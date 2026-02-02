@@ -12,6 +12,7 @@ mod float;
 mod fold;
 mod highlight;
 mod layout;
+mod number;
 mod popup;
 mod scroll;
 mod sign;
@@ -32,6 +33,7 @@ pub use float::{FloatAnchor, FloatBorder, FloatConfig, FloatRelative, FloatState
 pub use fold::{Fold, FoldMethod, FoldState};
 pub use highlight::{Color, HlGroup, HlGroups, TextAttr};
 pub use layout::{Layout, LayoutNode, SplitDirection};
+pub use number::{NumberColumn, NumberMode};
 pub use popup::{PopupItem, PopupMenu, PopupState};
 pub use scroll::{CursorPosition, ScrollAmount, ScrollDirection, ScrollState};
 pub use sign::{Sign, SignColumn, SignDefinition, SignPriority};
