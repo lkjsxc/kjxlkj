@@ -4,6 +4,7 @@
 
 mod change_event;
 mod diff;
+mod diff_types;
 mod edit;
 mod fold;
 mod fold_types;
