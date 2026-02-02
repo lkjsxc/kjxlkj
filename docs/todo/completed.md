@@ -99,6 +99,22 @@ Archive of completed TODO items.
 | Update app.rs to send OpenFile actions | ✓ |
 | All tests passing | ✓ |
 
+## Iteration 26 - Intent Handler Expansion
+
+| Task | Completed |
+|------|-----------|
+| Implement operator execution | ✓ |
+| Add operator_exec.rs module | ✓ |
+| Implement window operations | ✓ |
+| Add window_ops.rs module | ✓ |
+| Implement register operations | ✓ |
+| Add register_ops.rs module | ✓ |
+| Implement search operations | ✓ |
+| Add search_ops.rs module | ✓ |
+| Add text_ops.rs module | ✓ |
+| Add Save/SaveQuit action results | ✓ |
+| All 833 tests passing | ✓ |
+
 ## Final Statistics
 
 | Metric | Value |
