@@ -1,18 +1,14 @@
 //! Command-line input buffer.
 
+use crate::cmdline_history::CmdHistory;
+
 /// A buffer for command-line input.
 #[derive(Debug, Clone, Default)]
 pub struct CommandLine {
-    /// Current input.
     input: String,
-    /// Cursor position (byte index).
     cursor: usize,
-    /// Prompt character.
     prompt: char,
-    /// History.
-    history: Vec<String>,
-    /// Current history index.
-    history_idx: Option<usize>,
+    history: CmdHistory,
 }
 
 impl CommandLine {
@@ -26,7 +22,7 @@ impl CommandLine {
         self.input.clear();
         self.cursor = 0;
         self.prompt = prompt;
-        self.history_idx = None;
+        self.history.reset_index();
     }
 
     /// Closes the command line and returns the input.
@@ -126,43 +122,31 @@ impl CommandLine {
 
     /// Adds current input to history.
     pub fn add_to_history(&mut self) {
-        if !self.input.is_empty() {
-            self.history.push(self.input.clone());
-        }
+        self.history.add(self.input.clone());
     }
 
     /// Goes to previous history entry.
     pub fn history_prev(&mut self) -> bool {
-        if self.history.is_empty() {
-            return false;
+        if let Some(entry) = self.history.prev() {
+            self.input = entry.to_string();
+            self.cursor = self.input.len();
+            true
+        } else {
+            false
         }
-        let idx = match self.history_idx {
-            Some(i) if i > 0 => i - 1,
-            None if !self.history.is_empty() => self.history.len() - 1,
-            _ => return false,
-        };
-        self.history_idx = Some(idx);
-        self.input = self.history[idx].clone();
-        self.cursor = self.input.len();
-        true
     }
 
     /// Goes to next history entry.
     pub fn history_next(&mut self) -> bool {
-        let idx = match self.history_idx {
-            Some(i) => i + 1,
-            None => return false,
-        };
-        if idx >= self.history.len() {
-            self.history_idx = None;
+        if let Some(entry) = self.history.next() {
+            self.input = entry.to_string();
+            self.cursor = self.input.len();
+            true
+        } else {
             self.input.clear();
             self.cursor = 0;
-        } else {
-            self.history_idx = Some(idx);
-            self.input = self.history[idx].clone();
-            self.cursor = self.input.len();
+            true
         }
-        true
     }
 }
 
@@ -203,18 +187,5 @@ mod tests {
         assert_eq!(cmd.cursor(), 1);
         cmd.move_end();
         assert_eq!(cmd.cursor(), 3);
-    }
-
-    #[test]
-    fn test_history() {
-        let mut cmd = CommandLine::new();
-        cmd.open(':');
-        cmd.insert('w');
-        cmd.add_to_history();
-        cmd.close();
-        
-        cmd.open(':');
-        assert!(cmd.history_prev());
-        assert_eq!(cmd.input(), "w");
     }
 }

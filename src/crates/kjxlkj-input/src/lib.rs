@@ -3,6 +3,7 @@
 //! This crate converts key events into intents.
 
 mod cmdline;
+mod cmdline_history;
 mod digraph;
 mod key;
 mod mapping;

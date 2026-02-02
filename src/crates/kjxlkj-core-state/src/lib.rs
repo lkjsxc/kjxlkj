@@ -28,6 +28,7 @@ mod register_types;
 mod registers;
 mod repeat;
 mod session;
+mod session_manager;
 mod tabpage;
 mod tabpage_types;
 mod tag_types;
