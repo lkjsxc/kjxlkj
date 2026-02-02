@@ -49,3 +49,28 @@ impl OptionValue {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_option_scope() {
+        assert_ne!(OptionScope::Global, OptionScope::Buffer);
+        assert_ne!(OptionScope::Buffer, OptionScope::Window);
+    }
+
+    #[test]
+    fn test_option_value_accessors() {
+        let b = OptionValue::Bool(true);
+        let i = OptionValue::Int(42);
+        let s = OptionValue::String("test".to_string());
+
+        assert_eq!(b.as_bool(), Some(true));
+        assert_eq!(b.as_int(), None);
+        assert_eq!(i.as_int(), Some(42));
+        assert_eq!(i.as_string(), None);
+        assert_eq!(s.as_string(), Some("test"));
+        assert_eq!(s.as_bool(), None);
+    }
+}

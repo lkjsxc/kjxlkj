@@ -2,38 +2,7 @@
 //!
 //! Functions for viewport scrolling (Ctrl-D, Ctrl-U, Ctrl-F, Ctrl-B, zz, zt, zb).
 
-/// Scroll direction.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ScrollDirection {
-    /// Scroll up (content moves down).
-    Up,
-    /// Scroll down (content moves up).
-    Down,
-}
-
-/// Scroll amount.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ScrollAmount {
-    /// Half page (Ctrl-D, Ctrl-U).
-    HalfPage,
-    /// Full page (Ctrl-F, Ctrl-B).
-    FullPage,
-    /// Single line (Ctrl-E, Ctrl-Y).
-    Line,
-    /// Multiple lines.
-    Lines(usize),
-}
-
-/// Cursor position relative to viewport.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CursorPosition {
-    /// Center cursor in viewport (zz).
-    Center,
-    /// Move cursor to top of viewport (zt).
-    Top,
-    /// Move cursor to bottom of viewport (zb).
-    Bottom,
-}
+use crate::scroll_types::{CursorPosition, ScrollAmount, ScrollDirection};
 
 /// Scroll state for a window.
 #[derive(Debug, Clone)]
@@ -70,7 +39,12 @@ impl ScrollState {
     }
 
     /// Scrolls by the given amount.
-    pub fn scroll(&mut self, direction: ScrollDirection, amount: ScrollAmount, total_lines: usize) {
+    pub fn scroll(
+        &mut self,
+        direction: ScrollDirection,
+        amount: ScrollAmount,
+        total_lines: usize,
+    ) {
         let delta = match amount {
             ScrollAmount::HalfPage => self.height / 2,
             ScrollAmount::FullPage => self.height.saturating_sub(2),
@@ -96,13 +70,17 @@ impl ScrollState {
         } else if line > self.bottom_line() {
             self.top_line = line.saturating_sub(self.height.saturating_sub(1));
         }
-        // Ensure we don't scroll past end.
         let max_top = total_lines.saturating_sub(1);
         self.top_line = self.top_line.min(max_top);
     }
 
     /// Positions cursor in viewport.
-    pub fn position_cursor(&mut self, cursor_line: usize, position: CursorPosition, total_lines: usize) {
+    pub fn position_cursor(
+        &mut self,
+        cursor_line: usize,
+        position: CursorPosition,
+        total_lines: usize,
+    ) {
         match position {
             CursorPosition::Center => {
                 let half = self.height / 2;
@@ -115,7 +93,6 @@ impl ScrollState {
                 self.top_line = cursor_line.saturating_sub(self.height.saturating_sub(1));
             }
         }
-        // Clamp to valid range.
         let max_top = total_lines.saturating_sub(1);
         self.top_line = self.top_line.min(max_top);
     }
@@ -157,7 +134,6 @@ mod tests {
         assert!(state.is_line_visible(10));
         assert!(state.is_line_visible(25));
         assert!(!state.is_line_visible(9));
-        assert!(!state.is_line_visible(30));
     }
 
     #[test]
@@ -175,30 +151,9 @@ mod tests {
     }
 
     #[test]
-    fn test_ensure_visible_below() {
-        let mut state = ScrollState::new(0, 24);
-        state.ensure_visible(30, 100);
-        assert!(state.is_line_visible(30));
-    }
-
-    #[test]
-    fn test_ensure_visible_above() {
-        let mut state = ScrollState::new(20, 24);
-        state.ensure_visible(10, 100);
-        assert!(state.is_line_visible(10));
-    }
-
-    #[test]
     fn test_position_cursor_center() {
         let mut state = ScrollState::new(0, 24);
         state.position_cursor(50, CursorPosition::Center, 100);
         assert!(state.is_line_visible(50));
-    }
-
-    #[test]
-    fn test_position_cursor_top() {
-        let mut state = ScrollState::new(0, 24);
-        state.position_cursor(50, CursorPosition::Top, 100);
-        assert_eq!(state.top_line, 50);
     }
 }

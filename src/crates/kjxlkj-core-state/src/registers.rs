@@ -4,21 +4,15 @@ use crate::register_types::RegisterContent;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// Register storage.
+/// Register storage for yanked/deleted text.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Registers {
-    /// Named registers.
-    named: HashMap<char, RegisterContent>,
-    /// Unnamed register (").
-    unnamed: Option<RegisterContent>,
-    /// Small delete register (-).
-    small_delete: Option<RegisterContent>,
-    /// Numbered registers (0-9).
-    numbered: [Option<RegisterContent>; 10],
-    /// Last search pattern (/).
-    search: Option<String>,
-    /// Last inserted text (.).
-    last_insert: Option<String>,
+    named: HashMap<char, RegisterContent>,  // Named a-z registers
+    unnamed: Option<RegisterContent>,       // Unnamed register (")
+    small_delete: Option<RegisterContent>,  // Small delete register (-)
+    numbered: [Option<RegisterContent>; 10], // Numbered 0-9 registers
+    search: Option<String>,                 // Last search pattern (/)
+    last_insert: Option<String>,            // Last inserted text (.)
 }
 
 impl Registers {

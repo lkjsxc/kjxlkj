@@ -1,5 +1,7 @@
 //! Text manipulation utilities.
 
+pub use crate::text_stats::{byte_count, char_count, line_count, word_count};
+
 /// Joins lines with an optional separator.
 pub fn join_lines(lines: &[&str], separator: &str) -> String {
     lines.join(separator)
@@ -50,30 +52,6 @@ pub fn uniq_lines(lines: &[&str]) -> Vec<String> {
     result
 }
 
-/// Counts words in text.
-pub fn word_count(text: &str) -> usize {
-    text.split_whitespace().count()
-}
-
-/// Counts characters in text.
-pub fn char_count(text: &str) -> usize {
-    text.chars().count()
-}
-
-/// Counts bytes in text.
-pub fn byte_count(text: &str) -> usize {
-    text.len()
-}
-
-/// Counts lines in text.
-pub fn line_count(text: &str) -> usize {
-    if text.is_empty() {
-        0
-    } else {
-        text.lines().count()
-    }
-}
-
 /// Removes trailing whitespace from lines.
 pub fn strip_trailing_whitespace(text: &str) -> String {
     text.lines()
@@ -109,7 +87,7 @@ pub fn collapse_blank_lines(text: &str) -> String {
     let lines: Vec<&str> = text.lines().collect();
     let mut result: Vec<&str> = Vec::new();
     let mut prev_blank = false;
-    
+
     for line in lines {
         let is_blank = line.trim().is_empty();
         if is_blank && prev_blank {
@@ -118,7 +96,7 @@ pub fn collapse_blank_lines(text: &str) -> String {
         result.push(line);
         prev_blank = is_blank;
     }
-    
+
     result.join("\n")
 }
 
@@ -158,22 +136,10 @@ mod tests {
 
     #[test]
     fn test_uniq_lines() {
-        assert_eq!(uniq_lines(&["a", "a", "b", "b", "b", "c"]), vec!["a", "b", "c"]);
-    }
-
-    #[test]
-    fn test_word_count() {
-        assert_eq!(word_count("hello world foo"), 3);
-    }
-
-    #[test]
-    fn test_char_count() {
-        assert_eq!(char_count("hello"), 5);
-    }
-
-    #[test]
-    fn test_line_count() {
-        assert_eq!(line_count("a\nb\nc"), 3);
+        assert_eq!(
+            uniq_lines(&["a", "a", "b", "b", "b", "c"]),
+            vec!["a", "b", "c"]
+        );
     }
 
     #[test]

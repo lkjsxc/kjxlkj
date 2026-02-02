@@ -2,32 +2,8 @@
 //!
 //! Combines search state with buffer highlighting.
 
+use crate::search_hl_types::SearchHighlight;
 use kjxlkj_core_types::{Position, Range};
-
-/// A highlighted search match.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SearchHighlight {
-    /// Range of the match.
-    pub range: Range,
-    /// Whether this is the current match.
-    pub is_current: bool,
-}
-
-impl SearchHighlight {
-    /// Creates a new search highlight.
-    pub fn new(range: Range) -> Self {
-        Self {
-            range,
-            is_current: false,
-        }
-    }
-
-    /// Marks this as the current match.
-    pub fn current(mut self) -> Self {
-        self.is_current = true;
-        self
-    }
-}
 
 /// Search result with highlights.
 #[derive(Debug, Clone, Default)]
@@ -56,7 +32,6 @@ impl SearchResult {
             return;
         }
 
-        // Find all matches.
         let mut line = 0;
         let mut col = 0;
 
@@ -65,9 +40,9 @@ impl SearchResult {
                 let start = Position::new(line, col);
                 let end_col = col + pattern.chars().count();
                 let end = Position::new(line, end_col);
-                self.matches.push(SearchHighlight::new(Range::new(start, end)));
+                self.matches
+                    .push(SearchHighlight::new(Range::new(start, end)));
             }
-
             if ch == '\n' {
                 line += 1;
                 col = 0;
@@ -149,20 +124,6 @@ impl SearchResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_search_highlight_new() {
-        let range = Range::new(Position::new(0, 0), Position::new(0, 5));
-        let hl = SearchHighlight::new(range);
-        assert!(!hl.is_current);
-    }
-
-    #[test]
-    fn test_search_highlight_current() {
-        let range = Range::new(Position::new(0, 0), Position::new(0, 5));
-        let hl = SearchHighlight::new(range).current();
-        assert!(hl.is_current);
-    }
 
     #[test]
     fn test_search_result_set_pattern() {

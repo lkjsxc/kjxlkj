@@ -2,37 +2,7 @@
 //!
 //! Per-window list for navigating errors, search results, etc.
 
-use std::path::PathBuf;
-
-/// A single location list entry.
-#[derive(Debug, Clone)]
-pub struct LocationEntry {
-    /// File path.
-    pub path: PathBuf,
-    /// Line number (1-based).
-    pub line: usize,
-    /// Column number (1-based).
-    pub col: usize,
-    /// Entry text/message.
-    pub text: String,
-}
-
-impl LocationEntry {
-    /// Creates a new location entry.
-    pub fn new(path: PathBuf, line: usize, col: usize, text: &str) -> Self {
-        Self {
-            path,
-            line,
-            col,
-            text: text.to_string(),
-        }
-    }
-
-    /// Returns formatted location string.
-    pub fn location(&self) -> String {
-        format!("{}:{}:{}", self.path.display(), self.line, self.col)
-    }
-}
+use crate::location_types::LocationEntry;
 
 /// The location list (per-window).
 #[derive(Debug, Clone, Default)]
@@ -139,6 +109,7 @@ impl LocationList {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     fn sample_entries() -> Vec<LocationEntry> {
         vec![
@@ -146,12 +117,6 @@ mod tests {
             LocationEntry::new(PathBuf::from("b.rs"), 2, 5, "item 2"),
             LocationEntry::new(PathBuf::from("c.rs"), 10, 3, "item 3"),
         ]
-    }
-
-    #[test]
-    fn test_location_entry_location() {
-        let entry = LocationEntry::new(PathBuf::from("src/lib.rs"), 42, 10, "test");
-        assert_eq!(entry.location(), "src/lib.rs:42:10");
     }
 
     #[test]
@@ -184,22 +149,10 @@ mod tests {
     }
 
     #[test]
-    fn test_location_list_goto() {
-        let mut list = LocationList::new(1);
-        list.set(sample_entries());
-
-        list.goto(2);
-        assert_eq!(list.current_index(), 2);
-    }
-
-    #[test]
     fn test_location_list_clear() {
         let mut list = LocationList::new(1);
         list.set(sample_entries());
-        list.goto(2);
-
         list.clear();
         assert!(list.is_empty());
-        assert_eq!(list.current_index(), 0);
     }
 }

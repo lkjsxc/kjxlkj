@@ -168,26 +168,8 @@ mod tests {
     #[test]
     fn test_buffer_options_set_invalid() {
         let mut opts = BufferOptions::new();
-        // Wrong type
-        assert!(!opts.set("tabstop", OptionValue::Bool(true)));
-        // Unknown option
-        assert!(!opts.set("unknown", OptionValue::Int(1)));
-    }
-
-    #[test]
-    fn test_option_value_accessors() {
-        let b = OptionValue::Bool(true);
-        let i = OptionValue::Int(42);
-        let s = OptionValue::String("test".to_string());
-
-        assert_eq!(b.as_bool(), Some(true));
-        assert_eq!(b.as_int(), None);
-
-        assert_eq!(i.as_int(), Some(42));
-        assert_eq!(i.as_string(), None);
-
-        assert_eq!(s.as_string(), Some("test"));
-        assert_eq!(s.as_bool(), None);
+        assert!(!opts.set("tabstop", OptionValue::Bool(true))); // Wrong type
+        assert!(!opts.set("unknown", OptionValue::Int(1))); // Unknown option
     }
 
     #[test]

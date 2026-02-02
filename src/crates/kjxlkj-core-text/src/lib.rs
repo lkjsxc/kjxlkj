@@ -10,6 +10,7 @@ mod rope_ext;
 mod syntax_region;
 mod syntax_types;
 mod text_buffer;
+mod text_stats;
 mod width;
 mod word;
 mod word_end;
