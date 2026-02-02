@@ -172,6 +172,7 @@ dependencies = [
  "kjxlkj-core-types",
  "kjxlkj-core-ui",
  "kjxlkj-core-undo",
+ "kjxlkj-input",
  "serde",
 ]
 
