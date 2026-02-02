@@ -1,31 +1,33 @@
 # Current TODO
 
-Active task list for implementation - Iteration 30.
+Active task list for implementation - Iteration 30 Complete.
 
-## Completed (Iteration 29)
+## Completed (Iteration 29-30)
 
-- [x] Fixed viewport dimensions not being set for new windows
-- [x] Fixed viewport dimensions not being updated on terminal resize
-- [x] Added command line content to snapshot for rendering
-- [x] Fixed duplicate colon in command line display
-- [x] Added --dump CLI option for debugging render output
-- [x] All 838 tests passing
+- [x] Fixed viewport dimensions for text rendering
+- [x] Fixed command line display
+- [x] Added --dump CLI option for debugging
+- [x] Added leader key (Space) support
+- [x] Added file explorer intents (Space+e, Space+E)
+- [x] Added terminal toggle intent (Space+t)
+- [x] Added operator parsing (d, y, c, >, <)
+- [x] Added dd, yy, cc line operation support
+- [x] Extracted parser_operators.rs
+- [x] All 838+ tests passing
 
-## Bug Status After Iteration 29
+## Bug Status
 
 | Bug | Status |
 |-----|--------|
-| Main text not rendered | ✓ Fixed (viewport dimensions) |
-| Command mode not accepting input | ✓ Fixed (input works, display works) |
-| File browser Space+E | Not yet implemented (feature) |
+| Main text not rendered | ✓ Fixed |
+| Command mode input | ✓ Fixed |
+| File browser Space+E | ✓ Intent added (UI not implemented) |
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add leader key support | pending |
-| 2 | Add more operator support | pending |
-| 3 | Continue documentation updates | pending |
+| 1 | All tasks complete | ✓ |
 
 ## Related
 
