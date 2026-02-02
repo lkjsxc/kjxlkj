@@ -12,6 +12,7 @@ mod operator;
 mod operator_handler;
 mod search;
 mod search_highlight;
+mod spell;
 mod text_object;
 mod transaction;
 
@@ -33,5 +34,6 @@ pub use operator_handler::{
 };
 pub use search::{SearchDirection, SearchMatch, SearchState};
 pub use search_highlight::{SearchHighlight, SearchResult};
+pub use spell::{SimpleSpellChecker, SpellChecker, SpellState, SpellingError};
 pub use text_object::{find_text_object, TextObject, TextObjectKind, TextObjectModifier};
 pub use transaction::Transaction;
