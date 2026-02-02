@@ -1,31 +1,39 @@
 # Current TODO
 
-Active task list for implementation - Iteration 23.
+Active task list for implementation - Iteration 24.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Continue splitting large files | pending |
-| 2 | Add more comprehensive tests | pending |
-| 3 | Verify all files under 200 lines | pending |
-| 4 | Code quality improvements | pending |
+| 1 | Add integration tests | pending |
+| 2 | Implement missing features from specs | pending |
+| 3 | Address remaining warnings | pending |
+| 4 | Add documentation | pending |
 | 5 | Regenerate TODO list | pending |
 | 6 | Continue to next iteration | pending |
 
-## Completed (Iteration 22)
+## Completed (Iteration 23)
 
-- [x] Split text_object.rs (373→167+226 lines)
-- [x] Split float.rs (364→147+170 lines)
-- [x] Split editor.rs (344→120+136+86 lines)
-- [x] Split motion_handler.rs (314→200+91 lines)
-- [x] Total tests: 755
-- [x] All tests passing
+- [x] Split all remaining files over 200 lines
+- [x] location.rs → location_types.rs + location.rs
+- [x] scroll.rs → scroll_types.rs + scroll.rs  
+- [x] change.rs → change_types.rs + change.rs
+- [x] manipulation.rs → text_stats.rs + manipulation.rs
+- [x] search_highlight.rs → search_hl_types.rs + search_highlight.rs
+- [x] options.rs trimmed (moved tests to option_types.rs)
+- [x] registers.rs trimmed (consolidated doc comments)
+- [x] All 833 tests passing
+- [x] All files under 200 lines
 
-## Test Summary
+## Codebase Statistics
 
-- Total passing tests: 755
-- Crates with tests: 20+
+| Metric | Value |
+|--------|-------|
+| Source files | 236 |
+| Total lines | 25,750 |
+| Tests | 833 |
+| Crates | 19 |
 
 ## Related
 

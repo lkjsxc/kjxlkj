@@ -1,9 +1,8 @@
-```markdown
 # Completed Tasks
 
 Archive of completed TODO items.
 
-## Iteration 1
+## Iteration 1 - Initial Implementation
 
 | Task | Completed |
 |------|-----------|
@@ -29,7 +28,7 @@ Archive of completed TODO items.
 | Fix compilation errors | ✓ |
 | Build succeeds | ✓ |
 
-## Iteration 2
+## Iteration 2 - Core Tests
 
 | Task | Completed |
 |------|-----------|
@@ -42,9 +41,52 @@ Archive of completed TODO items.
 | Implement file save functionality | ✓ |
 | Total tests: 72, all passing | ✓ |
 
+## Iteration 3-10 - Expanded Tests
+
+| Task | Completed |
+|------|-----------|
+| Add comprehensive test coverage | ✓ |
+| Tests across all crates | ✓ |
+| Fix clippy warnings | ✓ |
+
+## Iteration 11-22 - File Splitting
+
+| Task | Completed |
+|------|-----------|
+| Split text_object.rs (373→167+226 lines) | ✓ |
+| Split float.rs (364→147+170 lines) | ✓ |
+| Split editor.rs (344→120+136+86 lines) | ✓ |
+| Split motion_handler.rs (314→200+91 lines) | ✓ |
+| Split history.rs | ✓ |
+| Split status.rs, conceal.rs, range_expand.rs | ✓ |
+| Split validation.rs, motion_handler.rs | ✓ |
+| Split branch.rs, syntax_region.rs, substitute.rs | ✓ |
+| Split clipboard.rs, search.rs | ✓ |
+
+## Iteration 23 - Final File Splitting
+
+| Task | Completed |
+|------|-----------|
+| Split location.rs → location_types.rs | ✓ |
+| Split scroll.rs → scroll_types.rs | ✓ |
+| Split change.rs → change_types.rs | ✓ |
+| Split manipulation.rs → text_stats.rs | ✓ |
+| Split search_highlight.rs → search_hl_types.rs | ✓ |
+| Trim options.rs | ✓ |
+| Trim registers.rs | ✓ |
+| All 833 tests passing | ✓ |
+| All files under 200 lines | ✓ |
+
+## Final Statistics
+
+| Metric | Value |
+|--------|-------|
+| Source files | 236 |
+| Total lines | 25,750 |
+| Tests | 833 |
+| Crates | 19 |
+
 ## Related
 
 - Current TODO: [current.md](current.md)
 - Plan: [plan.md](plan.md)
-
-```
