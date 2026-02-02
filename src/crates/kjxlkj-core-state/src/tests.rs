@@ -94,3 +94,65 @@ fn test_buffer_ids() {
     let ids = state.buffer_ids();
     assert_eq!(ids.len(), 3);
 }
+
+// Window management tests
+
+#[test]
+fn test_split_horizontal() {
+    let mut state = EditorState::new();
+    assert_eq!(state.window_count(), 1);
+    
+    let new_id = state.split_horizontal();
+    assert!(new_id.is_some());
+    assert_eq!(state.window_count(), 2);
+}
+
+#[test]
+fn test_split_vertical() {
+    let mut state = EditorState::new();
+    assert_eq!(state.window_count(), 1);
+    
+    let new_id = state.split_vertical();
+    assert!(new_id.is_some());
+    assert_eq!(state.window_count(), 2);
+}
+
+#[test]
+fn test_close_window() {
+    let mut state = EditorState::new();
+    state.split_horizontal();
+    
+    assert!(state.close_window());
+    assert_eq!(state.window_count(), 1);
+}
+
+#[test]
+fn test_cannot_close_last_window() {
+    let mut state = EditorState::new();
+    assert!(!state.close_window());
+    assert_eq!(state.window_count(), 1);
+}
+
+#[test]
+fn test_window_navigation() {
+    let mut state = EditorState::new();
+    let first = state.layout.active;
+    state.split_horizontal();
+    
+    assert!(state.next_window());
+    assert_ne!(state.layout.active, first);
+    
+    assert!(state.prev_window());
+    assert_eq!(state.layout.active, first);
+}
+
+#[test]
+fn test_only_window() {
+    let mut state = EditorState::new();
+    state.split_horizontal();
+    state.split_vertical();
+    assert_eq!(state.window_count(), 3);
+    
+    state.only_window();
+    assert_eq!(state.window_count(), 1);
+}
