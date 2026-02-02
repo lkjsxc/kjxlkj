@@ -2,6 +2,7 @@
 //!
 //! This crate aggregates all editor state and produces snapshots.
 
+mod arglist;
 mod buffer;
 mod clipboard;
 mod editor;
@@ -17,6 +18,7 @@ mod window;
 #[cfg(test)]
 mod tests;
 
+pub use arglist::ArgList;
 pub use buffer::BufferState;
 pub use clipboard::{ClipboardManager, ClipboardProvider, PrimarySelection, SystemClipboard};
 pub use editor::{BufferInfo, EditorState};
