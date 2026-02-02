@@ -4,6 +4,7 @@
 
 mod command;
 mod completion;
+mod global;
 mod parser;
 mod range;
 mod range_expand;
@@ -14,6 +15,7 @@ mod tests;
 
 pub use command::{Command, CommandKind};
 pub use completion::{Candidate, CommandCompletion, CommandRegistry, CompletionSource};
+pub use global::{GlobalCommand, GlobalMode, GlobalResult};
 pub use parser::CommandParser;
 pub use range::Range;
 pub use range_expand::{expand_range, expand_spec, ExpandedRange, RangeContext, RangeSpec};
