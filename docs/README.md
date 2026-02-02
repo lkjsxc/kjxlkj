@@ -15,7 +15,7 @@ This documentation is optimized for machine (LLM) parsing. See [policy/README.md
 | [reference/](reference/README.md) | Reference materials |
 | [overview/](overview/README.md) | Project overview |
 | [technical/](technical/README.md) | Technical implementation |
-| [TODO.md](TODO.md) | Documentation improvement tracker |
+| [todo/](todo/README.md) | Structured TODO management |
 
 ## Quick Start
 
