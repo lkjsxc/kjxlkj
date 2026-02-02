@@ -5,5 +5,8 @@
 mod event;
 mod terminal;
 
+#[cfg(test)]
+mod tests;
+
 pub use event::{HostEvent, HostEventStream};
 pub use terminal::TerminalHost;
