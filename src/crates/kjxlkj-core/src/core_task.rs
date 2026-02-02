@@ -17,7 +17,7 @@ pub struct CoreTask {
     /// Snapshot sender.
     snapshot_tx: watch::Sender<EditorSnapshot>,
     /// Running flag.
-    running: bool,
+    pub(crate) running: bool,
 }
 
 /// Handle for communicating with the core task.

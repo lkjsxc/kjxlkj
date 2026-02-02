@@ -7,6 +7,9 @@ mod core_task;
 pub mod motion;
 pub mod operator;
 
+#[cfg(test)]
+mod tests;
+
 pub use action::{Action, ActionResult};
 pub use core_task::{CoreTask, CoreHandle};
 pub use motion::execute_motion;
