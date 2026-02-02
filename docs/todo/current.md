@@ -1,23 +1,31 @@
 # Current TODO
 
-Active task list for implementation - Iteration 7.
+Active task list for implementation - Iteration 8.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add auto-indent support | pending |
-| 2 | Implement folding basics | pending |
-| 3 | Add completion support | pending |
-| 4 | Improve error handling | pending |
-| 5 | Add jumplist support | pending |
-| 6 | Add changelist support | pending |
-| 7 | Add command completion | pending |
-| 8 | Implement text objects for motions | pending |
-| 9 | Add input validation | pending |
-| 10 | Add service integration | pending |
+| 1 | Add command completion | pending |
+| 2 | Implement text objects for motions | pending |
+| 3 | Add input validation | pending |
+| 4 | Add service integration | pending |
+| 5 | Add word motion helpers | pending |
+| 6 | Add paragraph motion support | pending |
+| 7 | Add window scrolling support | pending |
+| 8 | Add statusline formatting | pending |
+| 9 | Add undo branching | pending |
+| 10 | Add file encoding support | pending |
 | 11 | Regenerate TODO list | pending |
 | 12 | Continue to next iteration | pending |
+
+## Completed (Iteration 7)
+
+- [x] Auto-indent support (8 tests)
+- [x] Code folding basics (6 tests)
+- [x] Completion support (5 tests)
+- [x] Error handling (6 tests)
+- [x] Jumplist navigation (8 tests)
 
 ## Completed (Iteration 6)
 
@@ -36,18 +44,10 @@ Active task list for implementation - Iteration 7.
 - [x] Host crate tests (5 tests)
 - [x] Service tests (9 tests)
 
-## Completed (Iteration 4)
-
-- [x] Window split management (:sp, :vsp)
-- [x] Window navigation (Ctrl-W + hjkl)
-- [x] Register operations (yank, delete, search, insert)
-- [x] Put (paste) intent and keybindings
-- [x] Render crate unit tests (11 tests)
-
 ## Test Summary
 
-- Total passing tests: 255
-- Crates with tests: 13 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render, host, service-fs, service-git)
+- Total passing tests: 290+
+- Crates with tests: 15 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render, host, service-fs, service-git, service-lsp placeholder)
 
 ## Related
 
