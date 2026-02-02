@@ -7,7 +7,10 @@ mod editor;
 mod registers;
 mod window;
 
+#[cfg(test)]
+mod tests;
+
 pub use buffer::BufferState;
-pub use editor::EditorState;
+pub use editor::{BufferInfo, EditorState};
 pub use registers::Registers;
 pub use window::WindowState;
