@@ -2,61 +2,7 @@
 //!
 //! Provides a list for navigating errors, search results, etc.
 
-use std::path::PathBuf;
-
-/// A single quickfix entry.
-#[derive(Debug, Clone)]
-pub struct QuickfixEntry {
-    /// File path.
-    pub path: PathBuf,
-    /// Line number (1-based).
-    pub line: usize,
-    /// Column number (1-based).
-    pub col: usize,
-    /// Entry text/message.
-    pub text: String,
-    /// Entry type.
-    pub kind: QuickfixKind,
-}
-
-/// Kind of quickfix entry.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum QuickfixKind {
-    /// Error.
-    Error,
-    /// Warning.
-    Warning,
-    /// Info.
-    Info,
-    /// Note.
-    Note,
-    /// Search result.
-    Search,
-}
-
-impl QuickfixEntry {
-    /// Creates a new quickfix entry.
-    pub fn new(path: PathBuf, line: usize, col: usize, text: &str) -> Self {
-        Self {
-            path,
-            line,
-            col,
-            text: text.to_string(),
-            kind: QuickfixKind::Error,
-        }
-    }
-
-    /// Sets the kind.
-    pub fn with_kind(mut self, kind: QuickfixKind) -> Self {
-        self.kind = kind;
-        self
-    }
-
-    /// Returns formatted location string.
-    pub fn location(&self) -> String {
-        format!("{}:{}:{}", self.path.display(), self.line, self.col)
-    }
-}
+pub use crate::quickfix_types::{QuickfixEntry, QuickfixKind};
 
 /// The quickfix list.
 #[derive(Debug, Clone, Default)]
@@ -173,6 +119,7 @@ impl QuickfixList {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     fn sample_entries() -> Vec<QuickfixEntry> {
         vec![

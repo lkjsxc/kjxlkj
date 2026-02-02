@@ -21,6 +21,7 @@ mod macros;
 mod mark_types;
 mod marks;
 mod quickfix;
+mod quickfix_types;
 mod register_types;
 mod registers;
 mod repeat;
