@@ -6,6 +6,7 @@ mod grapheme;
 mod manipulation;
 mod rope_ext;
 mod text_buffer;
+mod word;
 
 #[cfg(test)]
 mod tests;
@@ -19,3 +20,7 @@ pub use manipulation::{
 };
 pub use rope_ext::RopeExt;
 pub use text_buffer::TextBuffer;
+pub use word::{
+    bigword_end, next_bigword_start, next_word_start, prev_bigword_start, prev_word_start,
+    word_end, CharClass,
+};
