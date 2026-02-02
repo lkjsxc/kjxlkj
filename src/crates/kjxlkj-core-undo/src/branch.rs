@@ -4,40 +4,7 @@
 
 use std::collections::VecDeque;
 
-/// Branch identifier.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct BranchId(pub u64);
-
-/// Branch metadata.
-#[derive(Debug, Clone)]
-pub struct Branch {
-    /// Branch identifier.
-    pub id: BranchId,
-    /// Branch name.
-    pub name: Option<String>,
-    /// Head sequence number.
-    pub head_seq: u64,
-    /// Number of changes.
-    pub change_count: usize,
-}
-
-impl Branch {
-    /// Creates a new branch.
-    pub fn new(id: BranchId, head_seq: u64) -> Self {
-        Self {
-            id,
-            name: None,
-            head_seq,
-            change_count: 0,
-        }
-    }
-
-    /// Sets branch name.
-    pub fn with_name(mut self, name: &str) -> Self {
-        self.name = Some(name.to_string());
-        self
-    }
-}
+use crate::branch_types::{Branch, BranchId};
 
 /// Branch manager.
 #[derive(Debug, Clone, Default)]
@@ -159,15 +126,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_branch_new() {
-        let b = Branch::new(BranchId(1), 10);
-        assert_eq!(b.head_seq, 10);
-    }
-
-    #[test]
     fn test_branch_manager_create() {
         let mut mgr = BranchManager::new();
-        let id = mgr.create(0);
+        let _id = mgr.create(0);
         assert_eq!(mgr.len(), 1);
         assert!(mgr.current().is_some());
     }
@@ -176,7 +137,7 @@ mod tests {
     fn test_branch_manager_switch() {
         let mut mgr = BranchManager::new();
         let id1 = mgr.create(0);
-        let id2 = mgr.create(10);
+        let _id2 = mgr.create(10);
         assert!(mgr.switch(id1));
     }
 

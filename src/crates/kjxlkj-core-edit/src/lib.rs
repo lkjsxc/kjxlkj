@@ -20,6 +20,7 @@ mod operator;
 mod operator_handler;
 mod search;
 mod search_highlight;
+mod search_nav;
 mod search_types;
 mod spell;
 mod spell_checker;
@@ -49,7 +50,8 @@ pub use operator::{Operator, OperatorKind};
 pub use operator_handler::{
     execute_operator, extract_text, indent_text, transform_case, IndentDirection, OperatorResult,
 };
-pub use search::{SearchDirection, SearchMatch, SearchState};
+pub use search::SearchState;
+pub use search_types::{SearchDirection, SearchMatch};
 pub use search_highlight::{SearchHighlight, SearchResult};
 pub use spell::{SimpleSpellChecker, SpellChecker, SpellState, SpellingError};
 pub use text_object::{TextObject, TextObjectKind, TextObjectModifier};

@@ -14,6 +14,7 @@ mod range;
 mod range_expand;
 mod range_types;
 mod substitute;
+mod substitute_types;
 
 #[cfg(test)]
 mod tests;
@@ -26,4 +27,5 @@ pub use parser_types::ParseError;
 pub use range::Range;
 pub use range_expand::{expand_range, expand_spec};
 pub use range_types::{ExpandedRange, RangeContext, RangeSpec};
-pub use substitute::{SubstituteCommand, SubstituteFlags, SubstituteResult};
+pub use substitute::SubstituteCommand;
+pub use substitute_types::{SubstituteFlags, SubstituteResult};

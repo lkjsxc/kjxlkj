@@ -8,6 +8,7 @@ mod manipulation;
 mod paragraph;
 mod rope_ext;
 mod syntax_region;
+mod syntax_types;
 mod text_buffer;
 mod width;
 mod word;
@@ -25,7 +26,8 @@ pub use manipulation::{
 };
 pub use paragraph::{is_blank_line, next_paragraph, paragraph_count, paragraph_range, prev_paragraph};
 pub use rope_ext::RopeExt;
-pub use syntax_region::{MatchedRegion, SyntaxDefinition, SyntaxPattern, SyntaxRegion};
+pub use syntax_region::SyntaxDefinition;
+pub use syntax_types::{MatchedRegion, SyntaxPattern, SyntaxRegion};
 pub use text_buffer::TextBuffer;
 pub use width::{byte_for_column, char_width, str_width, truncate_to_width, width_to_byte, CharWidth};
 pub use word::{
