@@ -117,6 +117,9 @@ impl VirtualTextState {
         if let Some(vt) = self.texts.remove(&id) {
             if let Some(ids) = self.by_line.get_mut(&vt.line) {
                 ids.retain(|&i| i != id);
+                if ids.is_empty() {
+                    self.by_line.remove(&vt.line);
+                }
             }
             true
         } else {
@@ -137,6 +140,13 @@ impl VirtualTextState {
             .unwrap_or_default()
     }
 
+    /// Gets all virtual texts at a line in deterministic render order.
+    pub fn ordered_at_line(&self, line: usize) -> Vec<&VirtualText> {
+        let mut vts = self.at_line(line);
+        vts.sort_by_key(|vt| (pos_key(vt.pos), vt.id));
+        vts
+    }
+
     /// Clears all virtual texts.
     pub fn clear(&mut self) {
         self.texts.clear();
@@ -151,6 +161,15 @@ impl VirtualTextState {
     /// Returns whether empty.
     pub fn is_empty(&self) -> bool {
         self.texts.is_empty()
+    }
+}
+
+fn pos_key(pos: VirtualTextPos) -> (u8, usize) {
+    match pos {
+        VirtualTextPos::Overlay(col) => (0, col),
+        VirtualTextPos::Inline(col) => (1, col),
+        VirtualTextPos::EndOfLine => (2, usize::MAX),
+        VirtualTextPos::RightAlign => (3, usize::MAX),
     }
 }
 
@@ -204,5 +223,44 @@ mod tests {
 
         state.clear();
         assert!(state.is_empty());
+    }
+
+    #[test]
+    fn test_virtual_text_add_chunk_increases_length() {
+        let mut vt = VirtualText::eol(0, 1, "a", "A");
+        assert_eq!(vt.text_len(), 1);
+        vt.add_chunk("bc", "B");
+        assert_eq!(vt.text_len(), 3);
+    }
+
+    #[test]
+    fn test_virtual_text_state_remove_cleans_line_index() {
+        let mut state = VirtualTextState::new();
+        let id = state.add(VirtualText::eol(0, 10, "hint", "Hint"));
+        assert_eq!(state.at_line(10).len(), 1);
+        assert!(state.remove(id));
+        assert!(state.at_line(10).is_empty());
+        assert!(state.by_line.get(&10).is_none());
+    }
+
+    #[test]
+    fn test_virtual_text_state_ordered_at_line() {
+        let mut state = VirtualTextState::new();
+        state.add(VirtualText::inline(0, 10, 20, "b", "B"));
+        state.add(VirtualText::inline(0, 10, 5, "a", "A"));
+        state.add(VirtualText::eol(0, 10, "e", "E"));
+
+        let ordered = state.ordered_at_line(10);
+        assert_eq!(ordered.len(), 3);
+        assert_eq!(ordered[0].pos, VirtualTextPos::Inline(5));
+        assert_eq!(ordered[1].pos, VirtualTextPos::Inline(20));
+        assert_eq!(ordered[2].pos, VirtualTextPos::EndOfLine);
+    }
+
+    #[test]
+    fn test_virtual_text_pos_key_stable() {
+        assert!(pos_key(VirtualTextPos::Overlay(1)) < pos_key(VirtualTextPos::Inline(0)));
+        assert!(pos_key(VirtualTextPos::Inline(0)) < pos_key(VirtualTextPos::EndOfLine));
+        assert!(pos_key(VirtualTextPos::EndOfLine) < pos_key(VirtualTextPos::RightAlign));
     }
 }
