@@ -31,5 +31,5 @@ pub use operator_handler::{
     execute_operator, extract_text, indent_text, transform_case, IndentDirection, OperatorResult,
 };
 pub use search::{SearchDirection, SearchMatch, SearchState};
-pub use text_object::{TextObject, TextObjectKind, TextObjectModifier};
+pub use text_object::{find_text_object, TextObject, TextObjectKind, TextObjectModifier};
 pub use transaction::Transaction;
