@@ -4,9 +4,13 @@
 
 mod action;
 mod core_task;
+pub mod motion;
+pub mod operator;
 
 pub use action::{Action, ActionResult};
-pub use core_task::CoreTask;
+pub use core_task::{CoreTask, CoreHandle};
+pub use motion::execute_motion;
+pub use operator::{execute_operator, OperatorResult};
 
 // Re-exports
 pub use kjxlkj_core_edit as edit;

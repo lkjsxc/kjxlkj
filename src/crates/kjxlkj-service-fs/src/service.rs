@@ -1,6 +1,8 @@
 //! Filesystem service.
 
-use std::path::PathBuf;
+use crate::ops;
+use anyhow::Result;
+use std::path::{Path, PathBuf};
 
 /// Filesystem service.
 pub struct FsService {
@@ -19,8 +21,18 @@ impl FsService {
         &self.root
     }
 
+    /// Saves content to a file.
+    pub async fn save(&self, path: impl AsRef<Path>, content: &str) -> Result<()> {
+        ops::write_file(path, content).await
+    }
+
+    /// Loads content from a file.
+    pub async fn load(&self, path: impl AsRef<Path>) -> Result<String> {
+        ops::read_file(path).await
+    }
+
     /// Runs the service.
     pub async fn run(self) {
-        // Service loop
+        // Service loop - future message handling
     }
 }
