@@ -9,6 +9,7 @@ mod encoding;
 pub mod error;
 mod filetype;
 mod mode;
+mod option_types;
 mod options;
 mod position;
 mod range;

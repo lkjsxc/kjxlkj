@@ -2,6 +2,7 @@
 //!
 //! This crate provides the rope-based text buffer implementation.
 
+mod char_class;
 mod grapheme;
 mod manipulation;
 mod paragraph;

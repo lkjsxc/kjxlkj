@@ -33,6 +33,7 @@ mod sign;
 mod sign_types;
 mod snapshot;
 mod spelling;
+mod spelling_types;
 mod status;
 mod terminal;
 mod viewport;

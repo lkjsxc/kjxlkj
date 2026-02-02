@@ -2,34 +2,7 @@
 //!
 //! Helper functions for word-based cursor movement (w, W, b, B, e, E).
 
-/// Character classification for word motions.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CharClass {
-    /// Whitespace.
-    Whitespace,
-    /// Word character (alphanumeric or _).
-    Word,
-    /// Punctuation/symbol.
-    Punctuation,
-}
-
-impl CharClass {
-    /// Classifies a character.
-    pub fn classify(ch: char) -> Self {
-        if ch.is_whitespace() {
-            Self::Whitespace
-        } else if ch.is_alphanumeric() || ch == '_' {
-            Self::Word
-        } else {
-            Self::Punctuation
-        }
-    }
-
-    /// Returns whether two characters are in the same class.
-    pub fn same_class(a: char, b: char) -> bool {
-        Self::classify(a) == Self::classify(b)
-    }
-}
+pub use crate::char_class::CharClass;
 
 /// Finds the next word start position (w motion).
 pub fn next_word_start(text: &str, pos: usize) -> Option<usize> {
