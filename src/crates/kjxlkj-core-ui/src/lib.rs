@@ -13,6 +13,7 @@ mod sign;
 mod snapshot;
 mod status;
 mod viewport;
+mod virtual_text;
 
 pub use buffer_view::BufferView;
 pub use completion::{CompletionItem, CompletionKind, CompletionState};
@@ -25,3 +26,4 @@ pub use sign::{Sign, SignColumn, SignDefinition, SignPriority};
 pub use snapshot::EditorSnapshot;
 pub use status::StatusLine;
 pub use viewport::Viewport;
+pub use virtual_text::{VirtualText, VirtualTextChunk, VirtualTextPos, VirtualTextState};
