@@ -3,6 +3,7 @@
 //! This crate defines UI snapshot structures for rendering.
 
 mod buffer_view;
+mod cursor;
 mod dimensions;
 mod layout;
 mod snapshot;
@@ -10,6 +11,7 @@ mod status;
 mod viewport;
 
 pub use buffer_view::BufferView;
+pub use cursor::{CursorAppearance, CursorBlink, CursorShape};
 pub use dimensions::Dimensions;
 pub use layout::{Layout, LayoutNode, SplitDirection};
 pub use snapshot::EditorSnapshot;
