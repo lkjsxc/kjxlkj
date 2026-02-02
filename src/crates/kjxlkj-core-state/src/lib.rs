@@ -5,6 +5,7 @@
 mod buffer;
 mod editor;
 mod macros;
+mod marks;
 mod registers;
 mod window;
 
@@ -14,5 +15,6 @@ mod tests;
 pub use buffer::BufferState;
 pub use editor::{BufferInfo, EditorState};
 pub use macros::{Macro, MacroStore, RecordingState};
+pub use marks::{Mark, MarkStore, MarkType};
 pub use registers::Registers;
 pub use window::WindowState;
