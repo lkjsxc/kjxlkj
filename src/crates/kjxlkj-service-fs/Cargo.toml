@@ -12,3 +12,6 @@ description = "Filesystem service for kjxlkj editor"
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 tokio = { workspace = true }
 anyhow = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3.10"
