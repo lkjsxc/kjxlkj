@@ -1,23 +1,32 @@
 # Current TODO
 
-Active task list for implementation - Iteration 12.
+Active task list for implementation - Iteration 13.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add syntax region matching | pending |
-| 2 | Add sign column support | pending |
-| 3 | Add virtual text support | pending |
-| 4 | Add floating window support | pending |
-| 5 | Add popup menu support | pending |
-| 6 | Add terminal emulation basics | pending |
-| 7 | Add command history persistence | pending |
-| 8 | Add buffer metadata | pending |
-| 9 | Add workspace support | pending |
-| 10 | Add session persistence | pending |
+| 1 | Add command history persistence | pending |
+| 2 | Add buffer metadata | pending |
+| 3 | Add workspace support | pending |
+| 4 | Add session persistence | pending |
+| 5 | Add tabpage support | pending |
+| 6 | Add autocommand events | pending |
+| 7 | Add user function framework | pending |
+| 8 | Add expression evaluation | pending |
+| 9 | Add variable scope | pending |
+| 10 | Add wildmenu support | pending |
 | 11 | Regenerate TODO list | pending |
 | 12 | Continue to next iteration | pending |
+
+## Completed (Iteration 12)
+
+- [x] Syntax region matching (6 tests)
+- [x] Sign column support (6 tests)
+- [x] Virtual text support (6 tests)
+- [x] Floating window support (6 tests)
+- [x] Popup menu support (6 tests)
+- [x] Terminal emulation basics (6 tests)
 
 ## Completed (Iteration 11)
 
@@ -27,20 +36,11 @@ Active task list for implementation - Iteration 12.
 - [x] Diff mode support (6 tests)
 - [x] Conceal support (6 tests)
 
-## Completed (Iteration 10)
-
-- [x] Substitute command pattern (7 tests)
-- [x] Global command support (5 tests)
-- [x] Quickfix list (6 tests)
-- [x] Location list (6 tests)
-- [x] Argument list support (6 tests)
-- [x] Buffer-local options (6 tests)
-
 ## Test Summary
 
-- Total passing tests: 458
+- Total passing tests: 494
 - Crates with tests: 17+
-- Test growth: 30 new tests this iteration
+- Test growth: 36 new tests this iteration
 
 ## Related
 
