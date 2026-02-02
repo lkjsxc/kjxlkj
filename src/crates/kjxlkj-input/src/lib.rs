@@ -8,7 +8,10 @@ mod key;
 mod mapping;
 mod parser;
 mod user_mapping;
-mod validation;
+pub mod validation;
+
+#[cfg(test)]
+mod tests;
 
 pub use cmdline::CommandLine;
 pub use digraph::{Digraph, DigraphTable};
