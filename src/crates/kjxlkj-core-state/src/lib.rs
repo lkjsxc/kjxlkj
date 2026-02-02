@@ -4,6 +4,7 @@
 
 mod buffer;
 mod editor;
+mod jumplist;
 mod macros;
 mod marks;
 mod registers;
@@ -14,6 +15,7 @@ mod tests;
 
 pub use buffer::BufferState;
 pub use editor::{BufferInfo, EditorState};
+pub use jumplist::{ChangeList, Jump, JumpList};
 pub use macros::{Macro, MacroStore, RecordingState};
 pub use marks::{Mark, MarkStore, MarkType};
 pub use registers::Registers;
