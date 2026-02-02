@@ -6,27 +6,33 @@ Active task list for implementation - Iteration 25.
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Fix insert mode text input handling | pending |
-| 2 | Fix file loading from command line | pending |
-| 3 | Run tests and verify fixes | pending |
-| 4 | Recreate TODO list | pending |
-| 5 | Continue to next iteration | pending |
+| 1 | All bugs fixed | ✓ complete |
+
+## Completed (Iteration 25)
+
+- [x] Analyzed insert mode bug - process_intent() ignored most IntentKind variants
+- [x] Created intent_handler.rs with proper intent processing
+- [x] Implemented InsertText, InsertNewline, Backspace, DeleteChar handlers
+- [x] Analyzed file loading bug - Action::OpenFile was stub, args.files unused
+- [x] Implemented CoreTask::open_file() to load file contents
+- [x] Updated app.rs to send OpenFile actions for CLI file arguments
+- [x] All tests passing
 
 ## Bug Analysis (Iteration 25)
 
-### Bug 1: Insert Mode Key Input
+### Bug 1: Insert Mode Key Input - FIXED
 - **Symptom**: Mode switches to Insert, but typed characters not displayed
-- **Root Cause**: `CoreTask::process_intent()` has catch-all `_ => {}` that ignores InsertText, Backspace, etc.
-- **Fix**: Implement all IntentKind handlers in process_intent()
+- **Root Cause**: `CoreTask::process_intent()` had catch-all `_ => {}` that ignored InsertText
+- **Fix**: Created intent_handler.rs with proper handlers for all editing intents
 
-### Bug 2: File Loading
+### Bug 2: File Loading - FIXED  
 - **Symptom**: `cargo run ./README.md` shows [No Name] and empty content
 - **Root Cause**: 
   1. `args.files` never sent to core task
-  2. `Action::OpenFile { path }` does nothing in process_action()
+  2. `Action::OpenFile { path }` was a stub
 - **Fix**: 
-  1. Send OpenFile action for each CLI file
-  2. Implement file loading in process_action()
+  1. App::run() now sends OpenFile actions for CLI files
+  2. CoreTask::open_file() loads file content into buffer
 
 ## Related
 

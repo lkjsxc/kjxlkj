@@ -87,6 +87,18 @@ Archive of completed TODO items.
 | Update documentation | ✓ |
 | Zero warnings achieved | ✓ |
 
+## Iteration 25 - Critical Bug Fixes
+
+| Task | Completed |
+|------|-----------|
+| Fix insert mode text input bug | ✓ |
+| Create intent_handler.rs module | ✓ |
+| Implement InsertText/Backspace/DeleteChar | ✓ |
+| Fix file loading from CLI | ✓ |
+| Implement CoreTask::open_file() | ✓ |
+| Update app.rs to send OpenFile actions | ✓ |
+| All tests passing | ✓ |
+
 ## Final Statistics
 
 | Metric | Value |
