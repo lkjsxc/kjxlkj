@@ -54,12 +54,13 @@ Detailed recursive plan for complete source code implementation.
 | Fix clippy warnings | ✓ complete |
 | Enforce 200-line file limit | ✓ complete |
 
-## Phase 7: Next Steps (Pending)
+## Phase 7: Next Steps (In Progress)
 
 | Task | Status |
 |------|--------|
+| Implement intent handlers | ✓ complete |
+| Implement ex command execution | ✓ complete |
 | Add integration tests | pending |
-| Implement missing spec features | pending |
 | Add API documentation | pending |
 | Performance optimization | pending |
 
