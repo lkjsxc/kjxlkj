@@ -5,6 +5,7 @@
 mod abbreviation;
 mod arglist;
 mod autocmd;
+mod autocmd_types;
 mod buffer;
 mod change;
 mod changelist;
@@ -17,6 +18,7 @@ mod history_types;
 mod jump;
 mod jumplist;
 mod location;
+mod macro_types;
 mod macros;
 mod mark_types;
 mod marks;

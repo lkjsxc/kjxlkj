@@ -1,72 +1,9 @@
 //! Macro recording and playback.
 
 use kjxlkj_input::Key;
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// A recorded macro.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct Macro {
-    /// Keys in the macro.
-    keys: Vec<Key>,
-}
-
-impl Macro {
-    /// Creates a new empty macro.
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Creates a macro from keys.
-    pub fn from_keys(keys: Vec<Key>) -> Self {
-        Self { keys }
-    }
-
-    /// Returns the keys.
-    pub fn keys(&self) -> &[Key] {
-        &self.keys
-    }
-
-    /// Returns if empty.
-    pub fn is_empty(&self) -> bool {
-        self.keys.is_empty()
-    }
-
-    /// Returns the length.
-    pub fn len(&self) -> usize {
-        self.keys.len()
-    }
-
-    /// Adds a key.
-    pub fn push(&mut self, key: Key) {
-        self.keys.push(key);
-    }
-
-    /// Appends another macro.
-    pub fn append(&mut self, other: &Macro) {
-        self.keys.extend(other.keys.iter().cloned());
-    }
-
-    /// Clears the macro.
-    pub fn clear(&mut self) {
-        self.keys.clear();
-    }
-}
-
-/// Recording state.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum RecordingState {
-    /// Not recording.
-    Idle,
-    /// Recording to a register.
-    Recording(char),
-}
-
-impl Default for RecordingState {
-    fn default() -> Self {
-        Self::Idle
-    }
-}
+pub use crate::macro_types::{Macro, RecordingState};
 
 /// Macro storage and recording.
 #[derive(Debug, Clone, Default)]
@@ -107,7 +44,6 @@ impl MacroStore {
     /// Stops recording and stores the macro.
     pub fn stop_recording(&mut self) {
         if let RecordingState::Recording(register) = self.recording {
-            // Handle uppercase registers (append)
             if register.is_ascii_uppercase() {
                 let lower = register.to_ascii_lowercase();
                 if let Some(existing) = self.macros.get_mut(&lower) {
@@ -200,12 +136,10 @@ mod tests {
     fn test_macro_uppercase_append() {
         let mut store = MacroStore::new();
         
-        // Record to 'a'
         store.start_recording('a');
         store.record_key(key('x'));
         store.stop_recording();
         
-        // Append to 'A'
         store.start_recording('A');
         store.record_key(key('y'));
         store.stop_recording();
