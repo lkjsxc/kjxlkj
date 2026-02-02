@@ -20,6 +20,7 @@ This file is the authoritative execution plan for this repository.
 	- [ ] Crates: workspace member set + responsibilities.
 	- [ ] Policy: file/dir limits, doc fencing rules, navigation rules.
 - [ ] Build a traceability table mapping each extracted requirement → implementing module(s) under src/crates/.
+	- [x] Create TRACEABILITY.md skeleton with initial anchors.
 	- [ ] Record the requirement source as `docs/...#section`.
 	- [ ] Record at least one code anchor per requirement (crate + module path).
 - [ ] Run a doc link audit (internal links only) and fix any broken paths.
