@@ -111,3 +111,50 @@ fn test_color_rgb() {
         panic!("Expected RGB color");
     }
 }
+
+#[test]
+fn test_style_underline_field() {
+    let mut style = Style::new();
+    style.underline = true;
+    assert!(style.underline);
+}
+
+#[test]
+fn test_style_italic_field() {
+    let mut style = Style::new();
+    style.italic = true;
+    assert!(style.italic);
+}
+
+#[test]
+fn test_style_default() {
+    let style = Style::default();
+    assert!(!style.bold);
+    assert!(!style.italic);
+    assert!(!style.underline);
+}
+
+#[test]
+fn test_screen_buffer_fill() {
+    let dims = Dimensions::new(5, 5);
+    let mut buf = ScreenBuffer::new(dims);
+    let style = Style::new().fg(Color::Blue);
+    
+    for y in 0..5 {
+        for x in 0..5 {
+            buf.set_char(x, y, '#', style);
+        }
+    }
+    
+    for y in 0..5 {
+        for x in 0..5 {
+            assert_eq!(buf.get(x, y).unwrap().content, "#");
+        }
+    }
+}
+
+#[test]
+fn test_color_bright_black() {
+    let style = Style::new().fg(Color::BrightBlack);
+    assert_eq!(style.fg, Color::BrightBlack);
+}
