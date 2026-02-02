@@ -4,6 +4,7 @@
 
 mod abbreviation;
 mod arglist;
+mod autocmd;
 mod buffer;
 mod clipboard;
 mod editor;
@@ -25,6 +26,7 @@ mod tests;
 
 pub use abbreviation::{Abbreviation, AbbrMode, AbbrStore};
 pub use arglist::ArgList;
+pub use autocmd::{AutoCmd, AutoCmdManager, AutoEvent};
 pub use buffer::BufferState;
 pub use clipboard::{ClipboardManager, ClipboardProvider, PrimarySelection, SystemClipboard};
 pub use editor::{BufferInfo, EditorState};
