@@ -1,23 +1,31 @@
 # Current TODO
 
-Active task list for implementation - Iteration 9.
+Active task list for implementation - Iteration 10.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add search highlighting integration | pending |
-| 2 | Add clipboard system support | pending |
-| 3 | Add repeat command (.) support | pending |
-| 4 | Add visual line mode (V) | pending |
-| 5 | Add visual block mode (Ctrl-V) | pending |
-| 6 | Add ex range expansion | pending |
-| 7 | Add substitute command pattern | pending |
-| 8 | Add global command support (:g) | pending |
-| 9 | Add quickfix list | pending |
-| 10 | Add location list | pending |
+| 1 | Add substitute command pattern | pending |
+| 2 | Add global command support (:g) | pending |
+| 3 | Add quickfix list | pending |
+| 4 | Add location list | pending |
+| 5 | Add argument list support | pending |
+| 6 | Add buffer-local options | pending |
+| 7 | Add abbreviations support | pending |
+| 8 | Add digraph input | pending |
+| 9 | Add spell checking interface | pending |
+| 10 | Add diff mode support | pending |
 | 11 | Regenerate TODO list | pending |
 | 12 | Continue to next iteration | pending |
+
+## Completed (Iteration 9)
+
+- [x] Search highlighting integration (6 tests)
+- [x] Clipboard system support (6 tests)
+- [x] Repeat command (.) support (6 tests)
+- [x] Visual mode enhancements (4 tests)
+- [x] Ex range expansion (8 tests)
 
 ## Completed (Iteration 8)
 
@@ -32,18 +40,11 @@ Active task list for implementation - Iteration 9.
 - [x] Undo branching (6 tests)
 - [x] File encoding (8 tests)
 
-## Completed (Iteration 7)
-
-- [x] Auto-indent support (8 tests)
-- [x] Code folding basics (6 tests)
-- [x] Completion support (5 tests)
-- [x] Error handling (6 tests)
-- [x] Jumplist navigation (8 tests)
-
 ## Test Summary
 
-- Total passing tests: 363
-- Crates with tests: 17 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render, host, service-fs, service-git, service-lsp, plus others)
+- Total passing tests: 393
+- Crates with tests: 17+
+- Test growth: 30 new tests this iteration
 
 ## Related
 
