@@ -3,8 +3,11 @@
 //! This crate provides file indexing and search.
 
 mod finder;
-mod index;
+pub mod index;
 mod service;
+
+#[cfg(test)]
+mod tests;
 
 pub use finder::Finder;
 pub use index::Index;

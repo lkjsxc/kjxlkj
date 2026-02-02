@@ -5,5 +5,8 @@
 mod pty;
 mod service;
 
+#[cfg(test)]
+mod tests;
+
 pub use pty::Pty;
 pub use service::TerminalService;
