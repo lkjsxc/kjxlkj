@@ -11,6 +11,7 @@ mod syntax_region;
 mod text_buffer;
 mod width;
 mod word;
+mod word_end;
 
 #[cfg(test)]
 mod tests;

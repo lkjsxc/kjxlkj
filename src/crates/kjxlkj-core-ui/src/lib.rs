@@ -37,6 +37,7 @@ mod spelling;
 mod spelling_types;
 mod status;
 mod terminal;
+mod terminal_buffer;
 mod viewport;
 mod virtual_text;
 mod virtual_text_types;

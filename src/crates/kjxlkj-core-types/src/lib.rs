@@ -19,6 +19,8 @@ mod window;
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod tests2;
 
 pub use buffer::{BufferId, BufferName};
 pub use buffer_meta::{BufferFlags, BufferMetadata, BufferType};
