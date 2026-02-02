@@ -15,6 +15,7 @@ mod indent_types;
 mod motion;
 mod motion_handler;
 mod motion_helpers;
+mod motion_result;
 mod operator;
 mod operator_handler;
 mod search;
@@ -42,7 +43,8 @@ pub use indent::{
     IndentStyle,
 };
 pub use motion::{Motion, MotionKind};
-pub use motion_handler::{execute_motion, MotionResult};
+pub use motion_handler::execute_motion;
+pub use motion_result::MotionResult;
 pub use operator::{Operator, OperatorKind};
 pub use operator_handler::{
     execute_operator, extract_text, indent_text, transform_case, IndentDirection, OperatorResult,

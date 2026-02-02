@@ -1,29 +1,9 @@
 //! Motion execution.
 
 use crate::motion_helpers::*;
+use crate::motion_result::MotionResult;
 use crate::{Motion, MotionKind};
 use kjxlkj_core_types::Position;
-
-/// Result of a motion execution.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct MotionResult {
-    /// New position.
-    pub position: Position,
-    /// Whether motion found a valid target.
-    pub found: bool,
-}
-
-impl MotionResult {
-    /// Creates a successful result.
-    pub fn ok(position: Position) -> Self {
-        Self { position, found: true }
-    }
-
-    /// Creates a failed result (position unchanged).
-    pub fn fail(position: Position) -> Self {
-        Self { position, found: false }
-    }
-}
 
 /// Executes a motion on text.
 pub fn execute_motion(motion: &Motion, pos: Position, lines: &[&str]) -> MotionResult {

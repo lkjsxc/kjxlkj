@@ -2,29 +2,7 @@
 
 use std::path::Path;
 
-/// Validation result.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ValidationResult {
-    /// Input is valid.
-    Valid,
-    /// Input is invalid with reason.
-    Invalid(String),
-}
-
-impl ValidationResult {
-    /// Returns whether the result is valid.
-    pub fn is_valid(&self) -> bool {
-        matches!(self, Self::Valid)
-    }
-
-    /// Returns the error message if invalid.
-    pub fn error(&self) -> Option<&str> {
-        match self {
-            Self::Invalid(msg) => Some(msg),
-            Self::Valid => None,
-        }
-    }
-}
+use crate::validation_types::ValidationResult;
 
 /// Validates a buffer name.
 pub fn validate_buffer_name(name: &str) -> ValidationResult {

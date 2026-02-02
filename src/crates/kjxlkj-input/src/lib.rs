@@ -11,6 +11,7 @@ mod parser;
 mod parser_modes;
 mod user_mapping;
 pub mod validation;
+mod validation_types;
 
 #[cfg(test)]
 mod tests;
@@ -24,5 +25,6 @@ pub use user_mapping::{UserMapFlags, UserMapMode, UserMapStore, UserMapping};
 pub use validation::{
     validate_buffer_name, validate_column, validate_count, validate_file_path,
     validate_line_number, validate_mark, validate_pattern, validate_register, validate_split_ratio,
-    validate_tab_width, ValidationResult,
+    validate_tab_width,
 };
+pub use validation_types::ValidationResult;
