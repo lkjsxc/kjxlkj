@@ -1,7 +1,6 @@
 //! Filesystem service.
 
 use std::path::PathBuf;
-use tokio::sync::mpsc;
 
 /// Filesystem service.
 pub struct FsService {

@@ -14,7 +14,7 @@ pub struct InputParser {
     count: Option<usize>,
     /// Key maps by mode.
     normal_map: KeyMap,
-    insert_map: KeyMap,
+    _insert_map: KeyMap,
 }
 
 impl InputParser {
@@ -24,7 +24,7 @@ impl InputParser {
             sequence: KeySequence::new(),
             count: None,
             normal_map: Self::default_normal_map(),
-            insert_map: Self::default_insert_map(),
+            _insert_map: Self::default_insert_map(),
         }
     }
 

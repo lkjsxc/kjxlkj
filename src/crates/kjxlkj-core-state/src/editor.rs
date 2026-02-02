@@ -2,9 +2,7 @@
 
 use kjxlkj_core_mode::ModeState;
 use kjxlkj_core_types::{BufferId, Mode, WindowId};
-use kjxlkj_core_ui::{
-    BufferView, Dimensions, EditorSnapshot, Layout, LayoutNode, StatusLine, Viewport,
-};
+use kjxlkj_core_ui::{BufferView, Dimensions, EditorSnapshot, Layout, StatusLine};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

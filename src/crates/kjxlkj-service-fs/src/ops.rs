@@ -1,5 +1,7 @@
 //! File operations.
 
+#![allow(dead_code)]
+
 use anyhow::Result;
 use std::path::Path;
 use tokio::fs;

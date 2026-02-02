@@ -7,7 +7,7 @@ pub struct Pty {
     /// PTY ID.
     id: u64,
     /// Shell command.
-    shell: PathBuf,
+    _shell: PathBuf,
     /// Running flag.
     running: bool,
 }
@@ -17,7 +17,7 @@ impl Pty {
     pub fn new(id: u64, shell: PathBuf) -> Self {
         Self {
             id,
-            shell,
+            _shell: shell,
             running: false,
         }
     }

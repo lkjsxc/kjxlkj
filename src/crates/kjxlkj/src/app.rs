@@ -10,13 +10,13 @@ use kjxlkj_render::Renderer;
 /// Main application.
 pub struct App {
     /// CLI arguments.
-    args: Args,
+    _args: Args,
 }
 
 impl App {
     /// Creates a new application.
     pub fn new(args: Args) -> Result<Self> {
-        Ok(Self { args })
+        Ok(Self { _args: args })
     }
 
     /// Runs the application.

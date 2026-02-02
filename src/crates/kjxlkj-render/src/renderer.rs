@@ -8,7 +8,7 @@ pub struct Renderer {
     /// Current buffer.
     buffer: ScreenBuffer,
     /// Previous buffer for diffing.
-    prev_buffer: Option<ScreenBuffer>,
+    _prev_buffer: Option<ScreenBuffer>,
 }
 
 impl Renderer {
@@ -16,7 +16,7 @@ impl Renderer {
     pub fn new(dimensions: Dimensions) -> Self {
         Self {
             buffer: ScreenBuffer::new(dimensions),
-            prev_buffer: None,
+            _prev_buffer: None,
         }
     }
 

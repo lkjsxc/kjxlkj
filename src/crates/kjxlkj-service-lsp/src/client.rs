@@ -7,7 +7,7 @@ pub struct LspClient {
     /// Server name.
     name: String,
     /// Server command.
-    command: PathBuf,
+    _command: PathBuf,
     /// Running flag.
     running: bool,
 }
@@ -17,7 +17,7 @@ impl LspClient {
     pub fn new(name: impl Into<String>, command: PathBuf) -> Self {
         Self {
             name: name.into(),
-            command,
+            _command: command,
             running: false,
         }
     }
