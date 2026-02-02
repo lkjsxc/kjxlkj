@@ -5,6 +5,7 @@
 mod action;
 mod core_task;
 pub mod motion;
+mod motion_core;
 pub mod operator;
 
 #[cfg(test)]

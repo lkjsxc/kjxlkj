@@ -4,6 +4,11 @@ use kjxlkj_core_edit::{Motion, MotionKind};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::Position;
 
+use crate::motion_core::{
+    buffer_end, first_non_blank, goto_line, is_word_char, line_end, line_start,
+    move_down, move_left, move_right, move_up,
+};
+
 /// Executes a motion and returns the new position.
 pub fn execute_motion(
     buffer: &TextBuffer,
@@ -41,79 +46,21 @@ fn execute_motion_once(
     }
 }
 
-fn move_left(_buffer: &TextBuffer, pos: Position) -> Position {
-    if pos.col > 0 {
-        Position::new(pos.line, pos.col - 1)
-    } else {
-        pos
-    }
-}
-
-fn move_right(buffer: &TextBuffer, pos: Position) -> Position {
-    let line_len = buffer.line_grapheme_count(pos.line);
-    if pos.col + 1 < line_len {
-        Position::new(pos.line, pos.col + 1)
-    } else {
-        pos
-    }
-}
-
-fn move_up(_buffer: &TextBuffer, pos: Position) -> Position {
-    if pos.line > 0 {
-        Position::new(pos.line - 1, pos.col)
-    } else {
-        pos
-    }
-}
-
-fn move_down(buffer: &TextBuffer, pos: Position) -> Position {
-    if pos.line + 1 < buffer.line_count() {
-        Position::new(pos.line + 1, pos.col)
-    } else {
-        pos
-    }
-}
-
-fn line_start(pos: Position) -> Position {
-    Position::new(pos.line, 0)
-}
-
-fn line_end(buffer: &TextBuffer, pos: Position) -> Position {
-    let len = buffer.line_grapheme_count(pos.line);
-    if len > 0 {
-        Position::new(pos.line, len - 1)
-    } else {
-        Position::new(pos.line, 0)
-    }
-}
-
-fn first_non_blank(buffer: &TextBuffer, pos: Position) -> Position {
-    let line = buffer.line(pos.line);
-    let col = line
-        .chars()
-        .position(|c| !c.is_whitespace())
-        .unwrap_or(0);
-    Position::new(pos.line, col)
-}
-
 fn word_start(buffer: &TextBuffer, pos: Position) -> Position {
     let line = buffer.line(pos.line);
     let chars: Vec<char> = line.chars().collect();
     
     if pos.col >= chars.len() {
-        // Move to next line
         if pos.line + 1 < buffer.line_count() {
             return first_non_blank(buffer, Position::new(pos.line + 1, 0));
         }
         return pos;
     }
 
-    // Skip current word
     let mut col = pos.col;
     while col < chars.len() && is_word_char(chars[col]) {
         col += 1;
     }
-    // Skip whitespace
     while col < chars.len() && chars[col].is_whitespace() {
         col += 1;
     }
@@ -149,11 +96,9 @@ fn word_end(buffer: &TextBuffer, pos: Position) -> Position {
     }
 
     let mut col = pos.col + 1;
-    // Skip whitespace first
     while col < chars.len() && chars[col].is_whitespace() {
         col += 1;
     }
-    // Find end of word
     while col < chars.len() && is_word_char(chars[col]) {
         col += 1;
     }
@@ -174,11 +119,9 @@ fn word_back(buffer: &TextBuffer, pos: Position) -> Position {
     let chars: Vec<char> = line.chars().collect();
     
     let mut col = pos.col.saturating_sub(1);
-    // Skip whitespace
     while col > 0 && chars[col].is_whitespace() {
         col -= 1;
     }
-    // Find start of word
     while col > 0 && is_word_char(chars[col - 1]) {
         col -= 1;
     }
@@ -186,23 +129,10 @@ fn word_back(buffer: &TextBuffer, pos: Position) -> Position {
     Position::new(pos.line, col)
 }
 
-fn buffer_end(buffer: &TextBuffer) -> Position {
-    let last_line = buffer.line_count().saturating_sub(1);
-    Position::new(last_line, 0)
-}
-
-fn goto_line(buffer: &TextBuffer, line: usize) -> Position {
-    let target = line.saturating_sub(1).min(buffer.line_count().saturating_sub(1));
-    first_non_blank(buffer, Position::new(target, 0))
-}
-
-fn is_word_char(c: char) -> bool {
-    c.is_alphanumeric() || c == '_'
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::motion_core::{move_left, move_right, move_up, move_down, line_start, first_non_blank};
 
     #[test]
     fn test_move_left() {

@@ -27,6 +27,7 @@ mod registers;
 mod repeat;
 mod session;
 mod tabpage;
+mod tabpage_types;
 mod tag_types;
 mod tagstack;
 mod watch_types;
