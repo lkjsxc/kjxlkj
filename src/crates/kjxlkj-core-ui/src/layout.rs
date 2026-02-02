@@ -1,127 +1,8 @@
-//! Layout types.
+//! Editor layout.
 
+use crate::layout_node::{LayoutNode, SplitDirection};
 use kjxlkj_core_types::WindowId;
 use serde::{Deserialize, Serialize};
-
-/// Split direction.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum SplitDirection {
-    /// Horizontal split (windows stacked vertically).
-    Horizontal,
-    /// Vertical split (windows side by side).
-    Vertical,
-}
-
-/// Layout tree node.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum LayoutNode {
-    /// Leaf window.
-    Window(WindowId),
-    /// Split container.
-    Split {
-        /// Split direction.
-        direction: SplitDirection,
-        /// Child nodes.
-        children: Vec<LayoutNode>,
-        /// Split ratios (0.0 to 1.0).
-        ratios: Vec<f32>,
-    },
-}
-
-impl LayoutNode {
-    /// Creates a window leaf.
-    pub fn window(id: WindowId) -> Self {
-        Self::Window(id)
-    }
-
-    /// Creates a horizontal split.
-    pub fn hsplit(children: Vec<LayoutNode>) -> Self {
-        let n = children.len();
-        Self::Split {
-            direction: SplitDirection::Horizontal,
-            children,
-            ratios: vec![1.0 / n as f32; n],
-        }
-    }
-
-    /// Creates a vertical split.
-    pub fn vsplit(children: Vec<LayoutNode>) -> Self {
-        let n = children.len();
-        Self::Split {
-            direction: SplitDirection::Vertical,
-            children,
-            ratios: vec![1.0 / n as f32; n],
-        }
-    }
-
-    /// Collects all window IDs.
-    pub fn window_ids(&self) -> Vec<WindowId> {
-        match self {
-            LayoutNode::Window(id) => vec![*id],
-            LayoutNode::Split { children, .. } => {
-                children.iter().flat_map(|c| c.window_ids()).collect()
-            }
-        }
-    }
-
-    /// Finds a window and replaces it with a split.
-    pub fn split_window(
-        &mut self,
-        target: WindowId,
-        new_id: WindowId,
-        direction: SplitDirection,
-    ) -> bool {
-        match self {
-            LayoutNode::Window(id) if *id == target => {
-                let existing = LayoutNode::Window(target);
-                let new_node = LayoutNode::Window(new_id);
-                *self = LayoutNode::Split {
-                    direction,
-                    children: vec![existing, new_node],
-                    ratios: vec![0.5, 0.5],
-                };
-                true
-            }
-            LayoutNode::Split { children, .. } => {
-                children.iter_mut().any(|c| c.split_window(target, new_id, direction))
-            }
-            _ => false,
-        }
-    }
-
-    /// Removes a window from the layout.
-    pub fn remove_window(&mut self, target: WindowId) -> bool {
-        if let LayoutNode::Split { children, ratios, .. } = self {
-            // Find and remove the target
-            if let Some(pos) = children.iter().position(|c| {
-                matches!(c, LayoutNode::Window(id) if *id == target)
-            }) {
-                children.remove(pos);
-                ratios.remove(pos);
-                // Normalize ratios
-                let total: f32 = ratios.iter().sum();
-                if total > 0.0 {
-                    for r in ratios.iter_mut() {
-                        *r /= total;
-                    }
-                }
-                return true;
-            }
-            // Recurse
-            for child in children.iter_mut() {
-                if child.remove_window(target) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
-    /// Returns window count.
-    pub fn window_count(&self) -> usize {
-        self.window_ids().len()
-    }
-}
 
 /// Editor layout.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -148,12 +29,14 @@ impl Layout {
 
     /// Splits the active window horizontally.
     pub fn split_horizontal(&mut self, new_id: WindowId) -> bool {
-        self.root.split_window(self.active, new_id, SplitDirection::Horizontal)
+        self.root
+            .split_window(self.active, new_id, SplitDirection::Horizontal)
     }
 
     /// Splits the active window vertically.
     pub fn split_vertical(&mut self, new_id: WindowId) -> bool {
-        self.root.split_window(self.active, new_id, SplitDirection::Vertical)
+        self.root
+            .split_window(self.active, new_id, SplitDirection::Vertical)
     }
 
     /// Closes the active window and activates another.
@@ -237,7 +120,7 @@ mod tests {
         let id1 = WindowId::new(1);
         let id2 = WindowId::new(2);
         let mut layout = Layout::new(id1);
-        
+
         assert!(layout.split_horizontal(id2));
         assert_eq!(layout.window_count(), 2);
     }
@@ -247,7 +130,7 @@ mod tests {
         let id1 = WindowId::new(1);
         let id2 = WindowId::new(2);
         let mut layout = Layout::new(id1);
-        
+
         assert!(layout.split_vertical(id2));
         assert_eq!(layout.window_count(), 2);
     }
@@ -258,7 +141,7 @@ mod tests {
         let id2 = WindowId::new(2);
         let mut layout = Layout::new(id1);
         layout.split_horizontal(id2);
-        
+
         assert!(layout.close_active());
         assert_eq!(layout.window_count(), 1);
     }
@@ -276,11 +159,11 @@ mod tests {
         let id2 = WindowId::new(2);
         let mut layout = Layout::new(id1);
         layout.split_horizontal(id2);
-        
+
         let initial = layout.active;
         assert!(layout.next_window());
         assert_ne!(layout.active, initial);
-        
+
         assert!(layout.prev_window());
         assert_eq!(layout.active, initial);
     }

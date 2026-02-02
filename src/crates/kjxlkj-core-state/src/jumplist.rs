@@ -3,26 +3,10 @@
 //! Tracks positions visited during navigation (searches, jumps, etc.)
 //! for Ctrl-O (back) and Ctrl-I (forward) navigation.
 
-use kjxlkj_core_types::{BufferId, Position};
+use crate::jump::Jump;
 
 /// Maximum jump list size.
 const MAX_JUMPS: usize = 100;
-
-/// A jump location.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Jump {
-    /// Buffer ID.
-    pub buffer: BufferId,
-    /// Position in the buffer.
-    pub position: Position,
-}
-
-impl Jump {
-    /// Creates a new jump.
-    pub fn new(buffer: BufferId, position: Position) -> Self {
-        Self { buffer, position }
-    }
-}
 
 /// Jump list for navigation history.
 #[derive(Debug, Default)]
@@ -117,83 +101,10 @@ impl JumpList {
     }
 }
 
-/// Change list for tracking edit positions.
-#[derive(Debug, Default)]
-pub struct ChangeList {
-    /// List of change positions.
-    changes: Vec<Jump>,
-    /// Current position.
-    index: usize,
-}
-
-impl ChangeList {
-    /// Creates a new change list.
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Records a change at the given position.
-    pub fn record(&mut self, buffer: BufferId, position: Position) {
-        let jump = Jump::new(buffer, position);
-
-        // Avoid duplicating recent changes.
-        if let Some(last) = self.changes.last() {
-            if last.buffer == jump.buffer && last.position == jump.position {
-                return;
-            }
-        }
-
-        self.changes.push(jump);
-        self.index = self.changes.len();
-
-        // Limit size.
-        if self.changes.len() > MAX_JUMPS {
-            self.changes.remove(0);
-            self.index = self.changes.len();
-        }
-    }
-
-    /// Goes to older change (g;).
-    pub fn go_older(&mut self) -> Option<&Jump> {
-        if self.index > 0 {
-            self.index -= 1;
-            self.changes.get(self.index)
-        } else {
-            None
-        }
-    }
-
-    /// Goes to newer change (g,).
-    pub fn go_newer(&mut self) -> Option<&Jump> {
-        if self.index < self.changes.len() {
-            let jump = self.changes.get(self.index);
-            self.index += 1;
-            jump
-        } else {
-            None
-        }
-    }
-
-    /// Returns the most recent change.
-    pub fn last(&self) -> Option<&Jump> {
-        self.changes.last()
-    }
-
-    /// Returns all changes.
-    pub fn changes(&self) -> &[Jump] {
-        &self.changes
-    }
-
-    /// Clears the change list.
-    pub fn clear(&mut self) {
-        self.changes.clear();
-        self.index = 0;
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use kjxlkj_core_types::{BufferId, Position};
 
     fn buf(id: u64) -> BufferId {
         BufferId::new(id)
@@ -201,13 +112,6 @@ mod tests {
 
     fn pos(line: usize, col: usize) -> Position {
         Position::new(line, col)
-    }
-
-    #[test]
-    fn test_jump_new() {
-        let j = Jump::new(buf(1), pos(10, 5));
-        assert_eq!(j.buffer, buf(1));
-        assert_eq!(j.position, pos(10, 5));
     }
 
     #[test]
@@ -256,32 +160,10 @@ mod tests {
     }
 
     #[test]
-    fn test_changelist_record() {
-        let mut cl = ChangeList::new();
-        cl.record(buf(1), pos(5, 0));
-        cl.record(buf(1), pos(10, 0));
-        assert_eq!(cl.changes().len(), 2);
-    }
-
-    #[test]
-    fn test_changelist_go_older() {
-        let mut cl = ChangeList::new();
-        cl.record(buf(1), pos(5, 0));
-        cl.record(buf(1), pos(10, 0));
-
-        let c = cl.go_older().unwrap();
-        assert_eq!(c.position, pos(10, 0));
-    }
-
-    #[test]
-    fn test_changelist_go_newer() {
-        let mut cl = ChangeList::new();
-        cl.record(buf(1), pos(5, 0));
-        cl.record(buf(1), pos(10, 0));
-
-        cl.go_older();
-        cl.go_older();
-        let c = cl.go_newer().unwrap();
-        assert_eq!(c.position, pos(5, 0));
+    fn test_jumplist_clear() {
+        let mut jl = JumpList::new();
+        jl.push(Jump::new(buf(1), pos(0, 0)));
+        jl.clear();
+        assert!(jl.is_empty());
     }
 }
