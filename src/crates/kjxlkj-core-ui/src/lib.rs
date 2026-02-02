@@ -20,6 +20,7 @@ mod status;
 mod terminal;
 mod viewport;
 mod virtual_text;
+mod wrap;
 
 pub use buffer_view::BufferView;
 pub use completion::{CompletionItem, CompletionKind, CompletionState};
@@ -39,3 +40,4 @@ pub use status::StatusLine;
 pub use terminal::{TermBuffer, TermCell, TermCursor, TermSize, TermState};
 pub use viewport::Viewport;
 pub use virtual_text::{VirtualText, VirtualTextChunk, VirtualTextPos, VirtualTextState};
+pub use wrap::{WrapMode, WrapSegment, WrapState, WrappedLine};
