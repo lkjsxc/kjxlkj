@@ -6,6 +6,7 @@ mod change_event;
 mod diff;
 mod edit;
 mod fold;
+mod fold_types;
 mod highlight;
 mod highlight_types;
 mod indent;
@@ -27,7 +28,8 @@ mod tests;
 pub use change_event::{ChangeDispatcher, ChangeKind, TextChange};
 pub use diff::{DiffHunk, DiffKind, DiffState};
 pub use edit::{Edit, EditKind};
-pub use fold::{Fold, FoldRange, FoldState, Folds};
+pub use fold::Folds;
+pub use fold_types::{Fold, FoldRange, FoldState};
 pub use highlight::{BufferHighlights, LineHighlights};
 pub use highlight_types::{HighlightGroup, HighlightSpan};
 pub use indent::{
