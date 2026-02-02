@@ -45,3 +45,68 @@ mod ops_tests {
         assert!(result.is_err());
     }
 }
+
+mod watcher_tests {
+    use crate::FsWatcher;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_watcher_new() {
+        let watcher = FsWatcher::new();
+        assert!(watcher.paths.is_empty());
+    }
+
+    #[test]
+    fn test_watcher_watch() {
+        let mut watcher = FsWatcher::new();
+        watcher.watch(PathBuf::from("/home/user"));
+        assert_eq!(watcher.paths.len(), 1);
+    }
+
+    #[test]
+    fn test_watcher_unwatch() {
+        let mut watcher = FsWatcher::new();
+        let path = PathBuf::from("/home/user");
+        watcher.watch(path.clone());
+        watcher.unwatch(&path);
+        assert!(watcher.paths.is_empty());
+    }
+
+    #[test]
+    fn test_watcher_multiple() {
+        let mut watcher = FsWatcher::new();
+        watcher.watch(PathBuf::from("/a"));
+        watcher.watch(PathBuf::from("/b"));
+        watcher.watch(PathBuf::from("/c"));
+        assert_eq!(watcher.paths.len(), 3);
+    }
+}
+
+mod service_tests {
+    use crate::FsService;
+    use std::path::PathBuf;
+    use tempfile::TempDir;
+
+    fn setup() -> TempDir {
+        TempDir::new().unwrap()
+    }
+
+    #[tokio::test]
+    async fn test_service_save_load() {
+        let dir = setup();
+        let svc = FsService::new(dir.path().to_path_buf());
+        let path = dir.path().join("test.txt");
+
+        svc.save(&path, "content").await.unwrap();
+        let loaded = svc.load(&path).await.unwrap();
+
+        assert_eq!(loaded, "content");
+    }
+
+    #[test]
+    fn test_service_root() {
+        let root = PathBuf::from("/project");
+        let svc = FsService::new(root.clone());
+        assert_eq!(svc.root(), &root);
+    }
+}

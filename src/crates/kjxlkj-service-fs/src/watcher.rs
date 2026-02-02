@@ -5,7 +5,7 @@ use std::path::PathBuf;
 /// Filesystem watcher.
 pub struct FsWatcher {
     /// Paths being watched.
-    paths: Vec<PathBuf>,
+    pub(crate) paths: Vec<PathBuf>,
 }
 
 impl FsWatcher {
