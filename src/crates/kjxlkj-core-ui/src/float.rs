@@ -185,6 +185,40 @@ impl FloatState {
         self.windows.get(&id)
     }
 
+    /// Updates a floating window configuration.
+    pub fn update_config(&mut self, id: usize, config: FloatConfig) -> bool {
+        if let Some(win) = self.windows.get_mut(&id) {
+            win.config = config;
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Brings a floating window to the front by raising its z-index.
+    pub fn bring_to_front(&mut self, id: usize) -> bool {
+        let max_z = self
+            .windows
+            .values()
+            .map(|w| w.config.zindex)
+            .max()
+            .unwrap_or(0);
+
+        if let Some(win) = self.windows.get_mut(&id) {
+            win.config.zindex = max_z.saturating_add(1);
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Returns focusable windows sorted by z-index.
+    pub fn focusable_sorted(&self) -> Vec<&FloatWindow> {
+        let mut windows: Vec<_> = self.windows.values().filter(|w| w.config.focusable).collect();
+        windows.sort_by_key(|w| w.config.zindex);
+        windows
+    }
+
     /// Returns all windows sorted by zindex.
     pub fn all_sorted(&self) -> Vec<&FloatWindow> {
         let mut windows: Vec<_> = self.windows.values().collect();
@@ -267,5 +301,64 @@ mod tests {
 
         state.close_all();
         assert!(state.topmost().is_none());
+    }
+
+    #[test]
+    fn test_float_state_update_config() {
+        let mut state = FloatState::new();
+        let id = state.open(1, FloatConfig::new());
+        assert!(state.update_config(
+            id,
+            FloatConfig {
+                zindex: 99,
+                ..Default::default()
+            }
+        ));
+        assert_eq!(state.get(id).unwrap().config.zindex, 99);
+    }
+
+    #[test]
+    fn test_float_state_bring_to_front() {
+        let mut state = FloatState::new();
+        let a = state.open(1, FloatConfig { zindex: 10, ..Default::default() });
+        let b = state.open(2, FloatConfig { zindex: 50, ..Default::default() });
+
+        assert!(state.bring_to_front(a));
+        assert!(state.get(a).unwrap().config.zindex > state.get(b).unwrap().config.zindex);
+        assert_eq!(state.topmost().unwrap().id, a);
+    }
+
+    #[test]
+    fn test_float_state_focusable_sorted() {
+        let mut state = FloatState::new();
+        state.open(
+            1,
+            FloatConfig {
+                zindex: 50,
+                focusable: true,
+                ..Default::default()
+            },
+        );
+        state.open(
+            2,
+            FloatConfig {
+                zindex: 10,
+                focusable: true,
+                ..Default::default()
+            },
+        );
+        state.open(
+            3,
+            FloatConfig {
+                zindex: 5,
+                focusable: false,
+                ..Default::default()
+            },
+        );
+
+        let focusable = state.focusable_sorted();
+        assert_eq!(focusable.len(), 2);
+        assert_eq!(focusable[0].config.zindex, 10);
+        assert_eq!(focusable[1].config.zindex, 50);
     }
 }
