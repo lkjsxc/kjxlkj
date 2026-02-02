@@ -3,12 +3,14 @@
 //! This crate converts key events into intents.
 
 mod cmdline;
+mod digraph;
 mod key;
 mod mapping;
 mod parser;
 mod validation;
 
 pub use cmdline::CommandLine;
+pub use digraph::{Digraph, DigraphTable};
 pub use key::{Key, KeyCodeWrapper, KeySequence, Modifiers};
 pub use mapping::KeyMap;
 pub use parser::InputParser;
