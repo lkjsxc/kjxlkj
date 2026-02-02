@@ -10,6 +10,7 @@ mod completion_kind;
 mod completion_source;
 mod conceal;
 mod cursor;
+mod cursor_blink;
 mod cursorhl;
 mod diffhl;
 mod diffhl_types;

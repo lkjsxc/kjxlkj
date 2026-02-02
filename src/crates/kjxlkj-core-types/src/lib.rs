@@ -8,6 +8,7 @@ mod cursor;
 mod encoding;
 pub mod error;
 mod filetype;
+mod filetype_detect;
 mod mode;
 mod option_types;
 mod options;
