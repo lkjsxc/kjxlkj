@@ -22,6 +22,9 @@ pub fn insert_text(state: &mut EditorState, text: &str) {
     } else {
         window.cursor = Cursor::at(pos.line, pos.col + text.chars().count());
     }
+
+    // Ensure cursor visible after insert
+    window.ensure_cursor_visible();
 }
 
 /// Deletes character before cursor.
@@ -46,6 +49,9 @@ pub fn backspace(state: &mut EditorState) {
         buffer.modified = true;
         window.cursor = Cursor::new(start);
     }
+
+    // Ensure cursor visible after backspace
+    window.ensure_cursor_visible();
 }
 
 /// Deletes character at cursor.
@@ -105,4 +111,7 @@ pub fn execute_motion_on_state(
         let new_pos = crate::execute_motion(&buffer.text, window.cursor.position, motion);
         window.cursor = Cursor::new(new_pos);
     }
+
+    // Ensure cursor is visible after motion
+    window.ensure_cursor_visible();
 }

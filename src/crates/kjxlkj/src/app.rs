@@ -88,9 +88,11 @@ impl App {
         loop {
             let mut snapshot = core_handle.snapshot();
             
+            // Only show command line if in command mode and cmdline is open
             if snapshot.mode == Mode::Command {
-                let cmdline = parser.cmdline();
-                snapshot.command_line = Some(format!("{}{}", cmdline.prompt(), cmdline.input()));
+                if let Some(display) = parser.cmdline().display() {
+                    snapshot.command_line = Some(display);
+                }
             }
 
             let frame = renderer.render(&snapshot);

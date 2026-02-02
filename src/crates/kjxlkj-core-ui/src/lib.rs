@@ -76,7 +76,7 @@ pub use scroll::ScrollState;
 pub use scroll_types::{CursorPosition, ScrollAmount, ScrollDirection};
 pub use searchhl::{SearchHighlight, SearchMatch};
 pub use sign::{Sign, SignColumn, SignDefinition, SignPriority};
-pub use snapshot::EditorSnapshot;
+pub use snapshot::{EditorSnapshot, ExplorerEntry, ExplorerSnapshot};
 pub use spelling::{SpellConfig, SpellError, SpellResult, SpellState, UserWordList};
 pub use status::{SegmentStyle, StatusLine, StatusSegment};
 pub use terminal::{TermBuffer, TermCell, TermCursor, TermSize, TermState};

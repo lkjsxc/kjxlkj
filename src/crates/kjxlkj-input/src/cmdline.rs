@@ -29,7 +29,13 @@ impl CommandLine {
     pub fn close(&mut self) -> String {
         let input = std::mem::take(&mut self.input);
         self.cursor = 0;
+        self.prompt = '\0';  // Reset prompt to indicate closed
         input
+    }
+
+    /// Returns true if the command line is open.
+    pub fn is_open(&self) -> bool {
+        self.prompt != '\0'
     }
 
     /// Returns the current input.
@@ -47,9 +53,13 @@ impl CommandLine {
         self.cursor
     }
 
-    /// Returns the display line (prompt + input).
-    pub fn display(&self) -> String {
-        format!("{}{}", self.prompt, self.input)
+    /// Returns the display line (prompt + input), or None if closed.
+    pub fn display(&self) -> Option<String> {
+        if self.is_open() {
+            Some(format!("{}{}", self.prompt, self.input))
+        } else {
+            None
+        }
     }
 
     /// Inserts a character at cursor.

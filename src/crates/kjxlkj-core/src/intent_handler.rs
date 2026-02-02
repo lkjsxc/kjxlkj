@@ -153,14 +153,14 @@ pub fn process_intent(state: &mut EditorState, intent: Intent) -> ActionResult {
         }
 
         IntentKind::ToggleFileExplorer => {
-            // TODO: Implement file explorer toggle
-            state.set_message("File explorer not yet implemented");
+            state.file_explorer.toggle();
             ActionResult::Ok
         }
 
         IntentKind::FocusFileExplorer => {
-            // TODO: Implement file explorer focus
-            state.set_message("File explorer not yet implemented");
+            if !state.file_explorer.open {
+                state.file_explorer.toggle();
+            }
             ActionResult::Ok
         }
 

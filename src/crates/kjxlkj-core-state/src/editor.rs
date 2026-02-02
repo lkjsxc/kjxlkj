@@ -2,11 +2,11 @@
 
 use kjxlkj_core_mode::ModeState;
 use kjxlkj_core_types::{BufferId, Mode, WindowId};
-use kjxlkj_core_ui::{BufferView, Dimensions, EditorSnapshot, Layout, StatusLine};
+use kjxlkj_core_ui::{BufferView, Dimensions, EditorSnapshot, ExplorerEntry, ExplorerSnapshot, Layout, StatusLine};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::{BufferState, Registers, WindowState};
+use crate::{BufferState, FileExplorerState, Registers, WindowState};
 
 /// Complete editor state.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -26,6 +26,8 @@ pub struct EditorState {
     pub dimensions: Dimensions,
     /// Message to display.
     pub message: Option<String>,
+    /// File explorer state.
+    pub file_explorer: FileExplorerState,
     /// Next buffer ID.
     pub(crate) next_buffer_id: u64,
     /// Next window ID.
@@ -59,6 +61,7 @@ impl EditorState {
             registers: Registers::new(),
             dimensions: dims,
             message: None,
+            file_explorer: FileExplorerState::new(),
             next_buffer_id: 1,
             next_window_id: 1,
         }
@@ -155,6 +158,19 @@ impl EditorState {
 
         // Include message in snapshot
         snapshot.message = self.message.clone();
+
+        // Include file explorer state
+        snapshot.explorer = ExplorerSnapshot {
+            open: self.file_explorer.open,
+            width: self.file_explorer.width,
+            entries: self.file_explorer.entries.iter().map(|e| ExplorerEntry {
+                name: e.name.clone(),
+                is_dir: e.is_dir(),
+                depth: e.depth,
+                expanded: e.expanded,
+            }).collect(),
+            selected: self.file_explorer.selected,
+        };
 
         snapshot
     }
