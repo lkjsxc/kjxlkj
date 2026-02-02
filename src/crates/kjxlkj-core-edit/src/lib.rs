@@ -8,8 +8,11 @@ mod operator;
 mod text_object;
 mod transaction;
 
+#[cfg(test)]
+mod tests;
+
 pub use edit::{Edit, EditKind};
 pub use motion::{Motion, MotionKind};
 pub use operator::{Operator, OperatorKind};
-pub use text_object::{TextObject, TextObjectKind};
+pub use text_object::{TextObject, TextObjectKind, TextObjectModifier};
 pub use transaction::Transaction;

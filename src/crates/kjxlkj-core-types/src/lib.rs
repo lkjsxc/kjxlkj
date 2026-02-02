@@ -10,6 +10,9 @@ mod range;
 mod version;
 mod window;
 
+#[cfg(test)]
+mod tests;
+
 pub use buffer::{BufferId, BufferName};
 pub use cursor::Cursor;
 pub use mode::Mode;

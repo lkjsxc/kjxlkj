@@ -6,6 +6,9 @@ mod grapheme;
 mod rope_ext;
 mod text_buffer;
 
+#[cfg(test)]
+mod tests;
+
 pub use grapheme::{GraphemeIter, grapheme_count, grapheme_width};
 pub use rope_ext::RopeExt;
 pub use text_buffer::TextBuffer;
