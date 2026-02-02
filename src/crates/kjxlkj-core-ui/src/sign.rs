@@ -131,7 +131,20 @@ impl SignColumn {
         if let Some(sign) = self.signs.remove(&id) {
             if let Some(ids) = self.by_line.get_mut(&sign.line) {
                 ids.retain(|&i| i != id);
+                if ids.is_empty() {
+                    self.by_line.remove(&sign.line);
+                }
             }
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Sets the priority for a placed sign.
+    pub fn set_priority(&mut self, id: usize, priority: SignPriority) -> bool {
+        if let Some(sign) = self.signs.get_mut(&id) {
+            sign.priority = priority;
             true
         } else {
             false
