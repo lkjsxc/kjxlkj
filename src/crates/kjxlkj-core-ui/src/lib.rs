@@ -5,6 +5,8 @@
 mod buffer_view;
 mod colorcolumn;
 mod completion;
+mod completion_item;
+mod completion_kind;
 mod completion_source;
 mod conceal;
 mod cursor;
@@ -37,7 +39,9 @@ mod wrap;
 
 pub use buffer_view::BufferView;
 pub use colorcolumn::ColorColumn;
-pub use completion::{CompletionItem, CompletionKind, CompletionState};
+pub use completion::CompletionState;
+pub use completion_item::CompletionItem;
+pub use completion_kind::CompletionKind;
 pub use completion_source::{SourceConfig, SourceKind, SourceManager, SourcePriority};
 pub use conceal::{ConcealLevel, ConcealRegion, ConcealState, LineConceal};
 pub use cursor::{CursorAppearance, CursorBlink, CursorShape};

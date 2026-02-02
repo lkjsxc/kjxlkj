@@ -1,114 +1,6 @@
-//! Completion support.
+//! Completion state.
 
-use serde::{Deserialize, Serialize};
-
-/// Completion item kind.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum CompletionKind {
-    /// Text completion.
-    Text,
-    /// Method/function.
-    Method,
-    /// Function.
-    Function,
-    /// Constructor.
-    Constructor,
-    /// Field.
-    Field,
-    /// Variable.
-    Variable,
-    /// Class.
-    Class,
-    /// Interface.
-    Interface,
-    /// Module.
-    Module,
-    /// Property.
-    Property,
-    /// Unit.
-    Unit,
-    /// Value.
-    Value,
-    /// Enum.
-    Enum,
-    /// Keyword.
-    Keyword,
-    /// Snippet.
-    Snippet,
-    /// Color.
-    Color,
-    /// File.
-    File,
-    /// Reference.
-    Reference,
-    /// Folder.
-    Folder,
-    /// Enum member.
-    EnumMember,
-    /// Constant.
-    Constant,
-    /// Struct.
-    Struct,
-    /// Event.
-    Event,
-    /// Operator.
-    Operator,
-    /// Type parameter.
-    TypeParameter,
-}
-
-/// A completion item.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CompletionItem {
-    /// Display label.
-    pub label: String,
-    /// Kind of item.
-    pub kind: CompletionKind,
-    /// Text to insert.
-    pub insert_text: String,
-    /// Filter text for matching.
-    pub filter_text: Option<String>,
-    /// Sort text.
-    pub sort_text: Option<String>,
-    /// Detail description.
-    pub detail: Option<String>,
-    /// Documentation.
-    pub documentation: Option<String>,
-}
-
-impl CompletionItem {
-    /// Creates a new completion item.
-    pub fn new(label: impl Into<String>, kind: CompletionKind) -> Self {
-        let label = label.into();
-        Self {
-            insert_text: label.clone(),
-            label,
-            kind,
-            filter_text: None,
-            sort_text: None,
-            detail: None,
-            documentation: None,
-        }
-    }
-
-    /// Sets the insert text.
-    pub fn with_insert(mut self, text: impl Into<String>) -> Self {
-        self.insert_text = text.into();
-        self
-    }
-
-    /// Sets the detail.
-    pub fn with_detail(mut self, detail: impl Into<String>) -> Self {
-        self.detail = Some(detail.into());
-        self
-    }
-
-    /// Sets the documentation.
-    pub fn with_doc(mut self, doc: impl Into<String>) -> Self {
-        self.documentation = Some(doc.into());
-        self
-    }
-}
+use crate::completion_item::CompletionItem;
 
 /// Completion state.
 #[derive(Debug, Clone, Default)]
@@ -158,7 +50,8 @@ impl CompletionState {
         if self.prefix.is_empty() {
             return self.items.iter().collect();
         }
-        self.items.iter()
+        self.items
+            .iter()
             .filter(|item| {
                 let filter = item.filter_text.as_deref().unwrap_or(&item.label);
                 filter.to_lowercase().starts_with(&self.prefix.to_lowercase())
@@ -186,9 +79,7 @@ impl CompletionState {
     /// Selects previous item.
     pub fn select_prev(&mut self) {
         if !self.items.is_empty() {
-            self.selected = self.selected
-                .checked_sub(1)
-                .unwrap_or(self.items.len() - 1);
+            self.selected = self.selected.checked_sub(1).unwrap_or(self.items.len() - 1);
         }
     }
 
@@ -207,30 +98,19 @@ impl CompletionState {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_completion_item_new() {
-        let item = CompletionItem::new("foo", CompletionKind::Function);
-        assert_eq!(item.label, "foo");
-        assert_eq!(item.insert_text, "foo");
-    }
-
-    #[test]
-    fn test_completion_item_with() {
-        let item = CompletionItem::new("test", CompletionKind::Method)
-            .with_detail("A test method")
-            .with_doc("Documentation here");
-        assert_eq!(item.detail, Some("A test method".to_string()));
-    }
+    use crate::completion_kind::CompletionKind;
 
     #[test]
     fn test_completion_state_open_close() {
         let mut state = CompletionState::new();
         assert!(!state.is_visible());
-        
-        state.open(vec![CompletionItem::new("a", CompletionKind::Text)], "".to_string());
+
+        state.open(
+            vec![CompletionItem::new("a", CompletionKind::Text)],
+            "".to_string(),
+        );
         assert!(state.is_visible());
-        
+
         state.close();
         assert!(!state.is_visible());
     }
@@ -238,12 +118,15 @@ mod tests {
     #[test]
     fn test_completion_select() {
         let mut state = CompletionState::new();
-        state.open(vec![
-            CompletionItem::new("a", CompletionKind::Text),
-            CompletionItem::new("b", CompletionKind::Text),
-            CompletionItem::new("c", CompletionKind::Text),
-        ], "".to_string());
-        
+        state.open(
+            vec![
+                CompletionItem::new("a", CompletionKind::Text),
+                CompletionItem::new("b", CompletionKind::Text),
+                CompletionItem::new("c", CompletionKind::Text),
+            ],
+            "".to_string(),
+        );
+
         assert_eq!(state.selected_index(), 0);
         state.select_next();
         assert_eq!(state.selected_index(), 1);
@@ -255,13 +138,31 @@ mod tests {
     #[test]
     fn test_completion_filter() {
         let mut state = CompletionState::new();
-        state.open(vec![
-            CompletionItem::new("foo", CompletionKind::Text),
-            CompletionItem::new("bar", CompletionKind::Text),
-            CompletionItem::new("foobar", CompletionKind::Text),
-        ], "foo".to_string());
-        
+        state.open(
+            vec![
+                CompletionItem::new("foo", CompletionKind::Text),
+                CompletionItem::new("bar", CompletionKind::Text),
+                CompletionItem::new("foobar", CompletionKind::Text),
+            ],
+            "foo".to_string(),
+        );
+
         let filtered = state.filtered_items();
         assert_eq!(filtered.len(), 2);
+    }
+
+    #[test]
+    fn test_completion_select_prev() {
+        let mut state = CompletionState::new();
+        state.open(
+            vec![
+                CompletionItem::new("a", CompletionKind::Text),
+                CompletionItem::new("b", CompletionKind::Text),
+            ],
+            "".to_string(),
+        );
+
+        state.select_prev(); // wraps to end
+        assert_eq!(state.selected_index(), 1);
     }
 }
