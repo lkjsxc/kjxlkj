@@ -8,6 +8,7 @@ mod paragraph;
 mod rope_ext;
 mod syntax_region;
 mod text_buffer;
+mod width;
 mod word;
 
 #[cfg(test)]
@@ -24,6 +25,7 @@ pub use paragraph::{is_blank_line, next_paragraph, paragraph_count, paragraph_ra
 pub use rope_ext::RopeExt;
 pub use syntax_region::{MatchedRegion, SyntaxDefinition, SyntaxPattern, SyntaxRegion};
 pub use text_buffer::TextBuffer;
+pub use width::{byte_for_column, char_width, str_width, truncate_to_width, width_to_byte, CharWidth};
 pub use word::{
     bigword_end, next_bigword_start, next_word_start, prev_bigword_start, prev_word_start,
     word_end, CharClass,
