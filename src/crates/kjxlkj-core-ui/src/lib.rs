@@ -9,6 +9,7 @@ mod completion_source;
 mod conceal;
 mod cursor;
 mod cursorhl;
+mod diffhl;
 mod dimensions;
 mod float;
 mod fold;
@@ -37,6 +38,7 @@ pub use completion_source::{SourceConfig, SourceKind, SourceManager, SourcePrior
 pub use conceal::{ConcealLevel, ConcealRegion, ConcealState, LineConceal};
 pub use cursor::{CursorAppearance, CursorBlink, CursorShape};
 pub use cursorhl::{CursorColumnMode, CursorHighlight, CursorLineMode};
+pub use diffhl::{DiffConfig, DiffKind, DiffMarker, DiffState, DiffSummary};
 pub use dimensions::Dimensions;
 pub use float::{FloatAnchor, FloatBorder, FloatConfig, FloatRelative, FloatState, FloatWindow};
 pub use fold::{Fold, FoldMethod, FoldState};
