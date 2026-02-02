@@ -12,6 +12,7 @@ mod mode;
 mod options;
 mod position;
 mod range;
+mod variables;
 mod version;
 mod window;
 
@@ -28,5 +29,6 @@ pub use mode::Mode;
 pub use options::{BufferOptions, OptionScope, OptionValue};
 pub use position::Position;
 pub use range::Range;
+pub use variables::{BufferVars, VarValue, WindowVars};
 pub use version::BufferVersion;
 pub use window::WindowId;
