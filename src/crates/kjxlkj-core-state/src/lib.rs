@@ -9,6 +9,7 @@ mod jumplist;
 mod macros;
 mod marks;
 mod registers;
+mod repeat;
 mod window;
 
 #[cfg(test)]
@@ -21,4 +22,5 @@ pub use jumplist::{ChangeList, Jump, JumpList};
 pub use macros::{Macro, MacroStore, RecordingState};
 pub use marks::{Mark, MarkStore, MarkType};
 pub use registers::Registers;
+pub use repeat::{RepeatKind, RepeatState};
 pub use window::WindowState;
