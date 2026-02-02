@@ -16,5 +16,6 @@ kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
 kjxlkj-core-state = { path = "../kjxlkj-core-state" }
+kjxlkj-cmd = { path = "../kjxlkj-cmd" }
 tokio = { workspace = true }
 serde = { workspace = true }

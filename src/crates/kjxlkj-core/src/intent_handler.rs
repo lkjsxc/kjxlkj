@@ -3,6 +3,7 @@
 use kjxlkj_core_mode::{Intent, IntentKind};
 use kjxlkj_core_state::EditorState;
 
+use crate::ex_command::execute_ex_command;
 use crate::operator_exec::{operator_line, operator_motion, operator_text_object};
 use crate::register_ops;
 use crate::search_ops;
@@ -129,6 +130,10 @@ pub fn process_intent(state: &mut EditorState, intent: Intent) -> ActionResult {
         IntentKind::PrevMatch => {
             search_ops::prev_match(state);
             ActionResult::Ok
+        }
+
+        IntentKind::ExCommand { command } => {
+            execute_ex_command(state, &command)
         }
 
         IntentKind::Quit => ActionResult::Quit,

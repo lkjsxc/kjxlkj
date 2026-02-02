@@ -73,6 +73,12 @@ impl EditorState {
             .and_then(|w| self.buffers.get(&w.buffer_id))
     }
 
+    /// Returns the active buffer mutably.
+    pub fn active_buffer_mut(&mut self) -> Option<&mut BufferState> {
+        let buffer_id = self.active_window()?.buffer_id;
+        self.buffers.get_mut(&buffer_id)
+    }
+
     /// Creates a new window for a buffer.
     pub fn create_window(&mut self, buffer_id: BufferId) -> WindowId {
         let window_id = WindowId::new(self.next_window_id);

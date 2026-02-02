@@ -133,6 +133,7 @@ dependencies = [
 name = "kjxlkj-core"
 version = "0.1.0"
 dependencies = [
+ "kjxlkj-cmd",
  "kjxlkj-core-edit",
  "kjxlkj-core-mode",
  "kjxlkj-core-state",

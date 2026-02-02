@@ -51,6 +51,9 @@ pub enum ActionResult {
     /// Editor should save and quit.
     SaveQuit,
 
+    /// Open a file.
+    OpenFile(String),
+
     /// Error occurred.
     Error(String),
 
