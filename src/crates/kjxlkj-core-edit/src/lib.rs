@@ -3,6 +3,7 @@
 //! This crate defines edit operations and operators.
 
 mod edit;
+mod highlight;
 mod motion;
 mod operator;
 mod search;
@@ -13,6 +14,7 @@ mod transaction;
 mod tests;
 
 pub use edit::{Edit, EditKind};
+pub use highlight::{BufferHighlights, HighlightGroup, HighlightSpan, LineHighlights};
 pub use motion::{Motion, MotionKind};
 pub use operator::{Operator, OperatorKind};
 pub use search::{SearchDirection, SearchMatch, SearchState};
