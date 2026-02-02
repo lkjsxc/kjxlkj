@@ -198,4 +198,42 @@ mod tests {
         cmd.move_end();
         assert_eq!(cmd.cursor(), 3);
     }
+
+    #[test]
+    fn test_is_open() {
+        let mut cmd = CommandLine::new();
+        assert!(!cmd.is_open());
+        cmd.open(':');
+        assert!(cmd.is_open());
+        cmd.close();
+        assert!(!cmd.is_open());
+    }
+
+    #[test]
+    fn test_display_when_open() {
+        let mut cmd = CommandLine::new();
+        assert!(cmd.display().is_none());
+        
+        cmd.open(':');
+        cmd.insert('w');
+        assert_eq!(cmd.display(), Some(":w".to_string()));
+    }
+
+    #[test]
+    fn test_display_after_close() {
+        let mut cmd = CommandLine::new();
+        cmd.open(':');
+        cmd.insert('q');
+        cmd.close();
+        assert!(cmd.display().is_none());
+    }
+
+    #[test]
+    fn test_prompt_reset_on_close() {
+        let mut cmd = CommandLine::new();
+        cmd.open('/');
+        assert_eq!(cmd.prompt(), '/');
+        cmd.close();
+        assert_eq!(cmd.prompt(), '\0');
+    }
 }

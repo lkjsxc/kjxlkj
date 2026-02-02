@@ -219,3 +219,102 @@ impl FileExplorerState {
         self.refresh();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_file_explorer_new() {
+        let explorer = FileExplorerState::new();
+        assert!(!explorer.open);
+        assert!(explorer.root.is_none());
+        assert!(explorer.entries.is_empty());
+        assert_eq!(explorer.selected, 0);
+        assert_eq!(explorer.width, 30);
+        assert!(!explorer.show_hidden);
+    }
+
+    #[test]
+    fn test_file_explorer_toggle() {
+        let mut explorer = FileExplorerState::new();
+        explorer.root = Some(PathBuf::from("."));
+        
+        assert!(!explorer.open);
+        explorer.toggle();
+        assert!(explorer.open);
+        explorer.toggle();
+        assert!(!explorer.open);
+    }
+
+    #[test]
+    fn test_file_explorer_open_close() {
+        let mut explorer = FileExplorerState::new();
+        explorer.open(PathBuf::from("."));
+        
+        assert!(explorer.open);
+        assert_eq!(explorer.root, Some(PathBuf::from(".")));
+        
+        explorer.close();
+        assert!(!explorer.open);
+    }
+
+    #[test]
+    fn test_file_explorer_navigation() {
+        let mut explorer = FileExplorerState::new();
+        explorer.entries.push(FileEntry::directory("dir1", PathBuf::from("dir1"), 0));
+        explorer.entries.push(FileEntry::file("file1.rs", PathBuf::from("file1.rs"), 0));
+        explorer.entries.push(FileEntry::file("file2.rs", PathBuf::from("file2.rs"), 0));
+        
+        assert_eq!(explorer.selected, 0);
+        
+        explorer.move_down();
+        assert_eq!(explorer.selected, 1);
+        
+        explorer.move_down();
+        assert_eq!(explorer.selected, 2);
+        
+        explorer.move_down();
+        assert_eq!(explorer.selected, 2);
+        
+        explorer.move_up();
+        assert_eq!(explorer.selected, 1);
+        
+        explorer.move_up();
+        assert_eq!(explorer.selected, 0);
+        
+        explorer.move_up();
+        assert_eq!(explorer.selected, 0);
+    }
+
+    #[test]
+    fn test_file_entry_is_dir() {
+        let dir = FileEntry::directory("test", PathBuf::from("test"), 0);
+        let file = FileEntry::file("test.rs", PathBuf::from("test.rs"), 0);
+        
+        assert!(dir.is_dir());
+        assert!(!file.is_dir());
+    }
+
+    #[test]
+    fn test_file_explorer_toggle_hidden() {
+        let mut explorer = FileExplorerState::new();
+        assert!(!explorer.show_hidden);
+        
+        explorer.toggle_hidden();
+        assert!(explorer.show_hidden);
+        
+        explorer.toggle_hidden();
+        assert!(!explorer.show_hidden);
+    }
+
+    #[test]
+    fn test_file_explorer_selected_entry() {
+        let mut explorer = FileExplorerState::new();
+        assert!(explorer.selected_entry().is_none());
+        
+        explorer.entries.push(FileEntry::file("test.rs", PathBuf::from("test.rs"), 0));
+        let entry = explorer.selected_entry().unwrap();
+        assert_eq!(entry.name, "test.rs");
+    }
+}
