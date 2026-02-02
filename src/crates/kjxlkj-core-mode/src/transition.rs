@@ -27,33 +27,21 @@ impl ModeTransition {
 
     /// Returns true if this is exiting insert mode.
     pub fn is_exit_insert(&self) -> bool {
-        matches!(
-            (&self.from, &self.to),
-            (Mode::Insert, Mode::Normal)
-        )
+        matches!((&self.from, &self.to), (Mode::Insert, Mode::Normal))
     }
 
     /// Returns true if this is entering visual mode.
     pub fn is_enter_visual(&self) -> bool {
-        matches!(
-            (&self.from, &self.to),
-            (Mode::Normal, Mode::Visual(_))
-        )
+        matches!((&self.from, &self.to), (Mode::Normal, Mode::Visual(_)))
     }
 
     /// Returns true if this is exiting visual mode.
     pub fn is_exit_visual(&self) -> bool {
-        matches!(
-            (&self.from, &self.to),
-            (Mode::Visual(_), Mode::Normal)
-        )
+        matches!((&self.from, &self.to), (Mode::Visual(_), Mode::Normal))
     }
 
     /// Returns true if this is a visual mode toggle.
     pub fn is_visual_toggle(&self) -> bool {
-        matches!(
-            (&self.from, &self.to),
-            (Mode::Visual(_), Mode::Visual(_))
-        )
+        matches!((&self.from, &self.to), (Mode::Visual(_), Mode::Visual(_)))
     }
 }

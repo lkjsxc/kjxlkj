@@ -33,7 +33,11 @@ impl Subscription {
         loop {
             match self.receiver.recv().await {
                 Ok(msg) => {
-                    if self.topic_filter.as_ref().map_or(true, |t| msg.topic.starts_with(t)) {
+                    if self
+                        .topic_filter
+                        .as_ref()
+                        .map_or(true, |t| msg.topic.starts_with(t))
+                    {
                         return Some(msg);
                     }
                 }

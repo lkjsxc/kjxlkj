@@ -1,10 +1,8 @@
 //! Mark types and storage for kjxlkj editor.
 
+use kjxlkj_core_types::{BufferId, MarkId, Position};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use kjxlkj_core_types::{
-    BufferId, MarkId, Position,
-};
 
 /// A mark location.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -18,7 +16,10 @@ pub struct Mark {
 impl Mark {
     /// Creates a new mark.
     pub fn new(buffer_id: BufferId, position: Position) -> Self {
-        Self { buffer_id, position }
+        Self {
+            buffer_id,
+            position,
+        }
     }
 }
 
@@ -70,7 +71,10 @@ impl MarkStore {
 
     /// Gets a local mark from a buffer.
     pub fn get_local(&self, buffer_id: BufferId, name: char) -> Option<Position> {
-        self.local.get(&buffer_id).and_then(|m| m.get(&name)).copied()
+        self.local
+            .get(&buffer_id)
+            .and_then(|m| m.get(&name))
+            .copied()
     }
 
     /// Sets a global mark.
@@ -88,7 +92,9 @@ impl MarkStore {
     /// Gets a mark by ID.
     pub fn get(&self, buffer_id: BufferId, mark_id: MarkId) -> Option<Mark> {
         match mark_id {
-            MarkId::Local(c) => self.get_local(buffer_id, c).map(|pos| Mark::new(buffer_id, pos)),
+            MarkId::Local(c) => self
+                .get_local(buffer_id, c)
+                .map(|pos| Mark::new(buffer_id, pos)),
             MarkId::Global(c) => self.get_global(c),
             MarkId::LastJump => self.special.last_jump,
             MarkId::LastChange => self.special.last_change,

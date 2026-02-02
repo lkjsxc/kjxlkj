@@ -1,8 +1,8 @@
 //! Key mapping.
 
-use std::collections::HashMap;
-use kjxlkj_core_types::mode::Mode;
 use crate::key::KeyEvent;
+use kjxlkj_core_types::mode::Mode;
+use std::collections::HashMap;
 
 /// A key mapping entry.
 #[derive(Debug, Clone)]
@@ -48,9 +48,9 @@ impl KeyMapper {
 
     /// Finds a mapping for a key sequence.
     pub fn find(&self, mode: Mode, keys: &[KeyEvent]) -> Option<&KeyMapping> {
-        self.mappings.get(&mode).and_then(|mappings| {
-            mappings.iter().find(|m| m.from == keys)
-        })
+        self.mappings
+            .get(&mode)
+            .and_then(|mappings| mappings.iter().find(|m| m.from == keys))
     }
 
     /// Finds all mappings that could match a prefix.

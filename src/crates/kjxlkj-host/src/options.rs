@@ -33,7 +33,13 @@ impl OptionValue {
     /// Returns the integer value or default.
     pub fn as_int(&self) -> i64 {
         match self {
-            Self::Bool(b) => if *b { 1 } else { 0 },
+            Self::Bool(b) => {
+                if *b {
+                    1
+                } else {
+                    0
+                }
+            }
             Self::Int(i) => *i,
             Self::String(s) => s.parse().unwrap_or(0),
         }
@@ -111,9 +117,9 @@ impl Options {
 
     /// Gets an option value.
     pub fn get(&self, name: &str) -> Option<&OptionValue> {
-        self.global.get(name).or_else(|| {
-            self.meta.get(name).map(|m| &m.default)
-        })
+        self.global
+            .get(name)
+            .or_else(|| self.meta.get(name).map(|m| &m.default))
     }
 
     /// Sets an option value.
@@ -144,7 +150,8 @@ impl Options {
 
     /// Returns all option names.
     pub fn names(&self) -> impl Iterator<Item = &str> {
-        self.meta.values()
+        self.meta
+            .values()
             .map(|m| m.name)
             .collect::<std::collections::HashSet<_>>()
             .into_iter()

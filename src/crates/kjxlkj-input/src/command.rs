@@ -11,9 +11,16 @@ use kjxlkj_core_types::{
 #[derive(Debug, Clone)]
 pub enum Command {
     /// Motion command.
-    Motion { count: Option<usize>, motion: Motion },
+    Motion {
+        count: Option<usize>,
+        motion: Motion,
+    },
     /// Operator with implicit motion (doubled, e.g., dd).
-    OperatorLine { count: Option<usize>, operator: Operator, register: RegisterId },
+    OperatorLine {
+        count: Option<usize>,
+        operator: Operator,
+        register: RegisterId,
+    },
     /// Operator pending motion.
     OperatorMotion {
         count: Option<usize>,

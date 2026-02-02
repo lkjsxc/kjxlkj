@@ -1,7 +1,7 @@
 //! Word motion implementations.
 
-use kjxlkj_core_types::motion::MotionResult;
 use super::MotionContext;
+use kjxlkj_core_types::motion::MotionResult;
 
 /// Executes word forward motion.
 pub fn word_forward<C: MotionContext>(
@@ -26,8 +26,16 @@ pub fn word_forward<C: MotionContext>(
     if col >= chars.len() && line < ctx.line_count() - 1 {
         line += 1;
         let new_content = ctx.line_content(line);
-        col = new_content.chars().position(|c| !c.is_whitespace()).unwrap_or(0);
-        return MotionResult { line, column: col, wrapped: true, hit_boundary: false };
+        col = new_content
+            .chars()
+            .position(|c| !c.is_whitespace())
+            .unwrap_or(0);
+        return MotionResult {
+            line,
+            column: col,
+            wrapped: true,
+            hit_boundary: false,
+        };
     }
 
     MotionResult {
@@ -46,7 +54,12 @@ pub fn word_backward<C: MotionContext>(
     big: bool,
 ) -> MotionResult {
     if col == 0 && line == 0 {
-        return MotionResult { line: 0, column: 0, wrapped: false, hit_boundary: true };
+        return MotionResult {
+            line: 0,
+            column: 0,
+            wrapped: false,
+            hit_boundary: true,
+        };
     }
 
     // Move back one if not at start
@@ -69,16 +82,16 @@ pub fn word_backward<C: MotionContext>(
         col -= 1;
     }
 
-    MotionResult { line, column: col, wrapped: false, hit_boundary: false }
+    MotionResult {
+        line,
+        column: col,
+        wrapped: false,
+        hit_boundary: false,
+    }
 }
 
 /// Executes word end motion.
-pub fn word_end<C: MotionContext>(
-    ctx: &C,
-    line: usize,
-    mut col: usize,
-    big: bool,
-) -> MotionResult {
+pub fn word_end<C: MotionContext>(ctx: &C, line: usize, mut col: usize, big: bool) -> MotionResult {
     let content = ctx.line_content(line);
     let chars: Vec<char> = content.chars().collect();
 
@@ -106,5 +119,9 @@ pub fn word_end<C: MotionContext>(
 
 /// Checks if a character is a word character.
 pub fn is_word_char(c: char, big: bool) -> bool {
-    if big { !c.is_whitespace() } else { c.is_alphanumeric() || c == '_' }
+    if big {
+        !c.is_whitespace()
+    } else {
+        c.is_alphanumeric() || c == '_'
+    }
 }

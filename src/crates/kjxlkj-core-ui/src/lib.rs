@@ -2,8 +2,8 @@
 //!
 //! This crate provides window and layout management.
 
-mod window;
 mod layout;
+mod window;
 
-pub use window::Window;
 pub use layout::{Layout, LayoutNode};
+pub use window::Window;

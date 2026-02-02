@@ -3,8 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Named register identifier.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum Register {
     /// Unnamed register (default for yank/delete).
     #[default]
@@ -32,7 +31,6 @@ pub enum Register {
     /// Alternate file name register (# register).
     AlternateFile,
 }
-
 
 impl Register {
     /// Parses a register from a character.
@@ -78,10 +76,7 @@ impl Register {
     pub fn is_readonly(&self) -> bool {
         matches!(
             self,
-            Self::LastInserted
-                | Self::LastCommand
-                | Self::CurrentFile
-                | Self::AlternateFile
+            Self::LastInserted | Self::LastCommand | Self::CurrentFile | Self::AlternateFile
         )
     }
 
@@ -133,7 +128,10 @@ impl Default for RegisterContent {
 impl RegisterContent {
     /// Creates new register content.
     pub fn new(text: String, register_type: RegisterType) -> Self {
-        Self { text, register_type }
+        Self {
+            text,
+            register_type,
+        }
     }
 
     /// Creates character-wise content.

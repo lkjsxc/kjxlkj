@@ -2,13 +2,13 @@
 //!
 //! Snapshots are immutable views of editor state used for rendering.
 
-use serde::{Deserialize, Serialize};
 use crate::{
     buffer::BufferInfo,
     cursor::{Cursor, Selection},
     ids::{BufferId, WindowId},
     mode::Mode,
 };
+use serde::{Deserialize, Serialize};
 
 /// Snapshot of the entire editor state for rendering.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -64,7 +64,12 @@ pub struct WindowDimensions {
 impl WindowDimensions {
     /// Creates new window dimensions.
     pub fn new(x: u16, y: u16, width: u16, height: u16) -> Self {
-        Self { x, y, width, height }
+        Self {
+            x,
+            y,
+            width,
+            height,
+        }
     }
 
     /// Returns the number of visible text lines.

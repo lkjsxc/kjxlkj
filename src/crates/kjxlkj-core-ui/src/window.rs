@@ -89,7 +89,7 @@ impl Window {
     pub fn scroll_to_cursor(&mut self) {
         let cursor_line = self.cursor.line();
         let visible = self.visible_lines();
-        
+
         if cursor_line < self.top_line {
             self.top_line = cursor_line;
         } else if cursor_line >= self.top_line + visible {

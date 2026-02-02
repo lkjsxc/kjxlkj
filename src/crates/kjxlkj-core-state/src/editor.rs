@@ -1,13 +1,13 @@
 //! Central editor state.
 
+use crate::buffers::BufferStore;
+use crate::registers::RegisterStore;
+use kjxlkj_core_mode::ModeState;
 use kjxlkj_core_types::{
     ids::{BufferId, WindowId},
     snapshot::{EditorSnapshot, StatusSnapshot, WindowSnapshot},
 };
-use kjxlkj_core_mode::ModeState;
 use kjxlkj_core_ui::{Layout, Window};
-use crate::buffers::BufferStore;
-use crate::registers::RegisterStore;
 use std::collections::HashMap;
 
 /// The central editor state.

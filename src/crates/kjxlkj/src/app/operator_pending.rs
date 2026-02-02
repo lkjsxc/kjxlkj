@@ -60,7 +60,7 @@ pub fn handle_operator_pending_key(
 ) -> OperatorPendingAction {
     match code {
         KeyCode::Esc => OperatorPendingAction::Cancel,
-        
+
         // Repeat operator for whole line (dd, yy, cc)
         KeyCode::Char('d') if operator == Operator::Delete => {
             OperatorPendingAction::Complete(OperatorMotion {
@@ -83,59 +83,59 @@ pub fn handle_operator_pending_key(
                 motion: Motion::WholeLine,
             })
         }
-        
+
         // Motions
-        KeyCode::Char('h') | KeyCode::Left => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::Left,
-            })
-        }
-        KeyCode::Char('l') | KeyCode::Right => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::Right,
-            })
-        }
-        KeyCode::Char('j') | KeyCode::Down => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::Down,
-            })
-        }
-        KeyCode::Char('k') | KeyCode::Up => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::Up,
-            })
-        }
-        KeyCode::Char('w') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::Word,
-            })
-        }
-        KeyCode::Char('e') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::WordEnd,
-            })
-        }
-        KeyCode::Char('b') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::WordBack,
-            })
-        }
-        KeyCode::Char('0') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::LineStart,
-            })
-        }
-        KeyCode::Char('^') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::FirstNonBlank,
-            })
-        }
-        KeyCode::Char('$') => {
-            OperatorPendingAction::Complete(OperatorMotion {
-                operator, count, motion: Motion::LineEnd,
-            })
-        }
-        
+        KeyCode::Char('h') | KeyCode::Left => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::Left,
+        }),
+        KeyCode::Char('l') | KeyCode::Right => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::Right,
+        }),
+        KeyCode::Char('j') | KeyCode::Down => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::Down,
+        }),
+        KeyCode::Char('k') | KeyCode::Up => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::Up,
+        }),
+        KeyCode::Char('w') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::Word,
+        }),
+        KeyCode::Char('e') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::WordEnd,
+        }),
+        KeyCode::Char('b') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::WordBack,
+        }),
+        KeyCode::Char('0') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::LineStart,
+        }),
+        KeyCode::Char('^') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::FirstNonBlank,
+        }),
+        KeyCode::Char('$') => OperatorPendingAction::Complete(OperatorMotion {
+            operator,
+            count,
+            motion: Motion::LineEnd,
+        }),
+
         // Inner text objects
         KeyCode::Char('i') => {
             // Next key will be the text object type
@@ -145,7 +145,7 @@ pub fn handle_operator_pending_key(
             // Next key will be the text object type
             OperatorPendingAction::Continue
         }
-        
+
         _ => OperatorPendingAction::Continue,
     }
 }

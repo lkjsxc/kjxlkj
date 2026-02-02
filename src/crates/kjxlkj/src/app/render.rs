@@ -16,7 +16,8 @@ impl Application {
         for i in 0..text_height {
             let line_num = self.scroll_offset + i;
             if let Some(line) = self.buffer.line(line_num) {
-                self.terminal.write_at(0, i as u16, line.trim_end_matches('\n'))?;
+                self.terminal
+                    .write_at(0, i as u16, line.trim_end_matches('\n'))?;
             } else {
                 self.terminal.write_at(0, i as u16, "~")?;
             }
@@ -35,7 +36,8 @@ impl Application {
         self.terminal.write_at(0, (height - 1) as u16, &bottom)?;
 
         let cursor_y = (self.buffer.cursor_line() - self.scroll_offset) as u16;
-        self.terminal.move_cursor(self.buffer.cursor_col() as u16, cursor_y)?;
+        self.terminal
+            .move_cursor(self.buffer.cursor_col() as u16, cursor_y)?;
         self.terminal.show_cursor()?;
         self.terminal.flush()
     }

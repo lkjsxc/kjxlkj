@@ -32,7 +32,8 @@ pub fn handle_normal_key(code: KeyCode, buffer: &mut Buffer) -> NormalAction {
             NormalAction::ChangeMode(Mode::Insert)
         }
         KeyCode::Char('A') => {
-            let len = buffer.line(buffer.cursor_line())
+            let len = buffer
+                .line(buffer.cursor_line())
                 .map(|l| l.trim_end_matches('\n').len())
                 .unwrap_or(0);
             buffer.move_cursor(buffer.cursor_line(), len);
@@ -71,7 +72,8 @@ pub fn handle_normal_key(code: KeyCode, buffer: &mut Buffer) -> NormalAction {
             NormalAction::None
         }
         KeyCode::Char('$') | KeyCode::End => {
-            let len = buffer.line(buffer.cursor_line())
+            let len = buffer
+                .line(buffer.cursor_line())
                 .map(|l| l.trim_end_matches('\n').len().saturating_sub(1))
                 .unwrap_or(0);
             buffer.move_cursor(buffer.cursor_line(), len);

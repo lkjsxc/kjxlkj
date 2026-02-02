@@ -64,9 +64,7 @@ impl LayoutNode {
     pub fn all_windows(&self) -> Vec<WindowId> {
         match self {
             Self::Window(id) => vec![*id],
-            Self::Split { children, .. } => {
-                children.iter().flat_map(|c| c.all_windows()).collect()
-            }
+            Self::Split { children, .. } => children.iter().flat_map(|c| c.all_windows()).collect(),
         }
     }
 }
@@ -116,31 +114,27 @@ impl Layout {
     ) -> Vec<(WindowId, WindowDimensions)> {
         match node {
             LayoutNode::Window(id) => vec![(*id, area)],
-            LayoutNode::Split { direction, children, ratios } => {
+            LayoutNode::Split {
+                direction,
+                children,
+                ratios,
+            } => {
                 let mut result = Vec::new();
                 let mut offset = 0u16;
-                
+
                 for (child, ratio) in children.iter().zip(ratios.iter()) {
                     let child_area = match direction {
                         SplitDirection::Horizontal => {
                             let h = (area.height as f32 * ratio) as u16;
-                            let dims = WindowDimensions::new(
-                                area.x,
-                                area.y + offset,
-                                area.width,
-                                h,
-                            );
+                            let dims =
+                                WindowDimensions::new(area.x, area.y + offset, area.width, h);
                             offset += h;
                             dims
                         }
                         SplitDirection::Vertical => {
                             let w = (area.width as f32 * ratio) as u16;
-                            let dims = WindowDimensions::new(
-                                area.x + offset,
-                                area.y,
-                                w,
-                                area.height,
-                            );
+                            let dims =
+                                WindowDimensions::new(area.x + offset, area.y, w, area.height);
                             offset += w;
                             dims
                         }

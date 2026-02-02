@@ -53,19 +53,31 @@ pub enum Motion {
     GoToColumn(usize),
 
     // Search motions
-    FindChar { char: char, direction: Direction, inclusive: bool },
-    TillChar { char: char, direction: Direction },
+    FindChar {
+        char: char,
+        direction: Direction,
+        inclusive: bool,
+    },
+    TillChar {
+        char: char,
+        direction: Direction,
+    },
     RepeatFindChar,
     RepeatFindCharReverse,
     NextSearchResult,
     PrevSearchResult,
-    SearchWordUnderCursor { direction: Direction },
+    SearchWordUnderCursor {
+        direction: Direction,
+    },
 
     // Match motions
     MatchingBracket,
 
     // Mark motions
-    GoToMark { mark: char, column: bool },
+    GoToMark {
+        mark: char,
+        column: bool,
+    },
 
     // Scroll motions
     HalfPageDown,
@@ -101,7 +113,10 @@ impl Motion {
             Motion::WordEnd
                 | Motion::BigWordEnd
                 | Motion::LineEnd
-                | Motion::FindChar { inclusive: true, .. }
+                | Motion::FindChar {
+                    inclusive: true,
+                    ..
+                }
                 | Motion::MatchingBracket
         )
     }

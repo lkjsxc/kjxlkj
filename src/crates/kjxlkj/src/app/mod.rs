@@ -11,4 +11,3 @@ mod visual_mode;
 mod application;
 
 pub use application::Application;
-

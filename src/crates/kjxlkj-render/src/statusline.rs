@@ -1,7 +1,7 @@
 //! Statusline rendering component.
 
-use crossterm::style::Color;
 use crate::buffer::ScreenBuffer;
+use crossterm::style::Color;
 
 /// Statusline configuration.
 #[derive(Debug, Clone)]
@@ -56,21 +56,21 @@ pub fn render_statusline(
     config: &StatuslineConfig,
 ) {
     let width = buffer.width() as usize;
-    
+
     // Build left section
     let modified_indicator = if ctx.modified { " [+]" } else { "" };
     let left = format!(" {} | {}{} ", ctx.mode, ctx.filename, modified_indicator);
-    
+
     // Build right section
     let right = format!(" {}:{} | {} ", ctx.line, ctx.col, ctx.total_lines);
-    
+
     // Build center/fill
     let fill_len = width.saturating_sub(left.len() + right.len());
     let fill = " ".repeat(fill_len);
-    
+
     // Combine
     let line = format!("{}{}{}", left, fill, right);
-    
+
     // Write to buffer
     buffer.write_str(0, y, &line, config.fg, config.bg);
 }

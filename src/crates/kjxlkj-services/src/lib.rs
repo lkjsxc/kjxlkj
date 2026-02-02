@@ -6,6 +6,6 @@ mod bus;
 mod service;
 mod supervisor;
 
-pub use bus::{MessageBus, Message, Subscription};
+pub use bus::{Message, MessageBus, Subscription};
 pub use service::{Service, ServiceHandle};
 pub use supervisor::ServiceSupervisor;

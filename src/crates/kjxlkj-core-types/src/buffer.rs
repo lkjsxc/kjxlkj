@@ -1,12 +1,11 @@
 //! Buffer metadata types for kjxlkj editor.
 
+use crate::ids::BufferId;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use crate::ids::BufferId;
 
 /// Buffer name or path.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum BufferName {
     /// A file path.
     File(PathBuf),
@@ -16,7 +15,6 @@ pub enum BufferName {
     #[default]
     Unnamed,
 }
-
 
 impl BufferName {
     /// Returns the display name for this buffer.

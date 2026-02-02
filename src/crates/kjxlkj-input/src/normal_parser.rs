@@ -2,14 +2,11 @@
 
 use crate::command::Command;
 use crate::key::{Key, KeyEvent, KeyModifiers};
-use crate::normal_types::{CharPendingKind, MarkPendingKind};
 use crate::normal_other::parse_other_char;
 use crate::normal_pending::{handle_char_pending, handle_mark_pending, handle_scope_pending};
+use crate::normal_types::{CharPendingKind, MarkPendingKind};
 use kjxlkj_core_types::{
-    ids::RegisterId,
-    motion::Motion,
-    operator::Operator,
-    text_object::TextObjectScope,
+    ids::RegisterId, motion::Motion, operator::Operator, text_object::TextObjectScope,
 };
 
 /// Parser state for normal mode.
@@ -50,8 +47,11 @@ impl NormalParser {
         // Handle char pending
         if let Some(kind) = self.char_pending.take() {
             return handle_char_pending(
-                kind, event.key, self.count.take(),
-                self.operator.take(), self.register.take(),
+                kind,
+                event.key,
+                self.count.take(),
+                self.operator.take(),
+                self.register.take(),
             );
         }
 
@@ -63,8 +63,11 @@ impl NormalParser {
         // Handle scope pending (text object)
         if let Some(scope) = self.scope_pending.take() {
             return handle_scope_pending(
-                scope, event.key, self.count.take(),
-                self.operator.take(), self.register.take(),
+                scope,
+                event.key,
+                self.count.take(),
+                self.operator.take(),
+                self.register.take(),
             );
         }
 
@@ -190,7 +193,10 @@ impl NormalParser {
                 register: self.reg(),
             }
         } else {
-            Command::Motion { count: self.count.take(), motion }
+            Command::Motion {
+                count: self.count.take(),
+                motion,
+            }
         }
     }
 

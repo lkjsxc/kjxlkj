@@ -1,7 +1,7 @@
 //! Mode state management.
 
-use kjxlkj_core_types::mode::{Mode, VisualMode};
 use kjxlkj_core_types::intent::OperatorContext;
+use kjxlkj_core_types::mode::{Mode, VisualMode};
 
 /// Mode state including pending operators.
 #[derive(Debug, Clone, Default)]

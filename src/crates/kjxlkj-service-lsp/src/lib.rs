@@ -8,4 +8,4 @@ mod client;
 mod protocol;
 
 pub use client::LspClient;
-pub use protocol::{LspRequest, LspResponse, LspNotification};
+pub use protocol::{LspNotification, LspRequest, LspResponse};

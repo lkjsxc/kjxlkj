@@ -6,7 +6,7 @@ use std::{io, path::Path};
 use super::command_mode::{CommandModeAction, CommandResult};
 use super::insert_mode::InsertAction;
 use super::normal_mode::NormalAction;
-use super::operator_pending::{OperatorPendingAction, apply_operator_motion};
+use super::operator_pending::{apply_operator_motion, OperatorPendingAction};
 use super::replace_mode::ReplaceAction;
 use super::visual_mode::{VisualAction, VisualSelection};
 
@@ -113,7 +113,9 @@ impl Application {
     }
 
     fn handle_insert(&mut self, code: crossterm::event::KeyCode) {
-        if let InsertAction::ExitToNormal = super::insert_mode::handle_insert_key(code, &mut self.buffer) {
+        if let InsertAction::ExitToNormal =
+            super::insert_mode::handle_insert_key(code, &mut self.buffer)
+        {
             self.mode = Mode::Normal;
         }
     }
@@ -156,7 +158,9 @@ impl Application {
     }
 
     fn handle_replace(&mut self, code: crossterm::event::KeyCode) {
-        if let ReplaceAction::ExitToNormal = super::replace_mode::handle_replace_key(code, &mut self.buffer) {
+        if let ReplaceAction::ExitToNormal =
+            super::replace_mode::handle_replace_key(code, &mut self.buffer)
+        {
             self.mode = Mode::Normal;
         }
     }

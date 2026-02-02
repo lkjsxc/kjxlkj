@@ -31,9 +31,7 @@ impl IndexEntry {
             .map(|p| p.to_string_lossy().into_owned())
             .unwrap_or_else(|_| path.to_string_lossy().into_owned());
 
-        let extension = path
-            .extension()
-            .map(|s| s.to_string_lossy().into_owned());
+        let extension = path.extension().map(|s| s.to_string_lossy().into_owned());
 
         let is_dir = path.is_dir();
 

@@ -1,6 +1,6 @@
 //! Double-buffered rendering for efficient screen updates.
 
-use crossterm::style::{Color, Attribute, Attributes};
+use crossterm::style::{Attribute, Attributes, Color};
 
 /// A single cell on screen.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -29,7 +29,10 @@ impl Default for Cell {
 impl Cell {
     /// Creates a new cell with a character.
     pub fn new(ch: char) -> Self {
-        Self { ch, ..Default::default() }
+        Self {
+            ch,
+            ..Default::default()
+        }
     }
 
     /// Sets the foreground color.
@@ -109,7 +112,16 @@ impl ScreenBuffer {
             if col >= self.width {
                 break;
             }
-            self.set(col, y, Cell { ch, fg, bg, attrs: Attributes::default() });
+            self.set(
+                col,
+                y,
+                Cell {
+                    ch,
+                    fg,
+                    bg,
+                    attrs: Attributes::default(),
+                },
+            );
             col += 1;
         }
     }
@@ -125,7 +137,10 @@ impl ScreenBuffer {
     }
 
     /// Iterates over cells that differ from another buffer.
-    pub fn diff<'a>(&'a self, other: &'a ScreenBuffer) -> impl Iterator<Item = (u16, u16, &'a Cell)> {
+    pub fn diff<'a>(
+        &'a self,
+        other: &'a ScreenBuffer,
+    ) -> impl Iterator<Item = (u16, u16, &'a Cell)> {
         self.cells.iter().enumerate().filter_map(move |(i, cell)| {
             let x = (i % self.width as usize) as u16;
             let y = (i / self.width as usize) as u16;

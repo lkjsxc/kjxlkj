@@ -1,8 +1,8 @@
 //! File watcher.
 
+use crate::events::FsEvent;
 use std::path::{Path, PathBuf};
 use tokio::sync::mpsc;
-use crate::events::FsEvent;
 
 /// Configuration for file watching.
 #[derive(Debug, Clone)]

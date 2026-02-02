@@ -1,7 +1,7 @@
 //! Register storage.
 
-use std::collections::HashMap;
 use kjxlkj_core_types::register::{Register, RegisterContent};
+use std::collections::HashMap;
 
 /// Stores register contents.
 #[derive(Debug, Default)]
@@ -73,11 +73,11 @@ impl RegisterStore {
     /// Sets content for delete operations.
     pub fn set_delete(&mut self, register: Register, content: RegisterContent) {
         // Small deletes go to small delete register
-        let is_small = !content.text.contains('\n')
-            && content.text.chars().count() < 80;
+        let is_small = !content.text.contains('\n') && content.text.chars().count() < 80;
 
         if is_small && matches!(register, Register::Unnamed) {
-            self.registers.insert(Register::SmallDelete, content.clone());
+            self.registers
+                .insert(Register::SmallDelete, content.clone());
         }
 
         self.set(register, content);

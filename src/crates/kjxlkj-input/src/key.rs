@@ -126,9 +126,7 @@ impl KeyEvent {
 
     /// Returns true if this is a character key with no modifiers.
     pub fn is_plain_char(&self) -> bool {
-        matches!(self.key, Key::Char(_))
-            && !self.modifiers.ctrl
-            && !self.modifiers.alt
+        matches!(self.key, Key::Char(_)) && !self.modifiers.ctrl && !self.modifiers.alt
     }
 
     /// Returns the character if this is a plain char key.

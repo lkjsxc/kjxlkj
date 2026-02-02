@@ -1,11 +1,8 @@
 //! Buffer storage and management.
 
-use std::collections::HashMap;
-use kjxlkj_core_types::{
-    buffer::BufferInfo,
-    ids::BufferId,
-};
 use kjxlkj_core_text::TextBuffer;
+use kjxlkj_core_types::{buffer::BufferInfo, ids::BufferId};
+use std::collections::HashMap;
 
 /// Stores all open buffers.
 #[derive(Debug, Default)]

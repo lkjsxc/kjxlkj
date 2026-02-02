@@ -2,15 +2,11 @@
 //!
 //! Intents represent user-level operations that the core can execute.
 
-use serde::{Deserialize, Serialize};
-use crate::{
-    ids::BufferId,
-    position::Position,
-    register::Register,
-};
 pub use crate::intent_ui::{
     CommandIntent, ModeIntent, SearchIntent, WindowDirection, WindowIntent,
 };
+use crate::{ids::BufferId, position::Position, register::Register};
+use serde::{Deserialize, Serialize};
 
 /// A high-level user intent.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

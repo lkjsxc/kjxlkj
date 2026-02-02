@@ -1,7 +1,7 @@
 //! Cursor types for kjxlkj editor.
 
-use serde::{Deserialize, Serialize};
 use crate::position::Position;
+use serde::{Deserialize, Serialize};
 
 /// Cursor position in a buffer.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]

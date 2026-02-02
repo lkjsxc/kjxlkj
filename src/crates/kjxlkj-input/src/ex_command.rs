@@ -6,11 +6,19 @@ use std::path::PathBuf;
 #[derive(Debug, Clone)]
 pub enum ExCommand {
     /// Write file (:w).
-    Write { path: Option<PathBuf>, force: bool, all: bool },
+    Write {
+        path: Option<PathBuf>,
+        force: bool,
+        all: bool,
+    },
     /// Quit (:q).
     Quit { force: bool, all: bool },
     /// Write and quit (:wq, :x).
-    WriteQuit { path: Option<PathBuf>, force: bool, all: bool },
+    WriteQuit {
+        path: Option<PathBuf>,
+        force: bool,
+        all: bool,
+    },
     /// Edit file (:e).
     Edit { path: PathBuf, force: bool },
     /// New buffer (:enew).
@@ -22,7 +30,10 @@ pub enum ExCommand {
     /// Tab commands.
     Tab(TabCommand),
     /// Set option (:set).
-    Set { option: String, value: Option<String> },
+    Set {
+        option: String,
+        value: Option<String>,
+    },
     /// Substitute (:s).
     Substitute {
         pattern: String,
@@ -31,7 +42,11 @@ pub enum ExCommand {
         range: Option<String>,
     },
     /// Global command (:g).
-    Global { pattern: String, command: String, inverse: bool },
+    Global {
+        pattern: String,
+        command: String,
+        inverse: bool,
+    },
     /// Normal command (:norm).
     Normal { keys: String, range: Option<String> },
     /// Help (:h).
@@ -41,7 +56,11 @@ pub enum ExCommand {
     /// Source file (:source).
     Source { path: PathBuf },
     /// Map key (:map, :nmap, etc.).
-    Map { mode: String, lhs: String, rhs: String },
+    Map {
+        mode: String,
+        lhs: String,
+        rhs: String,
+    },
     /// Unmap key.
     Unmap { mode: String, lhs: String },
     /// Highlight (:hi).
@@ -63,7 +82,10 @@ pub enum ExCommand {
     /// Make (:make).
     Make { args: String },
     /// Grep (:grep).
-    Grep { pattern: String, path: Option<String> },
+    Grep {
+        pattern: String,
+        path: Option<String>,
+    },
     /// Execute shell command (:!).
     Shell { command: String },
     /// Read file/command (:r).

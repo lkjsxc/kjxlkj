@@ -1,7 +1,7 @@
 //! Renderer that converts snapshots to terminal output.
 
-use kjxlkj_core_types::snapshot::{EditorSnapshot, WindowSnapshot};
 use crate::terminal::Terminal;
+use kjxlkj_core_types::snapshot::{EditorSnapshot, WindowSnapshot};
 use std::io;
 
 /// Renders editor snapshots to the terminal.
@@ -34,8 +34,16 @@ impl Renderer {
         self.render_command_line(terminal, snapshot, height - 1)?;
 
         // Position cursor
-        if let Some(window) = snapshot.windows.iter().find(|w| w.id == snapshot.active_window) {
-            let cursor_y = window.cursor.position().line.as_usize()
+        if let Some(window) = snapshot
+            .windows
+            .iter()
+            .find(|w| w.id == snapshot.active_window)
+        {
+            let cursor_y = window
+                .cursor
+                .position()
+                .line
+                .as_usize()
                 .saturating_sub(window.top_line) as u16;
             let cursor_x = window.cursor.position().col.as_usize() as u16;
             terminal.move_cursor(
@@ -88,16 +96,11 @@ impl Renderer {
             format!(" {}", status.file_flags)
         };
 
-        let left = format!(" {} | {}{} ",
-            status.mode_text,
-            status.file_name,
-            flags_str
-        );
+        let left = format!(" {} | {}{} ", status.mode_text, status.file_name, flags_str);
 
-        let right = format!(" {}:{} {} ",
-            status.position,
-            status.file_type,
-            status.percentage
+        let right = format!(
+            " {}:{} {} ",
+            status.position, status.file_type, status.percentage
         );
 
         let padding = width as usize - left.len() - right.len();

@@ -1,9 +1,9 @@
 //! Text rope wrapper for efficient string operations.
 
-use ropey::Rope;
-use kjxlkj_core_types::position::Position;
-use std::str::FromStr;
 use crate::grapheme;
+use kjxlkj_core_types::position::Position;
+use ropey::Rope;
+use std::str::FromStr;
 
 /// A text rope for efficient editing of large documents.
 #[derive(Debug, Clone)]

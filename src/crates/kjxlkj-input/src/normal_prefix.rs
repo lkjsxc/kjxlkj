@@ -15,14 +15,32 @@ pub fn parse_g_command(event: KeyEvent, count: Option<usize>) -> (Command, bool)
                         motion: Motion::GoToLine(n.saturating_sub(1)),
                     }
                 } else {
-                    Command::Motion { count: None, motion: Motion::DocumentStart }
+                    Command::Motion {
+                        count: None,
+                        motion: Motion::DocumentStart,
+                    }
                 }
             }
-            'j' => Command::Motion { count: None, motion: Motion::Down },
-            'k' => Command::Motion { count: None, motion: Motion::Up },
-            '0' => Command::Motion { count: None, motion: Motion::FirstColumn },
-            '$' => Command::Motion { count: None, motion: Motion::LineEnd },
-            '_' => Command::Motion { count: None, motion: Motion::FirstNonBlank },
+            'j' => Command::Motion {
+                count: None,
+                motion: Motion::Down,
+            },
+            'k' => Command::Motion {
+                count: None,
+                motion: Motion::Up,
+            },
+            '0' => Command::Motion {
+                count: None,
+                motion: Motion::FirstColumn,
+            },
+            '$' => Command::Motion {
+                count: None,
+                motion: Motion::LineEnd,
+            },
+            '_' => Command::Motion {
+                count: None,
+                motion: Motion::FirstNonBlank,
+            },
             'u' => return (Command::Incomplete, true), // Need operator mode
             'U' => return (Command::Incomplete, true),
             '~' => return (Command::Incomplete, true),

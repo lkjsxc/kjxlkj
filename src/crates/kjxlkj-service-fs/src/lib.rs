@@ -4,8 +4,8 @@
 
 #![allow(dead_code)]
 
-mod watcher;
 mod events;
+mod watcher;
 
-pub use watcher::FileWatcher;
 pub use events::{FsEvent, FsEventKind};
+pub use watcher::FileWatcher;

@@ -132,7 +132,13 @@ impl TextRange {
         end_col: usize,
         linewise: bool,
     ) -> Self {
-        Self { start_line, start_col, end_line, end_col, linewise }
+        Self {
+            start_line,
+            start_col,
+            end_line,
+            end_col,
+            linewise,
+        }
     }
 
     /// Creates a charwise range.

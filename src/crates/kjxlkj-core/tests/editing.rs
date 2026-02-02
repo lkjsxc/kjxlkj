@@ -58,19 +58,19 @@ fn test_delete_line() {
 #[test]
 fn test_cursor_movement() {
     let mut buffer = create_buffer("line1\nline2\nline3");
-    
+
     // Down
     buffer.cursor_down();
     assert_eq!(buffer.cursor_line(), 1);
-    
+
     // Right
     buffer.cursor_right();
     assert_eq!(buffer.cursor_col(), 1);
-    
+
     // Up
     buffer.cursor_up();
     assert_eq!(buffer.cursor_line(), 0);
-    
+
     // Left
     buffer.cursor_left();
     assert_eq!(buffer.cursor_col(), 0);
@@ -85,10 +85,10 @@ fn test_current_char() {
 #[test]
 fn test_multiline_navigation() {
     let mut buffer = create_buffer("short\nverylongline\nx");
-    
+
     buffer.move_cursor(1, 10);
     assert_eq!(buffer.cursor_col(), 10);
-    
+
     // Move up to shorter line - cursor should clamp to line length - 1
     buffer.cursor_up();
     assert_eq!(buffer.cursor_line(), 0);
@@ -96,17 +96,21 @@ fn test_multiline_navigation() {
     // But move_cursor clamps to line_len - 1, and line includes newline
     // Actual behavior depends on implementation
     let col = buffer.cursor_col();
-    assert!(col <= 10, "Expected cursor to be within bounds, got {}", col);
+    assert!(
+        col <= 10,
+        "Expected cursor to be within bounds, got {}",
+        col
+    );
 }
 
 #[test]
 fn test_modified_flag() {
     let mut buffer = create_buffer("hello");
     assert!(!buffer.is_modified());
-    
+
     buffer.insert_char('X');
     assert!(buffer.is_modified());
-    
+
     buffer.mark_saved();
     assert!(!buffer.is_modified());
 }

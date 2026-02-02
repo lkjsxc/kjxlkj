@@ -45,10 +45,10 @@ impl UndoHistory {
     pub fn push(&mut self, entry: UndoEntry) {
         // Clear redo stack on new edit
         self.redo_stack.clear();
-        
+
         // Add to undo stack
         self.undo_stack.push(entry);
-        
+
         // Trim if exceeds max size
         if self.undo_stack.len() > self.max_size {
             self.undo_stack.remove(0);

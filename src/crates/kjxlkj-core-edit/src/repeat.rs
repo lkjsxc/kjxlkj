@@ -20,24 +20,16 @@ pub enum RecordedChange {
         count: usize,
     },
     /// Line operator (e.g., dd, cc, yy).
-    LineOperator {
-        operator: Operator,
-        count: usize,
-    },
+    LineOperator { operator: Operator, count: usize },
     /// Insert with text (e.g., i, a, o).
     InsertText {
         text: String,
         insert_type: InsertType,
     },
     /// Replace character (r).
-    ReplaceChar {
-        char: char,
-        count: usize,
-    },
+    ReplaceChar { char: char, count: usize },
     /// Delete character (x).
-    DeleteChar {
-        count: usize,
-    },
+    DeleteChar { count: usize },
 }
 
 /// Type of insert operation.

@@ -19,8 +19,9 @@ impl BufferId {
 }
 
 /// Buffer version for change tracking.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub struct BufferVersion(u64);
 
 impl BufferVersion {

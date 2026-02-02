@@ -2,10 +2,10 @@
 //!
 //! This crate provides efficient text storage using ropes.
 
-mod rope;
 mod buffer;
 pub mod grapheme;
+mod rope;
 
-pub use rope::TextRope;
 pub use buffer::TextBuffer;
-pub use grapheme::{grapheme_count, display_width, char_width};
+pub use grapheme::{char_width, display_width, grapheme_count};
+pub use rope::TextRope;

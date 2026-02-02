@@ -3,8 +3,9 @@
 use serde::{Deserialize, Serialize};
 
 /// Zero-based line index.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub struct LineIdx(pub usize);
 
 impl LineIdx {
@@ -30,8 +31,9 @@ impl LineIdx {
 }
 
 /// Byte offset within a buffer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub struct ByteOffset(pub usize);
 
 impl ByteOffset {
@@ -47,8 +49,9 @@ impl ByteOffset {
 }
 
 /// Character (grapheme cluster) offset within a line.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub struct CharOffset(pub usize);
 
 impl CharOffset {

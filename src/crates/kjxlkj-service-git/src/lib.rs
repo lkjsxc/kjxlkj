@@ -2,8 +2,8 @@
 //!
 //! This crate provides Git repository interaction.
 
-mod repo;
 mod diff;
+mod repo;
 
-pub use repo::{GitRepo, GitStatus};
 pub use diff::{DiffHunk, HunkType};
+pub use repo::{GitRepo, GitStatus};

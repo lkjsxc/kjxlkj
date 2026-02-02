@@ -53,7 +53,8 @@ pub fn handle_insert_key(code: KeyCode, buffer: &mut Buffer) -> InsertAction {
             InsertAction::None
         }
         KeyCode::End => {
-            let len = buffer.line(buffer.cursor_line())
+            let len = buffer
+                .line(buffer.cursor_line())
                 .map(|l| l.trim_end_matches('\n').len())
                 .unwrap_or(0);
             buffer.move_cursor(buffer.cursor_line(), len);

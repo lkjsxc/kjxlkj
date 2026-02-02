@@ -62,19 +62,26 @@ impl EditOperation {
                 end: *position, // Will be calculated properly
                 deleted: text.clone(),
             },
-            Self::Delete { start, end: _, deleted } => Self::Insert {
+            Self::Delete {
+                start,
+                end: _,
+                deleted,
+            } => Self::Insert {
                 position: *start,
                 text: deleted.clone(),
             },
-            Self::Replace { start, end, old_text, new_text } => Self::Replace {
+            Self::Replace {
+                start,
+                end,
+                old_text,
+                new_text,
+            } => Self::Replace {
                 start: *start,
                 end: *end,
                 old_text: new_text.clone(),
                 new_text: old_text.clone(),
             },
-            Self::Batch(ops) => {
-                Self::Batch(ops.iter().rev().map(|op| op.inverse()).collect())
-            }
+            Self::Batch(ops) => Self::Batch(ops.iter().rev().map(|op| op.inverse()).collect()),
         }
     }
 }

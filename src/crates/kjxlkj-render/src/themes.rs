@@ -58,9 +58,7 @@ impl RenderTheme {
             r#type: RenderStyle::new().fg(RenderColor::Cyan),
             comment: RenderStyle::new().fg(RenderColor::BrightBlack).italic(),
             line_number: RenderStyle::new().fg(RenderColor::BrightBlack),
-            line_number_current: RenderStyle::new()
-                .fg(RenderColor::Yellow)
-                .bold(),
+            line_number_current: RenderStyle::new().fg(RenderColor::Yellow).bold(),
             statusline: RenderStyle::new()
                 .fg(RenderColor::Black)
                 .bg(RenderColor::White),

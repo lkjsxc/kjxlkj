@@ -2,8 +2,8 @@
 
 use crate::ex_command::{BufferCommand, ExCommand, TabCommand, WindowCommand};
 use crate::ex_helpers::{
-    parse_buffer, parse_bdelete, parse_edit, parse_global, parse_grep, parse_path, parse_set,
-    parse_substitute, parse_write, parse_wq,
+    parse_bdelete, parse_buffer, parse_edit, parse_global, parse_grep, parse_path, parse_set,
+    parse_substitute, parse_wq, parse_write,
 };
 use std::path::PathBuf;
 
@@ -21,7 +21,9 @@ impl ExParser {
     pub fn parse(&self, line: &str) -> ExCommand {
         let line = line.trim();
         if line.is_empty() {
-            return ExCommand::Unknown { line: String::new() };
+            return ExCommand::Unknown {
+                line: String::new(),
+            };
         }
 
         // Handle range prefix (we'll skip it for now)
@@ -55,17 +57,33 @@ impl ExParser {
             "w" | "write" => parse_write(args, false),
             "w!" | "write!" => parse_write(args, true),
             "wa" | "wall" => ExCommand::Write {
-                path: None, force: false, all: true,
+                path: None,
+                force: false,
+                all: true,
             },
             "wa!" | "wall!" => ExCommand::Write {
-                path: None, force: true, all: true,
+                path: None,
+                force: true,
+                all: true,
             },
 
             // Quit commands
-            "q" | "quit" => ExCommand::Quit { force: false, all: false },
-            "q!" | "quit!" => ExCommand::Quit { force: true, all: false },
-            "qa" | "qall" => ExCommand::Quit { force: false, all: true },
-            "qa!" | "qall!" => ExCommand::Quit { force: true, all: true },
+            "q" | "quit" => ExCommand::Quit {
+                force: false,
+                all: false,
+            },
+            "q!" | "quit!" => ExCommand::Quit {
+                force: true,
+                all: false,
+            },
+            "qa" | "qall" => ExCommand::Quit {
+                force: false,
+                all: true,
+            },
+            "qa!" | "qall!" => ExCommand::Quit {
+                force: true,
+                all: true,
+            },
 
             // Write and quit
             "wq" => parse_wq(args, false),
@@ -73,10 +91,14 @@ impl ExParser {
             "x" | "xit" => parse_wq(args, false),
             "x!" | "xit!" => parse_wq(args, true),
             "wqa" | "wqall" => ExCommand::WriteQuit {
-                path: None, force: false, all: true,
+                path: None,
+                force: false,
+                all: true,
             },
             "xa" | "xall" => ExCommand::WriteQuit {
-                path: None, force: false, all: true,
+                path: None,
+                force: false,
+                all: true,
             },
 
             // Edit
@@ -136,19 +158,35 @@ impl ExParser {
 
             // Help and info
             "h" | "help" => ExCommand::Help {
-                topic: if args.is_empty() { None } else { Some(args.to_string()) },
+                topic: if args.is_empty() {
+                    None
+                } else {
+                    Some(args.to_string())
+                },
             },
             "version" | "ver" => ExCommand::Version,
             "marks" => ExCommand::Marks {
-                filter: if args.is_empty() { None } else { Some(args.to_string()) },
+                filter: if args.is_empty() {
+                    None
+                } else {
+                    Some(args.to_string())
+                },
             },
             "reg" | "registers" => ExCommand::Registers {
-                filter: if args.is_empty() { None } else { Some(args.to_string()) },
+                filter: if args.is_empty() {
+                    None
+                } else {
+                    Some(args.to_string())
+                },
             },
             "jumps" | "ju" => ExCommand::Jumps,
             "changes" => ExCommand::Changes,
             "history" | "his" => ExCommand::History {
-                kind: if args.is_empty() { None } else { Some(args.to_string()) },
+                kind: if args.is_empty() {
+                    None
+                } else {
+                    Some(args.to_string())
+                },
             },
 
             // Source
@@ -162,20 +200,30 @@ impl ExParser {
             },
 
             // Make and grep
-            "make" | "mak" => ExCommand::Make { args: args.to_string() },
+            "make" | "mak" => ExCommand::Make {
+                args: args.to_string(),
+            },
             "grep" | "gr" => parse_grep(args),
 
             // Shell
-            "!" => ExCommand::Shell { command: args.to_string() },
+            "!" => ExCommand::Shell {
+                command: args.to_string(),
+            },
 
             // Read
-            "r" | "read" => ExCommand::Read { source: args.to_string() },
+            "r" | "read" => ExCommand::Read {
+                source: args.to_string(),
+            },
 
             // Lua
-            "lua" => ExCommand::Lua { code: args.to_string() },
+            "lua" => ExCommand::Lua {
+                code: args.to_string(),
+            },
 
             // Unknown
-            _ => ExCommand::Unknown { line: line.to_string() },
+            _ => ExCommand::Unknown {
+                line: line.to_string(),
+            },
         }
     }
 

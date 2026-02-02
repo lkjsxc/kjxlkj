@@ -1,11 +1,11 @@
 //! Text buffer combining rope with metadata.
 
+use crate::rope::TextRope;
 use kjxlkj_core_types::{
     buffer::{BufferFlags, BufferInfo, BufferName},
     ids::{BufferId, BufferVersion},
     position::Position,
 };
-use crate::rope::TextRope;
 
 /// A text buffer with content and metadata.
 #[derive(Debug)]

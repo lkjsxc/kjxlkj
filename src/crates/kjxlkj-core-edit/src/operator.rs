@@ -1,7 +1,7 @@
 //! Operator execution for delete, change, yank, etc.
 
-use kjxlkj_core_types::position::Position;
 use kjxlkj_core_types::operator::Operator;
+use kjxlkj_core_types::position::Position;
 
 /// Context needed for operator execution.
 pub trait OperatorContext {
@@ -42,8 +42,12 @@ impl OperatorExecutor {
         end: Position,
         register: char,
     ) -> OperatorResult {
-        let (start, end) = if start > end { (end, start) } else { (start, end) };
-        
+        let (start, end) = if start > end {
+            (end, start)
+        } else {
+            (start, end)
+        };
+
         match op {
             Operator::Delete => {
                 let text = ctx.text_range(start, end);
@@ -155,7 +159,7 @@ impl OperatorExecutor {
     fn format_text(text: &str, max_width: usize) -> String {
         let mut result = String::new();
         let mut current_line = String::new();
-        
+
         for word in text.split_whitespace() {
             if current_line.is_empty() {
                 current_line = word.to_string();
@@ -168,20 +172,15 @@ impl OperatorExecutor {
                 current_line = word.to_string();
             }
         }
-        
+
         if !current_line.is_empty() {
             result.push_str(&current_line);
         }
-        
+
         result
     }
 
-    fn indent_lines<C: OperatorContext>(
-        ctx: &mut C,
-        start: Position,
-        end: Position,
-        indent: bool,
-    ) {
+    fn indent_lines<C: OperatorContext>(ctx: &mut C, start: Position, end: Position, indent: bool) {
         // Indent each line in range
         let start_line = start.line.as_usize();
         let end_line = end.line.as_usize();

@@ -4,9 +4,9 @@ use crate::command::Command;
 use crate::key::Key;
 use crate::normal_types::{CharPendingKind, MarkPendingKind};
 use kjxlkj_core_types::{
+    ids::RegisterId,
     motion::Motion,
     operator::Operator,
-    ids::RegisterId,
     text_object::{TextObject, TextObjectScope},
 };
 
@@ -21,11 +21,18 @@ pub fn handle_char_pending(
     if let Key::Char(c) = key {
         match kind {
             CharPendingKind::Find(dir) => {
-                let motion = Motion::FindChar { char: c, direction: dir, inclusive: true };
+                let motion = Motion::FindChar {
+                    char: c,
+                    direction: dir,
+                    inclusive: true,
+                };
                 motion_or_operator(motion, count, operator, register)
             }
             CharPendingKind::Till(dir) => {
-                let motion = Motion::TillChar { char: c, direction: dir };
+                let motion = Motion::TillChar {
+                    char: c,
+                    direction: dir,
+                };
                 motion_or_operator(motion, count, operator, register)
             }
             CharPendingKind::Replace => Command::ReplaceChar(c),
@@ -41,8 +48,14 @@ pub fn handle_mark_pending(kind: MarkPendingKind, key: Key) -> Command {
         if c.is_ascii_alphabetic() {
             return match kind {
                 MarkPendingKind::Set => Command::SetMark(c),
-                MarkPendingKind::Jump => Command::GoToMark { mark: c, column: false },
-                MarkPendingKind::JumpColumn => Command::GoToMark { mark: c, column: true },
+                MarkPendingKind::Jump => Command::GoToMark {
+                    mark: c,
+                    column: false,
+                },
+                MarkPendingKind::JumpColumn => Command::GoToMark {
+                    mark: c,
+                    column: true,
+                },
             };
         }
     }

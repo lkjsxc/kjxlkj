@@ -1,8 +1,8 @@
 //! Undo tree for branching history.
 
-use std::collections::HashMap;
 use kjxlkj_core_edit::EditOperation;
 use kjxlkj_core_types::position::Position;
+use std::collections::HashMap;
 
 /// A node in the undo tree.
 #[derive(Debug, Clone)]
@@ -53,7 +53,7 @@ impl UndoTree {
         };
         let mut nodes = HashMap::new();
         nodes.insert(0, root);
-        
+
         Self {
             nodes,
             current: 0,
@@ -66,7 +66,7 @@ impl UndoTree {
     pub fn push(&mut self, operation: EditOperation, cursor: Position, timestamp: u64) {
         let id = self.next_id;
         self.next_id += 1;
-        
+
         let node = UndoNode {
             id,
             parent: Some(self.current),
@@ -75,15 +75,15 @@ impl UndoTree {
             cursor,
             timestamp,
         };
-        
+
         // Add child to current node
         if let Some(current) = self.nodes.get_mut(&self.current) {
             current.children.push(id);
         }
-        
+
         self.nodes.insert(id, node);
         self.current = id;
-        
+
         // Prune if necessary
         self.prune_if_needed();
     }
@@ -111,12 +111,18 @@ impl UndoTree {
 
     /// Returns true if undo is available.
     pub fn can_undo(&self) -> bool {
-        self.nodes.get(&self.current).and_then(|n| n.parent).is_some()
+        self.nodes
+            .get(&self.current)
+            .and_then(|n| n.parent)
+            .is_some()
     }
 
     /// Returns true if redo is available.
     pub fn can_redo(&self) -> bool {
-        self.nodes.get(&self.current).map(|n| !n.children.is_empty()).unwrap_or(false)
+        self.nodes
+            .get(&self.current)
+            .map(|n| !n.children.is_empty())
+            .unwrap_or(false)
     }
 
     fn prune_if_needed(&mut self) {

@@ -14,10 +14,7 @@ pub enum CommandResult {
 }
 
 /// Handles command mode key input.
-pub fn handle_command_key(
-    code: KeyCode,
-    command_line: &mut String,
-) -> CommandModeAction {
+pub fn handle_command_key(code: KeyCode, command_line: &mut String) -> CommandModeAction {
     match code {
         KeyCode::Esc => {
             command_line.clear();
@@ -58,7 +55,7 @@ pub enum CommandModeAction {
 /// Executes an Ex command.
 pub fn execute_command(cmd: &str, buffer: &mut Buffer) -> CommandResult {
     let cmd = cmd.trim();
-    
+
     // Handle :help and :help topic
     if cmd == "help" || cmd == "h" {
         return CommandResult::Message(show_help(None));
@@ -66,7 +63,7 @@ pub fn execute_command(cmd: &str, buffer: &mut Buffer) -> CommandResult {
     if let Some(topic) = cmd.strip_prefix("help ").or_else(|| cmd.strip_prefix("h ")) {
         return CommandResult::Message(show_help(Some(topic.trim())));
     }
-    
+
     match cmd {
         "w" | "write" => {
             if let Err(e) = buffer.save() {
@@ -101,7 +98,10 @@ fn show_help(topic: Option<&str>) -> String {
         Some("motions") | Some("motion") => HELP_MOTIONS.to_string(),
         Some("operators") | Some("operator") => HELP_OPERATORS.to_string(),
         Some("commands") | Some("command") | Some("ex") => HELP_COMMANDS.to_string(),
-        Some(t) => format!("No help for '{}'. Try :help motions, :help operators, :help commands", t),
+        Some(t) => format!(
+            "No help for '{}'. Try :help motions, :help operators, :help commands",
+            t
+        ),
     }
 }
 

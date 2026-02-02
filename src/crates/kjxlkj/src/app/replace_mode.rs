@@ -22,7 +22,7 @@ pub fn handle_replace_key(code: KeyCode, buffer: &mut Buffer) -> ReplaceAction {
             ReplaceAction::None
         }
         KeyCode::Backspace => {
-            // In replace mode, backspace moves left and restores? 
+            // In replace mode, backspace moves left and restores?
             // For simplicity, just move left
             buffer.cursor_left();
             ReplaceAction::None

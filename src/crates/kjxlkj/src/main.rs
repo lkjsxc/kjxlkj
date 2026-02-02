@@ -31,7 +31,7 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    
+
     // Run the application
     let mut app = if let Some(file) = args.files.first() {
         app::Application::with_file(std::path::Path::new(file))?
@@ -39,6 +39,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         app::Application::new()?
     };
     app.run()?;
-    
+
     Ok(())
 }

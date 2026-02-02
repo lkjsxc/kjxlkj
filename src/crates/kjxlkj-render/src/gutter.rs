@@ -1,7 +1,7 @@
 //! Gutter rendering for line numbers and signs.
 
-use crossterm::style::Color;
 use crate::buffer::{Cell, ScreenBuffer};
+use crossterm::style::Color;
 
 /// Gutter component for line numbers and signs.
 #[derive(Debug, Clone)]
@@ -42,20 +42,20 @@ impl Default for GutterConfig {
 /// Calculates the width of the gutter.
 pub fn gutter_width(config: &GutterConfig, total_lines: usize) -> u16 {
     let mut width = 0;
-    
+
     if config.show_signs {
         width += 2; // Sign column
     }
-    
+
     if config.show_numbers {
         let num_width = total_lines.to_string().len().max(config.min_width as usize);
         width += num_width + 1; // Numbers + padding
     }
-    
+
     if config.show_folds {
         width += 1; // Fold column
     }
-    
+
     width as u16
 }
 
@@ -69,14 +69,14 @@ pub fn render_gutter_line(
     config: &GutterConfig,
 ) {
     let mut x = 0u16;
-    
+
     // Sign column
     if config.show_signs {
         buffer.set(x, y, Cell::new(' ').bg(config.bg));
         buffer.set(x + 1, y, Cell::new(' ').bg(config.bg));
         x += 2;
     }
-    
+
     // Line number
     if config.show_numbers {
         let num_width = total_lines.to_string().len().max(config.min_width as usize);
@@ -85,13 +85,13 @@ pub fn render_gutter_line(
         } else {
             line_num + 1
         };
-        
+
         let fg = if line_num == cursor_line {
             config.cursorline_fg
         } else {
             config.number_fg
         };
-        
+
         let num_str = format!("{:>width$} ", display_num, width = num_width);
         buffer.write_str(x, y, &num_str, fg, config.bg);
     }

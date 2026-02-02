@@ -1,7 +1,7 @@
 //! Operator types for text manipulation.
 
-use serde::{Deserialize, Serialize};
 use super::ids::RegisterId;
+use serde::{Deserialize, Serialize};
 
 /// An operator that acts on text.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -104,8 +104,7 @@ impl PendingOperator {
 }
 
 /// Result of an operator execution.
-#[derive(Debug, Clone)]
-#[derive(Default)]
+#[derive(Debug, Clone, Default)]
 pub struct OperatorResult {
     /// Text that was affected (for yank/delete).
     pub text: Option<String>,
@@ -116,4 +115,3 @@ pub struct OperatorResult {
     /// Whether to enter insert mode after.
     pub enter_insert: bool,
 }
-

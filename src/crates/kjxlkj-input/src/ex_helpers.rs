@@ -35,7 +35,11 @@ pub fn parse_edit(args: &str, force: bool) -> ExCommand {
 
 /// Parses a path argument.
 pub fn parse_path(args: &str) -> Option<PathBuf> {
-    if args.is_empty() { None } else { Some(PathBuf::from(args)) }
+    if args.is_empty() {
+        None
+    } else {
+        Some(PathBuf::from(args))
+    }
 }
 
 /// Parses a buffer command.
@@ -90,7 +94,9 @@ pub fn parse_substitute(args: &str, range: Option<String>) -> ExCommand {
             };
         }
     }
-    ExCommand::Unknown { line: format!("s{}", args) }
+    ExCommand::Unknown {
+        line: format!("s{}", args),
+    }
 }
 
 /// Parses a global command.
@@ -104,7 +110,9 @@ pub fn parse_global(args: &str, inverse: bool) -> ExCommand {
             };
         }
     }
-    ExCommand::Unknown { line: format!("g{}", args) }
+    ExCommand::Unknown {
+        line: format!("g{}", args),
+    }
 }
 
 /// Parses a grep command.

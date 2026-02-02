@@ -75,8 +75,12 @@ pub fn parse_visual_char(c: char) -> Option<VisualVariant> {
 /// Parses search motion characters.
 pub fn parse_search_motion(c: char) -> Option<Motion> {
     match c {
-        '*' => Some(Motion::SearchWordUnderCursor { direction: Direction::Forward }),
-        '#' => Some(Motion::SearchWordUnderCursor { direction: Direction::Backward }),
+        '*' => Some(Motion::SearchWordUnderCursor {
+            direction: Direction::Forward,
+        }),
+        '#' => Some(Motion::SearchWordUnderCursor {
+            direction: Direction::Backward,
+        }),
         _ => None,
     }
 }

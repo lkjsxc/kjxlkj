@@ -38,7 +38,9 @@ impl MotionExecutor {
 
         for _ in 1..count {
             result = Self::execute_once(ctx, result.line, result.column, &motion);
-            if result.hit_boundary { break; }
+            if result.hit_boundary {
+                break;
+            }
         }
 
         result
@@ -71,15 +73,30 @@ impl MotionExecutor {
             Motion::ParagraphForward => motion_misc::paragraph_forward(ctx, line),
             Motion::ParagraphBackward => motion_misc::paragraph_backward(ctx, line),
             Motion::MatchingBracket => motion_misc::matching_bracket(ctx, line, col),
-            _ => MotionResult { line, column: col, wrapped: false, hit_boundary: true },
+            _ => MotionResult {
+                line,
+                column: col,
+                wrapped: false,
+                hit_boundary: true,
+            },
         }
     }
 
     fn move_left(col: usize, line: usize) -> MotionResult {
         if col > 0 {
-            MotionResult { line, column: col - 1, wrapped: false, hit_boundary: false }
+            MotionResult {
+                line,
+                column: col - 1,
+                wrapped: false,
+                hit_boundary: false,
+            }
         } else {
-            MotionResult { line, column: 0, wrapped: false, hit_boundary: true }
+            MotionResult {
+                line,
+                column: 0,
+                wrapped: false,
+                hit_boundary: true,
+            }
         }
     }
 
@@ -87,9 +104,19 @@ impl MotionExecutor {
         let line_len = ctx.line_len(line);
         let max_col = line_len.saturating_sub(1);
         if col < max_col {
-            MotionResult { line, column: col + 1, wrapped: false, hit_boundary: false }
+            MotionResult {
+                line,
+                column: col + 1,
+                wrapped: false,
+                hit_boundary: false,
+            }
         } else {
-            MotionResult { line, column: max_col, wrapped: false, hit_boundary: true }
+            MotionResult {
+                line,
+                column: max_col,
+                wrapped: false,
+                hit_boundary: true,
+            }
         }
     }
 
@@ -98,9 +125,19 @@ impl MotionExecutor {
             let new_line = line - 1;
             let line_len = ctx.line_len(new_line);
             let new_col = col.min(line_len.saturating_sub(1));
-            MotionResult { line: new_line, column: new_col, wrapped: false, hit_boundary: false }
+            MotionResult {
+                line: new_line,
+                column: new_col,
+                wrapped: false,
+                hit_boundary: false,
+            }
         } else {
-            MotionResult { line: 0, column: col, wrapped: false, hit_boundary: true }
+            MotionResult {
+                line: 0,
+                column: col,
+                wrapped: false,
+                hit_boundary: true,
+            }
         }
     }
 
@@ -110,25 +147,53 @@ impl MotionExecutor {
             let new_line = line + 1;
             let line_len = ctx.line_len(new_line);
             let new_col = col.min(line_len.saturating_sub(1));
-            MotionResult { line: new_line, column: new_col, wrapped: false, hit_boundary: false }
+            MotionResult {
+                line: new_line,
+                column: new_col,
+                wrapped: false,
+                hit_boundary: false,
+            }
         } else {
-            MotionResult { line: max_line, column: col, wrapped: false, hit_boundary: true }
+            MotionResult {
+                line: max_line,
+                column: col,
+                wrapped: false,
+                hit_boundary: true,
+            }
         }
     }
 
     fn first_column(line: usize) -> MotionResult {
-        MotionResult { line, column: 0, wrapped: false, hit_boundary: false }
+        MotionResult {
+            line,
+            column: 0,
+            wrapped: false,
+            hit_boundary: false,
+        }
     }
 
     fn first_non_blank<C: MotionContext>(ctx: &C, line: usize) -> MotionResult {
         let content = ctx.line_content(line);
-        let col = content.chars().position(|c| !c.is_whitespace()).unwrap_or(0);
-        MotionResult { line, column: col, wrapped: false, hit_boundary: false }
+        let col = content
+            .chars()
+            .position(|c| !c.is_whitespace())
+            .unwrap_or(0);
+        MotionResult {
+            line,
+            column: col,
+            wrapped: false,
+            hit_boundary: false,
+        }
     }
 
     fn line_end<C: MotionContext>(ctx: &C, line: usize) -> MotionResult {
         let line_len = ctx.line_len(line);
         let col = line_len.saturating_sub(1);
-        MotionResult { line, column: col, wrapped: false, hit_boundary: false }
+        MotionResult {
+            line,
+            column: col,
+            wrapped: false,
+            hit_boundary: false,
+        }
     }
 }
