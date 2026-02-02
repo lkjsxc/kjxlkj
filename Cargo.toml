@@ -32,6 +32,7 @@ description = "A Neovim-inspired TUI text editor with all features built-in"
 
 [workspace.dependencies]
 tokio = { version = "1.35", features = ["full"] }
+tokio-stream = "0.1"
 crossterm = "0.27"
 unicode-width = "0.1"
 unicode-segmentation = "1.10"

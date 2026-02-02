@@ -3,7 +3,6 @@
 use anyhow::Result;
 use crossterm::{
     cursor,
-    event::{DisableMouseCapture, EnableMouseCapture},
     execute,
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };

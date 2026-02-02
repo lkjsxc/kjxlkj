@@ -21,12 +21,9 @@ pub struct CoreTask {
 }
 
 /// Handle for communicating with the core task.
-#[derive(Clone)]
 pub struct CoreHandle {
     /// Action sender.
     action_tx: mpsc::Sender<Action>,
-    /// Result receiver.
-    result_rx: mpsc::Receiver<ActionResult>,
     /// Snapshot receiver.
     snapshot_rx: watch::Receiver<EditorSnapshot>,
 }
@@ -35,7 +32,7 @@ impl CoreTask {
     /// Creates a new core task.
     pub fn new() -> (Self, CoreHandle) {
         let (action_tx, action_rx) = mpsc::channel(256);
-        let (result_tx, result_rx) = mpsc::channel(256);
+        let (result_tx, _result_rx) = mpsc::channel::<ActionResult>(256);
         let (snapshot_tx, snapshot_rx) = watch::channel(EditorSnapshot::default());
 
         let task = Self {
@@ -48,7 +45,6 @@ impl CoreTask {
 
         let handle = CoreHandle {
             action_tx,
-            result_rx,
             snapshot_rx,
         };
 

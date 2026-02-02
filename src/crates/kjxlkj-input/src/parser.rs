@@ -58,10 +58,10 @@ impl InputParser {
         }
 
         // Look up in keymap
-        if let Some(intent) = self.normal_map.lookup(&key) {
+        if let Some(intent) = self.normal_map.lookup(&key).cloned() {
             let count = self.count.take().unwrap_or(1);
             self.reset();
-            return Some(intent.clone().with_count(count));
+            return Some(intent.with_count(count));
         }
 
         // Basic motions

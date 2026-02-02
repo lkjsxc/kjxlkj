@@ -1,11 +1,11 @@
 //! Frame output.
 
-use crate::{ScreenBuffer, Style};
+use crate::ScreenBuffer;
 use crossterm::{
     cursor::MoveTo,
     style::{Print, SetBackgroundColor, SetForegroundColor},
     terminal::{Clear, ClearType},
-    QueuedCommand,
+    QueueableCommand,
 };
 use std::io::{self, Write};
 

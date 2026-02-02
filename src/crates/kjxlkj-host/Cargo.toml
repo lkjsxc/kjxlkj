@@ -11,6 +11,7 @@ description = "Terminal host integration for kjxlkj editor"
 [dependencies]
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
-crossterm = { workspace = true }
+crossterm = { workspace = true, features = ["event-stream"] }
 tokio = { workspace = true }
+tokio-stream = { workspace = true }
 anyhow = { workspace = true }

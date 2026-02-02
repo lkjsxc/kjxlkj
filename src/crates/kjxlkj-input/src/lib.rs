@@ -6,6 +6,6 @@ mod key;
 mod mapping;
 mod parser;
 
-pub use key::{Key, KeySequence, Modifiers};
+pub use key::{Key, KeyCodeWrapper, KeySequence, Modifiers};
 pub use mapping::KeyMap;
 pub use parser::InputParser;
