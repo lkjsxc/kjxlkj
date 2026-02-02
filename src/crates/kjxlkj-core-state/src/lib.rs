@@ -19,6 +19,7 @@ mod registers;
 mod repeat;
 mod session;
 mod tabpage;
+mod watcher;
 mod window;
 mod workspace;
 
@@ -42,5 +43,6 @@ pub use registers::Registers;
 pub use repeat::{RepeatKind, RepeatState};
 pub use session::{SavedTab, SavedWindow, Session, SessionManager};
 pub use tabpage::{TabId, TabManager, TabPage};
+pub use watcher::{PendingEvent, WatchConfig, WatchEvent, WatchManager, WatchState};
 pub use window::WindowState;
 pub use workspace::{RootMarker, Workspace, WorkspaceManager};
