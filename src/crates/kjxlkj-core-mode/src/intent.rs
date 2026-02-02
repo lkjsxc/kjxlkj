@@ -91,6 +91,16 @@ pub enum IntentKind {
 
     /// Navigate window by direction.
     WindowDirection(WindowDirection),
+
+    // Register operations
+    /// Put (paste) from register after cursor.
+    PutAfter { register: Option<char> },
+
+    /// Put (paste) from register before cursor.
+    PutBefore { register: Option<char> },
+
+    /// Yank current line.
+    YankLine,
 }
 
 /// Window navigation direction.

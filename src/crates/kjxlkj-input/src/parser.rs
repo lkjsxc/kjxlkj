@@ -106,6 +106,12 @@ impl InputParser {
             KeyCodeWrapper::Char('V') => Some(Intent::change_mode(Mode::VisualLine)),
             KeyCodeWrapper::Char(':') => Some(Intent::change_mode(Mode::Command)),
             KeyCodeWrapper::Char('u') => Some(Intent::new(IntentKind::Undo)),
+            KeyCodeWrapper::Char('p') => {
+                Some(Intent::new(IntentKind::PutAfter { register: None }))
+            }
+            KeyCodeWrapper::Char('P') => {
+                Some(Intent::new(IntentKind::PutBefore { register: None }))
+            }
             _ => None,
         };
 
