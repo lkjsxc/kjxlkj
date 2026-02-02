@@ -44,5 +44,39 @@ mod tests {
             .with_severity(DiagnosticSeverity::Error);
         assert_eq!(diag.severity, Some(DiagnosticSeverity::Error));
     }
+
+    #[test]
+    fn test_diagnostic_severity_values() {
+        assert_eq!(DiagnosticSeverity::Error as u8, 1);
+        assert_eq!(DiagnosticSeverity::Warning as u8, 2);
+        assert_eq!(DiagnosticSeverity::Information as u8, 3);
+        assert_eq!(DiagnosticSeverity::Hint as u8, 4);
+    }
+
+    #[test]
+    fn test_diagnostic_source() {
+        let range = Range::new(Position::new(1, 0), Position::new(1, 10));
+        let mut diag = Diagnostic::new(range, "type error");
+        diag.source = Some("rustc".into());
+        assert_eq!(diag.source, Some("rustc".into()));
+    }
+
+    #[test]
+    fn test_diagnostic_range() {
+        let start = Position::new(5, 10);
+        let end = Position::new(5, 20);
+        let range = Range::new(start, end);
+        let diag = Diagnostic::new(range, "test");
+        assert_eq!(diag.range.start.line, 5);
+        assert_eq!(diag.range.start.col, 10);
+        assert_eq!(diag.range.end.col, 20);
+    }
+
+    #[test]
+    fn test_lsp_client_path() {
+        let path = PathBuf::from("/opt/lsp/server");
+        let client = LspClient::new("custom", path.clone());
+        assert_eq!(client.path(), &path);
+    }
 }
 

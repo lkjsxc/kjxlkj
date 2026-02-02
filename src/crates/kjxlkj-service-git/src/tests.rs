@@ -42,3 +42,46 @@ mod hunk_tests {
         assert_ne!(HunkKind::Remove, HunkKind::Change);
     }
 }
+
+mod repo_tests {
+    use super::super::repo::{FileStatus, GitRepo};
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_repo_open_nonexistent() {
+        let repo = GitRepo::open(PathBuf::from("/nonexistent/path"));
+        assert!(repo.is_none());
+    }
+
+    #[test]
+    fn test_file_status_equality() {
+        assert_eq!(FileStatus::Modified, FileStatus::Modified);
+        assert_ne!(FileStatus::Added, FileStatus::Deleted);
+        assert_ne!(FileStatus::Renamed, FileStatus::Untracked);
+    }
+
+    #[test]
+    fn test_file_status_debug() {
+        let status = FileStatus::Modified;
+        let debug = format!("{:?}", status);
+        assert_eq!(debug, "Modified");
+    }
+}
+
+mod hunk_kind_tests {
+    use super::super::hunk::HunkKind;
+
+    #[test]
+    fn test_hunk_kind_debug() {
+        assert_eq!(format!("{:?}", HunkKind::Add), "Add");
+        assert_eq!(format!("{:?}", HunkKind::Remove), "Remove");
+        assert_eq!(format!("{:?}", HunkKind::Change), "Change");
+    }
+
+    #[test]
+    fn test_hunk_kind_clone() {
+        let kind = HunkKind::Add;
+        let cloned = kind;
+        assert_eq!(kind, cloned);
+    }
+}
