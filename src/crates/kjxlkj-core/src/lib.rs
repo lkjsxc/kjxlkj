@@ -8,6 +8,11 @@ mod intent_handler;
 pub mod motion;
 mod motion_core;
 pub mod operator;
+mod operator_exec;
+mod register_ops;
+mod search_ops;
+mod text_ops;
+mod window_ops;
 
 #[cfg(test)]
 mod tests;

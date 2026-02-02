@@ -45,6 +45,12 @@ pub enum ActionResult {
     /// Editor should quit.
     Quit,
 
+    /// Editor should save.
+    Save,
+
+    /// Editor should save and quit.
+    SaveQuit,
+
     /// Error occurred.
     Error(String),
 

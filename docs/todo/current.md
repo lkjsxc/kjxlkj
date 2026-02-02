@@ -1,38 +1,44 @@
 # Current TODO
 
-Active task list for implementation - Iteration 25.
+Active task list for implementation - Iteration 26.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | All bugs fixed | ✓ complete |
+| 1 | Implement operator execution | pending |
+| 2 | Implement window operations | pending |
+| 3 | Implement register operations | pending |
+| 4 | Implement ex command execution | pending |
+| 5 | Implement search operations | pending |
+| 6 | Add integration tests | pending |
 
-## Completed (Iteration 25)
+## Analysis (Iteration 26)
 
-- [x] Analyzed insert mode bug - process_intent() ignored most IntentKind variants
-- [x] Created intent_handler.rs with proper intent processing
-- [x] Implemented InsertText, InsertNewline, Backspace, DeleteChar handlers
-- [x] Analyzed file loading bug - Action::OpenFile was stub, args.files unused
-- [x] Implemented CoreTask::open_file() to load file contents
-- [x] Updated app.rs to send OpenFile actions for CLI file arguments
-- [x] All tests passing
+The following IntentKind variants need implementation:
 
-## Bug Analysis (Iteration 25)
+### Operators (priority: high)
+- `OperatorMotion` - apply operator over motion range
+- `OperatorTextObject` - apply operator over text object range
+- `OperatorLine` - apply operator on current line (dd, yy, etc)
 
-### Bug 1: Insert Mode Key Input - FIXED
-- **Symptom**: Mode switches to Insert, but typed characters not displayed
-- **Root Cause**: `CoreTask::process_intent()` had catch-all `_ => {}` that ignored InsertText
-- **Fix**: Created intent_handler.rs with proper handlers for all editing intents
+### Window Operations (priority: medium)
+- `SplitHorizontal`, `SplitVertical`
+- `CloseWindow`, `OnlyWindow`
+- `NextWindow`, `PrevWindow`, `WindowDirection`
 
-### Bug 2: File Loading - FIXED  
-- **Symptom**: `cargo run ./README.md` shows [No Name] and empty content
-- **Root Cause**: 
-  1. `args.files` never sent to core task
-  2. `Action::OpenFile { path }` was a stub
-- **Fix**: 
-  1. App::run() now sends OpenFile actions for CLI files
-  2. CoreTask::open_file() loads file content into buffer
+### Register Operations (priority: medium)
+- `PutAfter`, `PutBefore`
+- `YankLine`
+
+### Search Operations (priority: medium)
+- `SearchForward`, `SearchBackward`
+- `NextMatch`, `PrevMatch`
+
+### Other
+- `ExCommand` - execute parsed ex commands
+- `Save`, `SaveQuit` - file operations
+- `Repeat` - repeat last change
 
 ## Related
 

@@ -73,6 +73,17 @@ impl EditorState {
             .and_then(|w| self.buffers.get(&w.buffer_id))
     }
 
+    /// Creates a new window for a buffer.
+    pub fn create_window(&mut self, buffer_id: BufferId) -> WindowId {
+        let window_id = WindowId::new(self.next_window_id);
+        self.next_window_id += 1;
+
+        let window = WindowState::new(window_id, buffer_id);
+        self.windows.insert(window_id, window);
+
+        window_id
+    }
+
     /// Creates a snapshot for rendering.
     pub fn snapshot(&self) -> EditorSnapshot {
         let mut snapshot = EditorSnapshot::new(self.dimensions);

@@ -2,8 +2,12 @@
 
 use kjxlkj_core_mode::{Intent, IntentKind};
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{Cursor, Position, Range};
 
+use crate::operator_exec::{operator_line, operator_motion, operator_text_object};
+use crate::register_ops;
+use crate::search_ops;
+use crate::text_ops::{backspace, delete_char, execute_motion_on_state, insert_text, redo, undo};
+use crate::window_ops;
 use crate::ActionResult;
 
 /// Processes an intent and updates editor state.
@@ -42,7 +46,96 @@ pub fn process_intent(state: &mut EditorState, intent: Intent) -> ActionResult {
             ActionResult::Ok
         }
 
+        IntentKind::OperatorMotion { op, motion } => {
+            operator_motion(state, op, motion);
+            ActionResult::Ok
+        }
+
+        IntentKind::OperatorTextObject { op, text_object } => {
+            operator_text_object(state, op, text_object);
+            ActionResult::Ok
+        }
+
+        IntentKind::OperatorLine { op } => {
+            operator_line(state, op);
+            ActionResult::Ok
+        }
+
+        IntentKind::SplitHorizontal => {
+            window_ops::split_horizontal(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::SplitVertical => {
+            window_ops::split_vertical(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::CloseWindow => {
+            window_ops::close_window(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::OnlyWindow => {
+            window_ops::only_window(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::NextWindow => {
+            window_ops::next_window(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::PrevWindow => {
+            window_ops::prev_window(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::WindowDirection(dir) => {
+            window_ops::window_direction(state, dir);
+            ActionResult::Ok
+        }
+
+        IntentKind::PutAfter { register } => {
+            register_ops::put_after(state, register);
+            ActionResult::Ok
+        }
+
+        IntentKind::PutBefore { register } => {
+            register_ops::put_before(state, register);
+            ActionResult::Ok
+        }
+
+        IntentKind::YankLine => {
+            register_ops::yank_line(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::SearchForward { pattern } => {
+            search_ops::search_forward(state, &pattern);
+            ActionResult::Ok
+        }
+
+        IntentKind::SearchBackward { pattern } => {
+            search_ops::search_backward(state, &pattern);
+            ActionResult::Ok
+        }
+
+        IntentKind::NextMatch => {
+            search_ops::next_match(state);
+            ActionResult::Ok
+        }
+
+        IntentKind::PrevMatch => {
+            search_ops::prev_match(state);
+            ActionResult::Ok
+        }
+
         IntentKind::Quit => ActionResult::Quit,
+
+        IntentKind::Save => ActionResult::Save,
+
+        IntentKind::SaveQuit => ActionResult::SaveQuit,
 
         IntentKind::Undo => {
             undo(state);
@@ -56,108 +149,4 @@ pub fn process_intent(state: &mut EditorState, intent: Intent) -> ActionResult {
 
         _ => ActionResult::Ok,
     }
-}
-
-/// Executes a motion on the current state.
-fn execute_motion_on_state(
-    state: &mut EditorState,
-    motion: &kjxlkj_core_edit::Motion,
-    count: usize,
-) {
-    let Some(window) = state.windows.get_mut(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get(&window.buffer_id) else {
-        return;
-    };
-
-    for _ in 0..count {
-        let new_pos = crate::execute_motion(&buffer.text, window.cursor.position, motion);
-        window.cursor = Cursor::new(new_pos);
-    }
-}
-
-/// Inserts text at cursor position.
-fn insert_text(state: &mut EditorState, text: &str) {
-    let Some(window) = state.windows.get_mut(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get_mut(&window.buffer_id) else {
-        return;
-    };
-
-    let pos = window.cursor.position;
-    buffer.text.insert(pos, text);
-    buffer.modified = true;
-
-    // Move cursor after inserted text
-    if text == "\n" {
-        window.cursor = Cursor::at(pos.line + 1, 0);
-    } else {
-        window.cursor = Cursor::at(pos.line, pos.col + text.chars().count());
-    }
-}
-
-/// Deletes character before cursor.
-fn backspace(state: &mut EditorState) {
-    let Some(window) = state.windows.get_mut(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get_mut(&window.buffer_id) else {
-        return;
-    };
-
-    let pos = window.cursor.position;
-    if pos.col > 0 {
-        let start = Position::new(pos.line, pos.col - 1);
-        buffer.text.delete(Range::new(start, pos));
-        buffer.modified = true;
-        window.cursor = Cursor::new(start);
-    } else if pos.line > 0 {
-        let prev_len = buffer.text.line(pos.line - 1).chars().count();
-        let start = Position::new(pos.line - 1, prev_len);
-        buffer.text.delete(Range::new(start, pos));
-        buffer.modified = true;
-        window.cursor = Cursor::new(start);
-    }
-}
-
-/// Deletes character at cursor.
-fn delete_char(state: &mut EditorState) {
-    let Some(window) = state.windows.get(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get_mut(&window.buffer_id) else {
-        return;
-    };
-
-    let pos = window.cursor.position;
-    let line_content = buffer.text.line(pos.line);
-    if pos.col < line_content.chars().count() {
-        let end = Position::new(pos.line, pos.col + 1);
-        buffer.text.delete(Range::new(pos, end));
-        buffer.modified = true;
-    }
-}
-
-/// Undo last change.
-fn undo(state: &mut EditorState) {
-    let Some(window) = state.windows.get(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get_mut(&window.buffer_id) else {
-        return;
-    };
-    buffer.undo.undo();
-}
-
-/// Redo last undone change.
-fn redo(state: &mut EditorState) {
-    let Some(window) = state.windows.get(&state.layout.active) else {
-        return;
-    };
-    let Some(buffer) = state.buffers.get_mut(&window.buffer_id) else {
-        return;
-    };
-    buffer.undo.redo();
 }

@@ -68,6 +68,7 @@ pub use mark_types::{Mark, MarkType};
 pub use marks::MarkStore;
 pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
 pub use registers::Registers;
+pub use register_types::{RegisterContent, RegisterType};
 pub use repeat::{RepeatKind, RepeatState};
 pub use session::{SavedTab, SavedWindow, Session, SessionManager};
 pub use tabpage::{TabId, TabManager, TabPage};
