@@ -10,6 +10,8 @@ pub struct Args {
     pub log_file: Option<String>,
     /// Headless mode.
     pub headless: bool,
+    /// Dump mode - render once and dump output.
+    pub dump: bool,
 }
 
 /// Parses CLI arguments.
@@ -18,6 +20,7 @@ pub fn parse() -> Args {
         files: Vec::new(),
         log_file: None,
         headless: false,
+        dump: false,
     };
 
     let mut iter = std::env::args().skip(1);
@@ -28,6 +31,9 @@ pub fn parse() -> Args {
             }
             "--headless" => {
                 args.headless = true;
+            }
+            "--dump" => {
+                args.dump = true;
             }
             "--help" | "-h" => {
                 print_help();
@@ -57,6 +63,7 @@ fn print_help() {
     println!("Options:");
     println!("  --log <FILE>   Write logs to FILE");
     println!("  --headless     Run in headless mode");
+    println!("  --dump         Dump render output and exit");
     println!("  -h, --help     Print help");
     println!("  -v, --version  Print version");
 }

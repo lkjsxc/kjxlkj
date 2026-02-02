@@ -36,8 +36,12 @@ impl EditorState {
         let buffer_id = BufferId::new(0);
         let window_id = WindowId::new(0);
 
+        let dims = Dimensions::new(80, 24);
         let buffer = BufferState::new(buffer_id);
-        let window = WindowState::new(window_id, buffer_id);
+        let mut window = WindowState::new(window_id, buffer_id);
+        // Set initial viewport dimensions
+        window.viewport.dimensions.height = dims.height.saturating_sub(2);
+        window.viewport.dimensions.width = dims.width;
 
         let mut buffers = HashMap::new();
         buffers.insert(buffer_id, buffer);
@@ -51,7 +55,7 @@ impl EditorState {
             layout: Layout::new(window_id),
             mode: ModeState::new(),
             registers: Registers::new(),
-            dimensions: Dimensions::new(80, 24),
+            dimensions: dims,
             next_buffer_id: 1,
             next_window_id: 1,
         }
@@ -84,7 +88,10 @@ impl EditorState {
         let window_id = WindowId::new(self.next_window_id);
         self.next_window_id += 1;
 
-        let window = WindowState::new(window_id, buffer_id);
+        let mut window = WindowState::new(window_id, buffer_id);
+        // Set viewport dimensions to terminal size minus status/command lines
+        window.viewport.dimensions.height = self.dimensions.height.saturating_sub(2);
+        window.viewport.dimensions.width = self.dimensions.width;
         self.windows.insert(window_id, window);
 
         window_id

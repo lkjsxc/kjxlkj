@@ -79,6 +79,12 @@ impl CoreTask {
             }
             Action::Resize(dims) => {
                 self.state.dimensions = dims;
+                // Update viewport dimensions for all windows
+                for window in self.state.windows.values_mut() {
+                    // Reserve 2 lines for status and command line
+                    window.viewport.dimensions.height = dims.height.saturating_sub(2);
+                    window.viewport.dimensions.width = dims.width;
+                }
                 self.publish_snapshot();
                 ActionResult::Ok
             }

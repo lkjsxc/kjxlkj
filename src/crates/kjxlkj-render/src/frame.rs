@@ -43,6 +43,23 @@ impl Frame {
         Ok(())
     }
 
+    /// Dumps the frame to a string for debugging.
+    pub fn dump(&self) -> String {
+        let dims = self.buffer.dimensions();
+        let mut output = String::new();
+        output.push_str(&format!("=== Frame Dump ({}x{}) ===\n", dims.width, dims.height));
+        
+        for y in 0..dims.height {
+            for x in 0..dims.width {
+                if let Some(cell) = self.buffer.get(x, y) {
+                    output.push_str(&cell.content);
+                }
+            }
+            output.push('\n');
+        }
+        output
+    }
+
     /// Returns the buffer.
     pub fn buffer(&self) -> &ScreenBuffer {
         &self.buffer

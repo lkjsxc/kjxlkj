@@ -105,7 +105,7 @@ impl Renderer {
 
         // Show command or message
         if let Some(ref cmd) = snapshot.command_line {
-            self.buffer.set_string(0, y, &format!(":{}", cmd), style);
+            self.buffer.set_string(0, y, cmd, style);
         } else if let Some(ref msg) = snapshot.message {
             self.buffer.set_string(0, y, msg, style);
         }
