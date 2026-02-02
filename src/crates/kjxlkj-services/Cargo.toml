@@ -1,0 +1,19 @@
+[package]
+name = "kjxlkj-services"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Service supervisor for kjxlkj editor"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-service-fs = { path = "../kjxlkj-service-fs" }
+kjxlkj-service-lsp = { path = "../kjxlkj-service-lsp" }
+kjxlkj-service-git = { path = "../kjxlkj-service-git" }
+kjxlkj-service-index = { path = "../kjxlkj-service-index" }
+kjxlkj-service-terminal = { path = "../kjxlkj-service-terminal" }
+tokio = { workspace = true }
+serde = { workspace = true }
