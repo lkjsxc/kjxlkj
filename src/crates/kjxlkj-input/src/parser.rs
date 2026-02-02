@@ -112,6 +112,17 @@ impl InputParser {
             KeyCodeWrapper::Char('P') => {
                 Some(Intent::new(IntentKind::PutBefore { register: None }))
             }
+            // Search
+            KeyCodeWrapper::Char('/') => {
+                self.cmdline.open('/');
+                Some(Intent::change_mode(Mode::Command))
+            }
+            KeyCodeWrapper::Char('?') => {
+                self.cmdline.open('?');
+                Some(Intent::change_mode(Mode::Command))
+            }
+            KeyCodeWrapper::Char('n') => Some(Intent::new(IntentKind::NextMatch)),
+            KeyCodeWrapper::Char('N') => Some(Intent::new(IntentKind::PrevMatch)),
             _ => None,
         };
 
@@ -204,11 +215,21 @@ impl InputParser {
             return Some(Intent::change_mode(Mode::Normal));
         }
 
+        let prompt = self.cmdline.prompt();
+
         match &key.code {
             KeyCodeWrapper::Enter => {
                 self.cmdline.add_to_history();
-                let cmd = self.cmdline.close();
-                Some(Intent::new(IntentKind::ExCommand { command: cmd }))
+                let input = self.cmdline.close();
+                match prompt {
+                    '/' => Some(Intent::new(IntentKind::SearchForward {
+                        pattern: input,
+                    })),
+                    '?' => Some(Intent::new(IntentKind::SearchBackward {
+                        pattern: input,
+                    })),
+                    _ => Some(Intent::new(IntentKind::ExCommand { command: input })),
+                }
             }
             KeyCodeWrapper::Char(c) => {
                 self.cmdline.insert(*c);
