@@ -16,6 +16,7 @@ mod quickfix;
 mod registers;
 mod repeat;
 mod window;
+mod workspace;
 
 #[cfg(test)]
 mod tests;
@@ -34,3 +35,4 @@ pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
 pub use registers::Registers;
 pub use repeat::{RepeatKind, RepeatState};
 pub use window::WindowState;
+pub use workspace::{RootMarker, Workspace, WorkspaceManager};
