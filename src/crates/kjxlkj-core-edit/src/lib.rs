@@ -10,6 +10,7 @@ mod fold_types;
 mod highlight;
 mod highlight_types;
 mod indent;
+mod indent_types;
 mod motion;
 mod motion_handler;
 mod motion_helpers;

@@ -18,6 +18,7 @@ mod float_state;
 mod float_types;
 mod fold;
 mod gutter;
+mod gutter_types;
 mod highlight;
 mod indent;
 mod layout;

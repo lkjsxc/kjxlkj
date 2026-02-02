@@ -2,68 +2,9 @@
 //!
 //! Combines sign column and diff highlighting into a single renderable cell.
 
-use crate::{DiffKind, DiffState, SignColumn, SignDefinition};
+use crate::{DiffState, SignColumn, SignDefinition};
 
-/// Configuration for the gutter.
-#[derive(Debug, Clone)]
-pub struct GutterConfig {
-    /// Whether to show placed signs.
-    pub show_signs: bool,
-    /// Whether to show diff markers.
-    pub show_diff: bool,
-    /// Render width (characters).
-    pub width: usize,
-}
-
-impl Default for GutterConfig {
-    fn default() -> Self {
-        Self {
-            show_signs: true,
-            show_diff: true,
-            width: 2,
-        }
-    }
-}
-
-/// A renderable gutter cell.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct GutterCell {
-    /// Display text (already padded/truncated to config width).
-    pub text: String,
-    /// Highlight group name for the text.
-    pub text_highlight: String,
-}
-
-impl GutterCell {
-    fn pad_to_width(mut text: String, width: usize) -> String {
-        if width == 0 {
-            return String::new();
-        }
-        if text.chars().count() > width {
-            text = text.chars().take(width).collect();
-        }
-        while text.chars().count() < width {
-            text.push(' ');
-        }
-        text
-    }
-
-    fn blank(width: usize) -> Self {
-        Self {
-            text: Self::pad_to_width(String::new(), width),
-            text_highlight: "SignColumn".to_string(),
-        }
-    }
-}
-
-fn diff_symbol(kind: DiffKind) -> (&'static str, &'static str) {
-    match kind {
-        DiffKind::Added => ("+", "DiffAdd"),
-        DiffKind::Changed => ("~", "DiffChange"),
-        DiffKind::Deleted => ("_", "DiffDelete"),
-        DiffKind::DeletedTop => ("^", "DiffDelete"),
-    }
-}
+pub use crate::gutter_types::{diff_symbol, GutterCell, GutterConfig};
 
 /// A combined gutter state for a single buffer.
 #[derive(Debug, Default)]
@@ -152,7 +93,7 @@ fn render_sign(def: &SignDefinition, width: usize) -> GutterCell {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::DiffMarker;
+    use crate::{DiffKind, DiffMarker};
 
     #[test]
     fn test_gutter_cell_padding() {
