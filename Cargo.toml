@@ -1,0 +1,46 @@
+[workspace]
+resolver = "2"
+members = [
+    "src/crates/kjxlkj",
+    "src/crates/kjxlkj-core",
+    "src/crates/kjxlkj-core-types",
+    "src/crates/kjxlkj-core-text",
+    "src/crates/kjxlkj-core-edit",
+    "src/crates/kjxlkj-core-mode",
+    "src/crates/kjxlkj-core-undo",
+    "src/crates/kjxlkj-core-ui",
+    "src/crates/kjxlkj-core-state",
+    "src/crates/kjxlkj-host",
+    "src/crates/kjxlkj-input",
+    "src/crates/kjxlkj-render",
+    "src/crates/kjxlkj-services",
+    "src/crates/kjxlkj-service-lsp",
+    "src/crates/kjxlkj-service-git",
+    "src/crates/kjxlkj-service-index",
+    "src/crates/kjxlkj-service-fs",
+    "src/crates/kjxlkj-service-terminal",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["kjxlkj contributors"]
+license = "Apache-2.0"
+repository = "https://github.com/lkjsxc/kjxlkj"
+description = "A Neovim-inspired TUI text editor with all features built-in"
+
+[workspace.dependencies]
+tokio = { version = "1.35", features = ["full"] }
+crossterm = "0.27"
+unicode-width = "0.1"
+unicode-segmentation = "1.10"
+ropey = "1.6"
+toml = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+dirs = "5.0"

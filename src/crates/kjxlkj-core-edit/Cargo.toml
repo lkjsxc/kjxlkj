@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-core-edit"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Edit operations for kjxlkj editor"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }

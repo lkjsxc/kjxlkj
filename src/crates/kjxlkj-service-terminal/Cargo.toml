@@ -1,0 +1,12 @@
+[package]
+name = "kjxlkj-service-terminal"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Embedded terminal service for kjxlkj editor"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-services = { path = "../kjxlkj-services" }
+tokio = { workspace = true }

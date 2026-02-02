@@ -1,0 +1,20 @@
+[package]
+name = "kjxlkj"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "kjxlkj text editor binary"
+
+[[bin]]
+name = "kjxlkj"
+path = "src/main.rs"
+
+[dependencies]
+kjxlkj-core = { path = "../kjxlkj-core" }
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-host = { path = "../kjxlkj-host" }
+kjxlkj-render = { path = "../kjxlkj-render" }
+tokio = { workspace = true }
+clap = { version = "4.4", features = ["derive"] }
+crossterm = { workspace = true }

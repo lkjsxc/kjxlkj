@@ -1,0 +1,15 @@
+[package]
+name = "kjxlkj-core-state"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Editor state management for kjxlkj"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
+serde = { workspace = true }
