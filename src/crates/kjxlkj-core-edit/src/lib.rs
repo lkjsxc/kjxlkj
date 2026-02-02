@@ -17,6 +17,7 @@ mod operator;
 mod operator_handler;
 mod search;
 mod search_highlight;
+mod search_types;
 mod spell;
 mod text_object;
 mod text_object_finder;

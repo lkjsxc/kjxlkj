@@ -4,6 +4,8 @@ use crate::{Command, CommandKind, Range};
 use crate::command::{BufferArg, SetArg, SubstituteArgs, SubstituteFlags};
 use std::path::PathBuf;
 
+pub use crate::parser_types::ParseError;
+
 /// Parser for Ex commands.
 #[derive(Debug, Default)]
 pub struct CommandParser {
@@ -205,7 +207,7 @@ impl CommandParser {
     }
 
     fn skip_whitespace(&mut self) {
-        while self.peek().map(|c| c.is_whitespace()).unwrap_or(false) {
+        while self.peek().is_some_and(|c| c.is_whitespace()) {
             self.advance();
         }
     }
@@ -222,7 +224,7 @@ impl CommandParser {
 
     fn parse_number(&mut self) -> Option<usize> {
         let start = self.pos;
-        while self.peek().map(|c| c.is_ascii_digit()).unwrap_or(false) {
+        while self.peek().is_some_and(|c| c.is_ascii_digit()) {
             self.advance();
         }
         if self.pos > start {
@@ -235,15 +237,4 @@ impl CommandParser {
     fn remaining(&self) -> String {
         self.input[self.pos..].trim().to_string()
     }
-}
-
-/// Parse error.
-#[derive(Debug, Clone, PartialEq)]
-pub enum ParseError {
-    /// Unknown command.
-    UnknownCommand(String),
-    /// Missing required argument.
-    MissingArgument(&'static str),
-    /// Invalid substitute syntax.
-    InvalidSubstitute,
 }
