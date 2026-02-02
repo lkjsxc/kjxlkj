@@ -4,6 +4,7 @@
 
 mod grapheme;
 mod manipulation;
+mod paragraph;
 mod rope_ext;
 mod text_buffer;
 mod word;
@@ -18,6 +19,7 @@ pub use manipulation::{
     reverse_lines, sort_lines, sort_lines_reverse, split_lines, strip_trailing_whitespace,
     uniq_lines, word_count,
 };
+pub use paragraph::{is_blank_line, next_paragraph, paragraph_count, paragraph_range, prev_paragraph};
 pub use rope_ext::RopeExt;
 pub use text_buffer::TextBuffer;
 pub use word::{
