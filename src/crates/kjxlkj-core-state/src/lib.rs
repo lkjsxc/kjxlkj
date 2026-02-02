@@ -15,6 +15,7 @@ mod marks;
 mod quickfix;
 mod registers;
 mod repeat;
+mod session;
 mod window;
 mod workspace;
 
@@ -34,5 +35,6 @@ pub use marks::{Mark, MarkStore, MarkType};
 pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
 pub use registers::Registers;
 pub use repeat::{RepeatKind, RepeatState};
+pub use session::{SavedTab, SavedWindow, Session, SessionManager};
 pub use window::WindowState;
 pub use workspace::{RootMarker, Workspace, WorkspaceManager};
