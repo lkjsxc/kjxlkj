@@ -3,6 +3,7 @@
 //! This crate defines fundamental types used across all kjxlkj crates.
 
 mod buffer;
+mod buffer_meta;
 mod cursor;
 mod encoding;
 pub mod error;
@@ -18,6 +19,7 @@ mod window;
 mod tests;
 
 pub use buffer::{BufferId, BufferName};
+pub use buffer_meta::{BufferFlags, BufferMetadata, BufferType};
 pub use cursor::Cursor;
 pub use encoding::{detect_encoding, Encoding, FileMetadata, LineEnding};
 pub use error::{Error, Message, Result, Severity};
