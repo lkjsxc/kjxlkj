@@ -4,6 +4,7 @@
 
 mod buffer_view;
 mod completion;
+mod completion_source;
 mod conceal;
 mod cursor;
 mod dimensions;
@@ -22,6 +23,7 @@ mod virtual_text;
 
 pub use buffer_view::BufferView;
 pub use completion::{CompletionItem, CompletionKind, CompletionState};
+pub use completion_source::{SourceConfig, SourceKind, SourceManager, SourcePriority};
 pub use conceal::{ConcealLevel, ConcealRegion, ConcealState, LineConceal};
 pub use cursor::{CursorAppearance, CursorBlink, CursorShape};
 pub use dimensions::Dimensions;
