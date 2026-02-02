@@ -7,6 +7,7 @@ mod digraph;
 mod key;
 mod mapping;
 mod parser;
+mod parser_modes;
 mod user_mapping;
 pub mod validation;
 

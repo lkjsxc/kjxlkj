@@ -1,30 +1,30 @@
 # Current TODO
 
-Active task list for implementation - Iteration 22.
+Active task list for implementation - Iteration 23.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add more undo tests | pending |
-| 2 | Add more edit tests | pending |
-| 3 | Add more mode tests | pending |
-| 4 | Check code quality and documentation | pending |
-| 5 | Review file size limits | pending |
-| 6 | Regenerate TODO list | pending |
-| 7 | Continue to next iteration | pending |
+| 1 | Continue splitting large files | pending |
+| 2 | Add more comprehensive tests | pending |
+| 3 | Verify all files under 200 lines | pending |
+| 4 | Code quality improvements | pending |
+| 5 | Regenerate TODO list | pending |
+| 6 | Continue to next iteration | pending |
 
-## Completed (Iteration 21)
+## Completed (Iteration 22)
 
-- [x] Add LSP service tests (9 tests)
-- [x] Add Git service tests (10 tests)
-- [x] Add services integration tests (11 tests)
-- [x] Total tests now: 758
+- [x] Split text_object.rs (373→167+226 lines)
+- [x] Split float.rs (364→147+170 lines)
+- [x] Split editor.rs (344→120+136+86 lines)
+- [x] Split motion_handler.rs (314→200+91 lines)
+- [x] Total tests: 755
 - [x] All tests passing
 
 ## Test Summary
 
-- Total passing tests: 758
+- Total passing tests: 755
 - Crates with tests: 20+
 
 ## Related
