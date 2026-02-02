@@ -1,42 +1,7 @@
 //! Command history persistence.
-//!
-//! Provides command history storage and navigation.
 
+use crate::history_types::{HistoryEntry, HistoryType};
 use std::collections::VecDeque;
-
-/// History entry type.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HistoryType {
-    /// Command-line history (:commands).
-    Command,
-    /// Search history (/).
-    Search,
-    /// Expression history (=).
-    Expression,
-    /// Input history (@).
-    Input,
-    /// Debug history.
-    Debug,
-}
-
-/// A history entry.
-#[derive(Debug, Clone)]
-pub struct HistoryEntry {
-    /// The entry text.
-    pub text: String,
-    /// Timestamp (seconds since epoch).
-    pub timestamp: u64,
-}
-
-impl HistoryEntry {
-    /// Creates a new history entry.
-    pub fn new(text: &str, timestamp: u64) -> Self {
-        Self {
-            text: text.to_string(),
-            timestamp,
-        }
-    }
-}
 
 /// History list for a specific type.
 #[derive(Debug, Clone)]
@@ -190,20 +155,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_history_entry() {
-        let entry = HistoryEntry::new("test", 12345);
-        assert_eq!(entry.text, "test");
-        assert_eq!(entry.timestamp, 12345);
-    }
-
-    #[test]
     fn test_history_list_add() {
         let mut list = HistoryList::new(10);
         list.add("first", 1);
         list.add("second", 2);
 
         assert_eq!(list.len(), 2);
-        assert_eq!(list.all()[0], "second"); // Most recent first.
+        assert_eq!(list.all()[0], "second");
     }
 
     #[test]
@@ -211,10 +169,10 @@ mod tests {
         let mut list = HistoryList::new(10);
         list.add("cmd", 1);
         list.add("other", 2);
-        list.add("cmd", 3); // Duplicate.
+        list.add("cmd", 3);
 
         assert_eq!(list.len(), 2);
-        assert_eq!(list.all()[0], "cmd"); // Moved to front.
+        assert_eq!(list.all()[0], "cmd");
     }
 
     #[test]
@@ -248,5 +206,13 @@ mod tests {
 
         assert_eq!(hist.get(HistoryType::Command).len(), 1);
         assert_eq!(hist.get(HistoryType::Search).len(), 1);
+    }
+
+    #[test]
+    fn test_history_list_clear() {
+        let mut list = HistoryList::new(10);
+        list.add("test", 1);
+        list.clear();
+        assert!(list.is_empty());
     }
 }
