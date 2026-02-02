@@ -1,23 +1,31 @@
 # Current TODO
 
-Active task list for implementation - Iteration 5.
+Active task list for implementation - Iteration 6.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Implement search with highlighting | pending |
-| 2 | Add syntax highlighting foundation | pending |
-| 3 | Implement file type detection | pending |
-| 4 | Add cursor blinking support | pending |
-| 5 | Add host crate unit tests | pending |
-| 6 | Add service crate tests | pending |
-| 7 | Improve motion handler coverage | pending |
-| 8 | Add operator handler tests | pending |
-| 9 | Implement macro recording | pending |
-| 10 | Add mark support | pending |
+| 1 | Add cursor blinking support | pending |
+| 2 | Improve motion handler coverage | pending |
+| 3 | Add operator handler tests | pending |
+| 4 | Implement macro recording | pending |
+| 5 | Add mark support | pending |
+| 6 | Add text manipulation utilities | pending |
+| 7 | Add auto-indent support | pending |
+| 8 | Implement folding basics | pending |
+| 9 | Add completion support | pending |
+| 10 | Improve error handling | pending |
 | 11 | Regenerate TODO list | pending |
 | 12 | Continue to next iteration | pending |
+
+## Completed (Iteration 5)
+
+- [x] Search with highlighting (6 tests)
+- [x] Syntax highlighting foundation (4 tests)
+- [x] File type detection (8 tests)
+- [x] Host crate tests (5 tests)
+- [x] Service tests (9 tests)
 
 ## Completed (Iteration 4)
 
@@ -39,8 +47,8 @@ Active task list for implementation - Iteration 5.
 
 ## Test Summary
 
-- Total passing tests: 168
-- Crates with tests: 11 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render)
+- Total passing tests: 200
+- Crates with tests: 13 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render, host, service-fs, service-git)
 
 ## Related
 
