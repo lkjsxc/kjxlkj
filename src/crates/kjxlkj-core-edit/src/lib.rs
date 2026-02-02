@@ -4,6 +4,7 @@
 
 mod edit;
 mod highlight;
+mod indent;
 mod motion;
 mod motion_handler;
 mod operator;
@@ -17,6 +18,10 @@ mod tests;
 
 pub use edit::{Edit, EditKind};
 pub use highlight::{BufferHighlights, HighlightGroup, HighlightSpan, LineHighlights};
+pub use indent::{
+    adjust_indent_for_closing, compute_indent, detect_indent, detect_indent_style, IndentConfig,
+    IndentStyle,
+};
 pub use motion::{Motion, MotionKind};
 pub use motion_handler::{execute_motion, MotionResult};
 pub use operator::{Operator, OperatorKind};
