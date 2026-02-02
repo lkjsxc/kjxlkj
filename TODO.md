@@ -40,8 +40,8 @@ This file is the authoritative execution plan for this repository.
 
 ## Phase 3 — Git Decontamination (If Required)
 
-- [ ] Remove git history and reinitialize the repository so the directory state is treated as a fresh start.
-- [ ] Recreate essential git metadata (branch name, ignore rules) and make an initial clean commit.
+- [x] Remove git history and reinitialize the repository so the directory state is treated as a fresh start.
+- [x] Recreate essential git metadata (branch name, ignore rules) and make an initial clean commit.
 
 ## Completion Gate
 
