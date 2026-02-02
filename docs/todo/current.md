@@ -1,45 +1,23 @@
 # Current TODO
 
-Active task list for implementation - Iteration 27.
+Active task list for implementation - Iteration 28.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Iteration 27 complete | ✓ complete |
+| 1 | Iteration 28 complete | ✓ complete |
 
-## Completed (Iteration 27)
+## Completed (Iteration 28)
 
-- [x] Implement ex command execution module
-- [x] Handle :w, :q, :wq, :e commands
-- [x] Handle :sp, :vsp, :close, :only commands
-- [x] Handle :bn, :bp buffer navigation
-- [x] Add OpenFile action result
-- [x] Add active_buffer_mut() to EditorState
-- [x] All 833 tests passing
-
-## Implementation Summary (Iteration 27)
-
-### New Module Added
-
-| Module | Lines | Purpose |
-|--------|-------|---------|
-| ex_command.rs | 150 | Ex command parsing and execution |
-
-### Ex Commands Supported
-
-| Command | Description |
-|---------|-------------|
-| :w, :write | Save buffer |
-| :q, :quit | Quit editor |
-| :wq, :x | Save and quit |
-| :e, :edit | Open file |
-| :sp, :split | Horizontal split |
-| :vsp, :vsplit | Vertical split |
-| :close | Close window |
-| :only | Keep only current window |
-| :bn, :bnext | Next buffer |
-| :bp, :bprev | Previous buffer |
+- [x] Created integration test file
+- [x] Added 5 integration tests for core functionality
+- [x] Test mode switching
+- [x] Test text insertion
+- [x] Test cursor motion
+- [x] Test quit action
+- [x] Test resize
+- [x] All 838 tests passing (833 unit + 5 integration)
 
 ## Related
 

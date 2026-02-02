@@ -127,6 +127,18 @@ Archive of completed TODO items.
 | Add active_buffer_mut() | ✓ |
 | All 833 tests passing | ✓ |
 
+## Iteration 28 - Integration Tests
+
+| Task | Completed |
+|------|-----------|
+| Create integration test file | ✓ |
+| Add test_mode_switching | ✓ |
+| Add test_text_insertion | ✓ |
+| Add test_cursor_motion | ✓ |
+| Add test_quit_action | ✓ |
+| Add test_resize | ✓ |
+| All 838 tests passing | ✓ |
+
 ## Final Statistics
 
 | Metric | Value |
