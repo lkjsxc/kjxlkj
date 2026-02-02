@@ -2,6 +2,7 @@
 //!
 //! This crate defines edit operations and operators.
 
+mod change_event;
 mod diff;
 mod edit;
 mod fold;
@@ -20,6 +21,7 @@ mod transaction;
 #[cfg(test)]
 mod tests;
 
+pub use change_event::{ChangeDispatcher, ChangeKind, TextChange};
 pub use diff::{DiffHunk, DiffKind, DiffState};
 pub use edit::{Edit, EditKind};
 pub use fold::{Fold, FoldRange, FoldState, Folds};
