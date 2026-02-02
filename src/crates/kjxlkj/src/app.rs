@@ -10,13 +10,13 @@ use kjxlkj_render::Renderer;
 /// Main application.
 pub struct App {
     /// CLI arguments.
-    _args: Args,
+    args: Args,
 }
 
 impl App {
     /// Creates a new application.
     pub fn new(args: Args) -> Result<Self> {
-        Ok(Self { _args: args })
+        Ok(Self { args })
     }
 
     /// Runs the application.
@@ -38,6 +38,15 @@ impl App {
 
         // Send initial resize
         core_handle.send(Action::resize(dims.width, dims.height)).await?;
+
+        // Open files from command line
+        for file in &self.args.files {
+            if let Some(path_str) = file.to_str() {
+                core_handle.send(Action::OpenFile {
+                    path: path_str.to_string(),
+                }).await?;
+            }
+        }
 
         // Main loop
         loop {

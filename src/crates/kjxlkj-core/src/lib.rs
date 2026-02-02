@@ -4,6 +4,7 @@
 
 mod action;
 mod core_task;
+mod intent_handler;
 pub mod motion;
 mod motion_core;
 pub mod operator;

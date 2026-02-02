@@ -1,9 +1,12 @@
 //! Core task implementation.
 
-use kjxlkj_core_state::EditorState;
+use kjxlkj_core_state::{BufferState, EditorState};
+use kjxlkj_core_types::Cursor;
 use kjxlkj_core_ui::EditorSnapshot;
+use std::path::PathBuf;
 use tokio::sync::{mpsc, watch};
 
+use crate::intent_handler::process_intent;
 use crate::{Action, ActionResult};
 
 /// The core task manages all editor state.
@@ -66,13 +69,24 @@ impl CoreTask {
     /// Processes an action.
     fn process_action(&mut self, action: Action) -> ActionResult {
         match action {
-            Action::Intent(intent) => self.process_intent(intent),
+            Action::Intent(intent) => {
+                let result = process_intent(&mut self.state, intent);
+                self.publish_snapshot();
+                if matches!(result, ActionResult::Quit) {
+                    self.running = false;
+                }
+                result
+            }
             Action::Resize(dims) => {
                 self.state.dimensions = dims;
                 self.publish_snapshot();
                 ActionResult::Ok
             }
-            Action::OpenFile { path: _ } => ActionResult::Ok,
+            Action::OpenFile { path } => {
+                self.open_file(&path);
+                self.publish_snapshot();
+                ActionResult::Ok
+            }
             Action::Save => ActionResult::Ok,
             Action::SaveAs { path: _ } => ActionResult::Ok,
             Action::Quit => {
@@ -90,25 +104,31 @@ impl CoreTask {
         }
     }
 
-    /// Processes an intent.
-    fn process_intent(&mut self, intent: kjxlkj_core_mode::Intent) -> ActionResult {
-        use kjxlkj_core_mode::IntentKind;
+    /// Opens a file and loads it into the current buffer.
+    fn open_file(&mut self, path: &str) {
+        let path_buf = PathBuf::from(path);
 
-        match intent.kind {
-            IntentKind::Noop => ActionResult::Ok,
-            IntentKind::ChangeMode(mode) => {
-                self.state.mode.transition(mode);
-                self.publish_snapshot();
-                ActionResult::ModeChanged(mode)
-            }
-            IntentKind::Quit => {
-                self.running = false;
-                ActionResult::Quit
-            }
-            _ => {
-                self.publish_snapshot();
-                ActionResult::Ok
-            }
+        // Read file contents
+        let content = match std::fs::read_to_string(&path_buf) {
+            Ok(c) => c,
+            Err(_) => String::new(),
+        };
+
+        // Get active window's buffer
+        let Some(window) = self.state.windows.get(&self.state.layout.active) else {
+            return;
+        };
+        let buffer_id = window.buffer_id;
+
+        // Update buffer with file content
+        let new_buffer = BufferState::from_content(buffer_id, &content)
+            .with_path(path_buf.clone());
+
+        self.state.buffers.insert(buffer_id, new_buffer);
+
+        // Reset cursor to start
+        if let Some(window) = self.state.windows.get_mut(&self.state.layout.active) {
+            window.cursor = Cursor::origin();
         }
     }
 
