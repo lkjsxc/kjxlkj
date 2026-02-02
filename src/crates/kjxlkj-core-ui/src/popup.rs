@@ -2,66 +2,7 @@
 //!
 //! Provides popup menus for context menus, right-click, etc.
 
-/// Popup menu item.
-#[derive(Debug, Clone)]
-pub struct PopupItem {
-    /// Item ID.
-    pub id: String,
-    /// Display text.
-    pub text: String,
-    /// Keyboard shortcut hint.
-    pub shortcut: Option<String>,
-    /// Whether item is enabled.
-    pub enabled: bool,
-    /// Whether item is a separator.
-    pub separator: bool,
-    /// Submenu items.
-    pub submenu: Option<Vec<PopupItem>>,
-}
-
-impl PopupItem {
-    /// Creates a new popup item.
-    pub fn new(id: &str, text: &str) -> Self {
-        Self {
-            id: id.to_string(),
-            text: text.to_string(),
-            shortcut: None,
-            enabled: true,
-            separator: false,
-            submenu: None,
-        }
-    }
-
-    /// Creates a separator.
-    pub fn separator() -> Self {
-        Self {
-            id: String::new(),
-            text: String::new(),
-            shortcut: None,
-            enabled: false,
-            separator: true,
-            submenu: None,
-        }
-    }
-
-    /// Sets the shortcut hint.
-    pub fn with_shortcut(mut self, shortcut: &str) -> Self {
-        self.shortcut = Some(shortcut.to_string());
-        self
-    }
-
-    /// Disables the item.
-    pub fn disabled(mut self) -> Self {
-        self.enabled = false;
-        self
-    }
-
-    /// Adds a submenu.
-    pub fn with_submenu(mut self, items: Vec<PopupItem>) -> Self {
-        self.submenu = Some(items);
-        self
-    }
-}
+use crate::popup_item::PopupItem;
 
 /// Popup menu.
 #[derive(Debug, Clone)]
@@ -89,7 +30,8 @@ impl PopupMenu {
 
     /// Selects next item.
     pub fn select_next(&mut self) {
-        let selectable: Vec<usize> = self.items
+        let selectable: Vec<usize> = self
+            .items
             .iter()
             .enumerate()
             .filter(|(_, item)| item.enabled && !item.separator)
@@ -114,7 +56,8 @@ impl PopupMenu {
 
     /// Selects previous item.
     pub fn prev(&mut self) {
-        let selectable: Vec<usize> = self.items
+        let selectable: Vec<usize> = self
+            .items
             .iter()
             .enumerate()
             .filter(|(_, item)| item.enabled && !item.separator)
@@ -202,16 +145,6 @@ mod tests {
     }
 
     #[test]
-    fn test_popup_item() {
-        let item = PopupItem::new("cut", "Cut")
-            .with_shortcut("Ctrl+X")
-            .disabled();
-
-        assert_eq!(item.id, "cut");
-        assert!(!item.enabled);
-    }
-
-    #[test]
     fn test_popup_menu_navigation() {
         let mut menu = PopupMenu::new(sample_items(), 10, 20);
 
@@ -254,17 +187,5 @@ mod tests {
 
         state.close();
         assert!(!state.is_open());
-    }
-
-    #[test]
-    fn test_popup_item_submenu() {
-        let item = PopupItem::new("edit", "Edit")
-            .with_submenu(vec![
-                PopupItem::new("undo", "Undo"),
-                PopupItem::new("redo", "Redo"),
-            ]);
-
-        assert!(item.submenu.is_some());
-        assert_eq!(item.submenu.unwrap().len(), 2);
     }
 }
