@@ -49,10 +49,66 @@ impl ModeState {
     pub fn mode_name(&self) -> &'static str {
         self.mode.name()
     }
+
+    /// Returns true if in any visual mode.
+    pub fn is_visual(&self) -> bool {
+        self.mode.is_visual()
+    }
+
+    /// Returns true if in insert or replace mode.
+    pub fn is_insert_like(&self) -> bool {
+        self.mode.is_insert_like()
+    }
 }
 
 impl Default for ModeState {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_mode_state_new() {
+        let state = ModeState::new();
+        assert_eq!(state.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn test_transition_to_insert() {
+        let mut state = ModeState::new();
+        state.transition(Mode::Insert);
+        assert_eq!(state.mode, Mode::Insert);
+    }
+
+    #[test]
+    fn test_transition_to_visual() {
+        let mut state = ModeState::new();
+        state.transition(Mode::Visual);
+        assert!(state.is_visual());
+    }
+
+    #[test]
+    fn test_transition_to_command() {
+        let mut state = ModeState::new();
+        state.transition(Mode::Command);
+        assert_eq!(state.mode, Mode::Command);
+        assert_eq!(state.mode_name(), "COMMAND");
+    }
+
+    #[test]
+    fn test_is_insert_like() {
+        let mut state = ModeState::new();
+        state.transition(Mode::Insert);
+        assert!(state.is_insert_like());
+        
+        state.transition(Mode::Replace);
+        assert!(state.is_insert_like());
+        
+        state.transition(Mode::Normal);
+        assert!(!state.is_insert_like());
     }
 }

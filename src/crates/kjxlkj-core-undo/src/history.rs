@@ -85,3 +85,83 @@ impl UndoHistory {
         self.redo_stack.len()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core_edit::Edit;
+    use kjxlkj_core_types::{BufferId, BufferVersion, Position};
+
+    fn make_tx() -> Transaction {
+        let mut tx = Transaction::new(BufferVersion::initial());
+        tx.push(Edit::insert(BufferId::new(1), Position::origin(), "a"));
+        tx
+    }
+
+    #[test]
+    fn test_new_history() {
+        let history = UndoHistory::new();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_push_and_undo() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx());
+        assert!(history.can_undo());
+        
+        let tx = history.undo();
+        assert!(tx.is_some());
+        assert!(!history.can_undo());
+        assert!(history.can_redo());
+    }
+
+    #[test]
+    fn test_undo_and_redo() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx());
+        history.undo();
+        
+        let tx = history.redo();
+        assert!(tx.is_some());
+        assert!(history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_push_clears_redo() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx());
+        history.undo();
+        assert!(history.can_redo());
+        
+        history.push(make_tx());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_max_size() {
+        let mut history = UndoHistory::with_max_size(3);
+        for _ in 0..5 {
+            history.push(make_tx());
+        }
+        assert_eq!(history.undo_count(), 3);
+    }
+
+    #[test]
+    fn test_clear() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx());
+        history.clear();
+        assert!(!history.can_undo());
+    }
+
+    #[test]
+    fn test_empty_transaction_not_pushed() {
+        let mut history = UndoHistory::new();
+        let tx = Transaction::new(BufferVersion::initial());
+        history.push(tx);
+        assert!(!history.can_undo());
+    }
+}

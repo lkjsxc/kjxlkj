@@ -29,6 +29,19 @@ Archive of completed TODO items.
 | Fix compilation errors | ✓ |
 | Build succeeds | ✓ |
 
+## Iteration 2
+
+| Task | Completed |
+|------|-----------|
+| Fix remaining warnings | ✓ |
+| Add core-types unit tests (26 tests) | ✓ |
+| Add core-text unit tests (18 tests) | ✓ |
+| Add core-edit unit tests (16 tests) | ✓ |
+| Implement motion handlers (6 tests) | ✓ |
+| Implement operator handlers (6 tests) | ✓ |
+| Implement file save functionality | ✓ |
+| Total tests: 72, all passing | ✓ |
+
 ## Related
 
 - Current TODO: [current.md](current.md)
