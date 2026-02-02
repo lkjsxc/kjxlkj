@@ -1,0 +1,20 @@
+[package]
+name = "kjxlkj-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Core facade for kjxlkj editor"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }
+kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
+kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-core-state = { path = "../kjxlkj-core-state" }
+tokio = { workspace = true }
+serde = { workspace = true }
