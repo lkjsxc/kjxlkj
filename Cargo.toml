@@ -10,6 +10,7 @@ members = [
     "src/crates/kjxlkj-core-undo",
     "src/crates/kjxlkj-core-ui",
     "src/crates/kjxlkj-core-state",
+    "src/crates/kjxlkj-cmd",
     "src/crates/kjxlkj-host",
     "src/crates/kjxlkj-input",
     "src/crates/kjxlkj-render",

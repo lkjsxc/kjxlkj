@@ -103,6 +103,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "kjxlkj-cmd"
+version = "0.1.0"
+dependencies = [
+ "kjxlkj-core-edit",
+ "kjxlkj-core-mode",
+ "kjxlkj-core-types",
+]
+
+[[package]]
 name = "kjxlkj-core"
 version = "0.1.0"
 dependencies = [
