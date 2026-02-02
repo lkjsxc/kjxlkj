@@ -2,6 +2,7 @@
 //!
 //! This crate defines edit operations and operators.
 
+mod diff;
 mod edit;
 mod fold;
 mod highlight;
@@ -19,6 +20,7 @@ mod transaction;
 #[cfg(test)]
 mod tests;
 
+pub use diff::{DiffHunk, DiffKind, DiffState};
 pub use edit::{Edit, EditKind};
 pub use fold::{Fold, FoldRange, FoldState, Folds};
 pub use highlight::{BufferHighlights, HighlightGroup, HighlightSpan, LineHighlights};
