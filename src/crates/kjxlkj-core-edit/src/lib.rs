@@ -11,6 +11,7 @@ mod motion_handler;
 mod operator;
 mod operator_handler;
 mod search;
+mod search_highlight;
 mod text_object;
 mod transaction;
 
@@ -31,5 +32,6 @@ pub use operator_handler::{
     execute_operator, extract_text, indent_text, transform_case, IndentDirection, OperatorResult,
 };
 pub use search::{SearchDirection, SearchMatch, SearchState};
+pub use search_highlight::{SearchHighlight, SearchResult};
 pub use text_object::{find_text_object, TextObject, TextObjectKind, TextObjectModifier};
 pub use transaction::Transaction;
