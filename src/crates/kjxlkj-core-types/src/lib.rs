@@ -4,6 +4,7 @@
 
 mod buffer;
 mod cursor;
+mod encoding;
 pub mod error;
 mod filetype;
 mod mode;
@@ -17,6 +18,7 @@ mod tests;
 
 pub use buffer::{BufferId, BufferName};
 pub use cursor::Cursor;
+pub use encoding::{detect_encoding, Encoding, FileMetadata, LineEnding};
 pub use error::{Error, Message, Result, Severity};
 pub use filetype::{detect, FileType};
 pub use mode::Mode;
