@@ -1,41 +1,8 @@
 //! Undo tree implementation.
 
+use crate::undo_node::UndoNode;
 use kjxlkj_core_edit::Transaction;
 use serde::{Deserialize, Serialize};
-
-/// Node in the undo tree.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UndoNode {
-    /// Node ID.
-    pub id: usize,
-    /// Parent node ID.
-    pub parent: Option<usize>,
-    /// Child node IDs.
-    pub children: Vec<usize>,
-    /// Transaction at this node.
-    pub transaction: Transaction,
-    /// Timestamp.
-    pub timestamp: u64,
-}
-
-impl UndoNode {
-    /// Creates a new node.
-    pub fn new(id: usize, transaction: Transaction) -> Self {
-        Self {
-            id,
-            parent: None,
-            children: Vec::new(),
-            transaction,
-            timestamp: 0,
-        }
-    }
-
-    /// Sets the parent.
-    pub fn with_parent(mut self, parent: usize) -> Self {
-        self.parent = Some(parent);
-        self
-    }
-}
 
 /// Undo tree for persistent undo.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -217,12 +184,12 @@ mod tests {
     #[test]
     fn test_branching() {
         let mut tree = UndoTree::new();
-        tree.push(Transaction::default()); // Branch at node 1
-        tree.undo(); // Back to root
-        tree.push(Transaction::default()); // New branch at node 2
-        assert_eq!(tree.branches().len(), 0); // Node 2 has no children yet
-        tree.undo(); // Back to root
-        assert_eq!(tree.branches().len(), 2); // Root has 2 children
+        tree.push(Transaction::default());
+        tree.undo();
+        tree.push(Transaction::default());
+        assert_eq!(tree.branches().len(), 0);
+        tree.undo();
+        assert_eq!(tree.branches().len(), 2);
     }
 
     #[test]
@@ -232,7 +199,6 @@ mod tests {
         tree.undo();
         tree.push(Transaction::default());
         tree.undo();
-        // Now at root with 2 branches
         tree.switch_branch(0);
         assert_eq!(tree.current, 1);
     }

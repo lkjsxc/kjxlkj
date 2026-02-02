@@ -7,6 +7,7 @@ mod diff;
 mod edit;
 mod fold;
 mod highlight;
+mod highlight_types;
 mod indent;
 mod motion;
 mod motion_handler;
@@ -27,7 +28,8 @@ pub use change_event::{ChangeDispatcher, ChangeKind, TextChange};
 pub use diff::{DiffHunk, DiffKind, DiffState};
 pub use edit::{Edit, EditKind};
 pub use fold::{Fold, FoldRange, FoldState, Folds};
-pub use highlight::{BufferHighlights, HighlightGroup, HighlightSpan, LineHighlights};
+pub use highlight::{BufferHighlights, LineHighlights};
+pub use highlight_types::{HighlightGroup, HighlightSpan};
 pub use indent::{
     adjust_indent_for_closing, compute_indent, detect_indent, detect_indent_style, IndentConfig,
     IndentStyle,
