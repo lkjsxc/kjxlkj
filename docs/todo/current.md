@@ -1,30 +1,30 @@
 # Current TODO
 
-Active task list for implementation - Iteration 21.
+Active task list for implementation - Iteration 22.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add LSP service tests | pending |
-| 2 | Add Git service tests | pending |
-| 3 | Add services integration tests | pending |
-| 4 | Improve overall test coverage | pending |
-| 5 | Code quality and documentation | pending |
+| 1 | Add more undo tests | pending |
+| 2 | Add more edit tests | pending |
+| 3 | Add more mode tests | pending |
+| 4 | Check code quality and documentation | pending |
+| 5 | Review file size limits | pending |
 | 6 | Regenerate TODO list | pending |
 | 7 | Continue to next iteration | pending |
 
-## Completed (Iteration 20)
+## Completed (Iteration 21)
 
-- [x] Add input parser tests (23 tests)
-- [x] Add render tests (16 tests)
-- [x] Add host tests (9 tests)
-- [x] Total tests now: 738
+- [x] Add LSP service tests (9 tests)
+- [x] Add Git service tests (10 tests)
+- [x] Add services integration tests (11 tests)
+- [x] Total tests now: 758
 - [x] All tests passing
 
 ## Test Summary
 
-- Total passing tests: 738
+- Total passing tests: 758
 - Crates with tests: 20+
 
 ## Related

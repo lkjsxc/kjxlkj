@@ -16,6 +16,7 @@ mod search;
 mod search_highlight;
 mod spell;
 mod text_object;
+mod text_object_finder;
 mod transaction;
 
 #[cfg(test)]
@@ -39,5 +40,6 @@ pub use operator_handler::{
 pub use search::{SearchDirection, SearchMatch, SearchState};
 pub use search_highlight::{SearchHighlight, SearchResult};
 pub use spell::{SimpleSpellChecker, SpellChecker, SpellState, SpellingError};
-pub use text_object::{find_text_object, TextObject, TextObjectKind, TextObjectModifier};
+pub use text_object::{TextObject, TextObjectKind, TextObjectModifier};
+pub use text_object_finder::find_text_object;
 pub use transaction::Transaction;
