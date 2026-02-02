@@ -3,6 +3,7 @@
 //! This crate aggregates all editor state and produces snapshots.
 
 mod buffer;
+mod clipboard;
 mod editor;
 mod jumplist;
 mod macros;
@@ -14,6 +15,7 @@ mod window;
 mod tests;
 
 pub use buffer::BufferState;
+pub use clipboard::{ClipboardManager, ClipboardProvider, PrimarySelection, SystemClipboard};
 pub use editor::{BufferInfo, EditorState};
 pub use jumplist::{ChangeList, Jump, JumpList};
 pub use macros::{Macro, MacroStore, RecordingState};
