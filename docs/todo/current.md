@@ -1,34 +1,45 @@
 # Current TODO
 
-Active task list for implementation - Iteration 26.
+Active task list for implementation - Iteration 27.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Iteration 26 complete | ✓ complete |
+| 1 | Iteration 27 complete | ✓ complete |
 
-## Completed (Iteration 26)
+## Completed (Iteration 27)
 
-- [x] Implement operator execution (delete, change, yank, indent, case)
-- [x] Implement window operations (split, close, navigate)
-- [x] Implement register operations (put, yank line)  
-- [x] Implement search operations (forward, backward, next/prev match)
-- [x] Add Save and SaveQuit action results
-- [x] Split intent_handler into focused modules
+- [x] Implement ex command execution module
+- [x] Handle :w, :q, :wq, :e commands
+- [x] Handle :sp, :vsp, :close, :only commands
+- [x] Handle :bn, :bp buffer navigation
+- [x] Add OpenFile action result
+- [x] Add active_buffer_mut() to EditorState
 - [x] All 833 tests passing
 
-## Implementation Summary (Iteration 26)
+## Implementation Summary (Iteration 27)
 
-### New Modules Added to kjxlkj-core
+### New Module Added
 
 | Module | Lines | Purpose |
 |--------|-------|---------|
-| operator_exec.rs | 157 | Operator execution on editor state |
-| window_ops.rs | 85 | Window operations (split, close, navigate) |
-| register_ops.rs | 96 | Register operations (put, yank) |
-| search_ops.rs | 100 | Search operations (forward, backward) |
-| text_ops.rs | 108 | Text editing primitives |
+| ex_command.rs | 150 | Ex command parsing and execution |
+
+### Ex Commands Supported
+
+| Command | Description |
+|---------|-------------|
+| :w, :write | Save buffer |
+| :q, :quit | Quit editor |
+| :wq, :x | Save and quit |
+| :e, :edit | Open file |
+| :sp, :split | Horizontal split |
+| :vsp, :vsplit | Vertical split |
+| :close | Close window |
+| :only | Keep only current window |
+| :bn, :bnext | Next buffer |
+| :bp, :bprev | Previous buffer |
 
 ## Related
 

@@ -115,6 +115,18 @@ Archive of completed TODO items.
 | Add Save/SaveQuit action results | ✓ |
 | All 833 tests passing | ✓ |
 
+## Iteration 27 - Ex Command Execution
+
+| Task | Completed |
+|------|-----------|
+| Add ex_command.rs module | ✓ |
+| Handle :w, :q, :wq, :e commands | ✓ |
+| Handle :sp, :vsp, :close, :only | ✓ |
+| Handle :bn, :bp buffer navigation | ✓ |
+| Add OpenFile action result | ✓ |
+| Add active_buffer_mut() | ✓ |
+| All 833 tests passing | ✓ |
+
 ## Final Statistics
 
 | Metric | Value |
