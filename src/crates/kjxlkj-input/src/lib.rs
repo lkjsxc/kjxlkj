@@ -9,6 +9,7 @@ mod key;
 mod mapping;
 mod parser;
 mod parser_modes;
+mod parser_operators;
 mod user_mapping;
 pub mod validation;
 mod validation_types;

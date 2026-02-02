@@ -1,33 +1,31 @@
 # Current TODO
 
-Active task list for implementation - Iteration 29.
+Active task list for implementation - Iteration 30.
 
-## Bug Analysis
+## Completed (Iteration 29)
 
-### Bug 1: Main text is not rendered at all
-- **Root Cause**: App loop reads snapshot but command line content is not being sent to parser
-- **Issue**: InputParser updates `cmdline` internally but snapshot doesn't include it
-- **Fix**: Pass command line state to snapshot, ensure buffer lines are populated
+- [x] Fixed viewport dimensions not being set for new windows
+- [x] Fixed viewport dimensions not being updated on terminal resize
+- [x] Added command line content to snapshot for rendering
+- [x] Fixed duplicate colon in command line display
+- [x] Added --dump CLI option for debugging render output
+- [x] All 838 tests passing
 
-### Bug 2: Key input not accepted in command mode
-- **Root Cause**: parse_command returns None for character inputs (updates internal cmdline state)
-- **Issue**: Snapshot doesn't reflect command line changes because it's in InputParser not EditorState
-- **Fix**: Track command line in EditorState and update via Intent
+## Bug Status After Iteration 29
 
-### Bug 3: File browser cannot be displayed (Space+E)
-- **Root Cause**: No Space+E keybinding exists in parser
-- **Issue**: File explorer feature not yet implemented
-- **Fix**: Add leader key (Space) support and file explorer intent
+| Bug | Status |
+|-----|--------|
+| Main text not rendered | ✓ Fixed (viewport dimensions) |
+| Command mode not accepting input | ✓ Fixed (input works, display works) |
+| File browser Space+E | Not yet implemented (feature) |
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Update docs for iteration 29 | ✓ complete |
-| 2 | Fix command line tracking | pending |
-| 3 | Add debug dump mode | pending |
-| 4 | Verify and test fixes | pending |
-| 5 | Git commit | pending |
+| 1 | Add leader key support | pending |
+| 2 | Add more operator support | pending |
+| 3 | Continue documentation updates | pending |
 
 ## Related
 

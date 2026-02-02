@@ -101,6 +101,16 @@ pub enum IntentKind {
 
     /// Yank current line.
     YankLine,
+
+    // UI operations
+    /// Toggle file explorer.
+    ToggleFileExplorer,
+
+    /// Focus file explorer.
+    FocusFileExplorer,
+
+    /// Toggle terminal.
+    ToggleTerminal,
 }
 
 /// Window navigation direction.

@@ -152,6 +152,27 @@ pub fn process_intent(state: &mut EditorState, intent: Intent) -> ActionResult {
             ActionResult::Ok
         }
 
-        _ => ActionResult::Ok,
+        IntentKind::ToggleFileExplorer => {
+            // TODO: Implement file explorer toggle
+            state.set_message("File explorer not yet implemented");
+            ActionResult::Ok
+        }
+
+        IntentKind::FocusFileExplorer => {
+            // TODO: Implement file explorer focus
+            state.set_message("File explorer not yet implemented");
+            ActionResult::Ok
+        }
+
+        IntentKind::ToggleTerminal => {
+            // TODO: Implement terminal toggle
+            state.set_message("Terminal not yet implemented");
+            ActionResult::Ok
+        }
+
+        IntentKind::Repeat => {
+            // TODO: Implement repeat
+            ActionResult::Ok
+        }
     }
 }

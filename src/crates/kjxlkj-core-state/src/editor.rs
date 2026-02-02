@@ -24,6 +24,8 @@ pub struct EditorState {
     pub registers: Registers,
     /// Terminal dimensions.
     pub dimensions: Dimensions,
+    /// Message to display.
+    pub message: Option<String>,
     /// Next buffer ID.
     pub(crate) next_buffer_id: u64,
     /// Next window ID.
@@ -56,9 +58,20 @@ impl EditorState {
             mode: ModeState::new(),
             registers: Registers::new(),
             dimensions: dims,
+            message: None,
             next_buffer_id: 1,
             next_window_id: 1,
         }
+    }
+
+    /// Sets a message to display.
+    pub fn set_message(&mut self, msg: &str) {
+        self.message = Some(msg.to_string());
+    }
+
+    /// Clears the message.
+    pub fn clear_message(&mut self) {
+        self.message = None;
     }
 
     /// Returns the current mode.
@@ -139,6 +152,9 @@ impl EditorState {
                 };
             }
         }
+
+        // Include message in snapshot
+        snapshot.message = self.message.clone();
 
         snapshot
     }
