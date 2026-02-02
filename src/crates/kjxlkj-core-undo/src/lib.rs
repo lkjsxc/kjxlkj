@@ -5,6 +5,7 @@
 mod branch;
 mod history;
 mod tree;
+mod tree_nav;
 mod undo_node;
 
 pub use branch::{Branch, BranchId, BranchManager, TimeTravel};

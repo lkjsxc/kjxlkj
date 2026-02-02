@@ -7,6 +7,7 @@ mod completion;
 mod completion_types;
 mod global;
 mod parser;
+mod parser_helpers;
 mod parser_types;
 mod range;
 mod range_expand;

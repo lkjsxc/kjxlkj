@@ -20,8 +20,10 @@ mod search;
 mod search_highlight;
 mod search_types;
 mod spell;
+mod spell_checker;
 mod text_object;
 mod text_object_finder;
+mod text_object_helpers;
 mod transaction;
 
 #[cfg(test)]

@@ -67,6 +67,11 @@ impl UndoTree {
         &self.nodes[self.current]
     }
 
+    /// Returns the current node ID.
+    pub fn current_id(&self) -> usize {
+        self.current
+    }
+
     /// Returns true if undo is available.
     pub fn can_undo(&self) -> bool {
         self.nodes[self.current].parent.is_some()
@@ -139,7 +144,7 @@ impl UndoTree {
             path.push(current);
             current = parent;
         }
-        path.push(0); // Root
+        path.push(0);
         path.reverse();
         path
     }
@@ -179,45 +184,5 @@ mod tests {
         assert!(tree.can_undo());
         tree.undo();
         assert!(!tree.can_undo());
-    }
-
-    #[test]
-    fn test_branching() {
-        let mut tree = UndoTree::new();
-        tree.push(Transaction::default());
-        tree.undo();
-        tree.push(Transaction::default());
-        assert_eq!(tree.branches().len(), 0);
-        tree.undo();
-        assert_eq!(tree.branches().len(), 2);
-    }
-
-    #[test]
-    fn test_switch_branch() {
-        let mut tree = UndoTree::new();
-        tree.push(Transaction::default());
-        tree.undo();
-        tree.push(Transaction::default());
-        tree.undo();
-        tree.switch_branch(0);
-        assert_eq!(tree.current, 1);
-    }
-
-    #[test]
-    fn test_path_to_current() {
-        let mut tree = UndoTree::new();
-        tree.push(Transaction::default());
-        tree.push(Transaction::default());
-        let path = tree.path_to_current();
-        assert_eq!(path, vec![0, 1, 2]);
-    }
-
-    #[test]
-    fn test_goto_node() {
-        let mut tree = UndoTree::new();
-        tree.push(Transaction::default());
-        tree.push(Transaction::default());
-        tree.goto_node(1);
-        assert_eq!(tree.current, 1);
     }
 }
