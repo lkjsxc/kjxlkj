@@ -6,6 +6,7 @@ mod command;
 mod completion;
 mod parser;
 mod range;
+mod range_expand;
 
 #[cfg(test)]
 mod tests;
@@ -14,3 +15,4 @@ pub use command::{Command, CommandKind};
 pub use completion::{Candidate, CommandCompletion, CommandRegistry, CompletionSource};
 pub use parser::CommandParser;
 pub use range::Range;
+pub use range_expand::{expand_range, expand_spec, ExpandedRange, RangeContext, RangeSpec};
