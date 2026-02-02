@@ -1,6 +1,6 @@
 //! Virtual text state management.
 
-use crate::virtual_text_types::{pos_key, VirtualText, VirtualTextPos};
+use crate::virtual_text_types::{pos_key, VirtualText};
 use std::collections::HashMap;
 
 /// Virtual text state for a buffer.
@@ -91,6 +91,7 @@ impl VirtualTextState {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::virtual_text_types::VirtualTextPos;
 
     #[test]
     fn test_virtual_text_state_add() {

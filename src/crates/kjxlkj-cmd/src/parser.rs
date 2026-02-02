@@ -2,7 +2,7 @@
 
 use crate::command::{BufferArg, SetArg, SubstituteArgs, SubstituteFlags};
 use crate::parser_helpers::ParserState;
-use crate::{Command, CommandKind, Range};
+use crate::{Command, CommandKind};
 use std::path::PathBuf;
 
 pub use crate::parser_types::ParseError;
@@ -145,6 +145,7 @@ fn parse_substitute(args: &str) -> Result<CommandKind, ParseError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Range;
 
     #[test]
     fn test_parse_write() {

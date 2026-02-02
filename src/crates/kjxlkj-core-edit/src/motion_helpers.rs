@@ -82,6 +82,7 @@ pub fn find_char_forward(pos: Position, lines: &[&str], c: char) -> Option<Posit
 }
 
 /// Finds a character backward on the current line.
+#[allow(dead_code)]
 pub fn find_char_backward(pos: Position, lines: &[&str], c: char) -> Option<Position> {
     let line = lines.get(pos.line)?;
     if pos.col == 0 {

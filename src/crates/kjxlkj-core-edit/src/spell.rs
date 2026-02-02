@@ -2,9 +2,7 @@
 //!
 //! Provides spell checking integration for the editor.
 
-pub use crate::spell_checker::{
-    levenshtein, SimpleSpellChecker, SpellChecker, SpellingError,
-};
+pub use crate::spell_checker::{SimpleSpellChecker, SpellChecker, SpellingError};
 
 /// Spell check state for a buffer.
 #[derive(Debug, Clone, Default)]

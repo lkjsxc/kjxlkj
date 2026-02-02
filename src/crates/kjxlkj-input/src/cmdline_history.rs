@@ -1,6 +1,7 @@
 //! Command-line history management.
 
 /// History management for command line.
+#[allow(dead_code)]
 #[derive(Debug, Clone, Default)]
 pub struct CmdHistory {
     /// History entries.
@@ -11,11 +12,13 @@ pub struct CmdHistory {
 
 impl CmdHistory {
     /// Creates a new history.
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Self::default()
     }
 
     /// Returns if history is empty.
+    #[allow(dead_code)]
     pub fn is_empty(&self) -> bool {
         self.entries.is_empty()
     }

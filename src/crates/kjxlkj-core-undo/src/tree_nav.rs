@@ -3,6 +3,7 @@
 use kjxlkj_core_edit::Transaction;
 
 /// Navigation extension for undo trees.
+#[allow(dead_code)]
 pub trait UndoTreeNav {
     /// Returns all branch IDs at current node.
     fn branches(&self) -> &[usize];

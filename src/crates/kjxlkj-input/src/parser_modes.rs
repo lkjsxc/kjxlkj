@@ -1,7 +1,6 @@
 //! Parser mode handlers.
 
-use crate::{CommandLine, Key, KeyCodeWrapper, KeyMap, KeySequence};
-use kjxlkj_core_edit::{Motion, MotionKind};
+use crate::{CommandLine, Key, KeyCodeWrapper};
 use kjxlkj_core_mode::{Intent, IntentKind, WindowDirection};
 use kjxlkj_core_types::Mode;
 

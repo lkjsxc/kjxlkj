@@ -4,7 +4,7 @@
 
 use std::time::SystemTime;
 
-use crate::change_types::{ChangeState, FileChange, FileTracker};
+use crate::change_types::ChangeState;
 
 /// Buffer change tracker.
 #[derive(Debug, Clone)]
