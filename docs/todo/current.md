@@ -1,31 +1,31 @@
 # Current TODO
 
-Active task list for implementation - Iteration 18.
+Active task list for implementation - Iteration 19.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add spelling support | done |
-| 2 | Add diff highlighting | done |
-| 3 | Add sign column rendering | done |
-| 4 | Add virtual text enhancements | done |
-| 5 | Add floating window enhancements | done |
+| 1 | Add FS service tests | pending |
+| 2 | Enhance core task intents | pending |
+| 3 | Add command parsing tests | pending |
+| 4 | Improve motion handler coverage | pending |
+| 5 | Add operator handler tests | pending |
 | 6 | Regenerate TODO list | pending |
 | 7 | Continue to next iteration | pending |
 
-## Completed (Iteration 17)
+## Completed (Iteration 18)
 
-- [x] Undo branch navigation (6 tests)
-- [x] Text change events (6 tests)
-- [x] Buffer change tracking (6+ tests)
-- [x] File watcher state (6 tests)
-- [x] Tag stack navigation (6 tests)
+- [x] Rename next() methods for clippy
+- [x] Add terminal service tests (10 tests)
+- [x] Add index service tests (13 tests)
+- [x] Fix test method call updates
+- [x] All tests passing
 
 ## Test Summary
 
-- Total passing tests: 644
-- Crates with tests: 17+
+- Total passing tests: 692
+- Crates with tests: 19+
 
 ## Related
 
