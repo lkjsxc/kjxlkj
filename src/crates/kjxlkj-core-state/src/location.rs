@@ -93,7 +93,7 @@ impl LocationList {
     }
 
     /// Moves to the next entry.
-    pub fn next(&mut self) -> Option<&LocationEntry> {
+    pub fn advance_next(&mut self) -> Option<&LocationEntry> {
         if self.current + 1 < self.entries.len() {
             self.current += 1;
         }
@@ -166,7 +166,7 @@ mod tests {
         list.set(sample_entries());
 
         assert_eq!(list.current_index(), 0);
-        list.next();
+        list.advance_next();
         assert_eq!(list.current_index(), 1);
         list.prev();
         assert_eq!(list.current_index(), 0);

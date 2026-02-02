@@ -88,7 +88,7 @@ impl PopupMenu {
     }
 
     /// Selects next item.
-    pub fn next(&mut self) {
+    pub fn select_next(&mut self) {
         let selectable: Vec<usize> = self.items
             .iter()
             .enumerate()
@@ -215,14 +215,14 @@ mod tests {
     fn test_popup_menu_navigation() {
         let mut menu = PopupMenu::new(sample_items(), 10, 20);
 
-        menu.next();
+        menu.select_next();
         assert_eq!(menu.selected, Some(0));
 
-        menu.next();
+        menu.select_next();
         assert_eq!(menu.selected, Some(1));
 
         // Skip separator
-        menu.next();
+        menu.select_next();
         assert_eq!(menu.selected, Some(3));
     }
 
@@ -238,7 +238,7 @@ mod tests {
     #[test]
     fn test_popup_menu_selected_item() {
         let mut menu = PopupMenu::new(sample_items(), 10, 20);
-        menu.next();
+        menu.select_next();
 
         let item = menu.selected_item().unwrap();
         assert_eq!(item.id, "cut");

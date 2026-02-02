@@ -137,7 +137,7 @@ impl TabManager {
     }
 
     /// Goes to next tab.
-    pub fn next(&mut self) {
+    pub fn advance_next(&mut self) {
         if !self.tabs.is_empty() {
             self.current = (self.current + 1) % self.tabs.len();
         }
@@ -220,7 +220,7 @@ mod tests {
         mgr.new_tab();
         mgr.new_tab();
         assert_eq!(mgr.len(), 3);
-        mgr.next();
+        mgr.advance_next();
         mgr.prev();
         assert!(mgr.goto(2));
     }

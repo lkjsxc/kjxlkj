@@ -87,7 +87,7 @@ impl SearchResult {
     }
 
     /// Moves to the next match.
-    pub fn next(&mut self) -> Option<&SearchHighlight> {
+    pub fn advance_next(&mut self) -> Option<&SearchHighlight> {
         if self.matches.is_empty() {
             return None;
         }
@@ -176,11 +176,11 @@ mod tests {
         let mut result = SearchResult::new();
         result.set_pattern("foo", "foo foo foo");
         assert_eq!(result.current_index, Some(0));
-        result.next();
+        result.advance_next();
         assert_eq!(result.current_index, Some(1));
-        result.next();
+        result.advance_next();
         assert_eq!(result.current_index, Some(2));
-        result.next();
+        result.advance_next();
         assert_eq!(result.current_index, Some(0)); // Wrap
     }
 

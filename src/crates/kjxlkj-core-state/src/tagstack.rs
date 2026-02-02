@@ -184,7 +184,7 @@ impl TagMatch {
     }
 
     /// Moves to next match.
-    pub fn next(&mut self) -> Option<&TagDef> {
+    pub fn advance_next(&mut self) -> Option<&TagDef> {
         if self.index + 1 < self.matches.len() {
             self.index += 1;
         }
@@ -284,7 +284,7 @@ mod tests {
         let mut matcher = TagMatch::from_tags(tags);
 
         assert_eq!(matcher.current().unwrap().file, PathBuf::from("a.rs"));
-        matcher.next();
+        matcher.advance_next();
         assert_eq!(matcher.current().unwrap().file, PathBuf::from("b.rs"));
         matcher.prev();
         assert_eq!(matcher.current().unwrap().file, PathBuf::from("a.rs"));

@@ -96,7 +96,7 @@ impl CommandCompletion {
     }
 
     /// Selects the next candidate.
-    pub fn next(&mut self) {
+    pub fn select_next(&mut self) {
         if self.candidates.is_empty() {
             return;
         }
@@ -229,11 +229,11 @@ mod tests {
             "",
         );
         assert_eq!(cc.selected().unwrap().text, "a");
-        cc.next();
+        cc.select_next();
         assert_eq!(cc.selected().unwrap().text, "b");
-        cc.next();
+        cc.select_next();
         assert_eq!(cc.selected().unwrap().text, "c");
-        cc.next();
+        cc.select_next();
         assert_eq!(cc.selected().unwrap().text, "a"); // Wrap around
     }
 

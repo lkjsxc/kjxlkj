@@ -60,7 +60,7 @@ impl ArgList {
     }
 
     /// Moves to the next file.
-    pub fn next(&mut self) -> Option<&PathBuf> {
+    pub fn advance_next(&mut self) -> Option<&PathBuf> {
         if self.current + 1 < self.files.len() {
             self.current += 1;
         }
@@ -141,7 +141,7 @@ mod tests {
     fn test_arglist_navigation() {
         let mut list = ArgList::from_files(sample_files());
 
-        list.next();
+        list.advance_next();
         assert_eq!(list.current_index(), 1);
         list.prev();
         assert_eq!(list.current_index(), 0);
@@ -172,7 +172,7 @@ mod tests {
         let mut list = ArgList::from_files(sample_files());
         assert_eq!(list.status(), "[1 of 3]");
 
-        list.next();
+        list.advance_next();
         assert_eq!(list.status(), "[2 of 3]");
     }
 
