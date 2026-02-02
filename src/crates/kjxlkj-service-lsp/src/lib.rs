@@ -6,6 +6,9 @@ mod client;
 mod protocol;
 mod service;
 
+#[cfg(test)]
+mod tests;
+
 pub use client::LspClient;
 pub use protocol::{Diagnostic, DiagnosticSeverity};
 pub use service::LspService;
