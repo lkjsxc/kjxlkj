@@ -14,6 +14,7 @@ mod scroll;
 mod sign;
 mod snapshot;
 mod status;
+mod terminal;
 mod viewport;
 mod virtual_text;
 
@@ -29,5 +30,6 @@ pub use scroll::{CursorPosition, ScrollAmount, ScrollDirection, ScrollState};
 pub use sign::{Sign, SignColumn, SignDefinition, SignPriority};
 pub use snapshot::EditorSnapshot;
 pub use status::StatusLine;
+pub use terminal::{TermBuffer, TermCell, TermCursor, TermSize, TermState};
 pub use viewport::Viewport;
 pub use virtual_text::{VirtualText, VirtualTextChunk, VirtualTextPos, VirtualTextState};
