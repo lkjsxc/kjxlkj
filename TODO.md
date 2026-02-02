@@ -11,7 +11,7 @@ This file is the authoritative execution plan for this repository.
 - [x] Scan docs for links containing `../` and rewrite them to repo-root paths immediately.
 - [ ] Ensure docs navigation is complete: all docs reachable from docs/README.md and each directory has exactly one README.md.
 - [x] Add a command to delete checked items from this TODO: `python tools/todo_prune.py TODO.md`.
-- [ ] Set up a fast, repeatable validation loop: `cargo fmt`, `cargo clippy -D warnings`, `cargo test`.
+- [x] Set up a fast, repeatable validation loop: `cargo fmt`, `cargo clippy -D warnings`, `cargo test`.
 
 ## Phase 1 — Deep Doc Read & Traceability
 
