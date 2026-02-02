@@ -10,6 +10,7 @@ mod highlight;
 mod indent;
 mod motion;
 mod motion_handler;
+mod motion_helpers;
 mod operator;
 mod operator_handler;
 mod search;

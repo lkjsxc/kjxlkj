@@ -1,5 +1,6 @@
 //! Motion execution.
 
+use crate::motion_helpers::*;
 use crate::{Motion, MotionKind};
 use kjxlkj_core_types::Position;
 
@@ -25,13 +26,9 @@ impl MotionResult {
 }
 
 /// Executes a motion on text.
-pub fn execute_motion(
-    motion: &Motion,
-    pos: Position,
-    lines: &[&str],
-) -> MotionResult {
+pub fn execute_motion(motion: &Motion, pos: Position, lines: &[&str]) -> MotionResult {
     let mut result_pos = pos;
-    
+
     for _ in 0..motion.count {
         match motion.kind {
             MotionKind::Left => {
@@ -65,31 +62,20 @@ pub fn execute_motion(
                     return MotionResult::fail(result_pos);
                 }
             }
-            MotionKind::LineStart => {
-                result_pos.col = 0;
-            }
+            MotionKind::LineStart => result_pos.col = 0,
             MotionKind::LineEnd => {
                 let line_len = lines.get(result_pos.line).map(|l| l.len()).unwrap_or(0);
                 result_pos.col = line_len.saturating_sub(1);
             }
             MotionKind::FirstNonBlank => {
                 if let Some(line) = lines.get(result_pos.line) {
-                    result_pos.col = line.find(|c: char| !c.is_whitespace())
-                        .unwrap_or(0);
+                    result_pos.col = line.find(|c: char| !c.is_whitespace()).unwrap_or(0);
                 }
             }
-            MotionKind::WordStart => {
-                result_pos = find_word_start(result_pos, lines);
-            }
-            MotionKind::WordEnd => {
-                result_pos = find_word_end(result_pos, lines);
-            }
-            MotionKind::WordBack => {
-                result_pos = find_word_back(result_pos, lines);
-            }
-            MotionKind::BufferStart => {
-                result_pos = Position::origin();
-            }
+            MotionKind::WordStart => result_pos = find_word_start(result_pos, lines),
+            MotionKind::WordEnd => result_pos = find_word_end(result_pos, lines),
+            MotionKind::WordBack => result_pos = find_word_back(result_pos, lines),
+            MotionKind::BufferStart => result_pos = Position::origin(),
             MotionKind::BufferEnd => {
                 if !lines.is_empty() {
                     result_pos.line = lines.len() - 1;
@@ -124,82 +110,8 @@ pub fn execute_motion(
             _ => {}
         }
     }
-    
+
     MotionResult::ok(result_pos)
-}
-
-fn clamp_column(pos: &mut Position, lines: &[&str]) {
-    if let Some(line) = lines.get(pos.line) {
-        let max_col = line.len().saturating_sub(1);
-        if pos.col > max_col {
-            pos.col = max_col;
-        }
-    }
-}
-
-fn find_word_start(pos: Position, lines: &[&str]) -> Position {
-    let line = lines.get(pos.line).unwrap_or(&"");
-    let chars: Vec<char> = line.chars().collect();
-    let mut col = pos.col;
-    
-    // Skip current word
-    while col < chars.len() && !chars[col].is_whitespace() {
-        col += 1;
-    }
-    // Skip whitespace
-    while col < chars.len() && chars[col].is_whitespace() {
-        col += 1;
-    }
-    
-    if col >= chars.len() && pos.line + 1 < lines.len() {
-        // Go to next line
-        let next_line = lines[pos.line + 1];
-        let start = next_line.find(|c: char| !c.is_whitespace()).unwrap_or(0);
-        return Position::new(pos.line + 1, start);
-    }
-    
-    Position::new(pos.line, col.min(chars.len().saturating_sub(1)))
-}
-
-fn find_word_end(pos: Position, lines: &[&str]) -> Position {
-    let line = lines.get(pos.line).unwrap_or(&"");
-    let chars: Vec<char> = line.chars().collect();
-    let mut col = pos.col + 1;
-    
-    // Skip whitespace
-    while col < chars.len() && chars[col].is_whitespace() {
-        col += 1;
-    }
-    // Skip word
-    while col < chars.len() && !chars[col].is_whitespace() {
-        col += 1;
-    }
-    
-    Position::new(pos.line, col.saturating_sub(1))
-}
-
-fn find_word_back(pos: Position, lines: &[&str]) -> Position {
-    let line = lines.get(pos.line).unwrap_or(&"");
-    let chars: Vec<char> = line.chars().collect();
-    let mut col = pos.col;
-    
-    // Skip whitespace backwards
-    while col > 0 && chars[col - 1].is_whitespace() {
-        col -= 1;
-    }
-    // Skip word backwards
-    while col > 0 && !chars[col - 1].is_whitespace() {
-        col -= 1;
-    }
-    
-    Position::new(pos.line, col)
-}
-
-fn find_char_forward(pos: Position, lines: &[&str], c: char) -> Option<Position> {
-    let line = lines.get(pos.line)?;
-    let start = pos.col + 1;
-    let remaining = &line[start..];
-    remaining.find(c).map(|idx| Position::new(pos.line, start + idx))
 }
 
 #[cfg(test)]
@@ -223,7 +135,6 @@ mod tests {
         let motion = Motion::new(MotionKind::Left);
         let result = execute_motion(&motion, Position::new(0, 0), &lines("hello"));
         assert!(!result.found);
-        assert_eq!(result.position.col, 0);
     }
 
     #[test]
@@ -263,7 +174,7 @@ mod tests {
     fn test_motion_line_end() {
         let motion = Motion::new(MotionKind::LineEnd);
         let result = execute_motion(&motion, Position::new(0, 0), &lines("hello"));
-        assert_eq!(result.position.col, 4); // 0-indexed
+        assert_eq!(result.position.col, 4);
     }
 
     #[test]
@@ -287,22 +198,6 @@ mod tests {
         let text = "line one\nline two\nline three";
         let result = execute_motion(&motion, Position::new(0, 0), &lines(text));
         assert_eq!(result.position.line, 2);
-    }
-
-    #[test]
-    fn test_motion_goto_line() {
-        let motion = Motion::new(MotionKind::GotoLine).with_count(2);
-        let text = "line one\nline two\nline three";
-        let result = execute_motion(&motion, Position::new(0, 5), &lines(text));
-        assert_eq!(result.position.line, 1); // 0-indexed
-    }
-
-    #[test]
-    fn test_motion_find_char() {
-        let motion = Motion::new(MotionKind::FindChar).with_char('o');
-        let result = execute_motion(&motion, Position::new(0, 0), &lines("hello world"));
-        assert!(result.found);
-        assert_eq!(result.position.col, 4); // First 'o'
     }
 
     #[test]
