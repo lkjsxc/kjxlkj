@@ -69,6 +69,41 @@ pub enum IntentKind {
 
     /// Save and quit.
     SaveQuit,
+
+    // Window operations
+    /// Split window horizontally.
+    SplitHorizontal,
+
+    /// Split window vertically.
+    SplitVertical,
+
+    /// Close current window.
+    CloseWindow,
+
+    /// Keep only current window.
+    OnlyWindow,
+
+    /// Navigate to next window.
+    NextWindow,
+
+    /// Navigate to previous window.
+    PrevWindow,
+
+    /// Navigate window by direction.
+    WindowDirection(WindowDirection),
+}
+
+/// Window navigation direction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum WindowDirection {
+    /// Left window.
+    Left,
+    /// Down window.
+    Down,
+    /// Up window.
+    Up,
+    /// Right window.
+    Right,
 }
 
 /// An intent emitted by mode processing.

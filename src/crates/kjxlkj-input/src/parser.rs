@@ -2,7 +2,7 @@
 
 use crate::{CommandLine, Key, KeyCodeWrapper, KeyMap, KeySequence};
 use kjxlkj_core_edit::{Motion, MotionKind};
-use kjxlkj_core_mode::{Intent, IntentKind};
+use kjxlkj_core_mode::{Intent, IntentKind, WindowDirection};
 use kjxlkj_core_types::Mode;
 
 /// Input parser for converting keys to intents.
@@ -17,6 +17,8 @@ pub struct InputParser {
     _insert_map: KeyMap,
     /// Command line buffer.
     cmdline: CommandLine,
+    /// Pending Ctrl-W for window commands.
+    pending_ctrl_w: bool,
 }
 
 impl InputParser {
@@ -28,6 +30,7 @@ impl InputParser {
             normal_map: Self::default_normal_map(),
             _insert_map: Self::default_insert_map(),
             cmdline: CommandLine::new(),
+            pending_ctrl_w: false,
         }
     }
 
@@ -49,6 +52,20 @@ impl InputParser {
 
     /// Parses normal mode input.
     fn parse_normal(&mut self, key: Key) -> Option<Intent> {
+        // Handle Ctrl-W window command prefix
+        if self.pending_ctrl_w {
+            self.pending_ctrl_w = false;
+            return self.parse_window_command(key);
+        }
+
+        // Check for Ctrl-W prefix
+        if key.modifiers.ctrl {
+            if let KeyCodeWrapper::Char('w') = &key.code {
+                self.pending_ctrl_w = true;
+                return None;
+            }
+        }
+
         // Handle count accumulation
         if let KeyCodeWrapper::Char(c) = &key.code {
             if c.is_ascii_digit() && (self.count.is_some() || *c != '0') {
@@ -99,6 +116,53 @@ impl InputParser {
             Some(intent)
         } else {
             None
+        }
+    }
+
+    /// Parses window commands after Ctrl-W prefix.
+    fn parse_window_command(&mut self, key: Key) -> Option<Intent> {
+        match &key.code {
+            // Split commands
+            KeyCodeWrapper::Char('s') => Some(Intent::new(IntentKind::SplitHorizontal)),
+            KeyCodeWrapper::Char('v') => Some(Intent::new(IntentKind::SplitVertical)),
+            
+            // Close commands
+            KeyCodeWrapper::Char('c') | KeyCodeWrapper::Char('q') => {
+                Some(Intent::new(IntentKind::CloseWindow))
+            }
+            KeyCodeWrapper::Char('o') => Some(Intent::new(IntentKind::OnlyWindow)),
+            
+            // Navigation
+            KeyCodeWrapper::Char('h') => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Left)))
+            }
+            KeyCodeWrapper::Char('j') => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Down)))
+            }
+            KeyCodeWrapper::Char('k') => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Up)))
+            }
+            KeyCodeWrapper::Char('l') => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Right)))
+            }
+            KeyCodeWrapper::Left => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Left)))
+            }
+            KeyCodeWrapper::Down => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Down)))
+            }
+            KeyCodeWrapper::Up => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Up)))
+            }
+            KeyCodeWrapper::Right => {
+                Some(Intent::new(IntentKind::WindowDirection(WindowDirection::Right)))
+            }
+            
+            // Cycle windows
+            KeyCodeWrapper::Char('w') => Some(Intent::new(IntentKind::NextWindow)),
+            KeyCodeWrapper::Char('W') => Some(Intent::new(IntentKind::PrevWindow)),
+            
+            _ => None,
         }
     }
 

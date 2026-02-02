@@ -11,7 +11,7 @@ mod visual;
 
 pub use command::CommandState;
 pub use insert::InsertState;
-pub use intent::{Intent, IntentKind};
+pub use intent::{Intent, IntentKind, WindowDirection};
 pub use normal::NormalState;
 pub use state::ModeState;
 pub use visual::VisualState;
