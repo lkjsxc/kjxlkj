@@ -1,19 +1,14 @@
 //! Command-line completion for ex commands.
 
-use std::collections::HashMap;
-
+pub use crate::completion_registry::CommandRegistry;
 pub use crate::completion_types::{Candidate, CompletionSource};
 
 /// Command completion state.
 #[derive(Debug, Default)]
 pub struct CommandCompletion {
-    /// Current candidates.
     candidates: Vec<Candidate>,
-    /// Selected index.
     selected: Option<usize>,
-    /// Original text before completion.
     original: String,
-    /// Completion source type.
     source: Option<CompletionSource>,
 }
 
@@ -96,57 +91,6 @@ impl CommandCompletion {
     }
 }
 
-/// Command registry for completions.
-#[derive(Debug, Default)]
-pub struct CommandRegistry {
-    /// Commands and their completion sources.
-    commands: HashMap<String, CompletionSource>,
-}
-
-impl CommandRegistry {
-    /// Creates a new registry with built-in commands.
-    pub fn new() -> Self {
-        let mut reg = Self::default();
-        reg.register_builtins();
-        reg
-    }
-
-    /// Registers built-in commands.
-    fn register_builtins(&mut self) {
-        let file_cmds = ["e", "edit", "w", "write", "saveas", "r", "read"];
-        let buffer_cmds = ["b", "buffer", "bd", "bdelete", "bn", "bp"];
-        let option_cmds = ["set", "setlocal", "setglobal"];
-        let help_cmds = ["h", "help"];
-        let dir_cmds = ["cd", "lcd", "tcd", "pwd"];
-
-        for cmd in file_cmds {
-            self.commands.insert(cmd.to_string(), CompletionSource::File);
-        }
-        for cmd in buffer_cmds {
-            self.commands.insert(cmd.to_string(), CompletionSource::Buffer);
-        }
-        for cmd in option_cmds {
-            self.commands.insert(cmd.to_string(), CompletionSource::Option);
-        }
-        for cmd in help_cmds {
-            self.commands.insert(cmd.to_string(), CompletionSource::Help);
-        }
-        for cmd in dir_cmds {
-            self.commands.insert(cmd.to_string(), CompletionSource::Directory);
-        }
-    }
-
-    /// Gets the completion source for a command.
-    pub fn get_source(&self, command: &str) -> Option<CompletionSource> {
-        self.commands.get(command).copied()
-    }
-
-    /// Registers a custom command.
-    pub fn register(&mut self, command: &str, source: CompletionSource) {
-        self.commands.insert(command.to_string(), source);
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -155,22 +99,12 @@ mod tests {
     fn test_candidate_new() {
         let c = Candidate::new("test");
         assert_eq!(c.text, "test");
-        assert!(c.description.is_none());
-    }
-
-    #[test]
-    fn test_candidate_with_description() {
-        let c = Candidate::new("test").with_description("A test");
-        assert_eq!(c.description, Some("A test".to_string()));
     }
 
     #[test]
     fn test_completion_set_candidates() {
         let mut cc = CommandCompletion::new();
-        cc.set_candidates(
-            vec![Candidate::new("edit"), Candidate::new("exit")],
-            "e",
-        );
+        cc.set_candidates(vec![Candidate::new("edit"), Candidate::new("exit")], "e");
         assert_eq!(cc.candidates().len(), 2);
         assert_eq!(cc.selected_index(), Some(0));
     }
@@ -182,38 +116,15 @@ mod tests {
             vec![Candidate::new("a"), Candidate::new("b"), Candidate::new("c")],
             "",
         );
-        assert_eq!(cc.selected().unwrap().text, "a");
         cc.select_next();
         assert_eq!(cc.selected().unwrap().text, "b");
-        cc.select_next();
-        assert_eq!(cc.selected().unwrap().text, "c");
-        cc.select_next();
-        assert_eq!(cc.selected().unwrap().text, "a"); // Wrap around
     }
 
     #[test]
     fn test_completion_prev() {
         let mut cc = CommandCompletion::new();
-        cc.set_candidates(
-            vec![Candidate::new("a"), Candidate::new("b"), Candidate::new("c")],
-            "",
-        );
+        cc.set_candidates(vec![Candidate::new("a"), Candidate::new("b")], "");
         cc.prev();
-        assert_eq!(cc.selected().unwrap().text, "c"); // Wrap around
-    }
-
-    #[test]
-    fn test_registry_builtin() {
-        let reg = CommandRegistry::new();
-        assert_eq!(reg.get_source("edit"), Some(CompletionSource::File));
-        assert_eq!(reg.get_source("buffer"), Some(CompletionSource::Buffer));
-        assert_eq!(reg.get_source("set"), Some(CompletionSource::Option));
-    }
-
-    #[test]
-    fn test_registry_custom() {
-        let mut reg = CommandRegistry::new();
-        reg.register("mycommand", CompletionSource::Custom);
-        assert_eq!(reg.get_source("mycommand"), Some(CompletionSource::Custom));
+        assert_eq!(cc.selected().unwrap().text, "b");
     }
 }

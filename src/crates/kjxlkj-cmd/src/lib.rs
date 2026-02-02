@@ -4,6 +4,7 @@
 
 mod command;
 mod completion;
+mod completion_registry;
 mod completion_types;
 mod global;
 mod parser;
