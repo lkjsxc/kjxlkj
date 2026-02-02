@@ -19,6 +19,7 @@ mod location;
 mod macros;
 mod marks;
 mod quickfix;
+mod register_types;
 mod registers;
 mod repeat;
 mod session;

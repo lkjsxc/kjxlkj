@@ -1,63 +1,8 @@
 //! Register storage.
 
+use crate::register_types::RegisterContent;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
-/// Register type.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum RegisterType {
-    /// Character-wise.
-    Char,
-    /// Line-wise.
-    Line,
-    /// Block-wise.
-    Block,
-}
-
-/// Register content.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RegisterContent {
-    /// Text content.
-    pub text: String,
-    /// Register type.
-    pub reg_type: RegisterType,
-}
-
-impl RegisterContent {
-    /// Creates a character-wise register.
-    pub fn char(text: impl Into<String>) -> Self {
-        Self {
-            text: text.into(),
-            reg_type: RegisterType::Char,
-        }
-    }
-
-    /// Creates a line-wise register.
-    pub fn line(text: impl Into<String>) -> Self {
-        Self {
-            text: text.into(),
-            reg_type: RegisterType::Line,
-        }
-    }
-
-    /// Creates a block-wise register.
-    pub fn block(text: impl Into<String>) -> Self {
-        Self {
-            text: text.into(),
-            reg_type: RegisterType::Block,
-        }
-    }
-
-    /// Returns if this is line-wise.
-    pub fn is_linewise(&self) -> bool {
-        self.reg_type == RegisterType::Line
-    }
-
-    /// Returns if this is block-wise.
-    pub fn is_blockwise(&self) -> bool {
-        self.reg_type == RegisterType::Block
-    }
-}
 
 /// Register storage.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -143,12 +88,12 @@ impl Registers {
             self.numbered[i] = self.numbered[i - 1].take();
         }
         self.numbered[1] = self.unnamed.take();
-        
+
         // Small deletes (< 1 line) go to "-"
         if !content.text.contains('\n') && content.text.len() < 80 {
             self.small_delete = Some(content.clone());
         }
-        
+
         self.unnamed = Some(content);
     }
 
@@ -252,12 +197,5 @@ mod tests {
         let list = regs.list();
         assert!(list.contains(&'a'));
         assert!(list.contains(&'b'));
-    }
-
-    #[test]
-    fn test_linewise_register() {
-        let content = RegisterContent::line("line text");
-        assert!(content.is_linewise());
-        assert!(!content.is_blockwise());
     }
 }

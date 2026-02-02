@@ -35,6 +35,7 @@ mod status;
 mod terminal;
 mod viewport;
 mod virtual_text;
+mod virtual_text_types;
 mod wrap;
 
 pub use buffer_view::BufferView;
@@ -69,5 +70,6 @@ pub use spelling::{SpellConfig, SpellError, SpellResult, SpellState, UserWordLis
 pub use status::StatusLine;
 pub use terminal::{TermBuffer, TermCell, TermCursor, TermSize, TermState};
 pub use viewport::Viewport;
-pub use virtual_text::{VirtualText, VirtualTextChunk, VirtualTextPos, VirtualTextState};
+pub use virtual_text::VirtualTextState;
+pub use virtual_text_types::{VirtualText, VirtualTextChunk, VirtualTextPos};
 pub use wrap::{WrapMode, WrapSegment, WrapState, WrappedLine};
