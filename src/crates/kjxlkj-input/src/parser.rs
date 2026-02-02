@@ -1,6 +1,6 @@
 //! Input parser.
 
-use crate::{Key, KeyCodeWrapper, KeyMap, KeySequence};
+use crate::{CommandLine, Key, KeyCodeWrapper, KeyMap, KeySequence};
 use kjxlkj_core_edit::{Motion, MotionKind};
 use kjxlkj_core_mode::{Intent, IntentKind};
 use kjxlkj_core_types::Mode;
@@ -15,6 +15,8 @@ pub struct InputParser {
     /// Key maps by mode.
     normal_map: KeyMap,
     _insert_map: KeyMap,
+    /// Command line buffer.
+    cmdline: CommandLine,
 }
 
 impl InputParser {
@@ -25,7 +27,13 @@ impl InputParser {
             count: None,
             normal_map: Self::default_normal_map(),
             _insert_map: Self::default_insert_map(),
+            cmdline: CommandLine::new(),
         }
+    }
+
+    /// Returns the command line.
+    pub fn cmdline(&self) -> &CommandLine {
+        &self.cmdline
     }
 
     /// Parses a key in the given mode.
@@ -122,9 +130,62 @@ impl InputParser {
     /// Parses command mode input.
     fn parse_command(&mut self, key: Key) -> Option<Intent> {
         if key.is_esc() {
+            self.cmdline.close();
             return Some(Intent::change_mode(Mode::Normal));
         }
-        None
+
+        match &key.code {
+            KeyCodeWrapper::Enter => {
+                self.cmdline.add_to_history();
+                let cmd = self.cmdline.close();
+                Some(Intent::new(IntentKind::ExCommand { command: cmd }))
+            }
+            KeyCodeWrapper::Char(c) => {
+                self.cmdline.insert(*c);
+                None
+            }
+            KeyCodeWrapper::Backspace => {
+                if !self.cmdline.backspace() && self.cmdline.input().is_empty() {
+                    self.cmdline.close();
+                    return Some(Intent::change_mode(Mode::Normal));
+                }
+                None
+            }
+            KeyCodeWrapper::Delete => {
+                self.cmdline.delete();
+                None
+            }
+            KeyCodeWrapper::Left => {
+                self.cmdline.move_left();
+                None
+            }
+            KeyCodeWrapper::Right => {
+                self.cmdline.move_right();
+                None
+            }
+            KeyCodeWrapper::Home => {
+                self.cmdline.move_start();
+                None
+            }
+            KeyCodeWrapper::End => {
+                self.cmdline.move_end();
+                None
+            }
+            KeyCodeWrapper::Up => {
+                self.cmdline.history_prev();
+                None
+            }
+            KeyCodeWrapper::Down => {
+                self.cmdline.history_next();
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Opens command line with prompt.
+    pub fn open_cmdline(&mut self, prompt: char) {
+        self.cmdline.open(prompt);
     }
 
     /// Resets the parser state.

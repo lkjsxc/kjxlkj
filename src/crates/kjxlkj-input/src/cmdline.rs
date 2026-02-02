@@ -1,0 +1,220 @@
+//! Command-line input buffer.
+
+/// A buffer for command-line input.
+#[derive(Debug, Clone, Default)]
+pub struct CommandLine {
+    /// Current input.
+    input: String,
+    /// Cursor position (byte index).
+    cursor: usize,
+    /// Prompt character.
+    prompt: char,
+    /// History.
+    history: Vec<String>,
+    /// Current history index.
+    history_idx: Option<usize>,
+}
+
+impl CommandLine {
+    /// Creates a new command line.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Opens the command line with a prompt.
+    pub fn open(&mut self, prompt: char) {
+        self.input.clear();
+        self.cursor = 0;
+        self.prompt = prompt;
+        self.history_idx = None;
+    }
+
+    /// Closes the command line and returns the input.
+    pub fn close(&mut self) -> String {
+        let input = std::mem::take(&mut self.input);
+        self.cursor = 0;
+        input
+    }
+
+    /// Returns the current input.
+    pub fn input(&self) -> &str {
+        &self.input
+    }
+
+    /// Returns the prompt.
+    pub fn prompt(&self) -> char {
+        self.prompt
+    }
+
+    /// Returns cursor position.
+    pub fn cursor(&self) -> usize {
+        self.cursor
+    }
+
+    /// Returns the display line (prompt + input).
+    pub fn display(&self) -> String {
+        format!("{}{}", self.prompt, self.input)
+    }
+
+    /// Inserts a character at cursor.
+    pub fn insert(&mut self, c: char) {
+        self.input.insert(self.cursor, c);
+        self.cursor += c.len_utf8();
+    }
+
+    /// Deletes the character before cursor.
+    pub fn backspace(&mut self) -> bool {
+        if self.cursor == 0 {
+            return false;
+        }
+        let prev = self.input[..self.cursor]
+            .chars()
+            .last()
+            .map(|c| c.len_utf8())
+            .unwrap_or(0);
+        self.cursor -= prev;
+        self.input.remove(self.cursor);
+        true
+    }
+
+    /// Deletes the character at cursor.
+    pub fn delete(&mut self) -> bool {
+        if self.cursor >= self.input.len() {
+            return false;
+        }
+        self.input.remove(self.cursor);
+        true
+    }
+
+    /// Moves cursor left.
+    pub fn move_left(&mut self) -> bool {
+        if self.cursor == 0 {
+            return false;
+        }
+        let prev = self.input[..self.cursor]
+            .chars()
+            .last()
+            .map(|c| c.len_utf8())
+            .unwrap_or(0);
+        self.cursor -= prev;
+        true
+    }
+
+    /// Moves cursor right.
+    pub fn move_right(&mut self) -> bool {
+        if self.cursor >= self.input.len() {
+            return false;
+        }
+        let curr = self.input[self.cursor..]
+            .chars()
+            .next()
+            .map(|c| c.len_utf8())
+            .unwrap_or(0);
+        self.cursor += curr;
+        true
+    }
+
+    /// Moves cursor to start.
+    pub fn move_start(&mut self) {
+        self.cursor = 0;
+    }
+
+    /// Moves cursor to end.
+    pub fn move_end(&mut self) {
+        self.cursor = self.input.len();
+    }
+
+    /// Adds current input to history.
+    pub fn add_to_history(&mut self) {
+        if !self.input.is_empty() {
+            self.history.push(self.input.clone());
+        }
+    }
+
+    /// Goes to previous history entry.
+    pub fn history_prev(&mut self) -> bool {
+        if self.history.is_empty() {
+            return false;
+        }
+        let idx = match self.history_idx {
+            Some(i) if i > 0 => i - 1,
+            None if !self.history.is_empty() => self.history.len() - 1,
+            _ => return false,
+        };
+        self.history_idx = Some(idx);
+        self.input = self.history[idx].clone();
+        self.cursor = self.input.len();
+        true
+    }
+
+    /// Goes to next history entry.
+    pub fn history_next(&mut self) -> bool {
+        let idx = match self.history_idx {
+            Some(i) => i + 1,
+            None => return false,
+        };
+        if idx >= self.history.len() {
+            self.history_idx = None;
+            self.input.clear();
+            self.cursor = 0;
+        } else {
+            self.history_idx = Some(idx);
+            self.input = self.history[idx].clone();
+            self.cursor = self.input.len();
+        }
+        true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_open_close() {
+        let mut cmd = CommandLine::new();
+        cmd.open(':');
+        assert_eq!(cmd.prompt(), ':');
+        cmd.insert('w');
+        assert_eq!(cmd.close(), "w");
+    }
+
+    #[test]
+    fn test_insert_backspace() {
+        let mut cmd = CommandLine::new();
+        cmd.open(':');
+        cmd.insert('a');
+        cmd.insert('b');
+        assert_eq!(cmd.input(), "ab");
+        cmd.backspace();
+        assert_eq!(cmd.input(), "a");
+    }
+
+    #[test]
+    fn test_cursor_movement() {
+        let mut cmd = CommandLine::new();
+        cmd.open(':');
+        cmd.insert('a');
+        cmd.insert('b');
+        cmd.insert('c');
+        cmd.move_start();
+        assert_eq!(cmd.cursor(), 0);
+        cmd.move_right();
+        assert_eq!(cmd.cursor(), 1);
+        cmd.move_end();
+        assert_eq!(cmd.cursor(), 3);
+    }
+
+    #[test]
+    fn test_history() {
+        let mut cmd = CommandLine::new();
+        cmd.open(':');
+        cmd.insert('w');
+        cmd.add_to_history();
+        cmd.close();
+        
+        cmd.open(':');
+        assert!(cmd.history_prev());
+        assert_eq!(cmd.input(), "w");
+    }
+}
