@@ -3,6 +3,7 @@
 //! This crate provides the rope-based text buffer implementation.
 
 mod grapheme;
+mod manipulation;
 mod rope_ext;
 mod text_buffer;
 
@@ -10,5 +11,11 @@ mod text_buffer;
 mod tests;
 
 pub use grapheme::{GraphemeIter, grapheme_count, grapheme_width};
+pub use manipulation::{
+    byte_count, char_count, collapse_blank_lines, duplicate_line, ensure_final_newline,
+    join_lines, line_count, normalize_line_endings, remove_blank_lines, reverse_line,
+    reverse_lines, sort_lines, sort_lines_reverse, split_lines, strip_trailing_whitespace,
+    uniq_lines, word_count,
+};
 pub use rope_ext::RopeExt;
 pub use text_buffer::TextBuffer;
