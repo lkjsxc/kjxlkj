@@ -5,6 +5,9 @@
 mod bus;
 mod supervisor;
 
+#[cfg(test)]
+mod tests;
+
 pub use bus::{Message, MessageBus};
 pub use supervisor::ServiceSupervisor;
 
