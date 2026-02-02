@@ -4,6 +4,7 @@
 
 mod buffer;
 mod cursor;
+mod filetype;
 mod mode;
 mod position;
 mod range;
@@ -15,6 +16,7 @@ mod tests;
 
 pub use buffer::{BufferId, BufferName};
 pub use cursor::Cursor;
+pub use filetype::{detect, FileType};
 pub use mode::Mode;
 pub use position::Position;
 pub use range::Range;
