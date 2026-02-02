@@ -1,23 +1,32 @@
 # Current TODO
 
-Active task list for implementation - Iteration 6.
+Active task list for implementation - Iteration 7.
 
 ## Active Tasks
 
 | ID | Task | Status |
 |----|------|--------|
-| 1 | Add cursor blinking support | pending |
-| 2 | Improve motion handler coverage | pending |
-| 3 | Add operator handler tests | pending |
-| 4 | Implement macro recording | pending |
-| 5 | Add mark support | pending |
-| 6 | Add text manipulation utilities | pending |
-| 7 | Add auto-indent support | pending |
-| 8 | Implement folding basics | pending |
-| 9 | Add completion support | pending |
-| 10 | Improve error handling | pending |
+| 1 | Add auto-indent support | pending |
+| 2 | Implement folding basics | pending |
+| 3 | Add completion support | pending |
+| 4 | Improve error handling | pending |
+| 5 | Add jumplist support | pending |
+| 6 | Add changelist support | pending |
+| 7 | Add command completion | pending |
+| 8 | Implement text objects for motions | pending |
+| 9 | Add input validation | pending |
+| 10 | Add service integration | pending |
 | 11 | Regenerate TODO list | pending |
 | 12 | Continue to next iteration | pending |
+
+## Completed (Iteration 6)
+
+- [x] Cursor blinking support (6 tests)
+- [x] Motion handler with execution (13 tests)
+- [x] Operator handler with execution (9 tests)
+- [x] Macro recording and playback (6 tests)
+- [x] Mark storage and retrieval (6 tests)
+- [x] Text manipulation utilities (15 tests)
 
 ## Completed (Iteration 5)
 
@@ -35,19 +44,9 @@ Active task list for implementation - Iteration 6.
 - [x] Put (paste) intent and keybindings
 - [x] Render crate unit tests (11 tests)
 
-## Completed (Iteration 3)
-
-- [x] Visual mode selection tracking
-- [x] Command line parsing (kjxlkj-cmd crate, 28 tests)
-- [x] Buffer list management (16 tests)
-- [x] Core-mode unit tests (9 tests)
-- [x] Core-undo unit tests (7 tests)
-- [x] Scroll management (7 tests + 6 layout tests)
-- [x] Command mode integration (4 tests)
-
 ## Test Summary
 
-- Total passing tests: 200
+- Total passing tests: 255
 - Crates with tests: 13 (core, core-edit, core-mode, core-state, core-text, core-types, core-ui, core-undo, cmd, input, render, host, service-fs, service-git)
 
 ## Related
