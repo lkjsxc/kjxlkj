@@ -418,6 +418,14 @@ impl EditorState {
                 self.add_to_jump_list();
                 self.search_next_match(!self.search_forward);
             }
+            EditorAction::SearchWordForward => {
+                self.add_to_jump_list();
+                self.search_word_under_cursor(true);
+            }
+            EditorAction::SearchWordBackward => {
+                self.add_to_jump_list();
+                self.search_word_under_cursor(false);
+            }
             EditorAction::VisualDelete => {
                 self.apply_visual_operator(Operator::Delete);
             }
@@ -1958,6 +1966,67 @@ impl EditorState {
         }
 
         self.status_message = Some(format!("Pattern not found: {}", pattern));
+    }
+
+    /// Search for word under cursor (* and #).
+    fn search_word_under_cursor(&mut self, forward: bool) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        
+        // Get the current line
+        let line = match self.buffer.line(line_idx) {
+            Some(l) => l,
+            None => return,
+        };
+        
+        let col_idx = cursor.col as usize;
+        let chars: Vec<char> = line.chars().collect();
+        
+        if col_idx >= chars.len() || chars.is_empty() {
+            self.status_message = Some("No word under cursor".to_string());
+            return;
+        }
+        
+        // Check if cursor is on a word character
+        let ch = chars[col_idx];
+        if !ch.is_alphanumeric() && ch != '_' {
+            self.status_message = Some("No word under cursor".to_string());
+            return;
+        }
+        
+        // Find word boundaries
+        let mut word_start = col_idx;
+        while word_start > 0 {
+            let prev = chars[word_start - 1];
+            if !prev.is_alphanumeric() && prev != '_' {
+                break;
+            }
+            word_start -= 1;
+        }
+        
+        let mut word_end = col_idx;
+        while word_end < chars.len() {
+            let c = chars[word_end];
+            if !c.is_alphanumeric() && c != '_' {
+                break;
+            }
+            word_end += 1;
+        }
+        
+        // Extract the word
+        let word: String = chars[word_start..word_end].iter().collect();
+        
+        if word.is_empty() {
+            self.status_message = Some("No word under cursor".to_string());
+            return;
+        }
+        
+        // Set search pattern and direction
+        self.search_pattern = Some(word.clone());
+        self.search_forward = forward;
+        
+        // Move to next match
+        self.search_next_match(forward);
     }
 
     /// Convert byte offset to LineCol.
@@ -3779,5 +3848,50 @@ mod tests {
         
         let content = state.buffer().content();
         assert!(content.contains("-4"));
+    }
+
+    #[test]
+    fn star_search_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world hello again".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Search for "hello" forward
+        state.apply_action(EditorAction::SearchWordForward);
+        
+        // Should find second "hello" (at column 12)
+        let col = state.buffer().cursor().position.col;
+        assert!(col > 0, "Should move to next occurrence of 'hello'");
+        
+        // Verify pattern was set
+        assert_eq!(state.search_pattern, Some("hello".to_string()));
+    }
+
+    #[test]
+    fn hash_search_backward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world hello again".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to end
+        state.apply_action(EditorAction::FileEnd);
+        
+        // Move to word "again"
+        state.apply_action(EditorAction::WordBackward); // Now on "again"
+        
+        // Search backward for current word
+        state.apply_action(EditorAction::SearchWordBackward);
+        
+        // Verify pattern was set
+        assert!(state.search_pattern.is_some());
     }
 }

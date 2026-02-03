@@ -290,6 +290,8 @@ impl ModeHandler {
                 }
                 "n" => EditorAction::SearchNext,
                 "N" => EditorAction::SearchPrev,
+                "*" => EditorAction::SearchWordForward,
+                "#" => EditorAction::SearchWordBackward,
                 
                 // Find char motions (pending for next char)
                 "f" | "t" | "F" | "T" => {

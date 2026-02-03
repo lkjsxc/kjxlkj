@@ -215,6 +215,10 @@ pub enum EditorAction {
     SearchNext,
     /// Go to previous search match (N).
     SearchPrev,
+    /// Search forward for word under cursor (*).
+    SearchWordForward,
+    /// Search backward for word under cursor (#).
+    SearchWordBackward,
     /// Delete visual selection.
     VisualDelete,
     /// Yank visual selection.
