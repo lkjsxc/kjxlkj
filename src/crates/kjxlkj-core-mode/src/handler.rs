@@ -333,6 +333,9 @@ impl ModeHandler {
             EditorAction::JumpListOlder
         } else if key.is_ctrl('i') {
             EditorAction::JumpListNewer
+        } else if key.is_ctrl('v') {
+            self.state.set_mode(Mode::VisualBlock);
+            EditorAction::EnterVisualBlockMode
         } else if key.is_arrow_left() {
             EditorAction::CursorLeft
         } else if key.is_arrow_right() {

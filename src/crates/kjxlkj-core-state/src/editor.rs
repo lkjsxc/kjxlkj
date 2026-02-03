@@ -303,6 +303,10 @@ impl EditorState {
                 // Set anchor at current cursor position
                 self.visual_anchor = Some(self.buffer.cursor().position);
             }
+            EditorAction::EnterVisualBlockMode => {
+                // Set anchor at current cursor position for block selection
+                self.visual_anchor = Some(self.buffer.cursor().position);
+            }
             EditorAction::EnterReplaceMode => {}
             EditorAction::EnterCommandMode => {}
             EditorAction::EnterSearchForward => {
@@ -832,6 +836,20 @@ impl EditorState {
                         self.buffer.set_cursor_position(LineCol::new(start.line, 0));
                         self.buffer.delete_line();
                     }
+                } else if mode == Mode::VisualBlock {
+                    // Block delete: delete rectangular region
+                    let (min_col, max_col) = if anchor.col <= cursor.col {
+                        (anchor.col, cursor.col)
+                    } else {
+                        (cursor.col, anchor.col)
+                    };
+                    // Delete from bottom to top to preserve line numbers
+                    for line_idx in (start.line..=end.line).rev() {
+                        let block_start = LineCol::new(line_idx, min_col);
+                        let block_end = LineCol::new(line_idx, max_col + 1);
+                        self.buffer.delete_range(block_start, block_end);
+                    }
+                    self.buffer.set_cursor_position(LineCol::new(start.line, min_col));
                 } else {
                     // Charwise: need to handle end position inclusively
                     let end_inclusive = self.visual_end_inclusive(end);
@@ -852,6 +870,27 @@ impl EditorState {
                         }
                     }
                     self.buffer.set_yank_register(yanked);
+                } else if mode == Mode::VisualBlock {
+                    // Block yank: yank rectangular region
+                    let (min_col, max_col) = if anchor.col <= cursor.col {
+                        (anchor.col, cursor.col)
+                    } else {
+                        (cursor.col, anchor.col)
+                    };
+                    let mut yanked = String::new();
+                    for line_idx in start.line..=end.line {
+                        if let Some(line) = self.buffer.line(line_idx as usize) {
+                            let chars: Vec<char> = line.chars().collect();
+                            let start_idx = min_col as usize;
+                            let end_idx = (max_col as usize + 1).min(chars.len());
+                            if start_idx < chars.len() {
+                                yanked.extend(&chars[start_idx..end_idx]);
+                            }
+                            yanked.push('\n');
+                        }
+                    }
+                    self.buffer.set_yank_register(yanked);
+                    self.buffer.set_cursor_position(LineCol::new(start.line, min_col));
                 } else {
                     let end_inclusive = self.visual_end_inclusive(end);
                     self.buffer.yank_range(start, end_inclusive);
@@ -871,6 +910,20 @@ impl EditorState {
                     }
                     // Insert a new line and enter insert mode
                     self.buffer.set_cursor_position(LineCol::new(start.line, 0));
+                } else if mode == Mode::VisualBlock {
+                    // Block change: delete rectangular region and enter insert
+                    let (min_col, max_col) = if anchor.col <= cursor.col {
+                        (anchor.col, cursor.col)
+                    } else {
+                        (cursor.col, anchor.col)
+                    };
+                    // Delete from bottom to top to preserve line numbers
+                    for line_idx in (start.line..=end.line).rev() {
+                        let block_start = LineCol::new(line_idx, min_col);
+                        let block_end = LineCol::new(line_idx, max_col + 1);
+                        self.buffer.delete_range(block_start, block_end);
+                    }
+                    self.buffer.set_cursor_position(LineCol::new(start.line, min_col));
                 } else {
                     let end_inclusive = self.visual_end_inclusive(end);
                     self.buffer.delete_range(start, end_inclusive);
@@ -2346,5 +2399,56 @@ mod tests {
         // Ctrl-i should go forward
         state.apply_action(EditorAction::JumpListNewer);
         assert_eq!(state.buffer().cursor().position.line, end_pos.line);
+    }
+
+    #[test]
+    fn visual_block_mode_entry() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "abc\ndef\nghi".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Enter visual block mode
+        state.apply_action(EditorAction::EnterVisualBlockMode);
+        state.mode_handler.set_mode(Mode::VisualBlock);
+        
+        assert_eq!(state.mode(), Mode::VisualBlock);
+        assert!(state.visual_anchor.is_some());
+    }
+
+    #[test]
+    fn visual_block_delete() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "abcd\nefgh\nijkl".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to position (0, 1) - start at 'b'
+        state.apply_action(EditorAction::FileStart);
+        state.buffer.move_right(); // Now at col 1
+        
+        // Enter visual block mode
+        state.visual_anchor = Some(LineCol::new(0, 1));
+        state.mode_handler.set_mode(Mode::VisualBlock);
+        
+        // Move cursor to (1, 2) to select 'bc' on line 0 and 'fg' on line 1
+        state.buffer.set_cursor_position(LineCol::new(1, 2));
+        
+        // Delete the block
+        state.apply_visual_operator(Operator::Delete);
+        
+        // First line should be "ad" (b and c deleted)
+        // Second line should be "eh" (f and g deleted)
+        let content = state.buffer().content();
+        let lines: Vec<&str> = content.lines().collect();
+        assert_eq!(lines[0], "ad");
+        assert_eq!(lines[1], "eh");
     }
 }

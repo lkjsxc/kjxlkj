@@ -157,6 +157,8 @@ pub enum EditorAction {
     EnterVisualMode,
     /// Enter visual line mode.
     EnterVisualLineMode,
+    /// Enter visual block mode.
+    EnterVisualBlockMode,
     /// Enter replace mode.
     EnterReplaceMode,
     /// Enter command mode.
