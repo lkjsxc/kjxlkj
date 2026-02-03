@@ -195,6 +195,8 @@ pub enum EditorAction {
     EnterInsertModeEndOfLine,
     /// Open line below and enter insert mode.
     OpenLineBelow,
+    /// Open line above and enter insert mode.
+    OpenLineAbove,
     /// Enter visual mode.
     EnterVisualMode,
     /// Enter visual line mode.

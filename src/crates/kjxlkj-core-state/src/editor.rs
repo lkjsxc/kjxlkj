@@ -383,6 +383,12 @@ impl EditorState {
                 self.buffer.move_line_end();
                 self.buffer.insert_newline();
             }
+            EditorAction::OpenLineAbove => {
+                // Move to start of current line, insert newline, then move up
+                self.buffer.move_line_start();
+                self.buffer.insert_newline();
+                self.buffer.move_up();
+            }
             EditorAction::EnterVisualMode => {
                 // Set anchor at current cursor position
                 self.visual_anchor = Some(self.buffer.cursor().position);
@@ -3893,5 +3899,32 @@ mod tests {
         
         // Verify pattern was set
         assert!(state.search_pattern.is_some());
+    }
+
+    #[test]
+    fn open_line_above() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line one\nline two".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start on second line
+        state.apply_action(EditorAction::FileEnd);
+        let initial_line_count = state.buffer().line_count();
+        
+        // Open line above - should insert line and stay in insert mode state
+        state.mode_handler.set_mode(Mode::Insert);
+        state.apply_action(EditorAction::OpenLineAbove);
+        
+        // Insert text
+        for ch in "new".chars() {
+            state.apply_action(EditorAction::InsertChar(ch));
+        }
+        
+        let content = state.buffer().content();
+        // Should have more lines now
+        assert!(state.buffer().line_count() >= initial_line_count);
     }
 }

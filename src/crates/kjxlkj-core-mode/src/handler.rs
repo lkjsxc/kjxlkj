@@ -238,6 +238,10 @@ impl ModeHandler {
                     self.state.set_mode(Mode::Insert);
                     EditorAction::OpenLineBelow
                 }
+                "O" => {
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::OpenLineAbove
+                }
                 "J" => EditorAction::JoinLines,
                 "gJ" => EditorAction::JoinLinesNoSpace,
                 
