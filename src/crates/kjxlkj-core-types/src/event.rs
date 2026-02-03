@@ -193,6 +193,10 @@ pub enum EditorAction {
     PlayMacro(char),
     /// Repeat last played macro.
     RepeatLastMacro,
+    /// Jump to older position in jump list (Ctrl-o).
+    JumpListOlder,
+    /// Jump to newer position in jump list (Ctrl-i).
+    JumpListNewer,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

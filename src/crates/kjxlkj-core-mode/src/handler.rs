@@ -329,6 +329,10 @@ impl ModeHandler {
             action
         } else if key.is_ctrl('r') {
             EditorAction::Redo
+        } else if key.is_ctrl('o') {
+            EditorAction::JumpListOlder
+        } else if key.is_ctrl('i') {
+            EditorAction::JumpListNewer
         } else if key.is_arrow_left() {
             EditorAction::CursorLeft
         } else if key.is_arrow_right() {

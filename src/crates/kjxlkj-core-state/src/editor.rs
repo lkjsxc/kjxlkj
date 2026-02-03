@@ -68,6 +68,10 @@ pub struct EditorState {
     macro_recording_keys: Vec<String>,
     /// Last macro register used for @@ repeat.
     last_macro_register: Option<char>,
+    /// Jump list for Ctrl-o / Ctrl-i navigation.
+    jump_list: Vec<LineCol>,
+    /// Current position in jump list (index into jump_list).
+    jump_list_index: usize,
 }
 
 impl EditorState {
@@ -95,6 +99,8 @@ impl EditorState {
             macro_recording_register: None,
             macro_recording_keys: Vec::new(),
             last_macro_register: None,
+            jump_list: Vec::new(),
+            jump_list_index: 0,
         }
     }
 
@@ -188,8 +194,14 @@ impl EditorState {
             EditorAction::WORDBackward => self.buffer.move_word_backward(), // TODO: WORD semantics
             EditorAction::WordEnd => self.buffer.move_word_end(),
             EditorAction::WORDEnd => self.buffer.move_word_end(), // TODO: WORD semantics
-            EditorAction::FileStart => self.buffer.move_file_start(),
-            EditorAction::FileEnd => self.buffer.move_file_end(),
+            EditorAction::FileStart => {
+                self.add_to_jump_list();
+                self.buffer.move_file_start();
+            }
+            EditorAction::FileEnd => {
+                self.add_to_jump_list();
+                self.buffer.move_file_end();
+            }
             EditorAction::FindCharForward(ch) => {
                 if self.buffer.find_char_forward(ch) {
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -300,15 +312,18 @@ impl EditorState {
                 self.search_forward = false;
             }
             EditorAction::ExecuteSearch(pattern) => {
+                self.add_to_jump_list();
                 if !pattern.is_empty() {
                     self.search_pattern = Some(pattern.clone());
                 }
                 self.search_next_match(self.search_forward);
             }
             EditorAction::SearchNext => {
+                self.add_to_jump_list();
                 self.search_next_match(self.search_forward);
             }
             EditorAction::SearchPrev => {
+                self.add_to_jump_list();
                 self.search_next_match(!self.search_forward);
             }
             EditorAction::VisualDelete => {
@@ -388,6 +403,7 @@ impl EditorState {
             }
             EditorAction::JumpToMarkExact(mark) => {
                 if let Some(pos) = self.marks.get(&mark).copied() {
+                    self.add_to_jump_list();
                     self.buffer.cursor_mut().position = pos;
                 } else {
                     self.status_message = Some(format!("Mark '{}' not set", mark));
@@ -395,6 +411,7 @@ impl EditorState {
             }
             EditorAction::JumpToMarkLine(mark) => {
                 if let Some(pos) = self.marks.get(&mark).copied() {
+                    self.add_to_jump_list();
                     self.buffer.cursor_mut().position.line = pos.line;
                     self.buffer.move_first_non_blank();
                 } else {
@@ -428,6 +445,12 @@ impl EditorState {
                 } else {
                     self.status_message = Some("Pattern not found".to_string());
                 }
+            }
+            EditorAction::JumpListOlder => {
+                self.jump_list_older();
+            }
+            EditorAction::JumpListNewer => {
+                self.jump_list_newer();
             }
             EditorAction::Nop => {}
         }
@@ -529,6 +552,70 @@ impl EditorState {
         if self.macro_recording_register.is_some() {
             self.macro_recording_keys.push(key.to_string());
         }
+    }
+
+    /// Add the current position to the jump list.
+    /// This should be called before any "jump" command.
+    fn add_to_jump_list(&mut self) {
+        let pos = self.buffer.cursor().position;
+        
+        // Don't add duplicate consecutive entries
+        if let Some(last) = self.jump_list.last() {
+            if *last == pos {
+                return;
+            }
+        }
+        
+        // If we're not at the end of the list, truncate it
+        // (this handles the "branch" behavior when jumping back then making a new jump)
+        if self.jump_list_index < self.jump_list.len() {
+            self.jump_list.truncate(self.jump_list_index);
+        }
+        
+        // Add the new position
+        self.jump_list.push(pos);
+        self.jump_list_index = self.jump_list.len();
+        
+        // Limit jump list size (Vim uses 100)
+        const MAX_JUMP_LIST_SIZE: usize = 100;
+        if self.jump_list.len() > MAX_JUMP_LIST_SIZE {
+            self.jump_list.remove(0);
+            self.jump_list_index = self.jump_list.len();
+        }
+    }
+
+    /// Jump to an older position in the jump list (Ctrl-o).
+    fn jump_list_older(&mut self) {
+        if self.jump_list.is_empty() || self.jump_list_index == 0 {
+            self.status_message = Some("No older jump".to_string());
+            return;
+        }
+        
+        // If at the end, save current position first
+        if self.jump_list_index == self.jump_list.len() {
+            let pos = self.buffer.cursor().position;
+            // Only add if different from last entry
+            if self.jump_list.last().map_or(true, |last| *last != pos) {
+                self.jump_list.push(pos);
+                // Don't increment index since we're about to go back
+            }
+        }
+        
+        self.jump_list_index -= 1;
+        let pos = self.jump_list[self.jump_list_index];
+        self.buffer.cursor_mut().position = pos;
+    }
+
+    /// Jump to a newer position in the jump list (Ctrl-i).
+    fn jump_list_newer(&mut self) {
+        if self.jump_list_index >= self.jump_list.len().saturating_sub(1) {
+            self.status_message = Some("No newer jump".to_string());
+            return;
+        }
+        
+        self.jump_list_index += 1;
+        let pos = self.jump_list[self.jump_list_index];
+        self.buffer.cursor_mut().position = pos;
     }
 
     /// Apply substitute command on the current line.
@@ -2197,5 +2284,67 @@ mod tests {
         // (This is a simplified check - real implementation would store "@a")
         let macro_b = state.registers.get(&'b');
         assert!(macro_b.is_some(), "macro b should be recorded");
+    }
+
+    #[test]
+    fn jump_list_tracks_search_jumps() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line one\nline two\nfind this".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        assert_eq!(state.buffer().cursor().position.line, 0);
+        
+        // Search for "find"
+        state.search_forward = true;
+        state.search_pattern = Some("find".to_string());
+        state.apply_action(EditorAction::SearchNext);
+        
+        // Should be on line 2 now
+        assert_eq!(state.buffer().cursor().position.line, 2);
+        
+        // Jump back with Ctrl-o
+        state.apply_action(EditorAction::JumpListOlder);
+        
+        // Should be back to line 0
+        assert_eq!(state.buffer().cursor().position.line, 0);
+    }
+
+    #[test]
+    fn jump_list_ctrl_o_and_ctrl_i() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line 0\nline 1\nline 2\nline 3\nline 4".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start at beginning
+        state.apply_action(EditorAction::FileStart);
+        let start_pos = state.buffer().cursor().position;
+        
+        // Jump to end (adds to jump list)
+        state.apply_action(EditorAction::FileEnd);
+        let end_pos = state.buffer().cursor().position;
+        assert!(end_pos.line > start_pos.line);
+        
+        // Jump to start again
+        state.apply_action(EditorAction::FileStart);
+        
+        // Now Ctrl-o should go back through the jumps
+        state.apply_action(EditorAction::JumpListOlder);
+        assert_eq!(state.buffer().cursor().position.line, end_pos.line);
+        
+        // Ctrl-o again
+        state.apply_action(EditorAction::JumpListOlder);
+        assert_eq!(state.buffer().cursor().position.line, start_pos.line);
+        
+        // Ctrl-i should go forward
+        state.apply_action(EditorAction::JumpListNewer);
+        assert_eq!(state.buffer().cursor().position.line, end_pos.line);
     }
 }
