@@ -33,3 +33,10 @@ Bring documentation into full compliance with structure and link policies:
 
 - Ensure docs consistently reflect this repository’s scope and artifacts.
 - If implementation code is not present here, docs MUST say so unambiguously.
+- Use the plan: [/docs/todo/plan/repository-scope/README.md](/docs/todo/plan/repository-scope/README.md)
+
+## Deep dives
+
+| Area | Entry |
+|------|-------|
+| Repository scope consistency | [repo-scope/README.md](repo-scope/README.md) |

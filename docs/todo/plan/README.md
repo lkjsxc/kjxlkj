@@ -16,6 +16,7 @@ Define a deeply structured, implementation-ordered plan for:
 |----------|-------|
 | [reading/README.md](reading/README.md) | Reading order and comprehension workflow |
 | [docs-topology/README.md](docs-topology/README.md) | Link, structure, and policy compliance |
+| [repository-scope/README.md](repository-scope/README.md) | Repository scope and artifact consistency |
 | [cursor-viewport-input/README.md](cursor-viewport-input/README.md) | Cursor, viewport, and input ordering |
 | [terminal/README.md](terminal/README.md) | Integrated terminal specification plan |
 | [testing/README.md](testing/README.md) | Test strategy and acceptance criteria plan |
