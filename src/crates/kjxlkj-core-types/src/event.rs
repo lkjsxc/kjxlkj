@@ -173,6 +173,8 @@ pub enum EditorAction {
     VisualYank,
     /// Change visual selection (delete and enter insert mode).
     VisualChange,
+    /// Repeat last change (dot command).
+    RepeatLastChange,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

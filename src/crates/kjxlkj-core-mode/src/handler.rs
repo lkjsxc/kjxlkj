@@ -262,6 +262,7 @@ impl ModeHandler {
                 "x" => EditorAction::DeleteCharAt,
                 "p" => EditorAction::PasteAfter,
                 "u" => EditorAction::Undo,
+                "." => EditorAction::RepeatLastChange,
                 
                 _ => {
                     // Handle f{char}, t{char}, F{char}, T{char}

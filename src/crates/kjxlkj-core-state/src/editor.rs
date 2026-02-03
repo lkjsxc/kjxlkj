@@ -16,6 +16,19 @@ pub enum FindCharDirection {
     TillBackward,
 }
 
+/// A repeatable change for the dot command.
+#[derive(Debug, Clone)]
+pub enum RepeatableChange {
+    /// Operator with motion (e.g., dw, cw, ye).
+    OperatorMotion { operator: Operator, motion: Motion, count: Option<u32> },
+    /// Operator with text object (e.g., diw, ci").
+    OperatorTextObject { operator: Operator, text_object: TextObject },
+    /// Delete character at cursor (x).
+    DeleteCharAt,
+    /// Insert text (the text inserted before returning to normal mode).
+    InsertText(String),
+}
+
 /// The core editor state - single writer, owns all mutable state.
 #[derive(Debug)]
 pub struct EditorState {
@@ -37,6 +50,10 @@ pub struct EditorState {
     visual_anchor: Option<LineCol>,
     /// Last find char command for ; and , repeat.
     last_find_char: Option<(char, FindCharDirection)>,
+    /// Last repeatable change for dot command.
+    last_change: Option<RepeatableChange>,
+    /// Text being inserted (for tracking insert mode changes).
+    insert_buffer: String,
 }
 
 impl EditorState {
@@ -56,6 +73,8 @@ impl EditorState {
             search_forward: true,
             visual_anchor: None,
             last_find_char: None,
+            last_change: None,
+            insert_buffer: String::new(),
         }
     }
 
@@ -165,17 +184,32 @@ impl EditorState {
             EditorAction::RepeatFindCharReverse => {
                 self.repeat_find_char(true);
             }
-            EditorAction::InsertChar(ch) => self.buffer.insert_char(ch),
+            EditorAction::InsertChar(ch) => {
+                self.insert_buffer.push(ch);
+                self.buffer.insert_char(ch);
+            }
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
-            EditorAction::DeleteCharAt => self.buffer.delete_char_at(),
+            EditorAction::DeleteCharAt => {
+                self.last_change = Some(RepeatableChange::DeleteCharAt);
+                self.buffer.delete_char_at();
+            }
             EditorAction::DeleteLine => self.buffer.delete_line(),
             EditorAction::YankLine => self.buffer.yank_line(),
             EditorAction::PasteAfter => self.buffer.paste_after(),
             EditorAction::OperatorMotion { operator, motion, count } => {
+                self.last_change = Some(RepeatableChange::OperatorMotion {
+                    operator: operator.clone(),
+                    motion: motion.clone(),
+                    count,
+                });
                 self.apply_operator_motion(operator, motion, count);
             }
             EditorAction::OperatorTextObject { operator, text_object } => {
+                self.last_change = Some(RepeatableChange::OperatorTextObject {
+                    operator: operator.clone(),
+                    text_object: text_object.clone(),
+                });
                 self.apply_operator_text_object(operator, text_object);
             }
             EditorAction::Undo => {
@@ -193,8 +227,10 @@ impl EditorState {
                 self.buffer.move_right();
             }
             EditorAction::EnterInsertModeEndOfLine => {
-                self.buffer.move_line_end();
-                self.buffer.move_right();
+                // Position cursor past the last character for insert mode
+                let line = self.buffer.cursor().position.line as usize;
+                let line_len = self.buffer.line_len(line).unwrap_or(0);
+                self.buffer.cursor_mut().position.col = line_len as u32;
             }
             EditorAction::OpenLineBelow => {
                 self.buffer.move_line_end();
@@ -238,6 +274,12 @@ impl EditorState {
                 self.apply_visual_operator(Operator::Change);
             }
             EditorAction::ReturnToNormalMode => {
+                // Save any inserted text as the last repeatable change
+                if !self.insert_buffer.is_empty() {
+                    self.last_change = Some(RepeatableChange::InsertText(
+                        std::mem::take(&mut self.insert_buffer),
+                    ));
+                }
                 self.visual_anchor = None;
                 self.buffer.clamp_cursor();
             }
@@ -271,6 +313,26 @@ impl EditorState {
             }
             EditorAction::RunExternal(cmd) => {
                 self.status_message = Some(format!(":{}", cmd));
+            }
+            EditorAction::RepeatLastChange => {
+                if let Some(change) = self.last_change.clone() {
+                    match change {
+                        RepeatableChange::OperatorMotion { operator, motion, count } => {
+                            self.apply_operator_motion(operator, motion, count);
+                        }
+                        RepeatableChange::OperatorTextObject { operator, text_object } => {
+                            self.apply_operator_text_object(operator, text_object);
+                        }
+                        RepeatableChange::DeleteCharAt => {
+                            self.buffer.delete_char_at();
+                        }
+                        RepeatableChange::InsertText(text) => {
+                            for ch in text.chars() {
+                                self.buffer.insert_char(ch);
+                            }
+                        }
+                    }
+                }
             }
             EditorAction::Nop => {}
         }
@@ -1578,5 +1640,87 @@ mod tests {
         
         // Next 'a' is at column 6
         assert_eq!(state.buffer().cursor().position.col, 6);
+    }
+
+    #[test]
+    fn dot_repeats_operator_motion() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "aaa bbb ccc".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // dw deletes first word
+        state.handle_key(key('d'));
+        state.handle_key(key('w'));
+        assert_eq!(state.buffer().content(), "bbb ccc");
+        
+        // . repeats dw
+        state.handle_key(key('.'));
+        assert_eq!(state.buffer().content(), "ccc");
+    }
+
+    #[test]
+    fn dot_repeats_delete_char() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // x deletes one character
+        state.handle_key(key('x'));
+        assert_eq!(state.buffer().content(), "ello");
+        
+        // . repeats x
+        state.handle_key(key('.'));
+        assert_eq!(state.buffer().content(), "llo");
+        
+        // . again
+        state.handle_key(key('.'));
+        assert_eq!(state.buffer().content(), "lo");
+    }
+
+    #[test]
+    fn dot_repeats_insert_text() {
+        let mut state = EditorState::new();
+        
+        // Insert "ab" using i
+        state.handle_key(key('i'));
+        state.handle_key(key('a'));
+        state.handle_key(key('b'));
+        state.handle_key(esc());
+        assert_eq!(state.buffer().content(), "ab");
+        
+        // Go to start and insert "cd"
+        state.handle_key(key('0')); // go to start
+        state.handle_key(key('i')); // insert mode
+        state.handle_key(key('c'));
+        state.handle_key(key('d'));
+        state.handle_key(esc());
+        
+        // Now we have "cdab", last insert was "cd"
+        assert_eq!(state.buffer().content(), "cdab");
+        
+        // Go to end and . repeats the insert
+        // Cursor is now on 'd' (col 1). Move to end:
+        state.handle_key(key('$')); // go to end (on 'b')
+        
+        // . repeats inserting "cd" at current position
+        state.handle_key(key('.'));
+        // Cursor on 'b' (col 3), insert "cd" before it: "cdacdb"
+        assert_eq!(state.buffer().content(), "cdacdb");
     }
 }
