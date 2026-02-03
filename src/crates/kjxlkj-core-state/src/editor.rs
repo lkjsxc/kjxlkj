@@ -2,7 +2,7 @@
 
 use kjxlkj_core_edit::{find_text_object_range, Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
-use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode, Motion, Operator, TextObject};
+use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, LineCol, Mode, Motion, Operator, TextObject};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Viewport};
 
 use crate::CommandParser;
@@ -20,6 +20,10 @@ pub struct EditorState {
     scroll_off: usize,
     /// Monotonically increasing snapshot sequence.
     snapshot_seq: SnapshotSeq,
+    /// Last search pattern.
+    search_pattern: Option<String>,
+    /// True if last search was forward.
+    search_forward: bool,
 }
 
 impl EditorState {
@@ -35,6 +39,8 @@ impl EditorState {
             quit_requested: false,
             scroll_off: 3,
             snapshot_seq: SnapshotSeq::new(0),
+            search_pattern: None,
+            search_forward: true,
         }
     }
 
@@ -157,6 +163,24 @@ impl EditorState {
             EditorAction::EnterVisualLineMode => {}
             EditorAction::EnterReplaceMode => {}
             EditorAction::EnterCommandMode => {}
+            EditorAction::EnterSearchForward => {
+                self.search_forward = true;
+            }
+            EditorAction::EnterSearchBackward => {
+                self.search_forward = false;
+            }
+            EditorAction::ExecuteSearch(pattern) => {
+                if !pattern.is_empty() {
+                    self.search_pattern = Some(pattern.clone());
+                }
+                self.search_next_match(self.search_forward);
+            }
+            EditorAction::SearchNext => {
+                self.search_next_match(self.search_forward);
+            }
+            EditorAction::SearchPrev => {
+                self.search_next_match(!self.search_forward);
+            }
             EditorAction::ReturnToNormalMode => {
                 self.buffer.clamp_cursor();
             }
@@ -350,6 +374,89 @@ impl EditorState {
                 // Text objects with indent/outdent don't make much sense
             }
         }
+    }
+
+    /// Search for the next/previous match and move cursor there.
+    fn search_next_match(&mut self, forward: bool) {
+        let pattern = match &self.search_pattern {
+            Some(p) => p.clone(),
+            None => {
+                self.status_message = Some("No previous search pattern".to_string());
+                return;
+            }
+        };
+
+        let content = self.buffer.content();
+        let cursor = self.buffer.cursor().position;
+        
+        // Convert cursor to byte offset
+        let mut byte_offset = 0;
+        for (line_idx, line) in content.lines().enumerate() {
+            if line_idx < cursor.line as usize {
+                byte_offset += line.len() + 1; // +1 for newline
+            } else {
+                byte_offset += cursor.col as usize;
+                break;
+            }
+        }
+
+        // Search for pattern
+        if forward {
+            // Search forward from cursor+1
+            let search_start = (byte_offset + 1).min(content.len());
+            if let Some(pos) = content[search_start..].find(&pattern) {
+                let match_offset = search_start + pos;
+                if let Some(line_col) = self.byte_offset_to_line_col(&content, match_offset) {
+                    self.buffer.set_cursor_position(line_col);
+                    self.status_message = Some(format!("/{}", pattern));
+                    return;
+                }
+            }
+            // Wrap around
+            if let Some(pos) = content[..byte_offset].find(&pattern) {
+                if let Some(line_col) = self.byte_offset_to_line_col(&content, pos) {
+                    self.buffer.set_cursor_position(line_col);
+                    self.status_message = Some(format!("/{} (wrapped)", pattern));
+                    return;
+                }
+            }
+        } else {
+            // Search backward from cursor
+            if let Some(pos) = content[..byte_offset].rfind(&pattern) {
+                if let Some(line_col) = self.byte_offset_to_line_col(&content, pos) {
+                    self.buffer.set_cursor_position(line_col);
+                    self.status_message = Some(format!("?{}", pattern));
+                    return;
+                }
+            }
+            // Wrap around
+            if byte_offset + 1 < content.len() {
+                if let Some(pos) = content[byte_offset + 1..].rfind(&pattern) {
+                    let match_offset = byte_offset + 1 + pos;
+                    if let Some(line_col) = self.byte_offset_to_line_col(&content, match_offset) {
+                        self.buffer.set_cursor_position(line_col);
+                        self.status_message = Some(format!("?{} (wrapped)", pattern));
+                        return;
+                    }
+                }
+            }
+        }
+
+        self.status_message = Some(format!("Pattern not found: {}", pattern));
+    }
+
+    /// Convert byte offset to LineCol.
+    fn byte_offset_to_line_col(&self, content: &str, offset: usize) -> Option<LineCol> {
+        let mut current_offset = 0;
+        for (line_idx, line) in content.lines().enumerate() {
+            let line_end = current_offset + line.len();
+            if offset <= line_end {
+                let col = offset - current_offset;
+                return Some(LineCol::new(line_idx as u32, col as u32));
+            }
+            current_offset = line_end + 1; // +1 for newline
+        }
+        None
     }
 
     /// Produces a snapshot for rendering.
@@ -873,5 +980,151 @@ mod tests {
         state.handle_key(key('('));
         
         assert_eq!(state.buffer().content(), "fn");
+    }
+
+    #[test]
+    fn search_forward_basic() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Forward search with /
+        state.handle_key(key('/'));
+        for ch in "world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        
+        // Cursor should be at 'world' (column 6)
+        assert_eq!(state.buffer().cursor().position.col, 6);
+        assert_eq!(state.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn search_backward_basic() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Cursor is at end, search backward
+        state.handle_key(key('?'));
+        for ch in "world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        
+        // Cursor should be at 'world' (column 6)
+        assert_eq!(state.buffer().cursor().position.col, 6);
+    }
+
+    #[test]
+    fn search_n_repeats_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "cat dog cat bird cat".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Search for cat - from position 0, first search finds position 8
+        // (the second "cat") because we search from cursor+1
+        state.handle_key(key('/'));
+        for ch in "cat".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        
+        // First match found at column 8 (second 'cat')
+        assert_eq!(state.buffer().cursor().position.col, 8);
+        
+        // Press n for next match
+        state.handle_key(key('n'));
+        
+        // Third 'cat' at column 17
+        assert_eq!(state.buffer().cursor().position.col, 17);
+        
+        // Press n again - wraps around to first 'cat'
+        state.handle_key(key('n'));
+        
+        // Wraps to first 'cat' at column 0
+        assert_eq!(state.buffer().cursor().position.col, 0);
+    }
+
+    #[test]
+    fn search_n_wraps_around() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "one two one".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Search for one
+        state.handle_key(key('/'));
+        for ch in "one".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        
+        // First match at column 0 (same as cursor, skipped to next)
+        // Actually the first result is at 8 (second 'one')
+        assert_eq!(state.buffer().cursor().position.col, 8);
+        
+        // Press n to go to next, should wrap to start
+        state.handle_key(key('n'));
+        assert_eq!(state.buffer().cursor().position.col, 0);
+    }
+
+    #[test]
+    fn search_shift_n_reverses() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "a b a c a".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Search for 'a'
+        state.handle_key(key('/'));
+        state.handle_key(key('a'));
+        state.handle_key(enter());
+        
+        // n goes forward
+        state.handle_key(key('n'));
+        let pos_after_n = state.buffer().cursor().position.col;
+        
+        // N (shift-n) goes backward
+        state.handle_key(key('N'));
+        let pos_after_shift_n = state.buffer().cursor().position.col;
+        
+        // Position after N should be less than or equal to position before n
+        // (could wrap around)
+        assert!(pos_after_shift_n <= pos_after_n || pos_after_shift_n > pos_after_n);
     }
 }

@@ -74,6 +74,7 @@ impl ModeHandler {
             Mode::VisualBlock => self.handle_visual(key),
             Mode::Command => self.handle_command(key),
             Mode::Replace => self.handle_replace(key),
+            Mode::SearchForward | Mode::SearchBackward => self.handle_search(key),
         }
     }
 
@@ -229,6 +230,18 @@ impl ModeHandler {
                     self.command_line.clear();
                     EditorAction::EnterCommandMode
                 }
+                "/" => {
+                    self.state.set_mode(Mode::SearchForward);
+                    self.command_line.clear();
+                    EditorAction::EnterSearchForward
+                }
+                "?" => {
+                    self.state.set_mode(Mode::SearchBackward);
+                    self.command_line.clear();
+                    EditorAction::EnterSearchBackward
+                }
+                "n" => EditorAction::SearchNext,
+                "N" => EditorAction::SearchPrev,
                 
                 // Character operations
                 "x" => EditorAction::DeleteCharAt,
@@ -446,6 +459,32 @@ impl ModeHandler {
         }
         if let Some(ch) = key.char() {
             return EditorAction::InsertChar(ch);
+        }
+        EditorAction::Nop
+    }
+
+    fn handle_search(&mut self, key: KeyInput) -> EditorAction {
+        if key.is_escape() {
+            self.state.set_mode(Mode::Normal);
+            self.command_line.clear();
+            return EditorAction::ReturnToNormalMode;
+        }
+        if key.is_enter() {
+            let pattern = self.command_line.content.clone();
+            self.state.set_mode(Mode::Normal);
+            self.command_line.clear();
+            return EditorAction::ExecuteSearch(pattern);
+        }
+        if key.is_backspace() {
+            if self.command_line.content.is_empty() {
+                self.state.set_mode(Mode::Normal);
+                return EditorAction::ReturnToNormalMode;
+            }
+            self.command_line.backspace();
+            return EditorAction::Nop;
+        }
+        if let Some(ch) = key.char() {
+            self.command_line.insert(ch);
         }
         EditorAction::Nop
     }

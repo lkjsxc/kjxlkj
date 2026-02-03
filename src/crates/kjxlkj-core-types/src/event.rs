@@ -137,6 +137,16 @@ pub enum EditorAction {
     EnterReplaceMode,
     /// Enter command mode.
     EnterCommandMode,
+    /// Enter search mode (forward /).
+    EnterSearchForward,
+    /// Enter search mode (backward ?).
+    EnterSearchBackward,
+    /// Execute search with pattern.
+    ExecuteSearch(String),
+    /// Go to next search match (n).
+    SearchNext,
+    /// Go to previous search match (N).
+    SearchPrev,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

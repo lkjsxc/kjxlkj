@@ -19,6 +19,10 @@ pub enum Mode {
     Command,
     /// Replace mode - overwrite text.
     Replace,
+    /// Search mode - pattern entry (forward /).
+    SearchForward,
+    /// Search mode - pattern entry (backward ?).
+    SearchBackward,
 }
 
 impl Mode {
@@ -42,6 +46,8 @@ impl Mode {
             Mode::VisualBlock => "V-BLOCK",
             Mode::Command => "COMMAND",
             Mode::Replace => "REPLACE",
+            Mode::SearchForward => "SEARCH",
+            Mode::SearchBackward => "SEARCH",
         }
     }
 }

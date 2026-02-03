@@ -89,6 +89,21 @@ Operators (`d`, `y`, `c`) can be combined with text objects:
 | `i{` / `i}` / `iB` | Inner braces |
 | `a{` / `a}` / `aB` | Around braces |
 
+### Search
+
+| Key | Mode | Action |
+|---|---|---|
+| `/` | Normal | Enter forward search mode |
+| `?` | Normal | Enter backward search mode |
+| `n` | Normal | Repeat last search (same direction) |
+| `N` | Normal | Repeat last search (opposite direction) |
+
+Search behavior:
+- Search starts from cursor+1 position (forward) or cursor position (backward)
+- Search wraps around file boundaries (`wrapscan` behavior)
+- Pattern is stored and reused for `n`/`N` navigation
+- Status message shows current search pattern and wrap status
+
 ### Command-line (Ex) commands (subset)
 
 | Command | Behavior |
