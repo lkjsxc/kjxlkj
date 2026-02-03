@@ -2,6 +2,8 @@
 
 kjxlkj is a Neovim-inspired TUI text editor written in Rust.
 
+This repository is "All in Docs".
+
 This repository is optimized for machine (LLM) parsing and editing. This statement appears only here and in docs/README.md + docs/policy/README.md to avoid scattering it across leaf documents.
 
 ## Docs
