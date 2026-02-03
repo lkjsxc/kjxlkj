@@ -24,6 +24,8 @@ pub struct EditorState {
     search_pattern: Option<String>,
     /// True if last search was forward.
     search_forward: bool,
+    /// Visual mode anchor (starting position of selection).
+    visual_anchor: Option<LineCol>,
 }
 
 impl EditorState {
@@ -41,6 +43,7 @@ impl EditorState {
             snapshot_seq: SnapshotSeq::new(0),
             search_pattern: None,
             search_forward: true,
+            visual_anchor: None,
         }
     }
 
@@ -159,8 +162,14 @@ impl EditorState {
                 self.buffer.move_line_end();
                 self.buffer.insert_newline();
             }
-            EditorAction::EnterVisualMode => {}
-            EditorAction::EnterVisualLineMode => {}
+            EditorAction::EnterVisualMode => {
+                // Set anchor at current cursor position
+                self.visual_anchor = Some(self.buffer.cursor().position);
+            }
+            EditorAction::EnterVisualLineMode => {
+                // Set anchor at current cursor position
+                self.visual_anchor = Some(self.buffer.cursor().position);
+            }
             EditorAction::EnterReplaceMode => {}
             EditorAction::EnterCommandMode => {}
             EditorAction::EnterSearchForward => {
@@ -181,7 +190,17 @@ impl EditorState {
             EditorAction::SearchPrev => {
                 self.search_next_match(!self.search_forward);
             }
+            EditorAction::VisualDelete => {
+                self.apply_visual_operator(Operator::Delete);
+            }
+            EditorAction::VisualYank => {
+                self.apply_visual_operator(Operator::Yank);
+            }
+            EditorAction::VisualChange => {
+                self.apply_visual_operator(Operator::Change);
+            }
             EditorAction::ReturnToNormalMode => {
+                self.visual_anchor = None;
                 self.buffer.clamp_cursor();
             }
             EditorAction::ExecuteCommand(cmd) => {
@@ -374,6 +393,113 @@ impl EditorState {
                 // Text objects with indent/outdent don't make much sense
             }
         }
+    }
+
+    /// Apply operator over visual selection.
+    fn apply_visual_operator(&mut self, operator: Operator) {
+        let anchor = match self.visual_anchor {
+            Some(a) => a,
+            None => return, // No visual selection
+        };
+        
+        let cursor = self.buffer.cursor().position;
+        
+        // Determine selection range (start to end, inclusive)
+        let (start, end) = if anchor <= cursor {
+            (anchor, cursor)
+        } else {
+            (cursor, anchor)
+        };
+        
+        let mode = self.mode();
+        
+        match operator {
+            Operator::Delete => {
+                if mode == Mode::VisualLine {
+                    // Delete entire lines
+                    for _ in start.line..=end.line {
+                        // Set cursor to start line, then delete line
+                        self.buffer.set_cursor_position(LineCol::new(start.line, 0));
+                        self.buffer.delete_line();
+                    }
+                } else {
+                    // Charwise: need to handle end position inclusively
+                    let end_inclusive = self.visual_end_inclusive(end);
+                    self.buffer.delete_range(start, end_inclusive);
+                }
+                self.mode_handler.set_mode(Mode::Normal);
+                self.visual_anchor = None;
+            }
+            Operator::Yank => {
+                if mode == Mode::VisualLine {
+                    // Yank entire lines
+                    let mut yanked = String::new();
+                    for line_idx in start.line..=end.line {
+                        if let Some(line) = self.buffer.line(line_idx as usize) {
+                            yanked.push_str(&line);
+                            yanked.push('\n');
+                        }
+                    }
+                    self.buffer.set_yank_register(yanked);
+                } else {
+                    let end_inclusive = self.visual_end_inclusive(end);
+                    self.buffer.yank_range(start, end_inclusive);
+                }
+                // Move cursor to start of selection
+                self.buffer.set_cursor_position(start);
+                self.mode_handler.set_mode(Mode::Normal);
+                self.visual_anchor = None;
+            }
+            Operator::Change => {
+                if mode == Mode::VisualLine {
+                    // Delete entire lines and enter insert
+                    for _ in start.line..=end.line {
+                        self.buffer.set_cursor_position(LineCol::new(start.line, 0));
+                        self.buffer.delete_line();
+                    }
+                    // Insert a new line and enter insert mode
+                    self.buffer.set_cursor_position(LineCol::new(start.line, 0));
+                } else {
+                    let end_inclusive = self.visual_end_inclusive(end);
+                    self.buffer.delete_range(start, end_inclusive);
+                    self.buffer.set_cursor_position(start);
+                }
+                self.mode_handler.set_mode(Mode::Insert);
+                self.visual_anchor = None;
+            }
+            Operator::Indent => {
+                // Indent all lines in selection
+                for line_idx in start.line..=end.line {
+                    self.buffer.set_cursor_position(LineCol::new(line_idx, 0));
+                    self.buffer.indent_line();
+                }
+                self.mode_handler.set_mode(Mode::Normal);
+                self.visual_anchor = None;
+            }
+            Operator::Outdent => {
+                // Outdent all lines in selection
+                for line_idx in start.line..=end.line {
+                    self.buffer.set_cursor_position(LineCol::new(line_idx, 0));
+                    self.buffer.outdent_line();
+                }
+                self.mode_handler.set_mode(Mode::Normal);
+                self.visual_anchor = None;
+            }
+        }
+    }
+    
+    /// Get the inclusive end position for visual selection.
+    fn visual_end_inclusive(&self, end: LineCol) -> LineCol {
+        // In visual mode, the character under the cursor is included
+        // So we need to return the position after the end character
+        if let Some(line) = self.buffer.line(end.line as usize) {
+            let line_len = line.len() as u32;
+            if end.col < line_len {
+                return LineCol::new(end.line, end.col + 1);
+            }
+        }
+        // End of line - include newline
+        LineCol::new(end.line + 1, 0)
     }
 
     /// Search for the next/previous match and move cursor there.
@@ -1126,5 +1252,152 @@ mod tests {
         // Position after N should be less than or equal to position before n
         // (could wrap around)
         assert!(pos_after_shift_n <= pos_after_n || pos_after_shift_n > pos_after_n);
+    }
+
+    #[test]
+    fn visual_delete_selection() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Enter visual mode
+        state.handle_key(key('v'));
+        assert_eq!(state.mode(), Mode::Visual);
+        
+        // Move to select "hello"
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        
+        // Delete selection
+        state.handle_key(key('d'));
+        
+        // Should be back in normal mode
+        assert_eq!(state.mode(), Mode::Normal);
+        
+        // Content should have first 5 chars deleted
+        assert_eq!(state.buffer().content(), " world");
+    }
+
+    #[test]
+    fn visual_yank_selection() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Enter visual mode
+        state.handle_key(key('v'));
+        
+        // Move to select "hello"
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        
+        // Yank selection
+        state.handle_key(key('y'));
+        
+        // Should be back in normal mode
+        assert_eq!(state.mode(), Mode::Normal);
+        
+        // Content should be unchanged
+        assert_eq!(state.buffer().content(), "hello world");
+        
+        // Yank register should have "hello"
+        assert_eq!(state.buffer().yank_register(), "hello");
+    }
+
+    #[test]
+    fn visual_change_selection() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Enter visual mode
+        state.handle_key(key('v'));
+        
+        // Move to select "hello"
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        
+        // Change selection
+        state.handle_key(key('c'));
+        
+        // Should be in insert mode
+        assert_eq!(state.mode(), Mode::Insert);
+        
+        // Content should have "hello" deleted
+        assert_eq!(state.buffer().content(), " world");
+        
+        // Type replacement
+        for ch in "hi".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        assert_eq!(state.buffer().content(), "hi world");
+    }
+
+    #[test]
+    fn visual_line_delete() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line one".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        for ch in "line two".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        for ch in "line three".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to second line
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('j'));
+        
+        // Enter visual line mode
+        state.handle_key(key('V'));
+        assert_eq!(state.mode(), Mode::VisualLine);
+        
+        // Delete the line
+        state.handle_key(key('d'));
+        
+        // Should be back in normal mode
+        assert_eq!(state.mode(), Mode::Normal);
+        
+        // Should have two lines now
+        assert_eq!(state.buffer().line_count(), 2);
     }
 }

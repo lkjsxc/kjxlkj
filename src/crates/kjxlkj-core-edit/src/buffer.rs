@@ -108,6 +108,11 @@ impl Buffer {
         &self.yank_register
     }
 
+    /// Sets the yank register content.
+    pub fn set_yank_register(&mut self, content: String) {
+        self.yank_register = content;
+    }
+
     /// Inserts a character at the cursor position.
     pub fn insert_char(&mut self, ch: char) {
         let pos = self.cursor.position;

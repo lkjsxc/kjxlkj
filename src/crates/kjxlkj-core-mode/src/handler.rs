@@ -56,6 +56,11 @@ impl ModeHandler {
         self.state.mode()
     }
 
+    /// Sets the current mode.
+    pub fn set_mode(&mut self, mode: Mode) {
+        self.state.set_mode(mode);
+    }
+
     pub fn command_line(&self) -> &CommandLineState {
         &self.command_line
     }
@@ -414,12 +419,44 @@ impl ModeHandler {
             self.state.set_mode(Mode::Normal);
             return EditorAction::ReturnToNormalMode;
         }
+        
+        // Handle pending g for gg
+        if self.state.pending_keys() == ['g'] {
+            self.state.clear_pending();
+            if let Some('g') = key.char() {
+                return EditorAction::FileStart;
+            }
+            // Invalid after g, just ignore
+            return EditorAction::Nop;
+        }
+        
         if let Some(ch) = key.char() {
             match ch {
+                // Motions
                 'h' => return EditorAction::CursorLeft,
                 'j' => return EditorAction::CursorDown,
                 'k' => return EditorAction::CursorUp,
                 'l' => return EditorAction::CursorRight,
+                'w' => return EditorAction::WordForward,
+                'W' => return EditorAction::WORDForward,
+                'b' => return EditorAction::WordBackward,
+                'B' => return EditorAction::WORDBackward,
+                'e' => return EditorAction::WordEnd,
+                'E' => return EditorAction::WORDEnd,
+                '0' => return EditorAction::LineStart,
+                '^' => return EditorAction::FirstNonBlank,
+                '$' => return EditorAction::LineEnd,
+                'g' => {
+                    // gg - file start (pending)
+                    self.state.push_key('g');
+                    return EditorAction::Nop;
+                }
+                'G' => return EditorAction::FileEnd,
+                // Operators
+                'd' => return EditorAction::VisualDelete,
+                'x' => return EditorAction::VisualDelete,
+                'y' => return EditorAction::VisualYank,
+                'c' => return EditorAction::VisualChange,
                 _ => {}
             }
         }

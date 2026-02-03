@@ -147,6 +147,12 @@ pub enum EditorAction {
     SearchNext,
     /// Go to previous search match (N).
     SearchPrev,
+    /// Delete visual selection.
+    VisualDelete,
+    /// Yank visual selection.
+    VisualYank,
+    /// Change visual selection (delete and enter insert mode).
+    VisualChange,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

@@ -22,7 +22,8 @@ This document records the currently implemented, user-visible surface so that:
 | Normal | startup | N/A | Command/navigation mode |
 | Insert | `i`, `a`, `A`, `o` | `Esc` | Text insertion |
 | Command | `:` | `Esc`, `Enter` | Ex command entry |
-| Visual | `v` | `Esc` | Charwise selection (minimal) |
+| Visual | `v` | `Esc` | Charwise selection with operators |
+| Visual Line | `V` | `Esc` | Linewise selection with operators |
 | Replace | `R` | `Esc` | Currently behaves like Insert |
 
 ### Normal-mode keys (subset)
@@ -103,6 +104,21 @@ Search behavior:
 - Search wraps around file boundaries (`wrapscan` behavior)
 - Pattern is stored and reused for `n`/`N` navigation
 - Status message shows current search pattern and wrap status
+
+### Visual mode
+
+| Key | Action |
+|---|---|
+| `h`/`j`/`k`/`l` | Extend selection (cursor movement) |
+| `w`/`b`/`e` | Extend selection by word |
+| `0`/`^`/`$` | Extend selection to line boundaries |
+| `gg`/`G` | Extend selection to file boundaries |
+| `d`/`x` | Delete selection |
+| `y` | Yank selection |
+| `c` | Change selection (delete and enter Insert mode) |
+| `Esc` | Cancel selection, return to Normal mode |
+
+Visual Line mode (`V`) operates on entire lines for all operators.
 
 ### Command-line (Ex) commands (subset)
 
