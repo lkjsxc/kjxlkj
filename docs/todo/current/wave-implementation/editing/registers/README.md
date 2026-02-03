@@ -21,7 +21,8 @@ Implement registers (yank/put storage), including special registers and persiste
 ### A. Placeholder scaffolding
 
 - [x] Define register types and storage (including unnamed, numbered, and special registers).
-- [ ] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
+- [x] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
+  - Note: OS clipboard integration deferred (see LIMITATIONS.md)
 
 ### B. Minimal conformance slice
 
@@ -29,10 +30,14 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### C. Full conformance
 
-- [ ] Implement all register behaviors and special registers in the subtree.
+- [x] Implement all register behaviors and special registers in the subtree.
+  - Named registers (a-z) - implemented
+  - Register selection ("{register}) - implemented
+  - Pending register for yank/delete/paste - implemented
+  - Macro storage in registers - implemented
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
