@@ -4,6 +4,7 @@
 //! primitives used by the editor core.
 
 mod buffer;
+mod buffer_ops;
 mod grapheme;
 mod rope_ext;
 

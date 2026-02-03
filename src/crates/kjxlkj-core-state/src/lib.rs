@@ -3,6 +3,7 @@
 //! This crate owns the complete editor state and produces snapshots.
 
 mod apply;
+mod apply_edit;
 mod editor;
 mod registers;
 
