@@ -96,6 +96,10 @@ This document records the currently implemented, user-visible surface so that:
 | `guu` | Lowercase entire line |
 | `Ctrl-a` | Increment number under cursor |
 | `Ctrl-x` | Decrement number under cursor |
+| `Ctrl-d` | Scroll half page down |
+| `Ctrl-u` | Scroll half page up |
+| `Ctrl-f` | Scroll full page down |
+| `Ctrl-b` | Scroll full page up |
 
 ### Operators and motions
 

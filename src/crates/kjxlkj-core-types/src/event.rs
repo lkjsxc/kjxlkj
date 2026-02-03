@@ -99,6 +99,14 @@ pub enum EditorAction {
     CursorUp,
     /// Move cursor down.
     CursorDown,
+    /// Scroll half page down (Ctrl-d).
+    ScrollHalfPageDown,
+    /// Scroll half page up (Ctrl-u).
+    ScrollHalfPageUp,
+    /// Scroll full page down (Ctrl-f).
+    ScrollPageDown,
+    /// Scroll full page up (Ctrl-b).
+    ScrollPageUp,
     /// Move to start of line (column 0).
     LineStart,
     /// Move to end of line.

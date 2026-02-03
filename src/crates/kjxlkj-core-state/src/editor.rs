@@ -207,6 +207,10 @@ impl EditorState {
             EditorAction::CursorRight => self.buffer.move_right(),
             EditorAction::CursorUp => self.buffer.move_up(),
             EditorAction::CursorDown => self.buffer.move_down(),
+            EditorAction::ScrollHalfPageDown => self.scroll_half_page(true),
+            EditorAction::ScrollHalfPageUp => self.scroll_half_page(false),
+            EditorAction::ScrollPageDown => self.scroll_full_page(true),
+            EditorAction::ScrollPageUp => self.scroll_full_page(false),
             EditorAction::LineStart => self.buffer.move_line_start(),
             EditorAction::LineEnd => self.buffer.move_line_end(),
             EditorAction::FirstNonBlank => self.buffer.move_first_non_blank(),
@@ -1149,6 +1153,41 @@ impl EditorState {
         }
         
         None
+    }
+
+    /// Scroll half a page up or down, moving cursor with scroll.
+    fn scroll_half_page(&mut self, down: bool) {
+        let half_page = (self.terminal_size.1 as usize / 2).max(1);
+        let line_count = self.buffer.line_count();
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        
+        if down {
+            // Move cursor down by half page
+            let new_line = (cursor_line + half_page).min(line_count.saturating_sub(1));
+            self.buffer.cursor_mut().position.line = new_line as u32;
+        } else {
+            // Move cursor up by half page
+            let new_line = cursor_line.saturating_sub(half_page);
+            self.buffer.cursor_mut().position.line = new_line as u32;
+        }
+        // Clamp cursor column
+        self.buffer.clamp_cursor();
+    }
+
+    /// Scroll a full page up or down, moving cursor with scroll.
+    fn scroll_full_page(&mut self, down: bool) {
+        let full_page = (self.terminal_size.1 as usize).max(1);
+        let line_count = self.buffer.line_count();
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        
+        if down {
+            let new_line = (cursor_line + full_page).min(line_count.saturating_sub(1));
+            self.buffer.cursor_mut().position.line = new_line as u32;
+        } else {
+            let new_line = cursor_line.saturating_sub(full_page);
+            self.buffer.cursor_mut().position.line = new_line as u32;
+        }
+        self.buffer.clamp_cursor();
     }
 
     /// Join current line with next line.

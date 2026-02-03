@@ -405,6 +405,14 @@ impl ModeHandler {
         } else if key.is_ctrl('v') {
             self.state.set_mode(Mode::VisualBlock);
             EditorAction::EnterVisualBlockMode
+        } else if key.is_ctrl('d') {
+            EditorAction::ScrollHalfPageDown
+        } else if key.is_ctrl('u') {
+            EditorAction::ScrollHalfPageUp
+        } else if key.is_ctrl('f') {
+            EditorAction::ScrollPageDown
+        } else if key.is_ctrl('b') {
+            EditorAction::ScrollPageUp
         } else if key.is_ctrl('a') {
             let count = self.state.take_count().unwrap_or(1) as i32;
             EditorAction::IncrementNumber { amount: count }
