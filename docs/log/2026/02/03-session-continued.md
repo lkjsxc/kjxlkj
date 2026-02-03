@@ -57,9 +57,19 @@ Continued implementation of core editing features: search, visual mode operators
 - Support 'g' flag for global replacement on line
 - Add 5 tests for substitute parsing and execution
 
+### feat: implement named registers ("a, "b, etc.)
+- Add registers HashMap<char, String> to EditorState for named register storage
+- Add pending_register Option<char> for tracking selected register
+- Add SetPendingRegister action to set the register for next yank/delete/paste
+- Add "{register} handling in mode handler (f/t/m/`/' consolidated with register selection)
+- Modify yank/delete operations to store in pending register when set
+- Modify paste to use pending register content when set
+- Fix yank motion to restore cursor position after yank (vim-compatible)
+- Add 2 tests for named register yank and paste
+
 ## Current Test Count
 
-Total: 108 tests passing
+Total: 110 tests passing
 
 | Crate | Count |
 |-------|-------|
@@ -69,7 +79,7 @@ Total: 108 tests passing
 | kjxlkj-core-undo | 3 |
 | kjxlkj-core-edit | 18 |
 | kjxlkj-core-mode | 6 |
-| kjxlkj-core-state | 49 |
+| kjxlkj-core-state | 51 |
 | kjxlkj-core-ui | 5 |
 | kjxlkj-input | 2 |
 | kjxlkj-render | 1 |
@@ -101,19 +111,20 @@ Total: 108 tests passing
 - [x] Visual mode operators (d, y, c in v/V mode)
 - [x] Find char motions (f, t, F, T)
 - [x] Repeat find char (;, ,)
+- [x] Dot repeat (.)
+- [x] Marks (m, ', `)
+- [x] Substitute command (:s)
+- [x] Named registers ("a, "b, etc.)
 
 ### Pending
 - [ ] Macros (q, @)
-- [ ] Marks (m, ', `)
-- [ ] Named registers ("a, "b, etc.)
 - [ ] Block visual mode (Ctrl-v)
 - [ ] Search highlighting
-- [ ] Substitute command (:s)
 - [ ] Global command (:g)
 
 ## Next Steps
 
-1. Consider implementing dot repeat (.) for repeating last change
+1. Implement macros (q{register} to record, @{register} to play)
 2. Add more Ex commands (:set, :map, etc.)
-3. Implement marks and jump lists
-4. Add named register support
+3. Implement jump lists (Ctrl-o, Ctrl-i)
+4. Consider block visual mode (Ctrl-v)

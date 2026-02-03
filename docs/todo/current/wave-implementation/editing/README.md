@@ -50,7 +50,7 @@ Implement the editing primitives that power modal behavior:
   - count application rules
   - inclusive/exclusive motion types
   - linewise/charwise/blockwise edits
-- [ ] Define register types, storage, and persistence expectations.
+- [x] Define register types, storage, and persistence expectations.
 - [x] Define a mark model and its persistence strategy.
 
 ## Minimal conformance slice (sub-wave)
