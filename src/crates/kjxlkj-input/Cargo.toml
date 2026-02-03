@@ -1,0 +1,10 @@
+[package]
+name = "kjxlkj-input"
+version.workspace = true
+edition = "2021"
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
+crossterm = { workspace = true }

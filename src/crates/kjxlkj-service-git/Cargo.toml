@@ -1,0 +1,9 @@
+[package]
+name = "kjxlkj-service-git"
+version.workspace = true
+edition = "2021"
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }

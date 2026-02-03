@@ -1,0 +1,19 @@
+//! Git service.
+//!
+//! Git integration (placeholder).
+
+/// Placeholder Git service.
+pub struct GitService;
+
+impl GitService {
+    /// Creates a new Git service.
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl Default for GitService {
+    fn default() -> Self {
+        Self::new()
+    }
+}
