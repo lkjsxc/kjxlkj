@@ -20,12 +20,12 @@ Implement macro recording and playback, including recursion and register integra
 
 ### A. Placeholder scaffolding
 
-- [ ] Define macro representation and playback model.
+- [x] Define macro representation and playback model.
 - [ ] Define recursion handling and safety limits.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement recording/playback for a minimal set with deterministic tests.
+- [x] Implement recording/playback for a minimal set with deterministic tests.
 
 ### C. Full conformance
 

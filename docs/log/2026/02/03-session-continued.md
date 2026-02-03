@@ -67,9 +67,18 @@ Continued implementation of core editing features: search, visual mode operators
 - Fix yank motion to restore cursor position after yank (vim-compatible)
 - Add 2 tests for named register yank and paste
 
+### feat: implement macros (q{register}, @{register}, @@)
+- Add macro_recording_register, macro_recording_keys, last_macro_register to EditorState
+- Add ToggleMacroRecording, PlayMacro, RepeatLastMacro actions
+- Add q{register} to start/stop recording, @{register} to playback, @@ to repeat last
+- Intercept 'q' during recording to stop (handled in EditorState before mode handler)
+- Implement Display trait for KeyInput to serialize keys as strings
+- Prevent recursive recording during macro playback
+- Add 2 tests for macro recording and playback
+
 ## Current Test Count
 
-Total: 110 tests passing
+Total: 112 tests passing
 
 | Crate | Count |
 |-------|-------|
@@ -79,7 +88,7 @@ Total: 110 tests passing
 | kjxlkj-core-undo | 3 |
 | kjxlkj-core-edit | 18 |
 | kjxlkj-core-mode | 6 |
-| kjxlkj-core-state | 51 |
+| kjxlkj-core-state | 53 |
 | kjxlkj-core-ui | 5 |
 | kjxlkj-input | 2 |
 | kjxlkj-render | 1 |
@@ -115,16 +124,17 @@ Total: 110 tests passing
 - [x] Marks (m, ', `)
 - [x] Substitute command (:s)
 - [x] Named registers ("a, "b, etc.)
+- [x] Macros (q{register} to record, @{register} to play, @@ to repeat)
 
 ### Pending
-- [ ] Macros (q, @)
 - [ ] Block visual mode (Ctrl-v)
 - [ ] Search highlighting
 - [ ] Global command (:g)
+- [ ] Jump lists (Ctrl-o, Ctrl-i)
 
 ## Next Steps
 
-1. Implement macros (q{register} to record, @{register} to play)
-2. Add more Ex commands (:set, :map, etc.)
-3. Implement jump lists (Ctrl-o, Ctrl-i)
-4. Consider block visual mode (Ctrl-v)
+1. Add more Ex commands (:set, :map, etc.)
+2. Implement jump lists (Ctrl-o, Ctrl-i)
+3. Consider block visual mode (Ctrl-v)
+4. Add search highlighting
