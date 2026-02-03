@@ -30,7 +30,7 @@ This directory manages the recursive TODO workflow for kjxlkj development.
 
 | Rule | Requirement |
 |------|-------------|
-| Second-to-last task | Always: Regenerate TODO list |
+| Second-to-last task | Always: Recreate the TODO list |
 | Last task | Always: Continue to next iteration |
 | Continuous | Work proceeds without stopping |
 
