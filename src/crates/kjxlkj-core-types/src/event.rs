@@ -159,6 +159,20 @@ pub enum EditorAction {
     JoinLines,
     /// Join current line with next without spaces (gJ command).
     JoinLinesNoSpace,
+    /// Toggle case of character under cursor (~).
+    ToggleCaseChar,
+    /// Toggle case with motion (g~{motion}).
+    ToggleCaseMotion { motion: Motion, count: Option<u32> },
+    /// Toggle case of current line (g~~).
+    ToggleCaseLine,
+    /// Uppercase with motion (gU{motion}).
+    UppercaseMotion { motion: Motion, count: Option<u32> },
+    /// Uppercase current line (gUU).
+    UppercaseLine,
+    /// Lowercase with motion (gu{motion}).
+    LowercaseMotion { motion: Motion, count: Option<u32> },
+    /// Lowercase current line (guu).
+    LowercaseLine,
     /// Paste after cursor (p command).
     PasteAfter,
     /// Operator applied to a motion (e.g., dw, cw, yw).

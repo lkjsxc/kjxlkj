@@ -240,6 +240,27 @@ impl ModeHandler {
                 }
                 "J" => EditorAction::JoinLines,
                 "gJ" => EditorAction::JoinLinesNoSpace,
+                
+                // Case operators
+                "~" => EditorAction::ToggleCaseChar,
+                "g~~" => EditorAction::ToggleCaseLine,
+                "gUU" => EditorAction::UppercaseLine,
+                "guu" => EditorAction::LowercaseLine,
+                
+                // Case operator-pending (g~ / gU / gu) - these need motions
+                "g~" => {
+                    self.state.set_pending_operator(PendingOperator::ToggleCase);
+                    return EditorAction::Nop;
+                }
+                "gU" => {
+                    self.state.set_pending_operator(PendingOperator::Uppercase);
+                    return EditorAction::Nop;
+                }
+                "gu" => {
+                    self.state.set_pending_operator(PendingOperator::Lowercase);
+                    return EditorAction::Nop;
+                }
+                
                 "v" => {
                     self.state.set_mode(Mode::Visual);
                     EditorAction::EnterVisualMode
@@ -370,6 +391,11 @@ impl ModeHandler {
             Some(op) => op,
             None => return EditorAction::Nop,
         };
+        
+        // Handle case operators separately (they have their own action types)
+        if matches!(pending_op, PendingOperator::ToggleCase | PendingOperator::Uppercase | PendingOperator::Lowercase) {
+            return self.handle_case_operator_pending(pending_op, ch);
+        }
         
         let operator = match pending_op {
             PendingOperator::Delete => Operator::Delete,
@@ -503,6 +529,96 @@ impl ModeHandler {
                     operator,
                     motion: m,
                     count,
+                }
+            }
+            None => EditorAction::Nop,
+        }
+    }
+    
+    fn handle_case_operator_pending(&mut self, pending_op: PendingOperator, ch: char) -> EditorAction {
+        // Check for double-operator (g~~ for toggle case line)
+        if ch == pending_op.char() {
+            let _count = self.state.take_count();
+            self.state.clear_pending();
+            return match pending_op {
+                PendingOperator::ToggleCase => EditorAction::ToggleCaseLine,
+                PendingOperator::Uppercase => EditorAction::UppercaseLine,
+                PendingOperator::Lowercase => EditorAction::LowercaseLine,
+                _ => EditorAction::Nop,
+            };
+        }
+        
+        // Map character to motion
+        self.state.push_key(ch);
+        let pending_str: String = self.state.pending_keys().iter().collect();
+        
+        let motion = match pending_str.as_str() {
+            "h" => Some(Motion::Left),
+            "j" => Some(Motion::Down),
+            "k" => Some(Motion::Up),
+            "l" => Some(Motion::Right),
+            "0" => Some(Motion::LineStart),
+            "^" => Some(Motion::FirstNonBlank),
+            "$" => Some(Motion::LineEnd),
+            "w" => Some(Motion::WordForward),
+            "b" => Some(Motion::WordBackward),
+            "e" => Some(Motion::WordEnd),
+            "gg" => Some(Motion::FileStart),
+            "G" => Some(Motion::FileEnd),
+            ")" => Some(Motion::SentenceForward),
+            "(" => Some(Motion::SentenceBackward),
+            "}" => Some(Motion::ParagraphForward),
+            "{" => Some(Motion::ParagraphBackward),
+            "%" => Some(Motion::MatchBracket),
+            "g" => {
+                // Wait for second character
+                self.state.set_pending_operator(pending_op);
+                return EditorAction::Nop;
+            }
+            "f" | "F" | "t" | "T" => {
+                // Wait for target character
+                self.state.set_pending_operator(pending_op);
+                return EditorAction::Nop;
+            }
+            _ => None,
+        };
+        
+        // Check for f{char}, t{char}, F{char}, T{char}
+        if pending_str.len() == 2 {
+            let chars: Vec<char> = pending_str.chars().collect();
+            let cmd = chars[0];
+            let target = chars[1];
+            
+            let motion = match cmd {
+                'f' => Some(Motion::FindCharForward(target)),
+                'F' => Some(Motion::FindCharBackward(target)),
+                't' => Some(Motion::TillCharForward(target)),
+                'T' => Some(Motion::TillCharBackward(target)),
+                _ => None,
+            };
+            
+            if let Some(m) = motion {
+                self.state.clear_pending();
+                let count = self.state.take_count();
+                return match pending_op {
+                    PendingOperator::ToggleCase => EditorAction::ToggleCaseMotion { motion: m, count },
+                    PendingOperator::Uppercase => EditorAction::UppercaseMotion { motion: m, count },
+                    PendingOperator::Lowercase => EditorAction::LowercaseMotion { motion: m, count },
+                    _ => EditorAction::Nop,
+                };
+            }
+        }
+        
+        self.state.clear_pending();
+        
+        match motion {
+            Some(m) => {
+                let count = self.state.take_count();
+                match pending_op {
+                    PendingOperator::ToggleCase => EditorAction::ToggleCaseMotion { motion: m, count },
+                    PendingOperator::Uppercase => EditorAction::UppercaseMotion { motion: m, count },
+                    PendingOperator::Lowercase => EditorAction::LowercaseMotion { motion: m, count },
+                    _ => EditorAction::Nop,
                 }
             }
             None => EditorAction::Nop,

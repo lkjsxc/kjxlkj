@@ -18,6 +18,14 @@ pub enum FindCharDirection {
     TillBackward,
 }
 
+/// Case transformation type.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CaseTransform {
+    Toggle,
+    Upper,
+    Lower,
+}
+
 /// A repeatable change for the dot command.
 #[derive(Debug, Clone)]
 pub enum RepeatableChange {
@@ -281,6 +289,41 @@ impl EditorState {
                 let pos = self.buffer.cursor().position;
                 self.add_to_change_list(pos);
                 self.join_lines(false);
+            }
+            EditorAction::ToggleCaseChar => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.toggle_case_char();
+            }
+            EditorAction::ToggleCaseLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.toggle_case_line();
+            }
+            EditorAction::ToggleCaseMotion { motion, count } => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.toggle_case_motion(motion, count);
+            }
+            EditorAction::UppercaseLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.uppercase_line();
+            }
+            EditorAction::UppercaseMotion { motion, count } => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.uppercase_motion(motion, count);
+            }
+            EditorAction::LowercaseLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.lowercase_line();
+            }
+            EditorAction::LowercaseMotion { motion, count } => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.lowercase_motion(motion, count);
             }
             EditorAction::PasteAfter => {
                 // Use named register if pending, otherwise use default
@@ -1059,6 +1102,182 @@ impl EditorState {
         self.buffer.cursor_mut().position = LineCol { line: line_idx as u32, col: join_col as u32 };
     }
 
+    /// Toggle case of character under cursor and advance cursor.
+    fn toggle_case_char(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        let col_idx = cursor.col as usize;
+        
+        // Get the character at cursor position
+        if let Some(line) = self.buffer.line(line_idx) {
+            if let Some(ch) = line.chars().nth(col_idx) {
+                if ch == '\n' {
+                    return; // Don't toggle newline
+                }
+                
+                let toggled: String = if ch.is_lowercase() {
+                    ch.to_uppercase().collect()
+                } else if ch.is_uppercase() {
+                    ch.to_lowercase().collect()
+                } else {
+                    ch.to_string()
+                };
+                
+                // Delete the character at cursor and insert the toggled version
+                self.buffer.delete_char_at();
+                for c in toggled.chars() {
+                    self.buffer.insert_char(c);
+                }
+                
+                // Move cursor to next character (or stay if at end)
+                if let Some(line_len) = self.buffer.line_len(line_idx) {
+                    // Account for newline
+                    let effective_len = line_len.saturating_sub(1);
+                    if col_idx < effective_len {
+                        self.buffer.cursor_mut().position.col = (col_idx + 1) as u32;
+                    }
+                }
+            }
+        }
+    }
+
+    /// Toggle case of entire line.
+    fn toggle_case_line(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        
+        if let Some(line) = self.buffer.line_content(line_idx) {
+            let toggled: String = line.chars().map(|ch| {
+                if ch.is_lowercase() {
+                    ch.to_uppercase().collect::<String>()
+                } else if ch.is_uppercase() {
+                    ch.to_lowercase().collect::<String>()
+                } else {
+                    ch.to_string()
+                }
+            }).collect();
+            
+            self.buffer.replace_line(line_idx, &toggled);
+        }
+    }
+
+    /// Toggle case of text covered by motion.
+    fn toggle_case_motion(&mut self, motion: Motion, count: Option<u32>) {
+        let (start, end) = self.compute_motion_range(motion, count);
+        self.apply_case_transform(start, end, CaseTransform::Toggle);
+    }
+
+    /// Uppercase entire line.
+    fn uppercase_line(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        
+        if let Some(line) = self.buffer.line_content(line_idx) {
+            let uppercased: String = line.to_uppercase();
+            self.buffer.replace_line(line_idx, &uppercased);
+        }
+    }
+
+    /// Uppercase text covered by motion.
+    fn uppercase_motion(&mut self, motion: Motion, count: Option<u32>) {
+        let (start, end) = self.compute_motion_range(motion, count);
+        self.apply_case_transform(start, end, CaseTransform::Upper);
+    }
+
+    /// Lowercase entire line.
+    fn lowercase_line(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        
+        if let Some(line) = self.buffer.line_content(line_idx) {
+            let lowercased: String = line.to_lowercase();
+            self.buffer.replace_line(line_idx, &lowercased);
+        }
+    }
+
+    /// Lowercase text covered by motion.
+    fn lowercase_motion(&mut self, motion: Motion, count: Option<u32>) {
+        let (start, end) = self.compute_motion_range(motion, count);
+        self.apply_case_transform(start, end, CaseTransform::Lower);
+    }
+
+    /// Apply case transformation to a range.
+    fn apply_case_transform(&mut self, start: LineCol, end: LineCol, transform: CaseTransform) {
+        // Ensure start <= end
+        let (start, end) = if start.line < end.line || (start.line == end.line && start.col <= end.col) {
+            (start, end)
+        } else {
+            (end, start)
+        };
+        
+        // For single line
+        if start.line == end.line {
+            if let Some(line) = self.buffer.line_content(start.line as usize) {
+                let end_col = std::cmp::min(end.col as usize + 1, line.len());
+                let start_col = start.col as usize;
+                if start_col < line.len() {
+                    let before = &line[..start_col];
+                    let middle = &line[start_col..end_col];
+                    let after = &line[end_col..];
+                    
+                    let transformed = match transform {
+                        CaseTransform::Toggle => middle.chars().map(|ch| {
+                            if ch.is_lowercase() {
+                                ch.to_uppercase().collect::<String>()
+                            } else if ch.is_uppercase() {
+                                ch.to_lowercase().collect::<String>()
+                            } else {
+                                ch.to_string()
+                            }
+                        }).collect::<String>(),
+                        CaseTransform::Upper => middle.to_uppercase(),
+                        CaseTransform::Lower => middle.to_lowercase(),
+                    };
+                    
+                    let new_line = format!("{}{}{}", before, transformed, after);
+                    self.buffer.replace_line(start.line as usize, &new_line);
+                }
+            }
+        } else {
+            // Multi-line transformation
+            for line_idx in start.line..=end.line {
+                if let Some(line) = self.buffer.line_content(line_idx as usize) {
+                    let line = line.to_string();
+                    let (col_start, col_end) = if line_idx == start.line {
+                        (start.col as usize, line.len())
+                    } else if line_idx == end.line {
+                        (0, std::cmp::min(end.col as usize + 1, line.len()))
+                    } else {
+                        (0, line.len())
+                    };
+                    
+                    if col_start < line.len() {
+                        let before = &line[..col_start];
+                        let middle = &line[col_start..col_end];
+                        let after = &line[col_end..];
+                        
+                        let transformed = match transform {
+                            CaseTransform::Toggle => middle.chars().map(|ch| {
+                                if ch.is_lowercase() {
+                                    ch.to_uppercase().collect::<String>()
+                                } else if ch.is_uppercase() {
+                                    ch.to_lowercase().collect::<String>()
+                                } else {
+                                    ch.to_string()
+                                }
+                            }).collect::<String>(),
+                            CaseTransform::Upper => middle.to_uppercase(),
+                            CaseTransform::Lower => middle.to_lowercase(),
+                        };
+                        
+                        let new_line = format!("{}{}{}", before, transformed, after);
+                        self.buffer.replace_line(line_idx as usize, &new_line);
+                    }
+                }
+            }
+        }
+    }
+
     /// Apply substitute command on the current line.
     fn apply_substitute(&mut self, pattern: &str, replacement: &str, flags: &str) -> usize {
         if pattern.is_empty() {
@@ -1143,6 +1362,81 @@ impl EditorState {
         }
 
         count
+    }
+
+    /// Compute the range covered by a motion from the current cursor position.
+    /// Returns (start, end) positions.
+    fn compute_motion_range(&mut self, motion: Motion, count: Option<u32>) -> (LineCol, LineCol) {
+        let count = count.unwrap_or(1) as usize;
+        
+        // Get start position
+        let start = self.buffer.cursor().position;
+        
+        // Execute motion to get end position
+        for _ in 0..count {
+            match motion {
+                Motion::Left => self.buffer.move_left(),
+                Motion::Right => self.buffer.move_right(),
+                Motion::Up => self.buffer.move_up(),
+                Motion::Down => self.buffer.move_down(),
+                Motion::LineStart => self.buffer.move_line_start(),
+                Motion::LineEnd => self.buffer.move_line_end(),
+                Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::WordForward => self.buffer.move_word_forward(),
+                Motion::WordBackward => self.buffer.move_word_backward(),
+                Motion::WordEnd => self.buffer.move_word_end(),
+                Motion::FileStart => self.buffer.move_file_start(),
+                Motion::FileEnd => self.buffer.move_file_end(),
+                Motion::SentenceForward => self.move_sentence_forward(),
+                Motion::SentenceBackward => self.move_sentence_backward(),
+                Motion::ParagraphForward => self.move_paragraph_forward(),
+                Motion::ParagraphBackward => self.move_paragraph_backward(),
+                Motion::MatchBracket => self.move_match_bracket(),
+                Motion::FindCharForward(ch) => {
+                    self.buffer.find_char_forward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::Forward));
+                }
+                Motion::FindCharBackward(ch) => {
+                    self.buffer.find_char_backward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::Backward));
+                }
+                Motion::TillCharForward(ch) => {
+                    self.buffer.till_char_forward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::TillForward));
+                }
+                Motion::TillCharBackward(ch) => {
+                    self.buffer.till_char_backward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::TillBackward));
+                }
+                Motion::ToMarkExact(mark) => {
+                    if let Some(pos) = self.marks.get(&mark).copied() {
+                        self.buffer.cursor_mut().position = pos;
+                    }
+                }
+                Motion::ToMarkLine(mark) => {
+                    if let Some(pos) = self.marks.get(&mark).copied() {
+                        self.buffer.cursor_mut().position.line = pos.line;
+                        self.buffer.move_first_non_blank();
+                    }
+                }
+                Motion::CurrentLine => {
+                    // For CurrentLine, return the whole line
+                    let line_idx = start.line as usize;
+                    let line_len = self.buffer.line_len(line_idx).unwrap_or(0);
+                    return (
+                        LineCol { line: start.line, col: 0 },
+                        LineCol { line: start.line, col: line_len.saturating_sub(1) as u32 },
+                    );
+                }
+            }
+        }
+
+        let end = self.buffer.cursor().position;
+        
+        // Restore cursor to start for case operations (we just want the range)
+        self.buffer.cursor_mut().position = start;
+        
+        (start, end)
     }
 
     /// Apply an operator over a motion range.
@@ -3247,5 +3541,83 @@ mod tests {
         let content = state.buffer().content();
         assert_eq!(content.trim(), "hello  world");
         assert_eq!(state.buffer().cursor().position.col, 5); // At join point
+    }
+
+    #[test]
+    fn toggle_case_char() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "Hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Toggle case of 'H' -> 'h'
+        state.apply_action(EditorAction::ToggleCaseChar);
+        
+        let content = state.buffer().content();
+        assert!(content.starts_with("hello"));
+        // Cursor should advance
+        assert_eq!(state.buffer().cursor().position.col, 1);
+    }
+
+    #[test]
+    fn toggle_case_line() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "HeLLo WoRLd".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Toggle case of entire line
+        state.apply_action(EditorAction::ToggleCaseLine);
+        
+        let content = state.buffer().content();
+        assert_eq!(content.trim(), "hEllO wOrlD");
+    }
+
+    #[test]
+    fn uppercase_line() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Uppercase entire line
+        state.apply_action(EditorAction::UppercaseLine);
+        
+        let content = state.buffer().content();
+        assert_eq!(content.trim(), "HELLO WORLD");
+    }
+
+    #[test]
+    fn lowercase_line() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "HELLO WORLD".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Lowercase entire line
+        state.apply_action(EditorAction::LowercaseLine);
+        
+        let content = state.buffer().content();
+        assert_eq!(content.trim(), "hello world");
     }
 }
