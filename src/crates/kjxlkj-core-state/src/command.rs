@@ -13,6 +13,13 @@ impl CommandParser {
             return EditorAction::Nop;
         }
 
+        // Handle substitute command: s/pattern/replacement/flags
+        if input.starts_with("s/") || input.starts_with("s#") || input.starts_with("s|") {
+            if let Some(action) = Self::parse_substitute(input) {
+                return action;
+            }
+        }
+
         // Handle commands with arguments
         if let Some(rest) = input.strip_prefix("w ") {
             return EditorAction::Write {
@@ -51,6 +58,34 @@ impl CommandParser {
             "wq" | "x" => EditorAction::Write { path: None },
             _ => EditorAction::Nop,
         }
+    }
+
+    /// Parses a substitute command: s/pattern/replacement/flags
+    fn parse_substitute(input: &str) -> Option<EditorAction> {
+        // Get the delimiter (first char after 's')
+        let chars: Vec<char> = input.chars().collect();
+        if chars.len() < 2 {
+            return None;
+        }
+        let delimiter = chars[1];
+        
+        // Split by delimiter, being careful about escaped delimiters
+        let rest = &input[2..];
+        let parts: Vec<&str> = rest.splitn(3, delimiter).collect();
+        
+        if parts.is_empty() {
+            return None;
+        }
+        
+        let pattern = parts.get(0).unwrap_or(&"").to_string();
+        let replacement = parts.get(1).unwrap_or(&"").to_string();
+        let flags = parts.get(2).unwrap_or(&"").to_string();
+        
+        Some(EditorAction::Substitute {
+            pattern,
+            replacement,
+            flags,
+        })
     }
 }
 
@@ -94,6 +129,39 @@ mod tests {
             assert_eq!(cmd, "ls -la");
         } else {
             panic!("Expected RunExternal");
+        }
+    }
+
+    #[test]
+    fn parse_substitute_basic() {
+        if let EditorAction::Substitute { pattern, replacement, flags } = CommandParser::parse("s/foo/bar/") {
+            assert_eq!(pattern, "foo");
+            assert_eq!(replacement, "bar");
+            assert_eq!(flags, "");
+        } else {
+            panic!("Expected Substitute");
+        }
+    }
+
+    #[test]
+    fn parse_substitute_with_flags() {
+        if let EditorAction::Substitute { pattern, replacement, flags } = CommandParser::parse("s/foo/bar/g") {
+            assert_eq!(pattern, "foo");
+            assert_eq!(replacement, "bar");
+            assert_eq!(flags, "g");
+        } else {
+            panic!("Expected Substitute");
+        }
+    }
+
+    #[test]
+    fn parse_substitute_alternate_delimiter() {
+        if let EditorAction::Substitute { pattern, replacement, flags } = CommandParser::parse("s#foo#bar#gi") {
+            assert_eq!(pattern, "foo");
+            assert_eq!(replacement, "bar");
+            assert_eq!(flags, "gi");
+        } else {
+            panic!("Expected Substitute");
         }
     }
 }

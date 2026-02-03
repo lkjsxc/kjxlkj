@@ -359,6 +359,14 @@ impl EditorState {
                     self.status_message = Some(format!("Mark '{}' not set", mark));
                 }
             }
+            EditorAction::Substitute { pattern, replacement, flags } => {
+                let count = self.apply_substitute(&pattern, &replacement, &flags);
+                if count > 0 {
+                    self.status_message = Some(format!("{} substitution(s)", count));
+                } else {
+                    self.status_message = Some("Pattern not found".to_string());
+                }
+            }
             EditorAction::Nop => {}
         }
 
@@ -403,6 +411,39 @@ impl EditorState {
     fn update_viewport(&mut self) {
         let cursor_line = self.buffer.cursor().position.line as usize;
         self.viewport.follow_cursor(cursor_line, self.scroll_off);
+    }
+
+    /// Apply substitute command on the current line.
+    fn apply_substitute(&mut self, pattern: &str, replacement: &str, flags: &str) -> usize {
+        if pattern.is_empty() {
+            return 0;
+        }
+        
+        let global = flags.contains('g');
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        
+        if let Some(line_content) = self.buffer.line_content(cursor_line) {
+            let line_content = line_content.to_string();
+            
+            // Simple literal string replacement (no regex for now)
+            let new_content = if global {
+                line_content.replace(pattern, replacement)
+            } else {
+                line_content.replacen(pattern, replacement, 1)
+            };
+            
+            if new_content != line_content {
+                // Replace the line content
+                self.buffer.replace_line(cursor_line, &new_content);
+                return if global {
+                    line_content.matches(pattern).count()
+                } else {
+                    1
+                };
+            }
+        }
+        
+        0
     }
 
     /// Apply an operator over a motion range.
@@ -1826,5 +1867,49 @@ mod tests {
         // Should be on line 1, first non-blank which is col 2
         assert_eq!(state.buffer().cursor().position.line, 1);
         assert_eq!(state.buffer().cursor().position.col, 2);
+    }
+
+    #[test]
+    fn substitute_single_occurrence() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "foo bar foo".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start of line
+        state.handle_key(key('0'));
+        
+        // Execute substitute command (first occurrence only)
+        state.apply_action(EditorAction::Substitute {
+            pattern: "foo".to_string(),
+            replacement: "baz".to_string(),
+            flags: String::new(),
+        });
+        
+        assert_eq!(state.buffer().content(), "baz bar foo");
+    }
+
+    #[test]
+    fn substitute_global() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "foo bar foo".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start of line
+        state.handle_key(key('0'));
+        
+        // Execute substitute command (all occurrences)
+        state.apply_action(EditorAction::Substitute {
+            pattern: "foo".to_string(),
+            replacement: "baz".to_string(),
+            flags: "g".to_string(),
+        });
+        
+        assert_eq!(state.buffer().content(), "baz bar baz");
     }
 }

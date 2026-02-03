@@ -197,6 +197,12 @@ pub enum EditorAction {
     EditFile { path: String, force: bool },
     /// Run external command.
     RunExternal(String),
+    /// Substitute command (:s/pattern/replacement/flags).
+    Substitute {
+        pattern: String,
+        replacement: String,
+        flags: String,
+    },
     /// No operation.
     Nop,
 }

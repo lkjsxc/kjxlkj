@@ -214,6 +214,33 @@ impl Buffer {
         }
     }
 
+    /// Replaces the content of a specific line.
+    pub fn replace_line(&mut self, line_idx: usize, new_content: &str) {
+        if let Some(old_content) = self.line(line_idx) {
+            let start_pos = LineCol::new(line_idx as u32, 0);
+            let old_len = old_content.len();
+            
+            if let Some(start_char) = self.text.line_col_to_char(start_pos) {
+                // Remove old content (not including newline)
+                self.text.delete_range(start_char, start_char + old_len);
+                // Insert new content
+                self.text.insert(start_pos, new_content);
+                
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Delete {
+                    pos: start_pos,
+                    text: old_content,
+                });
+                group.push(EditOperation::Insert {
+                    pos: start_pos,
+                    text: new_content.to_string(),
+                });
+                self.history.push(group);
+                self.modified = true;
+            }
+        }
+    }
+
     /// Yanks the current line (yy command).
     pub fn yank_line(&mut self) {
         let line_idx = self.cursor.position.line as usize;
