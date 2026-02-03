@@ -1,8 +1,8 @@
 //! Core editor state.
 
-use kjxlkj_core_edit::{Buffer, CursorOps};
+use kjxlkj_core_edit::{find_text_object_range, Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
-use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode, Motion, Operator};
+use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode, Motion, Operator, TextObject};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Viewport};
 
 use crate::CommandParser;
@@ -127,6 +127,9 @@ impl EditorState {
             EditorAction::PasteAfter => self.buffer.paste_after(),
             EditorAction::OperatorMotion { operator, motion, count } => {
                 self.apply_operator_motion(operator, motion, count);
+            }
+            EditorAction::OperatorTextObject { operator, text_object } => {
+                self.apply_operator_text_object(operator, text_object);
             }
             EditorAction::Undo => {
                 if !self.buffer.undo() {
@@ -309,6 +312,42 @@ impl EditorState {
             Operator::Indent | Operator::Outdent => {
                 // For indent/outdent, need linewise behavior
                 // TODO: implement range indentation
+            }
+        }
+    }
+
+    /// Apply an operator over a text object.
+    fn apply_operator_text_object(&mut self, operator: Operator, text_object: TextObject) {
+        let cursor = self.buffer.cursor().position;
+        let line_content = self.buffer.line(cursor.line as usize);
+        let full_content = self.buffer.content();
+        
+        let range = match find_text_object_range(
+            text_object,
+            cursor,
+            line_content.as_deref(),
+            &full_content,
+        ) {
+            Some(r) => r,
+            None => return, // No text object found
+        };
+
+        // Apply operator over range
+        match operator {
+            Operator::Delete => {
+                self.buffer.delete_range(range.start, range.end);
+            }
+            Operator::Yank => {
+                self.buffer.yank_range(range.start, range.end);
+            }
+            Operator::Change => {
+                self.buffer.delete_range(range.start, range.end);
+                // For change, set cursor to start of deleted range without clamping
+                // since we're entering insert mode where end-of-line is valid
+                self.buffer.set_cursor_position(range.start);
+            }
+            Operator::Indent | Operator::Outdent => {
+                // Text objects with indent/outdent don't make much sense
             }
         }
     }
@@ -704,5 +743,135 @@ mod tests {
         state.handle_key(key('<'));
         
         assert_eq!(state.buffer().content(), "code");
+    }
+
+    #[test]
+    fn delete_inner_word() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start and position on 'hello'
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // diw deletes 'hello'
+        state.handle_key(key('d'));
+        state.handle_key(key('i'));
+        state.handle_key(key('w'));
+        
+        assert_eq!(state.buffer().content(), " world");
+    }
+
+    #[test]
+    fn delete_around_word() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // daw deletes 'hello ' (word + trailing space)
+        state.handle_key(key('d'));
+        state.handle_key(key('a'));
+        state.handle_key(key('w'));
+        
+        assert_eq!(state.buffer().content(), "world");
+    }
+
+    #[test]
+    fn change_inner_word() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start, then to 'world'
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        state.handle_key(key('w')); // now at 'world'
+        
+        // Verify cursor position
+        assert_eq!(state.buffer().cursor().position.col, 6, "cursor should be at 'w'");
+        
+        // ciw changes 'world', enters insert mode
+        state.handle_key(key('c'));
+        state.handle_key(key('i'));
+        state.handle_key(key('w'));
+        
+        // Check content after ciw (should be "hello ")
+        assert_eq!(state.buffer().content(), "hello ", "after ciw 'world' should be deleted");
+        
+        // Type replacement
+        for ch in "universe".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        assert_eq!(state.buffer().content(), "hello universe");
+    }
+
+    #[test]
+    fn delete_inner_quotes() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "say \"hello\" end".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Position inside quotes (at 'h')
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        // Move to position 5 (the 'h' in "hello")
+        for _ in 0..5 {
+            state.handle_key(key('l'));
+        }
+        
+        // di" deletes content inside quotes
+        state.handle_key(key('d'));
+        state.handle_key(key('i'));
+        state.handle_key(key('"'));
+        
+        assert_eq!(state.buffer().content(), "say \"\" end");
+    }
+
+    #[test]
+    fn delete_around_parens() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "fn(a, b)".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Position inside parens
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        for _ in 0..4 {
+            state.handle_key(key('l'));
+        }
+        
+        // da( deletes content including parens
+        state.handle_key(key('d'));
+        state.handle_key(key('a'));
+        state.handle_key(key('('));
+        
+        assert_eq!(state.buffer().content(), "fn");
     }
 }

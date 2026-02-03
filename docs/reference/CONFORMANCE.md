@@ -68,6 +68,27 @@ This document records the currently implemented, user-visible surface so that:
 | `>>` | (line) | Indent current line (4 spaces) |
 | `<<` | (line) | Outdent current line (up to 4 spaces) |
 
+### Text objects
+
+Operators (`d`, `y`, `c`) can be combined with text objects:
+
+| Text object | Description |
+|---|---|
+| `iw` | Inner word (word characters only) |
+| `aw` | Around word (word + trailing/leading whitespace) |
+| `iW` | Inner WORD (non-whitespace sequence) |
+| `aW` | Around WORD (WORD + whitespace) |
+| `i"` | Inner double quotes (content between quotes) |
+| `a"` | Around double quotes (content including quotes) |
+| `i'` | Inner single quotes |
+| `a'` | Around single quotes |
+| `i(` / `i)` / `ib` | Inner parentheses |
+| `a(` / `a)` / `ab` | Around parentheses |
+| `i[` / `i]` | Inner brackets |
+| `a[` / `a]` | Around brackets |
+| `i{` / `i}` / `iB` | Inner braces |
+| `a{` / `a}` / `aB` | Around braces |
+
 ### Command-line (Ex) commands (subset)
 
 | Command | Behavior |

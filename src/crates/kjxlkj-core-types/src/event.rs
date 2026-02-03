@@ -33,6 +33,39 @@ pub enum Operator {
     Outdent,
 }
 
+/// Text object types for operator + text-object combinations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TextObject {
+    /// Inner word (iw) - word characters only.
+    InnerWord,
+    /// Around word (aw) - word plus trailing whitespace.
+    AroundWord,
+    /// Inner WORD (iW) - non-whitespace sequence.
+    InnerWORD,
+    /// Around WORD (aW) - WORD plus trailing whitespace.
+    AroundWORD,
+    /// Inner parentheses (i().
+    InnerParen,
+    /// Around parentheses (a().
+    AroundParen,
+    /// Inner brackets (i[).
+    InnerBracket,
+    /// Around brackets (a[).
+    AroundBracket,
+    /// Inner braces (i{).
+    InnerBrace,
+    /// Around braces (a{).
+    AroundBrace,
+    /// Inner double quotes (i").
+    InnerDoubleQuote,
+    /// Around double quotes (a").
+    AroundDoubleQuote,
+    /// Inner single quotes (i').
+    InnerSingleQuote,
+    /// Around single quotes (a').
+    AroundSingleQuote,
+}
+
 /// Actions that the core task can execute.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EditorAction {
@@ -82,6 +115,8 @@ pub enum EditorAction {
     PasteAfter,
     /// Operator applied to a motion (e.g., dw, cw, yw).
     OperatorMotion { operator: Operator, motion: Motion, count: Option<u32> },
+    /// Operator applied to a text object (e.g., diw, ci", ya().
+    OperatorTextObject { operator: Operator, text_object: TextObject },
     /// Undo last change.
     Undo,
     /// Redo last undone change.

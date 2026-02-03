@@ -1,6 +1,6 @@
 //! Mode input handling.
 
-use kjxlkj_core_types::{EditorAction, Mode, Motion, Operator};
+use kjxlkj_core_types::{EditorAction, Mode, Motion, Operator, TextObject};
 
 use crate::{ModeState, PendingOperator};
 
@@ -289,9 +289,44 @@ impl ModeHandler {
             };
         }
 
-        // Map character to motion
+        // Map character to motion or text object
         self.state.push_key(ch);
         let pending_str: String = self.state.pending_keys().iter().collect();
+        
+        // Check for text objects first
+        let text_object = match pending_str.as_str() {
+            "iw" => Some(TextObject::InnerWord),
+            "aw" => Some(TextObject::AroundWord),
+            "iW" => Some(TextObject::InnerWORD),
+            "aW" => Some(TextObject::AroundWORD),
+            "i(" | "i)" | "ib" => Some(TextObject::InnerParen),
+            "a(" | "a)" | "ab" => Some(TextObject::AroundParen),
+            "i[" | "i]" => Some(TextObject::InnerBracket),
+            "a[" | "a]" => Some(TextObject::AroundBracket),
+            "i{" | "i}" | "iB" => Some(TextObject::InnerBrace),
+            "a{" | "a}" | "aB" => Some(TextObject::AroundBrace),
+            "i\"" => Some(TextObject::InnerDoubleQuote),
+            "a\"" => Some(TextObject::AroundDoubleQuote),
+            "i'" => Some(TextObject::InnerSingleQuote),
+            "a'" => Some(TextObject::AroundSingleQuote),
+            "i" | "a" => {
+                // Wait for second character (text object identifier)
+                self.state.set_pending_operator(pending_op);
+                return EditorAction::Nop;
+            }
+            _ => None,
+        };
+
+        if let Some(obj) = text_object {
+            self.state.clear_pending();
+            if operator == Operator::Change {
+                self.state.set_mode(Mode::Insert);
+            }
+            return EditorAction::OperatorTextObject {
+                operator,
+                text_object: obj,
+            };
+        }
         
         let motion = match pending_str.as_str() {
             "h" => Some(Motion::Left),

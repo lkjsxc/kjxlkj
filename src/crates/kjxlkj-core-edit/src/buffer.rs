@@ -74,6 +74,12 @@ impl Buffer {
         &mut self.cursor
     }
 
+    /// Sets the cursor position without clamping.
+    /// Use this for insert mode where cursor can be at end of line.
+    pub fn set_cursor_position(&mut self, pos: LineCol) {
+        self.cursor.position = pos;
+    }
+
     pub fn is_modified(&self) -> bool {
         self.modified
     }
