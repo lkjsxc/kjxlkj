@@ -33,6 +33,14 @@ pub enum Motion {
     ToMarkExact(char),
     /// Go to mark line start (' + mark).
     ToMarkLine(char),
+    /// Sentence forward ()).
+    SentenceForward,
+    /// Sentence backward (().
+    SentenceBackward,
+    /// Paragraph forward (}).
+    ParagraphForward,
+    /// Paragraph backward ({).
+    ParagraphBackward,
 }
 
 /// Operator types.
@@ -111,6 +119,14 @@ pub enum EditorAction {
     FileStart,
     /// Move to file end (G).
     FileEnd,
+    /// Move to next sentence ()).
+    SentenceForward,
+    /// Move to previous sentence (().
+    SentenceBackward,
+    /// Move to next paragraph (}).
+    ParagraphForward,
+    /// Move to previous paragraph ({).
+    ParagraphBackward,
     /// Find char forward (f).
     FindCharForward(char),
     /// Find char backward (F).

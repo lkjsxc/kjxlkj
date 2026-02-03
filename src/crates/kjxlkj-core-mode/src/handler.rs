@@ -208,6 +208,12 @@ impl ModeHandler {
                 "gg" => EditorAction::FileStart,
                 "G" => EditorAction::FileEnd,
                 
+                // Sentence/paragraph motions
+                ")" => EditorAction::SentenceForward,
+                "(" => EditorAction::SentenceBackward,
+                "}" => EditorAction::ParagraphForward,
+                "{" => EditorAction::ParagraphBackward,
+                
                 // Change list navigation
                 "g;" => EditorAction::ChangeListOlder,
                 "g," => EditorAction::ChangeListNewer,
@@ -434,6 +440,10 @@ impl ModeHandler {
             "e" => Some(Motion::WordEnd),
             "gg" => Some(Motion::FileStart),
             "G" => Some(Motion::FileEnd),
+            ")" => Some(Motion::SentenceForward),
+            "(" => Some(Motion::SentenceBackward),
+            "}" => Some(Motion::ParagraphForward),
+            "{" => Some(Motion::ParagraphBackward),
             "g" => {
                 // Wait for second character
                 self.state.set_pending_operator(pending_op);

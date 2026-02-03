@@ -208,6 +208,18 @@ impl EditorState {
                 self.add_to_jump_list();
                 self.buffer.move_file_end();
             }
+            EditorAction::SentenceForward => {
+                self.move_sentence_forward();
+            }
+            EditorAction::SentenceBackward => {
+                self.move_sentence_backward();
+            }
+            EditorAction::ParagraphForward => {
+                self.move_paragraph_forward();
+            }
+            EditorAction::ParagraphBackward => {
+                self.move_paragraph_backward();
+            }
             EditorAction::FindCharForward(ch) => {
                 if self.buffer.find_char_forward(ch) {
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -710,6 +722,186 @@ impl EditorState {
         self.buffer.cursor_mut().position = LineCol { line, col };
     }
 
+    /// Move cursor to next sentence.
+    /// A sentence ends with '.', '!', or '?' followed by end of line,
+    /// space, or tab.
+    fn move_sentence_forward(&mut self) {
+        let content = self.buffer.content();
+        let cursor = self.buffer.cursor().position;
+        
+        // Convert cursor position to byte offset
+        let mut byte_offset = 0usize;
+        for (i, line) in content.lines().enumerate() {
+            if i < cursor.line as usize {
+                byte_offset += line.len() + 1; // +1 for newline
+            } else {
+                byte_offset += cursor.col as usize;
+                break;
+            }
+        }
+        
+        let bytes = content.as_bytes();
+        let mut i = byte_offset;
+        
+        // Skip to end of current sentence
+        while i < bytes.len() {
+            let ch = bytes[i] as char;
+            if ch == '.' || ch == '!' || ch == '?' {
+                i += 1;
+                // Skip any spaces/newlines after punctuation
+                while i < bytes.len() && (bytes[i] == b' ' || bytes[i] == b'\t' || bytes[i] == b'\n') {
+                    i += 1;
+                }
+                break;
+            }
+            i += 1;
+        }
+        
+        // Convert byte offset back to LineCol
+        if i >= bytes.len() {
+            // Go to end of file
+            self.buffer.move_file_end();
+        } else {
+            let mut line = 0u32;
+            let mut col = 0u32;
+            let mut offset = 0usize;
+            
+            for (idx, text_line) in content.lines().enumerate() {
+                if offset + text_line.len() >= i {
+                    line = idx as u32;
+                    col = (i - offset) as u32;
+                    break;
+                }
+                offset += text_line.len() + 1;
+            }
+            
+            self.buffer.cursor_mut().position = LineCol { line, col };
+        }
+    }
+
+    /// Move cursor to previous sentence.
+    fn move_sentence_backward(&mut self) {
+        let content = self.buffer.content();
+        let cursor = self.buffer.cursor().position;
+        
+        // Convert cursor position to byte offset
+        let mut byte_offset = 0usize;
+        for (i, line) in content.lines().enumerate() {
+            if i < cursor.line as usize {
+                byte_offset += line.len() + 1;
+            } else {
+                byte_offset += cursor.col as usize;
+                break;
+            }
+        }
+        
+        if byte_offset == 0 {
+            return;
+        }
+        
+        let bytes = content.as_bytes();
+        let mut i = byte_offset.saturating_sub(1);
+        
+        // Skip any whitespace we're on
+        while i > 0 && (bytes[i] == b' ' || bytes[i] == b'\t' || bytes[i] == b'\n') {
+            i -= 1;
+        }
+        
+        // Skip to previous sentence end
+        while i > 0 {
+            let ch = bytes[i] as char;
+            if ch == '.' || ch == '!' || ch == '?' {
+                // Found previous sentence end, skip whitespace after it
+                i += 1;
+                while i < bytes.len() && (bytes[i] == b' ' || bytes[i] == b'\t' || bytes[i] == b'\n') {
+                    i += 1;
+                }
+                break;
+            }
+            i -= 1;
+        }
+        
+        // Convert byte offset back to LineCol
+        let mut line = 0u32;
+        let mut col = 0u32;
+        let mut offset = 0usize;
+        
+        for (idx, text_line) in content.lines().enumerate() {
+            if offset + text_line.len() >= i {
+                line = idx as u32;
+                col = (i - offset).min(text_line.len()) as u32;
+                break;
+            }
+            offset += text_line.len() + 1;
+        }
+        
+        self.buffer.cursor_mut().position = LineCol { line, col };
+    }
+
+    /// Move cursor to next paragraph (next blank line).
+    fn move_paragraph_forward(&mut self) {
+        let line_count = self.buffer.line_count();
+        let mut line = self.buffer.cursor().position.line as usize;
+        
+        // Skip current non-blank lines
+        while line < line_count {
+            if let Some(content) = self.buffer.line_content(line) {
+                if content.trim().is_empty() {
+                    break;
+                }
+            }
+            line += 1;
+        }
+        
+        // Skip blank lines
+        while line < line_count {
+            if let Some(content) = self.buffer.line_content(line) {
+                if !content.trim().is_empty() {
+                    break;
+                }
+            }
+            line += 1;
+        }
+        
+        // Position at first non-blank line after blank lines, or last line
+        let target_line = line.min(line_count.saturating_sub(1));
+        self.buffer.cursor_mut().position = LineCol { line: target_line as u32, col: 0 };
+    }
+
+    /// Move cursor to previous paragraph (previous blank line).
+    fn move_paragraph_backward(&mut self) {
+        let mut line = self.buffer.cursor().position.line as usize;
+        
+        if line == 0 {
+            return;
+        }
+        
+        line -= 1;
+        
+        // Skip current non-blank lines going backwards
+        while line > 0 {
+            if let Some(content) = self.buffer.line_content(line) {
+                if content.trim().is_empty() {
+                    break;
+                }
+            }
+            line -= 1;
+        }
+        
+        // Skip blank lines going backwards
+        while line > 0 {
+            if let Some(content) = self.buffer.line_content(line) {
+                if !content.trim().is_empty() {
+                    line += 1; // Go back to the blank line
+                    break;
+                }
+            }
+            line -= 1;
+        }
+        
+        self.buffer.cursor_mut().position = LineCol { line: line as u32, col: 0 };
+    }
+
     /// Apply substitute command on the current line.
     fn apply_substitute(&mut self, pattern: &str, replacement: &str, flags: &str) -> usize {
         if pattern.is_empty() {
@@ -818,6 +1010,10 @@ impl EditorState {
                 Motion::WordEnd => self.buffer.move_word_end(),
                 Motion::FileStart => self.buffer.move_file_start(),
                 Motion::FileEnd => self.buffer.move_file_end(),
+                Motion::SentenceForward => self.move_sentence_forward(),
+                Motion::SentenceBackward => self.move_sentence_backward(),
+                Motion::ParagraphForward => self.move_paragraph_forward(),
+                Motion::ParagraphBackward => self.move_paragraph_backward(),
                 Motion::FindCharForward(ch) => {
                     self.buffer.find_char_forward(ch);
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -2722,5 +2918,83 @@ mod tests {
         
         state.apply_action(EditorAction::ChangeListNewer);
         assert_eq!(state.buffer().cursor().position.line, 2);
+    }
+
+    #[test]
+    fn paragraph_forward_motion() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "paragraph one\nstill one\n\nparagraph two\nstill two".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start at beginning
+        state.apply_action(EditorAction::FileStart);
+        assert_eq!(state.buffer().cursor().position.line, 0);
+        
+        // Move to next paragraph - should skip blank line and land on "paragraph two"
+        state.apply_action(EditorAction::ParagraphForward);
+        assert_eq!(state.buffer().cursor().position.line, 3);
+    }
+
+    #[test]
+    fn paragraph_backward_motion() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "paragraph one\nstill one\n\nparagraph two\nstill two".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to end
+        state.apply_action(EditorAction::FileEnd);
+        let end_line = state.buffer().cursor().position.line;
+        assert!(end_line > 0);
+        
+        // Move to previous paragraph - should land on blank line between paragraphs
+        state.apply_action(EditorAction::ParagraphBackward);
+        assert_eq!(state.buffer().cursor().position.line, 2); // Blank line
+    }
+
+    #[test]
+    fn sentence_forward_motion() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "First sentence. Second sentence. Third sentence.".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start at beginning
+        state.apply_action(EditorAction::FileStart);
+        assert_eq!(state.buffer().cursor().position.col, 0);
+        
+        // Move to next sentence
+        state.apply_action(EditorAction::SentenceForward);
+        // Should be at start of "Second"
+        let col = state.buffer().cursor().position.col;
+        assert!(col > 15); // After "First sentence. "
+    }
+
+    #[test]
+    fn sentence_backward_motion() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "First sentence. Second sentence. Third.".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to end of line (not FileEnd which goes to first non-blank)
+        state.apply_action(EditorAction::LineEnd);
+        let end_col = state.buffer().cursor().position.col;
+        
+        // Move to previous sentence
+        state.apply_action(EditorAction::SentenceBackward);
+        // Should be at start of "Third."
+        let col = state.buffer().cursor().position.col;
+        // Verify we moved backwards from end
+        assert!(col < end_col, "Should have moved backwards from col {} to {}", end_col, col);
     }
 }
