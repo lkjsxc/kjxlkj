@@ -1,4 +1,3 @@
-```markdown
 # TODO Management
 
 Structured task tracking for continuous project improvement.
@@ -11,9 +10,10 @@ This directory manages the recursive TODO workflow for kjxlkj development.
 
 | Document | Content |
 |----------|---------|
-| [current.md](current.md) | Active TODO list |
-| [completed.md](completed.md) | Completed tasks archive |
-| [plan.md](plan.md) | Detailed implementation plan |
+| [current/README.md](current/README.md) | Active TODO list (current iteration) |
+| [completed/README.md](completed/README.md) | Completed tasks archive |
+| [plan/README.md](plan/README.md) | Detailed implementation plan (recursive) |
+| [reading/README.md](reading/README.md) | Reading log (spec/policy comprehension) |
 
 ## Workflow
 
@@ -35,7 +35,5 @@ This directory manages the recursive TODO workflow for kjxlkj development.
 
 ## Related
 
-- Policy: [docs/policy/README.md](docs/policy/README.md)
-- Spec: [docs/spec/README.md](docs/spec/README.md)
-
-```
+- Policy: [/docs/policy/README.md](/docs/policy/README.md)
+- Spec: [/docs/spec/README.md](/docs/spec/README.md)
