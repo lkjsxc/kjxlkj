@@ -640,6 +640,16 @@ impl ModeHandler {
     }
 
     fn handle_insert(&mut self, key: KeyInput) -> EditorAction {
+        // Handle pending state for Ctrl-r {register}
+        if !self.state.pending_keys().is_empty() && self.state.pending_keys()[0] == '\x12' {
+            // Ctrl-r was pressed, now we expect a register character
+            self.state.clear_pending();
+            if let Some(reg) = key.char() {
+                return EditorAction::InsertRegister(reg);
+            }
+            return EditorAction::Nop;
+        }
+
         if key.is_escape() {
             self.state.set_mode(Mode::Normal);
             return EditorAction::ReturnToNormalMode;
@@ -649,6 +659,19 @@ impl ModeHandler {
         }
         if key.is_enter() {
             return EditorAction::InsertNewline;
+        }
+        // Ctrl-w: delete word before cursor
+        if key.is_ctrl('w') {
+            return EditorAction::DeleteWordBefore;
+        }
+        // Ctrl-u: delete to line start
+        if key.is_ctrl('u') {
+            return EditorAction::DeleteToLineStart;
+        }
+        // Ctrl-r: insert register contents (wait for register name)
+        if key.is_ctrl('r') {
+            self.state.push_key('\x12'); // Marker for Ctrl-r pending
+            return EditorAction::Nop;
         }
         if let Some(ch) = key.char() {
             return EditorAction::InsertChar(ch);

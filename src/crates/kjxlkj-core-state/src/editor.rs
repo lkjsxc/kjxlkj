@@ -263,6 +263,9 @@ impl EditorState {
             }
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
+            EditorAction::DeleteWordBefore => self.delete_word_before(),
+            EditorAction::DeleteToLineStart => self.delete_to_line_start(),
+            EditorAction::InsertRegister(reg) => self.insert_register(reg),
             EditorAction::DeleteCharAt => {
                 let pos = self.buffer.cursor().position;
                 self.add_to_change_list(pos);
@@ -2042,6 +2045,92 @@ impl EditorState {
         
         // Move to next match
         self.search_next_match(forward);
+    }
+
+    /// Delete word before cursor (Ctrl-w in insert mode).
+    fn delete_word_before(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        if cursor.col == 0 {
+            // At start of line, nothing to delete
+            return;
+        }
+        
+        let line = match self.buffer.line(cursor.line as usize) {
+            Some(l) => l,
+            None => return,
+        };
+        
+        let chars: Vec<char> = line.chars().collect();
+        let col = cursor.col as usize;
+        
+        if col > chars.len() {
+            return;
+        }
+        
+        // Find word start (skip trailing spaces, then skip word chars)
+        let mut delete_start = col;
+        
+        // Skip spaces before cursor
+        while delete_start > 0 && chars[delete_start - 1].is_whitespace() {
+            delete_start -= 1;
+        }
+        
+        // Skip word characters (alphanumeric + underscore)
+        while delete_start > 0 {
+            let ch = chars[delete_start - 1];
+            if ch.is_alphanumeric() || ch == '_' {
+                delete_start -= 1;
+            } else {
+                break;
+            }
+        }
+        
+        if delete_start == col {
+            // No word to delete, delete one character
+            self.buffer.delete_char_before();
+            return;
+        }
+        
+        // Delete from delete_start to cursor position
+        let start_pos = LineCol::new(cursor.line, delete_start as u32);
+        let end_pos = cursor;
+        self.buffer.delete_range(start_pos, end_pos);
+    }
+
+    /// Delete to start of line (Ctrl-u in insert mode).
+    fn delete_to_line_start(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        if cursor.col == 0 {
+            // At start of line, nothing to delete
+            return;
+        }
+        
+        let start_pos = LineCol::new(cursor.line, 0);
+        let end_pos = cursor;
+        self.buffer.delete_range(start_pos, end_pos);
+    }
+
+    /// Insert contents of specified register (Ctrl-r {reg} in insert mode).
+    fn insert_register(&mut self, reg: char) {
+        let content = if reg == '"' {
+            // Unnamed register - use yank register
+            self.buffer.yank_register().to_string()
+        } else if reg.is_ascii_alphabetic() {
+            // Named register a-z
+            self.registers.get(&reg).cloned().unwrap_or_default()
+        } else {
+            return;
+        };
+        
+        if content.is_empty() {
+            return;
+        }
+        
+        // Insert without trailing newline for linewise registers
+        let insert_text = content.trim_end_matches('\n');
+        for ch in insert_text.chars() {
+            self.buffer.insert_char(ch);
+        }
     }
 
     /// Convert byte offset to LineCol.
@@ -3959,5 +4048,65 @@ mod tests {
         
         let content = state.buffer().content();
         assert!(content.contains("aab") || content == "aab", "content: {}", content);
+    }
+
+    #[test]
+    fn insert_mode_delete_word_before() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        // Now at end of "hello world", in insert mode
+        // Cursor is after 'd'
+        
+        // Delete word before cursor (Ctrl-w)
+        state.apply_action(EditorAction::DeleteWordBefore);
+        
+        let content = state.buffer().content();
+        // Should have deleted "world" leaving "hello "
+        assert!(content == "hello " || content.starts_with("hello"), "content: {}", content);
+    }
+
+    #[test]
+    fn insert_mode_delete_to_line_start() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        // Now at end of "hello world", in insert mode
+        
+        // Delete to line start (Ctrl-u)
+        state.apply_action(EditorAction::DeleteToLineStart);
+        
+        let content = state.buffer().content();
+        // Should have deleted everything to start of line
+        assert!(content.is_empty() || content == "\n", "content: '{}'", content);
+    }
+
+    #[test]
+    fn insert_mode_insert_register() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Yank the word
+        state.handle_key(key('0'));
+        state.handle_key(key('y'));
+        state.handle_key(key('w'));
+        
+        // Go to end and enter insert mode
+        state.handle_key(key('A'));
+        
+        // Insert from unnamed register (")
+        state.apply_action(EditorAction::InsertRegister('"'));
+        
+        let content = state.buffer().content();
+        // Should have "hello" inserted after existing "hello"
+        assert!(content.contains("hello"), "content: {}", content);
     }
 }

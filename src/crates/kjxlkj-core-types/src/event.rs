@@ -149,6 +149,12 @@ pub enum EditorAction {
     InsertNewline,
     /// Delete character before cursor (backspace).
     DeleteCharBefore,
+    /// Delete word before cursor (Ctrl-w in insert mode).
+    DeleteWordBefore,
+    /// Delete to start of line (Ctrl-u in insert mode).
+    DeleteToLineStart,
+    /// Insert register contents (Ctrl-r {reg} in insert mode).
+    InsertRegister(char),
     /// Delete character at cursor (x command).
     DeleteCharAt,
     /// Delete current line (dd command).
