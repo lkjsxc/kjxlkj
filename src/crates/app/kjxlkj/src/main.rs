@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+mod headless;
+
 use anyhow::Context;
 use clap::Parser;
 use kjxlkj_core::{CoreEvent, EditorState, Effect, ServiceResult};
@@ -10,27 +12,24 @@ use kjxlkj_services::{fs, terminal};
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use std::io;
+use std::path::PathBuf;
 use tokio::sync::{mpsc, watch};
 
 #[derive(Parser, Debug)]
 struct Args {
     #[arg(long)]
     headless: bool,
+    #[arg(long)]
+    script: Option<PathBuf>,
 }
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     if args.headless {
-        return run_headless().await;
+        return headless::run(args.script).await;
     }
     run_tui().await
-}
-
-async fn run_headless() -> anyhow::Result<()> {
-    let state = EditorState::default();
-    println!("{}", state.snapshot().buffers[0].lines.join(""));
-    Ok(())
 }
 
 async fn run_tui() -> anyhow::Result<()> {

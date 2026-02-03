@@ -5,9 +5,7 @@ use super::EditorState;
 
 impl EditorState {
     pub(super) fn insert_text(&mut self, text: &str) {
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let at = match buf.text.cursor_to_char(win.cursor) {
@@ -26,9 +24,7 @@ impl EditorState {
     }
 
     pub(super) fn backspace(&mut self) {
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let at = match buf.text.cursor_to_char(win.cursor) {
@@ -51,9 +47,7 @@ impl EditorState {
     }
 
     pub(super) fn delete_char_under_cursor(&mut self) {
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let at = match buf.text.cursor_to_char(win.cursor) {
@@ -76,9 +70,7 @@ impl EditorState {
     }
 
     pub(super) fn delete_current_line(&mut self) {
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let line = buf.text.clamp_cursor(win.cursor).line;
@@ -100,9 +92,7 @@ impl EditorState {
     }
 
     pub(super) fn yank_current_line(&mut self) {
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let line = buf.text.clamp_cursor(win.cursor).line;
@@ -118,9 +108,7 @@ impl EditorState {
         if self.yank.is_empty() {
             return;
         }
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let at = match buf.text.cursor_to_char(win.cursor) {
@@ -147,9 +135,7 @@ impl EditorState {
         let Some(anchor) = self.visual_anchor else {
             return;
         };
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let a = buf.text.cursor_to_char(anchor).ok();
@@ -179,9 +165,7 @@ impl EditorState {
         let Some(anchor) = self.visual_anchor else {
             return;
         };
-        let Some((buf_idx, win_idx)) = self.active_indices() else {
-            return;
-        };
+        let Some((buf_idx, win_idx)) = self.active_indices() else { return; };
         let buf = &mut self.buffers[buf_idx];
         let win = &mut self.windows[win_idx];
         let a = buf.text.cursor_to_char(anchor).ok();
