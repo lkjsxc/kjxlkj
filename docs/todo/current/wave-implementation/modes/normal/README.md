@@ -18,44 +18,36 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define Normal-mode key interpretation layers (raw input → mapping → intent).
+- [x] Define Normal-mode key interpretation layers (raw input → mapping → intent).
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal, test-backed subset of Normal-mode keys that is fully specified.
+- [x] Implement a minimal, test-backed subset of Normal-mode keys that is fully specified.
+  - Cursor movement (h, j, k, l, w, b, e, 0, ^, $, gg, G)
+  - Mode transitions (i, a, A, o, v, V, R, :)
+  - Operators (d, y, c) with motions and text objects
+  - Line operators (dd, yy, cc, >>, <<)
+  - Find char (f, t, F, T, ;, ,)
+  - Search (/, ?, n, N)
+  - Undo/redo (u, Ctrl-r)
+  - Dot repeat (.)
 
 ### C. Full conformance
 
-- [ ] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
+- [x] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
+  - Marks (m, ', `)
+  - Registers (", etc.)
+  - Macros (q, @, @@)
+  - Jump list (Ctrl-o, Ctrl-i)
+  - Change list (g;, g,)
+  - Sentence/paragraph motions ((, ), {, })
+  - Match bracket (%)
+  - Join lines (J, gJ)
+  - Case operators (~, g~, gU, gu)
+  - Increment/decrement (Ctrl-a, Ctrl-x)
+  - Block visual mode (Ctrl-v)
 
 ### D. Conformance updates
 
-- [ ] Update:
-  - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-## Scope
-
-Implement configuration options that affect modes and mode behavior.
-
-## Defining documents (direct, normative)
-
-- Mode configuration:
-  - [/docs/spec/modes/configuration.md](/docs/spec/modes/configuration.md)
-
-## Checklist
-
-### A. Placeholder scaffolding
-
-- [ ] Enumerate all configuration items that affect mode behavior.
-
-### B. Minimal conformance slice
-
-- [ ] Implement a minimal configuration set with deterministic tests.
-
-### C. Full conformance
-
-- [ ] Implement all configuration options in the doc and ensure they match runtime behavior.
-
-### D. Conformance updates
-
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
