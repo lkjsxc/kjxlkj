@@ -1,5 +1,7 @@
 //! Core editor state.
 
+use std::collections::HashMap;
+
 use kjxlkj_core_edit::{find_text_object_range, Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
 use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, LineCol, Mode, Motion, Operator, TextObject};
@@ -54,6 +56,8 @@ pub struct EditorState {
     last_change: Option<RepeatableChange>,
     /// Text being inserted (for tracking insert mode changes).
     insert_buffer: String,
+    /// Local marks (a-z) - maps mark character to position.
+    marks: HashMap<char, LineCol>,
 }
 
 impl EditorState {
@@ -75,6 +79,7 @@ impl EditorState {
             last_find_char: None,
             last_change: None,
             insert_buffer: String::new(),
+            marks: HashMap::new(),
         }
     }
 
@@ -334,6 +339,26 @@ impl EditorState {
                     }
                 }
             }
+            EditorAction::SetMark(mark) => {
+                let pos = self.buffer.cursor().position;
+                self.marks.insert(mark, pos);
+                self.status_message = Some(format!("mark '{}' set", mark));
+            }
+            EditorAction::JumpToMarkExact(mark) => {
+                if let Some(pos) = self.marks.get(&mark).copied() {
+                    self.buffer.cursor_mut().position = pos;
+                } else {
+                    self.status_message = Some(format!("Mark '{}' not set", mark));
+                }
+            }
+            EditorAction::JumpToMarkLine(mark) => {
+                if let Some(pos) = self.marks.get(&mark).copied() {
+                    self.buffer.cursor_mut().position.line = pos.line;
+                    self.buffer.move_first_non_blank();
+                } else {
+                    self.status_message = Some(format!("Mark '{}' not set", mark));
+                }
+            }
             EditorAction::Nop => {}
         }
 
@@ -417,6 +442,17 @@ impl EditorState {
                 Motion::TillCharBackward(ch) => {
                     self.buffer.till_char_backward(ch);
                     self.last_find_char = Some((ch, FindCharDirection::TillBackward));
+                }
+                Motion::ToMarkExact(mark) => {
+                    if let Some(pos) = self.marks.get(&mark).copied() {
+                        self.buffer.cursor_mut().position = pos;
+                    }
+                }
+                Motion::ToMarkLine(mark) => {
+                    if let Some(pos) = self.marks.get(&mark).copied() {
+                        self.buffer.cursor_mut().position.line = pos.line;
+                        self.buffer.move_first_non_blank();
+                    }
                 }
                 Motion::CurrentLine => {
                     // For linewise operations, delete/yank whole lines
@@ -1722,5 +1758,73 @@ mod tests {
         state.handle_key(key('.'));
         // Cursor on 'b' (col 3), insert "cd" before it: "cdacdb"
         assert_eq!(state.buffer().content(), "cdacdb");
+    }
+
+    #[test]
+    fn set_and_jump_to_mark_exact() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "aaa\nbbb\nccc".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to line 1
+        state.handle_key(key('g'));
+        state.handle_key(key('g')); // line 0
+        state.handle_key(key('j')); // line 1
+        assert_eq!(state.buffer().cursor().position.line, 1, "should be on line 1");
+        
+        // Set mark 'a'
+        state.handle_key(key('m'));
+        state.handle_key(key('a'));
+        
+        // Move to line 2
+        state.handle_key(key('j')); // line 2
+        assert_eq!(state.buffer().cursor().position.line, 2, "should be on line 2 after j");
+        
+        // Jump to mark 'a' exact position using backtick
+        state.handle_key(key('`'));
+        state.handle_key(key('a'));
+        
+        assert_eq!(state.buffer().cursor().position.line, 1, "should jump back to line 1");
+    }
+
+    #[test]
+    fn set_and_jump_to_mark_line() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "  hello\n  world\n  test".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to line 1, col 4
+        state.handle_key(key('g'));
+        state.handle_key(key('g')); // line 0
+        state.handle_key(key('j')); // line 1
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l'));
+        state.handle_key(key('l')); // col 4
+        
+        // Set mark 'b'
+        state.handle_key(key('m'));
+        state.handle_key(key('b'));
+        
+        // Move elsewhere
+        state.handle_key(key('g'));
+        state.handle_key(key('g')); // line 0
+        
+        // Verify we moved
+        assert_eq!(state.buffer().cursor().position.line, 0);
+        
+        // Jump to mark 'b' line (first non-blank)
+        state.handle_key(key('\''));
+        state.handle_key(key('b'));
+        
+        // Should be on line 1, first non-blank which is col 2
+        assert_eq!(state.buffer().cursor().position.line, 1);
+        assert_eq!(state.buffer().cursor().position.col, 2);
     }
 }

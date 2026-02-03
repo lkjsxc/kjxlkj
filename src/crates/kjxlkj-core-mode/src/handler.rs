@@ -265,7 +265,7 @@ impl ModeHandler {
                 "." => EditorAction::RepeatLastChange,
                 
                 _ => {
-                    // Handle f{char}, t{char}, F{char}, T{char}
+                    // Handle f{char}, t{char}, F{char}, T{char}, m{mark}, `{mark}, '{mark}
                     if pending.len() == 2 {
                         let chars: Vec<char> = pending.chars().collect();
                         let cmd = chars[0];
@@ -277,12 +277,15 @@ impl ModeHandler {
                             'F' => EditorAction::FindCharBackward(target),
                             't' => EditorAction::TillCharForward(target),
                             'T' => EditorAction::TillCharBackward(target),
+                            'm' if target.is_ascii_alphabetic() => EditorAction::SetMark(target),
+                            '`' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkExact(target),
+                            '\'' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkLine(target),
                             _ => EditorAction::Nop,
                         };
                     }
                     
-                    // Wait for more keys if needed (e.g., for gg, f{char})
-                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T") {
+                    // Wait for more keys if needed (e.g., for gg, f{char}, m{mark})
+                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T" | "m" | "`" | "\'") {
                         self.state.clear_pending();
                     }
                     return EditorAction::Nop;

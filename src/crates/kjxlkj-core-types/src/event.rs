@@ -29,6 +29,10 @@ pub enum Motion {
     TillCharForward(char),
     /// Till char backward (T).
     TillCharBackward(char),
+    /// Go to mark exact position (` + mark).
+    ToMarkExact(char),
+    /// Go to mark line start (' + mark).
+    ToMarkLine(char),
 }
 
 /// Operator types.
@@ -175,6 +179,12 @@ pub enum EditorAction {
     VisualChange,
     /// Repeat last change (dot command).
     RepeatLastChange,
+    /// Set a mark at current cursor position.
+    SetMark(char),
+    /// Jump to mark exact position.
+    JumpToMarkExact(char),
+    /// Jump to mark line (first non-blank on that line).
+    JumpToMarkLine(char),
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.
