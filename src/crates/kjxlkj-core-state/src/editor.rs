@@ -272,6 +272,16 @@ impl EditorState {
                 self.buffer.yank_line();
                 self.store_in_pending_register();
             }
+            EditorAction::JoinLines => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.join_lines(true);
+            }
+            EditorAction::JoinLinesNoSpace => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.join_lines(false);
+            }
             EditorAction::PasteAfter => {
                 // Use named register if pending, otherwise use default
                 if let Some(reg) = self.pending_register.take() {
@@ -996,6 +1006,57 @@ impl EditorState {
         }
         
         None
+    }
+
+    /// Join current line with next line.
+    /// If `add_space` is true, a single space is inserted at the join point.
+    fn join_lines(&mut self, add_space: bool) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        let line_count = self.buffer.line_count();
+        
+        // Can't join if we're on the last line
+        if line_idx >= line_count.saturating_sub(1) {
+            return;
+        }
+        
+        // Get current line content (without trailing newline)
+        let current_line = self.buffer.line_content(line_idx)
+            .map(|s| s.trim_end_matches('\n').to_string())
+            .unwrap_or_default();
+        
+        // Get next line content (trimmed of leading whitespace for J, full for gJ)
+        let next_line = self.buffer.line_content(line_idx + 1)
+            .map(|s| {
+                let s = s.trim_end_matches('\n');
+                if add_space {
+                    s.trim_start()
+                } else {
+                    s
+                }.to_string()
+            })
+            .unwrap_or_default();
+        
+        // Calculate the column where the join happens (for cursor positioning)
+        let join_col = current_line.len();
+        
+        // Build the joined line
+        let joined = if add_space && !current_line.is_empty() && !next_line.is_empty() {
+            format!("{} {}", current_line, next_line)
+        } else {
+            format!("{}{}", current_line, next_line)
+        };
+        
+        // Delete the next line first
+        self.buffer.cursor_mut().position = LineCol { line: (line_idx + 1) as u32, col: 0 };
+        self.buffer.delete_line();
+        
+        // Replace current line with joined content
+        self.buffer.cursor_mut().position = LineCol { line: line_idx as u32, col: 0 };
+        self.buffer.replace_line(line_idx, &joined);
+        
+        // Position cursor at the join point
+        self.buffer.cursor_mut().position = LineCol { line: line_idx as u32, col: join_col as u32 };
     }
 
     /// Apply substitute command on the current line.
@@ -3146,5 +3207,45 @@ mod tests {
         // Match bracket should go to last closing paren (matching pair)
         state.apply_action(EditorAction::MatchBracket);
         assert_eq!(state.buffer().cursor().position.col, 8); // Position of last ')'
+    }
+
+    #[test]
+    fn join_lines_with_space() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello\n  world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to first line
+        state.apply_action(EditorAction::FileStart);
+        
+        // Join lines (J) - should add space and trim leading whitespace
+        state.apply_action(EditorAction::JoinLines);
+        
+        let content = state.buffer().content();
+        assert_eq!(content.trim(), "hello world");
+        assert_eq!(state.buffer().cursor().position.col, 5); // At join point
+    }
+
+    #[test]
+    fn join_lines_no_space() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello\n  world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to first line
+        state.apply_action(EditorAction::FileStart);
+        
+        // Join lines without space (gJ) - preserves leading whitespace
+        state.apply_action(EditorAction::JoinLinesNoSpace);
+        
+        let content = state.buffer().content();
+        assert_eq!(content.trim(), "hello  world");
+        assert_eq!(state.buffer().cursor().position.col, 5); // At join point
     }
 }

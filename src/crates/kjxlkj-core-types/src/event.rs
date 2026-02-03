@@ -155,6 +155,10 @@ pub enum EditorAction {
     DeleteLine,
     /// Yank current line (yy command).
     YankLine,
+    /// Join current line with next (J command).
+    JoinLines,
+    /// Join current line with next without spaces (gJ command).
+    JoinLinesNoSpace,
     /// Paste after cursor (p command).
     PasteAfter,
     /// Operator applied to a motion (e.g., dw, cw, yw).
