@@ -36,7 +36,7 @@ Implement Replace and Virtual Replace mode semantics.
 - [ ] Implement all Replace/Virtual Replace behaviors in the subtree.
   - [x] Basic replace mode
   - [ ] Virtual Replace mode (gR) - future
-  - [ ] Single character replace (r) - implemented in normal mode
+  - [x] Single character replace (r)
 
 ### D. Conformance updates
 

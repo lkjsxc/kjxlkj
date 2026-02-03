@@ -25,7 +25,7 @@ This document records the currently implemented, user-visible surface so that:
 | Visual | `v` | `Esc` | Charwise selection with operators |
 | Visual Line | `V` | `Esc` | Linewise selection with operators |
 | Visual Block | `Ctrl-v` | `Esc` | Block (rectangular) selection |
-| Replace | `R` | `Esc` | Currently behaves like Insert |
+| Replace | `R` | `Esc` | Overwrites existing characters |
 
 ### Normal-mode keys (subset)
 
@@ -52,6 +52,7 @@ This document records the currently implemented, user-visible surface so that:
 | `v` | Enter Visual mode |
 | `V` | Enter Visual line mode |
 | `R` | Enter Replace mode |
+| `r{char}` | Replace character under cursor with {char} |
 | `x` | Delete character under cursor |
 | `X` | Delete character before cursor |
 | `p` | Paste after cursor |
