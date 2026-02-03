@@ -248,6 +248,73 @@ impl Buffer {
         }
     }
 
+    /// Deletes text in a range and yanks it.
+    pub fn delete_range(&mut self, start: LineCol, end: LineCol) {
+        if start == end {
+            return;
+        }
+        if let Some(text) = self.text.text_range_pos(start, end) {
+            if self.text.delete_range_pos(start, end) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Delete {
+                    pos: start,
+                    text: text.clone(),
+                });
+                self.history.push(group);
+                self.yank_register = text;
+                self.cursor.position = start;
+                self.clamp_cursor();
+                self.modified = true;
+            }
+        }
+    }
+
+    /// Yanks text in a range without deleting.
+    pub fn yank_range(&mut self, start: LineCol, end: LineCol) {
+        if let Some(text) = self.text.text_range_pos(start, end) {
+            self.yank_register = text;
+        }
+    }
+
+    /// Indents the current line.
+    pub fn indent_line(&mut self) {
+        let line_idx = self.cursor.position.line as usize;
+        let pos = LineCol::new(line_idx as u32, 0);
+        let indent = "    "; // 4 spaces
+        if self.text.insert(pos, indent) {
+            let mut group = UndoGroup::new();
+            group.push(EditOperation::Insert {
+                pos,
+                text: indent.to_string(),
+            });
+            self.history.push(group);
+            self.modified = true;
+        }
+    }
+
+    /// Outdents the current line.
+    pub fn outdent_line(&mut self) {
+        let line_idx = self.cursor.position.line as usize;
+        if let Some(line) = self.line(line_idx) {
+            let remove_count = line.chars().take(4).take_while(|c| *c == ' ').count();
+            if remove_count > 0 {
+                let start = LineCol::new(line_idx as u32, 0);
+                let end = LineCol::new(line_idx as u32, remove_count as u32);
+                let text: String = line.chars().take(remove_count).collect();
+                if self.text.delete_range_pos(start, end) {
+                    let mut group = UndoGroup::new();
+                    group.push(EditOperation::Delete {
+                        pos: start,
+                        text,
+                    });
+                    self.history.push(group);
+                    self.clamp_cursor();
+                    self.modified = true;
+                }
+            }
+        }
+    }
+
     /// Undoes the last change.
     pub fn undo(&mut self) -> bool {
         if let Some(group) = self.history.undo() {

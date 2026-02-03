@@ -6,4 +6,4 @@ mod handler;
 mod state;
 
 pub use handler::{CommandLineState, KeyCode, KeyInput, ModeHandler, Modifiers};
-pub use state::ModeState;
+pub use state::{ModeState, PendingOperator};

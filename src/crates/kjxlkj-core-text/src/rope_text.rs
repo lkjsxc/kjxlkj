@@ -125,7 +125,7 @@ impl RopeText {
         }
     }
 
-    /// Deletes a range of characters.
+    /// Deletes a range of characters by char indices.
     pub fn delete_range(&mut self, start: usize, end: usize) -> bool {
         if start <= end && end <= self.char_count() {
             self.rope.remove(start..end);
@@ -133,6 +133,36 @@ impl RopeText {
             true
         } else {
             false
+        }
+    }
+
+    /// Deletes a range of characters between two positions.
+    pub fn delete_range_pos(&mut self, start: LineCol, end: LineCol) -> bool {
+        let start_idx = match self.line_col_to_char(start) {
+            Some(idx) => idx,
+            None => return false,
+        };
+        let end_idx = match self.line_col_to_char(end) {
+            Some(idx) => idx,
+            None => return false,
+        };
+        if start_idx < end_idx && end_idx <= self.char_count() {
+            self.rope.remove(start_idx..end_idx);
+            self.bump_version();
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Gets text in a range between two positions.
+    pub fn text_range_pos(&self, start: LineCol, end: LineCol) -> Option<String> {
+        let start_idx = self.line_col_to_char(start)?;
+        let end_idx = self.line_col_to_char(end)?;
+        if start_idx <= end_idx && end_idx <= self.char_count() {
+            Some(self.rope.slice(start_idx..end_idx).to_string())
+        } else {
+            None
         }
     }
 

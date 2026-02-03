@@ -49,13 +49,24 @@ This document records the currently implemented, user-visible surface so that:
 | `v` | Enter Visual mode |
 | `V` | Enter Visual line mode |
 | `R` | Enter Replace mode |
-| `dd` | Delete current line (yanks deleted text) |
-| `yy` | Yank current line |
-| `p` | Paste after cursor |
 | `x` | Delete character under cursor |
+| `p` | Paste after cursor |
 | `u` | Undo |
 | `Ctrl-r` | Redo |
 | `:` | Enter Command mode |
+
+### Operators and motions
+
+| Operator | Motion/target | Action |
+|---|---|---|
+| `d` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Delete over motion, yank to register |
+| `y` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Yank over motion |
+| `c` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Change (delete then enter Insert) |
+| `dd` | (line) | Delete current line (yanks deleted text) |
+| `yy` | (line) | Yank current line |
+| `cc` | (line) | Change current line |
+| `>>` | (line) | Indent current line (4 spaces) |
+| `<<` | (line) | Outdent current line (up to 4 spaces) |
 
 ### Command-line (Ex) commands (subset)
 

@@ -1,8 +1,8 @@
 //! Mode input handling.
 
-use kjxlkj_core_types::{EditorAction, Mode};
+use kjxlkj_core_types::{EditorAction, Mode, Motion, Operator};
 
-use crate::ModeState;
+use crate::{ModeState, PendingOperator};
 
 /// Command line input state.
 #[derive(Debug, Default, Clone)]
@@ -80,10 +80,12 @@ impl ModeHandler {
     fn handle_normal(&mut self, key: KeyInput) -> EditorAction {
         if key.is_escape() {
             self.state.clear_pending();
+            self.state.take_pending_operator();
             return EditorAction::Nop;
         }
 
         if let Some(ch) = key.char() {
+            // Handle count prefix
             if ch.is_ascii_digit() && ch != '0' {
                 let digit = ch.to_digit(10).unwrap();
                 let count = self.state.take_count().unwrap_or(0) * 10 + digit;
@@ -91,9 +93,92 @@ impl ModeHandler {
                 return EditorAction::Nop;
             }
 
+            // Check if we're in operator-pending state
+            if self.state.is_operator_pending() {
+                return self.handle_operator_pending(ch);
+            }
+
             self.state.push_key(ch);
             let pending: String = self.state.pending_keys().iter().collect();
+            
+            // Check for operator entry
             let action = match pending.as_str() {
+                // Operators that enter operator-pending state
+                "d" => {
+                    self.state.set_pending_operator(PendingOperator::Delete);
+                    self.state.clear_pending();
+                    return EditorAction::Nop;
+                }
+                "y" => {
+                    self.state.set_pending_operator(PendingOperator::Yank);
+                    self.state.clear_pending();
+                    return EditorAction::Nop;
+                }
+                "c" => {
+                    self.state.set_pending_operator(PendingOperator::Change);
+                    self.state.clear_pending();
+                    return EditorAction::Nop;
+                }
+                ">" => {
+                    self.state.set_pending_operator(PendingOperator::Indent);
+                    self.state.clear_pending();
+                    return EditorAction::Nop;
+                }
+                "<" => {
+                    self.state.set_pending_operator(PendingOperator::Outdent);
+                    self.state.clear_pending();
+                    return EditorAction::Nop;
+                }
+
+                // Double-operator for line operations
+                "dd" => {
+                    let count = self.state.take_count();
+                    self.state.clear_pending();
+                    EditorAction::OperatorMotion {
+                        operator: Operator::Delete,
+                        motion: Motion::CurrentLine,
+                        count,
+                    }
+                }
+                "yy" => {
+                    let count = self.state.take_count();
+                    self.state.clear_pending();
+                    EditorAction::OperatorMotion {
+                        operator: Operator::Yank,
+                        motion: Motion::CurrentLine,
+                        count,
+                    }
+                }
+                "cc" => {
+                    let count = self.state.take_count();
+                    self.state.clear_pending();
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::OperatorMotion {
+                        operator: Operator::Change,
+                        motion: Motion::CurrentLine,
+                        count,
+                    }
+                }
+                ">>" => {
+                    let count = self.state.take_count();
+                    self.state.clear_pending();
+                    EditorAction::OperatorMotion {
+                        operator: Operator::Indent,
+                        motion: Motion::CurrentLine,
+                        count,
+                    }
+                }
+                "<<" => {
+                    let count = self.state.take_count();
+                    self.state.clear_pending();
+                    EditorAction::OperatorMotion {
+                        operator: Operator::Outdent,
+                        motion: Motion::CurrentLine,
+                        count,
+                    }
+                }
+
+                // Simple motions
                 "h" => EditorAction::CursorLeft,
                 "j" => EditorAction::CursorDown,
                 "k" => EditorAction::CursorUp,
@@ -109,6 +194,8 @@ impl ModeHandler {
                 "E" => EditorAction::WORDEnd,
                 "gg" => EditorAction::FileStart,
                 "G" => EditorAction::FileEnd,
+                
+                // Mode entries
                 "i" => {
                     self.state.set_mode(Mode::Insert);
                     EditorAction::EnterInsertMode
@@ -142,13 +229,15 @@ impl ModeHandler {
                     self.command_line.clear();
                     EditorAction::EnterCommandMode
                 }
+                
+                // Character operations
                 "x" => EditorAction::DeleteCharAt,
-                "dd" => EditorAction::DeleteLine,
-                "yy" => EditorAction::YankLine,
                 "p" => EditorAction::PasteAfter,
                 "u" => EditorAction::Undo,
+                
                 _ => {
-                    if pending.len() >= 2 {
+                    // Wait for more keys if needed (e.g., for gg)
+                    if pending.len() >= 2 && !matches!(pending.as_str(), "g") {
                         self.state.clear_pending();
                     }
                     return EditorAction::Nop;
@@ -168,6 +257,78 @@ impl ModeHandler {
             EditorAction::CursorDown
         } else {
             EditorAction::Nop
+        }
+    }
+
+    /// Handle motion after operator (operator-pending state).
+    fn handle_operator_pending(&mut self, ch: char) -> EditorAction {
+        let pending_op = match self.state.take_pending_operator() {
+            Some(op) => op,
+            None => return EditorAction::Nop,
+        };
+        
+        let operator = match pending_op {
+            PendingOperator::Delete => Operator::Delete,
+            PendingOperator::Yank => Operator::Yank,
+            PendingOperator::Change => Operator::Change,
+            PendingOperator::Indent => Operator::Indent,
+            PendingOperator::Outdent => Operator::Outdent,
+            _ => return EditorAction::Nop,
+        };
+
+        // Check for double-operator (dd, yy, cc, etc.)
+        if ch == pending_op.char() {
+            let count = self.state.take_count();
+            if operator == Operator::Change {
+                self.state.set_mode(Mode::Insert);
+            }
+            return EditorAction::OperatorMotion {
+                operator,
+                motion: Motion::CurrentLine,
+                count,
+            };
+        }
+
+        // Map character to motion
+        self.state.push_key(ch);
+        let pending_str: String = self.state.pending_keys().iter().collect();
+        
+        let motion = match pending_str.as_str() {
+            "h" => Some(Motion::Left),
+            "j" => Some(Motion::Down),
+            "k" => Some(Motion::Up),
+            "l" => Some(Motion::Right),
+            "0" => Some(Motion::LineStart),
+            "^" => Some(Motion::FirstNonBlank),
+            "$" => Some(Motion::LineEnd),
+            "w" => Some(Motion::WordForward),
+            "b" => Some(Motion::WordBackward),
+            "e" => Some(Motion::WordEnd),
+            "gg" => Some(Motion::FileStart),
+            "G" => Some(Motion::FileEnd),
+            "g" => {
+                // Wait for second character
+                self.state.set_pending_operator(pending_op);
+                return EditorAction::Nop;
+            }
+            _ => None,
+        };
+
+        self.state.clear_pending();
+
+        match motion {
+            Some(m) => {
+                let count = self.state.take_count();
+                if operator == Operator::Change {
+                    self.state.set_mode(Mode::Insert);
+                }
+                EditorAction::OperatorMotion {
+                    operator,
+                    motion: m,
+                    count,
+                }
+            }
+            None => EditorAction::Nop,
         }
     }
 

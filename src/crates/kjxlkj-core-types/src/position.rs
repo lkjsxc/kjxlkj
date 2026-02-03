@@ -21,6 +21,21 @@ pub struct LineCol {
     pub col: u32,
 }
 
+impl PartialOrd for LineCol {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for LineCol {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.line.cmp(&other.line) {
+            std::cmp::Ordering::Equal => self.col.cmp(&other.col),
+            ord => ord,
+        }
+    }
+}
+
 impl LineCol {
     /// Creates a new line-column position.
     pub fn new(line: u32, col: u32) -> Self {

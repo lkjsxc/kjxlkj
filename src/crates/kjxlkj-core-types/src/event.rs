@@ -4,6 +4,35 @@ use serde::{Deserialize, Serialize};
 
 use crate::{BufferId, Mode};
 
+/// Motion types for operator + motion combinations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Motion {
+    Left,
+    Right,
+    Up,
+    Down,
+    LineStart,
+    LineEnd,
+    FirstNonBlank,
+    WordForward,
+    WordBackward,
+    WordEnd,
+    FileStart,
+    FileEnd,
+    /// Current line (for double-operator like dd, yy).
+    CurrentLine,
+}
+
+/// Operator types.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Operator {
+    Delete,
+    Yank,
+    Change,
+    Indent,
+    Outdent,
+}
+
 /// Actions that the core task can execute.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum EditorAction {
@@ -51,6 +80,8 @@ pub enum EditorAction {
     YankLine,
     /// Paste after cursor (p command).
     PasteAfter,
+    /// Operator applied to a motion (e.g., dw, cw, yw).
+    OperatorMotion { operator: Operator, motion: Motion, count: Option<u32> },
     /// Undo last change.
     Undo,
     /// Redo last undone change.

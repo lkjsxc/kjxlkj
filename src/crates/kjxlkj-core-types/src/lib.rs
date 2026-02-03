@@ -12,7 +12,7 @@ mod window;
 
 pub use buffer::{BufferId, BufferVersion};
 pub use cursor::Cursor;
-pub use event::{EditorAction, EditorEvent, ServiceEvent, ServiceRequest};
+pub use event::{EditorAction, EditorEvent, Motion, Operator, ServiceEvent, ServiceRequest};
 pub use mode::Mode;
 pub use position::{ByteOffset, CharOffset, LineCol, Point};
 pub use window::WindowId;

@@ -2,7 +2,7 @@
 
 use kjxlkj_core_edit::{Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
-use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode};
+use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode, Motion, Operator};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Viewport};
 
 use crate::CommandParser;
@@ -125,6 +125,9 @@ impl EditorState {
             EditorAction::DeleteLine => self.buffer.delete_line(),
             EditorAction::YankLine => self.buffer.yank_line(),
             EditorAction::PasteAfter => self.buffer.paste_after(),
+            EditorAction::OperatorMotion { operator, motion, count } => {
+                self.apply_operator_motion(operator, motion, count);
+            }
             EditorAction::Undo => {
                 if !self.buffer.undo() {
                     self.status_message = Some("Already at oldest change".to_string());
@@ -229,6 +232,85 @@ impl EditorState {
     fn update_viewport(&mut self) {
         let cursor_line = self.buffer.cursor().position.line as usize;
         self.viewport.follow_cursor(cursor_line, self.scroll_off);
+    }
+
+    /// Apply an operator over a motion range.
+    fn apply_operator_motion(&mut self, operator: Operator, motion: Motion, count: Option<u32>) {
+        let count = count.unwrap_or(1) as usize;
+        
+        // Get start position
+        let start = self.buffer.cursor().position;
+        
+        // Execute motion to get end position
+        for _ in 0..count {
+            match motion {
+                Motion::Left => self.buffer.move_left(),
+                Motion::Right => self.buffer.move_right(),
+                Motion::Up => self.buffer.move_up(),
+                Motion::Down => self.buffer.move_down(),
+                Motion::LineStart => self.buffer.move_line_start(),
+                Motion::LineEnd => self.buffer.move_line_end(),
+                Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::WordForward => self.buffer.move_word_forward(),
+                Motion::WordBackward => self.buffer.move_word_backward(),
+                Motion::WordEnd => self.buffer.move_word_end(),
+                Motion::FileStart => self.buffer.move_file_start(),
+                Motion::FileEnd => self.buffer.move_file_end(),
+                Motion::CurrentLine => {
+                    // For linewise operations, delete/yank whole lines
+                    for _ in 0..count {
+                        match operator {
+                            Operator::Delete => self.buffer.delete_line(),
+                            Operator::Yank => self.buffer.yank_line(),
+                            Operator::Change => {
+                                self.buffer.delete_line();
+                                // Stay on the new line
+                            }
+                            Operator::Indent => {
+                                self.buffer.indent_line();
+                            }
+                            Operator::Outdent => {
+                                self.buffer.outdent_line();
+                            }
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+
+        let end = self.buffer.cursor().position;
+        
+        // Determine range (handle motion going backwards)
+        let (range_start, mut range_end) = if start <= end {
+            (start, end)
+        } else {
+            (end, start)
+        };
+
+        // For inclusive motions (like $, e, etc.), we need to include the end character
+        // Ranges are exclusive, so we add 1 to the end column
+        let is_inclusive = matches!(motion, Motion::LineEnd | Motion::WordEnd);
+        if is_inclusive {
+            range_end.col += 1;
+        }
+
+        // Apply operator over range
+        match operator {
+            Operator::Delete => {
+                self.buffer.delete_range(range_start, range_end);
+            }
+            Operator::Yank => {
+                self.buffer.yank_range(range_start, range_end);
+            }
+            Operator::Change => {
+                self.buffer.delete_range(range_start, range_end);
+            }
+            Operator::Indent | Operator::Outdent => {
+                // For indent/outdent, need linewise behavior
+                // TODO: implement range indentation
+            }
+        }
     }
 
     /// Produces a snapshot for rendering.
@@ -463,5 +545,164 @@ mod tests {
 
         // Content must be unchanged
         assert_eq!(state.buffer().content(), content_before);
+    }
+
+    #[test]
+    fn delete_word_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start of buffer
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // dw deletes "hello "
+        state.handle_key(key('d'));
+        state.handle_key(key('w'));
+        
+        assert_eq!(state.buffer().content(), "world");
+    }
+
+    #[test]
+    fn yank_word_and_paste() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // yw yanks "hello "
+        state.handle_key(key('y'));
+        state.handle_key(key('w'));
+        
+        // Content unchanged after yank
+        assert_eq!(state.buffer().content(), "hello world");
+        
+        // Go to end and paste
+        state.handle_key(key('$'));
+        state.handle_key(key('p'));
+        
+        assert!(state.buffer().content().contains("hello"));
+    }
+
+    #[test]
+    fn delete_to_line_end() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // Move to 'w'
+        state.handle_key(key('w'));
+        
+        // d$ deletes to end of line
+        state.handle_key(key('d'));
+        state.handle_key(key('$'));
+        
+        assert_eq!(state.buffer().content(), "hello ");
+    }
+
+    #[test]
+    fn delete_line_with_dd() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line1".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(enter());
+        for ch in "line2".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to first line
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        
+        // dd deletes the line
+        state.handle_key(key('d'));
+        state.handle_key(key('d'));
+        
+        assert_eq!(state.buffer().content(), "line2");
+    }
+
+    #[test]
+    fn operator_pending_escape_cancels() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start delete operator
+        state.handle_key(key('d'));
+        
+        // Escape should cancel
+        state.handle_key(esc());
+        
+        // Content unchanged
+        assert_eq!(state.buffer().content(), "hello");
+        
+        // Should be back in normal mode
+        assert_eq!(state.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn indent_line_with_double_greater() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "code".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        
+        // >> indents line
+        state.handle_key(key('>'));
+        state.handle_key(key('>'));
+        
+        assert!(state.buffer().content().starts_with("    "));
+    }
+
+    #[test]
+    fn outdent_line_with_double_less() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "    code".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        
+        // << outdents line
+        state.handle_key(key('<'));
+        state.handle_key(key('<'));
+        
+        assert_eq!(state.buffer().content(), "code");
     }
 }
