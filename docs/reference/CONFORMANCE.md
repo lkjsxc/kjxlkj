@@ -73,6 +73,17 @@ This document records the currently implemented, user-visible surface so that:
 | `{` | Move to previous paragraph |
 | `}` | Move to next paragraph |
 | `%` | Move to matching bracket |
+| `J` | Join current line with next (adds space) |
+| `gJ` | Join current line with next (no space) |
+| `~` | Toggle case of character under cursor |
+| `g~{motion}` | Toggle case over motion |
+| `g~~` | Toggle case of entire line |
+| `gU{motion}` | Uppercase over motion |
+| `gUU` | Uppercase entire line |
+| `gu{motion}` | Lowercase over motion |
+| `guu` | Lowercase entire line |
+| `Ctrl-a` | Increment number under cursor |
+| `Ctrl-x` | Decrement number under cursor |
 
 ### Operators and motions
 
