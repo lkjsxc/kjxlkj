@@ -15,3 +15,4 @@ As of 2026-02-03:
 - All `src/**/*.rs` files are ≤200 lines.
 - `cargo test` passes.
 - `cargo clippy --all-targets --all-features -- -D warnings` passes.
+- E2E coverage includes headless open/edit/write and write/quit flows.
