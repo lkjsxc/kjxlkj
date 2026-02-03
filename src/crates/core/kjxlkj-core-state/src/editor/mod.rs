@@ -12,6 +12,7 @@ mod edit;
 mod event;
 mod keys;
 mod movement;
+mod open_line;
 mod state;
 mod undo;
 
@@ -69,4 +70,3 @@ pub struct EditorState {
     visual_anchor: Option<CursorPos>,
     term_size: Option<(u16, u16)>,
 }
-

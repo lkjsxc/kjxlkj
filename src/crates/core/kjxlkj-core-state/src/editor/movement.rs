@@ -39,6 +39,29 @@ impl EditorState {
         win.cursor.col = 0;
     }
 
+    pub(super) fn move_right_in_line(&mut self) {
+        let Some((buf_idx, win_idx)) = self.active_indices() else {
+            return;
+        };
+        let buf = &self.buffers[buf_idx];
+        let win = &mut self.windows[win_idx];
+        win.cursor = buf.text.clamp_cursor(win.cursor);
+        let max_col = buf.text.line_len_chars_no_nl(win.cursor.line).unwrap_or(0);
+        if win.cursor.col < max_col {
+            win.cursor.col += 1;
+        }
+    }
+
+    pub(super) fn move_to_line_end(&mut self) {
+        let Some((buf_idx, win_idx)) = self.active_indices() else {
+            return;
+        };
+        let buf = &self.buffers[buf_idx];
+        let win = &mut self.windows[win_idx];
+        win.cursor = buf.text.clamp_cursor(win.cursor);
+        win.cursor.col = buf.text.line_len_chars_no_nl(win.cursor.line).unwrap_or(0);
+    }
+
     pub(super) fn move_up(&mut self) {
         let Some((buf_idx, win_idx)) = self.active_indices() else {
             return;

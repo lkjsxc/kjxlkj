@@ -32,6 +32,25 @@ impl EditorState {
         match key {
             Key { code: KeyCode::Esc, .. } => Vec::new(),
             Key { code: KeyCode::Char('i'), mods } if mods == plain => { self.set_mode(Mode::Insert); Vec::new() }
+            Key { code: KeyCode::Char('a'), mods } if mods == plain => {
+                self.move_right_in_line();
+                self.set_mode(Mode::Insert);
+                Vec::new()
+            }
+            Key { code: KeyCode::Char('A'), mods } if !mods.ctrl && !mods.alt => {
+                self.move_to_line_end();
+                self.set_mode(Mode::Insert);
+                Vec::new()
+            }
+            Key { code: KeyCode::Char('o'), mods } if mods == plain => {
+                self.open_line_below();
+                self.set_mode(Mode::Insert);
+                Vec::new()
+            }
+            Key { code: KeyCode::Char('R'), mods } if !mods.ctrl && !mods.alt => {
+                self.set_mode(Mode::Replace);
+                Vec::new()
+            }
             Key { code: KeyCode::Char('v'), mods } if mods == plain => {
                 if let Some(c) = self.active_window_cursor() {
                     self.set_visual_anchor(c);
