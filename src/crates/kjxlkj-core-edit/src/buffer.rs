@@ -128,6 +128,52 @@ impl Buffer {
         }
     }
 
+    /// Replaces the character at the cursor position (for Replace mode).
+    pub fn replace_char(&mut self, ch: char) {
+        let pos = self.cursor.position;
+        let line_idx = pos.line as usize;
+        let col_idx = pos.col as usize;
+        
+        // Get current line to check if we're at end
+        let line = match self.text.line(line_idx) {
+            Some(l) => l,
+            None => return,
+        };
+        
+        let line_len = line.chars().count();
+        
+        if col_idx >= line_len {
+            // At or past end of line, just insert
+            self.insert_char(ch);
+        } else {
+            // Delete current char and insert new one
+            let mut group = UndoGroup::new();
+            
+            // Get the old char for undo
+            let old_char: String = line.chars().nth(col_idx).map(|c| c.to_string()).unwrap_or_default();
+            
+            // Delete the old char
+            if !old_char.is_empty() && self.text.delete_char(pos) {
+                group.push(EditOperation::Delete {
+                    pos,
+                    text: old_char,
+                });
+            }
+            
+            // Insert new char
+            if self.text.insert_char(pos, ch) {
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: ch.to_string(),
+                });
+            }
+            
+            self.history.push(group);
+            self.cursor.position.col += 1;
+            self.modified = true;
+        }
+    }
+
     /// Inserts a newline at the cursor position.
     pub fn insert_newline(&mut self) {
         let pos = self.cursor.position;

@@ -771,8 +771,11 @@ impl ModeHandler {
             self.state.set_mode(Mode::Normal);
             return EditorAction::ReturnToNormalMode;
         }
+        if key.is_backspace() {
+            return EditorAction::CursorLeft;
+        }
         if let Some(ch) = key.char() {
-            return EditorAction::InsertChar(ch);
+            return EditorAction::ReplaceChar(ch);
         }
         EditorAction::Nop
     }

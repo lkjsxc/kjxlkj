@@ -261,6 +261,9 @@ impl EditorState {
                 self.insert_buffer.push(ch);
                 self.buffer.insert_char(ch);
             }
+            EditorAction::ReplaceChar(ch) => {
+                self.buffer.replace_char(ch);
+            }
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
             EditorAction::DeleteWordBefore => self.delete_word_before(),
@@ -4108,5 +4111,31 @@ mod tests {
         let content = state.buffer().content();
         // Should have "hello" inserted after existing "hello"
         assert!(content.contains("hello"), "content: {}", content);
+    }
+
+    #[test]
+    fn replace_mode_overwrites() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('0'));
+        
+        // Enter Replace mode
+        state.handle_key(key('R'));
+        assert_eq!(state.mode(), Mode::Replace);
+        
+        // Type "HELLO" - should replace existing chars
+        for ch in "HELLO".chars() {
+            state.handle_key(key(ch));
+        }
+        
+        let content = state.buffer().content();
+        // Should be "HELLO" not "HELLOhello"
+        assert_eq!(content, "HELLO", "content: {}", content);
     }
 }
