@@ -1,5 +1,6 @@
 # LSP Navigation
 
+Back: [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
 LSP-based code navigation features.
 
 ## Documents
@@ -15,4 +16,4 @@ LSP-based code navigation features.
 
 ## Related
 
-- LSP overview: [docs/spec/features/lsp/README.md](docs/spec/features/lsp/README.md)
+- LSP overview: [docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)

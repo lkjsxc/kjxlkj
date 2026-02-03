@@ -1,5 +1,6 @@
 # Testing
 
+Back: [/docs/technical/README.md](/docs/technical/README.md)
 Testing methodologies and coverage specifications.
 
 ## Documents
@@ -13,5 +14,5 @@ Testing methodologies and coverage specifications.
 
 ## Related
 
-- Technical overview: [docs/technical/README.md](docs/technical/README.md)
-- Spec technical: [docs/spec/technical/README.md](docs/spec/technical/README.md)
+- Technical overview: [docs/technical/README.md](/docs/technical/README.md)
+- Spec technical: [docs/spec/technical/README.md](/docs/spec/technical/README.md)

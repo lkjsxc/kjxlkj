@@ -1,5 +1,6 @@
 # Keybindings Directory
 
+Back: [/docs/spec/ux/README.md](/docs/spec/ux/README.md)
 Detailed keybinding specifications organized by category.
 
 ## Documents
@@ -20,5 +21,5 @@ Detailed keybinding specifications organized by category.
 
 ## Related
 
-- Keybindings overview: [docs/spec/ux/keybindings.md](docs/spec/ux/keybindings.md)
-- UX: [docs/spec/ux/README.md](docs/spec/ux/README.md)
+- Keybindings overview: [docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- UX: [docs/spec/ux/README.md](/docs/spec/ux/README.md)

@@ -1,5 +1,6 @@
 # Design
 
+Back: [/docs/README.md](/docs/README.md)
 Design rationale and detailed explanations for editing primitives.
 
 ## Purpose
@@ -14,5 +15,5 @@ This directory contains in-depth design documents explaining the rationale behin
 
 ## Related
 
-- Specifications: [docs/spec/README.md](docs/spec/README.md)
-- Policies: [docs/policy/README.md](docs/policy/README.md)
+- Specifications: [docs/spec/README.md](/docs/spec/README.md)
+- Policies: [docs/policy/README.md](/docs/policy/README.md)

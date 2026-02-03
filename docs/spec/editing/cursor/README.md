@@ -1,4 +1,7 @@
 # Cursor semantics
+
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
+
 Cursor behavior is core-owned, deterministic, and defined over buffer snapshots.
 
 ## Requirements
@@ -41,4 +44,4 @@ When transitioning into an end-exclusive mode (Normal/Visual/Replace), the curso
 
 ## Related documentation
 
-See [docs/design/editing/README.md](docs/design/editing/README.md) for design rationale on editing primitives.
+See [docs/design/editing/README.md](/docs/design/editing/README.md) for design rationale on editing primitives.

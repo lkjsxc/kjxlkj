@@ -1,5 +1,6 @@
 # Commands
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Ex commands are a first-class interface layered atop the same intent system.
 
 ## Directory Structure
@@ -47,5 +48,5 @@ The UI MUST show progress and allow cancellation.
 
 ## Related
 
-- Modes: [docs/spec/modes/README.md](docs/spec/modes/README.md)
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
+- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)

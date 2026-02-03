@@ -17,10 +17,10 @@ Normal mode is the primary composition mode: motions + operators + commands.
 
 - `i` enters Insert at the current cursor (insert before the character under cursor).
 - `a` enters Insert after the character under the cursor (append semantics).
-	- Cursor rules are defined in: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
+	- Cursor rules are defined in: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 
 ## Related
 
-- Motions/operators/text objects: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Commands: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Keybinding hints: [docs/spec/features/config/keybinding_hints.md](docs/spec/features/config/keybinding_hints.md)
+- Motions/operators/text objects: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Commands: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Keybinding hints: [docs/spec/features/config/keybinding_hints.md](/docs/spec/features/config/keybinding_hints.md)

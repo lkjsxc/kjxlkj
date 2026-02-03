@@ -1,5 +1,6 @@
 # UI Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 User interface components and visual features.
 
 ## Documents
@@ -20,4 +21,4 @@ User interface components and visual features.
 
 ## Related
 
-- Features overview: [docs/spec/features/README.md](docs/spec/features/README.md)
+- Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)

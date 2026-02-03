@@ -1,5 +1,6 @@
 # Git Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Built-in git integration for version control workflows.
 
 ## Documents
@@ -24,5 +25,5 @@ Built-in git integration for version control workflows.
 
 ## Related
 
-- Features overview: [docs/spec/features/README.md](docs/spec/features/README.md)
-- File navigation: [docs/spec/features/navigation/README.md](docs/spec/features/navigation/README.md)
+- Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- File navigation: [docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)

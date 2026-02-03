@@ -22,10 +22,10 @@ All motions accept a count prefix (e.g. `5j`, `3w`, `10G`).
 
 ## Cursor semantics
 
-Canonical spec cursor semantics: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
+Canonical spec cursor semantics: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 
 ## Related
 
 - Repeat motions: [repeat-motions.md](repeat-motions.md)
-- Cursor: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
+- Cursor: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 

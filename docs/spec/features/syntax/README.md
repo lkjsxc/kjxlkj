@@ -1,5 +1,6 @@
 # Syntax Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Syntax highlighting and semantic features.
 
 ## Highlighting Sources
@@ -35,5 +36,5 @@ Syntax highlighting and semantic features.
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Theming: [docs/spec/ux/theming.md](docs/spec/ux/theming.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Theming: [docs/spec/ux/theming.md](/docs/spec/ux/theming.md)

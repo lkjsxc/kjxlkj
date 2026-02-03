@@ -21,4 +21,4 @@ An undo unit typically corresponds to:
 
 ## UI
 
-Undo tree UI is specified at: [docs/spec/features/session/undo_tree.md](docs/spec/features/session/undo_tree.md)
+Undo tree UI is specified at: [docs/spec/features/session/undo_tree.md](/docs/spec/features/session/undo_tree.md)

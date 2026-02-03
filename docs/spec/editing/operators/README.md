@@ -1,5 +1,6 @@
 # Operators
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Operator specifications.
 
 ## Documents
@@ -20,5 +21,5 @@ Operator specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Motions: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)

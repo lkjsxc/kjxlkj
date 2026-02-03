@@ -1,5 +1,6 @@
 # Text Objects
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Text object specifications for semantic region selection.
 
 ## Common Text Objects
@@ -41,5 +42,5 @@ Text object specifications for semantic region selection.
 
 ## Related
 
-- Editing: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+- Editing: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Motions: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)

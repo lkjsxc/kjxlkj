@@ -82,5 +82,5 @@ See `examples/config.toml` for options.
 ## Getting Help
 
 - In-editor: `:help` or `:h topic`
-- Documentation: [docs/spec/](docs/spec/)
+- Documentation: [docs/spec/](/docs/spec/)
 - Issues: GitHub Issues

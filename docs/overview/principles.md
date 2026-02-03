@@ -35,4 +35,4 @@ graph TD
 ## Related
 
 - Overview index: [README.md](README.md)
-- Design rationale: [docs/design/README.md](docs/design/README.md)
+- Design rationale: [docs/design/README.md](/docs/design/README.md)

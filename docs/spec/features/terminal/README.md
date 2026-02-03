@@ -1,5 +1,6 @@
 # Terminal Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Integrated terminal and external tool features.
 
 ## Documents
@@ -30,5 +31,5 @@ Integrated terminal and external tool features.
 
 ## Related
 
-- Features overview: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Window management: [docs/spec/features/window/README.md](docs/spec/features/window/README.md)
+- Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Window management: [docs/spec/features/window/README.md](/docs/spec/features/window/README.md)

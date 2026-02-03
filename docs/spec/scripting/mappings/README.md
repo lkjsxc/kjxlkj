@@ -1,5 +1,6 @@
 # Mappings
 
+Back: [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md)
 Keybinding mapping specifications.
 
 ## Documents
@@ -18,4 +19,4 @@ Keybinding mapping specifications.
 
 ## Related
 
-- Scripting overview: [docs/spec/scripting/README.md](docs/spec/scripting/README.md)
+- Scripting overview: [docs/spec/scripting/README.md](/docs/spec/scripting/README.md)

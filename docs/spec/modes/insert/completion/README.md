@@ -1,5 +1,6 @@
 # Insert Completion
 
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
 Completion features in insert mode.
 
 ## Documents
@@ -13,4 +14,4 @@ Completion features in insert mode.
 
 ## Related
 
-- Insert mode: [docs/spec/modes/insert/README.md](docs/spec/modes/insert/README.md)
+- Insert mode: [docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)

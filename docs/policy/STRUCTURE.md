@@ -52,7 +52,7 @@ When a file approaches or exceeds 200 lines:
 
 The documentation intent statement MUST appear only in:
 
-- [docs/README.md](docs/README.md)
+- [docs/README.md](/docs/README.md)
 - [docs/policy/README.md](README.md)
 
 Leaf documents MUST NOT contain individual LLM-focused meta comments. Remove any such scattered notices during restructuring.

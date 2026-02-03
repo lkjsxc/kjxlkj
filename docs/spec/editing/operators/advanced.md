@@ -16,4 +16,4 @@ Macro recording/replay uses core intents (not raw terminal bytes).
 
 ## Multiple cursors
 
-Canonical spec specification: [docs/spec/features/editing/multicursor.md](docs/spec/features/editing/multicursor.md)
+Canonical spec specification: [docs/spec/features/editing/multicursor.md](/docs/spec/features/editing/multicursor.md)

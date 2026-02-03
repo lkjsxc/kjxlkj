@@ -1,5 +1,6 @@
 # Buffer Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Buffer management and navigation features.
 
 ## Common Operations
@@ -36,5 +37,5 @@ Buffer management and navigation features.
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Editor buffers: [docs/spec/editor/buffers.md](docs/spec/editor/buffers.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Editor buffers: [docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)

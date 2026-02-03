@@ -1,5 +1,6 @@
 # Command Execution
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Command execution modes and mechanisms.
 
 ## Documents
@@ -12,5 +13,5 @@ Command execution modes and mechanisms.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Scripting: [docs/spec/scripting/README.md](docs/spec/scripting/README.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Scripting: [docs/spec/scripting/README.md](/docs/spec/scripting/README.md)

@@ -1,5 +1,6 @@
 # Modes
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Modes are deterministic state machines driving intent generation.
 
 ## Mode Transition Diagram
@@ -54,5 +55,5 @@ stateDiagram-v2
 
 ## Related
 
-- Editing: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Commands: [docs/spec/commands/README.md](docs/spec/commands/README.md)
+- Editing: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Commands: [docs/spec/commands/README.md](/docs/spec/commands/README.md)

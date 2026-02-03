@@ -20,5 +20,5 @@ Command mode is the ex-style command line interface.
 
 ## Related
 
-- Command system: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Search UI: [docs/spec/features/navigation/finder.md](docs/spec/features/navigation/finder.md)
+- Command system: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Search UI: [docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

@@ -1,5 +1,6 @@
 # Range Specifications
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Range and address pattern specifications for commands.
 
 ## Documents
@@ -12,5 +13,5 @@ Range and address pattern specifications for commands.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Editing ranges: [docs/spec/editing/text-manipulation/ranges.md](docs/spec/editing/text-manipulation/ranges.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Editing ranges: [docs/spec/editing/text-manipulation/ranges.md](/docs/spec/editing/text-manipulation/ranges.md)

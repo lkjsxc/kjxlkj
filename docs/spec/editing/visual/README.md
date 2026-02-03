@@ -1,5 +1,6 @@
 # Visual Mode Editing
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Visual mode editing specifications.
 
 ## Documents
@@ -12,5 +13,5 @@ Visual mode editing specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Modes visual: [docs/spec/modes/visual.md](docs/spec/modes/visual.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Modes visual: [docs/spec/modes/visual.md](/docs/spec/modes/visual.md)

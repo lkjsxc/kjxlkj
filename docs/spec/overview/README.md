@@ -1,11 +1,12 @@
 # Overview
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 ## Reading order
 
-1. [docs/spec/README.md](docs/spec/README.md)
-2. [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
-3. [docs/spec/features/README.md](docs/spec/features/README.md)
-4. [docs/spec/technical/README.md](docs/spec/technical/README.md)
+1. [docs/spec/README.md](/docs/spec/README.md)
+2. [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+3. [docs/spec/features/README.md](/docs/spec/features/README.md)
+4. [docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
 ## What is kjxlkj
 A Neovim-inspired terminal editor with:
@@ -26,8 +27,8 @@ A Neovim-inspired terminal editor with:
 
 Legacy docs remain the place for vocabulary and values:
 
-- [docs/overview/glossary.md](docs/overview/glossary.md)
-- [docs/overview/principles.md](docs/overview/principles.md)
+- [docs/overview/glossary.md](/docs/overview/glossary.md)
+- [docs/overview/principles.md](/docs/overview/principles.md)
 
 Specification-local references:
 

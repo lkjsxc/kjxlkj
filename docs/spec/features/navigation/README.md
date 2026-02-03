@@ -1,5 +1,6 @@
 # Navigation Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Built-in navigation and search features.
 
 ## Quick Access
@@ -30,5 +31,5 @@ Built-in navigation and search features.
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- LSP navigation: [docs/spec/features/lsp/navigation/README.md](docs/spec/features/lsp/navigation/README.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- LSP navigation: [docs/spec/features/lsp/navigation/README.md](/docs/spec/features/lsp/navigation/README.md)

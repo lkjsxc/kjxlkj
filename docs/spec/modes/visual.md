@@ -39,6 +39,6 @@ Visual modes provide explicit selection regions for operator actions.
 
 ## Related
 
-- Editing: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Visual details: [docs/spec/editing/visual/README.md](docs/spec/editing/visual/README.md)
-- Multiple cursors: [docs/spec/features/editing/multicursor.md](docs/spec/features/editing/multicursor.md)
+- Editing: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Visual details: [docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
+- Multiple cursors: [docs/spec/features/editing/multicursor.md](/docs/spec/features/editing/multicursor.md)

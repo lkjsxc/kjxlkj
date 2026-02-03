@@ -14,5 +14,5 @@ Insert mode handles direct text entry and completion UI integration.
 
 ## Related
 
-- Undo granularity: [docs/spec/editing/text-manipulation/undo.md](docs/spec/editing/text-manipulation/undo.md)
-- LSP completion: [docs/spec/features/lsp/lsp.md](docs/spec/features/lsp/lsp.md)
+- Undo granularity: [docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
+- LSP completion: [docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)

@@ -1,5 +1,6 @@
 # User Experience
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Keyboard-only modal editing with async transparency.
 
 ## UX Pillars
@@ -52,4 +53,4 @@ All feature shortcuts use leader prefix.
 ## Related
 
 - [Keybindings](keybindings.md)
-- [Features](docs/spec/features/README.md)
+- [Features](/docs/spec/features/README.md)

@@ -17,4 +17,4 @@ Registers store text for yank/delete and for macros.
 
 ## Related
 
-- Advanced editing (macros): [docs/spec/editing/operators/advanced.md](docs/spec/editing/operators/advanced.md)
+- Advanced editing (macros): [docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)

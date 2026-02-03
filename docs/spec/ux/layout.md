@@ -1,5 +1,5 @@
 # Layout
-Canonical UI system: [docs/spec/ui/README.md](docs/spec/ui/README.md)
+Canonical UI system: [docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## Layout model
 
@@ -18,5 +18,5 @@ spec uses a snapshot-driven UI with a small number of persistent regions plus tr
 
 ## Related
 
-- UX hub: [docs/spec/ux/README.md](docs/spec/ux/README.md)
-- Statusline: [docs/spec/features/ui/statusline/README.md](docs/spec/features/ui/statusline/README.md)
+- UX hub: [docs/spec/ux/README.md](/docs/spec/ux/README.md)
+- Statusline: [docs/spec/features/ui/statusline/README.md](/docs/spec/features/ui/statusline/README.md)

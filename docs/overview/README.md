@@ -1,5 +1,6 @@
 # Overview
 
+Back: [/docs/README.md](/docs/README.md)
 High-level project overview for kjxlkj.
 
 Purpose: provide orientation and shared vocabulary before reading design and technical specifications.
@@ -15,11 +16,11 @@ Purpose: provide orientation and shared vocabulary before reading design and tec
 
 Canonical reading order:
 
-1. [docs/spec/README.md](docs/spec/README.md)
-2. [docs/spec/overview/README.md](docs/spec/overview/README.md)
-3. [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
-4. [docs/spec/features/README.md](docs/spec/features/README.md)
-5. [docs/spec/technical/README.md](docs/spec/technical/README.md)
+1. [docs/spec/README.md](/docs/spec/README.md)
+2. [docs/spec/overview/README.md](/docs/spec/overview/README.md)
+3. [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+4. [docs/spec/features/README.md](/docs/spec/features/README.md)
+5. [docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
 Legacy vocabulary:
 
@@ -51,20 +52,20 @@ This is a conceptual decomposition used for documentation and later implementati
 
 | Subsystem | Responsibility | Primary docs |
 |---|---|---|
-| Core editor | Editor state, buffers, window model, modes, commands | [docs/spec/editor/README.md](docs/spec/editor/README.md) |
-| Input | Terminal events → editor actions | [docs/spec/features/README.md](docs/spec/features/README.md) |
-| Rendering | State projection → terminal output | [docs/spec/ui/README.md](docs/spec/ui/README.md) |
-| Persistence | File I/O, session behavior | [docs/spec/features/session/README.md](docs/spec/features/session/README.md) |
-| Contracts | Cross-cutting invariants | [docs/spec/technical/contracts.md](docs/spec/technical/contracts.md) |
+| Core editor | Editor state, buffers, window model, modes, commands | [docs/spec/editor/README.md](/docs/spec/editor/README.md) |
+| Input | Terminal events → editor actions | [docs/spec/features/README.md](/docs/spec/features/README.md) |
+| Rendering | State projection → terminal output | [docs/spec/ui/README.md](/docs/spec/ui/README.md) |
+| Persistence | File I/O, session behavior | [docs/spec/features/session/README.md](/docs/spec/features/session/README.md) |
+| Contracts | Cross-cutting invariants | [docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md) |
 
-See [docs/spec/architecture/README.md](docs/spec/architecture/README.md) for the system-level diagrams.
+See [docs/spec/architecture/README.md](/docs/spec/architecture/README.md) for the system-level diagrams.
 
 ## Quick Start for Developers
 
-1. Read [docs/policy/INSTRUCT.md](docs/policy/INSTRUCT.md)
+1. Read [docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md)
 2. Understand [principles.md](principles.md)
-3. Explore [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+3. Explore [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
 ## Documentation policy
 
-All documentation under [docs/](docs/README.md) is normative. See [docs/policy/README.md](docs/policy/README.md).
+All documentation under [docs/](/docs/README.md) is normative. See [docs/policy/README.md](/docs/policy/README.md).

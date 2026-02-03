@@ -1,5 +1,6 @@
 # Macros
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Macro specifications.
 
 ## Documents
@@ -12,5 +13,5 @@ Macro specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Registers: [docs/spec/editing/registers/README.md](docs/spec/editing/registers/README.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Registers: [docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

@@ -1,5 +1,6 @@
 # Reference Documentation
 
+Back: [/docs/README.md](/docs/README.md)
 Reference materials including comparisons, plugin mappings, and release processes.
 
 ## Documents
@@ -13,5 +14,5 @@ Reference materials including comparisons, plugin mappings, and release processe
 
 ## Related
 
-- Guides: [docs/guides/README.md](docs/guides/README.md)
-- Specifications: [docs/spec/README.md](docs/spec/README.md)
+- Guides: [docs/guides/README.md](/docs/guides/README.md)
+- Specifications: [docs/spec/README.md](/docs/spec/README.md)

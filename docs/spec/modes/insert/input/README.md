@@ -1,5 +1,6 @@
 # Insert Input
 
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
 Special input handling in insert mode.
 
 ## Documents
@@ -14,4 +15,4 @@ Special input handling in insert mode.
 
 ## Related
 
-- Insert mode: [docs/spec/modes/insert/README.md](docs/spec/modes/insert/README.md)
+- Insert mode: [docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)

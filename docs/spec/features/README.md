@@ -1,5 +1,6 @@
 # Built-in Features
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 kjxlkj has no plugin system. All features are built-in natively.
 
 ## Feature Categories
@@ -55,5 +56,5 @@ graph TD
 
 ## Related
 
-- Architecture: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
-- UX: [docs/spec/ux/README.md](docs/spec/ux/README.md)
+- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- UX: [docs/spec/ux/README.md](/docs/spec/ux/README.md)

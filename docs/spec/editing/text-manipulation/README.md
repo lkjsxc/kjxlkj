@@ -1,5 +1,6 @@
 # Text Manipulation
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Text manipulation and transformation specifications.
 
 ## Documents
@@ -20,5 +21,5 @@ Text manipulation and transformation specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Operators: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Operators: [docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)

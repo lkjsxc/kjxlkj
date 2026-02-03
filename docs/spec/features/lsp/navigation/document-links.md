@@ -29,7 +29,7 @@ making them clickable for navigation.
 
 ### Mouse
 
-`Ctrl+Click` on link to open.
+Mouse input is ignored.
 
 ## Display
 
@@ -71,8 +71,8 @@ Resolved relative to workspace root.
 
 Standard Markdown link syntax is recognized:
 
-- **Text Links** - Written as `[Link Text](url)` format
-- **Image Links** - Written as `![Image](path/to/image.png)` format
+- **Text Links** - Written using the pattern `[Link Text](target)`
+- **Image Links** - Written using the pattern `![Image](path/to/image.png)`
 
 ## Commands
 

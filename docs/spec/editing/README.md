@@ -1,5 +1,6 @@
 # Editing
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Editing primitives are deterministic core operations.
 
 ## Operator Grammar
@@ -49,5 +50,5 @@ graph LR
 
 ## Related
 
-- Modes: [docs/spec/modes/README.md](docs/spec/modes/README.md)
-- Commands: [docs/spec/commands/README.md](docs/spec/commands/README.md)
+- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)
+- Commands: [docs/spec/commands/README.md](/docs/spec/commands/README.md)

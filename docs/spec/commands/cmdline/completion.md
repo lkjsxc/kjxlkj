@@ -14,4 +14,4 @@ Completion is a UI layer over deterministic parsing.
 
 ## Related
 
-- Finder command palette: [docs/spec/features/navigation/finder.md](docs/spec/features/navigation/finder.md)
+- Finder command palette: [docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

@@ -1,5 +1,6 @@
 # Editor Model
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Core editor state shared across all features.
 
 ## Documents
@@ -21,10 +22,10 @@ The editor core is a single-writer task that owns:
 
 ## Architecture Context
 
-- Runtime: [docs/spec/architecture/runtime.md](docs/spec/architecture/runtime.md)
-- System shape: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+- Runtime: [docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- System shape: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Modes: [docs/spec/modes/README.md](docs/spec/modes/README.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)

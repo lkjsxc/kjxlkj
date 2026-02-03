@@ -1,5 +1,6 @@
 # Search
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Search specifications.
 
 ## Documents
@@ -19,5 +20,5 @@ Search specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Regex: [docs/spec/editing/regex/README.md](docs/spec/editing/regex/README.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Regex: [docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)

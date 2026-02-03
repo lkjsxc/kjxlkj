@@ -1,5 +1,6 @@
 # Scripting
 
+Back: [/docs/spec/README.md](/docs/spec/README.md)
 Mapping and automation specifications for kjxlkj.
 
 ## Overview
@@ -39,5 +40,5 @@ kjxlkj does not have a plugin system, but provides:
 
 ## Related
 
-- Commands: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- UX keybindings: [docs/spec/ux/keybindings.md](docs/spec/ux/keybindings.md)
+- Commands: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- UX keybindings: [docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)

@@ -1,5 +1,6 @@
 # Marks
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Mark specifications for position bookmarking.
 
 ## Mark Keys
@@ -41,5 +42,5 @@ Mark specifications for position bookmarking.
 
 ## Related
 
-- Editing: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+- Editing: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Motions: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)

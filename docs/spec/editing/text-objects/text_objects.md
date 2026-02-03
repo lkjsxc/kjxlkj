@@ -15,6 +15,6 @@ Text objects define a region for an operator to act upon.
 
 ## Related
 
-- Motions: [docs/spec/editing/motions/motions.md](docs/spec/editing/motions/motions.md)
-- Operators: [docs/spec/editing/operators/operators.md](docs/spec/editing/operators/operators.md)
-- Syntax engine: [docs/spec/features/syntax/syntax.md](docs/spec/features/syntax/syntax.md)
+- Motions: [docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md)
+- Operators: [docs/spec/editing/operators/operators.md](/docs/spec/editing/operators/operators.md)
+- Syntax engine: [docs/spec/features/syntax/syntax.md](/docs/spec/features/syntax/syntax.md)

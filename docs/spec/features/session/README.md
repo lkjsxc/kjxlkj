@@ -1,5 +1,6 @@
 # Session Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Session and persistence features.
 
 ## Documents
@@ -19,4 +20,4 @@ Session and persistence features.
 
 ## Related
 
-- Features overview: [docs/spec/features/README.md](docs/spec/features/README.md)
+- Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)

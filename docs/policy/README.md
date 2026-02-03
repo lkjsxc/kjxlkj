@@ -1,5 +1,6 @@
 # Policy
 
+Back: [/docs/README.md](/docs/README.md)
 Operating invariants and agent rules.
 
 This documentation is optimized for machine (LLM) parsing. This fact is stated only here and in the root README to avoid repetition.
@@ -26,7 +27,7 @@ This documentation is optimized for machine (LLM) parsing. This fact is stated o
 
 spec documentation is canonical:
 
-- [docs/spec/README.md](docs/spec/README.md)
+- [docs/spec/README.md](/docs/spec/README.md)
 
 This repository includes a Rust implementation under `src/` that is expected to track the normative specifications under `docs/`.
 
@@ -53,9 +54,9 @@ See individual documents for complete details.
 
 ### Documentation fences (Mermaid-only) (normative)
 
-This repository treats documentation under [docs/](docs/README.md) as **normative, code-free specification**.
+This repository treats documentation under [docs/](/docs/README.md) as **normative, code-free specification**.
 
-- Documentation under [docs/](docs/README.md) **MUST NOT** contain any fenced code blocks.
+- Documentation under [docs/](/docs/README.md) **MUST NOT** contain any fenced code blocks.
 - The **only** exception is a Mermaid diagram fenced block (a fenced block whose info string is exactly `mermaid`).
 - This prohibition is unconditional: it applies to all non-Mermaid fences, including command lines, config, pseudo-code, data samples, and ASCII art.
 
@@ -63,7 +64,7 @@ Rationale: embedded snippets become stale and re-introduce undocumented coupling
 
 #### Allowed alternatives
 
-Documentation under [docs/](docs/README.md) **MUST** express behavior using one or more of:
+Documentation under [docs/](/docs/README.md) **MUST** express behavior using one or more of:
 
 - Prose with precise MUST/SHOULD language
 - Tables (types, fields, invariants, inputs/outputs, state transitions)

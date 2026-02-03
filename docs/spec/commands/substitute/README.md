@@ -1,5 +1,6 @@
 # Substitution Commands
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Search and replace commands.
 
 ## Documents
@@ -15,5 +16,5 @@ Search and replace commands.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Editing regex: [docs/spec/editing/regex/regex.md](docs/spec/editing/regex/regex.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Editing regex: [docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)

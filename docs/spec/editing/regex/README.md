@@ -1,5 +1,6 @@
 # Regex
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Regular expression specifications.
 
 ## Documents
@@ -20,5 +21,5 @@ Regular expression specifications.
 
 ## Related
 
-- Editing overview: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Search: [docs/spec/editing/search/README.md](docs/spec/editing/search/README.md)
+- Editing overview: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Search: [docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)

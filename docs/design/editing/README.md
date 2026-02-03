@@ -1,5 +1,6 @@
 # Editing Design
 
+Back: [/docs/design/README.md](/docs/design/README.md)
 Detailed design documents for editing primitives.
 
 ## Documents
@@ -12,5 +13,5 @@ Detailed design documents for editing primitives.
 
 ## Related
 
-- Editing spec: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Design overview: [docs/design/README.md](docs/design/README.md)
+- Editing spec: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Design overview: [docs/design/README.md](/docs/design/README.md)

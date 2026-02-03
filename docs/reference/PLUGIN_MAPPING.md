@@ -113,5 +113,5 @@ the feature is built into the core:
 
 ## Configuration Mapping
 
-See [docs/guides/MIGRATION.md](docs/guides/MIGRATION.md) for config
+See [docs/guides/MIGRATION.md](/docs/guides/MIGRATION.md) for config
 translation examples.

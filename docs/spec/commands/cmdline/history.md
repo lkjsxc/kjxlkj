@@ -14,4 +14,4 @@ Command history is core-owned state exposed via the command line and list UI.
 
 ## Related
 
-- Unified list model: [docs/spec/features/lsp/diagnostics.md](docs/spec/features/lsp/diagnostics.md)
+- Unified list model: [docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)

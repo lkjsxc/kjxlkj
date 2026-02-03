@@ -25,5 +25,5 @@ Mode configuration affects presentation, not editing semantics.
 
 ## Related
 
-- UX/theming: [docs/spec/ux/README.md](docs/spec/ux/README.md)
-- Cursor semantics: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
+- UX/theming: [docs/spec/ux/README.md](/docs/spec/ux/README.md)
+- Cursor semantics: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)

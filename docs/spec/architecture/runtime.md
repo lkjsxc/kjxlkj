@@ -36,8 +36,8 @@ graph TD
 ## Related
 
 - Architecture index: [README.md](README.md)
-- LSP service: [docs/spec/features/lsp/lsp.md](docs/spec/features/lsp/lsp.md)
-- Git service: [docs/spec/features/git/git.md](docs/spec/features/git/git.md)
-- Indexer service: [docs/spec/features/navigation/finder.md](docs/spec/features/navigation/finder.md)
-- Terminal service: [docs/spec/features/terminal/README.md](docs/spec/features/terminal/README.md)
-- Session service: [docs/spec/features/session/README.md](docs/spec/features/session/README.md)
+- LSP service: [docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)
+- Git service: [docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
+- Indexer service: [docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- Terminal service: [docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
+- Session service: [docs/spec/features/session/README.md](/docs/spec/features/session/README.md)

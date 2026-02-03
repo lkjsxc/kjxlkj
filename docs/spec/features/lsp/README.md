@@ -1,5 +1,6 @@
 # LSP Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Language Server Protocol integration for IDE features.
 
 ## Key Features
@@ -34,5 +35,5 @@ Language Server Protocol integration for IDE features.
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Editing: [docs/spec/features/editing/README.md](docs/spec/features/editing/README.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Editing: [docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md)

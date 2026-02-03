@@ -9,5 +9,5 @@ spec treats theming as pure data applied at render time.
 
 ## Related
 
-- UI system: [docs/spec/ui/README.md](docs/spec/ui/README.md)
-- Syntax and diagnostics surfaces: [docs/spec/features/syntax/syntax.md](docs/spec/features/syntax/syntax.md), [docs/spec/features/lsp/diagnostics.md](docs/spec/features/lsp/diagnostics.md)
+- UI system: [docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- Syntax and diagnostics surfaces: [docs/spec/features/syntax/syntax.md](/docs/spec/features/syntax/syntax.md), [docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)

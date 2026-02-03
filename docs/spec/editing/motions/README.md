@@ -1,5 +1,6 @@
 # Motions
 
+Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 Cursor motion specifications.
 
 ## Essential Motions
@@ -27,15 +28,14 @@ Cursor motion specifications.
 | [line-motions.md](line-motions.md) | Line motions |
 | [character-find.md](character-find.md) | Char find |
 | [word-WORD.md](word-WORD.md) | Word motions |
-| [jump-motions.md](jump-motions.md) | Jumps |
 | [scroll-motions.md](scroll-motions.md) | Scrolling |
 | [window-motions.md](window-motions.md) | Window |
 | [repeat-motions.md](repeat-motions.md) | Repeat |
-| [mark-motions.md](mark-motions.md) | Marks |
+| [jumps/](jumps/README.md) | Jump + mark motions |
 | [search-motions.md](search-motions.md) | Search |
 | [sentence-paragraph.md](sentence-paragraph.md) | Sentence/para |
 
 ## Related
 
-- Editing: [docs/spec/editing/README.md](docs/spec/editing/README.md)
-- Text objects: [docs/spec/editing/text-objects/README.md](docs/spec/editing/text-objects/README.md)
+- Editing: [docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- Text objects: [docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

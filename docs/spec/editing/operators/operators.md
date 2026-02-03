@@ -27,6 +27,6 @@ Operators transform text over a range defined by a motion or text object.
 
 ## Related
 
-- Text objects: [docs/spec/editing/text-objects/text_objects.md](docs/spec/editing/text-objects/text_objects.md)
-- Registers: [docs/spec/editing/registers/registers.md](docs/spec/editing/registers/registers.md)
-- Undo: [docs/spec/editing/text-manipulation/undo.md](docs/spec/editing/text-manipulation/undo.md)
+- Text objects: [docs/spec/editing/text-objects/text_objects.md](/docs/spec/editing/text-objects/text_objects.md)
+- Registers: [docs/spec/editing/registers/registers.md](/docs/spec/editing/registers/registers.md)
+- Undo: [docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)

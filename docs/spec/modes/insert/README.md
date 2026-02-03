@@ -1,5 +1,6 @@
 # Insert Mode
 
+Back: [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
 Insert mode specifications for text entry.
 
 ## Entry Keys
@@ -44,5 +45,5 @@ Insert mode specifications for text entry.
 
 ## Related
 
-- Modes: [docs/spec/modes/README.md](docs/spec/modes/README.md)
+- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)
 - Completion: [completion/README.md](completion/README.md)

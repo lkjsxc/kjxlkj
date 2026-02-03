@@ -1,5 +1,6 @@
 # Statusline
 
+Back: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
 Statusline configuration and customization.
 
 ## Documents
@@ -12,4 +13,4 @@ Statusline configuration and customization.
 
 ## Related
 
-- UI overview: [docs/spec/features/ui/README.md](docs/spec/features/ui/README.md)
+- UI overview: [docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)

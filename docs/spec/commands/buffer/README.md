@@ -1,5 +1,6 @@
 # Buffer Commands
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Buffer management and navigation commands.
 
 ## Documents
@@ -12,5 +13,5 @@ Buffer management and navigation commands.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Features bufferline: [docs/spec/features/buffer/bufferline.md](docs/spec/features/buffer/bufferline.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Features bufferline: [docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)

@@ -1,5 +1,6 @@
 # Command Line Interface
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Specifications for the Ex command-line interface.
 
 ## Documents
@@ -15,5 +16,5 @@ Specifications for the Ex command-line interface.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Modes: [docs/spec/modes/README.md](docs/spec/modes/README.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)

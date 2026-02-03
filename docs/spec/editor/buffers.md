@@ -36,6 +36,6 @@ spec supports large-file mode:
 
 ## Related
 
-- FS service: [docs/spec/architecture/runtime.md](docs/spec/architecture/runtime.md)
-- Syntax: [docs/spec/features/syntax/syntax.md](docs/spec/features/syntax/syntax.md)
-- Diagnostics/list UI: [docs/spec/features/lsp/diagnostics.md](docs/spec/features/lsp/diagnostics.md)
+- FS service: [docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- Syntax: [docs/spec/features/syntax/syntax.md](/docs/spec/features/syntax/syntax.md)
+- Diagnostics/list UI: [docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)

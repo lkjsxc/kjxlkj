@@ -34,6 +34,6 @@ Replace mode overwrites existing text rather than inserting.
 
 ## Related
 
-- Cursor semantics: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
-- Undo: [docs/spec/editing/text-manipulation/undo.md](docs/spec/editing/text-manipulation/undo.md)
-- Mode transitions: [docs/spec/modes/transitions.md](docs/spec/modes/transitions.md)
+- Cursor semantics: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- Undo: [docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
+- Mode transitions: [docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)

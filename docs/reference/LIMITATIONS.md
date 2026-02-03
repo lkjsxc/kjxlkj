@@ -102,7 +102,7 @@ Not implemented for security.
 
 ## Planned Improvements
 
-See [docs/TODO.md](docs/TODO.md) for roadmap.
+See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.
 
 ## Workarounds
 

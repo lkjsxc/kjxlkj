@@ -1,5 +1,6 @@
 # Session Commands
 
+Back: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 Session persistence and recovery commands.
 
 ## Documents
@@ -13,5 +14,5 @@ Session persistence and recovery commands.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](docs/spec/commands/README.md)
-- Sessions feature: [docs/spec/features/session/sessions.md](docs/spec/features/session/sessions.md)
+- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Sessions feature: [docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)

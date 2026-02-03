@@ -36,5 +36,5 @@ graph TD
 
 ## Related
 
-- Features index: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Runtime model: [docs/spec/architecture/runtime.md](docs/spec/architecture/runtime.md)
+- Features index: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Runtime model: [docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)

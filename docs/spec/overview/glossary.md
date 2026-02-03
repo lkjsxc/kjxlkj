@@ -28,5 +28,5 @@ Terminology used in kjxlkj specifications.
 
 ## Related
 
-- Full glossary: [docs/overview/glossary.md](docs/overview/glossary.md)
-- Architecture: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+- Full glossary: [docs/overview/glossary.md](/docs/overview/glossary.md)
+- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)

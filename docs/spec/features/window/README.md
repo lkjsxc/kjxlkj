@@ -1,5 +1,6 @@
 # Window Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Window and split management features.
 
 ## Key Keybindings
@@ -31,5 +32,5 @@ Window and split management features.
 
 ## Related
 
-- Features: [docs/spec/features/README.md](docs/spec/features/README.md)
-- Editor windows: [docs/spec/editor/windows.md](docs/spec/editor/windows.md)
+- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Editor windows: [docs/spec/editor/windows.md](/docs/spec/editor/windows.md)

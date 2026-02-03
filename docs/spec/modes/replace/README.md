@@ -1,5 +1,6 @@
 # Replace Mode
 
+Back: [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
 Replace mode specifications.
 
 ## Documents
@@ -13,4 +14,4 @@ Replace mode specifications.
 
 ## Related
 
-- Modes overview: [docs/spec/modes/README.md](docs/spec/modes/README.md)
+- Modes overview: [docs/spec/modes/README.md](/docs/spec/modes/README.md)

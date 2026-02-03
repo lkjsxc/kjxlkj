@@ -1,5 +1,6 @@
 # Technical Documentation
 
+Back: [/docs/README.md](/docs/README.md)
 Technical implementation details, debugging, and specialized topics.
 
 ## Documents
@@ -23,5 +24,5 @@ Technical implementation details, debugging, and specialized topics.
 
 ## Related
 
-- Spec technical: [docs/spec/technical/README.md](docs/spec/technical/README.md)
-- Architecture: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+- Spec technical: [docs/spec/technical/README.md](/docs/spec/technical/README.md)
+- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)

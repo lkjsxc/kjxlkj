@@ -24,5 +24,5 @@ A window is defined by:
 
 ## Related
 
-- UI views/components: [docs/spec/ui/README.md](docs/spec/ui/README.md)
-- Layout UX: [docs/spec/ux/layout.md](docs/spec/ux/layout.md)
+- UI views/components: [docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- Layout UX: [docs/spec/ux/layout.md](/docs/spec/ux/layout.md)

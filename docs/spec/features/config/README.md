@@ -1,5 +1,6 @@
 # Configuration Features
 
+Back: [/docs/spec/features/README.md](/docs/spec/features/README.md)
 Configuration and filetype features.
 
 ## Documents
@@ -20,4 +21,4 @@ Configuration and filetype features.
 
 ## Related
 
-- Features overview: [docs/spec/features/README.md](docs/spec/features/README.md)
+- Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)
