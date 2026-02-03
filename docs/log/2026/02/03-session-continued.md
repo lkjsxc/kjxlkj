@@ -76,9 +76,40 @@ Continued implementation of core editing features: search, visual mode operators
 - Prevent recursive recording during macro playback
 - Add 2 tests for macro recording and playback
 
+### feat: implement jump lists (Ctrl-o, Ctrl-i)
+- Add jump_list and jump_list_index fields to EditorState
+- Add JumpListOlder and JumpListNewer actions
+- Add add_to_jump_list() for recording jump positions
+- Add jump_list_older() and jump_list_newer() navigation
+- Add jump list calls to: FileStart, FileEnd, search, mark jumps
+- Add Ctrl-o and Ctrl-i key bindings in normal mode
+- Handle branch behavior when jumping back then making new jump
+- Limit jump list size to 100 entries (Vim-compatible)
+- Add 2 tests for jump list functionality
+
+### feat: implement block visual mode (Ctrl-v)
+- Add EnterVisualBlockMode action
+- Add Ctrl-v key binding in normal mode
+- Add block selection handling in visual operators:
+  - Block delete: delete rectangular region from all lines
+  - Block yank: yank rectangular region
+  - Block change: delete rectangular region and enter insert
+- Preserve line numbers by deleting from bottom to top
+- Add 2 tests for block visual mode
+
+### feat: implement global command (:g and :v)
+- Add Global action with pattern, command, and invert flag
+- Add g/pattern/command and v/pattern/command parsing
+- Implement apply_global() to execute commands on matching lines
+- Support delete (d) as default command
+- Support substitute (s/old/new/) on matching lines
+- Handle :v (vglobal) for inverted matching
+- Delete from bottom to top to preserve line numbers
+- Add 2 tests for global and vglobal commands
+
 ## Current Test Count
 
-Total: 112 tests passing
+Total: 118 tests passing
 
 | Crate | Count |
 |-------|-------|
@@ -88,7 +119,7 @@ Total: 112 tests passing
 | kjxlkj-core-undo | 3 |
 | kjxlkj-core-edit | 18 |
 | kjxlkj-core-mode | 6 |
-| kjxlkj-core-state | 53 |
+| kjxlkj-core-state | 59 |
 | kjxlkj-core-ui | 5 |
 | kjxlkj-input | 2 |
 | kjxlkj-render | 1 |
@@ -100,15 +131,15 @@ Total: 112 tests passing
 
 | File | Lines |
 |------|-------|
-| kjxlkj-core-state/src/editor.rs | ~1920 |
-| kjxlkj-core-state/src/editor.rs | ~1550 |
-| kjxlkj-core-mode/src/handler.rs | ~700 |
+| kjxlkj-core-state/src/editor.rs | ~2500 |
+| kjxlkj-core-mode/src/handler.rs | ~775 |
 | kjxlkj-core-edit/src/cursor_ops.rs | ~510 |
 | kjxlkj-core-edit/src/text_objects.rs | ~460 |
 | kjxlkj-core-edit/src/buffer.rs | ~420 |
+| kjxlkj-core-types/src/event.rs | ~270 |
 | kjxlkj-core-text/src/rope_text.rs | ~260 |
-| kjxlkj-core-types/src/event.rs | ~230 |
 | kjxlkj-service-fs/src/service.rs | ~250 |
+| kjxlkj-core-state/src/command.rs | ~210 |
 
 ## Features Implemented
 
@@ -125,16 +156,19 @@ Total: 112 tests passing
 - [x] Substitute command (:s)
 - [x] Named registers ("a, "b, etc.)
 - [x] Macros (q{register} to record, @{register} to play, @@ to repeat)
+- [x] Jump lists (Ctrl-o, Ctrl-i)
+- [x] Block visual mode (Ctrl-v)
+- [x] Global command (:g, :v)
 
 ### Pending
-- [ ] Block visual mode (Ctrl-v)
 - [ ] Search highlighting
-- [ ] Global command (:g)
-- [ ] Jump lists (Ctrl-o, Ctrl-i)
+- [ ] Additional Ex commands (:set, :map, etc.)
+- [ ] Changelist (g;, g,)
+- [ ] Additional motions (%, sentence/paragraph)
 
 ## Next Steps
 
 1. Add more Ex commands (:set, :map, etc.)
-2. Implement jump lists (Ctrl-o, Ctrl-i)
-3. Consider block visual mode (Ctrl-v)
-4. Add search highlighting
+2. Implement search highlighting
+3. Consider changelist navigation (g;, g,)
+4. Add sentence/paragraph motions

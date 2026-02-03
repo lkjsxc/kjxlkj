@@ -24,6 +24,7 @@ This document records the currently implemented, user-visible surface so that:
 | Command | `:` | `Esc`, `Enter` | Ex command entry |
 | Visual | `v` | `Esc` | Charwise selection with operators |
 | Visual Line | `V` | `Esc` | Linewise selection with operators |
+| Visual Block | `Ctrl-v` | `Esc` | Block (rectangular) selection |
 | Replace | `R` | `Esc` | Currently behaves like Insert |
 
 ### Normal-mode keys (subset)
@@ -55,6 +56,16 @@ This document records the currently implemented, user-visible surface so that:
 | `u` | Undo |
 | `Ctrl-r` | Redo |
 | `:` | Enter Command mode |
+| `.` | Repeat last change |
+| `m{a-z}` | Set local mark |
+| `` ` ``{a-z} | Jump to mark (exact position) |
+| `'{a-z}` | Jump to mark (line, first non-blank) |
+| `"{a-z}` | Select register for next yank/delete/paste |
+| `q{a-z}` | Start/stop macro recording |
+| `@{a-z}` | Play macro from register |
+| `@@` | Repeat last macro |
+| `Ctrl-o` | Jump to older position in jump list |
+| `Ctrl-i` | Jump to newer position in jump list |
 
 ### Operators and motions
 
@@ -131,6 +142,16 @@ Search behavior:
 
 Visual Line mode (`V`) operates on entire lines for all operators.
 
+Visual Block mode (`Ctrl-v`) operates on rectangular regions:
+
+| Key | Action |
+|---|---|
+| `h`/`j`/`k`/`l` | Extend block selection |
+| `d`/`x` | Delete block (rectangular region from each line) |
+| `y` | Yank block |
+| `c` | Change block (delete and enter Insert mode) |
+| `Esc` | Cancel selection, return to Normal mode |
+
 ### Command-line (Ex) commands (subset)
 
 | Command | Behavior |
@@ -144,6 +165,11 @@ Visual Line mode (`V`) operates on entire lines for all operators.
 | `:wq {file}` | Write to `{file}` then quit |
 | `:e {file}` / `:e! {file}` | Edit file (forced with `!`) |
 | `:! {cmd}` | Run `{cmd}` via terminal service and display first output line as status |
+| `:s/pattern/replacement/` | Substitute on current line |
+| `:s/pattern/replacement/g` | Substitute all occurrences on current line |
+| `:g/pattern/d` | Delete all lines matching pattern |
+| `:g/pattern/command` | Execute command on matching lines |
+| `:v/pattern/d` | Delete all lines NOT matching pattern (inverted global) |
 
 ### Headless test runner
 
