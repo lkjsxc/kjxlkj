@@ -29,7 +29,7 @@ spec documentation is canonical:
 
 - [docs/spec/README.md](/docs/spec/README.md)
 
-This repository includes a Rust implementation under `src/` that is expected to track the normative specifications under `docs/`.
+This repository is documentation-only. An external Rust implementation (when present) is expected to track the normative specifications under `/docs/`.
 
 ## Concurrency baseline
 The canonical architecture is **Tokio async-first**:
@@ -69,7 +69,7 @@ Documentation under [docs/](/docs/README.md) **MUST** express behavior using one
 - Prose with precise MUST/SHOULD language
 - Tables (types, fields, invariants, inputs/outputs, state transitions)
 - Inline code spans (for identifiers, short tokens, and literals)
-- Links to source-of-truth files under src/ or repository root files (for example `Cargo.toml`)
+- Links to canonical spec documents, or to source-of-truth files in an implementation repository (when present)
 - Mermaid diagrams
 
 #### Migration guidance (replace existing fences)
@@ -94,7 +94,7 @@ For any PR that changes files under docs/:
 
 - [ ] All fenced blocks are Mermaid-only (no non-Mermaid fences; no unlabeled fences; no tilde fences).
 - [ ] New behavior is specified as MUST/SHOULD statements, tables, or acceptance criteria.
-- [ ] Any implementation-relevant detail is linked to the canonical source under src/ (no embedded duplication).
+- [ ] Implementation-relevant detail is linked to a canonical spec document or an implementation source-of-truth (no embedded duplication).
 - [ ] The doc remains ≤ 200 lines unless an explicit exception is recorded in policy.
 
 ### "Remove all source code" interpretation (this documentation phase)
@@ -102,6 +102,6 @@ For any PR that changes files under docs/:
 For this documentation-reform task, **remove all source code means**:
 
 - Remove embedded source-code snippets from documentation.
-- Keep repository source files under src/ intact.
+- Do not add embedded code excerpts as fenced blocks under `/docs/`.
 
-If a future task explicitly requires deleting repository sources, record that as a separate policy decision before performing repo-wide deletions.
+If a future task introduces an implementation repository, record its scope and verification rules as a separate policy decision.

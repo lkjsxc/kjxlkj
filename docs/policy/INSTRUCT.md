@@ -7,7 +7,7 @@
 graph TD
     subgraph Contract ["0. Operating Contract"]
         P1["Phase 1: Plan & Structure"] --> P2["Phase 2: Implement & Test"]
-        P2 --> V1["Verify (clippy/test)"]
+        P2 --> V1["Verify (docs: link/fence; impl: clippy/test)"]
     end
 
     subgraph Invariants ["1. Hard Repository Invariants"]

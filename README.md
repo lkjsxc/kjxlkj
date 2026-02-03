@@ -12,7 +12,8 @@ This repository is optimized for machine (LLM) parsing and editing. This stateme
 - Policies and invariants: docs/policy/README.md
 - Documentation index: docs/README.md
 
-## Build
+## Implementation
 
-- Workspace: Cargo.toml
-- Binary: `kjxlkj` (see crates under src/crates/)
+This repository contains normative documentation only; it does not include buildable Rust source code.
+
+The intended implementation is a single Rust binary whose architecture, runtime model, and feature set are specified under `docs/spec/`.

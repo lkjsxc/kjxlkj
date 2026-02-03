@@ -102,5 +102,6 @@ Participate via:
 
 ## Source Code
 
-Telemetry code is open source. Audit at:
-`src/telemetry/mod.rs`
+Telemetry code is open source in the implementation repository.
+
+Expected implementation path: `src/telemetry/mod.rs`

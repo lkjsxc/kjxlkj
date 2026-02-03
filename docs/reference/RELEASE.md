@@ -11,9 +11,9 @@ We follow Semantic Versioning (semver):
 
 ## Pre-Release Checklist
 
-1. **All tests pass** - Run `make test`
+1. **All tests pass (implementation repo)** - Run `make test`
 
-2. **No clippy warnings** - Run `make clippy`
+2. **No clippy warnings (implementation repo)** - Run `make clippy`
 
 3. **Documentation up to date**
    - README.md reflects current features
@@ -21,7 +21,7 @@ We follow Semantic Versioning (semver):
    - API docs generated
 
 4. **Version bumped**
-   - Update `Cargo.toml` version
+   - Update `Cargo.toml` version (implementation repo)
    - Update `CHANGELOG.md` with release date
 
 ## Release Steps

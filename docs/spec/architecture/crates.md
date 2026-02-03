@@ -4,11 +4,11 @@
 
 When implementation exists, it MUST include at least 10 crates under `src/crates/`.
 
-This repository includes an implementation. This document describes the intended (and current) crate topology.
+This repository is documentation-only. This document describes the intended crate topology for an external implementation repository.
 
 ## Workspace members
 
-The Cargo workspace includes these crates under `src/crates/`:
+An implementation Cargo workspace SHOULD include these crates under `src/crates/`:
 
 | Crate | Role |
 |---|---|

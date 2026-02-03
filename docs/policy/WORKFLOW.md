@@ -15,7 +15,7 @@ graph TD
         Read["Read TOCs/READMEs"]
         Plan["Plan Invariants"]
         Slice["Implement Cohesive Slices"]
-        Verify["Verify (cargo clippy/test)"]
+        Verify["Verify (docs: link/fence; impl: clippy/test)"]
         Commit["Frequent Git Commits"]
     end
 
