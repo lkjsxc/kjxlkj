@@ -767,6 +767,12 @@ impl ModeHandler {
                 'x' => return EditorAction::VisualDelete,
                 'y' => return EditorAction::VisualYank,
                 'c' => return EditorAction::VisualChange,
+                's' => return EditorAction::VisualChange,  // s is alias for c in visual
+                // Selection manipulation
+                'o' => return EditorAction::VisualSwapEnd,
+                // Indentation
+                '>' => return EditorAction::VisualIndent,
+                '<' => return EditorAction::VisualOutdent,
                 _ => {}
             }
         }

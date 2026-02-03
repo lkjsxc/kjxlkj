@@ -506,6 +506,20 @@ impl EditorState {
             EditorAction::VisualChange => {
                 self.apply_visual_operator(Operator::Change);
             }
+            EditorAction::VisualSwapEnd => {
+                // Swap cursor with visual anchor
+                if let Some(anchor) = self.visual_anchor {
+                    let cursor = self.buffer.cursor().position;
+                    self.visual_anchor = Some(cursor);
+                    self.buffer.cursor_mut().position = anchor;
+                }
+            }
+            EditorAction::VisualIndent => {
+                self.apply_visual_operator(Operator::Indent);
+            }
+            EditorAction::VisualOutdent => {
+                self.apply_visual_operator(Operator::Outdent);
+            }
             EditorAction::ReturnToNormalMode => {
                 // Save any inserted text as the last repeatable change
                 if !self.insert_buffer.is_empty() {

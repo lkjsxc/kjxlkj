@@ -257,6 +257,12 @@ pub enum EditorAction {
     VisualYank,
     /// Change visual selection (delete and enter insert mode).
     VisualChange,
+    /// Swap to other end of visual selection (o command in visual mode).
+    VisualSwapEnd,
+    /// Indent visual selection (> in visual mode).
+    VisualIndent,
+    /// Outdent visual selection (< in visual mode).
+    VisualOutdent,
     /// Repeat last change (dot command).
     RepeatLastChange,
     /// Set a mark at current cursor position.

@@ -171,7 +171,10 @@ Search behavior:
 | `gg`/`G` | Extend selection to file boundaries |
 | `d`/`x` | Delete selection |
 | `y` | Yank selection |
-| `c` | Change selection (delete and enter Insert mode) |
+| `c`/`s` | Change selection (delete and enter Insert mode) |
+| `o` | Swap cursor to other end of selection |
+| `>` | Indent selection |
+| `<` | Outdent selection |
 | `Esc` | Cancel selection, return to Normal mode |
 
 Visual Line mode (`V`) operates on entire lines for all operators.
