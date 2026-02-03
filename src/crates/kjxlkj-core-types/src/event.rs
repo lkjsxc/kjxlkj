@@ -179,6 +179,8 @@ pub enum EditorAction {
     DecrementNumber { amount: i32 },
     /// Paste after cursor (p command).
     PasteAfter,
+    /// Paste before cursor (P command).
+    PasteBefore,
     /// Operator applied to a motion (e.g., dw, cw, yw).
     OperatorMotion { operator: Operator, motion: Motion, count: Option<u32> },
     /// Operator applied to a text object (e.g., diw, ci", ya().

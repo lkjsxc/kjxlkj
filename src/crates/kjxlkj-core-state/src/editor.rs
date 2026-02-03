@@ -344,6 +344,15 @@ impl EditorState {
                 }
                 self.buffer.paste_after();
             }
+            EditorAction::PasteBefore => {
+                // Use named register if pending, otherwise use default
+                if let Some(reg) = self.pending_register.take() {
+                    if let Some(content) = self.registers.get(&reg).cloned() {
+                        self.buffer.set_yank_register(content);
+                    }
+                }
+                self.buffer.paste_before();
+            }
             EditorAction::OperatorMotion { operator, motion, count } => {
                 self.last_change = Some(RepeatableChange::OperatorMotion {
                     operator: operator.clone(),
@@ -3926,5 +3935,29 @@ mod tests {
         let content = state.buffer().content();
         // Should have more lines now
         assert!(state.buffer().line_count() >= initial_line_count);
+    }
+
+    #[test]
+    fn paste_before() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "ab".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start, yank 'a'
+        state.handle_key(key('0'));
+        state.handle_key(key('y'));
+        state.handle_key(key('l'));
+        
+        // Move to 'b'
+        state.handle_key(key('l'));
+        
+        // Paste before (P) - should insert 'a' before 'b'
+        state.handle_key(key('P'));
+        
+        let content = state.buffer().content();
+        assert!(content.contains("aab") || content == "aab", "content: {}", content);
     }
 }

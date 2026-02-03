@@ -327,7 +327,9 @@ impl ModeHandler {
                 
                 // Character operations
                 "x" => EditorAction::DeleteCharAt,
+                "X" => EditorAction::DeleteCharBefore,
                 "p" => EditorAction::PasteAfter,
+                "P" => EditorAction::PasteBefore,
                 "u" => EditorAction::Undo,
                 "." => EditorAction::RepeatLastChange,
                 

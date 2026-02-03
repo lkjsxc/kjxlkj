@@ -286,6 +286,41 @@ impl Buffer {
         }
     }
 
+    /// Pastes before the cursor (P command).
+    pub fn paste_before(&mut self) {
+        if self.yank_register.is_empty() {
+            return;
+        }
+        let is_line = self.yank_register.ends_with('\n');
+        if is_line {
+            // Insert at start of current line
+            let pos = LineCol::new(self.cursor.position.line, 0);
+            if self.text.insert(pos, &self.yank_register) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: self.yank_register.clone(),
+                });
+                self.history.push(group);
+                // Cursor stays on the new line
+                self.cursor.position.col = 0;
+                self.modified = true;
+            }
+        } else {
+            // Insert at cursor position
+            let pos = self.cursor.position;
+            if self.text.insert(pos, &self.yank_register) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: self.yank_register.clone(),
+                });
+                self.history.push(group);
+                self.modified = true;
+            }
+        }
+    }
+
     /// Deletes text in a range and yanks it.
     pub fn delete_range(&mut self, start: LineCol, end: LineCol) {
         if start == end {
