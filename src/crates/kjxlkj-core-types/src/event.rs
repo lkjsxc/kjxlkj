@@ -21,6 +21,14 @@ pub enum Motion {
     FileEnd,
     /// Current line (for double-operator like dd, yy).
     CurrentLine,
+    /// Find char forward (f).
+    FindCharForward(char),
+    /// Find char backward (F).
+    FindCharBackward(char),
+    /// Till char forward (t).
+    TillCharForward(char),
+    /// Till char backward (T).
+    TillCharBackward(char),
 }
 
 /// Operator types.
@@ -99,6 +107,18 @@ pub enum EditorAction {
     FileStart,
     /// Move to file end (G).
     FileEnd,
+    /// Find char forward (f).
+    FindCharForward(char),
+    /// Find char backward (F).
+    FindCharBackward(char),
+    /// Till char forward (t).
+    TillCharForward(char),
+    /// Till char backward (T).
+    TillCharBackward(char),
+    /// Repeat last f/t/F/T motion.
+    RepeatFindChar,
+    /// Repeat last f/t/F/T motion in opposite direction.
+    RepeatFindCharReverse,
     /// Insert character at cursor.
     InsertChar(char),
     /// Insert newline at cursor.

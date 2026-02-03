@@ -248,14 +248,40 @@ impl ModeHandler {
                 "n" => EditorAction::SearchNext,
                 "N" => EditorAction::SearchPrev,
                 
+                // Find char motions (pending for next char)
+                "f" | "t" | "F" | "T" => {
+                    // Wait for the target character
+                    return EditorAction::Nop;
+                }
+                
+                // Repeat find char
+                ";" => EditorAction::RepeatFindChar,
+                "," => EditorAction::RepeatFindCharReverse,
+                
                 // Character operations
                 "x" => EditorAction::DeleteCharAt,
                 "p" => EditorAction::PasteAfter,
                 "u" => EditorAction::Undo,
                 
                 _ => {
-                    // Wait for more keys if needed (e.g., for gg)
-                    if pending.len() >= 2 && !matches!(pending.as_str(), "g") {
+                    // Handle f{char}, t{char}, F{char}, T{char}
+                    if pending.len() == 2 {
+                        let chars: Vec<char> = pending.chars().collect();
+                        let cmd = chars[0];
+                        let target = chars[1];
+                        self.state.clear_pending();
+                        
+                        return match cmd {
+                            'f' => EditorAction::FindCharForward(target),
+                            'F' => EditorAction::FindCharBackward(target),
+                            't' => EditorAction::TillCharForward(target),
+                            'T' => EditorAction::TillCharBackward(target),
+                            _ => EditorAction::Nop,
+                        };
+                    }
+                    
+                    // Wait for more keys if needed (e.g., for gg, f{char})
+                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T") {
                         self.state.clear_pending();
                     }
                     return EditorAction::Nop;
@@ -364,8 +390,41 @@ impl ModeHandler {
                 self.state.set_pending_operator(pending_op);
                 return EditorAction::Nop;
             }
+            "f" | "F" | "t" | "T" => {
+                // Wait for target character
+                self.state.set_pending_operator(pending_op);
+                return EditorAction::Nop;
+            }
             _ => None,
         };
+
+        // Check for f{char}, t{char}, F{char}, T{char}
+        if pending_str.len() == 2 {
+            let chars: Vec<char> = pending_str.chars().collect();
+            let cmd = chars[0];
+            let target = chars[1];
+            
+            let motion = match cmd {
+                'f' => Some(Motion::FindCharForward(target)),
+                'F' => Some(Motion::FindCharBackward(target)),
+                't' => Some(Motion::TillCharForward(target)),
+                'T' => Some(Motion::TillCharBackward(target)),
+                _ => None,
+            };
+            
+            if let Some(m) = motion {
+                self.state.clear_pending();
+                let count = self.state.take_count();
+                if operator == Operator::Change {
+                    self.state.set_mode(Mode::Insert);
+                }
+                return EditorAction::OperatorMotion {
+                    operator,
+                    motion: m,
+                    count,
+                };
+            }
+        }
 
         self.state.clear_pending();
 

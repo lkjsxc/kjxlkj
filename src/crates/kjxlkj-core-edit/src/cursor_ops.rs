@@ -192,6 +192,86 @@ pub trait CursorOps {
             self.move_first_non_blank();
         }
     }
+
+    /// Find character forward (f). Moves cursor to the character.
+    fn find_char_forward(&mut self, target: char) -> bool {
+        let cursor = self.cursor();
+        let line = cursor.position.line as usize;
+        let col = cursor.position.col as usize;
+        
+        if let Some(content) = self.line_content(line) {
+            let chars: Vec<char> = content.chars().collect();
+            // Search from col+1 to end of line
+            for i in (col + 1)..chars.len() {
+                if chars[i] == target {
+                    self.cursor_mut().position.col = i as u32;
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Find character backward (F). Moves cursor to the character.
+    fn find_char_backward(&mut self, target: char) -> bool {
+        let cursor = self.cursor();
+        let line = cursor.position.line as usize;
+        let col = cursor.position.col as usize;
+        
+        if let Some(content) = self.line_content(line) {
+            let chars: Vec<char> = content.chars().collect();
+            // Search from col-1 to start of line
+            for i in (0..col).rev() {
+                if chars[i] == target {
+                    self.cursor_mut().position.col = i as u32;
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Till character forward (t). Moves cursor to just before the character.
+    fn till_char_forward(&mut self, target: char) -> bool {
+        let cursor = self.cursor();
+        let line = cursor.position.line as usize;
+        let col = cursor.position.col as usize;
+        
+        if let Some(content) = self.line_content(line) {
+            let chars: Vec<char> = content.chars().collect();
+            // Search from col+1 to end of line
+            for i in (col + 1)..chars.len() {
+                if chars[i] == target {
+                    // Move to position before target
+                    if i > 0 {
+                        self.cursor_mut().position.col = (i - 1) as u32;
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Till character backward (T). Moves cursor to just after the character.
+    fn till_char_backward(&mut self, target: char) -> bool {
+        let cursor = self.cursor();
+        let line = cursor.position.line as usize;
+        let col = cursor.position.col as usize;
+        
+        if let Some(content) = self.line_content(line) {
+            let chars: Vec<char> = content.chars().collect();
+            // Search from col-1 to start of line
+            for i in (0..col).rev() {
+                if chars[i] == target {
+                    // Move to position after target
+                    self.cursor_mut().position.col = (i + 1) as u32;
+                    return true;
+                }
+            }
+        }
+        false
+    }
 }
 
 /// Determines if a character is a "word" character (alphanumeric or underscore).

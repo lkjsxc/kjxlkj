@@ -60,14 +60,25 @@ This document records the currently implemented, user-visible surface so that:
 
 | Operator | Motion/target | Action |
 |---|---|---|
-| `d` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Delete over motion, yank to register |
-| `y` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Yank over motion |
-| `c` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G` | Change (delete then enter Insert) |
+| `d` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Delete over motion, yank to register |
+| `y` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Yank over motion |
+| `c` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Change (delete then enter Insert) |
 | `dd` | (line) | Delete current line (yanks deleted text) |
 | `yy` | (line) | Yank current line |
 | `cc` | (line) | Change current line |
 | `>>` | (line) | Indent current line (4 spaces) |
 | `<<` | (line) | Outdent current line (up to 4 spaces) |
+
+### Find character motions
+
+| Key | Action |
+|---|---|
+| `f{char}` | Move cursor to next occurrence of {char} on line |
+| `F{char}` | Move cursor to previous occurrence of {char} on line |
+| `t{char}` | Move cursor to just before next occurrence of {char} |
+| `T{char}` | Move cursor to just after previous occurrence of {char} |
+| `;` | Repeat last f/t/F/T motion |
+| `,` | Repeat last f/t/F/T motion in opposite direction |
 
 ### Text objects
 

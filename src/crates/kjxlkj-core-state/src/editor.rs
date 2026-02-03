@@ -7,6 +7,15 @@ use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Vi
 
 use crate::CommandParser;
 
+/// Direction for find char commands (f/t/F/T).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FindCharDirection {
+    Forward,
+    Backward,
+    TillForward,
+    TillBackward,
+}
+
 /// The core editor state - single writer, owns all mutable state.
 #[derive(Debug)]
 pub struct EditorState {
@@ -26,6 +35,8 @@ pub struct EditorState {
     search_forward: bool,
     /// Visual mode anchor (starting position of selection).
     visual_anchor: Option<LineCol>,
+    /// Last find char command for ; and , repeat.
+    last_find_char: Option<(char, FindCharDirection)>,
 }
 
 impl EditorState {
@@ -44,6 +55,7 @@ impl EditorState {
             search_pattern: None,
             search_forward: true,
             visual_anchor: None,
+            last_find_char: None,
         }
     }
 
@@ -127,6 +139,32 @@ impl EditorState {
             EditorAction::WORDEnd => self.buffer.move_word_end(), // TODO: WORD semantics
             EditorAction::FileStart => self.buffer.move_file_start(),
             EditorAction::FileEnd => self.buffer.move_file_end(),
+            EditorAction::FindCharForward(ch) => {
+                if self.buffer.find_char_forward(ch) {
+                    self.last_find_char = Some((ch, FindCharDirection::Forward));
+                }
+            }
+            EditorAction::FindCharBackward(ch) => {
+                if self.buffer.find_char_backward(ch) {
+                    self.last_find_char = Some((ch, FindCharDirection::Backward));
+                }
+            }
+            EditorAction::TillCharForward(ch) => {
+                if self.buffer.till_char_forward(ch) {
+                    self.last_find_char = Some((ch, FindCharDirection::TillForward));
+                }
+            }
+            EditorAction::TillCharBackward(ch) => {
+                if self.buffer.till_char_backward(ch) {
+                    self.last_find_char = Some((ch, FindCharDirection::TillBackward));
+                }
+            }
+            EditorAction::RepeatFindChar => {
+                self.repeat_find_char(false);
+            }
+            EditorAction::RepeatFindCharReverse => {
+                self.repeat_find_char(true);
+            }
             EditorAction::InsertChar(ch) => self.buffer.insert_char(ch),
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
@@ -302,6 +340,22 @@ impl EditorState {
                 Motion::WordEnd => self.buffer.move_word_end(),
                 Motion::FileStart => self.buffer.move_file_start(),
                 Motion::FileEnd => self.buffer.move_file_end(),
+                Motion::FindCharForward(ch) => {
+                    self.buffer.find_char_forward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::Forward));
+                }
+                Motion::FindCharBackward(ch) => {
+                    self.buffer.find_char_backward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::Backward));
+                }
+                Motion::TillCharForward(ch) => {
+                    self.buffer.till_char_forward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::TillForward));
+                }
+                Motion::TillCharBackward(ch) => {
+                    self.buffer.till_char_backward(ch);
+                    self.last_find_char = Some((ch, FindCharDirection::TillBackward));
+                }
                 Motion::CurrentLine => {
                     // For linewise operations, delete/yank whole lines
                     for _ in 0..count {
@@ -334,9 +388,12 @@ impl EditorState {
             (end, start)
         };
 
-        // For inclusive motions (like $, e, etc.), we need to include the end character
+        // For inclusive motions (like $, e, f, t), we need to include the end character
         // Ranges are exclusive, so we add 1 to the end column
-        let is_inclusive = matches!(motion, Motion::LineEnd | Motion::WordEnd);
+        let is_inclusive = matches!(motion, 
+            Motion::LineEnd | Motion::WordEnd | 
+            Motion::FindCharForward(_) | Motion::FindCharBackward(_) |
+            Motion::TillCharForward(_) | Motion::TillCharBackward(_));
         if is_inclusive {
             range_end.col += 1;
         }
@@ -500,6 +557,33 @@ impl EditorState {
         }
         // End of line - include newline
         LineCol::new(end.line + 1, 0)
+    }
+
+    /// Repeat the last find char command (;) or reverse it (,).
+    fn repeat_find_char(&mut self, reverse: bool) {
+        let (ch, direction) = match self.last_find_char {
+            Some((c, d)) => (c, d),
+            None => return,
+        };
+        
+        let dir = if reverse {
+            // Reverse the direction
+            match direction {
+                FindCharDirection::Forward => FindCharDirection::Backward,
+                FindCharDirection::Backward => FindCharDirection::Forward,
+                FindCharDirection::TillForward => FindCharDirection::TillBackward,
+                FindCharDirection::TillBackward => FindCharDirection::TillForward,
+            }
+        } else {
+            direction
+        };
+        
+        match dir {
+            FindCharDirection::Forward => { self.buffer.find_char_forward(ch); }
+            FindCharDirection::Backward => { self.buffer.find_char_backward(ch); }
+            FindCharDirection::TillForward => { self.buffer.till_char_forward(ch); }
+            FindCharDirection::TillBackward => { self.buffer.till_char_backward(ch); }
+        }
     }
 
     /// Search for the next/previous match and move cursor there.
@@ -1399,5 +1483,100 @@ mod tests {
         
         // Should have two lines now
         assert_eq!(state.buffer().line_count(), 2);
+    }
+
+    #[test]
+    fn find_char_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // fa finds 'a' in "world" (no 'a' - actually use 'o')
+        state.handle_key(key('f'));
+        state.handle_key(key('o'));
+        
+        // Should be at the 'o' in "hello" (column 4)
+        assert_eq!(state.buffer().cursor().position.col, 4);
+    }
+
+    #[test]
+    fn till_char_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // to finds position before 'o' in "hello"
+        state.handle_key(key('t'));
+        state.handle_key(key('o'));
+        
+        // Should be just before 'o' (column 3)
+        assert_eq!(state.buffer().cursor().position.col, 3);
+    }
+
+    #[test]
+    fn delete_with_find_char() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // dfo deletes up to and including 'o'
+        state.handle_key(key('d'));
+        state.handle_key(key('f'));
+        state.handle_key(key('o'));
+        
+        // Should have deleted "hello", leaving " world"
+        assert_eq!(state.buffer().content(), " world");
+    }
+
+    #[test]
+    fn repeat_find_char_semicolon() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "abcabcabc".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // fa finds first 'a' after cursor
+        state.handle_key(key('f'));
+        state.handle_key(key('a'));
+        
+        // First 'a' is at column 0, but we start there, so next is column 3
+        assert_eq!(state.buffer().cursor().position.col, 3);
+        
+        // ; repeats the find
+        state.handle_key(key(';'));
+        
+        // Next 'a' is at column 6
+        assert_eq!(state.buffer().cursor().position.col, 6);
     }
 }
