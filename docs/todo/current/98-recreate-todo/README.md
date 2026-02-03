@@ -1,4 +1,4 @@
-# Recreate the TODO List (Iteration 32)
+# Recreate the TODO List (Iteration 33)
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
@@ -13,5 +13,7 @@ Keep the work recursive by regenerating the current TODO list with:
 ## Rules
 
 - The regenerated TODO list MUST still be recursively structured.
+- The regenerated TODO list MUST link every documentation file outside `/docs/todo/` via:
+  - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - The regenerated TODO list MUST keep the second-to-last item as “Recreate the TODO list”.
 - The regenerated TODO list MUST create a new iteration directory under `/docs/todo/current/` only after completing the current iteration’s checklist.

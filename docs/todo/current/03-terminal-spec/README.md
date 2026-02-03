@@ -1,4 +1,4 @@
-# Integrated Terminal Spec (Iteration 32)
+# Integrated Terminal Spec (Iteration 33)
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
