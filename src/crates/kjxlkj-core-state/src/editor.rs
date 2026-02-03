@@ -450,6 +450,14 @@ impl EditorState {
                     self.status_message = Some("Pattern not found".to_string());
                 }
             }
+            EditorAction::Global { pattern, command, invert } => {
+                let count = self.apply_global(&pattern, &command, invert);
+                if count > 0 {
+                    self.status_message = Some(format!("{} line(s) affected", count));
+                } else {
+                    self.status_message = Some("Pattern not found".to_string());
+                }
+            }
             EditorAction::JumpListOlder => {
                 self.jump_list_older();
             }
@@ -653,6 +661,59 @@ impl EditorState {
         }
         
         0
+    }
+
+    /// Apply global command on matching lines.
+    /// :g/pattern/command - execute command on lines matching pattern
+    /// :v/pattern/command - execute command on lines NOT matching pattern
+    fn apply_global(&mut self, pattern: &str, command: &str, invert: bool) -> usize {
+        if pattern.is_empty() {
+            return 0;
+        }
+
+        // First, collect line indices that match (or don't match for :v)
+        let total_lines = self.buffer.line_count();
+        let mut matching_lines: Vec<usize> = Vec::new();
+
+        for line_idx in 0..total_lines {
+            if let Some(line_content) = self.buffer.line_content(line_idx) {
+                let matches = line_content.contains(pattern);
+                if matches != invert {
+                    matching_lines.push(line_idx);
+                }
+            }
+        }
+
+        if matching_lines.is_empty() {
+            return 0;
+        }
+
+        let command = command.trim();
+        let count = matching_lines.len();
+
+        // Handle common commands
+        // For delete (d), we need to go from bottom to top to preserve line numbers
+        if command.is_empty() || command == "d" {
+            // Delete matching lines, from bottom to top
+            for &line_idx in matching_lines.iter().rev() {
+                self.buffer.set_cursor_position(LineCol::new(line_idx as u32, 0));
+                self.buffer.delete_line();
+            }
+        } else if command.starts_with("s") {
+            // Substitute on matching lines: g/pattern/s/old/new/
+            if let Some(sub_action) = CommandParser::parse_public(command) {
+                if let EditorAction::Substitute { pattern: sub_pat, replacement, flags } = sub_action {
+                    for &line_idx in matching_lines.iter() {
+                        self.buffer.set_cursor_position(LineCol::new(line_idx as u32, 0));
+                        self.apply_substitute(&sub_pat, &replacement, &flags);
+                    }
+                }
+            }
+        } else if command == "p" {
+            // Print is a no-op in our implementation (lines are displayed anyway)
+        }
+
+        count
     }
 
     /// Apply an operator over a motion range.
@@ -2450,5 +2511,53 @@ mod tests {
         let lines: Vec<&str> = content.lines().collect();
         assert_eq!(lines[0], "ad");
         assert_eq!(lines[1], "eh");
+    }
+
+    #[test]
+    fn global_command_delete_matching() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "keep this\ndelete foo\nkeep also\nfoo here too".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Delete all lines containing "foo"
+        state.apply_action(EditorAction::Global {
+            pattern: "foo".to_string(),
+            command: "d".to_string(),
+            invert: false,
+        });
+        
+        // Should have 2 lines left (the ones without "foo")
+        let content = state.buffer().content();
+        let lines: Vec<&str> = content.lines().collect();
+        assert_eq!(lines.len(), 2);
+        assert_eq!(lines[0], "keep this");
+        assert_eq!(lines[1], "keep also");
+    }
+
+    #[test]
+    fn vglobal_command_delete_non_matching() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "keep foo\nremove this\nkeep foo also\nremove this too".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Delete all lines NOT containing "foo" (inverted)
+        state.apply_action(EditorAction::Global {
+            pattern: "foo".to_string(),
+            command: "d".to_string(),
+            invert: true,
+        });
+        
+        // Should have 2 lines left (the ones WITH "foo")
+        let content = state.buffer().content();
+        let lines: Vec<&str> = content.lines().collect();
+        assert_eq!(lines.len(), 2);
+        assert_eq!(lines[0], "keep foo");
+        assert_eq!(lines[1], "keep foo also");
     }
 }

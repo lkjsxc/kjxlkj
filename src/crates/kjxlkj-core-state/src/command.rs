@@ -20,6 +20,18 @@ impl CommandParser {
             }
         }
 
+        // Handle global command: g/pattern/command or v/pattern/command
+        if input.starts_with("g/") || input.starts_with("g#") || input.starts_with("g|") {
+            if let Some(action) = Self::parse_global(input, false) {
+                return action;
+            }
+        }
+        if input.starts_with("v/") || input.starts_with("v#") || input.starts_with("v|") {
+            if let Some(action) = Self::parse_global(input, true) {
+                return action;
+            }
+        }
+
         // Handle commands with arguments
         if let Some(rest) = input.strip_prefix("w ") {
             return EditorAction::Write {
@@ -60,6 +72,16 @@ impl CommandParser {
         }
     }
 
+    /// Public entry point to parse a command (for use by global command).
+    pub fn parse_public(input: &str) -> Option<EditorAction> {
+        let action = Self::parse(input);
+        if matches!(action, EditorAction::Nop) {
+            None
+        } else {
+            Some(action)
+        }
+    }
+
     /// Parses a substitute command: s/pattern/replacement/flags
     fn parse_substitute(input: &str) -> Option<EditorAction> {
         // Get the delimiter (first char after 's')
@@ -85,6 +107,33 @@ impl CommandParser {
             pattern,
             replacement,
             flags,
+        })
+    }
+
+    /// Parses a global command: g/pattern/command or v/pattern/command
+    fn parse_global(input: &str, invert: bool) -> Option<EditorAction> {
+        // Get the delimiter (first char after 'g' or 'v')
+        let chars: Vec<char> = input.chars().collect();
+        if chars.len() < 2 {
+            return None;
+        }
+        let delimiter = chars[1];
+        
+        // Split by delimiter
+        let rest = &input[2..];
+        let parts: Vec<&str> = rest.splitn(2, delimiter).collect();
+        
+        if parts.is_empty() {
+            return None;
+        }
+        
+        let pattern = parts.get(0).unwrap_or(&"").to_string();
+        let command = parts.get(1).unwrap_or(&"d").to_string(); // Default to delete
+        
+        Some(EditorAction::Global {
+            pattern,
+            command,
+            invert,
         })
     }
 }

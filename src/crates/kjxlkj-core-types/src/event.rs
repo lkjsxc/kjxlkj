@@ -217,6 +217,12 @@ pub enum EditorAction {
         replacement: String,
         flags: String,
     },
+    /// Global command (:g/pattern/command).
+    Global {
+        pattern: String,
+        command: String,
+        invert: bool, // true for :v (vglobal)
+    },
     /// No operation.
     Nop,
 }
