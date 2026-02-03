@@ -16,6 +16,7 @@ This documentation is optimized for machine (LLM) parsing. See [policy/README.md
 | [overview/](overview/README.md) | Project overview |
 | [technical/](technical/README.md) | Technical implementation |
 | [todo/](todo/README.md) | Structured TODO management |
+| [log/](log/README.md) | Implementation log and audits |
 
 ## Quick Start
 
@@ -36,6 +37,7 @@ graph TD
     Root --> Reference[reference]
     Root --> Overview[overview]
     Root --> Technical[technical]
+    Root --> Log[log]
 
     Spec --> Arch[architecture]
     Spec --> Feat[features]

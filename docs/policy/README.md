@@ -12,6 +12,7 @@ This documentation is optimized for machine (LLM) parsing. This fact is stated o
 | [INSTRUCT.md](INSTRUCT.md) | **READ FIRST** - Operating contract |
 | [WORKFLOW.md](WORKFLOW.md) | Workflow rules and quality standards |
 | [STRUCTURE.md](STRUCTURE.md) | Directory and file structure constraints |
+| [ROOT_LAYOUT.md](ROOT_LAYOUT.md) | Root-level allowlist and layout constraints |
 | [Documentation fences (Mermaid-only)](#documentation-fences-mermaid-only-normative) | Documentation content compliance rule |
 
 ## Key Invariants
@@ -29,7 +30,10 @@ spec documentation is canonical:
 
 - [docs/spec/README.md](/docs/spec/README.md)
 
-This repository is documentation-only. An external Rust implementation (when present) is expected to track the normative specifications under `/docs/`.
+This repository includes both:
+
+- canonical specification under `/docs/` (normative)
+- a Rust implementation under `/src/` that is expected to track `/docs/`
 
 ## Concurrency baseline
 The canonical architecture is **Tokio async-first**:

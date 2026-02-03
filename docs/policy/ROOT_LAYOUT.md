@@ -1,0 +1,27 @@
+# Root Layout Policy
+
+This document defines the allowed top-level layout and the required implementation placement.
+
+## Root allowlist
+
+The repo root SHOULD contain only the following entries:
+
+| Path | Purpose |
+|---|---|
+| `README.md` | Project index and pointers |
+| `LICENSE` | License |
+| `docs/` | Canonical specification and policies |
+| `src/` | Rust implementation workspace |
+| `Cargo.toml` | Workspace manifest |
+| `Cargo.lock` | Locked dependencies |
+| `.gitignore` | Git ignore rules |
+
+Additional root entries MUST be justified by a concrete need and recorded in `docs/log/`.
+
+## Implementation layout
+
+| Path | Requirement |
+|---|---|
+| `src/crates/` | Workspace crates MUST live here |
+| `src/crates/kjxlkj/` | The single shipped binary crate MUST live here |
+

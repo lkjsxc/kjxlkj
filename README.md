@@ -2,8 +2,6 @@
 
 kjxlkj is a Neovim-inspired TUI text editor written in Rust.
 
-This repository is "All in Docs".
-
 This repository is optimized for machine (LLM) parsing and editing. This statement appears only here and in docs/README.md + docs/policy/README.md to avoid scattering it across leaf documents.
 
 ## Docs
@@ -14,6 +12,17 @@ This repository is optimized for machine (LLM) parsing and editing. This stateme
 
 ## Implementation
 
-This repository contains normative documentation only; it does not include buildable Rust source code.
+- The canonical specification lives under `docs/` and is treated as normative.
+- The Rust implementation lives under `src/crates/` as a Cargo workspace.
 
-The intended implementation is a single Rust binary whose architecture, runtime model, and feature set are specified under `docs/spec/`.
+Build:
+
+```bash
+cargo build
+```
+
+Test:
+
+```bash
+cargo test
+```

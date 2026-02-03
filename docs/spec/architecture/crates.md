@@ -4,7 +4,7 @@
 
 When implementation exists, it MUST include at least 10 crates under `src/crates/`.
 
-This repository is documentation-only. This document describes the intended crate topology for an external implementation repository.
+This repository includes an implementation workspace at `src/crates/` that is expected to follow this topology.
 
 ## Workspace members
 
