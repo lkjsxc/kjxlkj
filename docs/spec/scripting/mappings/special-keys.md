@@ -88,6 +88,8 @@ used in keybinding configurations.
 
 ## Mouse
 
+Mouse input is ignored. Mouse key notation exists only for compatibility and MUST NOT trigger actions.
+
 ### Mouse Buttons
 
 | Action | Notation |

@@ -16,8 +16,7 @@ above functions, classes, and other code elements.
 
 ### References
 
-
-Click to see references.
+Select the lens and execute it to see references.
 
 ### Implementations
 
@@ -93,14 +92,14 @@ Lens computed only for visible code.
 
 ### Run Single Test
 
-Click "Run" above test function.
+Select the code lens above the test and execute it.
 
 ### Run All Tests
 
 
 ### Debug
 
-Click "Debug" to start debugger.
+Select the code lens and execute it to start the debugger.
 
 ## Tips
 
@@ -110,4 +109,3 @@ Click "Debug" to start debugger.
 4. Refresh after changes
 
 ## Keybinding Configuration
-

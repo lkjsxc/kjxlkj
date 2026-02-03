@@ -14,8 +14,8 @@ A window is defined by:
 - `WindowId` (stable)
 - `BufferId` (what it shows)
 - cursor state (per-window)
-- viewport state (top line, dimensions)
-- per-window options (wrap, numbers) as core state
+- viewport state (top line, left column, text area dimensions)
+- per-window options (wrap, numbers, scrolloff/sidescrolloff) as core state
 
 ## Layout
 
@@ -26,3 +26,4 @@ A window is defined by:
 
 - UI views/components: [docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - Layout UX: [docs/spec/ux/layout.md](/docs/spec/ux/layout.md)
+- Viewport behavior: [docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)

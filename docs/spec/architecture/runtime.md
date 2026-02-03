@@ -36,6 +36,7 @@ graph TD
 ## Related
 
 - Architecture index: [README.md](README.md)
+- Latency and ordering: [docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 - LSP service: [docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)
 - Git service: [docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
 - Indexer service: [docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

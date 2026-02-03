@@ -81,7 +81,9 @@ then `:ConflictResolved`.
 ### Virtual Text
 
 
-### Click Actions
+### Key Actions
+
+Mouse input is ignored; conflict actions MUST be keyboard-driven.
 
 
 ## Conflict List

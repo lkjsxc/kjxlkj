@@ -63,9 +63,9 @@ Only hints for visible lines are computed.
 
 Show full type if truncated.
 
-### Double-Click
+### Activate
 
-Insert hint text into code (for some hints).
+Insert hint text into code for supported hints.
 
 ## Commands
 
@@ -105,4 +105,3 @@ Verify expected types.
 4. Toggle when hints clutter view
 
 ## Keybinding Configuration
-

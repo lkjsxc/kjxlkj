@@ -8,8 +8,8 @@ User notifications and alerts in kjxlkj.
 |------|----------|--------------|
 | Info | 3s | None |
 | Warning | 5s | None |
-| Error | Persistent | Click to dismiss |
-| Action | Persistent | Requires response |
+| Error | Persistent | Dismiss via keybinding |
+| Action | Persistent | Requires keyboard response |
 
 ## Display Locations
 
@@ -107,4 +107,3 @@ Errors and prompts in command area.
 
 
 ### Icons
-

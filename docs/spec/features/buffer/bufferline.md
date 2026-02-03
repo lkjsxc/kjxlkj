@@ -17,12 +17,7 @@ Top bar shows open buffers:
 
 ### Keybindings
 
-
-### Mouse Support (if terminal supports)
-
-- Click buffer: switch to it
-- Middle-click: close buffer
-- Scroll: cycle buffers
+Mouse input is ignored; buffer switching is keyboard-only.
 
 ## Buffer Groups
 

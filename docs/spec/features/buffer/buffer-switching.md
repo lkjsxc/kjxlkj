@@ -60,10 +60,6 @@ between buffers quickly.
 
 ### Visual Buffer Bar
 
-
-### Mouse Click
-
-
 ### Keybindings
 
 
@@ -89,4 +85,3 @@ between buffers quickly.
 
 
 ### Window-Local MRU
-

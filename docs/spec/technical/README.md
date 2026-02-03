@@ -9,6 +9,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [testing.md](testing.md) | Testing strategy |
 | [memory.md](memory.md) | Memory management |
 | [profiling.md](profiling.md) | Profiling |
+| [latency.md](latency.md) | Latency and event ordering |
 
 ## Scope
 

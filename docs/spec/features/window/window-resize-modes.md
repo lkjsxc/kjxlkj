@@ -53,13 +53,9 @@ window dimension adjustments.
 
 ### Fixed Windows
 
+## Mouse
 
-## Mouse Resize
-
-### Drag to Resize
-
-
-### Double-Click
+Mouse input is ignored; resizing is keyboard-only.
 
 
 ## Commands
@@ -92,4 +88,3 @@ window close/create.
 ## Golden Ratio
 
 ### Enable
-
