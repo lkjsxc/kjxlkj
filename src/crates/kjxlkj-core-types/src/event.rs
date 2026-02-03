@@ -15,10 +15,28 @@ pub enum EditorAction {
     CursorUp,
     /// Move cursor down.
     CursorDown,
-    /// Move to start of line.
+    /// Move to start of line (column 0).
     LineStart,
     /// Move to end of line.
     LineEnd,
+    /// Move to first non-blank character (^).
+    FirstNonBlank,
+    /// Move to next word start (w).
+    WordForward,
+    /// Move to next WORD start (W).
+    WORDForward,
+    /// Move to previous word start (b).
+    WordBackward,
+    /// Move to previous WORD start (B).
+    WORDBackward,
+    /// Move to word end (e).
+    WordEnd,
+    /// Move to WORD end (E).
+    WORDEnd,
+    /// Move to file start (gg).
+    FileStart,
+    /// Move to file end (G).
+    FileEnd,
     /// Insert character at cursor.
     InsertChar(char),
     /// Insert newline at cursor.

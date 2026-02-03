@@ -109,6 +109,15 @@ impl EditorState {
             EditorAction::CursorDown => self.buffer.move_down(),
             EditorAction::LineStart => self.buffer.move_line_start(),
             EditorAction::LineEnd => self.buffer.move_line_end(),
+            EditorAction::FirstNonBlank => self.buffer.move_first_non_blank(),
+            EditorAction::WordForward => self.buffer.move_word_forward(),
+            EditorAction::WORDForward => self.buffer.move_word_forward(), // TODO: WORD semantics
+            EditorAction::WordBackward => self.buffer.move_word_backward(),
+            EditorAction::WORDBackward => self.buffer.move_word_backward(), // TODO: WORD semantics
+            EditorAction::WordEnd => self.buffer.move_word_end(),
+            EditorAction::WORDEnd => self.buffer.move_word_end(), // TODO: WORD semantics
+            EditorAction::FileStart => self.buffer.move_file_start(),
+            EditorAction::FileEnd => self.buffer.move_file_end(),
             EditorAction::InsertChar(ch) => self.buffer.insert_char(ch),
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),

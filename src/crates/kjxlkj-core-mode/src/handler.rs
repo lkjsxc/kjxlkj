@@ -99,7 +99,16 @@ impl ModeHandler {
                 "k" => EditorAction::CursorUp,
                 "l" => EditorAction::CursorRight,
                 "0" => EditorAction::LineStart,
+                "^" => EditorAction::FirstNonBlank,
                 "$" => EditorAction::LineEnd,
+                "w" => EditorAction::WordForward,
+                "W" => EditorAction::WORDForward,
+                "b" => EditorAction::WordBackward,
+                "B" => EditorAction::WORDBackward,
+                "e" => EditorAction::WordEnd,
+                "E" => EditorAction::WORDEnd,
+                "gg" => EditorAction::FileStart,
+                "G" => EditorAction::FileEnd,
                 "i" => {
                     self.state.set_mode(Mode::Insert);
                     EditorAction::EnterInsertMode
