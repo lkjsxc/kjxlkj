@@ -124,7 +124,7 @@ impl<W: Write> Renderer<W> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use kjxlkj_core_ui::{BufferSnapshot, StatusLine, Viewport};
+    use kjxlkj_core_ui::{BufferSnapshot, SnapshotSeq, StatusLine, Viewport};
     use kjxlkj_core_types::{BufferId, BufferVersion, Cursor};
 
     #[test]
@@ -133,6 +133,7 @@ mod tests {
         let mut renderer = Renderer::new(&mut buf);
 
         let snapshot = EditorSnapshot {
+            seq: SnapshotSeq::new(1),
             buffer: BufferSnapshot {
                 id: BufferId::new(1),
                 version: BufferVersion::new(0),

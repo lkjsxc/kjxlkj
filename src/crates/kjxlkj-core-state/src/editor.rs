@@ -3,7 +3,7 @@
 use kjxlkj_core_edit::{Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
 use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, Mode};
-use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, StatusLine, Viewport};
+use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Viewport};
 
 use crate::CommandParser;
 
@@ -18,6 +18,8 @@ pub struct EditorState {
     status_message: Option<String>,
     quit_requested: bool,
     scroll_off: usize,
+    /// Monotonically increasing snapshot sequence.
+    snapshot_seq: SnapshotSeq,
 }
 
 impl EditorState {
@@ -32,6 +34,7 @@ impl EditorState {
             status_message: None,
             quit_requested: false,
             scroll_off: 3,
+            snapshot_seq: SnapshotSeq::new(0),
         }
     }
 
@@ -66,6 +69,11 @@ impl EditorState {
         self.mode_handler.command_line()
     }
 
+    /// Returns the current snapshot sequence number.
+    pub fn snapshot_seq(&self) -> SnapshotSeq {
+        self.snapshot_seq
+    }
+
     /// Sets the terminal size and updates viewport.
     pub fn set_terminal_size(&mut self, width: u16, height: u16) {
         self.terminal_size = (width, height);
@@ -75,15 +83,24 @@ impl EditorState {
     }
 
     /// Handles a key input and returns events.
+    /// Increments snapshot sequence for each input processed.
     pub fn handle_key(&mut self, key: KeyInput) -> Vec<EditorEvent> {
+        self.snapshot_seq = self.snapshot_seq.next();
+        let old_mode = self.mode();
         let action = self.mode_handler.handle_key(key);
-        self.apply_action(action)
+        let mut events = self.apply_action(action);
+
+        // Check for mode change (happens in mode_handler, not apply_action)
+        if self.mode() != old_mode {
+            events.push(EditorEvent::ModeChanged(self.mode()));
+        }
+
+        events
     }
 
     /// Applies an action and returns events.
     pub fn apply_action(&mut self, action: EditorAction) -> Vec<EditorEvent> {
         let mut events = Vec::new();
-        let old_mode = self.mode();
 
         match action {
             EditorAction::CursorLeft => self.buffer.move_left(),
@@ -164,10 +181,6 @@ impl EditorState {
 
         self.update_viewport();
 
-        if self.mode() != old_mode {
-            events.push(EditorEvent::ModeChanged(self.mode()));
-        }
-
         events
     }
 
@@ -246,6 +259,7 @@ impl EditorState {
         };
 
         EditorSnapshot {
+            seq: self.snapshot_seq,
             buffer: buffer_snapshot,
             status,
             command_line,
@@ -272,6 +286,20 @@ mod tests {
         }
     }
 
+    fn esc() -> KeyInput {
+        KeyInput {
+            code: KeyCode::Escape,
+            modifiers: Modifiers::default(),
+        }
+    }
+
+    fn enter() -> KeyInput {
+        KeyInput {
+            code: KeyCode::Enter,
+            modifiers: Modifiers::default(),
+        }
+    }
+
     #[test]
     fn initial_mode_is_normal() {
         let state = EditorState::new();
@@ -292,16 +320,139 @@ mod tests {
         let mut state = EditorState::new();
         state.handle_key(key('i'));
         state.handle_key(key('x'));
-        state.handle_key(KeyInput {
-            code: KeyCode::Escape,
-            modifiers: Modifiers::default(),
-        });
+        state.handle_key(esc());
         state.handle_key(key(':'));
         state.handle_key(key('q'));
-        state.handle_key(KeyInput {
-            code: KeyCode::Enter,
-            modifiers: Modifiers::default(),
-        });
+        state.handle_key(enter());
         assert!(!state.is_quit_requested());
+    }
+
+    // === Runtime Ordering Invariant Tests ===
+
+    #[test]
+    fn snapshot_seq_is_monotonic() {
+        let mut state = EditorState::new();
+        let mut prev_seq = state.snapshot_seq();
+
+        // Each key input should produce a newer sequence
+        for _ in 0..10 {
+            state.handle_key(key('j'));
+            let new_seq = state.snapshot_seq();
+            assert!(new_seq > prev_seq, "Snapshot sequence must be monotonically increasing");
+            prev_seq = new_seq;
+        }
+    }
+
+    #[test]
+    fn snapshot_reflects_latest_state() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        state.handle_key(key('a'));
+        state.handle_key(key('b'));
+        state.handle_key(key('c'));
+
+        let snapshot = state.snapshot();
+
+        // Snapshot must contain all typed characters
+        assert_eq!(snapshot.buffer.lines.join(""), "abc");
+        // Snapshot seq must match internal state
+        assert_eq!(snapshot.seq, state.snapshot_seq());
+    }
+
+    #[test]
+    fn snapshot_is_immutable_clone() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        state.handle_key(key('x'));
+
+        // Take snapshot
+        let snapshot1 = state.snapshot();
+        let seq1 = snapshot1.seq;
+
+        // Modify state
+        state.handle_key(key('y'));
+
+        // Original snapshot unchanged
+        assert_eq!(snapshot1.seq, seq1);
+        assert_eq!(snapshot1.buffer.lines.join(""), "x");
+
+        // New snapshot reflects changes
+        let snapshot2 = state.snapshot();
+        assert!(snapshot2.seq > seq1);
+        assert_eq!(snapshot2.buffer.lines.join(""), "xy");
+    }
+
+    #[test]
+    fn rapid_typing_maintains_order() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+
+        let chars: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
+        let mut prev_seq = state.snapshot_seq();
+
+        for ch in &chars {
+            state.handle_key(key(*ch));
+            let seq = state.snapshot_seq();
+            assert!(seq > prev_seq);
+            prev_seq = seq;
+        }
+
+        // All characters in order
+        let content = state.buffer().content();
+        assert_eq!(content, "abcdefghijklmnopqrstuvwxyz");
+    }
+
+    #[test]
+    fn event_to_snapshot_determinism() {
+        // Same inputs should produce same outputs
+        let run = || {
+            let mut state = EditorState::new();
+            state.handle_key(key('i'));
+            state.handle_key(key('h'));
+            state.handle_key(key('e'));
+            state.handle_key(key('l'));
+            state.handle_key(key('l'));
+            state.handle_key(key('o'));
+            state.handle_key(esc());
+            state.snapshot()
+        };
+
+        let snap1 = run();
+        let snap2 = run();
+
+        assert_eq!(snap1.buffer.lines, snap2.buffer.lines);
+        assert_eq!(snap1.buffer.cursor.position, snap2.buffer.cursor.position);
+        assert_eq!(snap1.status.mode, snap2.status.mode);
+    }
+
+    #[test]
+    fn mode_change_produces_event() {
+        let mut state = EditorState::new();
+        let events = state.handle_key(key('i'));
+
+        assert!(events.iter().any(|e| matches!(e, EditorEvent::ModeChanged(Mode::Insert))));
+    }
+
+    #[test]
+    fn resize_preserves_state() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        state.handle_key(key('t'));
+        state.handle_key(key('e'));
+        state.handle_key(key('s'));
+        state.handle_key(key('t'));
+
+        let content_before = state.buffer().content();
+
+        // Simulate resize storm
+        for w in 20..120 {
+            state.set_terminal_size(w, 24);
+        }
+        for h in 10..50 {
+            state.set_terminal_size(80, h);
+        }
+
+        // Content must be unchanged
+        assert_eq!(state.buffer().content(), content_before);
     }
 }

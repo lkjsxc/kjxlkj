@@ -5,5 +5,5 @@
 mod snapshot;
 mod viewport;
 
-pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
+pub use snapshot::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine};
 pub use viewport::Viewport;
