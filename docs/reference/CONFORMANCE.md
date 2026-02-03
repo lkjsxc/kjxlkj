@@ -31,11 +31,23 @@ This document records the currently implemented, user-visible surface so that:
 |---|---|
 | `h`/`j`/`k`/`l` | Cursor move left/down/up/right |
 | Arrow keys | Cursor move |
+| `0` | Move to start of line (column 0) |
+| `^` | Move to first non-blank character |
+| `$` | Move to end of line |
+| `w` | Move to next word start |
+| `W` | Move to next WORD start (same as `w` currently) |
+| `b` | Move to previous word start |
+| `B` | Move to previous WORD start (same as `b` currently) |
+| `e` | Move to word end |
+| `E` | Move to WORD end (same as `e` currently) |
+| `gg` | Move to file start |
+| `G` | Move to file end |
 | `i` | Enter Insert mode |
 | `a` | Enter Insert mode (after cursor) |
 | `A` | Enter Insert mode (end of line) |
 | `o` | Open line below and enter Insert mode |
 | `v` | Enter Visual mode |
+| `V` | Enter Visual line mode |
 | `R` | Enter Replace mode |
 | `dd` | Delete current line (yanks deleted text) |
 | `yy` | Yank current line |

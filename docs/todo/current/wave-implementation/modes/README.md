@@ -53,12 +53,12 @@ Implement modal editing semantics and mode transitions:
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal, fully tested set of mode transitions:
+- [x] Implement a minimal, fully tested set of mode transitions:
   - Normal ↔ Insert
   - Normal ↔ Visual (charwise)
   - Normal ↔ Command
   - Normal ↔ Replace (as defined, not “Insert-like” unless specified)
-- [ ] Ensure cursor and selection invariants hold across transitions.
+- [x] Ensure cursor and selection invariants hold across transitions.
 
 ## Full conformance (sub-wave)
 

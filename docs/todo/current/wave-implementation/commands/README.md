@@ -54,11 +54,11 @@ Implement the Ex command surface, including:
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement the smallest set of commands required to:
+- [x] Implement the smallest set of commands required to:
   - open/edit/write files
   - quit safely
   - run a shell command via the terminal service (if specified)
-- [ ] Add deterministic tests for the minimal slice.
+- [x] Add deterministic tests for the minimal slice.
 
 ## Full conformance (sub-wave)
 

@@ -55,11 +55,11 @@ Implement the editing primitives that power modal behavior:
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal set of motions/operators/text objects that is:
+- [x] Implement a minimal set of motions/operators/text objects that is:
   - fully specified by docs
   - test-backed
   - consistent across modes
-- [ ] Implement undo/redo semantics for the minimal slice.
+- [x] Implement undo/redo semantics for the minimal slice.
 
 ## Full conformance (sub-wave)
 
