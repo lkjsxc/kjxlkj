@@ -1,0 +1,12 @@
+[package]
+name = "kjxlkj-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+kjxlkj-core-state = { path = "../kjxlkj-core-state" }
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+

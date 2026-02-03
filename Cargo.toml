@@ -1,0 +1,41 @@
+[workspace]
+resolver = "2"
+members = [
+  "src/crates/app/kjxlkj",
+  "src/crates/core/kjxlkj-core",
+  "src/crates/core/kjxlkj-core-edit",
+  "src/crates/core/kjxlkj-core-mode",
+  "src/crates/core/kjxlkj-core-state",
+  "src/crates/core/kjxlkj-core-text",
+  "src/crates/core/kjxlkj-core-types",
+  "src/crates/core/kjxlkj-core-ui",
+  "src/crates/core/kjxlkj-core-undo",
+  "src/crates/host/kjxlkj-host",
+  "src/crates/input/kjxlkj-input",
+  "src/crates/render/kjxlkj-render",
+  "src/crates/services/kjxlkj-service-fs",
+  "src/crates/services/kjxlkj-service-terminal",
+  "src/crates/services/kjxlkj-services",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+crossterm = "0.28"
+ratatui = "0.28"
+ropey = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tokio = { version = "1", features = ["fs", "macros", "process", "rt-multi-thread", "sync", "time"] }
+unicode-segmentation = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+

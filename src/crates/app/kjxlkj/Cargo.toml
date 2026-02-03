@@ -1,0 +1,19 @@
+[package]
+name = "kjxlkj"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+crossterm.workspace = true
+kjxlkj-core = { path = "../../core/kjxlkj-core" }
+kjxlkj-host = { path = "../../host/kjxlkj-host" }
+kjxlkj-input = { path = "../../input/kjxlkj-input" }
+kjxlkj-render = { path = "../../render/kjxlkj-render" }
+kjxlkj-services = { path = "../../services/kjxlkj-services" }
+ratatui.workspace = true
+tokio.workspace = true
+
