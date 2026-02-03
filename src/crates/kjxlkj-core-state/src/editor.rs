@@ -35,6 +35,14 @@ pub enum RepeatableChange {
     OperatorTextObject { operator: Operator, text_object: TextObject },
     /// Delete character at cursor (x).
     DeleteCharAt,
+    /// Delete to end of line (D).
+    DeleteToEnd,
+    /// Change to end of line (C).
+    ChangeToEnd,
+    /// Substitute character (s).
+    Substitute,
+    /// Substitute line (S).
+    SubstituteLine,
     /// Insert text (the text inserted before returning to normal mode).
     InsertText(String),
 }
@@ -291,6 +299,35 @@ impl EditorState {
                 self.buffer.yank_line();
                 self.store_in_pending_register();
             }
+            EditorAction::DeleteToEndOfLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.last_change = Some(RepeatableChange::DeleteToEnd);
+                self.buffer.delete_to_end_of_line();
+                self.buffer.clamp_cursor();  // D stays in normal mode, so clamp
+                self.store_in_pending_register();
+            }
+            EditorAction::ChangeToEndOfLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.last_change = Some(RepeatableChange::ChangeToEnd);
+                self.buffer.delete_to_end_of_line();
+                // Don't clamp - C enters insert mode where cursor can be past end
+                self.store_in_pending_register();
+            }
+            EditorAction::SubstituteChar => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.last_change = Some(RepeatableChange::Substitute);
+                self.buffer.delete_char_at();
+            }
+            EditorAction::SubstituteLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.last_change = Some(RepeatableChange::SubstituteLine);
+                // Delete line content but not the newline (like cc)
+                self.buffer.change_line();
+            }
             EditorAction::JoinLines => {
                 let pos = self.buffer.cursor().position;
                 self.add_to_change_list(pos);
@@ -520,6 +557,21 @@ impl EditorState {
                         }
                         RepeatableChange::DeleteCharAt => {
                             self.buffer.delete_char_at();
+                        }
+                        RepeatableChange::DeleteToEnd => {
+                            self.buffer.delete_to_end_of_line();
+                        }
+                        RepeatableChange::ChangeToEnd => {
+                            self.buffer.delete_to_end_of_line();
+                            self.mode_handler.set_mode(Mode::Insert);
+                        }
+                        RepeatableChange::Substitute => {
+                            self.buffer.delete_char_at();
+                            self.mode_handler.set_mode(Mode::Insert);
+                        }
+                        RepeatableChange::SubstituteLine => {
+                            self.buffer.change_line();
+                            self.mode_handler.set_mode(Mode::Insert);
                         }
                         RepeatableChange::InsertText(text) => {
                             for ch in text.chars() {
@@ -4195,5 +4247,123 @@ mod tests {
         
         let content = state.buffer().content();
         assert_eq!(content, "   Xhello");
+    }
+
+    #[test]
+    fn delete_to_end_of_line_d_upper() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start, move to position 5 (the space)
+        state.handle_key(key('0'));
+        for _ in 0..5 {
+            state.handle_key(key('l'));
+        }
+        
+        // D should delete from cursor to end of line
+        state.handle_key(key('D'));
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "hello", "content: {}", content);
+    }
+
+    #[test]
+    fn change_to_end_of_line_c_upper() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start, move to position 5 (the space)
+        state.handle_key(key('0'));
+        for _ in 0..5 {
+            state.handle_key(key('l'));
+        }
+        
+        // C should delete from cursor to end and enter insert mode
+        state.handle_key(key('C'));
+        
+        assert_eq!(state.mode(), Mode::Insert);
+        
+        // Type replacement
+        state.handle_key(key('!'));
+        state.handle_key(esc());
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "hello!", "content: {}", content);
+    }
+
+    #[test]
+    fn substitute_char_s() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('0'));
+        
+        // s should delete char and enter insert mode
+        state.handle_key(key('s'));
+        
+        assert_eq!(state.mode(), Mode::Insert);
+        
+        // Type replacement
+        state.handle_key(key('H'));
+        state.handle_key(esc());
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "Hello", "content: {}", content);
+    }
+
+    #[test]
+    fn substitute_line_s_upper() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // S should delete line content and enter insert mode
+        state.handle_key(key('S'));
+        
+        assert_eq!(state.mode(), Mode::Insert);
+        
+        // Type replacement
+        for ch in "new line".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "new line", "content: {}", content);
+    }
+
+    #[test]
+    fn yank_line_y_upper() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Y should yank current line (like yy)
+        state.handle_key(key('Y'));
+        
+        // Paste to verify it yanked the line
+        state.handle_key(key('p'));
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "hello\nhello", "content: {}", content);
     }
 }

@@ -338,6 +338,20 @@ impl ModeHandler {
                 // Character operations
                 "x" => EditorAction::DeleteCharAt,
                 "X" => EditorAction::DeleteCharBefore,
+                "D" => EditorAction::DeleteToEndOfLine,
+                "C" => {
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::ChangeToEndOfLine
+                }
+                "s" => {
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::SubstituteChar
+                }
+                "S" => {
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::SubstituteLine
+                }
+                "Y" => EditorAction::YankLine,
                 "p" => EditorAction::PasteAfter,
                 "P" => EditorAction::PasteBefore,
                 "u" => EditorAction::Undo,

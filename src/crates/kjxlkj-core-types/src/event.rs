@@ -163,8 +163,16 @@ pub enum EditorAction {
     DeleteCharAt,
     /// Delete current line (dd command).
     DeleteLine,
+    /// Delete to end of line (D command).
+    DeleteToEndOfLine,
     /// Yank current line (yy command).
     YankLine,
+    /// Change to end of line (C command).
+    ChangeToEndOfLine,
+    /// Substitute character under cursor (s command).
+    SubstituteChar,
+    /// Substitute entire line (S command).
+    SubstituteLine,
     /// Join current line with next (J command).
     JoinLines,
     /// Join current line with next without spaces (gJ command).

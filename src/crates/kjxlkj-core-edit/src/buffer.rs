@@ -290,6 +290,53 @@ impl Buffer {
         }
     }
 
+    /// Deletes from cursor to end of line (D command).
+    /// Note: This does NOT clamp cursor since it may be used with C (change) which enters insert mode.
+    pub fn delete_to_end_of_line(&mut self) {
+        let pos = self.cursor.position;
+        let line_idx = pos.line as usize;
+        if let Some(line_content) = self.line(line_idx) {
+            let col = pos.col as usize;
+            if col < line_content.len() {
+                let deleted_text = line_content[col..].to_string();
+                if let Some(start_char) = self.text.line_col_to_char(pos) {
+                    self.text.delete_range(start_char, start_char + deleted_text.len());
+                    let mut group = UndoGroup::new();
+                    group.push(EditOperation::Delete {
+                        pos,
+                        text: deleted_text.clone(),
+                    });
+                    self.history.push(group);
+                    self.yank_register = deleted_text;
+                    // Don't clamp cursor - let caller decide (D stays in normal, C enters insert)
+                    self.modified = true;
+                }
+            }
+        }
+    }
+
+    /// Changes the current line (cc command) - deletes content but keeps the line.
+    pub fn change_line(&mut self) {
+        let line_idx = self.cursor.position.line as usize;
+        if let Some(line_content) = self.line(line_idx) {
+            if !line_content.is_empty() {
+                let start_pos = LineCol::new(line_idx as u32, 0);
+                if let Some(start_char) = self.text.line_col_to_char(start_pos) {
+                    self.text.delete_range(start_char, start_char + line_content.len());
+                    let mut group = UndoGroup::new();
+                    group.push(EditOperation::Delete {
+                        pos: start_pos,
+                        text: line_content.clone(),
+                    });
+                    self.history.push(group);
+                    self.yank_register = line_content;
+                    self.cursor.position.col = 0;
+                    self.modified = true;
+                }
+            }
+        }
+    }
+
     /// Deletes the current line (dd command).
     pub fn delete_line(&mut self) {
         let line_idx = self.cursor.position.line as usize;
@@ -348,13 +395,33 @@ impl Buffer {
         }
         let is_line = self.yank_register.ends_with('\n');
         if is_line {
+            // For linewise paste, insert on the next line
             let next_line = self.cursor.position.line + 1;
             let pos = LineCol::new(next_line, 0);
-            if self.text.insert(pos, &self.yank_register) {
+            
+            // Check if we need to add a newline first (when pasting after last line)
+            let need_newline = next_line as usize >= self.text.line_count();
+            let text_to_insert = if need_newline {
+                format!("\n{}", self.yank_register.trim_end_matches('\n'))
+            } else {
+                self.yank_register.clone()
+            };
+            
+            // Insert at end of current line if we need to add newline, otherwise at line start
+            let insert_pos = if need_newline {
+                // Insert at end of current line
+                let line_idx = self.cursor.position.line as usize;
+                let line_len = self.line_len(line_idx).unwrap_or(0);
+                LineCol::new(self.cursor.position.line, line_len as u32)
+            } else {
+                pos
+            };
+            
+            if self.text.insert(insert_pos, &text_to_insert) {
                 let mut group = UndoGroup::new();
                 group.push(EditOperation::Insert {
-                    pos,
-                    text: self.yank_register.clone(),
+                    pos: insert_pos,
+                    text: text_to_insert,
                 });
                 self.history.push(group);
                 self.cursor.position.line = next_line;

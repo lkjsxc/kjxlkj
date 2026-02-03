@@ -45,6 +45,7 @@ This document records the currently implemented, user-visible surface so that:
 | `gg` | Move to file start |
 | `G` | Move to file end |
 | `i` | Enter Insert mode |
+| `I` | Enter Insert mode (first non-blank of line) |
 | `a` | Enter Insert mode (after cursor) |
 | `A` | Enter Insert mode (end of line) |
 | `o` | Open line below and enter Insert mode |
@@ -55,6 +56,11 @@ This document records the currently implemented, user-visible surface so that:
 | `r{char}` | Replace character under cursor with {char} |
 | `x` | Delete character under cursor |
 | `X` | Delete character before cursor |
+| `D` | Delete from cursor to end of line |
+| `C` | Change from cursor to end of line |
+| `s` | Substitute character under cursor (delete and enter Insert) |
+| `S` | Substitute entire line (delete content and enter Insert) |
+| `Y` | Yank current line (like `yy`) |
 | `p` | Paste after cursor |
 | `P` | Paste before cursor |
 | `u` | Undo |
