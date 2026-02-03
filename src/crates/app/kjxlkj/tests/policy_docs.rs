@@ -13,6 +13,7 @@ fn docs_policy_invariants_hold() {
     assert_docs_no_parent_links(&docs);
     assert_docs_each_dir_has_one_readme(&docs);
     assert_docs_max_children_per_dir(&docs, 12);
+    assert_todo_links_all_docs_outside_todo(&root, &docs);
 }
 
 fn repo_root() -> PathBuf {
@@ -107,6 +108,35 @@ fn assert_docs_max_children_per_dir(docs: &Path, max: usize) {
             children <= max,
             "docs dir exceeds {max} direct children: {} ({children})",
             p.display()
+        );
+    });
+}
+
+fn assert_todo_links_all_docs_outside_todo(root: &Path, docs: &Path) {
+    let todo = docs.join("todo");
+    assert!(todo.is_dir(), "missing docs/todo/ directory");
+
+    let mut todo_markdown = String::new();
+    walk(&todo, &mut |p| {
+        if p.extension().and_then(|e| e.to_str()) != Some("md") {
+            return;
+        }
+        todo_markdown.push_str(&fs::read_to_string(p).unwrap());
+        todo_markdown.push('\n');
+    });
+
+    walk(docs, &mut |p| {
+        if p.extension().and_then(|e| e.to_str()) != Some("md") {
+            return;
+        }
+        if p.starts_with(&todo) {
+            return;
+        }
+        let rel = p.strip_prefix(root).unwrap();
+        let needle = format!("/{}", rel.display()).replace('\\', "/");
+        assert!(
+            todo_markdown.contains(&needle),
+            "doc not linked from docs/todo: {needle}"
         );
     });
 }
