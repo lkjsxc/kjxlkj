@@ -1,0 +1,39 @@
+# Ex Commands: Substitute and Global (Iteration 33)
+
+Back: [/docs/todo/current/wave-implementation/commands/README.md](/docs/todo/current/wave-implementation/commands/README.md)
+
+## Scope
+
+Implement substitution and global command families, including flags and special cases.
+
+## Defining documents (direct, normative)
+
+- Substitute index:
+  - [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
+
+## Coverage traversal
+
+- Substitute subtree:
+  - [/docs/todo/doc-coverage/spec/commands/substitute/README.md](/docs/todo/doc-coverage/spec/commands/substitute/README.md)
+
+## Checklist
+
+### A. Placeholder scaffolding
+
+- [ ] Define the substitution expression model and parsing rules.
+- [ ] Define interaction with regex engine and ranges.
+
+### B. Minimal conformance slice
+
+- [ ] Implement a minimal, fully tested `:substitute` subset that matches the spec.
+
+### C. Full conformance
+
+- [ ] Implement all substitution/global/vglobal behaviors, flags, and specials.
+
+### D. Conformance updates
+
+- [ ] Update:
+  - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+  - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
+

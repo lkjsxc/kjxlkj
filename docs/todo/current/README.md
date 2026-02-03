@@ -2,39 +2,52 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-## Structure
+## Purpose
 
-This TODO is recursively structured as:
+This TODO is the execution entrypoint for turning the documents into a complete, correct implementation.
 
-- A top-level checklist in this document
-- Deep-dive task breakdowns in subdirectories
+It is:
+
+- Recursive and hierarchical (parent checklists link to child checklists)
+- Wave-based (placeholders → progressively more detailed → full implementation)
+- Doc-driven (behavior is derived from documents; code follows docs)
+
+## Local rules (normative)
+
+- This iteration MUST be executed in wave order.
+- Work MUST be decomposed into leaf checklists that are:
+  - small enough to complete
+  - each gated by tests and conformance updates where applicable
+- Directory and file names under this TODO MUST NOT contain digits.
+- The second-to-last wave MUST be “Recreate the TODO list”.
+- The last wave MUST be “Continue to the next iteration”.
 
 ## TODO List
 
-### 1. Read and reconcile specifications
+### Wave: Placeholder scaffolding (fast, incomplete by design)
 
-- [00-reading/README.md](00-reading/README.md)
+- [wave-placeholder/README.md](wave-placeholder/README.md)
 
-### 2. Fix documentation topology and link correctness
+### Wave: Read and reconcile all documents (doc-complete)
 
-- [01-doc-topology/README.md](01-doc-topology/README.md)
+- [wave-reading/README.md](wave-reading/README.md)
 
-### 3. Specify and verify cursor, viewport, and input behavior
+### Wave: Convert documents into a complete plan (fill placeholders)
 
-- [02-cursor-viewport-input/README.md](02-cursor-viewport-input/README.md)
+- [wave-planning/README.md](wave-planning/README.md)
 
-### 4. Complete the integrated terminal specification
+### Wave: Implement the planned surface (placeholders → full behavior)
 
-- [03-terminal-spec/README.md](03-terminal-spec/README.md)
+- [wave-implementation/README.md](wave-implementation/README.md)
 
-### 5. Define tests (unit/integration/E2E) as normative specs
+### Wave: Verify conformance (tests, policy checks, perf baselines)
 
-- [04-testing-spec/README.md](04-testing-spec/README.md)
+- [wave-verification/README.md](wave-verification/README.md)
 
-### 6. Recreate the TODO list
+### Wave: Recreate the TODO list (second-to-last)
 
-- [98-recreate-todo/README.md](98-recreate-todo/README.md)
+- [wave-recursion/recreate-todo/README.md](wave-recursion/recreate-todo/README.md)
 
-### 7. Continue to the next iteration
+### Wave: Continue to the next iteration (last)
 
-- [99-next-iteration/README.md](99-next-iteration/README.md)
+- [wave-recursion/next-iteration/README.md](wave-recursion/next-iteration/README.md)

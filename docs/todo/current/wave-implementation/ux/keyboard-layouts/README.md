@@ -1,0 +1,18 @@
+# UX: Keyboard Layouts (Iteration 33)
+
+Back: [/docs/todo/current/wave-implementation/ux/README.md](/docs/todo/current/wave-implementation/ux/README.md)
+
+## Scope
+
+Implement keyboard-layout related behaviors and constraints (where specified).
+
+## Defining documents (direct, normative)
+
+- Keyboard layouts:
+  - [/docs/spec/ux/keyboard-layouts.md](/docs/spec/ux/keyboard-layouts.md)
+
+## Checklist
+
+- [ ] Define how key decoding handles non-US layouts (or record limitations).
+- [ ] Add tests covering layout-dependent key decoding behavior.
+
