@@ -1,10 +1,15 @@
 # Keybindings Reference
 
-Complete nvim-compatible keybinding documentation for kjxlkj.
+Target keybinding reference for kjxlkj.
 
 ## Overview
 
-kjxlkj implements full nvim keybinding compatibility including all expert-level shortcuts.
+This document describes the target keybinding surface.
+
+For the currently implemented subset, see:
+
+- [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Leader Key
 
@@ -94,4 +99,3 @@ Default leader: `Space`
 | `<leader>g` | Live grep |
 | `<leader>t` | Terminal |
 | `<leader>u` | Undo tree |
-

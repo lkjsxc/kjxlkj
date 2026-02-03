@@ -11,18 +11,18 @@ We follow Semantic Versioning (semver):
 
 ## Pre-Release Checklist
 
-1. **All tests pass (implementation repo)** - Run `make test`
+1. **All tests pass** - Run `cargo test`
 
-2. **No clippy warnings (implementation repo)** - Run `make clippy`
+2. **No clippy warnings** - Run `cargo clippy --all-targets --all-features -- -D warnings`
 
 3. **Documentation up to date**
    - README.md reflects current features
-   - CHANGELOG.md updated
-   - API docs generated
+   - docs/reference/CONFORMANCE.md updated (current surface)
+   - docs/reference/LIMITATIONS.md updated (known gaps)
 
 4. **Version bumped**
-   - Update `Cargo.toml` version (implementation repo)
-   - Update `CHANGELOG.md` with release date
+   - Update workspace `Cargo.toml` version
+   - Record release notes in the release artifact (tag/release body)
 
 ## Release Steps
 
@@ -32,9 +32,9 @@ We follow Semantic Versioning (semver):
 ### 2. Update Version
 
 
-### 3. Update CHANGELOG
+### 3. Update Release Notes
 
-Move "Unreleased" items under new version heading:
+Ensure the release notes match the actual shipped surface.
 
 
 ### 4. Commit and Tag
@@ -47,7 +47,7 @@ Move "Unreleased" items under new version heading:
 
 - Go to GitHub Releases
 - Select the tag
-- Add release notes from CHANGELOG
+- Add release notes derived from the doc set and the conformance matrix
 - GitHub Actions will build and attach binaries
 
 ### 7. Merge to Main

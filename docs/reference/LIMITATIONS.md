@@ -2,68 +2,36 @@
 
 Current limitations and planned improvements.
 
+This repository contains an early implementation slice. The implemented surface is recorded in:
+
+- [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+
 ## Not Yet Implemented
 
-### LSP Features
+### Editing surface
 
-- **Code Actions**: Partial support
-- **Rename Across Files**: Single file only
-- **Workspace Symbols**: Not implemented
-- **Call Hierarchy**: Planned
+- Most Vim/Neovim motions, text objects, and operators are not implemented.
+- Search (`/`, `?`) and match navigation (`n`, `N`) are not implemented.
+- Multi-buffer and multi-window management is not implemented (single buffer/window focus).
 
-### Git Integration
+### Built-in features
 
-- **Interactive Rebase**: Not supported
-- **Merge Conflict Resolution**: Basic only
-- **Stash Operations**: Limited
+- LSP is not implemented.
+- Git integration is not implemented.
+- Syntax highlighting and diagnostics UI are not implemented.
+- Integrated terminal panes are not implemented (only `:! {cmd}` execution exists).
 
-### Syntax Highlighting
+### Configuration
 
-- **Semantic Tokens**: Planned
-- **Embedded Languages**: Partial
-- **Custom Queries**: Not supported
-
-### Terminal
-
-- **Multiple Terminals**: Single terminal
-- **Terminal Splits**: Planned
-- **Command History**: Basic
+- TOML configuration, keybinding remapping, and themes are not implemented.
 
 ## Platform Specific
 
-### Windows
-
-- **PowerShell 7**: Required
-- **Windows Terminal**: Recommended
-- **ConPTY**: Required for terminal
-
-### macOS
-
-- **iTerm2**: Recommended
-- **Kitty**: Minor rendering issues
-
-### Linux
-
-- **Wayland**: Clipboard via wl-copy
-- **XWayland**: Works normally
+Platform-specific behavior has not been fully validated.
 
 ## Performance Limits
 
-### File Size
-
-- Tested up to 100MB
-- Performance degrades >50MB
-- Consider splitting large files
-
-### Line Length
-
-- Ultra-long lines may slow rendering
-- Soft wrap helps
-
-### Buffer Count
-
-- Tested with 100+ buffers
-- Memory increases linearly
+Performance characteristics (large files, long lines, many buffers) have not been benchmarked.
 
 ## Missing Vim Features
 

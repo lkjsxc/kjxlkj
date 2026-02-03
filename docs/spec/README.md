@@ -3,6 +3,10 @@
 Back: [/docs/README.md](/docs/README.md)
 kjxlkj is an async-first terminal editor with all features built-in natively.
 
+These documents describe the **target** behavior.
+
+The currently implemented surface is tracked in [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md). If the implementation diverges from the target spec, the divergence MUST be recorded there (and in [docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) when user-visible).
+
 ## Directory Structure
 
 | Directory | Content |
@@ -81,3 +85,4 @@ kjxlkj is an async-first terminal editor with all features built-in natively.
 
 - Policy: [docs/policy/README.md](/docs/policy/README.md)
 - Overview: [docs/overview/README.md](/docs/overview/README.md)
+- Current conformance: [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

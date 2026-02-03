@@ -8,6 +8,7 @@ Reference materials including comparisons, plugin mappings, and release processe
 | Document | Purpose |
 |----------|---------|
 | [COMPARISON.md](COMPARISON.md) | Editor comparison matrix |
+| [CONFORMANCE.md](CONFORMANCE.md) | Current implemented surface |
 | [LIMITATIONS.md](LIMITATIONS.md) | Known limitations |
 | [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Plugin to built-in mapping |
 | [RELEASE.md](RELEASE.md) | Release process |

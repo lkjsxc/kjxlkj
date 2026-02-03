@@ -1,5 +1,7 @@
 # Essential commands
-This is the minimum ex command surface expected in spec.
+This is the target minimum Ex command surface.
+
+For the currently implemented subset, see [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md).
 
 ## File
 
