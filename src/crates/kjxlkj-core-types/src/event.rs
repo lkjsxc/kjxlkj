@@ -187,6 +187,12 @@ pub enum EditorAction {
     JumpToMarkLine(char),
     /// Set the pending register for the next yank/delete/paste.
     SetPendingRegister(char),
+    /// Start or stop macro recording.
+    ToggleMacroRecording(char),
+    /// Play back a macro from a register.
+    PlayMacro(char),
+    /// Repeat last played macro.
+    RepeatLastMacro,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

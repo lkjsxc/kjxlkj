@@ -267,6 +267,18 @@ impl ModeHandler {
                     return EditorAction::Nop;
                 }
                 
+                // Macro recording (pending for next char)
+                "q" => {
+                    // Wait for the register name
+                    return EditorAction::Nop;
+                }
+                
+                // Macro playback (pending for next char)
+                "@" => {
+                    // Wait for the register name
+                    return EditorAction::Nop;
+                }
+                
                 // Repeat find char
                 ";" => EditorAction::RepeatFindChar,
                 "," => EditorAction::RepeatFindCharReverse,
@@ -278,7 +290,13 @@ impl ModeHandler {
                 "." => EditorAction::RepeatLastChange,
                 
                 _ => {
-                    // Handle f{char}, t{char}, F{char}, T{char}, m{mark}, `{mark}, '{mark}
+                    // Handle @@ for repeat last macro
+                    if pending == "@@" {
+                        self.state.clear_pending();
+                        return EditorAction::RepeatLastMacro;
+                    }
+                    
+                    // Handle f{char}, t{char}, F{char}, T{char}, m{mark}, `{mark}, '{mark}, "{reg}, q{reg}, @{reg}
                     if pending.len() == 2 {
                         let chars: Vec<char> = pending.chars().collect();
                         let cmd = chars[0];
@@ -294,12 +312,14 @@ impl ModeHandler {
                             '`' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkExact(target),
                             '\'' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkLine(target),
                             '"' if is_valid_register(target) => EditorAction::SetPendingRegister(target),
+                            'q' if target.is_ascii_alphabetic() => EditorAction::ToggleMacroRecording(target),
+                            '@' if target.is_ascii_alphabetic() => EditorAction::PlayMacro(target),
                             _ => EditorAction::Nop,
                         };
                     }
                     
-                    // Wait for more keys if needed (e.g., for gg, f{char}, m{mark}, "{reg})
-                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T" | "m" | "`" | "\'" | "\"") {
+                    // Wait for more keys if needed (e.g., for gg, f{char}, m{mark}, "{reg}, q{reg}, @{reg})
+                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T" | "m" | "`" | "\'" | "\"" | "q" | "@") {
                         self.state.clear_pending();
                     }
                     return EditorAction::Nop;
@@ -675,6 +695,29 @@ impl KeyInput {
             return self.modifiers.ctrl && c == ch;
         }
         false
+    }
+}
+
+impl std::fmt::Display for KeyInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.code {
+            KeyCode::Char(c) => {
+                if self.modifiers.ctrl {
+                    write!(f, "<C-{}>", c)
+                } else {
+                    write!(f, "{}", c)
+                }
+            }
+            KeyCode::Escape => write!(f, "<Esc>"),
+            KeyCode::Enter => write!(f, "<CR>"),
+            KeyCode::Backspace => write!(f, "<BS>"),
+            KeyCode::Left => write!(f, "<Left>"),
+            KeyCode::Right => write!(f, "<Right>"),
+            KeyCode::Up => write!(f, "<Up>"),
+            KeyCode::Down => write!(f, "<Down>"),
+            KeyCode::Tab => write!(f, "<Tab>"),
+            KeyCode::Other => write!(f, "<Other>"),
+        }
     }
 }
 

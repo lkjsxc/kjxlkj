@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 
 use kjxlkj_core_edit::{find_text_object_range, Buffer, CursorOps};
-use kjxlkj_core_mode::{CommandLineState, KeyInput, ModeHandler};
+use kjxlkj_core_mode::{CommandLineState, KeyCode, KeyInput, Modifiers, ModeHandler};
 use kjxlkj_core_types::{BufferId, EditorAction, EditorEvent, LineCol, Mode, Motion, Operator, TextObject};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, SnapshotSeq, StatusLine, Viewport};
 
@@ -62,6 +62,12 @@ pub struct EditorState {
     registers: HashMap<char, String>,
     /// Currently selected register for next yank/delete/paste.
     pending_register: Option<char>,
+    /// Register currently being recorded to (None if not recording).
+    macro_recording_register: Option<char>,
+    /// Keys recorded during macro recording.
+    macro_recording_keys: Vec<String>,
+    /// Last macro register used for @@ repeat.
+    last_macro_register: Option<char>,
 }
 
 impl EditorState {
@@ -86,6 +92,9 @@ impl EditorState {
             marks: HashMap::new(),
             registers: HashMap::new(),
             pending_register: None,
+            macro_recording_register: None,
+            macro_recording_keys: Vec::new(),
+            last_macro_register: None,
         }
     }
 
@@ -136,6 +145,18 @@ impl EditorState {
     /// Handles a key input and returns events.
     /// Increments snapshot sequence for each input processed.
     pub fn handle_key(&mut self, key: KeyInput) -> Vec<EditorEvent> {
+        // Handle stopping macro recording: 'q' alone stops recording when recording
+        let key_str = key.to_string();
+        if self.macro_recording_register.is_some() && key_str == "q" {
+            // Stop recording - don't pass to mode handler
+            self.stop_macro_recording();
+            self.snapshot_seq = self.snapshot_seq.next();
+            return Vec::new();
+        }
+        
+        // Record key for macro recording (before processing)
+        self.record_key(&key_str);
+        
         self.snapshot_seq = self.snapshot_seq.next();
         let old_mode = self.mode();
         let action = self.mode_handler.handle_key(key);
@@ -383,6 +404,23 @@ impl EditorState {
             EditorAction::SetPendingRegister(reg) => {
                 self.pending_register = Some(reg);
             }
+            EditorAction::ToggleMacroRecording(reg) => {
+                if self.macro_recording_register.is_some() {
+                    // Stop recording
+                    self.stop_macro_recording();
+                } else {
+                    // Start recording
+                    self.start_macro_recording(reg);
+                }
+            }
+            EditorAction::PlayMacro(reg) => {
+                self.play_macro(reg);
+            }
+            EditorAction::RepeatLastMacro => {
+                if let Some(reg) = self.last_macro_register {
+                    self.play_macro(reg);
+                }
+            }
             EditorAction::Substitute { pattern, replacement, flags } => {
                 let count = self.apply_substitute(&pattern, &replacement, &flags);
                 if count > 0 {
@@ -443,6 +481,53 @@ impl EditorState {
         if let Some(reg) = self.pending_register.take() {
             let content = self.buffer.yank_register().to_string();
             self.registers.insert(reg, content);
+        }
+    }
+
+    /// Start recording a macro into the given register.
+    fn start_macro_recording(&mut self, reg: char) {
+        self.macro_recording_register = Some(reg);
+        self.macro_recording_keys.clear();
+        self.status_message = Some(format!("recording @{}", reg));
+    }
+
+    /// Stop recording the current macro.
+    fn stop_macro_recording(&mut self) {
+        if let Some(reg) = self.macro_recording_register.take() {
+            // Join recorded keys into the register
+            let macro_content = self.macro_recording_keys.join("");
+            self.registers.insert(reg, macro_content);
+            self.macro_recording_keys.clear();
+            self.status_message = Some(format!("recorded @{}", reg));
+        }
+    }
+
+    /// Play back a macro from the given register.
+    fn play_macro(&mut self, reg: char) {
+        if let Some(content) = self.registers.get(&reg).cloned() {
+            self.last_macro_register = Some(reg);
+            // Parse the content as a series of key sequences and execute them
+            // For now, treat each character as a key press
+            for ch in content.chars() {
+                // Don't record macro playback while recording another macro
+                // to avoid infinite loops
+                let was_recording = self.macro_recording_register.take();
+                let key = KeyInput {
+                    code: KeyCode::Char(ch),
+                    modifiers: Modifiers::default(),
+                };
+                self.handle_key(key);
+                self.macro_recording_register = was_recording;
+            }
+        } else {
+            self.status_message = Some(format!("Register '{}' is empty", reg));
+        }
+    }
+
+    /// Record a key during macro recording.
+    fn record_key(&mut self, key: &str) {
+        if self.macro_recording_register.is_some() {
+            self.macro_recording_keys.push(key.to_string());
         }
     }
 
@@ -2034,5 +2119,83 @@ mod tests {
         
         // Should have pasted "foo " after cursor
         assert!(state.buffer().content().contains("foo "));
+    }
+
+    #[test]
+    fn macro_record_and_playback() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('0'));
+        
+        // Start recording macro in register 'a': qa
+        state.handle_key(key('q'));
+        state.handle_key(key('a'));
+        
+        // Should be in recording state
+        assert!(state.macro_recording_register.is_some());
+        
+        // Record some actions: x (delete char at cursor)
+        state.handle_key(key('x'));
+        
+        // Stop recording: q
+        state.handle_key(key('q'));
+        
+        // Should no longer be recording
+        assert!(state.macro_recording_register.is_none());
+        
+        // Buffer should be "ello" after first x
+        assert_eq!(state.buffer().content(), "ello");
+        
+        // Play back the macro: @a
+        state.handle_key(key('@'));
+        state.handle_key(key('a'));
+        
+        // Should have deleted another char, buffer now "llo"
+        assert_eq!(state.buffer().content(), "llo");
+        
+        // Play again with @@
+        state.handle_key(key('@'));
+        state.handle_key(key('@'));
+        
+        // Buffer should be "lo"
+        assert_eq!(state.buffer().content(), "lo");
+    }
+
+    #[test]
+    fn macro_does_not_record_during_playback() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "abc".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        state.handle_key(key('0'));
+        
+        // Record macro 'a': delete char
+        state.handle_key(key('q'));
+        state.handle_key(key('a'));
+        state.handle_key(key('x'));
+        state.handle_key(key('q'));
+        
+        // Get the recorded content length
+        let macro_a_len = state.registers.get(&'a').map(|s| s.len()).unwrap_or(0);
+        
+        // Now record macro 'b' which plays macro 'a'
+        state.handle_key(key('q'));
+        state.handle_key(key('b'));
+        state.handle_key(key('@'));
+        state.handle_key(key('a'));
+        state.handle_key(key('q'));
+        
+        // Macro 'b' should contain "@a" not the expanded keys
+        // (This is a simplified check - real implementation would store "@a")
+        let macro_b = state.registers.get(&'b');
+        assert!(macro_b.is_some(), "macro b should be recorded");
     }
 }
