@@ -4,6 +4,13 @@ use kjxlkj_core_types::{EditorAction, Mode, Motion, Operator, TextObject};
 
 use crate::{ModeState, PendingOperator};
 
+/// Check if a character is a valid register name.
+/// Valid registers: a-z, A-Z, 0-9, ", +, *, _, /, etc.
+fn is_valid_register(ch: char) -> bool {
+    ch.is_ascii_alphanumeric()
+        || matches!(ch, '"' | '+' | '*' | '_' | '/' | '-' | '.' | ':' | '%' | '#')
+}
+
 /// Command line input state.
 #[derive(Debug, Default, Clone)]
 pub struct CommandLineState {
@@ -254,6 +261,12 @@ impl ModeHandler {
                     return EditorAction::Nop;
                 }
                 
+                // Register selection (pending for next char)
+                "\"" => {
+                    // Wait for the register name
+                    return EditorAction::Nop;
+                }
+                
                 // Repeat find char
                 ";" => EditorAction::RepeatFindChar,
                 "," => EditorAction::RepeatFindCharReverse,
@@ -280,12 +293,13 @@ impl ModeHandler {
                             'm' if target.is_ascii_alphabetic() => EditorAction::SetMark(target),
                             '`' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkExact(target),
                             '\'' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkLine(target),
+                            '"' if is_valid_register(target) => EditorAction::SetPendingRegister(target),
                             _ => EditorAction::Nop,
                         };
                     }
                     
-                    // Wait for more keys if needed (e.g., for gg, f{char}, m{mark})
-                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T" | "m" | "`" | "\'") {
+                    // Wait for more keys if needed (e.g., for gg, f{char}, m{mark}, "{reg})
+                    if pending.len() >= 2 && !matches!(pending.as_str(), "g" | "f" | "F" | "t" | "T" | "m" | "`" | "\'" | "\"") {
                         self.state.clear_pending();
                     }
                     return EditorAction::Nop;

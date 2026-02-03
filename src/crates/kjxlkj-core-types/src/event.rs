@@ -185,6 +185,8 @@ pub enum EditorAction {
     JumpToMarkExact(char),
     /// Jump to mark line (first non-blank on that line).
     JumpToMarkLine(char),
+    /// Set the pending register for the next yank/delete/paste.
+    SetPendingRegister(char),
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

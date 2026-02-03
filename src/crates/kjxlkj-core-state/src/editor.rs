@@ -58,6 +58,10 @@ pub struct EditorState {
     insert_buffer: String,
     /// Local marks (a-z) - maps mark character to position.
     marks: HashMap<char, LineCol>,
+    /// Named registers (a-z, 0-9, ", +, *, etc.)
+    registers: HashMap<char, String>,
+    /// Currently selected register for next yank/delete/paste.
+    pending_register: Option<char>,
 }
 
 impl EditorState {
@@ -80,6 +84,8 @@ impl EditorState {
             last_change: None,
             insert_buffer: String::new(),
             marks: HashMap::new(),
+            registers: HashMap::new(),
+            pending_register: None,
         }
     }
 
@@ -198,10 +204,25 @@ impl EditorState {
             EditorAction::DeleteCharAt => {
                 self.last_change = Some(RepeatableChange::DeleteCharAt);
                 self.buffer.delete_char_at();
+                self.store_in_pending_register();
             }
-            EditorAction::DeleteLine => self.buffer.delete_line(),
-            EditorAction::YankLine => self.buffer.yank_line(),
-            EditorAction::PasteAfter => self.buffer.paste_after(),
+            EditorAction::DeleteLine => {
+                self.buffer.delete_line();
+                self.store_in_pending_register();
+            }
+            EditorAction::YankLine => {
+                self.buffer.yank_line();
+                self.store_in_pending_register();
+            }
+            EditorAction::PasteAfter => {
+                // Use named register if pending, otherwise use default
+                if let Some(reg) = self.pending_register.take() {
+                    if let Some(content) = self.registers.get(&reg).cloned() {
+                        self.buffer.set_yank_register(content);
+                    }
+                }
+                self.buffer.paste_after();
+            }
             EditorAction::OperatorMotion { operator, motion, count } => {
                 self.last_change = Some(RepeatableChange::OperatorMotion {
                     operator: operator.clone(),
@@ -359,6 +380,9 @@ impl EditorState {
                     self.status_message = Some(format!("Mark '{}' not set", mark));
                 }
             }
+            EditorAction::SetPendingRegister(reg) => {
+                self.pending_register = Some(reg);
+            }
             EditorAction::Substitute { pattern, replacement, flags } => {
                 let count = self.apply_substitute(&pattern, &replacement, &flags);
                 if count > 0 {
@@ -411,6 +435,15 @@ impl EditorState {
     fn update_viewport(&mut self) {
         let cursor_line = self.buffer.cursor().position.line as usize;
         self.viewport.follow_cursor(cursor_line, self.scroll_off);
+    }
+
+    /// Store yanked content in the pending register if set.
+    /// This should be called after any yank or delete operation.
+    fn store_in_pending_register(&mut self) {
+        if let Some(reg) = self.pending_register.take() {
+            let content = self.buffer.yank_register().to_string();
+            self.registers.insert(reg, content);
+        }
     }
 
     /// Apply substitute command on the current line.
@@ -513,6 +546,7 @@ impl EditorState {
                             }
                         }
                     }
+                    self.store_in_pending_register();
                     return;
                 }
             }
@@ -541,12 +575,17 @@ impl EditorState {
         match operator {
             Operator::Delete => {
                 self.buffer.delete_range(range_start, range_end);
+                self.store_in_pending_register();
             }
             Operator::Yank => {
                 self.buffer.yank_range(range_start, range_end);
+                self.store_in_pending_register();
+                // Yank doesn't move cursor - restore to start of range
+                self.buffer.set_cursor_position(range_start);
             }
             Operator::Change => {
                 self.buffer.delete_range(range_start, range_end);
+                self.store_in_pending_register();
             }
             Operator::Indent | Operator::Outdent => {
                 // For indent/outdent, need linewise behavior
@@ -575,12 +614,15 @@ impl EditorState {
         match operator {
             Operator::Delete => {
                 self.buffer.delete_range(range.start, range.end);
+                self.store_in_pending_register();
             }
             Operator::Yank => {
                 self.buffer.yank_range(range.start, range.end);
+                self.store_in_pending_register();
             }
             Operator::Change => {
                 self.buffer.delete_range(range.start, range.end);
+                self.store_in_pending_register();
                 // For change, set cursor to start of deleted range without clamping
                 // since we're entering insert mode where end-of-line is valid
                 self.buffer.set_cursor_position(range.start);
@@ -623,6 +665,7 @@ impl EditorState {
                     let end_inclusive = self.visual_end_inclusive(end);
                     self.buffer.delete_range(start, end_inclusive);
                 }
+                self.store_in_pending_register();
                 self.mode_handler.set_mode(Mode::Normal);
                 self.visual_anchor = None;
             }
@@ -641,6 +684,7 @@ impl EditorState {
                     let end_inclusive = self.visual_end_inclusive(end);
                     self.buffer.yank_range(start, end_inclusive);
                 }
+                self.store_in_pending_register();
                 // Move cursor to start of selection
                 self.buffer.set_cursor_position(start);
                 self.mode_handler.set_mode(Mode::Normal);
@@ -660,6 +704,7 @@ impl EditorState {
                     self.buffer.delete_range(start, end_inclusive);
                     self.buffer.set_cursor_position(start);
                 }
+                self.store_in_pending_register();
                 self.mode_handler.set_mode(Mode::Insert);
                 self.visual_anchor = None;
             }
@@ -1911,5 +1956,83 @@ mod tests {
         });
         
         assert_eq!(state.buffer().content(), "baz bar baz");
+    }
+
+    #[test]
+    fn named_register_yank_and_paste() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello world".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // First verify cursor is at start
+        assert_eq!(state.buffer().cursor().position.col, 0);
+        
+        // "ayw - yank word into register 'a'
+        state.handle_key(key('"'));
+        state.handle_key(key('a'));
+        state.handle_key(key('y'));
+        state.handle_key(key('w'));
+        
+        // Verify register 'a' contains "hello "
+        assert_eq!(state.registers.get(&'a'), Some(&"hello ".to_string()));
+        
+        // "ap - paste from register 'a' at end of line
+        state.handle_key(key('$'));
+        state.handle_key(key('"'));
+        state.handle_key(key('a'));
+        state.handle_key(key('p'));
+        
+        // Buffer should have "hello " pasted after cursor
+        assert!(state.buffer().content().contains("hello "), "buffer should contain 'hello '");
+    }
+
+    #[test]
+    fn named_register_delete_preserves_content() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "foo bar baz".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('g'));
+        state.handle_key(key('g'));
+        state.handle_key(key('0'));
+        
+        // "ayw - yank "foo " into register 'a'
+        state.handle_key(key('"'));
+        state.handle_key(key('a'));
+        state.handle_key(key('y'));
+        state.handle_key(key('w'));
+        
+        // Register 'a' should have "foo "
+        assert_eq!(state.registers.get(&'a'), Some(&"foo ".to_string()));
+        
+        // dw - delete "foo " (goes to unnamed register, not 'a')
+        state.handle_key(key('d'));
+        state.handle_key(key('w'));
+        
+        // Register 'a' should still have "foo "
+        assert_eq!(state.registers.get(&'a'), Some(&"foo ".to_string()));
+        
+        // Buffer should be "bar baz"
+        assert_eq!(state.buffer().content(), "bar baz");
+        
+        // "ap - paste from register 'a' (the preserved "foo ")
+        state.handle_key(key('"'));
+        state.handle_key(key('a'));
+        state.handle_key(key('p'));
+        
+        // Should have pasted "foo " after cursor
+        assert!(state.buffer().content().contains("foo "));
     }
 }
