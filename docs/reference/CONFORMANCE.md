@@ -188,6 +188,16 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `Ctrl-u` | Delete to start of line |
 | `Ctrl-r {reg}` | Insert contents of register |
 
+### Replace mode
+
+| Key | Action |
+|---|---|
+| `Esc` | Return to Normal mode |
+| (any char) | Replace character at cursor and advance |
+| `Backspace` | Move cursor left |
+
+At end of line, typed characters are inserted rather than replacing.
+
 ### Command-line (Ex) commands (subset)
 
 | Command | Behavior |
