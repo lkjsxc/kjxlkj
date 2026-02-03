@@ -208,6 +208,10 @@ impl ModeHandler {
                 "gg" => EditorAction::FileStart,
                 "G" => EditorAction::FileEnd,
                 
+                // Change list navigation
+                "g;" => EditorAction::ChangeListOlder,
+                "g," => EditorAction::ChangeListNewer,
+                
                 // Mode entries
                 "i" => {
                     self.state.set_mode(Mode::Insert);

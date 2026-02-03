@@ -199,6 +199,10 @@ pub enum EditorAction {
     JumpListOlder,
     /// Jump to newer position in jump list (Ctrl-i).
     JumpListNewer,
+    /// Jump to older position in change list (g;).
+    ChangeListOlder,
+    /// Jump to newer position in change list (g,).
+    ChangeListNewer,
     /// Return to normal mode.
     ReturnToNormalMode,
     /// Execute ex command.

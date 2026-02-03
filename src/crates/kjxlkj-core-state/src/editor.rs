@@ -72,6 +72,10 @@ pub struct EditorState {
     jump_list: Vec<LineCol>,
     /// Current position in jump list (index into jump_list).
     jump_list_index: usize,
+    /// Change list for g; / g, navigation.
+    change_list: Vec<LineCol>,
+    /// Current position in change list (index into change_list).
+    change_list_index: usize,
 }
 
 impl EditorState {
@@ -101,6 +105,8 @@ impl EditorState {
             last_macro_register: None,
             jump_list: Vec::new(),
             jump_list_index: 0,
+            change_list: Vec::new(),
+            change_list_index: 0,
         }
     }
 
@@ -235,11 +241,15 @@ impl EditorState {
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
             EditorAction::DeleteCharAt => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
                 self.last_change = Some(RepeatableChange::DeleteCharAt);
                 self.buffer.delete_char_at();
                 self.store_in_pending_register();
             }
             EditorAction::DeleteLine => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
                 self.buffer.delete_line();
                 self.store_in_pending_register();
             }
@@ -342,6 +352,9 @@ impl EditorState {
             EditorAction::ReturnToNormalMode => {
                 // Save any inserted text as the last repeatable change
                 if !self.insert_buffer.is_empty() {
+                    // Add current position to change list since we made an insert
+                    let pos = self.buffer.cursor().position;
+                    self.add_to_change_list(pos);
                     self.last_change = Some(RepeatableChange::InsertText(
                         std::mem::take(&mut self.insert_buffer),
                     ));
@@ -463,6 +476,12 @@ impl EditorState {
             }
             EditorAction::JumpListNewer => {
                 self.jump_list_newer();
+            }
+            EditorAction::ChangeListOlder => {
+                self.change_list_older();
+            }
+            EditorAction::ChangeListNewer => {
+                self.change_list_newer();
             }
             EditorAction::Nop => {}
         }
@@ -628,6 +647,67 @@ impl EditorState {
         self.jump_list_index += 1;
         let pos = self.jump_list[self.jump_list_index];
         self.buffer.cursor_mut().position = pos;
+    }
+
+    /// Add a position to the change list.
+    /// This should be called after any text-modifying operation.
+    fn add_to_change_list(&mut self, pos: LineCol) {
+        // Don't add duplicate consecutive entries
+        if let Some(last) = self.change_list.last() {
+            if *last == pos {
+                return;
+            }
+        }
+        
+        // Add the new position
+        self.change_list.push(pos);
+        self.change_list_index = self.change_list.len();
+        
+        // Limit change list size (Vim uses 100)
+        const MAX_CHANGE_LIST_SIZE: usize = 100;
+        if self.change_list.len() > MAX_CHANGE_LIST_SIZE {
+            self.change_list.remove(0);
+            self.change_list_index = self.change_list.len();
+        }
+    }
+
+    /// Jump to an older position in the change list (g;).
+    fn change_list_older(&mut self) {
+        if self.change_list.is_empty() || self.change_list_index == 0 {
+            self.status_message = Some("No older change".to_string());
+            return;
+        }
+        
+        self.change_list_index -= 1;
+        let pos = self.change_list[self.change_list_index];
+        // Clamp position to valid range
+        let line_count = self.buffer.line_count() as u32;
+        let line = pos.line.min(line_count.saturating_sub(1));
+        let line_len = self.buffer.line_len(line as usize).unwrap_or(0) as u32;
+        let col = pos.col.min(line_len.saturating_sub(1));
+        self.buffer.cursor_mut().position = LineCol { line, col };
+    }
+
+    /// Jump to a newer position in the change list (g,).
+    fn change_list_newer(&mut self) {
+        if self.change_list_index >= self.change_list.len() {
+            self.status_message = Some("No newer change".to_string());
+            return;
+        }
+        
+        self.change_list_index += 1;
+        if self.change_list_index >= self.change_list.len() {
+            self.status_message = Some("No newer change".to_string());
+            self.change_list_index = self.change_list.len();
+            return;
+        }
+        let pos = self.change_list[self.change_list_index];
+        // Clamp position to valid range
+        let line_count = self.buffer.line_count() as u32;
+        let line = pos.line.min(line_count.saturating_sub(1));
+        let line_len = self.buffer.line_len(line as usize).unwrap_or(0) as u32;
+        let col = pos.col.min(line_len.saturating_sub(1));
+        self.buffer.cursor_mut().position = LineCol { line, col };
     }
 
     /// Apply substitute command on the current line.
@@ -811,6 +891,7 @@ impl EditorState {
         // Apply operator over range
         match operator {
             Operator::Delete => {
+                self.add_to_change_list(range_start);
                 self.buffer.delete_range(range_start, range_end);
                 self.store_in_pending_register();
             }
@@ -821,6 +902,7 @@ impl EditorState {
                 self.buffer.set_cursor_position(range_start);
             }
             Operator::Change => {
+                self.add_to_change_list(range_start);
                 self.buffer.delete_range(range_start, range_end);
                 self.store_in_pending_register();
             }
@@ -850,6 +932,7 @@ impl EditorState {
         // Apply operator over range
         match operator {
             Operator::Delete => {
+                self.add_to_change_list(range.start);
                 self.buffer.delete_range(range.start, range.end);
                 self.store_in_pending_register();
             }
@@ -858,6 +941,7 @@ impl EditorState {
                 self.store_in_pending_register();
             }
             Operator::Change => {
+                self.add_to_change_list(range.start);
                 self.buffer.delete_range(range.start, range.end);
                 self.store_in_pending_register();
                 // For change, set cursor to start of deleted range without clamping
@@ -2559,5 +2643,84 @@ mod tests {
         assert_eq!(lines.len(), 2);
         assert_eq!(lines[0], "keep foo");
         assert_eq!(lines[1], "keep foo also");
+    }
+
+    #[test]
+    fn change_list_tracks_deletions() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "line 0\nline 1\nline 2".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to beginning
+        state.apply_action(EditorAction::FileStart);
+        
+        // Delete character at line 0 - adds to change list
+        state.handle_key(key('x'));
+        
+        // Move to line 2
+        state.handle_key(key('G'));
+        
+        // Delete character at line 2
+        state.handle_key(key('x'));
+        
+        // Change list now has 2 entries: [line0, line2]
+        // change_list_index = 2 (past end)
+        
+        // First g; goes to most recent change (line 2) - we're already there
+        state.apply_action(EditorAction::ChangeListOlder);
+        assert_eq!(state.buffer().cursor().position.line, 2);
+        
+        // Second g; goes to previous change (line 0)
+        state.apply_action(EditorAction::ChangeListOlder);
+        assert_eq!(state.buffer().cursor().position.line, 0);
+    }
+
+    #[test]
+    fn change_list_navigation_g_semicolon_g_comma() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "abc\ndef\nghi".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Start at beginning
+        state.apply_action(EditorAction::FileStart);
+        
+        // Make a deletion at line 0
+        state.handle_key(key('x'));
+        
+        // Move to line 1 and make a deletion
+        state.handle_key(key('j'));
+        state.handle_key(key('x'));
+        
+        // Move to line 2 and make a deletion
+        state.handle_key(key('j'));
+        state.handle_key(key('x'));
+        
+        // Change list has [line0, line1, line2], index = 3
+        
+        // Navigate backwards through change list
+        // First g; takes us to line 2 (most recent)
+        state.apply_action(EditorAction::ChangeListOlder);
+        assert_eq!(state.buffer().cursor().position.line, 2);
+        
+        // Second g; takes us to line 1
+        state.apply_action(EditorAction::ChangeListOlder);
+        assert_eq!(state.buffer().cursor().position.line, 1);
+        
+        // Third g; takes us to line 0
+        state.apply_action(EditorAction::ChangeListOlder);
+        assert_eq!(state.buffer().cursor().position.line, 0);
+        
+        // Navigate forward with g,
+        state.apply_action(EditorAction::ChangeListNewer);
+        assert_eq!(state.buffer().cursor().position.line, 1);
+        
+        state.apply_action(EditorAction::ChangeListNewer);
+        assert_eq!(state.buffer().cursor().position.line, 2);
     }
 }
