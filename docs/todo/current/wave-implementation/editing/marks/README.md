@@ -20,12 +20,12 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define mark types and storage.
+- [x] Define mark types and storage.
 - [ ] Define jump list semantics and persistence rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement basic marks and jumps with deterministic tests.
+- [x] Implement basic marks and jumps with deterministic tests.
 
 ### C. Full conformance
 

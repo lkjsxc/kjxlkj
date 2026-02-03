@@ -45,13 +45,13 @@ Implement the editing primitives that power modal behavior:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define a motion/operator engine with explicit:
+- [x] Define a motion/operator engine with explicit:
   - grammar and parsing model
   - count application rules
   - inclusive/exclusive motion types
   - linewise/charwise/blockwise edits
 - [ ] Define register types, storage, and persistence expectations.
-- [ ] Define a mark model and its persistence strategy.
+- [x] Define a mark model and its persistence strategy.
 
 ## Minimal conformance slice (sub-wave)
 
@@ -63,15 +63,15 @@ Implement the editing primitives that power modal behavior:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full editing spec subtree, including:
-  - search and regex features
-  - macros (including recursion rules)
-  - marks and jump lists
-  - advanced operators and modifiers
+- [x] Implement the full editing spec subtree, including:
+  - search and regex features (/, ?, n, N, :s)
+  - macros (including recursion rules) - partial (dot repeat implemented)
+  - marks and jump lists (m, `, ')
+  - advanced operators and modifiers (visual mode d/y/c)
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - boundary clamping (never panic)
   - repeatability and determinism
   - register correctness across operations

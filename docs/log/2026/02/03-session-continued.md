@@ -4,7 +4,7 @@ Back: [/docs/log/2026/02/README.md](/docs/log/2026/02/README.md)
 
 ## Summary
 
-Continued implementation of core editing features: search, visual mode operators, and find char motions.
+Continued implementation of core editing features: search, visual mode operators, find char motions, dot repeat, marks, and substitute command.
 
 ## Commits This Session
 
@@ -33,9 +33,33 @@ Continued implementation of core editing features: search, visual mode operators
 - Support f/t/F/T as operator motions (df{char}, ct{char}, etc.)
 - Add 4 tests for find char functionality
 
+### feat: implement dot repeat (.) command
+- Add RepeatableChange enum with variants for OperatorMotion, OperatorTextObject, DeleteCharAt, InsertText
+- Track last_change in EditorState for repeat functionality
+- Track insert_buffer to capture text entered in insert mode
+- Handle RepeatLastChange action to replay stored changes
+- Fix EnterInsertModeEndOfLine to correctly position cursor past last character
+- Add 3 tests for dot repeat
+
+### feat: implement marks (m, `, ')
+- Add marks storage (HashMap<char, LineCol>) to EditorState
+- Add SetMark, JumpToMarkExact, JumpToMarkLine actions
+- Add ToMarkExact, ToMarkLine motion variants
+- Handle m{mark} to set mark, `{mark} to jump to exact position, '{mark} to jump to line
+- Support both lowercase and uppercase marks (a-z, A-Z)
+- Add 2 tests for mark set and jump functionality
+
+### feat: implement substitute command (:s/pattern/replacement/flags)
+- Add Substitute action with pattern, replacement, and flags
+- Parse substitute command in CommandParser (supports / # | delimiters)
+- Add apply_substitute method to EditorState
+- Add replace_line method to Buffer for in-place line modification
+- Support 'g' flag for global replacement on line
+- Add 5 tests for substitute parsing and execution
+
 ## Current Test Count
 
-Total: 98 tests passing
+Total: 108 tests passing
 
 | Crate | Count |
 |-------|-------|
@@ -45,7 +69,7 @@ Total: 98 tests passing
 | kjxlkj-core-undo | 3 |
 | kjxlkj-core-edit | 18 |
 | kjxlkj-core-mode | 6 |
-| kjxlkj-core-state | 39 |
+| kjxlkj-core-state | 49 |
 | kjxlkj-core-ui | 5 |
 | kjxlkj-input | 2 |
 | kjxlkj-render | 1 |
@@ -57,6 +81,7 @@ Total: 98 tests passing
 
 | File | Lines |
 |------|-------|
+| kjxlkj-core-state/src/editor.rs | ~1920 |
 | kjxlkj-core-state/src/editor.rs | ~1550 |
 | kjxlkj-core-mode/src/handler.rs | ~700 |
 | kjxlkj-core-edit/src/cursor_ops.rs | ~510 |

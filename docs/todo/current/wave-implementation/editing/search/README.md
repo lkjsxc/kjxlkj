@@ -20,16 +20,20 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### A. Placeholder scaffolding
 
-- [ ] Define search state and its interaction with the command line and UI.
+- [x] Define search state and its interaction with the command line and UI.
 - [ ] Define highlighting and match navigation invariants.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement basic forward search and match navigation with deterministic tests.
+- [x] Implement basic forward search and match navigation with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all search behaviors in the subtree, including search-replace workflows where specified.
+- [x] Implement all search behaviors in the subtree, including search-replace workflows where specified.
+  - Forward search (/) and backward search (?) implemented
+  - n/N repeat search in same/opposite direction
+  - Search wrap-around with status message
+  - :s substitute command implemented
 
 ### D. Conformance updates
 
