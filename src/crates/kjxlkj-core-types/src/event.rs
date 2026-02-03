@@ -173,6 +173,10 @@ pub enum EditorAction {
     LowercaseMotion { motion: Motion, count: Option<u32> },
     /// Lowercase current line (guu).
     LowercaseLine,
+    /// Increment number under cursor (Ctrl-A).
+    IncrementNumber { amount: i32 },
+    /// Decrement number under cursor (Ctrl-X).
+    DecrementNumber { amount: i32 },
     /// Paste after cursor (p command).
     PasteAfter,
     /// Operator applied to a motion (e.g., dw, cw, yw).

@@ -372,6 +372,12 @@ impl ModeHandler {
         } else if key.is_ctrl('v') {
             self.state.set_mode(Mode::VisualBlock);
             EditorAction::EnterVisualBlockMode
+        } else if key.is_ctrl('a') {
+            let count = self.state.take_count().unwrap_or(1) as i32;
+            EditorAction::IncrementNumber { amount: count }
+        } else if key.is_ctrl('x') {
+            let count = self.state.take_count().unwrap_or(1) as i32;
+            EditorAction::DecrementNumber { amount: count }
         } else if key.is_arrow_left() {
             EditorAction::CursorLeft
         } else if key.is_arrow_right() {

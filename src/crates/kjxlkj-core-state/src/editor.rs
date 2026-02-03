@@ -325,6 +325,16 @@ impl EditorState {
                 self.add_to_change_list(pos);
                 self.lowercase_motion(motion, count);
             }
+            EditorAction::IncrementNumber { amount } => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.increment_number(amount);
+            }
+            EditorAction::DecrementNumber { amount } => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.increment_number(-amount);
+            }
             EditorAction::PasteAfter => {
                 // Use named register if pending, otherwise use default
                 if let Some(reg) = self.pending_register.take() {
@@ -1273,6 +1283,99 @@ impl EditorState {
                         let new_line = format!("{}{}{}", before, transformed, after);
                         self.buffer.replace_line(line_idx as usize, &new_line);
                     }
+                }
+            }
+        }
+    }
+
+    /// Increment or decrement a number under the cursor.
+    /// Positive `amount` increments, negative decrements.
+    fn increment_number(&mut self, amount: i32) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        let col_idx = cursor.col as usize;
+        
+        if let Some(line) = self.buffer.line(line_idx) {
+            let line = line.trim_end_matches('\n');
+            if line.is_empty() {
+                return;
+            }
+            
+            // Find the number at or after the cursor
+            // A number is a sequence of digits, optionally preceded by '-'
+            let chars: Vec<char> = line.chars().collect();
+            let mut num_start = None;
+            let mut num_end = None;
+            let mut is_negative = false;
+            
+            // Search forward from cursor for a number
+            let mut search_start = col_idx;
+            
+            // First, check if we're on a digit or minus sign
+            if search_start < chars.len() {
+                if chars[search_start].is_ascii_digit() {
+                    // Check for negative sign before
+                    if search_start > 0 && chars[search_start - 1] == '-' {
+                        is_negative = true;
+                        num_start = Some(search_start - 1);
+                    } else {
+                        num_start = Some(search_start);
+                    }
+                } else if chars[search_start] == '-' && search_start + 1 < chars.len() && chars[search_start + 1].is_ascii_digit() {
+                    is_negative = true;
+                    num_start = Some(search_start);
+                }
+            }
+            
+            // If not on a number, search forward
+            if num_start.is_none() {
+                for i in search_start..chars.len() {
+                    if chars[i].is_ascii_digit() {
+                        // Check for negative sign before
+                        if i > 0 && chars[i - 1] == '-' {
+                            is_negative = true;
+                            num_start = Some(i - 1);
+                        } else {
+                            num_start = Some(i);
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            if let Some(start) = num_start {
+                // Find the end of the number
+                let digit_start = if is_negative { start + 1 } else { start };
+                for i in digit_start..chars.len() {
+                    if !chars[i].is_ascii_digit() {
+                        num_end = Some(i);
+                        break;
+                    }
+                }
+                if num_end.is_none() {
+                    num_end = Some(chars.len());
+                }
+                
+                let end = num_end.unwrap();
+                
+                // Extract the number string
+                let num_str: String = chars[start..end].iter().collect();
+                
+                // Parse and modify
+                if let Ok(num) = num_str.parse::<i64>() {
+                    let new_num = num.saturating_add(amount as i64);
+                    let new_str = new_num.to_string();
+                    
+                    // Build the new line
+                    let before: String = chars[..start].iter().collect();
+                    let after: String = chars[end..].iter().collect();
+                    let new_line = format!("{}{}{}\n", before, new_str, after);
+                    
+                    self.buffer.replace_line(line_idx, &new_line);
+                    
+                    // Position cursor at the end of the new number
+                    let new_num_end = start + new_str.len();
+                    self.buffer.cursor_mut().position.col = new_num_end.saturating_sub(1) as u32;
                 }
             }
         }
@@ -3619,5 +3722,62 @@ mod tests {
         
         let content = state.buffer().content();
         assert_eq!(content.trim(), "hello world");
+    }
+
+    #[test]
+    fn increment_number() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "count: 10".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Increment the number
+        state.apply_action(EditorAction::IncrementNumber { amount: 1 });
+        
+        let content = state.buffer().content();
+        assert!(content.contains("11"));
+    }
+
+    #[test]
+    fn decrement_number() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "count: 10".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Decrement the number
+        state.apply_action(EditorAction::DecrementNumber { amount: 1 });
+        
+        let content = state.buffer().content();
+        assert!(content.contains("9"));
+    }
+
+    #[test]
+    fn increment_negative_number() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "-5 is negative".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.apply_action(EditorAction::FileStart);
+        
+        // Increment the negative number
+        state.apply_action(EditorAction::IncrementNumber { amount: 1 });
+        
+        let content = state.buffer().content();
+        assert!(content.contains("-4"));
     }
 }
