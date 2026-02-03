@@ -145,8 +145,10 @@ pub enum EditorAction {
     RepeatFindCharReverse,
     /// Insert character at cursor.
     InsertChar(char),
-    /// Replace character at cursor (Replace mode).
+    /// Replace character at cursor (Replace mode - advances cursor).
     ReplaceChar(char),
+    /// Replace single character at cursor (r command - no cursor advance).
+    ReplaceSingleChar(char),
     /// Insert newline at cursor.
     InsertNewline,
     /// Delete character before cursor (backspace).

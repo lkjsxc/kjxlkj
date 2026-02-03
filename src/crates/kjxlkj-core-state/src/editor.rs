@@ -264,6 +264,11 @@ impl EditorState {
             EditorAction::ReplaceChar(ch) => {
                 self.buffer.replace_char(ch);
             }
+            EditorAction::ReplaceSingleChar(ch) => {
+                let pos = self.buffer.cursor().position;
+                self.add_to_change_list(pos);
+                self.buffer.replace_single_char(ch);
+            }
             EditorAction::InsertNewline => self.buffer.insert_newline(),
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
             EditorAction::DeleteWordBefore => self.delete_word_before(),
@@ -4138,4 +4143,28 @@ mod tests {
         // Should be "HELLO" not "HELLOhello"
         assert_eq!(content, "HELLO", "content: {}", content);
     }
+
+    #[test]
+    fn single_char_replace_r() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start
+        state.handle_key(key('0'));
+        
+        // Replace 'h' with 'H' using r command
+        state.handle_key(key('r'));
+        state.handle_key(key('H'));
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "Hello", "content: {}", content);
+        
+        // Verify cursor stayed on the same position (col 0)
+        assert_eq!(state.buffer().cursor().position.col, 0, "cursor should stay");
+    }
 }
+

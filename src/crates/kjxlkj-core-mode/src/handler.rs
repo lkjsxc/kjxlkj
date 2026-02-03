@@ -303,6 +303,12 @@ impl ModeHandler {
                     return EditorAction::Nop;
                 }
                 
+                // Single character replace (pending for next char)
+                "r" => {
+                    // Wait for the replacement character
+                    return EditorAction::Nop;
+                }
+                
                 // Register selection (pending for next char)
                 "\"" => {
                     // Wait for the register name
@@ -340,7 +346,7 @@ impl ModeHandler {
                         return EditorAction::RepeatLastMacro;
                     }
                     
-                    // Handle f{char}, t{char}, F{char}, T{char}, m{mark}, `{mark}, '{mark}, "{reg}, q{reg}, @{reg}
+                    // Handle f{char}, t{char}, F{char}, T{char}, m{mark}, `{mark}, '{mark}, "{reg}, q{reg}, @{reg}, r{char}
                     if pending.len() == 2 {
                         let chars: Vec<char> = pending.chars().collect();
                         let cmd = chars[0];
@@ -352,6 +358,7 @@ impl ModeHandler {
                             'F' => EditorAction::FindCharBackward(target),
                             't' => EditorAction::TillCharForward(target),
                             'T' => EditorAction::TillCharBackward(target),
+                            'r' => EditorAction::ReplaceSingleChar(target),
                             'm' if target.is_ascii_alphabetic() => EditorAction::SetMark(target),
                             '`' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkExact(target),
                             '\'' if target.is_ascii_alphabetic() => EditorAction::JumpToMarkLine(target),
