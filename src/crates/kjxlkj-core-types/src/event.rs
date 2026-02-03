@@ -41,6 +41,8 @@ pub enum Motion {
     ParagraphForward,
     /// Paragraph backward ({).
     ParagraphBackward,
+    /// Match bracket (%).
+    MatchBracket,
 }
 
 /// Operator types.
@@ -127,6 +129,8 @@ pub enum EditorAction {
     ParagraphForward,
     /// Move to previous paragraph ({).
     ParagraphBackward,
+    /// Match bracket (%).
+    MatchBracket,
     /// Find char forward (f).
     FindCharForward(char),
     /// Find char backward (F).

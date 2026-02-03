@@ -214,6 +214,9 @@ impl ModeHandler {
                 "}" => EditorAction::ParagraphForward,
                 "{" => EditorAction::ParagraphBackward,
                 
+                // Match bracket
+                "%" => EditorAction::MatchBracket,
+                
                 // Change list navigation
                 "g;" => EditorAction::ChangeListOlder,
                 "g," => EditorAction::ChangeListNewer,
@@ -444,6 +447,7 @@ impl ModeHandler {
             "(" => Some(Motion::SentenceBackward),
             "}" => Some(Motion::ParagraphForward),
             "{" => Some(Motion::ParagraphBackward),
+            "%" => Some(Motion::MatchBracket),
             "g" => {
                 // Wait for second character
                 self.state.set_pending_operator(pending_op);

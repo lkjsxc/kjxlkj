@@ -220,6 +220,9 @@ impl EditorState {
             EditorAction::ParagraphBackward => {
                 self.move_paragraph_backward();
             }
+            EditorAction::MatchBracket => {
+                self.move_match_bracket();
+            }
             EditorAction::FindCharForward(ch) => {
                 if self.buffer.find_char_forward(ch) {
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -902,6 +905,99 @@ impl EditorState {
         self.buffer.cursor_mut().position = LineCol { line: line as u32, col: 0 };
     }
 
+    /// Move cursor to matching bracket.
+    /// Supports (), [], {}.
+    fn move_match_bracket(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_idx = cursor.line as usize;
+        
+        if let Some(line_content) = self.buffer.line_content(line_idx) {
+            let line_chars: Vec<char> = line_content.chars().collect();
+            let col = cursor.col as usize;
+            
+            // Find a bracket at or after cursor on current line
+            let mut search_col = col;
+            let open_brackets = ['(', '[', '{'];
+            let close_brackets = [')', ']', '}'];
+            
+            // Look for bracket at current position or scan forward
+            while search_col < line_chars.len() {
+                let ch = line_chars[search_col];
+                
+                if let Some(bracket_idx) = open_brackets.iter().position(|&b| b == ch) {
+                    // Opening bracket - search forward for match
+                    let close = close_brackets[bracket_idx];
+                    if let Some(pos) = self.find_matching_bracket_forward(ch, close, cursor.line, search_col as u32) {
+                        self.buffer.cursor_mut().position = pos;
+                        return;
+                    }
+                    break;
+                } else if let Some(bracket_idx) = close_brackets.iter().position(|&b| b == ch) {
+                    // Closing bracket - search backward for match
+                    let open = open_brackets[bracket_idx];
+                    if let Some(pos) = self.find_matching_bracket_backward(open, ch, cursor.line, search_col as u32) {
+                        self.buffer.cursor_mut().position = pos;
+                        return;
+                    }
+                    break;
+                }
+                
+                search_col += 1;
+            }
+        }
+    }
+
+    /// Find matching closing bracket forward.
+    fn find_matching_bracket_forward(&self, open: char, close: char, start_line: u32, start_col: u32) -> Option<LineCol> {
+        let mut depth = 1;
+        let line_count = self.buffer.line_count();
+        
+        for line_idx in start_line as usize..line_count {
+            if let Some(line_content) = self.buffer.line_content(line_idx) {
+                let start = if line_idx == start_line as usize { (start_col + 1) as usize } else { 0 };
+                
+                for (col, ch) in line_content.chars().enumerate().skip(start) {
+                    if ch == open {
+                        depth += 1;
+                    } else if ch == close {
+                        depth -= 1;
+                        if depth == 0 {
+                            return Some(LineCol { line: line_idx as u32, col: col as u32 });
+                        }
+                    }
+                }
+            }
+        }
+        
+        None
+    }
+
+    /// Find matching opening bracket backward.
+    fn find_matching_bracket_backward(&self, open: char, close: char, start_line: u32, start_col: u32) -> Option<LineCol> {
+        let mut depth = 1;
+        
+        for line_idx in (0..=start_line as usize).rev() {
+            if let Some(line_content) = self.buffer.line_content(line_idx) {
+                let chars: Vec<char> = line_content.chars().collect();
+                let end = if line_idx == start_line as usize { start_col as usize } else { chars.len() };
+                
+                for col in (0..end).rev() {
+                    let ch = chars[col];
+                    if ch == close {
+                        depth += 1;
+                    } else if ch == open {
+                        depth -= 1;
+                        if depth == 0 {
+                            return Some(LineCol { line: line_idx as u32, col: col as u32 });
+                        }
+                    }
+                }
+            }
+        }
+        
+        None
+    }
+
     /// Apply substitute command on the current line.
     fn apply_substitute(&mut self, pattern: &str, replacement: &str, flags: &str) -> usize {
         if pattern.is_empty() {
@@ -1014,6 +1110,7 @@ impl EditorState {
                 Motion::SentenceBackward => self.move_sentence_backward(),
                 Motion::ParagraphForward => self.move_paragraph_forward(),
                 Motion::ParagraphBackward => self.move_paragraph_backward(),
+                Motion::MatchBracket => self.move_match_bracket(),
                 Motion::FindCharForward(ch) => {
                     self.buffer.find_char_forward(ch);
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -2996,5 +3093,58 @@ mod tests {
         let col = state.buffer().cursor().position.col;
         // Verify we moved backwards from end
         assert!(col < end_col, "Should have moved backwards from col {} to {}", end_col, col);
+    }
+
+    #[test]
+    fn match_bracket_forward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "(hello world)".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start at opening paren
+        state.apply_action(EditorAction::FileStart);
+        assert_eq!(state.buffer().cursor().position.col, 0);
+        
+        // Match bracket should go to closing paren
+        state.apply_action(EditorAction::MatchBracket);
+        assert_eq!(state.buffer().cursor().position.col, 12); // Position of ')'
+    }
+
+    #[test]
+    fn match_bracket_backward() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "(hello world)".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to end at closing paren
+        state.apply_action(EditorAction::LineEnd);
+        assert_eq!(state.buffer().cursor().position.col, 12);
+        
+        // Match bracket should go to opening paren
+        state.apply_action(EditorAction::MatchBracket);
+        assert_eq!(state.buffer().cursor().position.col, 0); // Position of '('
+    }
+
+    #[test]
+    fn match_bracket_nested() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "((inner))".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to start at first opening paren
+        state.apply_action(EditorAction::FileStart);
+        
+        // Match bracket should go to last closing paren (matching pair)
+        state.apply_action(EditorAction::MatchBracket);
+        assert_eq!(state.buffer().cursor().position.col, 8); // Position of last ')'
     }
 }
