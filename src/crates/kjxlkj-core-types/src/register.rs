@@ -3,9 +3,10 @@
 use serde::{Deserialize, Serialize};
 
 /// Register name.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum RegisterName {
     /// Unnamed register (default).
+    #[default]
     Unnamed,
     /// Named register (a-z, A-Z).
     Named(char),
@@ -29,12 +30,6 @@ pub enum RegisterName {
     AltFileName,
     /// Expression register (=).
     Expression,
-}
-
-impl Default for RegisterName {
-    fn default() -> Self {
-        Self::Unnamed
-    }
 }
 
 impl RegisterName {

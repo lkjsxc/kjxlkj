@@ -5,21 +5,12 @@ use serde::{Deserialize, Serialize};
 use crate::Position;
 
 /// Cursor state within a window.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct Cursor {
     /// Current cursor position (line, column).
     pub position: Position,
     /// Desired column for vertical movement (sticky column).
     pub desired_col: u32,
-}
-
-impl Default for Cursor {
-    fn default() -> Self {
-        Self {
-            position: Position::default(),
-            desired_col: 0,
-        }
-    }
 }
 
 impl Cursor {

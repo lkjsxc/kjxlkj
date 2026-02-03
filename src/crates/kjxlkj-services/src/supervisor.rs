@@ -31,6 +31,18 @@ impl Supervisor {
         // For now, this is a placeholder
     }
 
+    /// Process incoming messages.
+    pub async fn process_messages(&mut self) {
+        while let Some(msg) = self.core_rx.recv().await {
+            match msg {
+                CoreMessage::Shutdown => break,
+                CoreMessage::RunCommand { cmd: _ } => {
+                    // TODO: Handle external command execution
+                }
+            }
+        }
+    }
+
     /// Shutdown all services.
     pub async fn shutdown(&mut self) {
         let _ = self.core_tx.send(CoreMessage::Shutdown).await;
