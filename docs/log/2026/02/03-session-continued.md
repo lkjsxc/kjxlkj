@@ -107,9 +107,38 @@ Continued implementation of core editing features: search, visual mode operators
 - Delete from bottom to top to preserve line numbers
 - Add 2 tests for global and vglobal commands
 
+### feat: implement changelist navigation (g;, g,)
+- Add change_list and change_list_index fields to EditorState
+- Add ChangeListOlder and ChangeListNewer actions
+- Add add_to_change_list() for recording change positions
+- Add change_list_older() and change_list_newer() navigation
+- Track changes in: ReturnToNormalMode (insert), DeleteCharAt, DeleteLine, operator motions, operator text objects
+- Add g; and g, key bindings in normal mode
+- Limit change list size to 100 entries (Vim-compatible)
+- Add 2 tests for changelist functionality
+
+### feat: implement sentence and paragraph motions ((, ), {, })
+- Add SentenceForward, SentenceBackward, ParagraphForward, ParagraphBackward motions
+- Add corresponding actions to EditorAction enum
+- Implement move_sentence_forward/backward (based on .!? punctuation)
+- Implement move_paragraph_forward/backward (based on blank lines)
+- Add motion support for operators (d(, c}, etc.)
+- Add (, ), {, } key bindings in normal mode
+- Add 4 tests for sentence/paragraph motions
+
+### feat: implement match bracket motion (%)
+- Add MatchBracket motion
+- Implement move_match_bracket with bracket matching
+- Support (), [], {} bracket pairs
+- Implement find_matching_bracket_forward/backward helpers
+- Scan forward for matching close, backward for matching open
+- Handle nested brackets correctly
+- Add motion support for operators (d%, c%, etc.)
+- Add 3 tests for match bracket functionality
+
 ## Current Test Count
 
-Total: 118 tests passing
+Total: 127 tests passing
 
 | Crate | Count |
 |-------|-------|
@@ -119,7 +148,7 @@ Total: 118 tests passing
 | kjxlkj-core-undo | 3 |
 | kjxlkj-core-edit | 18 |
 | kjxlkj-core-mode | 6 |
-| kjxlkj-core-state | 59 |
+| kjxlkj-core-state | 68 |
 | kjxlkj-core-ui | 5 |
 | kjxlkj-input | 2 |
 | kjxlkj-render | 1 |
@@ -131,12 +160,12 @@ Total: 118 tests passing
 
 | File | Lines |
 |------|-------|
-| kjxlkj-core-state/src/editor.rs | ~2500 |
-| kjxlkj-core-mode/src/handler.rs | ~775 |
+| kjxlkj-core-state/src/editor.rs | ~3150 |
+| kjxlkj-core-mode/src/handler.rs | ~790 |
 | kjxlkj-core-edit/src/cursor_ops.rs | ~510 |
 | kjxlkj-core-edit/src/text_objects.rs | ~460 |
 | kjxlkj-core-edit/src/buffer.rs | ~420 |
-| kjxlkj-core-types/src/event.rs | ~270 |
+| kjxlkj-core-types/src/event.rs | ~295 |
 | kjxlkj-core-text/src/rope_text.rs | ~260 |
 | kjxlkj-service-fs/src/service.rs | ~250 |
 | kjxlkj-core-state/src/command.rs | ~210 |
@@ -159,16 +188,16 @@ Total: 118 tests passing
 - [x] Jump lists (Ctrl-o, Ctrl-i)
 - [x] Block visual mode (Ctrl-v)
 - [x] Global command (:g, :v)
+- [x] Changelist (g;, g,)
+- [x] Sentence/paragraph motions ((, ), {, })
+- [x] Match bracket motion (%)
 
 ### Pending
 - [ ] Search highlighting
 - [ ] Additional Ex commands (:set, :map, etc.)
-- [ ] Changelist (g;, g,)
-- [ ] Additional motions (%, sentence/paragraph)
 
 ## Next Steps
 
 1. Add more Ex commands (:set, :map, etc.)
 2. Implement search highlighting
-3. Consider changelist navigation (g;, g,)
-4. Add sentence/paragraph motions
+3. Review TODO checklists for remaining items

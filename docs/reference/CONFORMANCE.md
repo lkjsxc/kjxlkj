@@ -66,14 +66,21 @@ This document records the currently implemented, user-visible surface so that:
 | `@@` | Repeat last macro |
 | `Ctrl-o` | Jump to older position in jump list |
 | `Ctrl-i` | Jump to newer position in jump list |
+| `g;` | Jump to older position in change list |
+| `g,` | Jump to newer position in change list |
+| `(` | Move to previous sentence |
+| `)` | Move to next sentence |
+| `{` | Move to previous paragraph |
+| `}` | Move to next paragraph |
+| `%` | Move to matching bracket |
 
 ### Operators and motions
 
 | Operator | Motion/target | Action |
 |---|---|---|
-| `d` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Delete over motion, yank to register |
-| `y` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Yank over motion |
-| `c` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}` | Change (delete then enter Insert) |
+| `d` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}`/`(`/`)`/`{`/`}`/`%` | Delete over motion, yank to register |
+| `y` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}`/`(`/`)`/`{`/`}`/`%` | Yank over motion |
+| `c` | `w`/`b`/`e`/`h`/`l`/`0`/`^`/`$`/`gg`/`G`/`f{c}`/`t{c}`/`(`/`)`/`{`/`}`/`%` | Change (delete then enter Insert) |
 | `dd` | (line) | Delete current line (yanks deleted text) |
 | `yy` | (line) | Yank current line |
 | `cc` | (line) | Change current line |

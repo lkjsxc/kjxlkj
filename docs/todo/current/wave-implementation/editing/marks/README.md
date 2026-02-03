@@ -34,6 +34,7 @@ Implement marks, jump lists, and related navigation state and persistence.
   - Jump to mark exact (`) and line (') - implemented
   - Jump list (Ctrl-o, Ctrl-i) - implemented
   - Jump list entry on search, G/gg, mark jumps - implemented
+  - Changelist (g;, g,) - implemented
 
 ### D. Conformance updates
 
