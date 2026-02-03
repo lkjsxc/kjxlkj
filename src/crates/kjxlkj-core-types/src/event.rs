@@ -205,6 +205,8 @@ pub enum EditorAction {
     EnterInsertModeAfter,
     /// Enter insert mode at end of line.
     EnterInsertModeEndOfLine,
+    /// Enter insert mode at first non-blank of line.
+    EnterInsertModeLineStart,
     /// Open line below and enter insert mode.
     OpenLineBelow,
     /// Open line above and enter insert mode.

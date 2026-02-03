@@ -399,6 +399,10 @@ impl EditorState {
                 let line_len = self.buffer.line_len(line).unwrap_or(0);
                 self.buffer.cursor_mut().position.col = line_len as u32;
             }
+            EditorAction::EnterInsertModeLineStart => {
+                // Move to first non-blank character of line
+                self.buffer.move_first_non_blank();
+            }
             EditorAction::OpenLineBelow => {
                 self.buffer.move_line_end();
                 self.buffer.insert_newline();
@@ -4166,5 +4170,30 @@ mod tests {
         // Verify cursor stayed on the same position (col 0)
         assert_eq!(state.buffer().cursor().position.col, 0, "cursor should stay");
     }
-}
 
+    #[test]
+    fn insert_at_line_start() {
+        let mut state = EditorState::new();
+        state.handle_key(key('i'));
+        for ch in "   hello".chars() {
+            state.handle_key(key(ch));
+        }
+        state.handle_key(esc());
+        
+        // Go to end of line
+        state.handle_key(key('$'));
+        
+        // Press 'I' to insert at first non-blank
+        state.handle_key(key('I'));
+        
+        // Should be in insert mode at column 3 (first non-blank 'h')
+        assert_eq!(state.mode(), Mode::Insert);
+        assert_eq!(state.buffer().cursor().position.col, 3);
+        
+        // Type some text
+        state.handle_key(key('X'));
+        
+        let content = state.buffer().content();
+        assert_eq!(content, "   Xhello");
+    }
+}

@@ -226,6 +226,10 @@ impl ModeHandler {
                     self.state.set_mode(Mode::Insert);
                     EditorAction::EnterInsertMode
                 }
+                "I" => {
+                    self.state.set_mode(Mode::Insert);
+                    EditorAction::EnterInsertModeLineStart
+                }
                 "a" => {
                     self.state.set_mode(Mode::Insert);
                     EditorAction::EnterInsertModeAfter
