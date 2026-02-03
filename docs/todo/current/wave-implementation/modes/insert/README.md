@@ -20,16 +20,26 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define Insert-mode input handling and text insertion rules.
+- [x] Define Insert-mode input handling and text insertion rules.
 - [ ] Define integration points for completion and autopairs if specified.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement minimal insertion, deletion, and navigation behavior with deterministic tests.
+- [x] Implement minimal insertion, deletion, and navigation behavior with deterministic tests.
+  - Character insertion
+  - Backspace (delete char before)
+  - Enter (insert newline)
+  - Arrow key navigation
 
 ### C. Full conformance
 
 - [ ] Implement all Insert-mode features in the subtree (autopairs, completion, mappings, indentation, etc.).
+  - [x] Ctrl-w (delete word before)
+  - [x] Ctrl-u (delete to line start)
+  - [x] Ctrl-r {reg} (insert register contents)
+  - [ ] Ctrl-o (execute one normal command) - future
+  - [ ] Completion integration - future
+  - [ ] Autopairs - future
 
 ### D. Conformance updates
 

@@ -48,15 +48,20 @@ This document records the currently implemented, user-visible surface so that:
 | `a` | Enter Insert mode (after cursor) |
 | `A` | Enter Insert mode (end of line) |
 | `o` | Open line below and enter Insert mode |
+| `O` | Open line above and enter Insert mode |
 | `v` | Enter Visual mode |
 | `V` | Enter Visual line mode |
 | `R` | Enter Replace mode |
 | `x` | Delete character under cursor |
+| `X` | Delete character before cursor |
 | `p` | Paste after cursor |
+| `P` | Paste before cursor |
 | `u` | Undo |
 | `Ctrl-r` | Redo |
 | `:` | Enter Command mode |
 | `.` | Repeat last change |
+| `*` | Search forward for word under cursor |
+| `#` | Search backward for word under cursor |
 | `m{a-z}` | Set local mark |
 | `` ` ``{a-z} | Jump to mark (exact position) |
 | `'{a-z}` | Jump to mark (line, first non-blank) |
@@ -169,6 +174,19 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `y` | Yank block |
 | `c` | Change block (delete and enter Insert mode) |
 | `Esc` | Cancel selection, return to Normal mode |
+
+### Insert mode
+
+| Key | Action |
+|---|---|
+| `Esc` | Return to Normal mode |
+| (any char) | Insert character at cursor |
+| `Backspace` | Delete character before cursor |
+| `Enter` | Insert newline |
+| Arrow keys | Move cursor |
+| `Ctrl-w` | Delete word before cursor |
+| `Ctrl-u` | Delete to start of line |
+| `Ctrl-r {reg}` | Insert contents of register |
 
 ### Command-line (Ex) commands (subset)
 
