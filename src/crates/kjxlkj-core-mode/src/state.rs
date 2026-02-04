@@ -1,6 +1,6 @@
 //! Mode state aggregation.
 
-use crate::{Intent, NormalModeState};
+use crate::NormalModeState;
 use kjxlkj_core_types::Mode;
 
 /// Aggregated mode state.

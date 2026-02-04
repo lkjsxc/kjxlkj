@@ -6,8 +6,7 @@ mod motions;
 mod operators;
 mod state;
 
-pub use motions::key_to_motion;
-pub use state::{AwaitingChar, NormalModeState};
+pub use state::NormalModeState;
 
 use crate::Intent;
 

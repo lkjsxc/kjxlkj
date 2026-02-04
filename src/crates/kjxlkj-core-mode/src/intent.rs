@@ -1,7 +1,7 @@
 //! Intent types emitted by modes.
 
-use kjxlkj_core_edit::{Motion, Operator, TextObject};
-use kjxlkj_core_types::{Mode, Position, RegisterName};
+use kjxlkj_core_edit::{Motion, Operator};
+use kjxlkj_core_types::{Mode, RegisterName};
 
 /// An intent represents a user action to be applied by the core.
 #[derive(Debug, Clone, PartialEq)]

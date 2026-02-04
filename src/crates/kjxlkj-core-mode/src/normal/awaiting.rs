@@ -54,7 +54,7 @@ impl NormalModeState {
 
     /// Handle Ctrl+key combinations.
     pub fn handle_ctrl_key(&mut self, key: char) -> Intent {
-        let count = self.get_count();
+        let _count = self.get_count();
         self.reset();
         match key {
             'r' => Intent::Redo,

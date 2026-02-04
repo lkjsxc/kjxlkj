@@ -6,6 +6,9 @@
 use std::fs;
 use std::process::Command;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static TEST_COUNTER: AtomicU64 = AtomicU64::new(0);
 
 /// Get the path to the kjxlkj binary
 fn binary_path() -> PathBuf {
@@ -22,8 +25,10 @@ fn binary_path() -> PathBuf {
 
 /// Run the editor in headless mode with a script.
 fn run_headless(script: &str) -> Result<String, String> {
-    let script_path = "/tmp/kjxlkj_e2e_test.json";
-    fs::write(script_path, script).map_err(|e| e.to_string())?;
+    let id = TEST_COUNTER.fetch_add(1, Ordering::SeqCst);
+    let pid = std::process::id();
+    let script_path = format!("/tmp/kjxlkj_e2e_{}_{}.json", pid, id);
+    fs::write(&script_path, script).map_err(|e| e.to_string())?;
 
     let bin = binary_path();
     if !bin.exists() {
@@ -31,11 +36,11 @@ fn run_headless(script: &str) -> Result<String, String> {
     }
 
     let output = Command::new(&bin)
-        .args(["--headless", "--script", script_path])
+        .args(["--headless", "--script", &script_path])
         .output()
         .map_err(|e| e.to_string())?;
 
-    let _ = fs::remove_file(script_path);
+    let _ = fs::remove_file(&script_path);
 
     let stdout = String::from_utf8_lossy(&output.stdout).to_string();
     let stderr = String::from_utf8_lossy(&output.stderr).to_string();

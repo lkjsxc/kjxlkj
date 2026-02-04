@@ -1,5 +1,6 @@
 //! Headless mode for scripted testing.
 
+mod motion;
 mod script;
 mod processor;
 
@@ -9,7 +10,6 @@ use kjxlkj_core::{EditorState, TextBuffer};
 use kjxlkj_services::fs::FsService;
 use std::path::PathBuf;
 
-pub use script::{ScriptKey, ScriptStep};
 
 /// Run in headless mode.
 pub fn run(args: &Args) -> Result<()> {

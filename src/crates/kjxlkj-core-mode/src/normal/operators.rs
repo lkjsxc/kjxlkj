@@ -1,7 +1,7 @@
 //! Operator and motion handlers.
 
 use crate::Intent;
-use kjxlkj_core_edit::{Motion, MotionKind, Operator, OperatorKind};
+use kjxlkj_core_edit::{Motion, Operator, OperatorKind};
 
 use super::motions::key_to_motion;
 use super::state::{AwaitingChar, NormalModeState};

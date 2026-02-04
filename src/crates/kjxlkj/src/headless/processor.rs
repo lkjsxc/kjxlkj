@@ -1,7 +1,9 @@
 //! Headless key processor.
 
-use kjxlkj_core::{EditorState, Intent, Mode, MotionKind, Position};
+use kjxlkj_core::{EditorState, Intent, Mode, Position};
 use kjxlkj_input::{Key, KeyCode};
+
+use super::motion;
 
 /// Process a key event in headless mode.
 pub fn process_key(state: &mut EditorState, key: Key) {
@@ -122,7 +124,7 @@ fn process_replace_key(state: &mut EditorState, key: Key) {
 fn apply_intent(state: &mut EditorState, intent: Intent) {
     match intent {
         Intent::None => {}
-        Intent::Move(motion) => apply_motion(state, motion),
+        Intent::Move(m) => motion::apply(state, m),
         Intent::EnterInsert { at_line_end, after_cursor } => {
             enter_insert(state, at_line_end, after_cursor);
         }
@@ -153,53 +155,20 @@ fn apply_intent(state: &mut EditorState, intent: Intent) {
     }
 }
 
-fn apply_motion(state: &mut EditorState, motion: kjxlkj_core::Motion) {
-    for _ in 0..motion.count {
-        match motion.kind {
-            MotionKind::Left => {
-                if state.cursor.col() > 0 {
-                    state.cursor.position.col -= 1;
-                }
-            }
-            MotionKind::Right => {
-                let max = state.buffer.line_len(state.cursor.line()).saturating_sub(1);
-                if state.cursor.col() < max {
-                    state.cursor.position.col += 1;
-                }
-            }
-            MotionKind::Up => {
-                if state.cursor.line() > 0 {
-                    state.cursor.position.line -= 1;
-                }
-            }
-            MotionKind::Down => {
-                if state.cursor.line() + 1 < state.buffer.line_count() {
-                    state.cursor.position.line += 1;
-                }
-            }
-            _ => {}
-        }
-    }
-}
-
 fn enter_insert(state: &mut EditorState, at_line_end: bool, after_cursor: bool) {
     if at_line_end {
         let len = state.buffer.line_len(state.cursor.line());
         state.cursor.position.col = len;
     } else if after_cursor {
         let len = state.buffer.line_len(state.cursor.line());
-        if state.cursor.col() < len {
-            state.cursor.position.col += 1;
-        }
+        if state.cursor.col() < len { state.cursor.position.col += 1; }
     }
     state.set_mode(Mode::Insert);
 }
 
 fn execute_command(state: &mut EditorState, cmd: &str) {
     match cmd.trim() {
-        "q" | "q!" | "quit" | "quit!" => {
-            state.should_quit = true;
-        }
+        "q" | "q!" | "quit" | "quit!" => state.should_quit = true,
         _ => {}
     }
 }
