@@ -224,8 +224,24 @@ impl ModeHandler {
                 "+" => EditorAction::NextLineStart,
                 "<CR>" => EditorAction::NextLineStart,  // Enter is same as +
                 "-" => EditorAction::PrevLineStart,
-                "gg" => EditorAction::FileStart,
-                "G" => EditorAction::FileEnd,
+                "gg" => {
+                    // With count, go to line N; without count, go to file start
+                    if let Some(line) = self.state.take_count() {
+                        self.state.clear_pending();
+                        EditorAction::GoToLine(line)
+                    } else {
+                        EditorAction::FileStart
+                    }
+                }
+                "G" => {
+                    // With count, go to line N; without count, go to file end
+                    if let Some(line) = self.state.take_count() {
+                        self.state.clear_pending();
+                        EditorAction::GoToLine(line)
+                    } else {
+                        EditorAction::FileEnd
+                    }
+                }
                 "H" => EditorAction::ScreenTop,
                 "M" => EditorAction::ScreenMiddle,
                 "L" => EditorAction::ScreenBottom,
@@ -245,8 +261,16 @@ impl ModeHandler {
                 "}" => EditorAction::ParagraphForward,
                 "{" => EditorAction::ParagraphBackward,
                 
-                // Match bracket
-                "%" => EditorAction::MatchBracket,
+                // Match bracket or go to percentage
+                "%" => {
+                    // With count, go to N% of file; without count, match bracket
+                    if let Some(pct) = self.state.take_count() {
+                        self.state.clear_pending();
+                        EditorAction::GoToPercent(pct)
+                    } else {
+                        EditorAction::MatchBracket
+                    }
+                }
                 
                 // Change list navigation
                 "g;" => EditorAction::ChangeListOlder,

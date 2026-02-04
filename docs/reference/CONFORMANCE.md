@@ -53,6 +53,9 @@ This document records the currently implemented, user-visible surface so that:
 | `-` | Move to first non-blank of previous line |
 | `gg` | Move to file start |
 | `G` | Move to file end |
+| `{count}gg` | Go to line N |
+| `{count}G` | Go to line N |
+| `{count}%` | Go to N% of file |
 | `H` | Move to top of visible screen |
 | `M` | Move to middle of visible screen |
 | `L` | Move to bottom of visible screen |

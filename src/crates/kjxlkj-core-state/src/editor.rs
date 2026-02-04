@@ -263,6 +263,14 @@ impl EditorState {
                 self.add_to_jump_list();
                 self.buffer.move_file_end();
             }
+            EditorAction::GoToLine(line) => {
+                self.add_to_jump_list();
+                self.go_to_line(line);
+            }
+            EditorAction::GoToPercent(pct) => {
+                self.add_to_jump_list();
+                self.go_to_percent(pct);
+            }
             EditorAction::SentenceForward => {
                 self.move_sentence_forward();
             }
@@ -1372,6 +1380,42 @@ impl EditorState {
             // Then move to first non-blank
             self.buffer.move_first_non_blank();
         }
+    }
+
+    /// Go to specific line number (1-based).
+    fn go_to_line(&mut self, line: u32) {
+        let line_count = self.buffer.line_count();
+        // Line is 1-based, convert to 0-based
+        let target_line = line.saturating_sub(1) as usize;
+        // Clamp to valid range
+        let target_line = target_line.min(line_count.saturating_sub(1));
+        
+        self.buffer.set_cursor_position(LineCol {
+            line: target_line as u32,
+            col: 0,
+        });
+        self.buffer.move_first_non_blank();
+    }
+
+    /// Go to percentage of file (N%).
+    fn go_to_percent(&mut self, pct: u32) {
+        let line_count = self.buffer.line_count();
+        if line_count == 0 {
+            return;
+        }
+        
+        // Clamp percentage to 0-100
+        let pct = pct.min(100) as usize;
+        
+        // Calculate target line (0-based)
+        let target_line = (pct * line_count) / 100;
+        let target_line = target_line.min(line_count.saturating_sub(1));
+        
+        self.buffer.set_cursor_position(LineCol {
+            line: target_line as u32,
+            col: 0,
+        });
+        self.buffer.move_first_non_blank();
     }
 
     /// Join current line with next line.

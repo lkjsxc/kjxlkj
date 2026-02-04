@@ -175,6 +175,10 @@ pub enum EditorAction {
     FileStart,
     /// Move to file end (G).
     FileEnd,
+    /// Go to specific line number ({count}G, {count}gg).
+    GoToLine(u32),
+    /// Go to percentage of file ({count}%).
+    GoToPercent(u32),
     /// Move to next sentence ()).
     SentenceForward,
     /// Move to previous sentence (().
