@@ -14,6 +14,7 @@ Make correctness provable and regressions difficult by treating tests and policy
 - [ ] All docs are navigable from:
   - [/docs/README.md](/docs/README.md)
 - [ ] All internal links resolve.
+- [ ] The repo’s verification gate is defined and reproducible locally (see [/docs/reference/CI.md](/docs/reference/CI.md)).
 
 ### B. Conformance and limitations are updated for each implemented slice
 
@@ -36,4 +37,3 @@ Make correctness provable and regressions difficult by treating tests and policy
 
 - [ ] Define performance targets derived from specs.
 - [ ] Add regression tests/benchmarks for typing bursts, scrolling, and resize storms.
-
