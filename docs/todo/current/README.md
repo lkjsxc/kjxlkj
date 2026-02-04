@@ -6,6 +6,10 @@ Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 This TODO is the execution entrypoint for turning the documents into a complete, correct implementation.
 
+This repository follows the **“All in Docs”** contract: the docs are the project and the system MUST be reconstructable from docs alone.
+
+Start here: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+
 It is:
 
 - Recursive and hierarchical (parent checklists link to child checklists)
@@ -27,6 +31,10 @@ It is:
 ### Wave: Placeholder scaffolding (fast, incomplete by design)
 
 - [wave-placeholder/README.md](wave-placeholder/README.md)
+
+### Wave: Reconstruction runbook (docs-only → full repo)
+
+- [wave-reconstruction/README.md](wave-reconstruction/README.md)
 
 ### Wave: Read and reconcile all documents (doc-complete)
 

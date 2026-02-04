@@ -1,11 +1,14 @@
 # Frequently Asked Questions
 
+Back: [/docs/guides/README.md](/docs/guides/README.md)
+
 ## General
 
 ### What is kjxlkj?
 
-kjxlkj is a Neovim-inspired terminal text editor with all features
-built-in natively. No plugins required.
+kjxlkj is a Neovim-inspired terminal (TUI) text editor written in Rust.
+
+This repository follows an “All in Docs” approach: `/docs/` is the source of truth and the system can be reconstructed from docs alone.
 
 ### Why "kjxlkj"?
 
@@ -13,30 +16,33 @@ The name is a project codename. Pronounce it however you like!
 
 ### Is it compatible with Neovim config?
 
-No. kjxlkj uses TOML configuration, not Lua. However, the keybindings
-and editing model are familiar to vim/neovim users.
+No. kjxlkj does not execute Neovim’s Lua configuration or plugin ecosystem.
+
+The long-term target includes configuration and keybinding remapping, but the currently shipped surface is tracked in:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 ### Can I use my vim plugins?
 
-No. kjxlkj has built-in features that replace common plugins.
-See the feature comparison table.
+No. kjxlkj has no plugin system by design.
+
+Some “plugin-like” capabilities are planned as built-in features, but many are not implemented yet. See:
+
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Installation
 
 ### What platforms are supported?
 
-- Linux (x86_64, aarch64)
-- macOS (Intel, Apple Silicon)
-- Windows (x86_64, aarch64)
+The codebase aims to be cross-platform via Rust and Crossterm, but platform support is not fully validated yet.
 
 ### How do I update?
 
-Download the latest release or run:
+There are no tagged releases in this repository yet. Rebuild from source.
 
 ### Where is the config file?
 
-- Linux/macOS: `~/.config/kjxlkj/config.toml`
-- Windows: `%APPDATA%\kjxlkj\config.toml`
+Persistent configuration is not implemented yet.
 
 ## Usage
 
@@ -46,64 +52,54 @@ Press `:q` and Enter. Or `ZZ` to save and quit.
 
 ### How do I save?
 
-Press `:w` and Enter. Or `:wq` to save and quit.
-
-### How do I open the file explorer?
-
-Press `<Space>e` (with default leader key).
+Use `:w {file}` to write to a path, or `:wq` / `:x` to write then quit.
 
 ### How do I search?
 
 Press `/` to search forward, `?` to search backward.
 
-### How do I use multiple cursors?
-
-Press `<C-n>` on a word to select it, then `<C-n>` again
-to select the next occurrence.
-
 ## Features
 
 ### Does it have LSP support?
 
-Yes, built-in. Configure language servers in config.toml.
+Not yet. The service crate exists as a placeholder, but LSP features are not implemented.
 
 ### Does it have syntax highlighting?
 
-Yes, via tree-sitter. Most languages supported.
+Not yet.
 
 ### Does it support splits?
 
-Yes. `<C-w>v` for vertical, `<C-w>s` for horizontal.
+Not yet.
 
 ### Does it have tabs?
 
-Yes. `:tabnew`, `gt`/`gT` to switch.
+Not yet.
 
 ## Troubleshooting
 
 ### Colors look wrong
 
-Ensure your terminal supports true color:
+Ensure your terminal supports at least 256 colors.
 
 ### Keys not working
 
-Check your terminal's key reporting. Some terminals
-require configuration for modifier keys.
+Some terminals do not report all modifier combinations consistently. Try a different terminal emulator.
 
 ### Slow startup
 
-Check for large config files or many buffers in session.
+Performance has not been benchmarked yet.
 
 ### High memory usage
 
-Large files or many buffers. See memory optimization docs.
+Large files have not been benchmarked yet.
 
 ## Contributing
 
 ### How can I contribute?
 
-See CONTRIBUTING.md. PRs welcome!
+This repo is currently optimized for doc-driven iteration and LLM-based implementation. Improvements should start with docs and conformance.
 
 ### Where do I report bugs?
 
-GitHub Issues: https://github.com/kjxlkj/kjxlkj/issues
+Use the repository issue tracker if one exists, or record issues in `/docs/reference/IMPLEMENTATION_HISTORY.md` with reproduction steps and spec references.

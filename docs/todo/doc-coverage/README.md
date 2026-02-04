@@ -6,8 +6,7 @@ Back: [/docs/todo/README.md](/docs/todo/README.md)
 Covers all documentation tracked by this repository, including:
 
 - `/docs/` (excluding `/docs/todo/`, which is the TODO system itself)
-- root-level documents (`/README.md`, `/LICENSE`)
-- implementation documentation under `/src/` (crate READMEs)
+- `/README.md` as an entrypoint (optional, non-normative)
 
 ## Checklist (apply to every document listed)
 - [ ] Read the document end-to-end.
@@ -19,31 +18,7 @@ Covers all documentation tracked by this repository, including:
 
 ## Documents
 ### Files
-- [ ] [/LICENSE](/LICENSE)
 - [ ] [/README.md](/README.md)
-- [ ] [/src/README.md](/src/README.md)
-- [ ] [/src/crates/README.md](/src/crates/README.md)
-- [ ] [/src/crates/app/README.md](/src/crates/app/README.md)
-- [ ] [/src/crates/app/kjxlkj/README.md](/src/crates/app/kjxlkj/README.md)
-- [ ] [/src/crates/core/README.md](/src/crates/core/README.md)
-- [ ] [/src/crates/core/kjxlkj-core/README.md](/src/crates/core/kjxlkj-core/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-edit/README.md](/src/crates/core/kjxlkj-core-edit/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-mode/README.md](/src/crates/core/kjxlkj-core-mode/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-state/README.md](/src/crates/core/kjxlkj-core-state/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-text/README.md](/src/crates/core/kjxlkj-core-text/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-types/README.md](/src/crates/core/kjxlkj-core-types/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-ui/README.md](/src/crates/core/kjxlkj-core-ui/README.md)
-- [ ] [/src/crates/core/kjxlkj-core-undo/README.md](/src/crates/core/kjxlkj-core-undo/README.md)
-- [ ] [/src/crates/host/README.md](/src/crates/host/README.md)
-- [ ] [/src/crates/host/kjxlkj-host/README.md](/src/crates/host/kjxlkj-host/README.md)
-- [ ] [/src/crates/input/README.md](/src/crates/input/README.md)
-- [ ] [/src/crates/input/kjxlkj-input/README.md](/src/crates/input/kjxlkj-input/README.md)
-- [ ] [/src/crates/render/README.md](/src/crates/render/README.md)
-- [ ] [/src/crates/render/kjxlkj-render/README.md](/src/crates/render/kjxlkj-render/README.md)
-- [ ] [/src/crates/services/README.md](/src/crates/services/README.md)
-- [ ] [/src/crates/services/kjxlkj-service-fs/README.md](/src/crates/services/kjxlkj-service-fs/README.md)
-- [ ] [/src/crates/services/kjxlkj-service-terminal/README.md](/src/crates/services/kjxlkj-service-terminal/README.md)
-- [ ] [/src/crates/services/kjxlkj-services/README.md](/src/crates/services/kjxlkj-services/README.md)
 - [ ] [/docs/README.md](/docs/README.md)
 
 ### Subdirectories

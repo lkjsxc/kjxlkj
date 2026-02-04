@@ -2,13 +2,22 @@
 
 kjxlkj is a Neovim-inspired TUI text editor written in Rust.
 
-This repository is optimized for machine (LLM) parsing and editing. This statement appears only here and in docs/README.md + docs/policy/README.md to avoid scattering it across leaf documents.
+## “All in Docs” (project contract)
+
+This repository follows an **“All in Docs”** philosophy:
+
+- The documentation under [`/docs/`](docs/README.md) is the **project** and the **source of truth**.
+- Everything else (code, build files, CI, generated artifacts) is a **derived** implementation detail.
+- The documentation is written so that **even if everything except `/docs/` disappeared**, a complete, working system can be reconstructed from the docs.
+
+This repo is also optimized for **machine (LLM) parsing and editing**. Canonical explanation: [`docs/overview/all-in-docs.md`](docs/overview/all-in-docs.md).
 
 ## Docs
 
-- Canonical specifications: docs/spec/README.md
-- Policies and invariants: docs/policy/README.md
-- Documentation index: docs/README.md
+- Documentation index: [docs/README.md](docs/README.md)
+- Canonical specifications: [docs/spec/README.md](docs/spec/README.md)
+- Policies and invariants: [docs/policy/README.md](docs/policy/README.md)
+- Reconstruction prompt (Copilot/Claude): [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
 
 ## Implementation
 

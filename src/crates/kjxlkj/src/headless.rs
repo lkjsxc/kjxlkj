@@ -62,11 +62,21 @@ pub fn run_script(path: &str) -> Result<()> {
         }
     }
 
-    let snapshot = state.snapshot();
-    println!("Final buffer content:");
-    for line in &snapshot.buffer.lines {
-        println!("{}", line);
+    let preview_lines = 200usize;
+    let total_lines = state.buffer().line_count();
+    let shown = total_lines.min(preview_lines);
+
+    println!("Final buffer preview ({} / {} lines):", shown, total_lines);
+    for i in 0..shown {
+        if let Some(line) = state.buffer().line(i) {
+            println!("{}", line);
+        }
     }
+    if total_lines > shown {
+        println!("... ({} more lines)", total_lines - shown);
+    }
+
+    let snapshot = state.snapshot();
     println!("Mode: {:?}", snapshot.status.mode);
     println!(
         "Cursor: {}:{}",

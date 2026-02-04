@@ -21,3 +21,4 @@ Covers documentation under `/docs/spec/technical/`.
 - [ ] [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
 - [ ] [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 - [ ] [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)

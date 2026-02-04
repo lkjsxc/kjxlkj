@@ -1,111 +1,70 @@
 # Neovim Migration Guide
 
-Guide for Neovim users transitioning to kjxlkj.
+Back: [/docs/guides/README.md](/docs/guides/README.md)
+Guidance for Neovim users transitioning to the currently implemented kjxlkj surface.
 
-## Philosophy Differences
+## What is similar
 
-| Aspect | Neovim | kjxlkj |
-|--------|--------|--------|
-| Config | Lua | TOML |
-| Plugins | External (lazy.nvim) | Built-in |
-| LSP | lspconfig | Native |
-| Treesitter | nvim-treesitter | Native |
+kjxlkj is intentionally Vim-like:
 
-## Keybinding Equivalents
+- modal editing (Normal / Insert / Visual / Command / Replace)
+- operator + motion model (`d{motion}`, `c{motion}`, `y{motion}`)
+- text objects, registers, marks, macros (subset; see conformance)
 
-Most vim keybindings work identically.
+For the authoritative “what exists right now” ledger, see:
 
-### File Explorer
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
-| Neovim (nvim-tree) | kjxlkj |
-|--------------------|--------|
-| `:NvimTreeToggle` | `<leader>e` |
-| Same navigation | Same navigation |
+## What is different
 
-### Fuzzy Finder
+### No plugin ecosystem
 
-| Neovim (Telescope) | kjxlkj |
-|--------------------|--------|
-| `:Telescope find_files` | `<leader>ff` |
-| `:Telescope live_grep` | `<leader>fg` |
-| `:Telescope buffers` | `<leader>fb` |
+kjxlkj has no plugin system. Features are either built-in (when implemented) or not available yet.
 
-### Terminal
+### No Neovim Lua config
 
-| Neovim (toggleterm) | kjxlkj |
-|---------------------|--------|
-| `<C-\><C-n>` exit | Same |
-| `:ToggleTerm` | `<leader>t` |
+kjxlkj does not execute Neovim configuration. Persistent configuration/key remapping is a target but is not implemented yet.
 
-### LSP
+### Documentation is the source of truth
 
-| Neovim | kjxlkj |
-|--------|--------|
-| `gd` | `gd` |
-| `K` | `K` |
-| `<leader>rn` | `<leader>rn` |
+This repo follows “All in Docs”: `/docs/` is normative and the system is reconstructable from docs alone.
 
-## Config Migration
+## Practical mapping
 
-### Neovim (Lua)
+### Editing workflow
 
+- Use Normal/Insert/Visual just as in Vim.
+- Use the command line (`:`) for file and Ex commands.
+- Use `.` to repeat the last change.
 
-### kjxlkj (TOML)
+### Files
 
+- Open a file: launch with a file path argument, or use `:e {file}`.
+- Write: `:w {file}` (and `:wq` / `:x` to write then quit).
+- Quit: `:q` (or `:q!` to force).
 
-## Keybinding Migration
+### Search and replace
 
-### Neovim
+- Search: `/` and `?`, then `n`/`N`.
+- Substitute: `:s/pat/repl/` and `:s/pat/repl/g`.
+- Global: `:g/pat/d` and `:v/pat/d` (subset).
 
+## What you will miss (for now)
 
-### kjxlkj
+These are specified as targets but are not implemented yet:
 
+- LSP client features
+- git UI/integration
+- syntax highlighting and diagnostics UI
+- built-in file explorer and fuzzy finder UIs
+- splits/windows/tabs and multi-buffer management
+- persistent configuration and key remapping
 
-## Plugin Replacements
+See:
 
-| Neovim Plugin | kjxlkj Built-in |
-|---------------|-----------------|
-| nvim-tree.lua | File Explorer |
-| telescope.nvim | Finder |
-| toggleterm.nvim | Terminal |
-| nvim-lspconfig | LSP Client |
-| nvim-cmp | Completion |
-| nvim-treesitter | Syntax |
-| gitsigns.nvim | Git Signs |
-| which-key.nvim | Which Key |
-| bufferline.nvim | Bufferline |
-| lualine.nvim | Statusline |
-| Comment.nvim | Comments |
-| nvim-surround | Surround |
-| flash.nvim | Flash |
-| undotree | Undo Tree |
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## What's Different
+## Recommended reading
 
-### No Plugin Management
-
-Everything built-in. No lazy.nvim, packer, etc.
-
-### No Lua Scripting
-
-Configuration only. No arbitrary code execution.
-
-### Faster Startup
-
-No plugin loading phase.
-
-## What's Similar
-
-- Modal editing
-- Vim keybindings
-- Splits and tabs
-- Registers and marks
-- Macros
-- Search and replace
-
-## Tips
-
-1. Start with default config, customize gradually
-2. Read the keybinding docs for differences
-3. Use `:help` for built-in documentation
-4. Check FAQ for common issues
+- Docs index: [/docs/README.md](/docs/README.md)
+- Target keybindings spec: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)

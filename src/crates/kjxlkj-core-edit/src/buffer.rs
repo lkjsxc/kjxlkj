@@ -1,5 +1,7 @@
 //! Buffer with editing capabilities.
 
+use std::io;
+
 use kjxlkj_core_text::RopeText;
 use kjxlkj_core_types::{BufferId, BufferVersion, Cursor, LineCol};
 use kjxlkj_core_undo::{EditOperation, UndoGroup, UndoHistory};
@@ -44,6 +46,24 @@ impl Buffer {
             modified: false,
             yank_register: String::new(),
         }
+    }
+
+    /// Creates a buffer by streaming UTF-8 content from a reader.
+    pub fn from_reader<R: io::Read>(
+        id: BufferId,
+        name: String,
+        reader: R,
+    ) -> io::Result<Self> {
+        Ok(Self {
+            id,
+            name,
+            path: None,
+            text: RopeText::from_reader(reader)?,
+            cursor: Cursor::origin(),
+            history: UndoHistory::new(),
+            modified: false,
+            yank_register: String::new(),
+        })
     }
 
     pub fn id(&self) -> BufferId {

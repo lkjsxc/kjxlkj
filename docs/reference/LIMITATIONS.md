@@ -1,95 +1,87 @@
 # Known Limitations
 
-Current limitations and planned improvements.
+Back: [/docs/reference/README.md](/docs/reference/README.md)
+User-visible gaps and caveats relative to the target spec.
 
-This repository contains an early implementation slice. The implemented surface is recorded in:
+## Purpose
 
-- [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+The target behavior is defined in `/docs/spec/`.
+
+This document records what is **not** implemented (or is only partially implemented) so users and implementers do not confuse “spec language” with “shipped behavior”.
+
+The currently implemented surface is tracked in:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 ## Not Yet Implemented
 
-### Editing surface
+### Core editor model
 
-- Most Vim/Neovim motions, text objects, and operators are not implemented.
-- Search (`/`, `?`) and match navigation (`n`, `N`) are not implemented.
-- Multi-buffer and multi-window management is not implemented (single buffer/window focus).
+- Multi-buffer editing is not implemented (single active buffer).
+- Window/split management is not implemented.
+- Tabs are not implemented.
+- Persistent sessions (restore layout/buffers) are not implemented.
 
-### Built-in features
+### Built-in “modern editor” features
 
-- LSP is not implemented.
-- Git integration is not implemented.
-- Syntax highlighting and diagnostics UI are not implemented.
+- LSP client features are not implemented (service crate is a placeholder).
+- Git integration features are not implemented (service crate is a placeholder).
+- Syntax highlighting is not implemented.
+- Diagnostics UI is not implemented.
+- File explorer is not implemented.
+- Fuzzy finder / indexing UI is not implemented (index service is a placeholder).
 - Integrated terminal panes are not implemented (only `:! {cmd}` execution exists).
+- Multiple cursors are not implemented.
+- Snippets are not implemented.
 
 ### Configuration
 
-- TOML configuration, keybinding remapping, and themes are not implemented.
+- Persistent configuration (TOML), key remapping, and theming are not implemented.
+- `:set`-style editor options are not implemented beyond the currently shipped subset.
 
 ## Platform Specific
 
-Platform-specific behavior has not been fully validated.
+Platform-specific behavior and terminal compatibility have not been fully validated.
 
 ## Performance Limits
 
-Performance characteristics (large files, long lines, many buffers) have not been benchmarked.
+Performance characteristics (large files, long lines, non-ASCII heavy text) have not been systematically benchmarked.
 
-## Missing Vim Features
+What is implemented today (useful guarantees, not benchmarks):
 
-### Ex Commands
+- Snapshot generation is viewport-bounded (does not clone/materialize all buffer lines per frame).
+- The terminal host avoids continuous redraw while idle (renders on input/resize rather than busy-looping).
+- File open avoids an intermediate “read entire file into a single String” allocation (streaming into the text model).
 
-Not all ex commands supported:
+Remaining gaps:
 
-| Unsupported | Alternative |
-|-------------|-------------|
-| `:global` | Search + visual |
-| `:vglobal` | Invert search |
-| `:normal` | Macros |
-| `:execute` | Not needed |
+- No progress indicator or cancel during long file reads.
+- No explicit “large file degradation mode” (feature disabling/caps) unless added in the future.
+- Extremely long lines may still be slow due to rendering and display-width work.
 
-### Vim Script
+## UX gaps
 
-No Vim script support. TOML config only.
+- No in-editor `:help` system.
+- No search highlighting.
+- No mouse support (by design).
 
-### Modelines
+## Known rough edges
 
-Not implemented for security.
+These are areas that are implemented but may not match full Vim behavior yet:
 
-## Configuration Limits
-
-### Keybinding Limits
-
-- No recursive keybindings
-- No functions in keybindings
-- Limited key combinations
-
-### Theme Limits
-
-- 256 color minimum
-- True color recommended
-- No GUI features
+- Edge-case compatibility around registers, macros, and marks.
+- Some Ex command parsing details and error messages.
+- Render behavior in unusual terminal sizes.
 
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.
 
-## Workarounds
+## Reporting issues (local workflow)
 
-### Large Files
+When reporting or logging issues, capture:
 
-
-### Missing LSP Feature
-
-Use external tools via terminal.
-
-### Clipboard Issues
-
-
-## Reporting Issues
-
-File issues at: GitHub repository
-
-Include:
-- kjxlkj version
-- OS and terminal
-- Minimal reproduction
-- Expected vs actual behavior
+- the conformance expectation (`/docs/reference/CONFORMANCE.md`)
+- the spec reference (exact `/docs/spec/...` document)
+- a minimal reproduction (prefer a headless script when possible)
+- expected vs actual behavior

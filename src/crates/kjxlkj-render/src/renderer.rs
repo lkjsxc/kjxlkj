@@ -33,10 +33,9 @@ impl<W: Write> Renderer<W> {
 
         let text_height = height.saturating_sub(2) as usize;
         for row in 0..text_height {
-            let line_idx = viewport.top_line + row;
             self.out.queue(MoveTo(0, row as u16))?;
-            if line_idx < snapshot.buffer.lines.len() {
-                let line = &snapshot.buffer.lines[line_idx];
+            if row < snapshot.buffer.lines.len() {
+                let line = &snapshot.buffer.lines[row];
                 let display: String = line
                     .chars()
                     .skip(viewport.left_col)

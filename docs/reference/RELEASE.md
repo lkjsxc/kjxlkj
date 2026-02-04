@@ -1,73 +1,36 @@
 # Release Process
 
-This document describes how to create a new kjxlkj release.
+Back: [/docs/reference/README.md](/docs/reference/README.md)
+How to cut a release from this repository.
 
-## Version Numbering
+This repository does not currently include a committed CI/release pipeline. Treat this as a documented manual process and update it when automation is introduced.
 
-We follow Semantic Versioning (semver):
-- **MAJOR**: Breaking changes
-- **MINOR**: New features, backward compatible
-- **PATCH**: Bug fixes, backward compatible
+## Versioning
 
-## Pre-Release Checklist
+Use Semantic Versioning:
 
-1. **All tests pass** - Run `cargo test`
+- MAJOR: breaking changes
+- MINOR: new features, backwards compatible
+- PATCH: bug fixes
 
-2. **No clippy warnings** - Run `cargo clippy --all-targets --all-features -- -D warnings`
+## Pre-release checklist
 
-3. **Documentation up to date**
-   - README.md reflects current features
-   - docs/reference/CONFORMANCE.md updated (current surface)
-   - docs/reference/LIMITATIONS.md updated (known gaps)
+1. All tests pass (`cargo test`).
+2. Lints are clean (`cargo clippy` as appropriate).
+3. Docs are consistent with the shipped surface:
+   - `/README.md` (high-level entrypoint)
+   - `/docs/reference/CONFORMANCE.md` (what is implemented)
+   - `/docs/reference/LIMITATIONS.md` (user-visible gaps)
+4. The version is updated in the workspace manifest.
 
-4. **Version bumped**
-   - Update workspace `Cargo.toml` version
-   - Record release notes in the release artifact (tag/release body)
+## Release steps (manual)
 
-## Release Steps
+1. Create a release commit on the main branch.
+2. Tag the commit (annotated tag recommended).
+3. Build binaries for your target platforms.
+4. Publish artifacts (GitHub Releases or your chosen distribution method).
+5. Record release notes based on the doc set and conformance ledger.
 
-### 1. Create Release Branch
+## Post-release
 
-
-### 2. Update Version
-
-
-### 3. Update Release Notes
-
-Ensure the release notes match the actual shipped surface.
-
-
-### 4. Commit and Tag
-
-
-### 5. Push
-
-
-### 6. Create GitHub Release
-
-- Go to GitHub Releases
-- Select the tag
-- Add release notes derived from the doc set and the conformance matrix
-- GitHub Actions will build and attach binaries
-
-### 7. Merge to Main
-
-
-## Artifacts
-
-GitHub Actions produces:
-- Linux x86_64 binary
-- Linux aarch64 binary
-- Linux x86_64 AppImage
-- Linux aarch64 AppImage
-- macOS x86_64 binary
-- macOS aarch64 binary
-- Windows x86_64 binary
-- Windows aarch64 binary
-
-## Post-Release
-
-1. Update Homebrew formula (if applicable)
-2. Update AUR package (if applicable)
-3. Announce on social channels
-4. Start next development cycle
+- Start the next development cycle by updating the TODO iteration under `/docs/todo/`.

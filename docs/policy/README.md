@@ -3,7 +3,17 @@
 Back: [/docs/README.md](/docs/README.md)
 Operating invariants and agent rules.
 
-This documentation is optimized for machine (LLM) parsing. This fact is stated only here and in the root README to avoid repetition.
+## “All in Docs” (normative)
+
+This repository follows an **“All in Docs”** contract:
+
+- Documentation under `/docs/` is **normative** and **sufficient to reconstruct the system**.
+- Implementation artifacts (code, build files) are **derived outputs** and are not authoritative.
+- Any divergence between docs and implementation MUST be resolved by updating docs and/or recording conformance/limitations in `/docs/reference/`.
+
+Canonical explanation: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md).
+
+This documentation is also optimized for machine (LLM) parsing and editing.
 
 ## Documents
 
@@ -55,8 +65,6 @@ The canonical architecture is **Tokio async-first**:
 See individual documents for complete details.
 
 ## Documentation fences (Mermaid-only) (normative)
-
-### Documentation fences (Mermaid-only) (normative)
 
 This repository treats documentation under [docs/](/docs/README.md) as **normative, code-free specification**.
 

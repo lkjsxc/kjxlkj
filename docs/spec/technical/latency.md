@@ -45,6 +45,7 @@ The implementation MUST satisfy:
 |------|-------------|
 | Keystroke latency | Typing SHOULD remain responsive under rapid input; rendering SHOULD avoid full-screen redraws on each key. |
 | Rendering writes | Render output SHOULD be diff-based (dirty region / cell diff) to minimize terminal writes. |
+| Idle rendering | When idle (no input, no animation), the host SHOULD avoid continuous redraw loops that rebuild snapshots. |
 | Resize storms | Rapid resizes MUST not corrupt state; viewport MUST re-clamp and keep cursor visible. |
 
 ## Acceptance criteria (Given/When/Then)
@@ -58,5 +59,6 @@ The implementation MUST satisfy:
 
 - Runtime model: [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
 - Contracts: [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md)
+- Large file invariants: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 - Viewport follow rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 - Testing strategy: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

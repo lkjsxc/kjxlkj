@@ -1,61 +1,36 @@
 # Windows Installation
 
-Multiple ways to install kjxlkj on Windows.
+Back: [/docs/guides/README.md](/docs/guides/README.md)
+Ways to run kjxlkj on Windows.
 
-## Pre-built Binaries
+## Pre-built binaries
 
-Download from [GitHub Releases](https://github.com/kjxlkj/kjxlkj/releases):
+This repository does not currently publish tagged releases. Build from source.
 
-1. Download `kjxlkj-vX.Y.Z-windows-x86_64.zip`
-2. Extract to a folder (e.g., `C:\Program Files\kjxlkj`)
-3. Add to PATH (System Properties → Environment Variables)
+## Build from source (recommended)
 
-## Winget (Windows Package Manager)
+1. Install the Rust toolchain (stable).
+2. Build with `cargo build`.
+3. Run with `cargo run`.
 
+If you want `kjxlkj` available globally, add the built binary directory to your `PATH`.
 
-## Scoop
+## Terminal recommendations
 
+kjxlkj is a terminal UI app; terminal choice matters.
 
-## Cargo (Build from Source)
+Recommended:
 
-Requires Rust toolchain:
-
-
-## Configuration
-
-Config location: `%APPDATA%\kjxlkj\config.toml`
-
-Or: `C:\Users\<username>\AppData\Roaming\kjxlkj\config.toml`
-
-## Terminal Recommendations
-
-For best experience, use a modern terminal:
-
-- **Windows Terminal** (recommended)
-- **Alacritty**
-- **WezTerm**
-
-### Windows Terminal Settings
-
-For proper key handling, add to settings.json:
-
+- Windows Terminal
+- WezTerm
+- Alacritty
 
 ## Troubleshooting
 
-### Arrow keys not working
-Use Windows Terminal instead of cmd.exe or PowerShell ISE.
+### Arrow keys or modifiers not working
+
+Try a different terminal emulator. Some environments do not report all key events consistently.
 
 ### Colors look wrong
-Ensure terminal supports 256 colors or true color.
 
-### Slow startup
-Check antivirus isn't scanning the binary on each launch.
-
-## Uninstall
-
-### Manual
-Delete the installation folder and remove from PATH.
-
-### Winget
-
-### Scoop
+Ensure the terminal is configured for at least 256 colors.

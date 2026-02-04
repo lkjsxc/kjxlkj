@@ -5,15 +5,22 @@ Structured project log for implementation work, decisions, and audits.
 
 ## Purpose
 
-This directory records:
+This repository may be rebuilt from documentation (see “All in Docs”), so long-running history is treated as optional.
 
-- implementation decisions and rationale
-- improvement proposals and follow-ups
-- compliance/audit notes (directory/file-size checks, spec alignment notes)
+This directory is intentionally minimal: it may contain only this README in some workflows.
 
-## Structure
+Historical context that used to live under `/docs/log/` is summarized in:
 
-Logs are organized by date:
+- [/docs/reference/IMPLEMENTATION_HISTORY.md](/docs/reference/IMPLEMENTATION_HISTORY.md)
 
-- [2026/README.md](2026/README.md)
+## What to update instead of logs
 
+When implementation is created or changed, update:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) (what is implemented)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (user-visible gaps)
+- [/docs/todo/current/README.md](/docs/todo/current/README.md) (next work)
+
+## Related
+
+- All-in-Docs contract: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)

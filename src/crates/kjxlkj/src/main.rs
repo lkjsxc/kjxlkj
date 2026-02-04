@@ -5,7 +5,6 @@
 mod headless;
 
 use std::env;
-use std::fs;
 
 use anyhow::Result;
 
@@ -18,13 +17,11 @@ fn main() -> Result<()> {
         return run_headless(&args);
     }
 
-    let content = if args.len() > 1 {
-        fs::read_to_string(&args[1]).unwrap_or_default()
+    let mut host = if args.len() > 1 {
+        TerminalHost::open_path(&args[1])?
     } else {
-        String::new()
+        TerminalHost::new()?
     };
-
-    let mut host = TerminalHost::with_content(&content)?;
     host.run()?;
 
     Ok(())

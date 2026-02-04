@@ -1,140 +1,87 @@
-# Bidirectional Text
+# Bidirectional Text (Implementation Guidance)
 
-Support for right-to-left and mixed-direction text.
+Back: [/docs/technical/README.md](/docs/technical/README.md)
+Guidance for supporting right-to-left and mixed-direction text in a terminal editor.
 
-## Overview
+Status note: many terminals do not perform full bidirectional reordering for you. If bidi support is incomplete or absent in the current implementation, that gap should be recorded in:
 
-kjxlkj supports bidirectional (bidi) text for
-languages like Arabic, Hebrew, and Persian.
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## Enabling Bidi
+## Goals
 
+- Preserve logical text order in the buffer (editing is always on the stored sequence).
+- Provide a deterministic visual presentation that matches the Unicode Bidirectional Algorithm (UAX #9).
+- Keep cursor behavior predictable and testable in mixed-direction lines.
 
-## Text Direction
+## Non-goals (unless explicitly specified later)
 
-### Right-to-Left (RTL)
+- Perfect script shaping in every terminal/font combination.
+- Vertical text layout.
+- Pixel-perfect compatibility with GUI editors.
 
-- Arabic: العربية
-- Hebrew: עברית
-- Persian: فارسی
+## Required model split
 
-### Left-to-Right (LTR)
+| Concern | Recommended owner | Notes |
+|---|---|---|
+| Logical text | Core | buffer stores the literal code point sequence |
+| Visual ordering | Renderer (or dedicated layout layer) | maps logical indices to visual cells |
+| Cursor semantics | Core + layout mapping | core stores logical positions; layout maps to screen |
 
-- English, European languages
-- CJK (top-to-bottom in traditional)
+Key principle: editing commands operate on logical text indices; bidi only affects how those indices map to screen positions.
 
-### Mixed
+## Cursor movement models
 
+Mixed-direction text forces an explicit decision: when the user presses “left” or “right”, should movement follow the screen or the logical string?
 
-## Cursor Behavior
+Recommended target posture:
 
-### Visual Mode
+- “left/right” in a bidi-enabled view moves visually (screen-direction).
+- word motions and higher-level text objects remain logical.
 
-Cursor moves visually (left/right on screen).
+If both behaviors exist, the mode must be explicit and user-visible.
 
-### Logical Mode
+## Selection and operators
 
-Cursor follows text order (reading direction).
+Selections should be defined over logical ranges, even if the on-screen highlight is discontinuous.
 
-### Configuration
+Target invariants:
 
+- a selection is serializable as logical ranges (start/end indices)
+- applying an operator to a selection must not depend on terminal rendering quirks
 
-## Editing
+## Direction control and markers
 
-### Insertion
+Unicode includes directional markers that affect bidi resolution (e.g., LRM/RLM).
 
-Text inserted in current direction context.
+Target guidance:
 
-### Deletion
+- preserve markers as literal text (do not strip them)
+- offer an optional “show bidi marks” rendering mode for debugging
 
-Backspace deletes logically previous character.
+## Terminal reality and compatibility
 
-## Display Modes
+Many terminals:
 
-### Implicit
+- shape complex scripts via font shaping
+- do not reorder characters visually according to UAX #9
 
-Algorithm determines direction per segment.
+Therefore, full bidi support typically requires the editor to:
 
-### Explicit
+- compute a visual ordering for each displayed line segment
+- render the reordered glyph sequence to the terminal
 
-Markers control direction:
+This is a substantial feature; it should be implemented behind clear conformance/limitations tracking.
 
-- LRM (U+200E) - Left-to-Right Mark
-- RLM (U+200F) - Right-to-Left Mark
+## Testing (recommended)
 
-### Configuration
+Tests should cover:
 
+- a line containing mixed RTL and LTR segments
+- cursor-left/right movement across direction boundaries
+- selection application across mixed runs
 
-## Statusline
+Prefer tests that validate the logical↔visual mapping rather than relying on a particular terminal’s bidi behavior.
 
-Shows current paragraph direction:
-
-
-## Selection
-
-### Visual Selection
-
-Highlights visual region, may be non-contiguous.
-
-### Logical Selection
-
-Selects logical text range.
-
-## Line Numbers
-
-### LTR Document
-
-
-### RTL Document
-
-
-## Terminal Support
-
-### Requirements
-
-- Unicode 9.0+ support
-- Bidi-capable font
-- Terminal bidi algorithm
-
-### Tested Terminals
-
-| Terminal | Support |
-|----------|---------|
-| Kitty | Full |
-| Alacritty | Limited |
-| iTerm2 | Full |
-| Windows Terminal | Full |
-
-## Limitations
-
-### Current
-
-- No vertical text
-- Limited neutral handling
-- Basic mirroring
-
-### Planned
-
-- Enhanced neutral support
-- Paragraph direction detection
-- Better cursor handling
-
-## Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<C-S-u>` | Toggle direction |
-| `<C-S-l>` | Force LTR |
-| `<C-S-r>` | Force RTL |
-
-## Tips
-
-1. Use monospace fonts with RTL support
-2. Enable bidi marks for debugging
-3. Use visual cursor mode
-4. Test with mixed content
-
-## Resources
+## References
 
 - Unicode Bidirectional Algorithm (UAX #9)
-- ICU Bidi documentation

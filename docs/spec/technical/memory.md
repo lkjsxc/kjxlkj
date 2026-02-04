@@ -1,100 +1,98 @@
-# Memory Optimization
+# Memory and Allocation Policy
 
-kjxlkj is designed for efficient memory usage.
+Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
+Define memory invariants that keep the editor stable and responsive as buffers and features grow.
 
-## Core Data Structures
+This document is normative for memory behavior, but it intentionally focuses on structural guarantees rather than hard numeric limits.
 
-### Rope-based Text Storage
+## Definitions
 
-Using `ropey` crate for text:
-- O(log n) insertions and deletions
-- Memory efficient for large files
-- Copy-on-write for undo snapshots
+| Term | Meaning |
+|---|---|
+| Resident memory | Long-lived allocations (buffers, indexes, undo state, caches). |
+| Transient memory | Short-lived allocations in hot paths (per keystroke, per snapshot, per render). |
+| Working set | Resident + expected transient usage under typical interaction. |
+| Large buffer | As defined in [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md). |
 
-### Memory Characteristics
+## Core requirements (normative)
 
-| Operation | Memory Impact |
-|-----------|---------------|
-| Open 1MB file | ~1.5MB (rope overhead) |
-| Undo snapshot | Incremental (shared nodes) |
-| Selection | O(1) - just positions |
-| Search results | Lazy iteration |
+### Avoid full-buffer copies in hot paths
 
-## Configuration
+The implementation MUST avoid allocating or copying the full buffer content as a `String` during routine interaction.
 
-### Buffer Limits
+Examples of “routine interaction”:
 
+- cursor motion
+- scrolling
+- Insert-mode typing
+- snapshot generation
+- rendering
 
-### Cache Sizing
+Full-buffer materialization MAY exist only for explicit operations that semantically require it (e.g., “write entire buffer”), and SHOULD be avoided for large buffers when practical.
 
+### Viewport-bounded snapshots MUST be memory-bounded
 
-## Large File Handling
+The snapshot is the core-to-render contract.
 
-### Streaming Open
+- Snapshot generation MUST be O(viewport) in allocation size.
+- A snapshot MUST NOT contain “all buffer lines”.
 
-Files over threshold use streaming:
+This requirement is shared with (and motivated by):
 
-Large files:
-- Partial syntax highlighting
-- Limited undo history
-- Disabled features (configurable)
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
-### Memory-Mapped Files
+### File open SHOULD avoid intermediate full copies
 
-For very large files (optional):
+When opening a file from disk:
 
-## Undo Memory Management
+- The implementation SHOULD stream UTF-8 bytes into the text model (reader → text) to avoid an additional “full file string” allocation.
+- Opening a missing path SHOULD create an empty buffer associated with that path (new-file semantics).
 
-### Incremental Snapshots
+### Undo/redo MUST have a bounded growth model
 
-Undo uses copy-on-write:
-- Only changed rope nodes copied
-- Typical undo step: < 1KB
+Undo history MUST not require copying the full buffer for every edit step.
 
-### Undo Pruning
+Allowed models include (non-exhaustive):
 
-When memory pressure:
-1. Oldest undo states pruned first
-2. Merge adjacent small changes
-3. Preserve branch points
+- persistent data structures with structural sharing
+- edit-log replay with periodic checkpoints
+- coalescing of fine-grained edits into larger, fewer steps
 
+If an undo model can grow unbounded in the worst case, it MUST provide a deterministic cap strategy (prune/coalesce), and that cap MUST be recorded as a user-visible limitation if it changes observable behavior.
 
-## LSP Memory
+### Caches MUST be bounded and evictable
 
-### Completion Limits
+Any caches introduced by services (LSP, indexing, syntax, git, etc.) MUST:
 
+- have explicit size bounds
+- support deterministic eviction (e.g., LRU)
+- be disable-able or more aggressively bounded for large buffers
 
-### Cache Eviction
+### Observability SHOULD exist (target)
 
-LRU cache for LSP responses:
-- Hover info
-- Signature help
-- Symbol information
+The system SHOULD provide a way (command, debug view, or log) to inspect coarse memory contributors:
 
-## Syntax Highlighting
+- active buffer size characteristics (bytes, line count)
+- undo history size (steps, estimated footprint)
+- cache sizes (per service)
 
-### Visible Range Only
+## Large/very large buffer posture (normative)
 
-Only highlight visible + buffer lines:
+For large buffers, memory behavior MUST prioritize responsiveness over feature completeness:
 
-### Parser Memory
+- no per-frame allocations proportional to total buffer size
+- no “hidden full scans” triggered by scrolling or typing
 
-Tree-sitter parsers per buffer:
-- Reuse parsers when possible
-- Unload for hidden buffers
+Any feature degradation used to preserve this MUST be explicit and recorded in conformance/limitations.
 
-## Monitoring Memory
+## Acceptance criteria (Given/When/Then)
 
-### Debug Mode
+1. Given a buffer with 1,000,000 lines, when a snapshot is produced, then the snapshot’s allocations MUST be bounded by viewport size (not total line count).
+2. Given a large file, when the editor is idle, then transient allocations SHOULD remain near-zero (no continuous redraw loop that reallocates snapshot data).
+3. Given repeated Insert-mode typing on a large buffer, when 1,000 characters are inserted, then memory usage MUST not increase by “one full-buffer copy” per character (no accidental per-keystroke full clones).
 
+## Related
 
-Logs memory stats periodically.
-
-### Runtime Check
-
-`:memory` command shows current usage.
-
-## Reducing Memory Usage
-
-Tips for constrained environments:
-
+- Large files: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- Latency: [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- Testing: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

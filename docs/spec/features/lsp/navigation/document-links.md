@@ -71,8 +71,8 @@ Resolved relative to workspace root.
 
 Standard Markdown link syntax is recognized:
 
-- **Text Links** - Written using the pattern `[Link Text](target)`
-- **Image Links** - Written using the pattern `![Image](path/to/image.png)`
+- **Text Links** - Written using the pattern `[` `Link Text` `]` `(` `target` `)`
+- **Image Links** - Written using the pattern `!` `[` `Alt` `]` `(` `path` `)`
 
 ## Commands
 

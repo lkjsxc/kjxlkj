@@ -1,81 +1,82 @@
-# Debugging Techniques
+# Debugging (Runbook)
 
-Debugging kjxlkj during development.
+Back: [/docs/technical/README.md](/docs/technical/README.md)
+Practical debugging guidance for kjxlkj development and reconstruction.
 
-## Logging
+Status note: kjxlkj is “All in Docs”. When debugging reveals a drift between docs and behavior, update the docs first (or record the gap) and then adjust the implementation.
 
-### Enable Debug Logging
+## Recommended workflow
 
+1. Reproduce in the smallest possible setup (small file, minimal keys).
+2. Convert the reproduction into a headless script (deterministic).
+3. Add a regression test (or a headless/E2E check) before fixing.
+4. Fix, then re-run the entire test suite.
+5. Update conformance/limitations if behavior is user-visible.
 
-### Specific Modules
+Related: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) and [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
+## Build and run (Rust)
 
-### Log Levels
+| Goal | How (examples) | Notes |
+|---|---|---|
+| Build | `cargo build` | fastest iteration loop |
+| Run editor | `cargo run -- <path>` | open the given file |
+| Run tests | `cargo test` | run full suite |
+| One test | `cargo test <name>` | filter by test name substring |
+| See test output | `cargo test -- --nocapture` | useful for failing tests |
 
-| Level | Use |
-|-------|-----|
-| error | Failures |
-| warn | Issues |
-| info | Events |
-| debug | Details |
-| trace | Everything |
+## Headless execution (recommended for repros)
 
-## Log Output
+The binary supports a headless mode that runs a deterministic script:
 
-### To File
+- `--headless` enables headless execution
+- `--script <path>` points to a script file
 
+This is the preferred way to:
 
-### Structured Logs
+- reproduce editor bugs without terminal state
+- create E2E tests that survive refactors
 
+See current surface: [/docs/reference/CONFORMANCE_COMMANDS_TESTING.md](/docs/reference/CONFORMANCE_COMMANDS_TESTING.md)
 
-## GDB/LLDB
+## Terminal “stuck state” recovery
 
-### Build with Debug Info
+If the editor crashes while the terminal is in raw/alternate-screen mode, your shell may look “broken”.
 
+Recommended recovery steps (in order):
 
-### Run in GDB
+1. Press `Enter` a few times (some shells redraw after a newline).
+2. Run `reset` (restores a sane terminal state on many systems).
+3. Run `stty sane` (restores cooked mode when `reset` is not enough).
 
+If this happens frequently, treat it as a bug: crash paths should attempt to restore the terminal before exit.
 
-### LLDB (macOS)
+## Panic/backtrace debugging
 
+Rust panics can be diagnosed via backtraces:
 
-### Breakpoints
+| Setting | Meaning |
+|---|---|
+| `RUST_BACKTRACE=1` | short backtrace |
+| `RUST_BACKTRACE=full` | full backtrace |
 
+If you add structured crash reporting, record it in:
 
-## VS Code Debugging
+- [/docs/technical/crash-reporting.md](/docs/technical/crash-reporting.md)
 
-### launch.json
+## Profiling and performance debugging
 
+The large-file performance spec explains where hidden O(file) work can appear:
 
-## Terminal Debugging
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
-### Alternate Screen
+General guidance:
 
-TUI uses alternate screen. For debugging:
+- look for loops that iterate “all lines” on every input
+- prefer viewport-bounded snapshots for rendering
+- avoid idle busy-loops that rebuild snapshots without new input
 
-
-### Raw Mode Issues
-
-
-## Panic Debugging
-
-### Backtrace
-
-
-### Panic Hook
-
-
-## Memory Debugging
-
-### Valgrind
-
-
-### AddressSanitizer
-
-
-## Performance Debugging
-
-### CPU Profiling
+For profiling targets and methodology (spec): [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 
 
 ### Flamegraph

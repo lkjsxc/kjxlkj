@@ -9,6 +9,7 @@ Purpose: provide orientation and shared vocabulary before reading design and tec
 
 | Document | Purpose |
 |----------|---------|
+| [all-in-docs.md](all-in-docs.md) | **READ FIRST** - Documentation-only reconstruction contract |
 | [principles.md](principles.md) | Core design principles |
 | [glossary.md](glossary.md) | Terminology and definitions |
 
@@ -35,7 +36,7 @@ A **Neovim-inspired TUI text editor** written in Rust with these characteristics
 - **Keyboard-only** - No mouse support
 - **Single binary** - All features built-in, no plugins
 - **Native performance** - Rust + terminal-native rendering
-- **Modern features** - LSP, fuzzy finder, git integration, multiple cursors
+- **Modern features (target)** - LSP, fuzzy finder, git integration, multiple cursors (see limitations for current status)
 
 The canonical spec clarifies that “modern features” are implemented as **built-in services** under a **Tokio async-first** runtime.
 

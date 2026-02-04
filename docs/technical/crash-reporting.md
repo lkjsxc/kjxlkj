@@ -1,68 +1,65 @@
-# Crash Reporting
+# Crash Reporting (Design)
 
-Automatic crash report generation and submission.
+Back: [/docs/technical/README.md](/docs/technical/README.md)
+Crash reporting is optional. This document defines what “good crash reporting” should look like for kjxlkj if/when implemented.
 
-## Overview
+Status note: current shipped behavior is tracked in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md). If crash reporting is not implemented, this document serves as implementation guidance for reconstruction.
 
-When kjxlkj crashes, it generates a report to help
-diagnose and fix the issue.
+## Goals (normative)
 
-## Crash Report Contents
+- Prefer not crashing: panics should be treated as bugs.
+- When a crash does occur, maximize diagnosability without leaking user data.
+- Make it easy for users to report issues with a structured artifact.
+- Attempt to restore terminal state before exit (raw mode / alternate screen safety).
 
-### Included
+## Report contents (target)
 
-- Backtrace
-- kjxlkj version
-- OS and terminal info
-- Recent actions (anonymized)
-- Configuration (sanitized)
+Crash reports SHOULD contain:
 
-### Excluded
+| Field | Why |
+|---|---|
+| build/version identifier | reproducibility |
+| OS + architecture | platform-specific bugs |
+| terminal family (best-effort) | rendering/input issues |
+| panic message | root cause hint |
+| backtrace (if available) | actionable stack context |
+| recent editor intents (sanitized) | minimal “what happened” trail |
 
-- File contents
-- Personal information
-- Credentials
-- Private paths (obfuscated)
+Crash reports MUST NOT contain:
 
-## Report Location
+- buffer contents
+- full file paths
+- secrets (tokens, keys)
+- clipboard contents
 
+If any “recent actions” are included, they MUST be a redacted, high-level log (e.g., command names, not typed text).
 
-## Report Format
+## Storage location (target)
 
+Reports SHOULD be stored locally in a user-data directory appropriate for the platform.
 
-## Automatic Submission
+Recommended posture:
 
-### Opt-In Only
+- a per-user directory under the platform’s standard application state/data location
+- bounded retention (cap number of stored reports)
+- filenames include a timestamp and a short random suffix to avoid collisions
 
+## Submission (target)
 
-### Submission
+- No automatic submission unless explicitly opted-in.
+- Manual workflow should be easy: “open report file, paste into issue”.
 
+If network submission is ever added, it must follow the same opt-in/privacy posture defined in:
 
-## Privacy
+- [/docs/technical/telemetry.md](/docs/technical/telemetry.md)
 
-### Sanitization
+## Recovery (target)
 
+If session persistence is implemented, the editor MAY offer a “restore previous session” flow after a crash.
 
-### No File Contents
+Until sessions exist, crash recovery should focus on:
 
-File contents are never included.
+- not corrupting files on disk
+- preserving unsaved work when possible (e.g., emergency write to a recovery file)
 
-## Manual Submission
-
-### GitHub Issues
-
-1. Open crash report file
-2. Create GitHub issue
-3. Paste report (review first)
-4. Add reproduction steps
-
-### Template
-
-Create a GitHub issue with the title "Crash Report" containing:
-
-1. **Reproduction Steps** - Numbered list of actions that caused the crash
-2. **Report** - Paste the crash report in a collapsible details block
-3. **Session Recovery** - Note if session was restored
-
-Previous session crashed.
-Restore session? [y/n]
+Related: [/docs/technical/error-recovery.md](/docs/technical/error-recovery.md)

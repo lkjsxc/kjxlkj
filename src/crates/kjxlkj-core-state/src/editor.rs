@@ -1,6 +1,6 @@
 //! Core editor state.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, fs, io, path::Path};
 
 use kjxlkj_core_edit::{find_text_object_range, Buffer, CursorOps};
 use kjxlkj_core_mode::{CommandLineState, KeyCode, KeyInput, Modifiers, ModeHandler};
@@ -135,6 +135,34 @@ impl EditorState {
             content,
         );
         state
+    }
+
+    /// Creates editor state by opening a UTF-8 text file from disk.
+    ///
+    /// If the path does not exist, an empty buffer is created with the path set
+    /// (new-file semantics).
+    pub fn open_path(path: &str) -> io::Result<Self> {
+        let mut state = Self::new();
+
+        let name = Path::new(path)
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or(path)
+            .to_string();
+
+        match fs::File::open(path) {
+            Ok(file) => {
+                state.buffer = Buffer::from_reader(BufferId::new(1), name, file)?;
+                state.buffer.set_path(path.to_string());
+            }
+            Err(e) if e.kind() == io::ErrorKind::NotFound => {
+                state.buffer = Buffer::new(BufferId::new(1), name);
+                state.buffer.set_path(path.to_string());
+            }
+            Err(e) => return Err(e),
+        }
+
+        Ok(state)
     }
 
     pub fn mode(&self) -> Mode {
@@ -509,7 +537,17 @@ impl EditorState {
             }
             EditorAction::EnterInsertMode => {}
             EditorAction::EnterInsertModeAfter => {
-                self.buffer.move_right();
+                // Append semantics: Insert position is after the character under the cursor.
+                // In end-exclusive modes the cursor is clamped to [0..N-1], but in Insert mode
+                // we allow the insertion point to be [0..N].
+                let pos = self.buffer.cursor().position;
+                let line_len = self
+                    .buffer
+                    .line_len(pos.line as usize)
+                    .unwrap_or(0);
+                let next_col = (pos.col as usize).saturating_add(1);
+                self.buffer.cursor_mut().position.col = next_col.min(line_len) as u32;
+                self.buffer.cursor_mut().clear_preferred_col();
             }
             EditorAction::EnterInsertModeEndOfLine => {
                 // Position cursor past the last character for insert mode
@@ -2710,7 +2748,10 @@ impl EditorState {
 
     /// Produces a snapshot for rendering.
     pub fn snapshot(&self) -> EditorSnapshot {
-        let lines: Vec<String> = (0..self.buffer.line_count())
+        // Performance invariant: snapshot generation MUST be O(viewport) for large files.
+        let start = self.viewport.top_line;
+        let end = start.saturating_add(self.viewport.height);
+        let lines: Vec<String> = (start..end)
             .filter_map(|i| self.buffer.line(i))
             .collect();
 
@@ -2799,6 +2840,50 @@ mod tests {
         state.handle_key(key('h'));
         state.handle_key(key('i'));
         assert_eq!(state.buffer().content(), "hi");
+    }
+
+    #[test]
+    fn append_at_end_of_line_inserts_after_last_char() {
+        let mut state = EditorState::new();
+
+        // Build a 2-char line, then return to Normal mode with cursor on last char.
+        state.handle_key(key('i'));
+        state.handle_key(key('a'));
+        state.handle_key(key('b'));
+        state.handle_key(esc());
+
+        // Append after cursor (at end-of-line) and type one more char.
+        state.handle_key(key('a'));
+        state.handle_key(key('c'));
+
+        assert_eq!(state.buffer().content(), "abc");
+    }
+
+    #[test]
+    fn append_on_empty_line_inserts_at_col_zero() {
+        let mut state = EditorState::new();
+        state.handle_key(key('a'));
+        state.handle_key(key('x'));
+        assert_eq!(state.buffer().content(), "x");
+    }
+
+    #[test]
+    fn snapshot_lines_are_viewport_sized_slice() {
+        let mut content = String::new();
+        for i in 0..100 {
+            if i > 0 {
+                content.push('\n');
+            }
+            content.push_str(&format!("line{}", i));
+        }
+
+        let mut state = EditorState::with_content(&content);
+        state.set_terminal_size(80, 7); // text area height = 5
+        state.viewport.top_line = 50;
+
+        let snapshot = state.snapshot();
+        assert!(snapshot.buffer.lines.len() <= 5);
+        assert_eq!(snapshot.buffer.lines.first().map(|s| s.as_str()), Some("line50"));
     }
 
     #[test]

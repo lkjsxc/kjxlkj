@@ -1,122 +1,48 @@
 # Editor Comparison
 
-Comparing kjxlkj with other terminal editors.
+Back: [/docs/reference/README.md](/docs/reference/README.md)
+High-level comparison of kjxlkj to other terminal editors.
 
-## Feature Matrix
+This document is descriptive and non-normative. For “what exists right now”, see:
 
-| Feature | kjxlkj | Neovim | Helix | Kakoune |
-|---------|--------|--------|-------|---------|
-| Modal Editing | ✓ | ✓ | ✓ | ✓ |
-| Built-in LSP | ✓ | Plugin | ✓ | Plugin |
-| Tree-sitter | ✓ | Plugin | ✓ | ✗ |
-| Fuzzy Finder | ✓ | Plugin | ✓ | Plugin |
-| File Explorer | ✓ | Plugin | ✓ | ✗ |
-| Git Integration | ✓ | Plugin | ✓ | Plugin |
-| Terminal | ✓ | ✓ | ✗ | ✗ |
-| Multiplexing | ✓ | ✗ | ✗ | ✗ |
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
-## Keybinding Philosophy
+## Feature matrix (current vs target)
 
-### kjxlkj / Neovim
+| Area | kjxlkj (current) | kjxlkj (target) | Notes |
+|------|-------------------|-----------------|-------|
+| Modal editing | Yes | Yes | Vim-like model |
+| Operator+motion | Yes (subset) | Yes | Expanding toward spec |
+| LSP | No | Yes | Placeholder service exists |
+| Git integration | No | Yes | Placeholder service exists |
+| Syntax highlighting | No | Yes | Planned |
+| Explorer UI | No | Yes | Planned |
+| Finder UI | No | Yes | Planned |
+| Splits/windows | No | Yes | Planned |
+| Config/remapping | No | Yes | Planned |
+| Plugins | No (by design) | No (by design) | Built-ins only |
 
-Vim-style: Verb → Motion
+## Keybinding philosophy
 
+### kjxlkj / (Neo)Vim
+
+Verb → motion / text object (operators compose with targets).
 
 ### Helix / Kakoune
 
-Selection-first: Select → Act
+Selection-first (select → act).
 
+## Configuration philosophy
 
-## Configuration
-
-| Editor | Config Format | Scripting |
-|--------|---------------|-----------|
-| kjxlkj | TOML | None |
+| Editor | Typical config | Scripting |
+|--------|----------------|----------|
+| kjxlkj | (planned) TOML | None (by design) |
 | Neovim | Lua | Full |
 | Helix | TOML | None |
 | Kakoune | Custom | Shell |
 
-## Startup Performance
+## Performance claims
 
-Approximate cold start times:
+This repository does not currently include published benchmarks. Performance characteristics are a target, not a measured guarantee.
 
-| Editor | Minimal | Typical |
-|--------|---------|---------|
-| kjxlkj | ~10ms | ~15ms |
-| Neovim | ~50ms | ~200ms+ |
-| Helix | ~20ms | ~30ms |
-| Kakoune | ~10ms | ~20ms |
-
-## Memory Usage
-
-Opening 10 small files:
-
-| Editor | RAM |
-|--------|-----|
-| kjxlkj | ~15MB |
-| Neovim | ~50MB |
-| Helix | ~30MB |
-| Kakoune | ~20MB |
-
-## Why Choose kjxlkj
-
-### Over Neovim
-
-- Batteries included (no plugin config)
-- Faster startup
-- Simpler configuration
-- Single binary
-
-### Over Helix
-
-- Vim keybindings (familiar)
-- Built-in terminal
-- More extensible config
-
-### Over Kakoune
-
-- Vim keybindings
-- Built-in features
-- Easier to get started
-
-## Trade-offs
-
-### kjxlkj Advantages
-
-- Zero configuration to start
-- No plugin management
-- Consistent experience
-- Fast and light
-
-### kjxlkj Disadvantages
-
-- Less extensible than Neovim
-- Smaller community
-- Fewer edge-case features
-
-## Ideal Users
-
-| User Type | Recommended |
-|-----------|-------------|
-| Vim veterans wanting simplicity | kjxlkj |
-| Heavy customizers | Neovim |
-| Modern modal learners | Helix |
-| Minimalists | Kakoune |
-
-## Migration Paths
-
-### From Vim/Neovim
-
-Easiest. Same keybindings, TOML config.
-
-### From Helix
-
-Medium. Learn vim keybindings.
-
-### From Kakoune
-
-Medium. Different paradigm.
-
-### From VSCode/etc
-
-Learn modal editing first.
+See `/docs/technical/` for technical notes and `/docs/spec/technical/` for target requirements.

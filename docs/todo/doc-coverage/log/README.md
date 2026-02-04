@@ -5,6 +5,8 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 ## Scope
 Covers documentation under `/docs/log/`.
 
+Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/README.md` remains). Historical context is summarized in `/docs/reference/IMPLEMENTATION_HISTORY.md`.
+
 ## Checklist (apply to every document listed)
 - [ ] Read the document end-to-end.
 - [ ] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
@@ -16,6 +18,3 @@ Covers documentation under `/docs/log/`.
 ## Documents
 ### Files
 - [ ] [/docs/log/README.md](/docs/log/README.md)
-
-### Subdirectories
-- [ ] [/docs/log/2026/](/docs/todo/doc-coverage/log/2026/README.md)

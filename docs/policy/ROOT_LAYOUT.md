@@ -16,7 +16,9 @@ The repo root SHOULD contain only the following entries:
 | `Cargo.lock` | Locked dependencies |
 | `.gitignore` | Git ignore rules |
 
-Additional root entries MUST be justified by a concrete need and recorded in `docs/log/`.
+Additional root entries MUST be justified by a concrete need and recorded in:
+
+- `/docs/reference/IMPLEMENTATION_HISTORY.md`
 
 ## Implementation layout
 
@@ -24,4 +26,3 @@ Additional root entries MUST be justified by a concrete need and recorded in `do
 |---|---|
 | `src/crates/` | Workspace crates MUST live here |
 | `src/crates/kjxlkj/` | The single shipped binary crate MUST live here |
-

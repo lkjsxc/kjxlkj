@@ -34,6 +34,13 @@ impl TerminalHost {
         Ok(Self { state, renderer })
     }
 
+    /// Creates a terminal host by opening a file from disk.
+    pub fn open_path(path: &str) -> io::Result<Self> {
+        let state = EditorState::open_path(path)?;
+        let renderer = Renderer::new(stdout());
+        Ok(Self { state, renderer })
+    }
+
     /// Enters the terminal and runs the editor loop.
     pub fn run(&mut self) -> io::Result<()> {
         self.enter_terminal()?;
@@ -57,24 +64,29 @@ impl TerminalHost {
     }
 
     fn event_loop(&mut self) -> io::Result<()> {
-        loop {
-            let snapshot = self.state.snapshot();
-            self.renderer.render(&snapshot)?;
+        // Render once on entry, then render only when state can change.
+        self.renderer.render(&self.state.snapshot())?;
 
+        loop {
             if self.state.is_quit_requested() {
                 break;
             }
 
-            if event::poll(Duration::from_millis(100))? {
-                let event = event::read()?;
-                if let Event::Resize(w, h) = event {
-                    self.state.set_terminal_size(w, h);
-                    continue;
-                }
-                if let Some(key_input) = InputDecoder::decode(event) {
-                    self.state.handle_key(key_input);
-                }
+            // Block until we have an event; avoids burning CPU and rebuilding snapshots while idle.
+            if !event::poll(Duration::from_millis(250))? {
+                continue;
             }
+
+            let event = event::read()?;
+            if let Event::Resize(w, h) = event {
+                self.state.set_terminal_size(w, h);
+            } else if let Some(key_input) = InputDecoder::decode(event) {
+                self.state.handle_key(key_input);
+            } else {
+                continue;
+            }
+
+            self.renderer.render(&self.state.snapshot())?;
         }
         Ok(())
     }

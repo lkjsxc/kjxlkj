@@ -16,5 +16,6 @@ Covers documentation under `/docs/overview/`.
 ## Documents
 ### Files
 - [ ] [/docs/overview/README.md](/docs/overview/README.md)
+- [ ] [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 - [ ] [/docs/overview/glossary.md](/docs/overview/glossary.md)
 - [ ] [/docs/overview/principles.md](/docs/overview/principles.md)

@@ -18,5 +18,4 @@ Align the workspace crate topology with the canonical spec.
 - [x] Placeholder scaffolding: ensure every required crate exists (stubs allowed).
 - [x] Minimal slice: ensure a minimal end-to-end runtime compiles and tests run.
 - [ ] Full conformance: align module boundaries and dependencies to the spec topology.
-- [ ] Record and justify any deviations in `/docs/log/` and `/docs/reference/LIMITATIONS.md`.
-
+- [ ] Record and justify any deviations in `/docs/reference/IMPLEMENTATION_HISTORY.md` and `/docs/reference/LIMITATIONS.md`.

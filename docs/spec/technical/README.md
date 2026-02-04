@@ -10,6 +10,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [memory.md](memory.md) | Memory management |
 | [profiling.md](profiling.md) | Profiling |
 | [latency.md](latency.md) | Latency and event ordering |
+| [large-files.md](large-files.md) | Large file performance and degradation |
 
 ## Scope
 

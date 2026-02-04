@@ -1,5 +1,7 @@
 //! Rope-based text storage.
 
+use std::io;
+
 use ropey::Rope;
 
 use kjxlkj_core_types::{BufferVersion, LineCol};
@@ -26,6 +28,14 @@ impl RopeText {
             rope: Rope::from_str(s),
             version: BufferVersion::default(),
         }
+    }
+
+    /// Creates text by streaming UTF-8 content from a reader.
+    pub fn from_reader<R: io::Read>(reader: R) -> io::Result<Self> {
+        Ok(Self {
+            rope: Rope::from_reader(reader)?,
+            version: BufferVersion::default(),
+        })
     }
 
     /// Returns the current version.

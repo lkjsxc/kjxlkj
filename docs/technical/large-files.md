@@ -1,130 +1,127 @@
-# Large File Handling
+# Large File Performance (Implementation)
 
-Strategies for editing large files efficiently.
+Back: [/docs/technical/README.md](/docs/technical/README.md)
+This document explains how kjxlkj stays responsive on large buffers in practice.
 
-## Definition
+Normative requirements live in: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
-| Size | Category |
-|------|----------|
-| <1MB | Small |
-| 1-10MB | Medium |
-| 10-100MB | Large |
-| >100MB | Very Large |
+## Goal
 
-## Automatic Detection
+Keep “edit a huge file” operations bounded by what the user can see (the viewport), not by total file size.
 
+This is an implementation document: it describes the intended tactics used to satisfy the spec.
 
-## Optimizations Applied
+## What “large” means here
 
-### For Large Files
+Use the spec’s definitions and stressors (bytes, line count, extremely long lines, heavy non-ASCII):
 
-| Feature | Change |
-|---------|--------|
-| Syntax | Disabled/limited |
-| LSP | Disabled |
-| Undo history | Reduced |
-| Line numbers | Relative disabled |
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
-### Configuration
+Implementation guidance: treat extremely long lines as “large” even when total file bytes are modest.
 
+## Current strategy (high-level)
 
-## Lazy Loading
+The architecture is “input → core → snapshot → render”. Large-file performance comes from ensuring the snapshot is cheap.
 
-### Chunked Reading
+### 1. Viewport-bounded snapshots (core)
 
-Files loaded in chunks, not entirely in memory.
+The core produces immutable snapshots for the renderer.
 
+To avoid per-frame work proportional to total file size:
 
-### Virtual Scrolling
+- a snapshot contains only a viewport-sized slice of lines (not “all buffer lines”)
+- snapshot generation must not iterate the entire buffer
+- allocations per snapshot are proportional to visible rows (plus small constant metadata)
 
-Only visible lines rendered.
+This is the single most important invariant for large files.
 
-## Memory Management
+### 2. Event-driven rendering (host)
 
-### Expected Usage
+The host render loop should avoid continuous redraws when idle.
 
-| File Size | RAM |
-|-----------|-----|
-| 10MB | ~30MB |
-| 100MB | ~150MB |
-| 1GB | ~1.5GB |
+In practice:
 
-### Memory Limits
+- render once on startup
+- then render only after input events (keys) and terminal resize events
 
+This prevents “idle CPU burn” on large files (where even a cheap snapshot still costs something).
 
-## Search Optimization
+### 3. Streaming file open (I/O)
 
-### Large File Search
+Opening a file should avoid intermediate “full file string” allocations.
 
+In practice:
 
-### Incremental Search
+- prefer reader → rope/text, rather than read-to-string → rope/text
+- missing paths behave like “new file”: create an empty buffer whose path is the requested path
 
-Results shown as found, not after complete scan.
+This reduces peak memory and time-to-first-interaction for large files.
 
-## Syntax Highlighting
+## Complexity expectations (informal)
 
-### Disabled for Large
+This section is descriptive, not normative.
 
+| Operation | Expected scaling | Notes |
+|---|---|---|
+| Snapshot generation | O(viewport height) | must not enumerate all lines |
+| Render | O(viewport width × height) | cell-based terminal output |
+| Scroll by 1 line | O(viewport height) | new visible slice; depends on line access cost |
+| Open file | O(file bytes) | single pass through input |
 
-### Partial Highlighting
+## Known stressors and current posture
 
-Only visible region highlighted.
+### Extremely long lines
 
-## Line Limits
+Even with viewport-bounded line counts, a single very long line can be expensive if the renderer must measure or slice deep into it.
 
-### Very Long Lines
+Current posture:
 
+- keep snapshot line count bounded
+- treat long-line optimizations as future work (see below)
 
-### Display
+### Non-ASCII and wide graphemes
 
+Display width computation is a renderer concern. The core should not precompute per-grapheme width for the entire buffer.
 
-## Undo Optimization
+## What is intentionally not promised here
 
-### Reduced History
+These are common “large file editor” behaviors, but they are not automatically assumed:
 
+- no dedicated “large file mode” toggle
+- no guaranteed feature degradation (syntax/LSP/undo caps) unless explicitly implemented
+- no progress indicator or cancel during open unless explicitly implemented
 
-### Checkpoint Strategy
+If any of the above are added, they should be specified first in:
 
-Fewer checkpoints for large edits.
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) and [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## File Opening
+## How to verify (recommended)
 
-### Progress Indicator
+### Automated
 
+- Add/keep regression tests that assert snapshot line materialization is viewport-sized.
+- Add/keep regression tests for “idle render does not busy-loop” where feasible.
 
-### Async Loading
+### Manual
 
-UI responsive during load.
+- Open a very large file and confirm:
+  - the editor becomes interactive quickly
+  - CPU usage stays low when not typing or resizing
+  - scrolling does not trigger “whole-file” pauses
 
-## Recommended Workflow
+## Future improvements (targets)
 
-1. Use grep for searching
-2. Split large files when possible
-3. Use streaming tools (sed, awk)
-4. Consider alternative viewers (less)
+These are compatible with the current model and can be implemented incrementally:
 
-## Commands
+- terminal diffing (dirty-region / cell-diff) to reduce writes
+- incremental snapshot caching for unchanged lines within a stable viewport
+- long-line virtualization (render only the visible slice of a single long line)
+- optional progress + cancel for long reads
 
-| Command | Description |
-|---------|-------------|
-| `:LargeFileMode` | Toggle optimizations |
-| `:set wrap` | Enable line wrap |
-| `:syntax off` | Disable syntax |
+## Related
 
-## Warning Dialog
-
-
-## Performance Tips
-
-1. Disable syntax highlighting
-2. Use narrower viewport
-3. Close unused buffers
-4. Avoid global operations
-
-## Limits
-
-### Tested Maximum
-
-- 1GB file: Opens, basic editing
-- 100k line files: Full functionality
-- 1M line files: Limited functionality
+- Spec: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- Latency: [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- Memory: [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
+- Viewport: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)

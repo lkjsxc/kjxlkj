@@ -1,113 +1,72 @@
-# Network File Systems
+# Network Filesystems (Guidance)
 
-Working with files on network file systems.
+Back: [/docs/technical/README.md](/docs/technical/README.md)
+Guidance for safe file I/O when the underlying filesystem is remote (NFS/SMB/SSHFS/etc.).
 
-## Supported Systems
+Status note: kjxlkj does not need special “filesystem plugins” to operate on network mounts. However, network filesystems amplify failure modes; this document defines the expectations a robust implementation should meet.
 
-| System | Support |
-|--------|---------|
-| NFS | Full |
-| SMB/CIFS | Full |
-| SSHFS | Full |
-| AFP | Basic |
+## Core risks
 
-## Considerations
+Network filesystems commonly introduce:
 
-### Latency
+- higher latency and variable throughput
+- transient failures (disconnects, timeouts)
+- weaker “atomicity” guarantees depending on mount options
+- clock skew affecting mtime-based change detection
 
-Network operations are slower than local.
+## Goals (normative)
 
+- Never silently lose user edits.
+- Never corrupt an on-disk file due to partial writes.
+- Make external modification conflicts explicit (when detectable).
+- Keep the editor responsive even when the filesystem is slow.
 
-### Reliability
+## Save strategy (target)
 
-Network may disconnect during edits.
+Recommended posture for writes (best-effort atomic save):
 
-## Auto-Save
+1. Write to a temporary file in the same directory as the target path.
+2. Flush and sync the temporary file (best-effort; platform-dependent).
+3. Replace the destination via an atomic rename when supported.
+4. On failure, keep the buffer “dirty” and surface an actionable error to the user.
 
-### Enabled by Default
+If a platform/filesystem cannot provide atomic replace, the limitation MUST be documented.
 
+## External modification detection (target)
 
-### On Focus Lost
+When writing a file that may have been modified externally, the editor SHOULD detect and report conflicts.
 
+Typical signals (all imperfect on network mounts):
 
-## Conflict Detection
+- file size
+- modified time
+- inode/file ID (when available)
+- content hash (expensive; consider only on explicit user action)
 
-### File Changed Externally
+If change detection is unreliable, the implementation should still avoid overwriting silently: require explicit confirmation before destructive writes.
 
+## Auto-save posture (target)
 
-### Check Frequency
+Auto-save is risky on flaky mounts.
 
+Recommended default:
 
-## Caching
+- do not auto-save by default
+- if auto-save exists, make it explicit and configurable per project
 
-### Read Cache
+## Error handling (normative)
 
+When a filesystem operation fails (read, write, rename, sync):
 
-### Write-Through
+- the editor MUST not panic
+- the buffer MUST remain intact in memory
+- the user MUST receive a clear error message
+- the editor SHOULD provide a “write to alternate path” escape hatch
 
-Writes always go directly to disk.
+Related: [/docs/technical/error-recovery.md](/docs/technical/error-recovery.md)
 
-## Error Handling
+## Performance posture (target)
 
-### Timeout
-
-
-### Disconnection
-
-
-## Performance Tips
-
-### Local Working Copy
-
-
-### Reduce Requests
-
-
-## NFS Specific
-
-### Lock Files
-
-
-### Hard Links
-
-Undo files may use hard links.
-
-## SMB Specific
-
-### Windows Shares
-
-
-## SSHFS
-
-### Mount Options
-
-
-### Integration
-
-SSHFS appears as local filesystem.
-
-## Offline Mode
-
-### When Disconnected
-
-
-### Sync on Reconnect
-
-Queued writes applied when connection restored.
-
-## Backup Strategy
-
-### Local Backups
-
-
-### Before Overwrite
-
-Always backup before saving to network.
-
-## Best Practices
-
-1. Enable auto-save
-2. Use local backups
-3. Watch for external changes
-4. Handle disconnects gracefully
-5. Consider latency in workflows
+- avoid synchronous “scan the whole directory tree” behaviors
+- avoid repeated stat calls on every keystroke
+- keep the UI responsive: IO should not stall rendering/input indefinitely

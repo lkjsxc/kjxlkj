@@ -2,7 +2,17 @@
 
 kjxlkj is a Neovim-inspired TUI text editor with all features built-in.
 
-This documentation is optimized for machine (LLM) parsing. See [policy/README.md](policy/README.md) for details.
+## “All in Docs”
+
+This repository uses an **“All in Docs”** approach:
+
+- The docs under `/docs/` are the **project** and the **source of truth**.
+- The implementation is **derived from the docs** (and may be deleted/rebuilt at any time).
+- The docs are intentionally written so that **the system can be reconstructed from docs alone**.
+
+Canonical explanation: [overview/all-in-docs.md](overview/all-in-docs.md).
+
+This documentation is also optimized for machine (LLM) parsing. See [policy/README.md](policy/README.md).
 
 ## Directory Structure
 
@@ -23,6 +33,7 @@ This documentation is optimized for machine (LLM) parsing. See [policy/README.md
 1. [spec/README.md](spec/README.md) - Canonical specifications
 2. [guides/QUICKSTART.md](guides/QUICKSTART.md) - Getting started
 3. [spec/ux/keybindings.md](spec/ux/keybindings.md) - Complete keybindings
+4. [todo/RECONSTRUCTION_PROMPT.md](todo/RECONSTRUCTION_PROMPT.md) - One-shot rebuild prompt
 
 ## Documentation Map
 

@@ -50,12 +50,16 @@ When a file approaches or exceeds 200 lines:
 
 ## LLM-Focused Note Consolidation
 
-The documentation intent statement MUST appear only in:
+The repository’s meta-intent statements MUST be centralized (to avoid scattering them across leaf docs).
 
-- [docs/README.md](/docs/README.md)
-- [docs/policy/README.md](README.md)
+The “All in Docs” contract and the “LLM-first parsing/editing” intent SHOULD appear only in these canonical locations:
 
-Leaf documents MUST NOT contain individual LLM-focused meta comments. Remove any such scattered notices during restructuring.
+- [/README.md](/README.md)
+- [/docs/README.md](/docs/README.md)
+- [/docs/policy/README.md](/docs/policy/README.md)
+- [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+
+Leaf documents MUST NOT add additional meta-intent commentary. Remove scattered meta notes during restructuring.
 
 ## Compliance Checklist
 

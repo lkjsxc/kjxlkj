@@ -1,25 +1,33 @@
 # kjxlkj Quick Start Guide
 
-Welcome to kjxlkj! This guide gets you started quickly.
+Back: [/docs/guides/README.md](/docs/guides/README.md)
+Getting started with the currently implemented editor surface.
+
+For the authoritative “what exists right now” ledger, see:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 ## Installation
 
-### Pre-built Binaries
+### Pre-built binaries
 
-Download from GitHub Releases for your platform:
-- Linux (x86_64, aarch64): `.tar.gz` or AppImage
-- macOS (Intel, Apple Silicon): `.tar.gz`
-- Windows (x86_64, aarch64): `.zip`
+This repository does not currently publish tagged releases. Build from source.
 
-### Build from Source
+### Build from source
 
+1. Install the Rust toolchain (stable).
+2. Build with `cargo build`.
+3. Run with `cargo run`.
 
-## First Steps
+## First steps
 
-### Opening Files
+### Opening a file
 
+Run the editor with an optional file path argument (the file content is loaded into the buffer).
 
-### Basic Navigation
+You can also open a file inside the editor with `:e {file}`.
+
+### Basic navigation
 
 | Key | Action |
 |-----|--------|
@@ -27,7 +35,7 @@ Download from GitHub Releases for your platform:
 | `w b e` | Word forward/backward/end |
 | `0 $` | Line start/end |
 | `gg G` | File start/end |
-| `Ctrl-d/u` | Page down/up |
+| `Ctrl-d` / `Ctrl-u` | Scroll half page down/up |
 
 ### Editing
 
@@ -35,52 +43,43 @@ Download from GitHub Releases for your platform:
 |-----|--------|
 | `i` | Insert before cursor |
 | `a` | Insert after cursor |
-| `o` | New line below |
-| `O` | New line above |
-| `x` | Delete character |
+| `o` | Open line below (enter Insert) |
+| `O` | Open line above (enter Insert) |
+| `x` | Delete character under cursor |
 | `dd` | Delete line |
-| `yy` | Copy line |
-| `p` | Paste |
+| `yy` | Yank line |
+| `p` | Paste after cursor |
 | `u` | Undo |
 | `Ctrl-r` | Redo |
 
-### Mode Switching
+### Mode switching
 
 | Key | Action |
 |-----|--------|
-| `i, a, o` | → Insert mode |
-| `v` | → Visual mode |
-| `V` | → Visual Line mode |
-| `Ctrl-v` | → Visual Block mode |
-| `:` | → Command mode |
-| `Esc` | → Normal mode |
+| `Esc` | Return to Normal mode |
+| `i, a, o` | Enter Insert mode |
+| `v` | Enter Visual mode |
+| `V` | Enter Visual Line mode |
+| `Ctrl-v` | Enter Visual Block mode |
+| `R` | Enter Replace mode |
+| `:` | Enter Command mode |
 
-## Built-in Features
+## Saving and quitting
 
-### File Explorer (Space + e)
-- Navigate: `j/k`
-- Open: `Enter` or `l`
-- Parent: `h`
-- Create: `a` (file) / `A` (dir)
-- Delete: `d`
+- Quit: `:q` (or `:q!` to force).
+- Write to a path: `:w {file}`.
+- Write then quit: `:wq` or `:x`.
+- Convenience: `ZZ` writes then quits; `ZQ` quits without saving.
 
-### Terminal (Space + t)
-- Toggle: `Ctrl-\`
-- Exit: type `exit` or close window
+## What is not implemented yet
 
-### Fuzzy Finder (Space + f)
-- Files: `<leader>ff`
-- Grep: `<leader>fg`
-- Buffers: `<leader>fb`
+Many “modern editor” features (LSP, git integration, syntax highlighting, explorer/finder UI, configuration) are specified as targets but are not implemented yet.
 
-## Configuration
+See:
 
-Config file: `~/.config/kjxlkj/config.toml`
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-See `examples/config.toml` for options.
+## Getting help
 
-## Getting Help
-
-- In-editor: `:help` or `:h topic`
-- Documentation: [docs/spec/](/docs/spec/)
-- Issues: GitHub Issues
+- Documentation index: [/docs/README.md](/docs/README.md)
+- Target keybindings spec: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)

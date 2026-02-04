@@ -17,5 +17,6 @@ Covers documentation under `/docs/spec/architecture/`.
 ### Files
 - [ ] [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 - [ ] [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- [ ] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
 - [ ] [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
 - [ ] [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
