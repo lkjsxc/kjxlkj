@@ -8,7 +8,7 @@ This project follows “All in Docs”: `/docs/` is the source of truth and the 
 <instructions>
 You are an autonomous implementation agent operating inside a git repository.
 
-Your task: reconstruct the entire project from documentation (“All in Docs”), by creating the complete source tree, build files, tests, CI, and supporting artifacts.
+Your task: reconstruct the entire project from documentation (“All in Docs”), by creating the complete source tree, build files, tests, and supporting artifacts.
 
 Treat `/docs/` as the only source of truth. Everything else is derived output.
 
@@ -19,6 +19,8 @@ Assume you can:
 - edit files
 - run commands (tests, linters, build)
 - make git commits
+
+This file is a process and discipline prompt, not a catalog of specific tooling. If the repo requires specific tooling (CI provider, containerization, etc.), those requirements MUST live in other `/docs/` documents and be discovered by reading them.
 </instructions>
 
 <one_shot_execution_strategy>
@@ -34,7 +36,7 @@ Operate in a tight loop until done:
 3. Implement the smallest coherent slice that advances conformance.
 4. Add/extend tests for observable behavior (including regressions).
 5. Update `/docs/reference/CONFORMANCE.md` and `/docs/reference/LIMITATIONS.md` (and append a note to `/docs/reference/IMPLEMENTATION_HISTORY.md` when decisions are made).
-6. Run verification commands (docs policy, fmt, clippy, tests) and fix issues.
+6. Run the repository’s verification gate as documented under `/docs/` (for example, in `/docs/reference/CI.md`) and fix issues.
 7. Commit a small, reviewable changeset.
 </one_shot_execution_strategy>
 
@@ -90,6 +92,7 @@ Root and repository layout
 TODO discipline
 - Use `/docs/todo/current/` as your master checklist.
 - Actually write checkmarks into the TODO-list document files as you complete items.
+- If starting from a docs-only checkout (or after deleting derived artifacts), treat existing checkmarks as non-authoritative: validate each checklist item against the current repository state; if an item is not actually satisfied, uncheck it and redo it.
 - Do not stop until every item in the current TODO iteration is checked off.
 - When creating new TODO leaves under `/docs/todo/current/`, obey local iteration rules (including the “no digits in directory/file names” constraint).
 - Second-to-last wave MUST be “Recreate the TODO list”; last wave MUST be “Continue to the next iteration”.
@@ -118,39 +121,11 @@ Logging
 - If any file-size policies are violated, record it explicitly there and create a TODO leaf to address it.
 </constraints>
 
-<reconstruction_runbook>
-Bootstrap and keep the repo buildable early:
-- Recreate the workspace topology from `/docs/spec/architecture/workspace-manifest.md` and `/docs/spec/architecture/crates.md`.
-- Create required root artifacts (toolchain pinning, CI, Docker) as described by policy and reference docs.
-- Ensure `cargo test --workspace` runs as early as possible (placeholders are acceptable only if recorded as limitations).
-
-Minimum derived artifacts checklist (root):
-- Build system: `Cargo.toml` (workspace), `Cargo.lock` (committed), `.gitignore` (ignores `/target`).
-- Toolchain pin: `rust-toolchain.toml` (stable + `rustfmt`/`clippy` components).
-- CI: `/.github/workflows/ci.yml`, `/.github/scripts/check_docs_policy.py` (and automation such as `/.github/dependabot.yml`).
-- Docker: `Dockerfile` and `.dockerignore`.
-
-Keep verification gated and reproducible:
-- Keep CI and local commands aligned with `/docs/reference/CI.md`.
-- After each coherent slice, run: `python .github/scripts/check_docs_policy.py`, `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace`.
-- Ensure Docker buildability: `docker build -t kjxlkj:ci .`.
-
-Maintain the runtime model and test harness:
-- Implement the Tokio runtime topology in `/docs/spec/architecture/runtime.md` (single-writer core, snapshot-based rendering, supervised services).
-- Keep a deterministic headless/E2E harness (see `/docs/reference/CONFORMANCE_COMMANDS_TESTING.md`) and expand it as features are implemented.
-
-Execute the TODO recursion, not just the current iteration:
-- Execute `/docs/todo/current/` in wave order.
-- When you reach “Continue to the next iteration”, create the next iteration and immediately continue executing it in the same run until the definition of done is satisfied.
-</reconstruction_runbook>
-
 <definition_of_done>
 You are done only when all of the following are true:
 
-- The repository builds from scratch and all tests pass reliably.
-- A clean rebuild works: remove derived artifacts (at least `cargo clean`) and re-run the full verification command set successfully.
-- CI is present and green (GitHub Actions under `/.github/`, including docs policy checks, `cargo fmt`, `cargo clippy -D warnings`, and `cargo test`).
-- Docker support is present and works (`Dockerfile`, `.dockerignore`, and a successful `docker build`).
+- The repository is buildable from scratch and the documented verification gate passes reliably.
+- The verification gate and local commands are aligned with the repository’s documented CI/verification requirements under `/docs/` (for example, `/docs/reference/CI.md`).
 - The implementation matches the canonical spec, or any divergence is recorded in `/docs/reference/`.
 - The TODO iteration is fully checked off, including the recursion waves.
 - The documentation remains sufficient to delete everything but `/docs/` and reconstruct again.
