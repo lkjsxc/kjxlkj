@@ -34,6 +34,6 @@ Implement cursor semantics, including cursor shape/visibility rules where specif
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

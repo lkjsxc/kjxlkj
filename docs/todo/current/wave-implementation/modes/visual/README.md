@@ -33,6 +33,6 @@ Implement Visual mode state and key interpretation (selection mechanics are also
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

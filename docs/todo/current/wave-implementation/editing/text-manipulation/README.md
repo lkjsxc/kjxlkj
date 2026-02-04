@@ -40,7 +40,7 @@ Implement text manipulation primitives such as:
 
 - [ ] Implement all text manipulation documents in the subtree.
   - [x] Case changing (~, g~, gU, gu)
-  - [ ] Increment/decrement (Ctrl-A, Ctrl-X)
+  - [x] Increment/decrement (Ctrl-A, Ctrl-X)
   - [x] Join/split (J, gJ)
   - [x] Undo/redo (u, Ctrl-r)
   - [ ] Sorting/alignment (future)

@@ -37,6 +37,6 @@ Implement macro recording and playback, including recursion and register integra
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

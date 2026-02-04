@@ -38,6 +38,6 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

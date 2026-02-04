@@ -37,6 +37,6 @@ Implement the Command mode state machine and its integration with Ex command-lin
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
