@@ -179,4 +179,18 @@ mod tests {
         let v2 = BufferVersion::new(10);
         assert_eq!(v1, v2);
     }
+
+    #[test]
+    fn buffer_id_copy() {
+        let id1 = BufferId::new(42);
+        let id2 = id1;
+        assert_eq!(id1, id2);
+    }
+
+    #[test]
+    fn buffer_version_copy() {
+        let v1 = BufferVersion::new(99);
+        let v2 = v1;
+        assert_eq!(v1, v2);
+    }
 }

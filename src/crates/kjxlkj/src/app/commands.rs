@@ -178,4 +178,11 @@ mod tests {
         execute_command(&mut state, "qall");
         assert!(state.should_quit);
     }
+
+    #[test]
+    fn unknown_command_noop() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "unknowncmd");
+        assert!(!state.should_quit);
+    }
 }

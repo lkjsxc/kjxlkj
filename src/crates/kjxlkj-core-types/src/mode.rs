@@ -181,4 +181,14 @@ mod tests {
     fn mode_visual_line_is_visual() {
         assert!(Mode::VisualLine.is_visual());
     }
+
+    #[test]
+    fn mode_visual_block_is_visual() {
+        assert!(Mode::VisualBlock.is_visual());
+    }
+
+    #[test]
+    fn mode_command_display_2() {
+        assert_eq!(Mode::Command.display_name(), "COMMAND");
+    }
 }
