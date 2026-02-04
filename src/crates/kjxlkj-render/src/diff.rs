@@ -207,4 +207,58 @@ mod tests {
         assert!(!diff.changed_lines.contains(&0));
         assert!(!diff.changed_lines.contains(&2));
     }
+
+    #[test]
+    fn test_render_diff_clone() {
+        let diff = RenderDiff {
+            changed_lines: vec![1, 2],
+            status_changed: true,
+            command_changed: false,
+            cursor_changed: true,
+            mode_changed: false,
+            selection_changed: false,
+        };
+        let cloned = diff.clone();
+        assert_eq!(cloned.changed_lines, diff.changed_lines);
+        assert_eq!(cloned.status_changed, diff.status_changed);
+    }
+
+    #[test]
+    fn test_render_diff_debug() {
+        let diff = RenderDiff::default();
+        let debug = format!("{:?}", diff);
+        assert!(debug.contains("RenderDiff"));
+    }
+
+    #[test]
+    fn test_selection_changed() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.selection = Some(kjxlkj_core_types::Selection::char_wise(
+            kjxlkj_core_types::Position::new(0, 0),
+            kjxlkj_core_types::Position::new(0, 5),
+        ));
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.selection_changed);
+        assert!(diff.needs_redraw());
+    }
+
+    #[test]
+    fn test_empty_snapshot_diff() {
+        let old = make_snapshot(vec![]);
+        let new = make_snapshot(vec![]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.changed_lines.is_empty());
+    }
+
+    #[test]
+    fn test_only_cursor_change() {
+        let old = make_snapshot(vec!["hello", "world"]);
+        let mut new = make_snapshot(vec!["hello", "world"]);
+        new.cursor = Cursor::new(1, 2);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.cursor_changed);
+        assert!(!diff.status_changed);
+        assert!(diff.changed_lines.is_empty());
+    }
 }

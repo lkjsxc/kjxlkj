@@ -739,3 +739,153 @@ fn test_end_to_end_open_above_insert() {
     assert_eq!(snapshot2.mode, kjxlkj_core_types::Mode::Insert);
     assert!(snapshot2.buffer.line_count > initial_lines);
 }
+
+/// Test: Append mode with a.
+#[test]
+fn test_end_to_end_append_mode() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start of line
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    // a -> append (insert after cursor)
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+    // Cursor should have moved right
+    assert!(snapshot.cursor.col() >= 1);
+}
+
+/// Test: Append at end of line with A.
+#[test]
+fn test_end_to_end_append_eol() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    // A -> append at end of line
+    state.handle_key(KeyEvent::new(KeyCode::Char('A'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+    // Cursor should be at end
+    assert!(snapshot.cursor.col() >= 4);
+}
+
+/// Test: Insert at beginning of line with I.
+#[test]
+fn test_end_to_end_insert_bol() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // I -> insert at beginning
+    state.handle_key(KeyEvent::new(KeyCode::Char('I'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+    assert_eq!(snapshot.cursor.col(), 0);
+}
+
+/// Test: Visual mode selection with motion.
+#[test]
+fn test_end_to_end_visual_mode_select() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    // v -> visual mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Visual);
+}
+
+/// Test: Visual line mode.
+#[test]
+fn test_end_to_end_visual_line_mode() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // V -> visual line mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('V'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::VisualLine);
+}
+
+/// Test: Exit visual mode with Escape.
+#[test]
+fn test_end_to_end_visual_escape() {
+    let mut state = EditorState::new();
+
+    // v -> visual mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    let snapshot1 = state.snapshot();
+    assert_eq!(snapshot1.mode, kjxlkj_core_types::Mode::Visual);
+    
+    // Escape -> normal
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    assert_eq!(snapshot2.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Delete word motion with dw.
+#[test]
+fn test_end_to_end_delete_word() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    let before = state.snapshot();
+    let before_len = before.buffer.lines.first().map(|l| l.len()).unwrap_or(0);
+
+    // dw -> delete word
+    state.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    
+    let after = state.snapshot();
+    let after_len = after.buffer.lines.first().map(|l| l.len()).unwrap_or(0);
+    
+    // Should have deleted at least "hello "
+    assert!(after_len < before_len);
+}
