@@ -92,4 +92,36 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn input_event_resize_zero() {
+        let event = InputEvent::resize(0, 0);
+        if let InputEvent::Resize(w, h) = event {
+            assert_eq!(w, 0);
+            assert_eq!(h, 0);
+        }
+    }
+
+    #[test]
+    fn input_event_resize_large() {
+        let event = InputEvent::resize(4096, 2160);
+        if let InputEvent::Resize(w, h) = event {
+            assert_eq!(w, 4096);
+            assert_eq!(h, 2160);
+        }
+    }
+
+    #[test]
+    fn input_event_clone() {
+        let event = InputEvent::key(Key::char('x'));
+        let cloned = event.clone();
+        assert_eq!(event, cloned);
+    }
+
+    #[test]
+    fn input_event_debug() {
+        let event = InputEvent::FocusGained;
+        let debug_str = format!("{:?}", event);
+        assert!(debug_str.contains("FocusGained"));
+    }
 }

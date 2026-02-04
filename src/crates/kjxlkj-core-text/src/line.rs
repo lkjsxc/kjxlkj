@@ -45,4 +45,21 @@ mod tests {
         assert_eq!(line_len("🎉"), 1);
         assert_eq!(line_len("hello🎉"), 6);
     }
+
+    #[test]
+    fn test_multibyte_line_end() {
+        assert_eq!(line_end_col("中文字", false), 2);
+        assert_eq!(line_end_col("中文字", true), 3);
+    }
+
+    #[test]
+    fn test_mixed_content_len() {
+        assert_eq!(line_len("abc中"), 4);
+    }
+
+    #[test]
+    fn test_whitespace_only_line() {
+        assert_eq!(line_len("   "), 3);
+        assert_eq!(line_end_col("   ", false), 2);
+    }
 }

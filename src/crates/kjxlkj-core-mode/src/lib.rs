@@ -4,6 +4,10 @@ mod intent;
 mod normal;
 mod state;
 
+#[cfg(test)]
+mod state_tests;
+
 pub use intent::Intent;
 pub use normal::NormalModeState;
 pub use state::ModeState;
+

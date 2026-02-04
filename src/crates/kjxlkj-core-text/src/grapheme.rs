@@ -75,4 +75,29 @@ mod tests {
         // Most terminals render emoji as width 2
         assert!(grapheme_width("😀") >= 1);
     }
+
+    #[test]
+    fn tab_width() {
+        // Tab character width (unicode width crate reports 1 for control chars)
+        assert!(grapheme_width("\t") >= 0);
+    }
+
+    #[test]
+    fn multibyte_boundaries() {
+        let s = "中文";
+        assert_eq!(next_grapheme_boundary(s, 0), 3); // 3 bytes per CJK char
+        assert_eq!(prev_grapheme_boundary(s, 6), 3);
+    }
+
+    #[test]
+    fn next_boundary_at_middle() {
+        let s = "abcdef";
+        assert_eq!(next_grapheme_boundary(s, 3), 4);
+    }
+
+    #[test]
+    fn prev_boundary_at_end() {
+        let s = "abcd";
+        assert_eq!(prev_grapheme_boundary(s, 4), 3);
+    }
 }

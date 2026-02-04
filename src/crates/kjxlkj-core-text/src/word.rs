@@ -149,4 +149,29 @@ mod tests {
         assert_eq!(next_word_boundary("", 0), 0);
         assert_eq!(prev_word_boundary("", 0), 0);
     }
+
+    #[test]
+    fn test_find_word_start_at_end() {
+        assert_eq!(find_word_start("hello", 5), 0);
+    }
+
+    #[test]
+    fn test_find_word_start_in_middle() {
+        assert_eq!(find_word_start("hello world", 8), 6);
+    }
+
+    #[test]
+    fn test_find_word_end_at_end() {
+        assert_eq!(find_word_end("hello", 3), 4);
+    }
+
+    #[test]
+    fn test_underscore_is_word_char() {
+        assert_eq!(next_word_boundary("foo_bar", 0), 7);
+    }
+
+    #[test]
+    fn test_multiple_spaces() {
+        assert_eq!(next_word_boundary("hello   world", 0), 8);
+    }
 }

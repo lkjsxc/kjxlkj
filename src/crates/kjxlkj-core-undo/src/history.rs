@@ -166,4 +166,32 @@ mod tests {
         assert!(pos.is_some());
         assert_eq!(pos.unwrap().line, 0);
     }
+
+    #[test]
+    fn undo_cursor_position_on_empty() {
+        let history = UndoHistory::new();
+        assert!(history.undo_cursor_position().is_none());
+    }
+
+    #[test]
+    fn multiple_undo_redo_cycles() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx("a"));
+        history.push(make_tx("b"));
+        history.undo();
+        history.undo();
+        history.redo();
+        history.redo();
+        assert!(history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn redo_after_new_push_not_possible() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx("first"));
+        history.undo();
+        history.push(make_tx("second"));
+        assert!(!history.can_redo());
+    }
 }

@@ -105,4 +105,25 @@ mod tests {
         store.set_local('x', Position::new(2, 2));
         assert_eq!(store.get_local('x'), Some(Position::new(2, 2)));
     }
+
+    #[test]
+    fn uppercase_not_local() {
+        let mut store = MarkStore::new();
+        store.set_local('A', Position::new(0, 0));
+        assert!(store.get_local('A').is_none());
+    }
+
+    #[test]
+    fn lowercase_not_global() {
+        let mut store = MarkStore::new();
+        store.set_global('a', "f.txt".to_string(), Position::new(0, 0));
+        assert!(store.get_global('a').is_none());
+    }
+
+    #[test]
+    fn get_nonexistent_mark() {
+        let store = MarkStore::new();
+        assert!(store.get('z').is_none());
+        assert!(store.get('Z').is_none());
+    }
 }
