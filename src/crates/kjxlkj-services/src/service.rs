@@ -86,4 +86,88 @@ mod tests {
         let msg = ServiceMessage::Shutdown;
         assert!(matches!(msg, ServiceMessage::Shutdown));
     }
+
+    #[test]
+    fn test_service_status_starting() {
+        let status = ServiceStatus::Starting;
+        assert_eq!(status, ServiceStatus::Starting);
+    }
+
+    #[test]
+    fn test_service_status_stopping() {
+        let status = ServiceStatus::Stopping;
+        assert_eq!(status, ServiceStatus::Stopping);
+    }
+
+    #[test]
+    fn test_service_status_stopped() {
+        let status = ServiceStatus::Stopped;
+        assert_eq!(status, ServiceStatus::Stopped);
+    }
+
+    #[test]
+    fn test_service_status_failed() {
+        let status = ServiceStatus::Failed;
+        assert_eq!(status, ServiceStatus::Failed);
+    }
+
+    #[test]
+    fn test_service_message_custom() {
+        let msg = ServiceMessage::Custom("test".to_string());
+        assert!(matches!(msg, ServiceMessage::Custom(_)));
+    }
+
+    #[test]
+    fn test_service_handle_new() {
+        let (tx, _rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new("test".to_string(), tx);
+        assert_eq!(handle.name, "test");
+        assert_eq!(handle.status, ServiceStatus::Starting);
+    }
+
+    #[tokio::test]
+    async fn test_service_handle_shutdown() {
+        let (tx, mut rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new("test".to_string(), tx);
+        handle.shutdown().await.unwrap();
+        let msg = rx.recv().await.unwrap();
+        assert!(matches!(msg, ServiceMessage::Shutdown));
+    }
+
+    #[tokio::test]
+    async fn test_service_handle_send() {
+        let (tx, mut rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new("test".to_string(), tx);
+        handle.send("hello".to_string()).await.unwrap();
+        let msg = rx.recv().await.unwrap();
+        assert!(matches!(msg, ServiceMessage::Custom(s) if s == "hello"));
+    }
+
+    #[test]
+    fn test_service_status_clone() {
+        let status = ServiceStatus::Running;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_service_status_debug() {
+        let status = ServiceStatus::Running;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Running"));
+    }
+
+    #[test]
+    fn test_service_message_clone() {
+        let msg = ServiceMessage::Custom("test".to_string());
+        let cloned = msg.clone();
+        assert!(matches!(cloned, ServiceMessage::Custom(s) if s == "test"));
+    }
+
+    #[test]
+    fn test_service_message_debug() {
+        let msg = ServiceMessage::Shutdown;
+        let debug = format!("{:?}", msg);
+        assert!(debug.contains("Shutdown"));
+    }
 }

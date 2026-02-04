@@ -253,4 +253,99 @@ mod tests {
         apply_indent(&mut buffer, Position::new(0, 0), Position::new(1, 0), true);
         assert!(buffer.to_string().starts_with("    line1"));
     }
+
+    #[test]
+    fn test_operator_equality() {
+        assert_eq!(Operator::Delete, Operator::Delete);
+        assert_ne!(Operator::Delete, Operator::Yank);
+    }
+
+    #[test]
+    fn test_operator_debug() {
+        let op = Operator::Change;
+        let debug = format!("{:?}", op);
+        assert!(debug.contains("Change"));
+    }
+
+    #[test]
+    fn test_outdent() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "    line1\n    line2");
+        apply_indent(&mut buffer, Position::new(0, 0), Position::new(1, 0), false);
+        assert!(buffer.to_string().starts_with("line1"));
+    }
+
+    #[test]
+    fn test_uppercase() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::Uppercase,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "HELLO");
+    }
+
+    #[test]
+    fn test_lowercase() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "HELLO");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::Lowercase,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "hello");
+    }
+
+    #[test]
+    fn test_toggle_case() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "HeLLo");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::ToggleCase,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "hEllO");
+    }
+
+    #[test]
+    fn test_normalize_range() {
+        let (start, end) = normalize_range(Position::new(0, 5), Position::new(0, 0));
+        assert!(start.col <= end.col);
+    }
+
+    #[test]
+    fn test_normalize_range_multiline() {
+        let (start, end) = normalize_range(Position::new(5, 0), Position::new(0, 0));
+        assert!(start.line <= end.line);
+    }
+
+    #[test]
+    fn test_operator_result_linewise() {
+        let result = OperatorResult {
+            text: "test".to_string(),
+            linewise: true,
+            cursor: Position::new(0, 0),
+        };
+        assert!(result.linewise);
+    }
+
+    #[test]
+    fn test_delete_linewise() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::Delete,
+            Position::new(1, 0),
+            Position::new(1, 4),
+            true,
+        );
+        assert!(result.linewise);
+        assert_eq!(buffer.line_count(), 2);
+    }
 }

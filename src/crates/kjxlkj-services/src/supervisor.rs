@@ -110,6 +110,12 @@ mod tests {
         assert_eq!(supervisor.service_count(), 0);
     }
 
+    #[test]
+    fn test_supervisor_default() {
+        let supervisor = Supervisor::default();
+        assert_eq!(supervisor.service_count(), 0);
+    }
+
     #[tokio::test]
     async fn test_supervisor_spawn() {
         let mut supervisor = Supervisor::new();
@@ -120,6 +126,50 @@ mod tests {
         assert_eq!(supervisor.service_count(), 1);
         assert!(supervisor.service_names().contains(&"test"));
 
+        supervisor.shutdown_all().await;
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_spawn_multiple() {
+        let mut supervisor = Supervisor::new();
+        
+        supervisor.spawn(Box::new(TestService { name: "a".to_string() })).unwrap();
+        supervisor.spawn(Box::new(TestService { name: "b".to_string() })).unwrap();
+        supervisor.spawn(Box::new(TestService { name: "c".to_string() })).unwrap();
+        
+        assert_eq!(supervisor.service_count(), 3);
+        assert!(supervisor.service_names().contains(&"a"));
+        assert!(supervisor.service_names().contains(&"b"));
+        assert!(supervisor.service_names().contains(&"c"));
+
+        supervisor.shutdown_all().await;
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_shutdown_clears_services() {
+        let mut supervisor = Supervisor::new();
+        supervisor.spawn(Box::new(TestService { name: "test".to_string() })).unwrap();
+        
+        assert_eq!(supervisor.service_count(), 1);
+        supervisor.shutdown_all().await;
+        assert_eq!(supervisor.service_count(), 0);
+    }
+
+    #[test]
+    fn test_service_names_empty() {
+        let supervisor = Supervisor::new();
+        assert!(supervisor.service_names().is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_replace_service() {
+        let mut supervisor = Supervisor::new();
+        
+        supervisor.spawn(Box::new(TestService { name: "test".to_string() })).unwrap();
+        // Spawning with same name replaces
+        supervisor.spawn(Box::new(TestService { name: "test".to_string() })).unwrap();
+        
+        assert_eq!(supervisor.service_count(), 1);
         supervisor.shutdown_all().await;
     }
 }

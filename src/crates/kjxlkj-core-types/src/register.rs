@@ -132,4 +132,60 @@ mod tests {
         assert_eq!(reg.content, "hello");
         assert!(!reg.linewise);
     }
+
+    #[test]
+    fn test_register_name_as_char() {
+        assert_eq!(RegisterName::Named('a').as_char(), 'a');
+        assert_eq!(RegisterName::Unnamed.as_char(), '"');
+        assert_eq!(RegisterName::BlackHole.as_char(), '_');
+        assert_eq!(RegisterName::Numbered(5).as_char(), '5');
+    }
+
+    #[test]
+    fn test_register_name_default() {
+        assert_eq!(RegisterName::default(), RegisterName::Unnamed);
+    }
+
+    #[test]
+    fn test_register_linewise() {
+        let reg = Register::new("line1\nline2", true);
+        assert!(reg.linewise);
+    }
+
+    #[test]
+    fn test_register_empty() {
+        let reg = Register::empty();
+        assert!(reg.is_empty());
+    }
+
+    #[test]
+    fn test_register_is_not_empty() {
+        let reg = Register::new("text", false);
+        assert!(!reg.is_empty());
+    }
+
+    #[test]
+    fn test_register_name_search() {
+        assert_eq!(RegisterName::from_char('/'), Some(RegisterName::Search));
+        assert_eq!(RegisterName::Search.as_char(), '/');
+    }
+
+    #[test]
+    fn test_register_name_clipboard() {
+        assert_eq!(RegisterName::from_char('+'), Some(RegisterName::Clipboard));
+        assert_eq!(RegisterName::Clipboard.as_char(), '+');
+    }
+
+    #[test]
+    fn test_register_name_filename() {
+        assert_eq!(RegisterName::from_char('%'), Some(RegisterName::Filename));
+        assert_eq!(RegisterName::Filename.as_char(), '%');
+    }
+
+    #[test]
+    fn test_register_clone() {
+        let reg = Register::new("test", false);
+        let cloned = reg.clone();
+        assert_eq!(reg, cloned);
+    }
 }
