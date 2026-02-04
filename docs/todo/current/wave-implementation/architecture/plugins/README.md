@@ -17,5 +17,5 @@ Enforce the “no plugins” invariant while still supporting built-in extensibi
 
 - [x] Define what "plugin-like behavior" means in this codebase and prohibit it.
 - [x] Ensure all feature extension points are internal modules/services only.
-- [ ] Add tests and/or build checks that prevent introducing plugin loading.
+- [x] Add tests and/or build checks that prevent introducing plugin loading.
 

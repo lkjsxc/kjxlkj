@@ -15,7 +15,7 @@ Implement theming expectations as a user-facing behavior.
 
 ## Checklist
 
-- [ ] Define theme model ownership and how themes affect rendering.
-- [ ] Minimal slice: implement a small theme set with deterministic render tests.
+- [x] Define theme model ownership and how themes affect rendering.
+- [x] Minimal slice: implement a small theme set with deterministic render tests.
 - [ ] Full conformance: implement all theming rules and customization behaviors.
 
