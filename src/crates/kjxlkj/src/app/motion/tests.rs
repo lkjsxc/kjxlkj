@@ -145,3 +145,51 @@ fn motion_line_end_cursor() {
     apply_motion(&mut state, Motion::new(MotionKind::LineEnd));
     assert!(state.cursor.col() >= 4);
 }
+
+#[test]
+fn motion_line_start_cursor() {
+    let mut state = state_with_text("hello");
+    state.cursor.position.col = 3;
+    apply_motion(&mut state, Motion::new(MotionKind::LineStart));
+    assert_eq!(state.cursor.col(), 0);
+}
+
+#[test]
+fn motion_right_one() {
+    let mut state = state_with_text("hello");
+    state.cursor.position.col = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::Right));
+    assert_eq!(state.cursor.col(), 1);
+}
+
+#[test]
+fn motion_left_one() {
+    let mut state = state_with_text("hello");
+    state.cursor.position.col = 2;
+    apply_motion(&mut state, Motion::new(MotionKind::Left));
+    assert_eq!(state.cursor.col(), 1);
+}
+
+#[test]
+fn motion_down_one() {
+    let mut state = state_with_text("a\nb\nc");
+    state.cursor.position.line = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::Down));
+    assert_eq!(state.cursor.line(), 1);
+}
+
+#[test]
+fn motion_up_one() {
+    let mut state = state_with_text("a\nb\nc");
+    state.cursor.position.line = 1;
+    apply_motion(&mut state, Motion::new(MotionKind::Up));
+    assert_eq!(state.cursor.line(), 0);
+}
+
+#[test]
+fn motion_first_line() {
+    let mut state = state_with_text("a\nb\nc");
+    state.cursor.position.line = 2;
+    apply_motion(&mut state, Motion::new(MotionKind::FileStart));
+    assert_eq!(state.cursor.line(), 0);
+}

@@ -184,4 +184,17 @@ mod tests {
         store.set(RegisterName::Unnamed, "text".to_string(), false);
         assert!(!store.unnamed().unwrap().linewise);
     }
+
+    #[test]
+    fn register_cloneable() {
+        let reg = Register::with_content("hello".to_string(), false);
+        let cloned = reg.clone();
+        assert_eq!(cloned.content, "hello");
+    }
+
+    #[test]
+    fn register_new_empty() {
+        let reg = Register::new();
+        assert!(reg.content.is_empty());
+    }
 }

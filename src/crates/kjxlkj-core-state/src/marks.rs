@@ -182,4 +182,16 @@ mod tests {
         store.set_local('x', Position::new(2, 2));
         assert_eq!(store.get_local('x'), Some(Position::new(2, 2)));
     }
+
+    #[test]
+    fn mark_store_get_none_for_unset() {
+        let store = MarkStore::new();
+        assert!(store.get_local('z').is_none());
+    }
+
+    #[test]
+    fn mark_store_new_is_empty() {
+        let store = MarkStore::new();
+        assert!(store.get('m').is_none());
+    }
 }

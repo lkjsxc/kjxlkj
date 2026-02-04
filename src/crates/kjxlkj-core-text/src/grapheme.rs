@@ -139,4 +139,61 @@ mod tests {
         let s = "abc";
         assert_eq!(next_grapheme_boundary(s, 3), 3);
     }
+
+    #[test]
+    fn prev_grapheme_from_end() {
+        let s = "hello";
+        assert_eq!(prev_grapheme_boundary(s, 5), 4);
+    }
+
+    #[test]
+    fn prev_grapheme_from_start() {
+        let s = "hello";
+        assert_eq!(prev_grapheme_boundary(s, 0), 0);
+    }
+
+    #[test]
+    fn next_boundary_single_char() {
+        assert_eq!(next_grapheme_boundary("a", 0), 1);
+    }
+
+    #[test]
+    fn prev_boundary_single_char() {
+        assert_eq!(prev_grapheme_boundary("a", 1), 0);
+    }
+
+    #[test]
+    fn grapheme_width_space() {
+        assert_eq!(grapheme_width(" "), 1);
+    }
+
+    #[test]
+    fn grapheme_width_tab() {
+        assert_eq!(grapheme_width("\t"), 1);
+    }
+
+    #[test]
+    fn grapheme_width_narrow_char() {
+        assert_eq!(grapheme_width("x"), 1);
+    }
+
+    #[test]
+    fn next_boundary_empty() {
+        assert_eq!(next_grapheme_boundary("", 0), 0);
+    }
+
+    #[test]
+    fn prev_boundary_empty() {
+        assert_eq!(prev_grapheme_boundary("", 0), 0);
+    }
+
+    #[test]
+    fn next_boundary_two_char() {
+        assert_eq!(next_grapheme_boundary("ab", 0), 1);
+    }
+
+    #[test]
+    fn prev_boundary_two_char() {
+        assert_eq!(prev_grapheme_boundary("ab", 2), 1);
+    }
 }

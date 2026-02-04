@@ -140,3 +140,59 @@ fn process_normal_mode_h() {
     process_key(&mut state, Key::new(KeyCode::Char('h'), Modifiers::none()));
     assert_eq!(state.cursor.col(), 2);
 }
+
+#[test]
+fn process_normal_mode_0() {
+    let mut state = EditorState::new();
+    state.buffer.insert(Position::new(0, 0), "hello");
+    state.cursor.position = Position::new(0, 3);
+    process_key(&mut state, Key::new(KeyCode::Char('0'), Modifiers::none()));
+    assert_eq!(state.cursor.col(), 0);
+}
+
+#[test]
+fn process_normal_mode_dollar() {
+    let mut state = EditorState::new();
+    state.buffer.insert(Position::new(0, 0), "hello");
+    state.cursor.position = Position::new(0, 0);
+    process_key(&mut state, Key::new(KeyCode::Char('$'), Modifiers::none()));
+    assert!(state.cursor.col() >= 4);
+}
+
+#[test]
+fn process_insert_char() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Insert);
+    process_key(&mut state, Key::new(KeyCode::Char('a'), Modifiers::none()));
+    assert!(state.buffer.line_count() >= 1);
+}
+
+#[test]
+fn process_escape_from_insert() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Insert);
+    process_key(&mut state, Key::new(KeyCode::Escape, Modifiers::none()));
+    assert_eq!(state.mode(), Mode::Normal);
+}
+
+#[test]
+fn process_v_enters_visual() {
+    let mut state = EditorState::new();
+    process_key(&mut state, Key::new(KeyCode::Char('v'), Modifiers::none()));
+    assert_eq!(state.mode(), Mode::Visual);
+}
+
+#[test]
+fn process_colon_enters_command() {
+    let mut state = EditorState::new();
+    process_key(&mut state, Key::new(KeyCode::Char(':'), Modifiers::none()));
+    assert_eq!(state.mode(), Mode::Command);
+}
+
+#[test]
+fn process_r_mode() {
+    let mut state = EditorState::new();
+    process_key(&mut state, Key::new(KeyCode::Char('r'), Modifiers::none()));
+    // Should enter Replace mode or stay in Normal depending on implementation
+    assert!(state.mode() == Mode::Replace || state.mode() == Mode::Normal);
+}

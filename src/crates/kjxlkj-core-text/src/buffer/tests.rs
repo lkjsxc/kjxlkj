@@ -186,3 +186,15 @@ fn buffer_path_initially_none() {
     let buf = TextBuffer::new(BufferId::new(1));
     assert!(buf.path().is_none());
 }
+
+#[test]
+fn buffer_from_str_single_line() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "hello");
+    assert_eq!(buf.line_count(), 1);
+}
+
+#[test]
+fn buffer_from_str_two_lines() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "a\nb");
+    assert_eq!(buf.line_count(), 2);
+}

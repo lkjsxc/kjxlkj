@@ -139,4 +139,48 @@ mod tests {
         // Verify poll_event method exists
         let _: fn(&TerminalHost, u64) -> Result<Option<InputEvent>> = TerminalHost::poll_event;
     }
+
+    #[test]
+    fn terminal_host_new_signature() {
+        // Just verify the function signature
+        let _f: fn() -> Result<TerminalHost> = TerminalHost::new;
+    }
+
+    #[test]
+    fn terminal_host_result_type() {
+        // TerminalHost::new returns Result type
+        let result: Result<TerminalHost> = TerminalHost::new();
+        // We can't easily test the actual result without terminal access
+        drop(result);
+    }
+
+    #[test]
+    fn terminal_flush_sig() {
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::flush;
+    }
+
+    #[test]
+    fn terminal_enter_sig() {
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::enter;
+    }
+
+    #[test]
+    fn terminal_leave_sig() {
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::leave;
+    }
+
+    #[test]
+    fn terminal_size_sig() {
+        let _: fn(&TerminalHost) -> Result<(u16, u16)> = TerminalHost::size;
+    }
+
+    #[test]
+    fn terminal_poll_sig() {
+        let _: fn(&TerminalHost, u64) -> Result<Option<InputEvent>> = TerminalHost::poll_event;
+    }
+
+    #[test]
+    fn terminal_stdout_sig() {
+        let _: for<'a> fn(&'a mut TerminalHost) -> &'a mut Stdout = TerminalHost::stdout;
+    }
 }

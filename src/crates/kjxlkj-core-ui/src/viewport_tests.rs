@@ -185,3 +185,15 @@ fn viewport_scroll_to_top_line() {
     vp.scroll_to_top(10);
     assert_eq!(vp.first_line, 10);
 }
+
+#[test]
+fn viewport_first_line_default() {
+    let vp = Viewport::new(80, 24);
+    assert_eq!(vp.first_line, 0);
+}
+
+#[test]
+fn viewport_width_height() {
+    let vp = Viewport::new(100, 50);
+    assert_eq!(vp.width + vp.height, 150);
+}

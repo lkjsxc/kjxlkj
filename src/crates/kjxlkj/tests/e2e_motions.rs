@@ -188,3 +188,13 @@ fn test_headless_goto_last_line() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_zero_motion() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"0"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

@@ -141,4 +141,49 @@ mod tests {
     fn test_two_char_line() {
         assert_eq!(line_end_col("ab", false), 1);
     }
+
+    #[test]
+    fn test_three_char_line() {
+        assert_eq!(line_end_col("abc", false), 2);
+    }
+
+    #[test]
+    fn test_line_len_whitespace_only() {
+        assert_eq!(line_len("   "), 3);
+    }
+
+    #[test]
+    fn test_line_len_mixed_ws() {
+        assert_eq!(line_len(" \t "), 3);
+    }
+
+    #[test]
+    fn test_unicode_len() {
+        assert_eq!(line_len("日本語"), 3);
+    }
+
+    #[test]
+    fn test_line_end_unicode() {
+        assert_eq!(line_end_col("日本語", false), 2);
+    }
+
+    #[test]
+    fn test_line_end_four_chars() {
+        assert_eq!(line_end_col("abcd", false), 3);
+    }
+
+    #[test]
+    fn test_line_len_crlf() {
+        assert_eq!(line_len("a\r\n"), 3);
+    }
+
+    #[test]
+    fn test_line_end_insert_empty() {
+        assert_eq!(line_end_col("", true), 0);
+    }
+
+    #[test]
+    fn test_line_len_two_spaces() {
+        assert_eq!(line_len("  "), 2);
+    }
 }
