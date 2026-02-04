@@ -73,7 +73,7 @@ Implement the editing primitives that power modal behavior:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - boundary clamping (never panic)
   - repeatability and determinism
   - register correctness across operations
