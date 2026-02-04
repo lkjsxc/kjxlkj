@@ -490,6 +490,12 @@ impl ModeHandler {
             EditorAction::CursorUp
         } else if key.is_arrow_down() {
             EditorAction::CursorDown
+        } else if key.is_backspace() {
+            // Backspace moves left in normal mode
+            EditorAction::CursorLeft
+        } else if key.char() == Some(' ') {
+            // Space moves right in normal mode
+            EditorAction::CursorRight
         } else {
             EditorAction::Nop
         }
@@ -783,6 +789,14 @@ impl ModeHandler {
         // Ctrl-d: outdent current line
         if key.is_ctrl('d') {
             return EditorAction::InsertOutdent;
+        }
+        // Ctrl-y: copy character from line above
+        if key.is_ctrl('y') {
+            return EditorAction::InsertCopyAbove;
+        }
+        // Ctrl-e: copy character from line below
+        if key.is_ctrl('e') {
+            return EditorAction::InsertCopyBelow;
         }
         // Ctrl-r: insert register contents (wait for register name)
         if key.is_ctrl('r') {

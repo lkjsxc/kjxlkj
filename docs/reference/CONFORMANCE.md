@@ -33,6 +33,8 @@ This document records the currently implemented, user-visible surface so that:
 |---|---|
 | `h`/`j`/`k`/`l` | Cursor move left/down/up/right |
 | Arrow keys | Cursor move |
+| `Space` | Move right (same as `l`) |
+| `Backspace` | Move left (same as `h`) |
 | `0` | Move to start of line (column 0) |
 | `^` | Move to first non-blank character |
 | `_` | Move to first non-blank (with count offset) |
@@ -232,6 +234,8 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `Ctrl-u` | Delete to start of line |
 | `Ctrl-t` | Indent current line |
 | `Ctrl-d` | Outdent current line |
+| `Ctrl-y` | Copy character from line above |
+| `Ctrl-e` | Copy character from line below |
 | `Ctrl-r {reg}` | Insert contents of register |
 
 ### Replace mode

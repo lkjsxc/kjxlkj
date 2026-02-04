@@ -330,6 +330,8 @@ impl EditorState {
             EditorAction::DeleteToLineStart => self.delete_to_line_start(),
             EditorAction::InsertIndent => self.insert_indent(),
             EditorAction::InsertOutdent => self.insert_outdent(),
+            EditorAction::InsertCopyAbove => self.insert_copy_above(),
+            EditorAction::InsertCopyBelow => self.insert_copy_below(),
             EditorAction::InsertRegister(reg) => self.insert_register(reg),
             EditorAction::DeleteCharAt => {
                 let pos = self.buffer.cursor().position;
@@ -2509,6 +2511,47 @@ impl EditorState {
             // Adjust cursor position
             let new_col = cursor.col.saturating_sub(spaces_to_remove as u32);
             self.buffer.set_cursor_position(LineCol::new(cursor.line, new_col));
+        }
+    }
+
+    /// Copy character from line above at same column (Ctrl-y in insert mode).
+    fn insert_copy_above(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        
+        // Can't copy from above if on first line
+        if cursor.line == 0 {
+            return;
+        }
+        
+        // Get character from line above at same column
+        if let Some(line_above) = self.buffer.line_content(cursor.line as usize - 1) {
+            if let Some(ch) = line_above.chars().nth(cursor.col as usize) {
+                // Don't copy newline characters
+                if ch != '\n' && ch != '\r' {
+                    self.buffer.insert_char(ch);
+                }
+            }
+        }
+    }
+
+    /// Copy character from line below at same column (Ctrl-e in insert mode).
+    fn insert_copy_below(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_count = self.buffer.line_count();
+        
+        // Can't copy from below if on last line
+        if cursor.line as usize >= line_count.saturating_sub(1) {
+            return;
+        }
+        
+        // Get character from line below at same column
+        if let Some(line_below) = self.buffer.line_content(cursor.line as usize + 1) {
+            if let Some(ch) = line_below.chars().nth(cursor.col as usize) {
+                // Don't copy newline characters
+                if ch != '\n' && ch != '\r' {
+                    self.buffer.insert_char(ch);
+                }
+            }
         }
     }
 

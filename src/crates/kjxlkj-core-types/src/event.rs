@@ -219,6 +219,10 @@ pub enum EditorAction {
     InsertIndent,
     /// Outdent current line in insert mode (Ctrl-d).
     InsertOutdent,
+    /// Copy character from line above (Ctrl-y in insert mode).
+    InsertCopyAbove,
+    /// Copy character from line below (Ctrl-e in insert mode).
+    InsertCopyBelow,
     /// Insert register contents (Ctrl-r {reg} in insert mode).
     InsertRegister(char),
     /// Delete character at cursor (x command).
