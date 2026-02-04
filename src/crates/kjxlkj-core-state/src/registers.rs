@@ -8,8 +8,6 @@ use std::collections::HashMap;
 pub struct RegisterStore {
     /// Named and numbered registers.
     registers: HashMap<RegisterName, Register>,
-    /// Last used register for unnamed operations.
-    last_yank: Option<RegisterName>,
     /// Recording macros.
     macro_recording: Option<(char, Vec<kjxlkj_core_types::Key>)>,
     /// Recorded macros.
@@ -29,11 +27,12 @@ impl RegisterStore {
         if matches!(name, RegisterName::BlackHole) {
             return; // Black hole discards
         }
-        self.registers.insert(name.clone(), content.clone());
         // Also update unnamed register for most operations.
         if !matches!(name, RegisterName::Unnamed | RegisterName::BlackHole) {
-            self.registers.insert(RegisterName::Unnamed, content);
+            self.registers
+                .insert(RegisterName::Unnamed, content.clone());
         }
+        self.registers.insert(name, content);
     }
 
     /// Get a register.
@@ -54,6 +53,10 @@ impl RegisterStore {
         } else {
             Register::charwise(text)
         };
+        if !matches!(name, RegisterName::BlackHole) {
+            self.registers
+                .insert(RegisterName::Numbered(0), reg.clone());
+        }
         self.set(name, reg);
     }
 
@@ -106,6 +109,8 @@ mod tests {
         let reg = store.unnamed().unwrap();
         assert_eq!(reg.content, "hello");
         assert!(!reg.linewise);
+        let reg0 = store.get(&RegisterName::Numbered(0)).unwrap();
+        assert_eq!(reg0.content, "hello");
     }
 
     #[test]

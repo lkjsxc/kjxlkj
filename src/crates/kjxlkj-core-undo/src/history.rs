@@ -36,12 +36,22 @@ impl Change {
     }
 
     /// Create an insertion change.
-    pub fn insert(offset: usize, text: String, cursor_before: Cursor, cursor_after: Cursor) -> Self {
+    pub fn insert(
+        offset: usize,
+        text: String,
+        cursor_before: Cursor,
+        cursor_after: Cursor,
+    ) -> Self {
         Self::new(offset, String::new(), text, cursor_before, cursor_after)
     }
 
     /// Create a deletion change.
-    pub fn delete(offset: usize, text: String, cursor_before: Cursor, cursor_after: Cursor) -> Self {
+    pub fn delete(
+        offset: usize,
+        text: String,
+        cursor_before: Cursor,
+        cursor_after: Cursor,
+    ) -> Self {
         Self::new(offset, text, String::new(), cursor_before, cursor_after)
     }
 

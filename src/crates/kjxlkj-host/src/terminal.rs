@@ -3,8 +3,8 @@
 use anyhow::Result;
 use crossterm::{
     event::{self, Event},
-    terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
     execute,
+    terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::{stdout, Stdout};
 use std::time::Duration;

@@ -14,11 +14,7 @@ impl TerminalService {
 
     /// Execute a shell command and return output.
     pub async fn execute(cmd: &str) -> Result<String> {
-        let output = Command::new("sh")
-            .arg("-c")
-            .arg(cmd)
-            .output()
-            .await?;
+        let output = Command::new("sh").arg("-c").arg(cmd).output().await?;
 
         let stdout = String::from_utf8_lossy(&output.stdout);
         let stderr = String::from_utf8_lossy(&output.stderr);

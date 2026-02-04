@@ -69,7 +69,10 @@ fn handle_insert(editor: &mut EditorState, key: Key) {
             }
         }
         KeyCode::Right => {
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
             if editor.buffer.cursor.col < max {
                 editor.buffer.cursor.col += 1;
             }
@@ -108,7 +111,10 @@ fn handle_replace(editor: &mut EditorState, key: Key) {
         KeyCode::Char(c) => {
             replace_char_at_cursor(editor, c);
             // Move cursor right.
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
             if editor.buffer.cursor.col < max {
                 editor.buffer.cursor.col += 1;
             }
@@ -227,14 +233,20 @@ async fn execute_parsed(editor: &mut EditorState, input: ParsedInput) {
         }
         ParsedInput::InsertAfter => {
             // Move cursor right by one (unless at end of line content).
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
             if editor.buffer.cursor.col < max {
                 editor.buffer.cursor.col += 1;
             }
             editor.mode.set_mode(Mode::Insert);
         }
         ParsedInput::InsertAtEnd => {
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
             editor.buffer.cursor.col = max;
             editor.mode.set_mode(Mode::Insert);
         }
@@ -324,8 +336,12 @@ fn apply_motion(editor: &mut EditorState, motion: &kjxlkj_core::edit::Motion) {
             editor.buffer.cursor.col = editor.buffer.cursor.col.saturating_sub(count);
         }
         MotionKind::Right => {
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
-            editor.buffer.cursor.col = (editor.buffer.cursor.col + count).min(max.saturating_sub(1));
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
+            editor.buffer.cursor.col =
+                (editor.buffer.cursor.col + count).min(max.saturating_sub(1));
         }
         MotionKind::Up => {
             editor.buffer.cursor.line = editor.buffer.cursor.line.saturating_sub(count);
@@ -340,7 +356,10 @@ fn apply_motion(editor: &mut EditorState, motion: &kjxlkj_core::edit::Motion) {
             editor.buffer.cursor.col = 0;
         }
         MotionKind::LineEnd => {
-            let max = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+            let max = editor
+                .buffer
+                .text
+                .line_grapheme_count(editor.buffer.cursor.line);
             editor.buffer.cursor.col = max.saturating_sub(1);
         }
         MotionKind::FirstNonBlank => {
@@ -443,7 +462,10 @@ fn move_word_backward(editor: &mut EditorState) {
         if col == 0 {
             if editor.buffer.cursor.line > 0 {
                 editor.buffer.cursor.line -= 1;
-                let new_len = editor.buffer.text.line_grapheme_count(editor.buffer.cursor.line);
+                let new_len = editor
+                    .buffer
+                    .text
+                    .line_grapheme_count(editor.buffer.cursor.line);
                 editor.buffer.cursor.col = new_len.saturating_sub(1);
             }
             return;
@@ -617,8 +639,14 @@ fn delete_word_before(editor: &mut EditorState) {
 
         // Delete from col to start_col.
         if let (Some(start_byte), Some(end_byte)) = (
-            editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(editor.buffer.cursor.line, col)),
-            editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(editor.buffer.cursor.line, start_col)),
+            editor
+                .buffer
+                .text
+                .cursor_to_byte(kjxlkj_core::Cursor::new(editor.buffer.cursor.line, col)),
+            editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(
+                editor.buffer.cursor.line,
+                start_col,
+            )),
         ) {
             editor.buffer.text.delete_range(start_byte, end_byte);
             editor.buffer.cursor.col = col;
@@ -631,7 +659,10 @@ fn delete_to_line_start(editor: &mut EditorState) {
     let cursor = editor.buffer.cursor;
     if cursor.col > 0 {
         if let (Some(start_byte), Some(end_byte)) = (
-            editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, 0)),
+            editor
+                .buffer
+                .text
+                .cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, 0)),
             editor.buffer.text.cursor_to_byte(cursor),
         ) {
             editor.buffer.text.delete_range(start_byte, end_byte);
@@ -684,7 +715,10 @@ fn delete_to_end_of_line(editor: &mut EditorState) {
     if cursor.col < line_len {
         if let (Some(start_byte), Some(end_byte)) = (
             editor.buffer.text.cursor_to_byte(cursor),
-            editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, line_len)),
+            editor
+                .buffer
+                .text
+                .cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, line_len)),
         ) {
             let deleted = editor.buffer.text.slice_bytes(start_byte, end_byte);
             editor.registers.yank(None, deleted, false);
@@ -755,7 +789,10 @@ fn paste_after(editor: &mut EditorState, count: usize) {
                 // Paste on new line below.
                 let line = editor.buffer.cursor.line;
                 if let Some(line_content) = editor.buffer.text.line(line) {
-                    let line_end = editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(line, 0))
+                    let line_end = editor
+                        .buffer
+                        .text
+                        .cursor_to_byte(kjxlkj_core::Cursor::new(line, 0))
                         .map(|b| b + line_content.len());
                     if let Some(byte) = line_end {
                         editor.buffer.text.insert(byte, &text);
@@ -770,7 +807,11 @@ fn paste_after(editor: &mut EditorState, count: usize) {
                 let max_col = editor.buffer.text.line_grapheme_count(cursor.line);
                 let paste_col = col.min(max_col);
 
-                if let Some(byte) = editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, paste_col)) {
+                if let Some(byte) = editor
+                    .buffer
+                    .text
+                    .cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, paste_col))
+                {
                     editor.buffer.text.insert(byte, &text);
                 }
                 editor.buffer.cursor.col = paste_col + text.len().saturating_sub(1);
@@ -789,7 +830,11 @@ fn paste_before(editor: &mut EditorState, count: usize) {
             if linewise {
                 // Paste on new line above.
                 let cursor = editor.buffer.cursor;
-                if let Some(byte) = editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, 0)) {
+                if let Some(byte) = editor
+                    .buffer
+                    .text
+                    .cursor_to_byte(kjxlkj_core::Cursor::new(cursor.line, 0))
+                {
                     editor.buffer.text.insert(byte, &text);
                 }
                 move_to_first_non_blank(editor);
@@ -810,7 +855,10 @@ fn undo(editor: &mut EditorState) {
     if let Some(change) = editor.buffer.undo.undo() {
         // Apply the inverted change.
         if !change.deleted.is_empty() {
-            editor.buffer.text.delete_range(change.offset, change.offset + change.deleted.len());
+            editor
+                .buffer
+                .text
+                .delete_range(change.offset, change.offset + change.deleted.len());
         }
         if !change.inserted.is_empty() {
             editor.buffer.text.insert(change.offset, &change.inserted);
@@ -826,7 +874,10 @@ fn redo(editor: &mut EditorState) {
     if let Some(change) = editor.buffer.undo.redo() {
         // Apply the change.
         if !change.deleted.is_empty() {
-            editor.buffer.text.delete_range(change.offset, change.offset + change.deleted.len());
+            editor
+                .buffer
+                .text
+                .delete_range(change.offset, change.offset + change.deleted.len());
         }
         if !change.inserted.is_empty() {
             editor.buffer.text.insert(change.offset, &change.inserted);
@@ -856,9 +907,15 @@ fn execute_operator_line(editor: &mut EditorState, op: kjxlkj_core::edit::Operat
 
             // Delete lines.
             if let (Some(start_byte), Some(end_byte)) = (
-                editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(start_line, 0)),
+                editor
+                    .buffer
+                    .text
+                    .cursor_to_byte(kjxlkj_core::Cursor::new(start_line, 0)),
                 if end_line < editor.buffer.text.len_lines() {
-                    editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(end_line, 0))
+                    editor
+                        .buffer
+                        .text
+                        .cursor_to_byte(kjxlkj_core::Cursor::new(end_line, 0))
                 } else {
                     Some(editor.buffer.text.len_bytes())
                 },
@@ -873,12 +930,20 @@ fn execute_operator_line(editor: &mut EditorState, op: kjxlkj_core::edit::Operat
             yank_lines(editor, count);
         }
         OperatorKind::Change => {
-            execute_operator_line(editor, kjxlkj_core::edit::Operator::new(OperatorKind::Delete), count);
+            execute_operator_line(
+                editor,
+                kjxlkj_core::edit::Operator::new(OperatorKind::Delete),
+                count,
+            );
             open_line_above(editor);
         }
         OperatorKind::Indent => {
             for i in start_line..end_line {
-                if let Some(byte) = editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(i, 0)) {
+                if let Some(byte) = editor
+                    .buffer
+                    .text
+                    .cursor_to_byte(kjxlkj_core::Cursor::new(i, 0))
+                {
                     editor.buffer.text.insert(byte, "    ");
                 }
             }
@@ -889,7 +954,11 @@ fn execute_operator_line(editor: &mut EditorState, op: kjxlkj_core::edit::Operat
                 if let Some(line) = editor.buffer.text.line_content(i) {
                     let spaces: usize = line.chars().take(4).take_while(|c| *c == ' ').count();
                     if spaces > 0 {
-                        if let Some(byte) = editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(i, 0)) {
+                        if let Some(byte) = editor
+                            .buffer
+                            .text
+                            .cursor_to_byte(kjxlkj_core::Cursor::new(i, 0))
+                        {
                             editor.buffer.text.delete_range(byte, byte + spaces);
                         }
                     }
@@ -921,7 +990,11 @@ fn execute_operator_motion(
 
     match op.kind {
         OperatorKind::Delete | OperatorKind::Change => {
-            if let Some(deleted) = editor.buffer.text.delete_cursor_range(range_start, range_end) {
+            if let Some(deleted) = editor
+                .buffer
+                .text
+                .delete_cursor_range(range_start, range_end)
+            {
                 editor.registers.yank(None, deleted, false);
             }
             editor.buffer.cursor = range_start;

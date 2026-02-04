@@ -1,6 +1,6 @@
 //! Normal mode input handling.
 
-use kjxlkj_core_edit::{Motion, MotionKind, Operator, OperatorKind, TextObject, TextObjectKind};
+use kjxlkj_core_edit::{Motion, MotionKind, Operator, OperatorKind};
 use kjxlkj_core_types::{Key, KeyCode, Mode};
 
 use crate::input::{InputResult, ParsedInput};
@@ -92,43 +92,101 @@ impl NormalState {
         let count = state.effective_count();
         match c {
             // Motions.
-            'h' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::Left, count))),
-            'l' | ' ' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::Right, count))),
-            'j' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::Down, count))),
-            'k' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::Up, count))),
+            'h' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::Left,
+                count,
+            ))),
+            'l' | ' ' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::Right,
+                count,
+            ))),
+            'j' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::Down,
+                count,
+            ))),
+            'k' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::Up,
+                count,
+            ))),
             '0' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::LineStart))),
-            '^' | '_' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::FirstNonBlank))),
+            '^' | '_' => {
+                InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::FirstNonBlank)))
+            }
             '$' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::LineEnd))),
-            'w' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordStart, count))),
-            'W' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordStartBig, count))),
-            'b' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordBack, count))),
-            'B' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordBackBig, count))),
-            'e' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordEnd, count))),
-            'E' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::WordEndBig, count))),
+            'w' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordStart,
+                count,
+            ))),
+            'W' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordStartBig,
+                count,
+            ))),
+            'b' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordBack,
+                count,
+            ))),
+            'B' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordBackBig,
+                count,
+            ))),
+            'e' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordEnd,
+                count,
+            ))),
+            'E' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::WordEndBig,
+                count,
+            ))),
             'G' => {
                 if state.count.is_some() {
-                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoLine(count))))
+                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoLine(
+                        count,
+                    ))))
                 } else {
                     InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::FileEnd)))
                 }
             }
-            '{' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::ParagraphBack, count))),
-            '}' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::ParagraphForward, count))),
-            '(' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::SentenceBack, count))),
-            ')' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::SentenceForward, count))),
+            '{' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::ParagraphBack,
+                count,
+            ))),
+            '}' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::ParagraphForward,
+                count,
+            ))),
+            '(' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::SentenceBack,
+                count,
+            ))),
+            ')' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::SentenceForward,
+                count,
+            ))),
             '%' => {
                 if state.count.is_some() {
-                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoPercent(count))))
+                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoPercent(
+                        count,
+                    ))))
                 } else {
-                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::MatchingBracket)))
+                    InputResult::Parsed(ParsedInput::Motion(Motion::new(
+                        MotionKind::MatchingBracket,
+                    )))
                 }
             }
             'H' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::ScreenTop))),
             'M' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::ScreenMiddle))),
             'L' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::ScreenBottom))),
-            '|' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoColumn(count)))),
-            '+' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::NextLineFirstNonBlank, count))),
-            '-' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::PrevLineFirstNonBlank, count))),
+            '|' => InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoColumn(
+                count,
+            )))),
+            '+' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::NextLineFirstNonBlank,
+                count,
+            ))),
+            '-' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::PrevLineFirstNonBlank,
+                count,
+            ))),
 
             // Mode changes.
             'i' => {
@@ -195,8 +253,14 @@ impl NormalState {
 
             // Find char.
             'f' | 'F' | 't' | 'T' => InputResult::Parsed(ParsedInput::AwaitFindChar(c)),
-            ';' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::RepeatFind, count))),
-            ',' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(MotionKind::RepeatFindReverse, count))),
+            ';' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::RepeatFind,
+                count,
+            ))),
+            ',' => InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
+                MotionKind::RepeatFindReverse,
+                count,
+            ))),
 
             // Marks.
             'm' => InputResult::Parsed(ParsedInput::AwaitSetMark),
@@ -228,23 +292,19 @@ impl NormalState {
             (Some('g'), KeyCode::Char('g')) => {
                 let count = state.effective_count();
                 if state.count.is_some() {
-                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoLine(count))))
+                    InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::GotoLine(
+                        count,
+                    ))))
                 } else {
                     InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::FileStart)))
                 }
             }
-            (Some('g'), KeyCode::Char('e')) => {
-                InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
-                    MotionKind::WordEndBack,
-                    state.effective_count(),
-                )))
-            }
-            (Some('g'), KeyCode::Char('E')) => {
-                InputResult::Parsed(ParsedInput::Motion(Motion::with_count(
-                    MotionKind::WordEndBackBig,
-                    state.effective_count(),
-                )))
-            }
+            (Some('g'), KeyCode::Char('e')) => InputResult::Parsed(ParsedInput::Motion(
+                Motion::with_count(MotionKind::WordEndBack, state.effective_count()),
+            )),
+            (Some('g'), KeyCode::Char('E')) => InputResult::Parsed(ParsedInput::Motion(
+                Motion::with_count(MotionKind::WordEndBackBig, state.effective_count()),
+            )),
             (Some('g'), KeyCode::Char('_')) => {
                 InputResult::Parsed(ParsedInput::Motion(Motion::new(MotionKind::LastNonBlank)))
             }
@@ -272,8 +332,12 @@ impl NormalState {
                 state.pending_operator = Some('U');
                 InputResult::Pending
             }
-            (Some('g'), KeyCode::Char('*')) => InputResult::Parsed(ParsedInput::SearchWordForwardPartial),
-            (Some('g'), KeyCode::Char('#')) => InputResult::Parsed(ParsedInput::SearchWordBackwardPartial),
+            (Some('g'), KeyCode::Char('*')) => {
+                InputResult::Parsed(ParsedInput::SearchWordForwardPartial)
+            }
+            (Some('g'), KeyCode::Char('#')) => {
+                InputResult::Parsed(ParsedInput::SearchWordBackwardPartial)
+            }
             (Some('g'), KeyCode::Char(';')) => InputResult::Parsed(ParsedInput::ChangeListOlder),
             (Some('g'), KeyCode::Char(',')) => InputResult::Parsed(ParsedInput::ChangeListNewer),
 
@@ -281,21 +345,35 @@ impl NormalState {
             (Some('z'), KeyCode::Char('z')) => InputResult::Parsed(ParsedInput::ScrollCursorCenter),
             (Some('z'), KeyCode::Char('t')) => InputResult::Parsed(ParsedInput::ScrollCursorTop),
             (Some('z'), KeyCode::Char('b')) => InputResult::Parsed(ParsedInput::ScrollCursorBottom),
-            (Some('z'), KeyCode::Enter) => InputResult::Parsed(ParsedInput::ScrollCursorTopFirstNonBlank),
-            (Some('z'), KeyCode::Char('.')) => InputResult::Parsed(ParsedInput::ScrollCursorCenterFirstNonBlank),
-            (Some('z'), KeyCode::Char('-')) => InputResult::Parsed(ParsedInput::ScrollCursorBottomFirstNonBlank),
+            (Some('z'), KeyCode::Enter) => {
+                InputResult::Parsed(ParsedInput::ScrollCursorTopFirstNonBlank)
+            }
+            (Some('z'), KeyCode::Char('.')) => {
+                InputResult::Parsed(ParsedInput::ScrollCursorCenterFirstNonBlank)
+            }
+            (Some('z'), KeyCode::Char('-')) => {
+                InputResult::Parsed(ParsedInput::ScrollCursorBottomFirstNonBlank)
+            }
 
             // Z-prefix commands.
             (Some('Z'), KeyCode::Char('Z')) => InputResult::Parsed(ParsedInput::WriteQuit),
             (Some('Z'), KeyCode::Char('Q')) => InputResult::Parsed(ParsedInput::QuitNoSave),
 
             // [-prefix commands.
-            (Some('['), KeyCode::Char('(')) => InputResult::Parsed(ParsedInput::GotoPrevUnmatched('(')),
-            (Some('['), KeyCode::Char('{')) => InputResult::Parsed(ParsedInput::GotoPrevUnmatched('{')),
+            (Some('['), KeyCode::Char('(')) => {
+                InputResult::Parsed(ParsedInput::GotoPrevUnmatched('('))
+            }
+            (Some('['), KeyCode::Char('{')) => {
+                InputResult::Parsed(ParsedInput::GotoPrevUnmatched('{'))
+            }
 
             // ]-prefix commands.
-            (Some(']'), KeyCode::Char(')')) => InputResult::Parsed(ParsedInput::GotoNextUnmatched(')')),
-            (Some(']'), KeyCode::Char('}')) => InputResult::Parsed(ParsedInput::GotoNextUnmatched('}')),
+            (Some(']'), KeyCode::Char(')')) => {
+                InputResult::Parsed(ParsedInput::GotoNextUnmatched(')'))
+            }
+            (Some(']'), KeyCode::Char('}')) => {
+                InputResult::Parsed(ParsedInput::GotoNextUnmatched('}'))
+            }
 
             _ => InputResult::Unhandled,
         }
@@ -379,7 +457,10 @@ mod tests {
     fn test_motion_key() {
         let mut state = ModeState::new();
         let result = NormalState::process_key(&mut state, Key::char('j'));
-        assert!(matches!(result, InputResult::Parsed(ParsedInput::Motion(_))));
+        assert!(matches!(
+            result,
+            InputResult::Parsed(ParsedInput::Motion(_))
+        ));
     }
 
     #[test]

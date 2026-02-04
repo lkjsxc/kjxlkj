@@ -8,15 +8,13 @@ pub async fn execute_command(editor: &mut EditorState, cmd: &str) {
     let cmd = cmd.trim();
 
     // Handle search commands.
-    if cmd.starts_with('/') {
-        let pattern = &cmd[1..];
+    if let Some(pattern) = cmd.strip_prefix('/') {
         editor.search_pattern = Some(pattern.to_string());
         editor.search_forward = true;
         search_next(editor);
         return;
     }
-    if cmd.starts_with('?') {
-        let pattern = &cmd[1..];
+    if let Some(pattern) = cmd.strip_prefix('?') {
         editor.search_pattern = Some(pattern.to_string());
         editor.search_forward = false;
         search_prev(editor);
@@ -183,7 +181,10 @@ fn execute_substitute(editor: &mut EditorState, args: &str) {
                 .cursor_to_byte(kjxlkj_core::Cursor::new(line_idx, 0))
             {
                 let old_len = line_content.len();
-                editor.buffer.text.delete_range(start_byte, start_byte + old_len);
+                editor
+                    .buffer
+                    .text
+                    .delete_range(start_byte, start_byte + old_len);
                 editor.buffer.text.insert(start_byte, &new_content);
                 editor.buffer.modified = true;
             }
@@ -218,17 +219,21 @@ fn execute_global(editor: &mut EditorState, args: &str, inverted: bool) {
     if *command == "d" {
         lines_to_process.reverse();
         for line_idx in lines_to_process {
-            if let (Some(start_byte), end_byte) = (
-                editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(line_idx, 0)),
+            if let (Some(start_byte), Some(end_byte)) = (
+                editor
+                    .buffer
+                    .text
+                    .cursor_to_byte(kjxlkj_core::Cursor::new(line_idx, 0)),
                 if line_idx + 1 < editor.buffer.text.len_lines() {
-                    editor.buffer.text.cursor_to_byte(kjxlkj_core::Cursor::new(line_idx + 1, 0))
+                    editor
+                        .buffer
+                        .text
+                        .cursor_to_byte(kjxlkj_core::Cursor::new(line_idx + 1, 0))
                 } else {
                     Some(editor.buffer.text.len_bytes())
                 },
             ) {
-                if let Some(end) = end_byte {
-                    editor.buffer.text.delete_range(start_byte, end);
-                }
+                editor.buffer.text.delete_range(start_byte, end_byte);
             }
         }
         editor.buffer.modified = true;
@@ -271,7 +276,11 @@ fn search_prev(editor: &mut EditorState) {
         for offset in 0..total_lines {
             let line_idx = (start_line + total_lines - offset) % total_lines;
             if let Some(content) = editor.buffer.text.line_content(line_idx) {
-                let search_end = if offset == 0 { start_col } else { content.len() };
+                let search_end = if offset == 0 {
+                    start_col
+                } else {
+                    content.len()
+                };
                 if let Some(pos) = content[..search_end].rfind(pattern) {
                     editor.buffer.cursor.line = line_idx;
                     editor.buffer.cursor.col = pos;

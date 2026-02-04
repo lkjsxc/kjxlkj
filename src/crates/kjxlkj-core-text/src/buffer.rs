@@ -3,17 +3,21 @@
 use crate::grapheme::{grapheme_count, nth_grapheme_offset};
 use kjxlkj_core_types::Cursor;
 use ropey::Rope;
+use std::fmt;
 use std::io::{BufRead, BufReader, Read};
 
 /// A text buffer backed by a rope.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct TextBuffer {
     rope: Rope,
 }
 
-impl Default for TextBuffer {
-    fn default() -> Self {
-        Self::new()
+impl fmt::Display for TextBuffer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for chunk in self.rope.chunks() {
+            f.write_str(chunk)?;
+        }
+        Ok(())
     }
 }
 
@@ -24,7 +28,7 @@ impl TextBuffer {
     }
 
     /// Create a buffer from a string.
-    pub fn from_str(s: &str) -> Self {
+    pub fn from_text(s: &str) -> Self {
         Self {
             rope: Rope::from_str(s),
         }
@@ -77,11 +81,8 @@ impl TextBuffer {
 
     /// Get line content without trailing newline.
     pub fn line_content(&self, line_idx: usize) -> Option<String> {
-        self.line(line_idx).map(|s| {
-            s.trim_end_matches('\n')
-                .trim_end_matches('\r')
-                .to_string()
-        })
+        self.line(line_idx)
+            .map(|s| s.trim_end_matches('\n').trim_end_matches('\r').to_string())
     }
 
     /// Get grapheme count for a line.
@@ -149,11 +150,6 @@ impl TextBuffer {
         self.rope.slice(start_char..end_char).to_string()
     }
 
-    /// Get the entire text as a string.
-    pub fn to_string(&self) -> String {
-        self.rope.to_string()
-    }
-
     /// Replace entire contents.
     pub fn set_text(&mut self, text: &str) {
         self.rope = Rope::from_str(text);
@@ -188,7 +184,7 @@ mod tests {
 
     #[test]
     fn test_from_str() {
-        let buf = TextBuffer::from_str("hello\nworld");
+        let buf = TextBuffer::from_text("hello\nworld");
         assert_eq!(buf.len_lines(), 2);
         assert_eq!(buf.line_content(0), Some("hello".to_string()));
         assert_eq!(buf.line_content(1), Some("world".to_string()));
@@ -196,14 +192,14 @@ mod tests {
 
     #[test]
     fn test_insert() {
-        let mut buf = TextBuffer::from_str("hello");
+        let mut buf = TextBuffer::from_text("hello");
         buf.insert(5, " world");
         assert_eq!(buf.to_string(), "hello world");
     }
 
     #[test]
     fn test_cursor_to_byte() {
-        let buf = TextBuffer::from_str("hello\nworld");
+        let buf = TextBuffer::from_text("hello\nworld");
         assert_eq!(buf.cursor_to_byte(Cursor::new(0, 0)), Some(0));
         assert_eq!(buf.cursor_to_byte(Cursor::new(0, 5)), Some(5));
         assert_eq!(buf.cursor_to_byte(Cursor::new(1, 0)), Some(6));

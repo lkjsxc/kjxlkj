@@ -42,8 +42,6 @@ pub struct EditorState {
     pub last_change: Option<String>,
     /// Whether to quit.
     pub should_quit: bool,
-    /// Next buffer ID.
-    next_buffer_id: u64,
 }
 
 impl Default for EditorState {
@@ -72,7 +70,6 @@ impl EditorState {
             change_index: 0,
             last_change: None,
             should_quit: false,
-            next_buffer_id: 1,
         }
     }
 

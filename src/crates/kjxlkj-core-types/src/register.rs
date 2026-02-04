@@ -3,13 +3,14 @@
 use serde::{Deserialize, Serialize};
 
 /// A register name (a-z, 0-9, or special).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum RegisterName {
     /// Named register a-z.
     Named(char),
     /// Numbered register 0-9.
     Numbered(u8),
     /// Unnamed (default) register.
+    #[default]
     Unnamed,
     /// Black hole register (discards content).
     BlackHole,
@@ -25,12 +26,6 @@ pub enum RegisterName {
     AltFileName,
     /// Expression register.
     Expression,
-}
-
-impl Default for RegisterName {
-    fn default() -> Self {
-        Self::Unnamed
-    }
 }
 
 impl RegisterName {
@@ -99,7 +94,10 @@ mod tests {
     #[test]
     fn register_name_parse() {
         assert_eq!(RegisterName::from_char('a'), Some(RegisterName::Named('a')));
-        assert_eq!(RegisterName::from_char('0'), Some(RegisterName::Numbered(0)));
+        assert_eq!(
+            RegisterName::from_char('0'),
+            Some(RegisterName::Numbered(0))
+        );
         assert_eq!(RegisterName::from_char('"'), Some(RegisterName::Unnamed));
     }
 

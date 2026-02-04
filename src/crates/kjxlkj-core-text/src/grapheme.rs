@@ -10,9 +10,7 @@ pub fn grapheme_count(s: &str) -> usize {
 
 /// Calculate display width of a string.
 pub fn grapheme_width(s: &str) -> usize {
-    s.graphemes(true)
-        .map(|g| UnicodeWidthStr::width(g))
-        .sum()
+    s.graphemes(true).map(UnicodeWidthStr::width).sum()
 }
 
 /// Get byte offset of the nth grapheme cluster.

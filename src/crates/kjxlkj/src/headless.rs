@@ -16,7 +16,9 @@ pub async fn run_headless(args: &[String]) -> Result<()> {
         .and_then(|i| args.get(i + 1))
         .ok_or_else(|| anyhow::anyhow!("--script path required"))?;
 
-    let file_idx = args.iter().position(|a| !a.starts_with('-') && a != "kjxlkj");
+    let file_idx = args
+        .iter()
+        .position(|a| !a.starts_with('-') && a != "kjxlkj");
     let file_path = file_idx.and_then(|i| {
         if i > 0 && args.get(i - 1).map(|s| s.as_str()) == Some("--script") {
             None
@@ -97,7 +99,7 @@ fn parse_script(content: &str) -> Result<Vec<Key>> {
 
     // Try parsing as simple string of characters.
     if let Ok(chars) = serde_json::from_str::<String>(content) {
-        return Ok(chars.chars().map(|c| Key::char(c)).collect());
+        return Ok(chars.chars().map(Key::char).collect());
     }
 
     Err(anyhow::anyhow!("Invalid script format"))

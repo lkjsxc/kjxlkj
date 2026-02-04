@@ -29,7 +29,11 @@ impl Renderer {
     }
 
     /// Render a snapshot to the terminal.
-    pub fn render(&mut self, stdout: &mut Stdout, snapshot: &EditorSnapshot) -> std::io::Result<()> {
+    pub fn render(
+        &mut self,
+        stdout: &mut Stdout,
+        snapshot: &EditorSnapshot,
+    ) -> std::io::Result<()> {
         execute!(stdout, Hide)?;
 
         // Clear and render lines.
@@ -60,14 +64,13 @@ impl Renderer {
         self.render_status(stdout, snapshot, height.saturating_sub(1) as u16, width)?;
 
         // Position cursor.
-        let cursor_row = snapshot.cursor.line.saturating_sub(snapshot.viewport.top_line);
+        let cursor_row = snapshot
+            .cursor
+            .line
+            .saturating_sub(snapshot.viewport.top_line);
         let cursor_col = self.visual_column(snapshot, snapshot.cursor.col);
 
-        execute!(
-            stdout,
-            MoveTo(cursor_col as u16, cursor_row as u16),
-            Show
-        )?;
+        execute!(stdout, MoveTo(cursor_col as u16, cursor_row as u16), Show)?;
 
         stdout.flush()?;
         self.last_mode = Some(snapshot.mode);
@@ -131,9 +134,7 @@ impl Renderer {
         // Right-aligned position info.
         let pos_str = format!(
             " {}:{}/{} ",
-            snapshot.status.line,
-            snapshot.status.col,
-            snapshot.status.total_lines
+            snapshot.status.line, snapshot.status.col, snapshot.status.total_lines
         );
         let pos_col = width.saturating_sub(pos_str.len());
         execute!(
@@ -151,7 +152,10 @@ impl Renderer {
 
     fn visual_column(&self, snapshot: &EditorSnapshot, col: usize) -> usize {
         // Get the actual line content to calculate visual width.
-        let line_idx = snapshot.cursor.line.saturating_sub(snapshot.viewport.top_line);
+        let line_idx = snapshot
+            .cursor
+            .line
+            .saturating_sub(snapshot.viewport.top_line);
         if line_idx >= snapshot.lines.len() {
             return col;
         }

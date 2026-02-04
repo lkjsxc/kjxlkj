@@ -44,7 +44,7 @@ impl BufferState {
         Self {
             id,
             path: None,
-            text: TextBuffer::from_str(text),
+            text: TextBuffer::from_text(text),
             cursor: Cursor::origin(),
             undo: UndoHistory::new(),
             marks: MarkStore::new(),
@@ -57,7 +57,7 @@ impl BufferState {
         Self {
             id,
             path: Some(path),
-            text: TextBuffer::from_str(content),
+            text: TextBuffer::from_text(content),
             cursor: Cursor::origin(),
             undo: UndoHistory::new(),
             marks: MarkStore::new(),

@@ -3,19 +3,13 @@
 use serde::{Deserialize, Serialize};
 
 /// Unique identifier for a buffer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct BufferId(pub u64);
 
 impl BufferId {
     /// Create a new buffer ID.
     pub fn new(id: u64) -> Self {
         Self(id)
-    }
-}
-
-impl Default for BufferId {
-    fn default() -> Self {
-        Self(0)
     }
 }
 

@@ -29,7 +29,11 @@ pub struct Selection {
 impl Selection {
     /// Create a new selection.
     pub fn new(anchor: Cursor, cursor: Cursor, kind: SelectionKind) -> Self {
-        Self { anchor, cursor, kind }
+        Self {
+            anchor,
+            cursor,
+            kind,
+        }
     }
 
     /// Create a charwise selection.

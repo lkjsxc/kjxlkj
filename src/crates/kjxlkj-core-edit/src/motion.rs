@@ -1,7 +1,5 @@
 //! Motion types for cursor movement.
 
-use kjxlkj_core_types::Cursor;
-
 /// A motion describes how the cursor moves.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MotionKind {
@@ -99,46 +97,6 @@ impl Motion {
     /// Create a motion with a specific count.
     pub fn with_count(kind: MotionKind, count: usize) -> Self {
         Self { kind, count }
-    }
-}
-
-/// Result of applying a motion.
-#[derive(Debug, Clone, Copy)]
-pub struct MotionResult {
-    /// New cursor position.
-    pub cursor: Cursor,
-    /// Whether this is a linewise motion.
-    pub linewise: bool,
-    /// Whether the motion was inclusive.
-    pub inclusive: bool,
-}
-
-impl MotionResult {
-    /// Create a charwise, exclusive motion result.
-    pub fn charwise(cursor: Cursor) -> Self {
-        Self {
-            cursor,
-            linewise: false,
-            inclusive: false,
-        }
-    }
-
-    /// Create a charwise, inclusive motion result.
-    pub fn inclusive(cursor: Cursor) -> Self {
-        Self {
-            cursor,
-            linewise: false,
-            inclusive: true,
-        }
-    }
-
-    /// Create a linewise motion result.
-    pub fn linewise(cursor: Cursor) -> Self {
-        Self {
-            cursor,
-            linewise: true,
-            inclusive: true,
-        }
     }
 }
 
