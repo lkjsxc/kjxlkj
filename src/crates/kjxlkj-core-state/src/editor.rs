@@ -99,6 +99,11 @@ impl EditorState {
         self.undo_history.clear();
     }
 
+    /// Get a reference to the buffer.
+    pub fn buffer(&self) -> &TextBuffer {
+        &self.buffer
+    }
+
     /// Get the buffer content.
     pub fn content(&self) -> String {
         self.buffer.to_string()

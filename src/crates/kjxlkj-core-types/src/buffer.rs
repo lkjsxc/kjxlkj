@@ -48,6 +48,11 @@ impl BufferVersion {
         Self(version)
     }
 
+    /// Get the version value.
+    pub fn value(self) -> u64 {
+        self.0
+    }
+
     /// Increment the version.
     pub fn next(self) -> Self {
         Self(self.0 + 1)
