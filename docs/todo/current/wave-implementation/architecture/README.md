@@ -50,7 +50,7 @@ Implement the runtime model and crate topology that everything else depends on:
   - deterministic
   - test-backed
   - compatible with the async-first runtime model
-- [ ] Implement at least one supervised service (filesystem or terminal) end-to-end, including:
+- [x] Implement at least one supervised service (filesystem or terminal) end-to-end, including:
   - request/response framing
   - error surfaces visible to the editor core
   - shutdown and cleanup semantics
@@ -62,7 +62,7 @@ Implement the runtime model and crate topology that everything else depends on:
   - failure handling and recovery
   - backpressure expectations
   - core responsiveness under service load
-- [ ] Ensure “no plugins” is enforced (only native features).
+- [x] Ensure "no plugins" is enforced (only native features).
 
 ## Tests (normative outputs)
 
@@ -74,6 +74,6 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
