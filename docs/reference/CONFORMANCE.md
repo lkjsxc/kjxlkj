@@ -218,10 +218,15 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `Esc` | Return to Normal mode |
 | (any char) | Insert character at cursor |
 | `Backspace` | Delete character before cursor |
+| `Ctrl-h` | Delete character before cursor (same as Backspace) |
 | `Enter` | Insert newline |
+| `Ctrl-j` | Insert newline (same as Enter) |
+| `Ctrl-m` | Insert newline (same as Enter) |
 | Arrow keys | Move cursor |
 | `Ctrl-w` | Delete word before cursor |
 | `Ctrl-u` | Delete to start of line |
+| `Ctrl-t` | Indent current line |
+| `Ctrl-d` | Outdent current line |
 | `Ctrl-r {reg}` | Insert contents of register |
 
 ### Replace mode

@@ -726,7 +726,15 @@ impl ModeHandler {
         if key.is_backspace() {
             return EditorAction::DeleteCharBefore;
         }
+        // Ctrl-h: also backspace
+        if key.is_ctrl('h') {
+            return EditorAction::DeleteCharBefore;
+        }
         if key.is_enter() {
+            return EditorAction::InsertNewline;
+        }
+        // Ctrl-j: also newline (like Ctrl-m)
+        if key.is_ctrl('j') || key.is_ctrl('m') {
             return EditorAction::InsertNewline;
         }
         // Ctrl-w: delete word before cursor
@@ -736,6 +744,14 @@ impl ModeHandler {
         // Ctrl-u: delete to line start
         if key.is_ctrl('u') {
             return EditorAction::DeleteToLineStart;
+        }
+        // Ctrl-t: indent current line
+        if key.is_ctrl('t') {
+            return EditorAction::InsertIndent;
+        }
+        // Ctrl-d: outdent current line
+        if key.is_ctrl('d') {
+            return EditorAction::InsertOutdent;
         }
         // Ctrl-r: insert register contents (wait for register name)
         if key.is_ctrl('r') {

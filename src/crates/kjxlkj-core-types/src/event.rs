@@ -207,6 +207,10 @@ pub enum EditorAction {
     DeleteWordBefore,
     /// Delete to start of line (Ctrl-u in insert mode).
     DeleteToLineStart,
+    /// Indent current line in insert mode (Ctrl-t).
+    InsertIndent,
+    /// Outdent current line in insert mode (Ctrl-d).
+    InsertOutdent,
     /// Insert register contents (Ctrl-r {reg} in insert mode).
     InsertRegister(char),
     /// Delete character at cursor (x command).

@@ -311,6 +311,8 @@ impl EditorState {
             EditorAction::DeleteCharBefore => self.buffer.delete_char_before(),
             EditorAction::DeleteWordBefore => self.delete_word_before(),
             EditorAction::DeleteToLineStart => self.delete_to_line_start(),
+            EditorAction::InsertIndent => self.insert_indent(),
+            EditorAction::InsertOutdent => self.insert_outdent(),
             EditorAction::InsertRegister(reg) => self.insert_register(reg),
             EditorAction::DeleteCharAt => {
                 let pos = self.buffer.cursor().position;
@@ -2408,6 +2410,53 @@ impl EditorState {
         let start_pos = LineCol::new(cursor.line, 0);
         let end_pos = cursor;
         self.buffer.delete_range(start_pos, end_pos);
+    }
+
+    /// Indent current line in insert mode (Ctrl-t).
+    fn insert_indent(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        
+        // Insert spaces at start of line
+        let indent = "    "; // 4 spaces
+        let start_pos = LineCol::new(cursor.line, 0);
+        self.buffer.set_cursor_position(start_pos);
+        for ch in indent.chars() {
+            self.buffer.insert_char(ch);
+        }
+        
+        // Restore cursor position (shifted by indent)
+        self.buffer.set_cursor_position(LineCol::new(
+            cursor.line,
+            cursor.col + indent.len() as u32,
+        ));
+    }
+
+    /// Outdent current line in insert mode (Ctrl-d).
+    fn insert_outdent(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        
+        // Get current line content
+        if let Some(line_content) = self.buffer.line_content(cursor.line as usize) {
+            // Count leading spaces (up to 4)
+            let spaces_to_remove = line_content
+                .chars()
+                .take(4)
+                .take_while(|c| *c == ' ')
+                .count();
+            
+            if spaces_to_remove == 0 {
+                return;
+            }
+            
+            // Delete leading spaces
+            let start_pos = LineCol::new(cursor.line, 0);
+            let end_pos = LineCol::new(cursor.line, spaces_to_remove as u32);
+            self.buffer.delete_range(start_pos, end_pos);
+            
+            // Adjust cursor position
+            let new_col = cursor.col.saturating_sub(spaces_to_remove as u32);
+            self.buffer.set_cursor_position(LineCol::new(cursor.line, new_col));
+        }
     }
 
     /// Insert contents of specified register (Ctrl-r {reg} in insert mode).
