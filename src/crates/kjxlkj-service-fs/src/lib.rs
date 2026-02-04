@@ -176,4 +176,41 @@ mod tests {
         let content = FsService::read_file(&path).await.unwrap();
         assert_eq!(content, "second");
     }
+
+    #[tokio::test]
+    async fn test_read_empty_dir() {
+        let dir = tempdir().unwrap();
+        let entries = FsService::read_dir(&dir.path().to_path_buf()).await.unwrap();
+        assert!(entries.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_create_nested_dir() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("a/b/c/d/e");
+        
+        FsService::create_dir(&path).await.unwrap();
+        assert!(FsService::exists(&path).await);
+    }
+
+    #[tokio::test]
+    async fn test_write_empty_file() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("empty.txt");
+        
+        FsService::write_file(&path, "").await.unwrap();
+        let content = FsService::read_file(&path).await.unwrap();
+        assert!(content.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_write_large_file() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("large.txt");
+        let content = "x".repeat(100000);
+        
+        FsService::write_file(&path, &content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert_eq!(read.len(), 100000);
+    }
 }
