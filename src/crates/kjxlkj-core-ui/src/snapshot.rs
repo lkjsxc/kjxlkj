@@ -152,4 +152,44 @@ mod tests {
         assert_eq!(row, 0);
         assert_eq!(col, 0);
     }
+
+    #[test]
+    fn snapshot_with_selection() {
+        let mut snap = EditorSnapshot::empty(Viewport::new(80, 24));
+        snap.selection = Some(Selection::new(
+            Position::new(0, 0),
+            Position::new(0, 5),
+            kjxlkj_core_types::SelectionKind::Char,
+        ));
+        assert!(snap.selection.is_some());
+    }
+
+    #[test]
+    fn snapshot_mode_change() {
+        let mut snap = EditorSnapshot::default();
+        snap.mode = Mode::Insert;
+        assert_eq!(snap.mode, Mode::Insert);
+    }
+
+    #[test]
+    fn buffer_snapshot_modified() {
+        let mut snap = BufferSnapshot::empty();
+        snap.modified = true;
+        assert!(snap.modified);
+    }
+
+    #[test]
+    fn status_line_with_message() {
+        let mut status = StatusLine::default();
+        status.message = Some("Test message".to_string());
+        assert!(status.message.is_some());
+        assert_eq!(status.message.as_ref().unwrap(), "Test message");
+    }
+
+    #[test]
+    fn status_line_with_command() {
+        let mut status = StatusLine::default();
+        status.command_line = Some("w".to_string());
+        assert!(status.command_line.is_some());
+    }
 }

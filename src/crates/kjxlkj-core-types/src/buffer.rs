@@ -71,4 +71,37 @@ mod tests {
         let id = BufferId::new(42);
         assert_eq!(id.as_u64(), 42);
     }
+
+    #[test]
+    fn buffer_id_default() {
+        let id = BufferId::default();
+        assert_eq!(id.as_u64(), 0);
+    }
+
+    #[test]
+    fn buffer_version_comparison() {
+        let v1 = BufferVersion::new(5);
+        let v2 = BufferVersion::new(10);
+        assert!(v1 < v2);
+    }
+
+    #[test]
+    fn buffer_version_increment_multiple() {
+        let mut v = BufferVersion::default();
+        v.increment();
+        v.increment();
+        v.increment();
+        assert_eq!(v.as_u64(), 3);
+    }
+
+    #[test]
+    fn buffer_id_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(BufferId::new(1));
+        set.insert(BufferId::new(2));
+        assert_eq!(set.len(), 2);
+        set.insert(BufferId::new(1));
+        assert_eq!(set.len(), 2);
+    }
 }

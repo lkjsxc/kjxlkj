@@ -154,4 +154,19 @@ mod tests {
         assert_eq!(sel.start(), Position::new(5, 2));
         assert_eq!(sel.end(), Position::new(5, 10));
     }
+
+    #[test]
+    fn selection_clone() {
+        let sel = Selection::char_at(Position::new(3, 4));
+        let cloned = sel.clone();
+        assert_eq!(sel, cloned);
+    }
+
+    #[test]
+    fn selection_debug_format() {
+        let sel = Selection::char_at(Position::new(1, 2));
+        let debug = format!("{:?}", sel);
+        assert!(debug.contains("anchor"));
+        assert!(debug.contains("cursor"));
+    }
 }

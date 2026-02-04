@@ -80,4 +80,42 @@ mod tests {
         set.insert(Position::new(1, 2));
         assert!(set.contains(&Position::new(1, 2)));
     }
+
+    #[test]
+    fn position_clone() {
+        let p = Position::new(5, 10);
+        let cloned = p.clone();
+        assert_eq!(p, cloned);
+    }
+
+    #[test]
+    fn position_debug_format() {
+        let p = Position::new(3, 7);
+        let debug = format!("{:?}", p);
+        assert!(debug.contains("3"));
+        assert!(debug.contains("7"));
+    }
+
+    #[test]
+    fn position_ord_same_line() {
+        let p1 = Position::new(5, 2);
+        let p2 = Position::new(5, 8);
+        assert!(p1 < p2);
+    }
+
+    #[test]
+    fn position_ord_different_lines() {
+        let p1 = Position::new(3, 100);
+        let p2 = Position::new(4, 0);
+        assert!(p1 < p2);
+    }
+
+    #[test]
+    fn position_hash_different() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Position::new(1, 2));
+        set.insert(Position::new(2, 1));
+        assert_eq!(set.len(), 2);
+    }
 }

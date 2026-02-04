@@ -93,4 +93,24 @@ mod tests {
         assert_eq!(c.line(), 0);
         assert_eq!(c.col(), 0);
     }
+
+    #[test]
+    fn cursor_clone() {
+        let c = Cursor::new(Position::new(3, 4));
+        let cloned = c.clone();
+        assert_eq!(c, cloned);
+    }
+
+    #[test]
+    fn cursor_position_access() {
+        let c = Cursor::new(Position::new(10, 20));
+        assert_eq!(c.position, Position::new(10, 20));
+    }
+
+    #[test]
+    fn cursor_preferred_col_preserved() {
+        let c = Cursor::origin().with_preferred_col(15);
+        assert_eq!(c.preferred_col, Some(15));
+        assert_eq!(c.col(), 0);
+    }
 }

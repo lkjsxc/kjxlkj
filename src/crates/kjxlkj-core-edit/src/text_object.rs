@@ -116,4 +116,38 @@ mod tests {
         let debug = format!("{:?}", to);
         assert!(debug.contains("DoubleQuotes"));
     }
+
+    #[test]
+    fn text_object_equality() {
+        let to1 = TextObject::inner(TextObjectKind::Word);
+        let to2 = TextObject::inner(TextObjectKind::Word);
+        assert_eq!(to1, to2);
+    }
+
+    #[test]
+    fn text_object_inequality() {
+        let to1 = TextObject::inner(TextObjectKind::Word);
+        let to2 = TextObject::around(TextObjectKind::Word);
+        assert_ne!(to1, to2);
+    }
+
+    #[test]
+    fn text_object_clone() {
+        let to = TextObject::around(TextObjectKind::Tag);
+        let cloned = to.clone();
+        assert_eq!(to, cloned);
+    }
+
+    #[test]
+    fn text_object_kind_angle_brackets() {
+        let to = TextObject::inner(TextObjectKind::AngleBrackets);
+        assert_eq!(to.kind, TextObjectKind::AngleBrackets);
+    }
+
+    #[test]
+    fn text_object_kind_backticks() {
+        let to = TextObject::around(TextObjectKind::Backticks);
+        assert!(to.around);
+        assert_eq!(to.kind, TextObjectKind::Backticks);
+    }
 }

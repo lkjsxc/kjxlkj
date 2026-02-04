@@ -84,4 +84,36 @@ mod tests {
         assert_eq!(Mode::Normal, Mode::Normal);
         assert_ne!(Mode::Normal, Mode::Insert);
     }
+
+    #[test]
+    fn mode_command_display() {
+        assert_eq!(Mode::Command.display_name(), "COMMAND");
+    }
+
+    #[test]
+    fn mode_replace_display() {
+        assert_eq!(Mode::Replace.display_name(), "REPLACE");
+    }
+
+    #[test]
+    fn mode_visual_display() {
+        assert_eq!(Mode::Visual.display_name(), "VISUAL");
+    }
+
+    #[test]
+    fn mode_command_not_visual() {
+        assert!(!Mode::Command.is_visual());
+    }
+
+    #[test]
+    fn mode_visual_not_insert() {
+        assert!(!Mode::Visual.is_insert());
+    }
+
+    #[test]
+    fn mode_clone() {
+        let m = Mode::Insert;
+        let cloned = m.clone();
+        assert_eq!(m, cloned);
+    }
 }

@@ -120,4 +120,33 @@ mod tests {
         assert_eq!(reg.content, "text");
         assert!(reg.linewise);
     }
+
+    #[test]
+    fn register_new_empty() {
+        let reg = Register::new();
+        assert!(reg.content.is_empty());
+        assert!(!reg.linewise);
+    }
+
+    #[test]
+    fn register_charwise_content() {
+        let reg = Register::with_content("word".to_string(), false);
+        assert!(!reg.linewise);
+    }
+
+    #[test]
+    fn register_uppercase_named() {
+        assert_eq!(
+            RegisterName::from_char('Z'),
+            Some(RegisterName::Named('z'))
+        );
+    }
+
+    #[test]
+    fn register_numbered_nine() {
+        assert_eq!(
+            RegisterName::from_char('9'),
+            Some(RegisterName::Numbered(9))
+        );
+    }
 }

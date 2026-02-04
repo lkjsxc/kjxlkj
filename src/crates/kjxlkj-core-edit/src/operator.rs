@@ -116,4 +116,30 @@ mod tests {
         let debug = format!("{:?}", op);
         assert!(debug.contains("Delete"));
     }
+
+    #[test]
+    fn operator_case_kinds() {
+        assert_eq!(OperatorKind::ToggleCase, OperatorKind::ToggleCase);
+        assert_eq!(OperatorKind::Uppercase, OperatorKind::Uppercase);
+        assert_eq!(OperatorKind::Lowercase, OperatorKind::Lowercase);
+    }
+
+    #[test]
+    fn operator_format_kind() {
+        assert_eq!(OperatorKind::Format, OperatorKind::Format);
+    }
+
+    #[test]
+    fn operator_clone() {
+        let op = Operator::line(OperatorKind::Yank, 3);
+        let cloned = op.clone();
+        assert_eq!(op, cloned);
+    }
+
+    #[test]
+    fn operator_equality() {
+        let op1 = Operator::line(OperatorKind::Delete, 1);
+        let op2 = Operator::line(OperatorKind::Delete, 1);
+        assert_eq!(op1, op2);
+    }
 }

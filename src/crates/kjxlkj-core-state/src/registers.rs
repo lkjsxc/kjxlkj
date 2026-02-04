@@ -115,4 +115,26 @@ mod tests {
         let store = RegisterStore::new();
         assert!(store.get(RegisterName::Named('z')).is_none());
     }
+
+    #[test]
+    fn last_register_default() {
+        let store = RegisterStore::new();
+        assert_eq!(store.last(), RegisterName::Unnamed);
+    }
+
+    #[test]
+    fn set_unnamed_directly() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Unnamed, "direct".to_string(), false);
+        let reg = store.unnamed().unwrap();
+        assert_eq!(reg.content, "direct");
+    }
+
+    #[test]
+    fn numbered_register() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Numbered(5), "num".to_string(), false);
+        let reg = store.get(RegisterName::Numbered(5)).unwrap();
+        assert_eq!(reg.content, "num");
+    }
 }
