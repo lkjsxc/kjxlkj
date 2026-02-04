@@ -88,4 +88,70 @@ mod tests {
         let sel = Selection::char_at(Position::new(1, 1));
         assert!(sel.is_empty());
     }
+
+    #[test]
+    fn selection_not_empty() {
+        let sel = Selection::new(
+            Position::new(0, 0),
+            Position::new(0, 5),
+            SelectionKind::Char,
+        );
+        assert!(!sel.is_empty());
+    }
+
+    #[test]
+    fn selection_swap() {
+        let mut sel = Selection::new(
+            Position::new(0, 0),
+            Position::new(1, 5),
+            SelectionKind::Char,
+        );
+        sel.swap();
+        assert_eq!(sel.anchor, Position::new(1, 5));
+        assert_eq!(sel.cursor, Position::new(0, 0));
+    }
+
+    #[test]
+    fn selection_line_kind() {
+        let sel = Selection::new(
+            Position::new(0, 0),
+            Position::new(2, 0),
+            SelectionKind::Line,
+        );
+        assert_eq!(sel.kind, SelectionKind::Line);
+    }
+
+    #[test]
+    fn selection_block_kind() {
+        let sel = Selection::new(
+            Position::new(0, 5),
+            Position::new(3, 10),
+            SelectionKind::Block,
+        );
+        assert_eq!(sel.kind, SelectionKind::Block);
+    }
+
+    #[test]
+    fn selection_kind_default() {
+        assert_eq!(SelectionKind::default(), SelectionKind::Char);
+    }
+
+    #[test]
+    fn selection_default() {
+        let sel = Selection::default();
+        assert!(sel.is_empty());
+        assert_eq!(sel.kind, SelectionKind::Char);
+        assert_eq!(sel.anchor, Position::new(0, 0));
+    }
+
+    #[test]
+    fn selection_start_end_same_line() {
+        let sel = Selection::new(
+            Position::new(5, 10),
+            Position::new(5, 2),
+            SelectionKind::Char,
+        );
+        assert_eq!(sel.start(), Position::new(5, 2));
+        assert_eq!(sel.end(), Position::new(5, 10));
+    }
 }
