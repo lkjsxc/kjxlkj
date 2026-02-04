@@ -419,4 +419,259 @@ mod tests {
         );
         assert_eq!(first_nb.col, 2);
     }
+
+    #[test]
+    fn test_motion_left_boundary() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let cursor = Cursor::new(0, 0);
+        
+        // Can't go left from column 0
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Left, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 0);
+    }
+
+    #[test]
+    fn test_motion_right_boundary() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let cursor = Cursor::new(0, 4); // Last char
+        
+        // Can't go right past end
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Right, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 4); // Stays at end
+    }
+
+    #[test]
+    fn test_motion_up_boundary() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2");
+        let cursor = Cursor::new(0, 2);
+        
+        // Can't go up from line 0
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Up, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 0);
+    }
+
+    #[test]
+    fn test_motion_down_boundary() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2");
+        let cursor = Cursor::new(1, 2);
+        
+        // Can't go down past last line
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Down, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 1);
+    }
+
+    #[test]
+    fn test_motion_with_count() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let cursor = Cursor::new(0, 5);
+        
+        // Move left 3
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Left, 3),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 2);
+    }
+
+    #[test]
+    fn test_motion_file_start_end() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let cursor = Cursor::new(1, 2);
+        
+        let start = apply_motion(
+            &Motion::new(MotionIntent::FileStart, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(start.line, 0);
+        assert_eq!(start.col, 0);
+        
+        let end = apply_motion(
+            &Motion::new(MotionIntent::FileEnd, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(end.line, 2);
+    }
+
+    #[test]
+    fn test_motion_word_start() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world test");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::WordStart, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 6); // Start of "world"
+    }
+
+    #[test]
+    fn test_motion_word_start_back() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world test");
+        let cursor = Cursor::new(0, 12);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::WordStartBack, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 6); // Start of "world"
+    }
+
+    #[test]
+    fn test_motion_word_end() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::WordEnd, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 4); // End of "hello"
+    }
+
+    #[test]
+    fn test_motion_goto_line() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::GotoLine(2), 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 1); // 0-indexed, so line 2 is index 1
+    }
+
+    #[test]
+    fn test_motion_goto_column() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::GotoColumn(6), 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 5); // 0-indexed, so column 6 is index 5
+    }
+
+    #[test]
+    fn test_motion_line_end() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::LineEnd, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 4); // Last char of "hello"
+    }
+
+    #[test]
+    fn test_motion_screen_positions() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3\nline4\nline5");
+        let cursor = Cursor::new(2, 0);
+        
+        let top = apply_motion(
+            &Motion::new(MotionIntent::ScreenTop, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(top.line, 0);
+        
+        let mid = apply_motion(
+            &Motion::new(MotionIntent::ScreenMiddle, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(mid.line, 2); // 5 lines / 2 = 2
+        
+        let bot = apply_motion(
+            &Motion::new(MotionIntent::ScreenBottom, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(bot.line, 4);
+    }
+
+    #[test]
+    fn test_motion_line_middle() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::LineMiddle, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 5); // 11 chars / 2 = 5
+    }
+
+    #[test]
+    fn test_motion_preferred_column() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "long line here\nshort\nlong line here");
+        let mut cursor = Cursor::new(0, 10);
+        cursor.preferred_col = Some(10);
+        
+        // Go down to short line
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Down, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 1);
+        assert!(pos.col < 10); // Clamped to line length
+    }
+
+    #[test]
+    fn test_motion_empty_buffer() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "");
+        let cursor = Cursor::new(0, 0);
+        
+        // These should not panic
+        let _ = apply_motion(&Motion::new(MotionIntent::Left, 1), &cursor, &buffer, 24);
+        let _ = apply_motion(&Motion::new(MotionIntent::Right, 1), &cursor, &buffer, 24);
+        let _ = apply_motion(&Motion::new(MotionIntent::Up, 1), &cursor, &buffer, 24);
+        let _ = apply_motion(&Motion::new(MotionIntent::Down, 1), &cursor, &buffer, 24);
+    }
 }

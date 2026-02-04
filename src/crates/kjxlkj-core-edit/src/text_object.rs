@@ -316,4 +316,152 @@ mod tests {
         assert_eq!(range.start.col, 5);
         assert_eq!(range.end.col, 9);
     }
+
+    #[test]
+    fn test_find_word_around() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 2),
+            TextObject::Word,
+            TextObjectKind::Around,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 0);
+        // Around should include trailing whitespace
+        assert!(range.end.col >= 5);
+    }
+
+    #[test]
+    fn test_find_brackets() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "arr[index]");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 5),
+            TextObject::Brackets,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 4);
+        assert_eq!(range.end.col, 8);
+    }
+
+    #[test]
+    fn test_find_braces() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "{a: 1}");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 2),
+            TextObject::Braces,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 1);
+        assert_eq!(range.end.col, 4);
+    }
+
+    #[test]
+    fn test_find_single_quotes() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "say 'hi'");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 5),
+            TextObject::SingleQuotes,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 5);
+        assert_eq!(range.end.col, 6);
+    }
+
+    #[test]
+    fn test_find_backticks() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "use `code` here");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 6),
+            TextObject::Backticks,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 5);
+        assert_eq!(range.end.col, 8);
+    }
+
+    #[test]
+    fn test_find_WORD() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello-world test");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 3),
+            TextObject::WORD,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        // WORD includes hyphen
+        assert!(range.end.col >= 10);
+    }
+
+    #[test]
+    fn test_find_parens_around() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "(test)");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 2),
+            TextObject::Parens,
+            TextObjectKind::Around,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 0); // Include opening paren
+        assert_eq!(range.end.col, 5);   // Include closing paren
+    }
+
+    #[test]
+    fn test_nested_parens() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "((inner))");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 3),
+            TextObject::Parens,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 2);
+        assert_eq!(range.end.col, 6);
+    }
+
+    #[test]
+    fn test_word_at_end_of_line() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "end");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 2),
+            TextObject::Word,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+        let range = result.unwrap();
+        assert_eq!(range.start.col, 0);
+        assert_eq!(range.end.col, 2);
+    }
+
+    #[test]
+    fn test_no_match_returns_none() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "no parens here");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 5),
+            TextObject::Parens,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_none());
+    }
 }
