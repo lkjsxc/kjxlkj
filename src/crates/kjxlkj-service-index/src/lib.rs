@@ -280,4 +280,79 @@ mod tests {
         let service = IndexService::default();
         assert_eq!(service.name(), "index");
     }
+
+    #[test]
+    fn test_file_index_new_is_empty() {
+        let index = FileIndex::new();
+        assert!(index.is_empty());
+        assert_eq!(index.len(), 0);
+    }
+
+    #[test]
+    fn test_fuzzy_score_exact_match() {
+        let score = fuzzy_score("file.rs", "file.rs");
+        assert!(score.is_some());
+        assert!(score.unwrap() > 0);
+    }
+
+    #[test]
+    fn test_fuzzy_score_partial() {
+        let score = fuzzy_score("file", "file.rs");
+        assert!(score.is_some());
+    }
+
+    #[test]
+    fn test_find_by_prefix_case() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/File.rs"),
+            name: "File.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        // Case-insensitive prefix search
+        let results = index.find_by_prefix("file");
+        assert!(!results.is_empty());
+    }
+
+    #[test]
+    fn test_index_entry_no_extension() {
+        let entry = IndexEntry {
+            path: PathBuf::from("/test/Makefile"),
+            name: "Makefile".to_string(),
+            extension: None,
+            size: 50,
+            modified: None,
+        };
+        assert!(entry.extension.is_none());
+    }
+
+    #[test]
+    fn test_file_index_multiple_remove() {
+        let mut index = FileIndex::new();
+        let path1 = PathBuf::from("/test/a.rs");
+        let path2 = PathBuf::from("/test/b.rs");
+        
+        index.add(IndexEntry {
+            path: path1.clone(),
+            name: "a.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 10,
+            modified: None,
+        });
+        index.add(IndexEntry {
+            path: path2.clone(),
+            name: "b.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 20,
+            modified: None,
+        });
+        
+        assert_eq!(index.len(), 2);
+        index.remove(&path1);
+        assert_eq!(index.len(), 1);
+        index.remove(&path2);
+        assert_eq!(index.len(), 0);
+    }
 }

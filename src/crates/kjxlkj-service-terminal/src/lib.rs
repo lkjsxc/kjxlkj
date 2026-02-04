@@ -208,4 +208,34 @@ mod tests {
         let mut session = TerminalSession::new(TerminalId::new(1));
         assert!(!session.is_running());
     }
+
+    #[test]
+    fn test_terminal_service_shell() {
+        let service = TerminalService::new();
+        // Shell should be non-empty
+        assert!(!service.shell().is_empty());
+    }
+
+    #[test]
+    fn test_terminal_id_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(TerminalId::new(1));
+        set.insert(TerminalId::new(2));
+        assert_eq!(set.len(), 2);
+        assert!(set.contains(&TerminalId::new(1)));
+    }
+
+    #[test]
+    fn test_terminal_session_output_empty() {
+        let session = TerminalSession::new(TerminalId::new(1));
+        assert!(session.output().is_empty());
+    }
+
+    #[test]
+    fn test_terminal_id_copy() {
+        let id = TerminalId::new(5);
+        let copied = id; // Copy, not move
+        assert_eq!(id, copied);
+    }
 }

@@ -259,4 +259,85 @@ mod tests {
         assert_ne!(DiagnosticSeverity::Error, DiagnosticSeverity::Warning);
         assert_ne!(DiagnosticSeverity::Information, DiagnosticSeverity::Hint);
     }
+
+    #[test]
+    fn test_lsp_service_default_has_configs() {
+        let service = LspService::default();
+        // Default should have rust and typescript
+        assert!(service.get_config("rust").is_some());
+        assert!(service.get_config("typescript").is_some());
+    }
+
+    #[test]
+    fn test_lsp_position_clone() {
+        let pos = LspPosition { line: 10, character: 5 };
+        let cloned = pos.clone();
+        assert_eq!(pos.line, cloned.line);
+        assert_eq!(pos.character, cloned.character);
+    }
+
+    #[test]
+    fn test_lsp_range_clone() {
+        let range = LspRange {
+            start: LspPosition { line: 0, character: 0 },
+            end: LspPosition { line: 1, character: 10 },
+        };
+        let cloned = range.clone();
+        assert_eq!(range.start.line, cloned.start.line);
+        assert_eq!(range.end.character, cloned.end.character);
+    }
+
+    #[test]
+    fn test_completion_item_clone() {
+        let item = CompletionItem {
+            label: "test".to_string(),
+            kind: Some(1),
+            detail: Some("A test".to_string()),
+            insert_text: Some("test()".to_string()),
+        };
+        let cloned = item.clone();
+        assert_eq!(item.label, cloned.label);
+        assert_eq!(item.insert_text, cloned.insert_text);
+    }
+
+    #[test]
+    fn test_diagnostic_clone() {
+        let diag = Diagnostic {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 10 },
+            },
+            severity: Some(DiagnosticSeverity::Error),
+            message: "error".to_string(),
+            source: None,
+        };
+        let cloned = diag.clone();
+        assert_eq!(diag.message, cloned.message);
+    }
+
+    #[test]
+    fn test_lsp_server_config_python() {
+        // Test custom config creation
+        let config = LspServerConfig {
+            language_id: "python".to_string(),
+            command: "pyright".to_string(),
+            args: vec!["--stdio".to_string()],
+            root_patterns: vec!["pyproject.toml".to_string()],
+        };
+        assert_eq!(config.language_id, "python");
+    }
+
+    #[test]
+    fn test_diagnostic_severity_clone() {
+        let sev = DiagnosticSeverity::Warning;
+        let cloned = sev.clone();
+        assert_eq!(sev, cloned);
+    }
+
+    #[test]
+    fn test_diagnostic_severity_copy() {
+        let sev = DiagnosticSeverity::Hint;
+        let copied = sev; // Copy
+        assert_eq!(sev, copied);
+    }
 }

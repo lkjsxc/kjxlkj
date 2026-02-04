@@ -186,4 +186,62 @@ mod tests {
         let debug = format!("{:?}", status);
         assert!(debug.contains("Untracked"));
     }
+
+    #[test]
+    fn test_git_status_modified_debug() {
+        let status = GitStatus::Modified;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Modified"));
+    }
+
+    #[test]
+    fn test_git_status_staged_debug() {
+        let status = GitStatus::Staged;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Staged"));
+    }
+
+    #[test]
+    fn test_git_status_unchanged_debug() {
+        let status = GitStatus::Unchanged;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Unchanged"));
+    }
+
+    #[test]
+    fn test_git_status_ignored_debug() {
+        let status = GitStatus::Ignored;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Ignored"));
+    }
+
+    #[test]
+    fn test_git_service_name() {
+        let service = GitService::new();
+        assert!(!service.name().is_empty());
+    }
+
+    #[test]
+    fn test_git_status_all_variants_clone() {
+        let variants = [
+            GitStatus::Untracked,
+            GitStatus::Modified,
+            GitStatus::Staged,
+            GitStatus::Unchanged,
+            GitStatus::Ignored,
+        ];
+        for v in variants {
+            let cloned = v.clone();
+            assert_eq!(v, cloned);
+        }
+    }
+
+    #[test]
+    fn test_git_status_eq_hash() {
+        // Can't hash GitStatus since it doesn't derive Hash, but we can test Eq
+        assert_eq!(GitStatus::Modified, GitStatus::Modified);
+        assert_ne!(GitStatus::Modified, GitStatus::Staged);
+        assert_ne!(GitStatus::Untracked, GitStatus::Ignored);
+        assert_ne!(GitStatus::Unchanged, GitStatus::Modified);
+    }
 }
