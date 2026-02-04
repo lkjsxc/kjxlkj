@@ -1,7 +1,7 @@
 //! Editor state tests.
 
 use super::EditorState;
-use kjxlkj_core_types::Mode;
+use kjxlkj_core_types::{Mode, Position};
 
 #[test]
 fn editor_state_creation() {
@@ -29,4 +29,27 @@ fn editor_state_snapshot() {
     let state = EditorState::new();
     let snap = state.snapshot();
     assert_eq!(snap.mode, Mode::Normal);
+}
+
+#[test]
+fn editor_state_jump_list() {
+    let mut state = EditorState::new();
+    state.push_jump();
+    state.push_jump();
+    let pos = state.jump_backward();
+    assert!(pos.is_some());
+}
+
+#[test]
+fn editor_state_clamp_cursor() {
+    let mut state = EditorState::new();
+    state.cursor.position = Position::new(1000, 1000);
+    state.clamp_cursor();
+    assert!(state.cursor.line() < 1000);
+}
+
+#[test]
+fn editor_state_default() {
+    let state = EditorState::default();
+    assert_eq!(state.mode(), Mode::Normal);
 }
