@@ -178,4 +178,16 @@ mod tests {
             panic!("Expected Line variant");
         }
     }
+
+    #[test]
+    fn operator_change_kind() {
+        let op = Operator::line(OperatorKind::Change, 1);
+        assert_eq!(op.kind(), OperatorKind::Change);
+    }
+
+    #[test]
+    fn operator_yank_kind() {
+        let op = Operator::line(OperatorKind::Yank, 1);
+        assert_eq!(op.kind(), OperatorKind::Yank);
+    }
 }

@@ -178,4 +178,18 @@ mod tests {
         let c = Cursor::new(Position::new(0, 99));
         assert_eq!(c.col(), 99);
     }
+
+    #[test]
+    fn cursor_position_field() {
+        let c = Cursor::new(Position::new(5, 10));
+        assert_eq!(c.position.line, 5);
+        assert_eq!(c.position.col, 10);
+    }
+
+    #[test]
+    fn cursor_debug() {
+        let c = Cursor::origin();
+        let s = format!("{:?}", c);
+        assert!(s.contains("Cursor"));
+    }
 }

@@ -178,4 +178,16 @@ mod tests {
         let v = Viewport::new(80, 5);
         assert_eq!(v.visible_lines(), 5);
     }
+
+    #[test]
+    fn viewport_first_line_default() {
+        let v = Viewport::new(80, 24);
+        assert_eq!(v.first_line, 0);
+    }
+
+    #[test]
+    fn viewport_width_accessor() {
+        let v = Viewport::new(120, 30);
+        assert_eq!(v.width, 120);
+    }
 }
