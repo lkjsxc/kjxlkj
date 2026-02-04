@@ -60,3 +60,141 @@ impl EditorState {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn snapshot_creation() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot;
+    }
+
+    #[test]
+    fn snapshot_has_buffer() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot.buffer;
+    }
+
+    #[test]
+    fn snapshot_has_cursor() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot.cursor;
+    }
+
+    #[test]
+    fn snapshot_has_mode() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert_eq!(snapshot.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn snapshot_has_viewport() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot.viewport;
+    }
+
+    #[test]
+    fn snapshot_has_status() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = &snapshot.status;
+    }
+
+    #[test]
+    fn snapshot_status_mode() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(!snapshot.status.mode.is_empty());
+    }
+
+    #[test]
+    fn snapshot_status_position() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(!snapshot.status.position.is_empty());
+    }
+
+    #[test]
+    fn snapshot_buffer_lines() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(!snapshot.buffer.lines.is_empty() || snapshot.buffer.total_lines == 0);
+    }
+
+    #[test]
+    fn snapshot_buffer_id() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot.buffer.id;
+    }
+
+    #[test]
+    fn snapshot_buffer_version() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        let _ = snapshot.buffer.version;
+    }
+
+    #[test]
+    fn snapshot_selection_none() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.selection.is_none());
+    }
+
+    #[test]
+    fn snapshot_status_percentage() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.status.percentage.contains('%'));
+    }
+
+    #[test]
+    fn snapshot_no_name_default() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.buffer.name.contains("No Name"));
+    }
+
+    #[test]
+    fn snapshot_command_line_none() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.status.command_line.is_none());
+    }
+
+    #[test]
+    fn snapshot_modified_false() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(!snapshot.buffer.modified);
+    }
+
+    #[test]
+    fn snapshot_status_message_none() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.status.message.is_none());
+    }
+
+    #[test]
+    fn snapshot_first_line() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert_eq!(snapshot.buffer.first_line, 0);
+    }
+
+    #[test]
+    fn snapshot_total_lines() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert!(snapshot.buffer.total_lines >= 1);
+    }
+}

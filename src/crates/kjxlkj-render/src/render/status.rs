@@ -172,4 +172,22 @@ mod tests {
         let result = render(&mut buf, &snapshot);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn render_status_replace_mode() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.mode = "REPLACE".to_string();
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_command_mode_2() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.mode = "COMMAND".to_string();
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
 }

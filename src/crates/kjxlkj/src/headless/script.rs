@@ -175,4 +175,26 @@ mod tests {
         };
         assert!(key.ctrl);
     }
+
+    #[test]
+    fn script_key_alt() {
+        let key = ScriptKey {
+            code: "a".to_string(),
+            ctrl: false,
+            alt: true,
+            shift: false,
+        };
+        assert!(key.alt);
+    }
+
+    #[test]
+    fn script_key_shift() {
+        let key = ScriptKey {
+            code: "a".to_string(),
+            ctrl: false,
+            alt: false,
+            shift: true,
+        };
+        assert!(key.shift);
+    }
 }

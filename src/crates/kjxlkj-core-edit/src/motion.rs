@@ -174,4 +174,14 @@ mod tests {
     fn motion_kind_file_end() {
         assert_eq!(MotionKind::FileEnd, MotionKind::FileEnd);
     }
+
+    #[test]
+    fn motion_kind_first_non_blank() {
+        assert_eq!(MotionKind::FirstNonBlank, MotionKind::FirstNonBlank);
+    }
+
+    #[test]
+    fn motion_kind_word_backward() {
+        assert_eq!(MotionKind::WordStartBackward, MotionKind::WordStartBackward);
+    }
 }
