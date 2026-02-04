@@ -20,12 +20,12 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define Insert-mode input handling and text insertion rules.
+- [x] Define Insert-mode input handling and text insertion rules.
 - [ ] Define integration points for completion and autopairs (only if/when specified as implemented).
 
 ### B. Minimal conformance slice
 
-- [ ] Ensure minimal insertion/deletion/navigation works in deterministic (headless) tests.
+- [x] Ensure minimal insertion/deletion/navigation works in deterministic (headless) tests.
   - character insertion
   - backspace (delete char before)
   - newline insertion in core state
