@@ -51,4 +51,51 @@ mod tests {
         let result = ModeResult::intent(Intent::Nop);
         assert!(matches!(result, ModeResult::Consumed(_)));
     }
+
+    #[test]
+    fn test_mode_result_intents() {
+        let result = ModeResult::intents(vec![Intent::Nop, Intent::Nop]);
+        if let ModeResult::Consumed(intents) = result {
+            assert_eq!(intents.len(), 2);
+        } else {
+            panic!("Expected Consumed");
+        }
+    }
+
+    #[test]
+    fn test_mode_result_nop() {
+        let result = ModeResult::nop();
+        if let ModeResult::Consumed(intents) = result {
+            assert_eq!(intents.len(), 1);
+            assert!(matches!(intents[0], Intent::Nop));
+        } else {
+            panic!("Expected Consumed");
+        }
+    }
+
+    #[test]
+    fn test_mode_result_pending() {
+        let result = ModeResult::Pending;
+        assert!(matches!(result, ModeResult::Pending));
+    }
+
+    #[test]
+    fn test_mode_result_ignored() {
+        let result = ModeResult::Ignored;
+        assert!(matches!(result, ModeResult::Ignored));
+    }
+
+    #[test]
+    fn test_mode_result_debug() {
+        let result = ModeResult::Pending;
+        let debug = format!("{:?}", result);
+        assert!(debug.contains("Pending"));
+    }
+
+    #[test]
+    fn test_mode_result_clone() {
+        let result = ModeResult::Consumed(vec![Intent::Nop]);
+        let cloned = result.clone();
+        assert!(matches!(cloned, ModeResult::Consumed(_)));
+    }
 }

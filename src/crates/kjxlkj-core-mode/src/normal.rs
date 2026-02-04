@@ -242,6 +242,7 @@ impl ModeHandler for NormalMode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use kjxlkj_core_types::KeyCode;
 
     #[test]
     fn test_normal_mode_motion() {
@@ -404,6 +405,111 @@ mod tests {
         let result = mode.handle_key(&KeyEvent::char('n'));
         if let ModeResult::Consumed(intents) = result {
             assert!(intents.iter().any(|i| matches!(i, Intent::NextMatch)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_mode() {
+        let mode = NormalMode::new();
+        assert_eq!(mode.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_normal_mode_replace() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('R'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Replace))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_delete_char() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('x'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_substitute() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('s'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Substitute)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_join() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('J'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::JoinLines { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_visual_block() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('v')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::VisualBlock))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_paste_before() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('P'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Paste { before: true, .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_redo() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('r')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Redo)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_insert_at_line_start() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('I'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Insert))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_append_at_line_end() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('A'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Insert))));
         } else {
             panic!("Expected consumed");
         }

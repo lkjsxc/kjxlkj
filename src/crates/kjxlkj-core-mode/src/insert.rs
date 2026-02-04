@@ -325,5 +325,59 @@ mod tests {
             panic!("Expected consumed with InsertText");
         }
     }
+
+    #[test]
+    fn test_insert_mode_special_chars() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::char('!'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_unicode() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::char('α'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_space() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::char(' '));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_numeric() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::char('5'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_page_up() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::PageUp));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Scroll(_))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_page_down() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::PageDown));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Scroll(_))));
+        }
+    }
 }
 

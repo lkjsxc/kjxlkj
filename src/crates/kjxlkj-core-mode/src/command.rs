@@ -211,4 +211,57 @@ mod tests {
         mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
         assert!(mode.buffer().is_empty());
     }
+
+    #[test]
+    fn test_command_mode_multiple_chars() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('w'));
+        mode.handle_key(&KeyEvent::char('r'));
+        mode.handle_key(&KeyEvent::char('i'));
+        mode.handle_key(&KeyEvent::char('t'));
+        mode.handle_key(&KeyEvent::char('e'));
+        assert_eq!(mode.buffer(), "write");
+    }
+
+    #[test]
+    fn test_command_mode_cursor_after_input() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        assert_eq!(mode.cursor(), 2);
+    }
+
+    #[test]
+    fn test_command_mode_delete_middle() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        mode.handle_key(&KeyEvent::char('c'));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Left));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
+        assert_eq!(mode.buffer(), "ac");
+    }
+
+    #[test]
+    fn test_command_mode_navigation() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('h'));
+        mode.handle_key(&KeyEvent::char('e'));
+        mode.handle_key(&KeyEvent::char('l'));
+        mode.handle_key(&KeyEvent::char('l'));
+        mode.handle_key(&KeyEvent::char('o'));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Home));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        assert_eq!(mode.cursor(), 2);
+    }
+
+    #[test]
+    fn test_command_mode_space() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('w'));
+        mode.handle_key(&KeyEvent::char(' '));
+        mode.handle_key(&KeyEvent::char('f'));
+        assert_eq!(mode.buffer(), "w f");
+    }
 }

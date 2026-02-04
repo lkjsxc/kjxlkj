@@ -188,4 +188,63 @@ mod tests {
         let cloned = reg.clone();
         assert_eq!(reg, cloned);
     }
+
+    #[test]
+    fn test_register_name_primary() {
+        assert_eq!(RegisterName::from_char('*'), Some(RegisterName::Primary));
+        assert_eq!(RegisterName::Primary.as_char(), '*');
+    }
+
+    #[test]
+    fn test_register_name_command() {
+        assert_eq!(RegisterName::from_char(':'), Some(RegisterName::Command));
+        assert_eq!(RegisterName::Command.as_char(), ':');
+    }
+
+    #[test]
+    fn test_register_name_expression() {
+        assert_eq!(RegisterName::from_char('='), Some(RegisterName::Expression));
+        assert_eq!(RegisterName::Expression.as_char(), '=');
+    }
+
+    #[test]
+    fn test_register_name_last_inserted() {
+        assert_eq!(RegisterName::from_char('.'), Some(RegisterName::LastInserted));
+        assert_eq!(RegisterName::LastInserted.as_char(), '.');
+    }
+
+    #[test]
+    fn test_register_name_alt_filename() {
+        assert_eq!(RegisterName::from_char('#'), Some(RegisterName::AltFilename));
+        assert_eq!(RegisterName::AltFilename.as_char(), '#');
+    }
+
+    #[test]
+    fn test_register_name_small_delete() {
+        assert_eq!(RegisterName::from_char('-'), Some(RegisterName::SmallDelete));
+        assert_eq!(RegisterName::SmallDelete.as_char(), '-');
+    }
+
+    #[test]
+    fn test_register_name_numbered_all() {
+        for n in 0..=9u8 {
+            let c = (b'0' + n) as char;
+            assert_eq!(RegisterName::from_char(c), Some(RegisterName::Numbered(n)));
+            assert_eq!(RegisterName::Numbered(n).as_char(), c);
+        }
+    }
+
+    #[test]
+    fn test_register_default() {
+        let reg = Register::default();
+        assert!(reg.content.is_empty());
+        assert!(!reg.linewise);
+    }
+
+    #[test]
+    fn test_register_name_debug() {
+        let name = RegisterName::Named('x');
+        let debug = format!("{:?}", name);
+        assert!(debug.contains("Named"));
+    }
 }

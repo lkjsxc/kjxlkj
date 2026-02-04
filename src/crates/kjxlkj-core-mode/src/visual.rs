@@ -237,4 +237,91 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_visual_mode_toggle_case() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('~'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::ToggleCase)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_indent() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('>'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Indent)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_outdent() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('<'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Outdent)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_x_delete() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('x'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_s_change() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('s'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Change { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_line_delete_linewise() {
+        let mut mode = VisualMode::line_wise();
+        let result = mode.handle_key(&KeyEvent::char('d'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { linewise: true, .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_kind_equality() {
+        assert_eq!(VisualKind::Char, VisualKind::Char);
+        assert_ne!(VisualKind::Char, VisualKind::Line);
+        assert_ne!(VisualKind::Line, VisualKind::Block);
+    }
+
+    #[test]
+    fn test_visual_kind_debug() {
+        let kind = VisualKind::Block;
+        let debug = format!("{:?}", kind);
+        assert!(debug.contains("Block"));
+    }
+
+    #[test]
+    fn test_visual_kind_clone() {
+        let kind = VisualKind::Line;
+        let cloned = kind.clone();
+        assert_eq!(kind, cloned);
+    }
 }

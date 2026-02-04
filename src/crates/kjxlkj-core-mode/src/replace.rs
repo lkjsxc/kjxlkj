@@ -95,5 +95,57 @@ mod tests {
             assert!(intents.iter().any(|i| matches!(i, Intent::ReplaceChar('c'))));
         }
     }
+
+    #[test]
+    fn test_replace_mode_backspace() {
+        let mut mode = ReplaceMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Left))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_replace_mode_arrows() {
+        let mut mode = ReplaceMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Left));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Left))));
+        }
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Right))));
+        }
+    }
+
+    #[test]
+    fn test_replace_mode_reset() {
+        let mut mode = ReplaceMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.reset();
+        // After reset, should still be in replace mode
+        assert_eq!(mode.mode(), Mode::Replace);
+    }
+
+    #[test]
+    fn test_replace_mode_special_chars() {
+        let mut mode = ReplaceMode::new();
+        let result = mode.handle_key(&KeyEvent::char('!'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::ReplaceChar('!'))));
+        }
+    }
+
+    #[test]
+    fn test_replace_mode_space() {
+        let mut mode = ReplaceMode::new();
+        let result = mode.handle_key(&KeyEvent::char(' '));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::ReplaceChar(' '))));
+        }
+    }
 }
 
