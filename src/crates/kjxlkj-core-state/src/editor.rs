@@ -1339,4 +1339,82 @@ mod tests {
         state.handle_key(KeyEvent::char('!'));
         assert!(state.content().contains('!'));
     }
+
+    #[test]
+    fn test_editor_state_default() {
+        let state = EditorState::default();
+        assert_eq!(state.mode(), Mode::Normal);
+        assert!(!state.should_quit());
+    }
+
+    #[test]
+    fn test_editor_state_first_non_blank() {
+        let mut state = EditorState::new();
+        state.load_content("    hello");
+        state.handle_key(KeyEvent::char('^'));
+        assert_eq!(state.cursor().col(), 4);
+    }
+
+    #[test]
+    fn test_editor_state_visual_line() {
+        let mut state = EditorState::new();
+        state.load_content("line1\nline2");
+        state.handle_key(KeyEvent::char('V'));
+        assert_eq!(state.mode(), Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_editor_state_empty_buffer() {
+        let state = EditorState::new();
+        assert!(state.content().is_empty() || state.content() == "");
+    }
+
+    #[test]
+    fn test_editor_state_multiple_lines() {
+        let mut state = EditorState::new();
+        state.load_content("a\nb\nc\nd\ne");
+        assert_eq!(state.buffer().line_count(), 5);
+    }
+
+    #[test]
+    fn test_editor_state_resize_event() {
+        let mut state = EditorState::new();
+        state.handle_event(EditorEvent::Resize { width: 200, height: 100 });
+        // Should not crash
+        assert!(!state.should_quit());
+    }
+
+    #[test]
+    fn test_editor_state_quit_event() {
+        let mut state = EditorState::new();
+        state.handle_event(EditorEvent::Quit);
+        assert!(state.should_quit());
+    }
+
+    #[test]
+    fn test_editor_state_go_to_line_end() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        state.handle_key(KeyEvent::char('$'));
+        // Should be at end of line
+        assert!(state.cursor().col() > 0);
+    }
+
+    #[test]
+    fn test_editor_state_open_line_below() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('o'));
+        assert_eq!(state.mode(), Mode::Insert);
+        // Should have added a new line
+        assert!(state.buffer().line_count() >= 2 || state.content().contains('\n'));
+    }
+
+    #[test]
+    fn test_editor_state_open_line_above() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('O'));
+        assert_eq!(state.mode(), Mode::Insert);
+    }
 }

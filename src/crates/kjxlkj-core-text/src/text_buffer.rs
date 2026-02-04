@@ -379,4 +379,80 @@ mod tests {
         let v2 = buf.version();
         assert_ne!(v1, v2);
     }
+
+    #[test]
+    fn test_replace_all() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.replace_all("goodbye");
+        assert_eq!(buf.to_string(), "goodbye");
+    }
+
+    #[test]
+    fn test_replace_all_empty() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.replace_all("");
+        assert!(buf.to_string().is_empty() || buf.char_count() == 0);
+    }
+
+    #[test]
+    fn test_line_grapheme_len_empty_line() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello\n\nworld");
+        assert_eq!(buf.line_grapheme_len(1), 0);
+    }
+
+    #[test]
+    fn test_from_file() {
+        let path = std::path::PathBuf::from("/test/file.txt");
+        let buf = TextBuffer::from_file(BufferId::new(1), path.clone(), "content");
+        assert_eq!(buf.to_string(), "content");
+        assert_eq!(buf.path(), Some(&path));
+    }
+
+    #[test]
+    fn test_name_with_path() {
+        let path = std::path::PathBuf::from("/test/file.txt");
+        let buf = TextBuffer::from_file(BufferId::new(1), path, "content");
+        let name = buf.name().as_str();
+        assert!(name.contains("file.txt"));
+    }
+
+    #[test]
+    fn test_name_no_path() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        let name = buf.name().as_str();
+        assert!(!name.is_empty());
+    }
+
+    #[test]
+    fn test_line_valid() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello\nworld");
+        let line = buf.line(0);
+        assert!(line.is_some());
+    }
+
+    #[test]
+    fn test_line_invalid() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        let line = buf.line(100);
+        assert!(line.is_none());
+    }
+
+    #[test]
+    fn test_char_to_line() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello\nworld\ntest");
+        assert_eq!(buf.char_to_line(0), 0);
+        assert_eq!(buf.char_to_line(7), 1);
+    }
+
+    #[test]
+    fn test_unicode_content() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "こんにちは");
+        assert_eq!(buf.line_grapheme_len(0), 5);
+    }
+
+    #[test]
+    fn test_emoji_content() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "👋🌍🎉");
+        assert!(buf.char_count() > 0);
+    }
 }

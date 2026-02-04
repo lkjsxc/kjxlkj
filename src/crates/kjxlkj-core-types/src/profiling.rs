@@ -345,4 +345,120 @@ mod tests {
             assert_eq!(last.cells_written, Some(1920));
         }
     }
+
+    #[test]
+    fn test_cycle_metrics_new() {
+        let metrics = CycleMetrics::new();
+        assert_eq!(metrics.input_events, 0);
+        assert_eq!(metrics.core_updates, 0);
+        assert_eq!(metrics.materialized_lines, 0);
+    }
+
+    #[test]
+    fn test_cycle_metrics_default() {
+        let metrics: CycleMetrics = Default::default();
+        assert_eq!(metrics.snapshot_duration, Duration::ZERO);
+        assert_eq!(metrics.render_duration, Duration::ZERO);
+    }
+
+    #[test]
+    fn test_cycle_metrics_clone() {
+        let metrics = CycleMetrics {
+            input_events: 5,
+            core_updates: 3,
+            ..Default::default()
+        };
+        let cloned = metrics.clone();
+        assert_eq!(metrics.input_events, cloned.input_events);
+    }
+
+    #[test]
+    fn test_cycle_metrics_debug() {
+        let metrics = CycleMetrics::new();
+        let debug = format!("{:?}", metrics);
+        assert!(debug.contains("CycleMetrics"));
+    }
+
+    #[test]
+    fn test_profiling_config_default() {
+        let config: ProfilingConfig = Default::default();
+        assert!(!config.enabled);
+        assert!(!config.log_to_stderr);
+    }
+
+    #[test]
+    fn test_profiling_config_clone() {
+        let config = ProfilingConfig {
+            enabled: true,
+            log_to_stderr: true,
+        };
+        let cloned = config.clone();
+        assert_eq!(config.enabled, cloned.enabled);
+        assert_eq!(config.log_to_stderr, cloned.log_to_stderr);
+    }
+
+    #[test]
+    fn test_profiling_config_debug() {
+        let config = ProfilingConfig::default();
+        let debug = format!("{:?}", config);
+        assert!(debug.contains("ProfilingConfig"));
+    }
+
+    #[test]
+    fn test_profiler_default() {
+        let profiler: Profiler = Default::default();
+        assert!(!profiler.is_enabled());
+    }
+
+    #[test]
+    fn test_profiler_clear() {
+        let mut profiler = Profiler::new();
+        // Clear should work even when empty
+        profiler.clear();
+        assert!(profiler.cycles().is_empty());
+    }
+
+    #[test]
+    fn test_profiler_cycles_empty() {
+        let profiler = Profiler::new();
+        assert!(profiler.cycles().is_empty());
+    }
+
+    #[test]
+    fn test_profiler_last_cycle_none() {
+        let profiler = Profiler::new();
+        assert!(profiler.last_cycle().is_none());
+    }
+
+    #[test]
+    fn test_profiler_is_idle_insufficient_cycles() {
+        let profiler = Profiler::new();
+        // Not enough cycles in history
+        assert!(!profiler.is_idle(5));
+    }
+
+    #[test]
+    fn test_profiler_detect_busy_loop_insufficient() {
+        let profiler = Profiler::new();
+        // Not enough cycles in history
+        assert!(!profiler.detect_busy_loop(5));
+    }
+
+    #[test]
+    fn test_cycle_metrics_viewport_bounded_exact() {
+        let metrics = CycleMetrics {
+            materialized_lines: 25,
+            ..Default::default()
+        };
+        // Exactly at boundary
+        assert!(metrics.is_viewport_bounded(25, 0));
+        assert!(!metrics.is_viewport_bounded(24, 0));
+    }
+
+    #[test]
+    fn test_profiler_debug() {
+        let profiler = Profiler::new();
+        let debug = format!("{:?}", profiler);
+        assert!(debug.contains("Profiler"));
+    }
 }
