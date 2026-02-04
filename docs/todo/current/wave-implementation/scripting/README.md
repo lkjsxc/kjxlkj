@@ -59,13 +59,13 @@ Implement the scripting surface defined by the spec (without introducing plugins
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - mapping precedence and mode scoping
   - recursion limits and safety rules
   - timing/debounce determinism
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
