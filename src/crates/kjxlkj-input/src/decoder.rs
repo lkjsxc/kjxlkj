@@ -294,4 +294,123 @@ mod tests {
         assert!(decoded.modifiers.ctrl);
         assert!(decoded.modifiers.alt);
     }
+
+    #[test]
+    fn test_decode_null() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Null, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Null);
+    }
+
+    #[test]
+    fn test_decode_backtab() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::BackTab, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::BackTab);
+    }
+
+    #[test]
+    fn test_decode_caps_lock() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::CapsLock, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::CapsLock);
+    }
+
+    #[test]
+    fn test_decode_scroll_lock() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::ScrollLock, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::ScrollLock);
+    }
+
+    #[test]
+    fn test_decode_num_lock() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::NumLock, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::NumLock);
+    }
+
+    #[test]
+    fn test_decode_print_screen() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::PrintScreen, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::PrintScreen);
+    }
+
+    #[test]
+    fn test_decode_pause() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Pause, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Pause);
+    }
+
+    #[test]
+    fn test_decode_menu() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Menu, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Menu);
+    }
+
+    #[test]
+    fn test_decode_keypad_begin() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::KeypadBegin, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::KeypadBegin);
+    }
+
+    #[test]
+    fn test_decode_meta_modifier() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('m'), CTMods::META);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.meta);
+    }
+
+    #[test]
+    fn test_decode_super_as_meta() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('s'), CTMods::SUPER);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.meta);
+    }
+
+    #[test]
+    fn test_decode_all_modifiers() {
+        let mods = CTMods::CONTROL | CTMods::ALT | CTMods::SHIFT | CTMods::META;
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('a'), mods);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.ctrl);
+        assert!(decoded.modifiers.alt);
+        assert!(decoded.modifiers.shift);
+        assert!(decoded.modifiers.meta);
+    }
+
+    #[test]
+    fn test_decode_f1_through_f12() {
+        for n in 1..=12 {
+            let ct_event = CTKeyEvent::new(CTKeyCode::F(n), CTMods::NONE);
+            let decoded = decode_key(ct_event);
+            assert_eq!(decoded.code, KeyCode::F(n));
+        }
+    }
+
+    #[test]
+    fn test_decode_uppercase_char() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('Z'), CTMods::SHIFT);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Char('Z'));
+        assert!(decoded.modifiers.shift);
+    }
+
+    #[test]
+    fn test_decode_digit_char() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('5'), CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Char('5'));
+    }
+
+    #[test]
+    fn test_decode_special_char() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('@'), CTMods::SHIFT);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Char('@'));
+    }
 }

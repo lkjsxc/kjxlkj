@@ -20,6 +20,7 @@ The `/docs/log/` subtree is intentionally treated as optional history. If detail
 | 2026-02-04 | Tooling cleanup: removed unused `Dockerfile`, CI scripts, and the docs policy checker in order to keep the repository minimal; these artifacts remain part of the reconstruction target and should be regenerated when producing a shippable repository state. |
 | 2026-02-04 | Docs-only baseline preparation: removed the in-repo Rust implementation workspace (`src/`) and related derived build artifacts to enable a clean reconstruction run from `/docs/` alone. |
 | 2026-02-04 | Iteration 34 reconstruction: Full 18-crate implementation rebuilt from `/docs/spec/architecture/crates.md`. All core types, text model, undo, editing primitives, mode handling, UI snapshots, state management, input conversion, terminal rendering, host lifecycle, services, and binary entry point. All 107 tests pass; `cargo check` and `cargo test` succeed. |
+| 2026-02-05 | Crate topology verified: All 18 crates from `/docs/spec/architecture/crates.md` exist and conform to the spec. No deviations from the defined topology. Test count increased to 1061. |
 
 ## Provenance note
 
