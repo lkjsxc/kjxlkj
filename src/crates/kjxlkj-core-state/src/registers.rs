@@ -170,4 +170,18 @@ mod tests {
         assert_eq!(store.get(RegisterName::Named('a')).unwrap().content, "aa");
         assert_eq!(store.get(RegisterName::Named('b')).unwrap().content, "bb");
     }
+
+    #[test]
+    fn set_linewise() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Unnamed, "line".to_string(), true);
+        assert!(store.unnamed().unwrap().linewise);
+    }
+
+    #[test]
+    fn set_not_linewise() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Unnamed, "text".to_string(), false);
+        assert!(!store.unnamed().unwrap().linewise);
+    }
 }

@@ -172,3 +172,21 @@ fn test_headless_insert_and_escape() {
         {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_append_and_escape() {
+    let s = r#"[{"kind":"keys","keys":"a"},{"kind":"keys","keys":"appended"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_visual_escape() {
+    let s = r#"[{"kind":"keys","keys":"v"},{"kind":"assert_mode","mode":"visual"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

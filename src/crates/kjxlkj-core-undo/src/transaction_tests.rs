@@ -159,3 +159,29 @@ fn edit_insert_kind() {
     let edit = Edit::insert(Position::new(0, 0), "x".to_string());
     assert_eq!(edit.kind, EditKind::Insert);
 }
+
+#[test]
+fn edit_delete_kind() {
+    let edit = Edit::delete(Position::new(0, 0), "y".to_string());
+    assert_eq!(edit.kind, EditKind::Delete);
+}
+
+#[test]
+fn transaction_has_edits() {
+    let mut tx = Transaction::new(Position::new(0, 0));
+    tx.push(Edit::insert(Position::new(0, 0), "z".to_string()));
+    assert!(!tx.is_empty());
+}
+
+#[test]
+fn edit_text_content() {
+    let edit = Edit::insert(Position::new(1, 2), "content".to_string());
+    assert_eq!(edit.text, "content");
+}
+
+#[test]
+fn transaction_single_edit() {
+    let mut tx = Transaction::new(Position::new(0, 0));
+    tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
+    assert_eq!(tx.edits.len(), 1);
+}

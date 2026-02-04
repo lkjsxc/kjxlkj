@@ -151,4 +151,32 @@ mod tests {
         let id = BufferId::default();
         assert_eq!(id.as_u64(), 0);
     }
+
+    #[test]
+    fn buffer_id_equals() {
+        let id1 = BufferId::new(5);
+        let id2 = BufferId::new(5);
+        assert_eq!(id1, id2);
+    }
+
+    #[test]
+    fn buffer_version_less_than() {
+        let v1 = BufferVersion::new(1);
+        let v2 = BufferVersion::new(2);
+        assert!(v1 < v2);
+    }
+
+    #[test]
+    fn buffer_id_not_equal() {
+        let id1 = BufferId::new(1);
+        let id2 = BufferId::new(2);
+        assert_ne!(id1, id2);
+    }
+
+    #[test]
+    fn buffer_version_equals() {
+        let v1 = BufferVersion::new(10);
+        let v2 = BufferVersion::new(10);
+        assert_eq!(v1, v2);
+    }
 }

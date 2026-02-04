@@ -99,3 +99,53 @@ impl Default for EditorSnapshot {
         Self::empty(Viewport::default())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn snapshot_empty_mode() {
+        let snap = EditorSnapshot::empty(Viewport::default());
+        assert_eq!(snap.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn snapshot_empty_selection() {
+        let snap = EditorSnapshot::empty(Viewport::default());
+        assert!(snap.selection.is_none());
+    }
+
+    #[test]
+    fn snapshot_empty_cursor() {
+        let snap = EditorSnapshot::empty(Viewport::default());
+        assert_eq!(snap.cursor.line(), 0);
+        assert_eq!(snap.cursor.col(), 0);
+    }
+
+    #[test]
+    fn snapshot_default() {
+        let snap = EditorSnapshot::default();
+        assert_eq!(snap.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn snapshot_cursor_screen_pos() {
+        let snap = EditorSnapshot::empty(Viewport::default());
+        let (col, row) = snap.cursor_screen_position();
+        assert_eq!(col, 0);
+        assert_eq!(row, 0);
+    }
+
+    #[test]
+    fn buffer_snapshot_empty() {
+        let buf = BufferSnapshot::empty();
+        assert_eq!(buf.total_lines, 1);
+    }
+
+    #[test]
+    fn status_line_default() {
+        let status = StatusLine::default();
+        assert!(status.mode.is_empty());
+    }
+}

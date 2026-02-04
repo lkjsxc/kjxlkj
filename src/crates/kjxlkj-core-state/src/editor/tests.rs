@@ -172,3 +172,19 @@ fn editor_state_normal_mode_check() {
     let state = EditorState::new();
     assert_eq!(state.mode(), Mode::Normal);
 }
+
+#[test]
+fn editor_state_visual_back_to_normal() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Visual);
+    state.set_mode(Mode::Normal);
+    assert_eq!(state.mode(), Mode::Normal);
+}
+
+#[test]
+fn editor_state_replace_back_to_normal() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Replace);
+    state.set_mode(Mode::Normal);
+    assert_eq!(state.mode(), Mode::Normal);
+}

@@ -105,3 +105,43 @@ fn motion_with_count() {
     apply_motion(&mut state, Motion::new(MotionKind::Right).with_count(3));
     assert_eq!(state.cursor.col(), 3);
 }
+
+#[test]
+fn motion_word_end() {
+    let mut state = state_with_text("hello world");
+    state.cursor.position.col = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::WordEnd));
+    assert!(state.cursor.col() >= 4);
+}
+
+#[test]
+fn motion_down_twice() {
+    let mut state = state_with_text("a\nb\nc");
+    state.cursor.position.line = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::Down).with_count(2));
+    assert_eq!(state.cursor.line(), 2);
+}
+
+#[test]
+fn motion_up_twice() {
+    let mut state = state_with_text("a\nb\nc");
+    state.cursor.position.line = 2;
+    apply_motion(&mut state, Motion::new(MotionKind::Up).with_count(2));
+    assert_eq!(state.cursor.line(), 0);
+}
+
+#[test]
+fn motion_left_at_boundary() {
+    let mut state = state_with_text("hello");
+    state.cursor.position.col = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::Left));
+    assert_eq!(state.cursor.col(), 0);
+}
+
+#[test]
+fn motion_line_end_cursor() {
+    let mut state = state_with_text("hello");
+    state.cursor.position.col = 0;
+    apply_motion(&mut state, Motion::new(MotionKind::LineEnd));
+    assert!(state.cursor.col() >= 4);
+}

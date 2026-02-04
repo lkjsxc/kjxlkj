@@ -162,4 +162,38 @@ mod tests {
         let p = Position::new(7, 3);
         assert_eq!(p, p);
     }
+
+    #[test]
+    fn position_not_equal() {
+        let p1 = Position::new(1, 2);
+        let p2 = Position::new(3, 4);
+        assert_ne!(p1, p2);
+    }
+
+    #[test]
+    fn position_cloneable() {
+        let p = Position::new(5, 6);
+        let cloned = p.clone();
+        assert_eq!(p, cloned);
+    }
+
+    #[test]
+    fn position_copyable() {
+        let p = Position::new(7, 8);
+        let copied: Position = p;
+        assert_eq!(p, copied);
+    }
+
+    #[test]
+    fn position_col_zero() {
+        let p = Position::line_start(10);
+        assert_eq!(p.col, 0);
+    }
+
+    #[test]
+    fn position_serialize() {
+        let p = Position::new(1, 2);
+        let display = format!("{:?}", p);
+        assert!(display.contains("line"));
+    }
 }

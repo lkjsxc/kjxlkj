@@ -153,4 +153,29 @@ mod tests {
         let c = Cursor::origin();
         assert_eq!(c.preferred_col, None);
     }
+
+    #[test]
+    fn cursor_clear_preferred() {
+        let mut c = Cursor::origin().with_preferred_col(10);
+        c.clear_preferred_col();
+        assert_eq!(c.preferred_col, None);
+    }
+
+    #[test]
+    fn cursor_origin_position() {
+        let c = Cursor::origin();
+        assert_eq!(c.position, Position::default());
+    }
+
+    #[test]
+    fn cursor_line_accessor() {
+        let c = Cursor::new(Position::new(42, 0));
+        assert_eq!(c.line(), 42);
+    }
+
+    #[test]
+    fn cursor_col_accessor() {
+        let c = Cursor::new(Position::new(0, 99));
+        assert_eq!(c.col(), 99);
+    }
 }

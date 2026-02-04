@@ -94,3 +94,60 @@ impl Default for Viewport {
         Self::new(80, 24)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn viewport_new_dimensions() {
+        let v = Viewport::new(100, 50);
+        assert_eq!(v.width, 100);
+        assert_eq!(v.height, 50);
+    }
+
+    #[test]
+    fn viewport_first_line_zero() {
+        let v = Viewport::new(80, 24);
+        assert_eq!(v.first_line, 0);
+    }
+
+    #[test]
+    fn viewport_is_line_visible() {
+        let v = Viewport::new(80, 10);
+        assert!(v.is_line_visible(5));
+    }
+
+    #[test]
+    fn viewport_line_not_visible() {
+        let v = Viewport::new(80, 10);
+        assert!(!v.is_line_visible(15));
+    }
+
+    #[test]
+    fn viewport_ensure_visible() {
+        let mut v = Viewport::new(80, 10);
+        v.ensure_visible(15, 20);
+        assert!(v.is_line_visible(15));
+    }
+
+    #[test]
+    fn viewport_default_values() {
+        let v = Viewport::default();
+        assert_eq!(v.width, 80);
+        assert_eq!(v.height, 24);
+    }
+
+    #[test]
+    fn viewport_scroll_top() {
+        let mut v = Viewport::new(80, 10);
+        v.scroll_to_top(5);
+        assert_eq!(v.first_line, 5);
+    }
+
+    #[test]
+    fn viewport_visible_lines() {
+        let v = Viewport::new(80, 20);
+        assert_eq!(v.visible_lines(), 20);
+    }
+}

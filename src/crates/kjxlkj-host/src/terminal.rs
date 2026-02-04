@@ -133,4 +133,10 @@ mod tests {
         // Verify the leave method exists
         let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::leave;
     }
+
+    #[test]
+    fn terminal_host_has_poll() {
+        // Verify poll_event method exists
+        let _: fn(&TerminalHost, u64) -> Result<Option<InputEvent>> = TerminalHost::poll_event;
+    }
 }

@@ -146,4 +146,40 @@ mod tests {
             assert_eq!(p.line, 5);
         }
     }
+
+    #[test]
+    fn global_mark_stores_filename() {
+        let mut store = MarkStore::new();
+        store.set_global('A', "file.txt".to_string(), Position::new(1, 2));
+        let result = store.get_global('A');
+        assert!(result.is_some());
+    }
+
+    #[test]
+    fn get_returns_local_for_lowercase() {
+        let mut store = MarkStore::new();
+        store.set_local('a', Position::new(0, 0));
+        assert!(store.get('a').is_some());
+    }
+
+    #[test]
+    fn get_returns_global_for_uppercase() {
+        let mut store = MarkStore::new();
+        store.set_global('Z', "test.txt".to_string(), Position::new(0, 0));
+        assert!(store.get('Z').is_some());
+    }
+
+    #[test]
+    fn mark_store_empty_initially() {
+        let store = MarkStore::new();
+        assert!(store.get('a').is_none());
+    }
+
+    #[test]
+    fn overwrite_local_mark() {
+        let mut store = MarkStore::new();
+        store.set_local('x', Position::new(1, 1));
+        store.set_local('x', Position::new(2, 2));
+        assert_eq!(store.get_local('x'), Some(Position::new(2, 2)));
+    }
 }
