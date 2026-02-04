@@ -186,4 +186,14 @@ mod tests {
     fn test_line_len_two_spaces() {
         assert_eq!(line_len("  "), 2);
     }
+
+    #[test]
+    fn test_line_len_single_char() {
+        assert_eq!(line_len("x"), 1);
+    }
+
+    #[test]
+    fn test_line_end_one_char() {
+        assert_eq!(line_end_col("x", false), 0);
+    }
 }

@@ -187,4 +187,10 @@ mod tests {
         let to = TextObject::inner(TextObjectKind::Parens);
         assert_eq!(to.kind, TextObjectKind::Parens);
     }
+
+    #[test]
+    fn text_object_quotes() {
+        let to = TextObject::inner(TextObjectKind::DoubleQuotes);
+        assert_eq!(to.kind, TextObjectKind::DoubleQuotes);
+    }
 }
