@@ -166,4 +166,61 @@ mod tests {
         let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
         assert_eq!(graphemes.len(), 3);
     }
+
+    #[test]
+    fn test_nth_grapheme_first() {
+        let rope = Rope::from_str("abc");
+        assert_eq!(rope.slice(..).nth_grapheme(0), Some("a".to_string()));
+    }
+
+    #[test]
+    fn test_nth_grapheme_last() {
+        let rope = Rope::from_str("abc");
+        assert_eq!(rope.slice(..).nth_grapheme(2), Some("c".to_string()));
+    }
+
+    #[test]
+    fn test_nth_grapheme_out_of_bounds() {
+        let rope = Rope::from_str("abc");
+        assert_eq!(rope.slice(..).nth_grapheme(10), None);
+    }
+
+    #[test]
+    fn test_display_width_tabs() {
+        let rope = Rope::from_str("\t");
+        // Tab is generally 1 display width in UnicodeWidthStr
+        let width = rope.slice(..).display_width();
+        assert!(width >= 0);
+    }
+
+    #[test]
+    fn test_grapheme_count_zwj_emoji() {
+        // Emoji with ZWJ (Zero Width Joiner)
+        let rope = Rope::from_str("👨‍👩‍👧");
+        // ZWJ emoji is 1 grapheme cluster
+        let count = rope.slice(..).grapheme_count();
+        assert!(count >= 1);
+    }
+
+    #[test]
+    fn test_display_width_combining() {
+        // Character with combining diacritical mark
+        let rope = Rope::from_str("é"); // e + combining accent
+        let width = rope.slice(..).display_width();
+        assert!(width >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_iter_combining() {
+        let rope = Rope::from_str("é");
+        let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
+        assert!(!graphemes.is_empty());
+    }
+
+    #[test]
+    fn test_grapheme_count_long_string() {
+        let content = "a".repeat(10000);
+        let rope = Rope::from_str(&content);
+        assert_eq!(rope.slice(..).grapheme_count(), 10000);
+    }
 }

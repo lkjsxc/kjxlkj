@@ -244,4 +244,52 @@ mod tests {
         assert_ne!(GitStatus::Untracked, GitStatus::Ignored);
         assert_ne!(GitStatus::Unchanged, GitStatus::Modified);
     }
+
+    #[test]
+    fn test_git_service_new_name() {
+        let service = GitService::new();
+        assert_eq!(service.name(), "git");
+    }
+
+    #[test]
+    fn test_git_status_all_inequality() {
+        let variants = [
+            GitStatus::Untracked,
+            GitStatus::Modified,
+            GitStatus::Staged,
+            GitStatus::Unchanged,
+            GitStatus::Ignored,
+        ];
+        for (i, a) in variants.iter().enumerate() {
+            for (j, b) in variants.iter().enumerate() {
+                if i == j {
+                    assert_eq!(a, b);
+                } else {
+                    assert_ne!(a, b);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_git_status_size() {
+        // GitStatus is an enum and should be small
+        assert!(std::mem::size_of::<GitStatus>() <= 8);
+    }
+
+    #[tokio::test]
+    async fn test_find_repo_root_nonexistent() {
+        let path = PathBuf::from("/nonexistent/path");
+        let result = GitService::find_repo_root(&path).await;
+        // Should be None for non-existent path
+        assert!(result.is_none());
+    }
+
+    #[tokio::test]
+    async fn test_current_branch_nonexistent() {
+        let path = PathBuf::from("/nonexistent/path");
+        let result = GitService::current_branch(&path).await;
+        // Should be None for non-existent path
+        assert!(result.is_none());
+    }
 }

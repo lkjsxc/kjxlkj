@@ -213,4 +213,46 @@ mod tests {
         let read = FsService::read_file(&path).await.unwrap();
         assert_eq!(read.len(), 100000);
     }
+
+    #[tokio::test]
+    async fn test_read_dir_with_subdirs() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().to_path_buf();
+        
+        FsService::create_dir(&path.join("subdir")).await.unwrap();
+        FsService::write_file(&path.join("file.txt"), "test").await.unwrap();
+        
+        let entries = FsService::read_dir(&path).await.unwrap();
+        assert_eq!(entries.len(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_write_newlines() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("lines.txt");
+        let content = "line1\nline2\nline3";
+        
+        FsService::write_file(&path, content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert!(read.contains('\n'));
+    }
+
+    #[tokio::test]
+    async fn test_exists_on_dir() {
+        let dir = tempdir().unwrap();
+        assert!(FsService::exists(&dir.path().to_path_buf()).await);
+    }
+
+    #[tokio::test]
+    async fn test_read_dir_nonexistent() {
+        let path = PathBuf::from("/nonexistent/directory/path");
+        let result = FsService::read_dir(&path).await;
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_fs_service_name_value() {
+        let service = FsService::new();
+        assert_eq!(service.name(), "fs");
+    }
 }
