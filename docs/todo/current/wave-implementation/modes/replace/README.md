@@ -40,6 +40,6 @@ Implement Replace and Virtual Replace mode semantics.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
