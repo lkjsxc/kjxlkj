@@ -24,6 +24,19 @@ Additional root entries MUST be justified by a concrete need and recorded in:
 
 - `/docs/reference/IMPLEMENTATION_HISTORY.md`
 
+## Docs-only baseline (reconstruction scenario)
+
+This repository is designed to allow deleting derived artifacts and reconstructing them from `/docs/`.
+
+It is acceptable to temporarily reduce the repo to a docs-only baseline that includes only:
+
+- `docs/`
+- `README.md`
+- `LICENSE`
+- a minimal set of dotfiles required for repository hygiene and version control
+
+After reconstruction, the repository SHOULD include the full root layout required by the current docs (workspace manifest, crate tree, verification automation, and any required packaging/run tooling), while still obeying the root allowlist above.
+
 ## Implementation layout
 
 | Path | Requirement |
