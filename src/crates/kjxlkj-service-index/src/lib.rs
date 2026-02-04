@@ -39,4 +39,23 @@ mod tests {
         let svc = IndexService::new();
         assert_type::<IndexService>(&svc);
     }
+
+    #[test]
+    fn index_service_multiple_instances() {
+        let svc1 = IndexService::new();
+        let svc2 = IndexService::default();
+        let _ = (&svc1, &svc2);
+    }
+
+    #[test]
+    fn index_service_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<IndexService>();
+    }
+
+    #[test]
+    fn index_service_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<IndexService>();
+    }
 }

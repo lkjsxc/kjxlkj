@@ -63,3 +63,31 @@ fn test_headless_text_insert_delete() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_insert_newline() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"line1"},
+        {"kind":"key","code":"Enter","ctrl":false},{"kind":"keys","keys":"line2"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_cursor_start_of_line() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_delete_word() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello world"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"d","ctrl":false},
+        {"kind":"key","code":"w","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

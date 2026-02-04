@@ -66,4 +66,44 @@ mod tests {
         let motion = Motion::new(MotionKind::Right);
         assert_eq!(motion.kind, MotionKind::Right);
     }
+
+    #[test]
+    fn facade_exports_operator() {
+        let op = Operator::line(OperatorKind::Delete, 1);
+        assert_eq!(op.kind(), OperatorKind::Delete);
+    }
+
+    #[test]
+    fn facade_mode_variants() {
+        let modes = [
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::Command,
+            Mode::Replace,
+        ];
+        assert_eq!(modes.len(), 6);
+    }
+
+    #[test]
+    fn facade_motion_kinds() {
+        let kinds = [
+            MotionKind::Left,
+            MotionKind::Right,
+            MotionKind::Up,
+            MotionKind::Down,
+        ];
+        assert_eq!(kinds.len(), 4);
+    }
+
+    #[test]
+    fn facade_operator_kinds() {
+        let kinds = [
+            OperatorKind::Delete,
+            OperatorKind::Yank,
+            OperatorKind::Change,
+        ];
+        assert_eq!(kinds.len(), 3);
+    }
 }

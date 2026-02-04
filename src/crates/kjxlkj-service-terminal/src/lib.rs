@@ -84,4 +84,16 @@ mod tests {
         let output = TerminalService::run_command_str("echo test").unwrap();
         assert!(output.len() > 0);
     }
+
+    #[test]
+    fn terminal_service_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<TerminalService>();
+    }
+
+    #[test]
+    fn terminal_service_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<TerminalService>();
+    }
 }

@@ -78,4 +78,27 @@ mod tests {
     fn test_emoji_sequence() {
         assert_eq!(line_len("👨‍👩‍👧"), 5); // Multi-code-point emoji
     }
+
+    #[test]
+    fn test_line_end_insert_mode() {
+        // Insert mode: can go past last char
+        assert_eq!(line_end_col("test", true), 4);
+    }
+
+    #[test]
+    fn test_line_end_normal_mode() {
+        // Normal mode: stop at last char
+        assert_eq!(line_end_col("test", false), 3);
+    }
+
+    #[test]
+    fn test_line_len_combining_chars() {
+        // e + combining accent
+        assert_eq!(line_len("e\u{0301}"), 2);
+    }
+
+    #[test]
+    fn test_single_space() {
+        assert_eq!(line_len(" "), 1);
+    }
 }

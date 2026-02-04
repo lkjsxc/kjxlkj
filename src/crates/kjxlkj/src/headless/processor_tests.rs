@@ -81,3 +81,36 @@ fn process_command_enter() {
     process_key(&mut state, Key::new(KeyCode::Enter, Modifiers::none()));
     assert!(state.should_quit);
 }
+
+#[test]
+fn process_insert_char_basic() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Insert);
+    state.cursor.position = Position::new(0, 0);
+    process_key(&mut state, Key::new(KeyCode::Char('x'), Modifiers::none()));
+    let line = state.buffer.line(0).unwrap_or_default();
+    assert!(line.contains('x'));
+}
+
+#[test]
+fn process_command_mode_char() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Command);
+    state.mode_state.command_line = "".to_string();
+    process_key(&mut state, Key::new(KeyCode::Char('w'), Modifiers::none()));
+    // Command line receives characters in command mode
+    assert_eq!(state.mode_state.command_line, "w");
+}
+
+#[test]
+fn process_visual_line_escape() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::VisualLine);
+    state.selection = Some(Selection::new(
+        Position::new(0, 0),
+        Position::new(1, 0),
+        SelectionKind::Line,
+    ));
+    process_key(&mut state, key_escape());
+    assert_eq!(state.mode(), Mode::Normal);
+}

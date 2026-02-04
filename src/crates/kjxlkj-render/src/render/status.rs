@@ -75,4 +75,29 @@ mod tests {
         let result = render(&mut buf, &snapshot);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn render_status_modified_file() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.modified = true;
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_narrow_viewport() {
+        let mut buf = Vec::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(20, 10));
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_wide_viewport() {
+        let mut buf = Vec::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(200, 50));
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
 }

@@ -40,4 +40,23 @@ mod tests {
         let svc = LspService::new();
         assert_type::<LspService>(&svc);
     }
+
+    #[test]
+    fn lsp_service_multiple_instances() {
+        let svc1 = LspService::new();
+        let svc2 = LspService::default();
+        let _ = (&svc1, &svc2);
+    }
+
+    #[test]
+    fn lsp_service_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<LspService>();
+    }
+
+    #[test]
+    fn lsp_service_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<LspService>();
+    }
 }

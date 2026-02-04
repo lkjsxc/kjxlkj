@@ -36,4 +36,34 @@ mod tests {
     fn git_service_struct_exists() {
         let _ = std::any::type_name::<GitService>();
     }
+
+    #[test]
+    fn git_service_multiple_instances() {
+        let svc1 = GitService::new();
+        let svc2 = GitService::default();
+        let _ = (&svc1, &svc2);
+    }
+
+    #[test]
+    fn git_service_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<GitService>();
+    }
+
+    #[test]
+    fn git_service_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<GitService>();
+    }
+
+    #[test]
+    fn git_service_type_size() {
+        // GitService should be zero-sized (no fields)
+        assert_eq!(std::mem::size_of::<GitService>(), 0);
+    }
+
+    #[test]
+    fn git_service_type_alignment() {
+        assert_eq!(std::mem::align_of::<GitService>(), 1);
+    }
 }

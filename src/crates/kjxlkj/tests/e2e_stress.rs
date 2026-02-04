@@ -81,3 +81,39 @@ fn test_input_ordering() {
         {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+/// Test repeated up movement.
+#[test]
+fn test_up_movement_burst() {
+    let mut script = String::from("[");
+    for _ in 0..15 {
+        script.push_str(r#"{"kind":"key","code":"k","ctrl":false},"#);
+    }
+    script.push_str(r#"{"kind":"key","code":":","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
+    assert!(run_headless(&script).is_ok());
+}
+
+/// Test repeated left movement.
+#[test]
+fn test_left_movement_burst() {
+    let mut script = String::from("[");
+    for _ in 0..10 {
+        script.push_str(r#"{"kind":"key","code":"h","ctrl":false},"#);
+    }
+    script.push_str(r#"{"kind":"key","code":":","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
+    assert!(run_headless(&script).is_ok());
+}
+
+/// Test repeated right movement.
+#[test]
+fn test_right_movement_burst() {
+    let mut script = String::from("[");
+    for _ in 0..10 {
+        script.push_str(r#"{"kind":"key","code":"l","ctrl":false},"#);
+    }
+    script.push_str(r#"{"kind":"key","code":":","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
+    assert!(run_headless(&script).is_ok());
+}
