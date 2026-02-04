@@ -19,4 +19,5 @@ Covers documentation under `/docs/guides/`.
 - [ ] [/docs/guides/FAQ.md](/docs/guides/FAQ.md)
 - [ ] [/docs/guides/INSTALL_WINDOWS.md](/docs/guides/INSTALL_WINDOWS.md)
 - [ ] [/docs/guides/MIGRATION.md](/docs/guides/MIGRATION.md)
+- [ ] [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
 - [ ] [/docs/guides/QUICKSTART.md](/docs/guides/QUICKSTART.md)

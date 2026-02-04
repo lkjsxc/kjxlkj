@@ -15,6 +15,10 @@ The repo root SHOULD contain only the following entries:
 | `Cargo.toml` | Workspace manifest |
 | `Cargo.lock` | Locked dependencies |
 | `.gitignore` | Git ignore rules |
+| `rust-toolchain.toml` | Toolchain pinning for reproducible builds and CI |
+| `.github/` | CI configuration (GitHub Actions) and automation (Dependabot) |
+| `Dockerfile` | Docker image definition |
+| `.dockerignore` | Docker build context filtering |
 
 Additional root entries MUST be justified by a concrete need and recorded in:
 

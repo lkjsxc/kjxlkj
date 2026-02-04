@@ -100,6 +100,8 @@ Logging
 You are done only when all of the following are true:
 
 - The repository builds from scratch and all tests pass reliably.
+- CI is present and green (GitHub Actions under `/.github/`, including docs policy checks, `cargo fmt`, `cargo clippy -D warnings`, and `cargo test`).
+- Docker support is present and works (`Dockerfile`, `.dockerignore`, and a successful `docker build`).
 - The implementation matches the canonical spec, or any divergence is recorded in `/docs/reference/`.
 - The TODO iteration is fully checked off, including the recursion waves.
 - The documentation remains sufficient to delete everything but `/docs/` and reconstruct again.

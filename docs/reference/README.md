@@ -15,6 +15,7 @@ Reference materials including comparisons, plugin mappings, and release processe
 | [LIMITATIONS.md](LIMITATIONS.md) | Known limitations |
 | [IMPLEMENTATION_HISTORY.md](IMPLEMENTATION_HISTORY.md) | Historical implementation context (summary) |
 | [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Plugin to built-in mapping |
+| [CI.md](CI.md) | Continuous integration checks |
 | [RELEASE.md](RELEASE.md) | Release process |
 
 ## Related

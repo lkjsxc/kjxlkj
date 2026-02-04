@@ -24,14 +24,37 @@ This repo is also optimized for **machine (LLM) parsing and editing**. Canonical
 - The canonical specification lives under `docs/` and is treated as normative.
 - The Rust implementation lives under `src/crates/` as a Cargo workspace.
 
+Toolchain:
+
+- The repo includes `rust-toolchain.toml` (stable + `rustfmt`/`clippy` components).
+
 Build:
 
 ```bash
 cargo build
 ```
 
+Format:
+
+```bash
+cargo fmt --all -- --check
+```
+
+Lint:
+
+```bash
+cargo clippy --workspace --all-targets -- -D warnings
+```
+
 Test:
 
 ```bash
-cargo test
+cargo test --workspace
+```
+
+Docker:
+
+```bash
+docker build -t kjxlkj:dev .
+docker run --rm -it kjxlkj:dev
 ```

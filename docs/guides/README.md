@@ -9,6 +9,7 @@ Guides for installation, getting started, and transitioning to kjxlkj.
 |----------|---------|
 | [QUICKSTART.md](QUICKSTART.md) | Getting started guide |
 | [INSTALL_WINDOWS.md](INSTALL_WINDOWS.md) | Windows installation |
+| [DOCKER.md](DOCKER.md) | Running with Docker |
 | [MIGRATION.md](MIGRATION.md) | Migrating from Neovim |
 | [FAQ.md](FAQ.md) | Frequently asked questions |
 
