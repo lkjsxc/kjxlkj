@@ -281,6 +281,7 @@ dependencies = [
  "crossterm",
  "kjxlkj-core-state",
  "kjxlkj-core-types",
+ "kjxlkj-core-ui",
  "kjxlkj-input",
  "kjxlkj-render",
  "thiserror",

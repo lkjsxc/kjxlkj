@@ -17,3 +17,4 @@ thiserror = "1"
 tracing = "0.1"
 
 [dev-dependencies]
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }

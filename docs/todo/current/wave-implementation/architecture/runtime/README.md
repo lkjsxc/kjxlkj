@@ -20,5 +20,5 @@ Implement the async-first runtime model:
 - [x] Placeholder scaffolding: define the task graph and message channels.
 - [x] Minimal slice: implement one event loop path with deterministic tests.
 - [ ] Full conformance: implement all ordering rules and invariants in the runtime spec.
-- [ ] Add tests proving ordering and failure recovery rules.
+- [x] Add tests proving ordering and failure recovery rules.
 

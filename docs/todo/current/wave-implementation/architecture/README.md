@@ -66,7 +66,7 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests that prove:
+- [x] Add tests that prove:
   - single-writer core task invariant
   - snapshot immutability and render isolation
   - service failure does not corrupt core state
