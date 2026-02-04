@@ -158,4 +158,32 @@ mod tests {
         assert_eq!(GitStatus::Untracked, GitStatus::Untracked);
         assert_ne!(GitStatus::Modified, GitStatus::Staged);
     }
+
+    #[test]
+    fn test_git_service_default() {
+        let service = GitService::default();
+        assert_eq!(service.name(), "git");
+    }
+
+    #[test]
+    fn test_git_status_equality() {
+        assert_eq!(GitStatus::Modified, GitStatus::Modified);
+        assert_eq!(GitStatus::Staged, GitStatus::Staged);
+        assert_eq!(GitStatus::Unchanged, GitStatus::Unchanged);
+        assert_eq!(GitStatus::Ignored, GitStatus::Ignored);
+    }
+
+    #[test]
+    fn test_git_status_clone() {
+        let status = GitStatus::Modified;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_git_status_debug() {
+        let status = GitStatus::Untracked;
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("Untracked"));
+    }
 }

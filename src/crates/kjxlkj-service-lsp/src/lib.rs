@@ -202,4 +202,61 @@ mod tests {
         };
         assert_eq!(item.label, "test");
     }
+
+    #[test]
+    fn test_lsp_position() {
+        let pos = LspPosition { line: 10, character: 5 };
+        assert_eq!(pos.line, 10);
+        assert_eq!(pos.character, 5);
+    }
+
+    #[test]
+    fn test_lsp_range() {
+        let range = LspRange {
+            start: LspPosition { line: 0, character: 0 },
+            end: LspPosition { line: 1, character: 10 },
+        };
+        assert_eq!(range.start.line, 0);
+        assert_eq!(range.end.line, 1);
+    }
+
+    #[test]
+    fn test_diagnostic() {
+        let diag = Diagnostic {
+            range: LspRange {
+                start: LspPosition { line: 5, character: 0 },
+                end: LspPosition { line: 5, character: 10 },
+            },
+            severity: Some(DiagnosticSeverity::Warning),
+            message: "test warning".to_string(),
+            source: Some("test".to_string()),
+        };
+        assert_eq!(diag.message, "test warning");
+        assert_eq!(diag.severity, Some(DiagnosticSeverity::Warning));
+    }
+
+    #[test]
+    fn test_lsp_server_config_rust() {
+        let config = LspServerConfig::rust_analyzer();
+        assert_eq!(config.language_id, "rust");
+        assert_eq!(config.command, "rust-analyzer");
+    }
+
+    #[test]
+    fn test_lsp_server_config_typescript() {
+        let config = LspServerConfig::typescript();
+        assert_eq!(config.language_id, "typescript");
+    }
+
+    #[test]
+    fn test_lsp_service_default() {
+        let service = LspService::default();
+        assert_eq!(service.name(), "lsp");
+    }
+
+    #[test]
+    fn test_diagnostic_severity_variants() {
+        assert_ne!(DiagnosticSeverity::Error, DiagnosticSeverity::Warning);
+        assert_ne!(DiagnosticSeverity::Information, DiagnosticSeverity::Hint);
+    }
 }

@@ -73,4 +73,60 @@ mod tests {
         editor.load_content("hello");
         assert_eq!(editor.content(), "hello");
     }
+
+    #[test]
+    fn test_text_module_exports() {
+        let buffer = text::TextBuffer::from_text(BufferId::new(1), "hello\nworld");
+        assert_eq!(buffer.line_count(), 2);
+    }
+
+    #[test]
+    fn test_undo_module_exports() {
+        let mut tx = undo::Transaction::new();
+        tx.push(undo::Edit::insert(Position::new(0, 0), "test"));
+        assert!(!tx.is_empty());
+    }
+
+    #[test]
+    fn test_edit_module_exports() {
+        let motion = edit::Motion::new(MotionIntent::Left, 1);
+        assert_eq!(motion.count, 1);
+    }
+
+    #[test]
+    fn test_mode_module_exports() {
+        let parser = mode::Parser::new();
+        // Just verify parser can be created
+        let _ = parser;
+    }
+
+    #[test]
+    fn test_ui_module_exports() {
+        let viewport = ui::Viewport::new(0, 24, 0, 80);
+        assert_eq!(viewport.height, 24);
+    }
+
+    #[test]
+    fn test_register_types() {
+        let name = RegisterName::Unnamed;
+        assert_eq!(name.as_char(), '"');
+    }
+
+    #[test]
+    fn test_selection_types() {
+        let sel = Selection::new(Position::new(0, 0), Position::new(1, 5), SelectionKind::Char);
+        assert_eq!(sel.start(), Position::new(0, 0));
+    }
+
+    #[test]
+    fn test_intent_types() {
+        let intent = Intent::Nop;
+        assert!(matches!(intent, Intent::Nop));
+    }
+
+    #[test]
+    fn test_scroll_intent() {
+        let scroll = ScrollIntent::LineDown;
+        assert!(matches!(scroll, ScrollIntent::LineDown));
+    }
 }
