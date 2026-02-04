@@ -74,4 +74,29 @@ mod tests {
         let name = std::any::type_name::<IndexService>();
         assert!(name.contains("IndexService"));
     }
+
+    #[test]
+    fn index_service_create_drop() {
+        let svc = IndexService::new();
+        drop(svc);
+    }
+
+    #[test]
+    fn index_service_multiple_new() {
+        let _ = IndexService::new();
+        let _ = IndexService::new();
+        let _ = IndexService::new();
+    }
+
+    #[test]
+    fn index_service_ref_pattern() {
+        let svc = &IndexService::new();
+        let _ = svc;
+    }
+
+    #[test]
+    fn index_service_box_pattern() {
+        let svc = Box::new(IndexService::new());
+        drop(svc);
+    }
 }

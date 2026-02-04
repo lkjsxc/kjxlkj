@@ -81,4 +81,23 @@ mod tests {
         let svc = LspService::new();
         drop(svc);
     }
+
+    #[test]
+    fn lsp_service_multiple_new() {
+        let _ = LspService::new();
+        let _ = LspService::new();
+        let _ = LspService::new();
+    }
+
+    #[test]
+    fn lsp_service_ref_pattern() {
+        let svc = &LspService::new();
+        let _ = svc;
+    }
+
+    #[test]
+    fn lsp_service_box_pattern() {
+        let svc = Box::new(LspService::new());
+        drop(svc);
+    }
 }

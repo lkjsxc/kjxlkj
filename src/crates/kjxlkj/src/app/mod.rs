@@ -131,4 +131,30 @@ mod tests {
         let mut state = EditorState::new();
         let _ = load_file(&mut state, "/tmp/nonexistent_test_file.txt");
     }
+
+    #[test]
+    fn apply_intent_repeat() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::RepeatChange);
+    }
+
+    #[test]
+    fn process_key_enter() {
+        let mut state = EditorState::new();
+        use kjxlkj_input::{Key, KeyCode, Modifiers};
+        process_key(&mut state, Key { code: KeyCode::Enter, mods: Modifiers::none() });
+    }
+
+    #[test]
+    fn process_key_backspace() {
+        let mut state = EditorState::new();
+        use kjxlkj_input::{Key, KeyCode, Modifiers};
+        process_key(&mut state, Key { code: KeyCode::Backspace, mods: Modifiers::none() });
+    }
+
+    #[test]
+    fn apply_intent_enter_command() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::EnterCommand);
+    }
 }

@@ -135,4 +135,29 @@ mod tests {
         let sup = ServiceSupervisor::new();
         drop(sup);
     }
+
+    #[test]
+    fn supervisor_box_pattern() {
+        let sup = Box::new(ServiceSupervisor::new());
+        drop(sup);
+    }
+
+    #[test]
+    fn supervisor_ref_pattern() {
+        let sup = &ServiceSupervisor::new();
+        let _ = sup;
+    }
+
+    #[test]
+    fn supervisor_multiple_new() {
+        let _ = ServiceSupervisor::new();
+        let _ = ServiceSupervisor::new();
+        let _ = ServiceSupervisor::new();
+    }
+
+    #[test]
+    fn git_type_via_services() {
+        let name = std::any::type_name::<git::GitService>();
+        assert!(name.contains("Git"));
+    }
 }

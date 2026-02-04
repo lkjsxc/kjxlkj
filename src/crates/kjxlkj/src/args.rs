@@ -120,4 +120,44 @@ mod tests {
         assert!(args.file.is_none());
         assert!(args.script.is_none());
     }
+
+    #[test]
+    fn args_file_path_pattern() {
+        let args = Args {
+            file: Some("/path/to/file.rs".to_string()),
+            headless: false,
+            script: None,
+        };
+        assert!(args.file.unwrap().contains("file.rs"));
+    }
+
+    #[test]
+    fn args_headless_only() {
+        let args = Args {
+            file: None,
+            headless: true,
+            script: None,
+        };
+        assert!(args.headless && args.file.is_none());
+    }
+
+    #[test]
+    fn args_script_path_pattern() {
+        let args = Args {
+            file: None,
+            headless: false,
+            script: Some("test.json".to_string()),
+        };
+        assert!(args.script.unwrap().ends_with(".json"));
+    }
+
+    #[test]
+    fn args_combined_fields() {
+        let args = Args {
+            file: Some("test.rs".to_string()),
+            headless: true,
+            script: Some("run.json".to_string()),
+        };
+        assert!(args.headless && args.file.is_some() && args.script.is_some());
+    }
 }

@@ -78,4 +78,23 @@ mod tests {
         let svc = GitService::new();
         drop(svc);
     }
+
+    #[test]
+    fn git_service_multiple_new() {
+        let _ = GitService::new();
+        let _ = GitService::new();
+        let _ = GitService::new();
+    }
+
+    #[test]
+    fn git_service_ref_pattern() {
+        let svc = &GitService::new();
+        let _ = svc;
+    }
+
+    #[test]
+    fn git_service_box_pattern() {
+        let svc = Box::new(GitService::new());
+        drop(svc);
+    }
 }
