@@ -15,6 +15,9 @@ This wave exists because this project follows “All in Docs”: the implementat
 | [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md) | The pasteable one-shot prompt (Copilot/Claude) |
 | [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md) | The crate/workspace topology to recreate |
 | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | The runtime ordering model to implement |
+| [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | The root allowlist and required implementation placement |
+| [/docs/reference/CI.md](/docs/reference/CI.md) | The verification gate the repo must pass (local + CI parity) |
+| [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | Container-based build/run expectations (when required by policy/spec) |
 | [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | The “what exists” ledger (must be kept accurate) |
 
 ## Checklist (normative)
@@ -32,6 +35,10 @@ This wave exists because this project follows “All in Docs”: the implementat
 - [x] Recreate the Cargo workspace and crate layout described in:
   - `/docs/spec/architecture/crates.md`
 - [x] Ensure `cargo test` can run early (even with placeholders) so later work is continuously verifiable.
+ - [x] Ensure required root-level artifacts and automation are reconstructed as specified by policy and reference docs:
+   - `/docs/policy/ROOT_LAYOUT.md`
+   - `/docs/reference/CI.md`
+   - `/docs/guides/DOCKER.md`
 
 ### C. Make reconstruction deterministic
 
