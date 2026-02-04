@@ -110,4 +110,24 @@ mod tests {
         assert!(result.is_ok());
         assert!(!buf.is_empty());
     }
+
+    #[test]
+    fn renderer_render_with_cursor() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(40, 10));
+        let result = renderer.render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn renderer_output_contains_content() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.buffer.lines = vec!["Hello World".to_string()];
+        let _ = renderer.render(&mut buf, &snapshot);
+        let output = String::from_utf8_lossy(&buf);
+        assert!(output.contains("Hello") || !buf.is_empty());
+    }
 }

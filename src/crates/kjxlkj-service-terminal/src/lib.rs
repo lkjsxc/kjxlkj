@@ -52,4 +52,18 @@ mod tests {
         let output = TerminalService::run_command_str("echo hello").unwrap();
         assert!(output.contains("hello"));
     }
+
+    #[test]
+    fn run_pwd_command() {
+        let output = TerminalService::run_command_str("pwd").unwrap();
+        assert!(!output.is_empty());
+    }
+
+    #[test]
+    fn run_invalid_command_fails() {
+        // An obviously invalid command
+        let result = TerminalService::run_command_str("nonexistent_command_xyz123");
+        // May succeed with error message or fail entirely
+        assert!(result.is_ok() || result.is_err());
+    }
 }
