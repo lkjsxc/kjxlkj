@@ -63,3 +63,27 @@ fn test_headless_file_motions() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_word_end_motion() {
+    let s = r#"[{"kind":"key","code":"e","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_paragraph_motion() {
+    let s = r#"[{"kind":"keys","keys":"}"},{"kind":"keys","keys":"{"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_screen_motion() {
+    let s = r#"[{"kind":"keys","keys":"H"},{"kind":"keys","keys":"M"},{"kind":"keys","keys":"L"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

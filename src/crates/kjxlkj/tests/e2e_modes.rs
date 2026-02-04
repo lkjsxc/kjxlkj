@@ -77,3 +77,35 @@ fn test_headless_replace_mode() {
         {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_visual_block_mode() {
+    let s = r#"[{"kind":"key","code":"v","ctrl":true},{"kind":"assert_mode","mode":"visual_block"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_append_mode() {
+    let s = r#"[{"kind":"key","code":"a","ctrl":false},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_append_end_of_line() {
+    let s = r#"[{"kind":"keys","keys":"A"},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_insert_start_of_line() {
+    let s = r#"[{"kind":"keys","keys":"I"},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
