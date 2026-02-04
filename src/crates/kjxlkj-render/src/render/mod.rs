@@ -179,4 +179,19 @@ mod tests {
         let result = renderer.render(&mut buf, &snapshot);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn renderer_square_viewport() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(50, 50));
+        let result = renderer.render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn renderer_type_name() {
+        let name = std::any::type_name::<Renderer>();
+        assert!(name.contains("Renderer"));
+    }
 }

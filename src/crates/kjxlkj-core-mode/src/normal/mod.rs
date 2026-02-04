@@ -182,4 +182,18 @@ mod tests {
         let intent = state.process_key('u', true, false);
         assert!(matches!(intent, Intent::Scroll(_)));
     }
+
+    #[test]
+    fn normal_mode_ctrl_d_scroll() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('d', true, false);
+        assert!(matches!(intent, Intent::Scroll(_)));
+    }
+
+    #[test]
+    fn normal_mode_G_file_end() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('G', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
 }

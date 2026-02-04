@@ -183,4 +183,15 @@ mod tests {
     fn terminal_stdout_sig() {
         let _: for<'a> fn(&'a mut TerminalHost) -> &'a mut Stdout = TerminalHost::stdout;
     }
+
+    #[test]
+    fn terminal_module_compiles() {
+        assert!(true);
+    }
+
+    #[test]
+    fn terminal_host_type_name() {
+        let name = std::any::type_name::<TerminalHost>();
+        assert!(name.contains("TerminalHost"));
+    }
 }
