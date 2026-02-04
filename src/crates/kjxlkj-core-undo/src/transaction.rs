@@ -155,4 +155,76 @@ mod tests {
         assert_eq!(inv.cursor_before(), Some(Position::new(0, 5)));
         assert_eq!(inv.cursor_after(), Some(Position::new(0, 0)));
     }
+
+    #[test]
+    fn test_edit_insert() {
+        let edit = Edit::insert(Position::new(1, 5), "text");
+        assert!(matches!(edit, Edit::Insert { .. }));
+    }
+
+    #[test]
+    fn test_edit_delete() {
+        let edit = Edit::delete(Position::new(1, 5), "text");
+        assert!(matches!(edit, Edit::Delete { .. }));
+    }
+
+    #[test]
+    fn test_transaction_empty() {
+        let tx = Transaction::new();
+        assert!(tx.is_empty());
+    }
+
+    #[test]
+    fn test_transaction_cursor_before_default() {
+        let tx = Transaction::new();
+        assert!(tx.cursor_before().is_none());
+    }
+
+    #[test]
+    fn test_transaction_cursor_after_default() {
+        let tx = Transaction::new();
+        assert!(tx.cursor_after().is_none());
+    }
+
+    #[test]
+    fn test_transaction_multiple_edits() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        tx.push(Edit::insert(Position::new(0, 1), "b"));
+        tx.push(Edit::insert(Position::new(0, 2), "c"));
+        assert_eq!(tx.edits().len(), 3);
+    }
+
+    #[test]
+    fn test_transaction_inverse_multiple() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        tx.push(Edit::insert(Position::new(0, 1), "b"));
+        
+        let inv = tx.inverse();
+        assert_eq!(inv.edits().len(), 2);
+    }
+
+    #[test]
+    fn test_edit_equality() {
+        let e1 = Edit::insert(Position::new(0, 0), "hello");
+        let e2 = Edit::insert(Position::new(0, 0), "hello");
+        assert_eq!(e1, e2);
+    }
+
+    #[test]
+    fn test_edit_inequality() {
+        let e1 = Edit::insert(Position::new(0, 0), "hello");
+        let e2 = Edit::insert(Position::new(0, 0), "world");
+        assert_ne!(e1, e2);
+    }
+
+    #[test]
+    fn test_transaction_clone() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "test"));
+        let cloned = tx.clone();
+        assert_eq!(tx.edits().len(), cloned.edits().len());
+    }
 }
+

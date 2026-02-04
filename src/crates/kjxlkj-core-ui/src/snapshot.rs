@@ -182,4 +182,108 @@ mod tests {
         assert!(status.message.is_some());
         assert!(!status.message.unwrap().1);
     }
+
+    #[test]
+    fn test_status_line_modified() {
+        let status = StatusLine::new(
+            Mode::Insert,
+            "test.rs".to_string(),
+            true,
+            &Cursor::new(5, 10),
+            200,
+        );
+        assert!(status.modified);
+        assert_eq!(status.mode, "INSERT");
+        assert_eq!(status.line, 5);
+        assert_eq!(status.col, 10);
+        assert_eq!(status.total_lines, 200);
+    }
+
+    #[test]
+    fn test_status_line_error_message() {
+        let status = StatusLine::default()
+            .with_message("Error occurred".to_string(), true);
+        assert!(status.message.is_some());
+        let (msg, is_error) = status.message.unwrap();
+        assert_eq!(msg, "Error occurred");
+        assert!(is_error);
+    }
+
+    #[test]
+    fn test_status_line_default() {
+        let status = StatusLine::default();
+        assert!(status.mode.is_empty());
+        assert!(status.file_name.is_empty());
+        assert!(!status.modified);
+    }
+
+    #[test]
+    fn test_buffer_snapshot_new() {
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec!["line1".to_string(), "line2".to_string()],
+            Viewport::new(0, 24, 0, 80),
+            false,
+        );
+        assert_eq!(snapshot.id, BufferId::new(1));
+        assert_eq!(snapshot.lines.len(), 2);
+    }
+
+    #[test]
+    fn test_buffer_snapshot_modified() {
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec![],
+            Viewport::new(0, 24, 0, 80),
+            true,
+        );
+        assert!(snapshot.modified);
+    }
+
+    #[test]
+    fn test_buffer_snapshot_clone() {
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec!["hello".to_string()],
+            Viewport::new(0, 24, 0, 80),
+            false,
+        );
+        let cloned = snapshot.clone();
+        assert_eq!(cloned.id, snapshot.id);
+        assert_eq!(cloned.lines, snapshot.lines);
+    }
+
+    #[test]
+    fn test_status_line_visual_mode() {
+        let status = StatusLine::new(
+            Mode::Visual,
+            "test.rs".to_string(),
+            false,
+            &Cursor::new(0, 0),
+            100,
+        );
+        assert_eq!(status.mode, "VISUAL");
+    }
+
+    #[test]
+    fn test_status_line_command_mode() {
+        let status = StatusLine::new(
+            Mode::Command,
+            "test.rs".to_string(),
+            false,
+            &Cursor::new(0, 0),
+            100,
+        );
+        assert_eq!(status.mode, "COMMAND");
+    }
 }
+

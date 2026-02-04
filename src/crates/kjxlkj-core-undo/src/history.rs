@@ -124,4 +124,80 @@ mod tests {
 
         assert!(!history.can_redo());
     }
+
+    #[test]
+    fn test_history_new() {
+        let history = UndoHistory::new();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_history_clear() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        history.push(tx);
+        
+        history.clear();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_undo_count() {
+        let mut history = UndoHistory::new();
+        assert_eq!(history.undo_count(), 0);
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        history.push(tx);
+        
+        assert_eq!(history.undo_count(), 1);
+    }
+
+    #[test]
+    fn test_redo_count() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        history.push(tx);
+        
+        history.undo();
+        assert_eq!(history.redo_count(), 1);
+    }
+
+    #[test]
+    fn test_undo_on_empty() {
+        let mut history = UndoHistory::new();
+        assert!(history.undo().is_none());
+    }
+
+    #[test]
+    fn test_redo_on_empty() {
+        let mut history = UndoHistory::new();
+        assert!(history.redo().is_none());
+    }
+
+    #[test]
+    fn test_multiple_undo() {
+        let mut history = UndoHistory::new();
+        
+        for i in 0..3 {
+            let mut tx = Transaction::new();
+            tx.push(Edit::insert(Position::new(0, i), "x"));
+            history.push(tx);
+        }
+        
+        assert_eq!(history.undo_count(), 3);
+        
+        history.undo();
+        history.undo();
+        
+        assert_eq!(history.undo_count(), 1);
+        assert_eq!(history.redo_count(), 2);
+    }
 }
+

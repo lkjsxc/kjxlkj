@@ -103,4 +103,89 @@ mod tests {
         vp.center_on_line(50, 100);
         assert!(vp.is_line_visible(50));
     }
+
+    #[test]
+    fn test_viewport_default() {
+        let vp = Viewport::default();
+        assert_eq!(vp.top_line, 0);
+        assert_eq!(vp.height, 0);
+    }
+
+    #[test]
+    fn test_viewport_bottom_line() {
+        let vp = Viewport::new(10, 20, 0, 80);
+        assert_eq!(vp.bottom_line(), 30);
+    }
+
+    #[test]
+    fn test_viewport_scroll_down() {
+        let mut vp = Viewport::new(0, 20, 0, 80);
+        vp.scroll_down(5, 100);
+        assert_eq!(vp.top_line, 5);
+    }
+
+    #[test]
+    fn test_viewport_scroll_up() {
+        let mut vp = Viewport::new(10, 20, 0, 80);
+        vp.scroll_up(5);
+        assert_eq!(vp.top_line, 5);
+    }
+
+    #[test]
+    fn test_viewport_scroll_up_at_top() {
+        let mut vp = Viewport::new(2, 20, 0, 80);
+        vp.scroll_up(10);
+        assert_eq!(vp.top_line, 0);
+    }
+
+    #[test]
+    fn test_viewport_scroll_down_at_bottom() {
+        let mut vp = Viewport::new(80, 20, 0, 80);
+        vp.scroll_down(10, 100);
+        assert_eq!(vp.top_line, 80);
+    }
+
+    #[test]
+    fn test_viewport_cursor_to_top() {
+        let mut vp = Viewport::new(0, 20, 0, 80);
+        vp.cursor_to_top(50);
+        assert_eq!(vp.top_line, 50);
+    }
+
+    #[test]
+    fn test_viewport_cursor_to_bottom() {
+        let mut vp = Viewport::new(0, 20, 0, 80);
+        vp.cursor_to_bottom(50);
+        assert_eq!(vp.top_line, 31);
+    }
+
+    #[test]
+    fn test_viewport_scroll_to_line_up() {
+        let mut vp = Viewport::new(20, 10, 0, 80);
+        vp.scroll_to_line(15, 100);
+        assert!(vp.is_line_visible(15));
+    }
+
+    #[test]
+    fn test_viewport_center_at_start() {
+        let mut vp = Viewport::new(50, 20, 0, 80);
+        vp.center_on_line(5, 100);
+        assert!(vp.is_line_visible(5));
+        assert_eq!(vp.top_line, 0);
+    }
+
+    #[test]
+    fn test_viewport_center_at_end() {
+        let mut vp = Viewport::new(0, 20, 0, 80);
+        vp.center_on_line(95, 100);
+        assert!(vp.is_line_visible(95));
+    }
+
+    #[test]
+    fn test_viewport_clone() {
+        let vp = Viewport::new(10, 20, 0, 80);
+        let cloned = vp.clone();
+        assert_eq!(vp, cloned);
+    }
 }
+

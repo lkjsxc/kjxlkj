@@ -93,4 +93,68 @@ mod tests {
         assert!(v1 > v0);
         assert_eq!(v1.0, 1);
     }
+
+    #[test]
+    fn test_buffer_id_value() {
+        let id = BufferId::new(123);
+        assert_eq!(id.value(), 123);
+    }
+
+    #[test]
+    fn test_buffer_id_equality() {
+        let id1 = BufferId::new(1);
+        let id2 = BufferId::new(1);
+        let id3 = BufferId::new(2);
+        assert_eq!(id1, id2);
+        assert_ne!(id1, id3);
+    }
+
+    #[test]
+    fn test_buffer_id_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(BufferId::new(1));
+        assert!(set.contains(&BufferId::new(1)));
+    }
+
+    #[test]
+    fn test_buffer_name_default() {
+        let name = BufferName::default();
+        assert_eq!(name.as_str(), "[No Name]");
+    }
+
+    #[test]
+    fn test_buffer_name_from_string() {
+        let name = BufferName::new(String::from("file.txt"));
+        assert_eq!(name.as_str(), "file.txt");
+    }
+
+    #[test]
+    fn test_buffer_version_value() {
+        let v = BufferVersion::new(42);
+        assert_eq!(v.value(), 42);
+    }
+
+    #[test]
+    fn test_buffer_version_default() {
+        let v = BufferVersion::default();
+        assert_eq!(v, BufferVersion::INITIAL);
+    }
+
+    #[test]
+    fn test_buffer_version_ordering() {
+        let v1 = BufferVersion::new(1);
+        let v2 = BufferVersion::new(2);
+        assert!(v1 < v2);
+    }
+
+    #[test]
+    fn test_buffer_version_chain() {
+        let v0 = BufferVersion::INITIAL;
+        let v1 = v0.next();
+        let v2 = v1.next();
+        let v3 = v2.next();
+        assert_eq!(v3.value(), 3);
+    }
 }
+
