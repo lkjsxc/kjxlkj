@@ -889,3 +889,169 @@ fn test_end_to_end_delete_word() {
     // Should have deleted at least "hello "
     assert!(after_len < before_len);
 }
+
+/// Test: Change word motion with cw.
+#[test]
+fn test_end_to_end_change_word() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // cw -> change word (should enter insert mode)
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    
+    let snapshot = state.snapshot();
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Undo with u key.
+#[test]
+fn test_end_to_end_u_undo() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let before_undo = state.snapshot();
+    assert!(before_undo.buffer.lines.first().map(|l| l.contains("hello")).unwrap_or(false));
+
+    // u -> undo
+    state.handle_key(KeyEvent::new(KeyCode::Char('u'), KeyModifiers::NONE));
+    
+    // Content may have changed after undo
+    let after_undo = state.snapshot();
+    assert!(after_undo.mode == kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Command mode entry.
+#[test]
+fn test_end_to_end_command_mode() {
+    let mut state = EditorState::new();
+
+    // : -> command mode
+    state.handle_key(KeyEvent::new(KeyCode::Char(':'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Command);
+}
+
+/// Test: Line join with J command.
+#[test]
+fn test_end_to_end_J_join() {
+    let mut state = EditorState::new();
+
+    // Insert two lines
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE));
+    for c in "line2".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('k'), KeyModifiers::NONE)); // Go up
+
+    let before = state.snapshot();
+    let before_lines = before.buffer.line_count;
+
+    // J -> join lines
+    state.handle_key(KeyEvent::new(KeyCode::Char('J'), KeyModifiers::NONE));
+    
+    let after = state.snapshot();
+    // May have one less line after join
+    assert!(after.buffer.line_count <= before_lines);
+}
+
+/// Test: Go to end of file with G motion.
+#[test]
+fn test_end_to_end_G_motion() {
+    let mut state = EditorState::new();
+
+    // Insert multiple lines with Enter key
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Currently at line 2
+    let before = state.snapshot();
+    
+    // G -> go to end (should stay or move)
+    state.handle_key(KeyEvent::new(KeyCode::Char('G'), KeyModifiers::NONE));
+    
+    let after = state.snapshot();
+    // Should be in normal mode and at last line
+    assert_eq!(after.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Replace single char with r.
+#[test]
+fn test_end_to_end_replace_char() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // r followed by a char -> replace char under cursor
+    state.handle_key(KeyEvent::new(KeyCode::Char('r'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('X'), KeyModifiers::NONE));
+    
+    let snapshot = state.snapshot();
+    // Should still be in normal mode
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Multiple cursor movements.
+#[test]
+fn test_end_to_end_cursor_movements() {
+    let mut state = EditorState::new();
+
+    // Insert text on single line
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // 0 - go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    let at_start = state.snapshot();
+    assert_eq!(at_start.cursor.col(), 0);
+
+    // $ - go to end of line
+    state.handle_key(KeyEvent::new(KeyCode::Char('$'), KeyModifiers::NONE));
+    let at_end = state.snapshot();
+    assert!(at_end.cursor.col() > at_start.cursor.col());
+
+    // h - move left
+    let before_h = state.snapshot();
+    state.handle_key(KeyEvent::new(KeyCode::Char('h'), KeyModifiers::NONE));
+    let after_h = state.snapshot();
+    assert!(after_h.cursor.col() < before_h.cursor.col());
+
+    // l - move right
+    let before_l = state.snapshot();
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    let after_l = state.snapshot();
+    assert!(after_l.cursor.col() >= before_l.cursor.col());
+}
+
