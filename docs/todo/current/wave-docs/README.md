@@ -23,6 +23,7 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 ### B. Reconcile derived automation artifacts (CI/Docker/toolchain)
 
 - [x] Clarify that CI, Docker support, and toolchain pinning are derived artifacts that may be absent in a docs-only baseline.
+- [x] Reduce the repository to a docs-only baseline by deleting derived implementation artifacts (`src/`, `Cargo.toml`, `Cargo.lock`) before a full reconstruction run.
 - [ ] Ensure all guides/reference docs describe derived artifacts conditionally (no unconditional “this repo includes X” unless the artifact is guaranteed present).
 
 ### C. Fix conformance docs vs implementation surface
@@ -35,13 +36,13 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 - [x] Add a normative completion gate command to the TODO index.
 - [ ] Convert non-checklist “Tasks” sections in the current iteration into checkboxes so completion is machine-checkable.
 - [ ] Uncheck any items that are not demonstrably complete (avoid pre-checked “future” items).
-- [ ] Add leaf TODOs for the reported high-priority gaps:
-  - long-line rendering stability
-  - interactive Insert-mode newline reliability
-  - CPU/latency regressions vs baseline expectations
-  - large-file open/scroll responsiveness
-  - file explorer MVP (spec exists; implementation missing)
+- [x] Add leaf TODOs for the reported high-priority gaps:
+  - long-line rendering stability: [/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md](/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md)
+  - interactive Insert-mode newline reliability: [/docs/todo/current/wave-implementation/modes/insert/newline/README.md](/docs/todo/current/wave-implementation/modes/insert/newline/README.md)
+  - CPU/latency regression harness: [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
+  - large-file open/scroll responsiveness: [/docs/todo/current/wave-implementation/technical/memory/README.md](/docs/todo/current/wave-implementation/technical/memory/README.md)
+  - file explorer MVP: [/docs/todo/current/wave-implementation/features/navigation/file-explorer/README.md](/docs/todo/current/wave-implementation/features/navigation/file-explorer/README.md)
 
 ### E. Record work products
 
-- [ ] Add a structured proposals/log area under `/docs/log/` and record the above gaps with links to defining specs, conformance claims, and test requirements.
+- [x] Add a structured proposals/log area under `/docs/log/` and record the above gaps with links to defining specs, conformance claims, and test requirements.

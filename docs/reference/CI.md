@@ -32,3 +32,5 @@ Checks:
 ## Local reproduction
 
 The CI checks are intended to be reproducible locally by running the same commands listed above from the repo root.
+
+In a docs-only baseline, Cargo- and Docker-based checks apply only after the workspace and packaging artifacts are reconstructed.
