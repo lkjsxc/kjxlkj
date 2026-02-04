@@ -132,4 +132,23 @@ mod tests {
         set.insert(BufferVersion::new(2));
         assert_eq!(set.len(), 2);
     }
+
+    #[test]
+    fn buffer_version_increment() {
+        let mut v = BufferVersion::new(5);
+        v.increment();
+        assert_eq!(v.as_u64(), 6);
+    }
+
+    #[test]
+    fn buffer_id_value() {
+        let id = BufferId::new(42);
+        assert_eq!(id.as_u64(), 42);
+    }
+
+    #[test]
+    fn buffer_id_default_value() {
+        let id = BufferId::default();
+        assert_eq!(id.as_u64(), 0);
+    }
 }

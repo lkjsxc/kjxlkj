@@ -119,6 +119,45 @@ fn modifiers_shift() {
 }
 
 #[test]
+fn modifiers_all_false() {
+    let m = Modifiers::none();
+    assert!(!m.ctrl && !m.alt && !m.shift);
+}
+
+#[test]
+fn modifiers_multiple() {
+    let m = Modifiers {
+        ctrl: true,
+        alt: true,
+        shift: false,
+    };
+    assert!(m.ctrl);
+    assert!(m.alt);
+}
+
+#[test]
+fn key_with_shift() {
+    let m = Modifiers {
+        ctrl: false,
+        alt: false,
+        shift: true,
+    };
+    let key = Key::new(KeyCode::Char('A'), m);
+    assert!(key.mods.shift);
+}
+
+#[test]
+fn key_enter_code() {
+    let key = Key::new(KeyCode::Enter, Modifiers::none());
+    assert_eq!(key.code, KeyCode::Enter);
+}
+
+#[test]
+fn key_backspace_code() {
+    let key = Key::new(KeyCode::Backspace, Modifiers::none());
+    assert_eq!(key.code, KeyCode::Backspace);
+}
+#[test]
 fn key_tab() {
     let k = Key::new(KeyCode::Tab, Modifiers::none());
     assert_eq!(k.code, KeyCode::Tab);

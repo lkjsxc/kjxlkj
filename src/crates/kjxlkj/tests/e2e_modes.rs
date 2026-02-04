@@ -109,3 +109,46 @@ fn test_headless_insert_start_of_line() {
         {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_open_line_below() {
+    let s = r#"[{"kind":"key","code":"o","ctrl":false},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_open_line_above() {
+    let s = r#"[{"kind":"keys","keys":"O"},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_visual_to_normal() {
+    let s = r#"[{"kind":"keys","keys":"v"},{"kind":"assert_mode","mode":"visual"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_insert_then_normal() {
+    let s = r#"[{"kind":"keys","keys":"i"},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_command_enter() {
+    let s = r#"[{"kind":"key","code":":","ctrl":false},{"kind":"assert_mode","mode":"command"},
+        {"kind":"key","code":"Enter","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

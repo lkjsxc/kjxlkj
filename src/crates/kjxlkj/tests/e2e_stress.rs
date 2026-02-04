@@ -146,3 +146,25 @@ fn test_visual_selection_burst() {
     script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
     assert!(run_headless(&script).is_ok());
 }
+
+/// Test command mode typing.
+#[test]
+fn test_command_mode_typing() {
+    let s = r#"[{"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"write"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+/// Test undo command.
+#[test]
+fn test_undo_operation() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"u","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

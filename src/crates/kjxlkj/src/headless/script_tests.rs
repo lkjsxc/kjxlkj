@@ -165,3 +165,27 @@ fn assert_mode_normal_valid() {
     let state = EditorState::new();
     assert!(assert_mode(&state, "normal").is_ok());
 }
+
+#[test]
+fn parse_up_arrow_key() {
+    let key = ScriptKey {
+        code: "Up".to_string(),
+        ctrl: false,
+        alt: false,
+        shift: false,
+    };
+    let k = parse_key(&key).unwrap();
+    assert_eq!(k.code, KeyCode::Up);
+}
+
+#[test]
+fn parse_down_arrow_key() {
+    let key = ScriptKey {
+        code: "Down".to_string(),
+        ctrl: false,
+        alt: false,
+        shift: false,
+    };
+    let k = parse_key(&key).unwrap();
+    assert_eq!(k.code, KeyCode::Down);
+}

@@ -161,3 +161,27 @@ fn viewport_first_line_scroll() {
     assert_eq!(vp.first_line, 50);
     assert_eq!(vp.last_line(), 73);
 }
+
+#[test]
+fn viewport_resize_larger() {
+    let mut vp = Viewport::new(80, 24);
+    vp.resize(160, 48);
+    assert_eq!(vp.width, 160);
+    assert_eq!(vp.height, 48);
+}
+
+#[test]
+fn viewport_resize_smaller() {
+    let mut vp = Viewport::new(80, 24);
+    vp.resize(40, 12);
+    assert_eq!(vp.width, 40);
+    assert_eq!(vp.height, 12);
+}
+
+#[test]
+fn viewport_scroll_to_top_line() {
+    let mut vp = Viewport::new(80, 24);
+    vp.first_line = 50;
+    vp.scroll_to_top(10);
+    assert_eq!(vp.first_line, 10);
+}

@@ -116,4 +116,27 @@ mod tests {
     fn space_width() {
         assert_eq!(grapheme_width(" "), 1);
     }
+
+    #[test]
+    fn digit_width() {
+        assert_eq!(grapheme_width("5"), 1);
+    }
+
+    #[test]
+    fn punctuation_width() {
+        assert_eq!(grapheme_width("."), 1);
+    }
+
+    #[test]
+    fn multiple_ascii_chars() {
+        let s = "hello";
+        assert_eq!(next_grapheme_boundary(s, 0), 1);
+        assert_eq!(next_grapheme_boundary(s, 1), 2);
+    }
+
+    #[test]
+    fn boundary_at_string_end() {
+        let s = "abc";
+        assert_eq!(next_grapheme_boundary(s, 3), 3);
+    }
 }

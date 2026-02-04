@@ -116,3 +116,64 @@ fn test_headless_word_motion_count() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_till_char_motion() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":"t","ctrl":false},{"kind":"key","code":"l","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_first_non_blank() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"   hello"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":"^","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_goto_line_start() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_backward_find() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"F"},{"kind":"key","code":"e","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_backward_till() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"T"},{"kind":"key","code":"e","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_goto_first_line() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"line1"},
+        {"kind":"key","code":"Enter","ctrl":false},{"kind":"keys","keys":"line2"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"gg"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

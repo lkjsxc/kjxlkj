@@ -177,3 +177,15 @@ fn viewport_first_line_default() {
     let snap = EditorSnapshot::default();
     assert_eq!(snap.viewport.first_line, 0);
 }
+
+#[test]
+fn snapshot_selection_initially_none() {
+    let snap = EditorSnapshot::default();
+    assert!(snap.selection.is_none());
+}
+
+#[test]
+fn buffer_snapshot_total_lines() {
+    let snap = BufferSnapshot::empty();
+    assert_eq!(snap.total_lines, 1);
+}

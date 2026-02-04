@@ -126,4 +126,24 @@ mod tests {
         assert!(store.get('z').is_none());
         assert!(store.get('Z').is_none());
     }
+
+    #[test]
+    fn set_multiple_local_marks() {
+        let mut store = MarkStore::new();
+        store.set_local('a', Position::new(0, 0));
+        store.set_local('b', Position::new(1, 1));
+        store.set_local('c', Position::new(2, 2));
+        assert_eq!(store.get_local('a'), Some(Position::new(0, 0)));
+        assert_eq!(store.get_local('b'), Some(Position::new(1, 1)));
+        assert_eq!(store.get_local('c'), Some(Position::new(2, 2)));
+    }
+
+    #[test]
+    fn local_mark_returns_position() {
+        let mut store = MarkStore::new();
+        store.set_local('m', Position::new(5, 10));
+        if let Some(p) = store.get_local('m') {
+            assert_eq!(p.line, 5);
+        }
+    }
 }

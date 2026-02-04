@@ -130,3 +130,32 @@ fn edit_kind_equality() {
     assert_eq!(EditKind::Delete, EditKind::Delete);
     assert_ne!(EditKind::Insert, EditKind::Delete);
 }
+
+#[test]
+fn transaction_cursor_accessors() {
+    let mut tx = Transaction::new(Position::new(5, 10));
+    tx.set_cursor_after(Position::new(6, 12));
+    assert_eq!(tx.cursor_before.line, 5);
+    assert_eq!(tx.cursor_after.line, 6);
+}
+
+#[test]
+fn edit_delete_position() {
+    let edit = Edit::delete(Position::new(3, 7), "test".to_string());
+    assert_eq!(edit.position.line, 3);
+    assert_eq!(edit.position.col, 7);
+    assert_eq!(edit.text, "test");
+}
+
+#[test]
+fn transaction_invert_empty() {
+    let tx = Transaction::new(Position::new(0, 0));
+    let inverted = tx.invert();
+    assert!(inverted.edits.is_empty());
+}
+
+#[test]
+fn edit_insert_kind() {
+    let edit = Edit::insert(Position::new(0, 0), "x".to_string());
+    assert_eq!(edit.kind, EditKind::Insert);
+}

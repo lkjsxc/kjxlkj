@@ -114,3 +114,29 @@ fn process_visual_line_escape() {
     process_key(&mut state, key_escape());
     assert_eq!(state.mode(), Mode::Normal);
 }
+
+#[test]
+fn process_normal_mode_j() {
+    let mut state = EditorState::new();
+    state.buffer.insert(Position::new(0, 0), "line1\nline2");
+    process_key(&mut state, Key::new(KeyCode::Char('j'), Modifiers::none()));
+    assert_eq!(state.cursor.line(), 1);
+}
+
+#[test]
+fn process_normal_mode_k() {
+    let mut state = EditorState::new();
+    state.buffer.insert(Position::new(0, 0), "line1\nline2");
+    state.cursor.position = Position::new(1, 0);
+    process_key(&mut state, Key::new(KeyCode::Char('k'), Modifiers::none()));
+    assert_eq!(state.cursor.line(), 0);
+}
+
+#[test]
+fn process_normal_mode_h() {
+    let mut state = EditorState::new();
+    state.buffer.insert(Position::new(0, 0), "hello");
+    state.cursor.position = Position::new(0, 3);
+    process_key(&mut state, Key::new(KeyCode::Char('h'), Modifiers::none()));
+    assert_eq!(state.cursor.col(), 2);
+}

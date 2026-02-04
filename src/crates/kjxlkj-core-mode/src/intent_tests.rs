@@ -181,3 +181,15 @@ fn intent_repeat_change() {
     let intent = Intent::RepeatChange;
     assert_eq!(intent, Intent::RepeatChange);
 }
+
+#[test]
+fn intent_enter_command() {
+    let intent = Intent::EnterCommand;
+    assert_eq!(intent, Intent::EnterCommand);
+}
+
+#[test]
+fn intent_enter_replace() {
+    let intent = Intent::EnterReplace;
+    assert_eq!(intent, Intent::EnterReplace);
+}
