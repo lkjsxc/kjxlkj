@@ -348,4 +348,50 @@ mod tests {
         assert!(result.linewise);
         assert_eq!(buffer.line_count(), 2);
     }
+
+    #[test]
+    fn test_operator_eq_ne() {
+        assert_eq!(Operator::Delete, Operator::Delete);
+        assert_ne!(Operator::Delete, Operator::Yank);
+    }
+
+    #[test]
+    fn test_operator_clone_copy() {
+        let op = Operator::Change;
+        let cloned = op.clone();
+        assert_eq!(op, cloned);
+    }
+
+    #[test]
+    fn test_operator_debug_format() {
+        let debug = format!("{:?}", Operator::Indent);
+        assert!(debug.contains("Indent"));
+    }
+
+    #[test]
+    fn test_all_operators_exist() {
+        let ops = [
+            Operator::Delete,
+            Operator::Yank,
+            Operator::Change,
+            Operator::Uppercase,
+            Operator::Lowercase,
+            Operator::ToggleCase,
+            Operator::Indent,
+            Operator::Outdent,
+        ];
+        assert_eq!(ops.len(), 8);
+    }
+
+    #[test]
+    fn test_operator_result_clone() {
+        let result = OperatorResult {
+            text: "test".to_string(),
+            linewise: false,
+            cursor: Position::new(1, 2),
+        };
+        let cloned = result.clone();
+        assert_eq!(result.text, cloned.text);
+        assert_eq!(result.linewise, cloned.linewise);
+    }
 }

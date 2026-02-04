@@ -674,4 +674,120 @@ mod tests {
         let _ = apply_motion(&Motion::new(MotionIntent::Up, 1), &cursor, &buffer, 24);
         let _ = apply_motion(&Motion::new(MotionIntent::Down, 1), &cursor, &buffer, 24);
     }
+
+    #[test]
+    fn test_motion_count_multiplier() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3\nline4\nline5");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Down, 3),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 3);
+    }
+
+    #[test]
+    fn test_motion_left_with_count() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let cursor = Cursor::new(0, 4);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Left, 3),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 1);
+    }
+
+    #[test]
+    fn test_motion_right_with_count() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "hello world test");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Right, 5),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.col, 5);
+    }
+
+    #[test]
+    fn test_motion_up_with_count() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3\nline4\nline5");
+        let cursor = Cursor::new(4, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::Up, 3),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 1);
+    }
+
+    #[test]
+    fn test_motion_goto_percent_boundaries() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10");
+        let cursor = Cursor::new(0, 0);
+        
+        // 0% should go to start
+        let pos0 = apply_motion(
+            &Motion::new(MotionIntent::GotoPercent(0), 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos0.line, 0);
+        
+        // 100% should go to end
+        let pos100 = apply_motion(
+            &Motion::new(MotionIntent::GotoPercent(100), 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos100.line, 9);
+    }
+
+    #[test]
+    fn test_motion_file_start() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let cursor = Cursor::new(2, 3);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::FileStart, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 0);
+        assert_eq!(pos.col, 0);
+    }
+
+    #[test]
+    fn test_motion_file_end() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let cursor = Cursor::new(0, 0);
+        
+        let pos = apply_motion(
+            &Motion::new(MotionIntent::FileEnd, 1),
+            &cursor,
+            &buffer,
+            24,
+        );
+        assert_eq!(pos.line, 2);
+    }
+
+    #[test]
+    fn test_motion_minimum_count() {
+        // Count of 0 should be treated as 1
+        let motion = Motion::new(MotionIntent::Down, 0);
+        assert_eq!(motion.count, 1);
+    }
 }
