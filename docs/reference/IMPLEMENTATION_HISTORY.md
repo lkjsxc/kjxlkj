@@ -19,7 +19,6 @@ The `/docs/log/` subtree is intentionally treated as optional history. If detail
 | 2026-02-04 | Project tooling baseline: introduced `rust-toolchain.toml`, GitHub Actions CI, and Docker support (`Dockerfile`, `.dockerignore`) as derived artifacts aligned with `/docs/policy/ROOT_LAYOUT.md` and `/docs/reference/CI.md`. |
 | 2026-02-04 | Tooling cleanup: removed unused `Dockerfile`, CI scripts, and the docs policy checker in order to keep the repository minimal; these artifacts remain part of the reconstruction target and should be regenerated when producing a shippable repository state. |
 | 2026-02-04 | Docs-only baseline preparation: removed the in-repo Rust implementation workspace (`src/`) and related derived build artifacts to enable a clean reconstruction run from `/docs/` alone. |
-| 2026-02-05 | Iteration 34 reconstruction: Rebuilt 18-crate workspace from docs-only baseline. Created all crates per crates.md topology, with core types, text model (ropey-based), editing primitives, mode state machine, undo history, UI model, state aggregation, input handling, terminal host, renderer, service framework, and main binary. Added headless mode for scripted testing. All 65+ unit tests pass. CI workflow and Dockerfile recreated. |
 
 ## Provenance note
 
