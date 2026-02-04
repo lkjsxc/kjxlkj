@@ -278,4 +278,20 @@ mod tests {
         let decoded = decode_key(ct_event);
         assert_eq!(decoded.code, KeyCode::Down);
     }
+
+    #[test]
+    fn test_input_decoder_new() {
+        let decoder = InputDecoder::new();
+        let event = Event::Key(CTKeyEvent::new(CTKeyCode::Char('a'), CTMods::NONE));
+        let decoded = decoder.decode(event);
+        assert!(matches!(decoded, EditorEvent::Key(_)));
+    }
+
+    #[test]
+    fn test_ctrl_alt_modifiers() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('x'), CTMods::CONTROL | CTMods::ALT);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.ctrl);
+        assert!(decoded.modifiers.alt);
+    }
 }

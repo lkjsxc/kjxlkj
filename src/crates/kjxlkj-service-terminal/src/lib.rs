@@ -173,4 +173,39 @@ mod tests {
         assert_eq!(session.id, TerminalId::new(1));
         assert!(session.output().is_empty());
     }
+
+    #[test]
+    fn test_terminal_id_equality() {
+        let id1 = TerminalId::new(1);
+        let id2 = TerminalId::new(1);
+        let id3 = TerminalId::new(2);
+        assert_eq!(id1, id2);
+        assert_ne!(id1, id3);
+    }
+
+    #[test]
+    fn test_terminal_id_clone() {
+        let id = TerminalId::new(5);
+        let cloned = id.clone();
+        assert_eq!(id, cloned);
+    }
+
+    #[test]
+    fn test_terminal_id_debug() {
+        let id = TerminalId::new(42);
+        let debug = format!("{:?}", id);
+        assert!(debug.contains("42"));
+    }
+
+    #[test]
+    fn test_terminal_service_default() {
+        let service = TerminalService::default();
+        assert_eq!(service.name(), "terminal");
+    }
+
+    #[test]
+    fn test_terminal_session_not_running() {
+        let mut session = TerminalSession::new(TerminalId::new(1));
+        assert!(!session.is_running());
+    }
 }

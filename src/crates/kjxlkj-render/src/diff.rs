@@ -3,7 +3,7 @@
 use kjxlkj_core_ui::EditorSnapshot;
 
 /// Represents changes between two snapshots.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct RenderDiff {
     /// Lines that changed.
     pub changed_lines: Vec<usize>,
@@ -168,5 +168,43 @@ mod tests {
         let diff = RenderDiff::compute(&old, &new);
         assert!(diff.mode_changed);
         assert!(diff.needs_full_redraw());
+    }
+
+    #[test]
+    fn test_render_diff_default() {
+        let diff = RenderDiff::default();
+        assert!(diff.changed_lines.is_empty());
+        assert!(!diff.needs_redraw());
+    }
+
+    #[test]
+    fn test_status_changed() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.status.modified = true;
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.status_changed);
+        assert!(diff.needs_redraw());
+    }
+
+    #[test]
+    fn test_command_changed() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.command_line = Some(":wq".to_string());
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.command_changed);
+        assert!(diff.needs_redraw());
+    }
+
+    #[test]
+    fn test_multiple_lines_changed() {
+        let old = make_snapshot(vec!["a", "b", "c", "d", "e"]);
+        let new = make_snapshot(vec!["a", "X", "c", "Y", "e"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.changed_lines.contains(&1));
+        assert!(diff.changed_lines.contains(&3));
+        assert!(!diff.changed_lines.contains(&0));
+        assert!(!diff.changed_lines.contains(&2));
     }
 }

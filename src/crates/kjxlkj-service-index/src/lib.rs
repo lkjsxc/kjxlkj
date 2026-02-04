@@ -225,4 +225,59 @@ mod tests {
         let results = index.find_by_prefix("fo");
         assert_eq!(results.len(), 1);
     }
+
+    #[test]
+    fn test_file_index_remove() {
+        let mut index = FileIndex::new();
+        let path = PathBuf::from("/test/file.rs");
+        index.add(IndexEntry {
+            path: path.clone(),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        assert_eq!(index.len(), 1);
+        index.remove(&path);
+        assert_eq!(index.len(), 0);
+    }
+
+    #[test]
+    fn test_file_index_is_empty() {
+        let index = FileIndex::new();
+        assert!(index.is_empty());
+    }
+
+    #[test]
+    fn test_find_fuzzy() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/main.rs"),
+            name: "main.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        let results = index.find_fuzzy("mr");
+        assert_eq!(results.len(), 1);
+    }
+
+    #[test]
+    fn test_index_entry_clone() {
+        let entry = IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        };
+        let cloned = entry.clone();
+        assert_eq!(entry.name, cloned.name);
+    }
+
+    #[test]
+    fn test_index_service_default() {
+        let service = IndexService::default();
+        assert_eq!(service.name(), "index");
+    }
 }

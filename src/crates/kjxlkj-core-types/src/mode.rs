@@ -133,5 +133,46 @@ mod tests {
         assert!(set.contains(&Mode::Normal));
         assert!(!set.contains(&Mode::Insert));
     }
+
+    #[test]
+    fn test_mode_debug() {
+        let mode = Mode::Command;
+        let debug = format!("{:?}", mode);
+        assert!(debug.contains("Command"));
+    }
+
+    #[test]
+    fn test_mode_all_variants() {
+        let modes = [
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::VisualBlock,
+            Mode::Command,
+            Mode::Replace,
+        ];
+        assert_eq!(modes.len(), 7);
+    }
+
+    #[test]
+    fn test_mode_visual_block_is_visual() {
+        assert!(Mode::VisualBlock.is_visual());
+    }
+
+    #[test]
+    fn test_mode_command_not_visual() {
+        assert!(!Mode::Command.is_visual());
+    }
+
+    #[test]
+    fn test_mode_replace_is_insert_like() {
+        assert!(Mode::Replace.is_insert_like());
+    }
+
+    #[test]
+    fn test_mode_not_insert_like() {
+        assert!(!Mode::Command.is_insert_like());
+    }
 }
 
