@@ -1,4 +1,4 @@
-# Editing: Marks and Jump Lists (Iteration 33)
+# Editing: Marks and Jump Lists (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -20,16 +20,16 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### A. Placeholder scaffolding
 
-- [x] Define mark types and storage.
-- [x] Define jump list semantics and persistence rules.
+- [ ] Define mark types and storage.
+- [ ] Define jump list semantics and persistence rules.
 
 ### B. Minimal conformance slice
 
-- [x] Implement basic marks and jumps with deterministic tests.
+- [ ] Implement basic marks and jumps with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all marks/jump list behaviors and persistence in the subtree.
+- [ ] Implement all marks/jump list behaviors and persistence in the subtree.
   - Local marks (a-z) - implemented
   - Jump to mark exact (`) and line (') - implemented
   - Jump list (Ctrl-o, Ctrl-i) - implemented
@@ -38,6 +38,6 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

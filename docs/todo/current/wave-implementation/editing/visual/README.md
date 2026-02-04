@@ -1,4 +1,4 @@
-# Editing: Visual Mode Semantics (Iteration 33)
+# Editing: Visual Mode Semantics (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -26,16 +26,16 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### A. Placeholder scaffolding
 
-- [x] Define a selection model that supports block selections (even if initially unimplemented).
-- [x] Define rendering rules for selections and cursor interaction.
+- [ ] Define a selection model that supports block selections (even if initially unimplemented).
+- [ ] Define rendering rules for selections and cursor interaction.
 
 ### B. Minimal conformance slice
 
-- [x] Implement charwise visual selection with deterministic tests.
+- [ ] Implement charwise visual selection with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all visual behaviors and variants in the subtree.
+- [ ] Implement all visual behaviors and variants in the subtree.
   - Charwise visual mode (v) - implemented
   - Linewise visual mode (V) - implemented
   - Blockwise visual mode (Ctrl-v) - implemented
@@ -43,6 +43,6 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

@@ -1,4 +1,4 @@
-# Implementation: Editor Core (Iteration 33)
+# Implementation: Editor Core (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -36,34 +36,34 @@ Implement the canonical editor core model:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define core state entities and their ownership boundaries.
-- [x] Define snapshot structures and update frequency rules.
-- [x] Define window-local viewport state (including wrap and scroll offsets).
+- [ ] Define core state entities and their ownership boundaries.
+- [ ] Define snapshot structures and update frequency rules.
+- [ ] Define window-local viewport state (including wrap and scroll offsets).
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a single-buffer, single-window editor that satisfies:
+- [ ] Implement a single-buffer, single-window editor that satisfies:
   - deterministic cursor movement and clamping
   - deterministic viewport follow rules
   - snapshot → render loop consistency
-- [x] Implement file open/edit/write flows as specified by the command and file specs.
+- [ ] Implement file open/edit/write flows as specified by the command and file specs.
 
 ## Full conformance (sub-wave)
 
-- [x] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
-- [x] Implement multi-window behavior per spec (splits, tabs, window commands).
-- [x] Ensure all per-window options that affect rendering are reflected in snapshots.
+- [ ] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
+- [ ] Implement multi-window behavior per spec (splits, tabs, window commands).
+- [ ] Ensure all per-window options that affect rendering are reflected in snapshots.
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - buffer lifecycle and identity invariants
   - cursor/viewport invariants across edits and window changes
   - snapshot stability and correctness
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

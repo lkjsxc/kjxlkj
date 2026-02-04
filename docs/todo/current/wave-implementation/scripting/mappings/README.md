@@ -1,4 +1,4 @@
-# Scripting: Mappings (Iteration 33)
+# Scripting: Mappings (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/scripting/README.md](/docs/todo/current/wave-implementation/scripting/README.md)
 
@@ -20,7 +20,7 @@ Implement mapping definition, resolution, expansion, and mode scoping.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define mapping storage and expansion boundaries.
-- [x] Minimal slice: implement a minimal mapping set with deterministic tests.
-- [x] Full conformance: implement all mapping modes, special keys, and recursion rules.
+- [ ] Placeholder scaffolding: define mapping storage and expansion boundaries.
+- [ ] Minimal slice: implement a minimal mapping set with deterministic tests.
+- [ ] Full conformance: implement all mapping modes, special keys, and recursion rules.
 

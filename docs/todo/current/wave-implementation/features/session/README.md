@@ -1,4 +1,4 @@
-# Features: Session (Iteration 33)
+# Features: Session (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -18,8 +18,8 @@ Implement built-in session and persistence features.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define persistence boundaries and recovery UX.
-- [x] Minimal slice: implement one persistence mechanism end-to-end with tests.
-- [x] Full conformance: implement all session feature documents.
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define persistence boundaries and recovery UX.
+- [ ] Minimal slice: implement one persistence mechanism end-to-end with tests.
+- [ ] Full conformance: implement all session feature documents.
+- [ ] Update conformance and limitations docs when user-visible.
 

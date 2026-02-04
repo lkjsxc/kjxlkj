@@ -1,4 +1,4 @@
-# Implementation: Technical Requirements (Iteration 33)
+# Implementation: Technical Requirements (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -43,24 +43,24 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define a project-wide “contracts checklist” that is referenced by all implementation leaves.
-- [x] Define how tests are organized and how determinism is enforced.
-- [x] Define a latency/performance baseline measurement strategy.
+- [ ] Define a project-wide “contracts checklist” that is referenced by all implementation leaves.
+- [ ] Define how tests are organized and how determinism is enforced.
+- [ ] Define a latency/performance baseline measurement strategy.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement enough of the test harness to:
+- [ ] Implement enough of the test harness to:
   - reproduce cursor/viewport/input regressions deterministically
   - enforce key invariants as tests
 
 ## Full conformance (sub-wave)
 
-- [x] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
-- [x] Implement profiling hooks and performance regression detection.
-- [x] Ensure memory usage and large-file behavior match constraints (or record limitations).
+- [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
+- [ ] Implement profiling hooks and performance regression detection.
+- [ ] Ensure memory usage and large-file behavior match constraints (or record limitations).
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

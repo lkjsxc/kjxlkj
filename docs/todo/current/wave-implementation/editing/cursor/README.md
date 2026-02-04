@@ -1,4 +1,4 @@
-# Editing: Cursor (Iteration 33)
+# Editing: Cursor (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -20,20 +20,20 @@ Implement cursor semantics, including cursor shape/visibility rules where specif
 
 ### A. Placeholder scaffolding
 
-- [x] Define cursor representation in core state and snapshots.
-- [x] Define clamp rules for cursor after edits and mode transitions.
+- [ ] Define cursor representation in core state and snapshots.
+- [ ] Define clamp rules for cursor after edits and mode transitions.
 
 ### B. Minimal conformance slice
 
-- [x] Implement deterministic cursor motion and visibility rules for a minimal mode set.
-- [x] Add regression tests for cursor invisibility and boundary cases.
+- [ ] Implement deterministic cursor motion and visibility rules for a minimal mode set.
+- [ ] Add regression tests for cursor invisibility and boundary cases.
 
 ### C. Full conformance
 
-- [x] Implement the full cursor subtree behavior, including interactions with overlays and highlights.
+- [ ] Implement the full cursor subtree behavior, including interactions with overlays and highlights.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

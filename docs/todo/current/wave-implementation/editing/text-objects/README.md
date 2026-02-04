@@ -1,4 +1,4 @@
-# Editing: Text Objects (Iteration 33)
+# Editing: Text Objects (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -20,16 +20,16 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### A. Placeholder scaffolding
 
-- [x] Define text object parsing and selection models.
-- [x] Define inclusive/exclusive and linewise behaviors when specified.
+- [ ] Define text object parsing and selection models.
+- [ ] Define inclusive/exclusive and linewise behaviors when specified.
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal text object set with deterministic tests.
+- [ ] Implement a minimal text object set with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all text object documents in the subtree.
+- [ ] Implement all text object documents in the subtree.
   - Word objects: iw, aw, iW, aW
   - Quote objects: i", a", i', a', i`, a`
   - Block objects: i(, a(, i[, a[, i{, a{, i<, a<, ib, ab, iB, aB
@@ -37,6 +37,6 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

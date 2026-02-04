@@ -1,4 +1,4 @@
-# Scripting: Event Automation (Iteration 33)
+# Scripting: Event Automation (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/scripting/README.md](/docs/todo/current/wave-implementation/scripting/README.md)
 
@@ -13,7 +13,7 @@ Implement event automation, hooks, and event routing rules.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define event types and subscription model.
-- [x] Minimal slice: implement one hookable event with deterministic tests.
-- [x] Full conformance: implement all automation rules and event families.
+- [ ] Placeholder scaffolding: define event types and subscription model.
+- [ ] Minimal slice: implement one hookable event with deterministic tests.
+- [ ] Full conformance: implement all automation rules and event families.
 

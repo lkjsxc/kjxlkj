@@ -1,4 +1,4 @@
-# UX: Layout (Iteration 33)
+# UX: Layout (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ux/README.md](/docs/todo/current/wave-implementation/ux/README.md)
 
@@ -13,7 +13,7 @@ Implement layout expectations that affect UI composition and navigation flows.
 
 ## Checklist
 
-- [x] Define layout invariants as acceptance criteria.
-- [x] Ensure window/UI implementation satisfies layout constraints.
-- [x] Add tests for focus movement and viewport stability within the layout.
+- [ ] Define layout invariants as acceptance criteria.
+- [ ] Ensure window/UI implementation satisfies layout constraints.
+- [ ] Add tests for focus movement and viewport stability within the layout.
 

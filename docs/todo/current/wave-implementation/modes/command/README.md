@@ -1,4 +1,4 @@
-# Modes: Command (Iteration 33)
+# Modes: Command (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/modes/README.md](/docs/todo/current/wave-implementation/modes/README.md)
 
@@ -17,11 +17,11 @@ Implement the Command mode state machine and its integration with Ex command-lin
 
 ### A. Placeholder scaffolding
 
-- [x] Define how `:` enters command-line mode and how it exits.
+- [ ] Define how `:` enters command-line mode and how it exits.
 
 ### B. Minimal conformance slice
 
-- [x] Implement basic `:` entry, editing, execute, and exit with deterministic tests.
+- [ ] Implement basic `:` entry, editing, execute, and exit with deterministic tests.
   - `:` enters command mode
   - Character input builds command
   - Backspace deletes characters
@@ -30,13 +30,13 @@ Implement the Command mode state machine and its integration with Ex command-lin
 
 ### C. Full conformance
 
-- [x] Implement all Command mode behaviors and integrate completion/history fully.
-  - [x] Basic command editing
-  - [x] Command history (up/down arrows) - future
-  - [x] Tab completion - future
+- [ ] Implement all Command mode behaviors and integrate completion/history fully.
+  - [ ] Basic command editing
+  - [ ] Command history (up/down arrows) - future
+  - [ ] Tab completion - future
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

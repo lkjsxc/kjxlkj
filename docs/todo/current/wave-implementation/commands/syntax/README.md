@@ -1,4 +1,4 @@
-# Ex Commands: Syntax (Iteration 33)
+# Ex Commands: Syntax (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/commands/README.md](/docs/todo/current/wave-implementation/commands/README.md)
 
@@ -22,20 +22,20 @@ Implement Ex-level syntax commands and their interaction with highlighting/synta
 
 ### A. Placeholder scaffolding
 
-- [x] Define a syntax/highlight ownership model (who owns state, who renders).
-- [x] Define how syntax commands mutate that state.
+- [ ] Define a syntax/highlight ownership model (who owns state, who renders).
+- [ ] Define how syntax commands mutate that state.
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal subset that is fully testable and user-visible.
+- [ ] Implement a minimal subset that is fully testable and user-visible.
 
 ### C. Full conformance
 
-- [x] Implement all syntax command behavior exactly as specified.
+- [ ] Implement all syntax command behavior exactly as specified.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

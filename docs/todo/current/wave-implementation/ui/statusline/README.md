@@ -1,4 +1,4 @@
-# UI: Statusline (Iteration 33)
+# UI: Statusline (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -13,7 +13,7 @@ Implement statusline content and rendering, including integration with mode/buff
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define statusline data model and render placement.
-- [x] Minimal slice: implement a minimal statusline with deterministic tests.
-- [x] Full conformance: implement all statusline items and update rules.
+- [ ] Placeholder scaffolding: define statusline data model and render placement.
+- [ ] Minimal slice: implement a minimal statusline with deterministic tests.
+- [ ] Full conformance: implement all statusline items and update rules.
 

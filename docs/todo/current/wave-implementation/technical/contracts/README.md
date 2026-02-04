@@ -1,4 +1,4 @@
-# Technical: Contracts (Iteration 33)
+# Technical: Contracts (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/technical/README.md](/docs/todo/current/wave-implementation/technical/README.md)
 
@@ -13,7 +13,7 @@ Implement and enforce the technical contracts and invariants required by the spe
 
 ## Checklist
 
-- [x] Turn each contract into explicit testable assertions where possible.
-- [x] Ensure contracts are enforced at API boundaries (core/services/render).
-- [x] Record any untestable contracts as limitations with a verification plan.
+- [ ] Turn each contract into explicit testable assertions where possible.
+- [ ] Ensure contracts are enforced at API boundaries (core/services/render).
+- [ ] Record any untestable contracts as limitations with a verification plan.
 

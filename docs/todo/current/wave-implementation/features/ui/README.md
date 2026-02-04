@@ -1,4 +1,4 @@
-# Features: UI Features (Iteration 33)
+# Features: UI Features (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -18,8 +18,8 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define feature state ownership and snapshot integration.
-- [x] Minimal slice: implement one feature end-to-end with deterministic tests.
-- [x] Full conformance: implement all UI feature documents.
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define feature state ownership and snapshot integration.
+- [ ] Minimal slice: implement one feature end-to-end with deterministic tests.
+- [ ] Full conformance: implement all UI feature documents.
+- [ ] Update conformance and limitations docs when user-visible.
 

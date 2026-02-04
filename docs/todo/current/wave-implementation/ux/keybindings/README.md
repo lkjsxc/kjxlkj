@@ -1,4 +1,4 @@
-# UX: Keybindings (Iteration 33)
+# UX: Keybindings (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ux/README.md](/docs/todo/current/wave-implementation/ux/README.md)
 
@@ -20,7 +20,7 @@ Implement keybinding coverage and ensure it matches mode behavior and command su
 
 ## Checklist
 
-- [x] Define a keybinding coverage map tied to tests and conformance.
-- [x] Minimal slice: ensure all currently implemented keys are documented and tested.
-- [x] Full conformance: implement the full keybinding tables (or record limitations explicitly).
+- [ ] Define a keybinding coverage map tied to tests and conformance.
+- [ ] Minimal slice: ensure all currently implemented keys are documented and tested.
+- [ ] Full conformance: implement the full keybinding tables (or record limitations explicitly).
 

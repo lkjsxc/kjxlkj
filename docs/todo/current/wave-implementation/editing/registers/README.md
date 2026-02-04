@@ -1,4 +1,4 @@
-# Editing: Registers (Iteration 33)
+# Editing: Registers (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -20,17 +20,17 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### A. Placeholder scaffolding
 
-- [x] Define register types and storage (including unnamed, numbered, and special registers).
-- [x] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
+- [ ] Define register types and storage (including unnamed, numbered, and special registers).
+- [ ] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
   - Note: OS clipboard integration deferred (see LIMITATIONS.md)
 
 ### B. Minimal conformance slice
 
-- [x] Implement yank/put for a minimal subset with deterministic tests.
+- [ ] Implement yank/put for a minimal subset with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all register behaviors and special registers in the subtree.
+- [ ] Implement all register behaviors and special registers in the subtree.
   - Named registers (a-z) - implemented
   - Register selection ("{register}) - implemented
   - Pending register for yank/delete/paste - implemented
@@ -38,6 +38,6 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

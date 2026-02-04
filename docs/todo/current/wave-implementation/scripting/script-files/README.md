@@ -1,4 +1,4 @@
-# Scripting: Script Files (Iteration 33)
+# Scripting: Script Files (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/scripting/README.md](/docs/todo/current/wave-implementation/scripting/README.md)
 
@@ -13,7 +13,7 @@ Implement script/config file loading, parsing, and execution rules.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define file locations and security constraints.
-- [x] Minimal slice: load one script file deterministically and validate behavior with tests.
-- [x] Full conformance: implement all specified script file behaviors.
+- [ ] Placeholder scaffolding: define file locations and security constraints.
+- [ ] Minimal slice: load one script file deterministically and validate behavior with tests.
+- [ ] Full conformance: implement all specified script file behaviors.
 

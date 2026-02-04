@@ -1,4 +1,4 @@
-# Editing: Search (Iteration 33)
+# Editing: Search (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -20,17 +20,17 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### A. Placeholder scaffolding
 
-- [x] Define search state and its interaction with the command line and UI.
-- [x] Define highlighting and match navigation invariants.
+- [ ] Define search state and its interaction with the command line and UI.
+- [ ] Define highlighting and match navigation invariants.
   - Note: Search highlighting deferred to future iteration
 
 ### B. Minimal conformance slice
 
-- [x] Implement basic forward search and match navigation with deterministic tests.
+- [ ] Implement basic forward search and match navigation with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all search behaviors in the subtree, including search-replace workflows where specified.
+- [ ] Implement all search behaviors in the subtree, including search-replace workflows where specified.
   - Forward search (/) and backward search (?) implemented
   - n/N repeat search in same/opposite direction
   - Search wrap-around with status message
@@ -38,6 +38,6 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

@@ -1,4 +1,4 @@
-# Scripting: Timing and Debounce (Iteration 33)
+# Scripting: Timing and Debounce (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/scripting/README.md](/docs/todo/current/wave-implementation/scripting/README.md)
 
@@ -13,7 +13,7 @@ Implement timing/debounce rules so automation is deterministic and does not intr
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define scheduler/timer abstraction boundaries.
-- [x] Minimal slice: implement one deterministic debounce path with tests.
-- [x] Full conformance: implement all timing rules, including cancel/merge semantics.
+- [ ] Placeholder scaffolding: define scheduler/timer abstraction boundaries.
+- [ ] Minimal slice: implement one deterministic debounce path with tests.
+- [ ] Full conformance: implement all timing rules, including cancel/merge semantics.
 

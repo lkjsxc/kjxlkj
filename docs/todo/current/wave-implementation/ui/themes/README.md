@@ -1,4 +1,4 @@
-# UI: Themes (Iteration 33)
+# UI: Themes (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -15,7 +15,7 @@ Implement theme models and rendering integration (color, styles, icons where spe
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define theme data model and apply rules.
-- [x] Minimal slice: implement a small theme set and verify deterministically.
-- [x] Full conformance: implement all theme behavior, including user customization.
+- [ ] Placeholder scaffolding: define theme data model and apply rules.
+- [ ] Minimal slice: implement a small theme set and verify deterministically.
+- [ ] Full conformance: implement all theme behavior, including user customization.
 

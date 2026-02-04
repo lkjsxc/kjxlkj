@@ -1,4 +1,4 @@
-# UX: Theming (Iteration 33)
+# UX: Theming (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ux/README.md](/docs/todo/current/wave-implementation/ux/README.md)
 
@@ -15,7 +15,7 @@ Implement theming expectations as a user-facing behavior.
 
 ## Checklist
 
-- [x] Define theme model ownership and how themes affect rendering.
-- [x] Minimal slice: implement a small theme set with deterministic render tests.
-- [x] Full conformance: implement all theming rules and customization behaviors.
+- [ ] Define theme model ownership and how themes affect rendering.
+- [ ] Minimal slice: implement a small theme set with deterministic render tests.
+- [ ] Full conformance: implement all theming rules and customization behaviors.
 

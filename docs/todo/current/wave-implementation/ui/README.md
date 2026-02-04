@@ -1,4 +1,4 @@
-# Implementation: UI (Iteration 33)
+# Implementation: UI (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -47,8 +47,8 @@ Implement the UI model and rendering pipeline:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define UI snapshot structures and rendering contract.
-- [x] Define view composition for:
+- [ ] Define UI snapshot structures and rendering contract.
+- [ ] Define view composition for:
   - editor window(s)
   - command-line window
   - popups/overlays
@@ -56,26 +56,26 @@ Implement the UI model and rendering pipeline:
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a minimal UI that satisfies:
+- [ ] Implement a minimal UI that satisfies:
   - cursor is always visible
   - viewport follows cursor deterministically
   - redraws are stable and do not flicker
 
 ## Full conformance (sub-wave)
 
-- [x] Implement all UI spec and UI feature documents.
-- [x] Implement theme and styling support as specified.
-- [x] Implement notification and popup APIs as specified (or record limitations).
+- [ ] Implement all UI spec and UI feature documents.
+- [ ] Implement theme and styling support as specified.
+- [ ] Implement notification and popup APIs as specified (or record limitations).
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - snapshot → render determinism
   - cursor visibility across modes and overlays
   - viewport invariants across scrolling and edits
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

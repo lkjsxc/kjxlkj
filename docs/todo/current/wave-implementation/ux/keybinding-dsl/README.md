@@ -1,4 +1,4 @@
-# UX: Keybinding DSL (Iteration 33)
+# UX: Keybinding DSL (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ux/README.md](/docs/todo/current/wave-implementation/ux/README.md)
 
@@ -13,7 +13,7 @@ Implement the keybinding DSL and its interpretation rules.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define the DSL parse model and validation rules.
-- [x] Minimal slice: implement a small DSL subset with deterministic tests.
-- [x] Full conformance: implement the entire DSL as specified.
+- [ ] Placeholder scaffolding: define the DSL parse model and validation rules.
+- [ ] Minimal slice: implement a small DSL subset with deterministic tests.
+- [ ] Full conformance: implement the entire DSL as specified.
 

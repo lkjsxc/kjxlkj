@@ -1,4 +1,4 @@
-# Features: Git Integration (Iteration 33)
+# Features: Git Integration (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -18,8 +18,8 @@ Implement built-in git integration as a native feature (no plugins).
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define git service APIs and UI hooks.
-- [x] Minimal slice: implement one visible git surface end-to-end with tests.
-- [x] Full conformance: implement all git feature documents.
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define git service APIs and UI hooks.
+- [ ] Minimal slice: implement one visible git surface end-to-end with tests.
+- [ ] Full conformance: implement all git feature documents.
+- [ ] Update conformance and limitations docs when user-visible.
 

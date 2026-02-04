@@ -1,4 +1,4 @@
-# UI: Cursor Rendering (Iteration 33)
+# UI: Cursor Rendering (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -15,7 +15,7 @@ Implement cursor rendering rules, including interaction with selection, highligh
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define cursor shape/visibility in snapshots.
-- [x] Minimal slice: ensure cursor is always visible across mode transitions and redraws.
-- [x] Full conformance: implement all cursor rendering and customization behaviors.
+- [ ] Placeholder scaffolding: define cursor shape/visibility in snapshots.
+- [ ] Minimal slice: ensure cursor is always visible across mode transitions and redraws.
+- [ ] Full conformance: implement all cursor rendering and customization behaviors.
 

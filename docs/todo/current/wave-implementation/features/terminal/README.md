@@ -1,4 +1,4 @@
-# Features: Integrated Terminal (Iteration 33)
+# Features: Integrated Terminal (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -20,8 +20,8 @@ Implement integrated terminal panes and PTY lifecycle management.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define terminal service APIs and pane model.
-- [x] Minimal slice: implement one PTY lifecycle end-to-end with tests.
-- [x] Full conformance: implement all terminal feature docs (tmux, WM integration, etc.).
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define terminal service APIs and pane model.
+- [ ] Minimal slice: implement one PTY lifecycle end-to-end with tests.
+- [ ] Full conformance: implement all terminal feature docs (tmux, WM integration, etc.).
+- [ ] Update conformance and limitations docs when user-visible.
 

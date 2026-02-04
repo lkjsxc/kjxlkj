@@ -1,4 +1,4 @@
-# UI: Popups and Overlays (Iteration 33)
+# UI: Popups and Overlays (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -13,7 +13,7 @@ Implement popups/overlays (completion, picker, confirmations) and their interact
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define overlay layering and focus rules.
-- [x] Minimal slice: implement one overlay with deterministic tests.
-- [x] Full conformance: implement all overlay and popup behaviors.
+- [ ] Placeholder scaffolding: define overlay layering and focus rules.
+- [ ] Minimal slice: implement one overlay with deterministic tests.
+- [ ] Full conformance: implement all overlay and popup behaviors.
 

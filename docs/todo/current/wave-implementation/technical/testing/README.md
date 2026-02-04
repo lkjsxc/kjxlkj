@@ -1,4 +1,4 @@
-# Technical: Testing (Iteration 33)
+# Technical: Testing (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/technical/README.md](/docs/todo/current/wave-implementation/technical/README.md)
 
@@ -15,7 +15,7 @@ Implement the testing strategy as a normative part of the spec.
 
 ## Checklist
 
-- [x] Establish deterministic unit/integration/E2E layers.
-- [x] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
-- [x] Add regression tests for cursor/viewport/input latency invariants.
+- [ ] Establish deterministic unit/integration/E2E layers.
+- [ ] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
+- [ ] Add regression tests for cursor/viewport/input latency invariants.
 

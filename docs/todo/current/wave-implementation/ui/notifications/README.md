@@ -1,4 +1,4 @@
-# UI: Notifications (Iteration 33)
+# UI: Notifications (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -13,7 +13,7 @@ Implement notifications and their rendering behavior.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define notification data model and queueing rules.
-- [x] Minimal slice: implement minimal notifications with deterministic tests.
-- [x] Full conformance: implement all notification behaviors and styling.
+- [ ] Placeholder scaffolding: define notification data model and queueing rules.
+- [ ] Minimal slice: implement minimal notifications with deterministic tests.
+- [ ] Full conformance: implement all notification behaviors and styling.
 

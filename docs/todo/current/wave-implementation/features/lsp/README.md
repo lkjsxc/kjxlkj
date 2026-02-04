@@ -1,4 +1,4 @@
-# Features: LSP (Iteration 33)
+# Features: LSP (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -18,8 +18,8 @@ Implement built-in Language Server Protocol integration.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
-- [x] Minimal slice: implement one request/response + UI update path with tests.
-- [x] Full conformance: implement all LSP feature documents and navigation subtrees.
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
+- [ ] Minimal slice: implement one request/response + UI update path with tests.
+- [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
+- [ ] Update conformance and limitations docs when user-visible.
 
