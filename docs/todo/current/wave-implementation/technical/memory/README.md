@@ -32,4 +32,4 @@ Implement memory and large-data behavior constraints.
 
 ### D. Extremely long lines
 
-- [ ] Add deterministic regression tests for extremely long lines (memory + rendering posture).
+- [x] Add deterministic regression tests for extremely long lines (memory + rendering posture).

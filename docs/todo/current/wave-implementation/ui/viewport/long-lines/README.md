@@ -45,13 +45,13 @@ This leaf covers both:
 
 ## Checklist
 
-- [ ] Add a minimal reproduction file fixture (long ASCII line; long Unicode-heavy line).
-- [ ] Add tests that fail if the renderer materializes full long lines per frame.
-- [ ] Add at least one regression test that exercises:
+- [x] Add a minimal reproduction file fixture (long ASCII line; long Unicode-heavy line).
+- [x] Add tests that fail if the renderer materializes full long lines per frame.
+- [x] Add at least one regression test that exercises:
   - resize storms with a long line visible
   - rapid horizontal scrolling (no-wrap)
   - wrap toggling (if supported)
-- [ ] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold.
-- [ ] Update limitations if any degradation is intentionally applied for very long lines:
+- [x] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold.
+- [x] Update limitations if any degradation is intentionally applied for very long lines:
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
