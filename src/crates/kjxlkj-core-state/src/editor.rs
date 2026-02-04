@@ -286,6 +286,18 @@ impl EditorState {
             EditorAction::MatchBracket => {
                 self.move_match_bracket();
             }
+            EditorAction::PrevUnmatchedParen => {
+                self.move_prev_unmatched('(');
+            }
+            EditorAction::NextUnmatchedParen => {
+                self.move_next_unmatched(')');
+            }
+            EditorAction::PrevUnmatchedBrace => {
+                self.move_prev_unmatched('{');
+            }
+            EditorAction::NextUnmatchedBrace => {
+                self.move_next_unmatched('}');
+            }
             EditorAction::FindCharForward(ch) => {
                 if self.buffer.find_char_forward(ch) {
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -618,6 +630,21 @@ impl EditorState {
                 } else {
                     self.quit_requested = true;
                     events.push(EditorEvent::QuitRequested);
+                }
+            }
+            EditorAction::WriteAndQuit => {
+                // Write and quit (ZZ)
+                if let Some(p) = self.buffer.path().map(|s| s.to_string()) {
+                    self.buffer.mark_saved();
+                    self.status_message = Some(format!("\"{}\" written", p));
+                    self.quit_requested = true;
+                    events.push(EditorEvent::QuitRequested);
+                } else if !self.buffer.is_modified() {
+                    // No changes and no file, just quit
+                    self.quit_requested = true;
+                    events.push(EditorEvent::QuitRequested);
+                } else {
+                    self.status_message = Some("No file name".to_string());
                 }
             }
             EditorAction::Write { path } => {
@@ -1242,6 +1269,87 @@ impl EditorState {
         None
     }
 
+    /// Move to previous unmatched bracket (e.g., [( finds previous unmatched `(`).
+    fn move_prev_unmatched(&mut self, bracket: char) {
+        let cursor = self.buffer.cursor().position;
+        let close = match bracket {
+            '(' => ')',
+            '{' => '}',
+            '[' => ']',
+            _ => return,
+        };
+        
+        let mut depth = 0i32;
+        
+        for line_idx in (0..=cursor.line as usize).rev() {
+            if let Some(line_content) = self.buffer.line_content(line_idx) {
+                let chars: Vec<char> = line_content.chars().collect();
+                let end = if line_idx == cursor.line as usize { 
+                    cursor.col as usize 
+                } else { 
+                    chars.len() 
+                };
+                
+                for col in (0..end).rev() {
+                    let ch = chars[col];
+                    if ch == close {
+                        depth += 1;
+                    } else if ch == bracket {
+                        if depth == 0 {
+                            // Found unmatched opening bracket
+                            self.buffer.cursor_mut().position = LineCol { 
+                                line: line_idx as u32, 
+                                col: col as u32 
+                            };
+                            return;
+                        }
+                        depth -= 1;
+                    }
+                }
+            }
+        }
+    }
+
+    /// Move to next unmatched bracket (e.g., ]) finds next unmatched `)`).
+    fn move_next_unmatched(&mut self, bracket: char) {
+        let cursor = self.buffer.cursor().position;
+        let open = match bracket {
+            ')' => '(',
+            '}' => '{',
+            ']' => '[',
+            _ => return,
+        };
+        
+        let mut depth = 0i32;
+        let line_count = self.buffer.line_count();
+        
+        for line_idx in cursor.line as usize..line_count {
+            if let Some(line_content) = self.buffer.line_content(line_idx) {
+                let start = if line_idx == cursor.line as usize { 
+                    (cursor.col + 1) as usize 
+                } else { 
+                    0 
+                };
+                
+                for (col, ch) in line_content.chars().enumerate().skip(start) {
+                    if ch == open {
+                        depth += 1;
+                    } else if ch == bracket {
+                        if depth == 0 {
+                            // Found unmatched closing bracket
+                            self.buffer.cursor_mut().position = LineCol { 
+                                line: line_idx as u32, 
+                                col: col as u32 
+                            };
+                            return;
+                        }
+                        depth -= 1;
+                    }
+                }
+            }
+        }
+    }
+
     /// Scroll half a page up or down, moving cursor with scroll.
     fn scroll_half_page(&mut self, down: bool) {
         let half_page = (self.terminal_size.1 as usize / 2).max(1);
@@ -1858,6 +1966,10 @@ impl EditorState {
                 Motion::ParagraphForward => self.move_paragraph_forward(),
                 Motion::ParagraphBackward => self.move_paragraph_backward(),
                 Motion::MatchBracket => self.move_match_bracket(),
+                Motion::PrevUnmatchedParen => self.move_prev_unmatched('('),
+                Motion::NextUnmatchedParen => self.move_next_unmatched(')'),
+                Motion::PrevUnmatchedBrace => self.move_prev_unmatched('{'),
+                Motion::NextUnmatchedBrace => self.move_next_unmatched('}'),
                 Motion::FindCharForward(ch) => {
                     self.buffer.find_char_forward(ch);
                     self.last_find_char = Some((ch, FindCharDirection::Forward));
@@ -1936,6 +2048,10 @@ impl EditorState {
                 Motion::ParagraphForward => self.move_paragraph_forward(),
                 Motion::ParagraphBackward => self.move_paragraph_backward(),
                 Motion::MatchBracket => self.move_match_bracket(),
+                Motion::PrevUnmatchedParen => self.move_prev_unmatched('('),
+                Motion::NextUnmatchedParen => self.move_next_unmatched(')'),
+                Motion::PrevUnmatchedBrace => self.move_prev_unmatched('{'),
+                Motion::NextUnmatchedBrace => self.move_next_unmatched('}'),
                 Motion::FindCharForward(ch) => {
                     self.buffer.find_char_forward(ch);
                     self.last_find_char = Some((ch, FindCharDirection::Forward));

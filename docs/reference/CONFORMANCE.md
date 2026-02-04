@@ -112,6 +112,12 @@ This document records the currently implemented, user-visible surface so that:
 | `{` | Move to previous paragraph |
 | `}` | Move to next paragraph |
 | `%` | Move to matching bracket |
+| `[(` | Move to previous unmatched `(` |
+| `])` | Move to next unmatched `)` |
+| `[{` | Move to previous unmatched `{` |
+| `]}` | Move to next unmatched `}` |
+| `ZZ` | Write and quit |
+| `ZQ` | Quit without saving |
 | `J` | Join current line with next (adds space) |
 | `gJ` | Join current line with next (no space) |
 | `~` | Toggle case of character under cursor |

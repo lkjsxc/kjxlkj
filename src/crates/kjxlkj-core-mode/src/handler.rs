@@ -272,6 +272,14 @@ impl ModeHandler {
                     }
                 }
                 
+                // Unmatched bracket motions
+                "[(" => EditorAction::PrevUnmatchedParen,
+                "])" => EditorAction::NextUnmatchedParen,
+                "[{" => EditorAction::PrevUnmatchedBrace,
+                "]}" => EditorAction::NextUnmatchedBrace,
+                "[" => return EditorAction::Nop,  // Wait for second character
+                "]" => return EditorAction::Nop,  // Wait for second character
+                
                 // Change list navigation
                 "g;" => EditorAction::ChangeListOlder,
                 "g," => EditorAction::ChangeListNewer,
@@ -303,6 +311,10 @@ impl ModeHandler {
                 }
                 "J" => EditorAction::JoinLines,
                 "gJ" => EditorAction::JoinLinesNoSpace,
+                
+                // Quick save/quit
+                "ZZ" => EditorAction::WriteAndQuit,
+                "ZQ" => EditorAction::Quit { force: true },
                 
                 // Case operators
                 "~" => EditorAction::ToggleCaseChar,

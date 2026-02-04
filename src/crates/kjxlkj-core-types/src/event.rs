@@ -51,6 +51,14 @@ pub enum Motion {
     ParagraphBackward,
     /// Match bracket (%).
     MatchBracket,
+    /// Previous unmatched ( ([().
+    PrevUnmatchedParen,
+    /// Next unmatched ) (])).
+    NextUnmatchedParen,
+    /// Previous unmatched { ([{).
+    PrevUnmatchedBrace,
+    /// Next unmatched } (]}).
+    NextUnmatchedBrace,
 }
 
 /// Operator types.
@@ -189,6 +197,14 @@ pub enum EditorAction {
     ParagraphBackward,
     /// Match bracket (%).
     MatchBracket,
+    /// Move to previous unmatched ( ([().
+    PrevUnmatchedParen,
+    /// Move to next unmatched ) (])).
+    NextUnmatchedParen,
+    /// Move to previous unmatched { ([{).
+    PrevUnmatchedBrace,
+    /// Move to next unmatched } (]}).
+    NextUnmatchedBrace,
     /// Find char forward (f).
     FindCharForward(char),
     /// Find char backward (F).
@@ -359,6 +375,8 @@ pub enum EditorAction {
     ExecuteCommand(String),
     /// Quit editor.
     Quit { force: bool },
+    /// Write buffer and quit (ZZ command).
+    WriteAndQuit,
     /// Write buffer to file.
     Write { path: Option<String> },
     /// Edit file.
