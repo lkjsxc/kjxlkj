@@ -31,7 +31,7 @@ It is:
 
 Before considering this iteration complete:
 
-1. Ensure no unchecked items remain in the current iteration by running `rg -n \"\\[ \\]\" docs/todo/current`.
+1. Ensure no unchecked checklist items remain in the current iteration by running `rg -n '^\s*-\s+\[\s\]' docs/todo/current`.
 2. Ensure documentation policy is satisfied (see [/docs/policy/README.md](/docs/policy/README.md)).
 3. Ensure the verification gate is green for the reconstructed implementation (see [/docs/reference/CI.md](/docs/reference/CI.md)).
 
