@@ -129,4 +129,25 @@ mod tests {
         let mut state = EditorState::new();
         execute_command(&mut state, "foobar");
     }
+
+    #[test]
+    fn qa_command_quits() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "qa");
+        assert!(state.should_quit);
+    }
+
+    #[test]
+    fn wq_command_quits() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "wq");
+        assert!(state.should_quit);
+    }
+
+    #[test]
+    fn x_command_quits() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "x");
+        assert!(state.should_quit);
+    }
 }

@@ -130,4 +130,26 @@ mod tests {
         let output = String::from_utf8_lossy(&buf);
         assert!(output.contains("Hello") || !buf.is_empty());
     }
+
+    #[test]
+    fn renderer_default() {
+        let renderer = Renderer::default();
+        let _ = renderer;
+    }
+
+    #[test]
+    fn renderer_struct_exists() {
+        fn assert_type<T>(_: &T) {}
+        let r = Renderer::new();
+        assert_type::<Renderer>(&r);
+    }
+
+    #[test]
+    fn renderer_empty_buffer() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        let _ = renderer.render(&mut buf, &snapshot);
+        assert!(!buf.is_empty());
+    }
 }

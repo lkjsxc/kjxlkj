@@ -90,11 +90,47 @@ impl Default for TerminalHost {
 
 #[cfg(test)]
 mod tests {
-    // Terminal tests are hard to run in CI, so we keep them minimal
+    use super::*;
 
     #[test]
     fn host_module_compiles() {
         // Just verify the module compiles
         assert!(true);
+    }
+
+    #[test]
+    fn terminal_host_struct_exists() {
+        // Verify the struct type exists
+        let _: fn() -> Result<TerminalHost> = TerminalHost::new;
+    }
+
+    #[test]
+    fn terminal_host_has_stdout() {
+        // Verify the stdout method exists
+        let _: for<'a> fn(&'a mut TerminalHost) -> &'a mut Stdout = TerminalHost::stdout;
+    }
+
+    #[test]
+    fn terminal_host_has_size() {
+        // Verify the size method exists
+        let _: fn(&TerminalHost) -> Result<(u16, u16)> = TerminalHost::size;
+    }
+
+    #[test]
+    fn terminal_host_has_flush() {
+        // Verify the flush method exists  
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::flush;
+    }
+
+    #[test]
+    fn terminal_host_has_enter() {
+        // Verify the enter method exists
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::enter;
+    }
+
+    #[test]
+    fn terminal_host_has_leave() {
+        // Verify the leave method exists
+        let _: fn(&mut TerminalHost) -> Result<()> = TerminalHost::leave;
     }
 }

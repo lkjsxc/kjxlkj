@@ -26,4 +26,17 @@ mod tests {
     fn index_service_creation() {
         let _svc = IndexService::new();
     }
+
+    #[test]
+    fn index_service_default() {
+        let svc = IndexService::default();
+        let _ = svc;
+    }
+
+    #[test]
+    fn index_service_struct_exists() {
+        fn assert_type<T>(_: &T) {}
+        let svc = IndexService::new();
+        assert_type::<IndexService>(&svc);
+    }
 }

@@ -104,4 +104,32 @@ mod tests {
         set.insert(BufferId::new(1));
         assert_eq!(set.len(), 2);
     }
+
+    #[test]
+    fn buffer_id_clone() {
+        let id = BufferId::new(10);
+        let cloned = id.clone();
+        assert_eq!(id, cloned);
+    }
+
+    #[test]
+    fn buffer_version_new() {
+        let v = BufferVersion::new(100);
+        assert_eq!(v.as_u64(), 100);
+    }
+
+    #[test]
+    fn buffer_version_default_is_zero() {
+        let v = BufferVersion::default();
+        assert_eq!(v.as_u64(), 0);
+    }
+
+    #[test]
+    fn buffer_version_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(BufferVersion::new(1));
+        set.insert(BufferVersion::new(2));
+        assert_eq!(set.len(), 2);
+    }
 }

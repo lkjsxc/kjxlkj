@@ -84,4 +84,36 @@ mod tests {
     fn fs_default_impl() {
         let _svc = FsService::default();
     }
+
+    #[test]
+    fn fs_write_empty_content() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_empty_test.txt");
+        FsService::write_file(&path, "").unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert!(content.is_empty());
+        std::fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn fs_write_multiline() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_multiline_test.txt");
+        FsService::write_file(&path, "line1\nline2\nline3").unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert!(content.contains("line1"));
+        assert!(content.contains("line2"));
+        std::fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn fs_overwrite_file() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_overwrite_test.txt");
+        FsService::write_file(&path, "original").unwrap();
+        FsService::write_file(&path, "overwritten").unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert_eq!(content, "overwritten");
+        std::fs::remove_file(&path).ok();
+    }
 }

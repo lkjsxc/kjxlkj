@@ -26,4 +26,14 @@ mod tests {
     fn git_service_creation() {
         let _svc = GitService::new();
     }
+
+    #[test]
+    fn git_service_default() {
+        let _svc = GitService::default();
+    }
+
+    #[test]
+    fn git_service_struct_exists() {
+        let _ = std::any::type_name::<GitService>();
+    }
 }

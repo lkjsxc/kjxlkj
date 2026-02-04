@@ -113,4 +113,19 @@ mod tests {
         assert_eq!(c.preferred_col, Some(15));
         assert_eq!(c.col(), 0);
     }
+
+    #[test]
+    fn cursor_chained_with_preferred() {
+        let c = Cursor::new(Position::new(1, 2)).with_preferred_col(5);
+        assert_eq!(c.line(), 1);
+        assert_eq!(c.col(), 2);
+        assert_eq!(c.preferred_col, Some(5));
+    }
+
+    #[test]
+    fn cursor_inequality() {
+        let c1 = Cursor::new(Position::new(1, 2));
+        let c2 = Cursor::new(Position::new(3, 4));
+        assert_ne!(c1, c2);
+    }
 }

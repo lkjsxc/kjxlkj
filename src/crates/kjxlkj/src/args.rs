@@ -48,9 +48,52 @@ impl Args {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
     fn args_module_compiles() {
         // Just verify the module compiles
         assert!(true);
+    }
+
+    #[test]
+    fn args_struct_exists() {
+        fn assert_type<T>(_: &T) {}
+        let args = Args {
+            file: None,
+            headless: false,
+            script: None,
+        };
+        assert_type::<Args>(&args);
+    }
+
+    #[test]
+    fn args_file_field() {
+        let args = Args {
+            file: Some("test.txt".to_string()),
+            headless: false,
+            script: None,
+        };
+        assert_eq!(args.file, Some("test.txt".to_string()));
+    }
+
+    #[test]
+    fn args_headless_field() {
+        let args = Args {
+            file: None,
+            headless: true,
+            script: None,
+        };
+        assert!(args.headless);
+    }
+
+    #[test]
+    fn args_script_field() {
+        let args = Args {
+            file: None,
+            headless: true,
+            script: Some("script.txt".to_string()),
+        };
+        assert_eq!(args.script, Some("script.txt".to_string()));
     }
 }

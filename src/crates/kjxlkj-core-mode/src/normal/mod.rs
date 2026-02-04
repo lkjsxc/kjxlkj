@@ -143,4 +143,43 @@ mod tests {
         let intent = state.process_key('d', true, false);
         assert!(matches!(intent, Intent::Scroll(_)));
     }
+
+    #[test]
+    fn normal_mode_yank_line() {
+        let mut state = NormalModeState::new();
+        let intent1 = state.process_key('y', false, false);
+        assert_eq!(intent1, Intent::None);
+        let intent2 = state.process_key('y', false, false);
+        assert!(matches!(intent2, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn normal_mode_change_line() {
+        let mut state = NormalModeState::new();
+        let intent1 = state.process_key('c', false, false);
+        assert_eq!(intent1, Intent::None);
+        let intent2 = state.process_key('c', false, false);
+        assert!(matches!(intent2, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn normal_mode_zero_is_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('0', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
+
+    #[test]
+    fn normal_mode_dollar_is_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('$', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
+
+    #[test]
+    fn normal_mode_ctrl_u_scroll() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('u', true, false);
+        assert!(matches!(intent, Intent::Scroll(_)));
+    }
 }

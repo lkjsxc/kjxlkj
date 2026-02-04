@@ -116,4 +116,17 @@ mod tests {
         let cloned = m.clone();
         assert_eq!(m, cloned);
     }
+
+    #[test]
+    fn mode_copy() {
+        let m = Mode::Visual;
+        let copied: Mode = m;
+        assert_eq!(m, copied);
+    }
+
+    #[test]
+    fn mode_replace_is_insert_like() {
+        assert!(Mode::Replace.is_insert());
+        assert!(!Mode::Replace.is_visual());
+    }
 }

@@ -66,4 +66,22 @@ mod tests {
         // May succeed with error message or fail entirely
         assert!(result.is_ok() || result.is_err());
     }
+
+    #[test]
+    fn terminal_service_default() {
+        let svc = TerminalService::default();
+        let _ = svc;
+    }
+
+    #[test]
+    fn run_command_returns_output() {
+        let output = TerminalService::run_command("echo test").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn run_command_str_trims() {
+        let output = TerminalService::run_command_str("echo test").unwrap();
+        assert!(output.len() > 0);
+    }
 }

@@ -40,4 +40,30 @@ mod tests {
         let state = EditorState::new();
         assert_eq!(state.mode(), Mode::Normal);
     }
+
+    #[test]
+    fn facade_exports_selection() {
+        let sel = Selection::new(Position::new(0, 0), Position::new(0, 1), SelectionKind::Char);
+        assert_eq!(sel.anchor.line, 0);
+    }
+
+    #[test]
+    fn facade_exports_register() {
+        let _name = RegisterName::Unnamed;
+        let reg = Register::new();
+        assert!(reg.content.is_empty());
+    }
+
+    #[test]
+    fn facade_exports_viewport() {
+        let vp = Viewport::new(80, 24);
+        assert_eq!(vp.height, 24);
+        assert_eq!(vp.width, 80);
+    }
+
+    #[test]
+    fn facade_exports_motion() {
+        let motion = Motion::new(MotionKind::Right);
+        assert_eq!(motion.kind, MotionKind::Right);
+    }
 }

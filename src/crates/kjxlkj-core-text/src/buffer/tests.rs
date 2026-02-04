@@ -109,3 +109,74 @@ fn buffer_delete_at_end_no_panic() {
     buf.delete_range(Position::new(0, 3), Position::new(0, 3));
     assert_eq!(buf.line(0), Some("ABC".to_string()));
 }
+
+#[test]
+fn buffer_from_str_empty() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "");
+    assert_eq!(buf.line_count(), 1);
+    assert_eq!(buf.char_count(), 0);
+}
+
+#[test]
+fn buffer_insert_at_middle() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "AC");
+    buf.insert(Position::new(0, 1), "B");
+    assert_eq!(buf.line(0), Some("ABC".to_string()));
+}
+
+#[test]
+fn buffer_insert_at_end() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "AB");
+    buf.insert(Position::new(0, 2), "C");
+    assert_eq!(buf.line(0), Some("ABC".to_string()));
+}
+
+#[test]
+fn buffer_multiple_lines_insertion() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "Line1\nLine3");
+    buf.insert(Position::new(0, 5), "\nLine2");
+    assert_eq!(buf.line_count(), 3);
+}
+
+#[test]
+fn buffer_id_access() {
+    let buf = TextBuffer::new(BufferId::new(42));
+    assert_eq!(buf.id().as_u64(), 42);
+}
+
+#[test]
+fn buffer_char_count() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "ABC");
+    assert_eq!(buf.char_count(), 3);
+}
+
+#[test]
+fn buffer_text_range_full_line() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "Hello");
+    let text = buf.text_range(Position::new(0, 0), Position::new(0, 5));
+    assert_eq!(text, Some("Hello".to_string()));
+}
+
+#[test]
+fn buffer_mark_saved() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "test");
+    buf.insert(Position::new(0, 4), "!");
+    assert!(buf.is_modified());
+    buf.mark_saved();
+    assert!(!buf.is_modified());
+}
+
+#[test]
+fn buffer_set_path() {
+    let mut buf = TextBuffer::new(BufferId::new(1));
+    use std::path::PathBuf;
+    buf.set_path(PathBuf::from("test.txt"));
+    assert!(buf.path().is_some());
+}
+
+#[test]
+fn buffer_delete_range_multichar() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "ABCDEF");
+    buf.delete_range(Position::new(0, 1), Position::new(0, 4));
+    assert_eq!(buf.line(0), Some("AEF".to_string()));
+}

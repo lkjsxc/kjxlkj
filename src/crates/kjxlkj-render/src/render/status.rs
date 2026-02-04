@@ -44,3 +44,35 @@ pub fn render<W: Write>(writer: &mut W, snapshot: &EditorSnapshot) -> io::Result
 
     execute!(writer, Print(&line[..line.len().min(width)]), ResetColor)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core_ui::{Viewport, StatusLine};
+
+    #[test]
+    fn render_status_line() {
+        let mut buf = Vec::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_line_with_command() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.command_line = Some("write".to_string());
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_line_with_message() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.message = Some("File saved".to_string());
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+}

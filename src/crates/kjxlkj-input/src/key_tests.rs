@@ -87,3 +87,39 @@ fn key_not_backspace() {
     let k = Key::char('a');
     assert!(!k.is_backspace());
 }
+
+#[test]
+fn key_code_arrow_keys() {
+    let left = KeyCode::Left;
+    let right = KeyCode::Right;
+    let up = KeyCode::Up;
+    let down = KeyCode::Down;
+    assert_ne!(left, right);
+    assert_ne!(up, down);
+}
+
+#[test]
+fn modifiers_alt() {
+    let m = Modifiers {
+        ctrl: false,
+        alt: true,
+        shift: false,
+    };
+    assert!(m.alt);
+}
+
+#[test]
+fn modifiers_shift() {
+    let m = Modifiers {
+        ctrl: false,
+        alt: false,
+        shift: true,
+    };
+    assert!(m.shift);
+}
+
+#[test]
+fn key_tab() {
+    let k = Key::new(KeyCode::Tab, Modifiers::none());
+    assert_eq!(k.code, KeyCode::Tab);
+}

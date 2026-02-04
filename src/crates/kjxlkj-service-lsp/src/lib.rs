@@ -26,4 +26,18 @@ mod tests {
     fn lsp_service_creation() {
         let _svc = LspService::new();
     }
+
+    #[test]
+    fn lsp_service_default() {
+        let svc = LspService::default();
+        // Verify default creates valid service
+        let _ = svc;
+    }
+
+    #[test]
+    fn lsp_service_struct_exists() {
+        fn assert_type<T>(_: &T) {}
+        let svc = LspService::new();
+        assert_type::<LspService>(&svc);
+    }
 }

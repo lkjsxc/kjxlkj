@@ -118,4 +118,27 @@ mod tests {
         set.insert(Position::new(2, 1));
         assert_eq!(set.len(), 2);
     }
+
+    #[test]
+    fn position_copy_trait() {
+        let p = Position::new(1, 2);
+        let copied: Position = p;
+        assert_eq!(p, copied);
+    }
+
+    #[test]
+    fn position_partial_eq() {
+        let p1 = Position::new(0, 0);
+        let p2 = Position::new(0, 0);
+        let p3 = Position::new(0, 1);
+        assert!(p1 == p2);
+        assert!(p1 != p3);
+    }
+
+    #[test]
+    fn position_origin() {
+        let p = Position::default();
+        assert_eq!(p.line, 0);
+        assert_eq!(p.col, 0);
+    }
 }

@@ -59,4 +59,18 @@ mod tests {
         let state = EditorState::new();
         assert_eq!(state.mode(), Mode::Normal);
     }
+
+    #[test]
+    fn headless_viewport_default() {
+        let mut state = EditorState::new();
+        state.viewport.resize(80, 24);
+        assert_eq!(state.viewport.width, 80);
+        assert_eq!(state.viewport.height, 24);
+    }
+
+    #[test]
+    fn headless_buffer_empty() {
+        let state = EditorState::new();
+        assert_eq!(state.buffer.line_count(), 1);
+    }
 }

@@ -32,4 +32,33 @@ mod tests {
     fn supervisor_creation() {
         let _sup = ServiceSupervisor::new();
     }
+
+    #[test]
+    fn supervisor_default() {
+        let _sup = ServiceSupervisor::default();
+    }
+
+    #[test]
+    fn fs_service_reexport() {
+        // Verify fs service is re-exported
+        let _ = std::any::type_name::<fs::FsService>();
+    }
+
+    #[test]
+    fn git_service_reexport() {
+        // Verify git service is re-exported
+        let _ = std::any::type_name::<git::GitService>();
+    }
+
+    #[test]
+    fn lsp_service_reexport() {
+        // Verify lsp service is re-exported
+        let _ = std::any::type_name::<lsp::LspService>();
+    }
+
+    #[test]
+    fn terminal_service_reexport() {
+        // Verify terminal service is re-exported
+        let _ = std::any::type_name::<terminal::TerminalService>();
+    }
 }
