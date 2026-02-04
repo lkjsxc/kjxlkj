@@ -58,6 +58,10 @@ Remaining gaps:
 - No progress indicator or cancel during long file reads.
 - No explicit “large file degradation mode” (feature disabling/caps) unless added in the future.
 - Extremely long lines may still be slow due to rendering and display-width work.
+- Extremely long lines may cause rendering instability in some cases until long-line virtualization is implemented:
+  - [/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md](/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md)
+- Performance baselines vs Vim/Neovim are not yet enforced by a regression harness:
+  - [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
 
 ## UX gaps
 
@@ -72,6 +76,8 @@ These are areas that are implemented but may not match full Vim behavior yet:
 - Edge-case compatibility around registers, macros, and marks.
 - Some Ex command parsing details and error messages.
 - Render behavior in unusual terminal sizes.
+- Interactive Insert-mode newline handling may be unreliable in some environments until validated by PTY-driven E2E:
+  - [/docs/todo/current/wave-implementation/modes/insert/newline/README.md](/docs/todo/current/wave-implementation/modes/insert/newline/README.md)
 
 ## Planned Improvements
 
