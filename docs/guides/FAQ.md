@@ -8,7 +8,7 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 kjxlkj is a Neovim-inspired terminal (TUI) text editor written in Rust.
 
-This repository follows an “All in Docs” approach: `/docs/` is the source of truth and the system can be reconstructed from docs alone.
+Repository contract: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ### Why "kjxlkj"?
 
@@ -98,7 +98,11 @@ Large files have not been benchmarked yet.
 
 ### How can I contribute?
 
-This repo is currently optimized for doc-driven iteration and LLM-based implementation. Improvements should start with docs and conformance.
+Start with the canonical docs:
+
+- Specs: [/docs/spec/README.md](/docs/spec/README.md)
+- Current surface: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ### Where do I report bugs?
 

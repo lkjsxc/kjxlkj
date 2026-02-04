@@ -6,7 +6,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 Enable a one-shot “docs-only → full repository” reconstruction run.
 
-This wave exists because this project follows “All in Docs”: the implementation may be deleted and rebuilt from `/docs/` without losing knowledge.
+Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ## Entry points
 
@@ -53,5 +53,5 @@ This wave exists because this project follows “All in Docs”: the implementat
 
 ## Related
 
-- All-in-Docs contract: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+- Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 - Doc coverage traversal: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)

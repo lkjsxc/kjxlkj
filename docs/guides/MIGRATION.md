@@ -25,9 +25,9 @@ kjxlkj has no plugin system. Features are either built-in (when implemented) or 
 
 kjxlkj does not execute Neovim configuration. Persistent configuration/key remapping is a target but is not implemented yet.
 
-### Documentation is the source of truth
+### Documentation contract
 
-This repo follows “All in Docs”: `/docs/` is normative and the system is reconstructable from docs alone.
+See: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ## Practical mapping
 

@@ -5,7 +5,7 @@ Historical context that used to live under `/docs/log/`.
 
 ## Purpose
 
-This project follows “All in Docs”: `/docs/` is the source of truth and the system is reconstructable from docs alone.
+Repository contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 The `/docs/log/` subtree is intentionally treated as optional history. If detailed dated logs are removed, this document preserves the minimum historical context that is useful for reconstruction and maintenance.
 
@@ -65,5 +65,5 @@ If you reconstruct the implementation from docs, structure modules so that both:
 
 ## Related
 
-- All-in-Docs contract: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+- Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 - Policy: [/docs/policy/README.md](/docs/policy/README.md)

@@ -4,11 +4,13 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Purpose
 
-Make the repository’s “docs as source of truth” workflow reliable by:
+Make the documentation and TODO workflow reliable by:
 
 - removing policy violations
 - making derived-artifact status explicit (so docs do not claim missing files exist)
 - ensuring the TODO system is actionable and checkmark-verifiable
+
+Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ## Checklist
 
@@ -43,4 +45,3 @@ Make the repository’s “docs as source of truth” workflow reliable by:
 ### E. Record work products
 
 - [ ] Add a structured proposals/log area under `/docs/log/` and record the above gaps with links to defining specs, conformance claims, and test requirements.
-

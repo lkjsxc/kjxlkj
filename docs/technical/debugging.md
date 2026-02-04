@@ -3,7 +3,8 @@
 Back: [/docs/technical/README.md](/docs/technical/README.md)
 Practical debugging guidance for kjxlkj development and reconstruction.
 
-Status note: kjxlkj is “All in Docs”. When debugging reveals a drift between docs and behavior, update the docs first (or record the gap) and then adjust the implementation.
+Drift rule: when debugging reveals a mismatch between docs and behavior, update the docs first (or record the gap), then adjust the implementation.
+Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ## Recommended workflow
 
