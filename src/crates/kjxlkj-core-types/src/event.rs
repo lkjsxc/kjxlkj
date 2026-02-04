@@ -383,4 +383,68 @@ mod tests {
         let ctrl_a = KeyEvent::ctrl(KeyCode::Char('a'));
         assert!(ctrl_a.modifiers.ctrl);
     }
+
+    #[test]
+    fn test_key_modifiers_shift() {
+        assert!(KeyModifiers::SHIFT.any());
+        assert!(KeyModifiers::SHIFT.shift);
+        assert!(!KeyModifiers::SHIFT.ctrl);
+    }
+
+    #[test]
+    fn test_key_modifiers_default() {
+        let mods: KeyModifiers = Default::default();
+        assert!(!mods.any());
+    }
+
+    #[test]
+    fn test_key_code_from_str_arrows() {
+        assert_eq!(KeyCode::from_str_loose("left"), Some(KeyCode::Left));
+        assert_eq!(KeyCode::from_str_loose("right"), Some(KeyCode::Right));
+        assert_eq!(KeyCode::from_str_loose("up"), Some(KeyCode::Up));
+        assert_eq!(KeyCode::from_str_loose("down"), Some(KeyCode::Down));
+    }
+
+    #[test]
+    fn test_key_code_from_str_special() {
+        assert_eq!(KeyCode::from_str_loose("tab"), Some(KeyCode::Tab));
+        assert_eq!(KeyCode::from_str_loose("backspace"), Some(KeyCode::Backspace));
+        assert_eq!(KeyCode::from_str_loose("delete"), Some(KeyCode::Delete));
+    }
+
+    #[test]
+    fn test_key_code_from_str_invalid() {
+        assert_eq!(KeyCode::from_str_loose("notakey"), None);
+    }
+
+    #[test]
+    fn test_key_event_plain() {
+        let ev = KeyEvent::plain(KeyCode::Escape);
+        assert_eq!(ev.code, KeyCode::Escape);
+        assert!(!ev.modifiers.any());
+    }
+
+    #[test]
+    fn test_intent_switch_mode() {
+        let intent = Intent::SwitchMode(Mode::Insert);
+        assert!(matches!(intent, Intent::SwitchMode(Mode::Insert)));
+    }
+
+    #[test]
+    fn test_intent_motion() {
+        let intent = Intent::Motion(MotionIntent::Left);
+        assert!(matches!(intent, Intent::Motion(MotionIntent::Left)));
+    }
+
+    #[test]
+    fn test_editor_event_key() {
+        let event = EditorEvent::Key(KeyEvent::char('x'));
+        assert!(matches!(event, EditorEvent::Key(_)));
+    }
+
+    #[test]
+    fn test_editor_event_resize() {
+        let event = EditorEvent::Resize { width: 120, height: 40 };
+        assert!(matches!(event, EditorEvent::Resize { width: 120, height: 40 }));
+    }
 }
