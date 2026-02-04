@@ -1223,4 +1223,120 @@ mod tests {
         state.handle_key(KeyEvent::plain(KeyCode::Enter));
         assert!(state.should_quit());
     }
+
+    #[test]
+    fn test_editor_state_load_content() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        assert_eq!(state.content(), "hello world");
+    }
+
+    #[test]
+    fn test_editor_state_resize() {
+        let mut state = EditorState::new();
+        state.resize(100, 50);
+        // Just ensure no panic
+        assert!(!state.should_quit());
+    }
+
+    #[test]
+    fn test_editor_state_visual_mode() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        state.handle_key(KeyEvent::char('v'));
+        assert_eq!(state.mode(), Mode::Visual);
+    }
+
+    #[test]
+    fn test_editor_state_command_mode() {
+        let mut state = EditorState::new();
+        state.handle_key(KeyEvent::char(':'));
+        assert_eq!(state.mode(), Mode::Command);
+    }
+
+    #[test]
+    fn test_editor_state_escape_from_insert() {
+        let mut state = EditorState::new();
+        state.handle_key(KeyEvent::char('i'));
+        assert_eq!(state.mode(), Mode::Insert);
+        state.handle_key(KeyEvent::plain(KeyCode::Escape));
+        assert_eq!(state.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_editor_state_cursor_movement_h_l() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('l'));
+        assert_eq!(state.cursor().col(), 1);
+        state.handle_key(KeyEvent::char('h'));
+        assert_eq!(state.cursor().col(), 0);
+    }
+
+    #[test]
+    fn test_editor_state_word_motion() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        state.handle_key(KeyEvent::char('w'));
+        assert_eq!(state.cursor().col(), 6);
+    }
+
+    #[test]
+    fn test_editor_state_line_start_end() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        state.handle_key(KeyEvent::char('$'));
+        assert!(state.cursor().col() > 0);
+        state.handle_key(KeyEvent::char('0'));
+        assert_eq!(state.cursor().col(), 0);
+    }
+
+    #[test]
+    fn test_editor_state_delete_char() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('x'));
+        assert_eq!(state.content(), "ello");
+    }
+
+    #[test]
+    fn test_editor_state_undo() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('x'));
+        state.handle_key(KeyEvent::char('u'));
+        assert_eq!(state.content(), "hello");
+    }
+
+    #[test]
+    fn test_editor_state_buffer() {
+        let state = EditorState::new();
+        let _buffer = state.buffer();
+        // Just ensure we can access buffer
+    }
+
+    #[test]
+    fn test_editor_state_snapshot() {
+        let state = EditorState::new();
+        let _snapshot = state.snapshot();
+        // Just ensure snapshot works
+    }
+
+    #[test]
+    fn test_editor_state_replace_mode() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('R'));
+        assert_eq!(state.mode(), Mode::Replace);
+    }
+
+    #[test]
+    fn test_editor_state_append() {
+        let mut state = EditorState::new();
+        state.load_content("hello");
+        state.handle_key(KeyEvent::char('a'));
+        assert_eq!(state.mode(), Mode::Insert);
+        state.handle_key(KeyEvent::char('!'));
+        assert!(state.content().contains('!'));
+    }
 }
