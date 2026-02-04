@@ -62,11 +62,12 @@ Read and follow these documents first, in order:
 
 1. `/docs/overview/all-in-docs.md` (what “done” means for this repo)
 2. `/docs/policy/INSTRUCT.md` and `/docs/policy/README.md` (hard rules)
-3. `/docs/todo/current/README.md` (the executable plan)
-4. `/docs/todo/doc-coverage/README.md` (the traversal that links every doc)
-5. `/docs/spec/README.md` (target spec surface)
-6. `/docs/spec/architecture/README.md` (system shape, crates, runtime ordering)
-7. `/docs/reference/README.md` (reference ledgers)
+3. `/docs/policy/WORKFLOW.md`, `/docs/policy/STRUCTURE.md`, and `/docs/policy/ROOT_LAYOUT.md` (workflow, doc topology, root allowlist)
+4. `/docs/todo/current/README.md` (the executable plan)
+5. `/docs/todo/doc-coverage/README.md` (the traversal that links every doc)
+6. `/docs/spec/README.md` (target spec surface)
+7. `/docs/spec/architecture/README.md` (system shape, crates, runtime ordering)
+8. `/docs/reference/README.md` (reference ledgers)
 
 Then use `/docs/todo/doc-coverage/` to read the remaining documents systematically.
 </mandatory_reading_order>
