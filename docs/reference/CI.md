@@ -5,9 +5,15 @@ Continuous integration for this repository.
 
 CI is required by policy (see `/docs/policy/WORKFLOW.md`).
 
+## Status (derived artifact)
+
+This repository may temporarily be in a docs-only baseline, or may have derived automation artifacts pruned.
+
+CI configuration and helper scripts are treated as derived artifacts: when absent, they MUST be reconstructed to satisfy policy before treating the repo as “shippable”.
+
 ## Location
 
-CI is defined in:
+The canonical CI location is:
 
 - `/.github/workflows/ci.yml`
 
@@ -21,7 +27,7 @@ Checks:
 - Formatting via `cargo fmt --all -- --check`
 - Linting via `cargo clippy --workspace --all-targets -- -D warnings`
 - Tests via `cargo test --workspace`
-- Docker buildability via `docker build -t kjxlkj:ci .`
+- Docker buildability via `docker build -t kjxlkj:ci .` (when `Dockerfile` exists per policy)
 
 ## Local reproduction
 

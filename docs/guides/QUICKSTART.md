@@ -15,11 +15,11 @@ This repository does not currently publish tagged releases. Build from source.
 
 ### Build from source
 
-1. Install the Rust toolchain (stable). This repo includes `rust-toolchain.toml` to pin the expected toolchain and components.
+1. Install the Rust toolchain (stable). If `rust-toolchain.toml` exists, use it to install the pinned toolchain + components for reproducibility.
 2. Build with `cargo build`.
 3. Run with `cargo run`.
 
-Docker-based usage is also supported; see [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md).
+Docker-based usage is a target derived artifact; if `Dockerfile` exists, see [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md).
 
 ## First steps
 

@@ -5,6 +5,8 @@ Running kjxlkj using Docker.
 
 Container-based build/run support is required by policy (see `/docs/policy/WORKFLOW.md`).
 
+`Dockerfile` and `.dockerignore` are derived artifacts in the “All in Docs” model: they may be absent in a docs-only baseline or after tooling cleanup, and MUST be regenerated when producing a shippable repository state.
+
 ## Build an image
 
 - Build: `docker build -t kjxlkj:dev .`

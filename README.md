@@ -26,7 +26,7 @@ This repo is also optimized for **machine (LLM) parsing and editing**. Canonical
 
 Toolchain:
 
-- The repo includes `rust-toolchain.toml` (stable + `rustfmt`/`clippy` components).
+- Rust stable is expected. When present, `rust-toolchain.toml` pins the toolchain + components for reproducible builds/CI (see `docs/policy/ROOT_LAYOUT.md`).
 
 Build:
 
@@ -53,6 +53,8 @@ cargo test --workspace
 ```
 
 Docker:
+
+Docker support is a target derived artifact. If `Dockerfile` exists, build/run with:
 
 ```bash
 docker build -t kjxlkj:dev .

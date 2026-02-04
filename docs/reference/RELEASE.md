@@ -3,7 +3,7 @@
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 How to cut a release from this repository.
 
-This repository includes a committed CI pipeline under `/.github/workflows/ci.yml`.
+The canonical CI pipeline location is `/.github/workflows/ci.yml` (a derived artifact that may be absent in a docs-only baseline).
 
 Release automation (tagging and publishing binaries) is still treated as a manual process and should be updated when automation is introduced.
 

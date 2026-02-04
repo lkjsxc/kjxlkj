@@ -35,6 +35,12 @@ It is acceptable to temporarily reduce the repo to a docs-only baseline that inc
 - `LICENSE`
 - a minimal set of dotfiles required for repository hygiene and version control
 
+In such a baseline, derived automation artifacts are commonly absent (and MUST be regenerated when producing a shippable state), including:
+
+- `rust-toolchain.toml` (toolchain pinning)
+- `.github/` (CI and automation)
+- `Dockerfile` and `.dockerignore` (container build/run support)
+
 After reconstruction, the repository SHOULD include the full root layout required by the current docs (workspace manifest, crate tree, verification automation, and any required packaging/run tooling), while still obeying the root allowlist above.
 
 ## Implementation layout
