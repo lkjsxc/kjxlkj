@@ -150,4 +150,32 @@ mod tests {
         execute_command(&mut state, "x");
         assert!(state.should_quit);
     }
+
+    #[test]
+    fn w_command_no_quit() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "w");
+        assert!(!state.should_quit);
+    }
+
+    #[test]
+    fn quit_bang_forces() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "q!");
+        assert!(state.should_quit);
+    }
+
+    #[test]
+    fn empty_command_noop() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "");
+        assert!(!state.should_quit);
+    }
+
+    #[test]
+    fn qall_command_quits() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "qall");
+        assert!(state.should_quit);
+    }
 }

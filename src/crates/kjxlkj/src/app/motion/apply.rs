@@ -143,3 +143,41 @@ fn apply_screen_bottom(state: &mut EditorState) {
     let bottom = state.viewport.last_line();
     state.cursor.position.line = bottom.min(state.buffer.line_count().saturating_sub(1));
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core::Motion;
+    
+    #[test]
+    fn apply_motion_left() {
+        let mut state = EditorState::new();
+        state.cursor.position.col = 5;
+        apply_motion(&mut state, Motion::new(MotionKind::Left));
+        assert_eq!(state.cursor.col(), 4);
+    }
+
+    #[test]
+    fn apply_motion_down() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "\nhello");
+        apply_motion(&mut state, Motion::new(MotionKind::Down));
+        assert_eq!(state.cursor.line(), 1);
+    }
+
+    #[test]
+    fn apply_motion_line_start() {
+        let mut state = EditorState::new();
+        state.cursor.position.col = 5;
+        apply_motion(&mut state, Motion::new(MotionKind::LineStart));
+        assert_eq!(state.cursor.col(), 0);
+    }
+
+    #[test]
+    fn apply_motion_with_count() {
+        let mut state = EditorState::new();
+        state.cursor.position.col = 10;
+        apply_motion(&mut state, Motion::new(MotionKind::Left).with_count(3));
+        assert!(state.cursor.col() <= 7);
+    }
+}

@@ -96,4 +96,32 @@ mod tests {
         fn assert_sync<T: Sync>() {}
         assert_sync::<TerminalService>();
     }
+
+    #[test]
+    fn terminal_service_type_size() {
+        assert_eq!(std::mem::size_of::<TerminalService>(), 0);
+    }
+
+    #[test]
+    fn terminal_service_type_alignment() {
+        assert_eq!(std::mem::align_of::<TerminalService>(), 1);
+    }
+
+    #[test]
+    fn run_command_pwd() {
+        let output = TerminalService::run_command("pwd").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn run_command_true() {
+        let output = TerminalService::run_command("true").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn terminal_service_create_drop() {
+        let svc = TerminalService::new();
+        drop(svc);
+    }
 }

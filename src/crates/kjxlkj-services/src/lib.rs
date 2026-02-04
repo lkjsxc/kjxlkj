@@ -107,4 +107,32 @@ mod tests {
         let sup = ServiceSupervisor::default();
         let _ = sup;
     }
+
+    #[test]
+    fn terminal_service_type_name() {
+        let name = std::any::type_name::<terminal::TerminalService>();
+        assert!(name.contains("TerminalService"));
+    }
+
+    #[test]
+    fn index_service_type_via() {
+        let name = std::any::type_name::<index::IndexService>();
+        assert!(name.contains("IndexService"));
+    }
+
+    #[test]
+    fn supervisor_type_size() {
+        assert_eq!(std::mem::size_of::<ServiceSupervisor>(), 0);
+    }
+
+    #[test]
+    fn supervisor_type_align() {
+        assert_eq!(std::mem::align_of::<ServiceSupervisor>(), 1);
+    }
+
+    #[test]
+    fn supervisor_new_create() {
+        let sup = ServiceSupervisor::new();
+        drop(sup);
+    }
 }

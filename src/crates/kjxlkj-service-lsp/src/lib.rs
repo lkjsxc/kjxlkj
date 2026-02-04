@@ -75,4 +75,10 @@ mod tests {
         let name = std::any::type_name::<LspService>();
         assert!(name.contains("LspService"));
     }
+
+    #[test]
+    fn lsp_service_create_drop() {
+        let svc = LspService::new();
+        drop(svc);
+    }
 }

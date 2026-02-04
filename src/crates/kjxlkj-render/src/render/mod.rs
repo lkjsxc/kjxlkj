@@ -152,4 +152,31 @@ mod tests {
         let _ = renderer.render(&mut buf, &snapshot);
         assert!(!buf.is_empty());
     }
+
+    #[test]
+    fn renderer_tall_viewport() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(80, 100));
+        let result = renderer.render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn renderer_wide_viewport() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(300, 24));
+        let result = renderer.render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn renderer_minimal_viewport() {
+        let mut buf = Vec::new();
+        let renderer = Renderer::new();
+        let snapshot = EditorSnapshot::empty(Viewport::new(10, 5));
+        let result = renderer.render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
 }

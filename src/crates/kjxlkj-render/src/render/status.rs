@@ -100,4 +100,40 @@ mod tests {
         let result = render(&mut buf, &snapshot);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn render_status_command_mode() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.command_line = Some(":q".to_string());
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_long_filename() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.filename = "very/long/path/to/file.rs".to_string();
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_position_max() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.position = "99999:999".to_string();
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn render_status_percentage_100() {
+        let mut buf = Vec::new();
+        let mut snapshot = EditorSnapshot::empty(Viewport::new(80, 24));
+        snapshot.status.percentage = "100%".to_string();
+        let result = render(&mut buf, &snapshot);
+        assert!(result.is_ok());
+    }
 }

@@ -116,4 +116,35 @@ mod tests {
         assert_eq!(content, "overwritten");
         std::fs::remove_file(&path).ok();
     }
+
+    #[test]
+    fn fs_special_chars() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_special_test.txt");
+        FsService::write_file(&path, "hello\tworld").unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert!(content.contains('\t'));
+        std::fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn fs_unicode_content() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_unicode_test.txt");
+        FsService::write_file(&path, "日本語テスト").unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert!(content.contains("日本語"));
+        std::fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn fs_long_content() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_long_test.txt");
+        let text = "x".repeat(10000);
+        FsService::write_file(&path, &text).unwrap();
+        let content = FsService::read_file(&path).unwrap();
+        assert_eq!(content.len(), 10000);
+        std::fs::remove_file(&path).ok();
+    }
 }

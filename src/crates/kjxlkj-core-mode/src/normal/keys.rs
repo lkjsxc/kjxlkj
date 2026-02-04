@@ -125,3 +125,50 @@ impl NormalModeState {
         self.count = Some(count);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn process_key_h_moves_left() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('h', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
+
+    #[test]
+    fn process_key_j_moves_down() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('j', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
+
+    #[test]
+    fn process_key_i_enters_insert() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('i', false, false);
+        assert!(matches!(intent, Intent::EnterInsert { .. }));
+    }
+
+    #[test]
+    fn process_key_x_deletes_char() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('x', false, false);
+        assert_eq!(intent, Intent::DeleteChar);
+    }
+
+    #[test]
+    fn process_key_colon_enters_command() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key(':', false, false);
+        assert_eq!(intent, Intent::EnterCommand);
+    }
+
+    #[test]
+    fn process_key_u_undo() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('u', false, false);
+        assert_eq!(intent, Intent::Undo);
+    }
+}

@@ -154,4 +154,24 @@ mod tests {
     fn motion_kind_line_end() {
         assert_eq!(MotionKind::LineEnd, MotionKind::LineEnd);
     }
+
+    #[test]
+    fn motion_kind_word_start() {
+        assert_eq!(MotionKind::WordStart, MotionKind::WordStart);
+    }
+
+    #[test]
+    fn motion_kind_word_end() {
+        assert_eq!(MotionKind::WordEnd, MotionKind::WordEnd);
+    }
+
+    #[test]
+    fn motion_kind_file_start() {
+        assert_eq!(MotionKind::FileStart, MotionKind::FileStart);
+    }
+
+    #[test]
+    fn motion_kind_file_end() {
+        assert_eq!(MotionKind::FileEnd, MotionKind::FileEnd);
+    }
 }

@@ -113,4 +113,42 @@ mod tests {
         let mut state = NormalModeState::new();
         assert_eq!(state.handle_ctrl_key('x'), Intent::DecrementNumber);
     }
+
+    #[test]
+    fn ctrl_f_page_down() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('f'), Intent::Scroll(ScrollIntent::FullPageDown));
+    }
+
+    #[test]
+    fn ctrl_b_page_up() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('b'), Intent::Scroll(ScrollIntent::FullPageUp));
+    }
+
+    #[test]
+    fn ctrl_e_line_down() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('e'), Intent::Scroll(ScrollIntent::LineDown));
+    }
+
+    #[test]
+    fn ctrl_y_line_up() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('y'), Intent::Scroll(ScrollIntent::LineUp));
+    }
+
+    #[test]
+    fn ctrl_o_jump_back() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_ctrl_key('o');
+        assert!(matches!(intent, Intent::JumpList { forward: false }));
+    }
+
+    #[test]
+    fn ctrl_i_jump_forward() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_ctrl_key('i');
+        assert!(matches!(intent, Intent::JumpList { forward: true }));
+    }
 }

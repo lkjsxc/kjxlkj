@@ -134,4 +134,38 @@ mod tests {
         let edit = Edit::delete(Position::new(0, 0), "a".to_string());
         assert!(matches!(edit.kind, EditKind::Delete));
     }
+
+    #[test]
+    fn transaction_cursor_after() {
+        let tx = Transaction::new(Position::new(0, 0));
+        assert_eq!(tx.cursor_after, Position::new(0, 0));
+    }
+
+    #[test]
+    fn edit_text_content() {
+        let edit = Edit::insert(Position::new(0, 0), "hello".to_string());
+        assert_eq!(edit.text, "hello");
+    }
+
+    #[test]
+    fn edit_position_field() {
+        let pos = Position::new(5, 10);
+        let edit = Edit::insert(pos, "x".to_string());
+        assert_eq!(edit.position, pos);
+    }
+
+    #[test]
+    fn transaction_set_cursor_after() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.cursor_after = Position::new(1, 2);
+        assert_eq!(tx.cursor_after.line, 1);
+    }
+
+    #[test]
+    fn transaction_multiple_edits() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
+        tx.push(Edit::insert(Position::new(0, 1), "b".to_string()));
+        assert_eq!(tx.edits.len(), 2);
+    }
 }
