@@ -514,4 +514,93 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_normal_mode_yank_line() {
+        let mut mode = NormalMode::new();
+        mode.handle_key(&KeyEvent::char('y'));
+        let result = mode.handle_key(&KeyEvent::char('y'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Yank { linewise: true, .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_search_slash() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('/'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SearchForward(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_search_question() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('?'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SearchBackward(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_N_key() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('N'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::PrevMatch)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_motion_left() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('h'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Left))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_motion_down() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('j'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Down))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_motion_up() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('k'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Up))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_motion_right() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('l'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Right))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
 }
