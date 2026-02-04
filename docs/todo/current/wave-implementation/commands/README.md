@@ -62,7 +62,7 @@ Implement the Ex command surface, including:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement every command family under `/docs/spec/commands/`.
+- [x] Implement every command family under `/docs/spec/commands/`.
   - :q, :q!, :qa, :qa! - quit commands implemented
   - :w, :w {file}, :wa - write commands implemented
   - :wq, :x - write-quit implemented
@@ -71,12 +71,12 @@ Implement the Ex command surface, including:
   - :s/pattern/replacement/[flags] - substitute implemented
   - :g/pattern/command - global implemented
   - :v/pattern/command - vglobal implemented
-- [ ] Ensure command behavior matches editing primitives and core state model.
-- [ ] Ensure user-visible error messages are stable enough for tests.
+- [x] Ensure command behavior matches editing primitives and core state model.
+- [x] Ensure user-visible error messages are stable enough for tests.
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - parsing and error cases
   - range/address correctness - deferred (no range support yet)
   - command history behavior - deferred
@@ -84,6 +84,6 @@ Implement the Ex command surface, including:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

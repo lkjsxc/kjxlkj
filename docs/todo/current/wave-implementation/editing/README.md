@@ -63,7 +63,7 @@ Implement the editing primitives that power modal behavior:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full editing spec subtree, including:
+- [x] Implement the full editing spec subtree, including:
   - search and regex features (/, ?, n, N, :s) - implemented
   - macros (including recursion rules) - fully implemented (q, @, @@)
   - marks and jump lists (m, `, ', Ctrl-o, Ctrl-i) - fully implemented
@@ -81,6 +81,6 @@ Implement the editing primitives that power modal behavior:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

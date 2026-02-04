@@ -55,12 +55,12 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
+- [x] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
 - [x] Implement profiling hooks and performance regression detection.
 - [x] Ensure memory usage and large-file behavior match constraints (or record limitations).
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
