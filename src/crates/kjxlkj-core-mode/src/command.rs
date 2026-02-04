@@ -135,4 +135,80 @@ mod tests {
         }
         assert!(mode.buffer().is_empty());
     }
+
+    #[test]
+    fn test_command_mode_backspace() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
+        assert_eq!(mode.buffer(), "a");
+    }
+
+    #[test]
+    fn test_command_mode_left_right() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        assert_eq!(mode.cursor(), 2);
+        mode.handle_key(&KeyEvent::plain(KeyCode::Left));
+        assert_eq!(mode.cursor(), 1);
+        mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        assert_eq!(mode.cursor(), 2);
+    }
+
+    #[test]
+    fn test_command_mode_home_end() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        mode.handle_key(&KeyEvent::char('c'));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Home));
+        assert_eq!(mode.cursor(), 0);
+        mode.handle_key(&KeyEvent::plain(KeyCode::End));
+        assert_eq!(mode.cursor(), 3);
+    }
+
+    #[test]
+    fn test_command_mode_reset() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.reset();
+        assert!(mode.buffer().is_empty());
+        assert_eq!(mode.cursor(), 0);
+    }
+
+    #[test]
+    fn test_command_mode_mode() {
+        let mode = CommandMode::new();
+        assert_eq!(mode.mode(), Mode::Command);
+    }
+
+    #[test]
+    fn test_command_mode_default() {
+        let mode = CommandMode::default();
+        assert!(mode.buffer().is_empty());
+    }
+
+    #[test]
+    fn test_command_mode_left_at_start() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::plain(KeyCode::Left));
+        assert_eq!(mode.cursor(), 0);
+    }
+
+    #[test]
+    fn test_command_mode_right_at_end() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        assert_eq!(mode.cursor(), 1);
+    }
+
+    #[test]
+    fn test_command_mode_backspace_at_start() {
+        let mut mode = CommandMode::new();
+        mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
+        assert!(mode.buffer().is_empty());
+    }
 }

@@ -532,4 +532,185 @@ mod tests {
             panic!("Expected complete");
         }
     }
+
+    #[test]
+    fn test_parse_yy() {
+        let mut parser = Parser::new();
+        parser.parse(&KeyEvent::char('y'));
+        let result = parser.parse(&KeyEvent::char('y'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Line));
+            assert!(matches!(cmd.operator, Some(OperatorKind::Yank)));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_cc() {
+        let mut parser = Parser::new();
+        parser.parse(&KeyEvent::char('c'));
+        let result = parser.parse(&KeyEvent::char('c'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Line));
+            assert!(matches!(cmd.operator, Some(OperatorKind::Change)));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_undo() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('u'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Undo));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_paste() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('p'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Paste { before: false }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_paste_before() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('P'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Paste { before: true }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_visual_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('v'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::VisualMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_visual_line_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('V'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::VisualLineMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_command_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char(':'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::CommandMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_insert_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('i'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::InsertMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_append_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('a'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::AppendMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_open_below() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('o'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::OpenBelow));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_open_above() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('O'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::OpenAbove));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_repeat() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('.'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Repeat));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_delete_char() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('x'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::DeleteChar));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parser_reset() {
+        let mut parser = Parser::new();
+        parser.parse(&KeyEvent::char('d'));
+        parser.reset();
+        // After reset, new command should work
+        let result = parser.parse(&KeyEvent::char('j'));
+        assert!(matches!(result, ParseResult::Complete(_)));
+    }
+
+    #[test]
+    fn test_parse_large_count() {
+        let mut parser = Parser::new();
+        parser.parse(&KeyEvent::char('9'));
+        parser.parse(&KeyEvent::char('9'));
+        let result = parser.parse(&KeyEvent::char('j'));
+        if let ParseResult::Complete(cmd) = result {
+            assert_eq!(cmd.count, 99);
+        } else {
+            panic!("Expected complete");
+        }
+    }
 }

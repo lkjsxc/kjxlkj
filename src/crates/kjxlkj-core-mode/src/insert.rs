@@ -105,4 +105,101 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_insert_mode_backspace() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Backspace));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_enter() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Enter));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_tab() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Tab));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_arrow_keys() {
+        let mut mode = InsertMode::new();
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Left));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Left))));
+        }
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Right));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Right))));
+        }
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Up));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Up))));
+        }
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Down));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::Down))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_home_end() {
+        let mut mode = InsertMode::new();
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Home));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::LineStart))));
+        }
+        
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::End));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(MotionIntent::LineEnd))));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_default() {
+        let mode = InsertMode::default();
+        assert_eq!(mode.mode(), Mode::Insert);
+    }
+
+    #[test]
+    fn test_insert_mode_mode() {
+        let mode = InsertMode::new();
+        assert_eq!(mode.mode(), Mode::Insert);
+    }
+
+    #[test]
+    fn test_insert_mode_delete() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Delete));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
 }
+

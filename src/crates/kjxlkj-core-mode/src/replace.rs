@@ -71,4 +71,29 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_replace_mode_mode() {
+        let mode = ReplaceMode::new();
+        assert_eq!(mode.mode(), Mode::Replace);
+    }
+
+    #[test]
+    fn test_replace_mode_default() {
+        let mode = ReplaceMode::default();
+        assert_eq!(mode.mode(), Mode::Replace);
+    }
+
+    #[test]
+    fn test_replace_mode_multiple_chars() {
+        let mut mode = ReplaceMode::new();
+        mode.handle_key(&KeyEvent::char('a'));
+        mode.handle_key(&KeyEvent::char('b'));
+        // Each char should be replaced independently
+        let result = mode.handle_key(&KeyEvent::char('c'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::ReplaceChar('c'))));
+        }
+    }
 }
+

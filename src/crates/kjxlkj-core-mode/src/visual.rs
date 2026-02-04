@@ -166,4 +166,75 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_visual_mode_yank() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('y'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Yank { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_change() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('c'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Change { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_char_wise() {
+        let mode = VisualMode::char_wise();
+        assert_eq!(mode.mode(), Mode::Visual);
+    }
+
+    #[test]
+    fn test_visual_mode_line_wise() {
+        let mode = VisualMode::line_wise();
+        assert_eq!(mode.mode(), Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_visual_mode_block_wise() {
+        let mode = VisualMode::block_wise();
+        assert_eq!(mode.mode(), Mode::VisualBlock);
+    }
+
+    #[test]
+    fn test_visual_mode_reset() {
+        let mut mode = VisualMode::char_wise();
+        mode.handle_key(&KeyEvent::char('d'));
+        mode.reset();
+        // After reset, state should be clean
+        assert_eq!(mode.mode(), Mode::Visual);
+    }
+
+    #[test]
+    fn test_visual_mode_uppercase() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('U'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Uppercase)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_lowercase() {
+        let mut mode = VisualMode::char_wise();
+        let result = mode.handle_key(&KeyEvent::char('u'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Lowercase)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
 }
