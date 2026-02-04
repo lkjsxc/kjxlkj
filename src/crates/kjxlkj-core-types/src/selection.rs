@@ -172,5 +172,39 @@ mod tests {
         let sel = Selection::line_wise(Position::new(7, 0), Position::new(2, 0));
         assert_eq!(sel.line_range(), (2, 7));
     }
+
+    #[test]
+    fn test_selection_debug() {
+        let sel = Selection::char_wise(Position::new(0, 0), Position::new(1, 1));
+        let debug = format!("{:?}", sel);
+        assert!(debug.contains("Selection"));
+    }
+
+    #[test]
+    fn test_selection_kind_debug() {
+        let kind = SelectionKind::Block;
+        let debug = format!("{:?}", kind);
+        assert!(debug.contains("Block"));
+    }
+
+    #[test]
+    fn test_selection_kind_clone() {
+        let kind = SelectionKind::Line;
+        let cloned = kind.clone();
+        assert_eq!(kind, cloned);
+    }
+
+    #[test]
+    fn test_selection_same_position() {
+        let sel = Selection::char_wise(Position::new(1, 1), Position::new(1, 1));
+        assert_eq!(sel.start(), sel.end());
+    }
+
+    #[test]
+    fn test_selection_swap_preserves_kind() {
+        let mut sel = Selection::block_wise(Position::new(0, 0), Position::new(5, 5));
+        sel.swap();
+        assert_eq!(sel.kind, SelectionKind::Block);
+    }
 }
 

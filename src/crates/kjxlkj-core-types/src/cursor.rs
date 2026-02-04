@@ -133,5 +133,51 @@ mod tests {
         let cursor = Cursor::default();
         assert_eq!(cursor.position, Position::ORIGIN);
     }
+
+    #[test]
+    fn test_cursor_equality() {
+        let c1 = Cursor::new(1, 2);
+        let c2 = Cursor::new(1, 2);
+        assert_eq!(c1, c2);
+    }
+
+    #[test]
+    fn test_cursor_inequality() {
+        let c1 = Cursor::new(1, 2);
+        let c2 = Cursor::new(3, 4);
+        assert_ne!(c1, c2);
+    }
+
+    #[test]
+    fn test_cursor_clone() {
+        let cursor = Cursor::new(5, 5);
+        let cloned = cursor.clone();
+        assert_eq!(cursor, cloned);
+    }
+
+    #[test]
+    fn test_cursor_debug() {
+        let cursor = Cursor::new(1, 2);
+        let debug = format!("{:?}", cursor);
+        assert!(debug.contains("Cursor"));
+    }
+
+    #[test]
+    fn test_cursor_vertical_preserves_preferred_col() {
+        let mut cursor = Cursor::new(0, 10);
+        cursor.move_vertical(1, 20);
+        assert_eq!(cursor.col(), 10);
+        cursor.move_vertical(2, 5);
+        // Should still try to get back to 10 on a longer line
+        assert_eq!(cursor.preferred_col, Some(10));
+    }
+
+    #[test]
+    fn test_cursor_from_position_impl() {
+        let pos = Position::new(7, 8);
+        let cursor: Cursor = pos.into();
+        assert_eq!(cursor.line(), 7);
+        assert_eq!(cursor.col(), 8);
+    }
 }
 

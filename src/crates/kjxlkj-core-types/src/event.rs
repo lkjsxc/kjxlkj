@@ -447,4 +447,73 @@ mod tests {
         let event = EditorEvent::Resize { width: 120, height: 40 };
         assert!(matches!(event, EditorEvent::Resize { width: 120, height: 40 }));
     }
+
+    #[test]
+    fn test_key_event_with_alt() {
+        let ev = KeyEvent::new(KeyCode::Char('x'), KeyModifiers {
+            ctrl: false,
+            alt: true,
+            shift: false,
+            meta: false,
+        });
+        assert!(ev.modifiers.alt);
+        assert!(!ev.modifiers.ctrl);
+    }
+
+    #[test]
+    fn test_key_modifiers_ctrl_shift() {
+        let mods = KeyModifiers {
+            ctrl: true,
+            shift: true,
+            alt: false,
+            meta: false,
+        };
+        assert!(mods.any());
+    }
+
+    #[test]
+    fn test_key_code_equality() {
+        assert_eq!(KeyCode::Char('a'), KeyCode::Char('a'));
+        assert_ne!(KeyCode::Char('a'), KeyCode::Char('b'));
+    }
+
+    #[test]
+    fn test_key_event_clone() {
+        let ev = KeyEvent::char('z');
+        let cloned = ev.clone();
+        assert_eq!(ev, cloned);
+    }
+
+    #[test]
+    fn test_key_code_debug() {
+        let code = KeyCode::Enter;
+        let debug = format!("{:?}", code);
+        assert!(debug.contains("Enter"));
+    }
+
+    #[test]
+    fn test_motion_intent_debug() {
+        let motion = MotionIntent::WordStart;
+        let debug = format!("{:?}", motion);
+        assert!(debug.contains("WordStart"));
+    }
+
+    #[test]
+    fn test_scroll_intent_debug() {
+        let scroll = ScrollIntent::HalfPageDown;
+        let debug = format!("{:?}", scroll);
+        assert!(debug.contains("HalfPageDown"));
+    }
+
+    #[test]
+    fn test_key_code_from_str_home_end() {
+        assert_eq!(KeyCode::from_str_loose("home"), Some(KeyCode::Home));
+        assert_eq!(KeyCode::from_str_loose("end"), Some(KeyCode::End));
+    }
+
+    #[test]
+    fn test_key_code_from_str_page_keys() {
+        assert_eq!(KeyCode::from_str_loose("pageup"), Some(KeyCode::PageUp));
+        assert_eq!(KeyCode::from_str_loose("pagedown"), Some(KeyCode::PageDown));
+    }
 }
