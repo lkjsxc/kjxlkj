@@ -185,3 +185,11 @@ fn transaction_single_edit() {
     tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
     assert_eq!(tx.edits.len(), 1);
 }
+
+#[test]
+fn transaction_two_edits() {
+    let mut tx = Transaction::new(Position::new(0, 0));
+    tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
+    tx.push(Edit::insert(Position::new(0, 1), "b".to_string()));
+    assert_eq!(tx.edits.len(), 2);
+}

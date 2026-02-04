@@ -184,4 +184,16 @@ mod tests {
         let svc: Option<ServiceSupervisor> = None;
         assert!(svc.is_none());
     }
+
+    #[test]
+    fn terminal_via_services() {
+        let name = std::any::type_name::<terminal::TerminalService>();
+        assert!(name.contains("Terminal"));
+    }
+
+    #[test]
+    fn index_via_services() {
+        let name = std::any::type_name::<index::IndexService>();
+        assert!(name.contains("Index"));
+    }
 }

@@ -183,4 +183,12 @@ mod tests {
         let res = render_char_selection(&mut buf, "", 0, sel.start(), sel.end());
         assert!(res.is_ok());
     }
+
+    #[test]
+    fn line_selection_empty_line() {
+        let sel = Selection::new(Position::new(0, 0), Position::new(0, 0), SelectionKind::Line);
+        let mut buf = Vec::new();
+        let res = render_with_selection(&mut buf, "", 0, &sel);
+        assert!(res.is_ok());
+    }
 }

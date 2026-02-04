@@ -185,4 +185,16 @@ mod tests {
         let intent = Intent::None;
         assert_eq!(intent, Intent::None);
     }
+
+    #[test]
+    fn facade_intent_undo() {
+        let intent = Intent::Undo;
+        assert_eq!(intent, Intent::Undo);
+    }
+
+    #[test]
+    fn facade_intent_redo() {
+        let intent = Intent::Redo;
+        assert_eq!(intent, Intent::Redo);
+    }
 }

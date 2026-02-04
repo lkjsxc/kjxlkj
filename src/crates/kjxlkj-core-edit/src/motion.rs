@@ -184,4 +184,16 @@ mod tests {
     fn motion_kind_word_backward() {
         assert_eq!(MotionKind::WordStartBackward, MotionKind::WordStartBackward);
     }
+
+    #[test]
+    fn motion_type_name() {
+        let name = std::any::type_name::<Motion>();
+        assert!(name.contains("Motion"));
+    }
+
+    #[test]
+    fn motion_kind_type_name() {
+        let name = std::any::type_name::<MotionKind>();
+        assert!(name.contains("MotionKind"));
+    }
 }

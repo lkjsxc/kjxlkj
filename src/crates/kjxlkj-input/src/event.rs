@@ -185,4 +185,10 @@ mod tests {
         let e2 = InputEvent::FocusLost;
         assert_ne!(e1, e2);
     }
+
+    #[test]
+    fn input_event_type_name() {
+        let name = std::any::type_name::<InputEvent>();
+        assert!(name.contains("InputEvent"));
+    }
 }
