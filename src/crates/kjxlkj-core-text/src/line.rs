@@ -33,4 +33,16 @@ mod tests {
         assert_eq!(line_len(""), 0);
         assert_eq!(line_len("中文"), 2);
     }
+
+    #[test]
+    fn test_single_char_line() {
+        assert_eq!(line_end_col("a", false), 0);
+        assert_eq!(line_end_col("a", true), 1);
+    }
+
+    #[test]
+    fn test_unicode_line_len() {
+        assert_eq!(line_len("🎉"), 1);
+        assert_eq!(line_len("hello🎉"), 6);
+    }
 }

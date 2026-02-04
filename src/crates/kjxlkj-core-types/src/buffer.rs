@@ -65,4 +65,10 @@ mod tests {
         v.increment();
         assert_eq!(v.as_u64(), 1);
     }
+
+    #[test]
+    fn buffer_id_as_u64() {
+        let id = BufferId::new(42);
+        assert_eq!(id.as_u64(), 42);
+    }
 }

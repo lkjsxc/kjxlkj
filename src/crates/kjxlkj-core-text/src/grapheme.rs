@@ -52,4 +52,27 @@ mod tests {
         assert_eq!(prev_grapheme_boundary(s, 2), 1);
         assert_eq!(prev_grapheme_boundary(s, 1), 0);
     }
+
+    #[test]
+    fn grapheme_boundary_at_end() {
+        let s = "ab";
+        assert_eq!(next_grapheme_boundary(s, 2), 2);
+    }
+
+    #[test]
+    fn grapheme_boundary_at_start() {
+        let s = "ab";
+        assert_eq!(prev_grapheme_boundary(s, 0), 0);
+    }
+
+    #[test]
+    fn empty_string_width() {
+        assert_eq!(grapheme_width(""), 0);
+    }
+
+    #[test]
+    fn emoji_width() {
+        // Most terminals render emoji as width 2
+        assert!(grapheme_width("😀") >= 1);
+    }
 }
