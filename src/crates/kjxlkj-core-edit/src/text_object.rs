@@ -464,4 +464,93 @@ mod tests {
         );
         assert!(result.is_none());
     }
+
+    #[test]
+    fn test_text_object_kind_equality() {
+        assert_eq!(TextObjectKind::Inner, TextObjectKind::Inner);
+        assert_ne!(TextObjectKind::Inner, TextObjectKind::Around);
+    }
+
+    #[test]
+    fn test_text_object_kind_clone() {
+        let kind = TextObjectKind::Around;
+        let cloned = kind.clone();
+        assert_eq!(kind, cloned);
+    }
+
+    #[test]
+    fn test_text_object_equality() {
+        assert_eq!(TextObject::Word, TextObject::Word);
+        assert_ne!(TextObject::Word, TextObject::WORD);
+    }
+
+    #[test]
+    fn test_text_object_debug() {
+        let debug = format!("{:?}", TextObject::Parens);
+        assert!(debug.contains("Parens"));
+    }
+
+    #[test]
+    fn test_text_range_new() {
+        let range = TextRange::new(Position::new(0, 0), Position::new(1, 5));
+        assert_eq!(range.start.line, 0);
+        assert_eq!(range.end.line, 1);
+    }
+
+    #[test]
+    fn test_text_range_equality() {
+        let r1 = TextRange::new(Position::new(0, 0), Position::new(1, 5));
+        let r2 = TextRange::new(Position::new(0, 0), Position::new(1, 5));
+        assert_eq!(r1, r2);
+    }
+
+    #[test]
+    fn test_text_range_clone() {
+        let range = TextRange::new(Position::new(0, 0), Position::new(1, 5));
+        let cloned = range.clone();
+        assert_eq!(range, cloned);
+    }
+
+    #[test]
+    fn test_all_text_objects_exist() {
+        let objects = [
+            TextObject::Word,
+            TextObject::WORD,
+            TextObject::Sentence,
+            TextObject::Paragraph,
+            TextObject::Parens,
+            TextObject::Brackets,
+            TextObject::Braces,
+            TextObject::Angles,
+            TextObject::DoubleQuotes,
+            TextObject::SingleQuotes,
+            TextObject::Backticks,
+            TextObject::Tag,
+        ];
+        assert_eq!(objects.len(), 12);
+    }
+
+    #[test]
+    fn test_find_brackets_inner() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "[array]");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 3),
+            TextObject::Brackets,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+    }
+
+    #[test]
+    fn test_find_braces_inner() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "{object}");
+        let result = find_text_object(
+            &buffer,
+            Position::new(0, 3),
+            TextObject::Braces,
+            TextObjectKind::Inner,
+        );
+        assert!(result.is_some());
+    }
 }
