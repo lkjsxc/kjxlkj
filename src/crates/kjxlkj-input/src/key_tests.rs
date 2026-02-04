@@ -192,3 +192,9 @@ fn key_char_x() {
     let k = Key::char('x');
     assert_eq!(k.code, KeyCode::Char('x'));
 }
+
+#[test]
+fn key_char_y() {
+    let k = Key::char('y');
+    assert_eq!(k.code, KeyCode::Char('y'));
+}

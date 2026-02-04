@@ -188,3 +188,11 @@ fn editor_state_replace_back_to_normal() {
     state.set_mode(Mode::Normal);
     assert_eq!(state.mode(), Mode::Normal);
 }
+
+#[test]
+fn editor_state_cmd_to_normal() {
+    let mut state = EditorState::new();
+    state.set_mode(Mode::Command);
+    state.set_mode(Mode::Normal);
+    assert_eq!(state.mode(), Mode::Normal);
+}
