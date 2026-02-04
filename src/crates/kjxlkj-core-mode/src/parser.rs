@@ -713,4 +713,125 @@ mod tests {
             panic!("Expected complete");
         }
     }
+
+    #[test]
+    fn test_parse_search_forward() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('/'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Search { forward: true }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_search_backward() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('?'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Search { forward: false }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_next_match() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('n'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::NextMatch));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_prev_match() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('N'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::PrevMatch));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_join_lines() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('J'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::JoinLines { add_space: true }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_replace_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('R'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::ReplaceMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_substitute() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('s'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Substitute));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_substitute_line() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('S'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::SubstituteLine));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_delete_to_end() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('D'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::DeleteToEnd));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_change_to_end() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('C'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::ChangeToEnd));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_yank_line() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('Y'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::YankLine));
+        } else {
+            panic!("Expected complete");
+        }
+    }
 }

@@ -263,3 +263,137 @@ fn test_undo_redo_consistency() {
     // Cursor should still be valid
     assert!(after_redo.cursor.line() < after_redo.buffer.line_count || after_redo.buffer.line_count == 0);
 }
+
+/// Test: Mode-specific key handling isolation.
+///
+/// Keys should be handled differently in different modes.
+#[test]
+fn test_mode_specific_handling() {
+    let mut state = EditorState::new();
+    state.load_content("hello world");
+
+    // In Normal mode, 'j' is motion
+    state.handle_key(KeyEvent::new(KeyCode::Char('j'), KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Normal);
+
+    // Enter Insert mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Insert);
+
+    // In Insert mode, 'j' inserts a character
+    state.handle_key(KeyEvent::new(KeyCode::Char('j'), KeyModifiers::NONE));
+    assert!(state.content().contains('j'));
+
+    // Exit back to Normal
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Normal);
+}
+
+/// Test: Rapid key sequences don't cause race conditions.
+///
+/// Even with many rapid keys, state should remain consistent.
+#[test]
+fn test_rapid_key_sequence() {
+    let mut state = EditorState::new();
+    state.load_content("test content here");
+
+    // Rapid mode switches and movements
+    for _ in 0..100 {
+        state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+        state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+        state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    }
+
+    // State should be consistent
+    let snapshot = state.snapshot();
+    assert!(snapshot.cursor.col() <= snapshot.buffer.lines[0].len());
+}
+
+/// Test: Delete operations maintain cursor validity.
+#[test]
+fn test_delete_maintains_cursor() {
+    let mut state = EditorState::new();
+    state.load_content("hello world test");
+
+    // Move to middle
+    for _ in 0..5 {
+        state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    }
+
+    // Delete word
+    state.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+
+    let snapshot = state.snapshot();
+    // Cursor should still be valid
+    let line_len = snapshot.buffer.lines.get(0).map(|l| l.len()).unwrap_or(0);
+    assert!(snapshot.cursor.col() <= line_len || line_len == 0);
+}
+
+/// Test: Visual selection clears on mode exit.
+#[test]
+fn test_visual_selection_clears() {
+    let mut state = EditorState::new();
+    state.load_content("hello world");
+
+    // Enter Visual mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Visual);
+
+    // Move to extend selection
+    for _ in 0..5 {
+        state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    }
+
+    // Exit with escape
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Normal);
+
+    let snapshot = state.snapshot();
+    // Selection should be cleared
+    assert!(snapshot.selection.is_none());
+}
+
+/// Test: Join lines operation.
+#[test]
+fn test_join_lines() {
+    let mut state = EditorState::new();
+    state.load_content("line one\nline two");
+
+    assert_eq!(state.buffer().line_count(), 2);
+
+    // Join lines with J
+    state.handle_key(KeyEvent::new(KeyCode::Char('J'), KeyModifiers::NONE));
+
+    assert_eq!(state.buffer().line_count(), 1);
+}
+
+/// Test: Open line operations.
+#[test]
+fn test_open_line() {
+    let mut state = EditorState::new();
+    state.load_content("line one");
+
+    let initial_count = state.buffer().line_count();
+
+    // Open line below with 'o'
+    state.handle_key(KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE));
+
+    assert_eq!(state.buffer().line_count(), initial_count + 1);
+    assert_eq!(state.mode(), Mode::Insert);
+}
+
+/// Test: Replace mode.
+#[test]
+fn test_replace_mode() {
+    let mut state = EditorState::new();
+    state.load_content("hello");
+
+    // Enter replace mode with R
+    state.handle_key(KeyEvent::new(KeyCode::Char('R'), KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Replace);
+
+    // Exit back to Normal
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    assert_eq!(state.mode(), Mode::Normal);
+}
