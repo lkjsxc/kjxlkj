@@ -58,4 +58,26 @@ mod tests {
         let p2 = Position::new(1, 2);
         assert_eq!(p1, p2);
     }
+
+    #[test]
+    fn position_default() {
+        let p = Position::default();
+        assert_eq!(p.line, 0);
+        assert_eq!(p.col, 0);
+    }
+
+    #[test]
+    fn position_line_start() {
+        let p = Position::line_start(5);
+        assert_eq!(p.line, 5);
+        assert_eq!(p.col, 0);
+    }
+
+    #[test]
+    fn position_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Position::new(1, 2));
+        assert!(set.contains(&Position::new(1, 2)));
+    }
 }

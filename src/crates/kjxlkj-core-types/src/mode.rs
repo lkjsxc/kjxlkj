@@ -63,4 +63,25 @@ mod tests {
         assert!(Mode::VisualBlock.is_visual());
         assert!(!Mode::Normal.is_visual());
     }
+
+    #[test]
+    fn mode_is_insert() {
+        assert!(Mode::Insert.is_insert());
+        assert!(Mode::Replace.is_insert());
+        assert!(!Mode::Normal.is_insert());
+    }
+
+    #[test]
+    fn mode_display_name() {
+        assert_eq!(Mode::Normal.display_name(), "NORMAL");
+        assert_eq!(Mode::Insert.display_name(), "INSERT");
+        assert_eq!(Mode::VisualLine.display_name(), "V-LINE");
+        assert_eq!(Mode::VisualBlock.display_name(), "V-BLOCK");
+    }
+
+    #[test]
+    fn mode_equality() {
+        assert_eq!(Mode::Normal, Mode::Normal);
+        assert_ne!(Mode::Normal, Mode::Insert);
+    }
 }

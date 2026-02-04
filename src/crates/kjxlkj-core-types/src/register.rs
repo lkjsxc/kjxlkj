@@ -89,4 +89,35 @@ mod tests {
         );
         assert_eq!(RegisterName::from_char('_'), Some(RegisterName::BlackHole));
     }
+
+    #[test]
+    fn register_name_special() {
+        assert_eq!(RegisterName::from_char('/'), Some(RegisterName::LastSearch));
+        assert_eq!(RegisterName::from_char('-'), Some(RegisterName::SmallDelete));
+        assert_eq!(RegisterName::from_char('='), Some(RegisterName::Expression));
+    }
+
+    #[test]
+    fn register_name_readonly() {
+        assert_eq!(RegisterName::from_char('%'), Some(RegisterName::ReadOnly('%')));
+        assert_eq!(RegisterName::from_char('#'), Some(RegisterName::ReadOnly('#')));
+    }
+
+    #[test]
+    fn register_name_invalid() {
+        assert!(RegisterName::from_char('~').is_none());
+        assert!(RegisterName::from_char('@').is_none());
+    }
+
+    #[test]
+    fn register_default() {
+        assert_eq!(RegisterName::default(), RegisterName::Unnamed);
+    }
+
+    #[test]
+    fn register_content() {
+        let reg = Register::with_content("text".to_string(), true);
+        assert_eq!(reg.content, "text");
+        assert!(reg.linewise);
+    }
 }
