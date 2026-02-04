@@ -1,8 +1,0 @@
-[package]
-name = "kjxlkj-core-undo"
-version.workspace = true
-edition = "2021"
-license.workspace = true
-
-[dependencies]
-kjxlkj-core-types = { path = "../kjxlkj-core-types" }
