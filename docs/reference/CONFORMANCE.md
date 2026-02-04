@@ -35,7 +35,9 @@ This document records the currently implemented, user-visible surface so that:
 | Arrow keys | Cursor move |
 | `0` | Move to start of line (column 0) |
 | `^` | Move to first non-blank character |
+| `_` | Move to first non-blank (with count offset) |
 | `g_` | Move to last non-blank character |
+| `gm` | Move to middle of line |
 | `$` | Move to end of line |
 | `\|` | Go to column N (with count) |
 | `w` | Move to next word start |

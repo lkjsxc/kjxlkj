@@ -143,8 +143,12 @@ pub enum EditorAction {
     LineEnd,
     /// Go to specific column (|).
     GoToColumn(u32),
+    /// Move to middle of text on line (gm).
+    LineMiddle,
     /// Move to first non-blank character (^).
     FirstNonBlank,
+    /// Move to first non-blank of line with count offset (_).
+    FirstNonBlankWithOffset(u32),
     /// Move to last non-blank character (g_).
     LastNonBlank,
     /// Move to first non-blank of next line (+, Enter).

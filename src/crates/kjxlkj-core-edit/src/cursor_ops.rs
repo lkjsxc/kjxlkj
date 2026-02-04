@@ -100,6 +100,19 @@ pub trait CursorOps {
         self.cursor_mut().clear_preferred_col();
     }
 
+    /// Moves the cursor to the middle of the line text (gm).
+    fn move_line_middle(&mut self) {
+        let cursor = self.cursor();
+        let line_len = self
+            .line_len(cursor.position.line as usize)
+            .unwrap_or(0);
+        if line_len > 0 {
+            let middle = (line_len - 1) / 2;
+            self.cursor_mut().position.col = middle as u32;
+            self.cursor_mut().clear_preferred_col();
+        }
+    }
+
     /// Moves the cursor to the first non-blank character on the line (^).
     fn move_first_non_blank(&mut self) {
         let cursor = self.cursor();

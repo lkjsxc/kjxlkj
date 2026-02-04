@@ -234,7 +234,16 @@ impl EditorState {
             EditorAction::LineStart => self.buffer.move_line_start(),
             EditorAction::LineEnd => self.buffer.move_line_end(),
             EditorAction::GoToColumn(col) => self.buffer.go_to_column(col),
+            EditorAction::LineMiddle => self.buffer.move_line_middle(),
             EditorAction::FirstNonBlank => self.buffer.move_first_non_blank(),
+            EditorAction::FirstNonBlankWithOffset(count) => {
+                // _ motion: move [count]-1 lines down, then to first non-blank
+                let lines_down = count.saturating_sub(1) as usize;
+                for _ in 0..lines_down {
+                    self.buffer.move_down();
+                }
+                self.buffer.move_first_non_blank();
+            }
             EditorAction::LastNonBlank => self.buffer.move_last_non_blank(),
             EditorAction::NextLineStart => self.move_next_line_start(),
             EditorAction::PrevLineStart => self.move_prev_line_start(),

@@ -198,7 +198,14 @@ impl ModeHandler {
                 "l" => EditorAction::CursorRight,
                 "0" => EditorAction::LineStart,
                 "^" => EditorAction::FirstNonBlank,
+                "_" => {
+                    // Go to first non-blank of line [count]-1 down
+                    let count = self.state.take_count().unwrap_or(1);
+                    self.state.clear_pending();
+                    EditorAction::FirstNonBlankWithOffset(count)
+                }
                 "g_" => EditorAction::LastNonBlank,
+                "gm" => EditorAction::LineMiddle,
                 "$" => EditorAction::LineEnd,
                 "|" => {
                     // Go to column N (1-based, default 1)
