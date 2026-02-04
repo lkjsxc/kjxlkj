@@ -131,7 +131,12 @@ fn apply_intent(state: &mut EditorState, intent: Intent) {
         Intent::EnterCommand => state.set_mode(Mode::Command),
         Intent::EnterReplace => state.set_mode(Mode::Replace),
         Intent::StartVisual(kind) => {
-            state.set_mode(Mode::Visual);
+            let mode = match kind {
+                kjxlkj_core::SelectionKind::Char => Mode::Visual,
+                kjxlkj_core::SelectionKind::Line => Mode::VisualLine,
+                kjxlkj_core::SelectionKind::Block => Mode::VisualBlock,
+            };
+            state.set_mode(mode);
             let pos = state.cursor.position;
             state.selection = Some(kjxlkj_core::Selection::new(pos, pos, kind));
         }

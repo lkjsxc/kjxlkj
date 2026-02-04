@@ -81,6 +81,8 @@ fn assert_mode(state: &EditorState, mode: &str) -> Result<()> {
         "normal" | "Normal" | "NORMAL" => Mode::Normal,
         "insert" | "Insert" | "INSERT" => Mode::Insert,
         "visual" | "Visual" | "VISUAL" => Mode::Visual,
+        "visual_line" | "Visual_Line" | "VISUAL_LINE" | "V-LINE" => Mode::VisualLine,
+        "visual_block" | "Visual_Block" | "VISUAL_BLOCK" | "V-BLOCK" => Mode::VisualBlock,
         "command" | "Command" | "COMMAND" => Mode::Command,
         "replace" | "Replace" | "REPLACE" => Mode::Replace,
         _ => anyhow::bail!("Unknown mode: {}", mode),
