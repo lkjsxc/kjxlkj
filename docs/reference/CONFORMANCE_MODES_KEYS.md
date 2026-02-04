@@ -1,7 +1,9 @@
 # Conformance: Modes and Keybindings
 
 Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-Mode set and keybindings currently implemented.
+Mode set and keybindings in the conformance ledger.
+
+In a docs-only baseline, treat this as the intended initial reconstruction target (update it after regenerating the implementation).
 
 ## Modes
 

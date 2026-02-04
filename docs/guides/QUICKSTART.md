@@ -1,11 +1,15 @@
 # kjxlkj Quick Start Guide
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
-Getting started with the currently implemented editor surface.
+Getting started with the editor surface described by the conformance ledger.
 
 For the authoritative “what exists right now” ledger, see:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+
+If this repository is in a docs-only baseline (no `src/`/Cargo workspace), reconstruct the implementation first:
+
+- [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
 
 ## Installation
 

@@ -1,7 +1,9 @@
 # Conformance: Ex Commands and Testing
 
 Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-Command-line (Ex) command subset and headless/E2E surface currently implemented.
+Command-line (Ex) command subset and headless/E2E surface in the conformance ledger.
+
+In a docs-only baseline, treat this as the intended initial reconstruction target (update it after regenerating the implementation).
 
 ## Command-line (Ex) commands (subset)
 

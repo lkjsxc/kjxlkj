@@ -18,6 +18,7 @@ The `/docs/log/` subtree is intentionally treated as optional history. If detail
 | 2026-02-04 | Full reconstruction from docs (Iteration 33): Rebuilt entire 18-crate workspace from `/docs/spec/architecture/crates.md`. Created core types, text model, undo, editing primitives, mode handling, UI snapshots, state management, input conversion, terminal rendering, host lifecycle, services, and binary entry point. All crates compile; unit tests pass. Target: current surface per CONFORMANCE.md. |
 | 2026-02-04 | Project tooling baseline: introduced `rust-toolchain.toml`, GitHub Actions CI, and Docker support (`Dockerfile`, `.dockerignore`) as derived artifacts aligned with `/docs/policy/ROOT_LAYOUT.md` and `/docs/reference/CI.md`. |
 | 2026-02-04 | Tooling cleanup: removed unused `Dockerfile`, CI scripts, and the docs policy checker in order to keep the repository minimal; these artifacts remain part of the reconstruction target and should be regenerated when producing a shippable repository state. |
+| 2026-02-04 | Docs-only baseline preparation: removed the in-repo Rust implementation workspace (`src/`) and related derived build artifacts to enable a clean reconstruction run from `/docs/` alone. |
 
 ## Provenance note
 

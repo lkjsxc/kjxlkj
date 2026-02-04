@@ -1,17 +1,19 @@
 # Conformance
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
-Current implementation surface relative to the canonical spec.
+Conformance ledger for the implementation surface relative to the canonical spec.
 
 ## Purpose
 
 The canonical spec under `/docs/spec/` describes the target system.
 
-This document set records the currently implemented, user-visible surface so that:
+This document set records the last known implemented, user-visible surface so that:
 
 - spec language is not misread as “already implemented”
 - tests can map to explicit supported behavior
 - gaps are explicit and actionable
+
+In a docs-only baseline (no implementation artifacts in-repo), treat this ledger as the intended initial reconstruction target until it is updated by the regenerated implementation.
 
 ## Conformance documents (current surface)
 
@@ -24,8 +26,8 @@ This document set records the currently implemented, user-visible surface so tha
 ## How to use this (recommended)
 
 1. Read the target spec for the area you care about (under `/docs/spec/`).
-2. Check this conformance set to confirm what is implemented today.
-3. If there is drift:
+2. Check this conformance set to confirm what is implemented in the current reconstructed state (or what should be reconstructed first from a docs-only baseline).
+3. If there is drift between docs and behavior:
    - update docs and/or implementation, and
    - record user-visible gaps in `/docs/reference/LIMITATIONS.md`.
 

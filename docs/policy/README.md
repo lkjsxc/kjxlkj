@@ -40,10 +40,14 @@ spec documentation is canonical:
 
 - [docs/spec/README.md](/docs/spec/README.md)
 
-This repository includes both:
+Repository states (derived artifacts) (normative):
 
-- canonical specification under `/docs/` (normative)
-- a Rust implementation under `/src/` that is expected to track `/docs/`
+| State | What exists | Notes |
+|---|---|---|
+| Docs-only baseline | `docs/` + minimal root files | Allowed for reconstruction; derived artifacts may be deleted. |
+| Shippable reconstructed state | Rust workspace under `src/` + root artifacts | Must satisfy `/docs/reference/CI.md` when CI is present. |
+
+In all states, the canonical specification under `/docs/` remains normative and sufficient to reconstruct the shippable state.
 
 ## Concurrency baseline
 The canonical architecture is **Tokio async-first**:

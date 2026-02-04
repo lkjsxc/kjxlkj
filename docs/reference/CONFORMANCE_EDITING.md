@@ -1,7 +1,9 @@
 # Conformance: Editing Semantics
 
 Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-Editing-related semantics currently implemented.
+Editing-related semantics in the conformance ledger.
+
+In a docs-only baseline, treat this as the intended initial reconstruction target (update it after regenerating the implementation).
 
 ## Operators and motions
 

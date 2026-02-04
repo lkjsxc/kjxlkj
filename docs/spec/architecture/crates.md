@@ -4,7 +4,7 @@
 
 When implementation exists, it MUST include at least 10 crates under `src/crates/`.
 
-This repository includes an implementation workspace at `src/crates/` that is expected to follow this topology.
+In a shippable reconstructed state, the repository includes an implementation workspace at `src/crates/` that is expected to follow this topology.
 
 ## Workspace members
 

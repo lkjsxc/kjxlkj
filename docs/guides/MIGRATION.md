@@ -1,7 +1,7 @@
 # Neovim Migration Guide
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
-Guidance for Neovim users transitioning to the currently implemented kjxlkj surface.
+Guidance for Neovim users transitioning to the kjxlkj surface described by the conformance ledger.
 
 ## What is similar
 

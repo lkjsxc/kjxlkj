@@ -22,7 +22,11 @@ This repo is also optimized for **machine (LLM) parsing and editing**. Canonical
 ## Implementation
 
 - The canonical specification lives under `docs/` and is treated as normative.
-- The Rust implementation lives under `src/crates/` as a Cargo workspace.
+- The Rust implementation is a **derived artifact**. The repo may be in a docs-only baseline (no `src/`/Cargo workspace).
+- To (re)generate the implementation from docs, follow:
+  - `docs/todo/RECONSTRUCTION_PROMPT.md`
+
+When the Cargo workspace exists, the implementation lives under `src/crates/`.
 
 Toolchain:
 

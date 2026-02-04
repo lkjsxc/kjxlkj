@@ -9,6 +9,7 @@ Read and understand the project’s important documents as deeply as possible, f
 - Never output a summary.
 - From the beginning—and frequently thereafter—read the documents deeply and understand the specifications, policies, and expected behavior as thoroughly as possible.
 - Write source code of the highest possible quality that works reliably.
+- Prefer a clean rebuild: if derived artifacts exist in-repo, you MAY delete them before reconstruction (for example: `src/`, `Cargo.toml`, `Cargo.lock`, `target/`, `.github/`, `Dockerfile`) as long as `/docs/` remains intact.
 - Commit to git frequently.
 - Create a log directory in the documentation, recursively structure files, and write down improvement ideas, etc.
 - If a source file exceeds 200 lines, note it in the documentation.
