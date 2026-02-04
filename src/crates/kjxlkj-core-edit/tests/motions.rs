@@ -371,3 +371,117 @@ fn test_motion_determinism() {
     
     assert_eq!(pos1, pos2);
 }
+
+/// Test: Line count with multiple newlines.
+#[test]
+fn test_motion_multiline() {
+    let buffer = test_buffer("line1\nline2\nline3\nline4\nline5");
+    let cursor = cursor_at(0, 0);
+    
+    // Move down 3 times with count
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::Down, 3),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert_eq!(new_pos.line, 3);
+}
+
+/// Test: Move right with count.
+#[test]
+fn test_motion_right_count() {
+    let buffer = test_buffer("hello world");
+    let cursor = cursor_at(0, 0);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::Right, 3),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert_eq!(new_pos.col, 3);
+}
+
+/// Test: Move left with count.
+#[test]
+fn test_motion_left_count() {
+    let buffer = test_buffer("hello world");
+    let cursor = cursor_at(0, 5);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::Left, 3),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert_eq!(new_pos.col, 2);
+}
+
+/// Test: Motion to file start (gg).
+#[test]
+fn test_motion_gg_from_middle() {
+    let buffer = test_buffer("line1\nline2\nline3");
+    let cursor = cursor_at(2, 3);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::FileStart, 1),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert_eq!(new_pos.line, 0);
+}
+
+/// Test: Motion to file end (G).
+#[test]
+fn test_motion_G_from_start() {
+    let buffer = test_buffer("line1\nline2\nline3");
+    let cursor = cursor_at(0, 0);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::FileEnd, 1),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert_eq!(new_pos.line, buffer.line_count() - 1);
+}
+
+/// Test: First non-blank motion (^).
+#[test]
+fn test_motion_caret_indented() {
+    let buffer = test_buffer("   hello");
+    let cursor = cursor_at(0, 0);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::FirstNonBlank, 1),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    assert!(new_pos.col >= 3);
+}
+
+/// Test: Motion on line with only whitespace.
+#[test]
+fn test_motion_whitespace_only() {
+    let buffer = test_buffer("     ");
+    let cursor = cursor_at(0, 0);
+    
+    let new_pos = apply_motion(
+        &Motion::new(MotionIntent::FirstNonBlank, 1),
+        &cursor,
+        &buffer,
+        24,
+    );
+    
+    // Should not crash
+    assert!(new_pos.col <= 5);
+}

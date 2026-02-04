@@ -394,4 +394,106 @@ mod tests {
         assert_eq!(result.text, cloned.text);
         assert_eq!(result.linewise, cloned.linewise);
     }
+
+    #[test]
+    fn test_yank_linewise() {
+        let buffer = TextBuffer::from_text(BufferId::new(1), "line1\nline2\nline3");
+        let result = apply_yank(&buffer, Position::new(0, 0), Position::new(1, 0), true);
+        assert!(result.linewise);
+        assert!(result.text.contains("line1"));
+        assert!(result.text.contains("line2"));
+    }
+
+    #[test]
+    fn test_delete_single_char() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::Delete,
+            Position::new(0, 0),
+            Position::new(0, 0),
+            false,
+        );
+        assert_eq!(result.text, "h");
+        assert_eq!(buffer.to_string(), "ello");
+    }
+
+    #[test]
+    fn test_change_operator_deletes() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello world");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::Change,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(result.text, "hello");
+        assert_eq!(buffer.to_string(), " world");
+    }
+
+    #[test]
+    fn test_indent_multiple_lines() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "a\nb\nc");
+        apply_indent(&mut buffer, Position::new(0, 0), Position::new(2, 0), true);
+        let text = buffer.to_string();
+        assert!(text.starts_with("    a"));
+        assert!(text.contains("    b"));
+        assert!(text.contains("    c"));
+    }
+
+    #[test]
+    fn test_outdent_no_spaces() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        apply_indent(&mut buffer, Position::new(0, 0), Position::new(0, 0), false);
+        // Should not crash or change anything
+        assert_eq!(buffer.to_string(), "hello");
+    }
+
+    #[test]
+    fn test_outdent_partial_spaces() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "  hello");
+        apply_indent(&mut buffer, Position::new(0, 0), Position::new(0, 0), false);
+        // Should remove up to 4 spaces (only 2 exist)
+        assert_eq!(buffer.to_string(), "hello");
+    }
+
+    #[test]
+    fn test_case_ops_mixed() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "AbC123xYz");
+        let result = apply_operator(
+            &mut buffer,
+            Operator::ToggleCase,
+            Position::new(0, 0),
+            Position::new(0, 8),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "aBc123XyZ");
+    }
+
+    #[test]
+    fn test_uppercase_already_upper() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "HELLO");
+        apply_operator(
+            &mut buffer,
+            Operator::Uppercase,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "HELLO");
+    }
+
+    #[test]
+    fn test_lowercase_already_lower() {
+        let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello");
+        apply_operator(
+            &mut buffer,
+            Operator::Lowercase,
+            Position::new(0, 0),
+            Position::new(0, 4),
+            false,
+        );
+        assert_eq!(buffer.to_string(), "hello");
+    }
 }
