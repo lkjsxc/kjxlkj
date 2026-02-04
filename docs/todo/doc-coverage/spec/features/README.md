@@ -6,26 +6,26 @@ Back: [/docs/todo/doc-coverage/spec/README.md](/docs/todo/doc-coverage/spec/READ
 Covers documentation under `/docs/spec/features/`.
 
 ## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+- [ ] Read the document end-to-end.
+- [ ] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- [ ] If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- [ ] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/spec/features/README.md](/docs/spec/features/README.md)
+- [ ] [/docs/spec/features/README.md](/docs/spec/features/README.md)
 
 ### Subdirectories
-- [x] [/docs/spec/features/buffer/](/docs/todo/doc-coverage/spec/features/buffer/README.md)
-- [x] [/docs/spec/features/config/](/docs/todo/doc-coverage/spec/features/config/README.md)
-- [x] [/docs/spec/features/editing/](/docs/todo/doc-coverage/spec/features/editing/README.md)
-- [x] [/docs/spec/features/git/](/docs/todo/doc-coverage/spec/features/git/README.md)
-- [x] [/docs/spec/features/lsp/](/docs/todo/doc-coverage/spec/features/lsp/README.md)
-- [x] [/docs/spec/features/navigation/](/docs/todo/doc-coverage/spec/features/navigation/README.md)
-- [x] [/docs/spec/features/session/](/docs/todo/doc-coverage/spec/features/session/README.md)
-- [x] [/docs/spec/features/syntax/](/docs/todo/doc-coverage/spec/features/syntax/README.md)
-- [x] [/docs/spec/features/terminal/](/docs/todo/doc-coverage/spec/features/terminal/README.md)
-- [x] [/docs/spec/features/ui/](/docs/todo/doc-coverage/spec/features/ui/README.md)
-- [x] [/docs/spec/features/window/](/docs/todo/doc-coverage/spec/features/window/README.md)
+- [ ] [/docs/spec/features/buffer/](/docs/todo/doc-coverage/spec/features/buffer/README.md)
+- [ ] [/docs/spec/features/config/](/docs/todo/doc-coverage/spec/features/config/README.md)
+- [ ] [/docs/spec/features/editing/](/docs/todo/doc-coverage/spec/features/editing/README.md)
+- [ ] [/docs/spec/features/git/](/docs/todo/doc-coverage/spec/features/git/README.md)
+- [ ] [/docs/spec/features/lsp/](/docs/todo/doc-coverage/spec/features/lsp/README.md)
+- [ ] [/docs/spec/features/navigation/](/docs/todo/doc-coverage/spec/features/navigation/README.md)
+- [ ] [/docs/spec/features/session/](/docs/todo/doc-coverage/spec/features/session/README.md)
+- [ ] [/docs/spec/features/syntax/](/docs/todo/doc-coverage/spec/features/syntax/README.md)
+- [ ] [/docs/spec/features/terminal/](/docs/todo/doc-coverage/spec/features/terminal/README.md)
+- [ ] [/docs/spec/features/ui/](/docs/todo/doc-coverage/spec/features/ui/README.md)
+- [ ] [/docs/spec/features/window/](/docs/todo/doc-coverage/spec/features/window/README.md)

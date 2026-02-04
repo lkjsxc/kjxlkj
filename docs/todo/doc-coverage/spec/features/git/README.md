@@ -6,18 +6,18 @@ Back: [/docs/todo/doc-coverage/spec/features/README.md](/docs/todo/doc-coverage/
 Covers documentation under `/docs/spec/features/git/`.
 
 ## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+- [ ] Read the document end-to-end.
+- [ ] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- [ ] If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- [ ] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
-- [x] [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
-- [x] [/docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
-- [x] [/docs/spec/features/git/gitsigns.md](/docs/spec/features/git/gitsigns.md)
-- [x] [/docs/spec/features/git/merge-conflicts.md](/docs/spec/features/git/merge-conflicts.md)
-- [x] [/docs/spec/features/git/vimdiff.md](/docs/spec/features/git/vimdiff.md)
+- [ ] [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+- [ ] [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
+- [ ] [/docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
+- [ ] [/docs/spec/features/git/gitsigns.md](/docs/spec/features/git/gitsigns.md)
+- [ ] [/docs/spec/features/git/merge-conflicts.md](/docs/spec/features/git/merge-conflicts.md)
+- [ ] [/docs/spec/features/git/vimdiff.md](/docs/spec/features/git/vimdiff.md)

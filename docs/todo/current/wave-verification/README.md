@@ -10,10 +10,10 @@ Make correctness provable and regressions difficult by treating tests and policy
 
 ### A. Documentation policy compliance (always-on)
 
-- [x] All docs under `/docs/` contain no non-Mermaid fenced blocks.
-- [x] All docs are navigable from:
+- [ ] All docs under `/docs/` contain no non-Mermaid fenced blocks.
+- [ ] All docs are navigable from:
   - [/docs/README.md](/docs/README.md)
-- [x] All internal links resolve.
+- [ ] All internal links resolve.
 - [ ] The repo's verification gate is defined and reproducible locally (see [/docs/reference/CI.md](/docs/reference/CI.md)).
 
 ### B. Conformance and limitations are updated for each implemented slice

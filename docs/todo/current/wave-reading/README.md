@@ -17,8 +17,8 @@ Make implementation doc-driven by ensuring every document file is reachable, rea
 
 ### A. Achieve full document link coverage
 
-- [x] Ensure every documentation file is directly linked by the TODO system.
-- [x] Use the coverage checklist as the canonical traversal mechanism:
+- [ ] Ensure every documentation file is directly linked by the TODO system.
+- [ ] Use the coverage checklist as the canonical traversal mechanism:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
 ### B. Read everything that can affect behavior

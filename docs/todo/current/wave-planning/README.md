@@ -18,7 +18,7 @@ Convert “what the documents say” into a complete, implementation-ordered pla
 
 ### A. Plan completeness and ordering
 
-- [x] Every spec area has an implementation checklist under:
+- [ ] Every spec area has an implementation checklist under:
   - [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 - [ ] The plan is ordered so later items depend only on earlier items.
 - [ ] Each leaf item defines:

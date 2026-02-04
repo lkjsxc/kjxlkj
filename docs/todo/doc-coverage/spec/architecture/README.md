@@ -6,17 +6,17 @@ Back: [/docs/todo/doc-coverage/spec/README.md](/docs/todo/doc-coverage/spec/READ
 Covers documentation under `/docs/spec/architecture/`.
 
 ## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+- [ ] Read the document end-to-end.
+- [ ] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- [ ] If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- [ ] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-- [x] [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
-- [x] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
-- [x] [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
-- [x] [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [ ] [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- [ ] [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- [ ] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [ ] [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
+- [ ] [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
