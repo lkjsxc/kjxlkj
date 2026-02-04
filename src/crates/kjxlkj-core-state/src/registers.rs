@@ -85,4 +85,34 @@ mod tests {
         let unnamed = store.unnamed().unwrap();
         assert_eq!(unnamed.content, "test");
     }
+
+    #[test]
+    fn linewise_register() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Named('b'), "line\n".to_string(), true);
+        let reg = store.get(RegisterName::Named('b')).unwrap();
+        assert!(reg.linewise);
+    }
+
+    #[test]
+    fn overwrite_register() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Named('c'), "first".to_string(), false);
+        store.set(RegisterName::Named('c'), "second".to_string(), false);
+        let reg = store.get(RegisterName::Named('c')).unwrap();
+        assert_eq!(reg.content, "second");
+    }
+
+    #[test]
+    fn last_register_tracking() {
+        let mut store = RegisterStore::new();
+        store.set_last(RegisterName::Named('x'));
+        assert_eq!(store.last(), RegisterName::Named('x'));
+    }
+
+    #[test]
+    fn get_nonexistent_returns_none() {
+        let store = RegisterStore::new();
+        assert!(store.get(RegisterName::Named('z')).is_none());
+    }
 }

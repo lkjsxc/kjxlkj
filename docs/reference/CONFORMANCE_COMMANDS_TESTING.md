@@ -61,14 +61,18 @@ The following E2E test scenarios are covered:
 | word_motions | `w/b` word movement |
 | line_motions | `0/$` line start/end |
 | file_motions | `gg/G` file start/end |
+| typing_burst | 50 chars typed rapidly in insert mode |
+| scroll_burst | 20 lines scrolled rapidly with `j` |
+| mode_switch_burst | 10 rapid Normal/Insert mode switches |
+| input_ordering | Verify input sequence order preserved |
 
 ## Test counts (as of current version)
 
 | Suite | Count |
 |---|---|
-| Unit tests (workspace) | 118 |
-| E2E tests | 14 |
-| **Total** | **132** |
+| Unit tests (workspace) | 143 |
+| E2E tests | 18 |
+| **Total** | **161** |
 
 ## Related
 

@@ -121,4 +121,49 @@ mod tests {
         history.push(make_tx("c"));
         assert!(!history.can_redo());
     }
+
+    #[test]
+    fn undo_on_empty_returns_none() {
+        let mut history = UndoHistory::new();
+        assert!(history.undo().is_none());
+    }
+
+    #[test]
+    fn redo_on_empty_returns_none() {
+        let mut history = UndoHistory::new();
+        assert!(history.redo().is_none());
+    }
+
+    #[test]
+    fn max_size_enforcement() {
+        let mut history = UndoHistory::with_max_size(3);
+        history.push(make_tx("a"));
+        history.push(make_tx("b"));
+        history.push(make_tx("c"));
+        history.push(make_tx("d"));
+        // Should have at most 3 items, oldest removed
+        let mut count = 0;
+        while history.undo().is_some() { count += 1; }
+        assert_eq!(count, 3);
+    }
+
+    #[test]
+    fn clear_empties_both_stacks() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx("a"));
+        history.push(make_tx("b"));
+        history.undo();
+        history.clear();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn undo_cursor_position_returns_last() {
+        let mut history = UndoHistory::new();
+        history.push(make_tx("test"));
+        let pos = history.undo_cursor_position();
+        assert!(pos.is_some());
+        assert_eq!(pos.unwrap().line, 0);
+    }
 }

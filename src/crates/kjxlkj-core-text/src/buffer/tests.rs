@@ -80,3 +80,32 @@ fn buffer_version_increments() {
     let v2 = buf.version();
     assert!(v2 > v1);
 }
+
+#[test]
+fn buffer_line_out_of_bounds_returns_none() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "Line 1");
+    assert!(buf.line(0).is_some());
+    assert!(buf.line(100).is_none());
+}
+
+#[test]
+fn buffer_pos_to_char_out_of_bounds() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "ABC");
+    // Line out of bounds
+    assert!(buf.pos_to_char_idx(Position::new(100, 0)).is_none());
+}
+
+#[test]
+fn buffer_text_range_bounds() {
+    let buf = TextBuffer::from_str(BufferId::new(1), "ABC");
+    // Valid range
+    assert!(buf.text_range(Position::new(0, 0), Position::new(0, 2)).is_some());
+}
+
+#[test]
+fn buffer_delete_at_end_no_panic() {
+    let mut buf = TextBuffer::from_str(BufferId::new(1), "ABC");
+    // Delete at the end should not panic
+    buf.delete_range(Position::new(0, 3), Position::new(0, 3));
+    assert_eq!(buf.line(0), Some("ABC".to_string()));
+}
