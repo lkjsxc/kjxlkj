@@ -59,4 +59,20 @@ mod tests {
         fn assert_sync<T: Sync>() {}
         assert_sync::<LspService>();
     }
+
+    #[test]
+    fn lsp_service_type_size() {
+        assert_eq!(std::mem::size_of::<LspService>(), 0);
+    }
+
+    #[test]
+    fn lsp_service_type_alignment() {
+        assert_eq!(std::mem::align_of::<LspService>(), 1);
+    }
+
+    #[test]
+    fn lsp_service_type_name() {
+        let name = std::any::type_name::<LspService>();
+        assert!(name.contains("LspService"));
+    }
 }

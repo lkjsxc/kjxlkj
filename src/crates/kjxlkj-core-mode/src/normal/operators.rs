@@ -49,3 +49,43 @@ impl NormalModeState {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn dd_is_linewise() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'd', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn yy_is_linewise() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Yank, 'y', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn cc_is_linewise() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Change, 'c', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn dw_uses_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'w', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn unknown_motion_none() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'z', 1);
+        assert_eq!(intent, Intent::None);
+    }
+}

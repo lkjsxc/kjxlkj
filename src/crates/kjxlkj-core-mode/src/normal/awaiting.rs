@@ -73,3 +73,44 @@ impl NormalModeState {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn ctrl_r_is_redo() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('r'), Intent::Redo);
+    }
+
+    #[test]
+    fn ctrl_d_half_page_down() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('d'), Intent::Scroll(ScrollIntent::HalfPageDown));
+    }
+
+    #[test]
+    fn ctrl_u_half_page_up() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('u'), Intent::Scroll(ScrollIntent::HalfPageUp));
+    }
+
+    #[test]
+    fn ctrl_unknown_is_none() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('z'), Intent::None);
+    }
+
+    #[test]
+    fn ctrl_a_increment() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('a'), Intent::IncrementNumber);
+    }
+
+    #[test]
+    fn ctrl_x_decrement() {
+        let mut state = NormalModeState::new();
+        assert_eq!(state.handle_ctrl_key('x'), Intent::DecrementNumber);
+    }
+}

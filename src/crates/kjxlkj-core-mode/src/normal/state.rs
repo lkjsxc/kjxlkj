@@ -51,3 +51,44 @@ impl NormalModeState {
         self.count.unwrap_or(1)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn normal_mode_state_new() {
+        let state = NormalModeState::new();
+        assert!(state.count.is_none());
+    }
+
+    #[test]
+    fn normal_mode_state_default() {
+        let state = NormalModeState::default();
+        assert!(state.pending_operator.is_none());
+    }
+
+    #[test]
+    fn normal_mode_get_count_default() {
+        let state = NormalModeState::new();
+        assert_eq!(state.get_count(), 1);
+    }
+
+    #[test]
+    fn normal_mode_reset_clears() {
+        let mut state = NormalModeState::new();
+        state.count = Some(5);
+        state.reset();
+        assert!(state.count.is_none());
+    }
+
+    #[test]
+    fn awaiting_char_replace_debug() {
+        let _ = format!("{:?}", AwaitingChar::Replace);
+    }
+
+    #[test]
+    fn awaiting_char_find_forward() {
+        let _ = format!("{:?}", AwaitingChar::FindForward);
+    }
+}

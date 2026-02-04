@@ -58,4 +58,20 @@ mod tests {
         fn assert_sync<T: Sync>() {}
         assert_sync::<IndexService>();
     }
+
+    #[test]
+    fn index_service_type_size() {
+        assert_eq!(std::mem::size_of::<IndexService>(), 0);
+    }
+
+    #[test]
+    fn index_service_type_alignment() {
+        assert_eq!(std::mem::align_of::<IndexService>(), 1);
+    }
+
+    #[test]
+    fn index_service_type_name() {
+        let name = std::any::type_name::<IndexService>();
+        assert!(name.contains("IndexService"));
+    }
 }

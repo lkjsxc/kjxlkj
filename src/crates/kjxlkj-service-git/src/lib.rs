@@ -66,4 +66,16 @@ mod tests {
     fn git_service_type_alignment() {
         assert_eq!(std::mem::align_of::<GitService>(), 1);
     }
+
+    #[test]
+    fn git_service_type_name() {
+        let name = std::any::type_name::<GitService>();
+        assert!(name.contains("GitService"));
+    }
+
+    #[test]
+    fn git_service_create_drop() {
+        let svc = GitService::new();
+        drop(svc);
+    }
 }

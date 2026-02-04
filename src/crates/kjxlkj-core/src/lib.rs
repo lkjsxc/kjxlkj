@@ -120,4 +120,35 @@ mod tests {
         assert_eq!(pos.line, 10);
         assert_eq!(pos.col, 20);
     }
+
+    #[test]
+    fn facade_cursor_move() {
+        let mut cursor = Cursor::origin();
+        cursor.position = Position::new(5, 5);
+        assert_eq!(cursor.line(), 5);
+    }
+
+    #[test]
+    fn facade_mode_normal() {
+        let mode = Mode::Normal;
+        assert_eq!(mode, Mode::Normal);
+    }
+
+    #[test]
+    fn facade_mode_insert() {
+        let mode = Mode::Insert;
+        assert!(!matches!(mode, Mode::Normal));
+    }
+
+    #[test]
+    fn facade_mode_command() {
+        let mode = Mode::Command;
+        assert!(!matches!(mode, Mode::Insert));
+    }
+
+    #[test]
+    fn facade_selection_kind_char() {
+        let kind = SelectionKind::Char;
+        assert!(matches!(kind, SelectionKind::Char));
+    }
 }

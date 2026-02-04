@@ -86,4 +86,25 @@ mod tests {
         fn assert_sync<T: Sync>() {}
         assert_sync::<ServiceSupervisor>();
     }
+
+    #[test]
+    fn git_service_via_reexport() {
+        let _ = std::any::type_name::<git::GitService>();
+    }
+
+    #[test]
+    fn fs_service_via_reexport() {
+        let _ = std::any::type_name::<fs::FsService>();
+    }
+
+    #[test]
+    fn lsp_service_via_reexport() {
+        let _ = std::any::type_name::<lsp::LspService>();
+    }
+
+    #[test]
+    fn supervisor_default_new() {
+        let sup = ServiceSupervisor::default();
+        let _ = sup;
+    }
 }

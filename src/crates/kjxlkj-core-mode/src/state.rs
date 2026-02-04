@@ -41,3 +41,47 @@ impl ModeState {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn mode_state_new() {
+        let state = ModeState::new();
+        assert_eq!(state.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn mode_state_default() {
+        let state = ModeState::default();
+        assert!(state.command_line.is_empty());
+    }
+
+    #[test]
+    fn mode_state_reset_clears() {
+        let mut state = ModeState::new();
+        state.command_line = "hello".to_string();
+        state.reset();
+        assert!(state.command_line.is_empty());
+    }
+
+    #[test]
+    fn mode_state_set_mode() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::Insert);
+        assert_eq!(state.mode, Mode::Insert);
+    }
+
+    #[test]
+    fn mode_state_search_default() {
+        let state = ModeState::new();
+        assert!(state.search_pattern.is_empty());
+    }
+
+    #[test]
+    fn mode_state_recording_macro_none() {
+        let state = ModeState::new();
+        assert!(state.recording_macro.is_none());
+    }
+}

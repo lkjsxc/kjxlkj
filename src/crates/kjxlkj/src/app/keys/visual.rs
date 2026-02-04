@@ -85,3 +85,38 @@ fn char_to_motion(c: char) -> Option<MotionKind> {
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn char_h_left() {
+        assert!(matches!(char_to_motion('h'), Some(MotionKind::Left)));
+    }
+
+    #[test]
+    fn char_j_down() {
+        assert!(matches!(char_to_motion('j'), Some(MotionKind::Down)));
+    }
+
+    #[test]
+    fn char_k_up() {
+        assert!(matches!(char_to_motion('k'), Some(MotionKind::Up)));
+    }
+
+    #[test]
+    fn char_l_right() {
+        assert!(matches!(char_to_motion('l'), Some(MotionKind::Right)));
+    }
+
+    #[test]
+    fn char_w_word() {
+        assert!(matches!(char_to_motion('w'), Some(MotionKind::WordStart)));
+    }
+
+    #[test]
+    fn char_unknown_none() {
+        assert!(char_to_motion('z').is_none());
+    }
+}

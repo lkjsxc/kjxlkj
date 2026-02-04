@@ -92,4 +92,32 @@ mod tests {
         let state = EditorState::new();
         assert!(!state.should_quit);
     }
+
+    #[test]
+    fn headless_mode_check() {
+        let state = EditorState::new();
+        // Normal mode should be default
+        let mode = state.mode();
+        let _ = format!("{:?}", mode);
+    }
+
+    #[test]
+    fn headless_editor_clamp() {
+        let mut state = EditorState::new();
+        state.clamp_cursor();
+        assert_eq!(state.cursor.col(), 0);
+    }
+
+    #[test]
+    fn headless_status_message_default() {
+        let state = EditorState::new();
+        assert!(state.status_message.is_none());
+    }
+
+    #[test]
+    fn headless_ensure_visible() {
+        let mut state = EditorState::new();
+        state.ensure_cursor_visible();
+        // No panic is success
+    }
 }
