@@ -180,4 +180,20 @@ mod tests {
         apply_motion(&mut state, Motion::new(MotionKind::Left).with_count(3));
         assert!(state.cursor.col() <= 7);
     }
+
+    #[test]
+    fn apply_motion_right() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "hello");
+        apply_motion(&mut state, Motion::new(MotionKind::Right));
+        assert_eq!(state.cursor.col(), 1);
+    }
+
+    #[test]
+    fn apply_motion_file_start() {
+        let mut state = EditorState::new();
+        state.cursor.position.line = 5;
+        apply_motion(&mut state, Motion::new(MotionKind::FileStart));
+        assert_eq!(state.cursor.line(), 0);
+    }
 }

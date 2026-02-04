@@ -189,3 +189,9 @@ fn buffer_snapshot_total_lines() {
     let snap = BufferSnapshot::empty();
     assert_eq!(snap.total_lines, 1);
 }
+
+#[test]
+fn buffer_snapshot_modified_check() {
+    let snap = BufferSnapshot::empty();
+    assert!(!snap.modified);
+}
