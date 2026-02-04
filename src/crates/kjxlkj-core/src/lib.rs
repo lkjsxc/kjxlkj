@@ -57,6 +57,7 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use mode::ModeHandler;
 
     #[test]
     fn test_prelude_imports() {
@@ -128,5 +129,79 @@ mod tests {
     fn test_scroll_intent() {
         let scroll = ScrollIntent::LineDown;
         assert!(matches!(scroll, ScrollIntent::LineDown));
+    }
+
+    #[test]
+    fn test_key_code_export() {
+        let code = KeyCode::Escape;
+        assert!(matches!(code, KeyCode::Escape));
+    }
+
+    #[test]
+    fn test_key_modifiers_export() {
+        let mods = KeyModifiers::CTRL;
+        assert!(mods.ctrl);
+    }
+
+    #[test]
+    fn test_buffer_version_export() {
+        let v1 = BufferVersion::new(1);
+        let v2 = BufferVersion::new(2);
+        assert!(v2 > v1);
+    }
+
+    #[test]
+    fn test_cursor_export() {
+        let cursor = Cursor::new(5, 10);
+        assert_eq!(cursor.line(), 5);
+        assert_eq!(cursor.col(), 10);
+    }
+
+    #[test]
+    fn test_motion_intent_export() {
+        let motion = MotionIntent::Right;
+        assert!(matches!(motion, MotionIntent::Right));
+    }
+
+    #[test]
+    fn test_editor_event_export() {
+        let event = EditorEvent::Key(KeyEvent::char('x'));
+        assert!(matches!(event, EditorEvent::Key(_)));
+    }
+
+    #[test]
+    fn test_text_object_kind_export() {
+        let kind = edit::TextObjectKind::Inner;
+        assert!(matches!(kind, edit::TextObjectKind::Inner));
+    }
+
+    #[test]
+    fn test_operator_export() {
+        let op = edit::Operator::Delete;
+        assert!(matches!(op, edit::Operator::Delete));
+    }
+
+    #[test]
+    fn test_normal_mode_export() {
+        let mode = mode::NormalMode::new();
+        assert_eq!(mode.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_insert_mode_export() {
+        let mode = mode::InsertMode::new();
+        assert_eq!(mode.mode(), Mode::Insert);
+    }
+
+    #[test]
+    fn test_command_mode_export() {
+        let mode = mode::CommandMode::new();
+        assert_eq!(mode.mode(), Mode::Command);
+    }
+
+    #[test]
+    fn test_replace_mode_export() {
+        let mode = mode::ReplaceMode::new();
+        assert_eq!(mode.mode(), Mode::Replace);
     }
 }
