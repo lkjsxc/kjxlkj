@@ -3,6 +3,8 @@
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 Running kjxlkj using Docker.
 
+Container-based build/run support is required by policy (see `/docs/policy/WORKFLOW.md`).
+
 ## Build an image
 
 - Build: `docker build -t kjxlkj:dev .`

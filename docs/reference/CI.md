@@ -3,6 +3,8 @@
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 Continuous integration for this repository.
 
+CI is required by policy (see `/docs/policy/WORKFLOW.md`).
+
 ## Location
 
 CI is defined in:
@@ -24,4 +26,3 @@ Checks:
 ## Local reproduction
 
 The CI checks are intended to be reproducible locally by running the same commands listed above from the repo root.
-
