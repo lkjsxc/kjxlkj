@@ -83,6 +83,7 @@ impl EditorState {
     /// Load content into the buffer.
     pub fn load_content(&mut self, content: &str) {
         self.buffer.replace_all(content);
+        self.buffer.mark_saved(); // Loading is not a modification
         self.cursor = Cursor::new(0, 0);
         self.undo_history.clear();
     }
