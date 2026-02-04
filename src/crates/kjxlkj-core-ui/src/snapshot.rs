@@ -192,4 +192,24 @@ mod tests {
         status.command_line = Some("w".to_string());
         assert!(status.command_line.is_some());
     }
+
+    #[test]
+    fn buffer_snapshot_name() {
+        let snap = BufferSnapshot::empty();
+        assert_eq!(snap.name, "[No Name]");
+    }
+
+    #[test]
+    fn buffer_snapshot_lines() {
+        let snap = BufferSnapshot::empty();
+        assert_eq!(snap.lines.len(), 1);
+        assert!(snap.lines[0].is_empty());
+    }
+
+    #[test]
+    fn snapshot_viewport_access() {
+        let snap = EditorSnapshot::empty(Viewport::new(120, 40));
+        assert_eq!(snap.viewport.width, 120);
+        assert_eq!(snap.viewport.height, 40);
+    }
 }

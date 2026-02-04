@@ -169,4 +169,18 @@ mod tests {
         assert!(debug.contains("anchor"));
         assert!(debug.contains("cursor"));
     }
+
+    #[test]
+    fn selection_copy_trait() {
+        let sel = Selection::char_at(Position::new(1, 1));
+        let copied: Selection = sel;
+        assert_eq!(sel, copied);
+    }
+
+    #[test]
+    fn selection_kind_equality() {
+        assert_eq!(SelectionKind::Char, SelectionKind::Char);
+        assert_ne!(SelectionKind::Char, SelectionKind::Line);
+        assert_ne!(SelectionKind::Line, SelectionKind::Block);
+    }
 }

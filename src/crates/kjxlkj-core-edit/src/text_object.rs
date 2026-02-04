@@ -150,4 +150,23 @@ mod tests {
         assert!(to.around);
         assert_eq!(to.kind, TextObjectKind::Backticks);
     }
+
+    #[test]
+    fn text_object_sentence() {
+        let to = TextObject::inner(TextObjectKind::Sentence);
+        assert_eq!(to.kind, TextObjectKind::Sentence);
+    }
+
+    #[test]
+    fn text_object_paragraph() {
+        let to = TextObject::around(TextObjectKind::Paragraph);
+        assert!(to.around);
+        assert_eq!(to.kind, TextObjectKind::Paragraph);
+    }
+
+    #[test]
+    fn text_object_count_default() {
+        let to = TextObject::inner(TextObjectKind::Word);
+        assert_eq!(to.count, 1);
+    }
 }

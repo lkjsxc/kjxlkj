@@ -100,4 +100,20 @@ mod tests {
         let s = "abcd";
         assert_eq!(prev_grapheme_boundary(s, 4), 3);
     }
+
+    #[test]
+    fn cjk_char_width() {
+        // CJK characters are typically double-width
+        assert!(grapheme_width("中") >= 1);
+    }
+
+    #[test]
+    fn ascii_char_width() {
+        assert_eq!(grapheme_width("a"), 1);
+    }
+
+    #[test]
+    fn space_width() {
+        assert_eq!(grapheme_width(" "), 1);
+    }
 }

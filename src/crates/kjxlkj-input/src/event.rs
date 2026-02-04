@@ -124,4 +124,23 @@ mod tests {
         let debug_str = format!("{:?}", event);
         assert!(debug_str.contains("FocusGained"));
     }
+
+    #[test]
+    fn input_event_resize_not_key() {
+        let event = InputEvent::resize(80, 24);
+        assert!(!matches!(event, InputEvent::Key(_)));
+    }
+
+    #[test]
+    fn input_event_key_not_resize() {
+        let event = InputEvent::key(Key::char('a'));
+        assert!(!matches!(event, InputEvent::Resize(_, _)));
+    }
+
+    #[test]
+    fn input_event_focus_variants() {
+        let gained = InputEvent::FocusGained;
+        let lost = InputEvent::FocusLost;
+        assert_ne!(gained, lost);
+    }
 }

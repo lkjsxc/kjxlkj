@@ -149,4 +149,32 @@ mod tests {
             Some(RegisterName::Numbered(9))
         );
     }
+
+    #[test]
+    fn register_name_clone() {
+        let name = RegisterName::Named('a');
+        let cloned = name.clone();
+        assert_eq!(name, cloned);
+    }
+
+    #[test]
+    fn register_clone() {
+        let reg = Register::with_content("test".to_string(), true);
+        let cloned = reg.clone();
+        assert_eq!(reg.content, cloned.content);
+        assert_eq!(reg.linewise, cloned.linewise);
+    }
+
+    #[test]
+    fn register_named_uppercase() {
+        // Named('A') gets lowercased on from_char so it becomes Named('a')
+        let name = RegisterName::from_char('A');
+        assert_eq!(name, Some(RegisterName::Named('a')));
+    }
+
+    #[test]
+    fn register_named_lowercase() {
+        let name = RegisterName::from_char('z');
+        assert_eq!(name, Some(RegisterName::Named('z')));
+    }
 }

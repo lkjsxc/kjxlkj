@@ -142,4 +142,18 @@ mod tests {
         let op2 = Operator::line(OperatorKind::Delete, 1);
         assert_eq!(op1, op2);
     }
+
+    #[test]
+    fn operator_inequality() {
+        let op1 = Operator::line(OperatorKind::Delete, 1);
+        let op2 = Operator::line(OperatorKind::Yank, 1);
+        assert_ne!(op1, op2);
+    }
+
+    #[test]
+    fn operator_kind_default_eq() {
+        let k1 = OperatorKind::Delete;
+        let k2 = OperatorKind::Delete;
+        assert_eq!(k1, k2);
+    }
 }

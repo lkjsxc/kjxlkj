@@ -89,3 +89,51 @@ fn motion_clone() {
     let cloned = m.clone();
     assert_eq!(m, cloned);
 }
+
+#[test]
+fn motion_sentence_backward() {
+    let m = Motion::new(MotionKind::SentenceBackward);
+    assert_eq!(m.kind, MotionKind::SentenceBackward);
+}
+
+#[test]
+fn motion_paragraph_backward() {
+    let m = Motion::new(MotionKind::ParagraphBackward);
+    assert_eq!(m.kind, MotionKind::ParagraphBackward);
+}
+
+#[test]
+fn motion_till_char_backward() {
+    let m = Motion::new(MotionKind::TillCharBackward('z'));
+    assert_eq!(m.kind, MotionKind::TillCharBackward('z'));
+}
+
+#[test]
+fn motion_repeat_find() {
+    let m = Motion::new(MotionKind::RepeatFind);
+    assert_eq!(m.kind, MotionKind::RepeatFind);
+}
+
+#[test]
+fn motion_repeat_find_reverse() {
+    let m = Motion::new(MotionKind::RepeatFindReverse);
+    assert_eq!(m.kind, MotionKind::RepeatFindReverse);
+}
+
+#[test]
+fn motion_screen_top() {
+    let m = Motion::new(MotionKind::ScreenTop);
+    assert_eq!(m.kind, MotionKind::ScreenTop);
+}
+
+#[test]
+fn motion_screen_middle() {
+    let m = Motion::new(MotionKind::ScreenMiddle);
+    assert_eq!(m.kind, MotionKind::ScreenMiddle);
+}
+
+#[test]
+fn motion_screen_bottom() {
+    let m = Motion::new(MotionKind::ScreenBottom);
+    assert_eq!(m.kind, MotionKind::ScreenBottom);
+}

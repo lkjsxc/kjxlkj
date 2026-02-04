@@ -98,3 +98,35 @@ fn edit_clone() {
     let cloned = edit.clone();
     assert_eq!(edit, cloned);
 }
+
+#[test]
+fn transaction_clone() {
+    let mut tx = Transaction::new(Position::new(1, 1));
+    tx.push(Edit::insert(Position::new(1, 1), "x".to_string()));
+    let cloned = tx.clone();
+    assert_eq!(tx.cursor_before, cloned.cursor_before);
+    assert_eq!(tx.edits.len(), cloned.edits.len());
+}
+
+#[test]
+fn edit_debug_format() {
+    let edit = Edit::insert(Position::new(0, 0), "abc".to_string());
+    let debug = format!("{:?}", edit);
+    assert!(debug.contains("Insert"));
+}
+
+#[test]
+fn transaction_multiple_edits() {
+    let mut tx = Transaction::new(Position::new(0, 0));
+    tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
+    tx.push(Edit::insert(Position::new(0, 1), "b".to_string()));
+    tx.push(Edit::insert(Position::new(0, 2), "c".to_string()));
+    assert_eq!(tx.edits.len(), 3);
+}
+
+#[test]
+fn edit_kind_equality() {
+    assert_eq!(EditKind::Insert, EditKind::Insert);
+    assert_eq!(EditKind::Delete, EditKind::Delete);
+    assert_ne!(EditKind::Insert, EditKind::Delete);
+}

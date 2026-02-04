@@ -177,3 +177,38 @@ fn mode_state_clone() {
     assert_eq!(cloned.mode, Mode::Insert);
     assert_eq!(cloned.command_line, "test");
 }
+
+#[test]
+fn visual_line_mode_transition() {
+    let mut state = ModeState::new();
+    state.set_mode(Mode::VisualLine);
+    assert_eq!(state.mode, Mode::VisualLine);
+}
+
+#[test]
+fn visual_block_mode_transition() {
+    let mut state = ModeState::new();
+    state.set_mode(Mode::VisualBlock);
+    assert_eq!(state.mode, Mode::VisualBlock);
+}
+
+#[test]
+fn command_mode_transition() {
+    let mut state = ModeState::new();
+    state.set_mode(Mode::Command);
+    assert_eq!(state.mode, Mode::Command);
+}
+
+#[test]
+fn replace_mode_transition() {
+    let mut state = ModeState::new();
+    state.set_mode(Mode::Replace);
+    assert_eq!(state.mode, Mode::Replace);
+}
+
+#[test]
+fn normal_state_access() {
+    let state = ModeState::new();
+    let count = state.normal.get_count();
+    assert_eq!(count, 1);
+}

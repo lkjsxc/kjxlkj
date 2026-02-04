@@ -174,4 +174,31 @@ mod tests {
     fn test_multiple_spaces() {
         assert_eq!(next_word_boundary("hello   world", 0), 8);
     }
+
+    #[test]
+    fn test_all_whitespace() {
+        assert_eq!(next_word_boundary("     ", 0), 5);
+    }
+
+    #[test]
+    fn test_mixed_chars() {
+        let line = "abc123def";
+        assert_eq!(find_word_end(line, 0), 8);
+    }
+
+    #[test]
+    fn test_find_word_start_single_char() {
+        assert_eq!(find_word_start("a", 0), 0);
+        assert_eq!(find_word_start("a", 1), 0);
+    }
+
+    #[test]
+    fn test_next_word_single_word() {
+        assert_eq!(next_word_boundary("word", 0), 4);
+    }
+
+    #[test]
+    fn test_prev_word_single_word() {
+        assert_eq!(prev_word_boundary("word", 4), 0);
+    }
 }

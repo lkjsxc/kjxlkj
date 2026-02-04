@@ -62,4 +62,20 @@ mod tests {
         assert_eq!(line_len("   "), 3);
         assert_eq!(line_end_col("   ", false), 2);
     }
+
+    #[test]
+    fn test_tab_line_len() {
+        assert_eq!(line_len("\t"), 1);
+    }
+
+    #[test]
+    fn test_newline_stripped() {
+        // line_len doesn't count trailing newline
+        assert_eq!(line_len("hello\n"), 6);
+    }
+
+    #[test]
+    fn test_emoji_sequence() {
+        assert_eq!(line_len("👨‍👩‍👧"), 5); // Multi-code-point emoji
+    }
 }

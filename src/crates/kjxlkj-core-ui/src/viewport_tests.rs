@@ -125,3 +125,39 @@ fn viewport_clone() {
     let cloned = vp.clone();
     assert_eq!(vp, cloned);
 }
+
+#[test]
+fn viewport_copy() {
+    let vp = Viewport::new(80, 24);
+    let copied: Viewport = vp;
+    assert_eq!(vp.width, copied.width);
+}
+
+#[test]
+fn viewport_debug_format() {
+    let vp = Viewport::new(80, 24);
+    let debug = format!("{:?}", vp);
+    assert!(debug.contains("width"));
+    assert!(debug.contains("height"));
+}
+
+#[test]
+fn viewport_visible_lines_matches_height() {
+    let vp = Viewport::new(80, 30);
+    assert_eq!(vp.visible_lines(), 30);
+}
+
+#[test]
+fn viewport_inequality() {
+    let vp1 = Viewport::new(80, 24);
+    let vp2 = Viewport::new(120, 40);
+    assert_ne!(vp1, vp2);
+}
+
+#[test]
+fn viewport_first_line_scroll() {
+    let mut vp = Viewport::new(80, 24);
+    vp.first_line = 50;
+    assert_eq!(vp.first_line, 50);
+    assert_eq!(vp.last_line(), 73);
+}
