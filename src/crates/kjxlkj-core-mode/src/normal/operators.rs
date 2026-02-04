@@ -165,4 +165,25 @@ mod tests {
         let intent = state.handle_operator_motion(OperatorKind::Delete, 'a', 1);
         assert_eq!(intent, Intent::None);
     }
+
+    #[test]
+    fn change_with_l_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Change, 'l', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn delete_with_h_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'h', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn yank_with_e_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Yank, 'e', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
 }

@@ -161,4 +161,33 @@ mod tests {
     fn awaiting_char_macro_play() {
         let _ = format!("{:?}", AwaitingChar::MacroPlay);
     }
+
+    #[test]
+    fn awaiting_char_clone() {
+        let aw = AwaitingChar::Replace;
+        let aw2 = aw;
+        let _ = format!("{:?}", aw2);
+    }
+
+    #[test]
+    fn normal_mode_debug() {
+        let state = NormalModeState::new();
+        let debug = format!("{:?}", state);
+        assert!(debug.contains("NormalModeState"));
+    }
+
+    #[test]
+    fn normal_mode_state_clone() {
+        let state = NormalModeState::new();
+        let state2 = state.clone();
+        assert!(state2.count.is_none());
+    }
+
+    #[test]
+    fn normal_mode_reset_resets_op() {
+        let mut state = NormalModeState::new();
+        state.pending_operator = Some(kjxlkj_core_edit::OperatorKind::Delete);
+        state.reset();
+        assert!(state.pending_operator.is_none());
+    }
 }

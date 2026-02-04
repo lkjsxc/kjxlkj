@@ -153,4 +153,39 @@ mod tests {
         let debug_str = format!("{:?}", state);
         assert!(debug_str.contains("ModeState"));
     }
+
+    #[test]
+    fn mode_state_set_mode_replace() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::Replace);
+        assert_eq!(state.mode, Mode::Replace);
+    }
+
+    #[test]
+    fn mode_state_set_visual_line() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::VisualLine);
+        assert_eq!(state.mode, Mode::VisualLine);
+    }
+
+    #[test]
+    fn mode_state_set_visual_block() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::VisualBlock);
+        assert_eq!(state.mode, Mode::VisualBlock);
+    }
+
+    #[test]
+    fn mode_state_search_pattern_set() {
+        let mut state = ModeState::new();
+        state.search_pattern = "hello".to_string();
+        assert!(state.search_pattern.contains("hello"));
+    }
+
+    #[test]
+    fn mode_state_set_search_forward() {
+        let mut state = ModeState::new();
+        state.search_forward = true;
+        assert!(state.search_forward);
+    }
 }

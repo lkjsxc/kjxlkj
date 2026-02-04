@@ -151,4 +151,46 @@ mod tests {
         let intent = state.handle_ctrl_key('i');
         assert!(matches!(intent, Intent::JumpList { forward: true }));
     }
+
+    #[test]
+    fn ctrl_v_visual_block() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_ctrl_key('v');
+        assert!(matches!(intent, Intent::StartVisual(SelectionKind::Block)));
+    }
+
+    #[test]
+    fn awaiting_replace() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_awaiting_char(AwaitingChar::Replace, 'x');
+        assert_eq!(intent, Intent::ReplaceChar('x'));
+    }
+
+    #[test]
+    fn awaiting_mark() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_awaiting_char(AwaitingChar::Mark, 'a');
+        assert_eq!(intent, Intent::SetMark('a'));
+    }
+
+    #[test]
+    fn awaiting_jump_mark() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_awaiting_char(AwaitingChar::JumpMark, 'a');
+        assert!(matches!(intent, Intent::JumpToMark { mark: 'a', line_start: false }));
+    }
+
+    #[test]
+    fn awaiting_macro_record() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_awaiting_char(AwaitingChar::MacroRecord, 'q');
+        assert_eq!(intent, Intent::StartMacro('q'));
+    }
+
+    #[test]
+    fn awaiting_macro_play() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_awaiting_char(AwaitingChar::MacroPlay, 'q');
+        assert_eq!(intent, Intent::PlayMacro('q'));
+    }
 }
