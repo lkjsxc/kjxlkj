@@ -1,5 +1,5 @@
 //! Rendering pipeline (snapshot → terminal frame).
 
-mod renderer;
+mod render;
 
-pub use renderer::Renderer;
+pub use render::Renderer;
