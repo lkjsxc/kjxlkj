@@ -14,5 +14,5 @@ Implement keyboard-layout related behaviors and constraints (where specified).
 ## Checklist
 
 - [x] Define how key decoding handles non-US layouts (or record limitations).
-- [ ] Add tests covering layout-dependent key decoding behavior.
+- [x] Add tests covering layout-dependent key decoding behavior.
 
