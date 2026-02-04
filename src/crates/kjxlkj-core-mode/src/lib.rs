@@ -5,6 +5,8 @@ mod normal;
 mod state;
 
 #[cfg(test)]
+mod intent_tests;
+#[cfg(test)]
 mod state_tests;
 
 pub use intent::Intent;

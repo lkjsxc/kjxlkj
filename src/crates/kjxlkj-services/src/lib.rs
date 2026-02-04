@@ -61,4 +61,17 @@ mod tests {
         // Verify terminal service is re-exported
         let _ = std::any::type_name::<terminal::TerminalService>();
     }
+
+    #[test]
+    fn index_service_reexport() {
+        // Verify index service is re-exported
+        let _ = std::any::type_name::<index::IndexService>();
+    }
+
+    #[test]
+    fn supervisor_multiple_instances() {
+        let sup1 = ServiceSupervisor::new();
+        let sup2 = ServiceSupervisor::new();
+        let _ = (&sup1, &sup2);
+    }
 }

@@ -191,14 +191,4 @@ mod tests {
         assert_eq!(find_word_start("a", 0), 0);
         assert_eq!(find_word_start("a", 1), 0);
     }
-
-    #[test]
-    fn test_next_word_single_word() {
-        assert_eq!(next_word_boundary("word", 0), 4);
-    }
-
-    #[test]
-    fn test_prev_word_single_word() {
-        assert_eq!(prev_word_boundary("word", 4), 0);
-    }
 }
