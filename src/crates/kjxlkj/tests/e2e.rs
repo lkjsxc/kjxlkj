@@ -99,3 +99,73 @@ fn test_headless_command_mode() {
     let result = run_headless(script);
     assert!(result.is_ok(), "Command mode test failed: {:?}", result.err());
 }
+
+#[test]
+fn test_headless_visual_mode() {
+    // Test entering visual mode
+    let script = r#"[
+        {"kind": "key", "code": "v", "ctrl": false},
+        {"kind": "assert_mode", "mode": "visual"},
+        {"kind": "key", "code": "Escape", "ctrl": false},
+        {"kind": "assert_mode", "mode": "normal"}
+    ]"#;
+
+    let result = run_headless(script);
+    assert!(result.is_ok(), "Visual mode test failed: {:?}", result.err());
+}
+
+#[test]
+fn test_headless_replace_mode() {
+    // Test entering replace mode with R
+    let script = r#"[
+        {"kind": "key", "code": "R", "shift": true},
+        {"kind": "assert_mode", "mode": "replace"},
+        {"kind": "key", "code": "Escape", "ctrl": false},
+        {"kind": "assert_mode", "mode": "normal"}
+    ]"#;
+
+    let result = run_headless(script);
+    assert!(result.is_ok(), "Replace mode test failed: {:?}", result.err());
+}
+
+#[test]
+fn test_headless_append_mode() {
+    // Test entering insert mode with a (append)
+    let script = r#"[
+        {"kind": "key", "code": "a", "ctrl": false},
+        {"kind": "assert_mode", "mode": "insert"},
+        {"kind": "key", "code": "Escape", "ctrl": false},
+        {"kind": "assert_mode", "mode": "normal"}
+    ]"#;
+
+    let result = run_headless(script);
+    assert!(result.is_ok(), "Append mode test failed: {:?}", result.err());
+}
+
+#[test]
+fn test_headless_open_line_below() {
+    // Test entering insert mode with o (open line below)
+    let script = r#"[
+        {"kind": "key", "code": "o", "ctrl": false},
+        {"kind": "assert_mode", "mode": "insert"},
+        {"kind": "key", "code": "Escape", "ctrl": false},
+        {"kind": "assert_mode", "mode": "normal"}
+    ]"#;
+
+    let result = run_headless(script);
+    assert!(result.is_ok(), "Open line below test failed: {:?}", result.err());
+}
+
+#[test]
+fn test_headless_open_line_above() {
+    // Test entering insert mode with O (open line above)
+    let script = r#"[
+        {"kind": "key", "code": "O", "shift": true},
+        {"kind": "assert_mode", "mode": "insert"},
+        {"kind": "key", "code": "Escape", "ctrl": false},
+        {"kind": "assert_mode", "mode": "normal"}
+    ]"#;
+
+    let result = run_headless(script);
+    assert!(result.is_ok(), "Open line above test failed: {:?}", result.err());
+}

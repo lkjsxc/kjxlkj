@@ -9,7 +9,8 @@ pub fn process_key(state: &mut EditorState, key: Key) {
         Mode::Normal => process_normal_key(state, key),
         Mode::Insert => process_insert_key(state, key),
         Mode::Command => process_command_key(state, key),
-        _ => {}
+        Mode::Visual | Mode::VisualLine | Mode::VisualBlock => process_visual_key(state, key),
+        Mode::Replace => process_replace_key(state, key),
     }
     state.clamp_cursor();
 }
@@ -72,6 +73,52 @@ fn process_command_key(state: &mut EditorState, key: Key) {
     }
 }
 
+fn process_visual_key(state: &mut EditorState, key: Key) {
+    match key.code {
+        KeyCode::Escape => {
+            state.selection = None;
+            state.set_mode(Mode::Normal);
+        }
+        KeyCode::Char(c) if !key.mods.ctrl => {
+            // Basic motions
+            match c {
+                'h' => { if state.cursor.col() > 0 { state.cursor.position.col -= 1; } }
+                'l' => {
+                    let max = state.buffer.line_len(state.cursor.line()).saturating_sub(1);
+                    if state.cursor.col() < max { state.cursor.position.col += 1; }
+                }
+                'j' => {
+                    if state.cursor.line() + 1 < state.buffer.line_count() {
+                        state.cursor.position.line += 1;
+                    }
+                }
+                'k' => { if state.cursor.line() > 0 { state.cursor.position.line -= 1; } }
+                _ => {}
+            }
+            // Update selection cursor position
+            if let Some(ref mut sel) = state.selection {
+                sel.cursor = state.cursor.position;
+            }
+        }
+        _ => {}
+    }
+}
+
+fn process_replace_key(state: &mut EditorState, key: Key) {
+    match key.code {
+        KeyCode::Escape => state.set_mode(Mode::Normal),
+        KeyCode::Char(c) if !key.mods.ctrl => {
+            // Replace character under cursor
+            let pos = state.cursor.position;
+            let next = Position::new(pos.line, pos.col + 1);
+            state.buffer.delete_range(pos, next);
+            state.buffer.insert(pos, &c.to_string());
+            state.cursor.position.col += 1;
+        }
+        _ => {}
+    }
+}
+
 fn apply_intent(state: &mut EditorState, intent: Intent) {
     match intent {
         Intent::None => {}
@@ -80,6 +127,27 @@ fn apply_intent(state: &mut EditorState, intent: Intent) {
             enter_insert(state, at_line_end, after_cursor);
         }
         Intent::EnterCommand => state.set_mode(Mode::Command),
+        Intent::EnterReplace => state.set_mode(Mode::Replace),
+        Intent::StartVisual(kind) => {
+            state.set_mode(Mode::Visual);
+            let pos = state.cursor.position;
+            state.selection = Some(kjxlkj_core::Selection::new(pos, pos, kind));
+        }
+        Intent::OpenLineBelow => {
+            let line = state.cursor.line();
+            let len = state.buffer.line_len(line);
+            let pos = Position::new(line, len);
+            state.buffer.insert(pos, "\n");
+            state.cursor.position = Position::new(line + 1, 0);
+            state.set_mode(Mode::Insert);
+        }
+        Intent::OpenLineAbove => {
+            let line = state.cursor.line();
+            let pos = Position::new(line, 0);
+            state.buffer.insert(pos, "\n");
+            state.cursor.position = Position::new(line, 0);
+            state.set_mode(Mode::Insert);
+        }
         Intent::Quit { .. } => state.should_quit = true,
         _ => {}
     }
