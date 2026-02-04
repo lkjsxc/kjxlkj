@@ -1,0 +1,16 @@
+[package]
+name = "kjxlkj-services"
+version = "0.1.0"
+edition = "2021"
+description = "Service supervisor for kjxlkj editor"
+license = "MIT"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { version = "1", features = ["sync", "rt", "macros", "time"] }
+anyhow = "1"
+thiserror = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "test-util"] }

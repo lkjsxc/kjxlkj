@@ -1,0 +1,961 @@
+//! Editor state implementation.
+
+use crate::Registers;
+use kjxlkj_core_edit::{apply_motion, Motion};
+use kjxlkj_core_mode::{ModeHandler, ModeResult};
+use kjxlkj_core_text::TextBuffer;
+use kjxlkj_core_types::{
+    BufferId, Cursor, EditorEvent, Intent, KeyEvent, Mode, MotionIntent, Position, Register,
+    ScrollIntent, Selection, SelectionKind,
+};
+use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, StatusLine, Viewport};
+use kjxlkj_core_undo::{Edit, Transaction, UndoHistory};
+use std::collections::HashMap;
+
+/// Complete editor state.
+pub struct EditorState {
+    /// Current buffer.
+    buffer: TextBuffer,
+    /// Next buffer ID.
+    next_buffer_id: u64,
+    /// Cursor position.
+    cursor: Cursor,
+    /// Current mode.
+    mode: Mode,
+    /// Current selection (visual mode).
+    selection: Option<Selection>,
+    /// Viewport.
+    viewport: Viewport,
+    /// Register storage.
+    registers: Registers,
+    /// Undo history.
+    undo_history: UndoHistory,
+    /// Marks.
+    marks: HashMap<char, Position>,
+    /// Status message.
+    status_message: Option<(String, bool)>,
+    /// Terminal dimensions.
+    width: u16,
+    height: u16,
+    /// Whether editor should quit.
+    should_quit: bool,
+    /// Current transaction (for grouping edits).
+    current_transaction: Option<Transaction>,
+    /// Last change for dot repeat.
+    last_change: Option<Vec<KeyEvent>>,
+    /// Recording change.
+    recording_change: Vec<KeyEvent>,
+    /// Macro recording.
+    recording_macro: Option<char>,
+    /// Recorded macros.
+    macros: HashMap<char, Vec<KeyEvent>>,
+    /// Command line content.
+    command_line: Option<String>,
+}
+
+impl EditorState {
+    /// Create a new editor state.
+    pub fn new() -> Self {
+        let buffer = TextBuffer::new(BufferId::new(1));
+        Self {
+            buffer,
+            next_buffer_id: 2,
+            cursor: Cursor::new(0, 0),
+            mode: Mode::Normal,
+            selection: None,
+            viewport: Viewport::new(0, 24, 0, 80),
+            registers: Registers::new(),
+            undo_history: UndoHistory::new(),
+            marks: HashMap::new(),
+            status_message: None,
+            width: 80,
+            height: 24,
+            should_quit: false,
+            current_transaction: None,
+            last_change: None,
+            recording_change: Vec::new(),
+            recording_macro: None,
+            macros: HashMap::new(),
+            command_line: None,
+        }
+    }
+
+    /// Load content into the buffer.
+    pub fn load_content(&mut self, content: &str) {
+        self.buffer.replace_all(content);
+        self.cursor = Cursor::new(0, 0);
+        self.undo_history.clear();
+    }
+
+    /// Load a file.
+    pub fn load_file(&mut self, path: std::path::PathBuf, content: &str) {
+        self.buffer = TextBuffer::from_file(
+            BufferId::new(self.next_buffer_id),
+            path,
+            content,
+        );
+        self.next_buffer_id += 1;
+        self.cursor = Cursor::new(0, 0);
+        self.undo_history.clear();
+    }
+
+    /// Get the buffer content.
+    pub fn content(&self) -> String {
+        self.buffer.to_string()
+    }
+
+    /// Get the current mode.
+    pub fn mode(&self) -> Mode {
+        self.mode
+    }
+
+    /// Get the cursor position.
+    pub fn cursor(&self) -> &Cursor {
+        &self.cursor
+    }
+
+    /// Check if the editor should quit.
+    pub fn should_quit(&self) -> bool {
+        self.should_quit
+    }
+
+    /// Resize the editor.
+    pub fn resize(&mut self, width: u16, height: u16) {
+        self.width = width;
+        self.height = height;
+        // Reserve 2 lines for status and command
+        self.viewport.height = (height as usize).saturating_sub(2);
+        self.viewport.width = width as usize;
+    }
+
+    /// Process an editor event.
+    pub fn handle_event(&mut self, event: EditorEvent) {
+        match event {
+            EditorEvent::Key(key) => self.handle_key(key),
+            EditorEvent::Resize { width, height } => self.resize(width, height),
+            EditorEvent::Quit => self.should_quit = true,
+            _ => {}
+        }
+    }
+
+    /// Process a key event.
+    pub fn handle_key(&mut self, key: KeyEvent) {
+        // Record for macro
+        if self.recording_macro.is_some() {
+            self.recording_change.push(key.clone());
+        }
+
+        // Clear status message on key press
+        self.status_message = None;
+
+        // Handle based on mode
+        let intents = self.get_mode_intents(&key);
+
+        // Apply intents
+        for intent in intents {
+            self.apply_intent(intent);
+        }
+
+        // Ensure cursor is valid
+        self.clamp_cursor();
+
+        // Scroll viewport to follow cursor
+        self.viewport
+            .scroll_to_line(self.cursor.line(), self.buffer.line_count());
+    }
+
+    fn get_mode_intents(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        // Create temporary mode handlers
+        match self.mode {
+            Mode::Normal => {
+                let mut handler = kjxlkj_core_mode::parser::Parser::new();
+                // Simplified: convert directly to intent
+                self.parse_normal_key(key)
+            }
+            Mode::Insert => self.parse_insert_key(key),
+            Mode::Visual | Mode::VisualLine | Mode::VisualBlock => self.parse_visual_key(key),
+            Mode::Command => self.parse_command_key(key),
+            Mode::Replace => self.parse_replace_key(key),
+        }
+    }
+
+    fn parse_normal_key(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        use kjxlkj_core_types::KeyCode;
+
+        let mut intents = Vec::new();
+
+        if key.modifiers.ctrl {
+            match &key.code {
+                KeyCode::Char('r') => intents.push(Intent::Redo),
+                KeyCode::Char('d') => intents.push(Intent::Scroll(ScrollIntent::HalfPageDown)),
+                KeyCode::Char('u') => intents.push(Intent::Scroll(ScrollIntent::HalfPageUp)),
+                KeyCode::Char('f') => intents.push(Intent::Scroll(ScrollIntent::PageDown)),
+                KeyCode::Char('b') => intents.push(Intent::Scroll(ScrollIntent::PageUp)),
+                KeyCode::Char('e') => intents.push(Intent::Scroll(ScrollIntent::LineDown)),
+                KeyCode::Char('y') => intents.push(Intent::Scroll(ScrollIntent::LineUp)),
+                KeyCode::Char('a') => intents.push(Intent::Increment(1)),
+                KeyCode::Char('x') => intents.push(Intent::Increment(-1)),
+                KeyCode::Char('v') => intents.push(Intent::SwitchMode(Mode::VisualBlock)),
+                _ => {}
+            }
+            return intents;
+        }
+
+        match &key.code {
+            KeyCode::Char('h') | KeyCode::Left => intents.push(Intent::Motion(MotionIntent::Left)),
+            KeyCode::Char('l') | KeyCode::Right => {
+                intents.push(Intent::Motion(MotionIntent::Right))
+            }
+            KeyCode::Char('j') | KeyCode::Down => intents.push(Intent::Motion(MotionIntent::Down)),
+            KeyCode::Char('k') | KeyCode::Up => intents.push(Intent::Motion(MotionIntent::Up)),
+            KeyCode::Char('0') => intents.push(Intent::Motion(MotionIntent::LineStart)),
+            KeyCode::Char('^') => intents.push(Intent::Motion(MotionIntent::FirstNonBlank)),
+            KeyCode::Char('$') => intents.push(Intent::Motion(MotionIntent::LineEnd)),
+            KeyCode::Char('w') => intents.push(Intent::Motion(MotionIntent::WordStart)),
+            KeyCode::Char('b') => intents.push(Intent::Motion(MotionIntent::WordStartBack)),
+            KeyCode::Char('e') => intents.push(Intent::Motion(MotionIntent::WordEnd)),
+            KeyCode::Char('G') => intents.push(Intent::Motion(MotionIntent::FileEnd)),
+            KeyCode::Char('i') => intents.push(Intent::SwitchMode(Mode::Insert)),
+            KeyCode::Char('a') => {
+                intents.push(Intent::Motion(MotionIntent::Right));
+                intents.push(Intent::SwitchMode(Mode::Insert));
+            }
+            KeyCode::Char('I') => {
+                intents.push(Intent::Motion(MotionIntent::FirstNonBlank));
+                intents.push(Intent::SwitchMode(Mode::Insert));
+            }
+            KeyCode::Char('A') => {
+                intents.push(Intent::Motion(MotionIntent::LineEnd));
+                intents.push(Intent::SwitchMode(Mode::Insert));
+            }
+            KeyCode::Char('o') => intents.push(Intent::OpenLine { below: true }),
+            KeyCode::Char('O') => intents.push(Intent::OpenLine { below: false }),
+            KeyCode::Char('v') => intents.push(Intent::SwitchMode(Mode::Visual)),
+            KeyCode::Char('V') => intents.push(Intent::SwitchMode(Mode::VisualLine)),
+            KeyCode::Char('R') => intents.push(Intent::SwitchMode(Mode::Replace)),
+            KeyCode::Char(':') => intents.push(Intent::SwitchMode(Mode::Command)),
+            KeyCode::Char('x') => intents.push(Intent::Delete { linewise: false }),
+            KeyCode::Char('X') => {
+                intents.push(Intent::Motion(MotionIntent::Left));
+                intents.push(Intent::Delete { linewise: false });
+            }
+            KeyCode::Char('p') => intents.push(Intent::Paste {
+                before: false,
+                cursor_at_end: false,
+            }),
+            KeyCode::Char('P') => intents.push(Intent::Paste {
+                before: true,
+                cursor_at_end: false,
+            }),
+            KeyCode::Char('u') => intents.push(Intent::Undo),
+            KeyCode::Char('J') => intents.push(Intent::JoinLines { add_space: true }),
+            KeyCode::Char('~') => intents.push(Intent::ToggleCase),
+            _ => {}
+        }
+
+        intents
+    }
+
+    fn parse_insert_key(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        use kjxlkj_core_types::KeyCode;
+
+        let mut intents = Vec::new();
+
+        if key.modifiers.ctrl {
+            match &key.code {
+                KeyCode::Char('h') => intents.push(Intent::InsertText("\x08".to_string())),
+                KeyCode::Char('w') => {} // Delete word
+                KeyCode::Char('u') => {} // Delete to line start
+                _ => {}
+            }
+            return intents;
+        }
+
+        match &key.code {
+            KeyCode::Escape => intents.push(Intent::SwitchMode(Mode::Normal)),
+            KeyCode::Enter => intents.push(Intent::InsertText("\n".to_string())),
+            KeyCode::Backspace => intents.push(Intent::InsertText("\x08".to_string())),
+            KeyCode::Tab => intents.push(Intent::InsertText("    ".to_string())),
+            KeyCode::Char(c) => intents.push(Intent::InsertText(c.to_string())),
+            KeyCode::Left => intents.push(Intent::Motion(MotionIntent::Left)),
+            KeyCode::Right => intents.push(Intent::Motion(MotionIntent::Right)),
+            KeyCode::Up => intents.push(Intent::Motion(MotionIntent::Up)),
+            KeyCode::Down => intents.push(Intent::Motion(MotionIntent::Down)),
+            _ => {}
+        }
+
+        intents
+    }
+
+    fn parse_visual_key(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        use kjxlkj_core_types::KeyCode;
+
+        let mut intents = Vec::new();
+
+        match &key.code {
+            KeyCode::Escape => intents.push(Intent::SwitchMode(Mode::Normal)),
+            KeyCode::Char('d') | KeyCode::Char('x') => {
+                let linewise = self.mode == Mode::VisualLine;
+                intents.push(Intent::Delete { linewise });
+                intents.push(Intent::SwitchMode(Mode::Normal));
+            }
+            KeyCode::Char('y') => {
+                let linewise = self.mode == Mode::VisualLine;
+                intents.push(Intent::Yank { linewise });
+                intents.push(Intent::SwitchMode(Mode::Normal));
+            }
+            KeyCode::Char('c') => {
+                let linewise = self.mode == Mode::VisualLine;
+                intents.push(Intent::Change { linewise });
+            }
+            KeyCode::Char('h') | KeyCode::Left => intents.push(Intent::Motion(MotionIntent::Left)),
+            KeyCode::Char('l') | KeyCode::Right => {
+                intents.push(Intent::Motion(MotionIntent::Right))
+            }
+            KeyCode::Char('j') | KeyCode::Down => intents.push(Intent::Motion(MotionIntent::Down)),
+            KeyCode::Char('k') | KeyCode::Up => intents.push(Intent::Motion(MotionIntent::Up)),
+            KeyCode::Char('o') => {
+                // Swap selection ends
+                if let Some(ref mut sel) = self.selection {
+                    sel.swap();
+                    self.cursor.position = sel.cursor;
+                }
+            }
+            _ => {}
+        }
+
+        intents
+    }
+
+    fn parse_command_key(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        use kjxlkj_core_types::KeyCode;
+
+        let mut intents = Vec::new();
+
+        match &key.code {
+            KeyCode::Escape => {
+                self.command_line = None;
+                intents.push(Intent::SwitchMode(Mode::Normal));
+            }
+            KeyCode::Enter => {
+                if let Some(cmd) = self.command_line.take() {
+                    intents.push(Intent::ExecuteCommand(cmd));
+                }
+                intents.push(Intent::SwitchMode(Mode::Normal));
+            }
+            KeyCode::Backspace => {
+                if let Some(ref mut cmd) = self.command_line {
+                    cmd.pop();
+                }
+            }
+            KeyCode::Char(c) => {
+                if self.command_line.is_none() {
+                    self.command_line = Some(String::new());
+                }
+                if let Some(ref mut cmd) = self.command_line {
+                    cmd.push(*c);
+                }
+            }
+            _ => {}
+        }
+
+        intents
+    }
+
+    fn parse_replace_key(&mut self, key: &KeyEvent) -> Vec<Intent> {
+        use kjxlkj_core_types::KeyCode;
+
+        let mut intents = Vec::new();
+
+        match &key.code {
+            KeyCode::Escape => intents.push(Intent::SwitchMode(Mode::Normal)),
+            KeyCode::Char(c) => {
+                intents.push(Intent::ReplaceChar(*c));
+                intents.push(Intent::Motion(MotionIntent::Right));
+            }
+            KeyCode::Backspace => intents.push(Intent::Motion(MotionIntent::Left)),
+            _ => {}
+        }
+
+        intents
+    }
+
+    fn apply_intent(&mut self, intent: Intent) {
+        match intent {
+            Intent::InsertText(text) => self.insert_text(&text),
+            Intent::Delete { linewise } => self.delete(linewise),
+            Intent::Yank { linewise } => self.yank(linewise),
+            Intent::Change { linewise } => {
+                self.delete(linewise);
+                self.mode = Mode::Insert;
+            }
+            Intent::MoveCursor(pos) => {
+                self.cursor.position = pos;
+                self.cursor.clear_preferred_col();
+            }
+            Intent::Motion(motion) => self.apply_motion(motion),
+            Intent::SwitchMode(new_mode) => self.switch_mode(new_mode),
+            Intent::ExecuteCommand(cmd) => self.execute_command(&cmd),
+            Intent::OpenLine { below } => self.open_line(below),
+            Intent::Undo => self.undo(),
+            Intent::Redo => self.redo(),
+            Intent::JoinLines { add_space } => self.join_lines(add_space),
+            Intent::Indent => self.indent(true),
+            Intent::Outdent => self.indent(false),
+            Intent::ToggleCase => self.toggle_case(),
+            Intent::Uppercase => {} // TODO
+            Intent::Lowercase => {} // TODO
+            Intent::Increment(n) => {} // TODO
+            Intent::Repeat => {}       // TODO
+            Intent::MacroToggle(c) => self.toggle_macro(c),
+            Intent::MacroPlay(c) => {} // TODO
+            Intent::SetMark(c) => {
+                self.marks.insert(c, self.cursor.position);
+            }
+            Intent::JumpToMark { mark, first_non_blank } => {
+                if let Some(pos) = self.marks.get(&mark).copied() {
+                    self.cursor.position = pos;
+                }
+            }
+            Intent::SearchForward(_) => {}  // TODO
+            Intent::SearchBackward(_) => {} // TODO
+            Intent::NextMatch => {}         // TODO
+            Intent::PrevMatch => {}         // TODO
+            Intent::Scroll(scroll) => self.scroll(scroll),
+            Intent::Paste { before, cursor_at_end } => self.paste(before, cursor_at_end),
+            Intent::SelectRegister(c) => {
+                if let Some(name) = kjxlkj_core_types::RegisterName::from_char(c) {
+                    self.registers.select(name);
+                }
+            }
+            Intent::ReplaceChar(c) => self.replace_char(c),
+            Intent::Substitute => {
+                self.delete(false);
+                self.mode = Mode::Insert;
+            }
+            Intent::Nop => {}
+        }
+    }
+
+    fn insert_text(&mut self, text: &str) {
+        if text == "\x08" {
+            // Backspace
+            if self.cursor.col() > 0 {
+                let line_start = self.buffer.line_to_char(self.cursor.line());
+                let idx = line_start + self.cursor.col();
+                self.buffer.remove(idx - 1, idx);
+                self.cursor.position.col -= 1;
+            } else if self.cursor.line() > 0 {
+                // Join with previous line
+                let prev_line = self.cursor.line() - 1;
+                let prev_len = self.buffer.line_grapheme_len(prev_line);
+                let line_start = self.buffer.line_to_char(self.cursor.line());
+                self.buffer.remove(line_start - 1, line_start);
+                self.cursor.position.line = prev_line;
+                self.cursor.position.col = prev_len;
+            }
+        } else {
+            let line_start = self.buffer.line_to_char(self.cursor.line());
+            let idx = line_start + self.cursor.col();
+            self.buffer.insert(idx, text);
+
+            // Update cursor
+            if text.contains('\n') {
+                let lines: Vec<&str> = text.split('\n').collect();
+                self.cursor.position.line += lines.len() - 1;
+                self.cursor.position.col = lines.last().map(|s| s.len()).unwrap_or(0);
+            } else {
+                self.cursor.position.col += text.chars().count();
+            }
+        }
+    }
+
+    fn delete(&mut self, linewise: bool) {
+        let (start, end) = if let Some(sel) = self.selection.take() {
+            (sel.start(), sel.end())
+        } else {
+            // Delete character at cursor
+            let pos = self.cursor.position;
+            (pos, pos)
+        };
+
+        let deleted_text = if linewise {
+            let mut text = String::new();
+            for line in start.line..=end.line {
+                if let Some(slice) = self.buffer.line(start.line) {
+                    text.push_str(slice.as_str().unwrap_or(""));
+                }
+                self.buffer.remove_line(start.line);
+            }
+            self.cursor.position = Position::new(
+                start.line.min(self.buffer.line_count().saturating_sub(1)),
+                0,
+            );
+            text
+        } else {
+            let start_idx = self.buffer.line_to_char(start.line) + start.col;
+            let end_idx = self.buffer.line_to_char(end.line) + end.col + 1;
+            let end_idx = end_idx.min(self.buffer.char_count());
+            let text = self.buffer.rope().slice(start_idx..end_idx).to_string();
+            self.buffer.remove(start_idx, end_idx);
+            self.cursor.position = start;
+            text
+        };
+
+        // Store in register
+        self.registers
+            .set_selected(Register::new(deleted_text, linewise));
+    }
+
+    fn yank(&mut self, linewise: bool) {
+        let (start, end) = if let Some(sel) = &self.selection {
+            (sel.start(), sel.end())
+        } else {
+            let pos = self.cursor.position;
+            (pos, pos)
+        };
+
+        let text = if linewise {
+            let mut yanked = String::new();
+            for line in start.line..=end.line {
+                if let Some(slice) = self.buffer.line(line) {
+                    yanked.push_str(slice.as_str().unwrap_or(""));
+                }
+            }
+            yanked
+        } else {
+            let start_idx = self.buffer.line_to_char(start.line) + start.col;
+            let end_idx = self.buffer.line_to_char(end.line) + end.col + 1;
+            let end_idx = end_idx.min(self.buffer.char_count());
+            self.buffer.rope().slice(start_idx..end_idx).to_string()
+        };
+
+        self.registers.set_selected(Register::new(text, linewise));
+        self.selection = None;
+        self.cursor.position = start;
+    }
+
+    fn apply_motion(&mut self, motion: MotionIntent) {
+        let new_pos =
+            apply_motion(&Motion::new(motion.clone(), 1), &self.cursor, &self.buffer, self.viewport.height);
+        self.cursor.position = new_pos;
+
+        // Update preferred column for vertical motions
+        match motion {
+            MotionIntent::Up | MotionIntent::Down => {
+                if self.cursor.preferred_col.is_none() {
+                    self.cursor.preferred_col = Some(self.cursor.col());
+                }
+            }
+            _ => {
+                self.cursor.clear_preferred_col();
+            }
+        }
+
+        // Update selection if in visual mode
+        if self.mode.is_visual() {
+            if let Some(ref mut sel) = self.selection {
+                sel.cursor = self.cursor.position;
+            }
+        }
+    }
+
+    fn switch_mode(&mut self, new_mode: Mode) {
+        let old_mode = self.mode;
+        self.mode = new_mode;
+
+        match new_mode {
+            Mode::Visual => {
+                self.selection = Some(Selection::char_wise(
+                    self.cursor.position,
+                    self.cursor.position,
+                ));
+            }
+            Mode::VisualLine => {
+                self.selection = Some(Selection::line_wise(
+                    self.cursor.position,
+                    self.cursor.position,
+                ));
+            }
+            Mode::VisualBlock => {
+                self.selection = Some(Selection::block_wise(
+                    self.cursor.position,
+                    self.cursor.position,
+                ));
+            }
+            Mode::Normal => {
+                self.selection = None;
+                // Clamp cursor to line length in normal mode
+                let line_len = self.buffer.line_grapheme_len(self.cursor.line());
+                if line_len > 0 && self.cursor.col() >= line_len {
+                    self.cursor.position.col = line_len - 1;
+                }
+            }
+            Mode::Command => {
+                self.command_line = Some(String::new());
+            }
+            _ => {}
+        }
+    }
+
+    fn execute_command(&mut self, cmd: &str) {
+        let cmd = cmd.trim();
+
+        match cmd {
+            "q" | "q!" => {
+                self.should_quit = true;
+            }
+            "qa" | "qa!" => {
+                self.should_quit = true;
+            }
+            "w" => {
+                self.status_message = Some(("Written".to_string(), false));
+            }
+            "wq" | "x" => {
+                self.should_quit = true;
+            }
+            _ => {
+                self.status_message =
+                    Some((format!("Unknown command: {}", cmd), true));
+            }
+        }
+    }
+
+    fn open_line(&mut self, below: bool) {
+        let line = if below {
+            self.cursor.line()
+        } else {
+            self.cursor.line().saturating_sub(1)
+        };
+
+        let insert_line = if below { line + 1 } else { line };
+        let line_start = self.buffer.line_to_char(insert_line.min(self.buffer.line_count()));
+        self.buffer.insert(line_start, "\n");
+
+        self.cursor.position = Position::new(insert_line, 0);
+        self.mode = Mode::Insert;
+    }
+
+    fn undo(&mut self) {
+        if let Some(tx) = self.undo_history.undo() {
+            // Apply inverse edits
+            for edit in tx.edits() {
+                match edit {
+                    kjxlkj_core_undo::Edit::Insert { position, text } => {
+                        let idx = self.buffer.line_to_char(position.line) + position.col;
+                        self.buffer.insert(idx, text);
+                    }
+                    kjxlkj_core_undo::Edit::Delete { position, text } => {
+                        let idx = self.buffer.line_to_char(position.line) + position.col;
+                        self.buffer.remove(idx, idx + text.len());
+                    }
+                }
+            }
+            if let Some(pos) = tx.cursor_after() {
+                self.cursor.position = pos;
+            }
+            self.status_message = Some(("Undo".to_string(), false));
+        }
+    }
+
+    fn redo(&mut self) {
+        if let Some(tx) = self.undo_history.redo() {
+            for edit in tx.edits() {
+                match edit {
+                    kjxlkj_core_undo::Edit::Insert { position, text } => {
+                        let idx = self.buffer.line_to_char(position.line) + position.col;
+                        self.buffer.insert(idx, text);
+                    }
+                    kjxlkj_core_undo::Edit::Delete { position, text } => {
+                        let idx = self.buffer.line_to_char(position.line) + position.col;
+                        self.buffer.remove(idx, idx + text.len());
+                    }
+                }
+            }
+            if let Some(pos) = tx.cursor_after() {
+                self.cursor.position = pos;
+            }
+            self.status_message = Some(("Redo".to_string(), false));
+        }
+    }
+
+    fn join_lines(&mut self, add_space: bool) {
+        let line = self.cursor.line();
+        if line + 1 < self.buffer.line_count() {
+            let line_len = self.buffer.line_grapheme_len(line);
+            let next_line_start = self.buffer.line_to_char(line + 1);
+
+            // Remove newline at end of current line
+            let current_line_end = next_line_start - 1;
+            self.buffer.remove(current_line_end, next_line_start);
+
+            // Optionally add space
+            if add_space {
+                self.buffer.insert(current_line_end, " ");
+                self.cursor.position.col = line_len;
+            } else {
+                self.cursor.position.col = line_len.saturating_sub(1);
+            }
+        }
+    }
+
+    fn indent(&mut self, indent: bool) {
+        let indent_str = "    ";
+        let line_start = self.buffer.line_to_char(self.cursor.line());
+
+        if indent {
+            self.buffer.insert(line_start, indent_str);
+        } else {
+            if let Some(slice) = self.buffer.line(self.cursor.line()) {
+                let s = slice.as_str().unwrap_or("");
+                let spaces: usize = s.chars().take(4).take_while(|c| *c == ' ').count();
+                if spaces > 0 {
+                    self.buffer.remove(line_start, line_start + spaces);
+                }
+            }
+        }
+    }
+
+    fn toggle_case(&mut self) {
+        let line_start = self.buffer.line_to_char(self.cursor.line());
+        let idx = line_start + self.cursor.col();
+
+        if idx < self.buffer.char_count() {
+            let c = self.buffer.rope().char(idx);
+            let toggled: String = if c.is_uppercase() {
+                c.to_lowercase().collect()
+            } else {
+                c.to_uppercase().collect()
+            };
+            self.buffer.remove(idx, idx + 1);
+            self.buffer.insert(idx, &toggled);
+            self.cursor.position.col += 1;
+        }
+    }
+
+    fn scroll(&mut self, scroll: ScrollIntent) {
+        let half_page = self.viewport.height / 2;
+        let line_count = self.buffer.line_count();
+
+        match scroll {
+            ScrollIntent::HalfPageDown => {
+                self.viewport.scroll_down(half_page, line_count);
+                self.cursor.position.line =
+                    (self.cursor.line() + half_page).min(line_count.saturating_sub(1));
+            }
+            ScrollIntent::HalfPageUp => {
+                self.viewport.scroll_up(half_page);
+                self.cursor.position.line = self.cursor.line().saturating_sub(half_page);
+            }
+            ScrollIntent::PageDown => {
+                self.viewport.scroll_down(self.viewport.height, line_count);
+                self.cursor.position.line = (self.cursor.line() + self.viewport.height)
+                    .min(line_count.saturating_sub(1));
+            }
+            ScrollIntent::PageUp => {
+                self.viewport.scroll_up(self.viewport.height);
+                self.cursor.position.line =
+                    self.cursor.line().saturating_sub(self.viewport.height);
+            }
+            ScrollIntent::LineDown => {
+                self.viewport.scroll_down(1, line_count);
+            }
+            ScrollIntent::LineUp => {
+                self.viewport.scroll_up(1);
+            }
+            ScrollIntent::CenterCursor => {
+                self.viewport.center_on_line(self.cursor.line(), line_count);
+            }
+            ScrollIntent::CursorToTop => {
+                self.viewport.cursor_to_top(self.cursor.line());
+            }
+            ScrollIntent::CursorToBottom => {
+                self.viewport.cursor_to_bottom(self.cursor.line());
+            }
+        }
+    }
+
+    fn paste(&mut self, before: bool, cursor_at_end: bool) {
+        if let Some(reg) = self.registers.get_selected().cloned() {
+            if reg.linewise {
+                let line = if before {
+                    self.cursor.line()
+                } else {
+                    self.cursor.line() + 1
+                };
+                let idx = self.buffer.line_to_char(line.min(self.buffer.line_count()));
+                let content = if reg.content.ends_with('\n') {
+                    reg.content.clone()
+                } else {
+                    format!("{}\n", reg.content)
+                };
+                self.buffer.insert(idx, &content);
+                self.cursor.position = Position::new(line, 0);
+            } else {
+                let line_start = self.buffer.line_to_char(self.cursor.line());
+                let idx = if before {
+                    line_start + self.cursor.col()
+                } else {
+                    line_start + self.cursor.col() + 1
+                };
+                self.buffer.insert(idx.min(self.buffer.char_count()), &reg.content);
+                if !before {
+                    self.cursor.position.col += 1;
+                }
+                if cursor_at_end {
+                    self.cursor.position.col += reg.content.len();
+                }
+            }
+        }
+    }
+
+    fn replace_char(&mut self, c: char) {
+        let line_start = self.buffer.line_to_char(self.cursor.line());
+        let idx = line_start + self.cursor.col();
+        if idx < self.buffer.char_count() {
+            self.buffer.remove(idx, idx + 1);
+            self.buffer.insert(idx, &c.to_string());
+        }
+    }
+
+    fn toggle_macro(&mut self, c: char) {
+        if let Some(recording) = self.recording_macro.take() {
+            // Stop recording
+            let recorded = std::mem::take(&mut self.recording_change);
+            // Remove the q command itself
+            let recorded: Vec<_> = recorded
+                .into_iter()
+                .take_while(|k| {
+                    !matches!(k.code, kjxlkj_core_types::KeyCode::Char('q'))
+                })
+                .collect();
+            self.macros.insert(recording, recorded);
+            self.status_message = Some((format!("Recorded @{}", recording), false));
+        } else {
+            // Start recording
+            self.recording_macro = Some(c);
+            self.recording_change.clear();
+            self.status_message = Some((format!("Recording @{}", c), false));
+        }
+    }
+
+    fn clamp_cursor(&mut self) {
+        let line_count = self.buffer.line_count();
+        if self.cursor.line() >= line_count {
+            self.cursor.position.line = line_count.saturating_sub(1);
+        }
+
+        let line_len = self.buffer.line_grapheme_len(self.cursor.line());
+        let max_col = if self.mode == Mode::Insert {
+            line_len
+        } else {
+            line_len.saturating_sub(1).max(0)
+        };
+
+        if self.cursor.col() > max_col {
+            self.cursor.position.col = max_col;
+        }
+    }
+
+    /// Create a snapshot for rendering.
+    pub fn snapshot(&self) -> EditorSnapshot {
+        let mut lines = Vec::new();
+        for line_idx in self.viewport.top_line..self.viewport.bottom_line() {
+            if let Some(line) = self.buffer.line(line_idx) {
+                let s = line.as_str().unwrap_or("");
+                let s = s.trim_end_matches('\n').trim_end_matches('\r');
+                lines.push(s.to_string());
+            } else {
+                lines.push(String::new());
+            }
+        }
+
+        let buffer_snapshot = BufferSnapshot::new(
+            self.buffer.id(),
+            self.buffer.name().clone(),
+            self.buffer.version(),
+            self.buffer.line_count(),
+            lines,
+            self.viewport,
+            self.buffer.is_modified(),
+        );
+
+        let status = StatusLine::new(
+            self.mode,
+            self.buffer.name().as_str().to_string(),
+            self.buffer.is_modified(),
+            &self.cursor,
+            self.buffer.line_count(),
+        );
+
+        let status = if let Some((msg, is_error)) = &self.status_message {
+            status.with_message(msg.clone(), *is_error)
+        } else {
+            status
+        };
+
+        EditorSnapshot::new(
+            buffer_snapshot,
+            self.cursor.clone(),
+            self.mode,
+            self.selection.clone(),
+            status,
+            self.command_line.clone(),
+            self.registers.search_pattern().map(String::from),
+            self.width,
+            self.height,
+        )
+    }
+}
+
+impl Default for EditorState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core_types::KeyCode;
+
+    #[test]
+    fn test_editor_state_new() {
+        let state = EditorState::new();
+        assert_eq!(state.mode(), Mode::Normal);
+        assert_eq!(state.cursor().line(), 0);
+        assert_eq!(state.cursor().col(), 0);
+    }
+
+    #[test]
+    fn test_editor_state_insert() {
+        let mut state = EditorState::new();
+        state.handle_key(KeyEvent::char('i'));
+        assert_eq!(state.mode(), Mode::Insert);
+
+        state.handle_key(KeyEvent::char('h'));
+        state.handle_key(KeyEvent::char('i'));
+        assert_eq!(state.content(), "hi");
+    }
+
+    #[test]
+    fn test_editor_state_motion() {
+        let mut state = EditorState::new();
+        state.load_content("hello\nworld");
+
+        state.handle_key(KeyEvent::char('j'));
+        assert_eq!(state.cursor().line(), 1);
+
+        state.handle_key(KeyEvent::char('k'));
+        assert_eq!(state.cursor().line(), 0);
+    }
+
+    #[test]
+    fn test_editor_state_quit() {
+        let mut state = EditorState::new();
+        state.handle_key(KeyEvent::char(':'));
+        state.handle_key(KeyEvent::char('q'));
+        state.handle_key(KeyEvent::plain(KeyCode::Enter));
+        assert!(state.should_quit());
+    }
+}

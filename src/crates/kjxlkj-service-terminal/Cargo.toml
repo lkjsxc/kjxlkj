@@ -1,0 +1,17 @@
+[package]
+name = "kjxlkj-service-terminal"
+version = "0.1.0"
+edition = "2021"
+description = "Terminal service for kjxlkj editor"
+license = "MIT"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-services = { path = "../kjxlkj-services" }
+tokio = { version = "1", features = ["process", "io-util", "sync"] }
+anyhow = "1"
+thiserror = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "test-util"] }

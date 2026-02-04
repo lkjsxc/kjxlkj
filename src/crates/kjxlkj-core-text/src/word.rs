@@ -1,0 +1,127 @@
+//! Word boundary detection.
+
+/// The kind of word for movement purposes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WordKind {
+    /// A word consisting of word characters (alphanumeric + underscore).
+    Word,
+    /// A WORD consisting of any non-whitespace characters.
+    WORD,
+}
+
+/// Character classification for word boundaries.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum CharClass {
+    /// Whitespace.
+    Whitespace,
+    /// Word character (alphanumeric or underscore).
+    Word,
+    /// Punctuation/other.
+    Punct,
+}
+
+fn classify_char(c: char) -> CharClass {
+    if c.is_whitespace() {
+        CharClass::Whitespace
+    } else if c.is_alphanumeric() || c == '_' {
+        CharClass::Word
+    } else {
+        CharClass::Punct
+    }
+}
+
+/// Find the next word boundary position in a string.
+pub fn find_word_boundary(s: &str, start: usize, forward: bool, kind: WordKind) -> usize {
+    let chars: Vec<char> = s.chars().collect();
+    let len = chars.len();
+
+    if len == 0 {
+        return 0;
+    }
+
+    let start = start.min(len.saturating_sub(1));
+
+    match kind {
+        WordKind::WORD => find_word_boundary_impl(&chars, start, forward, true),
+        WordKind::Word => find_word_boundary_impl(&chars, start, forward, false),
+    }
+}
+
+fn find_word_boundary_impl(chars: &[char], start: usize, forward: bool, is_word: bool) -> usize {
+    let len = chars.len();
+
+    if forward {
+        let mut pos = start;
+
+        // Skip current word/non-whitespace
+        if is_word {
+            while pos < len && !chars[pos].is_whitespace() {
+                pos += 1;
+            }
+        } else {
+            let start_class = classify_char(chars[pos]);
+            while pos < len && classify_char(chars[pos]) == start_class {
+                pos += 1;
+            }
+        }
+
+        // Skip whitespace
+        while pos < len && chars[pos].is_whitespace() {
+            pos += 1;
+        }
+
+        pos.min(len)
+    } else {
+        if start == 0 {
+            return 0;
+        }
+
+        let mut pos = start.saturating_sub(1);
+
+        // Skip whitespace
+        while pos > 0 && chars[pos].is_whitespace() {
+            pos -= 1;
+        }
+
+        if is_word {
+            // Skip non-whitespace
+            while pos > 0 && !chars[pos - 1].is_whitespace() {
+                pos -= 1;
+            }
+        } else {
+            // Skip same class
+            let end_class = classify_char(chars[pos]);
+            while pos > 0 && classify_char(chars[pos - 1]) == end_class {
+                pos -= 1;
+            }
+        }
+
+        pos
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_find_word_boundary_forward() {
+        let s = "hello world";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 6);
+        assert_eq!(find_word_boundary(s, 6, true, WordKind::Word), 11);
+    }
+
+    #[test]
+    fn test_find_word_boundary_backward() {
+        let s = "hello world";
+        assert_eq!(find_word_boundary(s, 10, false, WordKind::Word), 6);
+        assert_eq!(find_word_boundary(s, 6, false, WordKind::Word), 0);
+    }
+
+    #[test]
+    fn test_find_word_boundary_with_punct() {
+        let s = "hello.world";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 5);
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::WORD), 11);
+    }
+}
