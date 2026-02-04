@@ -120,4 +120,50 @@ mod tests {
         let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
         assert_eq!(graphemes, vec!["a", "b", "c"]);
     }
+
+    #[test]
+    fn test_grapheme_count_empty() {
+        let rope = Rope::from_str("");
+        assert_eq!(rope.slice(..).grapheme_count(), 0);
+    }
+
+    #[test]
+    fn test_grapheme_count_unicode() {
+        let rope = Rope::from_str("héllo");
+        assert_eq!(rope.slice(..).grapheme_count(), 5);
+    }
+
+    #[test]
+    fn test_display_width_emoji() {
+        let rope = Rope::from_str("👍");
+        assert!(rope.slice(..).display_width() >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_iter_empty() {
+        let rope = Rope::from_str("");
+        let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
+        assert!(graphemes.is_empty());
+    }
+
+    #[test]
+    fn test_grapheme_iter_unicode() {
+        let rope = Rope::from_str("日本");
+        let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
+        assert_eq!(graphemes.len(), 2);
+    }
+
+    #[test]
+    fn test_display_width_mixed() {
+        let rope = Rope::from_str("abc日");
+        let width = rope.slice(..).display_width();
+        assert_eq!(width, 5); // 3 ascii + 2 for CJK
+    }
+
+    #[test]
+    fn test_grapheme_iter_newlines() {
+        let rope = Rope::from_str("a\nb");
+        let graphemes: Vec<_> = rope.slice(..).graphemes().collect();
+        assert_eq!(graphemes.len(), 3);
+    }
 }

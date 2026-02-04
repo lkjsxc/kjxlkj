@@ -53,4 +53,83 @@ mod tests {
         assert!(args.file.is_none());
         assert!(!args.log);
     }
+
+    #[test]
+    fn test_args_with_file() {
+        let args = Args {
+            file: Some(PathBuf::from("test.txt")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.is_some());
+        assert_eq!(args.file.unwrap(), PathBuf::from("test.txt"));
+    }
+
+    #[test]
+    fn test_args_with_log() {
+        let args = Args {
+            file: None,
+            log: true,
+            log_file: Some("/tmp/log.txt".to_string()),
+            readonly: false,
+            line: None,
+        };
+        assert!(args.log);
+        assert!(args.log_file.is_some());
+    }
+
+    #[test]
+    fn test_args_readonly() {
+        let args = Args {
+            file: Some(PathBuf::from("readonly.txt")),
+            log: false,
+            log_file: None,
+            readonly: true,
+            line: None,
+        };
+        assert!(args.readonly);
+    }
+
+    #[test]
+    fn test_args_with_line() {
+        let args = Args {
+            file: Some(PathBuf::from("test.txt")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: Some(100),
+        };
+        assert_eq!(args.line, Some(100));
+    }
+
+    #[test]
+    fn test_args_debug() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        let debug = format!("{:?}", args);
+        assert!(debug.contains("Args"));
+    }
+
+    #[test]
+    fn test_args_all_fields() {
+        let args = Args {
+            file: Some(PathBuf::from("/path/to/file.rs")),
+            log: true,
+            log_file: Some("/var/log/editor.log".to_string()),
+            readonly: true,
+            line: Some(42),
+        };
+        assert!(args.file.is_some());
+        assert!(args.log);
+        assert!(args.log_file.is_some());
+        assert!(args.readonly);
+        assert_eq!(args.line, Some(42));
+    }
 }

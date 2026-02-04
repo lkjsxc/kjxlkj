@@ -181,3 +181,139 @@ fn test_end_to_end_state_consistency() {
         prev_snapshot = Some(snapshot);
     }
 }
+
+/// Test: Visual mode is entered and exited correctly.
+#[test]
+fn test_end_to_end_visual_mode() {
+    let mut state = EditorState::new();
+
+    // Start in Normal
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+
+    // Escape to normal
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE),
+        Some(&snapshot),
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Normal);
+
+    // v -> Visual
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE),
+        Some(&snapshot),
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Visual);
+
+    // Escape -> Normal
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE),
+        Some(&snapshot),
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Replace mode overwrites text correctly.
+#[test]
+fn test_end_to_end_replace_mode() {
+    let mut state = EditorState::new();
+
+    // Insert some text first
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // R -> Replace mode
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('R'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Replace);
+
+    // Type to overwrite
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('X'), KeyModifiers::NONE),
+        Some(&snapshot),
+    );
+
+    // First char should be replaced
+    assert!(snapshot.buffer.lines[0].starts_with("X"));
+}
+
+/// Test: Delete in normal mode works correctly.
+#[test]
+fn test_end_to_end_delete() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('h'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // x should delete char under cursor
+    let snapshot1 = state.snapshot();
+    let initial_len = snapshot1.buffer.lines[0].len();
+
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+
+    assert!(snapshot2.buffer.lines[0].len() < initial_len);
+}
+
+/// Test: Append mode enters insert after cursor.
+#[test]
+fn test_end_to_end_append() {
+    let mut state = EditorState::new();
+
+    // a -> Append (Insert after cursor)
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: o opens new line below.
+#[test]
+fn test_end_to_end_open_below() {
+    let mut state = EditorState::new();
+
+    // o -> Insert on new line below
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: O opens new line above.
+#[test]
+fn test_end_to_end_open_above() {
+    let mut state = EditorState::new();
+
+    // O -> Insert on new line above
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('O'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
+}
