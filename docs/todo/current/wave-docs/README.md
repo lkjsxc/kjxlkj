@@ -16,20 +16,20 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 
 ### A. Enforce documentation policy
 
-- [ ] Remove all non-Mermaid fenced blocks under `/docs/`.
-- [ ] Ensure documentation structure constraints are satisfied (≤200 lines per file; ≤12 direct children per directory; every directory has exactly one `README.md`).
-- [ ] Ensure internal documentation links do not use `../`.
+- [x] Remove all non-Mermaid fenced blocks under `/docs/`.
+- [x] Ensure documentation structure constraints are satisfied (≤200 lines per file; ≤12 direct children per directory; every directory has exactly one `README.md`).
+- [x] Ensure internal documentation links do not use `../`.
 
 ### B. Reconcile derived automation artifacts (CI/Docker/toolchain)
 
-- [ ] Clarify that CI, Docker support, and toolchain pinning are derived artifacts that may be absent in a docs-only baseline.
-- [ ] Reduce the repository to a docs-only baseline by deleting derived implementation artifacts (`src/`, `Cargo.toml`, `Cargo.lock`) before a full reconstruction run.
-- [ ] Ensure all guides/reference docs describe derived artifacts conditionally (no unconditional “this repo includes X” unless the artifact is guaranteed present).
+- [x] Clarify that CI, Docker support, and toolchain pinning are derived artifacts that may be absent in a docs-only baseline.
+- [x] Reduce the repository to a docs-only baseline by deleting derived implementation artifacts (`src/`, `Cargo.toml`, `Cargo.lock`) before a full reconstruction run.
+- [x] Ensure all guides/reference docs describe derived artifacts conditionally (no unconditional "this repo includes X" unless the artifact is guaranteed present).
 
 ### C. Fix conformance docs vs implementation surface
 
-- [ ] Remove non-compliant fences from conformance docs and keep headless script schema accurate.
-- [ ] Audit conformance statements that materially affect user expectations (modes, newline handling, long-line behavior, performance posture) and record any known drift in limitations.
+- [x] Remove non-compliant fences from conformance docs and keep headless script schema accurate.
+- [x] Audit conformance statements that materially affect user expectations (modes, newline handling, long-line behavior, performance posture) and record any known drift in limitations.
 
 ### D. Redesign the current TODO iteration for real execution
 
@@ -45,4 +45,4 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 
 ### E. Record work products
 
-- [ ] Add a structured proposals/log area under `/docs/log/` and record the above gaps with links to defining specs, conformance claims, and test requirements.
+- [x] Add a structured proposals/log area under `/docs/log/` and record the above gaps with links to defining specs, conformance claims, and test requirements.
