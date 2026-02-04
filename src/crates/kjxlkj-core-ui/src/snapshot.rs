@@ -285,5 +285,71 @@ mod tests {
         );
         assert_eq!(status.mode, "COMMAND");
     }
+
+    #[test]
+    fn test_status_line_replace_mode() {
+        let status = StatusLine::new(
+            Mode::Replace,
+            "test.rs".to_string(),
+            false,
+            &Cursor::new(0, 0),
+            100,
+        );
+        assert_eq!(status.mode, "REPLACE");
+    }
+
+    #[test]
+    fn test_status_line_visual_line_mode() {
+        let status = StatusLine::new(
+            Mode::VisualLine,
+            "test.rs".to_string(),
+            false,
+            &Cursor::new(0, 0),
+            100,
+        );
+        assert_eq!(status.mode, "VISUAL_LINE");
+    }
+
+    #[test]
+    fn test_buffer_snapshot_line_count() {
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            50,
+            vec!["line1".to_string(), "line2".to_string()],
+            Viewport::new(0, 24, 0, 80),
+            false,
+        );
+        assert_eq!(snapshot.line_count, 50);
+    }
+
+    #[test]
+    fn test_buffer_snapshot_viewport() {
+        let viewport = Viewport::new(10, 24, 0, 80);
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            100,
+            vec![],
+            viewport.clone(),
+            false,
+        );
+        assert_eq!(snapshot.viewport, viewport);
+    }
+
+    #[test]
+    fn test_status_line_percentage() {
+        let status = StatusLine::new(
+            Mode::Normal,
+            "test.rs".to_string(),
+            false,
+            &Cursor::new(50, 0),
+            100,
+        );
+        assert_eq!(status.line, 50);
+        assert_eq!(status.total_lines, 100);
+    }
 }
 

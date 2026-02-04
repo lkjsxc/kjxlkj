@@ -78,4 +78,49 @@ mod tests {
         assert!(config.file.is_none());
         assert!(config.content.is_none());
     }
+
+    #[test]
+    fn test_host_config_with_file() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/tmp/test.txt")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+        assert!(config.content.is_none());
+    }
+
+    #[test]
+    fn test_host_config_with_content() {
+        let config = HostConfig {
+            file: None,
+            content: Some("hello world".to_string()),
+        };
+        assert!(config.file.is_none());
+        assert!(config.content.is_some());
+    }
+
+    #[test]
+    fn test_host_config_clone() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/tmp/test.txt")),
+            content: Some("content".to_string()),
+        };
+        let cloned = config.clone();
+        assert_eq!(config.file, cloned.file);
+        assert_eq!(config.content, cloned.content);
+    }
+
+    #[test]
+    fn test_host_config_debug() {
+        let config = HostConfig::default();
+        let debug = format!("{:?}", config);
+        assert!(debug.contains("HostConfig"));
+    }
+
+    #[test]
+    fn test_host_new() {
+        let config = HostConfig::default();
+        let _host = Host::new(config);
+        // Host is created successfully
+    }
 }
