@@ -110,4 +110,61 @@ mod tests {
         assert_eq!(style.fg, Some(Color::Red));
         assert!(style.bold);
     }
+
+    #[test]
+    fn test_style_bg() {
+        let style = Style::new().bg(Color::Blue);
+        assert_eq!(style.bg, Some(Color::Blue));
+    }
+
+    #[test]
+    fn test_style_reverse() {
+        let style = Style::new().reverse();
+        assert!(style.reverse);
+    }
+
+    #[test]
+    fn test_style_default() {
+        let style = Style::default();
+        assert!(style.fg.is_none());
+        assert!(style.bg.is_none());
+        assert!(!style.bold);
+        assert!(!style.italic);
+        assert!(!style.underline);
+        assert!(!style.reverse);
+    }
+
+    #[test]
+    fn test_style_chain() {
+        let style = Style::new()
+            .fg(Color::Green)
+            .bg(Color::Black)
+            .bold()
+            .reverse();
+        assert_eq!(style.fg, Some(Color::Green));
+        assert_eq!(style.bg, Some(Color::Black));
+        assert!(style.bold);
+        assert!(style.reverse);
+    }
+
+    #[test]
+    fn test_style_equality() {
+        let style1 = Style::new().fg(Color::Red).bold();
+        let style2 = Style::new().fg(Color::Red).bold();
+        assert_eq!(style1, style2);
+    }
+
+    #[test]
+    fn test_style_clone() {
+        let style = Style::new().fg(Color::Yellow).bg(Color::Blue);
+        let cloned = style.clone();
+        assert_eq!(style, cloned);
+    }
+
+    #[test]
+    fn test_style_debug() {
+        let style = Style::new().bold();
+        let debug = format!("{:?}", style);
+        assert!(debug.contains("bold"));
+    }
 }

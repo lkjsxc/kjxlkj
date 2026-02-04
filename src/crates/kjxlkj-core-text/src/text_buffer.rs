@@ -304,4 +304,79 @@ mod tests {
         assert_eq!(buf.line_grapheme_len(0), 5);
         assert_eq!(buf.line_grapheme_len(1), 5);
     }
+
+    #[test]
+    fn test_buffer_id() {
+        let buf = TextBuffer::new(BufferId::new(42));
+        assert_eq!(buf.id(), BufferId::new(42));
+    }
+
+    #[test]
+    fn test_mark_saved() {
+        let mut buf = TextBuffer::new(BufferId::new(1));
+        buf.insert(0, "hello");
+        assert!(buf.is_modified());
+        buf.mark_saved();
+        assert!(!buf.is_modified());
+    }
+
+    #[test]
+    fn test_char_count() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello\n");
+        assert_eq!(buf.char_count(), 6); // 5 chars + newline
+    }
+
+    #[test]
+    fn test_empty_buffer_line_count() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "");
+        assert_eq!(buf.line_count(), 1);
+    }
+
+    #[test]
+    fn test_line_to_char() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "hello\nworld\n");
+        assert_eq!(buf.line_to_char(0), 0);
+        assert_eq!(buf.line_to_char(1), 6);
+        assert_eq!(buf.line_to_char(2), 12);
+    }
+
+    #[test]
+    fn test_insert_newline() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.insert(5, "\n");
+        assert_eq!(buf.line_count(), 2);
+    }
+
+    #[test]
+    fn test_remove_newline() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello\nworld");
+        buf.remove(5, 6); // Remove newline
+        assert_eq!(buf.line_count(), 1);
+        assert_eq!(buf.to_string(), "helloworld");
+    }
+
+    #[test]
+    fn test_multiple_inserts() {
+        let mut buf = TextBuffer::new(BufferId::new(1));
+        buf.insert(0, "a");
+        buf.insert(1, "b");
+        buf.insert(2, "c");
+        assert_eq!(buf.to_string(), "abc");
+    }
+
+    #[test]
+    fn test_insert_at_middle() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "helloworld");
+        buf.insert(5, " ");
+        assert_eq!(buf.to_string(), "hello world");
+    }
+
+    #[test]
+    fn test_version_increment() {
+        let mut buf = TextBuffer::new(BufferId::new(1));
+        let v1 = buf.version();
+        buf.insert(0, "x");
+        let v2 = buf.version();
+        assert_ne!(v1, v2);
+    }
 }
