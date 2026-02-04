@@ -17,15 +17,15 @@ Implement Visual mode state and key interpretation (selection mechanics are also
 
 ### A. Placeholder scaffolding
 
-- [ ] Define Visual mode entry/exit and selection anchoring rules.
+- [x] Define Visual mode entry/exit and selection anchoring rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement charwise Visual mode entry/exit with deterministic tests.
+- [x] Implement charwise Visual mode entry/exit with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all Visual mode behaviors and keybindings (including variants) or record limitations.
+- [x] Implement all Visual mode behaviors and keybindings (including variants) or record limitations.
   - Charwise visual mode (v) - implemented
   - Linewise visual mode (V) - implemented
   - Blockwise visual mode (Ctrl-v) - implemented

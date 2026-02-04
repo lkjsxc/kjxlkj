@@ -26,16 +26,16 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### A. Placeholder scaffolding
 
-- [ ] Define a selection model that supports block selections (even if initially unimplemented).
-- [ ] Define rendering rules for selections and cursor interaction.
+- [x] Define a selection model that supports block selections (even if initially unimplemented).
+- [x] Define rendering rules for selections and cursor interaction.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement charwise visual selection with deterministic tests.
+- [x] Implement charwise visual selection with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all visual behaviors and variants in the subtree.
+- [x] Implement all visual behaviors and variants in the subtree.
   - Charwise visual mode (v) - implemented
   - Linewise visual mode (V) - implemented
   - Blockwise visual mode (Ctrl-v) - implemented
@@ -43,6 +43,6 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
