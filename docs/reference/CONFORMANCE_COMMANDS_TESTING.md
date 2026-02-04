@@ -70,9 +70,9 @@ The following E2E test scenarios are covered:
 
 | Suite | Count |
 |---|---|
-| Unit tests (workspace) | 237 |
+| Unit tests (workspace) | 332 |
 | E2E tests | 18 |
-| **Total** | **255** |
+| **Total** | **350** |
 
 ## Related
 
