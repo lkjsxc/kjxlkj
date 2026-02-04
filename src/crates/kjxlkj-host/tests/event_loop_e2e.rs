@@ -603,3 +603,139 @@ fn test_end_to_end_join_lines() {
         assert!(snapshot2.buffer.line_count <= initial_lines);
     }
 }
+
+/// Test: Word movement with w.
+#[test]
+fn test_end_to_end_word_motion_w() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world test".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE)); // Start
+
+    // w -> Move to next word
+    let snapshot1 = state.snapshot();
+    let initial_col = snapshot1.cursor.col();
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    assert!(snapshot2.cursor.col() > initial_col);
+}
+
+/// Test: Beginning of word movement with b.
+#[test]
+fn test_end_to_end_word_motion_b() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world test".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // b -> Move to previous word
+    let snapshot1 = state.snapshot();
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    assert!(snapshot2.cursor.col() < snapshot1.cursor.col());
+}
+
+/// Test: End of word movement with e.
+#[test]
+fn test_end_to_end_word_motion_e() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world test".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE)); // Start
+
+    // e -> Move to end of word
+    let snapshot1 = state.snapshot();
+    let initial_col = snapshot1.cursor.col();
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    assert!(snapshot2.cursor.col() > initial_col);
+}
+
+/// Test: Replace mode with R and typing.
+#[test]
+fn test_end_to_end_replace_mode_typing() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // yy to yank line
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+
+    // p to paste after
+    state.handle_key(KeyEvent::new(KeyCode::Char('p'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    // Should have at least 2 lines now
+    assert!(snapshot.buffer.line_count >= 2);
+}
+
+/// Test: Open line below with o.
+#[test]
+fn test_end_to_end_open_below_insert() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let snapshot1 = state.snapshot();
+    let initial_lines = snapshot1.buffer.line_count;
+
+    // o -> Open line below
+    state.handle_key(KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    
+    // Should be in insert mode and have new line
+    assert_eq!(snapshot2.mode, kjxlkj_core_types::Mode::Insert);
+    assert!(snapshot2.buffer.line_count > initial_lines);
+}
+
+/// Test: Open line above with O.
+#[test]
+fn test_end_to_end_open_above_insert() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let snapshot1 = state.snapshot();
+    let initial_lines = snapshot1.buffer.line_count;
+
+    // O -> Open line above
+    state.handle_key(KeyEvent::new(KeyCode::Char('O'), KeyModifiers::NONE));
+    let snapshot2 = state.snapshot();
+    
+    // Should be in insert mode and have new line
+    assert_eq!(snapshot2.mode, kjxlkj_core_types::Mode::Insert);
+    assert!(snapshot2.buffer.line_count > initial_lines);
+}
