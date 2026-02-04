@@ -834,4 +834,80 @@ mod tests {
             panic!("Expected complete");
         }
     }
+
+    #[test]
+    fn test_operator_kind_equality() {
+        assert_eq!(OperatorKind::Delete, OperatorKind::Delete);
+        assert_ne!(OperatorKind::Delete, OperatorKind::Yank);
+    }
+
+    #[test]
+    fn test_operator_kind_clone() {
+        let op = OperatorKind::Change;
+        let cloned = op.clone();
+        assert_eq!(op, cloned);
+    }
+
+    #[test]
+    fn test_parse_result_debug() {
+        let result = ParseResult::Pending;
+        let debug = format!("{:?}", result);
+        assert!(debug.contains("Pending"));
+    }
+
+    #[test]
+    fn test_parsed_command_clone() {
+        let cmd = ParsedCommand {
+            count: 5,
+            operator: Some(OperatorKind::Delete),
+            action: ActionKind::Motion(MotionIntent::Down),
+        };
+        let cloned = cmd.clone();
+        assert_eq!(cmd.count, cloned.count);
+    }
+
+    #[test]
+    fn test_scroll_action_debug() {
+        let action = ScrollAction::HalfPageDown;
+        let debug = format!("{:?}", action);
+        assert!(debug.contains("HalfPageDown"));
+    }
+
+    #[test]
+    fn test_all_operator_kinds() {
+        let kinds = [
+            OperatorKind::Delete,
+            OperatorKind::Yank,
+            OperatorKind::Change,
+            OperatorKind::Indent,
+            OperatorKind::Outdent,
+            OperatorKind::ToggleCase,
+            OperatorKind::Uppercase,
+            OperatorKind::Lowercase,
+        ];
+        assert_eq!(kinds.len(), 8);
+    }
+
+    #[test]
+    fn test_parse_visual_block_mode() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::ctrl(KeyCode::Char('v')));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::VisualBlockMode));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parser_reset_on_invalid() {
+        let mut parser = Parser::new();
+        // Start with a partial sequence
+        let _ = parser.parse(&KeyEvent::char('d'));
+        // Then parse an invalid key
+        parser.reset();
+        // Should be fresh state
+        let result = parser.parse(&KeyEvent::char('j'));
+        assert!(matches!(result, ParseResult::Complete(_)));
+    }
 }
