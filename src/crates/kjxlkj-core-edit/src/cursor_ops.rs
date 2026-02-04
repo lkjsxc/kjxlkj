@@ -176,6 +176,43 @@ pub trait CursorOps {
         }
     }
 
+    /// Moves the cursor to the end of the previous word (ge).
+    fn move_word_end_backward(&mut self) {
+        let cursor = self.cursor();
+        let line = cursor.position.line as usize;
+        let col = cursor.position.col as usize;
+
+        if let Some(content) = self.line_content(line) {
+            let chars: Vec<char> = content.chars().collect();
+            
+            // Find the word end backward on current line
+            if let Some(new_col) = find_word_end_backward(&chars, col) {
+                self.cursor_mut().position.col = new_col as u32;
+                self.cursor_mut().clear_preferred_col();
+                return;
+            }
+        }
+
+        // Move to previous line end
+        if line > 0 {
+            self.cursor_mut().position.line = (line - 1) as u32;
+            self.move_line_end();
+            // Now find word end backward from this position
+            let cursor = self.cursor();
+            let new_line = cursor.position.line as usize;
+            if let Some(content) = self.line_content(new_line) {
+                let chars: Vec<char> = content.chars().collect();
+                if !chars.is_empty() {
+                    // Cursor is at line end, which is typically a word end
+                    // We stay here since it's the end of the last word on previous line
+                    return;
+                }
+            }
+            // If line is empty, recursively search further back
+            self.move_word_end_backward();
+        }
+    }
+
     /// Moves the cursor to the start of the file (gg).
     fn move_file_start(&mut self) {
         self.cursor_mut().position.line = 0;
@@ -397,6 +434,38 @@ fn find_word_end_forward(chars: &[char], start: usize) -> Option<usize> {
     Some(i)
 }
 
+/// Find the end of the previous word from the given position (for `ge` motion).
+fn find_word_end_backward(chars: &[char], start: usize) -> Option<usize> {
+    if chars.is_empty() || start == 0 {
+        return None;
+    }
+
+    let mut i = start.saturating_sub(1);
+
+    // Phase 1: Skip the current word (if we're on or right after a word)
+    // If current position is a non-whitespace char, skip backward through the word
+    while i > 0 && !chars[i].is_whitespace() {
+        i -= 1;
+    }
+    
+    // Phase 2: Skip whitespace backwards
+    while i > 0 && chars[i].is_whitespace() {
+        i -= 1;
+    }
+
+    // If we're at position 0 and it's whitespace, nothing to find
+    if chars[i].is_whitespace() {
+        return None;
+    }
+
+    // We're now at the end of the previous word
+    if i < start {
+        Some(i)
+    } else {
+        None
+    }
+}
+
 use crate::Buffer;
 
 impl CursorOps for Buffer {
@@ -505,5 +574,24 @@ mod tests {
         
         buf.move_file_end();
         assert_eq!(buf.cursor().position.line, 2);
+    }
+
+    #[test]
+    fn word_end_backward() {
+        let mut buf = Buffer::from_content(
+            BufferId::new(1),
+            "test".to_string(),
+            "hello world foo",
+        );
+        // Start at 'f' of "foo" (col 12)
+        buf.cursor_mut().position = LineCol::new(0, 12);
+        
+        // Move to end of previous word "world" (col 10)
+        buf.move_word_end_backward();
+        assert_eq!(buf.cursor().position.col, 10);
+        
+        // Move to end of "hello" (col 4)
+        buf.move_word_end_backward();
+        assert_eq!(buf.cursor().position.col, 4);
     }
 }

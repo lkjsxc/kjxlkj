@@ -211,15 +211,27 @@ impl EditorState {
             EditorAction::ScrollHalfPageUp => self.scroll_half_page(false),
             EditorAction::ScrollPageDown => self.scroll_full_page(true),
             EditorAction::ScrollPageUp => self.scroll_full_page(false),
+            EditorAction::ScrollLineDown => self.scroll_line(true),
+            EditorAction::ScrollLineUp => self.scroll_line(false),
+            EditorAction::ScreenTop => self.move_to_screen_top(),
+            EditorAction::ScreenMiddle => self.move_to_screen_middle(),
+            EditorAction::ScreenBottom => self.move_to_screen_bottom(),
+            EditorAction::ScrollCursorCenter => self.scroll_cursor_center(),
+            EditorAction::ScrollCursorTop => self.scroll_cursor_top(),
+            EditorAction::ScrollCursorBottom => self.scroll_cursor_bottom(),
             EditorAction::LineStart => self.buffer.move_line_start(),
             EditorAction::LineEnd => self.buffer.move_line_end(),
             EditorAction::FirstNonBlank => self.buffer.move_first_non_blank(),
+            EditorAction::NextLineStart => self.move_next_line_start(),
+            EditorAction::PrevLineStart => self.move_prev_line_start(),
             EditorAction::WordForward => self.buffer.move_word_forward(),
             EditorAction::WORDForward => self.buffer.move_word_forward(), // TODO: WORD semantics
             EditorAction::WordBackward => self.buffer.move_word_backward(),
             EditorAction::WORDBackward => self.buffer.move_word_backward(), // TODO: WORD semantics
             EditorAction::WordEnd => self.buffer.move_word_end(),
             EditorAction::WORDEnd => self.buffer.move_word_end(), // TODO: WORD semantics
+            EditorAction::WordEndBackward => self.buffer.move_word_end_backward(),
+            EditorAction::WORDEndBackward => self.buffer.move_word_end_backward(), // TODO: WORD semantics
             EditorAction::FileStart => {
                 self.add_to_jump_list();
                 self.buffer.move_file_start();
@@ -404,6 +416,24 @@ impl EditorState {
                     }
                 }
                 self.buffer.paste_before();
+            }
+            EditorAction::PasteAfterCursorEnd => {
+                // Use named register if pending, otherwise use default
+                if let Some(reg) = self.pending_register.take() {
+                    if let Some(content) = self.registers.get(&reg).cloned() {
+                        self.buffer.set_yank_register(content);
+                    }
+                }
+                self.buffer.paste_after_cursor_end();
+            }
+            EditorAction::PasteBeforeCursorEnd => {
+                // Use named register if pending, otherwise use default
+                if let Some(reg) = self.pending_register.take() {
+                    if let Some(content) = self.registers.get(&reg).cloned() {
+                        self.buffer.set_yank_register(content);
+                    }
+                }
+                self.buffer.paste_before_cursor_end();
             }
             EditorAction::OperatorMotion { operator, motion, count } => {
                 self.last_change = Some(RepeatableChange::OperatorMotion {
@@ -1204,6 +1234,113 @@ impl EditorState {
         self.buffer.clamp_cursor();
     }
 
+    /// Scroll one line up or down without moving cursor (Ctrl-e, Ctrl-y).
+    fn scroll_line(&mut self, down: bool) {
+        // This primarily affects the viewport, not the cursor.
+        // In our implementation, we just move the viewport offset.
+        // Since viewport follows cursor, we need to move cursor to stay visible.
+        if down {
+            self.viewport.top_line = self.viewport.top_line.saturating_add(1);
+            // If cursor would be above viewport, move it down
+            let cursor_line = self.buffer.cursor().position.line as usize;
+            if cursor_line < self.viewport.top_line {
+                self.buffer.cursor_mut().position.line = self.viewport.top_line as u32;
+                self.buffer.clamp_cursor();
+            }
+        } else {
+            if self.viewport.top_line > 0 {
+                self.viewport.top_line -= 1;
+            }
+            // If cursor would be below viewport, move it up
+            let cursor_line = self.buffer.cursor().position.line as usize;
+            let visible_height = self.terminal_size.1 as usize;
+            if cursor_line >= self.viewport.top_line + visible_height {
+                let new_line = (self.viewport.top_line + visible_height).saturating_sub(1);
+                self.buffer.cursor_mut().position.line = new_line as u32;
+                self.buffer.clamp_cursor();
+            }
+        }
+    }
+
+    /// Move cursor to top of visible screen (H).
+    fn move_to_screen_top(&mut self) {
+        let top_line = self.viewport.top_line;
+        self.buffer.cursor_mut().position.line = top_line as u32;
+        self.buffer.move_first_non_blank();
+    }
+
+    /// Move cursor to middle of visible screen (M).
+    fn move_to_screen_middle(&mut self) {
+        let visible_height = self.terminal_size.1 as usize;
+        let middle_offset = visible_height / 2;
+        let middle_line = self.viewport.top_line + middle_offset;
+        let line_count = self.buffer.line_count();
+        let target_line = middle_line.min(line_count.saturating_sub(1));
+        self.buffer.cursor_mut().position.line = target_line as u32;
+        self.buffer.move_first_non_blank();
+    }
+
+    /// Move cursor to bottom of visible screen (L).
+    fn move_to_screen_bottom(&mut self) {
+        let visible_height = self.terminal_size.1 as usize;
+        let bottom_line = self.viewport.top_line + visible_height.saturating_sub(1);
+        let line_count = self.buffer.line_count();
+        let target_line = bottom_line.min(line_count.saturating_sub(1));
+        self.buffer.cursor_mut().position.line = target_line as u32;
+        self.buffer.move_first_non_blank();
+    }
+
+    /// Center cursor line on screen (zz).
+    fn scroll_cursor_center(&mut self) {
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        let visible_height = self.terminal_size.1 as usize;
+        let half_height = visible_height / 2;
+        self.viewport.top_line = cursor_line.saturating_sub(half_height);
+    }
+
+    /// Move cursor line to top of screen (zt).
+    fn scroll_cursor_top(&mut self) {
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        self.viewport.top_line = cursor_line;
+    }
+
+    /// Move cursor line to bottom of screen (zb).
+    fn scroll_cursor_bottom(&mut self) {
+        let cursor_line = self.buffer.cursor().position.line as usize;
+        let visible_height = self.terminal_size.1 as usize;
+        self.viewport.top_line = cursor_line.saturating_sub(visible_height.saturating_sub(1));
+    }
+
+    /// Move to first non-blank character of next line (+)
+    fn move_next_line_start(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        let line_count = self.buffer.line_count();
+        let next_line = cursor.line as usize + 1;
+        if next_line < line_count {
+            // Move to next line
+            self.buffer.set_cursor_position(LineCol {
+                line: next_line as u32,
+                col: 0,
+            });
+            // Then move to first non-blank
+            self.buffer.move_first_non_blank();
+        }
+    }
+
+    /// Move to first non-blank character of previous line (-)
+    fn move_prev_line_start(&mut self) {
+        let cursor = self.buffer.cursor().position;
+        if cursor.line > 0 {
+            // Move to previous line
+            self.buffer.set_cursor_position(LineCol {
+                line: cursor.line - 1,
+                col: 0,
+            });
+            // Then move to first non-blank
+            self.buffer.move_first_non_blank();
+        }
+    }
+
     /// Join current line with next line.
     /// If `add_space` is true, a single space is inserted at the join point.
     fn join_lines(&mut self, add_space: bool) {
@@ -1628,9 +1765,12 @@ impl EditorState {
                 Motion::LineStart => self.buffer.move_line_start(),
                 Motion::LineEnd => self.buffer.move_line_end(),
                 Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::NextLineStart => self.move_next_line_start(),
+                Motion::PrevLineStart => self.move_prev_line_start(),
                 Motion::WordForward => self.buffer.move_word_forward(),
                 Motion::WordBackward => self.buffer.move_word_backward(),
                 Motion::WordEnd => self.buffer.move_word_end(),
+                Motion::WordEndBackward => self.buffer.move_word_end_backward(),
                 Motion::FileStart => self.buffer.move_file_start(),
                 Motion::FileEnd => self.buffer.move_file_end(),
                 Motion::SentenceForward => self.move_sentence_forward(),
@@ -1702,9 +1842,12 @@ impl EditorState {
                 Motion::LineStart => self.buffer.move_line_start(),
                 Motion::LineEnd => self.buffer.move_line_end(),
                 Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::NextLineStart => self.move_next_line_start(),
+                Motion::PrevLineStart => self.move_prev_line_start(),
                 Motion::WordForward => self.buffer.move_word_forward(),
                 Motion::WordBackward => self.buffer.move_word_backward(),
                 Motion::WordEnd => self.buffer.move_word_end(),
+                Motion::WordEndBackward => self.buffer.move_word_end_backward(),
                 Motion::FileStart => self.buffer.move_file_start(),
                 Motion::FileEnd => self.buffer.move_file_end(),
                 Motion::SentenceForward => self.move_sentence_forward(),

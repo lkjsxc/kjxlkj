@@ -42,8 +42,18 @@ This document records the currently implemented, user-visible surface so that:
 | `B` | Move to previous WORD start (same as `b` currently) |
 | `e` | Move to word end |
 | `E` | Move to WORD end (same as `e` currently) |
+| `ge` | Move to previous word end |
+| `gE` | Move to previous WORD end (same as `ge` currently) |
+| `+` | Move to first non-blank of next line |
+| `-` | Move to first non-blank of previous line |
 | `gg` | Move to file start |
 | `G` | Move to file end |
+| `H` | Move to top of visible screen |
+| `M` | Move to middle of visible screen |
+| `L` | Move to bottom of visible screen |
+| `zz` | Scroll cursor to center of screen |
+| `zt` | Scroll cursor to top of screen |
+| `zb` | Scroll cursor to bottom of screen |
 | `i` | Enter Insert mode |
 | `I` | Enter Insert mode (first non-blank of line) |
 | `a` | Enter Insert mode (after cursor) |
@@ -63,6 +73,8 @@ This document records the currently implemented, user-visible surface so that:
 | `Y` | Yank current line (like `yy`) |
 | `p` | Paste after cursor |
 | `P` | Paste before cursor |
+| `gp` | Paste after cursor, cursor at end of pasted text |
+| `gP` | Paste before cursor, cursor at end of pasted text |
 | `u` | Undo |
 | `Ctrl-r` | Redo |
 | `:` | Enter Command mode |
@@ -100,6 +112,8 @@ This document records the currently implemented, user-visible surface so that:
 | `Ctrl-u` | Scroll half page up |
 | `Ctrl-f` | Scroll full page down |
 | `Ctrl-b` | Scroll full page up |
+| `Ctrl-e` | Scroll one line down (cursor stays) |
+| `Ctrl-y` | Scroll one line up (cursor stays) |
 
 ### Operators and motions
 

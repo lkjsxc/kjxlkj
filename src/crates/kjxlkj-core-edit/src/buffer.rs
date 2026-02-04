@@ -480,6 +480,109 @@ impl Buffer {
         }
     }
 
+    /// Pastes after the cursor with cursor at end of pasted text (gp command).
+    pub fn paste_after_cursor_end(&mut self) {
+        if self.yank_register.is_empty() {
+            return;
+        }
+        let is_line = self.yank_register.ends_with('\n');
+        let paste_len = self.yank_register.len();
+        
+        if is_line {
+            // For linewise paste, insert on the next line and move cursor to line after paste
+            let line_count = self.yank_register.matches('\n').count();
+            let next_line = self.cursor.position.line + 1;
+            let pos = LineCol::new(next_line, 0);
+            
+            let need_newline = next_line as usize >= self.text.line_count();
+            let text_to_insert = if need_newline {
+                format!("\n{}", self.yank_register.trim_end_matches('\n'))
+            } else {
+                self.yank_register.clone()
+            };
+            
+            let insert_pos = if need_newline {
+                let line_idx = self.cursor.position.line as usize;
+                let line_len = self.line_len(line_idx).unwrap_or(0);
+                LineCol::new(self.cursor.position.line, line_len as u32)
+            } else {
+                pos
+            };
+            
+            if self.text.insert(insert_pos, &text_to_insert) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos: insert_pos,
+                    text: text_to_insert,
+                });
+                self.history.push(group);
+                // Move cursor to line after pasted text
+                self.cursor.position.line = next_line + line_count as u32;
+                self.cursor.position.col = 0;
+                self.clamp_cursor();
+                self.modified = true;
+            }
+        } else {
+            let pos = LineCol::new(
+                self.cursor.position.line,
+                self.cursor.position.col + 1,
+            );
+            if self.text.insert(pos, &self.yank_register) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: self.yank_register.clone(),
+                });
+                self.history.push(group);
+                // Move cursor past the pasted text
+                self.cursor.position.col = pos.col + paste_len as u32;
+                self.clamp_cursor();
+                self.modified = true;
+            }
+        }
+    }
+
+    /// Pastes before the cursor with cursor at end of pasted text (gP command).
+    pub fn paste_before_cursor_end(&mut self) {
+        if self.yank_register.is_empty() {
+            return;
+        }
+        let is_line = self.yank_register.ends_with('\n');
+        let paste_len = self.yank_register.len();
+        
+        if is_line {
+            let line_count = self.yank_register.matches('\n').count();
+            let pos = LineCol::new(self.cursor.position.line, 0);
+            if self.text.insert(pos, &self.yank_register) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: self.yank_register.clone(),
+                });
+                self.history.push(group);
+                // Move cursor to line after pasted text
+                self.cursor.position.line = self.cursor.position.line + line_count as u32;
+                self.cursor.position.col = 0;
+                self.clamp_cursor();
+                self.modified = true;
+            }
+        } else {
+            let pos = self.cursor.position;
+            if self.text.insert(pos, &self.yank_register) {
+                let mut group = UndoGroup::new();
+                group.push(EditOperation::Insert {
+                    pos,
+                    text: self.yank_register.clone(),
+                });
+                self.history.push(group);
+                // Move cursor past the pasted text
+                self.cursor.position.col = pos.col + paste_len as u32;
+                self.clamp_cursor();
+                self.modified = true;
+            }
+        }
+    }
+
     /// Deletes text in a range and yanks it.
     pub fn delete_range(&mut self, start: LineCol, end: LineCol) {
         if start == end {

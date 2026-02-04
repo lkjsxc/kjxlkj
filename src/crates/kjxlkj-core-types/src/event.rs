@@ -14,9 +14,15 @@ pub enum Motion {
     LineStart,
     LineEnd,
     FirstNonBlank,
+    /// First non-blank of next line (+, Enter).
+    NextLineStart,
+    /// First non-blank of previous line (-).
+    PrevLineStart,
     WordForward,
     WordBackward,
     WordEnd,
+    /// Word end backward (ge).
+    WordEndBackward,
     FileStart,
     FileEnd,
     /// Current line (for double-operator like dd, yy).
@@ -107,12 +113,32 @@ pub enum EditorAction {
     ScrollPageDown,
     /// Scroll full page up (Ctrl-b).
     ScrollPageUp,
+    /// Scroll one line down (Ctrl-e).
+    ScrollLineDown,
+    /// Scroll one line up (Ctrl-y).
+    ScrollLineUp,
+    /// Move cursor to top of screen (H).
+    ScreenTop,
+    /// Move cursor to middle of screen (M).
+    ScreenMiddle,
+    /// Move cursor to bottom of screen (L).
+    ScreenBottom,
+    /// Center cursor line on screen (zz).
+    ScrollCursorCenter,
+    /// Move cursor line to top of screen (zt).
+    ScrollCursorTop,
+    /// Move cursor line to bottom of screen (zb).
+    ScrollCursorBottom,
     /// Move to start of line (column 0).
     LineStart,
     /// Move to end of line.
     LineEnd,
     /// Move to first non-blank character (^).
     FirstNonBlank,
+    /// Move to first non-blank of next line (+, Enter).
+    NextLineStart,
+    /// Move to first non-blank of previous line (-).
+    PrevLineStart,
     /// Move to next word start (w).
     WordForward,
     /// Move to next WORD start (W).
@@ -125,6 +151,10 @@ pub enum EditorAction {
     WordEnd,
     /// Move to WORD end (E).
     WORDEnd,
+    /// Move to previous word end (ge).
+    WordEndBackward,
+    /// Move to previous WORD end (gE).
+    WORDEndBackward,
     /// Move to file start (gg).
     FileStart,
     /// Move to file end (G).
@@ -207,6 +237,10 @@ pub enum EditorAction {
     PasteAfter,
     /// Paste before cursor (P command).
     PasteBefore,
+    /// Paste after cursor with cursor at end (gp command).
+    PasteAfterCursorEnd,
+    /// Paste before cursor with cursor at end (gP command).
+    PasteBeforeCursorEnd,
     /// Operator applied to a motion (e.g., dw, cw, yw).
     OperatorMotion { operator: Operator, motion: Motion, count: Option<u32> },
     /// Operator applied to a text object (e.g., diw, ci", ya().

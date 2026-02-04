@@ -205,8 +205,21 @@ impl ModeHandler {
                 "B" => EditorAction::WORDBackward,
                 "e" => EditorAction::WordEnd,
                 "E" => EditorAction::WORDEnd,
+                "ge" => EditorAction::WordEndBackward,
+                "gE" => EditorAction::WORDEndBackward,
+                "+" => EditorAction::NextLineStart,
+                "-" => EditorAction::PrevLineStart,
                 "gg" => EditorAction::FileStart,
                 "G" => EditorAction::FileEnd,
+                "H" => EditorAction::ScreenTop,
+                "M" => EditorAction::ScreenMiddle,
+                "L" => EditorAction::ScreenBottom,
+                
+                // Scroll cursor centering
+                "zz" => EditorAction::ScrollCursorCenter,
+                "zt" => EditorAction::ScrollCursorTop,
+                "zb" => EditorAction::ScrollCursorBottom,
+                "z" => return EditorAction::Nop,  // Wait for second character
                 
                 // Sentence/paragraph motions
                 ")" => EditorAction::SentenceForward,
@@ -354,6 +367,8 @@ impl ModeHandler {
                 "Y" => EditorAction::YankLine,
                 "p" => EditorAction::PasteAfter,
                 "P" => EditorAction::PasteBefore,
+                "gp" => EditorAction::PasteAfterCursorEnd,
+                "gP" => EditorAction::PasteBeforeCursorEnd,
                 "u" => EditorAction::Undo,
                 "." => EditorAction::RepeatLastChange,
                 
@@ -413,6 +428,10 @@ impl ModeHandler {
             EditorAction::ScrollPageDown
         } else if key.is_ctrl('b') {
             EditorAction::ScrollPageUp
+        } else if key.is_ctrl('e') {
+            EditorAction::ScrollLineDown
+        } else if key.is_ctrl('y') {
+            EditorAction::ScrollLineUp
         } else if key.is_ctrl('a') {
             let count = self.state.take_count().unwrap_or(1) as i32;
             EditorAction::IncrementNumber { amount: count }
@@ -516,6 +535,8 @@ impl ModeHandler {
             "w" => Some(Motion::WordForward),
             "b" => Some(Motion::WordBackward),
             "e" => Some(Motion::WordEnd),
+            "ge" => Some(Motion::WordEndBackward),
+            "gE" => Some(Motion::WordEndBackward),  // TODO: WORD semantics
             "gg" => Some(Motion::FileStart),
             "G" => Some(Motion::FileEnd),
             ")" => Some(Motion::SentenceForward),
@@ -610,6 +631,8 @@ impl ModeHandler {
             "w" => Some(Motion::WordForward),
             "b" => Some(Motion::WordBackward),
             "e" => Some(Motion::WordEnd),
+            "ge" => Some(Motion::WordEndBackward),
+            "gE" => Some(Motion::WordEndBackward),  // TODO: WORD semantics
             "gg" => Some(Motion::FileStart),
             "G" => Some(Motion::FileEnd),
             ")" => Some(Motion::SentenceForward),
@@ -730,13 +753,17 @@ impl ModeHandler {
             return EditorAction::ReturnToNormalMode;
         }
         
-        // Handle pending g for gg
+        // Handle pending g for gg, ge, gE
         if self.state.pending_keys() == ['g'] {
             self.state.clear_pending();
-            if let Some('g') = key.char() {
-                return EditorAction::FileStart;
+            if let Some(ch) = key.char() {
+                match ch {
+                    'g' => return EditorAction::FileStart,
+                    'e' => return EditorAction::WordEndBackward,
+                    'E' => return EditorAction::WORDEndBackward,
+                    _ => return EditorAction::Nop,  // Invalid after g
+                }
             }
-            // Invalid after g, just ignore
             return EditorAction::Nop;
         }
         
@@ -757,7 +784,7 @@ impl ModeHandler {
                 '^' => return EditorAction::FirstNonBlank,
                 '$' => return EditorAction::LineEnd,
                 'g' => {
-                    // gg - file start (pending)
+                    // gg, ge, gE - (pending)
                     self.state.push_key('g');
                     return EditorAction::Nop;
                 }
