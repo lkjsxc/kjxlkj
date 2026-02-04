@@ -124,4 +124,85 @@ mod tests {
         assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 5);
         assert_eq!(find_word_boundary(s, 0, true, WordKind::WORD), 11);
     }
+
+    #[test]
+    fn test_word_kind_equality() {
+        assert_eq!(WordKind::Word, WordKind::Word);
+        assert_ne!(WordKind::Word, WordKind::WORD);
+    }
+
+    #[test]
+    fn test_classify_char_whitespace() {
+        assert_eq!(classify_char(' '), CharClass::Whitespace);
+        assert_eq!(classify_char('\t'), CharClass::Whitespace);
+        assert_eq!(classify_char('\n'), CharClass::Whitespace);
+    }
+
+    #[test]
+    fn test_classify_char_word() {
+        assert_eq!(classify_char('a'), CharClass::Word);
+        assert_eq!(classify_char('Z'), CharClass::Word);
+        assert_eq!(classify_char('_'), CharClass::Word);
+        assert_eq!(classify_char('5'), CharClass::Word);
+    }
+
+    #[test]
+    fn test_classify_char_punct() {
+        assert_eq!(classify_char('.'), CharClass::Punct);
+        assert_eq!(classify_char('-'), CharClass::Punct);
+        assert_eq!(classify_char('!'), CharClass::Punct);
+    }
+
+    #[test]
+    fn test_empty_string() {
+        let s = "";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 0);
+        assert_eq!(find_word_boundary(s, 0, false, WordKind::Word), 0);
+    }
+
+    #[test]
+    fn test_single_word() {
+        let s = "hello";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 5);
+        assert_eq!(find_word_boundary(s, 4, false, WordKind::Word), 0);
+    }
+
+    #[test]
+    fn test_multiple_spaces() {
+        let s = "hello    world";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 9);
+    }
+
+    #[test]
+    fn test_word_at_start() {
+        let s = "hello";
+        assert_eq!(find_word_boundary(s, 0, false, WordKind::Word), 0);
+    }
+
+    #[test]
+    fn test_word_at_end() {
+        let s = "hello";
+        assert_eq!(find_word_boundary(s, 4, true, WordKind::Word), 5);
+    }
+
+    #[test]
+    fn test_WORD_with_punct() {
+        let s = "hello-world test";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::WORD), 12);
+    }
+
+    #[test]
+    fn test_word_boundary_at_boundary() {
+        let s = "hello world";
+        assert_eq!(find_word_boundary(s, 5, true, WordKind::Word), 6);
+    }
+
+    #[test]
+    fn test_backward_multiple_words() {
+        let s = "one two three";
+        assert_eq!(find_word_boundary(s, 12, false, WordKind::Word), 8);
+        assert_eq!(find_word_boundary(s, 7, false, WordKind::Word), 4);
+        assert_eq!(find_word_boundary(s, 3, false, WordKind::Word), 0);
+    }
 }
+

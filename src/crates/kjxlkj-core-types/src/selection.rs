@@ -110,4 +110,67 @@ mod tests {
         let sel = Selection::line_wise(Position::new(2, 0), Position::new(7, 0));
         assert_eq!(sel.line_range(), (2, 7));
     }
+
+    #[test]
+    fn test_selection_kind_default() {
+        assert_eq!(SelectionKind::default(), SelectionKind::Char);
+    }
+
+    #[test]
+    fn test_selection_char_wise() {
+        let sel = Selection::char_wise(Position::new(0, 0), Position::new(1, 1));
+        assert_eq!(sel.kind, SelectionKind::Char);
+    }
+
+    #[test]
+    fn test_selection_line_wise() {
+        let sel = Selection::line_wise(Position::new(0, 0), Position::new(1, 1));
+        assert_eq!(sel.kind, SelectionKind::Line);
+    }
+
+    #[test]
+    fn test_selection_block_wise() {
+        let sel = Selection::block_wise(Position::new(0, 0), Position::new(1, 1));
+        assert_eq!(sel.kind, SelectionKind::Block);
+    }
+
+    #[test]
+    fn test_selection_start_same_line() {
+        let sel = Selection::char_wise(Position::new(0, 5), Position::new(0, 2));
+        assert_eq!(sel.start(), Position::new(0, 2));
+    }
+
+    #[test]
+    fn test_selection_end_same_line() {
+        let sel = Selection::char_wise(Position::new(0, 2), Position::new(0, 5));
+        assert_eq!(sel.end(), Position::new(0, 5));
+    }
+
+    #[test]
+    fn test_selection_new() {
+        let sel = Selection::new(Position::new(1, 2), Position::new(3, 4), SelectionKind::Block);
+        assert_eq!(sel.anchor, Position::new(1, 2));
+        assert_eq!(sel.cursor, Position::new(3, 4));
+        assert_eq!(sel.kind, SelectionKind::Block);
+    }
+
+    #[test]
+    fn test_selection_clone() {
+        let sel = Selection::char_wise(Position::new(0, 0), Position::new(1, 1));
+        let cloned = sel.clone();
+        assert_eq!(sel, cloned);
+    }
+
+    #[test]
+    fn test_selection_kind_equality() {
+        assert_eq!(SelectionKind::Char, SelectionKind::Char);
+        assert_ne!(SelectionKind::Char, SelectionKind::Line);
+    }
+
+    #[test]
+    fn test_selection_line_range_reversed() {
+        let sel = Selection::line_wise(Position::new(7, 0), Position::new(2, 0));
+        assert_eq!(sel.line_range(), (2, 7));
+    }
 }
+

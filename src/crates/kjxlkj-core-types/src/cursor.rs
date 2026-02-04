@@ -102,4 +102,36 @@ mod tests {
         assert_eq!(cursor.line(), 3);
         assert_eq!(cursor.col(), 7);
     }
+
+    #[test]
+    fn test_cursor_from_position() {
+        let pos = Position::new(2, 5);
+        let cursor = Cursor::from_position(pos);
+        assert_eq!(cursor.position, pos);
+    }
+
+    #[test]
+    fn test_cursor_move_to() {
+        let mut cursor = Cursor::new(0, 0);
+        cursor.preferred_col = Some(10);
+        cursor.move_to(5, 3);
+        assert_eq!(cursor.line(), 5);
+        assert_eq!(cursor.col(), 3);
+        assert!(cursor.preferred_col.is_none());
+    }
+
+    #[test]
+    fn test_cursor_clear_preferred_col() {
+        let mut cursor = Cursor::new(0, 0);
+        cursor.preferred_col = Some(10);
+        cursor.clear_preferred_col();
+        assert!(cursor.preferred_col.is_none());
+    }
+
+    #[test]
+    fn test_cursor_default() {
+        let cursor = Cursor::default();
+        assert_eq!(cursor.position, Position::ORIGIN);
+    }
 }
+

@@ -87,4 +87,51 @@ mod tests {
         assert_eq!(Mode::from_str_loose("visual_line"), Some(Mode::VisualLine));
         assert_eq!(Mode::from_str_loose("unknown"), None);
     }
+
+    #[test]
+    fn test_mode_is_insert_like() {
+        assert!(Mode::Insert.is_insert_like());
+        assert!(Mode::Replace.is_insert_like());
+        assert!(!Mode::Normal.is_insert_like());
+        assert!(!Mode::Visual.is_insert_like());
+    }
+
+    #[test]
+    fn test_mode_as_str() {
+        assert_eq!(Mode::Normal.as_str(), "normal");
+        assert_eq!(Mode::Insert.as_str(), "insert");
+        assert_eq!(Mode::Visual.as_str(), "visual");
+        assert_eq!(Mode::VisualLine.as_str(), "visual_line");
+        assert_eq!(Mode::VisualBlock.as_str(), "visual_block");
+        assert_eq!(Mode::Command.as_str(), "command");
+        assert_eq!(Mode::Replace.as_str(), "replace");
+    }
+
+    #[test]
+    fn test_mode_from_str_loose_shortcuts() {
+        assert_eq!(Mode::from_str_loose("n"), Some(Mode::Normal));
+        assert_eq!(Mode::from_str_loose("i"), Some(Mode::Insert));
+        assert_eq!(Mode::from_str_loose("v"), Some(Mode::Visual));
+        assert_eq!(Mode::from_str_loose("vl"), Some(Mode::VisualLine));
+        assert_eq!(Mode::from_str_loose("vb"), Some(Mode::VisualBlock));
+        assert_eq!(Mode::from_str_loose("cmd"), Some(Mode::Command));
+        assert_eq!(Mode::from_str_loose("r"), Some(Mode::Replace));
+    }
+
+    #[test]
+    fn test_mode_clone() {
+        let mode = Mode::Visual;
+        let cloned = mode.clone();
+        assert_eq!(mode, cloned);
+    }
+
+    #[test]
+    fn test_mode_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Mode::Normal);
+        assert!(set.contains(&Mode::Normal));
+        assert!(!set.contains(&Mode::Insert));
+    }
 }
+

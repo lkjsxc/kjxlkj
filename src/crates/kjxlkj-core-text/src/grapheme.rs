@@ -60,4 +60,70 @@ mod tests {
         assert_eq!(nth_grapheme_offset(slice, 1), Some(1));
         assert_eq!(nth_grapheme_offset(slice, 2), Some(3)); // 'é' is 2 bytes
     }
+
+    #[test]
+    fn test_grapheme_count_empty() {
+        assert_eq!(grapheme_count(""), 0);
+    }
+
+    #[test]
+    fn test_grapheme_count_single() {
+        assert_eq!(grapheme_count("a"), 1);
+    }
+
+    #[test]
+    fn test_grapheme_count_cjk() {
+        assert_eq!(grapheme_count("你好"), 2);
+        assert_eq!(grapheme_count("日本語"), 3);
+    }
+
+    #[test]
+    fn test_grapheme_count_combining() {
+        // e + combining acute accent = 1 grapheme
+        assert_eq!(grapheme_count("e\u{0301}"), 1);
+    }
+
+    #[test]
+    fn test_nth_grapheme_offset_empty() {
+        let rope = Rope::from_str("");
+        let slice = rope.slice(..);
+        assert_eq!(nth_grapheme_offset(slice, 0), Some(0));
+        assert_eq!(nth_grapheme_offset(slice, 1), None);
+    }
+
+    #[test]
+    fn test_nth_grapheme_offset_beyond() {
+        let rope = Rope::from_str("ab");
+        let slice = rope.slice(..);
+        assert_eq!(nth_grapheme_offset(slice, 10), None);
+    }
+
+    #[test]
+    fn test_rope_grapheme_count() {
+        let rope = Rope::from_str("hello");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 5);
+    }
+
+    #[test]
+    fn test_rope_grapheme_count_unicode() {
+        let rope = Rope::from_str("héllo 世界");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 8);
+    }
+
+    #[test]
+    fn test_rope_grapheme_count_empty() {
+        let rope = Rope::from_str("");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 0);
+    }
+
+    #[test]
+    fn test_rope_grapheme_count_newlines() {
+        let rope = Rope::from_str("a\nb\nc");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 5);
+    }
 }
+
