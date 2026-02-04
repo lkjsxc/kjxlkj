@@ -170,12 +170,15 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `Ctrl-j` | Insert newline (same as Enter) |
 | `Ctrl-m` | Insert newline (same as Enter) |
 | Arrow keys | Move cursor |
+| `Home` | Move to line start |
+| `End` | Move to line end |
+| `Delete` | Delete character at cursor |
+| `Tab` | Insert tab character |
 | `Ctrl-w` | Delete word before cursor |
 | `Ctrl-u` | Delete to start of line |
 | `Ctrl-t` | Indent current line |
 | `Ctrl-d` | Outdent current line |
-| `Ctrl-y` | Copy character from line above |
-| `Ctrl-e` | Copy character from line below |
+| `Ctrl-o` | Execute one Normal mode command then return to Insert |
 | `Ctrl-r {reg}` | Insert contents of register |
 
 ## Replace mode

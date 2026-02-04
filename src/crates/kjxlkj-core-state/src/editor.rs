@@ -447,6 +447,14 @@ impl EditorState {
                     self.registers.select(name);
                 }
             }
+            Intent::InsertFromRegister(c) => {
+                if let Some(name) = kjxlkj_core_types::RegisterName::from_char(c) {
+                    if let Some(content) = self.registers.get(name) {
+                        let text = content.content.clone();
+                        self.insert_text(&text);
+                    }
+                }
+            }
             Intent::ReplaceChar(c) => self.replace_char(c),
             Intent::Substitute => {
                 self.delete(false, 1);

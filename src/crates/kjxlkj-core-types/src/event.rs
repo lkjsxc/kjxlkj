@@ -249,6 +249,8 @@ pub enum Intent {
     Paste { before: bool, cursor_at_end: bool },
     /// Select register.
     SelectRegister(char),
+    /// Insert from register (Ctrl-r in insert mode).
+    InsertFromRegister(char),
     /// Replace character.
     ReplaceChar(char),
     /// Substitute character (delete and enter insert).

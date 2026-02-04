@@ -3,13 +3,26 @@
 use crate::handler::{ModeHandler, ModeResult};
 use kjxlkj_core_types::{Intent, KeyCode, KeyEvent, Mode, MotionIntent};
 
+/// State for insert mode (for Ctrl-r register sequence).
+#[derive(Debug, Clone, Default)]
+enum InsertState {
+    #[default]
+    Normal,
+    /// Waiting for register name after Ctrl-r.
+    WaitingForRegister,
+}
+
 /// Insert mode handler.
-pub struct InsertMode;
+pub struct InsertMode {
+    state: InsertState,
+}
 
 impl InsertMode {
     /// Create a new insert mode handler.
     pub fn new() -> Self {
-        Self
+        Self {
+            state: InsertState::Normal,
+        }
     }
 }
 
@@ -21,6 +34,16 @@ impl Default for InsertMode {
 
 impl ModeHandler for InsertMode {
     fn handle_key(&mut self, key: &KeyEvent) -> ModeResult {
+        // Handle waiting for register
+        if matches!(self.state, InsertState::WaitingForRegister) {
+            self.state = InsertState::Normal;
+            return match &key.code {
+                KeyCode::Char(c) => ModeResult::intent(Intent::InsertFromRegister(*c)),
+                KeyCode::Escape => ModeResult::Consumed(vec![]),
+                _ => ModeResult::Ignored,
+            };
+        }
+
         // Handle Ctrl combinations
         if key.modifiers.ctrl {
             return match &key.code {
@@ -52,6 +75,11 @@ impl ModeHandler for InsertMode {
                     // Execute one normal command
                     ModeResult::intent(Intent::SwitchMode(Mode::Normal))
                 }
+                KeyCode::Char('r') | KeyCode::Char('R') => {
+                    // Insert from register - wait for register name
+                    self.state = InsertState::WaitingForRegister;
+                    ModeResult::Consumed(vec![])
+                }
                 _ => ModeResult::Ignored,
             };
         }
@@ -77,7 +105,9 @@ impl ModeHandler for InsertMode {
         Mode::Insert
     }
 
-    fn reset(&mut self) {}
+    fn reset(&mut self) {
+        self.state = InsertState::Normal;
+    }
 }
 
 #[cfg(test)]
@@ -199,6 +229,100 @@ mod tests {
             assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
         } else {
             panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_w() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('w')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_u() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('u')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_t() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('t')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Indent)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_d() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('d')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Outdent)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_o() {
+        let mut mode = InsertMode::new();
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('o')));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Normal))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_r() {
+        let mut mode = InsertMode::new();
+        // Ctrl-r should enter waiting state
+        let result = mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('r')));
+        assert!(matches!(result, ModeResult::Consumed(_)));
+        
+        // Next key should be the register name
+        let result = mode.handle_key(&KeyEvent::char('a'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertFromRegister('a'))));
+        } else {
+            panic!("Expected consumed with InsertFromRegister");
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_ctrl_r_escape_cancels() {
+        let mut mode = InsertMode::new();
+        mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('r')));
+        let result = mode.handle_key(&KeyEvent::plain(KeyCode::Escape));
+        // Should cancel and return empty intents
+        assert!(matches!(result, ModeResult::Consumed(_)));
+    }
+
+    #[test]
+    fn test_insert_mode_reset() {
+        let mut mode = InsertMode::new();
+        mode.handle_key(&KeyEvent::ctrl(KeyCode::Char('r')));
+        mode.reset();
+        // After reset, should be back to normal state
+        let result = mode.handle_key(&KeyEvent::char('a'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        } else {
+            panic!("Expected consumed with InsertText");
         }
     }
 }
