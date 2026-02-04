@@ -124,6 +124,12 @@ Bootstrap and keep the repo buildable early:
 - Create required root artifacts (toolchain pinning, CI, Docker) as described by policy and reference docs.
 - Ensure `cargo test --workspace` runs as early as possible (placeholders are acceptable only if recorded as limitations).
 
+Minimum derived artifacts checklist (root):
+- Build system: `Cargo.toml` (workspace), `Cargo.lock` (committed), `.gitignore` (ignores `/target`).
+- Toolchain pin: `rust-toolchain.toml` (stable + `rustfmt`/`clippy` components).
+- CI: `/.github/workflows/ci.yml`, `/.github/scripts/check_docs_policy.py` (and automation such as `/.github/dependabot.yml`).
+- Docker: `Dockerfile` and `.dockerignore`.
+
 Keep verification gated and reproducible:
 - Keep CI and local commands aligned with `/docs/reference/CI.md`.
 - After each coherent slice, run: `python .github/scripts/check_docs_policy.py`, `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace`.
