@@ -91,6 +91,7 @@ TODO discipline
 - Use `/docs/todo/current/` as your master checklist.
 - Actually write checkmarks into the TODO-list document files as you complete items.
 - Do not stop until every item in the current TODO iteration is checked off.
+- When creating new TODO leaves under `/docs/todo/current/`, obey local iteration rules (including the “no digits in directory/file names” constraint).
 - Second-to-last wave MUST be “Recreate the TODO list”; last wave MUST be “Continue to the next iteration”.
 
 Documentation hygiene
@@ -124,12 +125,13 @@ Bootstrap and keep the repo buildable early:
 - Ensure `cargo test --workspace` runs as early as possible (placeholders are acceptable only if recorded as limitations).
 
 Keep verification gated and reproducible:
+- Keep CI and local commands aligned with `/docs/reference/CI.md`.
 - After each coherent slice, run: `python .github/scripts/check_docs_policy.py`, `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace`.
 - Ensure Docker buildability: `docker build -t kjxlkj:ci .`.
 
 Maintain the runtime model and test harness:
 - Implement the Tokio runtime topology in `/docs/spec/architecture/runtime.md` (single-writer core, snapshot-based rendering, supervised services).
-- Keep a deterministic headless/E2E harness and expand it as features are implemented.
+- Keep a deterministic headless/E2E harness (see `/docs/reference/CONFORMANCE_COMMANDS_TESTING.md`) and expand it as features are implemented.
 
 Execute the TODO recursion, not just the current iteration:
 - Execute `/docs/todo/current/` in wave order.
@@ -140,6 +142,7 @@ Execute the TODO recursion, not just the current iteration:
 You are done only when all of the following are true:
 
 - The repository builds from scratch and all tests pass reliably.
+- A clean rebuild works: remove derived artifacts (at least `cargo clean`) and re-run the full verification command set successfully.
 - CI is present and green (GitHub Actions under `/.github/`, including docs policy checks, `cargo fmt`, `cargo clippy -D warnings`, and `cargo test`).
 - Docker support is present and works (`Dockerfile`, `.dockerignore`, and a successful `docker build`).
 - The implementation matches the canonical spec, or any divergence is recorded in `/docs/reference/`.
