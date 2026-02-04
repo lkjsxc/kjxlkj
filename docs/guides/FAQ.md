@@ -18,7 +18,7 @@ The name is a project codename. Pronounce it however you like!
 
 No. kjxlkj does not execute Neovim’s Lua configuration or plugin ecosystem.
 
-The long-term target includes configuration and keybinding remapping, but the currently shipped surface is tracked in:
+The long-term target includes configuration and keybinding remapping. The supported surface (when a reconstructed implementation exists) is tracked in:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
@@ -62,7 +62,7 @@ Press `/` to search forward, `?` to search backward.
 
 ### Does it have LSP support?
 
-Not yet. The service crate exists as a placeholder, but LSP features are not implemented.
+Not yet. The target architecture includes an LSP service, but LSP features are not implemented.
 
 ### Does it have syntax highlighting?
 

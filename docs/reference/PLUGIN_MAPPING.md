@@ -5,7 +5,7 @@ Mapping from common Neovim plugins to kjxlkj built-in features.
 
 This document is **target-oriented**. Many items are not implemented yet.
 
-For the currently implemented surface, see:
+For the currently supported surface (or initial reconstruction target), see:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
@@ -20,13 +20,13 @@ For the currently implemented surface, see:
 
 | Neovim plugin examples | kjxlkj target | Current status |
 |------------------------|--------------|----------------|
-| telescope.nvim, fzf.vim, fzf-lua | Finder / Index UI | Not implemented (index service placeholder) |
+| telescope.nvim, fzf.vim, fzf-lua | Finder / Index UI | Not implemented (target service: `kjxlkj-service-index`) |
 
 ## LSP and completion
 
 | Neovim plugin examples | kjxlkj target | Current status |
 |------------------------|--------------|----------------|
-| nvim-lspconfig, mason.nvim | Built-in LSP client | Not implemented (LSP service placeholder) |
+| nvim-lspconfig, mason.nvim | Built-in LSP client | Not implemented (target service: `kjxlkj-service-lsp`) |
 | nvim-cmp, coq_nvim | Completion UI | Not implemented |
 
 ## Syntax and diagnostics
@@ -40,7 +40,7 @@ For the currently implemented surface, see:
 
 | Neovim plugin examples | kjxlkj target | Current status |
 |------------------------|--------------|----------------|
-| gitsigns.nvim, fugitive.vim | Git integration | Not implemented (git service placeholder) |
+| gitsigns.nvim, fugitive.vim | Git integration | Not implemented (target service: `kjxlkj-service-git`) |
 
 ## Editing helpers
 

@@ -24,6 +24,12 @@ Additional root entries MUST be justified by a concrete need and recorded in:
 
 - `/docs/reference/IMPLEMENTATION_HISTORY.md`
 
+## Tracked vs untracked (normative)
+
+This allowlist governs root entries that are expected to be tracked by git when present.
+
+Derived build artifacts (for example `target/`) MUST NOT be tracked. They may exist locally and may be deleted at any time, especially when preparing a clean docs-only baseline.
+
 ## Docs-only baseline (reconstruction scenario)
 
 This repository is designed to allow deleting derived artifacts and reconstructing them from `/docs/`.

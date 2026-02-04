@@ -21,6 +21,10 @@ This audit validates and/or repairs:
 | Exactly one `README.md` per directory | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | Pass |
 | No `../` links in docs | Project constraint + TODO policy | Pass |
 
+## Notes
+
+- Root-level `LICENSE` is 201 lines (legal text) and is treated as an allowed exception to the 200-line guideline, which applies to documentation under `/docs/` and source files under `src/` when reconstructed.
+
 ## Repairs made
 
 ### A. Documentation fence compliance
@@ -39,4 +43,3 @@ This audit validates and/or repairs:
 
 - Execute the leaf TODOs under `/docs/todo/current/` for the reported high-priority gaps.
 - Expand conformance/limitations to reflect any verified drift discovered during implementation.
-

@@ -13,8 +13,8 @@ This document is descriptive and non-normative. For “what exists right now”,
 |------|-------------------|-----------------|-------|
 | Modal editing | Yes | Yes | Vim-like model |
 | Operator+motion | Yes (subset) | Yes | Expanding toward spec |
-| LSP | No | Yes | Placeholder service exists |
-| Git integration | No | Yes | Placeholder service exists |
+| LSP | No | Yes | Target includes a service crate (see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)) |
+| Git integration | No | Yes | Target includes a service crate (see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)) |
 | Syntax highlighting | No | Yes | Planned |
 | Explorer UI | No | Yes | Planned |
 | Finder UI | No | Yes | Planned |

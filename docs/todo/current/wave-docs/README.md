@@ -24,18 +24,18 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 
 - [x] Clarify that CI, Docker support, and toolchain pinning are derived artifacts that may be absent in a docs-only baseline.
 - [x] Reduce the repository to a docs-only baseline by deleting derived implementation artifacts (`src/`, `Cargo.toml`, `Cargo.lock`) before a full reconstruction run.
-- [ ] Ensure all guides/reference docs describe derived artifacts conditionally (no unconditional “this repo includes X” unless the artifact is guaranteed present).
+- [x] Ensure all guides/reference docs describe derived artifacts conditionally (no unconditional “this repo includes X” unless the artifact is guaranteed present).
 
 ### C. Fix conformance docs vs implementation surface
 
 - [x] Remove non-compliant fences from conformance docs and keep headless script schema accurate.
-- [ ] Audit conformance statements that materially affect user expectations (modes, newline handling, long-line behavior, performance posture) and record any known drift in limitations.
+- [x] Audit conformance statements that materially affect user expectations (modes, newline handling, long-line behavior, performance posture) and record any known drift in limitations.
 
 ### D. Redesign the current TODO iteration for real execution
 
 - [x] Add a normative completion gate command to the TODO index.
-- [ ] Convert non-checklist “Tasks” sections in the current iteration into checkboxes so completion is machine-checkable.
-- [ ] Uncheck any items that are not demonstrably complete (avoid pre-checked “future” items).
+- [x] Convert non-checklist “Tasks” sections in the current iteration into checkboxes so completion is machine-checkable.
+- [x] Uncheck any items that are not demonstrably complete (avoid pre-checked “future” items).
 - [x] Add leaf TODOs for the reported high-priority gaps:
   - long-line rendering stability: [/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md](/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md)
   - interactive Insert-mode newline reliability: [/docs/todo/current/wave-implementation/modes/insert/newline/README.md](/docs/todo/current/wave-implementation/modes/insert/newline/README.md)

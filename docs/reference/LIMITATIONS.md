@@ -7,9 +7,11 @@ User-visible gaps and caveats relative to the target spec.
 
 The target behavior is defined in `/docs/spec/`.
 
-This document records what is **not** implemented (or is only partially implemented) so users and implementers do not confuse “spec language” with “shipped behavior”.
+This document records what is **not** implemented (or is only partially implemented) so readers do not confuse target spec language with the behavior of a reconstructed implementation.
 
-The currently implemented surface is tracked in:
+In a docs-only baseline (no implementation artifacts in-repo), treat this list as a reconstruction checklist of user-visible gaps and risks, and update it after the implementation is regenerated and tested.
+
+The implementation surface (when present) is tracked in:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
@@ -24,12 +26,12 @@ The currently implemented surface is tracked in:
 
 ### Built-in “modern editor” features
 
-- LSP client features are not implemented (service crate is a placeholder).
-- Git integration features are not implemented (service crate is a placeholder).
+- LSP client features are not implemented (target service: `kjxlkj-service-lsp`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
+- Git integration features are not implemented (target service: `kjxlkj-service-git`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
 - Syntax highlighting is not implemented.
 - Diagnostics UI is not implemented.
 - File explorer is not implemented.
-- Fuzzy finder / indexing UI is not implemented (index service is a placeholder).
+- Fuzzy finder / indexing UI is not implemented (target service: `kjxlkj-service-index`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
 - Integrated terminal panes are not implemented (only `:! {cmd}` execution exists).
 - Multiple cursors are not implemented.
 - Snippets are not implemented.
@@ -37,7 +39,7 @@ The currently implemented surface is tracked in:
 ### Configuration
 
 - Persistent configuration (TOML), key remapping, and theming are not implemented.
-- `:set`-style editor options are not implemented beyond the currently shipped subset.
+- `:set`-style editor options are not implemented beyond the subset recorded in the conformance ledger.
 
 ## Platform Specific
 
@@ -47,13 +49,19 @@ Platform-specific behavior and terminal compatibility have not been fully valida
 
 Performance characteristics (large files, long lines, non-ASCII heavy text) have not been systematically benchmarked.
 
-What is implemented today (useful guarantees, not benchmarks):
+Target performance posture is specified in:
+
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
+
+Until the regression harness is implemented and green, treat the following as expected invariants rather than verified guarantees:
 
 - Snapshot generation is viewport-bounded (does not clone/materialize all buffer lines per frame).
 - The terminal host avoids continuous redraw while idle (renders on input/resize rather than busy-looping).
 - File open avoids an intermediate “read entire file into a single String” allocation (streaming into the text model).
 
-Remaining gaps:
+Known gaps / not yet enforced:
 
 - No progress indicator or cancel during long file reads.
 - No explicit “large file degradation mode” (feature disabling/caps) unless added in the future.
@@ -71,7 +79,7 @@ Remaining gaps:
 
 ## Known rough edges
 
-These are areas that are implemented but may not match full Vim behavior yet:
+These are areas that are part of the intended surface but have historically exhibited drift vs full Vim behavior. Validate them early during reconstruction and keep this list accurate:
 
 - Edge-case compatibility around registers, macros, and marks.
 - Some Ex command parsing details and error messages.

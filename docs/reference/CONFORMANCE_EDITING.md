@@ -52,7 +52,7 @@ Operators (`d`, `y`, `c`) can be combined with text objects:
 
 ## Search behavior
 
-The currently shipped search behavior is:
+Search behavior in this conformance target is:
 
 - Search starts from cursor+1 position (forward) or cursor position (backward)
 - Search wraps around file boundaries (`wrapscan` behavior)

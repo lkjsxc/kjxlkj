@@ -3,7 +3,7 @@
 Back: [/docs/technical/README.md](/docs/technical/README.md)
 Guidance for supporting right-to-left and mixed-direction text in a terminal editor.
 
-Status note: many terminals do not perform full bidirectional reordering for you. If bidi support is incomplete or absent in the current implementation, that gap should be recorded in:
+Status note: many terminals do not perform full bidirectional reordering for you. If bidi support is incomplete or absent in a reconstructed implementation surface, that gap should be recorded in:
 
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

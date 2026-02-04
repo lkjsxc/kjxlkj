@@ -4,7 +4,7 @@ Back: [/docs/log/proposals/README.md](/docs/log/proposals/README.md)
 
 ## Problem statement
 
-The target spec includes a built-in file explorer, but the current implementation surface does not provide one.
+The target spec includes a built-in file explorer, but the conformance/limitations ledger indicates it is not implemented yet.
 
 This blocks basic “project navigation” workflows and forces users to rely on external shell navigation.
 
@@ -37,4 +37,3 @@ This blocks basic “project navigation” workflows and forces users to rely on
 
 - Workspace root definition must be explicit (current directory vs current file directory vs configured root).
 - Git status/diagnostics badges require additional services; defer behind explicit TODOs if not in MVP.
-

@@ -45,6 +45,8 @@ This repository treats verification as part of the contract.
 - The repository MUST include an automated CI implementation of the verification gate, at the location specified by the docs (see `/docs/reference/CI.md`).
 - A change is not considered complete unless the verification gate is green.
 
+In a docs-only baseline, CI configuration and helper scripts are treated as derived artifacts and may be absent. They MUST be reconstructed (per `/docs/reference/CI.md`) before treating the repository as shippable.
+
 ## Definition of done (normative)
 
 Work is done only when:

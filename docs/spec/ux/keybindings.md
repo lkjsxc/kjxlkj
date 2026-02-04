@@ -6,7 +6,7 @@ Target keybinding reference for kjxlkj.
 
 This document describes the target keybinding surface.
 
-For the currently implemented subset, see:
+For the currently supported subset (when a reconstructed implementation exists), see:
 
 - [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

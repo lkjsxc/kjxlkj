@@ -32,9 +32,9 @@ Bring documentation into full compliance with structure and link policies:
 
 ### 4. Remove contradictions about repository contents
 
-- [ ] Ensure docs consistently reflect the repository’s scope and derived artifacts (docs-only baseline vs shippable reconstructed state).
-- [ ] Ensure CI/Docker/toolchain documentation does not claim absent artifacts are present.
-- [ ] Use the plan: [/docs/todo/plan/repository-scope/README.md](/docs/todo/plan/repository-scope/README.md)
+- [x] Ensure docs consistently reflect the repository’s scope and derived artifacts (docs-only baseline vs shippable reconstructed state).
+- [x] Ensure CI/Docker/toolchain documentation does not claim absent artifacts are present.
+- [x] Use the plan: [/docs/todo/plan/repository-scope/README.md](/docs/todo/plan/repository-scope/README.md)
 
 ## Deep dives
 

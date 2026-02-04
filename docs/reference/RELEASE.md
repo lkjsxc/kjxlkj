@@ -7,6 +7,10 @@ The canonical CI pipeline location is `/.github/workflows/ci.yml` (a derived art
 
 Release automation (tagging and publishing binaries) is still treated as a manual process and should be updated when automation is introduced.
 
+This process applies only when a shippable reconstructed repository state exists (Cargo workspace, packaging, and verification artifacts are present). In a docs-only baseline, reconstruct first:
+
+- [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
+
 ## Versioning
 
 Use Semantic Versioning:
@@ -21,11 +25,11 @@ Use Semantic Versioning:
 2. All tests pass (`cargo test --workspace`).
 3. Lints are clean (`cargo clippy --workspace --all-targets -- -D warnings`).
 4. Formatting is clean (`cargo fmt --all -- --check`).
-5. Docs are consistent with the shipped surface:
+5. Docs are consistent with the intended release surface:
    - `/README.md` (high-level entrypoint)
    - `/docs/reference/CONFORMANCE.md` (what is implemented)
    - `/docs/reference/LIMITATIONS.md` (user-visible gaps)
-6. The version is updated in the workspace manifest.
+6. The version is updated in the workspace manifest (`Cargo.toml`) once it exists.
 
 ## Release steps (manual)
 

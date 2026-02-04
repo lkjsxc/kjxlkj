@@ -26,7 +26,7 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 
 ## Headless test runner
 
-The shipped binary supports a deterministic headless mode for E2E tests:
+This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:
 
 - `--headless` runs without a terminal UI.
 - `--script {path}` runs an event script (if provided).
@@ -50,7 +50,7 @@ The headless script file is UTF-8 JSON in one of two accepted shapes:
 | `alt` | boolean | no | Whether Alt/Meta is held. Defaults to `false`. |
 | `shift` | boolean | no | Whether Shift is held. Defaults to `false`. |
 
-Named `code` values supported by the current implementation:
+Named `code` values supported by this conformance target:
 
 | `code` | Meaning |
 |---|---|
@@ -72,11 +72,11 @@ If `code` is not a named value above, it MUST be a single-character string.
 | `assert_cursor` | `line` (integer), `col` (integer) | Assert the cursor position (0-based). |
 | `assert_line` | `line` (integer), `content` (string) | Assert an exact line string match (0-based). |
 
-Mode strings accepted by the current implementation include `normal`, `insert`, `visual`, `visual_line`, `visual_block`, `command`, `replace` (case-insensitive, with a small set of aliases).
+Mode strings accepted by this conformance target include `normal`, `insert`, `visual`, `visual_line`, `visual_block`, `command`, `replace` (case-insensitive, with a small set of aliases).
 
 ## E2E test coverage
 
-The following E2E test scenarios are covered:
+Once an implementation claims conformance to this document, it MUST include automated tests for at least the following E2E scenarios:
 
 | Test | Behavior verified |
 |---|---|

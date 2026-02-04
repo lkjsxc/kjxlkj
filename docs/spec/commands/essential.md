@@ -1,7 +1,7 @@
 # Essential commands
 This is the target minimum Ex command surface.
 
-For the currently implemented subset, see [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md).
+For the currently supported subset (when a reconstructed implementation exists), see [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md).
 
 ## File
 
