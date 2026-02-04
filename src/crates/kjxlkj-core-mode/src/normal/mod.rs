@@ -90,4 +90,57 @@ mod tests {
         let intent = state.process_key('j', false, false);
         assert!(matches!(intent, Intent::Move(_)));
     }
+
+    #[test]
+    fn normal_mode_ctrl_key() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('r', true, false);
+        assert_eq!(intent, Intent::Redo);
+    }
+
+    #[test]
+    fn normal_mode_find_char() {
+        let mut state = NormalModeState::new();
+        let intent1 = state.process_key('f', false, false);
+        assert_eq!(intent1, Intent::None);
+        let intent2 = state.process_key('x', false, false);
+        assert!(matches!(intent2, Intent::Move(_)));
+    }
+
+    #[test]
+    fn normal_mode_visual() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('v', false, false);
+        assert!(matches!(intent, Intent::StartVisual(_)));
+    }
+
+    #[test]
+    fn normal_mode_search_forward() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('/', false, false);
+        assert_eq!(intent, Intent::SearchForward);
+    }
+
+    #[test]
+    fn normal_mode_command() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key(':', false, false);
+        assert_eq!(intent, Intent::EnterCommand);
+    }
+
+    #[test]
+    fn normal_mode_mark() {
+        let mut state = NormalModeState::new();
+        let intent1 = state.process_key('m', false, false);
+        assert_eq!(intent1, Intent::None);
+        let intent2 = state.process_key('a', false, false);
+        assert!(matches!(intent2, Intent::SetMark('a')));
+    }
+
+    #[test]
+    fn normal_mode_scroll() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('d', true, false);
+        assert!(matches!(intent, Intent::Scroll(_)));
+    }
 }

@@ -138,3 +138,55 @@ fn change_range(state: &mut EditorState, from: Position, to: Position) {
     state.cursor.position = from;
     state.set_mode(Mode::Insert);
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn delete_lines_operator() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "line1\nline2\nline3");
+        let initial_lines = state.buffer.line_count();
+        apply_operator(&mut state, Operator::Line {
+            kind: OperatorKind::Delete,
+            count: 1,
+        });
+        assert!(state.buffer.line_count() < initial_lines);
+    }
+
+    #[test]
+    fn yank_lines_operator() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "hello world");
+        apply_operator(&mut state, Operator::Line {
+            kind: OperatorKind::Yank,
+            count: 1,
+        });
+        let reg = state.registers.get(RegisterName::Unnamed);
+        assert!(reg.is_some());
+    }
+
+    #[test]
+    fn indent_lines_operator() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "hello");
+        apply_operator(&mut state, Operator::Line {
+            kind: OperatorKind::Indent,
+            count: 1,
+        });
+        let line = state.buffer.line(0).unwrap();
+        assert!(line.starts_with("    "));
+    }
+
+    #[test]
+    fn change_lines_enters_insert() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "hello");
+        apply_operator(&mut state, Operator::Line {
+            kind: OperatorKind::Change,
+            count: 1,
+        });
+        assert_eq!(state.mode(), Mode::Insert);
+    }
+}

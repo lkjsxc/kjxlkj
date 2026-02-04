@@ -125,4 +125,43 @@ mod tests {
         assert_eq!(inverted.cursor_before, Position::new(0, 2));
         assert_eq!(inverted.cursor_after, Position::new(0, 0));
     }
+
+    #[test]
+    fn transaction_is_empty() {
+        let tx = Transaction::new(Position::new(0, 0));
+        assert!(tx.is_empty());
+    }
+
+    #[test]
+    fn transaction_not_empty() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.push(Edit::insert(Position::new(0, 0), "x".to_string()));
+        assert!(!tx.is_empty());
+    }
+
+    #[test]
+    fn edit_delete() {
+        let del = Edit::delete(Position::new(1, 5), "test".to_string());
+        assert_eq!(del.kind, EditKind::Delete);
+        assert_eq!(del.position, Position::new(1, 5));
+        assert_eq!(del.text, "test");
+    }
+
+    #[test]
+    fn edit_delete_invert() {
+        let del = Edit::delete(Position::new(1, 0), "abc".to_string());
+        let inverted = del.invert();
+        assert_eq!(inverted.kind, EditKind::Insert);
+    }
+
+    #[test]
+    fn transaction_double_invert() {
+        let mut tx = Transaction::new(Position::new(5, 5));
+        tx.push(Edit::insert(Position::new(5, 5), "hello".to_string()));
+        tx.set_cursor_after(Position::new(5, 10));
+        let inverted = tx.invert();
+        let restored = inverted.invert();
+        assert_eq!(restored.cursor_before, tx.cursor_before);
+        assert_eq!(restored.cursor_after, tx.cursor_after);
+    }
 }

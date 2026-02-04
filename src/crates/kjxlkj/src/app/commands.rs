@@ -93,3 +93,40 @@ fn execute_shell(state: &mut EditorState, cmd: &str) {
         Err(e) => state.set_status(format!("Error: {}", e)),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core::Position;
+
+    #[test]
+    fn quit_command_forces_modified() {
+        let mut state = EditorState::new();
+        // Insert to make modified
+        state.buffer.insert(Position::new(0, 0), "x");
+        execute_command(&mut state, "q!");
+        assert!(state.should_quit);
+    }
+
+    #[test]
+    fn quit_command_denies_modified() {
+        let mut state = EditorState::new();
+        // Insert to make modified
+        state.buffer.insert(Position::new(0, 0), "x");
+        execute_command(&mut state, "q");
+        assert!(!state.should_quit);
+    }
+
+    #[test]
+    fn quit_command_unmodified() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "q");
+        assert!(state.should_quit);
+    }
+
+    #[test]
+    fn unknown_command_sets_status() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "foobar");
+    }
+}

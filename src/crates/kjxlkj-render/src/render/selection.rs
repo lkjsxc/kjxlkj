@@ -94,3 +94,57 @@ fn render_block_selection<W: Write>(
     let after: String = chars[col_end.min(len)..].iter().collect();
     execute!(writer, Print(&after))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn line_selection_within_range() {
+        let sel = Selection::new(
+            Position::new(1, 0),
+            Position::new(3, 5),
+            SelectionKind::Line,
+        );
+        // Line 2 is within 1..=3
+        let mut buf = Vec::new();
+        let res = render_line_selection(&mut buf, "hello", 2, sel.start(), sel.end());
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn char_selection_before_range() {
+        let sel = Selection::new(
+            Position::new(5, 0),
+            Position::new(5, 5),
+            SelectionKind::Char,
+        );
+        let mut buf = Vec::new();
+        let res = render_char_selection(&mut buf, "hello", 0, sel.start(), sel.end());
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn block_selection_renders() {
+        let sel = Selection::new(
+            Position::new(0, 2),
+            Position::new(2, 5),
+            SelectionKind::Block,
+        );
+        let mut buf = Vec::new();
+        let res = render_block_selection(&mut buf, "hello world", 1, sel.start(), sel.end());
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn selection_kind_routing() {
+        let sel = Selection::new(
+            Position::new(0, 0),
+            Position::new(0, 5),
+            SelectionKind::Char,
+        );
+        let mut buf = Vec::new();
+        let res = render_with_selection(&mut buf, "hello", 0, &sel);
+        assert!(res.is_ok());
+    }
+}
