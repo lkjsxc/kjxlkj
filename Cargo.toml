@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "benches",
     "src/crates/kjxlkj",
     "src/crates/kjxlkj-core",
     "src/crates/kjxlkj-core-types",

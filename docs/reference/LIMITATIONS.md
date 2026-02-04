@@ -72,6 +72,19 @@ Known gaps / not yet enforced:
 - Extremely long lines may still be slow due to rendering and display-width work.
 - Performance baselines vs Vim/Neovim are not yet enforced by a regression harness.
 
+## Contract Verification Notes
+
+The following contracts from [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md) have verification plans but are not fully testable in isolation:
+
+| Contract | Verification Plan |
+|---|---|
+| Queue depth observability | Requires runtime instrumentation; validated by profiling hooks |
+| Latency measurement | Requires external timing infrastructure; validated by latency probe tests |
+| Service supervision restart | Requires fault injection; validated by supervisor tests with mock failures |
+| Cancellation idempotence | Fully tested; multiple cancel calls produce identical behavior |
+
+All contracts have at minimum a partial test or verification strategy in place.
+
 ## UX gaps
 
 - No in-editor `:help` system.

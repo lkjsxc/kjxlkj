@@ -41,11 +41,11 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### B. Benchmarks (repeatable, not flaky)
 
-- [ ] Add a benchmark suite that measures:
+- [x] Add a benchmark suite that measures:
   - snapshot generation cost vs viewport size
   - rendering cost vs viewport area
   - file open time-to-first-snapshot for large inputs
-- [ ] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present.
+- [x] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present.
 
 ### C. Idle CPU regression
 
@@ -58,6 +58,6 @@ Targets MUST be expressed in a way that is stable under CI variance:
   - the reproduction probe (link)
   - the observed behavior
   - whether the mitigation is “fix” or “explicit limitation/degradation”
-- [ ] Update user-visible limitations when behavior is intentionally degraded:
+- [x] Update user-visible limitations when behavior is intentionally degraded:
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
