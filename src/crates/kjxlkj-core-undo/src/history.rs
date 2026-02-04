@@ -199,5 +199,90 @@ mod tests {
         assert_eq!(history.undo_count(), 1);
         assert_eq!(history.redo_count(), 2);
     }
+
+    #[test]
+    fn test_empty_transaction_ignored() {
+        let mut history = UndoHistory::new();
+        
+        let tx = Transaction::new();
+        history.push(tx);
+        
+        assert_eq!(history.undo_count(), 0);
+    }
+
+    #[test]
+    fn test_redo_after_new_change() {
+        let mut history = UndoHistory::new();
+        
+        // Push first change
+        let mut tx1 = Transaction::new();
+        tx1.push(Edit::insert(Position::new(0, 0), "a"));
+        history.push(tx1);
+        
+        // Undo it
+        history.undo();
+        assert!(history.can_redo());
+        
+        // Push new change - should clear redo stack
+        let mut tx2 = Transaction::new();
+        tx2.push(Edit::insert(Position::new(0, 0), "b"));
+        history.push(tx2);
+        
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_undo_redo_cycle() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "test"));
+        history.push(tx);
+        
+        // Multiple undo/redo cycles
+        for _ in 0..5 {
+            assert!(history.can_undo());
+            history.undo();
+            assert!(history.can_redo());
+            history.redo();
+        }
+        
+        // Should still be undoable
+        assert!(history.can_undo());
+    }
+
+    #[test]
+    fn test_max_history_limit() {
+        let mut history = UndoHistory::new();
+        
+        // Push more than MAX_UNDO_HISTORY
+        for i in 0..1010 {
+            let mut tx = Transaction::new();
+            tx.push(Edit::insert(Position::new(0, 0), &i.to_string()));
+            history.push(tx);
+        }
+        
+        // Should be limited
+        assert!(history.undo_count() <= 1000);
+    }
+
+    #[test]
+    fn test_history_clone() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "clone"));
+        history.push(tx);
+        
+        let cloned = history.clone();
+        assert_eq!(cloned.undo_count(), 1);
+    }
+
+    #[test]
+    fn test_history_default() {
+        let history: UndoHistory = Default::default();
+        assert_eq!(history.undo_count(), 0);
+        assert_eq!(history.redo_count(), 0);
+    }
 }
 

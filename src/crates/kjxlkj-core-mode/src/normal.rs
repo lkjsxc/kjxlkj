@@ -260,4 +260,152 @@ mod tests {
             panic!("Expected consumed");
         }
     }
+
+    #[test]
+    fn test_normal_mode_append() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('a'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Insert))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_visual() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('v'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Visual))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_visual_line() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('V'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::VisualLine))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_command() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char(':'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SwitchMode(Mode::Command))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_undo() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('u'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Undo)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_paste() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('p'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Paste { .. })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_repeat() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('.'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Repeat)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_search_forward() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('/'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SearchForward(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_search_backward() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('?'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::SearchBackward(_))));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_default() {
+        let mode: NormalMode = Default::default();
+        assert_eq!(mode.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_normal_mode_reset() {
+        let mut mode = NormalMode::new();
+        mode.handle_key(&KeyEvent::char('d')); // Start a pending command
+        mode.reset();
+        // After reset, should be able to start fresh
+        let result = mode.handle_key(&KeyEvent::char('j'));
+        assert!(matches!(result, ModeResult::Consumed(_)));
+    }
+
+    #[test]
+    fn test_normal_mode_open_below() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('o'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::OpenLine { below: true })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_open_above() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('O'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::OpenLine { below: false })));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_next_match() {
+        let mut mode = NormalMode::new();
+        let result = mode.handle_key(&KeyEvent::char('n'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::NextMatch)));
+        } else {
+            panic!("Expected consumed");
+        }
+    }
 }

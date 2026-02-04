@@ -314,4 +314,35 @@ mod tests {
         // Wide characters
         assert_eq!(truncate_to_width("你好世界", 4), "你好");
     }
+
+    #[test]
+    fn test_truncate_exact_width() {
+        assert_eq!(truncate_to_width("hello", 5), "hello");
+    }
+
+    #[test]
+    fn test_truncate_zero_width() {
+        assert_eq!(truncate_to_width("hello", 0), "");
+    }
+
+    #[test]
+    fn test_truncate_mixed_width() {
+        // Mix of narrow and wide characters
+        let result = truncate_to_width("a你b好", 5);
+        // 'a' = 1, '你' = 2, 'b' = 1, total = 4 <= 5
+        assert!(result.len() <= 8); // UTF-8 bytes
+    }
+
+    #[test]
+    fn test_truncate_emoji() {
+        // Emoji can have various widths
+        let result = truncate_to_width("👋hello", 6);
+        assert!(!result.is_empty());
+    }
+
+    #[test]
+    fn test_truncate_single_char() {
+        assert_eq!(truncate_to_width("a", 1), "a");
+        assert_eq!(truncate_to_width("a", 0), "");
+    }
 }
