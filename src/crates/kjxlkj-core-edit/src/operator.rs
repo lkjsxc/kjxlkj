@@ -75,7 +75,7 @@ impl Operator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::MotionKind;
+    use crate::{MotionKind, TextObjectKind};
 
     #[test]
     fn operator_with_motion() {
@@ -92,5 +92,28 @@ mod tests {
         } else {
             panic!("Expected Line operator");
         }
+    }
+
+    #[test]
+    fn operator_with_text_object() {
+        let to = TextObject::inner(TextObjectKind::Word);
+        let op = Operator::with_text_object(OperatorKind::Change, to);
+        assert_eq!(op.kind(), OperatorKind::Change);
+    }
+
+    #[test]
+    fn operator_kind_variants() {
+        assert_eq!(OperatorKind::Delete, OperatorKind::Delete);
+        assert_eq!(OperatorKind::Change, OperatorKind::Change);
+        assert_eq!(OperatorKind::Yank, OperatorKind::Yank);
+        assert_eq!(OperatorKind::Indent, OperatorKind::Indent);
+        assert_eq!(OperatorKind::Outdent, OperatorKind::Outdent);
+    }
+
+    #[test]
+    fn operator_debug_format() {
+        let op = Operator::line(OperatorKind::Delete, 1);
+        let debug = format!("{:?}", op);
+        assert!(debug.contains("Delete"));
     }
 }

@@ -83,4 +83,37 @@ mod tests {
         assert!(to.around);
         assert_eq!(to.kind, TextObjectKind::Parens);
     }
+
+    #[test]
+    fn text_object_with_count() {
+        let to = TextObject::inner(TextObjectKind::Braces).with_count(3);
+        assert_eq!(to.count, 3);
+        assert!(!to.around);
+    }
+
+    #[test]
+    fn text_object_count_min_one() {
+        let to = TextObject::inner(TextObjectKind::Word).with_count(0);
+        assert_eq!(to.count, 1); // Minimum count is 1
+    }
+
+    #[test]
+    fn text_object_kinds_exist() {
+        let _ = TextObjectKind::Word;
+        let _ = TextObjectKind::BigWord;
+        let _ = TextObjectKind::Sentence;
+        let _ = TextObjectKind::Paragraph;
+        let _ = TextObjectKind::Parens;
+        let _ = TextObjectKind::Brackets;
+        let _ = TextObjectKind::Braces;
+        let _ = TextObjectKind::DoubleQuotes;
+        let _ = TextObjectKind::SingleQuotes;
+    }
+
+    #[test]
+    fn text_object_debug_format() {
+        let to = TextObject::around(TextObjectKind::DoubleQuotes);
+        let debug = format!("{:?}", to);
+        assert!(debug.contains("DoubleQuotes"));
+    }
 }
