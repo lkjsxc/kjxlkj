@@ -8,6 +8,7 @@ mod cursor;
 mod event;
 mod mode;
 mod position;
+pub mod profiling;
 mod register;
 mod selection;
 
@@ -16,5 +17,6 @@ pub use cursor::Cursor;
 pub use event::{EditorEvent, Intent, KeyCode, KeyEvent, KeyModifiers, MotionIntent, ScrollIntent};
 pub use mode::Mode;
 pub use position::Position;
+pub use profiling::{CycleMetrics, Profiler, ProfilingConfig};
 pub use register::{Register, RegisterName};
 pub use selection::{Selection, SelectionKind};
