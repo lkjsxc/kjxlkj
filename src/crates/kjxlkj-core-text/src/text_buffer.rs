@@ -130,10 +130,24 @@ impl TextBuffer {
     pub fn line_grapheme_len(&self, idx: usize) -> usize {
         self.line(idx)
             .map(|l| {
-                let s = l.as_str().unwrap_or("");
-                // Exclude newline from count
-                let s = s.trim_end_matches('\n').trim_end_matches('\r');
-                crate::grapheme::grapheme_count(s)
+                // Use rope_grapheme_count for large lines that may span multiple chunks
+                let mut len = crate::grapheme::rope_grapheme_count(l);
+                // Exclude trailing newline from count
+                if l.len_chars() > 0 {
+                    let last_char_idx = l.len_chars() - 1;
+                    let last_char = l.char(last_char_idx);
+                    if last_char == '\n' {
+                        len = len.saturating_sub(1);
+                        // Also check for \r\n
+                        if l.len_chars() > 1 {
+                            let second_last_idx = l.len_chars() - 2;
+                            if l.char(second_last_idx) == '\r' {
+                                len = len.saturating_sub(1);
+                            }
+                        }
+                    }
+                }
+                len
             })
             .unwrap_or(0)
     }

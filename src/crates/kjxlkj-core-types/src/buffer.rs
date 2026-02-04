@@ -11,6 +11,11 @@ impl BufferId {
     pub fn new(id: u64) -> Self {
         Self(id)
     }
+
+    /// Get the ID value.
+    pub fn value(self) -> u64 {
+        self.0
+    }
 }
 
 /// Display name for a buffer.

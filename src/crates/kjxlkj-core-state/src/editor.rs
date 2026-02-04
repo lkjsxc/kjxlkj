@@ -131,6 +131,9 @@ impl EditorState {
         // Reserve 2 lines for status and command
         self.viewport.height = (height as usize).saturating_sub(2);
         self.viewport.width = width as usize;
+        
+        // Re-clamp viewport to ensure cursor remains visible after resize
+        self.ensure_cursor_visible();
     }
 
     /// Process an editor event.
@@ -859,6 +862,22 @@ impl EditorState {
 
         if self.cursor.col() > max_col {
             self.cursor.position.col = max_col;
+        }
+    }
+
+    /// Ensure cursor is visible within the viewport.
+    fn ensure_cursor_visible(&mut self) {
+        let cursor_line = self.cursor.line();
+        
+        // If cursor is above viewport, scroll up
+        if cursor_line < self.viewport.top_line {
+            self.viewport.top_line = cursor_line;
+        }
+        
+        // If cursor is below viewport, scroll down
+        let bottom = self.viewport.top_line + self.viewport.height.saturating_sub(1);
+        if cursor_line > bottom {
+            self.viewport.top_line = cursor_line.saturating_sub(self.viewport.height.saturating_sub(1));
         }
     }
 
