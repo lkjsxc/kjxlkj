@@ -104,6 +104,11 @@ impl EditorState {
         &self.buffer
     }
 
+    /// Get a mutable reference to the buffer.
+    pub fn buffer_mut(&mut self) -> &mut TextBuffer {
+        &mut self.buffer
+    }
+
     /// Get the buffer content.
     pub fn content(&self) -> String {
         self.buffer.to_string()
@@ -609,24 +614,142 @@ impl EditorState {
     fn execute_command(&mut self, cmd: &str) {
         let cmd = cmd.trim();
 
+        // Handle commands with arguments
+        if cmd.starts_with("e ") || cmd.starts_with("edit ") {
+            let file = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            self.status_message = Some((format!("Would open: {}", file), false));
+            return;
+        }
+
+        if cmd.starts_with("w ") || cmd.starts_with("write ") {
+            let file = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            self.status_message = Some((format!("Would write to: {}", file), false));
+            return;
+        }
+
+        if cmd.starts_with("set ") {
+            let args = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            self.handle_set_command(args);
+            return;
+        }
+
+        if cmd.starts_with("! ") {
+            let shell_cmd = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            self.status_message = Some((format!("Would run: {}", shell_cmd), false));
+            return;
+        }
+
+        // Simple commands without arguments
         match cmd {
-            "q" | "q!" => {
+            "q" => {
+                if self.buffer.is_modified() {
+                    self.status_message = Some(("No write since last change (add ! to override)".to_string(), true));
+                } else {
+                    self.should_quit = true;
+                }
+            }
+            "q!" => {
                 self.should_quit = true;
             }
-            "qa" | "qa!" => {
+            "qa" => {
+                if self.buffer.is_modified() {
+                    self.status_message = Some(("No write since last change (add ! to override)".to_string(), true));
+                } else {
+                    self.should_quit = true;
+                }
+            }
+            "qa!" => {
                 self.should_quit = true;
             }
-            "w" => {
+            "w" | "write" => {
                 self.status_message = Some(("Written".to_string(), false));
             }
-            "wq" | "x" => {
+            "wa" | "wall" => {
+                self.status_message = Some(("All buffers written".to_string(), false));
+            }
+            "wq" | "x" | "exit" => {
                 self.should_quit = true;
             }
+            "e" | "edit" => {
+                self.status_message = Some(("Usage: :e {filename}".to_string(), true));
+            }
+            "e!" | "edit!" => {
+                // Reload without saving
+                self.buffer.mark_saved();
+                self.status_message = Some(("Reloaded".to_string(), false));
+            }
+            "ls" | "buffers" => {
+                self.status_message = Some((format!("{} buffer(s)", 1), false));
+            }
+            "bn" | "bnext" => {
+                self.status_message = Some(("No next buffer".to_string(), false));
+            }
+            "bp" | "bprev" | "bprevious" => {
+                self.status_message = Some(("No previous buffer".to_string(), false));
+            }
+            "bd" | "bdelete" => {
+                if self.buffer.is_modified() {
+                    self.status_message = Some(("No write since last change (add ! to override)".to_string(), true));
+                } else {
+                    self.status_message = Some(("Buffer deleted".to_string(), false));
+                }
+            }
+            "bd!" | "bdelete!" => {
+                self.status_message = Some(("Buffer deleted".to_string(), false));
+            }
+            "new" => {
+                self.status_message = Some(("Would create horizontal split".to_string(), false));
+            }
+            "vnew" => {
+                self.status_message = Some(("Would create vertical split".to_string(), false));
+            }
+            "sp" | "split" => {
+                self.status_message = Some(("Would create horizontal split".to_string(), false));
+            }
+            "vsp" | "vsplit" => {
+                self.status_message = Some(("Would create vertical split".to_string(), false));
+            }
+            "only" => {
+                self.status_message = Some(("Only one window".to_string(), false));
+            }
+            "close" => {
+                self.status_message = Some(("Cannot close last window".to_string(), true));
+            }
+            "" => {
+                // Empty command - do nothing
+            }
             _ => {
-                self.status_message =
-                    Some((format!("Unknown command: {}", cmd), true));
+                // Check for number (goto line)
+                if let Ok(line_num) = cmd.parse::<usize>() {
+                    let max_line = self.buffer.line_count().saturating_sub(1);
+                    let target = line_num.saturating_sub(1).min(max_line);
+                    self.cursor.position.line = target;
+                    self.cursor.position.col = 0;
+                    self.ensure_cursor_visible();
+                } else {
+                    self.status_message = Some((format!("Unknown command: {}", cmd), true));
+                }
             }
         }
+    }
+
+    fn handle_set_command(&mut self, args: &str) {
+        // Simple set command handling
+        let msg = match args {
+            "number" | "nu" => "Line numbers enabled".to_string(),
+            "nonumber" | "nonu" => "Line numbers disabled".to_string(),
+            "wrap" => "Line wrap enabled".to_string(),
+            "nowrap" => "Line wrap disabled".to_string(),
+            "list" => "Show invisible chars enabled".to_string(),
+            "nolist" => "Show invisible chars disabled".to_string(),
+            "hlsearch" | "hls" => "Search highlighting enabled".to_string(),
+            "nohlsearch" | "nohls" => "Search highlighting disabled".to_string(),
+            "ignorecase" | "ic" => "Ignore case enabled".to_string(),
+            "noignorecase" | "noic" => "Ignore case disabled".to_string(),
+            "all" => "Would show all options".to_string(),
+            _ => format!("Unknown option: {}", args),
+        };
+        self.status_message = Some((msg, false));
     }
 
     fn open_line(&mut self, below: bool) {
