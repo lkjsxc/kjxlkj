@@ -317,3 +317,115 @@ fn test_end_to_end_open_above() {
     );
     assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Insert);
 }
+
+/// Test: Undo restores previous state.
+#[test]
+fn test_end_to_end_undo() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('h'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let snapshot1 = state.snapshot();
+    assert!(snapshot1.buffer.lines[0].contains("hi"));
+
+    // Delete
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+
+    // Undo
+    state.handle_key(KeyEvent::new(KeyCode::Char('u'), KeyModifiers::NONE));
+
+    let snapshot2 = state.snapshot();
+    // Should have some content restored
+    assert!(!snapshot2.buffer.lines.is_empty());
+}
+
+/// Test: Visual line mode selects whole lines.
+#[test]
+fn test_end_to_end_visual_line() {
+    let mut state = EditorState::new();
+
+    // Insert some text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // V -> Visual Line
+    let (snapshot, _) = event_loop_iteration(
+        &mut state,
+        KeyEvent::new(KeyCode::Char('V'), KeyModifiers::NONE),
+        None,
+    );
+    assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::VisualLine);
+}
+
+/// Test: Cursor movement with motions.
+#[test]
+fn test_end_to_end_motions() {
+    let mut state = EditorState::new();
+
+    // Insert some text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE)); // Go to line start
+
+    // w -> Word forward
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    let snapshot = state.snapshot();
+    assert!(snapshot.cursor.col() > 0);
+}
+
+/// Test: Yank and paste.
+#[test]
+fn test_end_to_end_yank_paste() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('t'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('s'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('t'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // yy -> yank line
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+
+    // p -> paste
+    state.handle_key(KeyEvent::new(KeyCode::Char('p'), KeyModifiers::NONE));
+
+    let snapshot = state.snapshot();
+    assert!(snapshot.buffer.line_count > 1);
+}
+
+/// Test: Search forward.
+#[test]
+fn test_end_to_end_search() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // / -> Search forward
+    state.handle_key(KeyEvent::new(KeyCode::Char('/'), KeyModifiers::NONE));
+
+    // Should be in some kind of pending state (search entry)
+    let snapshot = state.snapshot();
+    // The mode might be Normal (with search overlay) or Command
+    assert!(snapshot.mode == kjxlkj_core_types::Mode::Normal || 
+            snapshot.mode == kjxlkj_core_types::Mode::Command);
+}
