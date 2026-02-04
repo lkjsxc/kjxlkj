@@ -133,4 +133,149 @@ mod tests {
         let decoded = decode_event(event);
         assert!(matches!(decoded, EditorEvent::Focus(true)));
     }
+
+    #[test]
+    fn test_decode_focus_lost() {
+        let event = Event::FocusLost;
+        let decoded = decode_event(event);
+        assert!(matches!(decoded, EditorEvent::Focus(false)));
+    }
+
+    #[test]
+    fn test_decode_alt_modifier() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('x'), CTMods::ALT);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.alt);
+        assert!(!decoded.modifiers.ctrl);
+    }
+
+    #[test]
+    fn test_decode_shift_modifier() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('A'), CTMods::SHIFT);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.shift);
+    }
+
+    #[test]
+    fn test_decode_ctrl_alt() {
+        let mods = CTMods::CONTROL | CTMods::ALT;
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('c'), mods);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.ctrl);
+        assert!(decoded.modifiers.alt);
+    }
+
+    #[test]
+    fn test_decode_backspace() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Backspace, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Backspace);
+    }
+
+    #[test]
+    fn test_decode_enter() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Enter, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Enter);
+    }
+
+    #[test]
+    fn test_decode_tab() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Tab, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Tab);
+    }
+
+    #[test]
+    fn test_decode_function_key() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::F(5), CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::F(5));
+    }
+
+    #[test]
+    fn test_decode_page_up() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::PageUp, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::PageUp);
+    }
+
+    #[test]
+    fn test_decode_page_down() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::PageDown, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::PageDown);
+    }
+
+    #[test]
+    fn test_decode_home() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Home, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Home);
+    }
+
+    #[test]
+    fn test_decode_end() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::End, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::End);
+    }
+
+    #[test]
+    fn test_decode_delete() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Delete, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Delete);
+    }
+
+    #[test]
+    fn test_decode_insert() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Insert, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Insert);
+    }
+
+    #[test]
+    fn test_decode_paste() {
+        let event = Event::Paste("pasted text".to_string());
+        let decoded = decode_event(event);
+        assert!(matches!(decoded, EditorEvent::Paste(_)));
+    }
+
+    #[test]
+    fn test_input_decoder_struct() {
+        let decoder = InputDecoder::new();
+        let event = Event::Key(CTKeyEvent::new(CTKeyCode::Char('a'), CTMods::NONE));
+        let decoded = decoder.decode(event);
+        assert!(matches!(decoded, EditorEvent::Key(_)));
+    }
+
+    #[test]
+    fn test_input_decoder_default() {
+        let decoder = InputDecoder::default();
+        let event = Event::FocusGained;
+        let decoded = decoder.decode(event);
+        assert!(matches!(decoded, EditorEvent::Focus(true)));
+    }
+
+    #[test]
+    fn test_decode_left() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Left, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Left);
+    }
+
+    #[test]
+    fn test_decode_right() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Right, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Right);
+    }
+
+    #[test]
+    fn test_decode_down() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Down, CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Down);
+    }
 }

@@ -92,10 +92,88 @@ impl Service for FsService {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tempfile::tempdir;
 
     #[test]
     fn test_fs_service_new() {
         let service = FsService::new();
         assert_eq!(service.name(), "fs");
+    }
+
+    #[test]
+    fn test_fs_service_default() {
+        let service = FsService::default();
+        assert_eq!(service.name(), "fs");
+    }
+
+    #[tokio::test]
+    async fn test_read_write_file() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("test.txt");
+        
+        FsService::write_file(&path, "hello").await.unwrap();
+        let content = FsService::read_file(&path).await.unwrap();
+        assert_eq!(content, "hello");
+    }
+
+    #[tokio::test]
+    async fn test_exists() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("exists.txt");
+        
+        assert!(!FsService::exists(&path).await);
+        FsService::write_file(&path, "test").await.unwrap();
+        assert!(FsService::exists(&path).await);
+    }
+
+    #[tokio::test]
+    async fn test_create_dir() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("subdir/nested");
+        
+        FsService::create_dir(&path).await.unwrap();
+        assert!(FsService::exists(&path).await);
+    }
+
+    #[tokio::test]
+    async fn test_read_dir() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().to_path_buf();
+        
+        FsService::write_file(&path.join("a.txt"), "a").await.unwrap();
+        FsService::write_file(&path.join("b.txt"), "b").await.unwrap();
+        
+        let entries = FsService::read_dir(&path).await.unwrap();
+        assert_eq!(entries.len(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_read_nonexistent_file() {
+        let path = PathBuf::from("/nonexistent/path/file.txt");
+        let result = FsService::read_file(&path).await;
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_write_with_utf8() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("unicode.txt");
+        let content = "Hello 世界 🌍";
+        
+        FsService::write_file(&path, content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert_eq!(read, content);
+    }
+
+    #[tokio::test]
+    async fn test_overwrite_file() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("overwrite.txt");
+        
+        FsService::write_file(&path, "first").await.unwrap();
+        FsService::write_file(&path, "second").await.unwrap();
+        
+        let content = FsService::read_file(&path).await.unwrap();
+        assert_eq!(content, "second");
     }
 }

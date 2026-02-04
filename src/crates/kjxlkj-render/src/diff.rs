@@ -109,4 +109,64 @@ mod tests {
         assert_eq!(diff.changed_lines, vec![1]);
         assert!(diff.needs_redraw());
     }
+
+    #[test]
+    fn test_diff_all_lines_changed() {
+        let old = make_snapshot(vec!["a", "b", "c"]);
+        let new = make_snapshot(vec!["x", "y", "z"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert_eq!(diff.changed_lines.len(), 3);
+    }
+
+    #[test]
+    fn test_diff_first_line_changed() {
+        let old = make_snapshot(vec!["hello", "world"]);
+        let new = make_snapshot(vec!["HELLO", "world"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert_eq!(diff.changed_lines, vec![0]);
+    }
+
+    #[test]
+    fn test_diff_new_line_added() {
+        let old = make_snapshot(vec!["hello"]);
+        let new = make_snapshot(vec!["hello", "world"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.changed_lines.contains(&1));
+    }
+
+    #[test]
+    fn test_diff_line_removed() {
+        let old = make_snapshot(vec!["hello", "world"]);
+        let new = make_snapshot(vec!["hello"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.changed_lines.contains(&1));
+    }
+
+    #[test]
+    fn test_needs_full_redraw_many_lines() {
+        let old = make_snapshot((0..20).map(|i| format!("line {}", i)).collect::<Vec<_>>().iter().map(|s| s.as_str()).collect());
+        let new = make_snapshot((0..20).map(|i| format!("changed {}", i)).collect::<Vec<_>>().iter().map(|s| s.as_str()).collect());
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.needs_full_redraw());
+    }
+
+    #[test]
+    fn test_needs_redraw_cursor_change() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.cursor.position.col = 5;
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.needs_redraw());
+        assert!(diff.cursor_changed);
+    }
+
+    #[test]
+    fn test_mode_change_triggers_full_redraw() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.mode = Mode::Insert;
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.mode_changed);
+        assert!(diff.needs_full_redraw());
+    }
 }
