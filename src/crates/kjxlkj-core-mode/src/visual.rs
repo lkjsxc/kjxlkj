@@ -55,21 +55,21 @@ impl ModeHandler for VisualMode {
             KeyCode::Char('d') | KeyCode::Char('x') => {
                 let linewise = self.kind == VisualKind::Line;
                 return ModeResult::intents(vec![
-                    Intent::Delete { linewise },
+                    Intent::Delete { linewise, count: 1, motion: None },
                     Intent::SwitchMode(Mode::Normal),
                 ]);
             }
             KeyCode::Char('y') => {
                 let linewise = self.kind == VisualKind::Line;
                 return ModeResult::intents(vec![
-                    Intent::Yank { linewise },
+                    Intent::Yank { linewise, count: 1, motion: None },
                     Intent::SwitchMode(Mode::Normal),
                 ]);
             }
             KeyCode::Char('c') | KeyCode::Char('s') => {
                 let linewise = self.kind == VisualKind::Line;
                 return ModeResult::intents(vec![
-                    Intent::Change { linewise },
+                    Intent::Change { linewise, count: 1, motion: None },
                     Intent::SwitchMode(Mode::Insert),
                 ]);
             }

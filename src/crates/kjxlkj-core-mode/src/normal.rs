@@ -68,26 +68,26 @@ impl NormalMode {
             ActionKind::Repeat => intents.push(Intent::Repeat),
             ActionKind::JoinLines { add_space } => intents.push(Intent::JoinLines { add_space }),
             ActionKind::DeleteChar => {
-                intents.push(Intent::Delete { linewise: false });
+                intents.push(Intent::Delete { linewise: false, count: cmd.count, motion: None });
             }
             ActionKind::DeleteCharBefore => {
                 intents.push(Intent::Motion(MotionIntent::Left));
-                intents.push(Intent::Delete { linewise: false });
+                intents.push(Intent::Delete { linewise: false, count: cmd.count, motion: None });
             }
             ActionKind::Substitute => {
                 intents.push(Intent::Substitute);
             }
             ActionKind::SubstituteLine => {
-                intents.push(Intent::Change { linewise: true });
+                intents.push(Intent::Change { linewise: true, count: 1, motion: None });
             }
             ActionKind::DeleteToEnd => {
-                intents.push(Intent::Delete { linewise: false });
+                intents.push(Intent::Delete { linewise: false, count: 1, motion: None });
             }
             ActionKind::ChangeToEnd => {
-                intents.push(Intent::Change { linewise: false });
+                intents.push(Intent::Change { linewise: false, count: 1, motion: None });
             }
             ActionKind::YankLine => {
-                intents.push(Intent::Yank { linewise: true });
+                intents.push(Intent::Yank { linewise: true, count: cmd.count, motion: None });
             }
             ActionKind::Search { forward } => {
                 if forward {
@@ -186,12 +186,13 @@ impl NormalMode {
         &self,
         op: OperatorKind,
         motion: MotionIntent,
-        _count: usize,
+        count: usize,
     ) -> Intent {
+        let motion = Some(motion);
         match op {
-            OperatorKind::Delete => Intent::Delete { linewise: false },
-            OperatorKind::Yank => Intent::Yank { linewise: false },
-            OperatorKind::Change => Intent::Change { linewise: false },
+            OperatorKind::Delete => Intent::Delete { linewise: false, count, motion },
+            OperatorKind::Yank => Intent::Yank { linewise: false, count, motion },
+            OperatorKind::Change => Intent::Change { linewise: false, count, motion },
             OperatorKind::Indent => Intent::Indent,
             OperatorKind::Outdent => Intent::Outdent,
             OperatorKind::ToggleCase => Intent::ToggleCase,
@@ -200,11 +201,11 @@ impl NormalMode {
         }
     }
 
-    fn operator_line_intent(&self, op: OperatorKind, _count: usize) -> Intent {
+    fn operator_line_intent(&self, op: OperatorKind, count: usize) -> Intent {
         match op {
-            OperatorKind::Delete => Intent::Delete { linewise: true },
-            OperatorKind::Yank => Intent::Yank { linewise: true },
-            OperatorKind::Change => Intent::Change { linewise: true },
+            OperatorKind::Delete => Intent::Delete { linewise: true, count, motion: None },
+            OperatorKind::Yank => Intent::Yank { linewise: true, count, motion: None },
+            OperatorKind::Change => Intent::Change { linewise: true, count, motion: None },
             OperatorKind::Indent => Intent::Indent,
             OperatorKind::Outdent => Intent::Outdent,
             OperatorKind::ToggleCase => Intent::ToggleCase,

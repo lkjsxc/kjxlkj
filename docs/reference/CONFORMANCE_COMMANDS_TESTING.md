@@ -9,14 +9,26 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 
 | Command | Behavior |
 |---|---|
-| `:q` / `:q!` | Quit (forced with `!`) |
-| `:qa` / `:qa!` | Alias for quit / forced quit |
+| `:q` / `:q!` | Quit (forced with `!`). Refuses if buffer is modified unless forced. |
+| `:qa` / `:qa!` | Quit all (forced with `!`) |
 | `:w` | Write to current buffer path (if set) |
 | `:w {file}` | Write to `{file}` |
-| `:wa` | Alias for `:w` |
-| `:wq` / `:x` | Write then quit |
+| `:wa` / `:wall` | Write all buffers |
+| `:wq` / `:x` / `:exit` | Write then quit |
 | `:wq {file}` | Write to `{file}` then quit |
 | `:e {file}` / `:e! {file}` | Edit file (forced with `!`) |
+| `:ls` / `:buffers` | List open buffers |
+| `:bn` / `:bnext` | Go to next buffer |
+| `:bp` / `:bprev` / `:bprevious` | Go to previous buffer |
+| `:bd` / `:bdelete` | Delete current buffer |
+| `:bd!` / `:bdelete!` | Force delete current buffer |
+| `:sp` / `:split` | Split window horizontally (stub) |
+| `:vsp` / `:vsplit` | Split window vertically (stub) |
+| `:new` | Open new empty buffer in split (stub) |
+| `:vnew` | Open new empty buffer in vertical split (stub) |
+| `:only` | Close all other windows (stub) |
+| `:set {option}` | Set editor option (number, nonumber, wrap, nowrap) |
+| `:{number}` | Go to line number |
 | `:! {cmd}` | Run `{cmd}` via terminal service and display first output line as status |
 | `:s/pattern/replacement/` | Substitute on current line |
 | `:s/pattern/replacement/g` | Substitute all occurrences on current line |

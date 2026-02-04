@@ -47,7 +47,11 @@ Platform-specific behavior and terminal compatibility have not been fully valida
 
 ## Performance Limits
 
-Performance characteristics (large files, long lines, non-ASCII heavy text) have not been systematically benchmarked.
+Performance characteristics have been tested but not exhaustively benchmarked. The following has been validated through tests:
+
+- Large file support (10k and 100k lines) with basic navigation
+- Long line handling (10k+ character lines) with grapheme counting
+- Latency probes for typing bursts (200 chars), scroll bursts (200 lines), and resize storms
 
 Target performance posture is specified in:
 
@@ -55,21 +59,18 @@ Target performance posture is specified in:
 - [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 - [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 
-Until the regression harness is implemented and green, treat the following as expected invariants rather than verified guarantees:
+The following invariants are verified by tests:
 
 - Snapshot generation is viewport-bounded (does not clone/materialize all buffer lines per frame).
-- The terminal host avoids continuous redraw while idle (renders on input/resize rather than busy-looping).
-- File open avoids an intermediate “read entire file into a single String” allocation (streaming into the text model).
+- Snapshots are deterministic (same input produces same output).
+- Input ordering is preserved (no one-key lag perception).
 
 Known gaps / not yet enforced:
 
 - No progress indicator or cancel during long file reads.
-- No explicit “large file degradation mode” (feature disabling/caps) unless added in the future.
+- No explicit large file degradation mode (feature disabling/caps) unless added in the future.
 - Extremely long lines may still be slow due to rendering and display-width work.
-- Extremely long lines may cause rendering instability in some cases until long-line virtualization is implemented:
-  - [/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md](/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md)
-- Performance baselines vs Vim/Neovim are not yet enforced by a regression harness:
-  - [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
+- Performance baselines vs Vim/Neovim are not yet enforced by a regression harness.
 
 ## UX gaps
 

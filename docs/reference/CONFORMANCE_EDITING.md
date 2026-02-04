@@ -17,6 +17,17 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `cc` | (line) | Change current line |
 | `>>` | (line) | Indent current line (4 spaces) |
 | `<<` | (line) | Outdent current line (up to 4 spaces) |
+| `x` | (char) | Delete character under cursor |
+| `X` | (char) | Delete character before cursor |
+| `D` | (to end) | Delete from cursor to end of line |
+| `C` | (to end) | Change from cursor to end of line |
+| `s` | (char) | Substitute character (delete and enter Insert) |
+| `S` | (line) | Substitute line (delete line and enter Insert) |
+| `J` | (join) | Join current line with next (add space) |
+| `gJ` | (join) | Join current line with next (no space) |
+| `~` | (char) | Toggle case of character under cursor |
+| `gU{motion}` | (uppercase) | Uppercase over motion |
+| `gu{motion}` | (lowercase) | Lowercase over motion |
 
 ## Find character motions
 

@@ -212,13 +212,31 @@ impl TextBuffer {
 
     /// Remove a line by index.
     pub fn remove_line(&mut self, idx: usize) {
-        if idx < self.line_count() {
-            let start = self.content.line_to_char(idx);
-            let end = if idx + 1 < self.line_count() {
-                self.content.line_to_char(idx + 1)
-            } else {
-                self.content.len_chars()
-            };
+        let line_count = self.line_count();
+        if idx >= line_count {
+            return;
+        }
+
+        let start = self.content.line_to_char(idx);
+        let end = if idx + 1 < line_count {
+            // Not the last line: remove including the trailing newline
+            self.content.line_to_char(idx + 1)
+        } else if idx > 0 {
+            // Last line and not the only line: also remove the preceding newline
+            // Actually, we should remove from the previous line's end to this line's end
+            self.content.len_chars()
+        } else {
+            // Only line in the buffer: remove everything
+            self.content.len_chars()
+        };
+
+        // Special case: if removing last line and there are multiple lines,
+        // also remove the newline before it
+        if idx + 1 >= line_count && idx > 0 {
+            // Remove including the previous newline
+            let newline_pos = start.saturating_sub(1);
+            self.remove(newline_pos, end);
+        } else {
             self.remove(start, end);
         }
     }

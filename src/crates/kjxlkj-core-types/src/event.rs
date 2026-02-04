@@ -192,11 +192,11 @@ pub enum Intent {
     /// Insert text at cursor.
     InsertText(String),
     /// Delete text (with motion description).
-    Delete { linewise: bool },
+    Delete { linewise: bool, count: usize, motion: Option<MotionIntent> },
     /// Yank text to register.
-    Yank { linewise: bool },
+    Yank { linewise: bool, count: usize, motion: Option<MotionIntent> },
     /// Change text (delete and enter insert mode).
-    Change { linewise: bool },
+    Change { linewise: bool, count: usize, motion: Option<MotionIntent> },
     /// Move cursor to position.
     MoveCursor(Position),
     /// Move cursor by motion.

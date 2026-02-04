@@ -30,11 +30,11 @@ impl ModeHandler for InsertMode {
                 }
                 KeyCode::Char('w') | KeyCode::Char('W') => {
                     // Delete word before cursor
-                    ModeResult::intent(Intent::Delete { linewise: false })
+                    ModeResult::intent(Intent::Delete { linewise: false, count: 1, motion: None })
                 }
                 KeyCode::Char('u') | KeyCode::Char('U') => {
                     // Delete to line start
-                    ModeResult::intent(Intent::Delete { linewise: false })
+                    ModeResult::intent(Intent::Delete { linewise: false, count: 1, motion: None })
                 }
                 KeyCode::Char('t') | KeyCode::Char('T') => {
                     // Indent
@@ -68,7 +68,7 @@ impl ModeHandler for InsertMode {
             KeyCode::Down => ModeResult::intent(Intent::Motion(MotionIntent::Down)),
             KeyCode::Home => ModeResult::intent(Intent::Motion(MotionIntent::LineStart)),
             KeyCode::End => ModeResult::intent(Intent::Motion(MotionIntent::LineEnd)),
-            KeyCode::Delete => ModeResult::intent(Intent::Delete { linewise: false }),
+            KeyCode::Delete => ModeResult::intent(Intent::Delete { linewise: false, count: 1, motion: None }),
             _ => ModeResult::Ignored,
         }
     }

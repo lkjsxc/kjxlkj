@@ -2,7 +2,7 @@
 
 use crate::Registers;
 use kjxlkj_core_edit::{apply_motion, Motion};
-use kjxlkj_core_mode::{ModeHandler, ModeResult};
+use kjxlkj_core_mode::{ModeHandler, ModeResult, NormalMode};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{
     BufferId, Cursor, EditorEvent, Intent, KeyEvent, Mode, MotionIntent, Position, Register,
@@ -51,6 +51,8 @@ pub struct EditorState {
     macros: HashMap<char, Vec<KeyEvent>>,
     /// Command line content.
     command_line: Option<String>,
+    /// Normal mode handler (for stateful multi-key sequences like dd, yy).
+    normal_mode: NormalMode,
 }
 
 impl EditorState {
@@ -77,6 +79,7 @@ impl EditorState {
             recording_macro: None,
             macros: HashMap::new(),
             command_line: None,
+            normal_mode: NormalMode::new(),
         }
     }
 
@@ -179,12 +182,14 @@ impl EditorState {
     }
 
     fn get_mode_intents(&mut self, key: &KeyEvent) -> Vec<Intent> {
-        // Create temporary mode handlers
         match self.mode {
             Mode::Normal => {
-                let mut handler = kjxlkj_core_mode::parser::Parser::new();
-                // Simplified: convert directly to intent
-                self.parse_normal_key(key)
+                // Use the stateful NormalMode handler for multi-key sequences
+                match self.normal_mode.handle_key(key) {
+                    ModeResult::Consumed(intents) => intents,
+                    ModeResult::Pending => vec![], // Wait for more keys
+                    ModeResult::Ignored => self.parse_normal_key(key), // Fallback
+                }
             }
             Mode::Insert => self.parse_insert_key(key),
             Mode::Visual | Mode::VisualLine | Mode::VisualBlock => self.parse_visual_key(key),
@@ -248,10 +253,10 @@ impl EditorState {
             KeyCode::Char('V') => intents.push(Intent::SwitchMode(Mode::VisualLine)),
             KeyCode::Char('R') => intents.push(Intent::SwitchMode(Mode::Replace)),
             KeyCode::Char(':') => intents.push(Intent::SwitchMode(Mode::Command)),
-            KeyCode::Char('x') => intents.push(Intent::Delete { linewise: false }),
+            KeyCode::Char('x') => intents.push(Intent::Delete { linewise: false, count: 1, motion: None }),
             KeyCode::Char('X') => {
                 intents.push(Intent::Motion(MotionIntent::Left));
-                intents.push(Intent::Delete { linewise: false });
+                intents.push(Intent::Delete { linewise: false, count: 1, motion: None });
             }
             KeyCode::Char('p') => intents.push(Intent::Paste {
                 before: false,
@@ -310,17 +315,17 @@ impl EditorState {
             KeyCode::Escape => intents.push(Intent::SwitchMode(Mode::Normal)),
             KeyCode::Char('d') | KeyCode::Char('x') => {
                 let linewise = self.mode == Mode::VisualLine;
-                intents.push(Intent::Delete { linewise });
+                intents.push(Intent::Delete { linewise, count: 1, motion: None });
                 intents.push(Intent::SwitchMode(Mode::Normal));
             }
             KeyCode::Char('y') => {
                 let linewise = self.mode == Mode::VisualLine;
-                intents.push(Intent::Yank { linewise });
+                intents.push(Intent::Yank { linewise, count: 1, motion: None });
                 intents.push(Intent::SwitchMode(Mode::Normal));
             }
             KeyCode::Char('c') => {
                 let linewise = self.mode == Mode::VisualLine;
-                intents.push(Intent::Change { linewise });
+                intents.push(Intent::Change { linewise, count: 1, motion: None });
             }
             KeyCode::Char('h') | KeyCode::Left => intents.push(Intent::Motion(MotionIntent::Left)),
             KeyCode::Char('l') | KeyCode::Right => {
@@ -397,10 +402,10 @@ impl EditorState {
     fn apply_intent(&mut self, intent: Intent) {
         match intent {
             Intent::InsertText(text) => self.insert_text(&text),
-            Intent::Delete { linewise } => self.delete(linewise),
-            Intent::Yank { linewise } => self.yank(linewise),
-            Intent::Change { linewise } => {
-                self.delete(linewise);
+            Intent::Delete { linewise, count, motion } => self.delete_with_motion(linewise, count, motion),
+            Intent::Yank { linewise, count, motion } => self.yank_with_motion(linewise, count, motion),
+            Intent::Change { linewise, count, motion } => {
+                self.delete_with_motion(linewise, count, motion);
                 self.mode = Mode::Insert;
             }
             Intent::MoveCursor(pos) => {
@@ -444,7 +449,7 @@ impl EditorState {
             }
             Intent::ReplaceChar(c) => self.replace_char(c),
             Intent::Substitute => {
-                self.delete(false);
+                self.delete(false, 1);
                 self.mode = Mode::Insert;
             }
             Intent::Nop => {}
@@ -484,20 +489,37 @@ impl EditorState {
         }
     }
 
-    fn delete(&mut self, linewise: bool) {
+    fn delete(&mut self, linewise: bool, count: usize) {
+        let cursor_before = self.cursor.position;
+        
         let (start, end) = if let Some(sel) = self.selection.take() {
             (sel.start(), sel.end())
+        } else if linewise && count > 1 {
+            // Delete multiple lines starting from cursor
+            let pos = self.cursor.position;
+            let end_line = (pos.line + count - 1).min(self.buffer.line_count().saturating_sub(1));
+            (pos, Position::new(end_line, 0))
+        } else if count > 1 {
+            // Delete multiple characters at cursor
+            let pos = self.cursor.position;
+            // End position is count-1 chars to the right (start is included)
+            (pos, Position::new(pos.line, pos.col + count - 1))
         } else {
-            // Delete character at cursor
+            // Delete single character at cursor
             let pos = self.cursor.position;
             (pos, pos)
         };
 
         let deleted_text = if linewise {
             let mut text = String::new();
-            for line in start.line..=end.line {
+            let lines_to_delete = (end.line - start.line + 1).min(self.buffer.line_count());
+            for _ in 0..lines_to_delete {
                 if let Some(slice) = self.buffer.line(start.line) {
                     text.push_str(slice.as_str().unwrap_or(""));
+                    // Add newline between lines for proper linewise paste
+                    if !text.ends_with('\n') {
+                        text.push('\n');
+                    }
                 }
                 self.buffer.remove_line(start.line);
             }
@@ -516,14 +538,27 @@ impl EditorState {
             text
         };
 
+        // Record undo
+        if !deleted_text.is_empty() {
+            let mut tx = Transaction::new();
+            tx.set_cursor_before(cursor_before);
+            tx.push(kjxlkj_core_undo::Edit::delete(start, deleted_text.clone()));
+            tx.set_cursor_after(self.cursor.position);
+            self.undo_history.push(tx);
+        }
+
         // Store in register
         self.registers
             .set_selected(Register::new(deleted_text, linewise));
     }
 
-    fn yank(&mut self, linewise: bool) {
+    fn yank(&mut self, linewise: bool, count: usize) {
         let (start, end) = if let Some(sel) = &self.selection {
             (sel.start(), sel.end())
+        } else if linewise && count > 1 {
+            let pos = self.cursor.position;
+            let end_line = (pos.line + count - 1).min(self.buffer.line_count().saturating_sub(1));
+            (pos, Position::new(end_line, 0))
         } else {
             let pos = self.cursor.position;
             (pos, pos)
@@ -547,6 +582,73 @@ impl EditorState {
         self.registers.set_selected(Register::new(text, linewise));
         self.selection = None;
         self.cursor.position = start;
+    }
+
+    fn delete_with_motion(&mut self, linewise: bool, count: usize, motion: Option<MotionIntent>) {
+        if let Some(m) = motion {
+            // Calculate motion target first
+            let start_pos = self.cursor.position;
+            let end_pos = apply_motion(&Motion::new(m, count), &self.cursor, &self.buffer, self.viewport.height);
+            
+            // Determine actual range (start might be after end for backwards motions)
+            let (start, end) = if start_pos < end_pos {
+                (start_pos, end_pos)
+            } else {
+                (end_pos, start_pos)
+            };
+            
+            // Delete the range (with special handling for exclusive motions)
+            let start_idx = self.buffer.line_to_char(start.line) + start.col;
+            let end_idx = self.buffer.line_to_char(end.line) + end.col;
+            let end_idx = end_idx.min(self.buffer.char_count());
+            
+            if start_idx < end_idx {
+                let text = self.buffer.rope().slice(start_idx..end_idx).to_string();
+                self.buffer.remove(start_idx, end_idx);
+                self.cursor.position = start;
+                
+                // Record undo
+                let mut tx = Transaction::new();
+                tx.set_cursor_before(start_pos);
+                tx.push(kjxlkj_core_undo::Edit::delete(start, text.clone()));
+                tx.set_cursor_after(self.cursor.position);
+                self.undo_history.push(tx);
+                
+                self.registers.set_selected(Register::new(text, false));
+            }
+        } else {
+            // No motion, use the original delete
+            self.delete(linewise, count);
+        }
+    }
+
+    fn yank_with_motion(&mut self, linewise: bool, count: usize, motion: Option<MotionIntent>) {
+        if let Some(m) = motion {
+            // Calculate motion target first
+            let start_pos = self.cursor.position;
+            let end_pos = apply_motion(&Motion::new(m, count), &self.cursor, &self.buffer, self.viewport.height);
+            
+            // Determine actual range
+            let (start, end) = if start_pos < end_pos {
+                (start_pos, end_pos)
+            } else {
+                (end_pos, start_pos)
+            };
+            
+            let start_idx = self.buffer.line_to_char(start.line) + start.col;
+            let end_idx = self.buffer.line_to_char(end.line) + end.col;
+            let end_idx = end_idx.min(self.buffer.char_count());
+            
+            if start_idx <= end_idx {
+                let text = self.buffer.rope().slice(start_idx..end_idx).to_string();
+                self.registers.set_selected(Register::new(text, false));
+            }
+            
+            self.cursor.position = start;
+        } else {
+            // No motion, use the original yank
+            self.yank(linewise, count);
+        }
     }
 
     fn apply_motion(&mut self, motion: MotionIntent) {

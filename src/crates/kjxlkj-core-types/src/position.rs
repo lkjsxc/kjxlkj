@@ -1,6 +1,7 @@
 //! Position types for cursor and text locations.
 
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 
 /// A position in a text buffer (0-indexed line and column).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -20,6 +21,21 @@ impl Position {
 
     /// Position at the origin (0, 0).
     pub const ORIGIN: Self = Self { line: 0, col: 0 };
+}
+
+impl PartialOrd for Position {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Position {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.line.cmp(&other.line) {
+            Ordering::Equal => self.col.cmp(&other.col),
+            ord => ord,
+        }
+    }
 }
 
 impl From<(usize, usize)> for Position {
