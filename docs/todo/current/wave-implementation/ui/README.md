@@ -47,8 +47,8 @@ Implement the UI model and rendering pipeline:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define UI snapshot structures and rendering contract.
-- [ ] Define view composition for:
+- [x] Define UI snapshot structures and rendering contract.
+- [x] Define view composition for:
   - editor window(s)
   - command-line window
   - popups/overlays
@@ -56,7 +56,7 @@ Implement the UI model and rendering pipeline:
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal UI that satisfies:
+- [x] Implement a minimal UI that satisfies:
   - cursor is always visible
   - viewport follows cursor deterministically
   - redraws are stable and do not flicker
