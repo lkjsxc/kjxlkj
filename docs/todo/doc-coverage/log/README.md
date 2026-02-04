@@ -6,6 +6,7 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 Covers documentation under `/docs/log/`.
 
 Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/README.md` remains). Historical context is summarized in `/docs/reference/IMPLEMENTATION_HISTORY.md`.
+When `/docs/log/` is present, it may also include structured proposals/audits subtrees.
 
 ## Checklist (apply to every document listed)
 - [x] Read the document end-to-end.
@@ -18,3 +19,7 @@ Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/R
 ## Documents
 ### Files
 - [x] [/docs/log/README.md](/docs/log/README.md)
+
+### Subdirectories
+- [x] [/docs/log/audits/](/docs/todo/doc-coverage/log/audits/README.md)
+- [x] [/docs/log/proposals/](/docs/todo/doc-coverage/log/proposals/README.md)
