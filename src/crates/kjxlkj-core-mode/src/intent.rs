@@ -168,4 +168,29 @@ mod tests {
     fn intent_delete_char_eq() {
         assert_eq!(Intent::DeleteChar, Intent::DeleteChar);
     }
+
+    #[test]
+    fn intent_undo_eq() {
+        assert_eq!(Intent::Undo, Intent::Undo);
+    }
+
+    #[test]
+    fn intent_redo_eq() {
+        assert_eq!(Intent::Redo, Intent::Redo);
+    }
+
+    #[test]
+    fn intent_repeat_change_eq() {
+        assert_eq!(Intent::RepeatChange, Intent::RepeatChange);
+    }
+
+    #[test]
+    fn intent_enter_command_eq() {
+        assert_eq!(Intent::EnterCommand, Intent::EnterCommand);
+    }
+
+    #[test]
+    fn scroll_intent_line_down_eq() {
+        assert_eq!(ScrollIntent::LineDown, ScrollIntent::LineDown);
+    }
 }

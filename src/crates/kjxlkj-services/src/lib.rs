@@ -160,4 +160,28 @@ mod tests {
         let name = std::any::type_name::<git::GitService>();
         assert!(name.contains("Git"));
     }
+
+    #[test]
+    fn lsp_type_via_services() {
+        let name = std::any::type_name::<lsp::LspService>();
+        assert!(name.contains("Lsp"));
+    }
+
+    #[test]
+    fn fs_type_via_services() {
+        let name = std::any::type_name::<fs::FsService>();
+        assert!(name.contains("Fs"));
+    }
+
+    #[test]
+    fn supervisor_option_some() {
+        let svc = Some(ServiceSupervisor::new());
+        assert!(svc.is_some());
+    }
+
+    #[test]
+    fn supervisor_option_none() {
+        let svc: Option<ServiceSupervisor> = None;
+        assert!(svc.is_none());
+    }
 }

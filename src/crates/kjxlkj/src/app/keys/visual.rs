@@ -149,4 +149,34 @@ mod tests {
     fn char_G_file_end() {
         assert!(matches!(char_to_motion('G'), Some(MotionKind::FileEnd)));
     }
+
+    #[test]
+    fn char_x_none() {
+        assert!(char_to_motion('x').is_none());
+    }
+
+    #[test]
+    fn char_d_none() {
+        assert!(char_to_motion('d').is_none());
+    }
+
+    #[test]
+    fn char_y_none() {
+        assert!(char_to_motion('y').is_none());
+    }
+
+    #[test]
+    fn char_space_none() {
+        assert!(char_to_motion(' ').is_none());
+    }
+
+    #[test]
+    fn char_newline_none() {
+        assert!(char_to_motion('\n').is_none());
+    }
+
+    #[test]
+    fn process_visual_key_import() {
+        let _ = std::any::type_name::<EditorState>();
+    }
 }

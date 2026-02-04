@@ -148,4 +148,34 @@ mod tests {
         let output = TerminalService::run_command_str("echo hello").unwrap();
         assert!(output.contains("hello"));
     }
+
+    #[test]
+    fn run_command_echo_multiple() {
+        let output = TerminalService::run_command_str("echo a b c").unwrap();
+        assert!(output.contains("a"));
+    }
+
+    #[test]
+    fn run_command_false() {
+        let output = TerminalService::run_command("false").unwrap();
+        assert!(!output.status.success());
+    }
+
+    #[test]
+    fn run_command_cat() {
+        let output = TerminalService::run_command("echo test | cat").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn terminal_service_box_pattern() {
+        let svc = Box::new(TerminalService::new());
+        drop(svc);
+    }
+
+    #[test]
+    fn terminal_service_multiple() {
+        let _ = TerminalService::new();
+        let _ = TerminalService::new();
+    }
 }

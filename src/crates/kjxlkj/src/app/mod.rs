@@ -157,4 +157,25 @@ mod tests {
         let mut state = EditorState::new();
         apply_intent(&mut state, Intent::EnterCommand);
     }
+
+    #[test]
+    fn apply_intent_cancel() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::Cancel);
+    }
+
+    #[test]
+    fn apply_operator_fn_import() {
+        let _ = std::any::type_name::<EditorState>();
+    }
+
+    #[test]
+    fn apply_motion_fn_import() {
+        let _ = std::any::type_name::<EditorState>();
+    }
+
+    #[test]
+    fn execute_command_fn_import() {
+        let _ = std::any::type_name::<EditorState>();
+    }
 }

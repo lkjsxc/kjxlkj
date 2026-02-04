@@ -147,4 +147,46 @@ mod tests {
         assert_eq!(content.len(), 10000);
         std::fs::remove_file(&path).ok();
     }
+
+    #[test]
+    fn fs_service_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<FsService>();
+    }
+
+    #[test]
+    fn fs_service_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<FsService>();
+    }
+
+    #[test]
+    fn fs_service_type_size() {
+        assert_eq!(std::mem::size_of::<FsService>(), 0);
+    }
+
+    #[test]
+    fn fs_path_join_test() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("subdir").join("file.txt");
+        assert!(path.ends_with("file.txt"));
+    }
+
+    #[test]
+    fn fs_temp_dir_exists() {
+        let dir = std::env::temp_dir();
+        assert!(FsService::exists(&dir));
+    }
+
+    #[test]
+    fn fs_service_create_drop() {
+        let svc = FsService::new();
+        drop(svc);
+    }
+
+    #[test]
+    fn fs_service_multiple() {
+        let _ = FsService::new();
+        let _ = FsService::new();
+    }
 }

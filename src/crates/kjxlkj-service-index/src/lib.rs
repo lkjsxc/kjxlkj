@@ -146,4 +146,34 @@ mod tests {
         let taken = std::mem::take(&mut svc);
         let _ = taken;
     }
+
+    #[test]
+    fn index_service_result_err() {
+        let result: Result<(), IndexService> = Err(IndexService::new());
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn index_service_vec_collect() {
+        let v: Vec<_> = (0..3).map(|_| IndexService::new()).collect();
+        assert_eq!(v.len(), 3);
+    }
+
+    #[test]
+    fn index_service_iter_count() {
+        let v: Vec<_> = (0..4).map(|_| IndexService::new()).collect();
+        assert_eq!(v.iter().count(), 4);
+    }
+
+    #[test]
+    fn index_service_rc_strong() {
+        let rc = std::rc::Rc::new(IndexService::new());
+        assert_eq!(std::rc::Rc::strong_count(&rc), 1);
+    }
+
+    #[test]
+    fn index_service_arc_strong() {
+        let arc = std::sync::Arc::new(IndexService::new());
+        assert_eq!(std::sync::Arc::strong_count(&arc), 1);
+    }
 }

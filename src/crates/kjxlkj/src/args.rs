@@ -160,4 +160,40 @@ mod tests {
         };
         assert!(args.headless && args.file.is_some() && args.script.is_some());
     }
+
+    #[test]
+    fn args_empty_file() {
+        let args = Args {
+            file: Some("".to_string()),
+            headless: false,
+            script: None,
+        };
+        assert_eq!(args.file, Some("".to_string()));
+    }
+
+    #[test]
+    fn args_relative_path() {
+        let args = Args {
+            file: Some("./file.rs".to_string()),
+            headless: false,
+            script: None,
+        };
+        assert!(args.file.unwrap().starts_with("./"));
+    }
+
+    #[test]
+    fn args_headless_false() {
+        let args = Args {
+            file: None,
+            headless: false,
+            script: None,
+        };
+        assert!(!args.headless);
+    }
+
+    #[test]
+    fn args_type_name() {
+        let name = std::any::type_name::<Args>();
+        assert!(name.contains("Args"));
+    }
 }

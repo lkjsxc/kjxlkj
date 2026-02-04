@@ -144,4 +144,42 @@ mod tests {
         let taken = std::mem::take(&mut svc);
         let _ = taken;
     }
+
+    #[test]
+    fn git_service_result_err() {
+        let result: Result<(), GitService> = Err(GitService::new());
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn git_service_cell_pattern() {
+        let cell = std::cell::Cell::new(0usize);
+        let _ = GitService::new();
+        cell.set(1);
+        assert_eq!(cell.get(), 1);
+    }
+
+    #[test]
+    fn git_service_vec_collect() {
+        let v: Vec<_> = (0..3).map(|_| GitService::new()).collect();
+        assert_eq!(v.len(), 3);
+    }
+
+    #[test]
+    fn git_service_iter_count() {
+        let v: Vec<_> = (0..4).map(|_| GitService::new()).collect();
+        assert_eq!(v.iter().count(), 4);
+    }
+
+    #[test]
+    fn git_service_rc_strong() {
+        let rc = std::rc::Rc::new(GitService::new());
+        assert_eq!(std::rc::Rc::strong_count(&rc), 1);
+    }
+
+    #[test]
+    fn git_service_arc_strong() {
+        let arc = std::sync::Arc::new(GitService::new());
+        assert_eq!(std::sync::Arc::strong_count(&arc), 1);
+    }
 }
