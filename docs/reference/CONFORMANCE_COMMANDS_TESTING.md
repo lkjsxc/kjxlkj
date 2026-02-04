@@ -26,20 +26,51 @@ Command-line (Ex) command subset and headless/E2E surface currently implemented.
 
 The shipped binary supports a deterministic headless mode for E2E tests:
 
-- `--headless --script {path}` runs an event script without terminal UI.
-- The script MAY be either:
-  - a JSON array of keys, where each item is a `Key` object with `code` and `mods`
-  - a JSON array of steps, where each item is a tagged object with `kind`
+- `--headless` runs without a terminal UI.
+- `--script {path}` runs an event script (if provided).
+- An optional positional `{file}` argument loads a file into the initial buffer before the script runs.
 
 ### Script format
 
-```json
-[
-  {"kind": "key", "code": "i", "ctrl": false},
-  {"kind": "keys", "keys": "hello"},
-  {"kind": "key", "code": "Escape", "ctrl": false}
-]
-```
+The headless script file is UTF-8 JSON in one of two accepted shapes:
+
+| Shape | Description |
+|---|---|
+| Steps array | A JSON array of `ScriptStep` objects. Each element is an object with a `kind` discriminator. |
+| Keys array | A JSON array of `ScriptKey` objects. Each element is a key description without `kind`. |
+
+#### `ScriptKey` schema (used by both shapes)
+
+| Field | Type | Required | Meaning |
+|---|---:|:---:|---|
+| `code` | string | yes | Key identity (either a single character, or a named special key). |
+| `ctrl` | boolean | no | Whether Ctrl is held. Defaults to `false`. |
+| `alt` | boolean | no | Whether Alt/Meta is held. Defaults to `false`. |
+| `shift` | boolean | no | Whether Shift is held. Defaults to `false`. |
+
+Named `code` values supported by the current implementation:
+
+| `code` | Meaning |
+|---|---|
+| `Escape`, `Esc` | Escape key |
+| `Enter`, `Return` | Enter/Return key |
+| `Backspace` | Backspace key |
+| `Tab` | Tab key |
+| `Left`, `Right`, `Up`, `Down` | Arrow keys |
+
+If `code` is not a named value above, it MUST be a single-character string.
+
+#### `ScriptStep` kinds
+
+| `kind` | Additional fields | Effect |
+|---|---|---|
+| `key` | `code`, optional `ctrl`/`alt`/`shift` | Inject one key event. |
+| `keys` | `keys` (string) | Inject literal characters, one per Unicode scalar value. |
+| `assert_mode` | `mode` (string) | Assert the current editor mode. |
+| `assert_cursor` | `line` (integer), `col` (integer) | Assert the cursor position (0-based). |
+| `assert_line` | `line` (integer), `content` (string) | Assert an exact line string match (0-based). |
+
+Mode strings accepted by the current implementation include `normal`, `insert`, `visual`, `visual_line`, `visual_block`, `command`, `replace` (case-insensitive, with a small set of aliases).
 
 ## E2E test coverage
 
@@ -65,14 +96,6 @@ The following E2E test scenarios are covered:
 | scroll_burst | 20 lines scrolled rapidly with `j` |
 | mode_switch_burst | 10 rapid Normal/Insert mode switches |
 | input_ordering | Verify input sequence order preserved |
-
-## Test counts (as of current version)
-
-| Suite | Count |
-|---|---|
-| Unit tests (workspace) | 332 |
-| E2E tests | 18 |
-| **Total** | **350** |
 
 ## Related
 
