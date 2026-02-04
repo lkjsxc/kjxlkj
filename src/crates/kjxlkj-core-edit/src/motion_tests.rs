@@ -137,3 +137,31 @@ fn motion_screen_bottom() {
     let m = Motion::new(MotionKind::ScreenBottom);
     assert_eq!(m.kind, MotionKind::ScreenBottom);
 }
+
+#[test]
+fn motion_with_zero_count() {
+    // Count should be at least 1
+    let m = Motion::new(MotionKind::Right).with_count(0);
+    assert_eq!(m.count, 1);
+}
+
+#[test]
+fn motion_with_large_count() {
+    let m = Motion::new(MotionKind::Down).with_count(100);
+    assert_eq!(m.count, 100);
+}
+
+#[test]
+fn motion_chained_methods() {
+    let m = Motion::new(MotionKind::WordEnd)
+        .with_count(3)
+        .inclusive();
+    assert_eq!(m.count, 3);
+    assert!(m.inclusive);
+}
+
+#[test]
+fn motion_default_not_inclusive() {
+    let m = Motion::new(MotionKind::Left);
+    assert!(!m.inclusive);
+}

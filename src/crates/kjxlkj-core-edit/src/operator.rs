@@ -156,4 +156,26 @@ mod tests {
         let k2 = OperatorKind::Delete;
         assert_eq!(k1, k2);
     }
+
+    #[test]
+    fn operator_indent_kind() {
+        let op = Operator::line(OperatorKind::Indent, 1);
+        assert_eq!(op.kind(), OperatorKind::Indent);
+    }
+
+    #[test]
+    fn operator_outdent_kind() {
+        let op = Operator::line(OperatorKind::Outdent, 1);
+        assert_eq!(op.kind(), OperatorKind::Outdent);
+    }
+
+    #[test]
+    fn operator_line_count() {
+        let op = Operator::line(OperatorKind::Delete, 5);
+        if let Operator::Line { count, .. } = op {
+            assert_eq!(count, 5);
+        } else {
+            panic!("Expected Line variant");
+        }
+    }
 }

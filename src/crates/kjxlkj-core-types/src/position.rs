@@ -141,4 +141,25 @@ mod tests {
         assert_eq!(p.line, 0);
         assert_eq!(p.col, 0);
     }
+
+    #[test]
+    fn position_display_format() {
+        let p = Position::new(5, 10);
+        let display = format!("{:?}", p);
+        assert!(display.contains("5"));
+        assert!(display.contains("10"));
+    }
+
+    #[test]
+    fn position_max_values() {
+        let p = Position::new(usize::MAX, usize::MAX);
+        assert_eq!(p.line, usize::MAX);
+        assert_eq!(p.col, usize::MAX);
+    }
+
+    #[test]
+    fn position_equal_to_self() {
+        let p = Position::new(7, 3);
+        assert_eq!(p, p);
+    }
 }

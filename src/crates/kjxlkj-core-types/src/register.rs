@@ -177,4 +177,22 @@ mod tests {
         let name = RegisterName::from_char('z');
         assert_eq!(name, Some(RegisterName::Named('z')));
     }
+
+    #[test]
+    fn register_black_hole() {
+        let name = RegisterName::from_char('_');
+        assert_eq!(name, Some(RegisterName::BlackHole));
+    }
+
+    #[test]
+    fn register_last_search() {
+        let name = RegisterName::from_char('/');
+        assert_eq!(name, Some(RegisterName::LastSearch));
+    }
+
+    #[test]
+    fn register_expression() {
+        let name = RegisterName::from_char('=');
+        assert_eq!(name, Some(RegisterName::Expression));
+    }
 }

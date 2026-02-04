@@ -145,3 +145,39 @@ fn intent_search_backward() {
     let intent = Intent::SearchBackward;
     assert_eq!(intent, Intent::SearchBackward);
 }
+
+#[test]
+fn intent_next_match() {
+    let intent = Intent::NextMatch;
+    assert_eq!(intent, Intent::NextMatch);
+}
+
+#[test]
+fn intent_prev_match() {
+    let intent = Intent::PrevMatch;
+    assert_eq!(intent, Intent::PrevMatch);
+}
+
+#[test]
+fn intent_cancel() {
+    let intent = Intent::Cancel;
+    assert_eq!(intent, Intent::Cancel);
+}
+
+#[test]
+fn intent_write() {
+    let intent = Intent::Write { path: None };
+    assert!(matches!(intent, Intent::Write { .. }));
+}
+
+#[test]
+fn intent_write_quit() {
+    let intent = Intent::WriteQuit { path: Some("/tmp/test".to_string()) };
+    assert!(matches!(intent, Intent::WriteQuit { .. }));
+}
+
+#[test]
+fn intent_repeat_change() {
+    let intent = Intent::RepeatChange;
+    assert_eq!(intent, Intent::RepeatChange);
+}

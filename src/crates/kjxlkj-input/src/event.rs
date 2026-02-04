@@ -143,4 +143,25 @@ mod tests {
         let lost = InputEvent::FocusLost;
         assert_ne!(gained, lost);
     }
+
+    #[test]
+    fn input_event_focus_gained_eq() {
+        let e1 = InputEvent::FocusGained;
+        let e2 = InputEvent::FocusGained;
+        assert_eq!(e1, e2);
+    }
+
+    #[test]
+    fn input_event_focus_lost_eq() {
+        let e1 = InputEvent::FocusLost;
+        let e2 = InputEvent::FocusLost;
+        assert_eq!(e1, e2);
+    }
+
+    #[test]
+    fn input_event_resize_eq() {
+        let e1 = InputEvent::resize(80, 24);
+        let e2 = InputEvent::resize(80, 24);
+        assert_eq!(e1, e2);
+    }
 }

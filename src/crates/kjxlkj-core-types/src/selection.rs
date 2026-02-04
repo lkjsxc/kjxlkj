@@ -183,4 +183,18 @@ mod tests {
         assert_ne!(SelectionKind::Char, SelectionKind::Line);
         assert_ne!(SelectionKind::Line, SelectionKind::Block);
     }
+
+    #[test]
+    fn selection_all_kinds() {
+        let _char = SelectionKind::Char;
+        let _line = SelectionKind::Line;
+        let _block = SelectionKind::Block;
+    }
+
+    #[test]
+    fn selection_anchor_equals_cursor() {
+        let pos = Position::new(3, 5);
+        let sel = Selection::char_at(pos);
+        assert_eq!(sel.anchor, sel.cursor);
+    }
 }

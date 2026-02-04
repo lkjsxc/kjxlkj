@@ -96,4 +96,28 @@ mod tests {
         };
         assert_eq!(args.script, Some("script.txt".to_string()));
     }
+
+    #[test]
+    fn args_all_fields_set() {
+        let args = Args {
+            file: Some("file.txt".to_string()),
+            headless: true,
+            script: Some("script.json".to_string()),
+        };
+        assert!(args.file.is_some());
+        assert!(args.headless);
+        assert!(args.script.is_some());
+    }
+
+    #[test]
+    fn args_default_values() {
+        let args = Args {
+            file: None,
+            headless: false,
+            script: None,
+        };
+        assert!(!args.headless);
+        assert!(args.file.is_none());
+        assert!(args.script.is_none());
+    }
 }

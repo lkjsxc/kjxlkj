@@ -106,4 +106,18 @@ mod tests {
         ];
         assert_eq!(kinds.len(), 3);
     }
+
+    #[test]
+    fn facade_cursor_origin() {
+        let cursor = Cursor::origin();
+        assert_eq!(cursor.line(), 0);
+        assert_eq!(cursor.col(), 0);
+    }
+
+    #[test]
+    fn facade_position_new() {
+        let pos = Position::new(10, 20);
+        assert_eq!(pos.line, 10);
+        assert_eq!(pos.col, 20);
+    }
 }

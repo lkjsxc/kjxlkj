@@ -73,4 +73,23 @@ mod tests {
         let state = EditorState::new();
         assert_eq!(state.buffer.line_count(), 1);
     }
+
+    #[test]
+    fn headless_cursor_default() {
+        let state = EditorState::new();
+        assert_eq!(state.cursor.line(), 0);
+        assert_eq!(state.cursor.col(), 0);
+    }
+
+    #[test]
+    fn headless_no_selection_default() {
+        let state = EditorState::new();
+        assert!(state.selection.is_none());
+    }
+
+    #[test]
+    fn headless_should_quit_default() {
+        let state = EditorState::new();
+        assert!(!state.should_quit);
+    }
 }

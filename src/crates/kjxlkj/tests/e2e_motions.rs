@@ -87,3 +87,32 @@ fn test_headless_screen_motion() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_find_char_motion() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hello"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":"f","ctrl":false},{"kind":"key","code":"l","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_percent_motion() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"()"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"%","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_word_motion_count() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"one two three four"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":"2","ctrl":false},{"kind":"key","code":"w","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

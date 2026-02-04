@@ -169,4 +169,22 @@ mod tests {
         let to = TextObject::inner(TextObjectKind::Word);
         assert_eq!(to.count, 1);
     }
+
+    #[test]
+    fn text_object_big_word() {
+        let to = TextObject::inner(TextObjectKind::BigWord);
+        assert_eq!(to.kind, TextObjectKind::BigWord);
+    }
+
+    #[test]
+    fn text_object_braces() {
+        let to = TextObject::around(TextObjectKind::Braces);
+        assert_eq!(to.kind, TextObjectKind::Braces);
+    }
+
+    #[test]
+    fn text_object_parens() {
+        let to = TextObject::inner(TextObjectKind::Parens);
+        assert_eq!(to.kind, TextObjectKind::Parens);
+    }
 }

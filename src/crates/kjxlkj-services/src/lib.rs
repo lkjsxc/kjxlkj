@@ -74,4 +74,16 @@ mod tests {
         let sup2 = ServiceSupervisor::new();
         let _ = (&sup1, &sup2);
     }
+
+    #[test]
+    fn supervisor_is_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<ServiceSupervisor>();
+    }
+
+    #[test]
+    fn supervisor_is_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<ServiceSupervisor>();
+    }
 }

@@ -152,3 +152,28 @@ fn snapshot_cursor_access() {
     assert_eq!(snap.cursor.line(), 0);
     assert_eq!(snap.cursor.col(), 0);
 }
+
+#[test]
+fn status_line_filename() {
+    let mut status = StatusLine::default();
+    status.filename = "test.rs".to_string();
+    assert_eq!(status.filename, "test.rs");
+}
+
+#[test]
+fn buffer_snapshot_first_line() {
+    let snap = BufferSnapshot::empty();
+    assert_eq!(snap.first_line, 0);
+}
+
+#[test]
+fn snapshot_buffer_lines() {
+    let snap = EditorSnapshot::default();
+    assert!(!snap.buffer.lines.is_empty());
+}
+
+#[test]
+fn viewport_first_line_default() {
+    let snap = EditorSnapshot::default();
+    assert_eq!(snap.viewport.first_line, 0);
+}

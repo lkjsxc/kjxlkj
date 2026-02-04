@@ -117,3 +117,32 @@ fn test_right_movement_burst() {
     script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
     assert!(run_headless(&script).is_ok());
 }
+
+/// Test repeated delete char.
+#[test]
+fn test_delete_char_burst() {
+    let mut script = String::from("[");
+    script.push_str(r#"{"kind":"key","code":"i","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"hello world"},"#);
+    script.push_str(r#"{"kind":"key","code":"Escape","ctrl":false},"#);
+    for _ in 0..5 {
+        script.push_str(r#"{"kind":"key","code":"x","ctrl":false},"#);
+    }
+    script.push_str(r#"{"kind":"key","code":":","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#);
+    assert!(run_headless(&script).is_ok());
+}
+
+/// Test visual mode selection.
+#[test]
+fn test_visual_selection_burst() {
+    let mut script = String::from("[");
+    script.push_str(r#"{"kind":"key","code":"v","ctrl":false},"#);
+    for _ in 0..5 {
+        script.push_str(r#"{"kind":"key","code":"l","ctrl":false},"#);
+    }
+    script.push_str(r#"{"kind":"key","code":"Escape","ctrl":false},"#);
+    script.push_str(r#"{"kind":"key","code":":","ctrl":false},"#);
+    script.push_str(r#"{"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#);
+    assert!(run_headless(&script).is_ok());
+}

@@ -123,3 +123,45 @@ fn assert_mode_insert_case_insensitive() {
     assert!(assert_mode(&state, "Insert").is_ok());
     assert!(assert_mode(&state, "INSERT").is_ok());
 }
+
+#[test]
+fn parse_shift_modifier() {
+    let key = ScriptKey {
+        code: "A".to_string(),
+        ctrl: false,
+        alt: false,
+        shift: true,
+    };
+    let k = parse_key(&key).unwrap();
+    assert!(k.mods.shift);
+}
+
+#[test]
+fn parse_left_arrow_key() {
+    let key = ScriptKey {
+        code: "Left".to_string(),
+        ctrl: false,
+        alt: false,
+        shift: false,
+    };
+    let k = parse_key(&key).unwrap();
+    assert_eq!(k.code, KeyCode::Left);
+}
+
+#[test]
+fn parse_right_arrow_key() {
+    let key = ScriptKey {
+        code: "Right".to_string(),
+        ctrl: false,
+        alt: false,
+        shift: false,
+    };
+    let k = parse_key(&key).unwrap();
+    assert_eq!(k.code, KeyCode::Right);
+}
+
+#[test]
+fn assert_mode_normal_valid() {
+    let state = EditorState::new();
+    assert!(assert_mode(&state, "normal").is_ok());
+}

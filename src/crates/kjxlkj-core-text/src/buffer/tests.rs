@@ -180,3 +180,9 @@ fn buffer_delete_range_multichar() {
     buf.delete_range(Position::new(0, 1), Position::new(0, 4));
     assert_eq!(buf.line(0), Some("AEF".to_string()));
 }
+
+#[test]
+fn buffer_path_initially_none() {
+    let buf = TextBuffer::new(BufferId::new(1));
+    assert!(buf.path().is_none());
+}
