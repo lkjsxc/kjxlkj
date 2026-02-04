@@ -1,83 +1,64 @@
-# Performance Profiling Guide
+# Profiling and Performance Observability
 
-Guide for profiling and optimizing kjxlkj.
+Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
+Normative observability requirements for diagnosing latency and performance regressions.
 
-## Built-in Metrics
+## Goals (normative)
 
-### Startup Time
+The implementation MUST make it possible to answer:
 
+- Where is time spent (input decode, core update, snapshot, render, I/O, services)?
+- Is per-frame work bounded to the viewport (or is there hidden O(file) behavior)?
+- Is the host busy-looping while idle (unnecessary CPU usage)?
 
-Target: < 50ms for version output.
+## Instrumentation requirements (normative)
 
-### Frame Time Logging
+Instrumentation MUST be:
 
+- opt-in (disabled by default)
+- low overhead when enabled (sufficient for dev profiling)
+- zero/near-zero overhead when disabled
+- deterministic with respect to core behavior (instrumentation must not change edit semantics)
 
-Logs render times to stderr or log file.
+## Required metrics (normative)
 
-## CPU Profiling
+The implementation MUST be able to record, at minimum, the following per input/update cycle:
 
-### Using perf (Linux)
+| Metric | Meaning | Why it matters |
+|---|---|---|
+| Input events processed | Count of decoded inputs applied | detects drops and batching behavior |
+| Core update count | Number of state transitions applied | correlates with intents |
+| Snapshot duration | Time spent producing a snapshot | detects O(file) snapshot work |
+| Render duration | Time spent producing terminal output | detects full redraw storms |
+| Snapshot “materialized lines” | Count of buffer lines materialized into the snapshot | strong signal for viewport-boundedness |
 
+If the renderer is cell-based, it SHOULD also record:
 
-### Using Instruments (macOS)
+| Metric | Meaning |
+|---|---|
+| Cells written | Number of terminal cells written per frame |
+| Dirty region size | Area of the screen that changed |
 
+## Required probes (normative)
 
-### Using cargo-flamegraph
+The implementation MUST support probes that can be exercised by tests/benchmarks:
 
+| Probe | Requirement |
+|---|---|
+| Idle CPU probe | Must detect redraw/snapshot busy-loop while idle (no input, no animation). |
+| Long-line probe | Must detect per-frame work proportional to total line length when only a slice is visible. |
+| Large-file probe | Must detect snapshot/render work proportional to total buffer size. |
 
-## Memory Profiling
+## Acceptance criteria (Given/When/Then)
 
-### Using Valgrind/Massif
+1. Given instrumentation is enabled, when the editor processes a burst of input, then the implementation MUST produce a record that includes snapshot duration and render duration for the burst.
+2. Given a very large buffer, when producing a snapshot, then the recorded “materialized lines” MUST be bounded by the viewport height (plus a small constant margin).
+3. Given no input for an extended period, when instrumentation is enabled, then the idle CPU probe MUST report no continuous redraw loop.
 
+## Related
 
-### Using heaptrack (Linux)
-
-
-### Memory Usage Check
-
-
-## Benchmarks
-
-### Running Benchmarks
-
-
-### Specific Benchmark
-
-
-### Benchmark Comparison
-
-
-## Common Bottlenecks
-
-### Syntax Highlighting
-
-- Large files with complex syntax
-- Solution: Limit visible range highlighting
-
-### LSP Communication
-
-- Large completion lists
-- Solution: Limit results, async loading
-
-### File I/O
-
-- Large file opening
-- Solution: Memory-mapped files, streaming
-
-### Rendering
-
-- Complex UI with many elements
-- Solution: Dirty-region tracking
-
-## Performance Targets
-
-| Operation | Target |
-|-----------|--------|
-| Startup | < 100ms |
-| Keystroke latency | < 16ms |
-| File open (1MB) | < 200ms |
-| File open (100MB) | < 2s |
-| Search (100k lines) | < 500ms |
-
-## Profiling in Tests
+- Latency ordering: [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- Large-file posture: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- Memory posture: [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
+- Test strategy: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 

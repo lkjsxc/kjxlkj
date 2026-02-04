@@ -1,92 +1,66 @@
-# Performance Regression Tests
+# Regression Testing (Correctness + Performance)
 
-Prevent performance regressions with automated benchmarks.
+Back: [/docs/technical/testing/README.md](/docs/technical/testing/README.md)
+Guidance for preventing correctness and performance regressions.
 
-## Overview
+## Principles
 
-Track performance across commits to catch regressions
-before they reach users.
+1. Prefer deterministic tests that assert invariants over tests that assert absolute timings.
+2. When performance matters, gate on algorithmic behavior (O(viewport) vs O(file)), not raw speed.
+3. Use benchmarks as trend signals; avoid hard CI budgets unless measurements are proven stable.
 
-## Criterion Benchmarks
+Normative requirements live in:
 
-### Location
+- [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
+## Correctness regressions (hard gates)
 
-### Running Benchmarks
+Examples of good regression guards:
 
+- “no input dropped” under typing/scroll/resize storms
+- viewport/cursor visibility invariants under resize and long-line navigation
+- deterministic headless scripts for bug repros (stable E2E surface)
 
-## Baseline Comparison
+When a bug is fixed:
 
-### Save Baseline
+- add a test that fails on the old behavior
+- link the test to the defining spec and (if user-visible) update limitations/conformance
 
+## Performance regressions
 
-### Compare to Baseline
+### A. Deterministic probes (hard gates)
 
+These should fail on algorithmic regressions and be stable under CI variance:
 
-## Benchmark Examples
+- viewport-bounded snapshot materialization checks
+- long-line rendering virtualization checks (no full-line per-frame materialization)
+- idle CPU probes (no busy-loop redraw)
 
-### Buffer Operations
+See TODO leaf:
 
+- [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
 
-### Rendering
+### B. Benchmarks (trend signals)
 
+Benchmarks SHOULD measure:
 
-## CI Integration
+- snapshot generation cost vs viewport size
+- rendering cost vs viewport area
+- file open time-to-first-snapshot for large inputs
 
-### GitHub Actions
+When CI is present, benchmarks MAY be reported for trend tracking (for example: as a workflow artifact or PR comment), but SHOULD NOT block merges unless stability is demonstrated.
 
+## Reporting
 
-### Benchmark Bot
+When a regression is found, record:
 
-Use GitHub Actions to comment benchmark results on PRs.
+- the spec expectation (link)
+- the reproduction probe/test (link)
+- expected vs observed behavior
+- whether the mitigation is “fix” or “explicit limitation/degradation”
 
-## Thresholds
+If user-visible behavior is intentionally degraded, update:
 
-### Acceptable Variance
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-| Operation | Threshold |
-|-----------|-----------|
-| Buffer ops | ±5% |
-| Rendering | ±10% |
-| Input | ±5% |
-| LSP | ±20% |
-
-## Tracking Over Time
-
-### Criterion Reports
-
-
-### Export Data
-
-
-## Custom Harness
-
-### Simple Timing
-
-
-## Benchmark Categories
-
-### Micro-benchmarks
-
-- Character insertion
-- Single line render
-- Key parsing
-
-### Macro-benchmarks
-
-- File loading
-- Full render cycle
-- Search across file
-
-## Preventing Regressions
-
-1. Run benchmarks in CI
-2. Block PRs on significant regressions
-3. Track trends over time
-4. Review benchmark results in code review
-
-## Makefile Targets
-
-- **bench** - Runs benchmarks with `cargo bench`
-- **bench-save** - Saves benchmark baseline using current commit hash
-- **bench-compare** - Compares against the main branch baseline
