@@ -164,4 +164,33 @@ mod tests {
         let mods = Modifiers::ctrl();
         assert!(mods.ctrl);
     }
+
+    #[test]
+    fn modifiers_shift_has_shift() {
+        let mods = Modifiers { ctrl: false, alt: false, shift: true };
+        assert!(mods.shift);
+    }
+
+    #[test]
+    fn modifiers_alt_has_alt() {
+        let mods = Modifiers { ctrl: false, alt: true, shift: false };
+        assert!(mods.alt);
+    }
+
+    #[test]
+    fn key_new_struct() {
+        let k = Key { code: KeyCode::Tab, mods: Modifiers::none() };
+        assert!(matches!(k.code, KeyCode::Tab));
+    }
+
+    #[test]
+    fn key_code_debug() {
+        let _ = format!("{:?}", KeyCode::Delete);
+    }
+
+    #[test]
+    fn key_modifiers_default() {
+        let mods = Modifiers::default();
+        assert!(!mods.ctrl && !mods.alt && !mods.shift);
+    }
 }

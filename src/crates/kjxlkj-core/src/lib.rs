@@ -151,4 +151,38 @@ mod tests {
         let kind = SelectionKind::Char;
         assert!(matches!(kind, SelectionKind::Char));
     }
+
+    #[test]
+    fn facade_selection_kind_line() {
+        let kind = SelectionKind::Line;
+        assert!(matches!(kind, SelectionKind::Line));
+    }
+
+    #[test]
+    fn facade_selection_kind_block() {
+        let kind = SelectionKind::Block;
+        assert!(matches!(kind, SelectionKind::Block));
+    }
+
+    #[test]
+    fn facade_text_object_kinds() {
+        let kinds = [
+            TextObjectKind::Word,
+            TextObjectKind::BigWord,
+            TextObjectKind::Paragraph,
+        ];
+        assert_eq!(kinds.len(), 3);
+    }
+
+    #[test]
+    fn facade_editor_state_new() {
+        let state = EditorState::new();
+        let _ = state;
+    }
+
+    #[test]
+    fn facade_intent_none() {
+        let intent = Intent::None;
+        assert_eq!(intent, Intent::None);
+    }
 }

@@ -165,4 +165,28 @@ mod tests {
         let buf = TextBuffer::new(BufferId::new(1));
         assert!(buf.line_count() >= 1);
     }
+
+    #[test]
+    fn buffer_from_str() {
+        let buf = TextBuffer::from_str(BufferId::new(1), "hello");
+        assert!(buf.char_count() >= 5);
+    }
+
+    #[test]
+    fn buffer_version_init() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        let _ = buf.version();
+    }
+
+    #[test]
+    fn buffer_line_len_zero() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        let _ = buf.line_len(0);
+    }
+
+    #[test]
+    fn buffer_line_get() {
+        let buf = TextBuffer::from_str(BufferId::new(1), "test");
+        assert!(buf.line(0).is_some());
+    }
 }

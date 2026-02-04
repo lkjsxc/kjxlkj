@@ -88,4 +88,39 @@ mod tests {
         let intent = state.handle_operator_motion(OperatorKind::Delete, 'z', 1);
         assert_eq!(intent, Intent::None);
     }
+
+    #[test]
+    fn indent_linewise() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Indent, '>', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn outdent_linewise() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Outdent, '<', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn delete_with_e_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'e', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn yank_with_w_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Yank, 'w', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn delete_with_b_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'b', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
 }

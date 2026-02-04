@@ -124,4 +124,28 @@ mod tests {
         let svc = TerminalService::new();
         drop(svc);
     }
+
+    #[test]
+    fn run_command_ls() {
+        let output = TerminalService::run_command("ls").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn run_command_whoami() {
+        let output = TerminalService::run_command("whoami").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn run_command_date() {
+        let output = TerminalService::run_command("date").unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn run_command_str_output() {
+        let output = TerminalService::run_command_str("echo hello").unwrap();
+        assert!(output.contains("hello"));
+    }
 }

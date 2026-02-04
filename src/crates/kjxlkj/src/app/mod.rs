@@ -87,3 +87,48 @@ pub fn load_file(state: &mut EditorState, path: &str) -> Result<()> {
     state.clamp_cursor();
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use kjxlkj_core::{Intent, Position};
+    
+    #[test]
+    fn apply_intent_none() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::None);
+    }
+
+    #[test]
+    fn apply_intent_delete_char() {
+        let mut state = EditorState::new();
+        state.buffer.insert(Position::new(0, 0), "hello");
+        state.cursor.position.col = 2;
+        apply_intent(&mut state, Intent::DeleteChar);
+    }
+
+    #[test]
+    fn apply_intent_undo() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::Undo);
+    }
+
+    #[test]
+    fn apply_intent_redo() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::Redo);
+    }
+
+    #[test]
+    fn process_key_escape() {
+        let mut state = EditorState::new();
+        use kjxlkj_input::{Key, KeyCode, Modifiers};
+        process_key(&mut state, Key { code: KeyCode::Escape, mods: Modifiers::none() });
+    }
+
+    #[test]
+    fn load_file_new_file() {
+        let mut state = EditorState::new();
+        let _ = load_file(&mut state, "/tmp/nonexistent_test_file.txt");
+    }
+}

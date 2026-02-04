@@ -119,4 +119,34 @@ mod tests {
     fn char_unknown_none() {
         assert!(char_to_motion('z').is_none());
     }
+
+    #[test]
+    fn char_b_word_backward() {
+        assert!(matches!(char_to_motion('b'), Some(MotionKind::WordStartBackward)));
+    }
+
+    #[test]
+    fn char_e_word_end() {
+        assert!(matches!(char_to_motion('e'), Some(MotionKind::WordEnd)));
+    }
+
+    #[test]
+    fn char_0_line_start() {
+        assert!(matches!(char_to_motion('0'), Some(MotionKind::LineStart)));
+    }
+
+    #[test]
+    fn char_caret_first_non_blank() {
+        assert!(matches!(char_to_motion('^'), Some(MotionKind::FirstNonBlank)));
+    }
+
+    #[test]
+    fn char_dollar_line_end() {
+        assert!(matches!(char_to_motion('$'), Some(MotionKind::LineEnd)));
+    }
+
+    #[test]
+    fn char_G_file_end() {
+        assert!(matches!(char_to_motion('G'), Some(MotionKind::FileEnd)));
+    }
 }

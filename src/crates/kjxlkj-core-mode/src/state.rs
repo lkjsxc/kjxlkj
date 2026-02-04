@@ -84,4 +84,39 @@ mod tests {
         let state = ModeState::new();
         assert!(state.recording_macro.is_none());
     }
+
+    #[test]
+    fn mode_state_search_forward_field() {
+        let state = ModeState::new();
+        let _ = state.search_forward;
+    }
+
+    #[test]
+    fn mode_state_set_mode_visual() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::Visual);
+        assert_eq!(state.mode, Mode::Visual);
+    }
+
+    #[test]
+    fn mode_state_set_mode_command() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::Command);
+        assert_eq!(state.mode, Mode::Command);
+    }
+
+    #[test]
+    fn mode_state_reset_to_normal() {
+        let mut state = ModeState::new();
+        state.set_mode(Mode::Insert);
+        state.reset();
+        assert_eq!(state.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn mode_state_clone() {
+        let state = ModeState::new();
+        let state2 = state.clone();
+        assert_eq!(state.mode, state2.mode);
+    }
 }

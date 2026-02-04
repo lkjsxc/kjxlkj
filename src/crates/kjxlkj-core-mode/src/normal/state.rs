@@ -91,4 +91,37 @@ mod tests {
     fn awaiting_char_find_forward() {
         let _ = format!("{:?}", AwaitingChar::FindForward);
     }
+
+    #[test]
+    fn awaiting_char_find_backward() {
+        let _ = format!("{:?}", AwaitingChar::FindBackward);
+    }
+
+    #[test]
+    fn awaiting_char_till_forward() {
+        let _ = format!("{:?}", AwaitingChar::TillForward);
+    }
+
+    #[test]
+    fn awaiting_char_mark() {
+        let _ = format!("{:?}", AwaitingChar::Mark);
+    }
+
+    #[test]
+    fn awaiting_char_register() {
+        let _ = format!("{:?}", AwaitingChar::Register);
+    }
+
+    #[test]
+    fn normal_mode_get_count_with_value() {
+        let mut state = NormalModeState::new();
+        state.count = Some(10);
+        assert_eq!(state.get_count(), 10);
+    }
+
+    #[test]
+    fn normal_mode_pending_register_none() {
+        let state = NormalModeState::new();
+        assert!(state.pending_register.is_none());
+    }
 }
