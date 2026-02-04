@@ -162,3 +162,33 @@ fn test_headless_indent_line() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_outdent_line() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"    hello"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"<<"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_delete_char_backward() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"abc"},
+        {"kind":"key","code":"Backspace","ctrl":false},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_tilde() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"abc"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"0","ctrl":false},
+        {"kind":"key","code":"~","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

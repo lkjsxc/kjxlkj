@@ -101,4 +101,44 @@ mod tests {
     fn test_single_space() {
         assert_eq!(line_len(" "), 1);
     }
+
+    #[test]
+    fn test_tab_character() {
+        assert_eq!(line_len("\t"), 1);
+    }
+
+    #[test]
+    fn test_newline_not_counted() {
+        assert_eq!(line_len("abc\n"), 4);
+    }
+
+    #[test]
+    fn test_line_end_single_char() {
+        assert_eq!(line_end_col("x", false), 0);
+    }
+
+    #[test]
+    fn test_line_end_single_char_insert() {
+        assert_eq!(line_end_col("x", true), 1);
+    }
+
+    #[test]
+    fn test_unicode_emoji() {
+        assert_eq!(line_len("😀"), 1);
+    }
+
+    #[test]
+    fn test_multiple_words() {
+        assert_eq!(line_len("hello world"), 11);
+    }
+
+    #[test]
+    fn test_empty_line_end() {
+        assert_eq!(line_end_col("", false), 0);
+    }
+
+    #[test]
+    fn test_two_char_line() {
+        assert_eq!(line_end_col("ab", false), 1);
+    }
 }

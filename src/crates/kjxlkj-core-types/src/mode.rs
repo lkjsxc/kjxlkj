@@ -129,4 +129,41 @@ mod tests {
         assert!(Mode::Replace.is_insert());
         assert!(!Mode::Replace.is_visual());
     }
+
+    #[test]
+    fn mode_insert_display() {
+        assert_eq!(Mode::Insert.display_name(), "INSERT");
+    }
+
+    #[test]
+    fn mode_command_name() {
+        assert_eq!(Mode::Command.display_name(), "COMMAND");
+    }
+
+    #[test]
+    fn mode_normal_is_default() {
+        let m = Mode::default();
+        assert_eq!(m, Mode::Normal);
+    }
+
+    #[test]
+    fn mode_all_variants() {
+        let modes = [Mode::Normal, Mode::Insert, Mode::Visual, Mode::Command, Mode::Replace];
+        assert_eq!(modes.len(), 5);
+    }
+
+    #[test]
+    fn mode_replace_name() {
+        assert_eq!(Mode::Replace.display_name(), "REPLACE");
+    }
+
+    #[test]
+    fn mode_visual_is_visual() {
+        assert!(Mode::Visual.is_visual());
+    }
+
+    #[test]
+    fn mode_insert_is_insert() {
+        assert!(Mode::Insert.is_insert());
+    }
 }

@@ -137,4 +137,37 @@ mod tests {
         let reg = store.get(RegisterName::Numbered(5)).unwrap();
         assert_eq!(reg.content, "num");
     }
+
+    #[test]
+    fn last_search_register() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::LastSearch, "pattern".to_string(), false);
+        let reg = store.get(RegisterName::LastSearch).unwrap();
+        assert_eq!(reg.content, "pattern");
+    }
+
+    #[test]
+    fn small_delete_register() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::SmallDelete, "del".to_string(), false);
+        let reg = store.get(RegisterName::SmallDelete).unwrap();
+        assert_eq!(reg.content, "del");
+    }
+
+    #[test]
+    fn overwrite_unnamed() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Unnamed, "first".to_string(), false);
+        store.set(RegisterName::Unnamed, "second".to_string(), false);
+        assert_eq!(store.unnamed().unwrap().content, "second");
+    }
+
+    #[test]
+    fn multiple_named_registers() {
+        let mut store = RegisterStore::new();
+        store.set(RegisterName::Named('a'), "aa".to_string(), false);
+        store.set(RegisterName::Named('b'), "bb".to_string(), false);
+        assert_eq!(store.get(RegisterName::Named('a')).unwrap().content, "aa");
+        assert_eq!(store.get(RegisterName::Named('b')).unwrap().content, "bb");
+    }
 }

@@ -162,3 +162,33 @@ fn key_tab() {
     let k = Key::new(KeyCode::Tab, Modifiers::none());
     assert_eq!(k.code, KeyCode::Tab);
 }
+
+#[test]
+fn key_escape() {
+    let k = Key::new(KeyCode::Escape, Modifiers::none());
+    assert_eq!(k.code, KeyCode::Escape);
+}
+
+#[test]
+fn key_left_arrow() {
+    let k = Key::new(KeyCode::Left, Modifiers::none());
+    assert_eq!(k.code, KeyCode::Left);
+}
+
+#[test]
+fn key_right_arrow() {
+    let k = Key::new(KeyCode::Right, Modifiers::none());
+    assert_eq!(k.code, KeyCode::Right);
+}
+
+#[test]
+fn key_ctrl_a() {
+    let k = Key::ctrl_char('a');
+    assert!(k.mods.ctrl);
+}
+
+#[test]
+fn key_char_x() {
+    let k = Key::char('x');
+    assert_eq!(k.code, KeyCode::Char('x'));
+}

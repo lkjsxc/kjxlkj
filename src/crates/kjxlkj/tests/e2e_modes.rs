@@ -152,3 +152,23 @@ fn test_headless_command_enter() {
         {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+#[test]
+fn test_headless_multiple_mode_switches() {
+    let s = r#"[{"kind":"keys","keys":"i"},{"kind":"assert_mode","mode":"insert"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"keys","keys":"v"},{"kind":"assert_mode","mode":"visual"},
+        {"kind":"key","code":"Escape","ctrl":false},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+#[test]
+fn test_headless_insert_and_escape() {
+    let s = r#"[{"kind":"keys","keys":"i"},{"kind":"keys","keys":"test"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"assert_mode","mode":"normal"},
+        {"kind":"key","code":":","ctrl":false},
+        {"kind":"keys","keys":"q!"},{"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

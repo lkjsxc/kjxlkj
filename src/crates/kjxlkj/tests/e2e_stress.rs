@@ -168,3 +168,25 @@ fn test_undo_operation() {
         {"kind":"key","code":"Enter","ctrl":false}]"#;
     assert!(run_headless(s).is_ok());
 }
+
+/// Test redo command.
+#[test]
+fn test_redo_operation() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"hi"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"key","code":"u","ctrl":false},
+        {"kind":"key","code":"r","ctrl":true},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}
+
+/// Test goto end of file.
+#[test]
+fn test_goto_end_of_file() {
+    let s = r#"[{"kind":"key","code":"i","ctrl":false},{"kind":"keys","keys":"line1"},
+        {"kind":"key","code":"Enter","ctrl":false},{"kind":"keys","keys":"line2"},
+        {"kind":"key","code":"Escape","ctrl":false},{"kind":"keys","keys":"G"},
+        {"kind":"key","code":":","ctrl":false},{"kind":"keys","keys":"q!"},
+        {"kind":"key","code":"Enter","ctrl":false}]"#;
+    assert!(run_headless(s).is_ok());
+}

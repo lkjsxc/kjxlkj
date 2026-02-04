@@ -128,4 +128,29 @@ mod tests {
         let c2 = Cursor::new(Position::new(3, 4));
         assert_ne!(c1, c2);
     }
+
+    #[test]
+    fn cursor_new_at_line() {
+        let c = Cursor::new(Position::new(5, 0));
+        assert_eq!(c.line(), 5);
+    }
+
+    #[test]
+    fn cursor_new_at_col() {
+        let c = Cursor::new(Position::new(0, 10));
+        assert_eq!(c.col(), 10);
+    }
+
+    #[test]
+    fn cursor_both_coords() {
+        let c1 = Cursor::new(Position::new(1, 2));
+        let c2 = Cursor::new(Position::new(1, 2));
+        assert_eq!(c1, c2);
+    }
+
+    #[test]
+    fn cursor_preferred_col_none_default() {
+        let c = Cursor::origin();
+        assert_eq!(c.preferred_col, None);
+    }
 }

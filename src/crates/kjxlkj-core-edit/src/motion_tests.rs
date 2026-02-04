@@ -165,3 +165,33 @@ fn motion_default_not_inclusive() {
     let m = Motion::new(MotionKind::Left);
     assert!(!m.inclusive);
 }
+
+#[test]
+fn motion_kind_line_end() {
+    let m = Motion::new(MotionKind::LineEnd);
+    assert_eq!(m.kind, MotionKind::LineEnd);
+}
+
+#[test]
+fn motion_kind_line_start() {
+    let m = Motion::new(MotionKind::LineStart);
+    assert_eq!(m.kind, MotionKind::LineStart);
+}
+
+#[test]
+fn motion_kind_word_start() {
+    let m = Motion::new(MotionKind::WordStart);
+    assert_eq!(m.kind, MotionKind::WordStart);
+}
+
+#[test]
+fn motion_count_default() {
+    let m = Motion::new(MotionKind::Up);
+    assert_eq!(m.count, 1);
+}
+
+#[test]
+fn motion_kind_first_non_blank() {
+    let m = Motion::new(MotionKind::FirstNonBlank);
+    assert_eq!(m.kind, MotionKind::FirstNonBlank);
+}
