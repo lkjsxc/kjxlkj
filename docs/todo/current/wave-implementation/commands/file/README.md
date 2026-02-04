@@ -20,13 +20,13 @@ Implement file-related Ex commands and path expansion behaviors.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define path expansion rules and their security constraints.
-- [ ] Define filesystem service interfaces required by file commands.
+- [x] Define path expansion rules and their security constraints.
+- [x] Define filesystem service interfaces required by file commands.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement minimal `:edit` and `:write` behaviors with deterministic tests.
-- [ ] Implement safe error handling for invalid paths and permissions.
+- [x] Implement minimal `:edit` and `:write` behaviors with deterministic tests.
+- [x] Implement safe error handling for invalid paths and permissions.
 
 ### C. Full conformance
 

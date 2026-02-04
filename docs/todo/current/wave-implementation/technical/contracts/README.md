@@ -13,7 +13,7 @@ Implement and enforce the technical contracts and invariants required by the spe
 
 ## Checklist
 
-- [ ] Turn each contract into explicit testable assertions where possible.
-- [ ] Ensure contracts are enforced at API boundaries (core/services/render).
+- [x] Turn each contract into explicit testable assertions where possible.
+- [x] Ensure contracts are enforced at API boundaries (core/services/render).
 - [ ] Record any untestable contracts as limitations with a verification plan.
 

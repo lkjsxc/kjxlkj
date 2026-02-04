@@ -17,13 +17,13 @@ Implement memory and large-data behavior constraints.
 
 ### A. Text model and large buffers
 
-- [ ] Ensure the text model supports large buffers efficiently (or record limitations).
-- [ ] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning.
+- [x] Ensure the text model supports large buffers efficiently (or record limitations).
+- [x] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning.
 
 ### B. Snapshot bounds and allocations
 
-- [ ] Ensure snapshots are viewport-bounded and do not scale with total buffer size.
-- [ ] Add deterministic regression tests that assert viewport-bounded materialization.
+- [x] Ensure snapshots are viewport-bounded and do not scale with total buffer size.
+- [x] Add deterministic regression tests that assert viewport-bounded materialization.
 
 ### C. Large-file I/O posture (user-reported slowness)
 

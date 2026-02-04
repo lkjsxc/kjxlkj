@@ -53,7 +53,7 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### D. Reporting and drift handling
 
-- [ ] When regressions are found, record:
+- [x] When regressions are found, record:
   - the spec expectation (link)
   - the reproduction probe (link)
   - the observed behavior

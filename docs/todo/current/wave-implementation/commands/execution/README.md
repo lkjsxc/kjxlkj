@@ -24,9 +24,9 @@ Implement Ex command execution, including `:execute`, `:normal`, and `:source` b
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the execution pipeline:
+- [x] Define the execution pipeline:
   - parse → resolve → execute → report
-- [ ] Define script/source file loading and error handling rules.
+- [x] Define script/source file loading and error handling rules.
 
 ### B. Minimal conformance slice
 

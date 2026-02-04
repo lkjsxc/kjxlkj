@@ -20,12 +20,12 @@ Implement buffer listing, navigation, and arglist-related Ex commands.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define buffer identity, naming, and lifecycle semantics in core state.
-- [ ] Define buffer list presentation rules (UI and command output).
+- [x] Define buffer identity, naming, and lifecycle semantics in core state.
+- [x] Define buffer list presentation rules (UI and command output).
 
 ### B. Minimal conformance slice
 
-- [ ] Implement buffer listing and navigation minimal subset with tests.
+- [x] Implement buffer listing and navigation minimal subset with tests.
 
 ### C. Full conformance
 
