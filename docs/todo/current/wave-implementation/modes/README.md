@@ -53,28 +53,28 @@ Implement modal editing semantics and mode transitions:
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a minimal, fully tested set of mode transitions:
+- [ ] Implement a minimal, fully tested set of mode transitions:
   - Normal ↔ Insert
   - Normal ↔ Visual (charwise)
   - Normal ↔ Command
   - Normal ↔ Replace (as defined, not “Insert-like” unless specified)
-- [x] Ensure cursor and selection invariants hold across transitions.
+- [ ] Ensure cursor and selection invariants hold across transitions.
 
 ## Full conformance (sub-wave)
 
-- [x] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
+- [ ] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
 - [ ] Implement configuration impacts on modes (where specified).
-- [x] Ensure mode behavior matches UX keybindings tables.
+- [ ] Ensure mode behavior matches UX keybindings tables.
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - mode transition graphs
   - pending state cancellation rules
   - selection model correctness for Visual modes
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

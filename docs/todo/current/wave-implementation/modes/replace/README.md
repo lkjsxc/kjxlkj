@@ -20,11 +20,11 @@ Implement Replace and Virtual Replace mode semantics.
 
 ### A. Placeholder scaffolding
 
-- [x] Define overwrite vs insert behavior and how it interacts with virtual spaces.
+- [ ] Define overwrite vs insert behavior and how it interacts with virtual spaces.
 
 ### B. Minimal conformance slice
 
-- [x] Implement Replace mode core behavior with deterministic tests.
+- [ ] Implement Replace mode core behavior with deterministic tests.
   - R enters Replace mode
   - Typing overwrites existing characters
   - At end of line, characters are inserted
@@ -34,9 +34,9 @@ Implement Replace and Virtual Replace mode semantics.
 ### C. Full conformance
 
 - [ ] Implement all Replace/Virtual Replace behaviors in the subtree.
-  - [x] Basic replace mode
+  - [ ] Basic replace mode
   - [ ] Virtual Replace mode (gR) - future
-  - [x] Single character replace (r)
+  - [ ] Single character replace (r)
 
 ### D. Conformance updates
 

@@ -38,19 +38,19 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Reconcile the crate layout expectation vs current workspace layout.
+- [ ] Reconcile the crate layout expectation vs current workspace layout.
   - If docs and code disagree, record a single canonical decision in `/docs/reference/IMPLEMENTATION_HISTORY.md`.
-- [x] Ensure the workspace contains the crates required by the spec topology, even if some are placeholders.
+- [ ] Ensure the workspace contains the crates required by the spec topology, even if some are placeholders.
   - For missing crates, create stubs that compile and are wired into the supervisor.
-- [x] Define shared core types and events required for the runtime model.
+- [ ] Define shared core types and events required for the runtime model.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement the smallest end-to-end “event → core → snapshot → render” loop that is:
+- [ ] Implement the smallest end-to-end “event → core → snapshot → render” loop that is:
   - deterministic
   - test-backed
   - compatible with the async-first runtime model
-- [x] Implement at least one supervised service (filesystem or terminal) end-to-end, including:
+- [ ] Implement at least one supervised service (filesystem or terminal) end-to-end, including:
   - request/response framing
   - error surfaces visible to the editor core
   - shutdown and cleanup semantics

@@ -45,7 +45,7 @@ Implement the Ex command surface, including:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define an Ex parser that:
+- [ ] Define an Ex parser that:
   - accepts the specified grammar - implemented (CommandParser)
   - reports errors deterministically
   - separates parsing from execution - implemented
@@ -54,15 +54,15 @@ Implement the Ex command surface, including:
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement the smallest set of commands required to:
+- [ ] Implement the smallest set of commands required to:
   - open/edit/write files
   - quit safely
   - run a shell command via the terminal service (if specified)
-- [x] Add deterministic tests for the minimal slice.
+- [ ] Add deterministic tests for the minimal slice.
 
 ## Full conformance (sub-wave)
 
-- [x] Implement every command family under `/docs/spec/commands/`.
+- [ ] Implement every command family under `/docs/spec/commands/`.
   - :q, :q!, :qa, :qa! - quit commands implemented
   - :w, :w {file}, :wa - write commands implemented
   - :wq, :x - write-quit implemented
@@ -71,12 +71,12 @@ Implement the Ex command surface, including:
   - :s/pattern/replacement/[flags] - substitute implemented
   - :g/pattern/command - global implemented
   - :v/pattern/command - vglobal implemented
-- [x] Ensure command behavior matches editing primitives and core state model.
-- [x] Ensure user-visible error messages are stable enough for tests.
+- [ ] Ensure command behavior matches editing primitives and core state model.
+- [ ] Ensure user-visible error messages are stable enough for tests.
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - parsing and error cases
   - range/address correctness - deferred (no range support yet)
   - command history behavior - deferred
@@ -84,6 +84,6 @@ Implement the Ex command surface, including:
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

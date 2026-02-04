@@ -20,12 +20,12 @@ Implement operators, operator-pending behavior, and operator modifiers.
 
 ### A. Placeholder scaffolding
 
-- [x] Define operator grammar and parsing model.
-- [x] Define operator application to motions and text objects.
+- [ ] Define operator grammar and parsing model.
+- [ ] Define operator application to motions and text objects.
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal operator set with deterministic tests (including edge cases).
+- [ ] Implement a minimal operator set with deterministic tests (including edge cases).
   - Delete (d), Yank (y), Change (c), Indent (>), Outdent (<) implemented
   - Line operators (dd, yy, cc, >>, <<) implemented
   - Operator+motion combinations (dw, cw, d$, etc.) implemented
@@ -33,13 +33,13 @@ Implement operators, operator-pending behavior, and operator modifiers.
 
 ### C. Full conformance
 
-- [x] Implement all operator behaviors, modifiers, and advanced operators in the subtree.
+- [ ] Implement all operator behaviors, modifiers, and advanced operators in the subtree.
   - Visual mode operators (d, y, c in v/V/Ctrl-v modes) implemented
   - Block visual mode rectangle operations implemented
   - Repeat with dot (.) implemented
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

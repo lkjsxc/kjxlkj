@@ -42,11 +42,11 @@ Implement the canonical editor core model:
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a single-buffer, single-window editor that satisfies:
+- [ ] Implement a single-buffer, single-window editor that satisfies:
   - deterministic cursor movement and clamping
   - deterministic viewport follow rules
   - snapshot → render loop consistency
-- [x] Implement file open/edit/write flows as specified by the command and file specs.
+- [ ] Implement file open/edit/write flows as specified by the command and file specs.
 
 ## Full conformance (sub-wave)
 
