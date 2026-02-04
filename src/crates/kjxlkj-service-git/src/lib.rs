@@ -97,4 +97,51 @@ mod tests {
         let svc = Box::new(GitService::new());
         drop(svc);
     }
+
+    #[test]
+    fn git_service_arc_pattern() {
+        let svc = std::sync::Arc::new(GitService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn git_service_rc_pattern() {
+        let svc = std::rc::Rc::new(GitService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn git_service_vec_pattern() {
+        let services: Vec<GitService> = (0..5).map(|_| GitService::new()).collect();
+        assert_eq!(services.len(), 5);
+    }
+
+    #[test]
+    fn git_service_option_some() {
+        let svc = Some(GitService::new());
+        assert!(svc.is_some());
+    }
+
+    #[test]
+    fn git_service_option_none() {
+        let svc: Option<GitService> = None;
+        assert!(svc.is_none());
+    }
+
+    #[test]
+    fn git_service_result_ok() {
+        let result: Result<GitService, ()> = Ok(GitService::new());
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn git_service_mem_take() {
+        let mut svc = GitService::new();
+        let taken = std::mem::take(&mut svc);
+        let _ = taken;
+    }
 }

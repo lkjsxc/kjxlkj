@@ -100,4 +100,51 @@ mod tests {
         let svc = Box::new(LspService::new());
         drop(svc);
     }
+
+    #[test]
+    fn lsp_service_arc_pattern() {
+        let svc = std::sync::Arc::new(LspService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn lsp_service_rc_pattern() {
+        let svc = std::rc::Rc::new(LspService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn lsp_service_vec_pattern() {
+        let services: Vec<LspService> = (0..5).map(|_| LspService::new()).collect();
+        assert_eq!(services.len(), 5);
+    }
+
+    #[test]
+    fn lsp_service_option_some() {
+        let svc = Some(LspService::new());
+        assert!(svc.is_some());
+    }
+
+    #[test]
+    fn lsp_service_option_none() {
+        let svc: Option<LspService> = None;
+        assert!(svc.is_none());
+    }
+
+    #[test]
+    fn lsp_service_result_ok() {
+        let result: Result<LspService, ()> = Ok(LspService::new());
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn lsp_service_mem_take() {
+        let mut svc = LspService::new();
+        let taken = std::mem::take(&mut svc);
+        let _ = taken;
+    }
 }

@@ -168,4 +168,31 @@ mod tests {
         tx.push(Edit::insert(Position::new(0, 1), "b".to_string()));
         assert_eq!(tx.edits.len(), 2);
     }
+
+    #[test]
+    fn edit_empty_text() {
+        let edit = Edit::insert(Position::new(0, 0), "".to_string());
+        assert!(edit.text.is_empty());
+    }
+
+    #[test]
+    fn transaction_edits_iter() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.push(Edit::insert(Position::new(0, 0), "x".to_string()));
+        assert_eq!(tx.edits.iter().count(), 1);
+    }
+
+    #[test]
+    fn edit_multiline_text() {
+        let edit = Edit::insert(Position::new(0, 0), "a\nb\nc".to_string());
+        assert!(edit.text.contains('\n'));
+    }
+
+    #[test]
+    fn transaction_clear() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.push(Edit::insert(Position::new(0, 0), "x".to_string()));
+        tx.edits.clear();
+        assert!(tx.is_empty());
+    }
 }

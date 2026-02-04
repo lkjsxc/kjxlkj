@@ -123,4 +123,46 @@ mod tests {
         let intent = state.handle_operator_motion(OperatorKind::Delete, 'b', 1);
         assert!(matches!(intent, Intent::Execute(_)));
     }
+
+    #[test]
+    fn change_with_e_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Change, 'e', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn yank_with_b_motion() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Yank, 'b', 1);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn delete_with_count() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'w', 3);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn yank_line_with_count() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Yank, 'y', 5);
+        assert!(matches!(intent, Intent::Execute(_)));
+    }
+
+    #[test]
+    fn inner_text_object_awaits() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'i', 1);
+        assert_eq!(intent, Intent::None);
+    }
+
+    #[test]
+    fn around_text_object_awaits() {
+        let mut state = NormalModeState::new();
+        let intent = state.handle_operator_motion(OperatorKind::Delete, 'a', 1);
+        assert_eq!(intent, Intent::None);
+    }
 }

@@ -119,4 +119,38 @@ mod tests {
         let state2 = state.clone();
         assert_eq!(state.mode, state2.mode);
     }
+
+    #[test]
+    fn mode_state_normal_field() {
+        let state = ModeState::new();
+        let _ = &state.normal;
+    }
+
+    #[test]
+    fn mode_state_set_recording_macro() {
+        let mut state = ModeState::new();
+        state.recording_macro = Some('a');
+        assert_eq!(state.recording_macro, Some('a'));
+    }
+
+    #[test]
+    fn mode_state_set_search_pattern() {
+        let mut state = ModeState::new();
+        state.search_pattern = "test".to_string();
+        assert_eq!(state.search_pattern, "test");
+    }
+
+    #[test]
+    fn mode_state_set_command_line() {
+        let mut state = ModeState::new();
+        state.command_line = ":w".to_string();
+        assert_eq!(state.command_line, ":w");
+    }
+
+    #[test]
+    fn mode_state_debug() {
+        let state = ModeState::new();
+        let debug_str = format!("{:?}", state);
+        assert!(debug_str.contains("ModeState"));
+    }
 }

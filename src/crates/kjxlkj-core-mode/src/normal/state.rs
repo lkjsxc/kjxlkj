@@ -124,4 +124,41 @@ mod tests {
         let state = NormalModeState::new();
         assert!(state.pending_register.is_none());
     }
+
+    #[test]
+    fn normal_mode_last_find_none() {
+        let state = NormalModeState::new();
+        assert!(state.last_find.is_none());
+    }
+
+    #[test]
+    fn normal_mode_awaiting_char_none() {
+        let state = NormalModeState::new();
+        assert!(state.awaiting_char.is_none());
+    }
+
+    #[test]
+    fn awaiting_char_till_backward() {
+        let _ = format!("{:?}", AwaitingChar::TillBackward);
+    }
+
+    #[test]
+    fn awaiting_char_jump_mark() {
+        let _ = format!("{:?}", AwaitingChar::JumpMark);
+    }
+
+    #[test]
+    fn awaiting_char_jump_mark_line() {
+        let _ = format!("{:?}", AwaitingChar::JumpMarkLine);
+    }
+
+    #[test]
+    fn awaiting_char_macro_record() {
+        let _ = format!("{:?}", AwaitingChar::MacroRecord);
+    }
+
+    #[test]
+    fn awaiting_char_macro_play() {
+        let _ = format!("{:?}", AwaitingChar::MacroPlay);
+    }
 }

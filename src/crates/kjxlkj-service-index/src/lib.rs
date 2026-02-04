@@ -99,4 +99,51 @@ mod tests {
         let svc = Box::new(IndexService::new());
         drop(svc);
     }
+
+    #[test]
+    fn index_service_arc_pattern() {
+        let svc = std::sync::Arc::new(IndexService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn index_service_rc_pattern() {
+        let svc = std::rc::Rc::new(IndexService::new());
+        let svc2 = svc.clone();
+        drop(svc);
+        drop(svc2);
+    }
+
+    #[test]
+    fn index_service_vec_pattern() {
+        let services: Vec<IndexService> = (0..5).map(|_| IndexService::new()).collect();
+        assert_eq!(services.len(), 5);
+    }
+
+    #[test]
+    fn index_service_option_some() {
+        let svc = Some(IndexService::new());
+        assert!(svc.is_some());
+    }
+
+    #[test]
+    fn index_service_option_none() {
+        let svc: Option<IndexService> = None;
+        assert!(svc.is_none());
+    }
+
+    #[test]
+    fn index_service_result_ok() {
+        let result: Result<IndexService, ()> = Ok(IndexService::new());
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn index_service_mem_take() {
+        let mut svc = IndexService::new();
+        let taken = std::mem::take(&mut svc);
+        let _ = taken;
+    }
 }

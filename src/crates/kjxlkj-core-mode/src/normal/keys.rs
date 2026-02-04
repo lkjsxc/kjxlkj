@@ -171,4 +171,18 @@ mod tests {
         let intent = state.process_key('u', false, false);
         assert_eq!(intent, Intent::Undo);
     }
+
+    #[test]
+    fn process_key_k_moves_up() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('k', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
+
+    #[test]
+    fn process_key_l_moves_right() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('l', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
 }

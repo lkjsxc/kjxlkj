@@ -172,4 +172,28 @@ mod tests {
         let status = StatusLine::default();
         assert_eq!(status.mode, "");
     }
+
+    #[test]
+    fn status_line_filename_default() {
+        let status = StatusLine::default();
+        assert!(status.filename.is_empty());
+    }
+
+    #[test]
+    fn buffer_snapshot_id() {
+        let buf = BufferSnapshot::empty();
+        let _ = buf.id;
+    }
+
+    #[test]
+    fn editor_snapshot_cursor() {
+        let snap = EditorSnapshot::default();
+        assert_eq!(snap.cursor.line(), 0);
+    }
+
+    #[test]
+    fn editor_snapshot_mode() {
+        let snap = EditorSnapshot::default();
+        let _ = format!("{:?}", snap.mode);
+    }
 }

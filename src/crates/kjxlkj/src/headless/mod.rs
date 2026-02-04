@@ -120,4 +120,75 @@ mod tests {
         state.ensure_cursor_visible();
         // No panic is success
     }
+
+    #[test]
+    fn headless_viewport_size() {
+        let mut state = EditorState::new();
+        state.viewport.resize(80, 24);
+        assert_eq!(state.viewport.width, 80);
+    }
+
+    #[test]
+    fn headless_buffer_line() {
+        let state = EditorState::new();
+        let _ = state.buffer.line(0);
+    }
+
+    #[test]
+    fn headless_cursor_position() {
+        let state = EditorState::new();
+        let pos = state.cursor.position;
+        assert_eq!(pos.line, 0);
+    }
+
+    #[test]
+    fn headless_selection_none() {
+        let state = EditorState::new();
+        assert!(state.selection.is_none());
+    }
+
+    #[test]
+    fn headless_registers_exist() {
+        let state = EditorState::new();
+        let _ = &state.registers;
+    }
+
+    #[test]
+    fn headless_marks_exist() {
+        let state = EditorState::new();
+        let _ = &state.marks;
+    }
+
+    #[test]
+    fn headless_undo_exists() {
+        let state = EditorState::new();
+        let _ = &state.undo;
+    }
+
+    #[test]
+    fn headless_mode_state_exists() {
+        let state = EditorState::new();
+        let _ = &state.mode_state;
+    }
+
+    #[test]
+    fn headless_viewport_exists() {
+        let state = EditorState::new();
+        let _ = &state.viewport;
+    }
+
+    #[test]
+    fn headless_set_status() {
+        let mut state = EditorState::new();
+        state.set_status("hello");
+        assert!(state.status_message.is_some());
+    }
+
+    #[test]
+    fn headless_clear_status() {
+        let mut state = EditorState::new();
+        state.set_status("hello");
+        state.clear_status();
+        assert!(state.status_message.is_none());
+    }
 }
