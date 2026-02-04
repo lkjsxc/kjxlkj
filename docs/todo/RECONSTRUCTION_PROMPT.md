@@ -8,11 +8,17 @@ This project follows “All in Docs”: `/docs/` is the source of truth and the 
 <instructions>
 You are an autonomous implementation agent operating inside a git repository.
 
-Your task: reconstruct the entire project from documentation (“All in Docs”), by creating the complete source tree, build files, tests, and supporting artifacts.
+Your task: reconstruct the entire project from documentation (“All in Docs”), by creating the complete source tree, build files, tests, CI, and supporting artifacts.
 
 Treat `/docs/` as the only source of truth. Everything else is derived output.
 
 Assume you are running as GitHub Copilot using Claude Opus 4.5 (or an equivalent coding-capable model).
+
+Assume you can:
+- read files
+- edit files
+- run commands (tests, linters, build)
+- make git commits
 </instructions>
 
 <one_shot_execution_strategy>
@@ -21,6 +27,15 @@ This prompt is designed for a single uninterrupted run.
 Do not ask for user input. Do not pause. Do not leave partial work behind.
 
 If something is ambiguous, choose the best default that maximizes compliance with `/docs/` and record the decision in `/docs/reference/IMPLEMENTATION_HISTORY.md`.
+
+Operate in a tight loop until done:
+1. Read docs (systematically).
+2. Extract MUST/SHOULD requirements into actionable TODO leaves under `/docs/todo/current/`.
+3. Implement the smallest coherent slice that advances conformance.
+4. Add/extend tests for observable behavior (including regressions).
+5. Update `/docs/reference/CONFORMANCE.md` and `/docs/reference/LIMITATIONS.md` (and append a note to `/docs/reference/IMPLEMENTATION_HISTORY.md` when decisions are made).
+6. Run verification commands (docs policy, fmt, clippy, tests) and fix issues.
+7. Commit a small, reviewable changeset.
 </one_shot_execution_strategy>
 
 <anti_stall_and_scope_refusal_policy>
@@ -37,7 +52,7 @@ Optimize for reliability in an LLM environment:
 - Prefer many small reads over one large read.
 - Use the doc-coverage traversal to open documentation one file at a time.
 - If a file is large, read only the sections you need (top + targeted search), then continue.
-- Avoid creating giant files: respect the 200-line and max-12-children policies.
+- Avoid creating giant files: respect the 200-line and max-12-children policies (for docs and for source).
 </llm_performance_hygiene>
 
 <mandatory_reading_order>
@@ -68,6 +83,10 @@ All-in-Docs workflow
   - `/docs/reference/CONFORMANCE.md` for “what exists”
   - `/docs/reference/LIMITATIONS.md` for user-visible gaps
 
+Root and repository layout
+- Obey the root allowlist in `/docs/policy/ROOT_LAYOUT.md`.
+- The single shipped binary crate MUST be `src/crates/kjxlkj/`.
+
 TODO discipline
 - Use `/docs/todo/current/` as your master checklist.
 - Actually write checkmarks into the TODO-list document files as you complete items.
@@ -86,15 +105,36 @@ Testing and verification
 - Run unit and integration tests frequently.
 - Include deterministic headless/E2E tests that exercise the editor end-to-end.
 - If a bug is found: add a regression test first (or immediately after fixing), then fix.
+- Keep tests deterministic (no wall-clock dependence; no network).
 
 Version control and traceability
 - Commit frequently at meaningful milestones (scaffold, feature slice, refactor, stabilization).
 - Keep commits small enough to review and to bisect.
+- Prefer `type(area): summary` commit messages.
 
 Logging
 - Maintain a structured reconstruction log in `/docs/reference/IMPLEMENTATION_HISTORY.md` (append new entries).
 - If any file-size policies are violated, record it explicitly there and create a TODO leaf to address it.
 </constraints>
+
+<reconstruction_runbook>
+Bootstrap and keep the repo buildable early:
+- Recreate the workspace topology from `/docs/spec/architecture/workspace-manifest.md` and `/docs/spec/architecture/crates.md`.
+- Create required root artifacts (toolchain pinning, CI, Docker) as described by policy and reference docs.
+- Ensure `cargo test --workspace` runs as early as possible (placeholders are acceptable only if recorded as limitations).
+
+Keep verification gated and reproducible:
+- After each coherent slice, run: `python .github/scripts/check_docs_policy.py`, `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and `cargo test --workspace`.
+- Ensure Docker buildability: `docker build -t kjxlkj:ci .`.
+
+Maintain the runtime model and test harness:
+- Implement the Tokio runtime topology in `/docs/spec/architecture/runtime.md` (single-writer core, snapshot-based rendering, supervised services).
+- Keep a deterministic headless/E2E harness and expand it as features are implemented.
+
+Execute the TODO recursion, not just the current iteration:
+- Execute `/docs/todo/current/` in wave order.
+- When you reach “Continue to the next iteration”, create the next iteration and immediately continue executing it in the same run until the definition of done is satisfied.
+</reconstruction_runbook>
 
 <definition_of_done>
 You are done only when all of the following are true:
