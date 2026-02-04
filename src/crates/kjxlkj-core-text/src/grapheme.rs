@@ -125,5 +125,38 @@ mod tests {
         let slice = rope.slice(..);
         assert_eq!(rope_grapheme_count(slice), 5);
     }
-}
 
+    #[test]
+    fn test_grapheme_count_emoji_zwj() {
+        // Family emoji (multiple code points joined with ZWJ)
+        assert_eq!(grapheme_count("👨‍👩‍👧‍👦"), 1);
+    }
+
+    #[test]
+    fn test_grapheme_count_emoji_simple() {
+        assert_eq!(grapheme_count("😀"), 1);
+        assert_eq!(grapheme_count("😀😀😀"), 3);
+    }
+
+    #[test]
+    fn test_grapheme_count_mixed() {
+        assert_eq!(grapheme_count("abc123"), 6);
+        assert_eq!(grapheme_count("a b c"), 5);
+    }
+
+    #[test]
+    fn test_nth_grapheme_offset_multi_byte() {
+        let rope = Rope::from_str("日本語");
+        let slice = rope.slice(..);
+        assert_eq!(nth_grapheme_offset(slice, 0), Some(0));
+        assert_eq!(nth_grapheme_offset(slice, 1), Some(3));
+        assert_eq!(nth_grapheme_offset(slice, 2), Some(6));
+    }
+
+    #[test]
+    fn test_rope_grapheme_count_tab() {
+        let rope = Rope::from_str("a\tb\tc");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 5);
+    }
+}

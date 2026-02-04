@@ -204,5 +204,40 @@ mod tests {
         assert_eq!(find_word_boundary(s, 7, false, WordKind::Word), 4);
         assert_eq!(find_word_boundary(s, 3, false, WordKind::Word), 0);
     }
-}
 
+    #[test]
+    fn test_word_kind_debug() {
+        let kind = WordKind::Word;
+        let debug = format!("{:?}", kind);
+        assert!(debug.contains("Word"));
+    }
+
+    #[test]
+    fn test_word_kind_clone() {
+        let kind = WordKind::WORD;
+        let cloned = kind.clone();
+        assert_eq!(kind, cloned);
+    }
+
+    #[test]
+    fn test_char_class_debug() {
+        let class = CharClass::Whitespace;
+        let debug = format!("{:?}", class);
+        assert!(debug.contains("Whitespace"));
+    }
+
+    #[test]
+    fn test_underscore_is_word() {
+        let s = "hello_world";
+        // Underscore should be part of word
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 11);
+    }
+
+    #[test]
+    fn test_hyphen_word_boundary() {
+        let s = "hello-world";
+        // Hyphen is punct, so should stop at it
+        let boundary = find_word_boundary(s, 0, true, WordKind::Word);
+        assert!(boundary <= 6);
+    }
+}
