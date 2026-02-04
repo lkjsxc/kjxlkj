@@ -76,4 +76,33 @@ mod tests {
         assert_eq!(file, "file.txt");
         assert_eq!(pos, Position::new(1, 2));
     }
+
+    #[test]
+    fn get_any_mark_local() {
+        let mut store = MarkStore::new();
+        store.set_local('b', Position::new(5, 3));
+        assert_eq!(store.get('b'), Some(Position::new(5, 3)));
+    }
+
+    #[test]
+    fn get_any_mark_global() {
+        let mut store = MarkStore::new();
+        store.set_global('B', "f.txt".to_string(), Position::new(2, 1));
+        assert_eq!(store.get('B'), Some(Position::new(2, 1)));
+    }
+
+    #[test]
+    fn invalid_mark_char_ignored() {
+        let mut store = MarkStore::new();
+        store.set_local('1', Position::new(0, 0)); // invalid
+        assert!(store.get_local('1').is_none());
+    }
+
+    #[test]
+    fn mark_overwrite() {
+        let mut store = MarkStore::new();
+        store.set_local('x', Position::new(1, 1));
+        store.set_local('x', Position::new(2, 2));
+        assert_eq!(store.get_local('x'), Some(Position::new(2, 2)));
+    }
 }

@@ -127,4 +127,26 @@ mod tests {
         assert_eq!(find_word_end("hello world", 0), 4);
         assert_eq!(find_word_end("hello world", 6), 10);
     }
+
+    #[test]
+    fn test_next_word_with_punctuation() {
+        assert_eq!(next_word_boundary("foo,bar", 0), 3);
+    }
+
+    #[test]
+    fn test_word_at_end_of_line() {
+        let line = "word";
+        assert_eq!(next_word_boundary(line, 0), 4);
+    }
+
+    #[test]
+    fn test_prev_word_at_start() {
+        assert_eq!(prev_word_boundary("hello", 0), 0);
+    }
+
+    #[test]
+    fn test_empty_line() {
+        assert_eq!(next_word_boundary("", 0), 0);
+        assert_eq!(prev_word_boundary("", 0), 0);
+    }
 }
