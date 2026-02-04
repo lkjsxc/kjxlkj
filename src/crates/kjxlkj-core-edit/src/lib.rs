@@ -64,4 +64,70 @@ mod tests {
         let cloned = motion.clone();
         assert_eq!(motion, cloned);
     }
+
+    #[test]
+    fn test_text_object_word_big() {
+        let obj = TextObject::WORD;
+        assert!(matches!(obj, TextObject::WORD));
+    }
+
+    #[test]
+    fn test_text_object_paragraph() {
+        let obj = TextObject::Paragraph;
+        assert!(matches!(obj, TextObject::Paragraph));
+    }
+
+    #[test]
+    fn test_text_object_sentence() {
+        let obj = TextObject::Sentence;
+        assert!(matches!(obj, TextObject::Sentence));
+    }
+
+    #[test]
+    fn test_text_object_parens() {
+        let obj = TextObject::Parens;
+        assert!(matches!(obj, TextObject::Parens));
+    }
+
+    #[test]
+    fn test_text_object_brackets() {
+        let obj = TextObject::Brackets;
+        assert!(matches!(obj, TextObject::Brackets));
+    }
+
+    #[test]
+    fn test_text_object_braces() {
+        let obj = TextObject::Braces;
+        assert!(matches!(obj, TextObject::Braces));
+    }
+
+    #[test]
+    fn test_text_object_angle_brackets() {
+        let obj = TextObject::Angles;
+        assert!(matches!(obj, TextObject::Angles));
+    }
+
+    #[test]
+    fn test_motion_line_start() {
+        let motion = Motion::new(MotionIntent::LineStart, 1);
+        assert_eq!(motion.intent, MotionIntent::LineStart);
+    }
+
+    #[test]
+    fn test_motion_line_end() {
+        let motion = Motion::new(MotionIntent::LineEnd, 1);
+        assert_eq!(motion.intent, MotionIntent::LineEnd);
+    }
+
+    #[test]
+    fn test_motion_word_start() {
+        let motion = Motion::new(MotionIntent::WordStart, 1);
+        assert_eq!(motion.intent, MotionIntent::WordStart);
+    }
+
+    #[test]
+    fn test_motion_word_end() {
+        let motion = Motion::new(MotionIntent::WordEnd, 1);
+        assert_eq!(motion.intent, MotionIntent::WordEnd);
+    }
 }
