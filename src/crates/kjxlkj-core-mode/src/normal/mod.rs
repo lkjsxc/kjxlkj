@@ -73,4 +73,21 @@ mod tests {
         let intent2 = state.process_key('d', false, false);
         assert!(matches!(intent2, Intent::Execute(_)));
     }
+
+    #[test]
+    fn normal_mode_insert() {
+        let mut state = NormalModeState::new();
+        let intent = state.process_key('i', false, false);
+        assert!(matches!(intent, Intent::EnterInsert { .. }));
+    }
+
+    #[test]
+    fn normal_mode_escape_clears_pending() {
+        let mut state = NormalModeState::new();
+        state.process_key('d', false, false); // pending operator
+        state.reset();
+        // After reset, should behave normally again
+        let intent = state.process_key('j', false, false);
+        assert!(matches!(intent, Intent::Move(_)));
+    }
 }

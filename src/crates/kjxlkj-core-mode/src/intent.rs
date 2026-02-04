@@ -159,4 +159,16 @@ mod tests {
             panic!("Expected ChangeMode");
         }
     }
+
+    #[test]
+    fn intent_quit() {
+        let intent = Intent::Quit { force: false };
+        assert!(matches!(intent, Intent::Quit { .. }));
+    }
+
+    #[test]
+    fn intent_scroll() {
+        let intent = Intent::Scroll(ScrollIntent::HalfPageDown);
+        assert!(matches!(intent, Intent::Scroll(_)));
+    }
 }
