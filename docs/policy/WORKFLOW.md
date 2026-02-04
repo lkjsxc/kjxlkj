@@ -42,6 +42,7 @@ This repository treats verification as part of the contract.
 
 - The repository MUST define a standard verification gate under `/docs/` (see `/docs/reference/CI.md`).
 - The verification gate MUST be reproducible locally (same commands, same expectations).
+- The repository MUST include an automated CI implementation of the verification gate, at the location specified by the docs (see `/docs/reference/CI.md`).
 - A change is not considered complete unless the verification gate is green.
 
 ## Definition of done (normative)
@@ -51,7 +52,7 @@ Work is done only when:
 - The implementation matches the normative documents under `/docs/spec/` (or any divergence is explicitly recorded as a limitation under `/docs/reference/`).
 - The current TODO iteration is complete (all items checked off, after validating the repository state).
 - The verification gate is green (see `/docs/reference/CI.md`).
-- The repository includes the required supporting artifacts described by policy and guides (for example, container-based build/run expectations under `/docs/guides/DOCKER.md` when required by the project).
+- The repository includes the required supporting artifacts described by policy and guides, including container-based build/run expectations under `/docs/guides/DOCKER.md`.
 
 ## Related
 
