@@ -171,72 +171,9 @@ fn enter_insert(state: &mut EditorState, at_line_end: bool, after_cursor: bool) 
     state.set_mode(Mode::Insert);
 }
 
-fn execute_command(state: &mut EditorState, cmd: &str) {
+pub(crate) fn execute_command(state: &mut EditorState, cmd: &str) {
     match cmd.trim() {
         "q" | "q!" | "quit" | "quit!" => state.should_quit = true,
         _ => {}
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use kjxlkj_input::{KeyCode, Modifiers};
-
-    fn key_escape() -> Key {
-        Key::new(KeyCode::Escape, Modifiers::none())
-    }
-
-    #[test]
-    fn process_normal_mode_escape() {
-        let mut state = EditorState::new();
-        process_key(&mut state, key_escape());
-        assert_eq!(state.mode(), Mode::Normal);
-    }
-
-    #[test]
-    fn process_insert_mode_escape() {
-        let mut state = EditorState::new();
-        state.set_mode(Mode::Insert);
-        process_key(&mut state, key_escape());
-        assert_eq!(state.mode(), Mode::Normal);
-    }
-
-    #[test]
-    fn process_insert_mode_char() {
-        let mut state = EditorState::new();
-        state.set_mode(Mode::Insert);
-        process_key(&mut state, Key::char('x'));
-        let line = state.buffer.line(0).unwrap_or_default();
-        assert!(line.contains('x'));
-    }
-
-    #[test]
-    fn process_command_mode_escape() {
-        let mut state = EditorState::new();
-        state.set_mode(Mode::Command);
-        process_key(&mut state, key_escape());
-        assert_eq!(state.mode(), Mode::Normal);
-    }
-
-    #[test]
-    fn process_visual_mode_escape() {
-        let mut state = EditorState::new();
-        state.set_mode(Mode::Visual);
-        state.selection = Some(kjxlkj_core::Selection::new(
-            Position::new(0, 0),
-            Position::new(0, 0),
-            kjxlkj_core::SelectionKind::Char,
-        ));
-        process_key(&mut state, key_escape());
-        assert_eq!(state.mode(), Mode::Normal);
-        assert!(state.selection.is_none());
-    }
-
-    #[test]
-    fn execute_quit_command() {
-        let mut state = EditorState::new();
-        execute_command(&mut state, "q");
-        assert!(state.should_quit);
     }
 }

@@ -1,8 +1,13 @@
 //! Headless mode for scripted testing.
 
 mod motion;
-mod script;
-mod processor;
+pub(crate) mod script;
+pub(crate) mod processor;
+
+#[cfg(test)]
+mod processor_tests;
+#[cfg(test)]
+mod script_tests;
 
 use crate::args::Args;
 use anyhow::Result;

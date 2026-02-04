@@ -76,7 +76,7 @@ fn execute_step(state: &mut EditorState, step: ScriptStep) -> Result<()> {
     Ok(())
 }
 
-fn assert_mode(state: &EditorState, mode: &str) -> Result<()> {
+pub(crate) fn assert_mode(state: &EditorState, mode: &str) -> Result<()> {
     let expected = match mode {
         "normal" | "Normal" | "NORMAL" => Mode::Normal,
         "insert" | "Insert" | "INSERT" => Mode::Insert,
@@ -97,7 +97,7 @@ fn assert_mode(state: &EditorState, mode: &str) -> Result<()> {
     Ok(())
 }
 
-fn assert_cursor(state: &EditorState, line: usize, col: usize) -> Result<()> {
+pub(crate) fn assert_cursor(state: &EditorState, line: usize, col: usize) -> Result<()> {
     let actual_line = state.cursor.line();
     let actual_col = state.cursor.col();
     if actual_line != line || actual_col != col {
@@ -148,83 +148,4 @@ pub fn parse_key(key: &ScriptKey) -> Result<Key> {
             shift: key.shift,
         },
     ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn parse_simple_key() {
-        let key = ScriptKey {
-            code: "a".to_string(),
-            ctrl: false,
-            alt: false,
-            shift: false,
-        };
-        let k = parse_key(&key).unwrap();
-        assert_eq!(k.code, KeyCode::Char('a'));
-    }
-
-    #[test]
-    fn parse_escape_key() {
-        let key = ScriptKey {
-            code: "Escape".to_string(),
-            ctrl: false,
-            alt: false,
-            shift: false,
-        };
-        let k = parse_key(&key).unwrap();
-        assert!(k.is_escape());
-    }
-
-    #[test]
-    fn parse_enter_key() {
-        let key = ScriptKey {
-            code: "Enter".to_string(),
-            ctrl: false,
-            alt: false,
-            shift: false,
-        };
-        let k = parse_key(&key).unwrap();
-        assert_eq!(k.code, KeyCode::Enter);
-    }
-
-    #[test]
-    fn parse_ctrl_modifier() {
-        let key = ScriptKey {
-            code: "c".to_string(),
-            ctrl: true,
-            alt: false,
-            shift: false,
-        };
-        let k = parse_key(&key).unwrap();
-        assert!(k.mods.ctrl);
-    }
-
-    #[test]
-    fn parse_arrow_key() {
-        let key = ScriptKey {
-            code: "Left".to_string(),
-            ctrl: false,
-            alt: false,
-            shift: false,
-        };
-        let k = parse_key(&key).unwrap();
-        assert_eq!(k.code, KeyCode::Left);
-    }
-
-    #[test]
-    fn assert_mode_valid() {
-        let state = EditorState::new();
-        let result = assert_mode(&state, "normal");
-        assert!(result.is_ok());
-    }
-
-    #[test]
-    fn assert_cursor_valid() {
-        let state = EditorState::new();
-        let result = assert_cursor(&state, 0, 0);
-        assert!(result.is_ok());
-    }
 }
