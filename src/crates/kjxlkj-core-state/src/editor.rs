@@ -219,9 +219,23 @@ impl EditorState {
             EditorAction::ScrollCursorCenter => self.scroll_cursor_center(),
             EditorAction::ScrollCursorTop => self.scroll_cursor_top(),
             EditorAction::ScrollCursorBottom => self.scroll_cursor_bottom(),
+            EditorAction::ScrollCursorTopFirstNonBlank => {
+                self.scroll_cursor_top();
+                self.buffer.move_first_non_blank();
+            }
+            EditorAction::ScrollCursorCenterFirstNonBlank => {
+                self.scroll_cursor_center();
+                self.buffer.move_first_non_blank();
+            }
+            EditorAction::ScrollCursorBottomFirstNonBlank => {
+                self.scroll_cursor_bottom();
+                self.buffer.move_first_non_blank();
+            }
             EditorAction::LineStart => self.buffer.move_line_start(),
             EditorAction::LineEnd => self.buffer.move_line_end(),
+            EditorAction::GoToColumn(col) => self.buffer.go_to_column(col),
             EditorAction::FirstNonBlank => self.buffer.move_first_non_blank(),
+            EditorAction::LastNonBlank => self.buffer.move_last_non_blank(),
             EditorAction::NextLineStart => self.move_next_line_start(),
             EditorAction::PrevLineStart => self.move_prev_line_start(),
             EditorAction::WordForward => self.buffer.move_word_forward(),
@@ -526,6 +540,14 @@ impl EditorState {
             EditorAction::SearchWordBackward => {
                 self.add_to_jump_list();
                 self.search_word_under_cursor(false);
+            }
+            EditorAction::SearchPartialWordForward => {
+                self.add_to_jump_list();
+                self.search_partial_word_under_cursor(true);
+            }
+            EditorAction::SearchPartialWordBackward => {
+                self.add_to_jump_list();
+                self.search_partial_word_under_cursor(false);
             }
             EditorAction::VisualDelete => {
                 self.apply_visual_operator(Operator::Delete);
@@ -1765,6 +1787,7 @@ impl EditorState {
                 Motion::LineStart => self.buffer.move_line_start(),
                 Motion::LineEnd => self.buffer.move_line_end(),
                 Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::LastNonBlank => self.buffer.move_last_non_blank(),
                 Motion::NextLineStart => self.move_next_line_start(),
                 Motion::PrevLineStart => self.move_prev_line_start(),
                 Motion::WordForward => self.buffer.move_word_forward(),
@@ -1842,6 +1865,7 @@ impl EditorState {
                 Motion::LineStart => self.buffer.move_line_start(),
                 Motion::LineEnd => self.buffer.move_line_end(),
                 Motion::FirstNonBlank => self.buffer.move_first_non_blank(),
+                Motion::LastNonBlank => self.buffer.move_last_non_blank(),
                 Motion::NextLineStart => self.move_next_line_start(),
                 Motion::PrevLineStart => self.move_prev_line_start(),
                 Motion::WordForward => self.buffer.move_word_forward(),
@@ -2247,29 +2271,51 @@ impl EditorState {
     }
 
     /// Search for word under cursor (* and #).
+    /// This searches for exact whole word matches.
     fn search_word_under_cursor(&mut self, forward: bool) {
+        if let Some(word) = self.get_word_under_cursor() {
+            // Set search pattern (whole word search adds boundaries conceptually)
+            // but our simple search_next_match doesn't have regex, so word is used as-is
+            self.search_pattern = Some(word);
+            self.search_forward = forward;
+            self.search_next_match(forward);
+        } else {
+            self.status_message = Some("No word under cursor".to_string());
+        }
+    }
+
+    /// Search for partial word under cursor (g* and g#).
+    /// This searches for the word as a substring (no word boundaries).
+    fn search_partial_word_under_cursor(&mut self, forward: bool) {
+        if let Some(word) = self.get_word_under_cursor() {
+            // For partial word search, just use the word as-is (substring match)
+            self.search_pattern = Some(word);
+            self.search_forward = forward;
+            self.search_next_match(forward);
+        } else {
+            self.status_message = Some("No word under cursor".to_string());
+        }
+    }
+
+    /// Get the word under the cursor for search operations.
+    fn get_word_under_cursor(&self) -> Option<String> {
         let cursor = self.buffer.cursor().position;
         let line_idx = cursor.line as usize;
         
         // Get the current line
-        let line = match self.buffer.line(line_idx) {
-            Some(l) => l,
-            None => return,
-        };
+        let line = self.buffer.line(line_idx)?;
         
         let col_idx = cursor.col as usize;
         let chars: Vec<char> = line.chars().collect();
         
         if col_idx >= chars.len() || chars.is_empty() {
-            self.status_message = Some("No word under cursor".to_string());
-            return;
+            return None;
         }
         
         // Check if cursor is on a word character
         let ch = chars[col_idx];
         if !ch.is_alphanumeric() && ch != '_' {
-            self.status_message = Some("No word under cursor".to_string());
-            return;
+            return None;
         }
         
         // Find word boundaries
@@ -2295,16 +2341,10 @@ impl EditorState {
         let word: String = chars[word_start..word_end].iter().collect();
         
         if word.is_empty() {
-            self.status_message = Some("No word under cursor".to_string());
-            return;
+            None
+        } else {
+            Some(word)
         }
-        
-        // Set search pattern and direction
-        self.search_pattern = Some(word.clone());
-        self.search_forward = forward;
-        
-        // Move to next match
-        self.search_next_match(forward);
     }
 
     /// Delete word before cursor (Ctrl-w in insert mode).

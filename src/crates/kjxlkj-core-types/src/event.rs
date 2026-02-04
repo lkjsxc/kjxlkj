@@ -14,6 +14,8 @@ pub enum Motion {
     LineStart,
     LineEnd,
     FirstNonBlank,
+    /// Last non-blank character on line (g_).
+    LastNonBlank,
     /// First non-blank of next line (+, Enter).
     NextLineStart,
     /// First non-blank of previous line (-).
@@ -129,12 +131,22 @@ pub enum EditorAction {
     ScrollCursorTop,
     /// Move cursor line to bottom of screen (zb).
     ScrollCursorBottom,
+    /// Scroll cursor to top and move to first non-blank (z<CR>).
+    ScrollCursorTopFirstNonBlank,
+    /// Scroll cursor to center and move to first non-blank (z.).
+    ScrollCursorCenterFirstNonBlank,
+    /// Scroll cursor to bottom and move to first non-blank (z-).
+    ScrollCursorBottomFirstNonBlank,
     /// Move to start of line (column 0).
     LineStart,
     /// Move to end of line.
     LineEnd,
+    /// Go to specific column (|).
+    GoToColumn(u32),
     /// Move to first non-blank character (^).
     FirstNonBlank,
+    /// Move to last non-blank character (g_).
+    LastNonBlank,
     /// Move to first non-blank of next line (+, Enter).
     NextLineStart,
     /// Move to first non-blank of previous line (-).
@@ -285,6 +297,10 @@ pub enum EditorAction {
     SearchWordForward,
     /// Search backward for word under cursor (#).
     SearchWordBackward,
+    /// Partial search forward for word under cursor (g*).
+    SearchPartialWordForward,
+    /// Partial search backward for word under cursor (g#).
+    SearchPartialWordBackward,
     /// Delete visual selection.
     VisualDelete,
     /// Yank visual selection.

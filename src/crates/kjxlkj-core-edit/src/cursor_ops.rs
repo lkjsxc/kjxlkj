@@ -86,6 +86,20 @@ pub trait CursorOps {
         self.cursor_mut().clear_preferred_col();
     }
 
+    /// Go to a specific column (1-based, | motion).
+    fn go_to_column(&mut self, col: u32) {
+        let cursor = self.cursor();
+        let line_len = self
+            .line_len(cursor.position.line as usize)
+            .unwrap_or(0);
+        // Column is 1-based, convert to 0-based
+        let target_col = col.saturating_sub(1) as usize;
+        // Clamp to line length
+        let max_col = if line_len > 0 { line_len - 1 } else { 0 };
+        self.cursor_mut().position.col = target_col.min(max_col) as u32;
+        self.cursor_mut().clear_preferred_col();
+    }
+
     /// Moves the cursor to the first non-blank character on the line (^).
     fn move_first_non_blank(&mut self) {
         let cursor = self.cursor();
@@ -96,6 +110,23 @@ pub trait CursorOps {
                 .map(|(i, _)| i)
                 .unwrap_or(0);
             self.cursor_mut().position.col = first_non_blank as u32;
+            self.cursor_mut().clear_preferred_col();
+        }
+    }
+
+    /// Moves the cursor to the last non-blank character on the line (g_).
+    fn move_last_non_blank(&mut self) {
+        let cursor = self.cursor();
+        if let Some(line) = self.line_content(cursor.position.line as usize) {
+            // Trim trailing newline for finding last non-blank
+            let content = line.trim_end_matches('\n');
+            let last_non_blank = content
+                .char_indices()
+                .rev()
+                .find(|(_, c)| !c.is_whitespace())
+                .map(|(i, _)| i)
+                .unwrap_or(0);
+            self.cursor_mut().position.col = last_non_blank as u32;
             self.cursor_mut().clear_preferred_col();
         }
     }

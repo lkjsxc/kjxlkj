@@ -35,7 +35,9 @@ This document records the currently implemented, user-visible surface so that:
 | Arrow keys | Cursor move |
 | `0` | Move to start of line (column 0) |
 | `^` | Move to first non-blank character |
+| `g_` | Move to last non-blank character |
 | `$` | Move to end of line |
+| `\|` | Go to column N (with count) |
 | `w` | Move to next word start |
 | `W` | Move to next WORD start (same as `w` currently) |
 | `b` | Move to previous word start |
@@ -45,6 +47,7 @@ This document records the currently implemented, user-visible surface so that:
 | `ge` | Move to previous word end |
 | `gE` | Move to previous WORD end (same as `ge` currently) |
 | `+` | Move to first non-blank of next line |
+| `Enter` | Move to first non-blank of next line (same as `+`) |
 | `-` | Move to first non-blank of previous line |
 | `gg` | Move to file start |
 | `G` | Move to file end |
@@ -54,6 +57,9 @@ This document records the currently implemented, user-visible surface so that:
 | `zz` | Scroll cursor to center of screen |
 | `zt` | Scroll cursor to top of screen |
 | `zb` | Scroll cursor to bottom of screen |
+| `z<CR>` | Scroll cursor to top, move to first non-blank |
+| `z.` | Scroll cursor to center, move to first non-blank |
+| `z-` | Scroll cursor to bottom, move to first non-blank |
 | `i` | Enter Insert mode |
 | `I` | Enter Insert mode (first non-blank of line) |
 | `a` | Enter Insert mode (after cursor) |
@@ -81,6 +87,8 @@ This document records the currently implemented, user-visible surface so that:
 | `.` | Repeat last change |
 | `*` | Search forward for word under cursor |
 | `#` | Search backward for word under cursor |
+| `g*` | Search forward for partial word under cursor |
+| `g#` | Search backward for partial word under cursor |
 | `m{a-z}` | Set local mark |
 | `` ` ``{a-z} | Jump to mark (exact position) |
 | `'{a-z}` | Jump to mark (line, first non-blank) |

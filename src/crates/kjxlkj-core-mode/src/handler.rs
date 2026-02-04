@@ -198,7 +198,14 @@ impl ModeHandler {
                 "l" => EditorAction::CursorRight,
                 "0" => EditorAction::LineStart,
                 "^" => EditorAction::FirstNonBlank,
+                "g_" => EditorAction::LastNonBlank,
                 "$" => EditorAction::LineEnd,
+                "|" => {
+                    // Go to column N (1-based, default 1)
+                    let col = self.state.take_count().unwrap_or(1);
+                    self.state.clear_pending();
+                    EditorAction::GoToColumn(col)
+                }
                 "w" => EditorAction::WordForward,
                 "W" => EditorAction::WORDForward,
                 "b" => EditorAction::WordBackward,
@@ -208,6 +215,7 @@ impl ModeHandler {
                 "ge" => EditorAction::WordEndBackward,
                 "gE" => EditorAction::WORDEndBackward,
                 "+" => EditorAction::NextLineStart,
+                "<CR>" => EditorAction::NextLineStart,  // Enter is same as +
                 "-" => EditorAction::PrevLineStart,
                 "gg" => EditorAction::FileStart,
                 "G" => EditorAction::FileEnd,
@@ -219,6 +227,9 @@ impl ModeHandler {
                 "zz" => EditorAction::ScrollCursorCenter,
                 "zt" => EditorAction::ScrollCursorTop,
                 "zb" => EditorAction::ScrollCursorBottom,
+                "z<CR>" => EditorAction::ScrollCursorTopFirstNonBlank,
+                "z." => EditorAction::ScrollCursorCenterFirstNonBlank,
+                "z-" => EditorAction::ScrollCursorBottomFirstNonBlank,
                 "z" => return EditorAction::Nop,  // Wait for second character
                 
                 // Sentence/paragraph motions
@@ -313,6 +324,8 @@ impl ModeHandler {
                 "N" => EditorAction::SearchPrev,
                 "*" => EditorAction::SearchWordForward,
                 "#" => EditorAction::SearchWordBackward,
+                "g*" => EditorAction::SearchPartialWordForward,
+                "g#" => EditorAction::SearchPartialWordBackward,
                 
                 // Find char motions (pending for next char)
                 "f" | "t" | "F" | "T" => {
