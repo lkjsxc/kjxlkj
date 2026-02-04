@@ -179,4 +179,19 @@ mod tests {
     fn process_visual_key_import() {
         let _ = std::any::type_name::<EditorState>();
     }
+
+    #[test]
+    fn char_tab_none() {
+        assert!(char_to_motion('\t').is_none());
+    }
+
+    #[test]
+    fn char_capital_h_none() {
+        assert!(char_to_motion('H').is_none());
+    }
+
+    #[test]
+    fn char_capital_j_none() {
+        assert!(char_to_motion('J').is_none());
+    }
 }

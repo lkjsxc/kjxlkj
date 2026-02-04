@@ -178,4 +178,22 @@ mod tests {
     fn execute_command_fn_import() {
         let _ = std::any::type_name::<EditorState>();
     }
+
+    #[test]
+    fn apply_intent_insert() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::InsertText("x".to_string()));
+    }
+
+    #[test]
+    fn apply_intent_newline() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::InsertNewline);
+    }
+
+    #[test]
+    fn apply_intent_delete_before() {
+        let mut state = EditorState::new();
+        apply_intent(&mut state, Intent::DeleteCharBefore);
+    }
 }
