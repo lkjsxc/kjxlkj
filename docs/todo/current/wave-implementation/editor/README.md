@@ -56,7 +56,7 @@ Implement the canonical editor core model:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - buffer lifecycle and identity invariants
   - cursor/viewport invariants across edits and window changes
   - snapshot stability and correctness
