@@ -121,4 +121,35 @@ mod tests {
         assert_eq!(row, 2); // 5 - 3
         assert_eq!(col, 10);
     }
+
+    #[test]
+    fn buffer_snapshot_empty() {
+        let snap = BufferSnapshot::empty();
+        assert_eq!(snap.name, "[No Name]");
+        assert!(!snap.modified);
+        assert_eq!(snap.total_lines, 1);
+    }
+
+    #[test]
+    fn status_line_default() {
+        let status = StatusLine::default();
+        assert!(status.message.is_none());
+        assert!(status.command_line.is_none());
+    }
+
+    #[test]
+    fn snapshot_default() {
+        let snap = EditorSnapshot::default();
+        assert_eq!(snap.mode, Mode::Normal);
+    }
+
+    #[test]
+    fn cursor_at_viewport_start() {
+        let mut snap = EditorSnapshot::empty(Viewport::new(80, 24));
+        snap.cursor = Cursor::new(Position::new(0, 0));
+        snap.viewport.first_line = 0;
+        let (col, row) = snap.cursor_screen_position();
+        assert_eq!(row, 0);
+        assert_eq!(col, 0);
+    }
 }
