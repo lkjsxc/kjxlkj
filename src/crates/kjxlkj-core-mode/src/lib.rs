@@ -182,4 +182,33 @@ mod tests {
         visual.reset();
         assert_eq!(visual.mode(), Mode::VisualLine);
     }
+
+    #[test]
+    fn test_visual_mode_variants() {
+        let char_wise = VisualMode::char_wise();
+        let line_wise = VisualMode::line_wise();
+        let block_wise = VisualMode::block_wise();
+        
+        assert_ne!(char_wise.mode(), line_wise.mode());
+        assert_ne!(line_wise.mode(), block_wise.mode());
+    }
+
+    #[test]
+    fn test_command_mode_buffer() {
+        let mut cmd = CommandMode::new();
+        cmd.handle_key(&KeyEvent::char('t'));
+        cmd.handle_key(&KeyEvent::char('e'));
+        cmd.handle_key(&KeyEvent::char('s'));
+        cmd.handle_key(&KeyEvent::char('t'));
+        assert_eq!(cmd.buffer(), "test");
+    }
+
+    #[test]
+    fn test_insert_mode_numbers() {
+        let mut insert = InsertMode::new();
+        let result = insert.handle_key(&KeyEvent::char('5'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
+        }
+    }
 }

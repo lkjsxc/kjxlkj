@@ -167,4 +167,54 @@ mod tests {
         let debug = format!("{:?}", style);
         assert!(debug.contains("bold"));
     }
+
+    #[test]
+    fn test_style_inequality() {
+        let style1 = Style::new().fg(Color::Red);
+        let style2 = Style::new().fg(Color::Blue);
+        assert_ne!(style1, style2);
+    }
+
+    #[test]
+    fn test_style_italic() {
+        let mut style = Style::new();
+        style.italic = true;
+        assert!(style.italic);
+    }
+
+    #[test]
+    fn test_style_underline() {
+        let mut style = Style::new();
+        style.underline = true;
+        assert!(style.underline);
+    }
+
+    #[test]
+    fn test_style_copy() {
+        let style = Style::new().bold();
+        let copied = style; // Copy trait
+        assert_eq!(style, copied);
+    }
+
+    #[test]
+    fn test_style_fg_rgb() {
+        let style = Style::new().fg(Color::Rgb { r: 255, g: 0, b: 0 });
+        assert!(style.fg.is_some());
+    }
+
+    #[test]
+    fn test_style_bg_rgb() {
+        let style = Style::new().bg(Color::Rgb { r: 0, g: 255, b: 0 });
+        assert!(style.bg.is_some());
+    }
+
+    #[test]
+    fn test_style_all_attrs() {
+        let mut style = Style::new();
+        style.bold = true;
+        style.italic = true;
+        style.underline = true;
+        style.reverse = true;
+        assert!(style.bold && style.italic && style.underline && style.reverse);
+    }
 }
