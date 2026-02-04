@@ -57,4 +57,31 @@ mod tests {
         assert_eq!(content, "test content");
         std::fs::remove_file(&path).ok();
     }
+
+    #[test]
+    fn fs_read_nonexistent_file_fails() {
+        let path = Path::new("/nonexistent/path/to/file.txt");
+        let result = FsService::read_file(path);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn fs_exists_returns_false_for_nonexistent() {
+        let path = Path::new("/nonexistent/path/to/file.txt");
+        assert!(!FsService::exists(path));
+    }
+
+    #[test]
+    fn fs_exists_returns_true_for_existing() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("kjxlkj_exists_test.txt");
+        FsService::write_file(&path, "exists").unwrap();
+        assert!(FsService::exists(&path));
+        std::fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn fs_default_impl() {
+        let _svc = FsService::default();
+    }
 }

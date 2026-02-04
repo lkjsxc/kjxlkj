@@ -52,18 +52,23 @@ The following E2E test scenarios are covered:
 | cursor_movement | `h/j/k/l` move cursor correctly |
 | command_mode | `:` enters Command mode |
 | visual_mode | `v` enters Visual mode |
+| visual_line_mode | `V` enters Visual-Line mode |
 | replace_mode | `R` enters Replace mode |
 | append_mode | `a` appends after cursor |
 | open_line_below | `o` opens line below |
 | open_line_above | `O` opens line above |
+| text_insert_delete | Insert mode text entry and backspace |
+| word_motions | `w/b` word movement |
+| line_motions | `0/$` line start/end |
+| file_motions | `gg/G` file start/end |
 
 ## Test counts (as of current version)
 
 | Suite | Count |
 |---|---|
-| Unit tests (workspace) | 111 |
-| E2E tests | 9 |
-| **Total** | **120** |
+| Unit tests (workspace) | 118 |
+| E2E tests | 14 |
+| **Total** | **132** |
 
 ## Related
 

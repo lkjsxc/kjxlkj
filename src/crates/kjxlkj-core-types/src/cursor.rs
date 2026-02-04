@@ -65,4 +65,32 @@ mod tests {
         let c = Cursor::origin().with_preferred_col(10);
         assert_eq!(c.preferred_col, Some(10));
     }
+
+    #[test]
+    fn cursor_origin_at_zero() {
+        let c = Cursor::origin();
+        assert_eq!(c.line(), 0);
+        assert_eq!(c.col(), 0);
+    }
+
+    #[test]
+    fn cursor_clear_preferred_col() {
+        let mut c = Cursor::origin().with_preferred_col(10);
+        c.clear_preferred_col();
+        assert!(c.preferred_col.is_none());
+    }
+
+    #[test]
+    fn cursor_equality() {
+        let c1 = Cursor::new(Position::new(5, 10));
+        let c2 = Cursor::new(Position::new(5, 10));
+        assert_eq!(c1, c2);
+    }
+
+    #[test]
+    fn cursor_default() {
+        let c = Cursor::default();
+        assert_eq!(c.line(), 0);
+        assert_eq!(c.col(), 0);
+    }
 }

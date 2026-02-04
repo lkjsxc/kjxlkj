@@ -52,4 +52,44 @@ mod tests {
             panic!("Expected Resize event");
         }
     }
+
+    #[test]
+    fn input_event_focus_gained() {
+        let event = InputEvent::FocusGained;
+        assert_eq!(event, InputEvent::FocusGained);
+    }
+
+    #[test]
+    fn input_event_focus_lost() {
+        let event = InputEvent::FocusLost;
+        assert_eq!(event, InputEvent::FocusLost);
+    }
+
+    #[test]
+    fn input_event_equality() {
+        let e1 = InputEvent::key(Key::char('a'));
+        let e2 = InputEvent::key(Key::char('a'));
+        let e3 = InputEvent::key(Key::char('b'));
+        assert_eq!(e1, e2);
+        assert_ne!(e1, e3);
+    }
+
+    #[test]
+    fn input_event_ordering_preserved() {
+        // Input events should process in sequence order
+        let events = vec![
+            InputEvent::key(Key::char('h')),
+            InputEvent::key(Key::char('e')),
+            InputEvent::key(Key::char('l')),
+            InputEvent::key(Key::char('l')),
+            InputEvent::key(Key::char('o')),
+        ];
+        // Verify sequential access maintains order
+        for (i, e) in events.iter().enumerate() {
+            if let InputEvent::Key(k) = e {
+                let expected = ['h', 'e', 'l', 'l', 'o'][i];
+                assert_eq!(k.code, KeyCode::Char(expected));
+            }
+        }
+    }
 }

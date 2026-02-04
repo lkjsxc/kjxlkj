@@ -1,6 +1,6 @@
 //! Editor snapshot for rendering.
 
-use kjxlkj_core_types::{BufferId, BufferVersion, Cursor, Mode, Position, Selection};
+use kjxlkj_core_types::{BufferId, BufferVersion, Cursor, Mode, Selection};
 use crate::Viewport;
 
 /// A snapshot of a buffer for rendering.
@@ -103,6 +103,7 @@ impl Default for EditorSnapshot {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use kjxlkj_core_types::Position;
 
     #[test]
     fn empty_snapshot() {
