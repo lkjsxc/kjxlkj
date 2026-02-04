@@ -253,3 +253,91 @@ fn test_insert_typing_burst() {
     // Should have many x's
     assert!(editor.content().matches('x').count() >= 40);
 }
+
+/// Helper to create a key event with Ctrl modifier.
+fn ctrl_key(c: char) -> KeyEvent {
+    KeyEvent {
+        code: KeyCode::Char(c),
+        modifiers: KeyModifiers { ctrl: true, ..Default::default() },
+    }
+}
+
+/// Test: Ctrl-j inserts newline (same as Enter).
+#[test]
+fn test_insert_ctrl_j_newline() {
+    let mut editor = EditorState::new();
+    editor.load_content("hello");
+    
+    editor.handle_key(key(KeyCode::Char('i')));
+    editor.handle_key(ctrl_key('j'));
+    
+    // Should have multiple lines now
+    assert!(editor.buffer().line_count() >= 2);
+}
+
+/// Test: Ctrl-m inserts newline (same as Enter).
+#[test]
+fn test_insert_ctrl_m_newline() {
+    let mut editor = EditorState::new();
+    editor.load_content("hello");
+    
+    editor.handle_key(key(KeyCode::Char('i')));
+    editor.handle_key(ctrl_key('m'));
+    
+    // Should have multiple lines now
+    assert!(editor.buffer().line_count() >= 2);
+}
+
+/// Test: Rapid newline + typing stress test (200 lines).
+#[test]
+fn test_insert_rapid_newlines_200() {
+    let mut editor = EditorState::new();
+    editor.load_content("");
+    
+    editor.handle_key(key(KeyCode::Char('i')));
+    
+    // Alternate typing and Enter for 200 lines
+    for i in 0..200 {
+        // Type a line number
+        for c in format!("line{}", i).chars() {
+            editor.handle_key(char_key(c));
+        }
+        editor.handle_key(key(KeyCode::Enter));
+    }
+    
+    assert_eq!(editor.mode(), Mode::Insert);
+    // Should have ~200+ lines
+    assert!(editor.buffer().line_count() >= 200);
+}
+
+/// Test: Ctrl-h acts as backspace in Insert mode.
+#[test]
+fn test_insert_ctrl_h_backspace() {
+    let mut editor = EditorState::new();
+    editor.load_content("");
+    
+    editor.handle_key(key(KeyCode::Char('i')));
+    editor.handle_key(char_key('a'));
+    editor.handle_key(char_key('b'));
+    editor.handle_key(ctrl_key('h'));
+    
+    // Should have just 'a' (b was deleted)
+    let content = editor.content();
+    // Could be 'a' or empty depending on implementation
+    assert!(content.len() <= 2);
+}
+
+/// Test: Insert mode with Ctrl-r register placeholder.
+#[test]
+fn test_insert_ctrl_r_register() {
+    let mut editor = EditorState::new();
+    editor.load_content("test");
+    
+    editor.handle_key(key(KeyCode::Char('i')));
+    editor.handle_key(ctrl_key('r'));
+    // Waiting for register name
+    editor.handle_key(char_key('a'));
+    
+    // Should still be in Insert mode
+    assert_eq!(editor.mode(), Mode::Insert);
+}

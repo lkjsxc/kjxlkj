@@ -285,6 +285,13 @@ impl EditorState {
                 KeyCode::Char('h') => intents.push(Intent::InsertText("\x08".to_string())),
                 KeyCode::Char('w') => {} // Delete word
                 KeyCode::Char('u') => {} // Delete to line start
+                KeyCode::Char('j') | KeyCode::Char('m') => {
+                    // Ctrl-j and Ctrl-m are newline (same as Enter)
+                    intents.push(Intent::InsertText("\n".to_string()))
+                }
+                KeyCode::Char('r') => {
+                    // TODO: Insert from register (already handled in mode handler)
+                }
                 _ => {}
             }
             return intents;
