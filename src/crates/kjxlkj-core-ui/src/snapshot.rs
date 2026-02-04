@@ -351,5 +351,94 @@ mod tests {
         assert_eq!(status.line, 50);
         assert_eq!(status.total_lines, 100);
     }
-}
 
+    #[test]
+    fn test_editor_snapshot_dimensions() {
+        let buffer = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec!["line".to_string()],
+            Viewport::new(0, 24, 0, 80),
+            false,
+        );
+        let status = StatusLine::default();
+        let snapshot = EditorSnapshot::new(
+            buffer,
+            Cursor::new(0, 0),
+            Mode::Normal,
+            None,
+            status,
+            None,
+            None,
+            120,
+            40,
+        );
+        assert_eq!(snapshot.width, 120);
+        assert_eq!(snapshot.height, 40);
+    }
+
+    #[test]
+    fn test_editor_snapshot_search_pattern() {
+        let buffer = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec![],
+            Viewport::new(0, 24, 0, 80),
+            false,
+        );
+        let status = StatusLine::default();
+        let snapshot = EditorSnapshot::new(
+            buffer,
+            Cursor::new(0, 0),
+            Mode::Normal,
+            None,
+            status,
+            None,
+            Some("pattern".to_string()),
+            80,
+            24,
+        );
+        assert_eq!(snapshot.search_pattern, Some("pattern".to_string()));
+    }
+
+    #[test]
+    fn test_status_line_default_fields() {
+        let status = StatusLine::default();
+        assert_eq!(status.mode, "");
+        assert!(!status.modified);
+        assert!(status.message.is_none());
+    }
+
+    #[test]
+    fn test_status_line_equality() {
+        let status1 = StatusLine::default();
+        let status2 = StatusLine::default();
+        assert_eq!(status1, status2);
+    }
+
+    #[test]
+    fn test_buffer_snapshot_debug() {
+        let snapshot = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test"),
+            BufferVersion::new(1),
+            10,
+            vec![],
+            Viewport::default(),
+            false,
+        );
+        let debug = format!("{:?}", snapshot);
+        assert!(debug.contains("BufferSnapshot"));
+    }
+
+    #[test]
+    fn test_status_line_debug() {
+        let status = StatusLine::default();
+        let debug = format!("{:?}", status);
+        assert!(debug.contains("StatusLine"));
+    }
+}

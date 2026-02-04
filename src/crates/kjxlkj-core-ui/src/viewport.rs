@@ -187,5 +187,55 @@ mod tests {
         let cloned = vp.clone();
         assert_eq!(vp, cloned);
     }
-}
 
+    #[test]
+    fn test_viewport_width() {
+        let vp = Viewport::new(0, 20, 5, 100);
+        assert_eq!(vp.width, 100);
+        assert_eq!(vp.left_col, 5);
+    }
+
+    #[test]
+    fn test_viewport_equality() {
+        let vp1 = Viewport::new(10, 20, 0, 80);
+        let vp2 = Viewport::new(10, 20, 0, 80);
+        assert_eq!(vp1, vp2);
+    }
+
+    #[test]
+    fn test_viewport_inequality() {
+        let vp1 = Viewport::new(10, 20, 0, 80);
+        let vp2 = Viewport::new(11, 20, 0, 80);
+        assert_ne!(vp1, vp2);
+    }
+
+    #[test]
+    fn test_viewport_debug() {
+        let vp = Viewport::new(10, 20, 0, 80);
+        let debug = format!("{:?}", vp);
+        assert!(debug.contains("Viewport"));
+    }
+
+    #[test]
+    fn test_viewport_zero_height() {
+        let vp = Viewport::new(0, 0, 0, 80);
+        assert_eq!(vp.bottom_line(), 0);
+        assert!(!vp.is_line_visible(0));
+    }
+
+    #[test]
+    fn test_viewport_scroll_small_buffer() {
+        let mut vp = Viewport::new(0, 20, 0, 80);
+        vp.scroll_down(10, 15);
+        // top_line should be 0 since buffer < viewport
+        assert_eq!(vp.top_line, 0);
+    }
+
+    #[test]
+    fn test_viewport_scroll_to_line_already_visible() {
+        let mut vp = Viewport::new(10, 20, 0, 80);
+        vp.scroll_to_line(20, 100);
+        // Should not change top_line since 20 is already visible
+        assert_eq!(vp.top_line, 10);
+    }
+}

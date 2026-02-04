@@ -198,4 +198,25 @@ mod tests {
         let cloned = regs.clone();
         assert_eq!(cloned.get(RegisterName::Named('a')).unwrap().content, "clone");
     }
+
+    #[test]
+    fn test_register_debug() {
+        let regs = Registers::new();
+        let debug = format!("{:?}", regs);
+        assert!(debug.contains("Registers"));
+    }
+
+    #[test]
+    fn test_register_default_trait() {
+        let regs: Registers = Default::default();
+        assert_eq!(regs.selected(), RegisterName::Unnamed);
+    }
+
+    #[test]
+    fn test_register_overwrite() {
+        let mut regs = Registers::new();
+        regs.set(RegisterName::Named('a'), Register::new("first", false));
+        regs.set(RegisterName::Named('a'), Register::new("second", false));
+        assert_eq!(regs.get(RegisterName::Named('a')).unwrap().content, "second");
+    }
 }

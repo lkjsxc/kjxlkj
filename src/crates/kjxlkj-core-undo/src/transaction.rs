@@ -226,5 +226,63 @@ mod tests {
         let cloned = tx.clone();
         assert_eq!(tx.edits().len(), cloned.edits().len());
     }
-}
 
+    #[test]
+    fn test_edit_clone() {
+        let edit = Edit::insert(Position::new(1, 2), "clone");
+        let cloned = edit.clone();
+        assert_eq!(edit, cloned);
+    }
+
+    #[test]
+    fn test_edit_debug() {
+        let edit = Edit::insert(Position::new(0, 0), "debug");
+        let debug = format!("{:?}", edit);
+        assert!(debug.contains("Insert"));
+    }
+
+    #[test]
+    fn test_delete_inverse() {
+        let delete = Edit::delete(Position::new(0, 0), "hello");
+        let insert = delete.inverse();
+        assert!(matches!(insert, Edit::Insert { .. }));
+    }
+
+    #[test]
+    fn test_transaction_default() {
+        let tx: Transaction = Default::default();
+        assert!(tx.is_empty());
+    }
+
+    #[test]
+    fn test_transaction_debug() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "a"));
+        let debug = format!("{:?}", tx);
+        assert!(debug.contains("Transaction"));
+    }
+
+    #[test]
+    fn test_inverse_preserves_length() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "one"));
+        tx.push(Edit::delete(Position::new(0, 3), "two"));
+        tx.push(Edit::insert(Position::new(0, 3), "three"));
+        
+        let inv = tx.inverse();
+        assert_eq!(tx.edits().len(), inv.edits().len());
+    }
+
+    #[test]
+    fn test_inverse_reverses_order() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "first"));
+        tx.push(Edit::insert(Position::new(0, 5), "second"));
+        
+        let inv = tx.inverse();
+        // First edit in inverse should be the inverse of the last original
+        if let Edit::Delete { text, .. } = &inv.edits()[0] {
+            assert_eq!(text, "second");
+        }
+    }
+}
