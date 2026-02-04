@@ -1,0 +1,96 @@
+//! Operator definitions.
+
+use crate::Motion;
+use crate::TextObject;
+
+/// An operator kind.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OperatorKind {
+    /// Delete text.
+    Delete,
+    /// Change text (delete and enter insert).
+    Change,
+    /// Yank text.
+    Yank,
+    /// Indent right.
+    Indent,
+    /// Indent left.
+    Outdent,
+    /// Toggle case.
+    ToggleCase,
+    /// Uppercase.
+    Uppercase,
+    /// Lowercase.
+    Lowercase,
+    /// Format.
+    Format,
+}
+
+/// An operator with target.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Operator {
+    /// Operator with motion.
+    WithMotion {
+        kind: OperatorKind,
+        motion: Motion,
+    },
+    /// Operator with text object.
+    WithTextObject {
+        kind: OperatorKind,
+        text_object: TextObject,
+    },
+    /// Line-wise operator (dd, yy, cc, etc).
+    Line {
+        kind: OperatorKind,
+        count: usize,
+    },
+}
+
+impl Operator {
+    /// Create an operator with motion.
+    pub fn with_motion(kind: OperatorKind, motion: Motion) -> Self {
+        Self::WithMotion { kind, motion }
+    }
+
+    /// Create an operator with text object.
+    pub fn with_text_object(kind: OperatorKind, text_object: TextObject) -> Self {
+        Self::WithTextObject { kind, text_object }
+    }
+
+    /// Create a line-wise operator.
+    pub fn line(kind: OperatorKind, count: usize) -> Self {
+        Self::Line { kind, count }
+    }
+
+    /// Get the operator kind.
+    pub fn kind(&self) -> OperatorKind {
+        match self {
+            Self::WithMotion { kind, .. } => *kind,
+            Self::WithTextObject { kind, .. } => *kind,
+            Self::Line { kind, .. } => *kind,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::MotionKind;
+
+    #[test]
+    fn operator_with_motion() {
+        let op = Operator::with_motion(OperatorKind::Delete, Motion::new(MotionKind::WordStart));
+        assert_eq!(op.kind(), OperatorKind::Delete);
+    }
+
+    #[test]
+    fn operator_line() {
+        let op = Operator::line(OperatorKind::Yank, 2);
+        if let Operator::Line { kind, count } = op {
+            assert_eq!(kind, OperatorKind::Yank);
+            assert_eq!(count, 2);
+        } else {
+            panic!("Expected Line operator");
+        }
+    }
+}
