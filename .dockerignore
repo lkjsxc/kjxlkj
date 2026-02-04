@@ -1,0 +1,31 @@
+# Build artifacts
+target/
+*.log
+
+# Git
+.git/
+.gitignore
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (not needed in runtime image)
+docs/
+*.md
+!README.md
+
+# CI/GitHub
+.github/
+
+# Development files
+.cargo/
+rustfmt.toml
+.clippy.toml
+
+# Test artifacts
+tests/
+benches/

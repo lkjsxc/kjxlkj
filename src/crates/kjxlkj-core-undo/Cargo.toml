@@ -1,0 +1,9 @@
+[package]
+name = "kjxlkj-core-undo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }
