@@ -46,7 +46,7 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement the smallest end-to-end “event → core → snapshot → render” loop that is:
+- [x] Implement the smallest end-to-end “event → core → snapshot → render” loop that is:
   - deterministic
   - test-backed
   - compatible with the async-first runtime model

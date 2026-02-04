@@ -87,6 +87,20 @@ These are areas that are part of the intended surface but have historically exhi
 - Interactive Insert-mode newline handling may be unreliable in some environments until validated by PTY-driven E2E:
   - [/docs/todo/current/wave-implementation/modes/insert/newline/README.md](/docs/todo/current/wave-implementation/modes/insert/newline/README.md)
 
+## Code structure limitations
+
+Some source files exceed the 200-line guideline from `/docs/policy/STRUCTURE.md`:
+
+- `kjxlkj-core-state/src/editor.rs` (966 lines) - main editor state machine
+- `kjxlkj-core-mode/src/parser.rs` (535 lines) - key sequence parser
+- `kjxlkj-core-edit/src/motion.rs` (422 lines) - motion implementations
+- `kjxlkj-core-types/src/event.rs` (384 lines) - event type definitions
+- `kjxlkj-core-edit/src/text_object.rs` (319 lines) - text object implementations
+- `kjxlkj-render/src/renderer.rs` (317 lines) - terminal renderer
+- `kjxlkj-core-text/src/text_buffer.rs` (275 lines) - text buffer implementation
+
+These should be refactored into smaller modules in future iterations.
+
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.
