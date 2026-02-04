@@ -57,16 +57,16 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full runtime ordering and invariants specified in `runtime.md`.
-- [ ] Implement service supervision as defined by the architecture spec:
+- [x] Implement the full runtime ordering and invariants specified in `runtime.md`.
+- [x] Implement service supervision as defined by the architecture spec:
   - failure handling and recovery
   - backpressure expectations
   - core responsiveness under service load
-- [ ] Ensure “no plugins” is enforced (only native features).
+- [x] Ensure “no plugins” is enforced (only native features).
 
 ## Tests (normative outputs)
 
-- [ ] Add tests that prove:
+- [x] Add tests that prove:
   - single-writer core task invariant
   - snapshot immutability and render isolation
   - service failure does not corrupt core state
@@ -74,6 +74,6 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

@@ -15,7 +15,7 @@ Implement cursor rendering rules, including interaction with selection, highligh
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define cursor shape/visibility in snapshots.
-- [ ] Minimal slice: ensure cursor is always visible across mode transitions and redraws.
-- [ ] Full conformance: implement all cursor rendering and customization behaviors.
+- [x] Placeholder scaffolding: define cursor shape/visibility in snapshots.
+- [x] Minimal slice: ensure cursor is always visible across mode transitions and redraws.
+- [x] Full conformance: implement all cursor rendering and customization behaviors.
 

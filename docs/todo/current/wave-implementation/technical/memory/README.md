@@ -15,7 +15,7 @@ Implement memory and large-data behavior constraints.
 
 ## Checklist
 
-- [ ] Ensure the text model supports large buffers efficiently (or record limitations).
-- [ ] Ensure snapshots are bounded and do not scale with terminal size unnecessarily.
-- [ ] Add regression tests for large file/long line scenarios (deterministic).
+- [x] Ensure the text model supports large buffers efficiently (or record limitations).
+- [x] Ensure snapshots are bounded and do not scale with terminal size unnecessarily.
+- [x] Add regression tests for large file/long line scenarios (deterministic).
 

@@ -13,7 +13,7 @@ Implement the buffer model and buffer lifecycle invariants.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define buffer identity, metadata, and text ownership.
-- [ ] Minimal slice: implement open/edit/write for one buffer with tests.
-- [ ] Full conformance: implement all buffer behaviors defined by the spec and command subtrees.
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Placeholder scaffolding: define buffer identity, metadata, and text ownership.
+- [x] Minimal slice: implement open/edit/write for one buffer with tests.
+- [x] Full conformance: implement all buffer behaviors defined by the spec and command subtrees.
+- [x] Update conformance and limitations docs when user-visible.

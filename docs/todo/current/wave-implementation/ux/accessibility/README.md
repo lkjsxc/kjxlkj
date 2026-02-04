@@ -13,7 +13,7 @@ Implement accessibility requirements (keyboard-only, focus clarity, visibility c
 
 ## Checklist
 
-- [ ] Turn accessibility requirements into testable acceptance criteria.
-- [ ] Ensure cursor and focus are always visible and unambiguous.
-- [ ] Add tests for focus transitions and visibility across modes.
+- [x] Turn accessibility requirements into testable acceptance criteria.
+- [x] Ensure cursor and focus are always visible and unambiguous.
+- [x] Add tests for focus transitions and visibility across modes.
 

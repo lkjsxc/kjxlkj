@@ -13,7 +13,7 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ## Checklist
 
-- [ ] Define measurable latency targets derived from the spec.
-- [ ] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms.
-- [ ] Ensure render coalescing and backpressure do not cause one-key lag.
+- [x] Define measurable latency targets derived from the spec.
+- [x] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms.
+- [x] Ensure render coalescing and backpressure do not cause one-key lag.
 

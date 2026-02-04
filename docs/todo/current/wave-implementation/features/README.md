@@ -47,15 +47,15 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Ensure each feature category has:
+- [x] Ensure each feature category has:
   - an owning crate or module
   - message bus integration points
   - a placeholder UI surface (if user-visible)
-- [ ] Ensure “no plugins” is enforced (features are internal modules/services only).
+- [x] Ensure “no plugins” is enforced (features are internal modules/services only).
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement one end-to-end feature slice that exercises:
+- [x] Implement one end-to-end feature slice that exercises:
   - service supervision
   - UI rendering
   - persistence or IO
@@ -63,18 +63,18 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement all feature specs under `/docs/spec/features/`.
-- [ ] Ensure feature behavior is reachable via keybindings or commands as specified.
+- [x] Implement all feature specs under `/docs/spec/features/`.
+- [x] Ensure feature behavior is reachable via keybindings or commands as specified.
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - terminal IO ordering and scrollback
   - session persistence correctness
   - feature-specific UI invariants
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

@@ -20,20 +20,20 @@ Implement session-related Ex commands and persistence behaviors (swap, undo pers
 
 ### A. Placeholder scaffolding
 
-- [ ] Define persistence boundaries and storage locations.
-- [ ] Define recovery behavior and user-visible diagnostics.
+- [x] Define persistence boundaries and storage locations.
+- [x] Define recovery behavior and user-visible diagnostics.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement one persistence mechanism end-to-end with tests (as specified).
+- [x] Implement one persistence mechanism end-to-end with tests (as specified).
 
 ### C. Full conformance
 
-- [ ] Implement all session commands and persistence behaviors in the subtree.
+- [x] Implement all session commands and persistence behaviors in the subtree.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

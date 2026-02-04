@@ -20,20 +20,20 @@ Implement cursor semantics, including cursor shape/visibility rules where specif
 
 ### A. Placeholder scaffolding
 
-- [ ] Define cursor representation in core state and snapshots.
-- [ ] Define clamp rules for cursor after edits and mode transitions.
+- [x] Define cursor representation in core state and snapshots.
+- [x] Define clamp rules for cursor after edits and mode transitions.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement deterministic cursor motion and visibility rules for a minimal mode set.
-- [ ] Add regression tests for cursor invisibility and boundary cases.
+- [x] Implement deterministic cursor motion and visibility rules for a minimal mode set.
+- [x] Add regression tests for cursor invisibility and boundary cases.
 
 ### C. Full conformance
 
-- [ ] Implement the full cursor subtree behavior, including interactions with overlays and highlights.
+- [x] Implement the full cursor subtree behavior, including interactions with overlays and highlights.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

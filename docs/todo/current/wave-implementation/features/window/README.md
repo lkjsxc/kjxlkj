@@ -18,8 +18,8 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define window feature state and UI invariants.
-- [ ] Minimal slice: implement one window workflow end-to-end with tests.
-- [ ] Full conformance: implement all window feature documents.
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Placeholder scaffolding: define window feature state and UI invariants.
+- [x] Minimal slice: implement one window workflow end-to-end with tests.
+- [x] Full conformance: implement all window feature documents.
+- [x] Update conformance and limitations docs when user-visible.
 

@@ -13,7 +13,7 @@ Implement the keybinding DSL and its interpretation rules.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define the DSL parse model and validation rules.
-- [ ] Minimal slice: implement a small DSL subset with deterministic tests.
-- [ ] Full conformance: implement the entire DSL as specified.
+- [x] Placeholder scaffolding: define the DSL parse model and validation rules.
+- [x] Minimal slice: implement a small DSL subset with deterministic tests.
+- [x] Full conformance: implement the entire DSL as specified.
 

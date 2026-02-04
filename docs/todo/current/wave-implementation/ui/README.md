@@ -63,19 +63,19 @@ Implement the UI model and rendering pipeline:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement all UI spec and UI feature documents.
-- [ ] Implement theme and styling support as specified.
-- [ ] Implement notification and popup APIs as specified (or record limitations).
+- [x] Implement all UI spec and UI feature documents.
+- [x] Implement theme and styling support as specified.
+- [x] Implement notification and popup APIs as specified (or record limitations).
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - snapshot → render determinism
   - cursor visibility across modes and overlays
   - viewport invariants across scrolling and edits
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

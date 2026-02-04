@@ -24,23 +24,23 @@ Implement Ex command execution, including `:execute`, `:normal`, and `:source` b
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the execution pipeline:
+- [x] Define the execution pipeline:
   - parse → resolve → execute → report
-- [ ] Define script/source file loading and error handling rules.
+- [x] Define script/source file loading and error handling rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement `:source` for a minimal, deterministic script subset (as specified).
-- [ ] Add tests proving deterministic execution ordering.
+- [x] Implement `:source` for a minimal, deterministic script subset (as specified).
+- [x] Add tests proving deterministic execution ordering.
 
 ### C. Full conformance
 
-- [ ] Implement all execution commands and semantics in the subtree.
-- [ ] Ensure execution integrates with mappings/macros as specified.
+- [x] Implement all execution commands and semantics in the subtree.
+- [x] Ensure execution integrates with mappings/macros as specified.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

@@ -18,8 +18,8 @@ Implement built-in navigation/indexing features.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define index service contracts and UI surfaces.
-- [ ] Minimal slice: implement one navigation workflow end-to-end with tests.
-- [ ] Full conformance: implement all navigation feature documents.
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Placeholder scaffolding: define index service contracts and UI surfaces.
+- [x] Minimal slice: implement one navigation workflow end-to-end with tests.
+- [x] Full conformance: implement all navigation feature documents.
+- [x] Update conformance and limitations docs when user-visible.
 

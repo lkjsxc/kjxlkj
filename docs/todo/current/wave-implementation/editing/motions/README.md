@@ -20,16 +20,16 @@ Implement motion parsing and motion behavior for navigation and operator targets
 
 ### A. Placeholder scaffolding
 
-- [ ] Implement motion grammar parsing and motion typing (inclusive/exclusive, linewise/charwise).
-- [ ] Define count application rules and repeat mechanics where specified.
+- [x] Implement motion grammar parsing and motion typing (inclusive/exclusive, linewise/charwise).
+- [x] Define count application rules and repeat mechanics where specified.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a small set of core motions with deterministic tests.
+- [x] Implement a small set of core motions with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all motion documents in the subtree, including:
+- [x] Implement all motion documents in the subtree, including:
   - scrolling and viewport-sensitive motions
   - search motions (/, ?, n, N)
   - jump/mark motions (`, ', g;, g,, Ctrl-o, Ctrl-i)
@@ -38,6 +38,6 @@ Implement motion parsing and motion behavior for navigation and operator targets
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

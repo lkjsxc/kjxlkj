@@ -13,7 +13,7 @@ Implement viewport model and cursor-follow invariants.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define viewport state per window.
-- [ ] Minimal slice: implement deterministic follow rules with regression tests.
-- [ ] Full conformance: implement all viewport behaviors and scrolling customization.
+- [x] Placeholder scaffolding: define viewport state per window.
+- [x] Minimal slice: implement deterministic follow rules with regression tests.
+- [x] Full conformance: implement all viewport behaviors and scrolling customization.
 

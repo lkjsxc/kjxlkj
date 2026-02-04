@@ -24,26 +24,26 @@ Implement the range and address model used by Ex commands.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the address parser and representation.
-- [ ] Define how ranges resolve against:
+- [x] Define the address parser and representation.
+- [x] Define how ranges resolve against:
   - current buffer
   - marks (if specified)
   - search patterns (if specified)
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal range set sufficient for:
+- [x] Implement a minimal range set sufficient for:
   - `:write` (when applicable)
   - `:substitute` (when applicable)
-- [ ] Add tests for common and boundary cases.
+- [x] Add tests for common and boundary cases.
 
 ### C. Full conformance
 
-- [ ] Implement all range/address behaviors and edge cases defined by the subtree.
+- [x] Implement all range/address behaviors and edge cases defined by the subtree.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

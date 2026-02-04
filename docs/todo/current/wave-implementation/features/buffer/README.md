@@ -18,8 +18,8 @@ Implement buffer-related built-in features beyond the core buffer model.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define owning module(s) and snapshot/UI hooks.
-- [ ] Minimal slice: implement one feature end-to-end with tests.
-- [ ] Full conformance: implement all documents in the subtree.
-- [ ] Update conformance and limitations docs when behavior becomes user-visible.
+- [x] Placeholder scaffolding: define owning module(s) and snapshot/UI hooks.
+- [x] Minimal slice: implement one feature end-to-end with tests.
+- [x] Full conformance: implement all documents in the subtree.
+- [x] Update conformance and limitations docs when behavior becomes user-visible.
 

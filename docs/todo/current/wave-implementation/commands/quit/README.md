@@ -20,20 +20,20 @@ Implement quit/exit commands and their safety rules (dirty buffers, forced quit,
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the editor “dirty state” model and how it affects quitting.
-- [ ] Define error messages and confirmation behaviors (if specified).
+- [x] Define the editor “dirty state” model and how it affects quitting.
+- [x] Define error messages and confirmation behaviors (if specified).
 
 ### B. Minimal conformance slice
 
-- [ ] Implement safe quit and forced quit flows with deterministic tests.
+- [x] Implement safe quit and forced quit flows with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all quit command variants and edge cases.
+- [x] Implement all quit command variants and edge cases.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

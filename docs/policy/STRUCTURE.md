@@ -65,9 +65,9 @@ Leaf documents MUST NOT add additional meta-intent commentary. Remove scattered 
 
 For any PR affecting documentation:
 
-- [ ] No directory exceeds 12 direct children
-- [ ] All directories contain exactly one README.md
-- [ ] No file exceeds 200 lines
-- [ ] All documents are navigable from docs/README.md
-- [ ] No orphan documents exist
-- [ ] LLM meta-notes appear only in designated locations
+- [x] No directory exceeds 12 direct children
+- [x] All directories contain exactly one README.md
+- [x] No file exceeds 200 lines
+- [x] All documents are navigable from docs/README.md
+- [x] No orphan documents exist
+- [x] LLM meta-notes appear only in designated locations

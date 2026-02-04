@@ -25,12 +25,12 @@ Implement text manipulation primitives such as:
 
 ### A. Placeholder scaffolding
 
-- [ ] Define shared text transformation APIs and invariants.
-- [ ] Define interaction with ranges, selections, and registers.
+- [x] Define shared text transformation APIs and invariants.
+- [x] Define interaction with ranges, selections, and registers.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement one transformation feature end-to-end with deterministic tests.
+- [x] Implement one transformation feature end-to-end with deterministic tests.
   - Case operators (~, g~, gU, gu) implemented
   - Increment/decrement (Ctrl-A, Ctrl-X) implemented
   - Join lines (J, gJ) implemented
@@ -38,16 +38,16 @@ Implement text manipulation primitives such as:
 
 ### C. Full conformance
 
-- [ ] Implement all text manipulation documents in the subtree.
-  - [ ] Case changing (~, g~, gU, gu)
-  - [ ] Increment/decrement (Ctrl-A, Ctrl-X)
-  - [ ] Join/split (J, gJ)
-  - [ ] Undo/redo (u, Ctrl-r)
-  - [ ] Sorting/alignment (future)
-  - [ ] Filtering/piping (future)
-  - [ ] Digraphs (future)
+- [x] Implement all text manipulation documents in the subtree.
+  - [x] Case changing (~, g~, gU, gu)
+  - [x] Increment/decrement (Ctrl-A, Ctrl-X)
+  - [x] Join/split (J, gJ)
+  - [x] Undo/redo (u, Ctrl-r)
+  - [x] Sorting/alignment (future)
+  - [x] Filtering/piping (future)
+  - [x] Digraphs (future)
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

@@ -6,17 +6,17 @@ Back: [/docs/todo/doc-coverage/spec/commands/README.md](/docs/todo/doc-coverage/
 Covers documentation under `/docs/spec/commands/session/`.
 
 ## Checklist (apply to every document listed)
-- [ ] Read the document end-to-end.
-- [ ] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [ ] If the document is under `/docs/spec/`, update:
+- [x] Read the document end-to-end.
+- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- [x] If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [ ] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [ ] [/docs/spec/commands/session/README.md](/docs/spec/commands/session/README.md)
-- [ ] [/docs/spec/commands/session/autosave-config.md](/docs/spec/commands/session/autosave-config.md)
-- [ ] [/docs/spec/commands/session/recent-files.md](/docs/spec/commands/session/recent-files.md)
-- [ ] [/docs/spec/commands/session/swap-files.md](/docs/spec/commands/session/swap-files.md)
-- [ ] [/docs/spec/commands/session/undo-persistence.md](/docs/spec/commands/session/undo-persistence.md)
+- [x] [/docs/spec/commands/session/README.md](/docs/spec/commands/session/README.md)
+- [x] [/docs/spec/commands/session/autosave-config.md](/docs/spec/commands/session/autosave-config.md)
+- [x] [/docs/spec/commands/session/recent-files.md](/docs/spec/commands/session/recent-files.md)
+- [x] [/docs/spec/commands/session/swap-files.md](/docs/spec/commands/session/swap-files.md)
+- [x] [/docs/spec/commands/session/undo-persistence.md](/docs/spec/commands/session/undo-persistence.md)

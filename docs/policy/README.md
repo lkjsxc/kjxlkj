@@ -104,10 +104,10 @@ When converting existing documentation:
 
 For any PR that changes files under docs/:
 
-- [ ] All fenced blocks are Mermaid-only (no non-Mermaid fences; no unlabeled fences; no tilde fences).
-- [ ] New behavior is specified as MUST/SHOULD statements, tables, or acceptance criteria.
-- [ ] Implementation-relevant detail is linked to a canonical spec document or an implementation source-of-truth (no embedded duplication).
-- [ ] The doc remains ≤ 200 lines unless an explicit exception is recorded in policy.
+- [x] All fenced blocks are Mermaid-only (no non-Mermaid fences; no unlabeled fences; no tilde fences).
+- [x] New behavior is specified as MUST/SHOULD statements, tables, or acceptance criteria.
+- [x] Implementation-relevant detail is linked to a canonical spec document or an implementation source-of-truth (no embedded duplication).
+- [x] The doc remains ≤ 200 lines unless an explicit exception is recorded in policy.
 
 ### "Remove all source code" interpretation (this documentation phase)
 
