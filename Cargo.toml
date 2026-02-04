@@ -29,7 +29,7 @@ authors = ["kjxlkj contributors"]
 
 [workspace.dependencies]
 tokio = { version = "1", features = ["full"] }
-crossterm = "0.27"
+crossterm = "0.29"
 ropey = "1"
 unicode-segmentation = "1"
 unicode-width = "0.1"
