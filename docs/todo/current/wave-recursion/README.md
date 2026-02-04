@@ -1,4 +1,4 @@
-# Wave: Recursion and Continuation (Iteration 33)
+# Wave: Recursion and Continuation (Iteration 34)
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
@@ -10,11 +10,10 @@ Keep progress continuous by regenerating a doc-complete, implementation-ready TO
 
 ### A. Recreate the TODO list (must remain second-to-last overall)
 
-- [x] Follow:
+- [ ] Follow:
   - [recreate-todo/README.md](recreate-todo/README.md)
 
 ### B. Continue to next iteration (must remain last overall)
 
-- [x] Follow:
+- [ ] Follow:
   - [next-iteration/README.md](next-iteration/README.md)
-

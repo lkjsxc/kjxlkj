@@ -1,4 +1,4 @@
-# Wave: Placeholder Scaffolding (Iteration 33)
+# Wave: Placeholder Scaffolding (Iteration 34)
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
@@ -44,4 +44,3 @@ This wave is expected to contain many placeholders.
 
 - [x] Record all known missing/placeholder areas as explicit TODO leaves (no implicit assumptions).
 - [x] Do not implement new behavior in code during this wave unless it is required to unblock later waves' test harness and verification pipeline.
-

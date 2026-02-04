@@ -1,4 +1,4 @@
-# Modes: Insert (Iteration 33)
+# Modes: Insert (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/modes/README.md](/docs/todo/current/wave-implementation/modes/README.md)
 
@@ -21,28 +21,30 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 ### A. Placeholder scaffolding
 
 - [x] Define Insert-mode input handling and text insertion rules.
-- [x] Define integration points for completion and autopairs if specified.
+- [ ] Define integration points for completion and autopairs (only if/when specified as implemented).
 
 ### B. Minimal conformance slice
 
-- [x] Implement minimal insertion, deletion, and navigation behavior with deterministic tests.
-  - Character insertion
-  - Backspace (delete char before)
-  - Enter (insert newline)
-  - Arrow key navigation
+- [x] Ensure minimal insertion/deletion/navigation works in deterministic (headless) tests.
+  - character insertion
+  - backspace (delete char before)
+  - newline insertion in core state
+  - arrow-key navigation in core state
+- [ ] Ensure interactive TUI input mapping reliably delivers `Enter` as newline insertion.
+  - [newline/README.md](newline/README.md)
 
 ### C. Full conformance
 
-- [x] Implement all Insert-mode features in the subtree (autopairs, completion, mappings, indentation, etc.).
-  - [x] Ctrl-w (delete word before)
-  - [x] Ctrl-u (delete to line start)
-  - [x] Ctrl-r {reg} (insert register contents)
-  - [x] Ctrl-o (execute one normal command) - future
-  - [x] Completion integration - future
-  - [x] Autopairs - future
+- [ ] Implement additional Insert-mode features from the subtree, gated by tests and conformance updates.
+  - [ ] Ctrl-w (delete word before)
+  - [ ] Ctrl-u (delete to line start)
+  - [ ] Ctrl-r {reg} (insert register contents)
+  - [ ] Ctrl-o (execute one normal command)
+  - [ ] Completion integration
+  - [ ] Autopairs
+  - [ ] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-

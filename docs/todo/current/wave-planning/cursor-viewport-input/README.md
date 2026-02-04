@@ -1,4 +1,4 @@
-# Cursor, Viewport, and Input Spec (Iteration 33)
+# Cursor, Viewport, and Input Spec (Iteration 34)
 
 Back: [/docs/todo/current/wave-planning/README.md](/docs/todo/current/wave-planning/README.md)
 
@@ -47,6 +47,14 @@ Define cursor rendering, cursor movement, and viewport-follow behavior precisely
   - [/docs/todo/current/wave-implementation/ui/cursor/README.md](/docs/todo/current/wave-implementation/ui/cursor/README.md)
   - [/docs/todo/current/wave-implementation/architecture/runtime/README.md](/docs/todo/current/wave-implementation/architecture/runtime/README.md)
 
+## Checklist
+
+- [ ] Define cursor layering rules (cursor vs selection vs overlays) as explicit requirements.
+- [ ] Define cursor movement determinism at boundaries (clamp/no-op; no panics).
+- [ ] Define viewport follow behavior for both `wrap = false` and `wrap = true`, including margins.
+- [ ] Define input ordering guarantees and “no one-key lag” observable criteria.
+- [ ] Define throughput targets and performance constraints for typing/scroll/resize.
+
 ## Deep-dive Areas
 
 ### A. Cursor rendering and visibility
@@ -58,7 +66,7 @@ Define cursor rendering, cursor movement, and viewport-follow behavior precisely
   - search highlights
   - diagnostics underlines
   - terminal-native cursor vs drawn cursor
- - Define which layer “wins” when cursor overlaps overlays.
+- Define which layer “wins” when cursor overlaps overlays.
 
 ### B. Cursor movement determinism
 

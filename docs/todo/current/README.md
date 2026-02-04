@@ -1,4 +1,4 @@
-# Current TODO (Iteration 33)
+# Current TODO (Iteration 34)
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
@@ -6,9 +6,7 @@ Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 This TODO is the execution entrypoint for turning the documents into a complete, correct implementation.
 
-This repository follows the **“All in Docs”** contract: the docs are the project and the system MUST be reconstructable from docs alone.
-
-Start here: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 It is:
 
@@ -22,9 +20,20 @@ It is:
 - Work MUST be decomposed into leaf checklists that are:
   - small enough to complete
   - each gated by tests and conformance updates where applicable
+- Checkboxes MUST be meaningful:
+  - `- [ ]` means not complete (or not yet verified)
+  - `- [x]` means complete and verified against the appropriate gate (tests, link checks, policy checks)
 - Directory and file names under this TODO MUST NOT contain digits.
 - The second-to-last wave MUST be “Recreate the TODO list”.
 - The last wave MUST be “Continue to the next iteration”.
+
+## Completion gate (normative)
+
+Before considering this iteration complete:
+
+1. Ensure no unchecked items remain in the current iteration by running `rg -n \"\\[ \\]\" docs/todo/current`.
+2. Ensure documentation policy is satisfied (see [/docs/policy/README.md](/docs/policy/README.md)).
+3. Ensure the verification gate is green for the reconstructed implementation (see [/docs/reference/CI.md](/docs/reference/CI.md)).
 
 ## TODO List
 
@@ -39,6 +48,10 @@ It is:
 ### Wave: Read and reconcile all documents (doc-complete)
 
 - [wave-reading/README.md](wave-reading/README.md)
+
+### Wave: Repair docs and the TODO system (make drift explicit)
+
+- [wave-docs/README.md](wave-docs/README.md)
 
 ### Wave: Convert documents into a complete plan (fill placeholders)
 

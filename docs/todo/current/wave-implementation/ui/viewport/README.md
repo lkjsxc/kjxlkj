@@ -1,4 +1,4 @@
-# UI: Viewport (Iteration 33)
+# UI: Viewport (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -13,7 +13,25 @@ Implement viewport model and cursor-follow invariants.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define viewport state per window.
-- [x] Minimal slice: implement deterministic follow rules with regression tests.
-- [x] Full conformance: implement all viewport behaviors and scrolling customization.
+### A. Viewport state and invariants (scaffolding)
 
+- [x] Define viewport state per window.
+- [ ] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
+
+### B. Cursor-follow rules (no-wrap + wrap)
+
+- [ ] Implement deterministic vertical follow for `wrap = false`.
+- [ ] Implement deterministic horizontal follow for `wrap = false`.
+- [ ] Implement deterministic follow for `wrap = true` (display-row model).
+
+### C. Long-line stability (user-reported rough edge)
+
+- [ ] Ensure extremely long lines do not corrupt or break display.
+  - [long-lines/README.md](long-lines/README.md)
+
+### D. Regression tests and documentation ledgers
+
+- [ ] Add regression tests for long lines, wrap/no-wrap, and resize storms.
+- [ ] Update conformance and limitations docs when behavior is user-visible:
+  - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+  - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

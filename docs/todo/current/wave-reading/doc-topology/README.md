@@ -1,4 +1,4 @@
-# Documentation Topology & Links (Iteration 33)
+# Documentation Topology & Links (Iteration 34)
 
 Back: [/docs/todo/current/wave-reading/README.md](/docs/todo/current/wave-reading/README.md)
 
@@ -15,25 +15,26 @@ Bring documentation into full compliance with structure and link policies:
 
 ### 1. Remove forbidden documentation fences
 
-- Identify any non-Mermaid fenced blocks under `/docs/`
-- Replace with prose, tables, inline code spans, or Mermaid (when diagrammatic)
+- [x] Identify any non-Mermaid fenced blocks under `/docs/`.
+- [x] Replace forbidden fences with prose, tables, inline code spans, or Mermaid (when diagrammatic).
 
 ### 2. Normalize cross-directory link style
 
-- Prefer repo-root absolute paths for cross-directory links:
+- [ ] Prefer repo-root absolute paths for cross-directory links when it reduces ambiguity:
   - Example pattern: `/docs/spec/README.md`
-- Avoid `../` in documentation links.
+- [x] Avoid `../` in documentation links.
 
 ### 3. Enforce directory constraints
 
-- Reduce `docs/spec/` to ≤ 12 direct children
-- Reduce `docs/spec/editing/motions/` to ≤ 12 direct children
+- [x] Ensure no directory under `/docs/` exceeds 12 direct children.
+- [x] Ensure every directory under `/docs/` contains exactly one `README.md`.
+- [x] Ensure no documentation file exceeds 200 lines.
 
 ### 4. Remove contradictions about repository contents
 
-- Ensure docs consistently reflect this repository’s scope and artifacts.
-- If implementation code is not present here, docs MUST say so unambiguously.
-- Use the plan: [/docs/todo/plan/repository-scope/README.md](/docs/todo/plan/repository-scope/README.md)
+- [ ] Ensure docs consistently reflect the repository’s scope and derived artifacts (docs-only baseline vs shippable reconstructed state).
+- [ ] Ensure CI/Docker/toolchain documentation does not claim absent artifacts are present.
+- [ ] Use the plan: [/docs/todo/plan/repository-scope/README.md](/docs/todo/plan/repository-scope/README.md)
 
 ## Deep dives
 

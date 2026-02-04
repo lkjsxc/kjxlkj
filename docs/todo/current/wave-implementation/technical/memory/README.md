@@ -1,4 +1,4 @@
-# Technical: Memory (Iteration 33)
+# Technical: Memory (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/technical/README.md](/docs/todo/current/wave-implementation/technical/README.md)
 
@@ -15,7 +15,21 @@ Implement memory and large-data behavior constraints.
 
 ## Checklist
 
-- [x] Ensure the text model supports large buffers efficiently (or record limitations).
-- [x] Ensure snapshots are bounded and do not scale with terminal size unnecessarily.
-- [x] Add regression tests for large file/long line scenarios (deterministic).
+### A. Text model and large buffers
 
+- [ ] Ensure the text model supports large buffers efficiently (or record limitations).
+- [ ] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning.
+
+### B. Snapshot bounds and allocations
+
+- [ ] Ensure snapshots are viewport-bounded and do not scale with total buffer size.
+- [ ] Add deterministic regression tests that assert viewport-bounded materialization.
+
+### C. Large-file I/O posture (user-reported slowness)
+
+- [ ] Ensure file open avoids intermediate full-file copies where possible (streaming into text model).
+- [ ] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render.
+
+### D. Extremely long lines
+
+- [ ] Add deterministic regression tests for extremely long lines (memory + rendering posture).
