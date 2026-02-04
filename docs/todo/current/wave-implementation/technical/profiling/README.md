@@ -13,7 +13,7 @@ Implement profiling hooks and workflows so performance regressions are detectabl
 
 ## Checklist
 
-- [ ] Define how profiling is enabled/disabled without changing behavior.
-- [ ] Add profiling instrumentation for core loop and rendering.
-- [ ] Establish a repeatable profiling workflow recorded in docs/log.
+- [x] Define how profiling is enabled/disabled without changing behavior.
+- [x] Add profiling instrumentation for core loop and rendering.
+- [x] Establish a repeatable profiling workflow recorded in docs/log.
 

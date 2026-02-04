@@ -34,10 +34,10 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### A. Deterministic performance probes
 
-- [ ] Add a deterministic typing-burst probe that asserts:
+- [x] Add a deterministic typing-burst probe that asserts:
   - all characters are applied in order
   - the final snapshot reflects the final input (no off-by-one lag)
-- [ ] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true.
+- [x] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true.
 
 ### B. Benchmarks (repeatable, not flaky)
 
@@ -49,7 +49,7 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### C. Idle CPU regression
 
-- [ ] Add a probe that detects busy-loop redraw when idle (no input, no animation).
+- [x] Add a probe that detects busy-loop redraw when idle (no input, no animation).
 
 ### D. Reporting and drift handling
 
