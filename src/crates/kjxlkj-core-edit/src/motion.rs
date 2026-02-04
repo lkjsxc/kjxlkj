@@ -106,3 +106,52 @@ impl Motion {
         self
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn motion_new_left() {
+        let m = Motion::new(MotionKind::Left);
+        assert_eq!(m.kind, MotionKind::Left);
+    }
+
+    #[test]
+    fn motion_with_count() {
+        let m = Motion::new(MotionKind::Right).with_count(5);
+        assert_eq!(m.count, 5);
+    }
+
+    #[test]
+    fn motion_count_min_one() {
+        let m = Motion::new(MotionKind::Right).with_count(0);
+        assert_eq!(m.count, 1);
+    }
+
+    #[test]
+    fn motion_inclusive() {
+        let m = Motion::new(MotionKind::Right).inclusive();
+        assert!(m.inclusive);
+    }
+
+    #[test]
+    fn motion_kind_up() {
+        assert_eq!(MotionKind::Up, MotionKind::Up);
+    }
+
+    #[test]
+    fn motion_kind_down() {
+        assert_eq!(MotionKind::Down, MotionKind::Down);
+    }
+
+    #[test]
+    fn motion_kind_line_start() {
+        assert_eq!(MotionKind::LineStart, MotionKind::LineStart);
+    }
+
+    #[test]
+    fn motion_kind_line_end() {
+        assert_eq!(MotionKind::LineEnd, MotionKind::LineEnd);
+    }
+}

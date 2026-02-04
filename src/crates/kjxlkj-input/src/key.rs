@@ -118,3 +118,50 @@ impl Key {
             || (matches!(self.code, KeyCode::Char('h')) && self.mods.ctrl)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn key_is_escape() {
+        let k = Key::new(KeyCode::Escape, Modifiers::none());
+        assert!(k.is_escape());
+    }
+
+    #[test]
+    fn key_is_not_escape() {
+        let k = Key::char('a');
+        assert!(!k.is_escape());
+    }
+
+    #[test]
+    fn key_is_enter() {
+        let k = Key::new(KeyCode::Enter, Modifiers::none());
+        assert!(k.is_enter());
+    }
+
+    #[test]
+    fn key_is_backspace() {
+        let k = Key::new(KeyCode::Backspace, Modifiers::none());
+        assert!(k.is_backspace());
+    }
+
+    #[test]
+    fn key_ctrl_h_is_backspace() {
+        let k = Key::ctrl_char('h');
+        assert!(k.is_backspace());
+    }
+
+    #[test]
+    fn modifiers_none_has_no_ctrl() {
+        let mods = Modifiers::none();
+        assert!(!mods.ctrl);
+    }
+
+    #[test]
+    fn modifiers_ctrl_has_ctrl() {
+        let mods = Modifiers::ctrl();
+        assert!(mods.ctrl);
+    }
+}

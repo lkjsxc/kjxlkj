@@ -99,3 +99,39 @@ impl Transaction {
         self.edits.is_empty()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn transaction_new_is_empty() {
+        let tx = Transaction::new(Position::new(0, 0));
+        assert!(tx.is_empty());
+    }
+
+    #[test]
+    fn transaction_cursor_before() {
+        let tx = Transaction::new(Position::new(5, 10));
+        assert_eq!(tx.cursor_before, Position::new(5, 10));
+    }
+
+    #[test]
+    fn transaction_push_not_empty() {
+        let mut tx = Transaction::new(Position::new(0, 0));
+        tx.push(Edit::insert(Position::new(0, 0), "a".to_string()));
+        assert!(!tx.is_empty());
+    }
+
+    #[test]
+    fn edit_insert_kind() {
+        let edit = Edit::insert(Position::new(0, 0), "a".to_string());
+        assert!(matches!(edit.kind, EditKind::Insert));
+    }
+
+    #[test]
+    fn edit_delete_kind() {
+        let edit = Edit::delete(Position::new(0, 0), "a".to_string());
+        assert!(matches!(edit.kind, EditKind::Delete));
+    }
+}

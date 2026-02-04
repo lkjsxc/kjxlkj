@@ -149,3 +149,30 @@ pub fn parse_key(key: &ScriptKey) -> Result<Key> {
         },
     ))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn script_key_new() {
+        let key = ScriptKey {
+            code: "a".to_string(),
+            ctrl: false,
+            alt: false,
+            shift: false,
+        };
+        assert_eq!(key.code, "a");
+    }
+    
+    #[test]
+    fn script_key_ctrl() {
+        let key = ScriptKey {
+            code: "a".to_string(),
+            ctrl: true,
+            alt: false,
+            shift: false,
+        };
+        assert!(key.ctrl);
+    }
+}

@@ -177,3 +177,22 @@ pub(crate) fn execute_command(state: &mut EditorState, cmd: &str) {
         _ => {}
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn exec_cmd_quit() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "q");
+        assert!(state.should_quit);
+    }
+    
+    #[test]
+    fn exec_cmd_quit_bang() {
+        let mut state = EditorState::new();
+        execute_command(&mut state, "q!");
+        assert!(state.should_quit);
+    }
+}

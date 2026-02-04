@@ -150,4 +150,32 @@ mod tests {
         let v = Viewport::new(80, 20);
         assert_eq!(v.visible_lines(), 20);
     }
+
+    #[test]
+    fn viewport_default_first_col() {
+        let v = Viewport::new(80, 24);
+        assert_eq!(v.first_col, 0);
+    }
+
+    #[test]
+    fn viewport_resize_changes_both() {
+        let mut v = Viewport::new(80, 24);
+        v.resize(100, 50);
+        assert_eq!(v.width, 100);
+        assert_eq!(v.height, 50);
+    }
+
+    #[test]
+    fn viewport_scroll_to_top_zero() {
+        let mut v = Viewport::new(80, 24);
+        v.first_line = 10;
+        v.scroll_to_top(0);
+        assert_eq!(v.first_line, 0);
+    }
+
+    #[test]
+    fn viewport_visible_lines_small() {
+        let v = Viewport::new(80, 5);
+        assert_eq!(v.visible_lines(), 5);
+    }
 }

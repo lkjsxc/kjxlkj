@@ -166,4 +166,19 @@ mod tests {
     fn mode_insert_is_insert() {
         assert!(Mode::Insert.is_insert());
     }
+
+    #[test]
+    fn mode_normal_is_not_visual() {
+        assert!(!Mode::Normal.is_visual());
+    }
+
+    #[test]
+    fn mode_insert_is_not_visual() {
+        assert!(!Mode::Insert.is_visual());
+    }
+
+    #[test]
+    fn mode_visual_line_is_visual() {
+        assert!(Mode::VisualLine.is_visual());
+    }
 }

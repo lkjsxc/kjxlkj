@@ -137,3 +137,32 @@ impl TextBuffer {
 impl Default for TextBuffer {
     fn default() -> Self { Self::new(BufferId::default()) }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn buffer_default_exists() {
+        let buf = TextBuffer::default();
+        assert!(buf.line_count() >= 1);
+    }
+
+    #[test]
+    fn buffer_rope_exists() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        let _ = buf.rope();
+    }
+
+    #[test]
+    fn buffer_id_field() {
+        let buf = TextBuffer::new(BufferId::new(42));
+        assert_eq!(buf.id(), BufferId::new(42));
+    }
+
+    #[test]
+    fn buffer_line_count_init() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        assert!(buf.line_count() >= 1);
+    }
+}

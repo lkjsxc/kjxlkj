@@ -164,4 +164,25 @@ mod tests {
         let e2 = InputEvent::resize(80, 24);
         assert_eq!(e1, e2);
     }
+
+    #[test]
+    fn input_event_resize_diff_width() {
+        let e1 = InputEvent::resize(80, 24);
+        let e2 = InputEvent::resize(100, 24);
+        assert_ne!(e1, e2);
+    }
+
+    #[test]
+    fn input_event_resize_diff_height() {
+        let e1 = InputEvent::resize(80, 24);
+        let e2 = InputEvent::resize(80, 50);
+        assert_ne!(e1, e2);
+    }
+
+    #[test]
+    fn input_event_focus_gained_not_lost() {
+        let e1 = InputEvent::FocusGained;
+        let e2 = InputEvent::FocusLost;
+        assert_ne!(e1, e2);
+    }
 }

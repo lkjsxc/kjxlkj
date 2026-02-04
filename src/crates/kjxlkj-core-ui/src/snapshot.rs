@@ -148,4 +148,28 @@ mod tests {
         let status = StatusLine::default();
         assert!(status.mode.is_empty());
     }
+
+    #[test]
+    fn buffer_snapshot_empty_lines() {
+        let buf = BufferSnapshot::empty();
+        assert!(buf.lines.len() <= 1);
+    }
+
+    #[test]
+    fn editor_snapshot_viewport_default() {
+        let snap = EditorSnapshot::default();
+        assert_eq!(snap.viewport.first_line, 0);
+    }
+
+    #[test]
+    fn editor_snapshot_no_selection() {
+        let snap = EditorSnapshot::default();
+        assert!(snap.selection.is_none());
+    }
+
+    #[test]
+    fn status_line_mode_empty() {
+        let status = StatusLine::default();
+        assert_eq!(status.mode, "");
+    }
 }

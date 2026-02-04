@@ -139,3 +139,33 @@ pub enum CenterKind {
     /// Bottom and first non-blank.
     BottomFirstNonBlank,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn center_kind_center_eq() {
+        assert_eq!(CenterKind::Center, CenterKind::Center);
+    }
+    
+    #[test]
+    fn center_kind_top_eq() {
+        assert_eq!(CenterKind::Top, CenterKind::Top);
+    }
+    
+    #[test]
+    fn center_kind_bottom_eq() {
+        assert_eq!(CenterKind::Bottom, CenterKind::Bottom);
+    }
+
+    #[test]
+    fn intent_none_eq() {
+        assert_eq!(Intent::None, Intent::None);
+    }
+
+    #[test]
+    fn intent_delete_char_eq() {
+        assert_eq!(Intent::DeleteChar, Intent::DeleteChar);
+    }
+}
