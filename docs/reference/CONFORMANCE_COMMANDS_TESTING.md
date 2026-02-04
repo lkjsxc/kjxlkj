@@ -31,6 +31,40 @@ The shipped binary supports a deterministic headless mode for E2E tests:
   - a JSON array of keys, where each item is a `Key` object with `code` and `mods`
   - a JSON array of steps, where each item is a tagged object with `kind`
 
+### Script format
+
+```json
+[
+  {"kind": "key", "code": "i", "ctrl": false},
+  {"kind": "keys", "keys": "hello"},
+  {"kind": "key", "code": "Escape", "ctrl": false}
+]
+```
+
+## E2E test coverage
+
+The following E2E test scenarios are covered:
+
+| Test | Behavior verified |
+|---|---|
+| headless_mode_starts | Editor starts, quits on `:q` |
+| insert_mode | `i` enters Insert mode, text entry works |
+| cursor_movement | `h/j/k/l` move cursor correctly |
+| command_mode | `:` enters Command mode |
+| visual_mode | `v` enters Visual mode |
+| replace_mode | `R` enters Replace mode |
+| append_mode | `a` appends after cursor |
+| open_line_below | `o` opens line below |
+| open_line_above | `O` opens line above |
+
+## Test counts (as of current version)
+
+| Suite | Count |
+|---|---|
+| Unit tests (workspace) | 111 |
+| E2E tests | 9 |
+| **Total** | **120** |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
