@@ -1,8 +1,8 @@
 //! Comprehensive tests for kjxlkj-input.
 
 use crossterm::event::{Event, KeyCode, KeyEvent as CrosstermKeyEvent, KeyModifiers};
+use kjxlkj_core_types::{EditorEvent, KeyEvent};
 use kjxlkj_input::*;
-use kjxlkj_core_types::{EditorEvent, KeyEvent, Modifier};
 
 mod decode_event_tests {
     use super::*;
@@ -20,7 +20,13 @@ mod decode_event_tests {
     fn test_decode_resize_event() {
         let event = Event::Resize(120, 40);
         let decoded = decode_event(event);
-        assert!(matches!(decoded, Some(EditorEvent::Resize { width: 120, height: 40 })));
+        assert!(matches!(
+            decoded,
+            Some(EditorEvent::Resize {
+                width: 120,
+                height: 40
+            })
+        ));
     }
 
     #[test]
@@ -441,8 +447,6 @@ mod extra_input_tests {
     use super::*;
 
     #[test]
-
-    #[test]
     fn test_decode_printable_chars() {
         for c in 'a'..='z' {
             let key = CrosstermKeyEvent::new(KeyCode::Char(c), KeyModifiers::empty());
@@ -466,7 +470,9 @@ mod extra_input_tests {
 
     #[test]
     fn test_decode_punctuation() {
-        let chars = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '=', '[', ']'];
+        let chars = [
+            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '=', '[', ']',
+        ];
         for c in chars {
             let key = CrosstermKeyEvent::new(KeyCode::Char(c), KeyModifiers::empty());
             let event = Event::Key(key);

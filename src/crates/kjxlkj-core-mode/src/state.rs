@@ -155,9 +155,7 @@ impl ModeState {
         match self.mode {
             Mode::Normal => self.process_normal(key),
             Mode::Insert => self.process_insert(key),
-            Mode::Visual | Mode::VisualLine | Mode::VisualBlock => {
-                self.process_visual(key)
-            }
+            Mode::Visual | Mode::VisualLine | Mode::VisualBlock => self.process_visual(key),
             Mode::Command | Mode::Search => self.process_command(key),
             Mode::Replace => self.process_replace(key),
         }
@@ -175,9 +173,7 @@ impl ModeState {
                 self.accumulate_count(*c);
                 None
             }
-            KeyEvent::Char('0', Modifier { ctrl: false, .. })
-                if self.pending_count.is_some() =>
-            {
+            KeyEvent::Char('0', Modifier { ctrl: false, .. }) if self.pending_count.is_some() => {
                 self.accumulate_count('0');
                 None
             }
@@ -460,15 +456,9 @@ impl ModeState {
             KeyEvent::Backspace => Some(Intent::DeleteCharBackward),
             KeyEvent::Delete => Some(Intent::DeleteChar),
             KeyEvent::Tab => Some(Intent::InsertChar('\t')),
-            KeyEvent::Char(c, Modifier { ctrl: false, .. }) => {
-                Some(Intent::InsertChar(*c))
-            }
-            KeyEvent::Char('w', Modifier { ctrl: true, .. }) => {
-                Some(Intent::DeleteWordBackward)
-            }
-            KeyEvent::Char('u', Modifier { ctrl: true, .. }) => {
-                Some(Intent::DeleteToLineStart)
-            }
+            KeyEvent::Char(c, Modifier { ctrl: false, .. }) => Some(Intent::InsertChar(*c)),
+            KeyEvent::Char('w', Modifier { ctrl: true, .. }) => Some(Intent::DeleteWordBackward),
+            KeyEvent::Char('u', Modifier { ctrl: true, .. }) => Some(Intent::DeleteToLineStart),
             KeyEvent::Left => Some(Intent::MoveLeft(1)),
             KeyEvent::Right => Some(Intent::MoveRight(1)),
             KeyEvent::Up => Some(Intent::MoveUp(1)),

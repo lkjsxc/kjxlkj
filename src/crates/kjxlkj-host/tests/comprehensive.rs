@@ -8,15 +8,13 @@
 
 mod host_module_tests {
     #[test]
-    fn test_host_crate_loads() {
-        // Verify the crate compiles and loads
-        assert!(true);
+    fn test_host_type_exists() {
+        let _ = std::any::TypeId::of::<kjxlkj_host::Host>();
     }
 
     #[test]
     fn test_run_function_exists() {
-        // Verify the run function exists (won't call it as it needs a TTY)
-        let _ = std::any::TypeId::of::<fn(Option<std::path::PathBuf>) -> std::io::Result<()>>();
+        let _run: fn(Option<std::path::PathBuf>) -> std::io::Result<()> = kjxlkj_host::run;
     }
 }
 

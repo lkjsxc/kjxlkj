@@ -226,13 +226,7 @@ mod window_snapshot_tests {
         let vp = Viewport::new(80, 24);
         let cursor = Cursor::new(0, 5);
 
-        let win_snap = WindowSnapshot::new(
-            WindowId::new(1),
-            buffer_snap,
-            cursor,
-            vp,
-            true,
-        );
+        let win_snap = WindowSnapshot::new(WindowId::new(1), buffer_snap, cursor, vp, true);
 
         assert_eq!(win_snap.id, WindowId::new(1));
         assert_eq!(win_snap.cursor, cursor);
@@ -252,13 +246,8 @@ mod window_snapshot_tests {
         );
         let vp = Viewport::new(80, 24);
 
-        let win_snap = WindowSnapshot::new(
-            WindowId::new(2),
-            buffer_snap,
-            Cursor::origin(),
-            vp,
-            false,
-        );
+        let win_snap =
+            WindowSnapshot::new(WindowId::new(2), buffer_snap, Cursor::origin(), vp, false);
 
         assert!(!win_snap.active);
     }
@@ -276,13 +265,8 @@ mod window_snapshot_tests {
         );
         let vp = Viewport::new(100, 50);
 
-        let win_snap = WindowSnapshot::new(
-            WindowId::new(1),
-            buffer_snap,
-            Cursor::origin(),
-            vp,
-            true,
-        );
+        let win_snap =
+            WindowSnapshot::new(WindowId::new(1), buffer_snap, Cursor::origin(), vp, true);
 
         assert_eq!(win_snap.viewport.width, 100);
         assert_eq!(win_snap.viewport.height, 50);
@@ -295,7 +279,7 @@ mod editor_snapshot_tests {
     fn make_window_snapshot(id: u64, active: bool) -> WindowSnapshot {
         let buffer_snap = BufferSnapshot::new(
             BufferId::new(id),
-            BufferName::new(&format!("file{}.txt", id)),
+            BufferName::new(format!("file{}.txt", id)),
             BufferVersion::new(0),
             vec!["line".to_string()],
             0,
@@ -303,13 +287,7 @@ mod editor_snapshot_tests {
             false,
         );
         let vp = Viewport::new(80, 24);
-        WindowSnapshot::new(
-            WindowId::new(id),
-            buffer_snap,
-            Cursor::origin(),
-            vp,
-            active,
-        )
+        WindowSnapshot::new(WindowId::new(id), buffer_snap, Cursor::origin(), vp, active)
     }
 
     #[test]
@@ -408,7 +386,13 @@ mod editor_snapshot_tests {
 
     #[test]
     fn test_editor_snapshot_modes() {
-        for mode in [Mode::Normal, Mode::Insert, Mode::Visual, Mode::Command, Mode::Replace] {
+        for mode in [
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::Command,
+            Mode::Replace,
+        ] {
             let windows = vec![make_window_snapshot(1, true)];
             let snap = EditorSnapshot::new(
                 1,
@@ -577,15 +561,9 @@ mod extra_snapshot_tests {
         let mut viewport = Viewport::new(80, 20);
         viewport.top_line = 5;
         viewport.left_col = 2;
-        
-        let window = WindowSnapshot::new(
-            WindowId::new(1),
-            buffer,
-            cursor,
-            viewport,
-            true,
-        );
-        
+
+        let window = WindowSnapshot::new(WindowId::new(1), buffer, cursor, viewport, true);
+
         let (row, col) = window.cursor_screen_pos();
         assert_eq!(row, 5); // 10 - 5
         assert_eq!(col, 3); // 5 - 2
@@ -609,7 +587,7 @@ mod extra_snapshot_tests {
             Viewport::new(80, 24),
             true,
         );
-        
+
         let snapshot = EditorSnapshot::new(
             1,
             vec![window],
@@ -620,7 +598,7 @@ mod extra_snapshot_tests {
             80,
             24,
         );
-        
+
         let active = snapshot.active_window();
         assert!(active.is_some());
         assert_eq!(active.unwrap().id, WindowId::new(42));

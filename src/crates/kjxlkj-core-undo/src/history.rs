@@ -5,9 +5,19 @@ use kjxlkj_core_types::{BufferVersion, Position, Range};
 /// The kind of edit operation.
 #[derive(Debug, Clone, PartialEq)]
 pub enum EditKind {
-    Insert { pos: Position, text: String },
-    Delete { range: Range, text: String },
-    Replace { range: Range, old: String, new: String },
+    Insert {
+        pos: Position,
+        text: String,
+    },
+    Delete {
+        range: Range,
+        text: String,
+    },
+    Replace {
+        range: Range,
+        old: String,
+        new: String,
+    },
 }
 
 /// A single edit operation that can be undone/redone.
@@ -30,10 +40,7 @@ impl Edit {
         cursor_after: Position,
     ) -> Self {
         Self {
-            kind: EditKind::Insert {
-                pos,
-                text,
-            },
+            kind: EditKind::Insert { pos, text },
             version_before,
             version_after,
             cursor_before: pos,
@@ -250,4 +257,3 @@ mod tests {
         assert!(!history.can_redo());
     }
 }
-

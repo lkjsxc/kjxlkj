@@ -144,7 +144,7 @@ mod history_tests {
     #[test]
     fn test_new_edit_clears_redo() {
         let mut history = UndoHistory::new();
-        
+
         history.record(Edit::insert(
             Position::origin(),
             "a".to_string(),
@@ -407,7 +407,6 @@ mod stress_tests {
     }
 }
 
-
 mod extra_tests {
     use super::*;
 
@@ -415,7 +414,7 @@ mod extra_tests {
     fn test_undo_count() {
         let mut history = UndoHistory::new();
         assert_eq!(history.undo_count(), 0);
-        
+
         for i in 0..5 {
             history.record(Edit::insert(
                 Position::new(0, i),
@@ -431,7 +430,7 @@ mod extra_tests {
     #[test]
     fn test_redo_count() {
         let mut history = UndoHistory::new();
-        
+
         for i in 0..3 {
             history.record(Edit::insert(
                 Position::new(0, i),
@@ -441,7 +440,7 @@ mod extra_tests {
                 Position::new(0, i + 1),
             ));
         }
-        
+
         history.undo();
         history.undo();
         assert_eq!(history.redo_count(), 2);
@@ -501,7 +500,7 @@ mod extra_tests {
         let inverse = edit.inverse();
         match inverse {
             EditKind::Replace { old, new, .. } => {
-                assert_eq!(old, "world");  // Swapped
+                assert_eq!(old, "world"); // Swapped
                 assert_eq!(new, "hello");
             }
             _ => panic!("Expected Replace"),
@@ -512,7 +511,7 @@ mod extra_tests {
     fn test_commit_transaction() {
         let mut history = UndoHistory::new();
         history.begin_transaction();
-        
+
         history.record(Edit::insert(
             Position::new(0, 0),
             "a".to_string(),
@@ -527,7 +526,7 @@ mod extra_tests {
             BufferVersion::new(2),
             Position::new(0, 2),
         ));
-        
+
         history.commit_transaction();
         assert_eq!(history.undo_count(), 1); // Merged into one
     }
@@ -536,7 +535,7 @@ mod extra_tests {
     fn test_abort_transaction() {
         let mut history = UndoHistory::new();
         history.begin_transaction();
-        
+
         history.record(Edit::insert(
             Position::new(0, 0),
             "a".to_string(),
@@ -544,7 +543,7 @@ mod extra_tests {
             BufferVersion::new(1),
             Position::new(0, 1),
         ));
-        
+
         history.abort_transaction();
         assert_eq!(history.undo_count(), 0); // Nothing recorded
     }
@@ -669,7 +668,7 @@ mod extra_tests {
     #[test]
     fn test_alternating_operations() {
         let mut history = UndoHistory::new();
-        
+
         // Insert 3
         for i in 0..3 {
             history.record(Edit::insert(
@@ -680,12 +679,12 @@ mod extra_tests {
                 Position::new(0, i + 1),
             ));
         }
-        
+
         // Undo 1
         history.undo();
         assert_eq!(history.undo_count(), 2);
         assert_eq!(history.redo_count(), 1);
-        
+
         // Redo 1
         history.redo();
         assert_eq!(history.undo_count(), 3);

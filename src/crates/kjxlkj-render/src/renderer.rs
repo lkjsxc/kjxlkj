@@ -127,9 +127,9 @@ impl<W: Write> Renderer<W> {
         let mut status = String::new();
 
         // Mode indicator
-        status.push_str(" ");
+        status.push(' ');
         status.push_str(snapshot.mode.indicator());
-        status.push_str(" ");
+        status.push(' ');
 
         // Buffer info
         if let Some(win) = snapshot.active_window() {
@@ -142,11 +142,7 @@ impl<W: Write> Renderer<W> {
 
         // Right side: cursor position
         let right_info = if let Some(win) = snapshot.active_window() {
-            format!(
-                "{}:{} ",
-                win.cursor.line + 1,
-                win.cursor.column + 1
-            )
+            format!("{}:{} ", win.cursor.line + 1, win.cursor.column + 1)
         } else {
             String::new()
         };

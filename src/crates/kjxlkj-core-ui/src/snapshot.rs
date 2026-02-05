@@ -91,6 +91,7 @@ pub struct EditorSnapshot {
 
 impl EditorSnapshot {
     /// Create a new editor snapshot.
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         sequence: u64,
         windows: Vec<WindowSnapshot>,
@@ -136,13 +137,7 @@ mod tests {
         );
         let mut vp = Viewport::new(80, 24);
         vp.top_line = 5;
-        let win = WindowSnapshot::new(
-            WindowId::new(1),
-            buf,
-            Cursor::new(10, 3),
-            vp,
-            true,
-        );
+        let win = WindowSnapshot::new(WindowId::new(1), buf, Cursor::new(10, 3), vp, true);
         let (row, col) = win.cursor_screen_pos();
         assert_eq!(row, 5);
         assert_eq!(col, 3);

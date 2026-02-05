@@ -1,10 +1,6 @@
 //! Terminal host implementation.
 
-use crossterm::{
-    cursor,
-    event,
-    execute, terminal,
-};
+use crossterm::{cursor, event, execute, terminal};
 use kjxlkj_core_state::Editor;
 use kjxlkj_input::decode_event;
 use kjxlkj_render::Renderer;
@@ -43,11 +39,7 @@ impl Host {
 
         let result = self.event_loop();
 
-        execute!(
-            stdout,
-            terminal::LeaveAlternateScreen,
-            cursor::Show
-        )?;
+        execute!(stdout, terminal::LeaveAlternateScreen, cursor::Show)?;
         terminal::disable_raw_mode()?;
 
         result
@@ -84,16 +76,5 @@ impl Host {
         let snapshot = self.editor.snapshot();
         self.renderer.render(&snapshot)?;
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // Note: Most host tests require a TTY, so we keep them minimal
-    #[test]
-    fn test_host_module_loads() {
-        assert!(true);
     }
 }

@@ -1,8 +1,5 @@
 //! LSP client service.
 
-use async_trait::async_trait;
-use tokio::sync::mpsc;
-
 /// LSP service for language server communication.
 pub struct LspService {
     running: bool,

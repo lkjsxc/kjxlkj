@@ -22,7 +22,7 @@ mod buffer_state_tests {
 
     #[test]
     fn test_buffer_state_line_count() {
-        let mut state = BufferState::new(BufferId::new(1), BufferName::unnamed());
+        let state = BufferState::new(BufferId::new(1), BufferName::unnamed());
         assert_eq!(state.line_count(), 1);
     }
 
@@ -255,7 +255,7 @@ mod editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::Escape));
 
         editor.process_event(EditorEvent::Key(KeyEvent::char('x')));
-        let snapshot = editor.snapshot();
+        let _snapshot = editor.snapshot();
         // 'x' deletes char at cursor
     }
 
@@ -274,7 +274,7 @@ mod editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::char('d')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('d')));
 
-        let snapshot = editor.snapshot();
+        let _snapshot = editor.snapshot();
         // Line should be deleted
     }
 
@@ -293,7 +293,7 @@ mod editor_tests {
         // p to paste
         editor.process_event(EditorEvent::Key(KeyEvent::char('p')));
 
-        let snapshot = editor.snapshot();
+        let _snapshot = editor.snapshot();
         // Should have duplicated content
     }
 
@@ -491,11 +491,7 @@ mod extra_buffer_tests {
 
     #[test]
     fn test_buffer_state_path_from_file() {
-        let buf = BufferState::from_file(
-            BufferId::new(1),
-            PathBuf::from("/home/user/code.rs"),
-            "",
-        );
+        let buf = BufferState::from_file(BufferId::new(1), PathBuf::from("/home/user/code.rs"), "");
         assert_eq!(buf.path, Some(PathBuf::from("/home/user/code.rs")));
         assert_eq!(buf.name.as_str(), "code.rs");
     }
@@ -527,15 +523,13 @@ mod extra_editor_tests {
     #[test]
     fn test_editor_snapshot_mode() {
         let mut editor = Editor::new(80, 24);
-        editor.process_event(EditorEvent::Key(KeyEvent::char(':'))); 
+        editor.process_event(EditorEvent::Key(KeyEvent::char(':')));
         let snapshot = editor.snapshot();
         assert_eq!(snapshot.mode, Mode::Command);
     }
 
     #[test]
-
-    #[test]
-    fn test_editor_G_moves_to_end() {
+    fn test_editor_capital_g_moves_to_end() {
         let mut editor = Editor::new(80, 24);
         editor.process_event(EditorEvent::Key(KeyEvent::char('i')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
@@ -544,12 +538,12 @@ mod extra_editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::Enter));
         editor.process_event(EditorEvent::Key(KeyEvent::char('c')));
         editor.process_event(EditorEvent::Key(KeyEvent::Escape));
-        
+
         editor.process_event(EditorEvent::Key(KeyEvent::char('g')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('g')));
-        
+
         editor.process_event(EditorEvent::Key(KeyEvent::char('G')));
-        
+
         let snapshot = editor.snapshot();
         assert!(snapshot.windows[0].cursor.line > 0);
     }
@@ -561,7 +555,7 @@ mod extra_editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('b')));
         editor.process_event(EditorEvent::Key(KeyEvent::Backspace));
-        
+
         let snapshot = editor.snapshot();
         assert!(snapshot.windows[0].buffer.lines[0].contains('a'));
         assert!(!snapshot.windows[0].buffer.lines[0].contains('b'));
@@ -612,11 +606,11 @@ mod extra_editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('b')));
         editor.process_event(EditorEvent::Key(KeyEvent::char('c')));
-        
+
         let snap1 = editor.snapshot();
         editor.process_event(EditorEvent::Key(KeyEvent::Left));
         let snap2 = editor.snapshot();
-        
+
         assert!(snap2.windows[0].cursor.column < snap1.windows[0].cursor.column);
     }
 
@@ -844,7 +838,10 @@ mod e2e_editor_tests {
         let mut editor = Editor::new(80, 24);
 
         // Simulate a terminal resize
-        editor.process_event(EditorEvent::Resize { width: 120, height: 40 });
+        editor.process_event(EditorEvent::Resize {
+            width: 120,
+            height: 40,
+        });
 
         let snap = editor.snapshot();
         assert_eq!(snap.terminal_width, 120);
@@ -892,7 +889,7 @@ mod e2e_editor_tests {
         editor.process_event(escape());
 
         let snap = editor.snapshot();
-        assert!(snap.windows.len() >= 1);
+        assert!(!snap.windows.is_empty());
     }
 
     #[test]

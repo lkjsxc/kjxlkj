@@ -90,4 +90,3 @@ mod tests {
         assert_eq!(name.as_str(), "[No Name]");
     }
 }
-

@@ -30,17 +30,10 @@ pub fn apply_operator(
     match op {
         Operator::Delete => {
             let version_before = buffer.version();
-            let cursor_before = range.start;
 
             if let Ok((deleted, version_after)) = buffer.delete(range) {
                 register.clone_from(&deleted);
-                let edit = Edit::delete(
-                    range,
-                    deleted,
-                    version_before,
-                    version_after,
-                    range.start,
-                );
+                let edit = Edit::delete(range, deleted, version_before, version_after, range.start);
                 history.record(edit);
                 Some(Cursor::from(range.start))
             } else {
@@ -60,13 +53,7 @@ pub fn apply_operator(
 
             if let Ok((deleted, version_after)) = buffer.delete(range) {
                 register.clone_from(&deleted);
-                let edit = Edit::delete(
-                    range,
-                    deleted,
-                    version_before,
-                    version_after,
-                    range.start,
-                );
+                let edit = Edit::delete(range, deleted, version_before, version_after, range.start);
                 history.record(edit);
                 Some(Cursor::from(range.start))
             } else {
@@ -176,13 +163,7 @@ mod tests {
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
 
-        apply_operator(
-            Operator::Yank,
-            range,
-            &mut buf,
-            &mut history,
-            &mut register,
-        );
+        apply_operator(Operator::Yank, range, &mut buf, &mut history, &mut register);
 
         assert_eq!(register, "hello");
         assert_eq!(buf.line(0).unwrap(), "hello world");

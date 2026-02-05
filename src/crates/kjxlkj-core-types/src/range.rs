@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::Position;
 
 /// A range of text in a buffer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub struct Range {
     /// Start position (inclusive).
     pub start: Position,
@@ -72,15 +72,6 @@ impl Range {
                 start: self.end,
                 end: self.start,
             }
-        }
-    }
-}
-
-impl Default for Range {
-    fn default() -> Self {
-        Self {
-            start: Position::origin(),
-            end: Position::origin(),
         }
     }
 }

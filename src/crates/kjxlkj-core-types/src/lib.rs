@@ -17,5 +17,5 @@ pub use event::{EditorEvent, Intent, KeyEvent, Modifier};
 pub use mode::Mode;
 pub use position::Position;
 pub use range::Range;
-pub use version::BufferVersion;
+pub use version::{BufferVersion, VersionCounter};
 pub use window::WindowId;

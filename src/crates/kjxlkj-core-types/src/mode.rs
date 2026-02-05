@@ -4,8 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 
 /// The editing mode.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum Mode {
+    #[default]
     Normal,
     Insert,
     Visual,
@@ -21,11 +22,7 @@ impl Mode {
     pub fn is_end_exclusive(self) -> bool {
         matches!(
             self,
-            Mode::Normal
-                | Mode::Visual
-                | Mode::VisualLine
-                | Mode::VisualBlock
-                | Mode::Replace
+            Mode::Normal | Mode::Visual | Mode::VisualLine | Mode::VisualBlock | Mode::Replace
         )
     }
 
@@ -51,12 +48,6 @@ impl Mode {
             Mode::Search => "SEARCH",
             Mode::Replace => "REPLACE",
         }
-    }
-}
-
-impl Default for Mode {
-    fn default() -> Self {
-        Mode::Normal
     }
 }
 

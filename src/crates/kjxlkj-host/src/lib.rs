@@ -17,12 +17,3 @@ pub fn run(file: Option<std::path::PathBuf>) -> std::io::Result<()> {
 
     host.run()
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_module_loads() {
-        // Just verify the module compiles
-        assert!(true);
-    }
-}

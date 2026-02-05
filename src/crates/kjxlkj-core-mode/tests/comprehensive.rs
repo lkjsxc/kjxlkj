@@ -242,10 +242,9 @@ mod mode_state_debug {
     fn test_mode_state_debug() {
         let state = ModeState::new();
         let debug = format!("{:?}", state);
-        assert!(debug.len() > 0);
+        assert!(!debug.is_empty());
     }
 }
-
 
 mod extra_api_tests {
     use super::*;
@@ -428,8 +427,8 @@ mod extra_api_tests {
 }
 
 mod extra_mode_state_tests {
-    use kjxlkj_core_types::Intent;
     use super::*;
+    use kjxlkj_core_types::Intent;
 
     #[test]
     fn test_mode_state_default() {
@@ -440,7 +439,14 @@ mod extra_mode_state_tests {
     #[test]
     fn test_cycle_through_all_modes() {
         let mut state = ModeState::new();
-        let modes = [Mode::Normal, Mode::Insert, Mode::Visual, Mode::VisualLine, Mode::Replace, Mode::Command];
+        let modes = [
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::Replace,
+            Mode::Command,
+        ];
         for mode in modes {
             state.set_mode(mode);
             assert_eq!(state.mode(), mode);
@@ -475,7 +481,7 @@ mod extra_mode_state_tests {
         state.command_line_push('b');
         state.command_line_push('c');
         assert_eq!(state.command_line(), "abc");
-        
+
         let c = state.command_line_pop();
         assert_eq!(c, Some('c'));
         assert_eq!(state.command_line(), "ab");
@@ -514,7 +520,7 @@ mod extra_mode_state_tests {
         let mut state = ModeState::new();
         let intent = state.process_key(&KeyEvent::char('g'));
         // 'g' alone starts a prefix, not a complete action
-        assert!(intent.is_none() || matches!(intent, Some(_)));
+        assert!(matches!(intent, Some(Intent::Noop)));
     }
 
     #[test]
@@ -523,10 +529,6 @@ mod extra_mode_state_tests {
         let _intent = state.process_key(&KeyEvent::char(':'));
         // After ':' we should be in command mode or processing
     }
-
-    #[test]
-
-    #[test]
 
     #[test]
     fn test_w_word_motion() {
@@ -563,8 +565,6 @@ mod extra_mode_state_tests {
         let intent = state.process_key(&KeyEvent::char('$'));
         assert!(matches!(intent, Some(Intent::MoveToLineEnd)));
     }
-
-    #[test]
 
     #[test]
     fn test_r_enters_replace_mode() {

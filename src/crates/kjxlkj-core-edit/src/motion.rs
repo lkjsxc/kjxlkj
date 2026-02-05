@@ -1,7 +1,7 @@
 //! Motion implementations.
 
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{Cursor, Position};
+use kjxlkj_core_types::Cursor;
 use unicode_segmentation::UnicodeSegmentation;
 
 /// A motion describes cursor movement.
@@ -23,7 +23,11 @@ pub enum Motion {
     BigWordForward(usize),
     BigWordBackward(usize),
     BigWordEnd(usize),
-    FindChar { char: char, forward: bool, till: bool },
+    FindChar {
+        char: char,
+        forward: bool,
+        till: bool,
+    },
     MatchBracket,
 }
 
@@ -183,7 +187,11 @@ pub fn apply_motion(
             (pos, false)
         }
 
-        Motion::FindChar { char, forward, till } => {
+        Motion::FindChar {
+            char,
+            forward,
+            till,
+        } => {
             if let Some(pos) = find_char(cursor, buffer, *char, *forward, *till) {
                 (pos, false)
             } else {
@@ -296,7 +304,10 @@ fn move_word_backward(cursor: Cursor, buffer: &TextBuffer, big: bool) -> Cursor 
 
         // Skip whitespace backward
         while col > 0 {
-            let c = graphemes.get(col).and_then(|g| g.chars().next()).unwrap_or(' ');
+            let c = graphemes
+                .get(col)
+                .and_then(|g| g.chars().next())
+                .unwrap_or(' ');
             if c.is_whitespace() {
                 col -= 1;
             } else {
@@ -305,7 +316,10 @@ fn move_word_backward(cursor: Cursor, buffer: &TextBuffer, big: bool) -> Cursor 
         }
 
         // Find start of word
-        let c = graphemes.get(col).and_then(|g| g.chars().next()).unwrap_or(' ');
+        let c = graphemes
+            .get(col)
+            .and_then(|g| g.chars().next())
+            .unwrap_or(' ');
         let in_word = is_word_char(c, big);
 
         while col > 0 {
@@ -313,9 +327,9 @@ fn move_word_backward(cursor: Cursor, buffer: &TextBuffer, big: bool) -> Cursor 
                 .get(col - 1)
                 .and_then(|g| g.chars().next())
                 .unwrap_or(' ');
-            if in_word && is_word_char(prev_c, big) {
-                col -= 1;
-            } else if !in_word && !prev_c.is_whitespace() && !is_word_char(prev_c, big) {
+            if (in_word && is_word_char(prev_c, big))
+                || (!in_word && !prev_c.is_whitespace() && !is_word_char(prev_c, big))
+            {
                 col -= 1;
             } else {
                 break;
@@ -361,9 +375,9 @@ fn move_word_end(cursor: Cursor, buffer: &TextBuffer, big: bool, _end_incl: bool
 
         while col + 1 < graphemes.len() {
             let next_c = graphemes[col + 1].chars().next().unwrap_or(' ');
-            if in_word && is_word_char(next_c, big) {
-                col += 1;
-            } else if !in_word && !next_c.is_whitespace() && !is_word_char(next_c, big) {
+            if (in_word && is_word_char(next_c, big))
+                || (!in_word && !next_c.is_whitespace() && !is_word_char(next_c, big))
+            {
                 col += 1;
             } else {
                 break;
@@ -374,20 +388,28 @@ fn move_word_end(cursor: Cursor, buffer: &TextBuffer, big: bool, _end_incl: bool
     }
 }
 
-fn find_char(cursor: Cursor, buffer: &TextBuffer, ch: char, forward: bool, till: bool) -> Option<Cursor> {
+fn find_char(
+    cursor: Cursor,
+    buffer: &TextBuffer,
+    ch: char,
+    forward: bool,
+    till: bool,
+) -> Option<Cursor> {
     let line = buffer.line(cursor.line).ok()?;
     let graphemes: Vec<&str> = line.graphemes(true).collect();
 
     if forward {
-        for i in (cursor.column + 1)..graphemes.len() {
-            if graphemes[i].chars().next() == Some(ch) {
-                let col = if till { i - 1 } else { i };
+        let start = cursor.column.saturating_add(1);
+        for (i, g) in graphemes.iter().enumerate().skip(start) {
+            if g.starts_with(ch) {
+                let col = if till { i.saturating_sub(1) } else { i };
                 return Some(Cursor::new(cursor.line, col));
             }
         }
     } else {
-        for i in (0..cursor.column).rev() {
-            if graphemes[i].chars().next() == Some(ch) {
+        let end = cursor.column.min(graphemes.len());
+        for (i, g) in graphemes.iter().enumerate().take(end).rev() {
+            if g.starts_with(ch) {
                 let col = if till { i + 1 } else { i };
                 return Some(Cursor::new(cursor.line, col));
             }

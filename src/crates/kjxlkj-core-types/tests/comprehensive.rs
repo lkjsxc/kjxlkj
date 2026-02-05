@@ -40,13 +40,13 @@ mod position_tests {
     fn test_position_debug() {
         let pos = Position::new(10, 20);
         let debug = format!("{:?}", pos);
-        assert!(debug.len() > 0);
+        assert!(!debug.is_empty());
     }
 
     #[test]
     fn test_position_clone() {
         let a = Position::new(5, 5);
-        let b = a.clone();
+        let b = a;
         assert_eq!(a, b);
     }
 
@@ -98,11 +98,11 @@ mod range_tests {
         // A point range in half-open interval is NOT empty (covers one char)
         let point = Range::point(Position::origin());
         assert!(!point.is_empty());
-        
+
         // A truly empty range has start == end
         let empty = Range::new(Position::new(0, 5), Position::new(0, 5));
         assert!(empty.is_empty());
-        
+
         let line = Range::from_coords(0, 0, 0, 5);
         assert!(!line.is_empty());
     }
@@ -318,7 +318,10 @@ mod editor_event_tests {
 
     #[test]
     fn test_editor_event_resize() {
-        let e = EditorEvent::Resize { width: 80, height: 24 };
+        let e = EditorEvent::Resize {
+            width: 80,
+            height: 24,
+        };
         assert!(matches!(e, EditorEvent::Resize { .. }));
     }
 
@@ -385,7 +388,7 @@ mod position_extra {
     #[test]
     fn test_position_clone() {
         let pos = Position::new(10, 20);
-        let cloned = pos.clone();
+        let cloned = pos;
         assert_eq!(pos, cloned);
     }
 
@@ -432,7 +435,7 @@ mod range_extra {
     #[test]
     fn test_range_clone() {
         let range = Range::from_coords(1, 2, 3, 4);
-        let cloned = range.clone();
+        let cloned = range;
         assert_eq!(range, cloned);
     }
 
@@ -466,7 +469,7 @@ mod cursor_extra {
     #[test]
     fn test_cursor_clone() {
         let cursor = Cursor::new(5, 10);
-        let cloned = cursor.clone();
+        let cloned = cursor;
         assert_eq!(cursor, cloned);
     }
 
@@ -498,11 +501,16 @@ mod mode_extra {
     #[test]
     fn test_mode_clone_all() {
         let modes = [
-            Mode::Normal, Mode::Insert, Mode::Visual,
-            Mode::VisualLine, Mode::VisualBlock, Mode::Command, Mode::Replace,
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::VisualBlock,
+            Mode::Command,
+            Mode::Replace,
         ];
         for mode in modes {
-            let cloned = mode.clone();
+            let cloned = mode;
             assert_eq!(mode, cloned);
         }
     }
@@ -510,11 +518,16 @@ mod mode_extra {
     #[test]
     fn test_mode_inequality_pairwise() {
         let modes = [
-            Mode::Normal, Mode::Insert, Mode::Visual,
-            Mode::VisualLine, Mode::VisualBlock, Mode::Command, Mode::Replace,
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::VisualBlock,
+            Mode::Command,
+            Mode::Replace,
         ];
         for i in 0..modes.len() {
-            for j in i+1..modes.len() {
+            for j in i + 1..modes.len() {
                 assert_ne!(modes[i], modes[j]);
             }
         }
@@ -528,9 +541,16 @@ mod key_event_extra {
     #[test]
     fn test_key_event_all_special() {
         let keys = [
-            KeyEvent::Escape, KeyEvent::Enter, KeyEvent::Backspace,
-            KeyEvent::Delete, KeyEvent::Tab, KeyEvent::BackTab,
-            KeyEvent::Home, KeyEvent::End, KeyEvent::PageUp, KeyEvent::PageDown,
+            KeyEvent::Escape,
+            KeyEvent::Enter,
+            KeyEvent::Backspace,
+            KeyEvent::Delete,
+            KeyEvent::Tab,
+            KeyEvent::BackTab,
+            KeyEvent::Home,
+            KeyEvent::End,
+            KeyEvent::PageUp,
+            KeyEvent::PageDown,
         ];
         for key in keys {
             let debug = format!("{:?}", key);
@@ -586,10 +606,17 @@ mod modifier_extra {
 
     #[test]
     fn test_modifier_constants() {
-        assert!(!Modifier::NONE.ctrl && !Modifier::NONE.alt && !Modifier::NONE.shift);
-        assert!(Modifier::CTRL.ctrl && !Modifier::CTRL.alt && !Modifier::CTRL.shift);
-        assert!(!Modifier::ALT.ctrl && Modifier::ALT.alt && !Modifier::ALT.shift);
-        assert!(!Modifier::SHIFT.ctrl && !Modifier::SHIFT.alt && Modifier::SHIFT.shift);
+        let none = Modifier::NONE;
+        assert!(!none.ctrl && !none.alt && !none.shift);
+
+        let ctrl = Modifier::CTRL;
+        assert!(ctrl.ctrl && !ctrl.alt && !ctrl.shift);
+
+        let alt = Modifier::ALT;
+        assert!(!alt.ctrl && alt.alt && !alt.shift);
+
+        let shift = Modifier::SHIFT;
+        assert!(!shift.ctrl && !shift.alt && shift.shift);
     }
 
     #[test]
@@ -608,7 +635,7 @@ mod modifier_extra {
     #[test]
     fn test_modifier_clone() {
         let mods = Modifier::ALT;
-        let cloned = mods.clone();
+        let cloned = mods;
         assert_eq!(mods, cloned);
     }
 }
@@ -620,10 +647,18 @@ mod intent_extra {
     #[test]
     fn test_intent_move_variety() {
         let moves = [
-            Intent::MoveUp(1), Intent::MoveUp(10), Intent::MoveUp(100),
-            Intent::MoveDown(1), Intent::MoveDown(10), Intent::MoveDown(100),
-            Intent::MoveLeft(1), Intent::MoveLeft(10), Intent::MoveLeft(100),
-            Intent::MoveRight(1), Intent::MoveRight(10), Intent::MoveRight(100),
+            Intent::MoveUp(1),
+            Intent::MoveUp(10),
+            Intent::MoveUp(100),
+            Intent::MoveDown(1),
+            Intent::MoveDown(10),
+            Intent::MoveDown(100),
+            Intent::MoveLeft(1),
+            Intent::MoveLeft(10),
+            Intent::MoveLeft(100),
+            Intent::MoveRight(1),
+            Intent::MoveRight(10),
+            Intent::MoveRight(100),
         ];
         for m in moves {
             let debug = format!("{:?}", m);
@@ -634,8 +669,13 @@ mod intent_extra {
     #[test]
     fn test_intent_enter_mode_all() {
         let modes = [
-            Mode::Normal, Mode::Insert, Mode::Visual,
-            Mode::VisualLine, Mode::VisualBlock, Mode::Command, Mode::Replace,
+            Mode::Normal,
+            Mode::Insert,
+            Mode::Visual,
+            Mode::VisualLine,
+            Mode::VisualBlock,
+            Mode::Command,
+            Mode::Replace,
         ];
         for mode in modes {
             let intent = Intent::EnterMode(mode);
@@ -682,7 +722,7 @@ mod buffer_version_extra {
     #[test]
     fn test_buffer_version_clone() {
         let v = BufferVersion::new(42);
-        let cloned = v.clone();
+        let cloned = v;
         assert_eq!(v.as_u64(), cloned.as_u64());
     }
 
@@ -773,7 +813,7 @@ mod extra_range_edge_tests {
     #[test]
     fn test_range_clone_eq() {
         let r1 = Range::from_coords(1, 2, 3, 4);
-        let r2 = r1.clone();
+        let r2 = r1;
         assert_eq!(r1, r2);
     }
 
@@ -820,7 +860,7 @@ mod extra_cursor_edge_tests {
     #[test]
     fn test_cursor_clone() {
         let c1 = Cursor::new(1, 2);
-        let c2 = c1.clone();
+        let c2 = c1;
         assert_eq!(c1.line, c2.line);
         assert_eq!(c1.column, c2.column);
     }
@@ -842,7 +882,7 @@ mod extra_mode_tests {
     #[test]
     fn test_mode_clone_eq() {
         let m1 = Mode::Normal;
-        let m2 = m1.clone();
+        let m2 = m1;
         assert_eq!(m1, m2);
     }
 
@@ -992,7 +1032,7 @@ mod extra_modifier_tests {
     #[test]
     fn test_modifier_clone() {
         let m1 = Modifier::CTRL;
-        let m2 = m1.clone();
+        let m2 = m1;
         assert_eq!(m1, m2);
     }
 
@@ -1015,7 +1055,10 @@ mod extra_editor_event_tests {
 
     #[test]
     fn test_editor_event_resize_variant() {
-        let event = EditorEvent::Resize { width: 80, height: 24 };
+        let event = EditorEvent::Resize {
+            width: 80,
+            height: 24,
+        };
         if let EditorEvent::Resize { width, height } = event {
             assert_eq!(width, 80);
             assert_eq!(height, 24);
@@ -1038,7 +1081,10 @@ mod extra_editor_event_tests {
 
     #[test]
     fn test_editor_event_clone() {
-        let e1 = EditorEvent::Resize { width: 100, height: 50 };
+        let e1 = EditorEvent::Resize {
+            width: 100,
+            height: 50,
+        };
         let e2 = e1.clone();
         assert_eq!(e1, e2);
     }

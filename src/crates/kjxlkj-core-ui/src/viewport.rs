@@ -48,7 +48,9 @@ impl Viewport {
 
     /// Adjust viewport to keep cursor visible.
     pub fn follow_cursor(&mut self, cursor: &Cursor, total_lines: usize) {
-        let min_top = cursor.line.saturating_sub(self.height.saturating_sub(1 + self.scrolloff));
+        let min_top = cursor
+            .line
+            .saturating_sub(self.height.saturating_sub(1 + self.scrolloff));
         let max_top = cursor.line.saturating_sub(self.scrolloff);
 
         if self.top_line < min_top {

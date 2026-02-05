@@ -37,6 +37,7 @@ impl TextBuffer {
     }
 
     /// Create a buffer from a string.
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Self {
         Self {
             rope: Rope::from_str(s),
@@ -95,6 +96,7 @@ impl TextBuffer {
     }
 
     /// Get all text as a string.
+    #[allow(clippy::inherent_to_string)]
     pub fn to_string(&self) -> String {
         self.rope.to_string()
     }
@@ -112,7 +114,10 @@ impl TextBuffer {
         let line_graphemes: Vec<&str> = line.graphemes(true).collect();
 
         if pos.column > line_graphemes.len() {
-            return Err(TextError::ColumnOutOfBounds(pos.column, line_graphemes.len()));
+            return Err(TextError::ColumnOutOfBounds(
+                pos.column,
+                line_graphemes.len(),
+            ));
         }
 
         // Convert grapheme offset to char offset
@@ -207,9 +212,7 @@ impl TextBuffer {
     pub fn lines_in_range(&self, start_line: usize, end_line: usize) -> Vec<String> {
         let start = start_line.min(self.line_count());
         let end = end_line.min(self.line_count());
-        (start..end)
-            .filter_map(|i| self.line(i).ok())
-            .collect()
+        (start..end).filter_map(|i| self.line(i).ok()).collect()
     }
 }
 

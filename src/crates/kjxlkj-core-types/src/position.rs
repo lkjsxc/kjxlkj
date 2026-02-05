@@ -67,4 +67,3 @@ mod tests {
         assert_eq!(p.column, 0);
     }
 }
-

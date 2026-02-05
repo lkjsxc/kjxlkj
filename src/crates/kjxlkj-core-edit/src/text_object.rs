@@ -69,9 +69,7 @@ fn find_word(
     let mut start = cursor.column;
     while start > 0 {
         let prev = graphemes[start - 1].chars().next()?;
-        if in_word && is_word(prev) {
-            start -= 1;
-        } else if !in_word && !prev.is_whitespace() && !is_word(prev) {
+        if (in_word && is_word(prev)) || (!in_word && !prev.is_whitespace() && !is_word(prev)) {
             start -= 1;
         } else {
             break;
@@ -82,9 +80,7 @@ fn find_word(
     let mut end = cursor.column;
     while end + 1 < graphemes.len() {
         let next = graphemes[end + 1].chars().next()?;
-        if in_word && is_word(next) {
-            end += 1;
-        } else if !in_word && !next.is_whitespace() && !is_word(next) {
+        if (in_word && is_word(next)) || (!in_word && !next.is_whitespace() && !is_word(next)) {
             end += 1;
         } else {
             break;
@@ -120,7 +116,7 @@ fn find_quote(
 
     // Find quotes on the line
     for (i, g) in graphemes.iter().enumerate() {
-        if g.chars().next() == Some(quote) {
+        if g.starts_with(quote) {
             if start.is_none() {
                 start = Some(i);
             } else {
@@ -286,12 +282,7 @@ mod tests {
     fn test_inner_word() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 2);
-        let range = find_text_object(
-            &TextObject::Word,
-            TextObjectKind::Inner,
-            cursor,
-            &buf,
-        );
+        let range = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
         assert!(range.is_some());
         let r = range.unwrap();
         assert_eq!(r.start.column, 0);
@@ -302,12 +293,7 @@ mod tests {
     fn test_around_word() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 2);
-        let range = find_text_object(
-            &TextObject::Word,
-            TextObjectKind::Around,
-            cursor,
-            &buf,
-        );
+        let range = find_text_object(&TextObject::Word, TextObjectKind::Around, cursor, &buf);
         assert!(range.is_some());
         let r = range.unwrap();
         assert_eq!(r.start.column, 0);
@@ -318,12 +304,7 @@ mod tests {
     fn test_inner_quote() {
         let buf = TextBuffer::from_str("say \"hello\" please");
         let cursor = Cursor::new(0, 7);
-        let range = find_text_object(
-            &TextObject::Quote('"'),
-            TextObjectKind::Inner,
-            cursor,
-            &buf,
-        );
+        let range = find_text_object(&TextObject::Quote('"'), TextObjectKind::Inner, cursor, &buf);
         assert!(range.is_some());
         let r = range.unwrap();
         assert_eq!(r.start.column, 5);

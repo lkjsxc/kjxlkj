@@ -378,7 +378,6 @@ mod grapheme_tests {
         let width = grapheme_width("中");
         assert!(width >= 1);
     }
-
 }
 
 mod text_buffer_unicode {
@@ -417,7 +416,6 @@ mod text_buffer_debug {
     }
 }
 
-
 // Additional edge case tests for TextBuffer
 mod text_buffer_extra {
     use super::*;
@@ -437,7 +435,10 @@ mod text_buffer_extra {
 
     #[test]
     fn test_from_str_many_lines() {
-        let text = (0..50).map(|i| format!("Line {}", i)).collect::<Vec<_>>().join("\n");
+        let text = (0..50)
+            .map(|i| format!("Line {}", i))
+            .collect::<Vec<_>>()
+            .join("\n");
         let buf = TextBuffer::from_str(&text);
         assert_eq!(buf.line_count(), 50);
     }
@@ -523,8 +524,6 @@ mod text_buffer_extra {
         let v2 = buf.version();
         assert!(v2.as_u64() > v1.as_u64());
     }
-
-    #[test]
 
     #[test]
     fn test_replace_text() {
@@ -848,7 +847,7 @@ mod extra_position_range_tests {
     #[test]
     fn test_position_clone() {
         let p1 = Position::new(1, 2);
-        let p2 = p1.clone();
+        let p2 = p1;
         assert_eq!(p1, p2);
     }
 
@@ -862,7 +861,7 @@ mod extra_position_range_tests {
     #[test]
     fn test_range_clone() {
         let r1 = Range::from_coords(0, 0, 1, 5);
-        let r2 = r1.clone();
+        let r2 = r1;
         assert_eq!(r1, r2);
     }
 

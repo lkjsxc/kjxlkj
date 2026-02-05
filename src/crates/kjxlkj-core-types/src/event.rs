@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{BufferId, Mode, Position, Range};
+use crate::{BufferId, Mode, Range};
 
 /// Keyboard modifier flags.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -103,8 +103,14 @@ pub enum Intent {
     MoveBigWordForward(usize),
     MoveBigWordBackward(usize),
     MoveBigWordEnd(usize),
-    FindChar { char: char, forward: bool, till: bool },
-    RepeatFindChar { reverse: bool },
+    FindChar {
+        char: char,
+        forward: bool,
+        till: bool,
+    },
+    RepeatFindChar {
+        reverse: bool,
+    },
     MatchBracket,
 
     // Scrolling
@@ -137,7 +143,9 @@ pub enum Intent {
     // Operators
     Yank(Range),
     YankLine(usize),
-    Paste { after: bool },
+    Paste {
+        after: bool,
+    },
     Change(Range),
     ChangeLine(usize),
     ChangeToLineEnd,

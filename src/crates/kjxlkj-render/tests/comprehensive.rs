@@ -1,9 +1,8 @@
 //! Comprehensive tests for kjxlkj-render.
 
-use kjxlkj_render::*;
 use kjxlkj_core_types::{BufferId, BufferName, BufferVersion, Cursor, Mode, WindowId};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, Viewport, WindowSnapshot};
-use std::io::Cursor as IoCursor;
+use kjxlkj_render::*;
 
 fn make_buffer_snapshot(lines: Vec<&str>) -> BufferSnapshot {
     BufferSnapshot::new(
@@ -28,7 +27,10 @@ fn make_window_snapshot(buffer: BufferSnapshot) -> WindowSnapshot {
 }
 
 fn make_editor_snapshot(windows: Vec<WindowSnapshot>) -> EditorSnapshot {
-    let active = windows.first().map(|w| w.id).unwrap_or_else(|| WindowId::new(1));
+    let active = windows
+        .first()
+        .map(|w| w.id)
+        .unwrap_or_else(|| WindowId::new(1));
     EditorSnapshot::new(
         1,
         windows,
@@ -74,7 +76,7 @@ mod renderer_tests {
     fn test_renderer_skips_stale_snapshots() {
         let buf = Vec::new();
         let mut renderer = Renderer::new(buf);
-        
+
         // Render sequence 2 first
         let buffer = make_buffer_snapshot(vec!["test"]);
         let window = make_window_snapshot(buffer);
@@ -335,7 +337,7 @@ mod extra_renderer_tests {
     fn test_renderer_sequential_renders() {
         let buf = Vec::new();
         let mut renderer = Renderer::new(buf);
-        
+
         for seq in 1..=5 {
             let buffer = make_buffer_snapshot(vec!["test"]);
             let window = make_window_snapshot(buffer);

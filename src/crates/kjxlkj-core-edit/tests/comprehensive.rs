@@ -2,7 +2,7 @@
 
 use kjxlkj_core_edit::*;
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{Cursor, Position, Range};
+use kjxlkj_core_types::{Cursor, Range};
 
 mod motion_tests {
     use super::*;
@@ -185,7 +185,16 @@ mod motion_tests {
     fn test_motion_find_char() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 0);
-        let result = apply_motion(&Motion::FindChar { char: 'o', forward: true, till: false }, cursor, &buf, false);
+        let result = apply_motion(
+            &Motion::FindChar {
+                char: 'o',
+                forward: true,
+                till: false,
+            },
+            cursor,
+            &buf,
+            false,
+        );
         assert_eq!(result.cursor.column, 4); // First 'o'
     }
 
@@ -193,7 +202,16 @@ mod motion_tests {
     fn test_motion_find_char_not_found() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 0);
-        let result = apply_motion(&Motion::FindChar { char: 'z', forward: true, till: false }, cursor, &buf, false);
+        let result = apply_motion(
+            &Motion::FindChar {
+                char: 'z',
+                forward: true,
+                till: false,
+            },
+            cursor,
+            &buf,
+            false,
+        );
         assert_eq!(result.cursor.column, 0); // Unchanged
     }
 
@@ -201,7 +219,16 @@ mod motion_tests {
     fn test_motion_till_char() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 0);
-        let result = apply_motion(&Motion::FindChar { char: 'o', forward: true, till: true }, cursor, &buf, false);
+        let result = apply_motion(
+            &Motion::FindChar {
+                char: 'o',
+                forward: true,
+                till: true,
+            },
+            cursor,
+            &buf,
+            false,
+        );
         assert_eq!(result.cursor.column, 3); // One before 'o'
     }
 }
@@ -233,7 +260,12 @@ mod text_object_tests {
     fn test_text_object_inner_paren() {
         let buf = TextBuffer::from_str("func(arg)");
         let cursor = Cursor::new(0, 6);
-        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('(', ')'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -241,7 +273,12 @@ mod text_object_tests {
     fn test_text_object_around_paren() {
         let buf = TextBuffer::from_str("func(arg)");
         let cursor = Cursor::new(0, 6);
-        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Around, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('(', ')'),
+            TextObjectKind::Around,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -249,7 +286,12 @@ mod text_object_tests {
     fn test_text_object_inner_bracket() {
         let buf = TextBuffer::from_str("arr[idx]");
         let cursor = Cursor::new(0, 5);
-        let range = find_text_object(&TextObject::Bracket('[', ']'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('[', ']'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -257,7 +299,12 @@ mod text_object_tests {
     fn test_text_object_inner_brace() {
         let buf = TextBuffer::from_str("{ code }");
         let cursor = Cursor::new(0, 3);
-        let range = find_text_object(&TextObject::Bracket('{', '}'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('{', '}'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -276,7 +323,12 @@ mod text_object_tests {
     fn test_text_object_inner_single_quote() {
         let buf = TextBuffer::from_str("say 'hello'");
         let cursor = Cursor::new(0, 6);
-        let range = find_text_object(&TextObject::Quote('\''), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Quote('\''),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -307,7 +359,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 6);
-        let result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        let result = apply_operator(
+            Operator::Delete,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert!(result.is_some());
         assert_eq!(buf.line(0).unwrap(), "world");
     }
@@ -330,7 +388,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Change, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Change,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), " world");
     }
 
@@ -340,7 +404,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Uppercase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Uppercase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "HELLO");
     }
 
@@ -350,7 +420,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Lowercase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Lowercase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "hello");
     }
 
@@ -360,7 +436,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::ToggleCase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::ToggleCase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "hEllO");
     }
 
@@ -370,7 +452,13 @@ mod operator_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 2, 0);
-        let _result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Delete,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line_count(), 1);
         assert_eq!(buf.line(0).unwrap(), "line3");
     }
@@ -432,7 +520,7 @@ mod operator_enum_tests {
     #[test]
     fn test_operator_clone() {
         let op1 = Operator::Yank;
-        let op2 = op1.clone();
+        let op2 = op1;
         assert!(matches!(op2, Operator::Yank));
     }
 
@@ -442,7 +530,6 @@ mod operator_enum_tests {
         assert_ne!(Operator::Delete, Operator::Yank);
     }
 }
-
 
 // Additional edge case tests for Motion
 mod motion_extra {
@@ -491,10 +578,17 @@ mod motion_extra {
     #[test]
     fn test_motion_all_variants() {
         let motions = [
-            Motion::Up(1), Motion::Down(1), Motion::Left(1), Motion::Right(1),
-            Motion::LineStart, Motion::LineEnd, Motion::FirstNonBlank,
-            Motion::DocumentStart, Motion::DocumentEnd,
-            Motion::WordForward(1), Motion::WordBackward(1),
+            Motion::Up(1),
+            Motion::Down(1),
+            Motion::Left(1),
+            Motion::Right(1),
+            Motion::LineStart,
+            Motion::LineEnd,
+            Motion::FirstNonBlank,
+            Motion::DocumentStart,
+            Motion::DocumentEnd,
+            Motion::WordForward(1),
+            Motion::WordBackward(1),
         ];
         for m in motions {
             let debug = format!("{:?}", m);
@@ -584,9 +678,14 @@ mod operator_extra {
     #[test]
     fn test_operator_all_variants() {
         let operators = [
-            Operator::Delete, Operator::Yank, Operator::Change,
-            Operator::Indent, Operator::Outdent,
-            Operator::Uppercase, Operator::Lowercase, Operator::ToggleCase,
+            Operator::Delete,
+            Operator::Yank,
+            Operator::Change,
+            Operator::Indent,
+            Operator::Outdent,
+            Operator::Uppercase,
+            Operator::Lowercase,
+            Operator::ToggleCase,
         ];
         for op in operators {
             let debug = format!("{:?}", op);
@@ -599,15 +698,18 @@ mod operator_extra {
         let op = Operator::Delete;
         let copied = op;
         assert_eq!(op, copied);
-        let cloned = op.clone();
+        let cloned = op;
         assert_eq!(op, cloned);
     }
 
     #[test]
     fn test_operator_equality_all() {
         let operators = [
-            Operator::Delete, Operator::Yank, Operator::Change,
-            Operator::Indent, Operator::Outdent,
+            Operator::Delete,
+            Operator::Yank,
+            Operator::Change,
+            Operator::Indent,
+            Operator::Outdent,
         ];
         for i in 0..operators.len() {
             assert_eq!(operators[i], operators[i]);
@@ -765,7 +867,16 @@ mod extra_motion_edge_tests {
     fn test_motion_find_char_second_occurrence() {
         let buf = TextBuffer::from_str("hello hello");
         let cursor = Cursor::new(0, 5);
-        let result = apply_motion(&Motion::FindChar { char: 'e', forward: true, till: false }, cursor, &buf, false);
+        let result = apply_motion(
+            &Motion::FindChar {
+                char: 'e',
+                forward: true,
+                till: false,
+            },
+            cursor,
+            &buf,
+            false,
+        );
         assert_eq!(result.cursor.column, 7);
     }
 
@@ -850,7 +961,12 @@ mod extra_text_object_edge_tests {
     fn test_text_object_empty_parens() {
         let buf = TextBuffer::from_str("func()");
         let cursor = Cursor::new(0, 4);
-        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('(', ')'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
         let r = range.unwrap();
         // Inner of () is empty
@@ -862,7 +978,12 @@ mod extra_text_object_edge_tests {
     fn test_text_object_nested_parens_outer() {
         let buf = TextBuffer::from_str("a((b))c");
         let cursor = Cursor::new(0, 3);
-        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Around, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('(', ')'),
+            TextObjectKind::Around,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -886,7 +1007,12 @@ mod extra_text_object_edge_tests {
     fn test_text_object_angle_brackets() {
         let buf = TextBuffer::from_str("<html>");
         let cursor = Cursor::new(0, 2);
-        let range = find_text_object(&TextObject::Bracket('<', '>'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('<', '>'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         assert!(range.is_some());
     }
 
@@ -894,7 +1020,12 @@ mod extra_text_object_edge_tests {
     fn test_text_object_unmatched_bracket() {
         let buf = TextBuffer::from_str("hello(world");
         let cursor = Cursor::new(0, 7);
-        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Inner, cursor, &buf);
+        let range = find_text_object(
+            &TextObject::Bracket('(', ')'),
+            TextObjectKind::Inner,
+            cursor,
+            &buf,
+        );
         // Unmatched, may return None
         assert!(range.is_none());
     }
@@ -917,7 +1048,7 @@ mod extra_text_object_edge_tests {
     #[test]
     fn test_text_object_kind_clone() {
         let k1 = TextObjectKind::Around;
-        let k2 = k1.clone();
+        let k2 = k1;
         assert!(matches!(k2, TextObjectKind::Around));
     }
 }
@@ -932,7 +1063,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 2, 0, 2);
-        let _result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Delete,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "hello");
     }
 
@@ -953,7 +1090,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 11);
-        let _result = apply_operator(Operator::Change, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Change,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "");
     }
 
@@ -963,7 +1106,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Uppercase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Uppercase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "HELLO");
     }
 
@@ -973,7 +1122,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Lowercase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Lowercase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "hello");
     }
 
@@ -983,7 +1138,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::ToggleCase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::ToggleCase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "hello");
     }
 
@@ -993,7 +1154,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::ToggleCase, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::ToggleCase,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         assert_eq!(buf.line(0).unwrap(), "HELLO");
     }
 
@@ -1003,7 +1170,13 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 1, 5);
-        let _result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Delete,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         // Buffer should be minimal
         assert!(buf.line_count() <= 1);
     }
@@ -1014,9 +1187,19 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Indent, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Indent,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         // Should have leading spaces/tabs
-        assert!(buf.line(0).unwrap().starts_with(' ') || buf.line(0).unwrap().starts_with('\t') || buf.line(0).unwrap() == "hello");
+        assert!(
+            buf.line(0).unwrap().starts_with(' ')
+                || buf.line(0).unwrap().starts_with('\t')
+                || buf.line(0).unwrap() == "hello"
+        );
     }
 
     #[test]
@@ -1025,12 +1208,16 @@ mod extra_operator_edge_tests {
         let mut history = UndoHistory::new();
         let mut register = String::new();
         let range = Range::from_coords(0, 0, 0, 5);
-        let _result = apply_operator(Operator::Outdent, range, &mut buf, &mut history, &mut register);
+        let _result = apply_operator(
+            Operator::Outdent,
+            range,
+            &mut buf,
+            &mut history,
+            &mut register,
+        );
         // No change expected
         assert_eq!(buf.line(0).unwrap(), "hello");
     }
-
-    #[test]
 
     #[test]
     fn test_operator_default_trait() {
@@ -1057,7 +1244,11 @@ mod motion_variants_coverage {
 
     #[test]
     fn test_motion_find_char_forward() {
-        let m = Motion::FindChar { char: 'a', forward: true, till: false };
+        let m = Motion::FindChar {
+            char: 'a',
+            forward: true,
+            till: false,
+        };
         assert!(matches!(m, Motion::FindChar { .. }));
     }
 
@@ -1065,7 +1256,11 @@ mod motion_variants_coverage {
     fn test_motion_find_char_backward() {
         let buf = TextBuffer::from_str("hello hello");
         let cursor = Cursor::new(0, 10);
-        let m = Motion::FindChar { char: 'e', forward: false, till: false };
+        let m = Motion::FindChar {
+            char: 'e',
+            forward: false,
+            till: false,
+        };
         let result = apply_motion(&m, cursor, &buf, false);
         // Should find 'e' going backward
         assert!(result.cursor.column < 10);
@@ -1075,7 +1270,11 @@ mod motion_variants_coverage {
     fn test_motion_till_char_forward() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 0);
-        let m = Motion::FindChar { char: 'o', forward: true, till: true };
+        let m = Motion::FindChar {
+            char: 'o',
+            forward: true,
+            till: true,
+        };
         let result = apply_motion(&m, cursor, &buf, false);
         // Should stop one before 'o'
         assert_eq!(result.cursor.column, 3);
@@ -1085,7 +1284,11 @@ mod motion_variants_coverage {
     fn test_motion_till_char_backward() {
         let buf = TextBuffer::from_str("hello world");
         let cursor = Cursor::new(0, 10);
-        let m = Motion::FindChar { char: 'e', forward: false, till: true };
+        let m = Motion::FindChar {
+            char: 'e',
+            forward: false,
+            till: true,
+        };
         let result = apply_motion(&m, cursor, &buf, false);
         // Should stop one after 'e' going backward
         assert!(result.cursor.column > 1);
