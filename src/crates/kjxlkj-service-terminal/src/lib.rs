@@ -238,4 +238,28 @@ mod tests {
         let copied = id; // Copy, not move
         assert_eq!(id, copied);
     }
+
+    #[test]
+    fn test_terminal_id_zero() {
+        let id = TerminalId::new(0);
+        assert_eq!(id.value(), 0);
+    }
+
+    #[test]
+    fn test_terminal_id_max() {
+        let id = TerminalId::new(u32::MAX);
+        assert_eq!(id.value(), u32::MAX);
+    }
+
+    #[test]
+    fn test_terminal_session_id_value() {
+        let session = TerminalSession::new(TerminalId::new(100));
+        assert_eq!(session.id.value(), 100);
+    }
+
+    #[test]
+    fn test_terminal_session_child_none() {
+        let mut session = TerminalSession::new(TerminalId::new(1));
+        assert!(!session.is_running());
+    }
 }

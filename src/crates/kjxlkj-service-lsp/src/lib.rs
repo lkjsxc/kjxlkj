@@ -340,4 +340,51 @@ mod tests {
         let copied = sev; // Copy
         assert_eq!(sev, copied);
     }
+
+    #[test]
+    fn test_lsp_position_clone_values() {
+        let pos = LspPosition { line: 10, character: 20 };
+        let cloned = pos.clone();
+        assert_eq!(cloned.line, 10);
+        assert_eq!(cloned.character, 20);
+    }
+
+    #[test]
+    fn test_lsp_range_clone_values() {
+        let range = LspRange {
+            start: LspPosition { line: 0, character: 0 },
+            end: LspPosition { line: 1, character: 10 },
+        };
+        let cloned = range.clone();
+        assert_eq!(cloned.start.line, 0);
+        assert_eq!(cloned.end.line, 1);
+    }
+
+    #[test]
+    fn test_completion_item_clone_values() {
+        let item = CompletionItem {
+            label: "test".to_string(),
+            kind: Some(1),
+            detail: Some("detail".to_string()),
+            insert_text: None,
+        };
+        let cloned = item.clone();
+        assert_eq!(cloned.label, "test");
+        assert_eq!(cloned.kind, Some(1));
+    }
+
+    #[test]
+    fn test_diagnostic_clone_values() {
+        let diag = Diagnostic {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 10 },
+            },
+            severity: Some(DiagnosticSeverity::Error),
+            message: "test error".to_string(),
+            source: Some("test".to_string()),
+        };
+        let cloned = diag.clone();
+        assert_eq!(cloned.message, "test error");
+    }
 }
