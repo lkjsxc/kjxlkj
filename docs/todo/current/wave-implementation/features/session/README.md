@@ -27,5 +27,5 @@ Implement built-in session and persistence features.
   - [x] Workspaces (Workspace, WorkspaceFolder, WorkspaceSettings, FolderSettings)
   - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
   - [x] Recent files tracking (RecentFiles, RecentFile)
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 

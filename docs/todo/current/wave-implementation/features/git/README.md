@@ -32,5 +32,5 @@ Implement built-in git integration as a native feature (no plugins).
   - [x] Blame (BlameInfo, BufferBlame with toggle visibility)
   - [x] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
   - [x] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 

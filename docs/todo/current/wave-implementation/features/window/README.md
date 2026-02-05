@@ -27,5 +27,5 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
   - Layout presets: LayoutPreset (Single/HorizontalStack/VerticalStack/Grid/MainLeft/etc.)
   - Resize modes: ResizeMode enum
   - 305 tests total in core-ui crate
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 

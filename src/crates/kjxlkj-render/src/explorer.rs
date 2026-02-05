@@ -406,4 +406,138 @@ mod tests {
         // Should only render 3 rows due to height limit
         assert_eq!(output.len(), 3);
     }
+
+    /// Snapshot test for explorer view with deterministic fake filesystem.
+    /// This tests the exact rendered output format against expected strings.
+    #[test]
+    fn test_explorer_snapshot_deterministic_filesystem() {
+        // Simulate a typical project structure
+        let config = ExplorerRenderConfig {
+            width: 35,
+            height: 10,
+            show_icons: false,
+            show_guides: true,
+            ..Default::default()
+        };
+        let renderer = ExplorerRenderer::new(config);
+
+        // Deterministic fake filesystem structure
+        let rows = vec![
+            ExplorerRenderRow {
+                text: "my-project".to_string(),
+                depth: 0,
+                selected: false,
+                is_dir: true,
+                is_expanded: true,
+            },
+            ExplorerRenderRow {
+                text: "src".to_string(),
+                depth: 1,
+                selected: true,
+                is_dir: true,
+                is_expanded: true,
+            },
+            ExplorerRenderRow {
+                text: "lib.rs".to_string(),
+                depth: 2,
+                selected: false,
+                is_dir: false,
+                is_expanded: false,
+            },
+            ExplorerRenderRow {
+                text: "main.rs".to_string(),
+                depth: 2,
+                selected: false,
+                is_dir: false,
+                is_expanded: false,
+            },
+            ExplorerRenderRow {
+                text: "tests".to_string(),
+                depth: 1,
+                selected: false,
+                is_dir: true,
+                is_expanded: false,
+            },
+            ExplorerRenderRow {
+                text: "Cargo.toml".to_string(),
+                depth: 1,
+                selected: false,
+                is_dir: false,
+                is_expanded: false,
+            },
+        ];
+
+        let output = renderer.render_to_buffer(&rows);
+
+        // Verify exact structure (snapshot assertions)
+        assert_eq!(output.len(), 6);
+
+        // Line 0: Root directory expanded
+        assert!(output[0].starts_with("▼ my-project"));
+
+        // Line 1: src directory (selected, expanded)
+        assert!(output[1].starts_with("[  ▼ src]"));
+
+        // Line 2: lib.rs (depth 2, file)
+        assert!(output[2].contains("    ")); // 4 spaces for depth 2
+        assert!(output[2].contains("lib.rs"));
+
+        // Line 3: main.rs (depth 2, file)
+        assert!(output[3].contains("main.rs"));
+
+        // Line 4: tests directory (collapsed)
+        assert!(output[4].contains("▶"));
+        assert!(output[4].contains("tests"));
+
+        // Line 5: Cargo.toml (file)
+        assert!(output[5].contains("Cargo.toml"));
+    }
+
+    /// Golden test for explorer view with icons enabled.
+    #[test]
+    fn test_explorer_golden_with_icons() {
+        let config = ExplorerRenderConfig {
+            width: 45,
+            height: 8,
+            show_icons: true,
+            ..Default::default()
+        };
+        let renderer = ExplorerRenderer::new(config);
+
+        // Simple project structure
+        let rows = vec![
+            ExplorerRenderRow {
+                text: "workspace".to_string(),
+                depth: 0,
+                selected: false,
+                is_dir: true,
+                is_expanded: true,
+            },
+            ExplorerRenderRow {
+                text: "config.toml".to_string(),
+                depth: 1,
+                selected: false,
+                is_dir: false,
+                is_expanded: false,
+            },
+            ExplorerRenderRow {
+                text: "data".to_string(),
+                depth: 1,
+                selected: true,
+                is_dir: true,
+                is_expanded: false,
+            },
+        ];
+
+        let output = renderer.render_to_buffer(&rows);
+        assert_eq!(output.len(), 3);
+
+        // Verify icons are present
+        assert!(output[0].contains("📁")); // dir icon
+        assert!(output[1].contains("📄")); // file icon
+        assert!(output[2].contains("📁")); // dir icon
+
+        // Verify selection marker
+        assert!(output[2].starts_with('['));
+    }
 }

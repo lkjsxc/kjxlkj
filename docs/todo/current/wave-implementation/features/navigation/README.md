@@ -35,6 +35,6 @@ Implement built-in navigation/indexing features.
 
 ### D. Documentation ledgers
 
-- [ ] Update conformance and limitations docs when user-visible:
+- [x] Update conformance and limitations docs when user-visible:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

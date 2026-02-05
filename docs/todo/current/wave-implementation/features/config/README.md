@@ -21,5 +21,5 @@ Implement configuration features (themes, keybindings, options) as specified.
 - [x] Placeholder scaffolding: define config file format and load/apply boundaries.
 - [x] Minimal slice: implement one configuration axis end-to-end with tests.
 - [x] Full conformance: implement all config documents in the subtree.
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 

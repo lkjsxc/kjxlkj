@@ -26,5 +26,5 @@ Implement integrated terminal panes and PTY lifecycle management.
   - DAP debugging: DapState, Breakpoint, BreakpointKind, StackFrame, Variable, VariableScope, DapSession
   - tmux integration: TmuxIntegration with passthrough support
   - 55 tests total
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 

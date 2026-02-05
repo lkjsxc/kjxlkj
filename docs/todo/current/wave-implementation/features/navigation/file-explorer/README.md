@@ -57,7 +57,7 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Golden UI tests (recommended)
 
-- [ ] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
+- [x] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
 
 ## Checklist
 
@@ -66,7 +66,7 @@ The MVP MAY defer (but must track as TODO leaves):
 - [x] Implement explorer view rendering and input handling with deterministic tests.
 - [x] Implement open-file intent wiring into the editor core.
 - [x] Add at least one regression test for "10k children expand does not freeze".
-- [ ] Update conformance and limitations docs:
+- [x] Update conformance and limitations docs:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

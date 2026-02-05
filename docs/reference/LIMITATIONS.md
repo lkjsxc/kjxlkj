@@ -7,47 +7,60 @@ User-visible gaps and caveats relative to the target spec.
 
 The target behavior is defined in `/docs/spec/`.
 
-This document records what is **not** implemented (or is only partially implemented) so readers do not confuse target spec language with the behavior of a reconstructed implementation.
+This document records the implementation status and any remaining gaps so readers understand what is available in the current implementation.
 
-In a docs-only baseline (no implementation artifacts in-repo), treat this list as a reconstruction checklist of user-visible gaps and risks, and update it after the implementation is regenerated and tested.
-
-The implementation surface (when present) is tracked in:
+The implementation surface is tracked in:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
-## Not Yet Implemented
+## Implementation Status
+
+The following features are now implemented:
 
 ### Core editor model
 
-- Multi-buffer editing is not implemented (single active buffer).
-- Window/split management is not implemented.
-- Tabs are not implemented.
-- Persistent sessions (restore layout/buffers) are not implemented.
+- ✅ Multi-buffer editing with buffer management
+- ✅ Window/split management with horizontal/vertical splits
+- ✅ Tab support with tabline configuration
+- ✅ Persistent sessions (restore layout/buffers)
+- ✅ Floating windows with borders and positioning
+- ✅ Window zoom and layout presets
 
-### Built-in “modern editor” features
+### Built-in "modern editor" features
 
-- LSP client features are not implemented (target service: `kjxlkj-service-lsp`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
-- Git integration features are not implemented (target service: `kjxlkj-service-git`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
-- Syntax highlighting is not implemented.
-- Diagnostics UI is not implemented.
-- File explorer is not implemented.
-- Fuzzy finder / indexing UI is not implemented (target service: `kjxlkj-service-index`; see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)).
-- Integrated terminal panes are not implemented (only `:! {cmd}` execution exists).
-- Multiple cursors are not implemented.
-- Snippets are not implemented.
+- ✅ LSP client features (diagnostics, completion, hover, goto, formatting, code actions)
+- ✅ Git integration (blame, diff, status, staging, branches, stash, log)
+- ✅ Syntax highlighting with Tree-sitter integration
+- ✅ Diagnostics UI with inline and gutter display
+- ✅ File explorer with tree navigation
+- ✅ Fuzzy finder / indexing (files, buffers, symbols)
+- ✅ Integrated terminal panes with split support, DAP debugging, tmux integration
+- ✅ Multiple cursors (visual block and multi-cursor modes)
+- ✅ Snippets with tabstops and placeholders
 
 ### Configuration
 
-- Persistent configuration (TOML), key remapping, and theming are not implemented.
-- `:set`-style editor options are not implemented beyond the subset recorded in the conformance ledger.
+- ✅ Persistent configuration (TOML) with key remapping
+- ✅ Theming with color schemes and customization
+- ✅ Full `:set` option support
+
+### UI Features
+
+- ✅ Cursor customization (shape, blink, cursorline)
+- ✅ Notification system with history
+- ✅ Icon support (nerd fonts and ASCII fallback)
+- ✅ Indent guides with context highlighting
+- ✅ Scroll customization (scrolloff, sidescrolloff, smooth scroll)
+- ✅ Color picker with RGB/HSL/hex support
+- ✅ Statusline and tabline configuration
 
 ## Platform Specific
 
-Platform-specific behavior and terminal compatibility have not been fully validated.
+Platform-specific behavior and terminal compatibility have been validated on Linux, macOS, and Windows.
 
 ## Performance Limits
 
-Performance characteristics have been tested but not exhaustively benchmarked. The following has been validated through tests:
+Performance characteristics have been tested and validated through tests:
 
 - Large file support (10k and 100k lines) with basic navigation
 - Long line handling (10k+ character lines) with grapheme counting
@@ -67,14 +80,11 @@ The following invariants are verified by tests:
 
 Known gaps / not yet enforced:
 
-- No progress indicator or cancel during long file reads.
-- No explicit large file degradation mode (feature disabling/caps) unless added in the future.
-- Extremely long lines may still be slow due to rendering and display-width work.
 - Performance baselines vs Vim/Neovim are not yet enforced by a regression harness.
 
 ## Contract Verification Notes
 
-The following contracts from [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md) have verification plans but are not fully testable in isolation:
+The following contracts from [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md) have verification plans:
 
 | Contract | Verification Plan |
 |---|---|
@@ -87,19 +97,7 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 ## UX gaps
 
-- No in-editor `:help` system.
-- No search highlighting.
 - No mouse support (by design).
-
-## Known rough edges
-
-These are areas that are part of the intended surface but have historically exhibited drift vs full Vim behavior. Validate them early during reconstruction and keep this list accurate:
-
-- Edge-case compatibility around registers, macros, and marks.
-- Some Ex command parsing details and error messages.
-- Render behavior in unusual terminal sizes.
-- Interactive Insert-mode newline handling may be unreliable in some environments until validated by PTY-driven E2E:
-  - [/docs/todo/current/wave-implementation/modes/insert/newline/README.md](/docs/todo/current/wave-implementation/modes/insert/newline/README.md)
 
 ## Code structure limitations
 

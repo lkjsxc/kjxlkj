@@ -37,5 +37,5 @@ Implement built-in Language Server Protocol integration.
   - [x] Formatting (FormattingOptions)
   - [x] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
   - [x] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible.
 
