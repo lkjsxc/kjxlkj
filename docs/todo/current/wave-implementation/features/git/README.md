@@ -25,10 +25,12 @@ Implement built-in git integration as a native feature (no plugins).
   - BranchInfo for statusline display
   - FileIndicator for explorer integration
   - RepoStats for summary view
-- [ ] Full conformance: implement all git feature documents.
+- [x] Full conformance: implement all git feature documents.
   - [x] Branch indicator in statusline (BranchInfo.display())
   - [x] File change indicators in file explorer (FileIndicator)
-  - [ ] Diff viewer
-  - [ ] Commit log viewer
+  - [x] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
+  - [x] Blame (BlameInfo, BufferBlame with toggle visibility)
+  - [x] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
+  - [x] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
 - [ ] Update conformance and limitations docs when user-visible.
 
