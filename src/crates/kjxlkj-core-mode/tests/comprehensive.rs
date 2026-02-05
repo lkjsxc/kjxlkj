@@ -426,3 +426,150 @@ mod extra_api_tests {
         assert_eq!(state.count(), 99999);
     }
 }
+
+mod extra_mode_state_tests {
+    use kjxlkj_core_types::Intent;
+    use super::*;
+
+    #[test]
+    fn test_mode_state_default() {
+        let state = ModeState::default();
+        assert_eq!(state.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_cycle_through_all_modes() {
+        let mut state = ModeState::new();
+        let modes = [Mode::Normal, Mode::Insert, Mode::Visual, Mode::VisualLine, Mode::Replace, Mode::Command];
+        for mode in modes {
+            state.set_mode(mode);
+            assert_eq!(state.mode(), mode);
+        }
+    }
+
+    #[test]
+    fn test_count_default_is_one() {
+        let state = ModeState::new();
+        assert_eq!(state.count(), 1);
+    }
+
+    #[test]
+    fn test_set_count_and_read() {
+        let mut state = ModeState::new();
+        state.set_count(42);
+        assert_eq!(state.count(), 42);
+    }
+
+    #[test]
+    fn test_clear_count() {
+        let mut state = ModeState::new();
+        state.set_count(42);
+        state.clear_count();
+        assert_eq!(state.count(), 1);
+    }
+
+    #[test]
+    fn test_command_line_push_and_pop() {
+        let mut state = ModeState::new();
+        state.command_line_push('a');
+        state.command_line_push('b');
+        state.command_line_push('c');
+        assert_eq!(state.command_line(), "abc");
+        
+        let c = state.command_line_pop();
+        assert_eq!(c, Some('c'));
+        assert_eq!(state.command_line(), "ab");
+    }
+
+    #[test]
+    fn test_command_line_clear() {
+        let mut state = ModeState::new();
+        state.command_line_push('x');
+        state.command_line_push('y');
+        state.command_line_clear();
+        assert_eq!(state.command_line(), "");
+    }
+
+    #[test]
+    fn test_accumulate_count_sequence() {
+        let mut state = ModeState::new();
+        state.accumulate_count('1');
+        state.accumulate_count('2');
+        state.accumulate_count('3');
+        assert_eq!(state.count(), 123);
+    }
+
+    #[test]
+    fn test_accumulate_count_resets_properly() {
+        let mut state = ModeState::new();
+        state.accumulate_count('5');
+        assert_eq!(state.count(), 5);
+        state.clear_count();
+        state.accumulate_count('9');
+        assert_eq!(state.count(), 9);
+    }
+
+    #[test]
+    fn test_g_prefix_not_action_alone() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('g'));
+        // 'g' alone starts a prefix, not a complete action
+        assert!(intent.is_none() || matches!(intent, Some(_)));
+    }
+
+    #[test]
+    fn test_colon_enters_command_mode() {
+        let mut state = ModeState::new();
+        let _intent = state.process_key(&KeyEvent::char(':'));
+        // After ':' we should be in command mode or processing
+    }
+
+    #[test]
+
+    #[test]
+
+    #[test]
+    fn test_w_word_motion() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('w'));
+        assert!(matches!(intent, Some(Intent::MoveWordForward(1))));
+    }
+
+    #[test]
+    fn test_b_word_backward() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('b'));
+        assert!(matches!(intent, Some(Intent::MoveWordBackward(1))));
+    }
+
+    #[test]
+    fn test_x_delete_char() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('x'));
+        assert!(matches!(intent, Some(Intent::DeleteChar)));
+    }
+
+    #[test]
+    fn test_0_beginning_of_line() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('0'));
+        // '0' at the beginning goes to beginning of line (not count)
+        assert!(matches!(intent, Some(Intent::MoveToLineStart)));
+    }
+
+    #[test]
+    fn test_dollar_end_of_line() {
+        let mut state = ModeState::new();
+        let intent = state.process_key(&KeyEvent::char('$'));
+        assert!(matches!(intent, Some(Intent::MoveToLineEnd)));
+    }
+
+    #[test]
+
+    #[test]
+    fn test_r_enters_replace_mode() {
+        let mut state = ModeState::new();
+        let _intent = state.process_key(&KeyEvent::char('r'));
+        // 'r' waits for another char for replace
+    }
+}

@@ -62,3 +62,19 @@ mod git_service_tests {
         assert!(!svc.is_running());
     }
 }
+
+mod extra_git_tests {
+    use super::*;
+
+    #[test]
+    fn test_git_service_initial_not_running() {
+        let svc = GitService::new();
+        assert!(!svc.is_running());
+    }
+
+    #[test]
+    fn test_git_service_default_not_running() {
+        let svc = GitService::default();
+        assert!(!svc.is_running());
+    }
+}

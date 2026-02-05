@@ -58,3 +58,19 @@ mod lsp_service_tests {
         assert!(!svc.is_running());
     }
 }
+
+mod extra_lsp_tests {
+    use super::*;
+
+    #[test]
+    fn test_lsp_service_initial_not_running() {
+        let svc = LspService::new();
+        assert!(!svc.is_running());
+    }
+
+    #[test]
+    fn test_lsp_service_default_not_running() {
+        let svc = LspService::default();
+        assert!(!svc.is_running());
+    }
+}

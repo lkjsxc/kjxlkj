@@ -58,3 +58,19 @@ mod terminal_service_tests {
         assert!(!svc.is_running());
     }
 }
+
+mod extra_terminal_tests {
+    use super::*;
+
+    #[test]
+    fn test_terminal_service_initial_not_running() {
+        let svc = TerminalService::new();
+        assert!(!svc.is_running());
+    }
+
+    #[test]
+    fn test_terminal_service_default_not_running() {
+        let svc = TerminalService::default();
+        assert!(!svc.is_running());
+    }
+}

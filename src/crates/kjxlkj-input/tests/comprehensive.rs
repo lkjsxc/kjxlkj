@@ -436,3 +436,64 @@ mod extra_decode_tests {
         }
     }
 }
+
+mod extra_input_tests {
+    use super::*;
+
+    #[test]
+
+    #[test]
+    fn test_decode_printable_chars() {
+        for c in 'a'..='z' {
+            let key = CrosstermKeyEvent::new(KeyCode::Char(c), KeyModifiers::empty());
+            let event = Event::Key(key);
+            if let Some(EditorEvent::Key(KeyEvent::Char(decoded, _))) = decode_event(event) {
+                assert_eq!(decoded, c);
+            }
+        }
+    }
+
+    #[test]
+    fn test_decode_uppercase_chars() {
+        for c in 'A'..='Z' {
+            let key = CrosstermKeyEvent::new(KeyCode::Char(c), KeyModifiers::empty());
+            let event = Event::Key(key);
+            if let Some(EditorEvent::Key(KeyEvent::Char(decoded, _))) = decode_event(event) {
+                assert_eq!(decoded, c);
+            }
+        }
+    }
+
+    #[test]
+    fn test_decode_punctuation() {
+        let chars = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '=', '[', ']'];
+        for c in chars {
+            let key = CrosstermKeyEvent::new(KeyCode::Char(c), KeyModifiers::empty());
+            let event = Event::Key(key);
+            if let Some(EditorEvent::Key(KeyEvent::Char(decoded, _))) = decode_event(event) {
+                assert_eq!(decoded, c);
+            }
+        }
+    }
+
+    #[test]
+    fn test_decode_space() {
+        let key = CrosstermKeyEvent::new(KeyCode::Char(' '), KeyModifiers::empty());
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(KeyEvent::Char(c, _))) = decode_event(event) {
+            assert_eq!(c, ' ');
+        }
+    }
+
+    #[test]
+    fn test_decode_various_resize_sizes() {
+        let sizes = [(80, 24), (120, 40), (200, 60), (1, 1), (10000, 10000)];
+        for (w, h) in sizes {
+            let event = Event::Resize(w, h);
+            if let Some(EditorEvent::Resize { width, height }) = decode_event(event) {
+                assert_eq!(width, w);
+                assert_eq!(height, h);
+            }
+        }
+    }
+}

@@ -58,3 +58,19 @@ mod index_service_tests {
         assert!(!svc.is_running());
     }
 }
+
+mod extra_index_tests {
+    use super::*;
+
+    #[test]
+    fn test_index_service_initial_not_running() {
+        let svc = IndexService::new();
+        assert!(!svc.is_running());
+    }
+
+    #[test]
+    fn test_index_service_default_not_running() {
+        let svc = IndexService::default();
+        assert!(!svc.is_running());
+    }
+}
