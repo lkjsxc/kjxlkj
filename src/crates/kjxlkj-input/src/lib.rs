@@ -3,8 +3,13 @@
 //! This crate provides input event conversion from crossterm to kjxlkj types.
 
 mod decoder;
+pub mod mapping;
 
 pub use decoder::{decode_event, InputDecoder};
+pub use mapping::{
+    expand_mapping, MapFlags, MapMode, MapResult, Mapping, MappingConfig, MappingRegistry,
+    MappingState,
+};
 
 use kjxlkj_core_types::EditorEvent;
 
