@@ -237,3 +237,176 @@ mod viewport_tests {
         assert_eq!(vp.left_col, 0);
     }
 }
+
+mod extra_renderer_tests {
+    use super::*;
+
+    #[test]
+    fn test_renderer_with_cursor() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = make_buffer_snapshot(vec!["hello world"]);
+        let mut window = make_window_snapshot(buffer);
+        window.cursor = Cursor::new(0, 5);
+        let snapshot = make_editor_snapshot(vec![window]);
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_with_scrolled_viewport() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::unnamed(),
+            BufferVersion::initial(),
+            (0..100).map(|i| format!("line {}", i)).collect(),
+            0,
+            100,
+            false,
+        );
+        let mut window = WindowSnapshot::new(
+            WindowId::new(1),
+            buffer,
+            Cursor::new(50, 0),
+            Viewport::new(80, 24),
+            true,
+        );
+        window.viewport.top_line = 45;
+        let snapshot = make_editor_snapshot(vec![window]);
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_with_modified_buffer() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = BufferSnapshot::new(
+            BufferId::new(1),
+            BufferName::new("test.rs"),
+            BufferVersion::initial(),
+            vec!["content".to_string()],
+            0,
+            1,
+            true, // modified
+        );
+        let window = WindowSnapshot::new(
+            WindowId::new(1),
+            buffer,
+            Cursor::origin(),
+            Viewport::new(80, 24),
+            true,
+        );
+        let snapshot = make_editor_snapshot(vec![window]);
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_command_mode() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = make_buffer_snapshot(vec!["test"]);
+        let window = make_window_snapshot(buffer);
+        let snapshot = EditorSnapshot::new(
+            1,
+            vec![window],
+            WindowId::new(1),
+            Mode::Command,
+            "set number".to_string(),
+            None,
+            80,
+            24,
+        );
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_with_multiple_lines() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let lines: Vec<&str> = (0..50).map(|_| "line content here").collect();
+        let buffer = make_buffer_snapshot(lines);
+        let window = make_window_snapshot(buffer);
+        let snapshot = make_editor_snapshot(vec![window]);
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_sequential_renders() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        
+        for seq in 1..=5 {
+            let buffer = make_buffer_snapshot(vec!["test"]);
+            let window = make_window_snapshot(buffer);
+            let snapshot = EditorSnapshot::new(
+                seq,
+                vec![window],
+                WindowId::new(1),
+                Mode::Normal,
+                String::new(),
+                None,
+                80,
+                24,
+            );
+            let _ = renderer.render(&snapshot);
+        }
+    }
+
+    #[test]
+    fn test_renderer_visual_mode() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = make_buffer_snapshot(vec!["select me"]);
+        let window = make_window_snapshot(buffer);
+        let snapshot = EditorSnapshot::new(
+            1,
+            vec![window],
+            WindowId::new(1),
+            Mode::Visual,
+            String::new(),
+            None,
+            80,
+            24,
+        );
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_replace_mode() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = make_buffer_snapshot(vec!["replace"]);
+        let window = make_window_snapshot(buffer);
+        let snapshot = EditorSnapshot::new(
+            1,
+            vec![window],
+            WindowId::new(1),
+            Mode::Replace,
+            String::new(),
+            None,
+            80,
+            24,
+        );
+        let _ = renderer.render(&snapshot);
+    }
+
+    #[test]
+    fn test_renderer_with_error_message() {
+        let buf = Vec::new();
+        let mut renderer = Renderer::new(buf);
+        let buffer = make_buffer_snapshot(vec!["test"]);
+        let window = make_window_snapshot(buffer);
+        let snapshot = EditorSnapshot::new(
+            1,
+            vec![window],
+            WindowId::new(1),
+            Mode::Normal,
+            String::new(),
+            Some("Error: file not found".to_string()),
+            80,
+            24,
+        );
+        let _ = renderer.render(&snapshot);
+    }
+}
