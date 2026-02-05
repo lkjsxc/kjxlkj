@@ -331,4 +331,56 @@ mod tests {
         tx.push(Edit::insert(Position::new(0, 0), "single"));
         assert_eq!(tx.edits().len(), 1);
     }
+
+    #[test]
+    fn test_edit_clone_insert() {
+        let edit = Edit::insert(Position::new(1, 2), "clone");
+        let cloned = edit.clone();
+        assert_eq!(edit, cloned);
+    }
+
+    #[test]
+    fn test_edit_eq() {
+        let e1 = Edit::insert(Position::new(0, 0), "same");
+        let e2 = Edit::insert(Position::new(0, 0), "same");
+        assert_eq!(e1, e2);
+    }
+
+    #[test]
+    fn test_edit_ne_different_text() {
+        let e1 = Edit::insert(Position::new(0, 0), "one");
+        let e2 = Edit::insert(Position::new(0, 0), "two");
+        assert_ne!(e1, e2);
+    }
+
+    #[test]
+    fn test_edit_ne_different_position() {
+        let e1 = Edit::insert(Position::new(0, 0), "same");
+        let e2 = Edit::insert(Position::new(1, 0), "same");
+        assert_ne!(e1, e2);
+    }
+
+    #[test]
+    fn test_transaction_clone_with_edit() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "clone"));
+        let cloned = tx.clone();
+        assert_eq!(tx.edits().len(), cloned.edits().len());
+    }
+
+    #[test]
+    fn test_edit_debug_delete() {
+        let edit = Edit::delete(Position::new(0, 0), "dbg");
+        let debug = format!("{:?}", edit);
+        assert!(debug.contains("Delete"));
+    }
+
+    #[test]
+    fn test_transaction_ten_edits() {
+        let mut tx = Transaction::new();
+        for i in 0..10 {
+            tx.push(Edit::insert(Position::new(0, i), "x"));
+        }
+        assert_eq!(tx.edits().len(), 10);
+    }
 }

@@ -361,5 +361,49 @@ mod tests {
         assert_eq!(history.undo_count(), 1);
         assert_eq!(history.redo_count(), 0);
     }
+
+    #[test]
+    fn test_can_undo_after_push() {
+        let mut history = UndoHistory::new();
+        assert!(!history.can_undo());
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "x"));
+        history.push(tx);
+        assert!(history.can_undo());
+    }
+
+    #[test]
+    fn test_can_redo_after_undo() {
+        let mut history = UndoHistory::new();
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "y"));
+        history.push(tx);
+        assert!(!history.can_redo());
+        history.undo();
+        assert!(history.can_redo());
+    }
+
+    #[test]
+    fn test_undo_count_zero_initially() {
+        let history = UndoHistory::new();
+        assert_eq!(history.undo_count(), 0);
+    }
+
+    #[test]
+    fn test_redo_count_zero_initially() {
+        let history = UndoHistory::new();
+        assert_eq!(history.redo_count(), 0);
+    }
+
+    #[test]
+    fn test_push_multiple_transactions() {
+        let mut history = UndoHistory::new();
+        for i in 1..=10 {
+            let mut tx = Transaction::new();
+            tx.push(Edit::insert(Position::new(0, 0), "x"));
+            history.push(tx);
+            assert_eq!(history.undo_count(), i);
+        }
+    }
 }
 

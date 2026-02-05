@@ -317,4 +317,52 @@ mod tests {
         let style = Style::new().fg(Color::DarkCyan);
         assert_eq!(style.fg, Some(Color::DarkCyan));
     }
+
+    #[test]
+    fn test_style_magenta() {
+        let style = Style::new().fg(Color::Magenta);
+        assert_eq!(style.fg, Some(Color::Magenta));
+    }
+
+    #[test]
+    fn test_style_cyan() {
+        let style = Style::new().fg(Color::Cyan);
+        assert_eq!(style.fg, Some(Color::Cyan));
+    }
+
+    #[test]
+    fn test_style_white() {
+        let style = Style::new().fg(Color::White);
+        assert_eq!(style.fg, Some(Color::White));
+    }
+
+    #[test]
+    fn test_style_black() {
+        let style = Style::new().bg(Color::Black);
+        assert_eq!(style.bg, Some(Color::Black));
+    }
+
+    #[test]
+    fn test_style_yellow() {
+        let style = Style::new().fg(Color::Yellow);
+        assert_eq!(style.fg, Some(Color::Yellow));
+    }
+
+    #[test]
+    fn test_style_blue() {
+        let style = Style::new().fg(Color::Blue);
+        assert_eq!(style.fg, Some(Color::Blue));
+    }
+
+    #[test]
+    fn test_style_green() {
+        let style = Style::new().fg(Color::Green);
+        assert_eq!(style.fg, Some(Color::Green));
+    }
+
+    #[test]
+    fn test_style_red() {
+        let style = Style::new().fg(Color::Red);
+        assert_eq!(style.fg, Some(Color::Red));
+    }
 }
