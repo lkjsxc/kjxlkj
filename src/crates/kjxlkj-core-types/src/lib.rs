@@ -14,7 +14,10 @@ mod selection;
 
 pub use buffer::{BufferId, BufferName, BufferVersion};
 pub use cursor::Cursor;
-pub use event::{EditorEvent, Intent, KeyCode, KeyEvent, KeyModifiers, MotionIntent, ScrollIntent};
+pub use event::{
+    EditorEvent, ExplorerIntent, Intent, KeyCode, KeyEvent, KeyModifiers, MotionIntent,
+    ScrollIntent,
+};
 pub use mode::Mode;
 pub use position::Position;
 pub use profiling::{CycleMetrics, Profiler, ProfilingConfig};

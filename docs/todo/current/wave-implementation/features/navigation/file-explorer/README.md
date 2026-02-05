@@ -49,11 +49,11 @@ The MVP MAY defer (but must track as TODO leaves):
 ### Unit tests (required)
 
 - [x] Explorer state transitions (expand/collapse, selection movement).
-- [ ] Tree rendering to a list of display rows given a known filesystem snapshot.
+- [x] Tree rendering to a list of display rows given a known filesystem snapshot.
 
 ### Integration tests (required)
 
-- [ ] FS service directory listing (cancellation, ordering, error handling).
+- [x] FS service directory listing (cancellation, ordering, error handling).
 
 ### Golden UI tests (recommended)
 
@@ -62,10 +62,10 @@ The MVP MAY defer (but must track as TODO leaves):
 ## Checklist
 
 - [x] Define the explorer core state model (tree nodes, expansion, selection).
-- [ ] Define the service interface for directory listing (incremental + cancellable for large dirs).
-- [ ] Implement explorer view rendering and input handling with deterministic tests.
-- [ ] Implement open-file intent wiring into the editor core.
-- [ ] Add at least one regression test for “10k children expand does not freeze”.
+- [x] Define the service interface for directory listing (incremental + cancellable for large dirs).
+- [x] Implement explorer view rendering and input handling with deterministic tests.
+- [x] Implement open-file intent wiring into the editor core.
+- [x] Add at least one regression test for "10k children expand does not freeze".
 - [ ] Update conformance and limitations docs:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

@@ -499,6 +499,7 @@ name = "kjxlkj-core-ui"
 version = "0.1.0"
 dependencies = [
  "kjxlkj-core-types",
+ "tempfile",
 ]
 
 [[package]]

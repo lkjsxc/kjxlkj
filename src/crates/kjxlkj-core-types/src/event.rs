@@ -255,8 +255,31 @@ pub enum Intent {
     ReplaceChar(char),
     /// Substitute character (delete and enter insert).
     Substitute,
+    /// Open file in editor.
+    OpenFile(std::path::PathBuf),
+    /// Toggle explorer visibility.
+    ToggleExplorer,
+    /// Explorer navigation.
+    ExplorerAction(ExplorerIntent),
     /// No operation.
     Nop,
+}
+
+/// Explorer-specific intents.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum ExplorerIntent {
+    /// Move selection up.
+    MoveUp,
+    /// Move selection down.
+    MoveDown,
+    /// Toggle expand/collapse.
+    Toggle,
+    /// Open selected file.
+    Open,
+    /// Go to parent directory.
+    GoParent,
+    /// Refresh current directory.
+    Refresh,
 }
 
 /// Motion intents for cursor movement.

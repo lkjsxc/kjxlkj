@@ -390,4 +390,157 @@ mod tests {
         assert_eq!(rows.len(), 1);
         assert!(rows[0].selected);
     }
+
+    #[test]
+    fn test_tree_rendering_to_rows() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        // Add children to root
+        let children = vec![
+            ExplorerNode::directory(PathBuf::from("/project/src"), 1),
+            ExplorerNode::file(PathBuf::from("/project/Cargo.toml"), 1),
+            ExplorerNode::file(PathBuf::from("/project/README.md"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        let rows = explorer.rows();
+        // Root + 3 children = 4 rows
+        assert_eq!(rows.len(), 4);
+        
+        // Verify structure
+        assert_eq!(rows[0].path, PathBuf::from("/project"));
+        assert_eq!(rows[0].kind, NodeKind::Directory);
+        assert_eq!(rows[0].depth, 0);
+        
+        assert_eq!(rows[1].path, PathBuf::from("/project/src"));
+        assert_eq!(rows[1].kind, NodeKind::Directory);
+        assert_eq!(rows[1].depth, 1);
+        
+        assert_eq!(rows[2].path, PathBuf::from("/project/Cargo.toml"));
+        assert_eq!(rows[2].kind, NodeKind::File);
+        assert_eq!(rows[2].depth, 1);
+    }
+
+    #[test]
+    fn test_tree_rendering_nested() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        // Add src dir
+        let mut src = ExplorerNode::directory(PathBuf::from("/project/src"), 1);
+        src.expand();
+        src.children = vec![
+            ExplorerNode::file(PathBuf::from("/project/src/main.rs"), 2),
+            ExplorerNode::file(PathBuf::from("/project/src/lib.rs"), 2),
+        ];
+        let children = vec![
+            src,
+            ExplorerNode::file(PathBuf::from("/project/Cargo.toml"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        let rows = explorer.rows();
+        // Root + src (expanded) + main.rs + lib.rs + Cargo.toml = 5 rows
+        assert_eq!(rows.len(), 5);
+        
+        // Verify depths
+        assert_eq!(rows[0].depth, 0); // project
+        assert_eq!(rows[1].depth, 1); // src
+        assert_eq!(rows[2].depth, 2); // main.rs
+        assert_eq!(rows[3].depth, 2); // lib.rs
+        assert_eq!(rows[4].depth, 1); // Cargo.toml
+    }
+
+    #[test]
+    fn test_tree_rendering_collapsed() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        // Add src dir (collapsed by default)
+        let mut src = ExplorerNode::directory(PathBuf::from("/project/src"), 1);
+        src.children = vec![
+            ExplorerNode::file(PathBuf::from("/project/src/main.rs"), 2),
+        ];
+        // Note: src is collapsed, so children should not appear
+        let children = vec![
+            src,
+            ExplorerNode::file(PathBuf::from("/project/Cargo.toml"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        let rows = explorer.rows();
+        // Root + src (collapsed) + Cargo.toml = 3 rows (main.rs not visible)
+        assert_eq!(rows.len(), 3);
+    }
+
+    #[test]
+    fn test_explorer_row_display_format() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        let children = vec![
+            ExplorerNode::file(PathBuf::from("/project/test.rs"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        let rows = explorer.rows();
+        // Check display format includes icon and name
+        assert!(rows[0].display.contains("📁")); // directory icon
+        assert!(rows[0].display.contains("project"));
+        assert!(rows[1].display.contains("📄")); // file icon
+        assert!(rows[1].display.contains("test.rs"));
+        // Check indentation
+        assert!(rows[1].display.starts_with("  ")); // depth 1 = 2 spaces
+    }
+
+    #[test]
+    fn test_explorer_row_indicators() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        let rows = explorer.rows();
+        // Root is collapsed, so indicator should be ▶
+        assert_eq!(rows[0].indicator, Some('▶'));
+        
+        // Expand root
+        explorer.toggle_current();
+        
+        let children = vec![
+            ExplorerNode::file(PathBuf::from("/project/test.rs"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        let rows = explorer.rows();
+        // Now root is expanded, indicator should be ▼
+        assert_eq!(rows[0].indicator, Some('▼'));
+        // File has no indicator
+        assert_eq!(rows[1].indicator, None);
+    }
+
+    #[test]
+    fn test_explorer_navigation_with_children() {
+        let mut explorer = Explorer::new();
+        explorer.set_root(PathBuf::from("/project"));
+        
+        let children = vec![
+            ExplorerNode::file(PathBuf::from("/project/a.rs"), 1),
+            ExplorerNode::file(PathBuf::from("/project/b.rs"), 1),
+        ];
+        explorer.add_children(Path::new("/project"), children);
+        
+        assert_eq!(explorer.cursor_pos(), 0);
+        assert_eq!(explorer.selected(), Some(Path::new("/project")));
+        
+        explorer.move_down();
+        assert_eq!(explorer.cursor_pos(), 1);
+        assert_eq!(explorer.selected(), Some(Path::new("/project/a.rs")));
+        
+        explorer.move_down();
+        assert_eq!(explorer.cursor_pos(), 2);
+        assert_eq!(explorer.selected(), Some(Path::new("/project/b.rs")));
+        
+        explorer.move_up();
+        assert_eq!(explorer.cursor_pos(), 1);
+    }
 }

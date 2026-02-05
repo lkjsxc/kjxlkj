@@ -28,7 +28,7 @@ Implement memory and large-data behavior constraints.
 ### C. Large-file I/O posture (user-reported slowness)
 
 - [x] Ensure file open avoids intermediate full-file copies where possible (streaming into text model).
-- [ ] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render.
+- [x] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render.
 
 ### D. Extremely long lines
 

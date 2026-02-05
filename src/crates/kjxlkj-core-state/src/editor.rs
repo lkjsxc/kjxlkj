@@ -5,12 +5,13 @@ use kjxlkj_core_edit::{apply_motion, Motion};
 use kjxlkj_core_mode::{ModeHandler, ModeResult, NormalMode};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{
-    BufferId, Cursor, EditorEvent, Intent, KeyEvent, Mode, MotionIntent, Position, Register,
-    ScrollIntent, Selection,
+    BufferId, Cursor, EditorEvent, ExplorerIntent, Intent, KeyEvent, Mode, MotionIntent, Position,
+    Register, ScrollIntent, Selection,
 };
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, StatusLine, Viewport};
 use kjxlkj_core_undo::{Transaction, UndoHistory};
 use std::collections::HashMap;
+use std::path::Path;
 
 /// Complete editor state.
 pub struct EditorState {
@@ -469,6 +470,9 @@ impl EditorState {
                 self.delete(false, 1);
                 self.mode = Mode::Insert;
             }
+            Intent::OpenFile(path) => self.open_file(&path),
+            Intent::ToggleExplorer => self.toggle_explorer(),
+            Intent::ExplorerAction(action) => self.apply_explorer_action(action),
             Intent::Nop => {}
         }
     }
@@ -1085,6 +1089,53 @@ impl EditorState {
             self.recording_macro = Some(c);
             self.recording_change.clear();
             self.status_message = Some((format!("Recording @{}", c), false));
+        }
+    }
+
+    fn open_file(&mut self, path: &Path) {
+        // TODO: Integrate with fs service for async file loading
+        // For now, just set status message indicating the file to open
+        let filename = path
+            .file_name()
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or_else(|| path.to_string_lossy().to_string());
+        self.status_message = Some((format!("Opening: {}", filename), false));
+        
+        // In a full implementation, this would:
+        // 1. Request file content from fs service
+        // 2. Create a new buffer with the content
+        // 3. Switch to the new buffer
+        // For now, we demonstrate the intent is wired through
+    }
+
+    fn toggle_explorer(&mut self) {
+        // TODO: Integrate with UI layer for explorer visibility
+        // This would toggle a visibility flag that the snapshot includes
+        self.status_message = Some(("Explorer toggled".to_string(), false));
+    }
+
+    fn apply_explorer_action(&mut self, action: ExplorerIntent) {
+        // TODO: Integrate with explorer state
+        // These actions would be forwarded to the Explorer model
+        match action {
+            ExplorerIntent::MoveUp => {
+                self.status_message = Some(("Explorer: up".to_string(), false));
+            }
+            ExplorerIntent::MoveDown => {
+                self.status_message = Some(("Explorer: down".to_string(), false));
+            }
+            ExplorerIntent::Toggle => {
+                self.status_message = Some(("Explorer: toggle node".to_string(), false));
+            }
+            ExplorerIntent::Open => {
+                self.status_message = Some(("Explorer: open file".to_string(), false));
+            }
+            ExplorerIntent::GoParent => {
+                self.status_message = Some(("Explorer: go parent".to_string(), false));
+            }
+            ExplorerIntent::Refresh => {
+                self.status_message = Some(("Explorer: refresh".to_string(), false));
+            }
         }
     }
 

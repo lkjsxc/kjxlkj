@@ -9,3 +9,4 @@ authors.workspace = true
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 
 [dev-dependencies]
+tempfile = "3"

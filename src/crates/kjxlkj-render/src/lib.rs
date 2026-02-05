@@ -4,11 +4,13 @@
 
 mod renderer;
 mod diff;
+pub mod explorer;
 pub mod syntax;
 pub mod theme;
 
 pub use renderer::TerminalRenderer;
 pub use diff::RenderDiff;
+pub use explorer::{ExplorerRenderConfig, ExplorerRenderRow, ExplorerRenderer};
 pub use syntax::{
     Color as SyntaxColor, Colorscheme, HighlightGroup, HighlightSource, HighlightSpan,
     LineHighlights, Style as SyntaxStyle, SyntaxState,
