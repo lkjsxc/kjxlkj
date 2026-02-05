@@ -71,4 +71,34 @@ mod tests {
         // Can't actually call it without a crossterm event in a unit test
         assert!(true);
     }
+
+    #[test]
+    fn test_terminal_input_size() {
+        let input = TerminalInput::new();
+        // Zero-sized type
+        assert_eq!(std::mem::size_of_val(&input), 0);
+    }
+
+    #[test]
+    fn test_input_decoder_size() {
+        let decoder = InputDecoder;
+        // Zero-sized type
+        assert_eq!(std::mem::size_of_val(&decoder), 0);
+    }
+
+    #[test]
+    fn test_input_source_trait_object_safe() {
+        // Verify InputSource can be used as a trait object
+        fn _accepts_input_source(_: &dyn InputSource) {}
+        // Compiles = trait is object safe
+    }
+
+    #[test]
+    fn test_terminal_input_multiple_instances() {
+        let input1 = TerminalInput::new();
+        let input2 = TerminalInput::new();
+        let _input3 = TerminalInput::default();
+        // All instances should be usable
+        assert_eq!(std::mem::size_of_val(&input1), std::mem::size_of_val(&input2));
+    }
 }
