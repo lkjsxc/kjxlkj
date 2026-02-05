@@ -12,6 +12,7 @@ mod insert;
 mod normal;
 pub mod parser;
 mod replace;
+pub mod script;
 pub mod user_command;
 mod visual;
 

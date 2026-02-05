@@ -13,7 +13,7 @@ Implement script/config file loading, parsing, and execution rules.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define file locations and security constraints.
-- [ ] Minimal slice: load one script file deterministically and validate behavior with tests.
+- [x] Placeholder scaffolding: define file locations and security constraints.
+- [x] Minimal slice: load one script file deterministically and validate behavior with tests.
 - [ ] Full conformance: implement all specified script file behaviors.
 
