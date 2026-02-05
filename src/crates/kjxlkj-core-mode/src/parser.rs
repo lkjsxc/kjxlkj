@@ -910,4 +910,103 @@ mod tests {
         let result = parser.parse(&KeyEvent::char('j'));
         assert!(matches!(result, ParseResult::Complete(_)));
     }
+
+    #[test]
+    fn test_parse_search_word_backward_hash() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('#'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::SearchWord { forward: false }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_search_backward_question() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('?'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Search { forward: false }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_join_lines_normal() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('J'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::JoinLines { .. }));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_substitute_line_s() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('S'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::SubstituteLine));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_insert_line_start() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('I'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::InsertLineStart));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_open_above_o() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('O'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::OpenAbove));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_screen_top() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('H'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Motion(MotionIntent::ScreenTop)));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_screen_middle() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('M'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Motion(MotionIntent::ScreenMiddle)));
+        } else {
+            panic!("Expected complete");
+        }
+    }
+
+    #[test]
+    fn test_parse_screen_bottom() {
+        let mut parser = Parser::new();
+        let result = parser.parse(&KeyEvent::char('L'));
+        if let ParseResult::Complete(cmd) = result {
+            assert!(matches!(cmd.action, ActionKind::Motion(MotionIntent::ScreenBottom)));
+        } else {
+            panic!("Expected complete");
+        }
+    }
 }

@@ -345,4 +345,38 @@ mod tests {
         assert_eq!(truncate_to_width("a", 1), "a");
         assert_eq!(truncate_to_width("a", 0), "");
     }
+
+    #[test]
+    fn test_truncate_whitespace() {
+        assert_eq!(truncate_to_width("   ", 2), "  ");
+        assert_eq!(truncate_to_width("  hello", 3), "  h");
+    }
+
+    #[test]
+    fn test_truncate_newline() {
+        // Newlines are characters too - they have zero width so truncate at width 3
+        // should keep all 3 chars: 'a', '\n', 'b' (since \n has width 0)
+        assert_eq!(truncate_to_width("a\nb", 3), "a\nb");
+    }
+
+    #[test]
+    fn test_truncate_tab() {
+        // Tab width handling
+        let result = truncate_to_width("\t", 1);
+        assert!(result.len() <= 1);
+    }
+
+    #[test]
+    fn test_truncate_long_string() {
+        let long = "a".repeat(1000);
+        let result = truncate_to_width(&long, 50);
+        assert_eq!(result.len(), 50);
+    }
+
+    #[test]
+    fn test_truncate_preserves_chars() {
+        // Make sure truncation doesn't corrupt characters
+        assert_eq!(truncate_to_width("hello", 5), "hello");
+        assert_eq!(truncate_to_width("hello", 4), "hell");
+    }
 }
