@@ -55,4 +55,51 @@ mod tests {
         let sl = StatusLine::default();
         assert!(sl.mode.is_empty());
     }
+
+    #[test]
+    fn test_status_line_mode_visual() {
+        let cursor = Cursor::new(0, 0);
+        let sl = StatusLine::new(Mode::Visual, "test.txt".to_string(), false, &cursor, 1);
+        assert!(sl.mode.contains("VISUAL"));
+    }
+
+    #[test]
+    fn test_status_line_mode_visual_line() {
+        let cursor = Cursor::new(0, 0);
+        let sl = StatusLine::new(Mode::VisualLine, "test.txt".to_string(), false, &cursor, 1);
+        assert!(sl.mode.contains("VISUAL_LINE"));
+    }
+
+    #[test]
+    fn test_status_line_mode_visual_block() {
+        let cursor = Cursor::new(0, 0);
+        let sl = StatusLine::new(Mode::VisualBlock, "test.txt".to_string(), false, &cursor, 1);
+        assert!(sl.mode.contains("VISUAL_BLOCK"));
+    }
+
+    #[test]
+    fn test_status_line_mode_command() {
+        let cursor = Cursor::new(0, 0);
+        let sl = StatusLine::new(Mode::Command, "test.txt".to_string(), false, &cursor, 1);
+        assert!(sl.mode.contains("COMMAND"));
+    }
+
+    #[test]
+    fn test_status_line_mode_replace() {
+        let cursor = Cursor::new(0, 0);
+        let sl = StatusLine::new(Mode::Replace, "test.txt".to_string(), false, &cursor, 1);
+        assert!(sl.mode.contains("REPLACE"));
+    }
+
+    #[test]
+    fn test_viewport_top_line() {
+        let vp = Viewport::new(10, 24, 0, 80);
+        assert_eq!(vp.top_line, 10);
+    }
+
+    #[test]
+    fn test_viewport_left_col() {
+        let vp = Viewport::new(0, 24, 5, 80);
+        assert_eq!(vp.left_col, 5);
+    }
 }

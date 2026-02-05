@@ -1782,6 +1782,645 @@ fn test_end_to_end_n_N_match() {
     assert_eq!(after_N.mode, kjxlkj_core_types::Mode::Normal);
 }
 
+/// Test: Search word under cursor with * and #.
+#[test]
+fn test_end_to_end_star_hash_search() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // * -> search word forward
+    state.handle_key(KeyEvent::new(KeyCode::Char('*'), KeyModifiers::NONE));
+    let after_star = state.snapshot();
+    assert_eq!(after_star.mode, kjxlkj_core_types::Mode::Normal);
+
+    // # -> search word backward
+    state.handle_key(KeyEvent::new(KeyCode::Char('#'), KeyModifiers::NONE));
+    let after_hash = state.snapshot();
+    assert_eq!(after_hash.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Semicolon and comma for repeat find.
+#[test]
+fn test_end_to_end_semicolon_comma_repeat() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // f + l
+    state.handle_key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+
+    // ; -> repeat find
+    state.handle_key(KeyEvent::new(KeyCode::Char(';'), KeyModifiers::NONE));
+    let after_semi = state.snapshot();
+    assert_eq!(after_semi.mode, kjxlkj_core_types::Mode::Normal);
+
+    // , -> repeat find reverse
+    state.handle_key(KeyEvent::new(KeyCode::Char(','), KeyModifiers::NONE));
+    let after_comma = state.snapshot();
+    assert_eq!(after_comma.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Indent and outdent with > and <.
+#[test]
+fn test_end_to_end_indent_outdent() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // >> -> indent
+    state.handle_key(KeyEvent::new(KeyCode::Char('>'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('>'), KeyModifiers::NONE));
+    let after_indent = state.snapshot();
+    assert_eq!(after_indent.mode, kjxlkj_core_types::Mode::Normal);
+
+    // << -> outdent
+    state.handle_key(KeyEvent::new(KeyCode::Char('<'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('<'), KeyModifiers::NONE));
+    let after_outdent = state.snapshot();
+    assert_eq!(after_outdent.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Toggle case with ~.
+#[test]
+fn test_end_to_end_toggle_case() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // ~ -> toggle case
+    state.handle_key(KeyEvent::new(KeyCode::Char('~'), KeyModifiers::NONE));
+    let after_toggle = state.snapshot();
+    assert_eq!(after_toggle.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Mark and jump with m and '.
+#[test]
+fn test_end_to_end_marks() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+
+    // m + a -> set mark 'a'
+    state.handle_key(KeyEvent::new(KeyCode::Char('m'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    let after_mark = state.snapshot();
+    assert_eq!(after_mark.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Percent to match bracket.
+#[test]
+fn test_end_to_end_percent_match() {
+    let mut state = EditorState::new();
+
+    // Insert text with brackets
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "(hello)".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // % -> match bracket
+    state.handle_key(KeyEvent::new(KeyCode::Char('%'), KeyModifiers::NONE));
+    let after_percent = state.snapshot();
+    assert_eq!(after_percent.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Ctrl-D for half page down.
+#[test]
+fn test_end_to_end_ctrl_d() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Ctrl-D -> half page down
+    state.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CTRL));
+    let after_ctrl_d = state.snapshot();
+    assert_eq!(after_ctrl_d.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Ctrl-U for half page up.
+#[test]
+fn test_end_to_end_ctrl_u() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Ctrl-U -> half page up
+    state.handle_key(KeyEvent::new(KeyCode::Char('u'), KeyModifiers::CTRL));
+    let after_ctrl_u = state.snapshot();
+    assert_eq!(after_ctrl_u.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Page up and page down.
+#[test]
+fn test_end_to_end_page_up_down() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // PageDown
+    state.handle_key(KeyEvent::new(KeyCode::PageDown, KeyModifiers::NONE));
+    let after_pgdn = state.snapshot();
+    assert_eq!(after_pgdn.mode, kjxlkj_core_types::Mode::Normal);
+
+    // PageUp
+    state.handle_key(KeyEvent::new(KeyCode::PageUp, KeyModifiers::NONE));
+    let after_pgup = state.snapshot();
+    assert_eq!(after_pgup.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: gj and gk for display line motion.
+#[test]
+fn test_end_to_end_gj_gk() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+
+    // gj -> display line down
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('j'), KeyModifiers::NONE));
+    let after_gj = state.snapshot();
+    assert_eq!(after_gj.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Replace char with r.
+#[test]
+fn test_end_to_end_replace_char_r() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // r + x -> replace with 'x'
+    state.handle_key(KeyEvent::new(KeyCode::Char('r'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    let after_r = state.snapshot();
+    assert_eq!(after_r.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Command mode with :q.
+#[test]
+fn test_end_to_end_command_mode_colon() {
+    let mut state = EditorState::new();
+
+    // : -> command mode
+    state.handle_key(KeyEvent::new(KeyCode::Char(':'), KeyModifiers::NONE));
+    let after_colon = state.snapshot();
+    assert_eq!(after_colon.mode, kjxlkj_core_types::Mode::Command);
+
+    // Escape back
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    let after_esc = state.snapshot();
+    assert_eq!(after_esc.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: ci" text object (change inside quotes).
+#[test]
+fn test_end_to_end_change_inside_quotes() {
+    let mut state = EditorState::new();
+
+    // Insert text with quotes
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "\"hello\"".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to middle
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+
+    // ci" -> change inside quotes
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('"'), KeyModifiers::NONE));
+    let after_ci = state.snapshot();
+    // Should enter insert mode
+    assert_eq!(after_ci.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: ca" text object (change around quotes).
+#[test]
+fn test_end_to_end_change_around_quotes() {
+    let mut state = EditorState::new();
+
+    // Insert text with quotes
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "\"hello\"".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to middle
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+
+    // ca" -> change around quotes
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('"'), KeyModifiers::NONE));
+    let after_ca = state.snapshot();
+    // Should enter insert mode
+    assert_eq!(after_ca.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Escape from visual mode back to normal.
+#[test]
+fn test_end_to_end_visual_escape_to_normal() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // v -> visual mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    let after_v = state.snapshot();
+    assert_eq!(after_v.mode, kjxlkj_core_types::Mode::Visual);
+
+    // Escape -> back to normal
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    let after_esc = state.snapshot();
+    assert_eq!(after_esc.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Yank in visual mode.
+#[test]
+fn test_end_to_end_visual_yank() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // v -> visual, l -> select, y -> yank
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    let after_y = state.snapshot();
+    assert_eq!(after_y.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Delete in visual mode.
+#[test]
+fn test_end_to_end_visual_delete() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // v -> visual, l -> select, d -> delete
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::NONE));
+    let after_d = state.snapshot();
+    assert_eq!(after_d.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Change in visual mode.
+#[test]
+fn test_end_to_end_visual_change() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // v -> visual, l -> select, c -> change
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('l'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::NONE));
+    let after_c = state.snapshot();
+    assert_eq!(after_c.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: zz center screen.
+#[test]
+fn test_end_to_end_zz_center() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // zz -> center screen
+    state.handle_key(KeyEvent::new(KeyCode::Char('z'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('z'), KeyModifiers::NONE));
+    let after_zz = state.snapshot();
+    assert_eq!(after_zz.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: zt top screen.
+#[test]
+fn test_end_to_end_zt_top() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // zt -> scroll to top
+    state.handle_key(KeyEvent::new(KeyCode::Char('z'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('t'), KeyModifiers::NONE));
+    let after_zt = state.snapshot();
+    assert_eq!(after_zt.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: zb bottom screen.
+#[test]
+fn test_end_to_end_zb_bottom() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // zb -> scroll to bottom
+    state.handle_key(KeyEvent::new(KeyCode::Char('z'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    let after_zb = state.snapshot();
+    assert_eq!(after_zb.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Ctrl-F page down.
+#[test]
+fn test_end_to_end_ctrl_f() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Ctrl-F -> page down
+    state.handle_key(KeyEvent::new(KeyCode::Char('f'), KeyModifiers::CTRL));
+    let after_ctrl_f = state.snapshot();
+    assert_eq!(after_ctrl_f.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Ctrl-B page up.
+#[test]
+fn test_end_to_end_ctrl_b() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Ctrl-B -> page up
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::CTRL));
+    let after_ctrl_b = state.snapshot();
+    assert_eq!(after_ctrl_b.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Backspace in insert mode.
+#[test]
+fn test_end_to_end_insert_backspace() {
+    let mut state = EditorState::new();
+
+    // Enter insert mode and type
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    
+    // Backspace
+    state.handle_key(KeyEvent::new(KeyCode::Backspace, KeyModifiers::NONE));
+    let after_bs = state.snapshot();
+    assert_eq!(after_bs.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Enter in insert mode.
+#[test]
+fn test_end_to_end_insert_enter() {
+    let mut state = EditorState::new();
+
+    // Enter insert mode and type
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
+    
+    // Enter
+    state.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE));
+    let after_enter = state.snapshot();
+    assert_eq!(after_enter.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Tab in insert mode.
+#[test]
+fn test_end_to_end_insert_tab() {
+    let mut state = EditorState::new();
+
+    // Enter insert mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    
+    // Tab
+    state.handle_key(KeyEvent::new(KeyCode::Tab, KeyModifiers::NONE));
+    let after_tab = state.snapshot();
+    assert_eq!(after_tab.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: gU uppercase.
+#[test]
+fn test_end_to_end_gU_uppercase() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // gU + motion
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('U'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    let after_gU = state.snapshot();
+    assert_eq!(after_gU.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: gu lowercase.
+#[test]
+fn test_end_to_end_gu_lowercase() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "HELLO".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // gu + motion
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('u'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    let after_gu = state.snapshot();
+    assert_eq!(after_gu.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Arrow keys in normal mode.
+#[test]
+fn test_end_to_end_arrow_keys() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello\nworld".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Arrow keys
+    state.handle_key(KeyEvent::new(KeyCode::Up, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Down, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Left, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Right, KeyModifiers::NONE));
+    let after_arrows = state.snapshot();
+    assert_eq!(after_arrows.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Home and End keys in insert mode.
+#[test]
+fn test_end_to_end_home_end_keys() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    
+    // Home and End in insert mode
+    state.handle_key(KeyEvent::new(KeyCode::Home, KeyModifiers::NONE));
+    let after_home = state.snapshot();
+    assert_eq!(after_home.mode, kjxlkj_core_types::Mode::Insert);
+    
+    state.handle_key(KeyEvent::new(KeyCode::End, KeyModifiers::NONE));
+    let after_end = state.snapshot();
+    assert_eq!(after_end.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+
+
+
 
 
 
