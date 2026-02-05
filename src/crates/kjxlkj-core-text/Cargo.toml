@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-core-text"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+ropey = { workspace = true }
+unicode-segmentation = { workspace = true }
+unicode-width = { workspace = true }
+thiserror = { workspace = true }
