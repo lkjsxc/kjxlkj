@@ -284,5 +284,82 @@ mod tests {
         assert_eq!(history.undo_count(), 0);
         assert_eq!(history.redo_count(), 0);
     }
+
+    #[test]
+    fn test_history_debug() {
+        let history = UndoHistory::new();
+        let debug = format!("{:?}", history);
+        assert!(debug.contains("UndoHistory"));
+    }
+
+    #[test]
+    fn test_undo_returns_inverse() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "inserted"));
+        history.push(tx);
+        
+        let inverse = history.undo().unwrap();
+        // The inverse should contain a delete
+        assert!(!inverse.is_empty());
+    }
+
+    #[test]
+    fn test_redo_returns_original() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "text"));
+        history.push(tx);
+        
+        history.undo();
+        let redo_tx = history.redo().unwrap();
+        assert!(!redo_tx.is_empty());
+    }
+
+    #[test]
+    fn test_clear_removes_all() {
+        let mut history = UndoHistory::new();
+        
+        for _ in 0..5 {
+            let mut tx = Transaction::new();
+            tx.push(Edit::insert(Position::new(0, 0), "x"));
+            history.push(tx);
+        }
+        
+        history.undo();
+        history.undo();
+        
+        assert!(history.undo_count() > 0);
+        assert!(history.redo_count() > 0);
+        
+        history.clear();
+        
+        assert_eq!(history.undo_count(), 0);
+        assert_eq!(history.redo_count(), 0);
+    }
+
+    #[test]
+    fn test_single_undo_then_redo() {
+        let mut history = UndoHistory::new();
+        
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "single"));
+        history.push(tx);
+        
+        assert_eq!(history.undo_count(), 1);
+        assert_eq!(history.redo_count(), 0);
+        
+        history.undo();
+        
+        assert_eq!(history.undo_count(), 0);
+        assert_eq!(history.redo_count(), 1);
+        
+        history.redo();
+        
+        assert_eq!(history.undo_count(), 1);
+        assert_eq!(history.redo_count(), 0);
+    }
 }
 

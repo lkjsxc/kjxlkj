@@ -285,4 +285,50 @@ mod tests {
             assert_eq!(text, "second");
         }
     }
+
+    #[test]
+    fn test_edit_insert_position() {
+        let edit = Edit::insert(Position::new(5, 10), "pos");
+        if let Edit::Insert { position, text } = edit {
+            assert_eq!(position.line, 5);
+            assert_eq!(position.col, 10);
+            assert_eq!(text, "pos");
+        }
+    }
+
+    #[test]
+    fn test_edit_delete_position() {
+        let edit = Edit::delete(Position::new(3, 7), "del");
+        if let Edit::Delete { position, text } = edit {
+            assert_eq!(position.line, 3);
+            assert_eq!(position.col, 7);
+            assert_eq!(text, "del");
+        }
+    }
+
+    #[test]
+    fn test_transaction_cursor_roundtrip() {
+        let mut tx = Transaction::new();
+        tx.set_cursor_before(Position::new(1, 1));
+        tx.set_cursor_after(Position::new(2, 2));
+        tx.push(Edit::insert(Position::new(0, 0), "x"));
+        
+        let inv = tx.inverse();
+        assert_eq!(inv.cursor_before(), Some(Position::new(2, 2)));
+        assert_eq!(inv.cursor_after(), Some(Position::new(1, 1)));
+    }
+
+    #[test]
+    fn test_empty_transaction_inverse() {
+        let tx = Transaction::new();
+        let inv = tx.inverse();
+        assert!(inv.is_empty());
+    }
+
+    #[test]
+    fn test_single_edit_transaction() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "single"));
+        assert_eq!(tx.edits().len(), 1);
+    }
 }

@@ -159,4 +159,44 @@ mod tests {
         let slice = rope.slice(..);
         assert_eq!(rope_grapheme_count(slice), 5);
     }
+
+    #[test]
+    fn test_grapheme_count_whitespace() {
+        assert_eq!(grapheme_count("   "), 3);
+        assert_eq!(grapheme_count("\t\t"), 2);
+    }
+
+    #[test]
+    fn test_nth_grapheme_offset_at_end() {
+        let rope = Rope::from_str("abc");
+        let slice = rope.slice(..);
+        assert_eq!(nth_grapheme_offset(slice, 3), Some(3));
+    }
+
+    #[test]
+    fn test_rope_grapheme_count_multiline() {
+        let rope = Rope::from_str("line1\nline2\nline3");
+        let slice = rope.slice(..);
+        assert_eq!(rope_grapheme_count(slice), 17);
+    }
+
+    #[test]
+    fn test_grapheme_count_korean() {
+        assert_eq!(grapheme_count("안녕하세요"), 5);
+    }
+
+    #[test]
+    fn test_grapheme_count_arabic() {
+        // Arabic characters - count may vary with complex scripts
+        let text = "مرحبا";
+        assert!(grapheme_count(text) > 0);
+    }
+
+    #[test]
+    fn test_nth_grapheme_offset_single_char() {
+        let rope = Rope::from_str("x");
+        let slice = rope.slice(..);
+        assert_eq!(nth_grapheme_offset(slice, 0), Some(0));
+        assert_eq!(nth_grapheme_offset(slice, 1), Some(1));
+    }
 }

@@ -240,4 +240,41 @@ mod tests {
         let boundary = find_word_boundary(s, 0, true, WordKind::Word);
         assert!(boundary <= 6);
     }
+
+    #[test]
+    fn test_classify_unicode_letter() {
+        assert_eq!(classify_char('α'), CharClass::Word);
+        assert_eq!(classify_char('日'), CharClass::Word);
+    }
+
+    #[test]
+    fn test_only_whitespace() {
+        let s = "   ";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 3);
+    }
+
+    #[test]
+    fn test_word_boundary_tabs() {
+        let s = "hello\tworld";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 6);
+    }
+
+    #[test]
+    fn test_word_boundary_punct_only() {
+        let s = "...";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 3);
+    }
+
+    #[test]
+    fn test_WORD_backward() {
+        let s = "hello-world test";
+        assert_eq!(find_word_boundary(s, 15, false, WordKind::WORD), 12);
+    }
+
+    #[test]
+    fn test_mixed_punct_letters() {
+        let s = "a.b.c";
+        let pos = find_word_boundary(s, 0, true, WordKind::Word);
+        assert!(pos <= 2);
+    }
 }
