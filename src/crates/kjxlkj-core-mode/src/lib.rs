@@ -12,6 +12,7 @@ mod insert;
 mod normal;
 pub mod parser;
 mod replace;
+pub mod user_command;
 mod visual;
 
 pub use command::CommandMode;
@@ -28,6 +29,10 @@ pub use insert::InsertMode;
 pub use normal::NormalMode;
 pub use parser::{ParseResult, Parser};
 pub use replace::ReplaceMode;
+pub use user_command::{
+    CommandAttributes, CommandCall, CommandRegistry, CommandResult, CompletionType as CmdCompletionType,
+    RangeDefault, UserCommand,
+};
 pub use visual::VisualMode;
 
 #[cfg(test)]
