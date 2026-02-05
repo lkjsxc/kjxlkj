@@ -6,6 +6,7 @@
 
 mod command;
 pub mod completion;
+pub mod event;
 pub mod function;
 mod handler;
 mod insert;
