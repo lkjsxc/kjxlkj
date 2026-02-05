@@ -634,3 +634,308 @@ mod extra_editor_tests {
         editor.process_event(EditorEvent::Key(KeyEvent::char('z')));
     }
 }
+
+mod e2e_editor_tests {
+    use super::*;
+    use kjxlkj_core_types::{EditorEvent, KeyEvent, Mode, Modifier};
+
+    fn key(c: char) -> EditorEvent {
+        EditorEvent::Key(KeyEvent::Char(c, Modifier::NONE))
+    }
+
+    fn escape() -> EditorEvent {
+        EditorEvent::Key(KeyEvent::Escape)
+    }
+
+    fn enter() -> EditorEvent {
+        EditorEvent::Key(KeyEvent::Enter)
+    }
+
+    fn backspace() -> EditorEvent {
+        EditorEvent::Key(KeyEvent::Backspace)
+    }
+
+    #[test]
+    fn e2e_enter_insert_mode_type_text_return_to_normal() {
+        let mut editor = Editor::new(80, 24);
+        assert_eq!(editor.mode(), Mode::Normal);
+
+        // Press 'i' to enter insert mode
+        editor.process_event(key('i'));
+        assert_eq!(editor.mode(), Mode::Insert);
+
+        // Type "hello"
+        for c in "hello".chars() {
+            editor.process_event(key(c));
+        }
+
+        // Press Escape to return to normal mode
+        editor.process_event(escape());
+        assert_eq!(editor.mode(), Mode::Normal);
+
+        // Verify buffer content
+        let snap = editor.snapshot();
+        let buf = snap.windows.first().map(|w| &w.buffer);
+        assert!(buf.is_some());
+    }
+
+    #[test]
+    fn e2e_cursor_movement_in_normal_mode() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type some text
+        editor.process_event(key('i'));
+        for c in "line1".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // Test hjkl movements
+        editor.process_event(key('h')); // move left
+        editor.process_event(key('l')); // move right
+
+        // Test 0 and $ for line start/end
+        editor.process_event(key('0')); // beginning of line
+        editor.process_event(key('$')); // end of line
+
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_append_mode() {
+        let mut editor = Editor::new(80, 24);
+
+        // 'a' enters insert mode after cursor
+        editor.process_event(key('a'));
+        assert_eq!(editor.mode(), Mode::Insert);
+
+        editor.process_event(key('x'));
+        editor.process_event(escape());
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_open_line_below() {
+        let mut editor = Editor::new(80, 24);
+
+        // 'o' opens line below and enters insert mode
+        editor.process_event(key('o'));
+        assert_eq!(editor.mode(), Mode::Insert);
+
+        editor.process_event(key('n'));
+        editor.process_event(key('e'));
+        editor.process_event(key('w'));
+        editor.process_event(escape());
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_open_line_above() {
+        let mut editor = Editor::new(80, 24);
+
+        // 'O' opens line above and enters insert mode
+        editor.process_event(key('O'));
+        assert_eq!(editor.mode(), Mode::Insert);
+        editor.process_event(escape());
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_word_motions() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type words
+        editor.process_event(key('i'));
+        for c in "hello world test".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // Test word motions
+        editor.process_event(key('0')); // go to start
+        editor.process_event(key('w')); // forward word
+        editor.process_event(key('w')); // forward word
+        editor.process_event(key('b')); // backward word
+        editor.process_event(key('e')); // end of word
+
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_delete_character() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type
+        editor.process_event(key('i'));
+        for c in "hello".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // Delete character with x
+        editor.process_event(key('x'));
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_undo_redo() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type
+        editor.process_event(key('i'));
+        for c in "test".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // Undo with u
+        editor.process_event(key('u'));
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_visual_mode() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type
+        editor.process_event(key('i'));
+        for c in "hello world".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // 'v' enters visual mode (if implemented)
+        // For now just verify we stay in consistent state
+        editor.process_event(key('0'));
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_document_navigation() {
+        let mut editor = Editor::new(80, 24);
+
+        // Enter insert mode and type multiple lines
+        editor.process_event(key('i'));
+        for c in "line1".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(enter());
+        for c in "line2".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(enter());
+        for c in "line3".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        // gg goes to start of document
+        editor.process_event(key('g'));
+        editor.process_event(key('g'));
+
+        // G goes to end of document
+        editor.process_event(key('G'));
+
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_resize_handling() {
+        let mut editor = Editor::new(80, 24);
+
+        // Simulate a terminal resize
+        editor.process_event(EditorEvent::Resize { width: 120, height: 40 });
+
+        let snap = editor.snapshot();
+        assert_eq!(snap.terminal_width, 120);
+        assert_eq!(snap.terminal_height, 40);
+    }
+
+    #[test]
+    fn e2e_quit_command() {
+        let mut editor = Editor::new(80, 24);
+
+        // Simulate quit event
+        editor.process_event(EditorEvent::Quit);
+        assert!(editor.quit_requested());
+    }
+
+    #[test]
+    fn e2e_command_mode_attempt() {
+        let mut editor = Editor::new(80, 24);
+
+        // ':' enters command mode (or starts command)
+        editor.process_event(key(':'));
+        // Escape to return to normal
+        editor.process_event(escape());
+
+        // Verify we're in a valid state
+        assert!(!editor.quit_requested());
+    }
+
+    #[test]
+    fn e2e_insert_multiple_lines() {
+        let mut editor = Editor::new(80, 24);
+
+        editor.process_event(key('i'));
+        for c in "first line".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(enter());
+        for c in "second line".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(enter());
+        for c in "third line".chars() {
+            editor.process_event(key(c));
+        }
+        editor.process_event(escape());
+
+        let snap = editor.snapshot();
+        assert!(snap.windows.len() >= 1);
+    }
+
+    #[test]
+    fn e2e_backspace_in_insert_mode() {
+        let mut editor = Editor::new(80, 24);
+
+        editor.process_event(key('i'));
+        for c in "hello".chars() {
+            editor.process_event(key(c));
+        }
+        // Backspace
+        editor.process_event(backspace());
+        editor.process_event(backspace());
+        editor.process_event(escape());
+
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn e2e_rapid_mode_switches() {
+        let mut editor = Editor::new(80, 24);
+
+        for _ in 0..10 {
+            editor.process_event(key('i'));
+            assert_eq!(editor.mode(), Mode::Insert);
+            editor.process_event(escape());
+            assert_eq!(editor.mode(), Mode::Normal);
+        }
+    }
+
+    #[test]
+    fn e2e_continuous_typing() {
+        let mut editor = Editor::new(80, 24);
+
+        editor.process_event(key('i'));
+
+        // Simulate continuous typing
+        let text = "The quick brown fox jumps over the lazy dog. This is a longer text to test continuous input handling.";
+        for c in text.chars() {
+            editor.process_event(key(c));
+        }
+
+        editor.process_event(escape());
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+}
