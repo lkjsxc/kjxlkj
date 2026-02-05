@@ -3,12 +3,16 @@
 //! This crate defines the types used for rendering the editor UI.
 
 mod explorer;
+mod popup;
 mod snapshot;
 mod view;
 mod viewport;
 pub mod window;
 
 pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
+pub use popup::{
+    Edge, Popup, PopupAnchor, PopupBorder, PopupConfig, PopupId, PopupKind, PopupManager,
+};
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
 pub use view::{
     FocusManager, ViewBounds, ViewConfig, ViewId, ViewLayout, ViewType, ViewVisibility,
