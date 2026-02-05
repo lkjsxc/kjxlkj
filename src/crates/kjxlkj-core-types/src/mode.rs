@@ -174,5 +174,28 @@ mod tests {
     fn test_mode_not_insert_like() {
         assert!(!Mode::Command.is_insert_like());
     }
+
+    #[test]
+    fn test_mode_copy() {
+        let mode = Mode::Normal;
+        let copied = mode;
+        assert_eq!(mode, copied);
+    }
+
+    #[test]
+    fn test_mode_inequality() {
+        assert_ne!(Mode::Normal, Mode::Insert);
+        assert_ne!(Mode::Visual, Mode::VisualLine);
+        assert_ne!(Mode::Command, Mode::Replace);
+    }
+
+    #[test]
+    fn test_mode_as_str_roundtrip() {
+        for mode in [Mode::Normal, Mode::Insert, Mode::Visual, Mode::VisualLine, Mode::VisualBlock, Mode::Command, Mode::Replace] {
+            let s = mode.as_str();
+            let parsed = Mode::from_str_loose(s);
+            assert_eq!(parsed, Some(mode));
+        }
+    }
 }
 

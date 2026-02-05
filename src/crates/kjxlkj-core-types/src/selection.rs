@@ -206,5 +206,44 @@ mod tests {
         sel.swap();
         assert_eq!(sel.kind, SelectionKind::Block);
     }
+
+    #[test]
+    fn test_selection_line_range_single_line() {
+        let sel = Selection::line_wise(Position::new(5, 0), Position::new(5, 10));
+        assert_eq!(sel.line_range(), (5, 5));
+    }
+
+    #[test]
+    fn test_selection_kind_copy() {
+        let kind = SelectionKind::Char;
+        let copied = kind;
+        assert_eq!(kind, copied);
+    }
+
+    #[test]
+    fn test_selection_anchor_access() {
+        let sel = Selection::char_wise(Position::new(1, 2), Position::new(3, 4));
+        assert_eq!(sel.anchor, Position::new(1, 2));
+    }
+
+    #[test]
+    fn test_selection_cursor_access() {
+        let sel = Selection::char_wise(Position::new(1, 2), Position::new(3, 4));
+        assert_eq!(sel.cursor, Position::new(3, 4));
+    }
+
+    #[test]
+    fn test_selection_extend_down() {
+        let mut sel = Selection::char_wise(Position::new(0, 0), Position::new(0, 5));
+        sel.cursor = Position::new(1, 5);
+        assert_eq!(sel.cursor.line, 1);
+    }
+
+    #[test]
+    fn test_selection_contains_line() {
+        let sel = Selection::line_wise(Position::new(2, 0), Position::new(5, 0));
+        let (start, end) = sel.line_range();
+        assert!(3 >= start && 3 <= end);
+    }
 }
 

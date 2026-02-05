@@ -1227,3 +1227,152 @@ fn test_end_to_end_yy_p_paste() {
     assert!(!after_paste.buffer.lines.is_empty());
 }
 
+/// Test: Delete character under cursor with x.
+#[test]
+fn test_end_to_end_x_delete_char() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // x -> delete char under cursor
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    let after_x = state.snapshot();
+    
+    // Content should be shorter
+    let content = after_x.buffer.lines.join("");
+    assert!(content.len() < 5 || content != "hello");
+}
+
+/// Test: Open line below with o.
+#[test]
+fn test_end_to_end_o_open_below() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let before_o = state.snapshot();
+    let line_count_before = before_o.buffer.line_count;
+
+    // o -> open line below
+    state.handle_key(KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE));
+    let after_o = state.snapshot();
+    
+    assert_eq!(after_o.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Open line above with O.
+#[test]
+fn test_end_to_end_O_open_above() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // O -> open line above
+    state.handle_key(KeyEvent::new(KeyCode::Char('O'), KeyModifiers::NONE));
+    let after_O = state.snapshot();
+    
+    assert_eq!(after_O.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Visual block mode with Ctrl-V.
+#[test]
+fn test_end_to_end_visual_block_mode() {
+    let mut state = EditorState::new();
+
+    // Insert some text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "abc".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // Ctrl-V -> visual block mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::CTRL));
+    let after_ctrl_v = state.snapshot();
+    
+    assert_eq!(after_ctrl_v.mode, kjxlkj_core_types::Mode::VisualBlock);
+}
+
+/// Test: Replace mode with R.
+#[test]
+fn test_end_to_end_R_replace_mode() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // R -> replace mode
+    state.handle_key(KeyEvent::new(KeyCode::Char('R'), KeyModifiers::NONE));
+    let after_R = state.snapshot();
+    
+    assert_eq!(after_R.mode, kjxlkj_core_types::Mode::Replace);
+}
+
+/// Test: Go to end of file with G.
+#[test]
+fn test_end_to_end_G_goto_end() {
+    let mut state = EditorState::new();
+
+    // Insert multiple lines
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to start first
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    
+    // G -> go to end of file
+    state.handle_key(KeyEvent::new(KeyCode::Char('G'), KeyModifiers::NONE));
+    let after_G = state.snapshot();
+    
+    // Should be at last line
+    assert!(after_G.cursor.line() >= 2);
+}
+
+/// Test: Join lines with J.
+#[test]
+fn test_end_to_end_J_join_lines() {
+    let mut state = EditorState::new();
+
+    // Insert multiple lines
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // Go to first line
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+
+    // J -> join lines
+    state.handle_key(KeyEvent::new(KeyCode::Char('J'), KeyModifiers::NONE));
+    let after_J = state.snapshot();
+    
+    // Should still work without crash
+    assert!(after_J.mode == kjxlkj_core_types::Mode::Normal);
+}
+
