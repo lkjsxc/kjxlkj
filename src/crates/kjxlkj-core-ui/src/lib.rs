@@ -4,11 +4,15 @@
 
 mod explorer;
 mod snapshot;
+mod view;
 mod viewport;
 pub mod window;
 
 pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
+pub use view::{
+    FocusManager, ViewBounds, ViewConfig, ViewId, ViewLayout, ViewType, ViewVisibility,
+};
 pub use viewport::Viewport;
 pub use window::{
     BufferId, Direction, SplitDirection, TabPage, Window, WindowCursor, WindowId, WindowManager,
