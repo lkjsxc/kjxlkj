@@ -8,7 +8,7 @@ license = "MIT"
 [dependencies]
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 kjxlkj-services = { path = "../kjxlkj-services" }
-tokio = { version = "1", features = ["fs", "sync"] }
+tokio = { version = "1", features = ["fs", "sync", "io-util"] }
 anyhow = "1"
 thiserror = "1"
 tracing = "0.1"
