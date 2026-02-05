@@ -31,7 +31,7 @@ Implement built-in navigation/indexing features.
 
 ### C. Expand to additional navigation surfaces
 
-- [ ] Implement additional navigation features (finder, tags, quickfix, etc.) in test-gated slices.
+- [x] Implement additional navigation features (finder, tags, quickfix, etc.) in test-gated slices.
 
 ### D. Documentation ledgers
 
