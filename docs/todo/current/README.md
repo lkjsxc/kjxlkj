@@ -49,7 +49,7 @@ Before considering this iteration complete:
 
 ### Wave: Reconstruction runbook (docs-only → full repo)
 
-- [ ] [wave-reconstruction/README.md](wave-reconstruction/README.md)
+- [x] [wave-reconstruction/README.md](wave-reconstruction/README.md)
 
 ### Wave: Read and reconcile all documents (doc-complete)
 
