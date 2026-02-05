@@ -29,7 +29,7 @@ Implement session-related Ex commands and persistence behaviors (swap, undo pers
 
 ### C. Full conformance
 
-- [ ] Implement all session commands and persistence behaviors in the subtree.
+- [x] Implement all session commands and persistence behaviors in the subtree.
 
 ### D. Conformance updates
 

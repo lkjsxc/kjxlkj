@@ -2,10 +2,14 @@
 //!
 //! This crate holds the complete editor state and produces snapshots for rendering.
 
+pub mod buffer_manager;
 mod editor;
 mod registers;
 pub mod session;
 
+pub use buffer_manager::{
+    AlternateFile, ArgList, BufferFlags, BufferGroup, BufferInfo, BufferManager, BufferState,
+};
 pub use editor::EditorState;
 pub use registers::Registers;
 pub use session::{
