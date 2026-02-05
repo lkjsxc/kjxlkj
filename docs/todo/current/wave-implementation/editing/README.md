@@ -1,4 +1,4 @@
-# Implementation: Editing (Iteration 34)
+# Implementation: Editing (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -42,6 +42,12 @@ Implement the editing primitives that power modal behavior:
 
 - Editing subtree:
   - [/docs/todo/doc-coverage/spec/editing/README.md](/docs/todo/doc-coverage/spec/editing/README.md)
+
+## Acceptance criteria (placeholder)
+
+- Given a motion and an operator are composed, when they are executed, then the edit semantics match the motion type (inclusive/exclusive, linewise/charwise) deterministically.
+- Given a count prefix is provided, when a motion/operator is executed, then the count application is deterministic and never panics on boundaries.
+- Given undo/redo is invoked, when edits are reversed/reapplied, then the resulting buffer content and cursor position match the spec-defined invariants.
 
 ## Placeholder scaffolding (sub-wave)
 

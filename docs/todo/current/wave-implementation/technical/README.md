@@ -1,4 +1,4 @@
-# Implementation: Technical Requirements (Iteration 34)
+# Implementation: Technical Requirements (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -41,6 +41,12 @@ Implement cross-cutting technical requirements that constrain every feature:
 - Non-spec technical subtree:
   - [/docs/todo/doc-coverage/technical/README.md](/docs/todo/doc-coverage/technical/README.md)
 
+## Acceptance criteria (placeholder)
+
+- Given the verification gate is run locally, when `cargo test --workspace` completes, then it is green and tests are deterministic.
+- Given a real TUI regression exists (input timing, leader chords, multi-key sequences), when the PTY E2E harness runs, then it detects the regression reliably.
+- Given large-file and latency constraints exist, when probes are executed, then measurements can be captured and regressions are detectable.
+
 ## Placeholder scaffolding (sub-wave)
 
 - [ ] Define a project-wide "contracts checklist" that is referenced by all implementation leaves.
@@ -58,6 +64,13 @@ Implement cross-cutting technical requirements that constrain every feature:
 - [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
 - [ ] Implement profiling hooks and performance regression detection.
 - [ ] Ensure memory usage and large-file behavior match constraints (or record limitations).
+
+## Tests (normative outputs)
+
+- [ ] Add tests for:
+  - deterministic PTY-driven E2E regressions (interactive TUI path)
+  - latency probes and input ordering invariants
+  - large-file correctness invariants (bounded snapshot work)
 
 ## Conformance and limitations (required updates)
 

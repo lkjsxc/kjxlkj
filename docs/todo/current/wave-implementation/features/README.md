@@ -1,4 +1,4 @@
-# Implementation: Built-in Features (Iteration 34)
+# Implementation: Built-in Features (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -44,6 +44,12 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 - Features subtree:
   - [/docs/todo/doc-coverage/spec/features/README.md](/docs/todo/doc-coverage/spec/features/README.md)
+
+## Acceptance criteria (placeholder)
+
+- Given a built-in feature is enabled, when the user invokes the defining keybinding or command, then the feature is reachable and the UI surface updates deterministically.
+- Given a feature requires IO or long-running work, when it runs, then it executes in a supervised service and failures are surfaced without corrupting core state.
+- Given configuration affects a feature, when config is applied, then feature behavior changes deterministically (or the gap is recorded as a limitation).
 
 ## Placeholder scaffolding (sub-wave)
 

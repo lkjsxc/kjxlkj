@@ -1,4 +1,4 @@
-# Implementation: Architecture (Iteration 34)
+# Implementation: Architecture (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -35,6 +35,12 @@ Implement the runtime model and crate topology that everything else depends on:
 
 - Follow the doc coverage subtree:
   - [/docs/todo/doc-coverage/spec/architecture/README.md](/docs/todo/doc-coverage/spec/architecture/README.md)
+
+## Acceptance criteria (placeholder)
+
+- Given the editor is started, when tasks and services are spawned, then the runtime task topology matches the constraints in `/docs/spec/architecture/runtime.md`.
+- Given input events arrive, when they are processed by the system, then the ordering from input → core mutation → snapshot → render is deterministic.
+- Given a supervised service fails, when it crashes or becomes unavailable, then the failure is surfaced to the core without corrupting editor state.
 
 ## Placeholder scaffolding (sub-wave)
 

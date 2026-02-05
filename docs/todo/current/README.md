@@ -45,7 +45,7 @@ Before considering this iteration complete:
 
 ### Wave: Placeholder scaffolding (fast, incomplete by design)
 
-- [ ] [wave-placeholder/README.md](wave-placeholder/README.md)
+- [x] [wave-placeholder/README.md](wave-placeholder/README.md)
 
 ### Wave: Reconstruction runbook (docs-only → full repo)
 

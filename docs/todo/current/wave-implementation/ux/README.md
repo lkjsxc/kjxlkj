@@ -1,4 +1,4 @@
-# Implementation: UX and Keybindings (Iteration 34)
+# Implementation: UX and Keybindings (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -38,6 +38,12 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 - UX subtree:
   - [/docs/todo/doc-coverage/spec/ux/README.md](/docs/todo/doc-coverage/spec/ux/README.md)
+
+## Acceptance criteria (placeholder)
+
+- Given Normal mode is active, when `Space` is pressed, then it acts as `<leader>` and does not mutate buffer content.
+- Given a leader chord is entered, when `<leader>e` or `<leader>t` is pressed, then the intended UI surface toggles (or the gap is recorded as a limitation).
+- Given keybindings are mode-scoped, when the same key is pressed in different modes, then resolution is deterministic and matches the UX keybindings spec.
 
 ## Placeholder scaffolding (sub-wave)
 

@@ -1,4 +1,4 @@
-# Implementation: Editor Core (Iteration 34)
+# Implementation: Editor Core (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -33,6 +33,12 @@ Implement the canonical editor core model:
 
 - Editor subtree:
   - [/docs/todo/doc-coverage/spec/editor/README.md](/docs/todo/doc-coverage/spec/editor/README.md)
+
+## Acceptance criteria (placeholder)
+
+- Given a single buffer in a single window, when the user applies motion keys, then cursor movement is deterministic and clamps safely at file boundaries.
+- Given the cursor moves outside the visible viewport, when a snapshot is produced, then the viewport follow rules keep the cursor visible.
+- Given edits are applied, when undo/redo is invoked, then buffer state transitions are deterministic and do not panic.
 
 ## Placeholder scaffolding (sub-wave)
 
