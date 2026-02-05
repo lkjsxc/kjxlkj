@@ -4,7 +4,9 @@
 
 mod explorer;
 mod finder;
+mod jumplist;
 mod popup;
+mod quickfix;
 mod snapshot;
 mod view;
 mod viewport;
@@ -14,9 +16,11 @@ pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
 pub use finder::{
     Finder, FinderAction, FinderItem, FinderLocation, FinderQuery, FinderSource,
 };
+pub use jumplist::{ChangeEntry, Changelist, JumpEntry, Jumplist};
 pub use popup::{
     Edge, Popup, PopupAnchor, PopupBorder, PopupConfig, PopupId, PopupKind, PopupManager,
 };
+pub use quickfix::{QuickfixEntry, QuickfixList, QuickfixManager, QuickfixType};
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
 pub use view::{
     FocusManager, ViewBounds, ViewConfig, ViewId, ViewLayout, ViewType, ViewVisibility,
