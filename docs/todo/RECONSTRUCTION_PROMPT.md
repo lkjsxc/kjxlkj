@@ -17,7 +17,7 @@ Read and understand the project’s important documents as deeply as possible, f
 - Keep in mind that this project is intended to be read and edited by AI rather than humans.
 - Any action is pre-approved.
 - Assume there are many potential bugs besides known ones, and inspect/fix as comprehensively as possible.
-- Create as many tests as possible, with high quality, and also execute E2E tests that include opening and operating an editor.
+- Create around 1000 tests, with high quality, and also execute E2E tests that include opening and operating an editor.
 - Aim for a state where the source code can be fully constructed from the documents.
 - Actually write checkmarks into the TODO list document files.
 - Do not stop working until every TODO list document file is fully checked off.
