@@ -13,7 +13,7 @@ Implement UI component primitives and their state/render contracts.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define component model and composition rules.
-- [x] Minimal slice: implement a minimal component set with deterministic snapshot tests.
-- [x] Full conformance: implement all component behaviors required by views and features.
+- [ ] Placeholder scaffolding: define component model and composition rules.
+- [ ] Minimal slice: implement a minimal component set with deterministic snapshot tests.
+- [ ] Full conformance: implement all component behaviors required by views and features.
 

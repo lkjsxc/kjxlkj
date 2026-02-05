@@ -18,11 +18,11 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### A. Placeholder scaffolding
 
-- [x] Define Normal-mode key interpretation layers (raw input → mapping → intent).
+- [ ] Define Normal-mode key interpretation layers (raw input → mapping → intent).
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal, test-backed subset of Normal-mode keys that is fully specified.
+- [ ] Implement a minimal, test-backed subset of Normal-mode keys that is fully specified.
   - Cursor movement (h, j, k, l, w, b, e, 0, ^, $, gg, G)
   - Mode transitions (i, a, A, o, v, V, R, :)
   - Operators (d, y, c) with motions and text objects
@@ -34,7 +34,7 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### C. Full conformance
 
-- [x] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
+- [ ] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
   - Marks (m, ', `)
   - Registers (", etc.)
   - Macros (q, @, @@)
@@ -49,5 +49,5 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

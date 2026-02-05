@@ -1,4 +1,4 @@
-# Features: Syntax (Iteration 35)
+# Features: Syntax (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/features/README.md](/docs/todo/current/wave-implementation/features/README.md)
 
@@ -18,9 +18,9 @@ Implement syntax highlighting and related feature surfaces.
 
 ## Checklist
 
-- [x] Implement language detection and built-in extension mapping:
+- [ ] Implement language detection and built-in extension mapping:
   - [language-detection/README.md](language-detection/README.md)
-- [x] Placeholder scaffolding: define highlight group model and rendering contract.
-- [x] Minimal slice: implement one highlight path with deterministic tests.
-- [x] Full conformance: implement all syntax feature documents and highlight group tables.
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define highlight group model and rendering contract.
+- [ ] Minimal slice: implement one highlight path with deterministic tests.
+- [ ] Full conformance: implement all syntax feature documents and highlight group tables.
+- [ ] Update conformance and limitations docs when user-visible.

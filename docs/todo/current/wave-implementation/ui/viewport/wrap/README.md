@@ -1,4 +1,4 @@
-# UI: Default Soft-Wrap Behavior (Iteration 35)
+# UI: Default Soft-Wrap Behavior (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/ui/viewport/README.md](/docs/todo/current/wave-implementation/ui/viewport/README.md)
 
@@ -19,20 +19,20 @@ Reported rough edge: long lines not wrapping in the interactive UI.
 
 ### A. Defaults
 
-- [x] Ensure `wrap = true` is the default for normal text windows.
-- [x] Ensure `wrap = true` implies `left_col = 0` (no horizontal scroll).
-- [x] Ensure switching `wrap` on/off re-clamps viewport deterministically and keeps cursor visible.
+- [ ] Ensure `wrap = true` is the default for normal text windows.
+- [ ] Ensure `wrap = true` implies `left_col = 0` (no horizontal scroll).
+- [ ] Ensure switching `wrap` on/off re-clamps viewport deterministically and keeps cursor visible.
 
 ### B. Tests (required)
 
-- [x] Add headless tests verifying default wrap state and invariants.
-- [x] Add golden UI snapshot tests for the same buffer in:
+- [ ] Add headless tests verifying default wrap state and invariants.
+- [ ] Add golden UI snapshot tests for the same buffer in:
   - wrap mode at multiple widths
   - no-wrap mode at multiple `left_col` offsets
-- [x] Add a PTY E2E regression that edits a long line and verifies the editor remains usable (cursor visible; no desync).
+- [ ] Add a PTY E2E regression that edits a long line and verifies the editor remains usable (cursor visible; no desync).
 
 ### C. Conformance and limitations updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

@@ -1,4 +1,4 @@
-# Technical: Testing (Iteration 35)
+# Technical: Testing (Iteration 36)
 
 Back: [/docs/todo/current/wave-implementation/technical/README.md](/docs/todo/current/wave-implementation/technical/README.md)
 
@@ -15,8 +15,8 @@ Implement the testing strategy as a normative part of the spec.
 
 ## Checklist
 
-- [x] Implement PTY-driven E2E harness and regressions:
+- [ ] Implement PTY-driven E2E harness and regressions:
   - [pty-e2e/README.md](pty-e2e/README.md)
-- [x] Establish deterministic unit/integration/E2E layers.
-- [x] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
-- [x] Add regression tests for cursor/viewport/input latency invariants.
+- [ ] Establish deterministic unit/integration/E2E layers.
+- [ ] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
+- [ ] Add regression tests for cursor/viewport/input latency invariants.

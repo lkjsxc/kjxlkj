@@ -18,14 +18,14 @@ Implement built-in session and persistence features.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define persistence boundaries and recovery UX.
-- [x] Minimal slice: implement one persistence mechanism end-to-end with tests.
-- [x] Full conformance: implement all session feature documents.
-  - [x] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
-  - [x] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
-  - [x] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
-  - [x] Workspaces (Workspace, WorkspaceFolder, WorkspaceSettings, FolderSettings)
-  - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
-  - [x] Recent files tracking (RecentFiles, RecentFile)
-- [x] Update conformance and limitations docs when user-visible.
+- [ ] Placeholder scaffolding: define persistence boundaries and recovery UX.
+- [ ] Minimal slice: implement one persistence mechanism end-to-end with tests.
+- [ ] Full conformance: implement all session feature documents.
+  - [ ] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
+  - [ ] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
+  - [ ] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
+  - [ ] Workspaces (Workspace, WorkspaceFolder, WorkspaceSettings, FolderSettings)
+  - [ ] Swap/Undo files (SwapFile, UndoFile with path encoding)
+  - [ ] Recent files tracking (RecentFiles, RecentFile)
+- [ ] Update conformance and limitations docs when user-visible.
 
