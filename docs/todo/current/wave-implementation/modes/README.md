@@ -1,4 +1,4 @@
-# Implementation: Modes (Iteration 36)
+# Implementation: Modes (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -41,12 +41,6 @@ Implement modal editing semantics and mode transitions:
 
 - Modes subtree:
   - [/docs/todo/doc-coverage/spec/modes/README.md](/docs/todo/doc-coverage/spec/modes/README.md)
-
-## Acceptance criteria (placeholder)
-
-- Given the editor is in Normal mode, when `i` is pressed, then the editor enters Insert mode and accepts text insertion until `Esc` returns to Normal.
-- Given the editor enters Visual mode, when motions are applied, then selection expansion is deterministic and mode exit rules restore the correct cursor.
-- Given multi-key sequences are entered, when keys arrive with realistic terminal timing, then the mode parser does not drop keys or reorder input.
 
 ## Placeholder scaffolding (sub-wave)
 

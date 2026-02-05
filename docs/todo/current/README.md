@@ -45,11 +45,11 @@ Before considering this iteration complete:
 
 ### Wave: Placeholder scaffolding (fast, incomplete by design)
 
-- [x] [wave-placeholder/README.md](wave-placeholder/README.md)
+- [ ] [wave-placeholder/README.md](wave-placeholder/README.md)
 
 ### Wave: Reconstruction runbook (docs-only → full repo)
 
-- [x] [wave-reconstruction/README.md](wave-reconstruction/README.md)
+- [ ] [wave-reconstruction/README.md](wave-reconstruction/README.md)
 
 ### Wave: Read and reconcile all documents (doc-complete)
 

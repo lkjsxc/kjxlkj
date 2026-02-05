@@ -24,12 +24,6 @@ Authoritative sources for “what exists” are:
 
 This limitations document exists to capture **user-visible drift** and **known rough edges** against the target spec.
 
-## Reconstruction target (Iteration 36)
-
-For Iteration 36, the reconstruction target is the **current surface** described by [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), not the full long-term target spec under `/docs/spec/`.
-
-Any target-spec behavior not present in the current conformance surface is treated as a limitation and MUST remain explicit (limitations + TODO leaves), not implicit.
-
 ## High-priority UX defects (reported and/or suspected)
 
 These items are prioritized because they block basic usability and because they can be missed by headless-only testing.

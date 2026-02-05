@@ -1,4 +1,4 @@
-# Implementation: Scripting and Automation (Iteration 36)
+# Implementation: Scripting and Automation (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -36,12 +36,6 @@ Implement the scripting surface defined by the spec (without introducing plugins
 
 - Scripting subtree:
   - [/docs/todo/doc-coverage/spec/scripting/README.md](/docs/todo/doc-coverage/spec/scripting/README.md)
-
-## Acceptance criteria (placeholder)
-
-- Given mappings are configured, when a key sequence is entered, then mapping resolution is deterministic and respects mode scoping and precedence.
-- Given a mapping expands to multiple editor intents, when it runs, then the resulting intents preserve order (no dropped or reordered keys).
-- Given recursion limits apply, when a recursive mapping is invoked, then expansion halts according to the spec-defined safety rules.
 
 ## Placeholder scaffolding (sub-wave)
 

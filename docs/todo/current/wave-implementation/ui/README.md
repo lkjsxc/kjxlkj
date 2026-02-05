@@ -1,4 +1,4 @@
-# Implementation: UI (Iteration 36)
+# Implementation: UI (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -44,12 +44,6 @@ Implement the UI model and rendering pipeline:
   - [/docs/todo/doc-coverage/spec/ui/README.md](/docs/todo/doc-coverage/spec/ui/README.md)
 - UI features subtree:
   - [/docs/todo/doc-coverage/spec/features/ui/README.md](/docs/todo/doc-coverage/spec/features/ui/README.md)
-
-## Acceptance criteria (placeholder)
-
-- Given a text window is rendered, when cursor movement occurs, then the cursor is always visible and the viewport follows deterministically.
-- Given `wrap = true` is active, when rendering long lines, then wrapping is applied and horizontal scrolling does not occur.
-- Given the render loop runs, when snapshots are produced, then rendering consumes immutable snapshots and is deterministic.
 
 ## Placeholder scaffolding (sub-wave)
 

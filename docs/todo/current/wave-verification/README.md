@@ -6,15 +6,6 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 Make correctness provable and regressions difficult by treating tests and policy checks as part of the specification.
 
-## Entry points (recursive)
-
-| Area | Checklist |
-|---|---|
-| Documentation policy | [docs/README.md](docs/README.md) |
-| Conformance updates | [conformance/README.md](conformance/README.md) |
-| Test gates (unit/integration/E2E) | [tests/README.md](tests/README.md) |
-| Performance/latency baselines | [performance/README.md](performance/README.md) |
-
 ## Checklist (normative)
 
 ### A. Documentation policy compliance (always-on)

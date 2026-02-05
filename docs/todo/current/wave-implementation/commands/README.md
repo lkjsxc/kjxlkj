@@ -1,4 +1,4 @@
-# Implementation: Ex Commands (Iteration 36)
+# Implementation: Ex Commands (Iteration 34)
 
 Back: [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
 
@@ -42,12 +42,6 @@ Implement the Ex command surface, including:
 
 - Commands subtree:
   - [/docs/todo/doc-coverage/spec/commands/README.md](/docs/todo/doc-coverage/spec/commands/README.md)
-
-## Acceptance criteria (placeholder)
-
-- Given command-line mode is entered, when the user edits the command text, then command-line editing behavior is deterministic and matches the command-line spec.
-- Given a file is modified, when `:w` is executed, then the file on disk reflects buffer contents and errors are surfaced deterministically.
-- Given `:q` or `:q!` is executed, when there are unsaved changes, then quit behavior matches the spec (safe vs forced).
 
 ## Placeholder scaffolding (sub-wave)
 
