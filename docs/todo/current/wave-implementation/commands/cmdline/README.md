@@ -37,7 +37,7 @@ Implement command-line entry, editing, history, completion, and command-line win
 
 ### C. Full conformance
 
-- [ ] Implement all command-line behaviors defined by the cmdline subtree.
+- [x] Implement all command-line behaviors defined by the cmdline subtree.
 - [ ] Ensure command-line window interactions integrate with window/viewports.
 
 ### D. Conformance updates

@@ -11,6 +11,7 @@ pub mod event;
 pub mod execution;
 pub mod function;
 mod handler;
+pub mod history;
 mod insert;
 pub mod insert_completion;
 mod normal;
@@ -36,6 +37,7 @@ pub use function::{
     FunctionValue,
 };
 pub use handler::{ModeHandler, ModeResult};
+pub use history::{HistoryList, HistoryManager, HistoryType};
 pub use insert::InsertMode;
 pub use insert_completion::{
     FilePathCompleter, InsertCompletionItem, InsertCompletionState, InsertCompletionType,
