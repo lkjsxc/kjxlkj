@@ -2,27 +2,53 @@
 //!
 //! This crate defines the types used for rendering the editor UI.
 
+mod color;
+mod cursor;
 mod explorer;
 mod finder;
+mod icon;
+mod indent_guide;
 mod jumplist;
+mod notification;
 mod popup;
 mod quickfix;
+mod scroll;
 mod snapshot;
+mod statusline;
 mod view;
 mod viewport;
 mod which_key;
 pub mod window;
 
+pub use color::{
+    Color, ColorComponent, ColorFormat, ColorMatch, ColorPicker, ColorPickerConfig,
+    ColorPreviewStyle,
+};
+pub use cursor::{
+    CursorBlink, CursorConfig, CursorLine, CursorShape, CursorState,
+};
 pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
 pub use finder::{
     Finder, FinderAction, FinderItem, FinderLocation, FinderQuery, FinderSource,
 };
+pub use icon::{
+    ActionIcon, ArrowIcon, DiagnosticLevel, DirectoryIcon, FileType, GitStatus, IconConfig,
+    IconKind,
+};
+pub use indent_guide::{
+    ContextLine, IndentGuide, IndentGuideConfig, IndentGuideStyle, LineIndentGuides,
+};
 pub use jumplist::{ChangeEntry, Changelist, JumpEntry, Jumplist};
+pub use notification::{Notification, NotificationKind, NotificationManager};
 pub use popup::{
     Edge, Popup, PopupAnchor, PopupBorder, PopupConfig, PopupId, PopupKind, PopupManager,
 };
 pub use quickfix::{QuickfixEntry, QuickfixList, QuickfixManager, QuickfixType};
+pub use scroll::{PastEnd, ScrollConfig, ScrollPosition};
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
+pub use statusline::{
+    RenderedStatusline, StatusSection, StatusSegment, StatuslineConfig, TabEntry, TablineConfig,
+};
 pub use view::{
     FocusManager, ViewBounds, ViewConfig, ViewId, ViewLayout, ViewType, ViewVisibility,
 };

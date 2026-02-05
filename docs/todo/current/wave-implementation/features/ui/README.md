@@ -20,6 +20,14 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
 
 - [x] Placeholder scaffolding: define feature state ownership and snapshot integration.
 - [x] Minimal slice: implement one feature end-to-end with deterministic tests.
-- [ ] Full conformance: implement all UI feature documents.
+- [x] Full conformance: implement all UI feature documents.
+  - Cursor customization: CursorShape, CursorBlink, CursorLine, CursorConfig, CursorState
+  - Notifications: NotificationKind, Notification, NotificationManager
+  - Icons: FileType, GitStatus, DiagnosticLevel, DirectoryIcon, ActionIcon, ArrowIcon, IconConfig
+  - Indent guides: IndentGuideStyle, IndentGuideConfig, IndentGuide, LineIndentGuides, ContextLine
+  - Scroll customization: PastEnd, ScrollConfig, ScrollPosition with cursor-follow
+  - Color picker: Color (RGB/HSL/hex), ColorMatch, ColorPicker, ColorPickerConfig
+  - Statusline: StatusSection, StatusSegment, StatuslineConfig, TablineConfig, TabEntry
+  - 288 tests total
 - [ ] Update conformance and limitations docs when user-visible.
 
