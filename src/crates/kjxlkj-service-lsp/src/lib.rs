@@ -249,6 +249,513 @@ pub struct DidCloseTextDocumentParams {
     pub text_document: TextDocumentIdentifier,
 }
 
+// ============================================================================
+// Hover
+// ============================================================================
+
+/// Hover result.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Hover {
+    /// Contents (markdown or plain text).
+    pub contents: HoverContents,
+    /// Range to highlight.
+    pub range: Option<LspRange>,
+}
+
+/// Hover contents.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum HoverContents {
+    /// Plain string.
+    String(String),
+    /// Markup content.
+    Markup(MarkupContent),
+    /// Multiple parts.
+    Parts(Vec<MarkedString>),
+}
+
+impl HoverContents {
+    /// Get as plain text.
+    pub fn as_text(&self) -> String {
+        match self {
+            Self::String(s) => s.clone(),
+            Self::Markup(m) => m.value.clone(),
+            Self::Parts(parts) => parts.iter().map(|p| p.value()).collect::<Vec<_>>().join("\n\n"),
+        }
+    }
+}
+
+/// Marked string (language-tagged code or plain).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum MarkedString {
+    /// Plain string.
+    String(String),
+    /// Language-tagged code.
+    Code { language: String, value: String },
+}
+
+impl MarkedString {
+    /// Get value.
+    pub fn value(&self) -> &str {
+        match self {
+            Self::String(s) => s,
+            Self::Code { value, .. } => value,
+        }
+    }
+}
+
+/// Markup content.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MarkupContent {
+    /// Kind (plaintext or markdown).
+    pub kind: MarkupKind,
+    /// The content.
+    pub value: String,
+}
+
+/// Markup kind.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MarkupKind {
+    /// Plain text.
+    Plaintext,
+    /// Markdown.
+    Markdown,
+}
+
+// ============================================================================
+// Signature Help
+// ============================================================================
+
+/// Signature help result.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SignatureHelp {
+    /// Available signatures.
+    pub signatures: Vec<SignatureInformation>,
+    /// Active signature index.
+    pub active_signature: Option<u32>,
+    /// Active parameter index.
+    pub active_parameter: Option<u32>,
+}
+
+/// A single signature.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SignatureInformation {
+    /// Label (the signature).
+    pub label: String,
+    /// Documentation.
+    pub documentation: Option<MarkupContent>,
+    /// Parameters.
+    pub parameters: Option<Vec<ParameterInformation>>,
+    /// Active parameter (overrides SignatureHelp.active_parameter).
+    pub active_parameter: Option<u32>,
+}
+
+/// Parameter information.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParameterInformation {
+    /// Label (parameter name or [start, end] offsets).
+    pub label: ParameterLabel,
+    /// Documentation.
+    pub documentation: Option<MarkupContent>,
+}
+
+/// Parameter label.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ParameterLabel {
+    /// Simple string label.
+    String(String),
+    /// Offset range [start, end].
+    Offsets([u32; 2]),
+}
+
+// ============================================================================
+// Code Actions
+// ============================================================================
+
+/// Code action kind.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CodeActionKind(pub String);
+
+impl CodeActionKind {
+    /// Quick fix.
+    pub const QUICKFIX: &'static str = "quickfix";
+    /// Refactor.
+    pub const REFACTOR: &'static str = "refactor";
+    /// Refactor extract.
+    pub const REFACTOR_EXTRACT: &'static str = "refactor.extract";
+    /// Refactor inline.
+    pub const REFACTOR_INLINE: &'static str = "refactor.inline";
+    /// Refactor rewrite.
+    pub const REFACTOR_REWRITE: &'static str = "refactor.rewrite";
+    /// Source action.
+    pub const SOURCE: &'static str = "source";
+    /// Organize imports.
+    pub const SOURCE_ORGANIZE_IMPORTS: &'static str = "source.organizeImports";
+
+    /// Create from string.
+    pub fn new(kind: impl Into<String>) -> Self {
+        Self(kind.into())
+    }
+
+    /// Is this a quickfix?
+    pub fn is_quickfix(&self) -> bool {
+        self.0.starts_with(Self::QUICKFIX)
+    }
+
+    /// Is this a refactor?
+    pub fn is_refactor(&self) -> bool {
+        self.0.starts_with(Self::REFACTOR)
+    }
+}
+
+/// A code action.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CodeAction {
+    /// Title (display text).
+    pub title: String,
+    /// Kind.
+    pub kind: Option<CodeActionKind>,
+    /// Diagnostics this action resolves.
+    pub diagnostics: Option<Vec<Diagnostic>>,
+    /// Is preferred action.
+    pub is_preferred: Option<bool>,
+    /// Workspace edit to apply.
+    pub edit: Option<WorkspaceEdit>,
+    /// Command to execute.
+    pub command: Option<Command>,
+}
+
+/// A command.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Command {
+    /// Title.
+    pub title: String,
+    /// Command ID.
+    pub command: String,
+    /// Arguments.
+    pub arguments: Option<Vec<serde_json::Value>>,
+}
+
+/// Workspace edit.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkspaceEdit {
+    /// Document changes keyed by URI.
+    pub changes: Option<HashMap<String, Vec<TextEdit>>>,
+    /// Versioned document changes.
+    pub document_changes: Option<Vec<TextDocumentEdit>>,
+}
+
+/// Text edit.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextEdit {
+    /// Range to replace.
+    pub range: LspRange,
+    /// New text.
+    pub new_text: String,
+}
+
+/// Text document edit.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentEdit {
+    /// Document.
+    pub text_document: VersionedTextDocumentIdentifier,
+    /// Edits.
+    pub edits: Vec<TextEdit>,
+}
+
+// ============================================================================
+// Navigation (Go to Definition, References, etc.)
+// ============================================================================
+
+/// Location result.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Location {
+    /// Document URI.
+    pub uri: String,
+    /// Range.
+    pub range: LspRange,
+}
+
+/// Location link (with origin span).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LocationLink {
+    /// Origin selection range (the clicked range).
+    pub origin_selection_range: Option<LspRange>,
+    /// Target URI.
+    pub target_uri: String,
+    /// Target range (full definition).
+    pub target_range: LspRange,
+    /// Target selection range (symbol name).
+    pub target_selection_range: LspRange,
+}
+
+/// Definition response.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum DefinitionResponse {
+    /// Single location.
+    Single(Location),
+    /// Multiple locations.
+    Multiple(Vec<Location>),
+    /// Location links.
+    Links(Vec<LocationLink>),
+}
+
+// ============================================================================
+// Rename
+// ============================================================================
+
+/// Prepare rename result.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum PrepareRenameResponse {
+    /// Range to rename.
+    Range(LspRange),
+    /// Range with placeholder.
+    RangeWithPlaceholder { range: LspRange, placeholder: String },
+    /// Default behavior.
+    DefaultBehavior { default_behavior: bool },
+}
+
+/// Rename params.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RenameParams {
+    /// Document.
+    pub text_document: TextDocumentIdentifier,
+    /// Position.
+    pub position: LspPosition,
+    /// New name.
+    pub new_name: String,
+}
+
+// ============================================================================
+// Code Lens
+// ============================================================================
+
+/// Code lens.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CodeLens {
+    /// Range.
+    pub range: LspRange,
+    /// Command (may be unresolved).
+    pub command: Option<Command>,
+    /// Data for resolve.
+    pub data: Option<serde_json::Value>,
+}
+
+// ============================================================================
+// Formatting
+// ============================================================================
+
+/// Formatting options.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FormattingOptions {
+    /// Tab size.
+    pub tab_size: u32,
+    /// Insert spaces instead of tabs.
+    pub insert_spaces: bool,
+    /// Trim trailing whitespace.
+    pub trim_trailing_whitespace: Option<bool>,
+    /// Insert final newline.
+    pub insert_final_newline: Option<bool>,
+    /// Trim final newlines.
+    pub trim_final_newlines: Option<bool>,
+}
+
+impl FormattingOptions {
+    /// Create with tab size and spaces.
+    pub fn new(tab_size: u32, insert_spaces: bool) -> Self {
+        Self {
+            tab_size,
+            insert_spaces,
+            ..Default::default()
+        }
+    }
+}
+
+// ============================================================================
+// Symbols
+// ============================================================================
+
+/// Symbol kind.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum SymbolKind {
+    File = 1,
+    Module = 2,
+    Namespace = 3,
+    Package = 4,
+    Class = 5,
+    Method = 6,
+    Property = 7,
+    Field = 8,
+    Constructor = 9,
+    Enum = 10,
+    Interface = 11,
+    Function = 12,
+    Variable = 13,
+    Constant = 14,
+    String = 15,
+    Number = 16,
+    Boolean = 17,
+    Array = 18,
+    Object = 19,
+    Key = 20,
+    Null = 21,
+    EnumMember = 22,
+    Struct = 23,
+    Event = 24,
+    Operator = 25,
+    TypeParameter = 26,
+}
+
+/// Document symbol.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DocumentSymbol {
+    /// Name.
+    pub name: String,
+    /// Detail.
+    pub detail: Option<String>,
+    /// Kind.
+    pub kind: SymbolKind,
+    /// Range.
+    pub range: LspRange,
+    /// Selection range.
+    pub selection_range: LspRange,
+    /// Children.
+    pub children: Option<Vec<DocumentSymbol>>,
+}
+
+/// Symbol information (flat).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SymbolInformation {
+    /// Name.
+    pub name: String,
+    /// Kind.
+    pub kind: SymbolKind,
+    /// Location.
+    pub location: Location,
+    /// Container name.
+    pub container_name: Option<String>,
+}
+
+// ============================================================================
+// Completion (extended)
+// ============================================================================
+
+/// Completion item kind.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum CompletionItemKind {
+    Text = 1,
+    Method = 2,
+    Function = 3,
+    Constructor = 4,
+    Field = 5,
+    Variable = 6,
+    Class = 7,
+    Interface = 8,
+    Module = 9,
+    Property = 10,
+    Unit = 11,
+    Value = 12,
+    Enum = 13,
+    Keyword = 14,
+    Snippet = 15,
+    Color = 16,
+    File = 17,
+    Reference = 18,
+    Folder = 19,
+    EnumMember = 20,
+    Constant = 21,
+    Struct = 22,
+    Event = 23,
+    Operator = 24,
+    TypeParameter = 25,
+}
+
+impl CompletionItemKind {
+    /// Get icon character.
+    pub fn icon(&self) -> char {
+        match self {
+            Self::Function | Self::Method => 'ƒ',
+            Self::Struct | Self::Class => '□',
+            Self::Enum | Self::EnumMember => '◇',
+            Self::Variable | Self::Field => '∴',
+            Self::Module => '◫',
+            Self::Keyword => '⌘',
+            Self::Snippet => '✎',
+            Self::File | Self::Folder => '📄',
+            Self::Constant => 'π',
+            Self::Interface => '◌',
+            Self::Property => '◉',
+            _ => '○',
+        }
+    }
+}
+
+/// Extended completion item.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletionItemEx {
+    /// Label.
+    pub label: String,
+    /// Kind.
+    pub kind: Option<CompletionItemKind>,
+    /// Detail.
+    pub detail: Option<String>,
+    /// Documentation.
+    pub documentation: Option<MarkupContent>,
+    /// Sort text.
+    pub sort_text: Option<String>,
+    /// Filter text.
+    pub filter_text: Option<String>,
+    /// Insert text.
+    pub insert_text: Option<String>,
+    /// Insert text format.
+    pub insert_text_format: Option<InsertTextFormat>,
+    /// Text edit.
+    pub text_edit: Option<TextEdit>,
+    /// Additional text edits.
+    pub additional_text_edits: Option<Vec<TextEdit>>,
+    /// Preselect.
+    pub preselect: Option<bool>,
+}
+
+/// Insert text format.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum InsertTextFormat {
+    /// Plain text.
+    PlainText = 1,
+    /// Snippet.
+    Snippet = 2,
+}
+
+/// Completion list.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletionList {
+    /// Is incomplete (more items on continued typing).
+    pub is_incomplete: bool,
+    /// Items.
+    pub items: Vec<CompletionItemEx>,
+}
+
 /// LSP server configuration.
 #[derive(Debug, Clone)]
 pub struct LspServerConfig {
@@ -749,5 +1256,339 @@ mod tests {
     fn test_client_capabilities_default() {
         let caps = ClientCapabilities::default();
         assert!(caps.text_document.is_none());
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Hover Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_hover_contents_string() {
+        let contents = HoverContents::String("Hello".to_string());
+        assert_eq!(contents.as_text(), "Hello");
+    }
+
+    #[test]
+    fn test_hover_contents_markup() {
+        let contents = HoverContents::Markup(MarkupContent {
+            kind: MarkupKind::Markdown,
+            value: "# Title".to_string(),
+        });
+        assert_eq!(contents.as_text(), "# Title");
+    }
+
+    #[test]
+    fn test_marked_string_value() {
+        let plain = MarkedString::String("plain".to_string());
+        assert_eq!(plain.value(), "plain");
+
+        let code = MarkedString::Code {
+            language: "rust".to_string(),
+            value: "fn foo()".to_string(),
+        };
+        assert_eq!(code.value(), "fn foo()");
+    }
+
+    #[test]
+    fn test_markup_kind() {
+        let plain = MarkupKind::Plaintext;
+        let md = MarkupKind::Markdown;
+        assert_ne!(plain, md);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Signature Help Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_signature_help() {
+        let help = SignatureHelp {
+            signatures: vec![],
+            active_signature: Some(0),
+            active_parameter: Some(1),
+        };
+        assert!(help.signatures.is_empty());
+        assert_eq!(help.active_parameter, Some(1));
+    }
+
+    #[test]
+    fn test_signature_information() {
+        let sig = SignatureInformation {
+            label: "fn foo(a: i32, b: i32)".to_string(),
+            documentation: None,
+            parameters: Some(vec![]),
+            active_parameter: None,
+        };
+        assert!(sig.label.contains("foo"));
+    }
+
+    #[test]
+    fn test_parameter_label() {
+        let string_label = ParameterLabel::String("param".to_string());
+        let offset_label = ParameterLabel::Offsets([10, 15]);
+
+        match string_label {
+            ParameterLabel::String(s) => assert_eq!(s, "param"),
+            _ => panic!("Expected string"),
+        }
+
+        match offset_label {
+            ParameterLabel::Offsets([start, end]) => {
+                assert_eq!(start, 10);
+                assert_eq!(end, 15);
+            }
+            _ => panic!("Expected offsets"),
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Code Action Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_code_action_kind_constants() {
+        assert_eq!(CodeActionKind::QUICKFIX, "quickfix");
+        assert_eq!(CodeActionKind::REFACTOR, "refactor");
+        assert_eq!(CodeActionKind::SOURCE, "source");
+    }
+
+    #[test]
+    fn test_code_action_kind_is_quickfix() {
+        let kind = CodeActionKind::new("quickfix.import");
+        assert!(kind.is_quickfix());
+        assert!(!kind.is_refactor());
+    }
+
+    #[test]
+    fn test_code_action_kind_is_refactor() {
+        let kind = CodeActionKind::new("refactor.extract");
+        assert!(kind.is_refactor());
+        assert!(!kind.is_quickfix());
+    }
+
+    #[test]
+    fn test_code_action() {
+        let action = CodeAction {
+            title: "Import foo".to_string(),
+            kind: Some(CodeActionKind::new("quickfix.import")),
+            diagnostics: None,
+            is_preferred: Some(true),
+            edit: None,
+            command: None,
+        };
+        assert_eq!(action.title, "Import foo");
+        assert!(action.is_preferred.unwrap());
+    }
+
+    #[test]
+    fn test_text_edit() {
+        let edit = TextEdit {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 5 },
+            },
+            new_text: "hello".to_string(),
+        };
+        assert_eq!(edit.new_text, "hello");
+    }
+
+    #[test]
+    fn test_workspace_edit_default() {
+        let edit = WorkspaceEdit::default();
+        assert!(edit.changes.is_none());
+        assert!(edit.document_changes.is_none());
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Navigation Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_location() {
+        let loc = Location {
+            uri: "file:///test.rs".to_string(),
+            range: LspRange {
+                start: LspPosition { line: 10, character: 0 },
+                end: LspPosition { line: 10, character: 20 },
+            },
+        };
+        assert_eq!(loc.uri, "file:///test.rs");
+        assert_eq!(loc.range.start.line, 10);
+    }
+
+    #[test]
+    fn test_location_link() {
+        let link = LocationLink {
+            origin_selection_range: None,
+            target_uri: "file:///def.rs".to_string(),
+            target_range: LspRange {
+                start: LspPosition { line: 5, character: 0 },
+                end: LspPosition { line: 10, character: 0 },
+            },
+            target_selection_range: LspRange {
+                start: LspPosition { line: 5, character: 4 },
+                end: LspPosition { line: 5, character: 10 },
+            },
+        };
+        assert_eq!(link.target_uri, "file:///def.rs");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Rename Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_rename_params() {
+        let params = RenameParams {
+            text_document: TextDocumentIdentifier {
+                uri: "file:///test.rs".to_string(),
+            },
+            position: LspPosition { line: 5, character: 10 },
+            new_name: "new_name".to_string(),
+        };
+        assert_eq!(params.new_name, "new_name");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Code Lens Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_code_lens() {
+        let lens = CodeLens {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 10 },
+            },
+            command: Some(Command {
+                title: "Run test".to_string(),
+                command: "rust-analyzer.runSingle".to_string(),
+                arguments: None,
+            }),
+            data: None,
+        };
+        assert!(lens.command.is_some());
+        assert_eq!(lens.command.unwrap().title, "Run test");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Formatting Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_formatting_options_new() {
+        let opts = FormattingOptions::new(4, true);
+        assert_eq!(opts.tab_size, 4);
+        assert!(opts.insert_spaces);
+    }
+
+    #[test]
+    fn test_formatting_options_default() {
+        let opts = FormattingOptions::default();
+        assert_eq!(opts.tab_size, 0);
+        assert!(!opts.insert_spaces);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Symbol Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_symbol_kind_values() {
+        assert_eq!(SymbolKind::File as u8, 1);
+        assert_eq!(SymbolKind::Function as u8, 12);
+        assert_eq!(SymbolKind::Struct as u8, 23);
+    }
+
+    #[test]
+    fn test_document_symbol() {
+        let sym = DocumentSymbol {
+            name: "main".to_string(),
+            detail: Some("fn main()".to_string()),
+            kind: SymbolKind::Function,
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 10, character: 0 },
+            },
+            selection_range: LspRange {
+                start: LspPosition { line: 0, character: 3 },
+                end: LspPosition { line: 0, character: 7 },
+            },
+            children: None,
+        };
+        assert_eq!(sym.name, "main");
+        assert_eq!(sym.kind, SymbolKind::Function);
+    }
+
+    #[test]
+    fn test_symbol_information() {
+        let sym = SymbolInformation {
+            name: "MyStruct".to_string(),
+            kind: SymbolKind::Struct,
+            location: Location {
+                uri: "file:///test.rs".to_string(),
+                range: LspRange {
+                    start: LspPosition { line: 5, character: 0 },
+                    end: LspPosition { line: 15, character: 0 },
+                },
+            },
+            container_name: Some("module".to_string()),
+        };
+        assert_eq!(sym.name, "MyStruct");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Completion Extended Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_completion_item_kind_icon() {
+        assert_eq!(CompletionItemKind::Function.icon(), 'ƒ');
+        assert_eq!(CompletionItemKind::Struct.icon(), '□');
+        assert_eq!(CompletionItemKind::Enum.icon(), '◇');
+        assert_eq!(CompletionItemKind::Variable.icon(), '∴');
+        assert_eq!(CompletionItemKind::Snippet.icon(), '✎');
+    }
+
+    #[test]
+    fn test_completion_item_kind_values() {
+        assert_eq!(CompletionItemKind::Text as u8, 1);
+        assert_eq!(CompletionItemKind::Method as u8, 2);
+        assert_eq!(CompletionItemKind::Snippet as u8, 15);
+    }
+
+    #[test]
+    fn test_insert_text_format() {
+        assert_eq!(InsertTextFormat::PlainText as u8, 1);
+        assert_eq!(InsertTextFormat::Snippet as u8, 2);
+    }
+
+    #[test]
+    fn test_completion_list() {
+        let list = CompletionList {
+            is_incomplete: true,
+            items: vec![],
+        };
+        assert!(list.is_incomplete);
+        assert!(list.items.is_empty());
+    }
+
+    #[test]
+    fn test_completion_item_ex() {
+        let item = CompletionItemEx {
+            label: "println".to_string(),
+            kind: Some(CompletionItemKind::Function),
+            detail: Some("macro".to_string()),
+            documentation: None,
+            sort_text: None,
+            filter_text: None,
+            insert_text: Some("println!($0)".to_string()),
+            insert_text_format: Some(InsertTextFormat::Snippet),
+            text_edit: None,
+            additional_text_edits: None,
+            preselect: Some(true),
+        };
+        assert_eq!(item.label, "println");
+        assert!(item.preselect.unwrap());
     }
 }

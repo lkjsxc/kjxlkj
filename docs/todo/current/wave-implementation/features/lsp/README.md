@@ -27,6 +27,15 @@ Implement built-in Language Server Protocol integration.
   - [x] Initialize handshake (InitializeParams, ServerCapabilities)
   - [x] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
   - [x] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
-- [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
+- [x] Full conformance: implement all LSP feature documents and navigation subtrees.
+  - [x] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
+  - [x] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)
+  - [x] Code Actions (CodeAction, CodeActionKind, WorkspaceEdit, TextEdit, Command)
+  - [x] Navigation (Location, LocationLink, DefinitionResponse)
+  - [x] Rename (RenameParams, PrepareRenameResponse)
+  - [x] Code Lens (CodeLens)
+  - [x] Formatting (FormattingOptions)
+  - [x] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
+  - [x] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
 - [ ] Update conformance and limitations docs when user-visible.
 
