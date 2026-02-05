@@ -130,4 +130,54 @@ mod tests {
         let motion = Motion::new(MotionIntent::WordEnd, 1);
         assert_eq!(motion.intent, MotionIntent::WordEnd);
     }
+
+    #[test]
+    fn test_motion_first_non_blank() {
+        let motion = Motion::new(MotionIntent::FirstNonBlank, 1);
+        assert_eq!(motion.intent, MotionIntent::FirstNonBlank);
+    }
+
+    #[test]
+    fn test_motion_file_start() {
+        let motion = Motion::new(MotionIntent::FileStart, 1);
+        assert_eq!(motion.intent, MotionIntent::FileStart);
+    }
+
+    #[test]
+    fn test_motion_file_end() {
+        let motion = Motion::new(MotionIntent::FileEnd, 1);
+        assert_eq!(motion.intent, MotionIntent::FileEnd);
+    }
+
+    #[test]
+    fn test_text_object_double_quotes() {
+        let obj = TextObject::DoubleQuotes;
+        assert!(matches!(obj, TextObject::DoubleQuotes));
+    }
+
+    #[test]
+    fn test_text_object_single_quotes() {
+        let obj = TextObject::SingleQuotes;
+        assert!(matches!(obj, TextObject::SingleQuotes));
+    }
+
+    #[test]
+    fn test_text_object_backticks() {
+        let obj = TextObject::Backticks;
+        assert!(matches!(obj, TextObject::Backticks));
+    }
+
+    #[test]
+    fn test_motion_debug() {
+        let motion = Motion::new(MotionIntent::Left, 1);
+        let debug = format!("{:?}", motion);
+        assert!(debug.contains("Motion"));
+    }
+
+    #[test]
+    fn test_text_object_kind_debug() {
+        let kind = TextObjectKind::Inner;
+        let debug = format!("{:?}", kind);
+        assert!(debug.contains("Inner"));
+    }
 }

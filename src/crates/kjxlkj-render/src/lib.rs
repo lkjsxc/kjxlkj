@@ -217,4 +217,62 @@ mod tests {
         style.reverse = true;
         assert!(style.bold && style.italic && style.underline && style.reverse);
     }
+
+    #[test]
+    fn test_style_fg_none_initially() {
+        let style = Style::new();
+        assert!(style.fg.is_none());
+        assert!(style.bg.is_none());
+    }
+
+    #[test]
+    fn test_style_chain_multiple() {
+        let style = Style::new()
+            .fg(Color::White)
+            .bg(Color::Black)
+            .bold()
+            .reverse();
+        assert_eq!(style.fg, Some(Color::White));
+        assert_eq!(style.bg, Some(Color::Black));
+        assert!(style.bold);
+        assert!(style.reverse);
+        assert!(!style.italic);
+        assert!(!style.underline);
+    }
+
+    #[test]
+    fn test_style_eq_with_all_fields() {
+        let mut s1 = Style::new();
+        s1.fg = Some(Color::Red);
+        s1.bg = Some(Color::Blue);
+        s1.bold = true;
+        s1.italic = true;
+        s1.underline = true;
+        s1.reverse = true;
+
+        let mut s2 = Style::new();
+        s2.fg = Some(Color::Red);
+        s2.bg = Some(Color::Blue);
+        s2.bold = true;
+        s2.italic = true;
+        s2.underline = true;
+        s2.reverse = true;
+
+        assert_eq!(s1, s2);
+    }
+
+    #[test]
+    fn test_style_ansi_colors() {
+        let style = Style::new()
+            .fg(Color::AnsiValue(42))
+            .bg(Color::AnsiValue(100));
+        assert!(style.fg.is_some());
+        assert!(style.bg.is_some());
+    }
+
+    #[test]
+    fn test_style_grey_color() {
+        let style = Style::new().fg(Color::Grey);
+        assert_eq!(style.fg, Some(Color::Grey));
+    }
 }

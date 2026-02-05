@@ -123,4 +123,51 @@ mod tests {
         let _host = Host::new(config);
         // Host is created successfully
     }
+
+    #[test]
+    fn test_host_config_both_file_and_content() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/tmp/test.txt")),
+            content: Some("hello".to_string()),
+        };
+        // Both can be set (file takes priority in run())
+        assert!(config.file.is_some());
+        assert!(config.content.is_some());
+    }
+
+    #[test]
+    fn test_host_config_empty_content() {
+        let config = HostConfig {
+            file: None,
+            content: Some(String::new()),
+        };
+        assert_eq!(config.content, Some(String::new()));
+    }
+
+    #[test]
+    fn test_host_config_path_extensions() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/home/user/code/file.rs")),
+            content: None,
+        };
+        assert!(config.file.as_ref().unwrap().to_string_lossy().ends_with(".rs"));
+    }
+
+    #[test]
+    fn test_host_config_relative_path() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("relative/path/file.txt")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_config_content_with_newlines() {
+        let config = HostConfig {
+            file: None,
+            content: Some("line1\nline2\nline3".to_string()),
+        };
+        assert!(config.content.as_ref().unwrap().contains('\n'));
+    }
 }

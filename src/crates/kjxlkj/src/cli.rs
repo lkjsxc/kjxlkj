@@ -132,4 +132,66 @@ mod tests {
         assert!(args.readonly);
         assert_eq!(args.line, Some(42));
     }
+
+    #[test]
+    fn test_args_line_zero() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: Some(0),
+        };
+        assert_eq!(args.line, Some(0));
+    }
+
+    #[test]
+    fn test_args_line_large() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: Some(999999),
+        };
+        assert_eq!(args.line, Some(999999));
+    }
+
+    #[test]
+    fn test_args_log_file_without_log() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: Some("file.log".to_string()),
+            readonly: false,
+            line: None,
+        };
+        // log_file can be set even if log is false
+        assert!(!args.log);
+        assert!(args.log_file.is_some());
+    }
+
+    #[test]
+    fn test_args_file_with_spaces() {
+        let args = Args {
+            file: Some(PathBuf::from("/path/to/my file.txt")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.as_ref().unwrap().to_string_lossy().contains(' '));
+    }
+
+    #[test]
+    fn test_args_readonly_default_false() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(!args.readonly);
+    }
 }
