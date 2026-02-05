@@ -32,7 +32,8 @@ This documentation is also optimized for machine (LLM) parsing and editing.
 3. **Two-Phase Execution** - Plan first, implement second
 4. **File Size Limits** - Source ≤200 lines, Docs ≤200 lines
 5. **Documentation Topology** - Every directory has one README.md
-6. **Directory Size Limits** - Max 12 direct children per directory
+6. **Line Wrapping** - Wrap long lines (soft limit: 100 columns)
+7. **Directory Size Limits** - Max 12 direct children per directory
 
 ## Canonical spec set
 
@@ -64,6 +65,7 @@ The canonical architecture is **Tokio async-first**:
 | Response Format | Intent, Plan, Impact, Tests, Commits, Risks |
 | Commits | `type(area): summary` format |
 | Line Limit | 200 lines per file |
+| Line Wrap | Soft max 100 columns |
 | Directory Rule | Every dir has exactly one README.md |
 
 See individual documents for complete details.

@@ -8,18 +8,18 @@ Covers documentation under `/docs/log/`.
 Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/README.md` remains).
 When `/docs/log/` is present, it may also include structured proposals/audits subtrees.
 
-## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+## Rules (apply to every document listed)
+- Read the document end-to-end.
+- Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/log/README.md](/docs/log/README.md)
+- [/docs/log/README.md](/docs/log/README.md)
 
 ### Subdirectories
-- [x] [/docs/log/audits/](/docs/todo/doc-coverage/log/audits/README.md)
-- [x] [/docs/log/proposals/](/docs/todo/doc-coverage/log/proposals/README.md)
+- [/docs/log/audits/](/docs/todo/doc-coverage/log/audits/README.md)
+- [/docs/log/proposals/](/docs/todo/doc-coverage/log/proposals/README.md)

@@ -14,9 +14,9 @@ Make the TODO system “doc-complete”: every documentation file is explicitly 
 
 ## Work Items
 
-### A. Complete the doc-coverage checklist
+### A. Traverse the doc-coverage index
 
-- Follow the recursive checklist:
+- Follow the recursive doc-coverage index:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - For each directory page:
   - [ ] Read every document linked under `### Files`.

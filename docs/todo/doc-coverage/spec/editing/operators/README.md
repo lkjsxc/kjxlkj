@@ -5,25 +5,25 @@ Back: [/docs/todo/doc-coverage/spec/editing/README.md](/docs/todo/doc-coverage/s
 ## Scope
 Covers documentation under `/docs/spec/editing/operators/`.
 
-## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+## Rules (apply to every document listed)
+- Read the document end-to-end.
+- Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
-- [x] [/docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)
-- [x] [/docs/spec/editing/operators/count-with-operators.md](/docs/spec/editing/operators/count-with-operators.md)
-- [x] [/docs/spec/editing/operators/double-operators.md](/docs/spec/editing/operators/double-operators.md)
-- [x] [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
-- [x] [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)
-- [x] [/docs/spec/editing/operators/g-operators.md](/docs/spec/editing/operators/g-operators.md)
-- [x] [/docs/spec/editing/operators/linewise-characterwise.md](/docs/spec/editing/operators/linewise-characterwise.md)
-- [x] [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
-- [x] [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
-- [x] [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
-- [x] [/docs/spec/editing/operators/operators.md](/docs/spec/editing/operators/operators.md)
+- [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- [/docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)
+- [/docs/spec/editing/operators/count-with-operators.md](/docs/spec/editing/operators/count-with-operators.md)
+- [/docs/spec/editing/operators/double-operators.md](/docs/spec/editing/operators/double-operators.md)
+- [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
+- [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)
+- [/docs/spec/editing/operators/g-operators.md](/docs/spec/editing/operators/g-operators.md)
+- [/docs/spec/editing/operators/linewise-characterwise.md](/docs/spec/editing/operators/linewise-characterwise.md)
+- [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
+- [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
+- [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
+- [/docs/spec/editing/operators/operators.md](/docs/spec/editing/operators/operators.md)

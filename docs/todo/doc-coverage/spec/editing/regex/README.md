@@ -5,25 +5,25 @@ Back: [/docs/todo/doc-coverage/spec/editing/README.md](/docs/todo/doc-coverage/s
 ## Scope
 Covers documentation under `/docs/spec/editing/regex/`.
 
-## Checklist (apply to every document listed)
-- [x] Read the document end-to-end.
-- [x] Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- [x] If the document is under `/docs/spec/`, update:
+## Rules (apply to every document listed)
+- Read the document end-to-end.
+- Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
+- If the document is under `/docs/spec/`, update:
   - `/docs/reference/CONFORMANCE.md`
   - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- [x] Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+- Add or extend tests for any implemented behavior; record gaps as TODO leaves.
 
 ## Documents
 ### Files
-- [x] [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
-- [x] [/docs/spec/editing/regex/anchors.md](/docs/spec/editing/regex/anchors.md)
-- [x] [/docs/spec/editing/regex/char-classes.md](/docs/spec/editing/regex/char-classes.md)
-- [x] [/docs/spec/editing/regex/grouping-refs.md](/docs/spec/editing/regex/grouping-refs.md)
-- [x] [/docs/spec/editing/regex/lookaround.md](/docs/spec/editing/regex/lookaround.md)
-- [x] [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md)
-- [x] [/docs/spec/editing/regex/multiline-patterns.md](/docs/spec/editing/regex/multiline-patterns.md)
-- [x] [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
-- [x] [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)
-- [x] [/docs/spec/editing/regex/regex-atoms.md](/docs/spec/editing/regex/regex-atoms.md)
-- [x] [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
-- [x] [/docs/spec/editing/regex/very-magic.md](/docs/spec/editing/regex/very-magic.md)
+- [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
+- [/docs/spec/editing/regex/anchors.md](/docs/spec/editing/regex/anchors.md)
+- [/docs/spec/editing/regex/char-classes.md](/docs/spec/editing/regex/char-classes.md)
+- [/docs/spec/editing/regex/grouping-refs.md](/docs/spec/editing/regex/grouping-refs.md)
+- [/docs/spec/editing/regex/lookaround.md](/docs/spec/editing/regex/lookaround.md)
+- [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md)
+- [/docs/spec/editing/regex/multiline-patterns.md](/docs/spec/editing/regex/multiline-patterns.md)
+- [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
+- [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)
+- [/docs/spec/editing/regex/regex-atoms.md](/docs/spec/editing/regex/regex-atoms.md)
+- [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
+- [/docs/spec/editing/regex/very-magic.md](/docs/spec/editing/regex/very-magic.md)

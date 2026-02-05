@@ -9,6 +9,7 @@ This document defines mandatory structural constraints for all documentation.
 | Max items per directory | 12 | Cognitive load limit; enables quick scanning |
 | README.md per directory | Required | Navigation entry point for each topic |
 | Max lines per file | 200 | Focused documents; split if exceeds |
+| Soft max columns per line | 100 | Prevent horizontal scrolling; wrap long lines |
 
 ## Directory Hierarchy Requirements
 

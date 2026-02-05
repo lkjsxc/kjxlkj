@@ -15,11 +15,15 @@ This audit validates and/or repairs:
 
 | Check | Policy reference | Result |
 |---|---|---|
-| No non-Mermaid fenced blocks under `/docs/` | [/docs/policy/README.md](/docs/policy/README.md) | Pass (one non-compliant fence removed from a conformance doc). |
+| No non-Mermaid fenced blocks under `/docs/` | [/docs/policy/README.md](/docs/policy/README.md) | Pass |
 | Docs ≤200 lines per file | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | Pass |
 | Direct children ≤12 per directory | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | Pass |
 | Exactly one `README.md` per directory | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | Pass |
 | No `../` links in docs | Project constraint + TODO policy | Pass |
+| TODO wave list uses checkboxes | [/docs/todo/current/README.md](/docs/todo/current/README.md) | Pass |
+| Current iteration is not pre-completed | [/docs/todo/current/README.md](/docs/todo/current/README.md) | Pass |
+| Completion handshake invokes `Ask` | [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md) | Pass |
+| Doc coverage is a topology index | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | Pass |
 
 ## Notes
 
@@ -27,19 +31,19 @@ This audit validates and/or repairs:
 
 ## Repairs made
 
-### A. Documentation fence compliance
+This audit repaired drift between the intended workflow and what the TODO system
+made machine-actionable:
 
-- Removed a non-Mermaid fenced block in a docs/reference conformance file and converted it to schema tables and prose.
-
-### B. Derived automation artifacts clarity
-
-- Updated guides/reference/policy docs to treat CI/Docker/toolchain as derived artifacts that may be absent, while preserving canonical expected locations for reconstruction.
-
-### C. TODO system integrity
-
-- Began Iteration 34 TODO reset: converted “Tasks” sections to checkboxes and introduced explicit unchecked leaves for known high-priority gaps (long lines, interactive newline, perf harness, file explorer MVP).
+- Converted the current TODO wave list into real task checkboxes and fixed
+  checkbox semantics.
+- Rolled `/docs/todo/current/` forward to a fresh iteration with all tasks
+  unchecked so a docs-only baseline remains executable.
+- Converted `/docs/todo/doc-coverage/` from a progress checklist into a pure link
+  index (no long-lived checkmark history).
+- Added an explicit completion handshake: when the iteration is complete and the
+  verification gate is green, invoke `Ask` to request the next objective.
 
 ## Follow-ups (recorded as TODO leaves)
 
-- Execute the leaf TODOs under `/docs/todo/current/` for the reported high-priority gaps.
-- Expand conformance/limitations to reflect any verified drift discovered during implementation.
+- None. Any newly discovered gaps MUST become TODO leaves under
+  `/docs/todo/current/`.

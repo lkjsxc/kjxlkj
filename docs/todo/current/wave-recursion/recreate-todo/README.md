@@ -30,7 +30,8 @@ Keep the work recursive by regenerating the current TODO list with:
 
 - [ ] Verify every documentation file is reachable via the TODO system by traversing:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
-- [ ] If any doc was added/moved, regenerate the coverage checklists under `/docs/todo/doc-coverage/` and re-run reachability verification.
+- [ ] If any doc was added/moved, regenerate the doc-coverage index pages under
+  `/docs/todo/doc-coverage/` and re-run reachability verification.
 
 ### C. Preserve iteration invariants
 
