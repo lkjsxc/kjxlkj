@@ -136,5 +136,39 @@ mod tests {
         assert!(debug.contains("1"));
         assert!(debug.contains("2"));
     }
+
+    #[test]
+    fn test_position_copy() {
+        let pos = Position::new(5, 10);
+        let copied = pos;
+        assert_eq!(pos, copied);
+    }
+
+    #[test]
+    fn test_position_large_values() {
+        let pos = Position::new(1000000, 500000);
+        assert_eq!(pos.line, 1000000);
+        assert_eq!(pos.col, 500000);
+    }
+
+    #[test]
+    fn test_position_zero_zero() {
+        let pos = Position::new(0, 0);
+        assert_eq!(pos, Position::ORIGIN);
+    }
+
+    #[test]
+    fn test_position_partial_eq() {
+        let pos1 = Position::new(3, 5);
+        let pos2 = Position::new(3, 5);
+        assert!(pos1 == pos2);
+    }
+
+    #[test]
+    fn test_position_ordering_equal() {
+        let pos1 = Position::new(5, 10);
+        let pos2 = Position::new(5, 10);
+        assert_eq!(pos1.cmp(&pos2), Ordering::Equal);
+    }
 }
 

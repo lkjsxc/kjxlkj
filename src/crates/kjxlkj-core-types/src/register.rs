@@ -247,4 +247,45 @@ mod tests {
         let debug = format!("{:?}", name);
         assert!(debug.contains("Named"));
     }
+
+    #[test]
+    fn test_register_content_with_newlines() {
+        let reg = Register::new("line1\nline2\nline3", true);
+        assert!(reg.content.contains('\n'));
+    }
+
+    #[test]
+    fn test_register_name_equality() {
+        assert_eq!(RegisterName::Named('a'), RegisterName::Named('a'));
+        assert_ne!(RegisterName::Named('a'), RegisterName::Named('b'));
+    }
+
+    #[test]
+    fn test_register_name_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(RegisterName::Named('a'));
+        assert!(set.contains(&RegisterName::Named('a')));
+    }
+
+    #[test]
+    fn test_register_name_uppercase_normalizes() {
+        // Uppercase letters should normalize to lowercase
+        assert_eq!(RegisterName::from_char('Z'), Some(RegisterName::Named('z')));
+        assert_eq!(RegisterName::from_char('M'), Some(RegisterName::Named('m')));
+    }
+
+    #[test]
+    fn test_register_from_string() {
+        let reg = Register::new(String::from("dynamic"), false);
+        assert_eq!(reg.content, "dynamic");
+    }
+
+    #[test]
+    fn test_register_name_all_named() {
+        for c in 'a'..='z' {
+            let name = RegisterName::from_char(c);
+            assert!(matches!(name, Some(RegisterName::Named(_))));
+        }
+    }
 }
