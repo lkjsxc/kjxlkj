@@ -2418,9 +2418,287 @@ fn test_end_to_end_home_end_keys() {
     assert_eq!(after_end.mode, kjxlkj_core_types::Mode::Insert);
 }
 
+/// Test: Word backwards motion (b).
+#[test]
+fn test_end_to_end_word_backward_b() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "one two three".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    let after_b = state.snapshot();
+    assert_eq!(after_b.mode, kjxlkj_core_types::Mode::Normal);
+}
 
+/// Test: Word end motion (e).
+#[test]
+fn test_end_to_end_word_end_e() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "one two".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+    let after_e = state.snapshot();
+    assert_eq!(after_e.mode, kjxlkj_core_types::Mode::Normal);
+}
 
+/// Test: Go to file end (G).
+#[test]
+fn test_end_to_end_go_file_end_G() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2\nline3".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('G'), KeyModifiers::NONE));
+    let after_G = state.snapshot();
+    assert_eq!(after_G.mode, kjxlkj_core_types::Mode::Normal);
+}
 
+/// Test: Go to file start (gg).
+#[test]
+fn test_end_to_end_go_file_start_gg() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "line1\nline2".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    let after_gg = state.snapshot();
+    assert_eq!(after_gg.mode, kjxlkj_core_types::Mode::Normal);
+}
 
+/// Test: Join lines (J).
+#[test]
+fn test_end_to_end_join_lines_J() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello\nworld".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('g'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('J'), KeyModifiers::NONE));
+    let after_J = state.snapshot();
+    assert_eq!(after_J.mode, kjxlkj_core_types::Mode::Normal);
+}
 
+/// Test: Insert at line start (I).
+#[test]
+fn test_end_to_end_insert_line_start_I() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "    hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('$'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('I'), KeyModifiers::NONE));
+    let after_I = state.snapshot();
+    assert_eq!(after_I.mode, kjxlkj_core_types::Mode::Insert);
+}
 
+/// Test: Append at line end (A).
+#[test]
+fn test_end_to_end_append_line_end_A() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('A'), KeyModifiers::NONE));
+    let after_A = state.snapshot();
+    assert_eq!(after_A.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Delete to end of line (D).
+#[test]
+fn test_end_to_end_delete_to_line_end_D() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello world".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('D'), KeyModifiers::NONE));
+    let after_D = state.snapshot();
+    assert_eq!(after_D.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Redo (Ctrl-r).
+#[test]
+fn test_end_to_end_redo_ctrl_r() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('u'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('r'), KeyModifiers::CTRL));
+    let after_redo = state.snapshot();
+    assert_eq!(after_redo.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Visual block mode (Ctrl-v).
+#[test]
+fn test_end_to_end_visual_block_ctrl_v() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello\nworld".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('v'), KeyModifiers::CTRL));
+    let after_ctrl_v = state.snapshot();
+    assert_eq!(after_ctrl_v.mode, kjxlkj_core_types::Mode::VisualBlock);
+}
+
+/// Test: Multiple escapes stay in normal mode.
+#[test]
+fn test_end_to_end_multiple_escapes() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    let after_esc = state.snapshot();
+    assert_eq!(after_esc.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Delete backward (X).
+#[test]
+fn test_end_to_end_delete_backward_X() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('$'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('X'), KeyModifiers::NONE));
+    let after_X = state.snapshot();
+    assert_eq!(after_X.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: yy yank line.
+#[test]
+fn test_end_to_end_yy_yank_line() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    let after_yy = state.snapshot();
+    assert_eq!(after_yy.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Delete forward (x).
+#[test]
+fn test_end_to_end_delete_forward_x() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('x'), KeyModifiers::NONE));
+    let after_x = state.snapshot();
+    assert_eq!(after_x.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Paste after (p).
+#[test]
+fn test_end_to_end_paste_after_p() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('p'), KeyModifiers::NONE));
+    let after_p = state.snapshot();
+    assert_eq!(after_p.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Paste before (P).
+#[test]
+fn test_end_to_end_paste_before_P() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('P'), KeyModifiers::NONE));
+    let after_P = state.snapshot();
+    assert_eq!(after_P.mode, kjxlkj_core_types::Mode::Normal);
+}
+
+/// Test: Empty content remains stable.
+#[test]
+fn test_end_to_end_empty_content_stable() {
+    let mut state = EditorState::new();
+    let snap1 = state.snapshot();
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    let snap2 = state.snapshot();
+    assert_eq!(snap1.mode, snap2.mode);
+}
+
+/// Test: Replace mode (R).
+#[test]
+fn test_end_to_end_replace_mode_R() {
+    let mut state = EditorState::new();
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('R'), KeyModifiers::NONE));
+    let after_R = state.snapshot();
+    assert_eq!(after_R.mode, kjxlkj_core_types::Mode::Replace);
+    
+    state.handle_key(KeyEvent::new(KeyCode::Char('X'), KeyModifiers::NONE));
+    let after_replace = state.snapshot();
+    assert_eq!(after_replace.mode, kjxlkj_core_types::Mode::Replace);
+}
