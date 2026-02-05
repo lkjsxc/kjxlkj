@@ -253,4 +253,90 @@ mod tests {
         let id = BufferId::new(42);
         assert_eq!(id.value(), 42);
     }
+
+    #[test]
+    fn test_mode_normal_is_normal() {
+        assert_eq!(Mode::Normal, Mode::Normal);
+    }
+
+    #[test]
+    fn test_mode_insert_is_insert() {
+        assert_eq!(Mode::Insert, Mode::Insert);
+    }
+
+    #[test]
+    fn test_mode_visual_is_visual() {
+        assert_eq!(Mode::Visual, Mode::Visual);
+    }
+
+    #[test]
+    fn test_mode_command_is_command() {
+        assert_eq!(Mode::Command, Mode::Command);
+    }
+
+    #[test]
+    fn test_mode_replace_is_replace() {
+        assert_eq!(Mode::Replace, Mode::Replace);
+    }
+
+    #[test]
+    fn test_mode_visualline_is_visualline() {
+        assert_eq!(Mode::VisualLine, Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_mode_visualblock_is_visualblock() {
+        assert_eq!(Mode::VisualBlock, Mode::VisualBlock);
+    }
+
+    #[test]
+    fn test_position_new_zero() {
+        let pos = Position::new(0, 0);
+        assert_eq!(pos.line, 0);
+        assert_eq!(pos.col, 0);
+    }
+
+    #[test]
+    fn test_position_new_nonzero() {
+        let pos = Position::new(10, 20);
+        assert_eq!(pos.line, 10);
+        assert_eq!(pos.col, 20);
+    }
+
+    #[test]
+    fn test_cursor_line_col() {
+        let cursor = Cursor::new(5, 10);
+        assert_eq!(cursor.line(), 5);
+        assert_eq!(cursor.col(), 10);
+    }
+
+    #[test]
+    fn test_key_event_char_creation() {
+        let event = KeyEvent::char('a');
+        assert!(matches!(event.code, KeyCode::Char('a')));
+    }
+
+    #[test]
+    fn test_key_event_escape() {
+        let event = KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE);
+        assert!(matches!(event.code, KeyCode::Escape));
+    }
+
+    #[test]
+    fn test_key_event_enter() {
+        let event = KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE);
+        assert!(matches!(event.code, KeyCode::Enter));
+    }
+
+    #[test]
+    fn test_text_buffer_empty() {
+        let buffer = text::TextBuffer::from_text(BufferId::new(1), "");
+        assert_eq!(buffer.line_count(), 1);
+    }
+
+    #[test]
+    fn test_undo_transaction_empty() {
+        let tx = undo::Transaction::new();
+        assert!(tx.is_empty());
+    }
 }

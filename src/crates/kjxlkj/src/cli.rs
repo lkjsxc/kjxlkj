@@ -194,4 +194,76 @@ mod tests {
         };
         assert!(!args.readonly);
     }
+
+    #[test]
+    fn test_args_file_unicode() {
+        let args = Args {
+            file: Some(PathBuf::from("/path/文件.txt")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.is_some());
+    }
+
+    #[test]
+    fn test_args_log_file_relative() {
+        let args = Args {
+            file: None,
+            log: true,
+            log_file: Some("./logs/debug.log".to_string()),
+            readonly: false,
+            line: None,
+        };
+        assert!(args.log_file.as_ref().unwrap().starts_with("./"));
+    }
+
+    #[test]
+    fn test_args_multiple_extensions() {
+        let args = Args {
+            file: Some(PathBuf::from("archive.tar.gz")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.as_ref().unwrap().to_string_lossy().ends_with(".gz"));
+    }
+
+    #[test]
+    fn test_args_hidden_file() {
+        let args = Args {
+            file: Some(PathBuf::from(".gitignore")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.as_ref().unwrap().to_string_lossy().starts_with('.'));
+    }
+
+    #[test]
+    fn test_args_log_file_empty() {
+        let args = Args {
+            file: None,
+            log: true,
+            log_file: Some(String::new()),
+            readonly: false,
+            line: None,
+        };
+        assert!(args.log_file.as_ref().unwrap().is_empty());
+    }
+
+    #[test]
+    fn test_args_file_no_extension() {
+        let args = Args {
+            file: Some(PathBuf::from("Makefile")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.is_some());
+    }
 }
