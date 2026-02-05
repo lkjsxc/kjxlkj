@@ -387,4 +387,111 @@ mod tests {
         let cloned = diag.clone();
         assert_eq!(cloned.message, "test error");
     }
+
+    #[test]
+    fn test_diagnostic_severity_all_values() {
+        assert_eq!(DiagnosticSeverity::Error as i32, 1);
+        assert_eq!(DiagnosticSeverity::Warning as i32, 2);
+        assert_eq!(DiagnosticSeverity::Information as i32, 3);
+        assert_eq!(DiagnosticSeverity::Hint as i32, 4);
+    }
+
+    #[test]
+    fn test_lsp_position_debug() {
+        let pos = LspPosition { line: 5, character: 10 };
+        let debug = format!("{:?}", pos);
+        assert!(debug.contains("line"));
+        assert!(debug.contains("5"));
+    }
+
+    #[test]
+    fn test_lsp_range_debug() {
+        let range = LspRange {
+            start: LspPosition { line: 0, character: 0 },
+            end: LspPosition { line: 1, character: 5 },
+        };
+        let debug = format!("{:?}", range);
+        assert!(debug.contains("start"));
+        assert!(debug.contains("end"));
+    }
+
+    #[test]
+    fn test_completion_item_debug() {
+        let item = CompletionItem {
+            label: "test".to_string(),
+            kind: None,
+            detail: None,
+            insert_text: None,
+        };
+        let debug = format!("{:?}", item);
+        assert!(debug.contains("test"));
+    }
+
+    #[test]
+    fn test_diagnostic_debug() {
+        let diag = Diagnostic {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 5 },
+            },
+            severity: Some(DiagnosticSeverity::Warning),
+            message: "warning message".to_string(),
+            source: None,
+        };
+        let debug = format!("{:?}", diag);
+        assert!(debug.contains("warning message"));
+    }
+
+    #[test]
+    fn test_lsp_server_config_debug() {
+        let config = LspServerConfig::rust_analyzer();
+        let debug = format!("{:?}", config);
+        assert!(debug.contains("rust"));
+    }
+
+    #[test]
+    fn test_diagnostic_severity_debug() {
+        let sev = DiagnosticSeverity::Information;
+        let debug = format!("{:?}", sev);
+        assert!(debug.contains("Information"));
+    }
+
+    #[test]
+    fn test_completion_item_with_insert_text() {
+        let item = CompletionItem {
+            label: "println".to_string(),
+            kind: Some(3),
+            detail: Some("macro".to_string()),
+            insert_text: Some("println!($0)".to_string()),
+        };
+        assert_eq!(item.insert_text, Some("println!($0)".to_string()));
+    }
+
+    #[test]
+    fn test_diagnostic_with_source() {
+        let diag = Diagnostic {
+            range: LspRange {
+                start: LspPosition { line: 0, character: 0 },
+                end: LspPosition { line: 0, character: 1 },
+            },
+            severity: Some(DiagnosticSeverity::Hint),
+            message: "hint".to_string(),
+            source: Some("clippy".to_string()),
+        };
+        assert_eq!(diag.source, Some("clippy".to_string()));
+    }
+
+    #[test]
+    fn test_lsp_position_zero() {
+        let pos = LspPosition { line: 0, character: 0 };
+        assert_eq!(pos.line, 0);
+        assert_eq!(pos.character, 0);
+    }
+
+    #[test]
+    fn test_lsp_position_max() {
+        let pos = LspPosition { line: u32::MAX, character: u32::MAX };
+        assert_eq!(pos.line, u32::MAX);
+        assert_eq!(pos.character, u32::MAX);
+    }
 }

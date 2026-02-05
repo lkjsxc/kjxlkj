@@ -217,4 +217,49 @@ mod tests {
         let host = Host::new(config);
         assert!(host.config.content.is_some());
     }
+
+    #[test]
+    fn test_host_config_path_with_spaces() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/home/user/my project/file name.txt")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_config_hidden_file() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/home/user/.config/.hidden")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_config_content_tabs() {
+        let config = HostConfig {
+            file: None,
+            content: Some("col1\tcol2\tcol3".to_string()),
+        };
+        assert!(config.content.as_ref().unwrap().contains('\t'));
+    }
+
+    #[test]
+    fn test_host_config_symlink_path() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/var/run/../log/test.log")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_config_no_extension() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("/usr/bin/bash")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
 }

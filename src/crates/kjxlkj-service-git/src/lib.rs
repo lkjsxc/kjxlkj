@@ -292,4 +292,44 @@ mod tests {
         // Should be None for non-existent path
         assert!(result.is_none());
     }
+
+    #[test]
+    fn test_git_status_untracked_clone() {
+        let status = GitStatus::Untracked;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_git_status_modified_clone() {
+        let status = GitStatus::Modified;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_git_service_name_is_git() {
+        let service = GitService::new();
+        assert_eq!(service.name, "git");
+    }
+
+    #[test]
+    fn test_git_service_repo_root_none_initially() {
+        let service = GitService::new();
+        assert!(service.repo_root.is_none());
+    }
+
+    #[test]
+    fn test_git_status_ignored_clone() {
+        let status = GitStatus::Ignored;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_git_status_staged_clone() {
+        let status = GitStatus::Staged;
+        let cloned = status.clone();
+        assert_eq!(status, cloned);
+    }
 }

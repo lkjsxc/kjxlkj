@@ -255,4 +255,60 @@ mod tests {
         let service = FsService::new();
         assert_eq!(service.name(), "fs");
     }
+
+    #[tokio::test]
+    async fn test_write_tabs() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("tabs.txt");
+        let content = "col1\tcol2\tcol3";
+        
+        FsService::write_file(&path, content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert!(read.contains('\t'));
+    }
+
+    #[tokio::test]
+    async fn test_write_carriage_return() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("crlf.txt");
+        let content = "line1\r\nline2\r\n";
+        
+        FsService::write_file(&path, content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert!(read.contains("\r\n"));
+    }
+
+    #[tokio::test]
+    async fn test_create_dir_already_exists() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("existdir");
+        
+        FsService::create_dir(&path).await.unwrap();
+        // Should not error on existing
+        let result = FsService::create_dir(&path).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_read_write_special_chars() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("special.txt");
+        let content = "!@#$%^&*()[]{}|;':\",./<>?";
+        
+        FsService::write_file(&path, content).await.unwrap();
+        let read = FsService::read_file(&path).await.unwrap();
+        assert_eq!(read, content);
+    }
+
+    #[tokio::test]
+    async fn test_exists_after_delete() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("to_delete.txt");
+        
+        FsService::write_file(&path, "test").await.unwrap();
+        assert!(FsService::exists(&path).await);
+        
+        tokio::fs::remove_file(&path).await.unwrap();
+        assert!(!FsService::exists(&path).await);
+    }
 }
