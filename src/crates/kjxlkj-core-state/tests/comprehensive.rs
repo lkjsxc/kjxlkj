@@ -453,3 +453,184 @@ mod apply_intent_tests {
         assert_eq!(editor.mode(), mode_before);
     }
 }
+
+mod extra_buffer_tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_buffer_state_from_file() {
+        let buf = BufferState::from_file(
+            BufferId::new(1),
+            PathBuf::from("/tmp/test.txt"),
+            "hello\nworld",
+        );
+        assert_eq!(buf.line_count(), 2);
+        assert!(buf.path.is_some());
+    }
+
+    #[test]
+    fn test_buffer_state_line_returns_option() {
+        let state = BufferState::new(BufferId::new(1), BufferName::unnamed());
+        assert!(state.line(0).is_some());
+        assert!(state.line(999).is_none()); // Out of bounds
+    }
+
+    #[test]
+    fn test_buffer_state_from_file_content() {
+        let buf = BufferState::from_file(
+            BufferId::new(1),
+            PathBuf::from("/test.rs"),
+            "line1\nline2\nline3",
+        );
+        assert_eq!(buf.line_count(), 3);
+        assert_eq!(buf.line(0), Some("line1".to_string()));
+        assert_eq!(buf.line(1), Some("line2".to_string()));
+        assert_eq!(buf.line(2), Some("line3".to_string()));
+    }
+
+    #[test]
+    fn test_buffer_state_path_from_file() {
+        let buf = BufferState::from_file(
+            BufferId::new(1),
+            PathBuf::from("/home/user/code.rs"),
+            "",
+        );
+        assert_eq!(buf.path, Some(PathBuf::from("/home/user/code.rs")));
+        assert_eq!(buf.name.as_str(), "code.rs");
+    }
+}
+
+mod extra_window_tests {
+    use super::*;
+    use kjxlkj_core_types::{Cursor, WindowId};
+
+    #[test]
+    fn test_window_state_move_cursor() {
+        let mut state = WindowState::new(WindowId::new(1), BufferId::new(1), 80, 24);
+        state.cursor = Cursor::new(5, 10);
+        assert_eq!(state.cursor.line, 5);
+        assert_eq!(state.cursor.column, 10);
+    }
+
+    #[test]
+    fn test_window_state_scroll() {
+        let mut state = WindowState::new(WindowId::new(1), BufferId::new(1), 80, 24);
+        state.viewport.top_line = 10;
+        assert_eq!(state.viewport.top_line, 10);
+    }
+}
+
+mod extra_editor_tests {
+    use super::*;
+
+    #[test]
+    fn test_editor_snapshot_mode() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char(':'))); 
+        let snapshot = editor.snapshot();
+        assert_eq!(snapshot.mode, Mode::Command);
+    }
+
+    #[test]
+
+    #[test]
+    fn test_editor_G_moves_to_end() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('i')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Enter));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('b')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Enter));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('c')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Escape));
+        
+        editor.process_event(EditorEvent::Key(KeyEvent::char('g')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('g')));
+        
+        editor.process_event(EditorEvent::Key(KeyEvent::char('G')));
+        
+        let snapshot = editor.snapshot();
+        assert!(snapshot.windows[0].cursor.line > 0);
+    }
+
+    #[test]
+    fn test_editor_backspace_in_insert() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('i')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('b')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Backspace));
+        
+        let snapshot = editor.snapshot();
+        assert!(snapshot.windows[0].buffer.lines[0].contains('a'));
+        assert!(!snapshot.windows[0].buffer.lines[0].contains('b'));
+    }
+
+    #[test]
+    fn test_editor_visual_line_mode() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('V')));
+        assert_eq!(editor.mode(), Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_editor_visual_block_mode() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::ctrl('v')));
+        assert_eq!(editor.mode(), Mode::VisualBlock);
+    }
+
+    #[test]
+    fn test_editor_visual_escape() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('v')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Escape));
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_editor_command_escape() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char(':')));
+        editor.process_event(EditorEvent::Key(KeyEvent::Escape));
+        assert_eq!(editor.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_editor_snapshot_dimensions() {
+        let mut editor = Editor::new(100, 50);
+        let snapshot = editor.snapshot();
+        assert_eq!(snapshot.terminal_width, 100);
+        assert_eq!(snapshot.terminal_height, 50);
+    }
+
+    #[test]
+    fn test_editor_arrow_keys_in_insert() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('i')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('a')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('b')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('c')));
+        
+        let snap1 = editor.snapshot();
+        editor.process_event(EditorEvent::Key(KeyEvent::Left));
+        let snap2 = editor.snapshot();
+        
+        assert!(snap2.windows[0].cursor.column < snap1.windows[0].cursor.column);
+    }
+
+    #[test]
+    fn test_editor_half_page_scroll() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::ctrl('d')));
+        editor.process_event(EditorEvent::Key(KeyEvent::ctrl('u')));
+    }
+
+    #[test]
+    fn test_editor_zz_centers() {
+        let mut editor = Editor::new(80, 24);
+        editor.process_event(EditorEvent::Key(KeyEvent::char('z')));
+        editor.process_event(EditorEvent::Key(KeyEvent::char('z')));
+    }
+}
