@@ -293,12 +293,10 @@ pub fn expand_mapping(
         state.clear_pending();
 
         // Handle recursion for recursive mappings
-        if mapping.flags.recursive {
-            if !state.can_recurse() {
-                return MapResult::RecursionLimit;
-            }
-            // Note: actual recursive expansion would be done by the caller
+        if mapping.flags.recursive && !state.can_recurse() {
+            return MapResult::RecursionLimit;
         }
+        // Note: actual recursive expansion would be done by the caller
 
         return MapResult::Expanded(result);
     }

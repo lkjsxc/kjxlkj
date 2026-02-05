@@ -38,9 +38,10 @@ impl Default for ScriptLocations {
 impl ScriptLocations {
     /// Create locations with a project root.
     pub fn with_project(project_root: &Path) -> Self {
-        let mut loc = Self::default();
-        loc.project_local = Some(project_root.join(".kjxlkj"));
-        loc
+        Self {
+            project_local: Some(project_root.join(".kjxlkj")),
+            ..Default::default()
+        }
     }
 
     /// Get the primary user config file path.
@@ -118,8 +119,8 @@ impl Script {
             }
 
             // Setting with :set
-            if line.starts_with("set ") {
-                let rest = line[4..].trim();
+            if let Some(rest) = line.strip_prefix("set ") {
+                let rest = rest.trim();
                 if let Some(eq_pos) = rest.find('=') {
                     let key = rest[..eq_pos].trim();
                     let value = rest[eq_pos + 1..].trim();
@@ -127,9 +128,9 @@ impl Script {
                         key.to_string(),
                         SettingValue::String(value.to_string()),
                     );
-                } else if rest.starts_with("no") {
+                } else if let Some(name) = rest.strip_prefix("no") {
                     script.settings.insert(
-                        rest[2..].to_string(),
+                        name.to_string(),
                         SettingValue::Bool(false),
                     );
                 } else {
