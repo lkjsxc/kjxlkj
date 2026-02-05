@@ -4,11 +4,10 @@ use kjxlkj_core_edit::{apply_motion, Motion};
 use kjxlkj_core_mode::ModeState;
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{
-    BufferId, BufferName, BufferVersion, Cursor, EditorEvent, Intent, Mode, Position, Range,
-    WindowId,
+    BufferId, BufferName, Cursor, EditorEvent, Intent, Mode, Position, Range, WindowId,
 };
-use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, Viewport, WindowSnapshot};
-use kjxlkj_core_undo::{Edit, UndoHistory};
+use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, WindowSnapshot};
+use kjxlkj_core_undo::Edit;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -21,6 +20,7 @@ pub struct Editor {
     active_window: WindowId,
     mode_state: ModeState,
     next_buffer_id: u64,
+    #[allow(dead_code)]
     next_window_id: u64,
     snapshot_sequence: u64,
     terminal_width: u16,
@@ -73,6 +73,21 @@ impl Editor {
     /// Get the current mode.
     pub fn mode(&self) -> Mode {
         self.mode_state.mode()
+    }
+
+    /// Get the active window cursor (0-based).
+    pub fn cursor(&self) -> Cursor {
+        self.windows
+            .get(&self.active_window)
+            .map(|w| w.cursor)
+            .unwrap_or_default()
+    }
+
+    /// Get a line from the active buffer by 0-based index.
+    pub fn active_line(&self, line: usize) -> Option<String> {
+        let win = self.windows.get(&self.active_window)?;
+        let buf = self.buffers.get(&win.buffer_id)?;
+        buf.line(line)
     }
 
     /// Process an editor event.
@@ -564,9 +579,7 @@ impl Editor {
     fn write_buffer(&mut self, path: Option<String>) {
         if let Some(win) = self.windows.get(&self.active_window) {
             if let Some(buf) = self.buffers.get_mut(&win.buffer_id) {
-                let target_path = path
-                    .map(PathBuf::from)
-                    .or_else(|| buf.path.clone());
+                let target_path = path.map(PathBuf::from).or_else(|| buf.path.clone());
 
                 if let Some(target) = target_path {
                     let content = buf.text.to_string();

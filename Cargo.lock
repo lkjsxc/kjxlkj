@@ -118,6 +118,8 @@ dependencies = [
  "kjxlkj-input",
  "kjxlkj-render",
  "kjxlkj-services",
+ "serde",
+ "serde_json",
  "tempfile",
  "tokio",
  "tracing",
