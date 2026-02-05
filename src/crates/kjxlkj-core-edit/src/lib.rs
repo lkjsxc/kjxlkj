@@ -6,11 +6,16 @@ mod motion;
 mod operator;
 pub mod regex;
 mod text_object;
+pub mod text_manip;
 
 pub use motion::{apply_motion, Motion};
 pub use operator::{apply_operator, Operator};
 pub use regex::{Captures, MagicMode, Match, Pattern, PatternCache, RegexError, RegexOptions};
 pub use text_object::{find_text_object, TextObject, TextObjectKind};
+pub use text_manip::{
+    align_lines, align_text, increment_number, join_lines, reverse_lines, shuffle_lines_seeded,
+    sort_lines, Alignment, SortOptions, SortOrder,
+};
 
 #[cfg(test)]
 mod tests {
