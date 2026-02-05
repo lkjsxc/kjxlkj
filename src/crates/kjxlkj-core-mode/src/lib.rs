@@ -11,6 +11,7 @@ pub mod execution;
 pub mod function;
 mod handler;
 mod insert;
+pub mod insert_completion;
 mod normal;
 pub mod parser;
 mod replace;
@@ -33,6 +34,10 @@ pub use function::{
 };
 pub use handler::{ModeHandler, ModeResult};
 pub use insert::InsertMode;
+pub use insert_completion::{
+    FilePathCompleter, InsertCompletionItem, InsertCompletionState, InsertCompletionType,
+    KeywordCompleter, LineCompleter,
+};
 pub use normal::NormalMode;
 pub use parser::{ParseResult, Parser};
 pub use replace::ReplaceMode;
