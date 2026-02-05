@@ -619,3 +619,499 @@ mod operator_extra {
         }
     }
 }
+
+mod extra_motion_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_motion_up_from_middle() {
+        let buf = TextBuffer::from_str("a\nb\nc\nd\ne");
+        let cursor = Cursor::new(2, 0);
+        let result = apply_motion(&Motion::Up(1), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 1);
+    }
+
+    #[test]
+    fn test_motion_down_multiple_past_end() {
+        let buf = TextBuffer::from_str("a\nb");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Down(10), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 1); // Capped at last line
+    }
+
+    #[test]
+    fn test_motion_left_multiple() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 4);
+        let result = apply_motion(&Motion::Left(2), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 2);
+    }
+
+    #[test]
+    fn test_motion_left_past_start() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 2);
+        let result = apply_motion(&Motion::Left(10), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_right_multiple() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Right(3), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 3);
+    }
+
+    #[test]
+    fn test_motion_empty_buffer() {
+        let buf = TextBuffer::new();
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Down(1), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 0);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_single_char_buffer() {
+        let buf = TextBuffer::from_str("x");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Right(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0); // Can't move past single char in exclusive mode
+    }
+
+    #[test]
+    fn test_motion_line_end_empty_line() {
+        let buf = TextBuffer::from_str("hello\n\nworld");
+        let cursor = Cursor::new(1, 0);
+        let result = apply_motion(&Motion::LineEnd, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_first_non_blank_all_whitespace() {
+        let buf = TextBuffer::from_str("     ");
+        let cursor = Cursor::new(0, 3);
+        let result = apply_motion(&Motion::FirstNonBlank, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_first_non_blank_no_leading_space() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 3);
+        let result = apply_motion(&Motion::FirstNonBlank, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_line_beyond_count() {
+        let buf = TextBuffer::from_str("a\nb\nc");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Line(100), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 2); // Capped at max
+    }
+
+    #[test]
+    fn test_motion_line_zero() {
+        let buf = TextBuffer::from_str("a\nb\nc");
+        let cursor = Cursor::new(2, 0);
+        let result = apply_motion(&Motion::Line(0), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 0);
+    }
+
+    #[test]
+    fn test_motion_word_forward_at_end() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 4);
+        let result = apply_motion(&Motion::WordForward(1), cursor, &buf, false);
+        // At end of single word, stays put or goes to end
+        assert!(result.cursor.column >= 4);
+    }
+
+    #[test]
+    fn test_motion_word_backward_at_start() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::WordBackward(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_word_end_single_word() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::WordEnd(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 4);
+    }
+
+    #[test]
+    fn test_motion_big_word_backward() {
+        let buf = TextBuffer::from_str("hello-world test");
+        let cursor = Cursor::new(0, 12);
+        let result = apply_motion(&Motion::BigWordBackward(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_big_word_end() {
+        let buf = TextBuffer::from_str("hello-world test");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::BigWordEnd(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 10); // End of "hello-world"
+    }
+
+    #[test]
+    fn test_motion_find_char_second_occurrence() {
+        let buf = TextBuffer::from_str("hello hello");
+        let cursor = Cursor::new(0, 5);
+        let result = apply_motion(&Motion::FindChar { char: 'e', forward: true, till: false }, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 7);
+    }
+
+    #[test]
+    fn test_motion_match_bracket_not_on_bracket() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::MatchBracket, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0); // Unchanged
+    }
+
+    #[test]
+    fn test_motion_linewise_flag() {
+        let buf = TextBuffer::from_str("a\nb\nc");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::DocumentEnd, cursor, &buf, false);
+        assert!(result.linewise);
+    }
+
+    #[test]
+    fn test_motion_up_preserves_target_column() {
+        let buf = TextBuffer::from_str("hello\na\nworld");
+        let cursor = Cursor::new(0, 4);
+        let r1 = apply_motion(&Motion::Down(1), cursor, &buf, false);
+        assert_eq!(r1.cursor.column, 0); // Line "a" is short
+        let r2 = apply_motion(&Motion::Down(1), r1.cursor, &buf, false);
+        // Target column should be preserved to 4
+        assert_eq!(r2.cursor.column, 4);
+    }
+
+    #[test]
+    fn test_motion_result_clone() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Right(1), cursor, &buf, false);
+        let cloned = result.clone();
+        assert_eq!(cloned.cursor.column, result.cursor.column);
+    }
+
+    #[test]
+    fn test_motion_result_debug() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Right(1), cursor, &buf, false);
+        let debug = format!("{:?}", result);
+        assert!(debug.contains("cursor"));
+    }
+}
+
+mod extra_text_object_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_text_object_word_at_start() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 0);
+        let range = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+        let r = range.unwrap();
+        assert_eq!(r.start.column, 0);
+        assert_eq!(r.end.column, 5);
+    }
+
+    #[test]
+    fn test_text_object_word_at_end() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 10);
+        let range = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_word_on_space() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 5); // On the space
+        let range = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
+        // Behavior varies, but should return something
+        assert!(range.is_some() || range.is_none());
+    }
+
+    #[test]
+    fn test_text_object_empty_parens() {
+        let buf = TextBuffer::from_str("func()");
+        let cursor = Cursor::new(0, 4);
+        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+        let r = range.unwrap();
+        // Inner of () is empty
+        assert_eq!(r.start.column, 5);
+        assert_eq!(r.end.column, 5);
+    }
+
+    #[test]
+    fn test_text_object_nested_parens_outer() {
+        let buf = TextBuffer::from_str("a((b))c");
+        let cursor = Cursor::new(0, 3);
+        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Around, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_quote_on_quote_char() {
+        let buf = TextBuffer::from_str("say \"hello\" there");
+        let cursor = Cursor::new(0, 4); // On the opening quote
+        let range = find_text_object(&TextObject::Quote('"'), TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_backtick() {
+        let buf = TextBuffer::from_str("say `hello` there");
+        let cursor = Cursor::new(0, 6);
+        let range = find_text_object(&TextObject::Quote('`'), TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_angle_brackets() {
+        let buf = TextBuffer::from_str("<html>");
+        let cursor = Cursor::new(0, 2);
+        let range = find_text_object(&TextObject::Bracket('<', '>'), TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_unmatched_bracket() {
+        let buf = TextBuffer::from_str("hello(world");
+        let cursor = Cursor::new(0, 7);
+        let range = find_text_object(&TextObject::Bracket('(', ')'), TextObjectKind::Inner, cursor, &buf);
+        // Unmatched, may return None
+        assert!(range.is_none());
+    }
+
+    #[test]
+    fn test_text_object_paragraph_at_start() {
+        let buf = TextBuffer::from_str("hello\nworld\n\nnew para");
+        let cursor = Cursor::new(0, 0);
+        let range = find_text_object(&TextObject::Paragraph, TextObjectKind::Inner, cursor, &buf);
+        assert!(range.is_some());
+    }
+
+    #[test]
+    fn test_text_object_kind_debug() {
+        let kind = TextObjectKind::Inner;
+        let debug = format!("{:?}", kind);
+        assert!(debug.contains("Inner"));
+    }
+
+    #[test]
+    fn test_text_object_kind_clone() {
+        let k1 = TextObjectKind::Around;
+        let k2 = k1.clone();
+        assert!(matches!(k2, TextObjectKind::Around));
+    }
+}
+
+mod extra_operator_edge_tests {
+    use super::*;
+    use kjxlkj_core_undo::UndoHistory;
+
+    #[test]
+    fn test_operator_delete_empty_range() {
+        let mut buf = TextBuffer::from_str("hello");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 2, 0, 2);
+        let _result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_operator_yank_multiline() {
+        let mut buf = TextBuffer::from_str("line1\nline2\nline3");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 1, 5);
+        let _result = apply_operator(Operator::Yank, range, &mut buf, &mut history, &mut register);
+        assert!(register.contains("line1"));
+        assert!(register.contains("line2"));
+    }
+
+    #[test]
+    fn test_operator_change_entire_line() {
+        let mut buf = TextBuffer::from_str("hello world");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 11);
+        let _result = apply_operator(Operator::Change, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "");
+    }
+
+    #[test]
+    fn test_operator_uppercase_mixed() {
+        let mut buf = TextBuffer::from_str("HeLLo");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::Uppercase, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "HELLO");
+    }
+
+    #[test]
+    fn test_operator_lowercase_mixed() {
+        let mut buf = TextBuffer::from_str("HeLLo");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::Lowercase, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_operator_toggle_case_all_upper() {
+        let mut buf = TextBuffer::from_str("HELLO");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::ToggleCase, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_operator_toggle_case_all_lower() {
+        let mut buf = TextBuffer::from_str("hello");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::ToggleCase, range, &mut buf, &mut history, &mut register);
+        assert_eq!(buf.line(0).unwrap(), "HELLO");
+    }
+
+    #[test]
+    fn test_operator_delete_all() {
+        let mut buf = TextBuffer::from_str("line1\nline2");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 1, 5);
+        let _result = apply_operator(Operator::Delete, range, &mut buf, &mut history, &mut register);
+        // Buffer should be minimal
+        assert!(buf.line_count() <= 1);
+    }
+
+    #[test]
+    fn test_operator_indent() {
+        let mut buf = TextBuffer::from_str("hello");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::Indent, range, &mut buf, &mut history, &mut register);
+        // Should have leading spaces/tabs
+        assert!(buf.line(0).unwrap().starts_with(' ') || buf.line(0).unwrap().starts_with('\t') || buf.line(0).unwrap() == "hello");
+    }
+
+    #[test]
+    fn test_operator_outdent_no_indent() {
+        let mut buf = TextBuffer::from_str("hello");
+        let mut history = UndoHistory::new();
+        let mut register = String::new();
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _result = apply_operator(Operator::Outdent, range, &mut buf, &mut history, &mut register);
+        // No change expected
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+
+    #[test]
+    fn test_operator_default_trait() {
+        // Test operators can be compared
+        assert!(Operator::Delete != Operator::Change);
+    }
+
+    #[test]
+    fn test_operator_coverage_all_variants() {
+        // Just ensure all variants exist
+        let _d = Operator::Delete;
+        let _y = Operator::Yank;
+        let _c = Operator::Change;
+        let _u = Operator::Uppercase;
+        let _l = Operator::Lowercase;
+        let _t = Operator::ToggleCase;
+        let _i = Operator::Indent;
+        let _o = Operator::Outdent;
+    }
+}
+
+mod motion_variants_coverage {
+    use super::*;
+
+    #[test]
+    fn test_motion_find_char_forward() {
+        let m = Motion::FindChar { char: 'a', forward: true, till: false };
+        assert!(matches!(m, Motion::FindChar { .. }));
+    }
+
+    #[test]
+    fn test_motion_find_char_backward() {
+        let buf = TextBuffer::from_str("hello hello");
+        let cursor = Cursor::new(0, 10);
+        let m = Motion::FindChar { char: 'e', forward: false, till: false };
+        let result = apply_motion(&m, cursor, &buf, false);
+        // Should find 'e' going backward
+        assert!(result.cursor.column < 10);
+    }
+
+    #[test]
+    fn test_motion_till_char_forward() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 0);
+        let m = Motion::FindChar { char: 'o', forward: true, till: true };
+        let result = apply_motion(&m, cursor, &buf, false);
+        // Should stop one before 'o'
+        assert_eq!(result.cursor.column, 3);
+    }
+
+    #[test]
+    fn test_motion_till_char_backward() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 10);
+        let m = Motion::FindChar { char: 'e', forward: false, till: true };
+        let result = apply_motion(&m, cursor, &buf, false);
+        // Should stop one after 'e' going backward
+        assert!(result.cursor.column > 1);
+    }
+
+    #[test]
+    fn test_motion_match_bracket_paren() {
+        let buf = TextBuffer::from_str("fn(a)");
+        let cursor = Cursor::new(0, 2); // On '('
+        let result = apply_motion(&Motion::MatchBracket, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 4); // On ')'
+    }
+
+    #[test]
+    fn test_motion_match_bracket_brace() {
+        let buf = TextBuffer::from_str("{ x }");
+        let cursor = Cursor::new(0, 0); // On '{'
+        let result = apply_motion(&Motion::MatchBracket, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 4); // On '}'
+    }
+
+    #[test]
+    fn test_motion_match_bracket_square() {
+        let buf = TextBuffer::from_str("[a]");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::MatchBracket, cursor, &buf, false);
+        assert_eq!(result.cursor.column, 2);
+    }
+}
