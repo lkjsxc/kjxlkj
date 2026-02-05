@@ -19,6 +19,7 @@ mod normal;
 pub mod parser;
 mod replace;
 pub mod script;
+pub mod surround;
 pub mod syntax_cmd;
 pub mod user_command;
 mod visual;
@@ -50,6 +51,7 @@ pub use mode_config::{
 pub use normal::NormalMode;
 pub use parser::{ParseResult, Parser};
 pub use replace::ReplaceMode;
+pub use surround::{Surround, SurroundAction, SurroundPair, SurroundRegistry, SurroundResult};
 pub use syntax_cmd::{
     ColorschemeCommand, HighlightAttr, HighlightCommand, HighlightDef, SyntaxCommand,
     SyntaxError, SyntaxSettings,
