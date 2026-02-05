@@ -506,4 +506,53 @@ mod tests {
         let v2 = buf.version();
         assert!(v2 > v1);
     }
+
+    #[test]
+    fn test_remove_at_start() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.remove(0, 2);
+        assert_eq!(buf.to_string(), "llo");
+    }
+
+    #[test]
+    fn test_remove_at_end() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.remove(3, 5);
+        assert_eq!(buf.to_string(), "hel");
+    }
+
+    #[test]
+    fn test_insert_at_end() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "hello");
+        buf.insert(5, " world");
+        assert_eq!(buf.to_string(), "hello world");
+    }
+
+    #[test]
+    fn test_buffer_clone() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "original");
+        let cloned = buf.clone();
+        assert_eq!(buf.to_string(), cloned.to_string());
+    }
+
+    #[test]
+    fn test_multiline_line_count() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "a\nb\nc\nd\ne");
+        assert_eq!(buf.line_count(), 5);
+    }
+
+    #[test]
+    fn test_set_path() {
+        let mut buf = TextBuffer::new(BufferId::new(1));
+        let path = std::path::PathBuf::from("/new/path.txt");
+        buf.set_path(path.clone());
+        assert_eq!(buf.path(), Some(&path));
+    }
+
+    #[test]
+    fn test_set_name() {
+        let mut buf = TextBuffer::new(BufferId::new(1));
+        buf.set_name(BufferName::new("custom_name"));
+        assert_eq!(buf.name().as_str(), "custom_name");
+    }
 }

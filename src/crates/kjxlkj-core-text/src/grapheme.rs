@@ -199,4 +199,25 @@ mod tests {
         assert_eq!(nth_grapheme_offset(slice, 0), Some(0));
         assert_eq!(nth_grapheme_offset(slice, 1), Some(1));
     }
+
+    #[test]
+    fn test_grapheme_count_flags() {
+        // Flag emoji (uses regional indicators)
+        let text = "🇺🇸";
+        assert_eq!(grapheme_count(text), 1);
+    }
+
+    #[test]
+    fn test_grapheme_count_skin_tone() {
+        // Emoji with skin tone modifier
+        let text = "👋🏽";
+        assert_eq!(grapheme_count(text), 1);
+    }
+
+    #[test]
+    fn test_rope_grapheme_partial_slice() {
+        let rope = Rope::from_str("hello world");
+        let slice = rope.slice(0..5);
+        assert_eq!(rope_grapheme_count(slice), 5);
+    }
 }
