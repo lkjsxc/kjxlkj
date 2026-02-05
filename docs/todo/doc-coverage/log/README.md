@@ -5,7 +5,7 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 ## Scope
 Covers documentation under `/docs/log/`.
 
-Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/README.md` remains). Historical context is summarized in `/docs/reference/IMPLEMENTATION_HISTORY.md`.
+Note: in some workflows, `/docs/log/` is intentionally pruned (only `/docs/log/README.md` remains).
 When `/docs/log/` is present, it may also include structured proposals/audits subtrees.
 
 ## Checklist (apply to every document listed)

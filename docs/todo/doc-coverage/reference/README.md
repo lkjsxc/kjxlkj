@@ -22,7 +22,6 @@ Covers documentation under `/docs/reference/`.
 - [ ] [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)
 - [ ] [/docs/reference/CONFORMANCE_COMMANDS_TESTING.md](/docs/reference/CONFORMANCE_COMMANDS_TESTING.md)
 - [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] [/docs/reference/IMPLEMENTATION_HISTORY.md](/docs/reference/IMPLEMENTATION_HISTORY.md)
 - [ ] [/docs/reference/PLUGIN_MAPPING.md](/docs/reference/PLUGIN_MAPPING.md)
 - [ ] [/docs/reference/CI.md](/docs/reference/CI.md)
 - [ ] [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

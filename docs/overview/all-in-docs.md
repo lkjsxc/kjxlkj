@@ -60,7 +60,7 @@ The docs are not static; they encode the maintenance workflow:
 - Specs live in `/docs/spec/`.
 - When implementation is created or changed, update:
   - `/docs/reference/` (what is implemented)
-  - `/docs/reference/IMPLEMENTATION_HISTORY.md` (what changed, and why)
+  - `/docs/log/` proposals/audits when non-normative work products are useful for iteration
 
 ### Drift management
 

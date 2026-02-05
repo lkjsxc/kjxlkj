@@ -22,7 +22,7 @@ The repo root SHOULD contain only the following entries:
 
 Additional root entries MUST be justified by a concrete need and recorded in:
 
-- `/docs/reference/IMPLEMENTATION_HISTORY.md`
+- `/docs/log/proposals/` (create a proposal documenting the rationale and any verification needs)
 
 ## Tracked vs untracked (normative)
 

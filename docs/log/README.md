@@ -9,10 +9,6 @@ Capture non-normative work products that are useful for reconstruction and itera
 
 This directory may be pruned in some workflows, but when it is used it SHOULD stay structured and link-driven.
 
-Historical context that used to live under `/docs/log/` is summarized in:
-
-- [/docs/reference/IMPLEMENTATION_HISTORY.md](/docs/reference/IMPLEMENTATION_HISTORY.md)
-
 ## Directory map
 
 | Path | Content |

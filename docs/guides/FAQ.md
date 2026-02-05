@@ -106,4 +106,4 @@ Start with the canonical docs:
 
 ### Where do I report bugs?
 
-Use the repository issue tracker if one exists, or record issues in `/docs/reference/IMPLEMENTATION_HISTORY.md` with reproduction steps and spec references.
+Use the repository issue tracker if one exists, or record issues as a proposal under `/docs/log/proposals/` with reproduction steps and spec references (and update `/docs/reference/LIMITATIONS.md` when user-visible).

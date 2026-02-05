@@ -13,7 +13,6 @@ Reference materials including comparisons, plugin mappings, and release processe
 | [CONFORMANCE_EDITING.md](CONFORMANCE_EDITING.md) | Editing semantics (ledger) |
 | [CONFORMANCE_COMMANDS_TESTING.md](CONFORMANCE_COMMANDS_TESTING.md) | Ex commands and headless testing (ledger) |
 | [LIMITATIONS.md](LIMITATIONS.md) | Known limitations |
-| [IMPLEMENTATION_HISTORY.md](IMPLEMENTATION_HISTORY.md) | Historical implementation context (summary) |
 | [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Plugin to built-in mapping |
 | [CI.md](CI.md) | Continuous integration checks |
 | [RELEASE.md](RELEASE.md) | Release process |

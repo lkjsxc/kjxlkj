@@ -28,7 +28,9 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
   - full target spec, or
   - "current surface" as documented in `/docs/reference/CONFORMANCE.md`
 - [ ] Record the chosen target explicitly in:
-  - `/docs/reference/IMPLEMENTATION_HISTORY.md` (append an entry for the reconstruction run)
+  - `/docs/reference/CONFORMANCE.md` (update the “docs-only baseline reconstruction target” notes if needed)
+  - `/docs/reference/LIMITATIONS.md` (record any user-visible scope reductions)
+  - `/docs/log/proposals/` (when the decision requires a durable rationale)
 
 ### B. Bootstrap required root artifacts
 

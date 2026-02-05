@@ -14,7 +14,7 @@ This directory manages the recursive TODO workflow for kjxlkj development.
 | [current/README.md](current/README.md) | Active TODO list (current iteration) |
 | [completed/README.md](completed/README.md) | Completed tasks archive |
 | [plan/README.md](plan/README.md) | Detailed implementation plan (recursive) |
-| [reading/README.md](reading/README.md) | Reading log (spec/policy comprehension) |
+| [reading/README.md](reading/README.md) | Reading discipline (no long-lived history) |
 | [doc-coverage/README.md](doc-coverage/README.md) | Checklist that links every doc outside `/docs/todo/` |
 | [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | One-shot rebuild prompt (Copilot/Claude) |
 

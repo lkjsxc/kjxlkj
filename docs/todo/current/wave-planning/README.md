@@ -42,5 +42,5 @@ Convert “what the documents say” into a complete, implementation-ordered pla
 - [ ] Ensure docs do not contradict the repository's actual artifacts:
   - [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
 - [ ] If the implementation topology differs from the spec topology, record:
-  - the decision and rationale in `/docs/reference/IMPLEMENTATION_HISTORY.md`
+  - the decision and rationale in `/docs/log/proposals/`
   - the resulting limitations in `/docs/reference/LIMITATIONS.md`

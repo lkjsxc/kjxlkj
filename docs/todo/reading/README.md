@@ -1,14 +1,33 @@
-# Reading Log
+# Reading Discipline
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Purpose
 
-Record the documents read in-depth for each iteration and track contradictions to resolve.
+Maintain a deterministic “read before implement” discipline without keeping long-lived historical logs that can become noise.
 
-## Iterations
+The canonical traversal mechanism is the doc coverage set:
 
-| Iteration | Date | Entry |
-|----------|------|-------|
-| 32 | 2026-02-03 | [iteration-32.md](iteration-32.md) |
-| 33 | 2026-02-04 | [iteration-33.md](iteration-33.md) |
+- [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
+
+## Normative rules
+
+- Reading MUST be performed before implementation work that changes observable behavior.
+- Reading MUST prioritize:
+  - `/docs/policy/` (constraints)
+  - `/docs/spec/` (target behavior)
+  - `/docs/reference/` (current surface and known gaps)
+  - `/docs/todo/current/` (execution plan)
+- Contradictions MUST be resolved by:
+  - updating the canonical spec/policy document, and/or
+  - recording user-visible drift in `/docs/reference/LIMITATIONS.md`, and/or
+  - creating a proposal under `/docs/log/proposals/` when design work is required.
+
+## Minimal recording (only when useful)
+
+If an iteration requires recording what was read, keep it minimal and non-historical:
+
+- add a short note to an audit under `/docs/log/audits/` describing:
+  - which doc subtree was reviewed
+  - what contradictions were found
+  - what canonical edits were made
