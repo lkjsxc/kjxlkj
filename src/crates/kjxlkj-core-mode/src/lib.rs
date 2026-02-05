@@ -17,6 +17,7 @@ mod normal;
 pub mod parser;
 mod replace;
 pub mod script;
+pub mod syntax_cmd;
 pub mod user_command;
 mod visual;
 
@@ -43,6 +44,10 @@ pub use insert_completion::{
 pub use normal::NormalMode;
 pub use parser::{ParseResult, Parser};
 pub use replace::ReplaceMode;
+pub use syntax_cmd::{
+    ColorschemeCommand, HighlightAttr, HighlightCommand, HighlightDef, SyntaxCommand,
+    SyntaxError, SyntaxSettings,
+};
 pub use user_command::{
     CommandAttributes, CommandCall, CommandRegistry, CommandResult, CompletionType as CmdCompletionType,
     RangeDefault, UserCommand,
