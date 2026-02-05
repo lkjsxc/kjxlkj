@@ -6,6 +6,7 @@
 
 mod command;
 pub mod completion;
+pub mod function;
 mod handler;
 mod insert;
 mod normal;
@@ -17,6 +18,10 @@ pub use command::CommandMode;
 pub use completion::{
     CommandCompletionProvider, CompletionItem, CompletionProvider, CompletionState,
     CompletionType, FileCompletionProvider, WildMode,
+};
+pub use function::{
+    BuiltinFunction, Callable, FunctionError, FunctionParam, FunctionRegistry, FunctionResult,
+    FunctionValue,
 };
 pub use handler::{ModeHandler, ModeResult};
 pub use insert::InsertMode;
