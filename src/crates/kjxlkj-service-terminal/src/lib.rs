@@ -211,6 +211,322 @@ impl TerminalManager {
     }
 }
 
+// ============================================================================
+// Debug Adapter Protocol (DAP)
+// ============================================================================
+
+/// DAP session state.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum DapState {
+    /// Not connected.
+    #[default]
+    Disconnected,
+    /// Initializing.
+    Initializing,
+    /// Stopped at breakpoint.
+    Stopped,
+    /// Running.
+    Running,
+    /// Terminated.
+    Terminated,
+}
+
+/// Breakpoint type.
+#[derive(Debug, Clone)]
+pub enum BreakpointKind {
+    /// Line breakpoint.
+    Line,
+    /// Conditional breakpoint with expression.
+    Conditional(String),
+    /// Function breakpoint.
+    Function(String),
+    /// Exception breakpoint.
+    Exception(ExceptionBreakMode),
+    /// Logpoint (logs message without stopping).
+    Logpoint(String),
+}
+
+/// Exception break mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExceptionBreakMode {
+    /// Never break.
+    Never,
+    /// Break on unhandled.
+    Unhandled,
+    /// Break on user-unhandled.
+    UserUnhandled,
+    /// Always break.
+    Always,
+}
+
+/// A breakpoint.
+#[derive(Debug, Clone)]
+pub struct Breakpoint {
+    /// Unique ID.
+    pub id: u32,
+    /// File path.
+    pub file: String,
+    /// Line number (1-indexed).
+    pub line: usize,
+    /// Breakpoint kind.
+    pub kind: BreakpointKind,
+    /// Is verified by debug adapter.
+    pub verified: bool,
+    /// Is enabled.
+    pub enabled: bool,
+    /// Hit count.
+    pub hit_count: u32,
+}
+
+impl Breakpoint {
+    /// Create a line breakpoint.
+    pub fn line(id: u32, file: impl Into<String>, line: usize) -> Self {
+        Self {
+            id,
+            file: file.into(),
+            line,
+            kind: BreakpointKind::Line,
+            verified: false,
+            enabled: true,
+            hit_count: 0,
+        }
+    }
+
+    /// Make conditional.
+    pub fn with_condition(mut self, expr: impl Into<String>) -> Self {
+        self.kind = BreakpointKind::Conditional(expr.into());
+        self
+    }
+
+    /// Make logpoint.
+    pub fn as_logpoint(mut self, message: impl Into<String>) -> Self {
+        self.kind = BreakpointKind::Logpoint(message.into());
+        self
+    }
+}
+
+/// Stack frame.
+#[derive(Debug, Clone)]
+pub struct StackFrame {
+    /// Frame ID.
+    pub id: u32,
+    /// Function name.
+    pub name: String,
+    /// Source file.
+    pub source: Option<String>,
+    /// Line number.
+    pub line: usize,
+    /// Column.
+    pub column: usize,
+}
+
+impl StackFrame {
+    /// Create a new stack frame.
+    pub fn new(id: u32, name: impl Into<String>) -> Self {
+        Self {
+            id,
+            name: name.into(),
+            source: None,
+            line: 0,
+            column: 0,
+        }
+    }
+
+    /// Set source location.
+    pub fn at(mut self, source: impl Into<String>, line: usize, column: usize) -> Self {
+        self.source = Some(source.into());
+        self.line = line;
+        self.column = column;
+        self
+    }
+}
+
+/// Variable scope.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VariableScope {
+    /// Local variables.
+    Local,
+    /// Function arguments.
+    Arguments,
+    /// Global/static.
+    Global,
+    /// Registers.
+    Registers,
+}
+
+/// A debug variable.
+#[derive(Debug, Clone)]
+pub struct Variable {
+    /// Variable name.
+    pub name: String,
+    /// Value as string.
+    pub value: String,
+    /// Type name.
+    pub type_name: Option<String>,
+    /// Variables reference (for expandable).
+    pub variables_reference: u32,
+    /// Named children count.
+    pub named_children: u32,
+    /// Indexed children count.
+    pub indexed_children: u32,
+}
+
+impl Variable {
+    /// Create a simple variable.
+    pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
+        Self {
+            name: name.into(),
+            value: value.into(),
+            type_name: None,
+            variables_reference: 0,
+            named_children: 0,
+            indexed_children: 0,
+        }
+    }
+
+    /// Set type.
+    pub fn with_type(mut self, type_name: impl Into<String>) -> Self {
+        self.type_name = Some(type_name.into());
+        self
+    }
+
+    /// Mark as expandable.
+    pub fn expandable(mut self, ref_id: u32) -> Self {
+        self.variables_reference = ref_id;
+        self
+    }
+}
+
+/// DAP session.
+#[derive(Debug, Default)]
+pub struct DapSession {
+    /// Current state.
+    pub state: DapState,
+    /// Active thread ID.
+    pub thread_id: Option<u32>,
+    /// Breakpoints.
+    breakpoints: HashMap<u32, Breakpoint>,
+    /// Next breakpoint ID.
+    next_bp_id: u32,
+    /// Call stack.
+    pub stack: Vec<StackFrame>,
+    /// Watch expressions.
+    watches: Vec<String>,
+}
+
+impl DapSession {
+    /// Create a new DAP session.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Add a breakpoint.
+    pub fn add_breakpoint(&mut self, file: impl Into<String>, line: usize) -> u32 {
+        let id = self.next_bp_id;
+        self.next_bp_id += 1;
+        let bp = Breakpoint::line(id, file, line);
+        self.breakpoints.insert(id, bp);
+        id
+    }
+
+    /// Remove a breakpoint.
+    pub fn remove_breakpoint(&mut self, id: u32) -> Option<Breakpoint> {
+        self.breakpoints.remove(&id)
+    }
+
+    /// Toggle a breakpoint enabled state.
+    pub fn toggle_breakpoint(&mut self, id: u32) {
+        if let Some(bp) = self.breakpoints.get_mut(&id) {
+            bp.enabled = !bp.enabled;
+        }
+    }
+
+    /// Get breakpoints for a file.
+    pub fn breakpoints_for_file(&self, file: &str) -> Vec<&Breakpoint> {
+        self.breakpoints.values().filter(|bp| bp.file == file).collect()
+    }
+
+    /// Get all breakpoints.
+    pub fn breakpoints(&self) -> impl Iterator<Item = &Breakpoint> {
+        self.breakpoints.values()
+    }
+
+    /// Add a watch expression.
+    pub fn add_watch(&mut self, expr: impl Into<String>) {
+        self.watches.push(expr.into());
+    }
+
+    /// Remove a watch expression.
+    pub fn remove_watch(&mut self, index: usize) -> Option<String> {
+        if index < self.watches.len() {
+            Some(self.watches.remove(index))
+        } else {
+            None
+        }
+    }
+
+    /// Get watch expressions.
+    pub fn watches(&self) -> &[String] {
+        &self.watches
+    }
+
+    /// Clear call stack.
+    pub fn clear_stack(&mut self) {
+        self.stack.clear();
+    }
+
+    /// Push a stack frame.
+    pub fn push_frame(&mut self, frame: StackFrame) {
+        self.stack.push(frame);
+    }
+}
+
+// ============================================================================
+// tmux/Screen Integration
+// ============================================================================
+
+/// tmux detection and integration.
+#[derive(Debug, Default)]
+pub struct TmuxIntegration {
+    /// Is running inside tmux.
+    pub inside_tmux: bool,
+    /// tmux version.
+    pub version: Option<String>,
+    /// True color support.
+    pub true_color: bool,
+    /// OSC52 clipboard support.
+    pub osc52: bool,
+}
+
+impl TmuxIntegration {
+    /// Detect tmux environment.
+    pub fn detect() -> Self {
+        let inside_tmux = std::env::var("TMUX").is_ok();
+        let term = std::env::var("TERM").unwrap_or_default();
+
+        Self {
+            inside_tmux,
+            version: None,
+            true_color: inside_tmux && term.contains("256color"),
+            osc52: inside_tmux,
+        }
+    }
+
+    /// Check if escape sequences should be wrapped.
+    pub fn needs_passthrough(&self) -> bool {
+        self.inside_tmux
+    }
+
+    /// Wrap escape sequence for tmux passthrough.
+    pub fn passthrough(&self, seq: &str) -> String {
+        if self.inside_tmux {
+            format!("\x1bPtmux;\x1b{}\x1b\\", seq)
+        } else {
+            seq.to_string()
+        }
+    }
+}
+
 /// Terminal session.
 pub struct TerminalSession {
     /// Session ID.
@@ -589,5 +905,181 @@ mod tests {
         let info = mgr.find_by_name("test-term");
         assert!(info.is_some());
         assert_eq!(info.unwrap().name, "test-term");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // DAP Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_dap_state_default() {
+        assert_eq!(DapState::default(), DapState::Disconnected);
+    }
+
+    #[test]
+    fn test_breakpoint_line() {
+        let bp = Breakpoint::line(1, "main.rs", 10);
+        assert_eq!(bp.id, 1);
+        assert_eq!(bp.file, "main.rs");
+        assert_eq!(bp.line, 10);
+        assert!(bp.enabled);
+        assert!(!bp.verified);
+    }
+
+    #[test]
+    fn test_breakpoint_conditional() {
+        let bp = Breakpoint::line(1, "main.rs", 10).with_condition("x > 5");
+        match bp.kind {
+            BreakpointKind::Conditional(cond) => assert_eq!(cond, "x > 5"),
+            _ => panic!("Expected conditional"),
+        }
+    }
+
+    #[test]
+    fn test_breakpoint_logpoint() {
+        let bp = Breakpoint::line(1, "main.rs", 10).as_logpoint("value = {x}");
+        match bp.kind {
+            BreakpointKind::Logpoint(msg) => assert_eq!(msg, "value = {x}"),
+            _ => panic!("Expected logpoint"),
+        }
+    }
+
+    #[test]
+    fn test_stack_frame_new() {
+        let frame = StackFrame::new(1, "main");
+        assert_eq!(frame.id, 1);
+        assert_eq!(frame.name, "main");
+        assert!(frame.source.is_none());
+    }
+
+    #[test]
+    fn test_stack_frame_at() {
+        let frame = StackFrame::new(1, "main").at("main.rs", 10, 5);
+        assert_eq!(frame.source, Some("main.rs".to_string()));
+        assert_eq!(frame.line, 10);
+        assert_eq!(frame.column, 5);
+    }
+
+    #[test]
+    fn test_variable_new() {
+        let var = Variable::new("x", "42");
+        assert_eq!(var.name, "x");
+        assert_eq!(var.value, "42");
+    }
+
+    #[test]
+    fn test_variable_with_type() {
+        let var = Variable::new("x", "42").with_type("i32");
+        assert_eq!(var.type_name, Some("i32".to_string()));
+    }
+
+    #[test]
+    fn test_variable_expandable() {
+        let var = Variable::new("obj", "{...}").expandable(100);
+        assert_eq!(var.variables_reference, 100);
+    }
+
+    #[test]
+    fn test_dap_session_new() {
+        let session = DapSession::new();
+        assert_eq!(session.state, DapState::Disconnected);
+        assert!(session.stack.is_empty());
+    }
+
+    #[test]
+    fn test_dap_session_add_breakpoint() {
+        let mut session = DapSession::new();
+        let id = session.add_breakpoint("main.rs", 10);
+        assert_eq!(id, 0);
+        let bps: Vec<_> = session.breakpoints_for_file("main.rs");
+        assert_eq!(bps.len(), 1);
+    }
+
+    #[test]
+    fn test_dap_session_remove_breakpoint() {
+        let mut session = DapSession::new();
+        let id = session.add_breakpoint("main.rs", 10);
+        let bp = session.remove_breakpoint(id);
+        assert!(bp.is_some());
+        assert!(session.breakpoints_for_file("main.rs").is_empty());
+    }
+
+    #[test]
+    fn test_dap_session_toggle_breakpoint() {
+        let mut session = DapSession::new();
+        let id = session.add_breakpoint("main.rs", 10);
+        assert!(session.breakpoints().next().unwrap().enabled);
+        session.toggle_breakpoint(id);
+        assert!(!session.breakpoints().next().unwrap().enabled);
+    }
+
+    #[test]
+    fn test_dap_session_watches() {
+        let mut session = DapSession::new();
+        session.add_watch("x + y");
+        session.add_watch("self.value");
+        assert_eq!(session.watches().len(), 2);
+    }
+
+    #[test]
+    fn test_dap_session_remove_watch() {
+        let mut session = DapSession::new();
+        session.add_watch("x");
+        session.add_watch("y");
+        let removed = session.remove_watch(0);
+        assert_eq!(removed, Some("x".to_string()));
+        assert_eq!(session.watches().len(), 1);
+    }
+
+    #[test]
+    fn test_dap_session_stack() {
+        let mut session = DapSession::new();
+        session.push_frame(StackFrame::new(0, "main"));
+        session.push_frame(StackFrame::new(1, "foo"));
+        assert_eq!(session.stack.len(), 2);
+        session.clear_stack();
+        assert!(session.stack.is_empty());
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // tmux Integration Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_tmux_integration_default() {
+        let tmux = TmuxIntegration::default();
+        assert!(!tmux.inside_tmux);
+    }
+
+    #[test]
+    fn test_tmux_passthrough_not_in_tmux() {
+        let tmux = TmuxIntegration::default();
+        let result = tmux.passthrough("\x1b[31m");
+        assert_eq!(result, "\x1b[31m");
+    }
+
+    #[test]
+    fn test_tmux_passthrough_in_tmux() {
+        let tmux = TmuxIntegration {
+            inside_tmux: true,
+            version: None,
+            true_color: false,
+            osc52: true,
+        };
+        let result = tmux.passthrough("[31m");
+        assert!(result.starts_with("\x1bPtmux;"));
+        assert!(result.ends_with("\x1b\\"));
+    }
+
+    #[test]
+    fn test_tmux_needs_passthrough() {
+        let not_tmux = TmuxIntegration::default();
+        assert!(!not_tmux.needs_passthrough());
+
+        let in_tmux = TmuxIntegration {
+            inside_tmux: true,
+            ..Default::default()
+        };
+        assert!(in_tmux.needs_passthrough());
     }
 }
