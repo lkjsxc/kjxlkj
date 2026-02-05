@@ -15,6 +15,12 @@ This document set records the last known implemented, user-visible surface so th
 
 In a docs-only baseline (no implementation artifacts in-repo), treat this ledger as the intended initial reconstruction target until it is updated by the regenerated implementation.
 
+## Reconstruction target (Iteration 36)
+
+For this iteration, the reconstruction target is the **current surface** described by this conformance document set.
+
+The target specs under `/docs/spec/` remain normative for the long-term system, but any gaps between target specs and the current surface MUST be recorded as limitations and carried as explicit TODO leaves.
+
 ## Conformance documents (current surface)
 
 | Document | Content |
