@@ -1,6 +1,6 @@
 //! Window management module.
 //!
-//! Implements the window tree model for splits and tabs.
+//! Implements the window tree model for splits, tabs, floating windows, and layouts.
 
 use std::collections::HashMap;
 
@@ -56,6 +56,343 @@ pub enum Direction {
     Left,
     /// Right.
     Right,
+}
+
+/// Window command (wincmd) operations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WinCmd {
+    /// Go to window in direction.
+    Goto(Direction),
+    /// Go to next window.
+    Next,
+    /// Go to previous window.
+    Previous,
+    /// Go to top-left window.
+    TopLeft,
+    /// Go to bottom-right window.
+    BottomRight,
+    /// Split horizontally.
+    SplitHorizontal,
+    /// Split vertically.
+    SplitVertical,
+    /// Close current window.
+    Close,
+    /// Close other windows.
+    Only,
+    /// Quit window (close and quit if last).
+    Quit,
+    /// Move window to edge.
+    Move(Direction),
+    /// Rotate windows.
+    Rotate(bool), // true = reverse
+    /// Exchange with next window.
+    Exchange,
+    /// Resize height.
+    ResizeHeight(i32),
+    /// Resize width.
+    ResizeWidth(i32),
+    /// Make all windows equal size.
+    Equal,
+    /// Maximize height.
+    MaxHeight,
+    /// Maximize width.
+    MaxWidth,
+    /// Move window to new tab.
+    MoveToTab,
+}
+
+/// Floating window border style.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum FloatBorder {
+    /// No border.
+    #[default]
+    None,
+    /// Single line border.
+    Single,
+    /// Double line border.
+    Double,
+    /// Rounded corners.
+    Rounded,
+    /// Solid block border.
+    Solid,
+    /// Shadow effect.
+    Shadow,
+}
+
+impl FloatBorder {
+    /// Get border characters: (top-left, top, top-right, left, right, bot-left, bot, bot-right).
+    pub fn chars(&self) -> Option<[char; 8]> {
+        match self {
+            Self::None => None,
+            Self::Single => Some(['┌', '─', '┐', '│', '│', '└', '─', '┘']),
+            Self::Double => Some(['╔', '═', '╗', '║', '║', '╚', '═', '╝']),
+            Self::Rounded => Some(['╭', '─', '╮', '│', '│', '╰', '─', '╯']),
+            Self::Solid => Some(['█', '▀', '█', '█', '█', '█', '▄', '█']),
+            Self::Shadow => Some(['▛', '▀', '▜', '▌', '▐', '▙', '▄', '▟']),
+        }
+    }
+}
+
+/// Floating window anchor position.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum FloatAnchor {
+    /// Anchor to cursor position.
+    #[default]
+    Cursor,
+    /// Anchor to center of screen.
+    Center,
+    /// Anchor to editor position.
+    Position { row: u16, col: u16 },
+    /// Anchor to corner.
+    Corner(Corner),
+}
+
+/// Screen corner.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Corner {
+    /// Top-left.
+    TopLeft,
+    /// Top-right.
+    TopRight,
+    /// Bottom-left.
+    BottomLeft,
+    /// Bottom-right.
+    BottomRight,
+}
+
+/// Floating window configuration.
+#[derive(Debug, Clone)]
+pub struct FloatConfig {
+    /// Anchor position.
+    pub anchor: FloatAnchor,
+    /// Width (absolute or percentage).
+    pub width: FloatSize,
+    /// Height (absolute or percentage).
+    pub height: FloatSize,
+    /// Border style.
+    pub border: FloatBorder,
+    /// Title text.
+    pub title: Option<String>,
+    /// Footer text.
+    pub footer: Option<String>,
+    /// Z-index for layering.
+    pub zindex: u8,
+    /// Whether the float is focusable.
+    pub focusable: bool,
+    /// Close on focus loss.
+    pub close_on_blur: bool,
+}
+
+/// Size specification for floating windows.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FloatSize {
+    /// Absolute size in cells.
+    Absolute(u16),
+    /// Percentage of screen.
+    Percent(u8),
+    /// Auto-size based on content.
+    Auto,
+}
+
+impl Default for FloatConfig {
+    fn default() -> Self {
+        Self {
+            anchor: FloatAnchor::Center,
+            width: FloatSize::Percent(60),
+            height: FloatSize::Percent(60),
+            border: FloatBorder::Rounded,
+            title: None,
+            footer: None,
+            zindex: 50,
+            focusable: true,
+            close_on_blur: false,
+        }
+    }
+}
+
+impl FloatConfig {
+    /// Create a centered float.
+    pub fn centered(width: u16, height: u16) -> Self {
+        Self {
+            anchor: FloatAnchor::Center,
+            width: FloatSize::Absolute(width),
+            height: FloatSize::Absolute(height),
+            ..Default::default()
+        }
+    }
+
+    /// Create a cursor-anchored float.
+    pub fn at_cursor(width: u16, height: u16) -> Self {
+        Self {
+            anchor: FloatAnchor::Cursor,
+            width: FloatSize::Absolute(width),
+            height: FloatSize::Absolute(height),
+            ..Default::default()
+        }
+    }
+
+    /// Set title.
+    pub fn with_title(mut self, title: &str) -> Self {
+        self.title = Some(title.to_string());
+        self
+    }
+
+    /// Set border.
+    pub fn with_border(mut self, border: FloatBorder) -> Self {
+        self.border = border;
+        self
+    }
+}
+
+/// A floating window.
+#[derive(Debug, Clone)]
+pub struct FloatingWindow {
+    /// Window ID.
+    pub id: WindowId,
+    /// Configuration.
+    pub config: FloatConfig,
+    /// Buffer ID.
+    pub buffer_id: BufferId,
+    /// Computed bounds.
+    pub bounds: FloatBounds,
+}
+
+/// Computed floating window bounds.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct FloatBounds {
+    /// Row position.
+    pub row: u16,
+    /// Column position.
+    pub col: u16,
+    /// Width.
+    pub width: u16,
+    /// Height.
+    pub height: u16,
+}
+
+impl FloatBounds {
+    /// Create new bounds.
+    pub fn new(row: u16, col: u16, width: u16, height: u16) -> Self {
+        Self { row, col, width, height }
+    }
+
+    /// Compute bounds from config and screen size.
+    pub fn compute(config: &FloatConfig, screen_width: u16, screen_height: u16, cursor_row: u16, cursor_col: u16) -> Self {
+        let width = match config.width {
+            FloatSize::Absolute(w) => w.min(screen_width),
+            FloatSize::Percent(p) => (screen_width as u32 * p as u32 / 100) as u16,
+            FloatSize::Auto => 40, // Default
+        };
+        let height = match config.height {
+            FloatSize::Absolute(h) => h.min(screen_height),
+            FloatSize::Percent(p) => (screen_height as u32 * p as u32 / 100) as u16,
+            FloatSize::Auto => 20, // Default
+        };
+
+        let (row, col) = match config.anchor {
+            FloatAnchor::Center => (
+                (screen_height.saturating_sub(height)) / 2,
+                (screen_width.saturating_sub(width)) / 2,
+            ),
+            FloatAnchor::Cursor => (cursor_row + 1, cursor_col),
+            FloatAnchor::Position { row, col } => (row, col),
+            FloatAnchor::Corner(corner) => match corner {
+                Corner::TopLeft => (0, 0),
+                Corner::TopRight => (0, screen_width.saturating_sub(width)),
+                Corner::BottomLeft => (screen_height.saturating_sub(height), 0),
+                Corner::BottomRight => (
+                    screen_height.saturating_sub(height),
+                    screen_width.saturating_sub(width),
+                ),
+            },
+        };
+
+        Self { row, col, width, height }
+    }
+}
+
+impl FloatingWindow {
+    /// Create a new floating window.
+    pub fn new(id: WindowId, buffer_id: BufferId, config: FloatConfig) -> Self {
+        Self {
+            id,
+            config,
+            buffer_id,
+            bounds: FloatBounds::default(),
+        }
+    }
+
+    /// Update bounds based on screen size.
+    pub fn compute_bounds(&mut self, screen_width: u16, screen_height: u16, cursor_row: u16, cursor_col: u16) {
+        self.bounds = FloatBounds::compute(&self.config, screen_width, screen_height, cursor_row, cursor_col);
+    }
+}
+
+/// Window zoom state.
+#[derive(Debug, Clone, Default)]
+pub struct ZoomState {
+    /// Whether zoom is active.
+    pub active: bool,
+    /// Zoomed window ID.
+    pub window_id: Option<WindowId>,
+    /// Saved layout before zoom.
+    saved_layout: Option<WindowNode>,
+}
+
+impl ZoomState {
+    /// Toggle zoom for a window.
+    pub fn toggle(&mut self, window_id: WindowId, current_layout: &WindowNode) -> Option<WindowNode> {
+        if self.active && self.window_id == Some(window_id) {
+            // Unzoom: restore saved layout
+            self.active = false;
+            self.window_id = None;
+            self.saved_layout.take()
+        } else {
+            // Zoom: save current layout
+            self.saved_layout = Some(current_layout.clone());
+            self.active = true;
+            self.window_id = Some(window_id);
+            None
+        }
+    }
+
+    /// Check if a window is zoomed.
+    pub fn is_zoomed(&self, window_id: WindowId) -> bool {
+        self.active && self.window_id == Some(window_id)
+    }
+}
+
+/// Window resize mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum ResizeMode {
+    /// Not in resize mode.
+    #[default]
+    None,
+    /// Interactive resize mode.
+    Interactive,
+    /// Resize by steps.
+    Step(u16),
+}
+
+/// Layout preset types.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LayoutPreset {
+    /// Single window (no splits).
+    Single,
+    /// Horizontal stack (windows side by side).
+    HorizontalStack,
+    /// Vertical stack (windows stacked vertically).
+    VerticalStack,
+    /// Grid layout (2x2).
+    Grid,
+    /// Main left with stacked right.
+    MainLeft,
+    /// Main right with stacked left.
+    MainRight,
+    /// Main top with stacked bottom.
+    MainTop,
+    /// Main bottom with stacked top.
+    MainBottom,
 }
 
 /// Per-window options.
@@ -613,5 +950,174 @@ mod tests {
         assert!(vp.is_line_visible(10));
         assert!(vp.is_line_visible(29));
         assert!(!vp.is_line_visible(30));
+    }
+
+    // Floating window tests
+    #[test]
+    fn test_float_border_chars() {
+        assert!(FloatBorder::None.chars().is_none());
+        assert!(FloatBorder::Single.chars().is_some());
+        assert!(FloatBorder::Rounded.chars().is_some());
+    }
+
+    #[test]
+    fn test_float_config_centered() {
+        let config = FloatConfig::centered(40, 20);
+        assert_eq!(config.anchor, FloatAnchor::Center);
+        assert_eq!(config.width, FloatSize::Absolute(40));
+    }
+
+    #[test]
+    fn test_float_config_at_cursor() {
+        let config = FloatConfig::at_cursor(30, 10);
+        assert_eq!(config.anchor, FloatAnchor::Cursor);
+    }
+
+    #[test]
+    fn test_float_config_with_title() {
+        let config = FloatConfig::default().with_title("Test");
+        assert_eq!(config.title, Some("Test".to_string()));
+    }
+
+    #[test]
+    fn test_float_bounds_compute_center() {
+        let config = FloatConfig::centered(40, 20);
+        let bounds = FloatBounds::compute(&config, 100, 50, 0, 0);
+        assert_eq!(bounds.width, 40);
+        assert_eq!(bounds.height, 20);
+        assert_eq!(bounds.col, 30); // (100-40)/2
+        assert_eq!(bounds.row, 15); // (50-20)/2
+    }
+
+    #[test]
+    fn test_float_bounds_compute_cursor() {
+        let config = FloatConfig::at_cursor(20, 10);
+        let bounds = FloatBounds::compute(&config, 100, 50, 5, 10);
+        assert_eq!(bounds.row, 6); // cursor_row + 1
+        assert_eq!(bounds.col, 10); // cursor_col
+    }
+
+    #[test]
+    fn test_float_bounds_compute_corner() {
+        let config = FloatConfig {
+            anchor: FloatAnchor::Corner(Corner::BottomRight),
+            width: FloatSize::Absolute(20),
+            height: FloatSize::Absolute(10),
+            ..Default::default()
+        };
+        let bounds = FloatBounds::compute(&config, 100, 50, 0, 0);
+        assert_eq!(bounds.col, 80);
+        assert_eq!(bounds.row, 40);
+    }
+
+    #[test]
+    fn test_floating_window_new() {
+        let fw = FloatingWindow::new(
+            WindowId::new(1),
+            BufferId::new(1),
+            FloatConfig::centered(40, 20),
+        );
+        assert_eq!(fw.id.value(), 1);
+    }
+
+    #[test]
+    fn test_floating_window_compute_bounds() {
+        let mut fw = FloatingWindow::new(
+            WindowId::new(1),
+            BufferId::new(1),
+            FloatConfig::centered(40, 20),
+        );
+        fw.compute_bounds(100, 50, 0, 0);
+        assert_eq!(fw.bounds.width, 40);
+    }
+
+    // Zoom state tests
+    #[test]
+    fn test_zoom_state_default() {
+        let zoom = ZoomState::default();
+        assert!(!zoom.active);
+        assert!(zoom.window_id.is_none());
+    }
+
+    #[test]
+    fn test_zoom_state_toggle() {
+        let mut zoom = ZoomState::default();
+        let window = Window::new(WindowId::new(1), BufferId::new(1));
+        let layout = WindowNode::leaf(window);
+        
+        // First toggle: zoom in
+        let restored = zoom.toggle(WindowId::new(1), &layout);
+        assert!(zoom.active);
+        assert_eq!(zoom.window_id, Some(WindowId::new(1)));
+        assert!(restored.is_none());
+        
+        // Second toggle: zoom out
+        let restored = zoom.toggle(WindowId::new(1), &layout);
+        assert!(!zoom.active);
+        assert!(restored.is_some());
+    }
+
+    #[test]
+    fn test_zoom_state_is_zoomed() {
+        let mut zoom = ZoomState::default();
+        let window = Window::new(WindowId::new(1), BufferId::new(1));
+        let layout = WindowNode::leaf(window);
+        
+        assert!(!zoom.is_zoomed(WindowId::new(1)));
+        zoom.toggle(WindowId::new(1), &layout);
+        assert!(zoom.is_zoomed(WindowId::new(1)));
+        assert!(!zoom.is_zoomed(WindowId::new(2)));
+    }
+
+    // Resize mode and layout preset tests
+    #[test]
+    fn test_resize_mode_default() {
+        assert_eq!(ResizeMode::default(), ResizeMode::None);
+    }
+
+    #[test]
+    fn test_layout_preset_variants() {
+        let presets = [
+            LayoutPreset::Single,
+            LayoutPreset::HorizontalStack,
+            LayoutPreset::VerticalStack,
+            LayoutPreset::Grid,
+            LayoutPreset::MainLeft,
+        ];
+        assert_eq!(presets.len(), 5);
+    }
+
+    // WinCmd tests
+    #[test]
+    fn test_wincmd_variants() {
+        let cmd = WinCmd::Goto(Direction::Left);
+        assert_eq!(cmd, WinCmd::Goto(Direction::Left));
+        
+        let cmd = WinCmd::ResizeHeight(5);
+        assert_eq!(cmd, WinCmd::ResizeHeight(5));
+    }
+
+    #[test]
+    fn test_float_size_percent() {
+        let config = FloatConfig {
+            width: FloatSize::Percent(50),
+            height: FloatSize::Percent(50),
+            ..Default::default()
+        };
+        let bounds = FloatBounds::compute(&config, 100, 80, 0, 0);
+        assert_eq!(bounds.width, 50);
+        assert_eq!(bounds.height, 40);
+    }
+
+    #[test]
+    fn test_float_size_auto() {
+        let config = FloatConfig {
+            width: FloatSize::Auto,
+            height: FloatSize::Auto,
+            ..Default::default()
+        };
+        let bounds = FloatBounds::compute(&config, 100, 80, 0, 0);
+        assert_eq!(bounds.width, 40); // default
+        assert_eq!(bounds.height, 20); // default
     }
 }

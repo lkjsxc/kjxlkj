@@ -57,8 +57,10 @@ pub use which_key::{
     CommandPalette, KeyHint, PaletteCommand, WhichKey, WhichKeyConfig, WhichKeyPosition,
 };
 pub use window::{
-    BufferId, Direction, SplitDirection, TabPage, Window, WindowCursor, WindowId, WindowManager,
-    WindowNode, WindowOptions, WindowViewport,
+    BufferId, Corner, Direction, FloatAnchor, FloatBorder, FloatBounds, FloatConfig,
+    FloatingWindow, FloatSize, LayoutPreset, ResizeMode, SplitDirection, TabPage, WinCmd,
+    Window, WindowCursor, WindowId, WindowManager, WindowNode, WindowOptions, WindowViewport,
+    ZoomState,
 };
 
 #[cfg(test)]
