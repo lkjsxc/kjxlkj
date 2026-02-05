@@ -455,4 +455,55 @@ mod tests {
         let buf = TextBuffer::from_text(BufferId::new(1), "👋🌍🎉");
         assert!(buf.char_count() > 0);
     }
+
+    #[test]
+    fn test_buffer_id_value() {
+        let buf = TextBuffer::from_text(BufferId::new(42), "test");
+        assert_eq!(buf.id().value(), 42);
+    }
+
+    #[test]
+    fn test_line_to_char_offset() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "abc\ndef\nghi");
+        let char_idx = buf.line_to_char(1);
+        assert_eq!(char_idx, 4);
+    }
+
+    #[test]
+    fn test_rope_access_method() {
+        let buf = TextBuffer::from_text(BufferId::new(1), "test content");
+        let rope = buf.rope();
+        assert_eq!(rope.len_chars(), 12);
+    }
+
+    #[test]
+    fn test_replace_all_clears_content() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "old content");
+        buf.replace_all("new");
+        assert_eq!(buf.to_string(), "new");
+    }
+
+    #[test]
+    fn test_modified_flag_on_insert() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "initial");
+        buf.mark_saved();
+        assert!(!buf.is_modified());
+        buf.insert(0, "x");
+        assert!(buf.is_modified());
+    }
+
+    #[test]
+    fn test_empty_buffer_initial_version() {
+        let buf = TextBuffer::new(BufferId::new(1));
+        assert_eq!(buf.version().value(), 0);
+    }
+
+    #[test]
+    fn test_version_increments_on_change() {
+        let mut buf = TextBuffer::from_text(BufferId::new(1), "text");
+        let v1 = buf.version();
+        buf.insert(0, "x");
+        let v2 = buf.version();
+        assert!(v2 > v1);
+    }
 }
