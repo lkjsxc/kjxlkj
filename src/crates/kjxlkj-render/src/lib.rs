@@ -4,9 +4,14 @@
 
 mod renderer;
 mod diff;
+pub mod syntax;
 
 pub use renderer::TerminalRenderer;
 pub use diff::RenderDiff;
+pub use syntax::{
+    Color as SyntaxColor, Colorscheme, HighlightGroup, HighlightSource, HighlightSpan,
+    LineHighlights, Style as SyntaxStyle, SyntaxState,
+};
 
 use crossterm::style::Color;
 
