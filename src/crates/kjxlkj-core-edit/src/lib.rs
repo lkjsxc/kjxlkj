@@ -180,4 +180,101 @@ mod tests {
         let debug = format!("{:?}", kind);
         assert!(debug.contains("Inner"));
     }
+
+    #[test]
+    fn test_text_object_clone() {
+        let obj = TextObject::Word;
+        let cloned = obj.clone();
+        assert_eq!(obj, cloned);
+    }
+
+    #[test]
+    fn test_text_object_kind_clone() {
+        let kind = TextObjectKind::Around;
+        let cloned = kind.clone();
+        assert_eq!(kind, cloned);
+    }
+
+    #[test]
+    fn test_motion_equality() {
+        let m1 = Motion::new(MotionIntent::Left, 2);
+        let m2 = Motion::new(MotionIntent::Left, 2);
+        assert_eq!(m1, m2);
+    }
+
+    #[test]
+    fn test_motion_inequality() {
+        let m1 = Motion::new(MotionIntent::Left, 2);
+        let m2 = Motion::new(MotionIntent::Right, 2);
+        assert_ne!(m1, m2);
+    }
+
+    #[test]
+    fn test_text_object_equality() {
+        assert_eq!(TextObject::Word, TextObject::Word);
+        assert_ne!(TextObject::Word, TextObject::WORD);
+    }
+
+    #[test]
+    fn test_text_object_kind_equality() {
+        assert_eq!(TextObjectKind::Inner, TextObjectKind::Inner);
+        assert_ne!(TextObjectKind::Inner, TextObjectKind::Around);
+    }
+
+    #[test]
+    fn test_motion_word_start_back() {
+        let motion = Motion::new(MotionIntent::WordStartBack, 1);
+        assert_eq!(motion.intent, MotionIntent::WordStartBack);
+    }
+
+    #[test]
+    fn test_motion_word_end_back() {
+        let motion = Motion::new(MotionIntent::WordEndBack, 1);
+        assert_eq!(motion.intent, MotionIntent::WordEndBack);
+    }
+
+    #[test]
+    fn test_motion_screen_top() {
+        let motion = Motion::new(MotionIntent::ScreenTop, 1);
+        assert_eq!(motion.intent, MotionIntent::ScreenTop);
+    }
+
+    #[test]
+    fn test_motion_screen_middle() {
+        let motion = Motion::new(MotionIntent::ScreenMiddle, 1);
+        assert_eq!(motion.intent, MotionIntent::ScreenMiddle);
+    }
+
+    #[test]
+    fn test_motion_screen_bottom() {
+        let motion = Motion::new(MotionIntent::ScreenBottom, 1);
+        assert_eq!(motion.intent, MotionIntent::ScreenBottom);
+    }
+
+    #[test]
+    fn test_text_object_tag() {
+        let obj = TextObject::Tag;
+        assert!(matches!(obj, TextObject::Tag));
+    }
+
+    #[test]
+    fn test_motion_clone_again() {
+        let motion = Motion::new(MotionIntent::Up, 3);
+        let cloned = motion.clone();
+        assert_eq!(motion, cloned);
+    }
+
+    #[test]
+    fn test_text_object_kind_copy() {
+        let kind = TextObjectKind::Inner;
+        let copied = kind; // Copy
+        assert_eq!(kind, copied);
+    }
+
+    #[test]
+    fn test_text_object_copy() {
+        let obj = TextObject::Word;
+        let copied = obj; // Copy
+        assert_eq!(obj, copied);
+    }
 }

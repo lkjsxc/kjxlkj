@@ -413,4 +413,27 @@ mod tests {
         let decoded = decode_key(ct_event);
         assert_eq!(decoded.code, KeyCode::Char('@'));
     }
+
+    #[test]
+    fn test_decode_space_char() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char(' '), CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Char(' '));
+    }
+
+    #[test]
+    fn test_decode_unicode_char() {
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('ñ'), CTMods::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.code, KeyCode::Char('ñ'));
+    }
+
+    #[test]
+    fn test_decode_ctrl_shift() {
+        let mods = CTMods::CONTROL | CTMods::SHIFT;
+        let ct_event = CTKeyEvent::new(CTKeyCode::Char('A'), mods);
+        let decoded = decode_key(ct_event);
+        assert!(decoded.modifiers.ctrl);
+        assert!(decoded.modifiers.shift);
+    }
 }
