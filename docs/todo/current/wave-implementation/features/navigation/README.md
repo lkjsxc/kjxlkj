@@ -22,11 +22,11 @@ Implement built-in navigation/indexing features.
 
 ### A. Indexing/navigation scaffolding
 
-- [ ] Define index service contracts and UI surfaces for navigation features.
+- [x] Define index service contracts and UI surfaces for navigation features.
 
 ### B. File explorer MVP (high priority gap)
 
-- [ ] Implement file explorer MVP end-to-end with deterministic tests.
+- [x] Implement file explorer MVP end-to-end with deterministic tests.
   - [file-explorer/README.md](file-explorer/README.md)
 
 ### C. Expand to additional navigation surfaces

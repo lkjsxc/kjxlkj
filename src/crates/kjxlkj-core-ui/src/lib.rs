@@ -3,6 +3,7 @@
 //! This crate defines the types used for rendering the editor UI.
 
 mod explorer;
+mod finder;
 mod popup;
 mod snapshot;
 mod view;
@@ -10,6 +11,9 @@ mod viewport;
 pub mod window;
 
 pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
+pub use finder::{
+    Finder, FinderAction, FinderItem, FinderLocation, FinderQuery, FinderSource,
+};
 pub use popup::{
     Edge, Popup, PopupAnchor, PopupBorder, PopupConfig, PopupId, PopupKind, PopupManager,
 };
