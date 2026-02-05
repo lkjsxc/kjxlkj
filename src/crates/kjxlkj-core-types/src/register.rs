@@ -288,4 +288,67 @@ mod tests {
             assert!(matches!(name, Some(RegisterName::Named(_))));
         }
     }
+
+    #[test]
+    fn test_register_name_invalid_chars() {
+        assert_eq!(RegisterName::from_char('!'), None);
+        assert_eq!(RegisterName::from_char('@'), None);
+        assert_eq!(RegisterName::from_char('$'), None);
+        assert_eq!(RegisterName::from_char('^'), None);
+    }
+
+    #[test]
+    fn test_register_clone_content() {
+        let reg = Register::new("hello", true);
+        let cloned = reg.clone();
+        assert_eq!(reg.content, cloned.content);
+        assert_eq!(reg.linewise, cloned.linewise);
+    }
+
+    #[test]
+    fn test_register_equality() {
+        let reg1 = Register::new("hello", true);
+        let reg2 = Register::new("hello", true);
+        let reg3 = Register::new("hello", false);
+        assert_eq!(reg1, reg2);
+        assert_ne!(reg1, reg3);
+    }
+
+    #[test]
+    fn test_register_debug() {
+        let reg = Register::new("test", false);
+        let debug = format!("{:?}", reg);
+        assert!(debug.contains("Register"));
+    }
+
+    #[test]
+    fn test_register_name_copy() {
+        let name = RegisterName::Named('x');
+        let copied = name; // Copy trait
+        assert_eq!(name, copied);
+    }
+
+    #[test]
+    fn test_register_empty_content() {
+        let reg = Register::new("", false);
+        assert!(reg.content.is_empty());
+    }
+
+    #[test]
+    fn test_register_unicode_content() {
+        let reg = Register::new("你好世界🌍", false);
+        assert_eq!(reg.content, "你好世界🌍");
+    }
+
+    #[test]
+    fn test_register_name_filename_parse() {
+        assert_eq!(RegisterName::from_char('%'), Some(RegisterName::Filename));
+        assert_eq!(RegisterName::Filename.as_char(), '%');
+    }
+
+    #[test]
+    fn test_register_name_default_value() {
+        let name = RegisterName::default();
+        assert_eq!(name, RegisterName::Unnamed);
+    }
 }

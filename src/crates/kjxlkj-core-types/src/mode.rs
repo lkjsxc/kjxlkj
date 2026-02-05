@@ -197,5 +197,64 @@ mod tests {
             assert_eq!(parsed, Some(mode));
         }
     }
-}
 
+    #[test]
+    fn test_mode_from_str_loose_case_insensitive() {
+        assert_eq!(Mode::from_str_loose("NORMAL"), Some(Mode::Normal));
+        assert_eq!(Mode::from_str_loose("InSeRt"), Some(Mode::Insert));
+        assert_eq!(Mode::from_str_loose("VISUAL"), Some(Mode::Visual));
+    }
+
+    #[test]
+    fn test_mode_from_str_loose_unknown() {
+        assert_eq!(Mode::from_str_loose("unknown"), None);
+        assert_eq!(Mode::from_str_loose(""), None);
+        assert_eq!(Mode::from_str_loose("xyz"), None);
+    }
+
+    #[test]
+    fn test_mode_eq_reflexive() {
+        assert_eq!(Mode::Normal, Mode::Normal);
+        assert_eq!(Mode::Insert, Mode::Insert);
+        assert_eq!(Mode::Visual, Mode::Visual);
+    }
+
+    #[test]
+    fn test_mode_visual_line_not_insert_like() {
+        assert!(!Mode::VisualLine.is_insert_like());
+    }
+
+    #[test]
+    fn test_mode_visual_block_not_insert_like() {
+        assert!(!Mode::VisualBlock.is_insert_like());
+    }
+
+    #[test]
+    fn test_mode_hash_all_modes() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Mode::Normal);
+        set.insert(Mode::Insert);
+        set.insert(Mode::Visual);
+        set.insert(Mode::VisualLine);
+        set.insert(Mode::VisualBlock);
+        set.insert(Mode::Command);
+        set.insert(Mode::Replace);
+        assert_eq!(set.len(), 7);
+    }
+
+    #[test]
+    fn test_mode_from_str_visualline_alt() {
+        assert_eq!(Mode::from_str_loose("visualline"), Some(Mode::VisualLine));
+    }
+
+    #[test]
+    fn test_mode_from_str_visualblock_alt() {
+        assert_eq!(Mode::from_str_loose("visualblock"), Some(Mode::VisualBlock));
+    }
+
+    #[test]
+    fn test_mode_from_str_c() {
+        assert_eq!(Mode::from_str_loose("c"), Some(Mode::Command));
+    }
+}

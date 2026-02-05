@@ -179,5 +179,34 @@ mod tests {
         assert_eq!(cursor.line(), 7);
         assert_eq!(cursor.col(), 8);
     }
-}
 
+    #[test]
+    fn test_cursor_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Cursor::new(1, 2));
+        assert!(set.contains(&Cursor::new(1, 2)));
+    }
+
+    #[test]
+    fn test_cursor_copy() {
+        let cursor = Cursor::new(3, 4);
+        let copied = cursor; // Copy trait
+        assert_eq!(cursor, copied);
+    }
+
+    #[test]
+    fn test_cursor_move_to_zero() {
+        let mut cursor = Cursor::new(10, 10);
+        cursor.move_to(0, 0);
+        assert_eq!(cursor.line(), 0);
+        assert_eq!(cursor.col(), 0);
+    }
+
+    #[test]
+    fn test_cursor_vertical_empty_line() {
+        let mut cursor = Cursor::new(0, 5);
+        cursor.move_vertical(1, 0);
+        assert_eq!(cursor.col(), 0);
+    }
+}
