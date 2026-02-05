@@ -7,6 +7,7 @@
 mod command;
 pub mod completion;
 pub mod event;
+pub mod execution;
 pub mod function;
 mod handler;
 mod insert;
@@ -21,6 +22,10 @@ pub use command::CommandMode;
 pub use completion::{
     CommandCompletionProvider, CompletionItem, CompletionProvider, CompletionState,
     CompletionType, FileCompletionProvider, WildMode,
+};
+pub use execution::{
+    ExCommand, ExecConfig, ExecContext, ExecError, ExecResult, ExecuteCommand, NormalCommand,
+    NormalExec, Range, RangeSpec, SourceCommand,
 };
 pub use function::{
     BuiltinFunction, Callable, FunctionError, FunctionParam, FunctionRegistry, FunctionResult,
