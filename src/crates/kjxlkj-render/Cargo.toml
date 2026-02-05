@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-render"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Rendering pipeline (snapshot to terminal frame)"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+crossterm = { workspace = true }
+unicode-width = { workspace = true }

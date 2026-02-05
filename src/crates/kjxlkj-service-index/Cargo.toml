@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-service-index"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Index/navigation service"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }

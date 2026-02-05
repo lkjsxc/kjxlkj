@@ -1,0 +1,10 @@
+[package]
+name = "kjxlkj-core-mode"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Modal state machines and input interpretation"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
