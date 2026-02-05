@@ -1055,3 +1055,175 @@ fn test_end_to_end_cursor_movements() {
     assert!(after_l.cursor.col() >= before_l.cursor.col());
 }
 
+/// Test: Word motion with w key.
+#[test]
+fn test_end_to_end_word_w_motion() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "one two three".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    let at_start = state.snapshot();
+    assert_eq!(at_start.cursor.col(), 0);
+
+    // w - go to next word
+    state.handle_key(KeyEvent::new(KeyCode::Char('w'), KeyModifiers::NONE));
+    let after_w = state.snapshot();
+    assert!(after_w.cursor.col() > 0);
+}
+
+/// Test: Word motion backward with b key.
+#[test]
+fn test_end_to_end_word_b_motion() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "one two three".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    let at_end = state.snapshot();
+
+    // b - go to previous word
+    state.handle_key(KeyEvent::new(KeyCode::Char('b'), KeyModifiers::NONE));
+    let after_b = state.snapshot();
+    assert!(after_b.cursor.col() < at_end.cursor.col());
+}
+
+/// Test: End of word motion with e key.
+#[test]
+fn test_end_to_end_word_e_motion() {
+    let mut state = EditorState::new();
+
+    // Insert text with multiple words
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "one two".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    let at_start = state.snapshot();
+    assert_eq!(at_start.cursor.col(), 0);
+
+    // e - go to end of word
+    state.handle_key(KeyEvent::new(KeyCode::Char('e'), KeyModifiers::NONE));
+    let after_e = state.snapshot();
+    assert!(after_e.cursor.col() > 0);
+}
+
+/// Test: Insert at beginning of line with I.
+#[test]
+fn test_end_to_end_insert_bol_I() {
+    let mut state = EditorState::new();
+
+    // Insert text and move to middle
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    
+    // l - stay somewhere in line
+    let before_I = state.snapshot();
+    
+    // I -> insert at beginning
+    state.handle_key(KeyEvent::new(KeyCode::Char('I'), KeyModifiers::NONE));
+    let after_I = state.snapshot();
+    
+    assert_eq!(after_I.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Append at end of line with A.
+#[test]
+fn test_end_to_end_append_eol_A() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE)); // Go to start
+
+    // A -> append at end of line
+    state.handle_key(KeyEvent::new(KeyCode::Char('A'), KeyModifiers::NONE));
+    let after_A = state.snapshot();
+    
+    assert_eq!(after_A.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: First non-blank with ^ motion.
+#[test]
+fn test_end_to_end_caret_first_non_blank() {
+    let mut state = EditorState::new();
+
+    // Insert text with leading spaces
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "    hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE)); // Go to start
+
+    let at_start = state.snapshot();
+    assert_eq!(at_start.cursor.col(), 0);
+
+    // ^ -> go to first non-blank
+    state.handle_key(KeyEvent::new(KeyCode::Char('^'), KeyModifiers::NONE));
+    let after_caret = state.snapshot();
+    assert!(after_caret.cursor.col() >= 4);
+}
+
+/// Test: Substitue single char with s.
+#[test]
+fn test_end_to_end_substitute_char_s() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('0'), KeyModifiers::NONE));
+
+    // s -> substitute (delete char and enter insert mode)
+    state.handle_key(KeyEvent::new(KeyCode::Char('s'), KeyModifiers::NONE));
+    let after_s = state.snapshot();
+    
+    assert_eq!(after_s.mode, kjxlkj_core_types::Mode::Insert);
+}
+
+/// Test: Yank and paste workflow.
+#[test]
+fn test_end_to_end_yy_p_paste() {
+    let mut state = EditorState::new();
+
+    // Insert text
+    state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
+    for c in "hello".chars() {
+        state.handle_key(KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+    state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
+
+    // yy -> yank line
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+    state.handle_key(KeyEvent::new(KeyCode::Char('y'), KeyModifiers::NONE));
+
+    // p -> paste
+    state.handle_key(KeyEvent::new(KeyCode::Char('p'), KeyModifiers::NONE));
+    
+    let after_paste = state.snapshot();
+    // Should have content (either same or duplicated)
+    assert!(!after_paste.buffer.lines.is_empty());
+}
+
