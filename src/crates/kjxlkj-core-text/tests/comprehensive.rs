@@ -417,3 +417,165 @@ mod text_buffer_debug {
     }
 }
 
+
+// Additional edge case tests for TextBuffer
+mod text_buffer_extra {
+    use super::*;
+
+    #[test]
+    fn test_from_str_empty() {
+        let buf = TextBuffer::from_str("");
+        assert!(buf.line_count() <= 1);
+    }
+
+    #[test]
+    fn test_from_str_single_line() {
+        let buf = TextBuffer::from_str("hello");
+        assert_eq!(buf.line_count(), 1);
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_from_str_many_lines() {
+        let text = (0..50).map(|i| format!("Line {}", i)).collect::<Vec<_>>().join("\n");
+        let buf = TextBuffer::from_str(&text);
+        assert_eq!(buf.line_count(), 50);
+    }
+
+    #[test]
+    fn test_line_bounds() {
+        let buf = TextBuffer::from_str("a\nb\nc");
+        assert!(buf.line(0).is_ok());
+        assert!(buf.line(1).is_ok());
+        assert!(buf.line(2).is_ok());
+        assert!(buf.line(3).is_err());
+    }
+
+    #[test]
+    fn test_line_len() {
+        let buf = TextBuffer::from_str("hello");
+        assert_eq!(buf.line_len(0).unwrap(), 5);
+    }
+
+    #[test]
+    fn test_line_len_empty() {
+        let buf = TextBuffer::from_str("");
+        assert_eq!(buf.line_len(0).unwrap(), 0);
+    }
+
+    #[test]
+    fn test_insert_at_start() {
+        let mut buf = TextBuffer::from_str("world");
+        let _ = buf.insert(Position::new(0, 0), "hello ");
+        assert!(buf.line(0).unwrap().starts_with("hello"));
+    }
+
+    #[test]
+    fn test_insert_at_end() {
+        let mut buf = TextBuffer::from_str("hello");
+        let _ = buf.insert(Position::new(0, 5), " world");
+        assert!(buf.line(0).unwrap().ends_with("world"));
+    }
+
+    #[test]
+    fn test_insert_newline() {
+        let mut buf = TextBuffer::from_str("hello");
+        let _ = buf.insert(Position::new(0, 5), "\nworld");
+        assert_eq!(buf.line_count(), 2);
+    }
+
+    #[test]
+    fn test_delete_single_char() {
+        let mut buf = TextBuffer::from_str("hello");
+        let range = Range::from_coords(0, 0, 0, 1);
+        let _ = buf.delete(range);
+        assert_eq!(buf.line(0).unwrap(), "ello");
+    }
+
+    #[test]
+    fn test_slice() {
+        let buf = TextBuffer::from_str("hello world");
+        let range = Range::from_coords(0, 0, 0, 5);
+        let slice = buf.slice(range).unwrap();
+        assert_eq!(slice, "hello");
+    }
+
+    #[test]
+    fn test_slice_multiline() {
+        let buf = TextBuffer::from_str("line1\nline2\nline3");
+        let range = Range::from_coords(0, 0, 2, 5);
+        let slice = buf.slice(range).unwrap();
+        assert!(slice.contains("line1"));
+    }
+
+    #[test]
+    fn test_version_initial() {
+        let buf = TextBuffer::new();
+        let v1 = buf.version();
+        assert_eq!(v1.as_u64(), 0);
+    }
+
+    #[test]
+    fn test_version_increments() {
+        let mut buf = TextBuffer::from_str("hello");
+        let v1 = buf.version();
+        let _ = buf.insert(Position::new(0, 5), "!");
+        let v2 = buf.version();
+        assert!(v2.as_u64() > v1.as_u64());
+    }
+
+    #[test]
+
+    #[test]
+    fn test_replace_text() {
+        let mut buf = TextBuffer::from_str("hello world");
+        let range = Range::from_coords(0, 0, 0, 5);
+        let _ = buf.replace(range, "hi");
+        assert!(buf.line(0).unwrap().starts_with("hi"));
+    }
+}
+
+// Additional edge case tests for graphemes
+mod grapheme_extra {
+    use super::*;
+
+    #[test]
+    fn test_grapheme_count_spaces() {
+        assert_eq!(grapheme_count("   "), 3);
+    }
+
+    #[test]
+    fn test_grapheme_count_mixed() {
+        // Mix of ASCII and multi-byte
+        let count = grapheme_count("aé");
+        assert!(count >= 2);
+    }
+
+    #[test]
+    fn test_grapheme_width_tab() {
+        // Tab has variable width
+        let w = grapheme_width("\t");
+        assert!(w >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_iter_empty() {
+        let iter = GraphemeIter::new("");
+        let graphemes: Vec<_> = iter.collect();
+        assert_eq!(graphemes.len(), 0);
+    }
+
+    #[test]
+    fn test_grapheme_iter_ascii() {
+        let iter = GraphemeIter::new("abc");
+        let graphemes: Vec<_> = iter.collect();
+        assert_eq!(graphemes.len(), 3);
+    }
+
+    #[test]
+    fn test_grapheme_iter_unicode() {
+        let iter = GraphemeIter::new("héllo");
+        let graphemes: Vec<_> = iter.collect();
+        assert!(graphemes.len() >= 5);
+    }
+}

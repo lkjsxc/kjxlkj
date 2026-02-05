@@ -443,3 +443,179 @@ mod operator_enum_tests {
     }
 }
 
+
+// Additional edge case tests for Motion
+mod motion_extra {
+    use super::*;
+
+    #[test]
+    fn test_motion_up_large_count() {
+        let buf = TextBuffer::from_str("l1\nl2\nl3\nl4\nl5");
+        let cursor = Cursor::new(4, 0);
+        let result = apply_motion(&Motion::Up(100), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 0);
+    }
+
+    #[test]
+    fn test_motion_down_large_count() {
+        let buf = TextBuffer::from_str("l1\nl2\nl3");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Down(100), cursor, &buf, false);
+        assert_eq!(result.cursor.line, 2);
+    }
+
+    #[test]
+    fn test_motion_left_large_count() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 3);
+        let result = apply_motion(&Motion::Left(100), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+
+    #[test]
+    fn test_motion_right_large_count() {
+        let buf = TextBuffer::from_str("hello");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::Right(100), cursor, &buf, false);
+        // Should be clamped to end of line
+        assert!(result.cursor.column <= 5);
+    }
+
+    #[test]
+    fn test_motion_clone() {
+        let m = Motion::Up(5);
+        let cloned = m.clone();
+        assert_eq!(format!("{:?}", m), format!("{:?}", cloned));
+    }
+
+    #[test]
+    fn test_motion_all_variants() {
+        let motions = [
+            Motion::Up(1), Motion::Down(1), Motion::Left(1), Motion::Right(1),
+            Motion::LineStart, Motion::LineEnd, Motion::FirstNonBlank,
+            Motion::DocumentStart, Motion::DocumentEnd,
+            Motion::WordForward(1), Motion::WordBackward(1),
+        ];
+        for m in motions {
+            let debug = format!("{:?}", m);
+            assert!(!debug.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_motion_word_forward_at_end() {
+        let buf = TextBuffer::from_str("word");
+        let cursor = Cursor::new(0, 3);
+        let result = apply_motion(&Motion::WordForward(1), cursor, &buf, false);
+        // Should not panic, stays at end
+        assert!(result.cursor.column <= 4);
+    }
+
+    #[test]
+    fn test_motion_word_backward_at_start() {
+        let buf = TextBuffer::from_str("word");
+        let cursor = Cursor::new(0, 0);
+        let result = apply_motion(&Motion::WordBackward(1), cursor, &buf, false);
+        assert_eq!(result.cursor.column, 0);
+    }
+}
+
+// Additional edge case tests for TextObject
+mod text_object_extra {
+    use super::*;
+
+    #[test]
+    fn test_text_object_all_variants() {
+        let objects = [
+            TextObject::Word,
+            TextObject::BigWord,
+            TextObject::Sentence,
+            TextObject::Paragraph,
+            TextObject::Quote('"'),
+            TextObject::Quote('\''),
+            TextObject::Bracket('(', ')'),
+            TextObject::Bracket('[', ']'),
+            TextObject::Bracket('{', '}'),
+            TextObject::Tag,
+        ];
+        for obj in objects {
+            let debug = format!("{:?}", obj);
+            assert!(!debug.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_text_object_kind() {
+        let inner = TextObjectKind::Inner;
+        let around = TextObjectKind::Around;
+        assert_ne!(inner, around);
+    }
+
+    #[test]
+    fn test_find_word_empty_buffer() {
+        let buf = TextBuffer::from_str("");
+        let cursor = Cursor::new(0, 0);
+        let result = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
+        // Should return None for empty buffer
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_find_word_at_word() {
+        let buf = TextBuffer::from_str("hello world");
+        let cursor = Cursor::new(0, 2);
+        let result = find_text_object(&TextObject::Word, TextObjectKind::Inner, cursor, &buf);
+        assert!(result.is_some());
+    }
+
+    #[test]
+    fn test_find_quote_no_quotes() {
+        let buf = TextBuffer::from_str("no quotes here");
+        let cursor = Cursor::new(0, 5);
+        let result = find_text_object(&TextObject::Quote('"'), TextObjectKind::Inner, cursor, &buf);
+        assert!(result.is_none());
+    }
+}
+
+// Additional edge case tests for Operator
+mod operator_extra {
+    use super::*;
+
+    #[test]
+    fn test_operator_all_variants() {
+        let operators = [
+            Operator::Delete, Operator::Yank, Operator::Change,
+            Operator::Indent, Operator::Outdent,
+            Operator::Uppercase, Operator::Lowercase, Operator::ToggleCase,
+        ];
+        for op in operators {
+            let debug = format!("{:?}", op);
+            assert!(!debug.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_operator_copy_clone() {
+        let op = Operator::Delete;
+        let copied = op;
+        assert_eq!(op, copied);
+        let cloned = op.clone();
+        assert_eq!(op, cloned);
+    }
+
+    #[test]
+    fn test_operator_equality_all() {
+        let operators = [
+            Operator::Delete, Operator::Yank, Operator::Change,
+            Operator::Indent, Operator::Outdent,
+        ];
+        for i in 0..operators.len() {
+            assert_eq!(operators[i], operators[i]);
+            for j in 0..operators.len() {
+                if i != j {
+                    assert_ne!(operators[i], operators[j]);
+                }
+            }
+        }
+    }
+}
