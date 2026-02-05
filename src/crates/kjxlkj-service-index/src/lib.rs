@@ -355,4 +355,153 @@ mod tests {
         index.remove(&path2);
         assert_eq!(index.len(), 0);
     }
+
+    #[test]
+    fn test_index_entry_with_modified_time() {
+        let now = std::time::SystemTime::now();
+        let entry = IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: Some(now),
+        };
+        assert!(entry.modified.is_some());
+    }
+
+    #[test]
+    fn test_find_by_prefix_empty_query() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        let results = index.find_by_prefix("");
+        assert_eq!(results.len(), 1);
+    }
+
+    #[test]
+    fn test_find_by_prefix_no_match() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        let results = index.find_by_prefix("xyz");
+        assert!(results.is_empty());
+    }
+
+    #[test]
+    fn test_find_fuzzy_no_match() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        let results = index.find_fuzzy("xyz");
+        assert!(results.is_empty());
+    }
+
+    #[test]
+    fn test_find_fuzzy_multiple_matches() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/main.rs"),
+            name: "main.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/mod.rs"),
+            name: "mod.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 50,
+            modified: None,
+        });
+        let results = index.find_fuzzy("m");
+        assert!(results.len() >= 2);
+    }
+
+    #[test]
+    fn test_fuzzy_score_consecutive_bonus() {
+        let score1 = fuzzy_score("mai", "main.rs").unwrap();
+        let score2 = fuzzy_score("min", "main.rs").unwrap();
+        // Consecutive letters "mai" should score higher than scattered "min"
+        assert!(score1 > score2);
+    }
+
+    #[test]
+    fn test_remove_nonexistent() {
+        let mut index = FileIndex::new();
+        let path = PathBuf::from("/nonexistent");
+        // Should not panic
+        index.remove(&path);
+        assert!(index.is_empty());
+    }
+
+    #[test]
+    fn test_index_entry_debug() {
+        let entry = IndexEntry {
+            path: PathBuf::from("/test/file.rs"),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        };
+        let debug = format!("{:?}", entry);
+        assert!(debug.contains("file.rs"));
+    }
+
+    #[test]
+    fn test_file_index_debug() {
+        let index = FileIndex::new();
+        let debug = format!("{:?}", index);
+        assert!(debug.contains("FileIndex"));
+    }
+
+    #[test]
+    fn test_add_duplicate_path() {
+        let mut index = FileIndex::new();
+        let path = PathBuf::from("/test/file.rs");
+        index.add(IndexEntry {
+            path: path.clone(),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        index.add(IndexEntry {
+            path: path.clone(),
+            name: "file.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 200,  // Different size
+            modified: None,
+        });
+        // Should replace, so still 1 entry
+        assert_eq!(index.len(), 1);
+    }
+
+    #[test]
+    fn test_find_by_prefix_unicode() {
+        let mut index = FileIndex::new();
+        index.add(IndexEntry {
+            path: PathBuf::from("/test/日本語.rs"),
+            name: "日本語.rs".to_string(),
+            extension: Some("rs".to_string()),
+            size: 100,
+            modified: None,
+        });
+        let results = index.find_by_prefix("日");
+        assert_eq!(results.len(), 1);
+    }
 }

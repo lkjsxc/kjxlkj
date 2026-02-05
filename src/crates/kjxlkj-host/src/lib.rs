@@ -170,4 +170,51 @@ mod tests {
         };
         assert!(config.content.as_ref().unwrap().contains('\n'));
     }
+
+    #[test]
+    fn test_host_config_unicode_content() {
+        let config = HostConfig {
+            file: None,
+            content: Some("你好世界 🌍".to_string()),
+        };
+        assert!(config.content.is_some());
+    }
+
+    #[test]
+    fn test_host_config_windows_path() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("C:\\Users\\test\\file.txt")),
+            content: None,
+        };
+        assert!(config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_config_long_content() {
+        let config = HostConfig {
+            file: None,
+            content: Some("x".repeat(10000)),
+        };
+        assert_eq!(config.content.as_ref().unwrap().len(), 10000);
+    }
+
+    #[test]
+    fn test_host_with_file_config() {
+        let config = HostConfig {
+            file: Some(PathBuf::from("test.rs")),
+            content: None,
+        };
+        let host = Host::new(config);
+        assert!(host.config.file.is_some());
+    }
+
+    #[test]
+    fn test_host_with_content_config() {
+        let config = HostConfig {
+            file: None,
+            content: Some("hello".to_string()),
+        };
+        let host = Host::new(config);
+        assert!(host.config.content.is_some());
+    }
 }

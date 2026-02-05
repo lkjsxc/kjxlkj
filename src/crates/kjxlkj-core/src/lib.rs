@@ -204,4 +204,53 @@ mod tests {
         let mode = mode::ReplaceMode::new();
         assert_eq!(mode.mode(), Mode::Replace);
     }
+
+    #[test]
+    fn test_visual_mode_char_export() {
+        use mode::VisualMode;
+        let mode = VisualMode::char_wise();
+        assert_eq!(mode.mode(), Mode::Visual);
+    }
+
+    #[test]
+    fn test_visual_mode_line_export() {
+        use mode::VisualMode;
+        let mode = VisualMode::line_wise();
+        assert_eq!(mode.mode(), Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_visual_mode_block_export() {
+        use mode::VisualMode;
+        let mode = VisualMode::block_wise();
+        assert_eq!(mode.mode(), Mode::VisualBlock);
+    }
+
+    #[test]
+    fn test_undo_history_export() {
+        let history = undo::UndoHistory::new();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_text_buffer_operations() {
+        let buffer = text::TextBuffer::from_text(BufferId::new(1), "hello");
+        assert_eq!(buffer.line_count(), 1);
+    }
+
+    #[test]
+    fn test_word_kind_export() {
+        use text::WordKind;
+        let kind = WordKind::Word;
+        assert!(matches!(kind, WordKind::Word));
+        let kind2 = WordKind::WORD;
+        assert!(matches!(kind2, WordKind::WORD));
+    }
+
+    #[test]
+    fn test_buffer_id_display() {
+        let id = BufferId::new(42);
+        assert_eq!(id.value(), 42);
+    }
 }
