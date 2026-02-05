@@ -14,6 +14,7 @@ mod handler;
 pub mod history;
 mod insert;
 pub mod insert_completion;
+pub mod mode_config;
 mod normal;
 pub mod parser;
 mod replace;
@@ -42,6 +43,9 @@ pub use insert::InsertMode;
 pub use insert_completion::{
     FilePathCompleter, InsertCompletionItem, InsertCompletionState, InsertCompletionType,
     KeywordCompleter, LineCompleter,
+};
+pub use mode_config::{
+    CursorConfig, CursorShape, LineNumberMode, ModeConfig, ModeIndicator,
 };
 pub use normal::NormalMode;
 pub use parser::{ParseResult, Parser};
