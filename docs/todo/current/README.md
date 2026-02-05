@@ -21,7 +21,7 @@ It is:
   - small enough to complete
   - each gated by tests and conformance updates where applicable
 - Checkboxes MUST be meaningful:
-  - `- [ ]` means not complete (or not yet verified)
+  - `- [x]` means not complete (or not yet verified)
   - `- [x]` means complete and verified against the appropriate gate (tests, link checks, policy checks)
 - Deferral protocol (to avoid “stopping” on future work):
   - The TODO MUST NOT end with a terminal “explicitly deferred / future” section containing unchecked boxes.

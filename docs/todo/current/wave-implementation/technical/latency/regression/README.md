@@ -34,30 +34,30 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### A. Deterministic performance probes
 
-- [ ] Add a deterministic typing-burst probe that asserts:
+- [x] Add a deterministic typing-burst probe that asserts:
   - all characters are applied in order
   - the final snapshot reflects the final input (no off-by-one lag)
-- [ ] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true.
+- [x] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true.
 
 ### B. Benchmarks (repeatable, not flaky)
 
-- [ ] Add a benchmark suite that measures:
+- [x] Add a benchmark suite that measures:
   - snapshot generation cost vs viewport size
   - rendering cost vs viewport area
   - file open time-to-first-snapshot for large inputs
-- [ ] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present.
+- [x] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present.
 
 ### C. Idle CPU regression
 
-- [ ] Add a probe that detects busy-loop redraw when idle (no input, no animation).
+- [x] Add a probe that detects busy-loop redraw when idle (no input, no animation).
 
 ### D. Reporting and drift handling
 
-- [ ] When regressions are found, record:
+- [x] When regressions are found, record:
   - the spec expectation (link)
   - the reproduction probe (link)
   - the observed behavior
   - whether the mitigation is “fix” or “explicit limitation/degradation”
-- [ ] Update user-visible limitations when behavior is intentionally degraded:
+- [x] Update user-visible limitations when behavior is intentionally degraded:
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

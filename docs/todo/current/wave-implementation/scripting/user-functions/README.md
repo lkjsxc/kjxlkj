@@ -13,7 +13,7 @@ Implement user-defined functions where the spec requires them, including invocat
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define function registry and call boundary.
-- [ ] Minimal slice: implement one deterministic function call with tests.
-- [ ] Full conformance: implement all function behaviors described by the spec.
+- [x] Placeholder scaffolding: define function registry and call boundary.
+- [x] Minimal slice: implement one deterministic function call with tests.
+- [x] Full conformance: implement all function behaviors described by the spec.
 

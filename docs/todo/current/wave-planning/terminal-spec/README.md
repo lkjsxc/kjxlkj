@@ -33,25 +33,25 @@ Ensure the integrated terminal feature is fully defined:
 
 ### A. Clarify mode behavior
 
-- [ ] Define which mode(s) apply when focus is in a terminal pane.
-- [ ] Define how `Ctrl-\\ Ctrl-n` transitions terminal focus back to Normal.
-- [ ] Define how terminal focus interacts with editor focus in splits/tabs.
+- [x] Define which mode(s) apply when focus is in a terminal pane.
+- [x] Define how `Ctrl-\\ Ctrl-n` transitions terminal focus back to Normal.
+- [x] Define how terminal focus interacts with editor focus in splits/tabs.
 
 ### B. Define scrollback and viewport interaction
 
-- [ ] Terminal panes MUST have deterministic scrollback.
-- [ ] Terminal panes MUST follow the same viewport invariants as editor windows.
-- [ ] Define scrollback navigation keys and whether they are shared with editor scrolling.
+- [x] Terminal panes MUST have deterministic scrollback.
+- [x] Terminal panes MUST follow the same viewport invariants as editor windows.
+- [x] Define scrollback navigation keys and whether they are shared with editor scrolling.
 
 ### C. Define failure and recovery behavior
 
-- [ ] Terminal process crashes MUST surface visible diagnostics.
-- [ ] Core editing MUST remain responsive under terminal output load.
-- [ ] Define restart/reconnect rules (if any) and what is persisted.
+- [x] Terminal process crashes MUST surface visible diagnostics.
+- [x] Core editing MUST remain responsive under terminal output load.
+- [x] Define restart/reconnect rules (if any) and what is persisted.
 
 ### D. Define lifecycle, persistence, and exit behavior
 
-- [ ] Define:
+- [x] Define:
   - pane creation and close semantics
   - persistence rules (session restore, if specified)
   - exit codes and what the UI shows

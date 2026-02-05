@@ -13,19 +13,19 @@ Remove contradictions where documentation:
 
 ### A. Root-level identity
 
-- [ ] Ensure `/README.md` describes this repository’s artifacts accurately.
+- [x] Ensure `/README.md` describes this repository’s artifacts accurately.
 
 ### B. Policy consistency
 
-- [ ] Ensure `/docs/policy/README.md` and `/docs/policy/ROOT_LAYOUT.md` distinguish “docs-only baseline” vs “shippable state” for derived artifacts.
-- [ ] Ensure `/docs/policy/WORKFLOW.md` describes a verification gate that can be reconstructed and run locally, and is mirrored by automated CI when present.
+- [x] Ensure `/docs/policy/README.md` and `/docs/policy/ROOT_LAYOUT.md` distinguish “docs-only baseline” vs “shippable state” for derived artifacts.
+- [x] Ensure `/docs/policy/WORKFLOW.md` describes a verification gate that can be reconstructed and run locally, and is mirrored by automated CI when present.
 
 ### C. Spec consistency
 
-- [ ] Ensure `/docs/spec/architecture/crates.md` and related architecture docs are framed as the reconstruction target topology (not a claim that every artifact is always present).
-- [ ] Remove or reframe references to `Cargo.toml` and `src/` where they are treated as non-deletable artifacts (they are derived outputs).
+- [x] Ensure `/docs/spec/architecture/crates.md` and related architecture docs are framed as the reconstruction target topology (not a claim that every artifact is always present).
+- [x] Remove or reframe references to `Cargo.toml` and `src/` where they are treated as non-deletable artifacts (they are derived outputs).
 
 ### D. Verification
 
-- [ ] All internal links resolve.
-- [ ] No new contradictions about repository artifacts are introduced.
+- [x] All internal links resolve.
+- [x] No new contradictions about repository artifacts are introduced.

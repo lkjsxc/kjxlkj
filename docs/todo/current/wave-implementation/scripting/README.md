@@ -39,33 +39,33 @@ Implement the scripting surface defined by the spec (without introducing plugins
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define the mapping data model and resolution order.
-- [ ] Define the boundary between:
+- [x] Define the mapping data model and resolution order.
+- [x] Define the boundary between:
   - raw input decoding
   - mapping expansion
   - core intent emission
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal subset of mappings that is:
+- [x] Implement a minimal subset of mappings that is:
   - deterministic
   - test-backed
   - sufficient to cover core navigation/editing paths
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full mapping and automation spec subtree.
-- [ ] Ensure recursion/plug mappings are handled exactly as specified (or recorded as limitations).
+- [x] Implement the full mapping and automation spec subtree.
+- [x] Ensure recursion/plug mappings are handled exactly as specified (or recorded as limitations).
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - mapping precedence and mode scoping
   - recursion limits and safety rules
   - timing/debounce determinism
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

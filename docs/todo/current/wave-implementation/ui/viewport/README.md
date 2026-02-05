@@ -15,24 +15,24 @@ Implement viewport model and cursor-follow invariants.
 
 ### A. Viewport state and invariants (scaffolding)
 
-- [ ] Define viewport state per window.
-- [ ] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
+- [x] Define viewport state per window.
+- [x] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
 
 ### B. Cursor-follow rules (no-wrap + wrap)
 
-- [ ] Implement deterministic vertical follow for `wrap = false`.
-- [ ] Implement deterministic horizontal follow for `wrap = false`.
-- [ ] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture:
+- [x] Implement deterministic vertical follow for `wrap = false`.
+- [x] Implement deterministic horizontal follow for `wrap = false`.
+- [x] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture:
   - [wrap/README.md](wrap/README.md)
 
 ### C. Long-line stability (user-reported rough edge)
 
-- [ ] Ensure extremely long lines do not corrupt or break display.
+- [x] Ensure extremely long lines do not corrupt or break display.
   - [long-lines/README.md](long-lines/README.md)
 
 ### D. Regression tests and documentation ledgers
 
-- [ ] Add regression tests for long lines, wrap/no-wrap, and resize storms.
-- [ ] Update conformance and limitations docs when behavior is user-visible:
+- [x] Add regression tests for long lines, wrap/no-wrap, and resize storms.
+- [x] Update conformance and limitations docs when behavior is user-visible:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

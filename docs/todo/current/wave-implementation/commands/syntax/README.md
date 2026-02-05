@@ -22,20 +22,20 @@ Implement Ex-level syntax commands and their interaction with highlighting/synta
 
 ### A. Placeholder scaffolding
 
-- [ ] Define a syntax/highlight ownership model (who owns state, who renders).
-- [ ] Define how syntax commands mutate that state.
+- [x] Define a syntax/highlight ownership model (who owns state, who renders).
+- [x] Define how syntax commands mutate that state.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal subset that is fully testable and user-visible.
+- [x] Implement a minimal subset that is fully testable and user-visible.
 
 ### C. Full conformance
 
-- [ ] Implement all syntax command behavior exactly as specified.
+- [x] Implement all syntax command behavior exactly as specified.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

@@ -19,21 +19,21 @@ This is a common off-by-one failure when mixing end-exclusive (Normal) and end-i
 
 ### A. Deterministic headless regression
 
-- [ ] Add a headless E2E test that:
+- [x] Add a headless E2E test that:
   - positions the cursor on the last character of a non-empty line in Normal mode
   - presses `a`
   - asserts the Insert-mode cursor column is exactly `N` (true EOL), not `N-1`
 
 ### B. Interactive PTY regression
 
-- [ ] Add a PTY E2E regression that:
+- [x] Add a PTY E2E regression that:
   - opens a temp file
   - inserts `hello`, exits Insert, moves to EOL, presses `a`, types `X`, writes and quits
   - asserts the file ends with `helloX` (not `hellXo`)
 
 ### C. Conformance and limitations updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (if user-visible drift existed)
 

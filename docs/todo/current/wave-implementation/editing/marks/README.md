@@ -20,16 +20,16 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### A. Placeholder scaffolding
 
-- [ ] Define mark types and storage.
-- [ ] Define jump list semantics and persistence rules.
+- [x] Define mark types and storage.
+- [x] Define jump list semantics and persistence rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement basic marks and jumps with deterministic tests.
+- [x] Implement basic marks and jumps with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all marks/jump list behaviors and persistence in the subtree.
+- [x] Implement all marks/jump list behaviors and persistence in the subtree.
   - Local marks (a-z) - implemented
   - Jump to mark exact (`) and line (') - implemented
   - Jump list (Ctrl-o, Ctrl-i) - implemented
@@ -38,6 +38,6 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

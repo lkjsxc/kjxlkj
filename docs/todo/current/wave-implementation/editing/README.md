@@ -45,25 +45,25 @@ Implement the editing primitives that power modal behavior:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define a motion/operator engine with explicit:
+- [x] Define a motion/operator engine with explicit:
   - grammar and parsing model
   - count application rules
   - inclusive/exclusive motion types
   - linewise/charwise/blockwise edits
-- [ ] Define register types, storage, and persistence expectations.
-- [ ] Define a mark model and its persistence strategy.
+- [x] Define register types, storage, and persistence expectations.
+- [x] Define a mark model and its persistence strategy.
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal set of motions/operators/text objects that is:
+- [x] Implement a minimal set of motions/operators/text objects that is:
   - fully specified by docs
   - test-backed
   - consistent across modes
-- [ ] Implement undo/redo semantics for the minimal slice.
+- [x] Implement undo/redo semantics for the minimal slice.
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full editing spec subtree, including:
+- [x] Implement the full editing spec subtree, including:
   - search and regex features (/, ?, n, N, :s) - implemented
   - macros (including recursion rules) - fully implemented (q, @, @@)
   - marks and jump lists (m, `, ', Ctrl-o, Ctrl-i) - fully implemented
@@ -73,7 +73,7 @@ Implement the editing primitives that power modal behavior:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - boundary clamping (never panic)
   - repeatability and determinism
   - register correctness across operations
@@ -81,6 +81,6 @@ Implement the editing primitives that power modal behavior:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

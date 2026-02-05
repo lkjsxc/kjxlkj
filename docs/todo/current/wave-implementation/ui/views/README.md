@@ -13,7 +13,7 @@ Implement view composition (editor, command line, popups, terminal panes).
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define view layout and focus model.
-- [ ] Minimal slice: implement editor view + command line view with tests.
-- [ ] Full conformance: implement all view types and composition rules.
+- [x] Placeholder scaffolding: define view layout and focus model.
+- [x] Minimal slice: implement editor view + command line view with tests.
+- [x] Full conformance: implement all view types and composition rules.
 

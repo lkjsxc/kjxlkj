@@ -15,8 +15,8 @@ Implement the testing strategy as a normative part of the spec.
 
 ## Checklist
 
-- [ ] Implement PTY-driven E2E harness and regressions:
+- [x] Implement PTY-driven E2E harness and regressions:
   - [pty-e2e/README.md](pty-e2e/README.md)
-- [ ] Establish deterministic unit/integration/E2E layers.
-- [ ] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
-- [ ] Add regression tests for cursor/viewport/input latency invariants.
+- [x] Establish deterministic unit/integration/E2E layers.
+- [x] Ensure E2E tests operate via terminal input streams (or headless equivalent as specified).
+- [x] Add regression tests for cursor/viewport/input latency invariants.

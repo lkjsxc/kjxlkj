@@ -35,36 +35,36 @@ Define a normative test suite (unit/integration/E2E) that can reproduce:
 
 ### A. Cursor visibility regression tests
 
-- [ ] Define scenarios covering every mode and theme.
-- [ ] Include overlays (completion, picker, confirm) and verify cursor remains visible.
-- [ ] Ensure tests cover redraws, resizes, and mode transitions.
+- [x] Define scenarios covering every mode and theme.
+- [x] Include overlays (completion, picker, confirm) and verify cursor remains visible.
+- [x] Ensure tests cover redraws, resizes, and mode transitions.
 
 ### B. Viewport follow regression tests
 
-- [ ] Define scenarios for:
+- [x] Define scenarios for:
   - small windows
   - long lines
   - wrap vs no-wrap
   - split viewports
   - scroll offsets and centering commands
-- [ ] Include mixed workloads: edits + scrolling + resize.
+- [x] Include mixed workloads: edits + scrolling + resize.
 
 ### C. Input latency regression tests
 
-- [ ] Define tests that assert “no off-by-one key perception” via:
+- [x] Define tests that assert “no off-by-one key perception” via:
   - input → snapshot → render ordering assertions
   - frame timing expectations
-- [ ] Define what “one-key lag” means in observable terms.
+- [x] Define what “one-key lag” means in observable terms.
 
 ### D. Performance regression tests
 
-- [ ] Define throughput targets and “typing burst” scenarios.
-- [ ] Include resize storms and scroll bursts.
-- [ ] Include terminal output storms (integrated terminal panes).
+- [x] Define throughput targets and “typing burst” scenarios.
+- [x] Include resize storms and scroll bursts.
+- [x] Include terminal output storms (integrated terminal panes).
 
 ### E. Doc-to-test traceability (required)
 
-- [ ] For each test suite:
+- [x] For each test suite:
   - link the defining spec documents
   - link the conformance entry that claims support
   - list the known limitations that affect expected behavior

@@ -49,11 +49,11 @@ Define cursor rendering, cursor movement, and viewport-follow behavior precisely
 
 ## Checklist
 
-- [ ] Define cursor layering rules (cursor vs selection vs overlays) as explicit requirements.
-- [ ] Define cursor movement determinism at boundaries (clamp/no-op; no panics).
-- [ ] Define viewport follow behavior for both `wrap = false` and `wrap = true`, including margins.
-- [ ] Define input ordering guarantees and “no one-key lag” observable criteria.
-- [ ] Define throughput targets and performance constraints for typing/scroll/resize.
+- [x] Define cursor layering rules (cursor vs selection vs overlays) as explicit requirements.
+- [x] Define cursor movement determinism at boundaries (clamp/no-op; no panics).
+- [x] Define viewport follow behavior for both `wrap = false` and `wrap = true`, including margins.
+- [x] Define input ordering guarantees and “no one-key lag” observable criteria.
+- [x] Define throughput targets and performance constraints for typing/scroll/resize.
 
 ## Deep-dive Areas
 

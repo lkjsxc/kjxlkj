@@ -20,8 +20,8 @@ Implement keybinding coverage and ensure it matches mode behavior and command su
 
 ## Checklist
 
-- [ ] Follow the leader-key checklist:
+- [x] Follow the leader-key checklist:
   - [leader/README.md](leader/README.md)
-- [ ] Define a keybinding coverage map tied to tests and conformance.
-- [ ] Minimal slice: ensure all currently implemented keys are documented and tested.
-- [ ] Full conformance: implement the full keybinding tables (or record limitations explicitly).
+- [x] Define a keybinding coverage map tied to tests and conformance.
+- [x] Minimal slice: ensure all currently implemented keys are documented and tested.
+- [x] Full conformance: implement the full keybinding tables (or record limitations explicitly).

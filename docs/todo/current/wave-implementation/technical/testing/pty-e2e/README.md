@@ -23,22 +23,22 @@ This harness is required for bugs that are invisible in headless-only tests (Ent
 
 ### A. Harness design rules (determinism)
 
-- [ ] Prefer file-based assertions (`:w`, `:wq`) over screen scraping.
-- [ ] Use timeouts with bounded retries; avoid fixed sleeps where possible.
-- [ ] Fix environment when needed (`TERM`, locale) to reduce terminal variance.
-- [ ] Ensure the harness is stable on Linux/macOS/Windows where feasible; record limitations when not.
+- [x] Prefer file-based assertions (`:w`, `:wq`) over screen scraping.
+- [x] Use timeouts with bounded retries; avoid fixed sleeps where possible.
+- [x] Fix environment when needed (`TERM`, locale) to reduce terminal variance.
+- [x] Ensure the harness is stable on Linux/macOS/Windows where feasible; record limitations when not.
 
 ### B. Required PTY regressions (minimum suite)
 
-- [ ] Insert newline: `i`, type `line1`, `Enter`, type `line2`, `Esc`, `:wq`, `Enter`; file contains `line1` then newline then `line2`.
-- [ ] Leader chords: `<leader>e` toggles explorer; `<leader>t` toggles terminal.
-- [ ] Multi-key sequences: `gg` goes to file start and is not dropped by input buffering.
-- [ ] Undo/redo: `u` undoes and `Ctrl-r` redoes without dropping input.
-- [ ] Append at EOL: `a` at last character inserts at true end-of-line (no off-by-one).
+- [x] Insert newline: `i`, type `line1`, `Enter`, type `line2`, `Esc`, `:wq`, `Enter`; file contains `line1` then newline then `line2`.
+- [x] Leader chords: `<leader>e` toggles explorer; `<leader>t` toggles terminal.
+- [x] Multi-key sequences: `gg` goes to file start and is not dropped by input buffering.
+- [x] Undo/redo: `u` undoes and `Ctrl-r` redoes without dropping input.
+- [x] Append at EOL: `a` at last character inserts at true end-of-line (no off-by-one).
 
 ### C. Traceability updates
 
-- [ ] For each PTY regression, link:
+- [x] For each PTY regression, link:
   - the defining spec document(s)
   - the conformance claim (if present)
   - the limitation entry (if user-visible drift exists)

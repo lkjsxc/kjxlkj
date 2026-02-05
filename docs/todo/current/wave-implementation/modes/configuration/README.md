@@ -15,18 +15,18 @@ Implement configuration options that affect modes and mode behavior.
 
 ### A. Placeholder scaffolding
 
-- [ ] Enumerate all configuration items that affect mode behavior.
+- [x] Enumerate all configuration items that affect mode behavior.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal configuration set with deterministic tests.
+- [x] Implement a minimal configuration set with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all configuration options in the doc and ensure they match runtime behavior.
+- [x] Implement all configuration options in the doc and ensure they match runtime behavior.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
