@@ -84,15 +84,18 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 Some source files exceed the 200-line guideline from `/docs/policy/STRUCTURE.md`:
 
-- `kjxlkj-core-state/src/editor.rs` (966 lines) - main editor state machine
-- `kjxlkj-core-mode/src/parser.rs` (535 lines) - key sequence parser
-- `kjxlkj-core-edit/src/motion.rs` (422 lines) - motion implementations
-- `kjxlkj-core-types/src/event.rs` (384 lines) - event type definitions
-- `kjxlkj-core-edit/src/text_object.rs` (319 lines) - text object implementations
-- `kjxlkj-render/src/renderer.rs` (317 lines) - terminal renderer
-- `kjxlkj-core-text/src/text_buffer.rs` (275 lines) - text buffer implementation
+- `kjxlkj-core-state/src/editor.rs` (768 lines) - main editor state machine
+- `kjxlkj-core-edit/src/motion.rs` (476 lines) - motion implementations
+- `kjxlkj-core-mode/src/parser.rs` (473 lines) - key sequence parser
+- `kjxlkj-core-types/src/event.rs` (353 lines) - event type definitions
+- `kjxlkj-core-edit/src/text_object.rs` (338 lines) - text object implementations
+- `kjxlkj-core-text/src/text_buffer.rs` (295 lines) - text buffer implementation
+- `kjxlkj-core-edit/src/operator.rs` (267 lines) - operator implementations
+- `kjxlkj-core-undo/src/history.rs` (258 lines) - undo history implementation
+- `kjxlkj-core-ui/src/snapshot.rs` (244 lines) - UI snapshot structures
+- `kjxlkj-render/src/renderer.rs` (235 lines) - terminal renderer
 
-These should be refactored into smaller modules in future iterations.
+These should be refactored into smaller modules in future iterations. See [/docs/log/large-files.md](/docs/log/large-files.md) for details.
 
 ## Planned Improvements
 
