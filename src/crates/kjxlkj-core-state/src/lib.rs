@@ -2,12 +2,16 @@
 //!
 //! This crate holds the complete editor state and produces snapshots for rendering.
 
+pub mod autocommand;
 pub mod buffer_manager;
 pub mod config;
 mod editor;
 mod registers;
 pub mod session;
 
+pub use autocommand::{
+    AutocmdAction, AutocmdEvent, AutocmdGroup, AutocmdManager, AutocmdPattern, Autocommand,
+};
 pub use buffer_manager::{
     AlternateFile, ArgList, BufferFlags, BufferGroup, BufferInfo, BufferManager, BufferState,
 };

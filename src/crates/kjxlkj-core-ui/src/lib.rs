@@ -10,6 +10,7 @@ mod quickfix;
 mod snapshot;
 mod view;
 mod viewport;
+mod which_key;
 pub mod window;
 
 pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
@@ -26,6 +27,9 @@ pub use view::{
     FocusManager, ViewBounds, ViewConfig, ViewId, ViewLayout, ViewType, ViewVisibility,
 };
 pub use viewport::Viewport;
+pub use which_key::{
+    CommandPalette, KeyHint, PaletteCommand, WhichKey, WhichKeyConfig, WhichKeyPosition,
+};
 pub use window::{
     BufferId, Direction, SplitDirection, TabPage, Window, WindowCursor, WindowId, WindowManager,
     WindowNode, WindowOptions, WindowViewport,
