@@ -67,6 +67,188 @@ pub struct CompletionItem {
     pub insert_text: Option<String>,
 }
 
+/// LSP client capabilities.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClientCapabilities {
+    /// Text document capabilities.
+    pub text_document: Option<TextDocumentClientCapabilities>,
+}
+
+/// Text document client capabilities.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentClientCapabilities {
+    /// Completion capabilities.
+    pub completion: Option<CompletionClientCapabilities>,
+    /// Synchronization capabilities.
+    pub synchronization: Option<SyncCapabilities>,
+}
+
+/// Completion client capabilities.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletionClientCapabilities {
+    /// Dynamic registration supported.
+    pub dynamic_registration: Option<bool>,
+    /// Snippet support.
+    pub snippet_support: Option<bool>,
+}
+
+/// Sync capabilities.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SyncCapabilities {
+    /// Dynamic registration.
+    pub dynamic_registration: Option<bool>,
+    /// Will save support.
+    pub will_save: Option<bool>,
+    /// Did save support.
+    pub did_save: Option<bool>,
+}
+
+/// Initialize params.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InitializeParams {
+    /// Process ID.
+    pub process_id: Option<u32>,
+    /// Root URI.
+    pub root_uri: Option<String>,
+    /// Client capabilities.
+    pub capabilities: ClientCapabilities,
+    /// Client info.
+    pub client_info: Option<ClientInfo>,
+}
+
+/// Client info.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ClientInfo {
+    /// Client name.
+    pub name: String,
+    /// Client version.
+    pub version: Option<String>,
+}
+
+impl InitializeParams {
+    /// Create new initialize params.
+    pub fn new(root_uri: Option<String>) -> Self {
+        Self {
+            process_id: Some(std::process::id()),
+            root_uri,
+            capabilities: ClientCapabilities::default(),
+            client_info: Some(ClientInfo {
+                name: "kjxlkj".to_string(),
+                version: Some(env!("CARGO_PKG_VERSION").to_string()),
+            }),
+        }
+    }
+}
+
+/// Server capabilities (initialize result).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ServerCapabilities {
+    /// Text document sync kind.
+    pub text_document_sync: Option<TextDocumentSyncKind>,
+    /// Completion provider.
+    pub completion_provider: Option<bool>,
+    /// Definition provider.
+    pub definition_provider: Option<bool>,
+    /// Hover provider.
+    pub hover_provider: Option<bool>,
+}
+
+/// Text document sync kind.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(u8)]
+pub enum TextDocumentSyncKind {
+    /// No sync.
+    None = 0,
+    /// Full sync.
+    Full = 1,
+    /// Incremental sync.
+    Incremental = 2,
+}
+
+/// Text document item for didOpen.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentItem {
+    /// Document URI.
+    pub uri: String,
+    /// Language ID.
+    pub language_id: String,
+    /// Version.
+    pub version: i32,
+    /// Text content.
+    pub text: String,
+}
+
+impl TextDocumentItem {
+    /// Create a new text document item.
+    pub fn new(uri: String, language_id: String, text: String) -> Self {
+        Self {
+            uri,
+            language_id,
+            version: 1,
+            text,
+        }
+    }
+}
+
+/// Text document identifier.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TextDocumentIdentifier {
+    /// Document URI.
+    pub uri: String,
+}
+
+/// Versioned text document identifier.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VersionedTextDocumentIdentifier {
+    /// Document URI.
+    pub uri: String,
+    /// Version.
+    pub version: i32,
+}
+
+/// Content change event.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentContentChangeEvent {
+    /// Range of change (None for full sync).
+    pub range: Option<LspRange>,
+    /// New text.
+    pub text: String,
+}
+
+/// didOpen params.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DidOpenTextDocumentParams {
+    /// Document being opened.
+    pub text_document: TextDocumentItem,
+}
+
+/// didChange params.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DidChangeTextDocumentParams {
+    /// Document being changed.
+    pub text_document: VersionedTextDocumentIdentifier,
+    /// Content changes.
+    pub content_changes: Vec<TextDocumentContentChangeEvent>,
+}
+
+/// didClose params.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DidCloseTextDocumentParams {
+    /// Document being closed.
+    pub text_document: TextDocumentIdentifier,
+}
+
 /// LSP server configuration.
 #[derive(Debug, Clone)]
 pub struct LspServerConfig {
@@ -491,5 +673,81 @@ mod tests {
         let pos = LspPosition { line: u32::MAX, character: u32::MAX };
         assert_eq!(pos.line, u32::MAX);
         assert_eq!(pos.character, u32::MAX);
+    }
+
+    #[test]
+    fn test_initialize_params_new() {
+        let params = InitializeParams::new(Some("file:///project".to_string()));
+        assert!(params.process_id.is_some());
+        assert_eq!(params.root_uri, Some("file:///project".to_string()));
+        assert!(params.client_info.is_some());
+    }
+
+    #[test]
+    fn test_text_document_item_new() {
+        let item = TextDocumentItem::new(
+            "file:///test.rs".to_string(),
+            "rust".to_string(),
+            "fn main() {}".to_string(),
+        );
+        assert_eq!(item.version, 1);
+        assert_eq!(item.language_id, "rust");
+    }
+
+    #[test]
+    fn test_did_open_params() {
+        let item = TextDocumentItem::new(
+            "file:///test.rs".to_string(),
+            "rust".to_string(),
+            "fn main() {}".to_string(),
+        );
+        let params = DidOpenTextDocumentParams { text_document: item };
+        assert_eq!(params.text_document.uri, "file:///test.rs");
+    }
+
+    #[test]
+    fn test_did_change_params() {
+        let params = DidChangeTextDocumentParams {
+            text_document: VersionedTextDocumentIdentifier {
+                uri: "file:///test.rs".to_string(),
+                version: 2,
+            },
+            content_changes: vec![TextDocumentContentChangeEvent {
+                range: None,
+                text: "fn main() { println!(\"hello\"); }".to_string(),
+            }],
+        };
+        assert_eq!(params.text_document.version, 2);
+        assert_eq!(params.content_changes.len(), 1);
+    }
+
+    #[test]
+    fn test_did_close_params() {
+        let params = DidCloseTextDocumentParams {
+            text_document: TextDocumentIdentifier {
+                uri: "file:///test.rs".to_string(),
+            },
+        };
+        assert_eq!(params.text_document.uri, "file:///test.rs");
+    }
+
+    #[test]
+    fn test_text_document_sync_kind() {
+        assert_eq!(TextDocumentSyncKind::None as u8, 0);
+        assert_eq!(TextDocumentSyncKind::Full as u8, 1);
+        assert_eq!(TextDocumentSyncKind::Incremental as u8, 2);
+    }
+
+    #[test]
+    fn test_server_capabilities_default() {
+        let caps = ServerCapabilities::default();
+        assert!(caps.text_document_sync.is_none());
+        assert!(caps.completion_provider.is_none());
+    }
+
+    #[test]
+    fn test_client_capabilities_default() {
+        let caps = ClientCapabilities::default();
+        assert!(caps.text_document.is_none());
     }
 }

@@ -11,7 +11,7 @@ use tokio::sync::mpsc;
 use tracing::{debug, info};
 
 /// Git status of a file.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum GitStatus {
     /// File is untracked.
     Untracked,
@@ -20,9 +20,121 @@ pub enum GitStatus {
     /// File is staged.
     Staged,
     /// File is unchanged.
+    #[default]
     Unchanged,
     /// File is ignored.
     Ignored,
+}
+
+/// Branch info for statusline.
+#[derive(Debug, Clone, Default)]
+pub struct BranchInfo {
+    /// Branch name.
+    pub name: String,
+    /// Commits ahead of remote.
+    pub ahead: usize,
+    /// Commits behind remote.
+    pub behind: usize,
+    /// Whether the branch is detached HEAD.
+    pub detached: bool,
+}
+
+impl BranchInfo {
+    /// Create a new branch info.
+    pub fn new(name: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            ahead: 0,
+            behind: 0,
+            detached: false,
+        }
+    }
+
+    /// Set ahead/behind counts.
+    pub fn with_remote(mut self, ahead: usize, behind: usize) -> Self {
+        self.ahead = ahead;
+        self.behind = behind;
+        self
+    }
+
+    /// Mark as detached HEAD.
+    pub fn detached(mut self) -> Self {
+        self.detached = true;
+        self
+    }
+
+    /// Format for statusline display.
+    pub fn display(&self) -> String {
+        if self.detached {
+            format!("({})", &self.name[..7.min(self.name.len())])
+        } else if self.ahead > 0 && self.behind > 0 {
+            format!(" {} ↑{} ↓{}", self.name, self.ahead, self.behind)
+        } else if self.ahead > 0 {
+            format!(" {} ↑{}", self.name, self.ahead)
+        } else if self.behind > 0 {
+            format!(" {} ↓{}", self.name, self.behind)
+        } else {
+            format!(" {}", self.name)
+        }
+    }
+}
+
+/// File change indicator for explorer.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FileIndicator {
+    /// No indicator (unchanged).
+    None,
+    /// Modified indicator.
+    Modified,
+    /// Added/untracked indicator.
+    Added,
+    /// Deleted indicator.
+    Deleted,
+    /// Renamed indicator.
+    Renamed,
+    /// Conflict indicator.
+    Conflict,
+    /// Ignored indicator.
+    Ignored,
+}
+
+impl FileIndicator {
+    /// Get the display character for this indicator.
+    pub fn char(&self) -> Option<char> {
+        match self {
+            Self::None => None,
+            Self::Modified => Some('M'),
+            Self::Added => Some('A'),
+            Self::Deleted => Some('D'),
+            Self::Renamed => Some('R'),
+            Self::Conflict => Some('!'),
+            Self::Ignored => Some('I'),
+        }
+    }
+
+    /// Convert from GitStatus.
+    pub fn from_status(status: &GitStatus) -> Self {
+        match status {
+            GitStatus::Modified => Self::Modified,
+            GitStatus::Staged => Self::Added,
+            GitStatus::Untracked => Self::Added,
+            GitStatus::Ignored => Self::Ignored,
+            GitStatus::Unchanged => Self::None,
+        }
+    }
+}
+
+/// Repository stats summary.
+#[derive(Debug, Clone, Default)]
+pub struct RepoStats {
+    /// Number of modified files.
+    pub modified: usize,
+    /// Number of staged files.
+    pub staged: usize,
+    /// Number of untracked files.
+    pub untracked: usize,
+    /// Number of conflicts.
+    pub conflicts: usize,
 }
 
 /// Git service.
@@ -332,5 +444,77 @@ mod tests {
         let status = GitStatus::Staged;
         let cloned = status.clone();
         assert_eq!(status, cloned);
+    }
+
+    #[test]
+    fn test_branch_info_new() {
+        let info = BranchInfo::new("main");
+        assert_eq!(info.name, "main");
+        assert_eq!(info.ahead, 0);
+        assert_eq!(info.behind, 0);
+        assert!(!info.detached);
+    }
+
+    #[test]
+    fn test_branch_info_with_remote() {
+        let info = BranchInfo::new("main").with_remote(2, 3);
+        assert_eq!(info.ahead, 2);
+        assert_eq!(info.behind, 3);
+    }
+
+    #[test]
+    fn test_branch_info_detached() {
+        let info = BranchInfo::new("abc123def").detached();
+        assert!(info.detached);
+        assert!(info.display().starts_with('('));
+    }
+
+    #[test]
+    fn test_branch_info_display_simple() {
+        let info = BranchInfo::new("main");
+        assert_eq!(info.display(), " main");
+    }
+
+    #[test]
+    fn test_branch_info_display_ahead() {
+        let info = BranchInfo::new("main").with_remote(3, 0);
+        assert!(info.display().contains("↑3"));
+    }
+
+    #[test]
+    fn test_branch_info_display_behind() {
+        let info = BranchInfo::new("main").with_remote(0, 2);
+        assert!(info.display().contains("↓2"));
+    }
+
+    #[test]
+    fn test_file_indicator_char() {
+        assert_eq!(FileIndicator::Modified.char(), Some('M'));
+        assert_eq!(FileIndicator::Added.char(), Some('A'));
+        assert_eq!(FileIndicator::None.char(), None);
+    }
+
+    #[test]
+    fn test_file_indicator_from_status() {
+        assert_eq!(
+            FileIndicator::from_status(&GitStatus::Modified),
+            FileIndicator::Modified
+        );
+        assert_eq!(
+            FileIndicator::from_status(&GitStatus::Unchanged),
+            FileIndicator::None
+        );
+    }
+
+    #[test]
+    fn test_repo_stats_default() {
+        let stats = RepoStats::default();
+        assert_eq!(stats.modified, 0);
+        assert_eq!(stats.staged, 0);
+    }
+
+    #[test]
+    fn test_git_status_default() {
+        assert_eq!(GitStatus::default(), GitStatus::Unchanged);
     }
 }

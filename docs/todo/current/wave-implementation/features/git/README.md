@@ -22,9 +22,12 @@ Implement built-in git integration as a native feature (no plugins).
 - [x] Minimal slice: implement one visible git surface end-to-end with tests.
   - GitService with find_repo_root, current_branch, file_status
   - GitStatus enum (Untracked, Modified, Staged, Unchanged, Ignored)
+  - BranchInfo for statusline display
+  - FileIndicator for explorer integration
+  - RepoStats for summary view
 - [ ] Full conformance: implement all git feature documents.
-  - [ ] Branch indicator in statusline
-  - [ ] File change indicators in file explorer
+  - [x] Branch indicator in statusline (BranchInfo.display())
+  - [x] File change indicators in file explorer (FileIndicator)
   - [ ] Diff viewer
   - [ ] Commit log viewer
 - [ ] Update conformance and limitations docs when user-visible.
