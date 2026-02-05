@@ -8,7 +8,7 @@ Integrated terminal and external tool features.
 | Document | Content |
 |----------|---------|
 | [terminal.md](terminal.md) | Built-in terminal emulator |
-| [tmux.md](tmux.md) | Tmux integration |
+| [tmux.md](tmux.md) | Terminal multiplexer integration (tmux reference) |
 | [wm-integration.md](wm-integration.md) | Window manager integration |
 | [remote.md](remote.md) | Remote editing over SSH |
 | [dap.md](dap.md) | Debug adapter protocol |

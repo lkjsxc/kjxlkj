@@ -1,119 +1,92 @@
-# tmux/screen Integration
+# Terminal Multiplexer Integration (tmux reference)
 
-Using kjxlkj with terminal multiplexers.
+Back: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 
-## tmux Integration
+This document specifies how kjxlkj interoperates with an **external terminal multiplexer**.
 
-### Clipboard Sync
+The editor’s own window/tabs system is an internal multiplexer for splits + embedded terminals; a terminal multiplexer adds capabilities that a single TUI process cannot provide reliably (multi-client attach/detach, “virtual displays”, persistent workspaces).
 
+## Required multiplexer capabilities (workflow contract)
 
-### True Color
+The supported terminal multiplexer MUST provide:
 
+| Capability | Meaning in practice | tmux concept (reference) |
+|---|---|---|
+| Freely change layouts | Split panes, resize, and apply preset layouts quickly | panes + layouts |
+| Multiple editor screens and terminals | Run multiple `kjxlkj` instances and multiple shells concurrently | windows + panes |
+| Tabs like a web browser | Named, reorderable, closable tabs; fast switching | windows |
+| Virtual displays | Separate workspaces that can be switched and persisted | sessions |
+| Attach/detach | Resume work from a different terminal later | clients + sessions |
 
-### Cursor Shape
+## Supported multiplexers
 
+| Multiplexer | Status | Notes |
+|---|---|---|
+| tmux | Reference implementation | This document uses tmux terminology for concreteness. |
+| GNU screen | Compatible subset | May lack modern ergonomics; treat as “best effort”. |
+| WezTerm | Supported | Provides tabs/panes and “workspaces” similar to sessions. |
 
-## kjxlkj Inside tmux
+## Key conflict policy (normative)
 
-### Start Session
+- tmux prefix MUST NOT be `Space` (reserved as kjxlkj `<leader>` by default).
+- tmux prefix SHOULD NOT be `Ctrl-w` (reserved by kjxlkj for window commands).
+- tmux prefix SHOULD remain `Ctrl-b` unless the user has a strong reason to change it.
+- When conflicts exist, prefer changing tmux bindings over changing kjxlkj core navigation/editing keys.
 
+## Terminal compatibility requirements (normative)
 
-### Detach/Reattach
+When kjxlkj is run inside a multiplexer:
 
+| Concern | Requirement |
+|---|---|
+| Escape/meta latency | Multiplexer configuration SHOULD avoid large `escape-time` delays so `Esc` and Alt/Meta chords do not feel laggy. |
+| True color | The environment SHOULD provide 24-bit color so themes render correctly. |
+| Cursor shape | Cursor shape changes (Normal/Insert/Replace) SHOULD remain visible; if not possible, the editor MUST still be usable. |
+| Clipboard | OSC52 copy SHOULD work through the multiplexer to enable remote/persisted clipboard flows. |
+| Focus/resize events | Focus and resize events SHOULD be delivered; missing focus MUST NOT break correctness. |
+| No mouse support | Mouse input is ignored by kjxlkj by policy; multiplexer mouse features MUST NOT be required for usability. |
 
-## Key Conflicts
+## Workflow patterns (recommended)
 
-### tmux Prefix
+### Sessions as “virtual displays”
 
-Default: `Ctrl+b`
+Use one multiplexer session per project or context:
 
-No conflict with kjxlkj defaults.
+- session name encodes project + purpose
+- detaching/attaching is the primary “move this workspace elsewhere” action
+- switching sessions is the primary “switch virtual display” action
 
-### Custom Prefix
+### Windows as “tabs”
 
+Use windows as browser-like tabs:
 
-Avoid remapping kjxlkj keys to prefix.
+- name windows by task (edit, test, logs, repl)
+- reorder windows to keep the current focus area left-to-right
+- keep one window for “always-on” shells (build/test)
 
-## Performance
+### Panes as layouts
 
-### Escape Time
+Use panes for short-lived layout changes:
 
+- split and resize freely during a task
+- collapse back to a single pane when done
+- prefer multiplexer panes for multiple editor processes; prefer kjxlkj splits for multiple views inside one editor process
 
-Important for mode switching.
+## Nested usage
 
-### Focus Events
+If the integrated terminal runs a shell inside kjxlkj, that shell MAY also run tmux.
 
+When nesting:
 
-## Screen Integration
+- distinguish keybinding layers (tmux prefix vs kjxlkj `<leader>` vs terminal-mode keys)
+- avoid “prefix inside prefix” confusion by using visual cues (statusline/tabline) and consistent naming
 
-### Terminal Type
+## Testing requirements (target)
 
+In addition to the PTY E2E tests required by [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md), the project SHOULD include a “multiplexer smoke” PTY E2E that:
 
-### Clipboard
+- launches a tmux session
+- runs kjxlkj inside it
+- performs a minimal edit + `:wq` flow
 
-
-## Nested Sessions
-
-### Avoiding Confusion
-
-
-### Visual Distinction
-
-
-## Copy Mode
-
-### tmux Copy Mode
-
-`Ctrl+b [` enters copy mode.
-
-### kjxlkj Copy
-
-Use kjxlkj's visual mode for editing.
-
-### Clipboard Sharing
-
-OSC52 enables cross-session clipboard.
-
-## Pane Management
-
-### Split Panes
-
-
-### Navigate Panes
-
-
-## Session Persistence
-
-### Save Session
-
-
-### kjxlkj Sessions
-
-Separate from tmux sessions.
-
-## Recommended Setup
-
-### .tmux.conf
-
-
-## Troubleshooting
-
-### Colors Wrong
-
-Check `$TERM` inside tmux.
-
-### Keys Not Working
-
-Reduce escape-time.
-
-### Clipboard Issues
-
-Enable OSC52 in kjxlkj config.
-
-### Slow Scrolling
-
-
-## Scripts
-
-### Quick Edit
-
+This detects environment-sensitive regressions (escape-time, key normalization, focus/resize routing).
