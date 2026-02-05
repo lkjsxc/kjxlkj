@@ -172,4 +172,49 @@ mod tests {
         assert_eq!(supervisor.service_count(), 1);
         supervisor.shutdown_all().await;
     }
+
+    #[test]
+    fn test_supervisor_service_count_initial() {
+        let supervisor = Supervisor::new();
+        assert_eq!(supervisor.service_count(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_spawn_and_check_names() {
+        let mut supervisor = Supervisor::new();
+        supervisor.spawn(Box::new(TestService { name: "svc1".to_string() })).unwrap();
+        supervisor.spawn(Box::new(TestService { name: "svc2".to_string() })).unwrap();
+        
+        let names = supervisor.service_names();
+        assert!(names.contains(&"svc1"));
+        assert!(names.contains(&"svc2"));
+        assert!(!names.contains(&"svc3"));
+
+        supervisor.shutdown_all().await;
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_double_shutdown() {
+        let mut supervisor = Supervisor::new();
+        supervisor.spawn(Box::new(TestService { name: "test".to_string() })).unwrap();
+        
+        supervisor.shutdown_all().await;
+        // Second shutdown should be a no-op
+        supervisor.shutdown_all().await;
+        assert_eq!(supervisor.service_count(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_spawn_after_shutdown() {
+        let mut supervisor = Supervisor::new();
+        supervisor.spawn(Box::new(TestService { name: "a".to_string() })).unwrap();
+        supervisor.shutdown_all().await;
+        
+        // Spawn new service after shutdown
+        supervisor.spawn(Box::new(TestService { name: "b".to_string() })).unwrap();
+        assert_eq!(supervisor.service_count(), 1);
+        assert!(supervisor.service_names().contains(&"b"));
+
+        supervisor.shutdown_all().await;
+    }
 }

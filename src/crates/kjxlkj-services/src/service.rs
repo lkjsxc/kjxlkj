@@ -170,4 +170,55 @@ mod tests {
         let debug = format!("{:?}", msg);
         assert!(debug.contains("Shutdown"));
     }
+
+    #[test]
+    fn test_service_status_all_variants_eq() {
+        let variants = [
+            ServiceStatus::Starting,
+            ServiceStatus::Running,
+            ServiceStatus::Stopping,
+            ServiceStatus::Stopped,
+            ServiceStatus::Failed,
+        ];
+        for (i, a) in variants.iter().enumerate() {
+            for (j, b) in variants.iter().enumerate() {
+                if i == j {
+                    assert_eq!(a, b);
+                } else {
+                    assert_ne!(a, b);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_service_handle_name() {
+        let (tx, _rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new("my-service".to_string(), tx);
+        assert_eq!(handle.name, "my-service");
+    }
+
+    #[test]
+    fn test_service_handle_initial_status() {
+        let (tx, _rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new("svc".to_string(), tx);
+        assert!(matches!(handle.status, ServiceStatus::Starting));
+    }
+
+    #[test]
+    fn test_service_message_custom_content() {
+        let msg = ServiceMessage::Custom("payload".to_string());
+        if let ServiceMessage::Custom(s) = msg {
+            assert_eq!(s, "payload");
+        } else {
+            panic!("Expected Custom variant");
+        }
+    }
+
+    #[test]
+    fn test_service_status_copy() {
+        let status = ServiceStatus::Running;
+        let copied = status;
+        assert_eq!(status, copied);
+    }
 }

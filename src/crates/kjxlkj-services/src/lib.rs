@@ -81,4 +81,44 @@ mod tests {
         let result: ServiceResult<i32> = Err(ServiceError::Timeout("test".to_string()));
         assert!(result.is_err());
     }
+
+    #[test]
+    fn test_error_start_failed_format() {
+        let err = ServiceError::StartFailed("connection refused".to_string());
+        assert!(err.to_string().contains("Failed to start service"));
+    }
+
+    #[test]
+    fn test_error_all_variants_debug() {
+        let variants: Vec<ServiceError> = vec![
+            ServiceError::StartFailed("a".to_string()),
+            ServiceError::Crashed("b".to_string()),
+            ServiceError::Channel("c".to_string()),
+            ServiceError::Timeout("d".to_string()),
+        ];
+        for v in variants {
+            let debug = format!("{:?}", v);
+            assert!(!debug.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_service_error_message_preserved() {
+        let err = ServiceError::Crashed("memory error".to_string());
+        assert!(err.to_string().contains("memory error"));
+    }
+
+    #[test]
+    fn test_service_result_map() {
+        let result: ServiceResult<i32> = Ok(10);
+        let mapped = result.map(|x| x * 2);
+        assert_eq!(mapped.unwrap(), 20);
+    }
+
+    #[test]
+    fn test_service_result_and_then() {
+        let result: ServiceResult<i32> = Ok(5);
+        let chained = result.and_then(|x| Ok(x + 1));
+        assert_eq!(chained.unwrap(), 6);
+    }
 }

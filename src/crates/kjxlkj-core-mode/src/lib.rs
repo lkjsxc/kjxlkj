@@ -211,4 +211,61 @@ mod tests {
             assert!(intents.iter().any(|i| matches!(i, Intent::InsertText(_))));
         }
     }
+
+    #[test]
+    fn test_normal_mode_default() {
+        let normal = NormalMode::default();
+        assert_eq!(normal.mode(), Mode::Normal);
+    }
+
+    #[test]
+    fn test_insert_mode_default() {
+        let insert = InsertMode::default();
+        assert_eq!(insert.mode(), Mode::Insert);
+    }
+
+    #[test]
+    fn test_command_mode_default() {
+        let cmd = CommandMode::default();
+        assert_eq!(cmd.mode(), Mode::Command);
+    }
+
+    #[test]
+    fn test_replace_mode_default() {
+        let replace = ReplaceMode::default();
+        assert_eq!(replace.mode(), Mode::Replace);
+    }
+
+    #[test]
+    fn test_visual_mode_d_delete() {
+        let mut visual = VisualMode::line_wise();
+        let result = visual.handle_key(&KeyEvent::char('d'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Delete { .. })));
+        }
+    }
+
+    #[test]
+    fn test_visual_mode_y_yank() {
+        let mut visual = VisualMode::char_wise();
+        let result = visual.handle_key(&KeyEvent::char('y'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Yank { .. })));
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_enter() {
+        let mut insert = InsertMode::new();
+        let result = insert.handle_key(&KeyEvent::plain(KeyCode::Enter));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| {
+                if let Intent::InsertText(s) = i {
+                    s == "\n"
+                } else {
+                    false
+                }
+            }));
+        }
+    }
 }

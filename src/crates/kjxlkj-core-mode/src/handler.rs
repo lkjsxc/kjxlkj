@@ -98,4 +98,39 @@ mod tests {
         let cloned = result.clone();
         assert!(matches!(cloned, ModeResult::Consumed(_)));
     }
+
+    #[test]
+    fn test_mode_result_empty_intents() {
+        let result = ModeResult::intents(vec![]);
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.is_empty());
+        } else {
+            panic!("Expected Consumed");
+        }
+    }
+
+    #[test]
+    fn test_mode_result_debug_consumed() {
+        let result = ModeResult::Consumed(vec![Intent::Nop]);
+        let debug = format!("{:?}", result);
+        assert!(debug.contains("Consumed"));
+    }
+
+    #[test]
+    fn test_mode_result_debug_ignored() {
+        let result = ModeResult::Ignored;
+        let debug = format!("{:?}", result);
+        assert!(debug.contains("Ignored"));
+    }
+
+    #[test]
+    fn test_mode_result_intent_switch_mode() {
+        let result = ModeResult::intent(Intent::SwitchMode(Mode::Insert));
+        if let ModeResult::Consumed(intents) = result {
+            assert_eq!(intents.len(), 1);
+            assert!(matches!(intents[0], Intent::SwitchMode(Mode::Insert)));
+        } else {
+            panic!("Expected Consumed");
+        }
+    }
 }
