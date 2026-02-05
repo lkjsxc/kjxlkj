@@ -13,50 +13,31 @@ The implementation surface is tracked in:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
-## Implementation Status
+## Status sources (avoid stale claims)
 
-The following features are now implemented:
+Do not infer “implemented” from target specs or placeholder feature lists.
 
-### Core editor model
+Authoritative sources for “what exists” are:
 
-- ✅ Multi-buffer editing with buffer management
-- ✅ Window/split management with horizontal/vertical splits
-- ✅ Tab support with tabline configuration
-- ✅ Persistent sessions (restore layout/buffers)
-- ✅ Floating windows with borders and positioning
-- ✅ Window zoom and layout presets
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) (the supported surface)
+- the repository’s automated tests (when an implementation workspace exists)
 
-### Built-in "modern editor" features
+This limitations document exists to capture **user-visible drift** and **known rough edges** against the target spec.
 
-- ✅ LSP client features (diagnostics, completion, hover, goto, formatting, code actions)
-- ✅ Git integration (blame, diff, status, staging, branches, stash, log)
-- ✅ Syntax highlighting with Tree-sitter integration
-- ✅ Diagnostics UI with inline and gutter display
-- ✅ File explorer with tree navigation
-- ✅ Fuzzy finder / indexing (files, buffers, symbols)
-- ✅ Integrated terminal panes with split support, DAP debugging, tmux integration
-- ✅ Multiple cursors (visual block and multi-cursor modes)
-- ✅ Snippets with tabstops and placeholders
+## High-priority UX defects (reported and/or suspected)
 
-### Configuration
+These items are prioritized because they block basic usability and because they can be missed by headless-only testing.
 
-- ✅ Persistent configuration (TOML) with key remapping
-- ✅ Theming with color schemes and customization
-- ✅ Full `:set` option support
+| Issue | Expected behavior | Defining spec |
+|---|---|---|
+| Leader key conflicts | `Space` acts as `<leader>` in Normal mode; feature chords like `<leader>e` and `<leader>t` are reachable | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
+| Append at end-of-line (`a`) off-by-one | When cursor is on last character, `a` enters Insert at column `N` (true EOL) | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
+| Soft wrap not applied | Long lines wrap by default (`wrap = true`) | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
+| Undo/redo not responding | `u` undoes; `Ctrl-r` redoes; both are deterministic | [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md) |
+| `gg` not responding | `gg` moves to file start (and is usable as a motion target) | [/docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md) |
+| `.c` syntax highlighting missing | Built-in language detection includes C/C++ by file extension | [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md) |
 
-### UI Features
-
-- ✅ Cursor customization (shape, blink, cursorline)
-- ✅ Notification system with history
-- ✅ Icon support (nerd fonts and ASCII fallback)
-- ✅ Indent guides with context highlighting
-- ✅ Scroll customization (scrolloff, sidescrolloff, smooth scroll)
-- ✅ Color picker with RGB/HSL/hex support
-- ✅ Statusline and tabline configuration
-
-## Platform Specific
-
-Platform-specific behavior and terminal compatibility have been validated on Linux, macOS, and Windows.
+For each item above, the implementation MUST include an **interactive PTY-driven E2E regression test** that drives the real TUI path and verifies behavior via persisted output (prefer file writes over screen scraping to reduce flakiness). See [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
 
 ## Performance Limits
 
@@ -99,7 +80,7 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 - No mouse support (by design).
 
-## Code structure limitations
+## Code structure limitations (must not repeat in next reconstruction)
 
 Some source files exceed the 200-line guideline from `/docs/policy/STRUCTURE.md`:
 

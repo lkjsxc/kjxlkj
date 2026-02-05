@@ -12,8 +12,9 @@ Complete nvim-compatible navigation keybindings.
 | `k` | Up | Move up one line |
 | `gj` | Display down | Move down one display line |
 | `gk` | Display up | Move up one display line |
-| `Space` | Forward char | Move right one character |
 | `Backspace` | Back char | Move left one character |
+
+Note: `Space` is reserved for `<leader>` by default (see [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)); use `l` for rightward motion.
 
 ## Line Navigation
 
@@ -121,4 +122,3 @@ Complete nvim-compatible navigation keybindings.
 | ``` `` ``` | Last jump exact | Jump to exact position before jump |
 | `'.` | Last change | Jump to last change position |
 | `'^` | Last insert | Jump to last insert position |
-

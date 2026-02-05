@@ -100,6 +100,7 @@ Once an implementation claims conformance to this document, it MUST include auto
 | visual_line_mode | `V` enters Visual-Line mode |
 | replace_mode | `R` enters Replace mode |
 | append_mode | `a` appends after cursor |
+| append_at_eol | When cursor is on last character, `a` appends at true end-of-line (no off-by-one) |
 | open_line_below | `o` opens line below |
 | open_line_above | `O` opens line above |
 | text_insert_delete | Insert mode text entry and backspace |
@@ -110,6 +111,8 @@ Once an implementation claims conformance to this document, it MUST include auto
 | scroll_burst | 20 lines scrolled rapidly with `j` |
 | mode_switch_burst | 10 rapid Normal/Insert mode switches |
 | input_ordering | Verify input sequence order preserved |
+
+These scenarios are primarily **headless** (no terminal UI). The project also requires **interactive PTY-driven E2E** tests for bugs that can hide in terminal decoding, key-chord parsing, focus/routing, or render-loop behavior. See [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
 
 ## Related
 

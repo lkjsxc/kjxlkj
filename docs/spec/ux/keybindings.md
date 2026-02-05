@@ -15,6 +15,11 @@ For the currently supported subset (when a reconstructed implementation exists),
 
 Default leader: `Space`
 
+Normative:
+
+- In Normal mode, `Space` MUST act as `<leader>` and MUST NOT perform cursor motion or editing by itself.
+- `<leader>` alone MUST NOT mutate buffer content; it MAY trigger a which-key style hint view if that feature is enabled.
+
 ## Documentation Index
 
 | Document | Content |

@@ -23,7 +23,7 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 |---|---|
 | `h`/`j`/`k`/`l` | Cursor move left/down/up/right |
 | Arrow keys | Cursor move |
-| `Space` | Move right (same as `l`) |
+| `Space` | Leader prefix (default leader); feature chords include `Space e` (explorer) and `Space t` (terminal) |
 | `Backspace` | Move left (same as `h`) |
 | `0` | Move to start of line (column 0) |
 | `^` | Move to first non-blank character |

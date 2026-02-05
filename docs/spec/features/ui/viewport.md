@@ -32,6 +32,14 @@ Deterministic rules for mapping buffers to on-screen window regions.
 | `past_end` | enum | Whether the viewport may show virtual empty rows past EOF. |
 | `smooth_follow` | boolean | Whether viewport changes may be animated (UI-only). |
 
+## Defaults (normative)
+
+| Field | Default | Notes |
+|---|---|---|
+| `wrap` | `true` | Long lines wrap by default (Vim-like). When `wrap = true`, `left_col` MUST be `0`. |
+| `top_line` | `0` | Clamped per invariants. |
+| `left_col` | `0` | Used only when `wrap = false`. |
+
 ## Invariants
 
 | Rule | Requirement |
