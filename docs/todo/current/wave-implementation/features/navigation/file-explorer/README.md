@@ -48,20 +48,20 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Unit tests (required)
 
-- Explorer state transitions (expand/collapse, selection movement).
-- Tree rendering to a list of display rows given a known filesystem snapshot.
+- [x] Explorer state transitions (expand/collapse, selection movement).
+- [ ] Tree rendering to a list of display rows given a known filesystem snapshot.
 
 ### Integration tests (required)
 
-- FS service directory listing (cancellation, ordering, error handling).
+- [ ] FS service directory listing (cancellation, ordering, error handling).
 
 ### Golden UI tests (recommended)
 
-- Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
+- [ ] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
 
 ## Checklist
 
-- [ ] Define the explorer core state model (tree nodes, expansion, selection).
+- [x] Define the explorer core state model (tree nodes, expansion, selection).
 - [ ] Define the service interface for directory listing (incremental + cancellable for large dirs).
 - [ ] Implement explorer view rendering and input handling with deterministic tests.
 - [ ] Implement open-file intent wiring into the editor core.

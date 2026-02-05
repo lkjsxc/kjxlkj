@@ -2,10 +2,12 @@
 //!
 //! This crate defines the types used for rendering the editor UI.
 
+mod explorer;
 mod snapshot;
 mod viewport;
 pub mod window;
 
+pub use explorer::{Explorer, ExplorerNode, ExplorerRow, NodeKind, NodeState};
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
 pub use viewport::Viewport;
 pub use window::{

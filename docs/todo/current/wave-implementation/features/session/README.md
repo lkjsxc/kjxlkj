@@ -18,8 +18,8 @@ Implement built-in session and persistence features.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define persistence boundaries and recovery UX.
-- [ ] Minimal slice: implement one persistence mechanism end-to-end with tests.
+- [x] Placeholder scaffolding: define persistence boundaries and recovery UX.
+- [x] Minimal slice: implement one persistence mechanism end-to-end with tests.
 - [ ] Full conformance: implement all session feature documents.
 - [ ] Update conformance and limitations docs when user-visible.
 
