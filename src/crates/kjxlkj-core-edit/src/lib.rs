@@ -7,6 +7,12 @@ mod operator;
 pub mod regex;
 mod text_object;
 pub mod text_manip;
+pub mod snippet;
+pub mod multicursor;
+pub mod comment;
+pub mod clipboard;
+pub mod spell;
+pub mod format;
 
 pub use motion::{apply_motion, Motion};
 pub use operator::{apply_operator, Operator};
@@ -15,6 +21,20 @@ pub use text_object::{find_text_object, TextObject, TextObjectKind};
 pub use text_manip::{
     align_lines, align_text, increment_number, join_lines, reverse_lines, shuffle_lines_seeded,
     sort_lines, Alignment, SortOptions, SortOrder,
+};
+pub use snippet::{
+    Placeholder, Snippet, SnippetContext, SnippetEngine, SnippetSession, SnippetVariable, Transform,
+};
+pub use multicursor::{Cursor, CursorEdit, CursorPosition, MultiCursor, MultiEditResult, Selection};
+pub use comment::{CommentOp, CommentRegistry, CommentState, CommentStyle, TodoComment};
+pub use clipboard::{
+    Clipboard, ClipboardConfig, ClipboardProvider, ReadOnlyRegister, Register, RegisterContent,
+    RegisterType, X11Selection,
+};
+pub use spell::{Dictionary, SpellChecker, SpellConfig, SpellError, SpellNav, SpellResult};
+pub use format::{
+    FormatOnPaste, FormatOnPasteConfig, FormatOnType, FormatOnTypeConfig, FormatResult,
+    FormatTrigger, IndentStyle, PasteAdjuster,
 };
 
 #[cfg(test)]

@@ -20,6 +20,6 @@ Implement built-in features that augment editing (but are not core motions/opera
 
 - [x] Placeholder scaffolding: define feature ownership and UI surfaces.
 - [x] Minimal slice: implement one feature end-to-end with tests.
-- [ ] Full conformance: implement all editing-feature documents.
+- [x] Full conformance: implement all editing-feature documents.
 - [ ] Update conformance and limitations docs when user-visible.
 
