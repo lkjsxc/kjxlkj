@@ -55,4 +55,103 @@ mod tests {
         assert!(!history.can_undo());
         assert!(!history.can_redo());
     }
+
+    #[test]
+    fn test_transaction_is_empty() {
+        let tx = Transaction::new();
+        assert!(tx.is_empty());
+    }
+
+    #[test]
+    fn test_transaction_not_empty_after_push() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "x"));
+        assert!(!tx.is_empty());
+    }
+
+    #[test]
+    fn test_history_undo_enables_redo() {
+        let mut history = UndoHistory::new();
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "test"));
+        history.push(tx);
+        let _ = history.undo();
+        assert!(history.can_redo());
+    }
+
+    #[test]
+    fn test_history_redo_after_undo() {
+        let mut history = UndoHistory::new();
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "test"));
+        history.push(tx);
+        let _ = history.undo();
+        let _ = history.redo();
+        assert!(history.can_undo());
+    }
+
+    #[test]
+    fn test_history_multiple_transactions() {
+        let mut history = UndoHistory::new();
+        for i in 0..5 {
+            let mut tx = Transaction::new();
+            tx.push(Edit::insert(Position::new(0, i), "x"));
+            history.push(tx);
+        }
+        assert!(history.can_undo());
+    }
+
+    #[test]
+    fn test_history_clear() {
+        let mut history = UndoHistory::new();
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "test"));
+        history.push(tx);
+        history.clear();
+        assert!(!history.can_undo());
+        assert!(!history.can_redo());
+    }
+
+    #[test]
+    fn test_edit_position() {
+        let edit = Edit::insert(Position::new(5, 10), "hi");
+        if let Edit::Insert { position, .. } = edit {
+            assert_eq!(position.line, 5);
+            assert_eq!(position.col, 10);
+        } else {
+            panic!("Expected Insert");
+        }
+    }
+
+    #[test]
+    fn test_edit_content() {
+        let edit = Edit::insert(Position::new(0, 0), "content");
+        if let Edit::Insert { text, .. } = edit {
+            assert_eq!(text, "content");
+        } else {
+            panic!("Expected Insert");
+        }
+    }
+
+    #[test]
+    fn test_transaction_edits_order() {
+        let mut tx = Transaction::new();
+        tx.push(Edit::insert(Position::new(0, 0), "first"));
+        tx.push(Edit::insert(Position::new(0, 5), "second"));
+        let edits = tx.edits();
+        assert!(matches!(&edits[0], Edit::Insert { text, .. } if text == "first"));
+        assert!(matches!(&edits[1], Edit::Insert { text, .. } if text == "second"));
+    }
+
+    #[test]
+    fn test_history_default() {
+        let history = UndoHistory::default();
+        assert!(!history.can_undo());
+    }
+
+    #[test]
+    fn test_transaction_default() {
+        let tx = Transaction::default();
+        assert!(tx.is_empty());
+    }
 }

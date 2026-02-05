@@ -164,3 +164,77 @@ async fn test_service_names() {
 
     supervisor.shutdown_all().await;
 }
+
+/// Test: Empty supervisor shutdown is safe.
+#[tokio::test]
+async fn test_empty_shutdown() {
+    let mut supervisor = Supervisor::new();
+    // Should not panic when shutting down empty supervisor
+    supervisor.shutdown_all().await;
+    assert_eq!(supervisor.service_count(), 0);
+}
+
+/// Test: Service replacement.
+#[tokio::test]
+async fn test_service_replacement() {
+    let mut supervisor = Supervisor::new();
+    supervisor.spawn(Box::new(TestService::new("service-a"))).expect("spawn");
+    
+    // Spawn with same name should replace
+    supervisor.spawn(Box::new(TestService::new("service-a"))).expect("spawn");
+    
+    // Should still be 1 service, not 2
+    assert_eq!(supervisor.service_count(), 1);
+    
+    supervisor.shutdown_all().await;
+}
+
+/// Test: Spawn after shutdown works.
+#[tokio::test]
+async fn test_spawn_after_shutdown() {
+    let mut supervisor = Supervisor::new();
+    supervisor.spawn(Box::new(TestService::new("first"))).expect("spawn");
+    supervisor.shutdown_all().await;
+    
+    // Should be able to spawn again
+    supervisor.spawn(Box::new(TestService::new("second"))).expect("spawn");
+    assert_eq!(supervisor.service_count(), 1);
+    
+    supervisor.shutdown_all().await;
+}
+
+/// Test: Many spawns are stable.
+#[tokio::test]
+async fn test_many_spawns() {
+    let mut supervisor = Supervisor::new();
+    
+    for i in 0..100 {
+        supervisor.spawn(Box::new(TestService::new(&format!("svc-{}", i)))).expect("spawn");
+    }
+    
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+    assert_eq!(supervisor.service_count(), 100);
+    
+    supervisor.shutdown_all().await;
+    assert_eq!(supervisor.service_count(), 0);
+}
+
+/// Test: Service count is accurate.
+#[tokio::test]
+async fn test_service_count_accuracy() {
+    let mut supervisor = Supervisor::new();
+    assert_eq!(supervisor.service_count(), 0);
+    
+    supervisor.spawn(Box::new(TestService::new("a"))).expect("spawn");
+    assert_eq!(supervisor.service_count(), 1);
+    
+    supervisor.spawn(Box::new(TestService::new("b"))).expect("spawn");
+    assert_eq!(supervisor.service_count(), 2);
+    
+    supervisor.spawn(Box::new(TestService::new("c"))).expect("spawn");
+    assert_eq!(supervisor.service_count(), 3);
+    
+    supervisor.shutdown_all().await;
+    assert_eq!(supervisor.service_count(), 0);
+}
+
