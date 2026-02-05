@@ -328,3 +328,111 @@ mod modifier_tests {
         }
     }
 }
+
+mod extra_decode_tests {
+    use super::*;
+
+    #[test]
+    fn test_decode_char_uppercase() {
+        let key = CrosstermKeyEvent::new(KeyCode::Char('Z'), KeyModifiers::SHIFT);
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(KeyEvent::Char(c, _))) = decode_event(event) {
+            assert_eq!(c, 'Z');
+        } else {
+            panic!("Expected char event");
+        }
+    }
+
+    #[test]
+    fn test_decode_char_special() {
+        let key = CrosstermKeyEvent::new(KeyCode::Char(':'), KeyModifiers::empty());
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(KeyEvent::Char(c, _))) = decode_event(event) {
+            assert_eq!(c, ':');
+        } else {
+            panic!("Expected char event");
+        }
+    }
+
+    #[test]
+    fn test_decode_ctrl_shift_combo() {
+        let key = CrosstermKeyEvent::new(
+            KeyCode::Char('s'),
+            KeyModifiers::CONTROL | KeyModifiers::SHIFT,
+        );
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(KeyEvent::Char(_, m))) = decode_event(event) {
+            assert!(m.ctrl);
+            assert!(m.shift);
+        } else {
+            panic!("Expected char event");
+        }
+    }
+
+    #[test]
+    fn test_decode_f5() {
+        let key = CrosstermKeyEvent::new(KeyCode::F(5), KeyModifiers::empty());
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(k)) = decode_event(event) {
+            assert!(matches!(k, KeyEvent::F(5)));
+        } else {
+            panic!("Expected F5");
+        }
+    }
+
+    #[test]
+    fn test_decode_f10() {
+        let key = CrosstermKeyEvent::new(KeyCode::F(10), KeyModifiers::empty());
+        let event = Event::Key(key);
+        if let Some(EditorEvent::Key(k)) = decode_event(event) {
+            assert!(matches!(k, KeyEvent::F(10)));
+        } else {
+            panic!("Expected F10");
+        }
+    }
+
+    #[test]
+    fn test_decode_insert_key() {
+        let key = CrosstermKeyEvent::new(KeyCode::Insert, KeyModifiers::empty());
+        let event = Event::Key(key);
+        // Insert key might not be mapped, just check it doesn't panic
+        let _ = decode_event(event);
+    }
+
+    #[test]
+    fn test_decode_resize_small() {
+        let event = Event::Resize(10, 5);
+        let decoded = decode_event(event);
+        if let Some(EditorEvent::Resize { width, height }) = decoded {
+            assert_eq!(width, 10);
+            assert_eq!(height, 5);
+        } else {
+            panic!("Expected resize");
+        }
+    }
+
+    #[test]
+    fn test_decode_resize_large() {
+        let event = Event::Resize(1920, 1080);
+        let decoded = decode_event(event);
+        if let Some(EditorEvent::Resize { width, height }) = decoded {
+            assert_eq!(width, 1920);
+            assert_eq!(height, 1080);
+        } else {
+            panic!("Expected resize");
+        }
+    }
+
+    #[test]
+    fn test_decode_numeric_chars() {
+        for digit in '0'..='9' {
+            let key = CrosstermKeyEvent::new(KeyCode::Char(digit), KeyModifiers::empty());
+            let event = Event::Key(key);
+            if let Some(EditorEvent::Key(KeyEvent::Char(c, _))) = decode_event(event) {
+                assert_eq!(c, digit);
+            } else {
+                panic!("Expected digit {}", digit);
+            }
+        }
+    }
+}
