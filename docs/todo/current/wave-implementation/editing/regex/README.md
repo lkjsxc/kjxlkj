@@ -20,12 +20,12 @@ Implement the regex behavior required by search, substitute, and other text feat
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the supported regex dialect and compatibility rules.
-- [ ] Define compilation/caching and performance expectations.
+- [x] Define the supported regex dialect and compatibility rules.
+- [x] Define compilation/caching and performance expectations.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement enough regex features to support basic search and substitute with tests.
+- [x] Implement enough regex features to support basic search and substitute with tests.
 
 ### C. Full conformance
 

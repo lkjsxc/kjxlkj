@@ -4,10 +4,12 @@
 
 mod motion;
 mod operator;
+pub mod regex;
 mod text_object;
 
 pub use motion::{apply_motion, Motion};
 pub use operator::{apply_operator, Operator};
+pub use regex::{Captures, MagicMode, Match, Pattern, PatternCache, RegexError, RegexOptions};
 pub use text_object::{find_text_object, TextObject, TextObjectKind};
 
 #[cfg(test)]

@@ -453,6 +453,7 @@ dependencies = [
  "kjxlkj-core-text",
  "kjxlkj-core-types",
  "kjxlkj-core-undo",
+ "regex",
 ]
 
 [[package]]

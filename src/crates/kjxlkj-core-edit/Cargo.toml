@@ -9,5 +9,6 @@ authors.workspace = true
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 kjxlkj-core-text = { path = "../kjxlkj-core-text" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
+regex = "1"
 
 [dev-dependencies]
