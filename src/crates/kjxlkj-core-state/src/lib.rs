@@ -68,4 +68,68 @@ mod tests {
         let state = EditorState::new();
         assert!(state.content().is_empty() || state.content().len() == 0);
     }
+
+    #[test]
+    fn test_editor_load_content() {
+        let mut state = EditorState::new();
+        state.load_content("hello world");
+        assert!(state.content().contains("hello"));
+    }
+
+    #[test]
+    fn test_editor_load_multiline() {
+        let mut state = EditorState::new();
+        state.load_content("line1\nline2\nline3");
+        let snapshot = state.snapshot();
+        assert!(snapshot.buffer.line_count >= 3);
+    }
+
+    #[test]
+    fn test_editor_resize() {
+        let mut state = EditorState::new();
+        state.resize(100, 50);
+        let snapshot = state.snapshot();
+        assert_eq!(snapshot.width, 100);
+        assert_eq!(snapshot.height, 50);
+    }
+
+    #[test]
+    fn test_editor_mode_change() {
+        let mut state = EditorState::new();
+        assert_eq!(state.mode(), kjxlkj_core_types::Mode::Normal);
+        state.handle_key(kjxlkj_core_types::KeyEvent::char('i'));
+        assert_eq!(state.mode(), kjxlkj_core_types::Mode::Insert);
+    }
+
+    #[test]
+    fn test_editor_escape_back_to_normal() {
+        let mut state = EditorState::new();
+        state.handle_key(kjxlkj_core_types::KeyEvent::char('i'));
+        assert_eq!(state.mode(), kjxlkj_core_types::Mode::Insert);
+        state.handle_key(kjxlkj_core_types::KeyEvent::new(
+            kjxlkj_core_types::KeyCode::Escape,
+            kjxlkj_core_types::KeyModifiers::NONE,
+        ));
+        assert_eq!(state.mode(), kjxlkj_core_types::Mode::Normal);
+    }
+
+    #[test]
+    fn test_editor_snapshot_mode() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert_eq!(snapshot.mode, kjxlkj_core_types::Mode::Normal);
+    }
+
+    #[test]
+    fn test_editor_snapshot_cursor() {
+        let state = EditorState::new();
+        let snapshot = state.snapshot();
+        assert_eq!(snapshot.cursor.line(), 0);
+    }
+
+    #[test]
+    fn test_registers_selected_default() {
+        let regs = Registers::new();
+        assert_eq!(regs.selected(), kjxlkj_core_types::RegisterName::Unnamed);
+    }
 }
