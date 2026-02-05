@@ -277,4 +277,62 @@ mod tests {
         let pos = find_word_boundary(s, 0, true, WordKind::Word);
         assert!(pos <= 2);
     }
+
+    #[test]
+    fn test_word_kind_copy() {
+        let kind = WordKind::Word;
+        let copied = kind;
+        assert_eq!(kind, copied);
+    }
+
+    #[test]
+    fn test_word_kind_eq() {
+        assert_eq!(WordKind::Word, WordKind::Word);
+        assert_eq!(WordKind::WORD, WordKind::WORD);
+        assert_ne!(WordKind::Word, WordKind::WORD);
+    }
+
+    #[test]
+    fn test_classify_digit() {
+        assert_eq!(classify_char('5'), CharClass::Word);
+        assert_eq!(classify_char('0'), CharClass::Word);
+    }
+
+    #[test]
+    fn test_classify_newline() {
+        assert_eq!(classify_char('\n'), CharClass::Whitespace);
+    }
+
+    #[test]
+    fn test_classify_tab() {
+        assert_eq!(classify_char('\t'), CharClass::Whitespace);
+    }
+
+    #[test]
+    fn test_classify_space() {
+        assert_eq!(classify_char(' '), CharClass::Whitespace);
+    }
+
+    #[test]
+    fn test_classify_at_sign() {
+        assert_eq!(classify_char('@'), CharClass::Punct);
+    }
+
+    #[test]
+    fn test_classify_hash() {
+        assert_eq!(classify_char('#'), CharClass::Punct);
+    }
+
+    #[test]
+    fn test_word_boundary_newline() {
+        let s = "hello\nworld";
+        assert_eq!(find_word_boundary(s, 0, true, WordKind::Word), 6);
+    }
+
+    #[test]
+    fn test_word_boundary_long_text() {
+        let s = "the quick brown fox jumps over the lazy dog";
+        let pos = find_word_boundary(s, 0, true, WordKind::Word);
+        assert_eq!(pos, 4);
+    }
 }
