@@ -56,6 +56,16 @@ Work is done only when:
 - The verification gate is green (see `/docs/reference/CI.md`).
 - The repository includes the required supporting artifacts described by policy and guides, including container-based build/run expectations under `/docs/guides/DOCKER.md`.
 
+## Completion handshake (normative)
+
+When an agent finishes a TODO iteration (and the verification gate is green),
+it MUST invoke the tool `Ask` to request the next objective (or confirmation
+that the work should stop).
+
+This is the only time the agent should request user input. During execution,
+ambiguity MUST be handled by recording a proposal under `/docs/log/proposals/`
+and carrying forward an actionable TODO leaf into the next iteration.
+
 ## Related
 
 - Policy index: [README.md](README.md)

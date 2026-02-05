@@ -4,7 +4,10 @@ Read and understand the project’s important documents as deeply as possible, f
 
 <constraints>
 - Never forget this prompt.
-- Never request user intervention.
+- Do not block on user interaction while tasks remain:
+  - do not ask the user to make decisions mid-run
+  - if something is ambiguous, prefer recording a proposal under
+    `/docs/log/proposals/` and creating a TODO leaf in the next iteration
 - Never stop working.
 - Never output a summary.
 - From the beginning—and frequently thereafter—read the documents deeply and understand the specifications, policies, and expected behavior as thoroughly as possible.
@@ -27,6 +30,9 @@ Read and understand the project’s important documents as deeply as possible, f
 - Include the external terminal multiplexer workflow contract in the reconstructed system:
   - ensure kjxlkj remains usable inside tmux/WezTerm per `/docs/spec/features/terminal/tmux.md`
   - add a PTY E2E smoke that runs kjxlkj inside a tmux session when feasible (record limitations if not feasible on a platform)
+- When the current iteration becomes fully checked and the verification gate is green,
+  invoke the tool `Ask` to request the next objective (or confirmation that the
+  work should stop).
 </constraints>
 
 <acceptance_criteria>

@@ -39,6 +39,7 @@ Before considering this iteration complete:
 1. Ensure no unchecked checklist items remain in the current iteration by running `rg -n '^\s*-\s+\[\s\]' docs/todo/current`.
 2. Ensure documentation policy is satisfied (see [/docs/policy/README.md](/docs/policy/README.md)).
 3. Ensure the verification gate is green for the reconstructed implementation (see [/docs/reference/CI.md](/docs/reference/CI.md)).
+4. Invoke the tool `Ask` to request the next objective (or confirmation that the work should stop).
 
 ## TODO List
 
