@@ -702,3 +702,351 @@ mod buffer_version_extra {
         assert!(v2 < v3);
     }
 }
+
+mod extra_position_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_position_max_values() {
+        let pos = Position::new(usize::MAX, usize::MAX);
+        assert_eq!(pos.line, usize::MAX);
+        assert_eq!(pos.column, usize::MAX);
+    }
+
+    #[test]
+    fn test_position_ordering_different_lines() {
+        let a = Position::new(0, 100);
+        let b = Position::new(1, 0);
+        assert!(a < b);
+    }
+
+    #[test]
+    fn test_position_equal_to_self() {
+        let pos = Position::new(5, 10);
+        assert_eq!(pos, pos);
+    }
+
+    #[test]
+    fn test_position_hash() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(Position::new(1, 2));
+        set.insert(Position::new(1, 2));
+        assert_eq!(set.len(), 1);
+    }
+
+    #[test]
+    fn test_position_copy() {
+        let p1 = Position::new(3, 4);
+        let p2 = p1;
+        assert_eq!(p1, p2);
+    }
+}
+
+mod extra_range_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_range_is_empty_same_position() {
+        let range = Range::from_coords(5, 10, 5, 10);
+        assert!(range.is_empty());
+    }
+
+    #[test]
+    fn test_range_single_char() {
+        let range = Range::from_coords(0, 0, 0, 1);
+        assert!(!range.is_empty());
+    }
+
+    #[test]
+    fn test_range_contains_start() {
+        let range = Range::from_coords(2, 0, 4, 0);
+        assert!(range.contains(Position::new(2, 0)));
+    }
+
+    #[test]
+    fn test_range_spans_line() {
+        let range = Range::from_coords(0, 0, 1, 0);
+        assert!(range.contains(Position::new(0, 5)));
+    }
+
+    #[test]
+    fn test_range_clone_eq() {
+        let r1 = Range::from_coords(1, 2, 3, 4);
+        let r2 = r1.clone();
+        assert_eq!(r1, r2);
+    }
+
+    #[test]
+    fn test_range_normalized() {
+        let r1 = Range::from_coords(5, 0, 2, 0);
+        let normalized = r1.normalized();
+        assert!(normalized.start <= normalized.end);
+    }
+
+    #[test]
+    fn test_range_copy() {
+        let r1 = Range::from_coords(0, 0, 1, 1);
+        let r2 = r1;
+        assert_eq!(r1, r2);
+    }
+}
+
+mod extra_cursor_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_cursor_max_values() {
+        let cursor = Cursor::new(usize::MAX, usize::MAX);
+        assert_eq!(cursor.line, usize::MAX);
+        assert_eq!(cursor.column, usize::MAX);
+    }
+
+    #[test]
+    fn test_cursor_with_target_preserved() {
+        let cursor = Cursor::new(0, 5).with_target_column(10);
+        assert_eq!(cursor.column, 5);
+        assert_eq!(cursor.effective_target(), 10);
+    }
+
+    #[test]
+    fn test_cursor_copy() {
+        let c1 = Cursor::new(7, 8);
+        let c2 = c1;
+        assert_eq!(c1.line, c2.line);
+        assert_eq!(c1.column, c2.column);
+    }
+
+    #[test]
+    fn test_cursor_clone() {
+        let c1 = Cursor::new(1, 2);
+        let c2 = c1.clone();
+        assert_eq!(c1.line, c2.line);
+        assert_eq!(c1.column, c2.column);
+    }
+}
+
+mod extra_mode_tests {
+    use super::*;
+
+    #[test]
+    fn test_mode_all_variants() {
+        let _n = Mode::Normal;
+        let _i = Mode::Insert;
+        let _v = Mode::Visual;
+        let _vl = Mode::VisualLine;
+        let _vb = Mode::VisualBlock;
+        let _c = Mode::Command;
+    }
+
+    #[test]
+    fn test_mode_clone_eq() {
+        let m1 = Mode::Normal;
+        let m2 = m1.clone();
+        assert_eq!(m1, m2);
+    }
+
+    #[test]
+    fn test_mode_debug_contains_name() {
+        let mode = Mode::Insert;
+        let debug = format!("{:?}", mode);
+        assert!(debug.contains("Insert"));
+    }
+
+    #[test]
+    fn test_mode_default_is_normal() {
+        let mode = Mode::default();
+        assert_eq!(mode, Mode::Normal);
+    }
+
+    #[test]
+    fn test_mode_ne() {
+        assert_ne!(Mode::Normal, Mode::Insert);
+        assert_ne!(Mode::Visual, Mode::VisualLine);
+    }
+
+    #[test]
+    fn test_mode_copy() {
+        let m1 = Mode::Visual;
+        let m2 = m1;
+        assert_eq!(m1, m2);
+    }
+}
+
+mod extra_key_event_tests {
+    use super::*;
+
+    #[test]
+    fn test_key_event_char_variant() {
+        let ke = KeyEvent::char('x');
+        assert!(matches!(ke, KeyEvent::Char('x', _)));
+    }
+
+    #[test]
+    fn test_key_event_ctrl_variant() {
+        let ke = KeyEvent::ctrl('c');
+        if let KeyEvent::Char(c, m) = ke {
+            assert_eq!(c, 'c');
+            assert!(m.ctrl);
+        } else {
+            panic!("Expected Char variant");
+        }
+    }
+
+    #[test]
+    fn test_key_event_escape_variant() {
+        let ke = KeyEvent::Escape;
+        assert!(matches!(ke, KeyEvent::Escape));
+    }
+
+    #[test]
+    fn test_key_event_enter_variant() {
+        let ke = KeyEvent::Enter;
+        assert!(matches!(ke, KeyEvent::Enter));
+    }
+
+    #[test]
+    fn test_key_event_backspace_variant() {
+        let ke = KeyEvent::Backspace;
+        assert!(matches!(ke, KeyEvent::Backspace));
+    }
+
+    #[test]
+    fn test_key_event_tab_variant() {
+        let ke = KeyEvent::Tab;
+        assert!(matches!(ke, KeyEvent::Tab));
+    }
+
+    #[test]
+    fn test_key_event_arrows() {
+        assert!(matches!(KeyEvent::Up, KeyEvent::Up));
+        assert!(matches!(KeyEvent::Down, KeyEvent::Down));
+        assert!(matches!(KeyEvent::Left, KeyEvent::Left));
+        assert!(matches!(KeyEvent::Right, KeyEvent::Right));
+    }
+
+    #[test]
+    fn test_key_event_f_keys() {
+        let f1 = KeyEvent::F(1);
+        let f12 = KeyEvent::F(12);
+        assert!(matches!(f1, KeyEvent::F(1)));
+        assert!(matches!(f12, KeyEvent::F(12)));
+    }
+
+    #[test]
+    fn test_key_event_clone() {
+        let ke1 = KeyEvent::char('z');
+        let ke2 = ke1.clone();
+        assert_eq!(ke1, ke2);
+    }
+
+    #[test]
+    fn test_key_event_debug() {
+        let ke = KeyEvent::Enter;
+        let debug = format!("{:?}", ke);
+        assert!(!debug.is_empty());
+    }
+}
+
+mod extra_modifier_tests {
+    use super::*;
+
+    #[test]
+    fn test_modifier_none() {
+        let m = Modifier::NONE;
+        assert!(!m.ctrl);
+        assert!(!m.alt);
+        assert!(!m.shift);
+    }
+
+    #[test]
+    fn test_modifier_ctrl() {
+        let m = Modifier::CTRL;
+        assert!(m.ctrl);
+        assert!(!m.alt);
+        assert!(!m.shift);
+    }
+
+    #[test]
+    fn test_modifier_alt() {
+        let m = Modifier::ALT;
+        assert!(!m.ctrl);
+        assert!(m.alt);
+        assert!(!m.shift);
+    }
+
+    #[test]
+    fn test_modifier_shift() {
+        let m = Modifier::SHIFT;
+        assert!(!m.ctrl);
+        assert!(!m.alt);
+        assert!(m.shift);
+    }
+
+    #[test]
+    fn test_modifier_default() {
+        let m = Modifier::default();
+        assert_eq!(m, Modifier::NONE);
+    }
+
+    #[test]
+    fn test_modifier_clone() {
+        let m1 = Modifier::CTRL;
+        let m2 = m1.clone();
+        assert_eq!(m1, m2);
+    }
+
+    #[test]
+    fn test_modifier_copy() {
+        let m1 = Modifier::ALT;
+        let m2 = m1;
+        assert_eq!(m1, m2);
+    }
+}
+
+mod extra_editor_event_tests {
+    use super::*;
+
+    #[test]
+    fn test_editor_event_key_variant() {
+        let event = EditorEvent::Key(KeyEvent::char('a'));
+        assert!(matches!(event, EditorEvent::Key(_)));
+    }
+
+    #[test]
+    fn test_editor_event_resize_variant() {
+        let event = EditorEvent::Resize { width: 80, height: 24 };
+        if let EditorEvent::Resize { width, height } = event {
+            assert_eq!(width, 80);
+            assert_eq!(height, 24);
+        }
+    }
+
+    #[test]
+    fn test_editor_event_focus_variants() {
+        let gained = EditorEvent::Focus(true);
+        let lost = EditorEvent::Focus(false);
+        assert!(matches!(gained, EditorEvent::Focus(true)));
+        assert!(matches!(lost, EditorEvent::Focus(false)));
+    }
+
+    #[test]
+    fn test_editor_event_quit_variant() {
+        let event = EditorEvent::Quit;
+        assert!(matches!(event, EditorEvent::Quit));
+    }
+
+    #[test]
+    fn test_editor_event_clone() {
+        let e1 = EditorEvent::Resize { width: 100, height: 50 };
+        let e2 = e1.clone();
+        assert_eq!(e1, e2);
+    }
+
+    #[test]
+    fn test_editor_event_debug() {
+        let event = EditorEvent::Quit;
+        let debug = format!("{:?}", event);
+        assert!(!debug.is_empty());
+    }
+}
