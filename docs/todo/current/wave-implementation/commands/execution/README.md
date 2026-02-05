@@ -35,12 +35,12 @@ Implement Ex command execution, including `:execute`, `:normal`, and `:source` b
 
 ### C. Full conformance
 
-- [ ] Implement all execution commands and semantics in the subtree.
-- [ ] Ensure execution integrates with mappings/macros as specified.
+- [x] Implement all execution commands and semantics in the subtree.
+- [x] Ensure execution integrates with mappings/macros as specified.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

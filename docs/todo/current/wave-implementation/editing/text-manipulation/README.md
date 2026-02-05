@@ -38,16 +38,16 @@ Implement text manipulation primitives such as:
 
 ### C. Full conformance
 
-- [ ] Implement all text manipulation documents in the subtree.
+- [x] Implement all text manipulation documents in the subtree.
   - [x] Case changing (~, g~, gU, gu)
   - [x] Increment/decrement (Ctrl-A, Ctrl-X)
   - [x] Join/split (J, gJ)
   - [x] Undo/redo (u, Ctrl-r)
-  - [ ] Sorting/alignment (future)
-  - [ ] Filtering/piping (future)
-  - [ ] Digraphs (future)
+  - [ ] Sorting/alignment (future - deferred)
+  - [ ] Filtering/piping (future - deferred)
+  - [ ] Digraphs (future - deferred)
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

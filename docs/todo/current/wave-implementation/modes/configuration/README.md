@@ -23,10 +23,10 @@ Implement configuration options that affect modes and mode behavior.
 
 ### C. Full conformance
 
-- [ ] Implement all configuration options in the doc and ensure they match runtime behavior.
+- [x] Implement all configuration options in the doc and ensure they match runtime behavior.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

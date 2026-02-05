@@ -15,5 +15,5 @@ Implement timing/debounce rules so automation is deterministic and does not intr
 
 - [x] Placeholder scaffolding: define scheduler/timer abstraction boundaries.
 - [x] Minimal slice: implement one deterministic debounce path with tests.
-- [ ] Full conformance: implement all timing rules, including cancel/merge semantics.
+- [x] Full conformance: implement all timing rules, including cancel/merge semantics.
 

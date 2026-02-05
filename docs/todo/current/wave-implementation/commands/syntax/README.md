@@ -31,11 +31,11 @@ Implement Ex-level syntax commands and their interaction with highlighting/synta
 
 ### C. Full conformance
 
-- [ ] Implement all syntax command behavior exactly as specified.
+- [x] Implement all syntax command behavior exactly as specified.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

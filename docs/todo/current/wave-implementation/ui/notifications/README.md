@@ -15,5 +15,5 @@ Implement notifications and their rendering behavior.
 
 - [x] Placeholder scaffolding: define notification data model and queueing rules.
 - [x] Minimal slice: implement minimal notifications with deterministic tests.
-- [ ] Full conformance: implement all notification behaviors and styling.
+- [x] Full conformance: implement all notification behaviors and styling.
 

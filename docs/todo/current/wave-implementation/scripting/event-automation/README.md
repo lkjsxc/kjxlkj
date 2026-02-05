@@ -15,5 +15,5 @@ Implement event automation, hooks, and event routing rules.
 
 - [x] Placeholder scaffolding: define event types and subscription model.
 - [x] Minimal slice: implement one hookable event with deterministic tests.
-- [ ] Full conformance: implement all automation rules and event families.
+- [x] Full conformance: implement all automation rules and event families.
 

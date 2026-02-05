@@ -17,5 +17,5 @@ Implement theme models and rendering integration (color, styles, icons where spe
 
 - [x] Placeholder scaffolding: define theme data model and apply rules.
 - [x] Minimal slice: implement a small theme set and verify deterministically.
-- [ ] Full conformance: implement all theme behavior, including user customization.
+- [x] Full conformance: implement all theme behavior, including user customization.
 

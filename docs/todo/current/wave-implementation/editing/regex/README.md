@@ -29,10 +29,10 @@ Implement the regex behavior required by search, substitute, and other text feat
 
 ### C. Full conformance
 
-- [ ] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
+- [x] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

@@ -22,5 +22,5 @@ Implement keybinding coverage and ensure it matches mode behavior and command su
 
 - [x] Define a keybinding coverage map tied to tests and conformance.
 - [x] Minimal slice: ensure all currently implemented keys are documented and tested.
-- [ ] Full conformance: implement the full keybinding tables (or record limitations explicitly).
+- [x] Full conformance: implement the full keybinding tables (or record limitations explicitly).
 

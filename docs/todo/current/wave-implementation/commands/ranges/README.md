@@ -39,11 +39,11 @@ Implement the range and address model used by Ex commands.
 
 ### C. Full conformance
 
-- [ ] Implement all range/address behaviors and edge cases defined by the subtree.
+- [x] Implement all range/address behaviors and edge cases defined by the subtree.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

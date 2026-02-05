@@ -15,5 +15,5 @@ Implement the keybinding DSL and its interpretation rules.
 
 - [x] Placeholder scaffolding: define the DSL parse model and validation rules.
 - [x] Minimal slice: implement a small DSL subset with deterministic tests.
-- [ ] Full conformance: implement the entire DSL as specified.
+- [x] Full conformance: implement the entire DSL as specified.
 
