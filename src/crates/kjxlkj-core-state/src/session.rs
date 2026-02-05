@@ -276,6 +276,374 @@ fn encode_path(path: &Path) -> String {
     s.replace(['/', '\\'], "%")
 }
 
+// ============================================================================
+// Macros
+// ============================================================================
+
+/// A recorded macro.
+#[derive(Debug, Clone)]
+pub struct Macro {
+    /// Register name (a-z).
+    pub register: char,
+    /// Recorded keystrokes.
+    pub keys: Vec<KeyStroke>,
+}
+
+impl Macro {
+    /// Create a new macro.
+    pub fn new(register: char) -> Self {
+        Self {
+            register,
+            keys: Vec::new(),
+        }
+    }
+
+    /// Add a keystroke to the macro.
+    pub fn push(&mut self, key: KeyStroke) {
+        self.keys.push(key);
+    }
+
+    /// Get the number of keystrokes.
+    pub fn len(&self) -> usize {
+        self.keys.len()
+    }
+
+    /// Check if empty.
+    pub fn is_empty(&self) -> bool {
+        self.keys.is_empty()
+    }
+}
+
+/// A keystroke for macro recording.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct KeyStroke {
+    /// Key code or character.
+    pub key: String,
+    /// Modifier keys.
+    pub modifiers: KeyModifiers,
+}
+
+impl KeyStroke {
+    /// Create a simple character keystroke.
+    pub fn char(c: char) -> Self {
+        Self {
+            key: c.to_string(),
+            modifiers: KeyModifiers::empty(),
+        }
+    }
+
+    /// Create a keystroke with key name.
+    pub fn named(name: impl Into<String>) -> Self {
+        Self {
+            key: name.into(),
+            modifiers: KeyModifiers::empty(),
+        }
+    }
+
+    /// Add control modifier.
+    pub fn ctrl(mut self) -> Self {
+        self.modifiers.ctrl = true;
+        self
+    }
+
+    /// Add alt modifier.
+    pub fn alt(mut self) -> Self {
+        self.modifiers.alt = true;
+        self
+    }
+
+    /// Add shift modifier.
+    pub fn shift(mut self) -> Self {
+        self.modifiers.shift = true;
+        self
+    }
+}
+
+/// Key modifiers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct KeyModifiers {
+    /// Control key pressed.
+    pub ctrl: bool,
+    /// Alt key pressed.
+    pub alt: bool,
+    /// Shift key pressed.
+    pub shift: bool,
+}
+
+impl KeyModifiers {
+    /// No modifiers.
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
+    /// Check if any modifier is set.
+    pub fn any(&self) -> bool {
+        self.ctrl || self.alt || self.shift
+    }
+}
+
+/// Macro recorder state.
+#[derive(Debug, Default)]
+pub struct MacroRecorder {
+    /// Currently recording macro.
+    recording: Option<Macro>,
+    /// Stored macros.
+    macros: std::collections::HashMap<char, Macro>,
+    /// Last played macro register.
+    last_played: Option<char>,
+}
+
+impl MacroRecorder {
+    /// Create a new macro recorder.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Start recording to a register.
+    pub fn start(&mut self, register: char) {
+        self.recording = Some(Macro::new(register));
+    }
+
+    /// Stop recording and store the macro.
+    pub fn stop(&mut self) {
+        if let Some(macro_) = self.recording.take() {
+            if !macro_.is_empty() {
+                self.macros.insert(macro_.register, macro_);
+            }
+        }
+    }
+
+    /// Check if currently recording.
+    pub fn is_recording(&self) -> bool {
+        self.recording.is_some()
+    }
+
+    /// Get the register being recorded to.
+    pub fn recording_register(&self) -> Option<char> {
+        self.recording.as_ref().map(|m| m.register)
+    }
+
+    /// Record a keystroke.
+    pub fn record(&mut self, key: KeyStroke) {
+        if let Some(ref mut macro_) = self.recording {
+            macro_.push(key);
+        }
+    }
+
+    /// Get a stored macro.
+    pub fn get(&self, register: char) -> Option<&Macro> {
+        self.macros.get(&register)
+    }
+
+    /// Play a macro, returning its keystrokes.
+    pub fn play(&mut self, register: char) -> Option<Vec<KeyStroke>> {
+        if let Some(macro_) = self.macros.get(&register) {
+            self.last_played = Some(register);
+            Some(macro_.keys.clone())
+        } else {
+            None
+        }
+    }
+
+    /// Replay the last played macro.
+    pub fn replay(&mut self) -> Option<Vec<KeyStroke>> {
+        self.last_played.and_then(|r| self.play(r))
+    }
+}
+
+// ============================================================================
+// Session Persistence
+// ============================================================================
+
+/// A saved session.
+#[derive(Debug, Clone)]
+pub struct Session {
+    /// Session name.
+    pub name: String,
+    /// Working directory.
+    pub cwd: PathBuf,
+    /// Open buffer paths.
+    pub buffers: Vec<PathBuf>,
+    /// Window layout.
+    pub layout: SessionLayout,
+    /// Active buffer index.
+    pub active_buffer: usize,
+}
+
+impl Session {
+    /// Create a new session.
+    pub fn new(name: impl Into<String>, cwd: PathBuf) -> Self {
+        Self {
+            name: name.into(),
+            cwd,
+            buffers: Vec::new(),
+            layout: SessionLayout::default(),
+            active_buffer: 0,
+        }
+    }
+
+    /// Add a buffer to the session.
+    pub fn add_buffer(&mut self, path: PathBuf) {
+        if !self.buffers.contains(&path) {
+            self.buffers.push(path);
+        }
+    }
+}
+
+/// Session layout info.
+#[derive(Debug, Clone, Default)]
+pub struct SessionLayout {
+    /// Window splits.
+    pub splits: Vec<SessionSplit>,
+}
+
+/// A window split.
+#[derive(Debug, Clone)]
+pub struct SessionSplit {
+    /// Split direction.
+    pub direction: SplitDirection,
+    /// Buffer index or nested layout.
+    pub content: SplitContent,
+    /// Size ratio (0.0-1.0).
+    pub ratio: f32,
+}
+
+/// Split direction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum SplitDirection {
+    /// Horizontal split (side by side).
+    #[default]
+    Horizontal,
+    /// Vertical split (stacked).
+    Vertical,
+}
+
+/// Split content.
+#[derive(Debug, Clone)]
+pub enum SplitContent {
+    /// A buffer by index.
+    Buffer(usize),
+    /// Nested splits.
+    Nested(Vec<SessionSplit>),
+}
+
+// ============================================================================
+// Workspaces
+// ============================================================================
+
+/// A workspace with multiple folders.
+#[derive(Debug, Clone)]
+pub struct Workspace {
+    /// Workspace name.
+    pub name: Option<String>,
+    /// Workspace file path.
+    pub file_path: Option<PathBuf>,
+    /// Root folders.
+    pub folders: Vec<WorkspaceFolder>,
+    /// Workspace-level settings.
+    pub settings: WorkspaceSettings,
+}
+
+impl Workspace {
+    /// Create a new empty workspace.
+    pub fn new() -> Self {
+        Self {
+            name: None,
+            file_path: None,
+            folders: Vec::new(),
+            settings: WorkspaceSettings::default(),
+        }
+    }
+
+    /// Create a single-folder workspace.
+    pub fn single(folder: PathBuf) -> Self {
+        Self {
+            name: folder.file_name().map(|n| n.to_string_lossy().into_owned()),
+            file_path: None,
+            folders: vec![WorkspaceFolder::new(folder)],
+            settings: WorkspaceSettings::default(),
+        }
+    }
+
+    /// Add a folder to the workspace.
+    pub fn add_folder(&mut self, folder: PathBuf) {
+        if !self.folders.iter().any(|f| f.path == folder) {
+            self.folders.push(WorkspaceFolder::new(folder));
+        }
+    }
+
+    /// Remove a folder from the workspace.
+    pub fn remove_folder(&mut self, folder: &Path) -> bool {
+        let len = self.folders.len();
+        self.folders.retain(|f| f.path != folder);
+        self.folders.len() < len
+    }
+
+    /// Get number of folders.
+    pub fn folder_count(&self) -> usize {
+        self.folders.len()
+    }
+
+    /// Check if workspace is multi-root.
+    pub fn is_multi_root(&self) -> bool {
+        self.folders.len() > 1
+    }
+}
+
+impl Default for Workspace {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// A folder in a workspace.
+#[derive(Debug, Clone)]
+pub struct WorkspaceFolder {
+    /// Folder path.
+    pub path: PathBuf,
+    /// Display name (optional override).
+    pub name: Option<String>,
+}
+
+impl WorkspaceFolder {
+    /// Create a new workspace folder.
+    pub fn new(path: PathBuf) -> Self {
+        Self { path, name: None }
+    }
+
+    /// Set a custom display name.
+    pub fn with_name(mut self, name: impl Into<String>) -> Self {
+        self.name = Some(name.into());
+        self
+    }
+
+    /// Get the display name.
+    pub fn display_name(&self) -> &str {
+        self.name.as_deref().unwrap_or_else(|| {
+            self.path
+                .file_name()
+                .map(|n| n.to_str().unwrap_or("unknown"))
+                .unwrap_or("unknown")
+        })
+    }
+}
+
+/// Workspace settings.
+#[derive(Debug, Clone, Default)]
+pub struct WorkspaceSettings {
+    /// Per-folder settings overrides.
+    pub folder_settings: std::collections::HashMap<PathBuf, FolderSettings>,
+}
+
+/// Per-folder settings.
+#[derive(Debug, Clone, Default)]
+pub struct FolderSettings {
+    /// Excluded patterns.
+    pub exclude: Vec<String>,
+    /// Include patterns.
+    pub include: Vec<String>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -454,5 +822,181 @@ mod tests {
         let mut state = AutoSaveState::new(config);
         state.mark_changed();
         assert!(!state.should_save_on_focus_lost());
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Macro Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_keystroke_char() {
+        let k = KeyStroke::char('a');
+        assert_eq!(k.key, "a");
+        assert!(!k.modifiers.any());
+    }
+
+    #[test]
+    fn test_keystroke_named() {
+        let k = KeyStroke::named("Enter");
+        assert_eq!(k.key, "Enter");
+    }
+
+    #[test]
+    fn test_keystroke_modifiers() {
+        let k = KeyStroke::char('c').ctrl();
+        assert!(k.modifiers.ctrl);
+        assert!(!k.modifiers.alt);
+
+        let k2 = KeyStroke::char('a').alt().shift();
+        assert!(k2.modifiers.alt);
+        assert!(k2.modifiers.shift);
+    }
+
+    #[test]
+    fn test_key_modifiers_empty() {
+        let m = KeyModifiers::empty();
+        assert!(!m.any());
+    }
+
+    #[test]
+    fn test_macro_new() {
+        let m = Macro::new('a');
+        assert_eq!(m.register, 'a');
+        assert!(m.is_empty());
+    }
+
+    #[test]
+    fn test_macro_push() {
+        let mut m = Macro::new('b');
+        m.push(KeyStroke::char('x'));
+        m.push(KeyStroke::char('y'));
+        assert_eq!(m.len(), 2);
+    }
+
+    #[test]
+    fn test_macro_recorder_start_stop() {
+        let mut rec = MacroRecorder::new();
+        assert!(!rec.is_recording());
+
+        rec.start('a');
+        assert!(rec.is_recording());
+        assert_eq!(rec.recording_register(), Some('a'));
+
+        rec.record(KeyStroke::char('x'));
+        rec.stop();
+
+        assert!(!rec.is_recording());
+        assert!(rec.get('a').is_some());
+    }
+
+    #[test]
+    fn test_macro_recorder_play() {
+        let mut rec = MacroRecorder::new();
+        rec.start('c');
+        rec.record(KeyStroke::char('j'));
+        rec.record(KeyStroke::char('j'));
+        rec.stop();
+
+        let keys = rec.play('c').unwrap();
+        assert_eq!(keys.len(), 2);
+    }
+
+    #[test]
+    fn test_macro_recorder_replay() {
+        let mut rec = MacroRecorder::new();
+        rec.start('d');
+        rec.record(KeyStroke::char('w'));
+        rec.stop();
+
+        rec.play('d');
+        let keys = rec.replay().unwrap();
+        assert_eq!(keys.len(), 1);
+    }
+
+    #[test]
+    fn test_macro_recorder_empty_not_stored() {
+        let mut rec = MacroRecorder::new();
+        rec.start('e');
+        rec.stop();
+        assert!(rec.get('e').is_none());
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Session Persistence Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_session_new() {
+        let session = Session::new("test", PathBuf::from("/project"));
+        assert_eq!(session.name, "test");
+        assert!(session.buffers.is_empty());
+    }
+
+    #[test]
+    fn test_session_add_buffer() {
+        let mut session = Session::new("test", PathBuf::from("/project"));
+        session.add_buffer(PathBuf::from("/a.txt"));
+        session.add_buffer(PathBuf::from("/b.txt"));
+        session.add_buffer(PathBuf::from("/a.txt")); // Duplicate
+        assert_eq!(session.buffers.len(), 2);
+    }
+
+    #[test]
+    fn test_split_direction_default() {
+        assert_eq!(SplitDirection::default(), SplitDirection::Horizontal);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Workspace Tests
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    #[test]
+    fn test_workspace_new() {
+        let ws = Workspace::new();
+        assert_eq!(ws.folder_count(), 0);
+        assert!(!ws.is_multi_root());
+    }
+
+    #[test]
+    fn test_workspace_single() {
+        let ws = Workspace::single(PathBuf::from("/project"));
+        assert_eq!(ws.folder_count(), 1);
+        assert!(!ws.is_multi_root());
+    }
+
+    #[test]
+    fn test_workspace_add_folder() {
+        let mut ws = Workspace::new();
+        ws.add_folder(PathBuf::from("/a"));
+        ws.add_folder(PathBuf::from("/b"));
+        ws.add_folder(PathBuf::from("/a")); // Duplicate
+        assert_eq!(ws.folder_count(), 2);
+        assert!(ws.is_multi_root());
+    }
+
+    #[test]
+    fn test_workspace_remove_folder() {
+        let mut ws = Workspace::new();
+        ws.add_folder(PathBuf::from("/a"));
+        ws.add_folder(PathBuf::from("/b"));
+
+        assert!(ws.remove_folder(Path::new("/a")));
+        assert_eq!(ws.folder_count(), 1);
+        assert!(!ws.remove_folder(Path::new("/c"))); // Not found
+    }
+
+    #[test]
+    fn test_workspace_folder_display_name() {
+        let folder = WorkspaceFolder::new(PathBuf::from("/home/user/project"));
+        assert_eq!(folder.display_name(), "project");
+
+        let named = WorkspaceFolder::new(PathBuf::from("/x")).with_name("Custom");
+        assert_eq!(named.display_name(), "Custom");
+    }
+
+    #[test]
+    fn test_workspace_default() {
+        let ws = Workspace::default();
+        assert!(ws.folders.is_empty());
     }
 }
