@@ -379,4 +379,55 @@ mod tests {
         assert_eq!(truncate_to_width("hello", 5), "hello");
         assert_eq!(truncate_to_width("hello", 4), "hell");
     }
+
+    #[test]
+    fn test_truncate_width_one() {
+        assert_eq!(truncate_to_width("abc", 1), "a");
+    }
+
+    #[test]
+    fn test_truncate_width_two() {
+        assert_eq!(truncate_to_width("abc", 2), "ab");
+    }
+
+    #[test]
+    fn test_truncate_unicode_japanese() {
+        // Japanese chars are typically 2 width
+        let result = truncate_to_width("日本語", 6);
+        assert_eq!(result, "日本語");
+    }
+
+    #[test]
+    fn test_truncate_unicode_partial() {
+        // Can't fit a 2-width char in 1 space
+        let result = truncate_to_width("日", 1);
+        assert_eq!(result, "");
+    }
+
+    #[test]
+    fn test_truncate_spaces_only() {
+        assert_eq!(truncate_to_width("     ", 3), "   ");
+    }
+
+    #[test]
+    fn test_truncate_with_numbers() {
+        assert_eq!(truncate_to_width("12345", 3), "123");
+    }
+
+    #[test]
+    fn test_truncate_symbols() {
+        assert_eq!(truncate_to_width("!@#$%", 3), "!@#");
+    }
+
+    #[test]
+    fn test_truncate_large_width() {
+        assert_eq!(truncate_to_width("hi", 100), "hi");
+    }
+
+    #[test]
+    fn test_truncate_korean() {
+        // Korean chars are typically 2 width
+        let result = truncate_to_width("안녕", 4);
+        assert_eq!(result, "안녕");
+    }
 }

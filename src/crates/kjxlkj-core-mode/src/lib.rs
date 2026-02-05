@@ -268,4 +268,58 @@ mod tests {
             }));
         }
     }
+
+    #[test]
+    fn test_normal_mode_zero_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::char('0'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_dollar_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::char('$'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_w_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::char('w'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_b_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::char('b'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_e_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::char('e'));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
+
+    #[test]
+    fn test_normal_mode_G_motion() {
+        let mut normal = NormalMode::new();
+        let result = normal.handle_key(&KeyEvent::new(KeyCode::Char('G'), kjxlkj_core_types::KeyModifiers::SHIFT));
+        if let ModeResult::Consumed(intents) = result {
+            assert!(intents.iter().any(|i| matches!(i, Intent::Motion(_))));
+        }
+    }
 }

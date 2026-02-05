@@ -261,4 +261,49 @@ mod tests {
         assert!(!diff.status_changed);
         assert!(diff.changed_lines.is_empty());
     }
+
+    #[test]
+    fn test_render_diff_default_no_full_redraw() {
+        let diff = RenderDiff::default();
+        assert!(!diff.needs_full_redraw());
+    }
+
+    #[test]
+    fn test_render_diff_all_false() {
+        let diff = RenderDiff::default();
+        assert!(!diff.status_changed);
+        assert!(!diff.command_changed);
+        assert!(!diff.cursor_changed);
+        assert!(!diff.mode_changed);
+        assert!(!diff.selection_changed);
+    }
+
+    #[test]
+    fn test_changed_lines_order() {
+        let old = make_snapshot(vec!["a", "b", "c"]);
+        let new = make_snapshot(vec!["x", "b", "z"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert_eq!(diff.changed_lines.len(), 2);
+        // Lines 0 and 2 changed
+        assert!(diff.changed_lines.contains(&0));
+        assert!(diff.changed_lines.contains(&2));
+    }
+
+    #[test]
+    fn test_needs_redraw_mode_change() {
+        let old = make_snapshot(vec!["hello"]);
+        let mut new = make_snapshot(vec!["hello"]);
+        new.mode = Mode::Visual;
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(diff.mode_changed);
+        assert!(diff.needs_redraw());
+    }
+
+    #[test]
+    fn test_single_line_snapshot() {
+        let old = make_snapshot(vec!["single line"]);
+        let new = make_snapshot(vec!["single line"]);
+        let diff = RenderDiff::compute(&old, &new);
+        assert!(!diff.needs_redraw());
+    }
 }
