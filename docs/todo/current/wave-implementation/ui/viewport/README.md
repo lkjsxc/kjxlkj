@@ -1,4 +1,4 @@
-# UI: Viewport (Iteration 34)
+# UI: Viewport (Iteration 35)
 
 Back: [/docs/todo/current/wave-implementation/ui/README.md](/docs/todo/current/wave-implementation/ui/README.md)
 
@@ -15,23 +15,24 @@ Implement viewport model and cursor-follow invariants.
 
 ### A. Viewport state and invariants (scaffolding)
 
-- [x] Define viewport state per window.
-- [x] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
+- [ ] Define viewport state per window.
+- [ ] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
 
 ### B. Cursor-follow rules (no-wrap + wrap)
 
-- [x] Implement deterministic vertical follow for `wrap = false`.
-- [x] Implement deterministic horizontal follow for `wrap = false`.
-- [ ] Implement deterministic follow for `wrap = true` (display-row model).
+- [ ] Implement deterministic vertical follow for `wrap = false`.
+- [ ] Implement deterministic horizontal follow for `wrap = false`.
+- [ ] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture:
+  - [wrap/README.md](wrap/README.md)
 
 ### C. Long-line stability (user-reported rough edge)
 
-- [x] Ensure extremely long lines do not corrupt or break display.
+- [ ] Ensure extremely long lines do not corrupt or break display.
   - [long-lines/README.md](long-lines/README.md)
 
 ### D. Regression tests and documentation ledgers
 
-- [x] Add regression tests for long lines, wrap/no-wrap, and resize storms.
-- [x] Update conformance and limitations docs when behavior is user-visible:
+- [ ] Add regression tests for long lines, wrap/no-wrap, and resize storms.
+- [ ] Update conformance and limitations docs when behavior is user-visible:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

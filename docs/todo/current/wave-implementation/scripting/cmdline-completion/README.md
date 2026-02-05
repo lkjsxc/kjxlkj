@@ -13,7 +13,7 @@ Implement scriptable completion behaviors for the command line, as specified.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define completion provider interfaces.
-- [x] Minimal slice: implement one deterministic completion source with tests.
-- [x] Full conformance: implement all completion behaviors described by the spec.
+- [ ] Placeholder scaffolding: define completion provider interfaces.
+- [ ] Minimal slice: implement one deterministic completion source with tests.
+- [ ] Full conformance: implement all completion behaviors described by the spec.
 

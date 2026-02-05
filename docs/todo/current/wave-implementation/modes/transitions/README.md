@@ -15,18 +15,18 @@ Implement mode transition rules and invariant enforcement across transitions.
 
 ### A. Placeholder scaffolding
 
-- [x] Define a single transition table/graph with explicit guards.
+- [ ] Define a single transition table/graph with explicit guards.
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal transition set and tests covering cancellation and clamping rules.
+- [ ] Implement a minimal transition set and tests covering cancellation and clamping rules.
 
 ### C. Full conformance
 
-- [x] Implement all transitions, including terminal-mode transitions when applicable.
+- [ ] Implement all transitions, including terminal-mode transitions when applicable.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

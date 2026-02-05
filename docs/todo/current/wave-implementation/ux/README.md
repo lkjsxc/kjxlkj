@@ -41,33 +41,33 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Create an explicit keybinding coverage map that:
+- [ ] Create an explicit keybinding coverage map that:
   - lists the implemented keys
   - links each key to the owning spec document(s)
   - links each key to tests that prove the behavior
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Ensure the minimal core editing surface is fully covered by:
+- [ ] Ensure the minimal core editing surface is fully covered by:
   - keybindings
   - documentation pointers
   - tests
 
 ## Full conformance (sub-wave)
 
-- [x] Implement all keybindings and UX behavior defined by the UX subtree.
-- [x] Ensure keyboard-only invariant is never violated.
-- [x] Ensure accessibility requirements are met (or explicitly limited).
+- [ ] Implement all keybindings and UX behavior defined by the UX subtree.
+- [ ] Ensure keyboard-only invariant is never violated.
+- [ ] Ensure accessibility requirements are met (or explicitly limited).
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - keybinding → action mapping determinism
   - mode-scoped keybinding behavior
   - accessibility-related UI invariants (focus, contrast, cursor visibility)
 
 ## Conformance and limitations (required updates)
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

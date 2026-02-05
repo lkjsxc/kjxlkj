@@ -1,4 +1,4 @@
-# Current TODO (Iteration 34)
+# Current TODO (Iteration 35)
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
@@ -23,6 +23,11 @@ It is:
 - Checkboxes MUST be meaningful:
   - `- [ ]` means not complete (or not yet verified)
   - `- [x]` means complete and verified against the appropriate gate (tests, link checks, policy checks)
+- Deferral protocol (to avoid “stopping” on future work):
+  - The TODO MUST NOT end with a terminal “explicitly deferred / future” section containing unchecked boxes.
+  - If an item is intentionally deferred, convert it into an actionable “defer-by-recording” task that can be checked off by:
+    - recording the rationale in `/docs/log/proposals/`, and
+    - carrying forward an implementation task into the next iteration.
 - Directory and file names under this TODO MUST NOT contain digits.
 - The second-to-last wave MUST be “Recreate the TODO list”.
 - The last wave MUST be “Continue to the next iteration”.

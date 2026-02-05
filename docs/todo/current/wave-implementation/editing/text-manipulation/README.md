@@ -1,4 +1,4 @@
-# Editing: Text Manipulation (Iteration 34)
+# Editing: Text Manipulation (Iteration 35)
 
 Back: [/docs/todo/current/wave-implementation/editing/README.md](/docs/todo/current/wave-implementation/editing/README.md)
 
@@ -25,12 +25,12 @@ Implement text manipulation primitives such as:
 
 ### A. Placeholder scaffolding
 
-- [x] Define shared text transformation APIs and invariants.
-- [x] Define interaction with ranges, selections, and registers.
+- [ ] Define shared text transformation APIs and invariants.
+- [ ] Define interaction with ranges, selections, and registers.
 
 ### B. Minimal conformance slice
 
-- [x] Implement one transformation feature end-to-end with deterministic tests.
+- [ ] Implement one transformation feature end-to-end with deterministic tests.
   - Case operators (~, g~, gU, gu) implemented
   - Increment/decrement (Ctrl-A, Ctrl-X) implemented
   - Join lines (J, gJ) implemented
@@ -38,16 +38,18 @@ Implement text manipulation primitives such as:
 
 ### C. Full conformance
 
-- [x] Implement all text manipulation documents in the subtree.
-  - [x] Case changing (~, g~, gU, gu)
-  - [x] Increment/decrement (Ctrl-A, Ctrl-X)
-  - [x] Join/split (J, gJ)
-  - [x] Undo/redo (u, Ctrl-r)
-  - [ ] Sorting/alignment (future - deferred)
-  - [ ] Filtering/piping (future - deferred)
-  - [ ] Digraphs (future - deferred)
+- [ ] Implement all text manipulation documents in the subtree.
+  - [ ] Case changing (~, g~, gU, gu)
+  - [ ] Increment/decrement (Ctrl-A, Ctrl-X)
+  - [ ] Join/split (J, gJ)
+  - [ ] Undo/redo (u, Ctrl-r)
+  - [ ] Sorting/alignment
+  - [ ] Filtering/piping
+  - [ ] Digraphs
+
+If any sub-item is intentionally deferred, apply the deferral protocol from [/docs/todo/current/README.md](/docs/todo/current/README.md) and avoid leaving a terminal “future” section with unchecked boxes.
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

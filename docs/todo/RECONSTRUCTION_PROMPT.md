@@ -20,7 +20,13 @@ Read and understand the project’s important documents as deeply as possible, f
 - Create around 1000 tests, with high quality, and also execute E2E tests that include opening and operating an editor.
 - Aim for a state where the source code can be fully constructed from the documents.
 - Actually write checkmarks into the TODO list document files.
-- Do not stop working until every TODO list document file is fully checked off.
+- Do not stop working until every TODO list document file under `/docs/todo/current/` is fully checked off.
+- Do not get stuck on “future/deferred” work:
+  - The TODO MUST NOT end with a terminal “explicitly deferred / future” section with unchecked boxes.
+  - If an item is intentionally deferred, follow the deferral protocol in `/docs/todo/current/README.md` (record a proposal and carry forward a next-iteration task), then check off the deferral item.
+- Include the external terminal multiplexer workflow contract in the reconstructed system:
+  - ensure kjxlkj remains usable inside tmux/WezTerm per `/docs/spec/features/terminal/tmux.md`
+  - add a PTY E2E smoke that runs kjxlkj inside a tmux session when feasible (record limitations if not feasible on a platform)
 </constraints>
 
 <acceptance_criteria>
@@ -28,4 +34,5 @@ Read and understand the project’s important documents as deeply as possible, f
 - Sufficient unit/integration/E2E tests are in place, and important flows—including editor operations—can be reproduced and verified via automated tests.
 - The test suite runs stably and reproducibly, and includes regression tests for bugs that were fixed.
 - git commits are made at meaningful milestones, with an appropriate and traceable granularity of changes.
+- Terminal multiplexer interoperability is supported per spec and has at least one automated smoke check.
 </acceptance_criteria>

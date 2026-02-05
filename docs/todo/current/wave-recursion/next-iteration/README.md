@@ -1,4 +1,4 @@
-# Continue to the Next Iteration (Iteration 34)
+# Continue to the Next Iteration (Iteration 35)
 
 Back: [/docs/todo/current/wave-recursion/README.md](/docs/todo/current/wave-recursion/README.md)
 
@@ -8,7 +8,11 @@ Define the handoff into the next iteration so improvement can continue.
 
 ## Tasks
 
-- [ ] Create an iteration marker (Iteration 35) by updating the current TODO index and wave titles.
-- [ ] Carry forward unfinished tasks as explicitly deferred unchecked items.
+- [ ] Create an iteration marker (Iteration 36) by updating the current TODO index and wave titles.
+- [ ] Carry forward unfinished tasks as actionable unchecked items in the next iteration.
+- [ ] If an item is intentionally deferred, do not leave it as an unchecked “future” box; instead:
+  - record the deferral as a proposal under `/docs/log/proposals/`
+  - add a linked implementation task in the next iteration
+  - check off the deferral task in the completed iteration
 - [ ] Start with a fresh reading pass on any documents modified in the prior iteration.
 - [ ] If documentation was added/moved, ensure [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) is regenerated and complete.

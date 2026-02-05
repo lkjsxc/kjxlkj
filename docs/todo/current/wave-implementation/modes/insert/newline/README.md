@@ -41,17 +41,17 @@ This bug class is often an interactive-input decode issue rather than a core edi
 
 ## Checklist
 
-- [x] Reproduce the failure in an interactive PTY-driven test.
+- [ ] Reproduce the failure in an interactive PTY-driven test.
   - Headless tests now cover Enter, Ctrl-j, Ctrl-m in Insert mode.
-- [x] Identify whether the failure is:
+- [ ] Identify whether the failure is:
   - terminal key decoding (Enter key not emitted as `Enter`),
   - mode dispatch (Insert does not treat `Enter` as newline),
   - transaction/undo interaction (newline suppressed),
   - rendering-only (newline exists but display is wrong).
   - Fixed: added Ctrl-j/Ctrl-m support to `parse_insert_key` in editor.rs.
-- [x] Fix the root cause and add a regression test that fails on the prior behavior.
+- [ ] Fix the root cause and add a regression test that fails on the prior behavior.
   - Added tests: `test_insert_ctrl_j_newline`, `test_insert_ctrl_m_newline`, `test_insert_rapid_newlines_200`.
-- [x] Update conformance/limitations docs as needed:
+- [ ] Update conformance/limitations docs as needed:
   - [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
   - Ctrl-j and Ctrl-m were already documented in CONFORMANCE_MODES_KEYS.md.

@@ -20,4 +20,4 @@ Covers documentation under `/docs/log/proposals/`.
 - [ ] [/docs/log/proposals/insert-newline.md](/docs/log/proposals/insert-newline.md)
 - [ ] [/docs/log/proposals/long-lines.md](/docs/log/proposals/long-lines.md)
 - [ ] [/docs/log/proposals/performance-regression-harness.md](/docs/log/proposals/performance-regression-harness.md)
-
+- [ ] [/docs/log/proposals/profiling-workflow.md](/docs/log/proposals/profiling-workflow.md)
