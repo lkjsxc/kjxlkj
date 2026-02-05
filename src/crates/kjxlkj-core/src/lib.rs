@@ -45,6 +45,9 @@ pub mod state {
     pub use kjxlkj_core_state::{EditorState, Registers};
 }
 
+// Re-export timing module
+pub mod timing;
+
 /// Prelude for common imports.
 pub mod prelude {
     pub use crate::{
