@@ -221,4 +221,46 @@ mod tests {
         let copied = status;
         assert_eq!(status, copied);
     }
+
+    #[test]
+    fn test_service_message_shutdown_clone() {
+        let msg = ServiceMessage::Shutdown;
+        let cloned = msg.clone();
+        assert!(matches!(cloned, ServiceMessage::Shutdown));
+    }
+
+    #[test]
+    fn test_service_status_not_eq_different() {
+        assert_ne!(ServiceStatus::Running, ServiceStatus::Stopped);
+        assert_ne!(ServiceStatus::Starting, ServiceStatus::Failed);
+    }
+
+    #[test]
+    fn test_service_message_custom_empty() {
+        let msg = ServiceMessage::Custom(String::new());
+        if let ServiceMessage::Custom(s) = msg {
+            assert!(s.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_service_status_all_debug() {
+        for status in [
+            ServiceStatus::Starting,
+            ServiceStatus::Running,
+            ServiceStatus::Stopping,
+            ServiceStatus::Stopped,
+            ServiceStatus::Failed,
+        ] {
+            let debug = format!("{:?}", status);
+            assert!(!debug.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_service_handle_name_empty() {
+        let (tx, _rx) = mpsc::channel(1);
+        let handle = ServiceHandle::new(String::new(), tx);
+        assert!(handle.name.is_empty());
+    }
 }

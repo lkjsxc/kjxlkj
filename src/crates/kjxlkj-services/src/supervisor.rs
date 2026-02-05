@@ -217,4 +217,20 @@ mod tests {
 
         supervisor.shutdown_all().await;
     }
+
+    #[test]
+    fn test_supervisor_names_vec_len() {
+        let supervisor = Supervisor::new();
+        assert_eq!(supervisor.service_names().len(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_supervisor_service_names_after_spawn() {
+        let mut supervisor = Supervisor::new();
+        supervisor.spawn(Box::new(TestService { name: "test_svc".to_string() })).unwrap();
+        let names = supervisor.service_names();
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0], "test_svc");
+        supervisor.shutdown_all().await;
+    }
 }

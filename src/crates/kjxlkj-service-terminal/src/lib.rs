@@ -262,4 +262,56 @@ mod tests {
         let mut session = TerminalSession::new(TerminalId::new(1));
         assert!(!session.is_running());
     }
+
+    #[test]
+    fn test_terminal_id_hash_duplicate() {
+        use std::collections::HashSet;
+        let mut set = HashSet::new();
+        set.insert(TerminalId::new(1));
+        set.insert(TerminalId::new(1));
+        assert_eq!(set.len(), 1);
+    }
+
+    #[test]
+    fn test_terminal_service_name_literal() {
+        let service = TerminalService::new();
+        assert_eq!(service.name(), "terminal");
+    }
+
+    #[test]
+    fn test_terminal_session_multiple() {
+        let s1 = TerminalSession::new(TerminalId::new(1));
+        let s2 = TerminalSession::new(TerminalId::new(2));
+        assert_ne!(s1.id, s2.id);
+    }
+
+    #[test]
+    fn test_terminal_id_sequential() {
+        let id1 = TerminalId::new(1);
+        let id2 = TerminalId::new(2);
+        let id3 = TerminalId::new(3);
+        assert_eq!(id1.value() + 1, id2.value());
+        assert_eq!(id2.value() + 1, id3.value());
+    }
+
+    #[test]
+    fn test_terminal_id_from_value() {
+        let value = 42u32;
+        let id = TerminalId::new(value);
+        assert_eq!(id.value(), value);
+    }
+
+    #[tokio::test]
+    async fn test_terminal_session_write_no_child() {
+        let mut session = TerminalSession::new(TerminalId::new(1));
+        let result = session.write("test").await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_terminal_session_kill_no_child() {
+        let mut session = TerminalSession::new(TerminalId::new(1));
+        let result = session.kill().await;
+        assert!(result.is_ok());
+    }
 }

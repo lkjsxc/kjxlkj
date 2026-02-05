@@ -266,4 +266,68 @@ mod tests {
         };
         assert!(args.file.is_some());
     }
+
+    #[test]
+    fn test_args_file_absolute_path() {
+        let args = Args {
+            file: Some(PathBuf::from("/absolute/path/file.rs")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.as_ref().unwrap().is_absolute());
+    }
+
+    #[test]
+    fn test_args_line_one() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: Some(1),
+        };
+        assert_eq!(args.line, Some(1));
+    }
+
+    #[test]
+    fn test_args_all_disabled() {
+        let args = Args {
+            file: None,
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.is_none());
+        assert!(!args.log);
+        assert!(args.log_file.is_none());
+        assert!(!args.readonly);
+        assert!(args.line.is_none());
+    }
+
+    #[test]
+    fn test_args_file_dot_dir() {
+        let args = Args {
+            file: Some(PathBuf::from("./relative/file.txt")),
+            log: false,
+            log_file: None,
+            readonly: false,
+            line: None,
+        };
+        assert!(args.file.as_ref().unwrap().starts_with("./"));
+    }
+
+    #[test]
+    fn test_args_log_file_absolute() {
+        let args = Args {
+            file: None,
+            log: true,
+            log_file: Some("/var/log/kjxlkj.log".to_string()),
+            readonly: false,
+            line: None,
+        };
+        assert!(args.log_file.as_ref().unwrap().starts_with('/'));
+    }
 }
