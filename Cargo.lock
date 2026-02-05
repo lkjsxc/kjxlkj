@@ -468,6 +468,7 @@ dependencies = [
 name = "kjxlkj-core-state"
 version = "0.1.0"
 dependencies = [
+ "dirs-next",
  "kjxlkj-core-edit",
  "kjxlkj-core-mode",
  "kjxlkj-core-text",

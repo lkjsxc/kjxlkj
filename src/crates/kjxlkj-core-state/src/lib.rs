@@ -4,9 +4,14 @@
 
 mod editor;
 mod registers;
+pub mod session;
 
 pub use editor::EditorState;
 pub use registers::Registers;
+pub use session::{
+    AutoSaveConfig, AutoSaveState, RecentFile, RecentFiles, RecentFilesConfig, SessionConfig,
+    SwapFile, UndoFile,
+};
 
 #[cfg(test)]
 mod tests {
