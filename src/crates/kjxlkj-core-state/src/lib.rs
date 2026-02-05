@@ -3,12 +3,16 @@
 //! This crate holds the complete editor state and produces snapshots for rendering.
 
 pub mod buffer_manager;
+pub mod config;
 mod editor;
 mod registers;
 pub mod session;
 
 pub use buffer_manager::{
     AlternateFile, ArgList, BufferFlags, BufferGroup, BufferInfo, BufferManager, BufferState,
+};
+pub use config::{
+    DetectionMethod, EditorOptions, Filetype, FiletypeDetection, FiletypeDetector,
 };
 pub use editor::EditorState;
 pub use registers::Registers;
