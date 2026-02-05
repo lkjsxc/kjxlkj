@@ -20,6 +20,6 @@ Implement syntax highlighting and related feature surfaces.
 
 - [x] Placeholder scaffolding: define highlight group model and rendering contract.
 - [x] Minimal slice: implement one highlight path with deterministic tests.
-- [ ] Full conformance: implement all syntax feature documents and highlight group tables.
+- [x] Full conformance: implement all syntax feature documents and highlight group tables.
 - [ ] Update conformance and limitations docs when user-visible.
 
