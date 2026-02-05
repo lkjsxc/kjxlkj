@@ -7,5 +7,6 @@ authors.workspace = true
 
 [dependencies]
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+dirs-next = "2.0"
 
 [dev-dependencies]

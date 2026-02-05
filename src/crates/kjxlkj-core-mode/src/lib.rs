@@ -5,6 +5,7 @@
 #![allow(non_snake_case)]
 
 mod command;
+pub mod completion;
 mod handler;
 mod insert;
 mod normal;
@@ -13,6 +14,10 @@ mod replace;
 mod visual;
 
 pub use command::CommandMode;
+pub use completion::{
+    CommandCompletionProvider, CompletionItem, CompletionProvider, CompletionState,
+    CompletionType, FileCompletionProvider, WildMode,
+};
 pub use handler::{ModeHandler, ModeResult};
 pub use insert::InsertMode;
 pub use normal::NormalMode;
