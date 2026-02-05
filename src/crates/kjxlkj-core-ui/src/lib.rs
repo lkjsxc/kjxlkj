@@ -4,9 +4,14 @@
 
 mod snapshot;
 mod viewport;
+pub mod window;
 
 pub use snapshot::{BufferSnapshot, EditorSnapshot, StatusLine};
 pub use viewport::Viewport;
+pub use window::{
+    BufferId, Direction, SplitDirection, TabPage, Window, WindowCursor, WindowId, WindowManager,
+    WindowNode, WindowOptions, WindowViewport,
+};
 
 #[cfg(test)]
 mod tests {

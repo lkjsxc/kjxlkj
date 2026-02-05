@@ -41,7 +41,7 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
   - [x] Ctrl-r {reg} (insert register contents)
   - [x] Ctrl-o (execute one normal command)
   - [x] Completion integration
-  - [ ] Autopairs
+  - [x] Autopairs
   - [x] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 
 ### D. Conformance updates
