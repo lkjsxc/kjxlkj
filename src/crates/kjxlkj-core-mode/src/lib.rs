@@ -4,6 +4,7 @@
 
 #![allow(non_snake_case)]
 
+pub mod autopairs;
 mod command;
 pub mod completion;
 pub mod event;
@@ -19,6 +20,7 @@ pub mod script;
 pub mod user_command;
 mod visual;
 
+pub use autopairs::{AutoPairs, AutoPairsConfig, AutoPairsContext, AutoPairsResult, Pair};
 pub use command::CommandMode;
 pub use completion::{
     CommandCompletionProvider, CompletionItem, CompletionProvider, CompletionState,

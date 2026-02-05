@@ -40,7 +40,7 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
   - [x] Ctrl-u (delete to line start)
   - [x] Ctrl-r {reg} (insert register contents)
   - [x] Ctrl-o (execute one normal command)
-  - [ ] Completion integration
+  - [x] Completion integration
   - [ ] Autopairs
   - [x] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 
