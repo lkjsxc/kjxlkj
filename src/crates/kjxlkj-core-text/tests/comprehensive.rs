@@ -579,3 +579,297 @@ mod grapheme_extra {
         assert!(graphemes.len() >= 5);
     }
 }
+
+mod extra_text_buffer_edge_tests {
+    use super::*;
+
+    #[test]
+    fn test_buffer_line_out_of_bounds() {
+        let buf = TextBuffer::from_str("hello");
+        assert!(buf.line(100).is_err());
+    }
+
+    #[test]
+    fn test_buffer_line_len_out_of_bounds() {
+        let buf = TextBuffer::from_str("hello");
+        assert!(buf.line_len(100).is_err());
+    }
+
+    #[test]
+    fn test_buffer_empty_lines() {
+        let buf = TextBuffer::from_str("\n\n\n");
+        assert_eq!(buf.line_count(), 4);
+        assert_eq!(buf.line(0).unwrap(), "");
+        assert_eq!(buf.line(1).unwrap(), "");
+    }
+
+    #[test]
+    fn test_buffer_from_str_empty() {
+        let buf = TextBuffer::from_str("");
+        assert_eq!(buf.line_count(), 1);
+        assert_eq!(buf.line(0).unwrap(), "");
+    }
+
+    #[test]
+    fn test_buffer_insert_at_end() {
+        let mut buf = TextBuffer::from_str("hello");
+        buf.insert_char(Position::new(0, 5), '!').unwrap();
+        assert_eq!(buf.line(0).unwrap(), "hello!");
+    }
+
+    #[test]
+    fn test_buffer_insert_string_empty() {
+        let mut buf = TextBuffer::from_str("hello");
+        buf.insert(Position::new(0, 2), "").unwrap();
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_buffer_insert_newline_middle() {
+        let mut buf = TextBuffer::from_str("helloworld");
+        buf.insert_char(Position::new(0, 5), '\n').unwrap();
+        assert_eq!(buf.line_count(), 2);
+        assert_eq!(buf.line(0).unwrap(), "hello");
+        assert_eq!(buf.line(1).unwrap(), "world");
+    }
+
+    #[test]
+    fn test_buffer_delete_at_line_start() {
+        let mut buf = TextBuffer::from_str("hello\nworld");
+        // Delete newline at end of first line
+        buf.delete_char(Position::new(0, 5)).unwrap();
+        assert_eq!(buf.line_count(), 1);
+        assert_eq!(buf.line(0).unwrap(), "helloworld");
+    }
+
+    #[test]
+    fn test_buffer_replace_empty_with_text() {
+        let mut buf = TextBuffer::from_str("hello world");
+        let range = Range::from_coords(0, 5, 0, 5);
+        buf.replace(range, " beautiful").unwrap();
+        assert_eq!(buf.line(0).unwrap(), "hello beautiful world");
+    }
+
+    #[test]
+    fn test_buffer_replace_with_empty() {
+        let mut buf = TextBuffer::from_str("hello world");
+        let range = Range::from_coords(0, 5, 0, 11);
+        buf.replace(range, "").unwrap();
+        assert_eq!(buf.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_buffer_replace_multiline_with_single() {
+        let mut buf = TextBuffer::from_str("line1\nline2\nline3");
+        let range = Range::from_coords(0, 0, 2, 5);
+        buf.replace(range, "replaced").unwrap();
+        assert_eq!(buf.line_count(), 1);
+        assert_eq!(buf.line(0).unwrap(), "replaced");
+    }
+
+    #[test]
+    fn test_buffer_slice_empty_range() {
+        let buf = TextBuffer::from_str("hello");
+        let range = Range::from_coords(0, 2, 0, 2);
+        let slice = buf.slice(range).unwrap();
+        assert_eq!(slice, "");
+    }
+
+    #[test]
+    fn test_buffer_unicode_chars() {
+        let buf = TextBuffer::from_str("héllo wörld");
+        assert_eq!(buf.char_count(), 11);
+    }
+
+    #[test]
+    fn test_buffer_unicode_emoji() {
+        let buf = TextBuffer::from_str("hello 👋 world");
+        assert!(buf.char_count() >= 12); // Emoji may be multiple code points
+    }
+
+    #[test]
+    fn test_buffer_cjk() {
+        let buf = TextBuffer::from_str("你好世界");
+        assert_eq!(buf.char_count(), 4);
+        assert_eq!(buf.line(0).unwrap(), "你好世界");
+    }
+
+    #[test]
+    fn test_buffer_to_string() {
+        let buf = TextBuffer::from_str("line1\nline2");
+        assert_eq!(buf.to_string(), "line1\nline2");
+    }
+
+    #[test]
+    fn test_buffer_default() {
+        let buf = TextBuffer::default();
+        assert!(buf.is_empty());
+    }
+
+    #[test]
+    fn test_buffer_clone() {
+        let buf1 = TextBuffer::from_str("hello");
+        let buf2 = buf1.clone();
+        assert_eq!(buf2.line(0).unwrap(), "hello");
+    }
+
+    #[test]
+    fn test_buffer_debug() {
+        let buf = TextBuffer::from_str("hello");
+        let debug = format!("{:?}", buf);
+        assert!(!debug.is_empty());
+    }
+
+    #[test]
+    fn test_buffer_very_long_line() {
+        let long_line: String = "a".repeat(10000);
+        let buf = TextBuffer::from_str(&long_line);
+        assert_eq!(buf.line_len(0).unwrap(), 10000);
+    }
+
+    #[test]
+    fn test_buffer_many_lines() {
+        let many_lines: String = (0..1000).map(|i| format!("line{}\n", i)).collect();
+        let buf = TextBuffer::from_str(&many_lines);
+        assert_eq!(buf.line_count(), 1001);
+    }
+}
+
+mod extra_grapheme_tests {
+    use super::*;
+
+    #[test]
+    fn test_grapheme_count_ascii() {
+        assert_eq!(grapheme_count("hello"), 5);
+    }
+
+    #[test]
+    fn test_grapheme_count_unicode() {
+        // é can be 1 grapheme even if 2 codepoints
+        let count = grapheme_count("café");
+        assert!(count >= 4);
+    }
+
+    #[test]
+    fn test_grapheme_count_empty() {
+        assert_eq!(grapheme_count(""), 0);
+    }
+
+    #[test]
+    fn test_grapheme_count_emoji() {
+        // 👨‍👩‍👧‍👦 is one grapheme cluster
+        let count = grapheme_count("👨‍👩‍👧‍👦");
+        assert!(count >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_width_ascii() {
+        assert_eq!(grapheme_width("a"), 1);
+    }
+
+    #[test]
+    fn test_grapheme_width_cjk() {
+        // CJK chars are typically double width
+        let width = grapheme_width("中");
+        assert!(width >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_width_emoji() {
+        let width = grapheme_width("👋");
+        assert!(width >= 1);
+    }
+
+    #[test]
+    fn test_grapheme_iter_ascii() {
+        let iter = GraphemeIter::new("hello");
+        let graphemes: Vec<_> = iter.collect();
+        assert_eq!(graphemes.len(), 5);
+        assert_eq!(graphemes[0].1, "h");
+    }
+
+    #[test]
+    fn test_grapheme_iter_empty() {
+        let iter = GraphemeIter::new("");
+        let graphemes: Vec<_> = iter.collect();
+        assert_eq!(graphemes.len(), 0);
+    }
+
+    #[test]
+    fn test_grapheme_iter_unicode() {
+        let iter = GraphemeIter::new("héllo");
+        let graphemes: Vec<_> = iter.collect();
+        assert!(graphemes.len() >= 4);
+    }
+
+    #[test]
+    fn test_grapheme_iter_cjk() {
+        let iter = GraphemeIter::new("你好");
+        let graphemes: Vec<_> = iter.collect();
+        assert_eq!(graphemes.len(), 2);
+    }
+}
+
+mod extra_position_range_tests {
+    use super::*;
+
+    #[test]
+    fn test_range_is_empty() {
+        let range = Range::from_coords(0, 0, 0, 0);
+        assert!(range.is_empty());
+    }
+
+    #[test]
+    fn test_range_not_empty() {
+        let range = Range::from_coords(0, 0, 0, 5);
+        assert!(!range.is_empty());
+    }
+
+    #[test]
+    fn test_range_multiline() {
+        let range = Range::from_coords(0, 0, 2, 0);
+        assert!(!range.is_empty());
+    }
+
+    #[test]
+    fn test_position_origin() {
+        let pos = Position::origin();
+        assert_eq!(pos.line, 0);
+        assert_eq!(pos.column, 0);
+    }
+
+    #[test]
+    fn test_position_new() {
+        let pos = Position::new(5, 10);
+        assert_eq!(pos.line, 5);
+        assert_eq!(pos.column, 10);
+    }
+
+    #[test]
+    fn test_position_clone() {
+        let p1 = Position::new(1, 2);
+        let p2 = p1.clone();
+        assert_eq!(p1, p2);
+    }
+
+    #[test]
+    fn test_position_debug() {
+        let pos = Position::new(1, 2);
+        let debug = format!("{:?}", pos);
+        assert!(debug.contains("1"));
+    }
+
+    #[test]
+    fn test_range_clone() {
+        let r1 = Range::from_coords(0, 0, 1, 5);
+        let r2 = r1.clone();
+        assert_eq!(r1, r2);
+    }
+
+    #[test]
+    fn test_range_debug() {
+        let range = Range::from_coords(0, 0, 1, 5);
+        let debug = format!("{:?}", range);
+        assert!(!debug.is_empty());
+    }
+}
