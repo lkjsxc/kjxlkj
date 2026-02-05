@@ -38,18 +38,16 @@ impl UndoHistory {
 
     /// Get the next edit to undo.
     pub fn undo(&mut self) -> Option<Edit> {
-        self.undo_stack.pop().map(|edit| {
-            self.redo_stack.push(edit.clone());
-            edit
-        })
+        let edit = self.undo_stack.pop()?;
+        self.redo_stack.push(edit.clone());
+        Some(edit)
     }
 
     /// Get the next edit to redo.
     pub fn redo(&mut self) -> Option<Edit> {
-        self.redo_stack.pop().map(|edit| {
-            self.undo_stack.push(edit.clone());
-            edit
-        })
+        let edit = self.redo_stack.pop()?;
+        self.undo_stack.push(edit.clone());
+        Some(edit)
     }
 
     /// Check if undo is available.

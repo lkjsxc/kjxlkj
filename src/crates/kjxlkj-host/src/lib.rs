@@ -2,4 +2,4 @@
 
 mod host;
 
-pub use host::run;
+pub use host::{run, run_headless};

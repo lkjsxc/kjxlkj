@@ -4,8 +4,7 @@ use crate::Position;
 use serde::{Deserialize, Serialize};
 
 /// A range spanning two positions (start inclusive, end exclusive).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct Range {
     /// Start position (inclusive).
     pub start: Position,

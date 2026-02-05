@@ -14,10 +14,28 @@ fn main() {
 
     // Parse arguments
     let args: Vec<String> = std::env::args().collect();
-    let file = args.get(1).map(PathBuf::from);
+    let mut file = None;
+    let mut headless = false;
+
+    for arg in args.iter().skip(1) {
+        match arg.as_str() {
+            "--headless" => headless = true,
+            _ if !arg.starts_with('-') => file = Some(PathBuf::from(arg)),
+            other => {
+                eprintln!("Unknown option: {}", other);
+                std::process::exit(1);
+            }
+        }
+    }
 
     // Run the editor
-    if let Err(e) = kjxlkj_host::run(file) {
+    let result = if headless {
+        kjxlkj_host::run_headless(file)
+    } else {
+        kjxlkj_host::run(file)
+    };
+
+    if let Err(e) = result {
         eprintln!("Error: {}", e);
         std::process::exit(1);
     }

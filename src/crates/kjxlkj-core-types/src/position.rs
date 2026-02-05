@@ -3,8 +3,9 @@
 use serde::{Deserialize, Serialize};
 
 /// A position in a text buffer (0-based line and column).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub struct Position {
     /// 0-based line index.
     pub line: usize,

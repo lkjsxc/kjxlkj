@@ -12,3 +12,4 @@ kjxlkj-input = { path = "../kjxlkj-input" }
 kjxlkj-render = { path = "../kjxlkj-render" }
 crossterm = { workspace = true }
 anyhow = { workspace = true }
+tracing = { workspace = true }

@@ -3,9 +3,7 @@
 use kjxlkj_core_edit::{apply_motion, Operator};
 use kjxlkj_core_mode::{Intent, ModeState};
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{
-    BufferId, BufferName, Cursor, EditorEvent, Mode, Position, Range,
-};
+use kjxlkj_core_types::{BufferId, BufferName, Cursor, EditorEvent, Mode, Position, Range};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, Viewport, WindowSnapshot};
 use kjxlkj_core_undo::{Edit, UndoHistory};
 use std::path::PathBuf;
@@ -86,7 +84,8 @@ impl Editor {
     /// Open a file.
     pub fn open_file(&mut self, path: &std::path::Path) -> std::io::Result<()> {
         let content = std::fs::read_to_string(path)?;
-        let name = path.file_name()
+        let name = path
+            .file_name()
             .map(|s| s.to_string_lossy().to_string())
             .unwrap_or_else(|| path.display().to_string());
 
@@ -96,7 +95,7 @@ impl Editor {
         let buffer = Buffer {
             id,
             name: BufferName::new(name),
-            text: TextBuffer::from_str(&content),
+            text: content.parse().unwrap(),
             path: Some(path.to_path_buf()),
             modified: false,
             undo: UndoHistory::new(),
@@ -264,7 +263,7 @@ impl Editor {
                     // Reverse the edit
                     if !edit.new_text.is_empty() {
                         let end = buffer.text.char_to_pos(
-                            buffer.text.pos_to_char(edit.range.start) + edit.new_text.len()
+                            buffer.text.pos_to_char(edit.range.start) + edit.new_text.len(),
                         );
                         buffer.text.delete(Range::new(edit.range.start, end));
                     }
@@ -373,8 +372,11 @@ impl Editor {
             _ => {
                 if let Ok(line_num) = cmd.parse::<usize>() {
                     if let Some(window) = self.windows.get_mut(self.active_window) {
-                        if let Some(buffer) = self.buffers.iter().find(|b| b.id == window.buffer_id) {
-                            let target = line_num.saturating_sub(1).min(buffer.text.line_count().saturating_sub(1));
+                        if let Some(buffer) = self.buffers.iter().find(|b| b.id == window.buffer_id)
+                        {
+                            let target = line_num
+                                .saturating_sub(1)
+                                .min(buffer.text.line_count().saturating_sub(1));
                             window.cursor.position = Position::new(target, 0);
                             self.ensure_cursor_visible();
                         }
@@ -412,14 +414,20 @@ impl Editor {
 
     fn ensure_cursor_visible(&mut self) {
         if let Some(window) = self.windows.get_mut(self.active_window) {
-            window.viewport.ensure_visible(window.cursor.position.line, 3);
+            window
+                .viewport
+                .ensure_visible(window.cursor.position.line, 3);
         }
     }
 
     /// Generate a snapshot for rendering.
     pub fn snapshot(&self) -> EditorSnapshot {
         let window = &self.windows[self.active_window];
-        let buffer = self.buffers.iter().find(|b| b.id == window.buffer_id).unwrap();
+        let buffer = self
+            .buffers
+            .iter()
+            .find(|b| b.id == window.buffer_id)
+            .unwrap();
 
         let visible_range = window.viewport.visible_lines();
         let lines: Vec<String> = (visible_range.start..visible_range.end)

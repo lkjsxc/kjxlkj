@@ -3,8 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Editor mode.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum Mode {
     /// Normal mode (default).
     #[default]
@@ -33,7 +32,10 @@ impl Mode {
 
     /// Check if cursor should be end-inclusive.
     pub fn is_end_inclusive(&self) -> bool {
-        matches!(self, Mode::Normal | Mode::Visual | Mode::VisualLine | Mode::VisualBlock)
+        matches!(
+            self,
+            Mode::Normal | Mode::Visual | Mode::VisualLine | Mode::VisualBlock
+        )
     }
 
     /// Get the mode indicator string.

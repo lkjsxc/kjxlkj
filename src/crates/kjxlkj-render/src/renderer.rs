@@ -3,7 +3,7 @@
 use crossterm::{
     cursor::{Hide, MoveTo, Show},
     execute,
-    style::{Print, SetBackgroundColor, SetForegroundColor, Color, ResetColor},
+    style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{Clear, ClearType},
 };
 use kjxlkj_core_types::Mode;
@@ -62,7 +62,11 @@ impl Renderer {
 
         let mode_str = snapshot.mode.indicator();
         let file_name = snapshot.window.buffer.name.as_str();
-        let modified = if snapshot.window.buffer.modified { "[+]" } else { "" };
+        let modified = if snapshot.window.buffer.modified {
+            "[+]"
+        } else {
+            ""
+        };
         let cursor = &snapshot.window.cursor;
         let line_info = format!(
             "{}:{} ({}/{})",

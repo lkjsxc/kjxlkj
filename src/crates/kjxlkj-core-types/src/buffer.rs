@@ -3,8 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Unique identifier for a buffer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct BufferId(pub u64);
 
 impl BufferId {
@@ -15,8 +14,7 @@ impl BufferId {
 }
 
 /// Buffer name for display.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct BufferName(String);
 
 impl BufferName {

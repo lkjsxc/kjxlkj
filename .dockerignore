@@ -1,0 +1,17 @@
+# Build artifacts
+target/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Documentation (not needed in runtime image)
+docs/
+
+# License and readme (not needed in runtime image)
+LICENSE
+README.md

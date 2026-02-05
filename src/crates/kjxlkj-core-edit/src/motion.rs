@@ -120,11 +120,11 @@ pub fn apply_motion(
                 let chars: Vec<char> = line.chars().collect();
                 let mut col = pos.column.saturating_sub(1);
                 // Skip whitespace
-                while col > 0 && chars.get(col).map_or(false, |c| c.is_whitespace()) {
+                while col > 0 && chars.get(col).is_some_and(|c| c.is_whitespace()) {
                     col -= 1;
                 }
                 // Skip to word start
-                while col > 0 && chars.get(col - 1).map_or(false, |c| !c.is_whitespace()) {
+                while col > 0 && chars.get(col - 1).is_some_and(|c| !c.is_whitespace()) {
                     col -= 1;
                 }
                 return Position::new(pos.line, col);
@@ -154,7 +154,9 @@ pub fn apply_motion(
             Position::new(last_line, 0)
         }
         Motion::GoToLine(line) => {
-            let target = line.saturating_sub(1).min(buf.line_count().saturating_sub(1));
+            let target = line
+                .saturating_sub(1)
+                .min(buf.line_count().saturating_sub(1));
             Position::new(target, 0)
         }
     }
@@ -166,7 +168,7 @@ mod tests {
 
     #[test]
     fn test_motion_left() {
-        let buf = TextBuffer::from_str("hello");
+        let buf: TextBuffer = "hello".parse().unwrap();
         let pos = Position::new(0, 3);
         let new_pos = apply_motion(&buf, pos, Motion::Left, 1, true);
         assert_eq!(new_pos, Position::new(0, 2));
@@ -174,7 +176,7 @@ mod tests {
 
     #[test]
     fn test_motion_right() {
-        let buf = TextBuffer::from_str("hello");
+        let buf: TextBuffer = "hello".parse().unwrap();
         let pos = Position::new(0, 0);
         let new_pos = apply_motion(&buf, pos, Motion::Right, 1, true);
         assert_eq!(new_pos, Position::new(0, 1));

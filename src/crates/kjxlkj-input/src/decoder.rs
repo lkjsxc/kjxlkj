@@ -47,7 +47,10 @@ mod tests {
     fn test_decode_char() {
         let ct_event = Event::Key(CtKeyEvent::new(KeyCode::Char('a'), KeyModifiers::NONE));
         let result = decode_event(ct_event);
-        assert!(matches!(result, Some(EditorEvent::Key(KeyEvent::Char('a', _)))));
+        assert!(matches!(
+            result,
+            Some(EditorEvent::Key(KeyEvent::Char('a', _)))
+        ));
     }
 
     #[test]

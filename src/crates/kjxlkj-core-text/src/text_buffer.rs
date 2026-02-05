@@ -2,6 +2,8 @@
 
 use kjxlkj_core_types::{Position, Range};
 use ropey::Rope;
+use std::fmt;
+use std::str::FromStr;
 use unicode_segmentation::UnicodeSegmentation;
 
 /// Text buffer backed by a rope.
@@ -17,19 +19,28 @@ impl Default for TextBuffer {
     }
 }
 
+impl FromStr for TextBuffer {
+    type Err = std::convert::Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self {
+            rope: Rope::from_str(s),
+            version: 0,
+        })
+    }
+}
+
+impl fmt::Display for TextBuffer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.rope)
+    }
+}
+
 impl TextBuffer {
     /// Create an empty text buffer.
     pub fn new() -> Self {
         Self {
             rope: Rope::new(),
-            version: 0,
-        }
-    }
-
-    /// Create a text buffer from a string.
-    pub fn from_str(s: &str) -> Self {
-        Self {
-            rope: Rope::from_str(s),
             version: 0,
         }
     }
@@ -126,11 +137,6 @@ impl TextBuffer {
         Position::new(line, col)
     }
 
-    /// Get the entire content as a string.
-    pub fn to_string(&self) -> String {
-        self.rope.to_string()
-    }
-
     /// Get a slice of the buffer.
     pub fn slice(&self, range: Range) -> String {
         let start = self.pos_to_char(range.start);
@@ -152,7 +158,7 @@ mod tests {
 
     #[test]
     fn test_from_str() {
-        let buf = TextBuffer::from_str("hello\nworld");
+        let buf: TextBuffer = "hello\nworld".parse().unwrap();
         assert_eq!(buf.line_count(), 2);
         assert_eq!(buf.line(0), Some("hello".to_string()));
         assert_eq!(buf.line(1), Some("world".to_string()));
@@ -167,7 +173,7 @@ mod tests {
 
     #[test]
     fn test_delete() {
-        let mut buf = TextBuffer::from_str("hello world");
+        let mut buf: TextBuffer = "hello world".parse().unwrap();
         let range = Range::new(Position::new(0, 0), Position::new(0, 6));
         let deleted = buf.delete(range);
         assert_eq!(deleted, "hello ");

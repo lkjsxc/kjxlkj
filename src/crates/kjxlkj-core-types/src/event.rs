@@ -3,8 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Modifier keys.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct Modifier {
     pub ctrl: bool,
     pub alt: bool,
@@ -13,15 +12,22 @@ pub struct Modifier {
 
 impl Modifier {
     /// No modifiers.
-    pub const NONE: Self = Self { ctrl: false, alt: false, shift: false };
+    pub const NONE: Self = Self {
+        ctrl: false,
+        alt: false,
+        shift: false,
+    };
 
     /// Ctrl modifier only.
-    pub const CTRL: Self = Self { ctrl: true, alt: false, shift: false };
+    pub const CTRL: Self = Self {
+        ctrl: true,
+        alt: false,
+        shift: false,
+    };
 }
 
 /// Key event.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum KeyEvent {
     /// Character key with modifiers.
     Char(char, Modifier),

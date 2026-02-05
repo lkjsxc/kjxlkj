@@ -155,6 +155,7 @@ dependencies = [
  "kjxlkj-core-types",
  "kjxlkj-input",
  "kjxlkj-render",
+ "tracing",
 ]
 
 [[package]]

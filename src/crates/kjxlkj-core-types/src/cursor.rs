@@ -4,8 +4,7 @@ use crate::Position;
 use serde::{Deserialize, Serialize};
 
 /// Cursor state within a window.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct Cursor {
     /// Current position.
     pub position: Position,
