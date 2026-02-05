@@ -20,5 +20,5 @@ Each proposal MUST:
 | [insert-newline.md](insert-newline.md) | Interactive Insert-mode newline reliability (`Enter`) |
 | [long-lines.md](long-lines.md) | Long-line rendering stability and virtualization |
 | [performance-regression-harness.md](performance-regression-harness.md) | CPU/latency regression harness and gating strategy |
+| [profiling-workflow.md](profiling-workflow.md) | Repeatable profiling workflow and regression triage |
 | [file-explorer-mvp.md](file-explorer-mvp.md) | File explorer MVP (toggle, navigate, open file) |
-

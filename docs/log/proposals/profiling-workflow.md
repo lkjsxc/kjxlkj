@@ -1,95 +1,100 @@
-# Profiling Workflow
+# Proposal: Profiling Workflow and Regression Triage
 
-This document establishes a repeatable profiling workflow for detecting performance regressions.
+Back: [/docs/log/proposals/README.md](/docs/log/proposals/README.md)
 
-## Overview
+## Problem statement
 
-The kjxlkj editor includes opt-in profiling instrumentation as specified in [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md).
+The performance posture in the canonical spec requires the editor to remain responsive under stress and to avoid idle busy-loop rendering.
 
-## Enabling Profiling
+Without a repeatable profiling workflow, regressions tend to reappear (especially around rendering I/O, snapshot building, long-line handling, and resize storms).
 
-### Compile-time
+This proposal describes a workflow that is:
 
-Enable the `profiling` feature when building:
+- deterministic enough to run in CI (when CI exists)
+- actionable for local triage (when CI is absent)
+- aligned with the normative observability requirements
 
-```bash
-cargo build --features profiling
-```
+## Defining documents
 
-### Runtime
+- Normative observability requirements:
+  - [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
+- Ordering/latency invariants:
+  - [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- Large-file and long-line posture:
+  - [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+  - [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- Regression harness proposal (trend + probes):
+  - [/docs/log/proposals/performance-regression-harness.md](/docs/log/proposals/performance-regression-harness.md)
 
-Create a profiler and enable it:
+## Proposed workflow (repeatable)
 
-```rust
-use kjxlkj_core_types::{Profiler, ProfilingConfig};
+### A. Enable instrumentation (opt-in)
 
-let config = ProfilingConfig {
-    enabled: true,
-    log_to_stderr: true,  // Optional: print metrics
-};
-let mut profiler = Profiler::with_config(config);
-```
+The implementation SHOULD provide:
 
-## Recording Metrics
+| Mechanism | Requirement |
+|---|---|
+| Build-time toggle | Instrumentation MUST be opt-in and MUST have near-zero overhead when disabled. |
+| Runtime toggle | Profiling MUST be enable-able at runtime to avoid requiring separate binaries for everyday debugging. |
+| Output sink | Profiling output MUST be machine-parseable and MUST support at least one local sink (stderr or a file path). |
 
-The profiler tracks per-cycle metrics:
+The specific toggles (feature flag names, env vars, CLI flags) are implementation-defined, but MUST be recorded in the verification gate docs when an implementation exists (see [/docs/reference/CI.md](/docs/reference/CI.md)).
 
-```rust
-profiler.start_cycle();
-profiler.record_input_event();
-profiler.record_core_update();
-profiler.start_snapshot();
-// ... snapshot generation ...
-profiler.end_snapshot(lines_materialized);
-profiler.start_render();
-// ... render ...
-profiler.end_render(Some(cells_written), Some(dirty_region));
-profiler.end_cycle();
-```
+### B. Record per-cycle metrics (spec-driven)
 
-## Analysis
+For each input/update cycle, the implementation MUST be able to emit the minimum metrics set defined in:
 
-### Viewport-Bounded Check
+- [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 
-Verify snapshot work is bounded by viewport:
+The workflow treats three numbers as primary regression detectors:
 
-```rust
-let metrics = profiler.last_cycle().unwrap();
-assert!(metrics.is_viewport_bounded(viewport_height, margin));
-```
+| Detector | Why it matters |
+|---|---|
+| Snapshot duration | Catches hidden O(file) work in snapshot generation. |
+| “Materialized lines” | Strong signal for viewport-boundedness violations. |
+| Cells written / dirty region | Catches full redraw storms and excessive terminal I/O. |
 
-### Idle CPU Detection
+### C. Run probes (turn “it feels slow” into “what broke”)
 
-Check for busy-loop redraw while idle:
+The workflow is to run probes that correspond directly to normative requirements:
 
-```rust
-// Check last 100 cycles
-if profiler.detect_busy_loop(100) {
-    eprintln!("Warning: Busy-loop detected while idle");
-}
-```
+| Probe | What it detects | Canonical requirement |
+|---|---|---|
+| Idle CPU probe | Continuous redraw/snapshot loop while idle | [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md) |
+| Long-line probe | Per-frame work proportional to total line length | [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md) |
+| Large-file probe | Snapshot/render work proportional to total buffer size | [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md) |
 
-## Key Metrics
+### D. Classify regressions by “where the time went”
 
-| Metric | Expected Behavior |
-|--------|-------------------|
-| `materialized_lines` | Should be ≤ viewport height + small margin |
-| `render_duration` with no input | Should be zero when idle |
-| `cells_written` | Should reflect actual changes, not full redraw |
+When a regression is observed, classify it into one of these buckets:
 
-## Probes for Testing
+| Bucket | Typical root causes |
+|---|---|
+| Input decode | terminal event normalization, key-sequence buffering, repeated parsing |
+| Core update | accidental O(N) scans, expensive regex/search, undo churn |
+| Snapshot | materializing too much text, reflowing long lines, rebuilding decorations |
+| Render | full redraw, diff algorithm regressions, too many flushes/syscalls |
+| I/O | sync FS access on hot path, small writes, excessive metadata/stat calls |
+| Services | unbounded queues, cancellation not honored, stale results applied |
 
-1. **Idle CPU probe**: Monitor render duration when no input for N cycles
-2. **Long-line probe**: Verify `materialized_lines` doesn't grow with line length
-3. **Large-file probe**: Verify `snapshot_duration` is independent of total buffer size
+The classification MUST drive the next step: add or tighten a deterministic test that fails when the regression returns (see [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)).
 
-## Integration with CI
+## CI integration (trend, not brittle budgets)
 
-When CI is available, profiling metrics can be used as trend signals:
+When CI is present, profiling SHOULD be integrated as:
 
-1. Run benchmarks with profiling enabled
-2. Record metrics to a file
-3. Compare against baseline
-4. Flag if degradation exceeds threshold
+- deterministic probes that hard-fail on algorithmic regressions (viewport-boundedness, idle busy-loop)
+- trend reporting for timing metrics (avoid flaky absolute thresholds unless stabilized)
 
-Note: Absolute timings are machine-dependent. Prefer relative comparisons or O() complexity checks.
+## Acceptance criteria (Given/When/Then)
+
+| Scenario | Requirement |
+|---|---|
+| Idle for an extended period | Idle probe MUST report no continuous redraw/snapshot loop. |
+| Render a very long line | “Materialized lines” MUST remain viewport-bounded; render MUST not do work proportional to total line length. |
+| Open and scroll a large buffer | Snapshot and render metrics MUST not scale with total buffer size. |
+
+## Related
+
+- Performance regression harness proposal: [/docs/log/proposals/performance-regression-harness.md](/docs/log/proposals/performance-regression-harness.md)
+- Profiling requirements (normative): [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
