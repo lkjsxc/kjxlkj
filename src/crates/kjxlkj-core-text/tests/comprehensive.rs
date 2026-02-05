@@ -416,3 +416,4 @@ mod text_buffer_debug {
         assert!(debug.contains("TextBuffer"));
     }
 }
+

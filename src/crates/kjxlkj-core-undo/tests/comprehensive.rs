@@ -406,3 +406,4 @@ mod stress_tests {
         assert!(!history.can_undo());
     }
 }
+

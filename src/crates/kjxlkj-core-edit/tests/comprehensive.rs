@@ -442,3 +442,4 @@ mod operator_enum_tests {
         assert_ne!(Operator::Delete, Operator::Yank);
     }
 }
+

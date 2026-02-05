@@ -216,7 +216,7 @@ mod key_event_tests {
     }
 }
 
-mod modifier_tests {
+mod modifier_edge_cases {
     use super::*;
 
     #[test]
