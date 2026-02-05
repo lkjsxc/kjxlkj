@@ -1,7 +1,7 @@
 //! Advanced editing feature tests - marks, macros, registers, search.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{KeyCode, KeyEvent, KeyModifiers};
+use kjxlkj_core_types::{KeyCode, KeyEvent};
 
 fn char_key(c: char) -> KeyEvent {
     KeyEvent::char(c)

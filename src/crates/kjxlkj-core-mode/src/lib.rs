@@ -2,6 +2,8 @@
 //!
 //! This crate handles mode-specific key interpretation and intent generation.
 
+#![allow(non_snake_case)]
+
 mod command;
 mod handler;
 mod insert;
@@ -232,7 +234,7 @@ mod tests {
 
     #[test]
     fn test_replace_mode_default() {
-        let replace = ReplaceMode::default();
+        let replace = ReplaceMode;
         assert_eq!(replace.mode(), Mode::Replace);
     }
 

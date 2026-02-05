@@ -3,6 +3,8 @@
 //! These tests verify that operators work correctly with motions
 //! and text objects in the full EditorState context.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent, KeyModifiers, Mode};
 

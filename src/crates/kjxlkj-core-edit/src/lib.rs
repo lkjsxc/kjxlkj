@@ -184,14 +184,14 @@ mod tests {
     #[test]
     fn test_text_object_clone() {
         let obj = TextObject::Word;
-        let cloned = obj.clone();
+        let cloned = obj;
         assert_eq!(obj, cloned);
     }
 
     #[test]
     fn test_text_object_kind_clone() {
         let kind = TextObjectKind::Around;
-        let cloned = kind.clone();
+        let cloned = kind;
         assert_eq!(kind, cloned);
     }
 

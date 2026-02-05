@@ -1,7 +1,7 @@
 //! Event loop implementation.
 
 use anyhow::Result;
-use crossterm::event::{poll, read, Event};
+use crossterm::event::{poll, read};
 use kjxlkj_core_state::EditorState;
 use kjxlkj_input::decode_event;
 use kjxlkj_render::TerminalRenderer;
@@ -58,7 +58,7 @@ impl EventLoop {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    
 
     #[test]
     fn test_event_loop_creation() {

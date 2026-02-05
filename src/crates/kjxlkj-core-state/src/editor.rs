@@ -6,10 +6,10 @@ use kjxlkj_core_mode::{ModeHandler, ModeResult, NormalMode};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{
     BufferId, Cursor, EditorEvent, Intent, KeyEvent, Mode, MotionIntent, Position, Register,
-    ScrollIntent, Selection, SelectionKind,
+    ScrollIntent, Selection,
 };
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, StatusLine, Viewport};
-use kjxlkj_core_undo::{Edit, Transaction, UndoHistory};
+use kjxlkj_core_undo::{Transaction, UndoHistory};
 use std::collections::HashMap;
 
 /// Complete editor state.
@@ -40,8 +40,10 @@ pub struct EditorState {
     /// Whether editor should quit.
     should_quit: bool,
     /// Current transaction (for grouping edits).
+    #[allow(dead_code)]
     current_transaction: Option<Transaction>,
     /// Last change for dot repeat.
+    #[allow(dead_code)]
     last_change: Option<Vec<KeyEvent>>,
     /// Recording change.
     recording_change: Vec<KeyEvent>,
@@ -431,14 +433,14 @@ impl EditorState {
             Intent::ToggleCase => self.toggle_case(),
             Intent::Uppercase => {} // TODO
             Intent::Lowercase => {} // TODO
-            Intent::Increment(n) => {} // TODO
+            Intent::Increment(_n) => {} // TODO
             Intent::Repeat => {}       // TODO
             Intent::MacroToggle(c) => self.toggle_macro(c),
-            Intent::MacroPlay(c) => {} // TODO
+            Intent::MacroPlay(_c) => {} // TODO
             Intent::SetMark(c) => {
                 self.marks.insert(c, self.cursor.position);
             }
-            Intent::JumpToMark { mark, first_non_blank } => {
+            Intent::JumpToMark { mark, first_non_blank: _ } => {
                 if let Some(pos) = self.marks.get(&mark).copied() {
                     self.cursor.position = pos;
                 }
@@ -692,7 +694,7 @@ impl EditorState {
     }
 
     fn switch_mode(&mut self, new_mode: Mode) {
-        let old_mode = self.mode;
+        let _old_mode = self.mode;
         self.mode = new_mode;
 
         match new_mode {
@@ -734,25 +736,25 @@ impl EditorState {
 
         // Handle commands with arguments
         if cmd.starts_with("e ") || cmd.starts_with("edit ") {
-            let file = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            let file = cmd.split_once(' ').map(|x| x.1).unwrap_or("").trim();
             self.status_message = Some((format!("Would open: {}", file), false));
             return;
         }
 
         if cmd.starts_with("w ") || cmd.starts_with("write ") {
-            let file = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            let file = cmd.split_once(' ').map(|x| x.1).unwrap_or("").trim();
             self.status_message = Some((format!("Would write to: {}", file), false));
             return;
         }
 
         if cmd.starts_with("set ") {
-            let args = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            let args = cmd.split_once(' ').map(|x| x.1).unwrap_or("").trim();
             self.handle_set_command(args);
             return;
         }
 
         if cmd.starts_with("! ") {
-            let shell_cmd = cmd.splitn(2, ' ').nth(1).unwrap_or("").trim();
+            let shell_cmd = cmd.split_once(' ').map(|x| x.1).unwrap_or("").trim();
             self.status_message = Some((format!("Would run: {}", shell_cmd), false));
             return;
         }
@@ -954,13 +956,11 @@ impl EditorState {
 
         if indent {
             self.buffer.insert(line_start, indent_str);
-        } else {
-            if let Some(slice) = self.buffer.line(self.cursor.line()) {
-                let s = slice.as_str().unwrap_or("");
-                let spaces: usize = s.chars().take(4).take_while(|c| *c == ' ').count();
-                if spaces > 0 {
-                    self.buffer.remove(line_start, line_start + spaces);
-                }
+        } else if let Some(slice) = self.buffer.line(self.cursor.line()) {
+            let s = slice.as_str().unwrap_or("");
+            let spaces: usize = s.chars().take(4).take_while(|c| *c == ' ').count();
+            if spaces > 0 {
+                self.buffer.remove(line_start, line_start + spaces);
             }
         }
     }
@@ -1161,9 +1161,9 @@ impl EditorState {
 
         EditorSnapshot::new(
             buffer_snapshot,
-            self.cursor.clone(),
+            self.cursor,
             self.mode,
-            self.selection.clone(),
+            self.selection,
             status,
             self.command_line.clone(),
             self.registers.search_pattern().map(String::from),

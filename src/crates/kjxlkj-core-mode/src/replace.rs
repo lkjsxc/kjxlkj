@@ -80,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_replace_mode_default() {
-        let mode = ReplaceMode::default();
+        let mode = ReplaceMode;
         assert_eq!(mode.mode(), Mode::Replace);
     }
 

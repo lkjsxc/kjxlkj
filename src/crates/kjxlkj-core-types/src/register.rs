@@ -3,11 +3,12 @@
 use serde::{Deserialize, Serialize};
 
 /// A named register for storing text.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum RegisterName {
     /// Named register a-z.
     Named(char),
     /// Unnamed (default) register.
+    #[default]
     Unnamed,
     /// Small delete register (for deletions less than one line).
     SmallDelete,
@@ -71,12 +72,6 @@ impl RegisterName {
             RegisterName::Filename => '%',
             RegisterName::AltFilename => '#',
         }
-    }
-}
-
-impl Default for RegisterName {
-    fn default() -> Self {
-        RegisterName::Unnamed
     }
 }
 

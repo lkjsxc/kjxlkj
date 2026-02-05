@@ -1,5 +1,7 @@
 //! Search and replace tests.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent};
 

@@ -47,6 +47,7 @@ impl RopeSliceExt for RopeSlice<'_> {
 
 /// Iterator over grapheme clusters in a rope slice.
 pub struct GraphemeIter<'a> {
+    #[allow(dead_code)]
     slice: RopeSlice<'a>,
     chunk_iter: ropey::iter::Chunks<'a>,
     current_chunk: Option<&'a str>,
@@ -190,7 +191,8 @@ mod tests {
         let rope = Rope::from_str("\t");
         // Tab is generally 1 display width in UnicodeWidthStr
         let width = rope.slice(..).display_width();
-        assert!(width >= 0);
+        // Width is always valid (usize)
+        let _ = width;
     }
 
     #[test]

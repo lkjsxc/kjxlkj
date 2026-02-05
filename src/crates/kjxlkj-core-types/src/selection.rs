@@ -157,7 +157,7 @@ mod tests {
     #[test]
     fn test_selection_clone() {
         let sel = Selection::char_wise(Position::new(0, 0), Position::new(1, 1));
-        let cloned = sel.clone();
+        let cloned = sel;
         assert_eq!(sel, cloned);
     }
 
@@ -190,7 +190,7 @@ mod tests {
     #[test]
     fn test_selection_kind_clone() {
         let kind = SelectionKind::Line;
-        let cloned = kind.clone();
+        let cloned = kind;
         assert_eq!(kind, cloned);
     }
 

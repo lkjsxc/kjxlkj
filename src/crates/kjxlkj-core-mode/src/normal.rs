@@ -1,5 +1,7 @@
 //! Normal mode handler.
 
+#![allow(non_snake_case)]
+
 use crate::handler::{ModeHandler, ModeResult};
 use crate::parser::{ActionKind, OperatorKind, ParseResult, ParsedCommand, Parser, ScrollAction};
 use kjxlkj_core_types::{Intent, KeyEvent, Mode, MotionIntent, ScrollIntent};

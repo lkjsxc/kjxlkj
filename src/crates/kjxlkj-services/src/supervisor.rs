@@ -1,9 +1,9 @@
 //! Service supervisor implementation.
 
-use crate::{Service, ServiceHandle, ServiceMessage, ServiceResult, ServiceStatus};
+use crate::{Service, ServiceHandle, ServiceResult};
 use std::collections::HashMap;
 use tokio::sync::mpsc;
-use tracing::{debug, error, info, warn};
+use tracing::{debug, info, warn};
 
 /// Channel buffer size for service messages.
 const CHANNEL_BUFFER_SIZE: usize = 32;
@@ -77,6 +77,7 @@ impl Default for Supervisor {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ServiceMessage;
     use std::future::Future;
     use std::pin::Pin;
 
@@ -95,10 +96,7 @@ mod tests {
         ) -> Pin<Box<dyn Future<Output = ()> + Send>> {
             Box::pin(async move {
                 while let Some(msg) = rx.recv().await {
-                    match msg {
-                        ServiceMessage::Shutdown => break,
-                        _ => {}
-                    }
+                    if let ServiceMessage::Shutdown = msg { break }
                 }
             })
         }

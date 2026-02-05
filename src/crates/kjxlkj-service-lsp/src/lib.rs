@@ -1,15 +1,13 @@
 //! LSP client service for kjxlkj editor.
-//!
-//! Provides Language Server Protocol client functionality.
+//!\n//! Provides Language Server Protocol client functionality.
 
 use kjxlkj_services::{Service, ServiceMessage};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::future::Future;
-use std::path::PathBuf;
 use std::pin::Pin;
 use tokio::sync::mpsc;
-use tracing::{debug, info, warn};
+use tracing::{debug, info};
 
 /// LSP position.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -330,7 +328,7 @@ mod tests {
     #[test]
     fn test_diagnostic_severity_clone() {
         let sev = DiagnosticSeverity::Warning;
-        let cloned = sev.clone();
+        let cloned = sev;
         assert_eq!(sev, cloned);
     }
 

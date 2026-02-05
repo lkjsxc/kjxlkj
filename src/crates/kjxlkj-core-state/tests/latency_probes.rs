@@ -6,6 +6,8 @@
 //!
 //! These tests assert ordering and convergence guarantees, not wall-clock time.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent, KeyModifiers, Mode};
 
@@ -96,7 +98,7 @@ fn test_no_off_by_one_lag() {
     for c in sequence.chars() {
         editor.handle_key(key(KeyCode::Char(c)));
         // Take snapshot after each key
-        let snapshot = editor.snapshot();
+        let _snapshot = editor.snapshot();
         // Content should contain all typed chars so far
         let content = editor.content();
         assert!(sequence.starts_with(&content) || content.len() <= sequence.len());
@@ -325,9 +327,8 @@ fn test_snapshot_sequence_monotonic() {
     for op in operations {
         editor.handle_key(op);
         let snapshot = editor.snapshot();
-        // The snapshot should be valid
-        let version = snapshot.buffer.version.value();
-        assert!(version >= 0);
+        // The snapshot should be valid - version is always a valid usize
+        let _version = snapshot.buffer.version.value();
     }
 }
 

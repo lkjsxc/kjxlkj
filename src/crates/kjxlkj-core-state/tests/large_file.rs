@@ -230,7 +230,7 @@ fn test_long_line_load() {
     let mut editor = EditorState::new();
 
     // Create a 10k character line
-    let long_line: String = std::iter::repeat('x').take(10_000).collect();
+    let long_line: String = std::iter::repeat_n('x', 10_000).collect();
     editor.load_content(&long_line);
     editor.resize(80, 24);
 
@@ -242,7 +242,7 @@ fn test_long_line_load() {
 fn test_long_line_navigation() {
     let mut editor = EditorState::new();
 
-    let long_line: String = std::iter::repeat('a').take(1000).collect();
+    let long_line: String = std::iter::repeat_n('a', 1000).collect();
     editor.load_content(&long_line);
     editor.resize(80, 24);
 
@@ -303,7 +303,7 @@ fn test_long_line_word_motion() {
 fn test_long_line_insert() {
     let mut editor = EditorState::new();
 
-    let long_line: String = std::iter::repeat('a').take(500).collect();
+    let long_line: String = std::iter::repeat_n('a', 500).collect();
     editor.load_content(&long_line);
     editor.resize(80, 24);
 
@@ -372,7 +372,7 @@ fn test_large_file_undo_consistency() {
     editor.load_content(&content);
     editor.resize(80, 24);
 
-    let original_count = editor.buffer().line_count();
+    let _original_count = editor.buffer().line_count();
 
     // Make changes
     editor.handle_key(key(KeyCode::Char('d')));

@@ -261,11 +261,13 @@ impl Profiler {
 }
 
 /// Scoped timer that records duration on drop.
+#[allow(dead_code)]
 pub struct ScopedTimer<'a> {
     profiler: &'a mut Profiler,
     kind: TimerKind,
 }
 
+#[allow(dead_code)]
 enum TimerKind {
     Snapshot { lines: usize },
     Render { cells: Option<usize>, dirty: Option<usize> },
@@ -323,22 +325,22 @@ mod tests {
             enabled: true,
             log_to_stderr: false,
         };
-        let mut profiler = Profiler::with_config(config);
+        let mut _profiler = Profiler::with_config(config);
 
         // Only works if PROFILING_ENABLED
         #[cfg(feature = "profiling")]
         {
-            profiler.start_cycle();
-            profiler.record_input_event();
-            profiler.record_input_event();
-            profiler.record_core_update();
-            profiler.start_snapshot();
-            profiler.end_snapshot(24);
-            profiler.start_render();
-            profiler.end_render(Some(1920), Some(100));
-            profiler.end_cycle();
+            _profiler.start_cycle();
+            _profiler.record_input_event();
+            _profiler.record_input_event();
+            _profiler.record_core_update();
+            _profiler.start_snapshot();
+            _profiler.end_snapshot(24);
+            _profiler.start_render();
+            _profiler.end_render(Some(1920), Some(100));
+            _profiler.end_cycle();
 
-            let last = profiler.last_cycle().unwrap();
+            let last = _profiler.last_cycle().unwrap();
             assert_eq!(last.input_events, 2);
             assert_eq!(last.core_updates, 1);
             assert_eq!(last.materialized_lines, 24);

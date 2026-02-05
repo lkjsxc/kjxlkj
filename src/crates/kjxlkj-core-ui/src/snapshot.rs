@@ -115,6 +115,7 @@ pub struct EditorSnapshot {
 
 impl EditorSnapshot {
     /// Create a new editor snapshot.
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         buffer: BufferSnapshot,
         cursor: Cursor,
@@ -333,7 +334,7 @@ mod tests {
             BufferVersion::new(1),
             100,
             vec![],
-            viewport.clone(),
+            viewport,
             false,
         );
         assert_eq!(snapshot.viewport, viewport);

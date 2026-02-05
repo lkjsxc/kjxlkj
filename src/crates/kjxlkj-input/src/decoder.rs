@@ -252,7 +252,7 @@ mod tests {
 
     #[test]
     fn test_input_decoder_default() {
-        let decoder = InputDecoder::default();
+        let decoder = InputDecoder::new();
         let event = Event::FocusGained;
         let decoded = decoder.decode(event);
         assert!(matches!(decoded, EditorEvent::Focus(true)));

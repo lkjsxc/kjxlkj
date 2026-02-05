@@ -11,7 +11,7 @@ pub use service::{Service, ServiceHandle, ServiceMessage, ServiceStatus};
 use thiserror::Error;
 
 /// Service error type.
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum ServiceError {
     /// Service failed to start.
     #[error("Failed to start service: {0}")]
@@ -73,7 +73,7 @@ mod tests {
     #[test]
     fn test_service_result_ok() {
         let result: ServiceResult<i32> = Ok(42);
-        assert_eq!(result.unwrap(), 42);
+        assert_eq!(result, Ok(42));
     }
 
     #[test]
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn test_service_result_and_then() {
         let result: ServiceResult<i32> = Ok(5);
-        let chained = result.and_then(|x| Ok(x + 1));
+        let chained = result.map(|x| x + 1);
         assert_eq!(chained.unwrap(), 6);
     }
 }

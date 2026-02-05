@@ -66,7 +66,7 @@ fn apply_delete(
     if linewise {
         // Delete entire lines
         let mut deleted = String::new();
-        for line in start.line..=end.line {
+        for _line in start.line..=end.line {
             if let Some(slice) = buffer.line(start.line) {
                 deleted.push_str(slice.as_str().unwrap_or(""));
             }
@@ -277,7 +277,7 @@ mod tests {
     #[test]
     fn test_uppercase() {
         let mut buffer = TextBuffer::from_text(BufferId::new(1), "hello");
-        let result = apply_operator(
+        let _result = apply_operator(
             &mut buffer,
             Operator::Uppercase,
             Position::new(0, 0),
@@ -290,7 +290,7 @@ mod tests {
     #[test]
     fn test_lowercase() {
         let mut buffer = TextBuffer::from_text(BufferId::new(1), "HELLO");
-        let result = apply_operator(
+        let _result = apply_operator(
             &mut buffer,
             Operator::Lowercase,
             Position::new(0, 0),
@@ -303,7 +303,7 @@ mod tests {
     #[test]
     fn test_toggle_case() {
         let mut buffer = TextBuffer::from_text(BufferId::new(1), "HeLLo");
-        let result = apply_operator(
+        let _result = apply_operator(
             &mut buffer,
             Operator::ToggleCase,
             Position::new(0, 0),
@@ -358,7 +358,7 @@ mod tests {
     #[test]
     fn test_operator_clone_copy() {
         let op = Operator::Change;
-        let cloned = op.clone();
+        let cloned = op;
         assert_eq!(op, cloned);
     }
 
@@ -461,7 +461,7 @@ mod tests {
     #[test]
     fn test_case_ops_mixed() {
         let mut buffer = TextBuffer::from_text(BufferId::new(1), "AbC123xYz");
-        let result = apply_operator(
+        let _result = apply_operator(
             &mut buffer,
             Operator::ToggleCase,
             Position::new(0, 0),

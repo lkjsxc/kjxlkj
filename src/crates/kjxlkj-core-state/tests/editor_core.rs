@@ -3,6 +3,8 @@
 //! Tests for editor core behaviors as required by
 //! /docs/todo/current/wave-implementation/editor/README.md
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent, KeyModifiers, Mode};
 use std::path::PathBuf;
@@ -128,8 +130,9 @@ fn test_cursor_never_negative() {
         editor.handle_key(key(KeyCode::Char('h')));
     }
     
-    assert!(editor.cursor().col() >= 0);
-    assert!(editor.cursor().line() >= 0);
+    // Cursor is always valid (col is usize, always >= 0)
+    let _ = editor.cursor().col();
+    let _ = editor.cursor().line();
 }
 
 /// Test: Cursor never exceeds buffer bounds.
@@ -315,7 +318,7 @@ fn test_snapshot_status_line() {
     
     // Status line should contain mode text
     let mode_text = snapshot.status.mode.to_uppercase();
-    assert!(mode_text.contains("NORMAL") || mode_text.len() > 0);
+    assert!(mode_text.contains("NORMAL") || !mode_text.is_empty());
 }
 
 // =============================================================================

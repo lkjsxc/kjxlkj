@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use std::pin::Pin;
 use tokio::process::Command;
 use tokio::sync::mpsc;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 
 /// Git status of a file.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -30,6 +30,7 @@ pub struct GitService {
     /// Service name.
     name: String,
     /// Repository root.
+    #[allow(dead_code)]
     repo_root: Option<PathBuf>,
 }
 

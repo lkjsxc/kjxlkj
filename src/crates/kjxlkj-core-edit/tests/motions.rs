@@ -3,9 +3,11 @@
 //! Tests for motions and operators as required by
 //! /docs/reference/CONFORMANCE_EDITING.md
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_edit::{apply_motion, Motion};
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{BufferId, Cursor, MotionIntent, Position};
+use kjxlkj_core_types::{BufferId, Cursor, MotionIntent};
 
 /// Create a test buffer.
 fn test_buffer(content: &str) -> TextBuffer {

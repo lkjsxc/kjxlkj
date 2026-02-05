@@ -1,5 +1,7 @@
 //! Mode transition tests - comprehensive tests for mode switching.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent, Mode};
 

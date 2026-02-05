@@ -46,9 +46,8 @@ impl UndoHistory {
 
     /// Redo the last undone transaction.
     pub fn redo(&mut self) -> Option<Transaction> {
-        self.redo_stack.pop().map(|tx| {
+        self.redo_stack.pop().inspect(|tx| {
             self.undo_stack.push(tx.clone());
-            tx
         })
     }
 
@@ -258,7 +257,7 @@ mod tests {
         // Push more than MAX_UNDO_HISTORY
         for i in 0..1010 {
             let mut tx = Transaction::new();
-            tx.push(Edit::insert(Position::new(0, 0), &i.to_string()));
+            tx.push(Edit::insert(Position::new(0, 0), i.to_string()));
             history.push(tx);
         }
         

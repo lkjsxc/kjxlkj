@@ -104,7 +104,7 @@ mod tests {
     #[test]
     fn test_position_clone() {
         let pos = Position::new(3, 7);
-        let cloned = pos.clone();
+        let cloned = pos;
         assert_eq!(pos, cloned);
     }
 

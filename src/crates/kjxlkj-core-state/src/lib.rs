@@ -66,7 +66,7 @@ mod tests {
     #[test]
     fn test_editor_state_content_initially_empty() {
         let state = EditorState::new();
-        assert!(state.content().is_empty() || state.content().len() == 0);
+        assert!(state.content().is_empty() || state.content().is_empty());
     }
 
     #[test]

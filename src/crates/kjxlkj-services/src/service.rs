@@ -146,7 +146,7 @@ mod tests {
     #[test]
     fn test_service_status_clone() {
         let status = ServiceStatus::Running;
-        let cloned = status.clone();
+        let cloned = status;
         assert_eq!(status, cloned);
     }
 

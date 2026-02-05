@@ -9,7 +9,6 @@ pub use renderer::TerminalRenderer;
 pub use diff::RenderDiff;
 
 use crossterm::style::Color;
-use kjxlkj_core_ui::EditorSnapshot;
 
 /// Style for rendered content.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -157,7 +156,7 @@ mod tests {
     #[test]
     fn test_style_clone() {
         let style = Style::new().fg(Color::Yellow).bg(Color::Blue);
-        let cloned = style.clone();
+        let cloned = style;
         assert_eq!(style, cloned);
     }
 

@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn test_cursor_clone() {
         let cursor = Cursor::new(5, 5);
-        let cloned = cursor.clone();
+        let cloned = cursor;
         assert_eq!(cursor, cloned);
     }
 

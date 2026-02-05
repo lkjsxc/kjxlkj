@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use std::pin::Pin;
 use tokio::fs;
 use tokio::sync::mpsc;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 
 /// Filesystem service.
 pub struct FsService {

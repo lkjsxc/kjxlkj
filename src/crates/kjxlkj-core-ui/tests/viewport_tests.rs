@@ -131,7 +131,7 @@ fn test_viewport_center() {
     assert!(vp.is_line_visible(50));
     // Line should be near the middle of the viewport
     let middle_offset = 50_i32 - vp.top_line as i32;
-    assert!(middle_offset >= 8 && middle_offset <= 12);
+    assert!((8..=12).contains(&middle_offset));
 }
 
 /// Test: Center near start of buffer.
@@ -210,7 +210,7 @@ fn test_viewport_determinism() {
 #[test]
 fn test_viewport_clone() {
     let vp1 = Viewport::new(10, 20, 5, 80);
-    let vp2 = vp1.clone();
+    let vp2 = vp1;
     
     assert_eq!(vp1, vp2);
 }

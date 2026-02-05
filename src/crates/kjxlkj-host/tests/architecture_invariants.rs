@@ -230,7 +230,7 @@ fn test_undo_redo_consistency() {
 
     // Check initial state
     let initial = state.snapshot();
-    let initial_line_count = initial.buffer.line_count;
+    let _initial_line_count = initial.buffer.line_count;
 
     // Insert text
     state.handle_key(KeyEvent::new(KeyCode::Char('i'), KeyModifiers::NONE));
@@ -326,7 +326,7 @@ fn test_delete_maintains_cursor() {
 
     let snapshot = state.snapshot();
     // Cursor should still be valid
-    let line_len = snapshot.buffer.lines.get(0).map(|l| l.len()).unwrap_or(0);
+    let line_len = snapshot.buffer.lines.first().map(|l| l.len()).unwrap_or(0);
     assert!(snapshot.cursor.col() <= line_len || line_len == 0);
 }
 

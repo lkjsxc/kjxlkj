@@ -9,12 +9,11 @@ pub use event_loop::EventLoop;
 use anyhow::Result;
 use crossterm::terminal;
 use kjxlkj_core_state::EditorState;
-use kjxlkj_input::TerminalInput;
-use kjxlkj_render::TerminalRenderer;
 use std::path::PathBuf;
 
 /// Host configuration.
 #[derive(Debug, Clone)]
+#[derive(Default)]
 pub struct HostConfig {
     /// Initial file to open.
     pub file: Option<PathBuf>,
@@ -22,14 +21,6 @@ pub struct HostConfig {
     pub content: Option<String>,
 }
 
-impl Default for HostConfig {
-    fn default() -> Self {
-        Self {
-            file: None,
-            content: None,
-        }
-    }
-}
 
 /// Terminal host.
 pub struct Host {

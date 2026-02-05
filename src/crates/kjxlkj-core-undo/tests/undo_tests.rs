@@ -99,7 +99,7 @@ fn test_multiple_undo_redo() {
     
     for i in 0..5 {
         let mut tx = Transaction::new();
-        tx.push(Edit::insert(Position::new(0, i), &format!("edit{}", i)));
+        tx.push(Edit::insert(Position::new(0, i), format!("edit{}", i)));
         history.push(tx);
     }
     

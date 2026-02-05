@@ -1,8 +1,8 @@
 //! Visual mode handler.
 
 use crate::handler::{ModeHandler, ModeResult};
-use crate::parser::{ActionKind, OperatorKind, ParseResult, Parser};
-use kjxlkj_core_types::{Intent, KeyCode, KeyEvent, Mode, MotionIntent};
+use crate::parser::{ActionKind, ParseResult, Parser};
+use kjxlkj_core_types::{Intent, KeyCode, KeyEvent, Mode};
 
 /// Visual mode kind.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -321,7 +321,7 @@ mod tests {
     #[test]
     fn test_visual_kind_clone() {
         let kind = VisualKind::Line;
-        let cloned = kind.clone();
+        let cloned = kind;
         assert_eq!(kind, cloned);
     }
 }

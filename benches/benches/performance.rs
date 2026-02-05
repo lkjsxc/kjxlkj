@@ -1,20 +1,19 @@
 //! Performance benchmarks for kjxlkj.
-//!
-//! These benchmarks measure:
+//!\n//! These benchmarks measure:
 //! - Snapshot generation cost vs viewport size
 //! - Rendering cost vs viewport area
 //! - File open time-to-first-snapshot for large inputs
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{BufferId, BufferName, BufferVersion, Cursor, Mode, Position};
+use kjxlkj_core_types::{BufferId, BufferName, BufferVersion, Cursor, Mode};
 use kjxlkj_core_ui::{BufferSnapshot, EditorSnapshot, StatusLine, Viewport};
 
 /// Generate a text buffer with the specified number of lines.
 fn generate_buffer(line_count: usize, line_length: usize) -> TextBuffer {
     let line = "a".repeat(line_length) + "\n";
     let content: String = line.repeat(line_count);
-    TextBuffer::from(&content)
+    TextBuffer::from_text(BufferId::new(1), &content)
 }
 
 /// Generate a buffer snapshot for the given viewport.
@@ -28,11 +27,11 @@ fn generate_buffer_snapshot(
 
     BufferSnapshot::new(
         BufferId::new(1),
-        BufferName::Scratch,
+        BufferName::default(),
         BufferVersion::new(1),
         buffer.line_count(),
         lines,
-        viewport.clone(),
+        *viewport,
         false,
     )
 }
@@ -45,7 +44,7 @@ fn generate_editor_snapshot(
     height: u16,
 ) -> EditorSnapshot {
     let buf_snap = generate_buffer_snapshot(buffer, viewport);
-    let cursor = Cursor::new(Position::new(0, 0));
+    let cursor = Cursor::new(0, 0);
     let status = StatusLine::new(Mode::Normal, "test.txt".to_string(), false, &cursor, buffer.line_count());
 
     EditorSnapshot::new(
@@ -67,7 +66,7 @@ fn benchmark_snapshot_generation(c: &mut Criterion) {
     // Test with various viewport sizes
     for viewport_height in [10, 50, 100, 200].iter() {
         let buffer = generate_buffer(10_000, 80);
-        let viewport = Viewport::new(0, *viewport_height);
+        let viewport = Viewport::new(0, *viewport_height, 0, 80);
 
         group.bench_with_input(
             BenchmarkId::new("viewport_height", viewport_height),
@@ -90,7 +89,7 @@ fn benchmark_snapshot_with_line_length(c: &mut Criterion) {
     // Test with various line lengths
     for line_length in [80, 500, 1000, 5000].iter() {
         let buffer = generate_buffer(1000, *line_length);
-        let viewport = Viewport::new(0, 50);
+        let viewport = Viewport::new(0, 50, 0, 80);
 
         group.bench_with_input(
             BenchmarkId::new("line_length", line_length),
@@ -113,7 +112,7 @@ fn benchmark_full_editor_snapshot(c: &mut Criterion) {
     // Test with various terminal dimensions
     for (width, height) in [(80, 24), (120, 40), (200, 60)].iter() {
         let buffer = generate_buffer(10_000, 80);
-        let viewport = Viewport::new(0, *height as usize);
+        let viewport = Viewport::new(0, *height as usize, 0, *width as usize);
 
         group.bench_with_input(
             BenchmarkId::new("terminal_size", format!("{}x{}", width, height)),
@@ -146,7 +145,7 @@ fn benchmark_large_file_open(c: &mut Criterion) {
             |b, &lc| {
                 b.iter(|| {
                     let buffer = generate_buffer(lc, 80);
-                    let viewport = Viewport::new(0, 50);
+                    let viewport = Viewport::new(0, 50, 0, 80);
                     let snap = generate_buffer_snapshot(&buffer, &viewport);
                     black_box(snap)
                 })
@@ -165,7 +164,7 @@ fn benchmark_viewport_scroll(c: &mut Criterion) {
 
     // Measure snapshot generation at different scroll positions
     for scroll_pos in [0, 1000, 5000, 9000].iter() {
-        let viewport = Viewport::new(*scroll_pos, viewport_height);
+        let viewport = Viewport::new(*scroll_pos, viewport_height, 0, 80);
 
         group.bench_with_input(
             BenchmarkId::new("scroll_position", scroll_pos),

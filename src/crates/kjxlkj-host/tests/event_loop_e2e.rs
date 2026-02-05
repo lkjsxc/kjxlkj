@@ -3,6 +3,8 @@
 //! These tests verify the minimal "event → core → snapshot → render" loop
 //! as specified in `/docs/spec/architecture/runtime.md`.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{KeyCode, KeyEvent, KeyModifiers};
 use kjxlkj_core_ui::EditorSnapshot;
@@ -988,7 +990,7 @@ fn test_end_to_end_G_motion() {
     state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
 
     // Currently at line 2
-    let before = state.snapshot();
+    let _before = state.snapshot();
     
     // G -> go to end (should stay or move)
     state.handle_key(KeyEvent::new(KeyCode::Char('G'), KeyModifiers::NONE));
@@ -1132,7 +1134,7 @@ fn test_end_to_end_insert_bol_I() {
     state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
     
     // l - stay somewhere in line
-    let before_I = state.snapshot();
+    let _before_I = state.snapshot();
     
     // I -> insert at beginning
     state.handle_key(KeyEvent::new(KeyCode::Char('I'), KeyModifiers::NONE));
@@ -1262,7 +1264,7 @@ fn test_end_to_end_o_open_below() {
     state.handle_key(KeyEvent::new(KeyCode::Escape, KeyModifiers::NONE));
 
     let before_o = state.snapshot();
-    let line_count_before = before_o.buffer.line_count;
+    let _line_count_before = before_o.buffer.line_count;
 
     // o -> open line below
     state.handle_key(KeyEvent::new(KeyCode::Char('o'), KeyModifiers::NONE));
@@ -4445,7 +4447,7 @@ fn test_end_to_end_yank_paste_workflow() {
     state.handle_key(KeyEvent::new(KeyCode::Char('p'), KeyModifiers::NONE));
     
     let snapshot = state.snapshot();
-    assert!(snapshot.buffer.lines.len() >= 1);
+    assert!(!snapshot.buffer.lines.is_empty());
 }
 
 /// Test: Delete character under cursor (x).
@@ -12000,8 +12002,8 @@ fn test_end_to_end_suspend() {
     // Ctrl+z suspends the editor (returns to shell)
     state.handle_key(KeyEvent::new(KeyCode::Char('z'), KeyModifiers::CTRL));
     let snapshot = state.snapshot();
-    // May or may not be Normal depending on implementation
-    assert!(snapshot.mode == kjxlkj_core_types::Mode::Normal || true);
+    // Suspend may or may not change mode - just verify snapshot is valid
+    let _ = snapshot.mode;
 }
 
 /// Test: Insert mode Ctrl+o (single command).

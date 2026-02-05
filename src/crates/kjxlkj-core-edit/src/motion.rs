@@ -27,7 +27,7 @@ pub fn apply_motion(
     motion: &Motion,
     cursor: &Cursor,
     buffer: &TextBuffer,
-    viewport_height: usize,
+    _viewport_height: usize,
 ) -> Position {
     let count = motion.count;
     let line = cursor.line();
@@ -260,7 +260,7 @@ fn prev_word_start(buffer: &TextBuffer, pos: Position) -> Position {
                 col = col.saturating_sub(1);
 
                 // Skip whitespace
-                while col > 0 && chars.get(col).map_or(false, |c| c.is_whitespace()) {
+                while col > 0 && chars.get(col).is_some_and(|c| c.is_whitespace()) {
                     col -= 1;
                 }
 
@@ -268,7 +268,7 @@ fn prev_word_start(buffer: &TextBuffer, pos: Position) -> Position {
                 while col > 0
                     && chars
                         .get(col.saturating_sub(1))
-                        .map_or(false, |c| !c.is_whitespace())
+                        .is_some_and(|c| !c.is_whitespace())
                 {
                     col -= 1;
                 }
@@ -336,11 +336,11 @@ fn prev_word_end(buffer: &TextBuffer, pos: Position) -> Position {
             let chars: Vec<char> = s.chars().collect();
 
             // Skip whitespace
-            while col > 0 && chars.get(col).map_or(false, |c| c.is_whitespace()) {
+            while col > 0 && chars.get(col).is_some_and(|c| c.is_whitespace()) {
                 col -= 1;
             }
 
-            if col > 0 || chars.first().map_or(false, |c| !c.is_whitespace()) {
+            if col > 0 || chars.first().is_some_and(|c| !c.is_whitespace()) {
                 return Position::new(line, col);
             }
         }

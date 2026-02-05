@@ -134,7 +134,11 @@ pub struct Parser {
 
 #[derive(Debug, Clone, Copy)]
 enum WaitingFor {
-    FindChar { forward: bool, inclusive: bool },
+    FindChar {
+        #[allow(dead_code)]
+        forward: bool,
+        inclusive: bool,
+    },
     ReplaceChar,
     Mark,
     JumpMark,
@@ -202,7 +206,7 @@ impl Parser {
 
         if let KeyCode::Char(c) = &key.code {
             let result = match waiting {
-                WaitingFor::FindChar { forward, inclusive } => {
+                WaitingFor::FindChar { forward: _, inclusive } => {
                     self.complete_motion(MotionIntent::FindChar {
                         c: *c,
                         inclusive,
@@ -245,14 +249,14 @@ impl Parser {
     }
 
     fn is_same_operator(&self, key: &KeyEvent, op: OperatorKind) -> bool {
-        match (&key.code, op) {
-            (KeyCode::Char('d'), OperatorKind::Delete) => true,
-            (KeyCode::Char('y'), OperatorKind::Yank) => true,
-            (KeyCode::Char('c'), OperatorKind::Change) => true,
-            (KeyCode::Char('>'), OperatorKind::Indent) => true,
-            (KeyCode::Char('<'), OperatorKind::Outdent) => true,
-            _ => false,
-        }
+        matches!(
+            (&key.code, op),
+            (KeyCode::Char('d'), OperatorKind::Delete)
+                | (KeyCode::Char('y'), OperatorKind::Yank)
+                | (KeyCode::Char('c'), OperatorKind::Change)
+                | (KeyCode::Char('>'), OperatorKind::Indent)
+                | (KeyCode::Char('<'), OperatorKind::Outdent)
+        )
     }
 
     fn parse_motion_or_action(&mut self, key: &KeyEvent) -> ParseResult {
@@ -486,7 +490,6 @@ impl Parser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use kjxlkj_core_types::KeyModifiers;
 
     #[test]
     fn test_parse_motion() {
@@ -844,7 +847,7 @@ mod tests {
     #[test]
     fn test_operator_kind_clone() {
         let op = OperatorKind::Change;
-        let cloned = op.clone();
+        let cloned = op;
         assert_eq!(op, cloned);
     }
 

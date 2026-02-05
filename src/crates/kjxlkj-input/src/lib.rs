@@ -32,7 +32,7 @@ impl Default for TerminalInput {
 
 impl InputSource for TerminalInput {
     fn poll_event(&mut self) -> Option<EditorEvent> {
-        use crossterm::event::{poll, read, Event};
+        use crossterm::event::{poll, read};
         use std::time::Duration;
 
         if poll(Duration::from_millis(100)).ok()? {
@@ -55,21 +55,20 @@ mod tests {
 
     #[test]
     fn test_terminal_input_default() {
-        let _input = TerminalInput::default();
+        let _input = TerminalInput;
     }
 
     #[test]
     fn test_input_decoder_exported() {
         let decoder = InputDecoder;
-        // Just verify it's exported
-        assert!(std::mem::size_of_val(&decoder) >= 0);
+        // Verify decoder is zero-sized
+        assert_eq!(std::mem::size_of_val(&decoder), 0);
     }
 
     #[test]
     fn test_decode_event_exported() {
         // Verify decode_event function is exported
         // Can't actually call it without a crossterm event in a unit test
-        assert!(true);
     }
 
     #[test]
@@ -97,7 +96,7 @@ mod tests {
     fn test_terminal_input_multiple_instances() {
         let input1 = TerminalInput::new();
         let input2 = TerminalInput::new();
-        let _input3 = TerminalInput::default();
+        let _input3 = TerminalInput;
         // All instances should be usable
         assert_eq!(std::mem::size_of_val(&input1), std::mem::size_of_val(&input2));
     }

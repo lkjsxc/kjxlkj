@@ -386,9 +386,10 @@ mod tests {
 
     #[test]
     fn test_key_modifiers_shift() {
-        assert!(KeyModifiers::SHIFT.any());
-        assert!(KeyModifiers::SHIFT.shift);
-        assert!(!KeyModifiers::SHIFT.ctrl);
+        let shift_mods = KeyModifiers::SHIFT;
+        assert!(shift_mods.any());
+        assert!(shift_mods.shift);
+        assert!(!shift_mods.ctrl);
     }
 
     #[test]

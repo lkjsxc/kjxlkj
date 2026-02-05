@@ -6,10 +6,10 @@ use kjxlkj_services::{Service, ServiceMessage};
 use std::future::Future;
 use std::pin::Pin;
 use std::process::Stdio;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::io::AsyncWriteExt;
 use tokio::process::{Child, Command};
 use tokio::sync::mpsc;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 
 /// Terminal session ID.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -186,7 +186,7 @@ mod tests {
     #[test]
     fn test_terminal_id_clone() {
         let id = TerminalId::new(5);
-        let cloned = id.clone();
+        let cloned = id;
         assert_eq!(id, cloned);
     }
 

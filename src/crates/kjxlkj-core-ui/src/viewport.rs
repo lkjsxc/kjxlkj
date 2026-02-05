@@ -184,7 +184,7 @@ mod tests {
     #[test]
     fn test_viewport_clone() {
         let vp = Viewport::new(10, 20, 0, 80);
-        let cloned = vp.clone();
+        let cloned = vp;
         assert_eq!(vp, cloned);
     }
 

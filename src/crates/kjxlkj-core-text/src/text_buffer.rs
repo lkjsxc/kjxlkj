@@ -152,11 +152,6 @@ impl TextBuffer {
             .unwrap_or(0)
     }
 
-    /// Get the entire content as a string.
-    pub fn to_string(&self) -> String {
-        self.content.to_string()
-    }
-
     /// Get a rope slice of the content.
     pub fn slice(&self) -> ropey::RopeSlice<'_> {
         self.content.slice(..)
@@ -261,6 +256,12 @@ impl TextBuffer {
     pub fn char_to_line(&self, char_idx: usize) -> usize {
         let idx = char_idx.min(self.content.len_chars());
         self.content.char_to_line(idx)
+    }
+}
+
+impl std::fmt::Display for TextBuffer {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.content)
     }
 }
 

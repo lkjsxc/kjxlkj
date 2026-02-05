@@ -1,5 +1,7 @@
 //! Text object types and detection.
 
+#![allow(non_snake_case)]
+
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::Position;
 
@@ -168,10 +170,10 @@ fn find_pair_object(
     // Find closing bracket (search forward)
     depth = 0;
     let mut close_idx = None;
-    for i in open_idx..chars.len() {
-        if chars[i] == open {
+    for (i, &ch) in chars.iter().enumerate().skip(open_idx) {
+        if ch == open {
             depth += 1;
-        } else if chars[i] == close {
+        } else if ch == close {
             depth -= 1;
             if depth == 0 {
                 close_idx = Some(i);
@@ -212,7 +214,7 @@ fn find_quote_object(
     let chars: Vec<char> = s.chars().collect();
 
     // Find quote boundaries on the same line
-    let mut quotes: Vec<usize> = chars
+    let quotes: Vec<usize> = chars
         .iter()
         .enumerate()
         .filter(|(_, c)| **c == quote)
@@ -474,7 +476,7 @@ mod tests {
     #[test]
     fn test_text_object_kind_clone() {
         let kind = TextObjectKind::Around;
-        let cloned = kind.clone();
+        let cloned = kind;
         assert_eq!(kind, cloned);
     }
 
@@ -507,7 +509,7 @@ mod tests {
     #[test]
     fn test_text_range_clone() {
         let range = TextRange::new(Position::new(0, 0), Position::new(1, 5));
-        let cloned = range.clone();
+        let cloned = range;
         assert_eq!(range, cloned);
     }
 

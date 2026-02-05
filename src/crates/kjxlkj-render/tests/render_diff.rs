@@ -185,8 +185,8 @@ fn test_render_diff_empty() {
     
     let diff = RenderDiff::compute(&snap1, &snap2);
     
-    // Should not crash
-    assert!(diff.changed_lines.is_empty() || diff.changed_lines.len() >= 0);
+    // Should not crash - just check computation succeeded
+    let _ = diff.changed_lines.is_empty();
 }
 
 /// Test: Diff with added lines.

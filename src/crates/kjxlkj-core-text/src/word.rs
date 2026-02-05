@@ -1,5 +1,7 @@
 //! Word boundary detection.
 
+#![allow(non_snake_case)]
+
 /// The kind of word for movement purposes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WordKind {
@@ -215,7 +217,7 @@ mod tests {
     #[test]
     fn test_word_kind_clone() {
         let kind = WordKind::WORD;
-        let cloned = kind.clone();
+        let cloned = kind;
         assert_eq!(kind, cloned);
     }
 
