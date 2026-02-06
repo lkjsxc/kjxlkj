@@ -441,3 +441,127 @@ fn change_to_end_enters_insert() {
     let buf = s.active_buffer().unwrap();
     assert_eq!(buf.text.line_to_string(0).trim(), "hello");
 }
+
+// ── Insert-mode Ctrl-w / Ctrl-u ─────────────────────────────
+
+#[test]
+fn delete_word_before_in_insert() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::EnterInsert(InsertPosition::EndOfLine),
+    );
+    dispatch_intent(&mut s, Intent::DeleteWordBefore);
+    let buf = s.active_buffer().unwrap();
+    // Ctrl-w deletes "world", leaving "hello "
+    assert_eq!(buf.text.line_to_string(0), "hello ");
+}
+
+#[test]
+fn delete_to_line_start_in_insert() {
+    let mut s = setup("hello world");
+    s.mode.transition(Mode::Insert);
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 5),
+    );
+    dispatch_intent(&mut s, Intent::DeleteToLineStart);
+    let buf = s.active_buffer().unwrap();
+    assert!(buf.text.line_to_string(0).starts_with(' '));
+    assert_eq!(s.cursor().col, 0);
+}
+
+// ── WORD motions ────────────────────────────────────────────
+
+#[test]
+fn word_forward_big_w() {
+    let mut s = setup("hello.world foo");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::WORDForward, 1),
+    );
+    // WORD skips "hello.world" as one WORD
+    assert_eq!(s.cursor().col, 12);
+}
+
+#[test]
+fn word_backward_big_b() {
+    let mut s = setup("hello.world foo");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 13),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::WORDBackward, 1),
+    );
+    assert_eq!(s.cursor().col, 12);
+}
+
+#[test]
+fn word_end_big_e() {
+    let mut s = setup("hello.world foo");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::WORDForwardEnd, 1),
+    );
+    assert_eq!(s.cursor().col, 10);
+}
+
+// ── Sentence motions ────────────────────────────────────────
+
+#[test]
+fn sentence_forward_motion() {
+    let mut s = setup("Hello world. Goodbye world.");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::NextSentence, 1),
+    );
+    assert_eq!(s.cursor().col, 13);
+}
+
+#[test]
+fn sentence_backward_motion() {
+    let mut s = setup("Hello. World.");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 10),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::PrevSentence, 1),
+    );
+    assert_eq!(s.cursor().col, 7);
+}
+
+// ── ge / gE motions ────────────────────────────────────────
+
+#[test]
+fn word_backward_end_ge() {
+    let mut s = setup("hello world foo");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 8),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::WordBackwardEnd, 1),
+    );
+    // ge from col 8 (in "world") should go to end of "hello" = col 4
+    assert_eq!(s.cursor().col, 4);
+}
+
+#[test]
+fn word_backward_end_big_ge() {
+    let mut s = setup("hello.x world");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 10),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::WORDBackwardEnd, 1),
+    );
+    // gE from col 10 (in "world") goes to end of "hello.x" = col 6
+    assert_eq!(s.cursor().col, 6);
+}

@@ -27,6 +27,23 @@ pub fn apply_motion(
         MotionKind::WordForward => word_forward(buf, pos, count),
         MotionKind::WordBackward => word_backward(buf, pos, count),
         MotionKind::WordForwardEnd => word_end(buf, pos, count),
+        MotionKind::WordBackwardEnd => {
+            word_end_backward(buf, pos, count)
+        }
+        MotionKind::WORDForward => {
+            big_word_forward(buf, pos, count)
+        }
+        MotionKind::WORDBackward => {
+            big_word_backward(buf, pos, count)
+        }
+        MotionKind::WORDForwardEnd => {
+            big_word_end(buf, pos, count)
+        }
+        MotionKind::WORDBackwardEnd => {
+            big_word_end_backward(buf, pos, count)
+        }
+        MotionKind::NextSentence => sentence_forward(buf, pos, count),
+        MotionKind::PrevSentence => sentence_backward(buf, pos, count),
         MotionKind::NextParagraph => {
             crate::motion_extra::next_paragraph(buf, pos, count)
         }
@@ -189,6 +206,90 @@ fn word_end(
     let mut p = pos;
     for _ in 0..count {
         p = kjxlkj_core_text::word_end_forward(buf, p);
+    }
+    p
+}
+
+fn word_end_backward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::word_end_backward(buf, p);
+    }
+    p
+}
+
+fn big_word_forward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::big_word_start_forward(buf, p);
+    }
+    p
+}
+
+fn big_word_backward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::big_word_start_backward(buf, p);
+    }
+    p
+}
+
+fn big_word_end(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::big_word_end_forward(buf, p);
+    }
+    p
+}
+
+fn big_word_end_backward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::big_word_end_backward(buf, p);
+    }
+    p
+}
+
+fn sentence_forward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::next_sentence(buf, p);
+    }
+    p
+}
+
+fn sentence_backward(
+    buf: &TextBuffer,
+    pos: Position,
+    count: usize,
+) -> Position {
+    let mut p = pos;
+    for _ in 0..count {
+        p = kjxlkj_core_text::prev_sentence(buf, p);
     }
     p
 }

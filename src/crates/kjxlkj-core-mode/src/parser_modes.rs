@@ -11,12 +11,8 @@ pub(crate) fn parse_insert(key: &KeyEvent) -> Intent {
     if key.ctrl {
         return match &key.code {
             KeyCode::Char('h') => Intent::DeleteCharBefore,
-            KeyCode::Char('w') => {
-                Intent::ExCommand(":delete-word-before".into())
-            }
-            KeyCode::Char('u') => {
-                Intent::ExCommand(":delete-to-bol".into())
-            }
+            KeyCode::Char('w') => Intent::DeleteWordBefore,
+            KeyCode::Char('u') => Intent::DeleteToLineStart,
             KeyCode::Char('j') | KeyCode::Char('m') => {
                 Intent::InsertNewline
             }

@@ -1,6 +1,7 @@
 //! Intent dispatch: process parsed intents against editor state.
 
 use crate::dispatch_editing::*;
+use crate::dispatch_editing_extra::*;
 use crate::dispatch_misc::*;
 use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
@@ -32,6 +33,12 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
             dispatch_delete_char_before(state)
         }
         Intent::DeleteCharAt => dispatch_delete_char_at(state),
+        Intent::DeleteWordBefore => {
+            dispatch_delete_word_before(state)
+        }
+        Intent::DeleteToLineStart => {
+            dispatch_delete_to_line_start(state)
+        }
         Intent::Operator(op, motion, count) => {
             dispatch_operator(state, op, motion, count);
         }

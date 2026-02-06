@@ -4,6 +4,7 @@ mod buffer;
 mod grapheme;
 mod snapshot;
 mod word;
+mod word_extra;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{
@@ -12,6 +13,11 @@ pub use grapheme::{
 };
 pub use snapshot::BufferSnapshot;
 pub use word::{
-    is_word_char, word_end_forward, word_start_backward, word_start_forward,
-    CharClass,
+    is_word_char, word_end_forward, word_end_backward,
+    word_start_backward, word_start_forward, CharClass,
+};
+pub use word_extra::{
+    big_word_start_forward, big_word_start_backward,
+    big_word_end_forward, big_word_end_backward,
+    next_sentence, prev_sentence,
 };

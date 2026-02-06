@@ -80,6 +80,10 @@ pub enum Intent {
     DeleteCharBefore,
     /// Delete character at cursor.
     DeleteCharAt,
+    /// Delete word before cursor (Ctrl-w in insert mode).
+    DeleteWordBefore,
+    /// Delete to line start (Ctrl-u in insert mode).
+    DeleteToLineStart,
     /// Execute a motion.
     Motion(MotionKind, usize),
     /// Execute an operator over a motion range.

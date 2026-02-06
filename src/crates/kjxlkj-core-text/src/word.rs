@@ -134,6 +134,53 @@ fn word_end_of_line_backward(buf: &TextBuffer, line: usize, from: usize) -> Posi
     Position::new(line, col)
 }
 
+/// Move to word end backward (`ge` motion).
+pub fn word_end_backward(buf: &TextBuffer, pos: Position) -> Position {
+    let mut line = pos.line;
+    let mut col = if pos.col > 0 { pos.col - 1 } else {
+        if line == 0 { return Position::new(0, 0); }
+        line -= 1;
+        buf.line_len(line).saturating_sub(1).max(0)
+    };
+
+    loop {
+        let chars: Vec<char> = buf.line_to_string(line).chars().collect();
+        if chars.is_empty() {
+            if line == 0 { return Position::new(0, 0); }
+            line -= 1;
+            col = buf.line_len(line).saturating_sub(1).max(0);
+            continue;
+        }
+        col = col.min(chars.len().saturating_sub(1));
+        // Skip backward past current word (non-whitespace of same class)
+        if !is_whitespace(chars[col]) {
+            let cls = char_class(chars[col]);
+            while col > 0 && char_class(chars[col]) == cls {
+                col -= 1;
+            }
+            if char_class(chars[col]) == cls && col == 0 {
+                // At start of line, go to previous line
+                if line == 0 { return Position::new(0, 0); }
+                line -= 1;
+                col = buf.line_len(line).saturating_sub(1).max(0);
+                continue;
+            }
+        }
+        // Skip whitespace backwards
+        while col > 0 && is_whitespace(chars[col]) {
+            col -= 1;
+        }
+        if col == 0 && is_whitespace(chars[col]) {
+            if line == 0 { return Position::new(0, 0); }
+            line -= 1;
+            col = buf.line_len(line).saturating_sub(1).max(0);
+            continue;
+        }
+        // Now at the end of the previous word
+        return Position::new(line, col);
+    }
+}
+
 /// Move to word end (`e` motion).
 pub fn word_end_forward(buf: &TextBuffer, pos: Position) -> Position {
     let max_line = buf.line_count().saturating_sub(1);
