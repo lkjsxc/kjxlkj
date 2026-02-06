@@ -6,6 +6,7 @@ mod commands_display;
 mod commands_file;
 mod commands_substitute;
 mod dispatch;
+mod dispatch_cmdline;
 mod dispatch_editing;
 mod dispatch_editing_extra;
 mod dispatch_jumps;
@@ -19,6 +20,7 @@ mod window_state;
 
 pub use buffer_state::BufferState;
 pub use dispatch::dispatch_intent;
+pub use dispatch_cmdline::handle_cmdline_key;
 pub use registers::RegisterFile;
 pub use window_state::WindowState;
 
@@ -61,8 +63,78 @@ pub struct EditorState {
     /// Change list: positions where changes occurred.
     pub change_list: Vec<(BufferId, Position)>,
     pub change_list_idx: usize,
+    /// Command line state.
+    pub cmdline: CommandLine,
+    /// Editor options/configuration.
+    pub options: EditorOptions,
     next_buffer_id: u64,
     next_window_id: u64,
+}
+
+/// Command-line editing state.
+pub struct CommandLine {
+    /// Current command text being typed.
+    pub text: String,
+    /// Cursor position within the command text.
+    pub cursor: usize,
+    /// Command prefix (: / ?).
+    pub prefix: char,
+    /// History of previously executed commands.
+    pub history: Vec<String>,
+    /// Current position in history navigation.
+    pub history_idx: Option<usize>,
+    /// Saved input text when navigating history.
+    pub saved_text: Option<String>,
+}
+
+/// Editor configuration options.
+pub struct EditorOptions {
+    pub number: bool,
+    pub relative_number: bool,
+    pub wrap: bool,
+    pub ignorecase: bool,
+    pub smartcase: bool,
+    pub hlsearch: bool,
+    pub incsearch: bool,
+    pub expandtab: bool,
+    pub tabstop: usize,
+    pub shiftwidth: usize,
+    pub scrolloff: usize,
+    pub autoindent: bool,
+    pub smartindent: bool,
+}
+
+impl Default for CommandLine {
+    fn default() -> Self {
+        Self {
+            text: String::new(),
+            cursor: 0,
+            prefix: ':',
+            history: Vec::new(),
+            history_idx: None,
+            saved_text: None,
+        }
+    }
+}
+
+impl Default for EditorOptions {
+    fn default() -> Self {
+        Self {
+            number: false,
+            relative_number: false,
+            wrap: true,
+            ignorecase: false,
+            smartcase: true,
+            hlsearch: true,
+            incsearch: true,
+            expandtab: true,
+            tabstop: 4,
+            shiftwidth: 4,
+            scrolloff: 3,
+            autoindent: true,
+            smartindent: false,
+        }
+    }
 }
 
 impl EditorState {
@@ -89,6 +161,8 @@ impl EditorState {
             jump_list_idx: 0,
             change_list: Vec::new(),
             change_list_idx: 0,
+            cmdline: CommandLine::default(),
+            options: EditorOptions::default(),
             next_buffer_id: 1,
             next_window_id: 1,
         }

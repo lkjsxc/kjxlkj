@@ -1,7 +1,7 @@
 //! TUI mode: terminal event loop with rendering.
 
 use anyhow::Result;
-use kjxlkj_core_state::{dispatch_intent, EditorState};
+use kjxlkj_core_state::{dispatch_intent, handle_cmdline_key, EditorState};
 use kjxlkj_core_types::{Mode, Size};
 use kjxlkj_host::TerminalHost;
 use kjxlkj_input::InputDecoder;
@@ -64,7 +64,11 @@ pub async fn run_tui(file: Option<String>) -> Result<()> {
                             state.parser.parse_visual(&core_key)
                         }
                         Mode::Command => {
-                            state.parser.parse_command(&core_key)
+                            let intent = handle_cmdline_key(
+                                &mut state,
+                                &core_key,
+                            );
+                            intent
                         }
                         Mode::Replace => {
                             state.parser.parse_replace(&core_key)
@@ -191,10 +195,20 @@ fn render_frame(
     )?;
     execute!(out, style::SetAttribute(style::Attribute::Reset))?;
 
-    // Message line
+    // Message / command line
     let msg_row = state.size.height.saturating_sub(1);
     execute!(out, cursor::MoveTo(0, msg_row))?;
-    if let Some(ref msg) = state.message {
+    if state.current_mode() == Mode::Command {
+        let cmdline_display = format!(
+            "{}{}",
+            state.cmdline.prefix,
+            state.cmdline.text
+        );
+        let truncated =
+            cmdline_display.chars().take(width).collect::<String>();
+        let pad = width.saturating_sub(truncated.len());
+        write!(out, "{}{}", truncated, " ".repeat(pad))?;
+    } else if let Some(ref msg) = state.message {
         let truncated = msg.chars().take(width).collect::<String>();
         let pad = width.saturating_sub(truncated.len());
         write!(out, "{}{}", truncated, " ".repeat(pad))?;
@@ -203,13 +217,23 @@ fn render_frame(
     }
 
     // Position cursor
-    let cursor_row = win.cursor_line.saturating_sub(win.top_line) as u16;
-    let cursor_col = win.cursor_col as u16;
-    execute!(
-        out,
-        cursor::MoveTo(cursor_col, cursor_row),
-        cursor::Show
-    )?;
+    if state.current_mode() == Mode::Command {
+        let cmd_col = (state.cmdline.cursor + 1) as u16; // +1 for prefix char
+        execute!(
+            out,
+            cursor::MoveTo(cmd_col, msg_row),
+            cursor::Show
+        )?;
+    } else {
+        let cursor_row =
+            win.cursor_line.saturating_sub(win.top_line) as u16;
+        let cursor_col = win.cursor_col as u16;
+        execute!(
+            out,
+            cursor::MoveTo(cursor_col, cursor_row),
+            cursor::Show
+        )?;
+    }
 
     out.flush()?;
     Ok(())

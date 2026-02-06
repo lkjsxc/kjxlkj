@@ -283,7 +283,7 @@ fn parser_big_v_visual_line() {
 fn parser_colon_command() {
     let mut p = KeyParser::new();
     let intent = p.parse_normal(&KeyEvent::char(':'));
-    assert!(matches!(intent, Intent::EnterMode(Mode::Command)));
+    assert!(matches!(intent, Intent::EnterCommandLine(':')));
 }
 
 #[test]

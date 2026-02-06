@@ -196,6 +196,8 @@ pub enum Intent {
     WindowEqualSize,
     /// Window rotate.
     WindowRotate,
+    /// Enter command-line mode with prefix (: / ?).
+    EnterCommandLine(char),
     /// Nothing (no-op).
     Noop,
 }

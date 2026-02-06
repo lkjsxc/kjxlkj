@@ -266,6 +266,15 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
             dispatch_window_equal_size(state)
         }
         Intent::WindowRotate => dispatch_window_rotate(state),
+        Intent::EnterCommandLine(prefix) => {
+            state.cmdline.text.clear();
+            state.cmdline.cursor = 0;
+            state.cmdline.prefix = prefix;
+            state.cmdline.history_idx = None;
+            state.cmdline.saved_text = None;
+            state.mode.transition(Mode::Command);
+            state.parser.reset();
+        }
     }
     // InsertNormal: return to Insert after one normal command.
     if was_insert_normal

@@ -319,7 +319,7 @@ fn parser_colon_enters_command() {
     let mut p = KeyParser::new();
     assert_eq!(
         p.parse_normal(&KeyEvent::char(':')),
-        Intent::EnterMode(Mode::Command)
+        Intent::EnterCommandLine(':')
     );
 }
 
