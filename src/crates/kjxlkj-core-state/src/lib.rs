@@ -8,14 +8,13 @@ mod commands_substitute; mod config;        mod dispatch;
 mod dispatch_case;  mod dispatch_cmdline;   mod dispatch_editing;
 mod dispatch_editing_extra; mod dispatch_insert; mod dispatch_jumps;
 mod dispatch_macros; mod dispatch_marks;    mod dispatch_misc;
-mod dispatch_navigation; mod dispatch_operators; mod dispatch_search;
-mod dispatch_windows; mod dispatch_yank_paste;
+mod dispatch_navigation; mod dispatch_operators; mod dispatch_search; mod dispatch_windows; mod dispatch_yank_paste;
 mod mappings;       mod quickfix;           mod registers;
 mod search_highlight; mod marks_extended;   mod substitute_flags;
 mod buffer_list;    mod visual_block;       mod window_state;
 mod cmdline_completion; mod keybinding_dsl; mod user_command_exec;
 mod user_function_exec; mod debounce_exec;  mod mapping_expansion;
-mod event_automation;   mod script_loader;
+mod event_automation; mod script_loader; mod command_history;
 mod session;        mod session_macros;     pub mod scripting;
 
 pub use autocommands::{AutoCmdTable, AutoEvent}; pub use buffer_state::BufferState;

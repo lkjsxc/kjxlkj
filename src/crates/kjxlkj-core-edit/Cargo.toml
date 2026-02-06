@@ -9,3 +9,4 @@ description = "Editing primitives — operations, motions, text objects"
 [dependencies]
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+regex = "1"

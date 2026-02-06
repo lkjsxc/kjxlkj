@@ -2,7 +2,7 @@
 
 mod motion; mod motion_extra; mod operator;
 mod text_object; mod text_object_delim;
-mod text_objects_ext;
+mod text_objects_ext; mod regex_engine;
 
 pub use motion::{apply_motion, compute_motion_range};
 pub use operator::apply_operator;

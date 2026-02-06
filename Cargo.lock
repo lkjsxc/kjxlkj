@@ -228,6 +228,7 @@ version = "0.1.0"
 dependencies = [
  "kjxlkj-core-text",
  "kjxlkj-core-types",
+ "regex",
 ]
 
 [[package]]
