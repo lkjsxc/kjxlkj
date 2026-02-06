@@ -6,6 +6,8 @@ mod timing_debounce;
 mod mappings_engine;
 mod keybinding_dsl;
 mod layout_acceptance;
+mod keybinding_tables;
+mod leader_keys;
 
 use kjxlkj_core_types::Size;
 

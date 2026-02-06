@@ -6,6 +6,8 @@ mod window_split;
 mod viewport_follow;
 mod long_line_handler;
 mod theme_full;
+mod ui_features;
+mod viewport_integrity;
 
 use kjxlkj_core_types::Size;
 use kjxlkj_core_ui::UiModel;

@@ -8,6 +8,7 @@ mod completion_engine;
 mod insert_newline;
 mod popup_overlay;
 mod cursor_rendering;
+mod mode_keybindings;
 
 pub use parser::KeyParser;
 pub use state::ModeState;
