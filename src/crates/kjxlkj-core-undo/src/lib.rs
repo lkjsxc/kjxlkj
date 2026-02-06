@@ -3,6 +3,7 @@
 pub mod branch;
 mod buffer_lifecycle;
 mod session_persistence;
+mod window_full;
 
 use std::time::Instant;
 

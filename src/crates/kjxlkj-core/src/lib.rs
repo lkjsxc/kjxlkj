@@ -3,6 +3,7 @@
 pub mod explorer_bridge;
 mod buffer_metadata;
 mod lsp_request;
+mod lsp_features;
 
 pub use kjxlkj_core_types as types;
 pub use kjxlkj_core_text as text;
