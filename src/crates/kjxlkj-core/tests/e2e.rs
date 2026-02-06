@@ -14,7 +14,7 @@ fn setup(text: &str) -> EditorState {
 /// Route a key event through the correct parser method based on current mode.
 fn parse_key(state: &mut EditorState, key: &KeyEvent) -> Intent {
     match state.current_mode() {
-        Mode::Normal => state.parser.parse_normal(key),
+        Mode::Normal | Mode::InsertNormal => state.parser.parse_normal(key),
         Mode::Insert => state.parser.parse_insert(key),
         Mode::Visual | Mode::VisualLine | Mode::VisualBlock => {
             state.parser.parse_visual(key)

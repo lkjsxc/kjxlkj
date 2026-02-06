@@ -2,6 +2,7 @@
 
 use crate::dispatch_editing::*;
 use crate::dispatch_editing_extra::*;
+use crate::dispatch_jumps::*;
 use crate::dispatch_misc::*;
 use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
@@ -11,6 +12,10 @@ use kjxlkj_core_types::{Intent, Mode, MotionKind, OperatorKind, Position};
 
 /// Process a single intent, mutating editor state.
 pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
+    // Check if we're in InsertNormal mode (Ctrl-o from insert).
+    let was_insert_normal =
+        state.mode.current() == Mode::InsertNormal;
+    let intent_ref = intent.clone();
     // Record intents for macro recording (except toggle-record itself).
     if state.macro_recording.is_some()
         && !matches!(intent, Intent::MacroToggleRecord(_))
@@ -238,6 +243,12 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         // Change list
         Intent::ChangeListOlder => dispatch_change_older(state),
         Intent::ChangeListNewer => dispatch_change_newer(state),
+    }
+    // InsertNormal: return to Insert after one normal command.
+    if was_insert_normal
+        && !matches!(intent_ref, Intent::EnterMode(_))
+    {
+        state.mode.transition(Mode::Insert);
     }
 }
 

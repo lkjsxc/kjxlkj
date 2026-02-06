@@ -19,7 +19,7 @@ pub(crate) fn parse_insert(key: &KeyEvent) -> Intent {
             KeyCode::Char('t') => Intent::Indent(true, 1),
             KeyCode::Char('d') => Intent::Indent(false, 1),
             KeyCode::Char('o') => {
-                Intent::ExCommand(":insert-normal".into())
+                Intent::EnterMode(Mode::InsertNormal)
             }
             _ => Intent::Noop,
         };

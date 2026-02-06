@@ -74,7 +74,7 @@ fn execute_command(state: &mut EditorState, cmd: &str) -> Result<()> {
                 for c in keys.chars() {
                     let key = kjxlkj_core_types::KeyEvent::char(c);
                     let intent = match state.current_mode() {
-                        Mode::Normal | Mode::OperatorPending => {
+                        Mode::Normal | Mode::OperatorPending | Mode::InsertNormal => {
                             state.parser.parse_normal(&key)
                         }
                         Mode::Insert => state.parser.parse_insert(&key),

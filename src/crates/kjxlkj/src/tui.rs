@@ -56,7 +56,7 @@ pub async fn run_tui(file: Option<String>) -> Result<()> {
                 kjxlkj_input::EditorEvent::Key(key) => {
                     let core_key = convert_key(&key);
                     let intent = match state.current_mode() {
-                        Mode::Normal | Mode::OperatorPending => {
+                        Mode::Normal | Mode::OperatorPending | Mode::InsertNormal => {
                             state.parser.parse_normal(&core_key)
                         }
                         Mode::Insert => state.parser.parse_insert(&core_key),

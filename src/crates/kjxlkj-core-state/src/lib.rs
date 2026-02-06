@@ -6,6 +6,7 @@ mod commands_file;
 mod dispatch;
 mod dispatch_editing;
 mod dispatch_editing_extra;
+mod dispatch_jumps;
 mod dispatch_misc;
 mod dispatch_navigation;
 mod dispatch_operators;

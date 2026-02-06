@@ -13,6 +13,8 @@ pub enum Mode {
     Replace,
     Command,
     OperatorPending,
+    /// One normal command from insert mode (Ctrl-o).
+    InsertNormal,
 }
 
 impl Default for Mode {
@@ -32,6 +34,7 @@ impl std::fmt::Display for Mode {
             Self::Replace => write!(f, "REPLACE"),
             Self::Command => write!(f, "COMMAND"),
             Self::OperatorPending => write!(f, "O-PENDING"),
+            Self::InsertNormal => write!(f, "(insert)"),
         }
     }
 }
@@ -74,7 +77,7 @@ pub enum CursorShape {
 impl Mode {
     pub fn cursor_shape(&self) -> CursorShape {
         match self {
-            Self::Normal | Self::OperatorPending => CursorShape::Block,
+            Self::Normal | Self::OperatorPending | Self::InsertNormal => CursorShape::Block,
             Self::Insert | Self::Command => CursorShape::Bar,
             Self::Visual | Self::VisualLine | Self::VisualBlock => CursorShape::Block,
             Self::Replace => CursorShape::Underline,

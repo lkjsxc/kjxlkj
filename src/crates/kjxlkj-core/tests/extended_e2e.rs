@@ -12,7 +12,7 @@ fn setup(text: &str) -> EditorState {
 
 fn parse_key(s: &mut EditorState, key: KeyEvent) -> Intent {
     match s.current_mode() {
-        Mode::Normal | Mode::OperatorPending => s.parser.parse_normal(&key),
+        Mode::Normal | Mode::OperatorPending | Mode::InsertNormal => s.parser.parse_normal(&key),
         Mode::Insert => s.parser.parse_insert(&key),
         Mode::Visual | Mode::VisualLine | Mode::VisualBlock => s.parser.parse_visual(&key),
         Mode::Command => s.parser.parse_command(&key),
