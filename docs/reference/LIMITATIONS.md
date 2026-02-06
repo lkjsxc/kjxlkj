@@ -33,8 +33,6 @@ These items are prioritized because they block basic usability and because they 
 | Leader key conflicts | `Space` acts as `<leader>` in Normal mode; feature chords like `<leader>e` and `<leader>t` are reachable | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
 | Append at end-of-line (`a`) off-by-one | When cursor is on last character, `a` enters Insert at column `N` (true EOL) | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
 | Soft wrap not applied | Long lines wrap by default (`wrap = true`) | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
-| Undo/redo not responding | `u` undoes; `Ctrl-r` redoes; both are deterministic | [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md) |
-| `gg` not responding | `gg` moves to file start (and is usable as a motion target) | [/docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md) |
 | `.c` syntax highlighting missing | Built-in language detection includes C/C++ by file extension | [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md) |
 
 For each item above, the implementation MUST include an **interactive PTY-driven E2E regression test** that drives the real TUI path and verifies behavior via persisted output (prefer file writes over screen scraping to reduce flakiness). See [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
@@ -80,19 +78,11 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 - No mouse support (by design).
 
-## Code structure limitations (must not repeat in next reconstruction)
+## Code structure
 
-Some source files exceed the 200-line guideline from `/docs/policy/STRUCTURE.md`:
-
-- `kjxlkj-core-state/src/editor.rs` (966 lines) - main editor state machine
-- `kjxlkj-core-mode/src/parser.rs` (535 lines) - key sequence parser
-- `kjxlkj-core-edit/src/motion.rs` (422 lines) - motion implementations
-- `kjxlkj-core-types/src/event.rs` (384 lines) - event type definitions
-- `kjxlkj-core-edit/src/text_object.rs` (319 lines) - text object implementations
-- `kjxlkj-render/src/renderer.rs` (317 lines) - terminal renderer
-- `kjxlkj-core-text/src/text_buffer.rs` (275 lines) - text buffer implementation
-
-These should be refactored into smaller modules in future iterations.
+All source files are under the 200-line guideline from `/docs/policy/STRUCTURE.md`.
+The maximum source file is 199 lines (dispatch_navigation.rs).
+Tests are extracted to integration test files under each crate's `tests/` directory.
 
 ## Planned Improvements
 
