@@ -6,6 +6,7 @@ pub mod contract_checks;
 pub mod profiling;
 pub mod plugin_prevention;
 pub mod file_explorer;
+pub mod event_automation;
 
 use std::collections::HashMap;
 

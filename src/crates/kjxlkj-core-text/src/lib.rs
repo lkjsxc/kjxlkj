@@ -3,6 +3,7 @@
 mod buffer; mod grapheme; mod sentence;
 mod snapshot; mod word; mod word_extra;
 mod large_buffer;
+mod text_objects_full;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{

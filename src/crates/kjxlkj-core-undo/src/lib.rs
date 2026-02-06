@@ -2,6 +2,7 @@
 
 pub mod branch;
 mod buffer_lifecycle;
+mod session_persistence;
 
 use std::time::Instant;
 

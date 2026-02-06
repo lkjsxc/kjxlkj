@@ -4,6 +4,7 @@ mod viewport_wrap;
 mod layout_invariants;
 mod window_split;
 mod viewport_follow;
+mod long_line_handler;
 
 use kjxlkj_core_types::Size;
 use kjxlkj_core_ui::UiModel;
