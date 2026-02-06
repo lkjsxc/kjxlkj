@@ -241,6 +241,17 @@ Search behavior in this conformance target is:
 | `untested()` / `not_implemented()` | Lists gaps in testing and implementation |
 | `build_normal_coverage()` | 35+ normal-mode keybindings mapped with descriptions |
 
+### Popup and Overlay Management (`popup_overlay.rs` — core-mode)
+
+| Aspect | Status |
+| --- | --- |
+| `PopupState` | State for completion/hover/signature/context/wildmenu/command-palette popups |
+| `show()` / `hide()` | Show items with auto-select first, hide and clear |
+| `select_next()` / `select_prev()` | Navigate selection with scroll offset tracking |
+| `visible_items()` | Return windowed slice respecting max_visible and scroll_offset |
+| `OverlayManager` | Layered popup stack with open/close_kind/close_all |
+| `compute_popup_rect()` | Position popup by anchor (Cursor/TopLeft/Center/CmdLine) with screen bounds |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

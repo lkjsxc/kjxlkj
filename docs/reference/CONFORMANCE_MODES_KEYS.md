@@ -319,6 +319,35 @@ At end of line, typed characters are inserted rather than replacing.
 | `resolve_mapping()` | Resolves through recursive mappings with depth limit |
 | Noremap | Non-recursive mappings stop after first resolution |
 
+### UI Views and Tabs (`ui_views.rs` — core-edit)
+
+| Aspect | Status |
+| --- | --- |
+| `ViewKind` | Buffer / Terminal / Explorer / Help / Preview / QuickFix / LocationList / Empty |
+| `View` | Typed view with id, kind, active flag + buffer/terminal/explorer constructors |
+| `TabPage` | Ordered view collection with add/remove |
+| `ViewManager` | Multi-tab view management with create_view/close_view/new_tab/active_view |
+| `tab_line_label()` | Format tab label with view count indicator |
+
+### Terminal Pane Management (`terminal_full.rs` — service-terminal)
+
+| Aspect | Status |
+| --- | --- |
+| `TerminalPane` | Pane with resize and scroll region support |
+| `PaneManager` | Create/close/get/set_active/list panes |
+| `TmuxState` / `TmuxAction` | Tmux session state and action dispatch (8 variants) |
+| `map_tmux_key()` | Map key names to tmux key sequences |
+| `scrollback_capacity()` | Compute scrollback buffer size with 10K cap |
+
+### Contracts System (`contracts.rs` — core-types)
+
+| Aspect | Status |
+| --- | --- |
+| `ContractChecker` | Collect violations (non-strict) or panic (strict mode) |
+| `require()` / `ensure()` / `invariant()` | Precondition / postcondition / invariant enforcement |
+| `Violation` | Structured record with level, module, message, Display impl |
+| `in_range()` / `non_empty()` / `valid_buffer_id()` / `within_limit()` | Contract helper predicates |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

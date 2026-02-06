@@ -277,3 +277,44 @@ When reporting or logging issues, capture:
 - the spec reference (exact `/docs/spec/...` document)
 - a minimal reproduction (prefer a headless script when possible)
 - expected vs actual behavior
+
+### Git Full Integration
+
+- `parse_diff()` only handles unified diff format; does not parse combined/merge diffs.
+- `parse_log()` expects specific `--format` output; arbitrary log formats not supported.
+- `BlameEntry` is a structural placeholder — no actual `git blame` subprocess invocation.
+- `compute_signs()` maps hunks to gutter signs but does not handle overlapping ranges.
+
+### Terminal Pane Management
+
+- `TerminalPane` resize is dimension-only — no actual PTY resize signal (SIGWINCH) sent.
+- `PaneManager` tracks panes in-memory only; no persistence across sessions.
+- `TmuxAction` is a dispatch enum — actual tmux binary communication not implemented.
+- `scrollback_capacity()` caps at 10,000 lines; no configurable override.
+
+### UI Views and Tabs
+
+- `ViewManager` does not enforce maximum tab count; unbounded tab creation possible.
+- `close_view()` removes from all tabs — no per-tab close semantics.
+- No view serialization for session restore.
+
+### Popup and Overlay Management
+
+- `PopupState` supports single-column item lists only; no multi-column completion.
+- `OverlayManager` uses stack ordering — no explicit z-index control.
+- Popup positioning does not account for existing overlapping popups.
+- `compute_popup_rect()` uses fixed popup dimensions; no dynamic sizing from content.
+
+### Notification Dispatch
+
+- `Dispatcher` stores notifications in a Vec — no bounded ring buffer for memory control.
+- `gc()` must be called explicitly; no automatic timer-based cleanup.
+- No notification persistence across editor restarts.
+- Severity ordering uses Ord; custom filtering strategies not supported.
+
+### Contracts System
+
+- `ContractChecker` is a runtime tool only; no compile-time contract enforcement.
+- Strict mode panics immediately — no structured error recovery path.
+- `valid_buffer_id()` only checks non-zero; does not validate against actual buffer registry.
+- Contract violations are stored in a Vec with no deduplication.

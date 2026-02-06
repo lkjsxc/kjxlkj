@@ -636,6 +636,28 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `expand()` | Substitutes `<args>`, `<q-args>`, `<bang>` in replacement |
 | `parse_command_def()` | Parses `:command` arguments into definition |
 
+### Notification Dispatch (`notification_dispatch.rs` — services)
+
+| Aspect | Status |
+| --- | --- |
+| `Dispatcher` | Route notifications with severity filtering, auto-dismiss, max-visible limit |
+| `Severity` | Debug / Info / Warning / Error with Ord ordering |
+| `NotifySource` | Editor / Lsp / Plugin / Git / System source classification |
+| `dismiss()` / `dismiss_source()` | Dismiss individual or by source |
+| `gc()` | Garbage-collect old notifications past auto_dismiss_ms |
+| `format_notification()` | Formats notification with severity prefix [D]/[I]/[W]/[E] |
+
+### Git Full Integration (`git_full.rs` — service-git)
+
+| Aspect | Status |
+| --- | --- |
+| `parse_diff()` | Parse unified diff format into DiffHunks with DiffLines |
+| `parse_hunk_header()` | Extract line ranges from @@ hunk headers |
+| `parse_log()` | Parse git log output into LogEntry records |
+| `BlameEntry` / `BranchInfo` | Structured blame and branch metadata |
+| `compute_signs()` | Map diff hunks to gutter GitSign indicators |
+| `count_changes()` | Aggregate added/removed line counts |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

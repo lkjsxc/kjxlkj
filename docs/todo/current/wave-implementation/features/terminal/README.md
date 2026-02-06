@@ -27,9 +27,10 @@ Implement integrated terminal panes and PTY lifecycle management.
   - TerminalConfig with shell, layout, start_insert, persist
   - TerminalService with spawn/resize/write/close/toggle/send_text
 - [x] Minimal slice: implement one PTY lifecycle end-to-end with tests.
-- [ ] Full conformance: implement all terminal feature docs (tmux, WM integration, etc.).
+- [x] Full conformance: implement all terminal feature docs (tmux, WM integration, etc.).
   - DAP debugging: DapState, Breakpoint, BreakpointKind, StackFrame, Variable, VariableScope, DapSession
   - tmux integration: TmuxIntegration with passthrough support
-  - 55 tests total
-- [ ] Update conformance and limitations docs when user-visible.
+  - terminal_full.rs: PaneId, TerminalPane, PaneManager, TmuxState, TmuxAction, map_tmux_key, scrollback_capacity
+  - 55+ tests total
+- [x] Update conformance and limitations docs when user-visible.
 

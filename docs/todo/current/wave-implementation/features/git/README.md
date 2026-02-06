@@ -24,7 +24,7 @@ Implement built-in git integration as a native feature (no plugins).
   - FileStatus enum (Untracked, Modified, Added, Deleted, Renamed, Unmodified)
   - RepoStatus with branch, ahead/behind, staged/unstaged/untracked
   - FileChange, DiffHunk, BlameLine, GitSign types
-- [ ] Full conformance: implement all git feature documents.
+- [x] Full conformance: implement all git feature documents.
   - [x] Branch indicator in statusline (BranchInfo.display())
   - [x] File change indicators in file explorer (FileIndicator)
     - FileIndicator enum (Modified/Added/Deleted/Renamed/Untracked/Conflicted/Ignored) with symbol()
@@ -35,5 +35,6 @@ Implement built-in git integration as a native feature (no plugins).
   - [x] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
     - DiffAlgorithm (Myers/Patience/Histogram), DiffLayout (Unified/SideBySide/Inline)
     - DiffView with count_added()/count_removed()
-- [ ] Update conformance and limitations docs when user-visible.
+  - [x] git_full.rs: DiffHunk/DiffLine/LogEntry/BlameEntry/BranchInfo, parse_diff, parse_log, GitSign, compute_signs
+- [x] Update conformance and limitations docs when user-visible.
 
