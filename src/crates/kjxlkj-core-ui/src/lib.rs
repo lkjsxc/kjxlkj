@@ -6,7 +6,10 @@ pub mod cursor_state;
 pub mod float_window;
 pub mod mode_config;
 pub mod notification_queue;
+pub mod popup_menu;
+pub mod statusline;
 pub mod theme;
+pub mod view_tree;
 
 use kjxlkj_core_types::{BufferId, Mode, Size, WindowId};
 

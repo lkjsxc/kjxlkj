@@ -2,6 +2,7 @@
 
 pub mod dap;
 pub mod runtime;
+pub mod contract_checks;
 
 use std::collections::HashMap;
 
