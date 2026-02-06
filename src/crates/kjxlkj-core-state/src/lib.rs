@@ -16,6 +16,7 @@ mod dispatch_cmdline;
 mod dispatch_editing;
 mod dispatch_editing_extra;
 mod dispatch_jumps;
+mod dispatch_macros;
 mod dispatch_misc;
 mod dispatch_navigation;
 mod dispatch_operators;

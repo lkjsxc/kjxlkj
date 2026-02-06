@@ -49,7 +49,7 @@ Implement the Ex command surface, including:
   - accepts the specified grammar - implemented (CommandParser)
   - reports errors deterministically
   - separates parsing from execution - implemented
-- [ ] Define range/address resolution as a reusable component.
+- [x] Define range/address resolution as a reusable component.
 - [x] Define command registry and completion model boundaries.
 
 ## Minimal conformance slice (sub-wave)

@@ -42,7 +42,7 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
   - [x] Ctrl-o (execute one normal command)
   - [ ] Completion integration
   - [ ] Autopairs
-  - [ ] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
+  - [x] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 
 ### D. Conformance updates
 
