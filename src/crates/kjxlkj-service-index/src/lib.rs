@@ -1,5 +1,7 @@
 //! Index service — file indexing, symbol search, workspace scanning, fuzzy finder.
 
+mod highlight_groups;
+
 use std::path::PathBuf;
 
 /// An indexed file entry.

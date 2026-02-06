@@ -2,6 +2,7 @@
 
 mod buffer; mod grapheme; mod sentence;
 mod snapshot; mod word; mod word_extra;
+mod large_buffer;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{

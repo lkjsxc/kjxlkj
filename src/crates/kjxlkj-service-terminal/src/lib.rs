@@ -1,5 +1,7 @@
 //! Terminal/PTY service — embedded terminal emulation.
 
+mod terminal_emulator;
+
 use kjxlkj_core_types::Size;
 
 /// Unique identifier for a terminal instance.
