@@ -54,6 +54,16 @@ impl BufferSnapshot {
     pub fn line(&self, offset: usize) -> Option<&str> {
         self.lines.get(offset).map(|s| s.as_str())
     }
+
+    /// Get a horizontal slice of a line for no-wrap mode (viewport-bounded).
+    /// Returns only the visible portion of the line from left_col within width.
+    pub fn line_slice(&self, offset: usize, left_col: usize, width: usize) -> Option<String> {
+        let line = self.lines.get(offset)?;
+        let chars: Vec<char> = line.chars().collect();
+        let start = left_col.min(chars.len());
+        let end = (left_col + width).min(chars.len());
+        Some(chars[start..end].iter().collect())
+    }
 }
 
 #[cfg(test)]
