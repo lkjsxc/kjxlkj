@@ -22,7 +22,7 @@ Implement viewport model and cursor-follow invariants.
 
 - [x] Implement deterministic vertical follow for `wrap = false`.
 - [x] Implement deterministic horizontal follow for `wrap = false`.
-- [ ] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture:
+- [x] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture: — done: `viewport_wrap.rs` with DisplayRow, DisplayMap, compute_display_rows(), follow_cursor_wrap()
   - [wrap/README.md](wrap/README.md)
 
 ### C. Long-line stability (user-reported rough edge)

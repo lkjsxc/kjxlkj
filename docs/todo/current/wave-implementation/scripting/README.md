@@ -54,7 +54,7 @@ Implement the scripting surface defined by the spec (without introducing plugins
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full mapping and automation spec subtree.
+- [x] Implement the full mapping and automation spec subtree. — done: mapping_expansion.rs (recursive expansion), event_automation.rs (event dispatch), script_loader.rs (file parsing)
 - [x] Ensure recursion/plug mappings are handled exactly as specified (or recorded as limitations). — done: `mapping_expansion.rs` MAX_DEPTH=100 recursion guard, prefix match
 
 ## Tests (normative outputs)

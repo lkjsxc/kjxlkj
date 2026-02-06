@@ -50,7 +50,7 @@ Implement the runtime model and crate topology that everything else depends on:
   - deterministic
   - test-backed
   - compatible with the async-first runtime model
-- [ ] Implement at least one supervised service (filesystem or terminal) end-to-end, including:
+- [x] Implement at least one supervised service (filesystem or terminal) end-to-end, including: — done: `supervisor.rs` with ServiceState, SupervisorConfig, HealthStatus, RestartDecision, compute_backoff(), 7 tests
   - request/response framing
   - error surfaces visible to the editor core
   - shutdown and cleanup semantics

@@ -91,6 +91,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Mapping expansion (`mapping_expansion.rs`) handles recursive expansion with MAX_DEPTH=100 guard and prefix matching but is not connected to the key parser dispatch.
 - Accessibility checks (`accessibility.rs`) verify WCAG 2.1 contrast ratios and focus indicators but are not enforced at render time.
 - Profiling (`profiling.rs`) supports span timing and counters but is not instrumented into the core loop or service layer.
+- Event automation (`event_automation.rs`) dispatches autocmd handlers deterministically but is not called automatically from buffer/mode transitions.
+- Script loader (`script_loader.rs`) parses script files into ScriptLine variants but does not integrate with filesystem I/O or the `:source` command dispatch.
+- Keyboard layout (`keyboard_layout.rs`) supports Dvorak/Colemak/Workman remapping with hjkl preservation but does not auto-detect the system layout.
+- Viewport wrap model (`viewport_wrap.rs`) computes display rows and cursor-follow for `wrap = true` but is not connected to the render pipeline.
+- Service supervisor (`supervisor.rs`) tracks health, restart policy, and exponential backoff but is not wired into the tokio runtime service spawning.
+- Extended text objects (`text_objects_ext.rs`) implement sentence, paragraph, and argument objects but the argument text object only works on single lines.
 - Notification queue supports priority, dedup, and timeout but is not rendered in the TUI yet.
 - Mode transition validation table exists but is not enforced at runtime (transitions are allowed unconditionally).
 - UI component model (Rect, LayoutNode, standard_layout) exists for deterministic layout but is not connected to the renderer.

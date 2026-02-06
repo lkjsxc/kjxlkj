@@ -321,6 +321,62 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `Profiler` | Enable/disable profiling, begin_span/end_span/count/report/reset |
 | `report()` | Aggregate span durations and counter values into summary |
 
+## Event automation types
+
+| Component | Behavior |
+|---|---|
+| `EventFired` | Result of firing an event: event type, filename, collected commands |
+| `fire_event()` | Collect matching autocommand handlers for event + filename pattern |
+| `fire_event_chain()` | Fire a sequence of events and collect all resulting commands |
+| `has_handler_for()` | Check if any handler is registered for event + filename |
+| `parse_spec_event()` | Map spec event names (buffer_new, insert_enter, etc.) to AutoEvent variants |
+
+## Script loader types
+
+| Component | Behavior |
+|---|---|
+| `ScriptLine` | Parsed line: Blank / Comment / SetOption / Mapping / AutoCmd / ExCommand |
+| `parse_script_line()` | Parse a single script line into ScriptLine variant |
+| `parse_script()` | Parse entire script file into Vec of ScriptLine |
+| `execute_script_lines()` | Execute parsed script, counting commands and collecting errors |
+
+## Keyboard layout types
+
+| Component | Behavior |
+|---|---|
+| `KeyboardLayout` | Qwerty / Dvorak / Colemak / Workman / Custom layout enum |
+| `LayoutRemapper` | Layout-aware key remapper with preserve_hjkl option |
+| `parse_layout()` | Parse layout name string to KeyboardLayout enum |
+| `dvorak_remaps()` | QWERTY-position hjkl remapping for Dvorak (d→h, h→j, t→k, n→l) |
+
+## Viewport wrap types
+
+| Component | Behavior |
+|---|---|
+| `DisplayRow` | Display row referencing buffer line, wrap offset, and column count |
+| `DisplayMap` | Collection of display rows with lookup by buffer position |
+| `compute_display_rows()` | Compute display rows from line widths and viewport width |
+| `effective_scrolloff()` | Clamp scrolloff to half-viewport per spec invariants |
+| `follow_cursor_wrap()` | Cursor-follow algorithm for wrap model — adjust top_line |
+
+## Supervisor types
+
+| Component | Behavior |
+|---|---|
+| `HealthStatus` | Healthy / Degraded / Failed / Stopped service health |
+| `RestartDecision` | Restart / GiveUp / Backoff(ms) decision from failure |
+| `SupervisorConfig` | max_restarts, backoff_base_ms, backoff_max_ms configuration |
+| `ServiceState` | Tracked service with name, status, restart_count, uptime |
+| `compute_backoff()` | Exponential backoff with cap for restart delay |
+
+## Extended text object types
+
+| Component | Behavior |
+|---|---|
+| `find_sentence()` | Sentence text object with `.`/`!`/`?` boundary detection |
+| `find_paragraph_ext()` | Paragraph text object with blank-line boundary detection |
+| `find_argument()` | Function argument text object between `,` and `(`/`)` boundaries |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:
