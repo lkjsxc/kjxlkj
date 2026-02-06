@@ -27,6 +27,6 @@ Implement configuration options that affect modes and mode behavior.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

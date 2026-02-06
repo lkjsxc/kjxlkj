@@ -391,6 +391,48 @@ When reporting or logging issues, capture:
 - `partial_matches()` returns all prefix matches — no ranking or priority.
 - Leader timeout (1000ms) is not enforced at runtime — requires integration with input timing.
 
+### FS Directory Listing
+
+- `list_directory()` builds listing from in-memory data — no actual filesystem I/O.
+- `sort_entries()` sorts entire listing at once — no lazy or streaming sort for large directories.
+- `max_children_check()` returns a boolean — no truncation or pagination of large listings.
+- `is_hidden()` only checks dot-prefix — no platform-specific hidden file attributes.
+
+### Command-Line Window
+
+- `CmdlineWindowState` stores history as `Vec<String>` — no shared history with command-line mode.
+- `render_cmdline_window()` returns strings — not wired to TUI rendering cells.
+- Only single-character prompts supported (`:`, `/`, `?`).
+- No syntax highlighting or command completion within the command-line window.
+
+### Streaming IO
+
+- `StreamReader` processes chunks in memory — no actual async I/O integration.
+- `estimate_line_count()` uses fixed 40 bytes/line — not adaptive to actual content.
+- `StreamConfig::max_file_size` is 1GB — files larger than this are rejected.
+- No streaming write support — only read path is modeled.
+
+### Profiling Workflow
+
+- `compute_stats()` requires pre-collected samples — no live instrumentation.
+- `format_report()` produces plain text — no JSON/CSV export for automation.
+- `meets_budget()` uses simple threshold comparison — no trend detection or regression analysis.
+- Profiling targets are predefined — no custom target registration.
+
+### UX Coverage
+
+- `build_normal_coverage()` is statically defined — no dynamic discovery from key parser.
+- Coverage entries track tested/documented booleans — no link to specific test names.
+- `keyboard_only_check()` verifies entries exist — does not verify actual runtime behavior.
+- Only Normal and Insert mode coverage are pre-built — Visual/Command/Replace modes need manual registration.
+
+### Feature Reachability
+
+- `define_core_features()` is a static list — no dynamic discovery from the crate graph.
+- `check_reachability()` only checks if entry points are defined — does not verify runtime wiring.
+- `EntryKind::MouseAction` entries exist as placeholders — no mouse support is implemented.
+- Feature test status is manually set — no integration with test runner results.
+
 ### Feature Integration
 
 - `validate_scenario()` is a structural dry-run only — no actual execution.

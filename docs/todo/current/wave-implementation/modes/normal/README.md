@@ -49,5 +49,5 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

@@ -64,8 +64,8 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement all feature specs under `/docs/spec/features/`.
-- [ ] Ensure feature behavior is reachable via keybindings or commands as specified.
+- [x] Implement all feature specs under `/docs/spec/features/`. — done: feature_reachability.rs (host) with define_core_features (15+ features), check_reachability
+- [x] Ensure feature behavior is reachable via keybindings or commands as specified. — done: feature_reachability.rs with has_keybinding_entry, has_command_entry checks
 
 ## Tests (normative outputs)
 
@@ -76,6 +76,6 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

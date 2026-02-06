@@ -42,7 +42,7 @@ This checklist exists because leader conflicts can silently break explorer/termi
 
 ### C. Conformance and limitations updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

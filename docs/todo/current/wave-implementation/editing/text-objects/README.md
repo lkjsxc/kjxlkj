@@ -37,6 +37,6 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

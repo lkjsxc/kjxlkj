@@ -51,7 +51,7 @@ This bug class is often an interactive-input decode issue rather than a core edi
   - Fixed: added Ctrl-j/Ctrl-m support to `parse_insert_key` in editor.rs.
 - [x] Fix the root cause and add a regression test that fails on the prior behavior. — done: `insert_newline.rs` with NewlineResult, AutoIndentMode (None/CopyIndent/SmartIndent), insert_newline, open_line, should_increase/decrease_indent
   - Added tests: `test_insert_ctrl_j_newline`, `test_insert_ctrl_m_newline`, `test_insert_rapid_newlines_200`.
-- [ ] Update conformance/limitations docs as needed:
+- [x] Update conformance/limitations docs as needed: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
   - Ctrl-j and Ctrl-m were already documented in CONFORMANCE_MODES_KEYS.md.

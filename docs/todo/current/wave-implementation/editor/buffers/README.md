@@ -17,4 +17,4 @@ Implement the buffer model and buffer lifecycle invariants.
 - [x] Minimal slice: implement open/edit/write for one buffer with tests.
 - [x] Full conformance: implement all buffer behaviors defined by the spec and command subtrees.
   - buffer_full.rs: BufferType (Normal/Scratch/Help/QuickFix/Terminal/Prompt/Popup), BufferFlags, BufferInfo, AlternateTracker (switch_to/swap), filter_listed, find_by_name, modified_count
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch

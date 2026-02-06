@@ -40,6 +40,6 @@ Implement operators, operator-pending behavior, and operator modifiers.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

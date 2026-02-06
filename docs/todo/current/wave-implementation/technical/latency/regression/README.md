@@ -59,6 +59,6 @@ Targets MUST be expressed in a way that is stable under CI variance:
   - the reproduction probe (link)
   - the observed behavior
   - whether the mitigation is “fix” or “explicit limitation/degradation”
-- [ ] Update user-visible limitations when behavior is intentionally degraded:
+- [x] Update user-visible limitations when behavior is intentionally degraded: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

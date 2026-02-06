@@ -35,7 +35,7 @@ This is a common off-by-one failure when mixing end-exclusive (Normal) and end-i
 
 ### C. Conformance and limitations updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (if user-visible drift existed)
 

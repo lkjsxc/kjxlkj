@@ -478,3 +478,70 @@ At end of line, typed characters are inserted rather than replacing.
 | `LeaderConfig` | Default leader key (Space), timeout (1000ms) |
 | `LeaderBinding` / `LeaderRegistry` | Leader chord binding and resolution (bind/resolve/partial_matches) |
 | `default_leader_bindings()` | 17 default bindings: find, buffer, git, LSP, terminal, explorer, etc. |
+
+### FS Directory Listing (`fs_directory.rs` — service-fs)
+
+| Aspect | Status |
+| --- | --- |
+| `DirEntry` | Name, is_dir, size, hidden flags per filesystem entry |
+| `SortOrder` | Name / NameDesc / Size / SizeDesc / Type / TypeDesc sorting |
+| `DirListing` | Path, entries, truncated flag for directory listing results |
+| `sort_entries()` | Sort by criteria with dirs-first ordering |
+| `filter_hidden()` / `is_hidden()` | Dot-file filtering |
+| `max_children_check()` | Large directory guard |
+
+### Command-Line Window (`cmdline_window.rs` — core-edit)
+
+| Aspect | Status |
+| --- | --- |
+| `CmdlineWindowState` | History, cursor position, prompt character, active flag |
+| `CmdlineViewport` | Viewport state for command-line window (top_line, visible_lines, width) |
+| `open()` / `close()` | Open with history, close returns selected command |
+| `move_cursor()` / `edit_line()` | Cursor navigation and line editing |
+| `follow_cmdline_cursor()` | Viewport follow for command-line window |
+| `render_cmdline_window()` | Render visible lines with prompt prefix |
+
+### Streaming IO (`streaming_io.rs` — core-text)
+
+| Aspect | Status |
+| --- | --- |
+| `StreamState` | Idle / Reading / Complete / Error state machine |
+| `ReadChunk` | Data chunk with offset and is_last flag |
+| `StreamConfig` | Chunk size (64KB default), max file size (1GB default) |
+| `StreamReader` | Chunk-based file reading with progress tracking |
+| `validate_file_size()` | File size validation against limit |
+| `estimate_line_count()` | Line count estimation from byte count |
+
+### Profiling Workflow (`profiling_workflow.rs` — services)
+
+| Aspect | Status |
+| --- | --- |
+| `ProfileTarget` | Startup / FileOpen / Keystroke / Scroll / Resize / Render / FullSession |
+| `ProfileConfig` | Target, iterations (100), warmup (10), output path |
+| `ProfileResult` | Samples with min/max/avg/p95 statistics |
+| `compute_stats()` | Statistical computation from sample data |
+| `format_report()` | Human-readable profiling report |
+| `meets_budget()` / `default_budgets()` | Latency budget checking (16ms keystroke, 8ms scroll, etc.) |
+
+### UX Coverage (`ux_coverage.rs` — input)
+
+| Aspect | Status |
+| --- | --- |
+| `CoverageEntry` | Key, action, tested/documented flags, mode |
+| `CoverageSummary` | Total/tested/documented counts with gap list |
+| `build_normal_coverage()` | 30+ Normal-mode key coverage entries |
+| `build_insert_coverage()` | Insert-mode key coverage entries |
+| `compute_summary()` | Coverage summary statistics |
+| `find_untested()` / `find_undocumented()` | Gap detection |
+| `keyboard_only_check()` | Verify keyboard-only accessibility invariant |
+
+### Feature Reachability (`feature_reachability.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `FeatureSpec` | Named feature with entry points and test flag |
+| `EntryKind` | Keybinding / ExCommand / LeaderChord / MouseAction |
+| `ReachabilityReport` | Features with reachable/unreachable counts |
+| `define_core_features()` | 15+ core features (open, save, quit, search, undo, etc.) |
+| `check_reachability()` | Feature reachability analysis |
+| `has_keybinding_entry()` / `has_command_entry()` | Entry point type checks |

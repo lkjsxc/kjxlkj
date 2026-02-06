@@ -28,5 +28,5 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
   - Resize modes: ResizeMode enum
   - window_full.rs: WindowOptions, SignColumn, CloseGuard, check_close_guard, WindowSnapshot, WindowOptionStore
   - 305+ tests total
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

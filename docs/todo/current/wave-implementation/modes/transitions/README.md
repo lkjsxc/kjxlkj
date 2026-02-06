@@ -27,6 +27,6 @@ Implement mode transition rules and invariant enforcement across transitions.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

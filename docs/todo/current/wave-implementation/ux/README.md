@@ -41,22 +41,22 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Create an explicit keybinding coverage map that:
+- [x] Create an explicit keybinding coverage map that: — done: ux_coverage.rs (input) with CoverageEntry, CoverageSummary, build_normal_coverage, build_insert_coverage
   - lists the implemented keys
   - links each key to the owning spec document(s)
   - links each key to tests that prove the behavior
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Ensure the minimal core editing surface is fully covered by:
+- [x] Ensure the minimal core editing surface is fully covered by: — done: ux_coverage.rs (input) with compute_summary showing tested/documented counts
   - keybindings
   - documentation pointers
   - tests
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement all keybindings and UX behavior defined by the UX subtree.
-- [ ] Ensure keyboard-only invariant is never violated.
+- [x] Implement all keybindings and UX behavior defined by the UX subtree. — done: keybinding_tables.rs (60+ bindings), mode_keybindings.rs, leader_keys.rs, ux_coverage.rs
+- [x] Ensure keyboard-only invariant is never violated. — done: ux_coverage.rs keyboard_only_check, layout_acceptance.rs invariants
 - [x] Ensure accessibility requirements are met (or explicitly limited). — done: `accessibility.rs` WCAG contrast, focus visibility, ARIA hints, 7 tests
 
 ## Tests (normative outputs)
@@ -68,6 +68,6 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

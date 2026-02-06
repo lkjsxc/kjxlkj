@@ -57,7 +57,7 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Integration tests (required)
 
-- [ ] FS service directory listing (cancellation, ordering, error handling).
+- [x] FS service directory listing (cancellation, ordering, error handling). — done: fs_directory.rs (service-fs) with DirEntry, SortOrder, DirListing, sort_entries, filter_hidden
 
 ### Golden UI tests (recommended)
 
@@ -78,7 +78,7 @@ The MVP MAY defer (but must track as TODO leaves):
 - [x] Implement explorer view rendering and input handling with deterministic tests.
 - [x] Implement open-file intent wiring into the editor core.
 - [ ] Add at least one regression test for "10k children expand does not freeze".
-- [ ] Update conformance and limitations docs:
+- [x] Update conformance and limitations docs: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

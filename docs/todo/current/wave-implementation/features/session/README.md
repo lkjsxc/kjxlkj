@@ -31,5 +31,5 @@ Implement built-in session and persistence features.
   - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
   - [x] Recent files tracking (RecentFiles, RecentFile)
   - [x] session_full.rs: SessionData, SessionBuffer, SessionWindow, SessionMark, serialize_session, parse_session_buffers
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

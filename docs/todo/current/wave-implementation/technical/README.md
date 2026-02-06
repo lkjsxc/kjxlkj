@@ -61,6 +61,6 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Conformance and limitations (required updates)
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

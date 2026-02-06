@@ -38,11 +38,11 @@ Implement command-line entry, editing, history, completion, and command-line win
 ### C. Full conformance
 
 - [x] Implement all command-line behaviors defined by the cmdline subtree.
-- [ ] Ensure command-line window interactions integrate with window/viewports.
+- [x] Ensure command-line window interactions integrate with window/viewports. — done: cmdline_window.rs (core-edit) with CmdlineWindowState, CmdlineViewport, follow_cmdline_cursor, render_cmdline_window
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

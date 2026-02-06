@@ -36,5 +36,5 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
   - Color picker: Color (RGB/HSL/hex), ColorMatch, ColorPicker, ColorPickerConfig
   - Statusline: StatusSection, StatusSegment, StatuslineConfig, TablineConfig, TabEntry
   - 288 tests total
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

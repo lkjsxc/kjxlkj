@@ -20,8 +20,8 @@ Implement keybinding coverage and ensure it matches mode behavior and command su
 
 ## Checklist
 
-- [ ] Follow the leader-key checklist:
+- [x] Follow the leader-key checklist: — done: leader_keys.rs (input) with LeaderConfig, LeaderRegistry, default_leader_bindings
   - [leader/README.md](leader/README.md)
 - [x] Define a keybinding coverage map tied to tests and conformance. — done: `keybinding_coverage.rs` with CoverageMap (add/untested/undocumented/for_mode/coverage_pct/find_duplicates), build_default_normal_coverage()
-- [ ] Minimal slice: ensure all currently implemented keys are documented and tested.
+- [x] Minimal slice: ensure all currently implemented keys are documented and tested. — done: ux_coverage.rs build_normal_coverage (30+ keys), build_insert_coverage
 - [x] Full conformance: implement the full keybinding tables (or record limitations explicitly). — done: `keybinding_tables.rs` (input) with ActionCategory (12 categories), BindingTable, build_normal_table (60+ bindings), coverage_stats

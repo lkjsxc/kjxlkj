@@ -24,5 +24,5 @@ Implement buffer-related built-in features beyond the core buffer model.
   - Scratch buffers (:scratch)
 - [x] Full conformance: implement all documents in the subtree.
   - buffer_features.rs: BufferVariables, BufferLocalOptions, FileFormat, BufEvent, AutoCmd, AutoCmdRegistry
-- [ ] Update conformance and limitations docs when behavior becomes user-visible.
+- [x] Update conformance and limitations docs when behavior becomes user-visible. — done: conformance and limitations entries maintained with each batch
 

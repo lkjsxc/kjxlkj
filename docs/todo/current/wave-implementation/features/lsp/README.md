@@ -48,5 +48,5 @@ Implement built-in Language Server Protocol integration.
     - SymbolKind (26 variants), DocumentSymbol (tree), SymbolInformation (flat)
   - [x] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
     - completion_ext.rs: CompletionItemKind (25 variants with icon/from_lsp), CompletionItemEx, CompletionList with filter/select
-- [ ] Update conformance and limitations docs when user-visible.
+- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 
