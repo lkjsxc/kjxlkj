@@ -17,6 +17,7 @@ path = "src/lib.rs"
 [dependencies]
 kjxlkj-core = { path = "../kjxlkj-core" }
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-state = { path = "../kjxlkj-core-state" }
 kjxlkj-host = { path = "../kjxlkj-host" }
 kjxlkj-input = { path = "../kjxlkj-input" }
 kjxlkj-render = { path = "../kjxlkj-render" }

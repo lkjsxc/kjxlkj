@@ -14,10 +14,16 @@ fn is_whitespace(c: char) -> bool {
 
 /// Classify a character for word motion purposes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum CharClass {
+pub enum CharClass {
     Word,
     Punctuation,
     Whitespace,
+}
+
+impl CharClass {
+    pub fn of(c: char) -> Self {
+        char_class(c)
+    }
 }
 
 fn char_class(c: char) -> CharClass {

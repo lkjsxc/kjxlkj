@@ -36,13 +36,13 @@ Implement the canonical editor core model:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define core state entities and their ownership boundaries.
-- [ ] Define snapshot structures and update frequency rules.
-- [ ] Define window-local viewport state (including wrap and scroll offsets).
+- [x] Define core state entities and their ownership boundaries.
+- [x] Define snapshot structures and update frequency rules.
+- [x] Define window-local viewport state (including wrap and scroll offsets).
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a single-buffer, single-window editor that satisfies:
+- [x] Implement a single-buffer, single-window editor that satisfies:
   - deterministic cursor movement and clamping
   - deterministic viewport follow rules
   - snapshot → render loop consistency
@@ -56,7 +56,7 @@ Implement the canonical editor core model:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - buffer lifecycle and identity invariants
   - cursor/viewport invariants across edits and window changes
   - snapshot stability and correctness

@@ -47,11 +47,11 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Ensure each feature category has:
+- [x] Ensure each feature category has:
   - an owning crate or module
   - message bus integration points
   - a placeholder UI surface (if user-visible)
-- [ ] Ensure "no plugins" is enforced (features are internal modules/services only).
+- [x] Ensure "no plugins" is enforced (features are internal modules/services only).
 
 ## Minimal conformance slice (sub-wave)
 

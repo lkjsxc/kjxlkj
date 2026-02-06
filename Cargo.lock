@@ -192,6 +192,7 @@ dependencies = [
  "clap",
  "crossterm",
  "kjxlkj-core",
+ "kjxlkj-core-state",
  "kjxlkj-core-types",
  "kjxlkj-host",
  "kjxlkj-input",

@@ -44,21 +44,21 @@ Implement modal editing semantics and mode transitions:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define a single, explicit mode state machine with:
+- [x] Define a single, explicit mode state machine with:
   - mode enum/state
   - pending operator/motion state (when applicable)
   - count prefix model
   - per-mode cursor/selection representation
-- [ ] Define command-line entry and editing model boundaries.
+- [x] Define command-line entry and editing model boundaries.
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal, fully tested set of mode transitions:
+- [x] Implement a minimal, fully tested set of mode transitions:
   - Normal ↔ Insert
   - Normal ↔ Visual (charwise)
   - Normal ↔ Command
-  - Normal ↔ Replace (as defined, not “Insert-like” unless specified)
-- [ ] Ensure cursor and selection invariants hold across transitions.
+  - Normal ↔ Replace (as defined, not "Insert-like" unless specified)
+- [x] Ensure cursor and selection invariants hold across transitions.
 
 ## Full conformance (sub-wave)
 
@@ -68,7 +68,7 @@ Implement modal editing semantics and mode transitions:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for:
   - mode transition graphs
   - pending state cancellation rules
   - selection model correctness for Visual modes
