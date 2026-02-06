@@ -115,6 +115,7 @@ pub struct EditorOptions {
     pub tabstop: usize,
     pub shiftwidth: usize,
     pub scrolloff: usize,
+    pub sidescrolloff: usize,
     pub autoindent: bool,
     pub smartindent: bool,
 }
@@ -146,6 +147,7 @@ impl Default for EditorOptions {
             tabstop: 4,
             shiftwidth: 4,
             scrolloff: 3,
+            sidescrolloff: 0,
             autoindent: true,
             smartindent: false,
         }
@@ -207,7 +209,13 @@ impl EditorState {
     pub fn create_window(&mut self, buffer_id: BufferId) -> WindowId {
         let id = WindowId(self.next_window_id);
         self.next_window_id += 1;
-        self.windows.insert(id, WindowState::new(id, buffer_id));
+        let mut win = WindowState::new(id, buffer_id);
+        win.scrolloff = self.options.scrolloff;
+        win.sidescrolloff = self.options.sidescrolloff;
+        win.wrap = self.options.wrap;
+        win.width = self.size.width as usize;
+        win.height = self.size.height.saturating_sub(2) as usize;
+        self.windows.insert(id, win);
         if self.active_window.is_none() {
             self.active_window = Some(id);
         }

@@ -108,17 +108,15 @@ pub(crate) fn dispatch_scroll(
         }
         ScrollKind::CursorCenter
         | ScrollKind::CursorCenterFirstNonBlank => {
-            win.top_line = win.cursor_line.saturating_sub(half);
+            win.center_cursor();
         }
         ScrollKind::CursorTop
         | ScrollKind::CursorTopFirstNonBlank => {
-            win.top_line = win.cursor_line;
+            win.cursor_to_top();
         }
         ScrollKind::CursorBottom
         | ScrollKind::CursorBottomFirstNonBlank => {
-            win.top_line = win
-                .cursor_line
-                .saturating_sub(win.height.saturating_sub(1));
+            win.cursor_to_bottom();
         }
     }
     // Clamp cursor to buffer

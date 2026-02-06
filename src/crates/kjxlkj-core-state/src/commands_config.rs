@@ -26,6 +26,11 @@ pub(crate) fn dispatch_set_option(
                     state.message =
                         Some(format!("scrolloff={}", n));
                 }
+                "sidescrolloff" | "siso" => {
+                    state.options.sidescrolloff = n;
+                    state.message =
+                        Some(format!("sidescrolloff={}", n));
+                }
                 _ => {
                     state.message = Some(format!(
                         "unknown option: {}",
