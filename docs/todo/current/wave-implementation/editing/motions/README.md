@@ -29,7 +29,7 @@ Implement motion parsing and motion behavior for navigation and operator targets
 
 ### C. Full conformance
 
-- [ ] Implement all motion documents in the subtree, including:
+- [x] Implement all motion documents in the subtree, including:
   - scrolling and viewport-sensitive motions
   - search motions (/, ?, n, N)
   - jump/mark motions (`, ', g;, g,, Ctrl-o, Ctrl-i)

@@ -34,8 +34,8 @@ Implement the essential Ex command surface and shared rules that apply to all co
 
 ### C. Full conformance
 
-- [ ] Implement all essential commands exactly as specified.
-- [ ] Ensure shared rules are applied consistently across all command families.
+- [x] Implement all essential commands exactly as specified.
+- [x] Ensure shared rules are applied consistently across all command families.
 
 ### D. Conformance updates
 

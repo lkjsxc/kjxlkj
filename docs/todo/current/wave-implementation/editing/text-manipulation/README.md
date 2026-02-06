@@ -25,12 +25,12 @@ Implement text manipulation primitives such as:
 
 ### A. Placeholder scaffolding
 
-- [ ] Define shared text transformation APIs and invariants.
-- [ ] Define interaction with ranges, selections, and registers.
+- [x] Define shared text transformation APIs and invariants.
+- [x] Define interaction with ranges, selections, and registers.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement one transformation feature end-to-end with deterministic tests.
+- [x] Implement one transformation feature end-to-end with deterministic tests.
   - Case operators (~, g~, gU, gu) implemented
   - Increment/decrement (Ctrl-A, Ctrl-X) implemented
   - Join lines (J, gJ) implemented

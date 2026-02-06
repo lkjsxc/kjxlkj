@@ -20,8 +20,8 @@ Implement macro recording and playback, including recursion and register integra
 
 ### A. Placeholder scaffolding
 
-- [ ] Define macro representation and playback model.
-- [ ] Define recursion handling and safety limits.
+- [x] Define macro representation and playback model.
+- [x] Define recursion handling and safety limits.
 
 ### B. Minimal conformance slice
 

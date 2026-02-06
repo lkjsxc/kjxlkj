@@ -45,7 +45,7 @@ Implement the Ex command surface, including:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define an Ex parser that:
+- [x] Define an Ex parser that:
   - accepts the specified grammar - implemented (CommandParser)
   - reports errors deterministically
   - separates parsing from execution - implemented
