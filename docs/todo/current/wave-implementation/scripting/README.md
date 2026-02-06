@@ -55,14 +55,14 @@ Implement the scripting surface defined by the spec (without introducing plugins
 ## Full conformance (sub-wave)
 
 - [ ] Implement the full mapping and automation spec subtree.
-- [ ] Ensure recursion/plug mappings are handled exactly as specified (or recorded as limitations).
+- [x] Ensure recursion/plug mappings are handled exactly as specified (or recorded as limitations). — done: `mapping_expansion.rs` MAX_DEPTH=100 recursion guard, prefix match
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
-  - mapping precedence and mode scoping
-  - recursion limits and safety rules
-  - timing/debounce determinism
+- [x] Add tests for:
+  - mapping precedence and mode scoping — done: `mapping_expansion.rs` mode-scoped entries, 9 tests
+  - recursion limits and safety rules — done: `expand_recursive()` MAX_DEPTH guard test
+  - timing/debounce determinism — done: `debounce_exec.rs` FakeClock, 7 tests
 
 ## Conformance and limitations (required updates)
 

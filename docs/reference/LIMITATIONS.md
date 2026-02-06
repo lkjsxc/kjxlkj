@@ -85,6 +85,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Session persistence (`:mksession`) records metadata and macro key strokes but does not serialize to/restore from disk.
 - Swap files and undo persistence types exist but are not written to disk.
 - Scripting types (completion providers, user commands, user functions, timers) exist but do not execute real script logic.
+- User command execution (`user_command_exec.rs`) implements dispatch, nargs validation, and argument substitution but does not integrate with the main Ex command parser loop.
+- User function execution (`user_function_exec.rs`) supports let/return/concat but does not support conditionals, loops, or full Vimscript expressions.
+- Debounce manager (`debounce_exec.rs`) uses a FakeClock for deterministic testing but is not wired into the tokio runtime timer.
+- Mapping expansion (`mapping_expansion.rs`) handles recursive expansion with MAX_DEPTH=100 guard and prefix matching but is not connected to the key parser dispatch.
+- Accessibility checks (`accessibility.rs`) verify WCAG 2.1 contrast ratios and focus indicators but are not enforced at render time.
+- Profiling (`profiling.rs`) supports span timing and counters but is not instrumented into the core loop or service layer.
 - Notification queue supports priority, dedup, and timeout but is not rendered in the TUI yet.
 - Mode transition validation table exists but is not enforced at runtime (transitions are allowed unconditionally).
 - UI component model (Rect, LayoutNode, standard_layout) exists for deterministic layout but is not connected to the renderer.

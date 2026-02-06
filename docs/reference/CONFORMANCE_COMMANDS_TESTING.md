@@ -259,6 +259,68 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `check_no_plugin_loading()` | Assert no dynamic plugin loading (built-in only) |
 | `check_restart_limit()` | Verify service restart count within policy |
 
+## User command execution types
+
+| Component | Behavior |
+|---|---|
+| `ExecResult` | Ok / Error(message) / NoSuchCommand result from user command dispatch |
+| `validate_nargs()` | Validate argument count against NArgs spec (0/1/*/+/?) |
+| `substitute_args()` | Replace `<args>`, `<bang>`, `<line1>`, `<line2>`, `<count>`, `<q-args>` in command template |
+| `execute_user_command()` | Look up registered command + validate nargs + substitute args |
+| `dispatch_user_command()` | Full dispatch: find command, validate, substitute, return expanded command body |
+
+## User function execution types
+
+| Component | Behavior |
+|---|---|
+| `FuncResult` | Value(String) / Void / Error(String) result from function execution |
+| `FuncContext` | Function execution context with args, locals, return value tracking |
+| `execute_function()` | Interpret function body: let assignments, return, concat expressions |
+| `parse_let()` | Parse `let var = expr` assignments within function body |
+| `resolve_expression()` | Resolve variable references (`a:`, `l:` scope) and string concatenation |
+
+## Debounce manager types
+
+| Component | Behavior |
+|---|---|
+| `FakeClock` | Deterministic fake clock for testing with advance() |
+| `PendingAction` | Scheduled action with deadline and coalesced_count |
+| `DebounceManager` | Schedule/cancel/tick debounce actions with coalescing |
+| `fired_actions()` | Report which actions fired after tick based on fake clock time |
+
+## Mapping expansion types
+
+| Component | Behavior |
+|---|---|
+| `MappingEntry` | Mode-scoped mapping from trigger keys to replacement keys |
+| `ExpansionResult` | Expanded(keys) / NoMapping / RecursionLimit result |
+| `expand_mapping()` | Longest-prefix match for one-level mapping expansion |
+| `expand_recursive()` | Recursive expansion with MAX_DEPTH=100 guard |
+| `has_prefix_match()` | Check if partial input has a potential mapping prefix |
+| `list_mappings()` | List all mappings for a given mode |
+
+## Accessibility types
+
+| Component | Behavior |
+|---|---|
+| `ContrastRatio` | WCAG 2.1 relative luminance and contrast ratio computation |
+| `luminance()` | Compute relative luminance from sRGB (0-255) tuple |
+| `contrast_ratio()` | Compute L1/L2 contrast ratio between two colors |
+| `FocusIndicator` | Underline/Reverse/Bold/HighContrast focus indicator styles |
+| `A11yCheck` | pass/fail named accessibility check result |
+| `check_color_scheme()` | Verify foreground/background meet WCAG AA 4.5:1 minimum |
+| `check_focus_visible()` | Verify focus indicator is not None |
+| `AriaHint` | Status/Editor/Menu ARIA role hints for screen readers |
+
+## Profiling types
+
+| Component | Behavior |
+|---|---|
+| `ProfilingSpan` | Named span with start/finish timestamps and duration_us |
+| `Counter` | Named event counter |
+| `Profiler` | Enable/disable profiling, begin_span/end_span/count/report/reset |
+| `report()` | Aggregate span durations and counter values into summary |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:

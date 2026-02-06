@@ -56,7 +56,7 @@ Implement cross-cutting technical requirements that constrain every feature:
 ## Full conformance (sub-wave)
 
 - [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
-- [ ] Implement profiling hooks and performance regression detection.
+- [x] Implement profiling hooks and performance regression detection. — done: `profiling.rs` with ProfilingSpan, Counter, Profiler, 6 tests
 - [ ] Ensure memory usage and large-file behavior match constraints (or record limitations).
 
 ## Conformance and limitations (required updates)

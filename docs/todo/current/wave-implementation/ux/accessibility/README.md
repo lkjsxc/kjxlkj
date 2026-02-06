@@ -13,7 +13,7 @@ Implement accessibility requirements (keyboard-only, focus clarity, visibility c
 
 ## Checklist
 
-- [ ] Turn accessibility requirements into testable acceptance criteria.
-- [ ] Ensure cursor and focus are always visible and unambiguous.
-- [ ] Add tests for focus transitions and visibility across modes.
+- [x] Turn accessibility requirements into testable acceptance criteria. — done: `accessibility.rs` with WCAG 2.1 contrast ratio, `A11yCheck`, `FocusIndicator`
+- [x] Ensure cursor and focus are always visible and unambiguous. — done: `check_focus_visible()`, `check_color_scheme()`, `FocusIndicator` enum
+- [x] Add tests for focus transitions and visibility across modes. — done: 7 tests covering contrast ratio, focus visibility, ARIA hints, color scheme checks
 

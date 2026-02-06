@@ -57,7 +57,7 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 - [ ] Implement all keybindings and UX behavior defined by the UX subtree.
 - [ ] Ensure keyboard-only invariant is never violated.
-- [ ] Ensure accessibility requirements are met (or explicitly limited).
+- [x] Ensure accessibility requirements are met (or explicitly limited). — done: `accessibility.rs` WCAG contrast, focus visibility, ARIA hints, 7 tests
 
 ## Tests (normative outputs)
 
