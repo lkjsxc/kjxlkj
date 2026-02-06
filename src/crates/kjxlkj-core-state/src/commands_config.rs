@@ -136,6 +136,14 @@ pub(crate) fn dispatch_set_option(
             state.message =
                 Some("smartindent off".into());
         }
+        "autopairs" => {
+            state.options.autopairs = true;
+            state.message = Some("autopairs on".into());
+        }
+        "noautopairs" => {
+            state.options.autopairs = false;
+            state.message = Some("autopairs off".into());
+        }
         _ => dispatch_set_query(state, opt),
     }
 }

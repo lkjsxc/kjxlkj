@@ -85,6 +85,7 @@ pub struct EditorOptions {
     pub sidescrolloff: usize,
     pub autoindent: bool,
     pub smartindent: bool,
+    pub autopairs: bool,
 }
 
 impl Default for CommandLine {
@@ -99,7 +100,7 @@ impl Default for EditorOptions {
             number: false, relative_number: false, wrap: true, ignorecase: false,
             smartcase: true, hlsearch: true, incsearch: true, expandtab: true,
             tabstop: 4, shiftwidth: 4, scrolloff: 3, sidescrolloff: 0,
-            autoindent: true, smartindent: false,
+            autoindent: true, smartindent: false, autopairs: false,
         }
     }
 }
