@@ -5,8 +5,10 @@ mod commands;
 mod commands_file;
 mod dispatch;
 mod dispatch_editing;
+mod dispatch_misc;
 mod dispatch_navigation;
 mod dispatch_operators;
+mod dispatch_search;
 mod registers;
 mod window_state;
 
@@ -18,7 +20,9 @@ pub use window_state::WindowState;
 use std::collections::HashMap;
 
 use kjxlkj_core_mode::{KeyParser, ModeState};
-use kjxlkj_core_types::{BufferId, Mode, Position, Size, WindowId};
+use kjxlkj_core_types::{
+    BufferId, FindCharKind, Mode, Position, Size, WindowId,
+};
 
 /// Top-level editor state that owns all buffers, windows, modes, registers.
 pub struct EditorState {
@@ -31,6 +35,15 @@ pub struct EditorState {
     pub active_window: Option<WindowId>,
     pub message: Option<String>,
     pub should_quit: bool,
+    /// Search state.
+    pub search_pattern: Option<String>,
+    pub search_forward: bool,
+    /// Marks: char -> (buffer_id, position).
+    pub marks: HashMap<char, (BufferId, Position)>,
+    /// Last find-char for ;/, repeat.
+    pub last_find_char: Option<(char, FindCharKind)>,
+    /// Last repeatable intent for dot repeat.
+    pub last_change: Option<kjxlkj_core_types::Intent>,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -47,6 +60,11 @@ impl EditorState {
             active_window: None,
             message: None,
             should_quit: false,
+            search_pattern: None,
+            search_forward: true,
+            marks: HashMap::new(),
+            last_find_char: None,
+            last_change: None,
             next_buffer_id: 1,
             next_window_id: 1,
         }

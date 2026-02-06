@@ -6,13 +6,25 @@ use kjxlkj_core_types::{RegisterContent, RegisterName, RegisterType};
 /// Manages all editor registers.
 pub struct RegisterFile {
     regs: HashMap<RegisterName, RegisterContent>,
+    selected: Option<RegisterName>,
 }
 
 impl RegisterFile {
     pub fn new() -> Self {
         Self {
             regs: HashMap::new(),
+            selected: None,
         }
+    }
+
+    /// Select a register for the next operation.
+    pub fn select(&mut self, name: RegisterName) {
+        self.selected = Some(name);
+    }
+
+    /// Take the selected register (consuming the selection).
+    pub fn take_selected(&mut self) -> Option<RegisterName> {
+        self.selected.take()
     }
 
     /// Get the content of a register.

@@ -1,6 +1,7 @@
 //! Editing primitives: motions, operators, text objects.
 
 mod motion;
+mod motion_extra;
 mod operator;
 mod text_object;
 

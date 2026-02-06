@@ -1,13 +1,19 @@
 //! Intent dispatch: process parsed intents against editor state.
 
 use crate::dispatch_editing::*;
+use crate::dispatch_misc::*;
 use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
+use crate::dispatch_search::*;
 use crate::EditorState;
 use kjxlkj_core_types::{Intent, Mode, OperatorKind};
 
 /// Process a single intent, mutating editor state.
 pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
+    // Track repeatable changes for dot repeat.
+    if is_repeatable(&intent) {
+        state.last_change = Some(intent.clone());
+    }
     match intent {
         Intent::Noop => {}
         Intent::Motion(kind, count) => {
@@ -79,8 +85,117 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         Intent::Indent(indent, count) => {
             dispatch_indent(state, indent, count);
         }
-        _ => {} // Remaining intents stubbed
+        // Search
+        Intent::SearchForward(pat) => {
+            dispatch_search_forward(state, &pat)
+        }
+        Intent::SearchBackward(pat) => {
+            dispatch_search_backward(state, &pat)
+        }
+        Intent::SearchNext => dispatch_search_next(state),
+        Intent::SearchPrev => dispatch_search_prev(state),
+        Intent::SearchWordForward => {
+            dispatch_search_word_forward(state)
+        }
+        Intent::SearchWordBackward => {
+            dispatch_search_word_backward(state)
+        }
+        // Marks
+        Intent::SetMark(c) => dispatch_set_mark(state, c),
+        Intent::JumpToMark(c) => {
+            dispatch_jump_to_mark(state, c)
+        }
+        Intent::JumpToMarkLine(c) => {
+            dispatch_jump_to_mark_line(state, c)
+        }
+        // Find-char
+        Intent::FindChar(c, kind) => {
+            dispatch_find_char(state, c, kind)
+        }
+        Intent::RepeatFindChar => {
+            dispatch_repeat_find_char(state)
+        }
+        Intent::RepeatFindCharReverse => {
+            dispatch_repeat_find_char_reverse(state)
+        }
+        // Case operators
+        Intent::CaseOperator(op, motion, count) => {
+            dispatch_case_operator(state, op, motion, count)
+        }
+        Intent::CaseOperatorLine(op) => {
+            dispatch_case_operator_line(state, op)
+        }
+        // Visual
+        Intent::VisualSwapEnd => {
+            dispatch_visual_swap_end(state)
+        }
+        // Register
+        Intent::SelectRegister(reg) => {
+            dispatch_select_register(state, reg)
+        }
+        // Increment/decrement
+        Intent::IncrementNumber(delta) => {
+            dispatch_increment_number(state, delta)
+        }
+        // Macro (stub — record/play not wired yet)
+        Intent::MacroToggleRecord(_) => {
+            state.message =
+                Some("Macro recording not yet implemented".into());
+        }
+        Intent::MacroPlay(_) => {
+            state.message =
+                Some("Macro playback not yet implemented".into());
+        }
+        Intent::MacroRepeatLast => {
+            state.message =
+                Some("Macro repeat not yet implemented".into());
+        }
+        // Dot repeat
+        Intent::RepeatLastChange => {
+            if let Some(last) = state.last_change.clone() {
+                // Prevent infinite recursion: don't re-set last_change
+                let saved = state.last_change.take();
+                dispatch_intent(state, last);
+                state.last_change = saved;
+            }
+        }
+        // Jump/change list (stub)
+        Intent::JumpListBack | Intent::JumpListForward => {
+            state.message =
+                Some("Jump list not yet implemented".into());
+        }
+        Intent::ChangeListOlder | Intent::ChangeListNewer => {
+            state.message =
+                Some("Change list not yet implemented".into());
+        }
     }
+}
+
+/// Check if an intent is a repeatable change (for dot).
+fn is_repeatable(intent: &Intent) -> bool {
+    matches!(
+        intent,
+        Intent::InsertChar(_)
+            | Intent::InsertNewline
+            | Intent::DeleteCharBefore
+            | Intent::DeleteCharAt
+            | Intent::Operator(_, _, _)
+            | Intent::OperatorTextObject(_, _, _)
+            | Intent::LineOperator(_, _)
+            | Intent::ReplaceChar(_)
+            | Intent::ReplaceInsert(_)
+            | Intent::OpenLine(_)
+            | Intent::JoinLines(_, _)
+            | Intent::ToggleCase
+            | Intent::SubstituteChar
+            | Intent::SubstituteLine
+            | Intent::DeleteToEnd
+            | Intent::ChangeToEnd
+            | Intent::Indent(_, _)
+            | Intent::CaseOperator(_, _, _)
+            | Intent::CaseOperatorLine(_)
+            | Intent::IncrementNumber(_)
+    )
 }
 
 #[cfg(test)]
