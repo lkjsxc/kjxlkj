@@ -54,3 +54,12 @@ pub(crate) fn dispatch_show_file_info(state: &mut EditorState) {
         state.message = Some(format!("\"{}\" {} {} lines --{}%--", name, modified, lines, pct));
     }
 }
+
+/// Display available digraphs (:digraphs).
+pub(crate) fn dispatch_show_digraphs(state: &mut EditorState) {
+    let mut entries = Vec::new();
+    for &(c1, c2, result) in kjxlkj_core_types::DIGRAPH_TABLE {
+        entries.push(format!("{}{} {}", c1, c2, result));
+    }
+    state.message = Some(entries.join("  "));
+}

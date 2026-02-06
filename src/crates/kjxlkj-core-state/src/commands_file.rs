@@ -55,19 +55,14 @@ pub(crate) fn dispatch_write_all(state: &mut EditorState) {
                 if let Some(path) = buf.file_path.clone() {
                     let text = buf.text.text();
                     if std::fs::write(&path, &text).is_ok() {
-                        if let Some(buf) =
-                            state.buffers.get_mut(&bid)
-                        {
-                            buf.modified = false;
-                        }
+                        if let Some(b) = state.buffers.get_mut(&bid) { b.modified = false; }
                         count += 1;
                     }
                 }
             }
         }
     }
-    state.message =
-        Some(format!("{} buffer(s) written", count));
+    state.message = Some(format!("{} buffer(s) written", count));
 }
 
 pub(crate) fn dispatch_edit(
@@ -170,12 +165,32 @@ pub(crate) fn dispatch_reload_buffer(state: &mut EditorState) {
                     ));
                 }
                 Err(e) => {
-                    state.message = Some(format!(
-                        "Cannot reload: {}",
-                        e
-                    ));
+                    state.message = Some(format!("Cannot reload: {}", e));
                 }
             }
         }
     }
+}
+
+/// :saveas {file} — write to file and switch buffer to it.
+pub(crate) fn dispatch_saveas(state: &mut EditorState, args: Option<&str>) {
+    match args {
+        Some(path) if !path.trim().is_empty() => {
+            let path = path.trim();
+            dispatch_write(state, Some(path));
+        }
+        _ => { state.message = Some("Usage: :saveas <file>".into()); }
+    }
+}
+
+/// :enew — create a new empty buffer in the current window.
+pub(crate) fn dispatch_enew(state: &mut EditorState) {
+    let bid = state.create_buffer();
+    if let Some(wid) = state.active_window {
+        if let Some(win) = state.windows.get_mut(&wid) {
+            win.buffer_id = bid;
+            win.cursor_line = 0; win.cursor_col = 0; win.top_line = 0;
+        }
+    }
+    state.message = Some("[New buffer]".into());
 }

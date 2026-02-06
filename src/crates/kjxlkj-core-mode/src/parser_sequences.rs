@@ -38,6 +38,7 @@ pub(crate) fn parse_g_sequence(
         }
         KeyCode::Char('J') => Intent::JoinLines(false, count),
         KeyCode::Char('v') => Intent::ReselectVisual,
+        KeyCode::Char('R') => Intent::EnterMode(kjxlkj_core_types::Mode::Replace),
         KeyCode::Char('~') => {
             *pending =
                 PendingState::GOperator(CaseOp::Toggle, count);

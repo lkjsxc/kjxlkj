@@ -75,24 +75,18 @@ fn get_range_or_cursor(state: &EditorState, range: Option<LineRange>) -> (Buffer
 pub(crate) fn dispatch_copy_lines(
     state: &mut EditorState, range: Option<LineRange>, args: Option<&str>,
 ) {
-    let dest = match args {
-        Some(a) => match parse_dest(state, a) {
-            Ok(d) => d, Err(e) => { state.message = Some(e); return; }
-        },
+    let dest = match args.and_then(|a| parse_dest(state, a).ok()) {
+        Some(d) => d,
         None => { state.message = Some("Usage: :t {address}".into()); return; }
     };
     if state.active_window.is_none() { return; }
     let (bid, start, end) = get_range_or_cursor(state, range);
-    let last = state.buffers.get(&bid).unwrap().text.line_count().saturating_sub(1);
-    let end = end.min(last);
+    let end = end.min(state.buffers.get(&bid).unwrap().text.line_count().saturating_sub(1));
     let count = end - start + 1;
     let text = collect_lines(state, bid, start, end);
     insert_after_line(state, bid, dest, &text);
-    let wid = state.active_window.unwrap();
-    let win = state.windows.get_mut(&wid).unwrap();
-    win.cursor_line = dest + count;
-    win.cursor_col = 0;
-    win.ensure_cursor_visible();
+    let win = state.windows.get_mut(&state.active_window.unwrap()).unwrap();
+    win.cursor_line = dest + count; win.cursor_col = 0; win.ensure_cursor_visible();
     state.message = Some(format!("{} line{} copied", count, if count > 1 { "s" } else { "" }));
 }
 
@@ -100,32 +94,23 @@ pub(crate) fn dispatch_copy_lines(
 pub(crate) fn dispatch_move_lines(
     state: &mut EditorState, range: Option<LineRange>, args: Option<&str>,
 ) {
-    let dest = match args {
-        Some(a) => match parse_dest(state, a) {
-            Ok(d) => d, Err(e) => { state.message = Some(e); return; }
-        },
+    let dest = match args.and_then(|a| parse_dest(state, a).ok()) {
+        Some(d) => d,
         None => { state.message = Some("Usage: :m {address}".into()); return; }
     };
     if state.active_window.is_none() { return; }
     let (bid, start, end) = get_range_or_cursor(state, range);
-    let last = state.buffers.get(&bid).unwrap().text.line_count().saturating_sub(1);
-    let end = end.min(last);
+    let end = end.min(state.buffers.get(&bid).unwrap().text.line_count().saturating_sub(1));
     let count = end - start + 1;
-    if dest >= start && dest < end {
-        state.message = Some("Move lines into themselves".into());
-        return;
-    }
+    if dest >= start && dest < end { state.message = Some("Move lines into themselves".into()); return; }
     let text = collect_lines(state, bid, start, end);
     for _ in 0..count { delete_line_at(state, bid, start); }
     state.buffers.get_mut(&bid).unwrap().modified = true;
     let adj_dest = if dest >= end + 1 { dest - count } else { dest };
     insert_after_line(state, bid, adj_dest, &text);
-    let wid = state.active_window.unwrap();
     let buf_last = state.buffers.get(&bid).unwrap().text.line_count().saturating_sub(1);
-    let win = state.windows.get_mut(&wid).unwrap();
-    win.cursor_line = (adj_dest + count).min(buf_last);
-    win.cursor_col = 0;
-    win.ensure_cursor_visible();
+    let win = state.windows.get_mut(&state.active_window.unwrap()).unwrap();
+    win.cursor_line = (adj_dest + count).min(buf_last); win.cursor_col = 0; win.ensure_cursor_visible();
     state.message = Some(format!("{} line{} moved", count, if count > 1 { "s" } else { "" }));
 }
 
@@ -152,4 +137,59 @@ pub(crate) fn dispatch_read_file(state: &mut EditorState, args: Option<&str>) {
     win.cursor_col = 0;
     win.ensure_cursor_visible();
     state.message = Some(format!("\"{}\" {} line{}", filename, lc, if lc != 1 { "s" } else { "" }));
+}
+
+/// :{range}!{cmd} — filter lines in range through an external command.
+pub(crate) fn dispatch_filter_lines(
+    state: &mut EditorState, range: Option<crate::commands_range::LineRange>, cmd: &str,
+) {
+    if cmd.trim().is_empty() {
+        state.message = Some("E471: Argument required".into());
+        return;
+    }
+    let wid = match state.active_window { Some(w) => w, None => return };
+    let (bid, start, end) = get_range_or_cursor(state, range);
+    let buf = match state.buffers.get(&bid) { Some(b) => b, None => return };
+    let last = buf.text.line_count().saturating_sub(1);
+    let end = end.min(last);
+    // Collect input lines
+    let mut input = String::new();
+    for l in start..=end {
+        input.push_str(&buf.text.line_to_string(l));
+        input.push('\n');
+    }
+    // Run command
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+    let child = Command::new("sh").arg("-c").arg(cmd)
+        .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn();
+    let output = match child {
+        Ok(mut c) => {
+            if let Some(mut stdin) = c.stdin.take() { let _ = stdin.write_all(input.as_bytes()); }
+            match c.wait_with_output() { Ok(o) => o, Err(e) => { state.message = Some(format!("filter error: {}", e)); return; } }
+        }
+        Err(e) => { state.message = Some(format!("filter error: {}", e)); return; }
+    };
+    let result = String::from_utf8_lossy(&output.stdout).to_string();
+    // Delete original range
+    let count = end - start + 1;
+    for _ in 0..count { delete_line_at(state, bid, start); }
+    // Insert filtered output
+    let dest = if start > 0 { start - 1 } else { 0 };
+    if !result.is_empty() {
+        let text = if result.ends_with('\n') { result.clone() } else { format!("{}\n", result) };
+        if start == 0 {
+            let buf = state.buffers.get_mut(&bid).unwrap();
+            buf.text.insert_text(Position::new(0, 0), &text);
+        } else {
+            insert_after_line(state, bid, dest, &text);
+        }
+    }
+    state.buffers.get_mut(&bid).unwrap().modified = true;
+    let new_count = result.lines().count();
+    let win = state.windows.get_mut(&wid).unwrap();
+    win.cursor_line = start;
+    win.cursor_col = 0;
+    win.ensure_cursor_visible();
+    state.message = Some(format!("{} line{} filtered", new_count, if new_count != 1 { "s" } else { "" }));
 }

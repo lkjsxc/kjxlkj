@@ -98,6 +98,12 @@ impl KeyParser {
 
     /// Parse a key in Insert mode.
     pub fn parse_insert(&mut self, key: &KeyEvent) -> Intent {
+        // Handle pending literal insert (Ctrl-V {char})
+        if self.pending == PendingState::InsertLiteral {
+            self.pending = PendingState::None;
+            if let KeyCode::Char(c) = key.code { return Intent::InsertChar(c); }
+            return Intent::Noop;
+        }
         // Handle pending Ctrl-r {register}
         if self.pending == PendingState::InsertRegister {
             self.pending = PendingState::None;
@@ -126,6 +132,11 @@ impl KeyParser {
         // Ctrl-k starts pending digraph insert
         if key.ctrl && key.code == KeyCode::Char('k') {
             self.pending = PendingState::InsertDigraph1;
+            return Intent::Noop;
+        }
+        // Ctrl-v starts pending literal insert
+        if key.ctrl && key.code == KeyCode::Char('v') {
+            self.pending = PendingState::InsertLiteral;
             return Intent::Noop;
         }
         crate::parser_modes::parse_insert(key)

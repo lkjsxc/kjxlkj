@@ -7,11 +7,11 @@ pub fn digraph_lookup(c1: char, c2: char) -> Option<char> {
 }
 
 fn lookup(c1: char, c2: char) -> Option<char> {
-    DIGRAPHS.iter().find(|&&(a, b, _)| a == c1 && b == c2).map(|e| e.2)
+    DIGRAPH_TABLE.iter().find(|&&(a, b, _)| a == c1 && b == c2).map(|e| e.2)
 }
 
 /// Built-in digraph table (subset of Vim's digraphs).
-static DIGRAPHS: &[(char, char, char)] = &[
+pub static DIGRAPH_TABLE: &[(char, char, char)] = &[
     // Accented characters
     ('a', '\'', 'á'), ('e', '\'', 'é'), ('i', '\'', 'í'),
     ('o', '\'', 'ó'), ('u', '\'', 'ú'),

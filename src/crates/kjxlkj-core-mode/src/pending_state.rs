@@ -13,6 +13,7 @@ pub(crate) enum PendingState {
     Mark, JumpMark, JumpMarkLine,
     MacroRecord, MacroPlay, ReplaceChar,
     InsertRegister, InsertDigraph1, InsertDigraph2(char),
+    InsertLiteral,
     Leader, CtrlW,
 }
 

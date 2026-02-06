@@ -41,11 +41,22 @@ impl GitService {
 
     /// Query the current repository status.
     pub async fn status(&self) -> anyhow::Result<RepoStatus> {
-        let _root = self.repo_root.as_ref().ok_or_else(|| {
+        let root = self.repo_root.as_ref().ok_or_else(|| {
             anyhow::anyhow!("no git repository configured")
         })?;
         tracing::debug!("querying git status");
-        Ok(RepoStatus::default())
+        let mut status = RepoStatus::default();
+        // Try to detect branch from HEAD
+        let head_path = root.join(".git/HEAD");
+        if let Ok(contents) = std::fs::read_to_string(&head_path) {
+            let contents = contents.trim();
+            if let Some(branch) = contents.strip_prefix("ref: refs/heads/") {
+                status.branch = Some(branch.to_string());
+            } else {
+                status.branch = Some(contents[..8.min(contents.len())].to_string());
+            }
+        }
+        Ok(status)
     }
 
     /// Get the file status for a specific path.

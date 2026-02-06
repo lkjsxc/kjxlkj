@@ -45,12 +45,15 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":close" => crate::dispatch_windows::dispatch_window_close(state),
         ":only" => crate::dispatch_windows::dispatch_window_only(state),
         ":new" => { let bid = state.create_buffer(); state.create_window(bid); }
+        ":enew" => file::dispatch_enew(state),
+        ":saveas" | ":sav" => file::dispatch_saveas(state, args),
         ":bd" | ":bdelete" => buf::dispatch_bdelete(state, false),
         ":bd!" | ":bdelete!" => buf::dispatch_bdelete(state, true),
         ":marks" => disp::dispatch_show_marks(state),
         ":reg" | ":registers" => disp::dispatch_show_registers(state),
         ":jumps" => disp::dispatch_show_jumps(state),
         ":changes" => disp::dispatch_show_changes(state),
+        ":digraphs" | ":dig" => disp::dispatch_show_digraphs(state),
         ":file" | ":f" => disp::dispatch_show_file_info(state),
         ":noh" | ":nohlsearch" => { state.search_pattern = None; state.message = None; }
         ":sort" => buf::dispatch_sort_lines(state, args),
@@ -58,23 +61,12 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             if state.message.is_none() { state.message = Some("No messages".into()); }
         }
         ":source" | ":so" => dispatch_source(state, args),
-        ":pwd" => {
-            if let Ok(d) = std::env::current_dir() {
-                state.message = Some(d.to_string_lossy().to_string());
-            }
+        ":pwd" => { if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); } }
+        ":cd" => {
+            if let Some(dir) = args {
+                if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {}", dir)); }
+            } else if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); }
         }
-        ":cd" => match args {
-            Some(dir) => {
-                if std::env::set_current_dir(dir).is_err() {
-                    state.message = Some(format!("Cannot cd to: {}", dir));
-                }
-            }
-            None => {
-                if let Ok(d) = std::env::current_dir() {
-                    state.message = Some(d.to_string_lossy().to_string());
-                }
-            }
-        },
         ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => {
             state.message = Some(format!("{}: coming soon", command));
         }
@@ -100,6 +92,8 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":put" => crate::dispatch_misc::dispatch_put_register(state, false),
         ":put!" => crate::dispatch_misc::dispatch_put_register(state, true),
         ":filetype" | ":ft" => cfm::dispatch_filetype(state, args),
+        ":syntax" | ":syn" => dispatch_syntax(state, args),
+        ":highlight" | ":hi" => dispatch_highlight(state, args),
         _ => dispatch_fallback(state, effective, trimmed, command, range),
     }
 }
@@ -118,25 +112,12 @@ fn dispatch_source(state: &mut EditorState, args: Option<&str>) {
 
 /// `:execute {string}` — evaluate a string as an Ex command.
 fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
-    let Some(expr) = args else {
-        state.message = Some("E471: Argument required".into());
-        return;
-    };
-    // Strip surrounding quotes if present
+    let Some(expr) = args else { state.message = Some("E471: Argument required".into()); return; };
     let cmd_str = if (expr.starts_with('"') && expr.ends_with('"'))
         || (expr.starts_with('\'') && expr.ends_with('\''))
-    {
-        &expr[1..expr.len() - 1]
-    } else {
-        expr
-    };
+    { &expr[1..expr.len() - 1] } else { expr };
     if cmd_str.is_empty() { return; }
-    // Ensure it starts with `:` as ExCommand convention requires
-    let full = if cmd_str.starts_with(':') {
-        cmd_str.to_string()
-    } else {
-        format!(":{}", cmd_str)
-    };
+    let full = if cmd_str.starts_with(':') { cmd_str.to_string() } else { format!(":{}", cmd_str) };
     dispatch_ex_command(state, &full);
 }
 
@@ -145,36 +126,48 @@ fn dispatch_normal(
     state: &mut EditorState, command: &str, args: Option<&str>,
     range: Option<crate::commands_range::LineRange>,
 ) {
-    let Some(keys_str) = args else {
-        state.message = Some("E471: Argument required".into());
-        return;
-    };
+    let Some(keys_str) = args else { state.message = Some("E471: Argument required".into()); return; };
     let _bang = command.ends_with('!');
-    // Determine line range to apply on
     let (start, end) = match range {
         Some(rng) => (rng.start, rng.end),
-        None => {
-            if let Some(win) = state.active_window_state() {
-                (win.cursor_line, win.cursor_line)
-            } else { return; }
-        }
+        None => match state.active_window_state() {
+            Some(win) => (win.cursor_line, win.cursor_line),
+            None => return,
+        },
     };
-    // Execute key sequence on each line in range
     for line in start..=end {
-        // Move cursor to beginning of the target line
         if let Some(wid) = state.active_window {
-            if let Some(win) = state.windows.get_mut(&wid) {
-                win.cursor_line = line;
-                win.cursor_col = 0;
-            }
+            if let Some(win) = state.windows.get_mut(&wid) { win.cursor_line = line; win.cursor_col = 0; }
         }
-        // Feed each character through the normal mode parser
         for ch in keys_str.chars() {
             let key = kjxlkj_core_types::KeyEvent::char(ch);
             let intent = state.parser.parse_normal(&key);
             crate::dispatch_intent(state, intent);
         }
         state.parser.reset();
+    }
+}
+
+fn dispatch_syntax(state: &mut EditorState, args: Option<&str>) {
+    match args.unwrap_or("").trim() {
+        "on" | "enable" => { state.syntax_enabled = true; state.message = Some("syntax on".into()); }
+        "off" | "" => { state.syntax_enabled = false; state.message = Some("syntax off".into()); }
+        _ => { state.message = Some("Usage: :syntax on|off".into()); }
+    }
+}
+
+fn dispatch_highlight(state: &mut EditorState, args: Option<&str>) {
+    if args.is_none() || args.unwrap().trim().is_empty() {
+        let groups: Vec<_> = state.highlight_overrides.keys()
+            .map(|g| format!("{:?}", g)).collect();
+        state.message = Some(if groups.is_empty() { "No highlight overrides".into() } else { groups.join(", ") });
+        return;
+    }
+    // :highlight {group} — show info about a group
+    let name = args.unwrap().trim();
+    match kjxlkj_core_types::HighlightGroup::from_name(name) {
+        Some(g) => { state.message = Some(format!("{:?}: {:?}", g, g.default_style())); }
+        None => { state.message = Some(format!("Unknown highlight group: {}", name)); }
     }
 }
 
@@ -185,7 +178,11 @@ fn dispatch_fallback(
     if eff.starts_with(":!") {
         let cmd = eff.trim_start_matches(":!").trim();
         if cmd.is_empty() { state.message = Some("E471: Argument required".into()); }
-        else { crate::dispatch_misc::dispatch_shell_command(state, cmd); }
+        else if range.is_some() {
+            crate::commands_line_ops::dispatch_filter_lines(state, range, cmd);
+        } else {
+            crate::dispatch_misc::dispatch_shell_command(state, cmd);
+        }
     } else if eff.starts_with(":s") && eff.len() > 2
         && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric()
     {

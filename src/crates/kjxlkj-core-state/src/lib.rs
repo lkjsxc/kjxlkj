@@ -53,6 +53,8 @@ pub struct EditorState {
     pub mappings: mappings::MappingTable,
     pub autocmds: autocommands::AutoCmdTable,
     pub last_visual: Option<(Position, Position, Mode)>,
+    pub syntax_enabled: bool,
+    pub highlight_overrides: HashMap<kjxlkj_core_types::HighlightGroup, kjxlkj_core_types::Style>,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -117,6 +119,8 @@ impl EditorState {
             cmdline: CommandLine::default(), options: EditorOptions::default(),
             mappings: mappings::MappingTable::new(), autocmds: autocommands::AutoCmdTable::new(),
             last_visual: None,
+            syntax_enabled: true,
+            highlight_overrides: HashMap::new(),
             next_buffer_id: 1, next_window_id: 1,
         }
     }
