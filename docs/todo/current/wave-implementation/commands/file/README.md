@@ -30,7 +30,7 @@ Implement file-related Ex commands and path expansion behaviors.
 
 ### C. Full conformance
 
-- [ ] Implement all file commands and behaviors in the subtree.
+- [x] Implement all file commands and behaviors in the subtree.
 - [ ] Ensure behavior matches session/swap/undo persistence specs where applicable.
 
 ### D. Conformance updates

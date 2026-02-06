@@ -38,14 +38,14 @@ Implement text manipulation primitives such as:
 
 ### C. Full conformance
 
-- [ ] Implement all text manipulation documents in the subtree.
+- [x] Implement all text manipulation documents in the subtree.
   - [x] Case changing (~, g~, gU, gu)
   - [x] Increment/decrement (Ctrl-A, Ctrl-X)
   - [x] Join/split (J, gJ)
-  - [ ] Undo/redo (u, Ctrl-r)
+  - [x] Undo/redo (u, Ctrl-r)
   - [x] Sorting/alignment
-  - [ ] Filtering/piping
-  - [ ] Digraphs
+  - [x] Filtering/piping
+  - [x] Digraphs
 
 If any sub-item is intentionally deferred, apply the deferral protocol from [/docs/todo/current/README.md](/docs/todo/current/README.md) and avoid leaving a terminal “future” section with unchecked boxes.
 

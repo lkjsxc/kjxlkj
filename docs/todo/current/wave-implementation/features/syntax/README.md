@@ -20,7 +20,7 @@ Implement syntax highlighting and related feature surfaces.
 
 - [x] Implement language detection and built-in extension mapping:
   - [language-detection/README.md](language-detection/README.md)
-- [ ] Placeholder scaffolding: define highlight group model and rendering contract.
-- [ ] Minimal slice: implement one highlight path with deterministic tests.
+- [x] Placeholder scaffolding: define highlight group model and rendering contract.
+- [x] Minimal slice: implement one highlight path with deterministic tests.
 - [ ] Full conformance: implement all syntax feature documents and highlight group tables.
 - [ ] Update conformance and limitations docs when user-visible.

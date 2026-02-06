@@ -33,9 +33,9 @@ Implement Replace and Virtual Replace mode semantics.
 
 ### C. Full conformance
 
-- [ ] Implement all Replace/Virtual Replace behaviors in the subtree.
+- [x] Implement all Replace/Virtual Replace behaviors in the subtree.
   - [x] Basic replace mode
-  - [ ] Virtual Replace mode (gR)
+  - [x] Virtual Replace mode (gR)
   - [x] Single character replace (r)
 
 If Virtual Replace is intentionally deferred, apply the deferral protocol from [/docs/todo/current/README.md](/docs/todo/current/README.md) and avoid leaving a terminal “future” section with unchecked boxes.
