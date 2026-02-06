@@ -186,12 +186,12 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
                 Some("all autocommands cleared".into());
         }
         ":d" | ":delete" => {
-            crate::commands_substitute::dispatch_range_delete(
+            crate::commands_range_ops::dispatch_range_delete(
                 state, range,
             );
         }
         ":y" | ":yank" => {
-            crate::commands_substitute::dispatch_range_yank(
+            crate::commands_range_ops::dispatch_range_yank(
                 state, range,
             );
         }
@@ -204,7 +204,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             if eff.starts_with(":s") && eff.len() > 2
                 && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric()
             {
-                crate::commands_substitute::dispatch_substitute_range(
+                crate::commands_range_ops::dispatch_substitute_range(
                     state, eff, range,
                 );
             } else if eff.starts_with(":g/")

@@ -8,6 +8,7 @@ mod commands_display;
 mod commands_file;
 mod commands_nav;
 mod commands_range;
+mod commands_range_ops;
 mod commands_substitute;
 mod config;
 mod dispatch;
