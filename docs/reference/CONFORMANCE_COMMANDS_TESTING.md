@@ -122,7 +122,7 @@ If `code` is not a named value above, it MUST be a single-character string.
 | `assert_cursor` | `line` (integer), `col` (integer) | Assert the cursor position (0-based). |
 | `assert_line` | `line` (integer), `content` (string) | Assert an exact line string match (0-based). |
 
-Mode strings accepted by this conformance target include `normal`, `insert`, `visual`, `visual_line`, `visual_block`, `command`, `replace` (case-insensitive, with a small set of aliases).
+Mode strings accepted by this conformance target include `normal`, `insert`, `visual`, `visual_line`, `visual_block`, `command`, `replace`, `terminal` (case-insensitive, with a small set of aliases).
 
 ## E2E test coverage
 

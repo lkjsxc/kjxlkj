@@ -98,8 +98,21 @@ Search behavior in this conformance target is:
 - Search wraps around file boundaries (`wrapscan` behavior)
 - Pattern is stored and reused for `n`/`N` navigation
 - Status message shows current search pattern and wrap status
-- `*` / `#` search for word under cursor (forward/backward)
+- `*` / `#` search for word under cursor (forward/backward) with `\b` word boundaries
 - `:noh` / `:nohlsearch` clears search highlight
+- Regex support: Vim magic-mode patterns (`.`, `*`, `^`, `$`, `[]`, `\d`, `\w`, `\s`, `\<`, `\>`, `\+`, `\?`, `\|`, `\(`, `\)`)
+- Case-insensitive search with `ignorecase` option, smart-case with `smartcase` option
+- Literal fallback when pattern has no metacharacters
+
+## Completion
+
+| Feature | Behavior |
+|---|---|
+| Buffer-word completion | `collect_buffer_words()` — unique words from buffer matching prefix |
+| Line completion | `collect_line_completions()` — matching lines for Ctrl-X Ctrl-L |
+| CompletionMenu | Open/close/select_next/select_prev/filter/current |
+| CompletionSource | Buffer, Path, Line, Lsp, Dictionary, Command |
+| CompletionKind | 13 variants (Variable, Function, Method, Class, etc.) |
 
 ## Related
 
