@@ -45,7 +45,7 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 - [ ] Define a project-wide "contracts checklist" that is referenced by all implementation leaves.
 - [x] Define how tests are organized and how determinism is enforced.
-- [ ] Define a latency/performance baseline measurement strategy.
+- [x] Define a latency/performance baseline measurement strategy.
 
 ## Minimal conformance slice (sub-wave)
 

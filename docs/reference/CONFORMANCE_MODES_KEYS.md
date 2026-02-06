@@ -217,6 +217,26 @@ At end of line, typed characters are inserted rather than replacing.
 | `dedent_line()` | Ctrl-D: removes one level of indentation |
 | `collect_completions()` | Gathers word completions from buffer matching prefix |
 
+## Window splits
+
+| Feature | Behavior |
+|---|---|
+| `LayoutNode` | Tree of Leaf (single window) and Split (h/v with children) |
+| `compute_rects()` | Computes pixel rectangles for all windows from layout |
+| `split_window()` | Splits a leaf into two windows (horizontal or vertical) |
+| `remove_window()` | Removes a window, simplifying single-child splits |
+| `WinRect` | x, y, w, h rectangle for each window |
+
+## Latency tracking
+
+| Feature | Behavior |
+|---|---|
+| `LatencyProbe` | Records samples, computes min/max/avg/p95 statistics |
+| `LatencyBudgets` | KEYSTROKE=16ms, FRAME=16ms, RESIZE=50ms, SCROLL=8ms |
+| `TimingGuard` | RAII guard that records elapsed time on drop |
+| `is_idle_busy_loop()` | Detects >120fps redraw rate as busy-loop |
+| `exceeds_budget()` | Checks if duration exceeds a latency budget |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

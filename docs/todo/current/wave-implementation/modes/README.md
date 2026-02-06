@@ -62,7 +62,7 @@ Implement modal editing semantics and mode transitions:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
+- [x] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
 - [x] Implement configuration impacts on modes (where specified).
 - [ ] Ensure mode behavior matches UX keybindings tables.
 

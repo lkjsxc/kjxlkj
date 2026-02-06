@@ -197,6 +197,17 @@ Search behavior in this conformance target is:
 | `resolve_scope()` | Look up style for a scope name |
 | `apply_override()` | Merge user override into theme |
 
+## Visual selection
+
+| Feature | Behavior |
+|---|---|
+| `VisualSelection` | Tracks kind (Char/Line/Block), anchor, cursor positions |
+| `contains()` | Tests if position is within selection for all three kinds |
+| `extract_selection()` | Extracts selected text as line fragments |
+| `swap_ends()` | Implements `o` command — swap anchor and cursor |
+| `block_cols()` | Returns column range for block selections |
+| `switch_kind()` | Switches between Char/Line/Block visual modes |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

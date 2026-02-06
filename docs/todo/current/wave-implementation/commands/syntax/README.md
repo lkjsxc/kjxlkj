@@ -31,7 +31,7 @@ Implement Ex-level syntax commands and their interaction with highlighting/synta
 
 ### C. Full conformance
 
-- [ ] Implement all syntax command behavior exactly as specified.
+- [x] Implement all syntax command behavior exactly as specified.
 
 ### D. Conformance updates
 

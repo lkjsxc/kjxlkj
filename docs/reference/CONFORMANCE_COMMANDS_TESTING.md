@@ -533,6 +533,35 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `BufferVariables` | Buffer-local variable store (b:var equivalent) |
 | `format_buffer_info()` | Formats buffer for `:ls` display |
 
+## Syntax commands
+
+| Feature | Behavior |
+|---|---|
+| `parse_syntax_command()` | Parses `:syntax on/off/manual/enable/disable` |
+| `detect_language()` | Maps file extension to language name (21 languages) |
+| `parse_filetype_command()` | Parses `:setfiletype` argument |
+| `format_syntax_info()` | Displays `syntax=on/off filetype=...` status |
+
+## Command-line parser
+
+| Feature | Behavior |
+|---|---|
+| `CmdlineState` | Tracks prefix, content, cursor position, history index |
+| `CmdlineAction` | 16 editing actions (insert, delete, move, history, etc.) |
+| `map_cmdline_key()` | Maps keys/ctrl/special to command-line actions |
+| Editing | InsertChar, DeleteBack, DeleteWord, DeleteToStart, Move* |
+| History | HistoryPrev, HistoryNext via Up/Down/Ctrl-p/Ctrl-n |
+
+## File explorer
+
+| Feature | Behavior |
+|---|---|
+| `ExplorerTree` | Tree model with NodeId, expand/collapse, hidden files |
+| `TreeNode` | id, name, path, kind (File/Directory/Symlink), depth |
+| `visible_nodes()` | Depth-first traversal respecting expanded/hidden/filter |
+| `format_node()` | Renders with indentation and directional icons (▶/▼) |
+| `GitBadge` | Modified/Added/Deleted/Untracked/Ignored/Conflict/Clean |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

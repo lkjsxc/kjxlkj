@@ -15,8 +15,8 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ### A. Define measurable targets
 
-- [ ] Define measurable latency/throughput targets derived from the spec.
-- [ ] Specify measurement methodology (hardware/terminal assumptions, warmup, variance tolerance).
+- [x] Define measurable latency/throughput targets derived from the spec.
+- [x] Specify measurement methodology (hardware/terminal assumptions, warmup, variance tolerance).
 
 ### B. Add regression harness
 
@@ -26,7 +26,7 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ### C. Idle CPU behavior
 
-- [ ] Ensure idle CPU usage remains low (no busy-loop redraw) when there is no input and no animation.
+- [x] Ensure idle CPU usage remains low (no busy-loop redraw) when there is no input and no animation.
 
 ### D. Render coalescing and backpressure
 

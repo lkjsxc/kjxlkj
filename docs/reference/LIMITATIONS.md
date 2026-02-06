@@ -144,6 +144,37 @@ All source files are under the 200-line guideline from `/docs/policy/STRUCTURE.m
 The maximum source file is 199 lines (dispatch_navigation.rs).
 Tests are extracted to integration test files under each crate's `tests/` directory.
 
+## Syntax commands
+
+- `:syntax` only supports on/off/manual/enable/disable arguments; syntax groups and match/region commands are not implemented.
+- Language detection is extension-based only; shebang and modeline detection are not implemented.
+
+## Command-line parser
+
+- Command-line completion triggers are recognized but completion candidates require integration with command registry.
+- PasteRegister action is recognized but actual register content paste requires core state integration.
+
+## File explorer
+
+- File explorer is a tree model only; actual filesystem I/O requires integration with FS service.
+- Git badges and diagnostic indicators are defined but not populated from real service data.
+- File operations (create, delete, rename, cut/copy/paste) are modeled but not wired to filesystem.
+
+## Window splits
+
+- Window layout uses floating-point weight-based sizing; integer cell rounding for terminal output is not implemented.
+- Window navigation between splits (Ctrl-W h/j/k/l) requires integration with input dispatch.
+
+## Visual selection
+
+- Block selection text extraction handles short lines but does not pad with spaces for rectangular operations.
+- Visual selection does not yet integrate with operator execution pipeline.
+
+## Latency tracking
+
+- Latency budgets are defined as constants but there is no automated enforcement or CI regression gate.
+- TimingGuard requires mutable probe reference which limits usage in concurrent contexts.
+
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.

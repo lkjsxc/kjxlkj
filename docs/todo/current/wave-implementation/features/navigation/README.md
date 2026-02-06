@@ -28,7 +28,7 @@ Implement built-in navigation/indexing features.
 
 ### B. File explorer MVP (high priority gap)
 
-- [ ] Implement file explorer MVP end-to-end with deterministic tests.
+- [x] Implement file explorer MVP end-to-end with deterministic tests.
   - [file-explorer/README.md](file-explorer/README.md)
 
 ### C. Expand to additional navigation surfaces
