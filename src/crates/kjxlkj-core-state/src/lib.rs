@@ -14,14 +14,14 @@ mod mappings;       mod quickfix;           mod registers;
 mod search_highlight; mod marks_extended;   mod substitute_flags;
 mod buffer_list;    mod visual_block;       mod window_state;
 mod cmdline_completion; mod keybinding_dsl;
+mod user_command_exec;  mod user_function_exec;
+mod debounce_exec;      mod mapping_expansion;
 mod session;        mod session_macros;     pub mod scripting;
 
-pub use autocommands::{AutoCmdTable, AutoEvent};
-pub use buffer_state::BufferState;
+pub use autocommands::{AutoCmdTable, AutoEvent}; pub use buffer_state::BufferState;
 pub use config::{execute_script, load_default_config};
 pub use dispatch::{dispatch_intent};   pub use dispatch_cmdline::handle_cmdline_key;
-pub use mappings::{MappingMode, MappingTable};
-pub use registers::RegisterFile;
+pub use mappings::{MappingMode, MappingTable}; pub use registers::RegisterFile;
 pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
 pub use session::{AutoSaveConfig, RecentFiles, Session, SessionLayout, SplitDirection, SwapFile, UndoFile, Workspace};
 pub use session_macros::{KeyModifiers, KeyStroke, Macro, MacroRecord, MacroStore};

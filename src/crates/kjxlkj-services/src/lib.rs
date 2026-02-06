@@ -3,6 +3,7 @@
 pub mod dap;
 pub mod runtime;
 pub mod contract_checks;
+pub mod profiling;
 
 use std::collections::HashMap;
 

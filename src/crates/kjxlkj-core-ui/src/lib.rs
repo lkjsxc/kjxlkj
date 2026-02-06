@@ -1,5 +1,6 @@
 //! UI model types — layout, status line, command line, popups, notifications, completion.
 
+pub mod accessibility;
 pub mod completion;
 pub mod component;
 pub mod cursor_state;
