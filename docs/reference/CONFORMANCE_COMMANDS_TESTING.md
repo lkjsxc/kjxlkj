@@ -74,6 +74,27 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `:mksession` / `:mks` | Save session |
 | `:oldfiles` / `:ol` | Display recent files |
 
+## Ranges and addresses
+
+| Syntax | Meaning |
+|---|---|
+| `%` | Entire file (all lines) |
+| `{N}` | Line number N (1-indexed in command, 0-indexed internally) |
+| `.` | Current line |
+| `$` | Last line |
+| `'{a-z}` | Line of mark (basic support) |
+| `{addr}+{N}` / `{addr}-{N}` | Offset from address |
+| `{addr1},{addr2}` | Range from addr1 to addr2 |
+
+## Scripting types
+
+| Component | Behavior |
+|---|---|
+| `CompletionRegistry` | Register/unregister completion providers by name+kind |
+| `UserCommandRegistry` | Define/remove user-defined Ex commands with `:command` semantics |
+| `UserFunctionRegistry` | Define/remove user-defined functions with `:function` semantics |
+| `Scheduler` | Timer/debounce management for deferred command execution |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:

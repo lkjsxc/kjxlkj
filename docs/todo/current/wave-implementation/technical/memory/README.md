@@ -22,8 +22,8 @@ Implement memory and large-data behavior constraints.
 
 ### B. Snapshot bounds and allocations
 
-- [ ] Ensure snapshots are viewport-bounded and do not scale with total buffer size.
-- [ ] Add deterministic regression tests that assert viewport-bounded materialization.
+- [x] Ensure snapshots are viewport-bounded and do not scale with total buffer size. — done: BufferSnapshot only materializes viewport rows
+- [x] Add deterministic regression tests that assert viewport-bounded materialization. — done: `memory_latency_probes.rs` and `long_line_rendering.rs` assert snapshot sizes
 
 ### C. Large-file I/O posture (user-reported slowness)
 
@@ -32,4 +32,4 @@ Implement memory and large-data behavior constraints.
 
 ### D. Extremely long lines
 
-- [ ] Add deterministic regression tests for extremely long lines (memory + rendering posture).
+- [x] Add deterministic regression tests for extremely long lines (memory + rendering posture). — done: 13 tests in `long_line_rendering.rs` including Unicode, mixed lengths, stress tests

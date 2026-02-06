@@ -84,6 +84,9 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Fuzzy finder (`<leader>f`, `<leader>g`) has scoring algorithm but no UI rendering.
 - Session persistence (`:mksession`) records metadata and macro key strokes but does not serialize to/restore from disk.
 - Swap files and undo persistence types exist but are not written to disk.
+- Scripting types (completion providers, user commands, user functions, timers) exist but do not execute real script logic.
+- Notification queue supports priority, dedup, and timeout but is not rendered in the TUI yet.
+- Mode transition validation table exists but is not enforced at runtime (transitions are allowed unconditionally).
 
 ## Code structure
 

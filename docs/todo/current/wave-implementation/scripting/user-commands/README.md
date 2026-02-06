@@ -13,7 +13,7 @@ Implement user-defined commands and their integration with Ex parsing/execution.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define command registration and scoping rules.
+- [x] Placeholder scaffolding: define command registration and scoping rules. — done: `UserCommand`, `NArgs`, `UserCommandRegistry` in `scripting.rs`
 - [ ] Minimal slice: create one user command deterministically with tests.
 - [ ] Full conformance: implement all user command features described by the spec.
 

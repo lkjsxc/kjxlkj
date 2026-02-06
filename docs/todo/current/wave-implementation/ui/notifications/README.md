@@ -13,7 +13,7 @@ Implement notifications and their rendering behavior.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define notification data model and queueing rules.
+- [x] Placeholder scaffolding: define notification data model and queueing rules. — done: `NotificationQueue`, `QueuedNotification`, `NotifyPriority` in `notification_queue.rs` with dedup, timeout, and priority tests
 - [ ] Minimal slice: implement minimal notifications with deterministic tests.
 - [ ] Full conformance: implement all notification behaviors and styling.
 

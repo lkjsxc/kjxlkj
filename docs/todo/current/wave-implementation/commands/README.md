@@ -71,14 +71,14 @@ Implement the Ex command surface, including:
   - :s/pattern/replacement/[flags] - substitute implemented
   - :g/pattern/command - global implemented
   - :v/pattern/command - vglobal implemented
-- [ ] Ensure command behavior matches editing primitives and core state model.
-- [ ] Ensure user-visible error messages are stable enough for tests.
+- [x] Ensure command behavior matches editing primitives and core state model. — done: 22 command tests in `command_parsing.rs`
+- [x] Ensure user-visible error messages are stable enough for tests. — done: error message assertions in command parsing tests
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
-  - parsing and error cases
-  - range/address correctness - deferred (no range support yet)
+- [x] Add tests for:
+  - parsing and error cases — done: `command_parsing.rs` with range, set, buffer, write, quit, substitute tests
+  - range/address correctness — done: %, numeric, $, ., +N offset tested
   - [x] command history behavior
     - cmdline_history_up_down, cmdline_ctrl_u_clears_to_start, cmdline_ctrl_w_deletes_word
   - [x] completion behavior

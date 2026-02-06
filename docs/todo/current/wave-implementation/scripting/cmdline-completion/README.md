@@ -13,7 +13,7 @@ Implement scriptable completion behaviors for the command line, as specified.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define completion provider interfaces.
+- [x] Placeholder scaffolding: define completion provider interfaces. — done: `CompletionProvider`, `CompletionProviderKind`, `CompletionRegistry` in `scripting.rs`
 - [ ] Minimal slice: implement one deterministic completion source with tests.
 - [ ] Full conformance: implement all completion behaviors described by the spec.
 

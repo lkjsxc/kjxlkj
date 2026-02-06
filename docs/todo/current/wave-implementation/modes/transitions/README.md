@@ -23,7 +23,7 @@ Implement mode transition rules and invariant enforcement across transitions.
 
 ### C. Full conformance
 
-- [ ] Implement all transitions, including terminal-mode transitions when applicable.
+- [x] Implement all transitions, including terminal-mode transitions when applicable. — done: `transitions.rs` with `is_valid_transition()`, `valid_targets()`, `escape_target()` and 7 tests
 
 ### D. Conformance updates
 

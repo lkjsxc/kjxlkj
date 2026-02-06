@@ -34,9 +34,10 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### A. Deterministic performance probes
 
-- [ ] Add a deterministic typing-burst probe that asserts:
+- [x] Add a deterministic typing-burst probe that asserts:
   - all characters are applied in order
   - the final snapshot reflects the final input (no off-by-one lag)
+  — done: `memory_latency_probes.rs` typing_burst_200/500 tests verify ordering + final state
 - [ ] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true.
 
 ### B. Benchmarks (repeatable, not flaky)

@@ -13,7 +13,7 @@ Implement timing/debounce rules so automation is deterministic and does not intr
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define scheduler/timer abstraction boundaries.
+- [x] Placeholder scaffolding: define scheduler/timer abstraction boundaries. — done: `TimerHandle`, `DebouncedAction`, `Scheduler` in `scripting.rs`
 - [ ] Minimal slice: implement one deterministic debounce path with tests.
 - [ ] Full conformance: implement all timing rules, including cancel/merge semantics.
 
