@@ -1,5 +1,7 @@
 //! Terminal input decoding — crossterm events to editor key events.
 
+mod keyboard_layout;
+
 use kjxlkj_core_types::Size;
 
 /// A decoded editor-level input event.

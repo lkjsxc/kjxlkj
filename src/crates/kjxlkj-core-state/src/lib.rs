@@ -13,9 +13,9 @@ mod dispatch_windows; mod dispatch_yank_paste;
 mod mappings;       mod quickfix;           mod registers;
 mod search_highlight; mod marks_extended;   mod substitute_flags;
 mod buffer_list;    mod visual_block;       mod window_state;
-mod cmdline_completion; mod keybinding_dsl;
-mod user_command_exec;  mod user_function_exec;
-mod debounce_exec;      mod mapping_expansion;
+mod cmdline_completion; mod keybinding_dsl; mod user_command_exec;
+mod user_function_exec; mod debounce_exec;  mod mapping_expansion;
+mod event_automation;   mod script_loader;
 mod session;        mod session_macros;     pub mod scripting;
 
 pub use autocommands::{AutoCmdTable, AutoEvent}; pub use buffer_state::BufferState;

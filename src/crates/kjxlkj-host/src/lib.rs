@@ -1,5 +1,7 @@
 //! Terminal host integration — raw mode, resize, lifecycle.
 
+mod supervisor;
+
 use kjxlkj_core_types::Size;
 
 /// Manages the terminal lifecycle: raw mode, alternate screen, cleanup.

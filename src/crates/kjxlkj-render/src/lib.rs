@@ -1,5 +1,7 @@
 //! Rendering pipeline — diff-based terminal output.
 
+mod viewport_wrap;
+
 use kjxlkj_core_types::Size;
 use kjxlkj_core_ui::UiModel;
 
