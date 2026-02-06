@@ -46,13 +46,13 @@ Implement the canonical editor core model:
   - deterministic cursor movement and clamping
   - deterministic viewport follow rules
   - snapshot → render loop consistency
-- [ ] Implement file open/edit/write flows as specified by the command and file specs.
+- [x] Implement file open/edit/write flows as specified by the command and file specs. — done: `file_flows.rs` (host) with FileOp (Open/Edit/Write/WriteQuit/SaveAs), validate_write_target, resolve_path, detect_encoding, detect_line_ending, build_edit_flow, build_wq_flow
 
 ## Full conformance (sub-wave)
 
 - [x] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
 - [x] Implement multi-window behavior per spec (splits, tabs, window commands).
-- [ ] Ensure all per-window options that affect rendering are reflected in snapshots.
+- [x] Ensure all per-window options that affect rendering are reflected in snapshots. — done: `window_full.rs` (core-undo) with WindowSnapshot containing WindowOptions (number, wrap, signcolumn, scrolloff, etc.)
 
 ## Tests (normative outputs)
 

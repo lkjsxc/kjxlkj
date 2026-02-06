@@ -350,6 +350,47 @@ When reporting or logging issues, capture:
 - No diagonal or non-rectangular region support.
 - `run_all_invariants()` does not check CmdLinePresent or StatusLinePresent (only 4 of 6 invariants run).
 
+### File Flows
+
+- `resolve_path()` performs tilde expansion only — no environment variable expansion.
+- `detect_encoding()` uses BOM and UTF-8 validation heuristics — no charset detection library.
+- `validate_write_target()` checks path structure — does not verify filesystem permissions at check time.
+- File operation sequences (`build_edit_flow`, `build_wq_flow`) are structural — not wired to actual I/O.
+
+### Mode Keybindings
+
+- `build_normal_bindings()` covers 25+ keys — not the full Normal-mode key surface.
+- `check_mode_coverage()` checks against a hardcoded expected count — not against the full spec table.
+- Only Normal mode bindings are pre-built; other modes require manual registration.
+
+### UI Features (Status Line / Message Area)
+
+- `render_segment()` produces strings — not connected to TUI rendering cells.
+- `StatusContext` fields are all strings — no live computation from editor state.
+- `MessageArea` is a data model — display timer and positioning are not implemented.
+- Status line segments are statically ordered — no user-configurable layout.
+
+### Keybinding Tables
+
+- `build_normal_table()` contains 60+ bindings — not all Vim Normal-mode keys are covered.
+- `coverage_stats()` counts per category — no per-key gap analysis against spec.
+- Only Normal mode table is pre-built; other modes are empty by default.
+- Action descriptions are static strings — no localization support.
+
+### Viewport Integrity
+
+- `wrap_line()` uses `unicode_width` crate — does not handle all Unicode edge cases (e.g., combining marks).
+- `DisplayCell::Wide` marker is set manually — no automatic detection from prior cell context.
+- `validate_viewport()` checks dimensions and widths — does not verify cursor position consistency.
+- Long line threshold is hardcoded at 1000 columns — not configurable.
+
+### Leader Keys
+
+- `LeaderConfig` default key is space — changing it requires constructing a new config.
+- `LeaderRegistry` uses linear scan for resolve — no trie or hash-based lookup.
+- `partial_matches()` returns all prefix matches — no ranking or priority.
+- Leader timeout (1000ms) is not enforced at runtime — requires integration with input timing.
+
 ### Feature Integration
 
 - `validate_scenario()` is a structural dry-run only — no actual execution.

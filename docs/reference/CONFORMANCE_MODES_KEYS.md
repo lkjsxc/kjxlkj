@@ -420,3 +420,61 @@ At end of line, typed characters are inserted rather than replacing.
 | `check_coverage()` | Verify regions cover full screen area |
 | `check_cursor_visible()` | Verify cursor is within a visible region |
 | `run_all_invariants()` | Run all 4 layout invariant checks |
+
+### File Flows (`file_flows.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `FileResult` | Success / NotFound / PermissionDenied / IoError result types |
+| `OpenOptions` / `WriteOptions` | Encoding, line ending, readonly, create, force, backup |
+| `FileOp` | Open / Edit / Write / WriteQuit / SaveAs enum |
+| `validate_write_target()` | Path validation for writes (empty, directory, exists checks) |
+| `resolve_path()` | Tilde expansion and path canonicalization |
+| `detect_encoding()` / `detect_line_ending()` | Auto-detect UTF-8/Latin1 and LF/CRLF/CR |
+| `build_edit_flow()` / `build_wq_flow()` | Multi-step file operation sequences |
+
+### Mode Keybindings (`mode_keybindings.rs` — core-mode)
+
+| Aspect | Status |
+| --- | --- |
+| `UxMode` | 9 variants: Normal, Insert, Visual, VisualLine, VisualBlock, Replace, Command, OperatorPending, Terminal |
+| `UxBinding` / `ModeBindingTable` | Per-mode binding table with add/count/for_mode/find_key/undocumented |
+| `build_normal_bindings()` | 25+ Normal-mode key bindings covering hjkl, 0/$, w/b/e, i/a, v/V, operators |
+| `check_mode_coverage()` | Verifies mode binding table completeness |
+
+### UI Features (`ui_features.rs` — render)
+
+| Aspect | Status |
+| --- | --- |
+| `StatusSegment` | 12 segment types: Mode, FileName, FileType, Encoding, Position, Percent, etc. |
+| `StatusLine` | Default layout with left/right alignment |
+| `render_segment()` | Segment rendering with context-based data |
+| `StatusContext` | Runtime context (mode, filename, filetype, encoding, position, etc.) |
+| `MessageArea` | Info/error message display with clear |
+
+### Keybinding Tables (`keybinding_tables.rs` — input)
+
+| Aspect | Status |
+| --- | --- |
+| `ActionCategory` | 12 categories: Motion, Operator, ModeSwitch, Command, Search, Scroll, etc. |
+| `BindingEntry` / `BindingTable` | Key-to-action mappings with category, description |
+| `build_normal_table()` | 60+ Normal-mode bindings across all categories |
+| `coverage_stats()` | Coverage statistics per category via HashMap |
+
+### Viewport Integrity (`viewport_integrity.rs` — render)
+
+| Aspect | Status |
+| --- | --- |
+| `DisplayCell` | Normal / Wide / Continuation cell types |
+| `DisplayRow` | Row of display cells with width computation |
+| `wrap_line()` | Unicode-width-aware line wrapping |
+| `is_long_line()` / `truncate_line()` | Long line detection (1000+ cols) and truncation |
+| `validate_viewport()` | Full viewport validation (dimensions, row widths) |
+
+### Leader Keys (`leader_keys.rs` — input)
+
+| Aspect | Status |
+| --- | --- |
+| `LeaderConfig` | Default leader key (Space), timeout (1000ms) |
+| `LeaderBinding` / `LeaderRegistry` | Leader chord binding and resolution (bind/resolve/partial_matches) |
+| `default_leader_bindings()` | 17 default bindings: find, buffer, git, LSP, terminal, explorer, etc. |

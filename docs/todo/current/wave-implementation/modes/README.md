@@ -64,7 +64,7 @@ Implement modal editing semantics and mode transitions:
 
 - [x] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
 - [x] Implement configuration impacts on modes (where specified).
-- [ ] Ensure mode behavior matches UX keybindings tables.
+- [x] Ensure mode behavior matches UX keybindings tables. — done: `mode_keybindings.rs` (core-mode) with UxMode (9 variants), ModeBindingTable, build_normal_bindings (25+ keys), check_mode_coverage
 
 ## Tests (normative outputs)
 

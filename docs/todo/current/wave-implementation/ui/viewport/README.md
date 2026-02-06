@@ -27,7 +27,7 @@ Implement viewport model and cursor-follow invariants.
 
 ### C. Long-line stability (user-reported rough edge)
 
-- [ ] Ensure extremely long lines do not corrupt or break display.
+- [x] Ensure extremely long lines do not corrupt or break display. — done: `viewport_integrity.rs` (render) with DisplayCell (normal/wide/continuation), DisplayRow, wrap_line (unicode_width), is_long_line, truncate_line, validate_viewport
   - [long-lines/README.md](long-lines/README.md)
 
 ### D. Regression tests and documentation ledgers

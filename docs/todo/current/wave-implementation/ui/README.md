@@ -63,9 +63,9 @@ Implement the UI model and rendering pipeline:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement all UI spec and UI feature documents.
-- [ ] Implement theme and styling support as specified.
-- [ ] Implement notification and popup APIs as specified (or record limitations).
+- [x] Implement all UI spec and UI feature documents. — done: `ui_features.rs` (render) with StatusSegment, StatusLine, StatusContext, MessageArea; `ui_components.rs` (core-edit); `ui_views.rs` (core-edit)
+- [x] Implement theme and styling support as specified. — done: `theme_full.rs` (render) with Rgb, ThemeColor, Face, index_to_rgb, resolve_color
+- [x] Implement notification and popup APIs as specified (or record limitations). — done: `notification_dispatch.rs` (services), `popup_overlay.rs` (core-mode)
 
 ## Tests (normative outputs)
 
