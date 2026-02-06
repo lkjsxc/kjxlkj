@@ -319,6 +319,43 @@ When reporting or logging issues, capture:
 - Blink interval is global — no per-mode blink configuration.
 - No cursor color customization beyond `color_override` string.
 
+### Crate Topology
+
+- `expected_topology()` is a static snapshot — does not parse actual Cargo.toml files.
+- `validate_topology()` checks dependency direction only — no cycle detection.
+- `CrateRole` is manually assigned; no automated role inference.
+
+### Buffer Features
+
+- `BufferVariables` stores string values only — no typed variable support.
+- `AutoCmdRegistry` uses simple string pattern matching — no glob or regex.
+- `BufferLocalOptions` fields are `Option<T>` — no default inheritance from global options.
+- `FileFormat::from_str` only accepts lowercase names.
+
+### UI Components
+
+- `layout_frame()` uses fixed 4-column line numbers — no dynamic width.
+- `component_at()` returns the first visible match — no z-order.
+- No component event/click handling — layout only.
+
+### Keybinding DSL (Full)
+
+- `parse_key_notation()` supports single modifiers per prefix — `<C-A-x>` works but `<CA-x>` does not.
+- F-key range limited to F1-F12; extended F-keys (F13+) not supported.
+- `<leader>` resolves to a KeySpec but leader key value is not configurable here.
+
+### Layout Acceptance
+
+- `check_coverage()` uses total area approximation — does not verify pixel-accurate coverage.
+- No diagonal or non-rectangular region support.
+- `run_all_invariants()` does not check CmdLinePresent or StatusLinePresent (only 4 of 6 invariants run).
+
+### Feature Integration
+
+- `validate_scenario()` is a structural dry-run only — no actual execution.
+- `ScenarioStep::WaitMs` is not enforced — timing is informational.
+- No parallel scenario execution or test isolation.
+
 ### Git Full Integration
 
 - `parse_diff()` only handles unified diff format; does not parse combined/merge diffs.

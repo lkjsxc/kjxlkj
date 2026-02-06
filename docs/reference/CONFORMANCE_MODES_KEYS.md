@@ -381,3 +381,42 @@ At end of line, typed characters are inserted rather than replacing.
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)
+
+### Buffer Features (`buffer_features.rs` — core-text)
+
+| Aspect | Status |
+| --- | --- |
+| `BufferVariables` | Buffer-local variable store (set/get/remove/keys) |
+| `BufferLocalOptions` | Per-buffer option overrides (tabstop, shiftwidth, expandtab, etc.) |
+| `FileFormat` | Unix / Dos / Mac with line ending strings |
+| `BufEvent` | 9 autocommand events (BufEnter/Leave/Read/Write/New/Delete/WinEnter/WinLeave/Modified) |
+| `AutoCmdRegistry` | Register/query/remove autocommands by event and pattern |
+
+### UI Components (`ui_components.rs` — core-edit)
+
+| Aspect | Status |
+| --- | --- |
+| `ComponentKind` | 10 kinds: StatusLine, TabLine, CommandLine, LineNumbers, SignColumn, etc. |
+| `Component` | Positioned UI element with visibility and hit testing |
+| `layout_frame()` | Build standard editor frame from dimensions and toggle options |
+| `component_at()` | Find visible component at screen position |
+
+### Keybinding DSL (`keybinding_dsl.rs` — input)
+
+| Aspect | Status |
+| --- | --- |
+| `SpecialKey` | 16+ special keys (Space, Enter, Escape, F1-F12, arrows, etc.) |
+| `Modifiers` | Ctrl / Alt / Shift / Meta modifier flags |
+| `parse_key_notation()` | Parse `<C-x>`, `<A-Space>`, `<leader>`, `<F12>` notation |
+| `parse_key_sequence()` | Parse full sequences like `<C-w>h` or `<leader>ff` |
+
+### Layout Acceptance (`layout_acceptance.rs` — input)
+
+| Aspect | Status |
+| --- | --- |
+| `InvariantKind` | NoOverlap / FullCoverage / MinSize / CursorVisible / CmdLinePresent / StatusLinePresent |
+| `LayoutRegion` | Rectangular region with overlap detection |
+| `check_no_overlap()` | Verify no two layout regions overlap |
+| `check_coverage()` | Verify regions cover full screen area |
+| `check_cursor_visible()` | Verify cursor is within a visible region |
+| `run_all_invariants()` | Run all 4 layout invariant checks |

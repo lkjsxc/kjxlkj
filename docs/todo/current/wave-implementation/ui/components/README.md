@@ -15,5 +15,6 @@ Implement UI component primitives and their state/render contracts.
 
 - [x] Placeholder scaffolding: define component model and composition rules.
 - [x] Minimal slice: implement a minimal component set with deterministic snapshot tests.
-- [ ] Full conformance: implement all component behaviors required by views and features.
+- [x] Full conformance: implement all component behaviors required by views and features.
+  - ui_components.rs: ComponentId, ComponentKind (10 kinds), Visibility, Component, layout_frame, component_at
 

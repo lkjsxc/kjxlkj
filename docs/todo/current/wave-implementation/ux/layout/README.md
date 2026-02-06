@@ -13,7 +13,8 @@ Implement layout expectations that affect UI composition and navigation flows.
 
 ## Checklist
 
-- [ ] Define layout invariants as acceptance criteria.
+- [x] Define layout invariants as acceptance criteria.
+  - layout_acceptance.rs: InvariantKind (6 kinds), LayoutRegion (overlaps/area), check_no_overlap, check_coverage, check_min_size, check_cursor_visible, run_all_invariants
 - [x] Ensure window/UI implementation satisfies layout constraints.
 - [x] Add tests for focus movement and viewport stability within the layout.
 

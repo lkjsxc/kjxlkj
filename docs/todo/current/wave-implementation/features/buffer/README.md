@@ -22,6 +22,7 @@ Implement buffer-related built-in features beyond the core buffer model.
 - [x] Minimal slice: implement one feature end-to-end with tests.
   - Alternate buffer (Ctrl-^, :b#, :b N)
   - Scratch buffers (:scratch)
-- [ ] Full conformance: implement all documents in the subtree.
+- [x] Full conformance: implement all documents in the subtree.
+  - buffer_features.rs: BufferVariables, BufferLocalOptions, FileFormat, BufEvent, AutoCmd, AutoCmdRegistry
 - [ ] Update conformance and limitations docs when behavior becomes user-visible.
 

@@ -678,6 +678,24 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `CodeAction` / `CodeActionKind` | QuickFix, Refactor, Source actions |
 | `filter_completions()` | Case-insensitive prefix filtering |
 
+### Crate Topology (`crate_topology.rs` — services)
+
+| Aspect | Status |
+| --- | --- |
+| `CrateRole` | Core / Service / UI / IO / Host role classification |
+| `check_dep_direction()` | Validates dependency direction rules (no service→host, core→host, etc.) |
+| `expected_topology()` | 11-crate topology with verified dependencies |
+| `validate_topology()` | Full graph validation returning list of violations |
+
+### Feature Integration (`feature_integration.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `IntegrationScenario` | Multi-step test scenarios with expected end state |
+| `ScenarioStep` | OpenFile / TypeText / ExecuteCommand / SendKey / WaitMs / Assert |
+| `validate_scenario()` | Dry-run validation of scenario structure |
+| `open_edit_save_scenario()` / `undo_redo_scenario()` | Pre-built integration scenarios |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

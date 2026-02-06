@@ -55,11 +55,12 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement one end-to-end feature slice that exercises:
+- [x] Implement one end-to-end feature slice that exercises:
   - service supervision
   - UI rendering
   - persistence or IO
   - deterministic tests
+  - feature_integration.rs: IntegrationScenario, ScenarioStep, open_edit_save_scenario, undo_redo_scenario, validate_scenario
 
 ## Full conformance (sub-wave)
 
