@@ -1,6 +1,7 @@
 //! Undo/redo tree with branching history.
 
 pub mod branch;
+mod buffer_lifecycle;
 
 use std::time::Instant;
 

@@ -1,6 +1,7 @@
 //! kjxlkj editor — main application wiring.
 
 mod headless; mod tui; mod tui_render;
+mod config_options;
 
 pub async fn run(
     file: Option<String>,
