@@ -26,9 +26,12 @@ Implement built-in Language Server Protocol integration.
   - ServerCapabilities model
   - HoverInfo, CodeAction, TextEdit, Location types
 - [ ] Minimal slice: implement one request/response + UI update path with tests.
-  - [ ] Initialize handshake (InitializeParams, ServerCapabilities)
-  - [ ] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
-  - [ ] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
+  - [x] Initialize handshake (InitializeParams, ServerCapabilities)
+    - make_initialize(), InitializeParams, ClientCapabilities, JSON-RPC Request/Response/Notification types
+  - [x] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
+    - make_did_open(), TextDocumentItem, encode_message()
+  - [x] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
+    - make_did_change(), VersionedTextDocId, ContentChange, DidCloseParams
 - [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
   - [ ] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
   - [ ] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)

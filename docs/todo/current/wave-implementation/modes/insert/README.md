@@ -42,7 +42,10 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
   - [x] Ctrl-o (execute one normal command)
   - [x] Ctrl-k (digraph insert)
   - [x] Ctrl-v (literal character insert)
-  - [ ] Completion integration
+  - [x] Completion integration
+    - CompletionSource (Buffer/Path/Line/Lsp/Dictionary/Command)
+    - CompletionMenu with open/close/select_next/prev/filter/current
+    - collect_buffer_words(), collect_line_completions() collectors
   - [x] Autopairs
   - [x] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 

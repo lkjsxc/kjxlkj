@@ -48,8 +48,12 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Unit tests (required)
 
-- [ ] Explorer state transitions (expand/collapse, selection movement).
-- [ ] Tree rendering to a list of display rows given a known filesystem snapshot.
+- [x] Explorer state transitions (expand/collapse, selection movement).
+  - ExplorerAction enum: ToggleExpand, OpenFile, SelectUp, SelectDown, Close, Refresh, CreateFile
+  - Keyboard handler: j/k navigation, Enter/l open, h collapse, q close, R refresh
+- [x] Tree rendering to a list of display rows given a known filesystem snapshot.
+  - ExplorerRow with text, depth, kind, expanded, is_selected, node_index
+  - Tree flattening with indentation, expand/collapse arrows (▸/▾), file-type icons
 
 ### Integration tests (required)
 
@@ -57,7 +61,8 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Golden UI tests (recommended)
 
-- [ ] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
+- [x] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
+  - Tests: render_empty_tree, render_flat_files, render_expanded_dir, render_collapsed_dir_hides_children, handle_key_navigation, handle_key_quit, find_path_at_index
 
 ## Checklist
 
@@ -70,7 +75,7 @@ The MVP MAY defer (but must track as TODO leaves):
 - [x] Define the service interface for directory listing (incremental + cancellable for large dirs).
   - FsWatchService.list_dir() async method
   - FsWatchService.sort_entries() with dirs-first option
-- [ ] Implement explorer view rendering and input handling with deterministic tests.
+- [x] Implement explorer view rendering and input handling with deterministic tests.
 - [ ] Implement open-file intent wiring into the editor core.
 - [ ] Add at least one regression test for "10k children expand does not freeze".
 - [ ] Update conformance and limitations docs:

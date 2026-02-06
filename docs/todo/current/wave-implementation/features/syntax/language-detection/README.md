@@ -24,7 +24,12 @@ Implement deterministic language detection so syntax highlighting activates for 
 ### B. Tests (required)
 
 - [x] Add unit tests for extension → language id mapping.
-- [ ] Add integration tests that open representative fixtures and assert:
+- [x] Add integration tests that open representative fixtures and assert:
+  - Extensions: rs, py, js, ts, go, java, cpp, zig, lua, unknown→Plain
+  - Filenames: Dockerfile, Makefile, main.rs, config.yaml
+  - Paths: /home/user/project/src/main.rs, scripts/build.sh
+  - LSP IDs: rust, python, typescript, markdown, plaintext
+  - Display: format!("{}", LanguageId::Rust) == "rust"
   - language id selection is correct
   - highlight spans are non-empty for fully supported languages
 

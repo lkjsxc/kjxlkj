@@ -29,7 +29,10 @@ Implement the regex behavior required by search, substitute, and other text feat
 
 ### C. Full conformance
 
-- [ ] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
+- [x] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
+  - Vim magic-mode: `.`, `*`, `^`, `$`, `[]`, `\d`, `\w`, `\s`, `\<`, `\>`, `\+`, `\?`, `\|`, `\(`, `\)`
+  - Case-insensitive and smartcase support in search
+  - Word-boundary search for `*` and `#` using `\b`
 
 ### D. Conformance updates
 
