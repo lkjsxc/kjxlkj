@@ -14,6 +14,6 @@ Implement layout expectations that affect UI composition and navigation flows.
 ## Checklist
 
 - [ ] Define layout invariants as acceptance criteria.
-- [ ] Ensure window/UI implementation satisfies layout constraints.
-- [ ] Add tests for focus movement and viewport stability within the layout.
+- [x] Ensure window/UI implementation satisfies layout constraints.
+- [x] Add tests for focus movement and viewport stability within the layout.
 

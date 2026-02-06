@@ -38,6 +38,6 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

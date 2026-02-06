@@ -91,6 +91,11 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Cursor state types (CursorState, CursorHint) exist for snapshot rendering but are not emitted by the render loop.
 - Mode configuration types (CursorConfig, LineNumberStyle, ModeIndicatorFormat) exist but are not persisted or applied at runtime.
 - Runtime lifecycle (RuntimePhase, RestartPolicy, ServiceLifecycle, BusCapacity) is modeled but not enforced by the tokio runtime.
+- Theme model (ThemePalette, ThemeRegistry, 3 built-in themes) exists with style resolution but is not connected to the render pipeline.
+- Floating window types (FloatConfig, FloatBorder, FloatAnchor, ZoomState, LayoutPreset) exist as data model only; no floating windows are rendered yet.
+- Search highlight model (SearchHighlights with next/prev/hlsearch) exists but is not integrated with the search dispatch or renderer.
+- Undo branching tree (BranchingUndoTree) coexists with the linear UndoTree; the branching variant is not yet wired into buffer state.
+- DAP debugging types (DapState, Breakpoint, StackFrame, Variable) are scaffolding; no debug adapter connection is implemented.
 
 ## Code structure
 

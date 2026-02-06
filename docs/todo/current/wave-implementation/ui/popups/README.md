@@ -13,7 +13,7 @@ Implement popups/overlays (completion, picker, confirmations) and their interact
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define overlay layering and focus rules.
+- [x] Placeholder scaffolding: define overlay layering and focus rules.
 - [ ] Minimal slice: implement one overlay with deterministic tests.
 - [ ] Full conformance: implement all overlay and popup behaviors.
 

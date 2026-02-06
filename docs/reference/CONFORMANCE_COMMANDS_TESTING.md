@@ -124,6 +124,48 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 |---|---|
 | `dispatch_explorer_action()` | Wires ExplorerAction::OpenFile to `:e {path}` command dispatch |
 
+## Theme types
+
+| Component | Behavior |
+|---|---|
+| `ThemePalette` | 17 semantic colors (fg, bg, cursor, selection, keyword, etc.) with per-group style resolution |
+| `Theme` | Named theme with palette + highlight group overrides |
+| `ThemeRegistry` | Registry of named themes with active theme switching |
+| `theme_dark/light/gruvbox()` | Three built-in theme definitions |
+
+## Floating window types
+
+| Component | Behavior |
+|---|---|
+| `FloatBorder` | None/Single/Double/Rounded/Solid/Shadow border styles |
+| `FloatConfig` | Anchor, size (fixed/percent), border, row/col offset, zindex |
+| `ZoomState` | Normal/Zoomed toggle with restore dimensions |
+| `LayoutPreset` | Single/EqualH/EqualV/MainLeft/MainTop/Grid layout computation |
+| `ResizeOp` | IncrementH/W, SetH/W, Maximize, Equalize with clamping |
+| `WinCmd` | Split/Close/Focus/Rotate/Exchange/Resize/Zoom commands |
+
+## Search highlight types
+
+| Component | Behavior |
+|---|---|
+| `SearchMatch` | Start/end position + is_current flag for each match |
+| `SearchHighlights` | Match collection with next/prev cycling, hlsearch toggle, visible filtering |
+
+## Undo branching types
+
+| Component | Behavior |
+|---|---|
+| `BranchingUndoTree` | Tree-structured undo with parent/children, branch selection, path traversal |
+| `NodeId` / `ChangeEntry` | Typed node IDs and forward/reverse patch entries |
+
+## DAP debugging types
+
+| Component | Behavior |
+|---|---|
+| `DapState` | Debug session state with breakpoints, stack frames, variables |
+| `Breakpoint` | Line/conditional/logpoint/function/data breakpoints with toggle |
+| `StackFrame` / `Variable` | Call stack traversal and variable inspection |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:
