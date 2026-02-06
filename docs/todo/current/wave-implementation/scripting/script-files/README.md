@@ -15,5 +15,5 @@ Implement script/config file loading, parsing, and execution rules.
 
 - [x] Placeholder scaffolding: define file locations and security constraints.
 - [x] Minimal slice: load one script file deterministically and validate behavior with tests.
-- [ ] Full conformance: implement all specified script file behaviors.
+- [x] Full conformance: implement all specified script file behaviors. — done: `script_files.rs` with ScriptFile, ScriptLine (ExCommand/Comment/Blank/Conditional), parse_script, executable_commands, resolve_source_path, SourceTracker, default_runtime_paths
 

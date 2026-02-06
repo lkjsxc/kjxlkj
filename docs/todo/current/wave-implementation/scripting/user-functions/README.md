@@ -15,5 +15,5 @@ Implement user-defined functions where the spec requires them, including invocat
 
 - [x] Placeholder scaffolding: define function registry and call boundary. — done: `UserFunction`, `UserFunctionRegistry` in `scripting.rs`
 - [x] Minimal slice: implement one deterministic function call with tests. — done: `user_function_exec.rs` with `FuncContext`, `execute_function()`, `parse_let()`, `resolve_expression()`, 7 tests
-- [ ] Full conformance: implement all function behaviors described by the spec.
+- [x] Full conformance: implement all function behaviors described by the spec. — done: `user_functions.rs` with UserFunction (params/body/varargs/script-local/range/abort), FunctionRegistry (define/get/remove/list), parse_function, parse_call
 

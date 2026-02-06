@@ -235,6 +235,36 @@ Tests are extracted to integration test files under each crate's `tests/` direct
 - Glob pattern matching supports only `*` and `*.ext` patterns; full glob syntax (brackets, ranges) is not implemented.
 - Autocommand execution order is insertion order; priority-based ordering is not supported.
 
+## Script files
+
+- Script file parsing does not support multi-line constructs (if/endif, while/endwhile) as nested structures.
+- Script execution is modeled as sequential command dispatch; conditional branching is parsed but not evaluated.
+
+## User commands
+
+- User command expansion handles `<args>`, `<q-args>`, `<bang>` but not `<line1>`, `<line2>`, `<count>`, `<reg>`.
+- Command completion attribute is stored but not wired to the completion engine.
+
+## User functions
+
+- Function body is stored as raw strings; no expression evaluation or variable scoping is implemented.
+- Varargs (`...`) are parsed but `a:000` list access is not implemented.
+
+## Input timing
+
+- Debouncer uses wall-clock Instant which may be affected by system clock adjustments.
+- Input rate window eviction uses linear scan; very high event rates may cause overhead.
+
+## Mappings engine
+
+- Recursive mapping resolution has a hard depth limit of 20; Vim's limit is configurable.
+- Buffer-local mappings are flagged but not scoped to specific buffer IDs.
+
+## Keybinding coverage
+
+- Coverage map is built programmatically; dynamic keybinding changes at runtime are not tracked.
+- Only normal mode coverage is pre-built; insert/visual/command modes require manual registration.
+
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.

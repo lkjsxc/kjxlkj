@@ -290,6 +290,35 @@ At end of line, typed characters are inserted rather than replacing.
 | `char_to_col()` / `col_to_char()` | Bidirectional char-index to display-column conversion |
 | `MAX_RENDER_COLS` | 10,000 column rendering threshold |
 
+## User functions
+
+| Feature | Behavior |
+|---|---|
+| `UserFunction` | Name, params, body, varargs, script-local, range, abort |
+| `FunctionRegistry` | define/get/remove/list with uppercase/s: enforcement |
+| `parse_function()` | Parses `:function` definition from lines |
+| `parse_call()` | Extracts function name and arguments from call expression |
+| `is_script_local()` | Checks s: or `<SID>` prefix |
+
+## Input timing
+
+| Feature | Behavior |
+|---|---|
+| `Debouncer` | Signal/check_pending with configurable delay |
+| `ResizeCoalescer` | Coalesces rapid resize events with settle timeout |
+| `IdleDetector` | Fires once after no input for specified duration |
+| `InputRateTracker` | Tracks event rate with sliding window, detects burst |
+
+## Mappings engine
+
+| Feature | Behavior |
+|---|---|
+| `MapMode` | Normal/Insert/Visual/Command/OperatorPending/Terminal |
+| `MappingStore` | add/remove/lookup/has_prefix/list/clear |
+| `parse_map_command()` | Parses :map/:nmap/:imap/:nnoremap etc. |
+| `resolve_mapping()` | Resolves through recursive mappings with depth limit |
+| Noremap | Non-recursive mappings stop after first resolution |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

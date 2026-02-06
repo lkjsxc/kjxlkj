@@ -615,6 +615,27 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `fire_event()` | Collects matching commands for an event firing |
 | `once` flag | Single-fire autocommands removed after execution |
 
+## Script files
+
+| Feature | Behavior |
+|---|---|
+| `ScriptFile` | Parsed script with path and command lines |
+| `ScriptLine` | ExCommand / Comment / Blank / Conditional variants |
+| `parse_script()` | Parses file content into script lines |
+| `executable_commands()` | Extracts only executable (non-comment/blank) lines |
+| `SourceTracker` | Tracks sourced files, prevents double-sourcing |
+| `resolve_source_path()` | Searches directories for script files with .vim fallback |
+
+## User commands
+
+| Feature | Behavior |
+|---|---|
+| `UserCommandDef` | Name, replacement, nargs, range/bang/bar/complete flags |
+| `NArgs` | Zero/One/Any/AtLeastOne/ZeroOrOne with validation |
+| `UserCommandRegistry` | define/get/remove/list/expand with uppercase enforcement |
+| `expand()` | Substitutes `<args>`, `<q-args>`, `<bang>` in replacement |
+| `parse_command_def()` | Parses `:command` arguments into definition |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

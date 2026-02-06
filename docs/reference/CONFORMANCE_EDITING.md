@@ -231,6 +231,16 @@ Search behavior in this conformance target is:
 | `find_number()` | Numeric literal under cursor |
 | `TextRange` | start/end line/col with contains() and is_empty() |
 
+## Keybinding coverage
+
+| Feature | Behavior |
+|---|---|
+| `BindingCoverage` | Coverage tracker with register/set_status/add_test |
+| `BindingStatus` | Implemented / Partial / Stub / NotImplemented |
+| `coverage_percent()` | Reports implementation coverage percentage |
+| `untested()` / `not_implemented()` | Lists gaps in testing and implementation |
+| `build_normal_coverage()` | 35+ normal-mode keybindings mapped with descriptions |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)
