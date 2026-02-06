@@ -11,6 +11,7 @@ mod dispatch_macros; mod dispatch_marks;    mod dispatch_misc;
 mod dispatch_navigation; mod dispatch_operators; mod dispatch_search;
 mod dispatch_windows; mod dispatch_yank_paste;
 mod mappings;       mod quickfix;           mod registers;
+mod search_highlight;
 mod session;        mod session_macros;     pub mod scripting;
 mod window_state;
 

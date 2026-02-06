@@ -1,5 +1,6 @@
 //! Service supervisor — manages background service lifecycle.
 
+pub mod dap;
 pub mod runtime;
 
 use std::collections::HashMap;

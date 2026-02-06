@@ -1,5 +1,7 @@
 //! Undo/redo tree with branching history.
 
+pub mod branch;
+
 use std::time::Instant;
 
 /// A unique identifier for an undo node.

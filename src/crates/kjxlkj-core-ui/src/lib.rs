@@ -3,8 +3,10 @@
 pub mod completion;
 pub mod component;
 pub mod cursor_state;
+pub mod float_window;
 pub mod mode_config;
 pub mod notification_queue;
+pub mod theme;
 
 use kjxlkj_core_types::{BufferId, Mode, Size, WindowId};
 
