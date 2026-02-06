@@ -23,7 +23,7 @@ Reported rough edge: long lines not wrapping in the interactive UI.
   - WindowState::new() sets wrap: true; EditorOptions::default() sets wrap: true
 - [x] Ensure `wrap = true` implies `left_col = 0` (no horizontal scroll).
   - ensure_cursor_visible_horizontal() forces left_col = 0 when wrap is true
-- [ ] Ensure switching `wrap` on/off re-clamps viewport deterministically and keeps cursor visible.
+- [x] Ensure switching `wrap` on/off re-clamps viewport deterministically and keeps cursor visible.
 
 ### B. Tests (required)
 

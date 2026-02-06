@@ -95,6 +95,35 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `UserFunctionRegistry` | Define/remove user-defined functions with `:function` semantics |
 | `Scheduler` | Timer/debounce management for deferred command execution |
 
+## UI types
+
+| Component | Behavior |
+|---|---|
+| `CursorState` | Per-snapshot cursor position, shape, blink, visibility |
+| `CursorHint` | Show/Hide hint for TUI layer from viewport coordinates |
+| `CursorConfig` | Per-mode cursor shape and blink configuration |
+| `LineNumberStyle` | None/Absolute/Relative/Hybrid line number display |
+| `ModeIndicatorFormat` | Uppercase/Short/Char/Hidden mode indicator format |
+| `ComponentId/Kind` | Typed component identifiers for layout tree (BufferView, StatusLine, etc.) |
+| `Rect` | Screen rectangle with split operations for layout composition |
+| `LayoutNode` | Component layout node with id, kind, rect, visibility |
+| `standard_layout()` | Compute standard editor layout (tab line, buffer, status, command) |
+
+## Runtime types
+
+| Component | Behavior |
+|---|---|
+| `RuntimePhase` | Init → CoreStarting → ServicesStarting → Running → ShuttingDown → Terminated |
+| `RestartPolicy` | Never / Limited(N) / Always restart on service failure |
+| `ServiceLifecycle` | Tracks restart count, status, errors, backoff for supervised services |
+| `BusCapacity` | Bounded message bus with send/receive/utilization tracking |
+
+## Explorer bridge
+
+| Component | Behavior |
+|---|---|
+| `dispatch_explorer_action()` | Wires ExplorerAction::OpenFile to `:e {path}` command dispatch |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:

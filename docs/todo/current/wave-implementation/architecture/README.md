@@ -57,8 +57,8 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full runtime ordering and invariants specified in `runtime.md`.
-- [ ] Implement service supervision as defined by the architecture spec:
+- [x] Implement the full runtime ordering and invariants specified in `runtime.md`.
+- [x] Implement service supervision as defined by the architecture spec:
   - failure handling and recovery
   - backpressure expectations
   - core responsiveness under service load

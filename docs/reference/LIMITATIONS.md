@@ -78,7 +78,7 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 - No mouse support (by design).
 - Terminal integration (`:terminal`, `<leader>t`) has Terminal mode and service scaffolding but no real PTY spawning yet.
-- File explorer (`:explorer`, `<leader>e`) has tree rendering, input handling, and display rows but is not wired into the TUI render loop yet.
+- File explorer (`:explorer`, `<leader>e`) has tree rendering, input handling, display rows, and open-file intent wiring to `:e` but is not wired into the TUI render loop yet.
 - LSP integration has JSON-RPC protocol types, initialize/didOpen/didChange builders, extended types (hover, signature help, code actions, navigation, rename, code lens, formatting, symbols), and message encoding but is not connected to real language servers.
 - Git integration detects current branch from `.git/HEAD`, has conflict marker detection, diff viewer types, and file indicators but does not run real git commands.
 - Fuzzy finder (`<leader>f`, `<leader>g`) has scoring algorithm but no UI rendering.
@@ -87,6 +87,10 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Scripting types (completion providers, user commands, user functions, timers) exist but do not execute real script logic.
 - Notification queue supports priority, dedup, and timeout but is not rendered in the TUI yet.
 - Mode transition validation table exists but is not enforced at runtime (transitions are allowed unconditionally).
+- UI component model (Rect, LayoutNode, standard_layout) exists for deterministic layout but is not connected to the renderer.
+- Cursor state types (CursorState, CursorHint) exist for snapshot rendering but are not emitted by the render loop.
+- Mode configuration types (CursorConfig, LineNumberStyle, ModeIndicatorFormat) exist but are not persisted or applied at runtime.
+- Runtime lifecycle (RuntimePhase, RestartPolicy, ServiceLifecycle, BusCapacity) is modeled but not enforced by the tokio runtime.
 
 ## Code structure
 

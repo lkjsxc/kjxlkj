@@ -47,7 +47,7 @@ This leaf covers both:
 
 - [ ] Add a minimal reproduction file fixture (long ASCII line; long Unicode-heavy line).
 - [x] Add tests that fail if the renderer materializes full long lines per frame. — done: `long_line_rendering.rs` with 13 tests for viewport-bounded slicing
-- [ ] Add at least one regression test that exercises:
+- [x] Add at least one regression test that exercises:
   - resize storms with a long line visible
   - rapid horizontal scrolling (no-wrap)
   - wrap toggling (if supported)

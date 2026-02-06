@@ -76,7 +76,7 @@ The MVP MAY defer (but must track as TODO leaves):
   - FsWatchService.list_dir() async method
   - FsWatchService.sort_entries() with dirs-first option
 - [x] Implement explorer view rendering and input handling with deterministic tests.
-- [ ] Implement open-file intent wiring into the editor core.
+- [x] Implement open-file intent wiring into the editor core.
 - [ ] Add at least one regression test for "10k children expand does not freeze".
 - [ ] Update conformance and limitations docs:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

@@ -35,7 +35,7 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 
 ### C. Full conformance
 
-- [ ] Implement additional Insert-mode features from the subtree, gated by tests and conformance updates.
+- [x] Implement additional Insert-mode features from the subtree, gated by tests and conformance updates.
   - [x] Ctrl-w (delete word before)
   - [x] Ctrl-u (delete to line start)
   - [x] Ctrl-r {reg} (insert register contents)
