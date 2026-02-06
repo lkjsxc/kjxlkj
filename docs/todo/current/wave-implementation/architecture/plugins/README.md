@@ -15,7 +15,7 @@ Enforce the “no plugins” invariant while still supporting built-in extensibi
 
 ## Checklist
 
-- [ ] Define what "plugin-like behavior" means in this codebase and prohibit it.
-- [ ] Ensure all feature extension points are internal modules/services only.
-- [ ] Add tests and/or build checks that prevent introducing plugin loading.
+- [x] Define what "plugin-like behavior" means in this codebase and prohibit it. — done: `plugin_prevention.rs` with FORBIDDEN_PATTERNS, audit_source(), audit_files()
+- [x] Ensure all feature extension points are internal modules/services only.
+- [x] Add tests and/or build checks that prevent introducing plugin loading. — done: 9 tests for clean source, dlopen detection, dependency checking, architecture rule
 

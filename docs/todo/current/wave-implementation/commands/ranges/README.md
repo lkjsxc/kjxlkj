@@ -39,7 +39,7 @@ Implement the range and address model used by Ex commands.
 
 ### C. Full conformance
 
-- [ ] Implement all range/address behaviors and edge cases defined by the subtree.
+- [x] Implement all range/address behaviors and edge cases defined by the subtree. — done: `range_address.rs` with Address (CurrentLine/LastLine/LineNumber/Mark/ForwardSearch/BackwardSearch/Offset), Range (None/Single/FromTo/Entire), parse_range(), resolve_range()
 
 ### D. Conformance updates
 

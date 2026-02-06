@@ -496,6 +496,43 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `annotate_chunks_with_lines()` | Map chunks to line ranges |
 | `extract_line_range()` | Extract text for line range using index |
 
+## Range and address parsing
+
+| Feature | Behavior |
+|---|---|
+| `Address` | CurrentLine (`.`), LastLine (`$`), LineNumber, Mark (`'a`), ForwardSearch (`/pat/`), BackwardSearch (`?pat?`), Offset |
+| `Range` | None, Single, FromTo (`,` separated), Entire (`%`) |
+| `parse_range()` | Parses range string into Range enum |
+| `parse_address()` | Parses single address with offset support |
+| `resolve_range()` | Resolves range to (start, end) line numbers |
+
+## Plugin prevention
+
+| Feature | Behavior |
+|---|---|
+| `audit_source()` | Scans source for forbidden patterns (dlopen, libloading, PluginManager, etc.) |
+| `audit_files()` | Batch audit across multiple files |
+| `check_dependencies()` | Verifies no forbidden crate dependencies |
+| `verify_architecture_rule()` | Validates architecture description matches no-plugin rule |
+
+## Session commands
+
+| Feature | Behavior |
+|---|---|
+| `SessionData` | Working dir, open files, cursor positions, window layout |
+| `serialize_session()` | Saves session to script format |
+| `parse_session()` | Restores session from script |
+| `WindowLayout` | Single, Horizontal, Vertical split trees |
+
+## Buffer metadata
+
+| Feature | Behavior |
+|---|---|
+| `BufferInfo` | id, name, modified, readonly, listed, loaded, line_count |
+| `AlternateFile` | Tracks current/alternate buffer for Ctrl-^ switching |
+| `BufferVariables` | Buffer-local variable store (b:var equivalent) |
+| `format_buffer_info()` | Formats buffer for `:ls` display |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

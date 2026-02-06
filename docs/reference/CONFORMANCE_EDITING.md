@@ -176,6 +176,27 @@ Search behavior in this conformance target is:
 | `check_layout_invariants()` | Checks overlaps, bounds, cursor, statusline |
 | `check_vertical_coverage()` | Verifies regions tile without vertical gaps |
 
+## Keybinding coverage
+
+| Feature | Behavior |
+|---|---|
+| `CoverageMap` | Tracks bindings with mode, keys, tested, documented flags |
+| `untested()` / `undocumented()` | Find gaps in coverage |
+| `coverage_pct()` | Percentage of tested bindings |
+| `find_duplicates()` | Detect duplicate bindings within same mode |
+| `build_default_normal_coverage()` | Default Normal mode map with 23 core keys |
+
+## Theme engine
+
+| Feature | Behavior |
+|---|---|
+| `ThemeColor` | RGBA color with rgb/rgba constructors and `to_ansi256()` |
+| `StyleRule` | Scope-to-color mapping with bold/italic/underline |
+| `Theme` | Full theme definition (dark/light) with editor, cursor, statusline colors |
+| `default_dark_theme()` / `default_light_theme()` | Built-in themes |
+| `resolve_scope()` | Look up style for a scope name |
+| `apply_override()` | Merge user override into theme |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

@@ -131,6 +131,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Highlight groups (`HighlightGroup` 31 variants, `token_to_group`, `highlight_line`) exist but are not connected to tree-sitter or the buffer render pipeline.
 - Large buffer support (`LoadStrategy`, `build_line_index`, `compute_chunks`, `extract_line_range`) exists but is not integrated into the file open/save pipeline.
 - Layout invariant checker (`check_layout_invariants`, `check_vertical_coverage`) exists but is not called during the render loop.
+- Range/address parser (`parse_range`, `parse_address`, `resolve_range`) exists but is not connected to the Ex command dispatch pipeline.
+- Plugin prevention auditor (`audit_source`, `audit_files`, `check_dependencies`) exists but is not run as a CI check or build step.
+- Keybinding coverage map (`CoverageMap` with untested/undocumented/find_duplicates) exists but is not wired into a CI gate or automated report.
+- Theme engine (`Theme`, `default_dark_theme`, `default_light_theme`, `resolve_scope`, `apply_override`) exists but is not connected to the render pipeline.
+- Session commands (`serialize_session`, `parse_session`, `SessionData`) exist but are not connected to `:mksession` or `:source`.
+- Buffer metadata (`AlternateFile`, `BufferVariables`, `format_buffer_info`) exists but is not integrated into the buffer lifecycle or `:ls` command.
 
 ## Code structure
 
