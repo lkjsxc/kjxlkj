@@ -15,5 +15,5 @@ Implement event automation, hooks, and event routing rules.
 
 - [x] Placeholder scaffolding: define event types and subscription model.
 - [x] Minimal slice: implement one hookable event with deterministic tests.
-- [ ] Full conformance: implement all automation rules and event families.
+- [x] Full conformance: implement all automation rules and event families. — done: `event_automation.rs` with AutoEvent (17 events), AutoPattern (All/Glob/FileType), AutoCmd, AutoCmdRegistry (add/matching/clear_group/remove_once_fired), fire_event
 

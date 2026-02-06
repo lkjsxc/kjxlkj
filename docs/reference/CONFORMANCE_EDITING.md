@@ -220,6 +220,17 @@ Search behavior in this conformance target is:
 | `cursor_in_viewport()` | Tests if cursor position is visible in viewport |
 | `matching_bracket()` | Finds matching bracket (parens/brackets/braces) |
 
+## Extended text objects
+
+| Feature | Behavior |
+|---|---|
+| `ExtTextObject` | Argument/IndentLevel/EntireBuffer/Line/Number/Url |
+| `find_argument()` | Comma-delimited argument within parens/brackets, inner/outer |
+| `find_indent_level()` | Contiguous lines with same or deeper indentation |
+| `find_entire_buffer()` | Entire buffer content, inner skips leading/trailing blank lines |
+| `find_number()` | Numeric literal under cursor |
+| `TextRange` | start/end line/col with contains() and is_empty() |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

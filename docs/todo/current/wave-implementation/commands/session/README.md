@@ -34,7 +34,7 @@ Implement session-related Ex commands and persistence behaviors (swap, undo pers
 
 ### C. Full conformance
 
-- [ ] Implement all session commands and persistence behaviors in the subtree.
+- [x] Implement all session commands and persistence behaviors in the subtree. — done: `session_persistence.rs` with SessionState (marks/jumps/registers/history/buffer_positions), save/restore via JSON, serialize_session, filter_history
 
 ### D. Conformance updates
 

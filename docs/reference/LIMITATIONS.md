@@ -205,6 +205,36 @@ Tests are extracted to integration test files under each crate's `tests/` direct
 - Viewport follow uses integer line arithmetic; sub-line scrolling for smooth scroll is not implemented.
 - Horizontal follow does not account for multi-width Unicode characters in column calculations.
 
+## Session persistence
+
+- Session state serialization produces a summary JSON (counts) rather than full restorable JSON with all data.
+- Mark and jump list capacity is capped at 100; older entries are silently evicted.
+
+## Extended text objects
+
+- Argument text object works on single-line expressions only; multi-line argument lists are not supported.
+- IndentLevel text object uses character-count indentation; mixed tabs/spaces may give unexpected results.
+
+## Long line handling
+
+- Wide character detection uses simplified Unicode ranges; full East Asian Width property is not consulted.
+- Line segmentation does not cache results; repeated rendering of the same long line recomputes segments.
+
+## Insert newline
+
+- Smart indent only recognizes `{`, `(`, `[`, `:` as indent triggers; language-specific indent rules are not supported.
+- Auto-indent does not consult treesitter or LSP for context-aware indentation.
+
+## LSP requests
+
+- Pending request tracking is single-server; multi-server scenarios require separate PendingRequests instances.
+- Diagnostic store does not support incremental (delta) diagnostic updates.
+
+## Event automation
+
+- Glob pattern matching supports only `*` and `*.ext` patterns; full glob syntax (brackets, ranges) is not implemented.
+- Autocommand execution order is insertion order; priority-based ordering is not supported.
+
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.

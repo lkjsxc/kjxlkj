@@ -25,7 +25,7 @@ Implement built-in Language Server Protocol integration.
   - LspPosition, LspRange types
   - ServerCapabilities model
   - HoverInfo, CodeAction, TextEdit, Location types
-- [ ] Minimal slice: implement one request/response + UI update path with tests.
+- [x] Minimal slice: implement one request/response + UI update path with tests. — done: `lsp_request.rs` with RequestId, LspMethod (15 variants), PendingRequests (send/complete/pending_count), DiagnosticStore (set/get/clear/error_count), ServerCapabilities
   - [x] Initialize handshake (InitializeParams, ServerCapabilities)
     - make_initialize(), InitializeParams, ClientCapabilities, JSON-RPC Request/Response/Notification types
   - [x] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)

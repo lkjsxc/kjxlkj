@@ -594,6 +594,27 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `SetAction` | ShowAll/Query/SetBool/SetInt/SetStr/Invalid |
 | `build_defaults()` | 10 built-in options (number, wrap, tabstop, etc.) |
 
+## Session persistence
+
+| Feature | Behavior |
+|---|---|
+| `SessionState` | Marks, jumps, registers, history, buffer positions |
+| `add_mark()` / `add_jump()` | Capped collections (100 marks, 100 jumps) |
+| `add_register()` | Deduplicates by name, stores linewise flag |
+| `add_history()` | Capped at 1000 entries, supports Command/Search/Input/Debug kinds |
+| `serialize_session()` | JSON summary serialization |
+| `filter_history()` | Filters history entries by HistoryKind |
+
+## Event automation
+
+| Feature | Behavior |
+|---|---|
+| `AutoEvent` | 17 events: BufEnter/Leave/Read/Write, Insert*, Cursor*, Win*, Vim*, FileType, etc. |
+| `AutoPattern` | All / Glob (*.ext) / FileType matching |
+| `AutoCmdRegistry` | Add/match/clear_group/remove_once_fired autocommands |
+| `fire_event()` | Collects matching commands for an event firing |
+| `once` flag | Single-fire autocommands removed after execution |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

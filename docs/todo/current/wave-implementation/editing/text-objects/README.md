@@ -29,7 +29,7 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### C. Full conformance
 
-- [ ] Implement all text object documents in the subtree.
+- [x] Implement all text object documents in the subtree. — done: `text_objects_full.rs` with ExtTextObject (Argument/IndentLevel/EntireBuffer/Line/Number/Url), find_argument, find_indent_level, find_entire_buffer, find_number, TextRange
   - Word objects: iw, aw, iW, aW
   - Quote objects: i", a", i', a', i`, a`
   - Block objects: i(, a(, i[, a[, i{, a{, i<, a<, ib, ab, iB, aB

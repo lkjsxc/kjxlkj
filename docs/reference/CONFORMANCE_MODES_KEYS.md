@@ -260,6 +260,36 @@ At end of line, typed characters are inserted rather than replacing.
 | `scroll()` | Scrolls by delta lines with clamping |
 | `scroll_percent()` | Reports percentage through file |
 
+## Insert newline
+
+| Feature | Behavior |
+|---|---|
+| `insert_newline()` | Splits line at cursor, applies auto-indent, returns NewlineResult |
+| `AutoIndentMode` | None / CopyIndent / SmartIndent (extra indent after {/:/(/) |
+| `open_line()` | Opens new line above (O) or below (o) with indent |
+| `should_increase_indent()` | Detects trailing `{`, `(`, `[`, `:` for indent increase |
+| `should_decrease_indent()` | Detects leading `}`, `)`, `]` for indent decrease |
+
+## LSP requests
+
+| Feature | Behavior |
+|---|---|
+| `LspMethod` | 15 methods: Initialize, Completion, Hover, Definition, etc. |
+| `PendingRequests` | Send/complete lifecycle with auto-incrementing IDs |
+| `DiagnosticStore` | Per-file diagnostics with severity filtering and error_count |
+| `ServerCapabilities` | Feature flags (completion, hover, definition, rename, etc.) |
+| `DiagnosticSeverity` | Error/Warning/Information/Hint (ordered) |
+
+## Long line handling
+
+| Feature | Behavior |
+|---|---|
+| `segment_line()` | Splits long lines into segments of max_width display columns |
+| `safe_slice()` | Viewport-bounded string slicing by display column range |
+| `display_width()` | Computes display width (tabs=8, wide chars=2) |
+| `char_to_col()` / `col_to_char()` | Bidirectional char-index to display-column conversion |
+| `MAX_RENDER_COLS` | 10,000 column rendering threshold |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

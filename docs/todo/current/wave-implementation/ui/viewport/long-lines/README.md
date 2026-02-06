@@ -51,7 +51,7 @@ This leaf covers both:
   - resize storms with a long line visible
   - rapid horizontal scrolling (no-wrap)
   - wrap toggling (if supported)
-- [ ] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold.
-- [ ] Update limitations if any degradation is intentionally applied for very long lines:
+- [x] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold. — done: `long_line_handler.rs` with LineSegment, segment_line (virtualized rendering), safe_slice (viewport-bounded), display_width, char_to_col/col_to_char, MAX_RENDER_COLS=10000
+- [x] Update limitations if any degradation is intentionally applied for very long lines: — done: batch 16 LIMITATIONS entries added
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
