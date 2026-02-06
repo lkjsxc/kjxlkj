@@ -22,7 +22,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         None => (effective, None),
     };
     use crate::{commands_config as cfg, commands_config_map as cfm, commands_display as disp, commands_file as file};
-    use crate::{commands_line_ops as lops, commands_nav as nav, commands_range_ops as rops};
+    use crate::{commands_buffer as buf, commands_line_ops as lops, commands_nav as nav, commands_range_ops as rops};
     match command {
         ":q" | ":quit" => nav::dispatch_quit(state, false),
         ":q!" | ":quit!" => nav::dispatch_quit(state, true),
@@ -45,15 +45,15 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":close" => crate::dispatch_windows::dispatch_window_close(state),
         ":only" => crate::dispatch_windows::dispatch_window_only(state),
         ":new" => { let bid = state.create_buffer(); state.create_window(bid); }
-        ":bd" | ":bdelete" => disp::dispatch_bdelete(state, false),
-        ":bd!" | ":bdelete!" => disp::dispatch_bdelete(state, true),
+        ":bd" | ":bdelete" => buf::dispatch_bdelete(state, false),
+        ":bd!" | ":bdelete!" => buf::dispatch_bdelete(state, true),
         ":marks" => disp::dispatch_show_marks(state),
         ":reg" | ":registers" => disp::dispatch_show_registers(state),
         ":jumps" => disp::dispatch_show_jumps(state),
         ":changes" => disp::dispatch_show_changes(state),
         ":file" | ":f" => disp::dispatch_show_file_info(state),
         ":noh" | ":nohlsearch" => { state.search_pattern = None; state.message = None; }
-        ":sort" => disp::dispatch_sort_lines(state, args),
+        ":sort" => buf::dispatch_sort_lines(state, args),
         ":messages" | ":mes" => {
             if state.message.is_none() { state.message = Some("No messages".into()); }
         }

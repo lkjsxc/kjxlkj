@@ -1,14 +1,9 @@
 //! Intent dispatch: process parsed intents against editor state.
 
-use crate::dispatch_editing::*;
-use crate::dispatch_editing_extra::*;
-use crate::dispatch_jumps::*;
-use crate::dispatch_macros::*;
-use crate::dispatch_misc::*;
-use crate::dispatch_navigation::*;
-use crate::dispatch_operators::*;
-use crate::dispatch_search::*;
-use crate::dispatch_windows::*;
+use crate::{dispatch_case::*, dispatch_editing::*, dispatch_editing_extra::*};
+use crate::{dispatch_insert::*, dispatch_jumps::*, dispatch_macros::*};
+use crate::{dispatch_marks::*, dispatch_misc::*, dispatch_navigation::*};
+use crate::{dispatch_operators::*, dispatch_search::*, dispatch_windows::*, dispatch_yank_paste::*};
 use crate::EditorState;
 use kjxlkj_core_types::{Intent, Mode, MotionKind, OperatorKind, Position};
 
