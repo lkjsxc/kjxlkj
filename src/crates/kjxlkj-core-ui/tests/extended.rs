@@ -57,6 +57,7 @@ fn status_line_populated() {
         line: 42,
         col: 10,
         total_lines: 100,
+        ..Default::default()
     };
     assert_eq!(sl.mode, "NORMAL");
     assert!(sl.modified);
@@ -72,6 +73,7 @@ fn status_line_clone() {
         line: 1,
         col: 5,
         total_lines: 50,
+        ..Default::default()
     };
     let sl2 = sl.clone();
     assert_eq!(sl2.mode, "INSERT");

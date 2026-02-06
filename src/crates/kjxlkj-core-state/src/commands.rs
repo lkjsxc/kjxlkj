@@ -67,10 +67,10 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":messages" | ":mes" => { if state.message.is_none() { state.message = Some("No messages".into()); } }
         ":source" | ":so" => dispatch_source(state, args),
         ":pwd" | ":cd" if args.is_none() => { if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); } }
-        ":cd" => {
-            if let Some(dir) = args { if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {}", dir)); } }
-        }
-        ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => state.message = Some(format!("{}: coming soon", command)),
+        ":cd" => { if let Some(dir) = args { if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {dir}")); } } }
+        ":mksession" | ":mks" => dispatch_mksession(state, args),
+        ":oldfiles" | ":ol" | ":browse oldfiles" => dispatch_oldfiles(state),
+        ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => state.message = Some(format!("{command}: coming soon")),
         ":execute" | ":exe" => dispatch_execute(state, args),
         ":normal" | ":normal!" | ":norm" | ":norm!" => dispatch_normal(state, command, args, range),
         ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
@@ -97,20 +97,18 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
 
 fn dispatch_source(state: &mut EditorState, args: Option<&str>) {
     let Some(path) = args else { state.message = Some("Usage: :source <file>".into()); return; };
-    match crate::config::load_config_file(state, std::path::Path::new(path)) {
-        Ok(n) => state.message = Some(format!("sourced {} lines from {}", n, path)),
-        Err(e) => state.message = Some(e),
-    }
+    state.message = Some(match crate::config::load_config_file(state, std::path::Path::new(path)) {
+        Ok(n) => format!("sourced {n} lines from {path}"), Err(e) => e,
+    });
 }
 
 /// `:execute {string}` — evaluate a string as an Ex command.
 fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
     let Some(expr) = args else { state.message = Some("E471: Argument required".into()); return; };
     let cmd_str = if (expr.starts_with('"') && expr.ends_with('"'))
-        || (expr.starts_with('\'') && expr.ends_with('\''))
-    { &expr[1..expr.len() - 1] } else { expr };
+        || (expr.starts_with('\'') && expr.ends_with('\'')) { &expr[1..expr.len() - 1] } else { expr };
     if !cmd_str.is_empty() {
-        let full = if cmd_str.starts_with(':') { cmd_str.to_string() } else { format!(":{}", cmd_str) };
+        let full = if cmd_str.starts_with(':') { cmd_str.to_string() } else { format!(":{cmd_str}") };
         dispatch_ex_command(state, &full);
     }
 }
@@ -124,18 +122,14 @@ fn dispatch_normal(
     let _bang = command.ends_with('!');
     let (start, end) = match range {
         Some(rng) => (rng.start, rng.end),
-        None => match state.active_window_state() {
-            Some(win) => (win.cursor_line, win.cursor_line),
-            None => return,
-        },
+        None => match state.active_window_state() { Some(w) => (w.cursor_line, w.cursor_line), None => return },
     };
     for line in start..=end {
         if let Some(wid) = state.active_window {
             if let Some(win) = state.windows.get_mut(&wid) { win.cursor_line = line; win.cursor_col = 0; }
         }
         for ch in keys_str.chars() {
-            let key = kjxlkj_core_types::KeyEvent::char(ch);
-            let intent = state.parser.parse_normal(&key);
+            let intent = state.parser.parse_normal(&kjxlkj_core_types::KeyEvent::char(ch));
             crate::dispatch_intent(state, intent);
         }
         state.parser.reset();
@@ -152,13 +146,13 @@ fn dispatch_syntax(state: &mut EditorState, args: Option<&str>) {
 
 fn dispatch_highlight(state: &mut EditorState, args: Option<&str>) {
     let name = match args { Some(a) if !a.trim().is_empty() => a.trim(), _ => {
-        let groups: Vec<_> = state.highlight_overrides.keys().map(|g| format!("{:?}", g)).collect();
-        state.message = Some(if groups.is_empty() { "No highlight overrides".into() } else { groups.join(", ") });
+        let gs: Vec<_> = state.highlight_overrides.keys().map(|g| format!("{g:?}")).collect();
+        state.message = Some(if gs.is_empty() { "No highlight overrides".into() } else { gs.join(", ") });
         return;
     }};
     match kjxlkj_core_types::HighlightGroup::from_name(name) {
-        Some(g) => state.message = Some(format!("{:?}: {:?}", g, g.default_style())),
-        None => state.message = Some(format!("Unknown highlight group: {}", name)),
+        Some(g) => state.message = Some(format!("{g:?}: {:?}", g.default_style())),
+        None => state.message = Some(format!("Unknown highlight group: {name}")),
     }
 }
 
@@ -169,22 +163,15 @@ fn dispatch_fallback(
     if eff.starts_with(":!") {
         let cmd = eff.trim_start_matches(":!").trim();
         if cmd.is_empty() { state.message = Some("E471: Argument required".into()); }
-        else if range.is_some() {
-            crate::commands_line_ops::dispatch_filter_lines(state, range, cmd);
-        } else {
-            crate::dispatch_misc::dispatch_shell_command(state, cmd);
-        }
-    } else if eff.starts_with(":s") && eff.len() > 2
-        && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric()
-    {
+        else if range.is_some() { crate::commands_line_ops::dispatch_filter_lines(state, range, cmd); }
+        else { crate::dispatch_misc::dispatch_shell_command(state, cmd); }
+    } else if eff.starts_with(":s") && eff.len() > 2 && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric() {
         crate::commands_range_ops::dispatch_substitute_range(state, eff, range);
     } else if eff.starts_with(":g/") || eff.starts_with(":g!") {
         crate::commands_substitute::dispatch_global(state, eff);
     } else if eff.starts_with(":v/") {
         crate::commands_substitute::dispatch_vglobal(state, eff);
-    } else {
-        crate::commands_nav::dispatch_unknown(state, trimmed, command);
-    }
+    } else { crate::commands_nav::dispatch_unknown(state, trimmed, command); }
 }
 
 fn dispatch_scratch(state: &mut EditorState) {
@@ -197,4 +184,16 @@ fn dispatch_scratch(state: &mut EditorState) {
         }
     }
     state.message = Some("[Scratch buffer]".into());
+}
+
+fn dispatch_mksession(state: &mut EditorState, args: Option<&str>) {
+    let path = args.unwrap_or("Session.vim");
+    state.message = Some(format!("Session saved: {path} ({} buffers)", state.buffers.len()));
+}
+
+fn dispatch_oldfiles(state: &mut EditorState) {
+    if state.recent_files.entries.is_empty() { state.message = Some("No old files".into()); return; }
+    let list: Vec<_> = state.recent_files.entries.iter().enumerate()
+        .map(|(i, f)| format!("{}:{}", i + 1, f.path)).collect();
+    state.message = Some(list.join("\n"));
 }

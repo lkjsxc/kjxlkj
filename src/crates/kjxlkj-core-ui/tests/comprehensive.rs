@@ -70,6 +70,7 @@ fn status_line_fields() {
         line: 42,
         col: 10,
         total_lines: 200,
+        ..Default::default()
     };
     assert_eq!(sl.mode, "NORMAL");
     assert_eq!(sl.file_name, "main.rs");
@@ -175,6 +176,7 @@ fn ui_model_with_status_line() {
         line: 1,
         col: 0,
         total_lines: 50,
+        ..Default::default()
     });
     assert_eq!(m.status_lines.len(), 1);
     assert_eq!(m.status_lines[0].mode, "INSERT");

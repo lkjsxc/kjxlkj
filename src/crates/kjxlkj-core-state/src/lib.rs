@@ -21,7 +21,7 @@ pub use dispatch_cmdline::handle_cmdline_key;
 pub use mappings::{MappingMode, MappingTable};
 pub use registers::RegisterFile;
 pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
-pub use session::{AutoSaveConfig, RecentFiles, Session, SessionLayout};
+pub use session::{AutoSaveConfig, RecentFiles, Session, SessionLayout, SplitDirection, SwapFile, UndoFile, Workspace};
 pub use window_state::WindowState;
 
 use std::collections::HashMap;
