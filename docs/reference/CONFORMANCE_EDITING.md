@@ -255,3 +255,13 @@ Search behavior in this conformance target is:
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)
+
+### Cursor Rendering (`cursor_rendering.rs` — core-mode)
+
+| Aspect | Status |
+| --- | --- |
+| `CursorShape` | Block / Line / Underline / Hidden |
+| `ModeCursorMap` | Mode-specific shapes (normal=Block, insert=Line, replace=Underline) |
+| `cursor_shape_escape()` | Terminal escape sequences for all shape+blink combinations |
+| `blink_state()` | Timestamp-based blink on/off calculation |
+| `cursor_visible()` | Visibility check combining shape and blink state |

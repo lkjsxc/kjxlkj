@@ -658,6 +658,26 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `compute_signs()` | Map diff hunks to gutter GitSign indicators |
 | `count_changes()` | Aggregate added/removed line counts |
 
+### Session Full (`session_full.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `SessionData` | Full session state with buffers, windows, tabs, global marks |
+| `serialize_session()` | Serialize to vimscript-like format (cd, edit, cursor) |
+| `parse_session_buffers()` | Parse session file to extract buffer paths |
+| `SessionBuffer` / `SessionWindow` / `SessionMark` | Structured references for session restore |
+
+### LSP Features (`lsp_features.rs` — core)
+
+| Aspect | Status |
+| --- | --- |
+| `CompletionItem` / `CompletionKind` | 13 completion kinds with insert text resolution |
+| `HoverInfo` | Hover contents with optional range |
+| `Diagnostic` / `DiagnosticSeverity` | Error/Warning/Information/Hint with ordered severity |
+| `DiagnosticStore` | Per-buffer diagnostics with error_count and total_count |
+| `CodeAction` / `CodeActionKind` | QuickFix, Refactor, Source actions |
+| `filter_completions()` | Case-insensitive prefix filtering |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

@@ -348,6 +348,36 @@ At end of line, typed characters are inserted rather than replacing.
 | `Violation` | Structured record with level, module, message, Display impl |
 | `in_range()` / `non_empty()` / `valid_buffer_id()` / `within_limit()` | Contract helper predicates |
 
+### Buffer Full (`buffer_full.rs` — core-text)
+
+| Aspect | Status |
+| --- | --- |
+| `BufferType` | Normal / Scratch / Help / QuickFix / Terminal / Prompt / Popup |
+| `BufferFlags` | modified, readonly, listed, loaded, modifiable flags |
+| `BufferInfo` | Full buffer metadata with type, flags, filetype, encoding |
+| `AlternateTracker` | Alternate buffer tracking for `:e #` / `Ctrl-^` with swap |
+| `filter_listed()` / `find_by_name()` / `modified_count()` | Buffer list operations |
+
+### Window Full (`window_full.rs` — core-undo)
+
+| Aspect | Status |
+| --- | --- |
+| `WindowOptions` | Per-window options (number, wrap, signcolumn, scrolloff, etc.) |
+| `SignColumn` | Auto / Yes / No / Number display modes |
+| `CloseGuard` | Allow / NeedsSave / LastWindow close prevention |
+| `WindowSnapshot` | Snapshot with options for rendering |
+| `WindowOptionStore` | Per-window option overrides with default fallback |
+
+### Theme Full (`theme_full.rs` — render)
+
+| Aspect | Status |
+| --- | --- |
+| `Rgb` | RGB color with hex serialization, from_hex parsing, luminance |
+| `ThemeColor` | Named / Rgb / Index / Default color references |
+| `Face` | Foreground + background + attributes (bold/italic/underline/strikethrough) |
+| `index_to_rgb()` | 256-color to RGB mapping (16 base + 216 cube + 24 grayscale) |
+| `resolve_color()` | ThemeColor to RGB resolution with default fallback |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

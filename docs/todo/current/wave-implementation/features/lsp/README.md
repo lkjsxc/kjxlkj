@@ -32,7 +32,7 @@ Implement built-in Language Server Protocol integration.
     - make_did_open(), TextDocumentItem, encode_message()
   - [x] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
     - make_did_change(), VersionedTextDocId, ContentChange, DidCloseParams
-- [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
+- [x] Full conformance: implement all LSP feature documents and navigation subtrees.
   - [x] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
     - protocol_ext.rs: Hover, HoverContents (Markup/MarkedString/Array), MarkupContent, MarkupKind
   - [x] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)

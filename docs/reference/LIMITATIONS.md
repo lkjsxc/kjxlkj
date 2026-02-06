@@ -278,6 +278,47 @@ When reporting or logging issues, capture:
 - a minimal reproduction (prefer a headless script when possible)
 - expected vs actual behavior
 
+### Buffer Full
+
+- `BufferInfo` is a metadata container — does not hold actual text content (that's in `TextBuffer`).
+- `AlternateTracker` only tracks current/alternate pair — no full buffer navigation history.
+- `BufferType::Popup` and `BufferType::Prompt` are type-only; no special behavior attached.
+
+### Window Full
+
+- `WindowOptions` is a per-window copy — no inheritance from global options.
+- `CloseGuard` only checks modified and last-window; no `:confirm` integration.
+- `WindowSnapshot` does not include fold state or diff mode indicators.
+- `WindowOptionStore` uses clone on get — no shared reference to avoid mutation races.
+
+### LSP Features
+
+- `CompletionKind` is a subset of LSP spec (13 of 25 kinds).
+- `filter_completions()` uses simple prefix matching — no fuzzy matching.
+- `DiagnosticStore` keyed by buffer id (u64) — no URI-based lookup.
+- `CodeActionKind` is a subset — no custom/extensible kinds.
+
+### Session Full
+
+- `serialize_session()` produces vimscript-like output — not actual vimscript.
+- `parse_session_buffers()` only extracts `edit` commands — no option/mark restoration.
+- Global marks stored as HashMap<char, SessionMark> — no validation of mark characters.
+- No encryption or compression of session files.
+
+### Theme Full
+
+- `index_to_rgb()` only maps base 8 colors (0-7) and 216/24 extended ranges; colors 8-15 use gray fallback.
+- `ThemeColor::Named` is not resolved — falls through to default.
+- Face builder pattern returns owned values — no in-place mutation for efficiency.
+- No file-based theme loading (TOML/JSON).
+
+### Cursor Rendering
+
+- `cursor_shape_escape()` uses DECSCUSR sequences — may not work on all terminals.
+- `ModeCursorMap` uses string matching for mode names — no enum integration.
+- Blink interval is global — no per-mode blink configuration.
+- No cursor color customization beyond `color_override` string.
+
 ### Git Full Integration
 
 - `parse_diff()` only handles unified diff format; does not parse combined/merge diffs.

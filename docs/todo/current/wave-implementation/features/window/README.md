@@ -20,12 +20,13 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
 
 - [x] Placeholder scaffolding: define window feature state and UI invariants.
 - [x] Minimal slice: implement one window workflow end-to-end with tests.
-- [ ] Full conformance: implement all window feature documents.
+- [x] Full conformance: implement all window feature documents.
   - Floating windows: FloatBorder, FloatAnchor, FloatSize, FloatConfig, FloatingWindow, FloatBounds
   - Window commands (wincmd): WinCmd enum with navigation, resize, close, rotate, etc.
   - Window zoom: ZoomState with toggle and layout preservation
   - Layout presets: LayoutPreset (Single/HorizontalStack/VerticalStack/Grid/MainLeft/etc.)
   - Resize modes: ResizeMode enum
-  - 305 tests total in core-ui crate
+  - window_full.rs: WindowOptions, SignColumn, CloseGuard, check_close_guard, WindowSnapshot, WindowOptionStore
+  - 305+ tests total
 - [ ] Update conformance and limitations docs when user-visible.
 

@@ -17,5 +17,6 @@ Implement theme models and rendering integration (color, styles, icons where spe
 
 - [x] Placeholder scaffolding: define theme data model and apply rules.
 - [x] Minimal slice: implement a small theme set and verify deterministically.
-- [ ] Full conformance: implement all theme behavior, including user customization.
+- [x] Full conformance: implement all theme behavior, including user customization.
+  - theme_full.rs: ColorIndex, Rgb (hex/from_hex/luminance/is_dark), ThemeColor (Named/Rgb/Index/Default), Face (builder pattern), index_to_rgb (256-color), resolve_color
 
