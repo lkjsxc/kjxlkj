@@ -135,6 +135,7 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         Intent::ReselectVisual => dispatch_reselect_visual(state),
         Intent::ShellCommand(cmd) => dispatch_shell_command(state, &cmd),
         Intent::PutRegister(before) => dispatch_put_register(state, before),
+        Intent::SwitchAlternate => crate::commands_buffer::dispatch_switch_alternate(state),
     }
     // InsertNormal: return to Insert after one normal command.
     if was_insert_normal

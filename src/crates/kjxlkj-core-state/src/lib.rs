@@ -10,7 +10,8 @@ mod dispatch_editing_extra; mod dispatch_insert; mod dispatch_jumps;
 mod dispatch_macros; mod dispatch_marks;    mod dispatch_misc;
 mod dispatch_navigation; mod dispatch_operators; mod dispatch_search;
 mod dispatch_windows; mod dispatch_yank_paste;
-mod mappings;       mod registers;          mod window_state;
+mod mappings;       mod quickfix;           mod registers;
+mod session;        mod window_state;
 
 pub use autocommands::{AutoCmdTable, AutoEvent};
 pub use buffer_state::BufferState;
@@ -19,6 +20,8 @@ pub use dispatch::dispatch_intent;
 pub use dispatch_cmdline::handle_cmdline_key;
 pub use mappings::{MappingMode, MappingTable};
 pub use registers::RegisterFile;
+pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
+pub use session::{AutoSaveConfig, RecentFiles, Session, SessionLayout};
 pub use window_state::WindowState;
 
 use std::collections::HashMap;
@@ -55,6 +58,11 @@ pub struct EditorState {
     pub last_visual: Option<(Position, Position, Mode)>,
     pub syntax_enabled: bool,
     pub highlight_overrides: HashMap<kjxlkj_core_types::HighlightGroup, kjxlkj_core_types::Style>,
+    pub alternate_file: Option<BufferId>,
+    pub recent_files: session::RecentFiles,
+    pub autosave: session::AutoSaveConfig,
+    pub quickfix: quickfix::QuickfixList,
+    pub loclist: quickfix::QuickfixList,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -71,21 +79,14 @@ pub struct CommandLine {
 
 /// Editor configuration options.
 pub struct EditorOptions {
-    pub number: bool,
-    pub relative_number: bool,
-    pub wrap: bool,
-    pub ignorecase: bool,
-    pub smartcase: bool,
-    pub hlsearch: bool,
-    pub incsearch: bool,
-    pub expandtab: bool,
-    pub tabstop: usize,
-    pub shiftwidth: usize,
-    pub scrolloff: usize,
-    pub sidescrolloff: usize,
-    pub autoindent: bool,
-    pub smartindent: bool,
-    pub autopairs: bool,
+    pub number: bool, pub relative_number: bool, pub wrap: bool,
+    pub ignorecase: bool, pub smartcase: bool,
+    pub hlsearch: bool, pub incsearch: bool,
+    pub expandtab: bool, pub tabstop: usize, pub shiftwidth: usize,
+    pub scrolloff: usize, pub sidescrolloff: usize,
+    pub autoindent: bool, pub smartindent: bool, pub autopairs: bool,
+    pub list: bool, pub cursorline: bool, pub cursorcolumn: bool,
+    pub showmode: bool, pub showcmd: bool, pub hidden: bool,
 }
 
 impl Default for CommandLine {
@@ -101,6 +102,8 @@ impl Default for EditorOptions {
             smartcase: true, hlsearch: true, incsearch: true, expandtab: true,
             tabstop: 4, shiftwidth: 4, scrolloff: 3, sidescrolloff: 0,
             autoindent: true, smartindent: false, autopairs: false,
+            list: false, cursorline: false, cursorcolumn: false,
+            showmode: true, showcmd: true, hidden: false,
         }
     }
 }
@@ -122,6 +125,11 @@ impl EditorState {
             last_visual: None,
             syntax_enabled: true,
             highlight_overrides: HashMap::new(),
+            alternate_file: None,
+            recent_files: session::RecentFiles::new(100),
+            autosave: session::AutoSaveConfig::default(),
+            quickfix: quickfix::QuickfixList::new(),
+            loclist: quickfix::QuickfixList::new(),
             next_buffer_id: 1, next_window_id: 1,
         }
     }

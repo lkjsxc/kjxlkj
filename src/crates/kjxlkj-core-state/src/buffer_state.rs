@@ -17,6 +17,8 @@ pub struct BufferState {
     pub readonly: bool,
     /// Whether the buffer is listed (shown in :ls).
     pub listed: bool,
+    /// Whether the buffer is a scratch buffer (no file, no save warnings).
+    pub scratch: bool,
     /// Buffer-local options (e.g., indentation overrides).
     pub local_tabstop: Option<usize>,
     pub local_shiftwidth: Option<usize>,
@@ -34,6 +36,7 @@ impl BufferState {
             language: LanguageId::Plain,
             readonly: false,
             listed: true,
+            scratch: false,
             local_tabstop: None,
             local_shiftwidth: None,
             local_expandtab: None,
@@ -50,6 +53,7 @@ impl BufferState {
             language: LanguageId::Plain,
             readonly: false,
             listed: true,
+            scratch: false,
             local_tabstop: None,
             local_shiftwidth: None,
             local_expandtab: None,

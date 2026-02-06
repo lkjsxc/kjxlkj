@@ -33,8 +33,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":wa" | ":wall" => file::dispatch_write_all(state),
         ":e" | ":edit" => file::dispatch_edit(state, args, false),
         ":e!" | ":edit!" => file::dispatch_edit(state, args, true),
-        ":bn" | ":bnext" => nav::dispatch_bnext(state),
-        ":bp" | ":bprev" | ":bprevious" => nav::dispatch_bprev(state),
+        ":bnext" | ":bn" => nav::dispatch_bnext(state), ":bp" | ":bprev" | ":bprevious" => nav::dispatch_bprev(state),
         ":ls" | ":buffers" => nav::dispatch_list_buffers(state),
         ":set" => match args {
             Some(opt) => cfg::dispatch_set_option(state, opt),
@@ -46,30 +45,32 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":only" => crate::dispatch_windows::dispatch_window_only(state),
         ":new" => { let bid = state.create_buffer(); state.create_window(bid); }
         ":enew" => file::dispatch_enew(state),
+        ":scratch" => dispatch_scratch(state),
         ":saveas" | ":sav" => file::dispatch_saveas(state, args),
         ":bd" | ":bdelete" => buf::dispatch_bdelete(state, false),
         ":bd!" | ":bdelete!" => buf::dispatch_bdelete(state, true),
-        ":marks" => disp::dispatch_show_marks(state),
-        ":reg" | ":registers" => disp::dispatch_show_registers(state),
+        ":b" | ":buffer" => match args {
+            Some(a) => buf::dispatch_switch_buffer(state, a),
+            None => { state.message = Some("Usage: :b[uffer] {N|#}".into()); }
+        },
+        ":b#" => buf::dispatch_switch_alternate(state),
+        ":marks" => disp::dispatch_show_marks(state), ":reg" | ":registers" => disp::dispatch_show_registers(state),
         ":jumps" => disp::dispatch_show_jumps(state),
         ":changes" => disp::dispatch_show_changes(state),
         ":digraphs" | ":dig" => disp::dispatch_show_digraphs(state),
         ":file" | ":f" => disp::dispatch_show_file_info(state),
         ":noh" | ":nohlsearch" => { state.search_pattern = None; state.message = None; }
         ":sort" => buf::dispatch_sort_lines(state, args),
-        ":messages" | ":mes" => {
-            if state.message.is_none() { state.message = Some("No messages".into()); }
-        }
+        ":cnext" | ":cn" => nav::dispatch_qf_next(state),
+        ":cprev" | ":cp" => nav::dispatch_qf_prev(state),
+        ":copen" | ":clist" => nav::dispatch_qf_list(state),
+        ":messages" | ":mes" => { if state.message.is_none() { state.message = Some("No messages".into()); } }
         ":source" | ":so" => dispatch_source(state, args),
-        ":pwd" => { if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); } }
+        ":pwd" | ":cd" if args.is_none() => { if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); } }
         ":cd" => {
-            if let Some(dir) = args {
-                if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {}", dir)); }
-            } else if let Ok(d) = std::env::current_dir() { state.message = Some(d.to_string_lossy().to_string()); }
+            if let Some(dir) = args { if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {}", dir)); } }
         }
-        ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => {
-            state.message = Some(format!("{}: coming soon", command));
-        }
+        ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => state.message = Some(format!("{}: coming soon", command)),
         ":execute" | ":exe" => dispatch_execute(state, args),
         ":normal" | ":normal!" | ":norm" | ":norm!" => dispatch_normal(state, command, args, range),
         ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
@@ -80,10 +81,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":mapclear" | ":nmapclear" | ":imapclear"
         | ":vmapclear" => cfm::dispatch_mapclear(state, command),
         ":autocmd" | ":au" => cfm::dispatch_autocmd(state, args),
-        ":autocmd!" | ":au!" => {
-            state.autocmds.clear_all();
-            state.message = Some("all autocommands cleared".into());
-        }
+        ":autocmd!" | ":au!" => { state.autocmds.clear_all(); state.message = Some("all autocommands cleared".into()); }
         ":d" | ":delete" => rops::dispatch_range_delete(state, range),
         ":y" | ":yank" => rops::dispatch_range_yank(state, range),
         ":t" | ":copy" => lops::dispatch_copy_lines(state, range, args),
@@ -92,21 +90,16 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":put" => crate::dispatch_misc::dispatch_put_register(state, false),
         ":put!" => crate::dispatch_misc::dispatch_put_register(state, true),
         ":filetype" | ":ft" => cfm::dispatch_filetype(state, args),
-        ":syntax" | ":syn" => dispatch_syntax(state, args),
-        ":highlight" | ":hi" => dispatch_highlight(state, args),
+        ":syntax" | ":syn" => dispatch_syntax(state, args), ":highlight" | ":hi" => dispatch_highlight(state, args),
         _ => dispatch_fallback(state, effective, trimmed, command, range),
     }
 }
 
 fn dispatch_source(state: &mut EditorState, args: Option<&str>) {
-    if let Some(path) = args {
-        let p = std::path::Path::new(path);
-        match crate::config::load_config_file(state, p) {
-            Ok(n) => state.message = Some(format!("sourced {} lines from {}", n, path)),
-            Err(e) => state.message = Some(e),
-        }
-    } else {
-        state.message = Some("Usage: :source <file>".into());
+    let Some(path) = args else { state.message = Some("Usage: :source <file>".into()); return; };
+    match crate::config::load_config_file(state, std::path::Path::new(path)) {
+        Ok(n) => state.message = Some(format!("sourced {} lines from {}", n, path)),
+        Err(e) => state.message = Some(e),
     }
 }
 
@@ -116,9 +109,10 @@ fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
     let cmd_str = if (expr.starts_with('"') && expr.ends_with('"'))
         || (expr.starts_with('\'') && expr.ends_with('\''))
     { &expr[1..expr.len() - 1] } else { expr };
-    if cmd_str.is_empty() { return; }
-    let full = if cmd_str.starts_with(':') { cmd_str.to_string() } else { format!(":{}", cmd_str) };
-    dispatch_ex_command(state, &full);
+    if !cmd_str.is_empty() {
+        let full = if cmd_str.starts_with(':') { cmd_str.to_string() } else { format!(":{}", cmd_str) };
+        dispatch_ex_command(state, &full);
+    }
 }
 
 /// `:normal[!] {commands}` — execute normal mode key sequence.
@@ -157,17 +151,14 @@ fn dispatch_syntax(state: &mut EditorState, args: Option<&str>) {
 }
 
 fn dispatch_highlight(state: &mut EditorState, args: Option<&str>) {
-    if args.is_none() || args.unwrap().trim().is_empty() {
-        let groups: Vec<_> = state.highlight_overrides.keys()
-            .map(|g| format!("{:?}", g)).collect();
+    let name = match args { Some(a) if !a.trim().is_empty() => a.trim(), _ => {
+        let groups: Vec<_> = state.highlight_overrides.keys().map(|g| format!("{:?}", g)).collect();
         state.message = Some(if groups.is_empty() { "No highlight overrides".into() } else { groups.join(", ") });
         return;
-    }
-    // :highlight {group} — show info about a group
-    let name = args.unwrap().trim();
+    }};
     match kjxlkj_core_types::HighlightGroup::from_name(name) {
-        Some(g) => { state.message = Some(format!("{:?}: {:?}", g, g.default_style())); }
-        None => { state.message = Some(format!("Unknown highlight group: {}", name)); }
+        Some(g) => state.message = Some(format!("{:?}: {:?}", g, g.default_style())),
+        None => state.message = Some(format!("Unknown highlight group: {}", name)),
     }
 }
 
@@ -194,4 +185,16 @@ fn dispatch_fallback(
     } else {
         crate::commands_nav::dispatch_unknown(state, trimmed, command);
     }
+}
+
+fn dispatch_scratch(state: &mut EditorState) {
+    let bid = state.create_buffer();
+    if let Some(buf) = state.buffers.get_mut(&bid) { buf.scratch = true; buf.listed = false; }
+    if let Some(wid) = state.active_window {
+        if let Some(win) = state.windows.get_mut(&wid) {
+            state.alternate_file = Some(win.buffer_id);
+            win.buffer_id = bid; win.cursor_line = 0; win.cursor_col = 0;
+        }
+    }
+    state.message = Some("[Scratch buffer]".into());
 }

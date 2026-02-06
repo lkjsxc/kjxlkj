@@ -74,6 +74,7 @@ pub enum Intent {
     ShellCommand(String),
     PutRegister(bool),
     InsertDigraph(char, char),
+    SwitchAlternate,
     Noop,
 }
 

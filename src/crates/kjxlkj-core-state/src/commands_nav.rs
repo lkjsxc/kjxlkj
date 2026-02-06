@@ -142,3 +142,24 @@ pub(crate) fn dispatch_unknown(
             Some(format!("unknown command: {}", command));
     }
 }
+
+pub(crate) fn dispatch_qf_next(state: &mut EditorState) {
+    match state.quickfix.next() {
+        Some(e) => state.message = Some(format!("{}:{}: {}", e.file, e.line, e.text)),
+        None => state.message = Some("No more items".into()),
+    }
+}
+
+pub(crate) fn dispatch_qf_prev(state: &mut EditorState) {
+    match state.quickfix.prev() {
+        Some(e) => state.message = Some(format!("{}:{}: {}", e.file, e.line, e.text)),
+        None => state.message = Some("At first item".into()),
+    }
+}
+
+pub(crate) fn dispatch_qf_list(state: &mut EditorState) {
+    if state.quickfix.is_empty() { state.message = Some("Quickfix list is empty".into()); return; }
+    let items: Vec<_> = state.quickfix.entries.iter()
+        .map(|e| format!("{}:{}:{}: {}", e.file, e.line, e.col, e.text)).collect();
+    state.message = Some(items.join("\n"));
+}

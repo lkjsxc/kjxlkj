@@ -143,6 +143,7 @@ pub(crate) fn parse_ctrl_key(
         }
         KeyCode::Char('v') => Intent::EnterMode(Mode::VisualBlock),
         KeyCode::Char('g') => Intent::ExCommand(":file".into()),
+        KeyCode::Char('6') => Intent::SwitchAlternate,
         _ => Intent::Noop,
     }
 }

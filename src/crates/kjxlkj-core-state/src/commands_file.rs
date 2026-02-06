@@ -96,6 +96,7 @@ pub(crate) fn dispatch_edit_file(
             }
             if let Some(wid) = state.active_window {
                 if let Some(win) = state.windows.get_mut(&wid) {
+                    state.alternate_file = Some(win.buffer_id);
                     win.buffer_id = bid;
                     win.cursor_line = 0;
                     win.cursor_col = 0;
@@ -117,6 +118,7 @@ pub(crate) fn dispatch_edit_file(
                     if let Some(win) =
                         state.windows.get_mut(&wid)
                     {
+                        state.alternate_file = Some(win.buffer_id);
                         win.buffer_id = bid;
                         win.cursor_line = 0;
                         win.cursor_col = 0;
@@ -188,6 +190,7 @@ pub(crate) fn dispatch_enew(state: &mut EditorState) {
     let bid = state.create_buffer();
     if let Some(wid) = state.active_window {
         if let Some(win) = state.windows.get_mut(&wid) {
+            state.alternate_file = Some(win.buffer_id);
             win.buffer_id = bid;
             win.cursor_line = 0; win.cursor_col = 0; win.top_line = 0;
         }

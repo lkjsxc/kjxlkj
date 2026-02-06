@@ -1,4 +1,4 @@
-//! Buffer management commands: :sort, :bdelete.
+//! Buffer management commands: :sort, :bdelete, alternate buffer.
 
 use crate::EditorState;
 use kjxlkj_core_types::{Position, Range};
@@ -49,5 +49,45 @@ pub(crate) fn dispatch_bdelete(state: &mut EditorState, force: bool) {
         w.buffer_id = other_bid;
         w.cursor_line = 0;
         w.cursor_col = 0;
+    }
+}
+
+/// Switch to alternate buffer (Ctrl-^, :b#).
+pub(crate) fn dispatch_switch_alternate(state: &mut EditorState) {
+    let alt = match state.alternate_file {
+        Some(bid) if state.buffers.contains_key(&bid) => bid,
+        _ => { state.message = Some("No alternate file".into()); return; }
+    };
+    let wid = match state.active_window { Some(w) => w, None => return };
+    let win = state.windows.get_mut(&wid).unwrap();
+    let old_bid = win.buffer_id;
+    win.buffer_id = alt;
+    win.cursor_line = 0;
+    win.cursor_col = 0;
+    state.alternate_file = Some(old_bid);
+}
+
+/// Switch to a specific buffer by number (:b N).
+pub(crate) fn dispatch_switch_buffer(state: &mut EditorState, args: &str) {
+    let args = args.trim();
+    if args == "#" {
+        dispatch_switch_alternate(state);
+        return;
+    }
+    if let Ok(n) = args.parse::<u64>() {
+        let bid = kjxlkj_core_types::BufferId(n);
+        if !state.buffers.contains_key(&bid) {
+            state.message = Some(format!("Buffer {} does not exist", n));
+            return;
+        }
+        let wid = match state.active_window { Some(w) => w, None => return };
+        let win = state.windows.get_mut(&wid).unwrap();
+        let old_bid = win.buffer_id;
+        win.buffer_id = bid;
+        win.cursor_line = 0;
+        win.cursor_col = 0;
+        state.alternate_file = Some(old_bid);
+    } else {
+        state.message = Some("Usage: :b[uffer] {N|#}".into());
     }
 }
