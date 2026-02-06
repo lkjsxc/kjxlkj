@@ -38,6 +38,7 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+  - marks_extended.rs: MarkScope, Mark, MarkRegistry with global/local/special marks
 

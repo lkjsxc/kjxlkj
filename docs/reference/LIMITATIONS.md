@@ -96,6 +96,11 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Search highlight model (SearchHighlights with next/prev/hlsearch) exists but is not integrated with the search dispatch or renderer.
 - Undo branching tree (BranchingUndoTree) coexists with the linear UndoTree; the branching variant is not yet wired into buffer state.
 - DAP debugging types (DapState, Breakpoint, StackFrame, Variable) are scaffolding; no debug adapter connection is implemented.
+- Extended marks model (MarkRegistry with global/local/special marks) exists but is not wired into the main EditorState marks HashMap.
+- Substitute flags model (SubstituteFlags, ConfirmState, parse_substitute_cmd) extends the basic substitute dispatch but the confirm interaction is not connected to the TUI.
+- Extended completion types (CompletionItemKind 25 variants, CompletionList with filtering) exist alongside the base CompletionItem but are not connected to real LSP responses.
+- Buffer list model (BufferFilter, BufferListEntry, build/format_buffer_list) exists but is not used by the `:ls` command dispatch.
+- Visual block operations model (BlockSelection, BlockEdit, extend_to_eol) exists but block insert/append/change are not applied to buffer text.
 
 ## Code structure
 

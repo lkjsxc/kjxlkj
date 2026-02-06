@@ -43,6 +43,7 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+  - visual_block.rs: BlockSelection, BlockOp, BlockEdit with line_edits/delete_range, extend_to_eol
 

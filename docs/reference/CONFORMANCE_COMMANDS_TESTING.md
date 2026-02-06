@@ -166,6 +166,45 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `Breakpoint` | Line/conditional/logpoint/function/data breakpoints with toggle |
 | `StackFrame` / `Variable` | Call stack traversal and variable inspection |
 
+## Extended marks types
+
+| Component | Behavior |
+|---|---|
+| `MarkScope` | Local (a-z, special) vs Global (A-Z) mark classification |
+| `Mark` / `MarkRegistry` | Per-buffer local marks, cross-buffer global marks, special marks (`[`, `]`, `<`, `>`) |
+
+## Substitute flags types
+
+| Component | Behavior |
+|---|---|
+| `SubstituteFlags` | Parse g/c/i/I/n/& flags from `:s///flags` |
+| `ConfirmState` | Interactive `:s///c` confirmation with Yes/No/All/Quit responses |
+| `parse_substitute_cmd()` | Parse full `:s/pattern/replacement/flags` command string |
+
+## Extended completion types
+
+| Component | Behavior |
+|---|---|
+| `CompletionItemKind` | 25 LSP completion kinds with icon() and from_lsp() mapping |
+| `CompletionItemEx` | Rich completion item with filter_text, sort_text, preselect, deprecated |
+| `CompletionList` | Filterable/selectable completion list with prefix matching |
+
+## Buffer list types
+
+| Component | Behavior |
+|---|---|
+| `BufferFilter` | All/Listed/Unlisted/Modified/Active buffer filtering |
+| `BufferListEntry` | Buffer metadata with flags() for `:ls` display formatting |
+| `build_buffer_list()` | Build filtered buffer list from EditorState buffers |
+
+## Visual block types
+
+| Component | Behavior |
+|---|---|
+| `BlockSelection` | Two-corner block selection with line/col range, height/width |
+| `BlockOp` / `BlockEdit` | Insert/Append/Change/Delete block operations with per-line edits |
+| `extend_to_eol()` | Extend block selection to end-of-line per row (like `$` in visual block) |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:
