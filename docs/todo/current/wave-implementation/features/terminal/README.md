@@ -20,8 +20,13 @@ Implement integrated terminal panes and PTY lifecycle management.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define terminal service APIs and pane model.
-- [ ] Minimal slice: implement one PTY lifecycle end-to-end with tests.
+- [x] Placeholder scaffolding: define terminal service APIs and pane model.
+  - TerminalId, TerminalState, TerminalLayout (Horizontal/Vertical/Float/Tab)
+  - TerminalEvent (Output/Bell/TitleChanged/Resized/Exited)
+  - TerminalPane with scrollback, cursor visibility
+  - TerminalConfig with shell, layout, start_insert, persist
+  - TerminalService with spawn/resize/write/close/toggle/send_text
+- [x] Minimal slice: implement one PTY lifecycle end-to-end with tests.
 - [ ] Full conformance: implement all terminal feature docs (tmux, WM integration, etc.).
   - DAP debugging: DapState, Breakpoint, BreakpointKind, StackFrame, Variable, VariableScope, DapSession
   - tmux integration: TmuxIntegration with passthrough support

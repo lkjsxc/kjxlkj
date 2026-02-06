@@ -20,12 +20,17 @@ Implement session-related Ex commands and persistence behaviors (swap, undo pers
 
 ### A. Placeholder scaffolding
 
-- [ ] Define persistence boundaries and storage locations.
-- [ ] Define recovery behavior and user-visible diagnostics.
+- [x] Define persistence boundaries and storage locations.
+  - SwapFile with path_for() encoding, UndoFile with path_for() encoding
+  - Session with name, working_dir, buffers, layout
+  - Workspace with name and folders
+- [x] Define recovery behavior and user-visible diagnostics.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement one persistence mechanism end-to-end with tests (as specified).
+- [x] Implement one persistence mechanism end-to-end with tests (as specified).
+  - :mksession / :mks — session save
+  - :oldfiles / :ol — recent files listing
 
 ### C. Full conformance
 

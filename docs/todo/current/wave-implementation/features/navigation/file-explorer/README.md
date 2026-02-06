@@ -61,8 +61,15 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ## Checklist
 
-- [ ] Define the explorer core state model (tree nodes, expansion, selection).
-- [ ] Define the service interface for directory listing (incremental + cancellable for large dirs).
+- [x] Define the explorer core state model (tree nodes, expansion, selection).
+  - TreeNode with entry, children, expanded, depth
+  - DirEntry with path, name, kind, size, hidden
+  - EntryKind (File/Directory/Symlink)
+  - ExplorerState with root, tree, selected, visible, config
+  - ExplorerConfig with show_hidden, show_icons, position, width, sort_dirs_first
+- [x] Define the service interface for directory listing (incremental + cancellable for large dirs).
+  - FsWatchService.list_dir() async method
+  - FsWatchService.sort_entries() with dirs-first option
 - [ ] Implement explorer view rendering and input handling with deterministic tests.
 - [ ] Implement open-file intent wiring into the editor core.
 - [ ] Add at least one regression test for "10k children expand does not freeze".

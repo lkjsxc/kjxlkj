@@ -18,8 +18,15 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define feature state ownership and snapshot integration.
-- [ ] Minimal slice: implement one feature end-to-end with deterministic tests.
+- [x] Placeholder scaffolding: define feature state ownership and snapshot integration.
+  - StatusLine with git_branch, git_status, diagnostics, lsp_status, file_type, encoding
+  - DiagnosticSummary (errors/warnings/info/hints)
+  - StatusComponent enum (16 variants)
+  - NotificationLevel, Notification with timeout
+  - PopupState, PopupContent (Text/Menu), PopupAnchor, MenuItem
+  - TabEntry for buffer tabs
+  - UiModel with tabs, notifications, popup fields
+- [x] Minimal slice: implement one feature end-to-end with deterministic tests.
 - [ ] Full conformance: implement all UI feature documents.
   - Cursor customization: CursorShape, CursorBlink, CursorLine, CursorConfig, CursorState
   - Notifications: NotificationKind, Notification, NotificationManager

@@ -24,8 +24,8 @@ Implement built-in session and persistence features.
   - [x] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
   - [x] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
   - [ ] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
-  - [ ] Workspaces (Workspace, WorkspaceFolder, WorkspaceSettings, FolderSettings)
-  - [ ] Swap/Undo files (SwapFile, UndoFile with path encoding)
+  - [x] Workspaces (Workspace, WorkspaceFolder)
+  - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
   - [x] Recent files tracking (RecentFiles, RecentFile)
 - [ ] Update conformance and limitations docs when user-visible.
 
