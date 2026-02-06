@@ -22,7 +22,9 @@ Implement built-in navigation/indexing features.
 
 ### A. Indexing/navigation scaffolding
 
-- [ ] Define index service contracts and UI surfaces for navigation features.
+- [x] Define index service contracts and UI surfaces for navigation features.
+  - QuickfixList with QuickfixEntry and QuickfixKind types
+  - :cnext, :cprev, :copen commands
 
 ### B. File explorer MVP (high priority gap)
 
@@ -31,7 +33,7 @@ Implement built-in navigation/indexing features.
 
 ### C. Expand to additional navigation surfaces
 
-- [ ] Implement additional navigation features (finder, tags, quickfix, etc.) in test-gated slices.
+- [x] Implement additional navigation features (finder, tags, quickfix, etc.) in test-gated slices.
 
 ### D. Documentation ledgers
 

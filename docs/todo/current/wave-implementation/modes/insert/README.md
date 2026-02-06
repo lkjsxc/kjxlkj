@@ -43,7 +43,7 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
   - [x] Ctrl-k (digraph insert)
   - [x] Ctrl-v (literal character insert)
   - [ ] Completion integration
-  - [ ] Autopairs
+  - [x] Autopairs
   - [x] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)
 
 ### D. Conformance updates
