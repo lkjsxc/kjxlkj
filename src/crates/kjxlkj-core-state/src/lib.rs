@@ -1,7 +1,12 @@
 //! Editor state aggregation — ties together all core sub-crates.
 
 mod buffer_state;
+mod commands;
+mod commands_file;
 mod dispatch;
+mod dispatch_editing;
+mod dispatch_navigation;
+mod dispatch_operators;
 mod registers;
 mod window_state;
 
@@ -114,5 +119,10 @@ impl EditorState {
     pub fn active_window_mut(&mut self) -> Option<&mut WindowState> {
         let wid = self.active_window?;
         self.windows.get_mut(&wid)
+    }
+
+    /// Check if any buffer has unsaved changes.
+    pub fn has_unsaved_changes(&self) -> bool {
+        self.buffers.values().any(|b| b.modified)
     }
 }

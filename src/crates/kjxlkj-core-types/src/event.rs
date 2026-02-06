@@ -1,6 +1,6 @@
 //! Events flowing through the editor system.
 
-use crate::{BufferId, Mode, Position, RegisterName, Size};
+use crate::{BufferId, Mode, RegisterName, Size};
 use serde::{Deserialize, Serialize};
 
 /// A key event from the terminal.
