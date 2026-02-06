@@ -2,7 +2,9 @@
 
 mod buffer_state;
 mod commands;
+mod commands_display;
 mod commands_file;
+mod commands_substitute;
 mod dispatch;
 mod dispatch_editing;
 mod dispatch_editing_extra;
@@ -11,6 +13,7 @@ mod dispatch_misc;
 mod dispatch_navigation;
 mod dispatch_operators;
 mod dispatch_search;
+mod dispatch_windows;
 mod registers;
 mod window_state;
 

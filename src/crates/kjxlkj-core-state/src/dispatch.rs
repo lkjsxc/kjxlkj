@@ -7,6 +7,7 @@ use crate::dispatch_misc::*;
 use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
 use crate::dispatch_search::*;
+use crate::dispatch_windows::*;
 use crate::EditorState;
 use kjxlkj_core_types::{Intent, Mode, MotionKind, OperatorKind, Position};
 
@@ -243,6 +244,28 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         // Change list
         Intent::ChangeListOlder => dispatch_change_older(state),
         Intent::ChangeListNewer => dispatch_change_newer(state),
+        // Window management
+        Intent::WindowSplitHorizontal => {
+            dispatch_window_split_horizontal(state)
+        }
+        Intent::WindowSplitVertical => {
+            dispatch_window_split_vertical(state)
+        }
+        Intent::WindowClose => dispatch_window_close(state),
+        Intent::WindowOnly => dispatch_window_only(state),
+        Intent::WindowFocusNext => {
+            dispatch_window_focus_next(state)
+        }
+        Intent::WindowFocusPrev => {
+            dispatch_window_focus_prev(state)
+        }
+        Intent::WindowFocusDirection(dir) => {
+            dispatch_window_focus_direction(state, dir)
+        }
+        Intent::WindowEqualSize => {
+            dispatch_window_equal_size(state)
+        }
+        Intent::WindowRotate => dispatch_window_rotate(state),
     }
     // InsertNormal: return to Insert after one normal command.
     if was_insert_normal

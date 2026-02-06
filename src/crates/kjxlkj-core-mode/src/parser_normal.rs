@@ -14,6 +14,11 @@ pub(crate) fn parse_normal_key(
     count: usize,
 ) -> Intent {
     if key.ctrl {
+        // Ctrl-w enters window command pending state
+        if key.code == KeyCode::Char('w') {
+            *pending = PendingState::CtrlW;
+            return Intent::Noop;
+        }
         return parse_ctrl_key(key, count);
     }
     match &key.code {
@@ -205,6 +210,7 @@ pub(crate) fn parse_ctrl_key(
             Intent::IncrementNumber(-(count as i64))
         }
         KeyCode::Char('v') => Intent::EnterMode(Mode::VisualBlock),
+        KeyCode::Char('g') => Intent::ExCommand(":file".into()),
         _ => Intent::Noop,
     }
 }

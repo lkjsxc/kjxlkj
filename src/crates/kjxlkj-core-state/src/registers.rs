@@ -92,6 +92,37 @@ impl RegisterFile {
     pub fn unnamed_type(&self) -> Option<RegisterType> {
         self.regs.get(&RegisterName::Unnamed).map(|c| c.reg_type)
     }
+
+    /// Display all registers for :registers command.
+    pub fn display(&self) -> String {
+        let mut lines = Vec::new();
+        let mut entries: Vec<_> = self.regs.iter().collect();
+        entries.sort_by_key(|(name, _)| format!("{:?}", name));
+        for (name, content) in entries {
+            let display_text: String = content
+                .text
+                .chars()
+                .take(50)
+                .collect();
+            let type_char = match content.reg_type {
+                RegisterType::Charwise => 'c',
+                RegisterType::Linewise => 'l',
+                RegisterType::Blockwise => 'b',
+            };
+            lines.push(format!(
+                "  {:?}  {}  {}",
+                name, type_char, display_text,
+            ));
+        }
+        if lines.is_empty() {
+            String::new()
+        } else {
+            format!(
+                "--- Registers ---\n{}",
+                lines.join("\n")
+            )
+        }
+    }
 }
 
 impl Default for RegisterFile {

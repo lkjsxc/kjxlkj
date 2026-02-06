@@ -115,6 +115,38 @@ pub(crate) fn parse_leader_chord(key: &KeyEvent) -> Intent {
     }
 }
 
+/// Parse Ctrl-w chord for window management.
+pub(crate) fn parse_ctrl_w_chord(key: &KeyEvent) -> Intent {
+    match &key.code {
+        KeyCode::Char('s') => Intent::WindowSplitHorizontal,
+        KeyCode::Char('v') => Intent::WindowSplitVertical,
+        KeyCode::Char('c') | KeyCode::Char('q') => {
+            Intent::WindowClose
+        }
+        KeyCode::Char('o') => Intent::WindowOnly,
+        KeyCode::Char('w') => Intent::WindowFocusNext,
+        KeyCode::Char('W') => Intent::WindowFocusPrev,
+        KeyCode::Char('h') => {
+            Intent::WindowFocusDirection(MotionKind::Left)
+        }
+        KeyCode::Char('j') => {
+            Intent::WindowFocusDirection(MotionKind::Down)
+        }
+        KeyCode::Char('k') => {
+            Intent::WindowFocusDirection(MotionKind::Up)
+        }
+        KeyCode::Char('l') => {
+            Intent::WindowFocusDirection(MotionKind::Right)
+        }
+        KeyCode::Char('=') => Intent::WindowEqualSize,
+        KeyCode::Char('r') => Intent::WindowRotate,
+        KeyCode::Char('n') => {
+            Intent::ExCommand(":new".into())
+        }
+        _ => Intent::Noop,
+    }
+}
+
 pub(crate) fn parse_operator_motion(
     pending: &mut PendingState,
     key: &KeyEvent,

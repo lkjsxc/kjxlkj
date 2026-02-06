@@ -25,6 +25,7 @@ pub(crate) enum PendingState {
     ReplaceChar,
     InsertRegister,
     Leader,
+    CtrlW,
 }
 
 /// Parses key events into intents based on current mode.
@@ -124,6 +125,10 @@ impl KeyParser {
             PendingState::Leader => {
                 self.pending = PendingState::None;
                 return crate::parser_sequences::parse_leader_chord(key);
+            }
+            PendingState::CtrlW => {
+                self.pending = PendingState::None;
+                return crate::parser_sequences::parse_ctrl_w_chord(key);
             }
             PendingState::G => {
                 let count = self.take_count();

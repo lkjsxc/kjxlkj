@@ -178,6 +178,24 @@ pub enum Intent {
     SubstituteChar,
     /// Substitute line.
     SubstituteLine,
+    /// Window split horizontal.
+    WindowSplitHorizontal,
+    /// Window split vertical.
+    WindowSplitVertical,
+    /// Window close.
+    WindowClose,
+    /// Window only (close all others).
+    WindowOnly,
+    /// Window focus next.
+    WindowFocusNext,
+    /// Window focus previous.
+    WindowFocusPrev,
+    /// Window focus direction (h/j/k/l).
+    WindowFocusDirection(MotionKind),
+    /// Window equal size.
+    WindowEqualSize,
+    /// Window rotate.
+    WindowRotate,
     /// Nothing (no-op).
     Noop,
 }

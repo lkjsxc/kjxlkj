@@ -41,14 +41,74 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
                     Some("Usage: :set <option>".into());
             }
         },
-        ":sp" | ":split" | ":vsp" | ":vsplit" | ":close"
-        | ":only" => {
-            state.message =
-                Some(format!("{}: not yet implemented", command));
+        ":sp" | ":split" => {
+            crate::dispatch_windows::dispatch_window_split_horizontal(state)
+        }
+        ":vsp" | ":vsplit" => {
+            crate::dispatch_windows::dispatch_window_split_vertical(state)
+        }
+        ":close" => {
+            crate::dispatch_windows::dispatch_window_close(state)
+        }
+        ":only" => {
+            crate::dispatch_windows::dispatch_window_only(state)
         }
         ":new" => {
             let bid = state.create_buffer();
             state.create_window(bid);
+        }
+        ":bd" | ":bdelete" => {
+            crate::commands_display::dispatch_bdelete(state, false)
+        }
+        ":bd!" | ":bdelete!" => {
+            crate::commands_display::dispatch_bdelete(state, true)
+        }
+        ":marks" => {
+            crate::commands_display::dispatch_show_marks(state)
+        }
+        ":reg" | ":registers" => {
+            crate::commands_display::dispatch_show_registers(state)
+        }
+        ":jumps" => {
+            crate::commands_display::dispatch_show_jumps(state)
+        }
+        ":changes" => {
+            crate::commands_display::dispatch_show_changes(state)
+        }
+        ":file" | ":f" => {
+            crate::commands_display::dispatch_show_file_info(state)
+        }
+        ":noh" | ":nohlsearch" => {
+            state.search_pattern = None;
+            state.message = None;
+        }
+        ":sort" => {
+            crate::commands_display::dispatch_sort_lines(state, args)
+        }
+        ":messages" | ":mes" => {
+            // Display message history (simplified)
+            if state.message.is_none() {
+                state.message = Some("No messages".into());
+            }
+        }
+        ":pwd" => {
+            if let Ok(dir) = std::env::current_dir() {
+                state.message =
+                    Some(dir.to_string_lossy().to_string());
+            }
+        }
+        ":cd" => {
+            if let Some(dir) = args {
+                if std::env::set_current_dir(dir).is_err() {
+                    state.message =
+                        Some(format!("Cannot cd to: {}", dir));
+                }
+            } else {
+                if let Ok(dir) = std::env::current_dir() {
+                    state.message =
+                        Some(dir.to_string_lossy().to_string());
+                }
+            }
         }
         ":explorer" | ":terminal" | ":find" | ":livegrep"
         | ":undotree" => {
@@ -61,7 +121,19 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             if trimmed.starts_with(":s") && trimmed.len() > 2
                 && !trimmed.chars().nth(2).unwrap_or(' ').is_alphanumeric()
             {
-                dispatch_substitute(state, trimmed);
+                crate::commands_substitute::dispatch_substitute(
+                    state, trimmed,
+                );
+            } else if trimmed.starts_with(":g/")
+                || trimmed.starts_with(":g!")
+            {
+                crate::commands_substitute::dispatch_global(
+                    state, trimmed,
+                );
+            } else if trimmed.starts_with(":v/") {
+                crate::commands_substitute::dispatch_vglobal(
+                    state, trimmed,
+                );
             } else {
                 dispatch_unknown(state, trimmed, command);
             }
@@ -209,48 +281,4 @@ fn dispatch_bprev(state: &mut EditorState) {
     }
 }
 
-/// Substitute command: :s/pattern/replacement/[flags]
-fn dispatch_substitute(state: &mut EditorState, cmd: &str) {
-    let sep = cmd.chars().nth(2).unwrap_or('/');
-    let rest = &cmd[3..]; // skip ":s/"
-    let parts: Vec<&str> = rest.splitn(3, sep).collect();
-    if parts.len() < 2 {
-        state.message =
-            Some("Usage: :s/pattern/replacement/[flags]".into());
-        return;
-    }
-    let pattern = parts[0];
-    let replacement = parts[1];
-    let flags = if parts.len() > 2 { parts[2] } else { "" };
-    let global = flags.contains('g');
-
-    let wid = match state.active_window {
-        Some(w) => w,
-        None => return,
-    };
-    let win = state.windows.get(&wid).unwrap();
-    let bid = win.buffer_id;
-    let line = win.cursor_line;
-    if let Some(buf) = state.buffers.get_mut(&bid) {
-        let text = buf.text.line_to_string(line);
-        let new_text = if global {
-            text.replace(pattern, replacement)
-        } else {
-            text.replacen(pattern, replacement, 1)
-        };
-        if new_text != text {
-            use kjxlkj_core_types::{Position, Range};
-            let end = text.len();
-            buf.text.delete_range(Range::new(
-                Position::new(line, 0),
-                Position::new(line, end),
-            ));
-            buf.text.insert_text(Position::new(line, 0), &new_text);
-            buf.modified = true;
-            state.message = None;
-        } else {
-            state.message =
-                Some(format!("Pattern not found: {}", pattern));
-        }
-    }
-}
+// Substitute/global commands moved to commands_substitute.rs
