@@ -29,7 +29,7 @@ Implement quit/exit commands and their safety rules (dirty buffers, forced quit,
 
 ### C. Full conformance
 
-- [ ] Implement all quit command variants and edge cases.
+- [x] Implement all quit command variants and edge cases.
 
 ### D. Conformance updates
 

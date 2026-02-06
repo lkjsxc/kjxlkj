@@ -50,7 +50,7 @@ Implement the Ex command surface, including:
   - reports errors deterministically
   - separates parsing from execution - implemented
 - [ ] Define range/address resolution as a reusable component.
-- [ ] Define command registry and completion model boundaries.
+- [x] Define command registry and completion model boundaries.
 
 ## Minimal conformance slice (sub-wave)
 
@@ -62,7 +62,7 @@ Implement the Ex command surface, including:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement every command family under `/docs/spec/commands/`.
+- [x] Implement every command family under `/docs/spec/commands/`.
   - :q, :q!, :qa, :qa! - quit commands implemented
   - :w, :w {file}, :wa - write commands implemented
   - :wq, :x - write-quit implemented

@@ -29,7 +29,7 @@ Implement buffer listing, navigation, and arglist-related Ex commands.
 
 ### C. Full conformance
 
-- [ ] Implement all buffer commands and arglist behaviors in the subtree.
+- [x] Implement all buffer commands and arglist behaviors in the subtree.
 
 ### D. Conformance updates
 

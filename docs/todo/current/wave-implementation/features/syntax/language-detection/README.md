@@ -17,13 +17,13 @@ Implement deterministic language detection so syntax highlighting activates for 
 
 ### A. Extension mapping
 
-- [ ] Implement the minimum built-in extension mapping table.
-- [ ] Ensure `.c` and `.h` map to C by default; ensure common C++ extensions map to C++.
-- [ ] Ensure unknown filetypes fall back to `plain` without crashing or panicking.
+- [x] Implement the minimum built-in extension mapping table.
+- [x] Ensure `.c` and `.h` map to C by default; ensure common C++ extensions map to C++.
+- [x] Ensure unknown filetypes fall back to `plain` without crashing or panicking.
 
 ### B. Tests (required)
 
-- [ ] Add unit tests for extension → language id mapping.
+- [x] Add unit tests for extension → language id mapping.
 - [ ] Add integration tests that open representative fixtures and assert:
   - language id selection is correct
   - highlight spans are non-empty for fully supported languages

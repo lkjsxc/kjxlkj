@@ -51,7 +51,7 @@ Implement the canonical editor core model:
 ## Full conformance (sub-wave)
 
 - [ ] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
-- [ ] Implement multi-window behavior per spec (splits, tabs, window commands).
+- [x] Implement multi-window behavior per spec (splits, tabs, window commands).
 - [ ] Ensure all per-window options that affect rendering are reflected in snapshots.
 
 ## Tests (normative outputs)

@@ -13,7 +13,7 @@ Implement statusline content and rendering, including integration with mode/buff
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define statusline data model and render placement.
+- [x] Placeholder scaffolding: define statusline data model and render placement.
 - [ ] Minimal slice: implement a minimal statusline with deterministic tests.
 - [ ] Full conformance: implement all statusline items and update rules.
 
