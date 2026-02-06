@@ -70,6 +70,9 @@ pub enum Intent {
     WindowEqualSize,
     WindowRotate,
     EnterCommandLine(char),
+    ReselectVisual,
+    ShellCommand(String),
+    PutRegister(bool),
     Noop,
 }
 

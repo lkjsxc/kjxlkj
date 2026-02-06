@@ -52,6 +52,7 @@ pub struct EditorState {
     pub options: EditorOptions,
     pub mappings: mappings::MappingTable,
     pub autocmds: autocommands::AutoCmdTable,
+    pub last_visual: Option<(Position, Position, Mode)>,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -115,6 +116,7 @@ impl EditorState {
             change_list: Vec::new(), change_list_idx: 0,
             cmdline: CommandLine::default(), options: EditorOptions::default(),
             mappings: mappings::MappingTable::new(), autocmds: autocommands::AutoCmdTable::new(),
+            last_visual: None,
             next_buffer_id: 1, next_window_id: 1,
         }
     }

@@ -24,7 +24,7 @@ pub fn find_text_object(
         TextObjectKind::AngleBracket => find_delimited(buf, pos, '<', '>', inner),
         TextObjectKind::Paragraph => find_paragraph(buf, pos, inner),
         TextObjectKind::Sentence => find_sentence(buf, pos, inner),
-        TextObjectKind::Tag => None, // Requires XML parsing
+        TextObjectKind::Tag => find_tag(buf, pos, inner),
     }
 }
 
@@ -122,4 +122,62 @@ fn find_paragraph(buf: &TextBuffer, pos: Position, inner: bool) -> Option<Range>
 
 fn find_sentence(buf: &TextBuffer, pos: Position, _inner: bool) -> Option<Range> {
     Some(Range::new(Position::new(pos.line, 0), Position::new(pos.line, buf.line_len(pos.line))))
+}
+
+/// Find `it` (inner tag) or `at` (around tag) text objects.
+fn find_tag(buf: &TextBuffer, pos: Position, inner: bool) -> Option<Range> {
+    // Collect all text with line offsets for searching
+    let total = buf.line_count();
+    let mut full_text = String::new();
+    let mut line_offsets = Vec::with_capacity(total);
+    for i in 0..total {
+        line_offsets.push(full_text.len());
+        full_text.push_str(&buf.line_to_string(i));
+        if i + 1 < total { full_text.push('\n'); }
+    }
+    let cursor_offset = line_offsets.get(pos.line).map(|o| o + pos.col)?;
+    // Search backward for opening tag
+    let bytes = full_text.as_bytes();
+    let mut search = cursor_offset;
+    loop {
+        let open_start = find_prev_char(bytes, b'<', search)?;
+        if open_start + 1 >= bytes.len() || bytes[open_start + 1] == b'/' { 
+            search = open_start.checked_sub(1)?; continue;
+        }
+        let open_end = find_next_char(bytes, b'>', open_start)?;
+        // Extract tag name
+        let tag_content = &full_text[open_start + 1..open_end];
+        let tag_name = tag_content.split(|c: char| c.is_whitespace() || c == '/').next()?;
+        if tag_name.is_empty() { search = open_start.checked_sub(1)?; continue; }
+        // Find matching closing tag
+        let close_tag = format!("</{}>", tag_name);
+        let close_start = full_text[open_end + 1..].find(&close_tag)
+            .map(|i| i + open_end + 1)?;
+        let close_end = close_start + close_tag.len();
+        // Check cursor is within range
+        if cursor_offset > close_end { search = open_start.checked_sub(1)?; continue; }
+        // Convert offsets back to positions
+        return if inner {
+            let s = offset_to_pos(&line_offsets, open_end + 1);
+            let e = offset_to_pos(&line_offsets, close_start);
+            Some(Range::new(s, e))
+        } else {
+            let s = offset_to_pos(&line_offsets, open_start);
+            let e = offset_to_pos(&line_offsets, close_end);
+            Some(Range::new(s, e))
+        };
+    }
+}
+
+fn find_prev_char(bytes: &[u8], c: u8, from: usize) -> Option<usize> {
+    (0..=from).rev().find(|&i| bytes[i] == c)
+}
+fn find_next_char(bytes: &[u8], c: u8, from: usize) -> Option<usize> {
+    (from..bytes.len()).find(|&i| bytes[i] == c)
+}
+fn offset_to_pos(line_offsets: &[usize], offset: usize) -> Position {
+    for (i, &lo) in line_offsets.iter().enumerate().rev() {
+        if offset >= lo { return Position::new(i, offset - lo); }
+    }
+    Position::new(0, offset)
 }

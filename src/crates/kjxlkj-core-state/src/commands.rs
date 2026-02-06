@@ -97,6 +97,8 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":t" | ":copy" => lops::dispatch_copy_lines(state, range, args),
         ":m" | ":move" => lops::dispatch_move_lines(state, range, args),
         ":r" | ":read" => lops::dispatch_read_file(state, args),
+        ":put" => crate::dispatch_misc::dispatch_put_register(state, false),
+        ":put!" => crate::dispatch_misc::dispatch_put_register(state, true),
         ":filetype" | ":ft" => cfm::dispatch_filetype(state, args),
         _ => dispatch_fallback(state, effective, trimmed, command, range),
     }
@@ -180,7 +182,11 @@ fn dispatch_fallback(
     state: &mut EditorState, eff: &str, trimmed: &str, command: &str,
     range: Option<crate::commands_range::LineRange>,
 ) {
-    if eff.starts_with(":s") && eff.len() > 2
+    if eff.starts_with(":!") {
+        let cmd = eff.trim_start_matches(":!").trim();
+        if cmd.is_empty() { state.message = Some("E471: Argument required".into()); }
+        else { crate::dispatch_misc::dispatch_shell_command(state, cmd); }
+    } else if eff.starts_with(":s") && eff.len() > 2
         && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric()
     {
         crate::commands_range_ops::dispatch_substitute_range(state, eff, range);

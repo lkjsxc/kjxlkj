@@ -103,6 +103,16 @@ pub(crate) fn parse_visual(key: &KeyEvent) -> Intent {
         KeyCode::Char('>') => Intent::Indent(true, 1),
         KeyCode::Char('<') => Intent::Indent(false, 1),
         KeyCode::Char('o') => Intent::VisualSwapEnd,
+        KeyCode::Char('~') => Intent::ToggleCase,
+        KeyCode::Char('U') => Intent::CaseOperatorLine(kjxlkj_core_types::CaseOp::Upper),
+        KeyCode::Char('u') => Intent::CaseOperatorLine(kjxlkj_core_types::CaseOp::Lower),
+        KeyCode::Char('J') => Intent::JoinLines(true, 1),
+        KeyCode::Char('r') => Intent::Noop, // TODO: pending replace char
+        KeyCode::Char('p') | KeyCode::Char('P') => Intent::Paste(
+            kjxlkj_core_types::RegisterName::Unnamed,
+            kjxlkj_core_types::PastePosition::After,
+        ),
+        KeyCode::Char(':') => Intent::EnterCommandLine(':'),
         _ => Intent::Noop,
     }
 }

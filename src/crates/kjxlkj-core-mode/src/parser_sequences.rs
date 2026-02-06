@@ -37,6 +37,7 @@ pub(crate) fn parse_g_sequence(
             Intent::Motion(MotionKind::WORDBackwardEnd, count)
         }
         KeyCode::Char('J') => Intent::JoinLines(false, count),
+        KeyCode::Char('v') => Intent::ReselectVisual,
         KeyCode::Char('~') => {
             *pending =
                 PendingState::GOperator(CaseOp::Toggle, count);

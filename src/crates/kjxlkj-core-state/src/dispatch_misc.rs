@@ -1,5 +1,5 @@
 //! Miscellaneous dispatch: find-char repeat, visual swap, select register,
-//! increment/decrement.
+//! increment/decrement, reselect visual, shell command, put register.
 
 use crate::EditorState;
 use kjxlkj_core_types::{FindCharKind, MotionKind, Position, Range};
@@ -81,5 +81,69 @@ pub(crate) fn dispatch_increment_number(state: &mut EditorState, delta: i64) {
             let win = state.windows.get_mut(&wid).unwrap();
             win.cursor_col = start + new_str.len() - 1;
         }
+    }
+}
+
+/// Reselect the last visual selection (gv).
+pub(crate) fn dispatch_reselect_visual(state: &mut EditorState) {
+    if let Some((anchor, cursor, mode)) = state.last_visual {
+        if let Some(wid) = state.active_window {
+            if let Some(win) = state.windows.get_mut(&wid) {
+                win.visual_anchor = Some(anchor);
+                win.cursor_line = cursor.line;
+                win.cursor_col = cursor.col;
+            }
+        }
+        state.mode.transition(mode);
+        state.parser.reset();
+    }
+}
+
+/// Execute a shell command and show output (:! cmd).
+pub(crate) fn dispatch_shell_command(state: &mut EditorState, cmd: &str) {
+    match std::process::Command::new("sh").arg("-c").arg(cmd)
+        .output()
+    {
+        Ok(output) => {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let msg = if stderr.is_empty() {
+                stdout.trim().to_string()
+            } else {
+                format!("{}\n{}", stdout.trim(), stderr.trim())
+            };
+            state.message = Some(if msg.is_empty() { "shell command completed".into() } else { msg });
+        }
+        Err(e) => { state.message = Some(format!("shell error: {}", e)); }
+    }
+}
+
+/// Put register contents below or above current line (:put / :put!).
+pub(crate) fn dispatch_put_register(state: &mut EditorState, before: bool) {
+    let text = match state.registers.get(kjxlkj_core_types::RegisterName::Unnamed) {
+        Some(entry) => entry.text.clone(),
+        None => return,
+    };
+    let wid = match state.active_window { Some(w) => w, None => return };
+    let win = state.windows.get(&wid).unwrap();
+    let bid = win.buffer_id;
+    let line = win.cursor_line;
+    if let Some(buf) = state.buffers.get_mut(&bid) {
+        let insert_line = if before { line } else { line + 1 };
+        let pos = if insert_line >= buf.text.line_count() {
+            let last = buf.text.line_count() - 1;
+            let len = buf.text.line_len(last);
+            buf.text.insert_text(Position::new(last, len), "\n");
+            Position::new(last + 1, 0)
+        } else {
+            Position::new(insert_line, 0)
+        };
+        let content = if text.ends_with('\n') { text.clone() } else { format!("{}\n", text) };
+        buf.text.insert_text(pos, &content);
+        buf.modified = true;
+    }
+    if let Some(win) = state.windows.get_mut(&wid) {
+        win.cursor_line = if before { line } else { line + 1 };
+        win.cursor_col = 0;
     }
 }

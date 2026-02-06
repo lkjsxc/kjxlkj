@@ -185,10 +185,10 @@ fn inner_sentence() {
 // ──────────── Tag text object ────────────
 
 #[test]
-fn tag_not_implemented() {
+fn tag_inner_basic() {
     let buf = TextBuffer::from_text("<div>hello</div>");
     let r = find_text_object(&buf, Position::new(0, 6), TextObjectKind::Tag, true);
-    assert_eq!(r, None); // Not implemented yet
+    assert_eq!(r, Some(Range::new(Position::new(0, 5), Position::new(0, 10))));
 }
 
 // ──────────── Edge cases ────────────

@@ -9,6 +9,15 @@ use kjxlkj_core_types::{Intent, Mode, MotionKind, OperatorKind, Position};
 
 /// Handle mode transition with visual anchor management.
 fn dispatch_enter_mode(state: &mut EditorState, mode: Mode) {
+    // Save last visual selection before leaving visual mode
+    if state.mode.current().is_visual() && !mode.is_visual() {
+        if let Some(win) = state.active_window_state() {
+            if let Some(anchor) = win.visual_anchor {
+                let cursor = Position::new(win.cursor_line, win.cursor_col);
+                state.last_visual = Some((anchor, cursor, state.mode.current()));
+            }
+        }
+    }
     if mode == Mode::Visual || mode == Mode::VisualLine {
         if let Some(win) = state.active_window_state() {
             let anchor = Position::new(win.cursor_line, win.cursor_col);
@@ -38,7 +47,6 @@ fn dispatch_enter_cmdline(state: &mut EditorState, prefix: char) {
     state.parser.reset();
 }
 
-/// Repeat last change (dot command).
 fn dispatch_repeat_last(state: &mut EditorState) {
     if let Some(last) = state.last_change.clone() {
         let saved = state.last_change.take();
@@ -49,28 +57,14 @@ fn dispatch_repeat_last(state: &mut EditorState) {
 
 /// Process a single intent, mutating editor state.
 pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
-    // Check if we're in InsertNormal mode (Ctrl-o from insert).
-    let was_insert_normal =
-        state.mode.current() == Mode::InsertNormal;
+    let was_insert_normal = state.mode.current() == Mode::InsertNormal;
     let intent_ref = intent.clone();
     // Record intents for macro recording (except toggle-record itself).
-    if state.macro_recording.is_some()
-        && !matches!(intent, Intent::MacroToggleRecord(_))
-    {
-        if let Some((_, ref mut intents)) = state.macro_recording {
-            intents.push(intent.clone());
-        }
+    if state.macro_recording.is_some() && !matches!(intent, Intent::MacroToggleRecord(_)) {
+        if let Some((_, ref mut intents)) = state.macro_recording { intents.push(intent.clone()); }
     }
-    // Track repeatable changes for dot repeat.
-    if is_repeatable(&intent) {
-        state.last_change = Some(intent.clone());
-        // Track change positions
-        push_change(state);
-    }
-    // Track jump positions for search/mark jumps.
-    if is_jump(&intent) {
-        push_jump(state);
-    }
+    if is_repeatable(&intent) { state.last_change = Some(intent.clone()); push_change(state); }
+    if is_jump(&intent) { push_jump(state); }
     match intent {
         Intent::Noop => {}
         Intent::Motion(kind, count) => dispatch_motion(state, kind, count),
@@ -137,6 +131,9 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         Intent::WindowEqualSize => dispatch_window_equal_size(state),
         Intent::WindowRotate => dispatch_window_rotate(state),
         Intent::EnterCommandLine(prefix) => dispatch_enter_cmdline(state, prefix),
+        Intent::ReselectVisual => dispatch_reselect_visual(state),
+        Intent::ShellCommand(cmd) => dispatch_shell_command(state, &cmd),
+        Intent::PutRegister(before) => dispatch_put_register(state, before),
     }
     // InsertNormal: return to Insert after one normal command.
     if was_insert_normal
