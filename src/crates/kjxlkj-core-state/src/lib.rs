@@ -4,6 +4,7 @@ mod autocommands;
 mod buffer_state;
 mod commands;
 mod commands_config;
+mod commands_config_map;
 mod commands_display;
 mod commands_file;
 mod commands_nav;

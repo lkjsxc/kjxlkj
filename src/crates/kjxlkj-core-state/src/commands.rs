@@ -21,7 +21,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         Some((c, a)) => (c, Some(a.trim())),
         None => (effective, None),
     };
-    use crate::{commands_config as cfg, commands_display as disp, commands_file as file};
+    use crate::{commands_config as cfg, commands_config_map as cfm, commands_display as disp, commands_file as file};
     use crate::{commands_line_ops as lops, commands_nav as nav, commands_range_ops as rops};
     match command {
         ":q" | ":quit" => nav::dispatch_quit(state, false),
@@ -80,12 +80,12 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         }
         ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
         | ":noremap" | ":nnoremap" | ":inoremap" | ":vnoremap"
-        | ":cnoremap" | ":onoremap" => cfg::dispatch_map_command(state, command, args),
+        | ":cnoremap" | ":onoremap" => cfm::dispatch_map_command(state, command, args),
         ":unmap" | ":nunmap" | ":iunmap" | ":vunmap"
-        | ":cunmap" | ":ounmap" => cfg::dispatch_unmap_command(state, command, args),
+        | ":cunmap" | ":ounmap" => cfm::dispatch_unmap_command(state, command, args),
         ":mapclear" | ":nmapclear" | ":imapclear"
-        | ":vmapclear" => cfg::dispatch_mapclear(state, command),
-        ":autocmd" | ":au" => cfg::dispatch_autocmd(state, args),
+        | ":vmapclear" => cfm::dispatch_mapclear(state, command),
+        ":autocmd" | ":au" => cfm::dispatch_autocmd(state, args),
         ":autocmd!" | ":au!" => {
             state.autocmds.clear_all();
             state.message = Some("all autocommands cleared".into());
@@ -95,7 +95,7 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":t" | ":copy" => lops::dispatch_copy_lines(state, range, args),
         ":m" | ":move" => lops::dispatch_move_lines(state, range, args),
         ":r" | ":read" => lops::dispatch_read_file(state, args),
-        ":filetype" | ":ft" => cfg::dispatch_filetype(state, args),
+        ":filetype" | ":ft" => cfm::dispatch_filetype(state, args),
         _ => dispatch_fallback(state, effective, trimmed, command, range),
     }
 }
