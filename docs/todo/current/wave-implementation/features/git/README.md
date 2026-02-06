@@ -18,18 +18,17 @@ Implement built-in git integration as a native feature (no plugins).
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define git service APIs and UI hooks.
-- [ ] Minimal slice: implement one visible git surface end-to-end with tests.
+- [x] Placeholder scaffolding: define git service APIs and UI hooks.
+- [x] Minimal slice: implement one visible git surface end-to-end with tests.
   - GitService with find_repo_root, current_branch, file_status
-  - GitStatus enum (Untracked, Modified, Staged, Unchanged, Ignored)
-  - BranchInfo for statusline display
-  - FileIndicator for explorer integration
-  - RepoStats for summary view
+  - FileStatus enum (Untracked, Modified, Added, Deleted, Renamed, Unmodified)
+  - RepoStatus with branch, ahead/behind, staged/unstaged/untracked
+  - FileChange, DiffHunk, BlameLine, GitSign types
 - [ ] Full conformance: implement all git feature documents.
-  - [ ] Branch indicator in statusline (BranchInfo.display())
+  - [x] Branch indicator in statusline (BranchInfo.display())
   - [ ] File change indicators in file explorer (FileIndicator)
-  - [ ] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
-  - [ ] Blame (BlameInfo, BufferBlame with toggle visibility)
+  - [x] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
+  - [x] Blame (BlameInfo, BufferBlame with toggle visibility)
   - [ ] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
   - [ ] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
 - [ ] Update conformance and limitations docs when user-visible.

@@ -18,11 +18,13 @@ Implement built-in Language Server Protocol integration.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
+- [x] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
   - LspService with server config management
   - LspServerConfig for rust-analyzer, typescript-language-server
   - Diagnostic and CompletionItem types
   - LspPosition, LspRange types
+  - ServerCapabilities model
+  - HoverInfo, CodeAction, TextEdit, Location types
 - [ ] Minimal slice: implement one request/response + UI update path with tests.
   - [ ] Initialize handshake (InitializeParams, ServerCapabilities)
   - [ ] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
