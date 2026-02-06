@@ -1,5 +1,7 @@
 //! Git service — repository status, diff, blame, hunk tracking.
 
+pub mod conflict;
+
 use std::path::PathBuf;
 
 /// Status of a file relative to git.

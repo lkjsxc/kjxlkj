@@ -216,6 +216,9 @@ dependencies = [
  "kjxlkj-core-types",
  "kjxlkj-core-ui",
  "kjxlkj-core-undo",
+ "kjxlkj-service-git",
+ "kjxlkj-service-lsp",
+ "serde_json",
 ]
 
 [[package]]

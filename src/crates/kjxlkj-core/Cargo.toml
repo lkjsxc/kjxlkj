@@ -14,3 +14,8 @@ kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
 kjxlkj-core-state = { path = "../kjxlkj-core-state" }
+
+[dev-dependencies]
+kjxlkj-service-lsp = { path = "../kjxlkj-service-lsp" }
+kjxlkj-service-git = { path = "../kjxlkj-service-git" }
+serde_json = { workspace = true }
