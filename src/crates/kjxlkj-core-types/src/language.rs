@@ -88,6 +88,15 @@ impl LanguageId {
         Self::Plain
     }
 
+    /// Detect language from a full file path.
+    pub fn detect(path: &str) -> Self {
+        let name = std::path::Path::new(path)
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or(path);
+        Self::from_filename(name)
+    }
+
     /// LSP language identifier string.
     pub fn lsp_id(&self) -> &'static str {
         match self {

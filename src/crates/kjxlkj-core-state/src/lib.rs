@@ -1,9 +1,12 @@
 //! Editor state aggregation — ties together all core sub-crates.
 
+mod autocommands;
 mod buffer_state;
 mod commands;
+mod commands_config;
 mod commands_display;
 mod commands_file;
+mod commands_nav;
 mod commands_substitute;
 mod config;
 mod dispatch;
@@ -20,6 +23,7 @@ mod mappings;
 mod registers;
 mod window_state;
 
+pub use autocommands::{AutoCmdTable, AutoEvent};
 pub use buffer_state::BufferState;
 pub use config::{execute_script, load_default_config};
 pub use dispatch::dispatch_intent;
@@ -73,6 +77,8 @@ pub struct EditorState {
     pub options: EditorOptions,
     /// User-defined key mappings.
     pub mappings: mappings::MappingTable,
+    /// Autocommand table.
+    pub autocmds: autocommands::AutoCmdTable,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -170,6 +176,7 @@ impl EditorState {
             cmdline: CommandLine::default(),
             options: EditorOptions::default(),
             mappings: mappings::MappingTable::new(),
+            autocmds: autocommands::AutoCmdTable::new(),
             next_buffer_id: 1,
             next_window_id: 1,
         }

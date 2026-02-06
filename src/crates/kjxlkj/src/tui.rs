@@ -35,7 +35,7 @@ pub async fn run_tui(file: Option<String>) -> Result<()> {
 
     if let Some(ref path) = file {
         if let Some(buf) = state.buffers.get_mut(&bid) {
-            buf.text.set_file_path(path.as_str());
+            buf.set_file_path(path.as_str());
         }
     }
 
