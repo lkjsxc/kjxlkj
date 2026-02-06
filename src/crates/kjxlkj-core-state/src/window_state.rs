@@ -10,6 +10,8 @@ pub struct WindowState {
     pub cursor_col: usize,
     pub top_line: usize,
     pub height: usize,
+    /// Visual mode anchor (start of selection).
+    pub visual_anchor: Option<Position>,
 }
 
 impl WindowState {
@@ -21,6 +23,7 @@ impl WindowState {
             cursor_col: 0,
             top_line: 0,
             height: 24,
+            visual_anchor: None,
         }
     }
 

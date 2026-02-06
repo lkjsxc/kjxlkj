@@ -201,9 +201,20 @@ fn apply_case_in_range(
 pub(crate) fn dispatch_visual_swap_end(
     state: &mut EditorState,
 ) {
-    // Visual mode anchor is tracked via mode state;
-    // this is a no-op until visual anchors are wired.
-    state.message = Some("Visual swap not yet wired".into());
+    let wid = match state.active_window {
+        Some(w) => w,
+        None => return,
+    };
+    let win = match state.windows.get_mut(&wid) {
+        Some(w) => w,
+        None => return,
+    };
+    if let Some(anchor) = win.visual_anchor {
+        let cursor = Position::new(win.cursor_line, win.cursor_col);
+        win.visual_anchor = Some(cursor);
+        win.cursor_line = anchor.line;
+        win.cursor_col = anchor.col;
+    }
 }
 
 // ── Select register ─────────────────────────────────────────

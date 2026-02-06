@@ -31,14 +31,8 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":e!" | ":edit!" => {
             crate::commands_file::dispatch_edit(state, args, true)
         }
-        ":bn" | ":bnext" => {
-            state.message =
-                Some("bnext: not yet implemented".into());
-        }
-        ":bp" | ":bprev" | ":bprevious" => {
-            state.message =
-                Some("bprev: not yet implemented".into());
-        }
+        ":bn" | ":bnext" => dispatch_bnext(state),
+        ":bp" | ":bprev" | ":bprevious" => dispatch_bprev(state),
         ":ls" | ":buffers" => dispatch_list_buffers(state),
         ":set" => match args {
             Some(opt) => dispatch_set_option(state, opt),
@@ -61,7 +55,14 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             state.message =
                 Some(format!("{}: coming soon", command));
         }
-        _ => dispatch_unknown(state, trimmed, command),
+        _ => {
+            // Try :s/pattern/replacement/[flags]
+            if trimmed.starts_with(":s/") || trimmed.starts_with(":s!") {
+                dispatch_substitute(state, trimmed);
+            } else {
+                dispatch_unknown(state, trimmed, command);
+            }
+        }
     }
 }
 
@@ -170,5 +171,83 @@ fn dispatch_unknown(
     } else {
         state.message =
             Some(format!("unknown command: {}", command));
+    }
+}
+
+fn dispatch_bnext(state: &mut EditorState) {
+    if let Some(wid) = state.active_window {
+        let win = state.windows.get(&wid).unwrap();
+        let current = win.buffer_id;
+        let mut ids: Vec<_> = state.buffers.keys().cloned().collect();
+        ids.sort_by_key(|b| b.0);
+        if let Some(pos) = ids.iter().position(|b| *b == current) {
+            let next = ids[(pos + 1) % ids.len()];
+            let w = state.windows.get_mut(&wid).unwrap();
+            w.buffer_id = next;
+            w.cursor_line = 0;
+            w.cursor_col = 0;
+        }
+    }
+}
+
+fn dispatch_bprev(state: &mut EditorState) {
+    if let Some(wid) = state.active_window {
+        let win = state.windows.get(&wid).unwrap();
+        let current = win.buffer_id;
+        let mut ids: Vec<_> = state.buffers.keys().cloned().collect();
+        ids.sort_by_key(|b| b.0);
+        if let Some(pos) = ids.iter().position(|b| *b == current) {
+            let prev = if pos == 0 { ids.len() - 1 } else { pos - 1 };
+            let w = state.windows.get_mut(&wid).unwrap();
+            w.buffer_id = ids[prev];
+            w.cursor_line = 0;
+            w.cursor_col = 0;
+        }
+    }
+}
+
+/// Substitute command: :s/pattern/replacement/[flags]
+fn dispatch_substitute(state: &mut EditorState, cmd: &str) {
+    let sep = cmd.chars().nth(2).unwrap_or('/');
+    let rest = &cmd[3..]; // skip ":s/"
+    let parts: Vec<&str> = rest.splitn(3, sep).collect();
+    if parts.len() < 2 {
+        state.message =
+            Some("Usage: :s/pattern/replacement/[flags]".into());
+        return;
+    }
+    let pattern = parts[0];
+    let replacement = parts[1];
+    let flags = if parts.len() > 2 { parts[2] } else { "" };
+    let global = flags.contains('g');
+
+    let wid = match state.active_window {
+        Some(w) => w,
+        None => return,
+    };
+    let win = state.windows.get(&wid).unwrap();
+    let bid = win.buffer_id;
+    let line = win.cursor_line;
+    if let Some(buf) = state.buffers.get_mut(&bid) {
+        let text = buf.text.line_to_string(line);
+        let new_text = if global {
+            text.replace(pattern, replacement)
+        } else {
+            text.replacen(pattern, replacement, 1)
+        };
+        if new_text != text {
+            use kjxlkj_core_types::{Position, Range};
+            let end = text.len();
+            buf.text.delete_range(Range::new(
+                Position::new(line, 0),
+                Position::new(line, end),
+            ));
+            buf.text.insert_text(Position::new(line, 0), &new_text);
+            buf.modified = true;
+            state.message = None;
+        } else {
+            state.message =
+                Some(format!("Pattern not found: {}", pattern));
+        }
     }
 }

@@ -22,7 +22,7 @@ use std::collections::HashMap;
 
 use kjxlkj_core_mode::{KeyParser, ModeState};
 use kjxlkj_core_types::{
-    BufferId, FindCharKind, Mode, Position, Size, WindowId,
+    BufferId, FindCharKind, Mode, Position, Range, Size, WindowId,
 };
 
 /// Top-level editor state that owns all buffers, windows, modes, registers.
@@ -143,5 +143,18 @@ impl EditorState {
     /// Check if any buffer has unsaved changes.
     pub fn has_unsaved_changes(&self) -> bool {
         self.buffers.values().any(|b| b.modified)
+    }
+
+    /// Get the visual selection range, if in visual mode.
+    pub fn visual_range(&self) -> Option<Range> {
+        let wid = self.active_window?;
+        let win = self.windows.get(&wid)?;
+        let anchor = win.visual_anchor?;
+        let cursor = Position::new(win.cursor_line, win.cursor_col);
+        if anchor <= cursor {
+            Some(Range::new(anchor, cursor))
+        } else {
+            Some(Range::new(cursor, anchor))
+        }
     }
 }

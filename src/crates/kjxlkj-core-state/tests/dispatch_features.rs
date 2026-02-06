@@ -565,3 +565,132 @@ fn word_backward_end_big_ge() {
     // gE from col 10 (in "world") goes to end of "hello.x" = col 6
     assert_eq!(s.cursor().col, 6);
 }
+
+// ── Substitute command ──────────────────────────────────────
+
+#[test]
+fn substitute_basic() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::ExCommand(":s/world/earth/".into()),
+    );
+    let buf = s.active_buffer().unwrap();
+    assert_eq!(buf.text.line_to_string(0), "hello earth");
+}
+
+#[test]
+fn substitute_global() {
+    let mut s = setup("aaa bbb aaa");
+    dispatch_intent(
+        &mut s,
+        Intent::ExCommand(":s/aaa/xxx/g".into()),
+    );
+    let buf = s.active_buffer().unwrap();
+    assert_eq!(buf.text.line_to_string(0), "xxx bbb xxx");
+}
+
+#[test]
+fn substitute_not_found() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::ExCommand(":s/xyz/abc/".into()),
+    );
+    assert!(s.message.as_ref().unwrap().contains("not found"));
+}
+
+// ── Buffer navigation ───────────────────────────────────────
+
+#[test]
+fn bnext_cycles_buffers() {
+    let mut s = setup("buffer1");
+    let bid2 = s.create_buffer_from_text("buffer2");
+    // Active window should have buffer 1
+    dispatch_intent(
+        &mut s,
+        Intent::ExCommand(":bn".into()),
+    );
+    let win = s.active_window_state().unwrap();
+    // Should have switched to the other buffer
+    assert!(win.buffer_id == bid2 || win.buffer_id.0 > 1);
+}
+
+// ── Visual mode anchor ─────────────────────────────────────
+
+#[test]
+fn visual_mode_sets_anchor() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 3),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::EnterMode(Mode::Visual),
+    );
+    let win = s.active_window_state().unwrap();
+    assert!(win.visual_anchor.is_some());
+    let anchor = win.visual_anchor.unwrap();
+    assert_eq!(anchor.col, 3);
+}
+
+#[test]
+fn visual_swap_end_swaps() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 2),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::EnterMode(Mode::Visual),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 5),
+    );
+    dispatch_intent(&mut s, Intent::VisualSwapEnd);
+    // Cursor should now be at the anchor (col 2)
+    assert_eq!(s.cursor().col, 2);
+    // And the anchor should be at the old cursor (col 7)
+    let win = s.active_window_state().unwrap();
+    assert_eq!(win.visual_anchor.unwrap().col, 7);
+}
+
+#[test]
+fn visual_range_computed() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 3),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::EnterMode(Mode::Visual),
+    );
+    dispatch_intent(
+        &mut s,
+        Intent::Motion(MotionKind::Right, 4),
+    );
+    let range = s.visual_range().unwrap();
+    assert_eq!(range.start.col, 3);
+    assert_eq!(range.end.col, 7);
+}
+
+#[test]
+fn leaving_visual_clears_anchor() {
+    let mut s = setup("hello world");
+    dispatch_intent(
+        &mut s,
+        Intent::EnterMode(Mode::Visual),
+    );
+    let win = s.active_window_state().unwrap();
+    assert!(win.visual_anchor.is_some());
+    dispatch_intent(
+        &mut s,
+        Intent::EnterMode(Mode::Normal),
+    );
+    let win = s.active_window_state().unwrap();
+    assert!(win.visual_anchor.is_none());
+}

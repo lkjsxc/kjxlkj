@@ -7,7 +7,7 @@ use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
 use crate::dispatch_search::*;
 use crate::EditorState;
-use kjxlkj_core_types::{Intent, Mode, OperatorKind};
+use kjxlkj_core_types::{Intent, Mode, OperatorKind, Position};
 
 /// Process a single intent, mutating editor state.
 pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
@@ -21,6 +21,26 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
             dispatch_motion(state, kind, count)
         }
         Intent::EnterMode(mode) => {
+            // Set/clear visual anchor on mode transitions
+            if mode == Mode::Visual || mode == Mode::VisualLine {
+                if let Some(win) = state.active_window_state() {
+                    let anchor = Position::new(
+                        win.cursor_line,
+                        win.cursor_col,
+                    );
+                    if let Some(wid) = state.active_window {
+                        if let Some(w) =
+                            state.windows.get_mut(&wid)
+                        {
+                            w.visual_anchor = Some(anchor);
+                        }
+                    }
+                }
+            } else if let Some(wid) = state.active_window {
+                if let Some(w) = state.windows.get_mut(&wid) {
+                    w.visual_anchor = None;
+                }
+            }
             state.mode.transition(mode);
             state.parser.reset();
         }
