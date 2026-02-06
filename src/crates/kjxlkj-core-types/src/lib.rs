@@ -15,3 +15,6 @@ pub use event::{EditorEvent, KeyEvent, Modifier};
 pub use mode::Mode;
 pub use position::Position;
 pub use range::Range;
+
+#[cfg(test)]
+mod tests;
