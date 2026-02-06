@@ -16,12 +16,12 @@ Implement viewport model and cursor-follow invariants.
 ### A. Viewport state and invariants (scaffolding)
 
 - [x] Define viewport state per window.
-- [ ] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
+- [x] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
 
 ### B. Cursor-follow rules (no-wrap + wrap)
 
-- [ ] Implement deterministic vertical follow for `wrap = false`.
-- [ ] Implement deterministic horizontal follow for `wrap = false`.
+- [x] Implement deterministic vertical follow for `wrap = false`.
+- [x] Implement deterministic horizontal follow for `wrap = false`.
 - [ ] Implement deterministic follow for `wrap = true` (display-row model) and default wrap posture:
   - [wrap/README.md](wrap/README.md)
 

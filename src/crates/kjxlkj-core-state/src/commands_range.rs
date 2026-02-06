@@ -86,7 +86,7 @@ pub(crate) fn parse_range(
 
 /// Parse a single address from a string.
 /// Returns (line_number, remaining_string).
-fn parse_address(
+pub(crate) fn parse_address(
     s: &str,
     cursor_line: usize,
     last_line: usize,
@@ -165,7 +165,7 @@ fn parse_address(
 }
 
 /// Parse an optional +N or -N offset.
-fn parse_offset(s: &str) -> (isize, &str) {
+pub(crate) fn parse_offset(s: &str) -> (isize, &str) {
     if s.is_empty() {
         return (0, s);
     }
@@ -188,7 +188,7 @@ fn parse_offset(s: &str) -> (isize, &str) {
 }
 
 /// Apply an offset to a line number, clamping to bounds.
-fn apply_offset(
+pub(crate) fn apply_offset(
     base: usize,
     offset: isize,
     max_line: usize,
@@ -203,7 +203,7 @@ fn apply_offset(
     }
 }
 
-fn current_line(state: &EditorState) -> usize {
+pub(crate) fn current_line(state: &EditorState) -> usize {
     state
         .active_window
         .and_then(|wid| state.windows.get(&wid))
@@ -211,7 +211,7 @@ fn current_line(state: &EditorState) -> usize {
         .unwrap_or(0)
 }
 
-fn last_line_idx(state: &EditorState) -> usize {
+pub(crate) fn last_line_idx(state: &EditorState) -> usize {
     state
         .active_window
         .and_then(|wid| {
