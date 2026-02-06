@@ -2,6 +2,7 @@
 
 mod viewport_wrap;
 mod layout_invariants;
+mod window_split;
 
 use kjxlkj_core_types::Size;
 use kjxlkj_core_ui::UiModel;

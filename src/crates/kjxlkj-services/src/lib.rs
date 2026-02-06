@@ -5,6 +5,7 @@ pub mod runtime;
 pub mod contract_checks;
 pub mod profiling;
 pub mod plugin_prevention;
+pub mod file_explorer;
 
 use std::collections::HashMap;
 
