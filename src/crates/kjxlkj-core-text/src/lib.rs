@@ -6,6 +6,7 @@ mod large_buffer;
 mod text_objects_full;
 mod buffer_full;
 mod buffer_features;
+mod streaming_io;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{

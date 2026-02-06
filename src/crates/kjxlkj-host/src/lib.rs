@@ -7,6 +7,7 @@ mod script_files;
 mod session_full;
 mod feature_integration;
 mod file_flows;
+mod feature_reachability;
 
 use kjxlkj_core_types::Size;
 

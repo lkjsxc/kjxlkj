@@ -8,6 +8,7 @@ mod cursor_overlay;
 mod keybinding_full;
 mod ui_views;
 mod ui_components;
+mod cmdline_window;
 
 pub use motion::{apply_motion, compute_motion_range};
 pub use operator::apply_operator;
