@@ -65,7 +65,7 @@ Before considering this iteration complete:
 
 ### Wave: Implement the planned surface (placeholders → full behavior)
 
-- [ ] [wave-implementation/README.md](wave-implementation/README.md)
+- [x] [wave-implementation/README.md](wave-implementation/README.md) — done: all implementation TODOs checked off through batches 1-23 (2580 tests)
 
 ### Wave: Verify conformance (tests, policy checks, perf baselines)
 

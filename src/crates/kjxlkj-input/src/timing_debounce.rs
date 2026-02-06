@@ -18,10 +18,7 @@ impl Debouncer {
     /// Signal an event. Returns true if the event should fire now.
     pub fn signal(&mut self, now: Instant) -> bool {
         if let Some(last) = self.last_trigger {
-            if now.duration_since(last) < self.delay {
-                self.pending = true;
-                return false;
-            }
+            if now.duration_since(last) < self.delay { self.pending = true; return false; }
         }
         self.last_trigger = Some(now);
         self.pending = false;
@@ -61,10 +58,9 @@ impl ResizeCoalescer {
     /// Record a resize event. Returns true if it should be processed immediately.
     pub fn record(&mut self, w: u16, h: u16, now: Instant) -> bool {
         self.last_size = Some((w, h));
-        let should_process = match self.last_event {
-            None => true,
-            Some(prev) => now.duration_since(prev) >= Duration::from_millis(self.settle_ms),
-        };
+        let should_process = self.last_event.map_or(true, |prev| {
+            now.duration_since(prev) >= Duration::from_millis(self.settle_ms)
+        });
         self.last_event = Some(now);
         should_process
     }
@@ -93,41 +89,27 @@ impl IdleDetector {
         Self { timeout: Duration::from_millis(timeout_ms), last_activity: Instant::now(), idle_fired: false }
     }
 
-    pub fn activity(&mut self, now: Instant) {
-        self.last_activity = now;
-        self.idle_fired = false;
-    }
+    pub fn activity(&mut self, now: Instant) { self.last_activity = now; self.idle_fired = false; }
 
     pub fn check_idle(&mut self, now: Instant) -> bool {
         if self.idle_fired { return false; }
-        if now.duration_since(self.last_activity) >= self.timeout {
-            self.idle_fired = true;
-            return true;
-        }
+        if now.duration_since(self.last_activity) >= self.timeout { self.idle_fired = true; return true; }
         false
     }
 
-    pub fn is_idle(&self, now: Instant) -> bool {
-        now.duration_since(self.last_activity) >= self.timeout
-    }
+    pub fn is_idle(&self, now: Instant) -> bool { now.duration_since(self.last_activity) >= self.timeout }
 }
 
 /// Input rate tracker for backpressure detection.
 #[derive(Debug)]
-pub struct InputRateTracker {
-    events: Vec<Instant>,
-    window: Duration,
-}
+pub struct InputRateTracker { events: Vec<Instant>, window: Duration }
 
 impl InputRateTracker {
-    pub fn new(window_ms: u64) -> Self {
-        Self { events: Vec::new(), window: Duration::from_millis(window_ms) }
-    }
+    pub fn new(window_ms: u64) -> Self { Self { events: Vec::new(), window: Duration::from_millis(window_ms) } }
 
     pub fn record(&mut self, now: Instant) {
         self.events.push(now);
-        let cutoff = now - self.window;
-        self.events.retain(|t| *t >= cutoff);
+        self.events.retain(|t| *t >= now - self.window);
     }
 
     pub fn rate(&self) -> f64 {
@@ -171,16 +153,14 @@ mod tests {
 
     #[test]
     fn resize_coalescer() {
-        let mut rc = ResizeCoalescer::new(50);
-        let now = Instant::now();
+        let (mut rc, now) = (ResizeCoalescer::new(50), Instant::now());
         assert!(rc.record(80, 24, now));
         assert!(!rc.record(120, 40, now + Duration::from_millis(10)));
     }
 
     #[test]
     fn resize_settled() {
-        let mut rc = ResizeCoalescer::new(50);
-        let now = Instant::now();
+        let (mut rc, now) = (ResizeCoalescer::new(50), Instant::now());
         rc.record(80, 24, now);
         assert!(rc.settled_size(now + Duration::from_millis(100)).is_some());
     }
@@ -206,17 +186,11 @@ mod tests {
 
     #[test]
     fn input_rate_tracker() {
-        let mut t = InputRateTracker::new(1000);
-        let now = Instant::now();
-        for i in 0..10 {
-            t.record(now + Duration::from_millis(i * 100));
-        }
+        let (mut t, now) = (InputRateTracker::new(1000), Instant::now());
+        for i in 0..10 { t.record(now + Duration::from_millis(i * 100)); }
         assert!(t.rate() > 5.0);
     }
 
     #[test]
-    fn rate_not_burst() {
-        let t = InputRateTracker::new(1000);
-        assert!(!t.is_burst(100.0));
-    }
+    fn rate_not_burst() { assert!(!InputRateTracker::new(1000).is_burst(100.0)); }
 }

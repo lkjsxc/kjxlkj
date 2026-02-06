@@ -177,10 +177,7 @@ mod tests {
     }
 
     #[test]
-    fn event_as_str_roundtrip() {
-        let e = AutoEvent::FileType;
-        assert_eq!(AutoEvent::from_str(e.as_str()), Some(e));
-    }
+    fn event_as_str_roundtrip() { assert_eq!(AutoEvent::from_str(AutoEvent::FileType.as_str()), Some(AutoEvent::FileType)); }
 
     #[test]
     fn registered_events_dedup() {
