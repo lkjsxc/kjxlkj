@@ -114,6 +114,38 @@ Search behavior in this conformance target is:
 | CompletionSource | Buffer, Path, Line, Lsp, Dictionary, Command |
 | CompletionKind | 13 variants (Variable, Function, Method, Class, etc.) |
 
+## Regex engine
+
+| Feature | Behavior |
+|---|---|
+| `compile_pattern()` | Compiles Vim-flavored regex with case sensitivity flag |
+| `find_all_matches()` | Iterates all matches with byte offsets and capture groups |
+| `find_next()` | First match at or after offset (with global position adjustment) |
+| `find_prev()` | Last match before offset |
+| `translate_vim_pattern()` | Converts `\<`→`\b`, `\(`→`(`, `\)`→`)`, `\+`→`+`, `\|`→`|`, `\{`→`{`, `\}`→`}` |
+| Case-insensitive | Prepends `(?i)` when `case_sensitive=false` |
+
+## Notification rendering
+
+| Feature | Behavior |
+|---|---|
+| `NotifPosition` | TopRight, BottomRight, TopCenter, BottomCenter |
+| `render_notification()` | Generates `RenderedNotif` with row/col, content lines, wrapped text |
+| `wrap_text()` | Word-wraps notification text at specified width |
+| `max_visible_notifications()` | Computes max visible based on terminal height |
+
+## Cursor visibility
+
+| Feature | Behavior |
+|---|---|
+| `CursorShape` | Block, Line, Underline |
+| `BlinkState` | On, Off |
+| `ModeCursorConfig` | Per-mode shape + blink settings |
+| `cursor_for_mode()` | Returns cursor shape for given mode |
+| `check_cursor_in_viewport()` | Validates cursor within viewport bounds |
+| `check_transition_visibility()` | Ensures cursor visible after mode transition |
+| `cursor_shape_escape()` | Generates terminal escape sequence for cursor shape |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

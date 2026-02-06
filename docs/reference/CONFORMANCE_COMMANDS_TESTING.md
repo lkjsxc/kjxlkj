@@ -455,6 +455,17 @@ Once an implementation claims conformance to this document, it MUST include auto
 
 These scenarios are primarily **headless** (no terminal UI). The project also requires **interactive PTY-driven E2E** tests for bugs that can hide in terminal decoding, key-chord parsing, focus/routing, or render-loop behavior. See [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
 
+## Command history
+
+| Feature | Behavior |
+|---|---|
+| `CommandHistory.push()` | Adds entry, deduplicates consecutive identical entries |
+| `CommandHistory.prev()` | Navigate to previous history entry |
+| `CommandHistory.next()` | Navigate to next history entry |
+| `search_prefix()` | Find previous entry matching prefix (backward search) |
+| `search_prefix_forward()` | Find next entry matching prefix (forward search) |
+| `search_substring()` | Find entries containing substring |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

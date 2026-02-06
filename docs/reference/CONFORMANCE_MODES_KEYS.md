@@ -197,6 +197,26 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 
 At end of line, typed characters are inserted rather than replacing.
 
+### Replace mode extended
+
+| Feature | Behavior |
+|---|---|
+| `ReplaceState` | Tracks continuous vs single-char replace with original chars |
+| `replace_char_at()` | Overwrites character at position, records original for undo |
+| `undo_replace_at()` | Restores original character at position |
+| `apply_single_replace()` | Single-character replace (`r`) without entering Replace mode |
+| `is_valid_replacement()` | Validates replacement char (rejects control chars except tab/newline) |
+
+### Insert mode extended
+
+| Feature | Behavior |
+|---|---|
+| `delete_word_back()` | Ctrl-W: deletes word before cursor in insert mode |
+| `delete_to_line_start()` | Ctrl-U: deletes from cursor to start of line |
+| `indent_line()` | Ctrl-T: adds one level of indentation |
+| `dedent_line()` | Ctrl-D: removes one level of indentation |
+| `collect_completions()` | Gathers word completions from buffer matching prefix |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

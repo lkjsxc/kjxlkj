@@ -119,6 +119,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Popup menu overlay (PopupMenu with scroll/selection, HoverTooltip) exists but is not rendered in the TUI.
 - Status line layout (StatusLineLayout with sections, vim_default) exists but is not used by the actual status line renderer.
 - Contract checker (ContractChecker with 6 boundary checks) exists but is not called at runtime boundaries.
+- Regex engine (`compile_pattern`, `find_all_matches`, `find_next`, `find_prev`, `translate_vim_pattern`) exists but is not connected to the search/substitute dispatch pipeline.
+- Insert mode extended editing (`delete_word_back`, `delete_to_line_start`, `indent_line`, `dedent_line`, `collect_completions`) exists but is not wired into the insert key handler.
+- Replace mode state (`ReplaceState`, `replace_char_at`, `undo_replace_at`, `apply_single_replace`) exists but is not integrated into the mode dispatch loop.
+- Command history (`CommandHistory` with push/dedup, prev/next, prefix/substring search) exists but is not connected to the command-line input handler.
+- Notification rendering (`render_notification`, `wrap_text`, `max_visible_notifications`, `NotifPosition`) exists but is not connected to the TUI render loop.
+- Cursor visibility (`cursor_for_mode`, `check_cursor_in_viewport`, `check_transition_visibility`, `cursor_shape_escape`) exists but is not wired into mode transitions or the render pass.
 
 ## Code structure
 

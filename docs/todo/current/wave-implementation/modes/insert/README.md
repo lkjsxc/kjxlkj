@@ -51,5 +51,5 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

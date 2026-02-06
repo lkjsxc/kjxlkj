@@ -36,6 +36,6 @@ Implement the regex behavior required by search, substitute, and other text feat
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

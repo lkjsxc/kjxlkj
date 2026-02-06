@@ -42,5 +42,5 @@ If Virtual Replace is intentionally deferred, apply the deferral protocol from [
 
 ### D. Conformance updates
 
-- [ ] Update:
+- [x] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
