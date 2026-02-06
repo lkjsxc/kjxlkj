@@ -205,6 +205,60 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `BlockOp` / `BlockEdit` | Insert/Append/Change/Delete block operations with per-line edits |
 | `extend_to_eol()` | Extend block selection to end-of-line per row (like `$` in visual block) |
 
+## Command-line completion types
+
+| Component | Behavior |
+|---|---|
+| `complete_command()` | Prefix-match against 55 built-in command names with scoring |
+| `complete_option()` | Prefix-match against 21 `:set` option names |
+| `complete_buffer()` | Match buffer names by prefix or substring |
+| `detect_completion_kind()` | Infer completion type from command-line context (set→option, buffer→buffer, edit→path) |
+
+## Keybinding DSL types
+
+| Component | Behavior |
+|---|---|
+| `KeyChord` | Parsed key with ctrl/alt/shift modifiers and display() round-trip |
+| `parse_key_sequence()` | Parse `<C-x>`, `<M-a>`, `<leader>`, `<CR>`, combined modifiers, plain chars |
+| `validate_key_sequence()` | Check for unclosed `<` brackets and syntax errors |
+| `resolve_special()` | Map CR/Esc/BS/Tab/Space/arrows/Del/Home/End/PageUp/PageDown to canonical names |
+
+## View tree types
+
+| Component | Behavior |
+|---|---|
+| `FocusTarget` | Editor/CommandLine/Explorer/Popup(id)/Notification focus targets |
+| `ViewNode` | Tree node with id, kind, rect, focusable flag, and children |
+| `ViewTree` | Root view tree with focus stack (push/pop), from_splits() layout builder |
+
+## Popup menu types
+
+| Component | Behavior |
+|---|---|
+| `PopupMenu` | Item list with selection cycling, scroll window, anchor-based positioning |
+| `HoverTooltip` | Positioned text tooltip with dismiss |
+| `PopupAnchor` | AboveCursor/BelowCursor/ScreenCenter/AtPosition anchor modes |
+| `compute_rect()` | Calculate popup rectangle constrained to screen bounds |
+
+## Status line layout types
+
+| Component | Behavior |
+|---|---|
+| `StatusSection` | Left/Center/Right aligned section with priority |
+| `StatusLineLayout` | Compose sections into fixed-width rendered line |
+| `vim_default()` | Standard Vim-like status format: mode, filename, modified, line:col, percent |
+
+## Contract checker types
+
+| Component | Behavior |
+|---|---|
+| `ContractChecker` | Accumulate pass/fail contract results with summary |
+| `check_viewport_bounded()` | Verify snapshot doesn't clone entire buffer |
+| `check_input_ordering()` | Verify monotonic input sequence numbers |
+| `check_bus_utilization()` | Warn when message bus >90% capacity |
+| `check_no_plugin_loading()` | Assert no dynamic plugin loading (built-in only) |
+| `check_restart_limit()` | Verify service restart count within policy |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:

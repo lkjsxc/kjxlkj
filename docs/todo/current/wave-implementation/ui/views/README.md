@@ -13,7 +13,9 @@ Implement view composition (editor, command line, popups, terminal panes).
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define view layout and focus model.
-- [ ] Minimal slice: implement editor view + command line view with tests.
+- [x] Placeholder scaffolding: define view layout and focus model.
+  - view_tree.rs: FocusTarget, ViewNode, ViewTree with focus stack
+- [x] Minimal slice: implement editor view + command line view with tests.
+  - from_splits() builds tab/buffer/status/cmdline layout, find() by ComponentId
 - [ ] Full conformance: implement all view types and composition rules.
 

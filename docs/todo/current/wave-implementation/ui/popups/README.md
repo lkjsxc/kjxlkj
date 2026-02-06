@@ -14,6 +14,7 @@ Implement popups/overlays (completion, picker, confirmations) and their interact
 ## Checklist
 
 - [x] Placeholder scaffolding: define overlay layering and focus rules.
-- [ ] Minimal slice: implement one overlay with deterministic tests.
+- [x] Minimal slice: implement one overlay with deterministic tests.
+  - popup_menu.rs: PopupMenu with scroll/selection, HoverTooltip, compute_rect() with anchor positioning
 - [ ] Full conformance: implement all overlay and popup behaviors.
 

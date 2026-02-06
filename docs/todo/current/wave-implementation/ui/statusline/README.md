@@ -15,5 +15,6 @@ Implement statusline content and rendering, including integration with mode/buff
 
 - [x] Placeholder scaffolding: define statusline data model and render placement.
 - [x] Minimal slice: implement a minimal statusline with deterministic tests.
-- [ ] Full conformance: implement all statusline items and update rules.
+- [x] Full conformance: implement all statusline items and update rules.
+  - statusline.rs: StatusLineLayout with Left/Center/Right sections, render(), vim_default(), truncate_section()
 

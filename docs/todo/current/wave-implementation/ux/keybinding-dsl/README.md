@@ -13,7 +13,9 @@ Implement the keybinding DSL and its interpretation rules.
 
 ## Checklist
 
-- [ ] Placeholder scaffolding: define the DSL parse model and validation rules.
-- [ ] Minimal slice: implement a small DSL subset with deterministic tests.
+- [x] Placeholder scaffolding: define the DSL parse model and validation rules.
+  - keybinding_dsl.rs: KeyChord struct, parse_angle(), resolve_special()
+- [x] Minimal slice: implement a small DSL subset with deterministic tests.
+  - parse_key_sequence() for <C-x>, <M-a>, <leader>, <CR>, <Esc>, combined modifiers, validate_key_sequence()
 - [ ] Full conformance: implement the entire DSL as specified.
 

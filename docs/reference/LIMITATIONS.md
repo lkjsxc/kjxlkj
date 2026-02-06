@@ -101,6 +101,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Extended completion types (CompletionItemKind 25 variants, CompletionList with filtering) exist alongside the base CompletionItem but are not connected to real LSP responses.
 - Buffer list model (BufferFilter, BufferListEntry, build/format_buffer_list) exists but is not used by the `:ls` command dispatch.
 - Visual block operations model (BlockSelection, BlockEdit, extend_to_eol) exists but block insert/append/change are not applied to buffer text.
+- Command-line completion sources (complete_command, complete_option, complete_buffer) exist but are not wired into the command-line input handler.
+- Keybinding DSL parser (parse_key_sequence, validate_key_sequence) exists but parsed key chords are not applied to the mapping table dispatch.
+- View tree (ViewTree with focus stack, ViewNode hierarchy, from_splits) exists but is not connected to the render loop.
+- Popup menu overlay (PopupMenu with scroll/selection, HoverTooltip) exists but is not rendered in the TUI.
+- Status line layout (StatusLineLayout with sections, vim_default) exists but is not used by the actual status line renderer.
+- Contract checker (ContractChecker with 6 boundary checks) exists but is not called at runtime boundaries.
 
 ## Code structure
 
