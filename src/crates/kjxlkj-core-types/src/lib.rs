@@ -6,6 +6,7 @@ mod motion_kind; pub mod perf; mod register; mod style;
 mod latency_tracker;
 mod user_functions;
 mod contracts;
+mod latency_regression;
 
 pub use digraph::*;
 pub use event::*;

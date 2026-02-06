@@ -8,6 +8,8 @@ mod session_full;
 mod feature_integration;
 mod file_flows;
 mod feature_reachability;
+mod pty_harness;
+mod pty_regressions;
 
 use kjxlkj_core_types::Size;
 

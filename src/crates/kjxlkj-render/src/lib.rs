@@ -8,6 +8,8 @@ mod long_line_handler;
 mod theme_full;
 mod ui_features;
 mod viewport_integrity;
+mod golden_snapshots;
+mod long_line_fixtures;
 
 use kjxlkj_core_types::Size;
 use kjxlkj_core_ui::UiModel;

@@ -11,6 +11,7 @@ pub mod user_commands;
 pub mod notification_dispatch;
 pub mod profiling_workflow;
 pub mod crate_topology;
+pub mod benchmark_suite;
 
 use std::collections::HashMap;
 
