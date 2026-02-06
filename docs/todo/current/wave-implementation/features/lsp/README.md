@@ -33,14 +33,19 @@ Implement built-in Language Server Protocol integration.
   - [x] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
     - make_did_change(), VersionedTextDocId, ContentChange, DidCloseParams
 - [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
-  - [ ] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
-  - [ ] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)
-  - [ ] Code Actions (CodeAction, CodeActionKind, WorkspaceEdit, TextEdit, Command)
-  - [ ] Navigation (Location, LocationLink, DefinitionResponse)
-  - [ ] Rename (RenameParams, PrepareRenameResponse)
-  - [ ] Code Lens (CodeLens)
-  - [ ] Formatting (FormattingOptions)
-  - [ ] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
+  - [x] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
+    - protocol_ext.rs: Hover, HoverContents (Markup/MarkedString/Array), MarkupContent, MarkupKind
+  - [x] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)
+    - SignatureHelp with active_signature/active_parameter, ParameterLabel (Simple/Offsets)
+  - [x] Code Actions (CodeAction, CodeActionKind, WorkspaceEdit, TextEdit, Command)
+    - CodeActionResponse, WorkspaceEdit, TextEditJson, LspCommand, code_action_kind consts
+  - [x] Navigation (Location, LocationLink, DefinitionResponse)
+    - LocationLink with origin/target ranges, LocationJson
+  - [x] Rename (RenameParams, PrepareRenameResponse)
+  - [x] Code Lens (CodeLens)
+  - [x] Formatting (FormattingOptions)
+  - [x] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
+    - SymbolKind (26 variants), DocumentSymbol (tree), SymbolInformation (flat)
   - [ ] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
 - [ ] Update conformance and limitations docs when user-visible.
 

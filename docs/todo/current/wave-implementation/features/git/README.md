@@ -26,10 +26,14 @@ Implement built-in git integration as a native feature (no plugins).
   - FileChange, DiffHunk, BlameLine, GitSign types
 - [ ] Full conformance: implement all git feature documents.
   - [x] Branch indicator in statusline (BranchInfo.display())
-  - [ ] File change indicators in file explorer (FileIndicator)
+  - [x] File change indicators in file explorer (FileIndicator)
+    - FileIndicator enum (Modified/Added/Deleted/Renamed/Untracked/Conflicted/Ignored) with symbol()
   - [x] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
   - [x] Blame (BlameInfo, BufferBlame with toggle visibility)
-  - [ ] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
-  - [ ] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
+  - [x] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
+    - BufferConflicts.detect() scans for <<<<<<< / ======= / >>>>>>> markers
+  - [x] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
+    - DiffAlgorithm (Myers/Patience/Histogram), DiffLayout (Unified/SideBySide/Inline)
+    - DiffView with count_added()/count_removed()
 - [ ] Update conformance and limitations docs when user-visible.
 

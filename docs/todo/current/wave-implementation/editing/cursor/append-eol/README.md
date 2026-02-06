@@ -19,10 +19,12 @@ This is a common off-by-one failure when mixing end-exclusive (Normal) and end-i
 
 ### A. Deterministic headless regression
 
-- [ ] Add a headless E2E test that:
+- [x] Add a headless E2E test that:
   - positions the cursor on the last character of a non-empty line in Normal mode
   - presses `a`
   - asserts the Insert-mode cursor column is exactly `N` (true EOL), not `N-1`
+  - Tests: append_at_eol_cursor_at_last_char, append_at_eol_type_produces_correct_text,
+    eol_append_with_capital_a, append_at_eol_empty_line
 
 ### B. Interactive PTY regression
 
