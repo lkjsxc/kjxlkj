@@ -23,6 +23,7 @@ pub(crate) enum PendingState {
     MacroRecord,
     MacroPlay,
     ReplaceChar,
+    InsertRegister,
     Leader,
 }
 
@@ -198,6 +199,19 @@ impl KeyParser {
 
     /// Parse a key in Insert mode.
     pub fn parse_insert(&mut self, key: &KeyEvent) -> Intent {
+        // Handle pending Ctrl-r {register}
+        if self.pending == PendingState::InsertRegister {
+            self.pending = PendingState::None;
+            if let KeyCode::Char(c) = key.code {
+                return Intent::InsertFromRegister(c);
+            }
+            return Intent::Noop;
+        }
+        // Ctrl-r starts pending register insert
+        if key.ctrl && key.code == KeyCode::Char('r') {
+            self.pending = PendingState::InsertRegister;
+            return Intent::Noop;
+        }
         crate::parser_modes::parse_insert(key)
     }
 

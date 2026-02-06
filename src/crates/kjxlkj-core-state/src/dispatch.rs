@@ -7,13 +7,27 @@ use crate::dispatch_navigation::*;
 use crate::dispatch_operators::*;
 use crate::dispatch_search::*;
 use crate::EditorState;
-use kjxlkj_core_types::{Intent, Mode, OperatorKind, Position};
+use kjxlkj_core_types::{Intent, Mode, MotionKind, OperatorKind, Position};
 
 /// Process a single intent, mutating editor state.
 pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
+    // Record intents for macro recording (except toggle-record itself).
+    if state.macro_recording.is_some()
+        && !matches!(intent, Intent::MacroToggleRecord(_))
+    {
+        if let Some((_, ref mut intents)) = state.macro_recording {
+            intents.push(intent.clone());
+        }
+    }
     // Track repeatable changes for dot repeat.
     if is_repeatable(&intent) {
         state.last_change = Some(intent.clone());
+        // Track change positions
+        push_change(state);
+    }
+    // Track jump positions for search/mark jumps.
+    if is_jump(&intent) {
+        push_jump(state);
     }
     match intent {
         Intent::Noop => {}
@@ -58,6 +72,9 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         }
         Intent::DeleteToLineStart => {
             dispatch_delete_to_line_start(state)
+        }
+        Intent::InsertFromRegister(reg) => {
+            dispatch_insert_from_register(state, reg)
         }
         Intent::Operator(op, motion, count) => {
             dispatch_operator(state, op, motion, count);
@@ -164,18 +181,47 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         Intent::IncrementNumber(delta) => {
             dispatch_increment_number(state, delta)
         }
-        // Macro (stub — record/play not wired yet)
-        Intent::MacroToggleRecord(_) => {
-            state.message =
-                Some("Macro recording not yet implemented".into());
+        // Macro recording/playback
+        Intent::MacroToggleRecord(reg) => {
+            if let Some((rec_reg, intents)) = state.macro_recording.take() {
+                // Stop recording — save to macro storage
+                state.macros.insert(rec_reg, intents);
+                state.message =
+                    Some(format!("Recorded @{}", rec_reg));
+            } else {
+                // Start recording into register
+                state.macro_recording = Some((reg, Vec::new()));
+                state.message =
+                    Some(format!("Recording @{}...", reg));
+            }
         }
-        Intent::MacroPlay(_) => {
-            state.message =
-                Some("Macro playback not yet implemented".into());
+        Intent::MacroPlay(reg) => {
+            if let Some(intents) = state.macros.get(&reg).cloned() {
+                state.last_macro = Some(reg);
+                // Temporarily stop recording to avoid re-recording
+                let was_recording = state.macro_recording.take();
+                for intent in intents {
+                    dispatch_intent(state, intent);
+                }
+                state.macro_recording = was_recording;
+            } else {
+                state.message =
+                    Some(format!("Empty macro @{}", reg));
+            }
         }
         Intent::MacroRepeatLast => {
-            state.message =
-                Some("Macro repeat not yet implemented".into());
+            if let Some(reg) = state.last_macro {
+                if let Some(intents) = state.macros.get(&reg).cloned() {
+                    let was_recording = state.macro_recording.take();
+                    for intent in intents {
+                        dispatch_intent(state, intent);
+                    }
+                    state.macro_recording = was_recording;
+                }
+            } else {
+                state.message =
+                    Some("No previous macro".into());
+            }
         }
         // Dot repeat
         Intent::RepeatLastChange => {
@@ -186,15 +232,12 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
                 state.last_change = saved;
             }
         }
-        // Jump/change list (stub)
-        Intent::JumpListBack | Intent::JumpListForward => {
-            state.message =
-                Some("Jump list not yet implemented".into());
-        }
-        Intent::ChangeListOlder | Intent::ChangeListNewer => {
-            state.message =
-                Some("Change list not yet implemented".into());
-        }
+        // Jump list
+        Intent::JumpListBack => dispatch_jump_back(state),
+        Intent::JumpListForward => dispatch_jump_forward(state),
+        // Change list
+        Intent::ChangeListOlder => dispatch_change_older(state),
+        Intent::ChangeListNewer => dispatch_change_newer(state),
     }
 }
 
@@ -222,6 +265,26 @@ fn is_repeatable(intent: &Intent) -> bool {
             | Intent::CaseOperator(_, _, _)
             | Intent::CaseOperatorLine(_)
             | Intent::IncrementNumber(_)
+    )
+}
+
+/// Check if an intent causes a position jump (for jump list).
+fn is_jump(intent: &Intent) -> bool {
+    matches!(
+        intent,
+        Intent::SearchForward(_)
+            | Intent::SearchBackward(_)
+            | Intent::SearchNext
+            | Intent::SearchPrev
+            | Intent::SearchWordForward
+            | Intent::SearchWordBackward
+            | Intent::JumpToMark(_)
+            | Intent::JumpToMarkLine(_)
+            | Intent::Motion(MotionKind::MatchingBracket, _)
+            | Intent::Motion(MotionKind::FileStart, _)
+            | Intent::Motion(MotionKind::FileEnd, _)
+            | Intent::Motion(MotionKind::GotoLine(_), _)
+            | Intent::Motion(MotionKind::GotoPercent(_), _)
     )
 }
 

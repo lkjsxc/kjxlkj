@@ -205,3 +205,33 @@ pub(crate) fn dispatch_delete_to_line_start(
         win.cursor_col = 0;
     }
 }
+
+/// Insert contents of a register at cursor (Ctrl-r {reg}).
+pub(crate) fn dispatch_insert_from_register(
+    state: &mut EditorState,
+    reg: char,
+) {
+    use kjxlkj_core_types::RegisterName;
+    let name = match RegisterName::from_char(reg) {
+        Some(n) => n,
+        None => return,
+    };
+    let text = match state.registers.get(name) {
+        Some(entry) => entry.text.clone(),
+        None => return,
+    };
+    let wid = match state.active_window {
+        Some(w) => w,
+        None => return,
+    };
+    let win = state.windows.get(&wid).unwrap();
+    let bid = win.buffer_id;
+    let pos = Position::new(win.cursor_line, win.cursor_col);
+    if let Some(buf) = state.buffers.get_mut(&bid) {
+        buf.text.insert_text(pos, &text);
+        buf.modified = true;
+    }
+    if let Some(win) = state.windows.get_mut(&wid) {
+        win.cursor_col += text.len();
+    }
+}

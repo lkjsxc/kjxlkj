@@ -57,7 +57,10 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         }
         _ => {
             // Try :s/pattern/replacement/[flags]
-            if trimmed.starts_with(":s/") || trimmed.starts_with(":s!") {
+            // Try :s/pattern/replacement/[flags] with any separator
+            if trimmed.starts_with(":s") && trimmed.len() > 2
+                && !trimmed.chars().nth(2).unwrap_or(' ').is_alphanumeric()
+            {
                 dispatch_substitute(state, trimmed);
             } else {
                 dispatch_unknown(state, trimmed, command);

@@ -45,6 +45,18 @@ pub struct EditorState {
     pub last_find_char: Option<(char, FindCharKind)>,
     /// Last repeatable intent for dot repeat.
     pub last_change: Option<kjxlkj_core_types::Intent>,
+    /// Macro recording: which register and accumulated intents.
+    pub macro_recording: Option<(char, Vec<kjxlkj_core_types::Intent>)>,
+    /// Macro storage: register char -> list of intents.
+    pub macros: HashMap<char, Vec<kjxlkj_core_types::Intent>>,
+    /// Last played macro register for @@ repeat.
+    pub last_macro: Option<char>,
+    /// Jump list: stack of (buffer_id, position).
+    pub jump_list: Vec<(BufferId, Position)>,
+    pub jump_list_idx: usize,
+    /// Change list: positions where changes occurred.
+    pub change_list: Vec<(BufferId, Position)>,
+    pub change_list_idx: usize,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -66,6 +78,13 @@ impl EditorState {
             marks: HashMap::new(),
             last_find_char: None,
             last_change: None,
+            macro_recording: None,
+            macros: HashMap::new(),
+            last_macro: None,
+            jump_list: Vec::new(),
+            jump_list_idx: 0,
+            change_list: Vec::new(),
+            change_list_idx: 0,
             next_buffer_id: 1,
             next_window_id: 1,
         }

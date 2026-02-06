@@ -84,6 +84,8 @@ pub enum Intent {
     DeleteWordBefore,
     /// Delete to line start (Ctrl-u in insert mode).
     DeleteToLineStart,
+    /// Insert contents of a register at cursor (Ctrl-r {reg}).
+    InsertFromRegister(char),
     /// Execute a motion.
     Motion(MotionKind, usize),
     /// Execute an operator over a motion range.
