@@ -40,18 +40,29 @@ impl WindowState {
 
     /// Ensure the cursor is visible within the viewport, scrolling if needed.
     pub fn ensure_cursor_visible(&mut self) {
-        let scroll_off = 3usize;
+        self.ensure_cursor_visible_with_scrolloff(3);
+    }
+
+    /// Ensure cursor visible with a specific scrolloff value.
+    pub fn ensure_cursor_visible_with_scrolloff(
+        &mut self,
+        scroll_off: usize,
+    ) {
         if self.height == 0 {
             return;
         }
         // Scroll up if cursor above viewport + scrolloff
-        if self.cursor_line < self.top_line.saturating_add(scroll_off) {
-            self.top_line = self.cursor_line.saturating_sub(scroll_off);
+        if self.cursor_line
+            < self.top_line.saturating_add(scroll_off)
+        {
+            self.top_line =
+                self.cursor_line.saturating_sub(scroll_off);
         }
         // Scroll down if cursor below viewport - scrolloff
         let bottom = self.top_line + self.height;
         if self.cursor_line + scroll_off >= bottom {
-            self.top_line = (self.cursor_line + scroll_off + 1).saturating_sub(self.height);
+            self.top_line = (self.cursor_line + scroll_off + 1)
+                .saturating_sub(self.height);
         }
     }
 }

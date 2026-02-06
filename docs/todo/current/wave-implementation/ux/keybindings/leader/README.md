@@ -24,8 +24,8 @@ This checklist exists because leader conflicts can silently break explorer/termi
 
 ### A. Reserve `Space` as `<leader>` (default)
 
-- [ ] In Normal mode, `Space` MUST act as `<leader>` and MUST NOT perform cursor motion or editing by itself.
-- [ ] Pressing `<leader>` alone MUST NOT mutate buffer content; it MAY trigger which-key hints if enabled.
+- [x] In Normal mode, `Space` MUST act as `<leader>` and MUST NOT perform cursor motion or editing by itself.
+- [x] Pressing `<leader>` alone MUST NOT mutate buffer content; it MAY trigger which-key hints if enabled.
 - [ ] Ensure keybinding tables do not bind `Space` to navigation (verify against [/docs/spec/ux/keybindings/navigation.md](/docs/spec/ux/keybindings/navigation.md)).
 
 ### B. Implement and test leader chords

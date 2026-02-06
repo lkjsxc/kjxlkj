@@ -91,6 +91,26 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
                 state.message = Some("No messages".into());
             }
         }
+        ":source" | ":so" => {
+            if let Some(path) = args {
+                let p = std::path::Path::new(path);
+                match crate::config::load_config_file(state, p)
+                {
+                    Ok(n) => {
+                        state.message = Some(format!(
+                            "sourced {} lines from {}",
+                            n, path
+                        ));
+                    }
+                    Err(e) => {
+                        state.message = Some(e);
+                    }
+                }
+            } else {
+                state.message =
+                    Some("Usage: :source <file>".into());
+            }
+        }
         ":pwd" => {
             if let Ok(dir) = std::env::current_dir() {
                 state.message =
@@ -114,6 +134,18 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         | ":undotree" => {
             state.message =
                 Some(format!("{}: coming soon", command));
+        }
+        ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
+        | ":noremap" | ":nnoremap" | ":inoremap" | ":vnoremap"
+        | ":cnoremap" | ":onoremap" => {
+            dispatch_map_command(state, command, args);
+        }
+        ":unmap" | ":nunmap" | ":iunmap" | ":vunmap" | ":cunmap"
+        | ":ounmap" => {
+            dispatch_unmap_command(state, command, args);
+        }
+        ":mapclear" | ":nmapclear" | ":imapclear" | ":vmapclear" => {
+            dispatch_mapclear(state, command);
         }
         _ => {
             // Try :s/pattern/replacement/[flags]
@@ -139,6 +171,110 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             }
         }
     }
+}
+
+fn map_mode(command: &str) -> crate::mappings::MappingMode {
+    use crate::mappings::MappingMode;
+    match command {
+        ":nmap" | ":nnoremap" | ":nunmap" | ":nmapclear" => {
+            MappingMode::Normal
+        }
+        ":imap" | ":inoremap" | ":iunmap" | ":imapclear" => {
+            MappingMode::Insert
+        }
+        ":vmap" | ":vnoremap" | ":vunmap" | ":vmapclear" => {
+            MappingMode::Visual
+        }
+        ":cmap" | ":cnoremap" | ":cunmap" => {
+            MappingMode::Command
+        }
+        ":omap" | ":onoremap" | ":ounmap" => {
+            MappingMode::OperatorPending
+        }
+        _ => MappingMode::All,
+    }
+}
+
+fn dispatch_map_command(
+    state: &mut EditorState,
+    command: &str,
+    args: Option<&str>,
+) {
+    let mode = map_mode(command);
+    let recursive = !command.contains("noremap");
+    match args {
+        Some(a) => {
+            if let Some((lhs, rhs)) = a.split_once(' ') {
+                state.mappings.add(
+                    mode,
+                    lhs.trim(),
+                    rhs.trim(),
+                    recursive,
+                );
+                state.message = Some(format!(
+                    "mapped {} → {}",
+                    lhs.trim(),
+                    rhs.trim()
+                ));
+            } else {
+                // Show mapping for lhs
+                if let Some(m) = state.mappings.get(mode, a) {
+                    state.message = Some(format!(
+                        "{} → {}",
+                        m.lhs, m.rhs
+                    ));
+                } else {
+                    state.message =
+                        Some(format!("No mapping: {}", a));
+                }
+            }
+        }
+        None => {
+            let all = state.mappings.list(mode);
+            if all.is_empty() {
+                state.message =
+                    Some("No mappings defined".into());
+            } else {
+                let lines: Vec<String> = all
+                    .iter()
+                    .map(|m| {
+                        format!("{} → {}", m.lhs, m.rhs)
+                    })
+                    .collect();
+                state.message =
+                    Some(lines.join(" | "));
+            }
+        }
+    }
+}
+
+fn dispatch_unmap_command(
+    state: &mut EditorState,
+    command: &str,
+    args: Option<&str>,
+) {
+    let mode = map_mode(command);
+    if let Some(lhs) = args {
+        if state.mappings.remove(mode, lhs.trim()) {
+            state.message =
+                Some(format!("unmapped {}", lhs.trim()));
+        } else {
+            state.message =
+                Some(format!("No mapping: {}", lhs.trim()));
+        }
+    } else {
+        state.message =
+            Some("Usage: :unmap <key>".into());
+    }
+}
+
+fn dispatch_mapclear(
+    state: &mut EditorState,
+    command: &str,
+) {
+    let mode = map_mode(command);
+    state.mappings.clear(mode);
+    state.message = Some("mappings cleared".into());
 }
 
 fn dispatch_quit(state: &mut EditorState, force: bool) {

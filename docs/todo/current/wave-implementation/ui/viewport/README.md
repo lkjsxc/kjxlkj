@@ -15,7 +15,7 @@ Implement viewport model and cursor-follow invariants.
 
 ### A. Viewport state and invariants (scaffolding)
 
-- [ ] Define viewport state per window.
+- [x] Define viewport state per window.
 - [ ] Ensure viewport invariants and clamping rules match `/docs/spec/features/ui/viewport.md`.
 
 ### B. Cursor-follow rules (no-wrap + wrap)

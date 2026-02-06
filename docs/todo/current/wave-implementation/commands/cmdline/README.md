@@ -26,14 +26,14 @@ Implement command-line entry, editing, history, completion, and command-line win
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the command-line model as part of core state and snapshots.
-- [ ] Define the history storage and persistence expectations (if any).
-- [ ] Define completion interfaces and data sources.
+- [x] Define the command-line model as part of core state and snapshots.
+- [x] Define the history storage and persistence expectations (if any).
+- [x] Define completion interfaces and data sources.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement `:` entry/exit and minimal editing.
-- [ ] Implement stable history navigation and acceptance tests.
+- [x] Implement `:` entry/exit and minimal editing.
+- [x] Implement stable history navigation and acceptance tests.
 
 ### C. Full conformance
 

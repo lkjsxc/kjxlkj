@@ -5,6 +5,7 @@ mod commands;
 mod commands_display;
 mod commands_file;
 mod commands_substitute;
+mod config;
 mod dispatch;
 mod dispatch_cmdline;
 mod dispatch_editing;
@@ -15,12 +16,15 @@ mod dispatch_navigation;
 mod dispatch_operators;
 mod dispatch_search;
 mod dispatch_windows;
+mod mappings;
 mod registers;
 mod window_state;
 
 pub use buffer_state::BufferState;
+pub use config::{execute_script, load_default_config};
 pub use dispatch::dispatch_intent;
 pub use dispatch_cmdline::handle_cmdline_key;
+pub use mappings::{MappingMode, MappingTable};
 pub use registers::RegisterFile;
 pub use window_state::WindowState;
 
@@ -67,6 +71,8 @@ pub struct EditorState {
     pub cmdline: CommandLine,
     /// Editor options/configuration.
     pub options: EditorOptions,
+    /// User-defined key mappings.
+    pub mappings: mappings::MappingTable,
     next_buffer_id: u64,
     next_window_id: u64,
 }
@@ -163,6 +169,7 @@ impl EditorState {
             change_list_idx: 0,
             cmdline: CommandLine::default(),
             options: EditorOptions::default(),
+            mappings: mappings::MappingTable::new(),
             next_buffer_id: 1,
             next_window_id: 1,
         }
