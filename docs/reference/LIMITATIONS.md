@@ -175,6 +175,36 @@ Tests are extracted to integration test files under each crate's `tests/` direct
 - Latency budgets are defined as constants but there is no automated enforcement or CI regression gate.
 - TimingGuard requires mutable probe reference which limits usage in concurrent contexts.
 
+## Buffer lifecycle
+
+- Swap file creation uses path hashing but does not write actual swap content to disk.
+- Auto-save policy is modeled but timer-based auto-save is not wired to the event loop.
+
+## Config options
+
+- Option scope resolution (Global/Buffer/Window) is implemented but per-buffer and per-window overrides are not persisted across sessions.
+- Only 10 built-in options defined; Vim's full option set is not modeled.
+
+## File I/O commands
+
+- Path validation checks parent directory existence but does not handle race conditions with concurrent filesystem changes.
+- WriteAll iterates buffers but does not implement atomic multi-file write transactions.
+
+## Cursor overlay
+
+- Overlay priority layering is modeled but rendering does not blend overlapping highlight colors.
+- Matching bracket search scans linearly; no syntax-aware bracket matching is implemented.
+
+## Completion engine
+
+- Path completion reads directory entries but does not handle permission errors gracefully.
+- Custom completion sources are defined in the enum but no plugin API for registering them exists.
+
+## Viewport follow
+
+- Viewport follow uses integer line arithmetic; sub-line scrolling for smooth scroll is not implemented.
+- Horizontal follow does not account for multi-width Unicode characters in column calculations.
+
 ## Planned Improvements
 
 See [/docs/todo/README.md](/docs/todo/README.md) for roadmap.

@@ -31,7 +31,7 @@ Implement file-related Ex commands and path expansion behaviors.
 ### C. Full conformance
 
 - [x] Implement all file commands and behaviors in the subtree.
-- [ ] Ensure behavior matches session/swap/undo persistence specs where applicable.
+- [x] Ensure behavior matches session/swap/undo persistence specs where applicable. — done: `file_io_commands.rs` with FileCommand enum, parse_file_command, validate_write, expand_tilde, buffer_title, display_path; `buffer_lifecycle.rs` with SwapState, ModificationInfo, LifecycleStage, AutoSavePolicy
 
 ### D. Conformance updates
 

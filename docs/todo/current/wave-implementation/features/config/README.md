@@ -20,6 +20,6 @@ Implement configuration features (themes, keybindings, options) as specified.
 
 - [x] Placeholder scaffolding: define config file format and load/apply boundaries.
 - [x] Minimal slice: implement one configuration axis end-to-end with tests.
-- [ ] Full conformance: implement all config documents in the subtree.
+- [x] Full conformance: implement all config documents in the subtree. — done: `config_options.rs` with OptionScope (Global/Buffer/Window), OptionValue, OptionDef, ConfigStore (define/get/set/resolve/all_names), parse_set_arg → SetAction, build_defaults (10 options)
 - [ ] Update conformance and limitations docs when user-visible.
 

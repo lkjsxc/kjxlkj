@@ -33,6 +33,6 @@ Implement viewport model and cursor-follow invariants.
 ### D. Regression tests and documentation ledgers
 
 - [x] Add regression tests for long lines, wrap/no-wrap, and resize storms.
-- [ ] Update conformance and limitations docs when behavior is user-visible:
+- [x] Update conformance and limitations docs when behavior is user-visible: — done: batch 15 viewport follow conformance and limitations entries added
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

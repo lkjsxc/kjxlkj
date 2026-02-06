@@ -237,6 +237,29 @@ At end of line, typed characters are inserted rather than replacing.
 | `is_idle_busy_loop()` | Detects >120fps redraw rate as busy-loop |
 | `exceeds_budget()` | Checks if duration exceeds a latency budget |
 
+## Buffer lifecycle
+
+| Feature | Behavior |
+|---|---|
+| `LifecycleStage` | Created/Loading/Loaded/Saving/Closing/Closed state machine |
+| `BufferLifecycle` | Tracks stage, path, dirty flag, swap state |
+| `ModificationInfo` | Change counting with mark_changed/saved, changes_since_save |
+| `SwapState` | Swap file path management (swap_path from file path) |
+| `AutoSavePolicy` | Disabled/Interval(secs)/OnFocusLost auto-save policies |
+| `buffers_needing_save()` | Filters collection for dirty buffers needing persistence |
+
+## Viewport follow
+
+| Feature | Behavior |
+|---|---|
+| `ViewportState` | top_line/left_col/visible_lines/visible_cols/scrolloff/sidescrolloff |
+| `follow_cursor_v()` | Adjusts top_line to keep cursor visible with scrolloff |
+| `follow_cursor_h()` | Adjusts left_col to keep cursor visible with sidescrolloff |
+| `center_on_line()` | Centers viewport on a given line (zz) |
+| `cursor_to_top()` / `cursor_to_bottom()` | Moves viewport so cursor is at top/bottom (zt/zb) |
+| `scroll()` | Scrolls by delta lines with clamping |
+| `scroll_percent()` | Reports percentage through file |
+
 ## Related
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)

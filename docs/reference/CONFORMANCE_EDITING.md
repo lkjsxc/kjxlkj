@@ -208,6 +208,18 @@ Search behavior in this conformance target is:
 | `block_cols()` | Returns column range for block selections |
 | `switch_kind()` | Switches between Char/Line/Block visual modes |
 
+## Cursor overlay
+
+| Feature | Behavior |
+|---|---|
+| `OverlayPriority` | Base < Selection < Search < Diagnostic < Cursor layering |
+| `HighlightRegion` | Start/end/kind region with containment test |
+| `effective_overlay()` | Resolves highest-priority overlay at a position |
+| `BoundaryAction` | Clamp/Wrap/NoOp for cursor boundary resolution |
+| `resolve_cursor_col()` | Clamps or wraps cursor column within line length |
+| `cursor_in_viewport()` | Tests if cursor position is visible in viewport |
+| `matching_bracket()` | Finds matching bracket (parens/brackets/braces) |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

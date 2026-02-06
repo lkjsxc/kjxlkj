@@ -32,7 +32,7 @@ Implement cursor semantics, including cursor shape/visibility rules where specif
 
 ### C. Full conformance
 
-- [ ] Implement the full cursor subtree behavior, including interactions with overlays and highlights.
+- [x] Implement the full cursor subtree behavior, including interactions with overlays and highlights. — done: `cursor_overlay.rs` with OverlayPriority, HighlightRegion, effective_overlay, BoundaryAction, resolve_cursor_col, at_line_boundary, cursor_in_viewport, viewport_top_for_cursor, matching_bracket
 
 ### D. Conformance updates
 

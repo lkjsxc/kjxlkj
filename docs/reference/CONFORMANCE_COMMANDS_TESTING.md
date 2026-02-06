@@ -562,6 +562,38 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `format_node()` | Renders with indentation and directional icons (▶/▼) |
 | `GitBadge` | Modified/Added/Deleted/Untracked/Ignored/Conflict/Clean |
 
+## File I/O commands
+
+| Feature | Behavior |
+|---|---|
+| `FileCommand` | Write/Edit/SaveAs/WriteQuit/WriteAll/Reload variants |
+| `parse_file_command()` | Parses `:w`, `:e`, `:saveas`, `:wq`, `:wa`, `:e!` from input |
+| `validate_write()` | Checks path exists, permissions, directory validity |
+| `expand_tilde()` | Expands `~/` to home directory in file paths |
+| `buffer_title()` | Derives display title from path or `[No Name]` |
+| `display_path()` | Shortens home-relative paths with `~/` prefix |
+
+## Completion engine
+
+| Feature | Behavior |
+|---|---|
+| `CompletionSource` | Command/Path/Option/Buffer/Help/ColorScheme/Custom |
+| `CompletionState` | Tracks candidates, index; next/prev/current/reset cycling |
+| `detect_source()` | Infers completion source from cmdline prefix context |
+| `complete_commands()` | Filters built-in command names by prefix |
+| `complete_paths()` | Filesystem path completion with directory awareness |
+| `common_prefix()` | Computes longest common prefix for menu narrowing |
+
+## Config options
+
+| Feature | Behavior |
+|---|---|
+| `OptionScope` | Global/Buffer/Window scope hierarchy |
+| `ConfigStore` | Define/get/set/resolve options with scope precedence |
+| `parse_set_arg()` | Parses `:set` arguments into SetAction variants |
+| `SetAction` | ShowAll/Query/SetBool/SetInt/SetStr/Invalid |
+| `build_defaults()` | 10 built-in options (number, wrap, tabstop, etc.) |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
