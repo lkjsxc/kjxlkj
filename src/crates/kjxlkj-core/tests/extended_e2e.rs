@@ -16,7 +16,7 @@ fn parse_key(s: &mut EditorState, key: KeyEvent) -> Intent {
         Mode::Insert => s.parser.parse_insert(&key),
         Mode::Visual | Mode::VisualLine | Mode::VisualBlock => s.parser.parse_visual(&key),
         Mode::Command => s.parser.parse_command(&key),
-        Mode::Replace => s.parser.parse_replace(&key),
+        Mode::Replace | Mode::Terminal => s.parser.parse_replace(&key),
     }
 }
 

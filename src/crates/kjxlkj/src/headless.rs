@@ -83,6 +83,7 @@ fn execute_command(state: &mut EditorState, cmd: &str) -> Result<()> {
                         }
                         Mode::Command => state.parser.parse_command(&key),
                         Mode::Replace => state.parser.parse_replace(&key),
+                        Mode::Terminal => state.parser.parse_insert(&key),
                     };
                     dispatch_intent(state, intent);
                 }

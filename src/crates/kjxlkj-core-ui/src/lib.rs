@@ -1,4 +1,6 @@
-//! UI model types — layout, status line, command line, popups, notifications.
+//! UI model types — layout, status line, command line, popups, notifications, completion.
+
+pub mod completion;
 
 use kjxlkj_core_types::{BufferId, Mode, Size, WindowId};
 

@@ -2,7 +2,7 @@
 
 mod digraph; mod event; mod geometry; mod highlight; mod ids;
 mod intent; mod language; mod mode;
-mod motion_kind; mod register; mod style;
+mod motion_kind; pub mod perf; mod register; mod style;
 
 pub use digraph::*;
 pub use event::*;

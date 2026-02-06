@@ -1,5 +1,7 @@
 //! LSP client service — language server protocol integration.
 
+pub mod protocol;
+
 use std::path::PathBuf;
 
 /// Configuration for an LSP server.

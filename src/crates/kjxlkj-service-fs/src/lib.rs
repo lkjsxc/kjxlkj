@@ -1,5 +1,7 @@
 //! Filesystem watch service — monitors file changes, directory listing.
 
+pub mod explorer;
+
 use std::path::PathBuf;
 
 /// A filesystem change event.

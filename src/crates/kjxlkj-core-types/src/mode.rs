@@ -15,6 +15,8 @@ pub enum Mode {
     OperatorPending,
     /// One normal command from insert mode (Ctrl-o).
     InsertNormal,
+    /// Terminal mode — input goes to embedded terminal.
+    Terminal,
 }
 
 impl Default for Mode {
@@ -35,6 +37,7 @@ impl std::fmt::Display for Mode {
             Self::Command => write!(f, "COMMAND"),
             Self::OperatorPending => write!(f, "O-PENDING"),
             Self::InsertNormal => write!(f, "(insert)"),
+            Self::Terminal => write!(f, "TERMINAL"),
         }
     }
 }
@@ -51,6 +54,7 @@ impl Mode {
             "replace" | "r" => Some(Self::Replace),
             "command" | "c" | "cmdline" => Some(Self::Command),
             "operator_pending" | "op" => Some(Self::OperatorPending),
+            "terminal" | "t" => Some(Self::Terminal),
             _ => None,
         }
     }
@@ -59,6 +63,9 @@ impl Mode {
     pub fn is_insert_like(&self) -> bool {
         matches!(self, Self::Insert | Self::Replace)
     }
+
+    /// Whether this mode is the terminal passthrough mode.
+    pub fn is_terminal(&self) -> bool { matches!(self, Self::Terminal) }
 
     /// Whether this mode is a visual selection mode.
     pub fn is_visual(&self) -> bool {
@@ -81,6 +88,7 @@ impl Mode {
             Self::Insert | Self::Command => CursorShape::Bar,
             Self::Visual | Self::VisualLine | Self::VisualBlock => CursorShape::Block,
             Self::Replace => CursorShape::Underline,
+            Self::Terminal => CursorShape::Bar,
         }
     }
 }

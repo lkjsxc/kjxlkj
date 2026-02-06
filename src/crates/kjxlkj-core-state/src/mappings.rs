@@ -95,6 +95,6 @@ pub fn mode_to_mapping_mode(mode: Mode) -> MappingMode {
         Mode::Visual | Mode::VisualLine | Mode::VisualBlock => MappingMode::Visual,
         Mode::Command => MappingMode::Command,
         Mode::OperatorPending => MappingMode::OperatorPending,
-        Mode::Replace => MappingMode::Normal,
+        Mode::Replace | Mode::Terminal => MappingMode::Normal,
     }
 }

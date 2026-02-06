@@ -43,6 +43,7 @@ pub async fn run_tui(file: Option<String>) -> Result<()> {
                         Mode::Visual | Mode::VisualLine | Mode::VisualBlock => state.parser.parse_visual(&core_key),
                         Mode::Command => handle_cmdline_key(&mut state, &core_key),
                         Mode::Replace => state.parser.parse_replace(&core_key),
+                        Mode::Terminal => state.parser.parse_insert(&core_key),
                     };
                     dispatch_intent(&mut state, intent);
                 }
