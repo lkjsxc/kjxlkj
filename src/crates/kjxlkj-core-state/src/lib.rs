@@ -11,22 +11,21 @@ mod dispatch_macros; mod dispatch_marks;    mod dispatch_misc;
 mod dispatch_navigation; mod dispatch_operators; mod dispatch_search;
 mod dispatch_windows; mod dispatch_yank_paste;
 mod mappings;       mod quickfix;           mod registers;
-mod search_highlight;
+mod search_highlight; mod marks_extended;   mod substitute_flags;
+mod buffer_list;    mod visual_block;
 mod session;        mod session_macros;     pub mod scripting;
 mod window_state;
 
 pub use autocommands::{AutoCmdTable, AutoEvent};
 pub use buffer_state::BufferState;
 pub use config::{execute_script, load_default_config};
-pub use dispatch::dispatch_intent;
-pub use dispatch_cmdline::handle_cmdline_key;
+pub use dispatch::{dispatch_intent};   pub use dispatch_cmdline::handle_cmdline_key;
 pub use mappings::{MappingMode, MappingTable};
 pub use registers::RegisterFile;
 pub use quickfix::{QuickfixEntry, QuickfixKind, QuickfixList};
 pub use session::{AutoSaveConfig, RecentFiles, Session, SessionLayout, SplitDirection, SwapFile, UndoFile, Workspace};
 pub use session_macros::{KeyModifiers, KeyStroke, Macro, MacroRecord, MacroStore};
 pub use window_state::WindowState;
-
 use std::collections::HashMap;
 use kjxlkj_core_mode::{KeyParser, ModeState};
 use kjxlkj_core_types::{BufferId, FindCharKind, Mode, Position, Range, Size, WindowId};

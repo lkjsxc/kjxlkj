@@ -2,6 +2,7 @@
 
 pub mod protocol;
 pub mod protocol_ext;
+pub mod completion_ext;
 
 use std::path::PathBuf;
 
