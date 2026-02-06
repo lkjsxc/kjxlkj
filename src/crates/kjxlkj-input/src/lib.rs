@@ -2,6 +2,8 @@
 
 mod keyboard_layout;
 mod keybinding_coverage;
+mod timing_debounce;
+mod mappings_engine;
 
 use kjxlkj_core_types::Size;
 
