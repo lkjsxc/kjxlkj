@@ -20,12 +20,12 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### A. Placeholder scaffolding
 
-- [ ] Define text object parsing and selection models.
-- [ ] Define inclusive/exclusive and linewise behaviors when specified.
+- [x] Define text object parsing and selection models.
+- [x] Define inclusive/exclusive and linewise behaviors when specified.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal text object set with deterministic tests.
+- [x] Implement a minimal text object set with deterministic tests.
 
 ### C. Full conformance
 

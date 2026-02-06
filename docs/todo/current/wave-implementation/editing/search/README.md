@@ -20,13 +20,13 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### A. Placeholder scaffolding
 
-- [ ] Define search state and its interaction with the command line and UI.
-- [ ] Define highlighting and match navigation invariants.
+- [x] Define search state and its interaction with the command line and UI.
+- [x] Define highlighting and match navigation invariants.
   - Note: Search highlighting deferred to future iteration
 
 ### B. Minimal conformance slice
 
-- [ ] Implement basic forward search and match navigation with deterministic tests.
+- [x] Implement basic forward search and match navigation with deterministic tests.
 
 ### C. Full conformance
 

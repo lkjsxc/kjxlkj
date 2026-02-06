@@ -20,13 +20,13 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### A. Placeholder scaffolding
 
-- [ ] Define register types and storage (including unnamed, numbered, and special registers).
-- [ ] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
+- [x] Define register types and storage (including unnamed, numbered, and special registers).
+- [x] Define clipboard/OS integration boundaries (if any; otherwise record limitations).
   - Note: OS clipboard integration deferred (see LIMITATIONS.md)
 
 ### B. Minimal conformance slice
 
-- [ ] Implement yank/put for a minimal subset with deterministic tests.
+- [x] Implement yank/put for a minimal subset with deterministic tests.
 
 ### C. Full conformance
 

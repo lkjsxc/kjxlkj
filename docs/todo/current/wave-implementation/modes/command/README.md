@@ -17,11 +17,11 @@ Implement the Command mode state machine and its integration with Ex command-lin
 
 ### A. Placeholder scaffolding
 
-- [ ] Define how `:` enters command-line mode and how it exits.
+- [x] Define how `:` enters command-line mode and how it exits.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement basic `:` entry, editing, execute, and exit with deterministic tests.
+- [x] Implement basic `:` entry, editing, execute, and exit with deterministic tests.
   - `:` enters command mode
   - Character input builds command
   - Backspace deletes characters

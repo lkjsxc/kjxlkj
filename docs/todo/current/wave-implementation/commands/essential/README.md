@@ -22,15 +22,15 @@ Implement the essential Ex command surface and shared rules that apply to all co
 
 ### A. Placeholder scaffolding
 
-- [ ] Define shared command parsing and execution interfaces.
-- [ ] Define shared error and message reporting rules.
+- [x] Define shared command parsing and execution interfaces.
+- [x] Define shared error and message reporting rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal set of essential commands required by:
+- [x] Implement a minimal set of essential commands required by:
   - core file open/write workflows
   - safe quit flows
-- [ ] Add deterministic tests for parsing and error cases.
+- [x] Add deterministic tests for parsing and error cases.
 
 ### C. Full conformance
 
