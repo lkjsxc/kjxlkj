@@ -79,10 +79,10 @@ All contracts have at minimum a partial test or verification strategy in place.
 - No mouse support (by design).
 - Terminal integration (`:terminal`, `<leader>t`) has Terminal mode and service scaffolding but no real PTY spawning yet.
 - File explorer (`:explorer`, `<leader>e`) has tree rendering, input handling, and display rows but is not wired into the TUI render loop yet.
-- LSP integration has JSON-RPC protocol types, initialize/didOpen/didChange builders, and message encoding but is not connected to real language servers.
-- Git integration detects current branch from `.git/HEAD` but does not run real git commands.
+- LSP integration has JSON-RPC protocol types, initialize/didOpen/didChange builders, extended types (hover, signature help, code actions, navigation, rename, code lens, formatting, symbols), and message encoding but is not connected to real language servers.
+- Git integration detects current branch from `.git/HEAD`, has conflict marker detection, diff viewer types, and file indicators but does not run real git commands.
 - Fuzzy finder (`<leader>f`, `<leader>g`) has scoring algorithm but no UI rendering.
-- Session persistence (`:mksession`) records metadata but does not serialize to/restore from disk.
+- Session persistence (`:mksession`) records metadata and macro key strokes but does not serialize to/restore from disk.
 - Swap files and undo persistence types exist but are not written to disk.
 
 ## Code structure

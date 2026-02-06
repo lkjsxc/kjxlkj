@@ -23,7 +23,10 @@ Implement built-in session and persistence features.
 - [ ] Full conformance: implement all session feature documents.
   - [x] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
   - [x] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
-  - [ ] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
+  - [x] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
+    - MacroStore with store/get/remove/registers/clear
+    - KeyStroke (code, ctrl, alt, shift) for serialization
+    - Macro, MacroRecord, KeyModifiers types
   - [x] Workspaces (Workspace, WorkspaceFolder)
   - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
   - [x] Recent files tracking (RecentFiles, RecentFile)

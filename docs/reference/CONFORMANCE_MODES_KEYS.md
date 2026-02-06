@@ -24,7 +24,7 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 |---|---|
 | `h`/`j`/`k`/`l` | Cursor move left/down/up/right |
 | Arrow keys | Cursor move |
-| `Space` | Leader prefix (default leader); feature chords include `Space e` (explorer) and `Space t` (terminal) |
+| `Space` | Leader prefix (default leader); feature chords: `Space e` (explorer), `Space t` (terminal), `Space f` (find), `Space g` (livegrep), `Space b` (buffers), `Space u` (undotree) |
 | `Backspace` | Move left (same as `h`) |
 | `0` | Move to start of line (column 0) |
 | `^` | Move to first non-blank character |

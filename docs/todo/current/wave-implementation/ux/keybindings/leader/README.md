@@ -30,8 +30,12 @@ This checklist exists because leader conflicts can silently break explorer/termi
 
 ### B. Implement and test leader chords
 
-- [ ] Ensure leader chords are parsed deterministically and are mode-scoped correctly.
-- [ ] Add headless tests for leader chords that mutate editor UI state (when feasible).
+- [x] Ensure leader chords are parsed deterministically and are mode-scoped correctly.
+  - Space enters PendingState::Leader, second key dispatches to parse_leader_chord
+  - Chords: e→:explorer, t→:terminal, f→:find, g→:livegrep, b→:ls, u→:undotree
+- [x] Add headless tests for leader chords that mutate editor UI state (when feasible).
+  - Tests: leader_e_triggers_explorer, leader_t_triggers_terminal, leader_f_triggers_find,
+    leader_g_triggers_livegrep, leader_b_triggers_buffers, leader_unknown_is_noop
 - [ ] Add PTY E2E regressions for at least:
   - `<leader>e` opens/closes the explorer view
   - `<leader>t` opens/closes the integrated terminal view

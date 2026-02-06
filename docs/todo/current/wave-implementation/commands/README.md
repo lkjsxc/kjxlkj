@@ -79,8 +79,10 @@ Implement the Ex command surface, including:
 - [ ] Add tests for:
   - parsing and error cases
   - range/address correctness - deferred (no range support yet)
-  - command history behavior - deferred
-  - completion behavior - deferred
+  - [x] command history behavior
+    - cmdline_history_up_down, cmdline_ctrl_u_clears_to_start, cmdline_ctrl_w_deletes_word
+  - [x] completion behavior
+    - cmdline_tab_completion test verifies prefix-matching and longest-common-prefix
 
 ## Conformance and limitations (required updates)
 
