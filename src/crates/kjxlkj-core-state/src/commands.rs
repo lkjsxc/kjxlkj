@@ -78,6 +78,8 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => {
             state.message = Some(format!("{}: coming soon", command));
         }
+        ":execute" | ":exe" => dispatch_execute(state, args),
+        ":normal" | ":normal!" | ":norm" | ":norm!" => dispatch_normal(state, command, args, range),
         ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
         | ":noremap" | ":nnoremap" | ":inoremap" | ":vnoremap"
         | ":cnoremap" | ":onoremap" => cfm::dispatch_map_command(state, command, args),
@@ -109,6 +111,68 @@ fn dispatch_source(state: &mut EditorState, args: Option<&str>) {
         }
     } else {
         state.message = Some("Usage: :source <file>".into());
+    }
+}
+
+/// `:execute {string}` — evaluate a string as an Ex command.
+fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
+    let Some(expr) = args else {
+        state.message = Some("E471: Argument required".into());
+        return;
+    };
+    // Strip surrounding quotes if present
+    let cmd_str = if (expr.starts_with('"') && expr.ends_with('"'))
+        || (expr.starts_with('\'') && expr.ends_with('\''))
+    {
+        &expr[1..expr.len() - 1]
+    } else {
+        expr
+    };
+    if cmd_str.is_empty() { return; }
+    // Ensure it starts with `:` as ExCommand convention requires
+    let full = if cmd_str.starts_with(':') {
+        cmd_str.to_string()
+    } else {
+        format!(":{}", cmd_str)
+    };
+    dispatch_ex_command(state, &full);
+}
+
+/// `:normal[!] {commands}` — execute normal mode key sequence.
+fn dispatch_normal(
+    state: &mut EditorState, command: &str, args: Option<&str>,
+    range: Option<crate::commands_range::LineRange>,
+) {
+    let Some(keys_str) = args else {
+        state.message = Some("E471: Argument required".into());
+        return;
+    };
+    let _bang = command.ends_with('!');
+    // Determine line range to apply on
+    let (start, end) = match range {
+        Some(rng) => (rng.start, rng.end),
+        None => {
+            if let Some(win) = state.active_window_state() {
+                (win.cursor_line, win.cursor_line)
+            } else { return; }
+        }
+    };
+    // Execute key sequence on each line in range
+    for line in start..=end {
+        // Move cursor to beginning of the target line
+        if let Some(wid) = state.active_window {
+            if let Some(win) = state.windows.get_mut(&wid) {
+                win.cursor_line = line;
+                win.cursor_col = 0;
+            }
+        }
+        // Feed each character through the normal mode parser
+        for ch in keys_str.chars() {
+            let key = kjxlkj_core_types::KeyEvent::char(ch);
+            let intent = state.parser.parse_normal(&key);
+            crate::dispatch_intent(state, intent);
+        }
+        state.parser.reset();
     }
 }
 
