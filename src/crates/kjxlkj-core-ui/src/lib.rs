@@ -1,6 +1,9 @@
 //! UI model types — layout, status line, command line, popups, notifications, completion.
 
 pub mod completion;
+pub mod component;
+pub mod cursor_state;
+pub mod mode_config;
 pub mod notification_queue;
 
 use kjxlkj_core_types::{BufferId, Mode, Size, WindowId};
