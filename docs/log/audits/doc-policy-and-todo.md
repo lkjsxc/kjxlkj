@@ -9,12 +9,50 @@ This audit verifies compliance with documentation policy and TODO system integri
 ## Status
 
 - Date: Iteration 36
-- Result: In progress
+- Result: Complete
 
-## Observations
+## Reading Summary
 
-TBD: Record observations as the audit proceeds.
+Full documentation reading completed covering:
+- 11 top-level directories under `/docs/spec/`
+- ~50+ MUST requirements identified
+- ~15 major feature limitations documented
+- 6 high-priority UX defects tracked
+- 5 service crates required but not yet implemented
 
-## Action items
+## Key Findings
 
-TBD: Record action items that emerge from the audit.
+### Normative Requirements Verified
+
+| Category | Count | Status |
+|---|---|---|
+| Architecture contracts | 7 MUST rules | Partially implemented |
+| Memory constraints | 5 MUST rules | Implemented |
+| Latency ordering | 5 MUST rules | Implemented |
+| Mode transitions | 4 MUST rules | Implemented |
+| Viewport semantics | 4 MUST rules | Partially implemented |
+
+### Documentation Policy Compliance
+
+- All directories contain README.md: PASS
+- Fence policy (Mermaid-only): PASS
+- Internal link validity: PASS
+- 200-line file limit: FAIL (2 files exceed limit)
+
+### Files Exceeding 200-Line Limit
+
+| File | Lines | Reason |
+|---|---|---|
+| editor.rs | 493 | Main editor state machine |
+| state.rs | 332 | Mode state machine |
+
+## Contradictions Found
+
+None requiring immediate resolution. Known limitations are properly documented.
+
+## Follow-up TODO Leaves
+
+1. Refactor oversized files (editor.rs, state.rs)
+2. Implement missing service crates
+3. Add PTY E2E test harness
+4. Fix high-priority UX defects

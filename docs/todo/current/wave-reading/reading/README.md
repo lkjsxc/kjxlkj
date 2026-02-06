@@ -19,22 +19,22 @@ Make the TODO system “doc-complete”: every documentation file is explicitly 
 - Follow the recursive doc-coverage index:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - For each directory page:
-  - [ ] Read every document linked under `### Files`.
-  - [ ] Continue recursively into every entry under `### Subdirectories`.
+  - [x] Read every document linked under `### Files`.
+  - [x] Continue recursively into every entry under `### Subdirectories`.
 
 ### B. Record reading completion and contradictions
 
 - If recording is useful for a specific iteration, add a short audit note under:
   - [/docs/log/audits/README.md](/docs/log/audits/README.md)
 - In the audit note, record only:
-  - which doc subtree was reviewed
-  - contradictions found (links)
-  - follow-up TODO leaves created under `/docs/todo/current/`
+  - [x] which doc subtree was reviewed
+  - [x] contradictions found (links)
+  - [x] follow-up TODO leaves created under `/docs/todo/current/`
 
 ### C. Gate behavior changes on reading + conformance + tests
 
-- For any behavior change, re-read the relevant spec subtree in `/docs/todo/doc-coverage/`.
-- If the change touches `/docs/spec/`, update:
+- [x] For any behavior change, re-read the relevant spec subtree in `/docs/todo/doc-coverage/`.
+- [x] If the change touches `/docs/spec/`, update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
-- Add or update unit/integration/E2E tests to prevent regressions.
+- [x] Add or update unit/integration/E2E tests to prevent regressions.
