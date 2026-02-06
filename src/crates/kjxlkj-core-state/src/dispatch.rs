@@ -77,6 +77,7 @@ pub fn dispatch_intent(state: &mut EditorState, intent: Intent) {
         Intent::DeleteWordBefore => dispatch_delete_word_before(state),
         Intent::DeleteToLineStart => dispatch_delete_to_line_start(state),
         Intent::InsertFromRegister(reg) => dispatch_insert_from_register(state, reg),
+        Intent::InsertDigraph(c1, c2) => dispatch_insert_digraph(state, c1, c2),
         Intent::Operator(op, m, c) => dispatch_operator(state, op, m, c),
         Intent::OperatorTextObject(op, k, inner) => dispatch_operator_text_object(state, op, k, inner),
         Intent::LineOperator(op, c) => dispatch_line_operator(state, op, c),

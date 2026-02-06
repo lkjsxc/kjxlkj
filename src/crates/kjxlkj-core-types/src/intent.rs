@@ -73,6 +73,7 @@ pub enum Intent {
     ReselectVisual,
     ShellCommand(String),
     PutRegister(bool),
+    InsertDigraph(char, char),
     Noop,
 }
 

@@ -69,3 +69,12 @@ pub(crate) fn dispatch_insert_from_register(state: &mut EditorState, reg: char) 
     if let Some(buf) = state.buffers.get_mut(&bid) { buf.text.insert_text(pos, &text); buf.modified = true; }
     if let Some(win) = state.windows.get_mut(&wid) { win.cursor_col += text.len(); }
 }
+
+/// Insert a digraph character at cursor (Ctrl-K c1 c2).
+pub(crate) fn dispatch_insert_digraph(state: &mut EditorState, c1: char, c2: char) {
+    if let Some(ch) = kjxlkj_core_types::digraph_lookup(c1, c2) {
+        dispatch_insert_char(state, ch);
+    } else {
+        state.message = Some(format!("Unknown digraph: {}{}", c1, c2));
+    }
+}

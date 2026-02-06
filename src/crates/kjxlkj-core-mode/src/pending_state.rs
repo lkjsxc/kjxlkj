@@ -12,7 +12,8 @@ pub(crate) enum PendingState {
     FindChar(FindCharKind), Register,
     Mark, JumpMark, JumpMarkLine,
     MacroRecord, MacroPlay, ReplaceChar,
-    InsertRegister, Leader, CtrlW,
+    InsertRegister, InsertDigraph1, InsertDigraph2(char),
+    Leader, CtrlW,
 }
 
 /// Shared char-to-motion mapping (stateless).

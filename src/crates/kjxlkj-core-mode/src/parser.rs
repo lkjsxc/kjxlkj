@@ -101,14 +101,31 @@ impl KeyParser {
         // Handle pending Ctrl-r {register}
         if self.pending == PendingState::InsertRegister {
             self.pending = PendingState::None;
-            if let KeyCode::Char(c) = key.code {
-                return Intent::InsertFromRegister(c);
+            if let KeyCode::Char(c) = key.code { return Intent::InsertFromRegister(c); }
+            return Intent::Noop;
+        }
+        // Handle pending digraph (Ctrl-K c1 c2)
+        if let PendingState::InsertDigraph2(c1) = self.pending {
+            self.pending = PendingState::None;
+            if let KeyCode::Char(c2) = key.code { return Intent::InsertDigraph(c1, c2); }
+            return Intent::Noop;
+        }
+        if self.pending == PendingState::InsertDigraph1 {
+            self.pending = PendingState::None;
+            if let KeyCode::Char(c1) = key.code {
+                self.pending = PendingState::InsertDigraph2(c1);
+                return Intent::Noop;
             }
             return Intent::Noop;
         }
         // Ctrl-r starts pending register insert
         if key.ctrl && key.code == KeyCode::Char('r') {
             self.pending = PendingState::InsertRegister;
+            return Intent::Noop;
+        }
+        // Ctrl-k starts pending digraph insert
+        if key.ctrl && key.code == KeyCode::Char('k') {
+            self.pending = PendingState::InsertDigraph1;
             return Intent::Noop;
         }
         crate::parser_modes::parse_insert(key)
