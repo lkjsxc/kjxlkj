@@ -26,12 +26,12 @@ Implement Ex command execution, including `:execute`, `:normal`, and `:source` b
 
 - [ ] Define the execution pipeline:
   - parse → resolve → execute → report
-- [ ] Define script/source file loading and error handling rules.
+- [x] Define script/source file loading and error handling rules.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement `:source` for a minimal, deterministic script subset (as specified).
-- [ ] Add tests proving deterministic execution ordering.
+- [x] Implement `:source` for a minimal, deterministic script subset (as specified).
+- [x] Add tests proving deterministic execution ordering.
 
 ### C. Full conformance
 

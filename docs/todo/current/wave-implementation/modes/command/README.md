@@ -30,10 +30,10 @@ Implement the Command mode state machine and its integration with Ex command-lin
 
 ### C. Full conformance
 
-- [ ] Implement all Command mode behaviors and integrate completion/history fully.
-  - [ ] Basic command editing
-  - [ ] Command history (up/down arrows)
-  - [ ] Tab completion
+- [x] Implement all Command mode behaviors and integrate completion/history fully.
+  - [x] Basic command editing
+  - [x] Command history (up/down arrows)
+  - [x] Tab completion
 
 If any sub-item is intentionally deferred, apply the deferral protocol from [/docs/todo/current/README.md](/docs/todo/current/README.md) and avoid leaving a terminal “future” section with unchecked boxes.
 

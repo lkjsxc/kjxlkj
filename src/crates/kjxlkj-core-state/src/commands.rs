@@ -5,9 +5,26 @@ use crate::EditorState;
 /// Dispatch an Ex command string against editor state.
 pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
     let trimmed = cmd.trim();
-    let (command, args) = match trimmed.split_once(' ') {
+    // Parse optional range prefix (e.g., :%s, :1,5d, :.,$s)
+    let (range, range_cmd) =
+        crate::commands_range::parse_range(state, trimmed);
+    let effective = if range.is_some() { &range_cmd } else { trimmed };
+    // If range was parsed and no command follows, treat as goto line
+    if let Some(ref rng) = range {
+        let stripped = effective.trim().trim_start_matches(':');
+        if stripped.is_empty() {
+            if let Some(wid) = state.active_window {
+                let win = state.windows.get_mut(&wid).unwrap();
+                win.cursor_line = rng.end;
+                win.cursor_col = 0;
+                win.ensure_cursor_visible();
+            }
+            return;
+        }
+    }
+    let (command, args) = match effective.split_once(' ') {
         Some((c, a)) => (c, Some(a.trim())),
-        None => (trimmed, None),
+        None => (effective, None),
     };
     match command {
         ":q" | ":quit" => {
@@ -168,27 +185,37 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
             state.message =
                 Some("all autocommands cleared".into());
         }
+        ":d" | ":delete" => {
+            crate::commands_substitute::dispatch_range_delete(
+                state, range,
+            );
+        }
+        ":y" | ":yank" => {
+            crate::commands_substitute::dispatch_range_yank(
+                state, range,
+            );
+        }
         ":filetype" | ":ft" => {
             crate::commands_config::dispatch_filetype(state, args);
         }
         _ => {
             // Try :s/pattern/replacement/[flags]
-            // Try :s/pattern/replacement/[flags] with any separator
-            if trimmed.starts_with(":s") && trimmed.len() > 2
-                && !trimmed.chars().nth(2).unwrap_or(' ').is_alphanumeric()
+            let eff = effective;
+            if eff.starts_with(":s") && eff.len() > 2
+                && !eff.chars().nth(2).unwrap_or(' ').is_alphanumeric()
             {
-                crate::commands_substitute::dispatch_substitute(
-                    state, trimmed,
+                crate::commands_substitute::dispatch_substitute_range(
+                    state, eff, range,
                 );
-            } else if trimmed.starts_with(":g/")
-                || trimmed.starts_with(":g!")
+            } else if eff.starts_with(":g/")
+                || eff.starts_with(":g!")
             {
                 crate::commands_substitute::dispatch_global(
-                    state, trimmed,
+                    state, eff,
                 );
-            } else if trimmed.starts_with(":v/") {
+            } else if eff.starts_with(":v/") {
                 crate::commands_substitute::dispatch_vglobal(
-                    state, trimmed,
+                    state, eff,
                 );
             } else {
                 crate::commands_nav::dispatch_unknown(

@@ -172,26 +172,39 @@ fn render_frame(
         style::SetAttribute(style::Attribute::Reverse),
     )?;
     let mode_str = format!(" {} ", state.current_mode());
-    let file_name = buf.text.name();
+    let file_name = buf.file_path.as_deref().unwrap_or("[No Name]");
     let modified = if buf.modified { " [+]" } else { "" };
+    let lang_str = format!(" {} ", buf.language);
+    let total = buf.text.line_count();
+    let pct = if total <= 1 {
+        "All".to_string()
+    } else if win.cursor_line == 0 {
+        "Top".to_string()
+    } else if win.cursor_line >= total.saturating_sub(1) {
+        "Bot".to_string()
+    } else {
+        format!("{}%", win.cursor_line * 100 / total)
+    };
     let pos_str = format!(
-        " {}:{} ",
+        " {}:{} {} ",
         win.cursor_line + 1,
-        win.cursor_col + 1
+        win.cursor_col + 1,
+        pct,
     );
-    let middle_pad = width
-        .saturating_sub(mode_str.len())
-        .saturating_sub(file_name.len())
-        .saturating_sub(modified.len())
-        .saturating_sub(pos_str.len());
+    let left_len =
+        mode_str.len() + file_name.len() + modified.len();
+    let right_len = lang_str.len() + pos_str.len();
+    let middle_pad =
+        width.saturating_sub(left_len).saturating_sub(right_len);
     write!(
         out,
-        "{}{}{}{}{}",
+        "{}{}{}{}{}{}",
         mode_str,
         file_name,
         modified,
         " ".repeat(middle_pad),
-        pos_str
+        lang_str,
+        pos_str,
     )?;
     execute!(out, style::SetAttribute(style::Attribute::Reset))?;
 

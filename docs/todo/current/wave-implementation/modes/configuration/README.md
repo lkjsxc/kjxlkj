@@ -15,11 +15,11 @@ Implement configuration options that affect modes and mode behavior.
 
 ### A. Placeholder scaffolding
 
-- [ ] Enumerate all configuration items that affect mode behavior.
+- [x] Enumerate all configuration items that affect mode behavior.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal configuration set with deterministic tests.
+- [x] Implement a minimal configuration set with deterministic tests.
 
 ### C. Full conformance
 

@@ -39,15 +39,15 @@ Implement the scripting surface defined by the spec (without introducing plugins
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define the mapping data model and resolution order.
-- [ ] Define the boundary between:
+- [x] Define the mapping data model and resolution order.
+- [x] Define the boundary between:
   - raw input decoding
   - mapping expansion
   - core intent emission
 
 ## Minimal conformance slice (sub-wave)
 
-- [ ] Implement a minimal subset of mappings that is:
+- [x] Implement a minimal subset of mappings that is:
   - deterministic
   - test-backed
   - sufficient to cover core navigation/editing paths

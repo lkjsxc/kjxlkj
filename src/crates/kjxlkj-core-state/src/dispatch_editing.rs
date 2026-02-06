@@ -67,13 +67,36 @@ pub(crate) fn dispatch_insert_newline(state: &mut EditorState) {
     };
     let bid = win.buffer_id;
     let pos = Position::new(win.cursor_line, win.cursor_col);
+    let auto_indent = state.options.autoindent;
+    // Compute indentation to carry forward
+    let indent = if auto_indent {
+        if let Some(buf) = state.buffers.get(&bid) {
+            let line_text =
+                buf.text.line_to_string(win.cursor_line);
+            let ws: String = line_text
+                .chars()
+                .take_while(|c| c.is_whitespace() && *c != '\n')
+                .collect();
+            ws
+        } else {
+            String::new()
+        }
+    } else {
+        String::new()
+    };
     if let Some(buf) = state.buffers.get_mut(&bid) {
         buf.text.insert_char(pos, '\n');
+        if !indent.is_empty() {
+            buf.text.insert_text(
+                Position::new(pos.line + 1, 0),
+                &indent,
+            );
+        }
         buf.modified = true;
     }
     if let Some(win) = state.windows.get_mut(&wid) {
         win.cursor_line += 1;
-        win.cursor_col = 0;
+        win.cursor_col = indent.len();
         win.ensure_cursor_visible();
     }
 }
