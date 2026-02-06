@@ -30,7 +30,7 @@ Implement registers (yank/put storage), including special registers and persiste
 
 ### C. Full conformance
 
-- [ ] Implement all register behaviors and special registers in the subtree.
+- [x] Implement all register behaviors and special registers in the subtree.
   - Named registers (a-z) - implemented
   - Register selection ("{register}) - implemented
   - Pending register for yank/delete/paste - implemented

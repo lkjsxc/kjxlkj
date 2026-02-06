@@ -25,11 +25,11 @@ Implement macro recording and playback, including recursion and register integra
 
 ### B. Minimal conformance slice
 
-- [ ] Implement recording/playback for a minimal set with deterministic tests.
+- [x] Implement recording/playback for a minimal set with deterministic tests.
 
 ### C. Full conformance
 
-- [ ] Implement all macro features in the subtree (advanced + recursive).
+- [x] Implement all macro features in the subtree (advanced + recursive).
   - q{register} to start/stop recording - implemented
   - @{register} to playback - implemented
   - @@ to repeat last macro - implemented

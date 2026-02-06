@@ -33,7 +33,7 @@ Implement operators, operator-pending behavior, and operator modifiers.
 
 ### C. Full conformance
 
-- [ ] Implement all operator behaviors, modifiers, and advanced operators in the subtree.
+- [x] Implement all operator behaviors, modifiers, and advanced operators in the subtree.
   - Visual mode operators (d, y, c in v/V/Ctrl-v modes) implemented
   - Block visual mode rectangle operations implemented
   - Repeat with dot (.) implemented

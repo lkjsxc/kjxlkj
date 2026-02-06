@@ -30,7 +30,7 @@ Implement search UI and behavior, including match navigation and search history 
 
 ### C. Full conformance
 
-- [ ] Implement all search behaviors in the subtree, including search-replace workflows where specified.
+- [x] Implement all search behaviors in the subtree, including search-replace workflows where specified.
   - Forward search (/) and backward search (?) implemented
   - n/N repeat search in same/opposite direction
   - Search wrap-around with status message

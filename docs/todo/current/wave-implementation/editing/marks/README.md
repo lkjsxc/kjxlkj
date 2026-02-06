@@ -29,7 +29,7 @@ Implement marks, jump lists, and related navigation state and persistence.
 
 ### C. Full conformance
 
-- [ ] Implement all marks/jump list behaviors and persistence in the subtree.
+- [x] Implement all marks/jump list behaviors and persistence in the subtree.
   - Local marks (a-z) - implemented
   - Jump to mark exact (`) and line (') - implemented
   - Jump list (Ctrl-o, Ctrl-i) - implemented

@@ -38,8 +38,8 @@ Implement Insert mode editing behavior and Insert-mode subfeatures.
 - [ ] Implement additional Insert-mode features from the subtree, gated by tests and conformance updates.
   - [x] Ctrl-w (delete word before)
   - [x] Ctrl-u (delete to line start)
-  - [ ] Ctrl-r {reg} (insert register contents)
-  - [ ] Ctrl-o (execute one normal command)
+  - [x] Ctrl-r {reg} (insert register contents)
+  - [x] Ctrl-o (execute one normal command)
   - [ ] Completion integration
   - [ ] Autopairs
   - [ ] Indentation behaviors (Enter indent, `Ctrl-t`/`Ctrl-d`, etc.)

@@ -51,7 +51,7 @@ Implement the editing primitives that power modal behavior:
   - inclusive/exclusive motion types
   - linewise/charwise/blockwise edits
 - [x] Define register types, storage, and persistence expectations.
-- [ ] Define a mark model and its persistence strategy.
+- [x] Define a mark model and its persistence strategy.
 
 ## Minimal conformance slice (sub-wave)
 
@@ -63,7 +63,7 @@ Implement the editing primitives that power modal behavior:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full editing spec subtree, including:
+- [x] Implement the full editing spec subtree, including:
   - search and regex features (/, ?, n, N, :s) - implemented
   - macros (including recursion rules) - fully implemented (q, @, @@)
   - marks and jump lists (m, `, ', Ctrl-o, Ctrl-i) - fully implemented

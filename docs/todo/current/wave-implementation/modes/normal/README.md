@@ -34,7 +34,7 @@ Implement Normal mode navigation and command initiation behaviors.
 
 ### C. Full conformance
 
-- [ ] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
+- [x] Implement all Normal-mode behaviors and keybindings required by the spec (or record limitations).
   - Marks (m, ', `)
   - Registers (", etc.)
   - Macros (q, @, @@)

@@ -35,7 +35,7 @@ Implement Visual selection semantics and behavior beyond mode transitions:
 
 ### C. Full conformance
 
-- [ ] Implement all visual behaviors and variants in the subtree.
+- [x] Implement all visual behaviors and variants in the subtree.
   - Charwise visual mode (v) - implemented
   - Linewise visual mode (V) - implemented
   - Blockwise visual mode (Ctrl-v) - implemented

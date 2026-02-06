@@ -25,7 +25,7 @@ Implement Visual mode state and key interpretation (selection mechanics are also
 
 ### C. Full conformance
 
-- [ ] Implement all Visual mode behaviors and keybindings (including variants) or record limitations.
+- [x] Implement all Visual mode behaviors and keybindings (including variants) or record limitations.
   - Charwise visual mode (v) - implemented
   - Linewise visual mode (V) - implemented
   - Blockwise visual mode (Ctrl-v) - implemented

@@ -39,8 +39,8 @@ Implement text manipulation primitives such as:
 ### C. Full conformance
 
 - [ ] Implement all text manipulation documents in the subtree.
-  - [ ] Case changing (~, g~, gU, gu)
-  - [ ] Increment/decrement (Ctrl-A, Ctrl-X)
+  - [x] Case changing (~, g~, gU, gu)
+  - [x] Increment/decrement (Ctrl-A, Ctrl-X)
   - [ ] Join/split (J, gJ)
   - [ ] Undo/redo (u, Ctrl-r)
   - [ ] Sorting/alignment

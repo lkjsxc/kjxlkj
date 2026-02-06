@@ -20,16 +20,16 @@ Implement substitution and global command families, including flags and special 
 
 ### A. Placeholder scaffolding
 
-- [ ] Define the substitution expression model and parsing rules.
-- [ ] Define interaction with regex engine and ranges.
+- [x] Define the substitution expression model and parsing rules.
+- [x] Define interaction with regex engine and ranges.
 
 ### B. Minimal conformance slice
 
-- [ ] Implement a minimal, fully tested `:substitute` subset that matches the spec.
+- [x] Implement a minimal, fully tested `:substitute` subset that matches the spec.
 
 ### C. Full conformance
 
-- [ ] Implement all substitution/global/vglobal behaviors, flags, and specials.
+- [x] Implement all substitution/global/vglobal behaviors, flags, and specials.
   - :s/pattern/replacement/ - implemented
   - :s/pattern/replacement/g flag - implemented
   - :g/pattern/command - implemented
