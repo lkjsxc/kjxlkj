@@ -1,6 +1,7 @@
 //! Terminal/PTY service — embedded terminal emulation.
 
 mod terminal_emulator;
+mod terminal_full;
 
 use kjxlkj_core_types::Size;
 

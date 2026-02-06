@@ -6,6 +6,7 @@ mod text_objects_ext; mod regex_engine; mod editing_features;
 mod range_address; mod syntax_command; mod visual_selection;
 mod cursor_overlay;
 mod keybinding_full;
+mod ui_views;
 
 pub use motion::{apply_motion, compute_motion_range};
 pub use operator::apply_operator;

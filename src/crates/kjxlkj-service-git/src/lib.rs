@@ -2,6 +2,7 @@
 
 pub mod conflict;
 mod git_status;
+mod git_full;
 
 use std::path::PathBuf;
 

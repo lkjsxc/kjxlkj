@@ -8,6 +8,7 @@ pub mod plugin_prevention;
 pub mod file_explorer;
 pub mod event_automation;
 pub mod user_commands;
+pub mod notification_dispatch;
 
 use std::collections::HashMap;
 
