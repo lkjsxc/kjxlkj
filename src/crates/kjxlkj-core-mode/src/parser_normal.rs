@@ -5,7 +5,7 @@ use kjxlkj_core_types::{
     MotionKind, OperatorKind, PastePosition, RegisterName, ScrollKind,
 };
 
-use crate::parser::PendingState;
+use crate::pending_state::PendingState;
 
 pub(crate) fn parse_normal_key(
     pending: &mut PendingState,
@@ -57,20 +57,8 @@ fn parse_normal_char(
         'E' => Intent::Motion(MotionKind::WORDForwardEnd, count),
         '$' => Intent::Motion(MotionKind::LineEnd, 1),
         '^' | '_' => Intent::Motion(MotionKind::FirstNonBlank, 1),
-        'G' => {
-            if count > 1 {
-                Intent::Motion(MotionKind::GotoLine(count), 1)
-            } else {
-                Intent::Motion(MotionKind::FileEnd, 1)
-            }
-        }
-        '%' => {
-            if count > 1 && count <= 100 {
-                Intent::Motion(MotionKind::GotoPercent(count), 1)
-            } else {
-                Intent::Motion(MotionKind::MatchingBracket, 1)
-            }
-        }
+        'G' => if count > 1 { Intent::Motion(MotionKind::GotoLine(count), 1) } else { Intent::Motion(MotionKind::FileEnd, 1) },
+        '%' => if count > 1 && count <= 100 { Intent::Motion(MotionKind::GotoPercent(count), 1) } else { Intent::Motion(MotionKind::MatchingBracket, 1) },
         '|' => Intent::Motion(MotionKind::GotoColumn(count), 1),
         '+' => Intent::Motion(MotionKind::NextNonBlankLine, count),
         '-' => Intent::Motion(MotionKind::PrevNonBlankLine, count),
@@ -110,85 +98,27 @@ fn parse_normal_char(
         'N' => Intent::SearchPrev,
         '~' => Intent::ToggleCase,
         'J' => Intent::JoinLines(true, count),
-        'd' => {
-            *pending = PendingState::Operator(OperatorKind::Delete, count);
-            Intent::Noop
-        }
-        'y' => {
-            *pending = PendingState::Operator(OperatorKind::Yank, count);
-            Intent::Noop
-        }
-        'c' => {
-            *pending = PendingState::Operator(OperatorKind::Change, count);
-            Intent::Noop
-        }
-        '>' => {
-            *pending = PendingState::Operator(OperatorKind::Indent, count);
-            Intent::Noop
-        }
-        '<' => {
-            *pending = PendingState::Operator(OperatorKind::Outdent, count);
-            Intent::Noop
-        }
-        'g' => {
-            *pending = PendingState::G;
-            *count_buf = if count > 1 { Some(count) } else { None };
-            Intent::Noop
-        }
-        'z' | 'Z' => {
-            *pending = PendingState::Z;
-            Intent::Noop
-        }
-        'r' => {
-            *pending = PendingState::ReplaceChar;
-            Intent::Noop
-        }
-        'f' => {
-            *pending = PendingState::FindChar(FindCharKind::Forward);
-            Intent::Noop
-        }
-        'F' => {
-            *pending = PendingState::FindChar(FindCharKind::Backward);
-            Intent::Noop
-        }
-        't' => {
-            *pending = PendingState::FindChar(FindCharKind::TillForward);
-            Intent::Noop
-        }
-        'T' => {
-            *pending = PendingState::FindChar(FindCharKind::TillBackward);
-            Intent::Noop
-        }
         ';' => Intent::RepeatFindChar,
         ',' => Intent::RepeatFindCharReverse,
-        '"' => {
-            *pending = PendingState::Register;
-            Intent::Noop
-        }
-        'm' => {
-            *pending = PendingState::Mark;
-            Intent::Noop
-        }
-        '`' => {
-            *pending = PendingState::JumpMark;
-            Intent::Noop
-        }
-        '\'' => {
-            *pending = PendingState::JumpMarkLine;
-            Intent::Noop
-        }
-        'q' => {
-            *pending = PendingState::MacroRecord;
-            Intent::Noop
-        }
-        '@' => {
-            *pending = PendingState::MacroPlay;
-            Intent::Noop
-        }
-        ' ' => {
-            *pending = PendingState::Leader;
-            Intent::Noop
-        }
+        'd' => { *pending = PendingState::Operator(OperatorKind::Delete, count); Intent::Noop }
+        'y' => { *pending = PendingState::Operator(OperatorKind::Yank, count); Intent::Noop }
+        'c' => { *pending = PendingState::Operator(OperatorKind::Change, count); Intent::Noop }
+        '>' => { *pending = PendingState::Operator(OperatorKind::Indent, count); Intent::Noop }
+        '<' => { *pending = PendingState::Operator(OperatorKind::Outdent, count); Intent::Noop }
+        'g' => { *pending = PendingState::G; *count_buf = if count > 1 { Some(count) } else { None }; Intent::Noop }
+        'z' | 'Z' => { *pending = PendingState::Z; Intent::Noop }
+        'r' => { *pending = PendingState::ReplaceChar; Intent::Noop }
+        'f' => { *pending = PendingState::FindChar(FindCharKind::Forward); Intent::Noop }
+        'F' => { *pending = PendingState::FindChar(FindCharKind::Backward); Intent::Noop }
+        't' => { *pending = PendingState::FindChar(FindCharKind::TillForward); Intent::Noop }
+        'T' => { *pending = PendingState::FindChar(FindCharKind::TillBackward); Intent::Noop }
+        '"' => { *pending = PendingState::Register; Intent::Noop }
+        'm' => { *pending = PendingState::Mark; Intent::Noop }
+        '`' => { *pending = PendingState::JumpMark; Intent::Noop }
+        '\'' => { *pending = PendingState::JumpMarkLine; Intent::Noop }
+        'q' => { *pending = PendingState::MacroRecord; Intent::Noop }
+        '@' => { *pending = PendingState::MacroPlay; Intent::Noop }
+        ' ' => { *pending = PendingState::Leader; Intent::Noop }
         _ => Intent::Noop,
     }
 }

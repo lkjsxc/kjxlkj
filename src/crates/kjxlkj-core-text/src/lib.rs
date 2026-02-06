@@ -1,10 +1,7 @@
 //! Text model wrapping ropey with grapheme-aware operations.
 
-mod buffer;
-mod grapheme;
-mod snapshot;
-mod word;
-mod word_extra;
+mod buffer; mod grapheme; mod sentence;
+mod snapshot; mod word; mod word_extra;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{
@@ -19,5 +16,5 @@ pub use word::{
 pub use word_extra::{
     big_word_start_forward, big_word_start_backward,
     big_word_end_forward, big_word_end_backward,
-    next_sentence, prev_sentence,
 };
+pub use sentence::{next_sentence, prev_sentence};

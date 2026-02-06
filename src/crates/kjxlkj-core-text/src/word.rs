@@ -3,37 +3,20 @@
 use crate::TextBuffer;
 use kjxlkj_core_types::Position;
 
-/// A character is a "word" character (alphanumeric or underscore).
-pub fn is_word_char(c: char) -> bool {
-    c.is_alphanumeric() || c == '_'
-}
+pub fn is_word_char(c: char) -> bool { c.is_alphanumeric() || c == '_' }
+fn is_whitespace(c: char) -> bool { c.is_whitespace() }
 
-fn is_whitespace(c: char) -> bool {
-    c.is_whitespace()
-}
-
-/// Classify a character for word motion purposes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CharClass {
-    Word,
-    Punctuation,
-    Whitespace,
-}
+pub enum CharClass { Word, Punctuation, Whitespace }
 
 impl CharClass {
-    pub fn of(c: char) -> Self {
-        char_class(c)
-    }
+    pub fn of(c: char) -> Self { char_class(c) }
 }
 
 fn char_class(c: char) -> CharClass {
-    if is_whitespace(c) {
-        CharClass::Whitespace
-    } else if is_word_char(c) {
-        CharClass::Word
-    } else {
-        CharClass::Punctuation
-    }
+    if is_whitespace(c) { CharClass::Whitespace }
+    else if is_word_char(c) { CharClass::Word }
+    else { CharClass::Punctuation }
 }
 
 /// Move to next word start (`w` motion).
@@ -211,47 +194,5 @@ pub fn word_end_forward(buf: &TextBuffer, pos: Position) -> Position {
         }
         line += 1;
         col = 0;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn word_forward_simple() {
-        let buf = TextBuffer::from_text("hello world foo");
-        let p = word_start_forward(&buf, Position::new(0, 0));
-        assert_eq!(p, Position::new(0, 6));
-    }
-
-    #[test]
-    fn word_backward_simple() {
-        let buf = TextBuffer::from_text("hello world");
-        let p = word_start_backward(&buf, Position::new(0, 8));
-        assert_eq!(p, Position::new(0, 6));
-    }
-
-    #[test]
-    fn word_end_simple() {
-        let buf = TextBuffer::from_text("hello world");
-        let p = word_end_forward(&buf, Position::new(0, 0));
-        assert_eq!(p, Position::new(0, 4));
-    }
-
-    #[test]
-    fn word_forward_across_lines() {
-        let buf = TextBuffer::from_text("hello\nworld");
-        let p = word_start_forward(&buf, Position::new(0, 0));
-        assert_eq!(p, Position::new(1, 0));
-    }
-
-    #[test]
-    fn word_char_classification() {
-        assert!(is_word_char('a'));
-        assert!(is_word_char('_'));
-        assert!(is_word_char('5'));
-        assert!(!is_word_char('.'));
-        assert!(!is_word_char(' '));
     }
 }

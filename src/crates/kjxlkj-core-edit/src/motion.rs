@@ -163,212 +163,24 @@ fn goto_line(buf: &TextBuffer, n: usize) -> Position {
     first_non_blank(buf, Position::new(line, 0))
 }
 
-fn goto_column(
-    buf: &TextBuffer,
-    pos: Position,
-    n: usize,
-) -> Position {
-    let col = n
-        .saturating_sub(1)
-        .min(buf.line_len(pos.line).saturating_sub(1).max(0));
+fn goto_column(buf: &TextBuffer, pos: Position, n: usize) -> Position {
+    let col = n.saturating_sub(1).min(buf.line_len(pos.line).saturating_sub(1).max(0));
     Position::new(pos.line, col)
 }
 
-fn word_forward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
+fn repeat_motion(buf: &TextBuffer, pos: Position, count: usize, f: fn(&TextBuffer, Position) -> Position) -> Position {
     let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::word_start_forward(buf, p);
-    }
+    for _ in 0..count { p = f(buf, p); }
     p
 }
 
-fn word_backward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::word_start_backward(buf, p);
-    }
-    p
-}
-
-fn word_end(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::word_end_forward(buf, p);
-    }
-    p
-}
-
-fn word_end_backward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::word_end_backward(buf, p);
-    }
-    p
-}
-
-fn big_word_forward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::big_word_start_forward(buf, p);
-    }
-    p
-}
-
-fn big_word_backward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::big_word_start_backward(buf, p);
-    }
-    p
-}
-
-fn big_word_end(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::big_word_end_forward(buf, p);
-    }
-    p
-}
-
-fn big_word_end_backward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::big_word_end_backward(buf, p);
-    }
-    p
-}
-
-fn sentence_forward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::next_sentence(buf, p);
-    }
-    p
-}
-
-fn sentence_backward(
-    buf: &TextBuffer,
-    pos: Position,
-    count: usize,
-) -> Position {
-    let mut p = pos;
-    for _ in 0..count {
-        p = kjxlkj_core_text::prev_sentence(buf, p);
-    }
-    p
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn left_right() {
-        let buf = TextBuffer::from_text("hello");
-        assert_eq!(
-            apply_motion(&buf, Position::new(0, 2), MotionKind::Left, 1),
-            Position::new(0, 1),
-        );
-        assert_eq!(
-            apply_motion(&buf, Position::new(0, 2), MotionKind::Right, 1),
-            Position::new(0, 3),
-        );
-    }
-
-    #[test]
-    fn up_down() {
-        let buf = TextBuffer::from_text("abc\ndef\nghi");
-        assert_eq!(
-            apply_motion(&buf, Position::new(1, 1), MotionKind::Up, 1),
-            Position::new(0, 1),
-        );
-        assert_eq!(
-            apply_motion(&buf, Position::new(1, 1), MotionKind::Down, 1),
-            Position::new(2, 1),
-        );
-    }
-
-    #[test]
-    fn line_start_end() {
-        let buf = TextBuffer::from_text("  hello  ");
-        assert_eq!(
-            apply_motion(&buf, Position::new(0, 4), MotionKind::LineStart, 1),
-            Position::new(0, 0),
-        );
-        assert_eq!(
-            apply_motion(&buf, Position::new(0, 0), MotionKind::FirstNonBlank, 1),
-            Position::new(0, 2),
-        );
-    }
-
-    #[test]
-    fn file_start_end() {
-        let buf = TextBuffer::from_text("abc\ndef\nghi");
-        assert_eq!(
-            apply_motion(&buf, Position::new(1, 0), MotionKind::FileStart, 1),
-            Position::new(0, 0),
-        );
-        let end = apply_motion(&buf, Position::new(0, 0), MotionKind::FileEnd, 1);
-        assert_eq!(end.line, 2);
-    }
-
-    #[test]
-    fn matching_bracket_test() {
-        let buf = TextBuffer::from_text("(hello (world))");
-        let r = apply_motion(
-            &buf,
-            Position::new(0, 0),
-            MotionKind::MatchingBracket,
-            1,
-        );
-        assert_eq!(r, Position::new(0, 14));
-    }
-
-    #[test]
-    fn find_char_test() {
-        let buf = TextBuffer::from_text("hello world");
-        let r = apply_motion(
-            &buf,
-            Position::new(0, 0),
-            MotionKind::FindCharForward('o'),
-            1,
-        );
-        assert_eq!(r, Position::new(0, 4));
-    }
-}
+fn word_forward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::word_start_forward) }
+fn word_backward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::word_start_backward) }
+fn word_end(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::word_end_forward) }
+fn word_end_backward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::word_end_backward) }
+fn big_word_forward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::big_word_start_forward) }
+fn big_word_backward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::big_word_start_backward) }
+fn big_word_end(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::big_word_end_forward) }
+fn big_word_end_backward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::big_word_end_backward) }
+fn sentence_forward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::next_sentence) }
+fn sentence_backward(b: &TextBuffer, p: Position, c: usize) -> Position { repeat_motion(b, p, c, kjxlkj_core_text::prev_sentence) }

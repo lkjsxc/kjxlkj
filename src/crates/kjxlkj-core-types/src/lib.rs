@@ -1,17 +1,15 @@
 //! Shared foundational types used across the editor.
 
-mod event;
-mod geometry;
-mod ids;
-mod language;
-mod mode;
-mod register;
-mod style;
+mod event; mod geometry; mod ids;
+mod intent; mod language; mod mode;
+mod motion_kind; mod register; mod style;
 
 pub use event::*;
 pub use geometry::*;
 pub use ids::*;
+pub use intent::*;
 pub use language::*;
 pub use mode::*;
+pub use motion_kind::*;
 pub use register::*;
 pub use style::*;

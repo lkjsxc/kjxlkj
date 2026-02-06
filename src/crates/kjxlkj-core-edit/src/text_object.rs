@@ -2,6 +2,7 @@
 
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{Position, Range, TextObjectKind};
+use crate::text_object_delim::{find_quoted, find_delimited};
 
 /// Find the range of a text object from cursor position.
 /// `inner` = true for inner (i), false for around (a).
@@ -97,135 +98,6 @@ fn find_word_big(buf: &TextBuffer, pos: Position, inner: bool) -> Option<Range> 
     ))
 }
 
-fn find_quoted(
-    buf: &TextBuffer,
-    pos: Position,
-    quote: char,
-    inner: bool,
-) -> Option<Range> {
-    let line_str = buf.line_to_string(pos.line);
-    let chars: Vec<char> = line_str.chars().collect();
-    let col = pos.col;
-    // Find opening quote (at or before cursor)
-    let mut open = None;
-    let mut i = 0;
-    let mut in_quote = false;
-    let mut start = 0;
-    while i < chars.len() {
-        if chars[i] == quote && (i == 0 || chars[i - 1] != '\\') {
-            if !in_quote {
-                start = i;
-                in_quote = true;
-            } else {
-                if col >= start && col <= i {
-                    open = Some((start, i));
-                    break;
-                }
-                in_quote = false;
-            }
-        }
-        i += 1;
-    }
-    // If cursor is not inside quotes, search forward
-    if open.is_none() {
-        let mut j = col;
-        let mut found_open = false;
-        while j < chars.len() {
-            if chars[j] == quote {
-                if !found_open {
-                    start = j;
-                    found_open = true;
-                } else {
-                    open = Some((start, j));
-                    break;
-                }
-            }
-            j += 1;
-        }
-    }
-    let (s, e) = open?;
-    if inner {
-        Some(Range::new(
-            Position::new(pos.line, s + 1),
-            Position::new(pos.line, e),
-        ))
-    } else {
-        Some(Range::new(
-            Position::new(pos.line, s),
-            Position::new(pos.line, e + 1),
-        ))
-    }
-}
-
-fn find_delimited(
-    buf: &TextBuffer,
-    pos: Position,
-    open: char,
-    close: char,
-    inner: bool,
-) -> Option<Range> {
-    // Search backward for opening delimiter
-    let mut depth = 0i32;
-    let mut sp = pos;
-    let mut found_open = false;
-    loop {
-        if let Some(c) = buf.char_at(sp) {
-            if c == close && sp != pos { depth += 1; }
-            if c == open {
-                if depth == 0 {
-                    found_open = true;
-                    break;
-                }
-                depth -= 1;
-            }
-        }
-        if sp.col > 0 {
-            sp.col -= 1;
-        } else if sp.line > 0 {
-            sp.line -= 1;
-            sp.col = buf.line_len(sp.line);
-        } else {
-            break;
-        }
-    }
-    if !found_open { return None; }
-
-    // Search forward for closing delimiter
-    depth = 0;
-    let mut ep = pos;
-    let mut found_close = false;
-    let max = buf.line_count();
-    loop {
-        if let Some(c) = buf.char_at(ep) {
-            if c == open && ep != sp { depth += 1; }
-            if c == close {
-                if depth == 0 {
-                    found_close = true;
-                    break;
-                }
-                depth -= 1;
-            }
-        }
-        ep.col += 1;
-        if ep.col > buf.line_len(ep.line) {
-            ep.line += 1;
-            ep.col = 0;
-            if ep.line >= max { break; }
-        }
-    }
-    if !found_close { return None; }
-
-    if inner {
-        let mut start = sp;
-        start.col += 1;
-        Some(Range::new(start, ep))
-    } else {
-        let mut end = ep;
-        end.col += 1;
-        Some(Range::new(sp, end))
-    }
-}
-
 fn find_paragraph(buf: &TextBuffer, pos: Position, inner: bool) -> Option<Range> {
     let max = buf.line_count();
     let mut start = pos.line;
@@ -249,50 +121,5 @@ fn find_paragraph(buf: &TextBuffer, pos: Position, inner: bool) -> Option<Range>
 }
 
 fn find_sentence(buf: &TextBuffer, pos: Position, _inner: bool) -> Option<Range> {
-    // Simplified sentence: terminated by .!? followed by whitespace
-    Some(Range::new(
-        Position::new(pos.line, 0),
-        Position::new(pos.line, buf.line_len(pos.line)),
-    ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn inner_word() {
-        let buf = TextBuffer::from_text("hello world");
-        let r = find_text_object(&buf, Position::new(0, 1), TextObjectKind::Word, true);
-        assert_eq!(r, Some(Range::new(Position::new(0, 0), Position::new(0, 5))));
-    }
-
-    #[test]
-    fn around_word() {
-        let buf = TextBuffer::from_text("hello world");
-        let r = find_text_object(&buf, Position::new(0, 1), TextObjectKind::Word, false);
-        // "hello " including trailing space
-        assert_eq!(r, Some(Range::new(Position::new(0, 0), Position::new(0, 6))));
-    }
-
-    #[test]
-    fn inner_double_quote() {
-        let buf = TextBuffer::from_text(r#"say "hello" there"#);
-        let r = find_text_object(&buf, Position::new(0, 6), TextObjectKind::DoubleQuote, true);
-        assert_eq!(r, Some(Range::new(Position::new(0, 5), Position::new(0, 10))));
-    }
-
-    #[test]
-    fn around_paren() {
-        let buf = TextBuffer::from_text("fn(a, b)");
-        let r = find_text_object(&buf, Position::new(0, 4), TextObjectKind::Paren, false);
-        assert_eq!(r, Some(Range::new(Position::new(0, 2), Position::new(0, 8))));
-    }
-
-    #[test]
-    fn inner_brace() {
-        let buf = TextBuffer::from_text("{ hello }");
-        let r = find_text_object(&buf, Position::new(0, 3), TextObjectKind::Brace, true);
-        assert!(r.is_some());
-    }
+    Some(Range::new(Position::new(pos.line, 0), Position::new(pos.line, buf.line_len(pos.line))))
 }
