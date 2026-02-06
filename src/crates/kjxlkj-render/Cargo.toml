@@ -1,0 +1,16 @@
+[package]
+name = "kjxlkj-render"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Rendering pipeline — diff-based terminal output"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+crossterm = { workspace = true }
+unicode-width = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }

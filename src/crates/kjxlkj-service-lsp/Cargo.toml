@@ -1,0 +1,15 @@
+[package]
+name = "kjxlkj-service-lsp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "LSP client service — language server protocol integration"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

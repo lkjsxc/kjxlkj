@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-service-index"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Index service — file indexing, symbol search, workspace scanning"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }

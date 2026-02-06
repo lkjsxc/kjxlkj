@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-services"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Service supervisor — manages background service lifecycle"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
