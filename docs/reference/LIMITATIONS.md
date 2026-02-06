@@ -479,3 +479,43 @@ When reporting or logging issues, capture:
 - Strict mode panics immediately — no structured error recovery path.
 - `valid_buffer_id()` only checks non-zero; does not validate against actual buffer registry.
 - Contract violations are stored in a Vec with no deduplication.
+
+### PTY E2E Harness
+
+- PTY scenarios are structural definitions only — no actual PTY spawning is implemented.
+- `validate_scenario()` checks structure — does not verify action/expectation compatibility.
+- `estimate_duration()` uses fixed per-action estimates — no adaptive timing.
+- No parallel scenario execution support.
+
+### PTY Regressions
+
+- All regression scenarios are declarative — require PTY harness execution to actually run.
+- `leader_explorer_scenario` and `leader_terminal_scenario` verify intent dispatch — not actual UI state changes.
+- File-based assertions require write support — scenarios that only observe screen state are not covered.
+
+### Golden Snapshots
+
+- `render_snapshot()` handles basic truncation and wrapping — no tab expansion or wide character support.
+- `compare_snapshot()` uses line-by-line comparison — no contextual diff or fuzzy matching.
+- No automated golden file management (snapshots are built in-memory, not loaded from disk).
+
+### Benchmark Suite
+
+- `compute_benchmark_result()` requires pre-collected samples — no integrated timing infrastructure.
+- `budget_for()` uses fixed thresholds — no machine-adaptive or percentile-based budgets.
+- Benchmarks are definitions only — no actual microbenchmark runner is integrated.
+- No disk I/O or network latency simulation.
+
+### Latency Regression
+
+- All probes use synthetic inputs — no integration with real terminal event streams.
+- `probe_busy_loop()` checks frame rate — does not detect CPU usage patterns.
+- `probe_input_ordering()` checks timestamps — does not verify actual event ordering in the parser.
+- `run_all_probes()` uses hardcoded sample data — not parameterizable.
+
+### Long Line Fixtures
+
+- `long_unicode_line()` uses a limited set of Unicode characters — not exhaustive East Asian Width coverage.
+- `FixtureKind::CombiningMarks` generates placeholder combining sequences — not all combining classes tested.
+- `expected_display_width` is computed from generation parameters — may not match actual terminal rendering.
+- Fixture verification checks non-empty and positive width — no character-level validation.

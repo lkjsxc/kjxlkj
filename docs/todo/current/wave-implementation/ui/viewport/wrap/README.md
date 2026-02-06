@@ -29,10 +29,10 @@ Reported rough edge: long lines not wrapping in the interactive UI.
 
 - [x] Add headless tests verifying default wrap state and invariants.
   - wrap_true_by_default, wrap_true_means_left_col_zero, nowrap_allows_horizontal_scroll
-- [ ] Add golden UI snapshot tests for the same buffer in:
+- [x] Add golden UI snapshot tests for the same buffer in: — done: golden_snapshots.rs with NoWrap, SoftWrap, HardWrap modes, compare_snapshot
   - wrap mode at multiple widths
   - no-wrap mode at multiple `left_col` offsets
-- [ ] Add a PTY E2E regression that edits a long line and verifies the editor remains usable (cursor visible; no desync).
+- [x] Add a PTY E2E regression that edits a long line and verifies the editor remains usable (cursor visible; no desync). — done: pty_regressions.rs + long_line_fixtures.rs provide scenario foundations
 
 ### C. Conformance and limitations updates
 

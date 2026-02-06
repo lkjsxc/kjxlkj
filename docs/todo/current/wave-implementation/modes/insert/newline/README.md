@@ -41,7 +41,7 @@ This bug class is often an interactive-input decode issue rather than a core edi
 
 ## Checklist
 
-- [ ] Reproduce the failure in an interactive PTY-driven test.
+- [x] Reproduce the failure in an interactive PTY-driven test. — done: pty_regressions.rs insert_newline_scenario
   - Headless tests now cover Enter, Ctrl-j, Ctrl-m in Insert mode.
 - [x] Identify whether the failure is:
   - terminal key decoding (Enter key not emitted as `Enter`),

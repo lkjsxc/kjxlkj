@@ -69,7 +69,7 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for: — done: feature_reachability.rs, benchmark_suite.rs, golden_snapshots.rs cover feature test areas
   - terminal IO ordering and scrollback
   - session persistence correctness
   - feature-specific UI invariants

@@ -382,6 +382,69 @@ At end of line, typed characters are inserted rather than replacing.
 
 - Editing semantics: [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)
 
+### PTY E2E Harness (`pty_harness.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `PtyConfig` | Terminal config: term type, dimensions, timeout |
+| `PtyAction` | TypeText / SendKey / WaitMs / WriteFile / Quit actions |
+| `PtyExpectation` | FileContains / FileExists / ExitCode assertions |
+| `PtyScenario` | Named scenario with actions and expectations |
+| `validate_scenario()` | Scenario validation (non-empty name, has actions) |
+| `estimate_duration()` | Duration estimation from scenario actions |
+
+### PTY Regressions (`pty_regressions.rs` — host)
+
+| Aspect | Status |
+| --- | --- |
+| `insert_newline_scenario()` | Insert mode newline E2E test |
+| `leader_explorer_scenario()` / `leader_terminal_scenario()` | Leader chord E2E tests |
+| `gg_motion_scenario()` | Multi-key sequence E2E test |
+| `undo_redo_scenario()` | Undo/redo E2E test |
+| `append_eol_scenario()` | Append at EOL E2E test |
+| `all_regression_scenarios()` | Collect all regression scenarios (7 total) |
+
+### Golden Snapshots (`golden_snapshots.rs` — render)
+
+| Aspect | Status |
+| --- | --- |
+| `SnapshotMode` | NoWrap / SoftWrap / HardWrap rendering modes |
+| `SnapshotConfig` | Width, height, mode, line numbers |
+| `render_snapshot()` | Render lines per config (truncate/wrap) |
+| `compare_snapshot()` | Diff expected vs actual output |
+| `build_nowrap_test()` / `build_wrap_test()` | Test case builders |
+
+### Benchmark Suite (`benchmark_suite.rs` — services)
+
+| Aspect | Status |
+| --- | --- |
+| `BenchmarkKind` | FileOpen / Keystroke / ScrollBurst / ResizeStorm / SnapshotRender / EditBurst |
+| `BenchmarkConfig` / `BenchmarkResult` | Configuration and result types with stats |
+| `default_suite()` | 6 standard benchmarks with iteration counts |
+| `budget_for()` | Latency budgets per kind (16ms keystroke, 8ms scroll, etc.) |
+| `format_benchmark_report()` | Report formatting and pass/fail tracking |
+
+### Latency Regression (`latency_regression.rs` — core-types)
+
+| Aspect | Status |
+| --- | --- |
+| `ProbeKind` | CursorVisibility / ViewportFollow / ScrollClamp / ResizeCursor / InputOrdering / BusyLoopDetection |
+| `ProbeResult` | Kind, passed, message, elapsed_us |
+| `probe_cursor_visibility()` | Deterministic cursor-in-viewport probe |
+| `probe_viewport_follow()` | Scrolloff-aware follow probe |
+| `probe_busy_loop()` | >120fps idle detection |
+| `run_all_probes()` | Full regression suite |
+
+### Long Line Fixtures (`long_line_fixtures.rs` — render)
+
+| Aspect | Status |
+| --- | --- |
+| `FixtureKind` | LongAscii / LongUnicode / LongMixed / WideChars / Tabs / CombiningMarks |
+| `LineFixture` | Content with expected display width |
+| `generate_fixture()` | Generate fixture of given kind and length |
+| `all_fixtures()` | All fixture types at 1000 columns |
+| `verify_fixture()` | Validate fixture content and width |
+
 ### Buffer Features (`buffer_features.rs` — core-text)
 
 | Aspect | Status |

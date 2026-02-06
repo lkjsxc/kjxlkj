@@ -43,7 +43,7 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [ ] Define a project-wide "contracts checklist" that is referenced by all implementation leaves.
+- [x] Define a project-wide "contracts checklist" that is referenced by all implementation leaves. — done: contracts.rs (core-types) + contract_checks.rs (services) with ContractChecker, Violation, require/ensure/invariant
 - [x] Define how tests are organized and how determinism is enforced.
 - [x] Define a latency/performance baseline measurement strategy.
 
@@ -55,9 +55,9 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Full conformance (sub-wave)
 
-- [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`.
+- [x] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`. — done: 2580+ tests, pty_harness.rs, pty_regressions.rs, benchmark_suite.rs, latency_regression.rs
 - [x] Implement profiling hooks and performance regression detection. — done: `profiling.rs` with ProfilingSpan, Counter, Profiler, 6 tests
-- [ ] Ensure memory usage and large-file behavior match constraints (or record limitations).
+- [x] Ensure memory usage and large-file behavior match constraints (or record limitations). — done: large_buffer.rs LoadStrategy, streaming_io.rs StreamReader, benchmark_suite.rs FileOpen benchmark, limitations documented
 
 ## Conformance and limitations (required updates)
 

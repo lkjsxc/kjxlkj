@@ -20,9 +20,9 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ### B. Add regression harness
 
-- [ ] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms.
+- [x] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms. — done: benchmark_suite.rs (Keystroke, ScrollBurst, ResizeStorm), latency_regression.rs probes
   - [regression/README.md](regression/README.md)
-- [ ] Add an interactive E2E smoke test that drives the real TUI and asserts "no one-key lag" behavior.
+- [x] Add an interactive E2E smoke test that drives the real TUI and asserts "no one-key lag" behavior. — done: pty_regressions.rs + latency_regression.rs probe_input_ordering
 
 ### C. Idle CPU behavior
 
@@ -30,5 +30,5 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ### D. Render coalescing and backpressure
 
-- [ ] Ensure render coalescing is snapshot-sequence-aware (drop stale, render latest).
-- [ ] Ensure input backpressure does not drop events and does not cause "one-key lag" perception.
+- [x] Ensure render coalescing is snapshot-sequence-aware (drop stale, render latest). — done: runtime.rs snapshot rendering model with sequence-aware coalescing
+- [x] Ensure input backpressure does not drop events and does not cause "one-key lag" perception. — done: latency_regression.rs probe_input_ordering, timing_debounce.rs InputRateTracker

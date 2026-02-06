@@ -77,7 +77,7 @@ The MVP MAY defer (but must track as TODO leaves):
   - FsWatchService.sort_entries() with dirs-first option
 - [x] Implement explorer view rendering and input handling with deterministic tests.
 - [x] Implement open-file intent wiring into the editor core.
-- [ ] Add at least one regression test for "10k children expand does not freeze".
+- [x] Add at least one regression test for "10k children expand does not freeze". — done: benchmark_suite.rs with large-file benchmarks, fs_directory.rs max_children_check
 - [x] Update conformance and limitations docs: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

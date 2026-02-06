@@ -28,7 +28,7 @@ Implement memory and large-data behavior constraints.
 ### C. Large-file I/O posture (user-reported slowness)
 
 - [x] Ensure file open avoids intermediate full-file copies where possible (streaming into text model). — done: streaming_io.rs (core-text) with StreamReader, ReadChunk, StreamConfig
-- [ ] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render.
+- [x] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render. — done: benchmark_suite.rs with BenchmarkKind::FileOpen (10k lines, 100 iters) and SnapshotRender
 
 ### D. Extremely long lines
 

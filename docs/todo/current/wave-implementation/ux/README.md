@@ -61,7 +61,7 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 ## Tests (normative outputs)
 
-- [ ] Add tests for:
+- [x] Add tests for: — done: ux_coverage.rs, keybinding_tables.rs, mode_keybindings.rs, leader_keys.rs all have tests
   - keybinding → action mapping determinism
   - mode-scoped keybinding behavior
   - accessibility-related UI invariants (focus, contrast, cursor visibility)

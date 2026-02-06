@@ -27,7 +27,7 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
   - TabEntry for buffer tabs
   - UiModel with tabs, notifications, popup fields
 - [x] Minimal slice: implement one feature end-to-end with deterministic tests.
-- [ ] Full conformance: implement all UI feature documents.
+- [x] Full conformance: implement all UI feature documents. — done: ui_features.rs, golden_snapshots.rs, long_line_fixtures.rs, viewport_integrity.rs
   - Cursor customization: CursorShape, CursorBlink, CursorLine, CursorConfig, CursorState
   - Notifications: NotificationKind, Notification, NotificationManager
   - Icons: FileType, GitStatus, DiagnosticLevel, DirectoryIcon, ActionIcon, ArrowIcon, IconConfig

@@ -28,7 +28,7 @@ This is a common off-by-one failure when mixing end-exclusive (Normal) and end-i
 
 ### B. Interactive PTY regression
 
-- [ ] Add a PTY E2E regression that:
+- [x] Add a PTY E2E regression that: — done: pty_regressions.rs append_eol_scenario
   - opens a temp file
   - inserts `hello`, exits Insert, moves to EOL, presses `a`, types `X`, writes and quits
   - asserts the file ends with `helloX` (not `hellXo`)
