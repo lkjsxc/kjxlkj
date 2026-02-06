@@ -9,6 +9,7 @@ pub mod float_window;
 pub mod mode_config;
 pub mod notification_queue;
 pub mod notification_render;
+pub mod theme_engine;
 pub mod popup_menu;
 pub mod statusline;
 pub mod theme;

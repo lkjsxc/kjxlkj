@@ -1,6 +1,7 @@
 //! Terminal host integration — raw mode, resize, lifecycle.
 
 mod supervisor;
+mod session_commands;
 
 use kjxlkj_core_types::Size;
 

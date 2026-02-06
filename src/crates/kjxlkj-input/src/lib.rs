@@ -1,6 +1,7 @@
 //! Terminal input decoding — crossterm events to editor key events.
 
 mod keyboard_layout;
+mod keybinding_coverage;
 
 use kjxlkj_core_types::Size;
 

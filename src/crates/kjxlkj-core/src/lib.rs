@@ -1,6 +1,7 @@
 //! Core facade crate — re-exports all core sub-crates under a single namespace.
 
 pub mod explorer_bridge;
+mod buffer_metadata;
 
 pub use kjxlkj_core_types as types;
 pub use kjxlkj_core_text as text;
