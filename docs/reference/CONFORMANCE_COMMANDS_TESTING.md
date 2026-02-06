@@ -27,14 +27,52 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `:new` | Open new empty buffer in split (stub) |
 | `:vnew` | Open new empty buffer in vertical split (stub) |
 | `:only` | Close all other windows (stub) |
-| `:set {option}` | Set editor option (number, nonumber, wrap, nowrap) |
+| `:set {option}` | Set editor option (number, nonumber, wrap, nowrap, etc. — 22 boolean + 4 numeric) |
 | `:{number}` | Go to line number |
 | `:! {cmd}` | Run `{cmd}` via terminal service and display first output line as status |
+| `:{range}!{cmd}` | Filter lines through external command |
 | `:s/pattern/replacement/` | Substitute on current line |
 | `:s/pattern/replacement/g` | Substitute all occurrences on current line |
 | `:g/pattern/d` | Delete all lines matching pattern |
 | `:g/pattern/command` | Execute command on matching lines |
 | `:v/pattern/d` | Delete all lines NOT matching pattern (inverted global) |
+| `:enew` | Open new empty buffer in current window |
+| `:saveas {file}` | Save buffer to new file path |
+| `:b {N}` / `:buffer {N}` | Switch to buffer by number |
+| `:b#` | Switch to alternate buffer |
+| `:scratch` | Create a scratch (unlisted) buffer |
+| `:marks` | Display marks |
+| `:reg` / `:registers` | Display registers |
+| `:jumps` | Display jump list |
+| `:changes` | Display change list |
+| `:digraphs` / `:dig` | Display digraph table |
+| `:file` / `:f` | Display current file info |
+| `:sort` | Sort lines in buffer |
+| `:noh` / `:nohlsearch` | Clear search highlighting |
+| `:cnext` / `:cn` | Jump to next quickfix entry |
+| `:cprev` / `:cp` | Jump to previous quickfix entry |
+| `:copen` / `:clist` | Show quickfix list |
+| `:messages` / `:mes` | Display messages |
+| `:source {file}` | Source a configuration file |
+| `:execute {expr}` | Execute expression as Ex command |
+| `:normal {keys}` | Execute normal-mode keys on current/range lines |
+| `:syntax on\|off` | Toggle syntax highlighting |
+| `:highlight {group}` | Display highlight group info |
+| `:map` / `:nmap` / `:imap` / ... | Create key mappings |
+| `:unmap` / `:nunmap` / ... | Remove key mappings |
+| `:mapclear` | Clear all mappings for a mode |
+| `:autocmd` / `:au` | Create autocommand |
+| `:d` / `:delete` | Delete lines (with range) |
+| `:y` / `:yank` | Yank lines (with range) |
+| `:t` / `:copy` | Copy lines (with range) |
+| `:m` / `:move` | Move lines (with range) |
+| `:r` / `:read` | Read file into buffer |
+| `:put` | Put register contents |
+| `:filetype` / `:ft` | Set/display filetype |
+| `:cd {dir}` | Change working directory |
+| `:pwd` | Display working directory |
+| `:mksession` / `:mks` | Save session |
+| `:oldfiles` / `:ol` | Display recent files |
 
 ## Headless test runner
 

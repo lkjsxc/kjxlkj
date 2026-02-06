@@ -60,6 +60,35 @@ Operators (`d`, `y`, `c`) can be combined with text objects:
 | `a[` / `a]` | Around brackets |
 | `i{` / `i}` / `iB` | Inner braces |
 | `a{` / `a}` / `aB` | Around braces |
+| `` i` `` | Inner backtick quotes |
+| `` a` `` | Around backtick quotes |
+| `i<` / `i>` | Inner angle brackets |
+| `a<` / `a>` | Around angle brackets |
+| `ip` | Inner paragraph |
+| `ap` | Around paragraph |
+| `is` | Inner sentence |
+| `as` | Around sentence |
+| `it` | Inner tag (HTML/XML) |
+| `at` | Around tag (HTML/XML) |
+
+## Autopairs
+
+| Feature | Behavior |
+|---|---|
+| Auto-close `(` | Inserts `)` after cursor when `autopairs` enabled |
+| Auto-close `[` | Inserts `]` after cursor when `autopairs` enabled |
+| Auto-close `{` | Inserts `}` after cursor when `autopairs` enabled |
+| Skip-over `)` | When typing `)` at `)`, skips over instead of inserting |
+| Skip-over `]` | When typing `]` at `]`, skips over instead of inserting |
+| Skip-over `}` | When typing `}` at `}`, skips over instead of inserting |
+| Off by default | `:set autopairs` enables, `:set noautopairs` disables |
+
+## Digraphs
+
+| Key | Action |
+|---|---|
+| `Ctrl-K {c1} {c2}` | Insert digraph character in Insert mode |
+| `:digraphs` / `:dig` | Display digraph table |
 
 ## Search behavior
 
@@ -69,6 +98,8 @@ Search behavior in this conformance target is:
 - Search wraps around file boundaries (`wrapscan` behavior)
 - Pattern is stored and reused for `n`/`N` navigation
 - Status message shows current search pattern and wrap status
+- `*` / `#` search for word under cursor (forward/backward)
+- `:noh` / `:nohlsearch` clears search highlight
 
 ## Related
 

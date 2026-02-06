@@ -123,6 +123,9 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | `guu` | Lowercase entire line |
 | `Ctrl-a` | Increment number under cursor |
 | `Ctrl-x` | Decrement number under cursor |
+| `Ctrl-6` / `Ctrl-^` | Switch to alternate/previous buffer |
+| `Ctrl-g` | Display file info (same as `:file`) |
+| `gv` | Reselect last visual selection |
 | `Ctrl-d` | Scroll half page down |
 | `Ctrl-u` | Scroll half page up |
 | `Ctrl-f` | Scroll full page down |
@@ -180,6 +183,8 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 | `Ctrl-d` | Outdent current line |
 | `Ctrl-o` | Execute one Normal mode command then return to Insert |
 | `Ctrl-r {reg}` | Insert contents of register |
+| `Ctrl-v` | Insert literal character |
+| `Ctrl-k {c1} {c2}` | Insert digraph character |
 
 ## Replace mode
 

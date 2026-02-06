@@ -77,6 +77,13 @@ All contracts have at minimum a partial test or verification strategy in place.
 ## UX gaps
 
 - No mouse support (by design).
+- Terminal integration (`:terminal`, `<leader>t`) is scaffolded but not functional (no real PTY spawning yet).
+- File explorer (`:explorer`, `<leader>e`) is scaffolded but not rendered in the TUI yet.
+- LSP integration is type-scaffolded but not connected to real language servers.
+- Git integration detects current branch from `.git/HEAD` but does not run real git commands.
+- Fuzzy finder (`<leader>f`, `<leader>g`) has scoring algorithm but no UI rendering.
+- Session persistence (`:mksession`) records metadata but does not serialize to/restore from disk.
+- Swap files and undo persistence types exist but are not written to disk.
 
 ## Code structure
 
