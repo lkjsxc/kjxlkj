@@ -146,6 +146,36 @@ Search behavior in this conformance target is:
 | `check_transition_visibility()` | Ensures cursor visible after mode transition |
 | `cursor_shape_escape()` | Generates terminal escape sequence for cursor shape |
 
+## Text manipulation
+
+| Feature | Behavior |
+|---|---|
+| `join_lines()` | Joins lines with separator, trims trailing whitespace |
+| `convert_case()` | Upper, Lower, Toggle, Title case conversion |
+| `sort_lines()` | Alphabetical sort with unique/reverse options |
+| `trim_trailing()` | Remove trailing whitespace from each line |
+| `reverse_chars()` | Reverse character order |
+| `indent_level()` | Compute indentation level (spaces + tabs) |
+| `reindent()` | Set line to target indent level with tabs or spaces |
+
+## Syntax highlight groups
+
+| Feature | Behavior |
+|---|---|
+| `HighlightGroup` | 31 standard groups (Comment, String, Keyword, Function, Type, etc.) |
+| `token_to_group()` | Maps token type strings to highlight groups |
+| `default_highlight_styles()` | 7 default dark-theme styles with fg/bold/italic |
+| `highlight_line()` | Produces `HighlightSpan` list from tokenized text |
+
+## Layout invariants
+
+| Feature | Behavior |
+|---|---|
+| `LayoutRect.overlaps()` | Detects region overlap |
+| `LayoutRect.fits_in()` | Validates region fits within terminal bounds |
+| `check_layout_invariants()` | Checks overlaps, bounds, cursor, statusline |
+| `check_vertical_coverage()` | Verifies regions tile without vertical gaps |
+
 ## Related
 
 - Modes and keys: [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)

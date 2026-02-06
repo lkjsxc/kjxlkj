@@ -125,6 +125,12 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Command history (`CommandHistory` with push/dedup, prev/next, prefix/substring search) exists but is not connected to the command-line input handler.
 - Notification rendering (`render_notification`, `wrap_text`, `max_visible_notifications`, `NotifPosition`) exists but is not connected to the TUI render loop.
 - Cursor visibility (`cursor_for_mode`, `check_cursor_in_viewport`, `check_transition_visibility`, `cursor_shape_escape`) exists but is not wired into mode transitions or the render pass.
+- Text manipulation features (`join_lines`, `convert_case`, `sort_lines`, `trim_trailing`, `reverse_chars`, `reindent`) exist but are not connected to Ex commands (`:sort`, `:s`, `J`, `~`, `gU`, `gu`).
+- Git status model (`FileStatus`, `StatusEntry`, `parse_diff_hunks`, `compute_gutter_signs`, `parse_blame_output`) exists but is not connected to git binary execution or gutter rendering.
+- Terminal emulator grid (`TerminalGrid`, `put_char`, `clear`, `scroll_up`, `parse_ansi_simple`) exists but is not connected to a real PTY or the terminal pane renderer.
+- Highlight groups (`HighlightGroup` 31 variants, `token_to_group`, `highlight_line`) exist but are not connected to tree-sitter or the buffer render pipeline.
+- Large buffer support (`LoadStrategy`, `build_line_index`, `compute_chunks`, `extract_line_range`) exists but is not integrated into the file open/save pipeline.
+- Layout invariant checker (`check_layout_invariants`, `check_vertical_coverage`) exists but is not called during the render loop.
 
 ## Code structure
 

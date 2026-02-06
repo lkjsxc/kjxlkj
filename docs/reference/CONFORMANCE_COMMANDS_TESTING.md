@@ -466,6 +466,36 @@ These scenarios are primarily **headless** (no terminal UI). The project also re
 | `search_prefix_forward()` | Find next entry matching prefix (forward search) |
 | `search_substring()` | Find entries containing substring |
 
+## Git status and diff
+
+| Feature | Behavior |
+|---|---|
+| `FileStatus` | Unmodified, Modified, Added, Deleted, Renamed, Untracked, Ignored, Conflicted |
+| `StatusEntry` | Path + status + staged flag |
+| `parse_diff_hunks()` | Parses unified diff text into `DiffHunk` with lines |
+| `compute_gutter_signs()` | Produces `(line, GutterSign)` from hunks |
+| `parse_blame_output()` | Parses blame lines into `BlameLine` entries |
+
+## Terminal emulator
+
+| Feature | Behavior |
+|---|---|
+| `TerminalGrid` | Cell grid with cursor position and current style |
+| `put_char()` | Write character at cursor, advance with wrapping |
+| `clear()` / `clear_to_eol()` | Clear screen or to end of line |
+| `scroll_up()` | Scroll grid up by one line |
+| `parse_ansi_simple()` | Parse subset of ANSI escapes (cursor move, clear, SGR) |
+
+## Large buffer support
+
+| Feature | Behavior |
+|---|---|
+| `LoadStrategy` | Full (≤1MB), Chunked (≤100MB), Streamed (>100MB) |
+| `build_line_index()` | Byte offsets of each line start |
+| `compute_chunks()` | Split file into fixed-size chunks |
+| `annotate_chunks_with_lines()` | Map chunks to line ranges |
+| `extract_line_range()` | Extract text for line range using index |
+
 ## Related
 
 - Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

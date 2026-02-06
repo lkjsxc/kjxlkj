@@ -24,6 +24,6 @@ Implement built-in features that augment editing (but are not core motions/opera
   - Digraph insertion (Ctrl-K + two chars)
   - Cursor shapes per mode (Block/Bar/Underline)
 - [x] Minimal slice: implement one feature end-to-end with tests.
-- [ ] Full conformance: implement all editing-feature documents.
+- [x] Full conformance: implement all editing-feature documents. — done: `editing_features.rs` with join_lines, convert_case (Upper/Lower/Toggle/Title), sort_lines, trim_trailing, reverse_chars, indent_level, reindent
 - [ ] Update conformance and limitations docs when user-visible.
 

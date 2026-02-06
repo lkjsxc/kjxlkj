@@ -17,8 +17,8 @@ Implement memory and large-data behavior constraints.
 
 ### A. Text model and large buffers
 
-- [ ] Ensure the text model supports large buffers efficiently (or record limitations).
-- [ ] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning.
+- [x] Ensure the text model supports large buffers efficiently (or record limitations). — done: `large_buffer.rs` with LoadStrategy (Full/Chunked/Streamed), chunk computation, line index, extract_line_range
+- [x] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning. — done: 9 tests for strategy selection, line indexing, chunk computation, line extraction
 
 ### B. Snapshot bounds and allocations
 
