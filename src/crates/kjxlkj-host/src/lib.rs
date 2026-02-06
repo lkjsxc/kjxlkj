@@ -5,6 +5,7 @@ mod session_commands;
 mod file_io_commands;
 mod script_files;
 mod session_full;
+mod feature_integration;
 
 use kjxlkj_core_types::Size;
 

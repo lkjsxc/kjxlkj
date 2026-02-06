@@ -5,6 +5,7 @@ mod snapshot; mod word; mod word_extra;
 mod large_buffer;
 mod text_objects_full;
 mod buffer_full;
+mod buffer_features;
 
 pub use buffer::TextBuffer;
 pub use grapheme::{
