@@ -24,6 +24,23 @@ Authoritative sources for “what exists” are:
 
 This limitations document exists to capture **user-visible drift** and **known rough edges** against the target spec.
 
+## Scope reductions (Iteration 36 reconstruction)
+
+The following capabilities are scoped out of initial reconstruction:
+
+| Feature | Status | Plan |
+|---|---|---|
+| Service crates (LSP, Git, Index, FS, Terminal) | Not implemented | Future wave |
+| Plugin system | Not implemented | Future wave |
+| Multi-buffer/multi-window | Partial (single window only) | Future wave |
+| Syntax highlighting | Not implemented | Future wave |
+| Search/replace | Not implemented | Future wave |
+| Macros | Not implemented | Future wave |
+| Marks | Not implemented | Future wave |
+| Registers | Not implemented | Future wave |
+| Visual block mode | Not implemented | Future wave |
+| Command-line completion | Not implemented | Future wave |
+
 ## High-priority UX defects (reported and/or suspected)
 
 These items are prioritized because they block basic usability and because they can be missed by headless-only testing.
@@ -84,13 +101,8 @@ All contracts have at minimum a partial test or verification strategy in place.
 
 Some source files exceed the 200-line guideline from `/docs/policy/STRUCTURE.md`:
 
-- `kjxlkj-core-state/src/editor.rs` (966 lines) - main editor state machine
-- `kjxlkj-core-mode/src/parser.rs` (535 lines) - key sequence parser
-- `kjxlkj-core-edit/src/motion.rs` (422 lines) - motion implementations
-- `kjxlkj-core-types/src/event.rs` (384 lines) - event type definitions
-- `kjxlkj-core-edit/src/text_object.rs` (319 lines) - text object implementations
-- `kjxlkj-render/src/renderer.rs` (317 lines) - terminal renderer
-- `kjxlkj-core-text/src/text_buffer.rs` (275 lines) - text buffer implementation
+- `kjxlkj-core-state/src/editor.rs` (493 lines) - main editor state machine
+- `kjxlkj-core-mode/src/state.rs` (332 lines) - mode state machine
 
 These should be refactored into smaller modules in future iterations.
 

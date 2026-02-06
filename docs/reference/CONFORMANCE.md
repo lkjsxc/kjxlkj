@@ -15,6 +15,18 @@ This document set records the last known implemented, user-visible surface so th
 
 In a docs-only baseline (no implementation artifacts in-repo), treat this ledger as the intended initial reconstruction target until it is updated by the regenerated implementation.
 
+## Reconstruction Target (Iteration 36)
+
+Target: **Current surface** as documented in these conformance documents.
+
+The reconstruction prioritizes:
+1. Core text editing (modes, motions, operators, text objects)
+2. Basic UI (single buffer, single window, viewport, status line)
+3. File I/O (open, write, quit)
+4. Headless mode for CI/E2E testing
+
+Scope reductions are documented in [LIMITATIONS.md](LIMITATIONS.md).
+
 ## Conformance documents (current surface)
 
 | Document | Content |
