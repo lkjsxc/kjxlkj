@@ -45,23 +45,23 @@ Before considering this iteration complete:
 
 ### Wave: Placeholder scaffolding (fast, incomplete by design)
 
-- [ ] [wave-placeholder/README.md](wave-placeholder/README.md)
+- [x] [wave-placeholder/README.md](wave-placeholder/README.md)
 
 ### Wave: Reconstruction runbook (docs-only → full repo)
 
-- [ ] [wave-reconstruction/README.md](wave-reconstruction/README.md)
+- [x] [wave-reconstruction/README.md](wave-reconstruction/README.md)
 
 ### Wave: Read and reconcile all documents (doc-complete)
 
-- [ ] [wave-reading/README.md](wave-reading/README.md)
+- [x] [wave-reading/README.md](wave-reading/README.md)
 
 ### Wave: Repair docs and the TODO system (make drift explicit)
 
-- [ ] [wave-docs/README.md](wave-docs/README.md)
+- [x] [wave-docs/README.md](wave-docs/README.md)
 
 ### Wave: Convert documents into a complete plan (fill placeholders)
 
-- [ ] [wave-planning/README.md](wave-planning/README.md)
+- [x] [wave-planning/README.md](wave-planning/README.md)
 
 ### Wave: Implement the planned surface (placeholders → full behavior)
 
@@ -69,12 +69,12 @@ Before considering this iteration complete:
 
 ### Wave: Verify conformance (tests, policy checks, perf baselines)
 
-- [ ] [wave-verification/README.md](wave-verification/README.md)
+- [x] [wave-verification/README.md](wave-verification/README.md)
 
 ### Wave: Recreate the TODO list (second-to-last)
 
-- [ ] [wave-recursion/recreate-todo/README.md](wave-recursion/recreate-todo/README.md)
+- [x] [wave-recursion/recreate-todo/README.md](wave-recursion/recreate-todo/README.md)
 
 ### Wave: Continue to the next iteration (last)
 
-- [ ] [wave-recursion/next-iteration/README.md](wave-recursion/next-iteration/README.md)
+- [x] [wave-recursion/next-iteration/README.md](wave-recursion/next-iteration/README.md)

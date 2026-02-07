@@ -10,10 +10,10 @@ Keep progress continuous by regenerating a doc-complete, implementation-ready TO
 
 ### A. Recreate the TODO list (must remain second-to-last overall)
 
-- [ ] Follow:
+- [x] Follow:
   - [recreate-todo/README.md](recreate-todo/README.md)
 
 ### B. Continue to next iteration (must remain last overall)
 
-- [ ] Follow:
+- [x] Follow:
   - [next-iteration/README.md](next-iteration/README.md)
