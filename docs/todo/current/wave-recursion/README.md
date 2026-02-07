@@ -15,5 +15,5 @@ Keep progress continuous by regenerating a doc-complete, implementation-ready TO
 
 ### B. Continue to next iteration (must remain last overall)
 
-- [x] Follow:
+- [ ] Follow:
   - [next-iteration/README.md](next-iteration/README.md)

@@ -37,3 +37,8 @@ Make correctness provable and regressions difficult by treating tests and policy
 
 - [x] Define performance targets derived from specs.
 - [x] Add regression tests/benchmarks for typing bursts, scrolling, and resize storms.
+
+### E. Standby follow-up (next iteration)
+
+- [ ] Execute unchecked boundary PTY E2E items in:
+  - [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)

@@ -8,4 +8,4 @@ Ensure all documentation under `/docs/` satisfies policy constraints.
 
 ## Status
 
-Verified — all constraints satisfied. See [/docs/log/audits/iteration-thirty-six.md](/docs/log/audits/iteration-thirty-six.md).
+Verified — all constraints satisfied. See [/docs/log/reconstruction/audits/docs-consistency-2026-02-07.md](/docs/log/reconstruction/audits/docs-consistency-2026-02-07.md).

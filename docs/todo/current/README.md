@@ -1,80 +1,52 @@
-# Current TODO (Iteration 36)
+# Current TODO (Standby Transition)
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Purpose
 
-This TODO is the execution entrypoint for turning the documents into a complete, correct implementation.
+This TODO is the active control surface for reconstruction and verification waves.
 
-Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
-
-It is:
-
-- Recursive and hierarchical (parent checklists link to child checklists)
-- Wave-based (placeholders → progressively more detailed → full implementation)
-- Doc-driven (behavior is derived from documents; code follows docs)
+Current state: documentation has been hardened and the next implementation wave is queued in standby mode.
 
 ## Local rules (normative)
 
-- This iteration MUST be executed in wave order.
-- Work MUST be decomposed into leaf checklists that are:
-  - small enough to complete
-  - each gated by tests and conformance updates where applicable
-- Checkboxes MUST be meaningful:
-  - `- [ ]` means not complete (or not yet verified)
-  - `- [x]` means complete and verified against the appropriate gate (tests, link checks, policy checks)
-- Deferral protocol (to avoid “stopping” on future work):
-  - The TODO MUST NOT end with a terminal “explicitly deferred / future” section containing unchecked boxes.
-  - If an item is intentionally deferred, convert it into an actionable “defer-by-recording” task that can be checked off by:
-    - recording the rationale in `/docs/log/proposals/`, and
-    - carrying forward an implementation task into the next iteration.
-- Directory and file names under this TODO MUST NOT contain digits.
-- The second-to-last wave MUST be “Recreate the TODO list”.
-- The last wave MUST be “Continue to the next iteration”.
+- Use checklist semantics strictly:
+  - `- [x]` complete and verified
+  - `- [ ]` pending or intentionally queued
+- If a task is deferred, record rationale in `/docs/log/` and keep a concrete queued item.
+- Keep links absolute from repository root (`/docs/...`) and do not use `../`.
+- Keep completion handshake in force: when a future wave reaches full completion and verification is green, invoke `Ask` for the next objective.
 
-## Completion gate (normative)
+## Documentation direct-link coverage
 
-Before considering this iteration complete:
+The TODO system MUST directly link all documentation files through the checklist below.
 
-1. Ensure no unchecked checklist items remain in the current iteration by running `rg -n '^\s*-\s+\[\s\]' docs/todo/current`.
-2. Ensure documentation policy is satisfied (see [/docs/policy/README.md](/docs/policy/README.md)).
-3. Ensure the verification gate is green for the reconstructed implementation (see [/docs/reference/CI.md](/docs/reference/CI.md)).
-4. Invoke the tool `Ask` to request the next objective (or confirmation that the work should stop).
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
 
-## TODO List
+## Wave status
 
-### Wave: Placeholder scaffolding (fast, incomplete by design)
+### Completed waves
 
-- [x] [wave-placeholder/README.md](wave-placeholder/README.md)
+- [x] [/docs/todo/current/wave-placeholder/README.md](/docs/todo/current/wave-placeholder/README.md)
+- [x] [/docs/todo/current/wave-reconstruction/README.md](/docs/todo/current/wave-reconstruction/README.md)
+- [x] [/docs/todo/current/wave-reading/README.md](/docs/todo/current/wave-reading/README.md)
+- [x] [/docs/todo/current/wave-docs/README.md](/docs/todo/current/wave-docs/README.md)
+- [x] [/docs/todo/current/wave-planning/README.md](/docs/todo/current/wave-planning/README.md)
+- [x] [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
+- [x] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md)
+- [x] [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
 
-### Wave: Reconstruction runbook (docs-only → full repo)
+### Standby wave (unchecked by design)
 
-- [x] [wave-reconstruction/README.md](wave-reconstruction/README.md)
+- [ ] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
+- [ ] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
 
-### Wave: Read and reconcile all documents (doc-complete)
+## Standby objective
 
-- [x] [wave-reading/README.md](wave-reading/README.md)
-
-### Wave: Repair docs and the TODO system (make drift explicit)
-
-- [x] [wave-docs/README.md](wave-docs/README.md)
-
-### Wave: Convert documents into a complete plan (fill placeholders)
-
-- [x] [wave-planning/README.md](wave-planning/README.md)
-
-### Wave: Implement the planned surface (placeholders → full behavior)
-
-- [x] [wave-implementation/README.md](wave-implementation/README.md) — done: all implementation TODOs checked off through batches 1-23 (2580 tests)
-
-### Wave: Verify conformance (tests, policy checks, perf baselines)
-
-- [x] [wave-verification/README.md](wave-verification/README.md)
-
-### Wave: Recreate the TODO list (second-to-last)
-
-- [x] [wave-recursion/recreate-todo/README.md](wave-recursion/recreate-todo/README.md)
-
-### Wave: Continue to the next iteration (last)
-
-- [x] [wave-recursion/next-iteration/README.md](wave-recursion/next-iteration/README.md)
+Next implementation wave should execute unchecked boundary PTY E2E items and then re-run full verification.

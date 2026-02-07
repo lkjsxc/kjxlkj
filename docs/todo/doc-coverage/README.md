@@ -3,25 +3,25 @@
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Scope
-Covers all documentation tracked by this repository, including:
 
-- `/docs/` (excluding `/docs/todo/`, which is the TODO system itself)
-- `/README.md` as an entrypoint (optional, non-normative)
+Covers all documentation in this repository, including `/docs/` and root `/README.md`.
 
-## Rules (apply to every document listed)
-- Read the document end-to-end.
-- Extract MUST/SHOULD requirements into actionable TODO leaf(s) under `/docs/todo/current/`.
-- If the document is under `/docs/spec/`, update:
-  - `/docs/reference/CONFORMANCE.md`
-  - `/docs/reference/LIMITATIONS.md` (when user-visible)
-- Add or extend tests for any implemented behavior; record gaps as TODO leaves.
+## Rules
 
-## Documents
-### Files
+- Every documentation file MUST be directly linked from at least one file in this tree.
+- New documentation files MUST be added to this coverage map in the same change.
+- Coverage files are TODO artifacts and may keep unchecked items for standby verification.
+
+## Entry points
+
+### Full direct-file index
+
+- [/docs/todo/doc-coverage/all-files/README.md](/docs/todo/doc-coverage/all-files/README.md)
+
+### Structured indexes
+
 - [/README.md](/README.md)
 - [/docs/README.md](/docs/README.md)
-
-### Subdirectories
 - [/docs/design/](/docs/todo/doc-coverage/design/README.md)
 - [/docs/guides/](/docs/todo/doc-coverage/guides/README.md)
 - [/docs/log/](/docs/todo/doc-coverage/log/README.md)
