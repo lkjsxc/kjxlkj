@@ -45,4 +45,4 @@ Queue the next execution cycle after documentation hardening.
 
 ### E. Completion handshake
 
-- [ ] Invoke `Ask` once the next iteration is fully complete and verification is green.
+- [x] Invoke `Ask` once the next iteration is fully complete and verification is green.
