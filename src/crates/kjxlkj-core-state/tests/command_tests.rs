@@ -32,12 +32,18 @@ fn parse_write_no_arg() {
 
 #[test]
 fn parse_write_with_file() {
-    assert_eq!(parse_command(":w foo.txt").unwrap(), ExCommand::Write(Some("foo.txt".into())));
+    assert_eq!(
+        parse_command(":w foo.txt").unwrap(),
+        ExCommand::Write(Some("foo.txt".into()))
+    );
 }
 
 #[test]
 fn parse_write_quit() {
-    assert!(matches!(parse_command(":wq").unwrap(), ExCommand::WriteQuit(None)));
+    assert!(matches!(
+        parse_command(":wq").unwrap(),
+        ExCommand::WriteQuit(None)
+    ));
 }
 
 #[test]
@@ -73,7 +79,10 @@ fn parse_buffer_prev() {
 
 #[test]
 fn parse_buffer_delete() {
-    assert!(matches!(parse_command(":bd").unwrap(), ExCommand::BufferDelete(false)));
+    assert!(matches!(
+        parse_command(":bd").unwrap(),
+        ExCommand::BufferDelete(false)
+    ));
 }
 
 #[test]

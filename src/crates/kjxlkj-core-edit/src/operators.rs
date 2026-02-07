@@ -1,8 +1,11 @@
 //! Editing operators that act on ranges within a buffer.
 
-use kjxlkj_core_text::manipulation::{convert_case, indent_level, reindent, CaseKind};
+use kjxlkj_core_text::manipulation::{indent_level, reindent};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{Operator, Position, Range};
+
+// Re-export case operators from dedicated module.
+pub use crate::operators_case::{lower_case_range, toggle_case_range, upper_case_range};
 
 /// Result of applying an operator to a range.
 #[derive(Debug, Clone)]
@@ -129,30 +132,7 @@ pub fn outdent_range(buffer: &mut TextBuffer, range: Range, amount: usize) {
     }
 }
 
-/// Toggle case of all characters in the range.
-pub fn toggle_case_range(buffer: &mut TextBuffer, range: Range) {
-    apply_case(buffer, range, CaseKind::Toggle);
-}
-
-/// Convert all characters in the range to upper case.
-pub fn upper_case_range(buffer: &mut TextBuffer, range: Range) {
-    apply_case(buffer, range, CaseKind::Upper);
-}
-
-/// Convert all characters in the range to lower case.
-pub fn lower_case_range(buffer: &mut TextBuffer, range: Range) {
-    apply_case(buffer, range, CaseKind::Lower);
-}
-
-fn apply_case(buffer: &mut TextBuffer, range: Range, kind: CaseKind) {
-    let r = range.normalized();
-    let text = extract_text(buffer, r);
-    let converted = convert_case(&text, kind);
-    buffer.delete_range(r.start, r.end);
-    buffer.insert_text(r.start, &converted);
-}
-
-fn extract_text(buffer: &TextBuffer, r: Range) -> String {
+pub(crate) fn extract_text(buffer: &TextBuffer, r: Range) -> String {
     let mut result = String::new();
     for line_idx in r.start.line..=r.end.line.min(buffer.line_count().saturating_sub(1)) {
         let line = buffer.line(line_idx).unwrap_or_default();
@@ -210,12 +190,5 @@ mod tests {
         let b = buf("hello world");
         let text = yank_range(&b, Range::new(Position::new(0, 0), Position::new(0, 5)));
         assert_eq!(text, "hello");
-    }
-
-    #[test]
-    fn test_toggle_case() {
-        let mut b = buf("Hello");
-        toggle_case_range(&mut b, Range::new(Position::new(0, 0), Position::new(0, 5)));
-        assert_eq!(b.line(0).unwrap(), "hELLO");
     }
 }

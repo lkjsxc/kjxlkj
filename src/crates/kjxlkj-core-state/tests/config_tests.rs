@@ -57,32 +57,50 @@ fn config_store_register_new() {
 
 #[test]
 fn parse_set_bool_enable() {
-    assert_eq!(parse_set_arg("number"), SetAction::SetBool("number".into(), true));
+    assert_eq!(
+        parse_set_arg("number"),
+        SetAction::SetBool("number".into(), true)
+    );
 }
 
 #[test]
 fn parse_set_bool_disable() {
-    assert_eq!(parse_set_arg("nonumber"), SetAction::SetBool("number".into(), false));
+    assert_eq!(
+        parse_set_arg("nonumber"),
+        SetAction::SetBool("number".into(), false)
+    );
 }
 
 #[test]
 fn parse_set_wrap() {
-    assert_eq!(parse_set_arg("wrap"), SetAction::SetBool("wrap".into(), true));
+    assert_eq!(
+        parse_set_arg("wrap"),
+        SetAction::SetBool("wrap".into(), true)
+    );
 }
 
 #[test]
 fn parse_set_nowrap() {
-    assert_eq!(parse_set_arg("nowrap"), SetAction::SetBool("wrap".into(), false));
+    assert_eq!(
+        parse_set_arg("nowrap"),
+        SetAction::SetBool("wrap".into(), false)
+    );
 }
 
 #[test]
 fn parse_set_int_tabstop() {
-    assert_eq!(parse_set_arg("tabstop=4"), SetAction::SetInt("tabstop".into(), 4));
+    assert_eq!(
+        parse_set_arg("tabstop=4"),
+        SetAction::SetInt("tabstop".into(), 4)
+    );
 }
 
 #[test]
 fn parse_set_int_shiftwidth() {
-    assert_eq!(parse_set_arg("shiftwidth=2"), SetAction::SetInt("shiftwidth".into(), 2));
+    assert_eq!(
+        parse_set_arg("shiftwidth=2"),
+        SetAction::SetInt("shiftwidth".into(), 2)
+    );
 }
 
 #[test]

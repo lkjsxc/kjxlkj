@@ -1,10 +1,10 @@
+use kjxlkj_services::crate_topology::CrateRole;
+use kjxlkj_services::crate_topology::{check_dep_direction, expected_topology, validate_topology};
+use kjxlkj_services::supervisor::{compute_backoff, decide_restart};
 use kjxlkj_services::{
     Dispatcher, HealthStatus, NotifySource, RestartDecision, ServiceState, Severity,
     SupervisorConfig,
 };
-use kjxlkj_services::crate_topology::{check_dep_direction, expected_topology, validate_topology};
-use kjxlkj_services::supervisor::{compute_backoff, decide_restart};
-use kjxlkj_services::crate_topology::CrateRole;
 
 // --- Supervisor config ---
 
@@ -30,7 +30,10 @@ fn restart_first_attempt() {
         restart_count: 0,
         last_error: None,
     };
-    assert_eq!(decide_restart(&state, &SupervisorConfig::default()), RestartDecision::Restart);
+    assert_eq!(
+        decide_restart(&state, &SupervisorConfig::default()),
+        RestartDecision::Restart
+    );
 }
 
 #[test]
@@ -41,7 +44,10 @@ fn restart_give_up_at_max() {
         restart_count: 5,
         last_error: Some("crash".into()),
     };
-    assert_eq!(decide_restart(&state, &SupervisorConfig::default()), RestartDecision::GiveUp);
+    assert_eq!(
+        decide_restart(&state, &SupervisorConfig::default()),
+        RestartDecision::GiveUp
+    );
 }
 
 #[test]

@@ -1,8 +1,8 @@
 //! Tests for mode state machine, cursor rendering, popups, and transitions.
 use kjxlkj_core_mode::{
     blink_state, can_transition, cursor_for_mode, cursor_shape_escape, cursor_visible,
-    validate_transition, BlinkState, CursorShape, ModeState, OverlayManager, PopupKind,
-    PopupState, TransitionError,
+    validate_transition, BlinkState, CursorShape, ModeState, OverlayManager, PopupKind, PopupState,
+    TransitionError,
 };
 use kjxlkj_core_types::Mode;
 
@@ -53,15 +53,26 @@ fn can_transition_normal_to_all() {
 }
 #[test]
 fn all_modes_escape_to_normal() {
-    for mode in [Mode::Insert, Mode::Visual, Mode::VisualLine, Mode::VisualBlock,
-                 Mode::Command, Mode::Replace, Mode::OperatorPending, Mode::Terminal] {
+    for mode in [
+        Mode::Insert,
+        Mode::Visual,
+        Mode::VisualLine,
+        Mode::VisualBlock,
+        Mode::Command,
+        Mode::Replace,
+        Mode::OperatorPending,
+        Mode::Terminal,
+    ] {
         assert!(can_transition(mode, Mode::Normal), "{mode} -> Normal");
     }
 }
 #[test]
 fn validate_transition_error() {
     let err = validate_transition(Mode::Insert, Mode::Replace);
-    assert!(matches!(err, Err(TransitionError::InvalidTransition { .. })));
+    assert!(matches!(
+        err,
+        Err(TransitionError::InvalidTransition { .. })
+    ));
 }
 #[test]
 fn validate_transition_ok() {

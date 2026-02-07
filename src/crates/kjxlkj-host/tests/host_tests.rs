@@ -1,11 +1,11 @@
 use kjxlkj_host::{
-    all_regression_scenarios, check_reachability, define_core_features, estimate_duration,
-    has_command_entry, has_keybinding_entry, validate_scenario as validate_pty_scenario,
-    EntryKind, FeatureSpec, PtyAction, PtyConfig, PtyExpectation, PtyScenario,
-};
-use kjxlkj_host::{
     build_edit_flow, build_wq_flow, detect_encoding, detect_line_ending, resolve_path,
     validate_write_target, FileOp,
+};
+use kjxlkj_host::{
+    check_reachability, define_core_features, estimate_duration, has_command_entry,
+    has_keybinding_entry, validate_scenario as validate_pty_scenario, EntryKind, FeatureSpec,
+    PtyAction, PtyConfig, PtyExpectation, PtyScenario,
 };
 
 // --- PTY scenario tests ---

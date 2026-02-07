@@ -1,6 +1,4 @@
-use kjxlkj_host::{
-    all_regression_scenarios, validate_scenario as validate_pty_scenario,
-};
+use kjxlkj_host::{all_regression_scenarios, validate_scenario as validate_pty_scenario};
 use kjxlkj_host::{
     integration_undo_redo_scenario, multi_buffer_scenario, open_edit_save_scenario,
     validate_integration_scenario,
@@ -54,8 +52,16 @@ fn regression_scenario_names_unique() {
 #[test]
 fn session_serialize_roundtrip() {
     let data = SessionData {
-        buffers: vec![SessionBuffer { path: "a.rs".into(), cursor_line: 1, cursor_col: 0 }],
-        windows: vec![SessionWindow { buffer_index: 0, width: 80, height: 24 }],
+        buffers: vec![SessionBuffer {
+            path: "a.rs".into(),
+            cursor_line: 1,
+            cursor_col: 0,
+        }],
+        windows: vec![SessionWindow {
+            buffer_index: 0,
+            width: 80,
+            height: 24,
+        }],
         globals: vec![],
         cwd: "/tmp".into(),
     };

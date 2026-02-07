@@ -1,6 +1,6 @@
 //! Tests for search forward/backward, pattern compilation, Vim regex translation.
 
-use kjxlkj_core_state::search::{search_forward, search_backward, SearchState};
+use kjxlkj_core_state::search::{search_backward, search_forward, SearchState};
 use kjxlkj_core_state::search_regex::{
     compile_pattern, find_all_matches, find_next, find_prev, translate_vim_pattern,
 };
@@ -94,13 +94,21 @@ fn translate_passthrough() {
 
 #[test]
 fn smart_case_lower_is_insensitive() {
-    let ss = SearchState { smart_case: true, ignore_case: true, ..SearchState::new() };
+    let ss = SearchState {
+        smart_case: true,
+        ignore_case: true,
+        ..SearchState::new()
+    };
     assert!(!ss.effective_case_sensitive("hello"));
 }
 
 #[test]
 fn smart_case_upper_is_sensitive() {
-    let ss = SearchState { smart_case: true, ignore_case: true, ..SearchState::new() };
+    let ss = SearchState {
+        smart_case: true,
+        ignore_case: true,
+        ..SearchState::new()
+    };
     assert!(ss.effective_case_sensitive("Hello"));
 }
 

@@ -4,8 +4,7 @@ use kjxlkj_core_types::BufferId;
 use serde::{Deserialize, Serialize};
 
 /// The kind of buffer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum BufferType {
     #[default]
     Normal,
@@ -16,7 +15,6 @@ pub enum BufferType {
     Prompt,
     Popup,
 }
-
 
 /// Boolean flags associated with a buffer.
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -4,6 +4,7 @@ pub mod cursor_rendering;
 pub mod mode_keybindings;
 pub mod mode_state;
 pub mod popup_overlay;
+pub mod popup_overlay_mgr;
 pub mod transitions;
 
 pub use cursor_rendering::{

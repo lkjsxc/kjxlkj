@@ -1,8 +1,8 @@
 //! Tests for Position, Range, Mode, EditorAction, Motion, ContractChecker,
 //! LatencyProbe, and KeyEvent.
 use kjxlkj_core_types::{
-    ContractChecker, ContractLevel, EditorAction, EditorEvent, KeyCode, KeyEvent, LatencyBudget,
-    LatencyProbe, Mode, Modifiers, Motion, Position, Range, TextObjectScope, TextObjectType,
+    ContractChecker, ContractLevel, EditorAction, KeyCode, KeyEvent, LatencyBudget, LatencyProbe,
+    Mode, Modifiers, Motion, Position, Range, TextObjectType,
 };
 use std::time::Duration;
 
@@ -43,8 +43,14 @@ fn range_empty() {
 #[test]
 fn mode_all_nine_variants() {
     let modes = [
-        Mode::Normal, Mode::Insert, Mode::Visual, Mode::VisualLine,
-        Mode::VisualBlock, Mode::Command, Mode::Replace, Mode::Terminal,
+        Mode::Normal,
+        Mode::Insert,
+        Mode::Visual,
+        Mode::VisualLine,
+        Mode::VisualBlock,
+        Mode::Command,
+        Mode::Replace,
+        Mode::Terminal,
         Mode::OperatorPending,
     ];
     assert_eq!(modes.len(), 9);

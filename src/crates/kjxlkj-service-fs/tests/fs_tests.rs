@@ -1,15 +1,40 @@
 use kjxlkj_service_fs::{
-    filter_hidden, is_hidden, list_directory, sort_entries, DirEntry, DirListing, SortOrder,
+    filter_hidden, is_hidden, list_directory, sort_entries, DirEntry, SortOrder,
 };
 use kjxlkj_service_fs::{FsEvent, FsWatcher};
 
 fn sample_entries() -> Vec<DirEntry> {
     vec![
-        DirEntry { name: "src".into(), is_dir: true, size: 0, hidden: false },
-        DirEntry { name: "main.rs".into(), is_dir: false, size: 200, hidden: false },
-        DirEntry { name: "lib.rs".into(), is_dir: false, size: 100, hidden: false },
-        DirEntry { name: ".gitignore".into(), is_dir: false, size: 50, hidden: true },
-        DirEntry { name: "tests".into(), is_dir: true, size: 0, hidden: false },
+        DirEntry {
+            name: "src".into(),
+            is_dir: true,
+            size: 0,
+            hidden: false,
+        },
+        DirEntry {
+            name: "main.rs".into(),
+            is_dir: false,
+            size: 200,
+            hidden: false,
+        },
+        DirEntry {
+            name: "lib.rs".into(),
+            is_dir: false,
+            size: 100,
+            hidden: false,
+        },
+        DirEntry {
+            name: ".gitignore".into(),
+            is_dir: false,
+            size: 50,
+            hidden: true,
+        },
+        DirEntry {
+            name: "tests".into(),
+            is_dir: true,
+            size: 0,
+            hidden: false,
+        },
     ]
 }
 
@@ -34,8 +59,18 @@ fn sort_by_name_dirs_first() {
 #[test]
 fn sort_by_size() {
     let mut entries = vec![
-        DirEntry { name: "big.txt".into(), is_dir: false, size: 500, hidden: false },
-        DirEntry { name: "small.txt".into(), is_dir: false, size: 10, hidden: false },
+        DirEntry {
+            name: "big.txt".into(),
+            is_dir: false,
+            size: 500,
+            hidden: false,
+        },
+        DirEntry {
+            name: "small.txt".into(),
+            is_dir: false,
+            size: 10,
+            hidden: false,
+        },
     ];
     sort_entries(&mut entries, SortOrder::Size);
     assert_eq!(entries[0].name, "small.txt");
@@ -44,8 +79,18 @@ fn sort_by_size() {
 #[test]
 fn sort_by_size_desc() {
     let mut entries = vec![
-        DirEntry { name: "small.txt".into(), is_dir: false, size: 10, hidden: false },
-        DirEntry { name: "big.txt".into(), is_dir: false, size: 500, hidden: false },
+        DirEntry {
+            name: "small.txt".into(),
+            is_dir: false,
+            size: 10,
+            hidden: false,
+        },
+        DirEntry {
+            name: "big.txt".into(),
+            is_dir: false,
+            size: 500,
+            hidden: false,
+        },
     ];
     sort_entries(&mut entries, SortOrder::SizeDesc);
     assert_eq!(entries[0].name, "big.txt");
@@ -54,8 +99,18 @@ fn sort_by_size_desc() {
 #[test]
 fn sort_by_type() {
     let mut entries = vec![
-        DirEntry { name: "main.rs".into(), is_dir: false, size: 0, hidden: false },
-        DirEntry { name: "lib.py".into(), is_dir: false, size: 0, hidden: false },
+        DirEntry {
+            name: "main.rs".into(),
+            is_dir: false,
+            size: 0,
+            hidden: false,
+        },
+        DirEntry {
+            name: "lib.py".into(),
+            is_dir: false,
+            size: 0,
+            hidden: false,
+        },
     ];
     sort_entries(&mut entries, SortOrder::Type);
     // "py" < "rs"

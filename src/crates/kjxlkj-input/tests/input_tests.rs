@@ -1,7 +1,6 @@
 //! Integration tests for input parsing, keybinding tables, and mappings.
 
 use kjxlkj_input::*;
-use kjxlkj_core_types::{KeyCode, Mode};
 
 #[test]
 fn parse_key_ctrl_a() {
@@ -103,9 +102,27 @@ fn mapping_recursive_limit() {
 #[test]
 fn layout_no_overlap() {
     let r = vec![
-        LayoutRegion { x: 0, y: 0, w: 80, h: 22, name: "editor".into() },
-        LayoutRegion { x: 0, y: 22, w: 80, h: 1, name: "status".into() },
-        LayoutRegion { x: 0, y: 23, w: 80, h: 1, name: "cmdline".into() },
+        LayoutRegion {
+            x: 0,
+            y: 0,
+            w: 80,
+            h: 22,
+            name: "editor".into(),
+        },
+        LayoutRegion {
+            x: 0,
+            y: 22,
+            w: 80,
+            h: 1,
+            name: "status".into(),
+        },
+        LayoutRegion {
+            x: 0,
+            y: 23,
+            w: 80,
+            h: 1,
+            name: "cmdline".into(),
+        },
     ];
     assert!(check_no_overlap(&r).is_ok());
 }
@@ -113,9 +130,27 @@ fn layout_no_overlap() {
 #[test]
 fn layout_coverage() {
     let r = vec![
-        LayoutRegion { x: 0, y: 0, w: 80, h: 22, name: "editor".into() },
-        LayoutRegion { x: 0, y: 22, w: 80, h: 1, name: "status".into() },
-        LayoutRegion { x: 0, y: 23, w: 80, h: 1, name: "cmdline".into() },
+        LayoutRegion {
+            x: 0,
+            y: 0,
+            w: 80,
+            h: 22,
+            name: "editor".into(),
+        },
+        LayoutRegion {
+            x: 0,
+            y: 22,
+            w: 80,
+            h: 1,
+            name: "status".into(),
+        },
+        LayoutRegion {
+            x: 0,
+            y: 23,
+            w: 80,
+            h: 1,
+            name: "cmdline".into(),
+        },
     ];
     assert!(check_coverage(&r, 80, 24));
 }

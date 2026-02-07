@@ -2,7 +2,7 @@
 
 use kjxlkj_core_state::*;
 use kjxlkj_core_text::TextBuffer;
-use kjxlkj_core_types::{BufferId, Mode, Position, WindowId};
+use kjxlkj_core_types::{BufferId, Mode, Position};
 
 #[test]
 fn create_editor_state() {
@@ -58,8 +58,14 @@ fn mark_set_get() {
 #[test]
 fn jump_list_push_pop() {
     let mut jl = JumpList::new();
-    jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(0, 0) });
-    jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(10, 0) });
+    jl.push(JumpEntry {
+        buffer_id: BufferId(1),
+        position: Position::new(0, 0),
+    });
+    jl.push(JumpEntry {
+        buffer_id: BufferId(1),
+        position: Position::new(10, 0),
+    });
     let e = jl.jump_back().unwrap();
     assert_eq!(e.position.line, 10);
     let e2 = jl.jump_back().unwrap();
@@ -69,7 +75,9 @@ fn jump_list_push_pop() {
 #[test]
 fn change_list_push() {
     let mut cl = ChangeList::new();
-    cl.push(ChangeListEntry { position: Position::new(3, 0) });
+    cl.push(ChangeListEntry {
+        position: Position::new(3, 0),
+    });
     assert_eq!(cl.len(), 1);
     let e = cl.older().unwrap();
     assert_eq!(e.position.line, 3);
@@ -140,7 +148,10 @@ fn parse_command_quit() {
 
 #[test]
 fn parse_command_write() {
-    assert_eq!(parse_command(":w").unwrap(), commands::ExCommand::Write(None));
+    assert_eq!(
+        parse_command(":w").unwrap(),
+        commands::ExCommand::Write(None)
+    );
 }
 
 #[test]

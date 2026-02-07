@@ -1,6 +1,4 @@
-use kjxlkj_service_terminal::{
-    parse_ansi_simple, AnsiAction, PaneManager, Style, TerminalGrid,
-};
+use kjxlkj_service_terminal::{parse_ansi_simple, AnsiAction, PaneManager, TerminalGrid};
 
 // --- Terminal grid ---
 
@@ -72,7 +70,10 @@ fn grid_clear_to_eol() {
 #[test]
 fn ansi_print_chars() {
     let actions = parse_ansi_simple("AB");
-    assert_eq!(actions, vec![AnsiAction::Print('A'), AnsiAction::Print('B')]);
+    assert_eq!(
+        actions,
+        vec![AnsiAction::Print('A'), AnsiAction::Print('B')]
+    );
 }
 
 #[test]

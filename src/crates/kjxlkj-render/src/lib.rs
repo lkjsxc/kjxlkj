@@ -9,6 +9,7 @@ pub mod notification;
 pub mod popup_menu;
 pub mod renderer;
 pub mod status_line;
+pub mod status_line_render;
 pub mod theme_full;
 pub mod viewport_integrity;
 

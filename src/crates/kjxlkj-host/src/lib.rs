@@ -8,6 +8,7 @@ pub mod feature_reachability;
 pub mod file_flows;
 pub mod host;
 pub mod host_args;
+pub mod host_event;
 pub mod plugin_audit;
 pub mod pty_harness;
 pub mod pty_regressions;

@@ -3,7 +3,9 @@
 pub mod headless;
 pub mod input_decoder;
 pub mod keybinding_dsl;
+pub mod keybinding_dsl_seq;
 pub mod keybinding_tables;
+pub mod keybinding_tables_build;
 pub mod layout_acceptance;
 pub mod leader_keys;
 pub mod mapping;

@@ -53,8 +53,7 @@ pub struct CursorState {
 }
 
 /// Visual cursor shape.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum CursorShape {
     #[default]
     Block,
@@ -100,7 +99,6 @@ impl Default for CursorState {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

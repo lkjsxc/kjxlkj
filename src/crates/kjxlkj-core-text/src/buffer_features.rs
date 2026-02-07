@@ -41,8 +41,7 @@ pub struct BufferLocalOptions {
 }
 
 /// File format (line-ending style).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum FileFormat {
     #[default]
     Unix,
@@ -60,7 +59,6 @@ impl FileFormat {
         }
     }
 }
-
 
 /// Buffer-related events for autocmd.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]

@@ -3,7 +3,9 @@
 
 pub mod command_mode;
 pub mod core_loop;
+pub mod core_loop_dispatch;
 pub mod digraph;
+pub mod digraph_lookup;
 pub mod insert_mode;
 pub mod insert_mode_ctrl;
 pub mod lsp_features;

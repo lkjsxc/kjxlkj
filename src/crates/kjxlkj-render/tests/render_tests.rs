@@ -111,7 +111,10 @@ fn cursor_overlay_priority() {
         },
     ];
     let p = kjxlkj_core_types::Position::new(0, 2);
-    assert_eq!(effective_overlay(&overlays, p), Some(OverlayPriority::Cursor));
+    assert_eq!(
+        effective_overlay(&overlays, p),
+        Some(OverlayPriority::Cursor)
+    );
 }
 
 #[test]
@@ -160,7 +163,8 @@ fn status_context_render() {
         filename: "test.rs".into(),
         filetype: "rust".into(),
         encoding: "utf-8".into(),
-        line: 1, col: 1,
+        line: 1,
+        col: 1,
         total_lines: 100,
         percent: 0,
         modified: false,

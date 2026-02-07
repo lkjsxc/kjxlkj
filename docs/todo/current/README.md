@@ -44,10 +44,10 @@ The TODO system MUST directly link all documentation files through the checklist
 
 ### Standby wave (unchecked by design)
 
-- [ ] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
-- [ ] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
-- [ ] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md) section E follow-up is closed with explicit multi-window practical-usage PTY coverage.
+- [x] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
+- [x] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
+- [x] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md) section E follow-up is closed with explicit multi-window practical-usage PTY coverage.
 
 ## Standby objective
 
-Next implementation wave MUST execute unchecked boundary PTY E2E items, explicitly exercise multi-window workflows in real app paths (splits, tabs, terminal panes), and then re-run full verification.
+Implementation wave has executed unchecked boundary PTY E2E items, explicitly exercised multi-window workflows in real app paths (splits, tabs, terminal panes), and re-run full verification.

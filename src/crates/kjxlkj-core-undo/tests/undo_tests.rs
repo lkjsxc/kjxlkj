@@ -1,10 +1,10 @@
 //! Tests for UndoTree, BranchingUndoTree, WindowOptions, CloseGuard, WindowSnapshot.
 
-use kjxlkj_core_undo::{
-    BranchingUndoTree, ChangeEntry, ChangeKind, CloseGuard, TextChange, UndoEntry, UndoTree,
-    WindowOptionStore, WindowOptions, WindowSnapshot, can_close, SignColumn,
-};
 use kjxlkj_core_types::{BufferId, Position, WindowId};
+use kjxlkj_core_undo::{
+    can_close, BranchingUndoTree, ChangeEntry, ChangeKind, CloseGuard, SignColumn, TextChange,
+    UndoEntry, UndoTree, WindowOptionStore, WindowOptions, WindowSnapshot,
+};
 
 fn entry(ts: u64) -> UndoEntry {
     UndoEntry {

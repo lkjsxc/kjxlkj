@@ -1,8 +1,7 @@
 //! Command-line argument parsing for the host binary.
 
 /// Parsed command-line arguments.
-#[derive(Debug, Clone)]
-#[derive(Default)]
+#[derive(Debug, Clone, Default)]
 pub struct HostArgs {
     /// File to open on startup.
     pub file: Option<String>,
@@ -11,7 +10,6 @@ pub struct HostArgs {
     /// Path to a JSON test script.
     pub script: Option<String>,
 }
-
 
 /// Parse command-line arguments into `HostArgs`.
 ///

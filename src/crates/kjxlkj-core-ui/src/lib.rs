@@ -3,6 +3,7 @@
 pub mod cursor_full;
 pub mod floating;
 pub mod layout;
+pub mod layout_standard;
 pub mod line_numbers;
 pub mod search_highlight;
 pub mod snapshot;

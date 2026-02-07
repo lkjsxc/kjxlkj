@@ -1,9 +1,9 @@
+use kjxlkj_service_lsp::requests::{
+    build_did_open, build_initialize_request, LspMethod, PendingRequests, ServerCapabilities,
+};
 use kjxlkj_service_lsp::{
     decode_message, encode_message, Diagnostic, DiagnosticSeverity, DiagnosticStore,
     JsonRpcMessage, JsonRpcRequest,
-};
-use kjxlkj_service_lsp::requests::{
-    build_did_open, build_initialize_request, LspMethod, PendingRequests, ServerCapabilities,
 };
 
 // --- LspMethod coverage ---
@@ -31,11 +31,21 @@ fn lsp_method_definition_str() {
 #[test]
 fn lsp_method_all_variants_have_str() {
     let methods = [
-        LspMethod::Initialize, LspMethod::Shutdown, LspMethod::Completion,
-        LspMethod::Hover, LspMethod::Definition, LspMethod::References,
-        LspMethod::Rename, LspMethod::SignatureHelp, LspMethod::CodeAction,
-        LspMethod::DocumentSymbol, LspMethod::WorkspaceSymbol, LspMethod::Formatting,
-        LspMethod::GotoImplementation, LspMethod::TypeDefinition, LspMethod::CodeLens,
+        LspMethod::Initialize,
+        LspMethod::Shutdown,
+        LspMethod::Completion,
+        LspMethod::Hover,
+        LspMethod::Definition,
+        LspMethod::References,
+        LspMethod::Rename,
+        LspMethod::SignatureHelp,
+        LspMethod::CodeAction,
+        LspMethod::DocumentSymbol,
+        LspMethod::WorkspaceSymbol,
+        LspMethod::Formatting,
+        LspMethod::GotoImplementation,
+        LspMethod::TypeDefinition,
+        LspMethod::CodeLens,
     ];
     for m in methods {
         assert!(!m.as_str().is_empty());
@@ -47,7 +57,10 @@ fn lsp_method_all_variants_have_str() {
 #[test]
 fn encode_request_has_content_length() {
     let msg = JsonRpcMessage::Request(JsonRpcRequest {
-        jsonrpc: "2.0".into(), id: 1, method: "initialize".into(), params: None,
+        jsonrpc: "2.0".into(),
+        id: 1,
+        method: "initialize".into(),
+        params: None,
     });
     let encoded = encode_message(&msg);
     assert!(encoded.starts_with("Content-Length: "));
@@ -56,7 +69,10 @@ fn encode_request_has_content_length() {
 #[test]
 fn encode_decode_roundtrip() {
     let msg = JsonRpcMessage::Request(JsonRpcRequest {
-        jsonrpc: "2.0".into(), id: 42, method: "test".into(), params: None,
+        jsonrpc: "2.0".into(),
+        id: 42,
+        method: "test".into(),
+        params: None,
     });
     let encoded = encode_message(&msg);
     let body = encoded.split("\r\n\r\n").nth(1).unwrap();
@@ -117,9 +133,15 @@ fn pending_multiple_requests() {
 #[test]
 fn diagnostic_store_add_get() {
     let mut store = DiagnosticStore::new();
-    store.add("file:///a.rs", Diagnostic {
-        message: "unused".into(), severity: DiagnosticSeverity::Warning, line: 1, col: 0,
-    });
+    store.add(
+        "file:///a.rs",
+        Diagnostic {
+            message: "unused".into(),
+            severity: DiagnosticSeverity::Warning,
+            line: 1,
+            col: 0,
+        },
+    );
     assert_eq!(store.get("file:///a.rs").len(), 1);
     assert_eq!(store.error_count(), 0);
 }
@@ -127,9 +149,15 @@ fn diagnostic_store_add_get() {
 #[test]
 fn diagnostic_store_remove() {
     let mut store = DiagnosticStore::new();
-    store.add("file:///b.rs", Diagnostic {
-        message: "err".into(), severity: DiagnosticSeverity::Error, line: 5, col: 2,
-    });
+    store.add(
+        "file:///b.rs",
+        Diagnostic {
+            message: "err".into(),
+            severity: DiagnosticSeverity::Error,
+            line: 5,
+            col: 2,
+        },
+    );
     assert_eq!(store.error_count(), 1);
     store.remove("file:///b.rs");
     assert_eq!(store.total_count(), 0);

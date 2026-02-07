@@ -1,7 +1,6 @@
 use kjxlkj_service_git::{
     compute_gutter_signs, count_changes, parse_blame_output, parse_diff_hunks, parse_log,
-    parse_status_line, BlameEntry, BranchInfo, DiffHunk, DiffLine, FileStatus, GutterSign,
-    LogEntry, StatusEntry,
+    parse_status_line, BranchInfo, DiffHunk, FileStatus, GutterSign, StatusEntry,
 };
 
 // --- File status variants ---
@@ -127,14 +126,26 @@ fn branch_info_creation() {
 
 #[test]
 fn count_changes_basic() {
-    use kjxlkj_service_git::DiffLine as DL;
     use kjxlkj_service_git::git_diff::DiffLineKind;
+    use kjxlkj_service_git::DiffLine as DL;
     let hunks = vec![DiffHunk {
-        old_start: 1, old_count: 2, new_start: 1, new_count: 3,
+        old_start: 1,
+        old_count: 2,
+        new_start: 1,
+        new_count: 3,
         lines: vec![
-            DL { kind: DiffLineKind::Added, content: "a".into() },
-            DL { kind: DiffLineKind::Added, content: "b".into() },
-            DL { kind: DiffLineKind::Removed, content: "c".into() },
+            DL {
+                kind: DiffLineKind::Added,
+                content: "a".into(),
+            },
+            DL {
+                kind: DiffLineKind::Added,
+                content: "b".into(),
+            },
+            DL {
+                kind: DiffLineKind::Removed,
+                content: "c".into(),
+            },
         ],
     }];
     assert_eq!(count_changes(&hunks), (2, 1));

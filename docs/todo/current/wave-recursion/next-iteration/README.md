@@ -22,26 +22,26 @@ Queue the next execution cycle after documentation hardening.
 
 ### A. Kickoff
 
-- [ ] Start next implementation iteration and execute unchecked boundary PTY E2E tasks.
+- [x] Start next implementation iteration and execute unchecked boundary PTY E2E tasks.
 
 ### B. Multi-window practical utilization (required before close)
 
-- [ ] Enforce at least one default app workflow that edits and writes from a non-primary split (not only single-window path).
-- [ ] Enforce at least one tab workflow (`:tabnew`/tab switch) in the standard edit-save flow.
-- [ ] Enforce terminal-pane usage from within a multi-window layout (open terminal pane, return focus to editor split, continue editing).
-- [ ] Ensure the above paths are reachable by documented commands/keybindings, not only internal APIs.
+- [x] Enforce at least one default app workflow that edits and writes from a non-primary split (not only single-window path).
+- [x] Enforce at least one tab workflow (`:tabnew`/tab switch) in the standard edit-save flow.
+- [x] Enforce terminal-pane usage from within a multi-window layout (open terminal pane, return focus to editor split, continue editing).
+- [x] Ensure the above paths are reachable by documented commands/keybindings, not only internal APIs.
 
 ### C. Verification and traceability
 
-- [ ] Implement/green all unchecked multi-window and boundary PTY tests in:
+- [x] Implement/green all unchecked multi-window and boundary PTY tests in:
   - [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
-- [ ] Re-run full verification gate after implementation updates.
-- [ ] Update conformance and limitations ledgers to match implemented behavior.
+- [x] Re-run full verification gate after implementation updates.
+- [x] Update conformance and limitations ledgers to match implemented behavior.
 
 ### D. Documentation topology hygiene
 
-- [ ] Regenerate `/docs/todo/doc-coverage/` if documentation topology changes.
-- [ ] Split line-count-exempt reference docs into <=200-line topology and remove exceptions from policy/checker.
+- [x] Regenerate `/docs/todo/doc-coverage/` if documentation topology changes.
+- [x] Split line-count-exempt reference docs into <=200-line topology and remove exceptions from policy/checker.
 
 ### E. Completion handshake
 

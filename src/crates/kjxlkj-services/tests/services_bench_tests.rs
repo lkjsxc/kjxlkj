@@ -1,6 +1,6 @@
-use kjxlkj_services::BenchmarkKind;
 use kjxlkj_services::benchmark_suite::{budget_for, compute_benchmark_result, default_suite};
 use kjxlkj_services::profiling_workflow::{compute_stats, default_budgets, meets_budget};
+use kjxlkj_services::BenchmarkKind;
 use kjxlkj_services::ProfileTarget;
 
 // --- Benchmark suite ---

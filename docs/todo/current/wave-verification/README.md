@@ -40,6 +40,6 @@ Make correctness provable and regressions difficult by treating tests and policy
 
 ### E. Standby follow-up (next iteration)
 
-- [ ] Execute unchecked boundary PTY E2E items in:
+- [x] Execute unchecked boundary PTY E2E items in:
   - [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
-- [ ] Do not close verification standby until unchecked multi-window practical-utilization PTY E2E items in section C are green.
+- [x] Do not close verification standby until unchecked multi-window practical-utilization PTY E2E items in section C are green.

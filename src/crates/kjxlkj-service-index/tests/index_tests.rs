@@ -1,6 +1,5 @@
 use kjxlkj_service_index::{
-    fuzzy_match, normalize_score, rank_candidates, FuzzyMatch, SymbolEntry, SymbolIndex,
-    SymbolKind,
+    fuzzy_match, normalize_score, rank_candidates, SymbolEntry, SymbolIndex, SymbolKind,
 };
 
 // --- Fuzzy matching ---
@@ -77,9 +76,24 @@ fn rank_no_matches() {
 
 fn sample_index() -> SymbolIndex {
     let mut idx = SymbolIndex::new();
-    idx.add(SymbolEntry { name: "foo_bar".into(), kind: SymbolKind::Function, file: "a.rs".into(), line: 10 });
-    idx.add(SymbolEntry { name: "FooService".into(), kind: SymbolKind::Struct, file: "b.rs".into(), line: 1 });
-    idx.add(SymbolEntry { name: "baz_qux".into(), kind: SymbolKind::Function, file: "c.rs".into(), line: 20 });
+    idx.add(SymbolEntry {
+        name: "foo_bar".into(),
+        kind: SymbolKind::Function,
+        file: "a.rs".into(),
+        line: 10,
+    });
+    idx.add(SymbolEntry {
+        name: "FooService".into(),
+        kind: SymbolKind::Struct,
+        file: "b.rs".into(),
+        line: 1,
+    });
+    idx.add(SymbolEntry {
+        name: "baz_qux".into(),
+        kind: SymbolKind::Function,
+        file: "c.rs".into(),
+        line: 20,
+    });
     idx
 }
 

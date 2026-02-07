@@ -8,24 +8,44 @@ fn sample_tree() -> ExplorerTree {
     let mut tree = ExplorerTree::new("/project".into());
     tree.nodes = vec![
         TreeNode {
-            id: 0, name: "root".into(), path: "/project".into(),
-            kind: TreeNodeKind::Directory, depth: 0, children: vec![1, 2, 3],
+            id: 0,
+            name: "root".into(),
+            path: "/project".into(),
+            kind: TreeNodeKind::Directory,
+            depth: 0,
+            children: vec![1, 2, 3],
         },
         TreeNode {
-            id: 1, name: "src".into(), path: "/project/src".into(),
-            kind: TreeNodeKind::Directory, depth: 1, children: vec![4],
+            id: 1,
+            name: "src".into(),
+            path: "/project/src".into(),
+            kind: TreeNodeKind::Directory,
+            depth: 1,
+            children: vec![4],
         },
         TreeNode {
-            id: 2, name: "Cargo.toml".into(), path: "/project/Cargo.toml".into(),
-            kind: TreeNodeKind::File, depth: 1, children: vec![],
+            id: 2,
+            name: "Cargo.toml".into(),
+            path: "/project/Cargo.toml".into(),
+            kind: TreeNodeKind::File,
+            depth: 1,
+            children: vec![],
         },
         TreeNode {
-            id: 3, name: ".gitignore".into(), path: "/project/.gitignore".into(),
-            kind: TreeNodeKind::File, depth: 1, children: vec![],
+            id: 3,
+            name: ".gitignore".into(),
+            path: "/project/.gitignore".into(),
+            kind: TreeNodeKind::File,
+            depth: 1,
+            children: vec![],
         },
         TreeNode {
-            id: 4, name: "main.rs".into(), path: "/project/src/main.rs".into(),
-            kind: TreeNodeKind::File, depth: 2, children: vec![],
+            id: 4,
+            name: "main.rs".into(),
+            path: "/project/src/main.rs".into(),
+            kind: TreeNodeKind::File,
+            depth: 2,
+            children: vec![],
         },
     ];
     tree
@@ -87,8 +107,12 @@ fn visible_nodes_show_hidden() {
 #[test]
 fn format_node_file() {
     let node = TreeNode {
-        id: 0, name: "main.rs".into(), path: "src/main.rs".into(),
-        kind: TreeNodeKind::File, depth: 1, children: vec![],
+        id: 0,
+        name: "main.rs".into(),
+        path: "src/main.rs".into(),
+        kind: TreeNodeKind::File,
+        depth: 1,
+        children: vec![],
     };
     let s = format_node(&node, false);
     assert!(s.contains("main.rs"));
@@ -98,8 +122,12 @@ fn format_node_file() {
 #[test]
 fn format_node_dir_expanded() {
     let node = TreeNode {
-        id: 0, name: "src".into(), path: "src".into(),
-        kind: TreeNodeKind::Directory, depth: 0, children: vec![],
+        id: 0,
+        name: "src".into(),
+        path: "src".into(),
+        kind: TreeNodeKind::Directory,
+        depth: 0,
+        children: vec![],
     };
     assert!(format_node(&node, true).contains('▼'));
     assert!(format_node(&node, false).contains('▶'));
@@ -108,8 +136,12 @@ fn format_node_dir_expanded() {
 #[test]
 fn format_node_symlink() {
     let node = TreeNode {
-        id: 0, name: "link".into(), path: "link".into(),
-        kind: TreeNodeKind::Symlink, depth: 0, children: vec![],
+        id: 0,
+        name: "link".into(),
+        path: "link".into(),
+        kind: TreeNodeKind::Symlink,
+        depth: 0,
+        children: vec![],
     };
     assert!(format_node(&node, false).contains('⤷'));
 }
@@ -117,8 +149,13 @@ fn format_node_symlink() {
 #[test]
 fn git_badge_variants() {
     let badges = [
-        GitBadge::Modified, GitBadge::Added, GitBadge::Deleted,
-        GitBadge::Untracked, GitBadge::Ignored, GitBadge::Conflict, GitBadge::Clean,
+        GitBadge::Modified,
+        GitBadge::Added,
+        GitBadge::Deleted,
+        GitBadge::Untracked,
+        GitBadge::Ignored,
+        GitBadge::Conflict,
+        GitBadge::Clean,
     ];
     assert_eq!(badges.len(), 7);
 }

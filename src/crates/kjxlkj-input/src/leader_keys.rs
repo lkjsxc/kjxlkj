@@ -103,7 +103,9 @@ mod tests {
 
     #[test]
     fn registry_resolve() {
-        let reg = LeaderRegistry { bindings: default_leader_bindings() };
+        let reg = LeaderRegistry {
+            bindings: default_leader_bindings(),
+        };
         assert_eq!(reg.resolve("f").unwrap().action, "find_file");
         assert!(reg.resolve("z").is_none());
     }

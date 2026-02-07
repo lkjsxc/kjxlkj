@@ -4,8 +4,7 @@ use kjxlkj_core_types::Mode;
 use serde::{Deserialize, Serialize};
 
 /// Style used for rendering line numbers in the gutter.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum LineNumberStyle {
     None,
     #[default]
@@ -13,7 +12,6 @@ pub enum LineNumberStyle {
     Relative,
     Hybrid,
 }
-
 
 /// Format a line number for display.
 ///

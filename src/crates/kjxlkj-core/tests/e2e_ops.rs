@@ -1,7 +1,7 @@
 //! E2E tests for editing operations, motions, and operators.
 
 use kjxlkj_core::CoreProcessor;
-use kjxlkj_core::{EditorAction, KeyCode, KeyEvent, Mode, Position};
+use kjxlkj_core::{EditorAction, KeyEvent, Mode, Position};
 
 fn processor_with_text(text: &str) -> CoreProcessor {
     let mut p = CoreProcessor::new();
@@ -14,10 +14,6 @@ fn processor_with_text(text: &str) -> CoreProcessor {
 
 fn press(p: &mut CoreProcessor, c: char) {
     p.process_key(KeyEvent::char(c));
-}
-
-fn press_key(p: &mut CoreProcessor, code: KeyCode) {
-    p.process_key(KeyEvent::plain(code));
 }
 
 #[test]

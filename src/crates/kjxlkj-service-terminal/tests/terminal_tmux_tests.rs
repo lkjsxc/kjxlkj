@@ -15,7 +15,7 @@ fn tmux_state_fields() {
 
 #[test]
 fn tmux_action_variants() {
-    let actions = vec![
+    let actions = [
         TmuxAction::NewWindow,
         TmuxAction::CloseWindow,
         TmuxAction::SplitH,

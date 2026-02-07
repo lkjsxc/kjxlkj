@@ -143,9 +143,11 @@ mod tests {
 
     #[test]
     fn scenario_count() {
-        let scenarios = [open_edit_save_scenario(),
+        let scenarios = [
+            open_edit_save_scenario(),
             undo_redo_scenario(),
-            multi_buffer_scenario()];
+            multi_buffer_scenario(),
+        ];
         assert_eq!(scenarios.len(), 3);
     }
 }
