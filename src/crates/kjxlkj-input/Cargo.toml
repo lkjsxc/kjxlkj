@@ -11,5 +11,6 @@ path = "src/lib.rs"
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 crossterm = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 thiserror = { workspace = true }
 unicode-width = { workspace = true }
