@@ -78,8 +78,12 @@ mod tests {
     #[test]
     fn push_and_older() {
         let mut cl = ChangeList::new();
-        cl.push(ChangeListEntry { position: Position::new(3, 0) });
-        cl.push(ChangeListEntry { position: Position::new(7, 0) });
+        cl.push(ChangeListEntry {
+            position: Position::new(3, 0),
+        });
+        cl.push(ChangeListEntry {
+            position: Position::new(7, 0),
+        });
         let e = cl.older().unwrap();
         assert_eq!(e.position, Position::new(7, 0));
     }
@@ -87,8 +91,12 @@ mod tests {
     #[test]
     fn newer_after_older() {
         let mut cl = ChangeList::new();
-        cl.push(ChangeListEntry { position: Position::new(3, 0) });
-        cl.push(ChangeListEntry { position: Position::new(7, 0) });
+        cl.push(ChangeListEntry {
+            position: Position::new(3, 0),
+        });
+        cl.push(ChangeListEntry {
+            position: Position::new(7, 0),
+        });
         cl.older();
         let e = cl.newer().unwrap();
         assert_eq!(e.position, Position::new(7, 0));

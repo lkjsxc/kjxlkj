@@ -27,13 +27,13 @@ pub use kjxlkj_core_undo as undo;
 // Re-export key types at crate root.
 pub use kjxlkj_core_state::EditorState;
 pub use kjxlkj_core_types::{
-    EditorAction, EditorEvent, KeyCode, KeyEvent, Mode, Modifiers, Motion,
-    Operator, OperatorTarget, Position, Range,
+    EditorAction, EditorEvent, KeyCode, KeyEvent, Mode, Modifiers, Motion, Operator,
+    OperatorTarget, Position, Range,
 };
 pub use kjxlkj_core_ui::snapshot::EditorSnapshot;
 
 pub use core_loop::CoreProcessor;
 pub use lsp_features::{
-    CodeAction, CodeActionKind, CompletionItem, CompletionKind,
-    Diagnostic, DiagnosticSeverity, DiagnosticStore, HoverInfo,
+    CodeAction, CodeActionKind, CompletionItem, CompletionKind, Diagnostic, DiagnosticSeverity,
+    DiagnosticStore, HoverInfo,
 };

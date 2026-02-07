@@ -23,7 +23,11 @@ pub struct VisualSelection {
 impl VisualSelection {
     /// Create a new visual selection.
     pub fn new(kind: VisualKind, anchor: Position, cursor: Position) -> Self {
-        Self { kind, anchor, cursor }
+        Self {
+            kind,
+            anchor,
+            cursor,
+        }
     }
 
     /// Check whether the given position is within the selection.
@@ -53,8 +57,16 @@ impl VisualSelection {
                 let mut result = Vec::new();
                 for line_idx in r.start.line..=r.end.line {
                     let line = buffer.line(line_idx).unwrap_or_default();
-                    let sc = if line_idx == r.start.line { r.start.col } else { 0 };
-                    let ec = if line_idx == r.end.line { r.end.col } else { line.len() };
+                    let sc = if line_idx == r.start.line {
+                        r.start.col
+                    } else {
+                        0
+                    };
+                    let ec = if line_idx == r.end.line {
+                        r.end.col
+                    } else {
+                        line.len()
+                    };
                     let ec = ec.min(line.len());
                     let sc = sc.min(ec);
                     result.push(line[sc..ec].to_string());
@@ -104,15 +116,24 @@ impl VisualSelection {
     /// Return the normalized range (start <= end) for the selection.
     pub fn selected_range(&self) -> Range {
         let (s, e) = if self.anchor <= self.cursor {
-            (self.anchor, Position::new(self.cursor.line, self.cursor.col + 1))
+            (
+                self.anchor,
+                Position::new(self.cursor.line, self.cursor.col + 1),
+            )
         } else {
-            (self.cursor, Position::new(self.anchor.line, self.anchor.col + 1))
+            (
+                self.cursor,
+                Position::new(self.anchor.line, self.anchor.col + 1),
+            )
         };
         match self.kind {
             VisualKind::Line => {
                 let start_line = s.line;
                 let end_line = e.line;
-                Range::new(Position::new(start_line, 0), Position::new(end_line, usize::MAX))
+                Range::new(
+                    Position::new(start_line, 0),
+                    Position::new(end_line, usize::MAX),
+                )
             }
             _ => Range::new(s, e),
         }
@@ -132,36 +153,29 @@ mod tests {
 
     #[test]
     fn char_selection() {
-        let sel = VisualSelection::new(
-            VisualKind::Char, Position::new(0, 2), Position::new(0, 5),
-        );
+        let sel = VisualSelection::new(VisualKind::Char, Position::new(0, 2), Position::new(0, 5));
         assert!(sel.contains(Position::new(0, 3)));
         assert!(!sel.contains(Position::new(0, 6)));
     }
 
     #[test]
     fn swap_ends() {
-        let mut sel = VisualSelection::new(
-            VisualKind::Char, Position::new(0, 0), Position::new(0, 5),
-        );
+        let mut sel =
+            VisualSelection::new(VisualKind::Char, Position::new(0, 0), Position::new(0, 5));
         sel.swap_ends();
         assert_eq!(sel.anchor, Position::new(0, 5));
     }
 
     #[test]
     fn block_cols() {
-        let sel = VisualSelection::new(
-            VisualKind::Block, Position::new(0, 5), Position::new(2, 2),
-        );
+        let sel = VisualSelection::new(VisualKind::Block, Position::new(0, 5), Position::new(2, 2));
         assert_eq!(sel.block_cols(), (2, 6));
     }
 
     #[test]
     fn extract_char() {
         let buf = TextBuffer::from_text(BufferId(1), "t".into(), "hello world");
-        let sel = VisualSelection::new(
-            VisualKind::Char, Position::new(0, 0), Position::new(0, 4),
-        );
+        let sel = VisualSelection::new(VisualKind::Char, Position::new(0, 0), Position::new(0, 4));
         let lines = sel.extract_selection(&buf);
         assert_eq!(lines, vec!["hello"]);
     }

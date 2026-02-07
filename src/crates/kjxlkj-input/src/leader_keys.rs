@@ -11,7 +11,10 @@ pub struct LeaderConfig {
 
 impl Default for LeaderConfig {
     fn default() -> Self {
-        Self { key: "Space".into(), timeout_ms: 1000 }
+        Self {
+            key: "Space".into(),
+            timeout_ms: 1000,
+        }
     }
 }
 
@@ -62,7 +65,9 @@ impl LeaderRegistry {
 /// Default leader bindings (17 bindings).
 pub fn default_leader_bindings() -> Vec<LeaderBinding> {
     let b = |c: &str, a: &str, d: &str| LeaderBinding {
-        chord: c.into(), action: a.into(), description: d.into(),
+        chord: c.into(),
+        action: a.into(),
+        description: d.into(),
     };
     vec![
         b("f", "find_file", "Find file"),
@@ -98,8 +103,7 @@ mod tests {
 
     #[test]
     fn registry_resolve() {
-        let mut reg = LeaderRegistry::default();
-        reg.bindings = default_leader_bindings();
+        let reg = LeaderRegistry { bindings: default_leader_bindings() };
         assert_eq!(reg.resolve("f").unwrap().action, "find_file");
         assert!(reg.resolve("z").is_none());
     }

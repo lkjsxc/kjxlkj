@@ -22,7 +22,8 @@ pub struct HighlightRegion {
 
 /// Return the highest-priority overlay that covers `pos`.
 pub fn effective_overlay(overlays: &[HighlightRegion], pos: Position) -> Option<OverlayPriority> {
-    overlays.iter()
+    overlays
+        .iter()
         .filter(|r| pos >= r.start && pos < r.end)
         .map(|r| r.kind)
         .max()
@@ -38,11 +39,17 @@ pub enum BoundaryAction {
 
 /// Resolve a cursor column given line length and boundary action.
 pub fn resolve_cursor_col(col: usize, line_len: usize, action: BoundaryAction) -> usize {
-    if line_len == 0 { return 0; }
+    if line_len == 0 {
+        return 0;
+    }
     match action {
         BoundaryAction::Clamp => col.min(line_len.saturating_sub(1)),
         BoundaryAction::Wrap => {
-            if col >= line_len { 0 } else { col }
+            if col >= line_len {
+                0
+            } else {
+                col
+            }
         }
         BoundaryAction::NoOp => col,
     }
@@ -50,7 +57,11 @@ pub fn resolve_cursor_col(col: usize, line_len: usize, action: BoundaryAction) -
 
 /// Check whether a cursor position is within the visible viewport.
 pub fn cursor_in_viewport(
-    cursor: Position, top: usize, left: usize, height: usize, width: usize,
+    cursor: Position,
+    top: usize,
+    left: usize,
+    height: usize,
+    width: usize,
 ) -> bool {
     cursor.line >= top
         && cursor.line < top + height
@@ -63,7 +74,9 @@ pub fn cursor_in_viewport(
 /// Supports `()`, `[]`, `{}`.
 pub fn matching_bracket(line: &str, col: usize) -> Option<usize> {
     let chars: Vec<char> = line.chars().collect();
-    if col >= chars.len() { return None; }
+    if col >= chars.len() {
+        return None;
+    }
     let ch = chars[col];
     let (open, close, forward) = match ch {
         '(' => ('(', ')', true),
@@ -76,16 +89,28 @@ pub fn matching_bracket(line: &str, col: usize) -> Option<usize> {
     };
     let mut depth = 0i32;
     if forward {
-        for i in col..chars.len() {
-            if chars[i] == open { depth += 1; }
-            if chars[i] == close { depth -= 1; }
-            if depth == 0 { return Some(i); }
+        for (i, &c) in chars.iter().enumerate().skip(col) {
+            if c == open {
+                depth += 1;
+            }
+            if c == close {
+                depth -= 1;
+            }
+            if depth == 0 {
+                return Some(i);
+            }
         }
     } else {
         for i in (0..=col).rev() {
-            if chars[i] == close { depth += 1; }
-            if chars[i] == open { depth -= 1; }
-            if depth == 0 { return Some(i); }
+            if chars[i] == close {
+                depth += 1;
+            }
+            if chars[i] == open {
+                depth -= 1;
+            }
+            if depth == 0 {
+                return Some(i);
+            }
         }
     }
     None
@@ -98,16 +123,30 @@ mod tests {
     #[test]
     fn overlay_highest_priority() {
         let overlays = vec![
-            HighlightRegion { start: Position::new(0,0), end: Position::new(0,10), kind: OverlayPriority::Selection },
-            HighlightRegion { start: Position::new(0,0), end: Position::new(0,5),  kind: OverlayPriority::Cursor },
+            HighlightRegion {
+                start: Position::new(0, 0),
+                end: Position::new(0, 10),
+                kind: OverlayPriority::Selection,
+            },
+            HighlightRegion {
+                start: Position::new(0, 0),
+                end: Position::new(0, 5),
+                kind: OverlayPriority::Cursor,
+            },
         ];
-        assert_eq!(effective_overlay(&overlays, Position::new(0,2)), Some(OverlayPriority::Cursor));
-        assert_eq!(effective_overlay(&overlays, Position::new(0,7)), Some(OverlayPriority::Selection));
+        assert_eq!(
+            effective_overlay(&overlays, Position::new(0, 2)),
+            Some(OverlayPriority::Cursor)
+        );
+        assert_eq!(
+            effective_overlay(&overlays, Position::new(0, 7)),
+            Some(OverlayPriority::Selection)
+        );
     }
 
     #[test]
     fn overlay_none() {
-        assert_eq!(effective_overlay(&[], Position::new(0,0)), None);
+        assert_eq!(effective_overlay(&[], Position::new(0, 0)), None);
     }
 
     #[test]
@@ -134,8 +173,8 @@ mod tests {
 
     #[test]
     fn cursor_viewport() {
-        assert!(cursor_in_viewport(Position::new(5,10), 0, 0, 24, 80));
-        assert!(!cursor_in_viewport(Position::new(30,0), 0, 0, 24, 80));
+        assert!(cursor_in_viewport(Position::new(5, 10), 0, 0, 24, 80));
+        assert!(!cursor_in_viewport(Position::new(30, 0), 0, 0, 24, 80));
     }
 
     #[test]

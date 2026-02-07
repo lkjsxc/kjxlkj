@@ -102,7 +102,7 @@ pub fn blink_state(elapsed_ms: u64, interval_ms: u64) -> BlinkState {
     if interval_ms == 0 {
         return BlinkState::On;
     }
-    if (elapsed_ms / interval_ms) % 2 == 0 {
+    if (elapsed_ms / interval_ms).is_multiple_of(2) {
         BlinkState::On
     } else {
         BlinkState::Off

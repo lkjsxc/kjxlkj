@@ -5,7 +5,12 @@ use serde::{Deserialize, Serialize};
 /// Mode in which a mapping is active.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum MapMode {
-    Normal, Insert, Visual, Command, OperatorPending, Terminal,
+    Normal,
+    Insert,
+    Visual,
+    Command,
+    OperatorPending,
+    Terminal,
 }
 
 /// A single key mapping entry.
@@ -38,12 +43,16 @@ impl MappingStore {
 
     /// Look up a mapping by mode and source keys.
     pub fn lookup(&self, mode: MapMode, from: &str) -> Option<&MappingEntry> {
-        self.entries.iter().find(|e| e.mode == mode && e.from == from)
+        self.entries
+            .iter()
+            .find(|e| e.mode == mode && e.from == from)
     }
 
     /// Check if any mapping starts with the given prefix (but is longer).
     pub fn has_prefix(&self, mode: MapMode, prefix: &str) -> bool {
-        self.entries.iter().any(|e| e.mode == mode && e.from.starts_with(prefix) && e.from != prefix)
+        self.entries
+            .iter()
+            .any(|e| e.mode == mode && e.from.starts_with(prefix) && e.from != prefix)
     }
 
     /// List all mappings for a mode.
@@ -60,7 +69,9 @@ impl MappingStore {
 /// Parse a map command string like `nmap jj <Esc>` or `nnoremap <C-s> :w<CR>`.
 pub fn parse_map_command(input: &str) -> Option<(MapMode, String, String, bool)> {
     let parts: Vec<&str> = input.splitn(3, char::is_whitespace).collect();
-    if parts.len() < 3 { return None; }
+    if parts.len() < 3 {
+        return None;
+    }
     let (mode, noremap) = match parts[0] {
         "map" | "nmap" => (MapMode::Normal, false),
         "noremap" | "nnoremap" => (MapMode::Normal, true),
@@ -85,15 +96,21 @@ pub fn resolve_mapping(store: &MappingStore, mode: MapMode, keys: &str) -> Optio
 }
 
 /// Expand a mapping recursively (up to `depth_limit` for remappable bindings).
+#[allow(clippy::result_unit_err)]
 pub fn expand_recursive(
-    store: &MappingStore, mode: MapMode, keys: &str, depth_limit: usize,
+    store: &MappingStore,
+    mode: MapMode,
+    keys: &str,
+    depth_limit: usize,
 ) -> Result<String, ()> {
     let mut current = keys.to_string();
     for _ in 0..depth_limit {
         match store.lookup(mode, &current) {
             Some(entry) => {
                 current = entry.to.clone();
-                if entry.noremap { return Ok(current); }
+                if entry.noremap {
+                    return Ok(current);
+                }
             }
             None => return Ok(current),
         }
@@ -106,7 +123,13 @@ mod tests {
     use super::*;
 
     fn me(mode: MapMode, from: &str, to: &str, noremap: bool) -> MappingEntry {
-        MappingEntry { mode, from: from.into(), to: to.into(), noremap, buffer_local: false }
+        MappingEntry {
+            mode,
+            from: from.into(),
+            to: to.into(),
+            noremap,
+            buffer_local: false,
+        }
     }
 
     #[test]

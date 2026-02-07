@@ -6,8 +6,18 @@ use std::collections::HashMap;
 /// Categories of editor actions for bindings.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ActionCategory {
-    Motion, Operator, ModeSwitch, Command, Search, Scroll,
-    Mark, Register, Macro, TextObject, Repeat, Window,
+    Motion,
+    Operator,
+    ModeSwitch,
+    Command,
+    Search,
+    Scroll,
+    Mark,
+    Register,
+    Macro,
+    TextObject,
+    Repeat,
+    Window,
 }
 
 /// A single keybinding entry.
@@ -28,7 +38,10 @@ pub struct BindingTable {
 impl BindingTable {
     pub fn add(&mut self, key: &str, action: &str, cat: ActionCategory, desc: &str) {
         self.entries.push(BindingEntry {
-            key: key.into(), action: action.into(), category: cat, description: desc.into(),
+            key: key.into(),
+            action: action.into(),
+            category: cat,
+            description: desc.into(),
         });
     }
 
@@ -57,50 +70,103 @@ pub fn build_normal_table() -> BindingTable {
     let mut t = BindingTable::default();
     // Motions (26)
     for (k, a, d) in [
-        ("h","move_left","left"),("j","move_down","down"),("k","move_up","up"),
-        ("l","move_right","right"),("w","word_forward","word fwd"),("b","word_backward","word back"),
-        ("e","word_end","word end"),("W","WORD_forward","WORD fwd"),("B","WORD_backward","WORD back"),
-        ("E","WORD_end","WORD end"),("0","line_start","line start"),("$","line_end","line end"),
-        ("^","first_non_blank","first non-blank"),("gg","goto_top","top"),("G","goto_bottom","bottom"),
-        ("%","match_bracket","bracket match"),("f","find_char","find char"),
-        ("F","find_char_back","find back"),("t","till_char","till char"),
-        ("T","till_char_back","till back"),(";","repeat_find","repeat find"),
-        (",","repeat_find_rev","reverse find"),("{","para_back","para back"),
-        ("}","para_forward","para fwd"),("(","sentence_back","sentence back"),
-        (")","sentence_fwd","sentence fwd"),
-    ] { t.add(k, a, Motion, d); }
+        ("h", "move_left", "left"),
+        ("j", "move_down", "down"),
+        ("k", "move_up", "up"),
+        ("l", "move_right", "right"),
+        ("w", "word_forward", "word fwd"),
+        ("b", "word_backward", "word back"),
+        ("e", "word_end", "word end"),
+        ("W", "WORD_forward", "WORD fwd"),
+        ("B", "WORD_backward", "WORD back"),
+        ("E", "WORD_end", "WORD end"),
+        ("0", "line_start", "line start"),
+        ("$", "line_end", "line end"),
+        ("^", "first_non_blank", "first non-blank"),
+        ("gg", "goto_top", "top"),
+        ("G", "goto_bottom", "bottom"),
+        ("%", "match_bracket", "bracket match"),
+        ("f", "find_char", "find char"),
+        ("F", "find_char_back", "find back"),
+        ("t", "till_char", "till char"),
+        ("T", "till_char_back", "till back"),
+        (";", "repeat_find", "repeat find"),
+        (",", "repeat_find_rev", "reverse find"),
+        ("{", "para_back", "para back"),
+        ("}", "para_forward", "para fwd"),
+        ("(", "sentence_back", "sentence back"),
+        (")", "sentence_fwd", "sentence fwd"),
+    ] {
+        t.add(k, a, Motion, d);
+    }
     // Operators (9)
     for (k, a, d) in [
-        ("d","delete","delete"),("c","change","change"),("y","yank","yank"),
-        (">","indent","indent"),("<","dedent","dedent"),("=","format","format"),
-        ("gq","wrap","line wrap"),("gu","lowercase","lowercase"),("gU","uppercase","uppercase"),
-    ] { t.add(k, a, Operator, d); }
+        ("d", "delete", "delete"),
+        ("c", "change", "change"),
+        ("y", "yank", "yank"),
+        (">", "indent", "indent"),
+        ("<", "dedent", "dedent"),
+        ("=", "format", "format"),
+        ("gq", "wrap", "line wrap"),
+        ("gu", "lowercase", "lowercase"),
+        ("gU", "uppercase", "uppercase"),
+    ] {
+        t.add(k, a, Operator, d);
+    }
     // Mode switches (11)
     for (k, a, d) in [
-        ("i","insert","insert"),("a","append","append"),("o","open_below","open below"),
-        ("O","open_above","open above"),("v","visual","visual"),("V","visual_line","visual line"),
-        ("<C-v>","visual_block","v-block"),("R","replace_mode","replace"),
-        (":","command_mode","cmdline"),("I","insert_bol","insert BOL"),("A","append_eol","append EOL"),
-    ] { t.add(k, a, ModeSwitch, d); }
+        ("i", "insert", "insert"),
+        ("a", "append", "append"),
+        ("o", "open_below", "open below"),
+        ("O", "open_above", "open above"),
+        ("v", "visual", "visual"),
+        ("V", "visual_line", "visual line"),
+        ("<C-v>", "visual_block", "v-block"),
+        ("R", "replace_mode", "replace"),
+        (":", "command_mode", "cmdline"),
+        ("I", "insert_bol", "insert BOL"),
+        ("A", "append_eol", "append EOL"),
+    ] {
+        t.add(k, a, ModeSwitch, d);
+    }
     // Commands (10)
     for (k, a, d) in [
-        ("u","undo","undo"),("<C-r>","redo","redo"),("p","paste_after","paste after"),
-        ("P","paste_before","paste before"),("x","delete_char","del char"),
-        ("r","replace_char","replace char"),("J","join_lines","join"),(".","repeat","repeat"),
-        ("ZZ","wq","write quit"),("ZQ","q!","force quit"),
-    ] { t.add(k, a, Command, d); }
+        ("u", "undo", "undo"),
+        ("<C-r>", "redo", "redo"),
+        ("p", "paste_after", "paste after"),
+        ("P", "paste_before", "paste before"),
+        ("x", "delete_char", "del char"),
+        ("r", "replace_char", "replace char"),
+        ("J", "join_lines", "join"),
+        (".", "repeat", "repeat"),
+        ("ZZ", "wq", "write quit"),
+        ("ZQ", "q!", "force quit"),
+    ] {
+        t.add(k, a, Command, d);
+    }
     // Search (6)
     for (k, a, d) in [
-        ("/","search_fwd","search fwd"),("?","search_back","search back"),
-        ("n","next_match","next match"),("N","prev_match","prev match"),
-        ("*","word_under_cursor","star search"),("#","word_under_cursor_back","hash search"),
-    ] { t.add(k, a, Search, d); }
+        ("/", "search_fwd", "search fwd"),
+        ("?", "search_back", "search back"),
+        ("n", "next_match", "next match"),
+        ("N", "prev_match", "prev match"),
+        ("*", "word_under_cursor", "star search"),
+        ("#", "word_under_cursor_back", "hash search"),
+    ] {
+        t.add(k, a, Search, d);
+    }
     // Scroll (7)
     for (k, a, d) in [
-        ("<C-d>","half_down","half down"),("<C-u>","half_up","half up"),
-        ("<C-f>","page_down","page down"),("<C-b>","page_up","page up"),
-        ("zz","center","center"),("zt","scroll_top","scroll top"),("zb","scroll_bot","scroll bot"),
-    ] { t.add(k, a, Scroll, d); }
+        ("<C-d>", "half_down", "half down"),
+        ("<C-u>", "half_up", "half up"),
+        ("<C-f>", "page_down", "page down"),
+        ("<C-b>", "page_up", "page up"),
+        ("zz", "center", "center"),
+        ("zt", "scroll_top", "scroll top"),
+        ("zb", "scroll_bot", "scroll bot"),
+    ] {
+        t.add(k, a, Scroll, d);
+    }
     // Marks, registers, macros, text objects, repeat, window
     t.add("m", "set_mark", Mark, "set mark");
     t.add("'", "goto_mark", Mark, "goto mark");

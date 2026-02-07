@@ -1,9 +1,7 @@
 //! Normal mode extensions: g-prefix commands, leader keys, and misc.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Direction, EditorAction, KeyCode, KeyEvent, Mode, Motion,
-};
+use kjxlkj_core_types::{Direction, EditorAction, KeyCode, KeyEvent, Mode, Motion};
 
 use crate::normal_mode::{motion_action, take_count};
 
@@ -19,10 +17,7 @@ pub fn handle_normal_g_key(_state: &mut EditorState) -> Option<EditorAction> {
 }
 
 /// Dispatch the second key after `g`.
-pub fn dispatch_g_sequence(
-    state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn dispatch_g_sequence(state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     match &key.code {
         KeyCode::Char('g') => {
             // gg — go to first line (or {count}gg)
@@ -50,10 +45,7 @@ pub fn dispatch_g_sequence(
 }
 
 /// Handle Space-prefixed leader key dispatch.
-pub fn handle_leader_key(
-    state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_leader_key(state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     match &key.code {
         KeyCode::Char('e') => {
             state.set_message("[explorer toggle]");
@@ -84,10 +76,7 @@ pub fn handle_leader_key(
 }
 
 /// Handle ZZ and ZQ sequences.
-pub fn dispatch_z_sequence(
-    _state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn dispatch_z_sequence(_state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     match &key.code {
         KeyCode::Char('Z') => Some(EditorAction::WriteQuit(None)),
         KeyCode::Char('Q') => Some(EditorAction::ForceQuit),
@@ -110,7 +99,9 @@ mod tests {
     #[test]
     fn gg_goes_to_start() {
         let mut state = EditorState::new();
-        state.active_buffer_mut().insert_text(Position::ZERO, "a\nb\nc\n");
+        state
+            .active_buffer_mut()
+            .insert_text(Position::ZERO, "a\nb\nc\n");
         state.active_window_mut().cursor.line = 2;
         dispatch_g_sequence(&mut state, &KeyEvent::char('g'));
         assert_eq!(state.active_window().cursor.line, 0);

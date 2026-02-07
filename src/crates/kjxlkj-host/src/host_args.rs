@@ -2,6 +2,7 @@
 
 /// Parsed command-line arguments.
 #[derive(Debug, Clone)]
+#[derive(Default)]
 pub struct HostArgs {
     /// File to open on startup.
     pub file: Option<String>,
@@ -11,11 +12,6 @@ pub struct HostArgs {
     pub script: Option<String>,
 }
 
-impl Default for HostArgs {
-    fn default() -> Self {
-        Self { file: None, headless: false, script: None }
-    }
-}
 
 /// Parse command-line arguments into `HostArgs`.
 ///

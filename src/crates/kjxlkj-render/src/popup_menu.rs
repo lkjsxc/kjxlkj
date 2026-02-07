@@ -24,12 +24,20 @@ pub struct PopupMenu {
 impl PopupMenu {
     /// Create a new popup menu.
     pub fn new(items: Vec<String>, max_visible: usize, anchor: PopupAnchor) -> Self {
-        Self { items, selected: 0, scroll_offset: 0, max_visible, anchor }
+        Self {
+            items,
+            selected: 0,
+            scroll_offset: 0,
+            max_visible,
+            anchor,
+        }
     }
 
     /// Select the next item, scrolling if needed.
     pub fn select_next(&mut self) {
-        if self.items.is_empty() { return; }
+        if self.items.is_empty() {
+            return;
+        }
         self.selected = (self.selected + 1).min(self.items.len() - 1);
         if self.selected >= self.scroll_offset + self.max_visible {
             self.scroll_offset = self.selected + 1 - self.max_visible;
@@ -38,7 +46,9 @@ impl PopupMenu {
 
     /// Select the previous item, scrolling if needed.
     pub fn select_prev(&mut self) {
-        if self.items.is_empty() { return; }
+        if self.items.is_empty() {
+            return;
+        }
         self.selected = self.selected.saturating_sub(1);
         if self.selected < self.scroll_offset {
             self.scroll_offset = self.selected;
@@ -59,7 +69,11 @@ impl PopupMenu {
 
 /// Compute the rectangle `(x, y, w, h)` for a popup given anchoring.
 pub fn compute_rect(
-    anchor: &PopupAnchor, screen_w: u16, screen_h: u16, popup_w: u16, popup_h: u16,
+    anchor: &PopupAnchor,
+    screen_w: u16,
+    screen_h: u16,
+    popup_w: u16,
+    popup_h: u16,
 ) -> (u16, u16, u16, u16) {
     match anchor {
         PopupAnchor::AboveCursor => (0, 0, popup_w.min(screen_w), popup_h.min(screen_h)),
@@ -88,7 +102,11 @@ pub struct HoverTooltip {
 impl HoverTooltip {
     /// Show a tooltip with the given text at position.
     pub fn show_tooltip(text: impl Into<String>, row: u16, col: u16) -> Self {
-        Self { text: text.into(), position: (row, col), visible: true }
+        Self {
+            text: text.into(),
+            position: (row, col),
+            visible: true,
+        }
     }
 
     /// Dismiss the tooltip.
@@ -103,7 +121,11 @@ mod tests {
 
     #[test]
     fn popup_navigation() {
-        let mut menu = PopupMenu::new(vec!["a".into(), "b".into(), "c".into()], 2, PopupAnchor::BelowCursor);
+        let mut menu = PopupMenu::new(
+            vec!["a".into(), "b".into(), "c".into()],
+            2,
+            PopupAnchor::BelowCursor,
+        );
         assert_eq!(menu.current(), Some("a"));
         menu.select_next();
         assert_eq!(menu.current(), Some("b"));
@@ -115,13 +137,21 @@ mod tests {
 
     #[test]
     fn popup_visible_items() {
-        let menu = PopupMenu::new(vec!["a".into(), "b".into(), "c".into()], 2, PopupAnchor::BelowCursor);
+        let menu = PopupMenu::new(
+            vec!["a".into(), "b".into(), "c".into()],
+            2,
+            PopupAnchor::BelowCursor,
+        );
         assert_eq!(menu.visible_items().len(), 2);
     }
 
     #[test]
     fn popup_scroll() {
-        let mut menu = PopupMenu::new(vec!["a".into(), "b".into(), "c".into(), "d".into()], 2, PopupAnchor::BelowCursor);
+        let mut menu = PopupMenu::new(
+            vec!["a".into(), "b".into(), "c".into(), "d".into()],
+            2,
+            PopupAnchor::BelowCursor,
+        );
         menu.select_next(); // b
         menu.select_next(); // c -> scroll
         assert_eq!(menu.scroll_offset, 1);

@@ -47,11 +47,7 @@ impl Default for SearchState {
 }
 
 /// Search forward from position, returning next match position.
-pub fn search_forward(
-    buffer: &TextBuffer,
-    pattern: &str,
-    from: Position,
-) -> Option<Position> {
+pub fn search_forward(buffer: &TextBuffer, pattern: &str, from: Position) -> Option<Position> {
     let re = search_regex::compile_pattern(pattern, true).ok()?;
     let total = buffer.line_count();
     if total == 0 {
@@ -74,11 +70,7 @@ pub fn search_forward(
 }
 
 /// Search backward from position, returning previous match position.
-pub fn search_backward(
-    buffer: &TextBuffer,
-    pattern: &str,
-    from: Position,
-) -> Option<Position> {
+pub fn search_backward(buffer: &TextBuffer, pattern: &str, from: Position) -> Option<Position> {
     let re = search_regex::compile_pattern(pattern, true).ok()?;
     let total = buffer.line_count();
     if total == 0 {
@@ -147,7 +139,11 @@ mod tests {
         let ss = SearchState::new();
         // default ignore_case=false so always case sensitive
         assert!(ss.effective_case_sensitive("hello"));
-        let ss2 = SearchState { smart_case: true, ignore_case: true, ..SearchState::new() };
+        let ss2 = SearchState {
+            smart_case: true,
+            ignore_case: true,
+            ..SearchState::new()
+        };
         assert!(ss2.effective_case_sensitive("Hello"));
         assert!(!ss2.effective_case_sensitive("hello"));
     }

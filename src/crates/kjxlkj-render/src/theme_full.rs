@@ -4,15 +4,23 @@ use serde::{Deserialize, Serialize};
 
 /// RGB triplet.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct Rgb { pub r: u8, pub g: u8, pub b: u8 }
+pub struct Rgb {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
 
 impl Rgb {
-    pub const fn new(r: u8, g: u8, b: u8) -> Self { Self { r, g, b } }
+    pub const fn new(r: u8, g: u8, b: u8) -> Self {
+        Self { r, g, b }
+    }
 
     /// Parse `#RRGGBB` hex string.
     pub fn from_hex(hex: &str) -> Option<Self> {
         let hex = hex.strip_prefix('#').unwrap_or(hex);
-        if hex.len() != 6 { return None; }
+        if hex.len() != 6 {
+            return None;
+        }
         let r = u8::from_str_radix(&hex[0..2], 16).ok()?;
         let g = u8::from_str_radix(&hex[2..4], 16).ok()?;
         let b = u8::from_str_radix(&hex[4..6], 16).ok()?;
@@ -55,8 +63,12 @@ pub struct Face {
 impl Default for Face {
     fn default() -> Self {
         Self {
-            fg: ThemeColor::Default, bg: ThemeColor::Default,
-            bold: false, italic: false, underline: false, strikethrough: false,
+            fg: ThemeColor::Default,
+            bg: ThemeColor::Default,
+            bold: false,
+            italic: false,
+            underline: false,
+            strikethrough: false,
         }
     }
 }
@@ -66,13 +78,26 @@ pub fn index_to_rgb(idx: u8) -> Rgb {
     match idx {
         0..=15 => {
             // Standard 16 ANSI colours (rough approximation).
-            let table: [(u8,u8,u8); 16] = [
-                (0,0,0),(128,0,0),(0,128,0),(128,128,0),(0,0,128),(128,0,128),
-                (0,128,128),(192,192,192),(128,128,128),(255,0,0),(0,255,0),
-                (255,255,0),(0,0,255),(255,0,255),(0,255,255),(255,255,255),
+            let table: [(u8, u8, u8); 16] = [
+                (0, 0, 0),
+                (128, 0, 0),
+                (0, 128, 0),
+                (128, 128, 0),
+                (0, 0, 128),
+                (128, 0, 128),
+                (0, 128, 128),
+                (192, 192, 192),
+                (128, 128, 128),
+                (255, 0, 0),
+                (0, 255, 0),
+                (255, 255, 0),
+                (0, 0, 255),
+                (255, 0, 255),
+                (0, 255, 255),
+                (255, 255, 255),
             ];
-            let (r,g,b) = table[idx as usize];
-            Rgb::new(r,g,b)
+            let (r, g, b) = table[idx as usize];
+            Rgb::new(r, g, b)
         }
         16..=231 => {
             let n = idx - 16;
@@ -117,8 +142,8 @@ mod tests {
 
     #[test]
     fn luminance_black_white() {
-        assert!(Rgb::new(0,0,0).luminance() < 0.01);
-        assert!(Rgb::new(255,255,255).luminance() > 0.99);
+        assert!(Rgb::new(0, 0, 0).luminance() < 0.01);
+        assert!(Rgb::new(255, 255, 255).luminance() > 0.99);
     }
 
     #[test]

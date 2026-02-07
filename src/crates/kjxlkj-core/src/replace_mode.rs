@@ -4,10 +4,7 @@ use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{EditorAction, KeyCode, KeyEvent, Mode, Position};
 
 /// Handle a key event in Replace mode.
-pub fn handle_replace_key(
-    state: &mut EditorState,
-    key: KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_replace_key(state: &mut EditorState, key: KeyEvent) -> Option<EditorAction> {
     if state.macro_state.is_recording() {
         state.macro_state.record_key(key.clone());
     }

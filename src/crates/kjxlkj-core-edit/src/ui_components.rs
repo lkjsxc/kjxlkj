@@ -42,7 +42,11 @@ pub fn layout_frame(
     if show_tabline {
         components.push(Component {
             kind: ComponentKind::TabLine,
-            x: 0, y: top, w: width, h: 1, visible: true,
+            x: 0,
+            y: top,
+            w: width,
+            h: 1,
+            visible: true,
         });
         top += 1;
     }
@@ -55,31 +59,51 @@ pub fn layout_frame(
     if show_numbers {
         components.push(Component {
             kind: ComponentKind::LineNumbers,
-            x: 0, y: top, w: 4, h: buffer_height, visible: true,
+            x: 0,
+            y: top,
+            w: 4,
+            h: buffer_height,
+            visible: true,
         });
         components.push(Component {
             kind: ComponentKind::SignColumn,
-            x: 4, y: top, w: 2, h: buffer_height, visible: true,
+            x: 4,
+            y: top,
+            w: 2,
+            h: buffer_height,
+            visible: true,
         });
     }
 
     // Main buffer view
     components.push(Component {
         kind: ComponentKind::BufferView,
-        x: gutter_w, y: top, w: width.saturating_sub(gutter_w), h: buffer_height, visible: true,
+        x: gutter_w,
+        y: top,
+        w: width.saturating_sub(gutter_w),
+        h: buffer_height,
+        visible: true,
     });
 
     // Status line
     let status_y = top + buffer_height;
     components.push(Component {
         kind: ComponentKind::StatusLine,
-        x: 0, y: status_y, w: width, h: 1, visible: true,
+        x: 0,
+        y: status_y,
+        w: width,
+        h: 1,
+        visible: true,
     });
 
     // Command line / message area (last row)
     components.push(Component {
         kind: ComponentKind::CommandLine,
-        x: 0, y: status_y + 1, w: width, h: 1, visible: true,
+        x: 0,
+        y: status_y + 1,
+        w: width,
+        h: 1,
+        visible: true,
     });
 
     components
@@ -88,9 +112,10 @@ pub fn layout_frame(
 /// Find which component is at the given screen coordinate.
 pub fn component_at(components: &[Component], x: u16, y: u16) -> Option<&Component> {
     // Search in reverse so floating windows take priority.
-    components.iter().rev().find(|c| {
-        c.visible && x >= c.x && x < c.x + c.w && y >= c.y && y < c.y + c.h
-    })
+    components
+        .iter()
+        .rev()
+        .find(|c| c.visible && x >= c.x && x < c.x + c.w && y >= c.y && y < c.y + c.h)
 }
 
 #[cfg(test)]

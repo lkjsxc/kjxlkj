@@ -60,7 +60,11 @@ pub fn decide_restart(state: &ServiceState, config: &SupervisorConfig) -> Restar
     if state.restart_count == 0 {
         return RestartDecision::Restart;
     }
-    let delay = compute_backoff(state.restart_count, config.backoff_base_ms, config.backoff_max_ms);
+    let delay = compute_backoff(
+        state.restart_count,
+        config.backoff_base_ms,
+        config.backoff_max_ms,
+    );
     RestartDecision::Backoff(delay)
 }
 
@@ -88,7 +92,10 @@ mod tests {
             restart_count: 0,
             last_error: Some("crash".into()),
         };
-        assert_eq!(decide_restart(&state, &SupervisorConfig::default()), RestartDecision::Restart);
+        assert_eq!(
+            decide_restart(&state, &SupervisorConfig::default()),
+            RestartDecision::Restart
+        );
     }
 
     #[test]
@@ -99,7 +106,10 @@ mod tests {
             restart_count: 5,
             last_error: None,
         };
-        assert_eq!(decide_restart(&state, &SupervisorConfig::default()), RestartDecision::GiveUp);
+        assert_eq!(
+            decide_restart(&state, &SupervisorConfig::default()),
+            RestartDecision::GiveUp
+        );
     }
 
     #[test]

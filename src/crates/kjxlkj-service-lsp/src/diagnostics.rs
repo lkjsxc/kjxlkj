@@ -30,7 +30,9 @@ pub struct DiagnosticStore {
 
 impl DiagnosticStore {
     pub fn new() -> Self {
-        Self { store: HashMap::new() }
+        Self {
+            store: HashMap::new(),
+        }
     }
 
     /// Add a diagnostic for the given buffer.
@@ -70,12 +72,15 @@ mod tests {
     #[test]
     fn add_and_get() {
         let mut store = DiagnosticStore::new();
-        store.add("file:///a.rs", Diagnostic {
-            message: "unused".into(),
-            severity: DiagnosticSeverity::Warning,
-            line: 1,
-            col: 0,
-        });
+        store.add(
+            "file:///a.rs",
+            Diagnostic {
+                message: "unused".into(),
+                severity: DiagnosticSeverity::Warning,
+                line: 1,
+                col: 0,
+            },
+        );
         assert_eq!(store.get("file:///a.rs").len(), 1);
         assert_eq!(store.total_count(), 1);
         assert_eq!(store.error_count(), 0);
@@ -84,12 +89,15 @@ mod tests {
     #[test]
     fn remove_clears() {
         let mut store = DiagnosticStore::new();
-        store.add("file:///b.rs", Diagnostic {
-            message: "err".into(),
-            severity: DiagnosticSeverity::Error,
-            line: 5,
-            col: 2,
-        });
+        store.add(
+            "file:///b.rs",
+            Diagnostic {
+                message: "err".into(),
+                severity: DiagnosticSeverity::Error,
+                line: 5,
+                col: 2,
+            },
+        );
         assert_eq!(store.error_count(), 1);
         store.remove("file:///b.rs");
         assert_eq!(store.total_count(), 0);

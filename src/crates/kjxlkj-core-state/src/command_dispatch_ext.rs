@@ -7,20 +7,32 @@ use crate::editor_state::EditorState;
 use crate::syntax_cmd;
 
 /// Dispatch extended commands that are not handled by the main dispatcher.
-pub fn dispatch_extended(
-    state: &mut EditorState,
-    cmd: ExCommand,
-) -> Result<(), EditorError> {
+pub fn dispatch_extended(state: &mut EditorState, cmd: ExCommand) -> Result<(), EditorError> {
     match cmd {
         ExCommand::Marks => {
-            let lines: Vec<String> = state.marks.iter()
-                .map(|(ch, m)| format!(" {ch}  {:>5}  {:>3}  {}", m.position.line + 1, m.position.col, m.buffer_id))
+            let lines: Vec<String> = state
+                .marks
+                .iter()
+                .map(|(ch, m)| {
+                    format!(
+                        " {ch}  {:>5}  {:>3}  {}",
+                        m.position.line + 1,
+                        m.position.col,
+                        m.buffer_id
+                    )
+                })
                 .collect();
-            state.set_message(if lines.is_empty() { "no marks".into() } else { lines.join("\n") });
+            state.set_message(if lines.is_empty() {
+                "no marks".into()
+            } else {
+                lines.join("\n")
+            });
             Ok(())
         }
         ExCommand::Registers => {
-            let lines: Vec<String> = state.registers.iter()
+            let lines: Vec<String> = state
+                .registers
+                .iter()
                 .map(|(ch, r)| {
                     let content = if r.content.len() > 40 {
                         format!("{}...", &r.content[..40])
@@ -30,23 +42,47 @@ pub fn dispatch_extended(
                     format!("\"{ch}   {content}")
                 })
                 .collect();
-            state.set_message(if lines.is_empty() { "no registers".into() } else { lines.join("\n") });
+            state.set_message(if lines.is_empty() {
+                "no registers".into()
+            } else {
+                lines.join("\n")
+            });
             Ok(())
         }
         ExCommand::Jumps => {
             let entries = state.jump_list.entries();
-            let lines: Vec<String> = entries.iter().enumerate()
-                .map(|(i, e)| format!("{:>3} {:>5} {:>3}  {}", i, e.position.line + 1, e.position.col, e.buffer_id))
+            let lines: Vec<String> = entries
+                .iter()
+                .enumerate()
+                .map(|(i, e)| {
+                    format!(
+                        "{:>3} {:>5} {:>3}  {}",
+                        i,
+                        e.position.line + 1,
+                        e.position.col,
+                        e.buffer_id
+                    )
+                })
                 .collect();
-            state.set_message(if lines.is_empty() { "no jumps".into() } else { lines.join("\n") });
+            state.set_message(if lines.is_empty() {
+                "no jumps".into()
+            } else {
+                lines.join("\n")
+            });
             Ok(())
         }
         ExCommand::Changes => {
             let entries = state.change_list.entries();
-            let lines: Vec<String> = entries.iter().enumerate()
+            let lines: Vec<String> = entries
+                .iter()
+                .enumerate()
                 .map(|(i, e)| format!("{:>3} {:>5} {:>3}", i, e.position.line + 1, e.position.col))
                 .collect();
-            state.set_message(if lines.is_empty() { "no changes".into() } else { lines.join("\n") });
+            state.set_message(if lines.is_empty() {
+                "no changes".into()
+            } else {
+                lines.join("\n")
+            });
             Ok(())
         }
         ExCommand::FileInfo => {
@@ -59,9 +95,8 @@ pub fn dispatch_extended(
         }
         ExCommand::Sort => {
             let buf = state.active_buffer_mut();
-            let mut all_lines: Vec<String> = (0..buf.line_count())
-                .filter_map(|i| buf.line(i))
-                .collect();
+            let mut all_lines: Vec<String> =
+                (0..buf.line_count()).filter_map(|i| buf.line(i)).collect();
             all_lines.sort();
             let new_text = all_lines.join("\n");
             let start = Position::ZERO;
@@ -82,9 +117,8 @@ pub fn dispatch_extended(
                 return dispatch_extended(state, ExCommand::Pwd);
             }
             let expanded = crate::file_commands::expand_tilde(&dir);
-            std::env::set_current_dir(&expanded).map_err(|e| {
-                EditorError::InvalidCommand(format!("cd: {e}"))
-            })?;
+            std::env::set_current_dir(&expanded)
+                .map_err(|e| EditorError::InvalidCommand(format!("cd: {e}")))?;
             let msg = format!("cd: {expanded}");
             state.set_message(msg);
             Ok(())
@@ -109,23 +143,28 @@ pub fn dispatch_extended(
             Ok(())
         }
         ExCommand::Messages => {
-            state.set_message(state.message.clone().unwrap_or_else(|| "no messages".into()));
+            state.set_message(
+                state
+                    .message
+                    .clone()
+                    .unwrap_or_else(|| "no messages".into()),
+            );
             Ok(())
         }
         ExCommand::ShellCommand(cmd) => {
             state.set_message(format!("shell: {cmd} (not yet implemented)"));
             Ok(())
         }
-        ExCommand::Substitute(pat, rep, flags) => {
-            dispatch_substitute(state, &pat, &rep, &flags)
-        }
+        ExCommand::Substitute(pat, rep, flags) => dispatch_substitute(state, &pat, &rep, &flags),
         _ => dispatch_remaining(state, cmd),
     }
 }
 
 fn dispatch_substitute(
     state: &mut EditorState,
-    pattern: &str, replacement: &str, flags: &str,
+    pattern: &str,
+    replacement: &str,
+    flags: &str,
 ) -> Result<(), EditorError> {
     let global = flags.contains('g');
     let cursor_line = state.windows[state.active_window].cursor.line;
@@ -147,10 +186,7 @@ fn dispatch_substitute(
     Ok(())
 }
 
-fn dispatch_remaining(
-    state: &mut EditorState,
-    cmd: ExCommand,
-) -> Result<(), EditorError> {
+fn dispatch_remaining(state: &mut EditorState, cmd: ExCommand) -> Result<(), EditorError> {
     let name = cmd.name();
     state.set_message(format!("{name}: not yet implemented"));
     Ok(())

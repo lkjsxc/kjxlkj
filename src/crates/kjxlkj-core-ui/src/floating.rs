@@ -107,7 +107,7 @@ pub fn compute_preset_rects(preset: LayoutPreset, w: u16, h: u16, count: usize) 
         }
         LayoutPreset::Grid => {
             let cols = (count as f64).sqrt().ceil() as u16;
-            let rows = ((count as u16) + cols - 1) / cols;
+            let rows = (count as u16).div_ceil(cols);
             let cw = w / cols;
             let rh = h / rows;
             (0..count)

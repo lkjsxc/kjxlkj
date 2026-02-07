@@ -25,8 +25,8 @@ pub enum Range {
 /// Returns (range, remaining_input).
 pub fn parse_range(input: &str) -> (Range, &str) {
     let input = input.trim_start();
-    if input.starts_with('%') {
-        return (Range::Entire, &input[1..]);
+    if let Some(rest) = input.strip_prefix('%') {
+        return (Range::Entire, rest);
     }
     if let Some((addr1, rest)) = parse_address(input) {
         let rest = rest.trim_start();
@@ -125,11 +125,7 @@ fn parse_number(input: &str) -> (usize, &str) {
 }
 
 /// Resolve a range to (start_line, end_line) 0-indexed.
-pub fn resolve_range(
-    range: &Range,
-    current_line: usize,
-    last_line: usize,
-) -> (usize, usize) {
+pub fn resolve_range(range: &Range, current_line: usize, last_line: usize) -> (usize, usize) {
     match range {
         Range::None => (current_line, current_line),
         Range::Entire => (0, last_line),
@@ -180,7 +176,10 @@ mod tests {
     #[test]
     fn parse_from_to() {
         let (r, rest) = parse_range("1,5d");
-        assert!(matches!(r, Range::FromTo(Address::LineNumber(1), Address::LineNumber(5))));
+        assert!(matches!(
+            r,
+            Range::FromTo(Address::LineNumber(1), Address::LineNumber(5))
+        ));
         assert_eq!(rest, "d");
     }
 

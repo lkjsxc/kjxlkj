@@ -16,7 +16,10 @@ pub struct FuzzyMatch {
 /// Returns `None` if the pattern cannot be matched.
 pub fn fuzzy_match(pattern: &str, candidate: &str) -> Option<FuzzyMatch> {
     if pattern.is_empty() {
-        return Some(FuzzyMatch { score: 0, indices: Vec::new() });
+        return Some(FuzzyMatch {
+            score: 0,
+            indices: Vec::new(),
+        });
     }
 
     let pat_lower: Vec<char> = pattern.chars().map(|c| c.to_ascii_lowercase()).collect();

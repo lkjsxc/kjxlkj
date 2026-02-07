@@ -62,9 +62,9 @@ impl CompletionItemKind {
 
     /// Convert from LSP numeric kind.
     pub fn from_lsp(value: u8) -> Option<Self> {
-        if value >= 1 && value <= 25 {
+        if (1..=25).contains(&value) {
             // SAFETY: repr(u8) and range is validated.
-            Some(unsafe { std::mem::transmute(value) })
+            Some(unsafe { std::mem::transmute::<u8, CompletionItemKind>(value) })
         } else {
             None
         }
@@ -137,7 +137,10 @@ mod tests {
 
     #[test]
     fn kind_roundtrip() {
-        assert_eq!(CompletionItemKind::from_lsp(3), Some(CompletionItemKind::Function));
+        assert_eq!(
+            CompletionItemKind::from_lsp(3),
+            Some(CompletionItemKind::Function)
+        );
         assert_eq!(CompletionItemKind::from_lsp(0), None);
         assert_eq!(CompletionItemKind::from_lsp(26), None);
     }

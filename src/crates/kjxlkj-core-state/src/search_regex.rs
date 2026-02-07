@@ -70,7 +70,10 @@ pub fn translate_vim_pattern(pattern: &str) -> String {
 
 /// Find all non-overlapping matches in text, returning (byte_start, byte_end).
 pub fn find_all_matches(text: &str, regex: &Regex) -> Vec<(usize, usize)> {
-    regex.find_iter(text).map(|m| (m.start(), m.end())).collect()
+    regex
+        .find_iter(text)
+        .map(|m| (m.start(), m.end()))
+        .collect()
 }
 
 /// Find next match at or after byte offset.

@@ -6,11 +6,26 @@ use serde::{Deserialize, Serialize};
 /// Steps in a headless test script.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ScriptStep {
-    Key { code: String, ctrl: bool, alt: bool, shift: bool },
-    Keys { keys: String },
-    AssertMode { mode: String },
-    AssertCursor { line: usize, col: usize },
-    AssertLine { line: usize, content: String },
+    Key {
+        code: String,
+        ctrl: bool,
+        alt: bool,
+        shift: bool,
+    },
+    Keys {
+        keys: String,
+    },
+    AssertMode {
+        mode: String,
+    },
+    AssertCursor {
+        line: usize,
+        col: usize,
+    },
+    AssertLine {
+        line: usize,
+        content: String,
+    },
 }
 
 /// Parse a JSON script string into a list of steps.
@@ -27,9 +42,15 @@ pub fn parse_script_key(value: &serde_json::Value) -> Option<KeyEvent> {
     let shift = obj.get("shift").and_then(|v| v.as_bool()).unwrap_or(false);
     let code = string_to_keycode(code_str)?;
     let mut mods = Modifiers::NONE;
-    if ctrl { mods = mods.union(Modifiers::CTRL); }
-    if alt { mods = mods.union(Modifiers::ALT); }
-    if shift { mods = mods.union(Modifiers::SHIFT); }
+    if ctrl {
+        mods = mods.union(Modifiers::CTRL);
+    }
+    if alt {
+        mods = mods.union(Modifiers::ALT);
+    }
+    if shift {
+        mods = mods.union(Modifiers::SHIFT);
+    }
     Some(KeyEvent::new(code, mods))
 }
 
@@ -62,20 +83,32 @@ fn string_to_keycode(s: &str) -> Option<KeyCode> {
 /// Convert a `ScriptStep` to a list of key events.
 pub fn script_step_to_keys(step: &ScriptStep) -> Vec<KeyEvent> {
     match step {
-        ScriptStep::Key { code, ctrl, alt, shift } => {
+        ScriptStep::Key {
+            code,
+            ctrl,
+            alt,
+            shift,
+        } => {
             if let Some(kc) = string_to_keycode(code) {
                 let mut mods = Modifiers::NONE;
-                if *ctrl { mods = mods.union(Modifiers::CTRL); }
-                if *alt { mods = mods.union(Modifiers::ALT); }
-                if *shift { mods = mods.union(Modifiers::SHIFT); }
+                if *ctrl {
+                    mods = mods.union(Modifiers::CTRL);
+                }
+                if *alt {
+                    mods = mods.union(Modifiers::ALT);
+                }
+                if *shift {
+                    mods = mods.union(Modifiers::SHIFT);
+                }
                 vec![KeyEvent::new(kc, mods)]
             } else {
                 vec![]
             }
         }
-        ScriptStep::Keys { keys } => {
-            keys.chars().map(|c| KeyEvent::plain(KeyCode::Char(c))).collect()
-        }
+        ScriptStep::Keys { keys } => keys
+            .chars()
+            .map(|c| KeyEvent::plain(KeyCode::Char(c)))
+            .collect(),
         _ => vec![],
     }
 }
@@ -136,7 +169,10 @@ mod tests {
     #[test]
     fn key_step_to_keys() {
         let step = ScriptStep::Key {
-            code: "Escape".into(), ctrl: false, alt: false, shift: false,
+            code: "Escape".into(),
+            ctrl: false,
+            alt: false,
+            shift: false,
         };
         let keys = script_step_to_keys(&step);
         assert_eq!(keys.len(), 1);
@@ -145,7 +181,9 @@ mod tests {
 
     #[test]
     fn assert_step_no_keys() {
-        let step = ScriptStep::AssertMode { mode: "normal".into() };
+        let step = ScriptStep::AssertMode {
+            mode: "normal".into(),
+        };
         assert!(script_step_to_keys(&step).is_empty());
     }
 

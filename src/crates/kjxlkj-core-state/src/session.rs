@@ -45,7 +45,7 @@ pub fn serialize_session(state: &SessionState) -> String {
 }
 
 /// Filter history entries by kind prefix.
-pub fn filter_history<'a>(history: &'a [String], kind: HistoryKind) -> Vec<&'a String> {
+pub fn filter_history(history: &[String], kind: HistoryKind) -> Vec<&String> {
     let prefix = match kind {
         HistoryKind::Command => "cmd:",
         HistoryKind::Search => "search:",

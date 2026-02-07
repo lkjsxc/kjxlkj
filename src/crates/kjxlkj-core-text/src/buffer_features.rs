@@ -42,7 +42,9 @@ pub struct BufferLocalOptions {
 
 /// File format (line-ending style).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum FileFormat {
+    #[default]
     Unix,
     Dos,
     Mac,
@@ -59,11 +61,6 @@ impl FileFormat {
     }
 }
 
-impl Default for FileFormat {
-    fn default() -> Self {
-        Self::Unix
-    }
-}
 
 /// Buffer-related events for autocmd.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -111,9 +108,7 @@ impl AutoCmdRegistry {
     pub fn query(&self, event: BufEvent, filename: &str) -> Vec<String> {
         self.entries
             .iter()
-            .filter(|ac| {
-                ac.event == event && Self::pattern_matches(&ac.pattern, filename)
-            })
+            .filter(|ac| ac.event == event && Self::pattern_matches(&ac.pattern, filename))
             .map(|ac| ac.command.clone())
             .collect()
     }

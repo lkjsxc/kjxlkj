@@ -85,7 +85,11 @@ fn build_status_line(state: &EditorState) -> String {
     let pos = state.active_window().cursor;
     let mode = state.mode.current();
     let pct = viewport::scroll_percent(pos.line, buf.line_count());
-    format!(" {mode} | {name}{modified} | {}:{} | {pct}%", pos.line + 1, pos.col + 1)
+    format!(
+        " {mode} | {name}{modified} | {}:{} | {pct}%",
+        pos.line + 1,
+        pos.col + 1
+    )
 }
 
 fn detect_filetype(path: Option<&str>) -> String {

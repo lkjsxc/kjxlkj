@@ -12,7 +12,9 @@ fn normal_h_moves_left() {
 #[test]
 fn normal_j_moves_down() {
     let mut state = EditorState::new();
-    state.active_buffer_mut().insert_text(Position::ZERO, "a\nb\nc\n");
+    state
+        .active_buffer_mut()
+        .insert_text(Position::ZERO, "a\nb\nc\n");
     handle_normal_key(&mut state, KeyEvent::char('j'));
     assert_eq!(state.active_window().cursor.line, 1);
 }

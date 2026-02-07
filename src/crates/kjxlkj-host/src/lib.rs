@@ -15,36 +15,27 @@ pub mod session_full;
 pub mod terminal_setup;
 
 pub use feature_integration::{
-    IntegrationScenario, ScenarioStep,
     multi_buffer_scenario, open_edit_save_scenario,
     undo_redo_scenario as integration_undo_redo_scenario,
-    validate_scenario as validate_integration_scenario,
+    validate_scenario as validate_integration_scenario, IntegrationScenario, ScenarioStep,
 };
 pub use feature_reachability::{
-    EntryKind, FeatureSpec, ReachabilityReport,
-    check_reachability, define_core_features,
-    has_command_entry, has_keybinding_entry,
+    check_reachability, define_core_features, has_command_entry, has_keybinding_entry, EntryKind,
+    FeatureSpec, ReachabilityReport,
 };
 pub use file_flows::{
-    FileOp, FileResult, OpenOptions, WriteOptions,
-    build_edit_flow, build_wq_flow, detect_encoding,
-    detect_line_ending, resolve_path, validate_write_target,
+    build_edit_flow, build_wq_flow, detect_encoding, detect_line_ending, resolve_path,
+    validate_write_target, FileOp, FileResult, OpenOptions, WriteOptions,
 };
 pub use host::Host;
-pub use host_args::{HostArgs, parse_args};
-pub use plugin_audit::{
-    audit_files, audit_source, check_dependencies,
-    verify_architecture_rule,
-};
+pub use host_args::{parse_args, HostArgs};
+pub use plugin_audit::{audit_files, audit_source, check_dependencies, verify_architecture_rule};
 pub use pty_harness::{
-    PtyAction, PtyConfig, PtyExpectation, PtyScenario,
-    estimate_duration, validate_scenario,
+    estimate_duration, validate_scenario, PtyAction, PtyConfig, PtyExpectation, PtyScenario,
 };
 pub use pty_regressions::all_regression_scenarios;
 pub use session_full::{
-    SessionBuffer, SessionData, SessionMark, SessionWindow,
-    parse_session_buffers, serialize_session,
+    parse_session_buffers, serialize_session, SessionBuffer, SessionData, SessionMark,
+    SessionWindow,
 };
-pub use terminal_setup::{
-    TerminalGuard, restore_terminal, setup_terminal,
-};
+pub use terminal_setup::{restore_terminal, setup_terminal, TerminalGuard};

@@ -82,7 +82,9 @@ impl EditorState {
             }
         }
         if self.buffers.len() <= 1 {
-            return Err(EditorError::InvalidCommand("cannot delete last buffer".into()));
+            return Err(EditorError::InvalidCommand(
+                "cannot delete last buffer".into(),
+            ));
         }
         self.buffers.remove(&id);
         // Switch windows that pointed to deleted buffer
@@ -116,9 +118,7 @@ impl EditorState {
     pub fn write_buffer(&mut self) -> Result<String, EditorError> {
         let buf = self.active_buffer();
         let path = buf.path().map(|s| s.to_string());
-        let path = path.ok_or_else(|| {
-            EditorError::InvalidCommand("no file name".into())
-        })?;
+        let path = path.ok_or_else(|| EditorError::InvalidCommand("no file name".into()))?;
         let text = buf.text();
         let lines = buf.line_count();
         let bytes = text.len();

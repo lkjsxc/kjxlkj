@@ -21,7 +21,11 @@ pub struct MessageArea {
 impl MessageArea {
     /// Create a new visible message area.
     pub fn new(message: impl Into<String>, kind: MessageKind) -> Self {
-        Self { message: message.into(), kind, visible: true }
+        Self {
+            message: message.into(),
+            kind,
+            visible: true,
+        }
     }
 
     /// Dismiss the current message.
@@ -43,7 +47,7 @@ pub fn render_message_area(message: &str, kind: MessageKind, width: usize) -> St
         full[..width].to_string()
     } else {
         let mut out = full;
-        out.extend(std::iter::repeat(' ').take(width - out.len()));
+        out.extend(std::iter::repeat_n(' ', width - out.len()));
         out
     }
 }

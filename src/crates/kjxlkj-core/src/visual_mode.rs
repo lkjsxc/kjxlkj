@@ -1,17 +1,12 @@
 //! Visual mode key handling.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    EditorAction, KeyCode, KeyEvent, Mode, Modifiers, Motion,
-};
+use kjxlkj_core_types::{EditorAction, KeyCode, KeyEvent, Mode, Modifiers, Motion};
 
 use crate::visual_mode_ops::{move_visual_cursor, visual_range};
 
 /// Handle a key event in Visual, Visual-Line, or Visual-Block mode.
-pub fn handle_visual_key(
-    state: &mut EditorState,
-    key: KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_visual_key(state: &mut EditorState, key: KeyEvent) -> Option<EditorAction> {
     if state.macro_state.is_recording() {
         state.macro_state.record_key(key.clone());
     }

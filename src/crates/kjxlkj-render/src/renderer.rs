@@ -20,22 +20,33 @@ pub struct Renderer {
 impl Renderer {
     /// Create a renderer for the given terminal size.
     pub fn new(width: u16, height: u16) -> Self {
-        Self { width, height, last_cursor: None }
+        Self {
+            width,
+            height,
+            last_cursor: None,
+        }
     }
 
     /// Render a complete frame from `snapshot` into `output`.
-    pub fn render(&mut self, snapshot: &EditorSnapshot, output: &mut impl Write) -> std::io::Result<()> {
+    pub fn render(
+        &mut self,
+        snapshot: &EditorSnapshot,
+        output: &mut impl Write,
+    ) -> std::io::Result<()> {
         execute!(output, Hide)?;
 
         let body_h = self.height.saturating_sub(3) as usize; // tab + status + cmd
-        // Tab line (row 0)
+                                                             // Tab line (row 0)
         let tab = snapshot.tab_line.as_deref().unwrap_or("");
         let tab_padded = pad_or_truncate(tab, self.width as usize);
         execute!(output, MoveTo(0, 0), Print(&tab_padded))?;
 
         // Buffer content
         let win = snapshot.windows.first();
-        let buf = snapshot.buffers.iter().find(|b| b.id == snapshot.active_buffer);
+        let buf = snapshot
+            .buffers
+            .iter()
+            .find(|b| b.id == snapshot.active_buffer);
         let top = win.map_or(0, |w| w.top_line);
         let left = win.map_or(0, |w| w.left_col);
         let show_nums = true;
@@ -110,7 +121,7 @@ fn pad_or_truncate(s: &str, w: usize) -> String {
         chars[..w].iter().collect()
     } else {
         let mut out: String = chars.into_iter().collect();
-        out.extend(std::iter::repeat(' ').take(w - out.len()));
+        out.extend(std::iter::repeat_n(' ', w - out.len()));
         out
     }
 }

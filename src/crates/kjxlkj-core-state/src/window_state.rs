@@ -38,7 +38,11 @@ impl WindowState {
         let max_line = buffer.line_count().saturating_sub(1);
         self.cursor.line = self.cursor.line.min(max_line);
         let line_len = buffer.line_len(self.cursor.line);
-        let max_col = if line_len > 0 { line_len.saturating_sub(1) } else { 0 };
+        let max_col = if line_len > 0 {
+            line_len.saturating_sub(1)
+        } else {
+            0
+        };
         self.cursor.col = self.cursor.col.min(max_col);
     }
 
@@ -59,8 +63,10 @@ impl WindowState {
         }
         let bottom = self.viewport_top + (self.height as usize).saturating_sub(1);
         if self.cursor.line > bottom {
-            self.viewport_top =
-                self.cursor.line.saturating_sub((self.height as usize).saturating_sub(1));
+            self.viewport_top = self
+                .cursor
+                .line
+                .saturating_sub((self.height as usize).saturating_sub(1));
         }
     }
 

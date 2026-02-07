@@ -89,7 +89,10 @@ pub fn parse_diff_hunks(diff_text: &str) -> Vec<DiffHunk> {
             } else {
                 (DiffLineKind::Context, line)
             };
-            hunk.lines.push(DiffLine { kind, content: content.to_string() });
+            hunk.lines.push(DiffLine {
+                kind,
+                content: content.to_string(),
+            });
         }
     }
     if let Some(hunk) = current {

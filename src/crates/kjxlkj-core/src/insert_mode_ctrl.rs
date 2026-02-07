@@ -4,10 +4,7 @@ use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{EditorAction, KeyCode, KeyEvent, Mode, Position};
 
 /// Handle Ctrl-key combinations in insert mode.
-pub fn handle_insert_ctrl(
-    state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_insert_ctrl(state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     match &key.code {
         KeyCode::Char('w') => {
             let pos = state.active_window().cursor;
@@ -66,10 +63,10 @@ pub fn handle_insert_ctrl(
 pub fn word_back_pos(line: &str, col: usize) -> usize {
     let chars: Vec<char> = line.chars().collect();
     let mut i = col;
-    while i > 0 && chars.get(i - 1).map_or(false, |c| c.is_whitespace()) {
+    while i > 0 && chars.get(i - 1).is_some_and(|c| c.is_whitespace()) {
         i -= 1;
     }
-    while i > 0 && chars.get(i - 1).map_or(false, |c| !c.is_whitespace()) {
+    while i > 0 && chars.get(i - 1).is_some_and(|c| !c.is_whitespace()) {
         i -= 1;
     }
     i

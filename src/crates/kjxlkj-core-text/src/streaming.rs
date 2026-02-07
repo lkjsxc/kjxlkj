@@ -4,18 +4,15 @@ use serde::{Deserialize, Serialize};
 
 /// State of a streaming read.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum StreamState {
+    #[default]
     Idle,
     Reading,
     Complete,
     Error,
 }
 
-impl Default for StreamState {
-    fn default() -> Self {
-        Self::Idle
-    }
-}
 
 /// A chunk of data from a streaming read.
 #[derive(Debug, Clone)]

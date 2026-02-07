@@ -35,7 +35,11 @@ pub struct PaneManager {
 
 impl PaneManager {
     pub fn new() -> Self {
-        Self { panes: HashMap::new(), active: None, next_id: 1 }
+        Self {
+            panes: HashMap::new(),
+            active: None,
+            next_id: 1,
+        }
     }
 
     pub fn create_pane(&mut self, title: &str, width: u16, height: u16) -> u32 {

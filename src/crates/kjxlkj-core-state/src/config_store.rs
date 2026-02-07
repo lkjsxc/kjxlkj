@@ -27,17 +27,22 @@ pub struct ConfigStore {
 
 impl ConfigStore {
     pub fn new() -> Self {
-        Self { options: HashMap::new() }
+        Self {
+            options: HashMap::new(),
+        }
     }
 
     /// Register an option with its default value.
     pub fn register(&mut self, name: &str, scope: OptionScope, default: &str) {
-        self.options.insert(name.to_string(), OptionDef {
-            name: name.to_string(),
-            scope,
-            default_value: default.to_string(),
-            value: default.to_string(),
-        });
+        self.options.insert(
+            name.to_string(),
+            OptionDef {
+                name: name.to_string(),
+                scope,
+                default_value: default.to_string(),
+                value: default.to_string(),
+            },
+        );
     }
 
     /// Get the current value of an option.

@@ -52,9 +52,7 @@ pub static TRANSITION_TABLE: &[(Mode, Mode)] = &[
 
 /// Check whether transitioning from `from` to `to` is valid.
 pub fn can_transition(from: Mode, to: Mode) -> bool {
-    TRANSITION_TABLE
-        .iter()
-        .any(|&(f, t)| f == from && t == to)
+    TRANSITION_TABLE.iter().any(|&(f, t)| f == from && t == to)
 }
 
 /// Validate a transition, returning an error if invalid.
@@ -93,7 +91,10 @@ mod tests {
             Mode::Terminal,
         ];
         for m in modes {
-            assert!(can_transition(m, Mode::Normal), "{m} -> Normal should be valid");
+            assert!(
+                can_transition(m, Mode::Normal),
+                "{m} -> Normal should be valid"
+            );
         }
     }
 

@@ -69,7 +69,9 @@ pub struct DiagnosticStore {
 
 impl DiagnosticStore {
     pub fn new() -> Self {
-        Self { entries: Vec::new() }
+        Self {
+            entries: Vec::new(),
+        }
     }
 
     pub fn set(&mut self, diagnostics: Vec<Diagnostic>) {
@@ -85,7 +87,10 @@ impl DiagnosticStore {
     }
 
     pub fn error_count(&self) -> usize {
-        self.entries.iter().filter(|d| d.severity == DiagnosticSeverity::Error).count()
+        self.entries
+            .iter()
+            .filter(|d| d.severity == DiagnosticSeverity::Error)
+            .count()
     }
 
     pub fn warning_count(&self) -> usize {

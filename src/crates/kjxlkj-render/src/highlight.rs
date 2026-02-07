@@ -9,11 +9,37 @@ use crate::theme_full::{Rgb, ThemeColor};
 /// Syntax highlight group (31 groups).
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum HighlightGroup {
-    Comment, String, Number, Keyword, Function, Type, Variable, Constant,
-    Operator, Delimiter, Identifier, Statement, PreProc, Include, Define,
-    Macro, StorageClass, Structure, Typedef, Special, SpecialChar, Tag,
-    Error, Todo, MatchParen, Search, Visual, CursorLine, LineNr,
-    CursorLineNr, StatusLine,
+    Comment,
+    String,
+    Number,
+    Keyword,
+    Function,
+    Type,
+    Variable,
+    Constant,
+    Operator,
+    Delimiter,
+    Identifier,
+    Statement,
+    PreProc,
+    Include,
+    Define,
+    Macro,
+    StorageClass,
+    Structure,
+    Typedef,
+    Special,
+    SpecialChar,
+    Tag,
+    Error,
+    Todo,
+    MatchParen,
+    Search,
+    Visual,
+    CursorLine,
+    LineNr,
+    CursorLineNr,
+    StatusLine,
 }
 
 /// Map a token type name to a highlight group.
@@ -64,30 +90,40 @@ pub struct HighlightSpan {
 
 /// Convert token spans `(start, end, token_type)` to [`HighlightSpan`]s.
 pub fn highlight_line(tokens: &[(usize, usize, &str)]) -> Vec<HighlightSpan> {
-    tokens.iter().filter_map(|(start, end, tok)| {
-        token_to_group(tok).map(|g| HighlightSpan { start_col: *start, end_col: *end, group: g })
-    }).collect()
+    tokens
+        .iter()
+        .filter_map(|(start, end, tok)| {
+            token_to_group(tok).map(|g| HighlightSpan {
+                start_col: *start,
+                end_col: *end,
+                group: g,
+            })
+        })
+        .collect()
 }
 
 fn face(fg_hex: &str, bold: bool, italic: bool) -> Face {
     Face {
         fg: ThemeColor::Rgb(Rgb::from_hex(fg_hex).unwrap()),
         bg: ThemeColor::Default,
-        bold, italic, underline: false, strikethrough: false,
+        bold,
+        italic,
+        underline: false,
+        strikethrough: false,
     }
 }
 
 /// Default dark-theme styles for at least 7 highlight groups.
 pub fn default_highlight_styles() -> HashMap<HighlightGroup, Face> {
     let mut m = HashMap::new();
-    m.insert(HighlightGroup::Comment,  face("#6a9955", false, true));
-    m.insert(HighlightGroup::String,   face("#ce9178", false, false));
-    m.insert(HighlightGroup::Number,   face("#b5cea8", false, false));
-    m.insert(HighlightGroup::Keyword,  face("#569cd6", true,  false));
+    m.insert(HighlightGroup::Comment, face("#6a9955", false, true));
+    m.insert(HighlightGroup::String, face("#ce9178", false, false));
+    m.insert(HighlightGroup::Number, face("#b5cea8", false, false));
+    m.insert(HighlightGroup::Keyword, face("#569cd6", true, false));
     m.insert(HighlightGroup::Function, face("#dcdcaa", false, false));
-    m.insert(HighlightGroup::Type,     face("#4ec9b0", false, false));
+    m.insert(HighlightGroup::Type, face("#4ec9b0", false, false));
     m.insert(HighlightGroup::Operator, face("#d4d4d4", false, false));
-    m.insert(HighlightGroup::Error,    face("#f44747", true,  false));
+    m.insert(HighlightGroup::Error, face("#f44747", true, false));
     m
 }
 

@@ -97,7 +97,9 @@ impl Range {
 
 /// Editor mode.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum Mode {
+    #[default]
     Normal,
     Insert,
     Visual,
@@ -109,11 +111,6 @@ pub enum Mode {
     OperatorPending,
 }
 
-impl Default for Mode {
-    fn default() -> Self {
-        Self::Normal
-    }
-}
 
 impl fmt::Display for Mode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

@@ -69,20 +69,28 @@ mod tests {
     fn sample_session() -> SessionData {
         SessionData {
             buffers: vec![
-                SessionBuffer { path: "main.rs".into(), cursor_line: 10, cursor_col: 5 },
-                SessionBuffer { path: "lib.rs".into(), cursor_line: 0, cursor_col: 0 },
-            ],
-            windows: vec![
-                SessionWindow { buffer_index: 0, width: 80, height: 24 },
-            ],
-            globals: vec![
-                SessionMark {
-                    name: "A".into(),
-                    buffer_path: "main.rs".into(),
-                    line: 10,
-                    col: 5,
+                SessionBuffer {
+                    path: "main.rs".into(),
+                    cursor_line: 10,
+                    cursor_col: 5,
+                },
+                SessionBuffer {
+                    path: "lib.rs".into(),
+                    cursor_line: 0,
+                    cursor_col: 0,
                 },
             ],
+            windows: vec![SessionWindow {
+                buffer_index: 0,
+                width: 80,
+                height: 24,
+            }],
+            globals: vec![SessionMark {
+                name: "A".into(),
+                buffer_path: "main.rs".into(),
+                line: 10,
+                col: 5,
+            }],
             cwd: "/home/user/project".into(),
         }
     }
@@ -129,7 +137,11 @@ mod tests {
 
     #[test]
     fn session_window_fields() {
-        let w = SessionWindow { buffer_index: 1, width: 120, height: 40 };
+        let w = SessionWindow {
+            buffer_index: 1,
+            width: 120,
+            height: 40,
+        };
         assert_eq!(w.buffer_index, 1);
     }
 }

@@ -35,7 +35,9 @@ pub struct SymbolIndex {
 
 impl SymbolIndex {
     pub fn new() -> Self {
-        Self { entries: Vec::new() }
+        Self {
+            entries: Vec::new(),
+        }
     }
 
     /// Add a symbol to the index.

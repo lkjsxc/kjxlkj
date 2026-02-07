@@ -21,7 +21,11 @@ pub struct OpenOptions {
 
 impl Default for OpenOptions {
     fn default() -> Self {
-        Self { encoding: "utf-8".into(), readonly: false, create: false }
+        Self {
+            encoding: "utf-8".into(),
+            readonly: false,
+            create: false,
+        }
     }
 }
 
@@ -89,7 +93,11 @@ pub fn detect_encoding(bytes: &[u8]) -> String {
 pub fn detect_line_ending(content: &str) -> String {
     let crlf = content.matches("\r\n").count();
     let lf = content.matches('\n').count().saturating_sub(crlf);
-    if crlf > lf { "\r\n".into() } else { "\n".into() }
+    if crlf > lf {
+        "\r\n".into()
+    } else {
+        "\n".into()
+    }
 }
 
 /// Validate that a path is suitable for writing.
@@ -100,7 +108,10 @@ pub fn validate_write_target(path: &str) -> Result<(), String> {
     let p = PathBuf::from(path);
     if let Some(parent) = p.parent() {
         if !parent.as_os_str().is_empty() && !parent.exists() {
-            return Err(format!("parent directory does not exist: {}", parent.display()));
+            return Err(format!(
+                "parent directory does not exist: {}",
+                parent.display()
+            ));
         }
     }
     Ok(())

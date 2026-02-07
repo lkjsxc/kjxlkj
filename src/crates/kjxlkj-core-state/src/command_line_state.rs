@@ -43,6 +43,7 @@ impl CommandHistory {
     }
 
     /// Navigate to next history entry.
+    #[allow(clippy::should_implement_trait)]
     pub fn next(&mut self) -> Option<&String> {
         if self.index >= self.entries.len() {
             return None;

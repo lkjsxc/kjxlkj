@@ -45,7 +45,9 @@ fn open_above_enters_insert() {
 #[test]
 fn to_eol_range_ok() {
     let mut state = EditorState::new();
-    state.active_buffer_mut().insert_text(Position::ZERO, "hello");
+    state
+        .active_buffer_mut()
+        .insert_text(Position::ZERO, "hello");
     let r = to_eol_range(&state);
     assert_eq!(r.end.col, 5);
 }

@@ -5,7 +5,9 @@ use serde::{Deserialize, Serialize};
 
 /// The kind of buffer.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum BufferType {
+    #[default]
     Normal,
     Scratch,
     Help,
@@ -15,11 +17,6 @@ pub enum BufferType {
     Popup,
 }
 
-impl Default for BufferType {
-    fn default() -> Self {
-        Self::Normal
-    }
-}
 
 /// Boolean flags associated with a buffer.
 #[derive(Debug, Clone, Serialize, Deserialize)]

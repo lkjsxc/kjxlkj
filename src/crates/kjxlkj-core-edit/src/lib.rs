@@ -26,7 +26,9 @@ pub use operators::{
     toggle_case_range, upper_case_range, yank_range, OperatorResult,
 };
 pub use text_objects::find_text_object;
-pub use text_objects_ext::{find_argument, find_entire_buffer, find_indent_level, find_number, TextRange};
+pub use text_objects_ext::{
+    find_argument, find_entire_buffer, find_indent_level, find_number, TextRange,
+};
 pub use ui_components::{component_at, layout_frame, Component, ComponentKind};
 pub use ui_views::{TabPage, View, ViewKind, ViewManager};
 pub use visual::{VisualKind, VisualSelection};

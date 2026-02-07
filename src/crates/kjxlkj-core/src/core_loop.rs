@@ -145,7 +145,11 @@ fn clamp_and_follow(state: &mut EditorState) {
     state.active_window_mut().cursor.line = state.active_window().cursor.line.min(max_line);
     let cur_line = state.active_window().cursor.line;
     let line_len = state.active_buffer().line_len(cur_line);
-    let max_col = if line_len > 0 { line_len.saturating_sub(1) } else { 0 };
+    let max_col = if line_len > 0 {
+        line_len.saturating_sub(1)
+    } else {
+        0
+    };
     state.active_window_mut().cursor.col = state.active_window().cursor.col.min(max_col);
     state.active_window_mut().ensure_cursor_visible();
 }

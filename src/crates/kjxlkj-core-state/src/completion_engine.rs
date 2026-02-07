@@ -10,10 +10,15 @@ pub struct CompletionState {
 
 impl CompletionState {
     pub fn new() -> Self {
-        Self { candidates: Vec::new(), index: 0, active: false }
+        Self {
+            candidates: Vec::new(),
+            index: 0,
+            active: false,
+        }
     }
 
     /// Cycle to the next candidate.
+    #[allow(clippy::should_implement_trait)]
     pub fn next(&mut self) -> Option<&String> {
         if self.candidates.is_empty() {
             return None;
@@ -52,8 +57,10 @@ pub fn detect_source(cmdline: &str) -> CompletionSource {
     if trimmed.is_empty() {
         return CompletionSource::Command;
     }
-    if trimmed.starts_with("e ") || trimmed.starts_with("edit ")
-        || trimmed.starts_with("w ") || trimmed.starts_with("r ")
+    if trimmed.starts_with("e ")
+        || trimmed.starts_with("edit ")
+        || trimmed.starts_with("w ")
+        || trimmed.starts_with("r ")
         || trimmed.starts_with("source ")
     {
         return CompletionSource::Path;
@@ -71,17 +78,58 @@ pub fn detect_source(cmdline: &str) -> CompletionSource {
 }
 
 const COMMANDS: &[&str] = &[
-    "quit", "q", "qa", "write", "w", "wa", "wq", "x", "exit",
-    "edit", "e", "enew", "new", "vnew", "split", "sp", "vsplit", "vsp",
-    "only", "set", "ls", "bn", "bp", "bd", "saveas", "source",
-    "marks", "reg", "jumps", "changes", "noh", "sort", "terminal",
-    "explorer", "find", "livegrep", "undotree", "syntax", "highlight",
-    "map", "unmap", "mapclear", "autocmd", "cd", "pwd", "ft",
+    "quit",
+    "q",
+    "qa",
+    "write",
+    "w",
+    "wa",
+    "wq",
+    "x",
+    "exit",
+    "edit",
+    "e",
+    "enew",
+    "new",
+    "vnew",
+    "split",
+    "sp",
+    "vsplit",
+    "vsp",
+    "only",
+    "set",
+    "ls",
+    "bn",
+    "bp",
+    "bd",
+    "saveas",
+    "source",
+    "marks",
+    "reg",
+    "jumps",
+    "changes",
+    "noh",
+    "sort",
+    "terminal",
+    "explorer",
+    "find",
+    "livegrep",
+    "undotree",
+    "syntax",
+    "highlight",
+    "map",
+    "unmap",
+    "mapclear",
+    "autocmd",
+    "cd",
+    "pwd",
+    "ft",
 ];
 
 /// Complete command names matching a prefix.
 pub fn complete_commands(prefix: &str) -> Vec<String> {
-    COMMANDS.iter()
+    COMMANDS
+        .iter()
         .filter(|c| c.starts_with(prefix))
         .map(|c| c.to_string())
         .collect()
@@ -89,13 +137,19 @@ pub fn complete_commands(prefix: &str) -> Vec<String> {
 
 /// Complete file paths matching a prefix.
 pub fn complete_paths(prefix: &str) -> Vec<String> {
-    let dir = if prefix.is_empty() { "." } else {
+    let dir = if prefix.is_empty() {
+        "."
+    } else {
         let p = std::path::Path::new(prefix);
-        if p.is_dir() { prefix } else {
+        if p.is_dir() {
+            prefix
+        } else {
             p.parent().map(|p| p.to_str().unwrap_or(".")).unwrap_or(".")
         }
     };
-    let Ok(entries) = std::fs::read_dir(dir) else { return Vec::new() };
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return Vec::new();
+    };
     let mut results = Vec::new();
     for entry in entries.flatten() {
         let name = entry.path().to_string_lossy().to_string();
@@ -110,9 +164,21 @@ pub fn complete_paths(prefix: &str) -> Vec<String> {
 /// Complete editor option names matching a prefix.
 pub fn complete_options(prefix: &str) -> Vec<String> {
     let opts = [
-        "number", "relativenumber", "wrap", "tabstop", "shiftwidth",
-        "expandtab", "scrolloff", "ignorecase", "smartcase", "hlsearch",
-        "incsearch", "autoindent", "smartindent", "syntax", "cursorline",
+        "number",
+        "relativenumber",
+        "wrap",
+        "tabstop",
+        "shiftwidth",
+        "expandtab",
+        "scrolloff",
+        "ignorecase",
+        "smartcase",
+        "hlsearch",
+        "incsearch",
+        "autoindent",
+        "smartindent",
+        "syntax",
+        "cursorline",
     ];
     opts.iter()
         .filter(|o| o.starts_with(prefix))
@@ -128,12 +194,19 @@ pub fn common_prefix(candidates: &[String]) -> String {
     let first = &candidates[0];
     let mut len = first.len();
     for c in &candidates[1..] {
-        len = first.chars().zip(c.chars())
+        len = first
+            .chars()
+            .zip(c.chars())
             .take_while(|(a, b)| a == b)
             .count()
             .min(len);
     }
-    first[..first.char_indices().nth(len).map(|(i, _)| i).unwrap_or(first.len())].to_string()
+    first[..first
+        .char_indices()
+        .nth(len)
+        .map(|(i, _)| i)
+        .unwrap_or(first.len())]
+        .to_string()
 }
 
 #[cfg(test)]

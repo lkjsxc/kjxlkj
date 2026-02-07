@@ -49,7 +49,7 @@ pub fn generate_fixture(kind: FixtureKind, length: usize) -> LineFixture {
         }
         FixtureKind::Tabs => {
             // Tabs (we treat each as 1 char; actual rendering depends on tab-stop)
-            let s: String = std::iter::repeat('\t').take(length).collect();
+            let s: String = std::iter::repeat_n('\t', length).collect();
             // unicode-width gives tabs width 0; use length as expected
             (s, length)
         }
@@ -64,7 +64,11 @@ pub fn generate_fixture(kind: FixtureKind, length: usize) -> LineFixture {
             (s, length)
         }
     };
-    LineFixture { content, expected_display_width: expected, kind }
+    LineFixture {
+        content,
+        expected_display_width: expected,
+        kind,
+    }
 }
 
 /// Generate one fixture for every kind at the given length.
@@ -86,9 +90,7 @@ pub fn verify_fixture(fixture: &LineFixture) -> bool {
             // Special cases handled by convention; skip unicode-width check
             true
         }
-        _ => {
-            UnicodeWidthStr::width(fixture.content.as_str()) == fixture.expected_display_width
-        }
+        _ => UnicodeWidthStr::width(fixture.content.as_str()) == fixture.expected_display_width,
     }
 }
 

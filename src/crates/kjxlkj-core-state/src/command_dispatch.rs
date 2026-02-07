@@ -2,17 +2,14 @@
 
 use kjxlkj_core_types::{BufferId, EditorError, Position};
 
-use crate::commands::ExCommand;
 use crate::command_dispatch_ext::dispatch_extended;
+use crate::commands::ExCommand;
 use crate::editor_state::EditorState;
 use crate::options::{apply_set_action, parse_set_arg};
 use crate::viewport;
 
 /// Execute an Ex command, modifying the editor state.
-pub fn dispatch_command(
-    state: &mut EditorState,
-    cmd: ExCommand,
-) -> Result<(), EditorError> {
+pub fn dispatch_command(state: &mut EditorState, cmd: ExCommand) -> Result<(), EditorError> {
     match cmd {
         ExCommand::Quit => {
             if state.active_buffer().is_modified() {
@@ -74,8 +71,14 @@ pub fn dispatch_command(
             let id = state.active_buffer_id();
             state.delete_buffer(id, force)
         }
-        ExCommand::Split => { state.split_horizontal(); Ok(()) }
-        ExCommand::VSplit => { state.split_vertical(); Ok(()) }
+        ExCommand::Split => {
+            state.split_horizontal();
+            Ok(())
+        }
+        ExCommand::VSplit => {
+            state.split_vertical();
+            Ok(())
+        }
         ExCommand::New => {
             let id = state.create_buffer("[No Name]", "");
             state.split_horizontal();
@@ -90,11 +93,19 @@ pub fn dispatch_command(
             state.windows[last].buffer_id = id;
             Ok(())
         }
-        ExCommand::Only => { state.close_other_windows(); Ok(()) }
+        ExCommand::Only => {
+            state.close_other_windows();
+            Ok(())
+        }
         ExCommand::Set(args) => {
             let action = parse_set_arg(&args);
             match apply_set_action(&mut state.options, action) {
-                Ok(msg) => { if !msg.is_empty() { state.set_message(msg); } Ok(()) }
+                Ok(msg) => {
+                    if !msg.is_empty() {
+                        state.set_message(msg);
+                    }
+                    Ok(())
+                }
                 Err(e) => Err(EditorError::InvalidCommand(e)),
             }
         }
@@ -161,7 +172,9 @@ fn dispatch_write_all(state: &mut EditorState) -> Result<(), EditorError> {
 
 fn dispatch_edit(state: &mut EditorState, path: &str, force: bool) -> Result<(), EditorError> {
     if !force && state.active_buffer().is_modified() {
-        return Err(EditorError::InvalidCommand("unsaved changes (use :e!)".into()));
+        return Err(EditorError::InvalidCommand(
+            "unsaved changes (use :e!)".into(),
+        ));
     }
     if path.is_empty() {
         return Err(EditorError::InvalidCommand("no file name".into()));

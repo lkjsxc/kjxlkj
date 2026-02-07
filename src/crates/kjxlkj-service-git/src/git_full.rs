@@ -102,7 +102,8 @@ mod tests {
 
     #[test]
     fn parse_log_entries() {
-        let output = "abc123\nAlice\n2025-01-01\nInitial commit\ndef456\nBob\n2025-01-02\nFix bug\n";
+        let output =
+            "abc123\nAlice\n2025-01-01\nInitial commit\ndef456\nBob\n2025-01-02\nFix bug\n";
         let entries = parse_log(output);
         assert_eq!(entries.len(), 2);
         assert_eq!(entries[0].author, "Alice");
@@ -118,9 +119,18 @@ mod tests {
             new_start: 1,
             new_count: 3,
             lines: vec![
-                DiffLine { kind: DiffLineKind::Context, content: "a".into() },
-                DiffLine { kind: DiffLineKind::Added, content: "b".into() },
-                DiffLine { kind: DiffLineKind::Removed, content: "c".into() },
+                DiffLine {
+                    kind: DiffLineKind::Context,
+                    content: "a".into(),
+                },
+                DiffLine {
+                    kind: DiffLineKind::Added,
+                    content: "b".into(),
+                },
+                DiffLine {
+                    kind: DiffLineKind::Removed,
+                    content: "c".into(),
+                },
             ],
         }];
         assert_eq!(count_changes(&hunks), (1, 1));

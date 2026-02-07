@@ -48,8 +48,8 @@ impl Host {
         }
         if let Some(ref script_path) = args.script {
             let json = std::fs::read_to_string(script_path)?;
-            let steps = parse_script(&json)
-                .map_err(|e| anyhow::anyhow!("script parse error: {e}"))?;
+            let steps =
+                parse_script(&json).map_err(|e| anyhow::anyhow!("script parse error: {e}"))?;
             for step in &steps {
                 let keys = script_step_to_keys(step);
                 for key in keys {
@@ -101,8 +101,7 @@ impl Host {
         }
         loop {
             let snap = self.core.snapshot();
-            self.renderer
-                .render(&snap, &mut std::io::stdout())?;
+            self.renderer.render(&snap, &mut std::io::stdout())?;
             let ev = event::read()?;
             if !self.process_event(ev) {
                 break;
@@ -125,18 +124,20 @@ impl Host {
                 if cur.line != *line || cur.col != *col {
                     anyhow::bail!(
                         "cursor assert: expected ({line},{col}), got ({},{})",
-                        cur.line, cur.col
+                        cur.line,
+                        cur.col
                     );
                 }
             }
             ScriptStep::AssertLine { line, content } => {
-                let actual = self.core.state().active_buffer()
+                let actual = self
+                    .core
+                    .state()
+                    .active_buffer()
                     .line(*line)
                     .unwrap_or_default();
                 if actual != *content {
-                    anyhow::bail!(
-                        "line {line} assert: expected '{content}', got '{actual}'"
-                    );
+                    anyhow::bail!("line {line} assert: expected '{content}', got '{actual}'");
                 }
             }
             _ => {}
@@ -167,9 +168,15 @@ fn map_crossterm_key(ke: crossterm::event::KeyEvent) -> Option<KeyEvent> {
     };
     let m = ke.modifiers;
     let mut mods = Modifiers::NONE;
-    if m.contains(KeyModifiers::CONTROL) { mods = mods.union(Modifiers::CTRL); }
-    if m.contains(KeyModifiers::ALT) { mods = mods.union(Modifiers::ALT); }
-    if m.contains(KeyModifiers::SHIFT) { mods = mods.union(Modifiers::SHIFT); }
+    if m.contains(KeyModifiers::CONTROL) {
+        mods = mods.union(Modifiers::CTRL);
+    }
+    if m.contains(KeyModifiers::ALT) {
+        mods = mods.union(Modifiers::ALT);
+    }
+    if m.contains(KeyModifiers::SHIFT) {
+        mods = mods.union(Modifiers::SHIFT);
+    }
     Some(KeyEvent::new(code, mods))
 }
 
@@ -194,7 +201,11 @@ mod tests {
     #[test]
     fn headless_no_script() {
         let mut h = Host::new(true);
-        let args = HostArgs { file: None, headless: true, script: None };
+        let args = HostArgs {
+            file: None,
+            headless: true,
+            script: None,
+        };
         assert!(h.run_headless(&args).is_ok());
     }
 }

@@ -30,9 +30,7 @@ pub fn handle_remaining(state: &mut EditorState, key: &KeyEvent) -> Option<Edito
         KeyCode::Char('m') => None,
         KeyCode::Char('`') | KeyCode::Char('\'') => None,
         KeyCode::Char('"') => None,
-        KeyCode::Char('f') | KeyCode::Char('F') | KeyCode::Char('t') | KeyCode::Char('T') => {
-            None
-        }
+        KeyCode::Char('f') | KeyCode::Char('F') | KeyCode::Char('t') | KeyCode::Char('T') => None,
         KeyCode::Char(';') => Some(EditorAction::Noop),
         KeyCode::Char(',') => Some(EditorAction::Noop),
         KeyCode::Char('+') | KeyCode::Enter => {
@@ -83,10 +81,7 @@ fn handle_open_above(state: &mut EditorState) -> Option<EditorAction> {
 
 pub fn current_line_range(state: &EditorState) -> kjxlkj_core_types::Range {
     let line = state.active_window().cursor.line;
-    kjxlkj_core_types::Range::new(
-        Position::new(line, 0),
-        Position::new(line + 1, 0),
-    )
+    kjxlkj_core_types::Range::new(Position::new(line, 0), Position::new(line + 1, 0))
 }
 
 pub fn to_eol_range(state: &EditorState) -> kjxlkj_core_types::Range {
@@ -139,8 +134,12 @@ pub fn apply_motion(state: &mut EditorState, motion: &Motion, count: usize) {
 }
 
 pub fn apply_operator_motion(
-    _state: &mut EditorState, _op: Operator, _motion: Motion, _count: usize,
-) {}
+    _state: &mut EditorState,
+    _op: Operator,
+    _motion: Motion,
+    _count: usize,
+) {
+}
 
 pub fn handle_operator(state: &mut EditorState, op: Operator) -> Option<EditorAction> {
     if state.mode.pending_operator() == Some(&op) {

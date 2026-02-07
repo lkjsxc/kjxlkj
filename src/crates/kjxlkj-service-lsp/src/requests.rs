@@ -56,7 +56,10 @@ pub struct PendingRequests {
 
 impl PendingRequests {
     pub fn new() -> Self {
-        Self { next_id: 1, pending: HashMap::new() }
+        Self {
+            next_id: 1,
+            pending: HashMap::new(),
+        }
     }
 
     /// Register a new request, returning the assigned id.

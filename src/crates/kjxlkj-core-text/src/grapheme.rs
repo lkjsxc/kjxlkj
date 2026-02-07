@@ -5,13 +5,7 @@ use unicode_width::UnicodeWidthChar;
 /// Display width of a string (tabs count as 8).
 pub fn display_width(s: &str) -> usize {
     s.chars()
-        .map(|c| {
-            if c == '\t' {
-                8
-            } else {
-                c.width().unwrap_or(0)
-            }
-        })
+        .map(|c| if c == '\t' { 8 } else { c.width().unwrap_or(0) })
         .sum()
 }
 
@@ -19,13 +13,7 @@ pub fn display_width(s: &str) -> usize {
 pub fn char_to_col(line: &str, char_idx: usize) -> usize {
     line.chars()
         .take(char_idx)
-        .map(|c| {
-            if c == '\t' {
-                8
-            } else {
-                c.width().unwrap_or(0)
-            }
-        })
+        .map(|c| if c == '\t' { 8 } else { c.width().unwrap_or(0) })
         .sum()
 }
 
@@ -48,9 +36,7 @@ pub fn is_word_char(c: char) -> bool {
 
 /// Index of the first non-blank character on the line.
 pub fn first_non_blank(line: &str) -> usize {
-    line.chars()
-        .position(|c| !c.is_whitespace())
-        .unwrap_or(0)
+    line.chars().position(|c| !c.is_whitespace()).unwrap_or(0)
 }
 
 /// Index of the last non-blank character on the line.
@@ -127,7 +113,11 @@ pub fn word_end_forward(line: &str, pos: usize) -> usize {
     if len == 0 {
         return 0;
     }
-    let mut i = if pos + 1 < len { pos + 1 } else { return len.saturating_sub(1) };
+    let mut i = if pos + 1 < len {
+        pos + 1
+    } else {
+        return len.saturating_sub(1);
+    };
     // skip whitespace
     while i < len && chars[i].is_whitespace() {
         i += 1;

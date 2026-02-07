@@ -7,8 +7,7 @@ use kjxlkj_core_types::{
 
 use crate::normal_mode_ext::handle_normal_g_key;
 use crate::normal_mode_ops::{
-    apply_motion, apply_operator_motion, handle_operator,
-    handle_remaining, open_above, open_below,
+    apply_motion, apply_operator_motion, handle_operator, handle_remaining, open_above, open_below,
 };
 use crate::normal_mode_scroll::handle_scroll_key;
 
@@ -47,12 +46,10 @@ fn dispatch_normal(state: &mut EditorState, key: &KeyEvent) -> Option<EditorActi
             let col = take_count(state).unwrap_or(1).saturating_sub(1);
             motion_action(state, Motion::GoToColumn(col))
         }
-        KeyCode::Char('G') => {
-            match take_count(state) {
-                Some(n) => motion_action(state, Motion::GoToLine(n.saturating_sub(1))),
-                None => motion_action(state, Motion::FileEnd),
-            }
-        }
+        KeyCode::Char('G') => match take_count(state) {
+            Some(n) => motion_action(state, Motion::GoToLine(n.saturating_sub(1))),
+            None => motion_action(state, Motion::FileEnd),
+        },
         KeyCode::Char('H') => motion_action(state, Motion::ScreenTop),
         KeyCode::Char('M') => motion_action(state, Motion::ScreenMiddle),
         KeyCode::Char('L') => motion_action(state, Motion::ScreenBottom),
@@ -153,7 +150,9 @@ pub(crate) fn motion_action(state: &mut EditorState, motion: Motion) -> Option<E
 
 pub(crate) fn first_non_blank_col(state: &EditorState, line: usize) -> usize {
     let text = state.active_buffer().line(line).unwrap_or_default();
-    text.chars().position(|c| !c.is_ascii_whitespace()).unwrap_or(0)
+    text.chars()
+        .position(|c| !c.is_ascii_whitespace())
+        .unwrap_or(0)
 }
 
 #[cfg(test)]

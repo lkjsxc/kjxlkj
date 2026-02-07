@@ -85,13 +85,21 @@ pub struct OverlayManager {
 }
 
 impl OverlayManager {
-    pub fn open(&mut self, popup: PopupState) { self.stack.push(popup); }
+    pub fn open(&mut self, popup: PopupState) {
+        self.stack.push(popup);
+    }
 
-    pub fn close_kind(&mut self, kind: PopupKind) { self.stack.retain(|p| p.kind != kind); }
+    pub fn close_kind(&mut self, kind: PopupKind) {
+        self.stack.retain(|p| p.kind != kind);
+    }
 
-    pub fn close_all(&mut self) { self.stack.clear(); }
+    pub fn close_all(&mut self) {
+        self.stack.clear();
+    }
 
-    pub fn top(&self) -> Option<&PopupState> { self.stack.last() }
+    pub fn top(&self) -> Option<&PopupState> {
+        self.stack.last()
+    }
 }
 
 /// Compute the rectangle `(x, y, w, h)` for a popup given an anchor and
@@ -133,7 +141,10 @@ mod tests {
         PopupState {
             kind: PopupKind::Completion,
             items: vec!["a".into(), "b".into(), "c".into(), "d".into(), "e".into()],
-            selected: 0, visible: true, max_visible: 3, scroll_offset: 0,
+            selected: 0,
+            visible: true,
+            max_visible: 3,
+            scroll_offset: 0,
         }
     }
 
@@ -174,7 +185,10 @@ mod tests {
 
     #[test]
     fn popup_rects() {
-        assert_eq!(compute_popup_rect(PopupAnchor::Center, 80, 24, 20, 10), (30, 7, 20, 10));
+        assert_eq!(
+            compute_popup_rect(PopupAnchor::Center, 80, 24, 20, 10),
+            (30, 7, 20, 10)
+        );
         let (_, _, w, h) = compute_popup_rect(PopupAnchor::TopLeft, 10, 5, 20, 10);
         assert_eq!((w, h), (10, 5));
     }

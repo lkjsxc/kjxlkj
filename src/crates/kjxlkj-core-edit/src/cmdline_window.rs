@@ -37,7 +37,11 @@ pub fn open(history: Vec<String>, prompt: char) -> CmdlineWindowState {
 pub fn close(state: &mut CmdlineWindowState) -> Option<String> {
     state.active = false;
     let line = current_line(state);
-    if line.is_empty() { None } else { Some(line) }
+    if line.is_empty() {
+        None
+    } else {
+        Some(line)
+    }
 }
 
 /// Move the cursor within the command-line window.
@@ -167,7 +171,11 @@ mod tests {
     #[test]
     fn render() {
         let s = open(vec!["echo 1".into(), "echo 2".into()], ':');
-        let vp = CmdlineViewport { top_line: 0, visible_lines: 10, width: 40 };
+        let vp = CmdlineViewport {
+            top_line: 0,
+            visible_lines: 10,
+            width: 40,
+        };
         let lines = render_cmdline_window(&s, &vp);
         assert_eq!(lines.len(), 3); // 2 history + 1 new line
         assert!(lines[0].starts_with(':'));

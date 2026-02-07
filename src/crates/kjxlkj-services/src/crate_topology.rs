@@ -23,11 +23,10 @@ pub struct CrateDep {
 /// Check if a dependency direction is allowed.
 /// Rules: no Service -> Host, no Core -> Host.
 pub fn check_dep_direction(from_role: CrateRole, to_role: CrateRole) -> bool {
-    match (from_role, to_role) {
-        (CrateRole::Service, CrateRole::Host) => false,
-        (CrateRole::Core, CrateRole::Host) => false,
-        _ => true,
-    }
+    !matches!(
+        (from_role, to_role),
+        (CrateRole::Service, CrateRole::Host) | (CrateRole::Core, CrateRole::Host)
+    )
 }
 
 /// Expected dependency topology for all crates.
@@ -48,7 +47,11 @@ pub fn expected_topology() -> Vec<CrateDep> {
 }
 
 fn dep(from: &str, to: &str, role: CrateRole) -> CrateDep {
-    CrateDep { from: from.to_string(), to: to.to_string(), role }
+    CrateDep {
+        from: from.to_string(),
+        to: to.to_string(),
+        role,
+    }
 }
 
 /// Validate a set of dependencies against the direction rules.

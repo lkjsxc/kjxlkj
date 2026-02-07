@@ -78,8 +78,16 @@ impl ViewTree {
         let root_rect = if children.is_empty() {
             Rect::new(0, 0, 0, 0)
         } else {
-            let max_x = children.iter().map(|c| c.rect.x + c.rect.w).max().unwrap_or(0);
-            let max_y = children.iter().map(|c| c.rect.y + c.rect.h).max().unwrap_or(0);
+            let max_x = children
+                .iter()
+                .map(|c| c.rect.x + c.rect.w)
+                .max()
+                .unwrap_or(0);
+            let max_y = children
+                .iter()
+                .map(|c| c.rect.y + c.rect.h)
+                .max()
+                .unwrap_or(0);
             Rect::new(0, 0, max_x, max_y)
         };
 
@@ -139,10 +147,7 @@ mod tests {
 
     #[test]
     fn from_splits_builds_tree() {
-        let rects = vec![
-            (1, Rect::new(0, 0, 40, 24)),
-            (2, Rect::new(40, 0, 40, 24)),
-        ];
+        let rects = vec![(1, Rect::new(0, 0, 40, 24)), (2, Rect::new(40, 0, 40, 24))];
         let tree = ViewTree::from_splits(rects);
         assert_eq!(tree.root.children.len(), 2);
         assert_eq!(tree.root.rect.w, 80);

@@ -85,7 +85,11 @@ impl ContractChecker {
 
     /// Assert `val` is in `[0, limit)`.
     pub fn in_range(&mut self, val: usize, limit: usize, module: &str) {
-        self.require(val < limit, module, &format!("{val} not in range [0, {limit})"));
+        self.require(
+            val < limit,
+            module,
+            &format!("{val} not in range [0, {limit})"),
+        );
     }
 
     /// Assert a slice is non-empty.
@@ -100,7 +104,11 @@ impl ContractChecker {
 
     /// Assert a value does not exceed a limit.
     pub fn within_limit(&mut self, val: usize, limit: usize, module: &str) {
-        self.require(val <= limit, module, &format!("{val} exceeds limit {limit}"));
+        self.require(
+            val <= limit,
+            module,
+            &format!("{val} exceeds limit {limit}"),
+        );
     }
 
     pub fn has_violations(&self) -> bool {

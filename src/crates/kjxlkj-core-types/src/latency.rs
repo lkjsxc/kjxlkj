@@ -65,7 +65,7 @@ impl LatencyProbe {
 
     /// Returns `true` if the p95 latency exceeds the given budget.
     pub fn exceeds_budget(&self, budget: Duration) -> bool {
-        self.p95().map_or(false, |p| p > budget)
+        self.p95().is_some_and(|p| p > budget)
     }
 }
 

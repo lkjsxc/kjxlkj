@@ -5,18 +5,15 @@ use serde::{Deserialize, Serialize};
 
 /// Style used for rendering line numbers in the gutter.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum LineNumberStyle {
     None,
+    #[default]
     Absolute,
     Relative,
     Hybrid,
 }
 
-impl Default for LineNumberStyle {
-    fn default() -> Self {
-        Self::Absolute
-    }
-}
 
 /// Format a line number for display.
 ///
@@ -35,22 +32,14 @@ pub fn format_line_number(
             format!("{:>w$}", display_line + 1, w = width)
         }
         LineNumberStyle::Relative => {
-            let rel = if display_line >= current_line {
-                display_line - current_line
-            } else {
-                current_line - display_line
-            };
+            let rel = display_line.abs_diff(current_line);
             format!("{:>w$}", rel, w = width)
         }
         LineNumberStyle::Hybrid => {
             if display_line == current_line {
                 format!("{:>w$}", display_line + 1, w = width)
             } else {
-                let rel = if display_line > current_line {
-                    display_line - current_line
-                } else {
-                    current_line - display_line
-                };
+                let rel = display_line.abs_diff(current_line);
                 format!("{:>w$}", rel, w = width)
             }
         }
@@ -102,15 +91,30 @@ mod tests {
 
     #[test]
     fn absolute_numbers() {
-        assert_eq!(format_line_number(LineNumberStyle::Absolute, 0, 0, 4), "   1");
-        assert_eq!(format_line_number(LineNumberStyle::Absolute, 0, 9, 4), "  10");
+        assert_eq!(
+            format_line_number(LineNumberStyle::Absolute, 0, 0, 4),
+            "   1"
+        );
+        assert_eq!(
+            format_line_number(LineNumberStyle::Absolute, 0, 9, 4),
+            "  10"
+        );
     }
 
     #[test]
     fn relative_numbers() {
-        assert_eq!(format_line_number(LineNumberStyle::Relative, 5, 5, 3), "  0");
-        assert_eq!(format_line_number(LineNumberStyle::Relative, 5, 8, 3), "  3");
-        assert_eq!(format_line_number(LineNumberStyle::Relative, 5, 2, 3), "  3");
+        assert_eq!(
+            format_line_number(LineNumberStyle::Relative, 5, 5, 3),
+            "  0"
+        );
+        assert_eq!(
+            format_line_number(LineNumberStyle::Relative, 5, 8, 3),
+            "  3"
+        );
+        assert_eq!(
+            format_line_number(LineNumberStyle::Relative, 5, 2, 3),
+            "  3"
+        );
     }
 
     #[test]
@@ -128,9 +132,21 @@ mod tests {
 
     #[test]
     fn mode_indicators() {
-        assert_eq!(format_mode_indicator(&Mode::Normal, ModeIndicatorFormat::Uppercase), "NORMAL");
-        assert_eq!(format_mode_indicator(&Mode::Insert, ModeIndicatorFormat::Short), "INS");
-        assert_eq!(format_mode_indicator(&Mode::Visual, ModeIndicatorFormat::Char), "V");
-        assert_eq!(format_mode_indicator(&Mode::Normal, ModeIndicatorFormat::Hidden), "");
+        assert_eq!(
+            format_mode_indicator(&Mode::Normal, ModeIndicatorFormat::Uppercase),
+            "NORMAL"
+        );
+        assert_eq!(
+            format_mode_indicator(&Mode::Insert, ModeIndicatorFormat::Short),
+            "INS"
+        );
+        assert_eq!(
+            format_mode_indicator(&Mode::Visual, ModeIndicatorFormat::Char),
+            "V"
+        );
+        assert_eq!(
+            format_mode_indicator(&Mode::Normal, ModeIndicatorFormat::Hidden),
+            ""
+        );
     }
 }

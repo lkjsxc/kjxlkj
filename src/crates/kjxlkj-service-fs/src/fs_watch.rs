@@ -19,7 +19,9 @@ pub struct FsWatcher {
 
 impl FsWatcher {
     pub fn new() -> Self {
-        Self { watched_paths: Vec::new() }
+        Self {
+            watched_paths: Vec::new(),
+        }
     }
 
     /// Add a path to watch.

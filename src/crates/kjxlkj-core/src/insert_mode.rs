@@ -6,10 +6,7 @@ use kjxlkj_core_types::{EditorAction, KeyCode, KeyEvent, Mode, Modifiers, Positi
 use crate::insert_mode_ctrl::handle_insert_ctrl;
 
 /// Handle a key event in Insert mode.
-pub fn handle_insert_key(
-    state: &mut EditorState,
-    key: KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_insert_key(state: &mut EditorState, key: KeyEvent) -> Option<EditorAction> {
     if state.macro_state.is_recording() {
         state.macro_state.record_key(key.clone());
     }
@@ -39,8 +36,7 @@ pub fn handle_insert_key(
                 let ins_pos = Position::new(new_line, 0);
                 state.active_buffer_mut().insert_text(ins_pos, &indent);
             }
-            state.active_window_mut().cursor =
-                Position::new(new_line, indent.len());
+            state.active_window_mut().cursor = Position::new(new_line, indent.len());
             state.active_window_mut().ensure_cursor_visible();
             None
         }
@@ -55,8 +51,7 @@ pub fn handle_insert_key(
                 let start = Position::new(pos.line - 1, prev_len);
                 let end = Position::new(pos.line, 0);
                 state.active_buffer_mut().delete_range(start, end);
-                state.active_window_mut().cursor =
-                    Position::new(pos.line - 1, prev_len);
+                state.active_window_mut().cursor = Position::new(pos.line - 1, prev_len);
             }
             None
         }

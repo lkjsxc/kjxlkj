@@ -86,8 +86,14 @@ mod tests {
 
     #[test]
     fn decode_focus_events() {
-        assert_eq!(decode_event(ct::Event::FocusGained), Some(EditorEvent::FocusGained));
-        assert_eq!(decode_event(ct::Event::FocusLost), Some(EditorEvent::FocusLost));
+        assert_eq!(
+            decode_event(ct::Event::FocusGained),
+            Some(EditorEvent::FocusGained)
+        );
+        assert_eq!(
+            decode_event(ct::Event::FocusLost),
+            Some(EditorEvent::FocusLost)
+        );
     }
 
     #[test]

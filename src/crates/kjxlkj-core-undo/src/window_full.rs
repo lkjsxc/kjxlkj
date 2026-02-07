@@ -83,10 +83,7 @@ pub struct WindowOptionStore {
 impl WindowOptionStore {
     /// Get options for a window, falling back to defaults.
     pub fn get(&self, id: WindowId) -> WindowOptions {
-        self.overrides
-            .get(&id)
-            .cloned()
-            .unwrap_or_default()
+        self.overrides.get(&id).cloned().unwrap_or_default()
     }
 
     /// Set options for a window.
@@ -132,9 +129,7 @@ mod tests {
     #[test]
     fn option_store_override() {
         let mut store = WindowOptionStore::default();
-        let mut opts = WindowOptions::default();
-        opts.number = true;
-        opts.scrolloff = 5;
+        let opts = WindowOptions { number: true, scrolloff: 5, ..Default::default() };
         store.set(WindowId(42), opts.clone());
         assert_eq!(store.get(WindowId(42)), opts);
     }

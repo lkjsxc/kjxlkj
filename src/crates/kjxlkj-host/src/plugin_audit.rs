@@ -42,7 +42,11 @@ pub fn audit_files(files: &[(String, String)]) -> Vec<(String, Vec<String>)> {
         .iter()
         .filter_map(|(name, content)| {
             let v = audit_source(content);
-            if v.is_empty() { None } else { Some((name.clone(), v)) }
+            if v.is_empty() {
+                None
+            } else {
+                Some((name.clone(), v))
+            }
         })
         .collect()
 }

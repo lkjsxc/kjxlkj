@@ -154,8 +154,18 @@ mod tests {
     #[test]
     fn menu_cycle() {
         let items = vec![
-            CompletionItem { label: "a".into(), detail: None, kind: None, source: CompletionSource::Buffer },
-            CompletionItem { label: "b".into(), detail: None, kind: None, source: CompletionSource::Buffer },
+            CompletionItem {
+                label: "a".into(),
+                detail: None,
+                kind: None,
+                source: CompletionSource::Buffer,
+            },
+            CompletionItem {
+                label: "b".into(),
+                detail: None,
+                kind: None,
+                source: CompletionSource::Buffer,
+            },
         ];
         let mut menu = CompletionMenu::open(items);
         assert_eq!(menu.current().unwrap().label, "a");
@@ -167,7 +177,11 @@ mod tests {
 
     #[test]
     fn line_completions() {
-        let buf = TextBuffer::from_text(BufferId(1), "t".into(), "fn main() {}\nfn helper() {}\nlet x = 1;\n");
+        let buf = TextBuffer::from_text(
+            BufferId(1),
+            "t".into(),
+            "fn main() {}\nfn helper() {}\nlet x = 1;\n",
+        );
         let lines = collect_line_completions(&buf, "fn");
         assert_eq!(lines.len(), 2);
     }

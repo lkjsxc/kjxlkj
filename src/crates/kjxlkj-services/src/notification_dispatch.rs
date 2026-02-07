@@ -42,13 +42,21 @@ pub struct Dispatcher {
 
 impl Default for Dispatcher {
     fn default() -> Self {
-        Self { notifications: Vec::new(), max_visible: 5, next_id: 1 }
+        Self {
+            notifications: Vec::new(),
+            max_visible: 5,
+            next_id: 1,
+        }
     }
 }
 
 impl Dispatcher {
     pub fn new(max_visible: usize) -> Self {
-        Self { notifications: Vec::new(), max_visible, next_id: 1 }
+        Self {
+            notifications: Vec::new(),
+            max_visible,
+            next_id: 1,
+        }
     }
 
     /// Add a notification, returning its id.
@@ -146,7 +154,10 @@ mod tests {
             timestamp_ms: 0,
             auto_dismiss_ms: None,
         };
-        assert_eq!(Dispatcher::format_notification(&n), "[ERR][system] disk full");
+        assert_eq!(
+            Dispatcher::format_notification(&n),
+            "[ERR][system] disk full"
+        );
     }
 
     #[test]

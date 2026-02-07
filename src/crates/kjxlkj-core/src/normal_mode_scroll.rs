@@ -5,10 +5,7 @@ use kjxlkj_core_state::EditorState;
 use kjxlkj_core_types::{EditorAction, KeyCode, KeyEvent, Modifiers};
 
 /// Handle Ctrl-key scroll commands from normal mode.
-pub fn handle_scroll_key(
-    state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_scroll_key(state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     if !key.modifiers.contains(Modifiers::CTRL) {
         return None;
     }
@@ -42,17 +39,16 @@ pub fn handle_scroll_key(
         }
         KeyCode::Char('v') => {
             // Ctrl-v: visual block
-            Some(EditorAction::ChangeMode(kjxlkj_core_types::Mode::VisualBlock))
+            Some(EditorAction::ChangeMode(
+                kjxlkj_core_types::Mode::VisualBlock,
+            ))
         }
         _ => None,
     }
 }
 
 /// Handle z-prefixed scroll positioning from normal mode.
-pub fn handle_z_scroll(
-    state: &mut EditorState,
-    key: &KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_z_scroll(state: &mut EditorState, key: &KeyEvent) -> Option<EditorAction> {
     let cursor_line = state.active_window().cursor.line;
     match &key.code {
         KeyCode::Char('z') => {

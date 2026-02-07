@@ -30,12 +30,20 @@ pub fn render_snapshot(lines: &[String], config: &SnapshotConfig) -> Vec<String>
         let raw = &lines[line_idx];
         match config.mode {
             SnapshotMode::NoWrap => {
-                output.push(format_row(line_idx, raw, num_w, text_w, config.show_line_numbers));
+                output.push(format_row(
+                    line_idx,
+                    raw,
+                    num_w,
+                    text_w,
+                    config.show_line_numbers,
+                ));
             }
             SnapshotMode::SoftWrap | SnapshotMode::HardWrap => {
                 let chunks = wrap(raw, text_w);
                 for (i, chunk) in chunks.iter().enumerate() {
-                    if output.len() >= config.height { break; }
+                    if output.len() >= config.height {
+                        break;
+                    }
                     let num = if i == 0 { Some(line_idx) } else { None };
                     let prefix = match num {
                         Some(n) if config.show_line_numbers => format!("{:>3} ", n + 1),
@@ -50,29 +58,43 @@ pub fn render_snapshot(lines: &[String], config: &SnapshotConfig) -> Vec<String>
     }
     // Fill remaining rows with tildes
     while output.len() < config.height {
-        let tilde = if config.show_line_numbers { "  ~ ".to_string() } else { "~".to_string() };
+        let tilde = if config.show_line_numbers {
+            "  ~ ".to_string()
+        } else {
+            "~".to_string()
+        };
         output.push(pad(&tilde, config.width));
     }
     output
 }
 
 fn format_row(idx: usize, raw: &str, num_w: usize, text_w: usize, show_nums: bool) -> String {
-    let prefix = if show_nums { format!("{:>3} ", idx + 1) } else { String::new() };
+    let prefix = if show_nums {
+        format!("{:>3} ", idx + 1)
+    } else {
+        String::new()
+    };
     let visible: String = raw.chars().take(text_w).collect();
     pad(&format!("{prefix}{visible}"), num_w + text_w)
 }
 
 fn wrap(s: &str, w: usize) -> Vec<String> {
-    if w == 0 { return vec![s.to_string()]; }
+    if w == 0 {
+        return vec![s.to_string()];
+    }
     let chars: Vec<char> = s.chars().collect();
-    if chars.is_empty() { return vec![String::new()]; }
+    if chars.is_empty() {
+        return vec![String::new()];
+    }
     chars.chunks(w).map(|c| c.iter().collect()).collect()
 }
 
 fn pad(s: &str, w: usize) -> String {
-    if s.len() >= w { s[..w].to_string() } else {
+    if s.len() >= w {
+        s[..w].to_string()
+    } else {
         let mut out = s.to_string();
-        out.extend(std::iter::repeat(' ').take(w - out.len()));
+        out.extend(std::iter::repeat_n(' ', w - out.len()));
         out
     }
 }
@@ -93,7 +115,12 @@ pub fn compare_snapshot(expected: &[String], actual: &[String]) -> Vec<String> {
 
 /// Build a no-wrap test case. Returns config and expected output.
 pub fn build_nowrap_test(lines: &[String], width: usize) -> (SnapshotConfig, Vec<String>) {
-    let cfg = SnapshotConfig { width, height: lines.len().max(1), mode: SnapshotMode::NoWrap, show_line_numbers: false };
+    let cfg = SnapshotConfig {
+        width,
+        height: lines.len().max(1),
+        mode: SnapshotMode::NoWrap,
+        show_line_numbers: false,
+    };
     let expected = render_snapshot(lines, &cfg);
     (cfg, expected)
 }
@@ -101,7 +128,12 @@ pub fn build_nowrap_test(lines: &[String], width: usize) -> (SnapshotConfig, Vec
 /// Build a soft-wrap test case.
 pub fn build_wrap_test(lines: &[String], width: usize) -> (SnapshotConfig, Vec<String>) {
     let h = lines.len().max(1) * 2;
-    let cfg = SnapshotConfig { width, height: h, mode: SnapshotMode::SoftWrap, show_line_numbers: false };
+    let cfg = SnapshotConfig {
+        width,
+        height: h,
+        mode: SnapshotMode::SoftWrap,
+        show_line_numbers: false,
+    };
     let expected = render_snapshot(lines, &cfg);
     (cfg, expected)
 }
@@ -113,7 +145,12 @@ mod tests {
     #[test]
     fn no_wrap_basic() {
         let lines = vec!["hello".into(), "world".into()];
-        let cfg = SnapshotConfig { width: 10, height: 3, mode: SnapshotMode::NoWrap, show_line_numbers: false };
+        let cfg = SnapshotConfig {
+            width: 10,
+            height: 3,
+            mode: SnapshotMode::NoWrap,
+            show_line_numbers: false,
+        };
         let out = render_snapshot(&lines, &cfg);
         assert_eq!(out.len(), 3);
         assert!(out[0].starts_with("hello"));
@@ -123,7 +160,12 @@ mod tests {
     #[test]
     fn with_line_numbers() {
         let lines = vec!["abc".into()];
-        let cfg = SnapshotConfig { width: 12, height: 2, mode: SnapshotMode::NoWrap, show_line_numbers: true };
+        let cfg = SnapshotConfig {
+            width: 12,
+            height: 2,
+            mode: SnapshotMode::NoWrap,
+            show_line_numbers: true,
+        };
         let out = render_snapshot(&lines, &cfg);
         assert!(out[0].starts_with("  1 "));
     }

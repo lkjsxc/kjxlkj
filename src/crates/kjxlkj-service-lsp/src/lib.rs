@@ -8,9 +8,9 @@ pub mod requests;
 pub use diagnostics::{Diagnostic, DiagnosticSeverity, DiagnosticStore};
 pub use lsp_features_ext::{CompletionItemEx, CompletionItemKind, CompletionList};
 pub use protocol::{
-    JsonRpcMessage, JsonRpcNotification, JsonRpcRequest, JsonRpcResponse, decode_message,
-    encode_message,
+    decode_message, encode_message, JsonRpcMessage, JsonRpcNotification, JsonRpcRequest,
+    JsonRpcResponse,
 };
 pub use requests::{
-    LspMethod, PendingRequests, ServerCapabilities, build_did_open, build_initialize_request,
+    build_did_open, build_initialize_request, LspMethod, PendingRequests, ServerCapabilities,
 };

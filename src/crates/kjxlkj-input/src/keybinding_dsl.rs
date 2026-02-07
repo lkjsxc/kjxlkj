@@ -5,10 +5,35 @@ use serde::{Deserialize, Serialize};
 /// Special key names recognized in angle-bracket notation.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SpecialKey {
-    Space, Enter, Escape, Backspace, Tab, Delete,
-    Left, Right, Up, Down, Home, End, PageUp, PageDown,
-    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
-    Insert, Nul, Leader,
+    Space,
+    Enter,
+    Escape,
+    Backspace,
+    Tab,
+    Delete,
+    Left,
+    Right,
+    Up,
+    Down,
+    Home,
+    End,
+    PageUp,
+    PageDown,
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    F11,
+    F12,
+    Insert,
+    Nul,
+    Leader,
 }
 
 /// A single key chord parsed from notation.
@@ -68,9 +93,19 @@ pub fn parse_key_notation(notation: &str) -> Option<KeyChord> {
         }
         let key_part = parts.last()?;
         let key = resolve_special(key_part).unwrap_or_else(|| key_part.to_string());
-        Some(KeyChord { key, ctrl, alt, shift })
+        Some(KeyChord {
+            key,
+            ctrl,
+            alt,
+            shift,
+        })
     } else if notation.len() == 1 {
-        Some(KeyChord { key: notation.to_string(), ctrl: false, alt: false, shift: false })
+        Some(KeyChord {
+            key: notation.to_string(),
+            ctrl: false,
+            alt: false,
+            shift: false,
+        })
     } else {
         None
     }

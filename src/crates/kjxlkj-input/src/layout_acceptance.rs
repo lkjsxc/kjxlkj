@@ -5,7 +5,12 @@ use serde::{Deserialize, Serialize};
 /// Kinds of layout invariants that can be checked.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum InvariantKind {
-    NoOverlap, FullCoverage, MinSize, CursorVisible, CmdLinePresent, StatusLinePresent,
+    NoOverlap,
+    FullCoverage,
+    MinSize,
+    CursorVisible,
+    CmdLinePresent,
+    StatusLinePresent,
 }
 
 /// A rectangular layout region on screen.
@@ -19,12 +24,18 @@ pub struct LayoutRegion {
 }
 
 impl LayoutRegion {
-    fn right(&self) -> u16 { self.x + self.w }
-    fn bottom(&self) -> u16 { self.y + self.h }
+    fn right(&self) -> u16 {
+        self.x + self.w
+    }
+    fn bottom(&self) -> u16 {
+        self.y + self.h
+    }
 
     fn overlaps(&self, other: &Self) -> bool {
-        self.x < other.right() && other.x < self.right()
-            && self.y < other.bottom() && other.y < self.bottom()
+        self.x < other.right()
+            && other.x < self.right()
+            && self.y < other.bottom()
+            && other.y < self.bottom()
     }
 }
 
@@ -38,17 +49,23 @@ pub fn check_no_overlap(regions: &[LayoutRegion]) -> Result<(), Vec<(String, Str
             }
         }
     }
-    if conflicts.is_empty() { Ok(()) } else { Err(conflicts) }
+    if conflicts.is_empty() {
+        Ok(())
+    } else {
+        Err(conflicts)
+    }
 }
 
 /// Check that regions fully cover the total area (pixel-by-pixel).
 pub fn check_coverage(regions: &[LayoutRegion], total_w: u16, total_h: u16) -> bool {
     for y in 0..total_h {
         for x in 0..total_w {
-            let covered = regions.iter().any(|r| {
-                x >= r.x && x < r.right() && y >= r.y && y < r.bottom()
-            });
-            if !covered { return false; }
+            let covered = regions
+                .iter()
+                .any(|r| x >= r.x && x < r.right() && y >= r.y && y < r.bottom());
+            if !covered {
+                return false;
+            }
         }
     }
     true
@@ -56,7 +73,8 @@ pub fn check_coverage(regions: &[LayoutRegion], total_w: u16, total_h: u16) -> b
 
 /// Return names of regions smaller than `min_w` x `min_h`.
 pub fn check_min_size(regions: &[LayoutRegion], min_w: u16, min_h: u16) -> Vec<String> {
-    regions.iter()
+    regions
+        .iter()
         .filter(|r| r.w < min_w || r.h < min_h)
         .map(|r| r.name.clone())
         .collect()
@@ -71,18 +89,30 @@ pub fn check_cursor_visible(cursor_x: u16, cursor_y: u16, regions: &[LayoutRegio
 
 /// Run all layout invariants and return results.
 pub fn run_all_invariants(
-    regions: &[LayoutRegion], total_w: u16, total_h: u16,
-    cursor_x: u16, cursor_y: u16,
+    regions: &[LayoutRegion],
+    total_w: u16,
+    total_h: u16,
+    cursor_x: u16,
+    cursor_y: u16,
 ) -> Vec<(InvariantKind, bool)> {
-    let has_cmd = regions.iter().any(|r| {
-        r.name.contains("cmd") || r.name.contains("command")
-    });
+    let has_cmd = regions
+        .iter()
+        .any(|r| r.name.contains("cmd") || r.name.contains("command"));
     let has_status = regions.iter().any(|r| r.name.contains("status"));
     vec![
         (InvariantKind::NoOverlap, check_no_overlap(regions).is_ok()),
-        (InvariantKind::FullCoverage, check_coverage(regions, total_w, total_h)),
-        (InvariantKind::MinSize, check_min_size(regions, 1, 1).is_empty()),
-        (InvariantKind::CursorVisible, check_cursor_visible(cursor_x, cursor_y, regions)),
+        (
+            InvariantKind::FullCoverage,
+            check_coverage(regions, total_w, total_h),
+        ),
+        (
+            InvariantKind::MinSize,
+            check_min_size(regions, 1, 1).is_empty(),
+        ),
+        (
+            InvariantKind::CursorVisible,
+            check_cursor_visible(cursor_x, cursor_y, regions),
+        ),
         (InvariantKind::CmdLinePresent, has_cmd),
         (InvariantKind::StatusLinePresent, has_status),
     ]
@@ -93,7 +123,13 @@ mod tests {
     use super::*;
 
     fn region(name: &str, x: u16, y: u16, w: u16, h: u16) -> LayoutRegion {
-        LayoutRegion { x, y, w, h, name: name.into() }
+        LayoutRegion {
+            x,
+            y,
+            w,
+            h,
+            name: name.into(),
+        }
     }
 
     #[test]

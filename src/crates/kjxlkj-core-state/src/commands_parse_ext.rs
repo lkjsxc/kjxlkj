@@ -48,7 +48,9 @@ pub fn parse_extended(cmd: &str, args: Option<&str>) -> Result<ExCommand, Editor
         "find" | "fin" => Ok(ExCommand::Find),
         "livegrep" | "lg" => Ok(ExCommand::LiveGrep),
         "undotree" => Ok(ExCommand::UndoTree),
-        _ => Err(EditorError::InvalidCommand(format!("unknown command: {cmd}"))),
+        _ => Err(EditorError::InvalidCommand(format!(
+            "unknown command: {cmd}"
+        ))),
     }
 }
 
@@ -66,7 +68,9 @@ pub fn parse_substitute(input: &str) -> Result<ExCommand, EditorError> {
     let replacement = parts.get(1).unwrap_or(&"").to_string();
     let flags = parts.get(2).unwrap_or(&"").to_string();
     if pattern.is_empty() {
-        return Err(EditorError::InvalidCommand("substitute: empty pattern".into()));
+        return Err(EditorError::InvalidCommand(
+            "substitute: empty pattern".into(),
+        ));
     }
     Ok(ExCommand::Substitute(pattern, replacement, flags))
 }
@@ -86,7 +90,9 @@ pub fn parse_global(input: &str, inverted: bool) -> Result<ExCommand, EditorErro
             Ok(ExCommand::Global(pattern, cmd))
         }
     } else {
-        Err(EditorError::InvalidCommand("global: missing separator".into()))
+        Err(EditorError::InvalidCommand(
+            "global: missing separator".into(),
+        ))
     }
 }
 
@@ -97,7 +103,10 @@ mod tests {
     #[test]
     fn parse_sub() {
         let cmd = parse_substitute("s/foo/bar/g").unwrap();
-        assert_eq!(cmd, ExCommand::Substitute("foo".into(), "bar".into(), "g".into()));
+        assert_eq!(
+            cmd,
+            ExCommand::Substitute("foo".into(), "bar".into(), "g".into())
+        );
     }
 
     #[test]

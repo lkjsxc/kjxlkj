@@ -1,6 +1,6 @@
 //! Editing operators that act on ranges within a buffer.
 
-use kjxlkj_core_text::manipulation::{convert_case, reindent, indent_level, CaseKind};
+use kjxlkj_core_text::manipulation::{convert_case, indent_level, reindent, CaseKind};
 use kjxlkj_core_text::TextBuffer;
 use kjxlkj_core_types::{Operator, Position, Range};
 
@@ -42,27 +42,49 @@ pub fn apply_operator(buffer: &mut TextBuffer, op: Operator, range: Range) -> Op
         }
         Operator::Indent => {
             indent_range(buffer, r, 1);
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
+            OperatorResult {
+                deleted_text: None,
+                new_cursor: r.start,
+                entered_insert: false,
+            }
         }
         Operator::Outdent => {
             outdent_range(buffer, r, 1);
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
+            OperatorResult {
+                deleted_text: None,
+                new_cursor: r.start,
+                entered_insert: false,
+            }
         }
         Operator::ToggleCase => {
             toggle_case_range(buffer, r);
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
+            OperatorResult {
+                deleted_text: None,
+                new_cursor: r.start,
+                entered_insert: false,
+            }
         }
         Operator::UpperCase => {
             upper_case_range(buffer, r);
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
+            OperatorResult {
+                deleted_text: None,
+                new_cursor: r.start,
+                entered_insert: false,
+            }
         }
         Operator::LowerCase => {
             lower_case_range(buffer, r);
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
+            OperatorResult {
+                deleted_text: None,
+                new_cursor: r.start,
+                entered_insert: false,
+            }
         }
-        Operator::Format => {
-            OperatorResult { deleted_text: None, new_cursor: r.start, entered_insert: false }
-        }
+        Operator::Format => OperatorResult {
+            deleted_text: None,
+            new_cursor: r.start,
+            entered_insert: false,
+        },
     }
 }
 
@@ -134,8 +156,16 @@ fn extract_text(buffer: &TextBuffer, r: Range) -> String {
     let mut result = String::new();
     for line_idx in r.start.line..=r.end.line.min(buffer.line_count().saturating_sub(1)) {
         let line = buffer.line(line_idx).unwrap_or_default();
-        let start_col = if line_idx == r.start.line { r.start.col } else { 0 };
-        let end_col = if line_idx == r.end.line { r.end.col } else { line.len() };
+        let start_col = if line_idx == r.start.line {
+            r.start.col
+        } else {
+            0
+        };
+        let end_col = if line_idx == r.end.line {
+            r.end.col
+        } else {
+            line.len()
+        };
         let end_col = end_col.min(line.len());
         if start_col < end_col {
             result.push_str(&line[start_col..end_col]);
@@ -167,7 +197,10 @@ mod tests {
     #[test]
     fn test_delete_range() {
         let mut b = buf("hello world");
-        let deleted = delete_range(&mut b, Range::new(Position::new(0, 5), Position::new(0, 11)));
+        let deleted = delete_range(
+            &mut b,
+            Range::new(Position::new(0, 5), Position::new(0, 11)),
+        );
         assert_eq!(deleted, " world");
         assert_eq!(b.line(0).unwrap(), "hello");
     }

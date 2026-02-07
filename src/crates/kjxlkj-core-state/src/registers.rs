@@ -23,7 +23,10 @@ pub fn yank_to_register(
     text: &str,
     linewise: bool,
 ) {
-    let entry = RegisterEntry { content: text.to_string(), linewise };
+    let entry = RegisterEntry {
+        content: text.to_string(),
+        linewise,
+    };
     registers.insert(DEFAULT_REGISTER, entry.clone());
     if reg == DEFAULT_REGISTER {
         registers.insert(YANK_REGISTER, entry);
@@ -39,7 +42,10 @@ pub fn delete_to_register(
     text: &str,
     linewise: bool,
 ) {
-    let entry = RegisterEntry { content: text.to_string(), linewise };
+    let entry = RegisterEntry {
+        content: text.to_string(),
+        linewise,
+    };
     registers.insert(DEFAULT_REGISTER, entry.clone());
     if reg == DEFAULT_REGISTER {
         if !linewise && !text.contains('\n') {
@@ -60,10 +66,7 @@ pub fn delete_to_register(
 }
 
 /// Get a register entry.
-pub fn get_register(
-    registers: &HashMap<char, RegisterEntry>,
-    reg: char,
-) -> Option<&RegisterEntry> {
+pub fn get_register(registers: &HashMap<char, RegisterEntry>, reg: char) -> Option<&RegisterEntry> {
     registers.get(&reg)
 }
 
@@ -81,7 +84,10 @@ mod tests {
         let mut regs = HashMap::new();
         yank_to_register(&mut regs, DEFAULT_REGISTER, "hello", false);
         assert_eq!(get_register(&regs, YANK_REGISTER).unwrap().content, "hello");
-        assert_eq!(get_register(&regs, DEFAULT_REGISTER).unwrap().content, "hello");
+        assert_eq!(
+            get_register(&regs, DEFAULT_REGISTER).unwrap().content,
+            "hello"
+        );
     }
 
     #[test]
@@ -89,7 +95,10 @@ mod tests {
         let mut regs = HashMap::new();
         yank_to_register(&mut regs, 'a', "text", false);
         assert_eq!(get_register(&regs, 'a').unwrap().content, "text");
-        assert_eq!(get_register(&regs, DEFAULT_REGISTER).unwrap().content, "text");
+        assert_eq!(
+            get_register(&regs, DEFAULT_REGISTER).unwrap().content,
+            "text"
+        );
     }
 
     #[test]
@@ -105,7 +114,10 @@ mod tests {
     fn small_delete() {
         let mut regs = HashMap::new();
         delete_to_register(&mut regs, DEFAULT_REGISTER, "x", false);
-        assert_eq!(get_register(&regs, SMALL_DELETE_REGISTER).unwrap().content, "x");
+        assert_eq!(
+            get_register(&regs, SMALL_DELETE_REGISTER).unwrap().content,
+            "x"
+        );
     }
 
     #[test]

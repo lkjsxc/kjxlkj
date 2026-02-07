@@ -110,7 +110,11 @@ pub fn format_node(node: &TreeNode, expanded: bool) -> String {
     let indent = "  ".repeat(node.depth);
     let icon = match node.kind {
         TreeNodeKind::Directory => {
-            if expanded { "▼ " } else { "▶ " }
+            if expanded {
+                "▼ "
+            } else {
+                "▶ "
+            }
         }
         TreeNodeKind::File => "  ",
         TreeNodeKind::Symlink => "⤷ ",
@@ -125,8 +129,12 @@ mod tests {
     #[test]
     fn format_file_node() {
         let node = TreeNode {
-            id: 0, name: "main.rs".into(), path: "src/main.rs".into(),
-            kind: TreeNodeKind::File, depth: 1, children: vec![],
+            id: 0,
+            name: "main.rs".into(),
+            path: "src/main.rs".into(),
+            kind: TreeNodeKind::File,
+            depth: 1,
+            children: vec![],
         };
         let s = format_node(&node, false);
         assert!(s.contains("main.rs"));
@@ -136,8 +144,12 @@ mod tests {
     #[test]
     fn format_dir_expanded() {
         let node = TreeNode {
-            id: 0, name: "src".into(), path: "src".into(),
-            kind: TreeNodeKind::Directory, depth: 0, children: vec![],
+            id: 0,
+            name: "src".into(),
+            path: "src".into(),
+            kind: TreeNodeKind::Directory,
+            depth: 0,
+            children: vec![],
         };
         assert!(format_node(&node, true).contains('▼'));
         assert!(format_node(&node, false).contains('▶'));

@@ -31,6 +31,12 @@ pub struct TabPage {
     pub views: Vec<View>,
 }
 
+impl Default for TabPage {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TabPage {
     pub fn new() -> Self {
         Self { views: Vec::new() }
@@ -48,6 +54,12 @@ pub struct ViewManager {
     next_view_id: u64,
 }
 
+impl Default for ViewManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ViewManager {
     pub fn new() -> Self {
         let empty_view = View {
@@ -57,7 +69,9 @@ impl ViewManager {
             active: true,
         };
         Self {
-            tabs: vec![TabPage { views: vec![empty_view] }],
+            tabs: vec![TabPage {
+                views: vec![empty_view],
+            }],
             active_tab: 0,
             next_view_id: 2,
         }
@@ -72,7 +86,12 @@ impl ViewManager {
             for v in &mut tab.views {
                 v.active = false;
             }
-            tab.views.push(View { id, kind, buffer_id, active: true });
+            tab.views.push(View {
+                id,
+                kind,
+                buffer_id,
+                active: true,
+            });
         }
         id
     }
@@ -98,7 +117,12 @@ impl ViewManager {
     pub fn new_tab(&mut self) {
         let id = self.next_view_id;
         self.next_view_id += 1;
-        let view = View { id, kind: ViewKind::Empty, buffer_id: None, active: true };
+        let view = View {
+            id,
+            kind: ViewKind::Empty,
+            buffer_id: None,
+            active: true,
+        };
         self.tabs.push(TabPage { views: vec![view] });
         self.active_tab = self.tabs.len() - 1;
     }

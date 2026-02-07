@@ -28,7 +28,9 @@ impl DisplayRow {
 
 /// Wrap a line into display rows respecting character widths.
 pub fn wrap_line(line: &str, max_width: usize) -> Vec<DisplayRow> {
-    if max_width == 0 { return vec![DisplayRow { cells: vec![] }]; }
+    if max_width == 0 {
+        return vec![DisplayRow { cells: vec![] }];
+    }
     let mut rows: Vec<DisplayRow> = Vec::new();
     let mut current: Vec<DisplayCell> = Vec::new();
     let mut col = 0usize;
@@ -36,7 +38,9 @@ pub fn wrap_line(line: &str, max_width: usize) -> Vec<DisplayRow> {
     for ch in line.chars() {
         let w = UnicodeWidthChar::width(ch).unwrap_or(1);
         if col + w > max_width {
-            rows.push(DisplayRow { cells: std::mem::take(&mut current) });
+            rows.push(DisplayRow {
+                cells: std::mem::take(&mut current),
+            });
             col = 0;
         }
         if w == 2 {
@@ -62,7 +66,9 @@ pub fn truncate_line(line: &str, max_width: usize) -> String {
     let mut col = 0usize;
     for ch in line.chars() {
         let w = UnicodeWidthChar::width(ch).unwrap_or(1);
-        if col + w > max_width { break; }
+        if col + w > max_width {
+            break;
+        }
         out.push(ch);
         col += w;
     }
@@ -75,7 +81,9 @@ pub fn validate_viewport(rows: &[DisplayRow], expected_width: usize) -> Vec<Stri
     for (i, row) in rows.iter().enumerate() {
         let w = row.width();
         if w > expected_width {
-            errors.push(format!("row {i}: width {w} exceeds expected {expected_width}"));
+            errors.push(format!(
+                "row {i}: width {w} exceeds expected {expected_width}"
+            ));
         }
     }
     errors
@@ -133,7 +141,9 @@ mod tests {
 
     #[test]
     fn validate_fail() {
-        let row = DisplayRow { cells: vec![DisplayCell::Normal('a'); 10] };
+        let row = DisplayRow {
+            cells: vec![DisplayCell::Normal('a'); 10],
+        };
         let errs = validate_viewport(&[row], 5);
         assert_eq!(errs.len(), 1);
     }

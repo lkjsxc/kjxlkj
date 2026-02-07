@@ -21,7 +21,10 @@ pub struct Cell {
 
 impl Default for Cell {
     fn default() -> Self {
-        Self { ch: ' ', style: Style::default() }
+        Self {
+            ch: ' ',
+            style: Style::default(),
+        }
     }
 }
 
@@ -49,14 +52,24 @@ pub struct TerminalGrid {
 impl TerminalGrid {
     pub fn new(width: u16, height: u16) -> Self {
         let cells = vec![vec![Cell::default(); width as usize]; height as usize];
-        Self { width, height, cells, cursor_x: 0, cursor_y: 0, current_style: Style::default() }
+        Self {
+            width,
+            height,
+            cells,
+            cursor_x: 0,
+            cursor_y: 0,
+            current_style: Style::default(),
+        }
     }
 
     /// Write a character at the cursor and advance.
     pub fn put_char(&mut self, ch: char) {
         let (x, y) = (self.cursor_x as usize, self.cursor_y as usize);
         if y < self.height as usize && x < self.width as usize {
-            self.cells[y][x] = Cell { ch, style: self.current_style };
+            self.cells[y][x] = Cell {
+                ch,
+                style: self.current_style,
+            };
             self.cursor_x += 1;
             if self.cursor_x >= self.width {
                 self.cursor_x = 0;
@@ -120,10 +133,8 @@ pub fn parse_ansi_simple(input: &str) -> Vec<AnsiAction> {
                 if let Some(cmd) = chars.next() {
                     match cmd {
                         'H' => {
-                            let parts: Vec<u16> = param
-                                .split(';')
-                                .filter_map(|s| s.parse().ok())
-                                .collect();
+                            let parts: Vec<u16> =
+                                param.split(';').filter_map(|s| s.parse().ok()).collect();
                             let row = parts.first().copied().unwrap_or(1).saturating_sub(1);
                             let col = parts.get(1).copied().unwrap_or(1).saturating_sub(1);
                             actions.push(AnsiAction::CursorMove(col, row));
@@ -171,7 +182,10 @@ mod tests {
     #[test]
     fn parse_print_chars() {
         let actions = parse_ansi_simple("AB");
-        assert_eq!(actions, vec![AnsiAction::Print('A'), AnsiAction::Print('B')]);
+        assert_eq!(
+            actions,
+            vec![AnsiAction::Print('A'), AnsiAction::Print('B')]
+        );
     }
 
     #[test]

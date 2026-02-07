@@ -13,7 +13,10 @@ pub struct BlockSelection {
 
 impl BlockSelection {
     pub fn new(top_left: Position, bottom_right: Position) -> Self {
-        Self { top_left, bottom_right }
+        Self {
+            top_left,
+            bottom_right,
+        }
     }
 
     /// Number of lines in the selection.

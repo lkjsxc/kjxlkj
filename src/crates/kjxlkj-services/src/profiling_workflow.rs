@@ -50,20 +50,32 @@ pub fn compute_stats(mut samples: Vec<u64>) -> ProfileResult {
         let idx = ((samples.len() as f64) * 0.95).ceil() as usize;
         samples[idx.min(samples.len() - 1)]
     };
-    ProfileResult { samples, min, max, avg, p95 }
+    ProfileResult {
+        samples,
+        min,
+        max,
+        avg,
+        p95,
+    }
 }
 
 /// Format a profiling report.
 pub fn format_report(results: &[(ProfileTarget, ProfileResult)]) -> String {
     let mut out = String::from("Profiling Report\n");
-    out.push_str(&format!("{:<16} {:>10} {:>10} {:>10} {:>10}\n",
-        "Target", "Min(µs)", "Max(µs)", "Avg(µs)", "P95(µs)"));
+    out.push_str(&format!(
+        "{:<16} {:>10} {:>10} {:>10} {:>10}\n",
+        "Target", "Min(µs)", "Max(µs)", "Avg(µs)", "P95(µs)"
+    ));
     out.push_str(&"-".repeat(60));
     out.push('\n');
     for (target, r) in results {
         out.push_str(&format!(
             "{:<16} {:>10} {:>10} {:>10} {:>10}\n",
-            format!("{:?}", target), r.min, r.max, r.avg, r.p95
+            format!("{:?}", target),
+            r.min,
+            r.max,
+            r.avg,
+            r.p95
         ));
     }
     out
@@ -77,12 +89,12 @@ pub fn meets_budget(result: &ProfileResult, budget_us: u64) -> bool {
 /// Default latency budgets in microseconds per target.
 pub fn default_budgets() -> HashMap<ProfileTarget, u64> {
     let mut m = HashMap::new();
-    m.insert(ProfileTarget::Startup, 500_000);    // 500ms
-    m.insert(ProfileTarget::FileOpen, 50_000);     // 50ms
-    m.insert(ProfileTarget::Keystroke, 8_000);     // 8ms
-    m.insert(ProfileTarget::Scroll, 16_000);       // 16ms
-    m.insert(ProfileTarget::Resize, 16_000);       // 16ms
-    m.insert(ProfileTarget::Render, 16_000);       // 16ms
+    m.insert(ProfileTarget::Startup, 500_000); // 500ms
+    m.insert(ProfileTarget::FileOpen, 50_000); // 50ms
+    m.insert(ProfileTarget::Keystroke, 8_000); // 8ms
+    m.insert(ProfileTarget::Scroll, 16_000); // 16ms
+    m.insert(ProfileTarget::Resize, 16_000); // 16ms
+    m.insert(ProfileTarget::Render, 16_000); // 16ms
     m.insert(ProfileTarget::FullSession, 2_000_000); // 2s
     m
 }

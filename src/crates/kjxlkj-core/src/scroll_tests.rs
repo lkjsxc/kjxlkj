@@ -75,6 +75,8 @@ fn ctrl_v_visual_block() {
     let action = handle_scroll_key(&mut state, &key);
     assert_eq!(
         action,
-        Some(EditorAction::ChangeMode(kjxlkj_core_types::Mode::VisualBlock))
+        Some(EditorAction::ChangeMode(
+            kjxlkj_core_types::Mode::VisualBlock
+        ))
     );
 }

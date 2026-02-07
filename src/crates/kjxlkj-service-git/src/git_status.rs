@@ -52,20 +52,36 @@ pub fn parse_status_line(line: &str) -> Option<StatusEntry> {
 
     // Untracked: "?? path"
     if index_char == '?' && worktree_char == '?' {
-        return Some(StatusEntry { path, status: FileStatus::Untracked, staged: false });
+        return Some(StatusEntry {
+            path,
+            status: FileStatus::Untracked,
+            staged: false,
+        });
     }
     // Ignored: "!! path"
     if index_char == '!' && worktree_char == '!' {
-        return Some(StatusEntry { path, status: FileStatus::Ignored, staged: false });
+        return Some(StatusEntry {
+            path,
+            status: FileStatus::Ignored,
+            staged: false,
+        });
     }
     // Staged change takes priority if present
     if index_char != ' ' {
         let status = FileStatus::from_char(index_char)?;
-        return Some(StatusEntry { path, status, staged: true });
+        return Some(StatusEntry {
+            path,
+            status,
+            staged: true,
+        });
     }
     // Worktree change
     let status = FileStatus::from_char(worktree_char)?;
-    Some(StatusEntry { path, status, staged: false })
+    Some(StatusEntry {
+        path,
+        status,
+        staged: false,
+    })
 }
 
 /// Detect current branch from the .git directory (reads HEAD).

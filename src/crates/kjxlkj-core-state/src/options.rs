@@ -98,10 +98,26 @@ pub fn parse_set_arg(arg: &str) -> SetAction {
 }
 
 fn is_bool_option(name: &str) -> bool {
-    matches!(name,
-        "number" | "relativenumber" | "wrap" | "expandtab" | "ignorecase" | "smartcase"
-        | "hlsearch" | "incsearch" | "autoindent" | "smartindent" | "autopairs"
-        | "syntax" | "ruler" | "showmode" | "showcmd" | "mouse" | "cursorline" | "cursorcolumn"
+    matches!(
+        name,
+        "number"
+            | "relativenumber"
+            | "wrap"
+            | "expandtab"
+            | "ignorecase"
+            | "smartcase"
+            | "hlsearch"
+            | "incsearch"
+            | "autoindent"
+            | "smartindent"
+            | "autopairs"
+            | "syntax"
+            | "ruler"
+            | "showmode"
+            | "showcmd"
+            | "mouse"
+            | "cursorline"
+            | "cursorcolumn"
     )
 }
 
@@ -168,7 +184,10 @@ fn query_option(opts: &EditorOptions, name: &str) -> Result<String, String> {
 }
 
 fn format_all_options(opts: &EditorOptions) -> String {
-    format!("number={} wrap={} ts={} sw={} et={}", opts.number, opts.wrap, opts.tabstop, opts.shiftwidth, opts.expandtab)
+    format!(
+        "number={} wrap={} ts={} sw={} et={}",
+        opts.number, opts.wrap, opts.tabstop, opts.shiftwidth, opts.expandtab
+    )
 }
 
 #[cfg(test)]
@@ -177,13 +196,22 @@ mod tests {
 
     #[test]
     fn parse_set_bool() {
-        assert_eq!(parse_set_arg("number"), SetAction::SetBool("number".into(), true));
-        assert_eq!(parse_set_arg("nonumber"), SetAction::SetBool("number".into(), false));
+        assert_eq!(
+            parse_set_arg("number"),
+            SetAction::SetBool("number".into(), true)
+        );
+        assert_eq!(
+            parse_set_arg("nonumber"),
+            SetAction::SetBool("number".into(), false)
+        );
     }
 
     #[test]
     fn parse_set_int() {
-        assert_eq!(parse_set_arg("tabstop=4"), SetAction::SetInt("tabstop".into(), 4));
+        assert_eq!(
+            parse_set_arg("tabstop=4"),
+            SetAction::SetInt("tabstop".into(), 4)
+        );
     }
 
     #[test]

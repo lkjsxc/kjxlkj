@@ -33,7 +33,13 @@ pub fn set_mark(
     buffer_id: BufferId,
     pos: Position,
 ) {
-    marks.insert(ch, MarkEntry { buffer_id, position: pos });
+    marks.insert(
+        ch,
+        MarkEntry {
+            buffer_id,
+            position: pos,
+        },
+    );
 }
 
 /// Get a mark from a flat map.
@@ -61,7 +67,13 @@ impl MarkRegistry {
     pub fn set(&mut self, ch: char, buffer_id: BufferId, pos: Position) {
         match mark_scope(ch) {
             MarkScope::Global => {
-                self.global.insert(ch, MarkEntry { buffer_id, position: pos });
+                self.global.insert(
+                    ch,
+                    MarkEntry {
+                        buffer_id,
+                        position: pos,
+                    },
+                );
             }
             MarkScope::Local => {
                 self.local.entry(buffer_id).or_default().insert(ch, pos);
@@ -76,12 +88,21 @@ impl MarkRegistry {
                 .local
                 .get(&current_buffer)
                 .and_then(|m| m.get(&ch))
-                .map(|pos| MarkEntry { buffer_id: current_buffer, position: *pos }),
+                .map(|pos| MarkEntry {
+                    buffer_id: current_buffer,
+                    position: *pos,
+                }),
         }
     }
 
     pub fn set_special(&mut self, ch: char, buffer_id: BufferId, pos: Position) {
-        self.special.insert(ch, MarkEntry { buffer_id, position: pos });
+        self.special.insert(
+            ch,
+            MarkEntry {
+                buffer_id,
+                position: pos,
+            },
+        );
     }
 }
 

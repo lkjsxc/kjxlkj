@@ -10,7 +10,9 @@ pub mod segment;
 pub mod streaming;
 
 pub use buffer::TextBuffer;
-pub use buffer_features::{AutoCmdRegistry, BufEvent, BufferLocalOptions, BufferVariables, FileFormat};
+pub use buffer_features::{
+    AutoCmdRegistry, BufEvent, BufferLocalOptions, BufferVariables, FileFormat,
+};
 pub use buffer_full::{
     filter_listed, find_by_name, modified_count, AlternateTracker, BufferFlags, BufferInfo,
     BufferType,

@@ -80,8 +80,14 @@ mod tests {
     #[test]
     fn push_and_back() {
         let mut jl = JumpList::new();
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(0, 0) });
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(5, 0) });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(0, 0),
+        });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(5, 0),
+        });
         let e = jl.jump_back().unwrap();
         assert_eq!(e.position, Position::new(5, 0));
     }
@@ -89,8 +95,14 @@ mod tests {
     #[test]
     fn forward_after_back() {
         let mut jl = JumpList::new();
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(0, 0) });
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(5, 0) });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(0, 0),
+        });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(5, 0),
+        });
         jl.jump_back();
         let e = jl.jump_forward().unwrap();
         assert_eq!(e.position, Position::new(5, 0));
@@ -99,10 +111,19 @@ mod tests {
     #[test]
     fn truncates_forward() {
         let mut jl = JumpList::new();
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(0, 0) });
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(5, 0) });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(0, 0),
+        });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(5, 0),
+        });
         jl.jump_back();
-        jl.push(JumpEntry { buffer_id: BufferId(1), position: Position::new(10, 0) });
+        jl.push(JumpEntry {
+            buffer_id: BufferId(1),
+            position: Position::new(10, 0),
+        });
         assert_eq!(jl.len(), 2);
     }
 }

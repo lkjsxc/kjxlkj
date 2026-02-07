@@ -78,13 +78,17 @@ impl EditorState {
     /// Get a reference to the active buffer.
     pub fn active_buffer(&self) -> &TextBuffer {
         let win = &self.windows[self.active_window];
-        self.buffers.get(&win.buffer_id).expect("active buffer missing")
+        self.buffers
+            .get(&win.buffer_id)
+            .expect("active buffer missing")
     }
 
     /// Get a mutable reference to the active buffer.
     pub fn active_buffer_mut(&mut self) -> &mut TextBuffer {
         let buf_id = self.windows[self.active_window].buffer_id;
-        self.buffers.get_mut(&buf_id).expect("active buffer missing")
+        self.buffers
+            .get_mut(&buf_id)
+            .expect("active buffer missing")
     }
 
     /// Get the active buffer's id.

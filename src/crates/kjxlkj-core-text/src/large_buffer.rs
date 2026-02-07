@@ -33,7 +33,7 @@ pub fn choose_strategy(file_size: u64) -> LoadStrategy {
 pub fn build_line_index(content: &str) -> Vec<usize> {
     let mut offsets = vec![0usize];
     for (i, b) in content.bytes().enumerate() {
-        if b == b'\n' && i + 1 <= content.len() {
+        if b == b'\n' && i < content.len() {
             offsets.push(i + 1);
         }
     }
@@ -66,10 +66,7 @@ pub fn extract_line_range(content: &str, index: &[usize], start: usize, end: usi
     } else {
         content.len()
     };
-    content
-        .get(byte_start..byte_end)
-        .unwrap_or("")
-        .to_string()
+    content.get(byte_start..byte_end).unwrap_or("").to_string()
 }
 
 #[cfg(test)]
@@ -80,10 +77,7 @@ mod tests {
     fn strategy_selection() {
         assert_eq!(choose_strategy(500), LoadStrategy::Full);
         assert_eq!(choose_strategy(2 * 1_024 * 1_024), LoadStrategy::Chunked);
-        assert_eq!(
-            choose_strategy(200 * 1_024 * 1_024),
-            LoadStrategy::Streamed
-        );
+        assert_eq!(choose_strategy(200 * 1_024 * 1_024), LoadStrategy::Streamed);
     }
 
     #[test]

@@ -29,27 +29,40 @@ pub struct ReachabilityReport {
 
 /// Check whether a feature has at least one keybinding entry.
 pub fn has_keybinding_entry(spec: &FeatureSpec) -> bool {
-    spec.entry_points.iter().any(|(k, _)| *k == EntryKind::Keybinding)
+    spec.entry_points
+        .iter()
+        .any(|(k, _)| *k == EntryKind::Keybinding)
 }
 
 /// Check whether a feature has at least one ex-command entry.
 pub fn has_command_entry(spec: &FeatureSpec) -> bool {
-    spec.entry_points.iter().any(|(k, _)| *k == EntryKind::ExCommand)
+    spec.entry_points
+        .iter()
+        .any(|(k, _)| *k == EntryKind::ExCommand)
 }
 
 /// Analyse reachability: features with at least one entry point are reachable.
 pub fn check_reachability(features: Vec<FeatureSpec>) -> ReachabilityReport {
-    let reachable_count = features.iter()
+    let reachable_count = features
+        .iter()
         .filter(|f| !f.entry_points.is_empty())
         .count();
     let unreachable_count = features.len() - reachable_count;
-    ReachabilityReport { features, reachable_count, unreachable_count }
+    ReachabilityReport {
+        features,
+        reachable_count,
+        unreachable_count,
+    }
 }
 
 /// Define the core features of the editor (15+ entries).
 pub fn define_core_features() -> Vec<FeatureSpec> {
     vec![
-        feat("cursor-movement", &[(EntryKind::Keybinding, "h/j/k/l")], true),
+        feat(
+            "cursor-movement",
+            &[(EntryKind::Keybinding, "h/j/k/l")],
+            true,
+        ),
         feat("insert-mode", &[(EntryKind::Keybinding, "i")], true),
         feat("visual-mode", &[(EntryKind::Keybinding, "v")], true),
         feat("command-mode", &[(EntryKind::Keybinding, ":")], true),
@@ -62,8 +75,16 @@ pub fn define_core_features() -> Vec<FeatureSpec> {
         feat("yank", &[(EntryKind::Keybinding, "y")], true),
         feat("paste", &[(EntryKind::Keybinding, "p")], true),
         feat("delete", &[(EntryKind::Keybinding, "d")], true),
-        feat("file-explorer", &[(EntryKind::LeaderChord, "<leader>e")], true),
-        feat("terminal-pane", &[(EntryKind::LeaderChord, "<leader>t")], true),
+        feat(
+            "file-explorer",
+            &[(EntryKind::LeaderChord, "<leader>e")],
+            true,
+        ),
+        feat(
+            "terminal-pane",
+            &[(EntryKind::LeaderChord, "<leader>t")],
+            true,
+        ),
         feat("goto-definition", &[(EntryKind::Keybinding, "gd")], false),
     ]
 }
@@ -71,7 +92,8 @@ pub fn define_core_features() -> Vec<FeatureSpec> {
 fn feat(name: &str, entries: &[(EntryKind, &str)], tested: bool) -> FeatureSpec {
     FeatureSpec {
         name: name.into(),
-        entry_points: entries.iter()
+        entry_points: entries
+            .iter()
             .map(|(k, s)| (k.clone(), s.to_string()))
             .collect(),
         tested,

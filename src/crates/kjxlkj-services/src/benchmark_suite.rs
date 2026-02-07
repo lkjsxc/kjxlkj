@@ -35,12 +35,36 @@ pub struct BenchmarkResult {
 /// Default benchmark suite.
 pub fn default_suite() -> Vec<BenchmarkConfig> {
     vec![
-        BenchmarkConfig { kind: BenchmarkKind::FileOpen, iterations: 100, warmup: 5 },
-        BenchmarkConfig { kind: BenchmarkKind::Keystroke, iterations: 1000, warmup: 10 },
-        BenchmarkConfig { kind: BenchmarkKind::ScrollBurst, iterations: 200, warmup: 5 },
-        BenchmarkConfig { kind: BenchmarkKind::ResizeStorm, iterations: 100, warmup: 5 },
-        BenchmarkConfig { kind: BenchmarkKind::SnapshotRender, iterations: 100, warmup: 5 },
-        BenchmarkConfig { kind: BenchmarkKind::EditBurst, iterations: 500, warmup: 10 },
+        BenchmarkConfig {
+            kind: BenchmarkKind::FileOpen,
+            iterations: 100,
+            warmup: 5,
+        },
+        BenchmarkConfig {
+            kind: BenchmarkKind::Keystroke,
+            iterations: 1000,
+            warmup: 10,
+        },
+        BenchmarkConfig {
+            kind: BenchmarkKind::ScrollBurst,
+            iterations: 200,
+            warmup: 5,
+        },
+        BenchmarkConfig {
+            kind: BenchmarkKind::ResizeStorm,
+            iterations: 100,
+            warmup: 5,
+        },
+        BenchmarkConfig {
+            kind: BenchmarkKind::SnapshotRender,
+            iterations: 100,
+            warmup: 5,
+        },
+        BenchmarkConfig {
+            kind: BenchmarkKind::EditBurst,
+            iterations: 500,
+            warmup: 10,
+        },
     ]
 }
 
@@ -72,14 +96,23 @@ pub fn compute_benchmark_result(kind: BenchmarkKind, mut samples: Vec<u64>) -> B
         let idx = ((samples.len() as f64) * 0.95).ceil() as usize;
         samples[idx.min(samples.len() - 1)]
     };
-    BenchmarkResult { kind, samples, min, max, avg, p95 }
+    BenchmarkResult {
+        kind,
+        samples,
+        min,
+        max,
+        avg,
+        p95,
+    }
 }
 
 /// Format a human-readable benchmark report.
 pub fn format_benchmark_report(results: &[BenchmarkResult]) -> String {
     let mut out = String::from("Benchmark Report\n");
-    out.push_str(&format!("{:<20} {:>8} {:>8} {:>8} {:>8} {:>8}\n",
-        "Kind", "Min(ms)", "Max(ms)", "Avg(ms)", "P95(ms)", "Budget"));
+    out.push_str(&format!(
+        "{:<20} {:>8} {:>8} {:>8} {:>8} {:>8}\n",
+        "Kind", "Min(ms)", "Max(ms)", "Avg(ms)", "P95(ms)", "Budget"
+    ));
     out.push_str(&"-".repeat(72));
     out.push('\n');
     for r in results {
@@ -87,7 +120,13 @@ pub fn format_benchmark_report(results: &[BenchmarkResult]) -> String {
         let status = if r.p95 <= budget { "OK" } else { "OVER" };
         out.push_str(&format!(
             "{:<20} {:>8} {:>8} {:>8} {:>8} {:>5}ms {}\n",
-            format!("{:?}", r.kind), r.min, r.max, r.avg, r.p95, budget, status
+            format!("{:?}", r.kind),
+            r.min,
+            r.max,
+            r.avg,
+            r.p95,
+            budget,
+            status
         ));
     }
     out

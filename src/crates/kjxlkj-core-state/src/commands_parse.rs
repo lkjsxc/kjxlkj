@@ -74,9 +74,9 @@ fn parse_buffer_switch(args: Option<&str>) -> Result<ExCommand, EditorError> {
     if arg == "#" {
         return Ok(ExCommand::SwitchBuffer(0)); // 0 = alternate
     }
-    let id: u64 = arg.parse().map_err(|_| {
-        EditorError::InvalidCommand(format!("invalid buffer number: {arg}"))
-    })?;
+    let id: u64 = arg
+        .parse()
+        .map_err(|_| EditorError::InvalidCommand(format!("invalid buffer number: {arg}")))?;
     Ok(ExCommand::SwitchBuffer(id))
 }
 
@@ -130,13 +130,19 @@ mod tests {
 
     #[test]
     fn parse_edit() {
-        assert!(matches!(parse_command(":e main.rs").unwrap(), ExCommand::Edit(p, false) if p == "main.rs"));
-        assert!(matches!(parse_command(":e! main.rs").unwrap(), ExCommand::Edit(p, true) if p == "main.rs"));
+        assert!(
+            matches!(parse_command(":e main.rs").unwrap(), ExCommand::Edit(p, false) if p == "main.rs")
+        );
+        assert!(
+            matches!(parse_command(":e! main.rs").unwrap(), ExCommand::Edit(p, true) if p == "main.rs")
+        );
     }
 
     #[test]
     fn parse_set() {
-        assert!(matches!(parse_command(":set number").unwrap(), ExCommand::Set(s) if s == "number"));
+        assert!(
+            matches!(parse_command(":set number").unwrap(), ExCommand::Set(s) if s == "number")
+        );
     }
 
     #[test]
@@ -146,6 +152,9 @@ mod tests {
 
     #[test]
     fn parse_buffer() {
-        assert!(matches!(parse_command(":b 3").unwrap(), ExCommand::SwitchBuffer(3)));
+        assert!(matches!(
+            parse_command(":b 3").unwrap(),
+            ExCommand::SwitchBuffer(3)
+        ));
     }
 }

@@ -5,10 +5,7 @@ use kjxlkj_core_state::{dispatch_command, parse_command, EditorState};
 use kjxlkj_core_types::{Direction, EditorAction, KeyEvent, Mode};
 
 /// Handle a key event in Command mode.
-pub fn handle_command_key(
-    state: &mut EditorState,
-    key: KeyEvent,
-) -> Option<EditorAction> {
+pub fn handle_command_key(state: &mut EditorState, key: KeyEvent) -> Option<EditorAction> {
     if state.macro_state.is_recording() {
         state.macro_state.record_key(key.clone());
     }
@@ -25,7 +22,10 @@ pub fn handle_command_key(
         CmdlineAction::DeleteBack => {
             if state.command_line.cursor_pos > 0 {
                 state.command_line.cursor_pos -= 1;
-                state.command_line.content.remove(state.command_line.cursor_pos);
+                state
+                    .command_line
+                    .content
+                    .remove(state.command_line.cursor_pos);
             } else {
                 // Empty command line + backspace → cancel
                 state.command_line.deactivate();
@@ -114,30 +114,34 @@ fn execute_command_line(
     content: &str,
 ) -> Option<EditorAction> {
     match prefix {
-        ":" => {
-            match parse_command(content) {
-                Ok(cmd) => match dispatch_command(state, cmd) {
-                    Ok(()) => None,
-                    Err(e) => {
-                        state.set_message(format!("E: {e}"));
-                        None
-                    }
-                },
+        ":" => match parse_command(content) {
+            Ok(cmd) => match dispatch_command(state, cmd) {
+                Ok(()) => None,
                 Err(e) => {
                     state.set_message(format!("E: {e}"));
                     None
                 }
+            },
+            Err(e) => {
+                state.set_message(format!("E: {e}"));
+                None
             }
-        }
+        },
         "/" => {
             state.search.pattern = Some(content.to_string());
             state.search.direction = Direction::Forward;
-            Some(EditorAction::Search(content.to_string(), Direction::Forward))
+            Some(EditorAction::Search(
+                content.to_string(),
+                Direction::Forward,
+            ))
         }
         "?" => {
             state.search.pattern = Some(content.to_string());
             state.search.direction = Direction::Backward;
-            Some(EditorAction::Search(content.to_string(), Direction::Backward))
+            Some(EditorAction::Search(
+                content.to_string(),
+                Direction::Backward,
+            ))
         }
         _ => None,
     }
@@ -147,10 +151,18 @@ fn execute_command_line(
 fn word_back(s: &str, pos: usize) -> usize {
     let bytes: Vec<u8> = s.bytes().collect();
     let mut i = pos;
-    while i > 0 && bytes.get(i - 1).map_or(false, |b| (*b as char).is_whitespace()) {
+    while i > 0
+        && bytes
+            .get(i - 1)
+            .is_some_and(|b| (*b as char).is_whitespace())
+    {
         i -= 1;
     }
-    while i > 0 && bytes.get(i - 1).map_or(false, |b| !(*b as char).is_whitespace()) {
+    while i > 0
+        && bytes
+            .get(i - 1)
+            .is_some_and(|b| !(*b as char).is_whitespace())
+    {
         i -= 1;
     }
     i

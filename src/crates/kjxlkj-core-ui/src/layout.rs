@@ -83,7 +83,12 @@ pub fn standard_layout(width: u16, height: u16) -> Vec<LayoutNode> {
     let mut y = 0u16;
 
     // Tab line at top
-    nodes.push(LayoutNode { id, kind: ComponentKind::TabLine, rect: Rect::new(0, y, width, 1), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::TabLine,
+        rect: Rect::new(0, y, width, 1),
+        visible: true,
+    });
     id += 1;
     y += 1;
 
@@ -91,29 +96,54 @@ pub fn standard_layout(width: u16, height: u16) -> Vec<LayoutNode> {
 
     // Sign column (1 col)
     let sign_w = 2u16.min(width);
-    nodes.push(LayoutNode { id, kind: ComponentKind::SignColumn, rect: Rect::new(0, y, sign_w, body_h), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::SignColumn,
+        rect: Rect::new(0, y, sign_w, body_h),
+        visible: true,
+    });
     id += 1;
 
     // Line numbers (4 cols)
     let num_x = sign_w;
     let num_w = 4u16.min(width.saturating_sub(num_x));
-    nodes.push(LayoutNode { id, kind: ComponentKind::LineNumbers, rect: Rect::new(num_x, y, num_w, body_h), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::LineNumbers,
+        rect: Rect::new(num_x, y, num_w, body_h),
+        visible: true,
+    });
     id += 1;
 
     // Buffer view (remaining)
     let buf_x = num_x + num_w;
     let buf_w = width.saturating_sub(buf_x);
-    nodes.push(LayoutNode { id, kind: ComponentKind::BufferView, rect: Rect::new(buf_x, y, buf_w, body_h), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::BufferView,
+        rect: Rect::new(buf_x, y, buf_w, body_h),
+        visible: true,
+    });
     id += 1;
     y += body_h;
 
     // Status line
-    nodes.push(LayoutNode { id, kind: ComponentKind::StatusLine, rect: Rect::new(0, y, width, 1), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::StatusLine,
+        rect: Rect::new(0, y, width, 1),
+        visible: true,
+    });
     id += 1;
     y += 1;
 
     // Command line
-    nodes.push(LayoutNode { id, kind: ComponentKind::CommandLine, rect: Rect::new(0, y, width, 1), visible: true });
+    nodes.push(LayoutNode {
+        id,
+        kind: ComponentKind::CommandLine,
+        rect: Rect::new(0, y, width, 1),
+        visible: true,
+    });
     let _ = id;
 
     nodes

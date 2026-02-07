@@ -58,8 +58,20 @@ mod tests {
     #[test]
     fn in_viewport() {
         assert!(check_cursor_in_viewport(Position::new(5, 3), 0, 24, 0, 80));
-        assert!(!check_cursor_in_viewport(Position::new(25, 0), 0, 24, 0, 80));
-        assert!(!check_cursor_in_viewport(Position::new(5, 81), 0, 24, 0, 80));
+        assert!(!check_cursor_in_viewport(
+            Position::new(25, 0),
+            0,
+            24,
+            0,
+            80
+        ));
+        assert!(!check_cursor_in_viewport(
+            Position::new(5, 81),
+            0,
+            24,
+            0,
+            80
+        ));
     }
 
     #[test]
