@@ -1,8 +1,7 @@
+#[cfg(test)]
+use crate::pty_harness::validate_scenario;
 /// PTY regression test scenarios covering high-priority E2E items.
-
-use crate::pty_harness::{
-    validate_scenario, PtyAction, PtyExpectation, PtyScenario,
-};
+use crate::pty_harness::{PtyAction, PtyExpectation, PtyScenario};
 
 pub(crate) fn insert_newline_scenario() -> PtyScenario {
     let mut s = PtyScenario::new("insert_newline");

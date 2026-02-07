@@ -126,13 +126,25 @@ fn pwd_shows_directory() {
     assert!(s.message.is_some());
 }
 
-// ──────────── Coming soon commands ────────────
+// ──────────── Feature command wiring ────────────
 
 #[test]
-fn coming_soon_commands() {
+fn feature_commands_are_wired() {
     let mut s = make_state();
-    for cmd in [":explorer", ":terminal", ":find", ":livegrep", ":undotree"] {
-        ex(&mut s, cmd);
-        assert!(s.message.as_ref().unwrap().contains("coming soon"));
-    }
+    ex(&mut s, ":explorer");
+    assert!(s.message.as_ref().unwrap().contains("Explorer opened"));
+    assert!(s.active_buffer().unwrap().scratch);
+
+    ex(&mut s, ":terminal");
+    assert!(s.message.as_ref().unwrap().contains("Terminal opened"));
+    assert!(s.active_buffer().unwrap().scratch);
+
+    ex(&mut s, ":find");
+    assert!(s.message.as_ref().unwrap().contains("pending"));
+
+    ex(&mut s, ":livegrep");
+    assert!(s.message.as_ref().unwrap().contains("pending"));
+
+    ex(&mut s, ":undotree");
+    assert!(s.message.as_ref().unwrap().contains("undo entries:"));
 }

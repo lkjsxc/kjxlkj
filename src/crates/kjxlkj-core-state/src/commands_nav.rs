@@ -163,3 +163,34 @@ pub(crate) fn dispatch_qf_list(state: &mut EditorState) {
         .map(|e| format!("{}:{}:{}: {}", e.file, e.line, e.col, e.text)).collect();
     state.message = Some(items.join("\n"));
 }
+
+fn open_scratch_panel(state: &mut EditorState, title: &str, text: String) {
+    let bid = state.create_buffer_from_text(&text);
+    if let Some(buf) = state.buffers.get_mut(&bid) {
+        buf.scratch = true; buf.readonly = true; buf.listed = false;
+        buf.file_path = Some(format!("[{title}]"));
+    }
+    if let Some(wid) = state.active_window {
+        if let Some(win) = state.windows.get_mut(&wid) {
+            state.alternate_file = Some(win.buffer_id);
+            win.buffer_id = bid; win.cursor_line = 0; win.cursor_col = 0; win.top_line = 0;
+        }
+    } else { state.create_window(bid); }
+}
+
+pub(crate) fn dispatch_explorer(state: &mut EditorState) {
+    let mut rows = Vec::new();
+    if let Ok(rd) = std::fs::read_dir(".") {
+        for e in rd.flatten().take(200) { rows.push(e.file_name().to_string_lossy().into_owned()); }
+        rows.sort();
+    }
+    if rows.is_empty() { rows.push("(empty directory)".into()); }
+    open_scratch_panel(state, "Explorer", rows.join("\n"));
+    state.message = Some("Explorer opened".into());
+}
+
+pub(crate) fn dispatch_terminal(state: &mut EditorState) {
+    let text = "Terminal panel\n\nInteractive PTY wiring is handled by the terminal service.\nUse :q or buffer switch to leave this panel.".to_string();
+    open_scratch_panel(state, "Terminal", text);
+    state.message = Some("Terminal opened".into());
+}

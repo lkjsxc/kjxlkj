@@ -160,6 +160,6 @@ mod tests {
     fn ansi256_grayscale() {
         let c = ThemeColor::rgb(128, 128, 128);
         let idx = c.to_ansi256();
-        assert!(idx >= 232 && idx <= 255);
+        assert!(idx >= 232);
     }
 }

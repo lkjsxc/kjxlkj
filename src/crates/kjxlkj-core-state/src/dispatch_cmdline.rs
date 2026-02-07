@@ -1,5 +1,6 @@
 //! Command-line mode dispatch: editing, history, execution.
 
+use crate::command_history::CommandHistory;
 use crate::EditorState;
 use kjxlkj_core_types::{Intent, KeyCode, KeyEvent, Mode};
 
@@ -15,7 +16,7 @@ pub fn handle_cmdline_key(state: &mut EditorState, key: &KeyEvent) -> Intent {
         KeyCode::Enter => {
             let text = cl.text.clone();
             let prefix = cl.prefix;
-            if !text.is_empty() { cl.history.push(text.clone()); }
+            if !text.is_empty() { cl.history.push(text.clone()); dedup_history(&mut cl.history); }
             cl.text.clear(); cl.cursor = 0;
             cl.history_idx = None; cl.saved_text = None;
             match prefix {
@@ -73,34 +74,42 @@ pub fn handle_cmdline_key(state: &mut EditorState, key: &KeyEvent) -> Intent {
 }
 
 fn cmdline_history_prev(state: &mut EditorState) {
-    if state.cmdline.history.is_empty() { return; }
-    let idx = match state.cmdline.history_idx {
-        Some(0) => return,
-        Some(i) => i - 1,
-        None => {
-            state.cmdline.saved_text = Some(state.cmdline.text.clone());
-            state.cmdline.history.len() - 1
-        }
-    };
+    let hist = build_history(&state.cmdline.history);
+    if hist.is_empty() { return; }
+    if state.cmdline.history_idx.is_none() { state.cmdline.saved_text = Some(state.cmdline.text.clone()); }
+    let Some(idx) = hist.prev(state.cmdline.history_idx) else { return; };
     state.cmdline.history_idx = Some(idx);
-    state.cmdline.text = state.cmdline.history[idx].clone();
+    state.cmdline.text = hist.get(idx).unwrap_or_default().to_string();
     state.cmdline.cursor = state.cmdline.text.len();
 }
 
 fn cmdline_history_next(state: &mut EditorState) {
-    let idx = match state.cmdline.history_idx { Some(i) => i, None => return };
-    if idx + 1 >= state.cmdline.history.len() {
+    let hist = build_history(&state.cmdline.history);
+    if state.cmdline.history_idx.is_none() { return; }
+    if let Some(next) = hist.next(state.cmdline.history_idx) {
+        state.cmdline.history_idx = Some(next);
+        state.cmdline.text = hist.get(next).unwrap_or_default().to_string();
+    } else {
         state.cmdline.history_idx = None;
         if let Some(saved) = state.cmdline.saved_text.take() {
             state.cmdline.text = saved;
         } else {
             state.cmdline.text.clear();
         }
-    } else {
-        state.cmdline.history_idx = Some(idx + 1);
-        state.cmdline.text = state.cmdline.history[idx + 1].clone();
     }
     state.cmdline.cursor = state.cmdline.text.len();
+}
+
+fn build_history(entries: &[String]) -> CommandHistory {
+    let mut h = CommandHistory::new(entries.len().max(1));
+    for e in entries { h.push(e); }
+    h
+}
+
+fn dedup_history(entries: &mut Vec<String>) {
+    let Some(last) = entries.last().cloned() else { return; };
+    entries.retain(|e| e != &last);
+    entries.push(last);
 }
 
 fn cmdline_complete(state: &mut EditorState) {

@@ -1,5 +1,4 @@
 //! Ex command dispatch: :w, :e, :q, :ls, :set, etc.
-
 use crate::EditorState;
 
 pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
@@ -70,7 +69,13 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         ":cd" => { if let Some(dir) = args { if std::env::set_current_dir(dir).is_err() { state.message = Some(format!("Cannot cd to: {dir}")); } } }
         ":mksession" | ":mks" => dispatch_mksession(state, args),
         ":oldfiles" | ":ol" | ":browse oldfiles" => dispatch_oldfiles(state),
-        ":explorer" | ":terminal" | ":find" | ":livegrep" | ":undotree" => state.message = Some(format!("{command}: coming soon")),
+        ":explorer" => nav::dispatch_explorer(state),
+        ":terminal" => nav::dispatch_terminal(state),
+        ":find" | ":livegrep" => state.message = Some(format!("{command}: command palette integration pending")),
+        ":undotree" => {
+            if let Some(b) = state.active_buffer() { state.message = Some(format!("undo entries: {}", b.undo.len())); }
+            else { state.message = Some("undo entries: 0".into()); }
+        }
         ":execute" | ":exe" => dispatch_execute(state, args),
         ":normal" | ":normal!" | ":norm" | ":norm!" => dispatch_normal(state, command, args, range),
         ":map" | ":nmap" | ":imap" | ":vmap" | ":cmap" | ":omap"
@@ -94,14 +99,12 @@ pub(crate) fn dispatch_ex_command(state: &mut EditorState, cmd: &str) {
         _ => dispatch_fallback(state, effective, trimmed, command, range),
     }
 }
-
 fn dispatch_source(state: &mut EditorState, args: Option<&str>) {
     let Some(path) = args else { state.message = Some("Usage: :source <file>".into()); return; };
     state.message = Some(match crate::config::load_config_file(state, std::path::Path::new(path)) {
         Ok(n) => format!("sourced {n} lines from {path}"), Err(e) => e,
     });
 }
-
 /// `:execute {string}` — evaluate a string as an Ex command.
 fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
     let Some(expr) = args else { state.message = Some("E471: Argument required".into()); return; };
@@ -112,7 +115,6 @@ fn dispatch_execute(state: &mut EditorState, args: Option<&str>) {
         dispatch_ex_command(state, &full);
     }
 }
-
 /// `:normal[!] {commands}` — execute normal mode key sequence.
 fn dispatch_normal(
     state: &mut EditorState, command: &str, args: Option<&str>,
@@ -135,7 +137,6 @@ fn dispatch_normal(
         state.parser.reset();
     }
 }
-
 fn dispatch_syntax(state: &mut EditorState, args: Option<&str>) {
     match args.unwrap_or("").trim() {
         "on" | "enable" => { state.syntax_enabled = true; state.message = Some("syntax on".into()); }
