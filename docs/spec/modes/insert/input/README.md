@@ -8,6 +8,7 @@ Special input handling in insert mode.
 | Document | Content |
 |----------|---------|
 | [insert-digraphs.md](insert-digraphs.md) | Digraph input |
+| [insert-japanese-ime.md](insert-japanese-ime.md) | Japanese IME composition and conversion behavior |
 | [insert-literal.md](insert-literal.md) | Literal input |
 | [insert-special-chars.md](insert-special-chars.md) | Special characters |
 | [insert-unicode.md](insert-unicode.md) | Unicode input |

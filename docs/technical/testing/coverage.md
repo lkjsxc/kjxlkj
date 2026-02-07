@@ -1,75 +1,50 @@
-# Code Coverage Configuration
+# Coverage Posture
 
-Setting up code coverage for kjxlkj development.
+Back: [/docs/technical/testing/README.md](/docs/technical/testing/README.md)
 
-## Tools
+Coverage is a risk signal, not a release criterion by itself.
 
-### cargo-llvm-cov
+## Principles
 
-Recommended tool for Rust coverage.
+| Principle | Guidance |
+|---|---|
+| Behavior-first | Prioritize coverage for critical behaviors and invariants over raw percentages. |
+| Risk-weighted | Higher-risk areas (mode transitions, file write paths, command parsing, viewport logic) require denser tests. |
+| Regression-linked | Fixed bugs MUST add tests in the exact risk area where failure occurred. |
 
+## Suggested targets (non-blocking)
 
-### tarpaulin
+| Area | Suggested line coverage |
+|---|---|
+| Core state/mode/dispatch crates | >= 80% |
+| Text model and editing primitives | >= 80% |
+| Host/input/render integration | >= 70% |
+| Service scaffolding and adapters | >= 65% |
 
-Alternative coverage tool.
+These percentages are advisory. Missing critical scenario tests is unacceptable even with high line coverage.
 
+## Minimum required coverage characteristics
 
-## Basic Usage
+| Characteristic | Requirement |
+|---|---|
+| Mode transitions | Enter/exit paths for Normal/Insert/Visual/Command/Replace are tested. |
+| Cursor invariants | End-exclusive vs end-inclusive clamping is tested. |
+| Wrap/viewport | Long-line wrap and cursor visibility are tested. |
+| Command parsing | Range/address parsing and error flows are tested. |
+| Persisted outcomes | `:w`, `:wq`, and related write paths are tested via file assertions. |
 
-### Generate Report
+## Tooling guidance
 
+`cargo-llvm-cov` is recommended for line/branch coverage collection in Rust workspaces.
 
-### Coverage Formats
+Mutation testing and PTY E2E suites SHOULD be used together with coverage to avoid false confidence.
 
+## Reporting
 
-## Configuration
+Coverage reports SHOULD be stored as CI artifacts when available.
 
-### .cargo/config.toml
+Coverage decreases are acceptable only when:
 
-
-### Exclude Patterns
-
-
-## CI Integration
-
-### GitHub Actions
-
-
-## Coverage Targets
-
-| Component | Target |
-|-----------|--------|
-| Core | 80% |
-| Editor | 70% |
-| Input | 75% |
-| Render | 60% |
-| Features | 70% |
-
-## Viewing Results
-
-### HTML Report
-
-
-### VS Code
-
-Install Coverage Gutters extension for inline display.
-
-## Exclusions
-
-### Ignore Lines
-
-
-### Ignore Functions
-
-
-## Best Practices
-
-1. Run coverage before PRs
-2. Don't chase 100% coverage
-3. Focus on critical paths
-4. Test edge cases
-
-## Makefile Targets
-
-- **coverage** - Runs `cargo llvm-cov --html --open` to generate and view HTML report
-- **coverage-ci** - Runs `cargo llvm-cov --lcov` to generate lcov.info for CI integration
+- risk is unchanged or reduced
+- critical-path behavior coverage is preserved
+- rationale is recorded in the change log or PR description

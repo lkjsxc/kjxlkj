@@ -50,6 +50,18 @@ Deterministic rules for mapping buffers to on-screen window regions.
 | Wrap interaction | When `wrap = true`, `left_col` MUST be `0` (no horizontal scrolling). |
 | Smoothness | If `smooth_follow = true`, smoothing MUST NOT produce any frame where the focused cursor is outside the viewport. |
 
+## Long line overflow behavior (normative)
+
+When `wrap = true`, any line segment that would overflow the right edge of the text area MUST continue on the next display row.
+
+| Condition | Required behavior |
+|---|---|
+| Display width exceeds `text_cols` | Render continuation rows until the entire line is represented. |
+| Wrapped row crosses viewport bottom | Viewport follow MUST keep focused cursor row visible without horizontal scrolling. |
+| Wrap toggled from `false` to `true` | `left_col` MUST reset to `0` and display rows MUST be recomputed before next frame. |
+
+No character data may be dropped due to wrapping.
+
 ## Effective margins
 
 The effective margins MUST be clamped to half the viewport to avoid impossible constraints.

@@ -1,104 +1,72 @@
-# Unicode Input
+# Insert Unicode Input
 
-Entering Unicode characters in insert mode.
+Back: [/docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md)
 
-## Overview
+This document defines Unicode insertion behavior in Insert mode.
 
-Multiple methods for inserting
-any Unicode character.
+## Goals
 
-## Methods Summary
+| Goal | Requirement |
+|---|---|
+| Data integrity | UTF-8 text MUST be preserved without silent corruption. |
+| Determinism | Identical input events MUST yield identical buffer text and cursor state. |
+| Predictability | Width and grapheme behavior MUST be stable enough for cursor/viewport invariants. |
 
-| Method          | Syntax              | Example      |
-|-----------------|---------------------|--------------|
-| Digraph         | `<C-k>{ab}`        | `<C-k>a:`→ä  |
-| Hex 2-digit     | `<C-v>x{hh}`       | `x41`→A      |
-| Unicode BMP     | `<C-v>u{hhhh}`     | `u03b1`→α    |
-| Unicode Full    | `<C-v>U{hhhhhhhh}` | `U0001F600`→😀|
-| Decimal         | `<C-v>{nnn}`       | `65`→A       |
+## Supported entry paths
 
-## Unicode Code Points
+| Path | Requirement |
+|---|---|
+| Direct character input | Printable Unicode committed by terminal/IME MUST insert at the current insertion point. |
+| Literal insertion (`Ctrl-v` forms) | Numeric or escaped literal forms MUST insert the intended Unicode scalar value. |
+| Digraph insertion (`Ctrl-k`) | Registered digraphs MUST map to deterministic Unicode output. |
+| Register insertion (`Ctrl-r`) | Register text MUST insert exactly as stored UTF-8 bytes. |
 
-### Basic Multilingual Plane
+## Cursor and grapheme semantics
 
+| Topic | Requirement |
+|---|---|
+| Insert cursor model | Insert mode uses end-inclusive insertion point (`0..N`). |
+| Grapheme atomicity | Delete/backspace operations SHOULD treat one grapheme cluster as one visible unit. |
+| Normal-mode clamp | Exiting Insert MUST clamp cursor back to end-exclusive model. |
 
-Range: U+0000 to U+FFFF
+## Width and display interaction
 
-### Supplementary Planes
+| Character class | Expected display behavior |
+|---|---|
+| ASCII and most Latin | width 1 |
+| Many CJK characters | width 2 |
+| Combining marks and joiners | width 0 by themselves; modify previous grapheme |
 
+Width differences MUST NOT break cursor visibility or viewport clamping.
 
-Range: U+10000 to U+10FFFF
+## Composition safety
 
-## Common Unicode Ranges
+Insert operations MUST separate two phases:
 
-### Latin Extended
+| Phase | Requirement |
+|---|---|
+| Preedit/composition | In-progress composition text MUST NOT be committed as buffer text yet. |
+| Commit | Final committed text MUST be inserted atomically at the insertion point. |
 
+`Esc` during composition MUST cancel preedit first. Mode transition out of Insert occurs only after composition is cancelled or committed.
 
-Examples:
+## Normalization policy
 
-### Greek
+The editor MUST NOT silently normalize buffer text between NFC/NFD during ordinary typing.
 
+If search or compare paths use normalization, the behavior MUST be documented and test-covered separately.
 
-Examples:
+## Required regression tests
 
-### Cyrillic
+| Category | Required cases |
+|---|---|
+| Unit/integration | wide character insertion, combining mark insertion, literal insertion, digraph insertion |
+| Boundary | insertion at start/end of line, empty line, and long wrapped lines |
+| Mode transition | repeated Insert enter/exit with Unicode text never leaves floating Normal-mode cursor |
+| PTY E2E | interactive Unicode typing path writes expected UTF-8 bytes to disk via `:wq` |
 
+## Related
 
-Examples:
-
-### Mathematical
-
-
-Examples:
-
-### Arrows
-
-
-Examples:
-
-### Box Drawing
-
-
-Examples:
-
-### Currency
-
-
-Examples:
-
-### Emoji
-
-
-Examples:
-
-## Input Methods
-
-### Quick Reference
-
-Find code point:
-
-### Unicode Name Search
-
-
-### Emoji Picker
-
-
-## Composed Characters
-
-### Combining Diacritics
-
-
-Example (a + combining acute):
-
-### Precomposed
-
-
-Prefer precomposed when available.
-
-## Normalization
-
-### Forms
-
-- NFC: Composed (canonical)
-- NFD: Decomposed
-
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Cursor contract: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- Unicode implementation guidance: [/docs/technical/unicode.md](/docs/technical/unicode.md)

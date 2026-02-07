@@ -1,62 +1,88 @@
-# Testing
+# Testing Contract
 
-## Strategy
+Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
-| Layer | Focus |
+This document is the normative testing contract for reconstruction.
+
+## Goals
+
+| Goal | Requirement |
 |---|---|
-| Core unit tests | Pure edits, mode transitions, undo determinism. |
-| Service unit tests | Protocol parsing, ranking logic, caching. |
-| Integration tests | Message ordering, cancellation, backpressure behavior. |
-| Golden UI tests | Snapshot-to-frame stability for critical views. |
-| Interactive PTY E2E | Real TUI path: input decode → dispatch → render, verified via persisted outputs. |
+| Correctness | Critical editor behavior MUST be guarded by deterministic automated tests. |
+| Reproducibility | Test outcomes MUST be stable across repeated local runs in the same environment. |
+| Regression resistance | Every fixed bug MUST gain at least one test that fails on prior broken behavior. |
 
-## Async correctness requirements
+## Required test layers
 
-| Concern | Requirement |
+| Layer | Required purpose |
 |---|---|
-| Cancellation | Tests MUST assert that cancelled requests do not mutate visible state. |
-| Staleness | Tests MUST ensure stale results are discarded by version checks. |
-| Backpressure | Tests MUST ensure overload is visible and does not crash. |
-| Recovery | Tests MUST cover service restart and continued editing. |
+| Unit | Validate local invariants and parsing/algorithm behavior. |
+| Integration | Validate multi-module state transitions and command flows. |
+| Headless E2E | Validate editor workflows without terminal transport variance. |
+| PTY E2E | Validate real interactive path: terminal input decode -> dispatch -> render side effects. |
 
-## Determinism checks
+## Determinism rules
 
-Given identical input streams, the core MUST yield identical serialized edit logs and identical snapshots (ignoring wall-clock timestamps).
+| Rule | Requirement |
+|---|---|
+| Time bounds | Tests MUST use bounded waits and deterministic deadlines. |
+| Verification target | Prefer persisted state assertions (file contents, serialized state) over screen scraping. |
+| Ordering | Input sequence ordering MUST be asserted for burst scenarios. |
+| Failure behavior | On timeout, tests MUST fail with actionable diagnostic context. |
 
-## End-to-End testing (normative)
+## Baseline implemented suites (reference mapping)
 
-### Two complementary E2E harnesses
+| Area | Existing suites |
+|---|---|
+| Core workflows and E2E | `src/crates/kjxlkj-core/tests/e2e.rs`, `src/crates/kjxlkj-core/tests/extended_e2e.rs` |
+| Cursor/viewport regressions | `src/crates/kjxlkj-core-state/tests/viewport_regression.rs`, `src/crates/kjxlkj-core-state/tests/viewport_scroll_probes.rs` |
+| Command parsing/execution | `src/crates/kjxlkj-core-state/tests/command_parsing.rs`, `src/crates/kjxlkj-core-state/tests/cmdline_options.rs` |
+| Input and keybinding behavior | `src/crates/kjxlkj-input/tests/extended.rs`, `src/crates/kjxlkj-input/tests/comprehensive.rs` |
+| PTY harness and regressions | `src/crates/kjxlkj-host/src/pty_harness.rs`, `src/crates/kjxlkj-host/src/pty_regressions.rs` |
 
-| Harness | What it validates | When it is required |
-|---|---|---|
-| Headless E2E | Core state machine correctness without terminal I/O | Always (fast, deterministic) |
-| PTY-driven E2E | The real interactive path including input decoding and render loop | Required for any bug that could be caused by terminal decoding, key-chord parsing, or focus/routing |
+## Mandatory regression scenarios
 
-The headless harness contract and script schema are recorded in:
+These scenarios are mandatory and must remain green.
 
-- [/docs/reference/CONFORMANCE_COMMANDS_TESTING.md](/docs/reference/CONFORMANCE_COMMANDS_TESTING.md)
+| Scenario | Defining spec |
+|---|---|
+| Append at EOL (`a`) and return with `Esc` never leaves floating cursor | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
+| Long line overflow wraps to next display row by default | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
+| Leader feature chords remain reachable (`<leader>e`, `<leader>t`) | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
+| Insert `Enter` persists newline through `:wq` | [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md) |
+| tmux/multiplexer smoke edit-save flow | [/docs/spec/features/terminal/tmux.md](/docs/spec/features/terminal/tmux.md) |
+| Japanese/Unicode commit and cancel behavior | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) |
 
-### PTY E2E design rules
+## Expert boundary E2E suite (required additions)
 
-PTY E2E tests MUST:
+The reconstruction plan MUST include these boundary PTY E2E tests even when headless suites already pass.
 
-- drive the real binary through a pseudo-terminal (not internal state injection)
-- avoid screen scraping when possible; prefer verifying by writing to disk (`:w`, `:wq`) and reading the file back
-- use deterministic timeouts (no unbounded waits; avoid fixed sleeps when possible)
-- fix environment where needed (`TERM`, locale) to reduce terminal variance
+| Test ID | Boundary focus |
+|---|---|
+| `pty_append_eol_mode_churn` | repeated `a` and `Esc` with mixed ASCII/CJK text |
+| `pty_wrap_long_cjk_line` | very long Japanese line wraps and remains navigable |
+| `pty_leader_vs_ime_space` | IME conversion `Space` does not trigger leader mapping |
+| `pty_tmux_detach_resume` | editor remains consistent after multiplexer detach/attach |
+| `pty_resize_storm_with_wrap` | rapid terminal resizes keep cursor visible and state coherent |
 
-### Required PTY E2E regressions (minimum set)
+## Incremental verification order
 
-These scenarios are required because they commonly pass in headless tests while failing interactively:
+| Phase | Gate |
+|---|---|
+| Per-leaf implementation | local unit + integration suites for touched area |
+| Per-feature completion | headless E2E plus any required PTY regressions |
+| Iteration close | full test suite and conformance/limitations update |
 
-| Scenario | Behavior verified | Defining spec |
-|---|---|---|
-| Insert newline | `Enter` inserts a newline in Insert mode and persists via `:wq` | [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md) |
-| Leader chords | `<leader>e` and `<leader>t` open explorer and terminal views | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
-| Multi-key sequences | `gg` and other prefix commands are recognized | [/docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md) |
-| Undo/redo | `u` undoes and `Ctrl-r` redoes without dropping input | [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md) |
-| Append at EOL | `a` appends at true end-of-line (no off-by-one) | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
+## Traceability requirement
+
+Each mandatory scenario SHOULD be traceable across three artifacts:
+
+- defining spec document
+- concrete test file/path
+- conformance or limitations entry when applicable
 
 ## Related
 
-- Determinism and ordering: [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- Conformance ledger: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Limitations ledger: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Technical regression guidance: [/docs/technical/testing/regression.md](/docs/technical/testing/regression.md)

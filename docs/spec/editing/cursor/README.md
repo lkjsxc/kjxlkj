@@ -38,9 +38,22 @@ This means:
 - If the cursor is on the last character ($c = N-1$), `a` enters Insert with column $N$ (append at end-of-line).
 - If the line is empty ($N=0$), `a` enters Insert at column 0.
 
+### Repeated `a` then `Esc` regression guard (normative)
+
+If the user repeatedly presses `a` and then exits Insert with `Esc`, the resulting Normal-mode cursor MUST clamp to the last character of the line (or `0` on empty line).
+
+The cursor MUST NOT remain at a floating end-inclusive column in Normal mode.
+
+| Line length | Expected Normal-mode column after `a ... Esc` |
+|---|---|
+| `N = 0` | `0` |
+| `N > 0` | `N - 1` |
+
 ## Mode transition clamping
 
 When transitioning into an end-exclusive mode (Normal/Visual/Replace), the cursor MUST be clamped into the end-exclusive range for the active buffer/line.
+
+This clamping rule is mandatory even after rapid mode churn (`a`, typed characters, `Esc`, repeated many times).
 
 ## Related documentation
 

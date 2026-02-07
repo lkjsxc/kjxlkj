@@ -21,6 +21,8 @@ Examples of good regression guards:
 - “no input dropped” under typing/scroll/resize storms
 - viewport/cursor visibility invariants under resize and long-line navigation
 - deterministic headless scripts for bug repros (stable E2E surface)
+- multiplexer PTY smoke flows (tmux/WezTerm) for attach/detach and key-latency regressions
+- Japanese/IME conversion commit/cancel behavior with persisted file assertions
 
 When a bug is fixed:
 
@@ -63,4 +65,3 @@ When a regression is found, record:
 If user-visible behavior is intentionally degraded, update:
 
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-

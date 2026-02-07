@@ -19,3 +19,4 @@ These documents specify:
 - Service boundaries and contracts
 - Observability and supervision expectations
 - Testing strategy that validates async behavior and determinism
+- Required regression traceability from specs to concrete automated tests

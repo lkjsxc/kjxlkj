@@ -21,6 +21,7 @@ Integrated terminal and external tool features.
 | Send to terminal | Execute selection in terminal |
 | Terminal navigation | Vi-like scrollback navigation |
 | Exit handling | Clean process termination |
+| Multiplexer interoperability | Supports pane layouts, tab-like windows, and virtual-display sessions via external multiplexer contract |
 
 ## Keybindings
 
@@ -33,3 +34,4 @@ Integrated terminal and external tool features.
 
 - Features overview: [docs/spec/features/README.md](/docs/spec/features/README.md)
 - Window management: [docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+- Multiplexer contract: [/docs/spec/features/terminal/tmux.md](/docs/spec/features/terminal/tmux.md)

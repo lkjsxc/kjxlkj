@@ -2,12 +2,10 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-## Purpose
+Verification records and compliance checks.
 
-Store audit records from verification waves and conformance checks.
+## Active references
 
-## Entries
+- Reconstruction consistency audits: [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audits/README.md)
 
-| Audit | Scope |
-|---|---|
-| [iteration-thirty-six.md](iteration-thirty-six.md) | Iteration 36 compliance audit |
+Iteration-specific deep logs should be pruned after their essential constraints are promoted into canonical docs.

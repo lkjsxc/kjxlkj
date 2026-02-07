@@ -1,104 +1,69 @@
-# Unicode and Text Semantics (Implementation Guidance)
+# Unicode and Multilingual Text Guidance
 
 Back: [/docs/technical/README.md](/docs/technical/README.md)
-Guidance for implementing predictable Unicode behavior in a terminal editor.
 
-Status note: this document describes target behavior and common pitfalls. The current shipped surface is tracked in:
+This document translates the Unicode specs into implementation guidance.
 
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+## Canonical behavior sources
 
-## Goals
+- [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
+- [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
+- [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 
-- Never corrupt user text (UTF-8 in, UTF-8 out).
-- Keep cursor/motion semantics deterministic and panic-free.
-- Separate “text indexing” (core) from “display width” (renderer).
-- Make behavior testable with deterministic fixtures.
+## Implementation split
 
-Related (cursor semantics): [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+| Concern | Owner |
+|---|---|
+| UTF-8 storage and edits | core text model |
+| Cursor semantics and mode clamping | core state/mode logic |
+| Width and wrapped row layout | renderer + viewport logic |
+| Terminal/IME event decoding | host/input layer |
 
-## Indexing model
+## Required invariants
 
-The editor needs a stable internal indexing model that does not depend on terminal rendering.
+| Invariant | Why it matters |
+|---|---|
+| Buffer bytes remain valid UTF-8 | prevents corruption and crashes on save/reload |
+| Insert to Normal transition always clamps to end-exclusive cursor | prevents floating cursor defects (`a ... Esc`) |
+| Wrap uses display width, not raw byte count | prevents off-screen drift on CJK and emoji lines |
+| Composition preedit is not committed early | prevents ghost text and duplicated Japanese input |
 
-Recommended split:
+## Japanese input guidance
 
-| Concern | Owner | Notes |
-|---|---|---|
-| Text storage | Core | stores UTF-8; supports edits and line access |
-| Cursor/motions | Core | operates on text indices, not cell widths |
-| Display width | Renderer | determines how many terminal cells a slice occupies |
+| Topic | Guidance |
+|---|---|
+| Preedit lifecycle | model preedit as transient state in input layer or host bridge |
+| Commit event | apply as one atomic insertion transaction |
+| Cancel path | clear transient state without touching committed buffer |
+| Leader safety | suppress mapping expansion for composition-only events |
 
-Implementation implication: core operations should avoid “scan the whole line for widths” unless explicitly required.
+## Long-line behavior
 
-## Grapheme clusters (user-visible “characters”)
+When `wrap = true`, long lines MUST wrap to the next display row regardless of script.
 
-Many user-perceived characters are composed of multiple Unicode scalar values (code points):
+Implementations SHOULD avoid full-line remeasurement on every frame by caching grapheme/width slices per visible window span.
 
-- combining marks (e.g., base letter + accent)
-- emoji ZWJ sequences
-- regional indicator pairs (flags)
+## Regression design
 
-Target rule:
+Minimum regression classes:
 
-- Motions and “delete char” operations should treat a grapheme cluster as the smallest user-visible unit.
+| Class | Example |
+|---|---|
+| Cursor clamp regression | repeated `a`, type text, `Esc`, cursor never beyond EOL in Normal mode |
+| IME conversion regression | conversion candidate cancel/commit behavior remains deterministic |
+| Width regression | mixed Japanese + ASCII line stays navigable with stable wrapping |
+| Persistence regression | file written with `:wq` preserves expected UTF-8 bytes |
 
-If the implementation is scalar-value-based (temporarily), the gap MUST be recorded as a limitation because it changes observable editing behavior.
+## Current quality gate
 
-## Display width
+Reconstruction SHOULD include:
 
-Terminal editors must handle both:
+- unit and integration tests for grapheme/width-aware cursor behavior
+- PTY E2E tests for Unicode typing and Japanese composition paths
+- limitation entry if any IME path is not automated on current platform
 
-- width-1 characters (most ASCII)
-- width-2 characters (many CJK and some emoji)
-- width-0 characters (combining marks, zero-width joiner)
+## Related
 
-Important: terminal width is not purely Unicode-derived; it can vary by terminal emulator, font, and settings.
-
-Target posture:
-
-- use a Unicode-width model for baseline behavior
-- accept that exact glyph width may vary and design clamping/scrolling to be robust
-
-## Control characters and line endings
-
-Suggested display policy (target):
-
-| Input | Recommended display | Notes |
-|---|---|---|
-| `\\t` | configurable (spaces or visible marker) | renderer concern |
-| `\\r` | visible marker (e.g., `^M`) | helps debug CRLF issues |
-| `\\0` | visible marker (e.g., `^@`) | avoid embedding NUL into terminal output |
-
-File input may contain CRLF. The editor should define a deterministic policy:
-
-- either normalize to `\\n` in-memory (and record that in docs), or
-- preserve original line endings and write them back
-
-Whatever is chosen MUST be consistent and test-covered.
-
-## Normalization
-
-Unicode text can exist in multiple canonically equivalent forms (NFC/NFD).
-
-Target guidance:
-
-- do not silently normalize buffer contents during editing
-- if search/case-folding uses normalization, document it and make it deterministic
-
-## Bidirectional text
-
-Bidi behavior is complex and should be treated as a separately specified feature:
-
-- [/docs/technical/bidi.md](/docs/technical/bidi.md)
-
-## Testing (recommended)
-
-Unicode behavior should be locked down with explicit tests that cover:
-
-- cursor movement across combining sequences
-- insertion/deletion around ZWJ emoji sequences
-- wide-character display width affecting viewport clamping
-- CRLF/`^M` handling policy
-
-If terminals differ, tests should target the core semantics (indices and invariants), not pixel-perfect terminal output.
+- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- Known gaps ledger: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

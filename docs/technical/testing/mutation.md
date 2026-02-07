@@ -1,97 +1,45 @@
-# Mutation Testing
+# Mutation Testing Guidance
 
-Verify test quality with mutation testing.
+Back: [/docs/technical/testing/README.md](/docs/technical/testing/README.md)
 
-## Overview
+Mutation testing validates whether tests can detect realistic logic defects.
 
-Mutation testing modifies code to check if tests
-catch the changes. Uncaught mutations indicate
-weak tests.
+## Purpose
 
-## Tools
+| Outcome | Meaning |
+|---|---|
+| Killed mutant | Existing tests detected the behavior change. |
+| Survived mutant | Test suite likely has a coverage or assertion gap. |
+| Timeout mutant | Mutation produced non-terminating path; investigate test timeout handling. |
 
-### cargo-mutants
+## Recommended tooling
 
+Use Rust mutation tooling (for example `cargo-mutants`) against focused crates first, then broaden scope.
 
-## Basic Usage
+## Where mutation testing adds the most value
 
-### Run All Mutations
+| Area | Why |
+|---|---|
+| Command parser and range parser | Small logic changes can silently alter semantics. |
+| Cursor and mode transitions | Off-by-one mutations are common and high-impact. |
+| Search/substitute flags | Branch behavior is dense and easy to under-test. |
+| Viewport follow and wrap logic | Boundary conditions are difficult and regression-prone. |
 
+## Execution strategy
 
-### Specific Module
+| Step | Guidance |
+|---|---|
+| Scope selection | Start with touched modules and known bug-prone areas. |
+| Baseline run | Ensure ordinary tests pass before running mutation suite. |
+| Triage | For each survived mutant, decide: add test, or classify as equivalent. |
+| Follow-up | If equivalent, document rationale; otherwise add failing test and fix. |
 
+## CI posture
 
-## Output
+Mutation testing SHOULD run on schedule or pre-release, not necessarily every commit.
 
-### Terminal
+If runtime cost is high, use diff-scoped mutation runs for fast feedback and periodic full runs for confidence.
 
+## Quality gate
 
-### Summary
-
-
-## Configuration
-
-### mutants.toml
-
-
-## Mutation Types
-
-| Mutation | Example |
-|----------|---------|
-| Replace operator | `+` → `-` |
-| Negate condition | `>` → `<=` |
-| Replace constant | `1` → `0` |
-| Remove statement | Delete line |
-| Replace return | `true` → `false` |
-
-## Interpreting Results
-
-### Killed Mutants
-
-Tests detected the change. Good.
-
-### Survived Mutants
-
-Tests didn't catch change. Review needed.
-
-### Timeout Mutants
-
-Mutant caused infinite loop. Usually OK.
-
-## Strategies
-
-### When to Run
-
-- Before releases
-- After major refactors
-- Weekly in CI
-
-### Focus Areas
-
-1. Business logic
-2. Parsing code
-3. State transitions
-4. Edge cases
-
-## CI Integration
-
-### GitHub Actions
-
-
-## Improving Score
-
-### Survived Mutant
-
-
-## Performance
-
-### Parallel Execution
-
-
-### Incremental
-
-
-## Makefile Targets
-
-- **mutants** - Runs full mutation testing with `cargo mutants`
-- **mutants-fast** - Tests only mutations in recent changes with `--in-diff HEAD~1`
+A change touching high-risk logic SHOULD NOT be considered complete when obvious non-equivalent mutants survive in that area.

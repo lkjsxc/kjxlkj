@@ -1,92 +1,99 @@
-# Terminal Multiplexer Integration (tmux reference)
+# Terminal Multiplexer Contract
 
 Back: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 
-This document specifies how kjxlkj interoperates with an **external terminal multiplexer**.
+This document defines the required behavior when `kjxlkj` is used with an external terminal multiplexer.
 
-The editor’s own window/tabs system is an internal multiplexer for splits + embedded terminals; a terminal multiplexer adds capabilities that a single TUI process cannot provide reliably (multi-client attach/detach, “virtual displays”, persistent workspaces).
+## Scope
 
-## Required multiplexer capabilities (workflow contract)
+`kjxlkj` MUST be fully usable in two layouts:
 
-The supported terminal multiplexer MUST provide:
+- standalone terminal session
+- nested inside a multiplexer session (for example tmux or WezTerm)
 
-| Capability | Meaning in practice | tmux concept (reference) |
-|---|---|---|
-| Freely change layouts | Split panes, resize, and apply preset layouts quickly | panes + layouts |
-| Multiple editor screens and terminals | Run multiple `kjxlkj` instances and multiple shells concurrently | windows + panes |
-| Tabs like a web browser | Named, reorderable, closable tabs; fast switching | windows |
-| Virtual displays | Separate workspaces that can be switched and persisted | sessions |
-| Attach/detach | Resume work from a different terminal later | clients + sessions |
+This contract is normative for reconstruction.
 
-## Supported multiplexers
+## Required multiplexer capabilities
 
-| Multiplexer | Status | Notes |
-|---|---|---|
-| tmux | Reference implementation | This document uses tmux terminology for concreteness. |
-| GNU screen | Compatible subset | May lack modern ergonomics; treat as “best effort”. |
-| WezTerm | Supported | Provides tabs/panes and “workspaces” similar to sessions. |
+The multiplexer used with `kjxlkj` MUST support all capabilities below.
 
-## Key conflict policy (normative)
-
-- tmux prefix MUST NOT be `Space` (reserved as kjxlkj `<leader>` by default).
-- tmux prefix SHOULD NOT be `Ctrl-w` (reserved by kjxlkj for window commands).
-- tmux prefix SHOULD remain `Ctrl-b` unless the user has a strong reason to change it.
-- When conflicts exist, prefer changing tmux bindings over changing kjxlkj core navigation/editing keys.
-
-## Terminal compatibility requirements (normative)
-
-When kjxlkj is run inside a multiplexer:
-
-| Concern | Requirement |
+| Capability | Required behavior |
 |---|---|
-| Escape/meta latency | Multiplexer configuration SHOULD avoid large `escape-time` delays so `Esc` and Alt/Meta chords do not feel laggy. |
-| True color | The environment SHOULD provide 24-bit color so themes render correctly. |
-| Cursor shape | Cursor shape changes (Normal/Insert/Replace) SHOULD remain visible; if not possible, the editor MUST still be usable. |
-| Clipboard | OSC52 copy SHOULD work through the multiplexer to enable remote/persisted clipboard flows. |
-| Focus/resize events | Focus and resize events SHOULD be delivered; missing focus MUST NOT break correctness. |
-| No mouse support | Mouse input is ignored by kjxlkj by policy; multiplexer mouse features MUST NOT be required for usability. |
+| Free layout changes | Users can split, close, resize, and rebalance panes during editing without restarting `kjxlkj`. |
+| Multiple editor and terminal panes | Users can keep several `kjxlkj` processes and shell panes open concurrently. |
+| Browser-like tabs | Users can create, close, rename, reorder, and switch tabs/windows quickly. |
+| Virtual displays | Users can maintain multiple named workspaces (session-like units) and switch between them without losing state. |
+| Attach and detach | Users can disconnect and later reconnect to the same running workspace from another terminal/client. |
 
-## Workflow patterns (recommended)
+## Reference mapping (tmux terminology)
 
-### Sessions as “virtual displays”
+| Contract concept | tmux concept |
+|---|---|
+| Browser-like tabs | window |
+| Pane layout | pane + layout |
+| Virtual display | session |
+| Attach/detach | client attach/detach |
 
-Use one multiplexer session per project or context:
+## Keybinding collision policy
 
-- session name encodes project + purpose
-- detaching/attaching is the primary “move this workspace elsewhere” action
-- switching sessions is the primary “switch virtual display” action
+| Rule | Requirement |
+|---|---|
+| Leader protection | Multiplexer prefix MUST NOT use `Space` (reserved for `kjxlkj` leader). |
+| Window command protection | Multiplexer prefix SHOULD NOT use `Ctrl-w`. |
+| Conflict resolution | If a collision exists, prefer remapping multiplexer keys instead of remapping core editor keys. |
 
-### Windows as “tabs”
+## Terminal behavior requirements
 
-Use windows as browser-like tabs:
+When running inside a multiplexer, the combined environment MUST satisfy:
 
-- name windows by task (edit, test, logs, repl)
-- reorder windows to keep the current focus area left-to-right
-- keep one window for “always-on” shells (build/test)
+| Topic | Requirement |
+|---|---|
+| Escape latency | Meta/Escape chords MUST remain responsive; large escape delay settings are not acceptable. |
+| Color fidelity | 24-bit color SHOULD be available so theme semantics remain stable. |
+| Resize/focus routing | Resize and focus events SHOULD propagate; if focus events are unavailable, correctness MUST still hold. |
+| Cursor semantics | Cursor shape differences between modes SHOULD be visible; missing shape support MUST NOT break editing logic. |
+| Clipboard path | Clipboard integration SHOULD support OSC52-compatible copy flows in local/remote sessions. |
 
-### Panes as layouts
+## Layout responsibility split
 
-Use panes for short-lived layout changes:
+| Use case | Preferred layer |
+|---|---|
+| Multiple views in one editor process | `kjxlkj` internal windows/splits |
+| Multiple editor instances, long-lived shells, project dashboards | multiplexer panes/windows/sessions |
 
-- split and resize freely during a task
-- collapse back to a single pane when done
-- prefer multiplexer panes for multiple editor processes; prefer kjxlkj splits for multiple views inside one editor process
+## Canonical workflow patterns
 
-## Nested usage
+| Pattern | Recommended structure |
+|---|---|
+| Session-per-project | One multiplexer session per repository or task family. |
+| Tab-per-context | Separate tabs/windows for edit, test, logs, and repl. |
+| Pane-per-operation | Short-lived pane splits for commands; collapse when done. |
+| Detached continuity | Detach frequently; treat reconnect as normal workflow rather than exception. |
 
-If the integrated terminal runs a shell inside kjxlkj, that shell MAY also run tmux.
+## Nested terminal usage
 
-When nesting:
+If a shell in an integrated terminal starts a multiplexer, three key layers coexist:
 
-- distinguish keybinding layers (tmux prefix vs kjxlkj `<leader>` vs terminal-mode keys)
-- avoid “prefix inside prefix” confusion by using visual cues (statusline/tabline) and consistent naming
+- multiplexer prefix layer
+- `kjxlkj` key layer
+- shell/terminal raw key layer
 
-## Testing requirements (target)
+The implementation MUST keep key parsing deterministic so nested usage never causes random mode changes.
 
-In addition to the PTY E2E tests required by [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md), the project SHOULD include a “multiplexer smoke” PTY E2E that:
+## Required automated tests
 
-- launches a tmux session
-- runs kjxlkj inside it
-- performs a minimal edit + `:wq` flow
+The reconstruction test suite MUST include at least one PTY E2E multiplexer smoke:
 
-This detects environment-sensitive regressions (escape-time, key normalization, focus/resize routing).
+| Scenario | Expected result |
+|---|---|
+| Launch `kjxlkj` inside multiplexer, perform `i`, text input, `Esc`, `:wq` | Persisted file content is correct and process exits cleanly. |
+| Split/resize multiplexer pane during active editor session | Editor remains responsive; no crash or stuck input state. |
+| Attach/detach while editor process remains alive | Session resumes with correct mode and cursor state. |
+
+If platform constraints prevent automated multiplexer tests, the limitation MUST be recorded in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) with an explicit plan to close the gap.
+
+## Related
+
+- Integrated terminal service: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- Window and tabs model: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+- Technical testing requirements: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
