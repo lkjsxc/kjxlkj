@@ -40,7 +40,15 @@ Representative suites:
 - [ ] `pty_tmux_detach_resume`: multiplexer attach/detach preserves interactive correctness.
 - [ ] `pty_resize_storm_with_wrap`: resize storms with wrapping keep cursor visible.
 
-### C. Stability and reproducibility
+### C. Add/maintain multi-window practical-utilization PTY E2E tests
+
+- [ ] `pty_split_edit_write_non_primary`: split, move to non-primary window, edit, `:wq`, and verify persisted content.
+- [ ] `pty_tabs_cycle_edit_persist`: create tabs, switch tabs, edit in each, and verify no state loss on save/quit.
+- [ ] `pty_window_terminal_focus_roundtrip`: open terminal pane from split layout, return focus, continue edit/write flow.
+- [ ] `pty_window_close_rebalance_persistence`: close one split after edits and verify remaining window/tab state and file output are coherent.
+- [ ] `pty_multiplexer_multi_window_resume`: after tmux detach/attach, split/tab layout and cursor focus remain consistent.
+
+### D. Stability and reproducibility
 
 - [ ] Ensure PTY tests use deterministic timeouts and bounded retries.
 - [ ] Ensure test failures report reproduction context (input script, temp file path, final mode).
@@ -48,4 +56,4 @@ Representative suites:
 
 ## Notes for next implementation pass
 
-Boundary PTY E2E items in section B are intentionally left unchecked as standby work for the next implementation wave.
+Boundary PTY E2E items in sections B and C are intentionally left unchecked as standby work for the next implementation wave.

@@ -29,4 +29,4 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
   - window_full.rs: WindowOptions, SignColumn, CloseGuard, check_close_guard, WindowSnapshot, WindowOptionStore
   - 305+ tests total
 - [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
-
+- [x] Handoff gate added: practical multi-window usage is explicitly queued in [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md) and [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md).
