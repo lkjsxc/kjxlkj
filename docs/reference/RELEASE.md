@@ -23,7 +23,7 @@ Use Semantic Versioning:
 
 1. CI is green (see `/docs/reference/CI.md`).
 2. All tests pass (`cargo test --workspace`).
-3. Lints are clean (`cargo clippy --workspace --all-targets -- -D warnings`).
+3. Lints were reviewed (`cargo clippy --workspace --all-targets`) and any accepted warnings are tracked in limitations/log records.
 4. Formatting is clean (`cargo fmt --all -- --check`).
 5. Docs are consistent with the intended release surface:
    - `/README.md` (high-level entrypoint)

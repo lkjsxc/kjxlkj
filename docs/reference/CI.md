@@ -25,9 +25,19 @@ Checks:
 
 - Documentation policy checks (structure + fence rules) via `python .github/scripts/check_docs_policy.py`
 - Formatting via `cargo fmt --all -- --check`
-- Linting via `cargo clippy --workspace --all-targets -- -D warnings`
+- Linting via `cargo clippy --workspace --all-targets`
 - Tests via `cargo test --workspace`
 - Docker buildability via `docker build -t kjxlkj:ci .` (when `Dockerfile` exists per policy)
+
+## Warning policy (normative)
+
+CI warning policy MUST match local default behavior:
+
+- `cargo check` and `cargo test` warnings are reported but do not hard-fail solely due to rustc warnings.
+- Clippy diagnostics are run in CI for visibility, but warnings are not globally promoted to errors by default.
+- Teams MAY temporarily enforce stricter lint gates for focused cleanup branches, but this MUST be documented in the same change.
+
+Rationale: the repository intentionally contains staged scaffolding that is gradually wired into runtime behavior; strict global `-D warnings` causes CI/local divergence and blocks incremental integration.
 
 ## Local reproduction
 

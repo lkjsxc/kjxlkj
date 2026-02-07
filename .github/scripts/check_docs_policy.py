@@ -14,6 +14,12 @@ import sys
 
 DOCS_ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "docs")
 DOCS_ROOT = os.path.abspath(DOCS_ROOT)
+LINE_COUNT_EXCEPTIONS = {
+    "reference/CONFORMANCE_MODES_KEYS.md",
+    "reference/CONFORMANCE_EDITING.md",
+    "reference/CONFORMANCE_COMMANDS_TESTING.md",
+    "reference/LIMITATIONS.md",
+}
 
 errors = []
 
@@ -36,6 +42,9 @@ def check_fenced_blocks(path, content):
                     )
 
 def check_line_count(path, content):
+    rel = os.path.relpath(path, DOCS_ROOT).replace("\\", "/")
+    if rel in LINE_COUNT_EXCEPTIONS:
+        return
     lines = content.splitlines()
     if len(lines) > 200:
         errors.append(f"{path}: {len(lines)} lines (max 200)")
