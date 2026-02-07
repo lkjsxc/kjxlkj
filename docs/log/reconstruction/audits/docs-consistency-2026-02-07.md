@@ -18,6 +18,9 @@ Back: [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audit
 | Repeated `a` then `Esc` cursor clamp requirement is explicit | PASS |
 | Japanese IME composition/cancel semantics are explicit | PASS |
 | TODO includes unchecked standby test items | PASS |
+| CI warning policy matches local default warning behavior | PASS |
+| Limitations entries match current `:explorer` / `:terminal` / `:undotree` behavior | PASS |
+| Docs line-count exceptions are explicit and checker-aligned | PASS |
 
 ## Follow-up
 

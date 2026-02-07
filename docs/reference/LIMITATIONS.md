@@ -77,11 +77,13 @@ All contracts have at minimum a partial test or verification strategy in place.
 ## UX gaps
 
 - No mouse support (by design).
-- Terminal integration (`:terminal`, `<leader>t`) has Terminal mode and service scaffolding but no real PTY spawning yet.
-- File explorer (`:explorer`, `<leader>e`) has tree rendering, input handling, display rows, and open-file intent wiring to `:e` but is not wired into the TUI render loop yet.
+- Terminal integration (`:terminal`, `<leader>t`) now opens a terminal scratch panel buffer, but real PTY process wiring is still pending.
+- File explorer (`:explorer`, `<leader>e`) now opens an explorer scratch panel generated from directory entries, but interactive tree navigation and TUI-side panel rendering are still pending.
 - LSP integration has JSON-RPC protocol types, initialize/didOpen/didChange builders, extended types (hover, signature help, code actions, navigation, rename, code lens, formatting, symbols), and message encoding but is not connected to real language servers.
 - Git integration detects current branch from `.git/HEAD`, has conflict marker detection, diff viewer types, and file indicators but does not run real git commands.
 - Fuzzy finder (`<leader>f`, `<leader>g`) has scoring algorithm but no UI rendering.
+- `:find` and `:livegrep` command entries exist but still route to a pending command-palette integration path.
+- `:undotree` currently reports undo entry count only; interactive tree UI is not implemented.
 - Session persistence (`:mksession`) records metadata and macro key strokes but does not serialize to/restore from disk.
 - Swap files and undo persistence types exist but are not written to disk.
 - Scripting types (completion providers, user commands, user functions, timers) exist but do not execute real script logic.
@@ -122,10 +124,10 @@ All contracts have at minimum a partial test or verification strategy in place.
 - Regex engine (`compile_pattern`, `find_all_matches`, `find_next`, `find_prev`, `translate_vim_pattern`) exists but is not connected to the search/substitute dispatch pipeline.
 - Insert mode extended editing (`delete_word_back`, `delete_to_line_start`, `indent_line`, `dedent_line`, `collect_completions`) exists but is not wired into the insert key handler.
 - Replace mode state (`ReplaceState`, `replace_char_at`, `undo_replace_at`, `apply_single_replace`) exists but is not integrated into the mode dispatch loop.
-- Command history (`CommandHistory` with push/dedup, prev/next, prefix/substring search) exists but is not connected to the command-line input handler.
+- Command history (`CommandHistory` with push/dedup, prev/next, prefix/substring search) is now used by command-line Up/Down navigation, but prefix/substring search bindings are not wired yet.
 - Notification rendering (`render_notification`, `wrap_text`, `max_visible_notifications`, `NotifPosition`) exists but is not connected to the TUI render loop.
 - Cursor visibility (`cursor_for_mode`, `check_cursor_in_viewport`, `check_transition_visibility`, `cursor_shape_escape`) exists but is not wired into mode transitions or the render pass.
-- Text manipulation features (`join_lines`, `convert_case`, `sort_lines`, `trim_trailing`, `reverse_chars`, `reindent`) exist but are not connected to Ex commands (`:sort`, `:s`, `J`, `~`, `gU`, `gu`).
+- Text manipulation features (`join_lines`, `convert_case`, `sort_lines`, `trim_trailing`, `reverse_chars`, `reindent`) are partially connected (`:sort`, `J`, `~`, `gU`, `gu` paths exist) but full coverage and parity are incomplete.
 - Git status model (`FileStatus`, `StatusEntry`, `parse_diff_hunks`, `compute_gutter_signs`, `parse_blame_output`) exists but is not connected to git binary execution or gutter rendering.
 - Terminal emulator grid (`TerminalGrid`, `put_char`, `clear`, `scroll_up`, `parse_ansi_simple`) exists but is not connected to a real PTY or the terminal pane renderer.
 - Highlight groups (`HighlightGroup` 31 variants, `token_to_group`, `highlight_line`) exist but are not connected to tree-sitter or the buffer render pipeline.
@@ -141,7 +143,7 @@ All contracts have at minimum a partial test or verification strategy in place.
 ## Code structure
 
 All source files are under the 200-line guideline from `/docs/policy/STRUCTURE.md`.
-The maximum source file is 199 lines (dispatch_navigation.rs).
+The current maximum source file is 200 lines (`src/crates/kjxlkj-core-state/src/commands.rs`).
 Tests are extracted to integration test files under each crate's `tests/` directory.
 
 ## Syntax commands

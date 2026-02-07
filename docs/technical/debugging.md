@@ -1,99 +1,85 @@
-# Debugging (Runbook)
+# Debugging Runbook
 
 Back: [/docs/technical/README.md](/docs/technical/README.md)
-Practical debugging guidance for kjxlkj development and reconstruction.
 
-Drift rule: when debugging reveals a mismatch between docs and behavior, update the docs first (or record the gap), then adjust the implementation.
-Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+Operational guidance for debugging `kjxlkj` during reconstruction and implementation waves.
 
-## Recommended workflow
+## Core workflow
 
-1. Reproduce in the smallest possible setup (small file, minimal keys).
-2. Convert the reproduction into a headless script (deterministic).
-3. Add a regression test (or a headless/E2E check) before fixing.
-4. Fix, then re-run the entire test suite.
-5. Update conformance/limitations if behavior is user-visible.
+1. Reproduce with the smallest possible input.
+2. Convert reproduction into an automated test (unit/integration/headless/PTy E2E).
+3. Fix implementation.
+4. Re-run target tests and then full verification.
+5. Update conformance/limitations if user-visible behavior changed.
 
-Related: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) and [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+## Local command reference
 
-## Build and run (Rust)
-
-| Goal | How (examples) | Notes |
-|---|---|---|
-| Build | `cargo build` | fastest iteration loop |
-| Run editor | `cargo run -- <path>` | open the given file |
-| Run tests | `cargo test` | run full suite |
-| One test | `cargo test <name>` | filter by test name substring |
-| See test output | `cargo test -- --nocapture` | useful for failing tests |
-
-## Headless execution (recommended for repros)
-
-The binary supports a headless mode that runs a deterministic script:
-
-- `--headless` enables headless execution
-- `--script <path>` points to a script file
-
-This is the preferred way to:
-
-- reproduce editor bugs without terminal state
-- create E2E tests that survive refactors
-
-See current surface: [/docs/reference/CONFORMANCE_COMMANDS_TESTING.md](/docs/reference/CONFORMANCE_COMMANDS_TESTING.md)
-
-## Terminal “stuck state” recovery
-
-If the editor crashes while the terminal is in raw/alternate-screen mode, your shell may look “broken”.
-
-Recommended recovery steps (in order):
-
-1. Press `Enter` a few times (some shells redraw after a newline).
-2. Run `reset` (restores a sane terminal state on many systems).
-3. Run `stty sane` (restores cooked mode when `reset` is not enough).
-
-If this happens frequently, treat it as a bug: crash paths should attempt to restore the terminal before exit.
-
-## Panic/backtrace debugging
-
-Rust panics can be diagnosed via backtraces:
-
-| Setting | Meaning |
+| Goal | Command |
 |---|---|
-| `RUST_BACKTRACE=1` | short backtrace |
-| `RUST_BACKTRACE=full` | full backtrace |
+| Build workspace | `cargo build --workspace` |
+| Fast check | `cargo check --workspace` |
+| Run editor | `cargo run -- <path>` |
+| Run all tests | `cargo test --workspace` |
+| Run one test | `cargo test <name>` |
+| Show test logs | `cargo test -- --nocapture` |
+| Lint review | `cargo clippy --workspace --all-targets` |
 
-If you add structured crash reporting, record it in:
+## CI parity rules
 
-- [/docs/technical/crash-reporting.md](/docs/technical/crash-reporting.md)
+- Local debug loops should use the same command families as CI.
+- CI currently reports warnings but does not globally fail only on rustc warnings.
+- Fix warnings in touched areas when practical; record accepted scaffolding warnings in docs when relevant.
 
-## Profiling and performance debugging
+Canonical CI contract:
 
-The large-file performance spec explains where hidden O(file) work can appear:
+- [/docs/reference/CI.md](/docs/reference/CI.md)
 
+## Headless and PTY strategy
+
+| Harness | Use when |
+|---|---|
+| Headless script execution | Repro does not depend on terminal transport or escape sequences |
+| PTY-driven E2E | Repro depends on input decoding, resize/focus routing, or terminal behavior |
+
+Prefer assertions on persisted output (files, serialized state) over fragile screen scraping.
+
+## Crash and terminal recovery
+
+If a crash leaves the terminal in a broken state:
+
+1. Press `Enter` once or twice.
+2. Run `reset`.
+3. If still broken, run `stty sane`.
+
+Persistent recovery failures are product bugs and should get regression tests.
+
+## Backtrace policy
+
+| Setting | Effect |
+|---|---|
+| `RUST_BACKTRACE=1` | compact backtrace |
+| `RUST_BACKTRACE=full` | full stack trace |
+
+Collect failing command, file path, and exact key sequence with the trace.
+
+## Performance triage
+
+When debugging latency or large-file issues:
+
+- check for accidental O(file) work in per-keystroke or per-frame paths
+- verify viewport-bounded snapshot behavior
+- verify no idle busy-loop redraws
+
+Primary specs:
+
+- [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 - [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 
-General guidance:
+## Documentation hygiene
 
-- look for loops that iterate “all lines” on every input
-- prefer viewport-bounded snapshots for rendering
-- avoid idle busy-loops that rebuild snapshots without new input
+If debugging discovers spec/implementation drift:
 
-For profiling targets and methodology (spec): [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
-
-
-### Flamegraph
-
-
-## Test Debugging
-
-### Single Test
-
-
-### With Logging
-
-
-## Tips
-
-1. Use `eprintln!` for quick debugging
-2. Enable backtraces always during dev
-3. Keep debug builds for iteration
-4. Use release builds for profiling
+1. update canonical spec or limitations
+2. link the fix to a regression test
+3. add a short record in `/docs/log/reconstruction/` when needed

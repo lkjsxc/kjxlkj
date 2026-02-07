@@ -16,7 +16,7 @@ In a docs-only baseline, treat this as the intended initial reconstruction targe
 | Visual Line | `V` | `Esc` | Linewise selection with operators |
 | Visual Block | `Ctrl-v` | `Esc` | Block (rectangular) selection |
 | Replace | `R` | `Esc` | Overwrites existing characters |
-| Terminal | `<leader>t`, `:terminal` | `Esc` (to Normal) | Pass-through to PTY (scaffolded) |
+| Terminal | `<leader>t`, `:terminal` | `Esc` (to Normal) | Opens terminal scratch panel; full PTY integration pending |
 
 ## Normal-mode keys (subset)
 
