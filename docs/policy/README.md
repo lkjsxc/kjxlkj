@@ -3,9 +3,9 @@
 Back: [/docs/README.md](/docs/README.md)
 Operating invariants and agent rules.
 
-## “All in Docs” (normative)
+## 「All in Docs」 (normative)
 
-This repository follows an **“All in Docs”** contract:
+This repository follows an **「All in Docs」** contract:
 
 - Documentation under `/docs/` is **normative** and **sufficient to reconstruct the system**.
 - Implementation artifacts (code, build files) are **derived outputs** and are not authoritative.

@@ -62,7 +62,7 @@ These files are temporarily exempt from the 200-line cap and MUST be split in a 
 
 The repository’s meta-intent statements MUST be centralized (to avoid scattering them across leaf docs).
 
-The “All in Docs” contract and the “LLM-first parsing/editing” intent SHOULD appear only in these canonical locations:
+The 「All in Docs」 contract and the “LLM-first parsing/editing” intent SHOULD appear only in these canonical locations:
 
 - [/README.md](/README.md)
 - [/docs/README.md](/docs/README.md)

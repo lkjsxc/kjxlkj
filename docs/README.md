@@ -2,9 +2,9 @@
 
 kjxlkj is a Neovim-inspired TUI text editor with all features built-in.
 
-## “All in Docs”
+## 「All in Docs」
 
-This repository uses an **“All in Docs”** approach:
+This repository uses an **「All in Docs」** approach:
 
 - The docs under `/docs/` are the **project** and the **source of truth**.
 - The implementation is **derived from the docs** (and may be deleted/rebuilt at any time).
