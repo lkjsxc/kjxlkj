@@ -21,13 +21,13 @@ Current state: documentation has been hardened and the next implementation wave 
 
 The TODO system MUST directly link all documentation files through the checklist below.
 
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
+- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
 
 ## Wave status
 

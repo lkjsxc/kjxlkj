@@ -15,5 +15,5 @@ Keep progress continuous by regenerating a doc-complete, implementation-ready TO
 
 ### B. Continue to next iteration (must remain last overall)
 
-- [ ] Follow:
+- [x] Follow:
   - [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
