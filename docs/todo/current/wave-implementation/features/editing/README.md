@@ -18,12 +18,12 @@ Implement built-in features that augment editing (but are not core motions/opera
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define feature ownership and UI surfaces.
+- [ ] Placeholder scaffolding: define feature ownership and UI surfaces.
   - Text objects: word/WORD/quote/delimiter/paragraph/sentence/tag
   - Autopairs in insert mode (auto-close parens/brackets/braces)
   - Digraph insertion (Ctrl-K + two chars)
   - Cursor shapes per mode (Block/Bar/Underline)
-- [x] Minimal slice: implement one feature end-to-end with tests.
-- [x] Full conformance: implement all editing-feature documents. — done: `editing_features.rs` with join_lines, convert_case (Upper/Lower/Toggle/Title), sort_lines, trim_trailing, reverse_chars, indent_level, reindent
-- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
+- [ ] Minimal slice: implement one feature end-to-end with tests.
+- [ ] Full conformance: implement all editing-feature documents. — done: `editing_features.rs` with join_lines, convert_case (Upper/Lower/Toggle/Title), sort_lines, trim_trailing, reverse_chars, indent_level, reindent
+- [ ] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

@@ -20,22 +20,22 @@ Implement the regex behavior required by search, substitute, and other text feat
 
 ### A. Placeholder scaffolding
 
-- [x] Define the supported regex dialect and compatibility rules.
-- [x] Define compilation/caching and performance expectations.
+- [ ] Define the supported regex dialect and compatibility rules.
+- [ ] Define compilation/caching and performance expectations.
 
 ### B. Minimal conformance slice
 
-- [x] Implement enough regex features to support basic search and substitute with tests.
+- [ ] Implement enough regex features to support basic search and substitute with tests.
 
 ### C. Full conformance
 
-- [x] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
+- [ ] Implement all regex features in the subtree (anchors, classes, magic modes, quantifiers, etc.).
   - Vim magic-mode: `.`, `*`, `^`, `$`, `[]`, `\d`, `\w`, `\s`, `\<`, `\>`, `\+`, `\?`, `\|`, `\(`, `\)`
   - Case-insensitive and smartcase support in search
   - Word-boundary search for `*` and `#` using `\b`
 
 ### D. Conformance updates
 
-- [x] Update:
+- [ ] Update:
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

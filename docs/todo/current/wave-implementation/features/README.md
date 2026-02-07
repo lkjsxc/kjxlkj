@@ -47,15 +47,15 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Ensure each feature category has:
+- [ ] Ensure each feature category has:
   - an owning crate or module
   - message bus integration points
   - a placeholder UI surface (if user-visible)
-- [x] Ensure "no plugins" is enforced (features are internal modules/services only).
+- [ ] Ensure "no plugins" is enforced (features are internal modules/services only).
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement one end-to-end feature slice that exercises:
+- [ ] Implement one end-to-end feature slice that exercises:
   - service supervision
   - UI rendering
   - persistence or IO
@@ -64,18 +64,18 @@ Implement built-in feature subsystems that are not “core editing” but are st
 
 ## Full conformance (sub-wave)
 
-- [x] Implement all feature specs under `/docs/spec/features/`. — done: feature_reachability.rs (host) with define_core_features (15+ features), check_reachability
-- [x] Ensure feature behavior is reachable via keybindings or commands as specified. — done: feature_reachability.rs with has_keybinding_entry, has_command_entry checks
+- [ ] Implement all feature specs under `/docs/spec/features/`. — done: feature_reachability.rs (host) with define_core_features (15+ features), check_reachability
+- [ ] Ensure feature behavior is reachable via keybindings or commands as specified. — done: feature_reachability.rs with has_keybinding_entry, has_command_entry checks
 
 ## Tests (normative outputs)
 
-- [x] Add tests for: — done: feature_reachability.rs, benchmark_suite.rs, golden_snapshots.rs cover feature test areas
+- [ ] Add tests for: — done: feature_reachability.rs, benchmark_suite.rs, golden_snapshots.rs cover feature test areas
   - terminal IO ordering and scrollback
   - session persistence correctness
   - feature-specific UI invariants
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

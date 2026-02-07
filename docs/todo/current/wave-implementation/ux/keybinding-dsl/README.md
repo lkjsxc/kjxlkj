@@ -13,10 +13,10 @@ Implement the keybinding DSL and its interpretation rules.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define the DSL parse model and validation rules.
+- [ ] Placeholder scaffolding: define the DSL parse model and validation rules.
   - keybinding_dsl.rs: KeyChord struct, parse_angle(), resolve_special()
-- [x] Minimal slice: implement a small DSL subset with deterministic tests.
+- [ ] Minimal slice: implement a small DSL subset with deterministic tests.
   - parse_key_sequence() for <C-x>, <M-a>, <leader>, <CR>, <Esc>, combined modifiers, validate_key_sequence()
-- [x] Full conformance: implement the entire DSL as specified.
+- [ ] Full conformance: implement the entire DSL as specified.
   - keybinding_dsl.rs: SpecialKey (16 keys + F1-F12), Modifiers (ctrl/alt/shift/meta), KeySpec, KeyChord, parse_key_notation, parse_key_sequence
 

@@ -22,20 +22,20 @@ Keep the work recursive by regenerating the current TODO list with:
 
 ### A. Expand and correct the TODO surface
 
-- [x] Add newly discovered issues as leaf TODOs (do not hide gaps in prose).
-- [x] Replace “future” pre-checked items with explicit unchecked work items.
-- [x] Ensure each leaf is small, testable, and directly linked to its defining spec documents.
+- [ ] Add newly discovered issues as leaf TODOs (do not hide gaps in prose).
+- [ ] Replace “future” pre-checked items with explicit unchecked work items.
+- [ ] Ensure each leaf is small, testable, and directly linked to its defining spec documents.
 
 ### B. Verify full document reachability (required)
 
-- [x] Verify every documentation file is reachable via the TODO system by traversing:
+- [ ] Verify every documentation file is reachable via the TODO system by traversing:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
-- [x] If any doc was added/moved, regenerate the doc-coverage index pages under
+- [ ] If any doc was added/moved, regenerate the doc-coverage index pages under
   `/docs/todo/doc-coverage/` and re-run reachability verification.
 
 ### C. Preserve iteration invariants
 
-- [x] Confirm the second-to-last wave remains:
+- [ ] Confirm the second-to-last wave remains:
   - [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
-- [x] Confirm the last wave remains:
+- [ ] Confirm the last wave remains:
   - [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)

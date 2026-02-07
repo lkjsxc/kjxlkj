@@ -17,19 +17,19 @@ Implement memory and large-data behavior constraints.
 
 ### A. Text model and large buffers
 
-- [x] Ensure the text model supports large buffers efficiently (or record limitations). — done: `large_buffer.rs` with LoadStrategy (Full/Chunked/Streamed), chunk computation, line index, extract_line_range
-- [x] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning. — done: 9 tests for strategy selection, line indexing, chunk computation, line extraction
+- [ ] Ensure the text model supports large buffers efficiently (or record limitations). — done: `large_buffer.rs` with LoadStrategy (Full/Chunked/Streamed), chunk computation, line index, extract_line_range
+- [ ] Add targeted tests for large-buffer edits (insert/delete) without full-buffer cloning. — done: 9 tests for strategy selection, line indexing, chunk computation, line extraction
 
 ### B. Snapshot bounds and allocations
 
-- [x] Ensure snapshots are viewport-bounded and do not scale with total buffer size. — done: BufferSnapshot only materializes viewport rows
-- [x] Add deterministic regression tests that assert viewport-bounded materialization. — done: `memory_latency_probes.rs` and `long_line_rendering.rs` assert snapshot sizes
+- [ ] Ensure snapshots are viewport-bounded and do not scale with total buffer size. — done: BufferSnapshot only materializes viewport rows
+- [ ] Add deterministic regression tests that assert viewport-bounded materialization. — done: `memory_latency_probes.rs` and `long_line_rendering.rs` assert snapshot sizes
 
 ### C. Large-file I/O posture (user-reported slowness)
 
-- [x] Ensure file open avoids intermediate full-file copies where possible (streaming into text model). — done: streaming_io.rs (core-text) with StreamReader, ReadChunk, StreamConfig
-- [x] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render. — done: benchmark_suite.rs with BenchmarkKind::FileOpen (10k lines, 100 iters) and SnapshotRender
+- [ ] Ensure file open avoids intermediate full-file copies where possible (streaming into text model). — done: streaming_io.rs (core-text) with StreamReader, ReadChunk, StreamConfig
+- [ ] Add a repeatable benchmark for large-file open and initial snapshot time-to-first-render. — done: benchmark_suite.rs with BenchmarkKind::FileOpen (10k lines, 100 iters) and SnapshotRender
 
 ### D. Extremely long lines
 
-- [x] Add deterministic regression tests for extremely long lines (memory + rendering posture). — done: 13 tests in `long_line_rendering.rs` including Unicode, mixed lengths, stress tests
+- [ ] Add deterministic regression tests for extremely long lines (memory + rendering posture). — done: 13 tests in `long_line_rendering.rs` including Unicode, mixed lengths, stress tests

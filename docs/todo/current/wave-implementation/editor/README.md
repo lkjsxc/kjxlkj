@@ -36,34 +36,34 @@ Implement the canonical editor core model:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define core state entities and their ownership boundaries.
-- [x] Define snapshot structures and update frequency rules.
-- [x] Define window-local viewport state (including wrap and scroll offsets).
+- [ ] Define core state entities and their ownership boundaries.
+- [ ] Define snapshot structures and update frequency rules.
+- [ ] Define window-local viewport state (including wrap and scroll offsets).
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a single-buffer, single-window editor that satisfies:
+- [ ] Implement a single-buffer, single-window editor that satisfies:
   - deterministic cursor movement and clamping
   - deterministic viewport follow rules
   - snapshot → render loop consistency
-- [x] Implement file open/edit/write flows as specified by the command and file specs. — done: `file_flows.rs` (host) with FileOp (Open/Edit/Write/WriteQuit/SaveAs), validate_write_target, resolve_path, detect_encoding, detect_line_ending, build_edit_flow, build_wq_flow
+- [ ] Implement file open/edit/write flows as specified by the command and file specs. — done: `file_flows.rs` (host) with FileOp (Open/Edit/Write/WriteQuit/SaveAs), validate_write_target, resolve_path, detect_encoding, detect_line_ending, build_edit_flow, build_wq_flow
 
 ## Full conformance (sub-wave)
 
-- [x] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
-- [x] Implement multi-window behavior per spec (splits, tabs, window commands).
-- [x] Ensure all per-window options that affect rendering are reflected in snapshots. — done: `window_full.rs` (core-undo) with WindowSnapshot containing WindowOptions (number, wrap, signcolumn, scrolloff, etc.)
+- [ ] Implement multi-buffer behavior per spec (buffer listing, navigation, arglist).
+- [ ] Implement multi-window behavior per spec (splits, tabs, window commands).
+- [ ] Ensure all per-window options that affect rendering are reflected in snapshots. — done: `window_full.rs` (core-undo) with WindowSnapshot containing WindowOptions (number, wrap, signcolumn, scrolloff, etc.)
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - buffer lifecycle and identity invariants
   - cursor/viewport invariants across edits and window changes
   - snapshot stability and correctness
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

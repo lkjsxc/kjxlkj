@@ -38,35 +38,35 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Reconcile the crate layout expectation vs current workspace layout.
+- [ ] Reconcile the crate layout expectation vs current workspace layout.
   - If docs and code disagree, record a single canonical decision in `/docs/log/proposals/`.
-- [x] Ensure the workspace contains the crates required by the spec topology, even if some are placeholders.
+- [ ] Ensure the workspace contains the crates required by the spec topology, even if some are placeholders.
   - For missing crates, create stubs that compile and are wired into the supervisor.
-- [x] Define shared core types and events required for the runtime model.
+- [ ] Define shared core types and events required for the runtime model.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement the smallest end-to-end "event → core → snapshot → render" loop that is:
+- [ ] Implement the smallest end-to-end "event → core → snapshot → render" loop that is:
   - deterministic
   - test-backed
   - compatible with the async-first runtime model
-- [x] Implement at least one supervised service (filesystem or terminal) end-to-end, including: — done: `supervisor.rs` with ServiceState, SupervisorConfig, HealthStatus, RestartDecision, compute_backoff(), 7 tests
+- [ ] Implement at least one supervised service (filesystem or terminal) end-to-end, including: — done: `supervisor.rs` with ServiceState, SupervisorConfig, HealthStatus, RestartDecision, compute_backoff(), 7 tests
   - request/response framing
   - error surfaces visible to the editor core
   - shutdown and cleanup semantics
 
 ## Full conformance (sub-wave)
 
-- [x] Implement the full runtime ordering and invariants specified in `runtime.md`.
-- [x] Implement service supervision as defined by the architecture spec:
+- [ ] Implement the full runtime ordering and invariants specified in `runtime.md`.
+- [ ] Implement service supervision as defined by the architecture spec:
   - failure handling and recovery
   - backpressure expectations
   - core responsiveness under service load
-- [x] Ensure "no plugins" is enforced (only native features).
+- [ ] Ensure "no plugins" is enforced (only native features).
 
 ## Tests (normative outputs)
 
-- [x] Add tests that prove:
+- [ ] Add tests that prove:
   - single-writer core task invariant
   - snapshot immutability and render isolation
   - service failure does not corrupt core state
@@ -74,6 +74,6 @@ Implement the runtime model and crate topology that everything else depends on:
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

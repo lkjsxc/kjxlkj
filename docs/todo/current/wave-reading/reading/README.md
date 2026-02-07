@@ -19,8 +19,8 @@ Make the TODO system “doc-complete”: every documentation file is explicitly 
 - Follow the recursive doc-coverage index:
   - [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - For each directory page:
-  - [x] Read every document linked under `### Files`.
-  - [x] Continue recursively into every entry under `### Subdirectories`.
+  - [ ] Read every document linked under `### Files`.
+  - [ ] Continue recursively into every entry under `### Subdirectories`.
 
 ### B. Record reading completion and contradictions
 

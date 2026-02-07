@@ -43,24 +43,24 @@ Implement cross-cutting technical requirements that constrain every feature:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define a project-wide "contracts checklist" that is referenced by all implementation leaves. — done: contracts.rs (core-types) + contract_checks.rs (services) with ContractChecker, Violation, require/ensure/invariant
-- [x] Define how tests are organized and how determinism is enforced.
-- [x] Define a latency/performance baseline measurement strategy.
+- [ ] Define a project-wide "contracts checklist" that is referenced by all implementation leaves. — done: contracts.rs (core-types) + contract_checks.rs (services) with ContractChecker, Violation, require/ensure/invariant
+- [ ] Define how tests are organized and how determinism is enforced.
+- [ ] Define a latency/performance baseline measurement strategy.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement enough of the test harness to:
+- [ ] Implement enough of the test harness to:
   - reproduce cursor/viewport/input regressions deterministically
   - enforce key invariants as tests
 
 ## Full conformance (sub-wave)
 
-- [x] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`. — done: 2580+ tests, pty_harness.rs, pty_regressions.rs, benchmark_suite.rs, latency_regression.rs
-- [x] Implement profiling hooks and performance regression detection. — done: `profiling.rs` with ProfilingSpan, Counter, Profiler, 6 tests
-- [x] Ensure memory usage and large-file behavior match constraints (or record limitations). — done: large_buffer.rs LoadStrategy, streaming_io.rs StreamReader, benchmark_suite.rs FileOpen benchmark, limitations documented
+- [ ] Implement the full testing strategy described by `testing.md` and `/docs/technical/testing/`. — done: 2580+ tests, pty_harness.rs, pty_regressions.rs, benchmark_suite.rs, latency_regression.rs
+- [ ] Implement profiling hooks and performance regression detection. — done: `profiling.rs` with ProfilingSpan, Counter, Profiler, 6 tests
+- [ ] Ensure memory usage and large-file behavior match constraints (or record limitations). — done: large_buffer.rs LoadStrategy, streaming_io.rs StreamReader, benchmark_suite.rs FileOpen benchmark, limitations documented
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

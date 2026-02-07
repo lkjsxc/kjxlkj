@@ -20,25 +20,25 @@ Implement session-related Ex commands and persistence behaviors (swap, undo pers
 
 ### A. Placeholder scaffolding
 
-- [x] Define persistence boundaries and storage locations.
+- [ ] Define persistence boundaries and storage locations.
   - SwapFile with path_for() encoding, UndoFile with path_for() encoding
   - Session with name, working_dir, buffers, layout
   - Workspace with name and folders
-- [x] Define recovery behavior and user-visible diagnostics.
+- [ ] Define recovery behavior and user-visible diagnostics.
 
 ### B. Minimal conformance slice
 
-- [x] Implement one persistence mechanism end-to-end with tests (as specified).
+- [ ] Implement one persistence mechanism end-to-end with tests (as specified).
   - :mksession / :mks — session save
   - :oldfiles / :ol — recent files listing
 
 ### C. Full conformance
 
-- [x] Implement all session commands and persistence behaviors in the subtree. — done: `session_persistence.rs` with SessionState (marks/jumps/registers/history/buffer_positions), save/restore via JSON, serialize_session, filter_history
+- [ ] Implement all session commands and persistence behaviors in the subtree. — done: `session_persistence.rs` with SessionState (marks/jumps/registers/history/buffer_positions), save/restore via JSON, serialize_session, filter_history
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

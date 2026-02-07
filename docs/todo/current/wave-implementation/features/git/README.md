@@ -18,23 +18,23 @@ Implement built-in git integration as a native feature (no plugins).
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define git service APIs and UI hooks.
-- [x] Minimal slice: implement one visible git surface end-to-end with tests.
+- [ ] Placeholder scaffolding: define git service APIs and UI hooks.
+- [ ] Minimal slice: implement one visible git surface end-to-end with tests.
   - GitService with find_repo_root, current_branch, file_status
   - FileStatus enum (Untracked, Modified, Added, Deleted, Renamed, Unmodified)
   - RepoStatus with branch, ahead/behind, staged/unstaged/untracked
   - FileChange, DiffHunk, BlameLine, GitSign types
-- [x] Full conformance: implement all git feature documents.
-  - [x] Branch indicator in statusline (BranchInfo.display())
-  - [x] File change indicators in file explorer (FileIndicator)
+- [ ] Full conformance: implement all git feature documents.
+  - [ ] Branch indicator in statusline (BranchInfo.display())
+  - [ ] File change indicators in file explorer (FileIndicator)
     - FileIndicator enum (Modified/Added/Deleted/Renamed/Untracked/Conflicted/Ignored) with symbol()
-  - [x] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
-  - [x] Blame (BlameInfo, BufferBlame with toggle visibility)
-  - [x] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
+  - [ ] Hunks and gutter signs (Hunk, HunkType, GutterSign, BufferHunks)
+  - [ ] Blame (BlameInfo, BufferBlame with toggle visibility)
+  - [ ] Merge conflict detection/navigation (Conflict, ConflictMarker, ConflictChoice, BufferConflicts)
     - BufferConflicts.detect() scans for <<<<<<< / ======= / >>>>>>> markers
-  - [x] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
+  - [ ] Diff viewer (DiffAlgorithm, DiffOptions, DiffLayout, DiffView)
     - DiffAlgorithm (Myers/Patience/Histogram), DiffLayout (Unified/SideBySide/Inline)
     - DiffView with count_added()/count_removed()
-  - [x] git_full.rs: DiffHunk/DiffLine/LogEntry/BlameEntry/BranchInfo, parse_diff, parse_log, GitSign, compute_signs
-- [x] Update conformance and limitations docs when user-visible.
+  - [ ] git_full.rs: DiffHunk/DiffLine/LogEntry/BlameEntry/BranchInfo, parse_diff, parse_log, GitSign, compute_signs
+- [ ] Update conformance and limitations docs when user-visible.
 

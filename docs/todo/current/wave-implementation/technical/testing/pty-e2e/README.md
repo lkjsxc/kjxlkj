@@ -23,22 +23,22 @@ This harness is required for bugs that are invisible in headless-only tests (Ent
 
 ### A. Harness design rules (determinism)
 
-- [x] Prefer file-based assertions (`:w`, `:wq`) over screen scraping. — done: pty_harness.rs PtyExpectation::FileContains, FileExists
-- [x] Use timeouts with bounded retries; avoid fixed sleeps where possible. — done: PtyConfig::timeout_ms with 5000ms default
-- [x] Fix environment when needed (`TERM`, locale) to reduce terminal variance. — done: PtyConfig::term defaults to xterm-256color
-- [x] Ensure the harness is stable on Linux/macOS/Windows where feasible; record limitations when not. — done: pty_harness.rs with platform-agnostic scenario validation
+- [ ] Prefer file-based assertions (`:w`, `:wq`) over screen scraping. — done: pty_harness.rs PtyExpectation::FileContains, FileExists
+- [ ] Use timeouts with bounded retries; avoid fixed sleeps where possible. — done: PtyConfig::timeout_ms with 5000ms default
+- [ ] Fix environment when needed (`TERM`, locale) to reduce terminal variance. — done: PtyConfig::term defaults to xterm-256color
+- [ ] Ensure the harness is stable on Linux/macOS/Windows where feasible; record limitations when not. — done: pty_harness.rs with platform-agnostic scenario validation
 
 ### B. Required PTY regressions (minimum suite)
 
-- [x] Insert newline: `i`, type `line1`, `Enter`, type `line2`, `Esc`, `:wq`, `Enter`; file contains `line1` then newline then `line2`. — done: pty_regressions.rs insert_newline_scenario
-- [x] Leader chords: `<leader>e` toggles explorer; `<leader>t` toggles terminal. — done: pty_regressions.rs leader_explorer_scenario, leader_terminal_scenario
-- [x] Multi-key sequences: `gg` goes to file start and is not dropped by input buffering. — done: pty_regressions.rs gg_motion_scenario, multi_key_sequence_scenario
-- [x] Undo/redo: `u` undoes and `Ctrl-r` redoes without dropping input. — done: pty_regressions.rs undo_redo_scenario
-- [x] Append at EOL: `a` at last character inserts at true end-of-line (no off-by-one). — done: pty_regressions.rs append_eol_scenario
+- [ ] Insert newline: `i`, type `line1`, `Enter`, type `line2`, `Esc`, `:wq`, `Enter`; file contains `line1` then newline then `line2`. — done: pty_regressions.rs insert_newline_scenario
+- [ ] Leader chords: `<leader>e` toggles explorer; `<leader>t` toggles terminal. — done: pty_regressions.rs leader_explorer_scenario, leader_terminal_scenario
+- [ ] Multi-key sequences: `gg` goes to file start and is not dropped by input buffering. — done: pty_regressions.rs gg_motion_scenario, multi_key_sequence_scenario
+- [ ] Undo/redo: `u` undoes and `Ctrl-r` redoes without dropping input. — done: pty_regressions.rs undo_redo_scenario
+- [ ] Append at EOL: `a` at last character inserts at true end-of-line (no off-by-one). — done: pty_regressions.rs append_eol_scenario
 
 ### C. Traceability updates
 
-- [x] For each PTY regression, link: — done: all scenarios link to defining spec through format_scenario
+- [ ] For each PTY regression, link: — done: all scenarios link to defining spec through format_scenario
   - the defining spec document(s)
   - the conformance claim (if present)
   - the limitation entry (if user-visible drift exists)

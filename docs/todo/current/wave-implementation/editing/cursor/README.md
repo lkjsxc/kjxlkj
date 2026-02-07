@@ -20,22 +20,22 @@ Implement cursor semantics, including cursor shape/visibility rules where specif
 
 ### A. Placeholder scaffolding
 
-- [x] Define cursor representation in core state and snapshots.
-- [x] Define clamp rules for cursor after edits and mode transitions.
+- [ ] Define cursor representation in core state and snapshots.
+- [ ] Define clamp rules for cursor after edits and mode transitions.
 
 ### B. Minimal conformance slice
 
-- [x] Implement deterministic cursor motion and visibility rules for a minimal mode set.
-- [x] Add regression tests for cursor invisibility and boundary cases.
-- [x] Add targeted regression for append-at-EOL off-by-one:
+- [ ] Implement deterministic cursor motion and visibility rules for a minimal mode set.
+- [ ] Add regression tests for cursor invisibility and boundary cases.
+- [ ] Add targeted regression for append-at-EOL off-by-one:
   - [append-eol/README.md](append-eol/README.md)
 
 ### C. Full conformance
 
-- [x] Implement the full cursor subtree behavior, including interactions with overlays and highlights. — done: `cursor_overlay.rs` with OverlayPriority, HighlightRegion, effective_overlay, BoundaryAction, resolve_cursor_col, at_line_boundary, cursor_in_viewport, viewport_top_for_cursor, matching_bracket
+- [ ] Implement the full cursor subtree behavior, including interactions with overlays and highlights. — done: `cursor_overlay.rs` with OverlayPriority, HighlightRegion, effective_overlay, BoundaryAction, resolve_cursor_col, at_line_boundary, cursor_in_viewport, viewport_top_for_cursor, matching_bracket
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

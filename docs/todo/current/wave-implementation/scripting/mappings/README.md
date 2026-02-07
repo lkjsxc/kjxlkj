@@ -20,7 +20,7 @@ Implement mapping definition, resolution, expansion, and mode scoping.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define mapping storage and expansion boundaries.
-- [x] Minimal slice: implement a minimal mapping set with deterministic tests.
-- [x] Full conformance: implement all mapping modes, special keys, and recursion rules. — done: `mapping_expansion.rs` with recursive expansion (MAX_DEPTH=100), prefix detection, `list_mappings()`, 9 tests
+- [ ] Placeholder scaffolding: define mapping storage and expansion boundaries.
+- [ ] Minimal slice: implement a minimal mapping set with deterministic tests.
+- [ ] Full conformance: implement all mapping modes, special keys, and recursion rules. — done: `mapping_expansion.rs` with recursive expansion (MAX_DEPTH=100), prefix detection, `list_mappings()`, 9 tests
 

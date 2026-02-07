@@ -48,37 +48,37 @@ The MVP MAY defer (but must track as TODO leaves):
 
 ### Unit tests (required)
 
-- [x] Explorer state transitions (expand/collapse, selection movement).
+- [ ] Explorer state transitions (expand/collapse, selection movement).
   - ExplorerAction enum: ToggleExpand, OpenFile, SelectUp, SelectDown, Close, Refresh, CreateFile
   - Keyboard handler: j/k navigation, Enter/l open, h collapse, q close, R refresh
-- [x] Tree rendering to a list of display rows given a known filesystem snapshot.
+- [ ] Tree rendering to a list of display rows given a known filesystem snapshot.
   - ExplorerRow with text, depth, kind, expanded, is_selected, node_index
   - Tree flattening with indentation, expand/collapse arrows (▸/▾), file-type icons
 
 ### Integration tests (required)
 
-- [x] FS service directory listing (cancellation, ordering, error handling). — done: fs_directory.rs (service-fs) with DirEntry, SortOrder, DirListing, sort_entries, filter_hidden
+- [ ] FS service directory listing (cancellation, ordering, error handling). — done: fs_directory.rs (service-fs) with DirEntry, SortOrder, DirListing, sort_entries, filter_hidden
 
 ### Golden UI tests (recommended)
 
-- [x] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
+- [ ] Snapshot-to-frame tests for explorer view with a deterministic fake filesystem.
   - Tests: render_empty_tree, render_flat_files, render_expanded_dir, render_collapsed_dir_hides_children, handle_key_navigation, handle_key_quit, find_path_at_index
 
 ## Checklist
 
-- [x] Define the explorer core state model (tree nodes, expansion, selection).
+- [ ] Define the explorer core state model (tree nodes, expansion, selection).
   - TreeNode with entry, children, expanded, depth
   - DirEntry with path, name, kind, size, hidden
   - EntryKind (File/Directory/Symlink)
   - ExplorerState with root, tree, selected, visible, config
   - ExplorerConfig with show_hidden, show_icons, position, width, sort_dirs_first
-- [x] Define the service interface for directory listing (incremental + cancellable for large dirs).
+- [ ] Define the service interface for directory listing (incremental + cancellable for large dirs).
   - FsWatchService.list_dir() async method
   - FsWatchService.sort_entries() with dirs-first option
-- [x] Implement explorer view rendering and input handling with deterministic tests.
-- [x] Implement open-file intent wiring into the editor core.
-- [x] Add at least one regression test for "10k children expand does not freeze". — done: benchmark_suite.rs with large-file benchmarks, fs_directory.rs max_children_check
-- [x] Update conformance and limitations docs: — done: conformance and limitations entries maintained with each batch
+- [ ] Implement explorer view rendering and input handling with deterministic tests.
+- [ ] Implement open-file intent wiring into the editor core.
+- [ ] Add at least one regression test for "10k children expand does not freeze". — done: benchmark_suite.rs with large-file benchmarks, fs_directory.rs max_children_check
+- [ ] Update conformance and limitations docs: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

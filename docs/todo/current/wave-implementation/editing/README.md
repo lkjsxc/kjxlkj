@@ -45,25 +45,25 @@ Implement the editing primitives that power modal behavior:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define a motion/operator engine with explicit:
+- [ ] Define a motion/operator engine with explicit:
   - grammar and parsing model
   - count application rules
   - inclusive/exclusive motion types
   - linewise/charwise/blockwise edits
-- [x] Define register types, storage, and persistence expectations.
-- [x] Define a mark model and its persistence strategy.
+- [ ] Define register types, storage, and persistence expectations.
+- [ ] Define a mark model and its persistence strategy.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a minimal set of motions/operators/text objects that is:
+- [ ] Implement a minimal set of motions/operators/text objects that is:
   - fully specified by docs
   - test-backed
   - consistent across modes
-- [x] Implement undo/redo semantics for the minimal slice.
+- [ ] Implement undo/redo semantics for the minimal slice.
 
 ## Full conformance (sub-wave)
 
-- [x] Implement the full editing spec subtree, including:
+- [ ] Implement the full editing spec subtree, including:
   - search and regex features (/, ?, n, N, :s) - implemented
   - macros (including recursion rules) - fully implemented (q, @, @@)
   - marks and jump lists (m, `, ', Ctrl-o, Ctrl-i) - fully implemented
@@ -73,7 +73,7 @@ Implement the editing primitives that power modal behavior:
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - boundary clamping (never panic)
   - repeatability and determinism
   - register correctness across operations
@@ -81,6 +81,6 @@ Implement the editing primitives that power modal behavior:
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

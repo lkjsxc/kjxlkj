@@ -45,13 +45,13 @@ This leaf covers both:
 
 ## Checklist
 
-- [x] Add a minimal reproduction file fixture (long ASCII line; long Unicode-heavy line). — done: long_line_fixtures.rs with LongAscii, LongUnicode, LongMixed, WideChars fixtures
-- [x] Add tests that fail if the renderer materializes full long lines per frame. — done: `long_line_rendering.rs` with 13 tests for viewport-bounded slicing
-- [x] Add at least one regression test that exercises:
+- [ ] Add a minimal reproduction file fixture (long ASCII line; long Unicode-heavy line). — done: long_line_fixtures.rs with LongAscii, LongUnicode, LongMixed, WideChars fixtures
+- [ ] Add tests that fail if the renderer materializes full long lines per frame. — done: `long_line_rendering.rs` with 13 tests for viewport-bounded slicing
+- [ ] Add at least one regression test that exercises:
   - resize storms with a long line visible
   - rapid horizontal scrolling (no-wrap)
   - wrap toggling (if supported)
-- [x] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold. — done: `long_line_handler.rs` with LineSegment, segment_line (virtualized rendering), safe_slice (viewport-bounded), display_width, char_to_col/col_to_char, MAX_RENDER_COLS=10000
-- [x] Update limitations if any degradation is intentionally applied for very long lines: — done: batch 16 LIMITATIONS entries added
+- [ ] Fix root causes (slicing, width computation caching, virtualization) until acceptance criteria hold. — done: `long_line_handler.rs` with LineSegment, segment_line (virtualized rendering), safe_slice (viewport-bounded), display_width, char_to_col/col_to_char, MAX_RENDER_COLS=10000
+- [ ] Update limitations if any degradation is intentionally applied for very long lines: — done: batch 16 LIMITATIONS entries added
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

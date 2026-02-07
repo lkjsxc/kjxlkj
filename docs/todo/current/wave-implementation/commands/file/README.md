@@ -20,22 +20,22 @@ Implement file-related Ex commands and path expansion behaviors.
 
 ### A. Placeholder scaffolding
 
-- [x] Define path expansion rules and their security constraints.
-- [x] Define filesystem service interfaces required by file commands.
+- [ ] Define path expansion rules and their security constraints.
+- [ ] Define filesystem service interfaces required by file commands.
 
 ### B. Minimal conformance slice
 
-- [x] Implement minimal `:edit` and `:write` behaviors with deterministic tests.
-- [x] Implement safe error handling for invalid paths and permissions.
+- [ ] Implement minimal `:edit` and `:write` behaviors with deterministic tests.
+- [ ] Implement safe error handling for invalid paths and permissions.
 
 ### C. Full conformance
 
-- [x] Implement all file commands and behaviors in the subtree.
-- [x] Ensure behavior matches session/swap/undo persistence specs where applicable. — done: `file_io_commands.rs` with FileCommand enum, parse_file_command, validate_write, expand_tilde, buffer_title, display_path; `buffer_lifecycle.rs` with SwapState, ModificationInfo, LifecycleStage, AutoSavePolicy
+- [ ] Implement all file commands and behaviors in the subtree.
+- [ ] Ensure behavior matches session/swap/undo persistence specs where applicable. — done: `file_io_commands.rs` with FileCommand enum, parse_file_command, validate_write, expand_tilde, buffer_title, display_path; `buffer_lifecycle.rs` with SwapState, ModificationInfo, LifecycleStage, AutoSavePolicy
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

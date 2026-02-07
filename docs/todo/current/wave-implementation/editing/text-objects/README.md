@@ -20,16 +20,16 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### A. Placeholder scaffolding
 
-- [x] Define text object parsing and selection models.
-- [x] Define inclusive/exclusive and linewise behaviors when specified.
+- [ ] Define text object parsing and selection models.
+- [ ] Define inclusive/exclusive and linewise behaviors when specified.
 
 ### B. Minimal conformance slice
 
-- [x] Implement a minimal text object set with deterministic tests.
+- [ ] Implement a minimal text object set with deterministic tests.
 
 ### C. Full conformance
 
-- [x] Implement all text object documents in the subtree. — done: `text_objects_full.rs` with ExtTextObject (Argument/IndentLevel/EntireBuffer/Line/Number/Url), find_argument, find_indent_level, find_entire_buffer, find_number, TextRange
+- [ ] Implement all text object documents in the subtree. — done: `text_objects_full.rs` with ExtTextObject (Argument/IndentLevel/EntireBuffer/Line/Number/Url), find_argument, find_indent_level, find_entire_buffer, find_number, TextRange
   - Word objects: iw, aw, iW, aW
   - Quote objects: i", a", i', a', i`, a`
   - Block objects: i(, a(, i[, a[, i{, a{, i<, a<, ib, ab, iB, aB
@@ -37,6 +37,6 @@ Implement text object selection semantics and interaction with operators and Vis
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 

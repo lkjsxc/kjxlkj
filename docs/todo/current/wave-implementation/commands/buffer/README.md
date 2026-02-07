@@ -20,20 +20,20 @@ Implement buffer listing, navigation, and arglist-related Ex commands.
 
 ### A. Placeholder scaffolding
 
-- [x] Define buffer identity, naming, and lifecycle semantics in core state.
-- [x] Define buffer list presentation rules (UI and command output).
+- [ ] Define buffer identity, naming, and lifecycle semantics in core state.
+- [ ] Define buffer list presentation rules (UI and command output).
 
 ### B. Minimal conformance slice
 
-- [x] Implement buffer listing and navigation minimal subset with tests.
+- [ ] Implement buffer listing and navigation minimal subset with tests.
 
 ### C. Full conformance
 
-- [x] Implement all buffer commands and arglist behaviors in the subtree.
+- [ ] Implement all buffer commands and arglist behaviors in the subtree.
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

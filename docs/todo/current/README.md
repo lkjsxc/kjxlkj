@@ -21,32 +21,32 @@ Current state: documentation has been hardened and the next implementation wave 
 
 The TODO system MUST directly link all documentation files through the checklist below.
 
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
-- [x] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
+- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
 
 ## Wave status
 
 ### Completed waves
 
-- [x] [/docs/todo/current/wave-placeholder/README.md](/docs/todo/current/wave-placeholder/README.md)
-- [x] [/docs/todo/current/wave-reconstruction/README.md](/docs/todo/current/wave-reconstruction/README.md)
-- [x] [/docs/todo/current/wave-reading/README.md](/docs/todo/current/wave-reading/README.md)
-- [x] [/docs/todo/current/wave-docs/README.md](/docs/todo/current/wave-docs/README.md)
-- [x] [/docs/todo/current/wave-planning/README.md](/docs/todo/current/wave-planning/README.md)
-- [x] [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
-- [x] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md)
-- [x] [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
+- [ ] [/docs/todo/current/wave-placeholder/README.md](/docs/todo/current/wave-placeholder/README.md)
+- [ ] [/docs/todo/current/wave-reconstruction/README.md](/docs/todo/current/wave-reconstruction/README.md)
+- [ ] [/docs/todo/current/wave-reading/README.md](/docs/todo/current/wave-reading/README.md)
+- [ ] [/docs/todo/current/wave-docs/README.md](/docs/todo/current/wave-docs/README.md)
+- [ ] [/docs/todo/current/wave-planning/README.md](/docs/todo/current/wave-planning/README.md)
+- [ ] [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
+- [ ] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md)
+- [ ] [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
 
 ### Standby wave (unchecked by design)
 
-- [x] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
-- [x] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
-- [x] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md) section E follow-up is closed with explicit multi-window practical-usage PTY coverage.
+- [ ] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
+- [ ] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
+- [ ] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md) section E follow-up is closed with explicit multi-window practical-usage PTY coverage.
 
 ## Standby objective
 

@@ -44,37 +44,37 @@ Implement modal editing semantics and mode transitions:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define a single, explicit mode state machine with:
+- [ ] Define a single, explicit mode state machine with:
   - mode enum/state
   - pending operator/motion state (when applicable)
   - count prefix model
   - per-mode cursor/selection representation
-- [x] Define command-line entry and editing model boundaries.
+- [ ] Define command-line entry and editing model boundaries.
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a minimal, fully tested set of mode transitions:
+- [ ] Implement a minimal, fully tested set of mode transitions:
   - Normal ↔ Insert
   - Normal ↔ Visual (charwise)
   - Normal ↔ Command
   - Normal ↔ Replace (as defined, not "Insert-like" unless specified)
-- [x] Ensure cursor and selection invariants hold across transitions.
+- [ ] Ensure cursor and selection invariants hold across transitions.
 
 ## Full conformance (sub-wave)
 
-- [x] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
-- [x] Implement configuration impacts on modes (where specified).
-- [x] Ensure mode behavior matches UX keybindings tables. — done: `mode_keybindings.rs` (core-mode) with UxMode (9 variants), ModeBindingTable, build_normal_bindings (25+ keys), check_mode_coverage
+- [ ] Implement full Insert/Replace/Visual semantics per spec, including sub-features under Insert mode.
+- [ ] Implement configuration impacts on modes (where specified).
+- [ ] Ensure mode behavior matches UX keybindings tables. — done: `mode_keybindings.rs` (core-mode) with UxMode (9 variants), ModeBindingTable, build_normal_bindings (25+ keys), check_mode_coverage
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - mode transition graphs
   - pending state cancellation rules
   - selection model correctness for Visual modes
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

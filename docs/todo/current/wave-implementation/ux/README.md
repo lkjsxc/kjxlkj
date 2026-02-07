@@ -41,33 +41,33 @@ Implement user-facing behavior and interactions that tie subsystems together:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Create an explicit keybinding coverage map that: — done: ux_coverage.rs (input) with CoverageEntry, CoverageSummary, build_normal_coverage, build_insert_coverage
+- [ ] Create an explicit keybinding coverage map that: — done: ux_coverage.rs (input) with CoverageEntry, CoverageSummary, build_normal_coverage, build_insert_coverage
   - lists the implemented keys
   - links each key to the owning spec document(s)
   - links each key to tests that prove the behavior
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Ensure the minimal core editing surface is fully covered by: — done: ux_coverage.rs (input) with compute_summary showing tested/documented counts
+- [ ] Ensure the minimal core editing surface is fully covered by: — done: ux_coverage.rs (input) with compute_summary showing tested/documented counts
   - keybindings
   - documentation pointers
   - tests
 
 ## Full conformance (sub-wave)
 
-- [x] Implement all keybindings and UX behavior defined by the UX subtree. — done: keybinding_tables.rs (60+ bindings), mode_keybindings.rs, leader_keys.rs, ux_coverage.rs
-- [x] Ensure keyboard-only invariant is never violated. — done: ux_coverage.rs keyboard_only_check, layout_acceptance.rs invariants
-- [x] Ensure accessibility requirements are met (or explicitly limited). — done: `accessibility.rs` WCAG contrast, focus visibility, ARIA hints, 7 tests
+- [ ] Implement all keybindings and UX behavior defined by the UX subtree. — done: keybinding_tables.rs (60+ bindings), mode_keybindings.rs, leader_keys.rs, ux_coverage.rs
+- [ ] Ensure keyboard-only invariant is never violated. — done: ux_coverage.rs keyboard_only_check, layout_acceptance.rs invariants
+- [ ] Ensure accessibility requirements are met (or explicitly limited). — done: `accessibility.rs` WCAG contrast, focus visibility, ARIA hints, 7 tests
 
 ## Tests (normative outputs)
 
-- [x] Add tests for: — done: ux_coverage.rs, keybinding_tables.rs, mode_keybindings.rs, leader_keys.rs all have tests
+- [ ] Add tests for: — done: ux_coverage.rs, keybinding_tables.rs, mode_keybindings.rs, leader_keys.rs all have tests
   - keybinding → action mapping determinism
   - mode-scoped keybinding behavior
   - accessibility-related UI invariants (focus, contrast, cursor visibility)
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

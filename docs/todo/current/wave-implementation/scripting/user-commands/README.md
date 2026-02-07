@@ -13,7 +13,7 @@ Implement user-defined commands and their integration with Ex parsing/execution.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define command registration and scoping rules. — done: `UserCommand`, `NArgs`, `UserCommandRegistry` in `scripting.rs`
-- [x] Minimal slice: create one user command deterministically with tests. — done: `user_command_exec.rs` with `execute_user_command()`, `dispatch_user_command()`, `validate_nargs()`, `substitute_args()`, 9 tests
-- [x] Full conformance: implement all user command features described by the spec. — done: `user_commands.rs` with UserCommandDef, NArgs (Zero/One/Any/AtLeastOne/ZeroOrOne), UserCommandRegistry (define/get/remove/list/expand), parse_command_def
+- [ ] Placeholder scaffolding: define command registration and scoping rules. — done: `UserCommand`, `NArgs`, `UserCommandRegistry` in `scripting.rs`
+- [ ] Minimal slice: create one user command deterministically with tests. — done: `user_command_exec.rs` with `execute_user_command()`, `dispatch_user_command()`, `validate_nargs()`, `substitute_args()`, 9 tests
+- [ ] Full conformance: implement all user command features described by the spec. — done: `user_commands.rs` with UserCommandDef, NArgs (Zero/One/Any/AtLeastOne/ZeroOrOne), UserCommandRegistry (define/get/remove/list/expand), parse_command_def
 

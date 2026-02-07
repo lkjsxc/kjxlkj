@@ -18,9 +18,9 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define window feature state and UI invariants.
-- [x] Minimal slice: implement one window workflow end-to-end with tests.
-- [x] Full conformance: implement all window feature documents.
+- [ ] Placeholder scaffolding: define window feature state and UI invariants.
+- [ ] Minimal slice: implement one window workflow end-to-end with tests.
+- [ ] Full conformance: implement all window feature documents.
   - Floating windows: FloatBorder, FloatAnchor, FloatSize, FloatConfig, FloatingWindow, FloatBounds
   - Window commands (wincmd): WinCmd enum with navigation, resize, close, rotate, etc.
   - Window zoom: ZoomState with toggle and layout preservation
@@ -28,5 +28,5 @@ Implement window-management features (splits, tabs, layouts) beyond the core win
   - Resize modes: ResizeMode enum
   - window_full.rs: WindowOptions, SignColumn, CloseGuard, check_close_guard, WindowSnapshot, WindowOptionStore
   - 305+ tests total
-- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
-- [x] Handoff gate added: practical multi-window usage is explicitly queued in [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md) and [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md).
+- [ ] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
+- [ ] Handoff gate added: practical multi-window usage is explicitly queued in [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md) and [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md).

@@ -15,7 +15,7 @@ Implement theming expectations as a user-facing behavior.
 
 ## Checklist
 
-- [x] Define theme model ownership and how themes affect rendering.
-- [x] Minimal slice: implement a small theme set with deterministic render tests.
-- [x] Full conformance: implement all theming rules and customization behaviors. — done: `theme_engine.rs` with ThemeColor (rgb/rgba/to_ansi256), StyleRule, Theme (dark+light), resolve_scope(), apply_override()
+- [ ] Define theme model ownership and how themes affect rendering.
+- [ ] Minimal slice: implement a small theme set with deterministic render tests.
+- [ ] Full conformance: implement all theming rules and customization behaviors. — done: `theme_engine.rs` with ThemeColor (rgb/rgba/to_ansi256), StyleRule, Theme (dark+light), resolve_scope(), apply_override()
 

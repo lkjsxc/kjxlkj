@@ -10,10 +10,10 @@ Keep progress continuous by regenerating a doc-complete, implementation-ready TO
 
 ### A. Recreate the TODO list (must remain second-to-last overall)
 
-- [x] Follow:
+- [ ] Follow:
   - [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
 
 ### B. Continue to next iteration (must remain last overall)
 
-- [x] Follow:
+- [ ] Follow:
   - [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)

@@ -138,7 +138,7 @@ Fallback symbols:
 | Original | Fallback |
 |----------|----------|
 |  | [+] |
-|  | [x] |
+|  | [ ] |
 |  | [>] |
 |  | [<] |
 

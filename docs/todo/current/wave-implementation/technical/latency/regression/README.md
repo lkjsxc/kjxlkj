@@ -34,31 +34,31 @@ Targets MUST be expressed in a way that is stable under CI variance:
 
 ### A. Deterministic performance probes
 
-- [x] Add a deterministic typing-burst probe that asserts:
+- [ ] Add a deterministic typing-burst probe that asserts:
   - all characters are applied in order
   - the final snapshot reflects the final input (no off-by-one lag)
   — done: `memory_latency_probes.rs` typing_burst_200/500 tests verify ordering + final state
-- [x] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true. — done: latency_regression.rs probe_scroll_clamp, probe_resize_cursor
+- [ ] Add deterministic scroll + resize probes that assert cursor visibility invariants remain true. — done: latency_regression.rs probe_scroll_clamp, probe_resize_cursor
 
 ### B. Benchmarks (repeatable, not flaky)
 
-- [x] Add a benchmark suite that measures: — done: benchmark_suite.rs with 6 benchmark kinds
+- [ ] Add a benchmark suite that measures: — done: benchmark_suite.rs with 6 benchmark kinds
   - snapshot generation cost vs viewport size
   - rendering cost vs viewport area
   - file open time-to-first-snapshot for large inputs
-- [x] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present. — done: benchmark_suite.rs format_benchmark_report, all_passed
+- [ ] Ensure benchmarks are runnable locally and can be used in CI as trend signals (not hard gates) when CI is present. — done: benchmark_suite.rs format_benchmark_report, all_passed
 
 ### C. Idle CPU regression
 
-- [x] Add a probe that detects busy-loop redraw when idle (no input, no animation). — done: latency_regression.rs probe_busy_loop
+- [ ] Add a probe that detects busy-loop redraw when idle (no input, no animation). — done: latency_regression.rs probe_busy_loop
 
 ### D. Reporting and drift handling
 
-- [x] When regressions are found, record: — done: ProbeResult with kind, passed, message, elapsed_us
+- [ ] When regressions are found, record: — done: ProbeResult with kind, passed, message, elapsed_us
   - the spec expectation (link)
   - the reproduction probe (link)
   - the observed behavior
   - whether the mitigation is “fix” or “explicit limitation/degradation”
-- [x] Update user-visible limitations when behavior is intentionally degraded: — done: conformance and limitations entries maintained with each batch
+- [ ] Update user-visible limitations when behavior is intentionally degraded: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

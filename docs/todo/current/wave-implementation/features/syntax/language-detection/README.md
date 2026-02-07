@@ -17,14 +17,14 @@ Implement deterministic language detection so syntax highlighting activates for 
 
 ### A. Extension mapping
 
-- [x] Implement the minimum built-in extension mapping table.
-- [x] Ensure `.c` and `.h` map to C by default; ensure common C++ extensions map to C++.
-- [x] Ensure unknown filetypes fall back to `plain` without crashing or panicking.
+- [ ] Implement the minimum built-in extension mapping table.
+- [ ] Ensure `.c` and `.h` map to C by default; ensure common C++ extensions map to C++.
+- [ ] Ensure unknown filetypes fall back to `plain` without crashing or panicking.
 
 ### B. Tests (required)
 
-- [x] Add unit tests for extension → language id mapping.
-- [x] Add integration tests that open representative fixtures and assert:
+- [ ] Add unit tests for extension → language id mapping.
+- [ ] Add integration tests that open representative fixtures and assert:
   - Extensions: rs, py, js, ts, go, java, cpp, zig, lua, unknown→Plain
   - Filenames: Dockerfile, Makefile, main.rs, config.yaml
   - Paths: /home/user/project/src/main.rs, scripts/build.sh
@@ -35,6 +35,6 @@ Implement deterministic language detection so syntax highlighting activates for 
 
 ### C. Conformance and limitations updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

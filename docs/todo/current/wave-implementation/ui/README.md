@@ -47,8 +47,8 @@ Implement the UI model and rendering pipeline:
 
 ## Placeholder scaffolding (sub-wave)
 
-- [x] Define UI snapshot structures and rendering contract.
-- [x] Define view composition for:
+- [ ] Define UI snapshot structures and rendering contract.
+- [ ] Define view composition for:
   - editor window(s)
   - command-line window
   - popups/overlays
@@ -56,26 +56,26 @@ Implement the UI model and rendering pipeline:
 
 ## Minimal conformance slice (sub-wave)
 
-- [x] Implement a minimal UI that satisfies:
+- [ ] Implement a minimal UI that satisfies:
   - cursor is always visible
   - viewport follows cursor deterministically
   - redraws are stable and do not flicker
 
 ## Full conformance (sub-wave)
 
-- [x] Implement all UI spec and UI feature documents. — done: `ui_features.rs` (render) with StatusSegment, StatusLine, StatusContext, MessageArea; `ui_components.rs` (core-edit); `ui_views.rs` (core-edit)
-- [x] Implement theme and styling support as specified. — done: `theme_full.rs` (render) with Rgb, ThemeColor, Face, index_to_rgb, resolve_color
-- [x] Implement notification and popup APIs as specified (or record limitations). — done: `notification_dispatch.rs` (services), `popup_overlay.rs` (core-mode)
+- [ ] Implement all UI spec and UI feature documents. — done: `ui_features.rs` (render) with StatusSegment, StatusLine, StatusContext, MessageArea; `ui_components.rs` (core-edit); `ui_views.rs` (core-edit)
+- [ ] Implement theme and styling support as specified. — done: `theme_full.rs` (render) with Rgb, ThemeColor, Face, index_to_rgb, resolve_color
+- [ ] Implement notification and popup APIs as specified (or record limitations). — done: `notification_dispatch.rs` (services), `popup_overlay.rs` (core-mode)
 
 ## Tests (normative outputs)
 
-- [x] Add tests for:
+- [ ] Add tests for:
   - snapshot → render determinism
   - cursor visibility across modes and overlays
   - viewport invariants across scrolling and edits
 
 ## Conformance and limitations (required updates)
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)

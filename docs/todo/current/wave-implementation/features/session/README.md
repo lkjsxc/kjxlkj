@@ -18,18 +18,18 @@ Implement built-in session and persistence features.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define persistence boundaries and recovery UX.
-- [x] Minimal slice: implement one persistence mechanism end-to-end with tests.
-- [x] Full conformance: implement all session feature documents.
-  - [x] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
-  - [x] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
-  - [x] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
+- [ ] Placeholder scaffolding: define persistence boundaries and recovery UX.
+- [ ] Minimal slice: implement one persistence mechanism end-to-end with tests.
+- [ ] Full conformance: implement all session feature documents.
+  - [ ] Session persistence (Session, SessionLayout, SessionSplit, SplitDirection)
+  - [ ] Auto-save (AutoSaveConfig, AutoSaveState with triggers and debounce)
+  - [ ] Macros (Macro, MacroRecorder, KeyStroke, KeyModifiers)
     - MacroStore with store/get/remove/registers/clear
     - KeyStroke (code, ctrl, alt, shift) for serialization
     - Macro, MacroRecord, KeyModifiers types
-  - [x] Workspaces (Workspace, WorkspaceFolder)
-  - [x] Swap/Undo files (SwapFile, UndoFile with path encoding)
-  - [x] Recent files tracking (RecentFiles, RecentFile)
-  - [x] session_full.rs: SessionData, SessionBuffer, SessionWindow, SessionMark, serialize_session, parse_session_buffers
-- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
+  - [ ] Workspaces (Workspace, WorkspaceFolder)
+  - [ ] Swap/Undo files (SwapFile, UndoFile with path encoding)
+  - [ ] Recent files tracking (RecentFiles, RecentFile)
+  - [ ] session_full.rs: SessionData, SessionBuffer, SessionWindow, SessionMark, serialize_session, parse_session_buffers
+- [ ] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

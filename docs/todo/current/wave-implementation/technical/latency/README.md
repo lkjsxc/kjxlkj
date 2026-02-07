@@ -15,20 +15,20 @@ Implement responsiveness and latency constraints, including measurement and regr
 
 ### A. Define measurable targets
 
-- [x] Define measurable latency/throughput targets derived from the spec.
-- [x] Specify measurement methodology (hardware/terminal assumptions, warmup, variance tolerance).
+- [ ] Define measurable latency/throughput targets derived from the spec.
+- [ ] Specify measurement methodology (hardware/terminal assumptions, warmup, variance tolerance).
 
 ### B. Add regression harness
 
-- [x] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms. — done: benchmark_suite.rs (Keystroke, ScrollBurst, ResizeStorm), latency_regression.rs probes
+- [ ] Add deterministic performance tests/benchmarks for typing, scrolling, and resize storms. — done: benchmark_suite.rs (Keystroke, ScrollBurst, ResizeStorm), latency_regression.rs probes
   - [regression/README.md](regression/README.md)
-- [x] Add an interactive E2E smoke test that drives the real TUI and asserts "no one-key lag" behavior. — done: pty_regressions.rs + latency_regression.rs probe_input_ordering
+- [ ] Add an interactive E2E smoke test that drives the real TUI and asserts "no one-key lag" behavior. — done: pty_regressions.rs + latency_regression.rs probe_input_ordering
 
 ### C. Idle CPU behavior
 
-- [x] Ensure idle CPU usage remains low (no busy-loop redraw) when there is no input and no animation.
+- [ ] Ensure idle CPU usage remains low (no busy-loop redraw) when there is no input and no animation.
 
 ### D. Render coalescing and backpressure
 
-- [x] Ensure render coalescing is snapshot-sequence-aware (drop stale, render latest). — done: runtime.rs snapshot rendering model with sequence-aware coalescing
-- [x] Ensure input backpressure does not drop events and does not cause "one-key lag" perception. — done: latency_regression.rs probe_input_ordering, timing_debounce.rs InputRateTracker
+- [ ] Ensure render coalescing is snapshot-sequence-aware (drop stale, render latest). — done: runtime.rs snapshot rendering model with sequence-aware coalescing
+- [ ] Ensure input backpressure does not drop events and does not cause "one-key lag" perception. — done: latency_regression.rs probe_input_ordering, timing_debounce.rs InputRateTracker

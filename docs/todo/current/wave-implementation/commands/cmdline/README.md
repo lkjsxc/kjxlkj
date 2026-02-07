@@ -26,23 +26,23 @@ Implement command-line entry, editing, history, completion, and command-line win
 
 ### A. Placeholder scaffolding
 
-- [x] Define the command-line model as part of core state and snapshots.
-- [x] Define the history storage and persistence expectations (if any).
-- [x] Define completion interfaces and data sources.
+- [ ] Define the command-line model as part of core state and snapshots.
+- [ ] Define the history storage and persistence expectations (if any).
+- [ ] Define completion interfaces and data sources.
 
 ### B. Minimal conformance slice
 
-- [x] Implement `:` entry/exit and minimal editing.
-- [x] Implement stable history navigation and acceptance tests.
+- [ ] Implement `:` entry/exit and minimal editing.
+- [ ] Implement stable history navigation and acceptance tests.
 
 ### C. Full conformance
 
-- [x] Implement all command-line behaviors defined by the cmdline subtree.
-- [x] Ensure command-line window interactions integrate with window/viewports. — done: cmdline_window.rs (core-edit) with CmdlineWindowState, CmdlineViewport, follow_cmdline_cursor, render_cmdline_window
+- [ ] Implement all command-line behaviors defined by the cmdline subtree.
+- [ ] Ensure command-line window interactions integrate with window/viewports. — done: cmdline_window.rs (core-edit) with CmdlineWindowState, CmdlineViewport, follow_cmdline_cursor, render_cmdline_window
 
 ### D. Conformance updates
 
-- [x] Update: — done: conformance and limitations entries maintained with each batch
+- [ ] Update: — done: conformance and limitations entries maintained with each batch
   - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
   - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) (when user-visible)
 

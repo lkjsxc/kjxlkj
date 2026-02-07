@@ -18,35 +18,35 @@ Implement built-in Language Server Protocol integration.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
+- [ ] Placeholder scaffolding: define LSP service APIs and diagnostic surfaces.
   - LspService with server config management
   - LspServerConfig for rust-analyzer, typescript-language-server
   - Diagnostic and CompletionItem types
   - LspPosition, LspRange types
   - ServerCapabilities model
   - HoverInfo, CodeAction, TextEdit, Location types
-- [x] Minimal slice: implement one request/response + UI update path with tests. — done: `lsp_request.rs` with RequestId, LspMethod (15 variants), PendingRequests (send/complete/pending_count), DiagnosticStore (set/get/clear/error_count), ServerCapabilities
-  - [x] Initialize handshake (InitializeParams, ServerCapabilities)
+- [ ] Minimal slice: implement one request/response + UI update path with tests. — done: `lsp_request.rs` with RequestId, LspMethod (15 variants), PendingRequests (send/complete/pending_count), DiagnosticStore (set/get/clear/error_count), ServerCapabilities
+  - [ ] Initialize handshake (InitializeParams, ServerCapabilities)
     - make_initialize(), InitializeParams, ClientCapabilities, JSON-RPC Request/Response/Notification types
-  - [x] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
+  - [ ] textDocument/didOpen (DidOpenTextDocumentParams, TextDocumentItem)
     - make_did_open(), TextDocumentItem, encode_message()
-  - [x] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
+  - [ ] textDocument/didChange (DidChangeTextDocumentParams, ContentChangeEvent)
     - make_did_change(), VersionedTextDocId, ContentChange, DidCloseParams
-- [x] Full conformance: implement all LSP feature documents and navigation subtrees.
-  - [x] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
+- [ ] Full conformance: implement all LSP feature documents and navigation subtrees.
+  - [ ] Hover (Hover, HoverContents, MarkupContent, MarkupKind, MarkedString)
     - protocol_ext.rs: Hover, HoverContents (Markup/MarkedString/Array), MarkupContent, MarkupKind
-  - [x] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)
+  - [ ] Signature Help (SignatureHelp, SignatureInformation, ParameterInformation)
     - SignatureHelp with active_signature/active_parameter, ParameterLabel (Simple/Offsets)
-  - [x] Code Actions (CodeAction, CodeActionKind, WorkspaceEdit, TextEdit, Command)
+  - [ ] Code Actions (CodeAction, CodeActionKind, WorkspaceEdit, TextEdit, Command)
     - CodeActionResponse, WorkspaceEdit, TextEditJson, LspCommand, code_action_kind consts
-  - [x] Navigation (Location, LocationLink, DefinitionResponse)
+  - [ ] Navigation (Location, LocationLink, DefinitionResponse)
     - LocationLink with origin/target ranges, LocationJson
-  - [x] Rename (RenameParams, PrepareRenameResponse)
-  - [x] Code Lens (CodeLens)
-  - [x] Formatting (FormattingOptions)
-  - [x] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
+  - [ ] Rename (RenameParams, PrepareRenameResponse)
+  - [ ] Code Lens (CodeLens)
+  - [ ] Formatting (FormattingOptions)
+  - [ ] Symbols (SymbolKind, DocumentSymbol, SymbolInformation)
     - SymbolKind (26 variants), DocumentSymbol (tree), SymbolInformation (flat)
-  - [x] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
+  - [ ] Extended Completion (CompletionItemKind with icons, CompletionItemEx, CompletionList)
     - completion_ext.rs: CompletionItemKind (25 variants with icon/from_lsp), CompletionItemEx, CompletionList with filter/select
-- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
+- [ ] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

@@ -18,7 +18,7 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define feature state ownership and snapshot integration.
+- [ ] Placeholder scaffolding: define feature state ownership and snapshot integration.
   - StatusLine with git_branch, git_status, diagnostics, lsp_status, file_type, encoding
   - DiagnosticSummary (errors/warnings/info/hints)
   - StatusComponent enum (16 variants)
@@ -26,8 +26,8 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
   - PopupState, PopupContent (Text/Menu), PopupAnchor, MenuItem
   - TabEntry for buffer tabs
   - UiModel with tabs, notifications, popup fields
-- [x] Minimal slice: implement one feature end-to-end with deterministic tests.
-- [x] Full conformance: implement all UI feature documents. — done: ui_features.rs, golden_snapshots.rs, long_line_fixtures.rs, viewport_integrity.rs
+- [ ] Minimal slice: implement one feature end-to-end with deterministic tests.
+- [ ] Full conformance: implement all UI feature documents. — done: ui_features.rs, golden_snapshots.rs, long_line_fixtures.rs, viewport_integrity.rs
   - Cursor customization: CursorShape, CursorBlink, CursorLine, CursorConfig, CursorState
   - Notifications: NotificationKind, Notification, NotificationManager
   - Icons: FileType, GitStatus, DiagnosticLevel, DirectoryIcon, ActionIcon, ArrowIcon, IconConfig
@@ -36,5 +36,5 @@ Implement the UI feature layer (cursor customization, viewport, popups, notifica
   - Color picker: Color (RGB/HSL/hex), ColorMatch, ColorPicker, ColorPickerConfig
   - Statusline: StatusSection, StatusSegment, StatuslineConfig, TablineConfig, TabEntry
   - 288 tests total
-- [x] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
+- [ ] Update conformance and limitations docs when user-visible. — done: conformance and limitations entries maintained with each batch
 

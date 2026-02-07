@@ -18,11 +18,11 @@ Implement buffer-related built-in features beyond the core buffer model.
 
 ## Checklist
 
-- [x] Placeholder scaffolding: define owning module(s) and snapshot/UI hooks.
-- [x] Minimal slice: implement one feature end-to-end with tests.
+- [ ] Placeholder scaffolding: define owning module(s) and snapshot/UI hooks.
+- [ ] Minimal slice: implement one feature end-to-end with tests.
   - Alternate buffer (Ctrl-^, :b#, :b N)
   - Scratch buffers (:scratch)
-- [x] Full conformance: implement all documents in the subtree.
+- [ ] Full conformance: implement all documents in the subtree.
   - buffer_features.rs: BufferVariables, BufferLocalOptions, FileFormat, BufEvent, AutoCmd, AutoCmdRegistry
-- [x] Update conformance and limitations docs when behavior becomes user-visible. — done: conformance and limitations entries maintained with each batch
+- [ ] Update conformance and limitations docs when behavior becomes user-visible. — done: conformance and limitations entries maintained with each batch
 
