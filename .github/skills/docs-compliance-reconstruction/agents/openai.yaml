@@ -1,4 +1,0 @@
-interface:
-  display_name: "Docs Compliance Reconstruction"
-  short_description: "Rebuild code from docs with strict conformance checks"
-  default_prompt: "Use $docs-compliance-reconstruction to implement this repository from /docs/ with strict conformance and full verification gates."

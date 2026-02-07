@@ -22,3 +22,4 @@ Each proposal MUST:
 | [performance-regression-harness.md](performance-regression-harness.md) | CPU/latency regression harness and gating strategy |
 | [profiling-workflow.md](profiling-workflow.md) | Repeatable profiling workflow and regression triage |
 | [file-explorer-mvp.md](file-explorer-mvp.md) | File explorer MVP (toggle, navigate, open file) |
+| [docs-only-baseline-reset-2026-02-07.md](docs-only-baseline-reset-2026-02-07.md) | Hard reset to docs-only baseline before next reconstruction wave |

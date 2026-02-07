@@ -3,34 +3,35 @@
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 High-level comparison of kjxlkj to other terminal editors.
 
-This document is descriptive and non-normative. For “what exists right now”, see:
+This document is descriptive and non-normative. For current implementation status, use:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## Feature matrix (current vs target)
+## Feature matrix (target framing)
 
-| Area | kjxlkj (current) | kjxlkj (target) | Notes |
-|------|-------------------|-----------------|-------|
-| Modal editing | Yes | Yes | Vim-like model |
-| Operator+motion | Yes (subset) | Yes | Expanding toward spec |
-| LSP | No | Yes | Target includes a service crate (see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)) |
-| Git integration | No | Yes | Target includes a service crate (see [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)) |
-| Syntax highlighting | No | Yes | Planned |
-| Explorer UI | No | Yes | Planned |
-| Finder UI | No | Yes | Planned |
-| Splits/windows | No | Yes | Planned |
-| Config/remapping | No | Yes | Planned |
-| Plugins | No (by design) | No (by design) | Built-ins only |
+| Area | Target scope in kjxlkj | Current status source | Notes |
+|------|-------------------------|-----------------------|-------|
+| Modal editing | Yes | `/docs/reference/CONFORMANCE_MODES_KEYS.md` | Vim-like model |
+| Operator+motion | Yes | `/docs/reference/CONFORMANCE_EDITING.md` | Command/editing surface |
+| LSP | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
+| Git integration | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
+| Syntax highlighting | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Explorer UI | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Finder UI | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Splits/windows | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Core editor model |
+| Config/remapping | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Config/scripting surface |
+| Plugins | No (by design) | `/docs/spec/README.md` | Built-ins only |
 
 ## Keybinding philosophy
 
 ### kjxlkj / (Neo)Vim
 
-Verb → motion / text object (operators compose with targets).
+Verb -> motion / text object (operators compose with targets).
 
 ### Helix / Kakoune
 
-Selection-first (select → act).
+Selection-first (select -> act).
 
 ## Configuration philosophy
 

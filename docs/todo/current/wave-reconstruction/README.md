@@ -4,7 +4,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Purpose
 
-Enable a one-shot “docs-only → full repository” reconstruction run.
+Enable a one-shot "docs-only -> full repository" reconstruction run.
 
 Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
@@ -18,7 +18,7 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | The root allowlist and required implementation placement |
 | [/docs/reference/CI.md](/docs/reference/CI.md) | The verification gate the repo must pass (local + CI parity) |
 | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | Container-based build/run expectations (when required by policy/spec) |
-| [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | The “what exists” ledger (must be kept accurate) |
+| [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | The "what exists" ledger (must be kept accurate) |
 
 ## Checklist (normative)
 
@@ -28,7 +28,7 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
   - full target spec, or
   - "current surface" as documented in `/docs/reference/CONFORMANCE.md`
 - [x] Record the chosen target explicitly in:
-  - `/docs/reference/CONFORMANCE.md` (update the “docs-only baseline reconstruction target” notes if needed)
+  - `/docs/reference/CONFORMANCE.md` (update the "docs-only baseline reconstruction target" notes if needed)
   - `/docs/reference/LIMITATIONS.md` (record any user-visible scope reductions)
   - `/docs/log/proposals/` (when the decision requires a durable rationale)
 
@@ -52,6 +52,7 @@ Contract reference: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.m
 
 - [x] Ensure the documentation remains sufficient to reconstruct the rebuilt repository again.
 - [x] Update `/docs/todo/RECONSTRUCTION_PROMPT.md` if the workflow or constraints changed.
+- [x] Require reconstruction runs to emit an audit artifact under `/docs/log/reconstruction/audits/` with mismatch matrix and verification evidence.
 
 ## Related
 

@@ -29,7 +29,11 @@ Use Semantic Versioning:
    - `/README.md` (high-level entrypoint)
    - `/docs/reference/CONFORMANCE.md` (what is implemented)
    - `/docs/reference/LIMITATIONS.md` (user-visible gaps)
-6. The version is updated in the workspace manifest (`Cargo.toml`) once it exists.
+6. Conformance claims pass the evidence gate:
+   - every `implemented` claim is reachable from a user path and backed by deterministic tests
+   - user-visible exceptions are recorded in `/docs/reference/LIMITATIONS.md`
+   - no contradiction remains between conformance claims and release behavior
+7. The version is updated in the workspace manifest (`Cargo.toml`) once it exists.
 
 ## Release steps (manual)
 

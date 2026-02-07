@@ -24,18 +24,37 @@ Authoritative sources for “what exists” are:
 
 This limitations document exists to capture **user-visible drift** and **known rough edges** against the target spec.
 
-## High-priority UX defects (reported and/or suspected)
+## Entry discipline (normative)
 
-These items are prioritized because they block basic usability and because they can be missed by headless-only testing.
+Each user-visible limitation entry SHOULD include:
 
-| Issue | Expected behavior | Defining spec |
-|---|---|---|
-| Leader key conflicts | `Space` acts as `<leader>` in Normal mode; feature chords like `<leader>e` and `<leader>t` are reachable | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
-| Append at end-of-line (`a`) off-by-one | When cursor is on last character, `a` enters Insert at column `N` (true EOL) | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
-| Soft wrap not applied | Long lines wrap by default (`wrap = true`) | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
-| `.c` syntax highlighting missing | Built-in language detection includes C/C++ by file extension | [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md) |
+- expected behavior with exact `/docs/spec/...` link
+- observed behavior (what user actually sees)
+- status (`open`, `partial`, or `accepted-temporary`)
+- verification evidence (test path, failing repro command, or deterministic manual script)
+- next action (fix path or explicit deferral plan)
 
-For each item above, the implementation MUST include an **interactive PTY-driven E2E regression test** that drives the real TUI path and verifies behavior via persisted output (prefer file writes over screen scraping to reduce flakiness). See [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
+Entries without evidence are allowed only as temporary triage notes and SHOULD be normalized in the next iteration.
+
+## Relationship to conformance (normative)
+
+- `CONFORMANCE` declares supported behavior.
+- `LIMITATIONS` records exceptions and gaps against target behavior.
+
+If an item is marked `implemented` in conformance but still has a user-visible defect, keep the conformance entry `partial` until the limitation is closed with evidence.
+
+## High-priority UX regression watchlist
+
+These scenarios are high risk because they can regress without being caught by headless-only checks.
+
+| Scenario | Expected behavior | Defining spec | Required evidence | If failing |
+|---|---|---|---|---|
+| Leader key reachability | `Space` acts as `<leader>` in Normal mode; `<leader>e` and `<leader>t` are reachable | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) | PTY E2E regression under `/docs/spec/technical/testing.md` | Record as `open` limitation with reproduction |
+| Append at EOL (`a`) | On last character, `a` enters Insert at true EOL; `Esc` returns without floating cursor | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | PTY E2E regression under `/docs/spec/technical/testing.md` | Record as `open` limitation with reproduction |
+| Soft wrap behavior | Long lines wrap by default (`wrap = true`) | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | PTY E2E regression under `/docs/spec/technical/testing.md` | Record as `open` limitation with reproduction |
+| C language detection | Built-in language detection includes C/C++ by file extension | [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md) | Deterministic integration or PTY regression | Record as `open` limitation with reproduction |
+
+For each scenario above, prefer persisted-output assertions instead of screen scraping to reduce flakiness.
 
 ## Performance Limits
 

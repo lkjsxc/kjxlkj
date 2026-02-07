@@ -16,17 +16,17 @@ This directory manages the recursive TODO workflow for kjxlkj development.
 | [plan/README.md](plan/README.md) | Detailed implementation plan (recursive) |
 | [reading/README.md](reading/README.md) | Reading discipline (no long-lived history) |
 | [doc-coverage/README.md](doc-coverage/README.md) | Checklist that directly links all repository documentation files |
-| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | One-shot rebuild prompt (Copilot/Claude) |
+| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | One-shot rebuild prompt with evidence-gated closure contract |
 
 ## Workflow
 
 | Phase | Description |
 |-------|-------------|
-| Plan | Read docs, understand requirements |
-| Implement | Create source code matching specs |
-| Verify | Validate against policies |
-| Commit | Frequent git commits |
-| Recurse | Regenerate TODO list |
+| Plan | Read docs and select reconstruction target scope |
+| Implement | Build one coherent slice via real user-reachable paths |
+| Verify | Run deterministic checks and synchronize conformance/limitations |
+| Audit | Record mismatch matrix and closure evidence under `/docs/log/reconstruction/audits/` |
+| Recurse | Carry forward explicit next-iteration tasks for deferred items |
 
 ## Invariants
 
