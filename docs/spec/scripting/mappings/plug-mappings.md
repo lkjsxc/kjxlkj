@@ -1,139 +1,43 @@
 # Plug Mappings
 
-Plugin-style mapping indirection.
+Back: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+
+Internal mapping names used for extensibility.
 
 ## Overview
 
-`<Plug>` mappings provide named intermediate mappings
-for customization. They create a stable action layer
-between implementation and user-facing keybindings.
+`<Plug>` mappings are virtual key sequences that serve as named interfaces for functionality. They connect user keybindings to internal operations without exposing implementation details.
 
-## Purpose
+## How It Works
 
-### Indirection Layer
+A `<Plug>` mapping is defined internally:
 
-A `<Plug>` mapping is a pseudo-key that represents an
-action. The actual implementation is mapped to the
-`<Plug>` key, and the user-visible key is mapped to
-the `<Plug>` key. This allows users to remap actions
-without knowing implementation details.
+`nnoremap <Plug>(CommentToggle) ...internal logic...`
 
-### Benefits
+Users then map a key to the plug name:
 
-1. Stable action names across versions
-2. User customization without breaking internals
-3. Plugin interoperability via named actions
-4. Self-documenting keybindings
+`nmap gc <Plug>(CommentToggle)`
+
+## Built-in Plug Mappings
+
+| Plug | Default Key | Description |
+|---|---|---|
+| `<Plug>(CommentToggle)` | `gc` | Toggle comment |
+| `<Plug>(SurroundAdd)` | `ys` | Add surround |
+| `<Plug>(SurroundDelete)` | `ds` | Delete surround |
+| `<Plug>(SurroundChange)` | `cs` | Change surround |
+| `<Plug>(JumpForward)` | `<C-i>` | Jump list forward |
+| `<Plug>(JumpBackward)` | `<C-o>` | Jump list backward |
 
 ## Naming Convention
 
-### Standard Format
+Plug mapping names use PascalCase in parentheses: `<Plug>(ActionName)`.
 
-`<Plug>(ActionName)` - parenthesized action name.
-Example: `<Plug>(comment-toggle-line)`.
+## Remapping
 
-### Examples
+Users can remap plug mappings to any key without affecting internal logic.
 
-| Plug Mapping | Action |
-|-------------|--------|
-| `<Plug>(lsp-definition)` | Go to definition |
-| `<Plug>(lsp-references)` | Find references |
-| `<Plug>(comment-toggle)` | Toggle comment |
-| `<Plug>(surround-add)` | Add surrounding |
-| `<Plug>(git-blame-line)` | Show line blame |
+## Related
 
-## Defining Plug Mappings
-
-### Simple Action
-
-In TOML config, plug mappings are defined under
-`[plug_mappings]`: the key is the plug name, the value
-is the command or action to execute.
-
-### Complex Action
-
-Plug mappings can reference multiple commands chained
-together, or call internal Lua/script functions.
-
-### Multi-Key Sequence
-
-A plug mapping can expand to a sequence of normal mode
-keys: `<Plug>(select-function) = "vaf"`.
-
-## User Remapping
-
-### Default Bindings
-
-Built-in features define a plug mapping AND a default
-user binding. For example:
-- `<Plug>(lsp-definition)` is bound to `gd` by default
-- Users can remap: `gd = "<Plug>(my-custom-goto)"`
-
-### User Override
-
-To override: set the desired key to the plug mapping name
-in `[keys.normal]`. To disable a default plug binding,
-map it to `"<Nop>"`.
-
-## Common Patterns
-
-### LSP Actions
-
-| Plug | Default Key |
-|------|-------------|
-| `<Plug>(lsp-definition)` | `gd` |
-| `<Plug>(lsp-references)` | `gr` |
-| `<Plug>(lsp-hover)` | `K` |
-| `<Plug>(lsp-rename)` | `<Leader>rn` |
-| `<Plug>(lsp-code-action)` | `<Leader>ca` |
-
-### Git Actions
-
-| Plug | Default Key |
-|------|-------------|
-| `<Plug>(git-blame-line)` | `<Leader>gb` |
-| `<Plug>(git-hunk-stage)` | `<Leader>gs` |
-| `<Plug>(git-hunk-reset)` | `<Leader>gr` |
-
-### Navigation
-
-| Plug | Default Key |
-|------|-------------|
-| `<Plug>(file-picker)` | `<Leader>ff` |
-| `<Plug>(buffer-picker)` | `<Leader>fb` |
-| `<Plug>(grep-picker)` | `<Leader>fg` |
-
-### Text Objects
-
-Plug mappings can define custom text objects:
-`<Plug>(textobj-function-inner)` mapped to `if`.
-
-## Chaining Plug Mappings
-
-### Sequential
-
-Multiple plug mappings can be chained:
-a key can map to a sequence of plug references.
-
-### Conditional
-
-Plug mappings do not support conditions directly.
-Use script-level branching instead.
-
-## Mode-Specific Plugs
-
-### Visual Mode
-
-Plug mappings can be mode-specific. Define under
-`[keys.visual]` to create visual-mode-only plugs.
-
-### Insert Mode
-
-Insert-mode plug mappings are defined under
-`[keys.insert]`. Commonly used for snippet expansion.
-
-## Repeatable Plug
-
-Plug mappings that modify text are automatically
-repeatable with `.` (dot repeat) if they use the
-standard operator framework.
+- Key mappings: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+- Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)

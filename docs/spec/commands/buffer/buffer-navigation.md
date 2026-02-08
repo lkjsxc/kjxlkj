@@ -1,115 +1,41 @@
 # Buffer Navigation
 
-Switch between open buffers.
+Back: [/docs/spec/commands/buffer/README.md](/docs/spec/commands/buffer/README.md)
+
+Commands for switching between buffers.
 
 ## Overview
 
-Multiple files can be open simultaneously as buffers.
-Navigation commands switch between them without closing.
+Buffer navigation commands switch the current window to display a different buffer.
 
-## Basic Commands
+## Commands
 
-### By Number
+| Command | Key | Description |
+|---|---|---|
+| `:bnext` | `]b` | Switch to next buffer |
+| `:bprev` | `[b` | Switch to previous buffer |
+| `:bfirst` | - | Switch to first buffer |
+| `:blast` | - | Switch to last buffer |
+| `:buffer {N}` | - | Switch to buffer number N |
+| `:buffer {name}` | - | Switch to buffer matching name |
+| `<C-^>` / `<C-6>` | - | Toggle alternate file |
 
-| Command | Description |
-|---------|-------------|
-| `:buffer {n}` | Switch to buffer number {n} |
-| `:b {n}` | Short form |
-| `:buffer {name}` | Switch by partial name match |
-| `:b {name}` | Short form |
+## Buffer Picker
 
-### By Position
+| Key | Command | Description |
+|---|---|---|
+| `<leader>fb` | `:Buffers` | Open buffer picker |
 
-| Command | Description |
-|---------|-------------|
-| `:bnext` / `:bn` | Next buffer |
-| `:bprevious` / `:bp` | Previous buffer |
-| `:bfirst` / `:bf` | First buffer |
-| `:blast` / `:bl` | Last buffer |
+## Modified Buffer Warning
 
-## Normal Mode Keys
+If the current buffer is modified, `:bnext` etc. will warn. Use `!` to force, or set `hidden` to allow background modified buffers.
 
-### Default Bindings
+| Setting | Default | Description |
+|---|---|---|
+| `hidden` | `true` | Allow switching away from modified buffers |
 
-| Key | Action |
-|-----|--------|
-| `]b` | Next buffer |
-| `[b` | Previous buffer |
-| `]B` | Last buffer |
-| `[B` | First buffer |
+## Related
 
-### With Count
-
-`3]b` moves forward 3 buffers.
-`2[b` moves backward 2 buffers.
-
-## Alternate Buffer
-
-### Toggle
-
-`<C-^>` switches to the alternate (previously edited)
-buffer. Each window has its own alternate buffer.
-
-### With Count
-
-`{n}<C-^>` switches to buffer number {n}.
-
-## Buffer List
-
-### Show Buffers
-
-`:buffers` or `:ls` shows all buffers.
-
-### Output Format
-
-Each line: `{nr} {flags} "{name}" line {n}`
-
-### Flags
-
-| Flag | Meaning |
-|------|---------|
-| `%` | Current buffer |
-| `#` | Alternate buffer |
-| `a` | Active (loaded and displayed) |
-| `h` | Hidden (loaded but not displayed) |
-| `+` | Modified |
-| `-` | Not modifiable |
-| `=` | Read-only |
-
-## Tab Completion
-
-### Name Matching
-
-`:buffer <Tab>` cycles through buffer names.
-Partial matching: `:buffer mai<Tab>` finds `main.rs`.
-
-### Fuzzy Match
-
-The buffer picker supports fuzzy matching for quick
-navigation when many buffers are open.
-
-## Hidden Buffers
-
-### Behavior
-
-When `hidden = true`, modified buffers can be hidden
-(navigated away from) without writing. They remain in
-the buffer list.
-
-### Warning
-
-When `hidden = false`, attempting to leave a modified
-buffer shows a warning: `E37: No write since last change`.
-
-## Unloading
-
-### Unload Buffer
-
-`:bunload {n}` unloads buffer (frees memory, keeps in list).
-`:bdelete {n}` removes from buffer list.
-`:bwipeout {n}` removes completely (clears undo, marks).
-
-### Ranges
-
-`:3,5bdelete` deletes buffers 3 through 5.
-`:bdelete file1.rs file2.rs` deletes by name.
+- Buffer management: [/docs/spec/commands/buffer/README.md](/docs/spec/commands/buffer/README.md)
+- Alternate file: [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
+- Buffer list: [/docs/spec/features/buffer/buffer-list.md](/docs/spec/features/buffer/buffer-list.md)

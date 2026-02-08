@@ -1,82 +1,47 @@
-# Git Signs (Gutter Integration)
+# Git Signs
 
-kjxlkj shows git changes in the gutter.
+Back: [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+
+Sign column indicators for Git changes.
 
 ## Overview
 
-Visual indicators for line changes:
+Git signs display in the sign column to show which lines have been added, modified, or deleted compared to the Git index (staged state) or HEAD.
 
+## Sign Types
 
-Symbols:
-- `+` Added lines
-- `~` Modified lines
-- `-` Deleted lines indicator
-
-## Configuration
-
-
-### Colors
-
-
-## Features
-
-### Blame Line
-
-Show git blame for current line:
-
-
-Displays: `John Doe • 2 days ago • feat: add feature`
-
-### Blame Virtual Text
-
+| Sign | Highlight | Meaning |
+|---|---|---|
+| `│` | `GitSignsAdd` | Added lines |
+| `│` | `GitSignsChange` | Changed lines |
+| `_` | `GitSignsDelete` | Deleted lines (below the sign) |
+| `‾` | `GitSignsTopDelete` | Deleted lines (above the sign) |
+| `~` | `GitSignsChangedelete` | Changed + deleted |
 
 ## Navigation
 
-Jump between hunks:
-
+| Key | Command | Description |
+|---|---|---|
+| `]h` | `:Gitsigns next_hunk` | Jump to next hunk |
+| `[h` | `:Gitsigns prev_hunk` | Jump to previous hunk |
 
 ## Hunk Operations
 
-### Preview Hunk
+| Key | Command | Description |
+|---|---|---|
+| `<leader>hs` | Stage hunk | Stage the hunk under cursor |
+| `<leader>hr` | Reset hunk | Revert hunk to index state |
+| `<leader>hp` | Preview hunk | Show hunk diff in popup |
+| `<leader>hS` | Stage buffer | Stage all changes in buffer |
 
+## Configuration
 
-Shows diff popup for current hunk.
+| Setting | Default | Description |
+|---|---|---|
+| `gitsigns.enabled` | `true` | Enable git signs |
+| `gitsigns.base` | `"index"` | Compare against: `index` or `HEAD` |
 
-### Stage Hunk
+## Related
 
-
-### Stage Buffer
-
-
-## Word Diff
-
-Highlight changed words within lines:
-
-
-## Staging from Visual
-
-In visual mode, stage selected lines:
-
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `:Gitsigns toggle_signs` | Toggle signs |
-| `:Gitsigns toggle_current_line_blame` | Toggle blame |
-| `:Gitsigns diffthis` | Diff with index |
-| `:Gitsigns diffthis ~` | Diff with HEAD |
-
-## Status Integration
-
-Statusline shows git info:
-
-
-Displays: ` main +2 ~1 -0`
-
-## Diff Mode
-
-Open side-by-side diff:
-
-
-Split view showing working copy vs index.
+- Git integration: [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+- Diff mode: [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)

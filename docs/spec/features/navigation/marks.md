@@ -1,75 +1,42 @@
-# Marks and Bookmarks
+# Navigation Marks Feature
 
-kjxlkj supports vim-style marks and enhanced bookmarks.
+Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
 
-## Vim Marks
+Mark-based navigation features beyond the core mark system.
 
-### Setting Marks
+## Overview
 
+This documents the navigation-layer features built on top of the core mark system: mark signs, mark pickers, and mark management commands.
 
-Examples:
-- `ma` - Set mark 'a' at cursor
-- `mA` - Set global mark 'A'
+## Mark Signs
 
-### Jumping to Marks
+Marks are shown as virtual text or sign column indicators:
 
+| Setting | Default | Description |
+|---|---|---|
+| `marks.signs` | `true` | Show marks in sign column |
 
-## Special Marks
+## Mark Picker
 
-| Mark | Description |
-|------|-------------|
-| `'` or `` ` `` | Previous jump position |
-| `.` | Last change position |
-| `"` | Last exit position in buffer |
-| `^` | Last insert position |
-| `[` | Start of last yank/change |
-| `]` | End of last yank/change |
-| `<` | Start of last visual selection |
-| `>` | End of last visual selection |
+| Key | Command | Description |
+|---|---|---|
+| `<leader>fm` | `:Marks` | Open mark picker |
 
-## Mark Navigation
+The picker lists all marks with their positions and allows jumping to any mark.
 
-
-## Listing Marks
-
-
-## Bookmarks (Enhanced)
-
-Beyond vim marks, kjxlkj provides bookmarks:
-
-
-### Annotated Bookmarks
-
-Add notes to bookmarks:
-
-
-Prompts for annotation text.
-
-### Bookmark Groups
-
-
-## Configuration
-
-
-## Persistence
-
-
-## Jump List
-
-Separate from marks, tracks jump history:
-
-
-## Finder Integration
-
-Find marks/bookmarks via fuzzy finder:
-
-
-## Commands
+## Delete Marks
 
 | Command | Description |
-|---------|-------------|
-| `:marks` | List marks |
-| `:delmarks {marks}` | Delete marks |
-| `:BookmarkToggle` | Toggle bookmark |
-| `:BookmarkList` | List bookmarks |
-| `:BookmarkClear` | Clear all bookmarks |
+|---|---|
+| `:delmarks {marks}` | Delete specified marks |
+| `:delmarks!` | Delete all lowercase marks for current buffer |
+
+## Mark List
+
+`:marks` displays all active marks with their line, column, and file information.
+
+## Related
+
+- Marks core: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+- Mark types: [/docs/spec/editing/marks/mark-types.md](/docs/spec/editing/marks/mark-types.md)
+- Jump list: [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)

@@ -1,139 +1,54 @@
 # Search Options
 
-Configuration options controlling search behavior.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 
-## Highlight Options
+Configuration options that control search behavior.
 
-### hlsearch (Highlight Search)
+## Overview
 
-When enabled (`hlsearch = true`), all matches of the last
-search pattern are highlighted in the buffer. Highlighting
-persists until `:nohlsearch` is run or the pattern changes.
-Default: `true`.
+Search behavior is controlled by several settings that affect case sensitivity, wrapping, highlighting, and regex interpretation.
 
-### incsearch (Incremental Search)
+## Case Settings
 
-When enabled (`incsearch = true`), the buffer scrolls to
-show the first match as the pattern is being typed.
-The match is highlighted in real-time. The cursor
-returns to its original position if search is canceled.
-Default: `true`.
+| Setting | Default | Description |
+|---|---|---|
+| `ignorecase` | `false` | Ignore case in search patterns |
+| `smartcase` | `true` | Override ignorecase if pattern has uppercase |
 
-## Case Options
+## Search Display
 
-### ignorecase
+| Setting | Default | Description |
+|---|---|---|
+| `hlsearch` | `true` | Highlight all matches |
+| `incsearch` | `true` | Show matches incrementally while typing |
 
-When `ignorecase = true`, search patterns are matched
-case-insensitively by default. `foo` matches `Foo`, `FOO`,
-`foo`. Default: `false`.
+## Wrapping
 
-### smartcase
+| Setting | Default | Description |
+|---|---|---|
+| `wrapscan` | `true` | Wrap search around end/beginning of buffer |
 
-When `smartcase = true` (requires `ignorecase = true`):
-- Pattern with only lowercase: case-insensitive
-- Pattern with any uppercase: case-sensitive
-- `foo` matches `Foo`; `Foo` only matches `Foo`
+## Magic Mode
 
-Default: `false`.
+| Setting | Default | Description |
+|---|---|---|
+| `magic` | `true` | Use "magic" regex syntax by default |
 
-## Wrap Options
+With `magic` on, characters like `.`, `*`, `[` are regex meta-characters. With `nomagic`, they are literal.
 
-### wrapscan
+## In-Pattern Flags
 
-When `wrapscan = true`, searches wrap around the end
-(or beginning for `?`) of the buffer. When `false`,
-search stops at the last (or first) match and displays
-"search hit BOTTOM" or "search hit TOP".
-Default: `true`.
+| Flag | Description |
+|---|---|
+| `\c` | Force case-insensitive |
+| `\C` | Force case-sensitive |
+| `\v` | Very magic (all non-alphanumeric chars are special) |
+| `\V` | Very nomagic (only `\` is special) |
+| `\m` | Magic (default) |
+| `\M` | Nomagic |
 
-## Display Options
+## Related
 
-### shortmess
-
-The `S` flag in `shortmess` suppresses search count
-messages (e.g. `[3/15]`). When `S` is absent, the
-current match index and total count are displayed in
-the command line during search navigation.
-
-## Search Match Display
-
-The current match is highlighted with `IncSearch` highlight
-group. Other matches use `Search` group. These are
-configurable via colorscheme TOML under `[highlights]`.
-
-## Performance Options
-
-### redrawtime
-
-Maximum time in milliseconds spent highlighting search
-matches before giving up. Prevents UI freezes on
-pathological patterns. Default: `2000`.
-
-### maxmempattern
-
-Maximum memory (KB) the regex engine may use for
-pattern matching. Prevents runaway memory on complex
-patterns. Default: `1000`.
-
-## Regex Engine Options
-
-### regexpengine
-
-| Value | Engine |
-|-------|--------|
-| `0` | Automatic selection (default) |
-| `1` | Backtracking NFA |
-| `2` | DFA (faster, fewer features) |
-
-Automatic mode uses DFA when the pattern supports it
-and falls back to NFA for lookahead/lookbehind.
-
-## Option Combinations
-
-### Common Configurations
-
-| Use Case | Settings |
-|----------|----------|
-| Case-smart | `ignorecase = true`, `smartcase = true` |
-| No wrap | `wrapscan = false` |
-| Fast highlight | `redrawtime = 500` |
-| Minimal messages | `shortmess` includes `S` |
-
-## Override in Pattern
-
-| Prefix | Effect |
-|--------|--------|
-| `\c` | Force case-insensitive for this pattern |
-| `\C` | Force case-sensitive for this pattern |
-
-These override `ignorecase` and `smartcase` for the
-single search where they appear.
-
-## Keybindings for Options
-
-| Key | Action |
-|-----|--------|
-| `<Leader>h` | Toggle hlsearch on/off |
-| `<Leader>/` | Run `:nohlsearch` (clear current highlight) |
-| `<Esc><Esc>` | Clear highlight (normal mode) |
-
-## Configuration File
-
-All search options are set in `~/.config/kjxlkj/config.toml`
-under `[editor.search]`:
-- `hlsearch` (bool)
-- `incsearch` (bool)
-- `ignorecase` (bool)
-- `smartcase` (bool)
-- `wrapscan` (bool)
-- `redrawtime` (integer)
-- `maxmempattern` (integer)
-- `regexpengine` (integer)
-
-## API Reference
-
-| Function | Return |
-|----------|--------|
-| `searchcount()` | `{ current, total, incomplete }` |
-| `searchpos(pattern)` | `[line, col]` of next match |
-
+- Search commands: [/docs/spec/editing/search/search-commands.md](/docs/spec/editing/search/search-commands.md)
+- Search patterns: [/docs/spec/editing/search/search-patterns.md](/docs/spec/editing/search/search-patterns.md)
+- Regex: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)

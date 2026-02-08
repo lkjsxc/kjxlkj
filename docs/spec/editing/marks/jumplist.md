@@ -1,109 +1,55 @@
-# Jumplist
+# Jump List
 
-Global navigation history for position-based movement.
+Back: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+
+Navigate through a history of cursor jump positions.
 
 ## Overview
 
-The jumplist tracks cursor positions across all buffers, enabling quick navigation back to previously visited locations.
+The jump list records cursor positions before large jumps. It allows navigating backward and forward through these positions.
 
 ## Navigation
 
-| Key | Action |
-|-----|--------|
-| `Ctrl-O` | Jump to older position |
-| `Ctrl-I` | Jump to newer position |
-| `Tab` | Same as `Ctrl-I` (in some configs) |
+| Key | Command | Description |
+|---|---|---|
+| `<C-o>` | `:jumps` | Jump to older position |
+| `<C-i>` | - | Jump to newer position |
+| `:jumps` | - | Display the jump list |
 
-## How It Works
+## What Creates a Jump Entry
 
+| Action | Creates Jump |
+|---|---|
+| `/` search | Yes |
+| `?` search | Yes |
+| `n` / `N` | Yes |
+| `*` / `#` | Yes |
+| `G` / `gg` | Yes |
+| `%` | Yes |
+| `(` / `)` | Yes |
+| `{` / `}` | Yes |
+| `H` / `M` / `L` | Yes |
+| `:number` (go to line) | Yes |
+| `` `{mark} `` | Yes |
+| Regular motions (h/j/k/l/w/e/b) | No |
 
-## What Creates Jump Entries
+## Cross-file Jumps
 
-Entries added for:
-- Search commands (`/`, `?`, `n`, `N`, `*`, `#`)
-- Line jumps (`G`, `gg`, `:123`)
-- Mark jumps (`'a`, `` `a ``)
-- Matching bracket (`%`)
-- Paragraph/sentence jumps (`{`, `}`, `(`, `)`)
-- Tag jumps (`:tag`, `Ctrl-]`)
-- Buffer switches
+Jump list entries include the file path. Jumping back with `<C-o>` can switch buffers.
 
-NOT added for:
-- Character movement (`h`, `j`, `k`, `l`)
-- Word movement (`w`, `b`, `e`)
-- Find character (`f`, `t`, `F`, `T`)
-- Scrolling (`Ctrl-D`, `Ctrl-U`)
+## List Size
 
-## Viewing the Jumplist
+| Setting | Default | Description |
+|---|---|---|
+| `jumplist_size` | `100` | Maximum jump list entries |
 
+When the list is full, the oldest entry is removed.
 
-Output:
+## Session Persistence
 
-## Count with Jumps
+The jump list is saved in the session file.
 
+## Related
 
-## Jumplist vs Other Navigation
-
-| Feature | Jumplist | Changelist | `''` |
-|---------|----------|------------|------|
-| Scope | Global | Per buffer | Buffer |
-| Keys | `Ctrl-O/I` | `g;/g,` | `''` |
-| Tracks | Navigation | Changes | Last position |
-| Cross-buffer | Yes | No | No |
-
-## Jumplist Limits
-
-
-## Cross-Buffer Jumping
-
-The jumplist seamlessly switches buffers:
-
-
-## File Position Memory
-
-Each file remembers its position in the jumplist:
-
-
-## Clearing Jumplist
-
-
-## Jumplist Branches
-
-When you jump back and then make a new jump:
-
-
-## Special Jump Commands
-
-| Command | Action |
-|---------|--------|
-| `Ctrl-O` | Older position |
-| `Ctrl-I` | Newer position |
-| `:jumps` | Show jumplist |
-| `:clearjumps` | Clear list |
-
-## No-Jumplist Variants
-
-Some commands don't add to jumplist:
-
-| Normal | No-Jumplist |
-|--------|-------------|
-| `'a` | `g'a` |
-| `` `a `` | `` g`a `` |
-| `''` | `g''` |
-
-## Configuration
-
-
-## Persistence
-
-
-## Picker Integration
-
-
-Shows visual list with:
-- File paths
-- Line numbers
-- Line previews
-
-## API Reference
-
+- Marks: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+- Change list: [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)

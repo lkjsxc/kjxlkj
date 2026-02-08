@@ -1,97 +1,36 @@
 # Read Command
 
-Insert file or command output into the buffer.
+Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
+
+Insert file contents or command output into the buffer.
 
 ## Overview
 
-`:read` inserts the contents of a file or the output
-of a shell command below the current line.
+`:read` (`:r`) inserts text into the current buffer from a file or from the output of a shell command.
 
 ## File Read
 
-### Basic Usage
+`:r {file}` — insert contents of `{file}` below the current line.
 
-`:read {file}` inserts the contents of `{file}` below
-the current line.
-
-`:0read {file}` inserts above the first line.
-
-### With Line Number
-
-`:{n}read {file}` inserts below line `{n}`.
-
-### Current File
-
-`:read` without arguments re-reads the current file
-and inserts below the current line.
+`:0r {file}` — insert at the top of the buffer.
 
 ## Command Read
 
-### Shell Output
+`:r !{cmd}` — execute `{cmd}` and insert its stdout below the current line.
 
-`:read !{command}` inserts the output of the shell
-command below the current line.
-
-### Examples
-
-`:read !date` inserts the current date.
-`:read !ls` inserts the directory listing.
-`:read !sort %` inserts sorted version of current file.
-
-### Error Handling
-
-If the command fails (non-zero exit), the error output
-is still inserted with an error message shown.
+| Example | Effect |
+|---|---|
+| `:r !date` | Insert current date |
+| `:r !ls` | Insert directory listing |
+| `:r !sort %` | Insert sorted version of current file |
 
 ## Range
 
-### Insert at Line
+`:10r {file}` — insert after line 10.
 
-`:5read file.txt` inserts after line 5.
-`:$read file.txt` inserts at end of file.
-`:.read file.txt` inserts after current line (default).
-
-### Replace Range
-
-`:1,$read` replaces the entire buffer — not directly.
-Use `:%d | read file.txt` to replace all content.
-
-## Encoding
-
-### Specify Encoding
-
-`:read ++enc=utf-16 file.txt` reads with specified encoding.
-
-### File Format
-
-`:read ++ff=dos file.txt` reads with DOS line endings.
-
-## Integration
-
-### Pipe
-
-`:read !grep pattern file.txt` inserts grep results.
-`:read !curl -s url` inserts HTTP response.
-
-### With Ranges
-
-`:0read !head -1 file.txt` inserts first line at top.
-
-## Undo
-
-### Single Operation
-
-The entire `:read` insertion is a single undo unit.
-`u` removes all inserted lines.
+`:{range}r {file}` — insert after the last line of the range.
 
 ## Related
 
-### Write
-
-`:write` is the inverse — writes buffer to file.
-`:write !{command}` pipes buffer content to a command.
-
-### Edit
-
-`:edit {file}` opens a file (replaces buffer).
-`:read` appends to the current buffer.
+- File operations: [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
+- Write commands: [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
