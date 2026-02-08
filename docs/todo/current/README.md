@@ -1,53 +1,41 @@
-# Current TODO (Standby Transition)
+# Current TODO
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Purpose
 
-This TODO is the active control surface for reconstruction and verification waves.
+Active control surface for reconstruction waves. All items use checklist semantics (`- [ ]` pending, `- [x]` verified complete). Implementation MUST follow [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md).
 
-Current state: documentation has been hardened and the next implementation wave is queued in standby mode.
+## Rules
 
-## Local rules (normative)
+- A `- [x]` item MUST have passing tests exercising real user paths.
+- A `- [x]` item MUST be reachable from the binary's `main` function.
+- Conformance and limitations MUST be updated in the same change.
+- Deferred items MUST record rationale in `/docs/log/proposals/`.
 
-- Use checklist semantics strictly:
-  - `- [x]` complete and verified
-  - `- [ ]` pending or intentionally queued
-- If a task is deferred, record rationale in `/docs/log/` and keep a concrete queued item.
-- Keep links absolute from repository root (`/docs/...`) and do not use `../`.
-- Keep completion handshake in force: when a future wave reaches full completion and verification is green, invoke `Ask` for the next objective.
+## Implementation areas
 
-## Documentation direct-link coverage
+| Area | Checklist | Primary specs |
+|---|---|---|
+| Architecture | [architecture.md](architecture.md) | [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md) |
+| Editor core | [editor-core.md](editor-core.md) | [/docs/spec/editor/README.md](/docs/spec/editor/README.md) |
+| Modes | [modes.md](modes.md) | [/docs/spec/modes/README.md](/docs/spec/modes/README.md) |
+| Editing | [editing.md](editing.md) | [/docs/spec/editing/README.md](/docs/spec/editing/README.md) |
+| Commands | [commands.md](commands.md) | [/docs/spec/commands/README.md](/docs/spec/commands/README.md) |
+| Features: core | [features-core.md](features-core.md) | Terminal, session, window specs |
+| Features: services | [features-services.md](features-services.md) | Git, LSP, navigation, syntax specs |
+| Features: editing | [features-editing.md](features-editing.md) | Auto-pairs, completion, snippets, etc. |
+| Scripting | [scripting.md](scripting.md) | [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md) |
+| UI and rendering | [ui-rendering.md](ui-rendering.md) | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) |
+| UX | [ux.md](ux.md) | [/docs/spec/ux/README.md](/docs/spec/ux/README.md) |
+| Technical | [technical.md](technical.md) | [/docs/spec/technical/README.md](/docs/spec/technical/README.md) |
 
-The TODO system MUST directly link all documentation files through the checklist below.
+## Verification
 
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-00.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-01.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-02.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-03.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-04.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-05.md)
-- [ ] [/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md](/docs/todo/doc-coverage/all-files/kjxlkj-docs-part-06.md)
+| Gate | Checklist |
+|---|---|
+| Verification | [verification.md](verification.md) |
 
-## Wave status
+## Completion handshake
 
-### Completed waves
-
-- [ ] [/docs/todo/current/wave-placeholder/README.md](/docs/todo/current/wave-placeholder/README.md)
-- [ ] [/docs/todo/current/wave-reconstruction/README.md](/docs/todo/current/wave-reconstruction/README.md)
-- [ ] [/docs/todo/current/wave-reading/README.md](/docs/todo/current/wave-reading/README.md)
-- [ ] [/docs/todo/current/wave-docs/README.md](/docs/todo/current/wave-docs/README.md)
-- [ ] [/docs/todo/current/wave-planning/README.md](/docs/todo/current/wave-planning/README.md)
-- [ ] [/docs/todo/current/wave-implementation/README.md](/docs/todo/current/wave-implementation/README.md)
-- [ ] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md)
-- [ ] [/docs/todo/current/wave-recursion/recreate-todo/README.md](/docs/todo/current/wave-recursion/recreate-todo/README.md)
-
-### Standby wave (unchecked by design)
-
-- [ ] [/docs/todo/current/wave-recursion/next-iteration/README.md](/docs/todo/current/wave-recursion/next-iteration/README.md)
-- [ ] [/docs/todo/current/wave-verification/tests/README.md](/docs/todo/current/wave-verification/tests/README.md)
-- [ ] [/docs/todo/current/wave-verification/README.md](/docs/todo/current/wave-verification/README.md) section E follow-up is closed with explicit multi-window practical-usage PTY coverage.
-
-## Standby objective
-
-Implementation wave has executed unchecked boundary PTY E2E items, explicitly exercised multi-window workflows in real app paths (splits, tabs, terminal panes), and re-run full verification.
+When all implementation areas reach full conformance and verification is green, invoke `Ask` for the next objective.
