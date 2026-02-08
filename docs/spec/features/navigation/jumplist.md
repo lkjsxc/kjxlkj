@@ -1,104 +1,68 @@
 # Jump List
 
-Navigate through position history.
+Navigate through cursor position history.
 
-## Overview
-
-The jump list tracks cursor positions for navigation
-back through your editing history.
-
-## Navigation
+## Navigation (normative)
 
 | Key | Action |
-|-----|--------|
-| `<C-o>` | Jump back |
-| `<C-i>` | Jump forward |
-| `<Tab>` | Jump forward (alternate) |
+|---|---|
+| `<C-o>` | Jump to older position |
+| `<C-i>` / `<Tab>` | Jump to newer position |
 
-## What Creates Jumps
+## What Creates Jumps (normative)
 
-### Movements
+### Jump-creating movements
 
-| Movement | Creates Jump |
-|----------|--------------|
-| `G`, `gg` | Yes |
-| `{count}G` | Yes |
-| `/`, `?` | Yes |
-| `n`, `N` | Yes |
-| `%` | Yes |
-| `(`, `)` | Yes |
-| `{`, `}` | Yes |
-| `[[`, `]]` | Yes |
+| Movement | Jump? |
+|---|---|
+| `G`, `gg`, `{count}G` | Yes |
+| `/`, `?`, `n`, `N` | Yes |
+| `%` (bracket match) | Yes |
+| `(`, `)`, `{`, `}` | Yes |
+| `[[`, `]]`, `[]`, `][` | Yes |
 | `H`, `M`, `L` | Yes |
-| `:123` | Yes |
-| `'mark` | Yes |
+| `:{number}` (ex line) | Yes |
+| `'mark`, `` `mark `` | Yes |
+| `<C-]>` (tag jump) | Yes |
 
-### Not Jumps
+### Non-jump movements
 
-| Movement | Creates Jump |
-|----------|--------------|
+| Movement | Jump? |
+|---|---|
 | `h`, `j`, `k`, `l` | No |
-| `w`, `b`, `e` | No |
-| `f`, `t` | No |
-| `^`, `$` | No |
+| `w`, `b`, `e`, `W`, `B`, `E` | No |
+| `f`, `t`, `F`, `T` | No |
+| `^`, `$`, `0` | No |
 
 ## Viewing Jump List
 
-### Command
-
-
-### Display
-
+`:jumps` shows the jumplist with position index, line, column, and file/text.
 
 ## Cross-File Jumps
 
-Jumps work across files:
+The jumplist spans across files. `<C-o>` may switch to a previously visited buffer. The file is reopened if it was closed.
 
+## Jump List Size
 
-## Configuration
-
+Default capacity: 100 entries. Oldest entries are dropped when the limit is exceeded.
 
 ## Clearing
 
-### Command
+`:clearjumps` clears the entire jumplist.
 
-
-### Start Fresh
-
-Clears jump history.
-
-## Integration
-
-### With Marks
-
-
-### With Changes
-
-
-## Tips
-
-1. Use `<C-o>` after search to go back
-2. Jump list persists in session
-3. Works across files
-4. Combine with marks
-
-## Comparison
-
-### Jump List vs Change List
+## Jump List vs Change List
 
 | Feature | Jump List | Change List |
-|---------|-----------|-------------|
-| Tracks | Positions | Edits |
-| Trigger | Large moves | Any change |
-| Navigate | `<C-o>`/`<C-i>` | `g;`/`g,` |
+|---|---|---|
+| Tracks | Large cursor movements | Edit positions |
+| Trigger | G, /, ?, n, marks, etc. | Any buffer modification |
+| Navigate | `<C-o>` / `<C-i>` | `g;` / `g,` |
 
-## Workflow
+## Persistence
 
-### Exploring Code
+The jumplist is saved in the session file and restored on next editor start.
 
+## Related
 
-### After Search
-
-
-## Commands
-
+- Change list: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+- Marks: [/docs/spec/editing/marks/jump-marks.md](/docs/spec/editing/marks/jump-marks.md)

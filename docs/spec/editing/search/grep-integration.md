@@ -1,108 +1,66 @@
 # Grep Integration
 
-Using external grep tools for project-wide search.
+Project-wide search using external grep tools.
 
-## Built-in :grep Command
-
-
-## Quickfix Integration
-
-Grep results populate quickfix list:
+## Commands (normative)
 
 | Command | Action |
-|---------|--------|
-| `:grep pattern` | Search and fill quickfix |
+|---|---|
+| `:grep {pattern}` | Search with external grep, populate quickfix |
+| `:lgrep {pattern}` | Search, populate location list |
+| `:vimgrep {pattern} {files}` | Internal search (Vim regex syntax) |
+| `:grepadd {pattern}` | Append results to existing quickfix |
+
+## Quickfix Navigation
+
+| Key | Action |
+|---|---|
 | `:copen` | Open quickfix window |
-| `:cnext` / `:cn` | Go to next result |
-| `:cprev` / `:cp` | Go to previous result |
-| `:cc N` | Go to result N |
+| `]q` / `:cnext` | Next result |
+| `[q` / `:cprev` | Previous result |
+| `:cc {n}` | Go to result number n |
 
 ## Grep Program Configuration
 
+| Option | Description |
+|---|---|
+| `grepprg` | External program (default: `grep -rn`) |
+| `grepformat` | Output parsing format (default: `%f:%l:%m`) |
 
-### Using ripgrep
+### Recommended: ripgrep
 
+Set `grepprg = "rg --vimgrep --smart-case"` and `grepformat = "%f:%l:%c:%m"` for fast, smart-case project search with column numbers.
 
-### Using ag (The Silver Searcher)
-
-
-## Grepprg Format
-
-
-## Grepformat
-
-Output parsing format:
-
+## Grepformat Tokens
 
 | Token | Meaning |
-|-------|---------|
+|---|---|
 | `%f` | Filename |
 | `%l` | Line number |
 | `%c` | Column number |
 | `%m` | Message/content |
-| `%n` | Error number |
 
 ## Async Grep
 
-Run grep in background:
+Grep runs asynchronously by default. Results populate the quickfix list incrementally as they arrive. The editor remains responsive during search.
 
-
-
-## Grep Keybindings
+## Keybindings
 
 | Key | Action |
-|-----|--------|
-| `<Leader>gg` | Grep word under cursor |
-| `<Leader>gw` | Grep current word (whole) |
-| `<Leader>gv` | Grep visual selection |
-| `<Leader>gf` | Grep in current file |
+|---|---|
+| `<leader>gg` | Grep word under cursor |
+| `<leader>gw` | Grep whole word under cursor |
+| `<leader>gv` | Grep visual selection |
 
+## :vimgrep vs :grep
 
-## Grep Commands
+| Feature | `:grep` | `:vimgrep` |
+|---|---|---|
+| Speed | Fast (external tool) | Slower (internal) |
+| Pattern syntax | Tool-specific (ripgrep, PCRE) | Vim regex |
+| Multi-line | Depends on tool | Supported |
 
-| Command | Action |
-|---------|--------|
-| `:grep` | External grep to quickfix |
-| `:lgrep` | External grep to location list |
-| `:vimgrep` | Internal grep (slower, more features) |
-| `:lvimgrep` | Internal grep to location list |
-| `:grepadd` | Add to existing quickfix |
+## Related
 
-## Vimgrep vs Grep
-
-| Feature | :grep | :vimgrep |
-|---------|-------|----------|
-| Speed | Fast (external) | Slower (internal) |
-| Syntax | Program-specific | Vim regex |
-| Multi-line | Depends | Supported |
-| Binary | May include | Excluded |
-
-## Search Patterns
-
-### Basic Patterns
-
-
-### File Patterns
-
-
-## Location List Variant
-
-Per-window results:
-
-
-## Grepadd - Append Results
-
-
-## Filtering Results
-
-
-## Common Configurations
-
-### Fast ripgrep Setup
-
-
-### Git Grep
-
-
-## Error Handling
-
+- Search patterns: [/docs/spec/editing/search/search-patterns.md](/docs/spec/editing/search/search-patterns.md)
+- Star search: [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)

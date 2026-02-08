@@ -1,115 +1,58 @@
 # Hover Documentation
 
-View documentation by hovering over symbols.
+View documentation and type information for symbols.
 
-## Usage
-
-### Keybinding
+## Keybindings (normative)
 
 | Key | Action |
-|-----|--------|
-| `K` | Show hover |
+|---|---|
+| `K` | Show hover popup for symbol under cursor |
 | `gh` | Show hover (alternative) |
 
-### Hold Position
+## Display Content
 
-Hover popup stays while key held or until dismissed.
+The hover popup shows information from the LSP server:
 
-## Display
+| Content Type | Includes |
+|---|---|
+| Function | Signature, parameter docs, return type, doc comment |
+| Variable | Type, doc comment |
+| Type | Full definition, doc comment |
+| Keyword | Language reference (if server provides) |
 
-### Example
+## Popup Navigation
 
-
-## Content
-
-### Function Hover
-
-- Signature
-- Documentation
-- Parameter descriptions
-- Return type info
-
-### Variable Hover
-
-- Type
-- Documentation (if available)
-
-### Type Hover
-
-- Full type definition
-- Documentation
-
-## Configuration
-
+| Key | Action |
+|---|---|
+| `j` / `k` | Scroll down/up within popup |
+| `<C-d>` / `<C-u>` | Page down/up |
+| `<Esc>` | Close popup |
 
 ## Markdown Rendering
 
-### Supported
-
-- Headers
-- Bold/italic
-- Code blocks
-- Lists
-- Links (displayed, not clickable)
-
-### Configuration
-
-
-## Code Examples
-
-### Display
-
-
-Shows syntax-highlighted code.
-
-## Navigation
-
-### Within Hover
-
-| Key | Action |
-|-----|--------|
-| `j` | Scroll down |
-| `k` | Scroll up |
-| `<C-d>` | Page down |
-| `<C-u>` | Page up |
-| `<Esc>` | Close |
-
-### Focus Mode
-
+Hover content is rendered as Markdown. Supported elements: headers, bold/italic, inline code, code blocks (syntax-highlighted), lists, links (display only).
 
 ## Multiple Hovers
 
-### On Same Position
-
-Some locations have multiple hover results.
+When multiple hover results exist at the same position:
 
 | Key | Action |
-|-----|--------|
-| `]h` | Next hover |
-| `[h` | Previous hover |
+|---|---|
+| `]h` | Next hover result |
+| `[h` | Previous hover result |
 
-## LSP Integration
+## Configuration
 
-### Requirements
+| Option | Default | Description |
+|---|---|---|
+| `hover` | `true` | Enable hover |
+| `hover_delay` | `0` | Delay before showing (ms, 0 = instant on keypress) |
 
-Requires LSP server with hover support.
+## LSP Fallback
 
-### Fallback
+Without LSP, hover falls back to showing the tree-sitter node type and any available type information.
 
-Without LSP, shows type from syntax tree.
+## Related
 
-## Styling
-
-
-## Commands
-
-
-## Tips
-
-1. Use `K` frequently
-2. Scroll long docs with `j`/`k`
-3. Check examples in docs
-4. Hover on types for full info
-
-## Keybindings
-
+- Signature help: [/docs/spec/features/lsp/signature-help.md](/docs/spec/features/lsp/signature-help.md)
+- Completion: [/docs/spec/features/lsp/completion.md](/docs/spec/features/lsp/completion.md)
