@@ -5,6 +5,10 @@
 
 mod command;
 mod command_helpers;
+#[cfg(test)]
+mod command_tests;
+#[cfg(test)]
+mod visual_tests;
 mod insert;
 mod normal;
 mod normal_g_z;

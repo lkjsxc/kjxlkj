@@ -1,6 +1,8 @@
 //! Terminal/PTY service: escape parsing, PTY spawn, screen buffer.
 
 mod escape_parser;
+#[cfg(test)]
+mod escape_parser_tests;
 mod pty;
 mod screen;
 mod service;

@@ -12,6 +12,10 @@ mod grapheme;
 mod grapheme_line;
 mod line_ops;
 mod word;
+#[cfg(test)]
+mod buffer_content_tests;
+#[cfg(test)]
+mod word_tests;
 
 pub use buffer_content::BufferContent;
 pub use display_width::{grapheme_display_width, str_display_width};

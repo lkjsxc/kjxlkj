@@ -9,6 +9,8 @@ mod motion_exec;
 mod motion_helpers;
 mod motion_line;
 mod operator_exec;
+#[cfg(test)]
+mod operator_tests;
 mod operator_helpers;
 mod registers;
 mod text_manip;

@@ -2,6 +2,8 @@
 
 mod action_dispatch;
 mod buffer;
+#[cfg(test)]
+mod buffer_tests;
 mod command_dispatch;
 mod editor;
 mod editor_actions;
