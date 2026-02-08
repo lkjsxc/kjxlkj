@@ -120,47 +120,23 @@ impl SearchState {
 
     /// Push a pattern to search history.
     pub fn push_history(&mut self, pattern: &str) {
-        if pattern.is_empty() {
-            return;
-        }
+        if pattern.is_empty() { return; }
         let s = pattern.to_string();
-        // Deduplicate: remove if present.
         self.history.retain(|h| h != &s);
         self.history.push(s);
-        // Cap at 100 entries.
-        if self.history.len() > 100 {
-            self.history.remove(0);
-        }
+        if self.history.len() > 100 { self.history.remove(0); }
         self.history_pos = None;
     }
 
     /// Navigate search history (true=older, false=newer).
-    pub fn navigate_history(
-        &mut self,
-        older: bool,
-    ) -> Option<&str> {
-        if self.history.is_empty() {
-            return None;
-        }
+    pub fn navigate_history(&mut self, older: bool) -> Option<&str> {
+        if self.history.is_empty() { return None; }
+        let len = self.history.len();
         let pos = match self.history_pos {
-            Some(p) => {
-                if older {
-                    p.saturating_sub(1)
-                } else {
-                    (p + 1).min(
-                        self.history.len()
-                            .saturating_sub(1),
-                    )
-                }
-            }
-            None => {
-                if older {
-                    self.history.len()
-                        .saturating_sub(1)
-                } else {
-                    return None;
-                }
-            }
+            Some(p) if older => p.saturating_sub(1),
+            Some(p) => (p + 1).min(len.saturating_sub(1)),
+            None if older => len.saturating_sub(1),
+            None => return None,
         };
         self.history_pos = Some(pos);
         Some(&self.history[pos])

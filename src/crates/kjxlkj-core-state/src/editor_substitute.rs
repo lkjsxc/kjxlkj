@@ -63,51 +63,25 @@ impl EditorState {
 
     /// Execute `:s` on a range of lines.
     pub(crate) fn do_substitute_range(
-        &mut self,
-        start_line: usize,
-        end_line: usize,
-        args: &str,
+        &mut self, start_line: usize,
+        end_line: usize, args: &str,
     ) {
         let parsed = match parse_sub_args(args) {
-            Some(p) => p,
-            None => return,
+            Some(p) => p, None => return,
         };
-        if parsed.pattern.is_empty() {
-            return;
-        }
+        if parsed.pattern.is_empty() { return; }
         for line in start_line..=end_line {
-            let line_text = match self
-                .active_buffer()
+            let line_text = match self.active_buffer()
                 .map(|b| b.content.line_content(line))
-            {
-                Some(t) => t,
-                None => continue,
-            };
-            let new_text = substitute_in_line(
-                &line_text,
-                &parsed,
-            );
-            if new_text == line_text {
-                continue;
-            }
-            if let Some(buf) =
-                self.active_buffer_mut()
-            {
-                let start = buf
-                    .content
-                    .line_start_offset(line);
-                let end_off = start
-                    + buf
-                        .content
-                        .line_content(line)
-                        .len();
-                buf.content
-                    .delete_range(start, end_off);
-                for (i, ch) in
-                    new_text.chars().enumerate()
-                {
-                    buf.content
-                        .insert_char(start + i, ch);
+            { Some(t) => t, None => continue };
+            let new_text = substitute_in_line(&line_text, &parsed);
+            if new_text == line_text { continue; }
+            if let Some(buf) = self.active_buffer_mut() {
+                let s = buf.content.line_start_offset(line);
+                let e = s + buf.content.line_content(line).len();
+                buf.content.delete_range(s, e);
+                for (i, ch) in new_text.chars().enumerate() {
+                    buf.content.insert_char(s + i, ch);
                 }
                 buf.modified = true;
             }
