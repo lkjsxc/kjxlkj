@@ -1,52 +1,152 @@
 # g-Prefixed Operators
 
-Back: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+Back: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
 
-Operators and commands accessed via the `g` prefix key.
+Operators and commands accessed via the `g` prefix.
 
-## Case operators (normative)
+## Overview
 
-| Key sequence | Action | Type |
-|---|---|---|
-| `g~{motion}` | Toggle case over motion range | Operator |
-| `gu{motion}` | Lowercase over motion range | Operator |
-| `gU{motion}` | Uppercase over motion range | Operator |
-| `g~~` | Toggle case of current line | Linewise variant |
-| `guu` | Lowercase current line | Linewise variant |
-| `gUU` | Uppercase current line | Linewise variant |
+The `g` prefix provides access to additional operators
+and commands that extend the standard operator set.
+These cover case conversion, formatting, cursor
+movement, and display-line operations.
 
-These follow the standard operator grammar: count + operator + motion/text-object.
+## Case Operators
 
-## Format operator (normative)
+### gu - Lowercase
 
-| Key sequence | Action |
-|---|---|
-| `gq{motion}` | Format text over motion range (cursor moves to last formatted line) |
-| `gw{motion}` | Format text over motion range (cursor position preserved) |
-| `gqq` | Format current line |
+`gu{motion}` converts text covered by motion to
+lowercase. `guu` lowercases the entire line.
 
-Formatting wraps text at `textwidth` (default 80). It joins short lines and respects `formatoptions` settings.
+### gU - Uppercase
 
-## Join operator (normative)
+`gU{motion}` converts text to uppercase. `gUU`
+uppercases the entire line.
 
-| Key sequence | Action |
-|---|---|
-| `gJ` | Join current line with next WITHOUT inserting a space |
-| `{count}gJ` | Join current line with next `{count}` lines without spaces |
+### g~ - Toggle Case
 
-Compare with `J` which inserts a space at the join point.
+`g~{motion}` toggles case of each character. `g~~`
+toggles case of the entire line.
 
-## Put with indent (normative)
+### Tilde Operator
 
-| Key sequence | Action |
-|---|---|
-| `]p` | Put after cursor with auto-indent adjustment |
-| `[p` | Put before cursor with auto-indent adjustment |
+`~` toggles case of the character under cursor and
+advances. With `tildeop` set, `~` acts as an operator
+requiring a motion (like `g~`).
+
+## Formatting Operator
+
+### gq - Format Text
+
+`gq{motion}` formats text to `textwidth` columns.
+`gqq` formats the current line. `gqap` formats
+the current paragraph.
+
+### gw - Format Without Cursor Move
+
+`gw{motion}` formats like `gq` but keeps the cursor
+at its original position.
+
+### Format Rules
+
+- Lines are broken at word boundaries
+- Existing line breaks within paragraphs are removed
+- Paragraphs are separated by blank lines
+- List items (starting with `-`, `*`, etc.) preserve
+  their indentation
+- Code blocks are not reformatted
+
+## Display Line Operations
+
+### gj / gk - Display Line Movement
+
+| Key | Action |
+|-----|--------|
+| `gj` | Down one display line |
+| `gk` | Up one display line |
+| `g0` | Start of display line |
+| `g^` | First non-blank of display line |
+| `g$` | End of display line |
+| `gm` | Middle of display line |
+
+These differ from `j`/`k` when `wrap` is enabled
+and long lines span multiple display rows.
+
+## Information Commands
+
+### ga - Character Info
+
+`ga` displays the character under the cursor:
+- Character representation
+- Decimal code point
+- Hex code point
+- Octal code point
+- Digraph codes (if any)
+
+### g8 - UTF-8 Bytes
+
+`g8` shows the raw UTF-8 byte sequence of the
+character under the cursor.
+
+### gCtrl-g - Cursor Position
+
+`g<Ctrl-g>` shows detailed cursor position:
+column, line, word count, character count, byte
+offset.
+
+## Go-To Commands
+
+### gg - Go to Line
+
+`gg` goes to the first line. `{N}gg` goes to
+line N. This is equivalent to `{N}G`.
+
+### gd - Go to Definition
+
+`gd` goes to local declaration of the word under
+cursor. Searches from the start of the current
+function/block.
+
+### gD - Go to Global Definition
+
+`gD` goes to global declaration. Searches from
+the start of the file.
+
+### gf - Go to File
+
+`gf` opens the file whose path is under the cursor.
+`gF` opens the file and jumps to the line number
+after the filename (e.g., `file.rs:42`).
+
+## Join and Put
+
+### gJ - Join Without Space
+
+`gJ` joins lines without inserting a space between
+them. Unlike `J`, it does not add any separator.
+
+### gp / gP - Put After/Before with Cursor
+
+`gp` puts text after cursor and moves cursor after
+the pasted text. `gP` puts before and moves cursor.
+(Standard `p`/`P` leave cursor at start of paste.)
+
+## Visual Commands
+
+### gv - Reselect Visual
+
+`gv` reselects the last visual selection. The
+selection area is restored exactly as it was.
+
+### gn / gN - Search and Select
+
+`gn` searches forward for the last search pattern
+and visually selects the match. `gN` searches
+backward. These can be used with operators:
+`dgn` deletes the next search match.
 
 ## Related
 
-- Normal mode g-prefix commands: [/docs/spec/modes/normal.md](/docs/spec/modes/normal.md)
-- Operators overview: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
-- Operator grammar: [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
-
-
+- Operators overview: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
+- Motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+- Line motions: [docs/spec/editing/motions/line-motions.md](docs/spec/editing/motions/line-motions.md)

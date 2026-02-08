@@ -1,48 +1,128 @@
-# Editing Helpers (autopairs/surround/comment class)
+# Editing Helpers
 
-## Scope
+Built-in autopairs, surround, and comment features.
 
-This feature provides built-in equivalents of common editing helpers:
+## Overview
 
-- Auto-pairs insertion and overtype behavior
-- Surround add/change/delete
-- Comment/uncomment linewise and blockwise
+These features replace common Vim plugins (auto-pairs,
+vim-surround, vim-commentary) with built-in
+equivalents sharing a unified configuration system.
 
-## Design principle
+## Auto-Pairs
 
-These helpers are not “UI features”; they are **edit primitives** that:
+### Behavior
 
-- Execute as serialized core edits
-- Participate in undo as single transactions
-- Are mode-aware
+When typing an opening delimiter, the closing
+delimiter is automatically inserted after the cursor.
 
-## Auto-pairs
+### Default Pairs
 
-| Behavior | Requirement |
-|---|---|
-| Pair insertion | Typing an opening delimiter inserts the matching closer. |
-| Skip closer | Typing a closer at an identical closer advances cursor. |
-| Newline rule | Enter inside pairs MAY auto-indent and place closers. |
-| Language sensitivity | Pair rules SHOULD vary by language/syntax context. |
+| Open | Close | Context |
+|------|-------|---------|
+| `(` | `)` | All filetypes |
+| `[` | `]` | All filetypes |
+| `{` | `}` | All filetypes |
+| `"` | `"` | All filetypes |
+| `'` | `'` | All filetypes |
+| `` ` `` | `` ` `` | Markdown, shell |
+| `<` | `>` | HTML, XML, JSX |
+
+### Smart Behaviors
+
+| Action | Description |
+|--------|-------------|
+| Skip close | Typing `)` when next char is `)` moves past it |
+| Delete pair | Backspace between empty pair deletes both |
+| Newline pair | Enter between `{}` creates indented block |
+| Wrap selection | Typing `(` with selection wraps it |
+
+### Context Awareness
+
+Auto-pairs are suppressed:
+- Inside string literals (no double-quoting)
+- Inside comments
+- After escape character `\`
+- When next character is a word character
 
 ## Surround
 
-| Operation | Requirement |
-|---|---|
-| Add | Wrap selection or text-object with a surround pair. |
-| Change | Replace existing surround with another. |
-| Delete | Remove the surround while preserving inner text. |
+### Normal Mode Operations
 
-## Comment
+| Sequence | Effect |
+|----------|--------|
+| `ys{motion}{char}` | Surround motion with char |
+| `yss{char}` | Surround entire line |
+| `cs{old}{new}` | Change surrounding delimiter |
+| `ds{char}` | Delete surrounding delimiter |
+| `yS{motion}{char}` | Surround on new lines |
 
-| Operation | Requirement |
-|---|---|
-| Toggle | Toggle comment state for selection/range. |
-| Respect syntax | Prefer language comment styles (line vs block). |
-| Preserve formatting | Indentation SHOULD remain stable after toggling. |
+### Examples
 
-## Acceptance criteria
+| Before | Sequence | After |
+|--------|----------|-------|
+| `hello` | `ysiw"` | `"hello"` |
+| `"hello"` | `cs"'` | `'hello'` |
+| `(hello)` | `ds(` | `hello` |
+| `hello` | `ysiw<div>` | `<div>hello</div>` |
+| `"hello"` | `cs"<p>` | `<p>hello</p>` |
 
-- All helper operations MUST undo/redo as single steps.
-- Helpers MUST not block; any language-aware lookup must be cached or async.
-- When syntax context is unavailable, helpers MUST fall back to conservative defaults.
+### Tag Surround
+
+When the surround character is `<`, the user is
+prompted for a tag name. The opening and closing
+tags are generated automatically.
+
+### Visual Mode
+
+In visual mode, `S{char}` surrounds the selection.
+
+## Comment Toggle
+
+### Normal Mode
+
+| Sequence | Effect |
+|----------|--------|
+| `gcc` | Toggle comment on current line |
+| `gc{motion}` | Toggle comment over motion range |
+| `gC` | Toggle block comment |
+
+### Visual Mode
+
+| Sequence | Effect |
+|----------|--------|
+| `gc` | Toggle line comment on selection |
+| `gC` | Toggle block comment on selection |
+
+### Comment Strings
+
+Comment strings are determined by filetype:
+
+| Filetype | Line comment | Block comment |
+|----------|-------------|---------------|
+| Rust | `//` | `/* */` |
+| Python | `#` | (none) |
+| HTML | (none) | `<!-- -->` |
+| Lua | `--` | `--[[ ]]` |
+| C/C++ | `//` | `/* */` |
+
+### Behavior Rules
+
+- Uncomment if all lines in range are commented
+- Comment if any line is uncommented
+- Preserve indentation level
+- Handle blank lines within range
+
+## Configuration
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `autopairs.enabled` | bool | true | Enable auto-pairs |
+| `autopairs.pairs` | list | (defaults) | Pair definitions |
+| `surround.enabled` | bool | true | Enable surround |
+| `comment.padding` | bool | true | Space after comment marker |
+| `comment.sticky_cursor` | bool | true | Keep cursor position |
+
+## Related
+
+- Auto-pairs detail: [docs/spec/features/editing/auto-pairs.md](docs/spec/features/editing/auto-pairs.md)
+- Text objects: [docs/spec/editing/text-objects/README.md](docs/spec/editing/text-objects/README.md)

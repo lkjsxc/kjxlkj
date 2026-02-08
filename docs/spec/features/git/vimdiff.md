@@ -1,51 +1,133 @@
-# Vimdiff Equivalent
+# Vimdiff Mode
 
-Back: [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+Back: [docs/spec/features/git/README.md](docs/spec/features/git/README.md)
 
-Side-by-side file comparison with merge capabilities.
+Side-by-side file comparison with merge support.
 
-## Entry (normative)
+## Overview
+
+Vimdiff mode shows two or three files side by side
+with change highlighting. It supports merge conflict
+resolution and general file comparison.
+
+## Activation
+
+### Command Line
+
+`kjxlkj -d file1 file2` opens in diff mode with
+two files in a vertical split.
+
+`kjxlkj -d file1 file2 file3` opens three-way diff
+for merge conflict resolution.
+
+### Ex Commands
 
 | Command | Action |
-|---|---|
-| `:diffsplit {file}` | Open `{file}` in a horizontal split with diff mode enabled |
-| `:vert diffsplit {file}` | Open `{file}` in a vertical split with diff mode |
-| `:diffthis` | Enable diff mode in the current window |
-| `:diffoff` | Disable diff mode in the current window |
-| `:diffoff!` | Disable diff mode in all windows |
-| `:diffupdate` | Recalculate diff |
+|---------|--------|
+| `:diffthis` | Mark current window for diff |
+| `:diffoff` | Remove diff mode from window |
+| `:diffoff!` | Remove diff from all windows |
+| `:diffsplit {file}` | Open file in diff split |
 
-## Diff display (normative)
+## Display
 
-In diff mode, two or more windows show the same region of their respective files:
+### Change Highlighting
 
-| Element | Rendering |
-|---|---|
-| Added lines | Highlighted with `DiffAdd` group |
-| Deleted lines | Highlighted with `DiffDelete` group; filler lines shown in the other window |
-| Changed lines | Highlighted with `DiffChange` group; changed text within the line uses `DiffText` |
-| Unchanged regions | Folded automatically when more than `diffopt` context lines apart |
+| Highlight | Meaning |
+|-----------|---------|
+| Added line | Green background |
+| Deleted line | Red background |
+| Changed line | Blue background |
+| Changed text | Bold within changed line |
 
-Windows in diff mode MUST scroll synchronously (`scrollbind` and `cursorbind` are set automatically).
+### Scroll Binding
 
-## Navigation (normative)
+Windows in diff mode scroll together. Scrolling
+one window scrolls all diff-linked windows by the
+same amount. This is `scrollbind` integration.
+
+### Fold Unchanged
+
+Unchanged regions are automatically folded to show
+only changed areas. The fold context (lines above
+and below changes) is controlled by `diffopt`.
+
+## Navigation
+
+### Hunk Navigation
 
 | Key | Action |
-|---|---|
-| `]c` | Jump to the next change (diff hunk) |
-| `[c` | Jump to the previous change |
+|-----|--------|
+| `]c` | Jump to next change hunk |
+| `[c` | Jump to previous change hunk |
 
-## Merge commands (normative)
+### Hunk Operations
 
 | Command | Action |
-|---|---|
-| `:diffget` / `do` | Obtain the change from the other window into the current window |
-| `:diffput` / `dp` | Put the change from the current window into the other window |
+|---------|--------|
+| `do` / `:diffget` | Get change from other buffer |
+| `dp` / `:diffput` | Put change to other buffer |
 
-With a range: `:'<,'>diffget` applies only to the selected lines.
+### With Buffer Argument
+
+`:diffget {bufnr}` gets changes from a specific
+buffer (for three-way diffs where multiple source
+buffers exist).
+
+## Diff Algorithm
+
+### Myers Algorithm
+
+The default diff algorithm is Myers (same as git
+default). It produces minimal edit distance diffs.
+
+### Patience Algorithm
+
+`diffopt` can select patience algorithm which
+produces more readable diffs for code changes by
+matching low-frequency unique lines first.
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `diffopt` | "filler" | Diff display options |
+| `diffopt+=algorithm:patience` | -- | Use patience alg |
+| `diffopt+=context:{n}` | 6 | Fold context lines |
+| `diffopt+=iwhite` | -- | Ignore whitespace changes |
+| `diffopt+=icase` | -- | Ignore case changes |
+| `diffopt+=indent-heuristic` | -- | Better hunk splits |
+
+## Three-Way Merge
+
+### Layout
+
+Three-way diffs show:
+- Left: LOCAL (current branch)
+- Center: BASE (common ancestor) or merged result
+- Right: REMOTE (incoming branch)
+
+### Merge Resolution
+
+1. Navigate to conflict hunk with `]c`
+2. Use `:diffget LOCAL` or `:diffget REMOTE`
+3. Edit the result manually if needed
+4. Mark resolved with `:diffupdate`
+
+## Buffer Update
+
+### Manual Refresh
+
+`:diffupdate` recalculates the diff. Use after
+making manual edits that change the diff state.
+
+### Auto Update
+
+The diff is automatically recalculated after any
+text change in a diff-linked buffer.
 
 ## Related
 
-- Git integration: [/docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
-- Diff mode: [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
-- Gitsigns: [/docs/spec/features/git/gitsigns.md](/docs/spec/features/git/gitsigns.md)
+- Git integration: [docs/spec/features/git/git.md](docs/spec/features/git/git.md)
+- Diff mode: [docs/spec/features/git/diff-mode.md](docs/spec/features/git/diff-mode.md)
+- Merge conflicts: [docs/spec/features/git/merge-conflicts.md](docs/spec/features/git/merge-conflicts.md)

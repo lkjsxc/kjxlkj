@@ -1,56 +1,126 @@
-# Command history
-Command history is core-owned state exposed via the command line and list UI.
+# Command History
 
-## Requirements
-- History updates are transactional.
-- History browsing never blocks on disk.
-- Optional persistence is versioned.
+Back: [docs/spec/commands/cmdline/README.md](docs/spec/commands/cmdline/README.md)
 
-## History types (normative)
+Persistent history for ex commands and searches.
 
-| Type | Content | Max entries (default) |
-|---|---|---|
-| Command | Ex commands entered with `:` | 1000 |
-| Search | Search patterns entered with `/` and `?` | 1000 |
-| Expression | Expressions entered with `=` | 1000 |
-| Input | Responses to `:input` prompts | 1000 |
+## Overview
 
-## Navigation keys (normative)
+The editor maintains separate histories for ex
+commands, search patterns, and expressions. History
+is navigable, persistent across sessions, and
+searchable.
 
-| Key | Action | Context |
-|---|---|---|
-| `Up` | Previous history entry | Command-line mode |
-| `Down` | Next history entry | Command-line mode |
-| `Ctrl-p` | Previous history entry (alternative) | Command-line mode |
-| `Ctrl-n` | Next history entry (alternative) | Command-line mode |
+## History Types
 
-When navigating with a partial command already typed, only entries starting with that prefix are shown.
+| Type | Content | Access |
+|------|---------|--------|
+| Command | Ex commands (`:...`) | `:` then Up/Down |
+| Search | Search patterns (`/...`) | `/` then Up/Down |
+| Expression | Expression register | Ctrl-r `=` |
+| Input | User input prompts | Automatic |
 
-## History windows (normative)
+## Navigation
 
-| Key | Opens | Content |
-|---|---|---|
-| `q:` | Command history window | All ex-command history in a buffer |
-| `q/` | Search history window | Forward search history in a buffer |
-| `q?` | Search history window | Backward search history in a buffer |
+### Arrow Keys
 
-The history window is a regular buffer window. The user can navigate, search, and edit entries. Pressing `Enter` on a line executes that command or search. Pressing `Esc` or `:q` closes the history window.
+| Key | Action |
+|-----|--------|
+| `Up` | Previous history entry |
+| `Down` | Next history entry |
+| `Ctrl-p` | Previous (same as Up) |
+| `Ctrl-n` | Next (same as Down) |
 
-## Deduplication (normative)
+### Prefix Filtering
 
-When a command is executed that already exists in history, the old entry is removed and the command is added at the most recent position. History MUST NOT contain consecutive duplicates.
+When text has been typed, Up/Down navigate only
+entries matching the typed prefix. For example:
+typing `:set` then pressing Up shows only previous
+`:set...` commands.
 
-## Persistence (normative)
+## History Window
 
-| Aspect | Specification |
-|---|---|
-| File location | `~/.local/share/kjxlkj/history` |
-| Format | Line-oriented text; one entry per line, prefixed with type tag |
-| Save trigger | On graceful shutdown and periodically (every 60 seconds if dirty) |
-| Load | On startup, merged with any existing in-memory entries |
-| Permissions | File MUST be created with `0600` permissions |
+### Opening
+
+`q:` opens the command history window showing all
+previous commands in a buffer. Normal editing
+commands work in this window.
+
+`q/` opens the search history window.
+
+### Editing in History Window
+
+Users can edit history entries before executing.
+Press `Enter` on a line to execute it as a command.
+Press `Ctrl-c` to close without executing.
+
+## Storage
+
+### File Location
+
+History is persisted to
+`~/.local/share/kjxlkj/history.json`.
+
+### Capacity
+
+| History Type | Default Max Entries |
+|-------------|-------------------|
+| Command | 1000 |
+| Search | 1000 |
+| Expression | 100 |
+| Input | 100 |
+
+Configurable via `history` option (applies globally).
+
+### Deduplication
+
+Duplicate entries are removed. When a command is
+entered that already exists in history, the old
+entry is removed and the new one is added at the
+top (most recent position).
+
+### Session Persistence
+
+History is written to disk on:
+- Normal exit (`:quit`, `:wq`)
+- Auto-save interval (every 60 seconds)
+- Explicit `:wshada` command
+
+History is loaded on startup from the file.
+
+## History Commands
+
+| Command | Action |
+|---------|--------|
+| `:history` | Show command history |
+| `:history search` | Show search history |
+| `:history expr` | Show expression history |
+| `:history all` | Show all histories |
+| `:history {n}` | Show last n entries |
+
+## Concurrent Instances
+
+Multiple editor instances share the history file.
+On write, the editor merges its in-memory history
+with the file using timestamp-based deduplication.
+
+## Privacy
+
+### Sensitive Commands
+
+Commands containing sensitive information can be
+excluded from history by prefixing with a space
+(when `histignore` option includes the space flag).
+
+## Configuration
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `history` | int | 1000 | Max entries per type |
+| `histignore` | string | "" | Patterns to exclude |
 
 ## Related
 
-- Command-line completion: [/docs/spec/commands/cmdline/completion.md](/docs/spec/commands/cmdline/completion.md)
-- Session persistence: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
+- Command-line mode: [docs/spec/modes/cmdline/README.md](docs/spec/modes/cmdline/README.md)
+- Completion: [docs/spec/commands/cmdline/completion.md](docs/spec/commands/cmdline/completion.md)
+- Session: [docs/spec/features/session/README.md](docs/spec/features/session/README.md)

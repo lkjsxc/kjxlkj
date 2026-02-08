@@ -1,49 +1,120 @@
 # Source Command
 
-Back: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+Back: [docs/spec/commands/execution/README.md](docs/spec/commands/execution/README.md)
 
 Execute ex commands from a file.
 
-## Syntax (normative)
+## Overview
 
-| Command | Action |
-|---|---|
-| `:source {file}` | Read and execute each line of `{file}` as an ex command |
-| `:source %` | Re-source the current buffer (useful for editing config) |
-| `:source` (no arg) | Source the default init file (`~/.config/kjxlkj/init.kjxlkj`) |
+The `:source` command reads a file and executes each
+line as an ex command. This is the primary mechanism
+for loading configuration and running batch command
+scripts.
 
-## File resolution (normative)
+## Syntax
 
-| Path form | Resolution |
-|---|---|
-| Absolute path | Used as-is |
-| Relative path | Resolved from cwd |
-| `~/{path}` | Expanded to user home directory |
-| `%` | Current buffer file path |
+### Basic Usage
 
-## Startup sourcing (normative)
+`:source {file}` reads the file and executes each
+non-blank, non-comment line as an ex command.
 
-On startup, the editor sources:
+### Source Current File
 
-1. Built-in defaults (compiled into binary)
-2. `~/.config/kjxlkj/config.toml` (TOML config; parsed, not sourced as commands)
-3. `~/.config/kjxlkj/init.kjxlkj` (command file; sourced line by line)
-4. `.kjxlkj.toml` (project-local TOML config)
+`:source %` sources the current buffer's file.
+`:source` with no argument sources the default
+configuration file (`~/.config/kjxlkj/config.toml`).
 
-## Command file format
+## File Format
 
-Each line is one ex command. Comments start with `"`. Empty lines are ignored. Lines MUST NOT contain leading `:` characters.
+### Command Lines
 
-## Error handling (normative)
+Each line is treated as an independent ex command.
+Lines are executed sequentially.
 
-| Situation | Behavior |
-|---|---|
-| File not found | Display error: "Can't open file: {file}" |
-| Command error | Stop sourcing at the failing line; display the error |
-| `silent! source {file}` | Source silently; suppress errors |
+### Comments
+
+Lines starting with `"` (double quote) are treated
+as comments and skipped.
+
+### Line Continuation
+
+A line ending with `\` continues on the next line.
+The backslash and newline are replaced with a space.
+
+### Blank Lines
+
+Empty lines and lines containing only whitespace
+are silently ignored.
+
+## TOML Configuration
+
+### Config File Processing
+
+The primary configuration file uses TOML format,
+not ex command format. When `:source` encounters
+a `.toml` file, it parses it as TOML configuration
+and applies the settings.
+
+### Setting Application
+
+TOML settings are applied immediately. Changed
+settings take effect on the next render cycle.
+
+## Execution Behavior
+
+### Error Handling
+
+If a command fails during sourcing, the error is
+reported but subsequent commands continue executing.
+All errors are collected and displayed after the
+file is fully processed.
+
+### Error Format
+
+Each error shows the filename, line number, and
+the error message:
+`Error on line 42 of config.toml: unknown option "foo"`
+
+### Nested Source
+
+`:source` can be called from within a sourced file.
+Nesting depth is limited to 10 to prevent infinite
+recursion. Exceeding the limit produces an error.
+
+## Scope
+
+### Option Scope
+
+Options set during `:source` affect global scope
+unless explicitly scoped with `:setlocal`.
+
+### Mapping Scope
+
+Mappings defined during `:source` are global unless
+`<buffer>` qualifier is used.
+
+## Startup Sourcing
+
+### Automatic Source
+
+At startup, the editor automatically sources:
+1. `~/.config/kjxlkj/config.toml` (main config)
+2. `.kjxlkj.toml` in the workspace root (if exists)
+
+### Skip Init
+
+`--clean` flag skips all automatic configuration
+sourcing, starting with default settings.
+
+## Profiling
+
+### Source Timing
+
+`:verbose source {file}` reports the time taken
+to process each command in the file.
 
 ## Related
 
-- Execute command: [/docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
-- Script files: [/docs/spec/scripting/script-files.md](/docs/spec/scripting/script-files.md)
-- Startup sequence: [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
+- Configuration: [docs/spec/features/config/README.md](docs/spec/features/config/README.md)
+- Execute command: [docs/spec/commands/execution/execute-command.md](docs/spec/commands/execution/execute-command.md)
+- Startup: [docs/spec/architecture/runtime.md](docs/spec/architecture/runtime.md)

@@ -1,53 +1,133 @@
-# Command-line completion
-Completion is a UI layer over deterministic parsing.
+# Command-Line Completion
 
-## Requirements
-- Completion does not mutate editor state.
-- Completion sources may be async (filesystem, LSP, commands), but results are versioned and cancellable.
+Back: [docs/spec/commands/cmdline/README.md](docs/spec/commands/cmdline/README.md)
 
-## Sources (normative)
+Tab-completion for ex command input.
 
-| Source | Trigger context | Examples |
-|---|---|---|
-| Command names | After `:` with no space yet | `:wri` completes to `:write` |
-| Sub-commands | After a command that takes sub-commands | `:syntax ` completes `on`, `off`, `reset` |
-| Options | After `:set ` | `:set number`, `:set tabstop=` |
-| Option values | After `=` in `:set opt=` | `:set filetype=` offers known filetypes |
-| File paths | After commands that take file arguments | `:e src/` lists directory contents |
-| Buffer names | After `:buffer ` or `:b ` | `:b main` matches buffer names |
-| Help tags | After `:help ` | `:help motion` |
-| Color schemes | After `:colorscheme ` | `:colorscheme dark` |
-| Variables | After `:let ` or in expressions | Variable names |
+## Overview
 
-## Completion keys (normative)
+Command-line completion provides context-aware
+suggestions as the user types ex commands. It
+completes command names, file paths, option names,
+buffer names, and other arguments.
+
+## Activation
+
+### Tab Trigger
+
+Pressing `Tab` in command-line mode triggers
+completion for the current argument position.
+
+### Wildmenu Display
+
+Completion candidates appear in a horizontal menu
+above the command line (wildmenu). The selected
+candidate is highlighted.
+
+## Completion Contexts
+
+### Command Names
+
+After `:`, completion suggests valid ex commands.
+Matches are filtered by the typed prefix.
+
+| Input | Completions |
+|-------|-------------|
+| `:e` | `:edit`, `:earlier`, ... |
+| `:w` | `:write`, `:wall`, `:wq`, ... |
+| `:set` | `:set`, `:setlocal`, ... |
+
+### File Paths
+
+For commands that take file arguments (`:edit`,
+`:write`, `:source`), completion shows file names
+from the filesystem.
+
+| Feature | Description |
+|---------|-------------|
+| Directory expansion | Tab into directories |
+| Hidden files | Shown only if prefix starts with `.` |
+| Glob patterns | `*` expands in file arguments |
+
+### Option Names
+
+After `:set`, completion suggests option names.
+After `:set option=`, completion suggests valid
+values for the option (if enumerable).
+
+### Buffer Names
+
+For `:buffer`, `:sbuffer`, and similar commands,
+completion suggests from open buffer names and
+numbers.
+
+### Help Tags
+
+For `:help`, completion searches the help index.
+
+### Color Schemes
+
+For `:colorscheme`, completion lists available
+themes.
+
+## Navigation
 
 | Key | Action |
-|---|---|
-| `Tab` | Complete to next match (or first match if no completion active) |
-| `Shift-Tab` | Complete to previous match |
-| `Ctrl-d` | List all possible completions without completing |
-| `Ctrl-l` | Complete to longest common prefix |
-| `Ctrl-n` | Next match (same as Tab) |
-| `Ctrl-p` | Previous match (same as Shift-Tab) |
+|-----|--------|
+| `Tab` | Next candidate |
+| `Shift-Tab` | Previous candidate |
+| `Ctrl-n` | Next candidate |
+| `Ctrl-p` | Previous candidate |
+| `Enter` | Accept and execute |
+| `Esc` | Cancel completion |
+| `Ctrl-e` | Dismiss menu, keep text |
 
-## Wildmenu (normative)
+## Wildmenu Options
 
-When multiple completions match, a horizontal menu MUST be displayed in the statusline area showing available options. The currently selected option MUST be highlighted. Configuration:
+### Configuration
 
-| Setting | Default | Description |
-|---|---|---|
-| `wildmenu` | true | Show completion menu |
-| `wildmode` | `full` | Completion behavior (`full`, `longest`, `list`, `lastused`) |
-| `wildignorecase` | false | Case-insensitive completion matching |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `wildmenu` | bool | true | Enable wildmenu |
+| `wildmode` | string | "full" | Completion mode |
+| `wildignore` | string | "" | Patterns to exclude |
+| `wildignorecase` | bool | false | Case-insensitive |
 
-## Filesystem completion detail (normative)
+### Wildmode Values
 
-- Paths are resolved relative to the current working directory.
-- The FS service provides directory listings asynchronously.
-- Results MUST be delivered within a timeout; stale results are discarded.
-- Hidden files (starting with `.`) are included only when the user has typed a `.` prefix.
+| Value | Behavior |
+|-------|----------|
+| "full" | Complete to first match, cycle |
+| "longest" | Complete to longest common prefix |
+| "longest:full" | Longest first, then full |
+| "list" | Show list, then complete |
+| "list:full" | List, then cycle |
+
+## Custom Completion
+
+### User Commands
+
+User-defined commands can specify custom completion
+functions. The function receives the current argument
+text and returns a list of candidates.
+
+## Fuzzy Completion
+
+### Behavior
+
+When exact prefix matching yields no results, the
+completion system falls back to fuzzy matching.
+Fuzzy matching uses the same scoring algorithm as
+the finder.
+
+## Acceptance Criteria
+
+- Completion MUST NOT mutate editor state
+- Completion MUST be synchronous (no async fetches)
+- File completion MUST respect `.gitignore` patterns
+- Candidates MUST update on each keystroke
 
 ## Related
 
-- Finder command palette: [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
-- Command parsing: [/docs/spec/commands/syntax.md](/docs/spec/commands/syntax.md)
+- Command-line mode: [docs/spec/modes/cmdline/README.md](docs/spec/modes/cmdline/README.md)
+- Command history: [docs/spec/commands/cmdline/history.md](docs/spec/commands/cmdline/history.md)
