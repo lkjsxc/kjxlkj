@@ -2,108 +2,38 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-## General
+## What is kjxlkj?
 
-### What is kjxlkj?
+A Neovim-inspired TUI text editor written in Rust. It provides modal editing, LSP support, Tree-sitter syntax highlighting, an embedded terminal, and Git integration.
 
-kjxlkj is a Neovim-inspired terminal (TUI) text editor written in Rust.
+## How is it different from Neovim?
 
-Repository contract: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+kjxlkj is a from-scratch implementation. It does not use Neovim's codebase. Key differences:
 
-### Why "kjxlkj"?
+| Aspect | kjxlkj | Neovim |
+|---|---|---|
+| Language | Rust | C + Lua |
+| Plugin system | None (all native) | Lua plugins |
+| Configuration | TOML | Lua / Vimscript |
+| Architecture | Async-first (Tokio) | Event loop |
 
-The name is a project codename. Pronounce it however you like!
+## What platforms are supported?
 
-### Is it compatible with Neovim config?
+Linux (primary), macOS, and Windows (via WSL or native).
 
-No. kjxlkj does not execute Neovim’s Lua configuration or plugin ecosystem.
+## Does it support plugins?
 
-The long-term target includes configuration and keybinding remapping. The supported surface (when a reconstructed implementation exists) is tracked in:
+No. All functionality is built-in natively. This ensures consistent behavior and performance.
 
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+## How do I configure it?
 
-### Can I use my vim plugins?
+Edit `~/.config/kjxlkj/config.toml`. See the quickstart guide.
 
-No. kjxlkj has no plugin system by design.
+## How do I install it?
 
-Some “plugin-like” capabilities are planned as built-in features, but many are not implemented yet. See:
+See [/docs/guides/INSTALL_WINDOWS.md](/docs/guides/INSTALL_WINDOWS.md) for Windows, or build from source with `cargo build --release`.
 
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+## Related
 
-## Installation
-
-### What platforms are supported?
-
-The codebase aims to be cross-platform via Rust and Crossterm, but platform support is not fully validated yet.
-
-### How do I update?
-
-There are no tagged releases in this repository yet. Rebuild from source.
-
-### Where is the config file?
-
-Persistent configuration is not implemented yet.
-
-## Usage
-
-### How do I exit?
-
-Press `:q` and Enter. Or `ZZ` to save and quit.
-
-### How do I save?
-
-Use `:w {file}` to write to a path, or `:wq` / `:x` to write then quit.
-
-### How do I search?
-
-Press `/` to search forward, `?` to search backward.
-
-## Features
-
-### Does it have LSP support?
-
-Not yet. The target architecture includes an LSP service, but LSP features are not implemented.
-
-### Does it have syntax highlighting?
-
-Not yet.
-
-### Does it support splits?
-
-Not yet.
-
-### Does it have tabs?
-
-Not yet.
-
-## Troubleshooting
-
-### Colors look wrong
-
-Ensure your terminal supports at least 256 colors.
-
-### Keys not working
-
-Some terminals do not report all modifier combinations consistently. Try a different terminal emulator.
-
-### Slow startup
-
-Performance has not been benchmarked yet.
-
-### High memory usage
-
-Large files have not been benchmarked yet.
-
-## Contributing
-
-### How can I contribute?
-
-Start with the canonical docs:
-
-- Specs: [/docs/spec/README.md](/docs/spec/README.md)
-- Current surface: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-
-### Where do I report bugs?
-
-Use the repository issue tracker if one exists, or record issues as a proposal under `/docs/log/proposals/` with reproduction steps and spec references (and update `/docs/reference/LIMITATIONS.md` when user-visible).
+- Quickstart: [/docs/guides/QUICKSTART.md](/docs/guides/QUICKSTART.md)
+- Migration: [/docs/guides/MIGRATION.md](/docs/guides/MIGRATION.md)

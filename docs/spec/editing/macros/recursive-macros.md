@@ -1,128 +1,42 @@
 # Recursive Macros
 
-Back: [docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+Back: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
 
-Macros that invoke themselves to create loops.
+Macros that call themselves for iterative processing.
 
 ## Overview
 
-A recursive macro calls itself during playback,
-repeating its actions until an error stops execution.
-This is a powerful pattern for batch editing.
+A macro can invoke itself to repeat until an error occurs (end of file, search fail, etc.). This is the primary mechanism for applying macros across an unknown number of targets.
 
-## Basic Pattern
+## Pattern
 
-### Recording
+1. Clear the register: `qaq` (record empty macro into `a`).
+2. Record the macro with a self-call at the end: `qa{commands}@aq`.
+3. Execute: `@a`.
 
-1. `qa` - Start recording into register `a`
-2. Perform the editing action
-3. Move to the next target
-4. `@a` - Call self (recursion step)
-5. `q` - Stop recording
+## How It Terminates
 
-### Execution
+The macro stops when any command in the sequence fails:
 
-`@a` starts the macro. Each iteration performs the
-action and then calls `@a` again. The loop continues
-until an error occurs (e.g., search fails, end of
-file reached).
-
-## Termination Conditions
-
-### Error-Based Termination
-
-The most common termination: a motion or search
-command fails, producing an error that aborts
-the macro chain. Examples:
-
-| Cause | Typical Command |
-|-------|-----------------|
-| No more matches | `/pattern` fails |
+| Error | Example |
+|---|---|
 | End of file | `j` at last line |
-| No more finds | `f{char}` on empty line |
-| Pattern not found | `:substitute` with no match |
+| No search match | `/pattern` with no more matches |
+| No more characters | `f{x}` with no `{x}` on line |
 
-### Count-Based
+## Example
 
-Instead of making the macro recursive, use a count:
-`100@a` repeats the macro 100 times. This is safer
-but requires knowing the iteration count.
+Delete all lines containing "TODO":
 
-### Search-In-Macro
+`qaq` `qa/TODO<CR>dd@aq` `@a`
 
-A common pattern: include a search (`/pattern<CR>`)
-in the macro. When no more matches exist, the search
-fails and the macro stops.
+This recursively searches for "TODO", deletes the line, and repeats until no more matches.
 
-## Safety Mechanisms
+## Safety
 
-### Error Stops Execution
-
-When any command in a macro produces an error, the
-entire macro chain stops. This prevents runaway
-recursion from corrupting the buffer.
-
-### Undo Safety
-
-Each complete macro invocation (including all
-recursive calls) is grouped as a single undo unit.
-A single `u` undoes ALL changes from the entire
-recursive macro execution.
-
-### Maximum Recursion Depth
-
-The editor limits recursive macro depth to prevent
-stack overflow. Default limit: 1000 iterations.
-Exceeding the limit produces an error:
-"recursive macro limit exceeded".
-
-## Advanced Patterns
-
-### Conditional Recursion
-
-Use search patterns to create conditional logic:
-1. Search for target pattern
-2. If found, perform action and recurse
-3. If not found, search fails and macro stops
-
-### Multi-Register Chains
-
-Macros in different registers can call each other:
-- Register `a`: perform action, call `@b`
-- Register `b`: move to next target, call `@a`
-
-This alternating pattern can implement complex
-multi-step batch operations.
-
-### Pre-Clear Register
-
-Before recording a recursive macro, clear the target
-register: `:let @a = ""`. This prevents stale
-content from the previous recording from interfering.
-
-## Debugging
-
-### Step-by-Step Testing
-
-Test the macro body (without the recursive `@a` call)
-first. Run it once manually. Then add the recursion.
-
-### Checking Register Content
-
-`:registers a` shows what is recorded in register a.
-Verify the content includes the self-call at the end.
-
-## Performance
-
-### Screen Update Suppression
-
-During recursive macro execution, the editor
-suppresses screen updates. The display is refreshed
-only after the entire macro chain completes. This
-provides significant speedup for large batch edits.
+Recursive macros have no built-in depth limit. They rely on command failure, so ensure at least one command will eventually fail.
 
 ## Related
 
-- Macro recording: [docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
-- Advanced macros: [docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
-- Registers: [docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
+- Macros: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+- Advanced macros: [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)

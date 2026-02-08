@@ -1,136 +1,47 @@
-# Keybinding Hints
+# Keybinding Hints (Which-Key)
 
-which-key style popup for discovering key sequences.
+Back: [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+
+Display available keybindings after a prefix key.
 
 ## Overview
 
-When a key prefix is pressed and no immediate command
-matches, a floating panel appears showing all possible
-continuations. This helps users discover and learn
-keybindings without leaving their editing flow.
+When a prefix key (like `<leader>` or `g`) is pressed and no immediate match exists, a floating panel appears showing available continuations with descriptions.
 
-## Trigger Conditions
+## Behavior
 
-| Trigger | Description |
-|---------|-------------|
-| Leader key | Show all leader-prefixed commands |
-| g prefix | Show all g-prefixed commands |
-| z prefix | Show all fold/scroll commands |
-| ] / [ prefix | Show all bracket motions |
-| Window prefix | After `Ctrl-W`, show split commands |
-| Operator pending | After d/c/y, show motion hints |
-| Custom prefix | Any user-defined prefix key |
+1. User presses a prefix key (e.g., `<leader>`).
+2. After a short delay (`timeoutlen`), a panel appears.
+3. The panel lists all bindings starting with that prefix.
+4. User presses the next key to complete the binding.
 
-## Timing
+## Display
 
-### Display Delay
-
-Hints appear after `whichkey_timeout` milliseconds
-(default: 500). This avoids flashing for experienced
-users who type sequences quickly.
-
-### Timeout Behavior
-
-If `timeoutlen` expires before a continuation key,
-the prefix itself is processed (or discarded if no
-solo meaning). The hint popup closes immediately.
-
-## Data Model
-
-### KeymapTrie
-
-All keybindings are stored in a trie structure indexed
-by mode. Each node contains:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `key` | `Key` | The key at this node |
-| `command` | `Option<CommandId>` | Command if this is a leaf |
-| `children` | `BTreeMap<Key, Node>` | Sub-prefix continuations |
-| `description` | `String` | Human-readable label |
-
-### HintEntry
-
-Each entry in the popup displays:
-
-| Field | Description |
-|-------|-------------|
-| `key` | Next key to press |
-| `label` | Short description of the command |
-| `group` | Category for visual grouping |
-| `is_prefix` | Whether this leads to more keys |
-
-## Display Layout
-
-### Panel Structure
-
-The popup appears as a floating window anchored to
-the bottom of the screen (above the status line).
-
-### Organization
-
-Entries are organized in columns, sorted by key.
-Groups are visually separated with headers.
-Prefix entries show `+` to indicate sub-menus.
-
-### Example Display
-
-After pressing leader key, hints display in a grid:
-
-| Column 1 | Column 2 | Column 3 |
-|---|---|---|
-| `f` +file | `b` +buffer | `w` +window |
-| `ff` find | `bn` next | `ws` split |
-| `fs` save | `bp` prev | `wv` vsplit |
-| `fq` quit | `bd` delete | `wq` close |
-
-## Filtering
-
-### Type-to-Filter
-
-While the hint popup is visible, typing narrows the
-displayed entries. Only matching entries remain.
-
-### Matching
-
-Filter matches against both key sequences and
-description text, case-insensitively.
-
-## Context Awareness
-
-### Mode-Dependent
-
-Hints reflect the current mode. Normal mode shows
-normal mappings; visual mode shows visual mappings.
-
-### View-Dependent
-
-If the focused view is the file explorer, hints
-include file-explorer-specific bindings. Similarly
-for the terminal window.
+| Column | Content |
+|---|---|
+| Key | The next key in the sequence |
+| Description | The `desc` field from the binding definition |
 
 ## Configuration
 
-### Settings
+| Setting | Default | Description |
+|---|---|---|
+| `whichkey.enabled` | `true` | Enable which-key popup |
+| `whichkey.delay` | `300` | Delay in ms before showing |
+| `whichkey.max_width` | `40` | Maximum popup width |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `whichkey.enabled` | bool | true | Enable hint popup |
-| `whichkey.timeout` | int | 500 | Delay in ms |
-| `whichkey.max_columns` | int | 5 | Column count |
-| `whichkey.show_icons` | bool | false | Show category icons |
-| `whichkey.sort` | string | "key" | Sort order |
+## Groups
 
-### Custom Labels
+Bindings can be organized into named groups for the which-key display:
 
-Users can override the description for any mapping
-in the configuration file.
+| Prefix | Group Name |
+|---|---|
+| `<leader>f` | "Find" |
+| `<leader>g` | "Git" |
+| `<leader>l` | "LSP" |
+| `<leader>b` | "Buffer" |
 
-## Acceptance Criteria
+## Related
 
-- Hints MUST never block input processing
-- Hints MUST derive data from in-memory keymaps only
-- Hint popup MUST close immediately on any key press
-- The UI MUST distinguish prefixes from leaf commands
-- Display MUST not delay rendering of the editor
-- Filtering MUST be responsive (no async delay)
+- Key mappings: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+- Keybinding DSL: [/docs/spec/ux/keybinding-dsl.md](/docs/spec/ux/keybinding-dsl.md)

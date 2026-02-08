@@ -1,123 +1,47 @@
 # Insert Auto-Pairs
 
-Automatic bracket and quote pairing.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+
+Automatic insertion of matching bracket/quote pairs.
 
 ## Overview
 
-When enabled, typing an opening delimiter automatically
-inserts the matching closing delimiter and positions the
-cursor between them.
+Auto-pairs automatically inserts the closing character when an opening character is typed. The cursor is placed between the pair.
 
-## Supported Pairs
+## Paired Characters
 
-### Default Pairs
-
-| Open | Close | Name |
-|------|-------|------|
-| `(` | `)` | Parentheses |
-| `[` | `]` | Brackets |
-| `{` | `}` | Braces |
-| `"` | `"` | Double quotes |
-| `'` | `'` | Single quotes |
-| `` ` `` | `` ` `` | Backticks |
-
-### Language-Specific
-
-| Language | Additional Pairs |
-|----------|-----------------|
-| HTML/XML | `<` / `>` (in tag context) |
-| Rust | `\|` / `\|` (closures) |
-| Python | `"""` / `"""` (docstrings) |
+| Open | Close |
+|---|---|
+| `(` | `)` |
+| `[` | `]` |
+| `{` | `}` |
+| `"` | `"` |
+| `'` | `'` |
+| `` ` `` | `` ` `` |
 
 ## Behavior
 
-### Insert Opening
+| Scenario | Action |
+|---|---|
+| Type `(` | Insert `()`, cursor between |
+| Type `)` when next char is `)` | Skip over the `)` (no duplicate) |
+| Type `<BS>` between empty pair | Delete both characters |
+| Type `<CR>` between `{}` | Open braces with indentation |
 
-Typing `(` inserts `()` with cursor between them.
-Typing `{` after `<CR>` also adds indented newline.
+## Smart Quotes
 
-### Skip Closing
+Quote auto-pairing is context-aware:
 
-If the cursor is before a closing delimiter that matches
-an already-paired opener, typing that closer moves the
-cursor past it instead of inserting a duplicate.
-
-### Delete Pair
-
-When `<BS>` is pressed between an empty pair (`()`),
-both delimiters are deleted.
-
-### Wrap Selection
-
-In visual mode, typing an opening delimiter wraps
-the selection: `(selection)`.
-
-## Smart Behavior
-
-### Context Awareness
-
-Auto-pairs do not activate inside:
-- String literals (no auto-pair for `'` inside `"..."`)
-- Comments (language-dependent)
-- After `\` (escaped character)
-
-### Word Boundary
-
-For quote characters (`"`, `'`, `` ` ``), auto-pairing
-only occurs when:
-- After whitespace or opening bracket
-- At start of line
-- NOT after word characters (avoids pairing in contractions)
+- Don't pair when inside a word (e.g., `can't`).
+- Don't pair when the character before is a backslash.
 
 ## Configuration
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `auto_pairs` | `true` | Enable/disable globally |
-| `auto_pairs_map` | (see above) | Custom pair definitions |
+| Setting | Default | Description |
+|---|---|---|
+| `autopairs.enabled` | `true` | Enable auto-pairs |
+| `autopairs.pairs` | default set | Custom pair definitions |
 
-### Per-Filetype
+## Related
 
-Auto-pairs can be configured per filetype in language
-settings to add or remove pairs.
-
-### Disable Specific
-
-To disable a specific pair, set its value to `false`
-in the auto_pairs_map configuration.
-
-## Multi-Line
-
-### Brace Newline
-
-Typing `{<CR>` produces:
-```
-{
-  |
-}
-```
-Where `|` is cursor position, indented appropriately.
-
-### Smart Indent
-
-The closing delimiter is placed at the same indent
-level as the opening delimiter's line.
-
-## Undo
-
-### Single Undo
-
-Auto-pair insertion is part of the same undo group
-as the character typed. `u` removes both delimiters.
-
-## Integration
-
-### With Completion
-
-When auto-completion inserts a function name followed
-by `(`, auto-pairs adds the closing `)`.
-
-### With Snippets
-
-Snippet expansion may include pairs. Auto-pairs
-defers to snippet handling in that case.
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
