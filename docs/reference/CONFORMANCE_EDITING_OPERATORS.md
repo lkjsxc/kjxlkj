@@ -4,6 +4,17 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Operator, motion, and text-object semantics in the conformance ledger.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Operators (d/y/c) | `implemented` | dispatch_tests.rs, boundary_tests (BD-39) |
+| Linewise operators (dd/yy/cc) | `implemented` | DoubleOperator tests |
+| Motions (hjkl, w/b/e, 0/$, gg/G) | `implemented` | integration_tests.rs, boundary_tests (BD-38) |
+| Find char (f/t/F/T) | `implemented` | dispatch_tests.rs |
+| Text objects (iw/aw/i"/a") | `implemented` | text_object tests |
+| Search motions (/,?) | `implemented` | feature_tests.rs, boundary_tests (BD-29) |
+
 ## Operators and motions
 
 | Operator | Motion/target | Action |

@@ -4,6 +4,16 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Input handling, keybinding tables, layout, coverage, and profiling conformance entries.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Buffer features | `implemented` | buffer_options module tests |
+| Keybinding DSL | `implemented` | keybinding_dsl module tests, REG-03 |
+| Mapping registry | `implemented` | mappings module tests |
+| Autocommands | `implemented` | autocmd module tests |
+| Profiling structure | `implemented` | contract_tests.rs (profiling_metrics) |
+
 ### Buffer Features
 
 | Aspect | Status |

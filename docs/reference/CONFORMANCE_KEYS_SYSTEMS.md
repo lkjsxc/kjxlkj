@@ -4,6 +4,16 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 UI views, terminal, buffer, window, and theme system conformance entries.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| View management | `implemented` | view_management module tests |
+| Tab pages | `implemented` | editor_tabs module tests |
+| Window splits | `implemented` | integration_tests.rs (HE-06), pty_e2e_tests.rs |
+| Terminal grid | `implemented` | terminal module tests |
+| Buffer options | `implemented` | buffer_options module tests |
+
 ### UI Views and Tabs
 
 | Aspect | Status |

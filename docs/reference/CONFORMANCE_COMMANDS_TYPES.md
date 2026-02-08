@@ -4,6 +4,16 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Type definitions for search, undo, DAP, marks, substitution, completion, and more.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Search highlights | `implemented` | search module tests |
+| Undo/redo | `implemented` | contract_tests.rs, headless_e2e_tests.rs |
+| Marks | `implemented` | editor_auto_marks module tests |
+| Substitution | `implemented` | feature_tests.rs (substitute) |
+| DAP types | `scaffold-only` | Types exist, no adapter process |
+
 ## Search highlight types
 
 | Component | Behavior |

@@ -4,6 +4,16 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Command-line (Ex) command subset and core types in the conformance ledger.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Quit commands | `implemented` | dispatch_tests.rs |
+| Write commands | `implemented` | headless_e2e_tests.rs (HE-01) |
+| Substitute | `implemented` | feature_tests.rs, headless_e2e_tests.rs (HE-03) |
+| Set commands | `implemented` | boundary_tests (BD-40) |
+| Range parsing | `implemented` | editor_range_cmds module tests |
+
 ## Command-line (Ex) commands (subset)
 
 | Command | Behavior |

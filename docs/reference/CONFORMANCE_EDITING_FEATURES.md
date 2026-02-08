@@ -4,6 +4,16 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Editing-related features, rendering, and UI subsystems in the conformance ledger.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Completion engine | `implemented` | completion module tests |
+| CJK cursor handling | `implemented` | cjk_support tests, REG-07 |
+| Line wrapping | `implemented` | line_wrap tests, REG-02, REG-08 |
+| Theming | `implemented` | theming module tests |
+| Statusline | `implemented` | statusline_dsl module tests |
+
 ## Completion
 
 | Feature | Behavior |

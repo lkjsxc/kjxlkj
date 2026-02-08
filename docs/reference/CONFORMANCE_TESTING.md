@@ -4,6 +4,18 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Headless test runner, E2E coverage, and runtime feature conformance entries.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Integration tests (INT-01..10) | `implemented` | integration_tests.rs (10 tests) |
+| Headless E2E (HE-01..09) | `implemented` | headless_e2e_tests.rs (9 tests) |
+| PTY E2E (PE-01..08) | `implemented` | pty_e2e_tests.rs (8 tests) |
+| Boundary tests (BD-01..40) | `implemented` | boundary_tests_1/2/3.rs (40 tests) |
+| Regression tests (REG-01..08) | `implemented` | regression_tests.rs (8 tests) |
+| Contract tests | `implemented` | contract_tests.rs (11 tests) |
+| Total test count | 523 | `cargo test --workspace` |
+
 ## Headless test runner
 
 This conformance target includes a deterministic headless mode intended for E2E tests and CI-like environments:

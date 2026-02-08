@@ -4,6 +4,15 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Mode set and core keybindings (Normal, Visual) in the conformance ledger.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Mode transitions | `implemented` | 523 tests passing; dispatch_tests.rs, integration_tests.rs, boundary_tests |
+| Normal-mode keys | `implemented` | feature_tests.rs, boundary_tests |
+| Visual mode keys | `implemented` | dispatch_tests.rs (visual_delete, visual_yank) |
+| Terminal mode | `partial` | SpawnTerminal action dispatches; no real PTY fork |
+
 ## Modes
 
 | Mode | Entry | Exit | Notes |

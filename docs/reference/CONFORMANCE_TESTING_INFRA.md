@@ -4,6 +4,21 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Session, syntax, explorer, completion, config, profiling, and integration conformance entries.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Session commands | `implemented` | session module tests, headless_e2e_tests.rs (HE-07) |
+| Buffer metadata | `implemented` | buffer module tests |
+| Syntax detection | `implemented` | filetype module tests |
+| File explorer | `implemented` | file_explorer module tests |
+| Completion engine | `implemented` | completion module tests |
+| Config options | `implemented` | buffer_options module tests |
+| Plugin prevention | `implemented` | audit module tests |
+| Git integration | `implemented` | git_features module tests |
+| LSP types | `scaffold-only` | Types exist, no LSP process |
+| Notifications | `implemented` | notifications module tests |
+
 ## Session commands
 
 | Feature | Behavior |

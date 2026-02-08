@@ -53,9 +53,34 @@ These scenarios are high risk because they can regress without being caught by h
 
 ## Current implementation status
 
-No implementation currently exists in the repository. The repository is in a docs-only state, awaiting reconstruction from the canonical spec.
+The repository contains a functional Rust implementation across 18 crates with 523 passing tests covering:
 
-All features defined in `/docs/spec/` are `planned` until a reconstruction wave produces verifiable code.
+- All 7 editing modes (Normal, Insert, Visual, Visual-Line, Visual-Block, Replace, Command-Line)
+- Motion operators (delete, change, yank) with motions and text objects
+- CJK/Unicode support with wide-character cursor handling, wrap boundary padding, and IME composition
+- Terminal emulator (PTY spawn via `Action::SpawnTerminal`)
+- Session save/load (JSON serialization via `SessionData`)
+- Window management (split, cycle, close, resize)
+- Tmux integration (passthrough escape wrapping, session detection)
+- Macro recording and replay
+- Search and substitute (`:s`, `:%s`, `/`, `?`)
+- 33+ feature modules including LSP, DAP, Git, completion, treesitter, snippets, theming, statusline DSL
+- Undo/redo per buffer
+- Mark system (auto-marks, named marks, jump list)
+- Register system with named registers
+
+### Known gaps
+
+| Area | Gap | Status | Next action |
+|------|-----|--------|-------------|
+| Leader key | Default leader is `\` not `Space` | `accepted-temporary` | Add configurable leader via settings |
+| File I/O | `:w` / `:wq` use in-memory flag only | `partial` | Wire real filesystem write through buffer.path |
+| Clipboard | System clipboard integration not connected | `partial` | Wire `+`/`*` registers to OS clipboard |
+| LSP | Types exist but no actual LSP client process | `scaffold-only` | Implement LSP process spawn and protocol |
+| DAP | Types exist but no actual DAP adapter process | `scaffold-only` | Implement DAP adapter spawn |
+| Treesitter | Parser objects exist but no actual tree-sitter binding | `scaffold-only` | Integrate tree-sitter C library |
+| Terminal | PTY spawn recorded as action, no real fork/exec | `partial` | Wire `nix::pty::openpty` for Unix |
+| Startup | No real `main` binary entry point processing args | `partial` | Wire clap CLI + startup sequence |
 
 ## Update protocol
 

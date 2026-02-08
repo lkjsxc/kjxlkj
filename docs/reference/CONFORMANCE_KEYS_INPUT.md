@@ -4,6 +4,15 @@ Back: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 
 Insert/Replace mode keybindings and core editing systems in the conformance ledger.
 
+## Implementation status
+
+| Area | Status | Evidence |
+|------|--------|----------|
+| Insert mode | `implemented` | dispatch_tests.rs, integration_tests.rs |
+| Replace mode | `implemented` | boundary_tests (BD-12) |
+| IME composition | `implemented` | ime module tests, REG-06 |
+| Registers | `implemented` | register module tests |
+
 ## Insert mode
 
 | Key | Action |
