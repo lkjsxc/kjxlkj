@@ -20,7 +20,8 @@ Each proposal MUST:
 | [performance-regression-harness.md](performance-regression-harness.md) | CPU/latency regression harness and gating strategy |
 | [profiling-workflow.md](profiling-workflow.md) | Repeatable profiling workflow and regression triage |
 | [anti-mvp-measures.md](anti-mvp-measures.md) | Measures to prevent minimal/scaffold-only implementations |
-| [deep-wiring-checklist.md](deep-wiring-checklist.md) | Per-crate module structure and function-level wiring inventory |
+| [deep-wiring-checklist.md](deep-wiring-checklist.md) | Per-crate module/function wiring inventory (core, render, input, terminal) |
+| [deep-wiring-checklist-2.md](deep-wiring-checklist-2.md) | Per-crate module/function wiring inventory (binary, facade, host, services) |
 | [terminal-emulator-detail.md](terminal-emulator-detail.md) | Terminal emulator full-scratch implementation detail proposal |
 
 ## Archived

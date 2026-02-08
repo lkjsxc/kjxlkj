@@ -24,7 +24,8 @@ Canonical facts:
 - Current supported behavior: `/docs/reference/CONFORMANCE.md`
 - User-visible gaps: `/docs/reference/LIMITATIONS.md`
 - Anti-MVP measures: `/docs/log/proposals/anti-mvp-measures.md`
-- Deep wiring checklist: `/docs/log/proposals/deep-wiring-checklist.md`
+- Deep wiring checklist (part 1): `/docs/log/proposals/deep-wiring-checklist.md`
+- Deep wiring checklist (part 2): `/docs/log/proposals/deep-wiring-checklist-2.md`
 </authority_and_precedence>
 
 <required_start_reading_order>
@@ -41,7 +42,8 @@ Canonical facts:
 11. `/docs/reference/LIMITATIONS.md`
 12. `/docs/log/proposals/anti-mvp-measures.md`
 13. `/docs/log/proposals/deep-wiring-checklist.md`
-14. `/docs/todo/README.md`
+14. `/docs/log/proposals/deep-wiring-checklist-2.md`
+15. `/docs/todo/README.md`
 </required_start_reading_order>
 
 <critical_specifications>
@@ -56,7 +58,8 @@ These specs define behavior that was previously implemented incorrectly. Read ca
 - Startup sequence: `/docs/spec/architecture/startup.md`
 - Render pipeline: `/docs/spec/architecture/render-pipeline.md`
 - Unicode guidance: `/docs/technical/unicode.md`
-- Deep wiring per-crate inventory: `/docs/log/proposals/deep-wiring-checklist.md`
+- Deep wiring per-crate inventory (part 1): `/docs/log/proposals/deep-wiring-checklist.md`
+- Deep wiring per-crate inventory (part 2): `/docs/log/proposals/deep-wiring-checklist-2.md`
 </critical_specifications>
 
 <execution_model>

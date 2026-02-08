@@ -54,16 +54,24 @@ The reconstruction prompt already prohibits evidence-free completion. Additional
 
 | Crate | Minimum lines (excluding tests) | Rationale |
 |---|---|---|
+| `kjxlkj` | 100 | Binary entrypoint: CLI parsing, Tokio runtime init, task spawning, shutdown |
+| `kjxlkj-core` | 50 | Facade re-exports; mostly `pub use` |
+| `kjxlkj-core-types` | 200 | Shared types: BufferId, WindowId, Mode, Action, Key, Color, CellAttrs |
 | `kjxlkj-core-text` | 400 | Rope wrapper, grapheme decomposition, display width, line operations |
 | `kjxlkj-core-edit` | 600 | Operators, text objects, motions, register operations |
 | `kjxlkj-core-mode` | 500 | Mode state machines, transition logic, cursor clamping |
-| `kjxlkj-core-state` | 500 | Editor state, command dispatch, viewport follow |
+| `kjxlkj-core-undo` | 200 | Undo tree: nodes, branching, group boundaries, persistence format |
+| `kjxlkj-core-ui` | 150 | EditorSnapshot, BufferSnapshot, TerminalSnapshot, CmdlineState, Notification |
+| `kjxlkj-core-state` | 500 | Editor state, command dispatch, viewport follow, window tree |
 | `kjxlkj-render` | 500 | Cell rendering, wrapping, gutter, statusline, diff display |
 | `kjxlkj-input` | 300 | Key parsing, mapping expansion, leader handling |
 | `kjxlkj-host` | 300 | Terminal raw mode, event loop, PTY harness |
+| `kjxlkj-services` | 100 | Service supervisor: spawn, health check, restart, shutdown coordination |
 | `kjxlkj-service-terminal` | 400 | Escape parsing state machine, PTY spawn, screen buffer |
 | `kjxlkj-service-lsp` | 300 | JSON-RPC client, request/response lifecycle |
 | `kjxlkj-service-git` | 200 | Git subprocess, diff parsing, status/blame |
+| `kjxlkj-service-index` | 150 | File scanning, fuzzy matching, symbol indexing |
+| `kjxlkj-service-fs` | 150 | File read/write, file watcher, directory listing |
 
 These are minimums. Individual source files MUST still be under 200 lines each, which means splitting into well-structured modules.
 

@@ -123,6 +123,7 @@ This crate MUST contain non-trivial implementations:
 
 ## Related
 
+- Part 2 (remaining crates): [/docs/log/proposals/deep-wiring-checklist-2.md](/docs/log/proposals/deep-wiring-checklist-2.md)
 - Anti-MVP measures: [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)
 - Reconstruction prompt: [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
 - Crate topology: [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
