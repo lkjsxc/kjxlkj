@@ -19,9 +19,16 @@ Do not claim "implemented" from non-authoritative docs.
 | Document | Purpose | Authority |
 |----------|---------|-----------|
 | [CONFORMANCE.md](CONFORMANCE.md) | Conformance ledger (implementation surface / reconstruction target) | Authoritative |
-| [CONFORMANCE_MODES_KEYS.md](CONFORMANCE_MODES_KEYS.md) | Modes and keybindings (ledger) | Authoritative |
-| [CONFORMANCE_EDITING.md](CONFORMANCE_EDITING.md) | Editing semantics (ledger) | Authoritative |
-| [CONFORMANCE_COMMANDS_TESTING.md](CONFORMANCE_COMMANDS_TESTING.md) | Ex commands and headless testing (ledger) | Authoritative |
+| [CONFORMANCE_MODES.md](CONFORMANCE_MODES.md) | Modes, Normal-mode keys, Visual mode (ledger) | Authoritative |
+| [CONFORMANCE_KEYS_INPUT.md](CONFORMANCE_KEYS_INPUT.md) | Insert/Replace modes and core systems (ledger) | Authoritative |
+| [CONFORMANCE_KEYS_SYSTEMS.md](CONFORMANCE_KEYS_SYSTEMS.md) | UI, terminal, buffer, window, theme systems (ledger) | Authoritative |
+| [CONFORMANCE_KEYS_INFRA.md](CONFORMANCE_KEYS_INFRA.md) | Input infrastructure and coverage (ledger) | Authoritative |
+| [CONFORMANCE_EDITING_OPERATORS.md](CONFORMANCE_EDITING_OPERATORS.md) | Editing operators, motions, text objects (ledger) | Authoritative |
+| [CONFORMANCE_EDITING_FEATURES.md](CONFORMANCE_EDITING_FEATURES.md) | Editing features and rendering (ledger) | Authoritative |
+| [CONFORMANCE_COMMANDS.md](CONFORMANCE_COMMANDS.md) | Ex commands, ranges, core types (ledger) | Authoritative |
+| [CONFORMANCE_COMMANDS_TYPES.md](CONFORMANCE_COMMANDS_TYPES.md) | Command and editor type definitions (ledger) | Authoritative |
+| [CONFORMANCE_TESTING.md](CONFORMANCE_TESTING.md) | Headless test runner and E2E coverage (ledger) | Authoritative |
+| [CONFORMANCE_TESTING_INFRA.md](CONFORMANCE_TESTING_INFRA.md) | Testing infrastructure and integration (ledger) | Authoritative |
 | [LIMITATIONS.md](LIMITATIONS.md) | Known user-visible gaps | Authoritative |
 | [CI.md](CI.md) | Continuous integration checks | Authoritative for verification gate |
 | [RELEASE.md](RELEASE.md) | Release process and readiness checks | Normative process |

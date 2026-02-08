@@ -41,11 +41,30 @@ If any item is missing, the claim MUST be recorded as `partial` or `scaffold-onl
 
 ## Conformance documents (current surface)
 
+### Modes and keybindings
+
 | Document | Content |
 |----------|---------|
-| [CONFORMANCE_MODES_KEYS.md](CONFORMANCE_MODES_KEYS.md) | Modes and keybindings currently supported |
-| [CONFORMANCE_EDITING.md](CONFORMANCE_EDITING.md) | Editing semantics (operators, text objects, search behavior) |
-| [CONFORMANCE_COMMANDS_TESTING.md](CONFORMANCE_COMMANDS_TESTING.md) | Ex commands and headless/E2E harness surface |
+| [CONFORMANCE_MODES.md](/docs/reference/CONFORMANCE_MODES.md) | Modes, Normal-mode keys, Visual mode |
+| [CONFORMANCE_KEYS_INPUT.md](/docs/reference/CONFORMANCE_KEYS_INPUT.md) | Insert/Replace modes and core systems |
+| [CONFORMANCE_KEYS_SYSTEMS.md](/docs/reference/CONFORMANCE_KEYS_SYSTEMS.md) | UI, terminal, buffer, window, and theme systems |
+| [CONFORMANCE_KEYS_INFRA.md](/docs/reference/CONFORMANCE_KEYS_INFRA.md) | Input infrastructure and coverage |
+
+### Editing semantics
+
+| Document | Content |
+|----------|---------|
+| [CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/CONFORMANCE_EDITING_OPERATORS.md) | Operators, motions, text objects, search behavior |
+| [CONFORMANCE_EDITING_FEATURES.md](/docs/reference/CONFORMANCE_EDITING_FEATURES.md) | Completion, rendering, cursor, theme, visual features |
+
+### Commands and testing
+
+| Document | Content |
+|----------|---------|
+| [CONFORMANCE_COMMANDS.md](/docs/reference/CONFORMANCE_COMMANDS.md) | Ex commands, ranges, and core types |
+| [CONFORMANCE_COMMANDS_TYPES.md](/docs/reference/CONFORMANCE_COMMANDS_TYPES.md) | Command and editor type definitions |
+| [CONFORMANCE_TESTING.md](/docs/reference/CONFORMANCE_TESTING.md) | Headless test runner and E2E coverage |
+| [CONFORMANCE_TESTING_INFRA.md](/docs/reference/CONFORMANCE_TESTING_INFRA.md) | Testing infrastructure and integration |
 
 ## Update protocol (normative)
 

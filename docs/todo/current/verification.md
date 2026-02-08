@@ -28,9 +28,16 @@ Per [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md):
 
 - [ ] Run touched tests first, then full suite
 - [ ] Update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] Update [/docs/reference/CONFORMANCE_EDITING.md](/docs/reference/CONFORMANCE_EDITING.md)
-- [ ] Update [/docs/reference/CONFORMANCE_MODES_KEYS.md](/docs/reference/CONFORMANCE_MODES_KEYS.md)
-- [ ] Update [/docs/reference/CONFORMANCE_COMMANDS_TESTING.md](/docs/reference/CONFORMANCE_COMMANDS_TESTING.md)
+- [ ] Update [/docs/reference/CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/CONFORMANCE_EDITING_OPERATORS.md)
+- [ ] Update [/docs/reference/CONFORMANCE_EDITING_FEATURES.md](/docs/reference/CONFORMANCE_EDITING_FEATURES.md)
+- [ ] Update [/docs/reference/CONFORMANCE_MODES.md](/docs/reference/CONFORMANCE_MODES.md)
+- [ ] Update [/docs/reference/CONFORMANCE_KEYS_INPUT.md](/docs/reference/CONFORMANCE_KEYS_INPUT.md)
+- [ ] Update [/docs/reference/CONFORMANCE_KEYS_SYSTEMS.md](/docs/reference/CONFORMANCE_KEYS_SYSTEMS.md)
+- [ ] Update [/docs/reference/CONFORMANCE_KEYS_INFRA.md](/docs/reference/CONFORMANCE_KEYS_INFRA.md)
+- [ ] Update [/docs/reference/CONFORMANCE_COMMANDS.md](/docs/reference/CONFORMANCE_COMMANDS.md)
+- [ ] Update [/docs/reference/CONFORMANCE_COMMANDS_TYPES.md](/docs/reference/CONFORMANCE_COMMANDS_TYPES.md)
+- [ ] Update [/docs/reference/CONFORMANCE_TESTING.md](/docs/reference/CONFORMANCE_TESTING.md)
+- [ ] Update [/docs/reference/CONFORMANCE_TESTING_INFRA.md](/docs/reference/CONFORMANCE_TESTING_INFRA.md)
 - [ ] Update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [ ] Check TODO items only after evidence is green
 

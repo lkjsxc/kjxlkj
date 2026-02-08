@@ -44,9 +44,6 @@ When a file approaches or exceeds 200 lines:
 
 These files are temporarily exempt from the 200-line cap and MUST be split in a future doc-topology wave:
 
-- `/docs/reference/CONFORMANCE_MODES_KEYS.md`
-- `/docs/reference/CONFORMANCE_EDITING.md`
-- `/docs/reference/CONFORMANCE_COMMANDS_TESTING.md`
 - `/docs/reference/LIMITATIONS.md`
 
 ## Navigation Requirements
