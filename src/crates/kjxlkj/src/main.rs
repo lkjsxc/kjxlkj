@@ -30,7 +30,7 @@ async fn run(
     let (quit_tx, _quit_rx) = broadcast::channel::<()>(1);
     let (action_tx, mut action_rx) =
         mpsc::channel::<kjxlkj_core_types::Action>(256);
-    let (key_tx, mut _key_rx) =
+    let (key_tx, mut key_rx) =
         mpsc::channel::<kjxlkj_core_types::Key>(256);
     let (response_tx, mut response_rx) =
         mpsc::channel::<kjxlkj_core_types::ServiceResponse>(
@@ -122,6 +122,15 @@ async fn run(
                         editor.dispatch(other);
                     }
                 }
+                let snap = editor.snapshot();
+                let _ = renderer.render(&snap);
+
+                if editor.should_quit {
+                    break;
+                }
+            }
+            Some(key) = key_rx.recv() => {
+                editor.dispatch_key(key);
                 let snap = editor.snapshot();
                 let _ = renderer.render(&snap);
 

@@ -10,6 +10,7 @@ mod editor_actions;
 mod editor_actions2;
 mod editor_file_ops;
 mod editor_insert;
+mod editor_key_dispatch;
 mod editor_marks;
 mod editor_scroll;
 mod editor_search_ops;
