@@ -1,56 +1,136 @@
-# Plugin/Extension Architecture
+# Built-in Feature System
 
-kjxlkj provides built-in features rather than a plugin system.
+Back: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
 
-## Design Philosophy
+All features are built-in; no external plugin system.
 
-Unlike Neovim which relies heavily on plugins (Lua ecosystem), kjxlkj:
-- Bundles essential features out-of-the-box
-- Eliminates plugin management complexity
-- Ensures consistent, tested integration
-- Provides fast startup (no runtime loading)
+## Overview
 
-## Built-in Feature Equivalents
+kjxlkj does not support external plugins. All
+functionality that would traditionally be a plugin
+is built into the editor as a first-class feature.
+This ensures consistent UX, unified configuration,
+and no runtime dependencies.
 
-| Neovim Plugin | kjxlkj Built-in |
-|---------------|-----------------|
-| nvim-tree.lua | File Explorer |
-| toggleterm.nvim | Integrated Terminal |
-| telescope.nvim | Fuzzy Finder |
-| nvim-lspconfig | LSP Client |
-| nvim-cmp | Completions |
-| auto-save.nvim | Auto Save |
-| winresizer | Window Resize Mode |
-| gitsigns.nvim | Git Integration |
-| nvim-treesitter | Syntax Highlighting |
+## Design Rationale
 
-## Configuration-Based Customization
+### Why No Plugins
 
-Instead of Lua plugins, customization via TOML:
+| Concern | Resolution |
+|---------|------------|
+| Security | No arbitrary code execution |
+| Stability | All features tested together |
+| Performance | No runtime loading overhead |
+| UX consistency | Shared list UIs, keymaps, themes |
+| Single binary | No plugin installation step |
 
+### Trade-offs
 
-## Keybinding Customization
+The trade-off is that new features require editor
+source changes. This is acceptable because the
+target feature set (Neovim-equivalent editing) is
+well-defined and finite.
 
-Custom keybindings without scripting:
+## Built-in Feature Categories
 
+### Editing Helpers (replacing plugins)
 
-## Event Hooks
+| Feature | Replaces |
+|---------|----------|
+| Auto-pairs | auto-pairs.nvim |
+| Surround | vim-surround |
+| Comment toggle | vim-commentary |
+| Multi-cursor | vim-visual-multi |
+| Flash motions | flash.nvim |
 
-Declarative event handling:
+### UI Features (replacing plugins)
 
+| Feature | Replaces |
+|---------|----------|
+| Bufferline | bufferline.nvim |
+| Statusline | lualine.nvim |
+| File explorer | neo-tree.nvim |
+| Fuzzy finder | telescope.nvim |
+| Which-key hints | which-key.nvim |
+| Indent guides | indent-blankline.nvim |
 
-## Future: Extension Points
+### Integration Features (replacing plugins)
 
-Potential extension mechanisms (not implemented):
-- Wasm plugins for sandboxed extensions
-- External process integration via JSON-RPC
-- Command palette extensions
+| Feature | Replaces |
+|---------|----------|
+| LSP client | nvim-lspconfig |
+| Completion | nvim-cmp |
+| Git signs | gitsigns.nvim |
+| Git diff | diffview.nvim |
+| Diagnostics | trouble.nvim |
+| Snippet engine | LuaSnip |
+| Tree-sitter | nvim-treesitter |
 
-## Rationale
+## Feature Configuration
 
-Benefits of built-in approach:
-1. **Performance** - No plugin loading overhead
-2. **Reliability** - Features are tested together
-3. **Simplicity** - No package manager needed
-4. **Security** - No third-party code execution
-5. **Consistency** - Uniform UX across features
+### Unified Config
+
+All features are configured through the single
+TOML configuration file. Each feature has its
+own configuration section.
+
+### Feature Toggling
+
+Individual features can be enabled or disabled:
+
+| Toggle | Effect |
+|--------|--------|
+| `autopairs.enabled = false` | Disable auto-pairs |
+| `bufferline.enabled = false` | Hide bufferline |
+| `indent_guides.enabled = false` | Hide guides |
+| `gitsigns.enabled = false` | Hide git signs |
+
+### Filetype-Specific
+
+Features can be configured per filetype:
+
+```toml
+[filetype.rust]
+autopairs.enabled = true
+format_on_save = true
+```
+
+## Extensibility
+
+### User Commands
+
+Users can define custom commands using `:command`
+that compose existing ex commands into new workflows.
+
+### Key Mappings
+
+Custom key mappings can trigger any built-in command
+or sequence of commands.
+
+### External Tools
+
+Integration with external tools is via:
+- `:!{cmd}` for shell commands
+- `:{range}!{cmd}` for text filtering
+- LSP server for language features
+- Tree-sitter grammars for syntax
+
+## After Directory
+
+### Purpose
+
+The `~/.config/kjxlkj/after/` directory contains
+filetype-specific configuration that is sourced
+after the main config, allowing per-filetype
+overrides.
+
+### Structure
+
+`after/ftplugin/{filetype}.toml` is sourced when
+a buffer of that filetype is opened.
+
+## Related
+
+- Architecture: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+- Configuration: [docs/spec/features/config/README.md](docs/spec/features/config/README.md)
+- Crates: [docs/spec/architecture/crates.md](docs/spec/architecture/crates.md)

@@ -1,57 +1,136 @@
 # Filtering and Piping
 
-Back: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
+Back: [docs/spec/editing/text-manipulation/README.md](docs/spec/editing/text-manipulation/README.md)
 
-Filter buffer text through external commands and insert external command output.
+Pass buffer text through external commands.
 
-## Filter operator (normative)
+## Overview
 
-The `!` operator filters a range of lines through an external command. The command's stdout replaces the filtered lines.
+Filtering sends buffer text to an external command's
+stdin and replaces it with the command's stdout.
+This enables using Unix tools (sort, awk, sed, etc.)
+directly on buffer content.
 
-| Syntax | Action |
-|---|---|
-| `!{motion}{cmd}` | Filter lines covered by motion through `{cmd}` |
-| `!!{cmd}` | Filter current line through `{cmd}` (linewise) |
-| `{count}!!{cmd}` | Filter `{count}` lines through `{cmd}` |
-| `:{range}!{cmd}` | Filter `{range}` lines through `{cmd}` |
-| `:%!{cmd}` | Filter entire buffer through `{cmd}` |
+## Filter Operator
 
-## Read command output (normative)
+### Syntax
 
-| Command | Action |
-|---|---|
-| `:r !{cmd}` | Insert stdout of `{cmd}` below the current line |
-| `:{line}r !{cmd}` | Insert stdout of `{cmd}` below line `{line}` |
+`!{motion}` filters the lines covered by the motion
+through an external command. After typing `!{motion}`,
+the command line opens with `:.!` prefix where the
+user types the command.
 
-## Write to command (normative)
+### Line Filter
 
-| Command | Action |
-|---|---|
-| `:w !{cmd}` | Send entire buffer to `{cmd}` stdin (buffer is NOT modified) |
-| `:{range}w !{cmd}` | Send `{range}` lines to `{cmd}` stdin |
+`!!` filters the current line. `{count}!!` filters
+count lines starting from the current.
 
-Note: `:w !cmd` (with space) writes to command stdin. `:w!` (without space) force-writes to file.
+### Visual Filter
 
-## Execution model
+In visual mode, `!` filters the selected lines.
+The selection is always expanded to full lines.
 
-| Requirement | Detail |
-|---|---|
-| Shell | Commands run via the shell specified by `shell` option (default: `$SHELL` or `/bin/sh`) |
-| Shell flags | The `shellcmdflag` option (default: `-c`) is passed before the command string |
-| Timeout | Commands MUST have a configurable timeout (default: 30 seconds). On timeout, the child process is killed. |
-| Error display | If the command exits with non-zero status, stderr output is displayed in the message area |
-| Encoding | Filter input and output use the buffer's `fileencoding` |
+## Read Command
 
-## Undo behavior
+### Syntax
 
-A filter operation (replacement of lines) is a single undo entry. `u` restores the original lines.
+`:read !{command}` inserts the output of the command
+below the current line.
 
-## Security
+`:read` without `!` reads from a file instead.
 
-Project-local config MUST NOT override the `shell` option. This is a restricted setting per [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md).
+### Line Position
+
+`:{n}read !{command}` inserts output below line n.
+`:0read !{command}` inserts at the top of the file.
+
+## Write to Command
+
+### Syntax
+
+`:{range}write !{command}` sends the range of lines
+to the command's stdin. The buffer is not modified.
+
+### Without Range
+
+`:write !command` sends the entire buffer to the
+command's stdin.
+
+## Common Filter Examples
+
+| Action | Command |
+|--------|---------|
+| Sort lines | `:%!sort` |
+| Sort unique | `:%!sort -u` |
+| Format JSON | `:%!jq .` |
+| Format Python | `:%!black -` |
+| Column extract | `:%!awk '{print $1}'` |
+| Reverse lines | `:%!tac` |
+| Number lines | `:%!nl` |
+| Base64 encode | `:'<,'>!base64` |
+
+## Execution
+
+### Shell
+
+The command runs through the user's shell (`$SHELL`
+or `/bin/sh`). Shell features like pipes, redirects,
+and expansion are available.
+
+### Working Directory
+
+The command runs in the editor's working directory
+(the workspace root).
+
+### Environment
+
+The command inherits the editor's environment
+variables. No additional variables are set.
+
+## Error Handling
+
+### Non-Zero Exit
+
+If the command exits with non-zero status, the
+filter is aborted. The original text is preserved.
+The error output is shown in the message area.
+
+### Stderr
+
+Stderr from the command is captured and displayed
+in the message area after the command completes.
+
+### Timeout
+
+External commands have a configurable timeout
+(default: 30 seconds). Exceeded timeout kills the
+process and preserves original text.
+
+## Undo Behavior
+
+The entire filter operation (replacing text with
+command output) is a single undo unit.
+
+## Range Integration
+
+### With Ranges
+
+`:{range}!{command}` filters the specified range.
+All range specifiers work: line numbers, marks,
+patterns, visual selection.
+
+### Examples
+
+| Range | Meaning |
+|-------|---------|
+| `:.!cmd` | Filter current line |
+| `:%!cmd` | Filter entire buffer |
+| `:1,10!cmd` | Filter lines 1-10 |
+| `:'<,'>!cmd` | Filter visual selection |
+| `:g/pat/!cmd` | Filter matched lines |
 
 ## Related
 
-- Text manipulation: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
-- Sorting/alignment: [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
-
+- Range specs: [docs/spec/commands/ranges/range-specs.md](docs/spec/commands/ranges/range-specs.md)
+- Read command: [docs/spec/commands/file/read-command.md](docs/spec/commands/file/read-command.md)
+- Shell integration: [docs/spec/features/terminal/README.md](docs/spec/features/terminal/README.md)
