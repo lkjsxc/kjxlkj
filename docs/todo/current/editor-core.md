@@ -24,8 +24,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Window model: `WindowId`, content enum (`Buffer(BufferId)` | `Terminal(TerminalId)`)
 - [x] Layout tree: leaf, hsplit, vsplit with weights
 - [x] Window creation via `:split`, `:vsplit`
-- [ ] Window navigation: `Ctrl-w h/j/k/l`, `Ctrl-w w`
-- [ ] Window close: `Ctrl-w c`, `Ctrl-w q`
+- [x] Window navigation: `Ctrl-w h/j/k/l`, `Ctrl-w w`
+- [x] Window close: `Ctrl-w c`, `Ctrl-w q`
 - [ ] Window resize: `Ctrl-w +/-`, `Ctrl-w </>`, `Ctrl-w =`
 - [ ] Window zoom: `Ctrl-w _`, `Ctrl-w |`
 - [ ] Window rotate: `Ctrl-w r`, `Ctrl-w R`
@@ -56,7 +56,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] Buffer switching `:b {name}` changes the active window content to the target buffer
 - [x] Buffer deletion `:bd` removes buffer from list, closes all windows showing it
 - [x] Window split `:split`/`:vsplit` divides current window, shares same buffer
-- [ ] Window close `Ctrl-w c` removes window, rebalances layout tree
-- [ ] Window navigation `Ctrl-w h/j/k/l` dispatches from keybinding through core state to focus change
+- [x] Window close `Ctrl-w c` removes window, rebalances layout tree
+- [x] Window navigation `Ctrl-w h/j/k/l` dispatches from keybinding through core state to focus change
 - [x] Viewport follow triggers after every cursor motion and produces correct `top_line`/`left_col`
 - [x] Terminal windows created via `:terminal` are leaf nodes in the layout tree

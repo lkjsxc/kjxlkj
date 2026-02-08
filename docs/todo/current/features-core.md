@@ -30,7 +30,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ### Terminal as window
 
 - [x] Terminal windows share WindowId in layout tree
-- [ ] Ctrl-w navigation works with terminal panes
+- [x] Ctrl-w navigation works with terminal panes
 - [x] SIGWINCH on terminal pane resize
 - [ ] SIGHUP on terminal pane close
 - [ ] Terminal Normal mode (scrollback navigation)
@@ -104,7 +104,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [ ] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
 - [x] `:SessionSave` serializes the full layout tree to JSON per session schema
 - [x] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions
-- [ ] Window `Ctrl-w h/j/k/l` navigation works identically for buffer and terminal windows
+- [x] Window `Ctrl-w h/j/k/l` navigation works identically for buffer and terminal windows
 - [x] Terminal window resize triggers ioctl(TIOCSWINSZ) and SIGWINCH delivery
 - [x] Buffer `:e {file}` dispatches FileRead to FS service and constructs rope on response
 - [x] Buffer `:w` dispatches FileWrite to FS service with rope snapshot

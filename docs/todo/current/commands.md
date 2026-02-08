@@ -15,8 +15,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] `:wq` write and quit
 - [x] `:q!` force quit without saving
 - [x] `:qa` quit all windows
-- [ ] `:wa` write all modified buffers
-- [ ] `:wqa` write all and quit all
+- [x] `:wa` write all modified buffers
+- [x] `:wqa` write all and quit all
 - [x] `:e {file}` edit file in current window
 
 ## File commands

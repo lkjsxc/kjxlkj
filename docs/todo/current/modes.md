@@ -28,7 +28,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Backspace/delete within insert
 - [x] `Esc` returns to Normal mode
 - [x] Cursor clamping on exit (never past last char in Normal)
-- [ ] Insert-mode navigation (arrow keys)
+- [x] Insert-mode navigation (arrow keys)
 - [x] Insert-normal mode (`Ctrl-o`)
 - [ ] Auto-indentation on `Enter`
 - [ ] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)

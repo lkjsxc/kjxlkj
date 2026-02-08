@@ -24,7 +24,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Word motions: `w`, `W`, `b`, `B`, `e`, `E` per [/docs/spec/editing/motions/word-WORD.md](/docs/spec/editing/motions/word-WORD.md)
 - [x] Line-position motions: `0`, `^`, `$`, `g_`
 - [x] File motions: `gg`, `G`, `{count}G`
-- [ ] Search motions: `/`, `?`, `n`, `N`, `*`, `#` per [/docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)
+- [x] Search motions: `/`, `?`, `n`, `N`, `*`, `#` per [/docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)
 - [x] Character find: `f`, `F`, `t`, `T`, `;`, `,` per [/docs/spec/editing/motions/character-find.md](/docs/spec/editing/motions/character-find.md)
 - [x] Sentence/paragraph: `(`, `)`, `{`, `}` per [/docs/spec/editing/motions/sentence-paragraph.md](/docs/spec/editing/motions/sentence-paragraph.md)
 - [ ] Scroll motions per [/docs/spec/editing/motions/scroll-motions.md](/docs/spec/editing/motions/scroll-motions.md)
@@ -94,7 +94,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 - [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
-- [ ] Forward search (`/`), backward search (`?`)
+- [x] Forward search (`/`), backward search (`?`)
 - [ ] Search highlight per [/docs/spec/editing/search/search-highlight.md](/docs/spec/editing/search/search-highlight.md)
 - [ ] Star search per [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
 - [ ] Search history per [/docs/spec/editing/search/search-history.md](/docs/spec/editing/search/search-history.md)
@@ -127,5 +127,5 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [ ] Dot repeat (`.`) replays the last recorded change with fidelity
 - [x] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
 - [ ] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
-- [ ] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously
+- [x] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously
 - [x] Character find (`f`/`t`/`F`/`T`) and repeat (`;`/`,`) work within and across lines correctly
