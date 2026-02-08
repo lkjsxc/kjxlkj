@@ -1,113 +1,88 @@
 # Hooks and Events
 
-Event system for extensibility.
+Back: [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+
+Internal event system for triggering actions on editor state changes.
 
 ## Overview
 
-Hooks allow custom behavior at defined points
-in the editor lifecycle.
+Hooks are callback registrations that fire when specific editor events occur. They provide the foundation for autocommands, format-on-save, and other automatic behaviors.
 
-## Hook Types
+## Event types
 
-### Pre-Hooks
+### Buffer events
 
-Execute before an action:
+| Event | Fires when |
+|---|---|
+| `BufNew` | A new buffer is created |
+| `BufRead` | A file is read into a buffer |
+| `BufWrite` | A buffer is about to be written to disk |
+| `BufWritePost` | A buffer has been written to disk |
+| `BufEnter` | A buffer becomes the active buffer in any window |
+| `BufLeave` | A buffer is no longer the active buffer |
+| `BufDelete` | A buffer is being deleted |
+| `BufModified` | A buffer's modified flag changes |
 
+### Window events
 
-### Post-Hooks
+| Event | Fires when |
+|---|---|
+| `WinNew` | A new window is created |
+| `WinClosed` | A window is closed |
+| `WinEnter` | A window gains focus |
+| `WinLeave` | A window loses focus |
+| `WinResize` | A window is resized |
 
-Execute after an action:
+### Editor events
 
+| Event | Fires when |
+|---|---|
+| `EditorStartup` | The editor finishes startup |
+| `EditorExit` | The editor is about to exit |
+| `ModeChanged` | The editor mode changes |
+| `CursorMoved` | The cursor position changes (Normal mode) |
+| `CursorMovedI` | The cursor position changes (Insert mode) |
+| `TextChanged` | Buffer text changes (Normal mode) |
+| `TextChangedI` | Buffer text changes (Insert mode) |
 
-## Built-in Events
+### File events
 
-### Lifecycle Events
+| Event | Fires when |
+|---|---|
+| `FileType` | File type is detected or changed |
+| `DirChanged` | The working directory changes |
 
-| Event | Description |
-|-------|-------------|
-| `startup` | Editor starting |
-| `shutdown` | Editor closing |
-| `idle` | No activity |
-| `focus_gained` | Window focused |
-| `focus_lost` | Window unfocused |
+## Hook registration
 
-### Buffer Events
+Hooks are registered via autocommands (see [/docs/spec/features/config/autocommands.md](/docs/spec/features/config/autocommands.md)). Each registration specifies the event, an optional file pattern, and an action (ex command string).
 
-| Event | Description |
-|-------|-------------|
-| `buffer_open` | Buffer opened |
-| `buffer_close` | Buffer closed |
-| `buffer_change` | Content changed |
-| `buffer_save` | Buffer saved |
-| `buffer_reload` | Buffer reloaded |
+## Event dispatch
 
-### Mode Events
+Events are dispatched synchronously within the core task. The core processes all registered hooks for an event before continuing. Long-running hook actions MUST NOT block the core; they should dispatch async work to services.
 
-| Event | Description |
-|-------|-------------|
-| `mode_change` | Mode switched |
-| `insert_enter` | Enter insert |
-| `insert_leave` | Leave insert |
-| `visual_enter` | Enter visual |
-| `visual_leave` | Leave visual |
+## Event data
 
-### Cursor Events
+Each event carries a context table with relevant data:
 
-| Event | Description |
-|-------|-------------|
-| `cursor_move` | Cursor moved |
-| `cursor_hold` | Cursor idle |
-| `selection_change` | Selection changed |
+| Field | Type | Description |
+|---|---|---|
+| `buf` | integer | Buffer ID |
+| `file` | string | File path (if applicable) |
+| `match` | string | File pattern that matched |
+| `event` | string | Event name |
 
-## Event Handlers
+## Ordering
 
-### Configuration
+When multiple hooks are registered for the same event, they fire in registration order. A hook that calls `:quit` or modifies the buffer list may prevent subsequent hooks from firing if the target buffer no longer exists.
 
+## Configuration
 
-### Multiple Handlers
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `events.cursor_debounce_ms` | integer | `50` | Debounce for CursorMoved events |
+| `events.text_debounce_ms` | integer | `100` | Debounce for TextChanged events |
 
+## Related
 
-### Conditional Handlers
-
-
-## Event Data
-
-Events pass context to handlers:
-
-### Buffer Events
-
-
-### Mode Events
-
-
-### Cursor Events
-
-
-## Custom Events
-
-### Emitting
-
-
-### Handling
-
-
-## Debouncing
-
-Prevent excessive triggers:
-
-
-## Throttling
-
-Rate limit handlers:
-
-
-## Priority
-
-Control execution order:
-
-
-## Error Handling
-
-### Continue on Error
-
-
+- Autocommands: [/docs/spec/features/config/autocommands.md](/docs/spec/features/config/autocommands.md)
+- Event automation: [/docs/spec/scripting/event-automation.md](/docs/spec/scripting/event-automation.md)

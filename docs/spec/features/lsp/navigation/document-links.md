@@ -1,82 +1,46 @@
 # Document Links
 
-Navigate URLs and file links in documents.
+Back: [/docs/spec/features/lsp/navigation/README.md](/docs/spec/features/lsp/navigation/README.md)
+
+Clickable links within document content via LSP `textDocument/documentLink`.
 
 ## Overview
 
-Document links recognizes URLs and file paths,
-making them clickable for navigation.
-
-## Supported Links
-
-### URLs
-
-
-### File Paths
-
-
-### Line References
-
-
-## Navigation
-
-### Keybindings
-
-| Key | Action |
-|-----|--------|
-| `gx` | Open link under cursor |
-| `<C-]>` | Follow link |
-
-### Mouse
-
-Mouse input is ignored.
+Document links identify URLs, file paths, and other navigable references within the buffer text. The editor highlights these regions and allows the user to follow them.
 
 ## Display
 
-### Highlighting
+Links are underlined using the `DocumentLink` highlight group. The URL or path is shown in a hover tooltip when the cursor is on the link.
 
-Links displayed with underline:
+## Following links
 
+| Key | Action |
+|---|---|
+| `gx` | Open link under cursor (in external browser for URLs, as file in editor for paths) |
+| `<C-]>` | Follow link under cursor |
 
-### Configuration
+## LSP integration
 
+The editor requests `textDocument/documentLink` when a buffer is opened or modified. The LSP server returns a list of link ranges with their target URIs.
 
-## URL Handling
+| Field | Type | Description |
+|---|---|---|
+| `range` | Range | The link span in the document |
+| `target` | URI | The link destination |
+| `tooltip` | string | Optional tooltip text |
 
-### External URLs
+## Link resolution
 
-Opens in system browser.
+If the LSP server returns links without targets, the editor sends `documentLink/resolve` to get the target URI before following.
 
+## Configuration
 
-### File URLs
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `links.enabled` | boolean | `true` | Enable document link detection |
+| `links.highlight` | boolean | `true` | Underline detected links |
 
-Opens in kjxlkj buffer.
+## Related
 
-## File Resolution
-
-### Relative Paths
-
-Resolved relative to current file.
-
-### Workspace Paths
-
-Resolved relative to workspace root.
-
-### Configuration
-
-
-## Link Types
-
-### Markdown Links
-
-Standard Markdown link syntax is recognized:
-
-- **Text Links** - Written using the pattern `[` `Link Text` `]` `(` `target` `)`
-- **Image Links** - Written using the pattern `!` `[` `Alt` `]` `(` `path` `)`
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `:DocumentLinks` | List all links in document |
-| `:OpenLink` | Open link at cursor position |
+- Hover: [/docs/spec/features/lsp/hover.md](/docs/spec/features/lsp/hover.md)
+- LSP: [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)

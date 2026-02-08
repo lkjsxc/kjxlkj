@@ -1,106 +1,65 @@
-# After-Directory Configuration
+# After Directory
 
-Configuration loaded after defaults.
+Back: [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+
+Post-processing configuration loaded after all other configuration sources.
 
 ## Overview
 
-The "after" directory contains configuration that
-loads after built-in defaults, allowing overrides.
+The `after/` directory is a configuration directory that is loaded after all other configuration. It allows the user to override or augment settings established by filetype detection, syntax files, and other configuration sources.
 
-## Directory Structure
+## Location
 
+| Path | Purpose |
+|---|---|
+| `~/.config/kjxlkj/after/` | User after-directory |
+| `.kjxlkj/after/` | Project after-directory |
 
-## Loading Order
+## Load order
 
-1. Built-in defaults
-2. User config (~/.config/kjxlkj/)
-3. After config (~/.config/kjxlkj/after/)
+1. System defaults
+2. User config (`~/.config/kjxlkj/config.toml`)
+3. Project config (`.kjxlkj.toml`)
+4. Filetype detection and filetype-specific settings
+5. After-directory scripts (loaded last, can override everything above)
 
-## Use Cases
+## Directory structure
 
-### Override Syntax
+| Path | Purpose |
+|---|---|
+| `after/ftconfig/` | Per-filetype setting overrides |
+| `after/syntax/` | Syntax highlighting overrides |
+| `after/indent/` | Indentation rule overrides |
 
-Modify built-in highlighting:
+## Ftconfig overrides
 
+Files in `after/ftconfig/` are named by filetype (e.g., `after/ftconfig/rust.toml`). They are loaded after the default filetype configuration and override matching settings.
 
-### Extend Filetype
+## Syntax overrides
 
-Add to existing filetype config:
+Files in `after/syntax/` can extend or replace highlight groups for a filetype. They are loaded after the default syntax definitions.
 
+## Indent overrides
 
-### Theme Tweaks
+Files in `after/indent/` can override indentation rules for a filetype. They are loaded after the default indentation configuration.
 
-Override theme colors:
+## Use cases
 
-
-## Syntax Overrides
-
-### Example
-
-Override Rust function highlighting:
-
-
-### Behavior
-
-After queries merged with defaults.
-
-## Filetype Overrides
-
-### Example
-
-
-### Merging
-
-After settings merged, overriding conflicts.
-
-## Theme Overrides
-
-### Example
-
-
-## Project After Directory
-
-### Location
-
-
-### Loading Order
-
-1. Built-in
-2. User config
-3. User after
-4. Project config
-5. Project after
-
-## Benefits
-
-### Non-Destructive
-
-Original config unchanged.
-
-### Targeted Changes
-
-Only override specific items.
-
-### Easy Maintenance
-
-Keep overrides separate.
+| Use case | Example |
+|---|---|
+| Override tab width for Rust | `after/ftconfig/rust.toml` with `tab_width = 2` |
+| Add custom highlight groups | `after/syntax/python.toml` with additional groups |
+| Fix indentation for a language | `after/indent/html.toml` with custom rules |
 
 ## Configuration
 
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `config.after_dir` | string | `~/.config/kjxlkj/after/` | Path to after-directory |
+| `config.load_after` | boolean | `true` | Enable after-directory loading |
 
-## Tips
+## Related
 
-1. Use for small tweaks
-2. Keep main config clean
-3. Document your overrides
-4. Check loading with `:verbose set option?`
-
-## Debugging
-
-### Show Load Order
-
-
-Shows where setting came from.
-
-### List Loaded Files
-
+- Configuration: [/docs/spec/features/config/implementation.md](/docs/spec/features/config/implementation.md)
+- Filetype config: [/docs/spec/features/config/ftconfig.md](/docs/spec/features/config/ftconfig.md)
+- Filetype detection: [/docs/spec/features/config/filetype.md](/docs/spec/features/config/filetype.md)

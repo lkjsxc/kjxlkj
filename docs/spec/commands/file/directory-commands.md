@@ -1,179 +1,57 @@
 # Directory Commands
 
-Working directory management.
+Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
 
-## Overview
+Commands for changing and querying the working directory.
 
-Commands for changing and managing working directories.
-The editor supports global, window-local, and tab-local
-working directories, forming a hierarchy.
+## Current directory
 
-## Current Directory
+| Command | Description |
+|---|---|
+| `:pwd` | Print the current working directory |
+| `:cd {path}` | Change the working directory to `{path}` |
+| `:cd` | Change to the home directory (`~`) |
+| `:cd -` | Change to the previous working directory |
 
-### Check
+## Local directory
 
-`:pwd` displays the current working directory.
+| Command | Description |
+|---|---|
+| `:lcd {path}` | Set the working directory for the current window only |
+| `:tcd {path}` | Set the working directory for the current tab only |
 
-### Output
+### Scope hierarchy
 
-Prints the effective working directory for the current
-window. If a window-local directory is set, it shows that;
-otherwise the global directory.
+| Scope | Command | Affects |
+|---|---|---|
+| Global | `:cd` | All windows and tabs |
+| Tab-local | `:tcd` | All windows in the current tab |
+| Window-local | `:lcd` | Only the current window |
 
-## Change Directory
+Window-local overrides tab-local, which overrides global.
 
-### Global
+## Auto-directory
 
-`:cd {path}` changes the global working directory.
-Affects all windows that do not have a local directory set.
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `editor.autochdir` | boolean | `false` | Automatically change directory to the file's directory when switching buffers |
 
-### Examples
+When `autochdir = true`, opening or switching to a buffer changes the window-local directory to the parent directory of the file.
 
-| Command | Effect |
-|---------|--------|
-| `:cd /home/user/project` | Absolute path |
-| `:cd src` | Relative to current dir |
-| `:cd -` | Previous directory |
-| `:cd` | Home directory |
-| `:cd %:h` | Directory of current file |
+## Project root detection
 
-## Local Directory
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `editor.root_markers` | array of string | `[".git", "Cargo.toml", "package.json"]` | Files/directories that indicate a project root |
+| `editor.root_strategy` | string | `nearest` | `nearest` (closest marker) or `workspace` (topmost marker) |
 
-### Window Local
+`:cd` with no argument when `root_strategy` is set changes to the detected project root.
 
-`:lcd {path}` sets a window-local working directory.
-Only the current window is affected.
+## Events
 
-### Use Case
+Changing the directory fires the `DirChanged` event (see [/docs/spec/features/config/hooks-events.md](/docs/spec/features/config/hooks-events.md)), which can trigger autocommands.
 
-Each split can have its own working directory, useful for
-working on multiple projects simultaneously.
+## Related
 
-### Check
-
-`:pwd` shows the effective directory. Window-local
-takes precedence over global.
-
-## Tab Directory
-
-### Tab Local
-
-`:tcd {path}` sets a tab-local working directory.
-All windows in the tab inherit this unless they have
-their own `:lcd`.
-
-### Hierarchy
-
-Priority order (highest first):
-1. Window-local (`:lcd`)
-2. Tab-local (`:tcd`)
-3. Global (`:cd`)
-
-## Home Directory
-
-### Shortcuts
-
-`~` expands to `$HOME` in all path arguments.
-`:cd ~` and `:cd` (no args) both go to home.
-
-## Previous Directory
-
-### Return
-
-`:cd -` returns to the previous working directory.
-The editor maintains a stack of one previous directory
-per scope (global, tab, window).
-
-### Stack
-
-Only one level of previous directory is remembered
-per scope. Repeated `:cd -` toggles between two dirs.
-
-## Path Expansion
-
-### Variables
-
-| Variable | Expansion |
-|----------|-----------|
-| `%` | Current file path |
-| `%:h` | Current file directory |
-| `%:t` | Current file name (tail) |
-| `%:r` | Current file without extension |
-| `%:e` | Current file extension |
-| `#` | Alternate file path |
-
-### Modifiers
-
-Modifiers chain: `%:p:h` gives the absolute directory
-of the current file.
-
-## Auto Directory
-
-### Follow Files
-
-When `autochdir = true`, the working directory
-automatically changes to the directory of the current
-file whenever you switch buffers or windows.
-
-### On Open
-
-`:e /some/path/file.rs` with `autochdir` changes
-the working directory to `/some/path/`.
-
-## Project Root
-
-### Jump to Root
-
-`:cd` with no arguments goes to home. For project root:
-`:ProjectRoot` (built-in command) searches upward for
-root markers.
-
-### Detection
-
-Root markers checked in order:
-`.git`, `.hg`, `Cargo.toml`, `package.json`,
-`pyproject.toml`, `.kjxlkj.toml`.
-Configurable via `project.root_markers` in config TOML.
-
-## Directory Listing
-
-### List Contents
-
-`:!ls` runs `ls` in the current directory and shows output.
-
-### In Buffer
-
-`:r !ls` reads directory listing into the current buffer.
-
-## Make Directory
-
-### Create
-
-`:!mkdir -p {path}` creates directories.
-The `%` prompt for `:Explore` also creates directories.
-
-## Remove Directory
-
-### Delete Empty
-
-`:!rmdir {path}` removes empty directories.
-
-### Delete Contents
-
-`:!rm -rf {path}` removes recursively. This is destructive
-and irreversible. No built-in safe-delete command;
-users must use shell commands.
-
-## File System Navigation
-
-### Explore
-
-`:Ex {path}` opens the file explorer at the specified path.
-Without argument, opens at the current directory.
-
-## Directory Stack
-
-### Manual Stack
-
-Not built-in. Can be scripted via user commands that
-maintain a list of directories and provide push/pop.
+- File operations: [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
+- Project config: [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)

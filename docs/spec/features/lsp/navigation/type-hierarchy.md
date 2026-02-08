@@ -1,121 +1,55 @@
 # Type Hierarchy
 
-View type inheritance and implementations.
+Back: [/docs/spec/features/lsp/navigation/README.md](/docs/spec/features/lsp/navigation/README.md)
+
+View supertypes and subtypes of a type via LSP `typeHierarchy/supertypes` and `typeHierarchy/subtypes`.
 
 ## Overview
 
-Type hierarchy shows supertypes (parents) and
-subtypes (children) of a type.
+Type hierarchy shows the inheritance chain of the type under the cursor. Supertypes show parent classes/interfaces. Subtypes show derived classes/implementations.
 
 ## Usage
 
-### Keybinding
-
 | Key | Action |
-|-----|--------|
-| `<leader>ts` | Type supertypes |
-| `<leader>tt` | Type subtypes |
+|---|---|
+| `<leader>ts` | Show supertypes |
+| `<leader>tt` | Show subtypes |
 
-### Command
+| Command | Description |
+|---|---|
+| `:Supertypes` | Show supertypes hierarchy |
+| `:Subtypes` | Show subtypes hierarchy |
 
+## Display
 
-## Supertypes
-
-### Display
-
-
-### Meaning
-
-Traits implemented, parent classes.
-
-## Subtypes
-
-### Display
-
-
-### Meaning
-
-Implementing types, child classes.
+Results are shown in an expandable tree view. Each node shows the type name, kind, and file location.
 
 ## Navigation
 
 | Key | Action |
-|-----|--------|
-| `j` | Move down |
-| `k` | Move up |
-| `<CR>` | Jump to type |
-| `l` | Expand |
-| `h` | Collapse |
+|---|---|
+| `j` / `k` | Move up/down |
+| `l` | Expand node |
+| `h` | Collapse node |
+| `<CR>` | Jump to type definition |
+| `<Esc>` | Close tree |
 
-## Language Support
+## Lazy loading
 
-### Rust
+Subtree nodes are fetched on demand when expanded. A loading indicator appears during the LSP request.
 
-- Trait implementations
-- Struct relationships
+## LSP requirements
 
-### TypeScript
+Requires `textDocument/prepareTypeHierarchy`, `typeHierarchy/supertypes`, and `typeHierarchy/subtypes`. Not all language servers support this.
 
-- Class inheritance
-- Interface implementations
+| Server | Type hierarchy |
+|---|---|
+| rust-analyzer | Yes |
+| clangd | Yes |
+| typescript-language-server | Yes |
+| gopls | Partial |
 
-### Go
+## Related
 
-- Interface implementations
-
-## Configuration
-
-
-## LSP Requirements
-
-### Server Support
-
-| Server | Type Hierarchy |
-|--------|----------------|
-| rust-analyzer | ✓ |
-| typescript | ✓ |
-| clangd | ✓ |
-
-## Use Cases
-
-### Understanding
-
-See how types relate.
-
-### Refactoring
-
-Find all implementations.
-
-### Navigation
-
-Jump between related types.
-
-## Display Options
-
-
-## Icons
-
-| Icon | Type |
-|------|------|
-| ◇ | Class |
-| ⬡ | Interface |
-| △ | Trait |
-| ▢ | Enum |
-| ○ | Struct |
-
-## Preview
-
-### On Select
-
-Shows type definition:
-
-
-## Tips
-
-1. Use supertypes to find interfaces
-2. Use subtypes for implementations
-3. Navigate complex inheritance
-4. Find all implementors
-
-## Keybindings
-
+- Call hierarchy: [/docs/spec/features/lsp/navigation/call-hierarchy.md](/docs/spec/features/lsp/navigation/call-hierarchy.md)
+- References: [/docs/spec/features/lsp/navigation/references.md](/docs/spec/features/lsp/navigation/references.md)
