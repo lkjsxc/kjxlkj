@@ -8,18 +8,19 @@ Store improvement proposals that are not yet canonical specification.
 
 Each proposal MUST:
 
-- link to the defining spec documents (or the spec gaps)
-- link to the TODO leaf that will implement it
-- define acceptance criteria and a test strategy
-- identify user-visible impacts and whether limitations must be updated
+- Link to the defining spec documents (or the spec gaps)
+- Define acceptance criteria and a test strategy
+- Identify user-visible impacts and whether limitations must be updated
 
 ## Active proposals
 
 | Proposal | Topic |
 |---|---|
-| [insert-newline.md](insert-newline.md) | Interactive Insert-mode newline reliability (`Enter`) |
-| [long-lines.md](long-lines.md) | Long-line rendering stability and virtualization |
+| [reconstruction-wave-improvements.md](reconstruction-wave-improvements.md) | Future improvement ideas (rope diffing, LSP streaming, WASM plugins, etc.) |
 | [performance-regression-harness.md](performance-regression-harness.md) | CPU/latency regression harness and gating strategy |
 | [profiling-workflow.md](profiling-workflow.md) | Repeatable profiling workflow and regression triage |
-| [file-explorer-mvp.md](file-explorer-mvp.md) | File explorer MVP (toggle, navigate, open file) |
-| [docs-only-baseline-reset-2026-02-07.md](docs-only-baseline-reset-2026-02-07.md) | Hard reset to docs-only baseline before next reconstruction wave |
+| [anti-mvp-measures.md](anti-mvp-measures.md) | Measures to prevent minimal/scaffold-only implementations |
+
+## Archived
+
+Previous proposals for insert-newline, long-lines, file-explorer-mvp, and docs-only-baseline-reset were deleted after their requirements were promoted to canonical specs.

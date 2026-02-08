@@ -2,8 +2,8 @@
 
 Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
+Audit records for reconstruction verification waves. Old entries were pruned after key constraints were promoted to canonical specs.
+
 ## Entries
 
-- [docs-consistency-2026-02-07.md](docs-consistency-2026-02-07.md)
-- [reconstruction-prompt-hardening-2026-02-07.md](reconstruction-prompt-hardening-2026-02-07.md)
-- [docs-only-baseline-reset-executed-2026-02-07.md](docs-only-baseline-reset-executed-2026-02-07.md)
+No active audit entries. Next reconstruction wave will produce new entries here.
