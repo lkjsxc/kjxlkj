@@ -1,116 +1,60 @@
 # Timing and Debounce
 
-Key timing, debounce, and throttle.
+Key timing, debounce, and throttle configuration.
 
-## Overview
+## Key Sequence Timeout
 
-Control timing behavior for
-keybindings and event handlers.
+| Setting | Default | Description |
+|---|---|---|
+| `timeout` | `true` | Enable timeout for mapped key sequences |
+| `timeoutlen` | `1000` | Milliseconds to wait for next key in mapping |
+| `ttimeout` | `true` | Enable timeout for terminal key codes |
+| `ttimeoutlen` | `50` | Milliseconds to wait for terminal escape sequence |
 
-## Timeout Configuration
-
-### Key Sequence Timeout
-
-
-### Behavior
-
-- Wait `timeout` ms for next key in sequence
-- Fall through to shorter match if timeout
-- Terminal codes use faster `ttimeout`
-
-## Key Sequence Timing
-
-### Multi-Key Mappings
-
-
-Typing `g` waits for next key.
-
-### Timeout Fallback
-
-If no second key within timeout:
-- Execute single key mapping if exists
-- Otherwise no action
+When `g` is pressed and a `gx` mapping exists, the editor waits `timeoutlen` ms for the next key. If no key arrives, execute `g` alone (if mapped) or do nothing.
 
 ## Debounce
 
-### Definition
+Delay execution until input stops for a specified duration. The timer resets on each new event.
 
-Delay execution until input stops.
-Useful for search-as-you-type.
-
-### Configuration
-
-
-### Use Cases
-
-| Feature | Debounce | Purpose |
-|---------|----------|---------|
-| Search | 150ms | Wait for typing |
-| Completion | 50ms | Fast response |
-| Diagnostics | 100ms | Reduce flicker |
-| Save | 1000ms | Batch saves |
+| Feature | Default ms | Purpose |
+|---|---|---|
+| Incremental search | 150 | Wait for typing to settle |
+| Completion trigger | 50 | Fast response after pause |
+| Diagnostic display | 100 | Reduce UI flicker |
+| Auto-save | 1000 | Batch rapid edits |
+| CursorHold event | 4000 | Idle detection |
 
 ## Throttle
 
-### Definition
+Limit execution rate to at most once per interval, regardless of input frequency.
 
-Limit execution rate. Execute at most
-once per interval.
+| Feature | Default ms | Purpose |
+|---|---|---|
+| Rendering frames | 16 | 60 fps cap |
+| Statusline update | 100 | Reduce redraws |
+| Scroll events | 16 | Smooth scrolling |
+| Resize handling | 50 | Batch resize events |
 
-### Configuration
+## CursorHold
 
+The `CursorHold` event fires after `updatetime` ms of inactivity in normal mode. Used for hover documentation, diagnostic popups, and auto-save triggers.
 
-### Use Cases
+Default `updatetime`: 4000 ms.
 
-| Feature | Throttle | Purpose |
-|---------|----------|---------|
-| Rendering | 16ms | 60fps cap |
-| Statusline | 100ms | Reduce updates |
-| Scroll | 16ms | Smooth scroll |
-| Resize | 50ms | Reduce redraws |
+## Configuration
 
-## Cursor Hold
+All timing values are configurable in TOML:
 
-### Configuration
+| Key | Type | Default |
+|---|---|---|
+| `editor.timeoutlen` | integer (ms) | 1000 |
+| `editor.ttimeoutlen` | integer (ms) | 50 |
+| `editor.updatetime` | integer (ms) | 4000 |
+| `completion.debounce` | integer (ms) | 50 |
+| `search.debounce` | integer (ms) | 150 |
 
+## Related
 
-### Event Trigger
-
-
-## Auto-Save Timing
-
-### Debounced Save
-
-
-### Idle Save
-
-
-## Completion Timing
-
-### Trigger Delay
-
-
-### Preview Delay
-
-
-## Search Timing
-
-### Live Search
-
-
-### Finder
-
-
-## LSP Timing
-
-### Request Debounce
-
-
-### Response Timeout
-
-
-## Animation Timing
-
-### Smooth Scroll
-
-
+- Key input: [/docs/spec/technical/input-decoding.md](/docs/spec/technical/input-decoding.md)
+- Keybindings: [/docs/spec/modes/keybindings.md](/docs/spec/modes/keybindings.md)

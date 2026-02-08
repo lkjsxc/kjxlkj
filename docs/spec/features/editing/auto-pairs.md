@@ -1,100 +1,45 @@
 # Auto-Pairs
 
-Automatic bracket and quote pairing.
-
-## Overview
-
-Auto-pairs automatically insert matching closing
-characters when you type opening characters.
+Automatic bracket and quote pairing in insert mode.
 
 ## Supported Pairs
 
-| Open | Close |
-|------|-------|
-| `(` | `)` |
-| `[` | `]` |
-| `{` | `}` |
-| `<` | `>` |
-| `"` | `"` |
-| `'` | `'` |
-| `` ` `` | `` ` `` |
+| Open | Close | Context |
+|---|---|---|
+| `(` | `)` | Always |
+| `[` | `]` | Always |
+| `{` | `}` | Always |
+| `"` | `"` | Smart (not after `\` or word char) |
+| `'` | `'` | Smart (not in words like `don't`) |
+| `` ` `` | `` ` `` | Smart |
+| `<` | `>` | Only in HTML/XML/JSX filetypes |
 
-## Enabling
+## Behavior Rules (normative)
 
+1. **On typing open char**: Insert both open and close, place cursor between them
+2. **On typing close char when next char is matching close**: Skip over the existing close character instead of inserting a duplicate
+3. **On Backspace between empty pair**: Delete both characters
+4. **On Enter between pair**: Insert newline, indent, place closing char on next line (expand pair)
 
-## Behavior
+## Smart Quote Logic
 
-### On Open
+Quotes (`"`, `'`, `` ` ``) only auto-pair when:
 
-
-### On Close
-
-
-### On Backspace
-
+- Previous character is whitespace, punctuation, or start of line
+- Next character is whitespace, punctuation, or end of line
+- Not inside a string where the quote would be an escape
 
 ## Configuration
 
+| Setting | Default | Description |
+|---|---|---|
+| `editor.auto_pairs` | `true` | Enable/disable globally |
+| `editor.auto_pairs.pairs` | (built-in set) | Custom pair definitions |
 
-## Per-Language
+## Per-Filetype Overrides
 
-### Rust
+Additional pairs can be enabled per filetype (e.g., `<`/`>` for HTML). Pairs can also be disabled per filetype.
 
+## Related
 
-### HTML
-
-
-## Smart Features
-
-### Skip Closing
-
-Don't add pair if next char is matching close:
-
-
-### Same-Char Pairs
-
-Quotes only pair when appropriate:
-
-
-## Delete Pair
-
-### Backspace
-
-
-### Configuration
-
-
-## Expand Pair
-
-### Enter Between Pairs
-
-
-### Configuration
-
-
-## Disable Temporarily
-
-### Toggle
-
-
-### Keybinding
-
-
-## Tips
-
-1. Get used to typing past pairs
-2. Use backspace to delete both
-3. Press Enter to expand
-4. Disable for specific situations
-
-## Keybindings
-
-
-## Comparison with Vim
-
-| Feature | Vim | kjxlkj |
-|---------|-----|--------|
-| Basic pairs | Plugin | Built-in |
-| Smart skip | Plugin | Built-in |
-| Delete pair | Plugin | Built-in |
-| Expand | Plugin | Built-in |
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)

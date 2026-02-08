@@ -1,118 +1,85 @@
 # Search and Replace Workflow
 
-Common patterns for finding and replacing text efficiently.
+Common patterns for finding and replacing text.
 
 ## Basic Workflow
 
-### 1. Search First, Then Replace
+1. Search with `/pattern` to verify matches
+2. Replace with `:%s/pattern/replacement/gc`
+3. Review confirmations (or use `g` flag for all)
 
+## Confirmation Keys
 
-### 2. Confirm Each Change
+| Key | Action |
+|---|---|
+| `y` | Replace this match |
+| `n` | Skip this match |
+| `a` | Replace all remaining |
+| `q` | Quit substitution |
+| `l` | Replace this and quit (last) |
+| `Ctrl-E` | Scroll up |
+| `Ctrl-Y` | Scroll down |
 
+## Using gn Motion
 
-Confirmation prompts:
-- `y` - Replace this match
-- `n` - Skip this match
-- `a` - Replace all remaining
-- `q` - Quit substitution
-- `l` - Replace and quit (last)
-- `Ctrl-E` - Scroll up
-- `Ctrl-Y` - Scroll down
+`gn` selects the next search match visually. Combined with `cgn`, this creates a repeatable replace:
 
-## Visual Feedback Workflow
+1. `/pattern` to set search
+2. `cgn` to change first match
+3. Type replacement text, press `Esc`
+4. `.` repeats on next match, `n` skips
 
-### Using gn Motion
+Advantages: no need to retype pattern, repeatable with `.`, can skip with `n`.
 
+## Multi-File Replace
 
-### Advantages of cgn
+| Command | Scope |
+|---|---|
+| `:argdo %s/old/new/ge` | All arglist files |
+| `:bufdo %s/old/new/ge` | All open buffers |
+| `:cfdo %s/old/new/ge` | All quickfix files |
 
-- Repeatable with `.`
-- Visual selection of match
-- Skip matches with `n`
-- No need to type pattern twice
+Add `\| update` to save each file after replacing.
 
-## Multi-File Search and Replace
+## Case-Preserving Replace
 
-### Using argdo
+The `\u`, `\l`, `\U`, `\L` modifiers transform case in replacements:
 
+| Modifier | Effect |
+|---|---|
+| `\u` | Uppercase next character |
+| `\l` | Lowercase next character |
+| `\U` | Uppercase until `\E` or end |
+| `\L` | Lowercase until `\E` or end |
+| `\E` | End case modification |
 
-### Using bufdo
+## Capture Groups
 
+Use `\(...\)` to capture, `\1`..`\9` to reference in replacement.
 
-### Using cfdo (Quickfix)
-
-
-## Preserving Case
-
-### Smart Case Replace
-
-
-| Original | Replacement |
-|----------|-------------|
-| word | replacement |
-| Word | Replacement |
-| WORD | REPLACEMENT |
-
-### Using \U, \L, \u, \l
-
-
-## Pattern Capture Groups
-
-### Basic Capture
-
-
-### Named Groups (Very Magic)
-
-
-### Backreferences
-
-
-## Expression Substitution
-
-### Increment Numbers
-
-
-### Custom Functions
-
-
-## Range-Based Replace
-
-
-## Interactive Preview
-
-
-Preview mode shows:
-- Original text (struck through)
-- Replacement text (highlighted)
-- Match count per line
-
-## Undo Integration
-
-
-## Best Practices
-
-### Test Pattern First
-
-
-### Use Very Magic for Complex Patterns
-
-
-### Backup Before Large Changes
-
-
-### Use Confirmation for Risky Changes
-
+In very-magic mode (`\v`): `(...)` captures, same back-references.
 
 ## Common Patterns
 
 | Task | Command |
-|------|---------|
+|---|---|
 | Remove trailing whitespace | `:%s/\s\+$//g` |
 | Convert tabs to spaces | `:%s/\t/    /g` |
 | Delete empty lines | `:g/^$/d` |
 | Remove duplicate lines | `:sort u` |
-| Wrap lines in quotes | `:%s/.*/"\0"/g` |
-| Add semicolons | `:%s/$/;/g` |
+| Wrap in quotes | `:%s/.*/"\0"/g` |
+| Append semicolons | `:%s/$/;/g` |
+| Swap words | `:%s/\v(foo)(bar)/\2\1/g` |
 
-## Configuration
+## Interactive Preview
 
+When `inccommand` is enabled, substitutions show a live preview: original text highlighted, replacement shown inline, match count displayed.
+
+## Undo Integration
+
+Each `:substitute` command is a single undo step. Use `u` to undo the entire substitution. `:argdo` / `:bufdo` create one undo step per buffer.
+
+## Related
+
+- Substitute command: [/docs/spec/commands/substitute/substitute.md](/docs/spec/commands/substitute/substitute.md)
+- Search: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)

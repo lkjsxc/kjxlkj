@@ -1,96 +1,62 @@
 # File Type Detection
 
-Automatic detection and configuration by file type.
+Automatic detection and per-filetype settings.
 
-## Overview
+## Detection Order (normative)
 
-kjxlkj automatically detects file types and applies
-appropriate settings and syntax highlighting.
+1. **Modeline** — `vim:` or `kjxlkj:` modeline in first/last 5 lines
+2. **Shebang** — `#!/usr/bin/env python3` → filetype `python`
+3. **Filename** — exact match (`Makefile` → `make`, `Dockerfile` → `dockerfile`)
+4. **Extension** — `.rs` → `rust`, `.py` → `python`, `.ts` → `typescript`
+5. **Content analysis** — first-line heuristics as fallback
 
-## Detection Methods
+## Built-in Extension Mappings
 
-### By Extension
-
-
-### By Filename
-
-
-### By Shebang
-
-
-### By Content
-
-First line patterns for detection.
-
-## Configuration
-
-### Extension Mapping
-
-
-### Filename Mapping
-
-
-### Pattern Mapping
-
-
-## Shebang Detection
-
+| Extension | Filetype |
+|---|---|
+| `.rs` | `rust` |
+| `.py` | `python` |
+| `.js` | `javascript` |
+| `.ts` | `typescript` |
+| `.tsx` | `typescriptreact` |
+| `.c`, `.h` | `c` |
+| `.cpp`, `.hpp` | `cpp` |
+| `.go` | `go` |
+| `.md` | `markdown` |
+| `.toml` | `toml` |
+| `.json` | `json` |
+| `.yaml`, `.yml` | `yaml` |
+| `.lua` | `lua` |
+| `.sh`, `.bash` | `sh` |
+| `.html` | `html` |
+| `.css` | `css` |
 
 ## Per-Filetype Settings
 
-### Configuration
+Each filetype may configure:
 
-
-### Applied Settings
-
-- Tab width
-- Use spaces
-- Formatters
-- LSP servers
-- Syntax highlighting
+| Setting | Example |
+|---|---|
+| `tabstop` | 4 for Rust, 2 for YAML |
+| `expandtab` | true for most, false for Makefiles |
+| `shiftwidth` | Matches tabstop |
+| `textwidth` | 80 or 100 |
+| `commentstring` | `// %s` for Rust, `# %s` for Python |
+| `formatter` | `rustfmt`, `prettier` |
+| `lsp.server` | `rust-analyzer`, `pyright` |
 
 ## Commands
 
-
-## Override
-
-### Per-Buffer
-
-
-### By Modeline
-
-
-## Detection Order
-
-1. Modeline
-2. Shebang
-3. Filename
-4. Extension
-5. Content analysis
+| Command | Action |
+|---|---|
+| `:set filetype={ft}` | Override filetype for current buffer |
+| `:set filetype?` | Display detected filetype |
 
 ## Custom Filetypes
 
-### Register New Type
+Users can register new filetypes in TOML config by specifying extension, filename, or content patterns and the associated settings.
 
+## Related
 
-### Associate Settings
-
-
-## Syntax Association
-
-### Built-in
-
-File types automatically get syntax highlighting.
-
-### Custom
-
-
-## LSP Association
-
-
-## Tips
-
-1. Check filetype with `:set ft?`
-2. Override with modeline if needed
-3. Add custom extensions
-4. Associate with existing syntax
+- Syntax highlighting: [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
+- LSP: [/docs/spec/features/lsp/code-actions.md](/docs/spec/features/lsp/code-actions.md)

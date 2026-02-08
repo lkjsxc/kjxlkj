@@ -1,122 +1,68 @@
 # Argument List
 
-Command-line file arguments.
+Command-line file arguments and batch editing workflows.
 
 ## Overview
 
-The arglist manages files passed on the
-command line or added during editing.
+The arglist is an ordered subset of the buffer list, initially populated from command-line arguments. It supports batch operations across a set of files.
 
-## Starting with Files
-
-
-Creates arglist with three files.
-
-## Viewing Arglist
-
-### List All
-
-
-### Current Position
-
-Current file marked with `[]`:
-
-
-## Navigation
-
-### Commands
+## Navigation Commands
 
 | Command | Action |
-|---------|--------|
-| `:next` | Next file |
-| `:prev` | Previous file |
-| `:first` | First file |
-| `:last` | Last file |
+|---|---|
+| `:next` / `:n` | Open next file in arglist |
+| `:prev` / `:N` | Open previous file |
+| `:first` | Open first file |
+| `:last` | Open last file |
+| `:argument {n}` | Open file at position n (1-based) |
+| `:next {count}` | Skip forward count files |
 
-### With Count
+All navigation commands accept `!` to discard unsaved changes.
 
+## Viewing the Arglist
 
-### Direct
+`:args` prints the arglist. The current file is enclosed in `[]`.
 
+`:arglocal` shows the window-local arglist (if set).
 
-## Modifying Arglist
+## Modifying the Arglist
 
-### Add Files
+| Command | Action |
+|---|---|
+| `:argadd {file}...` | Append files to arglist |
+| `:argdelete {pattern}` | Remove matching files |
+| `:args {file}...` | Replace entire arglist |
+| `:argdelete *` | Clear arglist |
 
+Files may use glob patterns: `*`, `**` (recursive), `?`, `[abc]`.
 
-### Delete Files
+## Window-Local Arglist
 
+`:arglocal` creates a separate arglist for the current window. `:argglobal` reverts to the shared global arglist.
 
-### Replace Arglist
+## Batch Editing
 
+| Command | Action |
+|---|---|
+| `:argdo {cmd}` | Execute cmd on every arglist file |
+| `:argdo update` | Save each modified file |
 
-### From Pattern
+`:argdo` opens each arglist buffer in sequence, executes the command, then moves to the next. Use with `:update` or `:write` to save changes.
 
-
-## Local Arglist
-
-### Window-Local
-
-
-Creates separate arglist for window.
-
-### Global
-
-
-Uses shared arglist.
-
-## Editing All
-
-### Apply to All
-
-
-### Examples
-
-
-### With Write
-
-
-## Write All
-
-
-## Arglist vs Buffers
+## Arglist vs Buffer List
 
 | Aspect | Arglist | Buffer List |
-|--------|---------|-------------|
-| Source | Explicit | Any opened |
-| Order | Preserved | By open time |
-| Subset | Yes | All files |
+|---|---|---|
+| Source | Explicit (CLI or `:args`) | Any opened file |
+| Order | Stable, user-controlled | By buffer number |
+| Subset | Yes | Contains all buffers |
+| Batch ops | `:argdo` | `:bufdo` |
 
-## Keybindings
+## Statusline Integration
 
+The current arglist position is available for statusline display as `[n/total]`.
 
-## Status
+## Related
 
-### Show Position
-
-
-### In Statusline
-
-
-## Wildcards
-
-### Glob Patterns
-
-| Pattern | Matches |
-|---------|---------|
-| `*` | Any characters |
-| `**` | Recursive |
-| `?` | Single char |
-| `[abc]` | Character class |
-
-### Examples
-
-
-## Arglist Files
-
-### Save Arglist
-
-
-### Load Arglist
-
-
+- Buffers: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
+- Buffer listing: [/docs/spec/features/buffer/buffer-listing.md](/docs/spec/features/buffer/buffer-listing.md)

@@ -1,129 +1,53 @@
 # Font Rendering
 
-Text rendering and font handling.
+Text rendering in the terminal interface.
 
 ## Overview
 
-Font rendering controls how text appears
-in the terminal interface.
+kjxlkj runs in a terminal emulator and relies on the terminal for font selection, glyph rendering, and anti-aliasing. The editor's responsibility is correct character width calculation and cell placement.
 
-## Terminal Fonts
+## Character Width Categories
 
-### Selection
+| Category | Display Width | Examples |
+|---|---|---|
+| ASCII printable | 1 | `a`-`z`, `0`-`9`, punctuation |
+| Latin extended | 1 | Accented characters |
+| CJK ideographs | 2 | Chinese, Japanese kanji, Korean |
+| CJK fullwidth | 2 | Fullwidth ASCII (`Ａ`), fullwidth punctuation |
+| Halfwidth katakana | 1 | `ｱ`, `ｲ`, `ｳ` |
+| Emoji (presentation) | 2 | Emoji with VS16 or default emoji presentation |
+| Combining marks | 0 | Diacritics, combining diacritical marks |
+| Control characters | 0 (or `^X` = 2) | Displayed as `^X` notation |
+| Tab | Variable | Expands to next tabstop |
 
-The editor uses the terminal's font settings.
-Configure fonts in your terminal emulator.
+Width is determined by Unicode East Asian Width property plus overrides for emoji and ambiguous-width characters.
 
-### Recommended Fonts
+## Ambiguous Width
 
-| Font | Features |
-|------|----------|
-| JetBrains Mono | Ligatures, clear |
-| Fira Code | Extensive ligatures |
-| Cascadia Code | Windows default |
-| Iosevka | Narrow, customizable |
-| Source Code Pro | Adobe, clean |
-| Hack | Highly legible |
+Characters with East Asian Width = Ambiguous (e.g., Greek letters, some symbols) default to width 1. Configurable via `editor.ambiguous_width` (1 or 2) for CJK locale terminals.
 
-### Nerd Font Variants
+## Recommended Fonts
 
-For icons, use Nerd Font patched versions:
+For best rendering, use a monospace font with Nerd Font patching for icons:
 
-- JetBrainsMono Nerd Font
-- FiraCode Nerd Font
-- Hack Nerd Font
-
-## Character Width
-
-### Detection
-
-
-### Manual Override
-
-
-### Wide Characters
-
-| Category | Width |
-|----------|-------|
-| ASCII | 1 |
-| CJK | 2 |
-| Emoji | 2 |
-| Combining | 0 |
-
-## Cell Rendering
-
-### Standard
-
-Each character occupies terminal cells:
-
-
-### Alignment
-
-
-## Font Fallback
-
-### Terminal Handles
-
-The terminal manages font fallback.
-Configure fallback in terminal settings.
-
-### Example (iTerm2)
-
-
-### Example (Kitty)
-
+| Font | Notes |
+|---|---|
+| JetBrains Mono NF | Ligatures, clear glyphs |
+| Fira Code NF | Extensive ligatures |
+| Hack NF | Highly legible |
+| Iosevka NF | Narrow, customizable |
 
 ## Rendering Modes
 
-### True Color
+| Mode | Description |
+|---|---|
+| True color (24-bit) | `COLORTERM=truecolor` — full RGB |
+| 256 color | Fallback for older terminals |
+| 16 color | Basic ANSI colors only |
 
+The renderer detects terminal capability and adjusts automatically.
 
-### 256 Color
+## Related
 
-
-### Basic
-
-For limited terminals:
-
-
-## Anti-Aliasing
-
-Handled by terminal. Common settings:
-
-### macOS
-
-- LCD smoothing
-- Font smoothing level
-
-### Linux
-
-- FreeType settings
-- Fontconfig hinting
-
-## Line Height
-
-Terminal-controlled. For spacing:
-
-
-## Tab Rendering
-
-
-## Space Rendering
-
-
-## Cursor Rendering
-
-
-## Selection Rendering
-
-
-## Performance
-
-### Refresh Rate
-
-
-### Batch Rendering
-
-
-### Lazy Rendering
-
+- Unicode handling: [/docs/spec/technical/unicode.md](/docs/spec/technical/unicode.md)
+- Render pipeline: [/docs/spec/ui/render-pipeline.md](/docs/spec/ui/render-pipeline.md)

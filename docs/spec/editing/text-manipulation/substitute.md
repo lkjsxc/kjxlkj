@@ -4,137 +4,61 @@ Search and replace operations.
 
 ## Overview
 
-The substitute command replaces text
-matching patterns with replacements.
+`:substitute` (`:s`) replaces text matching a pattern with a replacement string. It is one of the most frequently used Ex commands.
 
-## Basic Syntax
+## Syntax (normative)
 
+`:[range]s[ubstitute]/pattern/replacement/[flags]`
 
-## Simple Replace
+Default range is the current line.
 
-### First on Line
-
-
-### All on Line
-
-
-### Entire File
-
-
-## Common Flags
+## Flags (normative)
 
 | Flag | Description |
-|------|-------------|
-| `g` | Global (all on line) |
-| `c` | Confirm each |
-| `i` | Case insensitive |
-| `I` | Case sensitive |
-| `n` | Count only |
-| `e` | No error if no match |
+|---|---|
+| `g` | Replace all occurrences on the line (not just the first) |
+| `c` | Confirm each replacement interactively |
+| `i` | Case-insensitive pattern matching |
+| `I` | Case-sensitive pattern matching |
+| `n` | Count matches only (do not replace) |
+| `e` | Suppress "pattern not found" error |
+| `&` | Reuse flags from previous substitute |
 
-## Confirmation
+## Confirmation Responses (normative)
 
-### Confirm Each
+When using the `c` flag, each match prompts:
 
+| Key | Action |
+|---|---|
+| `y` | Replace this match |
+| `n` | Skip this match |
+| `a` | Replace all remaining matches |
+| `q` | Quit substitution |
+| `l` | Replace this match and quit (last) |
+| `Ctrl-e` | Scroll up |
+| `Ctrl-y` | Scroll down |
 
-Responses:
-- `y` - Replace
-- `n` - Skip
-- `a` - Replace all
-- `q` - Quit
-- `l` - Replace and quit
+## Replacement Specials
 
-## Range Examples
-
-
-## Special Characters
-
-### In Pattern
-
-| Char | Meaning |
-|------|---------|
-| `.` | Any character |
-| `*` | Zero or more |
-| `\+` | One or more |
-| `\?` | Zero or one |
-| `\s` | Whitespace |
-| `\d` | Digit |
-| `\w` | Word char |
-
-### In Replacement
-
-| Char | Meaning |
-|------|---------|
-| `&` | Entire match |
-| `\0` | Entire match |
-| `\1` | First group |
-| `\r` | Newline |
+| Sequence | Inserts |
+|---|---|
+| `&` / `\0` | Entire matched text |
+| `\1`-`\9` | Captured group |
+| `\r` | Newline (splits line) |
 | `\t` | Tab |
 | `\\` | Literal backslash |
+| `\u`, `\U`, `\l`, `\L`, `\e` | Case modifiers |
 
-## Groups
+## Repeat Last Substitute
 
-### Capture Groups
+| Command | Action |
+|---|---|
+| `:s` (no args) | Repeat last substitute on current line |
+| `&` | Same as `:s` |
+| `g&` | Repeat last substitute on all lines (`:%s//~/&`) |
 
+## Related
 
-Swaps: `foobar` → `barfoo`
-
-### Non-Capturing
-
-
-## Case Modification
-
-### In Replacement
-
-| Modifier | Effect |
-|----------|--------|
-| `\u` | Uppercase next |
-| `\l` | Lowercase next |
-| `\U` | Uppercase following |
-| `\L` | Lowercase following |
-| `\e` | End case change |
-
-### Examples
-
-
-## Expressions
-
-### Expression Replacement
-
-
-Increment numbers.
-
-### Functions
-
-
-Replace with length.
-
-## Delimiters
-
-### Alternative Delimiters
-
-
-Useful when pattern contains `/`.
-
-## Escaping
-
-### Literal Characters
-
-
-## Common Patterns
-
-### Remove Trailing Whitespace
-
-
-### Remove Leading Whitespace
-
-
-### Remove Empty Lines
-
-
-### Compress Whitespace
-
-
-### Add Line Numbers
-
-
+- Substitute specials: [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
+- Substitute expressions: [/docs/spec/commands/substitute/substitute-expressions.md](/docs/spec/commands/substitute/substitute-expressions.md)
+- Regex: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)

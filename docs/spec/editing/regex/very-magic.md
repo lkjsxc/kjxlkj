@@ -2,117 +2,51 @@
 
 The `\v` pattern modifier for Perl-like regular expressions.
 
-## Activating Very Magic
+## Overview
 
+Prefixing a pattern with `\v` enables "very magic" mode, where most special characters do not need backslash escaping. This makes patterns more readable, especially for users familiar with Perl/PCRE regex.
 
-## Character Behavior Comparison
+## Activation
 
-| Character | Normal | Very Magic (\v) |
-|-----------|--------|-----------------|
-| `(` `)` | Literal | Grouping |
-| `{` `}` | Literal | Quantifier |
-| `+` | Literal | One or more |
-| `?` | Literal | Zero or one |
-| `\|` | Literal | Alternation |
-| `<` `>` | Literal | Word boundary |
-| `=` | Literal | Zero or one (?) |
-| `@` | Literal | Lookaround |
+Place `\v` at the beginning of the pattern: `/\v(foo|bar)+`
 
-## Grouping
+## Comparison Table (normative)
 
-### Normal Mode
-
-
-### Very Magic Mode
-
-
-## Quantifiers
-
-### Normal Mode
-
-
-### Very Magic Mode
-
-
-## Alternation
-
-### Normal Mode
-
-
-### Very Magic Mode
-
-
-## Word Boundaries
-
-### Normal Mode
-
-
-### Very Magic Mode
-
-
-## Complete Examples
-
-### Match Function Calls
-
-
-### Match Email Address
-
-
-### Match IP Address
-
-
-### Swap Two Words
-
-
-## Characters Still Needing Escape
-
-Even in very magic mode, some need escaping:
-
-| Character | Reason |
-|-----------|--------|
-| `\` | Escape character itself |
-| `/` | Search delimiter |
-| `@` | Lookaround prefix |
-
-## Lookaround in Very Magic
-
-
-## Comparison Table
-
-| Pattern | Normal | Very Magic |
-|---------|--------|------------|
-| Group | `\(...\)` | `(...)` |
-| Or | `\|` | `\|` |
-| One+ | `\+` | `+` |
-| Zero/One | `\?` or `\=` | `?` |
-| Count | `\{n,m\}` | `{n,m}` |
+| Construct | Normal (nomagic) | Very Magic (`\v`) |
+|---|---|---|
+| Grouping | `\(...\)` | `(...)` |
+| Alternation | `\|` | `|` |
+| One or more | `\+` | `+` |
+| Zero or one | `\?` or `\=` | `?` |
+| Quantifier | `\{n,m\}` | `{n,m}` |
 | Word start | `\<` | `<` |
 | Word end | `\>` | `>` |
-| Not | `\(...\)\@!` | `(...)@!` |
+| Negative lookahead | `\(...\)\@!` | `(...)@!` |
+| Positive lookahead | `\(...\)\@=` | `(...)@=` |
+| Negative lookbehind | `\(...\)\@<!` | `(...)@<!` |
+| Positive lookbehind | `\(...\)\@<=` | `(...)@<=` |
+
+## Characters Still Requiring Escape in Very Magic
+
+| Character | Reason |
+|---|---|
+| `\` | Escape character itself |
+| `/` | Search delimiter (unless using alternate delimiter) |
+
+## Four Magic Modes
+
+| Prefix | Name | Behavior |
+|---|---|---|
+| `\v` | Very magic | Most chars are special |
+| `\m` | Magic | Default Vim behavior |
+| `\M` | Nomagic | Most chars are literal |
+| `\V` | Very nomagic | Only `\` is special |
 
 ## When to Use Very Magic
 
-### Recommended For
+Recommended for complex patterns with multiple groups, alternations, or quantifiers. Not necessary for simple literal searches.
 
-- Complex patterns with groups
-- Patterns with quantifiers
-- Perl/PCRE users
-- Readable regex patterns
+## Related
 
-### Stick with Normal For
-
-- Simple literal searches
-- Single character matches
-- Compatibility with scripts
-
-## Configuration Default
-
-
-Make very magic default:
-
-## Escaping in Very Magic
-
-
-## API Reference
-
-
+- Regex overview: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)

@@ -1,119 +1,53 @@
 # Substitute Expressions
 
-Dynamic replacements with \=.
+Dynamic replacements with `\=`.
 
 ## Overview
 
-The `\=` replacement syntax
-allows evaluating expressions
-for dynamic replacements.
+The `\=` replacement prefix in `:s` commands evaluates an expression and uses the result as replacement text, enabling computed substitutions.
 
-## Basic Syntax
+## Syntax (normative)
 
+`:[range]s/pattern/\={expression}/[flags]`
 
-The expression result becomes
-the replacement text.
+The expression is evaluated for each match. The returned string replaces the matched text.
 
-## Simple Expressions
+## submatch() Function (normative)
 
-### Literal Values
+| Call | Returns |
+|---|---|
+| `submatch(0)` | The entire matched text |
+| `submatch(1)` | First captured group `\(...\)` |
+| `submatch(2)` | Second captured group |
+| `submatch(N)` | Nth captured group |
 
+## Common Expression Patterns
 
-### Arithmetic
+| Goal | Expression |
+|---|---|
+| Uppercase match | `\=toupper(submatch(0))` |
+| Lowercase match | `\=tolower(submatch(0))` |
+| Increment numbers | `\=submatch(0) + 1` |
+| Multiply by 10 | `\=submatch(1) * 10` |
+| String length | `\=strlen(submatch(0))` |
+| Line number | `\=line(".")` |
+| Date stamp | `\=strftime("%Y-%m-%d")` |
+| Sequential counter | `\=line(".") - line("'<") + 1` (within visual selection) |
+| Conditional | `\=submatch(1) == "yes" ? "no" : "yes"` |
+| Pad with zeros | `\=printf("%04d", submatch(0))` |
+| Register content | `\=@a` |
+| Concatenation | `\=submatch(1) . "-" . submatch(2)` |
 
+## Evaluation Context
 
-## Submatch Function
+The expression runs in the context of the buffer being edited. `line(".")` returns the line number of the current match. Variables and functions from the scripting environment are accessible.
 
-### Access Matched Text
+## Error Handling
 
+If the expression evaluation fails, the substitution is aborted and an error message is displayed. The buffer is left in the state prior to the failed match.
 
-### Example
+## Related
 
-Multiply captured number by 10.
-
-## String Functions
-
-### Transformation
-
-
-### Reversal
-
-
-## Date/Time
-
-### Current Date
-
-
-### Format Codes
-
-| Code | Output          |
-|------|-----------------|
-| `%Y` | Year (4 digit)  |
-| `%m` | Month (01-12)   |
-| `%d` | Day (01-31)     |
-| `%H` | Hour (00-23)    |
-| `%M` | Minute (00-59)  |
-| `%S` | Second (00-59)  |
-
-## Line Information
-
-### Line Number
-
-
-### Line Content
-
-
-## Counter Variable
-
-### Sequential Numbers
-
-
-Better approach:
-
-### Padded Numbers
-
-
-## Register Content
-
-### Insert Register
-
-
-## Conditional Logic
-
-### Ternary
-
-
-### Complex Condition
-
-
-## List Operations
-
-### Join
-
-
-"a" → "a-a"
-
-### Split and Process
-
-
-## Math Functions
-
-### Arithmetic
-
-
-### Formatting
-
-Convert cents to dollars.
-
-## String Manipulation
-
-### Repeat
-
-"a" → "aaa"
-
-### Substring
-
-Truncate to 3 chars.
-
-### Padding
-
+- Substitute command: [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
+- Substitute specials: [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
+- Expression register: [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)

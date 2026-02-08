@@ -4,125 +4,58 @@ LSP code actions for quick fixes and refactoring.
 
 ## Overview
 
-Code actions provide context-aware suggestions for
-fixing errors, refactoring, or improving code.
+Code actions are context-sensitive suggestions from the LSP server: quick fixes for diagnostics, refactoring operations, and source-level transformations.
 
 ## Triggering
 
-### Keybindings
+| Key / Command | Action |
+|---|---|
+| `<leader>ca` | Show code actions menu |
+| `<leader>.` | Apply preferred (first) action |
+| `:CodeAction` | Show code actions menu |
+
+Code actions are available when the cursor is on a diagnostic or selected text.
+
+## Action Categories
+
+| Kind | Examples |
+|---|---|
+| Quick Fix | Import missing item, fix typo, add missing field |
+| Refactor | Extract function, inline variable, rename symbol |
+| Refactor Extract | Extract to function/variable/constant |
+| Refactor Inline | Inline function/variable |
+| Source | Organize imports, format file, generate docs |
+
+## Menu Navigation
 
 | Key | Action |
-|-----|--------|
-| `<leader>ca` | Code actions |
-| `<leader>.` | Quick action |
+|---|---|
+| `j` / `<Down>` | Next action |
+| `k` / `<Up>` | Previous action |
+| `<CR>` | Apply selected action |
+| `1`-`9` | Apply numbered action directly |
+| `<Esc>` / `q` | Cancel |
 
-### Command
+## Lightbulb Indicator
 
-
-## Display
-
-### Menu
-
-
-### Lightbulb
-
-
-Shows when actions available.
-
-## Types of Actions
-
-### Quick Fix
-
-- Import missing items
-- Fix typos
-- Add missing fields
-
-### Refactor
-
-- Extract function/method
-- Rename
-- Inline variable
-
-### Source Actions
-
-- Organize imports
-- Format file
-- Generate documentation
-
-## Configuration
-
-
-## Lightbulb
-
-### Appearance
-
-
-### Position
-
-
-## Navigation
-
-### Within Menu
-
-| Key | Action |
-|-----|--------|
-| `j` | Next action |
-| `k` | Previous action |
-| `<CR>` | Apply action |
-| `1-9` | Apply numbered action |
-| `<Esc>` | Cancel |
+When code actions are available at cursor position, a lightbulb icon appears in the sign column. Controlled by `lsp.code_action.lightbulb` (default: `true`).
 
 ## Visual Mode
 
-### On Selection
-
-Code actions apply to selection:
-
+With a visual selection active, `<leader>ca` requests actions scoped to the selected range (e.g., extract to function).
 
 ## Preferred Actions
 
-### Auto-Apply
+Some actions are marked "preferred" by the server (e.g., the most likely quick-fix). `<leader>.` applies the preferred action without showing the menu.
 
+## Configuration
 
-### Keybinding
+| Setting | Default | Description |
+|---|---|---|
+| `lsp.code_action.lightbulb` | `true` | Show lightbulb indicator |
+| `lsp.code_action.auto_apply_preferred` | `false` | Auto-apply preferred action |
 
+## Related
 
-## LSP Requirements
-
-### Server Support
-
-All major LSP servers support code actions.
-
-### Capability
-
-
-## Common Actions
-
-### Rust
-
-- Import item
-- Fill match arms
-- Convert to pattern
-- Extract variable
-
-### TypeScript
-
-- Import module
-- Add missing property
-- Convert to async
-- Generate getter/setter
-
-## Filtering
-
-### By Kind
-
-
-## Tips
-
-1. Check lightbulb for suggestions
-2. Use on errors for quick fixes
-3. Select code before refactoring
-4. Try preferred action first
-
-## Keybindings
-
+- Diagnostics: [/docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)
+- Formatting: [/docs/spec/features/lsp/formatting.md](/docs/spec/features/lsp/formatting.md)

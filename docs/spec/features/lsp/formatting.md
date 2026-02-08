@@ -1,109 +1,66 @@
 # Auto-Formatting
 
-Automatic code formatting on save or command.
+Code formatting via LSP or external formatters.
 
 ## Overview
 
-kjxlkj integrates with external formatters for
-automatic code formatting.
+kjxlkj integrates with LSP formatting and external formatters (rustfmt, prettier, black, etc.) for both manual and automatic formatting.
 
-## Enabling Format on Save
+## Format on Save
 
-### Configuration
-
-
-### Per-Filetype
-
-
-## Formatter Configuration
-
-### Language Formatters
-
-
-### Custom Commands
-
+| Setting | Default | Description |
+|---|---|---|
+| `format_on_save` | `false` | Enable auto-format on `:w` |
+| `format_on_save.timeout` | `2000` | Milliseconds before cancellation |
 
 ## Manual Formatting
 
-### Commands
+| Key / Command | Action |
+|---|---|
+| `gq{motion}` | Format text covered by motion |
+| `gqq` | Format current line |
+| Visual + `gq` | Format selection |
+| `<leader>lf` | Format entire buffer |
+| `:Format` | Format entire buffer |
 
+## Formatter Resolution
 
-### Keybindings
+Resolution order:
 
-| Key | Action |
-|-----|--------|
-| `<leader>lf` | Format buffer |
-| `gq` | Format selection/motion |
+1. **LSP** — if server supports `textDocument/formatting`
+2. **External** — configured per-filetype command
+3. **Built-in** — basic text wrapping via `textwidth`
 
-## LSP Formatting
-
-### Prefer LSP
-
-
-### Fallback to External
-
+| Setting | Default | Description |
+|---|---|---|
+| `prefer_lsp` | `true` | Try LSP first |
+| `lsp_fallback` | `true` | Fall back to external if no LSP |
 
 ## Range Formatting
 
-### Visual Selection
+When a visual selection is active, `gq` sends only the selected range for formatting. LSP servers that support `textDocument/rangeFormatting` format the selection; others format the full buffer.
 
-1. Select text visually
-2. Press `gq`
+## Per-Filetype Configuration
 
-### Motion-Based
+Formatters are configured per filetype in TOML:
 
-
-## Configuration Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `format_on_save` | false | Auto-format |
-| `prefer_lsp` | true | Use LSP first |
-| `lsp_fallback` | true | External if no LSP |
-| `timeout` | 2000 | ms before cancel |
+| Language | Typical Formatter |
+|---|---|
+| Rust | `rustfmt` |
+| JavaScript/TypeScript | `prettier` |
+| Python | `black` / `ruff` |
+| Go | `gofmt` / `goimports` |
+| C/C++ | `clang-format` |
 
 ## Error Handling
 
-### On Format Error
-
-
-### Async Formatting
-
-
-## Formatter Installation
-
-### Rust
-
-
-### JavaScript/TypeScript
-
-
-### Python
-
-
-### Go
-
-Included with Go installation.
-
-## Project Configuration
-
-### .editorconfig
-
-Respected by formatters that support it.
-
-### Local Formatter Config
-
-- `.rustfmt.toml`
-- `.prettierrc`
-- `pyproject.toml`
+If formatting fails (non-zero exit, LSP error), the buffer is left unchanged and an error message is displayed. Formatting never corrupts the buffer.
 
 ## Undo Integration
 
-Format operations are a single undo unit.
-Press `u` to undo entire format.
+Each format operation is a single undo step.
 
-## Performance
+## Related
 
-- Only formats changed ranges when possible
-- Debounced on rapid saves
-- Cached formatter processes
+- LSP: [/docs/spec/features/lsp/code-actions.md](/docs/spec/features/lsp/code-actions.md)
+- Text wrapping: [/docs/spec/editing/text-manipulation/formatting.md](/docs/spec/editing/text-manipulation/formatting.md)

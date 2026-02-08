@@ -1,113 +1,58 @@
 # Bracket Matching
 
-Navigate matching pairs.
+Navigate matching pairs with `%`.
 
 ## Overview
 
-Jump between matching brackets,
-parentheses, and other pairs.
+The `%` motion jumps between matching bracket pairs. It also works as an operator motion (e.g., `d%` deletes to the matching bracket).
 
-## Percent Motion
-
-### Basic Usage
-
-
-### Supported Pairs
+## Supported Pairs (normative)
 
 | Open | Close |
-|------|-------|
+|---|---|
 | `(` | `)` |
 | `[` | `]` |
 | `{` | `}` |
-| `<` | `>` |
 
-### Behavior
+## Behavior (normative)
 
-From opening bracket: jump to closing.
-From closing bracket: jump to opening.
+1. If the cursor is on a bracket character, `%` jumps to its matching partner.
+2. If the cursor is NOT on a bracket, `%` searches forward on the current line for the first bracket character, then jumps to its match.
+3. The match search respects nesting: `({})` on the outer `(` jumps to the outer `)`.
 
-## Example
+## Operator Compatibility
 
+`%` is an inclusive characterwise motion. It works with all operators:
 
-On `{` after `main()`, `%` jumps to final `}`.
+| Example | Effect |
+|---|---|
+| `d%` | Delete from cursor to matching bracket (inclusive) |
+| `y%` | Yank to matching bracket |
+| `c%` | Change to matching bracket |
+| `v%` | Visual select to matching bracket |
 
-## Extended Matching
-
-### Language Keywords
-
-
-### Configuration
-
-
-## Matchit Equivalent
-
-### Enable Extended
-
-
-### Language-Specific
-
-
-## Navigation
-
-### Forward to Match
-
-
-### Operators with %
-
-
-## Finding Unmatched
-
-### Unmatched Brackets
-
-
-## Bracket Text Objects
-
-### Objects
+## Bracket Text Objects (normative)
 
 | Object | Description |
-|--------|-------------|
-| `i(`, `ib` | Inside parentheses |
-| `a(`, `ab` | Around parentheses |
-| `i[` | Inside brackets |
-| `a[` | Around brackets |
-| `i{`, `iB` | Inside braces |
-| `a{`, `aB` | Around braces |
+|---|---|
+| `i(` / `ib` | Inside parentheses |
+| `a(` / `ab` | Around parentheses (including parens) |
+| `i[` | Inside square brackets |
+| `a[` | Around square brackets |
+| `i{` / `iB` | Inside curly braces |
+| `a{` / `aB` | Around curly braces |
 | `i<` | Inside angle brackets |
 | `a<` | Around angle brackets |
 
-### Examples
+## Match Highlighting
 
-
-## Highlighting
-
-### Match Highlight
-
-
-### Colors
-
-
-## Multi-Cursor Matching
-
-### Select All Matches
-
-
-### Add Cursor at Match
-
-
-## Tree-sitter Matching
-
-### Semantic Matching
-
-
-Uses syntax tree for accurate
-bracket/block matching.
-
-### Benefits
-
-- Language-aware matching
-- Handles strings/comments
-- Nested structure awareness
+When `showmatch` is enabled, briefly highlight the matching bracket when a closing bracket is typed in Insert mode. The highlight duration is controlled by `matchtime` (in tenths of a second, default 5).
 
 ## Jump List
 
-### Back to Origin
+`%` is a jump command: it adds the pre-jump position to the jump list.
+
+## Related
+
+- Motions: [/docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
+- Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

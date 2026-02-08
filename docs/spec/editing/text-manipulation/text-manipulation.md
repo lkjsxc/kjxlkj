@@ -4,136 +4,84 @@ Core text manipulation operations.
 
 ## Overview
 
-Text manipulation commands modify content
-efficiently across ranges and patterns.
+Text manipulation covers the fundamental editing primitives: delete, change, yank, put, join, indent, case conversion, and formatting.
 
-## Basic Operations
-
-### Delete
+## Delete (normative)
 
 | Command | Action |
-|---------|--------|
-| `d{motion}` | Delete motion |
-| `dd` | Delete line |
-| `D` | Delete to end |
-| `x` | Delete character |
-| `X` | Delete before |
+|---|---|
+| `d{motion}` | Delete text covered by motion |
+| `dd` | Delete current line |
+| `D` | Delete from cursor to end of line |
+| `x` | Delete character under cursor |
+| `X` | Delete character before cursor |
+| `:[range]d [reg]` | Delete lines in range |
 
-### Change
+Deleted text is stored in the unnamed register `"` and numbered registers `1`-`9`.
 
-| Command | Action |
-|---------|--------|
-| `c{motion}` | Change motion |
-| `cc` | Change line |
-| `C` | Change to end |
-| `s` | Substitute char |
-| `S` | Substitute line |
-
-### Yank
+## Change (normative)
 
 | Command | Action |
-|---------|--------|
-| `y{motion}` | Yank motion |
-| `yy` | Yank line |
-| `Y` | Yank line |
+|---|---|
+| `c{motion}` | Delete motion, enter Insert mode |
+| `cc` | Change entire line |
+| `C` | Change to end of line |
+| `s` | Substitute character (delete + insert) |
+| `S` | Substitute line (same as `cc`) |
 
-### Put
+## Yank (normative)
 
 | Command | Action |
-|---------|--------|
-| `p` | Put after |
-| `P` | Put before |
-| `gp` | Put, cursor after |
-| `gP` | Put before, cursor after |
+|---|---|
+| `y{motion}` | Yank (copy) text covered by motion |
+| `yy` / `Y` | Yank current line |
 
-## Line Operations
+Yanked text goes to register `0` (yank register) and `"` (unnamed register).
 
-### Duplicate
+## Put (normative)
 
+| Command | Action |
+|---|---|
+| `p` | Put after cursor (characterwise) or below (linewise) |
+| `P` | Put before cursor (characterwise) or above (linewise) |
+| `gp` | Put after, cursor moves to end of pasted text |
+| `gP` | Put before, cursor moves to end of pasted text |
+| `]p` | Put with adjusted indentation |
 
-### Move
+## Indentation (normative)
 
+| Command | Action |
+|---|---|
+| `>>` | Indent current line by `shiftwidth` |
+| `<<` | Unindent current line by `shiftwidth` |
+| `>{motion}` | Indent lines covered by motion |
+| `={motion}` | Auto-indent lines covered by motion |
+| `==` | Auto-indent current line |
 
-### Delete Range
+## Case Operations (normative)
 
+| Command | Action |
+|---|---|
+| `~` | Toggle case of character under cursor, advance |
+| `g~{motion}` | Toggle case of motion |
+| `gu{motion}` | Lowercase motion |
+| `gU{motion}` | Uppercase motion |
+| `g~~` | Toggle case of line |
+| `guu` | Lowercase line |
+| `gUU` | Uppercase line |
 
-## Join Operations
+## Number Increment/Decrement (normative)
 
-### Join Lines
+| Command | Action |
+|---|---|
+| `Ctrl-a` | Increment number under/after cursor |
+| `Ctrl-x` | Decrement number under/after cursor |
+| `{count}Ctrl-a` | Add count to number |
 
-| Key | Action |
-|-----|--------|
-| `J` | Join with space |
-| `gJ` | Join without space |
+Supported formats: decimal, hex (`0x`), octal (`0`), binary (`0b`). Controlled by `nrformats` option.
 
-### Range Join
+## Related
 
-
-## Split Operations
-
-### Split Line
-
-| Key | Action |
-|-----|--------|
-| `r<CR>` | Split at cursor |
-| `i<CR>` | Insert newline |
-
-### Command
-
-
-## Reformat
-
-### Paragraph
-
-
-### Width
-
-
-## Indentation
-
-### Shift
-
-| Key | Action |
-|-----|--------|
-| `>>` | Indent line |
-| `<<` | Outdent line |
-| `>{motion}` | Indent motion |
-| `={motion}` | Auto-indent |
-
-### Range
-
-
-## Replace
-
-### Character
-
-
-### Range
-
-
-## Case Operations
-
-| Key | Action |
-|-----|--------|
-| `~` | Toggle case |
-| `g~{motion}` | Toggle motion |
-| `gu{motion}` | Lowercase |
-| `gU{motion}` | Uppercase |
-
-## Rot13
-
-
-## Reverse
-
-
-## Unique Lines
-
-
-## Number Lines
-
-
-## Wrap Text
-
-
-## Remove Empty Lines
-
+- Operators: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Join/Split: [/docs/spec/editing/text-manipulation/join-split.md](/docs/spec/editing/text-manipulation/join-split.md)
+- Registers: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

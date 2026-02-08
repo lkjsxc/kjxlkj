@@ -1,154 +1,82 @@
 # Special Keys in Mappings
 
-Key notation and special keys.
-
-## Overview
-
-Reference for special key notation
-used in keybinding configurations.
+Key notation reference for keybinding configuration.
 
 ## Modifier Keys
 
-### Notation
-
 | Modifier | Notation | Example |
-|----------|----------|---------|
+|---|---|---|
 | Control | `<C-x>` | `<C-s>` |
 | Alt/Meta | `<M-x>` or `<A-x>` | `<M-a>` |
 | Shift | `<S-x>` | `<S-Tab>` |
 | Super/Cmd | `<D-x>` | `<D-s>` |
 
-### Combined
-
+Modifiers may be combined: `<C-S-a>` means Ctrl+Shift+A.
 
 ## Function Keys
 
-### Standard
-
 | Key | Notation |
-|-----|----------|
-| F1-F12 | `<F1>` - `<F12>` |
+|---|---|
+| F1 through F12 | `<F1>` .. `<F12>` |
 | Shift+F1 | `<S-F1>` |
-
-### Extended
-
-| Key | Notation |
-|-----|----------|
-| F13-F24 | `<F13>` - `<F24>` |
+| F13 through F24 | `<F13>` .. `<F24>` |
 
 ## Navigation Keys
 
-### Arrow Keys
-
 | Key | Notation |
-|-----|----------|
-| Up | `<Up>` |
-| Down | `<Down>` |
-| Left | `<Left>` |
-| Right | `<Right>` |
-
-### Page Keys
-
-| Key | Notation |
-|-----|----------|
-| Page Up | `<PageUp>` |
-| Page Down | `<PageDown>` |
-| Home | `<Home>` |
-| End | `<End>` |
+|---|---|
+| Up / Down / Left / Right | `<Up>` `<Down>` `<Left>` `<Right>` |
+| Page Up / Page Down | `<PageUp>` `<PageDown>` |
+| Home / End | `<Home>` `<End>` |
 
 ## Editing Keys
 
-### Common
+| Key | Notation | Aliases |
+|---|---|---|
+| Enter | `<CR>` | `<Enter>`, `<Return>` |
+| Tab | `<Tab>` | |
+| Backspace | `<BS>` | `<Backspace>` |
+| Delete | `<Del>` | `<Delete>` |
+| Escape | `<Esc>` | |
+| Space | `<Space>` | |
+| Insert | `<Insert>` | |
 
-| Key | Notation |
-|-----|----------|
-| Enter | `<CR>` or `<Enter>` |
-| Tab | `<Tab>` |
-| Backspace | `<BS>` |
-| Delete | `<Del>` |
-| Escape | `<Esc>` |
-| Space | `<Space>` |
-
-### Insert/Replace
-
-| Key | Notation |
-|-----|----------|
-| Insert | `<Insert>` |
-
-## Special Characters
-
-### Notation
+## Special Character Notation
 
 | Character | Notation |
-|-----------|----------|
+|---|---|
 | `<` | `<lt>` |
 | `>` | `<gt>` |
 | `\` | `<Bslash>` |
 | `|` | `<Bar>` |
 
-## Mouse
+## Leader Keys
 
-Mouse input is ignored. Mouse key notation exists only for compatibility and MUST NOT trigger actions.
+`<Leader>` expands to the value of `mapleader` (default: `\`). Set in config:
 
-### Mouse Buttons
+`<LocalLeader>` expands to `maplocalleader`, used for buffer-local mappings.
 
-| Action | Notation |
-|--------|----------|
-| Left Click | `<LeftMouse>` |
-| Right Click | `<RightMouse>` |
-| Middle Click | `<MiddleMouse>` |
-| Scroll Up | `<ScrollWheelUp>` |
-| Scroll Down | `<ScrollWheelDown>` |
+## No-Op Key
 
-### Mouse Modifiers
+`<Nop>` disables a key. Mapping a key to `<Nop>` makes it do nothing.
 
+## Plug and SID Keys
 
-### Mouse Drag
+`<Plug>` is used for plugin mapping namespaces. Not a real key — serves as a unique prefix to avoid conflicts.
 
-| Action | Notation |
-|--------|----------|
-| Left Drag | `<LeftDrag>` |
-| Left Release | `<LeftRelease>` |
+`<SID>` prefixes script-local mappings.
 
-## Leader Key
+## Mouse Keys (Ignored)
 
-### Definition
+Mouse input is ignored at runtime. The following notation exists only for compatibility and MUST NOT trigger actions:
 
+`<LeftMouse>`, `<RightMouse>`, `<MiddleMouse>`, `<ScrollWheelUp>`, `<ScrollWheelDown>`, `<LeftDrag>`, `<LeftRelease>`
 
-### Usage
+## Terminal Escape Codes
 
+Raw terminal escape sequences are decoded into the key notation above by the input-decoding layer. Mappings always use the human-readable notation.
 
-## Local Leader
+## Related
 
-### Definition
-
-
-### Usage
-
-
-## Null Key
-
-### No Operation
-
-
-## Plug Keys
-
-### Mapping Reference
-
-
-## SID Keys
-
-### Script Local
-
-
-## Cmd Key (macOS)
-
-### Command Key
-
-
-## Terminal Codes
-
-### Direct Codes
-
-
-## Multi-Key Sequences
+- Keybindings: [/docs/spec/modes/keybindings.md](/docs/spec/modes/keybindings.md)
+- Input decoding: [/docs/spec/technical/input-decoding.md](/docs/spec/technical/input-decoding.md)
