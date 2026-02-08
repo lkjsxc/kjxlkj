@@ -1,127 +1,67 @@
-# Grouping and Backreferences
+# Grouping and References
 
-Capturing groups and referencing matched content in patterns.
+Capturing groups, back-references, and non-capturing groups.
 
-## Basic Grouping
+## Capturing Groups
 
-### Creating Groups
+| Syntax | Magic Mode | Very Magic |
+|---|---|---|
+| `\(pattern\)` | Magic | `\v(pattern)` |
 
-
-### Group Usage
-
+Groups are numbered 1-9 from left to right by opening parenthesis position. Up to 9 numbered groups are supported.
 
 ## Non-Capturing Groups
 
-Groups that don't capture:
+| Syntax | Magic Mode | Very Magic |
+|---|---|---|
+| `\%(pattern\)` | Magic | `\v%(pattern)` |
 
+Non-capturing groups are used for grouping alternation or applying quantifiers without consuming a capture slot.
 
-### Use Cases
+## Back-References
 
+| Syntax | Meaning |
+|---|---|
+| `\1` .. `\9` | Match the same text as captured by group N |
 
-## Backreferences
+Back-references match the exact text captured, not the pattern. If group 1 captured `foo`, then `\1` matches literal `foo`.
 
-Reference captured groups in pattern:
+## Back-References in Replacement
 
-| Reference | Meaning |
-|-----------|---------|
-| `\1` | First captured group |
-| `\2` | Second captured group |
-| `\3` | Third captured group |
-| `\n` | Nth captured group |
+In `:s` replacement strings:
 
-### Examples
+| Syntax | Meaning |
+|---|---|
+| `\1` .. `\9` | Insert text captured by group N |
+| `\0` or `&` | Insert entire match |
 
+## Atomic Groups
 
-## Backreferences in Substitution
+| Syntax | Magic Mode | Very Magic |
+|---|---|---|
+| `\(pattern\)\@>` | Magic | `\v(pattern)@>` |
 
+Once an atomic group matches, the regex engine does not backtrack into it. Useful for performance optimization.
 
-This swaps two words: "hello world" → "world hello"
+## Lookaround (Zero-Width Assertions)
 
-### Substitution References
+| Syntax | Type | Description |
+|---|---|---|
+| `\(pattern\)\@=` | Positive lookahead | Assert pattern matches ahead |
+| `\(pattern\)\@!` | Negative lookahead | Assert pattern does NOT match ahead |
+| `\(pattern\)\@<=` | Positive lookbehind | Assert pattern matches behind |
+| `\(pattern\)\@<!` | Negative lookbehind | Assert pattern does NOT match behind |
 
-| Reference | Meaning |
-|-----------|---------|
-| `\0` or `&` | Entire match |
-| `\1` - `\9` | Captured groups |
-| `\r` | Newline in replacement |
-| `\t` | Tab in replacement |
+Lookaround assertions are zero-width: they assert a condition but consume no characters.
 
-## Very Magic Backreferences
+## Match Position Modifiers
 
+| Atom | Effect |
+|---|---|
+| `\zs` | Set the start of the match (text before is checked but not included) |
+| `\ze` | Set the end of the match (text after is checked but not included) |
 
-## Nested Groups
+## Related
 
-Groups are numbered by opening parenthesis:
-
-
-
-## Complex Examples
-
-### Match Duplicate Words
-
-
-Matches: "the the", "is is"
-
-### Match Balanced Quotes
-
-
-Matches: "hello", 'world'
-
-### Match Repeated Pattern
-
-
-Matches: "12-12-12"
-
-### Match HTML Tag Pair
-
-
-Matches: `<div>content</div>`
-
-## Substitution Examples
-
-### Swap Order
-
-
-### Duplicate Content
-
-
-### Wrap in Tags
-
-
-### Case Conversion
-
-
-## Group Modifiers
-
-### Case Modifiers in Replacement
-
-| Modifier | Effect |
-|----------|--------|
-| `\u` | Next char uppercase |
-| `\U` | Following chars uppercase |
-| `\l` | Next char lowercase |
-| `\L` | Following chars lowercase |
-| `\e` or `\E` | End case change |
-
-### Examples
-
-
-## Performance Notes
-
-- Backreferences slower than non-capturing
-- Use `\%(` when capture not needed
-- Limit nesting depth for performance
-- Avoid `\1` in character classes
-
-## Common Patterns
-
-| Task | Pattern |
-|------|---------|
-| Duplicate word | `\<\(\w\+\)\s\+\1\>` |
-| Quoted string | `\(["']\).*\1` |
-| Repeated char | `\(\w\)\1\+` |
-| XML tag | `<\(\w\+\)>.*</\1>` |
-| Variable assign | `\(\w\+\)\s*=\s*\1` |
-
-## API Reference
-
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
+- Quantifiers: [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)

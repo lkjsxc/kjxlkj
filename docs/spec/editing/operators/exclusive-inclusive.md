@@ -1,138 +1,65 @@
 # Exclusive vs Inclusive Motions
 
-Motion boundary behavior.
+How motion boundary type affects operator behavior.
 
-## Overview
+## Definitions
 
-- **Inclusive**: Includes end character
-- **Exclusive**: Excludes end character
+- **Inclusive**: The character at the destination IS included in the operation
+- **Exclusive**: The character at the destination is NOT included in the operation
 
-## Inclusive Motions
+## Inclusive Motions (complete list)
 
-### Definition
+| Motion | Description |
+|---|---|
+| `e`, `ge` | Word end |
+| `E`, `gE` | WORD end |
+| `$` | End of line |
+| `g_` | Last non-blank of line |
+| `f{c}` | Find character forward |
+| `F{c}` | Find character backward |
+| `` `{mark} `` | Go to mark position |
+| `%` | Matching bracket |
 
-The destination character is included
-in the operation.
+## Exclusive Motions (complete list)
 
-### Examples
+| Motion | Description |
+|---|---|
+| `w`, `b` | Word start |
+| `W`, `B` | WORD start |
+| `t{c}` | Till character forward |
+| `T{c}` | Till character backward |
+| `(`, `)` | Sentence |
+| `{`, `}` | Paragraph |
+| `/pattern`, `?pattern` | Search |
+| `n`, `N` | Repeat search |
+| `'{mark}` | Go to mark line |
+| `0`, `^` | Line start |
+| `h`, `l` | Character left/right |
+| `G`, `gg` | Go to line (linewise, but exclusive when forced charwise) |
 
-| Motion | Type | Description |
-|--------|------|-------------|
-| `e` | Inclusive | End of word |
-| `ge` | Inclusive | End of previous word |
-| `E` | Inclusive | End of WORD |
-| `gE` | Inclusive | End of previous WORD |
-| `$` | Inclusive | End of line |
-| `g_` | Inclusive | Last non-blank |
-| `f{c}` | Inclusive | Find character |
-| `F{c}` | Inclusive | Find backward |
-| `` ` `` | Inclusive | Go to mark |
-| `%` | Inclusive | Match bracket |
+## Till vs Find Example
 
-### Behavior
+Given text `hello world` with cursor on `h`:
 
+- `dfw` — deletes `hello w` (inclusive: includes `w`)
+- `dtw` — deletes `hello ` (exclusive: stops before `w`)
 
-## Exclusive Motions
+## Exclusive-to-Inclusive Adjustment
 
-### Definition
+When an exclusive characterwise motion ends at column 0 of a line past the start line, the end is adjusted back to the last character of the previous line (making it inclusive). This prevents accidentally including an empty line.
 
-The destination character is NOT
-included in the operation.
+## `v` Toggle
 
-### Examples
+Placing `v` between operator and motion toggles exclusive/inclusive for characterwise motions:
 
-| Motion | Type | Description |
-|--------|------|-------------|
-| `w` | Exclusive | Start of word |
-| `W` | Exclusive | Start of WORD |
-| `b` | Exclusive | Back to word start |
-| `B` | Exclusive | Back to WORD start |
-| `{` | Exclusive | Paragraph back |
-| `}` | Exclusive | Paragraph forward |
-| `(` | Exclusive | Sentence back |
-| `)` | Exclusive | Sentence forward |
-| `t{c}` | Exclusive | Till character |
-| `T{c}` | Exclusive | Till backward |
-| `/` | Exclusive | Search forward |
-| `?` | Exclusive | Search backward |
-| `n` | Exclusive | Next search |
-| `N` | Exclusive | Previous search |
+- `dve` — `e` is normally inclusive → becomes exclusive
+- `dvw` — `w` is normally exclusive → becomes inclusive
 
-### Behavior
+## Visual Mode Selection
 
+In visual mode, inclusive motions extend the selection to include the destination character. Exclusive motions stop just before it. `o` and `O` swap selection ends.
 
-## Till vs Find
+## Related
 
-### Find (f) - Inclusive
-
-
-### Till (t) - Exclusive
-
-
-## Practical Examples
-
-### Delete to Character
-
-
-### Delete Word
-
-
-## Force Inclusive
-
-### Make Exclusive Inclusive
-
-
-The `v` modifier forces characterwise
-and makes exclusive motions inclusive.
-
-### Example
-
-
-## Special Cases
-
-### Backward Motions
-
-Backward motions work toward
-line start, but rules still apply.
-
-
-### Empty Result
-
-Exclusive motion to current position
-results in no operation.
-
-## Line End Special
-
-### $ Motion
-
-`$` is inclusive but ignores
-newline character for operations.
-
-
-## Configuration
-
-### Motion Definitions
-
-
-## Visual Mode
-
-### Selection Behavior
-
-Inclusive motions extend selection
-to include the destination.
-
-Exclusive motions stop before
-the destination character.
-
-### Toggle Inclusive
-
-
-## Operators Affected
-
-### All Operators
-
-- Delete (`d`)
-- Yank (`y`)
-- Change (`c`)
-- Format (`gq`)
-- Case (`gu`, `gU`, `g~`)
+- Operator modifiers: [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
+- Motion grammar: [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)

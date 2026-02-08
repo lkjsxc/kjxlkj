@@ -1,120 +1,55 @@
 # Read-Only Registers
 
-Registers that can only be read, not written directly.
+Registers that reflect editor state and cannot be written directly.
 
-## List of Read-Only Registers
+## Register Reference (normative)
 
 | Register | Name | Content |
-|----------|------|---------|
-| `".` | Last insert | Last inserted text |
-| `"%` | Filename | Current buffer filename |
-| `"#` | Alternate | Alternate buffer filename |
-| `":` | Last command | Last ex command |
+|---|---|---|
+| `".` | Last insert | Text from the most recent insert mode session |
+| `"%` | Filename | Current buffer's relative filename |
+| `"#` | Alternate | Alternate (previous) buffer filename |
+| `":` | Last command | Most recently executed ex command (without `:`) |
 | `"/` | Last search | Last search pattern |
 
-## Last Insert Register (.)
+## Last Insert Register (`.`)
 
-Contains text from the most recent insert mode session.
+Updated on every insert mode exit. Contains only the text inserted during the most recent insert session (not cumulative). If insert mode types `hello`, `".` contains `hello`.
 
-### Content
+## Filename Register (`%`)
 
-
-### Usage
-
-
-### Limitations
-
-- Read-only: `:let @. = "x"` has no effect
-- Updated only on insert mode exit
-- Single insert session only (not cumulative)
-
-## Filename Register (%)
-
-Contains the current buffer's filename.
-
-### Content Examples
-
-
-### Usage
-
-
-### Path Modifiers
-
-Use `expand()` for path manipulation:
+Contains the current buffer's filename as a relative path. For path manipulation in commands, use expand modifiers:
 
 | Expression | Result |
-|------------|--------|
+|---|---|
 | `@%` | Relative filename |
-| `expand("%:p")` | Full path |
-| `expand("%:h")` | Directory |
-| `expand("%:t")` | Filename only |
-| `expand("%:r")` | Without extension |
+| `expand("%:p")` | Absolute path |
+| `expand("%:h")` | Directory part |
+| `expand("%:t")` | Filename only (tail) |
+| `expand("%:r")` | Without extension (root) |
 | `expand("%:e")` | Extension only |
 
-## Alternate File Register (#)
+## Alternate File Register (`#`)
 
-Contains the alternate (previous) buffer filename.
+Contains the filename of the previous buffer. Updated on buffer switch. `<C-^>` toggles between current and alternate buffers.
 
-### Usage
+## Last Command Register (`:`)
 
+Contains the last ex command text. Useful for repeating complex commands with `@:`.
 
-### When Updated
+## Last Search Register (`/`)
 
-- Changes when switching buffers
-- `:b#` uses this register
-- `Ctrl-^` toggles between current and alternate
+Contains the last search pattern. Unlike other read-only registers, `@/` can be set programmatically to change the active search pattern.
 
-## Last Command Register (:)
+## Accessing Read-Only Registers
 
-Contains the most recently executed ex command.
+| Context | Method |
+|---|---|
+| Normal mode | `"rp` where `r` is the register |
+| Insert mode | `<C-r>r` |
+| Command line | `<C-r>r` |
 
-### Content
+## Related
 
-
-### Usage
-
-
-### Note
-
-- Does not include the `:` prefix
-- Updated after each command execution
-- Useful for complex command repetition
-
-## Last Search Register (/)
-
-Contains the last search pattern.
-
-### Content
-
-
-### Usage
-
-
-### Setting (Special Case)
-
-Unlike other read-only registers, `@/` can be set:
-
-
-## Reading in Different Contexts
-
-### Normal Mode
-
-
-### Insert Mode
-
-
-### Command Line
-
-
-## Why Read-Only?
-
-These registers reflect editor state:
-- Content determined by editor actions
-- Writing would break expected behavior
-- Some have special write semantics (`/`)
-
-## Configuration
-
-
-## API Reference
-
+- Registers overview: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
+- Expression register: [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)

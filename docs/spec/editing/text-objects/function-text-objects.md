@@ -1,108 +1,52 @@
 # Function Text Objects
 
-Text objects for function definitions.
+Text objects for selecting function definitions and bodies.
 
-## Overview
+## Commands (normative)
 
-Select function bodies, signatures,
-or entire function definitions.
+| Object | Description |
+|---|---|
+| `if` | Inner function: function body only (excluding signature and delimiters) |
+| `af` | Around function: entire function (signature + body + closing) |
 
-## Inner Function
+## Detection Method
 
-### Command
+Function boundaries are detected via tree-sitter AST nodes. The editor queries for `function_item`, `function_definition`, `method_definition`, `arrow_function`, and similar node types depending on language grammar.
 
+### Fallback (no tree-sitter)
 
-### Behavior
+When tree-sitter is unavailable, function detection falls back to:
 
-Selects the body/implementation
-without signature or delimiters.
+1. Language-specific patterns (e.g., `fn` keyword for Rust, `def` for Python)
+2. Indentation-based body detection
 
-### Example
+## Language Examples
 
+| Language | `af` selects | `if` selects |
+|---|---|---|
+| Rust | `fn name(...) { ... }` | Body inside `{ ... }` |
+| Python | `def name(...):` + indented body | Indented body only |
+| JavaScript | `function name(...) { ... }` or `() => { ... }` | Body inside `{ ... }` |
+| Go | `func name(...) { ... }` | Body inside `{ ... }` |
 
-`dif` removes:
+## Closures and Lambdas
 
-## Around Function
-
-### Command
-
-
-### Behavior
-
-Selects complete function:
-signature + body + closing.
-
-### Example
-
-
-`daf` removes entire function.
-
-## Language Support
-
-### Rust
-
-
-### Python
-
-
-### JavaScript/TypeScript
-
-
-### Go
-
-
-## Methods
-
-### Instance Methods
-
-
-`af` on method selects entire method.
-
-### Static Methods
-
-
-## Closures/Lambdas
-
-### Inner
-
-
-`if` selects `x + 1`
-
-### Around
-
-`af` selects entire closure `|x| { x + 1 }`
-
-### Python Lambda
-
-
-`af` selects `lambda x: x + 1`
-
-## Detection
-
-### Tree-sitter Based
-
-
-### Indent Based Fallback
-
-For languages without tree-sitter:
-- Find function start pattern
-- Use indentation for body
+`af` and `if` also work on closures/lambdas when tree-sitter identifies them as function-like nodes.
 
 ## Nested Functions
 
-### Outer/Inner
+With nested functions, the text object selects the innermost function containing the cursor. Move the cursor outside the inner function to select the outer one.
 
+## Operator Examples
 
-With cursor on `body`:
-- `if` selects inner body
-- `af` selects entire inner
+| Command | Effect |
+|---|---|
+| `daf` | Delete entire function |
+| `yif` | Yank function body |
+| `vaf` | Visually select entire function |
+| `cif` | Change function body (enter insert mode) |
 
-### Navigate Up
+## Related
 
-Move cursor to outer function
-to select outer function.
-
-## Anonymous Functions
-
-### JavaScript
-
+- Class text objects: [/docs/spec/editing/text-objects/class-text-objects.md](/docs/spec/editing/text-objects/class-text-objects.md)
+- Text objects overview: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

@@ -1,139 +1,55 @@
 # Increment/Decrement
 
-Number and value manipulation.
+Number and value manipulation under cursor.
 
-## Overview
-
-Quickly increment or decrement numbers
-and other values under the cursor.
-
-## Basic Operations
-
-### Increment
+## Basic Operations (normative)
 
 | Key | Action |
-|-----|--------|
-| `Ctrl-A` | Increment by 1 |
-| `{n}Ctrl-A` | Increment by n |
+|---|---|
+| `<C-a>` | Increment number under/after cursor by 1 |
+| `{count}<C-a>` | Increment by count |
+| `<C-x>` | Decrement number under/after cursor by 1 |
+| `{count}<C-x>` | Decrement by count |
 
-### Decrement
+The cursor searches forward on the current line for the first number if not already on one.
 
-| Key | Action |
-|-----|--------|
-| `Ctrl-X` | Decrement by 1 |
-| `{n}Ctrl-X` | Decrement by n |
+## Supported Number Formats
 
-## Examples
+| Format | Prefix | Example | Detection |
+|---|---|---|---|
+| Decimal | (none) | `42`, `-7` | Default |
+| Hexadecimal | `0x` / `0X` | `0xff` | When `nrformats` contains `hex` |
+| Octal | `0` | `077` | When `nrformats` contains `octal` |
+| Binary | `0b` / `0B` | `0b1010` | When `nrformats` contains `bin` |
+| Unsigned | (none) | `255` | When `nrformats` contains `unsigned` |
 
-### Simple Increment
-
-Before: `10`
-After `Ctrl-A`: `11`
-
-### With Count
-
-Before: `10`
-After `5Ctrl-A`: `15`
-
-### Decrement
-
-Before: `10`
-After `Ctrl-X`: `9`
-
-## Number Formats
-
-### Decimal
-
-
-### Hexadecimal
-
-
-### Octal
-
-
-### Binary
-
-
-## Configuration
-
-### Number Formats
-
-
-### Options
-
-| Format | Numbers |
-|--------|---------|
-| `bin` | Binary (0b...) |
-| `hex` | Hexadecimal (0x...) |
-| `octal` | Octal (0...) |
-| `alpha` | Alphabetic (a-z) |
+Default `nrformats`: `bin,hex`.
 
 ## Negative Numbers
 
-### Works with Negatives
-
-Before: `-5`
-After `Ctrl-A`: `-4`
-
-### Through Zero
-
-Before: `-1`
-After `2Ctrl-A`: `1`
+- `-5` + `<C-a>` → `-4`
+- `-1` + `2<C-a>` → `1` (crosses zero)
 
 ## Visual Mode
 
-### Increment Selection
+With a visual selection containing numbers:
 
-Select numbers, then `Ctrl-A`:
+| Key | Action |
+|---|---|
+| `<C-a>` | Increment all numbers in selection by 1 |
+| `<C-x>` | Decrement all numbers in selection by 1 |
+| `g<C-a>` | Sequentially increment (1st +1, 2nd +2, etc.) |
+| `g<C-x>` | Sequentially decrement |
 
-Before:
+Sequential increment is useful for creating numbered lists from repeated zeros.
 
-After:
+## Alphabetic Increment
 
-### Sequential Increment
+When `nrformats` contains `alpha`:
 
-Select numbers, then `g Ctrl-A`:
+- `a` + `<C-a>` → `b`
+- `z` + `<C-a>` → wraps or stops depending on config
 
-Before:
+## Related
 
-After:
-
-## Block Mode
-
-### Column Increment
-
-`Ctrl-V` to select column of numbers:
-
-
-After `g Ctrl-A`:
-
-## Alphabetic
-
-### Enable Alpha
-
-
-### Increment Letters
-
-Before: `a`
-After `Ctrl-A`: `b`
-
-### Wraparound
-
-Before: `z`
-After `Ctrl-A`: `aa` (with setting)
-
-## Dates
-
-### Date Increment
-
-
-Before: `2024-01-01`
-After `Ctrl-A`: `2024-01-02`
-
-### Date Formats
-
-
-## Boolean Toggle
-
-### Toggle True/False
-
+- Text manipulation: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)

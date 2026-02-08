@@ -1,160 +1,48 @@
 # Magic Modes
 
-Pattern interpretation modes.
+Pattern interpretation modes controlling which characters are special.
 
-## Overview
+## Four Magic Levels (normative)
 
-Magic modes control how special characters
-are interpreted in patterns.
-
-## Magic Levels
-
-### Four Levels
-
-| Mode | Flag | Description |
-|------|------|-------------|
-| Very Magic | `\v` | Most special chars active |
-| Magic | `\m` | Default vim-like |
-| No Magic | `\M` | Most literal |
-| Very No Magic | `\V` | All literal |
+| Mode | Prefix | Special without `\` | Need `\` to activate |
+|---|---|---|---|
+| Very Magic | `\v` | Most punctuation: `()`, `|`, `+`, `?`, `{}`, `<>` | Only `\` and delimiter |
+| Magic | `\m` | `.`, `*`, `^`, `$`, `[` | `+`, `?`, `|`, `(`, `)`, `{`, `}` |
+| No Magic | `\M` | Only `^`, `$` | Everything else |
+| Very No Magic | `\V` | Nothing (only `\`) | Everything |
 
 ## Magic (Default)
 
-### Active Special Characters
+The default mode. `.`, `*`, `^`, `$`, `[` are special. Groups require `\(...\)`, alternation requires `\|`, quantifiers require `\+`, `\?`, `\{n,m}`.
 
-| Char | Meaning |
-|------|---------|
-| `.` | Any character |
-| `*` | Zero or more |
-| `^` | Start of line |
-| `$` | End of line |
-| `[` | Character class |
+## Very Magic (`\v`)
 
-### Escaped to Activate
+After `\v`, most punctuation is special without backslash. Only `\`, the search delimiter, and alphanumerics/`_` are literal.
 
-| Pattern | Meaning |
-|---------|---------|
-| `\+` | One or more |
-| `\?` | Zero or one |
-| `\|` | Alternation |
-| `\(` | Group start |
-| `\)` | Group end |
+Comparison for grouping with alternation:
 
-### Example
+- Magic: `\(foo\|bar\)\+`
+- Very Magic: `\v(foo|bar)+`
 
+## No Magic (`\M`)
 
-## Very Magic (\v)
+Only `^` and `$` are special. `.` matches literal dot. Use `\` to activate metacharacters: `\.` matches any char, `\*` matches zero or more.
 
-### Most Characters Special
+## Very No Magic (`\V`)
 
-After `\v`, these are special:
-- `()` - Groups
-- `|` - Alternation
-- `+` - One or more
-- `?` - Zero or one
-- `{}` - Quantifiers
+Everything is literal except `\`. Useful for searching literal text with special characters (paths, URLs). Escape to activate: `\V/path/to/file` searches for literal `/path/to/file`.
 
-### Only Literal
+## Mode Switching Mid-Pattern
 
-- `_` - Underscore
-- Letters and numbers
+Place `\v`, `\m`, `\M`, or `\V` anywhere in a pattern to switch modes from that point onward. Useful for mixing literal and regex sections.
 
-### Example
+## Recommended Usage
 
+- **Very Magic** (`\v`) for complex patterns (groups, alternation, quantifiers)
+- **Magic** (default) for simple patterns
+- **Very No Magic** (`\V`) for literal text search containing special characters
 
-Same as `/\(foo\|bar\)\+` in magic mode.
+## Related
 
-### Comparison
-
-| Magic | Very Magic |
-|-------|------------|
-| `\(foo\|bar\)` | `(foo\|bar)` |
-| `\d\+` | `\d+` |
-| `\w\{3,5\}` | `\w{3,5}` |
-| `\<word\>` | `<word>` |
-
-## No Magic (\M)
-
-### Mostly Literal
-
-Only `^` and `$` are special.
-
-### Example
-
-
-Matches literal `foo.bar`.
-
-### Escape to Activate
-
-
-`.` and `+` become special.
-
-## Very No Magic (\V)
-
-### All Literal
-
-Everything is literal except `\`.
-
-### Example
-
-
-Matches literal `foo.bar` including the `.`.
-
-### Escape to Activate
-
-
-## Switching Modes
-
-### Mid-Pattern
-
-
-Switch to very magic mid-pattern.
-
-### Multiple Switches
-
-
-## Configuration
-
-### Default Mode
-
-
-### Per-Search
-
-Override in search:
-
-
-## Practical Use
-
-### When to Use Very Magic
-
-- Complex patterns with groups
-- Multiple alternations
-- Cleaner syntax for regexes
-
-### When to Use No Magic
-
-- Searching for literal text
-- Text with many special chars
-- File paths, URLs
-
-## Examples
-
-### Very Magic Email
-
-
-### No Magic File Path
-
-
-### Very No Magic URL
-
-
-## Escape Reference
-
-### In Magic Mode
-
-| To Match | Pattern |
-|----------|---------|
-| `.` | `\.` |
-| `*` | `\*` |
-| `[` | `\[` |
-| `^` | `\^` |
+- Very magic detail: [/docs/spec/editing/regex/very-magic.md](/docs/spec/editing/regex/very-magic.md)
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)

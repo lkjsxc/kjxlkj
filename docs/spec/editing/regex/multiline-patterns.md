@@ -2,125 +2,48 @@
 
 Searching and matching across line boundaries.
 
-## Newline Matching
-
-### Basic Newline
+## Newline Atoms
 
 | Pattern | Meaning |
-|---------|---------|
-| `\n` | Match newline character |
+|---|---|
+| `\n` | Match newline character in search pattern |
 | `\_s` | Whitespace including newline |
 | `\_.` | Any character including newline |
-| `\_^` | Start of line (multiline) |
-| `\_$` | End of line (multiline) |
+| `\_^` | Start of line, anywhere in pattern |
+| `\_$` | End of line, anywhere in pattern |
 
 ## Character Class Extensions
 
-Add `\_` prefix for newline inclusion:
+Prefix any character class with `\_` to include newline:
 
-| Normal | With Newline |
-|--------|--------------|
-| `.` | `\_.` |
-| `\s` | `\_s` |
-| `\w` | `\_w` |
-| `\a` | `\_a` |
-| `[abc]` | `\_[abc]` |
-
-## Multi-line Search Examples
-
-### Match Across Lines
-
-
-Matches "start" through "end" across any number of lines.
-
-### Match Function Block
-
-
-Matches function with body spanning multiple lines.
-
-### Match Multi-line String
-
-
-Matches Python triple-quoted string.
-
-## Line-Oriented Patterns
-
-### Consecutive Lines
-
-
-Matches "line1" immediately followed by newline and "line2".
-
-### Empty Lines
-
-
-### Lines Starting With
-
-
-Matches if/then on consecutive lines.
-
-## Very Magic Multi-line
-
-
-## Practical Examples
-
-### Match Paragraph
-
-
-Non-empty lines until blank line.
-
-### Match Code Block
-
-
-Markdown code block.
-
-### Match Comment Block
-
-
-### Match Function Definition
-
-
-## Substitution Across Lines
-
-### Join Lines
-
-
-### Add After Pattern
-
-
-### Multi-line Replace
-
-
-## Using \_.* Carefully
-
-### Greedy Behavior
-
-
-### Performance
-
-Multi-line patterns can be slow on large files:
-
-
-## Visual Mode Multi-line
-
-
-## Range with Newlines
-
-### Match N Lines
-
-
-### Fixed Line Range
-
-
-## Joining Pattern
-
-Match and join:
-
+| Normal | With Newline | Matches |
+|---|---|---|
+| `.` | `\_.` | Any char including newline |
+| `\s` | `\_s` | Space, tab, newline |
+| `\w` | `\_w` | Word char or newline |
+| `\a` | `\_a` | Alpha or newline |
+| `[abc]` | `\_[abc]` | a, b, c, or newline |
 
 ## Common Multi-line Patterns
 
 | Task | Pattern |
-|------|---------|
-| C comment | `/\/\*\_.\{-}\*\/` |
-| HTML tag | `/<\w\+\_.\{-}<\/\w\+>` |
-| Triple string | `/"""\_.\{-}"""` |
-| Empty lines | `/^\s*\n\s*$` |
+|---|---|
+| Match text across lines | `start\_.\{-}end` |
+| Consecutive lines | `line1\nline2` |
+| C block comment | `/\*\_.\{-}\*/` |
+| HTML tag with content | `<\w\+\_.\{-}<\/\w\+>` |
+| Python triple string | `"""\_.\{-}"""` |
+| Adjacent blank lines | `\n\n\n` |
+
+## Performance Warning
+
+`\_.*` is greedy and scans to end of buffer. Always prefer `\_.\{-}` (non-greedy) for multi-line matching to avoid extreme slowness on large files.
+
+## Substitution Across Lines
+
+Multi-line patterns work in `:s` with appropriate ranges. Use `\n` in the pattern and `\r` in the replacement to insert newlines.
+
+## Related
+
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
+- Quantifiers: [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)

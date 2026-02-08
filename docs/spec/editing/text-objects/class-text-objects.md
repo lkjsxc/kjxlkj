@@ -1,101 +1,47 @@
 # Class Text Objects
 
-Text objects for class definitions.
+Text objects for selecting class/struct/enum definitions.
 
-## Overview
+## Commands (normative)
 
-Select class bodies, definitions,
-or entire class structures.
+| Object | Description |
+|---|---|
+| `ic` | Inner class: class body/members only (excluding declaration) |
+| `ac` | Around class: entire class (declaration + body + closing) |
 
-## Inner Class
+## Detection Method
 
-### Command
+Uses tree-sitter AST nodes: `struct_item`, `class_declaration`, `enum_item`, `interface_declaration`, `impl_item`, and similar node types.
 
+### What Counts as "Class"
 
-### Behavior
+| Language | Matched Constructs |
+|---|---|
+| Rust | `struct`, `enum`, `impl`, `trait` |
+| Python | `class` |
+| JavaScript/TypeScript | `class`, `interface`, `enum` |
+| Go | `type ... struct`, `type ... interface` |
+| Java/C# | `class`, `interface`, `enum` |
 
-Selects class body/members
-without class declaration.
+## Behavior
 
-### Example
-
-
-`dic` removes methods and attrs,
-leaving:
-
-## Around Class
-
-### Command
-
-
-### Behavior
-
-Selects complete class:
-declaration + body + closing.
-
-### Example
-
-
-`dac` removes entire struct.
-
-## Language Support
-
-### Python
-
-
-### Rust
-
-
-### JavaScript/TypeScript
-
-
-### Go
-
-
-### Java/C#
-
-
-## Structs and Types
-
-### Rust Struct
-
-
-Treated as class object.
-
-### TypeScript Interface
-
-
-Also matched by class object.
-
-### Go Struct
-
-
-## Enum Types
-
-### Rust Enum
-
-
-`ac` selects entire enum.
-`ic` selects variants only.
-
-### TypeScript Enum
-
+- `ic` selects only the members/body between delimiters (e.g., inside `{ }`)
+- `ac` selects the entire construct including keywords, name, and delimiters
 
 ## Nested Classes
 
-### Inner Class
+The text object selects the innermost class containing the cursor. Move cursor outside the inner class to operate on the outer one.
 
+## Operator Examples
 
-With cursor in Inner:
-- `ic` selects Inner body
-- `ac` selects entire Inner
+| Command | Effect |
+|---|---|
+| `dac` | Delete entire class/struct |
+| `yic` | Yank class body |
+| `vac` | Visually select entire class |
+| `cic` | Change class body |
 
-### Navigate to Outer
+## Related
 
-Move cursor outside Inner
-to operate on Outer.
-
-## Impl Blocks
-
-### Rust
-
+- Function text objects: [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)
+- Text objects overview: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

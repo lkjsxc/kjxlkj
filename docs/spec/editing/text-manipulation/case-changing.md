@@ -1,139 +1,61 @@
 # Case Changing
 
-Text case transformation.
+Text case transformation operators.
 
-## Overview
+## Case Operators (normative)
 
-Change text case with operators and
-commands for various case styles.
+| Key | Action | Type |
+|---|---|---|
+| `~` | Toggle case of character under cursor, advance cursor | Characterwise |
+| `g~{motion}` | Toggle case over motion | Operator |
+| `g~~` | Toggle case of current line | Linewise |
+| `gU{motion}` | Uppercase over motion | Operator |
+| `gUU` | Uppercase current line | Linewise |
+| `gu{motion}` | Lowercase over motion | Operator |
+| `guu` | Lowercase current line | Linewise |
 
-## Case Operators
-
-### Toggle Case
-
-| Key | Action |
-|-----|--------|
-| `~` | Toggle char under cursor |
-| `g~{motion}` | Toggle motion |
-| `g~~` | Toggle line |
-
-### Uppercase
+## Visual Mode Case
 
 | Key | Action |
-|-----|--------|
-| `gU{motion}` | Uppercase motion |
-| `gUU` | Uppercase line |
+|---|---|
+| `~` | Toggle case of selection |
+| `U` | Uppercase selection |
+| `u` | Lowercase selection |
 
-### Lowercase
+## Tilde Behavior
 
-| Key | Action |
-|-----|--------|
-| `gu{motion}` | Lowercase motion |
-| `guu` | Lowercase line |
+The `~` key toggles case of the character under the cursor and moves the cursor right. With a count, `5~` toggles the next 5 characters. When `tildeop` is set, `~` acts as an operator requiring a motion (`~w` toggles a word).
 
-## Examples
-
-### Toggle Word
-
-
-Before: `Hello` → After: `hELLO`
-
-### Uppercase Word
-
-
-Before: `hello` → After: `HELLO`
-
-### Lowercase Line
-
-
-## Visual Mode
-
-### Selection Case
-
-Select text, then:
-
-| Key | Action |
-|-----|--------|
-| `~` | Toggle case |
-| `U` | Uppercase |
-| `u` | Lowercase |
-
-## Range Commands
-
-### Uppercase Range
-
-
-### Lowercase Range
-
-
-### In Pattern
-
-
-## Case Modifiers
-
-### In Substitution
+## Case Modifiers in Substitution
 
 | Modifier | Effect |
-|----------|--------|
-| `\u` | Uppercase next char |
-| `\l` | Lowercase next char |
-| `\U` | Uppercase following |
-| `\L` | Lowercase following |
-| `\e` | End case modification |
+|---|---|
+| `\u` | Uppercase next character |
+| `\l` | Lowercase next character |
+| `\U` | Uppercase all following until `\E` |
+| `\L` | Lowercase all following until `\E` |
 | `\E` | End case modification |
 
-### Examples
+## Case Style Conversions
 
+Built-in commands for common case style transformations:
 
-## Case Styles
+| Style | Example | Description |
+|---|---|---|
+| camelCase | `helloWorld` | First word lowercase, subsequent capitalized |
+| PascalCase | `HelloWorld` | All words capitalized |
+| snake_case | `hello_world` | All lowercase with underscores |
+| SCREAMING_SNAKE | `HELLO_WORLD` | All uppercase with underscores |
+| kebab-case | `hello-world` | All lowercase with hyphens |
+| Title Case | `Hello World` | Each word capitalized |
 
-### camelCase
+Style conversions are available as commands or can be composed via substitute patterns.
 
+## Unicode Case
 
-Before: `hello_world` → After: `helloWorld`
+Case conversion is Unicode-aware. Characters such as `ß` → `SS` (uppercase), `i` → `I` (except in Turkish locale where `i` → `I` with dot above).
 
-### PascalCase
+## Related
 
-
-Before: `hello_world` → After: `HelloWorld`
-
-### snake_case
-
-
-Before: `helloWorld` → After: `hello_world`
-
-### SCREAMING_SNAKE
-
-
-Before: `helloWorld` → After: `HELLO_WORLD`
-
-### kebab-case
-
-
-Before: `helloWorld` → After: `hello-world`
-
-### Title Case
-
-
-Before: `hello world` → After: `Hello World`
-
-### Sentence case
-
-
-Before: `hello world` → After: `Hello world`
-
-## Configuration
-
-### Custom Commands
-
-
-### Default Case
-
-
-## Keybindings
-
-
-## With Text Objects
-
-### Uppercase Word
-
+- Text manipulation: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
+- Substitute: [/docs/spec/commands/substitute/substitute.md](/docs/spec/commands/substitute/substitute.md)

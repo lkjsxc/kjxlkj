@@ -1,141 +1,55 @@
 # Operator Modifiers
 
-Forcing motion types with operators.
+Force motion type when applying operators.
 
-## Overview
+## Motion Types
 
-Override the default motion type
-when applying operators.
+Every motion has a default type: characterwise, linewise, or blockwise. Modifiers override this default.
 
-## Motion Type Basics
+## Force Modifiers (normative)
 
-### Three Types
+| Modifier | Between operator and motion | Effect |
+|---|---|---|
+| `v` | `d v j` | Force characterwise |
+| `V` | `d V j` | Force linewise |
+| `<C-v>` | `d <C-v> j` | Force blockwise |
 
-1. **Characterwise**: Individual characters
-2. **Linewise**: Complete lines
-3. **Blockwise**: Rectangular block
+The modifier key is pressed between the operator and the motion.
 
-### Default Behavior
+## Force Characterwise (`v`)
 
-Motions have inherent types:
-- `w`, `e`: characterwise
-- `j`, `k`: linewise
-- `<C-v>`: blockwise (visual)
+Makes a linewise motion act characterwise. The operation affects from cursor position to the exact destination position.
 
-## Force Characterwise
+Example: `j` is normally linewise. `dvj` deletes from cursor position to the same column on the next line (characterwise), rather than deleting both entire lines.
 
-### Modifier
+## Force Linewise (`V`)
 
+Makes a characterwise motion act linewise. The operation affects entire lines covered by the motion.
 
-### Usage
+Example: `w` is normally characterwise. `dVw` deletes the entire line(s) covered by the word motion.
 
+## Force Blockwise (`<C-v>`)
 
-### Effect
+Creates a rectangular selection for the operator. The block spans from cursor to destination position.
 
-Normally `dj` is linewise (two lines).
-`dvj` deletes from cursor to same
-column on next line (characterwise).
+Example: `d<C-v>2j` deletes a column block spanning the cursor column across 3 lines.
 
-### Example
+## Force Impact Table
 
+| Motion | Default Type | + `v` | + `V` | + `<C-v>` |
+|---|---|---|---|---|
+| `j`, `k` | Linewise | Characterwise | Linewise | Blockwise |
+| `w`, `e`, `b` | Characterwise | Characterwise | Linewise | Blockwise |
+| `$` | Characterwise | Characterwise | Linewise | Blockwise |
+| `G` | Linewise | Characterwise | Linewise | Blockwise |
+| `/pattern` | Characterwise | Characterwise | Linewise | Blockwise |
+| `f{c}` | Characterwise | Characterwise | Linewise | Blockwise |
 
-With cursor on 'w':
-- `dj` → deletes both lines
-- `dvj` → deletes "world\nfoo "
+## Yank Type Affects Paste
 
-## Force Linewise
+The type used during yank determines paste behavior. A block yank (`y<C-v>j`) pastes as a block.
 
-### Modifier
+## Related
 
-
-### Usage
-
-
-### Effect
-
-Normally `dw` is characterwise.
-`dVw` deletes entire lines covered.
-
-### Example
-
-
-With cursor on 'h':
-- `dw` → "world"
-- `dVw` → (entire line deleted)
-
-## Force Blockwise
-
-### Modifier
-
-
-### Usage
-
-
-### Effect
-
-Creates rectangular selection
-for the delete operation.
-
-### Example
-
-
-With cursor on 'w':
-- `dj` → deletes lines
-- `d<C-v>j` → deletes column
-
-## Practical Examples
-
-### Characterwise Force
-
-
-Use when motion is linewise
-but you want characters.
-
-### Linewise Force
-
-
-Use when motion is characterwise
-but you want full lines.
-
-### Blockwise Force
-
-
-`d<C-v>2j$` deletes to end
-of each line (block).
-
-## With Text Objects
-
-### Force on Objects
-
-
-Usually not needed with objects,
-but available for special cases.
-
-## Motion Type Table
-
-| Motion | Default      | v       | V        | Ctrl-V   |
-|--------|-------------|---------|----------|----------|
-| w      | char        | char    | line     | block    |
-| j      | line        | char    | line     | block    |
-| $      | char        | char    | line     | block    |
-| G      | line        | char    | line     | block    |
-| /pat   | char        | char    | line     | block    |
-
-## Yank with Modifiers
-
-### Force Types
-
-
-### Paste Behavior
-
-Yanked type affects paste.
-Block yank → block paste.
-
-## Change with Modifiers
-
-### Force Types
-
-
-### Insert Behavior
-
-After forced change:
+- Exclusive/inclusive: [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
+- Forced motion types: [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)

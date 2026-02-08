@@ -1,123 +1,50 @@
 # Quantifiers
 
-Pattern repetition modifiers for controlling match counts.
+Repetition matching in regex patterns.
 
-## Basic Quantifiers
+## Quantifier Reference (normative)
 
-| Quantifier | Meaning |
-|------------|---------|
-| `*` | Zero or more (greedy) |
-| `\+` | One or more (greedy) |
-| `\?` | Zero or one (greedy) |
-| `\=` | Zero or one (synonym) |
-| `\{n}` | Exactly n times |
-| `\{n,}` | At least n times |
-| `\{,m}` | At most m times |
-| `\{n,m}` | Between n and m times |
+| Magic Mode | Very Magic | Meaning | Greedy |
+|---|---|---|---|
+| `*` | `*` | Zero or more | Yes |
+| `\+` | `+` | One or more | Yes |
+| `\?` or `\=` | `?` | Zero or one | Yes |
+| `\{n,m}` | `{n,m}` | Between n and m | Yes |
+| `\{n}` | `{n}` | Exactly n | N/A |
+| `\{n,}` | `{n,}` | At least n | Yes |
+| `\{,m}` | `{,m}` | At most m | Yes |
+| `\{-n,m}` | `{-n,m}` | Between n and m | No (lazy) |
+| `\{-}` | `{-}` | Zero or more | No (lazy) |
+| `\{-n,}` | `{-n,}` | At least n | No (lazy) |
+| `\{-,m}` | `{-,m}` | At most m | No (lazy) |
 
-## Greedy vs Non-Greedy
+## Greedy vs Lazy
 
-### Greedy (Default)
+**Greedy** quantifiers match as much as possible, then backtrack if needed.
 
-Match as much as possible:
+**Lazy** quantifiers (prefixed with `-` in braces) match as little as possible.
 
+Given text `<a>text</a>`:
 
-### Non-Greedy
+- Greedy `<.*>` matches `<a>text</a>` (entire string)
+- Lazy `<.\{-}>` matches `<a>` (first tag only)
 
-Match as little as possible:
+## Common Usage
 
+| Pattern | Meaning |
+|---|---|
+| `\d\+` | One or more digits |
+| `\w*` | Zero or more word characters |
+| `\s\?` | Optional whitespace |
+| `.\{3,5}` | 3 to 5 of any character |
+| `\_.\{-}` | Non-greedy across lines |
 
-| Greedy | Non-Greedy |
-|--------|------------|
-| `*` | `\{-}` |
-| `\+` | `\{-1,}` |
-| `\?` | `\{-0,1}` |
-| `\{n,m}` | `\{-n,m}` |
+## Quantifier Precedence
 
-## Very Magic Quantifiers
+Quantifiers bind to the immediately preceding atom. Use grouping to apply quantifiers to multi-character sequences: `\(foo\)\+` matches one or more `foo`.
 
-| Normal | Very Magic (\v) |
-|--------|-----------------|
-| `\+` | `+` |
-| `\?` | `?` |
-| `\{n,m}` | `{n,m}` |
+## Related
 
-
-## Count Examples
-
-### Exact Count
-
-
-### Minimum Count
-
-
-### Maximum Count
-
-
-### Range Count
-
-
-## Non-Greedy Examples
-
-### Basic Non-Greedy
-
-
-### Non-Greedy with Count
-
-
-## Possessive Quantifiers
-
-Match without backtracking (fail fast):
-
-
-## Combining Quantifiers
-
-### With Character Classes
-
-
-### With Groups
-
-
-## Practical Examples
-
-### Match IP Address
-
-
-### Match Phone Number
-
-
-### Match Email
-
-
-### Match Quoted String
-
-
-### Match HTML Tag
-
-
-## Zero-Width Assertions
-
-Quantifiers work with assertions:
-
-
-## Common Patterns
-
-| Task | Pattern |
-|------|---------|
-| Optional whitespace | `\s*` |
-| Required whitespace | `\s\+` |
-| Word characters | `\w\+` |
-| Any content | `.*` |
-| Minimal content | `.\{-}` |
-| Fixed digits | `\d\{4}` |
-| Variable length | `\w\{3,10}` |
-
-## Performance Notes
-
-- Non-greedy often slower
-- Possessive faster but less flexible
-- Specific counts faster than ranges
-- Character classes faster than `.`
-
-## Configuration
-
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
+- Grouping: [/docs/spec/editing/regex/grouping-refs.md](/docs/spec/editing/regex/grouping-refs.md)
+- Multi-line: [/docs/spec/editing/regex/multiline-patterns.md](/docs/spec/editing/regex/multiline-patterns.md)

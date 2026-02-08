@@ -1,135 +1,73 @@
 # Sentence and Paragraph Motions
 
-Navigate by text structure.
-
-## Overview
-
-Move by sentences and paragraphs
-for prose and code editing.
+Navigate by text structure units.
 
 ## Sentence Motions
 
-### Commands
+| Motion | Description | Type |
+|---|---|---|
+| `)` | Forward to next sentence start | Exclusive |
+| `(` | Backward to previous sentence start | Exclusive |
 
-| Motion | Description |
-|--------|-------------|
-| `)` | Next sentence start |
-| `(` | Previous sentence start |
+### Sentence Definition
 
-### Definition
+A sentence ends at `.`, `!`, or `?` followed by:
 
-A sentence ends at `.`, `!`, `?` 
-followed by end of line or spaces.
+- End of line, OR
+- At least one space or tab
 
-### Example
+Optionally, closing characters `)`, `]`, `"`, `'` may appear between the punctuation and the whitespace/EOL.
 
+A blank line also ends a sentence.
 
-## Sentence Rules
+### Sentence Text Objects
 
-### End Characters
-
-
-### Followed By
-
-- End of line
-- Space, tab
-- `)`, `]`, `"`, `'`
-
-### Example Ends
-
+| Object | Description |
+|---|---|
+| `is` | Inner sentence (no trailing whitespace) |
+| `as` | A sentence (includes trailing whitespace) |
 
 ## Paragraph Motions
 
-### Commands
+| Motion | Description | Type |
+|---|---|---|
+| `}` | Forward to next paragraph boundary (blank line) | Exclusive |
+| `{` | Backward to previous paragraph boundary | Exclusive |
 
-| Motion | Description |
-|--------|-------------|
-| `}` | Next paragraph start |
-| `{` | Previous paragraph start |
+### Paragraph Definition
 
-### Definition
+Paragraphs are separated by blank lines (lines containing only whitespace). In code, blank lines between function definitions act as paragraph boundaries.
 
-Paragraphs are separated by
-blank lines.
-
-### Example
-
-
-## Paragraph Boundaries
-
-### Separators
-
-- Blank lines
-- Form feed characters
-- Certain section macros
-
-### Code Context
-
-In code, blank lines separate
-"paragraphs" of code blocks.
-
-
-## Text Objects
-
-### Sentence Objects
+### Paragraph Text Objects
 
 | Object | Description |
-|--------|-------------|
-| `is` | Inner sentence |
-| `as` | A sentence (with space) |
-
-### Paragraph Objects
-
-| Object | Description |
-|--------|-------------|
-| `ip` | Inner paragraph |
-| `ap` | A paragraph (with blanks) |
-
-## Operator Examples
-
-### Delete Sentence
-
-
-### Delete Paragraph
-
-
-## Code Applications
-
-### Function Navigation
-
-`{` and `}` jump between functions
-separated by blank lines.
-
-### Block Navigation
-
-
-`}` jumps to the blank line.
-
-## Format Paragraph
-
-### gq Operator
-
-
-### Text Width
-
+|---|---|
+| `ip` | Inner paragraph (lines, excluding surrounding blank lines) |
+| `ap` | A paragraph (includes trailing blank lines) |
 
 ## Section Motions
 
-### Commands
-
 | Motion | Description |
-|--------|-------------|
-| `]]` | Next section start |
-| `[[` | Previous section start |
-| `][` | Next section end |
-| `[]` | Previous section end |
+|---|---|
+| `]]` | Forward to next section start (`{` at column 0) |
+| `[[` | Backward to previous section start |
+| `][` | Forward to next section end (`}` at column 0) |
+| `[]` | Backward to previous section end |
 
-### Definition
+Sections are defined by `{` or `}` at column 0, which typically correspond to C/Rust function boundaries.
 
-Sections start with `{` at
-beginning of line (C functions).
+## Operator Interaction
 
-## Prose Editing
+All sentence/paragraph motions work with operators:
 
-### Writing Workflow
+| Example | Effect |
+|---|---|
+| `d)` | Delete to next sentence start |
+| `dap` | Delete entire paragraph including trailing blanks |
+| `gqap` | Format paragraph to `textwidth` |
+| `y{` | Yank to previous paragraph boundary |
 
+## Related
+
+- Word motions: [/docs/spec/editing/motions/word-WORD.md](/docs/spec/editing/motions/word-WORD.md)
+- Motion grammar: [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)

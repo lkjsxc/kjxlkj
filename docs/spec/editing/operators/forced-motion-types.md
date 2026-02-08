@@ -1,133 +1,47 @@
 # Forced Motion Types
 
-Explicitly set motion behavior.
+Detailed reference for motion type forcing.
 
 ## Overview
 
-Override how motions interact
-with operators by forcing the
-selection type.
+This document supplements operator-modifiers.md with detailed rules for how forcing interacts with exclusive/inclusive semantics.
 
-## Characterwise Force
+## Exclusive vs Inclusive (normative)
 
-### Syntax
+| Category | Motions | Meaning |
+|---|---|---|
+| Inclusive | `e`, `ge`, `E`, `gE`, `$`, `g_`, `f{c}`, `F{c}`, `` ` ``mark, `%` | Destination character IS part of the operation |
+| Exclusive | `w`, `W`, `b`, `B`, `t{c}`, `T{c}`, `(`, `)`, `{`, `}`, `/`, `?`, `n`, `N` | Destination character is NOT part of the operation |
 
+## Exclusive-to-Inclusive Adjustment
 
-### Purpose
+When an exclusive characterwise motion results in the cursor being at column 0 of a line that is beyond the starting line, the operation is adjusted: the end moves back one character (to column 0 minus 1, i.e., end of previous line), and the motion becomes inclusive. This prevents unexpected empty line inclusion.
 
-Make a linewise motion act
-as characterwise.
+## The `v` Toggle
 
-### Example
+When `v` is placed between an operator and an exclusive characterwise motion, the motion becomes inclusive (and vice versa). This toggles the exclusive/inclusive behavior only for characterwise motions.
 
+## Inherently Linewise Motions
 
-Cursor on 'h':
-- `d2j` → deletes 3 lines
-- `dv2j` → deletes from 'h' to 'b'
+| Motion | Description |
+|---|---|
+| `j`, `k` | Line up/down |
+| `G`, `gg` | Go to line |
+| `H`, `M`, `L` | Screen line |
+| `]]`, `[[`, `][`, `[]` | Section |
+| `_` | Current line |
 
-## Linewise Force
+## Inherently Characterwise Motions
 
-### Syntax
+| Motion | Description |
+|---|---|
+| `h`, `l` | Character left/right |
+| `w`, `e`, `b` | Word motions |
+| `f`, `t`, `F`, `T` | Character find |
+| `$`, `0`, `^` | Line position |
+| `/`, `?`, `n`, `N` | Search |
 
+## Related
 
-### Purpose
-
-Make a characterwise motion
-act as linewise.
-
-### Example
-
-
-Cursor on 'w':
-- `d$` → deletes "world more"
-- `dV$` → deletes entire line
-
-## Blockwise Force
-
-### Syntax
-
-
-### Purpose
-
-Create rectangular selection
-for any motion.
-
-### Example
-
-
-Cursor on 'c':
-- `d2j` → deletes 3 lines
-- `d<C-v>2j` → deletes column c-o
-
-## Forcing Exclusive/Inclusive
-
-### Exclusive Motions
-
-End character not included:
-
-### Inclusive Motions
-
-End character included:
-
-### Force Inclusive
-
-
-Some interpretations vary.
-
-## Applying to Operators
-
-### Delete
-
-
-### Yank
-
-
-### Change
-
-
-## Motion Categories
-
-### Inherently Linewise
-
-These motions are linewise:
-
-### Inherently Characterwise
-
-These motions are characterwise:
-
-## Force Impact Table
-
-| Motion | Type    | +v      | +V      | +Ctrl-V |
-|--------|---------|---------|---------|---------|
-| j      | line    | char    | line    | block   |
-| w      | char    | char    | line    | block   |
-| G      | line    | char    | line    | block   |
-| $      | char    | char    | line    | block   |
-| fe     | char    | char    | line    | block   |
-
-## Exclusive vs Inclusive
-
-### Default Behavior
-
-- `w`: exclusive (stops before next word)
-- `e`: inclusive (includes end char)
-- `$`: inclusive (includes newline)
-
-### Force Effects
-
-Force modifier affects type,
-not exclusivity.
-
-## Practical Scenarios
-
-### Copy Column
-
-
-### Delete Non-Line Range
-
-
-### Change Full Lines
-
-
-## With Counts
-
+- Operator modifiers: [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
+- Exclusive/inclusive: [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
