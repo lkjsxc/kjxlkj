@@ -1,139 +1,67 @@
 # Inner Text Objects
 
-Select text content without delimiters.
+Back: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+
+Text objects that select content inside delimiters, excluding the delimiters themselves.
 
 ## Overview
 
-Inner text objects select content EXCLUDING delimiters
-and surrounding whitespace. They select only the
-"inside" of a construct.
+Inner text objects (`i{x}`) select text between enclosing characters without including the enclosing characters.
 
-## Word Objects
+## Available Inner Text Objects
 
-### Inner Word
+| Text Object | Selects Inner Content Of |
+|---|---|
+| `iw` | Word (cursor word, no surrounding whitespace) |
+| `iW` | WORD (cursor WORD, no surrounding whitespace) |
+| `is` | Sentence (no surrounding whitespace) |
+| `ip` | Paragraph (no surrounding blank lines) |
+| `i(` / `i)` / `ib` | Parentheses |
+| `i[` / `i]` | Square brackets |
+| `i{` / `i}` / `iB` | Curly braces |
+| `i<` / `i>` | Angle brackets |
+| `i"` | Double quotes |
+| `i'` | Single quotes |
+| `` i` `` | Backticks |
+| `it` | XML/HTML tag content |
 
-`iw` selects the word under the cursor without
-surrounding whitespace.
+## Word Object Difference
 
-### Behavior
+| Object | Text: `hello world` (cursor on `hello`) |
+|---|---|
+| `iw` | `hello` |
+| `aw` | `hello ` (includes trailing space) |
 
-Selects a contiguous sequence of keyword characters
-(letters, digits, underscore). If cursor is on
-whitespace, selects the whitespace block instead.
+## Delimiter Objects
 
-### Example
+For `i(`, `i[`, `i{`, `i<`, `i"`, `i'`, `` i` ``:
 
-On `the quick brown`, cursor on `quick`:
-`diw` deletes `quick`, result: `the  brown`.
-`ciw` changes `quick` and enters insert mode.
+- Select everything between the nearest matching pair.
+- Do NOT include the delimiters.
+- Search outward from cursor for enclosing pair if cursor is not between them.
 
-## WORD Objects
+## Nesting
 
-### Inner WORD
+For bracket-type objects, nesting is handled correctly:
 
-`iW` selects the WORD (non-whitespace sequence)
-under the cursor without surrounding whitespace.
+In `(a (b) c)` with cursor on `b`: `i)` selects `b` (inner parentheses). `2i)` is not supported — use `a)` to get the larger pair.
 
-### Example
+## Count
 
-On `foo-bar baz`, cursor on `-`:
-`diW` deletes `foo-bar`, result: ` baz`.
+A count selects the Nth outer enclosing pair:
 
-## Sentence Objects
-
-### Inner Sentence
-
-`is` selects the sentence content without trailing
-whitespace.
-
-## Paragraph Objects
-
-### Inner Paragraph
-
-`ip` selects the paragraph content without trailing
-blank lines.
-
-## Quote Objects
-
-### Inner Double Quote
-
-`i"` selects content between `"` delimiters,
-excluding the quotes themselves.
-
-### Inner Single Quote
-
-`i'` selects content between `'` delimiters.
-
-### Inner Backtick
-
-`` i` `` selects content between backtick delimiters.
-
-### Example
-
-On `say "hello world" now`, cursor inside quotes:
-`di"` deletes `hello world`, result: `say "" now`.
-`ci"` changes `hello world` and enters insert.
-
-## Bracket Objects
-
-### Inner Parentheses
-
-`i(` or `i)` or `ib` selects content inside `()`,
-excluding the parentheses.
-
-### Inner Brackets
-
-`i[` or `i]` selects content inside `[]`.
-
-### Inner Braces
-
-`i{` or `i}` or `iB` selects content inside `{}`.
-
-### Inner Angle Brackets
-
-`i<` or `i>` selects content inside `<>`.
-
-### Example
-
-On `fn(a, b, c)`, cursor inside parens:
-`di(` deletes `a, b, c`, result: `fn()`.
-`ci)` changes inner content and enters insert.
-
-## Tag Objects
-
-### Inner Tag
-
-`it` selects content between matching HTML/XML tags,
-excluding the tags themselves.
-
-### Example
-
-On `<div>hello</div>`:
-`dit` deletes `hello`, result: `<div></div>`.
-`cit` changes `hello` and enters insert mode.
-
-## Nested Delimiters
-
-### Level Selection
-
-`i(` selects the innermost `()` content around cursor.
-`2i(` selects the next level out.
-
-### Example
-
-On `(a(b(c)))`, cursor on `c`:
-`di(` deletes `c`, result: `(a(b()))`.
-`2di(` deletes `b(c)`, result: `(a())`.
+`d2i)` — delete inside the 2nd-level enclosing parentheses.
 
 ## Whitespace Handling
 
-### No Extra Space
+Inner objects for words, sentences, and paragraphs exclude surrounding whitespace. Inner objects for delimiters only exclude the delimiters, preserving any internal whitespace.
 
-Unlike `a` (around) objects, `i` (inner) objects never
-include adjacent whitespace. The selection is exactly
-the content within the delimiters.
+## CJK Behavior
 
-### Empty Content
+`iw` operates on grapheme clusters. A CJK character is treated as a word by itself—`iw` on a CJK character selects that single character.
 
-On `()`, `di(` is a no-op (nothing to delete).
-`ci(` enters insert mode between the delimiters.
+## Related
+
+- Around text objects: [/docs/spec/editing/text-objects/around-text-objects.md](/docs/spec/editing/text-objects/around-text-objects.md)
+- Text objects overview: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+- Bracket text objects: [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)

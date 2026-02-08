@@ -1,131 +1,58 @@
 # Advanced Macros
 
-Complex macro techniques and patterns.
+Back: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+
+Advanced macro techniques and edge cases.
 
 ## Overview
 
-Advanced macro techniques beyond basic recording
-and playback. Covers editing macros, conditional
-execution, and macro debugging.
+Beyond basic macro recording and playback, macros support recursive invocation, editing, appending, and interaction with other features like visual mode and counts.
 
-## Editing Macros
+## Appending to a Macro
 
-### Via Register
+`q{A-Z}` — recording with an uppercase register letter appends to the existing macro in that register.
 
-1. `"ap` — paste macro contents from register `a`
-2. Edit the pasted text as normal text
-3. `0"ay$` — yank the edited line back into register `a`
-
-### Via :let
-
-`:let @a = "0dwj"` sets register `a` directly.
-Special characters use escape sequences.
-
-## Conditional Patterns
-
-### Search-Based Stop
-
-A macro that uses `/pattern` will stop when no match
-is found. This acts as a conditional break.
-
-### Count-Based
-
-`10@a` runs macro `a` exactly 10 times. If the macro
-errors before completion, remaining iterations stop.
+`qa` records macro a. Later, `qA` appends additional commands to macro a.
 
 ## Recursive Macros
 
-### Self-Calling
+A macro can call itself: record a macro in register `a` that ends with `@a`. The macro repeats until an error occurs (e.g., end of file).
 
-`qa...@aq` — the macro calls itself at the end. It
-continues until an error occurs (natural termination).
+Example: `qadd@aq` — deletes a line and recursively repeats until no lines remain.
 
-### Terminate Conditions
+## Editing Macros
 
-Common termination triggers:
-- Motion fails (end/start of file)
-- Search finds no match
-- Explicitly recorded `<C-c>` (not recommended)
+Macros are stored in registers as text. To edit:
 
-## Parallel Application
+1. `"ap` — paste the macro text.
+2. Edit the text.
+3. `"ayy` — yank the edited text back into register `a`.
 
-### On Multiple Lines
+## Macro with Count
 
-`:%normal! @a` applies macro to every line independently.
-Each line starts fresh; errors on one line do not stop
-processing of subsequent lines.
+`10@a` — execute macro `a` 10 times. Stops early if the macro encounters an error.
 
-### On Selection
+## Last Macro
 
-Visual select lines, then `:'<,'>normal! @a`.
+`@@` replays the last executed macro. Useful for quickly repeating a just-run macro.
 
-### On Pattern Matches
+## Visual Mode
 
-`:g/pattern/normal! @a` applies only to matching lines.
+Select lines with `V`, then `:normal @a` — executes macro `a` on each selected line.
 
-## Macro Composition
+## Macro Registers
 
-### Sequential
+Macros are stored in named registers (`a`-`z`). They share storage with yank/delete registers.
 
-`:let @c = @a . @b` concatenates macros `a` and `b`
-into macro `c`.
+## Session Persistence
 
-### Nested Calls
+Macro registers are saved in the session file.
 
-Within macro `a`, call `@b` to execute macro `b` as
-a subroutine. Execution returns to macro `a` after
-`b` completes.
+## Error Behavior
 
-## Debugging
+If any command in a macro fails (e.g., search finds no match), macro execution stops immediately.
 
-### Step Through
+## Related
 
-There is no built-in macro debugger. Debugging strategy:
-1. Paste macro with `"ap`
-2. Read each command in the sequence
-3. Execute commands one at a time manually
-4. Identify the failing step
-
-### Common Issues
-
-- Forgetting to exit insert mode (`<Esc>`)
-- Cursor position not matching expectations
-- Searching for absent patterns
-- Off-by-one in count-based loops
-
-## Persistence
-
-### In Config
-
-Frequently used macros can be stored in config:
-`[macros]` section, `a = "0dwj"`, etc.
-
-### Session
-
-Macros in registers persist across sessions via the
-session file when session saving is enabled.
-
-## Performance
-
-### Large Repetitions
-
-`10000@a` may be slow. For very large repetitions,
-consider using `:g` with `:s` or `:normal` instead.
-
-### Screen Updates
-
-During macro playback, screen updates are suppressed
-until the macro completes. This improves performance
-significantly.
-
-## Safety
-
-### Undo
-
-The entire macro execution (all iterations) can be
-undone with a single `u`.
-
-### Backup
-
-Before running a destructive macro on many lines,
-save the file first or use `:earlier {time}`.
+- Macros: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+- Registers: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

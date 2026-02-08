@@ -1,165 +1,63 @@
-# Snippet Support
+# Snippets
 
-Code snippets for rapid text insertion.
+Back: [/docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md)
+
+Template-based text expansion with tabstops and placeholders.
 
 ## Overview
 
-Snippets are templates that expand into larger
-code blocks with placeholder values.
+Snippets are code templates composed of static text, tabstops, placeholders, choices, and transformations. They integrate with the completion system and can be triggered by typing a prefix.
 
-## Defining Snippets
+## Snippet Format
 
-### Configuration
+Snippets use LSP snippet syntax (a subset of TextMate snippet syntax).
 
-Snippets are defined in JSON or TOML files placed in the snippet directories. Each snippet MUST have a `prefix`, `body`, and MAY have `description` and `scope` fields.
+## Tabstops
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `prefix` | string | yes | Trigger text typed in insert mode |
-| `body` | array of strings | yes | Lines of expanded content with tab stops |
-| `description` | string | no | Shown in completion menu |
-| `scope` | string | no | Comma-separated language IDs; omit for all file types |
-
-Tab stop syntax: `$1`, `$2` for tab stops; `${1:default}` for placeholder with default text; `${1|a,b,c|}` for choice list; `$0` for final cursor position.
-
-## Triggering Snippets
-
-### Tab Expansion
-
-In insert mode, type a snippet prefix and press `<Tab>`. The
-editor MUST scan loaded snippets for a matching prefix. If
-exactly one match exists, it MUST expand immediately. If
-multiple prefixes match, a completion menu MUST appear listing
-all candidates with their descriptions.
-
-### Explicit Command
-
-`:SnippetExpand {prefix}` -- expand the named snippet at the
-cursor position from normal or command mode.
-`:SnippetList` -- show all snippets available for the current
-buffer's filetype.
+| Syntax | Description |
+|---|---|
+| `$1` | First tabstop |
+| `$2` | Second tabstop |
+| `$0` | Final cursor position |
+| `${1:default}` | Tabstop with default text |
 
 ## Placeholders
 
-### Syntax
+`${1:name}` — the text `name` is pre-filled and selected. Typing replaces it.
 
-| Syntax | Description |
-|--------|-------------|
-| `$1` | First placeholder |
-| `${1:default}` | With default |
-| `${1|a,b,c|}` | Choice list |
-| `$0` | Final cursor |
+## Choices
 
-### Navigation
-
-| Key | Action |
-|-----|--------|
-| `<Tab>` | Next placeholder |
-| `<S-Tab>` | Previous placeholder |
-| `<Esc>` | Exit snippet |
-
-## Linked Placeholders
-
-### Same Value
-
-Multiple occurrences of the same tab stop number (e.g. `$1`)
-MUST be linked. All instances MUST update in real time.
-
-Editing `$1` updates all instances.
-
-## Transformations
-
-### Case Conversion
-
-Transform syntax: `${N/regex/replacement/flags}`.
-Built-in case modifiers for replacement strings:
-
-- `${1:/upcase}` -- convert capture to UPPER CASE
-- `${1:/downcase}` -- convert capture to lower case
-- `${1:/capitalize}` -- capitalize first letter
-- `${1:/camelcase}` -- convert to camelCase
-- `${1:/pascalcase}` -- convert to PascalCase
-
-### Regex Replace
-
-Transformations use Rust `regex` crate syntax. Capture groups
-are referenced as `$1`, `$2`, etc. in the replacement string.
-
-Example: `${1/(.*)_(.*)/$2_$1/}` swaps words around `_`.
-
-## Built-in Snippets
-
-### Rust
-
-| Prefix | Description |
-|--------|-------------|
-| `fn` | Function |
-| `impl` | Implementation |
-| `struct` | Struct |
-| `enum` | Enum |
-| `test` | Test function |
-
-### JavaScript
-
-| Prefix | Description |
-|--------|-------------|
-| `func` | Function |
-| `arrow` | Arrow function |
-| `class` | Class |
-| `import` | Import statement |
-
-## Custom Snippet Files
-
-### Directory Structure
-
-Snippet files are placed under `~/.config/kjxlkj/snippets/` and named by language (e.g. `global.json` for all file types, `rust.json` for Rust-only, `python.json` for Python-only). Language identifiers MUST match the editor's internal filetype names.
-
-### Global Snippets
-
-Apply to all file types.
-Defined in `global.json`. If a global snippet prefix conflicts
-with a language-specific one, the language-specific snippet MUST
-take priority.
-
-## LSP Snippets
-
-### From Language Server
-
-LSP servers can provide snippets in completions.
-
-Completion items with `insertTextFormat: 2` (Snippet) MUST be
-parsed using LSP snippet syntax and expanded through the same
-snippet engine. LSP snippets MUST support the same tab stops,
-placeholders, choices, and variables as user-defined snippets.
+`${1|option1,option2,option3|}` — presents a choice menu at the tabstop.
 
 ## Variables
 
-### Built-in
-
 | Variable | Value |
-|----------|-------|
+|---|---|
 | `$TM_FILENAME` | Current filename |
-| `$TM_FILEPATH` | Full path |
-| `$TM_LINE_NUMBER` | Line number |
-| `$CURRENT_DATE` | Today's date |
+| `$TM_FILEPATH` | Full file path |
+| `$TM_DIRECTORY` | Directory of current file |
+| `$TM_LINE_NUMBER` | Current line number |
+| `$TM_SELECTED_TEXT` | Selected text (visual mode) |
+| `$CLIPBOARD` | Clipboard content |
+| `$CURRENT_YEAR` | Current year |
+| `$UUID` | Generated UUID |
 
-### Example
+## Transformations
 
-A snippet named `"File Header"` with prefix `"header"` and body `["$LINE_COMMENT File: $TM_FILENAME", "$LINE_COMMENT $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE", "$0"]`.
+`${1/pattern/replacement/flags}` — regex transform applied to tabstop value.
 
 ## Configuration
 
-In `~/.config/kjxlkj/config.toml`, a `[snippets]` table controls behavior:
+Snippets are defined in TOML files under `snippets/`:
 
-| Setting | Default | Description |
+| Field | Type | Description |
 |---|---|---|
-| `enable` | `true` | Master toggle |
-| `tab_trigger` | `true` | `<Tab>` triggers expansion |
-| `dirs` | `["~/.config/kjxlkj/snippets"]` | Additional snippet directories to search |
+| `prefix` | string | Trigger text |
+| `body` | string or array | Template lines |
+| `description` | string | Shown in completion menu |
+| `scope` | string | Comma-separated file types |
 
-## Best Practices
+## Related
 
-1. Use descriptive prefixes
-2. Add descriptions
-3. Keep snippets focused
-4. Use placeholders effectively
+- Insert snippets: [/docs/spec/modes/insert/completion/insert-snippets.md](/docs/spec/modes/insert/completion/insert-snippets.md)
+- Completion: [/docs/spec/modes/insert/completion/README.md](/docs/spec/modes/insert/completion/README.md)

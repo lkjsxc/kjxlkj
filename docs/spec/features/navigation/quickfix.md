@@ -1,107 +1,66 @@
-# Quickfix and Location Lists
+# Quickfix List
 
-kjxlkj provides quickfix and location list functionality.
+Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
+
+A global list of locations for navigating errors, search results, and other entries.
 
 ## Overview
 
-Lists for navigating through:
-- Compiler errors
-- Grep results
-- LSP diagnostics
-- Search results
+The quickfix list holds a collection of file positions (file, line, column, text). It is populated by commands like `:make`, `:grep`, `:vimgrep`, and LSP diagnostics.
 
-## Quickfix (Global)
+## Navigation
 
-One quickfix list shared across windows.
+| Command | Key | Description |
+|---|---|---|
+| `:cnext` | `]q` | Go to next quickfix entry |
+| `:cprev` | `[q` | Go to previous quickfix entry |
+| `:cfirst` | - | Go to first entry |
+| `:clast` | - | Go to last entry |
+| `:cc {N}` | - | Go to entry N |
 
-### Navigation
-
-
-### Open/Close
-
-
-## Location List (Per-window)
-
-Each window has its own location list.
-
-
-## Commands
-
-### Quickfix Commands
+## Open/Close
 
 | Command | Description |
-|---------|-------------|
+|---|---|
 | `:copen` | Open quickfix window |
 | `:cclose` | Close quickfix window |
-| `:cnext` | Next item |
-| `:cprev` | Previous item |
-| `:cfirst` | First item |
-| `:clast` | Last item |
-| `:cdo {cmd}` | Run command on each item |
+| `:cwindow` | Open quickfix window if there are entries |
 
-### Location Commands
+## Populate
 
-| Command | Description |
-|---------|-------------|
-| `:lopen` | Open location list |
-| `:lclose` | Close location list |
-| `:lnext` | Next item |
-| `:lprev` | Previous item |
+| Command | Source |
+|---|---|
+| `:make` | Build errors |
+| `:grep {pattern}` | Grep results |
+| `:vimgrep {pattern} {files}` | Internal grep |
+| LSP | Diagnostics, references |
 
-## Populating Lists
+## Location List
 
-### From Grep
+The location list is a per-window variant of the quickfix list:
 
-
-Fills quickfix with matches.
-
-### From LSP
-
-
-### From Build
-
-
-## Configuration
-
+| Quickfix | Location list |
+|---|---|
+| `:cnext` | `:lnext` |
+| `:cprev` | `:lprev` |
+| `:copen` | `:lopen` |
+| `:cclose` | `:lclose` |
 
 ## Quickfix Window
 
-Navigate within quickfix:
-
-| Key | Action |
-|-----|--------|
-| `j/k` | Move up/down |
-| `Enter` | Jump to item |
-| `o` | Open in split |
-| `t` | Open in tab |
-| `p` | Preview (don't close) |
-| `q` | Close quickfix |
+The quickfix window is a special buffer that displays entries. Press `<CR>` on an entry to jump to that location.
 
 ## History
 
-Navigate quickfix history:
+The editor remembers the last 10 quickfix lists. `:colder` and `:cnewer` navigate between them.
 
+| Command | Description |
+|---|---|
+| `:colder` | Switch to older quickfix list |
+| `:cnewer` | Switch to newer quickfix list |
 
+## Related
 
-## Filtering
-
-Filter quickfix items:
-
-
-## Integration
-
-### With LSP
-
-
-### With Finder
-
-Send finder results to quickfix:
-
-Press `<C-q>` in finder to send to quickfix.
-
-## Trouble Alternative
-
-View diagnostics in organized list:
-
-
-Shows grouped diagnostics with context.
+- Navigation: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
+- Live grep: [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)
+- Diagnostics: [/docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)

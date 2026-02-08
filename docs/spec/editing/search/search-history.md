@@ -1,89 +1,52 @@
 # Search History
 
-Navigation and management of search pattern history.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 
-## History Navigation
+History of search patterns used with `/` and `?`.
 
-### In Search Mode
+## Overview
 
-| Key | Action |
-|-----|--------|
-| `↑` / `Ctrl-P` | Previous search pattern |
-| `↓` / `Ctrl-N` | Next search pattern |
-| `Ctrl-R Ctrl-W` | Insert word under cursor |
-| `Ctrl-R Ctrl-A` | Insert WORD under cursor |
+Every search pattern entered with `/` or `?` is saved in the search history. The history can be navigated and re-used.
 
-### Filtered History
-
-When text is entered, arrows filter history:
-
-
-## History Registers
-
-
-## Command-Line Window
-
-Open full history in editable buffer:
+## Navigation
 
 | Key | Action |
-|-----|--------|
-| `q/` | Open search history window |
-| `q?` | Open backward search history |
-| `Ctrl-F` | Switch to history window (from /) |
+|---|---|
+| `<Up>` / `<C-p>` | Previous search pattern |
+| `<Down>` / `<C-n>` | Next search pattern |
 
-### In History Window
+History navigation filters entries to match any prefix already typed.
 
-| Key | Action |
-|-----|--------|
-| `<CR>` | Execute selected search |
-| `<Esc>` | Close without executing |
-| `j/k` | Navigate history |
-| `/` | Search within history |
+## History Size
 
-## History Storage
+| Setting | Default | Description |
+|---|---|---|
+| `history.search` | `100` | Maximum search history entries |
 
+## Search History Window
 
-## Viewing History
+`q/` opens the search history in a command-line window where entries can be browsed, edited, and executed with `<CR>`.
 
+## Session Persistence
 
-Output format:
+Search history is saved in the session file and survives editor restarts.
 
-## Clearing History
+## Programmatic Access
 
+| Command | Description |
+|---|---|
+| `:history /` | Display search history |
 
-## Adding to History
+## Last Search Pattern
 
+The last search pattern is stored in the `/` register. It can be inserted with `<C-r>/` in insert or command-line modes.
 
-## History Search (Incremental)
+## Clear History
 
-While typing search pattern:
+`:clearhistory search` clears the search history.
 
-| Key | Action |
-|-----|--------|
-| `Ctrl-G` | Go to next match (incsearch) |
-| `Ctrl-T` | Go to previous match |
+## Related
 
-## Pattern Recall
-
-| Key | Action |
-|-----|--------|
-| `/<CR>` | Repeat last search forward |
-| `?<CR>` | Repeat last search backward |
-| `n` | Repeat in same direction |
-| `N` | Repeat in opposite direction |
-
-## Substitute History Link
-
-Search and substitute share history:
-
-
-## History File Format
-
-
-## Configuration
-
-
-## API Reference
-
-
-## See Also
+- Search commands: [/docs/spec/editing/search/search-commands.md](/docs/spec/editing/search/search-commands.md)
+- Search patterns: [/docs/spec/editing/search/search-patterns.md](/docs/spec/editing/search/search-patterns.md)
+- Command-line history: [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)

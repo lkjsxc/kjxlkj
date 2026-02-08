@@ -1,129 +1,68 @@
 # Bracket Text Objects
 
-Text objects for paired brackets.
+Back: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+
+Text objects for paired bracket characters.
 
 ## Overview
 
-Bracket text objects select text delimited by paired
-bracket characters. Each pair has an "inner" (content only)
-and "around" (content plus delimiters) variant.
+Bracket text objects select text within or including matched bracket pairs: `()`, `[]`, `{}`, `<>`.
 
-## Parentheses
+## Text Objects
 
-### Inner
+| Inner | Around | Delimiters |
+|---|---|---|
+| `i(` / `i)` / `ib` | `a(` / `a)` / `ab` | `(...)` |
+| `i[` / `i]` | `a[` / `a]` | `[...]` |
+| `i{` / `i}` / `iB` | `a{` / `a}` / `aB` | `{...}` |
+| `i<` / `i>` | `a<` / `a>` | `<...>` |
 
-`i(` or `i)` or `ib` — selects everything between `(`
-and `)`, excluding the parentheses themselves.
+## Inner vs Around
 
-### Around
+| Object | Includes |
+|---|---|
+| `i(` | Content between `(` and `)` (exclusive) |
+| `a(` | Content including `(` and `)` themselves |
 
-`a(` or `a)` or `ab` — selects everything between `(`
-and `)`, including the parentheses.
+## Nesting
 
-### Example
+Brackets nest correctly. For `(a (b (c) d) e)` with cursor on `c`:
 
-With cursor on `bar` in `foo(bar, baz)`: `di(` deletes
-`bar, baz`, leaving `foo()`. `da(` deletes `(bar, baz)`.
+| Object | Selects |
+|---|---|
+| `i)` | `c` |
+| `a)` | `(c)` |
 
-## Square Brackets
+To select at higher nesting levels, position cursor appropriately or use count.
 
-### Inner
+## Multi-line
 
-`i[` or `i]` — selects content between `[` and `]`.
+Bracket pairs can span multiple lines. `i{` in a function body selects all lines between the braces.
 
-### Around
+## Search Behavior
 
-`a[` or `a]` — includes the brackets.
+When the cursor is:
 
-### Example
+1. **Between matching brackets**: selects that pair.
+2. **On an opening bracket**: selects the pair starting there.
+3. **On a closing bracket**: selects the pair ending there.
+4. **Outside any brackets**: searches forward on the line for an opening bracket.
 
-With cursor inside `arr[idx + 1]`: `ci[` changes `idx + 1`.
+## Count
 
-## Curly Braces
+`2i)` selects the contents of the second-level enclosing parentheses.
 
-### Inner
+## Operators
 
-`i{` or `i}` or `iB` — selects content between `{` and `}`.
+| Command | Effect |
+|---|---|
+| `di(` | Delete inside parentheses |
+| `ca{` | Change including curly braces |
+| `yi[` | Yank inside square brackets |
+| `da>` | Delete including angle brackets |
 
-### Around
+## Related
 
-`a{` or `a}` or `aB` — includes the braces.
-
-### Example
-
-With cursor inside a function body: `diB` deletes all lines
-between the opening and closing brace.
-
-## Angle Brackets
-
-### Inner
-
-`i<` or `i>` — selects content between `<` and `>`.
-
-### Around
-
-`a<` or `a>` — includes the angle brackets.
-
-### Example
-
-With cursor inside `<div class="x">`: `di<` deletes
-`div class="x"`.
-
-## Matching Algorithm
-
-### Finding Pairs
-
-1. From the cursor position, search backward for the opener
-2. Track nesting depth: increment on opener, decrement on closer
-3. When depth reaches zero backward, that is the matching opener
-4. From the opener, search forward with depth tracking for the closer
-5. Brackets inside string literals and comments are skipped
-   when tree-sitter is available
-
-### Cursor Position
-
-If the cursor is on a bracket character, that bracket is
-used as one end of the pair. The search proceeds in the
-appropriate direction for the matching partner.
-
-## Nested Brackets
-
-### Same Type
-
-Nesting is tracked by depth. In `((a)(b))` with cursor on `a`,
-`i(` selects `a`, while `2i(` selects `(a)(b)` (outer level).
-
-### Different Types
-
-Different bracket types nest independently.
-In `{ [a] }`, `i[` selects `a` and `i{` selects ` [a] `.
-
-## Multiline Brackets
-
-### Block Selection
-
-Bracket text objects work across multiple lines.
-With cursor inside a multiline block:
-`diB` deletes all lines between the braces,
-leaving only the opening and closing brace lines.
-
-### Formatting
-
-When the content is on separate lines from the brackets,
-"inner" includes all lines between the bracket lines
-(exclusive of the bracket lines themselves).
-
-## Empty Brackets
-
-### Behavior
-
-`i(` on `()` selects nothing (empty range). Operators
-like `d` have no effect. `a(` selects the entire `()`.
-
-## Unmatched Brackets
-
-### No Match Found
-
-If no matching pair is found, the operation is canceled
-and the cursor does not move. A beep/bell is produced.
-
+- Inner text objects: [/docs/spec/editing/text-objects/inner-text-objects.md](/docs/spec/editing/text-objects/inner-text-objects.md)
+- Around text objects: [/docs/spec/editing/text-objects/around-text-objects.md](/docs/spec/editing/text-objects/around-text-objects.md)
+- Quote text objects: [/docs/spec/editing/text-objects/quote-text-objects.md](/docs/spec/editing/text-objects/quote-text-objects.md)

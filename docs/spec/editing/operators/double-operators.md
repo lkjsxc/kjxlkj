@@ -1,161 +1,56 @@
 # Double Operators
 
-Line-wise shortcuts with repeated operators.
+Back: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+
+Operators applied to the current line by doubling the operator key.
 
 ## Overview
 
-Repeating an operator key applies the operation
-to the current line (linewise). The doubled key
-acts as a shorthand for `operator` + `_` (current line motion).
+Typing an operator key twice applies the operator to the entire current line(s). With a count, it applies to N lines starting from the current line.
 
-## Delete Line
+## Double Operator Commands
 
-### Command
+| Command | Effect |
+|---|---|
+| `dd` | Delete current line |
+| `cc` | Change current line (delete + enter insert) |
+| `yy` | Yank current line |
+| `>>` | Indent current line |
+| `<<` | Unindent current line |
+| `==` | Re-indent current line |
+| `gUU` | Uppercase current line |
+| `guu` | Lowercase current line |
+| `g~~` | Toggle case of current line |
+| `gqq` | Format current line |
 
-`dd` deletes the current line, including its trailing newline.
-The line below moves up to fill the gap.
+## With Count
 
-### Behavior
+`3dd` — delete 3 lines starting from the current line.
 
-The deleted text is placed in the unnamed register (`""`) and
-into `"1`, shifting `"1`–`"8` to `"2`–`"9`.
-The cursor moves to the first non-blank of the new current line.
+`5>>` — indent 5 lines.
 
-### With Count
+## Behavior
 
-`[count]dd` deletes count lines starting from the current line.
+The double-operator form is always line-wise. The entire line(s) including the newline character are affected.
 
-### With Register
+## Register
 
-`"add` deletes the current line into register `a`.
-`"Add` appends the deleted line to register `a`.
+`"a3dd` — delete 3 lines into register `a`.
 
-## Yank Line
+## Undo
 
-### Command
+Each double-operator command is a single undo unit.
 
-`yy` yanks the current line into the unnamed register (`""`) and `"0`.
-The cursor does not move.
+## Equivalence
 
-### Alias
+| Double | Equivalent |
+|---|---|
+| `dd` | `d_` (delete to first non-blank, line-wise) |
+| `yy` | `y_` or `Y` |
+| `cc` | `c_` or `S` |
 
-`Y` is equivalent to `yy` (Vim default; configurable to `y$`).
+## Related
 
-### With Count
-
-`[count]yy` yanks count lines.
-
-### With Register
-
-`"ayy` yanks into register `a`; `"Ayy` appends.
-
-## Change Line
-
-### Command
-
-`cc` clears the current line’s content and enters insert mode.
-The line itself remains (not deleted).
-
-### Behavior
-
-When `autoindent` is set, the cursor is placed at the
-indentation level of the original line. Otherwise column 0.
-
-### Alias
-
-`S` is equivalent to `cc`.
-
-### With Count
-
-`[count]cc` clears count lines, replacing them with a single
-blank line in insert mode.
-
-## Indent Line
-
-### Shift Right
-
-`>>` shifts the current line right by `shiftwidth` columns.
-Adds spaces or tabs depending on `expandtab`.
-
-### Shift Left
-
-`<<` shifts the current line left by `shiftwidth` columns.
-Stops at column 0 (never produces negative indent).
-
-### With Count
-
-`[count]>>` shifts count lines. Dot-repeatable.
-
-## Auto-Indent
-
-### Command
-
-`==` re-indents the current line based on syntax/indentation rules.
-Uses the configured `indentexpr` or built-in C-style indent.
-
-### Behavior
-
-Fixes indentation based on surrounding context.
-Does not alter non-whitespace content.
-
-### With Count
-
-`[count]==` re-indents count lines.
-
-## Format Line
-
-### Command
-
-`gqq` formats the current line.
-
-### Behavior
-
-Wraps the line at `textwidth`. Joins short neighboring lines.
-Respects `formatoptions` flags (comment leaders, list items).
-
-### With Count
-
-`[count]gqq` formats count lines.
-
-## Case Line
-
-### Toggle
-
-`g~~` toggles case of every character on the current line.
-
-### Lowercase
-
-`guu` converts the current line to lowercase.
-
-### Uppercase
-
-`gUU` converts the current line to uppercase.
-
-### With Count
-
-`[count]g~~` etc. operate on count lines.
-
-## Filter Line
-
-### Command
-
-`!!` filters the current line through an external command.
-The editor prompts for the command after `!!`.
-
-### Example
-
-`!!sort` replaces the current line with the output of `sort`.
-`3!!sort` filters 3 lines through `sort`.
-
-### With Count
-
-`[count]!!` filters count lines.
-
-## Comment Line
-
-### Plugin Command
-
-`gcc` toggles line comment on the current line using the
-filetype’s comment string (`commentstring` option).
-With count: `[count]gcc` toggles count lines.
-
+- Operators: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Operator grammar: [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
+- Operator-pending: [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
