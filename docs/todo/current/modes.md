@@ -71,7 +71,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Command parsing and execution
 - [x] Command-line editing (cursor movement, delete)
 - [x] Command history (`Up`/`Down`)
-- [ ] Tab completion
+- [x] Tab completion
 
 ## Replace mode
 

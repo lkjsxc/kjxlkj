@@ -16,7 +16,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Escape sequence parser: SU/SD/DECSTBM scroll regions
 - [x] Escape sequence parser: SGR (basic 8, bright 8, 256-color, 24-bit RGB)
 - [x] Escape sequence parser: DECSET/DECRST private modes (alt screen, cursor visibility)
-- [ ] Escape sequence parser: OSC (window title, clipboard)
+- [x] Escape sequence parser: OSC (window title, clipboard)
 - [x] Scrollback buffer with configurable capacity
 
 ### PTY management
@@ -25,14 +25,14 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Async read from PTY fd
 - [x] Write to PTY fd
 - [x] Resize via ioctl TIOCSWINSZ + SIGWINCH
-- [ ] Cleanup via SIGHUP on close
+- [x] Cleanup via SIGHUP on close
 
 ### Terminal as window
 
 - [x] Terminal windows share WindowId in layout tree
 - [x] Ctrl-w navigation works with terminal panes
 - [x] SIGWINCH on terminal pane resize
-- [ ] SIGHUP on terminal pane close
+- [x] SIGHUP on terminal pane close
 - [ ] Terminal Normal mode (scrollback navigation)
 
 ### Terminal features
