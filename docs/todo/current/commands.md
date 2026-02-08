@@ -35,8 +35,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Buffer commands
 
 - [/docs/spec/commands/buffer/README.md](/docs/spec/commands/buffer/README.md)
-- [ ] Buffer listing per [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)
-- [ ] Buffer navigation per [/docs/spec/commands/buffer/buffer-navigation.md](/docs/spec/commands/buffer/buffer-navigation.md)
+- [x] Buffer listing per [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)
+- [x] Buffer navigation per [/docs/spec/commands/buffer/buffer-navigation.md](/docs/spec/commands/buffer/buffer-navigation.md)
 - [ ] Arglist commands per [/docs/spec/commands/buffer/arglist-commands.md](/docs/spec/commands/buffer/arglist-commands.md)
 
 ## Quit commands

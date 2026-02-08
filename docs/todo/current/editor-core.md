@@ -26,8 +26,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Window creation via `:split`, `:vsplit`
 - [x] Window navigation: `Ctrl-w h/j/k/l`, `Ctrl-w w`
 - [x] Window close: `Ctrl-w c`, `Ctrl-w q`
-- [ ] Window resize: `Ctrl-w +/-`, `Ctrl-w </>`, `Ctrl-w =`
-- [ ] Window zoom: `Ctrl-w _`, `Ctrl-w |`
+- [x] Window resize: `Ctrl-w +/-`, `Ctrl-w </>`, `Ctrl-w =`
+- [x] Window zoom: `Ctrl-w _`, `Ctrl-w |`
 - [x] Window rotate: `Ctrl-w r`, `Ctrl-w R`
 - [x] Window move: `Ctrl-w H/J/K/L`
 - [x] Focus uniqueness invariant: exactly one focused window at all times

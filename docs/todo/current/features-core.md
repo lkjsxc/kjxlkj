@@ -79,19 +79,19 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Window command per [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
 - [ ] Window layouts per [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
 - [ ] Window presets per [/docs/spec/features/window/window-presets.md](/docs/spec/features/window/window-presets.md)
-- [ ] Window resize per [/docs/spec/features/window/window-resize-modes.md](/docs/spec/features/window/window-resize-modes.md)
+- [x] Window resize per [/docs/spec/features/window/window-resize-modes.md](/docs/spec/features/window/window-resize-modes.md)
 - [ ] Window resizer per [/docs/spec/features/window/window_resizer.md](/docs/spec/features/window/window_resizer.md)
-- [ ] Window zoom per [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)
+- [x] Window zoom per [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)
 
 ## Buffer features
 
 - [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
-- [ ] Buffer switching per [/docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)
+- [x] Buffer switching per [/docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)
 - [ ] Buffer groups per [/docs/spec/features/buffer/buffer-groups.md](/docs/spec/features/buffer/buffer-groups.md)
 - [ ] Buffer-local options per [/docs/spec/features/buffer/buffer-local-options.md](/docs/spec/features/buffer/buffer-local-options.md)
 - [ ] Buffer advanced per [/docs/spec/features/buffer/buffer-advanced.md](/docs/spec/features/buffer/buffer-advanced.md)
 - [ ] Bufferline per [/docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
-- [ ] Alternate file per [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
+- [x] Alternate file per [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
 - [ ] Arglist per [/docs/spec/features/buffer/arglist.md](/docs/spec/features/buffer/arglist.md)
 
 ## Wiring verification

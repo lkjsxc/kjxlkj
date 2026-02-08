@@ -97,4 +97,4 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] `r{char}` replaces single character without entering Replace mode
 - [x] Mode-dependent keybinding dispatch: same key produces different actions in different modes
 - [ ] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift
-- [ ] Mode indicator in statusline updates on every transition
+- [x] Mode indicator in statusline updates on every transition

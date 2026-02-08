@@ -43,9 +43,9 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Flash per [/docs/spec/features/navigation/flash.md](/docs/spec/features/navigation/flash.md)
 - [ ] Tags per [/docs/spec/features/navigation/tags.md](/docs/spec/features/navigation/tags.md)
 - [ ] Quickfix per [/docs/spec/features/navigation/quickfix.md](/docs/spec/features/navigation/quickfix.md)
-- [ ] Jump list per [/docs/spec/features/navigation/jumplist.md](/docs/spec/features/navigation/jumplist.md)
-- [ ] Change list per [/docs/spec/features/navigation/changelist.md](/docs/spec/features/navigation/changelist.md)
-- [ ] Marks per [/docs/spec/features/navigation/marks.md](/docs/spec/features/navigation/marks.md)
+- [x] Jump list per [/docs/spec/features/navigation/jumplist.md](/docs/spec/features/navigation/jumplist.md)
+- [x] Change list per [/docs/spec/features/navigation/changelist.md](/docs/spec/features/navigation/changelist.md)
+- [x] Marks per [/docs/spec/features/navigation/marks.md](/docs/spec/features/navigation/marks.md)
 - [ ] Include search per [/docs/spec/features/navigation/include-search.md](/docs/spec/features/navigation/include-search.md)
 
 ## Syntax and highlighting

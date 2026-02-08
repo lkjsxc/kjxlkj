@@ -74,7 +74,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Macros
 
 - [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
-- [ ] Record (`q{reg}`), playback (`@{reg}`), replay last (`@@`)
+- [x] Record (`q{reg}`), playback (`@{reg}`), replay last (`@@`)
 - [ ] Recursive macros per [/docs/spec/editing/macros/recursive-macros.md](/docs/spec/editing/macros/recursive-macros.md)
 - [ ] Register-based macros per [/docs/spec/editing/macros/register-macros.md](/docs/spec/editing/macros/register-macros.md)
 - [ ] Advanced macros per [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
@@ -86,7 +86,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Jump to mark (`` ` ``), jump to mark line (`'`)
 - [ ] Automatic marks per [/docs/spec/editing/marks/automatic-marks.md](/docs/spec/editing/marks/automatic-marks.md)
 - [ ] Special marks per [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
-- [ ] Jump list per [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
+- [x] Jump list per [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
 - [ ] Change list per [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)
 - [ ] Mark persistence per [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)
 
