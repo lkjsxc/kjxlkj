@@ -56,7 +56,9 @@ Each cell in the grid:
 
 ## Escape sequence parsing (normative)
 
-The terminal MUST implement a state machine parser for VT100/xterm escape sequences. The parser MUST handle:
+The terminal MUST implement a state machine parser for VT100/xterm escape sequences. The complete state machine, CSI dispatch table, private mode table, and SGR parameter parsing are specified in [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md).
+
+The parser MUST handle the following categories:
 
 | Category | Sequences |
 |---|---|
@@ -147,5 +149,6 @@ In terminal Normal mode, the scrollback buffer is navigable with standard Vim mo
 ## Related
 
 - Terminal README: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
+- Escape parser detail: [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md)
 - Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
 - Editor windows: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)

@@ -12,7 +12,8 @@ Terminal panes are windows. They share the same window tree, layout engine, spli
 
 | Document | Content |
 |----------|---------|
-| [terminal.md](terminal.md) | Full-scratch terminal emulator spec (PTY, escape parsing, screen buffer) |
+| [terminal.md](terminal.md) | Full-scratch terminal emulator spec (PTY, screen buffer, modes) |
+| [escape-parser.md](escape-parser.md) | VT100/xterm escape sequence parser state machine and dispatch tables |
 | [tmux.md](tmux.md) | Terminal multiplexer integration contract |
 | [wm-integration.md](wm-integration.md) | Window manager integration |
 | [remote.md](remote.md) | Remote editing over SSH |
