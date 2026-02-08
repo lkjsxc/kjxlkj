@@ -1,147 +1,72 @@
 # Quote Text Objects
 
+Back: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+
 Text objects for quoted strings.
 
 ## Overview
 
-Quote text objects select text delimited by quote
-characters. Three quote types are supported:
-double quotes, single quotes, and backticks.
+Quote text objects select text within or including matching quote characters. They work with single quotes, double quotes, and backticks.
 
-## Double Quotes
+## Quote Types
 
-### Inner
+| Text Object | Inner | Around | Delimiters |
+|---|---|---|---|
+| Single quote | `i'` | `a'` | `'...'` |
+| Double quote | `i"` | `a"` | `"..."` |
+| Backtick | `` i` `` | `` a` `` | `` `...` `` |
 
-`i"` selects the text between the nearest enclosing
-double-quote pair, excluding the quotes.
+## Inner vs Around
 
-### Around
+| Object | Selected Text |
+|---|---|
+| `i"` | Text between the quotes (exclusive of quotes) |
+| `a"` | Text including the quotes themselves |
 
-`a"` selects the text plus the quote characters.
-If a space follows the closing quote, it is included.
+## Search Behavior
 
-### Example
+When the cursor is:
 
-With cursor on `hello` in `say("hello")`: `di"` deletes
-`hello`, leaving `say("")`.
+1. **Inside quotes**: Selects the surrounding quote pair.
+2. **On a quote character**: Selects the quoted span containing that quote.
+3. **Outside quotes (on the line)**: Searches forward on the current line for the next quote pair.
 
-## Single Quotes
+Quote text objects do NOT cross line boundaries.
 
-### Inner
+## Escape Handling
 
-`i'` selects text between single quotes.
+Escaped quotes (e.g., `\"` inside a double-quoted string) are not treated as quote boundaries.
 
-### Around
+| String | `ci"` selects |
+|---|---|
+| `"hello"` | `hello` |
+| `"he\"llo"` | `he\"llo` |
+| `"a""b"` | When cursor is on `a`: `a` |
 
-`a'` includes the quote characters.
+## Nesting
 
-### Example
+Quotes of the same type do not nest. The first matching pair on the line is used. Different quote types do nest:
 
-With cursor inside `'world'`: `ci'` changes `world`.
+`"he said 'hello'"` — `i'` selects `hello`, `i"` selects `he said 'hello'`.
 
-## Backticks
+## Count
 
-### Inner
+A count is NOT supported for quote text objects. `2i"` does not select the second-out pair.
 
-`` i` `` selects text between backticks.
+## CJK Quotes
 
-### Around
+Full-width quotation marks (`「」`, `『』`, `""``) are NOT matched by `i"` / `a"`. These would need custom text objects.
 
-`` a` `` includes the backtick characters.
+## Operators
 
-### Example
+| Command | Effect |
+|---|---|
+| `ci"` | Change text inside double quotes |
+| `da'` | Delete text including single quotes |
+| `` yi` `` | Yank text inside backticks |
 
-With cursor inside `` `code` ``: `` di` `` deletes `code`.
+## Related
 
-## Quote Detection
-
-### Finding Pairs
-
-The cursor does not need to be on a quote character.
-If the cursor is not inside a quoted string, the editor
-searches forward on the current line for the next
-quote pair.
-
-### Search Behavior
-
-1. If cursor is on a quote char, determine if it is
-   opening or closing by counting quotes before it
-2. If cursor is between quotes, use those as the pair
-3. If cursor is outside any quotes, search forward
-   on the line for the next opening quote
-4. Matching only considers the current line
-   (quotes do not span lines by default)
-
-## Nested Quotes
-
-### Different Types
-
-Different quote types nest independently.
-In `"it's fine"`, `i"` selects `it's fine`
-and `i'` would select `s fine` if cursor is past the `'`.
-
-### Same Type (Escaped)
-
-Escaped quotes (`\"`) inside a string are not treated
-as delimiters. The matching algorithm skips any quote
-preceded by an odd number of backslashes.
-
-## Multiline Quotes
-
-### Behavior
-
-By default, quote text objects only work within
-a single line. A quote on line 5 does not match
-a quote on line 7.
-
-### When Enabled
-
-With tree-sitter active, multiline strings are
-recognized by the syntax tree. `i"` correctly
-selects content of multiline strings in languages
-that support them (Python, Rust raw strings, etc.).
-
-## String Continuation
-
-### Escaped Newlines
-
-Line continuations (`\` at end of line) do not
-automatically join lines for quote matching.
-Tree-sitter handles these correctly when available.
-
-## Special Cases
-
-### Empty Quotes
-
-`i"` on `""` selects nothing (empty range).
-Operators like `d` produce no change.
-`a"` selects the entire `""`.
-
-### Adjacent Quotes
-
-In `"a""b"`, with cursor on `a`: `i"` selects `a`.
-With cursor between the middle quotes: `i"` selects `b`.
-
-## Language Context
-
-### Python Triple Quotes
-
-When tree-sitter is active, triple-quoted strings
-(`"""..."""`  or `'''...'''`) are treated as a single
-delimited pair. `i"` selects the full multiline content.
-
-### Raw Strings
-
-Language-specific string prefixes (Rust `r#"..."#`,
-Python `r"..."``) are handled correctly when tree-sitter
-is enabled. Without tree-sitter, raw-string prefixes
-are not recognized.
-
-## Quote on Line
-
-### No Quotes Found
-
-If no quote pair is found on the current line, the
-operation is canceled. The cursor does not move
-and a beep/bell is produced.
-
+- Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+- Bracket text objects: [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)
+- Inner text objects: [/docs/spec/editing/text-objects/inner-text-objects.md](/docs/spec/editing/text-objects/inner-text-objects.md)

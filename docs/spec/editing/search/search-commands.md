@@ -1,76 +1,76 @@
 # Search Commands
 
-Forward and backward pattern searching with navigation.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 
-## Forward Search (/)
+Commands for searching within buffers.
 
+## Overview
 
-## Backward Search (?)
+The editor provides forward search (`/`), backward search (`?`), word search (`*`, `#`), and ex-command search (`:substitute`, `:global`).
 
+## Forward Search
 
-## Search Navigation
+`/pattern<CR>` — search forward from cursor for `pattern`. The cursor moves to the first match.
 
-| Key | Action |
-|-----|--------|
-| `n` | Repeat last search (same direction) |
-| `N` | Repeat last search (opposite direction) |
-| `/<CR>` | Repeat forward search |
-| `?<CR>` | Repeat backward search |
-| `gn` | Select next match (visual mode) |
-| `gN` | Select previous match |
+| Key | Description |
+|---|---|
+| `/` | Begin forward search |
+| `n` | Repeat search in same direction |
+| `N` | Repeat search in opposite direction |
 
-## Search Offsets
+## Backward Search
 
+`?pattern<CR>` — search backward from cursor. `n` continues backward; `N` searches forward.
 
-## Offset Examples
+## Incremental Search
 
+When `incsearch` is enabled, matches are highlighted as the pattern is typed.
 
-## Compound Searches
-
-
-## Search in Selection
-
+| Setting | Default | Description |
+|---|---|---|
+| `incsearch` | `true` | Show matches incrementally |
+| `hlsearch` | `true` | Highlight all matches |
 
 ## Case Sensitivity
 
+| Setting / Flag | Effect |
+|---|---|
+| `ignorecase` | Ignore case in patterns |
+| `smartcase` | Override `ignorecase` if pattern has uppercase |
+| `\c` in pattern | Force case-insensitive |
+| `\C` in pattern | Force case-sensitive |
 
-## Search Wrapping
+## Wrapping
 
-| Option | Effect |
-|--------|--------|
-| `wrapscan` | Search wraps around file |
-| `nowrapscan` | Stop at file boundaries |
+| Setting | Default | Description |
+|---|---|---|
+| `wrapscan` | `true` | Search wraps around buffer boundaries |
 
-## Search Count
+When wrapping occurs, a message is shown: "search hit BOTTOM, continuing at TOP".
 
-Display match position information:
+## Offset
 
+A search offset moves the cursor relative to the match:
 
-## Keybindings Summary
+| Offset | Meaning |
+|---|---|
+| `/pattern/+N` | N lines below match |
+| `/pattern/-N` | N lines above match |
+| `/pattern/e` | End of match |
+| `/pattern/e+N` | N characters after end |
+| `/pattern/b+N` | N characters after beginning |
 
-| Key | Mode | Action |
-|-----|------|--------|
-| `/` | N | Forward search |
-| `?` | N | Backward search |
-| `n` | N | Next match |
-| `N` | N | Previous match |
-| `gn` | N,V,O | Next match visual |
-| `gN` | N,V,O | Previous match visual |
-| `Ctrl-G` | / | Next search result |
-| `Ctrl-T` | / | Previous search result |
+## Count
 
-## Search Registers
+`3/pattern<CR>` — jump to the 3rd match.
 
+## Clear Highlight
 
-## Configuration
+`:nohlsearch` (`:noh`) clears search highlighting until the next search.
 
+## Related
 
-## API Integration
-
-
-## See Also
-
-- [search-options.md](search-options.md) - Search configuration
-- [star-search.md](star-search.md) - Word under cursor
-- [search-highlight.md](search-highlight.md) - Match highlighting
-- [search-history.md](search-history.md) - History navigation
+- Search patterns: [/docs/spec/editing/search/search-patterns.md](/docs/spec/editing/search/search-patterns.md)
+- Search history: [/docs/spec/editing/search/search-history.md](/docs/spec/editing/search/search-history.md)
+- Star search: [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
+- Live grep: [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)

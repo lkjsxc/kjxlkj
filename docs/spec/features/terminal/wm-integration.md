@@ -1,157 +1,66 @@
-# Window Manager Integration
+# Terminal Window Manager Integration
 
-Integrating kjxlkj with desktop window managers.
+Back: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 
-## Terminal Selection
+How terminal windows integrate with the editor's window management system.
 
-### Recommended Terminals
+## Overview
 
-| Terminal | Platform | Features |
-|----------|----------|----------|
-| Kitty | Linux/macOS | Best performance, true color, ligatures |
-| Alacritty | Cross-platform | GPU-accelerated, minimal |
-| WezTerm | Cross-platform | Multiplexing, Lua config |
-| iTerm2 | macOS | Native integration, tmux control |
-| Windows Terminal | Windows | GPU-accelerated, profiles |
-| foot | Linux (Wayland) | Lightweight, fast |
+Terminal buffers are displayed in regular editor windows. They participate in the window layout tree and can be split, moved, and resized like any buffer window.
 
-### Minimum Requirements
+## Terminal as Window
 
-Terminals must support: 256 colors (true color preferred),
-alternate screen buffer, bracketed paste mode, focus
-events, and Unicode.
+A terminal instance is associated with a buffer. That buffer is displayed in a window. The window can be:
 
-## Desktop Entries
+- Split horizontally or vertically
+- Moved within the layout
+- Zoomed
+- Closed (which may or may not kill the terminal process)
 
-### Linux .desktop File
+## Opening Terminals
 
-Location: `~/.local/share/applications/kjxlkj.desktop`
-or `/usr/share/applications/kjxlkj.desktop`.
+| Command | Description |
+|---|---|
+| `:terminal` | Open terminal in current window |
+| `:split \| terminal` | Open terminal in horizontal split |
+| `:vsplit \| terminal` | Open terminal in vertical split |
+| `:tabnew \| terminal` | Open terminal in new tab |
 
-Contents:
-- `[Desktop Entry]` section
-- `Name=kjxlkj`
-- `Exec=kitty kjxlkj %F` (wraps in preferred terminal)
-- `Type=Application`
-- `Categories=TextEditor;Development;`
-- `MimeType=text/plain;text/x-rust;...`
-- `Terminal=false` (already launches in terminal)
-- `Icon=kjxlkj`
+## Window Focus
 
-## File Associations
+When a terminal window is focused, the editor enters terminal mode. Terminal mode passes keystrokes directly to the terminal process except for the escape sequence (`<C-\><C-n>`).
 
-### Set Default Editor
+## Window Layout
 
-On Linux: `xdg-mime default kjxlkj.desktop text/plain`
-Or set `EDITOR=kjxlkj` and `VISUAL=kjxlkj` in shell profile.
+Terminal windows participate in the layout tree identically to file windows:
 
-### MIME Types
+| Feature | Terminal Window |
+|---|---|
+| Splitting | Supported |
+| Moving | Supported |
+| Resizing | Supported |
+| Zoom | Supported |
+| Tab switching | Supported |
 
-The `.desktop` file declares supported MIME types.
-Common types: `text/plain`, `text/x-c`, `text/x-rust`,
-`text/x-python`, `application/json`, `text/markdown`,
-`text/x-shellscript`, `text/html`, `text/css`.
+## Process Lifecycle
 
-## Keybindings
+| Event | Behavior |
+|---|---|
+| Window closed | Terminal process receives SIGHUP (configurable) |
+| Process exits | Window shows exit status, remains open until dismissed |
+| Editor exits | All terminal processes receive SIGHUP |
 
-### GNOME
+| Setting | Default | Description |
+|---|---|---|
+| `terminal.close_on_exit` | `true` | Auto-close window when process exits with 0 |
+| `terminal.kill_on_close` | `true` | Kill process when window is closed |
 
-Settings > Keyboard > Custom Shortcuts:
-Name: kjxlkj, Command: `kitty kjxlkj`, Shortcut: chosen key.
+## Scroll behavior
 
-### KDE
+When the terminal process produces output and the user has scrolled up in the scrollback, the terminal does NOT auto-scroll to the bottom. A marker indicates new output is available. Pressing `G` in terminal-normal mode jumps to the latest output.
 
-Settings > Shortcuts > Custom Shortcuts > New > Global.
-Set command to terminal wrapper launching kjxlkj.
+## Related
 
-### i3/Sway
-
-Config line: `bindsym $mod+e exec kitty kjxlkj`
-For floating: `for_window [title="kjxlkj"] floating enable`
-
-## macOS Integration
-
-### App Bundle
-
-Create an app bundle wrapping the terminal launch:
-`kjxlkj.app/Contents/MacOS/kjxlkj-launcher` (shell script
-that opens the configured terminal with kjxlkj).
-
-### Default Editor
-
-`duti -s com.kjxlkj .rs editor` sets kjxlkj as default
-for Rust files. Also set via Finder > Get Info.
-
-## Windows Integration
-
-### Context Menu
-
-Registry entries under `HKEY_CLASSES_ROOT\*\shell\kjxlkj`
-add "Open with kjxlkj" to right-click menu.
-
-### Windows Terminal Profile
-
-Add a profile in Windows Terminal settings JSON:
-`name: "kjxlkj"`, `commandline: "kjxlkj.exe"`,
-`icon: "path/to/icon"`.
-
-## Terminal Flags
-
-### Quick Open
-
-`kjxlkj +{line} {file}` opens a file at a specific line.
-`kjxlkj -O file1 file2` opens files in vertical splits.
-`kjxlkj -o file1 file2` opens files in horizontal splits.
-
-### Floating Window
-
-On tiling WMs, mark the kjxlkj window as floating for
-popup usage: `kjxlkj --class kjxlkj-float {file}` with
-WM rule `for_window [app_id="kjxlkj-float"] floating enable`.
-
-## Environment
-
-### Editor Variables
-
-Set these in shell profile for tool integration:
-- `EDITOR=kjxlkj` (for short-lived editing, e.g., git commit)
-- `VISUAL=kjxlkj` (for interactive editing)
-- `SUDO_EDITOR=kjxlkj` (for sudoedit)
-
-### Git Integration
-
-Git uses `$EDITOR` for commit messages, interactive rebase,
-and other editing tasks. kjxlkj exits with code 0 on `:wq`
-and non-zero on `:cq` for aborting.
-
-## Focus Handling
-
-### Focus Events
-
-When the terminal supports focus events (`CSI I` / `CSI O`),
-kjxlkj receives focus-gained and focus-lost notifications.
-
-### On Focus Lost
-
-Configurable behavior: auto-save modified buffers, check
-for external file changes (`:checktime`), or do nothing.
-Setting: `focus_lost_autosave = true`.
-
-### On Focus Gained
-
-Re-check file modification times. If a file changed
-externally, prompt to reload or auto-reload based on
-`autoread` setting.
-
-## Multiple Instances
-
-### Single Instance
-
-Not enforced by default. Each invocation starts a new
-process. No IPC between instances.
-
-### New Window
-
-`kjxlkj --remote {file}` could send files to an existing
-instance (future feature). Currently each invocation is
-independent.
+- Terminal: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)

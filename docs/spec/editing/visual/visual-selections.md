@@ -1,153 +1,94 @@
 # Visual Selections
 
-Visual mode selection types and behavior.
+Back: [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
+
+Types and behavior of visual mode selections.
 
 ## Overview
 
-Visual mode allows selecting text interactively before
-applying operators. Three visual sub-modes exist:
-character, line, and block.
+Visual mode highlights a region of text as the "selection." Operators act on the selected text. Three sub-modes define the shape of the selection.
 
-## Character Visual (v)
+## Character-wise Selection (`v`)
 
-### Enter
+Selects a contiguous range of characters from the start position to the cursor position. The selection wraps across lines.
 
-Press `v` in normal mode. Statusline shows `-- VISUAL --`.
+| Aspect | Behavior |
+|---|---|
+| Start | Position when `v` was pressed |
+| End | Current cursor position |
+| Shape | Contiguous character range |
+| Line wrap | Selection spans across line boundaries |
 
-### Selection
+## Line-wise Selection (`V`)
 
-Text is selected from the start position to the cursor.
-The selection is character-granular.
+Selects entire lines from the start line to the cursor line.
 
-### Inclusive
+| Aspect | Behavior |
+|---|---|
+| Start | Line where `V` was pressed |
+| End | Current cursor line |
+| Shape | Full lines |
+| Partial line | Not possible; always selects complete lines |
 
-The character under the cursor is always included in
-the selection. Selection covers start through cursor.
+## Block-wise Selection (`<C-v>`)
 
-## Line Visual (V)
+Selects a rectangular block defined by two corners.
 
-### Enter
+| Aspect | Behavior |
+|---|---|
+| Corners | Start position and cursor position define opposite corners |
+| Shape | Rectangle (column × row) |
+| CJK | If a wide character is partially overlapped, the full character is included |
 
-Press `V` (shift-v) in normal mode.
-Statusline shows `-- VISUAL LINE --`.
+## Selection Expansion
 
-### Selection
+Motions expand or contract the selection:
 
-Entire lines are selected. Even if the cursor moves
-mid-line, the full lines from start to cursor are selected.
+| Motion | Effect |
+|---|---|
+| `w` | Extend selection one word forward |
+| `b` | Move cursor (anchor stays), shrinks/extends |
+| `}` | Extend to next paragraph boundary |
+| `G` | Extend to end of file |
 
-### Operators
+## Switching Modes
 
-All operators act on whole lines when applied.
-
-## Block Visual (Ctrl-V)
-
-### Enter
-
-Press `<C-v>` in normal mode.
-Statusline shows `-- VISUAL BLOCK --`.
-
-### Selection
-
-A rectangular block of text is selected defined by
-two corner positions. Useful for columnar editing.
-
-### Width
-
-The block width is determined by the start and cursor
-columns. All lines between start and cursor rows are
-included with the same column range.
-
-## Extending Selection
-
-### Motions
-
-All normal mode motions work to extend the selection:
-`w`, `e`, `b`, `}`, `{`, `gg`, `G`, `/pattern`, etc.
-
-### Text Objects
-
-`viw` selects inner word, `va(` selects around parens.
-In visual mode, text objects extend the selection.
-
-### Other End
-
-`o` moves the cursor to the other end of the selection.
-`O` in block mode moves to the other corner.
-
-## Operators on Selection
-
-### Common Operators
-
-| Key | Action |
-|-----|--------|
-| `d` | Delete selection |
-| `y` | Yank selection |
-| `c` | Change selection (delete + insert) |
-| `>` | Indent selection |
-| `<` | Outdent selection |
-| `=` | Auto-format selection |
-| `~` | Toggle case |
-| `u` | Lowercase selection |
-| `U` | Uppercase selection |
-| `J` | Join selected lines |
-| `:` | Enter command mode with range |
+| Key | From | To |
+|---|---|---|
+| `v` | Visual-line or block | Visual-char |
+| `V` | Visual-char or block | Visual-line |
+| `<C-v>` | Visual-char or line | Visual-block |
+| `o` | Any | Swap anchor and cursor |
+| `O` | Block | Move cursor to other corner on same line |
 
 ## Reselect
 
-### gv
+`gv` reselects the previous visual selection with the same mode and range (adjusted for text changes).
 
-`gv` reselects the previous visual selection.
-The same mode (char/line/block) is restored.
+## Visual Marks
 
-### After Operator
+| Mark | Meaning |
+|---|---|
+| `'<` | Start of last visual selection |
+| `'>` | End of last visual selection |
 
-After an operator acts on a visual selection, `gv`
-reselects the same region (adjusted for changes).
+## Operators on Selection
 
-## Selection Adjustment
+After selecting, press an operator key:
 
-### Increase/Decrease
+| Key | Operator |
+|---|---|
+| `d` | Delete selection |
+| `y` | Yank selection |
+| `c` | Change selection |
+| `>` | Indent |
+| `<` | Unindent |
+| `gU` | Uppercase |
+| `gu` | Lowercase |
+| `=` | Re-indent |
 
-In visual mode, the selection can be adjusted with
-any motion. `<C-v>` + arrow keys adjust block selection.
+## Related
 
-### Switch Mode
-
-Press `v`, `V`, or `<C-v>` during visual to switch
-sub-mode without losing the anchor position.
-
-## Register Interaction
-
-### Specify Register
-
-`"ay` yanks selection into register `a`.
-`"ap` pastes from register `a`.
-
-### Put Over Selection
-
-In visual mode, `p` replaces the selection with the
-register contents. The replaced text goes into the
-unnamed register.
-
-## Search in Selection
-
-### Restrict to Selection
-
-`/\%Vpattern` restricts search to the visual selection.
-In command mode from visual: `:'<,'>s/old/new/g`.
-
-## CJK Considerations
-
-### Wide Characters
-
-Visual selection boundaries align to grapheme clusters.
-For CJK characters (display width 2), the selection
-highlight covers both columns of each wide character.
-
-### Block Mode
-
-In visual block mode with CJK, the column boundaries
-may not align exactly due to double-width characters.
-The selection rounds outward to include any partially
-covered wide character.
+- Visual mode: [/docs/spec/modes/visual/README.md](/docs/spec/modes/visual/README.md)
+- Operators: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

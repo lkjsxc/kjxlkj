@@ -1,200 +1,75 @@
 # Command-Line Editing
 
-Keys for editing in command-line mode (`:`, `/`, `?` prompts).
+Back: [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
+
+Keys for editing text on the command line.
+
+## Overview
+
+The command line (`:`, `/`, `?`) supports Emacs-style editing keys for cursor movement, deletion, and text insertion.
 
 ## Cursor Movement
 
-### Basic
+| Key | Action |
+|---|---|
+| `<Left>` | Move cursor left one character |
+| `<Right>` | Move cursor right one character |
+| `<Home>` / `<C-b>` | Move to beginning of line |
+| `<End>` / `<C-e>` | Move to end of line |
+| `<S-Left>` | Move one word left |
+| `<S-Right>` | Move one word right |
 
-| Key          | Action             |
-|--------------|-------------------|
-| `<Left>`     | Move left one char |
-| `<Right>`    | Move right one char|
-| `<Home>`     | Start of line      |
-| `<End>`      | End of line        |
-
-### Word Movement
-
-| Key          | Action             |
-|--------------|-------------------|
-| `<S-Left>`   | Move word left     |
-| `<S-Right>`  | Move word right    |
-| `<C-Left>`   | Move word left     |
-| `<C-Right>`  | Move word right    |
-
-### Alternative Keys
-
-| Key      | Action       |
-|----------|-------------|
-| `<C-b>`  | Beginning   |
-| `<C-e>`  | End         |
-
-## Text Deletion
-
-### Character
-
-| Key      | Action               |
-|----------|---------------------|
-| `<BS>`   | Delete char left    |
-| `<Del>`  | Delete char right   |
-| `<C-h>`  | Delete char left    |
-
-### Word
-
-| Key      | Action               |
-|----------|---------------------|
-| `<C-w>`  | Delete word left    |
-
-### Line
-
-| Key      | Action               |
-|----------|---------------------|
-| `<C-u>`  | Delete to start     |
-| `<C-k>`  | Delete to end       |
-
-## Text Insertion
-
-### Register Insert
-
-| Key         | Action              |
-|-------------|---------------------|
-| `<C-r>{reg}`| Insert register     |
-| `<C-r><C-r>`| Insert literally    |
-| `<C-r><C-o>`| Insert literally    |
-| `<C-r><C-w>`| Word under cursor   |
-| `<C-r><C-a>`| WORD under cursor   |
-| `<C-r><C-f>`| File under cursor   |
-| `<C-r><C-p>`| Expanded file path  |
-| `<C-r><C-l>`| Line under cursor   |
-
-### Special Registers
-
-| Sequence | Inserts |
-|----------|---------|
-| `<C-r>"` | Default (unnamed) register |
-| `<C-r>0` | Yank register |
-| `<C-r>+` | System clipboard |
-| `<C-r>/` | Last search pattern |
-| `<C-r>%` | Current filename |
-| `<C-r>=` | Expression result (prompts for expression) |
-
-## Completion
-
-### Tab Completion
-
-| Key        | Action              |
-|------------|---------------------|
-| `<Tab>`    | Complete forward    |
-| `<S-Tab>`  | Complete backward   |
-| `<C-d>`    | List completions    |
-| `<C-l>`    | Complete longest    |
-
-### Wildmenu
-
-Navigate completion menu:
+## Deletion
 
 | Key | Action |
-|-----|--------|
-| `<Tab>` | Next match in wildmenu |
-| `<S-Tab>` | Previous match in wildmenu |
-| `<Left>` | Previous match (horizontal layout) |
-| `<Right>` | Next match (horizontal layout) |
-| `<Up>` | Go up a directory level (file completion) |
-| `<Down>` | Enter directory / accept match |
-| `<C-y>` | Accept currently highlighted match |
-| `<C-e>` | Dismiss wildmenu, restore original text |
+|---|---|
+| `<BS>` / `<C-h>` | Delete character before cursor |
+| `<Del>` | Delete character under cursor |
+| `<C-w>` | Delete word before cursor |
+| `<C-u>` | Delete from cursor to start of line |
+
+## Insert Special Characters
+
+| Key | Action |
+|---|---|
+| `<C-r>{reg}` | Insert contents of register |
+| `<C-r><C-w>` | Insert word under cursor |
+| `<C-r><C-a>` | Insert WORD under cursor |
+| `<C-r><C-f>` | Insert file path under cursor |
+| `<C-r>=` | Evaluate expression and insert result |
+| `<C-v>{char}` | Insert literal character |
 
 ## History Navigation
 
-### Basic
+| Key | Action |
+|---|---|
+| `<Up>` / `<C-p>` | Previous history entry (matching prefix) |
+| `<Down>` / `<C-n>` | Next history entry (matching prefix) |
 
-| Key      | Action              |
-|----------|---------------------|
-| `<Up>`   | Previous history    |
-| `<Down>` | Next history        |
-| `<C-p>`  | Previous history    |
-| `<C-n>`  | Next history        |
+History entries are filtered to match the typed prefix.
 
-### Filtered
+## Completion
 
-Typing prefix then arrows filters to matching history.
+| Key | Action |
+|---|---|
+| `<Tab>` | Complete next match |
+| `<S-Tab>` | Complete previous match |
+| `<C-d>` | List all completions |
 
-## Special Keys
+Completion applies to commands, file paths, settings, etc.
 
-### Execute/Cancel
+## Confirm / Cancel
 
-| Key      | Action         |
-|----------|---------------|
-| `<CR>`   | Execute        |
-| `<Esc>`  | Cancel         |
-| `<C-c>`  | Cancel         |
-| `<C-[>`  | Cancel (alt)   |
+| Key | Action |
+|---|---|
+| `<CR>` | Execute command |
+| `<Esc>` / `<C-c>` | Cancel and close command line |
 
-### Mode Switch
+## Command-Line Window
 
-| Key      | Action               |
-|----------|---------------------|
-| `<C-o>`  | Execute & return    |
-| `<C-g>`  | Normal mode in cmd  |
+`<C-f>` in command-line mode opens the command-line window, which allows editing the command using full normal-mode editing capabilities. Press `<CR>` to execute.
 
-## File/Path Expansion
+## Related
 
-### Tokens
-
-| Token    | Expansion          |
-|----------|-------------------|
-| `%`      | Current file       |
-| `#`      | Alternate file     |
-| `#n`     | Buffer n           |
-| `##`     | All buffers        |
-
-### Modifiers
-
-| Modifier | Effect             |
-|----------|-------------------|
-| `:p`     | Full path          |
-| `:h`     | Head (directory)   |
-| `:t`     | Tail (filename)    |
-| `:r`     | Root (no extension)|
-| `:e`     | Extension only     |
-| `:s`     | Substitute         |
-
-### Example
-
-`:e %:h/other.rs` -- edit `other.rs` in same directory as current file.
-`:w #` -- save to the alternate file path.
-
-## Expression Evaluation
-
-### Expression Register
-
-`<C-r>=` opens an expression prompt (`=`). Type a Lua expression and press
-`<CR>` to insert the result as text into the command line.
-
-### Examples
-
-- `<C-r>=2+2<CR>` -- inserts `4`
-- `<C-r>=expand("%:t")<CR>` -- inserts current filename (tail)
-- `<C-r>=line(".")<CR>` -- inserts current line number
-
-## Literal Insert
-
-### Special Characters
-
-| Key         | Action              |
-|-------------|---------------------|
-| `<C-v>`     | Insert next literally|
-| `<C-q>`     | Insert next literally|
-| `<C-v>xxx`  | Insert decimal      |
-| `<C-v>xNN`  | Insert hex          |
-| `<C-k>{ab}` | Insert digraph      |
-
-## Paste Operations
-
-### Register Paste
-
-`<C-r>{reg}` pastes register contents into the command line at cursor position:
-- `<C-r>"` -- paste default register (last delete/yank)
-- `<C-r>a` -- paste named register `a`; `<C-r>+` -- paste system clipboard
-- `<C-r><C-w>` -- paste word under cursor (useful for search-and-replace)
-- `<C-r><C-r>{reg}` -- paste literally (no special character interpretation)
+- Command-line mode: [/docs/spec/modes/cmdline/README.md](/docs/spec/modes/cmdline/README.md)
+- Command history: [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)

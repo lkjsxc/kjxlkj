@@ -1,149 +1,74 @@
 # Window Resize Modes
 
-Interactive window resizing.
+Back: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+
+Interactive and command-based window resizing.
 
 ## Overview
 
-Enter resize mode for precise window dimension adjustments.
-Resize mode is a sub-mode of normal mode that remaps
-movement keys to resize operations.
+Windows can be resized using commands, key sequences, and an interactive resize mode.
 
-## Resize Mode
-
-### Enter Mode
-
-`<C-w>r` enters resize mode. The statusline shows `-- RESIZE --`.
-Alternatively, configure a custom key in TOML.
-
-### Exit Mode
-
-| Key | Effect |
-|-----|--------|
-| `<Esc>` | Confirm current sizes, exit resize mode |
-| `<CR>` | Confirm current sizes, exit resize mode |
-| `q` | Revert to original sizes, exit resize mode |
-
-## Mode Keybindings
-
-### In Resize Mode
+## Resize Keys
 
 | Key | Action |
-|-----|--------|
-| `h` | Decrease width by `resize_step` columns |
-| `l` | Increase width by `resize_step` columns |
-| `j` | Increase height by `resize_step` rows |
-| `k` | Decrease height by `resize_step` rows |
-| `H` | Decrease width by `resize_step_fast` columns |
-| `L` | Increase width by `resize_step_fast` columns |
-| `J` | Increase height by `resize_step_fast` rows |
-| `K` | Decrease height by `resize_step_fast` rows |
-| `=` | Equalize all window sizes |
+|---|---|
+| `<C-w>+` | Increase height by 1 |
+| `<C-w>-` | Decrease height by 1 |
+| `<C-w>>` | Increase width by 1 |
+| `<C-w><` | Decrease width by 1 |
+| `{N}<C-w>+` | Increase height by N |
+| `<C-w>=` | Equalize all window sizes |
 
-## Step Sizes
+## Absolute sizing
 
-### Normal Step
+| Key | Action |
+|---|---|
+| `<C-w>_` | Set window height to maximum (or count) |
+| `<C-w>\|` | Set window width to maximum (or count) |
+| `{N}<C-w>_` | Set window height to N rows |
+| `{N}<C-w>\|` | Set window width to N columns |
 
-`resize_step = 2` (default). Each `h`/`l`/`j`/`k` press
-changes the dimension by this many cells.
+## Resize Commands
 
-### Fast Step
+| Command | Description |
+|---|---|
+| `:resize {N}` | Set height to N |
+| `:resize +{N}` | Increase height by N |
+| `:resize -{N}` | Decrease height by N |
+| `:vertical resize {N}` | Set width to N |
+| `:vertical resize +{N}` | Increase width by N |
+| `:vertical resize -{N}` | Decrease width by N |
 
-`resize_step_fast = 5` (default). Shift+key uses this
-larger step for quick rough adjustments.
+## Interactive Resize Mode
 
-## Visual Feedback
+`:ResizeMode` enters an interactive mode where arrow keys or `hjkl` resize the current window. Press `<Esc>` or `<CR>` to exit.
 
-### Highlight
+| Key (in resize mode) | Action |
+|---|---|
+| `h` / `<Left>` | Decrease width |
+| `l` / `<Right>` | Increase width |
+| `j` / `<Down>` | Increase height |
+| `k` / `<Up>` | Decrease height |
 
-During resize mode, the borders of the active window
-are highlighted with the `WinResize` highlight group
-(default: bright yellow border).
+## Minimum Size
 
-### Status Display
+| Setting | Default | Description |
+|---|---|---|
+| `window.min_height` | `1` | Minimum window height in rows |
+| `window.min_width` | `1` | Minimum window width in columns |
 
-The statusline shows current window dimensions as
-`[cols x rows]` during resize mode, updating live.
+Windows cannot be resized below these minimums.
 
-## Presets
+## Equalization
 
-### Quick Sizes
+`<C-w>=` distributes available space equally among all siblings in the layout tree. When the terminal is resized, equalization is performed automatically if `equalalways` is set.
 
-| Key (in resize mode) | Effect |
-|-----------------------|--------|
-| `1` | Set width to 25% of terminal |
-| `2` | Set width to 33% of terminal |
-| `3` | Set width to 50% of terminal |
-| `4` | Set width to 67% of terminal |
-| `5` | Set width to 75% of terminal |
+| Setting | Default | Description |
+|---|---|---|
+| `equalalways` | `true` | Auto-equalize on window create/close |
 
-### Ratios
+## Related
 
-All ratios are computed relative to the parent split
-container, not the full terminal.
-
-## Constraints
-
-### Minimum Size
-
-Windows have a minimum size of `window_min_width` columns
-(default: 1) and `window_min_height` rows (default: 1).
-The statusline always occupies 1 row.
-
-### Fixed Windows
-
-Windows with `winfixwidth = true` or `winfixheight = true`
-are not resized by equalize or auto-balance operations.
-They can still be resized manually.
-
-## Mouse
-
-Mouse input is ignored; resizing is keyboard-only
-when in resize mode. Standard mouse drag on borders
-works outside resize mode (if mouse is enabled).
-
-## Commands
-
-### Set Size
-
-`:resize {n}` sets the height of the current window to `n` rows.
-`:vertical resize {n}` sets the width to `n` columns.
-
-### Relative Size
-
-`:resize +{n}` increases height by `n`.
-`:resize -{n}` decreases height by `n`.
-`:vertical resize +{n}` / `-{n}` for width.
-
-## Scripted Resize
-
-### Absolute
-
-`:resize 20` sets height to 20 rows.
-`:vertical resize 80` sets width to 80 columns.
-
-### Proportional
-
-No built-in percentage command. Calculate from
-terminal dimensions: `:resize` with computed value.
-
-## Smart Resize
-
-### Auto-Balance
-
-When `equalalways = true` (default), windows are
-automatically rebalanced after any window is
-created, closed, or resized.
-
-### Focus Grow
-
-When `focus_grow = true`, the focused window automatically
-expands to `focus_grow_width` / `focus_grow_height`
-and other windows shrink proportionally.
-
-## Golden Ratio
-
-### Enable
-
-`golden_ratio = true` in config TOML makes the focused
-window take approximately 61.8% of the available space.
-Other windows share the remainder equally.
+- Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)
+- Window zoom: [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)

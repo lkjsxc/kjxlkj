@@ -1,94 +1,30 @@
-# Expression Register
+# Expression Register (Session Context)
 
-The expression register `=` for evaluating expressions.
+Back: [/docs/spec/features/session/README.md](/docs/spec/features/session/README.md)
+
+Session-specific behavior for expression register history and state.
 
 ## Overview
 
-The expression register allows inserting the result
-of evaluated expressions into text.
+The expression register (`=`) allows evaluating expressions and using the result as text. This file documents session-related aspects. For core expression register behavior, see the registers specification.
 
-## Basic Usage
+## Session Persistence
 
-### Insert Mode
+| Data | Persisted | Location |
+|---|---|---|
+| Expression history | Yes | Session file |
+| Last expression result | No | Memory only |
 
+## History
 
-Type expression, press Enter to insert result.
+Expression register entries are saved in the expression history, which survives session restores.
 
-### Normal Mode
+| Setting | Default | Description |
+|---|---|---|
+| `history.expression` | `50` | Maximum expression history entries |
 
+## Related
 
-## Supported Expressions
-
-### Arithmetic
-
-
-### String Operations
-
-
-### Built-in Variables
-
-| Variable | Description |
-|----------|-------------|
-| `line` | Current line number |
-| `col` | Current column |
-| `filename` | Current file name |
-| `filetype` | Current file type |
-
-### Examples
-
-
-## Date and Time
-
-
-## Random Values
-
-
-## String Functions
-
-| Function | Description |
-|----------|-------------|
-| `upper(s)` | Uppercase |
-| `lower(s)` | Lowercase |
-| `trim(s)` | Remove whitespace |
-| `len(s)` | String length |
-| `repeat(s, n)` | Repeat string |
-
-## Use Cases
-
-### Insert Date Header
-
-
-### Line Numbers
-
-
-### Generate Sequences
-
-In macro, use expression with counter.
-
-### Quick Math
-
-Insert calculation results inline.
-
-## Comparison with Vim
-
-| Feature | Vim | kjxlkj |
-|---------|-----|--------|
-| VimL expressions | ✓ | ✗ |
-| Basic math | ✓ | ✓ |
-| Strings | ✓ | ✓ |
-| Built-in vars | ✓ | Subset |
-| Functions | All | Limited |
-
-## Limitations
-
-- No arbitrary code execution
-- Limited function set
-- No external commands
-- No variable assignment
-
-## Tips
-
-1. Use for quick calculations
-2. Insert timestamps in notes
-3. Generate repetitive text
-4. Access file metadata
+- Expression register: [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)
+- Sessions: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
+- Registers: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
