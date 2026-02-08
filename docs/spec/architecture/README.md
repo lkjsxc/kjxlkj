@@ -11,6 +11,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [runtime.md](runtime.md) | Runtime design |
 | [render-pipeline.md](render-pipeline.md) | Render pipeline detail |
 | [input-decoding.md](input-decoding.md) | Input decoding and keybinding resolution |
+| [startup.md](startup.md) | Startup sequence and shutdown |
 
 ## System shape
 

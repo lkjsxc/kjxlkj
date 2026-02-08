@@ -1,105 +1,83 @@
 # Address Patterns
 
-Using patterns as line addresses.
+Back: [/docs/spec/commands/ranges/README.md](/docs/spec/commands/ranges/README.md)
 
-## Overview
+Search patterns used as line addresses in ex commands.
 
-Search patterns can specify
-line addresses for Ex commands.
+## Forward search address (normative)
 
-## Basic Syntax
+`/{pattern}/` specifies the next line matching `{pattern}` below the cursor.
 
-### Forward Search
+| Syntax | Meaning | Example |
+|---|---|---|
+| `/{pattern}/` | Next line matching pattern | `/error/d` deletes next line containing "error" |
+| `/{pattern}/+{n}` | N lines after the match | `/^func/+1` is the line after next function header |
+| `/{pattern}/-{n}` | N lines before the match | `/^end/-1` is the line before next "end" |
 
+## Backward search address (normative)
 
-### Backward Search
+`?{pattern}?` specifies the previous line matching `{pattern}` above the cursor.
 
+| Syntax | Meaning |
+|---|---|
+| `?{pattern}?` | Previous line matching pattern |
+| `?{pattern}?+{n}` | N lines after the previous match |
+| `?{pattern}?-{n}` | N lines before the previous match |
 
-## Pattern Addresses
+## Pattern ranges (normative)
 
-### Next Match
+Two address patterns form a range:
 
+| Syntax | Meaning | Example |
+|---|---|---|
+| `/start/,/end/` | From first match of "start" to first match of "end" | `/^begin/,/^end/d` |
+| `/pat/,{line}` | From pattern match to absolute line | `/error/,$d` |
+| `{line},/pat/` | From absolute line to pattern match | `1,/^---/y` |
+| `/pat1/;/pat2/` | Semicolon: search for pat2 starts from pat1's line | `/func/;/end/d` |
 
-### Previous Match
+The semicolon `;` differs from comma `,` in range evaluation: with `;`, the cursor moves to the first address before evaluating the second.
 
+## Empty pattern (normative)
 
-## Pattern Ranges
+An empty pattern reuses the last search pattern:
 
-### Between Patterns
+| Syntax | Equivalent |
+|---|---|
+| `//` | `/{last_search}/` |
+| `??` | `?{last_search}?` |
+| `//,//` | Range using last search pattern for both endpoints |
 
+## Delimiter alternatives (normative)
 
-### Pattern to Line
+When the pattern contains `/`, an alternative delimiter may be used:
 
+| Form | Syntax |
+|---|---|
+| Forward with backslash | `\/{pattern}\/` (standard) |
+| Substitute with different delimiter | `:s#pattern#replacement#` |
 
-### Line to Pattern
+## Offset arithmetic (normative)
 
+Offsets are applied after the pattern match:
 
-## Pattern Offsets
+| Syntax | Result |
+|---|---|
+| `/pat/+0` | The matched line itself |
+| `/pat/+3` | Three lines below the match |
+| `/pat/-2` | Two lines above the match |
+| `/pat/+3-1` | Offsets are cumulative: net +2 |
 
-### After Match
+## Global command integration
 
+| Command | Meaning |
+|---|---|
+| `:g/pattern/cmd` | Execute `cmd` on every line matching `pattern` |
+| `:v/pattern/cmd` | Execute `cmd` on every line NOT matching `pattern` |
+| `:g/pat1/,/pat2/cmd` | Execute `cmd` on ranges delimited by patterns |
 
-### Before Match
+## Related
 
-
-### Combined Ranges
-
-
-## Empty Patterns
-
-### Reuse Last
-
-
-## Pattern Flags
-
-### Case Sensitivity
-
-
-## Delimiter Alternatives
-
-### When Pattern Has /
-
-
-### In Substitute
-
-
-## Global with Patterns
-
-### Delete Matching
-
-
-### Inverse
-
-
-### Global Range
-
-
-## Common Pattern Uses
-
-### Mark Sections
-
-
-### Delete Blocks
-
-
-### Yank Sections
-
-
-## Regular Expressions
-
-### Basic Patterns
-
-
-### Extended (Very Magic)
-
-
-## Address Chains
-
-### Multiple Patterns
-
-
-### Semicolon vs Comma
-
-
-## Wrapping
+- Range specs: [/docs/spec/commands/ranges/range-specs.md](/docs/spec/commands/ranges/range-specs.md)
+- Ranges: [/docs/spec/commands/ranges/ranges.md](/docs/spec/commands/ranges/ranges.md)
+- Regex: [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
 
