@@ -24,6 +24,7 @@ Canonical facts:
 - Current supported behavior: `/docs/reference/CONFORMANCE.md`
 - User-visible gaps: `/docs/reference/LIMITATIONS.md`
 - Anti-MVP measures: `/docs/log/proposals/anti-mvp-measures.md`
+- Deep wiring checklist: `/docs/log/proposals/deep-wiring-checklist.md`
 </authority_and_precedence>
 
 <required_start_reading_order>
@@ -39,7 +40,8 @@ Canonical facts:
 10. `/docs/reference/CONFORMANCE.md`
 11. `/docs/reference/LIMITATIONS.md`
 12. `/docs/log/proposals/anti-mvp-measures.md`
-13. `/docs/todo/README.md`
+13. `/docs/log/proposals/deep-wiring-checklist.md`
+14. `/docs/todo/README.md`
 </required_start_reading_order>
 
 <critical_specifications>
@@ -47,10 +49,14 @@ These specs define behavior that was previously implemented incorrectly. Read ca
 
 - Cursor semantics with CJK: `/docs/spec/editing/cursor/README.md`
 - Terminal emulator (full VT100): `/docs/spec/features/terminal/terminal.md`
+- Escape parser state machine: `/docs/spec/features/terminal/escape-parser.md`
 - Windows (buffer + terminal): `/docs/spec/editor/windows.md`
 - Viewport wrapping with CJK: `/docs/spec/features/ui/viewport.md`
 - Session JSON format: `/docs/spec/features/session/sessions.md`
+- Startup sequence: `/docs/spec/architecture/startup.md`
+- Render pipeline: `/docs/spec/architecture/render-pipeline.md`
 - Unicode guidance: `/docs/technical/unicode.md`
+- Deep wiring per-crate inventory: `/docs/log/proposals/deep-wiring-checklist.md`
 </critical_specifications>
 
 <execution_model>

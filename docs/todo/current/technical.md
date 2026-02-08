@@ -15,7 +15,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Integration tests per testing-e2e.md (10 integration scenarios)
 - [ ] Headless E2E tests per testing-e2e.md (9 headless scenarios)
 - [ ] PTY E2E tests per testing-e2e.md (8 PTY scenarios)
-- [ ] Boundary tests per testing-e2e.md (19 boundary scenarios)
+- [ ] Boundary tests per testing-e2e.md (40 boundary scenarios including CJK, session, terminal, wiring)
 
 ## Mandatory regression scenarios
 

@@ -100,6 +100,47 @@ These tests target corner cases that commonly cause panics, rendering artifacts,
 | BD-18 | Resize to 1 column | Shrinking to 1 column does not panic. Each width-2 grapheme either renders as a padding-only row or the implementation clamps to a minimum viable width. |
 | BD-19 | Resize to 1 row | Shrinking to 1 row does not panic. The cursor line is the only visible line. Status line may be suppressed. |
 
+### Session roundtrip tests
+
+| Test ID | Scenario | Acceptance criterion |
+|---|---|---|
+| BD-20 | Session save/load with empty buffer | `:SessionSave`, quit, `:SessionLoad`. Empty buffer restored. Cursor at (0,0). |
+| BD-21 | Session save/load with splits | Create 3-way split (`:vsplit`, `:split`), set distinct cursor positions. `:SessionSave`, `:SessionLoad`. Layout tree matches: 3 windows, same split types, cursor positions restored. |
+| BD-22 | Session save/load with terminal windows | Create a split with one buffer, one terminal. `:SessionSave`, `:SessionLoad`. Layout restored with 2 windows. Terminal window creates a new shell (process state not restored). Buffer window has correct cursor. |
+| BD-23 | Session save with CJK content | Buffer contains `"あいうえお"` with cursor on grapheme 3. `:SessionSave` writes JSON with `cursor_grapheme: 3`. `:SessionLoad` restores cursor on `"え"`. |
+| BD-24 | Session load with missing file | Session references a deleted file. `:SessionLoad` opens empty buffer for the missing file, shows warning. Other buffers load normally. |
+
+### CJK-specific editing tests
+
+| Test ID | Scenario | Acceptance criterion |
+|---|---|---|
+| BD-25 | CJK word motion | `w` on `"あいう えお"` (CJK space at index 3) moves cursor from grapheme 0 to grapheme 4 (first grapheme of second CJK word). |
+| BD-26 | CJK delete word | `dw` on `"あいう えお"` at grapheme 0 deletes `"あいう "` leaving `"えお"`. |
+| BD-27 | CJK visual selection | `v`, `2l` on `"あいうえお"` selects graphemes 0-2 (`"あいう"`). `d` deletes them, leaving `"えお"`. |
+| BD-28 | CJK yank and paste | `yy` on `"あいうえお"`, `p` on next line. Pasted line matches original. Display width of pasted line is 10. |
+| BD-29 | CJK search | `/あ` on buffer containing `"テストあいう"` moves cursor to grapheme 3. Search highlight covers display columns 6-7. |
+| BD-30 | CJK substitute | `:%s/あ/ア/g` on `"あいあう"` produces `"アいアう"`. Display width unchanged (all width-2). |
+| BD-31 | CJK cursor at line end | On `"あいう"` (3 graphemes), `$` moves to grapheme 2. Cursor block spans display columns 4-5. `a` enters Insert with insertion point at grapheme 3 (after `"う"`). |
+| BD-32 | Mixed ASCII/CJK append | On `"aあb"`, `$` places cursor on `"b"` (grapheme 2, display col 3). `A` enters Insert at grapheme 3 (past end). No half-cell state at any point. |
+
+### Terminal emulator rendering tests
+
+| Test ID | Scenario | Acceptance criterion |
+|---|---|---|
+| BD-33 | Terminal CJK output | `:terminal`, run `echo "あいう"`. Terminal screen buffer contains 3 graphemes occupying 6 cells. Continuation cells marked correctly. |
+| BD-34 | Terminal color output | `:terminal`, run `printf "\033[38;2;255;0;0mRED\033[0m"`. Terminal cells for `R`, `E`, `D` have fg RGB(255,0,0). Following cells have default fg. |
+| BD-35 | Terminal scrollback | `:terminal`, run `seq 100`. Terminal scrollback contains lines 1 through (100 - visible_rows). Scrollback navigation with `Ctrl-\ Ctrl-n` then `k` scrolls up. |
+| BD-36 | Terminal alternate screen | `:terminal`, run program that enters alternate screen (e.g., `less`). Exiting `less` restores main screen content. |
+| BD-37 | Terminal resize correctness | `:terminal` in a split. Resize the split with `Ctrl-w +`. Terminal grid rows increase. Child process receives SIGWINCH. |
+
+### Wiring verification tests
+
+| Test ID | Scenario | Acceptance criterion |
+|---|---|---|
+| BD-38 | All normal mode motions reachable | For each motion key (h/j/k/l/w/b/e/W/B/E/0/$/_/^/g_/gg/G/f/F/t/T/;/,/{/}/(/)/n/N/*/#/%/H/M/L), verify the key resolves to a handler and produces correct cursor movement. |
+| BD-39 | All operators with motions | For each operator (d/c/y/>/</ =/gq/gw/gu/gU/g~), combine with at least 3 motions (w/$/j) and verify correct text mutation. |
+| BD-40 | All ex commands reachable | For each essential command (:w/:q/:wq/:q!/:e/:sp/:vs/:b/:bn/:bp/:bd/:set/:map/:help/:terminal/:SessionSave/:SessionLoad), verify the command parser routes to a handler and produces the documented effect. |
+
 ## Test infrastructure requirements
 
 | Requirement | Detail |

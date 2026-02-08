@@ -93,3 +93,18 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Bufferline per [/docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
 - [ ] Alternate file per [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
 - [ ] Arglist per [/docs/spec/features/buffer/arglist.md](/docs/spec/features/buffer/arglist.md)
+
+## Wiring verification
+
+Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
+
+- [ ] `:terminal` spawns a real PTY process via openpty/forkpty, not a stub
+- [ ] Terminal screen buffer receives and parses escape sequences from PTY output
+- [ ] Typing in terminal-insert mode forwards raw bytes to the PTY fd
+- [ ] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
+- [ ] `:SessionSave` serializes the full layout tree to JSON per session schema
+- [ ] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions
+- [ ] Window `Ctrl-w h/j/k/l` navigation works identically for buffer and terminal windows
+- [ ] Terminal window resize triggers ioctl(TIOCSWINSZ) and SIGWINCH delivery
+- [ ] Buffer `:e {file}` dispatches FileRead to FS service and constructs rope on response
+- [ ] Buffer `:w` dispatches FileWrite to FS service with rope snapshot

@@ -46,3 +46,17 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/features/window/window-resize-modes.md](/docs/spec/features/window/window-resize-modes.md)
 - [/docs/spec/features/window/window_resizer.md](/docs/spec/features/window/window_resizer.md)
 - [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)
+
+## Wiring verification
+
+Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
+
+- [ ] Buffer creation from `:e {file}` reads file from disk via FS service, constructs rope
+- [ ] Buffer `:w` writes rope content to disk via FS service, clears modified flag
+- [ ] Buffer switching `:b {name}` changes the active window content to the target buffer
+- [ ] Buffer deletion `:bd` removes buffer from list, closes all windows showing it
+- [ ] Window split `:split`/`:vsplit` divides current window, shares same buffer
+- [ ] Window close `Ctrl-w c` removes window, rebalances layout tree
+- [ ] Window navigation `Ctrl-w h/j/k/l` dispatches from keybinding through core state to focus change
+- [ ] Viewport follow triggers after every cursor motion and produces correct `top_line`/`left_col`
+- [ ] Terminal windows created via `:terminal` are leaf nodes in the layout tree

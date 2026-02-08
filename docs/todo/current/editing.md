@@ -114,3 +114,18 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
 - [ ] Bracket matching per [/docs/spec/editing/text-manipulation/bracket-matching.md](/docs/spec/editing/text-manipulation/bracket-matching.md)
 - [ ] Digraphs per [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
+
+## Wiring verification
+
+Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
+
+- [ ] Every motion key (h/j/k/l/w/b/e/W/B/E/0/$/_/^/g_/gg/G) resolves to a real handler that moves the cursor
+- [ ] Every operator (d/c/y/>/</=) resolves to a real handler that mutates the buffer
+- [ ] Operator + motion combinations (dw, ci(, yap, etc.) are dispatched through the operator-pending path
+- [ ] Count prefix accumulates digits and multiplies the subsequent motion or operator
+- [ ] Register prefix (`"a`) sets the target register for the next yank/delete/paste
+- [ ] Dot repeat (`.`) replays the last recorded change with fidelity
+- [ ] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
+- [ ] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
+- [ ] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously
+- [ ] Character find (`f`/`t`/`F`/`T`) and repeat (`;`/`,`) work within and across lines correctly

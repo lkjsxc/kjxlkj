@@ -84,3 +84,17 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [ ] All transitions per [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
 - [ ] CJK cursor clamping on mode change (no half-cell positions)
+
+## Wiring verification
+
+Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
+
+- [ ] `i`/`I`/`a`/`A`/`o`/`O` each enter Insert mode with correct cursor placement
+- [ ] `Esc` from Insert mode transitions to Normal and clamps cursor to end-exclusive range
+- [ ] `v`/`V`/`Ctrl-v` each enter the correct Visual sub-mode with anchor set
+- [ ] `:` enters Command mode with empty command buffer and cursor at position 0
+- [ ] `R` enters Replace mode; typed characters overwrite at cursor position
+- [ ] `r{char}` replaces single character without entering Replace mode
+- [ ] Mode-dependent keybinding dispatch: same key produces different actions in different modes
+- [ ] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift
+- [ ] Mode indicator in statusline updates on every transition
