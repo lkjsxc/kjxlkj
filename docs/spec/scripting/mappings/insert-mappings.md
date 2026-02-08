@@ -1,35 +1,119 @@
-# Insert Mode Mapping Specification
+# Insert Mode Mappings
 
-Back: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+Back: [docs/spec/scripting/mappings/README.md](docs/spec/scripting/mappings/README.md)
 
-Insert-mode mappings are registered with `imap` (recursive) or `inoremap` (non-recursive).
+Mappings active during Insert mode input processing.
 
-## Mapping semantics (normative)
+## Commands
+
+### Recursive Mapping
+
+`:imap {lhs} {rhs}` creates an insert-mode mapping
+where the RHS is re-interpreted through the mapping
+table. Use when chaining mappings is intentional.
+
+### Non-Recursive Mapping
+
+`:inoremap {lhs} {rhs}` creates an insert-mode
+mapping where the RHS is NOT re-interpreted.
+This is the recommended default for user mappings.
+
+### Remove Mapping
+
+`:iunmap {lhs}` removes an insert-mode mapping.
+
+### Clear All
+
+`:imapclear` removes all insert-mode mappings.
+
+## Mapping Semantics
 
 | Property | Behavior |
-|---|---|
-| Trigger | LHS key sequence matches input while in Insert mode |
-| Expansion | RHS is replayed as if typed; special key notation is expanded |
-| Timeout | Ambiguous prefixes wait `timeoutlen` ms (default 1000) |
-| Non-recursive | `inoremap` does NOT re-interpret the RHS through the mapping table |
-| Priority | Buffer-local > global; more-specific prefix > less-specific |
+|----------|----------|
+| Trigger | LHS matches typed keys in Insert mode |
+| Expansion | RHS replayed as if typed |
+| Timeout | Ambiguous prefix waits `timeoutlen` ms |
+| Non-recursive | `inoremap` skips re-interpretation |
+| Priority | Buffer-local > global |
+| Specificity | Longer prefix > shorter prefix |
 
-## Escape alternatives
+## Common Patterns
 
-A common pattern maps `jk` or `jj` to `<Esc>` for faster mode exit.
+### Escape Alternatives
 
-The keybinding resolver MUST wait `timeoutlen` after `j` before inserting a literal `j`. If `k` arrives within the timeout, the mapping fires and mode transitions to Normal.
+Map `jk` or `jj` to `<Esc>` for faster mode exit.
+The keybinding resolver MUST wait `timeoutlen` after
+the first key before inserting a literal character.
 
-## Ctrl-O for single Normal command
+### Snippet Triggers
 
-`Ctrl-O` in Insert mode is NOT a mapping; it is a built-in that transitions to `InsertNormal` mode. Mappings MUST NOT shadow `Ctrl-O` by default.
+Map short sequences to expand common code patterns
+using `:inoremap` with special key notation for
+cursor positioning.
 
-## Interaction with completion
+### Auto-Closing Pairs Override
 
-When the completion popup is visible, mappings for `Tab`, `Ctrl-n`, `Ctrl-p` may conflict with completion navigation. The completion system takes priority for these keys unless the user explicitly remaps them.
+Users may remap `(` to insert `()` and position
+cursor between them. This interacts with the
+built-in autopairs feature; user mappings override
+autopairs for the mapped keys.
+
+## Special Key Interaction
+
+### Ctrl-O
+
+`Ctrl-O` transitions to InsertNormal mode for a
+single Normal-mode command. This is a built-in
+that MUST NOT be shadowed by default mappings.
+
+### Completion Keys
+
+When the completion popup is visible:
+
+| Key | Default Behavior | Mapping Conflict |
+|-----|------------------|------------------|
+| `Tab` | Accept completion | Common remap target |
+| `Ctrl-n` | Next item | Rare conflict |
+| `Ctrl-p` | Previous item | Rare conflict |
+| `Ctrl-y` | Confirm selection | Rare conflict |
+| `Ctrl-e` | Dismiss popup | Rare conflict |
+
+Completion system takes priority for these keys
+unless the user explicitly remaps them.
+
+### Expression Mappings
+
+`:inoremap <expr> {lhs} {expr}` evaluates the
+expression and uses the result as the RHS. The
+expression can check context (completion visible,
+cursor position) to provide conditional mappings.
+
+## Special Key Notation
+
+| Notation | Key |
+|----------|-----|
+| `<CR>` | Enter / Return |
+| `<Esc>` | Escape |
+| `<Tab>` | Tab |
+| `<BS>` | Backspace |
+| `<C-x>` | Ctrl+x |
+| `<A-x>` | Alt+x |
+| `<Space>` | Space bar |
+
+## Buffer-Local Mappings
+
+`:inoremap <buffer> {lhs} {rhs}` creates a mapping
+that only applies to the current buffer. Buffer-local
+mappings take priority over global mappings.
+
+## Listing Mappings
+
+`:imap` with no arguments lists all insert-mode
+mappings. `:imap {lhs}` shows mappings starting
+with the given prefix.
 
 ## Related
 
-- Insert mode spec: [/docs/spec/modes/insert/insert-mappings.md](/docs/spec/modes/insert/insert-mappings.md)
-- Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
-- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](docs/spec/scripting/mappings/mapping-modes.md)
+- Insert mode: [docs/spec/modes/insert/README.md](docs/spec/modes/insert/README.md)
+- Completion: [docs/spec/modes/insert/completion/insert-completion.md](docs/spec/modes/insert/completion/insert-completion.md)
