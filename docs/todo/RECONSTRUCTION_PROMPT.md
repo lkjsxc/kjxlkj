@@ -1,11 +1,13 @@
 <objective>
-Reconstruct and improve implementation from `/docs/` with maximum practical correctness.
+Reconstruct a complete, fully-featured implementation from `/docs/` with maximum practical correctness. The implementation MUST be production-grade, not a minimal MVP.
 </objective>
 
 <non_goals>
-- no evidence-free checkbox completion
-- no breadth-only scaffold inflation presented as completion
-- no stale status claims in conformance, limitations, or release docs
+- No evidence-free checkbox completion.
+- No breadth-only scaffold inflation presented as completion.
+- No stale status claims in conformance, limitations, or release docs.
+- No type-only implementations that are not reachable from user input.
+- No shortcutting: every feature specified in the docs MUST be wired into real user-facing paths.
 </non_goals>
 
 <authority_and_precedence>
@@ -15,12 +17,13 @@ Use this precedence when instructions conflict:
 2. `/docs/spec/`
 3. `/docs/reference/CONFORMANCE*.md` and `/docs/reference/LIMITATIONS.md`
 4. `/docs/todo/current/`
-5. all other docs
+5. All other docs
 
 Canonical facts:
-- target behavior: `/docs/spec/`
-- current supported behavior: `/docs/reference/CONFORMANCE.md`
-- user-visible gaps: `/docs/reference/LIMITATIONS.md`
+- Target behavior: `/docs/spec/`
+- Current supported behavior: `/docs/reference/CONFORMANCE.md`
+- User-visible gaps: `/docs/reference/LIMITATIONS.md`
+- Anti-MVP measures: `/docs/log/proposals/anti-mvp-measures.md`
 </authority_and_precedence>
 
 <required_start_reading_order>
@@ -31,127 +34,105 @@ Canonical facts:
 5. `/docs/policy/WORKFLOW.md`
 6. `/docs/spec/README.md`
 7. `/docs/spec/technical/testing.md`
-8. `/docs/reference/CONFORMANCE.md`
-9. `/docs/reference/LIMITATIONS.md`
-10. `/docs/todo/current/README.md`
+8. `/docs/spec/technical/testing-unit.md`
+9. `/docs/spec/technical/testing-e2e.md`
+10. `/docs/reference/CONFORMANCE.md`
+11. `/docs/reference/LIMITATIONS.md`
+12. `/docs/log/proposals/anti-mvp-measures.md`
+13. `/docs/todo/README.md`
 </required_start_reading_order>
 
-<target_selection_required>
-At start, select exactly one target:
-- A: full `/docs/spec/`
-- B: current `/docs/reference/CONFORMANCE.md`
+<critical_specifications>
+These specs define behavior that was previously implemented incorrectly. Read carefully:
 
-If scope interpretation changes, update:
-- `/docs/reference/CONFORMANCE.md`
-- `/docs/reference/LIMITATIONS.md` when user-visible
-- `/docs/log/proposals/` when tradeoffs or deferrals are introduced
-</target_selection_required>
+- Cursor semantics with CJK: `/docs/spec/editing/cursor/README.md`
+- Terminal emulator (full VT100): `/docs/spec/features/terminal/terminal.md`
+- Windows (buffer + terminal): `/docs/spec/editor/windows.md`
+- Viewport wrapping with CJK: `/docs/spec/features/ui/viewport.md`
+- Session JSON format: `/docs/spec/features/session/sessions.md`
+- Unicode guidance: `/docs/technical/unicode.md`
+</critical_specifications>
 
 <execution_model>
 Work in strict gates. Do not proceed to next gate on red checks.
 
 Gate 0: Baseline audit
-- run verification commands from `/docs/reference/CI.md`
-- create mismatch matrix and classify:
-  - M1 correctness
-  - M2 missing feature
-  - M3 undocumented behavior
-  - M4 verification gap
-  - M5 stale docs
-- fix priority: M1 -> user-visible M2 -> touched-area M4 -> M3/M5
+- Run verification commands from `/docs/reference/CI.md`.
+- Create mismatch matrix and classify: M1 correctness, M2 missing feature, M3 undocumented behavior, M4 verification gap, M5 stale docs.
+- Fix priority: M1 -> user-visible M2 -> touched-area M4 -> M3/M5.
 
 Gate 1: Slice definition
-- choose one coherent slice from `/docs/todo/current/`
-- define acceptance criteria and exact `/docs/spec/...` references
-- define required tests by behavior risk:
-  - unit + integration always
-  - headless E2E for cross-module behavior
-  - PTY E2E for interactive terminal paths
+- Choose one coherent slice from `/docs/todo/README.md`.
+- Define acceptance criteria with exact `/docs/spec/...` references.
+- Define required tests per `/docs/spec/technical/testing.md`.
 
 Gate 2: Implement
-- wire behavior through real user-reachable paths
-- keep structure policy limits and root-absolute links (`/docs/...`)
-- avoid disconnected type-only work unless explicitly marked `scaffold-only`
+- Wire behavior through real user-reachable paths.
+- Verify each feature is callable from the binary's `main` function through real user input.
+- Keep all source files under 200 lines per `/docs/policy/STRUCTURE.md`.
+- Keep root-absolute links (`/docs/...`).
+- Avoid disconnected type-only work unless explicitly marked `scaffold-only`.
 
 Gate 3: Verify and synchronize docs
-- run touched tests first, then full gate
-- update conformance and limitations in same change
-- check TODO items only after evidence is green
+- Run touched tests first, then full gate.
+- Update conformance and limitations in same change.
+- Check TODO items only after evidence is green.
 </execution_model>
 
 <anti_gaming_rules>
 Prohibited:
-- evidence-free completion
-- claiming "implemented" for unreachable behavior
-- low-signal test inflation for count targets
-- broad stubs presented as shipped functionality
-- destructive resets used to hide regressions
+- Evidence-free completion.
+- Claiming "implemented" for unreachable behavior.
+- Low-signal test inflation for count targets.
+- Broad stubs presented as shipped functionality.
+- Destructive resets used to hide regressions.
+- Marking a TODO complete when the feature only exists as types/structs.
+- Marking a TODO complete when the feature is not wired into the main dispatch loop.
 
-Implemented means all are true:
-- reachable via documented command/key workflow
-- user-visible behavior matches spec expectation
-- deterministic regression coverage exists
-- conformance and limitations are accurate
+Implemented means ALL are true:
+- Reachable via documented command/key workflow from the running binary.
+- User-visible behavior matches spec expectation.
+- Deterministic regression coverage exists.
+- Conformance and limitations are accurate.
+- Code volume meets the minimums in `/docs/log/proposals/anti-mvp-measures.md`.
 </anti_gaming_rules>
-
-<deletion_policy>
-Default is in-place improvement.
-Docs-only reset is allowed only when explicitly requested or when incremental repair is not viable.
-Before destructive reset, record rationale in `/docs/log/proposals/`.
-</deletion_policy>
 
 <testing_contract>
 Follow `/docs/spec/technical/testing.md` as normative:
-- each bug fix adds a regression test that fails on old behavior
-- prefer persisted-state assertions over fragile screen scraping
-- enforce deterministic deadlines and actionable timeout diagnostics
-- keep mandatory PTY boundary scenarios and multiplexer smoke coverage
-- optimize for coverage quality and reproducibility, not raw test count
+- Per-crate unit tests per `/docs/spec/technical/testing-unit.md`.
+- E2E and boundary tests per `/docs/spec/technical/testing-e2e.md`.
+- Each bug fix adds a regression test that fails on old behavior.
+- Prefer persisted-state assertions over fragile screen scraping.
+- Enforce deterministic deadlines and actionable timeout diagnostics.
+- Keep mandatory PTY boundary scenarios and multiplexer smoke coverage.
 </testing_contract>
 
 <todo_deferral_rules>
-For intentional deferral under `/docs/todo/current/`:
-- record rationale under `/docs/log/proposals/`
-- add concrete next-iteration leaf task
-- then mark the deferral item complete
-- do not leave terminal deferred buckets without actionable carry-forward
+For intentional deferral:
+- Record rationale under `/docs/log/proposals/`.
+- Add concrete next-iteration leaf task.
+- Then mark the deferral item complete.
+- Do not leave terminal deferred buckets without actionable carry-forward.
 </todo_deferral_rules>
 
 <required_audit_artifacts>
-During each run, produce or update one audit record under:
-- `/docs/log/reconstruction/audits/`
-
-Include:
-- mismatch matrix
-- closed mismatches with evidence
-- deferred mismatches with rationale and next action
-- exact verification commands and result signals
+During each run, produce or update one audit record under `/docs/log/reconstruction/audits/`. Include:
+- Mismatch matrix.
+- Closed mismatches with evidence.
+- Deferred mismatches with rationale and next action.
+- Exact verification commands and result signals.
 </required_audit_artifacts>
 
-<traceability_matrix_schema>
-- Requirement ID
-- Canonical doc path
-- Requirement statement
-- Code path(s)
-- Test path(s)
-- Status (`aligned`, `spec-only`, `code-only`, `test-gap`, `contradiction`)
-- Mismatch class (M1-M5)
-- Action (`implement`, `spec-update`, `test-add`, `refactor`, `defer-with-log`)
-- Verification evidence
-</traceability_matrix_schema>
-
-<completion_protocol>
-When iteration is fully green:
-- publish closure evidence in audit artifacts
-- invoke `Ask` for next objective per `/docs/policy/WORKFLOW.md`
-- if `Ask` is unavailable, emit an explicit blocking request in plain text
-</completion_protocol>
-
 <acceptance_criteria>
-Accept only when all are true:
-- behavior matches selected target and linked specs
-- conformance/limitations match observed behavior
-- required deterministic tests are green at required layers
-- TODO checkboxes reflect proven completion
-- terminal multiplexer contract is verified or explicitly limited with closure plan
+Accept only when ALL are true:
+- Behavior matches selected target and linked specs.
+- Conformance/limitations match observed behavior.
+- Required deterministic tests are green at all layers.
+- TODO checkboxes reflect proven completion.
+- Terminal emulator spawns real PTY processes.
+- Session save/load produces/reads valid JSON per schema.
+- CJK cursor never occupies half-cell position.
+- Long lines wrap correctly with CJK boundary padding.
+- Terminal multiplexer contract is verified or explicitly limited with closure plan.
+- Code volume meets minimums per `/docs/log/proposals/anti-mvp-measures.md`.
 </acceptance_criteria>
