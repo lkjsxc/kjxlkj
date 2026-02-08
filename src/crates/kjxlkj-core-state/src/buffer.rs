@@ -131,13 +131,25 @@ impl BufferState {
         self.saved_hash = simple_hash(&text);
     }
 
-    /// Detect file type from extension.
+    /// Detect file type from path and content.
     pub fn detect_file_type(&mut self) {
         if let Some(path) = &self.path {
-            self.file_type = path
-                .extension()
-                .map(|e| e.to_string_lossy().into_owned())
-                .unwrap_or_default();
+            let path_str =
+                path.to_string_lossy().to_string();
+            let first_line = if self.content.line_count()
+                > 0
+            {
+                Some(self.content.line_str(0))
+            } else {
+                None
+            };
+            let ft = crate::filetype::detect_filetype(
+                &path_str,
+                first_line.as_deref(),
+            );
+            if !ft.is_empty() {
+                self.file_type = ft;
+            }
         }
     }
 

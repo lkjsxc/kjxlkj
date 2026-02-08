@@ -2,6 +2,7 @@
 
 mod action_dispatch;
 mod action_dispatch2;
+pub(crate) mod autocmd;
 mod buffer;
 #[cfg(test)]
 mod buffer_tests;
@@ -17,6 +18,7 @@ mod editor_char_ops;
 mod editor_cmdline;
 mod editor_comments;
 mod editor_file_ops;
+pub(crate) mod filetype;
 mod editor_global_sort;
 mod editor_insert;
 mod editor_jumplist;
@@ -24,7 +26,9 @@ mod editor_key_dispatch;
 mod editor_macros;
 mod editor_op_resolve;
 mod editor_marks;
+pub(crate) mod mappings;
 mod editor_operators;
+mod editor_quickfix;
 mod editor_range_cmds;
 mod editor_range_dispatch;
 mod editor_scroll;
@@ -42,7 +46,7 @@ mod window;
 
 pub use buffer::{BufferState, LineEnding};
 pub use command_dispatch::dispatch_command;
-pub use editor::{EditorState, MarkEntry};
+pub use editor::{EditorState, MarkEntry, QuickfixEntry};
 pub use session::{load_session, save_session, SessionData, SessionLayout};
 pub use viewport::ViewportState;
 pub use window::{WindowContent, WindowOptions, WindowState};

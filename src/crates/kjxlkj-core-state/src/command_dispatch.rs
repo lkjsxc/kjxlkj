@@ -134,6 +134,32 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             }
         }
         "source" | "so" => Some(Action::Nop),
+        "filetype" | "ft" => Some(Action::Nop),
+        "autocmd" | "au" => Some(Action::Nop),
+        "cnext" | "cn" => Some(Action::Nop),
+        "cprev" | "cp" | "cprevious" => Some(Action::Nop),
+        "cfirst" | "cfir" => Some(Action::Nop),
+        "clast" | "cla" => Some(Action::Nop),
+        "copen" => Some(Action::Nop),
+        "cclose" | "ccl" => Some(Action::Nop),
+        "grep" | "vimgrep" => {
+            if !args.is_empty() {
+                Some(Action::ShellCommand(
+                    format!("grep -rn {}", args),
+                ))
+            } else {
+                Some(Action::Nop)
+            }
+        }
+        "make" => {
+            Some(Action::ShellCommand(
+                if args.is_empty() {
+                    "make".to_string()
+                } else {
+                    format!("make {}", args)
+                },
+            ))
+        }
         "new" => {
             if !args.is_empty() {
                 Some(Action::SplitOpen(args.to_string()))

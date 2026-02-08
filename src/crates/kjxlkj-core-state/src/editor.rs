@@ -13,6 +13,8 @@ use kjxlkj_core_types::{
     TextObjectScope, WindowId,
 };
 
+use crate::autocmd::AutoCmdRegistry;
+use crate::mappings::MappingRegistry;
 use crate::search::SearchState;
 use crate::{BufferState, WindowState};
 
@@ -21,6 +23,21 @@ use crate::{BufferState, WindowState};
 pub struct MarkEntry {
     pub buffer: BufferId,
     pub cursor: CursorPosition,
+}
+
+/// A quickfix list entry.
+#[derive(Debug, Clone)]
+pub struct QuickfixEntry {
+    /// File path.
+    pub file: String,
+    /// Line number (1-indexed).
+    pub line: usize,
+    /// Column number (1-indexed).
+    pub col: usize,
+    /// Error type (E, W, I).
+    pub kind: char,
+    /// Error text.
+    pub text: String,
 }
 
 /// Top-level editor state.
@@ -81,6 +98,16 @@ pub struct EditorState {
     pub terminal_escape_pending: bool,
     /// Macro playback depth for recursion limit.
     pub macro_depth: u32,
+    /// Autocommand registry.
+    pub autocmds: AutoCmdRegistry,
+    /// Quickfix list entries.
+    pub quickfix: Vec<QuickfixEntry>,
+    /// Quickfix list cursor position.
+    pub quickfix_pos: usize,
+    /// Previous window for `Ctrl-w p`.
+    pub prev_window: Option<WindowId>,
+    /// Key mapping registry.
+    pub mappings: MappingRegistry,
 }
 
 impl EditorState {
@@ -130,6 +157,11 @@ impl EditorState {
             op_force_motion: None,
             terminal_escape_pending: false,
             macro_depth: 0,
+            autocmds: AutoCmdRegistry::new(),
+            quickfix: Vec::new(),
+            quickfix_pos: 0,
+            prev_window: None,
+            mappings: MappingRegistry::new(),
         }
     }
 

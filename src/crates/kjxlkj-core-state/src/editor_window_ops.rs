@@ -26,6 +26,7 @@ impl EditorState {
         if ids.len() <= 1 {
             return;
         }
+        let old = self.focused_window;
         let idx = ids
             .iter()
             .position(|&i| i == self.focused_window)
@@ -43,6 +44,7 @@ impl EditorState {
             }
         };
         self.focused_window = next;
+        self.prev_window = Some(old);
     }
 
     /// Cycle to the next window.

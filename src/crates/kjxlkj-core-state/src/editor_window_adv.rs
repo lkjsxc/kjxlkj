@@ -61,8 +61,16 @@ impl EditorState {
     }
 
     /// Focus the previously focused window (`Ctrl-w p`).
-    /// In our simplified model, this cycles backward.
     pub(crate) fn do_focus_prev_window(&mut self) {
+        if let Some(prev) = self.prev_window {
+            if self.windows.contains_key(&prev) {
+                let old = self.focused_window;
+                self.focused_window = prev;
+                self.prev_window = Some(old);
+                return;
+            }
+        }
+        // Fallback: cycle backward.
         let ids: Vec<WindowId> =
             self.windows.keys().copied().collect();
         if ids.len() <= 1 {
@@ -77,7 +85,9 @@ impl EditorState {
         } else {
             ids[idx - 1]
         };
+        let old = self.focused_window;
         self.focused_window = prev;
+        self.prev_window = Some(old);
     }
 
     /// Create new horizontal split with empty buffer.
