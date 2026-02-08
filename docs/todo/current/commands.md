@@ -81,6 +81,6 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Execution commands
 
 - [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
-- [ ] Execute command per [/docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
+- [x] Execute command per [/docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
 - [x] Normal command per [/docs/spec/commands/execution/normal-command.md](/docs/spec/commands/execution/normal-command.md)
-- [ ] Source command per [/docs/spec/commands/execution/source-command.md](/docs/spec/commands/execution/source-command.md)
+- [x] Source command per [/docs/spec/commands/execution/source-command.md](/docs/spec/commands/execution/source-command.md)

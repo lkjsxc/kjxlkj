@@ -111,7 +111,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Increment/decrement per [/docs/spec/editing/text-manipulation/increment-decrement.md](/docs/spec/editing/text-manipulation/increment-decrement.md)
 - [x] Substitute per [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
 - [x] Sorting/alignment per [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
-- [ ] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
+- [x] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
 - [x] Bracket matching per [/docs/spec/editing/text-manipulation/bracket-matching.md](/docs/spec/editing/text-manipulation/bracket-matching.md)
 - [ ] Digraphs per [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
 

@@ -9,7 +9,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Mappings
 
 - [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
-- [ ] Mapping modes per [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
+- [x] Mapping modes per [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
 - [ ] Insert mappings per [/docs/spec/scripting/mappings/insert-mappings.md](/docs/spec/scripting/mappings/insert-mappings.md)
 - [ ] Command-line mappings per [/docs/spec/scripting/mappings/cmdline-mappings.md](/docs/spec/scripting/mappings/cmdline-mappings.md)
 - [ ] Operator mappings per [/docs/spec/scripting/mappings/operator-mappings.md](/docs/spec/scripting/mappings/operator-mappings.md)
@@ -21,7 +21,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Scripting features
 
-- [ ] User commands per [/docs/spec/scripting/user-commands.md](/docs/spec/scripting/user-commands.md)
+- [x] User commands per [/docs/spec/scripting/user-commands.md](/docs/spec/scripting/user-commands.md)
 - [ ] User functions per [/docs/spec/scripting/user-functions.md](/docs/spec/scripting/user-functions.md)
 - [ ] Event automation per [/docs/spec/scripting/event-automation.md](/docs/spec/scripting/event-automation.md)
 - [ ] Timing/debounce per [/docs/spec/scripting/timing-debounce.md](/docs/spec/scripting/timing-debounce.md)

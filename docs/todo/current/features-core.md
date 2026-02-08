@@ -54,7 +54,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Recursive LayoutNode tree (leaf/hsplit/vsplit)
 - [x] WindowRef with content_type (buffer/terminal)
 - [x] Buffer restoration (path, cursor, viewport)
-- [ ] Tab restoration
+- [x] Tab restoration
 - [ ] Register/mark persistence
 
 ### Session features
@@ -72,11 +72,11 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Window features
 
 - [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
-- [ ] Split windows per [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- [ ] Splits advanced per [/docs/spec/features/window/splits-advanced.md](/docs/spec/features/window/splits-advanced.md)
-- [ ] Floating windows per [/docs/spec/features/window/floating-windows.md](/docs/spec/features/window/floating-windows.md)
-- [ ] Tabs per [/docs/spec/features/window/tabs.md](/docs/spec/features/window/tabs.md)
-- [ ] Window command per [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
+- [x] Split windows per [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- [x] Splits advanced per [/docs/spec/features/window/splits-advanced.md](/docs/spec/features/window/splits-advanced.md)
+- [x] Floating windows per [/docs/spec/features/window/floating-windows.md](/docs/spec/features/window/floating-windows.md)
+- [x] Tabs per [/docs/spec/features/window/tabs.md](/docs/spec/features/window/tabs.md)
+- [x] Window command per [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
 - [ ] Window layouts per [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
 - [ ] Window presets per [/docs/spec/features/window/window-presets.md](/docs/spec/features/window/window-presets.md)
 - [x] Window resize per [/docs/spec/features/window/window-resize-modes.md](/docs/spec/features/window/window-resize-modes.md)
