@@ -4,108 +4,55 @@ Visual block mode operations.
 
 ## Overview
 
-Edit rectangular blocks of text for
-column-oriented operations.
+Visual block mode (`Ctrl-v`) selects a rectangular region of text. Operations on this block apply to each line independently, enabling column-oriented editing.
 
-## Entering Block Mode
+## Entering Block Mode (normative)
 
-### Start Selection
+| Key | Action |
+|---|---|
+| `Ctrl-v` | Enter visual block mode from Normal |
+| `Ctrl-v` (from visual) | Switch to block mode |
 
+Extend selection with standard motions (`h`, `j`, `k`, `l`, `w`, `$`, etc.). `$` extends to end of each line independently (ragged right edge).
 
-### Extend Selection
+## Block Operations (normative)
 
-| Key | Direction |
-|-----|-----------|
-| `h` | Left |
-| `j` | Down |
-| `k` | Up |
-| `l` | Right |
+| Key | Action |
+|---|---|
+| `I` | Insert text before the block on every line; text is typed once, then applied to all lines on `Esc` |
+| `A` | Append text after the block on every line |
+| `c` or `s` | Change: delete block content and enter insert mode; replacement applied to all lines |
+| `d` or `x` | Delete the block content |
+| `r{char}` | Replace every character in the block with `{char}` |
+| `y` | Yank the block (blockwise register) |
+| `>` / `<` | Indent/unindent selected lines |
+| `~` | Toggle case of block content |
+| `U` | Uppercase block content |
+| `u` | Lowercase block content |
 
-### Select to End
+## Block Insert (I) Behavior
 
+1. User presses `I` in block mode.
+2. Cursor moves to the top-left corner of the block.
+3. User types text (appears on the first line only during editing).
+4. On `Esc`, the same text is inserted at the beginning of the block column on every line in the selection.
+5. Lines shorter than the block's left column are not modified.
 
-## Block Operations
+## Block Append (A) Behavior
 
-### Insert Before
+Same as block insert, but text is added after the right edge of the block. If `$` was used to extend to end-of-line, text is appended at the end of each line.
 
+## Block Yank and Put
 
-Applies to all lines in block.
+- `y` in block mode stores text as blockwise in the register.
+- `p` with a blockwise register pastes the block starting at the cursor position, with each stored line placed on successive screen lines at the same column.
+- If the pasted block has fewer lines than the target, only those lines are affected.
 
-### Append After
+## Column Number Sequences
 
+`g Ctrl-a` in visual block mode creates incrementing number sequences. Select a column of numbers (or zeros), then `g Ctrl-a` increments each successive line by 1.
 
-### Change Block
+## Related
 
-
-### Delete Block
-
-
-## Column Insert
-
-### Example
-
-Starting text:
-
-With cursor on `f`, press `Ctrl-V`, `jj`, `I`, `- `, `Esc`:
-
-## Column Delete
-
-### Example
-
-
-Select leading spaces with `Ctrl-V`, `jj`, `l`, `d`:
-
-## Column Replace
-
-### Replace Characters
-
-
-### Example
-
-
-Select column of `|`, press `r `:
-
-## Column Yank/Put
-
-### Yank Block
-
-
-### Put Block
-
-
-Block put maintains rectangular shape.
-
-## Visual Block Selection
-
-### Start from Any Corner
-
-
-### Select Entire Lines
-
-
-### Select Characters
-
-
-## Column Numbers
-
-### Insert Sequence
-
-
-Example with zeros:
-
-Select, `g Ctrl-A`:
-
-## Column Alignment
-
-### Align Block Right
-
-Select block, then:
-
-### Align Block Left
-
-
-### Center Block
-
-
-## Rectangular Paste
-
+- Visual mode: [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
+- Registers: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

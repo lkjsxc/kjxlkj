@@ -4,123 +4,60 @@ Editing commands in a full buffer.
 
 ## Overview
 
-The command-line window allows
-editing commands with full
-buffer editing capabilities.
+The command-line window is a special buffer that displays command or search history, allowing full Normal-mode editing before execution.
 
-## Opening
+## Opening (normative)
 
-### From Normal Mode
+| Key | From | Window content |
+|---|---|---|
+| `q:` | Normal mode | Command history |
+| `q/` | Normal mode | Forward search history |
+| `q?` | Normal mode | Backward search history |
+| `Ctrl-f` | Command-line mode | Converts current cmdline to cmdline window |
 
-| Key   | Window           |
-|-------|------------------|
-| `q:`  | Command history  |
-| `q/`  | Search history   |
-| `q?`  | Search history   |
+## Window Properties
 
-### From Command-Line
-
-
-## Window Appearance
-
-### Layout
-
-
-### Position
-
-Opens at bottom by default.
-
-### Size
-
-
-## Navigation
-
-### Movement
-
-Standard normal mode:
-
-### Search
-
+| Property | Value |
+|---|---|
+| Position | Bottom of screen |
+| Height | Configurable via `cmdwinheight` option (default 7) |
+| Buffer type | `nofile` |
+| Modifiable | Yes (editable like a normal buffer) |
+| Saved | Never (content is lost on close) |
+| Listed | No (unlisted buffer) |
 
 ## Editing
 
-### Modify Commands
+The command-line window supports full Normal-mode editing:
 
-Full editing capabilities:
+- Navigate with `j`, `k`, motions, search, etc.
+- Edit any line (modify existing history entries or type new commands).
+- Standard insert mode works for adding/modifying text.
 
-### Example
+## Execution (normative)
 
-
-## Execution
-
-### Run Command
-
-From normal mode:
-
-### Multiple Execution
-
-Edit multiple lines, then:
-
-## Canceling
-
-### Exit Without Execute
-
-
-### Return to Command-Line
-
-
-## Window Behavior
-
-### Temporary Buffer
-
-- Not saved to file
-- Lost on close
-- Special buffer type
-
-### Buffer Options
-
+| Key | Action |
+|---|---|
+| `Enter` (Normal mode) | Execute the command on the current line and close the window |
+| `Ctrl-c` | Close the window without executing |
+| `:q` | Close the window without executing |
 
 ## History Integration
 
-### Shows History
+- The window displays history entries in chronological order (oldest at top).
+- The last line is empty, ready for new input.
+- Editing a line in the window does NOT modify the actual history until that line is executed.
+- After execution, the executed command IS added to history.
 
-Window displays history entries.
+## Restrictions
 
-### Adding New
+While the command-line window is open:
 
-Type new command at bottom.
+- Cannot open another command-line window.
+- Cannot switch to other windows (some implementations allow it; kjxlkj does not).
+- Buffer-switching commands are restricted.
 
-### Modifying History
+## Related
 
-Edits don't change actual history
-until executed.
-
-## Configuration
-
-### Window Options
-
-
-### Mappings
-
-
-## Search Window
-
-### Different History
-
-`q/` and `q?` show search history:
-
-### Execute Search
-
-`<CR>` runs search and
-returns to buffer.
-
-## Expression Window
-
-### Open
-
-Not standard, but can use
-expression history in insert.
-
-## Switching Windows
-
-### From Cmdwin
+- Command-line history: [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)
+- Command-line entry: [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)

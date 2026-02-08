@@ -4,122 +4,73 @@ Command and search history management.
 
 ## Overview
 
-Stores and recalls previous
-commands and searches.
+Each command-line type maintains its own history. History entries are navigable via arrow keys and persist across sessions.
 
-## History Types
+## History Types (normative)
 
-### Separate Histories
+| Type | Prompt | Content |
+|---|---|---|
+| Command | `:` | Ex commands |
+| Search | `/` or `?` | Search patterns |
+| Expression | `=` | Expression register inputs |
+| Input | `@` | Generic input prompts |
 
-| Type       | Access   | Content        |
-|------------|----------|----------------|
-| Command    | `:`      | Ex commands    |
-| Search     | `/` `?`  | Search patterns|
-| Expression | `=`      | Expressions    |
-| Input      | `@`      | User input     |
-| Debug      | `>`      | Debug commands |
+## Navigation (normative)
 
-## Navigation
-
-### Basic Keys
-
-| Key      | Action           |
-|----------|-----------------|
-| `<Up>`   | Previous entry   |
-| `<Down>` | Next entry       |
-| `<C-p>`  | Previous entry   |
-| `<C-n>`  | Next entry       |
+| Key | Action |
+|---|---|
+| `Up` | Previous entry (older) |
+| `Down` | Next entry (newer) |
+| `Ctrl-p` | Previous entry |
+| `Ctrl-n` | Next entry |
 
 ### Prefix Filtering
 
-Type text first, then arrows
-match only entries with prefix.
-
+If text has been typed before pressing Up/Down, only history entries starting with that prefix are shown. This enables efficient recall of similar commands.
 
 ## History Size
 
-### Configuration
+The `history` option controls how many entries are stored per type. Default: 1000.
 
+## Persistence (normative)
 
-### Default
+History is saved to a file on normal exit and loaded on startup:
 
-1000 entries per history type.
+| Setting | Description |
+|---|---|
+| Location | `~/.local/share/kjxlkj/history` |
+| Format | One entry per line, grouped by type |
+| Load | On startup, history file is read |
+| Save | On normal exit, history file is written |
 
-## Persistence
+## Command-Line Window (normative)
 
-### Save Location
+The command-line window provides a full buffer-editing view of history:
 
+| Key | Opens |
+|---|---|
+| `q:` | Command history window |
+| `q/` | Forward search history window |
+| `q?` | Backward search history window |
+| `Ctrl-f` (from cmdline) | Switch current cmdline into window |
 
-### Separate Files
+Features of the command-line window:
 
-
-### Disable Persistence
-
-
-## History Commands
-
-### View History
-
-
-### Output
-
-
-### Limit Output
-
-
-## Command-Line Window
-
-### Open History Window
-
-| Key   | Opens           |
-|-------|-----------------|
-| `q:`  | Command history |
-| `q/`  | Search history  |
-| `q?`  | Search history  |
-
-### From Command-Line
-
-
-### Window Features
-
-- Full editing capabilities
-- Navigate with j/k
-- Execute with `<CR>`
-- Quit with `<C-c>` or `:q`
-
-### Edit and Execute
-
-
-## History Search
-
-### Incremental
-
-When typing partial command:
-
-### Pattern Match
-
-History window supports search:
+- Full Normal-mode editing of history entries.
+- Navigate with `j`/`k`, standard motions.
+- Press `Enter` on a line to execute that entry.
+- Press `Ctrl-c` or `:q` to cancel and close.
+- New entries can be typed at the bottom of the buffer.
+- Edits within the window do NOT modify the actual history until executed.
 
 ## Re-Execute
 
-### Last Command
+| Command | Action |
+|---|---|
+| `@:` | Re-execute last Ex command |
+| `n` / `N` | Repeat last search (not from history, from search state) |
 
+## Related
 
-### From History
-
-
-## Clear History
-
-### Commands
-
-
-### Delete Single
-
-
-## History Modification
-
-### Add Entry
-
-
-### Get Entry
-
+- Command-line entry: [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)
+- Command-line editing: [/docs/spec/commands/cmdline/cmdline-editing.md](/docs/spec/commands/cmdline/cmdline-editing.md)

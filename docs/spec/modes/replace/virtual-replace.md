@@ -1,137 +1,64 @@
 # Virtual Replace Mode
 
-Tab-aware character replacement.
+Tab-aware and width-aware character replacement.
 
 ## Overview
 
-Virtual replace mode considers
-screen positions, not buffer bytes.
+Virtual replace mode (`gR`) replaces characters by display width rather than byte position. Unlike standard replace mode (`R`), it preserves column alignment when replacing tabs and wide characters.
 
-## Enter Virtual Replace
+## Entry and Exit (normative)
 
-### Command
+| Key | Action |
+|---|---|
+| `gR` | Enter virtual replace mode |
+| `gr{char}` | Replace single character virtually |
+| `Esc` | Exit to Normal mode |
 
+## Standard R vs Virtual gR (normative)
 
-### Single Character
+| Aspect | `R` (standard) | `gR` (virtual) |
+|---|---|---|
+| Tab handling | Replaces tab byte with one character | Treats tab as its display-width columns |
+| Wide char (CJK) | Replaces one byte | Replaces based on display width (2 columns) |
+| Column alignment | May break alignment | Preserves alignment |
+| Backspace | Restores original character (1 byte) | Restores original display columns |
 
+## Tab Replacement Example
 
-## Standard vs Virtual
+Given a tab displaying as 8 spaces:
 
-### Standard Replace
+- `R` then typing `ab` replaces the tab with `a`, then replaces the next character with `b`.
+- `gR` then typing `ab` replaces the first 2 columns of the tab's display. The remaining 6 columns are filled with spaces. Visual alignment is preserved.
 
+## Wide Character (CJK) Handling
 
-### Virtual Replace
+When replacing a CJK character (display width 2) in virtual replace mode:
 
+- Typing a width-1 character replaces the first column. The second column becomes a space to preserve width.
+- Typing another width-2 character replaces both columns exactly.
 
-## Tab Handling
+## Backspace in Virtual Replace
 
-### Standard R
+Backspace restores the original display columns, not just the original byte. If the original was a tab spanning 8 columns, backspace restores all 8 display columns.
 
-Replaces tab byte with one char.
-Tab becomes single character.
+## Single Virtual Replace (gr)
 
-### Virtual gR
+`gr{char}` replaces a single character at the cursor position using virtual-replace semantics, then returns to Normal mode. It is the virtual equivalent of `r{char}`.
 
-Treats tab as multiple spaces.
-Replacement preserves column width.
+## Count
 
-## Example
-
-### Before
-
-
-### Standard R + "ab"
-
-
-### Virtual gR + "ab"
-
-
-## Virtual Position
-
-### Definition
-
-Column position on screen,
-not byte position in buffer.
-
-### Impact
-
-Multi-byte chars (tabs, wide Unicode)
-counted by display width.
-
-## Single Virtual Replace
-
-### Command
-
-
-### Behavior
-
-Same as `gR`, but one character.
-
-## Wide Characters
-
-### Unicode
-
-Wide characters (CJK, emoji)
-occupy multiple columns.
-
-### Virtual Replace
-
-
-Respects visual width.
-
-## Use Cases
-
-### Tabular Data
-
-
-Preserves column alignment.
-
-### Fixed-Width
-
-When visual alignment matters
-more than byte positions.
-
-### Source Code
-
-When tabs represent indentation
-and alignment matters.
-
-## Backspace Behavior
-
-### Restore Original
-
-
-### Virtual Consideration
-
-Restores correct number of
-display columns.
-
-## Exit Mode
-
-### Commands
-
-
-## Mode Indicator
-
-### Display
-
-
-### Cursor Shape
-
+`{count}gR` enters virtual replace mode and the subsequent replacement text is applied `count` times on exit (same behavior as counted replace mode).
 
 ## Comparison Table
 
-| Feature          | R      | gR            |
-|-----------------|--------|---------------|
-| Tab as          | 1 byte | display width |
-| Wide char       | 1 byte | display width |
-| Alignment       | broken | preserved     |
-| Use case        | bytes  | visual        |
+| Feature | `R` | `gR` |
+|---|---|---|
+| Tab treated as | 1 byte | Display width |
+| Wide char treated as | 1 byte | Display width |
+| Alignment | May break | Preserved |
+| Best for | Byte-level replacement | Visual/tabular data |
 
-## Configuration
+## Related
 
-### Settings
-
-
-### Tab Width
-
+- Replace mode: [/docs/spec/modes/replace/replace-mode.md](/docs/spec/modes/replace/replace-mode.md)
+- CJK/Unicode: [/docs/spec/technical/unicode.md](/docs/spec/technical/unicode.md)
