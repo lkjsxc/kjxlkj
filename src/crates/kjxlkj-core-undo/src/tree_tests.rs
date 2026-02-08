@@ -2,7 +2,8 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::tree::{UndoEntry, UndoTree};
+    use crate::tree::UndoTree;
+    use crate::tree_types::UndoEntry;
 
     fn make_entry(old: &str, new: &str) -> UndoEntry {
         UndoEntry {

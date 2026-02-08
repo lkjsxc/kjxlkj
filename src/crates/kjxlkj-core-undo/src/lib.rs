@@ -6,8 +6,11 @@
 
 mod persistence;
 mod tree;
+mod tree_helpers;
+mod tree_types;
 #[cfg(test)]
 mod tree_tests;
 
 pub use persistence::{load_undo_tree, save_undo_tree};
-pub use tree::{UndoEntry, UndoGroup, UndoTree};
+pub use tree::UndoTree;
+pub use tree_types::{UndoEntry, UndoGroup};

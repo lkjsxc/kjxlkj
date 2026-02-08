@@ -5,6 +5,9 @@
 //! shared vocabulary of the editor.
 
 mod action;
+mod action_sub;
+#[cfg(test)]
+mod action_tests;
 mod cell;
 mod color;
 mod ids;
@@ -16,7 +19,8 @@ mod register;
 mod service;
 mod text_object;
 
-pub use action::{Action, CommandKind as ActionCommandKind, InsertPosition};
+pub use action::Action;
+pub use action_sub::{CommandKind as ActionCommandKind, InsertPosition};
 pub use cell::{Cell, CellAttrs};
 pub use color::Color;
 pub use ids::{BufferId, TabId, TerminalId, WindowId};

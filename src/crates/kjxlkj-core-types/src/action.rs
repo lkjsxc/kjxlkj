@@ -8,46 +8,19 @@ use crate::{
     Direction, Motion, Operator, RegisterName, ScrollDirection,
     TextObject, VisualKind,
 };
-
-/// Command-line sub-mode for action context.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum CommandKind {
-    Ex,
-    SearchForward,
-    SearchBackward,
-}
-
-/// Insert-mode entry position.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum InsertPosition {
-    /// `i` — before cursor.
-    BeforeCursor,
-    /// `a` — after cursor.
-    AfterCursor,
-    /// `I` — first non-blank.
-    FirstNonBlank,
-    /// `A` — end of line.
-    EndOfLine,
-    /// `o` — new line below.
-    NewLineBelow,
-    /// `O` — new line above.
-    NewLineAbove,
-}
+use crate::action_sub::{CommandKind, InsertPosition};
 
 /// The unified action type dispatched from input to core.
 ///
-/// Per /docs/spec/architecture/input-decoding.md, this enum covers all
-/// categories: movement, editing, mode, command, buffer, window, search,
-/// undo, macro, and system.
+/// Per /docs/spec/architecture/input-decoding.md, this enum covers
+/// movement, editing, mode, command, buffer, window, search,
+/// undo, macro, and system categories.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Action {
-    // -- Movement --
     /// Execute a motion with optional count.
     MoveCursor(Motion, u32),
     /// Scroll the viewport.
     Scroll(ScrollDirection, u32),
-
-    // -- Editing --
     /// Insert a character at cursor.
     InsertChar(char),
     /// Delete with operator + motion.
@@ -84,8 +57,6 @@ pub enum Action {
     DotRepeat,
     /// Increment number under cursor.
     Increment(i64),
-
-    // -- Mode --
     /// Enter insert mode at position.
     EnterInsert(InsertPosition),
     /// Enter visual mode with sub-kind.
@@ -98,12 +69,8 @@ pub enum Action {
     ReturnToNormal,
     /// Insert-normal mode (`Ctrl-O`).
     InsertNormal,
-
-    // -- Operator pending --
     /// Enter operator-pending mode.
     EnterOperatorPending(Operator),
-
-    // -- Command --
     /// Execute an ex command string.
     ExecuteCommand(String),
     /// Append character to command line.
@@ -114,8 +81,6 @@ pub enum Action {
     CmdlineComplete,
     /// Command history navigation.
     CmdlineHistory(Direction),
-
-    // -- Buffer --
     /// Open file path in current window.
     OpenFile(PathBuf),
     /// Write current buffer.
@@ -142,8 +107,6 @@ pub enum Action {
     DeleteBuffer,
     /// Alternate file (`Ctrl-^`).
     AlternateFile,
-
-    // -- Window --
     /// Split window horizontally.
     SplitHorizontal,
     /// Split window vertically.
@@ -164,8 +127,6 @@ pub enum Action {
     ZoomWindow,
     /// Rotate windows.
     RotateWindows(bool),
-
-    // -- Search --
     /// Forward search with pattern.
     SearchForward(String),
     /// Backward search with pattern.
@@ -174,34 +135,24 @@ pub enum Action {
     NextMatch,
     /// Jump to previous match.
     PrevMatch,
-
-    // -- Undo --
     /// Undo last change.
     Undo,
     /// Redo last undone change.
     Redo,
-
-    // -- Marks --
     /// Set mark at cursor.
     SetMark(char),
     /// Jump to mark (exact position).
     JumpToMark(char),
     /// Jump to mark line (first non-blank).
     JumpToMarkLine(char),
-
-    // -- Macro --
     /// Start recording macro into register.
     RecordMacro(char),
     /// Stop recording macro.
     StopRecordMacro,
     /// Play macro from register.
     PlayMacro(char, u32),
-
-    // -- Register --
     /// Set register for next operator.
     SetRegister(RegisterName),
-
-    // -- System --
     /// Terminal resize.
     Resize(u16, u16),
     /// Bracketed paste text.
@@ -212,31 +163,12 @@ pub enum Action {
     FocusLost,
     /// Quit signal (SIGTERM etc.).
     QuitSignal,
-
-    // -- Session --
     /// Save session.
     SessionSave,
     /// Load session.
     SessionLoad,
-
-    // -- Terminal --
     /// Spawn terminal.
     SpawnTerminal,
-
     /// No operation (sentinel / default).
     Nop,
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn action_variants_exist() {
-        let _ = Action::MoveCursor(Motion::Left, 1);
-        let _ = Action::InsertChar('a');
-        let _ = Action::Quit;
-        let _ = Action::Resize(80, 24);
-        let _ = Action::Nop;
-    }
 }

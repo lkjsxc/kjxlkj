@@ -24,7 +24,7 @@ pub fn load_undo_tree(path: &Path) -> std::io::Result<UndoTree> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::tree::UndoEntry;
+    use crate::tree_types::UndoEntry;
 
     #[test]
     fn round_trip() {
