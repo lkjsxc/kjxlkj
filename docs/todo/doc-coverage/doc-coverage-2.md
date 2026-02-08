@@ -12,6 +12,8 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
 - [ ] [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
 - [ ] [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [ ] [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- [ ] [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
 - [ ] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
 
 ## spec/commands/

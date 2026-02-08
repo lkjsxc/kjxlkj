@@ -6,6 +6,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 - [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md)
 
 ### Terminal emulator
 

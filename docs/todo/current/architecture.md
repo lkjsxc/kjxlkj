@@ -7,6 +7,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 - [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
 - [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
+- [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
 - [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
 
@@ -25,9 +27,29 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Runtime model
 
-- [ ] Async event loop with bounded channels
+- [ ] Async event loop with bounded channels per [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
 - [ ] Service message bus for inter-crate communication
 - [ ] Snapshot-driven render pipeline (core state never mutated by renderer)
+
+## Render pipeline
+
+- [ ] Cell grid construction from buffer content + viewport per [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
+- [ ] Decoration overlay (diagnostics, search highlights, cursor)
+- [ ] Diff-based frame output (only changed cells written to terminal)
+- [ ] Color capability detection (true color, 256, 16)
+- [ ] Window separator and tab line rendering
+- [ ] Batched single-write flush
+
+## Input decoding
+
+- [ ] Crossterm EventStream async reader per [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- [ ] Key event normalization (modifier canonicalization)
+- [ ] Keybinding trie with prefix matching and timeout
+- [ ] Count prefix accumulation
+- [ ] Register prefix (`"`) handling
+- [ ] Operator-pending mode resolution
+- [ ] Bracketed paste handling
+- [ ] Focus gained/lost events
 
 ## Plugin architecture
 
