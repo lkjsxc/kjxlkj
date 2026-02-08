@@ -1,110 +1,122 @@
 # Argument List Commands
 
-Managing the argument list.
+Manage the list of files passed on the command line.
 
 ## Overview
 
-The argument list holds
-files to process in sequence.
+The argument list (arglist) tracks files given as command
+line arguments. It provides sequential file navigation
+and batch operations.
 
-## Basic Concept
+## Commands
 
-### What Is Arglist
+### Navigation
 
-List of files passed on command
-line or added manually.
+| Command | Description |
+|---------|-------------|
+| `:argument {n}` | Edit argument {n} |
+| `:next` | Edit next argument |
+| `:previous` | Edit previous argument |
+| `:first` | Edit first argument |
+| `:last` | Edit last argument |
 
-### Difference from Buffers
+### Split Variants
 
-| Aspect     | Buffers        | Arglist       |
-|------------|----------------|---------------|
-| Contains   | All opened     | Subset        |
-| Order      | Open order     | Explicit      |
-| Purpose    | All files      | Work sequence |
+| Command | Description |
+|---------|-------------|
+| `:sargument {n}` | Split and edit argument {n} |
+| `:snext` | Split and edit next argument |
+| `:sprevious` | Split and edit previous |
 
-## View Arglist
+### Modification
 
-### Current List
+| Command | Description |
+|---------|-------------|
+| `:args {files}` | Replace arglist with {files} |
+| `:argadd {file}` | Add {file} to arglist |
+| `:argdelete {pattern}` | Remove matching entries |
+| `:argdedupe` | Remove duplicate entries |
 
+## Listing
 
-### Output
+### Show Arglist
 
+`:args` with no arguments shows the current list.
+The current file is shown in brackets: `[file.rs]`.
 
-Brackets show current position.
+### Output Format
 
-## Set Arglist
+`[main.rs] lib.rs utils.rs tests/test.rs`
 
-### Replace List
+### Count
 
+`:args` also shows position: `(1 of 4)`.
 
-### Add Files
+## Glob Expansion
 
+### Wildcards
 
-### Remove Files
+`:args src/*.rs` expands to all `.rs` files in `src/`.
+`:args **/*.md` expands recursively.
 
+### Backtick Expansion
 
-## Navigate Arglist
+`:args \`find . -name "*.rs"\`` uses shell output.
 
-### Next/Previous
+## Batch Operations
 
+### argdo
 
-### First/Last
+`:argdo {cmd}` executes `{cmd}` in each argument file.
 
+### Example
 
-### Rewind
+`:argdo %s/old/new/ge | update` replaces in all files.
 
+### Error Handling
 
-## Write and Move
+If `{cmd}` fails in a file, execution continues to the
+next file unless `abort` is set. Errors are collected
+and displayed at the end.
 
-### Write + Next
+## Local Arglists
 
+### Window-Local
 
-### Write + Previous
+`:argloca {files}` creates a window-local argument list.
+Each window can have its own arglist independent of the
+global one.
 
+### Scope
 
-## Force Navigation
+Window-local arglists are inherited by splits from
+that window.
 
-### Discard Changes
+## Integration
 
+### Statusline
 
-### Write First
+The statusline can show arglist position: `[2/5]`.
 
+### Startup
 
-## Apply to All
+Files passed on the command line (`kjxlkj a.rs b.rs`)
+populate the initial argument list.
 
-### Do Command
+### Buffer List
 
+Argument list entries are a subset of the buffer list.
+All arglist files appear in the buffer list, but not
+all buffers are in the arglist.
 
-### Examples
+## Write Commands
 
+### Write All
 
-### Write After
+`:wall` writes all modified buffers, not just arglist.
+`:argdo update` writes only modified arglist files.
 
+### Quit All
 
-## Local Arglist
-
-### Per Window
-
-
-### Global
-
-
-## Editing Arglist
-
-### Add at Position
-
-
-### Remove by Pattern
-
-
-### Clear
-
-
-## Count Files
-
-### Number of Args
-
-
-## Current Argument
-
-### Position
+`:qall` quits, warning about modified arglist files.
+`:qall!` quits without warnings.
