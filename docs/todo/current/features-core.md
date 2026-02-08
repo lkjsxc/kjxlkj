@@ -13,11 +13,11 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Screen buffer: cell model (grapheme, width, fg, bg, attrs, is_wide_continuation)
 - [x] Escape sequence parser: CUU/CUD/CUF/CUB/CUP cursor movement
 - [x] Escape sequence parser: ED/EL/ECH erase operations
-- [ ] Escape sequence parser: SU/SD/DECSTBM scroll regions
+- [x] Escape sequence parser: SU/SD/DECSTBM scroll regions
 - [x] Escape sequence parser: SGR (basic 8, bright 8, 256-color, 24-bit RGB)
-- [ ] Escape sequence parser: DECSET/DECRST private modes (alt screen, cursor visibility)
+- [x] Escape sequence parser: DECSET/DECRST private modes (alt screen, cursor visibility)
 - [ ] Escape sequence parser: OSC (window title, clipboard)
-- [ ] Scrollback buffer with configurable capacity
+- [x] Scrollback buffer with configurable capacity
 
 ### PTY management
 

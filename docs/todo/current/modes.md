@@ -30,7 +30,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Cursor clamping on exit (never past last char in Normal)
 - [x] Insert-mode navigation (arrow keys)
 - [x] Insert-normal mode (`Ctrl-o`)
-- [ ] Auto-indentation on `Enter`
+- [x] Auto-indentation on `Enter`
 - [ ] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
 - [ ] Unicode input per [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
 - [ ] Digraph input per [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
