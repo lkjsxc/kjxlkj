@@ -24,7 +24,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
 - [ ] `:edit` per [/docs/spec/commands/file/edit-command.md](/docs/spec/commands/file/edit-command.md)
 - [ ] `:write` per [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
-- [ ] `:read` per [/docs/spec/commands/file/read-command.md](/docs/spec/commands/file/read-command.md)
+- [x] `:read` per [/docs/spec/commands/file/read-command.md](/docs/spec/commands/file/read-command.md)
 - [ ] `:find` per [/docs/spec/commands/file/find-command.md](/docs/spec/commands/file/find-command.md)
 - [ ] File operations per [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
 - [ ] File exploration per [/docs/spec/commands/file/file-exploration.md](/docs/spec/commands/file/file-exploration.md)
@@ -41,7 +41,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Quit commands
 
-- [ ] Per [/docs/spec/commands/quit-commands.md](/docs/spec/commands/quit-commands.md)
+- [x] Per [/docs/spec/commands/quit-commands.md](/docs/spec/commands/quit-commands.md)
 
 ## Substitute commands
 
@@ -56,19 +56,19 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Range commands
 
 - [/docs/spec/commands/ranges/README.md](/docs/spec/commands/ranges/README.md)
-- [ ] Range specs per [/docs/spec/commands/ranges/range-specs.md](/docs/spec/commands/ranges/range-specs.md)
-- [ ] Ranges per [/docs/spec/commands/ranges/ranges.md](/docs/spec/commands/ranges/ranges.md)
-- [ ] Address patterns per [/docs/spec/commands/ranges/address-patterns.md](/docs/spec/commands/ranges/address-patterns.md)
+- [x] Range specs per [/docs/spec/commands/ranges/range-specs.md](/docs/spec/commands/ranges/range-specs.md)
+- [x] Ranges per [/docs/spec/commands/ranges/ranges.md](/docs/spec/commands/ranges/ranges.md)
+- [x] Address patterns per [/docs/spec/commands/ranges/address-patterns.md](/docs/spec/commands/ranges/address-patterns.md)
 
 ## Command-line interface
 
 - [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
-- [ ] Command-line entry per [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)
-- [ ] Command-line editing per [/docs/spec/commands/cmdline/cmdline-editing.md](/docs/spec/commands/cmdline/cmdline-editing.md)
-- [ ] Command-line history per [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)
+- [x] Command-line entry per [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)
+- [x] Command-line editing per [/docs/spec/commands/cmdline/cmdline-editing.md](/docs/spec/commands/cmdline/cmdline-editing.md)
+- [x] Command-line history per [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)
 - [ ] Command-line window per [/docs/spec/commands/cmdline/cmdline-window.md](/docs/spec/commands/cmdline/cmdline-window.md)
-- [ ] Tab completion per [/docs/spec/commands/cmdline/completion.md](/docs/spec/commands/cmdline/completion.md)
-- [ ] History per [/docs/spec/commands/cmdline/history.md](/docs/spec/commands/cmdline/history.md)
+- [x] Tab completion per [/docs/spec/commands/cmdline/completion.md](/docs/spec/commands/cmdline/completion.md)
+- [x] History per [/docs/spec/commands/cmdline/history.md](/docs/spec/commands/cmdline/history.md)
 
 ## Session commands
 
@@ -82,5 +82,5 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
 - [ ] Execute command per [/docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
-- [ ] Normal command per [/docs/spec/commands/execution/normal-command.md](/docs/spec/commands/execution/normal-command.md)
+- [x] Normal command per [/docs/spec/commands/execution/normal-command.md](/docs/spec/commands/execution/normal-command.md)
 - [ ] Source command per [/docs/spec/commands/execution/source-command.md](/docs/spec/commands/execution/source-command.md)

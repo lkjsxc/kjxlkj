@@ -33,7 +33,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Ctrl-w navigation works with terminal panes
 - [x] SIGWINCH on terminal pane resize
 - [x] SIGHUP on terminal pane close
-- [ ] Terminal Normal mode (scrollback navigation)
+- [x] Terminal Normal mode (scrollback navigation)
 
 ### Terminal features
 
@@ -101,7 +101,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] `:terminal` spawns a real PTY process via openpty/forkpty, not a stub
 - [x] Terminal screen buffer receives and parses escape sequences from PTY output
 - [ ] Typing in terminal-insert mode forwards raw bytes to the PTY fd
-- [ ] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
+- [x] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
 - [x] `:SessionSave` serializes the full layout tree to JSON per session schema
 - [x] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions
 - [x] Window `Ctrl-w h/j/k/l` navigation works identically for buffer and terminal windows

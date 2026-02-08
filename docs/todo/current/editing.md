@@ -29,8 +29,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Sentence/paragraph: `(`, `)`, `{`, `}` per [/docs/spec/editing/motions/sentence-paragraph.md](/docs/spec/editing/motions/sentence-paragraph.md)
 - [x] Scroll motions per [/docs/spec/editing/motions/scroll-motions.md](/docs/spec/editing/motions/scroll-motions.md)
 - [x] Window motions per [/docs/spec/editing/motions/window-motions.md](/docs/spec/editing/motions/window-motions.md)
-- [ ] Repeat motions per [/docs/spec/editing/motions/repeat-motions.md](/docs/spec/editing/motions/repeat-motions.md)
-- [ ] Jump motions per [/docs/spec/editing/motions/jumps/README.md](/docs/spec/editing/motions/jumps/README.md)
+- [x] Repeat motions per [/docs/spec/editing/motions/repeat-motions.md](/docs/spec/editing/motions/repeat-motions.md)
+- [x] Jump motions per [/docs/spec/editing/motions/jumps/README.md](/docs/spec/editing/motions/jumps/README.md)
 - [x] Motion grammar per [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)
 
 ## Operators
@@ -42,11 +42,11 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Linewise/characterwise per [/docs/spec/editing/operators/linewise-characterwise.md](/docs/spec/editing/operators/linewise-characterwise.md)
 - [x] Double operators (`dd`, `cc`, `yy`) per [/docs/spec/editing/operators/double-operators.md](/docs/spec/editing/operators/double-operators.md)
 - [x] Count with operators per [/docs/spec/editing/operators/count-with-operators.md](/docs/spec/editing/operators/count-with-operators.md)
-- [ ] Forced motion types per [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)
-- [ ] Operator modifiers per [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
+- [x] Forced motion types per [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)
+- [x] Operator modifiers per [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
 - [x] Operator-pending mode per [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
 - [x] `g` operators per [/docs/spec/editing/operators/g-operators.md](/docs/spec/editing/operators/g-operators.md)
-- [ ] Advanced operators per [/docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)
+- [x] Advanced operators per [/docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)
 
 ## Text objects
 
@@ -68,16 +68,16 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Black hole register (`"_`) per [/docs/spec/editing/registers/blackhole-register.md](/docs/spec/editing/registers/blackhole-register.md)
 - [x] Read-only registers per [/docs/spec/editing/registers/readonly-registers.md](/docs/spec/editing/registers/readonly-registers.md)
 - [ ] Expression register per [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)
-- [ ] Special registers per [/docs/spec/editing/registers/special-registers.md](/docs/spec/editing/registers/special-registers.md)
+- [x] Special registers per [/docs/spec/editing/registers/special-registers.md](/docs/spec/editing/registers/special-registers.md)
 - [x] Register commands per [/docs/spec/editing/registers/register-commands.md](/docs/spec/editing/registers/register-commands.md)
 
 ## Macros
 
 - [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
 - [x] Record (`q{reg}`), playback (`@{reg}`), replay last (`@@`)
-- [ ] Recursive macros per [/docs/spec/editing/macros/recursive-macros.md](/docs/spec/editing/macros/recursive-macros.md)
-- [ ] Register-based macros per [/docs/spec/editing/macros/register-macros.md](/docs/spec/editing/macros/register-macros.md)
-- [ ] Advanced macros per [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
+- [x] Recursive macros per [/docs/spec/editing/macros/recursive-macros.md](/docs/spec/editing/macros/recursive-macros.md)
+- [x] Register-based macros per [/docs/spec/editing/macros/register-macros.md](/docs/spec/editing/macros/register-macros.md)
+- [x] Advanced macros per [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
 
 ## Marks
 
@@ -85,7 +85,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Local marks (`a`-`z`), global marks (`A`-`Z`)
 - [x] Jump to mark (`` ` ``), jump to mark line (`'`)
 - [x] Automatic marks per [/docs/spec/editing/marks/automatic-marks.md](/docs/spec/editing/marks/automatic-marks.md)
-- [ ] Special marks per [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
+- [x] Special marks per [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
 - [x] Jump list per [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
 - [x] Change list per [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)
 - [ ] Mark persistence per [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)
