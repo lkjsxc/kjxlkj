@@ -13,17 +13,24 @@ use kjxlkj_core_types::{
     TabId, TextObjectScope, WindowId,
 };
 
+use crate::after_dir::AfterDirConfig;
+use crate::audio::AudioConfig;
+use crate::auto_session::{AutoSessionConfig, InitFileState};
 use crate::autocmd::AutoCmdRegistry;
 use crate::buffer_options::{ArgList, BufferGroupRegistry};
 use crate::completion::CompletionPopup;
+use crate::dap::DapState;
 use crate::digraphs::DigraphTable;
 use crate::editor_tabs::TabPage;
 use crate::flash_jump::FlashState;
 use crate::floating::FloatRegistry;
+use crate::folds_advanced::FoldState;
 use crate::git_features::GitState;
+use crate::ime::ImeState;
 use crate::keybinding_dsl::{
     CommandPalette, LeaderConfig, WhichKeyState,
 };
+use crate::live_grep::LiveGrepState;
 use crate::lsp_features::LspState;
 use crate::mappings::MappingRegistry;
 use crate::mouse::MouseConfig;
@@ -31,14 +38,25 @@ use crate::multicursor::MultiCursorState;
 use crate::notifications::NotificationManager;
 use crate::persistence::PersistenceConfig;
 use crate::popup::PopupMenu;
+use crate::regex_engine::RegexConfig;
+use crate::remote::RemoteState;
 use crate::search::SearchState;
+use crate::session_features::{
+    ExCommandBatch, ExpressionEval, MacroPersistence,
+    RegisterPersistence,
+};
 use crate::snippets::{SnippetRegistry, SnippetState};
 use crate::spell::SpellChecker;
 use crate::statusline_dsl::StatuslineConfig;
 use crate::tags::TagStack;
 use crate::theming::ThemeRegistry;
+use crate::tmux::TmuxState;
+use crate::treesitter_objects::TsTextObjects;
+use crate::unicode_input::UnicodeInputState;
 use crate::user_commands::UserCommandRegistry;
 use crate::user_functions::UserFunctionRegistry;
+use crate::view_management::ViewRegistry;
+use crate::wm_integration::WmState;
 use crate::{BufferState, WindowState};
 
 /// A stored mark: buffer id + cursor position.
@@ -185,6 +203,44 @@ pub struct EditorState {
     pub statusline_config: StatuslineConfig,
     /// User function registry.
     pub user_functions: UserFunctionRegistry,
+    /// Tmux integration state.
+    pub tmux_state: TmuxState,
+    /// DAP debugging state.
+    pub dap_state: DapState,
+    /// Remote editing state.
+    pub remote_state: RemoteState,
+    /// Window manager integration.
+    pub wm_state: WmState,
+    /// View management registry.
+    pub view_registry: ViewRegistry,
+    /// Macro persistence.
+    pub macro_persistence: MacroPersistence,
+    /// Register persistence.
+    pub register_persistence: RegisterPersistence,
+    /// Expression evaluator.
+    pub expr_eval: ExpressionEval,
+    /// Ex command batch processor.
+    pub ex_batch: ExCommandBatch,
+    /// IME composition state.
+    pub ime_state: ImeState,
+    /// Unicode input state.
+    pub unicode_input: UnicodeInputState,
+    /// Live grep state.
+    pub live_grep: LiveGrepState,
+    /// Regex configuration.
+    pub regex_config: RegexConfig,
+    /// After-directory config.
+    pub after_dir: AfterDirConfig,
+    /// Audio/bell config.
+    pub audio_config: AudioConfig,
+    /// Advanced fold state.
+    pub fold_state: FoldState,
+    /// Auto-session configuration.
+    pub auto_session: AutoSessionConfig,
+    /// Init file sourcing state.
+    pub init_files: InitFileState,
+    /// Treesitter text objects.
+    pub ts_text_objects: TsTextObjects,
 }
 
 impl EditorState {
@@ -266,6 +322,25 @@ impl EditorState {
             mouse_config: MouseConfig::new(),
             statusline_config: StatuslineConfig::new(),
             user_functions: UserFunctionRegistry::new(),
+            tmux_state: TmuxState::detect(),
+            dap_state: DapState::new(),
+            remote_state: RemoteState::new(),
+            wm_state: WmState::detect(),
+            view_registry: ViewRegistry::new(),
+            macro_persistence: MacroPersistence::new(),
+            register_persistence: RegisterPersistence::new(),
+            expr_eval: ExpressionEval::new(),
+            ex_batch: ExCommandBatch::new(),
+            ime_state: ImeState::new(),
+            unicode_input: UnicodeInputState::new(),
+            live_grep: LiveGrepState::new(),
+            regex_config: RegexConfig::default(),
+            after_dir: AfterDirConfig::new(),
+            audio_config: AudioConfig::new(),
+            fold_state: FoldState::new(),
+            auto_session: AutoSessionConfig::new(),
+            init_files: InitFileState::new(),
+            ts_text_objects: TsTextObjects::new(),
         }
     }
 
