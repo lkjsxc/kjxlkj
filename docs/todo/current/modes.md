@@ -15,21 +15,21 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Normal mode
 
-- [ ] Default mode on startup
-- [ ] Motion dispatch (h/j/k/l, w/b/e, 0/$, gg/G, etc.)
-- [ ] Operator-pending mode entry (d, c, y, etc.)
-- [ ] Count prefix handling
+- [x] Default mode on startup
+- [x] Motion dispatch (h/j/k/l, w/b/e, 0/$, gg/G, etc.)
+- [x] Operator-pending mode entry (d, c, y, etc.)
+- [x] Count prefix handling
 - [ ] Dot-repeat (`.`) for last change
 
 ## Insert mode
 
-- [ ] Entry commands: `i`, `I`, `a`, `A`, `o`, `O`
-- [ ] Character insertion at cursor
-- [ ] Backspace/delete within insert
-- [ ] `Esc` returns to Normal mode
-- [ ] Cursor clamping on exit (never past last char in Normal)
+- [x] Entry commands: `i`, `I`, `a`, `A`, `o`, `O`
+- [x] Character insertion at cursor
+- [x] Backspace/delete within insert
+- [x] `Esc` returns to Normal mode
+- [x] Cursor clamping on exit (never past last char in Normal)
 - [ ] Insert-mode navigation (arrow keys)
-- [ ] Insert-normal mode (`Ctrl-o`)
+- [x] Insert-normal mode (`Ctrl-o`)
 - [ ] Auto-indentation on `Enter`
 - [ ] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
 - [ ] Unicode input per [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
@@ -58,19 +58,19 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Visual mode
 
-- [ ] Character-wise visual (`v`)
-- [ ] Line-wise visual (`V`)
-- [ ] Block-wise visual (`Ctrl-v`)
+- [x] Character-wise visual (`v`)
+- [x] Line-wise visual (`V`)
+- [x] Block-wise visual (`Ctrl-v`)
 - [ ] Selection highlighting
-- [ ] Operators on visual selection (d, c, y, etc.)
+- [x] Operators on visual selection (d, c, y, etc.)
 - [ ] Per [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
 
 ## Command-line mode
 
-- [ ] Entry via `:`, `/`, `?`
-- [ ] Command parsing and execution
-- [ ] Command-line editing (cursor movement, delete)
-- [ ] Command history (`Up`/`Down`)
+- [x] Entry via `:`, `/`, `?`
+- [x] Command parsing and execution
+- [x] Command-line editing (cursor movement, delete)
+- [x] Command history (`Up`/`Down`)
 - [ ] Tab completion
 
 ## Replace mode
@@ -82,19 +82,19 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Mode transitions
 
-- [ ] All transitions per [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
+- [x] All transitions per [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
 - [ ] CJK cursor clamping on mode change (no half-cell positions)
 
 ## Wiring verification
 
 Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
 
-- [ ] `i`/`I`/`a`/`A`/`o`/`O` each enter Insert mode with correct cursor placement
-- [ ] `Esc` from Insert mode transitions to Normal and clamps cursor to end-exclusive range
-- [ ] `v`/`V`/`Ctrl-v` each enter the correct Visual sub-mode with anchor set
-- [ ] `:` enters Command mode with empty command buffer and cursor at position 0
+- [x] `i`/`I`/`a`/`A`/`o`/`O` each enter Insert mode with correct cursor placement
+- [x] `Esc` from Insert mode transitions to Normal and clamps cursor to end-exclusive range
+- [x] `v`/`V`/`Ctrl-v` each enter the correct Visual sub-mode with anchor set
+- [x] `:` enters Command mode with empty command buffer and cursor at position 0
 - [ ] `R` enters Replace mode; typed characters overwrite at cursor position
-- [ ] `r{char}` replaces single character without entering Replace mode
-- [ ] Mode-dependent keybinding dispatch: same key produces different actions in different modes
+- [x] `r{char}` replaces single character without entering Replace mode
+- [x] Mode-dependent keybinding dispatch: same key produces different actions in different modes
 - [ ] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift
 - [ ] Mode indicator in statusline updates on every transition

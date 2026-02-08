@@ -10,14 +10,14 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Essential commands
 
-- [ ] `:w` write current buffer to file
-- [ ] `:q` quit current window
-- [ ] `:wq` write and quit
-- [ ] `:q!` force quit without saving
-- [ ] `:qa` quit all windows
+- [x] `:w` write current buffer to file
+- [x] `:q` quit current window
+- [x] `:wq` write and quit
+- [x] `:q!` force quit without saving
+- [x] `:qa` quit all windows
 - [ ] `:wa` write all modified buffers
 - [ ] `:wqa` write all and quit all
-- [ ] `:e {file}` edit file in current window
+- [x] `:e {file}` edit file in current window
 
 ## File commands
 

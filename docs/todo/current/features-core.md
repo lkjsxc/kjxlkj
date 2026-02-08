@@ -10,28 +10,28 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ### Terminal emulator
 
-- [ ] Screen buffer: cell model (grapheme, width, fg, bg, attrs, is_wide_continuation)
-- [ ] Escape sequence parser: CUU/CUD/CUF/CUB/CUP cursor movement
-- [ ] Escape sequence parser: ED/EL/ECH erase operations
+- [x] Screen buffer: cell model (grapheme, width, fg, bg, attrs, is_wide_continuation)
+- [x] Escape sequence parser: CUU/CUD/CUF/CUB/CUP cursor movement
+- [x] Escape sequence parser: ED/EL/ECH erase operations
 - [ ] Escape sequence parser: SU/SD/DECSTBM scroll regions
-- [ ] Escape sequence parser: SGR (basic 8, bright 8, 256-color, 24-bit RGB)
+- [x] Escape sequence parser: SGR (basic 8, bright 8, 256-color, 24-bit RGB)
 - [ ] Escape sequence parser: DECSET/DECRST private modes (alt screen, cursor visibility)
 - [ ] Escape sequence parser: OSC (window title, clipboard)
 - [ ] Scrollback buffer with configurable capacity
 
 ### PTY management
 
-- [ ] PTY spawn via openpty/forkpty
-- [ ] Async read from PTY fd
-- [ ] Write to PTY fd
-- [ ] Resize via ioctl TIOCSWINSZ + SIGWINCH
+- [x] PTY spawn via openpty/forkpty
+- [x] Async read from PTY fd
+- [x] Write to PTY fd
+- [x] Resize via ioctl TIOCSWINSZ + SIGWINCH
 - [ ] Cleanup via SIGHUP on close
 
 ### Terminal as window
 
-- [ ] Terminal windows share WindowId in layout tree
+- [x] Terminal windows share WindowId in layout tree
 - [ ] Ctrl-w navigation works with terminal panes
-- [ ] SIGWINCH on terminal pane resize
+- [x] SIGWINCH on terminal pane resize
 - [ ] SIGHUP on terminal pane close
 - [ ] Terminal Normal mode (scrollback navigation)
 
@@ -49,11 +49,11 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ### Session save/load
 
-- [ ] `:SessionSave` writes JSON per session schema
-- [ ] `:SessionLoad` reads JSON and restores window layout
-- [ ] Recursive LayoutNode tree (leaf/hsplit/vsplit)
-- [ ] WindowRef with content_type (buffer/terminal)
-- [ ] Buffer restoration (path, cursor, viewport)
+- [x] `:SessionSave` writes JSON per session schema
+- [x] `:SessionLoad` reads JSON and restores window layout
+- [x] Recursive LayoutNode tree (leaf/hsplit/vsplit)
+- [x] WindowRef with content_type (buffer/terminal)
+- [x] Buffer restoration (path, cursor, viewport)
 - [ ] Tab restoration
 - [ ] Register/mark persistence
 
@@ -98,13 +98,13 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
 
-- [ ] `:terminal` spawns a real PTY process via openpty/forkpty, not a stub
-- [ ] Terminal screen buffer receives and parses escape sequences from PTY output
+- [x] `:terminal` spawns a real PTY process via openpty/forkpty, not a stub
+- [x] Terminal screen buffer receives and parses escape sequences from PTY output
 - [ ] Typing in terminal-insert mode forwards raw bytes to the PTY fd
 - [ ] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
-- [ ] `:SessionSave` serializes the full layout tree to JSON per session schema
-- [ ] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions
+- [x] `:SessionSave` serializes the full layout tree to JSON per session schema
+- [x] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions
 - [ ] Window `Ctrl-w h/j/k/l` navigation works identically for buffer and terminal windows
-- [ ] Terminal window resize triggers ioctl(TIOCSWINSZ) and SIGWINCH delivery
-- [ ] Buffer `:e {file}` dispatches FileRead to FS service and constructs rope on response
-- [ ] Buffer `:w` dispatches FileWrite to FS service with rope snapshot
+- [x] Terminal window resize triggers ioctl(TIOCSWINSZ) and SIGWINCH delivery
+- [x] Buffer `:e {file}` dispatches FileRead to FS service and constructs rope on response
+- [x] Buffer `:w` dispatches FileWrite to FS service with rope snapshot

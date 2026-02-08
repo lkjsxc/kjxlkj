@@ -34,7 +34,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ### Statusline
 
 - [/docs/spec/features/ui/statusline/README.md](/docs/spec/features/ui/statusline/README.md)
-- [ ] Statusline rendering per [/docs/spec/features/ui/statusline/statusline.md](/docs/spec/features/ui/statusline/statusline.md)
+- [x] Statusline rendering per [/docs/spec/features/ui/statusline/statusline.md](/docs/spec/features/ui/statusline/statusline.md)
 - [ ] Statusline DSL per [/docs/spec/features/ui/statusline/statusline-dsl.md](/docs/spec/features/ui/statusline/statusline-dsl.md)
 - [ ] Statusline config per [/docs/spec/features/ui/statusline/statusline-config.md](/docs/spec/features/ui/statusline/statusline-config.md)
 

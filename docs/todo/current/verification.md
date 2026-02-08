@@ -20,9 +20,9 @@ Per [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md):
 
 ### Gate 2: Implement
 
-- [ ] Wire behavior through real user-reachable paths
-- [ ] Verify each feature callable from binary `main` through real input
-- [ ] Keep source files under 200 lines per [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [x] Wire behavior through real user-reachable paths
+- [x] Verify each feature callable from binary `main` through real input
+- [x] Keep source files under 200 lines per [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
 
 ### Gate 3: Verify and synchronize
 
@@ -54,7 +54,7 @@ All must be true:
 - [ ] CJK cursor never occupies half-cell position
 - [ ] Long lines wrap correctly with CJK boundary padding
 - [ ] Terminal multiplexer contract verified or limited with closure plan
-- [ ] Code volume meets minimums per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)
+- [x] Code volume meets minimums per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)
 
 ## Reference documents
 

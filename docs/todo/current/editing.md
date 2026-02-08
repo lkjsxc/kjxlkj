@@ -9,8 +9,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Cursor model
 
-- [ ] Grapheme-based cursor position `(line, grapheme_offset)` per cursor spec
-- [ ] Bidirectional grapheme-to-display-column mapping
+- [x] Grapheme-based cursor position `(line, grapheme_offset)` per cursor spec
+- [x] Bidirectional grapheme-to-display-column mapping
 - [ ] CJK wide char: cursor always on grapheme boundary, never half-cell
 - [ ] CJK motion atomicity: `l`/`h` skip entire width-2 grapheme
 - [ ] Cursor rendering: block cursor spans full display width of grapheme
@@ -19,41 +19,41 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Motions
 
 - [/docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
-- [ ] Character motions: `h`, `l`, `space`, `backspace`
-- [ ] Line motions: `j`, `k`, `+`, `-` per [/docs/spec/editing/motions/line-motions.md](/docs/spec/editing/motions/line-motions.md)
-- [ ] Word motions: `w`, `W`, `b`, `B`, `e`, `E` per [/docs/spec/editing/motions/word-WORD.md](/docs/spec/editing/motions/word-WORD.md)
-- [ ] Line-position motions: `0`, `^`, `$`, `g_`
-- [ ] File motions: `gg`, `G`, `{count}G`
+- [x] Character motions: `h`, `l`, `space`, `backspace`
+- [x] Line motions: `j`, `k`, `+`, `-` per [/docs/spec/editing/motions/line-motions.md](/docs/spec/editing/motions/line-motions.md)
+- [x] Word motions: `w`, `W`, `b`, `B`, `e`, `E` per [/docs/spec/editing/motions/word-WORD.md](/docs/spec/editing/motions/word-WORD.md)
+- [x] Line-position motions: `0`, `^`, `$`, `g_`
+- [x] File motions: `gg`, `G`, `{count}G`
 - [ ] Search motions: `/`, `?`, `n`, `N`, `*`, `#` per [/docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)
-- [ ] Character find: `f`, `F`, `t`, `T`, `;`, `,` per [/docs/spec/editing/motions/character-find.md](/docs/spec/editing/motions/character-find.md)
-- [ ] Sentence/paragraph: `(`, `)`, `{`, `}` per [/docs/spec/editing/motions/sentence-paragraph.md](/docs/spec/editing/motions/sentence-paragraph.md)
+- [x] Character find: `f`, `F`, `t`, `T`, `;`, `,` per [/docs/spec/editing/motions/character-find.md](/docs/spec/editing/motions/character-find.md)
+- [x] Sentence/paragraph: `(`, `)`, `{`, `}` per [/docs/spec/editing/motions/sentence-paragraph.md](/docs/spec/editing/motions/sentence-paragraph.md)
 - [ ] Scroll motions per [/docs/spec/editing/motions/scroll-motions.md](/docs/spec/editing/motions/scroll-motions.md)
 - [ ] Window motions per [/docs/spec/editing/motions/window-motions.md](/docs/spec/editing/motions/window-motions.md)
 - [ ] Repeat motions per [/docs/spec/editing/motions/repeat-motions.md](/docs/spec/editing/motions/repeat-motions.md)
 - [ ] Jump motions per [/docs/spec/editing/motions/jumps/README.md](/docs/spec/editing/motions/jumps/README.md)
-- [ ] Motion grammar per [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)
+- [x] Motion grammar per [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)
 
 ## Operators
 
 - [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
-- [ ] Delete (`d`), change (`c`), yank (`y`)
-- [ ] Operator grammar per [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
-- [ ] Inclusive/exclusive per [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
-- [ ] Linewise/characterwise per [/docs/spec/editing/operators/linewise-characterwise.md](/docs/spec/editing/operators/linewise-characterwise.md)
-- [ ] Double operators (`dd`, `cc`, `yy`) per [/docs/spec/editing/operators/double-operators.md](/docs/spec/editing/operators/double-operators.md)
-- [ ] Count with operators per [/docs/spec/editing/operators/count-with-operators.md](/docs/spec/editing/operators/count-with-operators.md)
+- [x] Delete (`d`), change (`c`), yank (`y`)
+- [x] Operator grammar per [/docs/spec/editing/operators/operator-grammar.md](/docs/spec/editing/operators/operator-grammar.md)
+- [x] Inclusive/exclusive per [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md)
+- [x] Linewise/characterwise per [/docs/spec/editing/operators/linewise-characterwise.md](/docs/spec/editing/operators/linewise-characterwise.md)
+- [x] Double operators (`dd`, `cc`, `yy`) per [/docs/spec/editing/operators/double-operators.md](/docs/spec/editing/operators/double-operators.md)
+- [x] Count with operators per [/docs/spec/editing/operators/count-with-operators.md](/docs/spec/editing/operators/count-with-operators.md)
 - [ ] Forced motion types per [/docs/spec/editing/operators/forced-motion-types.md](/docs/spec/editing/operators/forced-motion-types.md)
 - [ ] Operator modifiers per [/docs/spec/editing/operators/operator-modifiers.md](/docs/spec/editing/operators/operator-modifiers.md)
-- [ ] Operator-pending mode per [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
+- [x] Operator-pending mode per [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)
 - [ ] `g` operators per [/docs/spec/editing/operators/g-operators.md](/docs/spec/editing/operators/g-operators.md)
 - [ ] Advanced operators per [/docs/spec/editing/operators/advanced.md](/docs/spec/editing/operators/advanced.md)
 
 ## Text objects
 
 - [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
-- [ ] Inner/around text objects (`iw`, `aw`, `is`, `as`, `ip`, `ap`)
-- [ ] Bracket text objects per [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)
-- [ ] Quote text objects per [/docs/spec/editing/text-objects/quote-text-objects.md](/docs/spec/editing/text-objects/quote-text-objects.md)
+- [x] Inner/around text objects (`iw`, `aw`, `is`, `as`, `ip`, `ap`)
+- [x] Bracket text objects per [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)
+- [x] Quote text objects per [/docs/spec/editing/text-objects/quote-text-objects.md](/docs/spec/editing/text-objects/quote-text-objects.md)
 - [ ] Tag text objects per [/docs/spec/editing/text-objects/tag-text-objects.md](/docs/spec/editing/text-objects/tag-text-objects.md)
 - [ ] Argument text objects per [/docs/spec/editing/text-objects/argument-text-objects.md](/docs/spec/editing/text-objects/argument-text-objects.md)
 - [ ] Function/class text objects per [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)
@@ -62,10 +62,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Registers
 
 - [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
-- [ ] Named registers (`"a`-`"z`) per [/docs/spec/editing/registers/named-registers.md](/docs/spec/editing/registers/named-registers.md)
-- [ ] Numbered registers (`"0`-`"9`) per [/docs/spec/editing/registers/numbered-registers.md](/docs/spec/editing/registers/numbered-registers.md)
+- [x] Named registers (`"a`-`"z`) per [/docs/spec/editing/registers/named-registers.md](/docs/spec/editing/registers/named-registers.md)
+- [x] Numbered registers (`"0`-`"9`) per [/docs/spec/editing/registers/numbered-registers.md](/docs/spec/editing/registers/numbered-registers.md)
 - [ ] Clipboard registers (`"+`, `"*`) per [/docs/spec/editing/registers/clipboard-registers.md](/docs/spec/editing/registers/clipboard-registers.md)
-- [ ] Black hole register (`"_`) per [/docs/spec/editing/registers/blackhole-register.md](/docs/spec/editing/registers/blackhole-register.md)
+- [x] Black hole register (`"_`) per [/docs/spec/editing/registers/blackhole-register.md](/docs/spec/editing/registers/blackhole-register.md)
 - [ ] Read-only registers per [/docs/spec/editing/registers/readonly-registers.md](/docs/spec/editing/registers/readonly-registers.md)
 - [ ] Expression register per [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)
 - [ ] Special registers per [/docs/spec/editing/registers/special-registers.md](/docs/spec/editing/registers/special-registers.md)
@@ -105,10 +105,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Text manipulation
 
 - [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
-- [ ] Undo/redo per [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
-- [ ] Join/split per [/docs/spec/editing/text-manipulation/join-split.md](/docs/spec/editing/text-manipulation/join-split.md)
-- [ ] Case changing per [/docs/spec/editing/text-manipulation/case-changing.md](/docs/spec/editing/text-manipulation/case-changing.md)
-- [ ] Increment/decrement per [/docs/spec/editing/text-manipulation/increment-decrement.md](/docs/spec/editing/text-manipulation/increment-decrement.md)
+- [x] Undo/redo per [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
+- [x] Join/split per [/docs/spec/editing/text-manipulation/join-split.md](/docs/spec/editing/text-manipulation/join-split.md)
+- [x] Case changing per [/docs/spec/editing/text-manipulation/case-changing.md](/docs/spec/editing/text-manipulation/case-changing.md)
+- [x] Increment/decrement per [/docs/spec/editing/text-manipulation/increment-decrement.md](/docs/spec/editing/text-manipulation/increment-decrement.md)
 - [ ] Substitute per [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
 - [ ] Sorting/alignment per [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
 - [ ] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
@@ -119,13 +119,13 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiring-checklist.md):
 
-- [ ] Every motion key (h/j/k/l/w/b/e/W/B/E/0/$/_/^/g_/gg/G) resolves to a real handler that moves the cursor
-- [ ] Every operator (d/c/y/>/</=) resolves to a real handler that mutates the buffer
-- [ ] Operator + motion combinations (dw, ci(, yap, etc.) are dispatched through the operator-pending path
-- [ ] Count prefix accumulates digits and multiplies the subsequent motion or operator
-- [ ] Register prefix (`"a`) sets the target register for the next yank/delete/paste
+- [x] Every motion key (h/j/k/l/w/b/e/W/B/E/0/$/_/^/g_/gg/G) resolves to a real handler that moves the cursor
+- [x] Every operator (d/c/y/>/</=) resolves to a real handler that mutates the buffer
+- [x] Operator + motion combinations (dw, ci(, yap, etc.) are dispatched through the operator-pending path
+- [x] Count prefix accumulates digits and multiplies the subsequent motion or operator
+- [x] Register prefix (`"a`) sets the target register for the next yank/delete/paste
 - [ ] Dot repeat (`.`) replays the last recorded change with fidelity
-- [ ] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
+- [x] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
 - [ ] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
 - [ ] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously
-- [ ] Character find (`f`/`t`/`F`/`T`) and repeat (`;`/`,`) work within and across lines correctly
+- [x] Character find (`f`/`t`/`F`/`T`) and repeat (`;`/`,`) work within and across lines correctly

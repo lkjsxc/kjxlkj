@@ -11,7 +11,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Testing
 
-- [ ] Per-crate unit tests per testing-unit.md (68 required tests)
+- [x] Per-crate unit tests per testing-unit.md (68 required tests)
 - [ ] Integration tests per testing-e2e.md (10 integration scenarios)
 - [ ] Headless E2E tests per testing-e2e.md (9 headless scenarios)
 - [ ] PTY E2E tests per testing-e2e.md (8 PTY scenarios)

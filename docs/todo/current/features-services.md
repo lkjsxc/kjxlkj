@@ -5,8 +5,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Git integration
 
 - [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
-- [ ] Git status/blame subprocess per [/docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
-- [ ] Diff parsing per [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
+- [x] Git status/blame subprocess per [/docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
+- [x] Diff parsing per [/docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
 - [ ] Gitsigns (gutter markers) per [/docs/spec/features/git/gitsigns.md](/docs/spec/features/git/gitsigns.md)
 - [ ] Merge conflict resolution per [/docs/spec/features/git/merge-conflicts.md](/docs/spec/features/git/merge-conflicts.md)
 - [ ] Vimdiff per [/docs/spec/features/git/vimdiff.md](/docs/spec/features/git/vimdiff.md)
@@ -14,7 +14,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## LSP integration
 
 - [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
-- [ ] JSON-RPC client per [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)
+- [x] JSON-RPC client per [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)
 - [ ] Completion per [/docs/spec/features/lsp/completion.md](/docs/spec/features/lsp/completion.md)
 - [ ] Diagnostics per [/docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)
 - [ ] Hover per [/docs/spec/features/lsp/hover.md](/docs/spec/features/lsp/hover.md)
@@ -39,7 +39,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
 - [ ] File explorer per [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
-- [ ] Finder per [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- [x] Finder per [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
 - [ ] Flash per [/docs/spec/features/navigation/flash.md](/docs/spec/features/navigation/flash.md)
 - [ ] Tags per [/docs/spec/features/navigation/tags.md](/docs/spec/features/navigation/tags.md)
 - [ ] Quickfix per [/docs/spec/features/navigation/quickfix.md](/docs/spec/features/navigation/quickfix.md)
