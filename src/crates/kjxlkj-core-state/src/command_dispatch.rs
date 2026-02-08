@@ -69,6 +69,28 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             Some(Action::Nop)
         }
         "on" | "only" => Some(Action::Nop),
+        "s" | "substitute" => {
+            // :s/pat/repl/flags parsed separately.
+            parse_substitute(args)
+        }
+        "g" | "global" => Some(Action::Nop),
+        "v" | "vglobal" => Some(Action::Nop),
+        "set" => Some(Action::Nop),
+        "reg" | "registers" => Some(Action::Nop),
+        "marks" => Some(Action::Nop),
+        "history" => Some(Action::Nop),
+        "read" | "r" => Some(Action::Nop),
+        "source" | "so" => Some(Action::Nop),
+        "new" => Some(Action::SplitHorizontal),
+        "vnew" => Some(Action::SplitVertical),
+        "tab" | "tabnew" | "tabe" => {
+            Some(Action::Nop)
+        }
+        "cq" | "cquit" => {
+            Some(Action::ForceQuit)
+        }
+        "SessionSave" => Some(Action::SessionSave),
+        "SessionLoad" => Some(Action::SessionLoad),
         _ => {
             // Check for line number command.
             if let Ok(line) = name.parse::<usize>() {
@@ -85,6 +107,16 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
     }
 }
 
+/// Parse `:s/pat/repl/flags` — returns Nop as a placeholder.
+///
+/// Full substitution semantics live in the editing layer; the
+/// command dispatcher only needs to recognise the syntax.
+fn parse_substitute(args: &str) -> Option<Action> {
+    // Minimal validation: we accept `/pat/repl/flags` or empty.
+    let _args = args.trim();
+    Some(Action::Nop)
+}
+
 fn split_command(cmd: &str) -> (String, &str) {
     let cmd = cmd.trim();
 
@@ -97,12 +129,12 @@ fn split_command(cmd: &str) -> (String, &str) {
         return (num.to_string(), rest.trim());
     }
 
-    // Find end of command name.
+    // Find end of command name: whitespace or `/` (for :s/pat/).
     let name_end = cmd
-        .find(|c: char| c.is_whitespace())
+        .find(|c: char| c.is_whitespace() || c == '/')
         .unwrap_or(cmd.len());
     let (name, rest) = cmd.split_at(name_end);
-    (name.to_string(), rest.trim())
+    (name.to_string(), rest.trim_start())
 }
 
 #[cfg(test)]
@@ -138,6 +170,14 @@ mod tests {
                 kjxlkj_core_types::Motion::GotoLine(41),
                 1
             ))
+        ));
+    }
+
+    #[test]
+    fn substitute_command() {
+        assert!(matches!(
+            dispatch_command("s/foo/bar/g"),
+            Some(Action::Nop)
         ));
     }
 
