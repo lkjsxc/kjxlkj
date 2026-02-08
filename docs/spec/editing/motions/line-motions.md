@@ -31,6 +31,8 @@ by display line rather than buffer line.
 
 ## Count Behavior
 
+How counts modify line-motion behavior.
+
 ### Dollar with Count
 
 `$` with count greater than 1 moves down `count-1`
@@ -58,6 +60,8 @@ than N columns, the cursor moves to the last column.
 
 ## CJK Display Column Handling
 
+Full-width characters affect column arithmetic.
+
 ### Column Counting
 
 Column positions for `{N}|` use display columns,
@@ -81,6 +85,8 @@ Text: `あいう` (columns 1-2, 3-4, 5-6)
 - `5|` -> cursor on `う` (column 5)
 
 ## Blank Line Behavior
+
+Edge cases on empty or whitespace-only lines.
 
 ### First Non-Blank on Empty Line
 

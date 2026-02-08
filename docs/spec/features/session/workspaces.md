@@ -32,6 +32,8 @@ Each FolderEntry contains:
 
 ## File explorer
 
+File tree behavior in multi-root workspaces.
+
 ### Multi-root view
 
 The file explorer MUST display each root folder as a top-level node. Folders MUST appear in the order defined by the workspace file or CLI arguments. Each root node MUST be collapsible independently. The explorer SHOULD visually distinguish root nodes from nested directories (e.g. bold label or icon).
@@ -84,6 +86,8 @@ Each folder MUST maintain independent git state:
 
 ## Search
 
+Searching across workspace folders.
+
 ### Workspace-wide search
 
 `:WorkspaceSearch {pattern}` or the search UI MUST search across all root folders. Results MUST be grouped or prefixed by folder name. The user SHOULD be able to include or exclude specific folders from the search scope.
@@ -103,6 +107,8 @@ The fuzzy finder MUST default to workspace-wide scope. A `folder:` prefix SHOULD
 | `:WorkspaceMove {index}` | Reorder the focused root folder to position `{index}`. |
 
 ## Workspace session
+
+Persisting workspace-specific state.
 
 ### Auto-save
 

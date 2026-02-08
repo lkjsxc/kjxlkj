@@ -22,6 +22,8 @@ searchable.
 
 ## Navigation
 
+Browsing through history entries.
+
 ### Arrow Keys
 
 | Key | Action |
@@ -40,6 +42,8 @@ typing `:set` then pressing Up shows only previous
 
 ## History Window
 
+A full-screen buffer for browsing and editing history.
+
 ### Opening
 
 `q:` opens the command history window showing all
@@ -55,6 +59,8 @@ Press `Enter` on a line to execute it as a command.
 Press `Ctrl-c` to close without executing.
 
 ## Storage
+
+How history is persisted across sessions.
 
 ### File Location
 
@@ -105,6 +111,8 @@ On write, the editor merges its in-memory history
 with the file using timestamp-based deduplication.
 
 ## Privacy
+
+Excluding sensitive commands from history.
 
 ### Sensitive Commands
 

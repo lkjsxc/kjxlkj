@@ -4,6 +4,8 @@ kjxlkj strives to be accessible to all users.
 
 ## Screen Reader Support
 
+Integration with terminal screen readers.
+
 ### Terminal Compatibility
 
 For screen reader users:
@@ -21,6 +23,8 @@ When available, kjxlkj announces:
 - File operations
 
 ## High Contrast Themes
+
+Themes designed for maximum readability.
 
 ### Built-in Themes
 
@@ -96,6 +100,8 @@ For users who can't use arrow keys:
 - `/` for search-based navigation
 
 ## Color Blindness
+
+Adaptations for color-blind users.
 
 ### Deuteranopia/Protanopia Friendly
 

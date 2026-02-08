@@ -8,6 +8,8 @@ Easily add, change, or delete surrounding pairs.
 
 ## Adding Surroundings
 
+Wrap text in delimiter pairs.
+
 ### With `ys` (you surround)
 
 
@@ -58,6 +60,8 @@ Opening bracket adds space:
 
 ## HTML Tags
 
+Surround operations with HTML/XML tag pairs.
+
 ### Surround with Tag
 
 - `ysiw<em>` → `<em>word</em>`
@@ -78,6 +82,7 @@ Opening bracket adds space:
 
 ## Custom Surrounds
 
+Users can define custom surround pairs in configuration.
 
 ## Multiline
 
@@ -85,6 +90,8 @@ Surround preserves indentation:
 
 
 ## Integration
+
+Surround works with text objects and the dot-repeat system.
 
 ### With Text Objects
 

@@ -8,6 +8,8 @@ The event system lets users attach handlers to named events. When events fire, r
 
 ## Event Types (normative)
 
+All supported event names and their trigger conditions.
+
 ### Buffer Events
 
 | Event | Trigger |
@@ -71,6 +73,8 @@ The event system lets users attach handlers to named events. When events fire, r
 
 ## Event Handlers
 
+Registering and managing event callbacks.
+
 ### Basic Handler
 
 Register a handler with the event name, an optional file pattern (glob), and a callback action (command string or function reference).
@@ -84,6 +88,8 @@ Multiple handlers can be registered for the same event. They execute in registra
 Handlers can include conditions checked at execution time. Use event data fields (buffer filetype, filename pattern, etc.) to filter.
 
 ## Event Groups
+
+Groups collect handlers for batch management.
 
 ### Group Definition
 
@@ -105,6 +111,8 @@ When a handler executes, it receives context about the triggering event:
 | `match` | Pattern-filtered events | Matched pattern |
 
 ## Reactive Patterns
+
+Common event-driven automation recipes.
 
 ### Auto Format on Save
 

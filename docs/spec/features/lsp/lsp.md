@@ -13,6 +13,8 @@ editor's UI and keybinding system.
 
 ## Architecture
 
+How the LSP client is structured within the editor.
+
 ### LSP Service Task
 
 The LSP service runs as a Tokio task, separate from
@@ -36,6 +38,8 @@ specifies which server to use for each filetype.
 | Restart | Automatic restart on crash (up to 3 retries) |
 
 ## Features
+
+All LSP protocol features supported by the client.
 
 ### Completion
 
@@ -123,6 +127,8 @@ as an outline.
 
 ## Server Configuration
 
+Configuring language server binaries and settings.
+
 ### Per-Language Settings
 
 Configuration in TOML:
@@ -149,6 +155,8 @@ LSP progress tokens (e.g., "indexing") are displayed
 in the status line with a spinner animation.
 
 ## Error Handling
+
+Recovery from server failures and timeouts.
 
 ### Server Crashes
 

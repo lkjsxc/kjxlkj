@@ -24,6 +24,8 @@ Comment strings are configured per filetype in `config.toml` or per-filetype con
 
 ## Keybindings
 
+All comment-related key mappings.
+
 ### Line Comment
 
 | Key | Mode | Action |
@@ -95,6 +97,8 @@ Override for specific languages by setting `commentstring` and `block_commentstr
 
 ## Smart Comments
 
+Intelligent toggle behavior.
+
 ### Uncomment Detection
 
 Automatically detects if lines are commented:
@@ -116,6 +120,8 @@ expected pattern. Trailing whitespace is not added to blank lines.
 
 ## Block Comments
 
+Block comment operations using opening/closing delimiters.
+
 ### Toggle Block
 
 `gbc` toggles block comment on current line.
@@ -130,6 +136,8 @@ delimiters appear on their own lines if `block_comment_own_line`
 is `true` (default: `false`).
 
 ## Advanced
+
+Additional comment features.
 
 ### Comment Above/Below
 

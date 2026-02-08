@@ -30,6 +30,8 @@ Expression mappings use `<expr>` flag. The mapping evaluates the expression and 
 
 ## Operators (normative)
 
+Arithmetic and comparison operators in expressions.
+
 ### Arithmetic
 
 | Operator | Description |
@@ -76,6 +78,8 @@ String comparisons with `#` suffix are always case-sensitive. With `?` suffix al
 `condition ? true_expr : false_expr` — evaluates and returns one branch.
 
 ## Functions (normative)
+
+Built-in functions callable from expressions.
 
 ### String Functions
 
@@ -131,6 +135,8 @@ String comparisons with `#` suffix are always case-sensitive. With `?` suffix al
 | `localtime()` | `Number` | Unix timestamp |
 
 ## Variables
+
+Variables accessible in the expression language.
 
 ### Special Variables (normative)
 

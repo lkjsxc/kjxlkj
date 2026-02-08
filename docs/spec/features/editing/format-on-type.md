@@ -18,6 +18,8 @@ When `format.on_type = true`, the editor sends `textDocument/onTypeFormatting` r
 
 ## Trigger characters
 
+Characters that initiate formatting requests.
+
 ### Default triggers
 
 Each LSP server advertises its own trigger characters in its capabilities response. Common triggers:
@@ -36,6 +38,8 @@ Each LSP server advertises its own trigger characters in its capabilities respon
 | `format.on_type_triggers` | string or null | null (use server defaults) | Override trigger characters. A string of characters, e.g., `";}"` |
 
 ## LSP integration
+
+How format-on-type interacts with language servers.
 
 ### Server support
 
@@ -61,11 +65,15 @@ If the LSP server does not support `textDocument/onTypeFormatting`, the feature 
 
 ## Undo
 
+Formatting changes are grouped with the trigger keystroke.
+
 ### Single undo
 
 The trigger character insertion and the formatting edits MUST be grouped into a single undo entry. Pressing `u` undoes both the character and the formatting change together.
 
 ## Performance
+
+Measures to prevent formatting from disrupting typing flow.
 
 ### Debouncing
 

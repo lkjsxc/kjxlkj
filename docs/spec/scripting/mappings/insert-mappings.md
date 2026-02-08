@@ -6,6 +6,8 @@ Mappings active during Insert mode input processing.
 
 ## Commands
 
+Commands for defining insert-mode mappings.
+
 ### Recursive Mapping
 
 `:imap {lhs} {rhs}` creates an insert-mode mapping
@@ -39,6 +41,8 @@ This is the recommended default for user mappings.
 
 ## Common Patterns
 
+Frequently used insert-mode mapping patterns.
+
 ### Escape Alternatives
 
 Map `jk` or `jj` to `<Esc>` for faster mode exit.
@@ -59,6 +63,8 @@ built-in autopairs feature; user mappings override
 autopairs for the mapped keys.
 
 ## Special Key Interaction
+
+How insert mappings interact with editor features.
 
 ### Ctrl-O
 

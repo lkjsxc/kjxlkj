@@ -10,6 +10,8 @@ popup notifications.
 
 ## Message Types
 
+Severity-based message categories.
+
 ### Information
 
 Standard messages displayed in the command line area.
@@ -27,6 +29,8 @@ Example: `E212: Can't open file for writing`.
 
 ## Display Locations
 
+Where messages appear on screen.
+
 ### Command Line
 
 The primary message area is the bottom command line.
@@ -41,6 +45,8 @@ Optional floating window notifications with timeout:
 - Stacking: multiple notifications stack vertically
 
 ## Message History
+
+Accessing past messages.
 
 ### :messages
 
@@ -89,6 +95,8 @@ In the messages window, use `j`/`k` to scroll and
 | `c` | Suppress completion menu messages |
 
 ## LSP Notifications
+
+Notifications originating from language servers.
 
 ### Progress
 

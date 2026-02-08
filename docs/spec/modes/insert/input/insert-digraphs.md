@@ -12,6 +12,8 @@ that visually represent the desired character.
 
 ## Entry Method
 
+How to type a digraph character.
+
 ### Ctrl-k Sequence
 
 1. Press `Ctrl-k` in Insert mode
@@ -44,6 +46,8 @@ that visually represent the desired character.
 
 ## Digraph Table
 
+The set of defined digraph codes.
+
 ### Built-in Digraphs
 
 The editor includes the standard RFC 1345 digraph
@@ -63,12 +67,16 @@ decimal number.
 
 ## Reverse Lookup
 
+Finding which digraph codes produce a given character.
+
 ### From Character to Digraph
 
 `ga` (get ASCII) on a character shows its code point
 and any digraph codes that produce it.
 
 ## CJK Digraphs
+
+Digraph codes for CJK characters.
 
 ### Japanese Kana
 

@@ -10,6 +10,8 @@ equivalents sharing a unified configuration system.
 
 ## Auto-Pairs
 
+Automatic bracket and quote pairing.
+
 ### Behavior
 
 When typing an opening delimiter, the closing
@@ -46,6 +48,8 @@ Auto-pairs are suppressed:
 
 ## Surround
 
+Surround text with delimiter pairs.
+
 ### Normal Mode Operations
 
 | Sequence | Effect |
@@ -77,6 +81,8 @@ tags are generated automatically.
 In visual mode, `S{char}` surrounds the selection.
 
 ## Comment Toggle
+
+Quick comment/uncomment operations.
 
 ### Normal Mode
 

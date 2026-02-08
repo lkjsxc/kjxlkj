@@ -13,6 +13,8 @@ find repeats (`;` and `,`) and search repeats
 
 ## Find Repeat
 
+Repeating the last `f`/`t`/`F`/`T` character-find.
+
 ### Commands
 
 | Motion | Direction | Description |
@@ -41,6 +43,8 @@ the cursor does not move and no error is shown.
 
 ## Search Repeat
 
+Repeating the last `/` or `?` pattern search.
+
 ### Commands
 
 | Motion | Direction | Description |
@@ -65,6 +69,8 @@ When wrapping occurs, a message is shown:
 
 ## Count Support
 
+Using numeric counts with repeat motions.
+
 ### Find Repeat with Count
 
 `{count};` repeats the find motion count times.
@@ -76,6 +82,8 @@ character on the current line.
 `{count}n` jumps to the count-th next match.
 
 ## With Operators
+
+Using repeat motions as operator targets.
 
 ### Find Repeat as Motion
 

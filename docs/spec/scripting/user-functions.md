@@ -12,6 +12,8 @@ provide computed values for expression contexts.
 
 ## User Commands
 
+Defining custom ex commands.
+
 ### Definition
 
 `:command {name} {replacement}` defines a new ex
@@ -83,6 +85,8 @@ completion type for arguments.
 
 ## Expression Evaluation
 
+Evaluating expressions in commands and mappings.
+
 ### Let Command
 
 `:let {var} = {expr}` sets a variable to the
@@ -118,6 +122,8 @@ result of an expression.
 | Match | `"abc" =~ "b"` |
 
 ## Built-in Functions
+
+Functions available in the expression language.
 
 ### Common Functions
 

@@ -13,6 +13,8 @@ buffer names, and other arguments.
 
 ## Activation
 
+Completion is triggered by keypress or automatically.
+
 ### Tab Trigger
 
 Pressing `Tab` in command-line mode triggers
@@ -25,6 +27,8 @@ above the command line (wildmenu). The selected
 candidate is highlighted.
 
 ## Completion Contexts
+
+Different argument positions complete different types of values.
 
 ### Command Names
 
@@ -84,6 +88,8 @@ themes.
 
 ## Wildmenu Options
 
+Settings controlling wildmenu appearance and behavior.
+
 ### Configuration
 
 | Option | Type | Default | Description |
@@ -105,6 +111,8 @@ themes.
 
 ## Custom Completion
 
+User-defined commands can provide their own completion sources.
+
 ### User Commands
 
 User-defined commands can specify custom completion
@@ -112,6 +120,8 @@ functions. The function receives the current argument
 text and returns a list of candidates.
 
 ## Fuzzy Completion
+
+Fallback to fuzzy matching when prefix matching finds no results.
 
 ### Behavior
 

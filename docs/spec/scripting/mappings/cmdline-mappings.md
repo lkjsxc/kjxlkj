@@ -6,6 +6,8 @@ Mappings active during command-line (ex) mode input.
 
 ## Commands
 
+Commands for defining command-line mode mappings.
+
 ### Recursive Mapping
 
 `:cmap {lhs} {rhs}` creates a command-line mapping
@@ -37,6 +39,8 @@ Recommended default for user-defined mappings.
 
 ## Common Patterns
 
+Frequently used command-line mapping patterns.
+
 ### Navigation Shortcuts
 
 Map Ctrl+A to beginning-of-line and Ctrl+E to
@@ -67,6 +71,8 @@ expression to produce the RHS string. Useful
 for context-sensitive expansions.
 
 ## Special Key Handling
+
+How command-line mappings interact with built-in keys.
 
 ### Keys with Built-in Behavior
 
