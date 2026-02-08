@@ -48,6 +48,13 @@ impl EditorState {
                 self.mode = Mode::Normal;
                 self.visual_state = None;
                 self.command_state = None;
+                // Clamp cursor: in Normal mode cursor
+                // must be on a character, not past end.
+                if let Some(w) = self.focused_window_mut() {
+                    if w.cursor.grapheme_offset > 0 {
+                        w.cursor.grapheme_offset -= 1;
+                    }
+                }
             }
             Action::InsertChar(ch) => {
                 self.insert_char(ch);
