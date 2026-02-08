@@ -97,6 +97,7 @@ impl NormalModeState {
         key: &Key,
     ) -> Option<Action> {
         self.ctrl_w_pending = false;
+        let count = self.effective_count();
         let action = match (&key.code, key.modifiers) {
             (KeyCode::Char('h'), KeyModifiers::NONE)
             | (KeyCode::Left, _) => {
@@ -117,9 +118,15 @@ impl NormalModeState {
             (KeyCode::Char('w'), _) => {
                 Action::CycleWindow
             }
+            (KeyCode::Char('W'), KeyModifiers::NONE) => {
+                Action::RotateWindows(false)
+            }
             (KeyCode::Char('c'), KeyModifiers::NONE)
             | (KeyCode::Char('q'), KeyModifiers::NONE) => {
                 Action::CloseWindow
+            }
+            (KeyCode::Char('o'), KeyModifiers::NONE) => {
+                Action::OnlyWindow
             }
             (KeyCode::Char('s'), KeyModifiers::NONE) => {
                 Action::SplitHorizontal
@@ -127,8 +134,41 @@ impl NormalModeState {
             (KeyCode::Char('v'), KeyModifiers::NONE) => {
                 Action::SplitVertical
             }
+            (KeyCode::Char('n'), KeyModifiers::NONE) => {
+                Action::NewSplit
+            }
             (KeyCode::Char('='), KeyModifiers::NONE) => {
                 Action::EqualizeWindows
+            }
+            (KeyCode::Char('+'), KeyModifiers::NONE) => {
+                Action::ResizeWindow(
+                    Direction::Down,
+                    count as i32,
+                )
+            }
+            (KeyCode::Char('-'), KeyModifiers::NONE) => {
+                Action::ResizeWindow(
+                    Direction::Up,
+                    -(count as i32),
+                )
+            }
+            (KeyCode::Char('>'), KeyModifiers::NONE) => {
+                Action::ResizeWindow(
+                    Direction::Right,
+                    count as i32,
+                )
+            }
+            (KeyCode::Char('<'), KeyModifiers::NONE) => {
+                Action::ResizeWindow(
+                    Direction::Left,
+                    -(count as i32),
+                )
+            }
+            (KeyCode::Char('_'), KeyModifiers::NONE) => {
+                Action::ZoomWindow
+            }
+            (KeyCode::Char('|'), KeyModifiers::NONE) => {
+                Action::ZoomWindow
             }
             (KeyCode::Char('H'), KeyModifiers::NONE) => {
                 Action::MoveWindow(Direction::Left)
@@ -148,8 +188,20 @@ impl NormalModeState {
             (KeyCode::Char('R'), KeyModifiers::NONE) => {
                 Action::RotateWindows(false)
             }
-            (KeyCode::Char('o'), KeyModifiers::NONE) => {
-                Action::ZoomWindow
+            (KeyCode::Char('x'), KeyModifiers::NONE) => {
+                Action::ExchangeWindow
+            }
+            (KeyCode::Char('T'), KeyModifiers::NONE) => {
+                Action::MoveWindowToTab
+            }
+            (KeyCode::Char('t'), KeyModifiers::NONE) => {
+                Action::FocusTopLeft
+            }
+            (KeyCode::Char('b'), KeyModifiers::NONE) => {
+                Action::FocusBottomRight
+            }
+            (KeyCode::Char('p'), KeyModifiers::NONE) => {
+                Action::FocusPrevWindow
             }
             _ => Action::Nop,
         };

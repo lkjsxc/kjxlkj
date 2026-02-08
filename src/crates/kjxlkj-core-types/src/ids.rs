@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub struct BufferId(pub u64);
 
 /// Stable unique identifier for a window.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct WindowId(pub u64);
 
 /// Stable unique identifier for a terminal instance.

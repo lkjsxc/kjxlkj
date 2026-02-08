@@ -191,6 +191,36 @@ pub enum Action {
     RangeNormal(String),
     /// Read file into buffer: `:r file`.
     ReadFile(String),
+    /// Shell command execution: `:!{cmd}`.
+    ShellCommand(String),
+    /// Filter lines through shell: `:{range}!{cmd}`.
+    FilterLines(String),
+    /// Execute command from string: `:execute {expr}`.
+    ExecuteExpr(String),
+    /// Close all other windows: `:only`.
+    OnlyWindow,
+    /// Hide current window: `:hide`.
+    HideWindow,
+    /// Exchange current window with next.
+    ExchangeWindow,
+    /// Focus top-left window.
+    FocusTopLeft,
+    /// Focus bottom-right window.
+    FocusBottomRight,
+    /// Focus previously focused window.
+    FocusPrevWindow,
+    /// Move current window to new tab.
+    MoveWindowToTab,
+    /// Open new split with empty buffer.
+    NewSplit,
+    /// Open new vertical split with empty buffer.
+    NewVsplit,
+    /// New horizontal split opening a file.
+    SplitOpen(String),
+    /// New vertical split opening a file.
+    VsplitOpen(String),
+    /// Resize height/width: `:resize {n}`.
+    ResizeCmd(String),
     /// No operation (sentinel / default).
     Nop,
 }

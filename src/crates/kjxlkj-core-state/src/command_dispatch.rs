@@ -11,6 +11,14 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
         return None;
     }
 
+    // Shell command: `!{cmd}`
+    if cmd.starts_with('!') {
+        let shell_cmd = &cmd[1..];
+        return Some(Action::ShellCommand(
+            shell_cmd.to_string(),
+        ));
+    }
+
     // Split command into name and arguments.
     let (name, args) = split_command(cmd);
     let force = name.ends_with('!');
@@ -58,9 +66,23 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
                 None
             }
         }
-        "sp" | "split" => Some(Action::SplitHorizontal),
-        "vs" | "vsplit" => Some(Action::SplitVertical),
+        "sp" | "split" => {
+            if !args.is_empty() {
+                Some(Action::SplitOpen(args.to_string()))
+            } else {
+                Some(Action::SplitHorizontal)
+            }
+        }
+        "vs" | "vsplit" => {
+            if !args.is_empty() {
+                Some(Action::VsplitOpen(args.to_string()))
+            } else {
+                Some(Action::SplitVertical)
+            }
+        }
         "close" => Some(Action::CloseWindow),
+        "on" | "only" => Some(Action::OnlyWindow),
+        "hide" => Some(Action::HideWindow),
         "terminal" | "term" => Some(Action::SpawnTerminal),
         "noh" | "nohlsearch" => Some(Action::Nop),
         "ls" | "buffers" | "files" => {
@@ -68,7 +90,6 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             // a real impl would populate a scratch buffer.
             Some(Action::Nop)
         }
-        "on" | "only" => Some(Action::Nop),
         "s" | "substitute" => {
             // :s/pat/repl/flags parsed and executed.
             Some(Action::Substitute(args.to_string()))
@@ -113,10 +134,56 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             }
         }
         "source" | "so" => Some(Action::Nop),
-        "new" => Some(Action::SplitHorizontal),
-        "vnew" => Some(Action::SplitVertical),
+        "new" => {
+            if !args.is_empty() {
+                Some(Action::SplitOpen(args.to_string()))
+            } else {
+                Some(Action::NewSplit)
+            }
+        }
+        "vnew" => {
+            if !args.is_empty() {
+                Some(Action::VsplitOpen(args.to_string()))
+            } else {
+                Some(Action::NewVsplit)
+            }
+        }
         "tab" | "tabnew" | "tabe" => {
             Some(Action::Nop)
+        }
+        "resize" => {
+            Some(Action::ResizeCmd(args.to_string()))
+        }
+        "vertical" => {
+            // `:vertical resize N` etc.
+            if args.starts_with("resize") {
+                let rest = args
+                    .strip_prefix("resize")
+                    .unwrap_or("")
+                    .trim();
+                Some(Action::ResizeCmd(
+                    format!("v {}", rest),
+                ))
+            } else if args.starts_with("split") {
+                let rest = args
+                    .strip_prefix("split")
+                    .unwrap_or("")
+                    .trim();
+                if rest.is_empty() {
+                    Some(Action::SplitVertical)
+                } else {
+                    Some(Action::VsplitOpen(
+                        rest.to_string(),
+                    ))
+                }
+            } else if args.starts_with("new") {
+                Some(Action::NewVsplit)
+            } else {
+                Some(Action::Nop)
+            }
+        }
+        "execute" | "exe" => {
+            Some(Action::ExecuteExpr(args.to_string()))
         }
         "cq" | "cquit" => {
             Some(Action::ForceQuit)
