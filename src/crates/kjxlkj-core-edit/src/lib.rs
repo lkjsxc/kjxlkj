@@ -7,6 +7,7 @@ mod char_find;
 mod cursor;
 mod motion_exec;
 mod motion_helpers;
+mod motion_line;
 mod operator_exec;
 mod operator_helpers;
 mod registers;

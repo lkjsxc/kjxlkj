@@ -6,6 +6,7 @@ use kjxlkj_core_types::Motion;
 
 use crate::cursor::CursorPosition;
 use crate::motion_helpers::*;
+use crate::motion_line::*;
 
 /// Execute a motion and return the new cursor position.
 pub fn execute_motion(
@@ -55,84 +56,27 @@ fn execute_single(
                 apply_desired_col(cursor, content);
             }
         }
-        Motion::LineStart => {
-            cursor.grapheme_offset = 0;
-            cursor.clear_desired_col();
-        }
+        Motion::LineStart => exec_line_start(cursor),
         Motion::FirstNonBlank => {
-            let line =
-                content.line_content(cursor.line);
-            let lg =
-                kjxlkj_core_text::LineGraphemes::from_str(
-                    &line,
-                );
-            let mut idx = 0;
-            for i in 0..lg.count() {
-                if let Some(g) = lg.get(i) {
-                    let c =
-                        g.chars().next().unwrap_or(' ');
-                    if !c.is_whitespace() {
-                        idx = i;
-                        break;
-                    }
-                }
-            }
-            cursor.grapheme_offset = idx;
-            cursor.clear_desired_col();
+            exec_first_non_blank(cursor, content)
         }
         Motion::LineEnd => {
-            let gc = content
-                .line_graphemes(cursor.line)
-                .count();
-            cursor.grapheme_offset =
-                if gc > 0 { gc - 1 } else { 0 };
-            cursor.clear_desired_col();
+            exec_line_end(cursor, content)
         }
         Motion::LastNonBlank => {
-            let line =
-                content.line_content(cursor.line);
-            let lg =
-                kjxlkj_core_text::LineGraphemes::from_str(
-                    &line,
-                );
-            let mut idx = if lg.count() > 0 {
-                lg.count() - 1
-            } else {
-                0
-            };
-            for i in (0..lg.count()).rev() {
-                if let Some(g) = lg.get(i) {
-                    let c =
-                        g.chars().next().unwrap_or(' ');
-                    if !c.is_whitespace() {
-                        idx = i;
-                        break;
-                    }
-                }
-            }
-            cursor.grapheme_offset = idx;
-            cursor.clear_desired_col();
+            exec_last_non_blank(cursor, content)
         }
         Motion::GotoFirstLine => {
-            cursor.line = 0;
-            cursor.grapheme_offset = 0;
-            cursor.clear_desired_col();
+            exec_goto_first_line(cursor)
         }
         Motion::GotoLastLine => {
-            cursor.line = if line_count > 0 {
-                line_count - 1
-            } else {
-                0
-            };
-            cursor.grapheme_offset = 0;
-            cursor.clear_desired_col();
+            exec_goto_last_line(cursor, line_count)
         }
         Motion::GotoLine(n) => {
-            let target =
-                (*n).min(line_count.saturating_sub(1));
-            cursor.line = target;
-            cursor.grapheme_offset = 0;
-            cursor.clear_desired_col();
+            exec_goto_line(cursor, *n, line_count)
+        }
+        Motion::GotoColumn(col) => {
+            exec_goto_column(cursor, *col, content)
         }
         Motion::WordForward => {
             move_word_forward(cursor, content, false);
@@ -170,38 +114,7 @@ fn execute_single(
             }
             move_to_first_non_blank(cursor, content);
         }
-        Motion::GotoColumn(col) => {
-            let gc = content
-                .line_graphemes(cursor.line)
-                .count();
-            cursor.grapheme_offset = (*col)
-                .min(if gc > 0 { gc - 1 } else { 0 });
-            cursor.clear_desired_col();
-        }
         _ => {}
-    }
-}
-
-fn apply_desired_col(
-    cursor: &mut CursorPosition,
-    content: &BufferContent,
-) {
-    let lg = content.line_graphemes(cursor.line);
-    let gc = lg.count();
-    if let Some(desired) = cursor.desired_col {
-        cursor.grapheme_offset = lg
-            .grapheme_at_col(desired)
-            .min(if gc > 0 { gc - 1 } else { 0 });
-    } else {
-        let current_lg =
-            content.line_graphemes(cursor.line);
-        let col = current_lg
-            .display_col_at(cursor.grapheme_offset)
-            .unwrap_or(0);
-        cursor.desired_col = Some(col);
-        cursor.grapheme_offset = cursor
-            .grapheme_offset
-            .min(if gc > 0 { gc - 1 } else { 0 });
     }
 }
 

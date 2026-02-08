@@ -1,9 +1,9 @@
 //! Editor actions: undo, put, operators, file ops.
 
 use kjxlkj_core_edit::{execute_motion, CursorPosition};
-use kjxlkj_core_types::{BufferId, Motion, Operator};
+use kjxlkj_core_types::{Motion, Operator};
 
-use crate::{BufferState, EditorState, WindowContent, WindowState};
+use crate::EditorState;
 
 impl EditorState {
     pub(crate) fn do_undo(&mut self) {

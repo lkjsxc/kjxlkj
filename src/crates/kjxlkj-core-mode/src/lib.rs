@@ -7,6 +7,7 @@ mod command;
 mod command_helpers;
 mod insert;
 mod normal;
+mod normal_g_z;
 mod normal_keys;
 mod normal_single;
 mod transition;
