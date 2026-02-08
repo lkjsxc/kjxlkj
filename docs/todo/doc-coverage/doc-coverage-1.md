@@ -42,6 +42,7 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/log/reconstruction/spec-changes/documentation-overhaul-2026-02-08.md](/docs/log/reconstruction/spec-changes/documentation-overhaul-2026-02-08.md)
 - [ ] [/docs/log/reconstruction/spec-changes/documentation-overhaul-wave2-2026-02-08.md](/docs/log/reconstruction/spec-changes/documentation-overhaul-wave2-2026-02-08.md)
 - [ ] [/docs/log/reconstruction/spec-changes/documentation-overhaul-wave3-2026-02-09.md](/docs/log/reconstruction/spec-changes/documentation-overhaul-wave3-2026-02-09.md)
+- [ ] [/docs/log/reconstruction/spec-changes/documentation-overhaul-wave3s4-2026-02-09.md](/docs/log/reconstruction/spec-changes/documentation-overhaul-wave3s4-2026-02-09.md)
 - [ ] [/docs/log/reconstruction/testing-ideas/README.md](/docs/log/reconstruction/testing-ideas/README.md)
 - [ ] [/docs/log/reconstruction/testing-ideas/expert-boundary-e2e.md](/docs/log/reconstruction/testing-ideas/expert-boundary-e2e.md)
 
