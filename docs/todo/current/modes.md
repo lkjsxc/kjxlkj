@@ -33,18 +33,18 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Auto-indentation on `Enter`
 - [ ] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
 - [ ] Unicode input per [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
-- [ ] Digraph input per [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
-- [ ] Literal input per [/docs/spec/modes/insert/input/insert-literal.md](/docs/spec/modes/insert/input/insert-literal.md)
+- [x] Digraph input per [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
+- [x] Literal input per [/docs/spec/modes/insert/input/insert-literal.md](/docs/spec/modes/insert/input/insert-literal.md)
 - [x] Register paste per [/docs/spec/modes/insert/input/insert-registers.md](/docs/spec/modes/insert/input/insert-registers.md)
-- [ ] Special chars per [/docs/spec/modes/insert/input/insert-special-chars.md](/docs/spec/modes/insert/input/insert-special-chars.md)
+- [x] Special chars per [/docs/spec/modes/insert/input/insert-special-chars.md](/docs/spec/modes/insert/input/insert-special-chars.md)
 
 ## Insert mode: completion
 
 - [/docs/spec/modes/insert/completion/README.md](/docs/spec/modes/insert/completion/README.md)
-- [ ] Completion popup trigger and navigation
-- [ ] Completion sources per [/docs/spec/modes/insert/completion/insert-completion-sources.md](/docs/spec/modes/insert/completion/insert-completion-sources.md)
-- [ ] Abbreviation expansion per [/docs/spec/modes/insert/completion/insert-abbreviations.md](/docs/spec/modes/insert/completion/insert-abbreviations.md)
-- [ ] Snippet expansion per [/docs/spec/modes/insert/completion/insert-snippets.md](/docs/spec/modes/insert/completion/insert-snippets.md)
+- [x] Completion popup trigger and navigation
+- [x] Completion sources per [/docs/spec/modes/insert/completion/insert-completion-sources.md](/docs/spec/modes/insert/completion/insert-completion-sources.md)
+- [x] Abbreviation expansion per [/docs/spec/modes/insert/completion/insert-abbreviations.md](/docs/spec/modes/insert/completion/insert-abbreviations.md)
+- [x] Snippet expansion per [/docs/spec/modes/insert/completion/insert-snippets.md](/docs/spec/modes/insert/completion/insert-snippets.md)
 
 ## Insert mode: additional specs
 
@@ -77,8 +77,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [x] Entry via `R`
 - [x] Single-char replace via `r`
-- [ ] Virtual replace per [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md)
-- [ ] Overstrike per [/docs/spec/modes/replace/overstrike.md](/docs/spec/modes/replace/overstrike.md)
+- [x] Virtual replace per [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md)
+- [x] Overstrike per [/docs/spec/modes/replace/overstrike.md](/docs/spec/modes/replace/overstrike.md)
 
 ## Mode transitions
 

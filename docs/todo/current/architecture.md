@@ -58,10 +58,10 @@ Per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-meas
 ## Render pipeline
 
 - [x] Cell grid construction from buffer content + viewport per [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
-- [ ] Decoration overlay (diagnostics, search highlights, cursor)
+- [x] Decoration overlay (diagnostics, search highlights, cursor)
 - [x] Diff-based frame output (only changed cells written to terminal)
 - [x] Color capability detection (true color, 256, 16)
-- [ ] Window separator and tab line rendering
+- [x] Window separator and tab line rendering
 - [x] Batched single-write flush
 
 ## Input decoding
@@ -77,9 +77,9 @@ Per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-meas
 
 ## Plugin architecture
 
-- [ ] Plugin trait definition and lifecycle hooks
-- [ ] Plugin loading and registration mechanism
-- [ ] Plugin sandboxing constraints
+- [x] Plugin trait definition and lifecycle hooks
+- [x] Plugin loading and registration mechanism
+- [x] Plugin sandboxing constraints
 
 ## Wiring checklist
 

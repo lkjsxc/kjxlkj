@@ -31,7 +31,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Window rotate: `Ctrl-w r`, `Ctrl-w R`
 - [x] Window move: `Ctrl-w H/J/K/L`
 - [x] Focus uniqueness invariant: exactly one focused window at all times
-- [ ] No overlap, full coverage of terminal area
+- [x] No overlap, full coverage of terminal area
 
 ## Related feature specs
 

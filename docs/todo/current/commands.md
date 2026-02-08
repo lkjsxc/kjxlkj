@@ -22,22 +22,22 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## File commands
 
 - [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
-- [ ] `:edit` per [/docs/spec/commands/file/edit-command.md](/docs/spec/commands/file/edit-command.md)
-- [ ] `:write` per [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
+- [x] `:edit` per [/docs/spec/commands/file/edit-command.md](/docs/spec/commands/file/edit-command.md)
+- [x] `:write` per [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
 - [x] `:read` per [/docs/spec/commands/file/read-command.md](/docs/spec/commands/file/read-command.md)
-- [ ] `:find` per [/docs/spec/commands/file/find-command.md](/docs/spec/commands/file/find-command.md)
-- [ ] File operations per [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
-- [ ] File exploration per [/docs/spec/commands/file/file-exploration.md](/docs/spec/commands/file/file-exploration.md)
-- [ ] Directory commands per [/docs/spec/commands/file/directory-commands.md](/docs/spec/commands/file/directory-commands.md)
-- [ ] Encoding commands per [/docs/spec/commands/file/encoding-commands.md](/docs/spec/commands/file/encoding-commands.md)
-- [ ] Path expansion per [/docs/spec/commands/file/path-expansion.md](/docs/spec/commands/file/path-expansion.md)
+- [x] `:find` per [/docs/spec/commands/file/find-command.md](/docs/spec/commands/file/find-command.md)
+- [x] File operations per [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
+- [x] File exploration per [/docs/spec/commands/file/file-exploration.md](/docs/spec/commands/file/file-exploration.md)
+- [x] Directory commands per [/docs/spec/commands/file/directory-commands.md](/docs/spec/commands/file/directory-commands.md)
+- [x] Encoding commands per [/docs/spec/commands/file/encoding-commands.md](/docs/spec/commands/file/encoding-commands.md)
+- [x] Path expansion per [/docs/spec/commands/file/path-expansion.md](/docs/spec/commands/file/path-expansion.md)
 
 ## Buffer commands
 
 - [/docs/spec/commands/buffer/README.md](/docs/spec/commands/buffer/README.md)
 - [x] Buffer listing per [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)
 - [x] Buffer navigation per [/docs/spec/commands/buffer/buffer-navigation.md](/docs/spec/commands/buffer/buffer-navigation.md)
-- [ ] Arglist commands per [/docs/spec/commands/buffer/arglist-commands.md](/docs/spec/commands/buffer/arglist-commands.md)
+- [x] Arglist commands per [/docs/spec/commands/buffer/arglist-commands.md](/docs/spec/commands/buffer/arglist-commands.md)
 
 ## Quit commands
 
@@ -48,8 +48,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
 - [x] `:s` per [/docs/spec/commands/substitute/substitute-command.md](/docs/spec/commands/substitute/substitute-command.md)
 - [x] Substitute flags per [/docs/spec/commands/substitute/substitute-flags.md](/docs/spec/commands/substitute/substitute-flags.md)
-- [ ] Substitute specials per [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
-- [ ] Substitute expressions per [/docs/spec/commands/substitute/substitute-expressions.md](/docs/spec/commands/substitute/substitute-expressions.md)
+- [x] Substitute specials per [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
+- [x] Substitute expressions per [/docs/spec/commands/substitute/substitute-expressions.md](/docs/spec/commands/substitute/substitute-expressions.md)
 - [x] Global command (`:g`) per [/docs/spec/commands/substitute/global-command.md](/docs/spec/commands/substitute/global-command.md)
 - [x] Vglobal command (`:v`) per [/docs/spec/commands/substitute/vglobal-command.md](/docs/spec/commands/substitute/vglobal-command.md)
 
@@ -66,17 +66,17 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Command-line entry per [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)
 - [x] Command-line editing per [/docs/spec/commands/cmdline/cmdline-editing.md](/docs/spec/commands/cmdline/cmdline-editing.md)
 - [x] Command-line history per [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)
-- [ ] Command-line window per [/docs/spec/commands/cmdline/cmdline-window.md](/docs/spec/commands/cmdline/cmdline-window.md)
+- [x] Command-line window per [/docs/spec/commands/cmdline/cmdline-window.md](/docs/spec/commands/cmdline/cmdline-window.md)
 - [x] Tab completion per [/docs/spec/commands/cmdline/completion.md](/docs/spec/commands/cmdline/completion.md)
 - [x] History per [/docs/spec/commands/cmdline/history.md](/docs/spec/commands/cmdline/history.md)
 
 ## Session commands
 
 - [/docs/spec/commands/session/README.md](/docs/spec/commands/session/README.md)
-- [ ] Autosave config per [/docs/spec/commands/session/autosave-config.md](/docs/spec/commands/session/autosave-config.md)
-- [ ] Recent files per [/docs/spec/commands/session/recent-files.md](/docs/spec/commands/session/recent-files.md)
-- [ ] Swap files per [/docs/spec/commands/session/swap-files.md](/docs/spec/commands/session/swap-files.md)
-- [ ] Undo persistence per [/docs/spec/commands/session/undo-persistence.md](/docs/spec/commands/session/undo-persistence.md)
+- [x] Autosave config per [/docs/spec/commands/session/autosave-config.md](/docs/spec/commands/session/autosave-config.md)
+- [x] Recent files per [/docs/spec/commands/session/recent-files.md](/docs/spec/commands/session/recent-files.md)
+- [x] Swap files per [/docs/spec/commands/session/swap-files.md](/docs/spec/commands/session/swap-files.md)
+- [x] Undo persistence per [/docs/spec/commands/session/undo-persistence.md](/docs/spec/commands/session/undo-persistence.md)
 
 ## Execution commands
 

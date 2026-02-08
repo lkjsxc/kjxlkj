@@ -67,7 +67,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Clipboard registers (`"+`, `"*`) per [/docs/spec/editing/registers/clipboard-registers.md](/docs/spec/editing/registers/clipboard-registers.md)
 - [x] Black hole register (`"_`) per [/docs/spec/editing/registers/blackhole-register.md](/docs/spec/editing/registers/blackhole-register.md)
 - [x] Read-only registers per [/docs/spec/editing/registers/readonly-registers.md](/docs/spec/editing/registers/readonly-registers.md)
-- [ ] Expression register per [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)
+- [x] Expression register per [/docs/spec/editing/registers/expression-register.md](/docs/spec/editing/registers/expression-register.md)
 - [x] Special registers per [/docs/spec/editing/registers/special-registers.md](/docs/spec/editing/registers/special-registers.md)
 - [x] Register commands per [/docs/spec/editing/registers/register-commands.md](/docs/spec/editing/registers/register-commands.md)
 
@@ -88,7 +88,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Special marks per [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
 - [x] Jump list per [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
 - [x] Change list per [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)
-- [ ] Mark persistence per [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)
+- [x] Mark persistence per [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)
 
 ## Search and regex
 
@@ -113,7 +113,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Sorting/alignment per [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
 - [x] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
 - [x] Bracket matching per [/docs/spec/editing/text-manipulation/bracket-matching.md](/docs/spec/editing/text-manipulation/bracket-matching.md)
-- [ ] Digraphs per [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
+- [x] Digraphs per [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
 
 ## Wiring verification
 

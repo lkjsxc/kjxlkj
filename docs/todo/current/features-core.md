@@ -55,15 +55,15 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] WindowRef with content_type (buffer/terminal)
 - [x] Buffer restoration (path, cursor, viewport)
 - [x] Tab restoration
-- [ ] Register/mark persistence
+- [x] Register/mark persistence
 
 ### Session features
 
-- [ ] Auto-save per [/docs/spec/features/session/auto_save.md](/docs/spec/features/session/auto_save.md)
-- [ ] Undo tree per [/docs/spec/features/session/undo_tree.md](/docs/spec/features/session/undo_tree.md)
+- [x] Auto-save per [/docs/spec/features/session/auto_save.md](/docs/spec/features/session/auto_save.md)
+- [x] Undo tree per [/docs/spec/features/session/undo_tree.md](/docs/spec/features/session/undo_tree.md)
 - [ ] View management per [/docs/spec/features/session/view-management.md](/docs/spec/features/session/view-management.md)
-- [ ] Workspaces per [/docs/spec/features/session/workspaces.md](/docs/spec/features/session/workspaces.md)
-- [ ] Project config per [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)
+- [x] Workspaces per [/docs/spec/features/session/workspaces.md](/docs/spec/features/session/workspaces.md)
+- [x] Project config per [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)
 - [ ] Macros per [/docs/spec/features/session/macros.md](/docs/spec/features/session/macros.md)
 - [ ] Registers per [/docs/spec/features/session/registers.md](/docs/spec/features/session/registers.md)
 - [ ] Expression register per [/docs/spec/features/session/expression-register.md](/docs/spec/features/session/expression-register.md)
@@ -77,22 +77,22 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Floating windows per [/docs/spec/features/window/floating-windows.md](/docs/spec/features/window/floating-windows.md)
 - [x] Tabs per [/docs/spec/features/window/tabs.md](/docs/spec/features/window/tabs.md)
 - [x] Window command per [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
-- [ ] Window layouts per [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
-- [ ] Window presets per [/docs/spec/features/window/window-presets.md](/docs/spec/features/window/window-presets.md)
+- [x] Window layouts per [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
+- [x] Window presets per [/docs/spec/features/window/window-presets.md](/docs/spec/features/window/window-presets.md)
 - [x] Window resize per [/docs/spec/features/window/window-resize-modes.md](/docs/spec/features/window/window-resize-modes.md)
-- [ ] Window resizer per [/docs/spec/features/window/window_resizer.md](/docs/spec/features/window/window_resizer.md)
+- [x] Window resizer per [/docs/spec/features/window/window_resizer.md](/docs/spec/features/window/window_resizer.md)
 - [x] Window zoom per [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)
 
 ## Buffer features
 
 - [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
 - [x] Buffer switching per [/docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)
-- [ ] Buffer groups per [/docs/spec/features/buffer/buffer-groups.md](/docs/spec/features/buffer/buffer-groups.md)
-- [ ] Buffer-local options per [/docs/spec/features/buffer/buffer-local-options.md](/docs/spec/features/buffer/buffer-local-options.md)
-- [ ] Buffer advanced per [/docs/spec/features/buffer/buffer-advanced.md](/docs/spec/features/buffer/buffer-advanced.md)
-- [ ] Bufferline per [/docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
+- [x] Buffer groups per [/docs/spec/features/buffer/buffer-groups.md](/docs/spec/features/buffer/buffer-groups.md)
+- [x] Buffer-local options per [/docs/spec/features/buffer/buffer-local-options.md](/docs/spec/features/buffer/buffer-local-options.md)
+- [x] Buffer advanced per [/docs/spec/features/buffer/buffer-advanced.md](/docs/spec/features/buffer/buffer-advanced.md)
+- [x] Bufferline per [/docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
 - [x] Alternate file per [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
-- [ ] Arglist per [/docs/spec/features/buffer/arglist.md](/docs/spec/features/buffer/arglist.md)
+- [x] Arglist per [/docs/spec/features/buffer/arglist.md](/docs/spec/features/buffer/arglist.md)
 
 ## Wiring verification
 

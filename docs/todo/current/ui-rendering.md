@@ -24,25 +24,25 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Horizontal follow: scroll to keep cursor column visible
 - [ ] Line wrapping algorithm per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 - [ ] CJK wrap-boundary padding cell insertion
-- [ ] Scrolloff/sidescrolloff handling
+- [x] Scrolloff/sidescrolloff handling
 
 ## Component model
 
-- [ ] Component taxonomy per [/docs/spec/ui/components.md](/docs/spec/ui/components.md)
-- [ ] Render/input contracts for each component type
-- [ ] Component lifecycle (create, render, destroy)
+- [x] Component taxonomy per [/docs/spec/ui/components.md](/docs/spec/ui/components.md)
+- [x] Render/input contracts for each component type
+- [x] Component lifecycle (create, render, destroy)
 
 ## View system
 
-- [ ] View types per [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
-- [ ] Workspace topology
-- [ ] View-window relationship
+- [x] View types per [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
+- [x] Workspace topology
+- [x] View-window relationship
 
 ## Theming
 
-- [ ] Theme system per [/docs/spec/ui/themes.md](/docs/spec/ui/themes.md)
+- [x] Theme system per [/docs/spec/ui/themes.md](/docs/spec/ui/themes.md)
 - [x] Highlight group resolution
-- [ ] Color scheme loading
+- [x] Color scheme loading
 
 ## Wiring verification
 
