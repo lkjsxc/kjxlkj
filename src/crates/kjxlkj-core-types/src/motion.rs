@@ -104,6 +104,10 @@ pub enum Motion {
     PrevLineFirstNonBlank,
     /// `|` — go to column (with count).
     GotoColumn(usize),
+    /// `Ctrl-O` — jump list backward.
+    JumpListBackward,
+    /// `Ctrl-I` — jump list forward.
+    JumpListForward,
 }
 
 impl Motion {

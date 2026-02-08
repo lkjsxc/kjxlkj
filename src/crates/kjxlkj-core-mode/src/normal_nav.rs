@@ -73,6 +73,36 @@ impl NormalModeState {
                     count,
                 )))
             }
+            // Repeat char find: ;/,
+            (KeyCode::Char(';'), KeyModifiers::NONE) => {
+                Some(Some(Action::MoveCursor(
+                    Motion::RepeatFindForward,
+                    count,
+                )))
+            }
+            (KeyCode::Char(','), KeyModifiers::NONE) => {
+                Some(Some(Action::MoveCursor(
+                    Motion::RepeatFindBackward,
+                    count,
+                )))
+            }
+            // Jump list: Ctrl-o / Ctrl-i
+            (KeyCode::Char('o'), m)
+                if m.contains(KeyModifiers::CTRL) =>
+            {
+                Some(Some(Action::MoveCursor(
+                    Motion::JumpListBackward,
+                    count,
+                )))
+            }
+            (KeyCode::Char('i'), m)
+                if m.contains(KeyModifiers::CTRL) =>
+            {
+                Some(Some(Action::MoveCursor(
+                    Motion::JumpListForward,
+                    count,
+                )))
+            }
             // f/F/t/T — set pending for next char
             (KeyCode::Char('f'), KeyModifiers::NONE) => {
                 self.find_char_pending =

@@ -46,12 +46,12 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Substitute commands
 
 - [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
-- [ ] `:s` per [/docs/spec/commands/substitute/substitute-command.md](/docs/spec/commands/substitute/substitute-command.md)
-- [ ] Substitute flags per [/docs/spec/commands/substitute/substitute-flags.md](/docs/spec/commands/substitute/substitute-flags.md)
+- [x] `:s` per [/docs/spec/commands/substitute/substitute-command.md](/docs/spec/commands/substitute/substitute-command.md)
+- [x] Substitute flags per [/docs/spec/commands/substitute/substitute-flags.md](/docs/spec/commands/substitute/substitute-flags.md)
 - [ ] Substitute specials per [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
 - [ ] Substitute expressions per [/docs/spec/commands/substitute/substitute-expressions.md](/docs/spec/commands/substitute/substitute-expressions.md)
-- [ ] Global command (`:g`) per [/docs/spec/commands/substitute/global-command.md](/docs/spec/commands/substitute/global-command.md)
-- [ ] Vglobal command (`:v`) per [/docs/spec/commands/substitute/vglobal-command.md](/docs/spec/commands/substitute/vglobal-command.md)
+- [x] Global command (`:g`) per [/docs/spec/commands/substitute/global-command.md](/docs/spec/commands/substitute/global-command.md)
+- [x] Vglobal command (`:v`) per [/docs/spec/commands/substitute/vglobal-command.md](/docs/spec/commands/substitute/vglobal-command.md)
 
 ## Range commands
 

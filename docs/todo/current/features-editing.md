@@ -8,16 +8,16 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Editing helper features
 
-- [ ] Auto-pairs per [/docs/spec/features/editing/auto-pairs.md](/docs/spec/features/editing/auto-pairs.md)
-- [ ] Clipboard integration per [/docs/spec/features/editing/clipboard.md](/docs/spec/features/editing/clipboard.md)
-- [ ] Comment toggling per [/docs/spec/features/editing/comments.md](/docs/spec/features/editing/comments.md)
+- [x] Auto-pairs per [/docs/spec/features/editing/auto-pairs.md](/docs/spec/features/editing/auto-pairs.md)
+- [x] Clipboard integration per [/docs/spec/features/editing/clipboard.md](/docs/spec/features/editing/clipboard.md)
+- [x] Comment toggling per [/docs/spec/features/editing/comments.md](/docs/spec/features/editing/comments.md)
 - [ ] Editing helpers per [/docs/spec/features/editing/editing_helpers.md](/docs/spec/features/editing/editing_helpers.md)
 - [ ] Format on paste per [/docs/spec/features/editing/format-on-paste.md](/docs/spec/features/editing/format-on-paste.md)
 - [ ] Format on type per [/docs/spec/features/editing/format-on-type.md](/docs/spec/features/editing/format-on-type.md)
 - [ ] Multi-cursor per [/docs/spec/features/editing/multicursor.md](/docs/spec/features/editing/multicursor.md)
 - [ ] Snippets per [/docs/spec/features/editing/snippets.md](/docs/spec/features/editing/snippets.md)
 - [ ] Spell checking per [/docs/spec/features/editing/spell.md](/docs/spec/features/editing/spell.md)
-- [ ] Surround per [/docs/spec/features/editing/surround.md](/docs/spec/features/editing/surround.md)
+- [x] Surround per [/docs/spec/features/editing/surround.md](/docs/spec/features/editing/surround.md)
 - [ ] Templates per [/docs/spec/features/editing/templates.md](/docs/spec/features/editing/templates.md)
 
 ## UI features

@@ -48,7 +48,24 @@ impl EditorState {
                 self.dispatch_op_pending_key(&key, op)
             }
             Mode::TerminalInsert => {
-                // Terminal mode: forward all keys.
+                // Check for Ctrl-\ (escape from terminal)
+                if let KeyCode::Char('\\') = key.code {
+                    if key.modifiers.contains(kjxlkj_core_types::KeyModifiers::CTRL) {
+                        self.terminal_escape_pending = true;
+                        return;
+                    }
+                }
+                if self.terminal_escape_pending {
+                    self.terminal_escape_pending = false;
+                    // Ctrl-\ followed by Ctrl-n → exit terminal mode
+                    if let KeyCode::Char('n') = key.code {
+                        if key.modifiers.contains(kjxlkj_core_types::KeyModifiers::CTRL) {
+                            self.mode = Mode::Normal;
+                            return;
+                        }
+                    }
+                }
+                // Otherwise forward key to terminal (no-op in state)
                 None
             }
             Mode::InsertNormal => {

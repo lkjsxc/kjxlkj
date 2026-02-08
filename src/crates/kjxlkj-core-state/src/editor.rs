@@ -75,6 +75,8 @@ pub struct EditorState {
     pub change_list_pos: usize,
     /// Pending text object scope in operator-pending mode.
     pub op_text_obj_pending: Option<(Operator, TextObjectScope)>,
+    /// Terminal escape pending: after Ctrl-\ waiting for Ctrl-n.
+    pub terminal_escape_pending: bool,
 }
 
 impl EditorState {
@@ -121,6 +123,7 @@ impl EditorState {
             change_list: Vec::new(),
             change_list_pos: 0,
             op_text_obj_pending: None,
+            terminal_escape_pending: false,
         }
     }
 

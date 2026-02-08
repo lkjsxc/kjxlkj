@@ -165,6 +165,12 @@ impl EditorState {
             KeyCode::Char('}') => {
                 Motion::ParagraphForward
             }
+            KeyCode::Char(';') => {
+                Motion::RepeatFindForward
+            }
+            KeyCode::Char(',') => {
+                Motion::RepeatFindBackward
+            }
             _ => return None,
         };
         Some((m, count))

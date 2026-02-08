@@ -29,6 +29,22 @@ impl EditorState {
         motion: Motion,
         count: u32,
     ) {
+        // Handle state-level motions.
+        match &motion {
+            Motion::JumpListBackward => {
+                for _ in 0..count {
+                    self.do_jump_older();
+                }
+                return;
+            }
+            Motion::JumpListForward => {
+                for _ in 0..count {
+                    self.do_jump_newer();
+                }
+                return;
+            }
+            _ => {}
+        }
         let (line, col) = self.cursor_pos();
         let bid = match self.active_buffer_id() {
             Some(b) => b,
