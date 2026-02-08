@@ -15,19 +15,12 @@ Toggle comments with a single keypress:
 
 ## Configuration
 
-Comment strings are configured per filetype in `config.toml` or
-per-filetype config files under `ftconfig/`. The `commentstring`
-option controls line comments; `block_commentstring` controls block
-comments. Both are set automatically when a filetype is detected.
+Comment strings are configured per filetype in `config.toml` or per-filetype config files under `ftconfig/`. The `commentstring` option controls line comments; `block_commentstring` controls block comments. Both are set automatically when a filetype is detected.
 
-```toml
-[filetype.rust]
-commentstring = "//"
-block_commentstring = ["/*", "*/"]
-
-[filetype.python]
-commentstring = "#"
-```
+| Filetype config key | Type | Example |
+|---|---|---|
+| `commentstring` | string | `"//"` for Rust, `"#"` for Python |
+| `block_commentstring` | array of 2 strings | `["/*", "*/"]` for Rust |
 
 ## Keybindings
 
@@ -98,17 +91,7 @@ Auto-detects comment style per language:
 
 ## Custom Comment Styles
 
-Override for specific languages:
-
-```toml
-[filetype.custom_lang]
-commentstring = ";;"
-block_commentstring = ["{-", "-}"]
-```
-
-When `commentstring` is empty, `gcc` is a no-op for that filetype.
-When `block_commentstring` is absent, `gbc` falls back to using
-`commentstring` on each line.
+Override for specific languages by setting `commentstring` and `block_commentstring` in the filetype configuration table. When `commentstring` is empty, `gcc` is a no-op for that filetype. When `block_commentstring` is absent, `gbc` falls back to using `commentstring` on each line.
 
 ## Smart Comments
 

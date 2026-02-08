@@ -11,28 +11,16 @@ code blocks with placeholder values.
 
 ### Configuration
 
-Snippets are defined in JSON or TOML files placed in the snippet
-directories. Each snippet MUST have a `prefix`, `body`, and MAY
-have `description` and `scope` fields.
+Snippets are defined in JSON or TOML files placed in the snippet directories. Each snippet MUST have a `prefix`, `body`, and MAY have `description` and `scope` fields.
 
-```json
-{
-  "Match Arm": {
-    "prefix": "match",
-    "body": [
-      "match ${1:expr} {",
-      "    ${2:pattern} => ${3:value},",
-      "    $0",
-      "}"
-    ],
-    "description": "Match expression",
-    "scope": "rust"
-  }
-}
-```
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `prefix` | string | yes | Trigger text typed in insert mode |
+| `body` | array of strings | yes | Lines of expanded content with tab stops |
+| `description` | string | no | Shown in completion menu |
+| `scope` | string | no | Comma-separated language IDs; omit for all file types |
 
-The `scope` field is a comma-separated list of language
-identifiers. If omitted, the snippet applies to all file types.
+Tab stop syntax: `$1`, `$2` for tab stops; `${1:default}` for placeholder with default text; `${1|a,b,c|}` for choice list; `$0` for final cursor position.
 
 ## Triggering Snippets
 
@@ -124,16 +112,7 @@ Example: `${1/(.*)_(.*)/$2_$1/}` swaps words around `_`.
 
 ### Directory Structure
 
-```
-~/.config/kjxlkj/snippets/
-  global.json     # all file types
-  rust.json       # Rust-only
-  python.json     # Python-only
-  javascript.json # JavaScript-only
-```
-
-Language identifiers MUST match the editor's internal filetype
-names (same identifiers used in `[language]` config sections).
+Snippet files are placed under `~/.config/kjxlkj/snippets/` and named by language (e.g. `global.json` for all file types, `rust.json` for Rust-only, `python.json` for Python-only). Language identifiers MUST match the editor's internal filetype names.
 
 ### Global Snippets
 
@@ -166,30 +145,17 @@ placeholders, choices, and variables as user-defined snippets.
 
 ### Example
 
-```json
-{
-  "File Header": {
-    "prefix": "header",
-    "body": ["$LINE_COMMENT File: $TM_FILENAME", "$LINE_COMMENT $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE", "$0"],
-    "description": "File header comment"
-  }
-}
-```
+A snippet named `"File Header"` with prefix `"header"` and body `["$LINE_COMMENT File: $TM_FILENAME", "$LINE_COMMENT $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE", "$0"]`.
 
 ## Configuration
 
-In `~/.config/kjxlkj/config.toml`:
+In `~/.config/kjxlkj/config.toml`, a `[snippets]` table controls behavior:
 
-```toml
-[snippets]
-enable = true
-tab_trigger = true
-dirs = ["~/.config/kjxlkj/snippets"]
-```
-
-- `enable` -- master toggle (default `true`)
-- `tab_trigger` -- `<Tab>` triggers expansion (default `true`)
-- `dirs` -- additional snippet directories to search
+| Setting | Default | Description |
+|---|---|---|
+| `enable` | `true` | Master toggle |
+| `tab_trigger` | `true` | `<Tab>` triggers expansion |
+| `dirs` | `["~/.config/kjxlkj/snippets"]` | Additional snippet directories to search |
 
 ## Best Practices
 

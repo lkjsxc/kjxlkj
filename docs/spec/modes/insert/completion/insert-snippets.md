@@ -17,38 +17,24 @@ the expanded snippet body.
 
 ### Example
 
-Typing `fn` then `<Tab>` in a Rust buffer expands to:
-
-```rust
-fn ${1:name}(${2:params}) {
-    $0
-}
-```
-
-Cursor lands at first placeholder.
+Typing `fn` then `<Tab>` in a Rust buffer expands to a function template: `fn ${1:name}(${2:params}) { $0 }`. Cursor lands at first placeholder.
 
 ## Snippet Structure
 
 ### Basic Snippet
 
-```json
-{
-  "Function": {
-    "prefix": "fn",
-    "body": ["fn ${1:name}(${2:params}) {", "    $0", "}"],
-    "description": "Define a function",
-    "scope": "rust"
-  }
-}
-```
+A snippet is a JSON object with a name key containing `prefix`, `body` (array of strings), `description`, and optional `scope` (language ID).
 
-### Parts
+Parts:
 
-- `prefix`: Trigger text
-- `body`: Expanded content (array of lines)
-- `description`: Shown in completion menu
-- `scope`: Comma-separated language IDs; omit for all languages
-- `$1, $2`: Tab stops; `$0`: Final cursor
+| Field | Purpose |
+|---|---|
+| `prefix` | Trigger text |
+| `body` | Expanded content (array of lines) |
+| `description` | Shown in completion menu |
+| `scope` | Comma-separated language IDs; omit for all languages |
+| `$1, $2` | Tab stops |
+| `$0` | Final cursor |
 
 ## Tab Stops
 
@@ -165,36 +151,21 @@ Typing "Hello" produces: `Hello -> HELLO`
 
 ### JSON
 
-Top-level keys are snippet names. Body is an array of strings.
-
-```json
-{
-  "For Loop": {
-    "prefix": "for",
-    "body": ["for ${1:item} in ${2:iter} {", "    $0", "}"],
-    "description": "For-in loop"
-  }
-}
-```
+Top-level keys are snippet names. Each value is an object with `prefix`, `body` (array of strings), and `description`. Example: a snippet named `"For Loop"` with prefix `"for"`, body `["for ${1:item} in ${2:iter} {", "    $0", "}"]`, and description `"For-in loop"`.
 
 ### TOML
 
-Each snippet is a TOML table. Body uses `\n` for newlines.
-
-```toml
-[snippets.for_loop]
-prefix = "for"
-body = "for ${1:item} in ${2:iter} {\n    $0\n}"
-description = "For-in loop"
-```
+Each snippet is a TOML table under `[snippets.{name}]` with `prefix`, `body` (string using `\n` for newlines), and `description`.
 
 ## File Location
 
 Snippet files MUST be discovered (highest priority first):
 
-1. `.kjxlkj/snippets/{language}.json` -- project-local
-2. `~/.config/kjxlkj/snippets/{language}.json` -- per-language
-3. `~/.config/kjxlkj/snippets/global.json` -- all file types
-4. LSP completions with `insertTextFormat: 2` (snippet)
+| Priority | Path | Scope |
+|---|---|---|
+| 1 | `.kjxlkj/snippets/{language}.json` | project-local |
+| 2 | `~/.config/kjxlkj/snippets/{language}.json` | per-language |
+| 3 | `~/.config/kjxlkj/snippets/global.json` | all file types |
+| 4 | LSP completions with `insertTextFormat: 2` | from language server |
 
 Project-local snippets override global ones on prefix conflict.

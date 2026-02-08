@@ -61,43 +61,17 @@ buffer. Unrecognized variables MUST be left as literal text.
 
 ### User Info
 
-In `~/.config/kjxlkj/config.toml`:
-
-```toml
-[user]
-name = "Jane Doe"
-email = "jane@example.com"
-```
-
-`{{author}}` resolves to `name`. If absent, falls back to `$USER`.
+In `~/.config/kjxlkj/config.toml`, define a `[user]` table with `name` and `email` keys. `{{author}}` resolves to the `name` value. If absent, falls back to `$USER`.
 
 ### Default Templates
 
-```toml
-[templates]
-auto_apply = true
-```
-
-When `auto_apply` is `true`, opening a new file via `:edit
-newfile.rs` MUST auto-populate from the matching template.
-When `false` (default), templates only apply via `:New`.
+The `[templates]` config section has an `auto_apply` boolean (default `false`). When `true`, opening a new file via `:edit newfile.rs` MUST auto-populate from the matching template. When `false`, templates only apply via `:New`.
 
 ## Project Templates
 
 ### .kjxlkj.toml
 
-```toml
-[templates]
-directory = ".kjxlkj/templates"
-auto_apply = true
-
-[templates.variables]
-license = "MIT"
-org = "Acme Corp"
-```
-
-Custom variables defined here are available as `{{license}}`,
-`{{org}}`, etc.
+The project-local `.kjxlkj.toml` SHOULD have a `[templates]` table with `directory` (default `.kjxlkj/templates`), `auto_apply` (boolean), and a `[templates.variables]` sub-table defining custom variables like `license = "MIT"`. Custom variables are available as `{{license}}`, `{{org}}`, etc.
 
 ### Project-Specific
 
@@ -114,68 +88,23 @@ the user's response.
 
 ### Template Content
 
-```
-// Module: {{prompt:Module name}}
-pub mod {{prompt:Module name}} {
-    {{cursor}}
-}
-```
+A template body MAY contain `{{prompt:Label}}` tokens. The editor MUST prompt once per unique label and reuse the value for duplicate labels in the same template.
 
-The editor MUST prompt once per unique label and reuse the
-value for duplicate labels in the same template.
+Example body: a line `// Module: {{prompt:Module name}}` followed by `pub mod {{prompt:Module name}} { {{cursor}} }`.
 
 ## Example Templates
 
-### Rust Main
-
-`~/.config/kjxlkj/templates/rust.template`:
-
-```
-// {{basename}}.rs - Copyright (c) {{year}} {{author}}
-fn main() {
-    {{cursor}}
-}
-```
-
-### Python Script
-
-`~/.config/kjxlkj/templates/python.template`:
-
-```
-#!/usr/bin/env python3
-"""{{basename}} - {{project}}."""
-
-def main():
-    {{cursor}}
-
-if __name__ == "__main__":
-    main()
-```
-
-### React Component
-
-`~/.config/kjxlkj/templates/typescriptreact.template`:
-
-```
-import React from "react";
-interface {{basename}}Props {}
-export function {{basename}}({}: {{basename}}Props) {
-    return <div>{{cursor}}</div>;
-}
-```
+| Template file | Language | Description |
+|---|---|---|
+| `rust.template` | Rust | Contains copyright header with `{{basename}}`, `{{year}}`, `{{author}}`, a `fn main()` body, and `{{cursor}}` inside |
+| `python.template` | Python | Contains shebang `#!/usr/bin/env python3`, docstring with `{{basename}}`, `def main()`, `if __name__` guard, and `{{cursor}}` |
+| `typescriptreact.template` | React/TSX | Contains import, interface `{{basename}}Props`, functional component `{{basename}}`, and `{{cursor}}` |
 
 ## Conditional Content
 
 ### If Blocks
 
-`{{#if variable}}...{{/if}}` blocks MUST include content only
-when the variable is defined and non-empty.
-
-```
-{{#if license}}
-// SPDX-License-Identifier: {{license}}
-{{/if}}
-```
+`{{#if variable}}...{{/if}}` blocks MUST include content only when the variable is defined and non-empty. For example, `{{#if license}} // SPDX-License-Identifier: {{license}} {{/if}}` inserts the license header only when the `license` variable is set.
 
 ## Template Discovery
 
