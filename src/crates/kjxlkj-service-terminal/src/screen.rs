@@ -21,6 +21,18 @@ pub struct ScreenBuffer {
     pub current_attrs: CellAttrs,
     /// Window title.
     pub title: String,
+    /// Scroll region top (inclusive, 0-based).
+    pub scroll_top: u16,
+    /// Scroll region bottom (inclusive, 0-based).
+    pub scroll_bottom: u16,
+    /// Cursor visibility.
+    pub cursor_visible: bool,
+    /// Alternate screen active.
+    pub alt_screen_active: bool,
+    /// Scrollback buffer (lines that scrolled off top).
+    pub scrollback: Vec<Vec<Cell>>,
+    /// Scrollback capacity.
+    pub scrollback_cap: usize,
 }
 
 impl ScreenBuffer {
@@ -42,6 +54,12 @@ impl ScreenBuffer {
             current_bg: Color::Default,
             current_attrs: CellAttrs::empty(),
             title: String::new(),
+            scroll_top: 0,
+            scroll_bottom: rows.saturating_sub(1),
+            cursor_visible: true,
+            alt_screen_active: false,
+            scrollback: Vec::new(),
+            scrollback_cap: 10000,
         }
     }
 
@@ -50,9 +68,9 @@ impl ScreenBuffer {
         if self.cursor_col >= self.cols {
             self.cursor_col = 0;
             self.cursor_row += 1;
-            if self.cursor_row >= self.rows {
+            if self.cursor_row > self.scroll_bottom {
                 self.scroll_up(1);
-                self.cursor_row = self.rows - 1;
+                self.cursor_row = self.scroll_bottom;
             }
         }
 
@@ -71,24 +89,6 @@ impl ScreenBuffer {
         self.cursor_col += 1;
     }
 
-    /// Scroll up by n lines.
-    pub fn scroll_up(&mut self, n: u16) {
-        let row_len = self.cols as usize;
-        let n = n as usize;
-        if n >= self.rows as usize {
-            self.clear();
-            return;
-        }
-        // Rotate rows up: first n rows go to end, then clear them.
-        let shift = n * row_len;
-        self.cells.rotate_left(shift);
-        let total = self.cells.len();
-        let clear_start = total - shift;
-        for cell in &mut self.cells[clear_start..] {
-            *cell = Cell::default();
-        }
-    }
-
     /// Clear the entire screen.
     pub fn clear(&mut self) {
         for cell in &mut self.cells {
@@ -105,9 +105,13 @@ impl ScreenBuffer {
     }
 
     /// Get the cells as a slice.
-    pub fn cells(&self) -> &[Cell] {
-        &self.cells
-    }
+    pub fn cells(&self) -> &[Cell] { &self.cells }
+
+    /// Internal mutable cell access (for scroll ops).
+    pub(crate) fn cells_ref(&self) -> &[Cell] { &self.cells }
+
+    /// Internal mutable cell access (for scroll ops).
+    pub(crate) fn cells_mut_raw(&mut self) -> &mut [Cell] { &mut self.cells }
 
     /// Resize the screen buffer.
     pub fn resize(&mut self, cols: u16, rows: u16) {
@@ -117,28 +121,26 @@ impl ScreenBuffer {
         self.rows = rows;
         self.cursor_col = self.cursor_col.min(cols - 1);
         self.cursor_row = self.cursor_row.min(rows - 1);
+        self.scroll_top = 0;
+        self.scroll_bottom = rows.saturating_sub(1);
     }
 
     /// Execute a newline.
     pub fn newline(&mut self) {
         self.cursor_col = 0;
         self.cursor_row += 1;
-        if self.cursor_row >= self.rows {
+        if self.cursor_row > self.scroll_bottom {
             self.scroll_up(1);
-            self.cursor_row = self.rows - 1;
+            self.cursor_row = self.scroll_bottom;
         }
     }
 
     /// Carriage return.
-    pub fn carriage_return(&mut self) {
-        self.cursor_col = 0;
-    }
+    pub fn carriage_return(&mut self) { self.cursor_col = 0; }
 
     /// Backspace.
     pub fn backspace(&mut self) {
-        if self.cursor_col > 0 {
-            self.cursor_col -= 1;
-        }
+        if self.cursor_col > 0 { self.cursor_col -= 1; }
     }
 }
 

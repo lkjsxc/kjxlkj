@@ -10,6 +10,7 @@ mod editor;
 mod editor_actions;
 mod editor_actions2;
 mod editor_actions3;
+mod editor_changelist;
 mod editor_file_ops;
 mod editor_insert;
 mod editor_jumplist;

@@ -5,6 +5,8 @@ mod escape_parser;
 mod escape_parser_tests;
 mod pty;
 mod screen;
+mod screen_ops;
+mod screen_scroll;
 mod service;
 
 pub use screen::ScreenBuffer;

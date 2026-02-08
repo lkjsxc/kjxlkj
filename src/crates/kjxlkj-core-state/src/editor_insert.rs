@@ -22,20 +22,37 @@ impl EditorState {
         if let Some(w) = self.focused_window_mut() {
             w.cursor.grapheme_offset += 1;
         }
+        self.push_change();
     }
 
     fn insert_newline_impl(&mut self) {
         let (line, col) = self.cursor_pos();
+        // Capture leading whitespace from current line
+        // for auto-indent.
+        let indent = self
+            .active_buffer()
+            .map(|b| {
+                b.content.line_leading_whitespace(line)
+            })
+            .unwrap_or_default();
+
         if let Some(buf) = self.active_buffer_mut() {
             let off = buf
                 .content
                 .line_grapheme_to_offset(line, col);
             buf.content.insert_char(off, '\n');
+            // Insert indent on new line.
+            let new_off = off + 1;
+            for (i, ch) in indent.chars().enumerate() {
+                buf.content
+                    .insert_char(new_off + i, ch);
+            }
             buf.modified = true;
         }
+        let indent_gc = indent.len();
         if let Some(w) = self.focused_window_mut() {
             w.cursor.line += 1;
-            w.cursor.grapheme_offset = 0;
+            w.cursor.grapheme_offset = indent_gc;
         }
     }
 

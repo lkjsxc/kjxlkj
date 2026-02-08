@@ -100,4 +100,16 @@ impl BufferContent {
             None
         }
     }
+
+    /// Get the leading whitespace string from a line.
+    pub fn line_leading_whitespace(
+        &self,
+        line: usize,
+    ) -> String {
+        let content = self.line_content(line);
+        content
+            .chars()
+            .take_while(|c| c.is_whitespace())
+            .collect()
+    }
 }

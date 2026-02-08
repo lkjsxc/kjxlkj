@@ -68,6 +68,10 @@ pub struct EditorState {
     pub jump_list: Vec<(BufferId, CursorPosition)>,
     /// Jump list cursor (for Ctrl-O / Ctrl-I).
     pub jump_list_pos: usize,
+    /// Change list: (buffer, cursor) entries.
+    pub change_list: Vec<(BufferId, CursorPosition)>,
+    /// Change list cursor (for g; / g,).
+    pub change_list_pos: usize,
 }
 
 impl EditorState {
@@ -111,6 +115,8 @@ impl EditorState {
             macro_keys: Vec::new(),
             jump_list: Vec::new(),
             jump_list_pos: 0,
+            change_list: Vec::new(),
+            change_list_pos: 0,
         }
     }
 
