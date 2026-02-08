@@ -20,6 +20,8 @@ The normative requirements live in:
 
 ## Core scenarios
 
+Load testing scenarios to exercise.
+
 ### Large files
 
 Recommended datasets:

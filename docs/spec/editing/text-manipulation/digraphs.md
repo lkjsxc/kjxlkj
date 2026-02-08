@@ -18,6 +18,8 @@ After `Ctrl-k`, the next two keystrokes are interpreted as a digraph pair. If th
 
 ## Common digraphs
 
+Frequently used digraph pairs organized by category.
+
 ### Currency
 
 | Digraph | Character | Description |

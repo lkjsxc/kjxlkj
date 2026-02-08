@@ -84,6 +84,8 @@ Additional triggers can be configured.
 
 ## Integration
 
+How which-key integrates with keybinding and UI systems.
+
 ### With Leader Key
 
 The which-key popup is most useful with `<Leader>`.

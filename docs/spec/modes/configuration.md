@@ -12,6 +12,8 @@ Mode configuration affects presentation, not editing semantics.
 
 ## Configurable elements (normative)
 
+Aspects of mode behavior that are user-configurable.
+
 ### Cursor shape per mode
 
 | Mode | Default shape | DECSCUSR code | Description |

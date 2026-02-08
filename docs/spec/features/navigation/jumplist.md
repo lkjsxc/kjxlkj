@@ -11,6 +11,8 @@ Navigate through cursor position history.
 
 ## What Creates Jumps (normative)
 
+Actions that add entries to the jump list.
+
 ### Jump-creating movements
 
 | Movement | Jump? |

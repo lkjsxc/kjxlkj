@@ -31,6 +31,8 @@ Recommended:
 
 ## Troubleshooting
 
+Common issues and solutions on Windows.
+
 ### Arrow keys or modifiers not working
 
 Try a different terminal emulator. Some environments do not report all key events consistently.

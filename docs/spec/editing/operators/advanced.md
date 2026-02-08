@@ -24,6 +24,8 @@ The `.` command repeats the last change. A "change" is defined as:
 
 ## Macros (normative)
 
+Macro recording and playback.
+
 ### Recording
 
 | Key | Action |

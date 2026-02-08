@@ -8,6 +8,8 @@ Observations and improvement ideas gathered during the full 18-crate workspace r
 
 ## Proposals
 
+Specific improvement proposals for the next reconstruction wave.
+
 ### 1. Incremental Rope Diffing for Render
 
 Currently the render crate snapshots entire `EditorState`. A structural diff on the rope (tracking changed line ranges via ropey's edit notifications) would eliminate redundant cell recomputation and reduce render latency on large files.

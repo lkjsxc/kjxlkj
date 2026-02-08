@@ -16,6 +16,8 @@ This document is normative for memory behavior, but it intentionally focuses on 
 
 ## Core requirements (normative)
 
+Memory usage invariants the implementation must satisfy.
+
 ### Avoid full-buffer copies in hot paths
 
 The implementation MUST avoid allocating or copying the full buffer content as a `String` during routine interaction.

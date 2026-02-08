@@ -8,6 +8,8 @@ The terminal emulator spec in [/docs/spec/features/terminal/terminal.md](/docs/s
 
 ## Required additions
 
+Additional terminal emulator specifications needed.
+
 ### VT100 state machine
 
 The escape sequence parser MUST be implemented as a finite state machine with explicit states and transitions. The recommended model follows the ANSI X3.64 / ECMA-48 parser topology:

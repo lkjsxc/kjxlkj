@@ -43,6 +43,8 @@ flowchart LR
 
 ## View requirements
 
+Constraints on view implementation.
+
 ### Editor view
 
 | Topic | Requirement |

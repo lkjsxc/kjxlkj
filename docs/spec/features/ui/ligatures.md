@@ -10,6 +10,8 @@ Ligatures are sequences of characters that a font renders as a single combined g
 
 ## Requirements
 
+Terminal font requirements for ligature rendering.
+
 ### Font support
 
 The user must configure a ligature-capable font in their terminal. Common programming fonts with ligature support include Fira Code, JetBrains Mono, Cascadia Code, Iosevka, and Hasklig.
@@ -35,6 +37,8 @@ The terminal emulator must support ligature rendering. Ligature rendering is a t
 When `editor.ligatures = false`, the editor makes no special accommodation for ligatures. Characters are treated independently.
 
 ## Cursor behavior
+
+How the cursor interacts with ligature sequences.
 
 ### Cursor on ligature sequence
 

@@ -8,6 +8,8 @@ Wave 3 completed skeleton expansion for all spec files. 365 spec files now exist
 
 ## Changes in this wave
 
+Documentation changes applied during wave 3.
+
 ### Skeleton expansion (sessions 1-3)
 
 Approximately 60 skeleton spec files were expanded to full specification-quality content across 8 commits. Each expanded file includes:

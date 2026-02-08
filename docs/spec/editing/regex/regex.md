@@ -14,6 +14,8 @@ kjxlkj uses Vim-compatible "magic" mode by default for `/` and `?` search. See [
 
 ## Supported patterns (normative)
 
+All regex constructs recognized by the engine.
+
 ### Literals and metacharacters
 
 | Pattern | Meaning |

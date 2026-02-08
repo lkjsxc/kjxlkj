@@ -1,5 +1,6 @@
 # Operating Contract & Invariants
 
+Rules that every agent session MUST follow.
 
 ## Policy Graph
 

@@ -70,6 +70,8 @@ This section is descriptive, not normative.
 
 ## Known stressors and current posture
 
+Factors that stress large file handling.
+
 ### Extremely long lines
 
 Even with viewport-bounded line counts, a single very long line can be expensive if the renderer must measure or slice deep into it.
@@ -97,6 +99,8 @@ If any of the above are added, they should be specified first in:
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) and [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## How to verify (recommended)
+
+Approaches for testing large file performance.
 
 ### Automated
 

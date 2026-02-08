@@ -15,6 +15,8 @@ When enabled, pasted content is automatically re-indented to match the surroundi
 
 ## Behavior
 
+How format-on-paste works.
+
 ### Indentation Adjustment (default)
 
 Pasted content is re-indented to match the indentation level at the cursor position. The relative indentation within the pasted block is preserved.

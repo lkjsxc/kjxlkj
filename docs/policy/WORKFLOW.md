@@ -1,5 +1,6 @@
 # Agent Workflow & Project Identity
 
+Project identity and workflow conventions.
 
 ## Workflow Graph
 

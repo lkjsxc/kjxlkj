@@ -22,6 +22,8 @@ Structural stressors (can matter more than bytes):
 
 ## Core performance invariants (normative)
 
+Performance guarantees for large file operations.
+
 ### Snapshot cost MUST be viewport-bounded
 
 The core produces immutable snapshots for rendering.
@@ -51,6 +53,8 @@ When no input and no UI-driven animation is occurring:
 If a periodic tick is required (cursor blink, timers), it MUST be bounded and MUST NOT re-materialize full-buffer data.
 
 ## File opening requirements (normative)
+
+Behavior on opening large files.
 
 ### Streaming open SHOULD avoid intermediate full copies
 

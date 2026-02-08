@@ -17,6 +17,8 @@ For the authoritative “what exists right now” ledger, see:
 
 ## What is different
 
+Key differences from Neovim.
+
 ### No plugin ecosystem
 
 kjxlkj has no plugin system. Features are either built-in (when implemented) or not available yet.
@@ -30,6 +32,8 @@ kjxlkj does not execute Neovim configuration. Persistent configuration/key remap
 See: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
 
 ## Practical mapping
+
+Common Neovim workflows and their kjxlkj equivalents.
 
 ### Editing workflow
 

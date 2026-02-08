@@ -10,6 +10,8 @@ Final quality audit and cross-link integrity pass across the entire documentatio
 
 ## Changes
 
+Documentation changes in wave 3 session 4.
+
 ### Anti-MVP expansion (all 18 crates)
 
 - Extended minimum code volume targets from 10 to 18 crates in [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)

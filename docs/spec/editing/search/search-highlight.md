@@ -12,6 +12,8 @@ Visual feedback for search matches.
 
 ## Behavior
 
+How search highlighting works during and after searches.
+
 ### During Incremental Search
 
 When `incsearch = true`, the current match is highlighted as you type the pattern. `<C-g>` and `<C-t>` cycle forward/backward through matches during typing.

@@ -16,6 +16,8 @@ Multiple expressions are concatenated with a space.
 
 ## Use Cases
 
+Typical scenarios for the execute command.
+
 ### Special Keys
 
 `:execute "normal! \<C-a>"` — the `\<C-a>` is evaluated to the actual key code.

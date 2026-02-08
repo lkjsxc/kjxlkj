@@ -1,5 +1,7 @@
 # Crates
 
+The editor is organized as a Cargo workspace with multiple crates.
+
 ## Source layout requirement
 
 When implementation exists, it MUST include at least 10 crates under `src/crates/`.

@@ -42,6 +42,8 @@ Each feature MUST be verifiable by this pattern:
 
 ## Crate-level wiring inventory
 
+Per-crate integration checklist.
+
 ### kjxlkj-core-text (min 400 lines)
 
 This crate MUST contain non-trivial implementations:

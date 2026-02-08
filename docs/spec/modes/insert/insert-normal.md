@@ -14,6 +14,8 @@ Press `<C-o>` in insert mode. The mode indicator changes to `(insert)`. After on
 
 ## Basic Usage
 
+How to use insert-normal mode.
+
 ### Movement
 
 | Sequence | Effect |

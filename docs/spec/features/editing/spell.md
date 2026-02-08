@@ -46,6 +46,8 @@ Multiple languages: `:set spelllang=en_US,de_DE` checks against both.
 
 ## Dictionary Management
 
+Managing spell check dictionaries.
+
 ### User Dictionary
 
 Location: `~/.config/kjxlkj/spell/user.dic`. Words added with `zg` go here.

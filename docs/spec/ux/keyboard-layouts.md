@@ -12,6 +12,8 @@ kjxlkj supports alternative keyboard layouts.
 
 ## Configuration
 
+Settings for keyboard layout handling.
+
 ### Auto-detect System Layout
 
 kjxlkj queries the OS for the active keyboard layout at startup:
@@ -136,6 +138,8 @@ For compose keys and dead keys:
 | AltGr characters | Terminal sends Unicode; editor receives it |
 
 ## Troubleshooting
+
+Common keyboard layout issues.
 
 ### Keys not working as expected
 

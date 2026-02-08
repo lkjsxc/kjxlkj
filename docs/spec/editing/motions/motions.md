@@ -8,6 +8,8 @@ Motions move the cursor and/or define a range when combined with an operator.
 
 ## Motion families (normative)
 
+Motions grouped by navigation scope.
+
 ### Character motions
 
 | Key | Motion | Inclusive/Exclusive |

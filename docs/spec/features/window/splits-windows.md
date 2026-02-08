@@ -19,6 +19,8 @@ A count prefix (e.g. `5 Ctrl-W s`) SHOULD set the initial height or width of the
 
 ## Navigation
 
+Moving focus between windows.
+
 ### Directional movement
 
 | Key | Required behavior |

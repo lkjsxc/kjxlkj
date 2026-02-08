@@ -17,6 +17,8 @@ Previous reconstruction produced a minimal implementation (MVP) where most featu
 
 ## Required measures
 
+Measures to ensure reconstruction goes beyond MVP.
+
 ### 1. Granular TODO items with acceptance criteria
 
 Every TODO item MUST include:

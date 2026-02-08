@@ -31,6 +31,8 @@ When a bug is fixed:
 
 ## Performance regressions
 
+Detecting and preventing performance degradation.
+
 ### A. Deterministic probes (hard gates)
 
 These should fail on algorithmic regressions and be stable under CI variance:

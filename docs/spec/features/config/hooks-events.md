@@ -10,6 +10,8 @@ Hooks are callback registrations that fire when specific editor events occur. Th
 
 ## Event types
 
+Categories of events that can trigger hooks.
+
 ### Buffer events
 
 | Event | Fires when |

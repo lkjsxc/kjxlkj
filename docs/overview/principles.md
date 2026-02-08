@@ -1,5 +1,6 @@
 # Design Principles Graph
 
+Visual overview of how design principles relate to each other.
 
 ## Principles Topology
 

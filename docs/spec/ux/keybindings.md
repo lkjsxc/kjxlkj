@@ -64,6 +64,8 @@ Normative:
 
 ## Quick Reference
 
+Common keybindings at a glance.
+
 ### Essential Keys
 
 | Key | Action |

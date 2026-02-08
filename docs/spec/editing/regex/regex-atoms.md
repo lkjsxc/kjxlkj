@@ -53,6 +53,8 @@ Fundamental pattern building blocks for search and substitute operations.
 
 ## Character classes
 
+Predefined and user-defined character classes.
+
 ### Defined classes
 
 Character classes use `[` and `]` brackets. Inside a class, most metacharacters lose their special meaning.
@@ -146,6 +148,8 @@ Position atoms using `\%l` and `\%c` constrain matches to specific line numbers 
 | `\%u0041` | Match character with Unicode code point U+0041 |
 
 ## Examples
+
+Practical regex usage patterns.
 
 ### Match identifiers
 

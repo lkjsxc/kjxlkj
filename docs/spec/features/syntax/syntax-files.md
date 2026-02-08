@@ -4,6 +4,8 @@ Tree-sitter based syntax highlighting configuration.
 
 ## Built-in Languages (normative)
 
+Languages with bundled tree-sitter support.
+
 ### Fully Supported
 
 Rust, Python, JavaScript, TypeScript, Go, C, C++, Markdown, JSON, YAML, TOML, HTML, CSS, Bash, Lua.

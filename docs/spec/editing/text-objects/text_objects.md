@@ -7,6 +7,8 @@ Text objects define a region for an operator to act upon.
 
 ## Core text objects (normative)
 
+All built-in text objects and their semantics.
+
 ### Word objects
 
 | Key | Object | Description |

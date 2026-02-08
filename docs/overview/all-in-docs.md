@@ -29,6 +29,8 @@ The goal is not “perfect prose”; the goal is a **complete rebuild spec**.
 
 ## How this repo is intended to be used
 
+The documentation serves as the sole specification.
+
 ### For humans
 
 - Use `/README.md` as an entrypoint, then switch to [/docs/README.md](/docs/README.md).

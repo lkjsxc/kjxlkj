@@ -25,6 +25,8 @@ This document is descriptive and non-normative. For current implementation statu
 
 ## Keybinding philosophy
 
+How key binding models differ across editors.
+
 ### kjxlkj / (Neo)Vim
 
 Verb -> motion / text object (operators compose with targets).

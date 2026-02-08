@@ -18,6 +18,8 @@ System clipboard integration across platforms.
 
 ## Configuration
 
+Clipboard behavior settings.
+
 ### Sync with Unnamed Register
 
 When `clipboard = "unnamedplus"` is set, all yank/delete/change operations use `"+` as the default register instead of `""`. This makes `y`, `d`, `p` work directly with the system clipboard.

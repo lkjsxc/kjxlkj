@@ -8,6 +8,8 @@ Autocommands register handlers that run when specific editor events occur. They 
 
 ## Events (normative)
 
+All supported autocommand event names.
+
 ### Buffer Events
 
 | Event | Trigger |
@@ -73,6 +75,8 @@ Autocommands can filter by file pattern (glob):
 Autocommands are organized into groups. Clearing a group removes all its handlers, preventing duplicates on config reload. Groups are declared with a name and their handlers are listed inside.
 
 ## Common Patterns
+
+Frequently used autocommand patterns.
 
 ### Format on Save
 

@@ -17,6 +17,8 @@ Find a character on the current line and move the cursor to it.
 
 ## Behavior
 
+Detailed semantics of character-find motions.
+
 ### Scope
 
 Character find motions operate within the current line only. They do not cross line boundaries.

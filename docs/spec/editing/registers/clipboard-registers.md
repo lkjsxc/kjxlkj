@@ -13,6 +13,8 @@ On macOS and Windows, both registers reference the same system clipboard.
 
 ## Platform Behavior
 
+Platform-specific clipboard integration.
+
 ### Linux (X11/Wayland)
 
 `"+` uses the system clipboard (via `xclip`/`xsel` or `wl-copy`/`wl-paste`). `"*` uses the X11 primary selection.

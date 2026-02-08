@@ -35,6 +35,8 @@ The currently implemented surface is tracked in [docs/reference/CONFORMANCE.md](
 
 ## How to Read (Recommended)
 
+Suggested reading order for understanding the specification.
+
 ### Reading order
 
 | Order | Document | Purpose |

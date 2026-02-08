@@ -30,6 +30,8 @@ The expression has access to:
 
 ## Common Patterns
 
+Frequently used expression mapping patterns.
+
 ### Smart Tab
 
 Map Tab to trigger completion if the popup menu is visible, otherwise insert a literal Tab:

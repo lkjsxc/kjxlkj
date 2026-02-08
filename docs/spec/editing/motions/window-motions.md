@@ -14,6 +14,8 @@ Navigate cursor to screen positions within the visible window area.
 
 ## Behavior rules
 
+Detailed semantics for each window motion.
+
 ### H (High)
 
 - Without count: move cursor to first visible line (respecting `scrolloff`).

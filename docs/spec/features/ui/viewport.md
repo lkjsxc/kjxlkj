@@ -87,6 +87,8 @@ When `wrap = false`, lines extend beyond `text_cols` and the viewport scrolls ho
 
 ## Cursor-follow algorithm (normative)
 
+How the viewport tracks the cursor position.
+
 ### Vertical follow (no-wrap)
 
 Given focused cursor line `c_line` and viewport `top_line`:

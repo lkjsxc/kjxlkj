@@ -13,6 +13,8 @@ If this repository is in a docs-only baseline (no `src/`/Cargo workspace), recon
 
 ## Installation
 
+How to obtain and build the editor.
+
 ### Pre-built binaries
 
 This repository does not currently publish tagged releases. Build from source.
@@ -26,6 +28,8 @@ This repository does not currently publish tagged releases. Build from source.
 Docker-based usage is a target derived artifact; if `Dockerfile` exists, see [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md).
 
 ## First steps
+
+Getting started after installation.
 
 ### Opening a file
 

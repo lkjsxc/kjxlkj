@@ -23,6 +23,8 @@ Text objects are resolved by the mode handler during operator-pending mode. The 
 
 ## Categories
 
+Text object types organized by delimiter style.
+
 ### Word Objects
 
 `iw` / `aw` — word boundaries follow Unicode word segmentation (UAX #29). CJK characters are each a single word.

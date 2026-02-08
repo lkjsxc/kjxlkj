@@ -20,6 +20,8 @@ Configuration for viewport follow and scroll behavior.
 
 ## Semantics
 
+Detailed scrolling behavior specifications.
+
 ### Cursor-follow margins
 
 - The viewport MUST apply margins as defined in `/docs/spec/features/ui/viewport.md`.

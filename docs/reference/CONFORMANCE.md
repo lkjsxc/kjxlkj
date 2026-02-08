@@ -41,6 +41,8 @@ If any item is missing, the claim MUST be recorded as `partial` or `scaffold-onl
 
 ## Conformance documents (current surface)
 
+All spec documents that define conformance requirements.
+
 ### Modes and keybindings
 
 | Document | Content |

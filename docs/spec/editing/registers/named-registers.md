@@ -11,6 +11,8 @@ Alphabetic registers (a-z, A-Z) for storing and retrieving text.
 
 ## Usage
 
+How to use named registers in editing operations.
+
 ### Yank to Register
 
 `"ay{motion}` yanks the text described by `{motion}` into register `a`.
