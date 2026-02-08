@@ -77,6 +77,62 @@ impl EditorState {
         );
     }
 
+    /// Update visual selection marks `<` and `>`.
+    pub(crate) fn update_visual_marks(
+        &mut self,
+        start_line: usize,
+        start_col: usize,
+        end_line: usize,
+        end_col: usize,
+    ) {
+        let bid = match self.active_buffer_id() {
+            Some(b) => b,
+            None => return,
+        };
+        self.marks.insert(
+            '<',
+            MarkEntry {
+                buffer: bid,
+                cursor: CursorPosition::new(
+                    start_line, start_col,
+                ),
+            },
+        );
+        self.marks.insert(
+            '>',
+            MarkEntry {
+                buffer: bid,
+                cursor: CursorPosition::new(
+                    end_line, end_col,
+                ),
+            },
+        );
+    }
+
+    /// Update the backtick mark (position before last jump).
+    pub(crate) fn update_jump_mark(&mut self) {
+        let bid = match self.active_buffer_id() {
+            Some(b) => b,
+            None => return,
+        };
+        let (line, col) = self.cursor_pos();
+        self.marks.insert(
+            '`',
+            MarkEntry {
+                buffer: bid,
+                cursor: CursorPosition::new(line, col),
+            },
+        );
+        // Also set ' (single quote) to same line
+        self.marks.insert(
+            '\'',
+            MarkEntry {
+                buffer: bid,
+                cursor: CursorPosition::new(line, col),
+            },
+        );
+    }
+
     /// Populate read-only registers with dynamic values.
     pub(crate) fn populate_readonly_registers(
         &mut self,

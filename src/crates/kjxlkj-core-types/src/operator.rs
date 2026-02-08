@@ -27,6 +27,20 @@ pub enum Operator {
     Uppercase,
 }
 
+/// Forced motion type: pressed between operator and motion.
+///
+/// `v` forces characterwise, `V` forces linewise,
+/// `Ctrl-v` forces blockwise.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ForceMotionType {
+    /// `v` between operator and motion.
+    Characterwise,
+    /// `V` between operator and motion.
+    Linewise,
+    /// `Ctrl-V` between operator and motion.
+    Blockwise,
+}
+
 impl Operator {
     /// Whether this operator deletes text from the buffer.
     pub fn is_destructive(&self) -> bool {

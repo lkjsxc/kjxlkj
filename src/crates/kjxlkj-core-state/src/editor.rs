@@ -9,7 +9,7 @@ use kjxlkj_core_mode::{
     NormalModeState, VisualModeState,
 };
 use kjxlkj_core_types::{
-    Action, BufferId, Key, Mode, Operator,
+    Action, BufferId, ForceMotionType, Key, Mode, Operator,
     TextObjectScope, WindowId,
 };
 
@@ -75,8 +75,12 @@ pub struct EditorState {
     pub change_list_pos: usize,
     /// Pending text object scope in operator-pending mode.
     pub op_text_obj_pending: Option<(Operator, TextObjectScope)>,
+    /// Forced motion type in operator-pending mode.
+    pub op_force_motion: Option<ForceMotionType>,
     /// Terminal escape pending: after Ctrl-\ waiting for Ctrl-n.
     pub terminal_escape_pending: bool,
+    /// Macro playback depth for recursion limit.
+    pub macro_depth: u32,
 }
 
 impl EditorState {
@@ -123,7 +127,9 @@ impl EditorState {
             change_list: Vec::new(),
             change_list_pos: 0,
             op_text_obj_pending: None,
+            op_force_motion: None,
             terminal_escape_pending: false,
+            macro_depth: 0,
         }
     }
 

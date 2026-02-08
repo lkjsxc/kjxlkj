@@ -5,7 +5,8 @@
 //! key is resolved here to produce an action.
 
 use kjxlkj_core_types::{
-    Action, Key, KeyCode, Motion, Mode, Operator,
+    Action, ForceMotionType, Key, KeyCode, KeyModifiers,
+    Motion, Mode, Operator,
     TextObject, TextObjectKind, TextObjectScope,
 };
 
@@ -21,10 +22,39 @@ impl EditorState {
         match &key.code {
             KeyCode::Esc => {
                 self.mode = Mode::Normal;
+                self.op_force_motion = None;
                 Some(Action::Nop)
             }
+            // Force motion modifiers: v/V/Ctrl-v
+            KeyCode::Char('v')
+                if key.modifiers == KeyModifiers::NONE
+                && self.op_text_obj_pending.is_none() =>
+            {
+                self.op_force_motion =
+                    Some(ForceMotionType::Characterwise);
+                None // Stay in OperatorPending
+            }
+            KeyCode::Char('V')
+                if key.modifiers == KeyModifiers::NONE
+                && self.op_text_obj_pending.is_none() =>
+            {
+                self.op_force_motion =
+                    Some(ForceMotionType::Linewise);
+                None
+            }
+            KeyCode::Char('v')
+                if key.modifiers.contains(KeyModifiers::CTRL)
+                && self.op_text_obj_pending.is_none() =>
+            {
+                self.op_force_motion =
+                    Some(ForceMotionType::Blockwise);
+                None
+            }
             // Text object prefix: wait for next key
-            KeyCode::Char('i') | KeyCode::Char('a') => {
+            KeyCode::Char('i') | KeyCode::Char('a')
+                if self.op_text_obj_pending.is_none()
+                && key.modifiers == KeyModifiers::NONE =>
+            {
                 let scope = if key.code == KeyCode::Char('i') {
                     TextObjectScope::Inner
                 } else {
@@ -38,10 +68,12 @@ impl EditorState {
                 if let Some((pending_op, scope)) = self.op_text_obj_pending.take() {
                     let action = self.resolve_text_obj_key(key, pending_op, scope);
                     self.mode = Mode::Normal;
+                    self.op_force_motion = None;
                     return action;
                 }
                 let action = self.resolve_op_key(key, op);
                 self.mode = Mode::Normal;
+                self.op_force_motion = None;
                 action
             }
         }

@@ -39,6 +39,20 @@ impl EditorState {
                 if self.mode == Mode::Insert {
                     self.update_caret_mark();
                 }
+                // Save visual marks when leaving visual mode
+                if let Mode::Visual(_) = self.mode {
+                    if let Some(vs) = &self.visual_state {
+                        let (al, ac) = vs.anchor;
+                        let (cl, cc) = self.cursor_pos();
+                        let (sl, sc, el, ec) = if al < cl
+                            || (al == cl && ac <= cc) {
+                            (al, ac, cl, cc)
+                        } else {
+                            (cl, cc, al, ac)
+                        };
+                        self.update_visual_marks(sl, sc, el, ec);
+                    }
+                }
                 self.mode = Mode::Normal;
                 self.visual_state = None;
                 self.command_state = None;

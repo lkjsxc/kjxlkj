@@ -179,6 +179,18 @@ pub enum Action {
     VglobalCommand(String),
     /// Sort lines: `:sort`.
     SortLines(String),
+    /// Range delete: `:1,5d`.
+    RangeDelete(String),
+    /// Range yank: `:1,5y`.
+    RangeYank(String),
+    /// Range copy: `:1,5t10`.
+    RangeCopy(String),
+    /// Range move: `:1,5m10`.
+    RangeMove(String),
+    /// Range normal: `:1,5normal @a`.
+    RangeNormal(String),
+    /// Read file into buffer: `:r file`.
+    ReadFile(String),
     /// No operation (sentinel / default).
     Nop,
 }

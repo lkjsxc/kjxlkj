@@ -27,7 +27,7 @@ pub use ids::{BufferId, TabId, TerminalId, WindowId};
 pub use key::{Key, KeyCode, KeyModifiers};
 pub use mode::{CommandKind, Mode, VisualKind};
 pub use motion::{Direction, Motion, ScrollDirection};
-pub use operator::Operator;
+pub use operator::{ForceMotionType, Operator};
 pub use register::{Register, RegisterName};
 pub use service::{ServiceRequest, ServiceResponse};
 pub use text_object::{TextObject, TextObjectKind, TextObjectScope};

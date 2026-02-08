@@ -59,6 +59,12 @@ impl EditorState {
             Action::GlobalCommand(args) => self.do_global_command(&args),
             Action::VglobalCommand(args) => self.do_vglobal_command(&args),
             Action::SortLines(args) => self.do_sort_lines(&args),
+            Action::RangeDelete(args) => self.dispatch_range_delete(&args),
+            Action::RangeYank(args) => self.dispatch_range_yank(&args),
+            Action::RangeCopy(args) => self.dispatch_range_copy(&args),
+            Action::RangeMove(args) => self.dispatch_range_move(&args),
+            Action::RangeNormal(args) => self.dispatch_range_normal(&args),
+            Action::ReadFile(path) => self.do_read_file(&path),
             Action::FocusGained | Action::FocusLost => {}
             Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}

@@ -76,11 +76,42 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
         "g" | "global" => Some(Action::GlobalCommand(args.to_string())),
         "v" | "vglobal" => Some(Action::VglobalCommand(args.to_string())),
         "sort" => Some(Action::SortLines(args.to_string())),
+        "d" | "delete" => {
+            Some(Action::RangeDelete(
+                full_with_range(cmd),
+            ))
+        }
+        "y" | "yank" => {
+            Some(Action::RangeYank(
+                full_with_range(cmd),
+            ))
+        }
+        "t" | "copy" => {
+            Some(Action::RangeCopy(
+                full_with_range(cmd),
+            ))
+        }
+        "m" | "move" => {
+            Some(Action::RangeMove(
+                full_with_range(cmd),
+            ))
+        }
+        "normal" | "norm" => {
+            Some(Action::RangeNormal(
+                full_with_range(cmd),
+            ))
+        }
         "set" => Some(Action::Nop),
         "reg" | "registers" => Some(Action::Nop),
         "marks" => Some(Action::Nop),
         "history" => Some(Action::Nop),
-        "read" | "r" => Some(Action::Nop),
+        "read" | "r" => {
+            if !args.is_empty() {
+                Some(Action::ReadFile(args.to_string()))
+            } else {
+                Some(Action::Nop)
+            }
+        }
         "source" | "so" => Some(Action::Nop),
         "new" => Some(Action::SplitHorizontal),
         "vnew" => Some(Action::SplitVertical),
@@ -108,11 +139,59 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
     }
 }
 
+/// Return the full command string (preserving range prefix).
+fn full_with_range(cmd: &str) -> String {
+    cmd.to_string()
+}
+
 fn split_command(cmd: &str) -> (String, &str) {
     let cmd = cmd.trim();
 
-    // Handle line-number-only commands.
-    if cmd.chars().next().map_or(false, |c| c.is_ascii_digit()) {
+    // Skip range prefix: digits, commas, dots, $, %, '
+    // to find the actual command name.
+    let mut pos = 0;
+    let bytes = cmd.as_bytes();
+    while pos < bytes.len() {
+        let b = bytes[pos];
+        if b == b'%'
+            || b == b'.'
+            || b == b'$'
+            || b == b','
+            || b == b'\''
+            || b.is_ascii_digit()
+        {
+            pos += 1;
+        } else {
+            break;
+        }
+    }
+
+    // If we skipped some range prefix and there's still
+    // an alpha command name, extract it.
+    let range_end = pos;
+    if range_end > 0 && range_end < cmd.len() {
+        let rest = &cmd[range_end..];
+        let name_end = rest
+            .find(|c: char| {
+                c.is_whitespace() || c == '/'
+            })
+            .unwrap_or(rest.len());
+        let name = &rest[..name_end];
+        if !name.is_empty()
+            && name.chars().next().unwrap().is_alphabetic()
+        {
+            let args = rest[name_end..].trim_start();
+            return (name.to_string(), args);
+        }
+    }
+
+    // Handle line-number-only commands (no alpha after).
+    if cmd
+        .chars()
+        .next()
+        .map_or(false, |c| c.is_ascii_digit())
+        && range_end == cmd.len()
+    {
         let end = cmd
             .find(|c: char| !c.is_ascii_digit())
             .unwrap_or(cmd.len());
@@ -120,7 +199,7 @@ fn split_command(cmd: &str) -> (String, &str) {
         return (num.to_string(), rest.trim());
     }
 
-    // Find end of command name: whitespace or `/` (for :s/pat/).
+    // Find end of command name: whitespace or `/`.
     let name_end = cmd
         .find(|c: char| c.is_whitespace() || c == '/')
         .unwrap_or(cmd.len());
@@ -176,5 +255,23 @@ mod tests {
     #[test]
     fn unknown_command() {
         assert!(dispatch_command("foobar").is_none());
+    }
+
+    #[test]
+    fn range_delete_command() {
+        let action = dispatch_command("1,5d");
+        assert!(matches!(
+            action,
+            Some(Action::RangeDelete(_))
+        ));
+    }
+
+    #[test]
+    fn range_normal_command() {
+        let action = dispatch_command("%normal @a");
+        assert!(matches!(
+            action,
+            Some(Action::RangeNormal(_))
+        ));
     }
 }

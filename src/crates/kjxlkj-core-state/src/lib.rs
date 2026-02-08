@@ -25,6 +25,8 @@ mod editor_macros;
 mod editor_op_resolve;
 mod editor_marks;
 mod editor_operators;
+mod editor_range_cmds;
+mod editor_range_dispatch;
 mod editor_scroll;
 mod editor_search_ops;
 mod editor_snapshot;

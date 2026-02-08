@@ -45,11 +45,16 @@ impl EditorState {
     }
 
     /// Play a macro from register `reg`, `count` times.
+    ///
+    /// Supports recursive macros with a depth limit of 1000.
     pub(crate) fn do_play_macro(
         &mut self,
         reg: char,
         count: u32,
     ) {
+        if self.macro_depth >= 1000 {
+            return; // Recursion depth limit reached
+        }
         let name = RegisterName::Named(reg);
         let content = match self.register_file.get(name) {
             Some(r) => r.content.clone(),
@@ -58,11 +63,18 @@ impl EditorState {
         self.register_file.set_last_macro(reg);
 
         let keys = string_to_keys(&content);
+        self.macro_depth += 1;
         for _ in 0..count {
             for key in &keys {
                 self.dispatch_key(key.clone());
+                // Check if depth was exceeded during recursion
+                if self.macro_depth > 1000 {
+                    self.macro_depth -= 1;
+                    return;
+                }
             }
         }
+        self.macro_depth -= 1;
     }
 }
 
