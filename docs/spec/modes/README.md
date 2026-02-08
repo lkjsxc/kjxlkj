@@ -10,12 +10,18 @@ stateDiagram-v2
     [*] --> Normal
     Normal --> Insert: i, a, o, O, A, I
     Normal --> Visual: v, V, Ctrl-v
-    Normal --> Command: :, /, ?
+    Normal --> Command: colon, /, ?
     Normal --> Replace: R
+    Normal --> OperatorPending: d, c, y, >, <, =
+    Normal --> TerminalInsert: i (terminal window)
     Insert --> Normal: Esc
+    Insert --> InsertNormal: Ctrl-O
+    InsertNormal --> Insert: after command
     Visual --> Normal: Esc, operator
     Command --> Normal: Esc, Enter
     Replace --> Normal: Esc
+    OperatorPending --> Normal: motion/Esc
+    TerminalInsert --> Normal: Ctrl-\ Ctrl-n
 ```
 
 ## Directory Structure
@@ -38,12 +44,15 @@ stateDiagram-v2
 ## Required Modes
 
 | Mode | Purpose |
-|------|---------|
+|---|---|
 | Normal | Navigation, operators, composition |
 | Insert | Text entry, completion |
-| Visual | Selection (char/line/block) |
-| Command | Ex commands and search |
+| Visual(Char/Line/Block) | Selection with three sub-modes |
+| Command(Ex/Search) | Ex commands (`:`) and search (`/`, `?`) |
 | Replace | Overwrite semantics |
+| OperatorPending | Awaiting motion after operator key (d, c, y, etc.) |
+| TerminalInsert | Forwarding input to PTY in terminal windows |
+| InsertNormal | Single normal command via `Ctrl-O` from insert |
 
 ## Cross-cutting Rules
 
