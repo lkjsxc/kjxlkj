@@ -1,104 +1,63 @@
 # Insert Mode Mappings
 
-Custom key bindings in insert mode.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
 
-## Overview
+Custom key bindings active in Insert mode.
 
-Define custom keys for actions
-while in insert mode.
+## Mapping definition (normative)
 
-## Basic Syntax
+Insert-mode mappings are defined with the `imap` (recursive) or `inoremap` (non-recursive) command:
 
-### TOML Configuration
+| Command | Description |
+|---|---|
+| `:imap {lhs} {rhs}` | Map `{lhs}` to `{rhs}` in Insert mode (recursive) |
+| `:inoremap {lhs} {rhs}` | Map `{lhs}` to `{rhs}` in Insert mode (non-recursive) |
+| `:iunmap {lhs}` | Remove Insert-mode mapping for `{lhs}` |
+| `:imapclear` | Remove all Insert-mode mappings |
 
+## TOML configuration equivalent
 
-### Command
+Mappings can also be set in `config.toml` under `[mappings.insert]`:
 
+| TOML key | Value | Equivalent command |
+|---|---|---|
+| `"jk"` | `"<Esc>"` | `:inoremap jk <Esc>` |
+| `"<C-s>"` | `":w<CR>"` | `:inoremap <C-s> <Esc>:w<CR>a` |
 
-## Common Mappings
+## Key notation in lhs
 
-### Save
+Insert-mode mappings support the same key notation as Normal mode:
 
+| Notation | Key |
+|---|---|
+| `<C-x>` | Ctrl + x |
+| `<M-x>` | Alt + x |
+| `<S-Tab>` | Shift + Tab |
+| `<CR>` | Enter |
+| `<BS>` | Backspace |
+| `<Esc>` | Escape |
 
-### Undo/Redo
+## Mapping vs literal input
 
+When a mapping's `{lhs}` is a prefix of ongoing input, the keybinding resolver waits for `timeoutlen` milliseconds before deciding. See [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md).
 
-### Quick Escape
+## Interaction with IME
 
+During IME composition (e.g., Japanese input), all Insert-mode mappings MUST be suspended. Only after the IME commits or cancels does mapping resolution resume.
 
-## Movement Mappings
+## Buffer-local mappings
 
-### Emacs Style
+The `<buffer>` flag restricts a mapping to the current buffer:
 
+| Command | Scope |
+|---|---|
+| `:inoremap <buffer> {lhs} {rhs}` | Current buffer only |
 
-### Word Movement
+Buffer-local mappings take priority over global mappings for the same `{lhs}`.
 
+## Related
 
-## Deletion Mappings
-
-### Custom Delete
-
-
-## Paste Mappings
-
-### Quick Paste
-
-
-## Mode Switching
-
-### Quick Normal
-
-
-### Quick Command
-
-
-## Completion Mappings
-
-### Custom Triggers
-
-
-### Accept/Cancel
-
-
-## Snippet Mappings
-
-### Navigation
-
-
-### Expand
-
-
-## Expression Mappings
-
-### Dynamic Content
-
-
-### Complex
-
-
-## Buffer Mappings
-
-### Buffer Local
-
-
-## Special Keys
-
-### Ctrl Combinations
-
-
-### Alt Combinations
-
-
-### Function Keys
-
-
-## Conditional Mappings
-
-### Based on Context
-
-
-### Based on Position
-
-
-## Mapping Modes
+- Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
+- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- Insert-mode overview: [/docs/spec/modes/insert/insert.md](/docs/spec/modes/insert/insert.md)
 
