@@ -7,6 +7,9 @@ mod buffer;
 #[cfg(test)]
 mod buffer_tests;
 mod command_dispatch;
+mod command_dispatch_ext;
+mod command_dispatch_tabs;
+mod command_parse;
 pub(crate) mod completion;
 mod editor;
 mod editor_actions;
