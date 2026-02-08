@@ -1,121 +1,72 @@
 # Mark Types
 
-Different categories of marks for position tracking.
+Back: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
 
-## Overview
+Classification of all mark types and their storage scope.
 
-| Type | Range | Scope | Persistence |
-|------|-------|-------|-------------|
-| Lowercase (a-z) | Local | Buffer only | Session |
-| Uppercase (A-Z) | Global | Cross-buffer | Persistent |
-| Numbered (0-9) | Global | Jump history | Persistent |
-| Special | Various | Context-dependent | Session |
+## Local marks (lowercase)
 
-## Lowercase Marks (a-z)
+| Range | Scope | Description |
+|---|---|---|
+| `a` - `z` | Buffer-local | User-set marks, one per letter per buffer |
 
-Local to current buffer only.
+Local marks are valid only within the buffer where they were set. They persist across sessions if session persistence is enabled.
 
-### Setting
+## Global marks (uppercase)
 
+| Range | Scope | Description |
+|---|---|---|
+| `A` - `Z` | Global | User-set marks, one per letter across all buffers |
 
-### Jumping
+Global marks remember both the file path and the position. Jumping to a global mark opens the associated file.
 
+## Numbered marks
 
-### Properties
+| Range | Scope | Description |
+|---|---|---|
+| `0` - `9` | Global | Automatically set by the editor |
 
-- 26 marks per buffer (a-z)
-- Cleared when buffer is closed
-- Not visible in other buffers
-- Line and column tracked
+`0` stores the position where the editor last exited. `1`-`9` store the previous exit positions (shifted like numbered registers).
 
-## Uppercase Marks (A-Z)
-
-Global marks accessible from any buffer.
-
-### Setting
-
-
-### Jumping
-
-
-### Properties
-
-- 26 global marks (A-Z)
-- Remembered across buffers
-- Persisted across sessions
-- Include file path
-
-## Numbered Marks (0-9)
-
-Special global marks for file history.
-
-| Mark | Content |
-|------|---------|
-| `'0` | Last file edited (before exit) |
-| `'1` | Second to last file |
-| `'2` | Third to last file |
-| ... | ... |
-| `'9` | Ninth to last file |
-
-### Usage
-
-
-### Properties
-
-- Automatically set on exit
-- Rotate when new files added
-- Useful for "continue where I left off"
-
-## Special Marks
+## Special marks
 
 | Mark | Description |
-|------|-------------|
-| `'<` | Start of last visual selection |
-| `'>` | End of last visual selection |
-| `'[` | Start of last change/yank |
-| `']` | End of last change/yank |
-| `'^` | Last insert mode position |
-| `'.` | Last change position |
-| `''` | Previous position (before jump) |
-| `` ` `` | Same as `''` (backtick version) |
-| `'"` | Position when last editing buffer |
+|---|---|
+| `` ` `` | Position before the last jump |
+| `'` | Line of position before the last jump |
+| `.` | Position of the last change |
+| `"` | Position when last exiting the buffer |
+| `^` | Position where Insert mode was last stopped |
+| `[` | Start of the last changed or yanked text |
+| `]` | End of the last changed or yanked text |
+| `<` | Start of the last visual selection |
+| `>` | End of the last visual selection |
 
-See [special-marks.md](special-marks.md) for details.
+## Automatic marks
 
-## Mark Storage
+Automatic marks are set by the editor without user action. They cannot be set explicitly by the user.
 
-### In Memory
+## Mark validity
 
+A mark becomes invalid when:
 
-### Persistence
+- The line it points to is deleted
+- The buffer is unloaded (for local marks)
+- The file is deleted (for global marks)
 
+Invalid marks are silently removed. Jumping to an invalid mark produces an error.
 
-## Viewing Marks
+## Storage
 
+| Mark type | Stored in |
+|---|---|
+| Local marks | Buffer state (core-owned) |
+| Global marks | Editor state (core-owned) |
+| Special marks | Automatically maintained by core |
 
-## Mark Lifetime
+## Related
 
-| Type | Created | Deleted |
-|------|---------|---------|
-| Lowercase | User sets | Buffer close or :delmarks |
-| Uppercase | User sets | :delmarks or never |
-| Numbered | On exit | Automatically rotated |
-| Special | Automatically | On new operation |
-
-## Configuration
-
-
-## Jump Behavior
-
-| Key | Movement |
-|-----|----------|
-| `'m` | First non-blank of mark line |
-| `` `m `` | Exact column of mark |
-| `g'm` | Without adding to jumplist |
-| `` g`m `` | Exact, no jumplist |
-
-## Mark vs Cursor Position
-
-
-## API Reference
-
+- Automatic marks: [/docs/spec/editing/marks/automatic-marks.md](/docs/spec/editing/marks/automatic-marks.md)
+- Special marks: [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
+- Jump marks: [/docs/spec/editing/marks/jump-marks.md](/docs/spec/editing/marks/jump-marks.md)
+- Mark persistence: [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)

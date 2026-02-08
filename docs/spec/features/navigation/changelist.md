@@ -1,109 +1,61 @@
 # Change List
 
-Navigate through edit positions.
+Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
+
+Navigate through positions where changes were made in the buffer.
 
 ## Overview
 
-The change list tracks positions where edits were
-made, allowing navigation through edit history.
+The change list records the cursor position each time a text modification occurs. This allows jumping between edit locations using `g;` and `g,`.
 
 ## Navigation
 
 | Key | Action |
-|-----|--------|
-| `g;` | Go to older change |
-| `g,` | Go to newer change |
+|---|---|
+| `g;` | Jump to the previous (older) change position |
+| `g,` | Jump to the next (newer) change position |
 
-## What Creates Entries
+## Change list contents
 
-### Any Edit
+Each entry stores:
 
-- Insert text
-- Delete text
-- Change text
-- Paste
-- Format
+| Field | Type | Description |
+|---|---|---|
+| `line` | integer | Line number where the change occurred |
+| `col` | integer | Column (grapheme offset) of the change |
 
-### Each Undo Block
+## Capacity
 
-One change list entry per undo block.
+| Setting | Default | Description |
+|---|---|---|
+| Change list size | 100 | Maximum number of entries per buffer |
 
-## Viewing Change List
+When the list is full, the oldest entry is removed.
 
-### Command
+## Recording changes
 
+A new entry is added to the change list whenever:
 
-### Display
+- Text is inserted (Insert mode input)
+- Text is deleted (operator `d`, `x`, etc.)
+- Text is changed (operator `c`)
+- A substitution is performed (`:s`)
+- An undo or redo operation occurs
 
+Multiple adjacent edits in Insert mode (continuous typing) are grouped into a single change list entry at the position where typing began.
 
-## Example Workflow
+## Relationship to marks
 
+The `'.` and `` `. `` marks point to the position of the last change. The change list provides a full history, whereas these marks only point to the most recent change.
 
-## Cross-File
+## Command
 
-Change list includes edits in all buffers:
+| Command | Description |
+|---|---|
+| `:changes` | Display the change list for the current buffer |
 
+## Related
 
-Navigation crosses files.
-
-## Configuration
-
-
-## Marks
-
-### Special Marks
-
-| Mark | Description |
-|------|-------------|
-| `'.` | Last change position |
-| `` `. `` | Last change (exact) |
-| `'^` | Last insert position |
-| `` `^ `` | Last insert (exact) |
-
-## Comparison
-
-### vs Jump List
-
-| Feature | Jump List | Change List |
-|---------|-----------|-------------|
-| Purpose | Navigation | Edits |
-| Trigger | Large moves | Changes |
-| Keys | `<C-o>`/`<C-i>` | `g;`/`g,` |
-
-### vs Undo
-
-| Feature | Change List | Undo |
-|---------|-------------|------|
-| Purpose | Position | Content |
-| Action | Move cursor | Revert |
-| Keys | `g;`/`g,` | `u`/`<C-r>` |
-
-## Use Cases
-
-### Return to Edit
-
-After viewing code:
-
-
-### Review Edits
-
-
-## Tips
-
-1. Use after exploring code
-2. Combine with undo for review
-3. Check `:changes` for overview
-4. Works across files
-
-## Commands
-
-
-## Integration
-
-### With Sessions
-
-Change list persisted in sessions.
-
-### With Undo Tree
-
-Navigate changes without undoing.
+- Jump list: [/docs/spec/features/navigation/jumplist.md](/docs/spec/features/navigation/jumplist.md)
+- Marks: [/docs/spec/features/navigation/marks.md](/docs/spec/features/navigation/marks.md)
+- Change list (editing spec): [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)

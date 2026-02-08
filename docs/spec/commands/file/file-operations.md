@@ -1,174 +1,78 @@
 # File Operations
 
-Saving, renaming, and managing files.
+Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
 
-## Overview
+Core file-related ex commands for opening, reading, and managing files.
 
-Commands for file operations beyond basic read/write.
-Includes file identity changes, renaming, copying,
-deleting, encoding management, and file metadata queries.
+## Open file
 
-## Save As
+| Command | Description |
+|---|---|
+| `:e[dit] {file}` | Open `{file}` in current window |
+| `:e[dit]` | Re-read current file from disk |
+| `:e[dit]!` | Re-read current file, discarding changes |
+| `:ene[w]` | Open a new empty buffer |
 
-### New Name
+## Read file
 
-`:saveas {path}` or `:sav {path}` writes the buffer to
-a new file and switches the buffer to that file.
+| Command | Description |
+|---|---|
+| `:r[ead] {file}` | Insert contents of `{file}` below cursor |
+| `:r[ead] !{cmd}` | Insert output of shell command below cursor |
+| `:{n}r {file}` | Insert below line `{n}` |
 
-### Behavior
+## Save as
 
-- Writes buffer content to the new path
-- Changes the current buffer name to the new path
-- The original file is unchanged on disk
-- Marks the buffer as unmodified
+| Command | Description |
+|---|---|
+| `:sav[eas] {file}` | Save buffer to `{file}` and switch to it |
+| `:sav[eas]! {file}` | Force save-as |
 
-## File Command
+## File information
 
-### Change Name
+| Command | Description |
+|---|---|
+| `:f[ile]` | Show current file name, modification status, position |
+| `:f[ile] {name}` | Set the buffer file name |
+| `Ctrl-g` | Show file info in statusline |
 
-`:file {name}` changes the buffer name without writing.
-The buffer is marked as modified (since the name changed
-but no write occurred to the new name).
+## File encoding
 
-### No Write
+| Command | Description |
+|---|---|
+| `:set fileencoding={enc}` | Set encoding for current buffer |
+| `:set fileformat={ff}` | Set line ending format (`unix`, `dos`) |
 
-Only changes the in-memory file association.
-Use `:w` to save to the new name.
+## New from template
 
-### Clear Name
+| Command | Description |
+|---|---|
+| `:e {file}` | If file doesn't exist, create a new buffer with that path |
 
-`:file` with no argument displays the current file info.
-`:0file` clears the file name, making the buffer unnamed.
+## FS service interaction
 
-## Move/Rename
+All file operations dispatch to the FS service:
 
-### Using Shell
+| Operation | FS service message |
+|---|---|
+| `:e {file}` | `FileRead { path }` |
+| `:w` | `FileWrite { path, content }` |
+| `:r {file}` | `FileRead { path }` (content inserted into buffer) |
+| `:sav {file}` | `FileWrite { path, content }` then buffer rename |
 
-`:!mv {old} {new}` renames the file on disk.
-Then `:e {new}` to reopen. Or use the built-in:
+The core task sends the message and awaits the response asynchronously.
 
-### Rename Function
+## Error handling
 
-`:Rename {newname}` (built-in command) renames the file
-on disk, updates the buffer name, and updates any
-open references. Accepts a bare filename (stays in same
-directory) or a full path.
+| Error | Behavior |
+|---|---|
+| File not found (`:e`) | Create new empty buffer with the path |
+| Permission denied | Error notification |
+| Path is directory | Error notification |
+| Binary file | Warning, open with `binary` option set |
 
-### Script Method
+## Related
 
-Alternative: `:saveas {new}` then `:!rm {old}`.
-
-## Copy File
-
-### To New Location
-
-`:w {path}` writes current buffer to a new file.
-The buffer continues to be associated with the original file.
-
-### Range Copy
-
-`:{range}w {path}` writes only the specified line range.
-
-## Delete File
-
-### Shell Command
-
-`:!rm %` deletes the current file. The buffer remains
-open but the file no longer exists on disk.
-
-### With Confirmation
-
-`:Delete` (built-in command) deletes the current file
-after confirmation prompt, then closes the buffer.
-
-## File Information
-
-### Current File
-
-`:f` or `<C-g>` displays file information in the command line.
-
-### Output
-
-Shows: filename, modified flag, line count, percentage
-through file, cursor position.
-
-### Detailed Output
-
-`2<C-g>` shows the full absolute path.
-`g<C-g>` shows word count, character count, byte count.
-
-## Check Modified
-
-### Status
-
-`:set modified?` shows whether the buffer is modified.
-
-### Indicator
-
-The statusline shows `[+]` for modified buffers.
-The bufferline shows a dot or `[+]` indicator.
-
-## File Exists
-
-### Check
-
-The expression `filereadable("{path}")` returns 1 if the
-file exists and is readable, 0 otherwise.
-
-## File Paths
-
-### Current File
-
-`%` in commands expands to the current file path.
-`%:p` expands to the full absolute path.
-
-### Expand
-
-Path modifiers:
-
-| Modifier | Expansion |
-|----------|-----------|
-| `:p` | Full path |
-| `:h` | Head (directory) |
-| `:t` | Tail (filename) |
-| `:r` | Root (remove extension) |
-| `:e` | Extension only |
-| `:~` | Relative to home |
-| `:.` | Relative to cwd |
-
-## Create Backup
-
-### Manual
-
-`:w %.bak` writes a backup copy.
-
-### Auto Backup
-
-Set `backup = true` in config TOML to create backup files
-automatically before each write. Backup files are named
-`{file}~` and stored in the same directory (or in
-`backupdir` if configured).
-
-## File Encoding
-
-### Check
-
-`:set fileencoding?` shows the encoding of the current buffer.
-
-### Change
-
-`:set fileencoding=utf-8` changes the encoding.
-The file is re-encoded on next write.
-Supported: `utf-8`, `latin1`, `utf-16le`, `utf-16be`,
-`sjis`, `euc-jp`, `gbk`.
-
-## File Format
-
-### Check
-
-`:set fileformat?` shows the line ending format:
-`unix` (LF), `dos` (CRLF), or `mac` (CR).
-
-### Change
-
-`:set fileformat=unix` converts line endings on next write.
+- Write commands: [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
+- Directory commands: [/docs/spec/commands/file/directory-commands.md](/docs/spec/commands/file/directory-commands.md)
+- Encoding commands: [/docs/spec/commands/file/encoding-commands.md](/docs/spec/commands/file/encoding-commands.md)

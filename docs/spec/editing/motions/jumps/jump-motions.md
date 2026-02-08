@@ -1,181 +1,61 @@
 # Jump Motions
 
-Structural navigation commands.
+Back: [/docs/spec/editing/motions/jumps/README.md](/docs/spec/editing/motions/jumps/README.md)
+
+Motions that add entries to the jump list.
 
 ## Overview
 
-Jump to matching structures, sections, blocks,
-and diagnostic/VCS locations. These motions add
-entries to the jumplist.
+Jump motions are motions that move the cursor a large distance or to a different location in the buffer. They record the cursor position in the jump list before moving.
 
-## Percent Motion
+## Motions classified as jumps
 
-### Match Pairs
+| Motion | Description |
+|---|---|
+| `gg` | Go to first line (or line N with count) |
+| `G` | Go to last line (or line N with count) |
+| `/pattern` | Search forward |
+| `?pattern` | Search backward |
+| `n` | Next search match |
+| `N` | Previous search match |
+| `*` | Search word under cursor forward |
+| `#` | Search word under cursor backward |
+| `%` | Go to matching bracket |
+| `(` / `)` | Previous/next sentence |
+| `{` / `}` | Previous/next paragraph |
+| `H` / `M` / `L` | Top/middle/bottom of window |
+| `` ` ``mark | Jump to mark position |
+| `'`mark | Jump to mark line |
+| `Ctrl-o` | Go to older position in jump list |
+| `Ctrl-i` | Go to newer position in jump list |
+| `:N` | Go to line N |
+| `:e {file}` | Open a different file |
 
-`%` jumps to the matching bracket/brace/parenthesis.
-Cursor must be on a bracket character, or `%` scans
-forward to the first bracket on the current line.
+## Non-jump motions
 
-### Supported Pairs
+The following are NOT jump motions and do NOT update the jump list:
 
-| Open | Close | Name |
-|------|-------|------|
-| `(` | `)` | Parentheses |
-| `[` | `]` | Brackets |
-| `{` | `}` | Braces |
+| Motion | Description |
+|---|---|
+| `h` / `j` / `k` / `l` | Character/line movement |
+| `w` / `b` / `e` | Word movement |
+| `0` / `$` / `^` | Line boundary movement |
+| `f` / `t` / `F` / `T` | Character find |
 
-### Nesting
+## Jump list entry
 
-`%` correctly handles nested pairs. It tracks depth
-using a counter: increment on open, decrement on close.
+Before executing a jump motion, the current position `(buffer, line, column)` is pushed onto the jump list. This allows returning to the previous position with `Ctrl-o`.
 
-### With Operators
+## Cross-file jumps
 
-`d%` deletes from cursor to matching bracket (inclusive).
-`y%` yanks from cursor to matching bracket.
-`v%` selects from cursor to matching bracket.
+Jumps that change the current buffer (e.g., `:e`, `gd` to a definition in another file) add the previous buffer position to the jump list. `Ctrl-o` returns to the previous file.
 
-### matchpairs Option
+## Count with jumps
 
-The `matchpairs` option defines additional pairs.
-Default: `(:),{:},[:]`. Add `<:>` for angle brackets:
-`matchpairs = "(:),{:},[:]<:>"`.
+Most jump motions accept a count. For example, `3gg` goes to line 3. The count does not affect whether the motion is a jump.
 
-## Section Motions
+## Related
 
-### Section Start
-
-`[[` jumps backward to the previous `{` in column 1.
-`]]` jumps forward to the next `{` in column 1.
-
-### Section End
-
-`[]` jumps backward to the previous `}` in column 1.
-`][` jumps forward to the next `}` in column 1.
-
-### Definition
-
-A section boundary is a `{` or `}` that appears in
-column 1 (the first character of the line). This
-matches C-style function definitions.
-
-### With Tree-sitter
-
-When tree-sitter is available, section motions use
-AST-based function/class boundaries instead of the
-column-1 brace heuristic.
-
-## Method Motions
-
-### Jump to Method
-
-`]m` jumps to start of next method/function.
-`[m` jumps to start of previous method/function.
-`]M` jumps to end of next method/function.
-`[M` jumps to end of previous method/function.
-
-### With Tree-sitter
-
-Tree-sitter provides accurate method detection for
-all supported languages. Without tree-sitter, these
-fall back to section motions.
-
-## Block Motions
-
-### Unmatched Brackets
-
-`[{` jumps to the previous unmatched `{`.
-`]}` jumps to the next unmatched `}`.
-`[(` jumps to the previous unmatched `(`.
-`])` jumps to the next unmatched `)`.
-
-### Use Case
-
-Navigate to the enclosing scope from deep inside
-nested blocks. Useful for finding the start of a
-function or conditional block.
-
-## Comment Motions
-
-### Navigate Comments
-
-`]//` or `]/` jumps to the start of the next comment.
-`[//` or `[/` jumps to the start of the previous comment.
-
-Tree-sitter provides accurate comment detection.
-
-## Diff Motions
-
-### Navigate Changes
-
-`]c` jumps to the next diff/change hunk.
-`[c` jumps to the previous diff/change hunk.
-
-### In Diff Mode
-
-In diff mode, these navigate between diff hunks.
-In normal editing, they navigate between git-modified
-regions (gutter signs).
-
-## Error Motions
-
-### Navigate Diagnostics
-
-| Key | Action |
-|-----|--------|
-| `]d` | Next diagnostic (any severity) |
-| `[d` | Previous diagnostic |
-| `]e` | Next error |
-| `[e` | Previous error |
-| `]w` | Next warning |
-| `[w` | Previous warning |
-
-Diagnostics come from LSP, linters, or the compiler.
-
-## Git Hunk Motions
-
-### Navigate Git Changes
-
-`]g` jumps to the next git change hunk.
-`[g` jumps to the previous git change hunk.
-
-These use the gutter diff signs to identify changed,
-added, or deleted regions.
-
-## Quickfix Motions
-
-### Navigate Quickfix
-
-`]q` jumps to the next quickfix entry.
-`[q` jumps to the previous quickfix entry.
-`]Q` jumps to the last quickfix entry.
-`[Q` jumps to the first quickfix entry.
-
-### Location List
-
-`]l` jumps to the next location list entry.
-`[l` jumps to the previous location list entry.
-
-## Buffer Motions
-
-### Navigate Buffers
-
-`]b` jumps to the next buffer.
-`[b` jumps to the previous buffer.
-`]B` jumps to the last buffer.
-`[B` jumps to the first buffer.
-
-## Argument Motions
-
-### Navigate Args
-
-`]a` jumps to the next argument list file.
-`[a` jumps to the previous argument list file.
-
-## Tab Motions
-
-### Navigate Tabs
-
-`]t` or `gt` jumps to the next tab.
-`[t` or `gT` jumps to the previous tab.
-`{count}gt` jumps to tab number {count}.
+- Jump list: [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
+- Mark motions: [/docs/spec/editing/motions/jumps/mark-motions.md](/docs/spec/editing/motions/jumps/mark-motions.md)
+- Motions overview: [/docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md)

@@ -1,114 +1,64 @@
 # Automatic Marks
 
-Marks that are set automatically by the editor.
+Back: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
 
-## List of Automatic Marks
+Marks set automatically by the editor during editing operations.
 
-| Mark | Set When | Content |
-|------|----------|---------|
-| `'.` | After change | Position of last change |
-| `'^` | Insert exit | Last insert mode exit position |
-| `'[` | After change/yank/put | Start of affected text |
-| `']` | After change/yank/put | End of affected text |
-| `'<` | Visual exit | Start of selection |
-| `'>` | Visual exit | End of selection |
-| `''` | After jump | Previous cursor position |
-| `'"` | Buffer leave | Last position in buffer |
-| `'0`-`'9` | Editor exit | Recent file positions |
+## Change marks
 
-## Change Marks
+| Mark | Set when | Position |
+|---|---|---|
+| `.` | Any text change | Position of the last change |
+| `[` | Text change or yank | Start of the affected region |
+| `]` | Text change or yank | End of the affected region |
 
-### Last Change Position (`'.`)
+## Insert marks
 
+| Mark | Set when | Position |
+|---|---|---|
+| `^` | Leaving Insert mode | Cursor position when `Esc` was pressed |
 
-Updated by:
-- Insert mode changes
-- Delete operations
-- Substitute commands
-- Put/paste operations
+## Visual marks
 
-### Change Bounds (`'[` and `']`)
+| Mark | Set when | Position |
+|---|---|---|
+| `<` | Visual selection | Start of the last visual selection |
+| `>` | Visual selection | End of the last visual selection |
 
+## Jump marks
 
-### After Put
+| Mark | Set when | Position |
+|---|---|---|
+| `` ` `` | Jump motion | Cursor position before the jump |
 
+This mark is updated by every jump motion (see [/docs/spec/editing/motions/jumps/jump-motions.md](/docs/spec/editing/motions/jumps/jump-motions.md)).
 
-Useful pattern:
+## Buffer exit marks
 
-## Insert Marks
+| Mark | Set when | Position |
+|---|---|---|
+| `"` | Leaving a buffer | Cursor position when the buffer was last left |
 
-### Last Insert Position (`'^`)
+When returning to a buffer, jumping to `'"` restores the previous cursor position.
 
+## Sentence/paragraph marks
 
-## Visual Marks
+These are not stored as marks but are implicit positions computed on demand by the `(`, `)`, `{`, `}` motions.
 
-### Selection Bounds (`'<` and `'>`)
+## Updating behavior
 
+Automatic marks are updated every time their triggering event occurs. They cannot be set manually by the user with `:mark` or `m{letter}`. However, `` ` `` and `'` can be accessed like other marks using `` ` ` `` and `''`.
 
-## Jump Mark
+## Use cases
 
-### Previous Position (`''`)
+| Pattern | Effect |
+|---|---|
+| `` `. `` | Jump to position of last change |
+| `'[` / `']` | Select the range of the last change (useful for `gv`-like re-selection after paste) |
+| `g;` / `g,` | Navigate the change list (similar to `.` but with history) |
 
-Set automatically when you jump:
+## Related
 
-
-Triggered by:
-- `G` commands
-- Search (`n`, `N`, `/`, `?`)
-- Mark jumps (`'a`, `` `a ``)
-- `:number` line jumps
-- `%` matching bracket
-
-## Buffer Position (`'"`)
-
-
-### Auto-restore
-
-
-## File History (`'0`-`'9`)
-
-Set on editor exit:
-
-| Mark | Content |
-|------|---------|
-| `'0` | Last edited file position |
-| `'1` | Second to last file |
-| `'2` | Third to last file |
-| ... | Rotates older positions |
-
-Usage:
-
-## When Marks Update
-
-### Immediately
-
-| Mark | Updated On |
-|------|------------|
-| `'.` | Any change |
-| `'^` | Insert mode exit |
-| `''` | Any jump |
-
-### On Mode Exit
-
-| Mark | Updated On |
-|------|------------|
-| `'<`, `'>` | Visual mode exit |
-| `'[`, `']` | After operation complete |
-
-### On Buffer/Editor Events
-
-| Mark | Updated On |
-|------|------------|
-| `'"` | Buffer leave |
-| `'0`-`'9` | Editor exit |
-
-## Configuration
-
-
-## Disabling Automatic Marks
-
-
-Or selectively:
-
-## API Reference
-
+- Mark types: [/docs/spec/editing/marks/mark-types.md](/docs/spec/editing/marks/mark-types.md)
+- Special marks: [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
+- Change list: [/docs/spec/editing/marks/changelist.md](/docs/spec/editing/marks/changelist.md)

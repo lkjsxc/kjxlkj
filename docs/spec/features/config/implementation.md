@@ -1,121 +1,86 @@
-# Implementation Finder
+# Configuration Implementation
 
-Find all implementations of a type or trait.
+Back: [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
 
-## Overview
+How the editor loads, merges, and applies configuration.
 
-Quickly navigate to implementations of interfaces,
-traits, or abstract types.
+## File format
 
-## Usage
+All configuration files use TOML format. The main config file is `~/.config/kjxlkj/config.toml`.
 
-### Keybinding
+## Load order
 
-| Key | Action |
-|-----|--------|
-| `gi` | Go to implementation |
+1. Compiled-in defaults (hardcoded in source)
+2. System config (`/etc/kjxlkj/config.toml`, if present)
+3. User config (`~/.config/kjxlkj/config.toml`)
+4. Project config (`.kjxlkj.toml` in project root)
+5. Command-line arguments
+6. Runtime `:set` commands
 
-### Command
+Later sources override earlier ones for the same key.
 
+## Merging
 
-## Display
+Table values are deep-merged: keys not present in the higher-priority source retain their lower-priority values. Array values are replaced entirely (not appended).
 
-### Multiple Implementations
+## Config schema
 
+The configuration schema is a Rust struct hierarchy. Each field has a type, default value, and optional constraints.
 
-### Single Implementation
+| Field type | TOML representation |
+|---|---|
+| boolean | `true` / `false` |
+| integer | `42` |
+| string | `"value"` |
+| array | `["a", "b"]` |
+| table | `[section]` with nested keys |
 
-Jumps directly to the implementation.
-
-## Navigation
-
-### From Interface/Trait
-
-
-Press `gi` to see all implementations.
-
-### From Abstract Method
-
-
-Press `gi` to see concrete implementations.
-
-## Configuration
-
-
-## Actions
-
-| Key | Action |
-|-----|--------|
-| `<CR>` | Jump to implementation |
-| `<C-v>` | Open in vsplit |
-| `<C-x>` | Open in split |
-| `<C-t>` | Open in new tab |
-| `<Esc>` | Cancel |
-
-## LSP Requirements
-
-### Server Support
-
-| Server | Implementation |
-|--------|----------------|
-| rust-analyzer | ✓ |
-| typescript | ✓ |
-| gopls | ✓ |
-| clangd | ✓ |
-
-## Use Cases
-
-### Interface Navigation
-
-Find all concrete implementations.
-
-### Polymorphism
-
-Understand runtime behavior.
-
-### Refactoring
-
-See affected implementations.
-
-## Related Commands
+## Reload
 
 | Command | Description |
-|---------|-------------|
-| `gd` | Go to definition |
-| `gD` | Go to declaration |
-| `gi` | Go to implementation |
-| `gr` | Go to references |
+|---|---|
+| `:ConfigReload` | Re-read config files and apply changes |
 
-## Difference from Definition
+Changed settings take effect immediately for new operations. Buffer-local settings that were already applied to open buffers are not retroactively changed unless the buffer is re-opened.
 
-### Definition (`gd`)
+## Validation
 
-Goes to where symbol is defined.
+Invalid configuration values are rejected with a warning notification. The editor continues with the previous valid value for that setting.
 
-### Implementation (`gi`)
+| Error | Behavior |
+|---|---|
+| Unknown key | Warning notification, key ignored |
+| Wrong type | Warning notification, default used |
+| Out of range | Warning notification, clamped to nearest valid value |
+| Parse error | Error notification, entire file skipped |
 
-Goes to concrete implementations.
+## Option types
 
-## Preview
+| Type | `:set` syntax | Example |
+|---|---|---|
+| Boolean | `:set wrap` / `:set nowrap` | Enable/disable wrapping |
+| Integer | `:set tabstop=4` | Set tab width |
+| String | `:set shell=/bin/zsh` | Set shell path |
 
-### Inline Preview
+## Option scopes
 
+| Scope | Description |
+|---|---|
+| Global | Applies to entire editor |
+| Buffer-local | Per-buffer override (`:setlocal`) |
+| Window-local | Per-window override (`:setlocal` for window options) |
 
-Shows implementation code before jumping.
+## Environment variables
 
-## Filtering
+| Variable | Purpose |
+|---|---|
+| `KJXLKJ_CONFIG` | Override config file path |
+| `KJXLKJ_LOG` | Set log level |
+| `XDG_CONFIG_HOME` | Override config directory base |
+| `XDG_DATA_HOME` | Override data directory base |
 
-### By Type
+## Related
 
-When multiple kinds exist:
-
-
-## Keybindings
-
-
-## Tips
-
-1. Use on traits to find implementors
-2. Jump from abstract to concrete
-3. Use preview before jumping
-4. Combine with references for full picture
+- Project config: [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)
+- After directory: [/docs/spec/features/config/after-dir.md](/docs/spec/features/config/after-dir.md)
+- Hooks: [/docs/spec/features/config/hooks-events.md](/docs/spec/features/config/hooks-events.md)

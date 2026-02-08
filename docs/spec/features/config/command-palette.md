@@ -1,119 +1,70 @@
 # Command Palette
 
-Quick command execution interface.
+Back: [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+
+Searchable list of all available commands and keybindings.
 
 ## Overview
 
-The command palette provides fuzzy search access
-to all available commands.
+The command palette provides a fuzzy-search interface for discovering and executing commands. It lists all ex commands, user commands, and their keybindings.
 
-## Opening
+## Activation
 
 | Key | Action |
-|-----|--------|
-| `<C-S-p>` | Open command palette |
-| `:` | Command line (different) |
+|---|---|
+| `<leader>p` | Open command palette |
 
-## Interface
+| Command | Description |
+|---|---|
+| `:CommandPalette` | Open command palette |
 
+## Display
 
-## Fuzzy Search
+Each entry shows:
 
-### Matching
+| Column | Content |
+|---|---|
+| Command name | The ex command or action name |
+| Keybinding | Associated keybinding (if any) |
+| Description | Brief description of what the command does |
 
-Type partial strings:
+## Search
 
+Typing filters the list by fuzzy match against the command name and description. The matching algorithm ranks results by relevance.
 
-### Ranking
+## Execution
 
-1. Exact match
-2. Prefix match
-3. Subsequence match
-
-## Command Categories
-
-### File
-
-- Save, Save As, Save All
-- Open, Open Recent
-- Close, Close All
-
-### Edit
-
-- Undo, Redo
-- Cut, Copy, Paste
-- Find, Replace
-
-### View
-
-- Toggle Sidebar
-- Zoom In/Out
-- Split
-
-### Go
-
-- Go to Line
-- Go to Symbol
-- Go to Definition
-
-### LSP
-
-- Rename
-- Format
-- Code Actions
-
-## Configuration
-
-
-## Keybindings Display
-
-
-## Recent Commands
-
-
-### Display
-
-
-## Custom Commands
-
-### Register
-
-
-### Visible in Palette
-
+Pressing `<CR>` on a selected entry executes the command. If the command requires arguments, the command line opens pre-filled with the command name.
 
 ## Navigation
 
 | Key | Action |
-|-----|--------|
-| `<C-n>` | Next |
-| `<C-p>` | Previous |
-| `<CR>` | Execute |
-| `<Esc>` | Cancel |
-| `<Tab>` | Complete |
+|---|---|
+| `j` / `<Down>` | Move selection down |
+| `k` / `<Up>` | Move selection up |
+| `<CR>` | Execute selected command |
+| `<Esc>` | Close palette |
 
-## Command Arguments
+## Source
 
-### With Prompt
+The command palette aggregates commands from:
 
-Some commands prompt for input:
+| Source | Examples |
+|---|---|
+| Built-in ex commands | `:w`, `:q`, `:e` |
+| User-defined commands | `:MyCommand` |
+| LSP commands | Code actions |
+| Session commands | `:SessionSave` |
 
+## Configuration
 
-### Direct Input
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `palette.max_results` | integer | `50` | Maximum displayed results |
+| `palette.show_keybindings` | boolean | `true` | Show associated keybindings |
 
+## Related
 
-## Tips
-
-1. Use fuzzy matching liberally
-2. Check keybindings in palette
-3. Recent commands save time
-4. Combine with `:` for power
-
-## Comparison
-
-| Feature | Palette | Command Line |
-|---------|---------|--------------|
-| Interface | Fuzzy picker | Text input |
-| Discovery | Easy | Harder |
-| Speed | Quick | Faster for experts |
-| Arguments | Prompted | Inline |
+- Which-key: [/docs/spec/features/config/which-key.md](/docs/spec/features/config/which-key.md)
+- Essential commands: [/docs/spec/commands/essential.md](/docs/spec/commands/essential.md)
+- Finder: [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

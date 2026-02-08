@@ -1,97 +1,66 @@
 # Numbered Registers
 
-Automatic registers 0-9 for delete and yank history.
+Back: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
 
-## Register 0 - Last Yank
+Automatic registers `"0` through `"9` that store recent yank and delete history.
 
-Always contains the most recent yank:
+## Register `"0` (yank register)
 
+The yank register stores the text from the most recent yank operation (`y{motion}`, `Y`, `yy`). It is NOT overwritten by delete or change operations.
 
-### Use Case: Replace Without Losing
+| Operation | Updates `"0`? |
+|---|---|
+| `yy` (yank line) | Yes |
+| `yw` (yank word) | Yes |
+| `dd` (delete line) | No |
+| `dw` (delete word) | No |
+| `cw` (change word) | No |
 
+## Registers `"1` through `"9` (delete history)
 
-## Registers 1-9 - Delete History
+These registers form a queue of the 9 most recent delete operations that contain at least one full line.
 
 | Register | Content |
-|----------|---------|
-| `"1` | Most recent delete |
-| `"2` | Second most recent |
-| `"3` | Third most recent |
+|---|---|
+| `"1` | Most recent delete/change text (linewise or multi-line) |
+| `"2` | Previous delete (shifted from `"1`) |
+| `"3` | Previous delete (shifted from `"2`) |
 | ... | ... |
-| `"9` | Ninth most recent |
+| `"9` | Oldest stored delete |
 
-### Rotation
+### Shift behavior
 
-When you delete text:
-1. Contents of 9 are lost
-2. 8 moves to 9
-3. 7 moves to 8
+When a new linewise delete occurs:
+
+1. `"9` content is discarded
+2. `"8` moves to `"9`
+3. `"7` moves to `"8`
 4. ... and so on
-5. New delete goes to 1
+5. `"1` moves to `"2`
+6. The new delete text goes to `"1`
 
+### Small deletes
 
-## Small vs Large Deletes
+Deletes of less than one line (e.g., `dw` within a line) go to the small delete register `"-` instead of the numbered registers, unless a specific register was specified.
 
-| Operation | Destination |
-|-----------|-------------|
-| Delete ≥1 line | Registers 1-9 |
-| Delete <1 line | Small delete register `-` |
-| Change operations | Follows same rules |
+## Unnamed register `""`
 
+The unnamed register always points to the last used register. After a yank, `""` contains the yanked text (same as `"0`). After a delete, `""` contains the deleted text (same as `"1`).
 
-## Viewing Numbered Registers
+## Paste from numbered registers
 
+| Command | Description |
+|---|---|
+| `"0p` | Paste from yank register (most recent yank) |
+| `"1p` | Paste most recent delete |
+| `"2p` | Paste second most recent delete |
 
-## Accessing History
+## Use case
 
+The most common pattern: yank text with `y`, delete the target with `d` (which goes to `"1`), then paste the yanked text with `"0p` (which was not overwritten by the delete).
 
-### Undo and Cycle Pattern
+## Related
 
-
-## Expression Access
-
-
-## Command Line
-
-
-## Insert Mode
-
-| Key | Action |
-|-----|--------|
-| `Ctrl-R 0` | Insert yank register |
-| `Ctrl-R 1` | Insert recent delete |
-| `Ctrl-R 9` | Insert oldest delete |
-
-## Configuration
-
-
-## Interaction with Named Registers
-
-
-Both specified register and numbered register receive content.
-
-## Register Priority
-
-When deleting/yanking:
-1. If named register specified: Use that + numbered
-2. If no register: Use unnamed + numbered
-3. Yank always updates 0
-4. Delete always rotates 1-9 (if line+)
-
-## Practical Examples
-
-### Recover Deleted Text
-
-
-### Access Old Deletes
-
-
-### Replace Multiple Times
-
-
-## API Reference
-
-
-## See Also
-
-- [named-registers.md](named-registers.md) - Registers a-z
+- Named registers: [/docs/spec/editing/registers/named-registers.md](/docs/spec/editing/registers/named-registers.md)
+- Black hole register: [/docs/spec/editing/registers/blackhole-register.md](/docs/spec/editing/registers/blackhole-register.md)
+- Register commands: [/docs/spec/editing/registers/register-commands.md](/docs/spec/editing/registers/register-commands.md)
