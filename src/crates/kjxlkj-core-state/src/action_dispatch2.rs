@@ -1,0 +1,54 @@
+//! Extended action dispatch (overflow from action_dispatch).
+
+use kjxlkj_core_types::{Action, Mode};
+use crate::EditorState;
+
+impl EditorState {
+    /// Dispatch actions not handled by the primary match.
+    pub(crate) fn dispatch_extended(
+        &mut self,
+        action: Action,
+    ) {
+        match action {
+            Action::SetMark(ch) => self.do_set_mark(ch),
+            Action::JumpToMark(ch) => self.do_jump_to_mark(ch),
+            Action::JumpToMarkLine(ch) => self.do_jump_to_mark_line(ch),
+            Action::AlternateFile => self.do_alternate_file(),
+            Action::OpenFile(path) => self.do_open_file(&path),
+            Action::NextBuffer => self.do_next_buffer(),
+            Action::PrevBuffer => self.do_prev_buffer(),
+            Action::DeleteBuffer => self.do_delete_buffer(),
+            Action::SplitHorizontal => self.do_split_horizontal(),
+            Action::SplitVertical => self.do_split_vertical(),
+            Action::FocusWindow(dir) => self.do_focus_window(dir),
+            Action::CycleWindow => self.do_cycle_window(),
+            Action::CloseWindow => self.do_close_window(),
+            Action::ExecuteCommand(cmd) => {
+                if let Some(a) = crate::dispatch_command(&cmd) {
+                    self.dispatch(a);
+                }
+            }
+            Action::SearchForward(pat) => self.do_search_forward(pat),
+            Action::SearchBackward(pat) => self.do_search_backward(pat),
+            Action::NextMatch => self.do_next_match(),
+            Action::PrevMatch => self.do_prev_match(),
+            Action::RecordMacro(reg) => self.do_record_macro(reg),
+            Action::StopRecordMacro => self.do_stop_record_macro(),
+            Action::PlayMacro(reg, count) => self.do_play_macro(reg, count),
+            Action::ResizeWindow(dir, amount) => {
+                self.do_resize_window(dir, amount);
+            }
+            Action::EqualizeWindows => self.do_equalize_windows(),
+            Action::ZoomWindow => self.do_zoom_window(),
+            Action::RotateWindows(forward) => self.do_rotate_windows(forward),
+            Action::MoveWindow(dir) => self.do_move_window(dir),
+            Action::InsertNormal => { self.mode = Mode::InsertNormal; }
+            Action::OperatorTextObject(op, tobj, count) => {
+                self.do_operator_text_object(op, tobj, count);
+            }
+            Action::SwitchBuffer(name) => self.do_switch_buffer(&name),
+            Action::Paste(text) => self.do_paste_text(&text),
+            _ => {}
+        }
+    }
+}

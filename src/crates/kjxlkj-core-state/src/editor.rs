@@ -3,12 +3,14 @@
 
 use std::collections::HashMap;
 
-use kjxlkj_core_edit::CursorPosition;
+use kjxlkj_core_edit::{CursorPosition, RegisterFile};
 use kjxlkj_core_mode::{
     CommandModeState, InsertModeState,
     NormalModeState, VisualModeState,
 };
-use kjxlkj_core_types::{Action, BufferId, Mode, WindowId};
+use kjxlkj_core_types::{
+    Action, BufferId, Key, Mode, WindowId,
+};
 
 use crate::search::SearchState;
 use crate::{BufferState, WindowState};
@@ -56,6 +58,16 @@ pub struct EditorState {
     pub alternate_buffer: Option<BufferId>,
     /// Last repeatable action for dot-repeat.
     pub last_repeatable: Option<Action>,
+    /// Register file for yank/delete/macro storage.
+    pub register_file: RegisterFile,
+    /// Macro recording: register being recorded into.
+    pub macro_recording: Option<char>,
+    /// Macro recording: key buffer.
+    pub macro_keys: Vec<Key>,
+    /// Jump list: (buffer, cursor) entries.
+    pub jump_list: Vec<(BufferId, CursorPosition)>,
+    /// Jump list cursor (for Ctrl-O / Ctrl-I).
+    pub jump_list_pos: usize,
 }
 
 impl EditorState {
@@ -94,75 +106,59 @@ impl EditorState {
             marks: HashMap::new(),
             alternate_buffer: None,
             last_repeatable: None,
+            register_file: RegisterFile::new(),
+            macro_recording: None,
+            macro_keys: Vec::new(),
+            jump_list: Vec::new(),
+            jump_list_pos: 0,
         }
     }
 
     /// Allocate a new buffer ID.
-    pub fn alloc_buffer_id(
-        &mut self,
-    ) -> BufferId {
+    pub fn alloc_buffer_id(&mut self) -> BufferId {
         let id = BufferId(self.next_buffer_id);
         self.next_buffer_id += 1;
         id
     }
 
     /// Allocate a new window ID.
-    pub fn alloc_window_id(
-        &mut self,
-    ) -> WindowId {
+    pub fn alloc_window_id(&mut self) -> WindowId {
         let id = WindowId(self.next_window_id);
         self.next_window_id += 1;
         id
     }
 
     /// Get the focused window.
-    pub fn focused_window(
-        &self,
-    ) -> Option<&WindowState> {
+    pub fn focused_window(&self) -> Option<&WindowState> {
         self.windows.get(&self.focused_window)
     }
 
     /// Get the focused window mutably.
-    pub fn focused_window_mut(
-        &mut self,
-    ) -> Option<&mut WindowState> {
+    pub fn focused_window_mut(&mut self) -> Option<&mut WindowState> {
         self.windows.get_mut(&self.focused_window)
     }
 
     /// Get the active buffer ID.
-    pub fn active_buffer_id(
-        &self,
-    ) -> Option<BufferId> {
-        self.focused_window()
-            .and_then(|w| w.buffer_id())
+    pub fn active_buffer_id(&self) -> Option<BufferId> {
+        self.focused_window().and_then(|w| w.buffer_id())
     }
 
     /// Get the active buffer.
-    pub fn active_buffer(
-        &self,
-    ) -> Option<&BufferState> {
-        self.active_buffer_id()
-            .and_then(|id| self.buffers.get(&id))
+    pub fn active_buffer(&self) -> Option<&BufferState> {
+        self.active_buffer_id().and_then(|id| self.buffers.get(&id))
     }
 
     /// Get the active buffer mutably.
-    pub fn active_buffer_mut(
-        &mut self,
-    ) -> Option<&mut BufferState> {
+    pub fn active_buffer_mut(&mut self) -> Option<&mut BufferState> {
         let id = self.active_buffer_id()?;
         self.buffers.get_mut(&id)
     }
 
     /// Handle a resize event.
-    pub fn handle_resize(
-        &mut self,
-        cols: u16,
-        rows: u16,
-    ) {
+    pub fn handle_resize(&mut self, cols: u16, rows: u16) {
         self.terminal_size = (cols, rows);
         for win in self.windows.values_mut() {
-            win.viewport
-                .set_size(cols, rows.saturating_sub(2));
+            win.viewport.set_size(cols, rows.saturating_sub(2));
         }
     }
 }

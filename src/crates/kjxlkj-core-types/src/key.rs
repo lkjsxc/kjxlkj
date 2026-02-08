@@ -101,6 +101,16 @@ impl Key {
         Self::new(KeyCode::Enter)
     }
 
+    /// Create the Backspace key.
+    pub fn backspace() -> Self {
+        Self::new(KeyCode::Backspace)
+    }
+
+    /// Create the Tab key.
+    pub fn tab() -> Self {
+        Self::new(KeyCode::Tab)
+    }
+
     /// Check if this is a digit character for count parsing.
     pub fn is_digit(&self) -> bool {
         matches!(

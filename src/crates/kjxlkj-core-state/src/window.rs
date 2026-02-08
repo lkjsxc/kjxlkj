@@ -79,6 +79,11 @@ impl WindowState {
         }
     }
 
+    /// Set this window to display a different buffer.
+    pub fn set_buffer(&mut self, id: BufferId) {
+        self.content = WindowContent::Buffer(id);
+    }
+
     /// Get the terminal ID if this is a terminal window.
     pub fn terminal_id(&self) -> Option<TerminalId> {
         match self.content {
