@@ -73,8 +73,9 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             // :s/pat/repl/flags parsed and executed.
             Some(Action::Substitute(args.to_string()))
         }
-        "g" | "global" => Some(Action::Nop),
-        "v" | "vglobal" => Some(Action::Nop),
+        "g" | "global" => Some(Action::GlobalCommand(args.to_string())),
+        "v" | "vglobal" => Some(Action::VglobalCommand(args.to_string())),
+        "sort" => Some(Action::SortLines(args.to_string())),
         "set" => Some(Action::Nop),
         "reg" | "registers" => Some(Action::Nop),
         "marks" => Some(Action::Nop),

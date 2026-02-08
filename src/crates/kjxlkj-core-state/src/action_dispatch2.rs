@@ -56,6 +56,9 @@ impl EditorState {
             Action::SpawnTerminal => {} // Handled at main loop level
             Action::Substitute(args) => self.do_substitute(&args),
             Action::InsertRegister(reg) => self.do_insert_register(reg),
+            Action::GlobalCommand(args) => self.do_global_command(&args),
+            Action::VglobalCommand(args) => self.do_vglobal_command(&args),
+            Action::SortLines(args) => self.do_sort_lines(&args),
             Action::FocusGained | Action::FocusLost => {}
             Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}

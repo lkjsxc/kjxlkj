@@ -173,6 +173,12 @@ pub enum Action {
     Substitute(String),
     /// Insert text from a register in insert mode.
     InsertRegister(char),
+    /// Global command: `:g/pat/cmd`.
+    GlobalCommand(String),
+    /// Vglobal command: `:v/pat/cmd`.
+    VglobalCommand(String),
+    /// Sort lines: `:sort`.
+    SortLines(String),
     /// No operation (sentinel / default).
     Nop,
 }

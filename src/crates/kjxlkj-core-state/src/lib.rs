@@ -17,6 +17,7 @@ mod editor_char_ops;
 mod editor_cmdline;
 mod editor_comments;
 mod editor_file_ops;
+mod editor_global_sort;
 mod editor_insert;
 mod editor_jumplist;
 mod editor_key_dispatch;

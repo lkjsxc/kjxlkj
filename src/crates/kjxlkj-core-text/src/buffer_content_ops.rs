@@ -112,4 +112,21 @@ impl BufferContent {
             .take_while(|c| c.is_whitespace())
             .collect()
     }
+
+    /// Replace the content of a single line (preserving newline).
+    pub fn replace_line(
+        &mut self,
+        line: usize,
+        text: &str,
+    ) {
+        if line >= self.line_count() {
+            return;
+        }
+        let start = self.rope.line_to_char(line);
+        let end = self.line_end_offset(line);
+        if start <= end {
+            self.rope.remove(start..end);
+            self.rope.insert(start, text);
+        }
+    }
 }

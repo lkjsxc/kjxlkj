@@ -9,7 +9,8 @@ use kjxlkj_core_mode::{
     NormalModeState, VisualModeState,
 };
 use kjxlkj_core_types::{
-    Action, BufferId, Key, Mode, WindowId,
+    Action, BufferId, Key, Mode, Operator,
+    TextObjectScope, WindowId,
 };
 
 use crate::search::SearchState;
@@ -72,6 +73,8 @@ pub struct EditorState {
     pub change_list: Vec<(BufferId, CursorPosition)>,
     /// Change list cursor (for g; / g,).
     pub change_list_pos: usize,
+    /// Pending text object scope in operator-pending mode.
+    pub op_text_obj_pending: Option<(Operator, TextObjectScope)>,
 }
 
 impl EditorState {
@@ -117,6 +120,7 @@ impl EditorState {
             jump_list_pos: 0,
             change_list: Vec::new(),
             change_list_pos: 0,
+            op_text_obj_pending: None,
         }
     }
 

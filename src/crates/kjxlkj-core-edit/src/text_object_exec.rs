@@ -11,6 +11,8 @@ use crate::text_object_delimited::{
     resolve_bracket, resolve_paragraph, resolve_quote,
     resolve_sentence,
 };
+use crate::text_object_argument::resolve_argument;
+use crate::text_object_tag::resolve_tag;
 
 /// Range produced by resolving a text object.
 #[derive(Debug, Clone, Copy)]
@@ -79,11 +81,11 @@ pub fn resolve_text_object(
                 obj.scope, cursor, content, '`',
             )
         }
-        TextObjectKind::Tag => None,
+        TextObjectKind::Tag => {
+            resolve_tag(obj.scope, cursor, content)
+        }
         TextObjectKind::Argument => {
-            resolve_bracket(
-                obj.scope, cursor, content, '(', ')',
-            )
+            resolve_argument(obj.scope, cursor, content)
         }
     }
 }

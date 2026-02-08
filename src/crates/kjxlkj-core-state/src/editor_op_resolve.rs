@@ -6,6 +6,7 @@
 
 use kjxlkj_core_types::{
     Action, Key, KeyCode, Motion, Mode, Operator,
+    TextObject, TextObjectKind, TextObjectScope,
 };
 
 use crate::EditorState;
@@ -22,28 +23,69 @@ impl EditorState {
                 self.mode = Mode::Normal;
                 Some(Action::Nop)
             }
+            // Text object prefix: wait for next key
+            KeyCode::Char('i') | KeyCode::Char('a') => {
+                let scope = if key.code == KeyCode::Char('i') {
+                    TextObjectScope::Inner
+                } else {
+                    TextObjectScope::Around
+                };
+                self.op_text_obj_pending = Some((op, scope));
+                None // Stay in OperatorPending mode
+            }
             _ => {
-                let action =
-                    self.resolve_op_key(key, op);
+                // Check if we have a pending text object scope
+                if let Some((pending_op, scope)) = self.op_text_obj_pending.take() {
+                    let action = self.resolve_text_obj_key(key, pending_op, scope);
+                    self.mode = Mode::Normal;
+                    return action;
+                }
+                let action = self.resolve_op_key(key, op);
                 self.mode = Mode::Normal;
                 action
             }
         }
     }
 
+    /// Resolve a text object key after i/a prefix.
+    fn resolve_text_obj_key(
+        &mut self,
+        key: &Key,
+        op: Operator,
+        scope: TextObjectScope,
+    ) -> Option<Action> {
+        let count = self.normal_state.effective_count();
+        let kind = match &key.code {
+            KeyCode::Char('w') => Some(TextObjectKind::Word),
+            KeyCode::Char('W') => Some(TextObjectKind::BigWord),
+            KeyCode::Char('s') => Some(TextObjectKind::Sentence),
+            KeyCode::Char('p') => Some(TextObjectKind::Paragraph),
+            KeyCode::Char('(') | KeyCode::Char(')') | KeyCode::Char('b') => Some(TextObjectKind::Parens),
+            KeyCode::Char('[') | KeyCode::Char(']') => Some(TextObjectKind::Brackets),
+            KeyCode::Char('{') | KeyCode::Char('}') | KeyCode::Char('B') => Some(TextObjectKind::Braces),
+            KeyCode::Char('<') | KeyCode::Char('>') => Some(TextObjectKind::AngleBrackets),
+            KeyCode::Char('"') => Some(TextObjectKind::DoubleQuote),
+            KeyCode::Char('\'') => Some(TextObjectKind::SingleQuote),
+            KeyCode::Char('`') => Some(TextObjectKind::Backtick),
+            KeyCode::Char('t') => Some(TextObjectKind::Tag),
+            KeyCode::Char('a') => Some(TextObjectKind::Argument),
+            _ => None,
+        };
+        self.normal_state.reset();
+        kind.map(|k| {
+            Action::OperatorTextObject(
+                op, TextObject::new(scope, k), count,
+            )
+        })
+    }
+
     /// Resolve operator + key to an action.
-    ///
-    /// If the key matches the operator char (dd, cc, yy),
-    /// produce a DoubleOperator action. Otherwise try
-    /// mapping the key to a motion.
     fn resolve_op_key(
         &mut self,
         key: &Key,
         op: Operator,
     ) -> Option<Action> {
-        let count =
-            self.normal_state.effective_count();
-
+        let count = self.normal_state.effective_count();
         let op_char = match op {
             Operator::Delete => 'd',
             Operator::Change => 'c',
@@ -56,19 +98,14 @@ impl EditorState {
             Operator::Lowercase => 'u',
             Operator::Reindent => '=',
         };
-
         if let KeyCode::Char(c) = key.code {
             if c == op_char {
                 self.normal_state.reset();
-                return Some(
-                    Action::DoubleOperator(op, count),
-                );
+                return Some(Action::DoubleOperator(op, count));
             }
         }
-
         let motion = self.key_to_motion(key, count);
         self.normal_state.reset();
-
         motion.map(|(m, c)| match op {
             Operator::Delete => Action::Delete(m, c),
             Operator::Change => Action::Change(m, c),
