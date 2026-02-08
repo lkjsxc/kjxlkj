@@ -1,107 +1,38 @@
-# Recent Files Management
+# Recent Files
 
-Tracking and accessing recent files.
+Back: [/docs/spec/commands/session/README.md](/docs/spec/commands/session/README.md)
 
-## Overview
+Track and access recently opened files.
 
-Quick access to recently
-opened files.
+## Storage (normative)
 
-## View Recent Files
+Recent files are persisted to `~/.local/share/kjxlkj/recent_files.json`. The file contains an ordered array of absolute file paths, most-recent first.
 
-### Command
+| Setting | Default | Description |
+|---|---|---|
+| `recent.max_entries` | `100` | Maximum number of entries |
+| `recent.exclude_patterns` | `[]` | Glob patterns to exclude (e.g., `"/tmp/*"`) |
 
+## Commands (normative)
 
-### Picker
+| Command | Action |
+|---|---|
+| `:RecentFiles` | Open the recent files picker |
+| `:browse oldfiles` | List recent files (Vim-compatible) |
 
+## Lifecycle (normative)
 
-## Recent Files List
+| Event | Action |
+|---|---|
+| File opened (`:e`, `:o`) | Prepend to recent list (move to front if already present) |
+| On startup | Validate entries: remove files that no longer exist |
+| On exit | Persist the list to disk |
 
-### Display
+## Oldfiles register
 
+The `v:oldfiles` variable contains the list of recent file paths. It is read-only.
 
-## Navigation
+## Related
 
-### From List
-
-
-### By Number
-
-
-## Configuration
-
-### Basic Settings
-
-
-### Exclude Patterns
-
-
-## Storage Location
-
-### Default
-
-
-### Configuration
-
-
-## Cleanup
-
-### Remove Invalid
-
-
-### On Startup
-
-Validates file existence.
-
-### Manual
-
-
-## Per-Project
-
-### Project Recent
-
-
-### Separate Lists
-
-
-## Age Limiting
-
-### Maximum Age
-
-
-## Frequency
-
-### Frecency
-
-Combine frequency + recency:
-
-
-### Boost Frequent
-
-Commonly used files rank higher.
-
-## Integration
-
-### Startup
-
-
-### Fuzzy Finder
-
-
-### Telescope-Style
-
-
-## Commands
-
-### Available
-
-
-## Oldfiles Register
-
-### Access
-
-
-### Use
-
-
-## Session Integration
+- Finder: [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- Session management: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)

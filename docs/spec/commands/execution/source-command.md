@@ -1,116 +1,49 @@
 # Source Command
 
-Execute commands from a file.
+Back: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
 
-## Overview
+Execute ex commands from a file.
 
-The `:source` command reads
-and executes Ex commands
-from a file.
+## Syntax (normative)
 
-## Basic Syntax
+| Command | Action |
+|---|---|
+| `:source {file}` | Read and execute each line of `{file}` as an ex command |
+| `:source %` | Re-source the current buffer (useful for editing config) |
+| `:source` (no arg) | Source the default init file (`~/.config/kjxlkj/init.kjxlkj`) |
 
+## File resolution (normative)
 
-## Simple Examples
+| Path form | Resolution |
+|---|---|
+| Absolute path | Used as-is |
+| Relative path | Resolved from cwd |
+| `~/{path}` | Expanded to user home directory |
+| `%` | Current buffer file path |
 
-### Source Config
+## Startup sourcing (normative)
 
+On startup, the editor sources:
 
-### Current File
+1. Built-in defaults (compiled into binary)
+2. `~/.config/kjxlkj/config.toml` (TOML config; parsed, not sourced as commands)
+3. `~/.config/kjxlkj/init.kjxlkj` (command file; sourced line by line)
+4. `.kjxlkj.toml` (project-local TOML config)
 
+## Command file format
 
-## File Resolution
+Each line is one ex command. Comments start with `"`. Empty lines are ignored. Lines MUST NOT contain leading `:` characters.
 
-### Absolute Path
+## Error handling (normative)
 
+| Situation | Behavior |
+|---|---|
+| File not found | Display error: "Can't open file: {file}" |
+| Command error | Stop sourcing at the failing line; display the error |
+| `silent! source {file}` | Source silently; suppress errors |
 
-### Relative Path
+## Related
 
-
-### Home Expansion
-
-
-## Runtime Command
-
-### Search Runtime
-
-
-### Difference
-
-| Command     | Behavior              |
-|-------------|----------------------|
-| `:source`   | Exact file path      |
-| `:runtime`  | Search runtimepath   |
-
-## Script Types
-
-### Vim Script
-
-
-### Commands File
-
-
-## Configuration Loading
-
-### Init File
-
-On startup, sources:
-
-### Project Local
-
-
-## Source Scope
-
-### Variables
-
-Variables defined in sourced
-file are global by default.
-
-### Local Variables
-
-
-## Error Handling
-
-### On Error
-
-Sourcing stops on first error.
-
-### Continue on Error
-
-
-### Check Exists
-
-
-## Dynamic Sourcing
-
-### With Execute
-
-
-### Variable Path
-
-
-## Common Use Cases
-
-### Reload Config
-
-
-### Apply Settings
-
-
-### Run Script
-
-
-## Modular Configuration
-
-### Main Config
-
-
-### Conditional
-
-
-## Arguments
-
-### Passing Data
-
-Cannot pass arguments directly.
-Use global variables:
+- Execute command: [/docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
+- Script files: [/docs/spec/scripting/script-files.md](/docs/spec/scripting/script-files.md)
+- Startup sequence: [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)

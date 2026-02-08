@@ -1,101 +1,61 @@
 # User-Defined Commands
 
-Creating custom commands.
+Back: [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md)
 
-## Overview
+Users can define custom ex commands.
 
-Define custom commands for frequently
-used operations and workflows.
+## Definition (normative)
 
-## Basic Definition
+| Command | Description |
+|---|---|
+| `:command {Name} {replacement}` | Define command `:{Name}` that executes `{replacement}` |
+| `:command! {Name} {replacement}` | Define (overwrite existing) |
+| `:delcommand {Name}` | Remove user command `{Name}` |
+| `:command` | List all user-defined commands |
 
-### Configuration
+User command names MUST start with an uppercase letter to distinguish from built-in commands.
 
+## Arguments (normative)
 
-### Usage
+User commands can accept arguments via the `-nargs` flag:
 
+| Flag | Meaning |
+|---|---|
+| `-nargs=0` | No arguments (default) |
+| `-nargs=1` | Exactly one argument |
+| `-nargs=*` | Any number of arguments |
+| `-nargs=?` | Zero or one argument |
+| `-nargs=+` | One or more arguments |
 
-## Command with Arguments
+In the replacement text, `<args>` expands to the user-supplied arguments. `<q-args>` quotes them.
 
-### Definition
+## Range support
 
+| Flag | Meaning |
+|---|---|
+| `-range` | Command accepts a range; `<line1>` and `<line2>` expand to range bounds |
+| `-range=%` | Default range is the whole file |
+| `-count={N}` | Command accepts a count with default N |
 
-### Usage
+## Bang support
 
+With the `-bang` flag, the command accepts `!`. In the replacement, `<bang>` expands to `!` if the user supplied it, or empty otherwise.
 
-## Multiple Arguments
+## Completion
 
-### Definition
+The `-complete={type}` flag enables tab-completion for the command's arguments:
 
+| type | Completes |
+|---|---|
+| `file` | File names |
+| `dir` | Directory names |
+| `buffer` | Buffer names |
+| `command` | Ex commands |
+| `color` | Colorscheme names |
+| `custom,{func}` | User-defined completion function |
 
-### Usage
+## Related
 
-
-## Optional Arguments
-
-### With Defaults
-
-
-### Usage
-
-
-## Range Commands
-
-### Accept Range
-
-
-### Usage
-
-
-## Count Commands
-
-### With Count
-
-
-### Usage
-
-
-## Bang Variants
-
-### Force Option
-
-
-### Usage
-
-
-## Command Completion
-
-### File Completion
-
-
-### Buffer Completion
-
-
-### Custom Completion
-
-
-## Multi-Statement
-
-### Multiple Commands
-
-
-### With Separator
-
-
-## External Commands
-
-### Shell Commands
-
-
-### Read Output
-
-
-## Replace Existing
-
-### Override Built-in
-
-
-## Conditional Commands
-
-### With Condition
+- Commands overview: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- User functions: [/docs/spec/scripting/user-functions.md](/docs/spec/scripting/user-functions.md)
 
