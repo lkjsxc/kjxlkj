@@ -15,6 +15,7 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - [ ] [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
 - [ ] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [ ] [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
 
 ## spec/commands/
 

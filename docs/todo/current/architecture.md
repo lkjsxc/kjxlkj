@@ -11,6 +11,20 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
 - [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
+
+## Startup and shutdown
+
+- [ ] Command-line argument parsing per [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
+- [ ] Tokio runtime initialization
+- [ ] Terminal capability detection and raw mode entry
+- [ ] Channel topology creation (input, service, render, quit)
+- [ ] Task spawning order: input, services, render, core
+- [ ] Auto-session restore
+- [ ] Init file sourcing
+- [ ] Shutdown: session save, service drain, terminal restore
+- [ ] Signal handling (SIGWINCH, SIGTERM, SIGHUP, SIGTSTP/SIGCONT)
+- [ ] Panic handler with terminal restore and crash report
 
 ## Crate topology
 
