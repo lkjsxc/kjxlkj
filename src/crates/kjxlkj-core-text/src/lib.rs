@@ -6,6 +6,7 @@
 //! as specified in /docs/spec/editor/buffers.md.
 
 mod buffer_content;
+mod buffer_content_ops;
 mod display_width;
 mod grapheme;
 mod line_ops;

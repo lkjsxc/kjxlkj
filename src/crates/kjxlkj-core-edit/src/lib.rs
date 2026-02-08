@@ -6,9 +6,11 @@
 mod char_find;
 mod cursor;
 mod motion_exec;
+mod motion_helpers;
 mod operator_exec;
 mod registers;
 mod text_manip;
+mod text_object_delimited;
 mod text_object_exec;
 
 pub use char_find::{CharFind, CharFindKind};

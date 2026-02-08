@@ -6,6 +6,7 @@ mod command_dispatch;
 mod editor;
 mod editor_actions;
 mod editor_actions2;
+mod editor_file_ops;
 mod session;
 mod viewport;
 mod window;
