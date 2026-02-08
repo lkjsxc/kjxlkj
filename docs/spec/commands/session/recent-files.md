@@ -1,6 +1,6 @@
 # Recent Files
 
-Back: [docs/spec/commands/session/README.md](docs/spec/commands/session/README.md)
+Back: [docs/spec/commands/session/README.md](/docs/spec/commands/session/README.md)
 
 Track and navigate recently opened files.
 
@@ -116,5 +116,5 @@ merge their entries on write using last-write-wins.
 
 ## Related
 
-- Session management: [docs/spec/features/session/README.md](docs/spec/features/session/README.md)
-- Finder: [docs/spec/features/navigation/finder.md](docs/spec/features/navigation/finder.md)
+- Session management: [docs/spec/features/session/README.md](/docs/spec/features/session/README.md)
+- Finder: [docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

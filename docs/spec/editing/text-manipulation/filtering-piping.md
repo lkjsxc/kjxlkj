@@ -1,6 +1,6 @@
 # Filtering and Piping
 
-Back: [docs/spec/editing/text-manipulation/README.md](docs/spec/editing/text-manipulation/README.md)
+Back: [docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
 
 Pass buffer text through external commands.
 
@@ -131,6 +131,6 @@ patterns, visual selection.
 
 ## Related
 
-- Range specs: [docs/spec/commands/ranges/range-specs.md](docs/spec/commands/ranges/range-specs.md)
-- Read command: [docs/spec/commands/file/read-command.md](docs/spec/commands/file/read-command.md)
-- Shell integration: [docs/spec/features/terminal/README.md](docs/spec/features/terminal/README.md)
+- Range specs: [docs/spec/commands/ranges/range-specs.md](/docs/spec/commands/ranges/range-specs.md)
+- Read command: [docs/spec/commands/file/read-command.md](/docs/spec/commands/file/read-command.md)
+- Shell integration: [docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)

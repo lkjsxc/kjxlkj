@@ -1,6 +1,6 @@
 # Line Motions
 
-Back: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+Back: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
 
 Motions that move within the current line.
 
@@ -102,7 +102,7 @@ In visual mode, line motions extend the selection:
 
 ## Related
 
-- Vertical motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
-- Cursor model: [docs/spec/editing/cursor/README.md](docs/spec/editing/cursor/README.md)
-- Display wrapping: [docs/spec/ui/viewport.md](docs/spec/ui/viewport.md)
-- CJK width: [docs/technical/unicode.md](docs/technical/unicode.md)
+- Vertical motions: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
+- Cursor model: [docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- Display wrapping: [docs/spec/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- CJK width: [docs/technical/unicode.md](/docs/technical/unicode.md)

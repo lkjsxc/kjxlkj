@@ -1,6 +1,6 @@
 # User Functions
 
-Back: [docs/spec/scripting/README.md](docs/spec/scripting/README.md)
+Back: [docs/spec/scripting/README.md](/docs/spec/scripting/README.md)
 
 User-defined commands and expressions.
 
@@ -139,6 +139,6 @@ provides conditional command execution.
 
 ## Related
 
-- Mappings: [docs/spec/scripting/mappings/README.md](docs/spec/scripting/mappings/README.md)
-- Execute command: [docs/spec/commands/execution/execute-command.md](docs/spec/commands/execution/execute-command.md)
-- Expression mappings: [docs/spec/scripting/mappings/expr-mappings.md](docs/spec/scripting/mappings/expr-mappings.md)
+- Mappings: [docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+- Execute command: [docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
+- Expression mappings: [docs/spec/scripting/mappings/expr-mappings.md](/docs/spec/scripting/mappings/expr-mappings.md)

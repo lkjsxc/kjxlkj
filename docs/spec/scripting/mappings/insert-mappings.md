@@ -1,6 +1,6 @@
 # Insert Mode Mappings
 
-Back: [docs/spec/scripting/mappings/README.md](docs/spec/scripting/mappings/README.md)
+Back: [docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
 Mappings active during Insert mode input processing.
 
@@ -114,6 +114,6 @@ with the given prefix.
 
 ## Related
 
-- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](docs/spec/scripting/mappings/mapping-modes.md)
-- Insert mode: [docs/spec/modes/insert/README.md](docs/spec/modes/insert/README.md)
-- Completion: [docs/spec/modes/insert/completion/insert-completion.md](docs/spec/modes/insert/completion/insert-completion.md)
+- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
+- Insert mode: [docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Completion: [docs/spec/modes/insert/completion/insert-completion.md](/docs/spec/modes/insert/completion/insert-completion.md)

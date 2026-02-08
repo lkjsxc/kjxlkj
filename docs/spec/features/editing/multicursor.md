@@ -1,6 +1,6 @@
 # Multi-Cursor Editing
 
-Back: [docs/spec/features/editing/README.md](docs/spec/features/editing/README.md)
+Back: [docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md)
 
 Simultaneous editing at multiple cursor positions.
 
@@ -144,6 +144,6 @@ Each cursor receives the macro keystrokes.
 
 ## Related
 
-- Visual mode: [docs/spec/editing/visual/README.md](docs/spec/editing/visual/README.md)
-- Operators: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
-- Search: [docs/spec/editing/search/README.md](docs/spec/editing/search/README.md)
+- Visual mode: [docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
+- Operators: [docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Search: [docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)

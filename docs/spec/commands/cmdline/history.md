@@ -1,6 +1,6 @@
 # Command History
 
-Back: [docs/spec/commands/cmdline/README.md](docs/spec/commands/cmdline/README.md)
+Back: [docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 
 Persistent history for ex commands and searches.
 
@@ -121,6 +121,6 @@ excluded from history by prefixing with a space
 
 ## Related
 
-- Command-line mode: [docs/spec/modes/cmdline/README.md](docs/spec/modes/cmdline/README.md)
-- Completion: [docs/spec/commands/cmdline/completion.md](docs/spec/commands/cmdline/completion.md)
-- Session: [docs/spec/features/session/README.md](docs/spec/features/session/README.md)
+- Command-line mode: [docs/spec/modes/cmdline/README.md](/docs/spec/modes/command.md)
+- Completion: [docs/spec/commands/cmdline/completion.md](/docs/spec/commands/cmdline/completion.md)
+- Session: [docs/spec/features/session/README.md](/docs/spec/features/session/README.md)

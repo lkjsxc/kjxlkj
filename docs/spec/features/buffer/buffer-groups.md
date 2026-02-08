@@ -1,6 +1,6 @@
 # Buffer Groups
 
-Back: [docs/spec/features/buffer/README.md](docs/spec/features/buffer/README.md)
+Back: [docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
 
 Organize buffers into logical groups for navigation.
 
@@ -114,6 +114,6 @@ groups are regenerated from file properties.
 
 ## Related
 
-- Bufferline: [docs/spec/features/buffer/bufferline.md](docs/spec/features/buffer/bufferline.md)
-- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](docs/spec/features/buffer/buffer-switching.md)
-- Session: [docs/spec/features/session/session-management.md](docs/spec/features/session/session-management.md)
+- Bufferline: [docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
+- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)
+- Session: [docs/spec/features/session/session-management.md](/docs/spec/features/session/sessions.md)

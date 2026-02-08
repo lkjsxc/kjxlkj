@@ -1,6 +1,6 @@
 # Recursive Macros
 
-Back: [docs/spec/editing/macros/README.md](docs/spec/editing/macros/README.md)
+Back: [docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
 
 Macros that invoke themselves to create loops.
 
@@ -123,6 +123,6 @@ provides significant speedup for large batch edits.
 
 ## Related
 
-- Macro recording: [docs/spec/editing/macros/README.md](docs/spec/editing/macros/README.md)
-- Advanced macros: [docs/spec/editing/macros/macros-advanced.md](docs/spec/editing/macros/macros-advanced.md)
-- Registers: [docs/spec/editing/registers/README.md](docs/spec/editing/registers/README.md)
+- Macro recording: [docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+- Advanced macros: [docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
+- Registers: [docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

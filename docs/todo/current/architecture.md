@@ -28,16 +28,26 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Crate topology
 
+Per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md) and [/docs/log/proposals/deep-wiring-checklist-2.md](/docs/log/proposals/deep-wiring-checklist-2.md):
+
+- [ ] `kjxlkj`: binary entrypoint, CLI parsing, task spawning, shutdown (min 100 lines)
+- [ ] `kjxlkj-core`: facade re-exports (min 50 lines)
+- [ ] `kjxlkj-core-types`: shared types: ids, Mode, Action, Key, Color, CellAttrs (min 200 lines)
 - [ ] `kjxlkj-core-text`: rope wrapper, grapheme decomposition, display width, line operations (min 400 lines)
 - [ ] `kjxlkj-core-edit`: operators, text objects, motions, register operations (min 600 lines)
 - [ ] `kjxlkj-core-mode`: mode state machines, transition logic, cursor clamping (min 500 lines)
-- [ ] `kjxlkj-core-state`: editor state, command dispatch, viewport follow (min 500 lines)
+- [ ] `kjxlkj-core-undo`: undo tree, branching, group boundaries, persistence (min 200 lines)
+- [ ] `kjxlkj-core-ui`: EditorSnapshot, BufferSnapshot, TerminalSnapshot (min 150 lines)
+- [ ] `kjxlkj-core-state`: editor state, command dispatch, viewport follow, session (min 500 lines)
 - [ ] `kjxlkj-render`: cell rendering, wrapping, gutter, statusline, diff display (min 500 lines)
 - [ ] `kjxlkj-input`: key parsing, mapping expansion, leader handling (min 300 lines)
-- [ ] `kjxlkj-host`: terminal raw mode, event loop, PTY harness (min 300 lines)
+- [ ] `kjxlkj-host`: terminal raw mode, event loop, PTY harness, signals (min 300 lines)
+- [ ] `kjxlkj-services`: service supervisor, health monitoring, channel factory (min 100 lines)
 - [ ] `kjxlkj-service-terminal`: escape parsing state machine, PTY spawn, screen buffer (min 400 lines)
 - [ ] `kjxlkj-service-lsp`: JSON-RPC client, request/response lifecycle (min 300 lines)
 - [ ] `kjxlkj-service-git`: git subprocess, diff parsing, status/blame (min 200 lines)
+- [ ] `kjxlkj-service-index`: file scanning, fuzzy matching, symbol indexing (min 150 lines)
+- [ ] `kjxlkj-service-fs`: file read/write, file watcher, encoding detection (min 150 lines)
 
 ## Runtime model
 

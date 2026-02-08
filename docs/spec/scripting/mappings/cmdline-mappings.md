@@ -1,6 +1,6 @@
 # Command-Line Mode Mappings
 
-Back: [docs/spec/scripting/mappings/README.md](docs/spec/scripting/mappings/README.md)
+Back: [docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
 Mappings active during command-line (ex) mode input.
 
@@ -93,5 +93,5 @@ was defined.
 
 ## Related
 
-- Command-line mode: [docs/spec/modes/cmdline/README.md](docs/spec/modes/cmdline/README.md)
-- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](docs/spec/scripting/mappings/mapping-modes.md)
+- Command-line mode: [docs/spec/modes/cmdline/README.md](/docs/spec/modes/command.md)
+- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)

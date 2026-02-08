@@ -1,6 +1,6 @@
 # g-Prefixed Operators
 
-Back: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
+Back: [docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
 
 Operators and commands accessed via the `g` prefix.
 
@@ -147,6 +147,6 @@ backward. These can be used with operators:
 
 ## Related
 
-- Operators overview: [docs/spec/editing/operators/README.md](docs/spec/editing/operators/README.md)
-- Motions: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
-- Line motions: [docs/spec/editing/motions/line-motions.md](docs/spec/editing/motions/line-motions.md)
+- Operators overview: [docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Motions: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
+- Line motions: [docs/spec/editing/motions/line-motions.md](/docs/spec/editing/motions/line-motions.md)

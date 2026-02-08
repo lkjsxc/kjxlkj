@@ -1,6 +1,6 @@
 # Built-in Feature System
 
-Back: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
+Back: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
 All features are built-in; no external plugin system.
 
@@ -131,6 +131,6 @@ a buffer of that filetype is opened.
 
 ## Related
 
-- Architecture: [docs/spec/architecture/README.md](docs/spec/architecture/README.md)
-- Configuration: [docs/spec/features/config/README.md](docs/spec/features/config/README.md)
-- Crates: [docs/spec/architecture/crates.md](docs/spec/architecture/crates.md)
+- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- Configuration: [docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+- Crates: [docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)

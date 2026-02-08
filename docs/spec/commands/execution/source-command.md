@@ -1,6 +1,6 @@
 # Source Command
 
-Back: [docs/spec/commands/execution/README.md](docs/spec/commands/execution/README.md)
+Back: [docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
 
 Execute ex commands from a file.
 
@@ -115,6 +115,6 @@ to process each command in the file.
 
 ## Related
 
-- Configuration: [docs/spec/features/config/README.md](docs/spec/features/config/README.md)
-- Execute command: [docs/spec/commands/execution/execute-command.md](docs/spec/commands/execution/execute-command.md)
-- Startup: [docs/spec/architecture/runtime.md](docs/spec/architecture/runtime.md)
+- Configuration: [docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+- Execute command: [docs/spec/commands/execution/execute-command.md](/docs/spec/commands/execution/execute-command.md)
+- Startup: [docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)

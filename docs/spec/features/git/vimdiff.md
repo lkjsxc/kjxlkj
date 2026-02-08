@@ -1,6 +1,6 @@
 # Vimdiff Mode
 
-Back: [docs/spec/features/git/README.md](docs/spec/features/git/README.md)
+Back: [docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
 
 Side-by-side file comparison with merge support.
 
@@ -128,6 +128,6 @@ text change in a diff-linked buffer.
 
 ## Related
 
-- Git integration: [docs/spec/features/git/git.md](docs/spec/features/git/git.md)
-- Diff mode: [docs/spec/features/git/diff-mode.md](docs/spec/features/git/diff-mode.md)
-- Merge conflicts: [docs/spec/features/git/merge-conflicts.md](docs/spec/features/git/merge-conflicts.md)
+- Git integration: [docs/spec/features/git/git.md](/docs/spec/features/git/git.md)
+- Diff mode: [docs/spec/features/git/diff-mode.md](/docs/spec/features/git/diff-mode.md)
+- Merge conflicts: [docs/spec/features/git/merge-conflicts.md](/docs/spec/features/git/merge-conflicts.md)

@@ -1,6 +1,6 @@
 # Command-Line Completion
 
-Back: [docs/spec/commands/cmdline/README.md](docs/spec/commands/cmdline/README.md)
+Back: [docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 
 Tab-completion for ex command input.
 
@@ -129,5 +129,5 @@ the finder.
 
 ## Related
 
-- Command-line mode: [docs/spec/modes/cmdline/README.md](docs/spec/modes/cmdline/README.md)
-- Command history: [docs/spec/commands/cmdline/history.md](docs/spec/commands/cmdline/history.md)
+- Command-line mode: [docs/spec/modes/cmdline/README.md](/docs/spec/modes/command.md)
+- Command history: [docs/spec/commands/cmdline/history.md](/docs/spec/commands/cmdline/history.md)

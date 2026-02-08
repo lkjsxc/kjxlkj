@@ -1,6 +1,6 @@
 # Insert Digraphs
 
-Back: [docs/spec/modes/insert/input/README.md](docs/spec/modes/insert/input/README.md)
+Back: [docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md)
 
 Insert special characters via two-key combinations.
 
@@ -104,5 +104,5 @@ literally and no error is shown.
 
 ## Related
 
-- Special characters: [docs/spec/modes/insert/input/insert-special-chars.md](docs/spec/modes/insert/input/insert-special-chars.md)
-- Unicode handling: [docs/technical/unicode.md](docs/technical/unicode.md)
+- Special characters: [docs/spec/modes/insert/input/insert-special-chars.md](/docs/spec/modes/insert/input/insert-special-chars.md)
+- Unicode handling: [docs/technical/unicode.md](/docs/technical/unicode.md)

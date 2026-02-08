@@ -1,6 +1,6 @@
 # Terminal Mode Mappings
 
-Back: [docs/spec/scripting/mappings/README.md](docs/spec/scripting/mappings/README.md)
+Back: [docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
 Mappings active in the terminal emulator window.
 
@@ -107,6 +107,6 @@ mappings. `:verbose tmap` shows definition source.
 
 ## Related
 
-- Terminal emulator: [docs/spec/features/terminal/README.md](docs/spec/features/terminal/README.md)
-- Terminal mode: [docs/spec/modes/terminal.md](docs/spec/modes/terminal.md)
-- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](docs/spec/scripting/mappings/mapping-modes.md)
+- Terminal emulator: [docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
+- Terminal mode: [docs/spec/modes/terminal.md](/docs/spec/features/terminal/terminal.md)
+- Mapping modes: [docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)

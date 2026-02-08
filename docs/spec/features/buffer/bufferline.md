@@ -138,6 +138,6 @@ in the status line suggesting to close unused buffers.
 
 ## Related
 
-- Buffer model: [docs/spec/editor/buffers.md](docs/spec/editor/buffers.md)
-- Buffer groups: [docs/spec/features/buffer/buffer-groups.md](docs/spec/features/buffer/buffer-groups.md)
-- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](docs/spec/features/buffer/buffer-switching.md)
+- Buffer model: [docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
+- Buffer groups: [docs/spec/features/buffer/buffer-groups.md](/docs/spec/features/buffer/buffer-groups.md)
+- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)

@@ -1,6 +1,6 @@
 # Fuzzy Finder
 
-Back: [docs/spec/features/navigation/README.md](docs/spec/features/navigation/README.md)
+Back: [docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
 
 Fast navigation across workspace using fuzzy matching.
 
@@ -167,6 +167,6 @@ large workspaces.
 
 ## Related
 
-- File explorer: [docs/spec/features/navigation/file-explorer.md](docs/spec/features/navigation/file-explorer.md)
-- Recent files: [docs/spec/commands/session/recent-files.md](docs/spec/commands/session/recent-files.md)
-- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](docs/spec/features/buffer/buffer-switching.md)
+- File explorer: [docs/spec/features/navigation/file-explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- Recent files: [docs/spec/commands/session/recent-files.md](/docs/spec/commands/session/recent-files.md)
+- Buffer switching: [docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)

@@ -1,6 +1,6 @@
 # LSP Integration
 
-Back: [docs/spec/features/lsp/README.md](docs/spec/features/lsp/README.md)
+Back: [docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
 
 Built-in Language Server Protocol client.
 
@@ -163,6 +163,6 @@ Timed-out requests show an error message.
 
 ## Related
 
-- Diagnostics: [docs/spec/features/lsp/diagnostics.md](docs/spec/features/lsp/diagnostics.md)
-- Completion: [docs/spec/modes/insert/completion/insert-completion.md](docs/spec/modes/insert/completion/insert-completion.md)
-- Formatting: [docs/spec/features/lsp/formatting.md](docs/spec/features/lsp/formatting.md)
+- Diagnostics: [docs/spec/features/lsp/diagnostics.md](/docs/spec/features/lsp/diagnostics.md)
+- Completion: [docs/spec/modes/insert/completion/insert-completion.md](/docs/spec/modes/insert/completion/insert-completion.md)
+- Formatting: [docs/spec/features/lsp/formatting.md](/docs/spec/features/lsp/formatting.md)

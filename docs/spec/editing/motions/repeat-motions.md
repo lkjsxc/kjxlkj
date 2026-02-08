@@ -1,6 +1,6 @@
 # Repeat Motions
 
-Back: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+Back: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
 
 Repeat the last search or character-find motion.
 
@@ -123,6 +123,6 @@ under the cursor with `\b` boundaries.
 
 ## Related
 
-- Character find: [docs/spec/editing/motions/character-find.md](docs/spec/editing/motions/character-find.md)
-- Search motions: [docs/spec/editing/motions/search-motions.md](docs/spec/editing/motions/search-motions.md)
-- Motions overview: [docs/spec/editing/motions/README.md](docs/spec/editing/motions/README.md)
+- Character find: [docs/spec/editing/motions/character-find.md](/docs/spec/editing/motions/character-find.md)
+- Search motions: [docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)
+- Motions overview: [docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)

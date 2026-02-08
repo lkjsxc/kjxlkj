@@ -1,6 +1,6 @@
 # Insert Special Characters
 
-Back: [docs/spec/modes/insert/input/README.md](docs/spec/modes/insert/input/README.md)
+Back: [docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md)
 
 Methods for inserting characters not directly typeable.
 
@@ -94,7 +94,7 @@ defined by the two-character combination. This is
 separate from the `Ctrl-v` literal insert method.
 
 See digraphs spec for the full digraph table:
-[docs/spec/modes/insert/input/insert-digraphs.md](docs/spec/modes/insert/input/insert-digraphs.md)
+[docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
 
 ## Bracketed Paste
 
@@ -128,6 +128,6 @@ after insertion.
 
 ## Related
 
-- Insert digraphs: [docs/spec/modes/insert/input/insert-digraphs.md](docs/spec/modes/insert/input/insert-digraphs.md)
-- Unicode handling: [docs/technical/unicode.md](docs/technical/unicode.md)
-- Literal insert: [docs/spec/modes/insert/input/insert-literal.md](docs/spec/modes/insert/input/insert-literal.md)
+- Insert digraphs: [docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
+- Unicode handling: [docs/technical/unicode.md](/docs/technical/unicode.md)
+- Literal insert: [docs/spec/modes/insert/input/insert-literal.md](/docs/spec/modes/insert/input/insert-literal.md)

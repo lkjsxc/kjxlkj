@@ -124,5 +124,5 @@ Comment strings are determined by filetype:
 
 ## Related
 
-- Auto-pairs detail: [docs/spec/features/editing/auto-pairs.md](docs/spec/features/editing/auto-pairs.md)
-- Text objects: [docs/spec/editing/text-objects/README.md](docs/spec/editing/text-objects/README.md)
+- Auto-pairs detail: [docs/spec/features/editing/auto-pairs.md](/docs/spec/features/editing/auto-pairs.md)
+- Text objects: [docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
