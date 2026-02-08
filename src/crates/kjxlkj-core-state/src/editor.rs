@@ -10,10 +10,11 @@ use kjxlkj_core_mode::{
 };
 use kjxlkj_core_types::{
     Action, BufferId, ForceMotionType, Key, Mode, Operator,
-    TextObjectScope, WindowId,
+    TabId, TextObjectScope, WindowId,
 };
 
 use crate::autocmd::AutoCmdRegistry;
+use crate::editor_tabs::TabPage;
 use crate::mappings::MappingRegistry;
 use crate::search::SearchState;
 use crate::{BufferState, WindowState};
@@ -108,6 +109,12 @@ pub struct EditorState {
     pub prev_window: Option<WindowId>,
     /// Key mapping registry.
     pub mappings: MappingRegistry,
+    /// Tab pages.
+    pub tabs: Vec<TabPage>,
+    /// Active tab index.
+    pub active_tab: usize,
+    /// Next tab ID counter.
+    pub next_tab_id: u64,
 }
 
 impl EditorState {
@@ -162,6 +169,9 @@ impl EditorState {
             quickfix_pos: 0,
             prev_window: None,
             mappings: MappingRegistry::new(),
+            tabs: vec![TabPage::new(TabId(1), win_id)],
+            active_tab: 0,
+            next_tab_id: 2,
         }
     }
 

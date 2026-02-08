@@ -59,6 +59,16 @@ impl NormalModeState {
                     1,
                 )
             }
+            KeyCode::Char('t') => {
+                if self.count.is_some() {
+                    Action::TabGoto(count as usize)
+                } else {
+                    Action::TabNext
+                }
+            }
+            KeyCode::Char('T') => {
+                Action::TabPrev
+            }
             _ => Action::Nop,
         };
         self.reset();

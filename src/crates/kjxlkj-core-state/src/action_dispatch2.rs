@@ -80,6 +80,24 @@ impl EditorState {
             Action::SplitOpen(path) => self.do_split_open(&path),
             Action::VsplitOpen(path) => self.do_vsplit_open(&path),
             Action::ResizeCmd(args) => self.do_resize_cmd(&args),
+            Action::TabNew(path) => self.do_tab_new(path.as_deref()),
+            Action::TabClose => self.do_tab_close(),
+            Action::TabOnly => self.do_tab_only(),
+            Action::TabNext => self.do_tab_next(),
+            Action::TabPrev => self.do_tab_prev(),
+            Action::TabFirst => self.do_tab_first(),
+            Action::TabLast => self.do_tab_last(),
+            Action::TabGoto(n) => self.do_tab_goto(n),
+            Action::TabMove(args) => self.do_tab_move(&args),
+            Action::MapCommand(cmd, args) => {
+                self.do_map_command(&cmd, &args);
+            }
+            Action::UnmapCommand(cmd, args) => {
+                self.do_unmap_command(&cmd, &args);
+            }
+            Action::UserCommand(_) => {} // User command stub
+            Action::SourceFile(path) => self.do_source_file(&path),
+            Action::SetOption(args) => self.do_set_option(&args),
             Action::FocusGained | Action::FocusLost => {}
             Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}

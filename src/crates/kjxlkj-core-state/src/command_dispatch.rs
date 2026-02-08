@@ -122,7 +122,9 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
                 full_with_range(cmd),
             ))
         }
-        "set" => Some(Action::Nop),
+        "set" => {
+            Some(Action::SetOption(args.to_string()))
+        }
         "reg" | "registers" => Some(Action::Nop),
         "marks" => Some(Action::Nop),
         "history" => Some(Action::Nop),
@@ -133,9 +135,39 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
                 Some(Action::Nop)
             }
         }
-        "source" | "so" => Some(Action::Nop),
+        "source" | "so" => {
+            if !args.is_empty() {
+                Some(Action::SourceFile(
+                    args.to_string(),
+                ))
+            } else {
+                Some(Action::Nop)
+            }
+        }
         "filetype" | "ft" => Some(Action::Nop),
         "autocmd" | "au" => Some(Action::Nop),
+        // Mapping commands
+        "map" | "noremap" | "nmap" | "nnoremap"
+        | "imap" | "inoremap" | "vmap" | "vnoremap"
+        | "cmap" | "cnoremap" | "tmap" | "tnoremap"
+        | "omap" | "onoremap" => {
+            Some(Action::MapCommand(
+                name_clean.to_string(),
+                args.to_string(),
+            ))
+        }
+        "unmap" | "nunmap" | "iunmap" | "vunmap"
+        | "cunmap" | "tunmap" | "ounmap" => {
+            Some(Action::UnmapCommand(
+                name_clean.to_string(),
+                args.to_string(),
+            ))
+        }
+        "command" => {
+            Some(Action::UserCommand(
+                args.to_string(),
+            ))
+        }
         "cnext" | "cn" => Some(Action::Nop),
         "cprev" | "cp" | "cprevious" => Some(Action::Nop),
         "cfirst" | "cfir" => Some(Action::Nop),
@@ -174,8 +206,35 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
                 Some(Action::NewVsplit)
             }
         }
-        "tab" | "tabnew" | "tabe" => {
-            Some(Action::Nop)
+        "tab" | "tabnew" | "tabe" | "tabedit" => {
+            if args.is_empty() {
+                Some(Action::TabNew(None))
+            } else {
+                Some(Action::TabNew(Some(
+                    args.to_string(),
+                )))
+            }
+        }
+        "tabclose" | "tabc" => {
+            Some(Action::TabClose)
+        }
+        "tabonly" | "tabo" => {
+            Some(Action::TabOnly)
+        }
+        "tabnext" | "tabn" => {
+            Some(Action::TabNext)
+        }
+        "tabprevious" | "tabprev" | "tabp" => {
+            Some(Action::TabPrev)
+        }
+        "tabfirst" | "tabfir" | "tabrewind" => {
+            Some(Action::TabFirst)
+        }
+        "tablast" | "tabl" => {
+            Some(Action::TabLast)
+        }
+        "tabmove" | "tabm" => {
+            Some(Action::TabMove(args.to_string()))
         }
         "resize" => {
             Some(Action::ResizeCmd(args.to_string()))

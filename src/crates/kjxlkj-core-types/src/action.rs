@@ -221,6 +221,34 @@ pub enum Action {
     VsplitOpen(String),
     /// Resize height/width: `:resize {n}`.
     ResizeCmd(String),
+    /// Create new tab page: `:tabnew [path]`.
+    TabNew(Option<String>),
+    /// Close current tab: `:tabclose`.
+    TabClose,
+    /// Close all other tabs: `:tabonly`.
+    TabOnly,
+    /// Go to next tab: `:tabnext` / `gt`.
+    TabNext,
+    /// Go to previous tab: `:tabprev` / `gT`.
+    TabPrev,
+    /// Go to first tab: `:tabfirst`.
+    TabFirst,
+    /// Go to last tab: `:tablast`.
+    TabLast,
+    /// Go to specific tab number (1-indexed).
+    TabGoto(usize),
+    /// Move current tab: `:tabmove {n}`.
+    TabMove(String),
+    /// Mapping command: `:nmap`/`:nnoremap`/etc.
+    MapCommand(String, String),
+    /// Unmap command: `:nunmap`/etc.
+    UnmapCommand(String, String),
+    /// User command definition: `:command`.
+    UserCommand(String),
+    /// Source file: `:source {file}`.
+    SourceFile(String),
+    /// Set option: `:set`.
+    SetOption(String),
     /// No operation (sentinel / default).
     Nop,
 }
