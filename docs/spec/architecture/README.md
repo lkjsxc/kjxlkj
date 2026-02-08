@@ -9,6 +9,8 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [workspace-manifest.md](workspace-manifest.md) | Root workspace manifest and dependency policy |
 | [plugins.md](plugins.md) | Plugin architecture |
 | [runtime.md](runtime.md) | Runtime design |
+| [render-pipeline.md](render-pipeline.md) | Render pipeline detail |
+| [input-decoding.md](input-decoding.md) | Input decoding and keybinding resolution |
 
 ## System shape
 
