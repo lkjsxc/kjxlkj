@@ -88,6 +88,15 @@ Gate 3: Verify and synchronize docs
 - Check TODO items only after evidence is green.
 </execution_model>
 
+<skeleton_section_policy>
+Many spec files contain heading-only sections with no content. When encountering an empty section:
+
+1. If the feature is covered by a parent spec or a related spec (e.g., the heading is in a detailed sub-file but the behavior is fully defined in the README), implement according to the parent spec.
+2. If the heading describes a standard Vim/Neovim behavior (e.g., `:argdo`, mark ranges, replace mode backspace), implement the standard behavior. Vim documentation at `:help {topic}` is the fallback reference.
+3. If the heading describes a novel feature with no clear spec, implement a reasonable minimal version and mark it `scaffold-only` in conformance.
+4. Do NOT skip features just because their spec section is empty — the heading itself signals that the feature is expected.
+</skeleton_section_policy>
+
 <anti_gaming_rules>
 Prohibited:
 - Evidence-free completion.

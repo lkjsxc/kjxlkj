@@ -4,141 +4,77 @@ Displaying and filtering buffers.
 
 ## Overview
 
-View all open buffers with
-status and information.
+The `:ls` (`:buffers`, `:files`) command lists open buffers with their status flags.
 
-## Basic Commands
+## Commands (normative)
 
-### List Buffers
-
+| Command | Shows |
+|---|---|
+| `:ls` | All listed buffers |
+| `:ls!` | All buffers including unlisted |
+| `:filter /pattern/ ls` | Buffers matching pattern |
 
 ## Output Format
 
-### Example
+Each line: `{bufnr} {flags} "{name}" line {lnum}`
 
+Example output:
 
-### Columns
+- `  1 %a   "src/main.rs"          line 42`
+- `  2 #h   "src/lib.rs"           line 1`
+- `  3  h+  "README.md"            line 15`
 
-1. Buffer number
-2. Flags
-3. Filename
-4. Current line
+## Buffer Flags (normative)
 
-## Buffer Flags
-
-### Indicators
-
-| Flag | Meaning                |
-|------|------------------------|
-| `%`  | Current buffer         |
-| `#`  | Alternate buffer       |
-| `a`  | Active (in window)     |
-| `h`  | Hidden (loaded)        |
-| ` `  | Not loaded             |
-| `+`  | Modified               |
-| `-`  | Read-only (modifiable) |
-| `=`  | Read-only (file perms) |
-| `R`  | Running terminal       |
-| `F`  | Finished terminal      |
-| `?`  | Not read yet           |
-| `u`  | Unlisted buffer        |
-
-## List Variants
-
-### Include Unlisted
-
-
-### Filter Modified
-
-
-### Filter Active
-
-
-## Filter Command
-
-### Pattern Matching
-
-
-### Inverse Filter
-
-
-## Buffer Information
-
-### Get Info
-
-
-### All Info
-
+| Flag | Position | Meaning |
+|---|---|---|
+| `%` | 1 | Current buffer |
+| `#` | 1 | Alternate buffer |
+| ` ` | 1 | Neither current nor alternate |
+| `a` | 2 | Active (loaded and displayed in a window) |
+| `h` | 2 | Hidden (loaded but not displayed) |
+| ` ` | 2 | Not loaded |
+| `+` | 3 | Modified |
+| `-` | 3 | Read-only (modifiable off) |
+| `=` | 3 | Read-only (file permission) |
+| `R` | 4 | Running terminal |
+| `F` | 4 | Finished terminal |
+| `?` | 4 | Not yet read |
+| `u` | special | Unlisted (only shown with `:ls!`) |
 
 ## Buffer Types
 
-### Regular Files
-
-Normal editing buffers.
-
-### Special Buffers
-
-| Type      | Purpose            |
-|-----------|-------------------|
-| nofile    | Scratch           |
-| nowrite   | Can't save        |
-| help      | Help buffer       |
-| quickfix  | Error list        |
-| terminal  | Terminal          |
-| prompt    | Input prompt      |
-
-### Check Type
-
-
-## Unlisted Buffers
-
-### What's Unlisted
-
-- Help buffers
-- Quickfix
-- Preview
-- Terminal
-
-### Make Listed
-
+| `buftype` value | Purpose | Listed by default |
+|---|---|---|
+| (empty) | Normal file buffer | Yes |
+| `nofile` | Scratch / temporary content | No |
+| `nowrite` | Cannot be saved | No |
+| `help` | Help documentation | No |
+| `quickfix` | Quickfix/location list | No |
+| `terminal` | Terminal emulator | No |
+| `prompt` | Input prompt | No |
 
 ## Buffer States
 
-### Loaded
+| State | Description |
+|---|---|
+| Active | Content in memory AND displayed in a window |
+| Hidden | Content in memory but NO window shows it |
+| Unloaded | In buffer list but content not in memory |
+| Wiped | Completely removed from buffer list |
 
-Content in memory.
+## Navigation from Listing
 
-### Hidden
+| Command | Action |
+|---|---|
+| `:b {N}` | Switch to buffer number N |
+| `:b {name}` | Switch by partial name match |
+| `:bnext` / `:bn` | Next buffer |
+| `:bprev` / `:bp` | Previous buffer |
+| `:bfirst` / `:bf` | First buffer |
+| `:blast` / `:bl` | Last buffer |
 
-Loaded but no window.
+## Related
 
-### Unloaded
-
-Not in memory.
-
-### Deleted
-
-Removed from list.
-
-## Commands
-
-### By Number
-
-
-### By Name
-
-
-## Buffer Picker
-
-### Fuzzy Find
-
-
-### Features
-
-- Search by name
-- Preview content
-- Delete option
-
-## Buffer Line UI
-
-### Enable
+- Buffer management: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
+- Advanced buffers: [/docs/spec/features/buffer/buffer-advanced.md](/docs/spec/features/buffer/buffer-advanced.md)

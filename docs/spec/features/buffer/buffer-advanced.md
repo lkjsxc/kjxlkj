@@ -4,130 +4,70 @@ Deep buffer control and strategies.
 
 ## Overview
 
-Advanced techniques for managing
-multiple buffers efficiently.
+Beyond basic open/close, buffers support typed behavior, lifecycle management, hidden policies, and batch operations.
 
-## Buffer States
+## Buffer States (normative)
 
-### State Types
+| State | In memory | In window | In list |
+|---|---|---|---|
+| Active | Yes | Yes | Yes |
+| Hidden | Yes | No | Yes |
+| Inactive (unloaded) | No | No | Yes |
+| Wiped | No | No | No |
 
-| State | Description |
-|-------|-------------|
-| Active | Displayed in window |
-| Hidden | Loaded, not displayed |
-| Inactive | Not loaded |
-| Modified | Has unsaved changes |
-| Readonly | Cannot modify |
+## Buffer Types (normative)
 
-### Check State
+Set via the `buftype` option.
 
+| `buftype` | Purpose | Writable | File-backed |
+|---|---|---|---|
+| (empty) | Normal file editing | Yes | Yes |
+| `nofile` | Scratch/temporary | Yes | No |
+| `nowrite` | Display only | Yes | No |
+| `help` | Help documentation | No | Yes (read-only) |
+| `quickfix` | Quickfix/location list | No | No |
+| `terminal` | Terminal emulator buffer | No (special) | No |
+| `prompt` | Input prompt | Restricted | No |
 
-## Buffer Types
+## Hidden Behavior (normative)
 
-### Special Buffers
-
-| Type | Purpose |
-|------|---------|
-| Normal | Regular file editing |
-| Help | Documentation |
-| Quickfix | Error/search lists |
-| Terminal | Terminal emulator |
-| Prompt | Input prompts |
-| Scratch | Temporary content |
-| Nofile | No associated file |
-
-### Set Type
-
-
-## Buffer Lifecycle
-
-### Create
-
-
-### Delete
-
-
-### Unload
-
-
-## Buffer Navigation
-
-### Direct Jump
-
-
-### Relative
-
-
-### Alternate
-
-
-## Buffer Lists
-
-### Standard List
-
-
-### Flags
-
-| Flag | Meaning |
-|------|---------|
-| `%` | Current buffer |
-| `#` | Alternate buffer |
-| `a` | Active (loaded, displayed) |
-| `h` | Hidden (loaded, not displayed) |
-| `+` | Modified |
-| `-` | Readonly |
-| `=` | Readonly |
-| `u` | Unlisted |
-
-## Buffer Filtering
-
-### By Modified
-
-
-### By Type
-
-
-## Buffer Commands
-
-### Apply to All
-
-
-### Apply with Pattern
-
-
-## Buffer Variables
-
-### Local Variables
-
-
-### Check Variable
-
-
-## Buffer Options
-
-### Local Options
-
-
-### Buffer-Local Only
-
-| Option | Description |
-|--------|-------------|
-| `buftype` | Buffer type |
-| `bufhidden` | Hidden behavior |
-| `buflisted` | In buffer list |
-| `swapfile` | Use swap file |
-| `modified` | Has changes |
-
-## Buffer Hidden Behavior
-
-### bufhidden Options
+The `bufhidden` option controls what happens when a buffer has no window:
 
 | Value | Behavior |
-|-------|----------|
-| `hide` | Hide when abandoned |
-| `unload` | Unload when hidden |
-| `delete` | Delete when hidden |
-| `wipe` | Wipe when hidden |
+|---|---|
+| (empty) | Use global `hidden` option |
+| `hide` | Keep buffer loaded but hidden |
+| `unload` | Unload buffer (free memory, keep in list) |
+| `delete` | Delete buffer from list |
+| `wipe` | Wipe buffer completely (remove from list) |
 
-### Configuration
+## Lifecycle Commands
 
+| Command | Effect |
+|---|---|
+| `:badd {file}` | Add file to buffer list without loading |
+| `:bunload {N}` | Unload buffer N (keep in list) |
+| `:bdelete {N}` | Delete buffer N (remove from list) |
+| `:bwipeout {N}` | Wipe buffer N completely |
+| `:bufdo {cmd}` | Execute command in each listed buffer |
+
+## Batch Operations
+
+`:bufdo` iterates over all listed buffers, executing the given Ex command. The current buffer is saved/restored. Modified buffers without `hidden` set cause an error.
+
+## Buffer-Local Options
+
+| Option | Description |
+|---|---|
+| `buftype` | Buffer type (see above) |
+| `bufhidden` | Hidden behavior |
+| `buflisted` | Whether buffer appears in `:ls` |
+| `swapfile` | Whether a swap file is created |
+| `modified` | Read-only flag indicating unsaved changes |
+| `modifiable` | Whether content can be modified |
+| `readonly` | Whether buffer is read-only |
+
+## Related
+
+- Buffers: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
+- Buffer listing: [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)

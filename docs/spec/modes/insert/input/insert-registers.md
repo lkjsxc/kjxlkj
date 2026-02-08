@@ -4,120 +4,46 @@ Inserting register content in insert mode.
 
 ## Overview
 
-Access registers to paste content
-without leaving insert mode.
+`Ctrl-r` followed by a register name inserts that register's content at the cursor position without leaving insert mode.
 
-## Basic Command
+## Key Sequences (normative)
 
-### Syntax
+| Key sequence | Behavior |
+|---|---|
+| `Ctrl-r {reg}` | Insert register contents; interprets mappings, triggers abbreviations, applies autoindent |
+| `Ctrl-r Ctrl-r {reg}` | Insert literally; no mapping interpretation, no abbreviation trigger, applies autoindent |
+| `Ctrl-r Ctrl-o {reg}` | Insert literally; no autoindent, preserves original formatting |
+| `Ctrl-r Ctrl-p {reg}` | Insert literally and fix indent |
 
+## Register Names
 
-### Behavior
+| Register | Content |
+|---|---|
+| `"` | Unnamed (last delete or yank) |
+| `0` | Last yank |
+| `1`-`9` | Last deletes (1 = most recent) |
+| `a`-`z` | Named registers |
+| `+` | System clipboard |
+| `*` | Primary selection (X11) |
+| `/` | Last search pattern |
+| `:` | Last command-line command |
+| `.` | Last inserted text |
+| `%` | Current file name |
+| `#` | Alternate file name |
+| `-` | Small delete (less than one line) |
+| `=` | Expression register (prompts for expression) |
 
-Inserts register content at cursor.
+## Expression Register (=)
 
-## Common Registers
-
-### Unnamed Register
-
-
-### Yank Register
-
-
-### Named Registers
-
-
-### Clipboard
-
-
-## Special Registers
-
-### Current File
-
-
-### Alternate File
-
-
-### Last Command
-
-
-### Last Search
-
-
-### Last Insert
-
-
-### Small Delete
-
-
-## Expression Register
-
-### Evaluate Expression
-
-
-### Examples
-
-
-## Insert Modes
-
-### Standard Insert
-
-
-### Literal Insert
-
-
-No interpretation of special chars.
-
-### No Indent
-
-
-### Fix Indent
-
-
-## Differences
-
-### <C-r>{reg}
-
-- Interprets mappings
-- Triggers abbreviations
-- Applies autoindent
-
-### <C-r><C-r>{reg}
-
-- No mapping interpretation
-- No abbreviation trigger
-- Applies autoindent
-
-### <C-r><C-o>{reg}
-
-- Literal insert
-- No autoindent
-- Preserves format
-
-## Word Under Cursor
-
-### In Command Line
-
-
-### In Insert Mode
-
-Use expression register:
-
-## Register Content
-
-### Check Content
-
-From normal mode:
-
-### Preview in Insert
-
-Not built-in, but:
+`Ctrl-r =` opens a prompt in the command line. The user types an expression, presses Enter, and the result is inserted. This enables computed insertions (e.g., arithmetic, string manipulation).
 
 ## Multi-line Content
 
-### Linewise Register
+- Linewise register: text is inserted as new lines above/below the cursor line depending on context.
+- Blockwise register: text is inserted starting at the cursor column, with each block line on a successive screen line.
+- Characterwise register: text is inserted inline at the cursor position.
 
+## Related
 
-### Blockwise Register
-
-Inserts block at cursor column.
+- Registers: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)

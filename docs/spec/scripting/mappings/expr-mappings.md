@@ -4,101 +4,58 @@ Dynamic mappings using expressions.
 
 ## Overview
 
-Expression mappings execute code and use
-the result as the mapping's key sequence.
+Expression mappings evaluate an expression at invocation time and use the result string as the key sequence to execute. This enables context-dependent key behavior.
 
-## Basic Syntax
+## Syntax (normative)
 
-### Expression Flag
+The `<expr>` flag in a mapping declaration makes it an expression mapping:
 
+- `:map <expr> {lhs} {expr}` - the expression is evaluated when `{lhs}` is typed, and the result is fed back as input keys.
 
-### Inline Expression
+## Evaluation Context
 
+The expression has access to:
 
-## Visual Line Navigation
+| Function / Variable | Returns |
+|---|---|
+| `mode()` | Current mode string |
+| `pumvisible()` | 1 if popup menu is visible, 0 otherwise |
+| `col(".")` | Current column number |
+| `line(".")` | Current line number |
+| `&filetype` | Current buffer filetype |
+| `&modified` | Whether buffer is modified |
+| `bufname()` | Current buffer name |
+| `winnr()` | Current window number |
+| `visualmode()` | Last visual mode character (`v`, `V`, or `Ctrl-v`) |
 
-### Smart j/k
+## Common Patterns
 
+### Smart Tab
 
-Move by display lines when no count given.
+Map Tab to trigger completion if the popup menu is visible, otherwise insert a literal Tab:
 
-## Conditional Mappings
+- `<expr>` mapping for `<Tab>`: if `pumvisible()` returns 1, produce `<C-n>`; otherwise produce `<Tab>`.
 
-### Mode Check
+### Smart j/k (display line navigation)
 
+Map `j` and `k` to move by display lines when no count is given (useful with `wrap`):
 
-### Buffer Check
+- `<expr>` mapping for `j`: if count is 0, produce `gj`; otherwise produce `j`.
+- `<expr>` mapping for `k`: if count is 0, produce `gk`; otherwise produce `k`.
 
+### Conditional by Mode
 
-## Available Functions
-
-### State Functions
-
-| Function | Returns |
-|----------|---------|
-| `pumvisible()` | Popup menu visible |
-| `mode()` | Current mode |
-| `visualmode()` | Last visual mode |
-| `col(".")` | Current column |
-| `line(".")` | Current line |
-
-### Buffer Functions
-
-| Function | Returns |
-|----------|---------|
-| `&filetype` | Buffer filetype |
-| `&modified` | Buffer modified |
-| `bufname()` | Buffer name |
-| `winnr()` | Window number |
-
-## Smart Tab
-
-### Completion Aware
-
-
-### Snippet Aware
-
-
-## Smart Enter
-
-### Completion Accept
-
-
-### Auto-Close Aware
-
+An expression mapping in visual mode can check `visualmode()` to decide behavior.
 
 ## Ternary Expressions
 
-### Simple Ternary
+Expressions use ternary syntax: `condition ? true_value : false_value`. These can be nested for multi-way branching.
 
+## Return Value
 
-### Nested Ternary
+The expression MUST return a string. The string is interpreted as a sequence of key presses (with special keys like `<CR>`, `<Esc>` recognized). An empty string means "do nothing."
 
+## Related
 
-## Variables
-
-### Access Variables
-
-
-### Counts
-
-
-## Register Expressions
-
-### Dynamic Register
-
-
-## Motion Expressions
-
-### Conditional Motion
-
-
-## Operator Expressions
-
-### Smart Operator
-
-
-## Insert Expressions
-
-### Smart Backspace
-
+- Key mappings: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
+- Modes: [/docs/spec/modes/README.md](/docs/spec/modes/README.md)

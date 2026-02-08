@@ -1,125 +1,67 @@
 # Command-Line Completion
 
-Custom completion sources.
+Custom completion sources and wildmenu behavior.
 
 ## Overview
 
-Configure completion for command-line
-mode with custom sources and behavior.
+Tab completion in command-line mode expands commands, file paths, buffer names, options, and custom sources.
 
-## Built-in Completions
+## Built-in Completion Types (normative)
 
-### Types
+| Type | Completes | Trigger context |
+|---|---|---|
+| `command` | Ex commands | After `:` at first word |
+| `file` | File paths | After commands that take file arguments |
+| `dir` | Directory paths | Same, directory-only |
+| `buffer` | Buffer names | After `:b`, `:sb`, etc. |
+| `option` | Options | After `:set` |
+| `help` | Help topics | After `:help` |
+| `color` | Color schemes | After `:colorscheme` |
+| `highlight` | Highlight groups | After `:highlight` |
+| `filetype` | File types | After `:setfiletype` |
+| `shellcmd` | Shell commands | After `:!` |
+| `event` | Autocommand events | After `:autocmd` |
 
-| Type | Completes |
-|------|-----------|
-| `file` | File paths |
-| `dir` | Directory paths |
-| `buffer` | Buffer names |
-| `command` | Commands |
-| `option` | Options |
-| `color` | Colorschemes |
-| `highlight` | Highlight groups |
-| `event` | Autocommand events |
-| `help` | Help topics |
-| `filetype` | Filetypes |
-| `shellcmd` | Shell commands |
+## Wildmode (normative)
 
-### Usage in Commands
+The `wildmode` option controls completion cycling behavior. It is a comma-separated list applied in order on successive Tab presses.
 
+| Component | Behavior |
+|---|---|
+| (empty) | Complete to longest common prefix |
+| `full` | Complete to next full match, cycling |
+| `longest` | Complete to longest common string |
+| `longest:full` | Longest first, then cycle full matches |
+| `list` | Show all matches in a list |
+| `list:full` | List matches, then cycle full |
+| `list:longest` | List matches, then complete to longest |
 
-## Custom Completions
+Default: `full`.
 
-### Static List
-
-
-### Dynamic List
-
-
-## Completion Behavior
-
-### Configuration
-
-
-### Wildmode Options
-
-| Mode | Description |
-|------|-------------|
-| `""` | Complete to longest match |
-| `full` | Complete to next full match |
-| `longest` | Complete to longest common |
-| `longest:full` | Longest, then cycle full |
-| `list` | Show list of matches |
-| `list:full` | List, then cycle full |
-
-## Completion Keys
-
-### Navigation
+## Completion Keys (normative)
 
 | Key | Action |
-|-----|--------|
+|---|---|
 | `Tab` | Next completion |
 | `Shift-Tab` | Previous completion |
-| `Ctrl-N` | Next |
-| `Ctrl-P` | Previous |
-| `Ctrl-Y` | Accept |
-| `Ctrl-E` | Cancel |
+| `Ctrl-n` | Next (same as Tab) |
+| `Ctrl-p` | Previous (same as Shift-Tab) |
+| `Ctrl-y` | Accept current completion |
+| `Ctrl-e` | Cancel completion, restore original text |
 
-### Configuration
+## Wildmenu Display
 
+When `wildmenu` is enabled (default: true), completions are displayed in a horizontal bar above the command line, with the current selection highlighted.
 
-## Fuzzy Completion
+## File Completion Details
 
-### Enable
+`wildignore` option: comma-separated glob patterns for files to exclude from completion (e.g., `*.o,*.pyc,target/**`).
 
+## Fuzzy Matching
 
-### Example
+When `wildoptions` contains `fuzzy`, completion uses fuzzy matching: characters need not be contiguous but must appear in order. Scoring prefers prefix matches and consecutive character runs.
 
-`:ed mai` matches `main.rs`
+## Related
 
-## File Completion
-
-### Ignore Patterns
-
-
-### Show Hidden
-
-
-## Buffer Completion
-
-### Options
-
-
-## Path Expansion
-
-### Home Directory
-
-
-### Environment Variables
-
-
-## History Completion
-
-### Command History
-
-
-### Search History
-
-
-### Configuration
-
-
-## Inline Completion
-
-### Suggestions
-
-
-Shows grayed suggestion inline.
-
-## Menu Appearance
-
-### Styling
-
-
-### Position
-
+- Command-line entry: [/docs/spec/commands/cmdline/cmdline-entry.md](/docs/spec/commands/cmdline/cmdline-entry.md)
+- Command-line editing: [/docs/spec/commands/cmdline/cmdline-editing.md](/docs/spec/commands/cmdline/cmdline-editing.md)

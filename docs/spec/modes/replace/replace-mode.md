@@ -1,136 +1,66 @@
-# Replace Mode
+# Replace Mode Detail
 
-Overtype existing characters.
+Back: [/docs/spec/modes/replace/README.md](/docs/spec/modes/replace/README.md)
 
-## Overview
+Replace mode overwrites characters one at a time as the user types.
 
-Replace mode overwrites characters
-instead of inserting new ones.
+## Entry and exit
 
-## Enter Replace Mode
+| Key | From | Action |
+|---|---|---|
+| `R` | Normal | Enter Replace mode at cursor position |
+| `Esc` | Replace | Return to Normal mode |
+| `r{char}` | Normal | Replace single character (does not enter Replace mode) |
 
-### From Normal Mode
+## Overstrike behavior (normative)
 
+In Replace mode, each typed character replaces the character at the cursor position:
 
-### Single Character
+1. The character under the cursor is replaced with the typed character.
+2. The cursor advances one grapheme to the right.
+3. If the cursor is at the end of the line, new characters are appended (like Insert mode).
+4. Each replacement is a separate change in the undo record.
 
+## Backspace behavior
 
-## Replace Mode Behavior
+Backspace in Replace mode MUST restore the original character:
 
-### Typing
+| Condition | Behavior |
+|---|---|
+| Within replaced region | Move cursor left, restore original character |
+| Before replaced region | Move cursor left (no restore; original was never changed) |
+| At line start | No action (stay at position 0) |
 
-Each character replaces
-the character under cursor.
+The implementation MUST maintain a stack of replaced characters to support correct backspace restoration.
 
-### Example
+## Tab and wide character handling
 
+| Scenario | Behavior |
+|---|---|
+| Replacing a tab with a regular character | Tab is removed; single character placed at cursor; subsequent characters shift |
+| Replacing a regular character with a tab | Regular character removed; tab inserted at cursor; display width changes |
+| Replacing width-1 with width-2 (CJK) | Width-1 character removed; width-2 character replaces it; subsequent characters shift |
+| Replacing width-2 with width-1 | Width-2 character removed; width-1 character placed; padding cell consumed |
 
-## Movement
+## Count with R
 
-### Cursor Moves Right
+`{count}R{text}Esc` replaces text and then repeats the replacement `count - 1` additional times after the first replacement.
 
-After each character typed,
-cursor advances to next position.
+## Newline in replace mode
 
-### At Line End
+Pressing Enter in Replace mode inserts a newline at the cursor position (like Insert mode), breaking the current line.
 
-New characters extend the line.
+## Virtual replace mode
 
-## Backspace
+`gR` enters Virtual Replace mode, which respects screen columns rather than character positions. See [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md).
 
-### Undo Replace
+## Undo
 
+When leaving Replace mode via Esc, all replacements made since entering Replace mode form a single undo group.
 
-### Behavior
+## Related
 
-Backspace restores the original
-character, not just deletes.
-
-### Example
-
-
-## Exit Replace Mode
-
-### Commands
-
-
-## Single Replace
-
-### One Character
-
-
-### Example
-
-
-### With Count
-
-
-## Replace Newline
-
-### Special Case
-
-
-### Effect
-
-Splits line at cursor position.
-
-## Replace Tab
-
-### Behavior
-
-
-Tab may replace multiple
-display columns.
-
-## Replace Mode Variants
-
-### Standard Replace
-
-
-### Virtual Replace
-
-
-## Virtual Replace Mode
-
-### Enter
-
-
-### Behavior
-
-Considers tabs as spaces.
-Doesn't corrupt tab alignment.
-
-### Example
-
-
-## Virtual Replace Character
-
-### Single
-
-
-### Tab Handling
-
-Replaces virtual position,
-preserves surrounding tabs.
-
-## Replace vs Insert
-
-### Replace
-
-- Overwrites existing
-- Length may change at EOL
-- Original recoverable with BS
-
-### Insert
-
-- Shifts text right
-- Length always increases
-- No overwrite
-
-## Common Operations
-
-### Fix Single Char
-
-
-### Overtype Section
-
+- Replace overview: [/docs/spec/modes/replace/README.md](/docs/spec/modes/replace/README.md)
+- Overstrike: [/docs/spec/modes/replace/overstrike.md](/docs/spec/modes/replace/overstrike.md)
+- Virtual replace: [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md)
+- Mode transitions: [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)

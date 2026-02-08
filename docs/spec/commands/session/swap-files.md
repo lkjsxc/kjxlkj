@@ -4,134 +4,68 @@ Crash recovery and swap files.
 
 ## Overview
 
-Swap files protect against
-data loss from crashes.
+Swap files protect against data loss from crashes. A swap file is created when a buffer is loaded and deleted on normal exit. If a crash occurs, the swap file enables recovery.
 
-## Purpose
+## Swap File Location (normative)
 
-### Recovery
+| Option | Default | Description |
+|---|---|---|
+| `directory` | `~/.local/share/kjxlkj/swap//` | Comma-separated list of directories for swap files |
 
-- Save editing state
-- Recover after crash
-- Prevent dual editing
+When `//` is appended to a directory path, the swap file name encodes the full path of the original file (replacing `/` with `%`), preventing collisions.
 
-## Swap File Location
+## Swap File Naming
 
-### Default
+Swap files are named `{encoded_path}.swp`. If the directory option uses `//`, the encoded path replaces path separators with `%`. Example: `/home/user/file.rs` becomes `%home%user%file.rs.swp`.
 
+## Enable / Disable
 
-### Configuration
+| Scope | Option | Effect |
+|---|---|---|
+| Global | `swapfile` (boolean) | Default for new buffers |
+| Per-buffer | `:setlocal noswapfile` | Disable for one buffer |
 
+## Write Timing (normative)
 
-### Same Directory
+| Trigger | Condition |
+|---|---|
+| Timer | Every `updatetime` milliseconds (default 4000) of inactivity |
+| Character count | After `updatecount` characters typed (default 200) |
+| Explicit | On `:preserve` command |
 
+## Swap Detection on Open (normative)
 
-## Enable/Disable
+When opening a file, if a swap file already exists:
 
-### Global
+1. Display a warning dialog showing: swap file path, process ID that created it, last modified time.
+2. Present choices:
 
-
-### Per Buffer
-
-
-## Swap File Names
-
-### Format
-
-
-### In Swap Directory
-
-
-## Swap Detection
-
-### On Open
-
-
-### Options
-
-| Choice | Action                |
-|--------|-----------------------|
-| O      | Open Read-Only        |
-| E      | Edit anyway           |
-| R      | Recover               |
-| D      | Delete and edit       |
-| Q      | Quit                  |
-| A      | Abort                 |
-
-## Recovery
-
-### Recover File
-
-
-### After Recovery
-
-
-### Delete Swap
-
-After successful recovery:
+| Choice | Action |
+|---|---|
+| (O)pen Read-Only | Open the file read-only, leave swap alone |
+| (E)dit anyway | Open normally, create a new swap file |
+| (R)ecover | Apply the swap file's changes to recover content |
+| (D)elete it | Delete the stale swap file and open normally |
+| (Q)uit | Abort opening this file |
+| (A)bort | Abort the entire startup |
 
 ## Recovery Process
 
-### Steps
+When the user chooses (R)ecover:
 
-1. Open shows swap warning
-2. Choose `R` to recover
-3. Review recovered content
-4. `:w` to save
-5. Delete swap file
-
-### Diff Original
-
+1. Read the swap file to reconstruct the buffer state at the time of the crash.
+2. Mark the buffer as modified (since the recovered content differs from the file on disk).
+3. The user should review the content, `:w` to save, then delete the swap file manually or via `:e` (which detects the swap is now stale).
 
 ## Automatic Cleanup
 
-### On Normal Exit
+On normal exit (`:q`, `:wq`, `:x`), the swap file for each buffer is deleted. Swap files from crashed sessions remain until manually deleted or recovered.
 
-Swap files deleted on `:wq`.
+## Multiple Editor Protection
 
-### Stale Swaps
+The swap file's existence signals that another editor instance may have the file open. The swap file stores the creating process's PID. If the PID is still running, the editor can warn accordingly.
 
-From crashed sessions remain.
+## Related
 
-## List Swap Files
-
-### Find All
-
-
-### Check Current
-
-
-## Swap Write Timing
-
-### Updatetime
-
-
-### Updatecount
-
-
-## Disk Space
-
-### Monitor
-
-Large files = large swap files.
-
-### Cleanup Stale
-
-
-Caution: Check for recovery first.
-
-## Multiple Editors
-
-### Prevention
-
-Swap files indicate editing.
-
-### Detection
-
-Second editor sees swap warning.
-
-### Same Machine
-
-Works via swap presence.
-
-### Remote
+- Session management: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
+- Buffers: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)

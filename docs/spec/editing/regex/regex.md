@@ -1,134 +1,100 @@
 # Regular Expressions
 
-Pattern matching syntax.
+Back: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
 
-## Overview
+Pattern matching syntax for search and substitution. The regex engine uses the Rust `regex` crate as the backend.
 
-Regular expressions match text patterns
-for searching and substitution.
+## Engine choice (normative)
 
-## Basic Patterns
+The implementation MUST use the Rust `regex` crate (or `regex-automata`). This provides linear-time matching without backtracking, Unicode support, and deterministic performance.
 
-### Literal Text
+## Default syntax mode
 
+kjxlkj uses Vim-compatible "magic" mode by default for `/` and `?` search. See [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md) for mode details.
 
-### Case Sensitivity
+## Supported patterns (normative)
 
-
-## Metacharacters
-
-### Any Character
-
-
-### Character Classes
-
-
-### Predefined Classes
-
-| Pattern | Matches |
-|---------|---------|
-| `\d` | Digit [0-9] |
-| `\D` | Non-digit |
-| `\w` | Word char [a-zA-Z0-9_] |
-| `\W` | Non-word char |
-| `\s` | Whitespace |
-| `\S` | Non-whitespace |
-| `\a` | Alpha [a-zA-Z] |
-| `\l` | Lowercase |
-| `\u` | Uppercase |
-
-## Quantifiers
-
-### Basic
+### Literals and metacharacters
 
 | Pattern | Meaning |
-|---------|---------|
-| `*` | Zero or more |
-| `\+` | One or more |
-| `\?` | Zero or one |
-| `\{n}` | Exactly n |
-| `\{n,}` | n or more |
-| `\{n,m}` | n to m |
-
-### Non-Greedy
-
-| Pattern | Meaning |
-|---------|---------|
-| `\{-}` | Zero or more (minimal) |
-| `\{-n,m}` | n to m (minimal) |
-
-## Anchors
-
-### Position
-
-| Pattern | Meaning |
-|---------|---------|
+|---|---|
+| `.` | Any character except newline |
+| `\` | Escape next character |
 | `^` | Start of line |
 | `$` | End of line |
-| `\<` | Start of word |
-| `\>` | End of word |
-| `\zs` | Set match start |
-| `\ze` | Set match end |
+| `\<` | Start of word boundary |
+| `\>` | End of word boundary |
 
-### Examples
+### Character classes
 
+| Pattern | Meaning |
+|---|---|
+| `[abc]` | Any of a, b, c |
+| `[^abc]` | Any except a, b, c |
+| `[a-z]` | Range a through z |
+| `\d` | Digit `[0-9]` |
+| `\D` | Non-digit `[^0-9]` |
+| `\w` | Word character `[a-zA-Z0-9_]` |
+| `\W` | Non-word character |
+| `\s` | Whitespace (space, tab, newline) |
+| `\S` | Non-whitespace |
 
-## Groups
+### Quantifiers
 
-### Capturing Groups
+| Pattern | Meaning |
+|---|---|
+| `*` | Zero or more (greedy) |
+| `\+` | One or more (greedy) |
+| `\?` or `\=` | Zero or one |
+| `\{n}` | Exactly n times |
+| `\{n,m}` | Between n and m times |
+| `\{n,}` | At least n times |
+| `\{,m}` | At most m times |
+| `\{-}` | Zero or more (non-greedy) |
 
+### Grouping and alternation
 
-### Non-Capturing
+| Pattern | Meaning |
+|---|---|
+| `\(` ... `\)` | Capture group |
+| `\%(` ... `\)` | Non-capturing group |
+| `\|` | Alternation (OR) |
+| `\1` ... `\9` | Back-reference to capture group N |
 
+### Special atoms
 
-### Alternation
+| Pattern | Meaning |
+|---|---|
+| `\n` | Newline |
+| `\t` | Tab |
+| `\r` | Carriage return |
+| `\e` | Escape (0x1B) |
 
+## Translation to Rust regex
 
-## Lookahead/Lookbehind
+The implementation MUST translate Vim-style magic patterns to Rust regex syntax before compilation:
 
-### Positive Lookahead
-
-
-### Negative Lookahead
-
-
-### Positive Lookbehind
-
-
-### Negative Lookbehind
-
-
-## Special Sequences
-
-### Visual Selection
-
-
-### Column Position
-
-
-### Line Position
-
-
-## Escaping
-
-### Literal Metacharacters
-
-
-## Very Magic
-
-### Simplified Syntax
-
-
-### Comparison
-
-| Normal | Very Magic |
-|--------|------------|
-| `\(` | `(` |
-| `\)` | `)` |
-| `\|` | `|` |
+| Vim magic | Rust regex |
+|---|---|
 | `\+` | `+` |
 | `\?` | `?` |
+| `\(` ... `\)` | `(` ... `)` |
+| `\|` | pipe |
+| `\<` | `\b` (word boundary) |
+| `\>` | `\b` |
+| `\{n,m}` | `{n,m}` |
 
-## No Magic
+## Case sensitivity
 
-### Literal Mode
+| Mode | Trigger | Behavior |
+|---|---|---|
+| Default | (none) | Follows `ignorecase` option |
+| Smart case | `smartcase` option | Case-insensitive if pattern is all lowercase; case-sensitive if any uppercase |
+| Force insensitive | `\c` in pattern | Always case-insensitive |
+| Force sensitive | `\C` in pattern | Always case-sensitive |
+
+## Related
+
+- Magic modes: [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md)
+- Search: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
+- Substitute: [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
