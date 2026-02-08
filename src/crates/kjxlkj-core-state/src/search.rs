@@ -14,6 +14,10 @@ pub struct SearchState {
     pub matches: Vec<(usize, usize)>,
     /// Index of the currently selected match.
     pub current_match: Option<usize>,
+    /// Search history (most recent last).
+    pub history: Vec<String>,
+    /// History navigation index.
+    pub history_pos: Option<usize>,
 }
 
 impl SearchState {
@@ -32,6 +36,7 @@ impl SearchState {
         self.forward = forward;
         self.matches.clear();
         self.current_match = None;
+        self.push_history(pattern);
 
         if pattern.is_empty() {
             return;
@@ -111,6 +116,54 @@ impl SearchState {
     /// Get current match count.
     pub fn match_count(&self) -> usize {
         self.matches.len()
+    }
+
+    /// Push a pattern to search history.
+    pub fn push_history(&mut self, pattern: &str) {
+        if pattern.is_empty() {
+            return;
+        }
+        let s = pattern.to_string();
+        // Deduplicate: remove if present.
+        self.history.retain(|h| h != &s);
+        self.history.push(s);
+        // Cap at 100 entries.
+        if self.history.len() > 100 {
+            self.history.remove(0);
+        }
+        self.history_pos = None;
+    }
+
+    /// Navigate search history (true=older, false=newer).
+    pub fn navigate_history(
+        &mut self,
+        older: bool,
+    ) -> Option<&str> {
+        if self.history.is_empty() {
+            return None;
+        }
+        let pos = match self.history_pos {
+            Some(p) => {
+                if older {
+                    p.saturating_sub(1)
+                } else {
+                    (p + 1).min(
+                        self.history.len()
+                            .saturating_sub(1),
+                    )
+                }
+            }
+            None => {
+                if older {
+                    self.history.len()
+                        .saturating_sub(1)
+                } else {
+                    return None;
+                }
+            }
+        };
+        self.history_pos = Some(pos);
+        Some(&self.history[pos])
     }
 }
 

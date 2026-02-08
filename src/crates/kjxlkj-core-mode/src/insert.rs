@@ -9,6 +9,8 @@ pub struct InsertModeState {
     pub inserted: Vec<char>,
     /// Whether we are in a Ctrl-O insert-normal sub-state.
     pub insert_normal: bool,
+    /// Awaiting register char for Ctrl-R.
+    pub awaiting_register: bool,
 }
 
 impl InsertModeState {
@@ -20,10 +22,20 @@ impl InsertModeState {
     pub fn reset(&mut self) {
         self.inserted.clear();
         self.insert_normal = false;
+        self.awaiting_register = false;
     }
 
     /// Process a key event in Insert mode.
     pub fn process_key(&mut self, key: &Key) -> Action {
+        // If awaiting register char for Ctrl-R, consume it.
+        if self.awaiting_register {
+            self.awaiting_register = false;
+            if let KeyCode::Char(c) = key.code {
+                return Action::InsertRegister(c);
+            }
+            return Action::Nop;
+        }
+
         match (&key.code, key.modifiers) {
             // Escape → back to Normal.
             (KeyCode::Esc, _) => {
@@ -75,9 +87,10 @@ impl InsertModeState {
                 Action::DeleteCharBackward
             }
 
-            // Ctrl-R → paste from register (needs register char).
+            // Ctrl-R → paste from register (awaits register char).
             (KeyCode::Char('r'), m) if m.contains(KeyModifiers::CTRL) => {
-                Action::Put(true)
+                self.awaiting_register = true;
+                Action::Nop
             }
 
             // Arrow keys for cursor movement in insert mode.

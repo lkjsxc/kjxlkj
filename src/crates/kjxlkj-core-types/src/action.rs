@@ -169,6 +169,10 @@ pub enum Action {
     SessionLoad,
     /// Spawn terminal.
     SpawnTerminal,
+    /// Substitute command: `:s/pat/repl/flags`.
+    Substitute(String),
+    /// Insert text from a register in insert mode.
+    InsertRegister(char),
     /// No operation (sentinel / default).
     Nop,
 }

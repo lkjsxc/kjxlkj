@@ -54,6 +54,8 @@ impl EditorState {
             Action::SessionSave => {} // Handled at main loop level
             Action::SessionLoad => {} // Handled at main loop level
             Action::SpawnTerminal => {} // Handled at main loop level
+            Action::Substitute(args) => self.do_substitute(&args),
+            Action::InsertRegister(reg) => self.do_insert_register(reg),
             Action::FocusGained | Action::FocusLost => {}
             Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}

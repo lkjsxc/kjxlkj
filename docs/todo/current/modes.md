@@ -61,7 +61,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Character-wise visual (`v`)
 - [x] Line-wise visual (`V`)
 - [x] Block-wise visual (`Ctrl-v`)
-- [ ] Selection highlighting
+- [x] Selection highlighting
 - [x] Operators on visual selection (d, c, y, etc.)
 - [ ] Per [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
 

@@ -70,8 +70,8 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
         }
         "on" | "only" => Some(Action::Nop),
         "s" | "substitute" => {
-            // :s/pat/repl/flags parsed separately.
-            parse_substitute(args)
+            // :s/pat/repl/flags parsed and executed.
+            Some(Action::Substitute(args.to_string()))
         }
         "g" | "global" => Some(Action::Nop),
         "v" | "vglobal" => Some(Action::Nop),
@@ -105,16 +105,6 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
             }
         }
     }
-}
-
-/// Parse `:s/pat/repl/flags` — returns Nop as a placeholder.
-///
-/// Full substitution semantics live in the editing layer; the
-/// command dispatcher only needs to recognise the syntax.
-fn parse_substitute(args: &str) -> Option<Action> {
-    // Minimal validation: we accept `/pat/repl/flags` or empty.
-    let _args = args.trim();
-    Some(Action::Nop)
 }
 
 fn split_command(cmd: &str) -> (String, &str) {
@@ -175,9 +165,10 @@ mod tests {
 
     #[test]
     fn substitute_command() {
+        let action = dispatch_command("s/foo/bar/g");
         assert!(matches!(
-            dispatch_command("s/foo/bar/g"),
-            Some(Action::Nop)
+            action,
+            Some(Action::Substitute(_))
         ));
     }
 

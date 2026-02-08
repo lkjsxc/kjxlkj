@@ -46,6 +46,18 @@ impl EditorState {
                 CmdlineState::inactive()
             };
 
+        let search = {
+            let ss = &self.search_state;
+            kjxlkj_core_ui::SearchState {
+                pattern: ss.pattern.clone().unwrap_or_default(),
+                active: ss.pattern.is_some(),
+                matches: ss.matches.iter().map(|&(l, c)| {
+                    let len = ss.pattern.as_ref().map_or(0, |p| p.len());
+                    (l, c, c + len.max(1))
+                }).collect(),
+            }
+        };
+
         let visual = self.visual_state.as_ref().map(|vs| {
             let (al, ac) = vs.anchor;
             let win = self.windows.get(&self.focused_window);
@@ -78,7 +90,7 @@ impl EditorState {
             mode: self.mode.clone(),
             cmdline,
             notifications: Vec::new(),
-            search: Default::default(),
+            search,
             visual,
             theme: Default::default(),
             terminal_size: self.terminal_size,
