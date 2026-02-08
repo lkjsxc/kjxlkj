@@ -1,77 +1,54 @@
-# Theme Gallery
+# Theme System
 
-kjxlkj includes multiple built-in themes.
+Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
-## Dark Themes
+kjxlkj includes multiple built-in themes and supports user-defined themes.
 
-### Default Dark
-Modern dark theme with balanced contrast.
+## Built-in themes
 
-### Catppuccin Mocha
-Warm, pastel colors. Community favorite.
+| Theme | Variant | Description |
+|---|---|---|
+| Default Dark | dark | Modern dark theme with balanced contrast |
+| Catppuccin Mocha | dark | Warm, pastel colors |
+| Tokyo Night | dark | Blue-tinted dark theme |
+| Dracula | dark | Classic purple-tinted dark theme |
+| Nord | dark | Arctic, bluish color palette |
+| Gruvbox Dark | dark | Retro earthy colors with high contrast |
+| One Dark | dark | Atom-inspired balanced dark theme |
+| Default Light | light | Clean light theme for daytime use |
+| Catppuccin Latte | light | Warm pastel light theme |
+| Gruvbox Light | light | Warm, retro light theme |
+| Solarized Light | light | Precision colors for visibility |
+| High Contrast Dark | dark | Maximum contrast for accessibility |
+| High Contrast Light | light | Light variant with maximum contrast |
 
-### Tokyo Night
-Blue-tinted dark theme inspired by Tokyo cityscape.
+## Theme file format
 
-### Dracula
-Classic purple-tinted dark theme.
+Themes are defined in TOML files stored under `~/.config/kjxlkj/themes/`.
 
-### Nord
-Arctic, bluish color palette.
+### Meta section
 
-### Gruvbox Dark
-Retro earthy colors with high contrast.
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `name` | string | yes | Theme display name |
+| `variant` | `"dark"` or `"light"` | yes | Base variant for fallback behavior |
+| `inherits` | string | no | Name of base theme to extend |
 
-### One Dark
-Atom-inspired balanced dark theme.
+### Palette section
 
-## Light Themes
+| Key | Type | Description |
+|---|---|---|
+| `bg` | hex color string | Background color (e.g. `"#1a1b26"`) |
+| `fg` | hex color string | Foreground color (e.g. `"#c0caf5"`) |
+| `red` | hex color string | Red palette slot |
+| `green` | hex color string | Green palette slot |
+| `blue` | hex color string | Blue palette slot |
+| `yellow` | hex color string | Yellow palette slot |
 
-### Default Light
-Clean light theme for daytime use.
+### Core highlight groups
 
-### Catppuccin Latte
-Warm pastel light theme.
-
-### Gruvbox Light
-Warm, retro light theme.
-
-### Solarized Light
-Precision colors for visibility.
-
-## High Contrast
-
-### High Contrast Dark
-Maximum contrast for accessibility.
-
-### High Contrast Light
-Light variant with maximum contrast.
-
-## Custom Themes
-
-### Full Customization
-
-Define a complete theme by specifying every highlight group.
-Create a file under the themes directory and set each group:
-
-```toml
-[meta]
-name = "my-theme"
-variant = "dark"           # "dark" or "light"
-
-[palette]
-bg       = "#1a1b26"
-fg       = "#c0caf5"
-red      = "#f7768e"
-green    = "#9ece6a"
-blue     = "#7aa2f7"
-yellow   = "#e0af68"
-```
-
-Core highlight groups:
-
-| Group | Purpose | Fields |
-|-------|---------|--------|
+| Group | Purpose | Supported fields |
+|---|---|---|
 | `Normal` | Default text | `fg`, `bg` |
 | `Comment` | Code comments | `fg`, `style` |
 | `Keyword` | Language keywords | `fg`, `style` |
@@ -83,64 +60,31 @@ Core highlight groups:
 | `StatusLine` | Status bar | `fg`, `bg`, `style` |
 | `LineNr` | Line numbers | `fg` |
 
-Style values: `bold`, `italic`, `underline`, `strikethrough`,
-or comma-separated combinations like `bold,italic`.
+Style values: `bold`, `italic`, `underline`, `strikethrough`, or comma-separated combinations.
 
-### Inherit and Override
+### Inheritance
 
-Extend a built-in theme and override only what you need:
+When `inherits` is set, groups not listed are inherited from the base theme. Chains are resolved at load time (no runtime cost).
 
-```toml
-[meta]
-name = "my-variant"
-inherits = "catppuccin-mocha"
-
-[highlight.Comment]
-fg = "#888888"
-style = "italic"
-
-[highlight.Keyword]
-style = "bold"
-```
-
-All groups not listed are inherited from the base theme.
-Inheritance chains are resolved at load time (no runtime cost).
-
-## Terminal Integration
-
-Theme colors work best when terminal supports:
-- True color (24-bit)
-- Or 256 color mode
-
-Check support:
-
-```
-set termcolors=auto
-```
+## Terminal color detection (normative)
 
 | Setting | Behavior |
-|---------|----------|
+|---|---|
 | `auto` | Detect from `$COLORTERM` and terminfo |
 | `truecolor` | Force 24-bit color output |
 | `256` | Use 256-color palette (closest match) |
 | `16` | Use terminal's 16 ANSI colors only |
 
-Detection logic:
-
 | Condition | Result |
-|-----------|--------|
+|---|---|
 | `$COLORTERM` = `truecolor` or `24bit` | True color |
 | terminfo `colors >= 256` | 256-color mode |
 | Otherwise | 16-color fallback |
 
-In 16-color mode, kjxlkj maps theme colors to the terminal's
-ANSI palette. The appearance depends on the terminal's own
-color scheme. Themes can provide explicit 16-color overrides:
+In 16-color mode, kjxlkj maps theme colors to the terminal's ANSI palette. Themes MAY provide explicit 16-color overrides via `palette.ansi16` mapping color names to ANSI indices (`0`-`15`).
 
-```toml
-[palette.ansi16]
-red    = "1"     # ANSI color index
-green  = "2"
-yellow = "3"
-blue   = "4"
-```
+## Related
+
+- UI index: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- Theming UX: [/docs/spec/ux/theming.md](/docs/spec/ux/theming.md)
+- Highlight groups: [/docs/spec/features/syntax/highlight-groups.md](/docs/spec/features/syntax/highlight-groups.md)
