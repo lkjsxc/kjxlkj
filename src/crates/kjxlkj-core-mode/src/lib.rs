@@ -8,10 +8,12 @@ mod command_helpers;
 mod insert;
 mod normal;
 mod normal_g_z;
+mod normal_commands;
 mod normal_keys;
 mod normal_single;
 mod transition;
 mod visual;
+mod visual_ops;
 
 pub use command::CommandModeState;
 pub use insert::InsertModeState;

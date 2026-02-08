@@ -9,6 +9,7 @@ mod buffer_content;
 mod buffer_content_ops;
 mod display_width;
 mod grapheme;
+mod grapheme_line;
 mod line_ops;
 mod word;
 
