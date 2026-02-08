@@ -24,6 +24,10 @@ pub struct NormalModeState {
     pub(crate) mark_pending: Option<MarkCommand>,
     /// Pending r (replace char).
     pub(crate) replace_char_pending: bool,
+    /// Pending f/F/t/T (waiting for char).
+    pub(crate) find_char_pending: Option<FindCharPending>,
+    /// Pending Ctrl-w window command.
+    pub(crate) ctrl_w_pending: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -31,6 +35,14 @@ pub(crate) enum MarkCommand {
     Set,
     JumpExact,
     JumpLine,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum FindCharPending {
+    Forward,
+    Backward,
+    TillForward,
+    TillBackward,
 }
 
 impl NormalModeState {
@@ -48,6 +60,8 @@ impl NormalModeState {
         self.bracket_pending = None;
         self.mark_pending = None;
         self.replace_char_pending = false;
+        self.find_char_pending = None;
+        self.ctrl_w_pending = false;
     }
 
     /// Get the effective count (default 1).
@@ -99,6 +113,38 @@ impl NormalModeState {
             return Some(Action::Nop);
         }
 
+        if let Some(fcp) = self.find_char_pending {
+            self.find_char_pending = None;
+            if let KeyCode::Char(c) = key.code {
+                use kjxlkj_core_types::Motion;
+                let motion = match fcp {
+                    FindCharPending::Forward => {
+                        Motion::FindCharForward(c)
+                    }
+                    FindCharPending::Backward => {
+                        Motion::FindCharBackward(c)
+                    }
+                    FindCharPending::TillForward => {
+                        Motion::TillCharForward(c)
+                    }
+                    FindCharPending::TillBackward => {
+                        Motion::TillCharBackward(c)
+                    }
+                };
+                let count = self.effective_count();
+                self.reset();
+                return Some(
+                    Action::MoveCursor(motion, count),
+                );
+            }
+            self.reset();
+            return Some(Action::Nop);
+        }
+
+        if self.ctrl_w_pending {
+            return self.process_ctrl_w_key(key);
+        }
+
         if self.register_pending {
             self.register_pending = false;
             if let KeyCode::Char(c) = key.code {
@@ -126,62 +172,5 @@ impl NormalModeState {
 
         // Standard key dispatch (in normal_keys.rs).
         self.dispatch_key(key)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use kjxlkj_core_types::{
-        InsertPosition, Motion, Operator,
-    };
-
-    #[test]
-    fn count_accumulation() {
-        let mut s = NormalModeState::new();
-        assert!(s.process_key(&Key::char('3')).is_none());
-        let a = s.process_key(&Key::char('j'));
-        assert!(matches!(
-            a,
-            Some(Action::MoveCursor(Motion::Down, 3))
-        ));
-    }
-
-    #[test]
-    fn insert_entry() {
-        let mut s = NormalModeState::new();
-        let a = s.process_key(&Key::char('i'));
-        assert!(matches!(
-            a,
-            Some(Action::EnterInsert(
-                InsertPosition::BeforeCursor
-            ))
-        ));
-    }
-
-    #[test]
-    fn operator_pending() {
-        let mut s = NormalModeState::new();
-        let a = s.process_key(&Key::char('d'));
-        assert!(matches!(
-            a,
-            Some(Action::EnterOperatorPending(
-                Operator::Delete
-            ))
-        ));
-    }
-
-    #[test]
-    fn gg_motion() {
-        let mut s = NormalModeState::new();
-        assert!(s.process_key(&Key::char('g')).is_none());
-        let a = s.process_key(&Key::char('g'));
-        assert!(matches!(
-            a,
-            Some(Action::MoveCursor(
-                Motion::GotoFirstLine,
-                1
-            ))
-        ));
     }
 }

@@ -1,7 +1,8 @@
-//! Normal mode: g and z prefix command handlers.
+//! Normal mode: g, z, and Ctrl-w prefix handlers.
 
 use kjxlkj_core_types::{
-    Action, Key, KeyCode, Motion, Operator,
+    Action, Direction, Key, KeyCode, KeyModifiers,
+    Motion, Operator,
 };
 
 use crate::normal::NormalModeState;
@@ -84,6 +85,71 @@ impl NormalModeState {
                     Motion::ScreenBottom,
                     1,
                 )
+            }
+            _ => Action::Nop,
+        };
+        self.reset();
+        Some(action)
+    }
+
+    pub(crate) fn process_ctrl_w_key(
+        &mut self,
+        key: &Key,
+    ) -> Option<Action> {
+        self.ctrl_w_pending = false;
+        let action = match (&key.code, key.modifiers) {
+            (KeyCode::Char('h'), KeyModifiers::NONE)
+            | (KeyCode::Left, _) => {
+                Action::FocusWindow(Direction::Left)
+            }
+            (KeyCode::Char('j'), KeyModifiers::NONE)
+            | (KeyCode::Down, _) => {
+                Action::FocusWindow(Direction::Down)
+            }
+            (KeyCode::Char('k'), KeyModifiers::NONE)
+            | (KeyCode::Up, _) => {
+                Action::FocusWindow(Direction::Up)
+            }
+            (KeyCode::Char('l'), KeyModifiers::NONE)
+            | (KeyCode::Right, _) => {
+                Action::FocusWindow(Direction::Right)
+            }
+            (KeyCode::Char('w'), _) => {
+                Action::CycleWindow
+            }
+            (KeyCode::Char('c'), KeyModifiers::NONE)
+            | (KeyCode::Char('q'), KeyModifiers::NONE) => {
+                Action::CloseWindow
+            }
+            (KeyCode::Char('s'), KeyModifiers::NONE) => {
+                Action::SplitHorizontal
+            }
+            (KeyCode::Char('v'), KeyModifiers::NONE) => {
+                Action::SplitVertical
+            }
+            (KeyCode::Char('='), KeyModifiers::NONE) => {
+                Action::EqualizeWindows
+            }
+            (KeyCode::Char('H'), KeyModifiers::NONE) => {
+                Action::MoveWindow(Direction::Left)
+            }
+            (KeyCode::Char('J'), KeyModifiers::NONE) => {
+                Action::MoveWindow(Direction::Down)
+            }
+            (KeyCode::Char('K'), KeyModifiers::NONE) => {
+                Action::MoveWindow(Direction::Up)
+            }
+            (KeyCode::Char('L'), KeyModifiers::NONE) => {
+                Action::MoveWindow(Direction::Right)
+            }
+            (KeyCode::Char('r'), KeyModifiers::NONE) => {
+                Action::RotateWindows(true)
+            }
+            (KeyCode::Char('R'), KeyModifiers::NONE) => {
+                Action::RotateWindows(false)
+            }
+            (KeyCode::Char('o'), KeyModifiers::NONE) => {
+                Action::ZoomWindow
             }
             _ => Action::Nop,
         };

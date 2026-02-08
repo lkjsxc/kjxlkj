@@ -1,10 +1,7 @@
 //! Normal mode: single-key commands and prefix handlers.
-//!
-//! Separated from normal.rs to keep files under 200
-//! lines per policy.
 
 use kjxlkj_core_types::{
-    Action, Key, KeyCode, KeyModifiers, Motion,
+    Action, Key, KeyCode, KeyModifiers,
 };
 
 use crate::normal::{MarkCommand, NormalModeState};
@@ -15,6 +12,19 @@ impl NormalModeState {
         key: &Key,
         count: u32,
     ) -> Option<Action> {
+        // Navigation & scroll keys (normal_nav.rs).
+        if let Some(result) =
+            self.try_dispatch_nav(key, count)
+        {
+            match result {
+                Some(action) => {
+                    self.reset();
+                    return Some(action);
+                }
+                None => return None,
+            }
+        }
+
         let action = match (&key.code, key.modifiers) {
             (KeyCode::Char('x'), KeyModifiers::NONE) => {
                 Action::DeleteCharForward
@@ -53,24 +63,6 @@ impl NormalModeState {
             }
             (KeyCode::Char('P'), KeyModifiers::NONE) => {
                 Action::Put(true)
-            }
-            (KeyCode::Char('n'), KeyModifiers::NONE) => {
-                Action::NextMatch
-            }
-            (KeyCode::Char('N'), KeyModifiers::NONE) => {
-                Action::PrevMatch
-            }
-            (KeyCode::Char('*'), KeyModifiers::NONE) => {
-                Action::MoveCursor(
-                    Motion::StarForward,
-                    1,
-                )
-            }
-            (KeyCode::Char('#'), KeyModifiers::NONE) => {
-                Action::MoveCursor(
-                    Motion::StarBackward,
-                    1,
-                )
             }
 
             // Replace char
@@ -141,11 +133,12 @@ impl NormalModeState {
                 Action::PlayMacro('\0', count)
             }
 
-            // Window commands
+            // Window commands — enter Ctrl-w prefix
             (KeyCode::Char('w'), m)
                 if m.contains(KeyModifiers::CTRL) =>
             {
-                Action::CycleWindow
+                self.ctrl_w_pending = true;
+                return None;
             }
             // Ctrl-^ alternate file
             (KeyCode::Char('^'), m)
