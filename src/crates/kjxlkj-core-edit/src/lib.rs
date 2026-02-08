@@ -8,6 +8,7 @@ mod cursor;
 mod motion_exec;
 mod motion_helpers;
 mod operator_exec;
+mod operator_helpers;
 mod registers;
 mod text_manip;
 mod text_object_delimited;

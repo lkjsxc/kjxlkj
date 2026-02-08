@@ -5,6 +5,7 @@ mod diff;
 mod flush;
 mod gutter;
 mod renderer;
+mod renderer_window;
 mod statusline;
 
 pub use cell_grid::CellGrid;

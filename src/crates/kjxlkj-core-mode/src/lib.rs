@@ -4,6 +4,7 @@
 //! and never block on external IO.
 
 mod command;
+mod command_helpers;
 mod insert;
 mod normal;
 mod normal_keys;

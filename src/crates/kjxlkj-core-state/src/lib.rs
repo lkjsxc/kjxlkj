@@ -7,6 +7,7 @@ mod editor;
 mod editor_actions;
 mod editor_actions2;
 mod editor_file_ops;
+mod editor_snapshot;
 mod session;
 mod viewport;
 mod window;
