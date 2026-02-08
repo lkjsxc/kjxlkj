@@ -1,80 +1,66 @@
-# Debug Adapter Protocol (DAP) Integration
+# Debug Adapter Protocol (DAP)
 
-kjxlkj includes a built-in DAP client for debugging support.
+Back: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
+
+DAP integration for debugging within the editor.
 
 ## Overview
 
-DAP provides a language-agnostic debugging interface, similar to LSP.
+The editor supports the Debug Adapter Protocol (DAP) for source-level debugging. DAP adapters communicate over JSON-RPC to control debuggers for various languages.
 
-## Supported Features
+## Architecture
 
-### Breakpoints
-- Line breakpoints (`<leader>db`)
-- Conditional breakpoints
-- Function breakpoints
-- Exception breakpoints
-- Logpoints
+The editor acts as a DAP client. It communicates with debug adapters (separate processes) that implement the DAP server protocol.
 
-### Execution Control
-- Continue (`<leader>dc`)
-- Step Over (`<leader>dn`)
-- Step Into (`<leader>di`)
-- Step Out (`<leader>do`)
-- Pause (`<leader>dp`)
-- Terminate (`<leader>dt`)
+## Launch/Attach
 
-### Inspection
-- Variables panel
-- Watch expressions
-- Call stack
-- Hover evaluation
+| Command | Description |
+|---|---|
+| `:DapLaunch` | Start debugging (launch mode) |
+| `:DapAttach {pid}` | Attach to running process |
+| `:DapTerminate` | Stop debugging session |
 
-## Keybindings
+## Breakpoints
 
-| Key | Action |
-|-----|--------|
-| `<leader>db` | Toggle breakpoint |
-| `<leader>dB` | Conditional breakpoint |
-| `<leader>dc` | Continue |
-| `<leader>dn` | Step over (next) |
-| `<leader>di` | Step into |
-| `<leader>do` | Step out |
-| `<leader>dt` | Terminate session |
-| `<leader>dr` | REPL open |
-| `<leader>dl` | Run last config |
-| `<leader>dh` | Hover variable |
+| Command | Key | Description |
+|---|---|---|
+| `:DapToggleBreakpoint` | `<leader>db` | Toggle breakpoint at cursor |
+| `:DapConditionalBreakpoint` | `<leader>dB` | Set conditional breakpoint |
+| `:DapClearBreakpoints` | - | Remove all breakpoints |
+
+Breakpoints are shown in the sign column.
+
+## Stepping
+
+| Command | Key | Description |
+|---|---|---|
+| `:DapContinue` | `<F5>` | Continue execution |
+| `:DapStepOver` | `<F10>` | Step over |
+| `:DapStepInto` | `<F11>` | Step into |
+| `:DapStepOut` | `<S-F11>` | Step out |
+
+## Inspection
+
+| Command | Description |
+|---|---|
+| `:DapHover` | Show value under cursor |
+| `:DapScopes` | Show local/global scopes |
+| `:DapFrames` | Show call stack |
+| `:DapRepl` | Open debug REPL |
 
 ## Configuration
 
+Debug configurations are defined per project in the workspace manifest:
 
-## Debug Adapter Setup
+| Field | Description |
+|---|---|
+| `type` | Adapter type (e.g., `lldb`, `codelldb`) |
+| `request` | `launch` or `attach` |
+| `program` | Executable path |
+| `args` | Command-line arguments |
+| `cwd` | Working directory |
 
-### Rust (codelldb)
+## Related
 
-### Node.js
-
-### Python (debugpy)
-
-### Go (delve)
-
-## UI Elements
-
-### Debug Panel
-Shows when debugging:
-- Variables tree
-- Watch expressions
-- Call stack
-- Breakpoints list
-
-### Inline Display
-- Current line indicator
-- Inline variable values
-- Breakpoint markers in gutter
-
-## Implementation Details
-
-Built on async message passing:
-1. DAP client connects to adapter
-2. Events streamed to UI
-3. User actions sent as requests
-4. Responses update editor state
+- Terminal: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- LSP: [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)

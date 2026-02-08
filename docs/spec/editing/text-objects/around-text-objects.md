@@ -1,158 +1,53 @@
 # Around Text Objects
 
-Selecting text with delimiters.
+Back: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+
+Text objects that select content including enclosing delimiters or surrounding whitespace.
 
 ## Overview
 
-Around text objects select content INCLUDING delimiters
-or surrounding whitespace. Used with operators like
-`d`, `c`, `y`.
+Around text objects (`a{x}`) select text including enclosing characters and/or adjacent whitespace.
 
-## Word Objects
+## Available Around Text Objects
 
-### Around Word
+| Text Object | Selects |
+|---|---|
+| `aw` | Word including surrounding whitespace |
+| `aW` | WORD including surrounding whitespace |
+| `as` | Sentence including surrounding whitespace |
+| `ap` | Paragraph including surrounding blank lines |
+| `a(` / `a)` / `ab` | Parenthesized block including `(` and `)` |
+| `a[` / `a]` | Bracketed block including `[` and `]` |
+| `a{` / `a}` / `aB` | Brace block including `{` and `}` |
+| `a<` / `a>` | Angle bracket block including `<` and `>` |
+| `a"` | Double-quoted string including quotes |
+| `a'` | Single-quoted string including quotes |
+| `` a` `` | Backtick string including backticks |
+| `at` | Tag block including tags |
 
-`aw` selects the word under the cursor plus adjacent
-whitespace. With `d`, deletes the word and normalizes
-spacing.
+## Whitespace Handling
 
-### Behavior
+For `aw`, `as`, `ap`: trailing whitespace is included. If at end of line/paragraph, leading whitespace is included instead.
 
-If the word has trailing whitespace, that whitespace is
-included. If the word is at end of line (no trailing
-space), leading whitespace is included instead.
+For delimiter types (`a(`, `a"`, etc.): the delimiters ARE included, but surrounding whitespace is NOT.
 
-### Example
+## Count
 
-On `the quick brown`, cursor on `quick`:
-`daw` removes `quick ` leaving `the brown`.
+`2a)` selects the second-level enclosing parentheses pair.
 
-## WORD Objects
+## CJK Behavior
 
-### Around WORD
+`aw` on a CJK character selects that character plus surrounding whitespace.
 
-`aW` selects the WORD (whitespace-delimited) plus
-adjacent whitespace. Same spacing rules as `aw` but
-using WORD boundaries (non-whitespace sequences).
+## Operators
 
-### Example
+| Command | Effect |
+|---|---|
+| `daw` | Delete word and trailing whitespace |
+| `ca"` | Change quoted string including quotes |
+| `yap` | Yank paragraph with surrounding blank lines |
 
-On `foo-bar baz`, cursor on `foo-bar`:
-`daW` removes `foo-bar ` leaving `baz`.
+## Related
 
-## Sentence Objects
-
-### Around Sentence
-
-`as` selects the entire sentence including trailing
-whitespace up to the start of the next sentence.
-
-### Behavior
-
-Sentence boundaries: `.`, `!`, `?` followed by space,
-tab, or end-of-line. Must be followed by whitespace or
-end of paragraph.
-
-## Paragraph Objects
-
-### Around Paragraph
-
-`ap` selects the paragraph including trailing blank lines
-up to the next paragraph.
-
-### Behavior
-
-Paragraphs are separated by blank lines. Adjacent blank
-lines are included in the selection.
-
-### Example
-
-On a 3-line paragraph followed by a blank line:
-`dap` deletes all 3 lines AND the blank line.
-
-## Quote Objects
-
-### Around Double Quote
-
-`a"` selects the content including the surrounding
-`"` delimiter pair.
-
-### Around Single Quote
-
-`a'` selects content including surrounding `'` pair.
-
-### Around Backtick
-
-`` a` `` selects content including surrounding `` ` `` pair.
-
-### Example
-
-On `say "hello world" now`, cursor inside quotes:
-`da"` removes `"hello world"` leaving `say  now`.
-`ca"` changes `"hello world"` and enters insert mode.
-
-## Bracket Objects
-
-### Around Parentheses
-
-`a(` or `a)` or `ab` selects content including the
-`(` and `)` delimiters.
-
-### Around Brackets
-
-`a[` or `a]` selects content including `[` and `]`.
-
-### Around Braces
-
-`a{` or `a}` or `aB` selects content including `{` and `}`.
-
-### Around Angle Brackets
-
-`a<` or `a>` selects content including `<` and `>`.
-
-### Example
-
-On `fn(a, b, c)`, cursor inside parens:
-`da(` removes `(a, b, c)` leaving `fn`.
-`ca)` changes `(a, b, c)` and enters insert mode.
-
-## Tag Objects
-
-### Around Tag
-
-`at` selects from the opening `<tag>` through the closing
-`</tag>`, including both tags.
-
-### Example
-
-On `<div>hello</div>`, `dat` removes entire element.
-`cat` changes the entire element.
-
-### Self-Closing
-
-Self-closing tags like `<br/>` are treated as a single
-unit.
-
-## Nested Delimiters
-
-### Behavior
-
-With nested delimiters, the innermost pair containing
-the cursor is selected. Count `{n}a(` selects the
-{n}th level outward.
-
-### Multiple Levels
-
-On `(a(b(c)))`, cursor on `c`:
-`da(` removes `(c)`, result: `(a(b))`.
-`2da(` removes `(b(c))`, result: `(a)`.
-`3da(` removes entire `(a(b(c)))`.
-
-## Smart Space Handling
-
-When deleting with `daw`, `das`, `dap`, the resulting
-text has correct spacing: no double spaces or missing
-separators. The algorithm:
-1. If trailing whitespace exists, include it
-2. Otherwise, include leading whitespace
-3. At start/end of line, adjust accordingly
+- Inner text objects: [/docs/spec/editing/text-objects/inner-text-objects.md](/docs/spec/editing/text-objects/inner-text-objects.md)
+- Text objects overview: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

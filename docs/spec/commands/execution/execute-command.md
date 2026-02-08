@@ -1,125 +1,54 @@
 # Execute Command
 
-Evaluate expressions and execute resulting strings.
+Back: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+
+Evaluate an expression and execute the result as an ex command.
 
 ## Overview
 
-`:execute` evaluates its arguments as expressions and
-executes the resulting string as an Ex command. This
-enables dynamic command construction.
+`:execute {expr}` evaluates `{expr}` and runs the resulting string as an ex command. This is primarily used for constructing commands with special keys or variable values.
 
-## Basic Syntax
+## Syntax
 
-`:execute {expr}` evaluates `{expr}` and runs the
-result as a command.
+`:execute {expr} [expr] ...`
 
-## String Concatenation
+Multiple expressions are concatenated with a space.
 
-### Dot Operator
+## Use Cases
 
-`:execute "normal! " . "dd"` concatenates strings.
-Multiple arguments are joined with spaces.
+### Special Keys
 
-### Variables
-
-`:execute "edit " . filename` uses variable values
-to construct commands dynamically.
-
-## Special Key Notation
-
-### Inserting Special Keys
-
-`:execute "normal! i" . text . "\<Esc>"` — the `\<Esc>`
-represents the escape key within the string.
-
-### Key Codes
-
-| Notation | Key |
-|----------|-----|
-| `"\<Esc>"` | Escape |
-| `"\<CR>"` | Enter |
-| `"\<Tab>"` | Tab |
-| `"\<C-w>"` | Ctrl-W |
-| `"\<BS>"` | Backspace |
-
-## Common Patterns
+`:execute "normal! \<C-a>"` — the `\<C-a>` is evaluated to the actual key code.
 
 ### Dynamic Commands
 
-`:execute ":" . line_number` jumps to a computed line.
-`:execute "edit " . expand("%:r") . ".test.rs"` opens
-the test file for the current source file.
+`:execute "edit " . filename` — opens a file stored in a variable.
 
-### With Normal
+### With Variables
 
-`:execute "normal! " . count . "j"` moves down a
-computed number of lines.
+`:execute line_number . "d"` — deletes the line at the stored number.
 
-### Pattern with Variables
+## Concatenation
 
-`:execute "g/" . pattern . "/d"` deletes lines matching
-a pattern stored in a variable.
+`:execute "normal!" "dd"` — evaluates to `:normal! dd`. Expressions are joined with spaces.
 
-## Multiple Commands
+## String Escaping
 
-### Bar Separator
+Strings use double quotes. Backslash sequences are interpreted:
 
-`:execute "cmd1" | execute "cmd2"` runs two commands.
-The `|` separates independent commands.
-
-### Within String
-
-`:execute "cmd1 | cmd2"` — the bar inside the string
-is part of the executed command, not a separator.
+| Sequence | Meaning |
+|---|---|
+| `\<CR>` | Carriage return |
+| `\<Esc>` | Escape |
+| `\<C-a>` | Ctrl-A |
+| `\\` | Literal backslash |
 
 ## Error Handling
 
-### Invalid Command
+If the expression evaluates to an invalid command, an error message is shown. Execution stops at the first error in a chained execute.
 
-If the resulting string is not a valid command, an
-error message is displayed. Execution of subsequent
-commands continues.
+## Related
 
-### Empty String
-
-`:execute ""` does nothing (no-op).
-
-## Expression Types
-
-### String Expressions
-
-`:execute "echo 'hello'"` runs `echo 'hello'`.
-
-### Numeric Expressions
-
-`:execute 42` is equivalent to `:42` (go to line 42).
-Numbers are converted to strings.
-
-### Conditional
-
-`:execute condition ? "cmd1" : "cmd2"` conditionally
-executes one of two commands.
-
-## Nesting
-
-### Execute within Execute
-
-`:execute "execute 'normal! dd'"` — execute can be
-nested but this is rarely needed.
-
-## Integration
-
-### With Ranges
-
-`:execute line1 . "," . line2 . "d"` deletes a
-computed range of lines.
-
-### With Registers
-
-`:execute "normal! \"" . reg . "p"` pastes from
-a register stored in a variable.
-
-### With Functions
-
-`:execute "call " . funcname . "()"` calls a
-function by computed name.
+- Execution: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+- Normal command: [/docs/spec/commands/execution/normal-command.md](/docs/spec/commands/execution/normal-command.md)
+- Scripting: [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md)

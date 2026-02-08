@@ -1,108 +1,46 @@
 # Find Command
 
-Find and edit files by name.
+Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
+
+The `:find` command for locating and opening files by name.
 
 ## Overview
 
-`:find` searches for files in the `path` option
-directories and opens the first match.
+`:find {filename}` searches for a file in the configured path and opens it.
 
-## Basic Usage
+## Syntax
 
-### Find File
+`:find[!] {filename}`
 
-`:find {filename}` opens the file if found in `path`.
-`:find main.rs` searches `path` for `main.rs`.
+## Search Path
 
-### With Wildcards
+The `path` setting determines where `:find` looks:
 
-`:find *.rs` finds the first `.rs` file.
-`:find src/**/test_*` searches recursively.
+| Component | Description |
+|---|---|
+| `.` | Current file's directory |
+| (empty) | Current working directory |
+| `**` | Recursive subdirectories |
 
-## Path Option
+Default: `path = [".", "**"]`
 
-### Configuration
+## Behavior
 
-`path` controls where `:find` searches.
-Default: `path = [".", "/usr/include", ""]`
+1. Search each path component for `{filename}`.
+2. If found, open the file.
+3. If multiple matches, open the first one.
+4. If not found, emit an error.
 
-### Path Components
+## Wildcards
 
-| Value | Meaning |
-|-------|---------|
-| `.` | Current file directory |
-| `""` (empty) | Current working directory |
-| `**` | Recursive search subdirectory |
-| `/path/` | Absolute path |
-
-### Common Setups
-
-`path = [".", "src/**", "tests/**"]` searches current
-file dir, all of `src/`, and all of `tests/`.
-
-## Suffixes
-
-### suffixesadd
-
-`:set suffixesadd=.rs,.toml` appends these extensions
-when `:find` cannot find the exact file name.
-
-`:find module` tries `module`, `module.rs`, `module.toml`.
+`:find *.rs` — opens the first `.rs` file found in the path.
 
 ## Tab Completion
 
-### Filename Completion
+`:find ` + `<Tab>` completes filenames found in the path.
 
-`:find ` followed by `<Tab>` cycles through matching
-files in `path`. `<C-d>` lists all matches.
+## Related
 
-### Wildcard Completion
-
-`:find src/**/<Tab>` lists all files under `src/`.
-
-## Split Variants
-
-### Horizontal Split
-
-`:sfind {file}` opens the file in a horizontal split.
-
-### Vertical Split
-
-`:vert sfind {file}` opens in a vertical split.
-
-### Tab
-
-`:tab sfind {file}` opens in a new tab.
-
-## Count
-
-### nth Match
-
-`:2find {file}` opens the 2nd match if multiple files
-match the pattern.
-
-## Integration
-
-### gf Command
-
-`gf` (go to file) in normal mode opens the file under
-the cursor, using `path` and `suffixesadd` for lookup.
-
-`gF` opens file under cursor and jumps to line number
-if the filename is followed by `:line` or `(line)`.
-
-### Include Search
-
-`:isearch`, `:dsearch` use `path` for header lookup.
-
-## Error Handling
-
-### Not Found
-
-If no file matches, displays: `E345: Can't find file
-"{filename}" in path`.
-
-### Multiple Matches
-
-`:find` opens the first match. Use tab completion
-to see all matches and select the desired one.
+- File operations: [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
+- File exploration: [/docs/spec/commands/file/file-exploration.md](/docs/spec/commands/file/file-exploration.md)
+- Finder: [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)

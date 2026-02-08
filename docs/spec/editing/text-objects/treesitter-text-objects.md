@@ -1,162 +1,57 @@
 # Tree-sitter Text Objects
 
-Syntax-aware text object selection.
+Back: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+
+Text objects defined by Tree-sitter syntax nodes.
 
 ## Overview
 
-Tree-sitter provides AST-based text objects that understand
-code structure. Unlike regex-based text objects, these
-never produce false positives inside strings or comments.
+Tree-sitter text objects use the parsed syntax tree to define structural selections. They are language-aware and operate on functions, classes, parameters, arguments, etc.
 
-## Benefits
+## Built-in Tree-sitter Objects
 
-### Over Regex
+| Text Object | Description |
+|---|---|
+| `af` / `if` | Around/inner function |
+| `ac` / `ic` | Around/inner class |
+| `aa` / `ia` | Around/inner argument/parameter |
+| `aC` / `iC` | Around/inner comment |
+| `al` / `il` | Around/inner loop |
+| `ai` / `ii` | Around/inner conditional (if) |
 
-- Accurate syntax understanding: parses actual grammar
-- No false positives in strings, comments, or attributes
-- Handles complex nesting (closures inside closures)
-- Language-aware boundaries (e.g. Python indentation blocks)
+## Inner vs Around
 
-### Examples
+| Object | Selects |
+|---|---|
+| `if` | Function body (excluding signature and braces) |
+| `af` | Entire function (including signature, braces, decorators) |
+| `ia` | Single argument value |
+| `aa` | Argument including trailing comma/separator |
 
-`daf` with tree-sitter correctly selects an entire Rust
-closure including its capture list. Regex-based selection
-would fail on nested braces.
+## Navigation
 
-## Configuration
+| Key | Description |
+|---|---|
+| `]f` | Jump to next function start |
+| `[f` | Jump to previous function start |
+| `]c` | Jump to next class start |
+| `[c` | Jump to previous class start |
 
-### Enable Tree-sitter
+## Language Support
 
-Tree-sitter text objects are enabled by default when
-a tree-sitter grammar is available for the current filetype.
-Disable per-language in config TOML under `[languages.{lang}]`
-with `treesitter_textobjects = false`.
+Tree-sitter text objects require query files for each language. These define which syntax nodes map to which text object types.
 
-### Object Mappings
+| Language | Function Node | Class Node |
+|---|---|---|
+| Rust | `function_item` | `struct_item`, `impl_item` |
+| Python | `function_definition` | `class_definition` |
+| JavaScript | `function_declaration`, `arrow_function` | `class_declaration` |
 
-| Key | Inner | Around | Object |
-|-----|-------|--------|--------|
-| `f` | `if` | `af` | Function / method |
-| `c` | `ic` | `ac` | Class / struct / enum |
-| `a` | `ia` | `aa` | Parameter / argument |
-| `/` | `i/` | `a/` | Comment |
-| `b` | `ib` | `ab` | Block (generic) |
+## Fallback
 
-These are configurable via TOML mappings.
+If no Tree-sitter parser is available for the current file type, tree-sitter text objects are not available. The editor emits a message.
 
-## Standard Objects
+## Related
 
-### Function
-
-`af` selects the entire function including signature, body,
-and doc-comments/attributes. `if` selects only the body.
-Works for `fn`, `def`, `function`, `func`, `method`, lambda.
-
-### Class
-
-`ac` selects the entire class/struct/enum including its body.
-`ic` selects only the body. Supports Rust `struct`/`enum`/`impl`,
-Python `class`, JS/TS `class`.
-
-### Parameter
-
-`aa` selects a function parameter including trailing comma
-and whitespace. `ia` selects only the parameter text.
-
-### Comment
-
-`a/` selects a comment block (consecutive line comments or
-a block comment). `i/` selects comment content without
-delimiters (`//`, `/* */`, `#`).
-
-### Block
-
-`ab` selects a generic block (`{ }`, indentation block,
-`do..end`). `ib` selects inner content.
-
-## Language Queries
-
-### Query Files
-
-Tree-sitter text object queries are stored at:
-`~/.config/kjxlkj/queries/{lang}/textobjects.scm`.
-Built-in queries are bundled for common languages.
-
-### Query Syntax
-
-Queries use tree-sitter S-expression pattern language.
-Capture names follow the convention `@{object}.inner`
-and `@{object}.outer` (e.g. `@function.inner`).
-
-## Common Captures
-
-### Statement
-
-`@statement.outer` captures a full statement including
-semicolon or newline terminator.
-
-### Conditional
-
-`@conditional.outer` captures an if/else/match/switch block.
-`@conditional.inner` captures the body.
-
-### Loop
-
-`@loop.outer` captures for/while/loop constructs.
-`@loop.inner` captures the loop body.
-
-### Call
-
-`@call.outer` captures a function call expression including
-arguments. `@call.inner` captures just the argument list.
-
-## Custom Queries
-
-### Add Query File
-
-Create `~/.config/kjxlkj/queries/{lang}/textobjects.scm`
-and define captures. The file extends (does not replace)
-built-in queries. To override a built-in capture, use
-`; inherits: false` at the top.
-
-### Inline Configuration
-
-Custom captures can also be defined in TOML config for
-simple cases under `[languages.{lang}.textobjects]`.
-
-## Node Selection
-
-### Current Node
-
-`<C-space>` (configurable) selects the AST node at
-the cursor position as a visual selection.
-
-### Parent Node
-
-Repeating the select key expands to the parent node.
-Useful for incremental selection widening.
-
-### Sibling Navigation
-
-`]a` / `[a` jump to the next/previous sibling node
-at the same AST level. Works with parameter lists,
-statement sequences, and array elements.
-
-## Incremental Selection
-
-### Configuration
-
-Incremental selection keybindings are configured under
-`[keys.normal]` in TOML. Default: `<C-space>` to start,
-repeat to expand, `<BS>` to shrink.
-
-### Usage
-
-1. Press `<C-space>` to select identifier at cursor
-2. Press again to expand to containing expression
-3. Press again to expand to statement
-4. Press again to expand to block
-5. `<BS>` to shrink back one level
-
-The selection stack is maintained as a `Vec<Range>`
-that tracks each expansion level.
+- Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+- Tree-sitter: [/docs/spec/features/syntax/treesitter.md](/docs/spec/features/syntax/treesitter.md)

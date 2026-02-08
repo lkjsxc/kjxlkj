@@ -1,161 +1,57 @@
-# Icons and Glyphs
+# Icons
 
-Visual symbols and icons.
+Back: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
+
+File type and UI icons using Nerd Font glyphs.
 
 ## Overview
 
-Icons enhance visual recognition of file
-types, git status, and UI elements.
-
-## Requirements
-
-### Nerd Fonts
-
-Icons require a Nerd Font patched terminal font:
-
-- FiraCode Nerd Font
-- JetBrains Mono Nerd Font
-- Hack Nerd Font
-
-### Configuration
-
+The editor displays icons for file types, git status, diagnostics, and UI elements when a Nerd Font is detected.
 
 ## File Type Icons
 
-### Languages
+File type icons appear in the file explorer, buffer tabs, and finder:
 
-| Icon | Type |
-|------|------|
-|  | Rust |
-|  | JavaScript |
-|  | TypeScript |
-|  | Python |
-|  | Go |
-|  | Lua |
-|  | C |
-|  | C++ |
-|  | Java |
-|  | Ruby |
+| Extension | Icon | Description |
+|---|---|---|
+| `.rs` | 🦀 | Rust |
+| `.py` | 🐍 | Python |
+| `.js` | JS | JavaScript |
+| `.ts` | TS | TypeScript |
+| `.md` | MD | Markdown |
+| (directory) | 📁 | Folder |
 
-### Data Files
+## Diagnostics Icons
 
-| Icon | Type |
-|------|------|
-|  | JSON |
-|  | YAML |
-|  | TOML |
-|  | Markdown |
-|  | HTML |
-|  | CSS |
-
-### Special Files
-
-| Icon | Type |
-|------|------|
-|  | Git |
-|  | Docker |
-|  | Config |
-|  | Lock file |
-|  | Shell |
-
-## Directory Icons
-
-| Icon | Directory |
-|------|-----------|
-|  | Folder |
-|  | Open folder |
-|  | Git folder |
-|  | Node modules |
-|  | Source |
-|  | Tests |
+| Level | Icon | Usage |
+|---|---|---|
+| Error | `✖` | Sign column, statusline |
+| Warning | `⚠` | Sign column, statusline |
+| Info | `ℹ` | Sign column, statusline |
+| Hint | `💡` | Sign column, statusline |
 
 ## Git Status Icons
 
-| Icon | Status |
-|------|--------|
-| ✓ | Clean |
-| ● | Modified |
-| ✚ | Staged |
-| ✖ | Deleted |
-| ? | Untracked |
-| ➜ | Renamed |
-| ═ | Conflict |
+| Status | Icon |
+|---|---|
+| Added | `+` |
+| Modified | `~` |
+| Deleted | `-` |
+| Renamed | `→` |
+| Untracked | `?` |
 
-## Diagnostic Icons
+## Configuration
 
-| Icon | Level |
-|------|-------|
-|  | Error |
-|  | Warning |
-|  | Information |
-|  | Hint |
-
-## UI Icons
-
-### Navigation
-
-| Icon | Usage |
-|------|-------|
-|  | Search |
-|  | File explorer |
-|  | Terminal |
-|  | Git |
-|  | Debug |
-|  | Settings |
-
-### Actions
-
-| Icon | Usage |
-|------|-------|
-|  | Close |
-|  | Add |
-|  | Edit |
-|  | Save |
-|  | Refresh |
-|  | Play/Run |
-
-### Arrows
-
-| Icon | Usage |
-|------|-------|
-|  | Expand |
-|  | Collapse |
-|  | Right |
-|  | Left |
-|  | Up |
-|  | Down |
-
-## Custom Icons
-
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `icons.enabled` | boolean | `true` | Enable icons |
+| `icons.nerd_font` | boolean | `auto` | Nerd Font detection |
 
 ## Fallback
 
-When icons unavailable:
+When Nerd Font is not available, the editor falls back to ASCII representations.
 
+## Related
 
-Fallback symbols:
-
-| Original | Fallback |
-|----------|----------|
-|  | [+] |
-|  | [ ] |
-|  | [>] |
-|  | [<] |
-
-## ASCII Mode
-
-No icons, pure ASCII:
-
-
-## Icon Colors
-
-
-## Statusline Icons
-
-
-## Explorer Icons
-
-
-## Ligature Icons
-
-Some fonts support ligatures:
+- File explorer: [/docs/spec/commands/file/file-exploration.md](/docs/spec/commands/file/file-exploration.md)
+- Syntax: [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)

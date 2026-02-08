@@ -1,119 +1,47 @@
 # Special Marks
 
-Automatically maintained mark positions.
+Back: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+
+Automatically set marks for common positions.
 
 ## Overview
 
-Special marks are set automatically by the editor
-during editing operations. They cannot be set manually
-with `m`.
+Special marks are set automatically by the editor. They cannot be set manually (with some exceptions).
 
-## Change Marks
+## Special Mark List
 
-### Last Change Position
+| Mark | Position | Description |
+|---|---|---|
+| `` ` `` (backtick) | Before last jump | Position before the last jump command |
+| `'` (single quote) | Before last jump (line) | Line of the last jump |
+| `.` | Last change | Position of the last text change |
+| `^` | Last insert | Position where insert mode was last exited |
+| `[` | Start of last change | First character of last changed/yanked text |
+| `]` | End of last change | Last character of last changed/yanked text |
+| `<` | Start of visual | Start of last visual selection |
+| `>` | End of visual | End of last visual selection |
+| `"` | Last exit | Position when the buffer was last exited |
+| `(` | Start of sentence | Start of current sentence |
+| `)` | End of sentence | End of current sentence |
+| `{` | Start of paragraph | Start of current paragraph |
+| `}` | End of paragraph | End of current paragraph |
 
-| Mark | Description |
-|------|-------------|
-| `` `. `` | Position of last change |
-| `'.` | Line of last change |
-| `` `[ `` | Start of last changed/yanked text |
-| `` `] `` | End of last changed/yanked text |
+## Usage
 
-### Usage
+| Command | Effect |
+|---|---|
+| `` `. `` | Jump to last change |
+| `` `^ `` | Jump to last insert position |
+| `` `" `` | Jump to position at last buffer exit |
+| `` `[ `` | Jump to start of last change |
+| `'<` | Jump to start line of last visual selection |
 
-`` `. `` is updated after every edit (insert, delete,
-change, put). It always points to the start of the
-most recent modification.
+## Session Persistence
 
-## Insert Marks
+Marks `.`, `^`, `"`, `[`, `]`, `<`, `>` are saved per buffer in the session file.
 
-### Last Insert
+## Related
 
-| Mark | Description |
-|------|-------------|
-| `` `^ `` | Position where insert mode was last exited |
-
-### Purpose
-
-Used by `gi` which goes to `` `^ `` and enters insert mode.
-
-## Visual Marks
-
-### Visual Selection Bounds
-
-| Mark | Description |
-|------|-------------|
-| `` `< `` | Start of last visual selection |
-| `` `> `` | End of last visual selection |
-
-### Persistence
-
-These marks persist after visual mode ends. They define
-the range `'<,'>` used with Ex commands.
-
-## Sentence/Paragraph Marks
-
-### Context Marks
-
-| Mark | Description |
-|------|-------------|
-| `` `( `` | Start of current sentence |
-| `` `) `` | End of current sentence |
-| `` `{ `` | Start of current paragraph |
-| `` `} `` | End of current paragraph |
-
-## File Marks
-
-### Buffer Position
-
-| Mark | Description |
-|------|-------------|
-| `'"` | Position when last exiting the buffer |
-| `` `" `` | Exact position when last exiting |
-
-### Restore
-
-When a file is reopened, the cursor can be restored
-to the position indicated by `'"`.
-
-## Jumplist Marks
-
-### Previous Context
-
-| Mark | Description |
-|------|-------------|
-| `` `` `` | Position before last jump |
-| `''` | Line before last jump |
-
-### Usage
-
-These marks are set before any "jump" command (search,
-tag jump, marks, etc.) and provide a quick way back.
-
-## Numbered Marks
-
-### Position History
-
-Marks `0`-`9` store positions across files from
-previous editing sessions:
-- `'0` — position when last exiting kjxlkj
-- `'1` — position before that
-- `'2`-`'9` — older positions (shifted down)
-
-### Rotation
-
-Each time kjxlkj exits, `'0` gets the current position,
-`'0` shifts to `'1`, `'1` to `'2`, etc. `'9` is lost.
-
-## Read-Only
-
-### Cannot Set
-
-Special marks cannot be set with `m{mark}`. They are
-maintained automatically by the editor. Attempting to
-set them produces no error but has no effect.
-
-### Can Jump
-
-All special marks can be jumped to with `` ` `` or `'`.
-They can also be used in Ex command ranges.
+- Marks overview: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
+- Mark types: [/docs/spec/editing/marks/mark-types.md](/docs/spec/editing/marks/mark-types.md)
+- Automatic marks: [/docs/spec/editing/marks/automatic-marks.md](/docs/spec/editing/marks/automatic-marks.md)
