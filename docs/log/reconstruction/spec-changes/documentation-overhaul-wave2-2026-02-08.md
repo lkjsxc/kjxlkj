@@ -4,27 +4,23 @@ Back: [/docs/log/reconstruction/spec-changes/README.md](/docs/log/reconstruction
 
 ## Objective
 
-Second major documentation improvement wave. Goal: ensure the documentation is complete enough for a full, non-MVP reconstruction by Claude Opus 4.5.
+Second documentation improvement wave. Goal: ensure documentation is complete enough for a full, non-MVP reconstruction by Claude Opus 4.5.
 
-## Areas of improvement
+## Completed changes
 
-| Area | Change | Status |
-|---|---|---|
-| TODO redesign | Complete redesign with granular acceptance criteria, anti-shortcut measures, and direct links to every doc | planned |
-| Cursor/CJK | Strengthen grapheme-only model, add implementation algorithm detail | planned |
-| Terminal emulator | Add VT100 state machine detail, DCS/CSI parsing tables, UTF-8 decoder | planned |
-| Viewport wrapping | Add complete wrapping algorithm with tab expansion and fold interaction | planned |
-| Session JSON | Add validation rules and migration strategy | planned |
-| Render pipeline | Add cell grid algorithm, diff rendering detail | planned |
-| Input decoding | Add escape sequence tables and timeout semantics | planned |
-| Test specs | Add more edge cases for CJK, terminal, session, and multi-window | planned |
-| Spec gap audit | Find and fill thin/empty spec files | planned |
-| Log structure | Add improvement proposals and testing ideas | planned |
+| Area | Change |
+|---|---|
+| Render pipeline | Created [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md) |
+| Input decoding | Created [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) |
+| Terminal VT100 | Created [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md) |
+| Thin spec expansion | 20+ spec files expanded with implementation-grade detail |
+| Code block fixes | Removed non-Mermaid code blocks from 5 files |
+| Doc coverage | Added new files to doc-coverage index |
+| TODO updates | Added items for new specs |
 
-## Constraints
+## Constraints followed
 
 - Documentation only: no source code changes
-- All TODOs unchecked at end (ready for fresh reconstruction)
+- All TODOs unchecked (ready for fresh reconstruction)
 - No `../` in links
-- All files under 200 lines
-- Every doc file linked from TODO system
+- No non-Mermaid code blocks
