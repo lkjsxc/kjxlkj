@@ -136,4 +136,4 @@ Workspace files are most useful for multi-crate Rust repositories, polyglot mono
 
 - Session management: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
 - Project config: [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)
-- File explorer: [/docs/spec/features/navigation/file-explorer.md](/docs/spec/features/navigation/file-explorer.md)
+- File explorer: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)

@@ -53,7 +53,7 @@ Required checks:
 
 See TODO leaf:
 
-- [/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md](/docs/todo/current/wave-implementation/ui/viewport/long-lines/README.md)
+- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 
 ### Input storms
 
@@ -72,7 +72,7 @@ Required checks:
 
 See:
 
-- [/docs/todo/current/wave-implementation/features/navigation/file-explorer/README.md](/docs/todo/current/wave-implementation/features/navigation/file-explorer/README.md)
+- [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
 
 ## What to measure
 

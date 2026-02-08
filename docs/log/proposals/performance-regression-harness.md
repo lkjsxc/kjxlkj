@@ -21,7 +21,7 @@ Performance regressions (typing latency, scroll jank, resize storms) must be det
 
 ## Implementation TODO
 
-- [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
+- [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 
 ## Test requirements
 

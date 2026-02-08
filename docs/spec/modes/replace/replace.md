@@ -63,4 +63,4 @@ The Replace mode session maintains a stack of replaced characters:
 - Cursor semantics: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 - Undo: [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
 - Mode transitions: [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
-- CJK width rules: [/docs/spec/technical/unicode.md](/docs/spec/technical/unicode.md)
+- CJK width rules: [/docs/technical/unicode.md](/docs/technical/unicode.md)

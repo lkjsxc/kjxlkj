@@ -158,4 +158,4 @@ The `Action` enum MUST include at minimum:
 - Runtime model: [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
 - Key binding reference: [/docs/reference/CONFORMANCE_KEYS_INPUT.md](/docs/reference/CONFORMANCE_KEYS_INPUT.md)
 - Mode transitions: [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
-- Operator-pending: [/docs/spec/modes/operator-pending/README.md](/docs/spec/modes/operator-pending/README.md)
+- Operator-pending: [/docs/spec/editing/operators/operator-pending.md](/docs/spec/editing/operators/operator-pending.md)

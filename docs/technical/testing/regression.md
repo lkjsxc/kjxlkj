@@ -41,7 +41,7 @@ These should fail on algorithmic regressions and be stable under CI variance:
 
 See TODO leaf:
 
-- [/docs/todo/current/wave-implementation/technical/latency/regression/README.md](/docs/todo/current/wave-implementation/technical/latency/regression/README.md)
+- [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 
 ### B. Benchmarks (trend signals)
 
