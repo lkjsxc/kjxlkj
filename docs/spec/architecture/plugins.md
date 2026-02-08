@@ -87,13 +87,12 @@ Individual features can be enabled or disabled:
 
 ### Filetype-Specific
 
-Features can be configured per filetype:
+Features can be configured per filetype via TOML sections:
 
-```toml
-[filetype.rust]
-autopairs.enabled = true
-format_on_save = true
-```
+| TOML key | Value |
+|---|---|
+| `filetype.rust.autopairs.enabled` | `true` |
+| `filetype.rust.format_on_save` | `true` |
 
 ## Extensibility
 

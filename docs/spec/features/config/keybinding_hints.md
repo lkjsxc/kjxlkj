@@ -75,13 +75,14 @@ Prefix entries show `+` to indicate sub-menus.
 
 ### Example Display
 
-After pressing leader key:
-```text
-f  +file     b  +buffer     w  +window
-ff  find      bn  next       ws  split
-fs  save      bp  prev       wv  vsplit
-fq  quit      bd  delete     wq  close
-```
+After pressing leader key, hints display in a grid:
+
+| Column 1 | Column 2 | Column 3 |
+|---|---|---|
+| `f` +file | `b` +buffer | `w` +window |
+| `ff` find | `bn` next | `ws` split |
+| `fs` save | `bp` prev | `wv` vsplit |
+| `fq` quit | `bd` delete | `wq` close |
 
 ## Filtering
 
