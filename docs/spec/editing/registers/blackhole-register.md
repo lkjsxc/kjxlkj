@@ -1,111 +1,46 @@
 # Black Hole Register
 
-The `_` register that discards all content written to it.
+Back: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)
 
-## Purpose
+The black hole register (`"_`) discards text without affecting other registers.
 
-Delete or change text without affecting any registers:
-- Preserves unnamed register ("")
-- Preserves numbered registers (1-9)
-- Preserves yank register (0)
+## Overview
 
-## Basic Usage
+Deleting or changing text normally overwrites the unnamed register (`""`) and numbered registers. The black hole register provides a way to delete text without storing it anywhere.
 
-### Delete Without Saving
+## Usage
 
+| Command | Effect |
+|---|---|
+| `"_dd` | Delete current line without storing it |
+| `"_d{motion}` | Delete text covered by motion without storing |
+| `"_c{motion}` | Change text without storing deleted text |
+| `"_x` | Delete character without storing |
 
-### Change Without Saving
+## Behavior
 
+Text sent to the black hole register is permanently discarded. It does not appear in:
 
-## Common Use Cases
+- The unnamed register (`""`)
+- The numbered registers (`"0`-`"9`)
+- The small delete register (`"-`)
+- Any other register
 
-### Replace Without Losing Yank
+## Use cases
 
+| Scenario | Without `"_` | With `"_` |
+|---|---|---|
+| Delete a line then paste | The deleted text replaces the paste content | The paste content is preserved |
+| Replace a word | `ciw` overwrites `""` | `"_ciw` preserves `""` |
 
-Without black hole:
+The most common use case is replacing text: yank the replacement, then use `"_d` or `"_c` to remove the target text without overwriting the yank register, then paste.
 
-### Clean Delete for Macros
+## Implementation
 
+When the black hole register is the target, the delete/change operation MUST skip all register writes. No `RegisterWrite` message is sent. The buffer mutation still occurs normally.
 
-### Bulk Replace
+## Related
 
-
-## Behavior Details
-
-### Reading From Black Hole
-
-Reading `_` always returns empty string:
-
-
-### In Insert Mode
-
-
-### In Expressions
-
-
-## Comparison Table
-
-| Operation | Without `_` | With `_` |
-|-----------|-------------|----------|
-| `dd` | Saves to "", 1-9 | |
-| `"_dd` | | Nothing saved |
-| `dw` | Saves to "", - | |
-| `"_dw` | | Nothing saved |
-| `cw` | Saves to "", -, 1-9 | |
-| `"_cw` | | Nothing saved |
-
-## Configuration
-
-
-## Best Practices
-
-### When to Use
-
-1. Replacing text with yanked content
-2. Recording clean macros
-3. Deleting without history pollution
-4. Multi-step replacements
-
-### When Not Needed
-
-1. Simple deletions you might undo
-2. When you want register history
-3. One-off operations
-
-## Keybinding Suggestions
-
-Some users map common operations to always use black hole:
-
-
-## Visual Mode
-
-
-## With Operators
-
-Black hole works with all delete/change operators:
-
-| Normal | Black Hole |
-|--------|------------|
-| `d{motion}` | `"_d{motion}` |
-| `c{motion}` | `"_c{motion}` |
-| `x` | `"_x` |
-| `X` | `"_X` |
-| `s` | `"_s` |
-| `S` | `"_S` |
-
-## API Reference
-
-
-## Why "_"?
-
-The underscore character was chosen because:
-- Visually suggests "nothing" or "blank"
-- Not used by other registers
-- Easy to type with shift key
-- Mnemonic: "underline" = below/nothing
-
-## See Also
-
-- [special-registers.md](special-registers.md) - Other special registers
-- [named-registers.md](named-registers.md) - Named registers
-- [numbered-registers.md](numbered-registers.md) - Numbered registers
+- Named registers: [/docs/spec/editing/registers/named-registers.md](/docs/spec/editing/registers/named-registers.md)
+- Numbered registers: [/docs/spec/editing/registers/numbered-registers.md](/docs/spec/editing/registers/numbered-registers.md)
+- Register commands: [/docs/spec/editing/registers/register-commands.md](/docs/spec/editing/registers/register-commands.md)

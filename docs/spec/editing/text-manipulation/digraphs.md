@@ -1,165 +1,96 @@
 # Digraphs
 
-Special character input.
+Back: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
+
+Two-character input sequences for entering special characters not available on the keyboard.
 
 ## Overview
 
-Digraphs provide a way to enter special
-characters using two-character combinations.
+Digraphs map two ASCII characters to a Unicode character. In Insert mode, pressing `Ctrl-k` followed by two characters inserts the corresponding special character.
 
-## Entering Digraphs
+## Input method
 
-### Insert Mode
+| Key sequence | Action |
+|---|---|
+| `Ctrl-k {char1} {char2}` | Insert the digraph defined by `{char1}{char2}` |
 
+After `Ctrl-k`, the next two keystrokes are interpreted as a digraph pair. If the pair is not defined, no character is inserted and a bell is emitted.
 
-### Example
-
-`Ctrl-K` `a` `'` → `á`
-
-## Common Digraphs
-
-### Accented Characters
-
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `a'` | á | a acute |
-| `e'` | é | e acute |
-| `i'` | í | i acute |
-| `o'` | ó | o acute |
-| `u'` | ú | u acute |
-| `a!` | à | a grave |
-| `a>` | â | a circumflex |
-| `a:` | ä | a diaeresis |
-| `a~` | ã | a tilde |
+## Common digraphs
 
 ### Currency
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `Eu` | € | Euro |
-| `Pd` | £ | Pound |
-| `Ye` | ¥ | Yen |
-| `Ct` | ¢ | Cent |
+| Digraph | Character | Description |
+|---|---|---|
+| `Eu` | € | Euro sign |
+| `Pd` | £ | Pound sign |
+| `Ye` | ¥ | Yen sign |
+| `Ct` | ¢ | Cent sign |
 
-### Math Symbols
+### Punctuation
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
+| Digraph | Character | Description |
+|---|---|---|
+| `<<` | « | Left guillemet |
+| `>>` | » | Right guillemet |
+| `--` | — | Em dash |
+| `-.` | – | En dash |
+| `..` | … | Ellipsis |
+| `!I` | ¡ | Inverted exclamation |
+| `?I` | ¿ | Inverted question |
+
+### Math and logic
+
+| Digraph | Character | Description |
+|---|---|---|
 | `+-` | ± | Plus-minus |
-| `*X` | × | Multiply |
-| `-:` | ÷ | Divide |
+| `*X` | × | Multiplication |
+| `-:` | ÷ | Division |
 | `!=` | ≠ | Not equal |
 | `=<` | ≤ | Less or equal |
 | `>=` | ≥ | Greater or equal |
 | `00` | ∞ | Infinity |
 
-### Greek Letters
+### Accented characters
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
+| Digraph | Character | Description |
+|---|---|---|
+| `a'` | á | A acute |
+| `e'` | é | E acute |
+| `a!` | à | A grave |
+| `a>` | â | A circumflex |
+| `a:` | ä | A diaeresis |
+| `a~` | ã | A tilde |
+| `n~` | ñ | N tilde |
+
+### Greek letters
+
+| Digraph | Character | Description |
+|---|---|---|
 | `a*` | α | Alpha |
 | `b*` | β | Beta |
 | `g*` | γ | Gamma |
 | `d*` | δ | Delta |
 | `p*` | π | Pi |
 | `s*` | σ | Sigma |
-| `l*` | λ | Lambda |
 
-### Arrows
+## Commands
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `->` | → | Right arrow |
-| `<-` | ← | Left arrow |
-| `-v` | ↓ | Down arrow |
-| `-!` | ↑ | Up arrow |
-| `<>` | ↔ | Left-right |
-| `=>` | ⇒ | Double right |
+| Command | Description |
+|---|---|
+| `:digraphs` | List all defined digraphs |
+| `:digraph {c1}{c2} {codepoint}` | Define a custom digraph |
 
-### Punctuation
+## Custom digraphs
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `..` | … | Ellipsis |
-| `--` | – | En dash |
-| `---` | — | Em dash |
-| `<<` | « | Left guillemet |
-| `>>` | » | Right guillemet |
-| `!!` | ¡ | Inverted exclaim |
-| `??` | ¿ | Inverted question |
+Users can define custom digraphs in configuration:
 
-### Fractions
+| Setting | Type | Description |
+|---|---|---|
+| `digraphs` | table | Custom digraph definitions: key is the 2-char pair, value is the Unicode code point |
 
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `12` | ½ | One half |
-| `14` | ¼ | One quarter |
-| `34` | ¾ | Three quarters |
+## Related
 
-### Box Drawing
-
-| Digraph | Result | Description |
-|---------|--------|-------------|
-| `vv` | │ | Vertical |
-| `hh` | ─ | Horizontal |
-| `dr` | ┌ | Down-right |
-| `dl` | ┐ | Down-left |
-| `ur` | └ | Up-right |
-| `ul` | ┘ | Up-left |
-
-## Viewing Digraphs
-
-### List All
-
-
-### Search
-
-
-Shows digraphs containing 'a'.
-
-## Custom Digraphs
-
-### Define
-
-
-Creates `xx` → `€` (Unicode 8364)
-
-### Configuration
-
-
-## Unicode Input
-
-### Direct Unicode
-
-
-Example: `Ctrl-V u2665` → `♥`
-
-### Hex Input
-
-
-For codes > 0xFFFF.
-
-## Emoji
-
-### Common Emoji
-
-| Digraph | Result |
-|---------|--------|
-| `:)` | 😊 |
-| `<3` | ❤️ |
-
-### Unicode Emoji
-
-
-## Configuration
-
-### Enable Digraphs
-
-
-### Show on Keypress
-
-
-## Abbreviations
-
-Combine with abbreviations:
-
+- Insert digraphs: [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
+- Unicode input: [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
+- Special characters: [/docs/spec/modes/insert/input/insert-special-chars.md](/docs/spec/modes/insert/input/insert-special-chars.md)

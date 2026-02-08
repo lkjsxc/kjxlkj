@@ -1,89 +1,69 @@
 # Star Search
 
-Search for word under cursor with * and # commands.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 
-## Basic Commands
+Search for the word under the cursor using `*` and `#`.
 
-| Key | Action |
-|-----|--------|
-| `*` | Search forward for word under cursor |
-| `#` | Search backward for word under cursor |
-| `g*` | Search forward (partial match) |
-| `g#` | Search backward (partial match) |
+## Overview
 
-## Word Boundaries
+Star search searches for the word under the cursor without requiring the user to type the search pattern manually. The word boundaries are automatically added.
 
-### Whole Word (*/#)
-
-
-### Partial Word (g*/g#)
-
-
-## Visual Mode Star
-
-| Key | Mode | Action |
-|-----|------|--------|
-| `*` | V | Search forward for selection |
-| `#` | V | Search backward for selection |
-
-
-## Behavior Details
-
-### Cursor Positioning
-
-
-### With Count
-
-
-## Search Pattern Generated
-
-
-## Case Sensitivity
-
-Star search follows current settings:
-
-
-Override with settings:
-- Word "Test" with smartcase → case sensitive
-- Word "test" with smartcase → case insensitive
-
-## Special Characters
-
-Star search escapes special characters:
-
-
-## WORD vs word
-
-
-## Navigation After Star
+## Commands
 
 | Key | Action |
-|-----|--------|
-| `n` | Next occurrence |
-| `N` | Previous occurrence |
-| `gn` | Select next match |
-| `gN` | Select previous match |
+|---|---|
+| `*` | Search forward for the word under cursor (whole word match) |
+| `#` | Search backward for the word under cursor (whole word match) |
+| `g*` | Search forward for the word under cursor (partial match, no word boundaries) |
+| `g#` | Search backward for the word under cursor (partial match, no word boundaries) |
 
-## Combining with Operators
+## Word extraction
 
+The word under the cursor is determined by the `iskeyword` option. The cursor must be on a keyword character for `*` and `#` to work. If the cursor is not on a keyword character, the search is not performed and a bell is emitted.
 
-## Dot-Repeat Pattern
+## Pattern construction
 
+| Command | Generated pattern |
+|---|---|
+| `*` | `\<word\>` (whole word forward) |
+| `#` | `\<word\>` (whole word backward) |
+| `g*` | `word` (partial match forward) |
+| `g#` | `word` (partial match backward) |
+
+The generated pattern is set as the current search register (`/`) and search highlighting is updated.
+
+## Behavior
+
+After the pattern is set, the cursor jumps to the next (or previous) occurrence. If no occurrence is found, a "Pattern not found" message is displayed.
+
+Star search wraps around the buffer (subject to `wrapscan` setting). When wrapping occurs, a "search hit BOTTOM, continuing at TOP" message is shown.
+
+## Count
+
+A count prefix is supported: `3*` searches forward and jumps to the 3rd occurrence of the word.
+
+## Interaction with search
+
+Star search sets the search register, so subsequent `n` and `N` repeat the star search pattern. The search history is updated.
+
+## Visual mode
+
+In Visual mode, `*` and `#` search for the selected text (not the word under cursor). The selection is escaped for use as a literal search pattern.
+
+## CJK words
+
+For CJK text, word boundaries may not apply in the same way. `*` on a CJK character searches for that character. `iskeyword` determines what constitutes a word.
 
 ## Configuration
 
+| Setting | Default | Description |
+|---|---|---|
+| `wrapscan` | `true` | Wrap search past end of buffer |
+| `ignorecase` | `false` | Case-insensitive search |
+| `smartcase` | `true` | Override ignorecase when pattern has uppercase |
 
-## Stay on Current Match
+## Related
 
-Some users prefer `*` to stay on current word:
-
-
-With this setting:
-- `*` highlights all matches, cursor stays
-- `n` moves to next match
-
-## Keybinding Customization
-
-
-## API Reference
-
+- Search: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
+- Search highlight: [/docs/spec/editing/search/search-highlight.md](/docs/spec/editing/search/search-highlight.md)
+- Search commands: [/docs/spec/editing/search/search-commands.md](/docs/spec/editing/search/search-commands.md)

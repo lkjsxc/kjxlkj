@@ -1,182 +1,75 @@
 # Search Patterns
 
-Advanced search techniques.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
+
+Pattern syntax and behavior for forward and backward search.
 
 ## Overview
 
-Comprehensive search pattern features for finding
-text efficiently with forward/backward search,
-regex, offsets, and history.
+Search patterns use the regex engine described in [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md). The search command parses the pattern, compiles it, and scans the buffer for matches.
 
-## Basic Search
+## Search commands
 
-### Forward Search
+| Key | Action |
+|---|---|
+| `/` | Enter forward search mode |
+| `?` | Enter backward search mode |
+| `n` | Repeat last search in same direction |
+| `N` | Repeat last search in opposite direction |
 
-`/pattern<CR>` searches forward from cursor.
-The cursor moves to the first match.
+## Pattern entry
 
-### Backward Search
+After pressing `/` or `?`, the command line opens with the search prompt. The user types the pattern and presses `<CR>` to execute. `<Esc>` cancels the search.
 
-`?pattern<CR>` searches backward from cursor.
+## Incremental search
 
-### Next/Previous
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `incsearch` | boolean | `true` | Show matches incrementally while typing |
 
-`n` repeats the last search in the same direction.
-`N` repeats the last search in the opposite direction.
+When `incsearch = true`, the first match is highlighted and the cursor is temporarily moved to it as the user types. The viewport scrolls to show the match.
 
-## Search Options
+## Case sensitivity
 
-### Case Sensitivity
+| Setting | Effect |
+|---|---|
+| `ignorecase = true` | All searches are case-insensitive |
+| `smartcase = true` | Case-insensitive unless the pattern contains uppercase letters |
+| `\c` in pattern | Force case-insensitive for this pattern |
+| `\C` in pattern | Force case-sensitive for this pattern |
 
-`\c` anywhere in the pattern forces case-insensitive.
-`\C` anywhere in the pattern forces case-sensitive.
+`smartcase` only applies when `ignorecase` is also `true`.
 
-### Configuration
+## Wrap behavior
 
-| Option | Default | Effect |
-|--------|---------|--------|
-| `ignorecase` | `false` | Case-insensitive search |
-| `smartcase` | `true` | Case-sensitive if uppercase used |
+| Setting | Default | Description |
+|---|---|---|
+| `wrapscan` | `true` | Continue search past end of buffer, wrapping to beginning |
 
-## Word Search
+When wrapping occurs, a message indicates the direction of the wrap.
 
-### Current Word
+## Search register
 
-`*` searches forward for word under cursor.
-`#` searches backward for word under cursor.
-
-### Word Boundaries
-
-`*` and `#` add word boundary markers (`\<` and `\>`)
-automatically. `g*` and `g#` search without boundaries,
-matching partial words.
-
-## Incremental Search
-
-### Enable
-
-`incsearch = true` highlights matches as you type.
-The cursor jumps to the first match during input and
-returns to the original position on `<Esc>`.
-
-## Search Highlighting
-
-### Toggle
-
-`:nohlsearch` (`:noh`) clears current highlights.
-`hlsearch = true` enables persistent highlights.
-
-### Configuration
-
-| Option | Default | Effect |
-|--------|---------|--------|
-| `hlsearch` | `true` | Highlight all matches |
-| `incsearch` | `true` | Highlight during typing |
-
-## Search History
-
-### Navigate History
-
-In search mode, `<Up>` and `<Down>` navigate through
-previous search patterns. History is filtered by the
-prefix already typed.
-
-### Clear History
-
-No built-in command to clear history. History is stored
-in the session file.
+The last search pattern is stored in the `/` register. It persists across searches and can be used by `n`, `N`, and `hlsearch`.
 
 ## Offset
 
-### After Match
+Search patterns support an offset that positions the cursor relative to the match:
 
-`/pattern/e` places cursor at end of match.
-`/pattern/e+{n}` places cursor {n} chars after end.
-`/pattern/e-{n}` places cursor {n} chars before end.
+| Offset | Meaning |
+|---|---|
+| `/pattern/+n` | Position cursor `n` lines below the match |
+| `/pattern/-n` | Position cursor `n` lines above the match |
+| `/pattern/e` | Position cursor at the end of the match |
+| `/pattern/e+n` | Position cursor `n` characters after match end |
+| `/pattern/b+n` | Position cursor `n` characters after match beginning |
 
-### Before Match
+## Search count
 
-`/pattern/b+{n}` places cursor {n} chars after start.
-`/pattern/b-{n}` places cursor {n} chars before start.
-`/pattern/s+{n}` is a synonym for `/b+{n}`.
+After a search, the statusline shows the match count and current index: `[3/15]` means the cursor is on match 3 of 15 total matches.
 
-### Line Offset
+## Related
 
-`/pattern/+{n}` places cursor {n} lines below match.
-`/pattern/-{n}` places cursor {n} lines above match.
-
-## Multi-Line Search
-
-### Across Lines
-
-`\_s` matches any whitespace including newlines.
-`\n` matches a newline character specifically.
-
-### Any Character Including Newline
-
-`\_.` matches any character including newline.
-This enables multi-line pattern matching.
-
-## Search Flags
-
-### In Command
-
-`/pattern/flags` where flags modify behavior.
-
-### Common Flags
-
-| Flag | Meaning |
-|------|---------|
-| `e` | Move to end of match |
-| `n` | Do not move cursor (report count) |
-| `s` | Set previous context mark |
-
-## Very Magic Search
-
-### Simplified Regex
-
-`/\v pattern` makes most characters special (regex-like).
-Less escaping needed: `/\v(foo|bar)\d+` instead of
-`/\(foo\|bar\)\d\+`.
-
-### Magic Levels
-
-| Prefix | Level | Description |
-|--------|-------|-------------|
-| `\v` | Very magic | Most chars are special |
-| `\m` | Magic | Default Vim behavior |
-| `\M` | No magic | Few chars are special |
-| `\V` | Very nomagic | Only `\` is special |
-
-## Literal Search
-
-### Very No Magic
-
-`/\V literal text` searches for exact text.
-Only `\` has special meaning, everything else literal.
-
-## Substitution Integration
-
-### Last Search
-
-`:s//replacement/` uses the last search pattern.
-`:%s//new/g` replaces all matches of the last search.
-
-### Confirm
-
-`:s/pattern/replace/c` prompts for each match:
-`y` (yes), `n` (no), `a` (all remaining), `q` (quit),
-`l` (last: substitute this one and quit).
-
-## Visual Selection Search
-
-### Search Selection
-
-In visual mode, pressing `*` or `#` can be mapped to
-search for the selected text. This is not built-in
-but commonly configured.
-
-### Escape Special Characters
-
-When searching for selected text, special regex
-characters must be escaped: `\`, `/`, `[`, `]`, `*`.
+- Regex: [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
+- Search highlight: [/docs/spec/editing/search/search-highlight.md](/docs/spec/editing/search/search-highlight.md)
+- Star search: [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
