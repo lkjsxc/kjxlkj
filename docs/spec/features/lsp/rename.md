@@ -1,118 +1,61 @@
 # Rename Refactoring
 
-Rename symbols across the codebase.
+LSP-powered rename of symbols across the project.
 
-## Overview
-
-LSP-powered rename refactoring updates all references
-to a symbol throughout the project.
-
-## Usage
-
-### Keybinding
+## Usage (normative)
 
 | Key | Action |
-|-----|--------|
-| `<leader>rn` | Rename symbol |
+|---|---|
+| `<leader>rn` | Start rename for symbol under cursor |
+| `:Rename {name}` | Rename to specified name directly |
 
-### Command
+## Workflow
 
-
-## Interactive Rename
-
-### Workflow
-
-1. Place cursor on symbol
-2. Press `<leader>rn`
-3. Type new name
-4. Press `<Enter>` to apply
-
-### Display
-
-
-## Preview
-
-### Before Apply
-
-
-### Preview Display
-
-
-## Configuration
-
+1. Cursor on symbol to rename
+2. `<leader>rn` opens inline rename prompt pre-filled with current name
+3. Edit the name
+4. `<Enter>` applies rename across all files; `<Esc>` cancels
 
 ## Prepare Rename
 
-### Validation
+Before showing the prompt, the editor sends `textDocument/prepareRename` to the LSP server. The server validates:
 
-LSP validates rename before starting:
-- Symbol is renameable
-- Valid identifier
-- No conflicts
+- Symbol exists and is renameable
+- Returns the valid range and placeholder text
 
-### Error
+If the symbol cannot be renamed, the editor shows an error message and does not open the prompt.
 
+## Preview
+
+When `rename_preview = true` (default), a preview panel shows all affected locations before applying. The user confirms or cancels.
 
 ## Scope
 
-### Project-Wide
+Rename affects all references in the workspace:
 
-Renames across all project files.
-
-### File-Specific
-
-Some renames may be file-local.
+- Same-file references
+- Cross-file references (imports, re-exports)
+- The declaration itself
 
 ## Undo
 
-### Single Undo
+All rename changes across all files are grouped as a single undo operation. A single `u` undoes the entire rename.
 
-All changes undone with single `u`.
+## LSP Server Support
 
-### Per-File Undo
+| Server | Rename | Prepare | File Rename |
+|---|---|---|---|
+| rust-analyzer | Yes | Yes | No |
+| typescript-language-server | Yes | Yes | Yes |
+| gopls | Yes | Yes | No |
+| clangd | Yes | Yes | No |
+| pyright | Yes | Yes | No |
 
-Each file can be undone independently.
+## File Rename
 
-## LSP Requirements
+Some LSP servers (e.g., TypeScript) support renaming files when a module is renamed. The editor applies associated import path updates.
 
-### Server Support
+## Related
 
-| Server | Rename |
-|--------|--------|
-| rust-analyzer | ✓ |
-| typescript | ✓ |
-| gopls | ✓ |
-| clangd | ✓ |
-
-## Special Cases
-
-### File Rename
-
-Some servers support renaming files:
-
-
-### Module Rename
-
-Automatically updates imports.
-
-## Conflicts
-
-### Detection
-
-
-### Resolution
-
-Choose different name.
-
-## Tips
-
-1. Preview changes before applying
-2. Check all files affected
-3. Use undo if needed
-4. Commit before large renames
-
-## Keybindings
-
-
-## Commands
-
+- Code actions: [/docs/spec/features/editing/code-actions.md](/docs/spec/features/editing/code-actions.md)
+- References: [/docs/spec/features/lsp/navigation/references.md](/docs/spec/features/lsp/navigation/references.md)

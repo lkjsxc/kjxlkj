@@ -1,107 +1,57 @@
 # Inlay Hints
 
-Inline type and parameter hints.
+Inline type and parameter annotations powered by LSP.
 
 ## Overview
 
-Inlay hints display type information and parameter
-names inline within your code.
+Inlay hints display non-editable annotations inline within the code — type hints on variables, parameter names at call sites, and chaining hints on method chains. They are rendered in a distinct dimmed style to avoid confusion with actual code.
 
-## Enabling
+## Types of Hints (normative)
 
+| Hint Type | Display | Example |
+|---|---|---|
+| Type hint | After variable name | `let x` → `let x: i32` |
+| Parameter hint | Before argument | `foo(` → `foo(name:` |
+| Chaining hint | After method chain | `.map(...)` → `.map(...): Vec<i32>` |
 
-## Types of Hints
+## Keybindings (normative)
 
-### Type Hints
-
-
-### Parameter Hints
-
-
-### Chaining Hints
-
-
-## Display
-
-### Appearance
-
-
-Hints shown in different color, non-intrusive.
+| Key | Action |
+|---|---|
+| `<leader>ih` | Toggle inlay hints on/off |
 
 ## Configuration
 
-
-## Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<leader>ih` | Toggle inlay hints |
-
-## Per-Language
-
-### Rust
-
-
-### TypeScript
-
+| Option | Default | Description |
+|---|---|---|
+| `inlay_hints` | `true` | Enable inlay hints |
+| `inlay_hints_type` | `true` | Show type hints |
+| `inlay_hints_parameter` | `true` | Show parameter name hints |
+| `inlay_hints_chaining` | `true` | Show chaining type hints |
+| `inlay_hints_delay` | `200` | Delay in ms before requesting hints |
 
 ## Styling
 
+Hints are rendered with a distinct face (typically dimmed foreground, no background) so they are visually distinct from actual code. The face is configurable via theme `inlay_hint` highlight group.
 
 ## Performance
 
-### Delay
+Hints are requested only for the visible viewport. On scroll, new hints are fetched. The `inlay_hints_delay` debounce prevents excessive LSP requests during rapid scrolling.
 
+## LSP Server Support
 
-### Viewport Only
+| Server | Type | Parameter | Chaining |
+|---|---|---|---|
+| rust-analyzer | Yes | Yes | Yes |
+| typescript-language-server | Yes | Yes | No |
+| clangd | Yes | Yes | No |
+| gopls | Yes | Yes | No |
 
-Only hints for visible lines are computed.
+## Interactive Behavior
 
-## Interactive
+Hovering on a hint (mouse or cursor) shows the full type if it was truncated. The hint text is not editable and does not affect cursor positioning.
 
-### Hover on Hint
+## Related
 
-Show full type if truncated.
-
-### Activate
-
-Insert hint text into code for supported hints.
-
-## Commands
-
-
-## LSP Requirements
-
-### Server Support
-
-Not all LSP servers support inlay hints.
-
-| Server | Support |
-|--------|---------|
-| rust-analyzer | ✓ |
-| typescript-language-server | ✓ |
-| clangd | ✓ |
-| gopls | ✓ |
-
-## Use Cases
-
-### Learning
-
-See types without annotations.
-
-### Reviewing
-
-Understand code quickly.
-
-### Debugging
-
-Verify expected types.
-
-## Tips
-
-1. Enable for unfamiliar codebases
-2. Disable for clean screenshots
-3. Use with type-inferred code
-4. Toggle when hints clutter view
-
-## Keybinding Configuration
+- Syntax highlighting: [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md)
+- Semantic tokens: [/docs/spec/features/syntax/semantic-tokens.md](/docs/spec/features/syntax/semantic-tokens.md)

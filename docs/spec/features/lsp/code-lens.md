@@ -1,111 +1,56 @@
 # Code Lens
 
-Actionable information displayed above code.
+Actionable annotations displayed above code elements.
 
 ## Overview
 
-Code lens shows contextual information and actions
-above functions, classes, and other code elements.
+Code lens shows contextual information (reference counts, test runners, implementations) as inline annotations above functions, classes, and other symbols. Each lens is clickable/actionable.
 
 ## Display
 
-### Example
+Lenses appear as dimmed text above the annotated line. Each lens shows a label and is activatable via `<CR>` or mouse click.
 
+## Common Lenses
 
-## Common Code Lens
+| Lens Type | Display | Action |
+|---|---|---|
+| References | `3 references` | Show references list |
+| Implementations | `2 implementations` | Show implementations |
+| Run test | `Run` | Execute test |
+| Debug test | `Debug` | Debug test |
 
-### References
+## Keybindings (normative)
 
-Select the lens and execute it to see references.
-
-### Implementations
-
-
-### Run/Debug
-
-
-## Enabling
-
+| Key | Action |
+|---|---|
+| `<leader>cl` | Toggle code lens visibility |
+| `<CR>` | Execute lens at cursor |
+| `]l` | Jump to next code lens |
+| `[l` | Jump to previous code lens |
 
 ## Configuration
 
-
-## Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<leader>cl` | Toggle code lens |
-| `<CR>` | Execute lens (when selected) |
-
-## Navigation
-
-### Jump to Lens
-
-| Key | Action |
-|-----|--------|
-| `]l` | Next code lens |
-| `[l` | Previous code lens |
-
-### Execute
-
-| Key | Action |
-|-----|--------|
-| `<CR>` | Execute selected lens |
-| `<leader>cx` | Execute lens at cursor |
+| Option | Default | Description |
+|---|---|---|
+| `code_lens` | `true` | Enable code lens display |
+| `code_lens_refresh` | `"auto"` | Refresh strategy: `"auto"`, `"save"`, `"manual"` |
 
 ## LSP Integration
 
-### Requirements
-
-Requires LSP server with code lens support.
-
-### Providers
+Code lens requires LSP server support via `textDocument/codeLens` and `codeLens/resolve`.
 
 | Server | Code Lens |
-|--------|-----------|
-| rust-analyzer | ✓ |
-| clangd | ✓ |
-| gopls | ✓ |
-| typescript | Limited |
-
-## Custom Code Lens
-
-### Configuration
-
+|---|---|
+| rust-analyzer | Yes (references, run/debug tests) |
+| clangd | Yes (references) |
+| gopls | Yes (references, implementations) |
+| typescript-language-server | Limited |
 
 ## Performance
 
-### Refresh
+Lenses are computed lazily — only for visible lines. On scroll, new lenses are requested. The `code_lens_refresh` option controls when full recomputation happens.
 
+## Related
 
-### Lazy Loading
-
-Lens computed only for visible code.
-
-## Styling
-
-
-## Commands
-
-
-## Rust-Analyzer Specific
-
-### Run Single Test
-
-Select the code lens above the test and execute it.
-
-### Run All Tests
-
-
-### Debug
-
-Select the code lens and execute it to start the debugger.
-
-## Tips
-
-1. Use for quick test runs
-2. Check reference counts
-3. Navigate implementations
-4. Refresh after changes
-
-## Keybinding Configuration
+- References: [/docs/spec/features/lsp/navigation/references.md](/docs/spec/features/lsp/navigation/references.md)
+- Hover: [/docs/spec/features/lsp/hover.md](/docs/spec/features/lsp/hover.md)

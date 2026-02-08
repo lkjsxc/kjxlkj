@@ -2,112 +2,61 @@
 
 Function signature display while typing.
 
-## Overview
+## Trigger (normative)
 
-Signature help shows function parameters as you
-type function calls.
+Signature help appears automatically when typing trigger characters inside a function call:
 
-## Automatic Display
+| Trigger | Context |
+|---|---|
+| `(` | Function/method call opened |
+| `,` | Moving to next argument |
+| `<` | Generic type arguments (language-dependent) |
 
-### Trigger
-
-Appears automatically when typing:
-- `(` - Function call
-- `,` - Next argument
-- `<` - Generic arguments
-
-### Example
-
+Manual trigger: `<C-s>` or `:SignatureHelp`.
 
 ## Display
 
-### Format
+The signature popup shows above or below the cursor:
 
+- Function name and full parameter list
+- Current parameter highlighted (bold or different color)
+- Parameter documentation (if available from LSP)
 
-### Multiple Signatures
+### Multiple Overloads
 
-
-## Navigation
+When a function has multiple signatures (overloads), the popup shows `1/N` and allows cycling:
 
 | Key | Action |
-|-----|--------|
-| `<C-j>` | Next signature |
-| `<C-k>` | Previous signature |
+|---|---|
+| `<C-j>` | Next overload |
+| `<C-k>` | Previous overload |
 | `<Esc>` | Dismiss |
-
-## Configuration
-
-
-## Manual Trigger
-
-| Key | Action |
-|-----|--------|
-| `<C-s>` | Show signature |
-
-### Command
-
 
 ## Parameter Highlighting
 
-### Visual
+The parameter corresponding to the cursor's argument position is highlighted. As you type `,` to advance to the next argument, the highlight moves.
 
-Current parameter is highlighted.
+## Auto-Close
 
-### Style
+The popup closes when:
 
+- Cursor moves outside the function call parentheses
+- Closing `)` is typed after all parameters
+- `<Esc>` is pressed
+- Switching to normal mode
 
-## Documentation
+## Configuration
 
-### Parameter Docs
-
-Shows documentation for current parameter.
-
-
-## LSP Integration
-
-### Requirements
-
-Requires LSP server with signature help support.
-
-### Capability
-
-
-## Overloaded Functions
-
-### Navigation
-
-When function has multiple signatures:
-
-
-Press `<C-j>`/`<C-k>` to cycle.
-
-## Closing
-
-### Auto-Close
-
-Closes when:
-- Cursor moves out of call
-- Typing `)` after all parameters
-- Pressing `<Esc>`
-
-### Manual Close
-
+| Option | Default | Description |
+|---|---|---|
+| `signature_help` | `true` | Enable automatic signature display |
+| `signature_help_trigger` | `true` | Auto-trigger on `(` and `,` |
 
 ## Position
 
-### Configuration
+The popup position adapts based on available space. If there is not enough room above the cursor, it appears below. Never overlaps the cursor line.
 
+## Related
 
-### Adaptive
-
-Adjusts based on available space.
-
-## Tips
-
-1. Watch parameter highlight
-2. Use navigation for overloads
-3. Read parameter documentation
-4. Manual trigger when needed
-
-## Keybindings
-
+- Completion: [/docs/spec/features/lsp/completion.md](/docs/spec/features/lsp/completion.md)
+- Hover: [/docs/spec/features/lsp/hover.md](/docs/spec/features/lsp/hover.md)

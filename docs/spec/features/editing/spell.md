@@ -2,125 +2,78 @@
 
 Built-in spell checking for text documents.
 
-## Enabling Spell Check
+## Enabling
 
-### Command
+`:set spell` enables spell checking. `:set nospell` disables it.
 
+Toggle: `<leader>ss`.
 
-### Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<leader>ss` | Toggle spell check |
-| `<leader>sl` | Change language |
-
-## Navigation
+## Navigation (normative)
 
 | Key | Action |
-|-----|--------|
+|---|---|
 | `]s` | Next misspelled word |
 | `[s` | Previous misspelled word |
-| `]S` | Next bad word (skip rare) |
+| `]S` | Next bad word (skip rare/regional) |
 | `[S` | Previous bad word |
 
-## Corrections
+## Corrections (normative)
 
 | Key | Action |
-|-----|--------|
-| `z=` | Suggest corrections |
-| `zg` | Add word to dictionary |
+|---|---|
+| `z=` | Show suggestion list for word under cursor |
+| `1z=` | Apply first suggestion |
+| `zg` | Add word to user dictionary (good) |
 | `zw` | Mark word as wrong |
-| `zug` | Undo add to dictionary |
-| `zuw` | Undo mark as wrong |
-| `1z=` | Use first suggestion |
+| `zug` | Undo `zg` (remove from dictionary) |
+| `zuw` | Undo `zw` |
 
 ## Visual Indicators
 
-Misspelled words are underlined:
-
-- **Red underline**: Unknown word
-- **Blue underline**: Rare word
-- **Yellow underline**: Wrong case
+| Underline Color | Meaning |
+|---|---|
+| Red | Unknown / misspelled word |
+| Blue | Rare word |
+| Yellow | Wrong capitalization |
 
 ## Languages
 
-### Configuration
+Default language: `en_US`. Change with `:set spelllang=de_DE`.
 
+Supported: `en_US`, `en_GB`, `de_DE`, `fr_FR`, `es_ES`, and any Hunspell-compatible dictionary.
 
-### Available Languages
-
-- `en_US` - English (US)
-- `en_GB` - English (UK)
-- `de_DE` - German
-- `fr_FR` - French
-- `es_ES` - Spanish
-
-### Multiple Languages
-
+Multiple languages: `:set spelllang=en_US,de_DE` checks against both.
 
 ## Dictionary Management
 
 ### User Dictionary
 
-Location: `~/.config/kjxlkj/spell/user.dic`
-
-### Adding Words
-
-1. Navigate to word
-2. Press `zg`
+Location: `~/.config/kjxlkj/spell/user.dic`. Words added with `zg` go here.
 
 ### Project Dictionary
 
+Place a `.kjxlkj-spell` file in the project root for project-specific words.
 
-## File Type Settings
+## File Type Integration
 
-### Enable for Specific Types
+Spell checking in code files only checks comments and strings (using tree-sitter to identify them). In prose files (Markdown, text), all content is checked.
 
+## Suggestion Ranking
 
-### Code Comments
+Suggestions are ranked by:
 
-
-## Suggestions
-
-### Fuzzy Matching
-
-Suggestions ranked by:
-1. Edit distance
+1. Edit distance (Levenshtein)
 2. Keyboard proximity
-3. Common patterns
-
-### Quick Replace
-
+3. Common substitution patterns
 
 ## Performance
 
-### Large Files
-
-Spell check is incremental:
-- Only visible lines checked
-- Background processing
-- Cached results
-
-### Disable When Not Needed
-
+Spell checking is incremental — only changed and visible lines are re-checked. Cached results are reused for unchanged content.
 
 ## Ignore Patterns
 
-### Configuration
+Built-in ignores: hex codes (`#ff0000`), paths (`/usr/bin/`), emails (`user@example.com`), URLs.
 
+## Related
 
-### Built-in Ignores
-
-- Hex codes: `#ff0000`
-- Paths: `/usr/bin/`
-- Emails: `user@domain.com`
-
-## Integration
-
-### LSP
-
-Spell suggestions in completion menu.
-
-### Status Line
-
-Shows spell language when active.
+- Autocommands: [/docs/spec/features/config/autocommands.md](/docs/spec/features/config/autocommands.md)

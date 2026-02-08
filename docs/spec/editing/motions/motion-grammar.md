@@ -1,161 +1,103 @@
 # Motion Grammar
 
-Understanding Vim motion structure.
+The composable grammar for Vim-style operators and motions.
 
-## Overview
+## Grammar Structure (normative)
 
-Motions follow a composable grammar:
-`[count][operator][motion]`
+The fundamental editing grammar is:
 
-## Basic Structure
+`[count] operator [count] motion`
 
-### Components
+or with text objects:
 
-| Component | Description | Example |
-|-----------|-------------|---------|
-| Count | Repetition | `3` |
-| Operator | Action | `d`, `y`, `c` |
-| Motion | Movement | `w`, `$`, `}` |
+`[count] operator [count] text-object`
 
-### Examples
+When both counts are present they multiply: `2d3w` deletes 6 words.
 
+## Components
+
+| Component | Role | Examples |
+|---|---|---|
+| Count | Repetition multiplier (default 1) | `3`, `12`, `100` |
+| Operator | Action to apply | `d`, `y`, `c`, `>`, `<`, `=`, `gq`, `g~`, `gu`, `gU` |
+| Motion | Cursor movement defining range | `w`, `e`, `b`, `$`, `}`, `f{char}` |
+| Text object | Structural selection (operator-pending only) | `iw`, `a"`, `ip`, `at` |
 
 ## Operator-Motion Combination
 
-### Pattern
+The operator defines *what* to do; the motion defines *where*. The text between the cursor start position and the motion destination is the operated region.
 
+| Input | Operator | Motion | Effect |
+|---|---|---|---|
+| `dw` | delete | word forward | Delete from cursor to next word start |
+| `y$` | yank | end of line | Yank to end of line |
+| `c}` | change | paragraph end | Change to end of paragraph |
+| `>j` | indent | line down | Indent current + next line |
+| `gUiw` | uppercase | inner word | Uppercase the word under cursor |
 
-### Common Operators
+## Doubled Operators (normative)
 
-| Operator | Action |
-|----------|--------|
-| `d` | Delete |
-| `y` | Yank (copy) |
-| `c` | Change |
-| `>` | Indent right |
-| `<` | Indent left |
-| `=` | Auto-indent |
-| `gq` | Format |
-| `g~` | Toggle case |
-| `gu` | Lowercase |
-| `gU` | Uppercase |
+An operator followed by itself operates on the current line:
+
+| Input | Effect |
+|---|---|
+| `dd` | Delete current line |
+| `yy` | Yank current line |
+| `cc` | Change current line |
+| `>>` | Indent current line |
+| `<<` | Unindent current line |
+| `==` | Auto-indent current line |
+| `gqq` | Format current line |
+| `gUU` | Uppercase current line |
+| `guu` | Lowercase current line |
+| `g~~` | Toggle case on current line |
+
+With count `3dd` deletes 3 lines starting from cursor line.
 
 ## Count Placement
 
-### Count Before Operator
+| Input | Meaning |
+|---|---|
+| `3dw` | Delete 3 words (count before operator) |
+| `d3w` | Delete 3 words (count before motion) |
+| `2d3w` | Delete 6 words (counts multiply) |
 
+## Motion Types and Operator Scope
 
-### Count Before Motion
+| Motion type | Operator scope |
+|---|---|
+| Characterwise exclusive | Start to destination (exclusive) |
+| Characterwise inclusive | Start to destination (inclusive) |
+| Linewise | Full lines from start line to destination line |
+| Blockwise | Rectangular block selection |
 
+See [/docs/spec/editing/operators/exclusive-inclusive.md](/docs/spec/editing/operators/exclusive-inclusive.md) for inclusive/exclusive details.
 
-### Both Counts
+## Text Objects in Operator-Pending
 
+Text objects are only valid after an operator (in operator-pending mode). They define a region around the cursor without moving it.
 
-## Motion Types
+| Prefix | Meaning |
+|---|---|
+| `i` | Inner — content between delimiters |
+| `a` | Around — content including delimiters |
 
-### Character Motions
+## Standalone Motions
 
-| Motion | Movement |
-|--------|----------|
-| `h` | Left |
-| `l` | Right |
-| `j` | Down |
-| `k` | Up |
+Without an operator prefix, a motion simply moves the cursor.
 
-### Word Motions
+## Visual Mode Grammar
 
-| Motion | Movement |
-|--------|----------|
-| `w` | Word start |
-| `e` | Word end |
-| `b` | Word back |
-| `W` | WORD start |
-| `E` | WORD end |
-| `B` | WORD back |
+In visual mode, motions extend the selection instead of defining an operator range. Operators in visual mode act on the selected region:
 
-### Line Motions
+`v{motion}...{operator}` — select a region then operate.
 
-| Motion | Movement |
-|--------|----------|
-| `0` | Line start |
-| `^` | First non-blank |
-| `$` | Line end |
-| `g_` | Last non-blank |
+## Command-Line Ranges
 
-### Sentence/Paragraph
+Ex commands use a different grammar: `:{range}command`. Ranges specify line numbers or patterns. See [/docs/spec/commands/ranges/README.md](/docs/spec/commands/ranges/README.md).
 
-| Motion | Movement |
-|--------|----------|
-| `(` | Sentence back |
-| `)` | Sentence forward |
-| `{` | Paragraph back |
-| `}` | Paragraph forward |
+## Related
 
-## Text Objects
-
-### Structure
-
-
-### Inner vs Outer
-
-| Prefix | Description |
-|--------|-------------|
-| `i` | Inner (inside) |
-| `a` | A/around (including) |
-
-### Objects
-
-| Object | Description |
-|--------|-------------|
-| `w` | Word |
-| `W` | WORD |
-| `s` | Sentence |
-| `p` | Paragraph |
-| `[`, `]` | Brackets |
-| `(`, `)` | Parentheses |
-| `{`, `}` | Braces |
-| `<`, `>` | Angle brackets |
-| `"` | Double quotes |
-| `'` | Single quotes |
-| `` ` `` | Backticks |
-| `t` | HTML/XML tag |
-
-### Examples
-
-
-## Doubled Operators
-
-### Line Operation
-
-
-## Motion Scope
-
-### Characterwise
-
-Operates on individual characters.
-Most motions are characterwise.
-
-### Linewise
-
-Operates on entire lines.
-`j`, `k`, `{`, `}` are linewise.
-
-### Blockwise
-
-Operates on rectangular block.
-Visual block mode `<C-v>`.
-
-## Exclusive vs Inclusive
-
-### Exclusive
-
-Doesn't include destination character.
-`w`, `b`, `{`, `}` are exclusive.
-
-### Inclusive
-
-Includes destination character.
-`e`, `f`, `t` are inclusive.
-
-### Force Inclusive/Exclusive
-
+- Operators: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
+- Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
+- Motions: [/docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)

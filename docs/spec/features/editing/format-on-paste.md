@@ -1,106 +1,53 @@
 # Format on Paste
 
-Automatic formatting when pasting code.
+Automatically adjust formatting when pasting code.
 
 ## Overview
 
-Format on paste automatically formats pasted content
-to match the surrounding code style.
-
-## Enabling
-
-
-## Behavior
-
-### Before Paste
-
-
-### Pasting Unformatted Code
-
-
-### After Format on Paste
-
+When enabled, pasted content is automatically re-indented to match the surrounding code. Optionally, full LSP formatting is applied to the pasted region.
 
 ## Configuration
 
+| Option | Default | Description |
+|---|---|---|
+| `format_on_paste` | `true` | Enable format-on-paste |
+| `format_on_paste_full` | `false` | Apply full LSP formatting (not just indent) |
 
-## Indentation Adjustment
+## Behavior
 
-### Smart Indent
+### Indentation Adjustment (default)
 
-Pasted code adjusted to cursor indent level.
+Pasted content is re-indented to match the indentation level at the cursor position. The relative indentation within the pasted block is preserved.
 
-### Example
+### Full Formatting
 
-Pasting at 4-space indent:
-
-
-## Format Content
-
-### Enabled
-
-Full formatting applied (spacing, style).
-
-### Disabled
-
-Only indentation adjusted.
-
-
-## Source Detection
-
-### Same File Type
-
-Full formatting available.
-
-### Different File Type
-
-Only indentation adjustment.
-
-### Plain Text
-
-Indentation adjustment only.
-
-## LSP Integration
-
-### Range Formatting
-
-Uses LSP range formatting for pasted region.
+When `format_on_paste_full = true` and an LSP server with `textDocument/rangeFormatting` is available, the pasted region receives full formatting (spacing, style, line breaks).
 
 ### Fallback
 
-External formatter or indent adjustment.
+If LSP is unavailable, only indentation adjustment is applied.
 
-## Per-Language
+## Source Detection
 
+| Pasted From | Treatment |
+|---|---|
+| Same file type | Full formatting available |
+| Different file type | Indentation adjustment only |
+| Plain text | Indentation adjustment only |
 
 ## Undo
 
-### Single Undo
+Paste and formatting are a single undo unit. One `u` undoes both.
 
-Paste and format are single undo unit.
+## Skip Formatting
 
+Use `<C-S-v>` (or configurable key) to paste without any formatting adjustment. `:paste!` also pastes raw content.
 
 ## Performance
 
-### Large Pastes
+For pastes exceeding 1000 lines, formatting is skipped and only indentation is adjusted, to avoid blocking the editor.
 
+## Related
 
-Skip formatting for very large pastes.
-
-## Disable Temporarily
-
-### Paste Without Format
-
-
-### Command
-
-
-## Tips
-
-1. Enable for code files
-2. Disable for prose
-3. Use `<C-S-v>` for raw paste
-4. Check indent style matches
-
-## Configuration Reference
-
+- Format on type: [/docs/spec/features/editing/format-on-type.md](/docs/spec/features/editing/format-on-type.md)
+- Formatting: [/docs/spec/features/editing/formatting.md](/docs/spec/features/editing/formatting.md)

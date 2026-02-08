@@ -1,152 +1,53 @@
 # Overstrike Mode
 
-Terminal-level overtype behavior.
+Terminal-level overtype behavior and how kjxlkj handles overstruck files.
 
 ## Overview
 
-Overstrike is a terminal/display
-concept where characters overlay
-existing characters.
+Overstrike is a legacy terminal/printer mechanism where characters are combined by printing a character, backspace, then another character on the same position. Modern editors display the control sequences rather than rendering overstrike effects.
 
-## Historical Context
+## Replace Mode vs Overstrike
 
-### Origin
+| Feature | Replace Mode (`R`) | Overstrike |
+|---|---|---|
+| Scope | Editor command | Terminal/file format |
+| Mechanism | Buffer character replacement | Backspace sequences in text |
+| Display | Normal character rendering | Historically combined glyphs |
+| Use case | Editing text | Legacy man pages, printer output |
 
-Older terminals and printers
-used overstrike for:
-- Bold (print char twice)
-- Underline (char + underscore)
-- Strikethrough
+## Handling Overstruck Files
 
-### Modern Relevance
+When reading files containing backspace (0x08) sequences:
 
-Less common today, but still
-relevant for some use cases.
-
-## Replace vs Overstrike
-
-### Replace Mode
-
-
-Replaces character in buffer.
-
-### Overstrike
-
-Terminal overwrites display
-position, may combine glyphs.
-
-## Terminal Behavior
-
-### Overstrike Sequence
-
-
-### Modern Terminals
-
-Most don't support true overstrike.
-Use ANSI escape codes instead.
-
-## Simulation
-
-### In Editor
-
-Editor doesn't have true overstrike,
-but replace mode is similar.
-
-### Configuration
-
-
-## Use Cases
-
-### Fixed-Width Output
-
-Generating output for legacy
-printers or displays.
-
-### Text-Based Formatting
-
-Creating "bold" or "underline"
-in plain text via overstriking.
-
-## Implementation
-
-### How It Works
-
-1. Print character
-2. Backspace
-3. Print same/different char
-
-### Example Output
-
-
-## In kjxlkj
-
-### Handling Overstruck Files
-
-When reading files with
-backspace sequences:
-
+1. Display the raw control characters as `^H` in the buffer
+2. Allow editing control characters directly
+3. Provide a conversion command to strip overstrike sequences
 
 ### Conversion
 
-
-Shows control characters.
-
-## Related Concepts
-
-### Replace Mode
-
-Use `R` for overtype editing.
-Most similar behavior.
-
-### Unicode Combining
-
-Modern combining characters:
-
-More compatible than overstrike.
+`:set display+=uhex` shows the hex representation. Users can substitute overstrike sequences using `:%s/.\%x08//g` to strip them.
 
 ## Man Page Format
 
-### Traditional man
+Traditional man pages use overstrike for formatting:
 
-Uses overstrike for formatting:
+- **Bold**: `char + BS + char` (same character printed twice)
+- **Underline**: `_ + BS + char` (underscore combined with character)
 
-### Reading man Files
+Modern systems use ANSI escape codes instead. kjxlkj reads man output processed through `col -b` or similar filters.
 
+## Modern Alternative: ANSI Codes
 
-May help visualize.
+kjxlkj supports ANSI SGR escape codes for terminal rendering (bold, underline, color). These are used in the built-in terminal emulator, not in normal buffers.
 
-## Terminal Settings
+## Configuration
 
-### ANSI Codes Preferred
+| Option | Effect |
+|---|---|
+| `display = "uhex"` | Show non-printable bytes as hex |
+| `list = true` | Show whitespace and control chars |
 
-Modern terminals use:
+## Related
 
-### Configuration
-
-
-## Compatibility
-
-### Terminals Supporting
-
-Few modern terminals:
-- Some TTY emulators
-- Historical terminal emulators
-
-### Terminals Not Supporting
-
-Most modern:
-- xterm (modern mode)
-- iTerm2
-- Windows Terminal
-- Alacritty
-
-## Editor Behavior
-
-### Display
-
-
-### Editing
-
-Control characters shown,
-can be edited directly.
-
+- Replace mode: [/docs/spec/modes/replace/README.md](/docs/spec/modes/replace/README.md)
+- Virtual replace: [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md)

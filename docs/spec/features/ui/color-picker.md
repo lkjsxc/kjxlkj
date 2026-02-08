@@ -2,112 +2,48 @@
 
 Preview and edit colors inline.
 
-## Overview
+## Color Preview (normative)
 
-Color picker displays color previews and provides
-interactive color editing.
-
-## Color Preview
-
-### Inline Display
-
-Colors shown as colored squares:
-
-
-### Formats Detected
+Colors in source code are detected and shown with a small colored square inline before the color value. Detected formats:
 
 | Format | Example |
-|--------|---------|
-| Hex | `#ff5370` |
+|---|---|
+| Hex | `#ff5370`, `#f53` |
 | RGB | `rgb(255, 83, 112)` |
 | RGBA | `rgba(255, 83, 112, 0.5)` |
 | HSL | `hsl(348, 100%, 66%)` |
-| Named | `red`, `blue` |
+| Named CSS | `red`, `blue`, `tomato` |
 
-## Enabling
-
-
-## Color Picker
-
-### Open
+## Color Picker Interface
 
 | Key | Action |
-|-----|--------|
-| `<leader>cp` | Color picker |
+|---|---|
+| `<leader>cp` | Open color picker at cursor |
 
-### Picker Interface
-
-
-## Editing
-
-### Adjust Values
+### Picker Controls
 
 | Key | Action |
-|-----|--------|
-| `h` | Decrease value |
-| `l` | Increase value |
-| `j` | Next component |
-| `k` | Previous component |
-
-### Apply
-
-| Key | Action |
-|-----|--------|
-| `<CR>` | Apply color |
+|---|---|
+| `h` / `l` | Decrease / increase current component |
+| `j` / `k` | Next / previous component (R/G/B or H/S/L) |
+| `<CR>` | Apply selected color |
 | `<Esc>` | Cancel |
 
 ## Format Conversion
 
-### Command
-
-
-### Keybinding
-
+The picker can convert between formats. Select the target format before applying.
 
 ## Configuration
 
+| Option | Default | Description |
+|---|---|---|
+| `color_preview` | `true` | Show inline color squares |
+| `color_picker` | `true` | Enable `<leader>cp` |
 
-## Preview Styles
+## Supported File Types
 
-### Square
+Color preview is enabled by default in CSS, SCSS, Less, HTML, JavaScript, TypeScript, and TOML/YAML config files. Other file types can be added via configuration.
 
+## Related
 
-### Background
-
-
-### Foreground
-
-
-## File Types
-
-### Enabled By Default
-
-- CSS
-- SCSS
-- Less
-- HTML
-- JavaScript
-- TypeScript
-- Config files
-
-### Configuration
-
-
-## Named Colors
-
-### CSS Colors
-
-`red`, `blue`, `green`, etc.
-
-### Custom Colors
-
-
-## Tips
-
-1. Hover over color for preview
-2. Use picker for precise editing
-3. Convert between formats
-4. Check contrast
-
-## Keybindings
-
+- UI overview: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)

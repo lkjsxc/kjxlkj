@@ -1,114 +1,55 @@
 # Reference Finder
 
-Find all references to a symbol.
+Find all references to a symbol across the project.
 
-## Usage
-
-### Keybinding
+## Keybindings (normative)
 
 | Key | Action |
-|-----|--------|
-| `gr` | Go to references |
-| `<leader>fr` | Find references |
-
-### Command
-
+|---|---|
+| `gr` | Show references for symbol under cursor |
+| `<leader>fr` | Find references (same as `gr`) |
 
 ## Display
 
-### Reference List
+References appear in a quickfix-style picker listing. Each entry shows:
 
+- File path (relative to workspace root)
+- Line number and column
+- Context line (the line containing the reference)
+- Total reference count in the header
 
-## Information Shown
-
-- File path
-- Line and column
-- Context line
-- Total count
-
-## Navigation
+## Navigation in Reference List
 
 | Key | Action |
-|-----|--------|
-| `j` | Next reference |
-| `k` | Previous reference |
+|---|---|
+| `j` / `k` | Move up/down |
 | `<CR>` | Jump to reference |
-| `<C-v>` | Open in vsplit |
-| `<Esc>` | Close |
+| `<C-v>` | Open in vertical split |
+| `<C-x>` | Open in horizontal split |
+| `<Esc>` | Close reference list |
+| `q` | Close reference list |
 
 ## Include Declaration
 
-### Configuration
-
-
-### Toggle
-
+By default, the declaration of the symbol is included in the reference list. This can be toggled via `references_include_declaration = true` (default).
 
 ## Quickfix Integration
 
-### Send to Quickfix
-
-
-### Navigate
-
+References can be sent to the quickfix list with `:copen` for batch navigation. From quickfix, use `]q` / `[q` to step through references.
 
 ## Preview
 
-### Inline
-
-
-Shows context around reference.
-
-## Configuration
-
+When navigating the reference list, a preview of the reference location is shown inline, displaying surrounding context lines.
 
 ## Filtering
 
-### By File Pattern
-
-
-### By Type
-
-
-## Use Cases
-
-### Refactoring
-
-Find all usages before renaming.
-
-### Understanding
-
-See how symbol is used.
-
-### Impact Analysis
-
-Assess change impact.
+For large result sets, type to filter references by file path or content.
 
 ## LSP Requirements
 
-### Server Support
+Requires LSP server with `textDocument/references` support. All major servers (rust-analyzer, typescript, gopls, clangd, pyright) support this.
 
-All major LSP servers support references.
+## Related
 
-## Related Commands
-
-| Command | Description |
-|---------|-------------|
-| `gd` | Go to definition |
-| `gi` | Go to implementation |
-| `gr` | Go to references |
-
-## Statusline
-
-Shows reference count:
-
-
-## Keybindings
-
-
-## Tips
-
-1. Check count before refactoring
-2. Use quickfix for systematic review
-3. Preview to understand context
-4. Filter large results
+- Go to definition: [/docs/spec/features/lsp/navigation/document-symbols.md](/docs/spec/features/lsp/navigation/document-symbols.md)
+- Rename: [/docs/spec/features/lsp/rename.md](/docs/spec/features/lsp/rename.md)

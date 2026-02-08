@@ -2,141 +2,95 @@
 
 System clipboard integration across platforms.
 
-## Overview
-
-kjxlkj integrates with the system clipboard for
-copy/paste operations.
-
-## Registers
-
-### Clipboard Registers
+## Clipboard Registers (normative)
 
 | Register | Description |
-|----------|-------------|
-| `"+` | System clipboard |
-| `"*` | Primary selection (X11) |
+|---|---|
+| `"+` | System clipboard (Ctrl+C/V equivalent) |
+| `"*` | Primary selection (X11 middle-click; aliased to `"+` on non-X11) |
 
 ### Usage
 
+- `"+y{motion}` — yank to system clipboard
+- `"+p` — paste from system clipboard
+- `"*y{motion}` — yank to primary selection
+- `"*p` — paste from primary selection
 
 ## Configuration
 
-### Default Register
+### Sync with Unnamed Register
 
+When `clipboard = "unnamedplus"` is set, all yank/delete/change operations use `"+` as the default register instead of `""`. This makes `y`, `d`, `p` work directly with the system clipboard.
 
-### Sync with Unnamed
+| Setting | Effect |
+|---|---|
+| `clipboard = "unnamed"` | Sync `""` with `"*` |
+| `clipboard = "unnamedplus"` | Sync `""` with `"+` |
+| (default) | No sync; clipboard requires explicit `"+`/`"*` |
 
+## Platform Detection (normative)
 
-## Platform Support
+kjxlkj auto-detects the clipboard provider at startup in this priority order:
 
-### Linux (X11)
+1. **Wayland**: `wl-copy` / `wl-paste` (from wl-clipboard package)
+2. **X11**: `xclip` or `xsel` (prefers xclip)
+3. **macOS**: `pbcopy` / `pbpaste` (built-in)
+4. **Windows**: Win32 clipboard API (built-in)
+5. **OSC 52**: Terminal escape sequence (fallback for SSH/containers)
+6. **Internal**: In-memory clipboard (no system integration)
 
-Uses: xclip, xsel
+If the preferred provider fails at runtime, fallback to the next level.
 
+## OSC 52 Terminal Clipboard
 
-### Linux (Wayland)
-
-Uses: wl-clipboard
-
-
-### macOS
-
-Uses: pbcopy/pbpaste (built-in)
-
-### Windows
-
-Uses: Windows clipboard API (built-in)
-
-## Detection
-
-kjxlkj auto-detects clipboard provider:
-
-1. Check for Wayland (wl-copy/wl-paste)
-2. Check for X11 (xclip/xsel)
-3. Check for macOS (pbcopy/pbpaste)
-4. Check for Windows (win32 API)
-5. Fall back to internal clipboard
-
-## OSC 52
-
-### Terminal Clipboard
-
-Works over SSH and in containers.
-
+OSC 52 enables clipboard access through the terminal emulator itself, working over SSH and inside containers without needing X11 forwarding.
 
 ### Supported Terminals
 
-- Kitty
-- Alacritty
-- iTerm2
-- WezTerm
-- Windows Terminal
+Kitty, Alacritty, iTerm2, WezTerm, Windows Terminal, foot, xterm (with allowWindowOps).
 
-## Troubleshooting
+### Configuration
 
-### Clipboard Not Working
+Enable with `clipboard_osc52 = true`. When enabled, OSC 52 is used alongside or instead of the platform provider.
 
+## X11 Selection Types
 
-### SSH Sessions
+| Selection | Behavior |
+|---|---|
+| Primary (`"*`) | Set automatically when text is selected; paste with middle-click |
+| Clipboard (`"+`) | Set by explicit copy action (Ctrl+C or yank command) |
 
-Enable OSC52 in config.
+On Wayland and macOS, primary and clipboard are identical.
 
-### tmux
+## Large Content Handling
 
-
-## Selection Types (X11)
-
-### Primary
-
-Middle-click paste. Selected text automatically.
-
-### Clipboard
-
-Ctrl+C/V. Explicit copy action.
-
-### Secondary
-
-Rarely used.
-
-## Large Content
-
-### Size Limits
-
-
-### Chunked Transfer
-
-Large content transferred in chunks.
+Content exceeding 1 MB is transferred in chunks. Extremely large clipboard content (> 10 MB) is rejected with a warning to prevent memory issues.
 
 ## Security
 
-### Sensitive Content
-
-
-### Paste Confirmation
-
+Paste from external clipboard in command-line mode shows a confirmation prompt when content contains newlines (prevents command injection). Configurable via `clipboard_paste_confirm = true`.
 
 ## Commands
 
 | Command | Description |
-|---------|-------------|
-| `:clipboard` | Show clipboard content |
-| `:clipboard clear` | Clear clipboard |
+|---|---|
+| `:clipboard` | Show clipboard register content |
+| `:clipboard clear` | Clear clipboard registers |
 
-## Keybindings
+## Insert Mode Paste
 
 | Key | Action |
-|-----|--------|
-| `<C-c>` | Copy (insert mode) |
-| `<C-v>` | Paste (insert mode) |
-| `"+y` | Copy to clipboard |
-| `"+p` | Paste from clipboard |
+|---|---|
+| `<C-r>+` | Insert from system clipboard |
+| `<C-r>*` | Insert from primary selection |
 
-## Internal Clipboard
+## Troubleshooting
 
-### Fallback
+- **Clipboard empty**: Verify provider is installed (`xclip`, `wl-clipboard`)
+- **SSH**: Enable OSC 52 in config and verify terminal supports it
+- **tmux**: Set `set -g set-clipboard on` in tmux config
 
-When system clipboard unavailable:
+## Related
 
-
-### Persistence
-
+- Clipboard registers: [/docs/spec/editing/registers/clipboard-registers.md](/docs/spec/editing/registers/clipboard-registers.md)
+- Registers overview: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

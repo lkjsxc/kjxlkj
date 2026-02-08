@@ -1,48 +1,31 @@
 # Syntax Files
 
-Configure syntax highlighting.
+Tree-sitter based syntax highlighting configuration.
 
-## Overview
-
-kjxlkj uses tree-sitter for syntax highlighting
-with configurable queries and themes.
-
-## Built-in Languages
+## Built-in Languages (normative)
 
 ### Fully Supported
 
-- Rust
-- Python
-- JavaScript/TypeScript
-- Go
-- C/C++
-- Markdown
-- JSON/YAML/TOML
-- HTML/CSS
-- Bash
-- Lua
+Rust, Python, JavaScript, TypeScript, Go, C, C++, Markdown, JSON, YAML, TOML, HTML, CSS, Bash, Lua.
 
-### Partial Support
+For each fully-supported language, the editor ships a compiled tree-sitter parser and a highlight query file. A typical source file in any of these languages renders with non-empty highlight spans by default.
 
-Additional languages via tree-sitter.
+## Language Detection (normative)
 
-## Language detection (normative)
+Detection priority:
 
-The syntax engine MUST choose a language id deterministically for each buffer.
+1. Explicit per-buffer override (`:set filetype=rust`)
+2. File extension mapping (see table below)
+3. Fallback to `plain` (no structured highlighting)
 
-Minimum detection strategy (in priority order):
+### Extension Mapping (normative)
 
-1. An explicit per-buffer override (if the implementation supports it).
-2. A file-extension mapping.
-3. Fallback to `plain` (no structured highlighting).
-
-The built-in extension mapping MUST include at least:
-
-| Extension | Language id |
+| Extension | Language ID |
 |---|---|
 | `.rs` | `rust` |
 | `.py` | `python` |
-| `.js`, `.jsx`, `.ts`, `.tsx` | `javascript` / `typescript` (implementation-defined split) |
+| `.js`, `.jsx` | `javascript` |
+| `.ts`, `.tsx` | `typescript` |
 | `.go` | `go` |
 | `.c`, `.h` | `c` |
 | `.cpp`, `.cc`, `.cxx`, `.hpp`, `.hh`, `.hxx` | `cpp` |
@@ -55,89 +38,48 @@ The built-in extension mapping MUST include at least:
 | `.sh`, `.bash` | `bash` |
 | `.lua` | `lua` |
 
-For any language listed as “Fully Supported”, the implementation MUST ship a working parser + highlight query set such that a typical file renders with non-empty highlight spans by default.
+## Highlight Groups (normative)
 
-## Configuration
-
-### Enable/Disable
-
-
-## Tree-sitter Queries
-
-### Location
-
-
-### Query Format
-
-
-## Highlight Groups
-
-### Standard Groups
+Standard capture names used in highlight queries:
 
 | Group | Description |
-|-------|-------------|
+|---|---|
 | `@comment` | Comments |
 | `@string` | String literals |
-| `@function` | Functions |
-| `@keyword` | Keywords |
-| `@type` | Types |
+| `@function` | Function names |
+| `@function.call` | Function call sites |
+| `@keyword` | Language keywords |
+| `@type` | Type names |
 | `@variable` | Variables |
 | `@constant` | Constants |
 | `@operator` | Operators |
+| `@punctuation` | Brackets, commas, semicolons |
+| `@property` | Struct/object fields |
+| `@number` | Numeric literals |
+| `@boolean` | Boolean literals |
 
-### Custom Groups
+## Tree-sitter Queries
 
+Queries are located in the runtime data directory under `queries/{language}/highlights.scm`. Each query file contains S-expression patterns that map tree-sitter node types to highlight groups.
 
-## Theme Integration
+## Language Injection
 
-### Mapping
+Embedded languages (SQL in strings, regex in strings, Markdown in doc comments) are supported via injection queries in `queries/{language}/injections.scm`.
 
+## Incremental Parsing
+
+Only the changed region of the buffer is re-parsed on each edit. The tree-sitter incremental parsing API receives the edit range and updates the syntax tree in-place.
+
+## Viewport Priority
+
+Highlighting is computed for the visible viewport first. Off-screen regions are parsed in the background at lower priority.
 
 ## Custom Languages
 
-### Register Language
+Users can add languages by placing a compiled parser (`.so`/`.dll`/`.dylib`) and query files in the runtime directory. Configuration maps file extensions to the new language ID.
 
+## Related
 
-### Parser Installation
-
-Tree-sitter parsers compiled as shared objects.
-
-## Injection
-
-### Embedded Languages
-
-
-### Common Injections
-
-- SQL in strings
-- Regex in strings
-- Markdown in comments
-
-## Performance
-
-### Incremental Parsing
-
-Only changed regions re-parsed.
-
-### Viewport Priority
-
-Visible lines parsed first.
-
-## Debugging
-
-### Show Syntax Tree
-
-
-### Show Highlight
-
-
-Shows capture groups at cursor.
-
-## Tips
-
-1. Use built-in languages when possible
-2. Customize colors via theme
-3. Check `:Inspect` for highlighting
-4. Report missing captures
-
-## Commands
+- Filetype detection: [/docs/spec/features/config/filetype.md](/docs/spec/features/config/filetype.md)
+- Semantic tokens: [/docs/spec/features/syntax/semantic-tokens.md](/docs/spec/features/syntax/semantic-tokens.md)
+- Inlay hints: [/docs/spec/features/syntax/inlay-hints.md](/docs/spec/features/syntax/inlay-hints.md)
