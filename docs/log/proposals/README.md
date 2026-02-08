@@ -20,6 +20,7 @@ Each proposal MUST:
 | [performance-regression-harness.md](performance-regression-harness.md) | CPU/latency regression harness and gating strategy |
 | [profiling-workflow.md](profiling-workflow.md) | Repeatable profiling workflow and regression triage |
 | [anti-mvp-measures.md](anti-mvp-measures.md) | Measures to prevent minimal/scaffold-only implementations |
+| [terminal-emulator-detail.md](terminal-emulator-detail.md) | Terminal emulator full-scratch implementation detail proposal |
 
 ## Archived
 
