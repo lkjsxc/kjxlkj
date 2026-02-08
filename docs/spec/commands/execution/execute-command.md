@@ -1,115 +1,125 @@
 # Execute Command
 
-Run commands with expression evaluation.
+Evaluate expressions and execute resulting strings.
 
 ## Overview
 
-The `:execute` command runs
-a string as an Ex command,
-allowing dynamic construction.
+`:execute` evaluates its arguments as expressions and
+executes the resulting string as an Ex command. This
+enables dynamic command construction.
 
 ## Basic Syntax
 
-
-## Simple Examples
-
-### Static Command
-
-
-### With Variables
-
+`:execute {expr}` evaluates `{expr}` and runs the
+result as a command.
 
 ## String Concatenation
 
-### Build Commands
+### Dot Operator
 
+`:execute "normal! " . "dd"` concatenates strings.
+Multiple arguments are joined with spaces.
 
-### Multiple Parts
+### Variables
 
+`:execute "edit " . filename` uses variable values
+to construct commands dynamically.
 
-## Special Keys
+## Special Key Notation
 
-### Escape Sequences
+### Inserting Special Keys
 
+`:execute "normal! i" . text . "\<Esc>"` — the `\<Esc>`
+represents the escape key within the string.
 
-### Key Notation
+### Key Codes
 
-| Sequence  | Key          |
-|-----------|--------------|
-| `\<CR>`   | Enter        |
-| `\<Esc>`  | Escape       |
-| `\<Tab>`  | Tab          |
-| `\<BS>`   | Backspace    |
-| `\<C-a>`  | Ctrl+A       |
-| `\<Space>`| Space        |
+| Notation | Key |
+|----------|-----|
+| `"\<Esc>"` | Escape |
+| `"\<CR>"` | Enter |
+| `"\<Tab>"` | Tab |
+| `"\<C-w>"` | Ctrl-W |
+| `"\<BS>"` | Backspace |
 
-## With Normal
+## Common Patterns
 
-### Common Pattern
+### Dynamic Commands
 
-Insert # at line start.
+`:execute ":" . line_number` jumps to a computed line.
+`:execute "edit " . expand("%:r") . ".test.rs"` opens
+the test file for the current source file.
 
-### Complex Normal
+### With Normal
 
-Find and delete function line.
+`:execute "normal! " . count . "j"` moves down a
+computed number of lines.
 
-## Variables
+### Pattern with Variables
 
-### Using Variables
-
-Substitute in next 10 lines.
-
-### Line Numbers
-
-
-## Functions in Execute
-
-### Built-in Functions
-
-
-### Strftime
-
-
-## Registers
-
-### Insert Register
-
-
-## Expression Evaluation
-
-### Arithmetic
-
-
-### Conditional
-
+`:execute "g/" . pattern . "/d"` deletes lines matching
+a pattern stored in a variable.
 
 ## Multiple Commands
 
-### Chained
+### Bar Separator
 
+`:execute "cmd1" | execute "cmd2"` runs two commands.
+The `|` separates independent commands.
 
-### In One Execute
+### Within String
 
+`:execute "cmd1 | cmd2"` — the bar inside the string
+is part of the executed command, not a separator.
 
-## Search Patterns
+## Error Handling
 
-### Dynamic Search
+### Invalid Command
 
+If the resulting string is not a valid command, an
+error message is displayed. Execution of subsequent
+commands continues.
 
-### Escape Pattern
+### Empty String
 
+`:execute ""` does nothing (no-op).
 
-## Substitute
+## Expression Types
 
-### Dynamic Replace
+### String Expressions
 
+`:execute "echo 'hello'"` runs `echo 'hello'`.
 
-### With Variables
+### Numeric Expressions
 
+`:execute 42` is equivalent to `:42` (go to line 42).
+Numbers are converted to strings.
 
-## File Operations
+### Conditional
 
-### Dynamic Paths
+`:execute condition ? "cmd1" : "cmd2"` conditionally
+executes one of two commands.
 
+## Nesting
 
-### Shellescape
+### Execute within Execute
+
+`:execute "execute 'normal! dd'"` — execute can be
+nested but this is rarely needed.
+
+## Integration
+
+### With Ranges
+
+`:execute line1 . "," . line2 . "d"` deletes a
+computed range of lines.
+
+### With Registers
+
+`:execute "normal! \"" . reg . "p"` pastes from
+a register stored in a variable.
+
+### With Functions
+
+`:execute "call " . funcname . "()"` calls a
+function by computed name.

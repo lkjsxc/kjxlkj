@@ -1,108 +1,115 @@
 # Buffer Navigation
 
-Switching between buffers.
+Switch between open buffers.
 
 ## Overview
 
-Navigate between open buffers
-using various commands.
+Multiple files can be open simultaneously as buffers.
+Navigation commands switch between them without closing.
 
-## Buffer Commands
+## Basic Commands
 
-### Next/Previous
+### By Number
 
+| Command | Description |
+|---------|-------------|
+| `:buffer {n}` | Switch to buffer number {n} |
+| `:b {n}` | Short form |
+| `:buffer {name}` | Switch by partial name match |
+| `:b {name}` | Short form |
 
-### First/Last
+### By Position
 
+| Command | Description |
+|---------|-------------|
+| `:bnext` / `:bn` | Next buffer |
+| `:bprevious` / `:bp` | Previous buffer |
+| `:bfirst` / `:bf` | First buffer |
+| `:blast` / `:bl` | Last buffer |
 
-## By Number
+## Normal Mode Keys
 
-### Direct Access
+### Default Bindings
 
+| Key | Action |
+|-----|--------|
+| `]b` | Next buffer |
+| `[b` | Previous buffer |
+| `]B` | Last buffer |
+| `[B` | First buffer |
 
-### Relative
+### With Count
 
-
-## By Name
-
-### Partial Match
-
-
-### Unique Prefix
-
-
-### Completion
-
+`3]b` moves forward 3 buffers.
+`2[b` moves backward 2 buffers.
 
 ## Alternate Buffer
 
 ### Toggle
 
+`<C-^>` switches to the alternate (previously edited)
+buffer. Each window has its own alternate buffer.
 
-### Mark Alternate
+### With Count
 
-Previous buffer becomes alternate.
+`{n}<C-^>` switches to buffer number {n}.
 
 ## Buffer List
 
 ### Show Buffers
 
+`:buffers` or `:ls` shows all buffers.
 
-### Output
+### Output Format
 
+Each line: `{nr} {flags} "{name}" line {n}`
 
-### Indicators
+### Flags
 
-| Flag | Meaning              |
-|------|---------------------|
-| `%`  | Current buffer      |
-| `#`  | Alternate buffer    |
-| `a`  | Active (loaded)     |
-| `h`  | Hidden              |
-| `+`  | Modified            |
-| `-`  | Read-only           |
-| `=`  | Read-only (perms)   |
-| `u`  | Unlisted            |
+| Flag | Meaning |
+|------|---------|
+| `%` | Current buffer |
+| `#` | Alternate buffer |
+| `a` | Active (loaded and displayed) |
+| `h` | Hidden (loaded but not displayed) |
+| `+` | Modified |
+| `-` | Not modifiable |
+| `=` | Read-only |
 
-## Buffer Modifiers
+## Tab Completion
 
-### List Variants
+### Name Matching
 
+`:buffer <Tab>` cycles through buffer names.
+Partial matching: `:buffer mai<Tab>` finds `main.rs`.
 
-### Filter
+### Fuzzy Match
 
+The buffer picker supports fuzzy matching for quick
+navigation when many buffers are open.
 
-## Delete Buffers
+## Hidden Buffers
 
-### Unload
+### Behavior
 
+When `hidden = true`, modified buffers can be hidden
+(navigated away from) without writing. They remain in
+the buffer list.
 
-### Delete
+### Warning
 
+When `hidden = false`, attempting to leave a modified
+buffer shows a warning: `E37: No write since last change`.
 
-### Wipe
+## Unloading
 
+### Unload Buffer
 
-### Force
+`:bunload {n}` unloads buffer (frees memory, keeps in list).
+`:bdelete {n}` removes from buffer list.
+`:bwipeout {n}` removes completely (clears undo, marks).
 
+### Ranges
 
-## Multiple Buffers
-
-### Range
-
-
-### Pattern
-
-
-## Normal Mode Keys
-
-### Navigation
-
-
-### Mappings
-
-
-## Buffer Line
-
-### Tab-Like Display
-
+`:3,5bdelete` deletes buffers 3 through 5.
+`:bdelete file1.rs file2.rs` deletes by name.

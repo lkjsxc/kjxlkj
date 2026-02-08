@@ -1,113 +1,84 @@
-# Literal Insert
+# Literal Insert (Input Context)
 
-Inserting characters literally.
+Insert characters by numeric code or literally.
 
 ## Overview
 
-Insert characters without
-interpretation as commands.
+This covers the input mechanics of literal character
+insertion via `<C-v>` sequences. For the full literal
+insertion specification including digraphs, see the
+main insert-literal document.
 
-## Command
+## Input Processing
 
-### Basic
+### Bypass Mappings
 
+`<C-v>` bypasses all key mappings for the next keypress.
+The raw key event is captured and inserted as-is.
 
-## Use Cases
+### Bypass Abbreviations
 
-### Control Characters
+`<C-v>` prevents abbreviation expansion for the
+following character.
 
-Insert control codes:
+## Numeric Input States
 
-### Special Keys
+### State Machine
 
-Insert key codes:
+1. Idle: waiting for `<C-v>`
+2. Prefix: reading mode prefix (none, `o`, `x`, `u`, `U`)
+3. Digits: accumulating digit characters
+4. Complete: character inserted, return to idle
 
-## Decimal Code
+### Digit Limits
 
-### Syntax
+| Mode | Max Digits | Value Range |
+|------|-----------|-------------|
+| Decimal | 3 | 0-255 |
+| Octal (`o`) | 3 | 0-377 (0-255) |
+| Hex (`x`) | 2 | 0x00-0xFF |
+| Unicode (`u`) | 4 | U+0000-U+FFFF |
+| Full Unicode (`U`) | 8 | U+00000000-U+0010FFFF |
 
+### Early Completion
 
-### Examples
+If the maximum digits are reached, insertion happens
+immediately. If fewer digits are typed followed by a
+non-digit, the accumulated value is used.
 
+## Display During Input
 
-### Three Digits
+### Status Feedback
 
-Always uses 3 digits max:
+While entering digits, the command area shows:
+- `^` initially
+- `^o177` (example) as digits are typed
 
-## Octal Code
+### Cursor Behavior
 
-### Syntax
+The cursor remains at the insertion point. A special
+indicator shows the pending literal state.
 
+## Error Handling
 
-### Examples
+### Invalid Code Point
 
+Values above U+10FFFF are rejected. Surrogate code
+points (U+D800-U+DFFF) are rejected.
 
-## Hexadecimal Code
+### Overflow
 
-### Two-Digit Hex
+If the decimal value exceeds 255, only the last 3
+digits are used (wraps).
 
+## Special Cases
 
-### Examples
+### Null Character
 
+`<C-v>000` inserts a null byte (0x00). This is valid
+in the buffer but may cause issues with some operations.
 
-## Unicode Code Point
+### Tab in expandtab Mode
 
-### 4-Digit Unicode
-
-
-### Examples
-
-
-### Full Unicode
-
-
-### Examples
-
-
-## Control Character Display
-
-### Caret Notation
-
-
-### Example
-
-
-## Null Character
-
-### Insert
-
-
-### Display
-
-Shows as `^@` in buffer.
-
-## Newline Characters
-
-### Different Types
-
-
-### File Format
-
-Depends on fileformat setting.
-
-## Tab Character
-
-### Force Tab
-
-Even with `expandtab`:
-
-### Difference
-
-Regular `<Tab>` may insert spaces.
-
-## Escape Mappings
-
-### Skip Mapping
-
-
-If `<C-s>` is mapped:
-
-## In Command Mode
-
-### Literal in Commands
-
+`<C-v><Tab>` inserts a literal tab character even when
+`expandtab` is enabled. Normal `<Tab>` would insert spaces.

@@ -1,104 +1,97 @@
-# Buffer Local Options
+# Buffer-Local Options
 
-Per-buffer settings and options.
+Options scoped to individual buffers.
 
 ## Overview
 
-Set options that apply only to
-a specific buffer, not globally.
+Buffer-local options apply only to a specific buffer.
+Each buffer maintains its own copy of these options
+independent of global defaults.
 
-## Setting Local Options
+## Option Scope
 
-### setlocal Command
+### Global Options
 
+Global options apply everywhere: `hlsearch`, `ignorecase`.
+Setting them changes behavior across all buffers.
 
-### Shorthand
+### Buffer-Local Options
 
+Buffer-local options include: `filetype`, `tabstop`,
+`shiftwidth`, `expandtab`, `textwidth`, `formatoptions`,
+`syntax`, `spelllang`, `fileencoding`, `fileformat`,
+`modifiable`, `readonly`, `undofile`, `swapfile`.
 
-## Local vs Global
+### Window-Local Options
 
-### Local Only
+Window-local options: `number`, `relativenumber`,
+`signcolumn`, `foldmethod`, `wrap`, `linebreak`,
+`cursorline`, `cursorcolumn`, `scrolloff`, `colorcolumn`.
 
+## Setting Commands
 
-### Global
+### Set for Current Buffer
 
+`:setlocal tabstop=4` sets tabstop for the current
+buffer only. Other buffers keep their own value.
 
-### Both
+### Check Current Value
 
-
-## Common Buffer Options
-
-### Indentation
-
-
-### Display
-
-
-### Editing
-
-
-## Buffer-Only Options
-
-### Cannot Be Global
-
-| Option | Description |
-|--------|-------------|
-| `buftype` | Buffer type |
-| `bufhidden` | Behavior when hidden |
-| `buflisted` | In buffer list |
-| `swapfile` | Use swap file |
-| `modified` | Has unsaved changes |
-| `readonly` | Read-only buffer |
-| `modifiable` | Can be modified |
-
-## Filetype Options
-
-### In Configuration
-
-
-### Autocommand Method
-
-
-## Reset Local Options
+`:setlocal tabstop?` shows the buffer-local value.
+`:set tabstop?` shows the effective value.
 
 ### Reset to Global
 
+`:setlocal tabstop<` resets to the global default.
 
-The `<` resets local to global value.
+## Filetype Detection
 
-### Reset All
+### Automatic
 
+When a file is opened, its filetype is detected from
+extension, shebang line, and content inspection.
 
-## Check Option Value
+### Configuration
 
-### Current Value
+Filetype-specific options are set in language config:
+`[languages.rust]` section with `tabstop = 4`, etc.
 
+## Common Buffer-Local Options
 
-### Show Where Set
+| Option | Type | Description |
+|--------|------|-------------|
+| `filetype` | string | Detected file type |
+| `tabstop` | number | Tab display width |
+| `shiftwidth` | number | Indent step size |
+| `expandtab` | bool | Use spaces for tab |
+| `textwidth` | number | Line wrap column (0=off) |
+| `fileencoding` | string | File encoding |
+| `fileformat` | string | Line ending style |
+| `modifiable` | bool | Allow buffer modification |
+| `readonly` | bool | Read-only flag |
+| `undolevels` | number | Max undo levels |
 
+## Modeline
 
-## Buffer Variables
+### Syntax
 
-### Set Variable
+The first or last 5 lines of a file can contain a
+modeline: `// vim: tabstop=4 shiftwidth=4 expandtab`
 
+### Security
 
-### Get Variable
+Modelines are parsed but sandboxed. Only safe options
+can be set via modelines. `modeline = true` enables
+modeline parsing (default: true).
 
+## Interaction
 
-### Check Exists
+### Buffer Switch
 
+When switching buffers, the editor applies the target
+buffer's local options automatically.
 
-## Per-Buffer Keybindings
+### New Buffer
 
-### Buffer-Local Maps
-
-
-### In Configuration
-
-
-## Buffer Commands
-
-### Define Local Command
-
-
-### In Configuration
+New buffers inherit the global defaults until modified
+by filetype detection or explicit `:setlocal` commands.

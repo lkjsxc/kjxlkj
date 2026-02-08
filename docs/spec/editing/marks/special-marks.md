@@ -1,104 +1,119 @@
 # Special Marks
 
-Automatically maintained marks for common editing positions.
+Automatically maintained mark positions.
 
-## Visual Selection Marks
+## Overview
 
-### `'<` - Start of Visual Selection
+Special marks are set automatically by the editor
+during editing operations. They cannot be set manually
+with `m`.
 
+## Change Marks
 
-### `'>` - End of Visual Selection
+### Last Change Position
 
+| Mark | Description |
+|------|-------------|
+| `` `. `` | Position of last change |
+| `'.` | Line of last change |
+| `` `[ `` | Start of last changed/yanked text |
+| `` `] `` | End of last changed/yanked text |
 
-### Usage in Commands
+### Usage
 
+`` `. `` is updated after every edit (insert, delete,
+change, put). It always points to the start of the
+most recent modification.
 
-## Change/Yank Marks
+## Insert Marks
 
-### `'[` - Start of Last Change
+### Last Insert
 
+| Mark | Description |
+|------|-------------|
+| `` `^ `` | Position where insert mode was last exited |
 
-### `']` - End of Last Change
+### Purpose
 
+Used by `gi` which goes to `` `^ `` and enters insert mode.
 
-### After Yank
+## Visual Marks
 
+### Visual Selection Bounds
 
-### After Paste
+| Mark | Description |
+|------|-------------|
+| `` `< `` | Start of last visual selection |
+| `` `> `` | End of last visual selection |
 
+### Persistence
 
-## Insert Position Marks
+These marks persist after visual mode ends. They define
+the range `'<,'>` used with Ex commands.
 
-### `'^` - Last Insert Stop Position
+## Sentence/Paragraph Marks
 
+### Context Marks
 
-### `'.` - Last Change Position
+| Mark | Description |
+|------|-------------|
+| `` `( `` | Start of current sentence |
+| `` `) `` | End of current sentence |
+| `` `{ `` | Start of current paragraph |
+| `` `} `` | End of current paragraph |
 
+## File Marks
 
-## Jump Marks
+### Buffer Position
 
-### `''` - Previous Position (Line)
+| Mark | Description |
+|------|-------------|
+| `'"` | Position when last exiting the buffer |
+| `` `" `` | Exact position when last exiting |
 
+### Restore
 
-### ``` `` ``` - Previous Position (Exact)
+When a file is reopened, the cursor can be restored
+to the position indicated by `'"`.
 
+## Jumplist Marks
 
-## Buffer Position Mark
+### Previous Context
 
-### `'"` - Last Position in Buffer
+| Mark | Description |
+|------|-------------|
+| `` `` `` | Position before last jump |
+| `''` | Line before last jump |
 
-When reopening a buffer:
+### Usage
 
-### Auto-restore
+These marks are set before any "jump" command (search,
+tag jump, marks, etc.) and provide a quick way back.
 
+## Numbered Marks
 
-## Sentence and Paragraph
+### Position History
 
-### `'(` and `')` - Around Sentence
+Marks `0`-`9` store positions across files from
+previous editing sessions:
+- `'0` — position when last exiting kjxlkj
+- `'1` — position before that
+- `'2`-`'9` — older positions (shifted down)
 
+### Rotation
 
-### `'{` and `'}` - Around Paragraph
+Each time kjxlkj exits, `'0` gets the current position,
+`'0` shifts to `'1`, `'1` to `'2`, etc. `'9` is lost.
 
+## Read-Only
 
-## Summary Table
+### Cannot Set
 
-| Mark | Content | Updated When |
-|------|---------|--------------|
-| `'<` | Visual start | Visual mode exit |
-| `'>` | Visual end | Visual mode exit |
-| `'[` | Change/yank start | After change/yank/put |
-| `']` | Change/yank end | After change/yank/put |
-| `'^` | Last insert exit | Leaving insert mode |
-| `'.` | Last change | After any change |
-| `''` | Previous line | After jump |
-| ``` `` ``` | Previous position | After jump |
-| `'"` | Last buffer position | On buffer leave |
+Special marks cannot be set with `m{mark}`. They are
+maintained automatically by the editor. Attempting to
+set them produces no error but has no effect.
 
-## Persistence
+### Can Jump
 
-Special marks are session-only (not persisted):
-
-
-Exception: `'"` is persisted for restore-on-open feature.
-
-## Using with Operators
-
-### Reselect Last Visual
-
-
-### Operate on Last Change
-
-
-### Operate on Last Paste
-
-
-## Common Patterns
-
-### Format Pasted Text
-
-
-### Uppercase Last Insert
-
-
-### Delete Last Change
-
+All special marks can be jumped to with `` ` `` or `'`.
+They can also be used in Ex command ranges.

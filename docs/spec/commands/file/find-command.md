@@ -1,120 +1,108 @@
 # Find Command
 
-Searching for files in path.
+Find and edit files by name.
 
 ## Overview
 
-The `:find` command searches
-for files in configured paths.
+`:find` searches for files in the `path` option
+directories and opens the first match.
 
-## Basic Syntax
-
-
-## Simple Usage
+## Basic Usage
 
 ### Find File
 
+`:find {filename}` opens the file if found in `path`.
+`:find main.rs` searches `path` for `main.rs`.
 
-### Tab Completion
+### With Wildcards
 
+`:find *.rs` finds the first `.rs` file.
+`:find src/**/test_*` searches recursively.
 
-## Path Configuration
+## Path Option
 
-### View Path
+### Configuration
 
+`path` controls where `:find` searches.
+Default: `path = [".", "/usr/include", ""]`
 
-### Default Path
+### Path Components
 
+| Value | Meaning |
+|-------|---------|
+| `.` | Current file directory |
+| `""` (empty) | Current working directory |
+| `**` | Recursive search subdirectory |
+| `/path/` | Absolute path |
 
-### Add Paths
+### Common Setups
 
-
-### Recursive Search
-
-
-## Path Syntax
-
-### Components
-
-| Pattern  | Meaning              |
-|----------|---------------------|
-| `.`      | Relative to file    |
-| `,,`     | Current directory   |
-| `**`     | Recursive subdirs   |
-| `*`      | Any subdirectory    |
-| `/abs`   | Absolute path       |
-
-### Examples
-
-
-## Wildcard Depth
-
-### Limit Recursion
-
-
-### Performance
-
-Deeper paths = slower search.
-
-## Find Variants
-
-### Split
-
-
-### Vertical Split
-
-
-### Tab
-
-
-## Multiple Matches
-
-### First Match
-
-Default behavior opens first.
-
-### Completion
-
-
-## Find with Count
-
-### Nth Match
-
-
-## Include Files
-
-### For Programming
-
-
-### Find Include
-
+`path = [".", "src/**", "tests/**"]` searches current
+file dir, all of `src/`, and all of `tests/`.
 
 ## Suffixes
 
-### Try Extensions
+### suffixesadd
 
+`:set suffixesadd=.rs,.toml` appends these extensions
+when `:find` cannot find the exact file name.
 
-### View
+`:find module` tries `module`, `module.rs`, `module.toml`.
 
+## Tab Completion
 
-## Find in Explorer
+### Filename Completion
 
-### Integration
+`:find ` followed by `<Tab>` cycles through matching
+files in `path`. `<C-d>` lists all matches.
 
+### Wildcard Completion
 
-## Fuzzy Finding
+`:find src/**/<Tab>` lists all files under `src/`.
 
-### Modern Alternative
+## Split Variants
 
+### Horizontal Split
 
-### Faster Search
+`:sfind {file}` opens the file in a horizontal split.
 
-More efficient for large projects.
+### Vertical Split
 
-## Configuration
+`:vert sfind {file}` opens in a vertical split.
 
-### Path Setup
+### Tab
 
+`:tab sfind {file}` opens in a new tab.
 
-### Ignore Patterns
+## Count
 
+### nth Match
+
+`:2find {file}` opens the 2nd match if multiple files
+match the pattern.
+
+## Integration
+
+### gf Command
+
+`gf` (go to file) in normal mode opens the file under
+the cursor, using `path` and `suffixesadd` for lookup.
+
+`gF` opens file under cursor and jumps to line number
+if the filename is followed by `:line` or `(line)`.
+
+### Include Search
+
+`:isearch`, `:dsearch` use `path` for header lookup.
+
+## Error Handling
+
+### Not Found
+
+If no file matches, displays: `E345: Can't find file
+"{filename}" in path`.
+
+### Multiple Matches
+
+`:find` opens the first match. Use tab completion
+to see all matches and select the desired one.

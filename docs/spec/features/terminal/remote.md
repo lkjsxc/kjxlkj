@@ -1,103 +1,102 @@
-# SSH/Remote Editing
+# Remote Editing
 
-Editing files on remote systems.
+Edit files on remote systems.
 
-## Methods
+## Overview
 
-### 1. SSH + Local kjxlkj
+kjxlkj supports editing files over SSH connections
+and within remote containers using a thin remote
+protocol.
 
-Run kjxlkj locally, edit remote files via mount.
+## SSH Integration
 
+### Direct Command
 
-### 2. Remote kjxlkj
+`kjxlkj scp://host/path/to/file` opens a remote file.
+This uses SSH under the hood for transport.
 
-Run kjxlkj on remote system.
+### Authentication
 
+SSH authentication uses the system SSH agent, key files
+from `~/.ssh/`, or interactive password prompts.
 
-## SSHFS Setup
+### Configuration
 
-### Installation
+Remote hosts can be configured in the editor:
+- `ssh_command = "ssh"` — SSH binary path
+- `ssh_args = ["-o", "StrictHostKeyChecking=no"]`
+- `remote_timeout = 30` — Connection timeout in seconds
 
+## Remote Protocol
 
-### Mounting
+### Architecture
 
+The remote protocol runs a small helper binary on the
+remote machine that handles file I/O and sends results
+back over the SSH channel.
 
-### Recommended Options
+### File Operations
 
+| Operation | Description |
+|-----------|-------------|
+| Read file | Transfer file contents to local |
+| Write file | Send buffer contents to remote |
+| List directory | Get directory listing |
+| File info | Get size, permissions, modified time |
+| Watch file | Monitor for external changes |
 
-### Unmounting
+### Caching
 
+Remote file contents are cached locally in
+`~/.cache/kjxlkj/remote/`. The cache is invalidated
+when the remote file's modification time changes.
 
-## Remote kjxlkj
+## Container Support
 
-### Installation on Remote
+### Docker
 
+`kjxlkj docker://container_id/path` edits files inside
+Docker containers using `docker exec`.
 
-### Running
+### Devcontainer
 
+Integration with devcontainer.json for VS Code-style
+development containers.
 
-### Persistent Session
+## LSP Over Remote
 
+### Remote LSP
 
-## Configuration Sync
+LSP servers run on the remote machine. The remote helper
+forwards LSP messages between the local editor and the
+remote language server.
 
-### dotfiles
+### Latency
 
+LSP operations have additional latency due to network
+round trips. The editor handles this asynchronously
+without blocking the UI.
 
-### Minimal Remote Config
+## Terminal Over Remote
 
+### Remote Shell
 
-## Performance
+`:terminal ssh host` opens a remote terminal session.
+The terminal runs on the remote machine.
 
-### Latency Mitigation
+## Limitations
 
+### Performance
 
-### Compression
+Large files may be slow to open/save over slow
+connections. The editor shows progress indicators.
 
+### Binary Files
 
-## Clipboard
+Binary file editing is not supported over remote
+connections.
 
-### SSH Forwarding
+### Concurrent Edits
 
-
-### OSC52 Clipboard
-
-
-## Mosh
-
-### Better Than SSH
-
-
-### Benefits
-
-- Handles disconnects
-- Lower latency feel
-- Local echo
-
-## Port Forwarding
-
-### LSP Over SSH
-
-
-Run LSP server on remote, connect locally.
-
-## Troubleshooting
-
-### Slow Connection
-
-
-### Broken Pipe
-
-- Use mosh instead of SSH
-- Add keep-alive options
-
-### Display Issues
-
-
-## Best Practices
-
-1. Use SSHFS for occasional edits
-2. Use remote kjxlkj for heavy work
-3. Use tmux for persistent sessions
-4. Enable OSC52 clipboard
-5. Consider mosh for unreliable connections
+No real-time collaboration support. File locks are
+advisory only.

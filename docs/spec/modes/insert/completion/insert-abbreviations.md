@@ -1,108 +1,70 @@
-# Insert Abbreviations
+# Insert Abbreviations (Completion Context)
 
-Text expansion while typing.
+Text expansion while typing using abbreviations.
 
 ## Overview
 
-Abbreviations expand short text
-to longer content automatically.
+This document covers abbreviation-triggered completions.
+For the full abbreviation specification, see the main
+abbreviation document in insert mode.
 
-## Define Abbreviation
+## Abbreviation as Completion
 
-### Basic Syntax
+### Trigger
 
+Abbreviations act as a form of auto-completion: type
+a short trigger, press a non-keyword character, and
+the abbreviation expands into the full text.
 
-### Example
+### vs Completion Menu
 
+Unlike completion menu entries, abbreviations:
+- Expand automatically (no explicit accept step)
+- Do not show a popup menu
+- Are defined statically (not context-aware)
 
-## Abbreviation Types
+## Abbreviation-Based Snippets
 
-### Insert Mode Only
+### Simple Expansion
 
+`:iabbrev fn function` expands `fn` to `function`.
+Useful for common keywords and boilerplate.
 
-### Command Mode Only
+### Multi-Line
 
+`:iabbrev main public static void main(String[] args) {}`
+Can use `<CR>` for line breaks in the expansion.
 
-### Both Modes
+### Expression
 
+`:iabbrev <expr> date strftime("%Y-%m-%d")` expands
+`date` to the current date dynamically.
 
-## Trigger Expansion
+## Integration with Completion
 
-### When Triggered
+### Priority
 
-Expansion occurs when:
-- Space typed after abbreviation
-- Punctuation after abbreviation
-- Enter pressed
-- Tab pressed
+When both an abbreviation and a completion menu entry
+match, the abbreviation takes priority since it triggers
+on non-keyword character input.
 
-### Example
+### Coexistence
 
+Abbreviations and completion can coexist. The completion
+menu appears for partial matches while abbreviations
+expand on trigger characters.
 
-## Non-Word Trigger
-
-### Word Boundary
-
-Abbreviation must be at word boundary.
-
-
-## Prevent Expansion
-
-### Skip Once
-
-
-### Example
-
-
-## List Abbreviations
-
-### All
-
-
-### By Type
-
-
-## Remove Abbreviation
-
-### Unabbreviate
-
-
-### Clear All
-
-
-### By Type
-
-
-## Common Abbreviations
-
-### Typo Fixes
-
-
-### Email/Signature
-
-
-### Code Snippets
-
+## Common Patterns
 
 ### Date/Time
 
+`:iabbrev <expr> now strftime("%H:%M")`
 
-## Expression Abbreviations
+### Signatures
 
-### Dynamic Content
+`:iabbrev <buffer> sig Regards,<CR>Your Name`
 
+### Corrections
 
-### Function Call
-
-
-## Multi-line Abbreviations
-
-### Line Breaks
-
-
-Note: `^J` is literal newline (`<C-v><Enter>`).
-
-## No Remap
-
-### Prevent Remapping
-
+`:iabbrev teh the`
+`:iabbrev dont don't`

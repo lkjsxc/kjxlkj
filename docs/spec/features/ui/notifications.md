@@ -1,109 +1,101 @@
-# Notification System
+# Notifications
 
-User notifications and alerts in kjxlkj.
+User notification system.
 
-## Notification Types
+## Overview
 
-| Type | Duration | Interruption |
-|------|----------|--------------|
-| Info | 3s | None |
-| Warning | 5s | None |
-| Error | Persistent | Dismiss via keybinding |
-| Action | Persistent | Requires keyboard response |
+Notifications display messages, warnings, and errors
+to the user through the command line area and optional
+popup notifications.
 
-## Display Locations
+## Message Types
 
-### Statusline
+### Information
 
-Temporary messages appear in statusline.
-
-
-### Popup
-
-Important notifications as popup.
-
-### Command Line
-
-Errors and prompts in command area.
-
-## Configuration
-
-
-## Message Examples
-
-### Info
-
+Standard messages displayed in the command line area.
+Examples: `:w` shows `"file.rs" written, 42 lines`.
 
 ### Warning
 
+Yellow-highlighted warnings for non-critical issues.
+Example: `W10: Warning: Changing a readonly file`.
 
 ### Error
 
+Red-highlighted errors for failures.
+Example: `E212: Can't open file for writing`.
 
-### Action Required
+## Display Locations
 
+### Command Line
 
-## Sound
+The primary message area is the bottom command line.
+Messages appear here and are cleared on the next
+keypress or command.
 
-### Audio Feedback
+### Floating Notification
 
+Optional floating window notifications with timeout:
+- Position: top-right or bottom-right (configurable)
+- Duration: auto-dismiss after `notification_timeout` ms
+- Stacking: multiple notifications stack vertically
 
-### Terminal Bell
+## Message History
 
+### :messages
 
-## History
+`:messages` shows the full message history for the
+current session.
 
-### View History
+### Navigation
 
+In the messages window, use `j`/`k` to scroll and
+`q` to close.
 
-### Clear History
+### Clear
 
+`:messages clear` clears the message history.
 
-### Log File
+## Severity Levels
 
+| Level | Display | Use |
+|-------|---------|-----|
+| `debug` | Hidden (log only) | Internal diagnostics |
+| `info` | Normal text | File operations |
+| `warn` | Yellow text | Non-fatal issues |
+| `error` | Red text | Failures |
 
-## Filtering
+## Configuration
 
-### Suppress Notifications
+| Option | Default | Description |
+|--------|---------|-------------|
+| `notification_timeout` | `3000` | Auto-dismiss ms |
+| `notification_position` | `"top-right"` | Popup position |
+| `cmdheight` | `1` | Command line height |
+| `shortmess` | `"filnxtToOF"` | Message shortening |
 
+## shortmess Flags
 
-### Priority Levels
-
+| Flag | Effect |
+|------|--------|
+| `f` | Use `[3 lines]` instead of `3 lines, 45 bytes` |
+| `i` | Use `[incomplete]` instead of full text |
+| `l` | Use `999L, 888B` instead of `999 lines, 888 bytes` |
+| `n` | Use `[New]` instead of `[New File]` |
+| `s` | Suppress "search hit BOTTOM" message |
+| `t` | Truncate messages that are too long |
+| `T` | Truncate at start if needed to show the end |
+| `W` | Suppress "written" message for `:w` |
+| `c` | Suppress completion menu messages |
 
 ## LSP Notifications
 
-### From Language Server
+### Progress
 
+LSP servers send progress notifications displayed as
+a spinner with label in the statusline.
 
-### Progress Indicators
+### Server Messages
 
-
-## Desktop Notifications
-
-### External Integration
-
-
-### Script Hook
-
-
-## Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<C-g>` | Dismiss notification |
-| `:messages` | View history |
-
-## Custom Messages
-
-### From Macros
-
-
-### From Commands
-
-
-## Visual Styles
-
-### Colors
-
-
-### Icons
+LSP `window/showMessage` requests are displayed as
+notifications with appropriate severity level.
