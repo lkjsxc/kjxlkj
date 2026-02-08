@@ -9,6 +9,7 @@ use kjxlkj_core_mode::{
 };
 use kjxlkj_core_types::{BufferId, Mode, WindowId};
 
+use crate::search::SearchState;
 use crate::{BufferState, WindowState};
 
 /// Top-level editor state.
@@ -39,6 +40,8 @@ pub struct EditorState {
     next_window_id: u64,
     /// Should quit flag.
     pub should_quit: bool,
+    /// Search state.
+    pub search_state: SearchState,
 }
 
 impl EditorState {
@@ -73,6 +76,7 @@ impl EditorState {
             next_buffer_id: 2,
             next_window_id: 2,
             should_quit: false,
+            search_state: SearchState::new(),
         }
     }
 

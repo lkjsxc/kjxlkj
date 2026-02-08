@@ -2,7 +2,6 @@
 //! to the appropriate mode/edit/state handlers.
 
 use kjxlkj_core_types::{Action, Mode, Operator};
-
 use crate::EditorState;
 
 impl EditorState {
@@ -19,8 +18,11 @@ impl EditorState {
                 self.do_write();
                 self.should_quit = true;
             }
-            Action::WriteAll => {}
+            Action::WriteAll => {
+                self.do_write_all();
+            }
             Action::WriteAllQuit => {
+                self.do_write_all();
                 self.should_quit = true;
             }
             Action::Resize(c, r) => {
@@ -120,6 +122,23 @@ impl EditorState {
                 {
                     self.dispatch(a);
                 }
+            }
+            Action::SearchForward(pat) => {
+                self.do_search_forward(pat);
+            }
+            Action::SearchBackward(pat) => {
+                self.do_search_backward(pat);
+            }
+            Action::NextMatch => self.do_next_match(),
+            Action::PrevMatch => self.do_prev_match(),
+            Action::FocusWindow(dir) => {
+                self.do_focus_window(dir);
+            }
+            Action::CycleWindow => {
+                self.do_cycle_window();
+            }
+            Action::CloseWindow => {
+                self.do_close_window();
             }
             _ => {}
         }

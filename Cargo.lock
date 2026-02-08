@@ -408,6 +408,7 @@ dependencies = [
  "kjxlkj-core-undo",
  "serde",
  "serde_json",
+ "unicode-segmentation",
 ]
 
 [[package]]

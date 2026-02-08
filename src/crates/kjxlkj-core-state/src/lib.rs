@@ -11,6 +11,8 @@ mod editor_actions2;
 mod editor_file_ops;
 mod editor_insert;
 mod editor_snapshot;
+mod editor_window_ops;
+mod search;
 mod session;
 mod viewport;
 mod window;

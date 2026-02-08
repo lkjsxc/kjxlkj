@@ -12,3 +12,4 @@ kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
 serde = { workspace = true }
 serde_json = { workspace = true }
+unicode-segmentation = { workspace = true }
