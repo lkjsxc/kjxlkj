@@ -19,7 +19,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Motion dispatch (h/j/k/l, w/b/e, 0/$, gg/G, etc.)
 - [x] Operator-pending mode entry (d, c, y, etc.)
 - [x] Count prefix handling
-- [ ] Dot-repeat (`.`) for last change
+- [x] Dot-repeat (`.`) for last change
 
 ## Insert mode
 
@@ -75,8 +75,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Replace mode
 
-- [ ] Entry via `R`
-- [ ] Single-char replace via `r`
+- [x] Entry via `R`
+- [x] Single-char replace via `r`
 - [ ] Virtual replace per [/docs/spec/modes/replace/virtual-replace.md](/docs/spec/modes/replace/virtual-replace.md)
 - [ ] Overstrike per [/docs/spec/modes/replace/overstrike.md](/docs/spec/modes/replace/overstrike.md)
 
@@ -93,7 +93,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] `Esc` from Insert mode transitions to Normal and clamps cursor to end-exclusive range
 - [x] `v`/`V`/`Ctrl-v` each enter the correct Visual sub-mode with anchor set
 - [x] `:` enters Command mode with empty command buffer and cursor at position 0
-- [ ] `R` enters Replace mode; typed characters overwrite at cursor position
+- [x] `R` enters Replace mode; typed characters overwrite at cursor position
 - [x] `r{char}` replaces single character without entering Replace mode
 - [x] Mode-dependent keybinding dispatch: same key produces different actions in different modes
 - [ ] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift

@@ -27,8 +27,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Search motions: `/`, `?`, `n`, `N`, `*`, `#` per [/docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)
 - [x] Character find: `f`, `F`, `t`, `T`, `;`, `,` per [/docs/spec/editing/motions/character-find.md](/docs/spec/editing/motions/character-find.md)
 - [x] Sentence/paragraph: `(`, `)`, `{`, `}` per [/docs/spec/editing/motions/sentence-paragraph.md](/docs/spec/editing/motions/sentence-paragraph.md)
-- [ ] Scroll motions per [/docs/spec/editing/motions/scroll-motions.md](/docs/spec/editing/motions/scroll-motions.md)
-- [ ] Window motions per [/docs/spec/editing/motions/window-motions.md](/docs/spec/editing/motions/window-motions.md)
+- [x] Scroll motions per [/docs/spec/editing/motions/scroll-motions.md](/docs/spec/editing/motions/scroll-motions.md)
+- [x] Window motions per [/docs/spec/editing/motions/window-motions.md](/docs/spec/editing/motions/window-motions.md)
 - [ ] Repeat motions per [/docs/spec/editing/motions/repeat-motions.md](/docs/spec/editing/motions/repeat-motions.md)
 - [ ] Jump motions per [/docs/spec/editing/motions/jumps/README.md](/docs/spec/editing/motions/jumps/README.md)
 - [x] Motion grammar per [/docs/spec/editing/motions/motion-grammar.md](/docs/spec/editing/motions/motion-grammar.md)
@@ -82,8 +82,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Marks
 
 - [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
-- [ ] Local marks (`a`-`z`), global marks (`A`-`Z`)
-- [ ] Jump to mark (`` ` ``), jump to mark line (`'`)
+- [x] Local marks (`a`-`z`), global marks (`A`-`Z`)
+- [x] Jump to mark (`` ` ``), jump to mark line (`'`)
 - [ ] Automatic marks per [/docs/spec/editing/marks/automatic-marks.md](/docs/spec/editing/marks/automatic-marks.md)
 - [ ] Special marks per [/docs/spec/editing/marks/special-marks.md](/docs/spec/editing/marks/special-marks.md)
 - [ ] Jump list per [/docs/spec/editing/marks/jumplist.md](/docs/spec/editing/marks/jumplist.md)
@@ -96,7 +96,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
 - [x] Forward search (`/`), backward search (`?`)
 - [ ] Search highlight per [/docs/spec/editing/search/search-highlight.md](/docs/spec/editing/search/search-highlight.md)
-- [ ] Star search per [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
+- [x] Star search per [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
 - [ ] Search history per [/docs/spec/editing/search/search-history.md](/docs/spec/editing/search/search-history.md)
 - [ ] Live grep per [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)
 - [ ] Regex engine per [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
@@ -112,7 +112,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Substitute per [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
 - [ ] Sorting/alignment per [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
 - [ ] Filtering/piping per [/docs/spec/editing/text-manipulation/filtering-piping.md](/docs/spec/editing/text-manipulation/filtering-piping.md)
-- [ ] Bracket matching per [/docs/spec/editing/text-manipulation/bracket-matching.md](/docs/spec/editing/text-manipulation/bracket-matching.md)
+- [x] Bracket matching per [/docs/spec/editing/text-manipulation/bracket-matching.md](/docs/spec/editing/text-manipulation/bracket-matching.md)
 - [ ] Digraphs per [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
 
 ## Wiring verification
@@ -124,7 +124,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] Operator + motion combinations (dw, ci(, yap, etc.) are dispatched through the operator-pending path
 - [x] Count prefix accumulates digits and multiplies the subsequent motion or operator
 - [x] Register prefix (`"a`) sets the target register for the next yank/delete/paste
-- [ ] Dot repeat (`.`) replays the last recorded change with fidelity
+- [x] Dot repeat (`.`) replays the last recorded change with fidelity
 - [x] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
 - [ ] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
 - [x] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously

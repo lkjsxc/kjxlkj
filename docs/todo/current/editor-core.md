@@ -13,10 +13,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Buffer model: id, path, content (rope), modified flag, read-only flag
 - [x] Buffer creation from file path (`:e`)
 - [x] Buffer creation as empty scratch buffer
-- [ ] Buffer listing (`:ls`, `:buffers`)
+- [x] Buffer listing (`:ls`, `:buffers`)
 - [x] Buffer switching (`:b`, `:bnext`, `:bprev`)
 - [x] Buffer deletion (`:bd`, `:bw`)
-- [ ] Alternate file (`Ctrl-^`)
+- [x] Alternate file (`Ctrl-^`)
 - [x] Modified buffer guard (prevent quit without save)
 
 ## Windows
@@ -28,8 +28,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Window close: `Ctrl-w c`, `Ctrl-w q`
 - [ ] Window resize: `Ctrl-w +/-`, `Ctrl-w </>`, `Ctrl-w =`
 - [ ] Window zoom: `Ctrl-w _`, `Ctrl-w |`
-- [ ] Window rotate: `Ctrl-w r`, `Ctrl-w R`
-- [ ] Window move: `Ctrl-w H/J/K/L`
+- [x] Window rotate: `Ctrl-w r`, `Ctrl-w R`
+- [x] Window move: `Ctrl-w H/J/K/L`
 - [x] Focus uniqueness invariant: exactly one focused window at all times
 - [ ] No overlap, full coverage of terminal area
 
