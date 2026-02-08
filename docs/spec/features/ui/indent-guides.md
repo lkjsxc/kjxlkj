@@ -1,69 +1,38 @@
 # Indent Guides
 
-kjxlkj displays visual indent guides.
+Back: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
+
+Visual lines showing indentation levels.
 
 ## Overview
 
-Vertical lines showing indentation levels:
+Indent guides display thin vertical lines at each indentation level to help visualize code structure.
 
+## Display
+
+A `│` character is rendered at each `shiftwidth`-multiple column on lines that have at least that much indentation.
 
 ## Configuration
 
-
-### Scope Highlighting
-
-Current scope uses different color:
-
-
-## Characters
-
-Different styles:
-
+| Setting | Default | Description |
+|---|---|---|
+| `indent_guides.enabled` | `true` | Enable indent guides |
+| `indent_guides.char` | `│` | Character used for guide |
 
 ## Colors
 
+| Highlight Group | Usage |
+|---|---|
+| `IndentGuide` | Normal indent guide |
+| `IndentGuideCurrent` | Guide for the current scope level |
 
 ## Exclude Filetypes
 
+| Setting | Default | Description |
+|---|---|---|
+| `indent_guides.exclude` | `["help", "terminal"]` | File types where guides are not shown |
 
-## Context Lines
+## Related
 
-Show current context at top when scrolled:
-
-
-When inside a function, the function signature
-shows at top of window.
-
-## Tree-sitter Integration
-
-Use tree-sitter for accurate scope detection:
-
-
-Benefits:
-- Accurate scope boundaries
-- Handles complex nesting
-- Language-aware
-
-## Blank Lines
-
-Show guides through blank lines:
-
-
-## Keybindings
-
-
-## Performance
-
-For large files:
-
-
-## Integration
-
-### With Folding
-
-Guides respect fold boundaries.
-
-### With Scope Jumping
-
-Jump to indent scope start:
-
+- UI: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
+- Indentation: [/docs/spec/modes/insert/insert-indentation.md](/docs/spec/modes/insert/insert-indentation.md)

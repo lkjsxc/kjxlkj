@@ -1,135 +1,50 @@
-# Built-in Feature System
+# Plugin Architecture
 
-Back: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-All features are built-in; no external plugin system.
+All features are built-in; there is no external plugin system.
 
 ## Overview
 
-kjxlkj does not support external plugins. All
-functionality that would traditionally be a plugin
-is built into the editor as a first-class feature.
-This ensures consistent UX, unified configuration,
-and no runtime dependencies.
+Unlike Vim/Neovim, this editor has no plugin API. Every feature that would traditionally be a plugin is implemented as a native Rust module within the appropriate crate.
 
-## Design Rationale
+## Rationale
 
-### Why No Plugins
+- Eliminates plugin compatibility issues
+- Single binary deployment
+- Consistent performance
+- Full type safety across all features
 
-| Concern | Resolution |
-|---------|------------|
-| Security | No arbitrary code execution |
-| Stability | All features tested together |
-| Performance | No runtime loading overhead |
-| UX consistency | Shared list UIs, keymaps, themes |
-| Single binary | No plugin installation step |
+## Feature Modules
 
-### Trade-offs
+Each feature-module follows a standard pattern:
 
-The trade-off is that new features require editor
-source changes. This is acceptable because the
-target feature set (Neovim-equivalent editing) is
-well-defined and finite.
+1. A struct implementing the feature logic
+2. Registration with the message bus for relevant events
+3. Configuration via the TOML config system
+4. UI integration via the render pipeline
 
-## Built-in Feature Categories
+## Feature Categories
 
-### Editing Helpers (replacing plugins)
-
-| Feature | Replaces |
-|---------|----------|
-| Auto-pairs | auto-pairs.nvim |
-| Surround | vim-surround |
-| Comment toggle | vim-commentary |
-| Multi-cursor | vim-visual-multi |
-| Flash motions | flash.nvim |
-
-### UI Features (replacing plugins)
-
-| Feature | Replaces |
-|---------|----------|
-| Bufferline | bufferline.nvim |
-| Statusline | lualine.nvim |
-| File explorer | neo-tree.nvim |
-| Fuzzy finder | telescope.nvim |
-| Which-key hints | which-key.nvim |
-| Indent guides | indent-blankline.nvim |
-
-### Integration Features (replacing plugins)
-
-| Feature | Replaces |
-|---------|----------|
-| LSP client | nvim-lspconfig |
-| Completion | nvim-cmp |
-| Git signs | gitsigns.nvim |
-| Git diff | diffview.nvim |
-| Diagnostics | trouble.nvim |
-| Snippet engine | LuaSnip |
-| Tree-sitter | nvim-treesitter |
-
-## Feature Configuration
-
-### Unified Config
-
-All features are configured through the single
-TOML configuration file. Each feature has its
-own configuration section.
-
-### Feature Toggling
-
-Individual features can be enabled or disabled:
-
-| Toggle | Effect |
-|--------|--------|
-| `autopairs.enabled = false` | Disable auto-pairs |
-| `bufferline.enabled = false` | Hide bufferline |
-| `indent_guides.enabled = false` | Hide guides |
-| `gitsigns.enabled = false` | Hide git signs |
-
-### Filetype-Specific
-
-Features can be configured per filetype via TOML sections:
-
-| TOML key | Value |
+| Category | Examples |
 |---|---|
-| `filetype.rust.autopairs.enabled` | `true` |
-| `filetype.rust.format_on_save` | `true` |
+| Navigation | Finder, flash, file explorer |
+| Git | Gitsigns, diff mode, merge conflicts |
+| LSP | Completions, hover, diagnostics |
+| Editing | Surround, autopairs, comments |
+| UI | Statusline, bufferline, indent guides |
+| Debug | DAP integration |
 
-## Extensibility
+## Adding Features
 
-### User Commands
+New features are added as modules within the relevant crate. Each feature must:
 
-Users can define custom commands using `:command`
-that compose existing ex commands into new workflows.
-
-### Key Mappings
-
-Custom key mappings can trigger any built-in command
-or sequence of commands.
-
-### External Tools
-
-Integration with external tools is via:
-- `:!{cmd}` for shell commands
-- `:{range}!{cmd}` for text filtering
-- LSP server for language features
-- Tree-sitter grammars for syntax
-
-## After Directory
-
-### Purpose
-
-The `~/.config/kjxlkj/after/` directory contains
-filetype-specific configuration that is sourced
-after the main config, allowing per-filetype
-overrides.
-
-### Structure
-
-`after/ftplugin/{filetype}.toml` is sourced when
-a buffer of that filetype is opened.
+1. Handle its own configuration section in TOML
+2. Register message bus subscriptions
+3. Provide render fragments if it has UI
+4. Include integration tests
 
 ## Related
 
-- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-- Configuration: [docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
-- Crates: [docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- Crate structure: [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- Runtime: [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)

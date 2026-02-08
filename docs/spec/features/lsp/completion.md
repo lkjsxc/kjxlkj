@@ -1,91 +1,53 @@
-# Auto-Completion
+# LSP Completion
 
-Intelligent code completion from multiple sources.
+Back: [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
 
-## Triggering Completion (normative)
+Completion powered by Language Server Protocol.
 
-### Automatic
+## Overview
 
-Completion popup appears automatically after typing an identifier character when `auto_complete = true` (default). A debounce delay of `completion_delay` ms (default 100) prevents excessive requests.
+LSP completion provides context-aware suggestions including symbols, keywords, snippets, and auto-imports.
 
-### Manual
+## Trigger
+
+| Trigger | Description |
+|---|---|
+| `<C-Space>` | Manual trigger |
+| Auto | After typing trigger characters (`.`, `::`, etc.) |
+
+## Popup Menu
 
 | Key | Action |
 |---|---|
-| `<C-Space>` | Trigger completion menu |
-| `<C-n>` | Next item (also triggers if menu closed) |
-| `<C-p>` | Previous item (also triggers if menu closed) |
+| `<C-n>` / `<Down>` | Next item |
+| `<C-p>` / `<Up>` | Previous item |
+| `<C-y>` | Confirm selection |
+| `<C-e>` | Cancel |
+| `<Tab>` | Next item or expand |
 
-## Completion Sources (normative)
+## Item Kinds
 
-| Source | Priority | Content |
+| Kind | Icon | Description |
 |---|---|---|
-| LSP | 1 (highest) | Semantic completions from language server |
-| Snippets | 2 | Snippet templates |
-| Buffer words | 3 | Words from current and open buffers |
-| File paths | 4 | File and directory paths (triggered by `/` or `\`) |
+| Function | `ƒ` | Functions and methods |
+| Variable | `α` | Variables and parameters |
+| Struct | `S` | Structs and classes |
+| Module | `M` | Modules and namespaces |
+| Snippet | `⚡` | Snippet templates |
 
-Sources are merged and sorted by priority, then by match score.
+## Resolve
 
-## Menu Display
-
-The completion menu shows up to `completion_menu_max` items (default 20). Each entry displays:
-
-| Column | Content |
-|---|---|
-| Icon | Completion kind (function, variable, struct, etc.) |
-| Label | Completion text |
-| Source | Source indicator |
-
-### Kind Icons
-
-| Icon | Kind |
-|---|---|
-| `f` | Function/Method |
-| `S` | Struct/Class |
-| `E` | Enum |
-| `v` | Variable |
-| `M` | Module |
-| `k` | Keyword |
-| `s` | Snippet |
-| `p` | Property/Field |
-| `C` | Constant |
-| `i` | Interface/Trait |
-
-## Navigation
-
-| Key | Action |
-|---|---|
-| `<C-n>` | Next item |
-| `<C-p>` | Previous item |
-| `<C-y>` | Accept selected |
-| `<C-e>` | Cancel menu |
-| `<Tab>` | Accept (when configured) |
-| `<S-Tab>` | Previous item (when configured) |
-
-## Documentation Preview
-
-When a completion item is selected, its documentation appears in a side panel. The panel shows the full type signature and doc comment.
-
-## Fuzzy Matching
-
-Completion uses fuzzy matching by default. Typing `fn` matches `function`, `format_number`, `find_next`. Matching is case-insensitive unless the query contains uppercase characters.
+On item focus, the editor sends `completionItem/resolve` to get documentation and additional text edits (auto-imports).
 
 ## Configuration
 
-| Option | Default | Description |
+| Setting | Default | Description |
 |---|---|---|
-| `auto_complete` | `true` | Enable automatic completion |
-| `completion_delay` | `100` | Debounce delay in ms |
-| `completion_menu_max` | `20` | Max items in menu |
-| `completion_doc_preview` | `true` | Show documentation panel |
-
-## Performance
-
-Completion requests are debounced and cached. Repeated completions at the same position reuse cached results. LSP completion requests include the `triggerKind` field to let the server optimize.
+| `completion.auto` | `true` | Auto-trigger |
+| `completion.min_length` | `1` | Min prefix length |
+| `completion.max_items` | `50` | Max popup items |
 
 ## Related
 
-- Completion sources detail: [/docs/spec/features/editing/insert-completion-sources.md](/docs/spec/features/editing/insert-completion-sources.md)
-- Insert completion: [/docs/spec/features/editing/insert-completion.md](/docs/spec/features/editing/insert-completion.md)
-- Signature help: [/docs/spec/features/lsp/signature-help.md](/docs/spec/features/lsp/signature-help.md)
+- Insert mode: [/docs/spec/modes/insert.md](/docs/spec/modes/insert.md)
+- LSP: [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)

@@ -1,84 +1,40 @@
-# Literal Insert (Input Context)
+# Insert Literal (Input Layer)
 
-Insert characters by numeric code or literally.
+Back: [/docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md)
+
+Low-level input processing for literal character insertion.
 
 ## Overview
 
-This covers the input mechanics of literal character
-insertion via `<C-v>` sequences. For the full literal
-insertion specification including digraphs, see the
-main insert-literal document.
+This documents the input layer behavior when `<C-v>` is pressed in insert mode, including numeric code states and display.
 
 ## Input Processing
 
-### Bypass Mappings
+After `<C-v>`:
 
-`<C-v>` bypasses all key mappings for the next keypress.
-The raw key event is captured and inserted as-is.
-
-### Bypass Abbreviations
-
-`<C-v>` prevents abbreviation expansion for the
-following character.
+1. If next input is a digit, enter numeric code input mode.
+2. If next input is `o`, `x`, `u`, or `U`, enter the appropriate radix mode.
+3. Otherwise, insert the literal byte of the next key.
 
 ## Numeric Input States
 
-### State Machine
-
-1. Idle: waiting for `<C-v>`
-2. Prefix: reading mode prefix (none, `o`, `x`, `u`, `U`)
-3. Digits: accumulating digit characters
-4. Complete: character inserted, return to idle
-
-### Digit Limits
-
-| Mode | Max Digits | Value Range |
-|------|-----------|-------------|
-| Decimal | 3 | 0-255 |
-| Octal (`o`) | 3 | 0-377 (0-255) |
-| Hex (`x`) | 2 | 0x00-0xFF |
-| Unicode (`u`) | 4 | U+0000-U+FFFF |
-| Full Unicode (`U`) | 8 | U+00000000-U+0010FFFF |
-
-### Early Completion
-
-If the maximum digits are reached, insertion happens
-immediately. If fewer digits are typed followed by a
-non-digit, the accumulated value is used.
+| State | Trigger | Format | Max digits |
+|---|---|---|---|
+| Decimal | `0`-`9` | `{0-255}` | 3 digits |
+| Octal | `o` | `o{0-377}` | 3 digits |
+| Hex byte | `x` | `x{00-FF}` | 2 digits |
+| Unicode 4-digit | `u` | `u{0000-FFFF}` | 4 digits |
+| Unicode 8-digit | `U` | `U{00000000-7FFFFFFF}` | 8 digits |
 
 ## Display During Input
 
-### Status Feedback
-
-While entering digits, the command area shows:
-- `^` initially
-- `^o177` (example) as digits are typed
-
-### Cursor Behavior
-
-The cursor remains at the insertion point. A special
-indicator shows the pending literal state.
+While entering numeric code, the status area shows the partial input (e.g., `^V123`).
 
 ## Error Handling
 
-### Invalid Code Point
+If the numeric value exceeds the valid range, the character is not inserted and a bell is emitted.
 
-Values above U+10FFFF are rejected. Surrogate code
-points (U+D800-U+DFFF) are rejected.
+## Related
 
-### Overflow
-
-If the decimal value exceeds 255, only the last 3
-digits are used (wraps).
-
-## Special Cases
-
-### Null Character
-
-`<C-v>000` inserts a null byte (0x00). This is valid
-in the buffer but may cause issues with some operations.
-
-### Tab in expandtab Mode
-
-`<C-v><Tab>` inserts a literal tab character even when
-`expandtab` is enabled. Normal `<Tab>` would insert spaces.
+- Insert literal overview: [/docs/spec/modes/insert/insert-literal.md](/docs/spec/modes/insert/insert-literal.md)
+- Insert special chars: [/docs/spec/modes/insert/input/insert-special-chars.md](/docs/spec/modes/insert/input/insert-special-chars.md)

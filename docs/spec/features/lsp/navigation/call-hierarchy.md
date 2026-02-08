@@ -2,116 +2,36 @@
 
 Back: [/docs/spec/features/lsp/navigation/README.md](/docs/spec/features/lsp/navigation/README.md)
 
-View incoming and outgoing function calls via LSP `callHierarchy/incomingCalls` and `callHierarchy/outgoingCalls`.
+View incoming and outgoing calls for a function.
 
 ## Overview
 
-Call hierarchy displays which functions call a given function (incoming) and which functions a given function calls (outgoing). Results are presented in an expandable tree view.
+Call hierarchy shows which functions call the current function (incoming) and which functions are called by the current function (outgoing).
 
 ## Usage
 
-### Keybinding
-
-| Key | Action |
-|---|---|
-| `<leader>ci` | Show incoming calls to function under cursor |
-| `<leader>co` | Show outgoing calls from function under cursor |
-
-### Command
-
 | Command | Description |
 |---|---|
-| `:IncomingCalls` | Show incoming calls |
-| `:OutgoingCalls` | Show outgoing calls |
+| `:CallHierarchyIncoming` | Show incoming calls |
+| `:CallHierarchyOutgoing` | Show outgoing calls |
 
-## Incoming calls
+## Incoming Calls
 
-### Display
+Lists all functions/methods that call the function under the cursor. Each entry shows the caller's name, file, and line.
 
-The tree root is the function under the cursor. Each child node is a function that calls the root function. Children can be expanded to show their own callers recursively.
+## Outgoing Calls
 
-### Meaning
-
-Answers the question: "Who calls this function?" Used for understanding impact before refactoring.
-
-## Outgoing calls
-
-### Display
-
-The tree root is the function under the cursor. Each child node is a function that the root function calls. Children can be expanded to show their own callees recursively.
-
-### Meaning
-
-Answers the question: "What does this function do?" Used for understanding behavior and dependencies.
+Lists all functions/methods called by the function under the cursor.
 
 ## Navigation
 
-### Tree navigation
+Select an entry and press `<CR>` to jump to it. The hierarchy can be expanded to show deeper levels.
 
-| Key | Action |
-|---|---|
-| `j` / `<Down>` | Move selection down |
-| `k` / `<Up>` | Move selection up |
-| `l` | Expand child node |
-| `h` | Collapse node |
-| `<Tab>` | Toggle expand/collapse |
+## LSP Requirements
 
-### Actions
-
-| Key | Action |
-|---|---|
-| `<CR>` | Jump to the selected function definition |
-| `o` | Jump to function and close tree |
-| `v` | Open in vertical split |
-| `s` | Open in horizontal split |
-| `<Esc>` | Close the tree view |
-
-## Depth
-
-### Expand levels
-
-The initial display shows one level of calls. Each node can be expanded on demand. The editor MUST NOT eagerly load the entire call graph (which could be infinite for recursive functions).
-
-### Lazy loading
-
-Children are fetched from the LSP server only when the user expands a node. A loading indicator is shown while the request is in flight.
-
-## Configuration
-
-| Setting | Type | Default | Description |
-|---|---|---|---|
-| `call_hierarchy.max_depth` | integer | `10` | Maximum expansion depth |
-| `call_hierarchy.auto_expand` | integer | `1` | Number of levels to auto-expand |
-
-## LSP requirements
-
-### Server support
-
-The LSP server must support `textDocument/prepareCallHierarchy`, `callHierarchy/incomingCalls`, and `callHierarchy/outgoingCalls`.
-
-| Server | Call hierarchy support |
-|---|---|
-| rust-analyzer | Yes |
-| clangd | Yes |
-| typescript-language-server | Yes |
-| gopls | Yes |
-| pyright | Yes |
-
-## Display options
-
-| Setting | Type | Default | Description |
-|---|---|---|---|
-| `call_hierarchy.show_detail` | boolean | `true` | Show function signature detail |
-| `call_hierarchy.show_kind` | boolean | `true` | Show symbol kind icon |
-
-## Preview
-
-### On select
-
-When a node is highlighted, a preview of the function's source code is shown in a split pane or floating window. The preview highlights the line where the call occurs.
+Uses `textDocument/prepareCallHierarchy`, `callHierarchy/incomingCalls`, and `callHierarchy/outgoingCalls` LSP methods.
 
 ## Related
 
+- LSP: [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
 - Type hierarchy: [/docs/spec/features/lsp/navigation/type-hierarchy.md](/docs/spec/features/lsp/navigation/type-hierarchy.md)
-- References: [/docs/spec/features/lsp/navigation/references.md](/docs/spec/features/lsp/navigation/references.md)
-- LSP: [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)
