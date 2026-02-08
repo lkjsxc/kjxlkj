@@ -15,15 +15,15 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Cell grid computation from buffer content + viewport
 - [x] Gutter rendering (line numbers, signs, folds)
 - [x] Statusline rendering
-- [ ] CJK-aware cell rendering (width-2 graphemes span two cells)
+- [x] CJK-aware cell rendering (width-2 graphemes span two cells)
 - [x] Diff display (gitsigns, inline diff markers)
 
 ## Viewport rendering
 
 - [x] Vertical follow: keep cursor within viewport bounds
 - [x] Horizontal follow: scroll to keep cursor column visible
-- [ ] Line wrapping algorithm per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- [ ] CJK wrap-boundary padding cell insertion
+- [x] Line wrapping algorithm per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- [x] CJK wrap-boundary padding cell insertion
 - [x] Scrolloff/sidescrolloff handling
 
 ## Component model
@@ -51,10 +51,10 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] Core task publishes EditorSnapshot on watch channel after every state change
 - [x] Render task receives snapshot and builds cell grid for every visible window
 - [x] Cell grid includes correct grapheme, width, fg, bg, attrs for each cell
-- [ ] CJK width-2 graphemes produce continuation cells marked `is_wide_continuation`
+- [x] CJK width-2 graphemes produce continuation cells marked `is_wide_continuation`
 - [x] Diff rendering compares current grid with previous and emits only changed cells
 - [x] All terminal output is flushed in a single `write_all` syscall per frame
-- [ ] Cursor highlight spans full display width of the grapheme under cursor
-- [ ] Wrap algorithm produces padding cells at CJK boundary, never split wide chars
+- [x] Cursor highlight spans full display width of the grapheme under cursor
+- [x] Wrap algorithm produces padding cells at CJK boundary, never split wide chars
 - [x] Gutter renders line numbers with correct alignment and sign/fold columns
 - [x] Statusline updates on every mode change, cursor move, and buffer switch

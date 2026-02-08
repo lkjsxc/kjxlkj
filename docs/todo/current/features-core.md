@@ -37,10 +37,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ### Terminal features
 
-- [ ] tmux integration per [/docs/spec/features/terminal/tmux.md](/docs/spec/features/terminal/tmux.md)
-- [ ] DAP debugging per [/docs/spec/features/terminal/dap.md](/docs/spec/features/terminal/dap.md)
-- [ ] Remote editing per [/docs/spec/features/terminal/remote.md](/docs/spec/features/terminal/remote.md)
-- [ ] WM integration per [/docs/spec/features/terminal/wm-integration.md](/docs/spec/features/terminal/wm-integration.md)
+- [x] tmux integration per [/docs/spec/features/terminal/tmux.md](/docs/spec/features/terminal/tmux.md)
+- [x] DAP debugging per [/docs/spec/features/terminal/dap.md](/docs/spec/features/terminal/dap.md)
+- [x] Remote editing per [/docs/spec/features/terminal/remote.md](/docs/spec/features/terminal/remote.md)
+- [x] WM integration per [/docs/spec/features/terminal/wm-integration.md](/docs/spec/features/terminal/wm-integration.md)
 
 ## Session management
 
@@ -61,13 +61,13 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [x] Auto-save per [/docs/spec/features/session/auto_save.md](/docs/spec/features/session/auto_save.md)
 - [x] Undo tree per [/docs/spec/features/session/undo_tree.md](/docs/spec/features/session/undo_tree.md)
-- [ ] View management per [/docs/spec/features/session/view-management.md](/docs/spec/features/session/view-management.md)
+- [x] View management per [/docs/spec/features/session/view-management.md](/docs/spec/features/session/view-management.md)
 - [x] Workspaces per [/docs/spec/features/session/workspaces.md](/docs/spec/features/session/workspaces.md)
 - [x] Project config per [/docs/spec/features/session/project-config.md](/docs/spec/features/session/project-config.md)
-- [ ] Macros per [/docs/spec/features/session/macros.md](/docs/spec/features/session/macros.md)
-- [ ] Registers per [/docs/spec/features/session/registers.md](/docs/spec/features/session/registers.md)
-- [ ] Expression register per [/docs/spec/features/session/expression-register.md](/docs/spec/features/session/expression-register.md)
-- [ ] Ex commands detailed per [/docs/spec/features/session/ex-commands-detailed.md](/docs/spec/features/session/ex-commands-detailed.md)
+- [x] Macros per [/docs/spec/features/session/macros.md](/docs/spec/features/session/macros.md)
+- [x] Registers per [/docs/spec/features/session/registers.md](/docs/spec/features/session/registers.md)
+- [x] Expression register per [/docs/spec/features/session/expression-register.md](/docs/spec/features/session/expression-register.md)
+- [x] Ex commands detailed per [/docs/spec/features/session/ex-commands-detailed.md](/docs/spec/features/session/ex-commands-detailed.md)
 
 ## Window features
 
@@ -100,7 +100,7 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 
 - [x] `:terminal` spawns a real PTY process via openpty/forkpty, not a stub
 - [x] Terminal screen buffer receives and parses escape sequences from PTY output
-- [ ] Typing in terminal-insert mode forwards raw bytes to the PTY fd
+- [x] Typing in terminal-insert mode forwards raw bytes to the PTY fd
 - [x] `Ctrl-\ Ctrl-n` switches terminal to Normal mode for scrollback navigation
 - [x] `:SessionSave` serializes the full layout tree to JSON per session schema
 - [x] `:SessionLoad` reads JSON and reconstructs window layout with correct cursor positions

@@ -20,8 +20,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Terminal capability detection and raw mode entry
 - [x] Channel topology creation (input, service, render, quit)
 - [x] Task spawning order: input, services, render, core
-- [ ] Auto-session restore
-- [ ] Init file sourcing
+- [x] Auto-session restore
+- [x] Init file sourcing
 - [x] Shutdown: session save, service drain, terminal restore
 - [x] Signal handling (SIGWINCH, SIGTERM, SIGHUP, SIGTSTP/SIGCONT)
 - [x] Panic handler with terminal restore and crash report

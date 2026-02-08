@@ -11,10 +11,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 - [x] Grapheme-based cursor position `(line, grapheme_offset)` per cursor spec
 - [x] Bidirectional grapheme-to-display-column mapping
-- [ ] CJK wide char: cursor always on grapheme boundary, never half-cell
-- [ ] CJK motion atomicity: `l`/`h` skip entire width-2 grapheme
-- [ ] Cursor rendering: block cursor spans full display width of grapheme
-- [ ] Append-at-EOL (`a`) and `Esc` return never leaves floating cursor (REG-01)
+- [x] CJK wide char: cursor always on grapheme boundary, never half-cell
+- [x] CJK motion atomicity: `l`/`h` skip entire width-2 grapheme
+- [x] Cursor rendering: block cursor spans full display width of grapheme
+- [x] Append-at-EOL (`a`) and `Esc` return never leaves floating cursor (REG-01)
 
 ## Motions
 
@@ -56,8 +56,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Quote text objects per [/docs/spec/editing/text-objects/quote-text-objects.md](/docs/spec/editing/text-objects/quote-text-objects.md)
 - [x] Tag text objects per [/docs/spec/editing/text-objects/tag-text-objects.md](/docs/spec/editing/text-objects/tag-text-objects.md)
 - [x] Argument text objects per [/docs/spec/editing/text-objects/argument-text-objects.md](/docs/spec/editing/text-objects/argument-text-objects.md)
-- [ ] Function/class text objects per [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)
-- [ ] Treesitter text objects per [/docs/spec/editing/text-objects/treesitter-text-objects.md](/docs/spec/editing/text-objects/treesitter-text-objects.md)
+- [x] Function/class text objects per [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)
+- [x] Treesitter text objects per [/docs/spec/editing/text-objects/treesitter-text-objects.md](/docs/spec/editing/text-objects/treesitter-text-objects.md)
 
 ## Registers
 
@@ -98,9 +98,9 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Search highlight per [/docs/spec/editing/search/search-highlight.md](/docs/spec/editing/search/search-highlight.md)
 - [x] Star search per [/docs/spec/editing/search/star-search.md](/docs/spec/editing/search/star-search.md)
 - [x] Search history per [/docs/spec/editing/search/search-history.md](/docs/spec/editing/search/search-history.md)
-- [ ] Live grep per [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)
-- [ ] Regex engine per [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
-- [ ] Magic modes per [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md)
+- [x] Live grep per [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)
+- [x] Regex engine per [/docs/spec/editing/regex/regex.md](/docs/spec/editing/regex/regex.md)
+- [x] Magic modes per [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md)
 
 ## Text manipulation
 
@@ -126,6 +126,6 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] Register prefix (`"a`) sets the target register for the next yank/delete/paste
 - [x] Dot repeat (`.`) replays the last recorded change with fidelity
 - [x] Undo (`u`) and redo (`Ctrl-r`) traverse the undo tree correctly
-- [ ] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
+- [x] CJK motions move by grapheme, not byte offset, and never land on half-cell positions
 - [x] Search motions (`/`, `?`, `n`, `N`) update cursor and search highlight simultaneously
 - [x] Character find (`f`/`t`/`F`/`T`) and repeat (`;`/`,`) work within and across lines correctly

@@ -31,8 +31,8 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Insert-mode navigation (arrow keys)
 - [x] Insert-normal mode (`Ctrl-o`)
 - [x] Auto-indentation on `Enter`
-- [ ] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
-- [ ] Unicode input per [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
+- [x] Japanese IME composition handling per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
+- [x] Unicode input per [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
 - [x] Digraph input per [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md)
 - [x] Literal input per [/docs/spec/modes/insert/input/insert-literal.md](/docs/spec/modes/insert/input/insert-literal.md)
 - [x] Register paste per [/docs/spec/modes/insert/input/insert-registers.md](/docs/spec/modes/insert/input/insert-registers.md)
@@ -63,7 +63,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [x] Block-wise visual (`Ctrl-v`)
 - [x] Selection highlighting
 - [x] Operators on visual selection (d, c, y, etc.)
-- [ ] Per [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
+- [x] Per [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
 
 ## Command-line mode
 
@@ -83,7 +83,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Mode transitions
 
 - [x] All transitions per [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
-- [ ] CJK cursor clamping on mode change (no half-cell positions)
+- [x] CJK cursor clamping on mode change (no half-cell positions)
 
 ## Wiring verification
 
@@ -96,5 +96,5 @@ Per [/docs/log/proposals/deep-wiring-checklist.md](/docs/log/proposals/deep-wiri
 - [x] `R` enters Replace mode; typed characters overwrite at cursor position
 - [x] `r{char}` replaces single character without entering Replace mode
 - [x] Mode-dependent keybinding dispatch: same key produces different actions in different modes
-- [ ] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift
+- [x] Rapid mode switching (`i Esc i Esc` x100) causes no memory leak or cursor drift
 - [x] Mode indicator in statusline updates on every transition

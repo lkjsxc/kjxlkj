@@ -26,10 +26,10 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ### Viewport
 
-- [ ] Line wrapping with CJK boundary padding per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- [ ] Long line overflow wraps to next display row (REG-02)
-- [ ] Width-2 grapheme at wrap boundary produces padding cell (REG-08)
-- [ ] Horizontal/vertical follow cursor
+- [x] Line wrapping with CJK boundary padding per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- [x] Long line overflow wraps to next display row (REG-02)
+- [x] Width-2 grapheme at wrap boundary produces padding cell (REG-08)
+- [x] Horizontal/vertical follow cursor
 
 ### Statusline
 
