@@ -1,11 +1,6 @@
 # Command-Line Editing
 
-Keys for editing in command-line mode.
-
-## Overview
-
-Command-line mode supports
-comprehensive editing keys.
+Keys for editing in command-line mode (`:`, `/`, `?` prompts).
 
 ## Cursor Movement
 
@@ -74,6 +69,14 @@ comprehensive editing keys.
 
 ### Special Registers
 
+| Sequence | Inserts |
+|----------|---------|
+| `<C-r>"` | Default (unnamed) register |
+| `<C-r>0` | Yank register |
+| `<C-r>+` | System clipboard |
+| `<C-r>/` | Last search pattern |
+| `<C-r>%` | Current filename |
+| `<C-r>=` | Expression result (prompts for expression) |
 
 ## Completion
 
@@ -90,6 +93,17 @@ comprehensive editing keys.
 
 Navigate completion menu:
 
+| Key | Action |
+|-----|--------|
+| `<Tab>` | Next match in wildmenu |
+| `<S-Tab>` | Previous match in wildmenu |
+| `<Left>` | Previous match (horizontal layout) |
+| `<Right>` | Next match (horizontal layout) |
+| `<Up>` | Go up a directory level (file completion) |
+| `<Down>` | Enter directory / accept match |
+| `<C-y>` | Accept currently highlighted match |
+| `<C-e>` | Dismiss wildmenu, restore original text |
+
 ## History Navigation
 
 ### Basic
@@ -103,8 +117,7 @@ Navigate completion menu:
 
 ### Filtered
 
-Typing prefix, then arrows
-filters to matching history.
+Typing prefix then arrows filters to matching history.
 
 ## Special Keys
 
@@ -148,14 +161,21 @@ filters to matching history.
 
 ### Example
 
+`:e %:h/other.rs` -- edit `other.rs` in same directory as current file.
+`:w #` -- save to the alternate file path.
 
 ## Expression Evaluation
 
 ### Expression Register
 
+`<C-r>=` opens an expression prompt (`=`). Type a Lua expression and press
+`<CR>` to insert the result as text into the command line.
 
 ### Examples
 
+- `<C-r>=2+2<CR>` -- inserts `4`
+- `<C-r>=expand("%:t")<CR>` -- inserts current filename (tail)
+- `<C-r>=line(".")<CR>` -- inserts current line number
 
 ## Literal Insert
 
@@ -173,3 +193,8 @@ filters to matching history.
 
 ### Register Paste
 
+`<C-r>{reg}` pastes register contents into the command line at cursor position:
+- `<C-r>"` -- paste default register (last delete/yank)
+- `<C-r>a` -- paste named register `a`; `<C-r>+` -- paste system clipboard
+- `<C-r><C-w>` -- paste word under cursor (useful for search-and-replace)
+- `<C-r><C-r>{reg}` -- paste literally (no special character interpretation)
