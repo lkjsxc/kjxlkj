@@ -1,105 +1,90 @@
 # Argument Text Objects
 
-Text objects for function arguments.
+Select function arguments and parameters.
 
 ## Overview
 
-Select individual arguments in
-function calls, definitions, or
-comma-separated lists.
+Argument text objects select individual arguments in
+function calls, definitions, and similar comma-separated
+lists. They require tree-sitter for accurate detection.
 
-## Inner Argument
+## Commands
 
-### Command
+### Inner Argument
 
+`ia` selects the argument content without surrounding
+commas or whitespace.
 
-### Behavior
+### Around Argument
 
-Selects a single argument.
-Excludes commas and spaces.
+`aa` selects the argument including the trailing comma
+and whitespace, or the leading comma if last argument.
 
-### Example
+## Examples
 
+### Function Call
 
-## Around Argument
-
-### Command
-
-
-### Behavior
-
-Includes comma and space.
-Smart about which side.
-
-### Example
-
-
-## Smart Separator Handling
-
-### Middle Argument
-
-
-### Last Argument
-
+On `fn(alpha, beta, gamma)`, cursor on `beta`:
+- `dia` deletes `beta`, result: `fn(alpha, , gamma)`
+- `daa` deletes `beta, `, result: `fn(alpha, gamma)`
 
 ### First Argument
 
+On `fn(alpha, beta)`, cursor on `alpha`:
+- `daa` deletes `alpha, `, result: `fn(beta)`
+
+### Last Argument
+
+On `fn(alpha, beta)`, cursor on `beta`:
+- `daa` deletes `, beta`, result: `fn(alpha)`
 
 ### Single Argument
 
+On `fn(alpha)`, cursor on `alpha`:
+- `daa` deletes `alpha`, result: `fn()`
 
-## Detection Algorithm
+## Supported Contexts
 
-### Finding Arguments
+### Languages
 
-1. Find enclosing brackets
-2. Split by top-level commas
-3. Determine current argument
-4. Handle nested structures
+Works in any language with tree-sitter support for
+function calls and definitions.
 
-### Respects Nesting
+### List Types
 
+| Context | Example |
+|---------|---------|
+| Function call | `f(a, b, c)` |
+| Function def | `fn f(x: i32, y: i32)` |
+| Array literal | `[1, 2, 3]` |
+| Tuple | `(a, b, c)` |
+| Generic args | `HashMap<K, V>` |
+| Template args | `std::vector<int, alloc>` |
 
-## Complex Arguments
+## With Operators
 
-### Function Calls
+### Common Operations
 
+| Sequence | Effect |
+|----------|--------|
+| `dia` | Delete argument content |
+| `daa` | Delete argument with comma |
+| `cia` | Change argument content |
+| `caa` | Change argument with comma |
+| `yia` | Yank argument content |
+| `via` | Select argument visually |
 
-### Objects/Arrays
+## Count
 
+### Multiple Arguments
 
-### Closures
+`d2aa` deletes 2 arguments including commas.
+`v3ia` selects 3 argument contents.
 
+## Fallback
 
-## Generic Arguments
+### Without Tree-sitter
 
-### Type Parameters
-
-
-### Template Arguments
-
-
-## Array Elements
-
-### List Items
-
-
-### Works Similarly
-
-Same comma-separation logic.
-
-## Object Properties
-
-### Key-Value
-
-
-### Smart Handling
-
-Treats `key: value` as unit.
-
-## Multiline Arguments
-
-### Formatted Calls
-
-
-With cursor on arg2:
+Without tree-sitter, argument detection falls back to
+simple comma-based splitting within the nearest
+parentheses. This is less accurate for nested calls.

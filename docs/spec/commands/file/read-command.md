@@ -1,120 +1,97 @@
 # Read Command
 
-Inserting external content.
+Insert file or command output into the buffer.
 
 ## Overview
 
-The `:read` command inserts
-file contents or command output.
+`:read` inserts the contents of a file or the output
+of a shell command below the current line.
 
-## Basic Syntax
+## File Read
 
+### Basic Usage
 
-## Read File
+`:read {file}` inserts the contents of `{file}` below
+the current line.
 
-### After Current Line
+`:0read {file}` inserts above the first line.
 
+### With Line Number
 
-### At Position
+`:{n}read {file}` inserts below line `{n}`.
 
+### Current File
 
-## Read Command
+`:read` without arguments re-reads the current file
+and inserts below the current line.
+
+## Command Read
 
 ### Shell Output
 
+`:read !{command}` inserts the output of the shell
+command below the current line.
 
-### With Arguments
+### Examples
 
+`:read !date` inserts the current date.
+`:read !ls` inserts the directory listing.
+`:read !sort %` inserts sorted version of current file.
 
-## Positioning
+### Error Handling
 
-### Insert After
+If the command fails (non-zero exit), the error output
+is still inserted with an error message shown.
 
+## Range
 
-### Insert Before
+### Insert at Line
 
-Use line 0:
+`:5read file.txt` inserts after line 5.
+`:$read file.txt` inserts at end of file.
+`:.read file.txt` inserts after current line (default).
 
-## Options
+### Replace Range
 
-### Encoding
+`:1,$read` replaces the entire buffer — not directly.
+Use `:%d | read file.txt` to replace all content.
 
+## Encoding
+
+### Specify Encoding
+
+`:read ++enc=utf-16 file.txt` reads with specified encoding.
 
 ### File Format
 
+`:read ++ff=dos file.txt` reads with DOS line endings.
 
-### Binary
+## Integration
 
+### Pipe
 
-## Range Read
+`:read !grep pattern file.txt` inserts grep results.
+`:read !curl -s url` inserts HTTP response.
 
-### File Sections
+### With Ranges
 
-Not directly supported.
-Use shell:
+`:0read !head -1 file.txt` inserts first line at top.
 
-## Common Uses
+## Undo
 
-### Insert Template
+### Single Operation
 
+The entire `:read` insertion is a single undo unit.
+`u` removes all inserted lines.
 
-### Date/Time
+## Related
 
+### Write
 
-### Include Output
+`:write` is the inverse — writes buffer to file.
+`:write !{command}` pipes buffer content to a command.
 
+### Edit
 
-### Code Generation
-
-
-## Read vs Edit
-
-### Difference
-
-| Command  | Effect              |
-|----------|---------------------|
-| `:e`     | Open new buffer     |
-| `:r`     | Insert into current |
-
-## Read Stdin
-
-### From Pipe
-
-
-## Current File
-
-### Re-read Part
-
-
-## Error Handling
-
-### Missing File
-
-
-### Command Error
-
-Shows command's error output.
-
-## Performance
-
-### Large Files
-
-`:r` loads entire file.
-Consider:
-
-## In Insert Mode
-
-### Using Shortcuts
-
-
-## Undo Integration
-
-### Single Undo
-
-Read creates one undo point.
-`u` removes all inserted.
-
-## Filtering
-
-### Process While Reading
-
+`:edit {file}` opens a file (replaces buffer).
+`:read` appends to the current buffer.

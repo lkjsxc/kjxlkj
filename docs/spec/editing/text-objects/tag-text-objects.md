@@ -1,111 +1,124 @@
 # Tag Text Objects
 
-Text objects for markup tags.
+Select HTML/XML tag pairs and content.
 
 ## Overview
 
-Select content inside or around
-HTML/XML/JSX style tags.
+Tag text objects work with HTML, XML, JSX, and similar
+markup languages to select tag pairs and their content.
 
-## Tag Definitions
+## Commands
 
-### Valid Tags
+### Inner Tag
 
+`it` selects the content between the opening and
+closing tags, excluding the tags themselves.
+
+### Around Tag
+
+`at` selects from the start of the opening tag to
+the end of the closing tag, including both tags.
+
+## Examples
+
+### Simple Tags
+
+On `<div>hello world</div>`:
+- `dit` selects `hello world`
+- `dat` selects `<div>hello world</div>`
+
+### Nested Tags
+
+On `<div><span>text</span></div>`, cursor on `text`:
+- `dit` selects `text` (innermost tag content)
+- `dat` selects `<span>text</span>`
+- `2dit` selects `<span>text</span>` (outer inner)
+- `2dat` selects `<div><span>text</span></div>`
+
+### With Attributes
+
+On `<div class="box">content</div>`:
+- `dat` includes the full opening tag with attributes
+
+## Tag Detection
+
+### Matching Algorithm
+
+1. Search backward for `<` that starts a tag
+2. Parse the tag name
+3. Search forward for `</tagname>`
+4. Match by tag name, handling nesting depth
 
 ### Self-Closing Tags
 
+`<br/>`, `<img src="x"/>` are treated as single
+elements. `it` on a self-closing tag is empty.
+`at` selects the entire self-closing tag.
 
-## Inner Tag
+### Void Elements
 
-### Command
+HTML void elements (`<br>`, `<hr>`, `<img>`, `<input>`)
+without explicit close are recognized.
 
+## With Operators
 
-### Behavior
+### Common Operations
 
-Selects everything between
-opening and closing tags.
+| Sequence | Effect |
+|----------|--------|
+| `dit` | Delete tag content |
+| `dat` | Delete entire tag element |
+| `cit` | Change tag content |
+| `cat` | Change entire tag element |
+| `yit` | Yank tag content |
+| `vat` | Select entire tag visually |
 
-### Example
+## Multi-Line
 
+### Block Tags
 
-## Around Tag
+Tags spanning multiple lines are handled correctly.
+The content between opening and closing tags is
+selected regardless of line count.
 
-### Command
+### Indented Content
 
+Indentation within the tag is part of `it` selection.
+`dit` removes content including internal indentation.
 
-### Behavior
+## Count
 
-Selects entire element:
-opening tag + content + closing tag.
+### Nesting Levels
 
-### Example
+`{count}it` selects the content of the {count}th
+enclosing tag. `2it` selects the parent tag's content.
 
+## Tree-sitter Integration
 
-## Nested Tags
+### Improved Accuracy
 
-### Same Type
+With tree-sitter, tag matching uses the AST for
+perfect accuracy in complex cases like self-closing
+tags, comments containing tags, and string literals.
 
+### JSX/TSX
 
-With cursor on "inner":
+Tree-sitter enables correct tag handling in JSX/TSX
+where tags can contain expressions `{expr}`.
 
-### Different Types
+## Edge Cases
 
+### Mismatched Tags
 
-## Multiline Content
+If no matching close tag is found, the text object
+fails (no selection). No error is displayed.
 
-### Block Elements
+### Comments
 
+Tags within comments (`<!-- <div> -->`) are ignored
+by the matching algorithm.
 
-With cursor on item:
+### Attributes with Special Characters
 
-## Tag Attributes
-
-### Preserved with `it`
-
-
-### Removed with `at`
-
-
-## Self-Closing Tags
-
-### No Content
-
-
-### Deletion
-
-
-## JSX/TSX Support
-
-### Component Tags
-
-
-Works same as HTML tags.
-
-### Fragments
-
-
-## XML Support
-
-### Namespaced Tags
-
-
-### Processing Instructions
-
-
-Not matched by tag objects.
-
-## Finding Tags
-
-### Search Algorithm
-
-1. Find nearest enclosing tags
-2. Match tag names
-3. Handle nesting properly
-
-### Cursor Position
-
-Cursor can be anywhere inside:
-- Opening tag
-- Content
-- Closing tag (usually)
-
+Attributes containing `>` or `<` in quoted values
+do not interfere with tag detection.

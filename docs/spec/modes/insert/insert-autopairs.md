@@ -1,112 +1,123 @@
-# Auto-Pairs in Insert
+# Insert Auto-Pairs
 
 Automatic bracket and quote pairing.
 
 ## Overview
 
-Auto-pairs insert matching closing
-characters when opening typed.
-
-## Paired Characters
-
-### Brackets
-
-
-### Quotes
-
-
-## Basic Behavior
-
-### On Open
-
-Typing `(` inserts `()` with
+When enabled, typing an opening delimiter automatically
+inserts the matching closing delimiter and positions the
 cursor between them.
 
-### On Close
+## Supported Pairs
 
-Typing `)` with cursor before `)`
-skips over it (no duplicate).
+### Default Pairs
 
-### Example
+| Open | Close | Name |
+|------|-------|------|
+| `(` | `)` | Parentheses |
+| `[` | `]` | Brackets |
+| `{` | `}` | Braces |
+| `"` | `"` | Double quotes |
+| `'` | `'` | Single quotes |
+| `` ` `` | `` ` `` | Backticks |
 
+### Language-Specific
 
-## Skip Over
+| Language | Additional Pairs |
+|----------|-----------------|
+| HTML/XML | `<` / `>` (in tag context) |
+| Rust | `\|` / `\|` (closures) |
+| Python | `"""` / `"""` (docstrings) |
 
-### When to Skip
+## Behavior
 
-If next char matches closing:
+### Insert Opening
 
-### Skip Works For
+Typing `(` inserts `()` with cursor between them.
+Typing `{` after `<CR>` also adds indented newline.
 
-All configured pairs.
+### Skip Closing
 
-## Delete Pair
+If the cursor is before a closing delimiter that matches
+an already-paired opener, typing that closer moves the
+cursor past it instead of inserting a duplicate.
 
-### Backspace
+### Delete Pair
 
+When `<BS>` is pressed between an empty pair (`()`),
+both delimiters are deleted.
 
-### Configuration
+### Wrap Selection
 
+In visual mode, typing an opening delimiter wraps
+the selection: `(selection)`.
 
-## Smart Quotes
+## Smart Behavior
 
 ### Context Awareness
 
-Don't pair if:
-- In string already
-- In comment
-- After word character
+Auto-pairs do not activate inside:
+- String literals (no auto-pair for `'` inside `"..."`)
+- Comments (language-dependent)
+- After `\` (escaped character)
 
-### Example
+### Word Boundary
 
+For quote characters (`"`, `'`, `` ` ``), auto-pairing
+only occurs when:
+- After whitespace or opening bracket
+- At start of line
+- NOT after word characters (avoids pairing in contractions)
 
-## Wrap Selection
+## Configuration
 
-### Visual Mode
+| Option | Default | Description |
+|--------|---------|-------------|
+| `auto_pairs` | `true` | Enable/disable globally |
+| `auto_pairs_map` | (see above) | Custom pair definitions |
 
-Select text, type quote:
+### Per-Filetype
 
-### Configuration
+Auto-pairs can be configured per filetype in language
+settings to add or remove pairs.
 
+### Disable Specific
 
-## Multi-character Pairs
+To disable a specific pair, set its value to `false`
+in the auto_pairs_map configuration.
 
-### Examples
+## Multi-Line
 
+### Brace Newline
 
-### Configuration
+Typing `{<CR>` produces:
+```
+{
+  |
+}
+```
+Where `|` is cursor position, indented appropriately.
 
+### Smart Indent
 
-## Language-Specific
+The closing delimiter is placed at the same indent
+level as the opening delimiter's line.
 
-### Per Filetype
+## Undo
 
+### Single Undo
 
-### Disabled Pairs
+Auto-pair insertion is part of the same undo group
+as the character typed. `u` removes both delimiters.
 
+## Integration
 
-## Fast Wrap
+### With Completion
 
-### Jump Out
+When auto-completion inserts a function name followed
+by `(`, auto-pairs adds the closing `)`.
 
+### With Snippets
 
-Or:
-
-### Configuration
-
-
-## Newline Between
-
-### Smart Newline
-
-
-### Configuration
-
-
-## Space Between
-
-### Smart Space
-
-
-### Configuration
-
+Snippet expansion may include pairs. Auto-pairs
+defers to snippet handling in that case.

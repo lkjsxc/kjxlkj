@@ -1,111 +1,131 @@
-# Advanced Macro Recording
+# Advanced Macros
 
-Expert-level macro techniques.
+Complex macro techniques and patterns.
 
 ## Overview
 
-Advanced macro recording enables complex
-automated editing workflows.
+Advanced macro techniques beyond basic recording
+and playback. Covers editing macros, conditional
+execution, and macro debugging.
 
-## Recording Basics
+## Editing Macros
 
-### Start Recording
+### Via Register
 
+1. `"ap` — paste macro contents from register `a`
+2. Edit the pasted text as normal text
+3. `0"ay$` — yank the edited line back into register `a`
 
-### Stop Recording
+### Via :let
 
+`:let @a = "0dwj"` sets register `a` directly.
+Special characters use escape sequences.
 
-### Execute
+## Conditional Patterns
 
+### Search-Based Stop
 
-## Register Selection
+A macro that uses `/pattern` will stop when no match
+is found. This acts as a conditional break.
 
-### Named Registers
+### Count-Based
 
-
-### Append to Macro
-
-
-Uppercase appends to existing content.
-
-## Execution with Count
-
-### Repeat N Times
-
-
-### Until End of File
-
-
-Or:
-
+`10@a` runs macro `a` exactly 10 times. If the macro
+errors before completion, remaining iterations stop.
 
 ## Recursive Macros
 
 ### Self-Calling
 
+`qa...@aq` — the macro calls itself at the end. It
+continues until an error occurs (natural termination).
 
-Continues until error or end of file.
+### Terminate Conditions
 
-### Safe Recursion
+Common termination triggers:
+- Motion fails (end/start of file)
+- Search finds no match
+- Explicitly recorded `<C-c>` (not recommended)
 
-End with motion that fails at boundary:
+## Parallel Application
 
+### On Multiple Lines
 
-## Editing Macros
+`:%normal! @a` applies macro to every line independently.
+Each line starts fresh; errors on one line do not stop
+processing of subsequent lines.
 
-### View Macro
+### On Selection
 
+Visual select lines, then `:'<,'>normal! @a`.
 
-### Paste to Edit
+### On Pattern Matches
 
+`:g/pattern/normal! @a` applies only to matching lines.
 
-Edit the text, then:
-
-
-### Set Directly
-
-
-## Escaping in Macros
-
-### Special Characters
-
-| Key | Representation |
-|-----|----------------|
-| `<CR>` | Enter |
-| `<Esc>` | Escape |
-| `<Tab>` | Tab |
-| `<C-o>` | Ctrl-O |
-
-### Example
-
-
-## Chaining Macros
+## Macro Composition
 
 ### Sequential
 
+`:let @c = @a . @b` concatenates macros `a` and `b`
+into macro `c`.
 
-### In Macro
+### Nested Calls
 
+Within macro `a`, call `@b` to execute macro `b` as
+a subroutine. Execution returns to macro `a` after
+`b` completes.
 
-## Conditional Macros
+## Debugging
 
-### With Search
+### Step Through
 
+There is no built-in macro debugger. Debugging strategy:
+1. Paste macro with `"ap`
+2. Read each command in the sequence
+3. Execute commands one at a time manually
+4. Identify the failing step
 
-Macro stops when pattern not found.
+### Common Issues
 
-### With Marks
+- Forgetting to exit insert mode (`<Esc>`)
+- Cursor position not matching expectations
+- Searching for absent patterns
+- Off-by-one in count-based loops
 
+## Persistence
 
-## Visual Mode Macros
+### In Config
 
-### Record in Visual
+Frequently used macros can be stored in config:
+`[macros]` section, `a = "0dwj"`, etc.
 
+### Session
 
-### Apply to Selection
+Macros in registers persist across sessions via the
+session file when session saving is enabled.
 
+## Performance
 
-## Macro Best Practices
+### Large Repetitions
 
-### Start Consistent
+`10000@a` may be slow. For very large repetitions,
+consider using `:g` with `:s` or `:normal` instead.
 
+### Screen Updates
+
+During macro playback, screen updates are suppressed
+until the macro completes. This improves performance
+significantly.
+
+## Safety
+
+### Undo
+
+The entire macro execution (all iterations) can be
+undone with a single `u`.
+
+### Backup
+
+Before running a destructive macro on many lines,
+save the file first or use `:earlier {time}`.
