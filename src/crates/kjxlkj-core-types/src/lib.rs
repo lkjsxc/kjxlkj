@@ -10,6 +10,7 @@ mod action_sub;
 mod action_tests;
 mod cell;
 mod color;
+pub mod cursor_style;
 mod ids;
 mod key;
 mod mode;

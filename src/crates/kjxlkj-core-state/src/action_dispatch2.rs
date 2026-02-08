@@ -98,6 +98,49 @@ impl EditorState {
             Action::UserCommand(_) => {} // User command stub
             Action::SourceFile(path) => self.do_source_file(&path),
             Action::SetOption(args) => self.do_set_option(&args),
+            Action::LspHover => self.do_lsp_hover(),
+            Action::LspCodeAction => self.do_lsp_code_action(),
+            Action::LspFormat => self.do_lsp_format(),
+            Action::LspRename(name) => self.do_lsp_rename(&name),
+            Action::LspSignatureHelp => self.do_lsp_signature_help(),
+            Action::LspReferences => self.do_lsp_references(),
+            Action::LspDocumentSymbols => self.do_lsp_document_symbols(),
+            Action::LspWorkspaceSymbols => self.do_lsp_workspace_symbols(),
+            Action::LspCodeLens => self.do_lsp_code_lens(),
+            Action::LspInlayHints => self.do_lsp_inlay_hints(),
+            Action::LspCallHierarchy => self.do_lsp_call_hierarchy(),
+            Action::LspTypeHierarchy => self.do_lsp_type_hierarchy(),
+            Action::GitSigns => self.do_git_signs(),
+            Action::GitDiff => self.do_git_diff(),
+            Action::GitBlame => self.do_git_blame(),
+            Action::FlashJump => self.do_flash_jump(),
+            Action::IncludeSearch(_) => {} // Include search stub
+            Action::MultiCursorAdd => {
+                if let Some(win) = self.focused_window() {
+                    let cursor = win.cursor;
+                    self.multi_cursor.add_cursor(cursor);
+                }
+            }
+            Action::MultiCursorAll => {} // Select all matches stub
+            Action::MultiCursorSkip => {} // Skip match stub
+            Action::SnippetExpand => {} // Snippet expand stub
+            Action::SnippetNext => {
+                self.snippet_state.next_stop();
+            }
+            Action::SnippetPrev => {
+                self.snippet_state.prev_stop();
+            }
+            Action::SpellToggle => self.spell_checker.toggle(),
+            Action::SpellNext => { self.spell_checker.next_error(); }
+            Action::SpellPrev => { self.spell_checker.prev_error(); }
+            Action::AutoSaveToggle => {
+                self.persistence.auto_save.enabled =
+                    !self.persistence.auto_save.enabled;
+            }
+            Action::UndoTreeToggle => {} // Undo tree viz stub
+            Action::NotificationDismiss => {
+                self.notifications.dismiss_latest();
+            }
             Action::FocusGained | Action::FocusLost => {}
             Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}

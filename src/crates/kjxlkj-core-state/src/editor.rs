@@ -14,13 +14,31 @@ use kjxlkj_core_types::{
 };
 
 use crate::autocmd::AutoCmdRegistry;
+use crate::buffer_options::{ArgList, BufferGroupRegistry};
 use crate::completion::CompletionPopup;
+use crate::digraphs::DigraphTable;
 use crate::editor_tabs::TabPage;
+use crate::flash_jump::FlashState;
 use crate::floating::FloatRegistry;
+use crate::git_features::GitState;
+use crate::keybinding_dsl::{
+    CommandPalette, LeaderConfig, WhichKeyState,
+};
+use crate::lsp_features::LspState;
 use crate::mappings::MappingRegistry;
+use crate::mouse::MouseConfig;
+use crate::multicursor::MultiCursorState;
+use crate::notifications::NotificationManager;
+use crate::persistence::PersistenceConfig;
+use crate::popup::PopupMenu;
 use crate::search::SearchState;
+use crate::snippets::{SnippetRegistry, SnippetState};
+use crate::spell::SpellChecker;
+use crate::statusline_dsl::StatuslineConfig;
 use crate::tags::TagStack;
+use crate::theming::ThemeRegistry;
 use crate::user_commands::UserCommandRegistry;
+use crate::user_functions::UserFunctionRegistry;
 use crate::{BufferState, WindowState};
 
 /// A stored mark: buffer id + cursor position.
@@ -127,6 +145,46 @@ pub struct EditorState {
     pub tag_stack: TagStack,
     /// Completion popup state.
     pub completion: CompletionPopup,
+    /// LSP feature state.
+    pub lsp_state: LspState,
+    /// Git feature state.
+    pub git_state: GitState,
+    /// Flash/EasyMotion jump state.
+    pub flash_state: FlashState,
+    /// Multi-cursor state.
+    pub multi_cursor: MultiCursorState,
+    /// Snippet engine state.
+    pub snippet_state: SnippetState,
+    /// Snippet registry.
+    pub snippet_registry: SnippetRegistry,
+    /// Spell checker.
+    pub spell_checker: SpellChecker,
+    /// Notification manager.
+    pub notifications: NotificationManager,
+    /// Popup menu state.
+    pub popup_menu: PopupMenu,
+    /// Persistence configuration.
+    pub persistence: PersistenceConfig,
+    /// Theme registry.
+    pub theme_registry: ThemeRegistry,
+    /// Buffer group registry.
+    pub buffer_groups: BufferGroupRegistry,
+    /// Argument list.
+    pub arglist: ArgList,
+    /// Leader key configuration.
+    pub leader_config: LeaderConfig,
+    /// Which-key state.
+    pub which_key: WhichKeyState,
+    /// Command palette state.
+    pub command_palette: CommandPalette,
+    /// Digraph table.
+    pub digraph_table: DigraphTable,
+    /// Mouse configuration.
+    pub mouse_config: MouseConfig,
+    /// Statusline configuration.
+    pub statusline_config: StatuslineConfig,
+    /// User function registry.
+    pub user_functions: UserFunctionRegistry,
 }
 
 impl EditorState {
@@ -188,6 +246,26 @@ impl EditorState {
             user_commands: UserCommandRegistry::new(),
             tag_stack: TagStack::new(),
             completion: CompletionPopup::new(),
+            lsp_state: LspState::default(),
+            git_state: GitState::default(),
+            flash_state: FlashState::new(),
+            multi_cursor: MultiCursorState::new(),
+            snippet_state: SnippetState::new(),
+            snippet_registry: SnippetRegistry::new(),
+            spell_checker: SpellChecker::new(),
+            notifications: NotificationManager::new(),
+            popup_menu: PopupMenu::new(),
+            persistence: PersistenceConfig::new(),
+            theme_registry: ThemeRegistry::new(),
+            buffer_groups: BufferGroupRegistry::new(),
+            arglist: ArgList::new(),
+            leader_config: LeaderConfig::default(),
+            which_key: WhichKeyState::new(),
+            command_palette: CommandPalette::new(),
+            digraph_table: DigraphTable::new(),
+            mouse_config: MouseConfig::new(),
+            statusline_config: StatuslineConfig::new(),
+            user_functions: UserFunctionRegistry::new(),
         }
     }
 

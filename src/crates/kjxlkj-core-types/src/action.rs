@@ -249,6 +249,64 @@ pub enum Action {
     SourceFile(String),
     /// Set option: `:set`.
     SetOption(String),
+    /// LSP hover at cursor.
+    LspHover,
+    /// LSP code action at cursor.
+    LspCodeAction,
+    /// LSP format buffer/range.
+    LspFormat,
+    /// LSP rename symbol under cursor.
+    LspRename(String),
+    /// LSP signature help.
+    LspSignatureHelp,
+    /// LSP go to references.
+    LspReferences,
+    /// LSP document symbols.
+    LspDocumentSymbols,
+    /// LSP workspace symbols.
+    LspWorkspaceSymbols,
+    /// LSP code lens.
+    LspCodeLens,
+    /// LSP inlay hints toggle.
+    LspInlayHints,
+    /// LSP call hierarchy.
+    LspCallHierarchy,
+    /// LSP type hierarchy.
+    LspTypeHierarchy,
+    /// Git signs toggle.
+    GitSigns,
+    /// Git diff current file.
+    GitDiff,
+    /// Git blame current line.
+    GitBlame,
+    /// Flash jump (EasyMotion).
+    FlashJump,
+    /// Include search.
+    IncludeSearch(String),
+    /// Multi-cursor add at position.
+    MultiCursorAdd,
+    /// Multi-cursor select all matches.
+    MultiCursorAll,
+    /// Multi-cursor skip match.
+    MultiCursorSkip,
+    /// Snippet expand trigger.
+    SnippetExpand,
+    /// Snippet next placeholder.
+    SnippetNext,
+    /// Snippet prev placeholder.
+    SnippetPrev,
+    /// Spell check toggle.
+    SpellToggle,
+    /// Next spelling error.
+    SpellNext,
+    /// Prev spelling error.
+    SpellPrev,
+    /// Auto-save toggle.
+    AutoSaveToggle,
+    /// Undo tree visualize.
+    UndoTreeToggle,
+    /// Notification dismiss.
+    NotificationDismiss,
     /// No operation (sentinel / default).
     Nop,
 }
