@@ -18,6 +18,25 @@ pub struct SearchState {
     pub pattern: String,
     /// Whether search is active.
     pub active: bool,
+    /// Match positions: (line, start_col, end_col).
+    pub matches: Vec<(usize, usize, usize)>,
+}
+
+/// Visual selection range for rendering.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VisualRange {
+    /// Start line.
+    pub start_line: usize,
+    /// Start column.
+    pub start_col: usize,
+    /// End line.
+    pub end_line: usize,
+    /// End column.
+    pub end_col: usize,
+    /// Whether this is linewise.
+    pub linewise: bool,
+    /// Whether this is block mode.
+    pub block: bool,
 }
 
 /// Complete editor snapshot for the render task.
@@ -42,6 +61,8 @@ pub struct EditorSnapshot {
     pub notifications: Vec<Notification>,
     /// Search state.
     pub search: SearchState,
+    /// Visual selection (if in visual mode).
+    pub visual: Option<VisualRange>,
     /// Active theme.
     pub theme: Theme,
     /// Terminal dimensions (cols, rows).
@@ -73,6 +94,7 @@ impl EditorSnapshot {
             cmdline: CmdlineState::inactive(),
             notifications: Vec::new(),
             search: SearchState::default(),
+            visual: None,
             theme: Theme::default(),
             terminal_size: (cols, rows),
         }

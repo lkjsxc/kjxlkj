@@ -16,6 +16,6 @@ pub use buffer_snapshot::BufferSnapshot;
 pub use cmdline::CmdlineState;
 pub use layout::{LayoutNode, Rect, WindowLayout};
 pub use notification::{Notification, NotificationLevel};
-pub use snapshot::EditorSnapshot;
+pub use snapshot::{EditorSnapshot, SearchState, VisualRange};
 pub use terminal_snapshot::TerminalSnapshot;
 pub use theme::{Theme, ThemeColor};

@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 use kjxlkj_core_ui::{
     BufferSnapshot, CmdlineState, EditorSnapshot,
-    Rect, WindowLayout,
+    Rect, VisualRange, WindowLayout,
 };
 
 use crate::{BufferState, EditorState};
@@ -46,6 +46,30 @@ impl EditorState {
                 CmdlineState::inactive()
             };
 
+        let visual = self.visual_state.as_ref().map(|vs| {
+            let (al, ac) = vs.anchor;
+            let win = self.windows.get(&self.focused_window);
+            let (cl, cc) = win
+                .map(|w| (w.cursor.line, w.cursor.grapheme_offset))
+                .unwrap_or((al, ac));
+            let linewise = vs.kind == kjxlkj_core_types::VisualKind::Line;
+            let block = vs.kind == kjxlkj_core_types::VisualKind::Block;
+            let (start_line, start_col, end_line, end_col) =
+                if (al, ac) <= (cl, cc) {
+                    (al, ac, cl, cc)
+                } else {
+                    (cl, cc, al, ac)
+                };
+            VisualRange {
+                start_line,
+                start_col,
+                end_line,
+                end_col,
+                linewise,
+                block,
+            }
+        });
+
         EditorSnapshot {
             sequence: self.sequence,
             layout,
@@ -55,6 +79,7 @@ impl EditorState {
             cmdline,
             notifications: Vec::new(),
             search: Default::default(),
+            visual,
             theme: Default::default(),
             terminal_size: self.terminal_size,
         }

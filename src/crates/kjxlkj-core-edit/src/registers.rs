@@ -113,6 +113,13 @@ impl RegisterFile {
         self.registers.clear();
         self.last_macro_register = None;
     }
+
+    /// Get mutable access to registers map.
+    pub fn registers_mut(
+        &mut self,
+    ) -> &mut HashMap<RegisterName, Register> {
+        &mut self.registers
+    }
 }
 
 impl Default for RegisterFile {

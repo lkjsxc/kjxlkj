@@ -36,6 +36,9 @@ impl EditorState {
             Action::EnterCommand(kind) => self.enter_command(kind),
             Action::EnterReplace => { self.mode = Mode::Replace; }
             Action::ReturnToNormal => {
+                if self.mode == Mode::Insert {
+                    self.update_caret_mark();
+                }
                 self.mode = Mode::Normal;
                 self.visual_state = None;
                 self.command_state = None;

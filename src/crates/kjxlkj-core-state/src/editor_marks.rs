@@ -132,6 +132,7 @@ impl EditorState {
             | Action::ChangeToEnd => {
                 self.last_repeatable =
                     Some(action.clone());
+                self.update_dot_mark();
             }
             _ => {}
         }
