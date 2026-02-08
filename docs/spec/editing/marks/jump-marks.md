@@ -1,122 +1,69 @@
 # Jump Marks
 
-Using quote and backtick for mark-based navigation.
+Mark-based cursor navigation using `'` and backtick.
 
-## Two Jump Styles
+## Two Jump Styles (normative)
 
-| Key | Target | Movement |
-|-----|--------|----------|
-| `'m` | Mark m | First non-blank of line |
-| `` `m `` | Mark m | Exact position (line + column) |
+| Key | Target | Movement type |
+|---|---|---|
+| `'m` | Line of mark m | First non-blank of that line (linewise) |
+| `` `m `` | Position of mark m | Exact line + column (characterwise) |
 
-## Line vs Exact Position
-
-### Apostrophe (')
-
-
-### Backtick (`)
-
-
-## Mark Navigation Commands
-
-### Local Marks
+## Local Mark Jumps
 
 | Command | Action |
-|---------|--------|
-| `'a` | Jump to line of mark a |
-| `` `a `` | Jump to position of mark a |
-| `'z` | Jump to line of mark z |
-| `` `z `` | Jump to position of mark z |
+|---|---|
+| `'a` – `'z` | Jump to line of local mark |
+| `` `a `` – `` `z `` | Jump to exact position of local mark |
 
-### Global Marks
+Local marks are per-buffer. Each buffer has its own `a`-`z` marks.
 
-| Command | Action |
-|---------|--------|
-| `'A` | Jump to mark A (may switch buffer) |
-| `` `A `` | Jump to exact position of A |
-| `'Z` | Jump to global mark Z |
-
-### Special Marks
+## Global Mark Jumps
 
 | Command | Action |
-|---------|--------|
-| `''` | Previous position (line) |
-| ``` `` ``` | Previous position (exact) |
-| `'.` | Last change position |
-| `'^` | Last insert position |
-| `'<` | Start of visual selection |
-| `'>` | End of visual selection |
-| `'[` | Start of last change |
-| `']` | End of last change |
+|---|---|
+| `'A` – `'Z` | Jump to line of global mark (may switch buffer) |
+| `` `A `` – `` `Z `` | Jump to exact position of global mark |
 
-## Without Jumplist (g prefix)
+Global marks remember both the file and position. Jumping to a global mark opens the file if not already open.
 
-These jump without adding to jumplist:
+## Special Mark Jumps (normative)
 
-| Command | Action |
-|---------|--------|
-| `g'a` | Jump to mark a (no jumplist) |
-| `` g`a `` | Exact position (no jumplist) |
-| `g''` | Previous position (no jumplist) |
+| Command | Target |
+|---|---|
+| `''` / ``` `` ``` | Previous cursor position (before last jump) |
+| `'.` / `` `. `` | Position of last change |
+| `'^` / `` `^ `` | Position where insert mode was last exited |
+| `'<` / `` `< `` | Start of last visual selection |
+| `'>` / `` `> `` | End of last visual selection |
+| `'[` / `` `[ `` | Start of last change/yank |
+| `']` / `` `] `` | End of last change/yank |
+| `'"` / `` `" `` | Last cursor position when file was last closed |
 
-## Jumping to Files
+## Jumplist Interaction
 
-Global marks include file information:
+Jumps with `'` and `` ` `` add to the jumplist. Use `<C-o>` / `<C-i>` to navigate back and forward through the jumplist.
 
+### Without Jumplist (g prefix)
 
-## Mark Motions
+`g'a` and `` g`a `` jump to mark `a` without adding to the jumplist.
 
-Marks can be used as motions with operators:
+## Marks as Motions
 
+Marks can serve as the motion in operator commands:
 
-## Visual Mode Selection
+| Command | Effect |
+|---|---|
+| `d'a` | Delete from cursor line to line of mark `a` |
+| `` d`a `` | Delete from cursor position to exact position of mark `a` |
+| `y'a` | Yank from cursor line to line of mark `a` |
 
+## Visual Mode
 
-## Jump Behavior
+In visual mode, `'a` or `` `a `` extends the selection to the mark position.
 
-### Adding to Jumplist
+## Related
 
-Jumps with `'` or `` ` `` add to jumplist:
-
-
-### Wrapping
-
-
-## Common Workflows
-
-### Mark and Return
-
-
-### Mark Range for Operations
-
-
-### Visual Selection to Mark
-
-
-## Quick Reference
-
-| Key | Meaning |
-|-----|---------|
-| `'a-z` | Local mark line |
-| `` `a-z `` | Local mark exact |
-| `'A-Z` | Global mark line |
-| `` `A-Z `` | Global mark exact |
-| `'0-9` | File history |
-| `''` | Previous line |
-| ``` `` ``` | Previous exact |
-| `'.` | Last change line |
-| `` `. `` | Last change exact |
-| `'^` | Last insert line |
-| `` `^ `` | Last insert exact |
-| `'<` `'>` | Visual bounds |
-| `'[` `']` | Change bounds |
-| `'"` | Last position in file |
-
-## Configuration
-
-
-## Error Handling
-
-
-## API Reference
-
+- Mark persistence: [/docs/spec/editing/marks/mark-persistence.md](/docs/spec/editing/marks/mark-persistence.md)
+- Jumplist: [/docs/spec/features/navigation/jumplist.md](/docs/spec/features/navigation/jumplist.md)
+- Marks overview: [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)

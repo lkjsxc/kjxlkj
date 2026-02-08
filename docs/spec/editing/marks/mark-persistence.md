@@ -2,94 +2,57 @@
 
 Saving and restoring marks across editor sessions.
 
-## What Gets Persisted
+## What Gets Persisted (normative)
 
-| Mark Type | Default Persistence |
-|-----------|---------------------|
-| Lowercase (a-z) | No |
-| Uppercase (A-Z) | Yes |
-| Numbered (0-9) | Yes |
-| Special | `'"` only |
+| Mark Type | Persisted | Storage |
+|---|---|---|
+| Uppercase (A-Z) | Yes | Global session file |
+| Numbered (0-9) | Yes | Global session file |
+| Lowercase (a-z) | Optional | Per-file metadata |
+| `'"` (last position) | Yes | Per-file metadata |
+| Other special marks | No | Runtime only |
 
-## Configuration
+## Storage Location
 
-### Basic Settings
+Marks are stored in the session JSON file at `~/.local/share/kjxlkj/session.json`. Per-file marks are within the `files` array of the session.
 
+## Save Triggers
 
-### Advanced Settings
+- **On exit**: All persistent marks saved on normal editor exit
+- **On buffer close**: Buffer-local position (`'"`) saved when buffer is closed
+- **Periodic**: Optionally, save every `session_save_interval` seconds (default: 300)
 
+## Load Triggers
 
-## Persistence File Format
-
-### Location
-
-
-### Structure
-
-
-## When Marks Are Saved
-
-### On Exit
-
-All persistent marks saved when editor closes normally.
-
-### Periodic Save
-
-
-### On Buffer Close
-
-Buffer position (`'"`) saved when buffer is closed.
-
-## When Marks Are Loaded
-
-### On Startup
-
-Global marks and file history loaded at editor start.
-
-### On Buffer Open
-
-Buffer-specific marks loaded when file is opened.
+- **On startup**: Global marks (A-Z) and file history (numbered 0-9) loaded
+- **On buffer open**: File-specific marks loaded when file is reopened
 
 ## Handling Missing Files
 
-When a marked file no longer exists:
+When a mark references a file that no longer exists:
 
+| Behavior | Description |
+|---|---|
+| Remove (default) | Silently remove invalid marks |
+| Keep | Preserve mark; jump may fail |
 
-| Option | Behavior |
-|--------|----------|
-| `keep` | Preserve mark, may fail on jump |
-| `remove` | Silently remove invalid marks |
-| `ask` | Prompt user on first access |
+## Configuration
 
-## File Move/Rename Detection
-
-
-## Backup
-
-
-Creates:
+| Option | Default | Description |
+|---|---|---|
+| `persist_marks` | `true` | Enable mark persistence |
+| `persist_local_marks` | `false` | Also persist lowercase (a-z) marks |
+| `session_save_interval` | `300` | Auto-save interval in seconds (0 = disable) |
 
 ## Commands
 
-### Force Save
+| Command | Description |
+|---|---|
+| `:marks` | List all marks |
+| `:delmarks a-z` | Delete marks a through z |
+| `:delmarks!` | Delete all lowercase marks for current buffer |
 
+## Related
 
-### Force Load
-
-
-### Clear Persistent Marks
-
-
-## Local Mark Persistence
-
-To persist local marks (a-z):
-
-
-| Scope | Storage |
-|-------|---------|
-| `file` | With each file's metadata |
-| `workspace` | Per workspace folder |
-| `global` | Single global store |
-
-## API Reference
-
+- Jump marks: [/docs/spec/editing/marks/jump-marks.md](/docs/spec/editing/marks/jump-marks.md)
+- Session persistence: [/docs/spec/features/session/README.md](/docs/spec/features/session/README.md)

@@ -2,104 +2,63 @@
 
 System clipboard integration with `+` and `*` registers.
 
-## Overview
+## Register Overview (normative)
 
 | Register | System | Description |
-|----------|--------|-------------|
-| `"+` | Clipboard | System clipboard (Ctrl-C/V) |
-| `"*` | Selection | Primary selection (X11 middle-click) |
+|---|---|---|
+| `"+` | Clipboard | System clipboard (Ctrl+C/V) |
+| `"*` | Selection | X11 primary selection (middle-click paste) |
+
+On macOS and Windows, both registers reference the same system clipboard.
 
 ## Platform Behavior
 
 ### Linux (X11/Wayland)
 
-| Register | Clipboard |
-|----------|-----------|
-| `"+` | System clipboard (xclip, wl-copy) |
-| `"*` | Primary selection (mouse selection) |
+`"+` uses the system clipboard (via `xclip`/`xsel` or `wl-copy`/`wl-paste`). `"*` uses the X11 primary selection.
 
 ### macOS
 
-Both registers use the same system clipboard (pbcopy/pbpaste).
+Both `"+` and `"*` use `pbcopy`/`pbpaste`.
 
 ### Windows
 
-Both registers use the same system clipboard.
+Both `"+` and `"*` use the Win32 clipboard API.
 
-## Basic Usage
+## Usage
 
-### Copy to System Clipboard
-
-
-### Paste from System Clipboard
-
-
-### Delete to Clipboard
-
-
-## Visual Mode
-
+| Command | Effect |
+|---|---|
+| `"+y{motion}` | Yank to system clipboard |
+| `"+p` | Paste from system clipboard |
+| `"+d{motion}` | Delete to system clipboard |
+| `"*y{motion}` | Yank to primary selection |
+| `"*p` | Paste from primary selection |
 
 ## Insert Mode
 
 | Key | Action |
-|-----|--------|
-| `Ctrl-R +` | Insert clipboard contents |
-| `Ctrl-R *` | Insert selection contents |
+|---|---|
+| `<C-r>+` | Insert system clipboard contents |
+| `<C-r>*` | Insert primary selection contents |
 
 ## Command Line
 
+`<C-r>+` inserts clipboard contents on the command line.
 
-## Configuration
+## Sync with Unnamed Register
 
-### Sync with Unnamed Register
+When `clipboard = "unnamedplus"`, all default yank/delete/put operations use `"+` automatically. See [/docs/spec/features/editing/clipboard.md](/docs/spec/features/editing/clipboard.md).
 
+## X11 Selection vs Clipboard
 
-With `sync_unnamed = true`:
+| Feature | Selection (`"*`) | Clipboard (`"+`) |
+|---|---|---|
+| Set by | Mouse selection, visual yank | Explicit copy |
+| Paste by | Middle-click | Ctrl+V |
+| Lifetime | Until selection lost | Until overwritten |
 
-### Clipboard Provider
+## Related
 
-
-### Provider Commands
-
-
-## Keybinding Shortcuts
-
-Common convenience mappings:
-
-
-## OSC 52 Support
-
-For remote terminals (SSH), use OSC 52 escape sequences:
-
-
-## Troubleshooting
-
-### Check Clipboard Support
-
-
-### Common Issues
-
-| Problem | Solution |
-|---------|----------|
-| No clipboard | Install xclip or xsel |
-| Wayland | Install wl-clipboard |
-| SSH | Enable OSC 52 |
-| WSL | Install win32yank |
-
-## Selection vs Clipboard (X11)
-
-### Selection (`*`)
-
-- Updated when text is selected with mouse
-- Pasted with middle-click
-- Cleared when selection is lost
-
-### Clipboard (`+`)
-
-- Updated by explicit copy (Ctrl-C)
-- Pasted by explicit paste (Ctrl-V)
-- Persists until overwritten
-
-## API Reference
-
+- Clipboard integration: [/docs/spec/features/editing/clipboard.md](/docs/spec/features/editing/clipboard.md)
+- Registers overview: [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md)

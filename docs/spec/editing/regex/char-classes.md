@@ -2,116 +2,81 @@
 
 Matching sets of characters in patterns.
 
-## Basic Syntax
+## Basic Collection Syntax (normative)
 
+`[abc]` matches any single character `a`, `b`, or `c`.
 
-## Range Patterns
+`[^abc]` matches any character except `a`, `b`, or `c` (negation).
 
-| Pattern | Description |
-|---------|-------------|
-| `[a-z]` | Lowercase letters |
-| `[A-Z]` | Uppercase letters |
+## Range Patterns (normative)
+
+| Pattern | Matches |
+|---|---|
+| `[a-z]` | Lowercase ASCII letters |
+| `[A-Z]` | Uppercase ASCII letters |
 | `[0-9]` | Digits |
-| `[a-zA-Z]` | All letters |
+| `[a-zA-Z]` | All ASCII letters |
 | `[a-zA-Z0-9]` | Alphanumeric |
-| `[a-f0-9]` | Hex digits (lower) |
+| `[a-fA-F0-9]` | Hex digits |
 
-## Negation
+## Special Characters Inside Collections
 
-
-## Special Characters Inside Classes
-
-### Literal Special Characters
-
-| To Match | Pattern |
-|----------|---------|
-| `]` | `[\]]` or `[]abc]` (first) |
-| `^` | `[^^]` or `[a^b]` (not first) |
-| `-` | `[-abc]` or `[abc-]` (first/last) |
-| `\` | `[\\]` |
-
-### Examples
-
+| To match | Place it |
+|---|---|
+| `]` | First position: `[]abc]` |
+| `^` | Not first: `[a^b]` |
+| `-` | First or last: `[-abc]` or `[abc-]` |
+| `\` | Escaped: `[\\]` |
 
 ## POSIX Character Classes
 
 | Class | Equivalent | Description |
-|-------|------------|-------------|
+|---|---|---|
 | `[[:alnum:]]` | `[a-zA-Z0-9]` | Alphanumeric |
 | `[[:alpha:]]` | `[a-zA-Z]` | Alphabetic |
 | `[[:blank:]]` | `[ \t]` | Space/tab |
-| `[[:cntrl:]]` | `[\x00-\x1f\x7f]` | Control |
 | `[[:digit:]]` | `[0-9]` | Digits |
-| `[[:graph:]]` | `[!-~]` | Visible |
 | `[[:lower:]]` | `[a-z]` | Lowercase |
-| `[[:print:]]` | `[ -~]` | Printable |
-| `[[:punct:]]` | Various | Punctuation |
-| `[[:space:]]` | `[ \t\n\r\f\v]` | Whitespace |
 | `[[:upper:]]` | `[A-Z]` | Uppercase |
+| `[[:space:]]` | `[ \t\n\r\f\v]` | Whitespace |
 | `[[:xdigit:]]` | `[0-9A-Fa-f]` | Hex digits |
+| `[[:punct:]]` | Punctuation | Punctuation chars |
+| `[[:print:]]` | `[ -~]` | Printable |
+| `[[:graph:]]` | `[!-~]` | Visible (no space) |
+| `[[:cntrl:]]` | Control chars | Control chars |
 
-### Usage
+## Vim Shortcut Atoms (normative)
 
+| Shortcut | Matches | Negation |
+|---|---|---|
+| `\d` | `[0-9]` | `\D` |
+| `\w` | `[a-zA-Z0-9_]` | `\W` |
+| `\s` | `[ \t]` | `\S` |
+| `\a` | `[a-zA-Z]` | `\A` |
+| `\l` | `[a-z]` | `\L` |
+| `\u` | `[A-Z]` | `\U` |
+| `\x` | `[0-9A-Fa-f]` | `\X` |
 
-## Combining Classes
+These shortcuts work outside of collections (standalone atoms).
 
+## Collection Rules
 
-## Vim Character Class Shortcuts
-
-| Shortcut | Equivalent | POSIX |
-|----------|------------|-------|
-| `\d` | `[0-9]` | `[[:digit:]]` |
-| `\D` | `[^0-9]` | `[^[:digit:]]` |
-| `\w` | `[a-zA-Z0-9_]` | N/A |
-| `\W` | `[^a-zA-Z0-9_]` | N/A |
-| `\s` | `[ \t]` | `[[:blank:]]` |
-| `\S` | `[^ \t]` | `[^[:blank:]]` |
-| `\a` | `[a-zA-Z]` | `[[:alpha:]]` |
-| `\l` | `[a-z]` | `[[:lower:]]` |
-| `\u` | `[A-Z]` | `[[:upper:]]` |
-| `\x` | `[0-9A-Fa-f]` | `[[:xdigit:]]` |
-
-## Unicode Classes
-
-
-### Unicode Scripts
-
-
-## Collection Operations
-
+1. `]` as the first character after `[` or `[^` is literal
+2. `^` not in first position is literal
+3. `-` in first or last position is literal
+4. `\` always escapes the next character
+5. All other characters are literal
 
 ## Common Patterns
 
 | Pattern | Matches |
-|---------|---------|
-| `[_a-zA-Z][_a-zA-Z0-9]*` | C identifier |
-| `[+-]?[0-9]+` | Signed integer |
-| `[0-9]+\.[0-9]+` | Decimal number |
-| `[a-fA-F0-9]+` | Hex string |
-| `[^\x00-\x7F]` | Non-ASCII |
-| `[^\n\r]` | Not newline |
+|---|---|
+| `[_a-zA-Z][_a-zA-Z0-9]*` | C/Rust identifier |
+| `[+-]\?[0-9]\+` | Optional-sign integer |
+| `[0-9]\+\.[0-9]\+` | Decimal number |
+| `[^\x00-\x7F]` | Non-ASCII (matches CJK, etc.) |
 
-## Inside Collection Rules
+## Related
 
-1. `]` as first char is literal
-2. `^` not first is literal
-3. `-` first or last is literal
-4. `\` always escapes next char
-5. Other chars are literal
-
-## Examples
-
-### Match Filename
-
-
-### Match Quoted String
-
-
-### Match URL Characters
-
-
-## API Reference
-
-
-## See Also
-
+- Pattern atoms: [/docs/spec/editing/regex/pattern-atoms.md](/docs/spec/editing/regex/pattern-atoms.md)
+- Quantifiers: [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)
