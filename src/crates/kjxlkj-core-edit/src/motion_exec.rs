@@ -5,8 +5,10 @@ use kjxlkj_core_text::BufferContent;
 use kjxlkj_core_types::Motion;
 
 use crate::cursor::CursorPosition;
+use crate::motion_extended::*;
 use crate::motion_helpers::*;
 use crate::motion_line::*;
+use crate::motion_search::*;
 
 /// Execute a motion and return the new cursor position.
 pub fn execute_motion(
@@ -114,64 +116,56 @@ fn execute_single(
             }
             move_to_first_non_blank(cursor, content);
         }
+        Motion::FindCharForward(ch) => {
+            exec_find_char(
+                cursor, content, *ch, true, false,
+            );
+        }
+        Motion::FindCharBackward(ch) => {
+            exec_find_char(
+                cursor, content, *ch, false, false,
+            );
+        }
+        Motion::TillCharForward(ch) => {
+            exec_find_char(
+                cursor, content, *ch, true, true,
+            );
+        }
+        Motion::TillCharBackward(ch) => {
+            exec_find_char(
+                cursor, content, *ch, false, true,
+            );
+        }
+        Motion::MatchingBracket => {
+            exec_matching_bracket(cursor, content);
+        }
+        Motion::ScreenTop => {
+            cursor.line = 0;
+            move_to_first_non_blank(cursor, content);
+        }
+        Motion::ScreenMiddle => {
+            let mid = line_count / 2;
+            cursor.line =
+                mid.min(line_count.saturating_sub(1));
+            move_to_first_non_blank(cursor, content);
+        }
+        Motion::ScreenBottom => {
+            cursor.line =
+                line_count.saturating_sub(1);
+            move_to_first_non_blank(cursor, content);
+        }
+        Motion::StarForward => {
+            exec_star_search(cursor, content, true);
+        }
+        Motion::StarBackward => {
+            exec_star_search(cursor, content, false);
+        }
+        Motion::SentenceForward => {
+            move_sentence_forward(cursor, content);
+        }
+        Motion::SentenceBackward => {
+            move_sentence_backward(cursor, content);
+        }
         _ => {}
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn move_left_right() {
-        let content =
-            BufferContent::from_str("hello\n");
-        let mut cursor = CursorPosition::new(0, 2);
-        execute_motion(
-            &mut cursor,
-            &Motion::Left,
-            1,
-            &content,
-        );
-        assert_eq!(cursor.grapheme_offset, 1);
-        execute_motion(
-            &mut cursor,
-            &Motion::Right,
-            1,
-            &content,
-        );
-        assert_eq!(cursor.grapheme_offset, 2);
-    }
-
-    #[test]
-    fn move_down_up() {
-        let content =
-            BufferContent::from_str("abc\ndef\n");
-        let mut cursor = CursorPosition::new(0, 0);
-        execute_motion(
-            &mut cursor,
-            &Motion::Down,
-            1,
-            &content,
-        );
-        assert_eq!(cursor.line, 1);
-        execute_motion(
-            &mut cursor, &Motion::Up, 1, &content,
-        );
-        assert_eq!(cursor.line, 0);
-    }
-
-    #[test]
-    fn goto_lines() {
-        let content =
-            BufferContent::from_str("a\nb\nc\nd\n");
-        let mut cursor = CursorPosition::new(0, 0);
-        execute_motion(
-            &mut cursor,
-            &Motion::GotoLastLine,
-            1,
-            &content,
-        );
-        assert!(cursor.line >= 3);
     }
 }

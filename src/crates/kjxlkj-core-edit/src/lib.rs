@@ -6,8 +6,12 @@
 mod char_find;
 mod cursor;
 mod motion_exec;
+mod motion_extended;
 mod motion_helpers;
 mod motion_line;
+mod motion_search;
+#[cfg(test)]
+mod motion_tests;
 mod operator_exec;
 #[cfg(test)]
 mod operator_tests;
