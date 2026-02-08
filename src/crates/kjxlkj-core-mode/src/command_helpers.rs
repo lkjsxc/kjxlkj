@@ -31,7 +31,7 @@ impl CommandModeState {
         idx.min(self.buffer.len())
     }
 
-    pub(crate) fn navigate_history(
+    pub fn navigate_history(
         &mut self,
         direction: Direction,
     ) {

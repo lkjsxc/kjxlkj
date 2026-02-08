@@ -28,6 +28,10 @@ impl EditorState {
                     self.dispatch(a);
                 }
             }
+            Action::CmdlineChar(ch) => self.do_cmdline_char(ch),
+            Action::CmdlineBackspace => self.do_cmdline_backspace(),
+            Action::CmdlineComplete => self.do_cmdline_complete(),
+            Action::CmdlineHistory(dir) => self.do_cmdline_history(dir),
             Action::SearchForward(pat) => self.do_search_forward(pat),
             Action::SearchBackward(pat) => self.do_search_backward(pat),
             Action::NextMatch => self.do_next_match(),
@@ -35,9 +39,8 @@ impl EditorState {
             Action::RecordMacro(reg) => self.do_record_macro(reg),
             Action::StopRecordMacro => self.do_stop_record_macro(),
             Action::PlayMacro(reg, count) => self.do_play_macro(reg, count),
-            Action::ResizeWindow(dir, amount) => {
-                self.do_resize_window(dir, amount);
-            }
+            Action::SetRegister(_name) => {} // Register prefix handled in key dispatch
+            Action::ResizeWindow(dir, amount) => self.do_resize_window(dir, amount),
             Action::EqualizeWindows => self.do_equalize_windows(),
             Action::ZoomWindow => self.do_zoom_window(),
             Action::RotateWindows(forward) => self.do_rotate_windows(forward),
@@ -48,6 +51,11 @@ impl EditorState {
             }
             Action::SwitchBuffer(name) => self.do_switch_buffer(&name),
             Action::Paste(text) => self.do_paste_text(&text),
+            Action::SessionSave => {} // Handled at main loop level
+            Action::SessionLoad => {} // Handled at main loop level
+            Action::SpawnTerminal => {} // Handled at main loop level
+            Action::FocusGained | Action::FocusLost => {}
+            Action::EnterVisual(_) => {} // Already handled in primary
             _ => {}
         }
     }

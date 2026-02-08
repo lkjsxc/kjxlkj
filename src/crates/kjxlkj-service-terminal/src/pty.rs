@@ -116,6 +116,20 @@ impl Pty {
     pub fn master_raw_fd(&self) -> RawFd {
         self.master_fd.as_raw_fd()
     }
+
+    /// Send SIGHUP to the child process on close.
+    pub fn close(&self) {
+        let _ = nix::sys::signal::kill(
+            self.child_pid,
+            nix::sys::signal::Signal::SIGHUP,
+        );
+    }
+}
+
+impl Drop for Pty {
+    fn drop(&mut self) {
+        self.close();
+    }
 }
 
 #[cfg(test)]
