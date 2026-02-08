@@ -63,4 +63,4 @@ Each format operation is a single undo step.
 ## Related
 
 - LSP: [/docs/spec/features/lsp/code-actions.md](/docs/spec/features/lsp/code-actions.md)
-- Text wrapping: [/docs/spec/editing/text-manipulation/formatting.md](/docs/spec/editing/text-manipulation/formatting.md)
+- Text wrapping: [/docs/spec/features/lsp/formatting.md](/docs/spec/features/lsp/formatting.md)

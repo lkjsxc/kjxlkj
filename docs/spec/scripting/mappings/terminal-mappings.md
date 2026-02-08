@@ -28,5 +28,5 @@ By default, all keys except `<C-\><C-n>` are passed to the terminal process. Use
 
 ## Related
 
-- Terminal mode: [/docs/spec/modes/terminal/README.md](/docs/spec/modes/terminal/README.md)
+- Terminal mode: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 - Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)

@@ -44,4 +44,4 @@ From visual mode, `<C-d>` adds cursors at each occurrence of the selected text.
 ## Related
 
 - Editing features: [/docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md)
-- Visual mode: [/docs/spec/modes/visual/README.md](/docs/spec/modes/visual/README.md)
+- Visual mode: [/docs/spec/modes/visual.md](/docs/spec/modes/visual.md)

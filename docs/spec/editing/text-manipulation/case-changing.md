@@ -58,4 +58,4 @@ Case conversion is Unicode-aware. Characters such as `ß` → `SS` (uppercase), 
 ## Related
 
 - Text manipulation: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
-- Substitute: [/docs/spec/commands/substitute/substitute.md](/docs/spec/commands/substitute/substitute.md)
+- Substitute: [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)

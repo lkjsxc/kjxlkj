@@ -89,4 +89,4 @@ Always prefer `nnoremap` (non-recursive) unless recursion is intentionally neede
 ## Related
 
 - Key mappings: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
-- Leader key: [/docs/spec/scripting/mappings/leader-key.md](/docs/spec/scripting/mappings/leader-key.md)
+- Leader key: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)

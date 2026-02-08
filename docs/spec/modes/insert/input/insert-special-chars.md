@@ -27,5 +27,5 @@ CJK input methods are supported via the terminal's IME integration. The editor h
 ## Related
 
 - Insert literal: [/docs/spec/modes/insert/input/insert-literal.md](/docs/spec/modes/insert/input/insert-literal.md)
-- Digraphs: [/docs/spec/features/editing/digraphs.md](/docs/spec/features/editing/digraphs.md)
+- Digraphs: [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
 - Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)

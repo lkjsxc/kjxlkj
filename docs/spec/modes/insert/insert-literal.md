@@ -48,5 +48,5 @@ Non-printable characters are displayed using special notation (e.g., `^[` for es
 ## Related
 
 - Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
-- Digraphs: [/docs/spec/features/editing/digraphs.md](/docs/spec/features/editing/digraphs.md)
+- Digraphs: [/docs/spec/editing/text-manipulation/digraphs.md](/docs/spec/editing/text-manipulation/digraphs.md)
 - Unicode: [/docs/technical/unicode.md](/docs/technical/unicode.md)

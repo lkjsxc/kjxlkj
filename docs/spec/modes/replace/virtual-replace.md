@@ -61,4 +61,4 @@ Backspace restores the original display columns, not just the original byte. If 
 ## Related
 
 - Replace mode: [/docs/spec/modes/replace/replace-mode.md](/docs/spec/modes/replace/replace-mode.md)
-- CJK/Unicode: [/docs/spec/technical/unicode.md](/docs/spec/technical/unicode.md)
+- CJK/Unicode: [/docs/technical/unicode.md](/docs/technical/unicode.md)

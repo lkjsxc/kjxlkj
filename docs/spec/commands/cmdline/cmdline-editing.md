@@ -71,5 +71,5 @@ Completion applies to commands, file paths, settings, etc.
 
 ## Related
 
-- Command-line mode: [/docs/spec/modes/cmdline/README.md](/docs/spec/modes/cmdline/README.md)
+- Command-line mode: [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 - Command history: [/docs/spec/commands/cmdline/cmdline-history.md](/docs/spec/commands/cmdline/cmdline-history.md)

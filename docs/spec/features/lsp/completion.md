@@ -49,5 +49,5 @@ On item focus, the editor sends `completionItem/resolve` to get documentation an
 
 ## Related
 
-- Insert mode: [/docs/spec/modes/insert.md](/docs/spec/modes/insert.md)
+- Insert mode: [/docs/spec/modes/insert/insert.md](/docs/spec/modes/insert/insert.md)
 - LSP: [/docs/spec/features/lsp/lsp.md](/docs/spec/features/lsp/lsp.md)

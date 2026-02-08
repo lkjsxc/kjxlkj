@@ -54,4 +54,4 @@ If no Tree-sitter parser is available for the current file type, tree-sitter tex
 ## Related
 
 - Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)
-- Tree-sitter: [/docs/spec/features/syntax/treesitter.md](/docs/spec/features/syntax/treesitter.md)
+- Tree-sitter: [/docs/spec/editing/text-objects/treesitter-text-objects.md](/docs/spec/editing/text-objects/treesitter-text-objects.md)

@@ -89,6 +89,6 @@ After selecting, press an operator key:
 
 ## Related
 
-- Visual mode: [/docs/spec/modes/visual/README.md](/docs/spec/modes/visual/README.md)
+- Visual mode: [/docs/spec/modes/visual.md](/docs/spec/modes/visual.md)
 - Operators: [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
 - Text objects: [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md)

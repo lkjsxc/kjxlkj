@@ -52,4 +52,4 @@ For pastes exceeding 1000 lines, formatting is skipped and only indentation is a
 ## Related
 
 - Format on type: [/docs/spec/features/editing/format-on-type.md](/docs/spec/features/editing/format-on-type.md)
-- Formatting: [/docs/spec/features/editing/formatting.md](/docs/spec/features/editing/formatting.md)
+- Formatting: [/docs/spec/features/lsp/formatting.md](/docs/spec/features/lsp/formatting.md)

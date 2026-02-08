@@ -78,5 +78,5 @@ Raw terminal escape sequences are decoded into the key notation above by the inp
 
 ## Related
 
-- Keybindings: [/docs/spec/modes/keybindings.md](/docs/spec/modes/keybindings.md)
-- Input decoding: [/docs/spec/technical/input-decoding.md](/docs/spec/technical/input-decoding.md)
+- Keybindings: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)

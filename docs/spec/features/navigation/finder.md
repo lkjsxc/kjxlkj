@@ -50,4 +50,4 @@ The finder uses a fuzzy matching algorithm that:
 
 - Live grep: [/docs/spec/editing/search/live-grep.md](/docs/spec/editing/search/live-grep.md)
 - Quickfix: [/docs/spec/features/navigation/quickfix.md](/docs/spec/features/navigation/quickfix.md)
-- Command palette: [/docs/spec/features/navigation/command-palette.md](/docs/spec/features/navigation/command-palette.md)
+- Command palette: [/docs/spec/features/config/command-palette.md](/docs/spec/features/config/command-palette.md)

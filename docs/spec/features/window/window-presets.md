@@ -33,5 +33,5 @@ Custom presets are defined in configuration files. Each preset specifies the lay
 
 ## Related
 
-- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)
+- Window layout: [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
 - Session: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)

@@ -49,5 +49,5 @@ The renderer detects terminal capability and adjusts automatically.
 
 ## Related
 
-- Unicode handling: [/docs/spec/technical/unicode.md](/docs/spec/technical/unicode.md)
-- Render pipeline: [/docs/spec/ui/render-pipeline.md](/docs/spec/ui/render-pipeline.md)
+- Unicode handling: [/docs/technical/unicode.md](/docs/technical/unicode.md)
+- Render pipeline: [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)

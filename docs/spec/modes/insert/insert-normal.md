@@ -104,4 +104,4 @@ Only ONE normal-mode command is executed per `<C-o>`. To run multiple, press `<C
 
 - Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
 - Insert navigation: [/docs/spec/modes/insert/insert-navigation.md](/docs/spec/modes/insert/insert-navigation.md)
-- Normal mode: [/docs/spec/modes/normal/README.md](/docs/spec/modes/normal/README.md)
+- Normal mode: [/docs/spec/modes/normal.md](/docs/spec/modes/normal.md)

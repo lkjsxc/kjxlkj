@@ -69,4 +69,4 @@ Folds can be nested. `zo` opens the outermost fold at the cursor; repeated `zo` 
 ## Related
 
 - Syntax: [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
-- Tree-sitter: [/docs/spec/features/syntax/treesitter.md](/docs/spec/features/syntax/treesitter.md)
+- Tree-sitter: [/docs/spec/editing/text-objects/treesitter-text-objects.md](/docs/spec/editing/text-objects/treesitter-text-objects.md)

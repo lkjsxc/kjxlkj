@@ -65,4 +65,4 @@ The current arglist position is available for statusline display as `[n/total]`.
 ## Related
 
 - Buffers: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
-- Buffer listing: [/docs/spec/features/buffer/buffer-listing.md](/docs/spec/features/buffer/buffer-listing.md)
+- Buffer listing: [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)

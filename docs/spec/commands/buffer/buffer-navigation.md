@@ -38,4 +38,4 @@ If the current buffer is modified, `:bnext` etc. will warn. Use `!` to force, or
 
 - Buffer management: [/docs/spec/commands/buffer/README.md](/docs/spec/commands/buffer/README.md)
 - Alternate file: [/docs/spec/features/buffer/alternate-file.md](/docs/spec/features/buffer/alternate-file.md)
-- Buffer list: [/docs/spec/features/buffer/buffer-list.md](/docs/spec/features/buffer/buffer-list.md)
+- Buffer list: [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)

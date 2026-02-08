@@ -57,5 +57,5 @@ Some LSP servers (e.g., TypeScript) support renaming files when a module is rena
 
 ## Related
 
-- Code actions: [/docs/spec/features/editing/code-actions.md](/docs/spec/features/editing/code-actions.md)
+- Code actions: [/docs/spec/features/lsp/code-actions.md](/docs/spec/features/lsp/code-actions.md)
 - References: [/docs/spec/features/lsp/navigation/references.md](/docs/spec/features/lsp/navigation/references.md)

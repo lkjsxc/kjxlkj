@@ -34,5 +34,5 @@ When a group is active, `:bnext` / `:bprev` cycle only within the group.
 
 ## Related
 
-- Buffer list: [/docs/spec/features/buffer/buffer-list.md](/docs/spec/features/buffer/buffer-list.md)
+- Buffer list: [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)
 - Buffer navigation: [/docs/spec/commands/buffer/buffer-navigation.md](/docs/spec/commands/buffer/buffer-navigation.md)

@@ -70,5 +70,5 @@ Windows cannot be resized below these minimums.
 ## Related
 
 - Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
-- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)
+- Window layout: [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
 - Window zoom: [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md)

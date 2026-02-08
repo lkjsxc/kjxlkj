@@ -83,4 +83,4 @@ Default markers: `{{{` (open) and `}}}` (close). Numbered markers (`{{{1`, `}}}1
 
 ## Related
 
-- Basic folds: [/docs/spec/features/syntax/folds.md](/docs/spec/features/syntax/folds.md)
+- Basic folds: [/docs/spec/features/syntax/folds-advanced.md](/docs/spec/features/syntax/folds-advanced.md)

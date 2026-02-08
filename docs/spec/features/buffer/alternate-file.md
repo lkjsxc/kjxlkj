@@ -66,4 +66,4 @@ If the alternate file does not exist on disk, the editor offers to create it (if
 ## Related
 
 - Buffer management: [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
-- Buffer list: [/docs/spec/features/buffer/buffer-list.md](/docs/spec/features/buffer/buffer-list.md)
+- Buffer list: [/docs/spec/commands/buffer/buffer-listing.md](/docs/spec/commands/buffer/buffer-listing.md)

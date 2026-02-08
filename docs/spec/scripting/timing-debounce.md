@@ -56,5 +56,5 @@ All timing values are configurable in TOML:
 
 ## Related
 
-- Key input: [/docs/spec/technical/input-decoding.md](/docs/spec/technical/input-decoding.md)
-- Keybindings: [/docs/spec/modes/keybindings.md](/docs/spec/modes/keybindings.md)
+- Key input: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- Keybindings: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)

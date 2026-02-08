@@ -59,5 +59,5 @@ When zoom is toggled on, the current layout tree is serialized. When toggled off
 ## Related
 
 - Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
-- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)
+- Window layout: [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
 - Session: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)

@@ -73,5 +73,5 @@ Tree-sitter capture names map to highlight groups:
 ## Related
 
 - Syntax highlighting: [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
-- Colorscheme: [/docs/spec/features/syntax/colorscheme.md](/docs/spec/features/syntax/colorscheme.md)
+- Colorscheme: [/docs/spec/features/syntax/colorscheme-creation.md](/docs/spec/features/syntax/colorscheme-creation.md)
 - Semantic tokens: [/docs/spec/features/syntax/semantic-tokens.md](/docs/spec/features/syntax/semantic-tokens.md)

@@ -81,5 +81,5 @@ Each `:substitute` command is a single undo step. Use `u` to undo the entire sub
 
 ## Related
 
-- Substitute command: [/docs/spec/commands/substitute/substitute.md](/docs/spec/commands/substitute/substitute.md)
+- Substitute command: [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
 - Search: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)

@@ -63,4 +63,4 @@ When the terminal process produces output and the user has scrolled up in the sc
 
 - Terminal: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
 - Window management: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
-- Window layout: [/docs/spec/features/window/window-layout.md](/docs/spec/features/window/window-layout.md)
+- Window layout: [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)

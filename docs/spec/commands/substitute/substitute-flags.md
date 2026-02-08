@@ -61,5 +61,5 @@ Common combinations:
 
 ## Related
 
-- Substitute command: [/docs/spec/commands/substitute/substitute.md](/docs/spec/commands/substitute/substitute.md)
+- Substitute command: [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
 - Substitute specials: [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
