@@ -1,59 +1,65 @@
 # Colorscheme Creation
 
-Building custom color themes.
+Back: [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
 
-## Overview
+Custom colorschemes are TOML files stored in `~/.config/kjxlkj/themes/`.
 
-Create custom colorschemes by defining
-highlight groups with coordinated colors.
+## File structure (normative)
 
-## File Location
+A theme TOML file MUST contain:
 
+| Top-level key | Type | Description |
+|---|---|---|
+| `name` | string | Display name of the theme |
+| `background` | `"dark"` or `"light"` | Theme variant for `background` option |
+| `[palette]` | table | Named color definitions (e.g., `red = "#e06c75"`) |
+| `[highlights]` | table | Highlight group definitions |
+| `[terminal_colors]` | table | 16 ANSI terminal color overrides |
 
-## Basic Structure
+## Highlight group definition (normative)
 
+Each key under `[highlights]` is a highlight group name. The value is a table:
 
-## Palette Definition
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `fg` | string (color or palette ref) | inherited | Foreground color |
+| `bg` | string (color or palette ref) | inherited | Background color |
+| `bold` | boolean | false | Bold attribute |
+| `italic` | boolean | false | Italic attribute |
+| `underline` | boolean | false | Underline attribute |
+| `strikethrough` | boolean | false | Strikethrough attribute |
+| `link` | string (group name) | none | Inherit from another group |
 
-### Naming Convention
+Color values can be hex (`"#rrggbb"`), palette references (`"palette.red"`), or named ANSI colors (`"red"`, `"blue"`).
 
+## Required highlight groups
 
-### Color Variants
+A theme MUST define at least these groups (or link them):
 
-
-## Highlight Definitions
-
-### Editor UI
-
-
-### Syntax
-
-
-### Diagnostics
-
-
-### Diff/Git
-
-
-### Statusline
-
-
-## Light Theme
-
-
-## Terminal Colors
-
-
-## Semantic Tokens
-
+| Group | Used for |
+|---|---|
+| `Normal` | Default text |
+| `Cursor` | Cursor cell |
+| `Visual` | Visual selection |
+| `Search` | Search match highlighting |
+| `StatusLine` | Active status line |
+| `StatusLineNC` | Inactive status line |
+| `LineNr` | Line numbers |
+| `CursorLineNr` | Current line number |
+| `Comment` | Code comments |
+| `String` | String literals |
+| `Keyword` | Language keywords |
+| `Function` | Function names |
+| `Type` | Type names |
+| `Error` | Error diagnostics |
+| `Warning` | Warning diagnostics |
 
 ## Activation
 
+Set the theme in config: `colorscheme = "theme_name"`. At runtime: `:colorscheme theme_name`.
 
-Or at runtime:
+## Related
 
-
-## Testing
-
-View all highlight groups:
+- Theme system: [/docs/spec/ui/themes.md](/docs/spec/ui/themes.md)
+- Highlight groups: [/docs/spec/features/syntax/highlight-groups.md](/docs/spec/features/syntax/highlight-groups.md)
 

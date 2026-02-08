@@ -1,84 +1,50 @@
 # Recursive Macros
 
-Self-repeating macro patterns.
+Back: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
 
-## Overview
+A recursive macro is one that invokes itself during playback, creating a loop.
 
-Recursive macros call themselves to
-repeat operations automatically.
+## Mechanism (normative)
 
-## Basic Recursion
+A macro in register `a` is recursive if its recorded sequence ends with `@a`. When played back, it repeats until a motion or command fails (e.g., `j` fails at the last line).
 
-### Pattern
+## Stop conditions (normative)
 
+Recursive playback terminates when:
 
-### Execution
+| Condition | Example |
+|---|---|
+| Motion fails | `j` at the last line of the buffer |
+| Search fails | `n` when no more matches exist |
+| Command errors | `:s/pat/rep/` when `pat` is not found |
+| User interrupts | `Ctrl-C` during macro playback |
+| Maximum recursion depth | Default limit: 1000 iterations (prevents runaway) |
 
+## Example: process every line
 
-## Stop Conditions
+To number every line:
 
-### End of File
+1. Move to first line: `gg`
+2. Start recording: `qa`
+3. Perform the action: `I1. <Esc>`
+4. Move to next line: `j`
+5. Call self: `@a`
+6. Stop recording: `q`
+7. Play: `@a`
 
+The macro stops when `j` fails at the last line.
 
-### Pattern Not Found
+## Counted vs recursive
 
+Using a count (`100@a`) is simpler and safer than recursion when the iteration count is known. Recursion is preferred when the count depends on buffer content.
 
-### Failed Motion
+## Error handling
 
+On error during recursive playback, the macro stops immediately. The buffer state reflects all changes made before the error. Undo reverts the entire playback sequence (one `u` undoes all iterations).
 
-## Examples
+## Related
 
-### Number All Lines
-
-
-### Delete Matching Lines
-
-
-### Transform Each Line
-
-
-## Safe Recursion
-
-### Guard Against Infinite Loop
-
-End with operation that fails:
-
-
-### With Mark Check
-
-
-## Counted Recursion
-
-### Limit Iterations
-
-Instead of recursion, use count:
-
-
-### Explicit Count
-
-
-## Nested Recursion
-
-### Inner and Outer
-
-
-## Conditional Recursion
-
-### Based on Content
-
-
-### Based on Position
-
-
-## Error Handling
-
-### Continue on Error
-
-
-### Explicit Exit
-
-
-## Performance
-
-### Large Files
+- Macros: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)
+- Register macros: [/docs/spec/editing/macros/register-macros.md](/docs/spec/editing/macros/register-macros.md)
+- Advanced macros: [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
 

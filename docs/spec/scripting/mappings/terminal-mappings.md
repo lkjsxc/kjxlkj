@@ -1,99 +1,43 @@
 # Terminal Mode Mappings
 
-Mappings for embedded terminal.
+Back: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
-## Overview
+Mappings active when the terminal emulator window is focused in terminal-insert mode.
 
-Terminal mode mappings control behavior
-in the integrated terminal emulator.
+## Definition (normative)
 
-## Entering Terminal Mode
+| Command | Description |
+|---|---|
+| `:tmap {lhs} {rhs}` | Recursive mapping in terminal mode |
+| `:tnoremap {lhs} {rhs}` | Non-recursive mapping in terminal mode |
+| `:tunmap {lhs}` | Remove terminal-mode mapping |
 
-### Open Terminal
+## Default terminal keybindings (normative)
 
+| Key | Action |
+|---|---|
+| `Ctrl-\ Ctrl-n` | Exit to Normal mode (stop forwarding keys to PTY) |
+| `Esc Esc` | Exit to Normal mode (alternative double-escape) |
+| `Ctrl-w h/j/k/l` | Navigate to adjacent window (pass-through to window system) |
+| `Ctrl-w c` | Close terminal window |
 
-### Terminal Splits
+All other keys are forwarded to the PTY as raw input.
 
+## Custom mappings
 
-## Exiting Terminal Mode
+Users may define mappings to add terminal-specific shortcuts. The `{rhs}` of a terminal mapping can include `<C-\><C-n>` to exit to Normal mode before executing further actions.
 
-### Return to Normal
+## Passthrough vs interception
 
+By default, most keys pass through to the PTY. Only mapped sequences and the built-in exit sequences are intercepted. If a user maps `Esc` in terminal mode, single-`Esc` no longer passes to the PTY.
 
-### Default Escape
+## Auto-insert on focus
 
-`<C-\><C-n>` is the standard exit sequence.
+When `terminal.start_insert` is true (default), focusing a terminal window automatically enters terminal-insert mode. The user can override this with a mapping.
 
-## Window Navigation
+## Related
 
-### From Terminal
-
-
-### Direct Switch
-
-
-## Passthrough
-
-### Let Terminal Handle
-
-Some keys should pass to terminal:
-
-
-### Force Passthrough
-
-
-## Copy/Paste
-
-### Clipboard Integration
-
-
-### Quick Paste
-
-
-## Scrolling
-
-### Scroll Terminal
-
-
-### Scroll Without Exit
-
-
-## Search in Terminal
-
-### Search Output
-
-
-## Tab Navigation
-
-### Switch Tabs
-
-
-## Buffer Operations
-
-### Terminal Buffer
-
-
-## Auto-Insert
-
-### Enter Insert on Focus
-
-
-## Terminal Size
-
-### Resize
-
-
-## Send Keys
-
-### Send Literal
-
-
-## Multiple Terminals
-
-### Switch Terminals
-
-
-## Named Terminals
-
-### Open Named
+- Terminal spec: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- Mode transitions: [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
+- Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
 

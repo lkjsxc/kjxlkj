@@ -1,100 +1,44 @@
 # Buffer Groups
 
-Organize buffers into logical groups.
+Back: [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
 
-## Overview
+Organize buffers into logical groups for easier navigation.
 
-Group related buffers for easier
-navigation and management.
+## Automatic groups (normative)
 
-## Automatic Groups
+The editor MAY automatically group buffers by:
 
-### By Directory
+| Strategy | Grouping key |
+|---|---|
+| Directory | Parent directory of the file path |
+| Filetype | Detected filetype (e.g., rust, typescript, markdown) |
+| Project root | Nearest directory containing a project marker (`.git`, `Cargo.toml`, `package.json`) |
 
+Automatic grouping is enabled with `buffer.auto_group` option (default: `"directory"`).
 
-Groups buffers by parent directory.
+## Manual groups
 
-### By Filetype
+| Command | Action |
+|---|---|
+| `:BufferGroup {name}` | Add the current buffer to group `{name}` |
+| `:BufferUngroup {name}` | Remove the current buffer from group `{name}` |
+| `:BufferGroups` | List all groups and their buffers |
+| `:BufferGroupClose {name}` | Close all buffers in group `{name}` |
 
+## Group navigation
 
-Groups: rust, typescript, markdown, etc.
+| Command / Key | Action |
+|---|---|
+| `:bnext {group}` | Next buffer within the specified group |
+| `:bprev {group}` | Previous buffer within the specified group |
+| `<leader>bg` | Open group picker (fuzzy finder filtered by group) |
 
-### By Project
+## Bufferline integration
 
+When the bufferline is visible, groups are rendered as separate sections with the group name as a separator label. The active group may be highlighted.
 
-## Manual Groups
+## Related
 
-### Create Group
-
-
-### Add to Group
-
-
-### Remove from Group
-
-
-## Configuration
-
-### Define Groups
-
-
-### Group Properties
-
-
-## Navigation
-
-### Switch Group
-
-
-### Within Group
-
-
-### Filter by Group
-
-
-## Group Commands
-
-### List Groups
-
-
-### Show Group Buffers
-
-
-### Close Group
-
-
-### Delete Group
-
-
-## Bufferline Integration
-
-### Show Group Tabs
-
-
-### Group Separators
-
-
-### Group Colors
-
-
-## Group Visibility
-
-### Collapse Group
-
-
-### Expand Group
-
-
-### Toggle Collapse
-
-
-## Group Actions
-
-### Apply to Group
-
-
-### Close All in Group
-
-
-### Save All in Group
+- Buffer switching: [/docs/spec/features/buffer/buffer-switching.md](/docs/spec/features/buffer/buffer-switching.md)
+- Bufferline: [/docs/spec/features/buffer/bufferline.md](/docs/spec/features/buffer/bufferline.md)
 

@@ -1,95 +1,35 @@
-# Insert Mode Mappings
+# Insert Mode Mapping Specification
 
-Mappings for insert mode.
+Back: [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
-## Overview
+Insert-mode mappings are registered with `imap` (recursive) or `inoremap` (non-recursive).
 
-Insert mode mappings enable quick actions
-while typing without leaving insert mode.
+## Mapping semantics (normative)
 
-## Basic Mappings
+| Property | Behavior |
+|---|---|
+| Trigger | LHS key sequence matches input while in Insert mode |
+| Expansion | RHS is replayed as if typed; special key notation is expanded |
+| Timeout | Ambiguous prefixes wait `timeoutlen` ms (default 1000) |
+| Non-recursive | `inoremap` does NOT re-interpret the RHS through the mapping table |
+| Priority | Buffer-local > global; more-specific prefix > less-specific |
 
-### Configuration
+## Escape alternatives
 
+A common pattern maps `jk` or `jj` to `<Esc>` for faster mode exit.
 
-## Escape Alternatives
+The keybinding resolver MUST wait `timeoutlen` after `j` before inserting a literal `j`. If `k` arrives within the timeout, the mapping fires and mode transitions to Normal.
 
-### Common Escapes
+## Ctrl-O for single Normal command
 
+`Ctrl-O` in Insert mode is NOT a mapping; it is a built-in that transitions to `InsertNormal` mode. Mappings MUST NOT shadow `Ctrl-O` by default.
 
-### Timeout
+## Interaction with completion
 
+When the completion popup is visible, mappings for `Tab`, `Ctrl-n`, `Ctrl-p` may conflict with completion navigation. The completion system takes priority for these keys unless the user explicitly remaps them.
 
-## Movement
+## Related
 
-### Without Leaving Insert
-
-
-### Using Ctrl-O
-
-
-`<C-o>` executes one normal command.
-
-## Deletion
-
-### Delete Operations
-
-
-## Text Insertion
-
-### Quick Insert
-
-
-### Register Paste
-
-
-## Line Operations
-
-### New Lines
-
-
-### Duplicate
-
-
-## Undo in Insert
-
-### Undo Last Change
-
-
-## Completion
-
-### Trigger Completion
-
-
-### Navigate Completion
-
-
-## Snippet Expansion
-
-### Trigger Snippets
-
-
-## Auto Pairs
-
-### Pair Behavior
-
-
-## Expression Mappings
-
-### Dynamic Content
-
-
-### Conditional
-
-
-## Command Execution
-
-### Quick Commands
-
-
-### Stay in Insert
-
-
-## Text Objects
-
-### Not Applicable
+- Insert mode spec: [/docs/spec/modes/insert/insert-mappings.md](/docs/spec/modes/insert/insert-mappings.md)
+- Mapping modes: [/docs/spec/scripting/mappings/mapping-modes.md](/docs/spec/scripting/mappings/mapping-modes.md)
+- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
