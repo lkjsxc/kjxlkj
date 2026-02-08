@@ -3,14 +3,22 @@
 
 use std::collections::HashMap;
 
+use kjxlkj_core_edit::CursorPosition;
 use kjxlkj_core_mode::{
     CommandModeState, InsertModeState,
     NormalModeState, VisualModeState,
 };
-use kjxlkj_core_types::{BufferId, Mode, WindowId};
+use kjxlkj_core_types::{Action, BufferId, Mode, WindowId};
 
 use crate::search::SearchState;
 use crate::{BufferState, WindowState};
+
+/// A stored mark: buffer id + cursor position.
+#[derive(Debug, Clone, Copy)]
+pub struct MarkEntry {
+    pub buffer: BufferId,
+    pub cursor: CursorPosition,
+}
 
 /// Top-level editor state.
 pub struct EditorState {
@@ -42,6 +50,12 @@ pub struct EditorState {
     pub should_quit: bool,
     /// Search state.
     pub search_state: SearchState,
+    /// Marks storage: char → (buffer, pos).
+    pub marks: HashMap<char, MarkEntry>,
+    /// Alternate buffer for `Ctrl-^`.
+    pub alternate_buffer: Option<BufferId>,
+    /// Last repeatable action for dot-repeat.
+    pub last_repeatable: Option<Action>,
 }
 
 impl EditorState {
@@ -77,6 +91,9 @@ impl EditorState {
             next_window_id: 2,
             should_quit: false,
             search_state: SearchState::new(),
+            marks: HashMap::new(),
+            alternate_buffer: None,
+            last_repeatable: None,
         }
     }
 

@@ -63,6 +63,12 @@ pub fn dispatch_command(cmd: &str) -> Option<Action> {
         "close" => Some(Action::CloseWindow),
         "terminal" | "term" => Some(Action::SpawnTerminal),
         "noh" | "nohlsearch" => Some(Action::Nop),
+        "ls" | "buffers" | "files" => {
+            // Buffer listing — Nop in this implementation;
+            // a real impl would populate a scratch buffer.
+            Some(Action::Nop)
+        }
+        "on" | "only" => Some(Action::Nop),
         _ => {
             // Check for line number command.
             if let Ok(line) = name.parse::<usize>() {

@@ -18,6 +18,9 @@ impl EditorState {
         &mut self,
         path: &std::path::Path,
     ) {
+        // Track alternate buffer.
+        self.alternate_buffer = self.active_buffer_id();
+
         let buf_id = self.alloc_buffer_id();
         let buf = BufferState::new_with_path(
             buf_id,
@@ -38,6 +41,7 @@ impl EditorState {
             return;
         }
         let current = self.active_buffer_id();
+        self.alternate_buffer = current;
         let idx = current
             .and_then(|c| {
                 ids.iter().position(|&i| i == c)
@@ -56,6 +60,7 @@ impl EditorState {
             return;
         }
         let current = self.active_buffer_id();
+        self.alternate_buffer = current;
         let idx = current
             .and_then(|c| {
                 ids.iter().position(|&i| i == c)

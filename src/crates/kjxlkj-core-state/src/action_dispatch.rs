@@ -7,6 +7,9 @@ use crate::EditorState;
 impl EditorState {
     /// Dispatch a single action, mutating editor state.
     pub fn dispatch(&mut self, action: Action) {
+        // Store repeatable actions for dot-repeat.
+        self.store_repeatable(&action);
+
         match action {
             Action::Nop => {}
             Action::Quit => self.should_quit = true,
@@ -18,9 +21,7 @@ impl EditorState {
                 self.do_write();
                 self.should_quit = true;
             }
-            Action::WriteAll => {
-                self.do_write_all();
-            }
+            Action::WriteAll => self.do_write_all(),
             Action::WriteAllQuit => {
                 self.do_write_all();
                 self.should_quit = true;
@@ -30,6 +31,9 @@ impl EditorState {
             }
             Action::MoveCursor(motion, count) => {
                 self.do_motion(motion, count);
+            }
+            Action::Scroll(dir, count) => {
+                self.do_scroll(dir, count);
             }
             Action::EnterInsert(pos) => {
                 self.enter_insert(pos);
@@ -50,9 +54,9 @@ impl EditorState {
                 self.mode = Mode::Normal;
                 self.visual_state = None;
                 self.command_state = None;
-                // Clamp cursor: in Normal mode cursor
-                // must be on a character, not past end.
-                if let Some(w) = self.focused_window_mut() {
+                if let Some(w) =
+                    self.focused_window_mut()
+                {
                     if w.cursor.grapheme_offset > 0 {
                         w.cursor.grapheme_offset -= 1;
                     }
@@ -69,52 +73,84 @@ impl EditorState {
             }
             Action::Delete(motion, count) => {
                 self.do_operator_motion_action(
-                    Operator::Delete,
-                    motion,
-                    count,
+                    Operator::Delete, motion, count,
                 );
             }
             Action::Change(motion, count) => {
                 self.do_operator_motion_action(
-                    Operator::Change,
-                    motion,
-                    count,
+                    Operator::Change, motion, count,
                 );
             }
             Action::Yank(motion, count) => {
                 self.do_operator_motion_action(
-                    Operator::Yank,
-                    motion,
-                    count,
+                    Operator::Yank, motion, count,
                 );
             }
             Action::DoubleOperator(op, count) => {
                 self.do_double_operator(op, count);
             }
+            Action::SubstituteChar => {
+                self.do_substitute_char();
+            }
+            Action::SubstituteLine => {
+                self.do_substitute_line();
+            }
+            Action::ChangeToEnd => {
+                self.do_change_to_end();
+            }
+            Action::JoinLines => self.do_join(),
+            Action::JoinLinesNoSpace => {
+                self.do_join_no_space();
+            }
+            Action::ToggleCaseChar => {
+                self.do_toggle_case();
+            }
+            Action::DotRepeat => self.do_dot_repeat(),
             Action::Undo => self.do_undo(),
             Action::Redo => self.do_redo(),
             Action::Put(before) => {
                 self.do_put(before);
-            }
-            Action::JoinLines => self.do_join(),
-            Action::ToggleCaseChar => self.do_toggle_case(),
-            Action::OpenFile(path) => {
-                self.do_open_file(&path);
-            }
-            Action::NextBuffer => self.do_next_buffer(),
-            Action::PrevBuffer => self.do_prev_buffer(),
-            Action::DeleteBuffer => self.do_delete_buffer(),
-            Action::SplitHorizontal => {
-                self.do_split_horizontal();
-            }
-            Action::SplitVertical => {
-                self.do_split_vertical();
             }
             Action::ReplaceChar(c) => {
                 self.do_replace_char(c);
             }
             Action::Increment(n) => {
                 self.do_increment(n);
+            }
+            Action::SetMark(ch) => {
+                self.do_set_mark(ch);
+            }
+            Action::JumpToMark(ch) => {
+                self.do_jump_to_mark(ch);
+            }
+            Action::JumpToMarkLine(ch) => {
+                self.do_jump_to_mark_line(ch);
+            }
+            Action::AlternateFile => {
+                self.do_alternate_file();
+            }
+            Action::OpenFile(path) => {
+                self.do_open_file(&path);
+            }
+            Action::NextBuffer => self.do_next_buffer(),
+            Action::PrevBuffer => self.do_prev_buffer(),
+            Action::DeleteBuffer => {
+                self.do_delete_buffer();
+            }
+            Action::SplitHorizontal => {
+                self.do_split_horizontal();
+            }
+            Action::SplitVertical => {
+                self.do_split_vertical();
+            }
+            Action::FocusWindow(dir) => {
+                self.do_focus_window(dir);
+            }
+            Action::CycleWindow => {
+                self.do_cycle_window();
+            }
+            Action::CloseWindow => {
+                self.do_close_window();
             }
             Action::ExecuteCommand(cmd) => {
                 if let Some(a) =
@@ -131,15 +167,6 @@ impl EditorState {
             }
             Action::NextMatch => self.do_next_match(),
             Action::PrevMatch => self.do_prev_match(),
-            Action::FocusWindow(dir) => {
-                self.do_focus_window(dir);
-            }
-            Action::CycleWindow => {
-                self.do_cycle_window();
-            }
-            Action::CloseWindow => {
-                self.do_close_window();
-            }
             _ => {}
         }
     }
