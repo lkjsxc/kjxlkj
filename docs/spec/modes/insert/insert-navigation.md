@@ -1,183 +1,114 @@
 # Insert Mode Navigation
 
-Moving cursor while in insert mode.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+
+Navigation commands available while remaining in insert mode.
 
 ## Overview
 
-Navigate without leaving insert mode for efficient editing.
-Insert mode provides limited navigation compared to normal
-mode, prioritizing text entry.
+In insert mode, the cursor can be repositioned using arrow keys, Home/End, Page Up/Down, and special key combinations without leaving insert mode.
 
 ## Arrow Keys
 
-### Basic Movement
+| Key | Movement |
+|---|---|
+| `<Left>` | One character left |
+| `<Right>` | One character right |
+| `<Up>` | One line up |
+| `<Down>` | One line down |
 
-| Key | Action |
-|-----|--------|
-| `<Left>` | Move one character left |
-| `<Right>` | Move one character right |
-| `<Up>` | Move one line up |
-| `<Down>` | Move one line down |
-
-### Behavior
-
-Arrow keys work as expected within the buffer bounds.
-The cursor stays in insert mode. For CJK characters
-(display width 2), left/right moves by one full character
-(not half).
+Arrow key movement respects virtual-edit settings and CJK character boundaries (skip full grapheme cluster).
 
 ## Word Movement
 
-### Shift+Arrow
+| Key | Movement |
+|---|---|
+| `<S-Left>` | One word backward |
+| `<S-Right>` | One word forward |
+| `<C-Left>` | One WORD backward |
+| `<C-Right>` | One WORD forward |
 
-`<S-Left>` and `<S-Right>` move by word. This extends
-the selection in some terminal emulators but in kjxlkj
-it simply moves the cursor by word.
-
-### Ctrl+Arrow
-
-`<C-Left>` moves to the beginning of the previous word.
-`<C-Right>` moves to the beginning of the next word.
-Words are defined by `iskeyword`.
+Word boundaries use the same definition as normal mode `w`/`b`.
 
 ## Line Movement
 
-### Home/End
-
-`<Home>` moves to column 0.
-`<End>` moves to the end of the line.
-
-### Ctrl+Home/End
-
-`<C-Home>` moves to the first line of the buffer.
-`<C-End>` moves to the last line.
-Both keep insert mode active.
+| Key | Movement |
+|---|---|
+| `<Home>` | Move to first non-blank character of line |
+| `<End>` | Move to end of line |
+| `<C-Home>` | Move to first line of buffer |
+| `<C-End>` | Move to last line of buffer |
 
 ## Page Movement
 
-### Page Up/Down
+| Key | Movement |
+|---|---|
+| `<PageUp>` | Scroll one page up |
+| `<PageDown>` | Scroll one page down |
 
-`<PageUp>` scrolls one page up, cursor moves to top.
-`<PageDown>` scrolls one page down, cursor moves to bottom.
+Cursor repositions to keep visible after page scroll.
 
 ## Normal Mode Command
 
-### Temporary Normal
+`<C-o>` enters insert-normal mode: executes one normal-mode command, then returns to insert mode.
 
-`<C-o>` executes one normal mode command, then returns
-to insert mode. The statusline shows `-- (insert) --`
-during the command.
-
-### Examples
-
-| Sequence | Effect |
-|----------|--------|
-| `<C-o>zz` | Center screen |
-| `<C-o>dd` | Delete current line |
-| `<C-o>p` | Paste |
-| `<C-o>$` | Move to end of line |
-
-### Return to Insert
-
-After the single command completes, the editor returns
-to insert mode automatically. Operators that change mode
-(like `c`) may alter this.
-
-## Multiple Commands
-
-### Stay in Insert
-
-`<C-o>` only runs ONE command. For multiple commands,
-use `<C-o>` multiple times, or exit insert mode briefly.
-
-### Exit Pattern
-
-`<Esc>` followed by commands, then `a`/`i` to re-enter.
-This is often more natural for complex operations.
+See: [/docs/spec/modes/insert/insert-normal.md](/docs/spec/modes/insert/insert-normal.md)
 
 ## Character Deletion
 
-### While Moving
-
-Deletion keys work during navigation:
-`<BS>` deletes the character before cursor.
-`<Del>` deletes the character after cursor.
-
-### Word Deletion
-
-`<C-w>` deletes the word before the cursor.
-`<C-u>` deletes from cursor to start of line.
+| Key | Effect |
+|---|---|
+| `<BS>` / `<C-h>` | Delete character before cursor |
+| `<Del>` | Delete character under cursor |
+| `<C-w>` | Delete word before cursor |
 
 ## Line Operations
 
-### Delete to Start
-
-`<C-u>` deletes from cursor position to the beginning
-of the line. If the cursor is at column 0, `<C-u>`
-joins with the line above.
-
-### Split Line
-
-Press `<CR>` at any cursor position to split the line.
-Text after the cursor moves to a new line below.
+| Key | Effect |
+|---|---|
+| `<C-u>` | Delete from cursor to start of line |
+| `<CR>` / `<C-m>` | Insert new line (split at cursor) |
+| `<C-j>` | Insert new line (same as `<CR>`) |
 
 ## Scrolling
 
-### While in Insert
+| Key | Effect |
+|---|---|
+| `<C-x><C-e>` | Scroll window down one line |
+| `<C-x><C-y>` | Scroll window up one line |
 
-The viewport can be scrolled without moving the cursor
-out of insert mode using `<C-o>` with scroll commands.
-
-### Scroll Commands
-
-| Sequence | Action |
-|----------|--------|
-| `<C-o><C-e>` | Scroll down one line |
-| `<C-o><C-y>` | Scroll up one line |
-| `<C-o><C-d>` | Scroll down half page |
-| `<C-o><C-u>` | Scroll up half page |
-| `<C-o>zz` | Center cursor line |
+Cursor stays on the same buffer position; the viewport shifts.
 
 ## Search
 
-### From Insert
-
-`<C-o>/` starts a forward search from insert mode.
-After the search completes, returns to insert mode
-at the found position.
+`<C-o>` followed by `/` or `?` performs a single search command and returns to insert mode.
 
 ## Marks
 
-### Jump to Mark
-
-`<C-o>` followed by `` ` `` or `'` and a mark letter
-jumps to the mark, then returns to insert mode.
+`<C-o>` followed by a mark command (`` ` `` or `'`) jumps to the mark, then returns to insert mode.
 
 ## Window Navigation
 
-### Switch Windows
+Use `<C-o><C-w>{cmd}` to issue a single window command from insert mode.
 
-`<C-o><C-w>w` switches to the next window.
-`<C-o><C-w>h/j/k/l` switches directionally.
-Insert mode continues in the new window.
-
-## Limited Movement
-
-### Stay on Line
-
-Some users prefer to restrict insert-mode navigation
-to the current line only. This is not enforced by default
-but can be configured by unmapping arrow keys in insert mode.
+| Sequence | Effect |
+|---|---|
+| `<C-o><C-w>w` | Switch to next window |
+| `<C-o><C-w>h` | Switch to window left |
 
 ## Custom Mappings
 
-### Emacs Style
+Insert-mode navigation can be extended with mappings. Example Emacs-style:
 
-Common Emacs-like mappings for insert mode:
-- `<C-a>` move to beginning of line
-- `<C-e>` move to end of line
-- `<C-f>` move forward one character
-- `<C-b>` move backward one character
+| Mapping | From | To |
+|---|---|---|
+| `inoremap <C-a>` | `<Home>` | Start of line |
+| `inoremap <C-e>` | `<End>` | End of line |
+| `inoremap <C-f>` | `<Right>` | Forward one character |
+| `inoremap <C-b>` | `<Left>` | Backward one character |
 
-These must be explicitly configured as they conflict
-with default keybindings.
+## Related
+
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Insert-normal: [/docs/spec/modes/insert/insert-normal.md](/docs/spec/modes/insert/insert-normal.md)
+- Cursor: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)

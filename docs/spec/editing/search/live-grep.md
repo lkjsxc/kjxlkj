@@ -1,102 +1,77 @@
 # Live Grep
 
-Interactive real-time project-wide search with ripgrep integration.
+Back: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
 
-## Opening Live Grep
+Project-wide search with real-time results using an external grep tool.
+
+## Overview
+
+Live grep searches all files in the project directory for a pattern. Results are displayed in a picker as the user types. The search is delegated to an external tool (ripgrep by default).
+
+## Activation
 
 | Key | Action |
-|-----|--------|
-| `<Leader>lg` | Open live grep picker |
-| `<Leader>fw` | Find word in project |
-| `<Leader>/` | Search in project |
-| `:LiveGrep` | Command to open |
+|---|---|
+| `<leader>fg` | Open live grep picker |
+| `<leader>fG` | Live grep with additional options |
 
-## Interface
+| Command | Description |
+|---|---|
+| `:LiveGrep [pattern]` | Open live grep with optional initial pattern |
 
+## Search tool
 
-## Real-Time Features
+| Setting | Default | Description |
+|---|---|---|
+| `grep.command` | `rg` (ripgrep) | External grep command |
+| `grep.args` | `["--color=never", "--no-heading", "--with-filename", "--line-number", "--column"]` | Default arguments |
 
-- Results update as you type
-- Debounced input (configurable delay)
-- Streaming results
-- Progress indicator
+The editor spawns the grep command as a subprocess and streams results.
+
+## Real-time behavior
+
+As the user types the pattern:
+
+1. Debounce keystrokes (150ms default)
+2. Kill any running grep subprocess
+3. Spawn new grep subprocess with updated pattern
+4. Stream results into the picker
+
+## Result display
+
+Each result line shows:
+
+| Column | Content |
+|---|---|
+| File path | Relative path from project root |
+| Line | Line number |
+| Column | Column number |
+| Match | Matched text with surrounding context |
+
+## Navigation
+
+| Key | Action |
+|---|---|
+| `<CR>` | Open file at match location |
+| `<C-v>` | Open in vertical split |
+| `<C-s>` | Open in horizontal split |
+| `<C-q>` | Send all results to quickfix list |
+| `<Esc>` | Close picker |
 
 ## Configuration
 
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `grep.debounce_ms` | integer | `150` | Debounce interval |
+| `grep.max_results` | integer | `1000` | Maximum results |
+| `grep.respect_gitignore` | boolean | `true` | Respect `.gitignore` patterns |
 
-## Ripgrep Arguments
+## Quickfix integration
 
+Pressing `<C-q>` sends all current results to the quickfix list for persistent navigation with `:cnext` / `:cprev`.
 
-## Picker Keybindings
+## Related
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Open file at match |
-| `Ctrl-v` | Open in vertical split |
-| `Ctrl-x` | Open in horizontal split |
-| `Ctrl-t` | Open in new tab |
-| `Ctrl-q` | Send to quickfix |
-| `Tab` | Toggle selection |
-| `Ctrl-a` | Select all |
-| `Esc` | Cancel |
-| `Ctrl-u` | Clear query |
-
-## Search Modifiers
-
-### In Query
-
-| Prefix | Effect |
-|--------|--------|
-| `!pattern` | Exclude pattern |
-| `'pattern` | Literal match |
-| `^pattern` | Start of line |
-| `pattern$` | End of line |
-
-### Toggle Keys
-
-| Key | Effect |
-|-----|--------|
-| `Ctrl-r` | Toggle regex mode |
-| `Ctrl-c` | Toggle case sensitivity |
-| `Ctrl-w` | Toggle whole word |
-| `Ctrl-h` | Toggle hidden files |
-
-## File Type Filtering
-
-
-### Common Types
-
-| Type | Extensions |
-|------|------------|
-| `rust` | .rs |
-| `python` | .py |
-| `javascript` | .js, .jsx |
-| `typescript` | .ts, .tsx |
-| `markdown` | .md |
-| `json` | .json |
-| `yaml` | .yaml, .yml |
-
-## Path Filtering
-
-
-## Preview Window
-
-
-## Replace Mode
-
-Live grep with replace:
-
-
-Interface:
-
-## Keybindings Configuration
-
-
-## Integration with Finder
-
-
-## Performance Tuning
-
-
-## Ignore Patterns
-
+- Search: [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md)
+- Finder: [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- Quickfix: [/docs/spec/features/navigation/quickfix.md](/docs/spec/features/navigation/quickfix.md)

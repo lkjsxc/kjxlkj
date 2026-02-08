@@ -1,179 +1,63 @@
 # Character Find Motions
 
-f, t, F, T character search.
+Back: [/docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
 
-## Overview
+Find a character on the current line and move the cursor to it.
 
-Find specific characters on the current line only.
-These are exclusive/inclusive motions depending on
-the command used.
+## Commands
 
-## Forward Find
+| Key | Type | Description |
+|---|---|---|
+| `f{char}` | Inclusive | Move forward to the next occurrence of `{char}` on the line |
+| `F{char}` | Inclusive | Move backward to the previous occurrence of `{char}` on the line |
+| `t{char}` | Exclusive | Move forward to just before the next `{char}` |
+| `T{char}` | Exclusive | Move backward to just after the previous `{char}` |
+| `;` | - | Repeat the last `f`/`F`/`t`/`T` in the same direction |
+| `,` | - | Repeat the last `f`/`F`/`t`/`T` in the opposite direction |
 
-### f (Find)
+## Behavior
 
-`f{char}` moves cursor forward to the next occurrence
-of `{char}` on the current line.
+### Scope
 
-**Inclusive**: Cursor lands ON the character.
-When used with `d`, the character is deleted.
+Character find motions operate within the current line only. They do not cross line boundaries.
 
-### t (Till)
+### Count
 
-`t{char}` moves cursor forward to just BEFORE the next
-occurrence of `{char}` on the current line.
+A count prefix finds the Nth occurrence. `3fa` finds the 3rd `a` on the line.
 
-**Inclusive**: Cursor lands one position BEFORE the character.
-Useful for deleting up to but not including a character.
+### Failure
 
-## Backward Find
+If the character is not found on the line, the cursor does not move and a bell is emitted.
 
-### F (Find back)
+### Inclusivity with operators
 
-`F{char}` moves cursor backward to the previous
-occurrence of `{char}` on the current line.
+| Motion | With `d` | Example |
+|---|---|---|
+| `df{char}` | Deletes from cursor through `{char}` (inclusive) | `dfa` on `abcabc` at `a` deletes `abca` |
+| `dt{char}` | Deletes from cursor to just before `{char}` (exclusive) | `dta` on `abcabc` at col 0 would delete up to but not including the second `a` |
 
-**Exclusive**: Cursor lands ON the character.
+### CJK characters
 
-### T (Till back)
+`f` and `t` match by grapheme cluster. `f{cjk}` finds the next CJK character. The cursor lands on the grapheme boundary.
 
-`T{char}` moves cursor backward to just AFTER the
-previous occurrence of `{char}` on the current line.
+## Repeat
 
-**Exclusive**: Cursor lands one position AFTER the character.
+The last character find command and its target character are remembered. `;` repeats in the original direction and `,` repeats in the reverse direction.
 
-## Examples
+After `fa` on `abracadabra`, pressing `;` finds the next `a`, and `,` finds the previous `a`.
 
-### Forward
+## Operator-pending
 
-On `hello world`, cursor on `h`:
-- `fw` moves to `w` in `world`
-- `tw` moves to the space before `w`
-- `fl` moves to first `l` in `hello`
-- `2fl` moves to second `l` in `hello`
+In operator-pending mode, `f`/`F`/`t`/`T` define the range for the operator.
 
-### Backward
+| Command | Effect |
+|---|---|
+| `df)` | Delete from cursor to and including `)` |
+| `ct"` | Change from cursor to just before `"` |
+| `yF(` | Yank from cursor backward to and including `(` |
 
-On `hello world`, cursor on `d`:
-- `Fh` moves to `h`
-- `Th` moves to `e` (one after `h`)
-- `Fo` moves to `o` in `world`
-- `2Fo` moves to `o` in `hello`
+## Related
 
-## With Operators
-
-### Delete
-
-| Sequence | Effect |
-|----------|--------|
-| `df)` | Delete from cursor through `)` |
-| `dt)` | Delete from cursor to before `)` |
-| `dF(` | Delete backward through `(` |
-| `dT(` | Delete backward to after `(` |
-
-### Yank
-
-| Sequence | Effect |
-|----------|--------|
-| `yf;` | Yank from cursor through `;` |
-| `yt;` | Yank from cursor to before `;` |
-
-### Change
-
-| Sequence | Effect |
-|----------|--------|
-| `cf"` | Change from cursor through `"` |
-| `ct"` | Change from cursor to before `"` |
-
-## Repeat Find
-
-### Same Direction
-
-`;` repeats the last f/t/F/T motion in the same direction.
-
-### Opposite Direction
-
-`,` repeats the last f/t/F/T motion in the opposite direction.
-
-### Example
-
-On `a,b,c,d`: `f,` finds first `,`. Then `;` finds
-the second `,`, and `;` again finds the third.
-`,` goes back to the second `,`.
-
-## Count
-
-### Multiple Characters
-
-`{count}f{char}` finds the {count}th occurrence.
-`3fa` finds the third `a` on the current line.
-If fewer than {count} occurrences exist, cursor stays.
-
-## Visual Mode
-
-### Select With f/t
-
-`vf)` selects from cursor through `)`.
-`vt)` selects from cursor to before `)`.
-
-### Extend Selection
-
-In visual mode, repeated `;` extends the selection
-forward through each next match.
-
-## Line Scope
-
-### Line Only
-
-f/t/F/T only search the current line.
-They will NOT cross line boundaries.
-
-### No Match
-
-If the character is not found on the current line:
-- Cursor stays in place (no movement)
-- No error beep unless `errorbells` is enabled
-- Operator is cancelled
-
-## Special Characters
-
-### Finding Punctuation
-
-`f.` finds next period, `f,` finds next comma.
-`f<Space>` finds next space character.
-
-### Finding Spaces
-
-`f ` (f followed by a literal space) finds the next
-space on the line.
-
-## CJK Characters
-
-### Wide Characters
-
-`f{CJK}` finds CJK characters. Since CJK characters
-have display width 2, the cursor positions on the
-first column of the character. The `;` repeat works
-correctly with wide characters.
-
-### Input
-
-The find character is read as a complete Unicode
-grapheme cluster, so CJK input works correctly.
-
-## Common Patterns
-
-### Delete to Character
-
-`dt)` — delete everything before closing paren.
-`df,` — delete through next comma (including it).
-
-### Change Inside
-
-`ct"` — change text up to the next quote.
-`cT"` — change text back to after the previous quote.
-
-### Quick Navigation
-
-`f{` then `;` to hop through brace-delimited blocks.
-`f,` then `;` to hop through comma-separated items.
+- Motions overview: [/docs/spec/editing/motions/motions.md](/docs/spec/editing/motions/motions.md)
+- Repeat motions: [/docs/spec/editing/motions/repeat-motions.md](/docs/spec/editing/motions/repeat-motions.md)
+- Search motions: [/docs/spec/editing/motions/search-motions.md](/docs/spec/editing/motions/search-motions.md)

@@ -1,171 +1,105 @@
-# Insert Normal Mode
+# Insert-Normal Mode
 
-Execute normal commands from insert.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+
+Execute one Normal-mode command while in Insert mode, then return automatically.
 
 ## Overview
 
-Run one normal mode command without fully leaving insert
-mode. The `<C-o>` key enters a temporary normal mode
-that auto-returns to insert after one command.
+Insert-normal mode allows executing a single normal mode command without fully leaving insert mode. This is useful for repositioning, scrolling, or performing quick edits.
 
 ## Command
 
-### Syntax
-
-`<C-o>{normal-command}` in insert mode.
-
-### Behavior
-
-1. Enter temporary normal mode (statusline: `-- (insert) --`)
-2. Execute exactly one normal mode command
-3. Automatically return to insert mode
+Press `<C-o>` in insert mode. The mode indicator changes to `(insert)`. After one normal-mode command completes, the editor returns to insert mode.
 
 ## Basic Usage
 
 ### Movement
 
 | Sequence | Effect |
-|----------|--------|
+|---|---|
 | `<C-o>w` | Move forward one word |
 | `<C-o>b` | Move backward one word |
-| `<C-o>0` | Move to beginning of line |
 | `<C-o>$` | Move to end of line |
-| `<C-o>gg` | Move to first line |
-| `<C-o>G` | Move to last line |
+| `<C-o>0` | Move to start of line |
+| `<C-o>gg` | Move to top of file |
+| `<C-o>G` | Move to bottom of file |
 
 ### Editing
 
 | Sequence | Effect |
-|----------|--------|
+|---|---|
 | `<C-o>dd` | Delete current line |
 | `<C-o>D` | Delete to end of line |
+| `<C-o>u` | Undo |
 | `<C-o>p` | Paste after cursor |
-| `<C-o>u` | Undo last change |
-| `<C-o><C-r>` | Redo |
 
 ## With Count
 
-### Counted Commands
-
-`<C-o>3w` moves 3 words forward.
-`<C-o>5j` moves 5 lines down.
-The count is part of the single command.
+`<C-o>3w` — move forward 3 words, then return to insert mode.
 
 ## With Operators
 
-### Operator + Motion
-
-`<C-o>dw` deletes a word. The operator+motion pair
-counts as one command.
-
-### Returns to Insert
-
-After the operator+motion completes, insert mode resumes.
-If the operator opens insert mode (like `c`), the behavior
-depends: `<C-o>cw` changes a word and stays in insert mode
-(the `c` operator implies insert mode entry).
+`<C-o>dw` — delete a word, then return to insert mode. The operator-motion pair counts as one command.
 
 ## Scrolling
 
-### Center/Top/Bottom
-
 | Sequence | Effect |
-|----------|--------|
-| `<C-o>zz` | Center current line |
-| `<C-o>zt` | Current line to top |
-| `<C-o>zb` | Current line to bottom |
-
-### Scroll Lines
-
-| Sequence | Effect |
-|----------|--------|
+|---|---|
+| `<C-o>zz` | Center cursor line on screen |
+| `<C-o>zt` | Scroll cursor line to top |
+| `<C-o>zb` | Scroll cursor line to bottom |
 | `<C-o><C-e>` | Scroll down one line |
 | `<C-o><C-y>` | Scroll up one line |
-| `<C-o><C-d>` | Scroll down half page |
-| `<C-o><C-u>` | Scroll up half page |
 
 ## Window Commands
 
-### Switch Windows
-
-`<C-o><C-w>w` cycles to the next window.
-`<C-o><C-w>h/j/k/l` navigates directionally.
-Insert mode continues in the target window.
-
-### Window Size
-
-`<C-o><C-w>+` increases window height.
-`<C-o><C-w>-` decreases window height.
+| Sequence | Effect |
+|---|---|
+| `<C-o><C-w>w` | Switch to next window |
+| `<C-o><C-w>h` | Move to left window |
+| `<C-o><C-w>+` | Increase window height |
 
 ## Search
 
-### Quick Search
-
-`<C-o>/pattern<CR>` searches forward and returns to insert.
-`<C-o>*` searches for word under cursor.
-
-### Word Under Cursor
-
-`<C-o>*` is useful for checking other occurrences of the
-word being typed.
+| Sequence | Effect |
+|---|---|
+| `<C-o>/pattern<CR>` | Search forward |
+| `<C-o>*` | Search for word under cursor |
+| `<C-o>#` | Search backward for word under cursor |
 
 ## Marks
 
-### Jump to Mark
-
-`<C-o>'a` jumps to mark `a`'s line, returns to insert.
-
-### Set Mark
-
-`<C-o>ma` sets mark `a` at current position, returns to insert.
+| Sequence | Effect |
+|---|---|
+| `<C-o>ma` | Set mark `a` at cursor position |
+| `` <C-o>`a `` | Jump to mark `a` |
 
 ## Ex Commands
 
-### Run Command
+`<C-o>:w<CR>` — save the file and return to insert mode.
 
-`<C-o>:cmd<CR>` runs an ex command from insert mode.
-
-### Stay in Insert
-
-After the ex command completes, returns to insert mode.
-This is useful for `:w` (save) without leaving insert.
+The ex command counts as the single normal-mode command.
 
 ## Multiple Commands
 
-### Not Directly
-
-`<C-o>` runs ONE command only. It does not accept
-sequences of multiple commands.
-
-### Workarounds
-
-Exit to normal mode, perform multiple commands, re-enter
-insert mode with `a` or `i`.
-
-### Macro
-
-`<C-o>@a` executes macro `a` as one command. The macro
-can contain multiple commands.
+Only ONE normal-mode command is executed per `<C-o>`. To run multiple, press `<C-o>` again after each returns to insert mode.
 
 ## Visual Mode
 
-### Quick Select
+`<C-o>v` enters visual mode. After completing the visual operation, control returns to insert mode.
 
-`<C-o>v` enters visual mode. However, visual mode
-commands typically end in normal mode, not insert.
+## Differences vs Full Exit
 
-Note: Visual mode exits to normal mode, not insert mode.
+| Aspect | `<C-o>` (insert-normal) | `<Esc>` (exit fully) |
+|---|---|---|
+| Returns to insert | Automatically after 1 command | Must press `i`/`a` again |
+| Undo break | Does NOT create an undo break | Creates an undo break |
+| Dot repeat | Does not reset `.` context | Resets `.` context |
+| Cursor | Stays where command leaves it | Moves left 1 column |
 
-### Workaround
+## Related
 
-Use `<C-o>` with an operator+text-object instead:
-`<C-o>diw` deletes inner word and returns to insert.
-
-## Differences
-
-### vs Full Exit
-
-`<C-o>{cmd}` preserves the insert session: undo groups
-continue, and the `.` repeat register includes the
-full insert session. `<Esc>{cmd}i` starts a new insert
-session and creates a new undo point.
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Insert navigation: [/docs/spec/modes/insert/insert-navigation.md](/docs/spec/modes/insert/insert-navigation.md)
+- Normal mode: [/docs/spec/modes/normal/README.md](/docs/spec/modes/normal/README.md)

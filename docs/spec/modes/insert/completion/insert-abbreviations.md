@@ -1,70 +1,42 @@
-# Insert Abbreviations (Completion Context)
+# Insert Abbreviations Completion
 
-Text expansion while typing using abbreviations.
+Back: [/docs/spec/modes/insert/completion/README.md](/docs/spec/modes/insert/completion/README.md)
+
+How abbreviations interact with the completion system.
 
 ## Overview
 
-This document covers abbreviation-triggered completions.
-For the full abbreviation specification, see the main
-abbreviation document in insert mode.
+Abbreviations and completion are independent systems that can coexist. Abbreviations trigger on non-keyword characters; completion triggers on keyword input or explicit invocation.
 
 ## Abbreviation as Completion
 
-### Trigger
+Abbreviations function as a simple form of text expansion. Unlike completion menu items, they expand inline without requiring selection.
 
-Abbreviations act as a form of auto-completion: type
-a short trigger, press a non-keyword character, and
-the abbreviation expands into the full text.
-
-### vs Completion Menu
-
-Unlike completion menu entries, abbreviations:
-- Expand automatically (no explicit accept step)
-- Do not show a popup menu
-- Are defined statically (not context-aware)
+| Aspect | Abbreviation | Completion |
+|---|---|---|
+| Trigger | Non-keyword character after keyword | `<C-x>` sequence or auto-trigger |
+| UI | No menu | Menu popup |
+| Selection | Automatic | User selects item |
 
 ## Abbreviation-Based Snippets
 
-### Simple Expansion
+Abbreviations can serve as simple snippets:
 
-`:iabbrev fn function` expands `fn` to `function`.
-Useful for common keywords and boilerplate.
-
-### Multi-Line
-
-`:iabbrev main public static void main(String[] args) {}`
-Can use `<CR>` for line breaks in the expansion.
-
-### Expression
-
-`:iabbrev <expr> date strftime("%Y-%m-%d")` expands
-`date` to the current date dynamically.
+| Abbreviation | Expansion | Use |
+|---|---|---|
+| `fn` | `function() {}` | Quick function template |
+| `dt` | (expression for date) | Insert current date |
+| `sig` | Full signature text | Email signature |
 
 ## Integration with Completion
 
-### Priority
+When both systems are active:
 
-When both an abbreviation and a completion menu entry
-match, the abbreviation takes priority since it triggers
-on non-keyword character input.
+1. The completion menu takes visual priority.
+2. Abbreviation expansion occurs when the menu is dismissed or not showing.
+3. If `<CR>` confirms a completion item, abbreviation expansion is suppressed.
 
-### Coexistence
+## Related
 
-Abbreviations and completion can coexist. The completion
-menu appears for partial matches while abbreviations
-expand on trigger characters.
-
-## Common Patterns
-
-### Date/Time
-
-`:iabbrev <expr> now strftime("%H:%M")`
-
-### Signatures
-
-`:iabbrev <buffer> sig Regards,<CR>Your Name`
-
-### Corrections
-
-`:iabbrev teh the`
-`:iabbrev dont don't`
+- Abbreviations: [/docs/spec/modes/insert/insert-abbreviations.md](/docs/spec/modes/insert/insert-abbreviations.md)
+- Completion: [/docs/spec/modes/insert/completion/README.md](/docs/spec/modes/insert/completion/README.md)

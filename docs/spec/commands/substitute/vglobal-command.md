@@ -1,173 +1,47 @@
-# VGlobal Command
+# Vglobal Command
 
-Executing commands on non-matching lines.
+Back: [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
 
-## Overview
+Execute a command on lines that do NOT match a pattern.
 
-The `:vglobal` (`:v`) command
-executes Ex commands on lines
-NOT matching a pattern.
+## Syntax
 
-## Basic Syntax
+`:v[global]/{pattern}/{command}`
 
-```
-:[range]v/pattern/command
-```
+This is the inverse of `:g` — it runs `{command}` on every line that does NOT match `{pattern}`.
 
-Without a range, operates on the entire file (`%` is the default range). Executes the command on every line where the pattern does NOT match.
+## Equivalence
 
-## Equivalents
+`:v/{pattern}/{cmd}` is equivalent to `:g!/{pattern}/{cmd}`.
 
-| Form | Meaning |
-|------|---------|
-| `:v/pattern/command` | Execute on lines NOT matching `pattern` |
-| `:g!/pattern/command` | Identical to `:v/pattern/command` |
-
-Both do the same thing.
-
-## Common Uses
-
-### Keep Matching Lines
-
-`:v/pattern/d` deletes every line that does NOT match, keeping only lines containing the pattern.
+## Examples
 
 | Command | Effect |
-|---------|--------|
-| `:v/TODO/d` | Keep only lines containing `TODO` |
-| `:v/error\|warn/d` | Keep only lines with `error` or `warn` |
-| `:v/pattern/d` | Keep only lines matching `pattern` |
+|---|---|
+| `:v/error/d` | Delete all lines that do NOT contain "error" |
+| `:v/^$/d` | Delete all non-empty lines (keep only blank lines) |
+| `:v/TODO/normal! I// ` | Comment out all lines without "TODO" |
+| `:v/\S/d` | Delete all blank lines |
 
-### Filter Results
+## Range
 
-| Command | Effect |
-|---------|--------|
-| `:v/^#/d` | Keep only comment lines |
-| `:v/pattern/s/old/new/g` | Substitute only on non-matching lines |
-| `:v/^$/normal >>` | Indent all non-empty lines |
-
-## Inverse Logic
-
-### Delete What Doesn't Match
-
-`:v/keep_this/d` is the standard idiom. All lines not containing `keep_this` are deleted, leaving only relevant lines.
-
-### Clean Non-Code
+`:v` accepts a range prefix:
 
 | Command | Effect |
-|---------|--------|
-| `:v/\S/d` | Delete all whitespace-only and blank lines |
-| `:v/[a-zA-Z]/d` | Delete lines containing no letters |
-| `:v/^\s*[^#]/d` | Keep only non-comment lines |
+|---|---|
+| `:%v/pattern/d` | Apply to entire buffer |
+| `:10,20v/pattern/d` | Apply to lines 10-20 |
+| `:'<,'>v/pattern/d` | Apply to visual selection |
 
-## Practical Examples
+## Behavior
 
-### Log Analysis
+1. Scan all lines in the range for `{pattern}`.
+2. Mark lines that do NOT match.
+3. Execute `{command}` on each marked line from top to bottom.
 
-| Command | Effect |
-|---------|--------|
-| `:v/ERROR/d` | Keep only error lines from a log |
-| `:v/2024-01-15/d` | Keep only entries from a specific date |
-| `:v/\[CRITICAL\]/d` | Keep only critical-level entries |
+Lines are marked before execution begins, so deletions do not affect which lines are processed.
 
-### Code Filtering
+## Related
 
-| Command | Effect |
-|---------|--------|
-| `:v/^import/d` | Keep only import statements |
-| `:v/def \|class /d` | Keep only function and class definitions |
-| `:v/^\s*return/d` | Keep only return statements |
-
-### Cleanup
-
-| Command | Effect |
-|---------|--------|
-| `:v/\S/d` | Remove blank lines |
-| `:v/[^[:space:]]/d` | Remove whitespace-only lines |
-| `:v/./d` | Remove empty lines (same as `:g/^$/d`) |
-
-## With Range
-
-### Limit Scope
-
-| Command | Effect |
-|---------|--------|
-| `:1,50v/pattern/d` | Filter within first 50 lines only |
-| `:'<,'>v/keep/d` | Filter within visual selection |
-| `:.,.+20v/data/d` | Filter in next 20 lines |
-
-## Combining Patterns
-
-### OR Logic
-
-Use regex alternation to keep lines matching any term: `:v/error\|warning\|fatal/d` keeps lines containing any of those words.
-
-### Complex Patterns
-
-Keep function and class definitions.
-
-`:v/^\(function\|class\|def\)/d` retains only lines starting with definition keywords.
-
-## With Other Commands
-
-### Print
-
-`:v/pattern/p` prints all lines NOT matching the pattern. Useful for previewing what remains without modifying the buffer.
-
-### Normal Mode
-
-`:v/pattern/normal >>` indents all non-matching lines. `:v/^#/normal I// ` adds `// ` before all non-comment lines.
-
-### Substitute
-
-`:v/^#/s/foo/bar/g` replaces `foo` with `bar` only on non-comment lines. The substitute runs on every line where the `:v` pattern does not match.
-
-## Practical Workflows
-
-### Extract Code
-
-`:v/^\(import\|from\)/d` extracts only import statements from a Python file for review.
-
-### Configuration
-
-`:v/^[^;#]/d` keeps only active (non-commented) lines from an INI or config file.
-
-### Data Processing
-
-`:v/^[0-9]/d` keeps only lines starting with a digit, useful for extracting numeric data rows from mixed-format files.
-
-## Comparison: g vs v
-
-### Global
-
-`:g/pattern/d` acts on lines that MATCH the pattern. It deletes matching lines, leaving non-matches.
-
-### VGlobal
-
-`:v/pattern/d` acts on lines that do NOT match the pattern. It deletes non-matching lines, leaving matches.
-
-### Choose Based on Goal
-
-- More to delete → use `:g`
-- More to keep → use `:v`
-
-## Double Negative
-
-### Keep Everything
-
-`:v` cannot be chained. To apply multiple filters, run them sequentially: first `:v/error/d`, then `:v/2024/d`. Each pass further narrows the remaining lines.
-
-## Complex Filtering
-
-### Multi-Step
-
-Run multiple passes to narrow results. `:v/error/d` then `:v/2024/d` keeps only lines containing both `error` and `2024`.
-
-### Combined
-
-`:v/error.*2024\|2024.*error/d` achieves the same result with a single regex alternation, matching lines with both terms in either order.
-
-## With Marks
-
-### Mark Matching
-
-`:v/pattern/mark a` sets mark `a` on non-matching lines. Only the last non-matching line retains the mark since each execution overwrites it.
+- Global command: [/docs/spec/commands/substitute/global-command.md](/docs/spec/commands/substitute/global-command.md)
+- Substitute: [/docs/spec/commands/substitute/substitute-command.md](/docs/spec/commands/substitute/substitute-command.md)

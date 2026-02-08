@@ -1,150 +1,97 @@
 # Normal Command
 
-Execute normal mode commands from Ex.
+Back: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+
+Execute normal mode keystrokes from the command line.
 
 ## Overview
 
-The `:normal` command executes normal mode commands
-programmatically on lines, enabling batch operations.
+`:normal {keys}` feeds `{keys}` into the editor as if typed in normal mode. This is powerful for scripting repetitive edits.
 
 ## Basic Syntax
 
-`:normal {commands}` executes `{commands}` as if typed
-in normal mode. The commands string is a sequence of
-keystrokes.
+`:normal[!] {keys}`
+
+The `!` modifier bypasses user mappings.
 
 ## Simple Examples
 
-### Single Command
-
-`:normal dd` deletes the current line.
-`:normal 0` moves to column 1.
-
-### Multiple Commands
-
-`:normal 0i// ` inserts `// ` at line start (comments line).
-`:normal ^dw` deletes first word after indentation.
+| Command | Effect |
+|---|---|
+| `:normal dd` | Delete current line |
+| `:normal A;` | Append `;` to current line |
+| `:normal 0i// ` | Insert `// ` at start of current line |
 
 ## With Range
 
-### Multiple Lines
+| Command | Effect |
+|---|---|
+| `:%normal A;` | Append `;` to every line |
+| `:10,20normal dd` | Delete lines 10-20 |
+| `:'<,'>normal @a` | Execute macro `a` on visual selection |
 
-`:%normal A;` appends `;` to every line in the buffer.
-`:10,20normal dd` deletes lines 10-20 (one at a time).
+## Bang Modifier
 
-### Pattern Range
+`:normal! {keys}` ignores user-defined mappings and uses default key meanings.
 
-`:g/TODO/normal dd` deletes all lines containing `TODO`.
-
-## Bang Modifier (!)
-
-### Ignore Mappings
-
-`:normal! dd` uses built-in `dd` regardless of mappings.
-Without `!`, user's custom mappings are applied.
-
-### Recommended
-
-Always use `!` in scripts and macros for predictable
-behavior. Custom mappings can cause unexpected results.
+Always use `!` for robust, predictable behavior independent of user configuration.
 
 ## Special Keys
 
-### Escape Sequence
+Use `\<keyname>` notation or `execute` for special keys:
 
-`<Esc>` cannot be typed literally in the command line.
-Use `execute` to include special keys.
-
-### With Execute
-
-`:execute "normal! i" . variable . "\<Esc>"` inserts
-variable content and escapes. The `\<Esc>` represents
-the escape key in the string.
+| Example | Description |
+|---|---|
+| `:exe "normal! \<C-a>"` | Increment number |
+| `:exe "normal! /pattern\<CR>"` | Search for pattern |
+| `:exe "normal! O\<Esc>"` | Insert blank line above |
 
 ## Common Uses
 
-### Comment Lines
-
-`:%normal! I// ` prepends `// ` to every line.
-`:10,20normal! I# ` comments lines 10-20 with `#`.
-
-### Append to Lines
-
-`:%normal! A;` appends semicolons to all lines.
-`:g/return/normal! A // checked` annotates return lines.
-
-### Delete Characters
-
-`:%normal! x` deletes first character of every line.
-`:%normal! $x` deletes last character of every line.
-
-### Indent
-
-`:%normal! >>` indents all lines by one level.
-`:10,20normal! >>` indents lines 10-20.
+| Pattern | Effect |
+|---|---|
+| `:%normal! I# ` | Comment all lines (prepend `# `) |
+| `:%normal! A,` | Append `,` to all lines |
+| `:%normal! $x` | Remove last character of every line |
+| `:%normal! ==` | Re-indent every line |
 
 ## With Global
 
-### Process Matching Lines
-
-`:g/pattern/normal! @a` runs macro `a` on matching lines.
-`:g/^$/normal! dd` deletes all blank lines.
-
-### Complex Actions
-
-`:g/fn /normal! f(yi(` yanks function parameters on
-each line containing `fn `.
+| Command | Effect |
+|---|---|
+| `:g/TODO/normal! dd` | Delete all lines containing TODO |
+| `:g/^$/normal! O// blank` | Insert comment above blank lines |
 
 ## Macros
 
-### Execute Macro
+`:normal @a` replays macro `a` on each line in the range.
 
-`:%normal! @a` runs macro `a` on every line.
-
-### Record + Apply
-
-1. `qa` — Start recording macro `a`
-2. Edit one line as desired
-3. `q` — Stop recording
-4. `:%normal! @a` — Apply to all lines
+| Command | Effect |
+|---|---|
+| `:%normal @q` | Run macro q on all lines |
+| `:g/pattern/normal @a` | Run macro a on matching lines |
 
 ## Motion Commands
 
-### Navigate and Act
-
-`:normal! gg` moves to the first line.
-`:normal! G` moves to the last line.
-
-### Search
-
-`:normal! /pattern` starts a search (but cannot press
-Enter from within `:normal`). Use `:execute` for this.
+| Command | Effect |
+|---|---|
+| `:normal! gg=G` | Re-indent entire file |
+| `:normal! /foo` | Search for foo |
 
 ## Insert Mode
 
-### Enter and Exit
-
-`:normal! ihello\<Esc>` inserts "hello" and exits insert.
-The `\<Esc>` must be provided via `:execute`.
-
-### Practical
-
-`:execute "normal! Iprefix: \<Esc>"` inserts prefix text.
+`:normal! ifoo` enters insert mode, types `foo`, but does NOT exit insert mode (use `\<Esc>` via `:execute` to add the escape).
 
 ## Visual Mode
 
-### Select and Act
-
-`:normal! viwd` selects inner word then deletes.
-
-### Block Operations
-
-`:normal! V>` selects line and indents (same as `>>`).
+`:normal! viw` enters visual mode and selects a word. Combined with operators: `:normal! viwd` selects a word and deletes it.
 
 ## Operators
 
-### Delete
+`:normal! d$` deletes to end of line. `:normal! gUiw` uppercases current word. All operator-motion combinations work.
 
-`:normal! d$` deletes to end of line.
-`:normal! daw` deletes a word with surrounding space.
-`:normal! d%` deletes to matching bracket.
+## Related
+
+- Execute: [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+- Global command: [/docs/spec/commands/substitute/global-command.md](/docs/spec/commands/substitute/global-command.md)
+- Macros: [/docs/spec/editing/macros/README.md](/docs/spec/editing/macros/README.md)

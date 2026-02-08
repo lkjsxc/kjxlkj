@@ -1,167 +1,94 @@
-# Insert Indentation
+# Insert Mode Indentation
 
-Managing indentation in insert mode.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+
+Indentation controls available in insert mode.
 
 ## Overview
 
-Control indentation while typing with automatic and
-manual methods. Indentation behavior depends on three
-settings: `autoindent`, `smartindent`, and language-specific
-indent expressions.
+Insert mode provides keys for adjusting indentation of the current line. These work alongside auto-indent, smart-indent, and file-type-specific indentation rules.
 
 ## Manual Indentation
 
-### Increase Indent
-
-`<C-t>` inserts one `shiftwidth` of indentation at the
-beginning of the current line without moving the cursor
-position relative to the text.
-
-### Decrease Indent
-
-`<C-d>` removes one `shiftwidth` of indentation from the
-beginning of the current line.
-
-### Remove All Indent
-
-`0<C-d>` removes all indentation from the current line.
-The `0` is consumed by the indent command, not inserted.
-
-### Restore Indent
-
-`^<C-d>` temporarily removes indent for the current line
-and restores it on the next line (useful for labels and
-preprocessor directives).
+| Key | Effect |
+|---|---|
+| `<C-t>` | Increase indent by one `shiftwidth` |
+| `<C-d>` | Decrease indent by one `shiftwidth` |
+| `0<C-d>` | Remove all indentation from current line |
+| `^<C-d>` | Remove indentation temporarily (restored on next line) |
 
 ## Auto-Indent
 
-### Behavior
+When `autoindent` is enabled, pressing `<CR>` copies the indentation of the current line to the new line.
 
-When pressing Enter in insert mode:
-- The new line inherits the indentation of the previous line
-- If `smartindent` is active, indent may increase for
-  block-opening keywords (`{`, `if`, `def`, `fn`)
-- If `indentexpr` is set, it overrides `smartindent`
-
-### Configuration
-
-`autoindent = true` (default: `true`). Copies indent from
-the current line to the new line on `<CR>`.
+| Setting | Default | Description |
+|---|---|---|
+| `autoindent` | `true` | Copy indent from current line to new line |
 
 ## Smart Indent
 
-### Code Awareness
+When `smartindent` is enabled, the editor adjusts indentation based on C-like syntax.
 
-`smartindent = true` adds one `shiftwidth` after lines
-ending with `{` and removes one after `}` at line start.
-Works for C-like languages.
-
-### Keywords
-
-Smart indent increases after: `{`, `if`, `else`, `while`,
-`for`, `do`, `switch`, `case`. Decreases at `}`, `end`.
-Language-specific keywords are configured via `indentexpr`.
+| Trigger | Action |
+|---|---|
+| `{` at end of line | Increase indent on next line |
+| `}` at start of line | Decrease indent of current line |
+| After keyword (`if`, `else`, `for`, `while`, `do`) | Increase indent on next line |
 
 ## Indent Settings
 
-### Tab Width
-
-`tabstop` (integer): display width of a `\t` character.
-Default: 8. Common settings: 2, 4, 8.
-
-### Expand Tabs
-
-`expandtab` (bool): when `true`, pressing `<Tab>` inserts
-spaces instead of a tab character. Default: `false`.
+| Setting | Default | Description |
+|---|---|---|
+| `tabstop` | `8` | Display width of a tab character |
+| `shiftwidth` | `4` | Number of spaces per indent level |
+| `expandtab` | `true` | Use spaces instead of tabs |
+| `softtabstop` | `4` | Number of spaces `<Tab>` inserts |
 
 ## Tab Key Behavior
 
-### Standard
+| Scenario | `<Tab>` inserts |
+|---|---|
+| `expandtab` off | Literal tab character |
+| `expandtab` on | Spaces to next `softtabstop` boundary |
+| `<C-v><Tab>` | Always inserts literal tab |
 
-When `expandtab = false`, `<Tab>` inserts a literal tab
-character (`\t`).
+## Indentation Commands from Normal Mode
 
-### With expandtab
+| Command | Effect |
+|---|---|
+| `>>` | Indent line by `shiftwidth` |
+| `<<` | Unindent line by `shiftwidth` |
+| `={motion}` | Re-indent region using indent expression |
 
-When `expandtab = true`, `<Tab>` inserts `shiftwidth` spaces
-(or enough spaces to reach the next `shiftwidth` boundary).
+## Entering Insert with Indentation
 
-### Literal Tab
-
-`<C-v><Tab>` always inserts a literal tab character,
-regardless of `expandtab` setting.
-
-## Indentation Commands
-
-### From Normal Mode
-
-`>>` / `<<` shift right/left by `shiftwidth`.
-`==` re-indents based on `indentexpr`.
-
-### In Insert Mode
-
-`<C-t>` / `<C-d>` are the insert-mode equivalents.
-
-## Entering Insert
-
-### Indentation Modes
-
-| Command | Indent Behavior |
-|---------|----------------|
-| `o` | Open below, auto-indent the new line |
-| `O` | Open above, auto-indent the new line |
-| `cc` / `S` | Clear line, preserve indent |
-| `i` / `a` | No indent change |
-| `I` | Cursor at first non-blank |
-
-### o/O Behavior
-
-`o` opens a new line below and applies auto-indent rules.
-If the current line ends with `{`, the new line is indented
-one level deeper.
+| Key | Effect |
+|---|---|
+| `o` | Open line below with auto-indent |
+| `O` | Open line above with auto-indent |
+| `S` | Delete line content and auto-indent |
+| `cc` | Change entire line with auto-indent |
 
 ## Auto-Indent Triggers
 
-### After Keywords
-
-Language-specific keywords trigger increased indent.
-For Rust: `fn`, `if`, `else`, `match`, `loop`, `for`,
-`while`, `impl`, `struct`, `enum`.
-
-### After Braces
-
-Opening braces `{`, `(`, `[` increase indent.
-Closing braces `}`, `)`, `]` decrease indent.
+After `{` followed by `<CR>`, the new line is indented by one `shiftwidth`. Typing `}` on a blank line auto-unindents to match the `{`.
 
 ## File Type Settings
 
-### Per Language
+Per-language indentation is configured in filetype settings:
 
-Indent settings are configurable per filetype under
-`[languages.{lang}]` in TOML. Common settings:
-- Rust: `indent_unit = "    "` (4 spaces)
-- Python: `indent_unit = "    "` (4 spaces)
-- JavaScript: `indent_unit = "  "` (2 spaces)
-- Go: `expandtab = false`, `tabstop = 4`
+| Language | `tabstop` | `shiftwidth` | `expandtab` |
+|---|---|---|---|
+| Rust | 4 | 4 | true |
+| Go | 4 | 4 | false |
+| Python | 4 | 4 | true |
+| JavaScript | 2 | 2 | true |
 
 ## Paste Indentation
 
-### Problem
+When `paste` mode is active, auto-indent and smart-indent are disabled to allow pasting pre-formatted text without indentation adjustments.
 
-Pasting text in insert mode with `autoindent` active
-can produce cascading indentation since each pasted
-newline triggers auto-indent.
+## Related
 
-### Solution
-
-`:set paste` before pasting disables auto-indent
-temporarily. `:set nopaste` restores. Alternatively,
-use `<C-r>+` or `p`/`P` from normal mode.
-
-## Indent While Typing
-
-### Break Line
-
-When `<CR>` is pressed in the middle of a line, the new
-line receives auto-indent AND the text after the cursor
-moves to the new line at the indented position.
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Text manipulation: [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)

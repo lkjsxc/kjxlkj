@@ -1,149 +1,69 @@
-# Alternate File (#)
+# Alternate File
 
-Switch between related files.
+Back: [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
+
+Quick switching between the current and alternate (previous) buffer.
 
 ## Overview
 
-The alternate file (`#`) provides quick access to the
-previously edited file. It enables fast toggling between
-two buffers.
+The alternate file is the buffer that was most recently active before the current one. It provides a fast way to toggle between two files.
 
 ## Basic Usage
 
-### Toggle Alternate
-
-`<C-^>` (or `<C-6>` on some terminals) switches between
-the current file and the alternate file.
-
-### With Count
-
-`{count}<C-^>` switches to buffer number `{count}`.
-This overrides the alternate file for the jump.
+| Key | Command | Description |
+|---|---|---|
+| `<C-^>` / `<C-6>` | `:e #` | Switch to alternate file |
+| `{N}<C-^>` | `:e #{N}` | Switch to buffer number N |
 
 ## How It Works
 
-### Automatic Assignment
+The alternate file is updated whenever you switch buffers:
 
-When you switch buffers, the previous buffer becomes
-the alternate file. The alternate is tracked per-window.
-
-### Flow Example
-
-1. Open `main.rs` (current: main.rs, alt: none)
-2. Open `lib.rs` (current: lib.rs, alt: main.rs)
-3. `<C-^>` switches to `main.rs` (current: main.rs, alt: lib.rs)
-4. `<C-^>` switches to `lib.rs` (current: lib.rs, alt: main.rs)
+1. Buffer A is active. Alternate is empty.
+2. Open buffer B. Alternate becomes A.
+3. Open buffer C. Alternate becomes B.
+4. Press `<C-^>`. Switch to B, alternate becomes C.
 
 ## Alternate File Register
 
-### Check Alternate
+The alternate file path is stored in the `#` register.
 
-`:echo @#` displays the alternate file path.
-`<C-g>` shows it in the file info line.
+| Register | Content |
+|---|---|
+| `%` | Current file path |
+| `#` | Alternate file path |
 
-### In Commands
-
-`#` expands to the alternate file path in ex commands:
-`:e #` opens the alternate file.
-`:sp #` opens it in a split.
+These can be used in commands: `:e #` edits the alternate file.
 
 ## Configuration
 
-### Keybindings
-
-| Key | Action |
-|-----|--------|
-| `<C-^>` | Toggle alternate (default) |
-| `<Leader>a` | Toggle alternate (common remap) |
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `alternate.patterns` | array | `[]` | Pattern rules for source/test switching |
 
 ## Alternate Patterns
 
-### Source/Test Switching
+User-defined patterns allow switching between related files:
 
-Configurable patterns in TOML under `[alternate]`:
-rules map source files to their test files and vice versa.
-
-| Source Pattern | Alternate Pattern |
-|----------------|-------------------|
-| `src/{}.rs` | `tests/{}_test.rs` |
-| `src/{}.ts` | `src/{}.test.ts` |
-| `lib/{}.rb` | `spec/{}_spec.rb` |
-
-### Header/Source
-
-For C/C++ projects:
-
-| Source | Alternate |
-|--------|-----------|
-| `src/{}.c` | `include/{}.h` |
-| `src/{}.cpp` | `include/{}.hpp` |
-
-## Related Files
-
-### Multiple Alternates
-
-When alternate patterns produce multiple candidates,
-`:AlternateList` shows them in a picker. The first
-existing file is used as the default alternate.
-
-### Cycle Related
-
-`:AlternateNext` cycles through related files in order.
-`:AlternatePrev` cycles backward.
+| From | To | Pattern |
+|---|---|---|
+| `src/foo.rs` | `tests/foo_test.rs` | `src/*.rs` → `tests/*_test.rs` |
+| `lib/bar.js` | `test/bar.test.js` | `lib/*.js` → `test/*.test.js` |
+| `include/x.h` | `src/x.c` | `include/*.h` → `src/*.c` |
 
 ## Commands
 
-### Alternate Command
-
-`:b #` opens the alternate buffer.
-`:e #` edits the alternate file (reloads from disk).
-
-### Split Alternate
-
-`:sb #` opens the alternate in a horizontal split.
-`:vert sb #` opens in a vertical split.
+| Command | Description |
+|---|---|
+| `:e #` | Edit alternate file |
+| `:sp #` | Split and edit alternate file |
+| `:vs #` | Vertical split and edit alternate file |
 
 ## Fallback Behavior
 
-### Create If Missing
+If the alternate file does not exist on disk, the editor offers to create it (if `alternate.create_missing` is `true`). Otherwise, an error is emitted.
 
-When `alternate.create_if_missing = true`, if the
-alternate file does not exist, a new buffer with that
-path is created (unsaved).
+## Related
 
-### Prompt
-
-When `alternate.create_if_missing = false` (default),
-attempting to switch to a non-existent alternate shows
-"No alternate file".
-
-## Project-Local Patterns
-
-### Per-Project
-
-Alternate patterns in `.kjxlkj.toml` at the project root
-override global patterns.
-
-## Functions
-
-### Get Alternate
-
-`alternate({path})` returns the computed alternate file
-path based on configured patterns.
-
-### Set Alternate
-
-The alternate file is set automatically. To override:
-`:let @# = "path/to/file"`.
-
-## Multiple Alternates
-
-### Alternate List
-
-When multiple alternates exist (e.g. source has both
-unit test and integration test), the list is stored
-internally and accessible via `:AlternateList`.
-
-### Select Alternate
-
-`:Alternate {n}` selects the nth alternate from the list.
+- Buffer management: [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md)
+- Buffer list: [/docs/spec/features/buffer/buffer-list.md](/docs/spec/features/buffer/buffer-list.md)

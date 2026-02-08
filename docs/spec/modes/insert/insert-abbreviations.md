@@ -1,180 +1,99 @@
-# Insert Abbreviations
+# Insert Mode Abbreviations
 
-Automatic text replacements triggered by typing.
+Back: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+
+Abbreviations expand short text into longer replacements when triggered.
 
 ## Overview
 
-Abbreviations automatically expand typed shorthand into
-longer text when followed by a non-keyword character.
-They are defined with the `:abbreviate` (`:ab`) command.
+Abbreviations are defined with `:abbreviate` (or `:ab`). When a trigger character (space, punctuation, `<Esc>`) is typed after an abbreviation keyword, the keyword is replaced with the expansion.
 
 ## Definition Commands
 
-### Create Abbreviation
+| Command | Description |
+|---|---|
+| `:ab[breviate] {lhs} {rhs}` | Define abbreviation: typing `{lhs}` expands to `{rhs}` |
+| `:ia[bbrev] {lhs} {rhs}` | Insert-mode only abbreviation |
+| `:ca[bbrev] {lhs} {rhs}` | Command-line mode only abbreviation |
 
-| Command | Mode | Description |
-|---------|------|-------------|
-| `:abbreviate {lhs} {rhs}` | Insert + Command | Both modes |
-| `:iabbrev {lhs} {rhs}` | Insert only | Insert mode only |
-| `:cabbrev {lhs} {rhs}` | Command only | Command line only |
-
-### Remove Abbreviation
+## Removing Abbreviations
 
 | Command | Description |
-|---------|-------------|
-| `:unabbreviate {lhs}` | Remove from both modes |
-| `:iunabbrev {lhs}` | Remove insert mode only |
-| `:cunabbrev {lhs}` | Remove command line only |
-
-### Clear All
-
-| Command | Description |
-|---------|-------------|
-| `:abclear` | Clear all abbreviations |
-| `:iabclear` | Clear insert mode only |
-| `:cabclear` | Clear command line only |
+|---|---|
+| `:una[bbreviate] {lhs}` | Remove abbreviation |
+| `:iuna[bbrev] {lhs}` | Remove insert-mode abbreviation |
+| `:abc[lear]` | Remove all abbreviations |
 
 ## Trigger
 
-### Trigger Characters
+Abbreviations are triggered when a non-keyword character is typed after the abbreviation text. Trigger characters include: space, `<CR>`, `.`, `,`, `;`, `)`, `<Esc>`.
 
-Abbreviations expand when a non-keyword character is
-typed after the abbreviation text. Trigger characters
-include: space, enter, tab, and punctuation.
-
-### Keyword Characters
-
-Keyword characters are letters, digits, and underscore.
-These do NOT trigger expansion.
-
-### Escape Prevention
-
-Typing `<C-]>` immediately triggers abbreviation
-expansion. `<Esc>` leaves insert mode without expanding.
+The abbreviation must be preceded by a non-keyword character or be at the start of the line.
 
 ## Types
 
-### Full-id
-
-All characters in `lhs` are keyword characters.
-Example: `:iabbrev teh the`
-
-### End-id
-
-Last character of `lhs` is a keyword character but
-earlier characters are not all keyword characters.
-Example: `:iabbrev #i #include`
-
-### Non-id
-
-Last character of `lhs` is not a keyword character.
-Example: `:iabbrev ;; <Esc>`
+| Type | Rule | Example |
+|---|---|---|
+| Full-id | All keyword characters | `teh` → `the` |
+| End-id | Last character is keyword, not first | `#i` → `#include` |
+| Non-id | Last character is not keyword | N/A |
 
 ## Matching
 
-### Case Sensitivity
+Abbreviations are matched case-sensitively. `Teh` does not trigger an abbreviation for `teh`.
 
-Abbreviation matching is case-sensitive by default.
-`:iabbrev Teh The` only matches `Teh`, not `teh`.
-
-### Word Boundary
-
-The abbreviation must be preceded by a non-keyword
-character or be at the start of a line. This prevents
-expansion inside words.
+The match requires a word boundary before the abbreviation text.
 
 ## Expression Abbreviations
 
-### Dynamic Replacement
+| Command | Description |
+|---|---|
+| `:iab <expr> {lhs} {expr}` | The `{expr}` is evaluated at trigger time |
 
-Using `<expr>` flag allows dynamic expansion:
-`:iabbrev <expr> dt strftime("%Y-%m-%d")`
-
-### Evaluation
-
-The `rhs` is evaluated as a script expression each
-time the abbreviation triggers. The result string
-replaces the typed text.
+Expression abbreviations allow dynamic expansion (e.g., inserting current date).
 
 ## Special Keys
 
-### Key Notation in RHS
+Key notation can be used in the right-hand side:
 
-| Notation | Effect |
-|----------|--------|
-| `<CR>` | Newline |
-| `<Esc>` | Escape (leave insert) |
-| `<C-o>` | Insert-normal command |
+| Notation | Key |
+|---|---|
+| `<CR>` | Enter/newline |
+| `<Tab>` | Tab |
 | `<BS>` | Backspace |
-
-### Multi-line
-
-Use `<CR>` in `rhs` to create multi-line expansions.
+| `<C-o>` | Insert-normal escape |
 
 ## Listing
 
-### Show All
+| Command | Description |
+|---|---|
+| `:ab` | List all abbreviations |
+| `:iab` | List insert-mode abbreviations |
+| `:cab` | List command-line abbreviations |
 
-`:abbreviate` with no arguments lists all abbreviations.
-
-### Output Format
-
-Output shows mode indicator, lhs, and rhs:
-`i  teh          the`
-`!  btw          by the way`
-
-### Filter
-
-`:abbreviate {prefix}` lists only abbreviations starting
-with `{prefix}`.
+Output shows the mode flag, LHS, and RHS.
 
 ## Buffer-Local
 
-### Local Abbreviations
+| Command | Description |
+|---|---|
+| `:iab <buffer> {lhs} {rhs}` | Abbreviation only for current buffer |
 
-`:iabbrev <buffer> lhs rhs` creates a buffer-local
-abbreviation that only applies in the current buffer.
+Buffer-local abbreviations take priority over global ones.
 
-### Use Cases
+## No-Remap
 
-Buffer-local abbreviations are useful for filetype-specific
-expansions (e.g., language keywords, common patterns).
+| Command | Description |
+|---|---|
+| `:inoreab {lhs} {rhs}` | Non-recursive abbreviation |
 
-## No-remap
-
-### Recursive
-
-By default, abbreviations may trigger other abbreviations
-recursively.
-
-### Non-recursive
-
-`:inoreabbrev lhs rhs` prevents recursive expansion.
-Always prefer `noreabbrev` variants to avoid surprises.
+Non-recursive abbreviations do not trigger further abbreviation expansion inside the replacement text.
 
 ## Undo
 
-### Undo Expansion
+`<C-]>` triggers abbreviation expansion without inserting a character. Pressing `u` after expansion undoes the expansion and restores the original text.
 
-After an abbreviation expands, pressing `<C-z>` or
-`u` (after returning to normal mode) undoes the expansion
-as a single undo unit.
+## Related
 
-### Inline Undo
-
-`<C-w>` in insert mode may delete back through the
-expanded text, but this is word-by-word, not expansion-aware.
-
-## Configuration
-
-### In Config File
-
-Abbreviations are stored in config as:
-
-`[abbreviations.insert]` section with `lhs = "rhs"` pairs.
-
-### Loading
-
-Abbreviations from config are loaded at startup.
-Buffer-local abbreviations are applied via filetype
-configuration.
+- Insert mode: [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- Completion abbreviations: [/docs/spec/modes/insert/completion/insert-abbreviations.md](/docs/spec/modes/insert/completion/insert-abbreviations.md)

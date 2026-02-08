@@ -1,124 +1,51 @@
-# Lookahead and Lookbehind
+# Lookaround
 
-Zero-width assertions for matching based on surrounding context.
+Back: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
+
+Zero-width assertions that match based on surrounding text without consuming it.
 
 ## Overview
 
-Lookaround assertions match a position, not text. They check what's ahead or behind without consuming characters.
+Lookaround atoms assert that certain text exists (or does not exist) ahead of or behind the current position, without including that text in the match.
 
-| Type | Syntax | Meaning |
-|------|--------|---------|
-| Positive lookahead | `\(pattern\)\@=` | Followed by pattern |
-| Negative lookahead | `\(pattern\)\@!` | Not followed by pattern |
-| Positive lookbehind | `\(pattern\)\@<=` | Preceded by pattern |
-| Negative lookbehind | `\(pattern\)\@<!` | Not preceded by pattern |
+## Lookahead
 
-## Positive Lookahead
+| Atom | Name | Meaning |
+|---|---|---|
+| `\(pattern\)\@=` | Positive lookahead | Succeeds if `pattern` matches ahead |
+| `\(pattern\)\@!` | Negative lookahead | Succeeds if `pattern` does NOT match ahead |
 
-Match only if followed by pattern:
+## Lookbehind
 
+| Atom | Name | Meaning |
+|---|---|---|
+| `\(pattern\)\@<=` | Positive lookbehind | Succeeds if `pattern` matches behind |
+| `\(pattern\)\@<!` | Negative lookbehind | Succeeds if `pattern` does NOT match behind |
 
-Matches: "foo" in "foobar"
-Does not match: "foo" in "foobaz"
+## Performance note
 
-### Use Cases
+Lookbehind with variable-length patterns can be expensive. The regex engine must try all possible lengths. Use `\@123<=` to limit the maximum lookbehind width to 123 bytes.
 
+## Examples
 
-## Negative Lookahead
+| Pattern | Matches |
+|---|---|
+| `foo\(bar\)\@=` | `foo` only when followed by `bar` |
+| `foo\(bar\)\@!` | `foo` only when NOT followed by `bar` |
+| `\(foo\)\@<=bar` | `bar` only when preceded by `foo` |
+| `\(foo\)\@<!bar` | `bar` only when NOT preceded by `foo` |
 
-Match only if NOT followed by pattern:
+## Match boundary interaction
 
+Lookaround atoms interact with `\zs` and `\ze`:
 
-Matches: "foo" in "foobaz"
-Does not match: "foo" in "foobar"
+| Pattern | Matches | Explanation |
+|---|---|---|
+| `\(TODO\)\@<=:.*` | `:...` after `TODO` | Lookbehind for `TODO`, match starts at `:` |
+| `.*\ze\(;\)` | Text before `;` | Lookahead for `;`, match ends before it |
 
-### Use Cases
+## Related
 
-
-## Positive Lookbehind
-
-Match only if preceded by pattern:
-
-
-Matches: "bar" in "foobar"
-Does not match: "bar" in "bazbar"
-
-### Use Cases
-
-
-## Negative Lookbehind
-
-Match only if NOT preceded by pattern:
-
-
-Matches: "bar" in "bazbar"
-Does not match: "bar" in "foobar"
-
-### Use Cases
-
-
-## Very Magic Syntax
-
-| Normal | Very Magic (\v) |
-|--------|-----------------|
-| `\(pat\)\@=` | `(pat)@=` |
-| `\(pat\)\@!` | `(pat)@!` |
-| `\(pat\)\@<=` | `(pat)@<=` |
-| `\(pat\)\@<!` | `(pat)@<!` |
-
-
-## Using \zs and \ze Instead
-
-Often simpler alternative:
-
-
-### Comparison
-
-| Task | Lookaround | \zs/\ze |
-|------|------------|---------|
-| Word before ( | `/\w\+\((\)\@=` | `/\w\+\ze(` |
-| After $ | `/\(\$\)\@<=\w\+` | `/\$\zs\w\+` |
-| Between " " | Complex | `/".\{-}"` |
-
-## Combining Lookarounds
-
-### Both Ahead and Behind
-
-
-Matches: "bar" in "foobarbaz"
-
-### Multiple Conditions
-
-
-Matches: "include" not after #, before .h
-
-## Practical Examples
-
-### Match Function Name
-
-
-### Match Variable Assignment
-
-
-### Match Import Path
-
-
-### Match in Comments
-
-
-## Performance Considerations
-
-| Type | Performance |
-|------|-------------|
-| Lookahead | Fast (linear) |
-| Lookbehind | Slower (variable length) |
-| Nested | Slow |
-| With `*` | Very slow |
-
-### Optimization Tips
-
-
-## Fixed-Width Constraint
-
-Lookbehind requires fixed-width pattern:
-
+- Regex atoms: [/docs/spec/editing/regex/regex-atoms.md](/docs/spec/editing/regex/regex-atoms.md)
+- Grouping: [/docs/spec/editing/regex/grouping-refs.md](/docs/spec/editing/regex/grouping-refs.md)
+- Quantifiers: [/docs/spec/editing/regex/quantifiers.md](/docs/spec/editing/regex/quantifiers.md)
