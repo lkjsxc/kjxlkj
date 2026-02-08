@@ -14,9 +14,13 @@ use kjxlkj_core_types::{
 };
 
 use crate::autocmd::AutoCmdRegistry;
+use crate::completion::CompletionPopup;
 use crate::editor_tabs::TabPage;
+use crate::floating::FloatRegistry;
 use crate::mappings::MappingRegistry;
 use crate::search::SearchState;
+use crate::tags::TagStack;
+use crate::user_commands::UserCommandRegistry;
 use crate::{BufferState, WindowState};
 
 /// A stored mark: buffer id + cursor position.
@@ -115,6 +119,14 @@ pub struct EditorState {
     pub active_tab: usize,
     /// Next tab ID counter.
     pub next_tab_id: u64,
+    /// Floating window registry.
+    pub float_registry: FloatRegistry,
+    /// User-defined commands.
+    pub user_commands: UserCommandRegistry,
+    /// Tag stack for navigation.
+    pub tag_stack: TagStack,
+    /// Completion popup state.
+    pub completion: CompletionPopup,
 }
 
 impl EditorState {
@@ -172,6 +184,10 @@ impl EditorState {
             tabs: vec![TabPage::new(TabId(1), win_id)],
             active_tab: 0,
             next_tab_id: 2,
+            float_registry: FloatRegistry::new(),
+            user_commands: UserCommandRegistry::new(),
+            tag_stack: TagStack::new(),
+            completion: CompletionPopup::new(),
         }
     }
 

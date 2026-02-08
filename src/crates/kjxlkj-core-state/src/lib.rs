@@ -7,6 +7,7 @@ mod buffer;
 #[cfg(test)]
 mod buffer_tests;
 mod command_dispatch;
+pub(crate) mod completion;
 mod editor;
 mod editor_actions;
 mod editor_actions2;
@@ -19,7 +20,9 @@ mod editor_cmdline;
 mod editor_comments;
 mod editor_config;
 mod editor_file_ops;
+pub(crate) mod file_explorer;
 pub(crate) mod filetype;
+pub(crate) mod floating;
 mod editor_global_sort;
 mod editor_insert;
 mod editor_jumplist;
@@ -43,6 +46,8 @@ mod editor_window_ops;
 mod editor_window_resize;
 mod search;
 mod session;
+pub(crate) mod tags;
+pub(crate) mod user_commands;
 mod viewport;
 mod window;
 
