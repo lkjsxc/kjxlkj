@@ -1,0 +1,10 @@
+[package]
+name = "kjxlkj-service-terminal"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+tokio = { workspace = true }
+nix = { workspace = true }
+compact_str = { workspace = true }

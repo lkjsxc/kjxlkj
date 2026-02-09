@@ -1,0 +1,9 @@
+[package]
+name = "kjxlkj-core-types"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+compact_str = { workspace = true }
+bitflags = { workspace = true }
+serde = { workspace = true }

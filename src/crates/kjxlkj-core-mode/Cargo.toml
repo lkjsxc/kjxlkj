@@ -1,0 +1,9 @@
+[package]
+name = "kjxlkj-core-mode"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }

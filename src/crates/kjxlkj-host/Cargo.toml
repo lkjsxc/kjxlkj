@@ -1,0 +1,10 @@
+[package]
+name = "kjxlkj-host"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+crossterm = { workspace = true }
+tokio = { workspace = true }
+nix = { workspace = true }
