@@ -7,6 +7,7 @@ use crate::editor::EditorState;
 impl EditorState {
     pub(crate) fn enter_insert(&mut self) {
         self.mode = Mode::Insert;
+        self.last_inserted_text.clear();
         let cursor = self.windows.focused().cursor;
         let version = self.buffers.current().version;
         let content = self.buffers.current().content.clone();
@@ -80,6 +81,7 @@ impl EditorState {
     }
 
     pub(crate) fn insert_char(&mut self, c: char) {
+        self.last_inserted_text.push(c);
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get_mut(buf_id) {
@@ -91,6 +93,7 @@ impl EditorState {
     }
 
     pub(crate) fn insert_newline(&mut self) {
+        self.last_inserted_text.push('\n');
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get_mut(buf_id) {

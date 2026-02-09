@@ -21,20 +21,32 @@ impl EditorState {
     }
 
     /// Load configuration from a specific path.
+    /// Supports [section] headers; keys become "section.key".
     pub fn load_config_file(&mut self, path: &str) {
         let content = match std::fs::read_to_string(path) {
             Ok(c) => c,
             Err(_) => return,
         };
+        let mut section = String::new();
         for line in content.lines() {
             let trimmed = line.trim();
             if trimmed.is_empty() || trimmed.starts_with('#') {
                 continue;
             }
+            // Section header: [section]
+            if trimmed.starts_with('[') && trimmed.ends_with(']') {
+                section = trimmed[1..trimmed.len() - 1].trim().to_string();
+                continue;
+            }
             if let Some((key, value)) = trimmed.split_once('=') {
                 let key = key.trim();
                 let value = value.trim();
-                self.apply_config_value(key, value);
+                let full_key = if section.is_empty() {
+                    key.to_string()
+                } else {
+                    format!("{}.{}", section, key)
+                };
+                self.apply_config_value(&full_key, value);
             }
         }
     }
@@ -49,6 +61,15 @@ impl EditorState {
         // Try integer.
         if let Ok(n) = value.parse::<usize>() {
             self.options.set(key, crate::options::OptionValue::Int(n));
+            return;
+        }
+        // Array value: [a, b, c] → stored as comma-separated string.
+        if value.starts_with('[') && value.ends_with(']') {
+            let inner = &value[1..value.len() - 1];
+            let items: Vec<&str> = inner.split(',').map(|s| s.trim()).collect();
+            let joined = items.join(",");
+            self.options
+                .set(key, crate::options::OptionValue::Str(joined));
             return;
         }
         // Strip quotes for string values.

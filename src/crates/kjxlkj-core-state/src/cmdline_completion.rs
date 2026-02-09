@@ -87,13 +87,21 @@ impl EditorState {
                 // Context-aware completion after a space.
                 self.build_arg_candidates();
             } else {
-                // Command name completion.
+                // Command name completion (builtin + user-defined).
                 let prefix = content.to_string();
-                let matches: Vec<String> = COMMANDS
+                let mut matches: Vec<String> = COMMANDS
                     .iter()
                     .filter(|c| c.starts_with(&prefix))
                     .map(|c| c.to_string())
                     .collect();
+                // Add user-defined commands.
+                for cmd in self.user_commands.list() {
+                    if cmd.name.starts_with(&prefix) {
+                        matches.push(cmd.name.clone());
+                    }
+                }
+                matches.sort();
+                matches.dedup();
                 if matches.is_empty() {
                     return;
                 }

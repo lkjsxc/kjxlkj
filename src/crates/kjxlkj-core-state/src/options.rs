@@ -51,6 +51,8 @@ impl OptionStore {
         self.set("incsearch", OptionValue::Bool(true));
         self.set("autoindent", OptionValue::Bool(true));
         self.set("scrolloff", OptionValue::Int(0));
+        self.set("textwidth", OptionValue::Int(79));
+        self.set("formatoptions", OptionValue::Str("tcq".to_string()));
     }
 
     /// Set an option value.

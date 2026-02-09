@@ -8,13 +8,12 @@ use crate::editor::EditorState;
 impl EditorState {
     /// Process a key press.
     pub fn handle_key(&mut self, key: Key) {
-        // If recording a macro, intercept `q` to stop recording.
+        // Intercept `q` to stop macro recording.
         if self.is_recording() && Self::is_q_key(&key) {
             self.stop_recording();
             return;
         }
-        // Record the key for macro playback (before dispatch).
-        self.record_key(&key);
+        self.record_key(&key); // record for macro playback
 
         // Pending prefix (m, g, z, ", ', `, q, @) bypasses transition.
         if matches!(self.mode, Mode::Normal) && self.dispatch.has_pending() {
@@ -64,15 +63,12 @@ impl EditorState {
     }
 
     fn compute_hlsearch(&self) -> Vec<(usize, usize, usize)> {
-        if !self.options.get_bool("hlsearch") || !self.search.active {
-            return Vec::new();
-        }
-        let pat = match &self.search.pattern {
-            Some(p) if !p.is_empty() => p.clone(),
+        let active = self.options.get_bool("hlsearch") && self.search.active;
+        let pat = match (&self.search.pattern, active) {
+            (Some(p), true) if !p.is_empty() => p.clone(),
             _ => return Vec::new(),
         };
-        let buf_id = self.current_buffer_id();
-        let buf = match self.buffers.get(buf_id) {
+        let buf = match self.buffers.get(self.current_buffer_id()) {
             Some(b) => b,
             None => return Vec::new(),
         };
@@ -126,6 +122,13 @@ impl EditorState {
                 };
                 self.marks.set_last_change(mp);
                 self.marks.set_last_insert(mp);
+                if !self.last_inserted_text.is_empty() {
+                    let t = self.last_inserted_text.clone();
+                    self.registers.set(
+                        kjxlkj_core_edit::RegisterName::LastInserted,
+                        kjxlkj_core_edit::Register::new(t, false),
+                    );
+                }
                 let cursor = &mut self.windows.focused_mut().cursor;
                 if cursor.grapheme > 0 {
                     cursor.grapheme -= 1;

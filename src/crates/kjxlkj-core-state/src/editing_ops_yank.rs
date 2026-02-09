@@ -103,6 +103,21 @@ impl EditorState {
     pub(crate) fn yank_lines(&mut self, count: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
+        let bid = buf_id.0 as usize;
+        // Set [ ] marks for yanked range.
+        let sm = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: cursor.line,
+            col: 0,
+        };
+        let end_l = (cursor.line + count).saturating_sub(1);
+        let em = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: end_l,
+            col: 0,
+        };
+        self.marks.set_change_start(sm);
+        self.marks.set_change_end(em);
         if let Some(buf) = self.buffers.get(buf_id) {
             let start_line = cursor.line;
             let end_line = (start_line + count).min(buf.content.len_lines());

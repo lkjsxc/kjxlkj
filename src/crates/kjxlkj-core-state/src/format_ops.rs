@@ -7,7 +7,12 @@ use crate::editor::EditorState;
 
 impl EditorState {
     /// Format (re-wrap) a range of lines at textwidth.
+    /// Respects formatoptions: 'q' must be present for gq to work.
     pub(crate) fn format_lines(&mut self, start: usize, end: usize) {
+        let fo = self.options.get_str("formatoptions").to_string();
+        if !fo.contains('q') {
+            return; // gq formatting disabled
+        }
         let tw = self.get_textwidth();
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;

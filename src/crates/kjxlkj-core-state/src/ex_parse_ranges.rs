@@ -1,7 +1,4 @@
-//! Rich range parsing with pattern and mark support.
-//!
-//! Extends basic range parsing to handle `/pattern/`,
-//! `?pattern?`, and `'{mark}` range addresses.
+//! Rich range parsing: /pattern/, ?pattern?, '{mark}, +N/-N addresses.
 
 use crate::ex_parse::{parse_offset, ExRange};
 
@@ -134,6 +131,12 @@ fn parse_address_ctx<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<usiz
             let l = (line as isize + offset).max(0) as usize;
             return (Some(l), rest);
         }
+    }
+    // Bare +N or -N → current_line ± offset.
+    if first == b'+' || first == b'-' {
+        let (offset, rest) = parse_offset(input);
+        let l = (ctx.current_line as isize + offset).max(0) as usize;
+        return (Some(l), rest);
     }
     (None, input)
 }

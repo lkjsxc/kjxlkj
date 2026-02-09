@@ -57,6 +57,10 @@ pub struct EditorState {
     pub(crate) last_ft: Option<(char, char)>,
     /// Text-object prefix: 'i' (inner) or 'a' (around) in op-pending.
     pub(crate) text_obj_prefix: Option<char>,
+    /// Macro recursion depth counter.
+    pub(crate) macro_depth: usize,
+    /// Last inserted text for . register.
+    pub(crate) last_inserted_text: String,
 }
 
 impl EditorState {
@@ -95,6 +99,8 @@ impl EditorState {
             last_macro: None,
             last_ft: None,
             text_obj_prefix: None,
+            macro_depth: 0,
+            last_inserted_text: String::new(),
         }
     }
 

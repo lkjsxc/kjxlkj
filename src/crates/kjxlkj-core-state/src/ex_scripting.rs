@@ -165,6 +165,11 @@ impl EditorState {
                 lines.push(format!("\"{i}   {}", truncate(&s, 40)));
             }
         }
+        // Last-inserted text (. register).
+        if let Some(r) = self.registers.get(RegisterName::LastInserted) {
+            let s = r.content.replace('\n', "^J");
+            lines.push(format!("\".   {}", truncate(&s, 40)));
+        }
         self.notify_info(&lines.join("\n"));
     }
 

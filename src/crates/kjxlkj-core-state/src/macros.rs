@@ -72,7 +72,12 @@ impl EditorState {
 
     /// Play back the macro stored in the given register.
     /// `count` is the number of times to replay.
+    /// Enforces a maximum recursion depth of 100.
     pub(crate) fn play_macro(&mut self, reg: char, count: usize) {
+        const MAX_MACRO_DEPTH: usize = 100;
+        if self.macro_depth >= MAX_MACRO_DEPTH {
+            return;
+        }
         let reg = if reg == '@' {
             match self.last_macro {
                 Some(r) => r,
@@ -86,11 +91,16 @@ impl EditorState {
             None => return,
         };
         self.last_macro = Some(reg);
+        self.macro_depth += 1;
         for _ in 0..count {
+            if self.macro_depth > MAX_MACRO_DEPTH {
+                break;
+            }
             for key in &keys {
                 self.handle_key(key.clone());
             }
         }
+        self.macro_depth -= 1;
     }
 
     /// Check if a key is the bare `q` key (no modifiers).
