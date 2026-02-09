@@ -138,7 +138,34 @@ impl EditorState {
     }
 
     pub(crate) fn handle_list_registers(&mut self) {
-        self.notify_info("Registers: (use :reg to view)");
+        use kjxlkj_core_edit::RegisterName;
+        let mut lines = Vec::new();
+        lines.push("--- Registers ---".to_string());
+        // Show unnamed.
+        if let Some(r) = self.registers.get_unnamed() {
+            let s = r.content.replace('\n', "^J");
+            lines.push(format!("\"\"   {}", truncate(&s, 40)));
+        }
+        // Named a-z.
+        for c in 'a'..='z' {
+            let name = RegisterName::Named(c);
+            if let Some(r) = self.registers.get(name) {
+                let s = r.content.replace('\n', "^J");
+                lines.push(format!("\"{c}   {}", truncate(&s, 40)));
+            } else if let Some(keys) = self.macro_store.get(&c) {
+                let s: String = keys.iter().map(macro_key_char).collect();
+                lines.push(format!("\"{c}   {}", truncate(&s, 40)));
+            }
+        }
+        // Numbered 0-9.
+        for i in 0..=9u8 {
+            let name = RegisterName::Numbered(i);
+            if let Some(r) = self.registers.get(name) {
+                let s = r.content.replace('\n', "^J");
+                lines.push(format!("\"{i}   {}", truncate(&s, 40)));
+            }
+        }
+        self.notify_info(&lines.join("\n"));
     }
 
     pub(crate) fn handle_set_command(&mut self, args: &str) {
@@ -147,5 +174,22 @@ impl EditorState {
             Ok(None) => {}
             Err(e) => self.notify_error(&e),
         }
+    }
+}
+
+fn truncate(s: &str, max: usize) -> &str {
+    if s.len() <= max {
+        s
+    } else {
+        &s[..max]
+    }
+}
+
+fn macro_key_char(key: &kjxlkj_core_types::Key) -> char {
+    match &key.code {
+        kjxlkj_core_types::KeyCode::Char(c) => *c,
+        kjxlkj_core_types::KeyCode::Enter => '\n',
+        kjxlkj_core_types::KeyCode::Esc => '\x1b',
+        _ => '?',
     }
 }

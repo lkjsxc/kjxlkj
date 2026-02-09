@@ -168,7 +168,7 @@ impl EditorState {
         }
     }
 
-    fn delete_range_raw(
+    pub(crate) fn delete_range_raw(
         &mut self,
         buf_id: kjxlkj_core_types::BufferId,
         sl: usize,

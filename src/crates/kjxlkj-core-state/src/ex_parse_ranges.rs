@@ -46,6 +46,22 @@ pub fn parse_range_ctx<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<Ex
                 rest2,
             );
         }
+        // Semicolon: set context current_line to start before parsing rhs.
+        if let Some(rest2) = rest1.strip_prefix(';') {
+            let rest2 = rest2.trim_start();
+            let ctx2 = RangeContext {
+                current_line: start,
+                total_lines: ctx.total_lines,
+                lines: ctx.lines,
+                mark_line: ctx.mark_line,
+                last_search: ctx.last_search,
+            };
+            let (addr2, rest3) = parse_address_ctx(rest2, &ctx2);
+            if let Some(end) = addr2 {
+                return (Some(ExRange { start, end }.clamp(ctx.total_lines)), rest3);
+            }
+            return (Some(ExRange::single(start).clamp(ctx.total_lines)), rest2);
+        }
         return (Some(ExRange::single(start).clamp(ctx.total_lines)), rest1);
     }
     (None, input)

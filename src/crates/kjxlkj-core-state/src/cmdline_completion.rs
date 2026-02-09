@@ -81,25 +81,27 @@ impl EditorState {
             return;
         }
         let content = &self.cmdline.content;
-        // Only complete first word.
-        if content.contains(' ') {
-            return;
-        }
         let cs = &mut self.cmdline.completion;
         if cs.candidates.is_empty() {
-            // Build candidate list from prefix.
-            let prefix = content.to_string();
-            let matches: Vec<String> = COMMANDS
-                .iter()
-                .filter(|c| c.starts_with(&prefix))
-                .map(|c| c.to_string())
-                .collect();
-            if matches.is_empty() {
-                return;
+            if content.contains(' ') {
+                // File-path completion after a space.
+                self.build_file_candidates();
+            } else {
+                // Command name completion.
+                let prefix = content.to_string();
+                let matches: Vec<String> = COMMANDS
+                    .iter()
+                    .filter(|c| c.starts_with(&prefix))
+                    .map(|c| c.to_string())
+                    .collect();
+                if matches.is_empty() {
+                    return;
+                }
+                let cs = &mut self.cmdline.completion;
+                cs.prefix = prefix;
+                cs.candidates = matches;
+                cs.index = Some(0);
             }
-            cs.prefix = prefix;
-            cs.candidates = matches;
-            cs.index = Some(0);
         } else {
             // Cycle forward.
             let next = match cs.index {
@@ -108,9 +110,18 @@ impl EditorState {
             };
             cs.index = Some(next);
         }
+        let cs = &self.cmdline.completion;
         if let Some(idx) = cs.index {
-            let word = cs.candidates[idx].clone();
-            self.cmdline.content = word;
+            if cs.prefix.contains(' ') {
+                // File completion: replace only the path part.
+                let pfx_space = cs.prefix.rfind(' ').unwrap_or(0) + 1;
+                let before = &cs.prefix[..pfx_space];
+                let word = &cs.candidates[idx];
+                self.cmdline.content = format!("{}{}", before, word);
+            } else {
+                let word = cs.candidates[idx].clone();
+                self.cmdline.content = word;
+            }
             self.cmdline.cursor_pos = self.cmdline.content.len();
         }
     }
@@ -135,5 +146,45 @@ impl EditorState {
     /// Reset completion when user types a new character.
     pub(crate) fn cmdline_reset_completion(&mut self) {
         self.cmdline.completion.clear();
+    }
+
+    /// Build file-path candidates from the path prefix.
+    fn build_file_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let (dir, prefix) = if let Some(slash) = partial.rfind('/') {
+            (&partial[..=slash], &partial[slash + 1..])
+        } else {
+            ("./", partial)
+        };
+        let entries = match std::fs::read_dir(dir) {
+            Ok(e) => e,
+            Err(_) => return,
+        };
+        let mut matches: Vec<String> = Vec::new();
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with(prefix) {
+                let path = if dir == "./" {
+                    name.clone()
+                } else {
+                    format!("{}{}", dir, name)
+                };
+                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                    matches.push(format!("{}/", path));
+                } else {
+                    matches.push(path);
+                }
+            }
+        }
+        matches.sort();
+        if matches.is_empty() {
+            return;
+        }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content;
+        cs.candidates = matches;
+        cs.index = Some(0);
     }
 }

@@ -2,7 +2,7 @@
 //! numbered register rotation, macro append,
 //! last-search shorthand in ranges.
 
-use kjxlkj_core_types::{Key, KeyCode, Mode, Modifier};
+use kjxlkj_core_types::{Key, Mode};
 
 use crate::editor::EditorState;
 

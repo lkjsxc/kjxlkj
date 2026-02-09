@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod tests {
     use crate::editor::EditorState;
-    use kjxlkj_core_types::{Key, KeyCode, Mode, Modifier, Operator};
+    use kjxlkj_core_types::{Key, Mode, Operator};
 
     fn editor_with(text: &str) -> EditorState {
         let mut e = EditorState::new(80, 24);

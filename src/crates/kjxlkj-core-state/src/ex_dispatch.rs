@@ -122,6 +122,16 @@ impl EditorState {
             }
             "marks" => self.handle_list_marks(),
             "registers" | "reg" => self.handle_list_registers(),
+            "mksession" => self.handle_mksession(None),
+            _ if rest.starts_with("mksession ") => {
+                let path = rest.strip_prefix("mksession ").unwrap().trim();
+                self.handle_mksession(Some(path));
+            }
+            "source" => self.notify_error("E471: Argument required"),
+            _ if rest.starts_with("source ") => {
+                let path = rest.strip_prefix("source ").unwrap().trim();
+                self.handle_source(path);
+            }
             _ if rest == "set" || rest.starts_with("set ") || rest.starts_with("set\t") => {
                 let args = rest.strip_prefix("set").unwrap_or("").trim();
                 self.handle_set_command(args);

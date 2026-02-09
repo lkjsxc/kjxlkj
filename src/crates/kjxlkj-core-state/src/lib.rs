@@ -11,6 +11,7 @@ mod cmdline_completion;
 mod cmdline_dispatch;
 #[cfg(test)]
 mod completion_range_tests;
+mod config_loader;
 pub mod contracts;
 mod cursor_ops;
 mod cursor_ops_findchar;
@@ -27,6 +28,7 @@ pub mod editor;
 mod editor_actions;
 #[cfg(test)]
 mod editor_actions_tests;
+mod editor_mode_dispatch;
 mod editor_modes;
 mod editor_search_marks;
 #[cfg(test)]
@@ -46,6 +48,7 @@ pub mod ex_parse_substitute;
 #[cfg(test)]
 mod ex_parse_tests;
 mod ex_scripting;
+mod ex_session_cmds;
 mod ex_substitute;
 #[cfg(test)]
 mod findchar_tests;
@@ -92,6 +95,8 @@ mod visual_ops;
 mod visual_ops_tests;
 #[cfg(test)]
 mod wave7_tests;
+#[cfg(test)]
+mod wave8_tests;
 mod window_tree;
 mod window_tree_layout;
 

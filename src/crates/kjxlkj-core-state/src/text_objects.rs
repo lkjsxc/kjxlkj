@@ -26,7 +26,8 @@ pub fn resolve_text_object(
     rope: &Rope,
 ) -> Option<TextObjectRange> {
     match obj {
-        'w' | 'W' => resolve_word(kind, pos, rope),
+        'w' => resolve_word(kind, pos, rope, false),
+        'W' => resolve_word(kind, pos, rope, true),
         'p' => resolve_paragraph(kind, pos, rope),
         '(' | ')' | 'b' | '[' | ']' | '{' | '}' | 'B' | '<' | '>' | '"' | '\'' | '`' => {
             crate::text_objects_delim::resolve_delim_object(kind, obj, pos, rope)
@@ -35,7 +36,12 @@ pub fn resolve_text_object(
     }
 }
 
-fn resolve_word(kind: TextObjectKind, pos: CursorPosition, rope: &Rope) -> Option<TextObjectRange> {
+fn resolve_word(
+    kind: TextObjectKind,
+    pos: CursorPosition,
+    rope: &Rope,
+    bigword: bool,
+) -> Option<TextObjectRange> {
     if pos.line >= rope.len_lines() {
         return None;
     }
@@ -45,7 +51,13 @@ fn resolve_word(kind: TextObjectKind, pos: CursorPosition, rope: &Rope) -> Optio
     if chars.is_empty() {
         return None;
     }
-    let is_word_char = |c: char| c.is_alphanumeric() || c == '_';
+    let is_word_char = |c: char| -> bool {
+        if bigword {
+            !c.is_whitespace()
+        } else {
+            c.is_alphanumeric() || c == '_'
+        }
+    };
     let cur = chars[g];
     // Find word boundary.
     let (mut ws, mut we) = (g, g);

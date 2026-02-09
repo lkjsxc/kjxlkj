@@ -1,5 +1,5 @@
 /// Mode transitions and key dispatch for EditorState.
-use kjxlkj_core_mode::{KeyDispatchResult, ModeTransition};
+use kjxlkj_core_mode::ModeTransition;
 use kjxlkj_core_types::{CommandKind, ContentSource, Key, Mode};
 use kjxlkj_core_ui::{EditorSnapshot, TabSnapshot};
 
@@ -88,6 +88,15 @@ impl EditorState {
             }
             (Mode::Insert, Mode::Normal) => {
                 self.buffers.current_mut().undo_tree.end_group();
+                let cursor = self.windows.focused().cursor;
+                let bid = self.current_buffer_id().0 as usize;
+                let mp = crate::marks::MarkPosition {
+                    buffer_id: bid,
+                    line: cursor.line,
+                    col: cursor.grapheme,
+                };
+                self.marks.set_last_change(mp);
+                self.marks.set_last_insert(mp);
                 let cursor = &mut self.windows.focused_mut().cursor;
                 if cursor.grapheme > 0 {
                     cursor.grapheme -= 1;
@@ -125,6 +134,28 @@ impl EditorState {
                 self.g_prefix = false;
             }
             (Mode::Visual(_), Mode::Normal) => {
+                if let Some(anchor) = self.visual_anchor {
+                    let cursor = self.windows.focused().cursor;
+                    let bid = self.current_buffer_id().0 as usize;
+                    let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme)
+                    {
+                        (anchor, cursor)
+                    } else {
+                        (cursor, anchor)
+                    };
+                    let sm = crate::marks::MarkPosition {
+                        buffer_id: bid,
+                        line: s.line,
+                        col: s.grapheme,
+                    };
+                    let em = crate::marks::MarkPosition {
+                        buffer_id: bid,
+                        line: e.line,
+                        col: e.grapheme,
+                    };
+                    self.marks.set_visual_start(sm);
+                    self.marks.set_visual_end(em);
+                }
                 self.visual_anchor = None;
             }
             (Mode::Visual(_), Mode::Visual(_)) => {
@@ -133,44 +164,5 @@ impl EditorState {
             _ => {}
         }
         self.mode = new_mode;
-    }
-
-    fn dispatch_in_mode(&mut self, key: Key) {
-        match &self.mode {
-            Mode::Normal => {
-                let result = self.dispatch.dispatch(&key);
-                if let KeyDispatchResult::Action(action) = result {
-                    self.handle_action(action);
-                }
-            }
-            Mode::Insert => match &key.code {
-                kjxlkj_core_types::KeyCode::Char(c) => self.insert_char(*c),
-                kjxlkj_core_types::KeyCode::Enter => self.insert_newline(),
-                kjxlkj_core_types::KeyCode::Backspace => {
-                    self.delete_char_backward();
-                }
-                kjxlkj_core_types::KeyCode::Delete => {
-                    self.delete_char_forward();
-                }
-                kjxlkj_core_types::KeyCode::Tab => self.insert_text("    "),
-                _ => {}
-            },
-            Mode::Command(_) => self.dispatch_command_key(key),
-            Mode::Replace => {
-                if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
-                    self.replace_char(*c);
-                    self.move_cursor_right(1);
-                }
-            }
-            Mode::OperatorPending(op) => {
-                let op = *op;
-                self.dispatch_op_pending(key, op);
-            }
-            Mode::Visual(kind) => {
-                let kind = *kind;
-                self.dispatch_visual(key, kind);
-            }
-            _ => {}
-        }
     }
 }

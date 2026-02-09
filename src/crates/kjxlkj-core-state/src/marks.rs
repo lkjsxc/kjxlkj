@@ -96,6 +96,16 @@ impl MarkFile {
         self.special.insert('>', pos);
     }
 
+    /// Set start of last changed/yanked text.
+    pub fn set_change_start(&mut self, pos: MarkPosition) {
+        self.special.insert('[', pos);
+    }
+
+    /// Set end of last changed/yanked text.
+    pub fn set_change_end(&mut self, pos: MarkPosition) {
+        self.special.insert(']', pos);
+    }
+
     /// List all marks for a buffer.
     pub fn list_for_buffer(&self, buffer_id: usize) -> Vec<(char, &MarkPosition)> {
         let mut result = Vec::new();

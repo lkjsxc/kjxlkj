@@ -10,10 +10,6 @@ fn ed() -> EditorState {
     e
 }
 
-fn enter_key() -> Key {
-    Key::new(KeyCode::Enter, Modifier::NONE)
-}
-
 fn tab_key() -> Key {
     Key::new(KeyCode::Tab, Modifier::NONE)
 }
