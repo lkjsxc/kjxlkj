@@ -1,19 +1,24 @@
 # Design
 
 Back: [/docs/README.md](/docs/README.md)
-Design rationale and detailed explanations for editing primitives.
 
-## Purpose
+Design rationale and decomposition notes for major behaviors.
 
-This directory contains in-depth design documents explaining the rationale behind core editor behaviors.
+## Authority
+
+This directory is explanatory.
+
+- It does not override `/docs/policy/`, `/docs/spec/`, `/docs/reference/`, or `/docs/todo/`.
+- When design notes conflict with canonical docs, canonical docs win.
 
 ## Subdirectories
 
 | Directory | Content |
-|-----------|---------|
-| [editing/](editing/README.md) | Motion, operator, and text object design |
+|---|---|
+| [editing/](editing/README.md) | Motion, operator, and text-object rationale |
 
 ## Related
 
-- Specifications: [docs/spec/README.md](/docs/spec/README.md)
-- Policies: [docs/policy/README.md](/docs/policy/README.md)
+- Canonical contract: [/docs/README.md](/docs/README.md)
+- Specifications: [/docs/spec/README.md](/docs/spec/README.md)
+- Current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)

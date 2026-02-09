@@ -3,13 +3,22 @@
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 Ways to run kjxlkj on Windows.
 
+For current supported behavior and known gaps, check:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+
 If this repository is in a docs-only baseline (no `src/`/Cargo workspace), reconstruct the implementation first:
 
 - [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
 
 ## Pre-built binaries
 
-This repository does not currently publish tagged releases. Build from source.
+Release availability depends on the active reconstructed state and release process.
+
+See:
+
+- [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
 
 ## Build from source (recommended)
 

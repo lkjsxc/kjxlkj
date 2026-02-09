@@ -2,7 +2,7 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
-Feature checklists for the current reconstruction wave.
+Feature checklists track cross-domain integrations that require coordinated wiring.
 
 ## Checklists
 

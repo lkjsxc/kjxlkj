@@ -1,9 +1,0 @@
-[package]
-name = "kjxlkj-service-fs"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-kjxlkj-core-types = { path = "../kjxlkj-core-types" }
-tokio = { workspace = true }
-notify = { workspace = true }

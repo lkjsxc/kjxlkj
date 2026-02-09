@@ -5,7 +5,7 @@ Mapping from common Neovim plugins to kjxlkj built-in features.
 
 This document is target-oriented and intentionally non-authoritative for current runtime status.
 
-For currently supported behavior, always check:
+For verified current behavior, always check:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

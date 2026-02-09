@@ -4,11 +4,27 @@
 
 ## Contract
 
-- The full product MUST be reconstructable from documentation alone.
-- Implementation files under `src/` are derived artifacts.
-- If implementation and docs diverge, documentation MUST be corrected first, then tracked in
-  `/docs/reference/CONFORMANCE.md` and `/docs/reference/LIMITATIONS.md`.
-- Documentation is written for AI-first reconstruction and verification.
+- The product MUST be reconstructable from documentation alone.
+- Source code and automation artifacts are derived outputs.
+- When docs and implementation diverge, docs are corrected first, then drift is recorded in reference ledgers.
+
+## Authority and Precedence
+
+Use this precedence order for all decisions:
+
+1. [/docs/policy/](policy/README.md)
+2. [/docs/spec/](spec/README.md)
+3. [/docs/reference/](reference/README.md)
+4. [/docs/todo/](todo/README.md)
+5. [/docs/technical/](technical/README.md), [/docs/design/](design/README.md), [/docs/guides/](guides/README.md), [/docs/overview/](overview/README.md), [/docs/log/](log/README.md)
+
+## Status Model
+
+- `policy` and `spec` are normative.
+- `reference` is normative for current verified state only.
+- `todo` is normative for reconstruction workflow and completion gates.
+- `technical`, `design`, `guides`, and `overview` are explanatory unless explicitly referenced by `policy` or `spec` as normative.
+- `log` is historical and non-authoritative.
 
 ## Canonical Reading Order
 
@@ -16,31 +32,25 @@
 2. [spec/README.md](spec/README.md)
 3. [reference/README.md](reference/README.md)
 4. [todo/README.md](todo/README.md)
-5. [log/README.md](log/README.md)
+5. [technical/README.md](technical/README.md)
+6. [log/README.md](log/README.md)
 
 ## Directory Map
 
 | Directory | Role |
 |---|---|
-| [policy/](policy/README.md) | Normative rules for repository operation and document quality |
-| [spec/](spec/README.md) | Target product specification (what must exist) |
-| [reference/](reference/README.md) | Verified current implementation surface and known gaps |
-| [todo/](todo/README.md) | Reconstruction control plane with checklists |
-| [technical/](technical/README.md) | Engineering guidance and implementation notes |
-| [design/](design/README.md) | Rationale and decomposition guidance |
-| [guides/](guides/README.md) | Usage guides and operator workflows |
-| [overview/](overview/README.md) | Concepts and glossary |
-| [log/](log/README.md) | Non-canonical wave logs, audits, and proposals |
-
-## Reconstruction Discipline
-
-- Use `/docs/spec/` for target behavior.
-- Use `/docs/reference/` for what is currently proven in-repo.
-- Use `/docs/todo/current/` to plan and gate each reconstruction wave.
-- Do not mark TODO items complete without deterministic evidence.
+| [policy/](policy/README.md) | Repository rules and invariants |
+| [spec/](spec/README.md) | Target behavior and architecture |
+| [reference/](reference/README.md) | Verified current state and explicit gaps |
+| [todo/](todo/README.md) | Reconstruction execution plan and gates |
+| [technical/](technical/README.md) | Implementation guidance |
+| [design/](design/README.md) | Rationale and decomposition notes |
+| [guides/](guides/README.md) | Operator-facing workflows |
+| [overview/](overview/README.md) | Concepts and terminology |
+| [log/](log/README.md) | Historical audits and proposals |
 
 ## Related
 
 - All-in-docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
-- Structure policy: [policy/STRUCTURE.md](policy/STRUCTURE.md)
-- Root layout policy: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)
+- Structure rules: [policy/STRUCTURE.md](policy/STRUCTURE.md)
+- Root layout rules: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)

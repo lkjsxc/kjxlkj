@@ -59,4 +59,4 @@ around-12 fan-out targets.
 ## Canonical Follow-Up
 
 - [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
-- [/docs/todo/current/architecture.md](/docs/todo/current/architecture.md)
+- [/docs/todo/current/areas/architecture.md](/docs/todo/current/areas/architecture.md)

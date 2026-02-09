@@ -1,73 +1,42 @@
-# Agent Workflow & Project Identity
+# Workflow
 
-Project identity and workflow conventions.
+Back: [/docs/policy/README.md](/docs/policy/README.md)
 
-## Workflow Graph
+Reconstruction workflow and verification gates.
 
-```mermaid
-graph TD
-    subgraph Identity ["2. Project Identity (Neovim-inspired TUI)"]
-        Modal["Modal Editing"]
-        Native["Native Features (No Plugins)"]
-        Rust["Rust/Native Performance"]
-    end
+## Gate Sequence
 
-    subgraph Rules ["3. Agent Workflow Rules"]
-        Read["Read TOCs/READMEs"]
-        Plan["Plan Invariants"]
-        Slice["Implement Cohesive Slices"]
-        Verify["Verify (docs: link/fence; impl: clippy/test)"]
-        Commit["Frequent Git Commits"]
-    end
+1. Read policy, spec, reference, and todo indexes.
+2. Build a mismatch matrix (spec vs implementation vs tests).
+3. Select one coherent reconstruction slice.
+4. Implement only user-reachable behavior in that slice.
+5. Run deterministic tests for touched behavior and full verification gate.
+6. Update reference ledgers and TODO state in the same change.
 
-    subgraph DoD ["4. Definition of Done"]
-        DocMatch["Code matches Docs"]
-        TestsPass["Tests Pass"]
-        ClippyPass["Clippy (0 warnings)"]
-        DocsUpdated["TOCs/Docs Updated"]
-    end
+## Verification Gate
 
-    Identity -->|Constrains| Rules
-    Rules -->|Produces| DoD
+The baseline gate is defined in [/docs/reference/CI.md](/docs/reference/CI.md).
 
-    %% Styling
-    style Identity fill:#c8e6c9,stroke:#2e7d32
-    style Rules fill:#fff9c4,stroke:#fbc02d
-    style DoD fill:#e1f5fe,stroke:#01579b
+A change is complete only if:
 
-```
+- required checks are green for the targeted state
+- conformance and limitations are synchronized
+- TODO updates are evidence-backed
 
-## Verification gate (normative)
+## Drift Handling
 
-This repository treats verification as part of the contract.
+When mismatch is found:
 
-- The repository MUST define a standard verification gate under `/docs/` (see `/docs/reference/CI.md`).
-- The verification gate MUST be reproducible locally (same commands, same expectations).
-- The repository MUST include an automated CI implementation of the verification gate, at the location specified by the docs (see `/docs/reference/CI.md`).
-- A change is not considered complete unless the verification gate is green.
+- classify mismatch type
+- prioritize correctness and user-visible behavior first
+- either close mismatch now or record explicit defer rationale with next action
 
-In a docs-only baseline, CI configuration and helper scripts are treated as derived artifacts and may be absent. They MUST be reconstructed (per `/docs/reference/CI.md`) before treating the repository as shippable.
+## Docs-Only Baseline Rule
 
-## Definition of done (normative)
-
-Work is done only when:
-
-- The implementation matches the normative documents under `/docs/spec/` (or any divergence is explicitly recorded as a limitation under `/docs/reference/`).
-- The current TODO iteration is complete (all items checked off, after validating the repository state).
-- The verification gate is green (see `/docs/reference/CI.md`).
-- The repository includes the required supporting artifacts described by policy and guides, including container-based build/run expectations under `/docs/guides/DOCKER.md`.
-
-## Completion handshake (normative)
-
-When an agent finishes a TODO iteration (and the verification gate is green),
-it MUST invoke the tool `Ask` to request the next objective (or confirmation
-that the work should stop).
-
-This is the only time the agent should request user input. During execution,
-ambiguity MUST be handled by recording a proposal under `/docs/log/proposals/`
-and carrying forward an actionable TODO leaf into the next iteration.
+In docs-only state, missing CI/workspace artifacts are acceptable, but TODO and reference docs MUST explicitly describe what must be regenerated for a shippable state.
 
 ## Related
 
-- Policy index: [README.md](README.md)
 - Operating contract: [INSTRUCT.md](INSTRUCT.md)
+- CI baseline: [/docs/reference/CI.md](/docs/reference/CI.md)
+- Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)

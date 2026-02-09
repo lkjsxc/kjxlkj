@@ -2,50 +2,32 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
-## Gate 0: Baseline Audit
+## Gate 0: Requirement Inventory
 
-- [x] Run verification commands from [/docs/reference/CI.md](/docs/reference/CI.md)
-- [x] Build mismatch matrix (M1-M5) in `/docs/log/reconstruction/audits/`
-- [x] Prioritize by user impact and regression risk
+- [ ] Build or update a requirements matrix in `/docs/log/reconstruction/audits/`.
+- [ ] Assign requirement IDs mapped to exact `/docs/spec/...` links.
+- [ ] Mark each requirement as `verified`, `partial`, `scaffold-only`, or `unverified`.
 
-## Gate 1: Slice Definition
+## Gate 1: Implementation Reachability
 
-- [ ] Select one coherent implementation slice
-- [ ] Attach exact spec links for every selected behavior
-- [ ] Define unit/integration/E2E/PTy coverage required for slice
+- [ ] Confirm each claimed feature is reachable from real runtime input paths.
+- [ ] Confirm no completion claim is based only on types or stubs.
+- [ ] Confirm dispatch wiring exists for each implemented command/key workflow.
 
-## Gate 2: Implementation Integrity
+## Gate 2: Deterministic Verification
 
-- [ ] Ensure feature is reachable from runtime entrypoint
-- [x] Ensure no source file exceeds 200 lines after implementation
-- [ ] Ensure source directory fan-out remains around 12 children
-- [ ] Ensure terminal/explorer/window behavior is integrated as real windows
+- [ ] Run targeted tests for touched domains.
+- [ ] Run full reconstructed verification gate from [/docs/reference/CI.md](/docs/reference/CI.md).
+- [ ] Capture result evidence in dated audit logs.
 
-## Gate 3: Verification and Sync
+## Gate 3: Reference Synchronization
 
-- [ ] Run touched tests
-- [x] Run full `cargo test --workspace`
-- [x] Record proof of 523+ listed tests or updated total with command evidence
-- [ ] Update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] Update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] Update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) with evidence-backed status.
+- [ ] Update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) for remaining gaps.
+- [ ] Update relevant sub-ledgers in [/docs/reference/conformance/README.md](/docs/reference/conformance/README.md).
 
-## Gate 4: Critical UX Regressions
+## Gate 4: TODO Integrity
 
-- [ ] `A` / `Shift+a` append-at-EOL behavior is verified by tests
-- [ ] Long lines wrap on-screen with no off-screen overflow
-- [ ] Japanese IME composition does not leak into leader mappings
-- [ ] Terminal spawn/resize/close lifecycle works in real PTY path
-- [ ] Explorer open/split workflows are wired and test-covered
-
-## Gate 5: TODO Integrity
-
-- [ ] Every checked item has concrete evidence lines
-- [ ] No checked item depends on known open limitation
-- [ ] `/docs/todo/doc-coverage/` contains direct links to every documentation file
-- [ ] All TODO changes remain unchecked unless explicitly proven complete
-
-## Related
-
-- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Boundary matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
-- Spec-code sync audit template: [/docs/log/reconstruction/audits/2026-02-09-doc-sync-matrix.md](/docs/log/reconstruction/audits/2026-02-09-doc-sync-matrix.md)
+- [ ] Mark checkboxes complete only when evidence exists.
+- [ ] Ensure no checked item conflicts with open limitations.
+- [ ] Ensure `/docs/todo/doc-coverage/` reflects current documentation topology.

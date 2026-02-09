@@ -8,19 +8,19 @@ This document is descriptive and non-normative. For current implementation statu
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## Feature matrix (target framing)
+## Feature Matrix (Target Framing)
 
 | Area | Target scope in kjxlkj | Current status source | Notes |
 |------|-------------------------|-----------------------|-------|
-| Modal editing | Yes | `/docs/reference/conformance/CONFORMANCE_MODES.md` | Vim-like model |
-| Operator+motion | Yes | `/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md` | Command/editing surface |
-| LSP | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
-| Git integration | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
-| Syntax highlighting | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
-| Explorer UI | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
-| Finder UI | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
-| Splits/windows | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Core editor model |
-| Config/remapping | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Config/scripting surface |
+| Modal editing | Targeted | `/docs/reference/conformance/CONFORMANCE_MODES.md` | Vim-like model |
+| Operator+motion | Targeted | `/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md` | Command/editing surface |
+| LSP | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
+| Git integration | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
+| Syntax highlighting | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Explorer UI | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Finder UI | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |
+| Splits/windows | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Core editor model |
+| Config/remapping | Targeted | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Config/scripting surface |
 | Plugins | No (by design) | `/docs/spec/README.md` | Built-ins only |
 
 ## Keybinding philosophy
@@ -35,17 +35,17 @@ Verb -> motion / text object (operators compose with targets).
 
 Selection-first (select -> act).
 
-## Configuration philosophy
+## Configuration and Scripting Philosophy
 
 | Editor | Typical config | Scripting |
 |--------|----------------|----------|
-| kjxlkj | (planned) TOML | None (by design) |
+| kjxlkj | TOML-oriented target + command/mapping scripting surfaces | See `/docs/spec/scripting/` and status ledgers |
 | Neovim | Lua | Full |
 | Helix | TOML | None |
 | Kakoune | Custom | Shell |
 
 ## Performance claims
 
-This repository does not currently include published benchmarks. Performance characteristics are a target, not a measured guarantee.
+This repository may be in docs-only or partially reconstructed states. Performance characteristics are target requirements unless evidence is linked in conformance/audits.
 
 See `/docs/technical/` for technical notes and `/docs/spec/technical/` for target requirements.

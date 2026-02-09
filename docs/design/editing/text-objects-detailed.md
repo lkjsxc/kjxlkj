@@ -3,6 +3,7 @@
 Back: [/docs/design/editing/README.md](/docs/design/editing/README.md)
 
 Design rationale for text objects implementation.
+Normative requirements are defined in `/docs/spec/editing/text-objects/`.
 
 ## Overview
 

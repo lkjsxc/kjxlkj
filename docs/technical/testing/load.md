@@ -53,7 +53,7 @@ Required checks:
 - no panics and no terminal display corruption
 - per-frame work is bounded to the visible slice (not full line length)
 
-See TODO leaf:
+Related requirement:
 
 - [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 
@@ -97,4 +97,3 @@ Prefer a layered approach:
 Record results and regressions in:
 
 - [/docs/log/audits/README.md](/docs/log/audits/README.md)
-

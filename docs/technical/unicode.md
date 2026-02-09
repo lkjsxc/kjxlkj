@@ -2,99 +2,75 @@
 
 Back: [/docs/technical/README.md](/docs/technical/README.md)
 
-This document provides implementation guidance for Unicode text handling, with emphasis on CJK/Japanese text and wide character correctness.
+Implementation guidance for Unicode handling, with focus on CJK and IME correctness.
 
-## Canonical behavior sources
+## Canonical Sources
 
-- [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) — grapheme-based cursor model
-- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) — wrapping and display width
-- [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md) — Unicode insertion
-- [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) — IME behavior
+- [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
+- [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
 
-## Implementation split
+## Component Responsibilities
 
-| Concern | Owner crate |
+| Concern | Owner component |
 |---|---|
-| UTF-8 storage and grapheme decomposition | `kjxlkj-core-text` |
-| Display width computation (East Asian Width) | `kjxlkj-core-text` |
-| Cursor arithmetic (grapheme-based) | `kjxlkj-core-edit` and `kjxlkj-core-state` |
-| Mode transition clamping | `kjxlkj-core-mode` |
-| Viewport wrapping with display widths | `kjxlkj-render` |
-| IME preedit and composition events | `kjxlkj-input` and `kjxlkj-host` |
-| Terminal cell rendering of wide chars | `kjxlkj-render` |
+| UTF-8 storage and grapheme segmentation | Text model layer |
+| Display width computation | Text/layout layer |
+| Cursor arithmetic and clamping | Editing/state layer |
+| Mode transition clamping | Mode system |
+| Viewport wrapping by display width | Render pipeline |
+| IME preedit/commit/cancel handling | Input pipeline + core dispatch |
+| Terminal cell rendering for wide chars | Render pipeline |
 
-## Display width computation (normative)
+## Display Width Guidance
 
-The implementation MUST use the Unicode East Asian Width property (UAX #11) to determine character display widths:
+Use Unicode East Asian Width (UAX #11) for display widths.
 
-| Category | Width | Examples |
-|---|---|---|
-| Narrow (Na), Neutral (N), Half-width (H) | 1 | ASCII, most Latin, Greek, Cyrillic |
-| Wide (W), Full-width (F) | 2 | CJK ideographs, fullwidth ASCII, most Katakana/Hiragana |
-| Ambiguous (A) | 1 (default) | Some Greek, Cyrillic, symbols; configurable per locale |
-| Combining marks, zero-width joiners | 0 | Combining accents, ZWJ, ZWNJ |
-
-The `unicode-width` crate or equivalent MUST be used. Simplified range checks are NOT sufficient.
-
-## Grapheme cluster rules
-
-| Rule | Requirement |
+| Category | Width |
 |---|---|
-| Segmentation | Use Unicode UAX #29 grapheme cluster boundaries for all cursor operations. |
-| Combining marks | A base character + combining marks = one grapheme cluster. |
-| Emoji sequences | ZWJ sequences and flag sequences = one grapheme cluster. |
-| Recommended crate | `unicode-segmentation` for grapheme boundaries. |
+| Narrow/Neutral/Half-width | 1 |
+| Wide/Full-width | 2 |
+| Ambiguous | 1 by default (locale policy may vary) |
+| Combining marks / ZWJ sequences | 0 for combining unit contributions |
 
-## CJK cursor behavior summary
+Avoid simplified codepoint-range heuristics.
 
-The cursor model is grapheme-based (see [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)). Key rules:
+## Grapheme Rules
 
-| Rule | Detail |
+Use UAX #29 grapheme boundaries for cursor and edit operations.
+
+Key invariants:
+
+- cursor never occupies half-cell position of a wide grapheme
+- movement operates on grapheme units, not bytes
+- mode transitions clamp to valid grapheme boundaries
+
+## IME Guidance
+
+- preedit text stays transient until commit
+- commit inserts as one atomic change
+- cancel clears transient state without mutating buffer
+- leader and mode keys must not fire normal mappings during active composition
+
+## Wrapping with CJK
+
+When wrapping is enabled:
+
+- wrapping must use display width, not byte count
+- wide grapheme at last single remaining cell must move to next row
+- visible-row work should stay viewport-bounded
+
+## Regression Test Classes
+
+| Class | Example |
 |---|---|
-| No half-cell positions | The cursor MUST never be on the second column of a wide character. |
-| Motion granularity | `h`/`l` move one grapheme at a time; on CJK text this moves 2 display columns. |
-| Block cursor width | On a width-2 grapheme, the block cursor spans 2 terminal columns. |
-| Grapheme-to-display mapping | A bidirectional map between grapheme indices and display columns MUST be maintained. |
-
-## Japanese input guidance
-
-| Topic | Guidance |
-|---|---|
-| Preedit lifecycle | Model preedit as transient state in `kjxlkj-input`; do not write to buffer. |
-| Commit event | Apply confirmed text as one atomic insertion at the insertion point. |
-| Cancel path | Clear transient state; buffer remains unchanged. |
-| Leader safety | `Space` during IME composition MUST NOT trigger leader mappings. |
-| Esc safety | `Esc` during composition MUST cancel preedit first, not switch mode. |
-
-## Line wrapping with CJK
-
-When `wrap = true`, the wrapping algorithm MUST handle wide characters at row boundaries (see [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)):
-
-| Scenario | Required behavior |
-|---|---|
-| Wide char at row boundary | If only 1 column remains, push wide char to next row; pad current row. |
-| Mixed-width line | Display width varies per grapheme; wrapping uses cumulative display widths. |
-| Performance | Cache grapheme/width slices per visible span; avoid full-line remeasurement per frame. |
-
-## Required invariants
-
-| Invariant | Why it matters |
-|---|---|
-| Buffer bytes remain valid UTF-8 | Prevents corruption on save/reload. |
-| Mode transition clamps cursor to grapheme boundary | Prevents floating cursor on CJK text. |
-| Wrap uses display width, not byte count | Prevents off-screen drift on CJK lines. |
-| Preedit not committed early | Prevents ghost text and duplicated input. |
-
-## Regression test classes
-
-| Class | Example scenario |
-|---|---|
-| CJK cursor motion | `l` on `あいう` advances by 2 display columns per press |
-| Mode churn on CJK | `a` + type CJK + `Esc` repeatedly; cursor always on grapheme boundary |
-| IME commit/cancel | Commit inserts atomically; cancel leaves buffer unchanged |
-| Mixed-width wrap | Line with ASCII + CJK wraps correctly at row boundaries |
-| Wide char at boundary | Width-2 char pushed to next row when only 1 column remains |
-| Persistence | `:wq` preserves expected UTF-8 bytes for CJK content |
+| CJK cursor motion | movement across width-2 graphemes |
+| Mode churn on CJK | insert/escape cycles remain boundary-safe |
+| IME commit/cancel | commit writes once, cancel writes nothing |
+| Mixed-width wrap | ASCII + CJK wraps deterministically |
+| Wide boundary case | width-2 grapheme near row end handled correctly |
+| Persistence | save/reload preserves expected UTF-8 bytes |
 
 ## Related
 

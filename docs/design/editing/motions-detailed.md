@@ -1,5 +1,9 @@
 # Motion Commands
 
+Back: [/docs/design/editing/README.md](/docs/design/editing/README.md)
+
+Detailed design notes for motion behavior. Normative requirements are defined in `/docs/spec/editing/motions/`.
+
 All motion commands for cursor navigation.
 
 ## Character Motions

@@ -1,74 +1,48 @@
 # Neovim Migration Guide
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
-Guidance for Neovim users transitioning to the kjxlkj surface described by the conformance ledger.
 
-## What is similar
+Guidance for Neovim users moving to `kjxlkj`.
 
-kjxlkj is intentionally Vim-like:
+## Important Status Rule
 
-- modal editing (Normal / Insert / Visual / Command / Replace)
-- operator + motion model (`d{motion}`, `c{motion}`, `y{motion}`)
-- text objects, registers, marks, macros (subset; see conformance)
-
-For the authoritative “what exists right now” ledger, see:
+Treat this guide as orientation only. For exact availability:
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-
-## What is different
-
-Key differences from Neovim.
-
-### No plugin ecosystem
-
-kjxlkj has no plugin system. Features are either built-in (when implemented) or not available yet.
-
-### No Neovim Lua config
-
-kjxlkj does not execute Neovim configuration. Persistent configuration/key remapping is a target but is not implemented yet.
-
-### Documentation contract
-
-See: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
-
-## Practical mapping
-
-Common Neovim workflows and their kjxlkj equivalents.
-
-### Editing workflow
-
-- Use Normal/Insert/Visual just as in Vim.
-- Use the command line (`:`) for file and Ex commands.
-- Use `.` to repeat the last change.
-
-### Files
-
-- Open a file: launch with a file path argument, or use `:e {file}`.
-- Write: `:w {file}` (and `:wq` / `:x` to write then quit).
-- Quit: `:q` (or `:q!` to force).
-
-### Search and replace
-
-- Search: `/` and `?`, then `n`/`N`.
-- Substitute: `:s/pat/repl/` and `:s/pat/repl/g`.
-- Global: `:g/pat/d` and `:v/pat/d` (subset).
-
-## What you will miss (for now)
-
-These are specified as targets but are not implemented yet:
-
-- LSP client features
-- git UI/integration
-- syntax highlighting and diagnostics UI
-- built-in file explorer and fuzzy finder UIs
-- splits/windows/tabs and multi-buffer management
-- persistent configuration and key remapping
-
-See:
-
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-## Recommended reading
+## Conceptual Similarities
+
+The target interaction model is Vim-like:
+
+- modal editing
+- operator + motion grammar
+- command-line workflows
+
+Target definitions:
+
+- [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
+- [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+
+## Intentional Differences
+
+- no external plugin loading
+- built-in integrations only
+- documentation-first reconstruction workflow
+
+References:
+
+- [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
+- [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+
+## Migration Approach
+
+1. Verify current supported behavior in conformance.
+2. Map your key daily workflows to documented command/mode surfaces.
+3. Track unresolved gaps in limitations before adopting as primary editor.
+
+## Related
 
 - Docs index: [/docs/README.md](/docs/README.md)
-- Target keybindings spec: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- UX target: [/docs/spec/ux/README.md](/docs/spec/ux/README.md)

@@ -41,7 +41,7 @@ These should fail on algorithmic regressions and be stable under CI variance:
 - long-line rendering virtualization checks (no full-line per-frame materialization)
 - idle CPU probes (no busy-loop redraw)
 
-See TODO leaf:
+Related requirement:
 
 - [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 

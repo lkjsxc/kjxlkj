@@ -2,38 +2,44 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/reference/` records verified implementation status and release operations.
+`/docs/reference/` tracks current verified behavior and explicit gaps.
 
-## Authority Model
+## Authority
 
-Use this order when deciding what is true right now:
+Within current-state reporting, use this order:
 
-1. [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-2. [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-3. Deterministic automated test evidence
-4. Other files in this directory
+1. [CONFORMANCE.md](CONFORMANCE.md)
+2. [LIMITATIONS.md](LIMITATIONS.md)
+3. Evidence artifacts linked from those files
+4. Supporting sub-ledgers in [conformance/](conformance/README.md)
 
-`/docs/spec/` remains the target contract for what should exist in the final product.
+`/docs/spec/` remains the target behavior contract.
+
+## Purpose of This Directory
+
+- prevent stale "implemented" claims
+- make current gaps explicit and actionable
+- provide evidence links for every current-state assertion
 
 ## Documents
 
 | Document | Role |
 |---|---|
-| [CONFORMANCE.md](CONFORMANCE.md) | Current verified implementation surface |
-| [LIMITATIONS.md](LIMITATIONS.md) | User-visible gaps and temporary exceptions |
-| [CI.md](CI.md) | Verification command baseline |
-| [RELEASE.md](RELEASE.md) | Release process and evidence checks |
-| [conformance/README.md](conformance/README.md) | Conformance sub-ledgers (testing, modes, keys, operators, commands) |
-| [COMPARISON.md](COMPARISON.md) | Comparison matrix (non-authoritative) |
-| [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Plugin migration mapping (non-authoritative) |
+| [CONFORMANCE.md](CONFORMANCE.md) | Current verified behavior ledger |
+| [LIMITATIONS.md](LIMITATIONS.md) | Open user-visible mismatches |
+| [CI.md](CI.md) | Verification gate definition |
+| [RELEASE.md](RELEASE.md) | Release evidence process |
+| [conformance/README.md](conformance/README.md) | Domain-specific conformance sub-ledgers |
+| [COMPARISON.md](COMPARISON.md) | Non-authoritative comparison notes |
+| [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Non-authoritative migration notes |
 
 ## Update Discipline
 
-- Update `CONFORMANCE` and `LIMITATIONS` in the same change as behavior updates.
-- Keep claims tied to existing files/tests.
-- If behavior is target-only, keep it in `/docs/spec/` and mark as not yet implemented.
+- Update conformance and limitations together.
+- Every claim needs evidence links.
+- Unknown or unverified behavior must be marked explicitly as unverified.
 
 ## Related
 
-- Target specification: [/docs/spec/README.md](/docs/spec/README.md)
-- Reconstruction TODOs: [/docs/todo/current/README.md](/docs/todo/current/README.md)
+- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
+- Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)

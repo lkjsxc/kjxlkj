@@ -1,94 +1,34 @@
 # TODO: Architecture
 
-Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
+Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
-## Defining specs
+## Normative Sources
 
 - [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 - [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
 - [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
-- [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
+- [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
 - [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
 - [/docs/spec/architecture/plugins.md](/docs/spec/architecture/plugins.md)
 - [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
-- [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
 
-## Startup and shutdown
+## Inventory
 
-- [ ] Command-line argument parsing per [/docs/spec/architecture/startup.md](/docs/spec/architecture/startup.md)
-- [ ] Tokio runtime initialization
-- [ ] Terminal capability detection and raw mode entry
-- [ ] Channel topology creation (input, service, render, quit)
-- [ ] Task spawning order: input, services, render, core
-- [ ] Auto-session restore
-- [ ] Init file sourcing
-- [ ] Shutdown: session save, service drain, terminal restore
-- [ ] Signal handling (SIGWINCH, SIGTERM, SIGHUP, SIGTSTP/SIGCONT)
-- [ ] Panic handler with terminal restore and crash report
+- [ ] Extract all normative requirements from listed architecture specs into requirement matrix.
+- [ ] Assign stable IDs and map each ID to implementation and test evidence paths.
+- [ ] Identify parallel agent/runtime implementations and map each to canonical architecture requirements.
 
-## Crate topology
+## Implementation
 
-Per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md) and [/docs/log/proposals/deep-wiring-checklist-2.md](/docs/log/proposals/deep-wiring-checklist-2.md):
+- [ ] Implement startup/shutdown sequence exactly as specified.
+- [ ] Implement runtime task topology and channel topology exactly as specified.
+- [ ] Consolidate parallel agent/runtime paths into one canonical input->core->render/service flow.
+- [ ] Ensure single-writer core ownership and snapshot-only rendering path.
+- [ ] Enforce built-in integrations policy (no external plugin loading).
 
-- [ ] `kjxlkj`: binary entrypoint, CLI parsing, task spawning, shutdown (min 100 lines)
-- [ ] `kjxlkj-core`: facade re-exports (min 50 lines)
-- [ ] `kjxlkj-core-types`: shared types: ids, Mode, Action, Key, Color, CellAttrs (min 200 lines)
-- [ ] `kjxlkj-core-text`: rope wrapper, grapheme decomposition, display width, line operations (min 400 lines)
-- [ ] `kjxlkj-core-edit`: operators, text objects, motions, register operations (min 600 lines)
-- [ ] `kjxlkj-core-mode`: mode state machines, transition logic, cursor clamping (min 500 lines)
-- [ ] `kjxlkj-core-undo`: undo tree, branching, group boundaries, persistence (min 200 lines)
-- [ ] `kjxlkj-core-ui`: EditorSnapshot, BufferSnapshot, TerminalSnapshot (min 150 lines)
-- [ ] `kjxlkj-core-state`: editor state, command dispatch, viewport follow, session (min 500 lines)
-- [ ] `kjxlkj-render`: cell rendering, wrapping, gutter, statusline, diff display (min 500 lines)
-- [ ] `kjxlkj-input`: key parsing, mapping expansion, leader handling (min 300 lines)
-- [ ] `kjxlkj-host`: terminal raw mode, event loop, PTY harness, signals (min 300 lines)
-- [ ] `kjxlkj-services`: service supervisor, health monitoring, channel factory (min 100 lines)
-- [ ] `kjxlkj-service-terminal`: escape parsing state machine, PTY spawn, screen buffer (min 400 lines)
-- [ ] `kjxlkj-service-lsp`: JSON-RPC client, request/response lifecycle (min 300 lines)
-- [ ] `kjxlkj-service-git`: git subprocess, diff parsing, status/blame (min 200 lines)
-- [ ] `kjxlkj-service-index`: file scanning, fuzzy matching, symbol indexing (min 150 lines)
-- [ ] `kjxlkj-service-fs`: file read/write, file watcher, encoding detection (min 150 lines)
+## Verification
 
-## Runtime model
-
-- [ ] Async event loop with bounded channels per [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
-- [ ] Service message bus for inter-crate communication
-- [ ] Snapshot-driven render pipeline (core state never mutated by renderer)
-
-## Render pipeline
-
-- [ ] Cell grid construction from buffer content + viewport per [/docs/spec/architecture/render-pipeline.md](/docs/spec/architecture/render-pipeline.md)
-- [ ] Decoration overlay (diagnostics, search highlights, cursor)
-- [ ] Diff-based frame output (only changed cells written to terminal)
-- [ ] Color capability detection (true color, 256, 16)
-- [ ] Window separator and tab line rendering
-- [ ] Batched single-write flush
-
-## Input decoding
-
-- [ ] Crossterm EventStream async reader per [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
-- [ ] Key event normalization (modifier canonicalization)
-- [ ] Keybinding trie with prefix matching and timeout
-- [ ] Count prefix accumulation
-- [ ] Register prefix (`"`) handling
-- [ ] Operator-pending mode resolution
-- [ ] Bracketed paste handling
-- [ ] Focus gained/lost events
-
-## Plugin architecture
-
-- [ ] Plugin trait definition and lifecycle hooks
-- [ ] Plugin loading and registration mechanism
-- [ ] Plugin sandboxing constraints
-
-## Wiring checklist
-
-Per [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md):
-
-- [ ] Key dispatch: all keybindings route to real handlers
-- [ ] Command dispatch: all commands route to real handlers
-- [ ] Render pipeline: snapshots flow through render to terminal output
-- [ ] Service bus: services send/receive through message bus
-- [ ] Session I/O: `:SessionSave` writes JSON, `:SessionLoad` reads and restores
-- [ ] Terminal PTY: `:terminal` spawns a real PTY process
-- [ ] File I/O: `:w` and `:e` perform real filesystem reads/writes
+- [ ] Add/refresh deterministic tests for startup, runtime orchestration, and signal handling.
+- [ ] Verify only one canonical core dispatch owner exists in runtime behavior.
+- [ ] Verify architecture claims in reference ledgers with evidence links.

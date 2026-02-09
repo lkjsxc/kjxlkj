@@ -1,44 +1,42 @@
 # Architecture
 
 Back: [/docs/spec/README.md](/docs/spec/README.md)
+
 ## Documents
 
 | Document | Purpose |
-|----------|---------|
+|---|---|
 | [crates.md](crates.md) | Crate structure |
 | [workspace-manifest.md](workspace-manifest.md) | Root workspace manifest and dependency policy |
-| [plugins.md](plugins.md) | Plugin architecture |
-| [runtime.md](runtime.md) | Runtime design |
-| [render-pipeline.md](render-pipeline.md) | Render pipeline detail |
-| [input-decoding.md](input-decoding.md) | Input decoding and keybinding resolution |
-| [startup.md](startup.md) | Startup sequence and shutdown |
+| [plugins.md](plugins.md) | Built-in integration policy (no external plugins) |
+| [runtime.md](runtime.md) | Tokio runtime and task topology |
+| [render-pipeline.md](render-pipeline.md) | Snapshot-to-frame rendering rules |
+| [input-decoding.md](input-decoding.md) | Terminal event decode and key resolution |
+| [startup.md](startup.md) | Startup and shutdown sequence |
 
-## System shape
+## System Shape
 
 ```mermaid
 graph TD
-  UI[Terminal UI] -->|events| HOST[Host]
-  HOST -->|actions| CORE[Core Task: Editor State]
+  RT[Tokio Runtime]
+  RT --> CORE[Core Task]
+  RT --> INPUT[Input Task]
+  RT --> RENDER[Render Task]
+  RT --> SVC[Service Tasks]
 
-  CORE -->|immutable snapshot| RENDER[Render Task]
-  RENDER -->|frame| UI
-
-  CORE <--> BUS[Message Bus]
-
-  BUS <--> IDX[Indexer Service]
-  BUS <--> LSP[LSP Service]
-  BUS <--> GIT[Git Service]
-  BUS <--> FS[FS Watch Service]
-  BUS <--> TERM[Terminal Service]
-
-  IDX -->|results| BUS
-  LSP -->|diagnostics, edits| BUS
-  GIT -->|hunks, blame, status| BUS
-  FS -->|file events| BUS
-  TERM -->|pty events| BUS
-
+  INPUT -->|Action/Key channels| CORE
+  SVC -->|ServiceResponse channel| CORE
+  CORE -->|EditorSnapshot watch| RENDER
 ```
+
+## Invariants
+
+- `EditorState` has a single mutable owner: the core task.
+- Rendering consumes immutable snapshots only.
+- IO and long-running work executes in supervised services.
+- Input and services communicate with core through bounded channels.
 
 ## Related
 
 - Runtime model: [runtime.md](runtime.md)
+- Startup sequence: [startup.md](startup.md)

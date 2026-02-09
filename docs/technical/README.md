@@ -1,28 +1,38 @@
 # Technical Documentation
 
 Back: [/docs/README.md](/docs/README.md)
-Technical implementation details, debugging, and specialized topics.
+
+Implementation guidance for cross-cutting technical topics.
+
+## Authority
+
+This directory is explanatory and does not override canonical docs.
+
+Canonical sources:
+
+- policy/spec contracts: [/docs/policy/README.md](/docs/policy/README.md), [/docs/spec/README.md](/docs/spec/README.md)
+- current-state status: [/docs/reference/README.md](/docs/reference/README.md)
 
 ## Documents
 
 | Document | Content |
-|----------|---------|
-| [bidi.md](bidi.md) | Bidirectional text support |
-| [crash-reporting.md](crash-reporting.md) | Crash reporting mechanisms |
-| [debugging.md](debugging.md) | Debugging techniques |
-| [error-recovery.md](error-recovery.md) | Error recovery strategies |
-| [large-files.md](large-files.md) | Large file handling |
-| [network-fs.md](network-fs.md) | Network filesystem support |
-| [telemetry.md](telemetry.md) | Telemetry and analytics |
-| [unicode.md](unicode.md) | Unicode handling |
+|---|---|
+| [bidi.md](bidi.md) | Bidirectional text guidance |
+| [crash-reporting.md](crash-reporting.md) | Crash-reporting guidance |
+| [debugging.md](debugging.md) | Debugging runbook |
+| [error-recovery.md](error-recovery.md) | Recovery posture guidance |
+| [large-files.md](large-files.md) | Large-file tactics |
+| [network-fs.md](network-fs.md) | Network filesystem safety |
+| [telemetry.md](telemetry.md) | Telemetry posture |
+| [unicode.md](unicode.md) | Unicode/CJK guidance |
 
 ## Subdirectories
 
 | Directory | Content |
-|-----------|---------|
-| [testing/](testing/README.md) | Testing methodologies |
+|---|---|
+| [testing/](testing/README.md) | Testing guidance |
 
 ## Related
 
-- Spec technical: [docs/spec/technical/README.md](/docs/spec/technical/README.md)
-- Architecture: [docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- Technical specs: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
+- Architecture specs: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)

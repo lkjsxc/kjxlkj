@@ -2,17 +2,17 @@
 
 Back: [/docs/technical/README.md](/docs/technical/README.md)
 
-Operational guidance for debugging `kjxlkj` during reconstruction and implementation waves.
+Operational guidance for debugging during reconstruction waves.
 
-## Core workflow
+## Core Workflow
 
-1. Reproduce with the smallest possible input.
-2. Convert reproduction into an automated test (unit/integration/headless/PTy E2E).
-3. Fix implementation.
-4. Re-run target tests and then full verification.
-5. Update conformance/limitations if user-visible behavior changed.
+1. Reproduce with the smallest deterministic input.
+2. Convert the repro to automated verification.
+3. Fix behavior through real runtime paths.
+4. Re-run targeted tests, then profile-appropriate full verification gate.
+5. Sync conformance/limitations when user-visible behavior changed.
 
-## Local command reference
+## Local Command Reference
 
 | Goal | Command |
 |---|---|
@@ -24,51 +24,49 @@ Operational guidance for debugging `kjxlkj` during reconstruction and implementa
 | Show test logs | `cargo test -- --nocapture` |
 | Lint review | `cargo clippy --workspace --all-targets` |
 
-## CI parity rules
+## CI Parity Rule
 
-- Local debug loops should use the same command families as CI.
-- CI currently reports warnings but does not globally fail only on rustc warnings.
-- Fix warnings in touched areas when practical; record accepted scaffolding warnings in docs when relevant.
+Use command families consistent with the active CI profile.
 
 Canonical CI contract:
 
 - [/docs/reference/CI.md](/docs/reference/CI.md)
 
-## Headless and PTY strategy
+## Headless vs PTY
 
 | Harness | Use when |
 |---|---|
-| Headless script execution | Repro does not depend on terminal transport or escape sequences |
+| Headless script execution | Repro does not depend on terminal transport/escape behavior |
 | PTY-driven E2E | Repro depends on input decoding, resize/focus routing, or terminal behavior |
 
-Prefer assertions on persisted output (files, serialized state) over fragile screen scraping.
+Prefer persisted-state assertions over fragile screen scraping.
 
-## Crash and terminal recovery
+## Crash and Terminal Recovery
 
-If a crash leaves the terminal in a broken state:
+If a crash leaves terminal state broken:
 
 1. Press `Enter` once or twice.
 2. Run `reset`.
 3. If still broken, run `stty sane`.
 
-Persistent recovery failures are product bugs and should get regression tests.
+Persistent recovery failures are product bugs and should receive regression tests.
 
-## Backtrace policy
+## Backtrace Policy
 
 | Setting | Effect |
 |---|---|
-| `RUST_BACKTRACE=1` | compact backtrace |
-| `RUST_BACKTRACE=full` | full stack trace |
+| `RUST_BACKTRACE=1` | Compact backtrace |
+| `RUST_BACKTRACE=full` | Full stack trace |
 
-Collect failing command, file path, and exact key sequence with the trace.
+Capture failing command, file path, and exact key sequence with the trace.
 
-## Performance triage
+## Performance Triage
 
 When debugging latency or large-file issues:
 
-- check for accidental O(file) work in per-keystroke or per-frame paths
+- check for accidental O(file) work in per-keystroke/per-frame paths
 - verify viewport-bounded snapshot behavior
-- verify no idle busy-loop redraws
+- verify no idle busy-loop redraw
 
 Primary specs:
 
@@ -76,10 +74,10 @@ Primary specs:
 - [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 - [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
 
-## Documentation hygiene
+## Documentation Hygiene
 
-If debugging discovers spec/implementation drift:
+If debugging finds drift:
 
 1. update canonical spec or limitations
-2. link the fix to a regression test
-3. add a short record in `/docs/log/reconstruction/` when needed
+2. link fix to regression coverage
+3. add a short dated note under `/docs/log/` when useful

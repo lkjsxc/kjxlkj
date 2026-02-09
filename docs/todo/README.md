@@ -2,46 +2,40 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-This directory is the reconstruction control plane.
+`/docs/todo/` is the execution control plane for full reconstruction.
 
-## Operating Rules
+## Objective
 
-- Every item MUST use checkbox form.
-- All items remain unchecked until deterministic evidence exists.
-- No checkbox may be checked from type-only or unreachable implementation work.
-- TODOs must remain stricter than MVP: target full feature wiring.
+Following TODO items exactly MUST produce a complete reconstructed implementation that conforms to all normative docs.
 
-## Documents
+## Normative Inputs
 
-| Document | Purpose |
+- [/docs/policy/README.md](/docs/policy/README.md)
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/reference/README.md](/docs/reference/README.md)
+
+## Non-Negotiable Rules
+
+- Every checkbox stays unchecked until evidence exists.
+- No type-only or unreachable work may be marked complete.
+- Conformance and limitations must be updated with every verified behavior change.
+- Requirement coverage must be explicit and auditable.
+
+## Execution Layers
+
+| Layer | Purpose |
 |---|---|
-| [current/README.md](current/README.md) | Active reconstruction checklists |
-| [doc-coverage/README.md](doc-coverage/README.md) | Direct-link checklist for every documentation file |
-| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | Rebuild execution contract |
-| [reading/README.md](reading/README.md) | Reading discipline before implementation |
-| [completed/README.md](completed/README.md) | Optional archive for completed waves |
+| [current/README.md](current/README.md) | Standby baseline checks and active wave gates |
+| [doc-coverage/README.md](doc-coverage/README.md) | Documentation file coverage tracking |
+| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | Execution contract for full rebuild runs |
+| [reading/README.md](reading/README.md) | Mandatory reading discipline |
+| [completed/README.md](completed/README.md) | Archived waves |
 
-## Required Gate Sequence
+## Completion Definition
 
-1. Read canonical docs.
-2. Build mismatch matrix.
-3. Select one coherent reconstruction slice.
-4. Implement via user-reachable paths.
-5. Run deterministic tests.
-6. Update conformance and limitations.
-7. Check only proven TODOs.
+A wave is complete only when all are true:
 
-## Anti-Shortcut Policy
-
-| Shortcut Pattern | Disallowed Outcome |
-|---|---|
-| Type scaffolding without runtime path | Cannot mark feature complete |
-| Passing only unit tests for UI/runtime behavior | Cannot mark E2E-related item complete |
-| Updating spec without limitations/conformance sync | Cannot mark item complete |
-| Ignoring known boundary behavior | Cannot mark parent area complete |
-
-## Related
-
-- Policy: [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
-- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+1. Every normative requirement has coverage status (`verified` or explicit limitation).
+2. Runtime behavior is user-reachable.
+3. Deterministic verification gate is green for reconstructed profile.
+4. Reference ledgers and TODO status are synchronized.

@@ -3,6 +3,7 @@
 Back: [/docs/design/editing/README.md](/docs/design/editing/README.md)
 
 Implementation details for the operator system.
+Normative requirements are defined in `/docs/spec/editing/operators/`.
 
 ## Overview
 

@@ -2,54 +2,47 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-All checkboxes below are intentionally unchecked for next full reconstruction.
+Standby reconstruction baseline.
 
-## Completion Preconditions
+This state is used when derived artifacts are intentionally removed and the next
+implementation wave has not started yet.
 
-- [ ] Feature is reachable from runtime entrypoint via real user input
-- [ ] Deterministic tests exist at required layers
-- [ ] `/docs/reference/CONFORMANCE.md` updated
-- [ ] `/docs/reference/LIMITATIONS.md` updated for any remaining user-visible gaps
-- [ ] Relevant links in `/docs/todo/doc-coverage/` confirmed
+## Standby Baseline Checks
 
-## Area Checklists
+- [ ] Confirm docs-only repository shape (no workspace/source/CI artifacts).
+- [ ] Confirm conformance and limitations reflect docs-first baseline.
+- [ ] Confirm all reconstruction checklists remain evidence-empty (unchecked).
+- [ ] Confirm doc coverage inventory is up to date.
 
-Navigation:
+When starting a new wave, complete Global Preconditions first and then proceed
+through the domain checklists.
 
-- [areas/README.md](areas/README.md)
-- [features/README.md](features/README.md)
+## Global Preconditions
+
+- [ ] Read canonical documents in required order.
+- [ ] Create a requirement inventory covering all normative spec files.
+- [ ] Create mismatch matrix (spec vs implementation vs tests).
+- [ ] Prioritize correctness and user-visible gaps first.
+
+## Domain Checklists
 
 - [ ] [areas/architecture.md](areas/architecture.md)
 - [ ] [areas/editor-core.md](areas/editor-core.md)
 - [ ] [areas/modes.md](areas/modes.md)
 - [ ] [areas/editing.md](areas/editing.md)
 - [ ] [areas/commands.md](areas/commands.md)
-- [ ] [features/features-core.md](features/features-core.md)
-- [ ] [features/features-services.md](features/features-services.md)
-- [ ] [features/features-editing.md](features/features-editing.md)
 - [ ] [areas/scripting.md](areas/scripting.md)
 - [ ] [areas/ui-rendering.md](areas/ui-rendering.md)
 - [ ] [areas/ux.md](areas/ux.md)
 - [ ] [areas/technical.md](areas/technical.md)
+- [ ] [features/features-core.md](features/features-core.md)
+- [ ] [features/features-services.md](features/features-services.md)
+- [ ] [features/features-editing.md](features/features-editing.md)
 - [ ] [verification.md](verification.md)
 
-## Critical Gap Closures
+## Global Exit Criteria
 
-- [ ] Fix `A` / `Shift+a` append-at-EOL behavior per [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
-- [ ] Wire `:terminal` into real PTY-backed terminal windows per [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
-- [ ] Implement spatially correct split/window navigation graph per [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- [ ] Wire explorer toggle/open/split workflows per [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
-- [ ] Implement real filesystem-backed `:w` and `:e` behavior per [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
-- [ ] Wire `:SessionSave`/`:SessionLoad` command path per [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
-- [ ] Complete Japanese IME intercept/commit/cancel per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
-- [ ] Guarantee wrapped rendering for long lines per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-
-## Direct-Link Coverage
-
-- [ ] [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
-
-## Related
-
-- Reconstruction contract: [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
-- Current conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- Current limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] No normative requirement remains without either verification evidence or an explicit open limitation.
+- [ ] Conformance ledgers contain dated evidence links.
+- [ ] Limitations ledger contains only intentional, scoped residual gaps.
+- [ ] TODO checkboxes reflect evidence-backed state only.

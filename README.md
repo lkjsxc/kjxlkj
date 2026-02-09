@@ -1,36 +1,41 @@
 # kjxlkj
 
-kjxlkj is a Neovim-inspired TUI text editor written in Rust.
+`kjxlkj` is a Neovim-inspired terminal editor with a documentation-first contract.
 
-## “All in Docs” (project contract)
+## Project Contract
 
-This repository follows an **“All in Docs”** philosophy:
+- `/docs/` is the canonical system definition.
+- Source code, CI, and packaging artifacts are derived outputs.
+- The repository may intentionally exist in a docs-only baseline and be reconstructed from documentation.
 
-- The documentation under [`/docs/`](docs/README.md) is the **project** and the **source of truth**.
-- Everything else (code, build files, CI, generated artifacts) is a **derived** implementation detail.
-- The documentation is written so that **even if everything except `/docs/` disappeared**, a complete, working system can be reconstructed from the docs.
+Canonical explanation:
 
-This repo is also optimized for **machine (LLM) parsing and editing**. Canonical explanation: [`docs/overview/all-in-docs.md`](docs/overview/all-in-docs.md).
+- [docs/overview/all-in-docs.md](docs/overview/all-in-docs.md)
 
-## Docs
+## Canonical Docs
 
 - Documentation index: [docs/README.md](docs/README.md)
-- Canonical specifications: [docs/spec/README.md](docs/spec/README.md)
-- Policies and invariants: [docs/policy/README.md](docs/policy/README.md)
-- Reconstruction prompt (Copilot/Claude): [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
+- Policies: [docs/policy/README.md](docs/policy/README.md)
+- Specifications: [docs/spec/README.md](docs/spec/README.md)
+- Current verified status: [docs/reference/CONFORMANCE.md](docs/reference/CONFORMANCE.md)
+- Known gaps: [docs/reference/LIMITATIONS.md](docs/reference/LIMITATIONS.md)
+- Reconstruction contract: [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
 
-## Implementation
+## Repository States
 
-- The canonical specification lives under `docs/` and is treated as normative.
-- The Rust implementation is a **derived artifact**. The repo may be in a docs-only baseline (no `src/`/Cargo workspace).
-- To (re)generate the implementation from docs, follow:
-  - `docs/todo/RECONSTRUCTION_PROMPT.md`
+- Docs-only baseline: canonical docs are present; derived artifacts may be absent.
+- Reconstructed implementation: workspace and automation artifacts are regenerated from docs.
 
-When the Cargo workspace exists, the implementation lives under `src/crates/`.
+## Reconstructing the Implementation
 
-Toolchain:
+Follow:
 
-- Rust stable is expected. When present, `rust-toolchain.toml` pins the toolchain + components for reproducible builds/CI (see `docs/policy/ROOT_LAYOUT.md`).
+- [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
+- [docs/todo/README.md](docs/todo/README.md)
+
+When reconstructed, the Rust workspace is expected under `src/crates/`.
+
+## Build and Verification (When Workspace Exists)
 
 Build:
 
@@ -38,7 +43,7 @@ Build:
 cargo build
 ```
 
-Format:
+Format check:
 
 ```bash
 cargo fmt --all -- --check
@@ -56,11 +61,19 @@ Test:
 cargo test --workspace
 ```
 
-Docker:
+CI contract:
 
-Docker support is a target derived artifact. If `Dockerfile` exists, build/run with:
+- [docs/reference/CI.md](docs/reference/CI.md)
+
+## Docker (When Artifacts Exist)
+
+If `Dockerfile` exists:
 
 ```bash
 docker build -t kjxlkj:dev .
 docker run --rm -it kjxlkj:dev
 ```
+
+Container guidance:
+
+- [docs/guides/DOCKER.md](docs/guides/DOCKER.md)

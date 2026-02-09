@@ -2,19 +2,27 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/log/` stores non-canonical records used to support reconstruction quality.
+`/docs/log/` contains historical records and working notes.
+
+## Authority
+
+Files in this directory are non-canonical. They do not override policy, spec, reference, or todo documents.
 
 ## Contents
 
 | Directory | Purpose |
 |---|---|
-| [audits/](audits/README.md) | Topology/compliance audits |
-| [proposals/](proposals/README.md) | Proposed improvements not yet promoted to canonical docs |
-| [reconstruction/](reconstruction/README.md) | Wave-specific spec sync, testing ideas, and mismatch audits |
+| [audits/](audits/README.md) | Historical audits and evidence snapshots |
+| [proposals/](proposals/README.md) | Improvement proposals not yet promoted |
+| [reconstruction/](reconstruction/README.md) | Wave-specific notes and sync audits |
 
-## Hygiene Rules
+## Hygiene
 
-- Promote durable requirements into `/docs/spec/` or `/docs/policy/`.
-- Keep logs concise and evidence-based.
-- Delete stale historical records once promoted to canonical docs.
-- Avoid contradictory status claims between logs and `reference` ledgers.
+- Promote durable requirements into canonical docs.
+- Keep logs evidence-oriented and dated.
+- Avoid using logs as current-state authority.
+
+## Related
+
+- Canonical docs index: [/docs/README.md](/docs/README.md)
+- Current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)

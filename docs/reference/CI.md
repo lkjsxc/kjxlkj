@@ -1,46 +1,33 @@
 # CI
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
-Continuous integration for this repository.
 
-CI is required by policy (see `/docs/policy/WORKFLOW.md`).
+Defines the reproducible verification gate.
 
-## Status (derived artifact)
-
-This repository may temporarily be in a docs-only baseline, or may have derived automation artifacts pruned.
-
-CI configuration and helper scripts are treated as derived artifacts: when absent, they MUST be reconstructed to satisfy policy before treating the repo as “shippable”.
-
-## Location
-
-The canonical CI location is:
+## Canonical Location
 
 - `/.github/workflows/ci.yml`
 
-## What CI verifies
+In docs-only baseline state, this file may be intentionally absent and must be
+regenerated during reconstruction.
 
-CI MUST remain green for changes to be considered shippable.
+## Verification Profiles
 
-Checks:
+| Profile | Applies When | Required Checks |
+|---|---|---|
+| Docs-only | Source artifacts absent by design | internal doc link/path checks, policy checks |
+| Reconstructed | Workspace exists | docs checks + `cargo fmt --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
 
-- Documentation policy checks (structure + fence rules) via `python .github/scripts/check_docs_policy.py`
-- Formatting via `cargo fmt --all -- --check`
-- Linting via `cargo clippy --workspace --all-targets`
-- Tests via `cargo test --workspace`
-- Docker buildability via `docker build -t kjxlkj:ci .` (when `Dockerfile` exists per policy)
+## Local Reproduction
 
-## Warning policy (normative)
+Run the profile-appropriate checks from repository root.
 
-CI warning policy MUST match local default behavior:
+If running in reconstructed profile, minimum gate is:
 
-- `cargo check` and `cargo test` warnings are reported but do not hard-fail solely due to rustc warnings.
-- Clippy diagnostics are run in CI for visibility, but warnings are not globally promoted to errors by default.
-- Teams MAY temporarily enforce stricter lint gates for focused cleanup branches, but this MUST be documented in the same change.
+1. `cargo fmt --all -- --check`
+2. `cargo clippy --workspace --all-targets`
+3. `cargo test --workspace`
 
-Rationale: the repository intentionally contains staged scaffolding that is gradually wired into runtime behavior; strict global `-D warnings` causes CI/local divergence and blocks incremental integration.
+## Evidence Rule
 
-## Local reproduction
-
-The CI checks are intended to be reproducible locally by running the same commands listed above from the repo root.
-
-In a docs-only baseline, Cargo- and Docker-based checks apply only after the workspace and packaging artifacts are reconstructed.
+CI status claims in `CONFORMANCE` or release docs MUST include a dated evidence pointer.

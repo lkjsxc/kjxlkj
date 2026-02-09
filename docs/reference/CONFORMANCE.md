@@ -2,53 +2,45 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger captures the verified implementation surface for the current repository state.
+This ledger records what is currently verified, with evidence links.
 
-## Verification Snapshot
+## Current Baseline
 
-| Check | Result | Evidence |
-|---|---|---|
-| `cargo test --workspace` | pass | Local run on 2026-02-09 |
-| `cargo test --workspace -- --list` | 596 tests listed | [/docs/log/audits/verification-evidence-2026-02-09.md](/docs/log/audits/verification-evidence-2026-02-09.md) |
+This repository is currently maintained in a documentation-first reconstruction state.
+
+In this state:
+
+- target behavior is defined by `/docs/spec/`
+- implementation may be partial, stale, or absent
+- claims in this file MUST be evidence-backed and time-scoped
 
 ## Status Vocabulary
 
 | Status | Meaning |
 |---|---|
-| `implemented` | Reachable and covered by deterministic tests |
-| `partial` | Implemented in part, with known wiring gaps |
-| `scaffold-only` | Data types or modules exist, but user path is not fully wired |
-| `planned` | Target only, no meaningful implementation |
+| `verified` | Reachable behavior confirmed by deterministic evidence |
+| `partial` | Some behavior is verified, but user-visible gaps remain |
+| `scaffold-only` | Types/modules exist but user path is not complete |
+| `unverified` | No current evidence recorded |
 
-## Current Surface (High-Level)
+## Verification Snapshot
 
-| Area | Status | Evidence |
+| Check | Result | Evidence |
 |---|---|---|
-| Core modal editing loop | `implemented` | `src/crates/kjxlkj-core-mode/src/`, `src/crates/kjxlkj-core-state/tests/dispatch_tests.rs` |
-| Basic motions/operators/registers | `implemented` | `src/crates/kjxlkj-core-edit/src/`, `src/crates/kjxlkj-core-state/tests/regression_tests.rs` |
-| CJK cursor and wrap primitives | `implemented` | `src/crates/kjxlkj-core-state/src/cjk_support.rs`, `src/crates/kjxlkj-core-state/src/line_wrap.rs` |
-| Window split/cycle/close primitives | `implemented` | `src/crates/kjxlkj-core-state/src/editor_file_ops.rs`, `src/crates/kjxlkj-core-state/tests/headless_e2e_tests.rs` |
-| Advanced window graph semantics | `partial` | `src/crates/kjxlkj-core-state/src/editor_window_ops.rs` uses cyclic ordering, not spatial graph |
-| File explorer integration | `partial` | `src/crates/kjxlkj-core-state/src/file_explorer.rs` exists; dispatch wiring is incomplete |
-| Terminal as real user-facing window | `partial` | `Action::SpawnTerminal` currently no-op in `src/crates/kjxlkj-core-state/src/action_dispatch2.rs` |
-| PTY runtime implementation | `scaffold-only` | `src/crates/kjxlkj-service-terminal/src/pty.rs` exists but not integrated into main action path |
-| Session command wiring | `partial` | session model exists; `SessionSave/SessionLoad` are no-op in dispatch |
-| File write/read real persistence | `partial` | `do_write` clears modified flag; does not persist file bytes |
-| Leader key UX parity with target docs | `partial` | default leader is `\\` in `src/crates/kjxlkj-core-state/src/keybinding_dsl.rs` |
-| Japanese IME full input-pipeline behavior | `partial` | IME state exists in `src/crates/kjxlkj-core-state/src/ime.rs`; end-to-end terminal composition flow incomplete |
+| Documentation consistency sweep | completed | current change set |
+| Docs-only baseline shape | completed | current change set (workspace artifacts intentionally absent) |
+| Runtime verification gate | unverified | no current evidence record |
 
 ## Claim Rules
 
-A claim in this ledger is valid only when all are true:
+A claim is valid only when all are true:
 
-1. Target behavior is defined in `/docs/spec/...`.
-2. User-facing path is reachable from runtime entrypoint.
-3. Deterministic tests cover success and boundary behavior.
-4. Any remaining user-visible gap is recorded in `LIMITATIONS`.
+1. Linked spec requirement exists.
+2. Runtime path is user-reachable.
+3. Deterministic verification evidence is linked.
+4. Remaining user-visible gaps are listed in `LIMITATIONS`.
 
-## Sub-Ledgers
-
-These files provide domain-focused detail and MUST be interpreted under this top-level ledger:
+## Domain Ledgers
 
 - [conformance/CONFORMANCE_MODES.md](conformance/CONFORMANCE_MODES.md)
 - [conformance/CONFORMANCE_KEYS_INPUT.md](conformance/CONFORMANCE_KEYS_INPUT.md)
@@ -63,5 +55,5 @@ These files provide domain-focused detail and MUST be interpreted under this top
 
 ## Related
 
-- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- Target spec: [/docs/spec/README.md](/docs/spec/README.md)
+- Open mismatches: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
