@@ -105,30 +105,23 @@ impl EditorState {
                 let r = range.unwrap_or(ExRange { start: 0, end: total_lines.saturating_sub(1) });
                 self.handle_sort(flags, r);
             }
-            _ if rest.starts_with("call cursor(") => {
-                self.handle_call_cursor(rest);
-            }
-            _ if rest.starts_with("call ") => {
-                self.handle_call_function(rest);
-            }
-            _ if rest.starts_with("let ") => {
-                let args = rest.strip_prefix("let ").unwrap();
-                self.handle_let_command(args);
-            }
-            _ if rest.starts_with("e ") || rest.starts_with("edit ") => {
-                let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();
-                if !path.is_empty() {
-                    self.notify_info(&format!("Opening: {path}"));
-                }
-            }
+            _ if rest.starts_with("call cursor(") => { self.handle_call_cursor(rest); }
+            _ if rest.starts_with("call ") => { self.handle_call_function(rest); }
+            _ if rest.starts_with("let ") => { self.handle_let_command(rest.strip_prefix("let ").unwrap()); }
+            _ if rest.starts_with("e ") || rest.starts_with("edit ") => { let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim(); if !path.is_empty() { self.notify_info(&format!("Opening: {path}")); } }
             _ if rest.starts_with("b ") => { if let Ok(n) = rest[2..].trim().parse::<u64>() { self.buffers.switch_to(kjxlkj_core_types::BufferId(n)); } }
             _ if rest.starts_with("echo ") || rest == "echo" => { let msg = rest.strip_prefix("echo").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echon ") => { let msg = rest.strip_prefix("echon ").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echomsg ") => { let msg = rest.strip_prefix("echomsg ").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echohl ") => { let hl = rest.strip_prefix("echohl ").unwrap().trim(); self.options.set("echohl", crate::options::OptionValue::Str(hl.to_string())); }
+            _ if rest.starts_with("echon ") => { let msg = rest[6..].trim().trim_matches('"'); self.notify_info(msg); }
+            _ if rest.starts_with("echomsg ") => { let msg = rest[8..].trim().trim_matches('"'); self.notify_info(msg); }
+            _ if rest.starts_with("echohl ") => { let hl = rest[7..].trim(); self.options.set("echohl", crate::options::OptionValue::Str(hl.to_string())); }
             _ if rest == "echohl" => { self.options.set("echohl", crate::options::OptionValue::Str(String::new())); }
-            _ if rest.starts_with("echoerr ") => { let msg = rest.strip_prefix("echoerr ").unwrap().trim().trim_matches('"'); self.notify_error(msg); }
-            _ if rest.starts_with("throw ") => { let msg = rest.strip_prefix("throw ").unwrap().trim().trim_matches('"'); self.last_error = Some(msg.to_string()); self.notify_error(&format!("E605: Exception: {msg}")); }
+            _ if rest.starts_with("echoerr ") => { let msg = rest[8..].trim().trim_matches('"'); self.notify_error(msg); }
+            _ if rest.starts_with("throw ") => { let msg = rest[6..].trim().trim_matches('"'); self.last_error = Some(msg.to_string()); self.notify_error(&format!("E605: Exception: {msg}")); }
+            _ if rest.starts_with("execute ") || rest.starts_with("exe ") => {
+                let arg = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();
+                match crate::expr_eval::eval_expression(arg) { Ok(cmd) => { let cmd = cmd.trim().to_string(); if !cmd.is_empty() { self.execute_ex_command(&cmd); } } Err(e) => self.notify_error(&format!("E15: {e}")), }
+            }
+            _ if rest == "retab" || rest.starts_with("retab ") || rest.starts_with("retab!") => { self.handle_retab(rest.strip_prefix("retab").unwrap_or("")); }
             _ if super::ex_map::is_map_command(rest) => self.handle_map_command(rest),
             _ if rest == "command" || rest == "comclear" => { self.handle_command_command(rest, ""); }
             _ if rest.starts_with("command ") || rest.starts_with("command! ") => {
@@ -137,13 +130,8 @@ impl EditorState {
             }
             _ if rest.starts_with("delcommand ") => { self.handle_delcommand(rest.strip_prefix("delcommand ").unwrap().trim()); }
             _ if rest.starts_with("autocmd ") || rest == "autocmd" => { self.handle_autocmd(rest.strip_prefix("autocmd").unwrap().trim()); }
-            _ if rest.starts_with("mark ") || rest.starts_with("k ") => {
-                self.handle_mark_command(rest);
-            }
-            _ if rest.starts_with("delmarks ") => {
-                let names = rest.strip_prefix("delmarks ").unwrap().trim();
-                self.handle_delmarks(names);
-            }
+            _ if rest.starts_with("mark ") || rest.starts_with("k ") => { self.handle_mark_command(rest); }
+            _ if rest.starts_with("delmarks ") => { self.handle_delmarks(rest.strip_prefix("delmarks ").unwrap().trim()); }
             "delmarks!" => {
                 let bid = self.current_buffer_id().0 as usize;
                 self.marks.clear_buffer(bid);

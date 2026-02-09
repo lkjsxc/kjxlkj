@@ -116,7 +116,8 @@ impl Default for OptionStore {
 /// Parse and execute a `:set` command argument.
 /// Returns a human-readable result or error message.
 pub fn parse_set_command(opts: &mut OptionStore, args: &str) -> Result<Option<String>, String> {
-    let args = args.trim();
+    let args = resolve_option_abbrev(args.trim());
+    let args = args.as_str();
     if args.is_empty() || args == "all" {
         let items = opts.list();
         let lines: Vec<String> = items.iter().map(|(k, v)| format!("  {k}={v}")).collect();
@@ -158,4 +159,20 @@ pub fn parse_set_command(opts: &mut OptionStore, args: &str) -> Result<Option<St
         return Ok(None);
     }
     Err(format!("E518: Unknown option: {name}"))
+}
+
+/// Resolve common Vim option abbreviations to full names.
+#[rustfmt::skip]
+fn resolve_option_abbrev(s: &str) -> String {
+    let (prefix, rest) = if let Some(r) = s.strip_prefix("no") { ("no", r) } else { ("", s) };
+    let (name, suffix) = if let Some((n, v)) = rest.split_once('=') { (n, format!("={v}")) } else { (rest, String::new()) };
+    let resolved = match name {
+        "ts" => "tabstop", "sw" => "shiftwidth", "et" => "expandtab",
+        "tw" => "textwidth", "ai" => "autoindent", "si" => "smartindent",
+        "ic" => "ignorecase", "scs" => "smartcase", "hls" => "hlsearch",
+        "is" => "incsearch", "nu" => "number", "rnu" => "relativenumber",
+        "so" => "scrolloff", "ft" => "filetype", "fo" => "formatoptions",
+        _ => return s.to_string(),
+    };
+    format!("{prefix}{resolved}{suffix}")
 }

@@ -40,145 +40,65 @@ pub fn build_grid(snapshot: &EditorSnapshot) -> CellGrid {
 
 fn render_statusline(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
     let style = snapshot.theme.statusline_style;
-
-    for col in 0..cols {
-        grid.set(
-            col,
-            row,
-            Cell {
-                grapheme: " ".to_string(),
-                width: 1,
-                style,
-                is_wide_continuation: false,
-            },
-        );
-    }
-
+    for col in 0..cols { grid.set(col, row, Cell { grapheme: " ".into(), width: 1, style, is_wide_continuation: false }); }
     let mode_str = format!(" {} ", snapshot.mode);
     grid.set_str(0, row, &mode_str, style);
-
     let tab = snapshot.tabs.get(snapshot.active_tab);
-    let buf_name = if let Some(tab) = tab {
-        if let Some(ws) = tab.windows.get(&snapshot.focused_window) {
-            if let ContentSource::Buffer(bid) = &ws.content {
-                snapshot
-                    .buffers
-                    .get(bid)
-                    .map(|b| {
-                        let modified = if b.modified { "[+]" } else { "" };
-                        format!(" {}{} ", b.name, modified)
-                    })
-                    .unwrap_or_default()
-            } else {
-                String::new()
-            }
-        } else {
-            String::new()
-        }
-    } else {
-        String::new()
-    };
-
-    let mode_len = mode_str.len() as u16;
-    grid.set_str(mode_len, row, &buf_name, style);
-
-    if let Some(tab) = tab {
-        if let Some(ws) = tab.windows.get(&snapshot.focused_window) {
-            let pos_str = format!(" {}:{} ", ws.cursor.line + 1, ws.cursor.grapheme + 1);
-            let pos_len = pos_str.len() as u16;
-            if cols > pos_len {
-                grid.set_str(cols - pos_len, row, &pos_str, style);
-            }
-        }
+    let buf_name = tab.and_then(|t| t.windows.get(&snapshot.focused_window)).and_then(|ws| {
+        if let ContentSource::Buffer(bid) = &ws.content { snapshot.buffers.get(bid).map(|b| { let m = if b.modified { "[+]" } else { "" }; format!(" {}{} ", b.name, m) }) } else { None }
+    }).unwrap_or_default();
+    grid.set_str(mode_str.len() as u16, row, &buf_name, style);
+    if let Some(ws) = tab.and_then(|t| t.windows.get(&snapshot.focused_window)) {
+        let pos_str = format!(" {}:{} ", ws.cursor.line + 1, ws.cursor.grapheme + 1);
+        let pos_len = pos_str.len() as u16;
+        if cols > pos_len { grid.set_str(cols - pos_len, row, &pos_str, style); }
     }
 }
 
 fn render_cmdline(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
     if snapshot.cmdline.active {
-        let prefix = snapshot
-            .cmdline
-            .prefix
-            .map(|c| c.to_string())
-            .unwrap_or_default();
-        let text = format!("{}{}", prefix, snapshot.cmdline.content);
-        grid.set_str(0, row, &text, snapshot.theme.cmdline_style);
-        // Wildmenu: show completions on status bar row.
-        if !snapshot.cmdline.completions.is_empty() && row > 0 {
-            render_wildmenu(grid, cols, row - 1, snapshot);
-        }
+        let prefix = snapshot.cmdline.prefix.map(|c| c.to_string()).unwrap_or_default();
+        grid.set_str(0, row, &format!("{}{}", prefix, snapshot.cmdline.content), snapshot.theme.cmdline_style);
+        if !snapshot.cmdline.completions.is_empty() && row > 0 { render_wildmenu(grid, cols, row - 1, snapshot); }
     } else if let Some(notif) = snapshot.notifications.last() {
         let style = match notif.level {
-            kjxlkj_core_ui::NotificationLevel::Error => Style {
-                fg: Color::Rgb(255, 0, 0),
-                ..Style::default()
-            },
-            kjxlkj_core_ui::NotificationLevel::Warning => Style {
-                fg: Color::Rgb(255, 255, 0),
-                ..Style::default()
-            },
+            kjxlkj_core_ui::NotificationLevel::Error => Style { fg: Color::Rgb(255, 0, 0), ..Style::default() },
+            kjxlkj_core_ui::NotificationLevel::Warning => Style { fg: Color::Rgb(255, 255, 0), ..Style::default() },
             _ => Style::default(),
         };
         grid.set_str(0, row, &notif.message, style);
     }
-    // Search count display on cmdline row right side.
     if let Some((cur, total)) = snapshot.search.match_count {
-        let count_str = format!("[{}/{}]", cur, total);
-        let len = count_str.len() as u16;
-        if cols > len {
-            grid.set_str(cols - len, row, &count_str, Style::default());
-        }
+        let cs = format!("[{}/{}]", cur, total); let len = cs.len() as u16;
+        if cols > len { grid.set_str(cols - len, row, &cs, Style::default()); }
     }
 }
 
+#[rustfmt::skip]
 fn render_wildmenu(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
     let sel = snapshot.cmdline.completion_index;
     let normal = snapshot.theme.statusline_style;
-    let selected = Style {
-        fg: Color::Rgb(0, 0, 0),
-        bg: Color::Rgb(255, 255, 255),
-        bold: false,
-        italic: false,
-        underline: false,
-        reverse: false,
-    };
-    // Compute item widths and find scroll start.
-    let items: Vec<String> = snapshot
-        .cmdline
-        .completions
-        .iter()
-        .map(|s| format!(" {} ", s))
-        .collect();
+    let selected = Style { fg: Color::Rgb(0, 0, 0), bg: Color::Rgb(255, 255, 255), bold: false, italic: false, underline: false, reverse: false };
+    let items: Vec<String> = snapshot.cmdline.completions.iter().map(|s| format!(" {} ", s)).collect();
     let widths: Vec<u16> = items.iter().map(|s| s.len() as u16).collect();
     let total_w: u16 = widths.iter().sum();
-    let scroll_start = if total_w <= cols {
-        0
-    } else {
-        // Ensure selected item is visible.
+    let scroll_start = if total_w <= cols { 0 } else {
         let si = sel.unwrap_or(0);
         let mut prefix: u16 = widths[..si].iter().sum();
-        if prefix + widths[si] > cols {
-            prefix = (prefix + widths[si]).saturating_sub(cols);
-        }
-        let mut start = 0usize;
-        let mut acc = 0u16;
-        for (i, &w) in widths.iter().enumerate() {
-            if acc + w > prefix {
-                start = i;
-                break;
-            }
-            acc += w;
-        }
+        if prefix + widths[si] > cols { prefix = (prefix + widths[si]).saturating_sub(cols); }
+        let mut start = 0usize; let mut acc = 0u16;
+        for (i, &w) in widths.iter().enumerate() { if acc + w > prefix { start = i; break; } acc += w; }
         start
     };
-    let mut col = 0u16;
+    let ind = Style { fg: Color::Rgb(255, 255, 0), bg: normal.bg, bold: true, italic: false, underline: false, reverse: false };
+    let mut col = if scroll_start > 0 { grid.set_str(0, row, "<", ind); 1u16 } else { 0u16 };
     for (i, item) in items.iter().enumerate().skip(scroll_start) {
-        if col >= cols {
-            break;
-        }
-        let st = if sel == Some(i) { selected } else { normal };
-        grid.set_str(col, row, item, st);
-        col += item.len() as u16;
+        if col >= cols.saturating_sub(1) { break; }
+        grid.set_str(col, row, item, if sel == Some(i) { selected } else { normal }); col += item.len() as u16;
     }
+    let mut ve = scroll_start; let mut aw = if scroll_start > 0 { 1u16 } else { 0u16 };
+    for (i, it) in items.iter().enumerate().skip(scroll_start) { if aw + it.len() as u16 > cols { break; } aw += it.len() as u16; ve = i + 1; }
+    if ve < items.len() && cols > 0 { grid.set_str(cols - 1, row, ">", ind); }
 }
 
 #[rustfmt::skip]

@@ -81,7 +81,7 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                     Some('e') => { chars.next(); has_ze = true; ze_pos = Some(out.len()); }
                     _ => out.push_str("\\z"),
                 },
-                // Multi-line class atoms: \_s, \_d, \_w, \_.
+                // Multi-line class atoms: \_s, \_d, \_w, \_. ; \%V inside-visual-area atom (no-op in static regex).
                 Some('_') => match chars.next() {
                     Some('s') => out.push_str("[\\s\\n]"),
                     Some('S') => out.push_str("[^\\s]"),
@@ -91,10 +91,11 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                     Some(other) => { out.push_str("\\_"); out.push(other); }
                     None => out.push_str("\\_"),
                 },
-                // \%[abc] collection → [abc], \%(…\) non-capturing group → (?:…), \%dN/\%xH/\%oO equivalence
+                // \%[abc] collection → [abc], \%(…\) non-capturing group → (?:…), \%dN/\%xH/\%oO, \%V visual area
                 Some('%') => match chars.peek() {
                     Some('[') => { chars.next(); out.push('['); consume_until(&mut chars, &mut out, ']'); out.push(']'); }
                     Some('(') => { chars.next(); group_starts.push(out.len()); out.push_str("(?:"); }
+                    Some('V') => { chars.next(); /* \%V = inside visual area, runtime no-op in static regex */ }
                     Some('d') => { chars.next(); let n = collect_digits(&mut chars); if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } }
                     Some('x') => { chars.next(); let s = collect_hex(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 16) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }
                     Some('o') => { chars.next(); let s = collect_oct(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 8) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }

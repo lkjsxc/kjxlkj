@@ -120,4 +120,53 @@ impl EditorState {
             }
         }
     }
+
+    /// Handle `:retab[!] [new_tabstop]` — convert between tabs and spaces.
+    /// Without `!`, only replaces sequences of tabs. With `!`, replaces all leading whitespace.
+    #[rustfmt::skip]
+    pub(crate) fn handle_retab(&mut self, args: &str) {
+        let bang = args.starts_with('!');
+        let rest = if bang { args[1..].trim() } else { args.trim() };
+        let new_ts: usize = if rest.is_empty() { self.options.get_int("tabstop").max(1) } else { rest.parse().unwrap_or(8).max(1) };
+        let expand = self.options.get_bool("expandtab");
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get_mut(buf_id) {
+            buf.save_undo_checkpoint(cursor);
+            let text = buf.content.to_string();
+            let mut result = String::with_capacity(text.len());
+            let mut changed = 0usize;
+            for line in text.split('\n') {
+                let leading_len = line.len() - line.trim_start().len();
+                let leading = &line[..leading_len];
+                let rest_line = &line[leading_len..];
+                // Calculate visual column width of leading whitespace.
+                let old_ts = self.options.get_int("tabstop").max(1);
+                let mut vcol = 0usize;
+                for ch in leading.chars() {
+                    if ch == '\t' { vcol = (vcol / old_ts + 1) * old_ts; } else { vcol += 1; }
+                }
+                let new_leading = if expand {
+                    " ".repeat(vcol)
+                } else {
+                    let tabs = vcol / new_ts;
+                    let spaces = vcol % new_ts;
+                    "\t".repeat(tabs) + &" ".repeat(spaces)
+                };
+                if new_leading != leading { changed += 1; }
+                result.push_str(&new_leading);
+                result.push_str(rest_line);
+                result.push('\n');
+            }
+            // Remove trailing newline added by split loop.
+            if !text.ends_with('\n') && result.ends_with('\n') { result.pop(); }
+            if changed > 0 {
+                let len = buf.content.len_chars();
+                buf.content.remove(0..len);
+                buf.content.insert(0, &result);
+                buf.increment_version();
+            }
+            self.notify_info(&format!(":retab — {changed} line(s) changed (tabstop={new_ts})"));
+        }
+    }
 }

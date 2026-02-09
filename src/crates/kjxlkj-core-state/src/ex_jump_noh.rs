@@ -22,6 +22,7 @@ impl EditorState {
     }
 
     /// Parse modeline from buffer first/last 5 lines.
+    /// Supports multiple options: `vim: set ts=4 sw=4 et:` or `vim: ts=4:sw=4:et`.
     pub(crate) fn parse_modeline(&mut self) {
         let buf_id = self.current_buffer_id();
         let text = match self.buffers.get(buf_id) {
@@ -39,7 +40,11 @@ impl EditorState {
         };
         for line in check_lines {
             if let Some(opts) = extract_modeline(line) {
-                for part in opts.split_whitespace() {
+                // Split on whitespace and colons to handle both
+                // "ts=4 sw=4 et" and "ts=4:sw=4:et" styles.
+                for part in opts.split(|c: char| c.is_whitespace() || c == ':') {
+                    let part = part.trim();
+                    if part.is_empty() { continue; }
                     let _ = crate::options::parse_set_command(&mut self.options, part);
                 }
             }
@@ -49,17 +54,15 @@ impl EditorState {
 
 /// Extract options string from a modeline comment.
 /// Matches: `vim:` or `vi:` with `set ` prefix or bare options.
+/// Returns the FULL options string (caller splits on whitespace/colons).
 #[rustfmt::skip]
 fn extract_modeline(line: &str) -> Option<&str> {
     for prefix in ["vim:", "vi:", "ex:"] {
         if let Some(idx) = line.find(prefix) {
             let rest = &line[idx + prefix.len()..];
             let rest = rest.trim();
-            if let Some(s) = rest.strip_prefix("set ") {
-                let s = s.trim();
-                return Some(s.split(':').next().unwrap_or(s));
-            }
-            return Some(rest.split(':').next().unwrap_or(rest));
+            if let Some(s) = rest.strip_prefix("set ") { return Some(s.trim()); }
+            return Some(rest);
         }
     }
     None

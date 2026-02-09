@@ -51,6 +51,38 @@ impl SpellChecker {
         let lower = word.to_lowercase();
         self.good_words.retain(|w| w.to_lowercase() != lower);
     }
+
+    /// Generate spelling suggestions for a word using edit-distance heuristic.
+    /// Returns up to `max` suggestions sorted by relevance.
+    #[rustfmt::skip]
+    pub fn suggest(&self, word: &str, max: usize) -> Vec<String> {
+        let lower = word.to_lowercase();
+        let mut candidates: Vec<(usize, String)> = Vec::new();
+        // Score good words by edit distance.
+        for gw in &self.good_words {
+            let dist = edit_distance(&lower, &gw.to_lowercase());
+            if dist <= 3 && dist > 0 { candidates.push((dist, gw.clone())); }
+        }
+        // Common transformations: swap adjacent, delete char, insert common chars, replace.
+        let alpha = "abcdefghijklmnopqrstuvwxyz";
+        let bytes = lower.as_bytes();
+        // Single-char deletions.
+        for i in 0..bytes.len() { let mut w = lower.clone(); w.remove(i); if !w.is_empty() && !candidates.iter().any(|(_, c)| c == &w) { candidates.push((1, w)); } }
+        // Adjacent swaps.
+        for i in 0..bytes.len().saturating_sub(1) {
+            let mut w: Vec<u8> = bytes.to_vec(); w.swap(i, i + 1);
+            let s = String::from_utf8_lossy(&w).to_string();
+            if !candidates.iter().any(|(_, c)| c == &s) { candidates.push((1, s)); }
+        }
+        // Single-char replacements.
+        for i in 0..bytes.len() {
+            for c in alpha.bytes() {
+                if c != bytes[i] { let mut w: Vec<u8> = bytes.to_vec(); w[i] = c; let s = String::from_utf8_lossy(&w).to_string(); if !candidates.iter().any(|(_, c2)| c2 == &s) { candidates.push((1, s)); } }
+            }
+        }
+        candidates.sort_by_key(|&(d, _)| d);
+        candidates.into_iter().take(max).map(|(_, w)| w).collect()
+    }
 }
 
 impl EditorState {
@@ -79,6 +111,21 @@ impl EditorState {
         self.notify_info(&format!("Word marked as wrong: {word}"));
     }
 
+    /// Handle `z=` command: show spelling suggestions for word under cursor.
+    #[allow(dead_code)]
+    pub(crate) fn spell_suggest(&mut self) {
+        let word = self.word_under_cursor_pub();
+        if word.is_empty() { return self.notify_error("E756: No word under cursor"); }
+        let suggestions = self.spell.suggest(&word, 10);
+        if suggestions.is_empty() {
+            self.notify_info(&format!("No suggestions for \"{word}\""));
+        } else {
+            let mut lines = vec![format!("Suggestions for \"{word}\":")];
+            for (i, s) in suggestions.iter().enumerate() { lines.push(format!(" {:>2}: {s}", i + 1)); }
+            self.notify_info(&lines.join("\n"));
+        }
+    }
+
     /// Public wrapper for word_under_cursor.
     #[allow(dead_code)]
     pub(crate) fn word_under_cursor_pub(&self) -> String {
@@ -97,4 +144,22 @@ impl EditorState {
         }
         String::new()
     }
+}
+
+/// Simple Levenshtein edit distance between two strings.
+#[rustfmt::skip]
+fn edit_distance(a: &str, b: &str) -> usize {
+    let (ab, bb) = (a.as_bytes(), b.as_bytes());
+    let (m, n) = (ab.len(), bb.len());
+    let mut prev: Vec<usize> = (0..=n).collect();
+    let mut curr = vec![0usize; n + 1];
+    for i in 1..=m {
+        curr[0] = i;
+        for j in 1..=n {
+            let cost = if ab[i - 1] == bb[j - 1] { 0 } else { 1 };
+            curr[j] = (prev[j] + 1).min(curr[j - 1] + 1).min(prev[j - 1] + cost);
+        }
+        std::mem::swap(&mut prev, &mut curr);
+    }
+    prev[n]
 }

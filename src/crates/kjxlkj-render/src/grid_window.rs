@@ -116,32 +116,18 @@ fn render_line_content(
                 ..style
             };
         }
+        // Visual block cursor-column painting: subtle highlight on cursor column within block.
+        if is_block_cursor_column(ws.visual_selection.as_ref(), buf_line, g_idx, ws.cursor.grapheme) {
+            style = Style { bg: Color::Rgb(60, 60, 120), ..style };
+        }
         if is_focused && buf_line == ws.cursor.line && g_idx == ws.cursor.grapheme {
             style = *cursor_style;
         }
         let screen_col = text_start_col + col;
         if screen_col < grid.width() {
-            grid.set(
-                screen_col,
-                screen_row,
-                Cell {
-                    grapheme: grapheme.to_string(),
-                    width: w,
-                    style,
-                    is_wide_continuation: false,
-                },
-            );
+            grid.set(screen_col, screen_row, Cell { grapheme: grapheme.to_string(), width: w, style, is_wide_continuation: false });
             if w == 2 && screen_col + 1 < grid.width() {
-                grid.set(
-                    screen_col + 1,
-                    screen_row,
-                    Cell {
-                        grapheme: String::new(),
-                        width: 0,
-                        style,
-                        is_wide_continuation: true,
-                    },
-                );
+                grid.set(screen_col + 1, screen_row, Cell { grapheme: String::new(), width: 0, style, is_wide_continuation: true });
             }
         }
         col += w as u16;
@@ -153,16 +139,7 @@ fn render_line_content(
     {
         let screen_col = text_start_col + col;
         if screen_col < grid.width() {
-            grid.set(
-                screen_col,
-                screen_row,
-                Cell {
-                    grapheme: " ".to_string(),
-                    width: 1,
-                    style: *cursor_style,
-                    is_wide_continuation: false,
-                },
-            );
+            grid.set(screen_col, screen_row, Cell { grapheme: " ".into(), width: 1, style: *cursor_style, is_wide_continuation: false });
         }
     }
 }
@@ -197,4 +174,17 @@ fn is_in_visual_selection(sel: Option<&VisualSelection>, line: usize, col: usize
             line >= sl && line <= el && col >= min_c && col <= max_c
         }
     }
+}
+
+/// In visual block mode, highlight the cursor column on lines within/near the block range.
+/// This paints the cursor's exact column with a subtle background outside the block selection.
+#[rustfmt::skip]
+fn is_block_cursor_column(sel: Option<&VisualSelection>, line: usize, col: usize, cursor_col: usize) -> bool {
+    let sel = match sel { Some(s) => s, None => return false };
+    if !matches!(sel.kind, VisualKind::Block) { return false; }
+    let (al, cl) = (sel.anchor.line, sel.cursor.line);
+    let (sl, el) = if al <= cl { (al, cl) } else { (cl, al) };
+    // Only paint cursor column on lines within the block range, and only if not already in selection.
+    if line < sl || line > el { return false; }
+    col == cursor_col && !is_in_visual_selection(Some(sel), line, col)
 }
