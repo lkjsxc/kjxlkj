@@ -69,6 +69,12 @@ pub struct EditorState {
     pub(crate) changelist_idx: usize,
     /// Set during macro playback when an error occurs, to halt.
     pub(crate) macro_error: bool,
+    /// Jump list for Ctrl-O / Ctrl-I navigation.
+    pub(crate) jumplist: Vec<(usize, usize, usize)>,
+    /// Current index in jump list.
+    pub(crate) jumplist_idx: usize,
+    /// Alternate (previous) buffer id for # register.
+    pub(crate) alternate_buffer: Option<kjxlkj_core_types::BufferId>,
 }
 
 impl EditorState {
@@ -113,12 +119,18 @@ impl EditorState {
             changelist: Vec::new(),
             changelist_idx: 0,
             macro_error: false,
+            jumplist: Vec::new(),
+            jumplist_idx: 0,
+            alternate_buffer: None,
         }
     }
 
     /// Open file content into a buffer and display it.
     pub fn open_file(&mut self, path: &str, content: &str) {
+        let prev = self.current_buffer_id();
         let buf_id = self.buffers.open(content, std::path::PathBuf::from(path));
         self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
+        self.alternate_buffer = Some(prev);
+        self.parse_modeline();
     }
 }

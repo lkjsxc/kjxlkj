@@ -1,7 +1,7 @@
 /// Render a single window's buffer content into the cell grid.
 use crate::cell::{Cell, CellGrid};
-use kjxlkj_core_types::{BufferId, ContentSource};
-use kjxlkj_core_ui::{BufferSnapshot, Color, Style, WindowSnapshot};
+use kjxlkj_core_types::{BufferId, ContentSource, VisualKind};
+use kjxlkj_core_ui::{BufferSnapshot, Color, Style, VisualSelection, WindowSnapshot};
 use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -67,22 +67,7 @@ pub(crate) fn render_window(
                 hl_ranges,
             );
         } else {
-            let screen_col = text_start_col;
-            if screen_col < grid.width() {
-                grid.set(
-                    screen_col,
-                    screen_row,
-                    Cell {
-                        grapheme: "~".to_string(),
-                        width: 1,
-                        style: Style {
-                            fg: Color::Indexed(242),
-                            ..Style::default()
-                        },
-                        is_wide_continuation: false,
-                    },
-                );
-            }
+            render_tilde(grid, text_start_col, screen_row);
         }
     }
 }
@@ -120,6 +105,14 @@ fn render_line_content(
             style = Style {
                 fg: Color::Rgb(0, 0, 0),
                 bg: Color::Rgb(255, 255, 0),
+                ..style
+            };
+        }
+        // Apply visual selection highlight.
+        if is_in_visual_selection(ws.visual_selection.as_ref(), buf_line, g_idx) {
+            style = Style {
+                fg: Color::Rgb(0, 0, 0),
+                bg: Color::Rgb(100, 100, 255),
                 ..style
             };
         }
@@ -170,6 +163,38 @@ fn render_line_content(
                     is_wide_continuation: false,
                 },
             );
+        }
+    }
+}
+
+/// Render tilde placeholder for empty lines.
+#[rustfmt::skip]
+fn render_tilde(grid: &mut CellGrid, col: u16, row: u16) {
+    if col < grid.width() {
+        let st = Style { fg: Color::Indexed(242), ..Style::default() };
+        grid.set(col, row, Cell { grapheme: "~".into(), width: 1, style: st, is_wide_continuation: false });
+    }
+}
+
+/// Check if a cell at (line, col) is inside the visual selection.
+#[rustfmt::skip]
+fn is_in_visual_selection(sel: Option<&VisualSelection>, line: usize, col: usize) -> bool {
+    let sel = match sel { Some(s) => s, None => return false };
+    let (al, ac) = (sel.anchor.line, sel.anchor.grapheme);
+    let (cl, cc) = (sel.cursor.line, sel.cursor.grapheme);
+    let (sl, sc, el, ec) = if (al, ac) <= (cl, cc) { (al, ac, cl, cc) } else { (cl, cc, al, ac) };
+    match sel.kind {
+        VisualKind::Char => {
+            if line < sl || line > el { return false; }
+            if sl == el { return col >= sc && col <= ec; }
+            if line == sl { return col >= sc; }
+            if line == el { return col <= ec; }
+            true
+        }
+        VisualKind::Line => line >= sl && line <= el,
+        VisualKind::Block => {
+            let (min_c, max_c) = if ac <= cc { (ac, cc) } else { (cc, ac) };
+            line >= sl && line <= el && col >= min_c && col <= max_c
         }
     }
 }

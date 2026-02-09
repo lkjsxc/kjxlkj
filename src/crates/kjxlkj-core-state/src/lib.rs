@@ -16,6 +16,7 @@ mod config_loader;
 pub mod contracts;
 mod cursor_ops;
 mod cursor_ops_findchar;
+mod cursor_ops_lists;
 mod cursor_ops_scroll;
 pub mod editing_helpers;
 pub mod editing_helpers_surround;
@@ -42,6 +43,7 @@ mod events_tests;
 pub mod events_types;
 mod ex_buffer_cmds;
 mod ex_dispatch;
+mod ex_jump_noh;
 pub(crate) mod ex_map;
 mod ex_parse;
 mod ex_parse_ranges;
@@ -100,6 +102,8 @@ mod visual_ops_tests;
 #[cfg(test)]
 mod wave10_tests;
 mod wave11_tests;
+#[cfg(test)]
+mod wave12_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

@@ -160,11 +160,13 @@ pub enum Action {
     JumpToMarkLine(char),
     ChangelistOlder,
     ChangelistNewer,
+    JumpOlder,
+    JumpNewer,
 
     // -- Macros --
     StartRecording(char),
     StopRecording,
-    PlayMacro(char),
+    PlayMacro(char, usize),
 
     // -- Register --
     SelectRegister(char),

@@ -115,7 +115,7 @@ impl EditorState {
             }
             Action::StartRecording(c) => self.start_recording(c),
             Action::StopRecording => self.stop_recording(),
-            Action::PlayMacro(c) => self.play_macro(c, 1),
+            Action::PlayMacro(c, count) => self.play_macro(c, count),
             Action::EnterOperatorPending(op) => {
                 self.op_count = self.dispatch.take_count();
                 self.motion_count = None;
@@ -132,6 +132,8 @@ impl EditorState {
             Action::ToggleCase => self.toggle_case(),
             Action::ChangelistOlder => self.changelist_older(),
             Action::ChangelistNewer => self.changelist_newer(),
+            Action::JumpOlder => self.jump_older(),
+            Action::JumpNewer => self.jump_newer(),
             Action::DotRepeat => {}
             _ => {}
         }

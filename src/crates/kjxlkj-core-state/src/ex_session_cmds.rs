@@ -14,7 +14,6 @@ impl EditorState {
         for buf in self.buffers.iter() {
             if let Some(ref p) = buf.path {
                 lines.push(format!("edit {}", p.display()));
-                // Save cursor position for the focused buffer.
                 if buf.id == focused_buf {
                     lines.push(format!(
                         "call cursor({}, {})",
@@ -24,10 +23,36 @@ impl EditorState {
                 }
             }
         }
+        // Save window layout.
+        self.serialize_layout(&self.windows.layout().clone(), &mut lines);
         let content = lines.join("\n") + "\n";
         match std::fs::write(path, content) {
             Ok(()) => self.notify_info(&format!("Session saved: {path}")),
             Err(e) => self.notify_error(&format!("E138: Cannot write: {e}")),
+        }
+    }
+
+    /// Serialize layout tree as session commands.
+    fn serialize_layout(&self, node: &kjxlkj_core_types::LayoutNode, lines: &mut Vec<String>) {
+        use kjxlkj_core_types::LayoutNode;
+        match node {
+            LayoutNode::Leaf(_) => {}
+            LayoutNode::HorizontalSplit { children, .. } => {
+                for (i, child) in children.iter().enumerate() {
+                    if i > 0 {
+                        lines.push("split".to_string());
+                    }
+                    self.serialize_layout(child, lines);
+                }
+            }
+            LayoutNode::VerticalSplit { children, .. } => {
+                for (i, child) in children.iter().enumerate() {
+                    if i > 0 {
+                        lines.push("vsplit".to_string());
+                    }
+                    self.serialize_layout(child, lines);
+                }
+            }
         }
     }
 

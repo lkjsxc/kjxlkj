@@ -84,6 +84,8 @@ impl NormalDispatch {
                     'b' => KeyDispatchResult::Action(Action::PageUp),
                     'd' => KeyDispatchResult::Action(Action::HalfPageDown),
                     'u' => KeyDispatchResult::Action(Action::HalfPageUp),
+                    'o' => KeyDispatchResult::Action(Action::JumpOlder),
+                    'i' => KeyDispatchResult::Action(Action::JumpNewer),
                     'w' => KeyDispatchResult::Consumed,
                     _ => KeyDispatchResult::Unhandled,
                 };
@@ -102,7 +104,7 @@ impl NormalDispatch {
                     '\'' => KeyDispatchResult::Action(Action::JumpToMarkLine(*c)),
                     '`' => KeyDispatchResult::Action(Action::JumpToMark(*c)),
                     '"' => KeyDispatchResult::Action(Action::SelectRegister(*c)),
-                    '@' => KeyDispatchResult::Action(Action::PlayMacro(*c)),
+                    '@' => KeyDispatchResult::Action(Action::PlayMacro(*c, count)),
                     'q' => KeyDispatchResult::Action(Action::StartRecording(*c)),
                     'f' => KeyDispatchResult::Action(Action::FindCharForward(*c)),
                     'F' => KeyDispatchResult::Action(Action::FindCharBackward(*c)),

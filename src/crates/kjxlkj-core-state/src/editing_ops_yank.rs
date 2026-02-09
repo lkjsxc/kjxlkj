@@ -50,21 +50,17 @@ impl EditorState {
         self.registers.get_unnamed().cloned()
     }
 
+    #[rustfmt::skip]
     fn read_special_register(&self, rn: char) -> Option<Register> {
         match rn {
-            '%' => self
-                .buffers
-                .get(self.current_buffer_id())
+            '%' => self.buffers.get(self.current_buffer_id())
                 .and_then(|b| b.path.as_ref())
                 .map(|p| Register::new(p.display().to_string(), false)),
-            ':' if !self.last_ex_command.is_empty() => {
-                Some(Register::new(self.last_ex_command.clone(), false))
-            }
-            '/' if self.search.active => self
-                .search
-                .pattern
-                .as_ref()
-                .map(|p| Register::new(p.clone(), false)),
+            '#' => self.alternate_buffer.and_then(|id| self.buffers.get(id))
+                .and_then(|b| b.path.as_ref())
+                .map(|p| Register::new(p.display().to_string(), false)),
+            ':' if !self.last_ex_command.is_empty() => Some(Register::new(self.last_ex_command.clone(), false)),
+            '/' if self.search.active => self.search.pattern.as_ref().map(|p| Register::new(p.clone(), false)),
             '.' => self.registers.get(RegisterName::LastInserted).cloned(),
             _ => self.registers.get(RegisterName::Named(rn)).cloned(),
         }

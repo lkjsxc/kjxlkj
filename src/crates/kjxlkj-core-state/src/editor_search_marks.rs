@@ -17,6 +17,7 @@ impl EditorState {
     pub(crate) fn jump_to_mark(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
+            self.push_jumplist();
             self.windows.focused_mut().cursor =
                 kjxlkj_core_types::CursorPosition::new(pos.line, pos.col);
             self.clamp_cursor();
@@ -27,6 +28,7 @@ impl EditorState {
     pub(crate) fn jump_to_mark_line(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
+            self.push_jumplist();
             self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(pos.line, 0);
             self.move_to_first_non_blank();
             self.ensure_cursor_visible();
@@ -38,6 +40,7 @@ impl EditorState {
             Some(p) if !p.is_empty() => p.clone(),
             _ => return,
         };
+        self.push_jumplist();
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get(buf_id) {
@@ -64,6 +67,7 @@ impl EditorState {
             Some(p) if !p.is_empty() => p.clone(),
             _ => return,
         };
+        self.push_jumplist();
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get(buf_id) {
@@ -111,42 +115,81 @@ impl EditorState {
     }
 }
 
-/// Strip `\v` prefix and return (pattern, is_regex).
-fn strip_vmagic(pattern: &str) -> (&str, bool) {
+/// Strip `\v` (very magic), `\m` (magic), `\M` (nomagic) prefix.
+/// Returns (pattern, mode) where mode: 'v'=very-magic, 'M'=nomagic, 'm'=magic/literal.
+fn strip_magic_prefix(pattern: &str) -> (&str, char) {
     if let Some(rest) = pattern.strip_prefix("\\v") {
-        (rest, true)
+        (rest, 'v')
+    } else if let Some(rest) = pattern.strip_prefix("\\M") {
+        (rest, 'M')
+    } else if let Some(rest) = pattern.strip_prefix("\\m") {
+        (rest, 'm')
     } else {
-        (pattern, false)
+        (pattern, 'm')
     }
+}
+
+/// Escape a nomagic pattern: only ^ and $ are special.
+fn nomagic_to_literal(pat: &str) -> String {
+    let mut out = String::new();
+    for ch in pat.chars() {
+        if ch == '^' || ch == '$' {
+            out.push(ch);
+        } else if ".+*?{}[]()\\|".contains(ch) {
+            out.push('\\');
+            out.push(ch);
+        } else {
+            out.push(ch);
+        }
+    }
+    out
 }
 
 /// Find pattern forward from `from` in `text`. Returns (offset, len).
 fn find_pattern(text: &str, from: usize, pattern: &str, _fwd: bool) -> Option<(usize, usize)> {
-    let (pat, is_re) = strip_vmagic(pattern);
-    if is_re {
-        if let Ok(re) = regex::Regex::new(pat) {
-            if let Some(m) = re.find(&text[from..]) {
-                return Some((from + m.start(), m.len()));
+    let (pat, mode) = strip_magic_prefix(pattern);
+    match mode {
+        'v' => {
+            if let Ok(re) = regex::Regex::new(pat) {
+                if let Some(m) = re.find(&text[from..]) {
+                    return Some((from + m.start(), m.len()));
+                }
             }
+            None
         }
-        return None;
+        'M' => {
+            let escaped = nomagic_to_literal(pat);
+            if let Ok(re) = regex::Regex::new(&escaped) {
+                if let Some(m) = re.find(&text[from..]) {
+                    return Some((from + m.start(), m.len()));
+                }
+            }
+            None
+        }
+        _ => text[from..].find(pat).map(|off| (from + off, pat.len())),
     }
-    text[from..].find(pat).map(|off| (from + off, pat.len()))
 }
 
 /// Find pattern backward (last match before `before`).
 fn rfind_pattern(text: &str, before: usize, pattern: &str) -> Option<(usize, usize)> {
-    let (pat, is_re) = strip_vmagic(pattern);
+    let (pat, mode) = strip_magic_prefix(pattern);
     let slice = &text[..before.min(text.len())];
-    if is_re {
-        if let Ok(re) = regex::Regex::new(pat) {
-            let mut last = None;
-            for m in re.find_iter(slice) {
-                last = Some((m.start(), m.len()));
+    match mode {
+        'v' | 'M' => {
+            let rpat = if mode == 'M' {
+                nomagic_to_literal(pat)
+            } else {
+                pat.to_string()
+            };
+            if let Ok(re) = regex::Regex::new(&rpat) {
+                let mut last = None;
+                for m in re.find_iter(slice) {
+                    last = Some((m.start(), m.len()));
+                }
+                return last;
             }
-            return last;
+            None
         }
-        return None;
+        _ => slice.rfind(pat).map(|off| (off, pat.len())),
     }
-    slice.rfind(pat).map(|off| (off, pat.len()))
 }

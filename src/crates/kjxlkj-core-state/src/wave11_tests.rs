@@ -19,7 +19,10 @@ fn readonly_register_percent() {
     ed.handle_action(kjxlkj_core_types::Action::PutAfter);
     let buf = ed.buffers.current();
     let line: String = buf.content.line(0).chars().collect();
-    assert!(line.contains("/tmp/test.txt"), "Expected filename in put, got: {line}");
+    assert!(
+        line.contains("/tmp/test.txt"),
+        "Expected filename in put, got: {line}"
+    );
 }
 
 /// REQ-ROREG-01: Read-only register : returns last ex command.
@@ -31,7 +34,10 @@ fn readonly_register_colon() {
     ed.handle_action(kjxlkj_core_types::Action::PutAfter);
     let buf = ed.buffers.current();
     let line: String = buf.content.line(0).chars().collect();
-    assert!(line.contains("set number"), "Expected 'set number' in put, got: {line}");
+    assert!(
+        line.contains("set number"),
+        "Expected 'set number' in put, got: {line}"
+    );
 }
 
 /// REQ-CHANGELIST-01: g; navigates changelist backward.
@@ -83,7 +89,10 @@ fn session_saves_cursor() {
     let path = "/tmp/test_session_w11.vim";
     ed.handle_mksession(Some(path));
     let content = std::fs::read_to_string(path).unwrap();
-    assert!(content.contains("call cursor(3, 4)"), "Expected cursor pos in session: {content}");
+    assert!(
+        content.contains("call cursor(3, 4)"),
+        "Expected cursor pos in session: {content}"
+    );
     let _ = std::fs::remove_file(path);
 }
 
@@ -98,7 +107,10 @@ fn visual_block_in_snapshot() {
     let snap = ed.snapshot();
     let tab = &snap.tabs[0];
     let ws = tab.windows.values().next().unwrap();
-    assert!(ws.visual_selection.is_some(), "Expected visual selection in snapshot");
+    assert!(
+        ws.visual_selection.is_some(),
+        "Expected visual selection in snapshot"
+    );
     let vs = ws.visual_selection.as_ref().unwrap();
     assert!(matches!(vs.kind, kjxlkj_core_types::VisualKind::Block));
 }
@@ -120,9 +132,15 @@ fn macro_halts_on_error() {
     ed.notifications.clear();
     ed.play_macro('a', 100);
     // Should have at most a few error notifications, not 100.
-    let err_count = ed.notifications.iter().filter(|n|
-        matches!(n.level, kjxlkj_core_ui::NotificationLevel::Error)).count();
-    assert!(err_count <= 2, "Expected macro to halt on error, got {err_count} errors");
+    let err_count = ed
+        .notifications
+        .iter()
+        .filter(|n| matches!(n.level, kjxlkj_core_ui::NotificationLevel::Error))
+        .count();
+    assert!(
+        err_count <= 2,
+        "Expected macro to halt on error, got {err_count} errors"
+    );
 }
 
 /// REQ-VMAGIC-01: Search with \v prefix uses regex.
@@ -139,18 +157,25 @@ fn very_magic_search() {
     ed.search_next();
     // Should have moved to the first digit match.
     let cursor = ed.windows.focused().cursor;
-    assert_eq!(cursor.grapheme, 3, "Expected cursor at col 3 (start of 123)");
+    assert_eq!(
+        cursor.grapheme, 3,
+        "Expected cursor at col 3 (start of 123)"
+    );
 }
 
 /// REQ-HLRENDER-01: Compute hlsearch produces highlight ranges.
 #[test]
 fn hlsearch_produces_ranges() {
     let mut ed = make_editor();
-    ed.options.set("hlsearch", crate::options::OptionValue::Bool(true));
+    ed.options
+        .set("hlsearch", crate::options::OptionValue::Bool(true));
     ed.search.pattern = Some("line".to_string());
     ed.search.active = true;
     let snap = ed.snapshot();
-    assert!(!snap.search.highlight_ranges.is_empty(), "Expected highlight ranges for 'line'");
+    assert!(
+        !snap.search.highlight_ranges.is_empty(),
+        "Expected highlight ranges for 'line'"
+    );
     // All ranges should reference column 0 (where "line" starts).
     for &(_, start, _) in &snap.search.highlight_ranges {
         assert_eq!(start, 0, "Expected highlight start at col 0");

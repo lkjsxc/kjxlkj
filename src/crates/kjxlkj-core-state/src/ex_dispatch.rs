@@ -145,6 +145,8 @@ impl EditorState {
             }
             "marks" => self.handle_list_marks(),
             "registers" | "reg" => self.handle_list_registers(),
+            "jumps" => self.handle_list_jumps(),
+            "noh" | "nohlsearch" => self.handle_nohlsearch(),
             "mksession" => self.handle_mksession(None),
             _ if rest.starts_with("mksession ") => {
                 let path = rest.strip_prefix("mksession ").unwrap().trim();
