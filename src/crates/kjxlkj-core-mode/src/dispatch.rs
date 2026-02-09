@@ -138,12 +138,7 @@ impl NormalDispatch {
     }
 
     fn dispatch_z(c: char) -> KeyDispatchResult {
-        match c {
-            'z' => KeyDispatchResult::Action(Action::ScrollCenterCursor),
-            't' => KeyDispatchResult::Action(Action::ScrollCursorTop),
-            'b' => KeyDispatchResult::Action(Action::ScrollCursorBottom),
-            _ => KeyDispatchResult::Unhandled,
-        }
+        match c { 'z' => KeyDispatchResult::Action(Action::ScrollCenterCursor), 't' => KeyDispatchResult::Action(Action::ScrollCursorTop), 'b' => KeyDispatchResult::Action(Action::ScrollCursorBottom), _ => KeyDispatchResult::Unhandled }
     }
 
     fn dispatch_normal_char(c: char, count: usize) -> KeyDispatchResult {
@@ -171,6 +166,7 @@ impl NormalDispatch {
             'x' => KeyDispatchResult::Action(Action::DeleteChar(count)),
             'X' => KeyDispatchResult::Action(Action::DeleteCharBack(count)),
             'J' => KeyDispatchResult::Action(Action::JoinLines),
+            'K' => KeyDispatchResult::Action(Action::LookupKeyword),
             '~' => KeyDispatchResult::Action(Action::ToggleCase),
             ';' => KeyDispatchResult::Action(Action::RepeatFindChar),
             ',' => KeyDispatchResult::Action(Action::RepeatFindCharReverse),

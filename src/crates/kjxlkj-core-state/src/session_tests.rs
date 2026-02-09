@@ -17,6 +17,7 @@ fn test_serialize_deserialize_roundtrip() {
         active_buffer: 0,
         tab_count: 1,
         active_tab: 0,
+        tab_layouts: Vec::new(),
     };
 
     let serialized = SessionManager::serialize(&data);

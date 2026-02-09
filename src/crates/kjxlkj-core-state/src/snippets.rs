@@ -109,17 +109,27 @@ impl SnippetSession {
 }
 
 /// Parse tab-stop markers ($0-$9, ${0}-${9}, ${N:default}) from body text.
+/// Duplicate stop numbers create mirror positions.
 /// Returns (stripped_text, sorted_offsets_for_stops_1_through_9_then_0).
 fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
     let mut out = String::with_capacity(body.len());
     let mut stops: Vec<(u8, usize)> = Vec::new();
+    let mut defaults: std::collections::HashMap<u8, String> = std::collections::HashMap::new();
     let mut chars = body.chars().peekable();
     while let Some(c) = chars.next() {
         if c == '$' {
             if let Some(&d) = chars.peek() {
                 if d.is_ascii_digit() {
                     chars.next();
-                    stops.push((d as u8 - b'0', out.len()));
+                    let num = d as u8 - b'0';
+                    // Mirror: if this stop was seen with a default, insert default text here too
+                    if let Some(def) = defaults.get(&num) {
+                        let offset = out.len();
+                        out.push_str(def);
+                        stops.push((num, offset));
+                    } else {
+                        stops.push((num, out.len()));
+                    }
                     continue;
                 }
                 if d == '{' {
@@ -130,12 +140,21 @@ fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
                             let stop_num = n as u8 - b'0';
                             let offset = out.len();
                             if chars.peek() == Some(&':') {
-                                chars.next(); // consume ':'
+                                chars.next();
+                                let mut def_text = String::new();
                                 while let Some(&pc) = chars.peek() {
                                     if pc == '}' { chars.next(); break; }
-                                    out.push(pc); chars.next();
+                                    def_text.push(pc); chars.next();
                                 }
-                            } else if chars.peek() == Some(&'}') { chars.next(); }
+                                defaults.insert(stop_num, def_text.clone());
+                                out.push_str(&def_text);
+                            } else if chars.peek() == Some(&'}') {
+                                chars.next();
+                                // Mirror reference: insert default from earlier definition
+                                if let Some(def) = defaults.get(&stop_num) {
+                                    out.push_str(def);
+                                }
+                            }
                             stops.push((stop_num, offset));
                             continue;
                         }

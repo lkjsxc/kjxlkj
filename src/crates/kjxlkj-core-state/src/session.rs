@@ -19,6 +19,8 @@ pub struct SessionData {
     pub tab_count: usize,
     /// Active tab index (0-based).
     pub active_tab: usize,
+    /// Per-tab window layouts.
+    pub tab_layouts: Vec<SessionLayout>,
 }
 
 /// A file entry in a session.
@@ -56,12 +58,7 @@ pub struct SessionManager {
 }
 
 impl SessionManager {
-    pub fn new(session_dir: PathBuf) -> Self {
-        Self {
-            session_dir,
-            current_name: None,
-        }
-    }
+    pub fn new(session_dir: PathBuf) -> Self { Self { session_dir, current_name: None } }
 
     /// Serialize session data to a string format.
     #[rustfmt::skip]
@@ -70,6 +67,7 @@ impl SessionManager {
         if let Some(ref cwd) = data.cwd { out.push_str(&format!("cwd {}\n", cwd.display())); }
         out.push_str(&format!("active {}\n", data.active_buffer));
         if data.tab_count > 1 { out.push_str(&format!("tabs {} {}\n", data.tab_count, data.active_tab)); }
+        for (ti, tl) in data.tab_layouts.iter().enumerate() { out.push_str(&format!("tablayout {} {}\n", ti, serialize_layout(tl))); }
         for file in &data.files {
             let m = if file.was_modified { "m" } else { "-" };
             out.push_str(&format!("file {} {} {} {m}\n", file.path.display(), file.cursor_line, file.cursor_col));
@@ -87,24 +85,23 @@ impl SessionManager {
     /// Deserialize session data from a string.
     pub fn deserialize(input: &str) -> SessionData {
         let mut data = SessionData::default();
-
         for line in input.lines() {
             let line = line.trim();
-            if line.is_empty() || line.starts_with('#') {
-                continue;
-            }
+            if line.is_empty() || line.starts_with('#') { continue; }
 
             let parts: Vec<&str> = line.splitn(5, ' ').collect();
             match parts.first().copied() {
-                Some("cwd") if parts.len() >= 2 => {
-                    data.cwd = Some(PathBuf::from(parts[1]));
-                }
-                Some("active") if parts.len() >= 2 => {
-                    data.active_buffer = parts[1].parse().unwrap_or(0);
-                }
+                Some("cwd") if parts.len() >= 2 => { data.cwd = Some(PathBuf::from(parts[1])); }
+                Some("active") if parts.len() >= 2 => { data.active_buffer = parts[1].parse().unwrap_or(0); }
                 Some("tabs") if parts.len() >= 3 => {
                     data.tab_count = parts[1].parse().unwrap_or(1);
                     data.active_tab = parts[2].parse().unwrap_or(0);
+                }
+                Some("tablayout") if parts.len() >= 3 => {
+                    let layout = parse_layout_str(parts[2]);
+                    let idx: usize = parts[1].parse().unwrap_or(0);
+                    while data.tab_layouts.len() <= idx { data.tab_layouts.push(SessionLayout::Single); }
+                    data.tab_layouts[idx] = layout;
                 }
                 Some("file") if parts.len() >= 4 => {
                     data.files.push(SessionFile {
@@ -184,6 +181,18 @@ impl SessionManager {
 
 impl Default for SessionManager { fn default() -> Self { Self::new(PathBuf::from(".sessions")) } }
 
-fn parse_weights(s: &str) -> Vec<f64> {
-    s.split(',').filter_map(|w| w.trim().parse().ok()).collect()
+fn parse_weights(s: &str) -> Vec<f64> { s.split(',').filter_map(|w| w.trim().parse().ok()).collect() }
+
+fn serialize_layout(l: &SessionLayout) -> String {
+    match l {
+        SessionLayout::Single => "single".into(),
+        SessionLayout::Hsplit(_, w) => { let ws: Vec<String> = w.iter().map(|v| format!("{v:.4}")).collect(); format!("hsplit:{}", ws.join(",")) }
+        SessionLayout::Vsplit(_, w) => { let ws: Vec<String> = w.iter().map(|v| format!("{v:.4}")).collect(); format!("vsplit:{}", ws.join(",")) }
+    }
+}
+
+fn parse_layout_str(s: &str) -> SessionLayout {
+    if let Some(w) = s.strip_prefix("hsplit:") { SessionLayout::Hsplit(Vec::new(), parse_weights(w)) }
+    else if let Some(w) = s.strip_prefix("vsplit:") { SessionLayout::Vsplit(Vec::new(), parse_weights(w)) }
+    else { SessionLayout::Single }
 }

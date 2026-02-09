@@ -172,6 +172,9 @@ pub enum Action {
     // -- Register --
     SelectRegister(char),
 
+    /// Look up keyword under cursor using keywordprg.
+    LookupKeyword,
+
     // -- Noop --
     Noop,
 }

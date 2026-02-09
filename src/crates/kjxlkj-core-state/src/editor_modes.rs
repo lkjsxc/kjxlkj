@@ -38,28 +38,18 @@ impl EditorState {
         self.sequence += 1;
         let (cols, rows) = self.terminal_size;
         let content_rows = rows.saturating_sub(2);
-
         let mut win_snapshots = self.windows.snapshots(cols, content_rows);
-        // Inject visual selection info into focused window.
         if let Mode::Visual(kind) = &self.mode {
             if let Some(anchor) = self.visual_anchor {
                 let fid = self.windows.focused_id();
                 if let Some(ws) = win_snapshots.get_mut(&fid) {
-                    ws.visual_selection = Some(kjxlkj_core_ui::VisualSelection {
-                        anchor,
-                        cursor: ws.cursor,
-                        kind: *kind,
-                    });
+                    ws.visual_selection = Some(kjxlkj_core_ui::VisualSelection { anchor, cursor: ws.cursor, kind: *kind });
                 }
             }
         }
-        let tab = TabSnapshot {
-            layout: self.windows.layout().clone(),
-            windows: win_snapshots,
-        };
+        let tab = TabSnapshot { layout: self.windows.layout().clone(), windows: win_snapshots };
         let mut search = self.search.clone();
         search.highlight_ranges = self.compute_hlsearch();
-
         EditorSnapshot {
             sequence: self.sequence,
             tabs: vec![tab],
@@ -170,7 +160,17 @@ impl EditorState {
                 self.cmdline.open(ch);
             }
             (Mode::Command(_), Mode::Normal) => {
-                if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) { self.execute_cmdline(); return; }
+                if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) {
+                    if let Some(idx) = self.cmdline.completion.index {
+                        if !self.cmdline.completion.candidates.is_empty() {
+                            self.cmdline.content = self.cmdline.completion.candidates[idx].clone();
+                            self.cmdline.cursor_pos = self.cmdline.content.len();
+                            self.cmdline.completion.clear();
+                            self.mode = Mode::Command(CommandKind::Ex); return;
+                        }
+                    }
+                    self.execute_cmdline(); return;
+                }
                 self.cmdline.close();
             }
             (Mode::Normal, Mode::Visual(_)) => { self.visual_anchor = Some(self.windows.focused().cursor); }

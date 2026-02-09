@@ -136,7 +136,44 @@ impl EditorState {
             Action::JumpNewer => self.jump_newer(),
             Action::DotRepeat => {}
             Action::VisualReselect => self.restore_last_visual(),
+            Action::LookupKeyword => self.handle_keyword_lookup(),
             _ => {}
         }
+    }
+
+    /// Handle K command: look up keyword under cursor with keywordprg.
+    pub(crate) fn handle_keyword_lookup(&mut self) {
+        let word = self.word_under_cursor();
+        if word.is_empty() { return self.notify_error("E349: No identifier under cursor"); }
+        let prg = self.options.get_str("keywordprg").to_string();
+        let prg = if prg.is_empty() { "man".to_string() } else { prg };
+        use std::process::Command;
+        match Command::new(&prg).arg(&word).output() {
+            Ok(out) => {
+                let text = String::from_utf8_lossy(&out.stdout);
+                let first_line = text.lines().next().unwrap_or("(no output)");
+                self.notify_info(&format!("{prg} {word}: {first_line}"));
+            }
+            Err(e) => self.notify_error(&format!("E282: {prg}: {e}")),
+        }
+    }
+
+    /// Get the keyword (word) under the cursor.
+    fn word_under_cursor(&self) -> String {
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get(buf_id) {
+            if cursor.line < buf.content.len_lines() {
+                let line: String = buf.content.line(cursor.line).chars().collect();
+                let bytes = line.as_bytes();
+                let col = cursor.grapheme.min(bytes.len().saturating_sub(1));
+                if col < bytes.len() && ((bytes[col] as char).is_alphanumeric() || bytes[col] == b'_') {
+                    let start = (0..=col).rev().take_while(|&i| { let c = bytes[i] as char; c.is_alphanumeric() || c == '_' }).last().unwrap_or(col);
+                    let end = (col..bytes.len()).take_while(|&i| { let c = bytes[i] as char; c.is_alphanumeric() || c == '_' }).last().unwrap_or(col);
+                    return line[start..=end].to_string();
+                }
+            }
+        }
+        String::new()
     }
 }

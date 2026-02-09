@@ -28,29 +28,16 @@ pub struct MarkFile {
 }
 
 impl MarkFile {
-    pub fn new() -> Self {
-        Self::default()
-    }
+    pub fn new() -> Self { Self::default() }
 
-    /// Set a mark.
     pub fn set(&mut self, name: char, pos: MarkPosition) {
         match name {
-            'a'..='z' => {
-                self.local
-                    .entry(pos.buffer_id)
-                    .or_default()
-                    .insert(name, pos);
-            }
-            'A'..='Z' | '0'..='9' => {
-                self.global.insert(name, pos);
-            }
-            _ => {
-                self.special.insert(name, pos);
-            }
+            'a'..='z' => { self.local.entry(pos.buffer_id).or_default().insert(name, pos); }
+            'A'..='Z' | '0'..='9' => { self.global.insert(name, pos); }
+            _ => { self.special.insert(name, pos); }
         }
     }
 
-    /// Get a mark. For local marks, requires buffer_id context.
     pub fn get(&self, name: char, buffer_id: usize) -> Option<&MarkPosition> {
         match name {
             'a'..='z' => self.local.get(&buffer_id).and_then(|m| m.get(&name)),
@@ -59,14 +46,9 @@ impl MarkFile {
         }
     }
 
-    /// Delete a mark.
     pub fn delete(&mut self, name: char, buffer_id: usize) -> bool {
         match name {
-            'a'..='z' => self
-                .local
-                .get_mut(&buffer_id)
-                .map(|m| m.remove(&name).is_some())
-                .unwrap_or(false),
+            'a'..='z' => self.local.get_mut(&buffer_id).map(|m| m.remove(&name).is_some()).unwrap_or(false),
             'A'..='Z' | '0'..='9' => self.global.remove(&name).is_some(),
             _ => self.special.remove(&name).is_some(),
         }
@@ -145,7 +127,31 @@ impl MarkFile {
         self.global.insert('0', pos);
     }
 
-    /// Adjust marks after lines are inserted or deleted in a buffer.
+    /// Serialize global+numbered marks to viminfo format.
+    pub fn serialize_viminfo(&self) -> String {
+        let mut out = String::from("# Viminfo Marks\n");
+        for (&name, pos) in &self.global {
+            out.push_str(&format!("'{}  {}  {}  {}\n", name, pos.buffer_id, pos.line, pos.col));
+        }
+        out
+    }
+
+    /// Load marks from viminfo format string.
+    pub fn load_viminfo(&mut self, input: &str) {
+        for line in input.lines() {
+            let line = line.trim();
+            if line.is_empty() || line.starts_with('#') { continue; }
+            if line.starts_with('\'') && line.len() >= 3 {
+                let ch = line.as_bytes()[1] as char;
+                let parts: Vec<&str> = line[2..].split_whitespace().collect();
+                if parts.len() >= 3 {
+                    if let (Ok(bid), Ok(l), Ok(c)) = (parts[0].parse(), parts[1].parse(), parts[2].parse()) {
+                        self.global.insert(ch, MarkPosition { buffer_id: bid, line: l, col: c });
+                    }
+                }
+            }
+        }
+    }
     pub fn adjust_for_edit(&mut self, buffer_id: usize, start_line: usize, lines_added: isize) {
         // Adjust local marks
         if let Some(locals) = self.local.get_mut(&buffer_id) {

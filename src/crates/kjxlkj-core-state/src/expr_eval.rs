@@ -1,57 +1,35 @@
 //! Expression register (=) evaluation: arithmetic, string, comparison, lists, dicts.
 #![allow(dead_code)]
 use std::collections::HashMap;
-
-/// Evaluate a simple expression for the = register.
 pub fn eval_expression(expr: &str) -> Result<String, String> { eval_expression_with_vars(expr, &HashMap::new()) }
-
-/// Evaluate expression with variable bindings.
 #[rustfmt::skip]
-pub fn eval_expression_with_vars(
-    expr: &str, vars: &HashMap<String, String>,
-) -> Result<String, String> {
+pub fn eval_expression_with_vars(expr: &str, vars: &HashMap<String, String>) -> Result<String, String> {
     let expr = expr.trim();
     if expr.is_empty() { return Ok(String::new()); }
     if let Some(r) = try_builtin_function(expr, vars) { return r; }
     if let Some(rest) = expr.strip_prefix("g:").or_else(|| expr.strip_prefix("b:"))
-        .or_else(|| expr.strip_prefix("w:")).or_else(|| expr.strip_prefix("v:"))
-    {
-        let key = format!("{}{}", &expr[..2], rest);
-        return Ok(vars.get(&key).cloned().unwrap_or_default());
-    }
-    if let Some(parts) = split_concat(expr) {
-        let mut r = String::new();
-        for p in parts { r.push_str(&eval_expression_with_vars(p.trim(), vars)?); }
-        return Ok(r);
-    }
-    if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 {
-        return Ok(expr[1..expr.len() - 1].to_string());
-    }
-    if expr.starts_with('[') && expr.ends_with(']') {
-        return Ok(expr.to_string()); // list literal returned as-is
-    }
-    if expr.starts_with('{') && expr.ends_with('}') {
-        return Ok(expr.to_string()); // dict literal returned as-is
-    }
+        .or_else(|| expr.strip_prefix("w:")).or_else(|| expr.strip_prefix("v:")).or_else(|| expr.strip_prefix("s:"))
+    { return Ok(vars.get(&format!("{}{}", &expr[..2], rest)).cloned().unwrap_or_default()); }
+    if let Some(b) = expr.find("[\"") { if expr.ends_with("\"]") { return Ok(extract_dict_value(&eval_expression_with_vars(&expr[..b], vars)?, &expr[b+2..expr.len()-2])); } }
+    if expr.starts_with("function(\"") && expr.ends_with("\")") { return Ok(expr[10..expr.len()-2].to_string()); }
+    if let Some(parts) = split_concat(expr) { let mut r = String::new(); for p in parts { r.push_str(&eval_expression_with_vars(p.trim(), vars)?); } return Ok(r); }
+    if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 { return Ok(expr[1..expr.len()-1].to_string()); }
+    if expr.starts_with('[') && expr.ends_with(']') { return Ok(expr.to_string()); }
+    if expr.starts_with('{') && expr.ends_with('}') { return Ok(expr.to_string()); }
     if let Some(r) = try_ternary(expr, vars) { return r; }
     if let Some(r) = try_comparison(expr, vars) { return r; }
     eval_arithmetic(expr)
 }
 
-/// Split on ` . ` outside quotes.
 #[rustfmt::skip]
 fn split_concat(expr: &str) -> Option<Vec<&str>> {
     let (mut in_str, bytes) = (false, expr.as_bytes());
     let (mut splits, mut last, mut i) = (Vec::new(), 0usize, 0usize);
     while i < bytes.len() {
-        if bytes[i] == b'"' { in_str = !in_str; }
-        else if !in_str && i + 3 <= bytes.len() && &bytes[i..i + 3] == b" . " {
-            splits.push(&expr[last..i]); last = i + 3; i += 3; continue;
-        }
+        if bytes[i] == b'"' { in_str = !in_str; } else if !in_str && i+3 <= bytes.len() && &bytes[i..i+3] == b" . " { splits.push(&expr[last..i]); last = i+3; i += 3; continue; }
         i += 1;
     }
-    if splits.is_empty() { return None; }
-    splits.push(&expr[last..]); Some(splits)
+    if splits.is_empty() { None } else { splits.push(&expr[last..]); Some(splits) }
 }
 
 #[rustfmt::skip]
@@ -83,111 +61,85 @@ fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
     found
 }
 
-/// Try ternary: `cond ? then : else`.
 #[rustfmt::skip]
 fn try_ternary(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
     let qpos = find_top_level_char(expr, '?')?;
-    let rest = &expr[qpos + 1..];
-    let cpos = find_top_level_char(rest, ':')?;
-    let cond = expr[..qpos].trim();
-    let then_part = rest[..cpos].trim();
-    let else_part = rest[cpos + 1..].trim();
-    let cv = match eval_expression_with_vars(cond, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-    let truthy = cv != "0" && !cv.is_empty();
-    Some(eval_expression_with_vars(if truthy { then_part } else { else_part }, vars))
+    let rest = &expr[qpos + 1..]; let cpos = find_top_level_char(rest, ':')?;
+    let cv = match eval_expression_with_vars(expr[..qpos].trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+    Some(eval_expression_with_vars(if cv != "0" && !cv.is_empty() { rest[..cpos].trim() } else { rest[cpos+1..].trim() }, vars))
 }
-
-/// Find top-level char (not inside parens/quotes).
 #[rustfmt::skip]
 fn find_top_level_char(expr: &str, target: char) -> Option<usize> {
     let (bytes, mut depth, mut in_str) = (expr.as_bytes(), 0i32, false);
     for (i, &b) in bytes.iter().enumerate() {
-        if b == b'"' { in_str = !in_str; continue; }
-        if in_str { continue; }
+        if b == b'"' { in_str = !in_str; continue; } else if in_str { continue; }
         match b { b'(' => depth += 1, b')' => depth -= 1, _ => {} }
         if depth == 0 && b == target as u8 { return Some(i); }
-    }
-    None
+    } None
 }
 
-/// Try to evaluate a comparison expression (==, !=, <=, >=, <, >).
-/// Returns "1" for true, "0" for false.
 #[rustfmt::skip]
-fn try_comparison(
-    expr: &str, vars: &HashMap<String, String>,
-) -> Option<Result<String, String>> {
-    // Order matters: check two-char ops before single-char.
+fn try_comparison(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
     for &op in &["==", "!=", "<=", ">=", "<", ">"] {
         if let Some(pos) = find_comparison_op(expr, op) {
-            let left = match eval_expression_with_vars(expr[..pos].trim(), vars) {
-                Ok(v) => v, Err(e) => return Some(Err(e)),
+            let left = match eval_expression_with_vars(expr[..pos].trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            let right = match eval_expression_with_vars(expr[pos+op.len()..].trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            let r = match (left.parse::<i64>(), right.parse::<i64>()) {
+                (Ok(l), Ok(r)) => match op { "==" => l==r, "!=" => l!=r, "<" => l<r, ">" => l>r, "<=" => l<=r, _ => l>=r },
+                _ => match op { "==" => left==right, "!=" => left!=right, "<" => left<right, ">" => left>right, "<=" => left<=right, _ => left>=right },
             };
-            let right = match eval_expression_with_vars(expr[pos + op.len()..].trim(), vars) {
-                Ok(v) => v, Err(e) => return Some(Err(e)),
-            };
-            let result = match (left.parse::<i64>(), right.parse::<i64>()) {
-                (Ok(l), Ok(r)) => match op {
-                    "==" => l == r, "!=" => l != r, "<" => l < r,
-                    ">" => l > r, "<=" => l <= r, ">=" => l >= r, _ => false,
-                },
-                _ => match op {
-                    "==" => left == right, "!=" => left != right, "<" => left < right,
-                    ">" => left > right, "<=" => left <= right, ">=" => left >= right, _ => false,
-                },
-            };
-            return Some(Ok(if result { "1" } else { "0" }.to_string()));
+            return Some(Ok(if r { "1" } else { "0" }.into()));
         }
-    }
-    None
+    } None
 }
-
-/// Find comparison op at top-level (outside parens/quotes).
 #[rustfmt::skip]
 fn find_comparison_op(expr: &str, op: &str) -> Option<usize> {
     let (bytes, ob, mut depth, mut in_str) = (expr.as_bytes(), op.as_bytes(), 0i32, false);
     for i in 0..bytes.len() {
-        if bytes[i] == b'"' { in_str = !in_str; continue; }
-        if in_str { continue; }
+        if bytes[i] == b'"' { in_str = !in_str; continue; } else if in_str { continue; }
         match bytes[i] { b'(' => depth += 1, b')' => depth -= 1, _ => {} }
-        if depth == 0 && i > 0 && i + ob.len() <= bytes.len() && &bytes[i..i + ob.len()] == ob { return Some(i); }
-    }
-    None
+        if depth == 0 && i > 0 && i+ob.len() <= bytes.len() && &bytes[i..i+ob.len()] == ob { return Some(i); }
+    } None
 }
 #[rustfmt::skip]
-fn try_builtin_function(
-    expr: &str, vars: &HashMap<String, String>,
-) -> Option<Result<String, String>> {
+fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
     let paren = expr.find('(')?;
     if !expr.ends_with(')') { return None; }
-    let name = expr[..paren].trim();
-    let arg = expr[paren + 1..expr.len() - 1].trim();
+    let (name, arg) = (expr[..paren].trim(), expr[paren+1..expr.len()-1].trim());
     match name {
-        "strlen" => {
-            let val = match eval_expression_with_vars(arg, vars) {
-                Ok(v) => v, Err(e) => return Some(Err(e)),
-            };
-            Some(Ok(format!("{}", val.len())))
-        }
+        "strlen" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(format!("{}", v.len()))) }
         "len" => {
-            let val = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            if val.starts_with('[') && val.ends_with(']') {
-                let inner = val[1..val.len()-1].trim();
-                let count = if inner.is_empty() { 0 } else { inner.split(',').count() };
-                Some(Ok(format!("{count}")))
-            } else { Some(Ok(format!("{}", val.len()))) }
+            let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            if v.starts_with('[') && v.ends_with(']') { let inner = v[1..v.len()-1].trim(); Some(Ok(format!("{}", if inner.is_empty() { 0 } else { inner.split(',').count() }))) }
+            else { Some(Ok(format!("{}", v.len()))) }
         }
-        "line" if arg == "\".\"" || arg == "'.'" || arg == "." =>
-            Some(Ok(vars.get("v:lnum").cloned().unwrap_or_else(|| "1".into()))),
-        "col" if arg == "\".\"" || arg == "'.'" || arg == "." =>
-            Some(Ok(vars.get("v:col").cloned().unwrap_or_else(|| "1".into()))),
+        "line" if arg == "\".\"" || arg == "'.'" || arg == "." => Some(Ok(vars.get("v:lnum").cloned().unwrap_or_else(|| "1".into()))),
+        "col" if arg == "\".\"" || arg == "'.'" || arg == "." => Some(Ok(vars.get("v:col").cloned().unwrap_or_else(|| "1".into()))),
         "line" | "col" => Some(Ok("0".into())),
-        "type" => {
-            let val = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            let t = if val.starts_with('[') { "3" } else if val.starts_with('{') { "4" } else if val.parse::<i64>().is_ok() { "0" } else { "1" };
-            Some(Ok(t.into()))
+        "type" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok((if v.starts_with('[') { "3" } else if v.starts_with('{') { "4" } else if v.parse::<i64>().is_ok() { "0" } else { "1" }).into())) }
+        "has_key" => {
+            let ps: Vec<&str> = arg.splitn(2, ',').collect();
+            if ps.len() != 2 { return Some(Err("has_key() requires 2 args".into())); }
+            let d = match eval_expression_with_vars(ps[0].trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            let k = ps[1].trim().trim_matches('"');
+            Some(Ok(if d.contains(&format!("\"{}\":", k)) || d.contains(&format!("\"{}\" :", k)) { "1" } else { "0" }.into()))
         }
+        "function" => Some(Ok(arg.trim().trim_matches('"').to_string())),
         _ => None,
     }
+}
+
+/// Extract a value from a JSON-ish dict string by key.
+fn extract_dict_value(dict: &str, key: &str) -> String {
+    let needle = format!("\"{}\":", key);
+    if let Some(pos) = dict.find(&needle) {
+        let after = dict[pos + needle.len()..].trim_start();
+        if let Some(inner) = after.strip_prefix('"') {
+            inner.split('"').next().unwrap_or("").to_string()
+        } else {
+            after.split(&[',', '}'][..]).next().unwrap_or("").trim().to_string()
+        }
+    } else { String::new() }
 }
 
 #[cfg(test)]
