@@ -53,10 +53,7 @@ pub enum Mode {
 impl Mode {
     /// Whether this mode uses end-exclusive cursor positioning.
     pub fn is_end_exclusive(&self) -> bool {
-        matches!(
-            self,
-            Mode::Normal | Mode::Visual(_) | Mode::Replace
-        )
+        matches!(self, Mode::Normal | Mode::Visual(_) | Mode::Replace)
     }
 
     /// Whether this mode uses end-inclusive (insertion-point) cursor.
@@ -107,9 +104,6 @@ mod tests {
     fn display_names() {
         assert_eq!(Mode::Normal.display_name(), "NORMAL");
         assert_eq!(Mode::Insert.display_name(), "INSERT");
-        assert_eq!(
-            Mode::Visual(VisualKind::Block).display_name(),
-            "V-BLOCK"
-        );
+        assert_eq!(Mode::Visual(VisualKind::Block).display_name(), "V-BLOCK");
     }
 }

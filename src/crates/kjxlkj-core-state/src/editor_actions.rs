@@ -3,8 +3,7 @@
 
 use kjxlkj_core_edit::{execute_motion, CursorPosition};
 use kjxlkj_core_types::{
-    ActionCommandKind, CommandKind, InsertPosition, Mode,
-    Motion, Operator, VisualKind,
+    ActionCommandKind, CommandKind, InsertPosition, Mode, Motion, Operator, VisualKind,
 };
 
 use crate::EditorState;
@@ -15,20 +14,14 @@ impl EditorState {
     /// Read cursor position without borrowing self mutably.
     pub(crate) fn cursor_pos(&self) -> (usize, usize) {
         self.focused_window()
-            .map(|w| {
-                (w.cursor.line, w.cursor.grapheme_offset)
-            })
+            .map(|w| (w.cursor.line, w.cursor.grapheme_offset))
             .unwrap_or((0, 0))
     }
 
     // -- motions -----------------------------------------------
 
     /// Execute a cursor motion.
-    pub(crate) fn do_motion(
-        &mut self,
-        motion: Motion,
-        count: u32,
-    ) {
+    pub(crate) fn do_motion(&mut self, motion: Motion, count: u32) {
         // Handle state-level motions.
         match &motion {
             Motion::JumpListBackward => {
@@ -55,12 +48,8 @@ impl EditorState {
                 Some(b) => b,
                 None => return,
             };
-            let mut cursor =
-                CursorPosition::new(line, col);
-            execute_motion(
-                &mut cursor, &motion, count,
-                &buf.content,
-            );
+            let mut cursor = CursorPosition::new(line, col);
+            execute_motion(&mut cursor, &motion, count, &buf.content);
             (cursor.line, cursor.grapheme_offset)
         };
         if let Some(w) = self.focused_window_mut() {
@@ -73,10 +62,7 @@ impl EditorState {
     // -- insert mode -------------------------------------------
 
     /// Enter insert mode at the given position.
-    pub(crate) fn enter_insert(
-        &mut self,
-        pos: InsertPosition,
-    ) {
+    pub(crate) fn enter_insert(&mut self, pos: InsertPosition) {
         use InsertPosition::*;
         match pos {
             NewLineBelow => {
@@ -88,23 +74,15 @@ impl EditorState {
                 return;
             }
             EndOfLine => {
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
-                    w.cursor.grapheme_offset =
-                        usize::MAX;
+                if let Some(w) = self.focused_window_mut() {
+                    w.cursor.grapheme_offset = usize::MAX;
                 }
             }
             FirstNonBlank => {
-                self.do_motion(
-                    Motion::FirstNonBlank,
-                    1,
-                );
+                self.do_motion(Motion::FirstNonBlank, 1);
             }
             AfterCursor => {
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
+                if let Some(w) = self.focused_window_mut() {
                     w.cursor.grapheme_offset += 1;
                 }
             }
@@ -117,46 +95,25 @@ impl EditorState {
     // -- visual / command / op-pending -------------------------
 
     /// Enter visual mode.
-    pub(crate) fn enter_visual(
-        &mut self,
-        kind: VisualKind,
-    ) {
+    pub(crate) fn enter_visual(&mut self, kind: VisualKind) {
         let anchor = self.cursor_pos();
-        self.visual_state = Some(
-            kjxlkj_core_mode::VisualModeState::new(
-                kind, anchor,
-            ),
-        );
+        self.visual_state = Some(kjxlkj_core_mode::VisualModeState::new(kind, anchor));
         self.mode = Mode::Visual(kind);
     }
 
     /// Enter operator-pending mode.
-    pub(crate) fn enter_op_pending(
-        &mut self,
-        op: Operator,
-    ) {
+    pub(crate) fn enter_op_pending(&mut self, op: Operator) {
         self.mode = Mode::OperatorPending(op);
     }
 
     /// Enter command mode.
-    pub(crate) fn enter_command(
-        &mut self,
-        kind: ActionCommandKind,
-    ) {
+    pub(crate) fn enter_command(&mut self, kind: ActionCommandKind) {
         let mode_kind = match kind {
             ActionCommandKind::Ex => CommandKind::Ex,
-            ActionCommandKind::SearchForward => {
-                CommandKind::SearchForward
-            }
-            ActionCommandKind::SearchBackward => {
-                CommandKind::SearchBackward
-            }
+            ActionCommandKind::SearchForward => CommandKind::SearchForward,
+            ActionCommandKind::SearchBackward => CommandKind::SearchBackward,
         };
-        self.command_state = Some(
-            kjxlkj_core_mode::CommandModeState::new(
-                kind,
-            ),
-        );
+        self.command_state = Some(kjxlkj_core_mode::CommandModeState::new(kind));
         self.mode = Mode::Command(mode_kind);
     }
 }

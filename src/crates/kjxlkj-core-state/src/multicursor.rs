@@ -31,10 +31,7 @@ impl MultiCursorState {
     }
 
     /// Add a cursor at position.
-    pub fn add_cursor(
-        &mut self,
-        pos: CursorPosition,
-    ) {
+    pub fn add_cursor(&mut self, pos: CursorPosition) {
         self.active = true;
         self.cursors.push(SecondaryCursor {
             position: pos,
@@ -43,10 +40,7 @@ impl MultiCursorState {
     }
 
     /// Remove cursor nearest to position.
-    pub fn remove_nearest(
-        &mut self,
-        pos: CursorPosition,
-    ) {
+    pub fn remove_nearest(&mut self, pos: CursorPosition) {
         if self.cursors.is_empty() {
             return;
         }
@@ -54,8 +48,7 @@ impl MultiCursorState {
         let mut best_dist = usize::MAX;
         for (i, c) in self.cursors.iter().enumerate() {
             let dist = pos.line.abs_diff(c.position.line)
-                + pos.grapheme_offset
-                    .abs_diff(c.position.grapheme_offset);
+                + pos.grapheme_offset.abs_diff(c.position.grapheme_offset);
             if dist < best_dist {
                 best_dist = dist;
                 best = i;

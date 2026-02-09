@@ -33,42 +33,30 @@ impl UserFunctionRegistry {
     /// Define or replace a function.
     pub fn define(&mut self, func: UserFunction) {
         // Remove existing with same name.
-        self.functions
-            .retain(|f| f.name != func.name);
+        self.functions.retain(|f| f.name != func.name);
         self.functions.push(func);
     }
 
     /// Find a function by name.
-    pub fn find(
-        &self,
-        name: &str,
-    ) -> Option<&UserFunction> {
-        self.functions
-            .iter()
-            .find(|f| f.name == name)
+    pub fn find(&self, name: &str) -> Option<&UserFunction> {
+        self.functions.iter().find(|f| f.name == name)
     }
 
     /// Remove a function.
     pub fn remove(&mut self, name: &str) -> bool {
         let len = self.functions.len();
-        self.functions
-            .retain(|f| f.name != name);
+        self.functions.retain(|f| f.name != name);
         self.functions.len() < len
     }
 
     /// List all function names.
     pub fn list(&self) -> Vec<&str> {
-        self.functions
-            .iter()
-            .map(|f| f.name.as_str())
-            .collect()
+        self.functions.iter().map(|f| f.name.as_str()).collect()
     }
 }
 
 /// Parse a `:function` definition block.
-pub fn parse_function_def(
-    lines: &[&str],
-) -> Option<UserFunction> {
+pub fn parse_function_def(lines: &[&str]) -> Option<UserFunction> {
     let first = lines.first()?;
     let trimmed = first.trim();
     // function! Name(args)
@@ -97,17 +85,12 @@ pub fn parse_function_def(
         .filter(|s| !s.is_empty() && s != "...")
         .collect();
 
-    let abort = rest[close + 1..]
-        .trim()
-        .contains("abort");
+    let abort = rest[close + 1..].trim().contains("abort");
 
     // Body: everything except first/last lines.
     let body: Vec<String> = lines[1..]
         .iter()
-        .take_while(|l| {
-            l.trim() != "endfunction"
-                && l.trim() != "endfunction!"
-        })
+        .take_while(|l| l.trim() != "endfunction" && l.trim() != "endfunction!")
         .map(|l| l.to_string())
         .collect();
 
@@ -139,11 +122,7 @@ mod tests {
 
     #[test]
     fn parse_function() {
-        let lines = vec![
-            "function! Greet(name)",
-            "  echo a:name",
-            "endfunction",
-        ];
+        let lines = vec!["function! Greet(name)", "  echo a:name", "endfunction"];
         let func = parse_function_def(&lines).unwrap();
         assert_eq!(func.name, "Greet");
         assert_eq!(func.params, vec!["name"]);
@@ -152,11 +131,7 @@ mod tests {
 
     #[test]
     fn parse_function_abort() {
-        let lines = vec![
-            "function! Run() abort",
-            "  call X()",
-            "endfunction",
-        ];
+        let lines = vec!["function! Run() abort", "  call X()", "endfunction"];
         let func = parse_function_def(&lines).unwrap();
         assert!(func.abort);
     }

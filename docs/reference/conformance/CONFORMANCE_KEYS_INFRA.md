@@ -180,5 +180,5 @@ Input handling, keybinding tables, layout, coverage, and profiling conformance e
 
 ## Related
 
-- Key systems: [/docs/reference/CONFORMANCE_KEYS_SYSTEMS.md](/docs/reference/CONFORMANCE_KEYS_SYSTEMS.md)
-- Modes: [/docs/reference/CONFORMANCE_MODES.md](/docs/reference/CONFORMANCE_MODES.md)
+- Key systems: [/docs/reference/conformance/CONFORMANCE_KEYS_SYSTEMS.md](/docs/reference/conformance/CONFORMANCE_KEYS_SYSTEMS.md)
+- Modes: [/docs/reference/conformance/CONFORMANCE_MODES.md](/docs/reference/conformance/CONFORMANCE_MODES.md)

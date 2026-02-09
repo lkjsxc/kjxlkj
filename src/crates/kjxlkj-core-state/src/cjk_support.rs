@@ -7,12 +7,8 @@ use unicode_segmentation::UnicodeSegmentation;
 
 /// Clamp a cursor position so it never lands on the
 /// second column of a width-2 grapheme.
-pub fn clamp_cursor_to_grapheme_boundary(
-    line_str: &str,
-    cursor: &mut CursorPosition,
-) {
-    let graphemes: Vec<&str> =
-        line_str.graphemes(true).collect();
+pub fn clamp_cursor_to_grapheme_boundary(line_str: &str, cursor: &mut CursorPosition) {
+    let graphemes: Vec<&str> = line_str.graphemes(true).collect();
     let count = graphemes.len();
     if count == 0 {
         cursor.grapheme_offset = 0;
@@ -27,10 +23,7 @@ pub fn clamp_cursor_to_grapheme_boundary(
 
 /// Move cursor right by one grapheme, skipping entire
 /// width-2 graphemes atomically.
-pub fn move_right_cjk(
-    line_str: &str,
-    cursor: &mut CursorPosition,
-) -> bool {
+pub fn move_right_cjk(line_str: &str, cursor: &mut CursorPosition) -> bool {
     let count = line_str.graphemes(true).count();
     if cursor.grapheme_offset + 1 < count {
         cursor.grapheme_offset += 1;
@@ -43,10 +36,7 @@ pub fn move_right_cjk(
 
 /// Move cursor left by one grapheme, skipping entire
 /// width-2 graphemes atomically.
-pub fn move_left_cjk(
-    _line_str: &str,
-    cursor: &mut CursorPosition,
-) -> bool {
+pub fn move_left_cjk(_line_str: &str, cursor: &mut CursorPosition) -> bool {
     if cursor.grapheme_offset > 0 {
         cursor.grapheme_offset -= 1;
         cursor.desired_col = None;
@@ -58,12 +48,8 @@ pub fn move_left_cjk(
 
 /// Compute the display width of the grapheme under cursor.
 /// For CJK: returns 2. For ASCII: returns 1.
-pub fn cursor_grapheme_width(
-    line_str: &str,
-    offset: usize,
-) -> u8 {
-    let graphemes: Vec<&str> =
-        line_str.graphemes(true).collect();
+pub fn cursor_grapheme_width(line_str: &str, offset: usize) -> u8 {
+    let graphemes: Vec<&str> = line_str.graphemes(true).collect();
     if offset < graphemes.len() {
         grapheme_display_width(graphemes[offset])
     } else {
@@ -76,10 +62,7 @@ pub fn cursor_grapheme_width(
 ///
 /// Given a line of graphemes and the available columns,
 /// returns wrapped display rows with padding where needed.
-pub fn wrap_with_cjk_padding(
-    line_str: &str,
-    cols: u16,
-) -> Vec<Vec<WrapCell>> {
+pub fn wrap_with_cjk_padding(line_str: &str, cols: u16) -> Vec<Vec<WrapCell>> {
     let cols = cols as usize;
     let mut rows: Vec<Vec<WrapCell>> = Vec::new();
     let mut current_row: Vec<WrapCell> = Vec::new();

@@ -40,8 +40,7 @@ impl VimRegex {
     pub fn compile(pattern: &str) -> Self {
         let (mode, pat) = Self::detect_mode(pattern);
         let translated = Self::translate(&pat, mode);
-        let case_sensitive =
-            !pat.contains("\\c") && !pattern.contains("\\c");
+        let case_sensitive = !pat.contains("\\c") && !pattern.contains("\\c");
         Self {
             original: pattern.to_string(),
             translated,
@@ -85,8 +84,14 @@ impl VimRegex {
                     if ch == '\\' {
                         if let Some(&next) = chars.peek() {
                             match next {
-                                'n' => { result.push('\n'); chars.next(); }
-                                't' => { result.push('\t'); chars.next(); }
+                                'n' => {
+                                    result.push('\n');
+                                    chars.next();
+                                }
+                                't' => {
+                                    result.push('\t');
+                                    chars.next();
+                                }
                                 _ => {
                                     result.push(next);
                                     chars.next();
@@ -103,20 +108,18 @@ impl VimRegex {
                 }
                 result
             }
-            MagicMode::Magic | MagicMode::NoMagic => {
-                pattern
-                    .replace("\\<", "\\b")
-                    .replace("\\>", "\\b")
-                    .replace("\\c", "")
-                    .replace("\\C", "")
-                    .replace("\\(", "(")
-                    .replace("\\)", ")")
-                    .replace("\\|", "|")
-                    .replace("\\+", "+")
-                    .replace("\\?", "?")
-                    .replace("\\{", "{")
-                    .replace("\\}", "}")
-            }
+            MagicMode::Magic | MagicMode::NoMagic => pattern
+                .replace("\\<", "\\b")
+                .replace("\\>", "\\b")
+                .replace("\\c", "")
+                .replace("\\C", "")
+                .replace("\\(", "(")
+                .replace("\\)", ")")
+                .replace("\\|", "|")
+                .replace("\\+", "+")
+                .replace("\\?", "?")
+                .replace("\\{", "{")
+                .replace("\\}", "}"),
         }
     }
 

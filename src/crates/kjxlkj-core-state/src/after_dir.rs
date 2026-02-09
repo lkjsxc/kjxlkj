@@ -31,10 +31,7 @@ impl AfterDirConfig {
     }
 
     /// Find after-directory files for a filetype.
-    pub fn find_after_files(
-        &self,
-        filetype: &str,
-    ) -> Vec<PathBuf> {
+    pub fn find_after_files(&self, filetype: &str) -> Vec<PathBuf> {
         if !self.enabled {
             return Vec::new();
         }
@@ -74,9 +71,7 @@ impl AfterDirConfig {
         cfg.add_path(config_dir.to_path_buf());
         // Also check XDG data dirs
         if let Ok(data_home) = std::env::var("XDG_DATA_HOME") {
-            cfg.add_path(
-                PathBuf::from(data_home).join("kjxlkj"),
-            );
+            cfg.add_path(PathBuf::from(data_home).join("kjxlkj"));
         }
         cfg
     }

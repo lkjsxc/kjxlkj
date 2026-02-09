@@ -66,11 +66,7 @@ impl PopupMenu {
     }
 
     /// Show popup with items.
-    pub fn show(
-        &mut self,
-        items: Vec<PopupItem>,
-        anchor: PopupAnchor,
-    ) {
+    pub fn show(&mut self, items: Vec<PopupItem>, anchor: PopupAnchor) {
         self.items = items;
         self.anchor = anchor;
         self.selected = 0;
@@ -89,8 +85,7 @@ impl PopupMenu {
         if self.items.is_empty() {
             return;
         }
-        self.selected =
-            (self.selected + 1) % self.items.len();
+        self.selected = (self.selected + 1) % self.items.len();
         self.ensure_visible();
     }
 
@@ -108,9 +103,7 @@ impl PopupMenu {
     }
 
     /// Get selected item.
-    pub fn selected_item(
-        &self,
-    ) -> Option<&PopupItem> {
+    pub fn selected_item(&self) -> Option<&PopupItem> {
         self.items.get(self.selected)
     }
 
@@ -118,18 +111,14 @@ impl PopupMenu {
     fn ensure_visible(&mut self) {
         if self.selected < self.scroll_offset {
             self.scroll_offset = self.selected;
-        } else if self.selected
-            >= self.scroll_offset + self.max_height
-        {
-            self.scroll_offset =
-                self.selected - self.max_height + 1;
+        } else if self.selected >= self.scroll_offset + self.max_height {
+            self.scroll_offset = self.selected - self.max_height + 1;
         }
     }
 
     /// Get visible items slice.
     pub fn visible_items(&self) -> &[PopupItem] {
-        let end = (self.scroll_offset + self.max_height)
-            .min(self.items.len());
+        let end = (self.scroll_offset + self.max_height).min(self.items.len());
         &self.items[self.scroll_offset..end]
     }
 }

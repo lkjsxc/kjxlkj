@@ -9,9 +9,7 @@ fn ed() -> EditorState {
 }
 
 fn ins(e: &mut EditorState, text: &str) {
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         e.dispatch(Action::InsertChar(ch));
     }
@@ -23,16 +21,11 @@ fn ins(e: &mut EditorState, text: &str) {
 fn contract_edit_serial() {
     let mut e = ed();
     for i in 0..100u8 {
-        e.dispatch(Action::EnterInsert(
-            InsertPosition::BeforeCursor,
-        ));
-        e.dispatch(Action::InsertChar(
-            char::from(b'a' + i % 26),
-        ));
+        e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
+        e.dispatch(Action::InsertChar(char::from(b'a' + i % 26)));
         e.dispatch(Action::ReturnToNormal);
     }
-    assert!(e.active_buffer().unwrap()
-        .content.line_count() >= 1);
+    assert!(e.active_buffer().unwrap().content.line_count() >= 1);
 }
 
 /// Snapshot monotonicity.
@@ -49,9 +42,7 @@ fn contract_snapshot_monotonic() {
 #[test]
 fn contract_snapshot_bounded() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for i in 0..1000 {
         for ch in format!("l{i}").chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -69,8 +60,7 @@ fn contract_snapshot_bounded() {
 fn contract_utf8() {
     let mut e = ed();
     ins(&mut e, "こんにちは 🎉 test");
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(!line.is_empty());
 }
 
@@ -93,9 +83,7 @@ fn latency_keystroke() {
     let mut e = ed();
     let start = std::time::Instant::now();
     for _ in 0..200 {
-        e.dispatch(Action::EnterInsert(
-            InsertPosition::BeforeCursor,
-        ));
+        e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
         e.dispatch(Action::InsertChar('x'));
         e.dispatch(Action::ReturnToNormal);
     }
@@ -131,9 +119,7 @@ fn latency_resize() {
 #[test]
 fn memory_no_full_copy() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for _ in 0..500 {
         for ch in "some content here".chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -161,9 +147,7 @@ fn profiling_metrics() {
 #[test]
 fn large_file_bounded() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for i in 0..2000 {
         for ch in format!("ln {i}").chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -171,11 +155,8 @@ fn large_file_bounded() {
         e.dispatch(Action::InsertChar('\n'));
     }
     e.dispatch(Action::ReturnToNormal);
-    e.dispatch(Action::MoveCursor(
-        Motion::GotoLine(1000), 1,
-    ));
-    assert_eq!(e.focused_window().unwrap()
-        .cursor.line, 1000);
+    e.dispatch(Action::MoveCursor(Motion::GotoLine(1000), 1));
+    assert_eq!(e.focused_window().unwrap().cursor.line, 1000);
     let snap = e.snapshot();
     assert!(snap.sequence > 0);
 }

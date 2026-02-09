@@ -44,9 +44,7 @@ impl WmState {
             WmType::Sway
         } else if std::env::var("I3SOCK").is_ok() {
             WmType::I3
-        } else if std::env::var("HYPRLAND_INSTANCE_SIGNATURE")
-            .is_ok()
-        {
+        } else if std::env::var("HYPRLAND_INSTANCE_SIGNATURE").is_ok() {
             WmType::Hyprland
         } else if std::env::var("WAYLAND_DISPLAY").is_ok() {
             WmType::Wayland
@@ -64,19 +62,10 @@ impl WmState {
 
     /// Build a WM focus command for navigating outside the editor.
     /// Returns None if not applicable.
-    pub fn focus_command(
-        &self,
-        direction: &str,
-    ) -> Option<String> {
+    pub fn focus_command(&self, direction: &str) -> Option<String> {
         match self.wm_type {
-            WmType::I3 => Some(format!(
-                "i3-msg focus {}",
-                direction
-            )),
-            WmType::Sway => Some(format!(
-                "swaymsg focus {}",
-                direction
-            )),
+            WmType::I3 => Some(format!("i3-msg focus {}", direction)),
+            WmType::Sway => Some(format!("swaymsg focus {}", direction)),
             WmType::Hyprland => Some(format!(
                 "hyprctl dispatch movefocus {}",
                 match direction {

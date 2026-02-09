@@ -6,10 +6,7 @@ use crate::EditorState;
 
 impl EditorState {
     /// Dispatch `:1,5d` or `:%d` etc.
-    pub(crate) fn dispatch_range_delete(
-        &mut self,
-        full_cmd: &str,
-    ) {
+    pub(crate) fn dispatch_range_delete(&mut self, full_cmd: &str) {
         let (cl, ll) = self.current_last_line();
         let cleaned = strip_cmd_name(full_cmd, "d");
         let (s, e, _) = parse_range(&cleaned, cl, ll);
@@ -17,10 +14,7 @@ impl EditorState {
     }
 
     /// Dispatch `:1,5y` etc.
-    pub(crate) fn dispatch_range_yank(
-        &mut self,
-        full_cmd: &str,
-    ) {
+    pub(crate) fn dispatch_range_yank(&mut self, full_cmd: &str) {
         let (cl, ll) = self.current_last_line();
         let cleaned = strip_cmd_name(full_cmd, "y");
         let (s, e, _) = parse_range(&cleaned, cl, ll);
@@ -28,14 +22,10 @@ impl EditorState {
     }
 
     /// Dispatch `:1,5t10` etc.
-    pub(crate) fn dispatch_range_copy(
-        &mut self,
-        full_cmd: &str,
-    ) {
+    pub(crate) fn dispatch_range_copy(&mut self, full_cmd: &str) {
         let (cl, ll) = self.current_last_line();
         let cleaned = strip_cmd_name(full_cmd, "t");
-        let (s, e, rest) =
-            parse_range(&cleaned, cl, ll);
+        let (s, e, rest) = parse_range(&cleaned, cl, ll);
         let dest = rest
             .trim()
             .parse::<usize>()
@@ -45,14 +35,10 @@ impl EditorState {
     }
 
     /// Dispatch `:1,5m10` etc.
-    pub(crate) fn dispatch_range_move(
-        &mut self,
-        full_cmd: &str,
-    ) {
+    pub(crate) fn dispatch_range_move(&mut self, full_cmd: &str) {
         let (cl, ll) = self.current_last_line();
         let cleaned = strip_cmd_name(full_cmd, "m");
-        let (s, e, rest) =
-            parse_range(&cleaned, cl, ll);
+        let (s, e, rest) = parse_range(&cleaned, cl, ll);
         let dest = rest
             .trim()
             .parse::<usize>()
@@ -62,23 +48,15 @@ impl EditorState {
     }
 
     /// Dispatch `:1,5normal @a` etc.
-    pub(crate) fn dispatch_range_normal(
-        &mut self,
-        full_cmd: &str,
-    ) {
+    pub(crate) fn dispatch_range_normal(&mut self, full_cmd: &str) {
         let (cl, ll) = self.current_last_line();
-        let cleaned =
-            strip_cmd_name(full_cmd, "normal");
-        let (s, e, rest) =
-            parse_range(&cleaned, cl, ll);
+        let cleaned = strip_cmd_name(full_cmd, "normal");
+        let (s, e, rest) = parse_range(&cleaned, cl, ll);
         self.do_range_normal(s, e, &rest);
     }
 
     /// Read file contents into buffer after cursor line.
-    pub(crate) fn do_read_file(
-        &mut self,
-        path: &str,
-    ) {
+    pub(crate) fn do_read_file(&mut self, path: &str) {
         let path = path.trim();
         if path.is_empty() {
             return;
@@ -124,10 +102,7 @@ impl EditorState {
 
 /// Strip the command name from a full command string,
 /// leaving only the range prefix and arguments.
-fn strip_cmd_name(
-    cmd: &str,
-    name: &str,
-) -> String {
+fn strip_cmd_name(cmd: &str, name: &str) -> String {
     let cmd = cmd.trim();
     // Skip the range prefix: digits, commas, %, $, .
     let mut pos = 0;
@@ -172,13 +147,7 @@ mod tests {
     #[test]
     fn strip_cmd_name_works() {
         assert_eq!(strip_cmd_name("1,5d", "d"), "1,5");
-        assert_eq!(
-            strip_cmd_name("%d", "d"),
-            "%"
-        );
-        assert_eq!(
-            strip_cmd_name("3,7t 10", "t"),
-            "3,7 10"
-        );
+        assert_eq!(strip_cmd_name("%d", "d"), "%");
+        assert_eq!(strip_cmd_name("3,7t 10", "t"), "3,7 10");
     }
 }

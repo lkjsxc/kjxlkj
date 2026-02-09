@@ -14,9 +14,7 @@ pub struct FileWatcher {
 }
 
 impl FileWatcher {
-    pub fn new(
-        response_tx: mpsc::Sender<ServiceResponse>,
-    ) -> Self {
+    pub fn new(response_tx: mpsc::Sender<ServiceResponse>) -> Self {
         Self {
             response_tx,
             watched_paths: Vec::new(),
@@ -30,18 +28,12 @@ impl FileWatcher {
 
     /// Remove a path from watching.
     pub fn unwatch(&mut self, path: &std::path::Path) {
-        self.watched_paths
-            .retain(|p| p.as_path() != path);
+        self.watched_paths.retain(|p| p.as_path() != path);
     }
 
     /// Start watching (simplified: polls on interval).
-    pub async fn run(
-        self,
-        mut quit_rx: tokio::sync::broadcast::Receiver<()>,
-    ) {
-        let mut interval = tokio::time::interval(
-            std::time::Duration::from_secs(2),
-        );
+    pub async fn run(self, mut quit_rx: tokio::sync::broadcast::Receiver<()>) {
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(2));
 
         loop {
             tokio::select! {

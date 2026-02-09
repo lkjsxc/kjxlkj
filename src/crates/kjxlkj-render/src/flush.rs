@@ -22,9 +22,7 @@ pub fn build_flush_buffer(diff: &FrameDiff) -> Vec<u8> {
     for change in &diff.changes {
         // Move cursor if not sequential.
         let need_move = match (last_row, last_col) {
-            (Some(r), Some(c)) => {
-                r != change.row || c + 1 != change.col
-            }
+            (Some(r), Some(c)) => r != change.row || c + 1 != change.col,
             _ => true,
         };
 
@@ -33,9 +31,7 @@ pub fn build_flush_buffer(diff: &FrameDiff) -> Vec<u8> {
         }
 
         // Set attributes.
-        if change.cell.fg != last_fg
-            || change.cell.bg != last_bg
-            || change.cell.attrs != last_attrs
+        if change.cell.fg != last_fg || change.cell.bg != last_bg || change.cell.attrs != last_attrs
         {
             write_sgr(&mut buf, &change.cell);
             last_fg = change.cell.fg;
@@ -107,11 +103,7 @@ fn write_color(buf: &mut Vec<u8>, color: Color, is_fg: bool) {
         }
         Color::Rgb(r, g, b_val) => {
             let base = if is_fg { 38 } else { 48 };
-            let _ = write!(
-                buf,
-                ";{};2;{};{};{}",
-                base, r, g, b_val
-            );
+            let _ = write!(buf, ";{};2;{};{};{}", base, r, g, b_val);
         }
     }
 }

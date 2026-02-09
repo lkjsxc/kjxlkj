@@ -1,48 +1,24 @@
 //! Theming system per /docs/spec/ux/theming.md.
-//!
-//! Color scheme loading, highlight group resolution,
-//! and theme definitions.
 
 use std::collections::HashMap;
 
 use kjxlkj_core_types::Color;
 
-/// A style specification for a highlight group.
 #[derive(Debug, Clone, Default)]
+#[rustfmt::skip]
 pub struct ThemeStyle {
-    /// Foreground color.
-    pub fg: Option<Color>,
-    /// Background color.
-    pub bg: Option<Color>,
-    /// Bold.
-    pub bold: bool,
-    /// Italic.
-    pub italic: bool,
-    /// Underline.
-    pub underline: bool,
-    /// Strikethrough.
-    pub strikethrough: bool,
-    /// Link to another group (inheritance).
-    pub link: Option<String>,
+    pub fg: Option<Color>, pub bg: Option<Color>, pub bold: bool, pub italic: bool, pub underline: bool,
+    pub strikethrough: bool, pub link: Option<String>,
 }
 
-/// A complete theme definition.
 #[derive(Debug, Clone)]
+#[rustfmt::skip]
 pub struct Theme {
-    /// Theme name.
-    pub name: String,
-    /// Whether this is a dark theme.
-    pub dark: bool,
-    /// Default foreground.
-    pub default_fg: Color,
-    /// Default background.
-    pub default_bg: Color,
-    /// Highlight group styles.
+    pub name: String, pub dark: bool, pub default_fg: Color, pub default_bg: Color,
     pub groups: HashMap<String, ThemeStyle>,
 }
 
 impl Theme {
-    /// Create a minimal dark theme.
     pub fn dark_default() -> Self {
         let mut groups = HashMap::new();
         groups.insert(
@@ -114,11 +90,7 @@ impl Theme {
         }
     }
 
-    /// Resolve a highlight group style.
-    pub fn resolve(
-        &self,
-        group: &str,
-    ) -> ThemeStyle {
+    pub fn resolve(&self, group: &str) -> ThemeStyle {
         if let Some(style) = self.groups.get(group) {
             if let Some(ref link) = style.link {
                 return self.resolve(link);
@@ -133,13 +105,10 @@ impl Theme {
     }
 }
 
-/// Theme registry.
 #[derive(Debug, Clone)]
+#[rustfmt::skip]
 pub struct ThemeRegistry {
-    /// Available themes.
-    pub themes: Vec<Theme>,
-    /// Active theme index.
-    pub active: usize,
+    pub themes: Vec<Theme>, pub active: usize,
 }
 
 impl Default for ThemeRegistry {
@@ -152,26 +121,16 @@ impl Default for ThemeRegistry {
 }
 
 impl ThemeRegistry {
-    /// Create with default theme.
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Get the active theme.
     pub fn active_theme(&self) -> &Theme {
         &self.themes[self.active]
     }
 
-    /// Set active theme by name.
-    pub fn set_theme(
-        &mut self,
-        name: &str,
-    ) -> bool {
-        if let Some(idx) = self
-            .themes
-            .iter()
-            .position(|t| t.name == name)
-        {
+    pub fn set_theme(&mut self, name: &str) -> bool {
+        if let Some(idx) = self.themes.iter().position(|t| t.name == name) {
             self.active = idx;
             true
         } else {
@@ -179,7 +138,6 @@ impl ThemeRegistry {
         }
     }
 
-    /// Add a theme.
     pub fn add_theme(&mut self, theme: Theme) {
         self.themes.push(theme);
     }

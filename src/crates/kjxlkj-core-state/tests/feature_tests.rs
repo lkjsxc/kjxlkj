@@ -2,19 +2,14 @@
 //! and write-all features.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Action, ActionCommandKind, Direction,
-    InsertPosition, Mode, Motion,
-};
+use kjxlkj_core_types::{Action, ActionCommandKind, Direction, InsertPosition, Mode, Motion};
 
 fn make_editor() -> EditorState {
     EditorState::new(80, 24)
 }
 
 fn insert_text(ed: &mut EditorState, text: &str) {
-    ed.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    ed.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         ed.dispatch(Action::InsertChar(ch));
     }
@@ -25,10 +20,7 @@ fn insert_text(ed: &mut EditorState, text: &str) {
 fn search_forward_moves_cursor() {
     let mut ed = make_editor();
     insert_text(&mut ed, "hello world\nfoo bar");
-    ed.dispatch(Action::MoveCursor(
-        Motion::GotoLine(0),
-        1,
-    ));
+    ed.dispatch(Action::MoveCursor(Motion::GotoLine(0), 1));
     ed.dispatch(Action::MoveCursor(Motion::LineStart, 1));
     ed.dispatch(Action::SearchForward("bar".into()));
     let w = ed.focused_window().unwrap();
@@ -41,10 +33,7 @@ fn search_backward_moves_cursor() {
     let mut ed = make_editor();
     insert_text(&mut ed, "xyz abc\nxyz def\nxyz abc");
     // Move to end of buffer.
-    ed.dispatch(Action::MoveCursor(
-        Motion::GotoLastLine,
-        1,
-    ));
+    ed.dispatch(Action::MoveCursor(Motion::GotoLastLine, 1));
     ed.dispatch(Action::MoveCursor(Motion::LineEnd, 1));
     ed.dispatch(Action::SearchBackward("xyz".into()));
     let w = ed.focused_window().unwrap();
@@ -56,10 +45,7 @@ fn search_backward_moves_cursor() {
 fn next_prev_match() {
     let mut ed = make_editor();
     insert_text(&mut ed, "aa\naa\naa");
-    ed.dispatch(Action::MoveCursor(
-        Motion::GotoLine(0),
-        1,
-    ));
+    ed.dispatch(Action::MoveCursor(Motion::GotoLine(0), 1));
     ed.dispatch(Action::SearchForward("aa".into()));
     let line1 = ed.focused_window().unwrap().cursor.line;
     ed.dispatch(Action::NextMatch);
@@ -147,10 +133,7 @@ fn close_last_window_quits() {
 fn replace_mode_overwrites() {
     let mut ed = make_editor();
     insert_text(&mut ed, "hello");
-    ed.dispatch(Action::MoveCursor(
-        Motion::GotoLine(0),
-        1,
-    ));
+    ed.dispatch(Action::MoveCursor(Motion::GotoLine(0), 1));
     ed.dispatch(Action::MoveCursor(Motion::LineStart, 1));
     ed.dispatch(Action::EnterReplace);
     assert_eq!(ed.mode, Mode::Replace);
@@ -160,8 +143,6 @@ fn replace_mode_overwrites() {
 fn enter_command_search_forward() {
     let mut ed = make_editor();
     insert_text(&mut ed, "hello world");
-    ed.dispatch(Action::EnterCommand(
-        ActionCommandKind::SearchForward,
-    ));
+    ed.dispatch(Action::EnterCommand(ActionCommandKind::SearchForward));
     assert!(matches!(ed.mode, Mode::Command(_)));
 }

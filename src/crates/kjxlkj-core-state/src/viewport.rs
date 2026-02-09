@@ -24,12 +24,7 @@ impl ViewportState {
     }
 
     /// Ensure cursor line is visible, adjusting top_line.
-    pub fn follow_cursor(
-        &mut self,
-        cursor_line: usize,
-        scroll_off: u16,
-        line_count: usize,
-    ) {
+    pub fn follow_cursor(&mut self, cursor_line: usize, scroll_off: u16, line_count: usize) {
         let off = scroll_off as usize;
         let h = self.height as usize;
 
@@ -40,8 +35,7 @@ impl ViewportState {
 
         // Cursor below visible area.
         if h > 0 && cursor_line >= self.top_line + h - off.min(h - 1) {
-            self.top_line = cursor_line
-                .saturating_sub(h - 1 - off.min(h - 1));
+            self.top_line = cursor_line.saturating_sub(h - 1 - off.min(h - 1));
         }
 
         // Clamp top_line.
@@ -52,11 +46,7 @@ impl ViewportState {
     }
 
     /// Ensure cursor column is visible (nowrap mode).
-    pub fn follow_cursor_col(
-        &mut self,
-        cursor_col: usize,
-        side_scroll_off: u16,
-    ) {
+    pub fn follow_cursor_col(&mut self, cursor_col: usize, side_scroll_off: u16) {
         let off = side_scroll_off as usize;
         let w = self.width as usize;
 
@@ -69,8 +59,7 @@ impl ViewportState {
         }
 
         if cursor_col >= self.left_col + w - off.min(w - 1) {
-            self.left_col =
-                cursor_col.saturating_sub(w - 1 - off.min(w - 1));
+            self.left_col = cursor_col.saturating_sub(w - 1 - off.min(w - 1));
         }
     }
 

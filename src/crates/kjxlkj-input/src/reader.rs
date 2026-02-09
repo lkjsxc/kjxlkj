@@ -17,10 +17,7 @@ pub struct InputReader {
 
 impl InputReader {
     /// Create a new input reader.
-    pub fn new(
-        action_tx: mpsc::Sender<Action>,
-        key_tx: mpsc::Sender<Key>,
-    ) -> Self {
+    pub fn new(action_tx: mpsc::Sender<Action>, key_tx: mpsc::Sender<Key>) -> Self {
         Self { action_tx, key_tx }
     }
 
@@ -28,12 +25,8 @@ impl InputReader {
     ///
     /// This should be spawned as a Tokio task. It reads events from
     /// crossterm's async EventStream and dispatches them.
-    pub async fn run(
-        self,
-        mut quit_rx: tokio::sync::broadcast::Receiver<()>,
-    ) {
-        let mut reader =
-            crossterm::event::EventStream::new();
+    pub async fn run(self, mut quit_rx: tokio::sync::broadcast::Receiver<()>) {
+        let mut reader = crossterm::event::EventStream::new();
 
         loop {
             tokio::select! {
@@ -51,10 +44,7 @@ impl InputReader {
         }
     }
 
-    async fn handle_event(
-        &self,
-        event: &crossterm::event::Event,
-    ) {
+    async fn handle_event(&self, event: &crossterm::event::Event) {
         // First check for non-key events.
         if let Some(action) = decode_crossterm_event(event) {
             let _ = self.action_tx.send(action).await;

@@ -15,14 +15,9 @@ pub struct Pty {
 
 impl Pty {
     /// Spawn a new PTY process.
-    pub fn spawn(
-        command: &str,
-        cols: u16,
-        rows: u16,
-    ) -> Result<Self, String> {
+    pub fn spawn(command: &str, cols: u16, rows: u16) -> Result<Self, String> {
         let OpenptyResult { master, slave } =
-            openpty(None, None)
-                .map_err(|e| format!("openpty: {e}"))?;
+            openpty(None, None).map_err(|e| format!("openpty: {e}"))?;
 
         // Set initial size.
         let winsize = nix::pty::Winsize {
@@ -53,21 +48,11 @@ impl Pty {
                 drop(slave);
 
                 // Exec the command.
-                let shell =
-                    std::env::var("SHELL")
-                        .unwrap_or_else(|_| {
-                            String::from("/bin/sh")
-                        });
-                let c_shell =
-                    std::ffi::CString::new(shell).unwrap();
-                let c_flag =
-                    std::ffi::CString::new("-c").unwrap();
-                let c_cmd =
-                    std::ffi::CString::new(command).unwrap();
-                let _ = execvp(
-                    &c_shell,
-                    &[&c_shell, &c_flag, &c_cmd],
-                );
+                let shell = std::env::var("SHELL").unwrap_or_else(|_| String::from("/bin/sh"));
+                let c_shell = std::ffi::CString::new(shell).unwrap();
+                let c_flag = std::ffi::CString::new("-c").unwrap();
+                let c_cmd = std::ffi::CString::new(command).unwrap();
+                let _ = execvp(&c_shell, &[&c_shell, &c_flag, &c_cmd]);
                 std::process::exit(1);
             }
             Ok(ForkResult::Parent { child }) => {
@@ -83,11 +68,7 @@ impl Pty {
     }
 
     /// Resize the PTY.
-    pub fn resize(
-        &self,
-        cols: u16,
-        rows: u16,
-    ) -> Result<(), String> {
+    pub fn resize(&self, cols: u16, rows: u16) -> Result<(), String> {
         let winsize = nix::pty::Winsize {
             ws_row: rows,
             ws_col: cols,
@@ -105,10 +86,7 @@ impl Pty {
             }
         }
         // Signal the child.
-        let _ = nix::sys::signal::kill(
-            self.child_pid,
-            nix::sys::signal::Signal::SIGWINCH,
-        );
+        let _ = nix::sys::signal::kill(self.child_pid, nix::sys::signal::Signal::SIGWINCH);
         Ok(())
     }
 
@@ -119,10 +97,7 @@ impl Pty {
 
     /// Send SIGHUP to the child process on close.
     pub fn close(&self) {
-        let _ = nix::sys::signal::kill(
-            self.child_pid,
-            nix::sys::signal::Signal::SIGHUP,
-        );
+        let _ = nix::sys::signal::kill(self.child_pid, nix::sys::signal::Signal::SIGHUP);
     }
 }
 

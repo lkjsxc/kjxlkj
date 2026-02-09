@@ -4,9 +4,9 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Gate 0: Baseline Audit
 
-- [ ] Run verification commands from [/docs/reference/CI.md](/docs/reference/CI.md)
-- [ ] Build mismatch matrix (M1-M5) in `/docs/log/reconstruction/audits/`
-- [ ] Prioritize by user impact and regression risk
+- [x] Run verification commands from [/docs/reference/CI.md](/docs/reference/CI.md)
+- [x] Build mismatch matrix (M1-M5) in `/docs/log/reconstruction/audits/`
+- [x] Prioritize by user impact and regression risk
 
 ## Gate 1: Slice Definition
 
@@ -17,15 +17,15 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Gate 2: Implementation Integrity
 
 - [ ] Ensure feature is reachable from runtime entrypoint
-- [ ] Ensure no source file exceeds 200 lines after implementation
+- [x] Ensure no source file exceeds 200 lines after implementation
 - [ ] Ensure source directory fan-out remains around 12 children
 - [ ] Ensure terminal/explorer/window behavior is integrated as real windows
 
 ## Gate 3: Verification and Sync
 
 - [ ] Run touched tests
-- [ ] Run full `cargo test --workspace`
-- [ ] Record proof of 523+ listed tests or updated total with command evidence
+- [x] Run full `cargo test --workspace`
+- [x] Record proof of 523+ listed tests or updated total with command evidence
 - [ ] Update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [ ] Update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 

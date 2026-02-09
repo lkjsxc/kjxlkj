@@ -21,10 +21,7 @@ pub struct LspClient {
 
 impl LspClient {
     /// Spawn a language server.
-    pub async fn spawn(
-        command: &str,
-        args: &[&str],
-    ) -> Result<Self, String> {
+    pub async fn spawn(command: &str, args: &[&str]) -> Result<Self, String> {
         let child = Command::new(command)
             .args(args)
             .stdin(Stdio::piped())
@@ -49,10 +46,8 @@ impl LspClient {
         let id = self.next_id;
         self.next_id += 1;
 
-        let req =
-            codec::JsonRpcRequest::new(id, method, params);
-        let body = serde_json::to_vec(&req)
-            .map_err(|e| format!("serialize: {e}"))?;
+        let req = codec::JsonRpcRequest::new(id, method, params);
+        let body = serde_json::to_vec(&req).map_err(|e| format!("serialize: {e}"))?;
         let msg = codec::encode_message(&body);
 
         if let Some(ref mut child) = self.child {
@@ -79,8 +74,7 @@ impl LspClient {
             method: method.into(),
             params,
         };
-        let body = serde_json::to_vec(&notif)
-            .map_err(|e| format!("serialize: {e}"))?;
+        let body = serde_json::to_vec(&notif).map_err(|e| format!("serialize: {e}"))?;
         let msg = codec::encode_message(&body);
 
         if let Some(ref mut child) = self.child {

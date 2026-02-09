@@ -29,37 +29,23 @@ impl Renderer {
     }
 
     /// Render a snapshot to the terminal.
-    pub fn render(
-        &mut self,
-        snapshot: &EditorSnapshot,
-    ) -> std::io::Result<()> {
+    pub fn render(&mut self, snapshot: &EditorSnapshot) -> std::io::Result<()> {
         let (cols, rows) = snapshot.terminal_size;
         self.cols = cols;
         self.rows = rows;
 
         let mut grid = CellGrid::new(cols, rows);
 
-        for win_id in
-            snapshot.layout.root.window_ids()
-        {
-            if let Some(rect) = snapshot
-                .layout
-                .root
-                .find_window(win_id)
-            {
-                renderer_window::render_window(
-                    &mut grid, snapshot, win_id,
-                    rect,
-                );
+        for win_id in snapshot.layout.root.window_ids() {
+            if let Some(rect) = snapshot.layout.root.find_window(win_id) {
+                renderer_window::render_window(&mut grid, snapshot, win_id, rect);
             }
         }
 
         self.render_cmdline(&mut grid, snapshot);
 
         let diff = match &self.prev_grid {
-            Some(prev) => {
-                FrameDiff::compute(prev, &grid)
-            }
+            Some(prev) => FrameDiff::compute(prev, &grid),
             None => FrameDiff::full(&grid),
         };
 
@@ -70,15 +56,10 @@ impl Renderer {
         Ok(())
     }
 
-    fn render_cmdline(
-        &self,
-        grid: &mut CellGrid,
-        snapshot: &EditorSnapshot,
-    ) {
+    fn render_cmdline(&self, grid: &mut CellGrid, snapshot: &EditorSnapshot) {
         let y = self.rows - 1;
         if snapshot.cmdline.active {
-            let display =
-                snapshot.cmdline.display_string();
+            let display = snapshot.cmdline.display_string();
             grid.write_str(
                 0,
                 y,
@@ -87,28 +68,13 @@ impl Renderer {
                 snapshot.theme.cmdline.bg,
                 CellAttrs::empty(),
             );
-        } else if let Some(notif) =
-            snapshot.notifications.last()
-        {
+        } else if let Some(notif) = snapshot.notifications.last() {
             let color = match notif.level {
-                kjxlkj_core_ui::NotificationLevel::Error => {
-                    snapshot.theme.error_msg
-                }
-                kjxlkj_core_ui::NotificationLevel::Warning => {
-                    snapshot.theme.warning_msg
-                }
-                kjxlkj_core_ui::NotificationLevel::Info => {
-                    snapshot.theme.cmdline
-                }
+                kjxlkj_core_ui::NotificationLevel::Error => snapshot.theme.error_msg,
+                kjxlkj_core_ui::NotificationLevel::Warning => snapshot.theme.warning_msg,
+                kjxlkj_core_ui::NotificationLevel::Info => snapshot.theme.cmdline,
             };
-            grid.write_str(
-                0,
-                y,
-                &notif.message,
-                color.fg,
-                color.bg,
-                CellAttrs::empty(),
-            );
+            grid.write_str(0, y, &notif.message, color.fg, color.bg, CellAttrs::empty());
         }
     }
 

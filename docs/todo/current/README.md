@@ -14,18 +14,23 @@ All checkboxes below are intentionally unchecked for next full reconstruction.
 
 ## Area Checklists
 
-- [ ] [architecture.md](architecture.md)
-- [ ] [editor-core.md](editor-core.md)
-- [ ] [modes.md](modes.md)
-- [ ] [editing.md](editing.md)
-- [ ] [commands.md](commands.md)
-- [ ] [features-core.md](features-core.md)
-- [ ] [features-services.md](features-services.md)
-- [ ] [features-editing.md](features-editing.md)
-- [ ] [scripting.md](scripting.md)
-- [ ] [ui-rendering.md](ui-rendering.md)
-- [ ] [ux.md](ux.md)
-- [ ] [technical.md](technical.md)
+Navigation:
+
+- [areas/README.md](areas/README.md)
+- [features/README.md](features/README.md)
+
+- [ ] [areas/architecture.md](areas/architecture.md)
+- [ ] [areas/editor-core.md](areas/editor-core.md)
+- [ ] [areas/modes.md](areas/modes.md)
+- [ ] [areas/editing.md](areas/editing.md)
+- [ ] [areas/commands.md](areas/commands.md)
+- [ ] [features/features-core.md](features/features-core.md)
+- [ ] [features/features-services.md](features/features-services.md)
+- [ ] [features/features-editing.md](features/features-editing.md)
+- [ ] [areas/scripting.md](areas/scripting.md)
+- [ ] [areas/ui-rendering.md](areas/ui-rendering.md)
+- [ ] [areas/ux.md](areas/ux.md)
+- [ ] [areas/technical.md](areas/technical.md)
 - [ ] [verification.md](verification.md)
 
 ## Critical Gap Closures

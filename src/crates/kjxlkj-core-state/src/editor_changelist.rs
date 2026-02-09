@@ -26,11 +26,8 @@ impl EditorState {
 
         // Truncate forward entries if we're not
         // at the end.
-        if self.change_list_pos
-            < self.change_list.len()
-        {
-            self.change_list
-                .truncate(self.change_list_pos);
+        if self.change_list_pos < self.change_list.len() {
+            self.change_list.truncate(self.change_list_pos);
         }
 
         self.change_list.push(entry);
@@ -49,38 +46,25 @@ impl EditorState {
             return;
         }
         self.change_list_pos -= 1;
-        let (bid, pos) =
-            self.change_list[self.change_list_pos];
+        let (bid, pos) = self.change_list[self.change_list_pos];
         self.jump_to_change(bid, pos);
     }
 
     /// Jump to newer change (`g,`).
     pub(crate) fn do_change_newer(&mut self) {
-        if self.change_list_pos
-            >= self.change_list.len().saturating_sub(1)
-        {
+        if self.change_list_pos >= self.change_list.len().saturating_sub(1) {
             return;
         }
         self.change_list_pos += 1;
-        let (bid, pos) =
-            self.change_list[self.change_list_pos];
+        let (bid, pos) = self.change_list[self.change_list_pos];
         self.jump_to_change(bid, pos);
     }
 
-    fn jump_to_change(
-        &mut self,
-        bid: BufferId,
-        pos: CursorPosition,
-    ) {
+    fn jump_to_change(&mut self, bid: BufferId, pos: CursorPosition) {
         if self.active_buffer_id() != Some(bid) {
             if self.buffers.contains_key(&bid) {
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
-                    w.content =
-                        crate::WindowContent::Buffer(
-                            bid,
-                        );
+                if let Some(w) = self.focused_window_mut() {
+                    w.content = crate::WindowContent::Buffer(bid);
                 }
             }
         }

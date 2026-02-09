@@ -63,14 +63,10 @@ impl SpellChecker {
 
     /// Add word to user dictionary.
     pub fn add_word(&mut self, word: &str) {
-        self.user_words.insert(
-            word.to_lowercase(),
-        );
+        self.user_words.insert(word.to_lowercase());
         // Remove any errors for this word.
         let lower = word.to_lowercase();
-        self.errors.retain(|e| {
-            e.word.to_lowercase() != lower
-        });
+        self.errors.retain(|e| e.word.to_lowercase() != lower);
     }
 
     /// Check if a word is correctly spelled.
@@ -83,11 +79,7 @@ impl SpellChecker {
     }
 
     /// Check a line of text for errors.
-    pub fn check_line(
-        &self,
-        line_idx: usize,
-        text: &str,
-    ) -> Vec<SpellError> {
+    pub fn check_line(&self, line_idx: usize, text: &str) -> Vec<SpellError> {
         if !self.enabled {
             return Vec::new();
         }
@@ -127,28 +119,21 @@ impl SpellChecker {
     }
 
     /// Navigate to next spelling error.
-    pub fn next_error(
-        &mut self,
-    ) -> Option<&SpellError> {
+    pub fn next_error(&mut self) -> Option<&SpellError> {
         if self.errors.is_empty() {
             return None;
         }
-        self.current_error =
-            (self.current_error + 1)
-                % self.errors.len();
+        self.current_error = (self.current_error + 1) % self.errors.len();
         Some(&self.errors[self.current_error])
     }
 
     /// Navigate to previous spelling error.
-    pub fn prev_error(
-        &mut self,
-    ) -> Option<&SpellError> {
+    pub fn prev_error(&mut self) -> Option<&SpellError> {
         if self.errors.is_empty() {
             return None;
         }
         if self.current_error == 0 {
-            self.current_error =
-                self.errors.len() - 1;
+            self.current_error = self.errors.len() - 1;
         } else {
             self.current_error -= 1;
         }
@@ -174,10 +159,7 @@ mod tests {
         sc.enabled = true;
         sc.dictionary.insert("hello".into());
         sc.dictionary.insert("world".into());
-        let errs = sc.check_line(
-            0,
-            "hello wrold world",
-        );
+        let errs = sc.check_line(0, "hello wrold world");
         assert_eq!(errs.len(), 1);
         assert_eq!(errs[0].word, "wrold");
     }

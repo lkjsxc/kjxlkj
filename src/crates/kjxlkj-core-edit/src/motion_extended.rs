@@ -25,18 +25,13 @@ pub(crate) fn exec_find_char(
         crate::CharFindKind::BackwardTo
     };
     let find = crate::CharFind::new(ch, kind);
-    if let Some(idx) =
-        find.execute(&line, cursor.grapheme_offset)
-    {
+    if let Some(idx) = find.execute(&line, cursor.grapheme_offset) {
         cursor.grapheme_offset = idx;
     }
     cursor.clear_desired_col();
 }
 
-pub(crate) fn exec_matching_bracket(
-    cursor: &mut CursorPosition,
-    content: &BufferContent,
-) {
+pub(crate) fn exec_matching_bracket(cursor: &mut CursorPosition, content: &BufferContent) {
     let line = content.line_content(cursor.line);
     let chars: Vec<char> = line.chars().collect();
     let idx = cursor.grapheme_offset;
@@ -75,8 +70,7 @@ pub(crate) fn exec_matching_bracket(
             c -= 1;
         }
         if forward {
-            let llen =
-                content.line_content(l).chars().count();
+            let llen = content.line_content(l).chars().count();
             if c >= llen {
                 l += 1;
                 if l >= total {

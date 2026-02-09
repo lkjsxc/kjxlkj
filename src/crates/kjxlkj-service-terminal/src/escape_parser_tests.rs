@@ -21,10 +21,9 @@ fn parse_csi_sequence() {
     for b in b"\x1b[1;2H" {
         parser.feed(*b, &mut actions);
     }
-    assert!(actions.iter().any(|a| matches!(
-        a,
-        ParseAction::CsiDispatch('H', _)
-    )));
+    assert!(actions
+        .iter()
+        .any(|a| matches!(a, ParseAction::CsiDispatch('H', _))));
 }
 
 #[test]
@@ -32,8 +31,5 @@ fn parse_c0_control() {
     let mut parser = EscapeParser::new();
     let mut actions = Vec::new();
     parser.feed(0x0A, &mut actions); // LF
-    assert!(matches!(
-        actions[0],
-        ParseAction::Execute(0x0A)
-    ));
+    assert!(matches!(actions[0], ParseAction::Execute(0x0A)));
 }

@@ -40,7 +40,11 @@ impl CharFind {
                 for i in (from_idx + 1)..graphemes.len() {
                     if grapheme_starts_with(graphemes[i], self.ch) {
                         return if self.kind == CharFindKind::ForwardTill {
-                            if i > 0 { Some(i - 1) } else { Some(0) }
+                            if i > 0 {
+                                Some(i - 1)
+                            } else {
+                                Some(0)
+                            }
                         } else {
                             Some(i)
                         };

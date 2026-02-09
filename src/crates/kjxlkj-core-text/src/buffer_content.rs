@@ -91,11 +91,7 @@ impl BufferContent {
     }
 
     /// Convert (line, grapheme_offset) to a char index in the rope.
-    pub fn grapheme_to_char(
-        &self,
-        line: usize,
-        grapheme_offset: usize,
-    ) -> usize {
+    pub fn grapheme_to_char(&self, line: usize, grapheme_offset: usize) -> usize {
         let line_start = self.rope.line_to_char(line);
         let line_str = self.line_str(line);
         let lg = LineGraphemes::from_str(&line_str);
@@ -109,12 +105,7 @@ impl BufferContent {
     }
 
     /// Insert text at (line, grapheme_offset).
-    pub fn insert(
-        &mut self,
-        line: usize,
-        grapheme_offset: usize,
-        text: &str,
-    ) {
+    pub fn insert(&mut self, line: usize, grapheme_offset: usize, text: &str) {
         let char_idx = self.grapheme_to_char(line, grapheme_offset);
         self.rope.insert(char_idx, text);
     }

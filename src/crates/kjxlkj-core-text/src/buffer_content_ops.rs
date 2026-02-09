@@ -10,10 +10,7 @@ impl BufferContent {
     }
 
     /// Get the char index at the start of a line.
-    pub fn line_start_offset(
-        &self,
-        line: usize,
-    ) -> usize {
+    pub fn line_start_offset(&self, line: usize) -> usize {
         if line >= self.line_count() {
             return self.rope.len_chars();
         }
@@ -22,10 +19,7 @@ impl BufferContent {
 
     /// Get the char index at the end of a line
     /// (before the newline character).
-    pub fn line_end_offset(
-        &self,
-        line: usize,
-    ) -> usize {
+    pub fn line_end_offset(&self, line: usize) -> usize {
         if line >= self.line_count() {
             return self.rope.len_chars();
         }
@@ -44,19 +38,12 @@ impl BufferContent {
     }
 
     /// Convert (line, grapheme_offset) to a char index.
-    pub fn line_grapheme_to_offset(
-        &self,
-        line: usize,
-        grapheme_offset: usize,
-    ) -> usize {
+    pub fn line_grapheme_to_offset(&self, line: usize, grapheme_offset: usize) -> usize {
         self.grapheme_to_char(line, grapheme_offset)
     }
 
     /// Count graphemes in a line.
-    pub fn line_grapheme_count(
-        &self,
-        line: usize,
-    ) -> usize {
+    pub fn line_grapheme_count(&self, line: usize) -> usize {
         if line >= self.line_count() {
             return 0;
         }
@@ -65,11 +52,7 @@ impl BufferContent {
     }
 
     /// Insert a single char at a char index.
-    pub fn insert_char(
-        &mut self,
-        char_idx: usize,
-        ch: char,
-    ) {
+    pub fn insert_char(&mut self, char_idx: usize, ch: char) {
         let idx = char_idx.min(self.rope.len_chars());
         let mut buf = [0u8; 4];
         let s = ch.encode_utf8(&mut buf);
@@ -77,11 +60,7 @@ impl BufferContent {
     }
 
     /// Delete a range of chars [start, end).
-    pub fn delete_range(
-        &mut self,
-        start: usize,
-        end: usize,
-    ) {
+    pub fn delete_range(&mut self, start: usize, end: usize) {
         let s = start.min(self.rope.len_chars());
         let e = end.min(self.rope.len_chars());
         if s < e {
@@ -90,10 +69,7 @@ impl BufferContent {
     }
 
     /// Get char at a char index.
-    pub fn char_at(
-        &self,
-        char_idx: usize,
-    ) -> Option<char> {
+    pub fn char_at(&self, char_idx: usize) -> Option<char> {
         if char_idx < self.rope.len_chars() {
             Some(self.rope.char(char_idx))
         } else {
@@ -102,23 +78,13 @@ impl BufferContent {
     }
 
     /// Get the leading whitespace string from a line.
-    pub fn line_leading_whitespace(
-        &self,
-        line: usize,
-    ) -> String {
+    pub fn line_leading_whitespace(&self, line: usize) -> String {
         let content = self.line_content(line);
-        content
-            .chars()
-            .take_while(|c| c.is_whitespace())
-            .collect()
+        content.chars().take_while(|c| c.is_whitespace()).collect()
     }
 
     /// Replace the content of a single line (preserving newline).
-    pub fn replace_line(
-        &mut self,
-        line: usize,
-        text: &str,
-    ) {
+    pub fn replace_line(&mut self, line: usize, text: &str) {
         if line >= self.line_count() {
             return;
         }

@@ -12,8 +12,8 @@ This document is descriptive and non-normative. For current implementation statu
 
 | Area | Target scope in kjxlkj | Current status source | Notes |
 |------|-------------------------|-----------------------|-------|
-| Modal editing | Yes | `/docs/reference/CONFORMANCE_MODES_KEYS.md` | Vim-like model |
-| Operator+motion | Yes | `/docs/reference/CONFORMANCE_EDITING.md` | Command/editing surface |
+| Modal editing | Yes | `/docs/reference/conformance/CONFORMANCE_MODES.md` | Vim-like model |
+| Operator+motion | Yes | `/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md` | Command/editing surface |
 | LSP | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
 | Git integration | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in service target |
 | Syntax highlighting | Yes | `/docs/reference/CONFORMANCE.md` + `/docs/reference/LIMITATIONS.md` | Built-in feature target |

@@ -3,9 +3,7 @@
 use kjxlkj_core_types::{Action, Key, KeyCode, KeyModifiers};
 
 /// Convert a crossterm key event into our Key type.
-pub fn decode_crossterm_key(
-    event: &crossterm::event::KeyEvent,
-) -> Key {
+pub fn decode_crossterm_key(event: &crossterm::event::KeyEvent) -> Key {
     let code = match event.code {
         crossterm::event::KeyCode::Char(c) => KeyCode::Char(c),
         crossterm::event::KeyCode::F(n) => KeyCode::F(n),
@@ -52,9 +50,7 @@ pub fn decode_crossterm_key(
 }
 
 /// Convert a crossterm event into an Action.
-pub fn decode_crossterm_event(
-    event: &crossterm::event::Event,
-) -> Option<Action> {
+pub fn decode_crossterm_event(event: &crossterm::event::Event) -> Option<Action> {
     match event {
         crossterm::event::Event::Key(key_event) => {
             // Keys are dispatched by the mode-aware layer,
@@ -63,18 +59,10 @@ pub fn decode_crossterm_event(
             let _key = decode_crossterm_key(key_event);
             None
         }
-        crossterm::event::Event::Resize(cols, rows) => {
-            Some(Action::Resize(*cols, *rows))
-        }
-        crossterm::event::Event::Paste(text) => {
-            Some(Action::Paste(text.clone()))
-        }
-        crossterm::event::Event::FocusGained => {
-            Some(Action::FocusGained)
-        }
-        crossterm::event::Event::FocusLost => {
-            Some(Action::FocusLost)
-        }
+        crossterm::event::Event::Resize(cols, rows) => Some(Action::Resize(*cols, *rows)),
+        crossterm::event::Event::Paste(text) => Some(Action::Paste(text.clone())),
+        crossterm::event::Event::FocusGained => Some(Action::FocusGained),
+        crossterm::event::Event::FocusLost => Some(Action::FocusLost),
         _ => None,
     }
 }

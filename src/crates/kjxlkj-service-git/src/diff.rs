@@ -38,14 +38,11 @@ pub fn parse_unified_diff(diff: &str) -> Vec<DiffHunk> {
             }
         } else if let Some(ref mut hunk) = current {
             if let Some(stripped) = line.strip_prefix('+') {
-                hunk.lines
-                    .push(DiffLine::Added(stripped.to_string()));
+                hunk.lines.push(DiffLine::Added(stripped.to_string()));
             } else if let Some(stripped) = line.strip_prefix('-') {
-                hunk.lines
-                    .push(DiffLine::Removed(stripped.to_string()));
+                hunk.lines.push(DiffLine::Removed(stripped.to_string()));
             } else if let Some(stripped) = line.strip_prefix(' ') {
-                hunk.lines
-                    .push(DiffLine::Context(stripped.to_string()));
+                hunk.lines.push(DiffLine::Context(stripped.to_string()));
             }
         }
     }
@@ -81,10 +78,7 @@ fn parse_hunk_header(line: &str) -> Option<DiffHunk> {
 
 fn parse_range(s: &str) -> (usize, usize) {
     if let Some((start, count)) = s.split_once(',') {
-        (
-            start.parse().unwrap_or(0),
-            count.parse().unwrap_or(0),
-        )
+        (start.parse().unwrap_or(0), count.parse().unwrap_or(0))
     } else {
         (s.parse().unwrap_or(0), 1)
     }

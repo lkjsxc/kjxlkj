@@ -8,9 +8,7 @@ fn ed() -> EditorState {
 }
 
 fn ins(e: &mut EditorState, text: &str) {
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         e.dispatch(Action::InsertChar(ch));
     }
@@ -24,16 +22,12 @@ fn pe01_append_eol_churn() {
     ins(&mut e, "aあb");
     for _ in 0..20 {
         e.dispatch(Action::MoveCursor(Motion::LineEnd, 1));
-        e.dispatch(Action::EnterInsert(
-            InsertPosition::AfterCursor,
-        ));
+        e.dispatch(Action::EnterInsert(InsertPosition::AfterCursor));
         e.dispatch(Action::InsertChar('x'));
         e.dispatch(Action::ReturnToNormal);
     }
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
-    let x_count = line.chars()
-        .filter(|&c| c == 'x').count();
+    let line = e.active_buffer().unwrap().content.line_str(0);
+    let x_count = line.chars().filter(|&c| c == 'x').count();
     assert_eq!(x_count, 20);
 }
 
@@ -41,19 +35,15 @@ fn pe01_append_eol_churn() {
 #[test]
 fn pe02_long_cjk_motions() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for _ in 0..100 {
         e.dispatch(Action::InsertChar('あ'));
     }
     e.dispatch(Action::ReturnToNormal);
     e.dispatch(Action::MoveCursor(Motion::LineEnd, 1));
-    assert_eq!(e.focused_window().unwrap()
-        .cursor.grapheme_offset, 99);
+    assert_eq!(e.focused_window().unwrap().cursor.grapheme_offset, 99);
     e.dispatch(Action::MoveCursor(Motion::LineStart, 1));
-    assert_eq!(e.focused_window().unwrap()
-        .cursor.grapheme_offset, 0);
+    assert_eq!(e.focused_window().unwrap().cursor.grapheme_offset, 0);
 }
 
 /// PE-03: Leader vs IME space.
@@ -118,7 +108,6 @@ fn pe08_concurrent() {
     let mut e = ed();
     e.dispatch(Action::SplitHorizontal);
     ins(&mut e, "buffer content");
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(line.contains("buffer content"));
 }

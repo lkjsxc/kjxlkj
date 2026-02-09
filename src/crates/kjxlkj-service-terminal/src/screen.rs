@@ -37,11 +37,7 @@ pub struct ScreenBuffer {
 
 impl ScreenBuffer {
     /// Create a new screen buffer.
-    pub fn new(
-        id: TerminalId,
-        cols: u16,
-        rows: u16,
-    ) -> Self {
+    pub fn new(id: TerminalId, cols: u16, rows: u16) -> Self {
         let count = cols as usize * rows as usize;
         Self {
             id,
@@ -74,13 +70,9 @@ impl ScreenBuffer {
             }
         }
 
-        let idx = self.cursor_row as usize * self.cols as usize
-            + self.cursor_col as usize;
+        let idx = self.cursor_row as usize * self.cols as usize + self.cursor_col as usize;
         if idx < self.cells.len() {
-            self.cells[idx].grapheme =
-                compact_str::CompactString::from(
-                    ch.to_string().as_str(),
-                );
+            self.cells[idx].grapheme = compact_str::CompactString::from(ch.to_string().as_str());
             self.cells[idx].width = 1;
             self.cells[idx].fg = self.current_fg;
             self.cells[idx].bg = self.current_bg;
@@ -105,13 +97,19 @@ impl ScreenBuffer {
     }
 
     /// Get the cells as a slice.
-    pub fn cells(&self) -> &[Cell] { &self.cells }
+    pub fn cells(&self) -> &[Cell] {
+        &self.cells
+    }
 
     /// Internal mutable cell access (for scroll ops).
-    pub(crate) fn cells_ref(&self) -> &[Cell] { &self.cells }
+    pub(crate) fn cells_ref(&self) -> &[Cell] {
+        &self.cells
+    }
 
     /// Internal mutable cell access (for scroll ops).
-    pub(crate) fn cells_mut_raw(&mut self) -> &mut [Cell] { &mut self.cells }
+    pub(crate) fn cells_mut_raw(&mut self) -> &mut [Cell] {
+        &mut self.cells
+    }
 
     /// Resize the screen buffer.
     pub fn resize(&mut self, cols: u16, rows: u16) {
@@ -136,11 +134,15 @@ impl ScreenBuffer {
     }
 
     /// Carriage return.
-    pub fn carriage_return(&mut self) { self.cursor_col = 0; }
+    pub fn carriage_return(&mut self) {
+        self.cursor_col = 0;
+    }
 
     /// Backspace.
     pub fn backspace(&mut self) {
-        if self.cursor_col > 0 { self.cursor_col -= 1; }
+        if self.cursor_col > 0 {
+            self.cursor_col -= 1;
+        }
     }
 }
 
@@ -150,16 +152,14 @@ mod tests {
 
     #[test]
     fn put_char_advances_cursor() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.put_char('A');
         assert_eq!(buf.cursor_col, 1);
     }
 
     #[test]
     fn newline_wraps() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.cursor_row = 23;
         buf.newline();
         assert_eq!(buf.cursor_row, 23);
@@ -167,8 +167,7 @@ mod tests {
 
     #[test]
     fn clear_resets() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.put_char('X');
         buf.clear();
         assert_eq!(buf.cursor_col, 0);

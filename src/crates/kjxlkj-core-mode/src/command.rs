@@ -1,8 +1,6 @@
 //! Command-line mode state: input buffer, cursor, history.
 
-use kjxlkj_core_types::{
-    Action, ActionCommandKind, Direction, Key, KeyCode, KeyModifiers,
-};
+use kjxlkj_core_types::{Action, ActionCommandKind, Direction, Key, KeyCode, KeyModifiers};
 
 /// State maintained during Command-line mode (`:`, `/`, `?`).
 #[derive(Debug)]
@@ -71,15 +69,9 @@ impl CommandModeState {
                 self.cursor = 0;
                 self.history_index = None;
                 match self.kind {
-                    ActionCommandKind::Ex => {
-                        Some(Action::ExecuteCommand(text))
-                    }
-                    ActionCommandKind::SearchForward => {
-                        Some(Action::SearchForward(text))
-                    }
-                    ActionCommandKind::SearchBackward => {
-                        Some(Action::SearchBackward(text))
-                    }
+                    ActionCommandKind::Ex => Some(Action::ExecuteCommand(text)),
+                    ActionCommandKind::SearchForward => Some(Action::SearchForward(text)),
+                    ActionCommandKind::SearchBackward => Some(Action::SearchBackward(text)),
                 }
             }
 

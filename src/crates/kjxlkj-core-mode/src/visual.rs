@@ -1,9 +1,6 @@
 //! Visual mode state: selection tracking and key dispatch.
 
-use kjxlkj_core_types::{
-    Action, Key, KeyCode, KeyModifiers, Motion,
-    VisualKind,
-};
+use kjxlkj_core_types::{Action, Key, KeyCode, KeyModifiers, Motion, VisualKind};
 
 /// Visual mode state tracking the selection anchor and
 /// kind.
@@ -18,10 +15,7 @@ pub struct VisualModeState {
 }
 
 impl VisualModeState {
-    pub fn new(
-        kind: VisualKind,
-        anchor: (usize, usize),
-    ) -> Self {
+    pub fn new(kind: VisualKind, anchor: (usize, usize)) -> Self {
         Self {
             kind,
             anchor,
@@ -44,10 +38,7 @@ impl VisualModeState {
     }
 
     /// Process a key event in Visual mode.
-    pub fn process_key(
-        &mut self,
-        key: &Key,
-    ) -> Option<Action> {
+    pub fn process_key(&mut self, key: &Key) -> Option<Action> {
         if key.code == KeyCode::Esc {
             self.reset_count();
             return Some(Action::ReturnToNormal);
@@ -63,108 +54,53 @@ impl VisualModeState {
 
         let count = self.effective_count();
 
-        let action =
-            match (&key.code, key.modifiers) {
-                (KeyCode::Char('h'), KeyModifiers::NONE)
-                | (KeyCode::Left, _) => {
-                    Action::MoveCursor(
-                        Motion::Left,
-                        count,
-                    )
+        let action = match (&key.code, key.modifiers) {
+            (KeyCode::Char('h'), KeyModifiers::NONE) | (KeyCode::Left, _) => {
+                Action::MoveCursor(Motion::Left, count)
+            }
+            (KeyCode::Char('l'), KeyModifiers::NONE) | (KeyCode::Right, _) => {
+                Action::MoveCursor(Motion::Right, count)
+            }
+            (KeyCode::Char('j'), KeyModifiers::NONE) | (KeyCode::Down, _) => {
+                Action::MoveCursor(Motion::Down, count)
+            }
+            (KeyCode::Char('k'), KeyModifiers::NONE) | (KeyCode::Up, _) => {
+                Action::MoveCursor(Motion::Up, count)
+            }
+            (KeyCode::Char('w'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::WordForward, count)
+            }
+            (KeyCode::Char('b'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::WordBackward, count)
+            }
+            (KeyCode::Char('e'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::WordEndForward, count)
+            }
+            (KeyCode::Char('0'), KeyModifiers::NONE) if self.count.is_none() => {
+                Action::MoveCursor(Motion::LineStart, 1)
+            }
+            (KeyCode::Char('^'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::FirstNonBlank, 1)
+            }
+            (KeyCode::Char('$'), KeyModifiers::NONE) => Action::MoveCursor(Motion::LineEnd, 1),
+            (KeyCode::Char('G'), KeyModifiers::NONE) => {
+                if self.count.is_some() {
+                    Action::MoveCursor(Motion::GotoLine(count as usize - 1), 1)
+                } else {
+                    Action::MoveCursor(Motion::GotoLastLine, 1)
                 }
-                (KeyCode::Char('l'), KeyModifiers::NONE)
-                | (KeyCode::Right, _) => {
-                    Action::MoveCursor(
-                        Motion::Right,
-                        count,
-                    )
-                }
-                (KeyCode::Char('j'), KeyModifiers::NONE)
-                | (KeyCode::Down, _) => {
-                    Action::MoveCursor(
-                        Motion::Down,
-                        count,
-                    )
-                }
-                (KeyCode::Char('k'), KeyModifiers::NONE)
-                | (KeyCode::Up, _) => {
-                    Action::MoveCursor(
-                        Motion::Up,
-                        count,
-                    )
-                }
-                (KeyCode::Char('w'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::WordForward,
-                        count,
-                    )
-                }
-                (KeyCode::Char('b'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::WordBackward,
-                        count,
-                    )
-                }
-                (KeyCode::Char('e'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::WordEndForward,
-                        count,
-                    )
-                }
-                (
-                    KeyCode::Char('0'),
-                    KeyModifiers::NONE,
-                ) if self.count.is_none() => {
-                    Action::MoveCursor(
-                        Motion::LineStart,
-                        1,
-                    )
-                }
-                (KeyCode::Char('^'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::FirstNonBlank,
-                        1,
-                    )
-                }
-                (KeyCode::Char('$'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::LineEnd,
-                        1,
-                    )
-                }
-                (KeyCode::Char('G'), KeyModifiers::NONE) => {
-                    if self.count.is_some() {
-                        Action::MoveCursor(
-                            Motion::GotoLine(
-                                count as usize - 1,
-                            ),
-                            1,
-                        )
-                    } else {
-                        Action::MoveCursor(
-                            Motion::GotoLastLine,
-                            1,
-                        )
-                    }
-                }
-                (KeyCode::Char('{'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::ParagraphBackward,
-                        count,
-                    )
-                }
-                (KeyCode::Char('}'), KeyModifiers::NONE) => {
-                    Action::MoveCursor(
-                        Motion::ParagraphForward,
-                        count,
-                    )
-                }
+            }
+            (KeyCode::Char('{'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::ParagraphBackward, count)
+            }
+            (KeyCode::Char('}'), KeyModifiers::NONE) => {
+                Action::MoveCursor(Motion::ParagraphForward, count)
+            }
 
-                _ => {
-                    return self
-                        .dispatch_visual_command(key);
-                }
-            };
+            _ => {
+                return self.dispatch_visual_command(key);
+            }
+        };
 
         self.reset_count();
         Some(action)

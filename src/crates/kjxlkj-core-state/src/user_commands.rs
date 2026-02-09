@@ -34,8 +34,7 @@ impl UserCommandRegistry {
 
     /// Add or replace a user command.
     pub fn add(&mut self, cmd: UserCommandDef) {
-        self.commands
-            .retain(|c| c.name != cmd.name);
+        self.commands.retain(|c| c.name != cmd.name);
         self.commands.push(cmd);
     }
 
@@ -45,13 +44,8 @@ impl UserCommandRegistry {
     }
 
     /// Find a user command by name.
-    pub fn find(
-        &self,
-        name: &str,
-    ) -> Option<&UserCommandDef> {
-        self.commands
-            .iter()
-            .find(|c| c.name == name)
+    pub fn find(&self, name: &str) -> Option<&UserCommandDef> {
+        self.commands.iter().find(|c| c.name == name)
     }
 
     /// List all user commands.
@@ -62,27 +56,19 @@ impl UserCommandRegistry {
 
 /// Parse a `:command` definition.
 /// Format: `:command[-opts] Name replacement`
-pub fn parse_user_command(
-    args: &str,
-) -> Option<UserCommandDef> {
+pub fn parse_user_command(args: &str) -> Option<UserCommandDef> {
     let args = args.trim();
     if args.is_empty() {
         return None;
     }
     // Find the command name (first word starting
     // with uppercase).
-    let parts: Vec<&str> = args.splitn(2, |c: char| {
-        c.is_whitespace()
-    }).collect();
+    let parts: Vec<&str> = args.splitn(2, |c: char| c.is_whitespace()).collect();
     if parts.is_empty() {
         return None;
     }
     let name = parts[0];
-    if !name
-        .chars()
-        .next()
-        .map_or(false, |c| c.is_uppercase())
-    {
+    if !name.chars().next().map_or(false, |c| c.is_uppercase()) {
         return None;
     }
     let replacement = if parts.len() > 1 {
@@ -108,9 +94,7 @@ mod tests {
 
     #[test]
     fn parse_simple_command() {
-        let cmd = parse_user_command(
-            "Greet echo hello",
-        );
+        let cmd = parse_user_command("Greet echo hello");
         assert!(cmd.is_some());
         let cmd = cmd.unwrap();
         assert_eq!(cmd.name, "Greet");

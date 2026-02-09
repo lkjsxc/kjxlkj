@@ -1,21 +1,9 @@
-//! Advanced fold features: fold methods, nested folds,
-//! fold column, and fold persistence.
+//! Advanced fold features.
 
-/// Fold method determining how folds are created.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[rustfmt::skip]
 pub enum FoldMethod {
-    /// Manual folding with `zf`.
-    Manual,
-    /// Indent-based folding.
-    Indent,
-    /// Marker-based folding (`{{{`/`}}}`).
-    Marker,
-    /// Syntax-based folding.
-    Syntax,
-    /// Expression-based folding.
-    Expr,
-    /// Diff-mode folding.
-    Diff,
+    Manual, Indent, Marker, Syntax, Expr, Diff,
 }
 
 impl Default for FoldMethod {
@@ -24,35 +12,22 @@ impl Default for FoldMethod {
     }
 }
 
-/// A fold region in a buffer.
 #[derive(Debug, Clone)]
 pub struct FoldRegion {
-    /// Start line (0-indexed).
     pub start: usize,
-    /// End line (inclusive).
     pub end: usize,
-    /// Fold level (1-based nesting depth).
     pub level: u8,
-    /// Whether this fold is currently closed.
     pub closed: bool,
-    /// Display text when folded.
     pub text: Option<String>,
 }
 
-/// Advanced fold state for a buffer.
 #[derive(Debug, Clone, Default)]
 pub struct FoldState {
-    /// All fold regions.
     pub regions: Vec<FoldRegion>,
-    /// Current fold method.
     pub method: FoldMethod,
-    /// Fold column width (0 = no fold column).
     pub fold_column: u8,
-    /// Maximum fold nesting level.
     pub fold_level: u8,
-    /// Minimum lines for auto-fold.
     pub fold_min_lines: usize,
-    /// Fold marker strings (open, close).
     pub markers: (String, String),
 }
 
@@ -68,7 +43,6 @@ impl FoldState {
         }
     }
 
-    /// Create a manual fold between two lines.
     pub fn create_fold(&mut self, start: usize, end: usize) {
         if start >= end {
             return;
@@ -84,14 +58,10 @@ impl FoldState {
         self.regions.sort_by_key(|r| r.start);
     }
 
-    /// Delete a fold at a specific line.
     pub fn delete_fold(&mut self, line: usize) {
-        self.regions.retain(|r| {
-            !(r.start <= line && line <= r.end)
-        });
+        self.regions.retain(|r| !(r.start <= line && line <= r.end));
     }
 
-    /// Toggle fold at line.
     pub fn toggle_fold(&mut self, line: usize) {
         for region in &mut self.regions {
             if region.start <= line && line <= region.end {
@@ -101,33 +71,28 @@ impl FoldState {
         }
     }
 
-    /// Open all folds.
     pub fn open_all(&mut self) {
         for r in &mut self.regions {
             r.closed = false;
         }
     }
 
-    /// Close all folds.
     pub fn close_all(&mut self) {
         for r in &mut self.regions {
             r.closed = true;
         }
     }
 
-    /// Check if a line is inside a closed fold.
     pub fn is_folded(&self, line: usize) -> bool {
-        self.regions.iter().any(|r| {
-            r.closed && r.start < line && line <= r.end
-        })
+        self.regions
+            .iter()
+            .any(|r| r.closed && r.start < line && line <= r.end)
     }
 
-    /// Get the fold region at a line (if it starts there).
     pub fn fold_at(&self, line: usize) -> Option<&FoldRegion> {
         self.regions.iter().find(|r| r.start == line)
     }
 
-    /// Compute fold nesting level at a line.
     pub fn nesting_level(&self, line: usize) -> u8 {
         self.regions
             .iter()
@@ -135,12 +100,7 @@ impl FoldState {
             .count() as u8
     }
 
-    /// Detect folds from indent levels.
-    pub fn detect_indent_folds(
-        &mut self,
-        lines: &[&str],
-        tab_size: usize,
-    ) {
+    pub fn detect_indent_folds(&mut self, lines: &[&str], tab_size: usize) {
         self.regions.clear();
         if lines.is_empty() {
             return;

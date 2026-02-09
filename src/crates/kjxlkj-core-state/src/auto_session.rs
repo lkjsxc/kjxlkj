@@ -1,23 +1,12 @@
 //! Auto-session restore and init file sourcing.
-//!
-//! Handles automatic session restoration on startup
-//! and sourcing of init configuration files.
 
 use std::path::{Path, PathBuf};
 
-/// Auto-session restore configuration.
 #[derive(Debug, Clone)]
+#[rustfmt::skip]
 pub struct AutoSessionConfig {
-    /// Whether to auto-restore last session.
-    pub auto_restore: bool,
-    /// Whether to auto-save session on quit.
-    pub auto_save_on_quit: bool,
-    /// Session directory path.
-    pub session_dir: PathBuf,
-    /// Current session file name.
-    pub current_session: Option<String>,
-    /// Directories to exclude from auto-session.
-    pub exclude_dirs: Vec<PathBuf>,
+    pub auto_restore: bool, pub auto_save_on_quit: bool, pub session_dir: PathBuf,
+    pub current_session: Option<String>, pub exclude_dirs: Vec<PathBuf>,
 }
 
 impl AutoSessionConfig {
@@ -34,20 +23,15 @@ impl AutoSessionConfig {
         }
     }
 
-    /// Get the session file for a working directory.
     pub fn session_file_for(&self, cwd: &Path) -> PathBuf {
-        let hash = simple_hash(
-            &cwd.to_string_lossy(),
-        );
+        let hash = simple_hash(&cwd.to_string_lossy());
         self.session_dir.join(format!("{}.json", hash))
     }
 
-    /// Whether a directory is excluded.
     pub fn is_excluded(&self, dir: &Path) -> bool {
         self.exclude_dirs.iter().any(|e| dir.starts_with(e))
     }
 
-    /// List available sessions.
     pub fn list_sessions(&self) -> Vec<String> {
         if !self.session_dir.exists() {
             return Vec::new();
@@ -77,15 +61,10 @@ impl Default for AutoSessionConfig {
     }
 }
 
-/// Init file sourcing order and state.
 #[derive(Debug, Clone, Default)]
+#[rustfmt::skip]
 pub struct InitFileState {
-    /// Init files to source in order.
-    pub init_files: Vec<PathBuf>,
-    /// Files already sourced.
-    pub sourced: Vec<PathBuf>,
-    /// Whether init file sourcing is complete.
-    pub complete: bool,
+    pub init_files: Vec<PathBuf>, pub sourced: Vec<PathBuf>, pub complete: bool,
 }
 
 impl InitFileState {
@@ -93,10 +72,8 @@ impl InitFileState {
         Self::default()
     }
 
-    /// Discover init files in standard locations.
     pub fn discover(&mut self) {
         self.init_files.clear();
-        // XDG config
         if let Some(config_dir) = dirs_hint() {
             let init = config_dir.join("init.vim");
             if init.exists() {
@@ -107,9 +84,7 @@ impl InitFileState {
                 self.init_files.push(init_lua);
             }
         }
-        // Legacy location
-        let home_rc = home_dir_hint()
-            .map(|h| h.join(".kjxlkjrc"));
+        let home_rc = home_dir_hint().map(|h| h.join(".kjxlkjrc"));
         if let Some(rc) = home_rc {
             if rc.exists() {
                 self.init_files.push(rc);
@@ -117,7 +92,6 @@ impl InitFileState {
         }
     }
 
-    /// Get the next init file to source.
     pub fn next_file(&mut self) -> Option<PathBuf> {
         for f in &self.init_files {
             if !self.sourced.contains(f) {
@@ -130,13 +104,11 @@ impl InitFileState {
         None
     }
 
-    /// Whether all init files have been sourced.
     pub fn is_complete(&self) -> bool {
         self.complete
     }
 }
 
-/// Simple string hash for session file naming.
 fn simple_hash(s: &str) -> String {
     let mut hash: u64 = 5381;
     for byte in s.bytes() {
@@ -145,18 +117,13 @@ fn simple_hash(s: &str) -> String {
     format!("{:016x}", hash)
 }
 
-/// Hint for config directory.
 fn dirs_hint() -> Option<PathBuf> {
     std::env::var("XDG_CONFIG_HOME")
         .ok()
         .map(|d| PathBuf::from(d).join("kjxlkj"))
-        .or_else(|| {
-            home_dir_hint()
-                .map(|h| h.join(".config").join("kjxlkj"))
-        })
+        .or_else(|| home_dir_hint().map(|h| h.join(".config").join("kjxlkj")))
 }
 
-/// Hint for home directory.
 fn home_dir_hint() -> Option<PathBuf> {
     std::env::var("HOME").ok().map(PathBuf::from)
 }
@@ -176,8 +143,7 @@ mod tests {
     #[test]
     fn exclude_dir() {
         let mut cfg = AutoSessionConfig::new();
-        cfg.exclude_dirs
-            .push(PathBuf::from("/tmp"));
+        cfg.exclude_dirs.push(PathBuf::from("/tmp"));
         assert!(cfg.is_excluded(Path::new("/tmp/foo")));
         assert!(!cfg.is_excluded(Path::new("/home/foo")));
     }

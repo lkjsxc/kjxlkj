@@ -23,10 +23,7 @@ pub struct FrameDiff {
 
 impl FrameDiff {
     /// Compute the diff between a previous and current cell grid.
-    pub fn compute(
-        prev: &CellGrid,
-        curr: &CellGrid,
-    ) -> Self {
+    pub fn compute(prev: &CellGrid, curr: &CellGrid) -> Self {
         // If dimensions changed, full redraw.
         if prev.cols != curr.cols || prev.rows != curr.rows {
             return Self::full(curr);

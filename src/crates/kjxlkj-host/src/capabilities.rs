@@ -86,9 +86,7 @@ fn detect_unicode_support() -> bool {
     for var in ["LC_ALL", "LC_CTYPE", "LANG"] {
         if let Ok(val) = env::var(var) {
             let lower = val.to_lowercase();
-            if lower.contains("utf-8")
-                || lower.contains("utf8")
-            {
+            if lower.contains("utf-8") || lower.contains("utf8") {
                 return true;
             }
         }
@@ -113,9 +111,7 @@ mod tests {
     fn color_ordering() {
         assert!(ColorSupport::None < ColorSupport::Basic16);
         assert!(ColorSupport::Basic16 < ColorSupport::Color256);
-        assert!(
-            ColorSupport::Color256 < ColorSupport::TrueColor
-        );
+        assert!(ColorSupport::Color256 < ColorSupport::TrueColor);
     }
 
     #[test]

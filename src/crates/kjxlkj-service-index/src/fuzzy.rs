@@ -12,8 +12,7 @@ pub fn fuzzy_match(query: &str, candidate: &str) -> Option<i32> {
     let candidate_lower = candidate.to_lowercase();
 
     let query_chars: Vec<char> = query_lower.chars().collect();
-    let candidate_chars: Vec<char> =
-        candidate_lower.chars().collect();
+    let candidate_chars: Vec<char> = candidate_lower.chars().collect();
 
     let mut qi = 0;
     let mut score: i32 = 0;
@@ -38,19 +37,14 @@ pub fn fuzzy_match(query: &str, candidate: &str) -> Option<i32> {
             // Bonus for match after separator.
             if ci > 0 {
                 let prev = candidate_chars[ci - 1];
-                if prev == '/' || prev == '\\' || prev == '_'
-                    || prev == '-' || prev == '.'
-                {
+                if prev == '/' || prev == '\\' || prev == '_' || prev == '-' || prev == '.' {
                     score += 2;
                 }
             }
 
             // Bonus for case match.
-            let orig_char: Vec<char> =
-                candidate.chars().collect();
-            if ci < orig_char.len()
-                && query.chars().nth(qi) == Some(orig_char[ci])
-            {
+            let orig_char: Vec<char> = candidate.chars().collect();
+            if ci < orig_char.len() && query.chars().nth(qi) == Some(orig_char[ci]) {
                 score += 1;
             }
 
@@ -69,15 +63,10 @@ pub fn fuzzy_match(query: &str, candidate: &str) -> Option<i32> {
 }
 
 /// Sort candidates by fuzzy match score.
-pub fn fuzzy_sort(
-    query: &str,
-    candidates: &[String],
-) -> Vec<(String, i32)> {
+pub fn fuzzy_sort(query: &str, candidates: &[String]) -> Vec<(String, i32)> {
     let mut scored: Vec<(String, i32)> = candidates
         .iter()
-        .filter_map(|c| {
-            fuzzy_match(query, c).map(|s| (c.clone(), s))
-        })
+        .filter_map(|c| fuzzy_match(query, c).map(|s| (c.clone(), s)))
         .collect();
 
     scored.sort_by(|a, b| b.1.cmp(&a.1));
@@ -112,11 +101,7 @@ mod tests {
 
     #[test]
     fn sort_by_score() {
-        let candidates = vec![
-            "apple".into(),
-            "application".into(),
-            "app".into(),
-        ];
+        let candidates = vec!["apple".into(), "application".into(), "app".into()];
         let sorted = fuzzy_sort("app", &candidates);
         assert!(!sorted.is_empty());
         // All three should match.

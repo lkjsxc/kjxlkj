@@ -11,13 +11,7 @@ pub fn split_command(cmd: &str) -> (String, &str) {
     let bytes = cmd.as_bytes();
     while pos < bytes.len() {
         let b = bytes[pos];
-        if b == b'%'
-            || b == b'.'
-            || b == b'$'
-            || b == b','
-            || b == b'\''
-            || b.is_ascii_digit()
-        {
+        if b == b'%' || b == b'.' || b == b'$' || b == b',' || b == b'\'' || b.is_ascii_digit() {
             pos += 1;
         } else {
             break;
@@ -28,41 +22,24 @@ pub fn split_command(cmd: &str) -> (String, &str) {
     if range_end > 0 && range_end < cmd.len() {
         let rest = &cmd[range_end..];
         let name_end = rest
-            .find(|c: char| {
-                c.is_whitespace() || c == '/'
-            })
+            .find(|c: char| c.is_whitespace() || c == '/')
             .unwrap_or(rest.len());
         let name = &rest[..name_end];
-        if !name.is_empty()
-            && name
-                .chars()
-                .next()
-                .unwrap()
-                .is_alphabetic()
-        {
+        if !name.is_empty() && name.chars().next().unwrap().is_alphabetic() {
             let args = rest[name_end..].trim_start();
             return (name.to_string(), args);
         }
     }
 
     // Line-number-only commands.
-    if cmd
-        .chars()
-        .next()
-        .map_or(false, |c| c.is_ascii_digit())
-        && range_end == cmd.len()
-    {
-        let end = cmd
-            .find(|c: char| !c.is_ascii_digit())
-            .unwrap_or(cmd.len());
+    if cmd.chars().next().map_or(false, |c| c.is_ascii_digit()) && range_end == cmd.len() {
+        let end = cmd.find(|c: char| !c.is_ascii_digit()).unwrap_or(cmd.len());
         let (num, rest) = cmd.split_at(end);
         return (num.to_string(), rest.trim());
     }
 
     let name_end = cmd
-        .find(|c: char| {
-            c.is_whitespace() || c == '/'
-        })
+        .find(|c: char| c.is_whitespace() || c == '/')
         .unwrap_or(cmd.len());
     let (name, rest) = cmd.split_at(name_end);
     (name.to_string(), rest.trim_start())
@@ -80,31 +57,19 @@ mod tests {
 
     #[test]
     fn quit_command() {
-        assert!(matches!(
-            dispatch_command("q"),
-            Some(Action::Quit)
-        ));
-        assert!(matches!(
-            dispatch_command("q!"),
-            Some(Action::ForceQuit)
-        ));
+        assert!(matches!(dispatch_command("q"), Some(Action::Quit)));
+        assert!(matches!(dispatch_command("q!"), Some(Action::ForceQuit)));
     }
 
     #[test]
     fn write_command() {
-        assert!(matches!(
-            dispatch_command("w"),
-            Some(Action::Write)
-        ));
+        assert!(matches!(dispatch_command("w"), Some(Action::Write)));
     }
 
     #[test]
     fn edit_command() {
         let action = dispatch_command("e test.txt");
-        assert!(matches!(
-            action,
-            Some(Action::OpenFile(_))
-        ));
+        assert!(matches!(action, Some(Action::OpenFile(_))));
     }
 
     #[test]
@@ -113,9 +78,7 @@ mod tests {
         assert!(matches!(
             action,
             Some(Action::MoveCursor(
-                kjxlkj_core_types::Motion::GotoLine(
-                    41
-                ),
+                kjxlkj_core_types::Motion::GotoLine(41),
                 1
             ))
         ));
@@ -123,12 +86,8 @@ mod tests {
 
     #[test]
     fn substitute_command() {
-        let action =
-            dispatch_command("s/foo/bar/g");
-        assert!(matches!(
-            action,
-            Some(Action::Substitute(_))
-        ));
+        let action = dispatch_command("s/foo/bar/g");
+        assert!(matches!(action, Some(Action::Substitute(_))));
     }
 
     #[test]
@@ -139,19 +98,13 @@ mod tests {
     #[test]
     fn range_delete_command() {
         let action = dispatch_command("1,5d");
-        assert!(matches!(
-            action,
-            Some(Action::RangeDelete(_))
-        ));
+        assert!(matches!(action, Some(Action::RangeDelete(_))));
     }
 
     #[test]
     fn range_normal_command() {
         let action = dispatch_command("%normal @a");
-        assert!(matches!(
-            action,
-            Some(Action::RangeNormal(_))
-        ));
+        assert!(matches!(action, Some(Action::RangeNormal(_))));
     }
 
     #[test]
@@ -168,10 +121,7 @@ mod tests {
             dispatch_command("tabclose"),
             Some(Action::TabClose)
         ));
-        assert!(matches!(
-            dispatch_command("tabnext"),
-            Some(Action::TabNext)
-        ));
+        assert!(matches!(dispatch_command("tabnext"), Some(Action::TabNext)));
     }
 
     #[test]

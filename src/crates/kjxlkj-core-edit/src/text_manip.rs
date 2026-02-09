@@ -17,12 +17,7 @@ pub fn case_toggle(c: char) -> char {
 /// Join lines `start..=end` with a space between each.
 ///
 /// The cursor should remain on the original line.
-pub fn join_lines(
-    content: &mut BufferContent,
-    start: usize,
-    end: usize,
-    with_space: bool,
-) {
+pub fn join_lines(content: &mut BufferContent, start: usize, end: usize, with_space: bool) {
     let end = end.min(content.line_count().saturating_sub(1));
     if start >= end {
         return;
@@ -52,24 +47,14 @@ pub fn join_lines(
 }
 
 /// Indent a line by prepending spaces.
-pub fn indent_line(
-    content: &mut BufferContent,
-    line: usize,
-    indent: &str,
-) {
+pub fn indent_line(content: &mut BufferContent, line: usize, indent: &str) {
     content.insert(line, 0, indent);
 }
 
 /// Sort lines in a range alphabetically.
-pub fn sort_lines(
-    content: &mut BufferContent,
-    start: usize,
-    end: usize,
-) {
+pub fn sort_lines(content: &mut BufferContent, start: usize, end: usize) {
     let end = end.min(content.line_count());
-    let mut lines: Vec<String> = (start..end)
-        .map(|i| content.line_content(i))
-        .collect();
+    let mut lines: Vec<String> = (start..end).map(|i| content.line_content(i)).collect();
     lines.sort();
 
     // Replace the lines

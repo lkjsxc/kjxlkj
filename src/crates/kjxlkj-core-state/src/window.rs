@@ -113,29 +113,20 @@ mod tests {
 
     #[test]
     fn new_buffer_window() {
-        let w = WindowState::new_buffer(
-            WindowId(1),
-            BufferId(1),
-        );
+        let w = WindowState::new_buffer(WindowId(1), BufferId(1));
         assert_eq!(w.buffer_id(), Some(BufferId(1)));
         assert_eq!(w.terminal_id(), None);
     }
 
     #[test]
     fn gutter_width_small() {
-        let w = WindowState::new_buffer(
-            WindowId(1),
-            BufferId(1),
-        );
+        let w = WindowState::new_buffer(WindowId(1), BufferId(1));
         assert_eq!(w.gutter_width(10), 3);
     }
 
     #[test]
     fn gutter_width_large() {
-        let w = WindowState::new_buffer(
-            WindowId(1),
-            BufferId(1),
-        );
+        let w = WindowState::new_buffer(WindowId(1), BufferId(1));
         assert_eq!(w.gutter_width(1000), 5);
     }
 }

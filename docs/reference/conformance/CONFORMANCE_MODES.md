@@ -172,5 +172,5 @@ Visual Block mode (`Ctrl-v`) operates on rectangular regions:
 
 ## Related
 
-- Input modes: [/docs/reference/CONFORMANCE_KEYS_INPUT.md](/docs/reference/CONFORMANCE_KEYS_INPUT.md)
-- Editing semantics: [/docs/reference/CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/CONFORMANCE_EDITING_OPERATORS.md)
+- Input modes: [/docs/reference/conformance/CONFORMANCE_KEYS_INPUT.md](/docs/reference/conformance/CONFORMANCE_KEYS_INPUT.md)
+- Editing semantics: [/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md)

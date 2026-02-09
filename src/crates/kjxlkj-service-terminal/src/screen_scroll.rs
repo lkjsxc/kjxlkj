@@ -22,8 +22,7 @@ impl ScreenBuffer {
                 let start = r * row_len;
                 let end = start + row_len;
                 if end <= self.cells_ref().len() {
-                    let line =
-                        self.cells_ref()[start..end].to_vec();
+                    let line = self.cells_ref()[start..end].to_vec();
                     self.scrollback.push(line);
                 }
             }
@@ -36,8 +35,7 @@ impl ScreenBuffer {
             let dst = r * row_len;
             let src = (r + n) * row_len;
             for i in 0..row_len {
-                self.cells_mut_raw()[dst + i] =
-                    self.cells_mut_raw()[src + i].clone();
+                self.cells_mut_raw()[dst + i] = self.cells_mut_raw()[src + i].clone();
             }
         }
         self.clear_region(bot - n + 1, bot);
@@ -59,24 +57,16 @@ impl ScreenBuffer {
             let dst = r * row_len;
             let src = (r - n) * row_len;
             for i in 0..row_len {
-                self.cells_mut_raw()[dst + i] =
-                    self.cells_mut_raw()[src + i].clone();
+                self.cells_mut_raw()[dst + i] = self.cells_mut_raw()[src + i].clone();
             }
         }
         self.clear_region(top, top + n - 1);
     }
 
     /// Set scroll region (DECSTBM). Params are 1-based.
-    pub fn set_scroll_region(
-        &mut self,
-        top: u16,
-        bottom: u16,
-    ) {
-        let t =
-            top.saturating_sub(1).min(self.rows - 1);
-        let b = bottom
-            .saturating_sub(1)
-            .min(self.rows - 1);
+    pub fn set_scroll_region(&mut self, top: u16, bottom: u16) {
+        let t = top.saturating_sub(1).min(self.rows - 1);
+        let b = bottom.saturating_sub(1).min(self.rows - 1);
         if t < b {
             self.scroll_top = t;
             self.scroll_bottom = b;
@@ -90,9 +80,7 @@ impl ScreenBuffer {
         let row_len = self.cols as usize;
         for r in top..=bot {
             let start = r * row_len;
-            for c in
-                &mut self.cells_mut_raw()[start..start + row_len]
-            {
+            for c in &mut self.cells_mut_raw()[start..start + row_len] {
                 *c = Cell::default();
             }
         }
@@ -107,8 +95,7 @@ mod tests {
 
     #[test]
     fn scroll_region_up() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.set_scroll_region(1, 10);
         buf.scroll_up(2);
         assert_eq!(buf.cursor_col, 0);
@@ -116,8 +103,7 @@ mod tests {
 
     #[test]
     fn scroll_region_down() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.set_scroll_region(1, 10);
         buf.scroll_down(2);
         assert_eq!(buf.cursor_col, 0);
@@ -125,8 +111,7 @@ mod tests {
 
     #[test]
     fn scrollback_captures() {
-        let mut buf =
-            ScreenBuffer::new(TerminalId(1), 80, 24);
+        let mut buf = ScreenBuffer::new(TerminalId(1), 80, 24);
         buf.put_char('A');
         buf.scroll_up(1);
         assert_eq!(buf.scrollback.len(), 1);

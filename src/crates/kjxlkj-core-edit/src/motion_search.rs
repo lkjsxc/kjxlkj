@@ -19,16 +19,13 @@ pub(crate) fn exec_star_search(
     while start > 0 && is_word_char(chars[start - 1]) {
         start -= 1;
     }
-    while end < chars.len()
-        && is_word_char(chars[end])
-    {
+    while end < chars.len() && is_word_char(chars[end]) {
         end += 1;
     }
     if start == end {
         return;
     }
-    let word: String =
-        chars[start..end].iter().collect();
+    let word: String = chars[start..end].iter().collect();
     let total = content.line_count();
     if forward {
         for off in 1..=(total * 2) {
@@ -36,22 +33,18 @@ pub(crate) fn exec_star_search(
             let ln = content.line_content(l);
             if let Some(pos) = ln.find(&word) {
                 cursor.line = l;
-                cursor.grapheme_offset =
-                    ln[..pos].chars().count();
+                cursor.grapheme_offset = ln[..pos].chars().count();
                 cursor.clear_desired_col();
                 return;
             }
         }
     } else {
         for off in 1..=(total * 2) {
-            let l = (cursor.line + total
-                - off % total)
-                % total;
+            let l = (cursor.line + total - off % total) % total;
             let ln = content.line_content(l);
             if let Some(pos) = ln.rfind(&word) {
                 cursor.line = l;
-                cursor.grapheme_offset =
-                    ln[..pos].chars().count();
+                cursor.grapheme_offset = ln[..pos].chars().count();
                 cursor.clear_desired_col();
                 return;
             }
@@ -63,10 +56,7 @@ fn is_word_char(c: char) -> bool {
     c.is_alphanumeric() || c == '_'
 }
 
-pub(crate) fn move_sentence_forward(
-    cursor: &mut CursorPosition,
-    content: &BufferContent,
-) {
+pub(crate) fn move_sentence_forward(cursor: &mut CursorPosition, content: &BufferContent) {
     let lc = content.line_count();
     let mut l = cursor.line;
     let mut c = cursor.grapheme_offset + 1;
@@ -74,15 +64,10 @@ pub(crate) fn move_sentence_forward(
         let line = content.line_content(l);
         let chars: Vec<char> = line.chars().collect();
         while c < chars.len() {
-            if is_sentence_end(chars[c])
-                && (c + 1 >= chars.len()
-                    || chars[c + 1].is_whitespace())
-            {
+            if is_sentence_end(chars[c]) && (c + 1 >= chars.len() || chars[c + 1].is_whitespace()) {
                 cursor.line = l;
                 cursor.grapheme_offset = c + 1;
-                if cursor.grapheme_offset >= chars.len()
-                    && l + 1 < lc
-                {
+                if cursor.grapheme_offset >= chars.len() && l + 1 < lc {
                     cursor.line = l + 1;
                     cursor.grapheme_offset = 0;
                 }
@@ -97,13 +82,8 @@ pub(crate) fn move_sentence_forward(
     cursor.grapheme_offset = 0;
 }
 
-pub(crate) fn move_sentence_backward(
-    cursor: &mut CursorPosition,
-    content: &BufferContent,
-) {
-    if cursor.line == 0
-        && cursor.grapheme_offset == 0
-    {
+pub(crate) fn move_sentence_backward(cursor: &mut CursorPosition, content: &BufferContent) {
+    if cursor.line == 0 && cursor.grapheme_offset == 0 {
         return;
     }
     let mut l = cursor.line;
@@ -122,10 +102,7 @@ pub(crate) fn move_sentence_backward(
         let chars: Vec<char> = line.chars().collect();
         while c > 0 {
             c -= 1;
-            if is_sentence_end(chars[c])
-                && c + 1 < chars.len()
-                && chars[c + 1].is_whitespace()
-            {
+            if is_sentence_end(chars[c]) && c + 1 < chars.len() && chars[c + 1].is_whitespace() {
                 cursor.line = l;
                 cursor.grapheme_offset = c + 2;
                 return;

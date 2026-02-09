@@ -1,18 +1,14 @@
 //! Boundary tests BD-33 through BD-40.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Action, InsertPosition, Mode, Motion, Operator,
-};
+use kjxlkj_core_types::{Action, InsertPosition, Mode, Motion, Operator};
 
 fn ed() -> EditorState {
     EditorState::new(80, 24)
 }
 
 fn ins(e: &mut EditorState, text: &str) {
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         e.dispatch(Action::InsertChar(ch));
     }
@@ -23,7 +19,8 @@ fn ins(e: &mut EditorState, text: &str) {
 #[test]
 fn bd33_terminal_cjk() {
     use kjxlkj_core_text::display_width::grapheme_display_width;
-    let total: usize = "あいう".chars()
+    let total: usize = "あいう"
+        .chars()
         .map(|c| grapheme_display_width(&c.to_string()) as usize)
         .sum();
     assert_eq!(total, 6);
@@ -89,38 +86,22 @@ fn bd38_normal_motions() {
 /// BD-39: All operators with motions.
 #[test]
 fn bd39_operators() {
-    let operators = [
-        Operator::Delete,
-        Operator::Yank,
-        Operator::Change,
-    ];
-    let motions = [
-        Motion::WordForward,
-        Motion::LineEnd,
-        Motion::Down,
-    ];
+    let operators = [Operator::Delete, Operator::Yank, Operator::Change];
+    let motions = [Motion::WordForward, Motion::LineEnd, Motion::Down];
     for op in &operators {
         for m in &motions {
             let mut e = ed();
             ins(&mut e, "one two three\nfour five six");
-            e.dispatch(Action::MoveCursor(
-                Motion::LineStart, 1,
-            ));
+            e.dispatch(Action::MoveCursor(Motion::LineStart, 1));
             match op {
                 Operator::Delete => {
-                    e.dispatch(Action::Delete(
-                        m.clone(), 1,
-                    ));
+                    e.dispatch(Action::Delete(m.clone(), 1));
                 }
                 Operator::Yank => {
-                    e.dispatch(Action::Yank(
-                        m.clone(), 1,
-                    ));
+                    e.dispatch(Action::Yank(m.clone(), 1));
                 }
                 Operator::Change => {
-                    e.dispatch(Action::Change(
-                        m.clone(), 1,
-                    ));
+                    e.dispatch(Action::Change(m.clone(), 1));
                 }
                 _ => {}
             }
@@ -145,8 +126,6 @@ fn bd40_ex_commands() {
     ];
     for cmd in &commands {
         let mut e = ed();
-        e.dispatch(Action::ExecuteCommand(
-            cmd.to_string(),
-        ));
+        e.dispatch(Action::ExecuteCommand(cmd.to_string()));
     }
 }

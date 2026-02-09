@@ -8,11 +8,7 @@ use crate::EditorState;
 
 impl EditorState {
     /// Execute dd, cc, yy etc.
-    pub(crate) fn do_double_operator(
-        &mut self,
-        op: Operator,
-        count: u32,
-    ) {
+    pub(crate) fn do_double_operator(&mut self, op: Operator, count: u32) {
         let (line, _col) = self.cursor_pos();
         let bid = match self.active_buffer_id() {
             Some(b) => b,
@@ -20,10 +16,8 @@ impl EditorState {
         };
         let mut enter_insert = false;
         if let Some(buf) = self.buffers.get_mut(&bid) {
-            let end_line = (line + count as usize)
-                .min(buf.line_count());
-            let start =
-                buf.content.line_start_offset(line);
+            let end_line = (line + count as usize).min(buf.line_count());
+            let start = buf.content.line_start_offset(line);
             let end = if end_line >= buf.line_count() {
                 buf.content.len_chars()
             } else {
@@ -44,8 +38,7 @@ impl EditorState {
             }
         }
         if enter_insert {
-            self.mode =
-                kjxlkj_core_types::Mode::Insert;
+            self.mode = kjxlkj_core_types::Mode::Insert;
         }
         let max_line = self
             .active_buffer()
@@ -60,12 +53,7 @@ impl EditorState {
     }
 
     /// Execute operator + motion.
-    pub(crate) fn do_operator_motion_action(
-        &mut self,
-        op: Operator,
-        motion: Motion,
-        count: u32,
-    ) {
+    pub(crate) fn do_operator_motion_action(&mut self, op: Operator, motion: Motion, count: u32) {
         let (line, col) = self.cursor_pos();
         let bid = match self.active_buffer_id() {
             Some(b) => b,
@@ -76,22 +64,14 @@ impl EditorState {
                 Some(b) => b,
                 None => return,
             };
-            let mut cursor =
-                CursorPosition::new(line, col);
-            let result = execute_motion(
-                &mut cursor, &motion, count,
-                &buf.content,
-            );
+            let mut cursor = CursorPosition::new(line, col);
+            let result = execute_motion(&mut cursor, &motion, count, &buf.content);
             (result.line, result.grapheme_offset)
         };
         let mut enter_insert = false;
         if let Some(buf) = self.buffers.get_mut(&bid) {
-            let start = buf
-                .content
-                .line_grapheme_to_offset(line, col);
-            let end = buf.content.line_grapheme_to_offset(
-                end_line, end_col,
-            );
+            let start = buf.content.line_grapheme_to_offset(line, col);
+            let end = buf.content.line_grapheme_to_offset(end_line, end_col);
             let (s, e) = if start <= end {
                 (start, end + 1)
             } else {
@@ -113,8 +93,7 @@ impl EditorState {
             }
         }
         if enter_insert {
-            self.mode =
-                kjxlkj_core_types::Mode::Insert;
+            self.mode = kjxlkj_core_types::Mode::Insert;
         }
         let max = self
             .active_buffer()
@@ -149,17 +128,9 @@ mod tests {
             w.cursor.line = 0;
             w.cursor.grapheme_offset = 0;
         }
-        let initial =
-            state.active_buffer().unwrap().line_count();
-        state.do_double_operator(
-            kjxlkj_core_types::Operator::Delete,
-            1,
-        );
-        let after =
-            state.active_buffer().unwrap().line_count();
-        assert!(
-            after < initial,
-            "expected {after} < {initial}",
-        );
+        let initial = state.active_buffer().unwrap().line_count();
+        state.do_double_operator(kjxlkj_core_types::Operator::Delete, 1);
+        let after = state.active_buffer().unwrap().line_count();
+        assert!(after < initial, "expected {after} < {initial}",);
     }
 }

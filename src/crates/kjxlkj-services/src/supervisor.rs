@@ -23,10 +23,7 @@ pub struct ServiceSupervisor {
 
 impl ServiceSupervisor {
     /// Create a new supervisor.
-    pub fn new(
-        response_tx: mpsc::Sender<ServiceResponse>,
-        quit_tx: broadcast::Sender<()>,
-    ) -> Self {
+    pub fn new(response_tx: mpsc::Sender<ServiceResponse>, quit_tx: broadcast::Sender<()>) -> Self {
         Self {
             response_tx,
             quit_tx,
@@ -98,11 +95,7 @@ impl ServiceSupervisor {
 
         // Wait for all tasks with a timeout.
         for handle in self.handles {
-            let _ = tokio::time::timeout(
-                std::time::Duration::from_secs(5),
-                handle,
-            )
-            .await;
+            let _ = tokio::time::timeout(std::time::Duration::from_secs(5), handle).await;
         }
     }
 }

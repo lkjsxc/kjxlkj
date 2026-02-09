@@ -44,10 +44,7 @@ pub enum ForceMotionType {
 impl Operator {
     /// Whether this operator deletes text from the buffer.
     pub fn is_destructive(&self) -> bool {
-        matches!(
-            self,
-            Operator::Delete | Operator::Change
-        )
+        matches!(self, Operator::Delete | Operator::Change)
     }
 
     /// Whether this operator enters insert mode after execution.

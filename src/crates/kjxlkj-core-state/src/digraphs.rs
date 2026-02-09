@@ -55,11 +55,7 @@ impl DigraphTable {
     }
 
     /// Look up a digraph.
-    pub fn lookup(
-        &self,
-        c1: char,
-        c2: char,
-    ) -> Option<char> {
+    pub fn lookup(&self, c1: char, c2: char) -> Option<char> {
         self.entries
             .get(&(c1, c2))
             .or_else(|| self.entries.get(&(c2, c1)))
@@ -67,12 +63,7 @@ impl DigraphTable {
     }
 
     /// Add a custom digraph.
-    pub fn define(
-        &mut self,
-        c1: char,
-        c2: char,
-        out: char,
-    ) {
+    pub fn define(&mut self, c1: char, c2: char, out: char) {
         self.entries.insert((c1, c2), out);
     }
 
@@ -104,11 +95,7 @@ impl DigraphInputState {
     }
 
     /// Feed a character. Returns result if complete.
-    pub fn feed(
-        &mut self,
-        c: char,
-        table: &DigraphTable,
-    ) -> Option<char> {
+    pub fn feed(&mut self, c: char, table: &DigraphTable) -> Option<char> {
         if let Some(first) = self.first_char {
             self.active = false;
             self.first_char = None;
@@ -133,20 +120,14 @@ mod tests {
     #[test]
     fn lookup_copyright() {
         let table = DigraphTable::new();
-        assert_eq!(
-            table.lookup('C', 'o'),
-            Some('©'),
-        );
+        assert_eq!(table.lookup('C', 'o'), Some('©'),);
     }
 
     #[test]
     fn lookup_reversed() {
         let table = DigraphTable::new();
         // Reversed lookup works.
-        assert_eq!(
-            table.lookup('o', 'C'),
-            Some('©'),
-        );
+        assert_eq!(table.lookup('o', 'C'), Some('©'),);
     }
 
     #[test]

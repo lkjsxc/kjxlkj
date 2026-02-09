@@ -65,9 +65,7 @@ impl Default for UndoPersistConfig {
     fn default() -> Self {
         Self {
             enabled: false,
-            directory: String::from(
-                "~/.local/state/kjxlkj/undo",
-            ),
+            directory: String::from("~/.local/state/kjxlkj/undo"),
             max_size: 10 * 1024 * 1024,
         }
     }

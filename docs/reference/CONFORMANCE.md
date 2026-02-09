@@ -9,7 +9,7 @@ This ledger captures the verified implementation surface for the current reposit
 | Check | Result | Evidence |
 |---|---|---|
 | `cargo test --workspace` | pass | Local run on 2026-02-09 |
-| `cargo test --workspace -- --list` | 523 tests listed | Local run on 2026-02-09 |
+| `cargo test --workspace -- --list` | 596 tests listed | [/docs/log/audits/verification-evidence-2026-02-09.md](/docs/log/audits/verification-evidence-2026-02-09.md) |
 
 ## Status Vocabulary
 
@@ -50,16 +50,16 @@ A claim in this ledger is valid only when all are true:
 
 These files provide domain-focused detail and MUST be interpreted under this top-level ledger:
 
-- [CONFORMANCE_MODES.md](CONFORMANCE_MODES.md)
-- [CONFORMANCE_KEYS_INPUT.md](CONFORMANCE_KEYS_INPUT.md)
-- [CONFORMANCE_KEYS_SYSTEMS.md](CONFORMANCE_KEYS_SYSTEMS.md)
-- [CONFORMANCE_KEYS_INFRA.md](CONFORMANCE_KEYS_INFRA.md)
-- [CONFORMANCE_EDITING_OPERATORS.md](CONFORMANCE_EDITING_OPERATORS.md)
-- [CONFORMANCE_EDITING_FEATURES.md](CONFORMANCE_EDITING_FEATURES.md)
-- [CONFORMANCE_COMMANDS.md](CONFORMANCE_COMMANDS.md)
-- [CONFORMANCE_COMMANDS_TYPES.md](CONFORMANCE_COMMANDS_TYPES.md)
-- [CONFORMANCE_TESTING.md](CONFORMANCE_TESTING.md)
-- [CONFORMANCE_TESTING_INFRA.md](CONFORMANCE_TESTING_INFRA.md)
+- [conformance/CONFORMANCE_MODES.md](conformance/CONFORMANCE_MODES.md)
+- [conformance/CONFORMANCE_KEYS_INPUT.md](conformance/CONFORMANCE_KEYS_INPUT.md)
+- [conformance/CONFORMANCE_KEYS_SYSTEMS.md](conformance/CONFORMANCE_KEYS_SYSTEMS.md)
+- [conformance/CONFORMANCE_KEYS_INFRA.md](conformance/CONFORMANCE_KEYS_INFRA.md)
+- [conformance/CONFORMANCE_EDITING_OPERATORS.md](conformance/CONFORMANCE_EDITING_OPERATORS.md)
+- [conformance/CONFORMANCE_EDITING_FEATURES.md](conformance/CONFORMANCE_EDITING_FEATURES.md)
+- [conformance/CONFORMANCE_COMMANDS.md](conformance/CONFORMANCE_COMMANDS.md)
+- [conformance/CONFORMANCE_COMMANDS_TYPES.md](conformance/CONFORMANCE_COMMANDS_TYPES.md)
+- [conformance/CONFORMANCE_TESTING.md](conformance/CONFORMANCE_TESTING.md)
+- [conformance/CONFORMANCE_TESTING_INFRA.md](conformance/CONFORMANCE_TESTING_INFRA.md)
 
 ## Related
 

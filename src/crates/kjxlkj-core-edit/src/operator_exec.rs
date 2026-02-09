@@ -27,31 +27,17 @@ pub fn execute_operator(
     ctx: &mut OperatorContext<'_>,
 ) -> bool {
     match op {
-        Operator::Delete => {
-            exec_delete(start, end, linewise, ctx)
-        }
+        Operator::Delete => exec_delete(start, end, linewise, ctx),
         Operator::Change => {
             exec_delete(start, end, linewise, ctx);
             true
         }
-        Operator::Yank => {
-            exec_yank(start, end, linewise, ctx)
-        }
-        Operator::Indent => {
-            exec_indent(start, end, ctx, true)
-        }
-        Operator::Dedent => {
-            exec_indent(start, end, ctx, false)
-        }
-        Operator::ToggleCase => {
-            exec_case(start, end, ctx, CaseOp::Toggle)
-        }
-        Operator::Lowercase => {
-            exec_case(start, end, ctx, CaseOp::Lower)
-        }
-        Operator::Uppercase => {
-            exec_case(start, end, ctx, CaseOp::Upper)
-        }
+        Operator::Yank => exec_yank(start, end, linewise, ctx),
+        Operator::Indent => exec_indent(start, end, ctx, true),
+        Operator::Dedent => exec_indent(start, end, ctx, false),
+        Operator::ToggleCase => exec_case(start, end, ctx, CaseOp::Toggle),
+        Operator::Lowercase => exec_case(start, end, ctx, CaseOp::Lower),
+        Operator::Uppercase => exec_case(start, end, ctx, CaseOp::Upper),
         Operator::Reindent | Operator::Format => false,
     }
 }
@@ -63,43 +49,29 @@ fn exec_delete(
     ctx: &mut OperatorContext<'_>,
 ) -> bool {
     let (s, e) = normalize_range(start, end);
-    let old_text =
-        extract_text(ctx.content, &s, &e, linewise);
+    let old_text = extract_text(ctx.content, &s, &e, linewise);
 
     if linewise {
         ctx.content.delete_lines(s.line, e.line + 1);
         ctx.cursor.line = s.line;
         ctx.cursor.grapheme_offset = 0;
     } else {
-        ctx.content.delete(
-            s.line,
-            s.grapheme_offset,
-            e.line,
-            e.grapheme_offset + 1,
-        );
+        ctx.content
+            .delete(s.line, s.grapheme_offset, e.line, e.grapheme_offset + 1);
         *ctx.cursor = s;
     }
 
     if ctx.target_register != RegisterName::BlackHole {
-        ctx.registers.store(
-            ctx.target_register,
-            old_text.clone(),
-            linewise,
-        );
+        ctx.registers
+            .store(ctx.target_register, old_text.clone(), linewise);
     }
 
     ctx.undo.record(UndoEntry {
         start: 0,
         old_text,
         new_text: String::new(),
-        cursor_before: (
-            start.line,
-            start.grapheme_offset,
-        ),
-        cursor_after: (
-            ctx.cursor.line,
-            ctx.cursor.grapheme_offset,
-        ),
+        cursor_before: (start.line, start.grapheme_offset),
+        cursor_after: (ctx.cursor.line, ctx.cursor.grapheme_offset),
     });
 
     false
@@ -112,10 +84,8 @@ fn exec_yank(
     ctx: &mut OperatorContext<'_>,
 ) -> bool {
     let (s, e) = normalize_range(start, end);
-    let text =
-        extract_text(ctx.content, &s, &e, linewise);
-    ctx.registers
-        .store(ctx.target_register, text, linewise);
+    let text = extract_text(ctx.content, &s, &e, linewise);
+    ctx.registers.store(ctx.target_register, text, linewise);
     false
 }
 
@@ -126,20 +96,14 @@ fn exec_indent(
     indent: bool,
 ) -> bool {
     let (s, e) = normalize_range(start, end);
-    for line in
-        s.line..=e.line.min(ctx.content.line_count() - 1)
-    {
+    for line in s.line..=e.line.min(ctx.content.line_count() - 1) {
         let content = ctx.content.line_content(line);
         let new_content = if indent {
             format!("    {content}")
         } else {
             strip_indent(&content)
         };
-        replace_line_content(
-            ctx.content,
-            line,
-            &new_content,
-        );
+        replace_line_content(ctx.content, line, &new_content);
     }
     false
 }
@@ -157,20 +121,15 @@ fn exec_case(
     op: CaseOp,
 ) -> bool {
     let (s, e) = normalize_range(start, end);
-    let text =
-        extract_text(ctx.content, &s, &e, false);
+    let text = extract_text(ctx.content, &s, &e, false);
     let new_text = match op {
         CaseOp::Toggle => text
             .chars()
             .map(|c| {
                 if c.is_uppercase() {
-                    c.to_lowercase()
-                        .next()
-                        .unwrap_or(c)
+                    c.to_lowercase().next().unwrap_or(c)
                 } else {
-                    c.to_uppercase()
-                        .next()
-                        .unwrap_or(c)
+                    c.to_uppercase().next().unwrap_or(c)
                 }
             })
             .collect(),

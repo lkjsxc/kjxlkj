@@ -125,5 +125,5 @@ Operators (`d`, `y`, `c`) can be combined with text objects:
 
 ## Related
 
-- Editing features: [/docs/reference/CONFORMANCE_EDITING_FEATURES.md](/docs/reference/CONFORMANCE_EDITING_FEATURES.md)
-- Modes and keys: [/docs/reference/CONFORMANCE_MODES.md](/docs/reference/CONFORMANCE_MODES.md)
+- Editing features: [/docs/reference/conformance/CONFORMANCE_EDITING_FEATURES.md](/docs/reference/conformance/CONFORMANCE_EDITING_FEATURES.md)
+- Modes and keys: [/docs/reference/conformance/CONFORMANCE_MODES.md](/docs/reference/conformance/CONFORMANCE_MODES.md)

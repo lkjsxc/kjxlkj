@@ -78,9 +78,7 @@ impl StatuslineConfig {
     }
 
     /// Parse format string into segments.
-    pub fn parse_format(
-        fmt: &str,
-    ) -> Vec<StatusSegment> {
+    pub fn parse_format(fmt: &str) -> Vec<StatusSegment> {
         let mut segs = Vec::new();
         for part in fmt.split('%') {
             if part.is_empty() {
@@ -112,9 +110,7 @@ impl StatuslineConfig {
                     segs.push(StatusSegment::Separator);
                 }
                 _ => {
-                    segs.push(StatusSegment::Text(
-                        part.to_string(),
-                    ));
+                    segs.push(StatusSegment::Text(part.to_string()));
                 }
             }
         }
@@ -136,9 +132,7 @@ mod tests {
 
     #[test]
     fn parse_format_string() {
-        let segs = StatuslineConfig::parse_format(
-            "%m %f %=%l:%c",
-        );
+        let segs = StatuslineConfig::parse_format("%m %f %=%l:%c");
         assert!(segs.contains(&StatusSegment::Mode));
         assert!(segs.contains(&StatusSegment::FileName));
         assert!(segs.contains(&StatusSegment::Separator));

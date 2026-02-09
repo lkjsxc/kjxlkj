@@ -33,8 +33,7 @@ pub struct GraphemeIter<'a> {
 impl<'a> GraphemeIter<'a> {
     /// Create from a string slice.
     pub fn new(s: &'a str) -> Self {
-        let inner: Vec<&str> =
-            s.graphemes(true).collect();
+        let inner: Vec<&str> = s.graphemes(true).collect();
         Self {
             inner,
             pos: 0,
@@ -84,8 +83,7 @@ mod tests {
 
     #[test]
     fn cjk_line_graphemes() {
-        let lg =
-            LineGraphemes::from_str("あいう\n");
+        let lg = LineGraphemes::from_str("あいう\n");
         assert_eq!(lg.count(), 3);
         assert_eq!(lg.width_at(0), Some(2));
         assert_eq!(lg.total_width(), 6);
@@ -102,8 +100,7 @@ mod tests {
 
     #[test]
     fn grapheme_at_col_wide() {
-        let lg =
-            LineGraphemes::from_str("あいう");
+        let lg = LineGraphemes::from_str("あいう");
         assert_eq!(lg.grapheme_at_col(0), 0);
         assert_eq!(lg.grapheme_at_col(1), 0);
         assert_eq!(lg.grapheme_at_col(2), 1);

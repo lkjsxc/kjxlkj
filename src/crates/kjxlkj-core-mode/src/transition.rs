@@ -28,62 +28,40 @@ impl ModeTransition {
 
         match (&current, &target) {
             // Insert → InsertNormal (Ctrl-O in Insert mode).
-            (Mode::Insert, Mode::InsertNormal) => {
-                TransitionResult::Switch(Mode::InsertNormal)
-            }
+            (Mode::Insert, Mode::InsertNormal) => TransitionResult::Switch(Mode::InsertNormal),
 
             // InsertNormal → Insert (after single Normal cmd completed).
-            (Mode::InsertNormal, Mode::Insert) => {
-                TransitionResult::Switch(Mode::Insert)
-            }
+            (Mode::InsertNormal, Mode::Insert) => TransitionResult::Switch(Mode::Insert),
 
             // Visual → Visual (toggle sub-kind).
-            (Mode::Visual(_), Mode::Visual(_)) => {
-                TransitionResult::Switch(target)
-            }
+            (Mode::Visual(_), Mode::Visual(_)) => TransitionResult::Switch(target),
 
             // Visual → OperatorPending.
-            (Mode::Visual(_), Mode::OperatorPending(_)) => {
-                TransitionResult::Switch(target)
-            }
+            (Mode::Visual(_), Mode::OperatorPending(_)) => TransitionResult::Switch(target),
 
             // Replace → Insert (when pressing Insert key in Replace).
-            (Mode::Replace, Mode::Insert) => {
-                TransitionResult::Switch(Mode::Insert)
-            }
+            (Mode::Replace, Mode::Insert) => TransitionResult::Switch(Mode::Insert),
 
             // Any mode → Normal.
             (_, Mode::Normal) => TransitionResult::Switch(Mode::Normal),
 
             // Normal → Insert.
-            (Mode::Normal, Mode::Insert) => {
-                TransitionResult::Switch(Mode::Insert)
-            }
+            (Mode::Normal, Mode::Insert) => TransitionResult::Switch(Mode::Insert),
 
             // Normal → Replace.
-            (Mode::Normal, Mode::Replace) => {
-                TransitionResult::Switch(Mode::Replace)
-            }
+            (Mode::Normal, Mode::Replace) => TransitionResult::Switch(Mode::Replace),
 
             // Normal → Visual (any sub-kind).
-            (Mode::Normal, Mode::Visual(_)) => {
-                TransitionResult::Switch(target)
-            }
+            (Mode::Normal, Mode::Visual(_)) => TransitionResult::Switch(target),
 
             // Normal → Command.
-            (Mode::Normal, Mode::Command(_)) => {
-                TransitionResult::Switch(target)
-            }
+            (Mode::Normal, Mode::Command(_)) => TransitionResult::Switch(target),
 
             // Normal → OperatorPending.
-            (Mode::Normal, Mode::OperatorPending(_)) => {
-                TransitionResult::Switch(target)
-            }
+            (Mode::Normal, Mode::OperatorPending(_)) => TransitionResult::Switch(target),
 
             // Normal → TerminalInsert (when focusing terminal buffer).
-            (Mode::Normal, Mode::TerminalInsert) => {
-                TransitionResult::Switch(Mode::TerminalInsert)
-            }
+            (Mode::Normal, Mode::TerminalInsert) => TransitionResult::Switch(Mode::TerminalInsert),
 
             // Default: allow the transition.
             (_, _) => TransitionResult::Switch(target),
@@ -132,10 +110,7 @@ mod tests {
     #[test]
     fn normal_to_visual() {
         assert_eq!(
-            ModeTransition::compute(
-                Mode::Normal,
-                Mode::Visual(VisualKind::Char)
-            ),
+            ModeTransition::compute(Mode::Normal, Mode::Visual(VisualKind::Char)),
             TransitionResult::Switch(Mode::Visual(VisualKind::Char)),
         );
     }

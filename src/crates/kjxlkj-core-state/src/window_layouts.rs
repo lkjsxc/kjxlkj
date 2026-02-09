@@ -96,8 +96,7 @@ pub fn builtin_layouts() -> Vec<WindowLayout> {
 pub fn leaf_count(node: &LayoutNode) -> usize {
     match node {
         LayoutNode::Leaf { .. } => 1,
-        LayoutNode::HSplit { children }
-        | LayoutNode::VSplit { children } => {
+        LayoutNode::HSplit { children } | LayoutNode::VSplit { children } => {
             children.iter().map(leaf_count).sum()
         }
     }
@@ -116,20 +115,14 @@ mod tests {
     #[test]
     fn grid4_has_4_leaves() {
         let layouts = builtin_layouts();
-        let grid = layouts
-            .iter()
-            .find(|l| l.name == "grid-4")
-            .unwrap();
+        let grid = layouts.iter().find(|l| l.name == "grid-4").unwrap();
         assert_eq!(leaf_count(&grid.root), 4);
     }
 
     #[test]
     fn single_has_1_leaf() {
         let layouts = builtin_layouts();
-        let single = layouts
-            .iter()
-            .find(|l| l.name == "single")
-            .unwrap();
+        let single = layouts.iter().find(|l| l.name == "single").unwrap();
         assert_eq!(leaf_count(&single.root), 1);
     }
 }

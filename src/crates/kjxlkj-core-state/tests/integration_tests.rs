@@ -1,19 +1,14 @@
 //! Integration tests INT-01 through INT-10.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Action, InsertPosition, Mode, Motion,
-    Operator, VisualKind,
-};
+use kjxlkj_core_types::{Action, InsertPosition, Mode, Motion, Operator, VisualKind};
 
 fn ed() -> EditorState {
     EditorState::new(80, 24)
 }
 
 fn ins(ed: &mut EditorState, text: &str) {
-    ed.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    ed.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         ed.dispatch(Action::InsertChar(ch));
     }
@@ -25,13 +20,11 @@ fn ins(ed: &mut EditorState, text: &str) {
 fn int01_insert_undo_redo() {
     let mut e = ed();
     ins(&mut e, "hello");
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(line.contains("hello"));
     e.dispatch(Action::Undo);
     e.dispatch(Action::Redo);
-    let line2 = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line2 = e.active_buffer().unwrap().content.line_str(0);
     assert!(line2.contains("hello"));
 }
 
@@ -43,17 +36,14 @@ fn int02_visual_delete() {
     e.dispatch(Action::MoveCursor(Motion::LineStart, 1));
     // Use Delete(motion) directly.
     e.dispatch(Action::Delete(Motion::WordForward, 1));
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(!line.starts_with("one "));
 }
 
 /// INT-03: Key mapping registration.
 #[test]
 fn int03_mapping() {
-    use kjxlkj_core_state::mappings::{
-        KeyMapping, MappingMode, MappingRegistry,
-    };
+    use kjxlkj_core_state::mappings::{KeyMapping, MappingMode, MappingRegistry};
     let mut reg = MappingRegistry::new();
     reg.add(KeyMapping {
         modes: vec![MappingMode::Insert],
@@ -81,9 +71,7 @@ fn int04_snapshot() {
 #[test]
 fn int05_cjk_viewport() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for _ in 0..50 {
         for ch in "あいうえお".chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -91,9 +79,7 @@ fn int05_cjk_viewport() {
         e.dispatch(Action::InsertChar('\n'));
     }
     e.dispatch(Action::ReturnToNormal);
-    e.dispatch(Action::MoveCursor(
-        Motion::GotoLine(39), 1,
-    ));
+    e.dispatch(Action::MoveCursor(Motion::GotoLine(39), 1));
     let w = e.focused_window().unwrap();
     assert_eq!(w.cursor.line, 39);
 }
@@ -105,8 +91,7 @@ fn int06_count_delete() {
     ins(&mut e, "one two three four");
     e.dispatch(Action::MoveCursor(Motion::LineStart, 1));
     e.dispatch(Action::Delete(Motion::WordForward, 2));
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(!line.starts_with("one"));
 }
 
@@ -143,8 +128,6 @@ fn int09_resize() {
 #[test]
 fn int10_command() {
     let mut e = ed();
-    e.dispatch(Action::ExecuteCommand(
-        "set number".into(),
-    ));
+    e.dispatch(Action::ExecuteCommand("set number".into()));
     assert_eq!(e.mode, Mode::Normal);
 }

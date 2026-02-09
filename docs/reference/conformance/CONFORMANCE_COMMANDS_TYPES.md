@@ -184,5 +184,5 @@ Type definitions for search, undo, DAP, marks, substitution, completion, and mor
 
 ## Related
 
-- Ex commands: [/docs/reference/CONFORMANCE_COMMANDS.md](/docs/reference/CONFORMANCE_COMMANDS.md)
-- Testing: [/docs/reference/CONFORMANCE_TESTING.md](/docs/reference/CONFORMANCE_TESTING.md)
+- Ex commands: [/docs/reference/conformance/CONFORMANCE_COMMANDS.md](/docs/reference/conformance/CONFORMANCE_COMMANDS.md)
+- Testing: [/docs/reference/conformance/CONFORMANCE_TESTING.md](/docs/reference/conformance/CONFORMANCE_TESTING.md)

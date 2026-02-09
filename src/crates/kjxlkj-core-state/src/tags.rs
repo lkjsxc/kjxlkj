@@ -37,21 +37,14 @@ impl TagStack {
     }
 
     /// Push current position before tag jump.
-    pub fn push(
-        &mut self,
-        file: PathBuf,
-        line: usize,
-        col: usize,
-    ) {
+    pub fn push(&mut self, file: PathBuf, line: usize, col: usize) {
         self.entries.truncate(self.pos);
         self.entries.push((file, line, col));
         self.pos = self.entries.len();
     }
 
     /// Pop and return previous position.
-    pub fn pop(
-        &mut self,
-    ) -> Option<(PathBuf, usize, usize)> {
+    pub fn pop(&mut self) -> Option<(PathBuf, usize, usize)> {
         if self.pos > 0 {
             self.pos -= 1;
             Some(self.entries[self.pos].clone())
@@ -67,9 +60,7 @@ impl TagStack {
 }
 
 /// Parse a ctags file.
-pub fn parse_tags_file(
-    path: &Path,
-) -> Vec<TagEntry> {
+pub fn parse_tags_file(path: &Path) -> Vec<TagEntry> {
     let content = match std::fs::read_to_string(path) {
         Ok(c) => c,
         Err(_) => return Vec::new(),
@@ -92,21 +83,14 @@ fn parse_tag_line(line: &str) -> Option<TagEntry> {
     let name = parts.next()?.to_string();
     let file = PathBuf::from(parts.next()?);
     let rest = parts.next()?;
-    let address = if let Some(pattern) =
-        rest.strip_prefix("/^")
-    {
-        let end = pattern.find("$/").unwrap_or(
-            pattern.len(),
-        );
-        TagAddress::Pattern(
-            pattern[..end].to_string(),
-        )
+    let address = if let Some(pattern) = rest.strip_prefix("/^") {
+        let end = pattern.find("$/").unwrap_or(pattern.len());
+        TagAddress::Pattern(pattern[..end].to_string())
     } else {
         let num_end = rest
             .find(|c: char| !c.is_ascii_digit())
             .unwrap_or(rest.len());
-        let line_num =
-            rest[..num_end].parse().unwrap_or(1);
+        let line_num = rest[..num_end].parse().unwrap_or(1);
         TagAddress::Line(line_num)
     };
     let kind = rest
@@ -122,13 +106,8 @@ fn parse_tag_line(line: &str) -> Option<TagEntry> {
 }
 
 /// Find tags matching a name.
-pub fn find_tags<'a>(
-    tags: &'a [TagEntry],
-    name: &str,
-) -> Vec<&'a TagEntry> {
-    tags.iter()
-        .filter(|t| t.name == name)
-        .collect()
+pub fn find_tags<'a>(tags: &'a [TagEntry], name: &str) -> Vec<&'a TagEntry> {
+    tags.iter().filter(|t| t.name == name).collect()
 }
 
 #[cfg(test)]
@@ -138,11 +117,7 @@ mod tests {
     #[test]
     fn tag_stack_push_pop() {
         let mut stack = TagStack::new();
-        stack.push(
-            PathBuf::from("a.rs"),
-            10,
-            0,
-        );
+        stack.push(PathBuf::from("a.rs"), 10, 0);
         assert!(stack.can_pop());
         let entry = stack.pop();
         assert!(entry.is_some());

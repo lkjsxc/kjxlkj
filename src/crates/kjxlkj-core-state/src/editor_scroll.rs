@@ -6,15 +6,8 @@ use crate::EditorState;
 
 impl EditorState {
     /// Execute a scroll action.
-    pub(crate) fn do_scroll(
-        &mut self,
-        direction: ScrollDirection,
-        count: u32,
-    ) {
-        let line_count = self
-            .active_buffer()
-            .map(|b| b.line_count())
-            .unwrap_or(1);
+    pub(crate) fn do_scroll(&mut self, direction: ScrollDirection, count: u32) {
+        let line_count = self.active_buffer().map(|b| b.line_count()).unwrap_or(1);
 
         let height = self
             .focused_window()
@@ -24,50 +17,30 @@ impl EditorState {
         let amount = match direction {
             ScrollDirection::Up => count as usize,
             ScrollDirection::Down => count as usize,
-            ScrollDirection::HalfUp => {
-                (height / 2).max(1) * count as usize
-            }
-            ScrollDirection::HalfDown => {
-                (height / 2).max(1) * count as usize
-            }
-            ScrollDirection::PageUp => {
-                height.saturating_sub(2).max(1)
-                    * count as usize
-            }
-            ScrollDirection::PageDown => {
-                height.saturating_sub(2).max(1)
-                    * count as usize
-            }
+            ScrollDirection::HalfUp => (height / 2).max(1) * count as usize,
+            ScrollDirection::HalfDown => (height / 2).max(1) * count as usize,
+            ScrollDirection::PageUp => height.saturating_sub(2).max(1) * count as usize,
+            ScrollDirection::PageDown => height.saturating_sub(2).max(1) * count as usize,
         };
 
         if let Some(w) = self.focused_window_mut() {
             match direction {
-                ScrollDirection::Up
-                | ScrollDirection::HalfUp
-                | ScrollDirection::PageUp => {
+                ScrollDirection::Up | ScrollDirection::HalfUp | ScrollDirection::PageUp => {
                     w.viewport.scroll_up(amount);
                     // Keep cursor in visible area.
                     let top = w.viewport.top_line;
-                    if w.cursor.line
-                        >= top + w.viewport.height as usize
-                    {
-                        w.cursor.line = top
-                            + w.viewport.height as usize
-                            - 1;
+                    if w.cursor.line >= top + w.viewport.height as usize {
+                        w.cursor.line = top + w.viewport.height as usize - 1;
                     }
                 }
-                ScrollDirection::Down
-                | ScrollDirection::HalfDown
-                | ScrollDirection::PageDown => {
-                    w.viewport
-                        .scroll_down(amount, line_count);
+                ScrollDirection::Down | ScrollDirection::HalfDown | ScrollDirection::PageDown => {
+                    w.viewport.scroll_down(amount, line_count);
                     // Keep cursor in visible area.
                     let top = w.viewport.top_line;
                     if w.cursor.line < top {
                         w.cursor.line = top;
                     }
-                    let max_line =
-                        line_count.saturating_sub(1);
+                    let max_line = line_count.saturating_sub(1);
                     if w.cursor.line > max_line {
                         w.cursor.line = max_line;
                     }
@@ -88,8 +61,7 @@ impl EditorState {
     pub(crate) fn do_substitute_line(&mut self) {
         let line = self.cursor_pos().0;
         if let Some(buf) = self.active_buffer_mut() {
-            let start =
-                buf.content.line_start_offset(line);
+            let start = buf.content.line_start_offset(line);
             let end = buf.content.line_end_offset(line);
             if end > start {
                 buf.content.delete_range(start, end);
@@ -108,9 +80,7 @@ impl EditorState {
     pub(crate) fn do_change_to_end(&mut self) {
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
-            let start = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let start = buf.content.line_grapheme_to_offset(line, col);
             let end = buf.content.line_end_offset(line);
             if end > start {
                 buf.content.delete_range(start, end);
@@ -126,14 +96,10 @@ impl EditorState {
         let line = self.cursor_pos().0;
         if let Some(buf) = self.active_buffer_mut() {
             if line + 1 < buf.line_count() {
-                let end =
-                    buf.content.line_end_offset(line);
+                let end = buf.content.line_end_offset(line);
                 let next_start = end + 1;
-                if next_start
-                    <= buf.content.len_chars()
-                {
-                    buf.content
-                        .delete_range(end, next_start);
+                if next_start <= buf.content.len_chars() {
+                    buf.content.delete_range(end, next_start);
                     buf.modified = true;
                 }
             }

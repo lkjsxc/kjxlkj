@@ -7,20 +7,20 @@ mod command;
 mod command_helpers;
 #[cfg(test)]
 mod command_tests;
-#[cfg(test)]
-mod normal_tests;
-#[cfg(test)]
-mod visual_tests;
 mod insert;
 mod normal;
-mod normal_g_z;
 mod normal_commands;
+mod normal_g_z;
 mod normal_keys;
 mod normal_nav;
 mod normal_single;
+#[cfg(test)]
+mod normal_tests;
 mod transition;
 mod visual;
 mod visual_ops;
+#[cfg(test)]
+mod visual_tests;
 
 pub use command::CommandModeState;
 pub use insert::InsertModeState;

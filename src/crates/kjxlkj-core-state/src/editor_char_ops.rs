@@ -8,16 +8,11 @@ impl EditorState {
         let line = self.cursor_pos().0;
         if let Some(buf) = self.active_buffer_mut() {
             if line + 1 < buf.line_count() {
-                let end =
-                    buf.content.line_end_offset(line);
+                let end = buf.content.line_end_offset(line);
                 let next_start = end + 1;
-                if next_start
-                    <= buf.content.len_chars()
-                {
-                    buf.content
-                        .delete_range(end, next_start);
-                    buf.content
-                        .insert_char(end, ' ');
+                if next_start <= buf.content.len_chars() {
+                    buf.content.delete_range(end, next_start);
+                    buf.content.insert_char(end, ' ');
                     buf.modified = true;
                 }
             }
@@ -27,21 +22,14 @@ impl EditorState {
     pub(crate) fn do_toggle_case(&mut self) {
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
-            let off = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let off = buf.content.line_grapheme_to_offset(line, col);
             if let Some(ch) = buf.content.char_at(off) {
                 let toggled = if ch.is_uppercase() {
-                    ch.to_lowercase()
-                        .next()
-                        .unwrap_or(ch)
+                    ch.to_lowercase().next().unwrap_or(ch)
                 } else {
-                    ch.to_uppercase()
-                        .next()
-                        .unwrap_or(ch)
+                    ch.to_uppercase().next().unwrap_or(ch)
                 };
-                buf.content
-                    .delete_range(off, off + 1);
+                buf.content.delete_range(off, off + 1);
                 buf.content.insert_char(off, toggled);
                 buf.modified = true;
             }
@@ -51,48 +39,29 @@ impl EditorState {
         }
     }
 
-    pub(crate) fn do_replace_char(
-        &mut self,
-        ch: char,
-    ) {
+    pub(crate) fn do_replace_char(&mut self, ch: char) {
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
-            let off = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let off = buf.content.line_grapheme_to_offset(line, col);
             if off < buf.content.len_chars() {
-                buf.content
-                    .delete_range(off, off + 1);
+                buf.content.delete_range(off, off + 1);
                 buf.content.insert_char(off, ch);
                 buf.modified = true;
             }
         }
     }
 
-    pub(crate) fn do_increment(
-        &mut self,
-        n: i64,
-    ) {
+    pub(crate) fn do_increment(&mut self, n: i64) {
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
             let text = buf.content.line_content(line);
-            if let Some((start, end, val)) =
-                find_number_at(&text, col)
-            {
+            if let Some((start, end, val)) = find_number_at(&text, col) {
                 let new_val = val + n;
                 let new_str = new_val.to_string();
-                let off = buf
-                    .content
-                    .line_start_offset(line);
-                buf.content
-                    .delete_range(off + start, off + end);
-                for (i, ch) in
-                    new_str.chars().enumerate()
-                {
-                    buf.content.insert_char(
-                        off + start + i,
-                        ch,
-                    );
+                let off = buf.content.line_start_offset(line);
+                buf.content.delete_range(off + start, off + end);
+                for (i, ch) in new_str.chars().enumerate() {
+                    buf.content.insert_char(off + start + i, ch);
                 }
                 buf.modified = true;
             }
@@ -101,22 +70,15 @@ impl EditorState {
 }
 
 /// Find a number at or near the given column.
-fn find_number_at(
-    line: &str,
-    col: usize,
-) -> Option<(usize, usize, i64)> {
+fn find_number_at(line: &str, col: usize) -> Option<(usize, usize, i64)> {
     let bytes = line.as_bytes();
     let mut start = col;
-    while start < bytes.len()
-        && !bytes[start].is_ascii_digit()
-    {
+    while start < bytes.len() && !bytes[start].is_ascii_digit() {
         start += 1;
     }
     if start >= bytes.len() {
         start = col;
-        while start > 0
-            && !bytes[start - 1].is_ascii_digit()
-        {
+        while start > 0 && !bytes[start - 1].is_ascii_digit() {
             start -= 1;
         }
         if start == 0 {
@@ -125,15 +87,10 @@ fn find_number_at(
         start -= 1;
     }
     let mut end = start + 1;
-    while end < bytes.len()
-        && bytes[end].is_ascii_digit()
-    {
+    while end < bytes.len() && bytes[end].is_ascii_digit() {
         end += 1;
     }
-    while start > 0
-        && (bytes[start - 1].is_ascii_digit()
-            || bytes[start - 1] == b'-')
-    {
+    while start > 0 && (bytes[start - 1].is_ascii_digit() || bytes[start - 1] == b'-') {
         start -= 1;
     }
     line[start..end]

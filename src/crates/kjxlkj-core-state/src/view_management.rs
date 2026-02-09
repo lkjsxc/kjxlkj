@@ -1,9 +1,9 @@
 //! View management: save/restore per-window view state
 //! (cursor, scroll position, folds, local options).
 
-use std::collections::HashMap;
 use kjxlkj_core_edit::CursorPosition;
 use kjxlkj_core_types::BufferId;
+use std::collections::HashMap;
 
 /// Saved view state for a buffer.
 #[derive(Debug, Clone)]
@@ -47,13 +47,9 @@ impl ViewRegistry {
         top_line: usize,
         left_col: usize,
     ) {
-        if self.views.len() >= self.max_views
-            && !self.views.contains_key(&buffer_id)
-        {
+        if self.views.len() >= self.max_views && !self.views.contains_key(&buffer_id) {
             // Evict oldest (arbitrary) entry
-            if let Some(&key) =
-                self.views.keys().next()
-            {
+            if let Some(&key) = self.views.keys().next() {
                 self.views.remove(&key);
             }
         }
@@ -71,10 +67,7 @@ impl ViewRegistry {
     }
 
     /// Restore previously saved view for a buffer.
-    pub fn restore(
-        &self,
-        buffer_id: BufferId,
-    ) -> Option<&ViewState> {
+    pub fn restore(&self, buffer_id: BufferId) -> Option<&ViewState> {
         self.views.get(&buffer_id)
     }
 

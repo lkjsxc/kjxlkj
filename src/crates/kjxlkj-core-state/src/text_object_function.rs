@@ -20,17 +20,21 @@ pub struct FunctionBounds {
 /// Uses keyword + indentation heuristics:
 /// - Look backward for `fn`, `def`, `function`, `func`, `sub`
 /// - The function extends to the matching indent level or closing brace.
-pub fn find_function_bounds(
-    content: &BufferContent,
-    cursor_line: usize,
-) -> Option<FunctionBounds> {
+pub fn find_function_bounds(content: &BufferContent, cursor_line: usize) -> Option<FunctionBounds> {
     let total = content.line_count();
     if total == 0 {
         return None;
     }
     let keywords = [
-        "fn ", "def ", "function ", "function(", "func ",
-        "sub ", "pub fn ", "async fn ", "pub async fn ",
+        "fn ",
+        "def ",
+        "function ",
+        "function(",
+        "func ",
+        "sub ",
+        "pub fn ",
+        "async fn ",
+        "pub async fn ",
     ];
 
     // Search backward for a function keyword
@@ -73,8 +77,7 @@ pub fn find_function_bounds(
         }
         // For languages without braces, check indent
         if i > start && !line.trim().is_empty() && !found_open {
-            let this_indent =
-                line.len() - line.trim_start().len();
+            let this_indent = line.len() - line.trim_start().len();
             if this_indent <= indent {
                 end = i.saturating_sub(1);
                 break;
@@ -90,14 +93,16 @@ pub fn find_function_bounds(
 }
 
 /// Find class/struct/impl bounds surrounding cursor.
-pub fn find_class_bounds(
-    content: &BufferContent,
-    cursor_line: usize,
-) -> Option<FunctionBounds> {
+pub fn find_class_bounds(content: &BufferContent, cursor_line: usize) -> Option<FunctionBounds> {
     let total = content.line_count();
     let keywords = [
-        "class ", "struct ", "impl ", "trait ",
-        "interface ", "enum ", "module ",
+        "class ",
+        "struct ",
+        "impl ",
+        "trait ",
+        "interface ",
+        "enum ",
+        "module ",
     ];
 
     let mut start = cursor_line;
@@ -134,8 +139,7 @@ pub fn find_class_bounds(
             break;
         }
         if i > start && !line.trim().is_empty() && !found_open {
-            let this_indent =
-                line.len() - line.trim_start().len();
+            let this_indent = line.len() - line.trim_start().len();
             if this_indent <= indent {
                 end = i.saturating_sub(1);
                 break;

@@ -14,9 +14,7 @@ pub struct GitService {
 }
 
 impl GitService {
-    pub fn new(
-        response_tx: mpsc::Sender<ServiceResponse>,
-    ) -> Self {
+    pub fn new(response_tx: mpsc::Sender<ServiceResponse>) -> Self {
         Self {
             response_tx,
             repo_root: None,
@@ -31,9 +29,7 @@ impl GitService {
             .ok()?;
 
         if output.status.success() {
-            let root = String::from_utf8_lossy(&output.stdout)
-                .trim()
-                .to_string();
+            let root = String::from_utf8_lossy(&output.stdout).trim().to_string();
             let path = PathBuf::from(root);
             self.repo_root = Some(path.clone());
             Some(path)
@@ -49,8 +45,7 @@ impl GitService {
             .output()
             .map_err(|e| format!("git status: {e}"))?;
 
-        Ok(String::from_utf8_lossy(&output.stdout)
-            .to_string())
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
     /// Get git diff for a file.
@@ -60,15 +55,11 @@ impl GitService {
             .output()
             .map_err(|e| format!("git diff: {e}"))?;
 
-        Ok(String::from_utf8_lossy(&output.stdout)
-            .to_string())
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
     /// Run the service loop.
-    pub async fn run(
-        self,
-        mut quit_rx: broadcast::Receiver<()>,
-    ) {
+    pub async fn run(self, mut quit_rx: broadcast::Receiver<()>) {
         loop {
             tokio::select! {
                 _ = quit_rx.recv() => break,

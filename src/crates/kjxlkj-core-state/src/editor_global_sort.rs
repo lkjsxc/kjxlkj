@@ -87,10 +87,10 @@ impl EditorState {
             None => return,
         };
         let lc = buf.content.line_count();
-        if lc <= 1 { return; }
-        let mut lines: Vec<String> = (0..lc)
-            .map(|i| buf.content.line_content(i))
-            .collect();
+        if lc <= 1 {
+            return;
+        }
+        let mut lines: Vec<String> = (0..lc).map(|i| buf.content.line_content(i)).collect();
         let unique = args.contains('u');
         let reverse = args.contains('!');
         let numeric = args.contains('n');
@@ -103,8 +103,12 @@ impl EditorState {
         } else {
             lines.sort();
         }
-        if reverse { lines.reverse(); }
-        if unique { lines.dedup(); }
+        if reverse {
+            lines.reverse();
+        }
+        if unique {
+            lines.dedup();
+        }
         // Replace buffer content
         let buf = match self.buffers.get_mut(&bid) {
             Some(b) => b,
@@ -119,13 +123,17 @@ impl EditorState {
 /// Parse `:g/pattern/command` arguments.
 fn parse_global_args(args: &str) -> Option<(String, String)> {
     let args = args.trim();
-    if args.is_empty() { return None; }
+    if args.is_empty() {
+        return None;
+    }
     let delim = args.chars().next()?;
     let rest = &args[delim.len_utf8()..];
     let end = rest.find(delim)?;
     let pattern = rest[..end].to_string();
     let cmd = rest[end + delim.len_utf8()..].to_string();
-    if pattern.is_empty() { return None; }
+    if pattern.is_empty() {
+        return None;
+    }
     Some((pattern, cmd))
 }
 

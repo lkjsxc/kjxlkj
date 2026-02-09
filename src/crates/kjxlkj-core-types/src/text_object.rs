@@ -72,9 +72,7 @@ impl TextObject {
     pub fn is_quote(&self) -> bool {
         matches!(
             self.kind,
-            TextObjectKind::DoubleQuote
-                | TextObjectKind::SingleQuote
-                | TextObjectKind::Backtick
+            TextObjectKind::DoubleQuote | TextObjectKind::SingleQuote | TextObjectKind::Backtick
         )
     }
 }
@@ -85,19 +83,13 @@ mod tests {
 
     #[test]
     fn bracket_pair_detection() {
-        let obj = TextObject::new(
-            TextObjectScope::Inner,
-            TextObjectKind::Parens,
-        );
+        let obj = TextObject::new(TextObjectScope::Inner, TextObjectKind::Parens);
         assert!(obj.is_bracket_pair());
     }
 
     #[test]
     fn quote_detection() {
-        let obj = TextObject::new(
-            TextObjectScope::Around,
-            TextObjectKind::DoubleQuote,
-        );
+        let obj = TextObject::new(TextObjectScope::Around, TextObjectKind::DoubleQuote);
         assert!(obj.is_quote());
     }
 }

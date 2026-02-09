@@ -2,10 +2,7 @@
 
 use kjxlkj_core_types::BufferId;
 
-use crate::{
-    BufferState, EditorState, WindowContent,
-    WindowState,
-};
+use crate::{BufferState, EditorState, WindowContent, WindowState};
 
 impl EditorState {
     pub(crate) fn do_write(&mut self) {
@@ -14,18 +11,12 @@ impl EditorState {
         }
     }
 
-    pub(crate) fn do_open_file(
-        &mut self,
-        path: &std::path::Path,
-    ) {
+    pub(crate) fn do_open_file(&mut self, path: &std::path::Path) {
         // Track alternate buffer.
         self.alternate_buffer = self.active_buffer_id();
 
         let buf_id = self.alloc_buffer_id();
-        let buf = BufferState::new_with_path(
-            buf_id,
-            path.to_path_buf(),
-        );
+        let buf = BufferState::new_with_path(buf_id, path.to_path_buf());
         self.buffers.insert(buf_id, buf);
         if let Some(w) = self.focused_window_mut() {
             w.content = WindowContent::Buffer(buf_id);
@@ -35,17 +26,14 @@ impl EditorState {
     }
 
     pub(crate) fn do_next_buffer(&mut self) {
-        let ids: Vec<BufferId> =
-            self.buffers.keys().copied().collect();
+        let ids: Vec<BufferId> = self.buffers.keys().copied().collect();
         if ids.len() <= 1 {
             return;
         }
         let current = self.active_buffer_id();
         self.alternate_buffer = current;
         let idx = current
-            .and_then(|c| {
-                ids.iter().position(|&i| i == c)
-            })
+            .and_then(|c| ids.iter().position(|&i| i == c))
             .unwrap_or(0);
         let next = ids[(idx + 1) % ids.len()];
         if let Some(w) = self.focused_window_mut() {
@@ -54,17 +42,14 @@ impl EditorState {
     }
 
     pub(crate) fn do_prev_buffer(&mut self) {
-        let ids: Vec<BufferId> =
-            self.buffers.keys().copied().collect();
+        let ids: Vec<BufferId> = self.buffers.keys().copied().collect();
         if ids.len() <= 1 {
             return;
         }
         let current = self.active_buffer_id();
         self.alternate_buffer = current;
         let idx = current
-            .and_then(|c| {
-                ids.iter().position(|&i| i == c)
-            })
+            .and_then(|c| ids.iter().position(|&i| i == c))
             .unwrap_or(0);
         let prev = if idx == 0 {
             ids[ids.len() - 1]
@@ -83,11 +68,8 @@ impl EditorState {
                 let id = self.alloc_buffer_id();
                 let buf = BufferState::new(id);
                 self.buffers.insert(id, buf);
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
-                    w.content =
-                        WindowContent::Buffer(id);
+                if let Some(w) = self.focused_window_mut() {
+                    w.content = WindowContent::Buffer(id);
                 }
             }
         }
@@ -97,12 +79,8 @@ impl EditorState {
         if let Some(bid) = self.active_buffer_id() {
             let win_id = self.alloc_window_id();
             let (cols, rows) = self.terminal_size;
-            let mut win =
-                WindowState::new_buffer(win_id, bid);
-            win.viewport.set_size(
-                cols,
-                rows.saturating_sub(2) / 2,
-            );
+            let mut win = WindowState::new_buffer(win_id, bid);
+            win.viewport.set_size(cols, rows.saturating_sub(2) / 2);
             self.windows.insert(win_id, win);
         }
     }
@@ -111,12 +89,8 @@ impl EditorState {
         if let Some(bid) = self.active_buffer_id() {
             let win_id = self.alloc_window_id();
             let (cols, rows) = self.terminal_size;
-            let mut win =
-                WindowState::new_buffer(win_id, bid);
-            win.viewport.set_size(
-                cols / 2,
-                rows.saturating_sub(2),
-            );
+            let mut win = WindowState::new_buffer(win_id, bid);
+            win.viewport.set_size(cols / 2, rows.saturating_sub(2));
             self.windows.insert(win_id, win);
         }
     }

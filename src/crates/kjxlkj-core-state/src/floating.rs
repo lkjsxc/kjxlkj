@@ -2,28 +2,16 @@
 
 use kjxlkj_core_types::WindowId;
 
-/// Float anchor point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[rustfmt::skip]
 pub enum FloatAnchor {
-    Editor,
-    Cursor,
-    Window,
-    NW,
-    NE,
-    SW,
-    SE,
+    Editor, Cursor, Window, NW, NE, SW, SE,
 }
 
-/// Float border style.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[rustfmt::skip]
 pub enum FloatBorder {
-    None,
-    Single,
-    Double,
-    Rounded,
-    Solid,
-    Shadow,
-    Custom([String; 8]),
+    None, Single, Double, Rounded, Solid, Shadow, Custom([String; 8]),
 }
 
 impl Default for FloatBorder {
@@ -32,7 +20,6 @@ impl Default for FloatBorder {
     }
 }
 
-/// Configuration for creating a floating window.
 #[derive(Debug, Clone)]
 pub struct FloatConfig {
     pub width: u16,
@@ -53,12 +40,10 @@ pub struct FloatConfig {
     pub relative_height: Option<f32>,
 }
 
-/// Title/footer alignment.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[rustfmt::skip]
 pub enum TitlePos {
-    Left,
-    Center,
-    Right,
+    Left, Center, Right,
 }
 
 impl Default for FloatConfig {
@@ -84,7 +69,6 @@ impl Default for FloatConfig {
     }
 }
 
-/// A floating window state.
 #[derive(Debug)]
 pub struct FloatingWindow {
     pub window_id: WindowId,
@@ -92,7 +76,6 @@ pub struct FloatingWindow {
     pub creation_order: u64,
 }
 
-/// Registry of floating windows.
 #[derive(Debug, Default)]
 pub struct FloatRegistry {
     pub floats: Vec<FloatingWindow>,
@@ -104,12 +87,7 @@ impl FloatRegistry {
         Self::default()
     }
 
-    /// Add a floating window.
-    pub fn add(
-        &mut self,
-        window_id: WindowId,
-        config: FloatConfig,
-    ) {
+    pub fn add(&mut self, window_id: WindowId, config: FloatConfig) {
         self.next_order += 1;
         self.floats.push(FloatingWindow {
             window_id,
@@ -118,35 +96,20 @@ impl FloatRegistry {
         });
     }
 
-    /// Remove a floating window.
     pub fn remove(&mut self, window_id: WindowId) {
-        self.floats
-            .retain(|f| f.window_id != window_id);
+        self.floats.retain(|f| f.window_id != window_id);
     }
 
-    /// Check if a window is floating.
-    pub fn is_floating(
-        &self,
-        window_id: WindowId,
-    ) -> bool {
-        self.floats
-            .iter()
-            .any(|f| f.window_id == window_id)
+    pub fn is_floating(&self, window_id: WindowId) -> bool {
+        self.floats.iter().any(|f| f.window_id == window_id)
     }
 
-    /// Get floats in render order (z-index, creation).
-    pub fn render_order(
-        &self,
-    ) -> Vec<&FloatingWindow> {
-        let mut ordered: Vec<&FloatingWindow> =
-            self.floats.iter().collect();
-        ordered.sort_by_key(|f| {
-            (f.config.zindex, f.creation_order)
-        });
+    pub fn render_order(&self) -> Vec<&FloatingWindow> {
+        let mut ordered: Vec<&FloatingWindow> = self.floats.iter().collect();
+        ordered.sort_by_key(|f| (f.config.zindex, f.creation_order));
         ordered
     }
 
-    /// Get focusable floats for cycling.
     pub fn focusable_ids(&self) -> Vec<WindowId> {
         self.floats
             .iter()
@@ -155,36 +118,26 @@ impl FloatRegistry {
             .collect()
     }
 
-    /// Compute positioned rect for a float.
     pub fn compute_rect(
         config: &FloatConfig,
         term_cols: u16,
         term_rows: u16,
     ) -> (u16, u16, u16, u16) {
-        let w = if let Some(rel) =
-            config.relative_width
-        {
-            ((term_cols as f32) * rel) as u16
-        } else {
-            config.width
-        };
-        let h = if let Some(rel) =
-            config.relative_height
-        {
-            ((term_rows as f32) * rel) as u16
-        } else {
-            config.height
-        };
+        let w = config
+            .relative_width
+            .map(|rel| ((term_cols as f32) * rel) as u16)
+            .unwrap_or(config.width);
+        let h = config
+            .relative_height
+            .map(|rel| ((term_rows as f32) * rel) as u16)
+            .unwrap_or(config.height);
         let (x, y) = if config.center {
             (
                 term_cols.saturating_sub(w) / 2,
                 term_rows.saturating_sub(h) / 2,
             )
         } else {
-            (
-                config.col.max(0) as u16,
-                config.row.max(0) as u16,
-            )
+            (config.col.max(0) as u16, config.row.max(0) as u16)
         };
         let x = x.min(term_cols.saturating_sub(w));
         let y = y.min(term_rows.saturating_sub(h));
@@ -204,10 +157,7 @@ mod tests {
             center: true,
             ..Default::default()
         };
-        let (x, y, w, h) =
-            FloatRegistry::compute_rect(
-                &config, 80, 24,
-            );
+        let (x, y, w, h) = FloatRegistry::compute_rect(&config, 80, 24);
         assert_eq!(w, 20);
         assert_eq!(h, 10);
         assert_eq!(x, 30);

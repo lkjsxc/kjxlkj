@@ -25,12 +25,7 @@ impl RegisterFile {
     }
 
     /// Store content into a register.
-    pub fn store(
-        &mut self,
-        name: RegisterName,
-        content: String,
-        linewise: bool,
-    ) {
+    pub fn store(&mut self, name: RegisterName, content: String, linewise: bool) {
         if name == RegisterName::BlackHole {
             return; // Black hole discards
         }
@@ -73,12 +68,7 @@ impl RegisterFile {
     }
 
     /// Append to a named register (uppercase letter).
-    pub fn append(
-        &mut self,
-        name: RegisterName,
-        content: &str,
-        linewise: bool,
-    ) {
+    pub fn append(&mut self, name: RegisterName, content: &str, linewise: bool) {
         if let Some(existing) = self.registers.get_mut(&name) {
             existing.content.push_str(content);
             existing.linewise = existing.linewise || linewise;
@@ -102,10 +92,8 @@ impl RegisterFile {
             self.registers.insert(RegisterName::Numbered(1), reg);
         }
         // New content → 0
-        self.registers.insert(
-            RegisterName::Numbered(0),
-            Register::new(content, linewise),
-        );
+        self.registers
+            .insert(RegisterName::Numbered(0), Register::new(content, linewise));
     }
 
     /// Clear all registers.
@@ -115,9 +103,7 @@ impl RegisterFile {
     }
 
     /// Get mutable access to registers map.
-    pub fn registers_mut(
-        &mut self,
-    ) -> &mut HashMap<RegisterName, Register> {
+    pub fn registers_mut(&mut self) -> &mut HashMap<RegisterName, Register> {
         &mut self.registers
     }
 }

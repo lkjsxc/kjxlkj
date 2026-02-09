@@ -7,9 +7,7 @@ use kjxlkj_core_text::BufferContent;
 use kjxlkj_core_types::TextObjectScope;
 
 use crate::cursor::CursorPosition;
-use crate::text_object_bracket::{
-    find_close_bracket, find_open_bracket,
-};
+use crate::text_object_bracket::{find_close_bracket, find_open_bracket};
 use crate::text_object_exec::TextObjectRange;
 
 /// Resolve an argument text object at cursor.
@@ -19,15 +17,11 @@ pub(crate) fn resolve_argument(
     content: &BufferContent,
 ) -> Option<TextObjectRange> {
     // Find enclosing parentheses, brackets, or angles
-    let (open_line, open_col) =
-        find_any_open_bracket(cursor, content)?;
-    let (close_line, close_col) =
-        find_any_close_bracket(open_line, open_col, cursor, content)?;
+    let (open_line, open_col) = find_any_open_bracket(cursor, content)?;
+    let (close_line, close_col) = find_any_close_bracket(open_line, open_col, cursor, content)?;
 
     // Collect comma positions at this nesting level
-    let commas = find_commas_at_level(
-        open_line, open_col, close_line, close_col, content,
-    );
+    let commas = find_commas_at_level(open_line, open_col, close_line, close_col, content);
 
     // Find which argument the cursor is in
     let mut arg_start_line = open_line;
@@ -55,26 +49,25 @@ pub(crate) fn resolve_argument(
         skip_whitespace_forward(arg_start_line, arg_start_col, content);
 
     match scope {
-        TextObjectScope::Inner => {
-            Some(TextObjectRange {
-                start: CursorPosition::new(
-                    trimmed_start_line, trimmed_start_col,
-                ),
-                end: CursorPosition::new(arg_end_line, arg_end_col),
-                linewise: false,
-            })
-        }
+        TextObjectScope::Inner => Some(TextObjectRange {
+            start: CursorPosition::new(trimmed_start_line, trimmed_start_col),
+            end: CursorPosition::new(arg_end_line, arg_end_col),
+            linewise: false,
+        }),
         TextObjectScope::Around => {
             // Include comma: prefer trailing, else leading
-            let (s_line, s_col, e_line, e_col) =
-                if let Some((cl, cc)) = comma_after {
-                    (trimmed_start_line, trimmed_start_col, cl, cc)
-                } else if let Some((cl, cc)) = comma_before {
-                    (cl, cc, arg_end_line, arg_end_col)
-                } else {
-                    (trimmed_start_line, trimmed_start_col,
-                     arg_end_line, arg_end_col)
-                };
+            let (s_line, s_col, e_line, e_col) = if let Some((cl, cc)) = comma_after {
+                (trimmed_start_line, trimmed_start_col, cl, cc)
+            } else if let Some((cl, cc)) = comma_before {
+                (cl, cc, arg_end_line, arg_end_col)
+            } else {
+                (
+                    trimmed_start_line,
+                    trimmed_start_col,
+                    arg_end_line,
+                    arg_end_col,
+                )
+            };
             Some(TextObjectRange {
                 start: CursorPosition::new(s_line, s_col),
                 end: CursorPosition::new(e_line, e_col),
@@ -119,8 +112,10 @@ fn find_any_close_bracket(
 
 /// Find commas at the same nesting depth.
 fn find_commas_at_level(
-    open_line: usize, open_col: usize,
-    close_line: usize, close_col: usize,
+    open_line: usize,
+    open_col: usize,
+    close_line: usize,
+    close_col: usize,
     content: &BufferContent,
 ) -> Vec<(usize, usize)> {
     let mut result = Vec::new();
@@ -129,7 +124,11 @@ fn find_commas_at_level(
         let lc = content.line_content(line);
         let lg = kjxlkj_core_text::LineGraphemes::from_str(&lc);
         let si = if line == open_line { open_col + 1 } else { 0 };
-        let ei = if line == close_line { close_col } else { lg.count() };
+        let ei = if line == close_line {
+            close_col
+        } else {
+            lg.count()
+        };
         for i in si..ei {
             if let Some(g) = lg.get(i) {
                 let c = g.chars().next().unwrap_or(' ');
@@ -146,9 +145,7 @@ fn find_commas_at_level(
 }
 
 /// Skip whitespace forward from a position.
-fn skip_whitespace_forward(
-    line: usize, col: usize, content: &BufferContent,
-) -> (usize, usize) {
+fn skip_whitespace_forward(line: usize, col: usize, content: &BufferContent) -> (usize, usize) {
     let lc = content.line_content(line);
     let lg = kjxlkj_core_text::LineGraphemes::from_str(&lc);
     let mut c = col;

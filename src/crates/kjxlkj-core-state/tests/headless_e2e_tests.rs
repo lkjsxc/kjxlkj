@@ -1,18 +1,14 @@
 //! Headless E2E tests HE-01 through HE-09.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Action, InsertPosition, Mode, Motion, Operator,
-};
+use kjxlkj_core_types::{Action, InsertPosition, Mode, Motion, Operator};
 
 fn ed() -> EditorState {
     EditorState::new(80, 24)
 }
 
 fn ins(ed: &mut EditorState, text: &str) {
-    ed.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    ed.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         ed.dispatch(Action::InsertChar(ch));
     }
@@ -24,8 +20,12 @@ fn ins(ed: &mut EditorState, text: &str) {
 fn he01_create_edit_save() {
     let mut e = ed();
     ins(&mut e, "test content");
-    assert!(e.active_buffer().unwrap()
-        .content.line_str(0).contains("test content"));
+    assert!(e
+        .active_buffer()
+        .unwrap()
+        .content
+        .line_str(0)
+        .contains("test content"));
     e.dispatch(Action::WriteAll);
     assert!(!e.active_buffer().unwrap().modified);
 }
@@ -34,9 +34,7 @@ fn he01_create_edit_save() {
 #[test]
 fn he02_navigate() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for i in 0..50 {
         for ch in format!("line {i}").chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -44,9 +42,7 @@ fn he02_navigate() {
         e.dispatch(Action::InsertChar('\n'));
     }
     e.dispatch(Action::ReturnToNormal);
-    e.dispatch(Action::MoveCursor(
-        Motion::GotoLine(24), 1,
-    ));
+    e.dispatch(Action::MoveCursor(Motion::GotoLine(24), 1));
     assert_eq!(e.focused_window().unwrap().cursor.line, 24);
 }
 
@@ -55,11 +51,8 @@ fn he02_navigate() {
 fn he03_search_replace() {
     let mut e = ed();
     ins(&mut e, "foo bar foo");
-    e.dispatch(Action::ExecuteCommand(
-        "%s/foo/baz/g".into(),
-    ));
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    e.dispatch(Action::ExecuteCommand("%s/foo/baz/g".into()));
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(line.contains("baz"));
     assert!(!line.contains("foo"));
 }
@@ -68,9 +61,7 @@ fn he03_search_replace() {
 #[test]
 fn he04_visual_block() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for i in 0..5 {
         for ch in "ABCDEFGH".chars() {
             e.dispatch(Action::InsertChar(ch));
@@ -80,8 +71,7 @@ fn he04_visual_block() {
         }
     }
     e.dispatch(Action::ReturnToNormal);
-    assert_eq!(e.active_buffer().unwrap()
-        .content.line_count(), 5);
+    assert_eq!(e.active_buffer().unwrap().content.line_count(), 5);
 }
 
 /// HE-05: Macro record and replay.
@@ -95,8 +85,7 @@ fn he05_macro() {
     e.dispatch(Action::Delete(Motion::WordForward, 1));
     e.dispatch(Action::RecordMacro('a'));
     // After stop, buffer is still valid
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(!line.is_empty());
 }
 
@@ -125,8 +114,7 @@ fn he07_session() {
         cwd: PathBuf::from("/tmp"),
     };
     let json = serde_json::to_string(&data).unwrap();
-    let loaded: SessionData =
-        serde_json::from_str(&json).unwrap();
+    let loaded: SessionData = serde_json::from_str(&json).unwrap();
     assert_eq!(loaded.buffers.len(), 1);
 }
 
@@ -134,18 +122,16 @@ fn he07_session() {
 #[test]
 fn he08_cjk() {
     let mut e = ed();
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in "あいうえお".chars() {
         e.dispatch(Action::InsertChar(ch));
     }
     e.dispatch(Action::ReturnToNormal);
-    let line = e.active_buffer().unwrap()
-        .content.line_str(0);
+    let line = e.active_buffer().unwrap().content.line_str(0);
     assert!(line.contains("あいうえお"));
     use kjxlkj_core_text::display_width::grapheme_display_width;
-    let w: usize = "あいうえお".chars()
+    let w: usize = "あいうえお"
+        .chars()
         .map(|c| grapheme_display_width(&c.to_string()) as usize)
         .sum();
     assert_eq!(w, 10);

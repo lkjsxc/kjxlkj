@@ -17,11 +17,8 @@ pub struct LineGraphemes {
 
 impl LineGraphemes {
     /// Build from a rope line slice.
-    pub fn from_rope_slice(
-        slice: ropey::RopeSlice<'_>,
-    ) -> Self {
-        let line_str: String =
-            slice.chunks().collect();
+    pub fn from_rope_slice(slice: ropey::RopeSlice<'_>) -> Self {
+        let line_str: String = slice.chunks().collect();
         Self::from_str(&line_str)
     }
 
@@ -71,10 +68,7 @@ impl LineGraphemes {
     }
 
     /// Starting display column of grapheme at index.
-    pub fn display_col_at(
-        &self,
-        idx: usize,
-    ) -> Option<usize> {
+    pub fn display_col_at(&self, idx: usize) -> Option<usize> {
         self.display_cols.get(idx).copied()
     }
 
@@ -84,19 +78,13 @@ impl LineGraphemes {
             0
         } else {
             let last = self.graphemes.len() - 1;
-            self.display_cols[last]
-                + self.widths[last] as usize
+            self.display_cols[last] + self.widths[last] as usize
         }
     }
 
     /// Find grapheme index at a display column.
-    pub fn grapheme_at_col(
-        &self,
-        col: usize,
-    ) -> usize {
-        for (i, &dc) in
-            self.display_cols.iter().enumerate()
-        {
+    pub fn grapheme_at_col(&self, col: usize) -> usize {
+        for (i, &dc) in self.display_cols.iter().enumerate() {
             let w = self.widths[i] as usize;
             if col < dc + w {
                 return i;
@@ -106,10 +94,7 @@ impl LineGraphemes {
     }
 
     /// Get the byte offset of grapheme at index.
-    pub fn byte_offset_at(
-        &self,
-        idx: usize,
-    ) -> Option<usize> {
+    pub fn byte_offset_at(&self, idx: usize) -> Option<usize> {
         self.byte_offsets.get(idx).copied()
     }
 
@@ -119,16 +104,12 @@ impl LineGraphemes {
             0
         } else {
             let last = self.graphemes.len() - 1;
-            self.byte_offsets[last]
-                + self.graphemes[last].len()
+            self.byte_offsets[last] + self.graphemes[last].len()
         }
     }
 
     /// Clamp a grapheme index to valid range.
-    pub fn clamp_exclusive(
-        &self,
-        idx: usize,
-    ) -> usize {
+    pub fn clamp_exclusive(&self, idx: usize) -> usize {
         if self.graphemes.is_empty() {
             0
         } else {
@@ -137,10 +118,7 @@ impl LineGraphemes {
     }
 
     /// Clamp a grapheme index to valid inclusive range.
-    pub fn clamp_inclusive(
-        &self,
-        idx: usize,
-    ) -> usize {
+    pub fn clamp_inclusive(&self, idx: usize) -> usize {
         idx.min(self.graphemes.len())
     }
 }

@@ -155,5 +155,5 @@ Command-line (Ex) command subset and core types in the conformance ledger.
 
 ## Related
 
-- Command types: [/docs/reference/CONFORMANCE_COMMANDS_TYPES.md](/docs/reference/CONFORMANCE_COMMANDS_TYPES.md)
-- Testing: [/docs/reference/CONFORMANCE_TESTING.md](/docs/reference/CONFORMANCE_TESTING.md)
+- Command types: [/docs/reference/conformance/CONFORMANCE_COMMANDS_TYPES.md](/docs/reference/conformance/CONFORMANCE_COMMANDS_TYPES.md)
+- Testing: [/docs/reference/conformance/CONFORMANCE_TESTING.md](/docs/reference/conformance/CONFORMANCE_TESTING.md)

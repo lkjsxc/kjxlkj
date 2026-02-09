@@ -47,40 +47,26 @@ impl MappingRegistry {
     /// Add a mapping.
     pub fn add(&mut self, mapping: KeyMapping) {
         // Remove existing mapping with same lhs/modes.
-        self.mappings.retain(|m| {
-            m.lhs != mapping.lhs
-                || m.modes != mapping.modes
-        });
+        self.mappings
+            .retain(|m| m.lhs != mapping.lhs || m.modes != mapping.modes);
         self.mappings.push(mapping);
     }
 
     /// Remove a mapping by lhs and mode.
-    pub fn remove(
-        &mut self,
-        lhs: &str,
-        mode: MappingMode,
-    ) {
-        self.mappings.retain(|m| {
-            !(m.lhs == lhs && m.modes.contains(&mode))
-        });
+    pub fn remove(&mut self, lhs: &str, mode: MappingMode) {
+        self.mappings
+            .retain(|m| !(m.lhs == lhs && m.modes.contains(&mode)));
     }
 
     /// Find a mapping for a key sequence in a mode.
-    pub fn find(
-        &self,
-        lhs: &str,
-        mode: MappingMode,
-    ) -> Option<&KeyMapping> {
-        self.mappings.iter().find(|m| {
-            m.lhs == lhs && m.modes.contains(&mode)
-        })
+    pub fn find(&self, lhs: &str, mode: MappingMode) -> Option<&KeyMapping> {
+        self.mappings
+            .iter()
+            .find(|m| m.lhs == lhs && m.modes.contains(&mode))
     }
 
     /// List all mappings for a mode.
-    pub fn list(
-        &self,
-        mode: MappingMode,
-    ) -> Vec<&KeyMapping> {
+    pub fn list(&self, mode: MappingMode) -> Vec<&KeyMapping> {
         self.mappings
             .iter()
             .filter(|m| m.modes.contains(&mode))
@@ -94,10 +80,7 @@ impl MappingRegistry {
 }
 
 /// Parse mapping command (`:nmap`, `:nnoremap`, etc).
-pub fn parse_mapping_cmd(
-    cmd: &str,
-    args: &str,
-) -> Option<KeyMapping> {
+pub fn parse_mapping_cmd(cmd: &str, args: &str) -> Option<KeyMapping> {
     let (modes, noremap) = match cmd {
         "map" => (
             vec![
@@ -122,27 +105,14 @@ pub fn parse_mapping_cmd(
         "vmap" => (vec![MappingMode::Visual], false),
         "vnoremap" => (vec![MappingMode::Visual], true),
         "cmap" => (vec![MappingMode::Command], false),
-        "cnoremap" => (
-            vec![MappingMode::Command],
-            true,
-        ),
+        "cnoremap" => (vec![MappingMode::Command], true),
         "tmap" => (vec![MappingMode::Terminal], false),
-        "tnoremap" => (
-            vec![MappingMode::Terminal],
-            true,
-        ),
-        "omap" => (
-            vec![MappingMode::OperatorPending],
-            false,
-        ),
-        "onoremap" => (
-            vec![MappingMode::OperatorPending],
-            true,
-        ),
+        "tnoremap" => (vec![MappingMode::Terminal], true),
+        "omap" => (vec![MappingMode::OperatorPending], false),
+        "onoremap" => (vec![MappingMode::OperatorPending], true),
         _ => return None,
     };
-    let parts: Vec<&str> =
-        args.splitn(2, char::is_whitespace).collect();
+    let parts: Vec<&str> = args.splitn(2, char::is_whitespace).collect();
     if parts.len() < 2 {
         return None;
     }
@@ -163,10 +133,7 @@ mod tests {
 
     #[test]
     fn parse_nnoremap() {
-        let m = parse_mapping_cmd(
-            "nnoremap",
-            "<leader>e :e .",
-        );
+        let m = parse_mapping_cmd("nnoremap", "<leader>e :e .");
         assert!(m.is_some());
         let m = m.unwrap();
         assert_eq!(m.lhs, "<leader>e");
@@ -188,8 +155,7 @@ mod tests {
         });
         let found = reg.find("jk", MappingMode::Normal);
         assert!(found.is_some());
-        let not_found =
-            reg.find("jk", MappingMode::Insert);
+        let not_found = reg.find("jk", MappingMode::Insert);
         assert!(not_found.is_none());
     }
 }

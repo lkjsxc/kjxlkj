@@ -13,9 +13,7 @@ impl EditorState {
         }
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
-            let off = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let off = buf.content.line_grapheme_to_offset(line, col);
             buf.content.insert_char(off, ch);
             buf.modified = true;
         }
@@ -31,21 +29,16 @@ impl EditorState {
         // for auto-indent.
         let indent = self
             .active_buffer()
-            .map(|b| {
-                b.content.line_leading_whitespace(line)
-            })
+            .map(|b| b.content.line_leading_whitespace(line))
             .unwrap_or_default();
 
         if let Some(buf) = self.active_buffer_mut() {
-            let off = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let off = buf.content.line_grapheme_to_offset(line, col);
             buf.content.insert_char(off, '\n');
             // Insert indent on new line.
             let new_off = off + 1;
             for (i, ch) in indent.chars().enumerate() {
-                buf.content
-                    .insert_char(new_off + i, ch);
+                buf.content.insert_char(new_off + i, ch);
             }
             buf.modified = true;
         }
@@ -64,29 +57,20 @@ impl EditorState {
         }
         let prev_gc = if col == 0 && line > 0 {
             self.active_buffer()
-                .map(|b| {
-                    b.content.line_grapheme_count(line - 1)
-                })
+                .map(|b| b.content.line_grapheme_count(line - 1))
                 .unwrap_or(0)
         } else {
             0
         };
         if let Some(buf) = self.active_buffer_mut() {
             if col > 0 {
-                let off = buf
-                    .content
-                    .line_grapheme_to_offset(
-                        line,
-                        col - 1,
-                    );
+                let off = buf.content.line_grapheme_to_offset(line, col - 1);
                 buf.content.delete_range(off, off + 1);
                 buf.modified = true;
             } else {
-                let off =
-                    buf.content.line_start_offset(line);
+                let off = buf.content.line_start_offset(line);
                 if off > 0 {
-                    buf.content
-                        .delete_range(off - 1, off);
+                    buf.content.delete_range(off - 1, off);
                     buf.modified = true;
                 }
             }
@@ -105,9 +89,7 @@ impl EditorState {
     pub(crate) fn delete_char_forward(&mut self) {
         let (line, col) = self.cursor_pos();
         if let Some(buf) = self.active_buffer_mut() {
-            let off = buf
-                .content
-                .line_grapheme_to_offset(line, col);
+            let off = buf.content.line_grapheme_to_offset(line, col);
             if off < buf.content.len_chars() {
                 buf.content.delete_range(off, off + 1);
                 buf.modified = true;
@@ -135,8 +117,7 @@ impl EditorState {
     pub(crate) fn open_line_above(&mut self) {
         let line = self.cursor_pos().0;
         if let Some(buf) = self.active_buffer_mut() {
-            let start =
-                buf.content.line_start_offset(line);
+            let start = buf.content.line_start_offset(line);
             buf.content.insert_char(start, '\n');
             buf.modified = true;
         }

@@ -1,8 +1,8 @@
 //! Statusline rendering.
 
 use kjxlkj_core_types::{CellAttrs, Mode};
-use kjxlkj_core_ui::ThemeColor;
 use kjxlkj_core_ui::BufferSnapshot;
+use kjxlkj_core_ui::ThemeColor;
 
 use crate::CellGrid;
 
@@ -63,14 +63,7 @@ pub fn render_statusline(
     } else {
         format!(" {}", buf.name)
     };
-    grid.write_str(
-        x,
-        y,
-        &name,
-        color.fg,
-        color.bg,
-        CellAttrs::empty(),
-    );
+    grid.write_str(x, y, &name, color.fg, color.bg, CellAttrs::empty());
 
     // Right-aligned: cursor position, file type, encoding.
     let right = format!(
@@ -80,14 +73,7 @@ pub fn render_statusline(
         buf.line_ending,
     );
     let right_x = width.saturating_sub(right.len() as u16);
-    grid.write_str(
-        right_x,
-        y,
-        &right,
-        color.fg,
-        color.bg,
-        CellAttrs::empty(),
-    );
+    grid.write_str(right_x, y, &right, color.fg, color.bg, CellAttrs::empty());
 }
 
 #[cfg(test)]

@@ -73,8 +73,7 @@ impl LiveGrepState {
     /// Select next result.
     pub fn select_next(&mut self) {
         if !self.results.is_empty() {
-            self.selected =
-                (self.selected + 1) % self.results.len();
+            self.selected = (self.selected + 1) % self.results.len();
         }
     }
 
@@ -177,10 +176,7 @@ mod tests {
 
     #[test]
     fn parse_rg_output() {
-        let m = LiveGrepState::parse_rg_line(
-            "src/lib.rs:42:5:let x = 10;",
-        )
-        .unwrap();
+        let m = LiveGrepState::parse_rg_line("src/lib.rs:42:5:let x = 10;").unwrap();
         assert_eq!(m.file, PathBuf::from("src/lib.rs"));
         assert_eq!(m.line, 42);
         assert_eq!(m.col, 4);

@@ -11,23 +11,13 @@ impl EditorState {
             return;
         }
         // Execute shell command and capture output.
-        let output = std::process::Command::new("sh")
-            .arg("-c")
-            .arg(cmd)
-            .output();
+        let output = std::process::Command::new("sh").arg("-c").arg(cmd).output();
         match output {
             Ok(out) => {
-                let text = String::from_utf8_lossy(
-                    &out.stdout,
-                )
-                .to_string();
+                let text = String::from_utf8_lossy(&out.stdout).to_string();
                 // Store output in unnamed register.
                 use kjxlkj_core_types::RegisterName;
-                self.register_file.store(
-                    RegisterName::Unnamed,
-                    text,
-                    false,
-                );
+                self.register_file.store(RegisterName::Unnamed, text, false);
             }
             Err(_) => {}
         }
@@ -46,44 +36,30 @@ impl EditorState {
             .active_buffer()
             .map(|b| b.content.line_count())
             .unwrap_or(1);
-        let (start, end, cmd) =
-            crate::editor_range_parse::parse_range(
-                args, line, line_count,
-            );
+        let (start, end, cmd) = crate::editor_range_parse::parse_range(args, line, line_count);
         if cmd.is_empty() {
             return;
         }
         // Collect lines to filter.
         let input: String = (start..=end)
-            .filter_map(|l| {
-                self.active_buffer().map(|b| {
-                    b.content.line_str(l)
-                })
-            })
+            .filter_map(|l| self.active_buffer().map(|b| b.content.line_str(l)))
             .collect::<Vec<_>>()
             .join("");
         // Run filter.
-        let result =
-            run_filter(&cmd, &input).unwrap_or(input);
+        let result = run_filter(&cmd, &input).unwrap_or(input);
         // Replace the range with the result.
         if let Some(buf) = self.active_buffer_mut() {
             for l in (start..=end).rev() {
                 buf.content.delete_lines(l, l);
             }
-            let result_lines: Vec<&str> =
-                result.lines().collect();
-            for (i, text) in
-                result_lines.iter().enumerate()
-            {
+            let result_lines: Vec<&str> = result.lines().collect();
+            for (i, text) in result_lines.iter().enumerate() {
                 let ins_line = start + i;
                 let content = format!("{}\n", text);
                 if ins_line < buf.content.line_count() {
-                    let off = buf
-                        .content
-                        .line_start_offset(ins_line);
+                    let off = buf.content.line_start_offset(ins_line);
                     for ch in content.chars().rev() {
-                        buf.content
-                            .insert_char(off, ch);
+                        buf.content.insert_char(off, ch);
                     }
                 } else {
                     let off = buf.content.len_chars();
@@ -100,19 +76,15 @@ impl EditorState {
     pub(crate) fn do_execute_expr(&mut self, expr: &str) {
         let expr = expr.trim();
         // Strip surrounding quotes if present.
-        let cmd = if (expr.starts_with('"')
-            && expr.ends_with('"'))
-            || (expr.starts_with('\'')
-                && expr.ends_with('\''))
+        let cmd = if (expr.starts_with('"') && expr.ends_with('"'))
+            || (expr.starts_with('\'') && expr.ends_with('\''))
         {
             &expr[1..expr.len() - 1]
         } else {
             expr
         };
         if !cmd.is_empty() {
-            if let Some(action) =
-                crate::dispatch_command(cmd)
-            {
+            if let Some(action) = crate::dispatch_command(cmd) {
                 self.dispatch(action);
             }
         }
@@ -120,10 +92,7 @@ impl EditorState {
 }
 
 /// Run a shell filter command on input text.
-fn run_filter(
-    cmd: &str,
-    input: &str,
-) -> Option<String> {
+fn run_filter(cmd: &str, input: &str) -> Option<String> {
     use std::io::Write;
     use std::process::{Command, Stdio};
     let mut child = Command::new("sh")
@@ -137,9 +106,7 @@ fn run_filter(
         let _ = stdin.write_all(input.as_bytes());
     }
     let out = child.wait_with_output().ok()?;
-    Some(
-        String::from_utf8_lossy(&out.stdout).to_string(),
-    )
+    Some(String::from_utf8_lossy(&out.stdout).to_string())
 }
 
 #[cfg(test)]

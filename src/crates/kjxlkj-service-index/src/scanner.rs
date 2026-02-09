@@ -9,11 +9,7 @@ pub fn scan_directory(root: &Path) -> Vec<PathBuf> {
     result
 }
 
-fn scan_recursive(
-    root: &Path,
-    dir: &Path,
-    result: &mut Vec<PathBuf>,
-) {
+fn scan_recursive(root: &Path, dir: &Path, result: &mut Vec<PathBuf>) {
     let entries = match std::fs::read_dir(dir) {
         Ok(e) => e,
         Err(_) => return,
@@ -30,8 +26,7 @@ fn scan_recursive(
         }
         if matches!(
             name_str.as_ref(),
-            "node_modules" | "target" | "__pycache__"
-                | ".git" | "dist" | "build"
+            "node_modules" | "target" | "__pycache__" | ".git" | "dist" | "build"
         ) {
             continue;
         }

@@ -12,18 +12,14 @@ impl EditorState {
             Some(id) => id,
             None => return,
         };
-        let cursor =
-            match self.focused_window() {
-                Some(w) => w.cursor,
-                None => return,
-            };
+        let cursor = match self.focused_window() {
+            Some(w) => w.cursor,
+            None => return,
+        };
 
         // Truncate forward entries.
-        if self.jump_list_pos
-            < self.jump_list.len()
-        {
-            self.jump_list
-                .truncate(self.jump_list_pos);
+        if self.jump_list_pos < self.jump_list.len() {
+            self.jump_list.truncate(self.jump_list_pos);
         }
 
         // Avoid consecutive duplicates.
@@ -42,19 +38,14 @@ impl EditorState {
 
     /// Jump to older position (Ctrl-O).
     pub(crate) fn do_jump_older(&mut self) {
-        if self.jump_list_pos == 0
-            || self.jump_list.is_empty()
-        {
+        if self.jump_list_pos == 0 || self.jump_list.is_empty() {
             return;
         }
         self.jump_list_pos -= 1;
-        let (buf_id, cursor) =
-            self.jump_list[self.jump_list_pos];
+        let (buf_id, cursor) = self.jump_list[self.jump_list_pos];
         if self.active_buffer_id() != Some(buf_id) {
             if self.buffers.contains_key(&buf_id) {
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
+                if let Some(w) = self.focused_window_mut() {
                     w.set_buffer(buf_id);
                 }
             }
@@ -66,19 +57,14 @@ impl EditorState {
 
     /// Jump to newer position (Ctrl-I / Tab).
     pub(crate) fn do_jump_newer(&mut self) {
-        if self.jump_list_pos
-            >= self.jump_list.len()
-        {
+        if self.jump_list_pos >= self.jump_list.len() {
             return;
         }
-        let (buf_id, cursor) =
-            self.jump_list[self.jump_list_pos];
+        let (buf_id, cursor) = self.jump_list[self.jump_list_pos];
         self.jump_list_pos += 1;
         if self.active_buffer_id() != Some(buf_id) {
             if self.buffers.contains_key(&buf_id) {
-                if let Some(w) =
-                    self.focused_window_mut()
-                {
+                if let Some(w) = self.focused_window_mut() {
                     w.set_buffer(buf_id);
                 }
             }

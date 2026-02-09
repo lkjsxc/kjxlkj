@@ -6,11 +6,7 @@ use crate::EditorState;
 
 impl EditorState {
     /// Execute `:delete` on a line range.
-    pub(crate) fn do_range_delete(
-        &mut self,
-        start: usize,
-        end: usize,
-    ) {
+    pub(crate) fn do_range_delete(&mut self, start: usize, end: usize) {
         let bid = match self.active_buffer_id() {
             Some(b) => b,
             None => return,
@@ -44,11 +40,7 @@ impl EditorState {
     }
 
     /// Execute `:yank` on a line range (stores in unnamed).
-    pub(crate) fn do_range_yank(
-        &mut self,
-        start: usize,
-        end: usize,
-    ) {
+    pub(crate) fn do_range_yank(&mut self, start: usize, end: usize) {
         let bid = match self.active_buffer_id() {
             Some(b) => b,
             None => return,
@@ -61,21 +53,13 @@ impl EditorState {
             for l in s..e {
                 text.push_str(&buf.content.line_str(l));
             }
-            self.register_file.store(
-                kjxlkj_core_types::RegisterName::Unnamed,
-                text,
-                true,
-            );
+            self.register_file
+                .store(kjxlkj_core_types::RegisterName::Unnamed, text, true);
         }
     }
 
     /// Execute `:copy` (`:t`): copy lines to a destination.
-    pub(crate) fn do_range_copy(
-        &mut self,
-        start: usize,
-        end: usize,
-        dest: usize,
-    ) {
+    pub(crate) fn do_range_copy(&mut self, start: usize, end: usize, dest: usize) {
         let bid = match self.active_buffer_id() {
             Some(b) => b,
             None => return,
@@ -89,18 +73,14 @@ impl EditorState {
                 text.push_str(&buf.content.line_str(l));
             }
             drop(buf);
-            if let Some(buf) =
-                self.buffers.get_mut(&bid)
-            {
+            if let Some(buf) = self.buffers.get_mut(&bid) {
                 let d = dest.min(buf.line_count());
                 let off = if d >= buf.line_count() {
                     buf.content.len_chars()
                 } else {
                     buf.content.line_start_offset(d)
                 };
-                for (i, ch) in
-                    text.chars().enumerate()
-                {
+                for (i, ch) in text.chars().enumerate() {
                     buf.content.insert_char(off + i, ch);
                 }
                 buf.modified = true;
@@ -109,12 +89,7 @@ impl EditorState {
     }
 
     /// Execute `:move` (`:m`): move lines to a destination.
-    pub(crate) fn do_range_move(
-        &mut self,
-        start: usize,
-        end: usize,
-        dest: usize,
-    ) {
+    pub(crate) fn do_range_move(&mut self, start: usize, end: usize, dest: usize) {
         // Copy first, then delete source lines.
         self.do_range_copy(start, end, dest);
         // After copy, the source shifted if dest < start.
@@ -128,17 +103,9 @@ impl EditorState {
     }
 
     /// Execute `:normal` on a range of lines.
-    pub(crate) fn do_range_normal(
-        &mut self,
-        start: usize,
-        end: usize,
-        keys_str: &str,
-    ) {
+    pub(crate) fn do_range_normal(&mut self, start: usize, end: usize, keys_str: &str) {
         let keys = parse_key_string(keys_str);
-        let lc = self
-            .active_buffer()
-            .map(|b| b.line_count())
-            .unwrap_or(0);
+        let lc = self.active_buffer().map(|b| b.line_count()).unwrap_or(0);
         let s = start.min(lc.saturating_sub(1));
         let e = end.min(lc);
         for line in s..e {
@@ -167,15 +134,9 @@ mod tests {
         ed.insert_char('\n');
         ed.insert_char('c');
         ed.mode = kjxlkj_core_types::Mode::Normal;
-        let initial = ed
-            .active_buffer()
-            .unwrap()
-            .line_count();
+        let initial = ed.active_buffer().unwrap().line_count();
         ed.do_range_delete(0, 1);
-        let after = ed
-            .active_buffer()
-            .unwrap()
-            .line_count();
+        let after = ed.active_buffer().unwrap().line_count();
         assert!(after < initial);
     }
 }

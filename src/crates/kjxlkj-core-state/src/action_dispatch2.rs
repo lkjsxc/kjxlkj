@@ -1,14 +1,11 @@
 //! Extended action dispatch (overflow from action_dispatch).
 
-use kjxlkj_core_types::{Action, Mode};
 use crate::EditorState;
+use kjxlkj_core_types::{Action, Mode};
 
 impl EditorState {
     /// Dispatch actions not handled by the primary match.
-    pub(crate) fn dispatch_extended(
-        &mut self,
-        action: Action,
-    ) {
+    pub(crate) fn dispatch_extended(&mut self, action: Action) {
         match action {
             Action::SetMark(ch) => self.do_set_mark(ch),
             Action::JumpToMark(ch) => self.do_jump_to_mark(ch),
@@ -45,14 +42,16 @@ impl EditorState {
             Action::ZoomWindow => self.do_zoom_window(),
             Action::RotateWindows(forward) => self.do_rotate_windows(forward),
             Action::MoveWindow(dir) => self.do_move_window(dir),
-            Action::InsertNormal => { self.mode = Mode::InsertNormal; }
+            Action::InsertNormal => {
+                self.mode = Mode::InsertNormal;
+            }
             Action::OperatorTextObject(op, tobj, count) => {
                 self.do_operator_text_object(op, tobj, count);
             }
             Action::SwitchBuffer(name) => self.do_switch_buffer(&name),
             Action::Paste(text) => self.do_paste_text(&text),
-            Action::SessionSave => {} // Handled at main loop level
-            Action::SessionLoad => {} // Handled at main loop level
+            Action::SessionSave => {}   // Handled at main loop level
+            Action::SessionLoad => {}   // Handled at main loop level
             Action::SpawnTerminal => {} // Handled at main loop level
             Action::Substitute(args) => self.do_substitute(&args),
             Action::InsertRegister(reg) => self.do_insert_register(reg),
@@ -121,9 +120,9 @@ impl EditorState {
                     self.multi_cursor.add_cursor(cursor);
                 }
             }
-            Action::MultiCursorAll => {} // Select all matches stub
+            Action::MultiCursorAll => {}  // Select all matches stub
             Action::MultiCursorSkip => {} // Skip match stub
-            Action::SnippetExpand => {} // Snippet expand stub
+            Action::SnippetExpand => {}   // Snippet expand stub
             Action::SnippetNext => {
                 self.snippet_state.next_stop();
             }
@@ -131,11 +130,14 @@ impl EditorState {
                 self.snippet_state.prev_stop();
             }
             Action::SpellToggle => self.spell_checker.toggle(),
-            Action::SpellNext => { self.spell_checker.next_error(); }
-            Action::SpellPrev => { self.spell_checker.prev_error(); }
+            Action::SpellNext => {
+                self.spell_checker.next_error();
+            }
+            Action::SpellPrev => {
+                self.spell_checker.prev_error();
+            }
             Action::AutoSaveToggle => {
-                self.persistence.auto_save.enabled =
-                    !self.persistence.auto_save.enabled;
+                self.persistence.auto_save.enabled = !self.persistence.auto_save.enabled;
             }
             Action::UndoTreeToggle => {} // Undo tree viz stub
             Action::NotificationDismiss => {

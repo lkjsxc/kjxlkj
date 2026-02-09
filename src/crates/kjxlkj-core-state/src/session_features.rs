@@ -1,24 +1,16 @@
-//! Detailed session features: macros persistence,
-//! register persistence, expression register eval,
-//! and ex command batch processing.
+//! Session features.
 
 use std::collections::HashMap;
 
-/// Macro recording entry for session persistence.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct MacroEntry {
-    /// Register name character.
     pub register: char,
-    /// Recorded key sequence as string representation.
     pub keys: String,
 }
 
-/// Macro persistence state.
 #[derive(Debug, Clone, Default)]
 pub struct MacroPersistence {
-    /// Saved macros for session save/restore.
     pub saved_macros: Vec<MacroEntry>,
-    /// Whether to persist macros across sessions.
     pub persist: bool,
 }
 
@@ -30,17 +22,14 @@ impl MacroPersistence {
         }
     }
 
-    /// Save a macro for persistence.
     pub fn save_macro(&mut self, register: char, keys: &str) {
-        self.saved_macros
-            .retain(|m| m.register != register);
+        self.saved_macros.retain(|m| m.register != register);
         self.saved_macros.push(MacroEntry {
             register,
             keys: keys.to_string(),
         });
     }
 
-    /// Get a saved macro.
     pub fn get_macro(&self, register: char) -> Option<&str> {
         self.saved_macros
             .iter()
@@ -49,12 +38,9 @@ impl MacroPersistence {
     }
 }
 
-/// Register persistence for session save/restore.
 #[derive(Debug, Clone, Default)]
 pub struct RegisterPersistence {
-    /// Named register contents (a-z).
     pub named: HashMap<char, String>,
-    /// Whether to persist registers across sessions.
     pub persist: bool,
 }
 
@@ -66,25 +52,19 @@ impl RegisterPersistence {
         }
     }
 
-    /// Save a register value.
     pub fn save_register(&mut self, name: char, content: &str) {
         self.named.insert(name, content.to_string());
     }
 
-    /// Get a saved register value.
     pub fn get_register(&self, name: char) -> Option<&str> {
         self.named.get(&name).map(|s| s.as_str())
     }
 }
 
-/// Simple expression evaluator for `=` register.
 #[derive(Debug, Clone, Default)]
 pub struct ExpressionEval {
-    /// Last evaluated expression.
     pub last_expr: Option<String>,
-    /// Last result.
     pub last_result: Option<String>,
-    /// Variable bindings for expressions.
     pub variables: HashMap<String, String>,
 }
 
@@ -93,10 +73,8 @@ impl ExpressionEval {
         Self::default()
     }
 
-    /// Evaluate a simple arithmetic or string expression.
     pub fn eval(&mut self, expr: &str) -> String {
         self.last_expr = Some(expr.to_string());
-        // Simple integer arithmetic
         let result = if let Some(val) = self.try_arithmetic(expr) {
             val.to_string()
         } else if let Some(val) = self.variables.get(expr) {
@@ -130,19 +108,14 @@ impl ExpressionEval {
         expr.parse::<i64>().ok()
     }
 
-    /// Set a variable.
     pub fn set_var(&mut self, name: &str, value: &str) {
-        self.variables
-            .insert(name.to_string(), value.to_string());
+        self.variables.insert(name.to_string(), value.to_string());
     }
 }
 
-/// Ex command batch processor for `:source` and scripts.
 #[derive(Debug, Clone, Default)]
 pub struct ExCommandBatch {
-    /// Queue of commands to execute.
     pub queue: Vec<String>,
-    /// Current index in the queue.
     pub index: usize,
 }
 
@@ -151,7 +124,6 @@ impl ExCommandBatch {
         Self::default()
     }
 
-    /// Load commands from script text (one per line).
     pub fn load_script(&mut self, script: &str) {
         self.queue = script
             .lines()
@@ -162,7 +134,6 @@ impl ExCommandBatch {
         self.index = 0;
     }
 
-    /// Get the next command to execute.
     pub fn next_command(&mut self) -> Option<String> {
         if self.index < self.queue.len() {
             let cmd = self.queue[self.index].clone();
@@ -173,12 +144,10 @@ impl ExCommandBatch {
         }
     }
 
-    /// Whether there are more commands.
     pub fn has_more(&self) -> bool {
         self.index < self.queue.len()
     }
 
-    /// Reset the batch.
     pub fn reset(&mut self) {
         self.queue.clear();
         self.index = 0;

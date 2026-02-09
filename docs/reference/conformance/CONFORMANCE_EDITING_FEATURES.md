@@ -163,5 +163,5 @@ Editing-related features, rendering, and UI subsystems in the conformance ledger
 
 ## Related
 
-- Editing operators: [/docs/reference/CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/CONFORMANCE_EDITING_OPERATORS.md)
-- Modes and keys: [/docs/reference/CONFORMANCE_MODES.md](/docs/reference/CONFORMANCE_MODES.md)
+- Editing operators: [/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md](/docs/reference/conformance/CONFORMANCE_EDITING_OPERATORS.md)
+- Modes and keys: [/docs/reference/conformance/CONFORMANCE_MODES.md](/docs/reference/conformance/CONFORMANCE_MODES.md)

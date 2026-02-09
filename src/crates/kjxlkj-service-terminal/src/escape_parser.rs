@@ -97,8 +97,7 @@ impl EscapeParser {
     fn csi_entry(&mut self, byte: u8, actions: &mut Vec<ParseAction>) {
         match byte {
             b'0'..=b'9' => {
-                self.current_param =
-                    (byte - b'0') as u16;
+                self.current_param = (byte - b'0') as u16;
                 self.state = ParseState::CsiParam;
             }
             b';' => {
@@ -110,10 +109,7 @@ impl EscapeParser {
             }
             0x40..=0x7e => {
                 let cmd = byte as char;
-                actions.push(ParseAction::CsiDispatch(
-                    cmd,
-                    self.params.clone(),
-                ));
+                actions.push(ParseAction::CsiDispatch(cmd, self.params.clone()));
                 self.state = ParseState::Ground;
             }
             _ => {
@@ -137,10 +133,7 @@ impl EscapeParser {
             0x40..=0x7e => {
                 self.params.push(self.current_param);
                 let cmd = byte as char;
-                actions.push(ParseAction::CsiDispatch(
-                    cmd,
-                    self.params.clone(),
-                ));
+                actions.push(ParseAction::CsiDispatch(cmd, self.params.clone()));
                 self.state = ParseState::Ground;
             }
             _ => {
@@ -152,10 +145,7 @@ impl EscapeParser {
     fn osc_string(&mut self, byte: u8, actions: &mut Vec<ParseAction>) {
         match byte {
             0x07 | 0x1b => {
-                let s = String::from_utf8_lossy(
-                    &self.intermediates,
-                )
-                .to_string();
+                let s = String::from_utf8_lossy(&self.intermediates).to_string();
                 actions.push(ParseAction::OscDispatch(s));
                 self.state = ParseState::Ground;
             }

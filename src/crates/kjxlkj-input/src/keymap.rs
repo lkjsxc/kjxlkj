@@ -42,9 +42,7 @@ impl KeyTrie {
         let entry = self
             .children
             .entry(keys[0].clone())
-            .or_insert_with(|| {
-                KeymapEntry::Prefix(KeyTrie::new())
-            });
+            .or_insert_with(|| KeymapEntry::Prefix(KeyTrie::new()));
         if let KeymapEntry::Prefix(ref mut trie) = entry {
             trie.bind_seq(&keys[1..], action);
         }
@@ -57,10 +55,7 @@ impl KeyTrie {
 
     /// Check if the trie has a prefix for this key.
     pub fn has_prefix(&self, key: &Key) -> bool {
-        matches!(
-            self.children.get(key),
-            Some(KeymapEntry::Prefix(_))
-        )
+        matches!(self.children.get(key), Some(KeymapEntry::Prefix(_)))
     }
 
     /// Number of bindings.
@@ -92,11 +87,7 @@ impl KeyMatcher {
     }
 
     /// Feed a key. Returns the action if a binding was matched.
-    pub fn feed(
-        &mut self,
-        key: Key,
-        trie: &KeyTrie,
-    ) -> KeyMatchResult {
+    pub fn feed(&mut self, key: Key, trie: &KeyTrie) -> KeyMatchResult {
         self.pending.push(key);
 
         // Walk the trie with the pending sequence.
@@ -145,10 +136,10 @@ mod tests {
     #[test]
     fn single_key_binding() {
         let mut trie = KeyTrie::new();
-        trie.bind(Key::char('j'), Action::MoveCursor(
-            kjxlkj_core_types::Motion::Down,
-            1,
-        ));
+        trie.bind(
+            Key::char('j'),
+            Action::MoveCursor(kjxlkj_core_types::Motion::Down, 1),
+        );
         assert!(trie.get(&Key::char('j')).is_some());
     }
 
@@ -157,10 +148,7 @@ mod tests {
         let mut trie = KeyTrie::new();
         trie.bind_seq(
             &[Key::char('g'), Key::char('g')],
-            Action::MoveCursor(
-                kjxlkj_core_types::Motion::GotoFirstLine,
-                1,
-            ),
+            Action::MoveCursor(kjxlkj_core_types::Motion::GotoFirstLine, 1),
         );
         assert!(trie.has_prefix(&Key::char('g')));
     }

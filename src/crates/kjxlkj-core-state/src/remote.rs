@@ -59,8 +59,7 @@ impl RemoteState {
     /// Parse a remote URI like `ssh://user@host:port/path`.
     pub fn parse_uri(uri: &str) -> Option<(RemoteMethod, String)> {
         if let Some(rest) = uri.strip_prefix("ssh://") {
-            let (hostpart, path) =
-                rest.split_once('/').unwrap_or((rest, ""));
+            let (hostpart, path) = rest.split_once('/').unwrap_or((rest, ""));
             let (userhost, port) = if hostpart.contains(':') {
                 let (h, p) = hostpart.rsplit_once(':').unwrap();
                 (h, p.parse::<u16>().unwrap_or(22))
@@ -72,13 +71,9 @@ impl RemoteState {
             } else {
                 userhost.to_string()
             };
-            Some((
-                RemoteMethod::Ssh { host, port },
-                format!("/{}", path),
-            ))
+            Some((RemoteMethod::Ssh { host, port }, format!("/{}", path)))
         } else if let Some(rest) = uri.strip_prefix("scp://") {
-            let (host, path) =
-                rest.split_once(':').unwrap_or((rest, ""));
+            let (host, path) = rest.split_once(':').unwrap_or((rest, ""));
             Some((
                 RemoteMethod::Scp {
                     host: host.to_string(),
@@ -91,16 +86,10 @@ impl RemoteState {
     }
 
     /// Build the SSH command for opening a remote file.
-    pub fn ssh_command(
-        &self,
-        remote_path: &str,
-    ) -> Option<String> {
+    pub fn ssh_command(&self, remote_path: &str) -> Option<String> {
         match &self.method {
             Some(RemoteMethod::Ssh { host, port }) => {
-                let user = self
-                    .username
-                    .as_deref()
-                    .unwrap_or("root");
+                let user = self.username.as_deref().unwrap_or("root");
                 Some(format!(
                     "ssh -p {} {}@{} cat {}",
                     port, user, host, remote_path
@@ -141,9 +130,7 @@ mod tests {
 
     #[test]
     fn parse_ssh_uri() {
-        let (method, path) =
-            RemoteState::parse_uri("ssh://user@host:2222/tmp/file.rs")
-                .unwrap();
+        let (method, path) = RemoteState::parse_uri("ssh://user@host:2222/tmp/file.rs").unwrap();
         match method {
             RemoteMethod::Ssh { host, port } => {
                 assert_eq!(host, "host");

@@ -32,9 +32,7 @@ Override with an explicit setting if detection is wrong.
 
 Set the layout directly in the config file:
 
-```
-set keyboardlayout=dvorak
-```
+  set keyboardlayout=dvorak
 
 | Value | Layout |
 |-------|--------|
@@ -48,9 +46,7 @@ set keyboardlayout=dvorak
 
 Some users prefer vim keys to stay in QWERTY positions:
 
-```
-set langmap=dh,hj,tk,nl
-```
+  set langmap=dh,hj,tk,nl
 
 This works like Vim's `langmap`: the left character (physical key)
 is translated to the right character (logical key) in Normal mode.
@@ -66,14 +62,12 @@ With Dvorak, this maps:
 
 Define a full remapping table for any layout:
 
-```
-[keymap.custom]
-langmap = """
-  dh,hj,tk,nl,
-  DH,HJ,TK,NL,
-  -[,=[,_],+]
-"""
-```
+    [keymap.custom]
+    langmap = """
+      dh,hj,tk,nl,
+      DH,HJ,TK,NL,
+      -[,=[,_],+]
+    """
 
 | Field | Purpose |
 |-------|---------|
@@ -95,13 +89,11 @@ Common Dvorak-friendly remappings:
 
 ### Full Dvorak Config
 
-```
-set keyboardlayout=dvorak
-set langmap=dh,hj,tk,nl,DH,HJ,TK,NL
--- Optionally remap common operators too:
-nmap s cursor.down      -- Dvorak 's' is easy to reach
-nmap n search.next      -- restore 'n' to search-next
-```
+  set keyboardlayout=dvorak
+  set langmap=dh,hj,tk,nl,DH,HJ,TK,NL
+  -- Optionally remap common operators too:
+  nmap s cursor.down      -- Dvorak 's' is easy to reach
+  nmap n search.next      -- restore 'n' to search-next
 
 ## Colemak Considerations
 

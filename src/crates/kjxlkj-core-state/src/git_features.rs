@@ -56,8 +56,7 @@ pub struct GitState {
 impl EditorState {
     /// Toggle gitsigns display.
     pub fn do_git_signs(&mut self) {
-        self.git_state.signs_enabled =
-            !self.git_state.signs_enabled;
+        self.git_state.signs_enabled = !self.git_state.signs_enabled;
         if self.git_state.signs_enabled {
             self.refresh_git_signs();
         } else {
@@ -73,8 +72,7 @@ impl EditorState {
         let line_count = buf.content.line_count();
         // Initialize all lines with no sign.
         // Real implementation would compare with git index.
-        self.git_state.signs =
-            vec![None; line_count];
+        self.git_state.signs = vec![None; line_count];
     }
 
     /// Show git diff for current file.
@@ -90,8 +88,7 @@ impl EditorState {
 
     /// Toggle inline blame for current line.
     pub fn do_git_blame(&mut self) {
-        self.git_state.blame_active =
-            !self.git_state.blame_active;
+        self.git_state.blame_active = !self.git_state.blame_active;
         if !self.git_state.blame_active {
             self.git_state.blame_text = None;
         }
@@ -115,20 +112,16 @@ impl EditorState {
             let trimmed = line.trim();
             if trimmed.starts_with("<<<<<<<") {
                 ours_start = Some(i);
-            } else if trimmed.starts_with("=======")
-            {
+            } else if trimmed.starts_with("=======") {
                 separator = Some(i);
             } else if trimmed.starts_with(">>>>>>>") {
-                if let (Some(os), Some(sep)) =
-                    (ours_start, separator)
-                {
-                    conflicts
-                        .push(MergeConflict {
-                            ours_start: os,
-                            theirs_end: i,
-                            separator: sep,
-                            base_start: None,
-                        });
+                if let (Some(os), Some(sep)) = (ours_start, separator) {
+                    conflicts.push(MergeConflict {
+                        ours_start: os,
+                        theirs_end: i,
+                        separator: sep,
+                        base_start: None,
+                    });
                 }
                 ours_start = None;
                 separator = None;

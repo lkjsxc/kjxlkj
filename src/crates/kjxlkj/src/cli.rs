@@ -52,9 +52,7 @@ mod tests {
 
     #[test]
     fn cli_with_file() {
-        let cli =
-            Cli::try_parse_from(["kjxlkj", "test.txt"])
-                .unwrap();
+        let cli = Cli::try_parse_from(["kjxlkj", "test.txt"]).unwrap();
         assert_eq!(cli.files.len(), 1);
     }
 }

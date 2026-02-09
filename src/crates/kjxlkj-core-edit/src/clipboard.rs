@@ -33,15 +33,13 @@ pub fn detect_provider() -> ClipboardProvider {
 }
 
 /// Copy text to system clipboard.
-pub fn clipboard_set(
-    provider: ClipboardProvider,
-    text: &str,
-    primary: bool,
-) -> bool {
+pub fn clipboard_set(provider: ClipboardProvider, text: &str, primary: bool) -> bool {
     match provider {
         ClipboardProvider::WlClipboard => {
             let mut args = vec!["--type", "text/plain"];
-            if primary { args.push("--primary"); }
+            if primary {
+                args.push("--primary");
+            }
             run_stdin("wl-copy", &args, text)
         }
         ClipboardProvider::Xclip => {
@@ -52,22 +50,19 @@ pub fn clipboard_set(
             let flag = if primary { "--primary" } else { "--clipboard" };
             run_stdin("xsel", &[flag, "--input"], text)
         }
-        ClipboardProvider::Pbcopy => {
-            run_stdin("pbcopy", &[], text)
-        }
+        ClipboardProvider::Pbcopy => run_stdin("pbcopy", &[], text),
         ClipboardProvider::Internal => false,
     }
 }
 
 /// Get text from system clipboard.
-pub fn clipboard_get(
-    provider: ClipboardProvider,
-    primary: bool,
-) -> Option<String> {
+pub fn clipboard_get(provider: ClipboardProvider, primary: bool) -> Option<String> {
     match provider {
         ClipboardProvider::WlClipboard => {
             let mut args = vec!["--no-newline"];
-            if primary { args.push("--primary"); }
+            if primary {
+                args.push("--primary");
+            }
             run_stdout("wl-paste", &args)
         }
         ClipboardProvider::Xclip => {
@@ -78,9 +73,7 @@ pub fn clipboard_get(
             let flag = if primary { "--primary" } else { "--clipboard" };
             run_stdout("xsel", &[flag, "--output"])
         }
-        ClipboardProvider::Pbcopy => {
-            run_stdout("pbpaste", &[])
-        }
+        ClipboardProvider::Pbcopy => run_stdout("pbpaste", &[]),
         ClipboardProvider::Internal => None,
     }
 }

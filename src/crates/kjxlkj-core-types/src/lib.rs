@@ -33,7 +33,6 @@ pub use operator::{ForceMotionType, Operator};
 pub use register::{Register, RegisterName};
 pub use service::{ServiceRequest, ServiceResponse};
 pub use syntax::{
-    Diagnostic, DiagnosticSeverity, FoldRegion,
-    HighlightGroup, HighlightSpan, HighlightStyle,
+    Diagnostic, DiagnosticSeverity, FoldRegion, HighlightGroup, HighlightSpan, HighlightStyle,
 };
 pub use text_object::{TextObject, TextObjectKind, TextObjectScope};

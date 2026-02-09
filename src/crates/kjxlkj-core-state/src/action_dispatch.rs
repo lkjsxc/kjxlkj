@@ -1,8 +1,8 @@
 //! Action dispatch: process editor actions by delegating
 //! to the appropriate mode/edit/state handlers.
 
-use kjxlkj_core_types::{Action, Mode, Operator};
 use crate::EditorState;
+use kjxlkj_core_types::{Action, Mode, Operator};
 
 impl EditorState {
     /// Dispatch a single action, mutating editor state.
@@ -34,7 +34,9 @@ impl EditorState {
             Action::EnterVisual(kind) => self.enter_visual(kind),
             Action::EnterOperatorPending(op) => self.enter_op_pending(op),
             Action::EnterCommand(kind) => self.enter_command(kind),
-            Action::EnterReplace => { self.mode = Mode::Replace; }
+            Action::EnterReplace => {
+                self.mode = Mode::Replace;
+            }
             Action::ReturnToNormal => {
                 if self.mode == Mode::Insert {
                     self.update_caret_mark();
@@ -44,8 +46,7 @@ impl EditorState {
                     if let Some(vs) = &self.visual_state {
                         let (al, ac) = vs.anchor;
                         let (cl, cc) = self.cursor_pos();
-                        let (sl, sc, el, ec) = if al < cl
-                            || (al == cl && ac <= cc) {
+                        let (sl, sc, el, ec) = if al < cl || (al == cl && ac <= cc) {
                             (al, ac, cl, cc)
                         } else {
                             (cl, cc, al, ac)

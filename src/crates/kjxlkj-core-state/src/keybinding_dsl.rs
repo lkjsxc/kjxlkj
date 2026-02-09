@@ -105,18 +105,12 @@ impl CommandPalette {
     /// Get filtered commands.
     pub fn filtered(&self) -> Vec<&str> {
         if self.filter.is_empty() {
-            return self
-                .commands
-                .iter()
-                .map(|s| s.as_str())
-                .collect();
+            return self.commands.iter().map(|s| s.as_str()).collect();
         }
         let lower = self.filter.to_lowercase();
         self.commands
             .iter()
-            .filter(|c| {
-                c.to_lowercase().contains(&lower)
-            })
+            .filter(|c| c.to_lowercase().contains(&lower))
             .map(|s| s.as_str())
             .collect()
     }
@@ -145,11 +139,7 @@ mod tests {
     #[test]
     fn command_palette_filter() {
         let mut cp = CommandPalette::new();
-        cp.open(vec![
-            "write".into(),
-            "quit".into(),
-            "wqa".into(),
-        ]);
+        cp.open(vec!["write".into(), "quit".into(), "wqa".into()]);
         cp.set_filter("w");
         let f = cp.filtered();
         assert_eq!(f.len(), 2);

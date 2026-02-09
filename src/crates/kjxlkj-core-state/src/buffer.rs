@@ -67,11 +67,7 @@ impl BufferState {
     }
 
     /// Create a buffer from file content.
-    pub fn from_content(
-        id: BufferId,
-        path: PathBuf,
-        text: &str,
-    ) -> Self {
+    pub fn from_content(id: BufferId, path: PathBuf, text: &str) -> Self {
         let le = if text.contains("\r\n") {
             LineEnding::CrLf
         } else {
@@ -113,7 +109,8 @@ impl BufferState {
         end_line: usize,
         end_col: usize,
     ) {
-        self.content.delete(start_line, start_col, end_line, end_col);
+        self.content
+            .delete(start_line, start_col, end_line, end_col);
         self.version += 1;
         self.modified = true;
     }
@@ -134,19 +131,13 @@ impl BufferState {
     /// Detect file type from path and content.
     pub fn detect_file_type(&mut self) {
         if let Some(path) = &self.path {
-            let path_str =
-                path.to_string_lossy().to_string();
-            let first_line = if self.content.line_count()
-                > 0
-            {
+            let path_str = path.to_string_lossy().to_string();
+            let first_line = if self.content.line_count() > 0 {
                 Some(self.content.line_str(0))
             } else {
                 None
             };
-            let ft = crate::filetype::detect_filetype(
-                &path_str,
-                first_line.as_deref(),
-            );
+            let ft = crate::filetype::detect_filetype(&path_str, first_line.as_deref());
             if !ft.is_empty() {
                 self.file_type = ft;
             }

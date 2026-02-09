@@ -8,8 +8,7 @@ pub fn install_panic_handler() {
 
     panic::set_hook(Box::new(move |info| {
         // Attempt to restore terminal.
-        let _ =
-            crossterm::terminal::disable_raw_mode();
+        let _ = crossterm::terminal::disable_raw_mode();
         let _ = crossterm::execute!(
             std::io::stdout(),
             crossterm::cursor::Show,
@@ -19,17 +18,11 @@ pub fn install_panic_handler() {
         // Write crash info.
         eprintln!("\n=== kjxlkj CRASH ===");
         if let Some(location) = info.location() {
-            eprintln!(
-                "Panic at {}:{}",
-                location.file(),
-                location.line()
-            );
+            eprintln!("Panic at {}:{}", location.file(), location.line());
         }
         if let Some(msg) = info.payload().downcast_ref::<&str>() {
             eprintln!("Message: {msg}");
-        } else if let Some(msg) =
-            info.payload().downcast_ref::<String>()
-        {
+        } else if let Some(msg) = info.payload().downcast_ref::<String>() {
             eprintln!("Message: {msg}");
         }
         eprintln!("=== END CRASH ===\n");

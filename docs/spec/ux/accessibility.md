@@ -45,19 +45,17 @@ Activate with: `set theme=high-contrast`
 
 Override any highlight group to suit specific visual needs:
 
-```
-[highlight.Normal]
-fg = "#FFFFFF"
-bg = "#000000"
+	[highlight.Normal]
+	fg = "#FFFFFF"
+	bg = "#000000"
 
-[highlight.Comment]
-fg = "#FFD700"
-style = "italic"
+	[highlight.Comment]
+	fg = "#FFD700"
+	style = "italic"
 
-[highlight.Error]
-fg = "#FF0000"
-style = "bold,underline"
-```
+	[highlight.Error]
+	fg = "#FF0000"
+	style = "bold,underline"
 
 See `/home/lkjsxc/repos/kjxlkj/docs/spec/ui/themes.md` for the
 full highlight group reference.
@@ -66,9 +64,7 @@ full highlight group reference.
 
 Disable animations:
 
-```
-set animation=none
-```
+	set animation=none
 
 | Setting | Values | Default |
 |---------|--------|---------|
@@ -142,12 +138,11 @@ Configure cursor appearance for visibility:
 | `cursor.highlight_line` | `true`, `false` | `false` |
 | `cursor.highlight_column` | `true`, `false` | `false` |
 
-```
-set cursor.shape=block
-set cursor.blink=true
-set cursor.blink_rate=400
-set cursor.highlight_line=true
-```
+	set cursor.shape=block
+	set cursor.blink=true
+	set cursor.blink_rate=400
+	set cursor.highlight_line=true
+
 
 Enabling `highlight_line` draws a visible bar across the full
 width of the viewport, making cursor location easy to find.

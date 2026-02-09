@@ -39,8 +39,7 @@ impl CellGrid {
     /// Set a cell at (col, row).
     pub fn set(&mut self, col: u16, row: u16, cell: Cell) {
         if col < self.cols && row < self.rows {
-            let idx =
-                row as usize * self.cols as usize + col as usize;
+            let idx = row as usize * self.cols as usize + col as usize;
             self.cells[idx] = cell;
         }
     }
@@ -61,10 +60,7 @@ impl CellGrid {
                 break;
             }
             let mut cell = Cell::default();
-            cell.grapheme =
-                compact_str::CompactString::from(
-                    ch.to_string().as_str(),
-                );
+            cell.grapheme = compact_str::CompactString::from(ch.to_string().as_str());
             cell.width = 1;
             cell.fg = fg;
             cell.bg = bg;
@@ -94,21 +90,14 @@ impl CellGrid {
     }
 
     /// Fill a row with a repeated character.
-    pub fn fill_row(
-        &mut self,
-        row: u16,
-        ch: char,
-        fg: Color,
-        bg: Color,
-    ) {
+    pub fn fill_row(&mut self, row: u16, ch: char, fg: Color, bg: Color) {
         if row >= self.rows {
             return;
         }
         let s = ch.to_string();
         for col in 0..self.cols {
             let mut cell = Cell::default();
-            cell.grapheme =
-                compact_str::CompactString::from(s.as_str());
+            cell.grapheme = compact_str::CompactString::from(s.as_str());
             cell.width = 1;
             cell.fg = fg;
             cell.bg = bg;

@@ -7,17 +7,11 @@ use crate::EditorState;
 fn comment_prefix(file_type: &str) -> Option<&'static str> {
     match file_type {
         "rust" | "rs" => Some("// "),
-        "javascript" | "js" | "typescript" | "ts"
-        | "c" | "cpp" | "java" | "go" | "swift"
+        "javascript" | "js" | "typescript" | "ts" | "c" | "cpp" | "java" | "go" | "swift"
         | "kotlin" | "scala" | "dart" => Some("// "),
-        "python" | "py" | "ruby" | "rb" | "bash"
-        | "sh" | "zsh" | "fish" | "toml" | "yaml"
-        | "yml" | "conf" | "perl" | "elixir" => {
-            Some("# ")
-        }
-        "lua" | "haskell" | "hs" | "sql" => {
-            Some("-- ")
-        }
+        "python" | "py" | "ruby" | "rb" | "bash" | "sh" | "zsh" | "fish" | "toml" | "yaml"
+        | "yml" | "conf" | "perl" | "elixir" => Some("# "),
+        "lua" | "haskell" | "hs" | "sql" => Some("-- "),
         "vim" | "vimscript" => Some("\" "),
         "lisp" | "clojure" | "scheme" => Some(";; "),
         "html" | "xml" => None,
@@ -27,9 +21,7 @@ fn comment_prefix(file_type: &str) -> Option<&'static str> {
 
 impl EditorState {
     /// Toggle line comment on the current line.
-    pub(crate) fn toggle_comment_line(
-        &mut self,
-    ) {
+    pub(crate) fn toggle_comment_line(&mut self) {
         let (line, _) = self.cursor_pos();
         let ft = self
             .active_buffer()
@@ -39,10 +31,7 @@ impl EditorState {
             Some(p) => p,
             None => return,
         };
-        let line_text = match self
-            .active_buffer()
-            .map(|b| b.content.line_content(line))
-        {
+        let line_text = match self.active_buffer().map(|b| b.content.line_content(line)) {
             Some(t) => t,
             None => return,
         };
@@ -56,72 +45,39 @@ impl EditorState {
         }
     }
 
-    fn comment_line(
-        &mut self,
-        line: usize,
-        prefix: &str,
-    ) {
-        if let Some(buf) = self.active_buffer_mut()
-        {
-            let line_text =
-                buf.content.line_content(line);
-            let indent_len = line_text.len()
-                - line_text.trim_start().len();
-            let off = buf
-                .content
-                .line_start_offset(line)
-                + indent_len;
-            for (i, ch) in
-                prefix.chars().enumerate()
-            {
+    fn comment_line(&mut self, line: usize, prefix: &str) {
+        if let Some(buf) = self.active_buffer_mut() {
+            let line_text = buf.content.line_content(line);
+            let indent_len = line_text.len() - line_text.trim_start().len();
+            let off = buf.content.line_start_offset(line) + indent_len;
+            for (i, ch) in prefix.chars().enumerate() {
                 buf.content.insert_char(off + i, ch);
             }
             buf.modified = true;
         }
     }
 
-    fn uncomment_line(
-        &mut self,
-        line: usize,
-        prefix: &str,
-    ) {
-        if let Some(buf) = self.active_buffer_mut()
-        {
-            let line_text =
-                buf.content.line_content(line);
-            let indent_len = line_text.len()
-                - line_text.trim_start().len();
-            let trimmed_prefix =
-                prefix.trim_end();
+    fn uncomment_line(&mut self, line: usize, prefix: &str) {
+        if let Some(buf) = self.active_buffer_mut() {
+            let line_text = buf.content.line_content(line);
+            let indent_len = line_text.len() - line_text.trim_start().len();
+            let trimmed_prefix = prefix.trim_end();
             // Check if it has exact prefix with space.
-            let remove_len = if line_text
-                [indent_len..]
-                .starts_with(prefix)
-            {
+            let remove_len = if line_text[indent_len..].starts_with(prefix) {
                 prefix.len()
-            } else if line_text[indent_len..]
-                .starts_with(trimmed_prefix)
-            {
+            } else if line_text[indent_len..].starts_with(trimmed_prefix) {
                 trimmed_prefix.len()
             } else {
                 return;
             };
-            let off = buf
-                .content
-                .line_start_offset(line)
-                + indent_len;
-            buf.content
-                .delete_range(off, off + remove_len);
+            let off = buf.content.line_start_offset(line) + indent_len;
+            buf.content.delete_range(off, off + remove_len);
             buf.modified = true;
         }
     }
 
     /// Toggle comments on a range of lines.
-    pub(crate) fn toggle_comment_range(
-        &mut self,
-        start: usize,
-        end: usize,
-    ) {
+    pub(crate) fn toggle_comment_range(&mut self, start: usize, end: usize) {
         for line in start..=end {
             // Simplified: toggle each line individually.
             let ft = self
@@ -132,17 +88,12 @@ impl EditorState {
                 Some(p) => p,
                 None => return,
             };
-            let line_text = match self
-                .active_buffer()
-                .map(|b| b.content.line_content(line))
-            {
+            let line_text = match self.active_buffer().map(|b| b.content.line_content(line)) {
                 Some(t) => t,
                 None => continue,
             };
             let trimmed = line_text.trim_start();
-            if trimmed.starts_with(
-                prefix.trim_end(),
-            ) {
+            if trimmed.starts_with(prefix.trim_end()) {
                 self.uncomment_line(line, prefix);
             } else {
                 self.comment_line(line, prefix);
@@ -162,16 +113,12 @@ mod tests {
 
     #[test]
     fn comment_prefix_python() {
-        assert_eq!(
-            comment_prefix("python"),
-            Some("# ")
-        );
+        assert_eq!(comment_prefix("python"), Some("# "));
     }
 
     #[test]
     fn toggle_comment() {
-        let mut state =
-            crate::EditorState::new(80, 24);
+        let mut state = crate::EditorState::new(80, 24);
         // Insert some text first.
         state.insert_char('h');
         state.insert_char('i');

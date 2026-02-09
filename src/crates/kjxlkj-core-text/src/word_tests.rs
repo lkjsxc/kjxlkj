@@ -1,8 +1,7 @@
 //! Tests for word classification and boundary detection.
 
 use crate::word::{
-    classify_word_char, find_word_boundary,
-    find_word_end, find_word_start_backward, WordKind,
+    classify_word_char, find_word_boundary, find_word_end, find_word_start_backward, WordKind,
 };
 
 #[test]

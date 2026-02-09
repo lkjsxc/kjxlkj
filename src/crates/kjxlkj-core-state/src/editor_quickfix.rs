@@ -47,15 +47,12 @@ impl EditorState {
 
     /// Jump to the current quickfix entry.
     fn jump_to_quickfix(&mut self) {
-        let entry = match self.quickfix.get(
-            self.quickfix_pos,
-        ) {
+        let entry = match self.quickfix.get(self.quickfix_pos) {
             Some(e) => e.clone(),
             None => return,
         };
         // Open file and go to line.
-        let path =
-            std::path::PathBuf::from(&entry.file);
+        let path = std::path::PathBuf::from(&entry.file);
         self.do_open_file(&path);
         let line = entry.line.saturating_sub(1);
         let col = entry.col.saturating_sub(1);
@@ -73,36 +70,25 @@ impl EditorState {
     }
 
     /// Set quickfix entries from a vector.
-    pub fn set_quickfix(
-        &mut self,
-        entries: Vec<crate::QuickfixEntry>,
-    ) {
+    pub fn set_quickfix(&mut self, entries: Vec<crate::QuickfixEntry>) {
         self.quickfix = entries;
         self.quickfix_pos = 0;
     }
 
     /// Parse grep output into quickfix entries.
-    pub fn parse_grep_output(
-        &mut self,
-        output: &str,
-    ) {
+    pub fn parse_grep_output(&mut self, output: &str) {
         let entries: Vec<crate::QuickfixEntry> = output
             .lines()
-            .filter_map(|line| {
-                parse_grep_line(line)
-            })
+            .filter_map(|line| parse_grep_line(line))
             .collect();
         self.set_quickfix(entries);
     }
 }
 
 /// Parse a single grep-style line.
-fn parse_grep_line(
-    line: &str,
-) -> Option<crate::QuickfixEntry> {
+fn parse_grep_line(line: &str) -> Option<crate::QuickfixEntry> {
     // file:line:col:text or file:line:text
-    let parts: Vec<&str> =
-        line.splitn(4, ':').collect();
+    let parts: Vec<&str> = line.splitn(4, ':').collect();
     if parts.len() < 3 {
         return None;
     }
@@ -129,8 +115,7 @@ mod tests {
 
     #[test]
     fn parse_grep_line_valid() {
-        let entry =
-            parse_grep_line("main.rs:10:5:error here");
+        let entry = parse_grep_line("main.rs:10:5:error here");
         assert!(entry.is_some());
         let e = entry.unwrap();
         assert_eq!(e.file, "main.rs");

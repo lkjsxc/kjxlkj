@@ -12,10 +12,7 @@ struct SubstituteArgs<'a> {
 
 impl EditorState {
     /// Execute `:s/pat/repl/flags` on the current line.
-    pub(crate) fn do_substitute(
-        &mut self,
-        args: &str,
-    ) {
+    pub(crate) fn do_substitute(&mut self, args: &str) {
         let parsed = match parse_sub_args(args) {
             Some(p) => p,
             None => return,
@@ -24,37 +21,20 @@ impl EditorState {
             return;
         }
         let (line, _) = self.cursor_pos();
-        let line_text = match self
-            .active_buffer()
-            .map(|b| b.content.line_content(line))
-        {
+        let line_text = match self.active_buffer().map(|b| b.content.line_content(line)) {
             Some(t) => t,
             None => return,
         };
-        let new_text = substitute_in_line(
-            &line_text,
-            &parsed,
-        );
+        let new_text = substitute_in_line(&line_text, &parsed);
         if new_text == line_text {
             return;
         }
-        if let Some(buf) = self.active_buffer_mut()
-        {
-            let start = buf
-                .content
-                .line_start_offset(line);
-            let end_off = start
-                + buf
-                    .content
-                    .line_content(line)
-                    .len();
-            buf.content
-                .delete_range(start, end_off);
-            for (i, ch) in
-                new_text.chars().enumerate()
-            {
-                buf.content
-                    .insert_char(start + i, ch);
+        if let Some(buf) = self.active_buffer_mut() {
+            let start = buf.content.line_start_offset(line);
+            let end_off = start + buf.content.line_content(line).len();
+            buf.content.delete_range(start, end_off);
+            for (i, ch) in new_text.chars().enumerate() {
+                buf.content.insert_char(start + i, ch);
             }
             buf.modified = true;
         }
@@ -62,20 +42,23 @@ impl EditorState {
     }
 
     /// Execute `:s` on a range of lines.
-    pub(crate) fn do_substitute_range(
-        &mut self, start_line: usize,
-        end_line: usize, args: &str,
-    ) {
+    pub(crate) fn do_substitute_range(&mut self, start_line: usize, end_line: usize, args: &str) {
         let parsed = match parse_sub_args(args) {
-            Some(p) => p, None => return,
+            Some(p) => p,
+            None => return,
         };
-        if parsed.pattern.is_empty() { return; }
+        if parsed.pattern.is_empty() {
+            return;
+        }
         for line in start_line..=end_line {
-            let line_text = match self.active_buffer()
-                .map(|b| b.content.line_content(line))
-            { Some(t) => t, None => continue };
+            let line_text = match self.active_buffer().map(|b| b.content.line_content(line)) {
+                Some(t) => t,
+                None => continue,
+            };
             let new_text = substitute_in_line(&line_text, &parsed);
-            if new_text == line_text { continue; }
+            if new_text == line_text {
+                continue;
+            }
             if let Some(buf) = self.active_buffer_mut() {
                 let s = buf.content.line_start_offset(line);
                 let e = s + buf.content.line_content(line).len();
@@ -97,18 +80,13 @@ fn parse_sub_args(args: &str) -> Option<SubstituteArgs<'_>> {
     }
     let delim = args.as_bytes()[0] as char;
     let rest = &args[1..];
-    let parts: Vec<&str> =
-        rest.splitn(3, delim).collect();
+    let parts: Vec<&str> = rest.splitn(3, delim).collect();
     if parts.len() < 2 {
         return None;
     }
     let pattern = parts[0];
     let replacement = parts[1];
-    let flags = if parts.len() > 2 {
-        parts[2]
-    } else {
-        ""
-    };
+    let flags = if parts.len() > 2 { parts[2] } else { "" };
     Some(SubstituteArgs {
         pattern,
         replacement,
@@ -117,19 +95,14 @@ fn parse_sub_args(args: &str) -> Option<SubstituteArgs<'_>> {
     })
 }
 
-fn substitute_in_line(
-    line: &str,
-    args: &SubstituteArgs<'_>,
-) -> String {
+fn substitute_in_line(line: &str, args: &SubstituteArgs<'_>) -> String {
     if args.case_insensitive {
         let pat_lower = args.pattern.to_lowercase();
         let mut result = String::new();
         let src_lower = line.to_lowercase();
         let mut start = 0;
         loop {
-            if let Some(pos) =
-                src_lower[start..].find(&pat_lower)
-            {
+            if let Some(pos) = src_lower[start..].find(&pat_lower) {
                 let abs = start + pos;
                 result.push_str(&line[start..abs]);
                 result.push_str(args.replacement);
@@ -173,10 +146,7 @@ mod tests {
             global: false,
             case_insensitive: false,
         };
-        let result = substitute_in_line(
-            "hello hello",
-            &args,
-        );
+        let result = substitute_in_line("hello hello", &args);
         assert_eq!(result, "world hello");
     }
 
@@ -188,10 +158,7 @@ mod tests {
             global: true,
             case_insensitive: false,
         };
-        let result = substitute_in_line(
-            "aaa",
-            &args,
-        );
+        let result = substitute_in_line("aaa", &args);
         assert_eq!(result, "bbb");
     }
 }

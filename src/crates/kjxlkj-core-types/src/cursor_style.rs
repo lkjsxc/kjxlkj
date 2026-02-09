@@ -54,10 +54,7 @@ impl Default for CursorStyle {
 
 impl CursorStyle {
     /// Get cursor escape sequence for a mode.
-    pub fn escape_for_mode(
-        &self,
-        mode: Mode,
-    ) -> &'static str {
+    pub fn escape_for_mode(&self, mode: Mode) -> &'static str {
         let shape = match mode {
             Mode::Normal => self.normal,
             Mode::Insert => self.insert,
@@ -129,19 +126,14 @@ mod tests {
     #[test]
     fn cursor_style_default() {
         let style = CursorStyle::default();
-        assert_eq!(
-            style.normal,
-            CursorShape::Block
-        );
+        assert_eq!(style.normal, CursorShape::Block);
         assert_eq!(style.insert, CursorShape::Bar);
     }
 
     #[test]
     fn cursor_escape_sequence() {
         let style = CursorStyle::default();
-        let esc = style.escape_for_mode(
-            Mode::Insert,
-        );
+        let esc = style.escape_for_mode(Mode::Insert);
         assert_eq!(esc, "\x1b[5 q");
     }
 }

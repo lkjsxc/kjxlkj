@@ -23,16 +23,7 @@ Use this order when deciding what is true right now:
 | [LIMITATIONS.md](LIMITATIONS.md) | User-visible gaps and temporary exceptions |
 | [CI.md](CI.md) | Verification command baseline |
 | [RELEASE.md](RELEASE.md) | Release process and evidence checks |
-| [CONFORMANCE_TESTING.md](CONFORMANCE_TESTING.md) | Test-surface conformance mapping |
-| [CONFORMANCE_TESTING_INFRA.md](CONFORMANCE_TESTING_INFRA.md) | Integration and infra conformance mapping |
-| [CONFORMANCE_MODES.md](CONFORMANCE_MODES.md) | Mode conformance sub-ledger |
-| [CONFORMANCE_KEYS_INPUT.md](CONFORMANCE_KEYS_INPUT.md) | Input key conformance sub-ledger |
-| [CONFORMANCE_KEYS_SYSTEMS.md](CONFORMANCE_KEYS_SYSTEMS.md) | Systems key conformance sub-ledger |
-| [CONFORMANCE_KEYS_INFRA.md](CONFORMANCE_KEYS_INFRA.md) | Input infra conformance sub-ledger |
-| [CONFORMANCE_EDITING_OPERATORS.md](CONFORMANCE_EDITING_OPERATORS.md) | Editing operator conformance sub-ledger |
-| [CONFORMANCE_EDITING_FEATURES.md](CONFORMANCE_EDITING_FEATURES.md) | Editing feature conformance sub-ledger |
-| [CONFORMANCE_COMMANDS.md](CONFORMANCE_COMMANDS.md) | Command conformance sub-ledger |
-| [CONFORMANCE_COMMANDS_TYPES.md](CONFORMANCE_COMMANDS_TYPES.md) | Command/type conformance sub-ledger |
+| [conformance/README.md](conformance/README.md) | Conformance sub-ledgers (testing, modes, keys, operators, commands) |
 | [COMPARISON.md](COMPARISON.md) | Comparison matrix (non-authoritative) |
 | [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Plugin migration mapping (non-authoritative) |
 

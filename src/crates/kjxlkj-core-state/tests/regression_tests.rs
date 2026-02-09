@@ -1,18 +1,14 @@
 //! Regression tests REG-01 through REG-08.
 
 use kjxlkj_core_state::EditorState;
-use kjxlkj_core_types::{
-    Action, InsertPosition, Motion,
-};
+use kjxlkj_core_types::{Action, InsertPosition, Motion};
 
 fn ed() -> EditorState {
     EditorState::new(80, 24)
 }
 
 fn ins(ed: &mut EditorState, text: &str) {
-    ed.dispatch(Action::EnterInsert(
-        InsertPosition::BeforeCursor,
-    ));
+    ed.dispatch(Action::EnterInsert(InsertPosition::BeforeCursor));
     for ch in text.chars() {
         ed.dispatch(Action::InsertChar(ch));
     }
@@ -25,9 +21,7 @@ fn reg01_append_eol() {
     let mut e = ed();
     ins(&mut e, "hello");
     e.dispatch(Action::MoveCursor(Motion::LineEnd, 1));
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::AfterCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::AfterCursor));
     e.dispatch(Action::InsertChar('!'));
     e.dispatch(Action::ReturnToNormal);
     let w = e.focused_window().unwrap();
@@ -49,9 +43,7 @@ fn reg02_long_line_wraps() {
 /// REG-03: Leader chords reachable.
 #[test]
 fn reg03_leader_chords() {
-    use kjxlkj_core_state::keybinding_dsl::{
-        KeybindingDesc, LeaderConfig, WhichKeyState,
-    };
+    use kjxlkj_core_state::keybinding_dsl::{KeybindingDesc, LeaderConfig, WhichKeyState};
     let ldr = LeaderConfig::default();
     assert_eq!(ldr.leader, '\\');
     let mut wk = WhichKeyState::new();
@@ -77,9 +69,7 @@ fn reg03_leader_chords() {
 fn reg04_insert_enter() {
     let mut e = ed();
     ins(&mut e, "line1");
-    e.dispatch(Action::EnterInsert(
-        InsertPosition::AfterCursor,
-    ));
+    e.dispatch(Action::EnterInsert(InsertPosition::AfterCursor));
     e.dispatch(Action::InsertChar('\n'));
     e.dispatch(Action::InsertChar('2'));
     e.dispatch(Action::ReturnToNormal);

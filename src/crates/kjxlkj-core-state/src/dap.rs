@@ -91,11 +91,7 @@ impl DapState {
     }
 
     /// Toggle a breakpoint at file:line.
-    pub fn toggle_breakpoint(
-        &mut self,
-        file: PathBuf,
-        line: usize,
-    ) {
+    pub fn toggle_breakpoint(&mut self, file: PathBuf, line: usize) {
         let bps = self.breakpoints.entry(file.clone()).or_default();
         if let Some(idx) = bps.iter().position(|b| b.line == line) {
             bps.remove(idx);
@@ -112,10 +108,7 @@ impl DapState {
     }
 
     /// Get all breakpoints for a file.
-    pub fn file_breakpoints(
-        &self,
-        file: &PathBuf,
-    ) -> &[Breakpoint] {
+    pub fn file_breakpoints(&self, file: &PathBuf) -> &[Breakpoint] {
         self.breakpoints
             .get(file)
             .map(|v| v.as_slice())

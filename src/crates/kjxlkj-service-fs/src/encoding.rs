@@ -37,10 +37,7 @@ mod tests {
 
     #[test]
     fn utf8_detection() {
-        assert_eq!(
-            detect_encoding(b"hello world"),
-            Encoding::Utf8
-        );
+        assert_eq!(detect_encoding(b"hello world"), Encoding::Utf8);
     }
 
     #[test]

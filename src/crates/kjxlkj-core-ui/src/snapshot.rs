@@ -6,10 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use kjxlkj_core_types::{BufferId, Mode, TerminalId};
 
-use crate::{
-    BufferSnapshot, CmdlineState, Notification, TerminalSnapshot,
-    Theme, WindowLayout,
-};
+use crate::{BufferSnapshot, CmdlineState, Notification, TerminalSnapshot, Theme, WindowLayout};
 
 /// Search state for rendering highlights.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -84,10 +81,7 @@ impl EditorSnapshot {
 
         Self {
             sequence: 0,
-            layout: WindowLayout::single(
-                win_id,
-                Rect::new(0, 0, cols, rows.saturating_sub(1)),
-            ),
+            layout: WindowLayout::single(win_id, Rect::new(0, 0, cols, rows.saturating_sub(1))),
             buffers,
             terminals: HashMap::new(),
             mode: Mode::Normal,
@@ -108,12 +102,7 @@ mod tests {
 
     #[test]
     fn initial_snapshot() {
-        let snap = EditorSnapshot::initial(
-            80,
-            24,
-            BufferId(1),
-            WindowId(1),
-        );
+        let snap = EditorSnapshot::initial(80, 24, BufferId(1), WindowId(1));
         assert_eq!(snap.sequence, 0);
         assert_eq!(snap.terminal_size, (80, 24));
         assert_eq!(snap.mode, Mode::Normal);

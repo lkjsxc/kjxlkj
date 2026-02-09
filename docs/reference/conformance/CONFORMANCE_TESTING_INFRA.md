@@ -35,6 +35,6 @@ This file records the current state of testing infrastructure and integration en
 
 ## Related
 
-- Current test surface: [/docs/reference/CONFORMANCE_TESTING.md](/docs/reference/CONFORMANCE_TESTING.md)
+- Current test surface: [/docs/reference/conformance/CONFORMANCE_TESTING.md](/docs/reference/conformance/CONFORMANCE_TESTING.md)
 - Target testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - High-risk missing behaviors: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

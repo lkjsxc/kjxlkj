@@ -20,12 +20,7 @@ pub fn surround_pair(ch: char) -> Option<(char, char)> {
 }
 
 /// Delete surrounding pair on the given line.
-pub fn delete_surround(
-    content: &mut BufferContent,
-    line: usize,
-    col: usize,
-    ch: char,
-) -> bool {
+pub fn delete_surround(content: &mut BufferContent, line: usize, col: usize, ch: char) -> bool {
     let (open, close) = match surround_pair(ch) {
         Some(p) => p,
         None => return false,
@@ -90,7 +85,10 @@ pub fn change_surround(
             break;
         }
     }
-    let open_pos = match open_pos { Some(p) => p, None => return false };
+    let open_pos = match open_pos {
+        Some(p) => p,
+        None => return false,
+    };
     let mut close_pos = None;
     for i in (open_pos + 1)..chars.len() {
         if chars[i] == old_close {
@@ -98,7 +96,10 @@ pub fn change_surround(
             break;
         }
     }
-    let close_pos = match close_pos { Some(p) => p, None => return false };
+    let close_pos = match close_pos {
+        Some(p) => p,
+        None => return false,
+    };
     chars[open_pos] = new_open;
     chars[close_pos] = new_close;
     let new_line: String = chars.into_iter().collect();

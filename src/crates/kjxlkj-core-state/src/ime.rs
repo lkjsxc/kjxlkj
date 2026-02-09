@@ -69,10 +69,7 @@ impl ImeState {
     }
 
     /// Set candidate list and enter selection phase.
-    pub fn set_candidates(
-        &mut self,
-        candidates: Vec<ImeCandidate>,
-    ) {
+    pub fn set_candidates(&mut self, candidates: Vec<ImeCandidate>) {
         self.candidates = candidates;
         self.selected = 0;
         if !self.candidates.is_empty() {
@@ -83,8 +80,7 @@ impl ImeState {
     /// Select next candidate.
     pub fn next_candidate(&mut self) {
         if !self.candidates.is_empty() {
-            self.selected =
-                (self.selected + 1) % self.candidates.len();
+            self.selected = (self.selected + 1) % self.candidates.len();
         }
     }
 
@@ -101,9 +97,7 @@ impl ImeState {
 
     /// Commit the current selection or preedit text.
     pub fn commit(&mut self) -> String {
-        let text = if let Some(cand) =
-            self.candidates.get(self.selected)
-        {
+        let text = if let Some(cand) = self.candidates.get(self.selected) {
             cand.text.clone()
         } else {
             self.preedit.clone()

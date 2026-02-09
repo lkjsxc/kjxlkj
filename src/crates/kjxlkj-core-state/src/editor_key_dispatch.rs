@@ -17,40 +17,31 @@ impl EditorState {
         // Record key for macro if recording.
         self.record_key_if_needed(&key);
         let action = match self.mode {
-            Mode::Normal => {
-                self.normal_state.process_key(&key)
-            }
-            Mode::Insert => {
-                Some(self.insert_state.process_key(&key))
-            }
+            Mode::Normal => self.normal_state.process_key(&key),
+            Mode::Insert => Some(self.insert_state.process_key(&key)),
             Mode::Visual(_) => {
-                if let Some(ref mut vs) =
-                    self.visual_state
-                {
+                if let Some(ref mut vs) = self.visual_state {
                     vs.process_key(&key)
                 } else {
                     Some(Action::ReturnToNormal)
                 }
             }
             Mode::Command(_) => {
-                if let Some(ref mut cs) =
-                    self.command_state
-                {
+                if let Some(ref mut cs) = self.command_state {
                     cs.process_key(&key)
                 } else {
                     Some(Action::ReturnToNormal)
                 }
             }
-            Mode::Replace => {
-                self.dispatch_replace_key(&key)
-            }
-            Mode::OperatorPending(op) => {
-                self.dispatch_op_pending_key(&key, op)
-            }
+            Mode::Replace => self.dispatch_replace_key(&key),
+            Mode::OperatorPending(op) => self.dispatch_op_pending_key(&key, op),
             Mode::TerminalInsert => {
                 // Check for Ctrl-\ (escape from terminal)
                 if let KeyCode::Char('\\') = key.code {
-                    if key.modifiers.contains(kjxlkj_core_types::KeyModifiers::CTRL) {
+                    if key
+                        .modifiers
+                        .contains(kjxlkj_core_types::KeyModifiers::CTRL)
+                    {
                         self.terminal_escape_pending = true;
                         return;
                     }
@@ -59,7 +50,10 @@ impl EditorState {
                     self.terminal_escape_pending = false;
                     // Ctrl-\ followed by Ctrl-n → exit terminal mode
                     if let KeyCode::Char('n') = key.code {
-                        if key.modifiers.contains(kjxlkj_core_types::KeyModifiers::CTRL) {
+                        if key
+                            .modifiers
+                            .contains(kjxlkj_core_types::KeyModifiers::CTRL)
+                        {
                             self.mode = Mode::Normal;
                             return;
                         }
@@ -70,8 +64,7 @@ impl EditorState {
             }
             Mode::InsertNormal => {
                 // Single Normal command from Insert.
-                let action =
-                    self.normal_state.process_key(&key);
+                let action = self.normal_state.process_key(&key);
                 if action.is_some() {
                     self.mode = Mode::Insert;
                 }
@@ -85,24 +78,15 @@ impl EditorState {
     }
 
     /// Handle keys in Replace mode.
-    fn dispatch_replace_key(
-        &mut self,
-        key: &Key,
-    ) -> Option<Action> {
+    fn dispatch_replace_key(&mut self, key: &Key) -> Option<Action> {
         match &key.code {
-            KeyCode::Esc => {
-                Some(Action::ReturnToNormal)
-            }
+            KeyCode::Esc => Some(Action::ReturnToNormal),
             KeyCode::Char(ch) => {
                 self.do_replace_char_at_cursor(*ch);
                 None
             }
-            KeyCode::Backspace => {
-                Some(Action::DeleteCharBackward)
-            }
-            KeyCode::Enter => {
-                Some(Action::InsertChar('\n'))
-            }
+            KeyCode::Backspace => Some(Action::DeleteCharBackward),
+            KeyCode::Enter => Some(Action::InsertChar('\n')),
             _ => None,
         }
     }

@@ -31,11 +31,7 @@ pub fn classify_word_char(c: char) -> WordKind {
 /// Find the start of the next word in a line from a given grapheme index.
 ///
 /// Returns `None` if at end of line.
-pub fn find_word_boundary(
-    line: &str,
-    grapheme_idx: usize,
-    big_word: bool,
-) -> Option<usize> {
+pub fn find_word_boundary(line: &str, grapheme_idx: usize, big_word: bool) -> Option<usize> {
     use unicode_segmentation::UnicodeSegmentation;
     let graphemes: Vec<&str> = line.graphemes(true).collect();
     if grapheme_idx >= graphemes.len() {
@@ -71,11 +67,7 @@ pub fn find_word_boundary(
 }
 
 /// Find the end of the current/next word.
-pub fn find_word_end(
-    line: &str,
-    grapheme_idx: usize,
-    big_word: bool,
-) -> Option<usize> {
+pub fn find_word_end(line: &str, grapheme_idx: usize, big_word: bool) -> Option<usize> {
     use unicode_segmentation::UnicodeSegmentation;
     let graphemes: Vec<&str> = line.graphemes(true).collect();
     if grapheme_idx >= graphemes.len() {
@@ -112,11 +104,7 @@ pub fn find_word_end(
 }
 
 /// Find the start of the current/previous word.
-pub fn find_word_start_backward(
-    line: &str,
-    grapheme_idx: usize,
-    big_word: bool,
-) -> Option<usize> {
+pub fn find_word_start_backward(line: &str, grapheme_idx: usize, big_word: bool) -> Option<usize> {
     use unicode_segmentation::UnicodeSegmentation;
     let graphemes: Vec<&str> = line.graphemes(true).collect();
     if grapheme_idx == 0 || graphemes.is_empty() {

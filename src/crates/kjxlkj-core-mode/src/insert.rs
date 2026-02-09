@@ -50,9 +50,7 @@ impl InsertModeState {
             }
 
             // Ctrl-C → also return to Normal (vim compat).
-            (KeyCode::Char('c'), m) if m.contains(KeyModifiers::CTRL) => {
-                Action::ReturnToNormal
-            }
+            (KeyCode::Char('c'), m) if m.contains(KeyModifiers::CTRL) => Action::ReturnToNormal,
 
             // Backspace
             (KeyCode::Backspace, _) => {
@@ -73,9 +71,7 @@ impl InsertModeState {
             }
 
             // Ctrl-W → delete word backward.
-            (KeyCode::Char('w'), m) if m.contains(KeyModifiers::CTRL) => {
-                Action::DeleteCharBackward
-            }
+            (KeyCode::Char('w'), m) if m.contains(KeyModifiers::CTRL) => Action::DeleteCharBackward,
 
             // Ctrl-U → delete to start of line.
             (KeyCode::Char('u'), m) if m.contains(KeyModifiers::CTRL) => {
@@ -83,9 +79,7 @@ impl InsertModeState {
             }
 
             // Ctrl-H → backspace alias.
-            (KeyCode::Char('h'), m) if m.contains(KeyModifiers::CTRL) => {
-                Action::DeleteCharBackward
-            }
+            (KeyCode::Char('h'), m) if m.contains(KeyModifiers::CTRL) => Action::DeleteCharBackward,
 
             // Ctrl-R → paste from register (awaits register char).
             (KeyCode::Char('r'), m) if m.contains(KeyModifiers::CTRL) => {
@@ -94,18 +88,10 @@ impl InsertModeState {
             }
 
             // Arrow keys for cursor movement in insert mode.
-            (KeyCode::Left, _) => {
-                Action::MoveCursor(kjxlkj_core_types::Motion::Left, 1)
-            }
-            (KeyCode::Right, _) => {
-                Action::MoveCursor(kjxlkj_core_types::Motion::Right, 1)
-            }
-            (KeyCode::Up, _) => {
-                Action::MoveCursor(kjxlkj_core_types::Motion::Up, 1)
-            }
-            (KeyCode::Down, _) => {
-                Action::MoveCursor(kjxlkj_core_types::Motion::Down, 1)
-            }
+            (KeyCode::Left, _) => Action::MoveCursor(kjxlkj_core_types::Motion::Left, 1),
+            (KeyCode::Right, _) => Action::MoveCursor(kjxlkj_core_types::Motion::Right, 1),
+            (KeyCode::Up, _) => Action::MoveCursor(kjxlkj_core_types::Motion::Up, 1),
+            (KeyCode::Down, _) => Action::MoveCursor(kjxlkj_core_types::Motion::Down, 1),
 
             // Regular character insertion.
             (KeyCode::Char(c), KeyModifiers::NONE | KeyModifiers::SHIFT) => {
@@ -136,20 +122,14 @@ mod tests {
     #[test]
     fn char_insertion() {
         let mut s = InsertModeState::new();
-        assert_eq!(
-            s.process_key(&Key::char('a')),
-            Action::InsertChar('a')
-        );
+        assert_eq!(s.process_key(&Key::char('a')), Action::InsertChar('a'));
         assert_eq!(s.inserted, vec!['a']);
     }
 
     #[test]
     fn enter_inserts_newline() {
         let mut s = InsertModeState::new();
-        assert_eq!(
-            s.process_key(&Key::enter()),
-            Action::InsertChar('\n')
-        );
+        assert_eq!(s.process_key(&Key::enter()), Action::InsertChar('\n'));
     }
 
     #[test]

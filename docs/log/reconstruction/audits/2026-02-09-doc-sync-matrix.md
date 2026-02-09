@@ -36,6 +36,17 @@ Documentation-only reconciliation across spec, reference, TODO, and current code
 | R-IME-01 | Requires IME/runtime path integration | Keep limitation open and add PTY composition tests |
 | R-FS-01 | Requires real filesystem wiring | Keep limitation open and add file-backed integration tests |
 
+## Priority Order (next wave)
+
+Prioritized by user impact and regression risk.
+
+1. R-FS-01 (`:w` persistence): high impact; correctness and data loss risk.
+2. R-TERM-01 (`:terminal` PTY-backed window): high impact; requires service + window lifecycle wiring.
+3. R-WIN-01 (spatial window focus): high UX impact; correctness + navigation regressions.
+4. R-KEY-01 (`A`/`Shift+a` append-at-EOL): high UX polish; easy to regress in input normalization.
+5. R-IME-01 (IME composition isolation): high-risk correctness; needs end-to-end terminal input coverage.
+6. R-EXP-01 (explorer wiring): medium impact; requires dispatch/render integration work.
+
 ## Verification Commands
 
 - `cargo test --workspace`

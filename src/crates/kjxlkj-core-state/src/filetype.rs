@@ -1,6 +1,5 @@
-//! Filetype detection and per-filetype configuration.
+//! Filetype detection.
 
-/// Detect filetype from file extension.
 pub fn filetype_from_extension(ext: &str) -> &'static str {
     match ext {
         "rs" => "rust",
@@ -46,7 +45,6 @@ pub fn filetype_from_extension(ext: &str) -> &'static str {
     }
 }
 
-/// Detect filetype from filename (exact match).
 pub fn filetype_from_filename(name: &str) -> &'static str {
     match name {
         "Makefile" | "GNUmakefile" => "make",
@@ -64,7 +62,6 @@ pub fn filetype_from_filename(name: &str) -> &'static str {
     }
 }
 
-/// Detect filetype from shebang line.
 pub fn filetype_from_shebang(line: &str) -> &'static str {
     let line = line.trim();
     if !line.starts_with("#!") {
@@ -92,20 +89,13 @@ pub fn filetype_from_shebang(line: &str) -> &'static str {
     ""
 }
 
-/// Full filetype detection from path and optional
-/// first line.
-pub fn detect_filetype(
-    path: &str,
-    first_line: Option<&str>,
-) -> String {
-    // Check shebang.
+pub fn detect_filetype(path: &str, first_line: Option<&str>) -> String {
     if let Some(line) = first_line {
         let ft = filetype_from_shebang(line);
         if !ft.is_empty() {
             return ft.to_string();
         }
     }
-    // Check filename.
     let name = std::path::Path::new(path)
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -114,7 +104,6 @@ pub fn detect_filetype(
     if !ft.is_empty() {
         return ft.to_string();
     }
-    // Check extension.
     let ext = std::path::Path::new(path)
         .extension()
         .map(|e| e.to_string_lossy().to_string())
@@ -126,16 +115,12 @@ pub fn detect_filetype(
     String::new()
 }
 
-/// Get comment string for a filetype.
 pub fn comment_string(ft: &str) -> &'static str {
     match ft {
-        "rust" | "c" | "cpp" | "java" | "javascript"
-        | "typescript" | "typescriptreact"
-        | "javascriptreact" | "go" | "swift"
-        | "kotlin" | "dart" | "zig" | "scss"
-        | "protobuf" | "graphql" => "//",
-        "python" | "ruby" | "sh" | "yaml" | "toml"
-        | "make" | "cmake" | "r" | "ini"
+        "rust" | "c" | "cpp" | "java" | "javascript" | "typescript" | "typescriptreact"
+        | "javascriptreact" | "go" | "swift" | "kotlin" | "dart" | "zig" | "scss" | "protobuf"
+        | "graphql" => "//",
+        "python" | "ruby" | "sh" | "yaml" | "toml" | "make" | "cmake" | "r" | "ini"
         | "gitconfig" | "elixir" | "perl" => "#",
         "lua" | "haskell" | "sql" => "--",
         "vim" | "lisp" | "clojure" => "\"",
@@ -146,15 +131,11 @@ pub fn comment_string(ft: &str) -> &'static str {
     }
 }
 
-/// Get indent settings for a filetype.
-pub fn indent_settings(
-    ft: &str,
-) -> (usize, bool) {
+pub fn indent_settings(ft: &str) -> (usize, bool) {
     match ft {
         "make" => (8, false), // tabs
         "go" => (4, false),   // tabs
-        "yaml" | "json" | "html" | "css" | "scss"
-        | "xml" => (2, true),
+        "yaml" | "json" | "html" | "css" | "scss" | "xml" => (2, true),
         _ => (4, true), // 4 spaces default
     }
 }
@@ -165,27 +146,18 @@ mod tests {
 
     #[test]
     fn detect_rust() {
-        assert_eq!(
-            detect_filetype("main.rs", None),
-            "rust",
-        );
+        assert_eq!(detect_filetype("main.rs", None), "rust");
     }
 
     #[test]
     fn detect_makefile() {
-        assert_eq!(
-            detect_filetype("Makefile", None),
-            "make",
-        );
+        assert_eq!(detect_filetype("Makefile", None), "make");
     }
 
     #[test]
     fn detect_shebang_python() {
         assert_eq!(
-            detect_filetype(
-                "script",
-                Some("#!/usr/bin/env python3"),
-            ),
+            detect_filetype("script", Some("#!/usr/bin/env python3")),
             "python",
         );
     }

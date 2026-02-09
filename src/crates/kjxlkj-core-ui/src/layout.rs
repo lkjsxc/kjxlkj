@@ -44,10 +44,7 @@ impl Rect {
 
     /// Whether a point is inside this rect.
     pub fn contains(&self, col: u16, row: u16) -> bool {
-        col >= self.x
-            && col < self.right()
-            && row >= self.y
-            && row < self.bottom()
+        col >= self.x && col < self.right() && row >= self.y && row < self.bottom()
     }
 }
 
@@ -55,10 +52,7 @@ impl Rect {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum LayoutNode {
     /// A leaf window.
-    Leaf {
-        window_id: WindowId,
-        rect: Rect,
-    },
+    Leaf { window_id: WindowId, rect: Rect },
     /// Horizontal split (children arranged top-to-bottom).
     HorizontalSplit {
         children: Vec<LayoutNode>,
@@ -121,10 +115,7 @@ pub struct WindowLayout {
 
 impl WindowLayout {
     /// Create a single-window layout filling the given rectangle.
-    pub fn single(
-        window_id: WindowId,
-        rect: Rect,
-    ) -> Self {
+    pub fn single(window_id: WindowId, rect: Rect) -> Self {
         Self {
             root: LayoutNode::Leaf { window_id, rect },
             focused: window_id,
@@ -147,16 +138,14 @@ mod tests {
     #[test]
     fn single_layout() {
         let wid = WindowId(1);
-        let layout =
-            WindowLayout::single(wid, Rect::new(0, 0, 80, 24));
+        let layout = WindowLayout::single(wid, Rect::new(0, 0, 80, 24));
         assert_eq!(layout.root.window_ids(), vec![wid]);
     }
 
     #[test]
     fn find_window() {
         let wid = WindowId(1);
-        let layout =
-            WindowLayout::single(wid, Rect::new(0, 0, 80, 24));
+        let layout = WindowLayout::single(wid, Rect::new(0, 0, 80, 24));
         assert!(layout.root.find_window(wid).is_some());
         assert!(layout.root.find_window(WindowId(2)).is_none());
     }

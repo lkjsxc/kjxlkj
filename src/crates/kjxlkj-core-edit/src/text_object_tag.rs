@@ -14,16 +14,12 @@ pub(crate) fn resolve_tag(
     cursor: &CursorPosition,
     content: &BufferContent,
 ) -> Option<TextObjectRange> {
-    let (open_start, open_end, close_start, close_end) =
-        find_enclosing_tag(cursor, content)?;
+    let (open_start, open_end, close_start, close_end) = find_enclosing_tag(cursor, content)?;
     match scope {
         TextObjectScope::Inner => {
             let s = advance_past(content, open_end);
             let e = retreat_before(content, close_start);
-            if s.line > e.line
-                || (s.line == e.line
-                    && s.grapheme_offset > e.grapheme_offset)
-            {
+            if s.line > e.line || (s.line == e.line && s.grapheme_offset > e.grapheme_offset) {
                 return None; // Empty tag content
             }
             Some(TextObjectRange {
@@ -32,21 +28,16 @@ pub(crate) fn resolve_tag(
                 linewise: false,
             })
         }
-        TextObjectScope::Around => {
-            Some(TextObjectRange {
-                start: open_start,
-                end: close_end,
-                linewise: false,
-            })
-        }
+        TextObjectScope::Around => Some(TextObjectRange {
+            start: open_start,
+            end: close_end,
+            linewise: false,
+        }),
     }
 }
 
 /// Advance one grapheme past a position.
-fn advance_past(
-    content: &BufferContent,
-    pos: CursorPosition,
-) -> CursorPosition {
+fn advance_past(content: &BufferContent, pos: CursorPosition) -> CursorPosition {
     let line = content.line_content(pos.line);
     let lg = kjxlkj_core_text::LineGraphemes::from_str(&line);
     if pos.grapheme_offset + 1 < lg.count() {
@@ -59,10 +50,7 @@ fn advance_past(
 }
 
 /// Retreat one grapheme before a position.
-fn retreat_before(
-    _content: &BufferContent,
-    pos: CursorPosition,
-) -> CursorPosition {
+fn retreat_before(_content: &BufferContent, pos: CursorPosition) -> CursorPosition {
     if pos.grapheme_offset > 0 {
         CursorPosition::new(pos.line, pos.grapheme_offset - 1)
     } else if pos.line > 0 {
@@ -77,14 +65,17 @@ fn retreat_before(
 fn find_enclosing_tag(
     cursor: &CursorPosition,
     content: &BufferContent,
-) -> Option<(CursorPosition, CursorPosition, CursorPosition, CursorPosition)> {
+) -> Option<(
+    CursorPosition,
+    CursorPosition,
+    CursorPosition,
+    CursorPosition,
+)> {
     // Search backward for opening tag `<name...>`
-    let (open_s, open_e, tag_name) =
-        find_opening_tag_backward(cursor, content)?;
+    let (open_s, open_e, tag_name) = find_opening_tag_backward(cursor, content)?;
     // Search forward for matching closing tag `</name>`
     let search_from = advance_past(content, open_e);
-    let (close_s, close_e) =
-        find_closing_tag_forward(&search_from, content, &tag_name)?;
+    let (close_s, close_e) = find_closing_tag_forward(&search_from, content, &tag_name)?;
     Some((open_s, open_e, close_s, close_e))
 }
 
@@ -116,8 +107,7 @@ fn find_opening_tag_backward(
                     continue;
                 }
                 // Extract tag name
-                let tag_content: String =
-                    chars[i + 1..].iter().collect();
+                let tag_content: String = chars[i + 1..].iter().collect();
                 let end_bracket = tag_content.find('>')?;
                 let tag_str = &tag_content[..end_bracket];
                 if tag_str.ends_with('/') {
@@ -151,7 +141,11 @@ fn find_closing_tag_forward(
     for line in start.line..content.line_count() {
         let lc = content.line_content(line);
         let chars: Vec<char> = lc.chars().collect();
-        let si = if line == start.line { start.grapheme_offset } else { 0 };
+        let si = if line == start.line {
+            start.grapheme_offset
+        } else {
+            0
+        };
         for i in si..chars.len() {
             if i + tlen <= chars.len() {
                 let slice: Vec<char> = chars[i..i + tlen].to_vec();

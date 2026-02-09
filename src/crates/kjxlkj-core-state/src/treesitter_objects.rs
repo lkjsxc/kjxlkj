@@ -56,11 +56,7 @@ impl TsTextObjects {
     }
 
     /// Set availability.
-    pub fn set_available(
-        &mut self,
-        lang: &str,
-        available: bool,
-    ) {
+    pub fn set_available(&mut self, lang: &str, available: bool) {
         self.available = available;
         self.language = if available {
             Some(lang.to_string())
@@ -71,18 +67,12 @@ impl TsTextObjects {
 
     /// Update cached nodes at cursor. In a real implementation,
     /// this would query the tree-sitter parse tree.
-    pub fn update_nodes(
-        &mut self,
-        nodes: Vec<(TsNodeKind, TsSpan)>,
-    ) {
+    pub fn update_nodes(&mut self, nodes: Vec<(TsNodeKind, TsSpan)>) {
         self.nodes_at_cursor = nodes;
     }
 
     /// Find the innermost node of a specific kind.
-    pub fn find_innermost(
-        &self,
-        kind: &TsNodeKind,
-    ) -> Option<&TsSpan> {
+    pub fn find_innermost(&self, kind: &TsNodeKind) -> Option<&TsSpan> {
         // Nodes are ordered outer-to-inner, so reverse search
         self.nodes_at_cursor
             .iter()
@@ -92,10 +82,7 @@ impl TsTextObjects {
     }
 
     /// Find the outermost node of a specific kind.
-    pub fn find_outermost(
-        &self,
-        kind: &TsNodeKind,
-    ) -> Option<&TsSpan> {
+    pub fn find_outermost(&self, kind: &TsNodeKind) -> Option<&TsSpan> {
         self.nodes_at_cursor
             .iter()
             .find(|(k, _)| k == kind)

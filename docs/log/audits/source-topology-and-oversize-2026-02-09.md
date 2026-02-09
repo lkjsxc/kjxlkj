@@ -17,7 +17,7 @@ around-12 fan-out targets.
 | `src/crates/kjxlkj-core-mode/src` | 16 |
 | `src/crates/kjxlkj-core-types/src` | 16 |
 
-## Files Exceeding 200 Lines (Current Snapshot)
+## Files Exceeding 200 Lines (Initial Snapshot)
 
 | Lines | File |
 |---:|---|
@@ -43,6 +43,12 @@ around-12 fan-out targets.
 | 202 | `src/crates/kjxlkj-core-edit/src/text_object_exec.rs` |
 | 201 | `src/crates/kjxlkj-core-state/src/file_explorer.rs` |
 | 201 | `src/crates/kjxlkj-core-state/src/auto_session.rs` |
+
+## Files Exceeding 200 Lines (Post-Compaction Snapshot)
+
+- Scope: `src/**/*.rs`
+- Result: none (0 files)
+- Evidence: [/docs/log/audits/verification-evidence-2026-02-09.md](/docs/log/audits/verification-evidence-2026-02-09.md)
 
 ## Required Decomposition Actions
 

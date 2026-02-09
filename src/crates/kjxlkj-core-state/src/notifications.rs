@@ -46,12 +46,7 @@ impl NotificationManager {
     }
 
     /// Add a notification.
-    pub fn notify(
-        &mut self,
-        message: String,
-        level: NotifyLevel,
-        timeout: u64,
-    ) {
+    pub fn notify(&mut self, message: String, level: NotifyLevel, timeout: u64) {
         if !self.enabled {
             return;
         }
@@ -66,8 +61,7 @@ impl NotificationManager {
 
     /// Dismiss the most recent notification.
     pub fn dismiss_latest(&mut self) {
-        for n in self.notifications.iter_mut().rev()
-        {
+        for n in self.notifications.iter_mut().rev() {
             if !n.dismissed {
                 n.dismissed = true;
                 return;
@@ -94,8 +88,7 @@ impl NotificationManager {
 
     /// Remove dismissed notifications.
     pub fn gc(&mut self) {
-        self.notifications
-            .retain(|n| !n.dismissed);
+        self.notifications.retain(|n| !n.dismissed);
     }
 }
 
@@ -106,27 +99,15 @@ mod tests {
     #[test]
     fn notify_and_visible() {
         let mut mgr = NotificationManager::new();
-        mgr.notify(
-            "hello".into(),
-            NotifyLevel::Info,
-            3000,
-        );
+        mgr.notify("hello".into(), NotifyLevel::Info, 3000);
         assert_eq!(mgr.visible().len(), 1);
     }
 
     #[test]
     fn dismiss_latest() {
         let mut mgr = NotificationManager::new();
-        mgr.notify(
-            "a".into(),
-            NotifyLevel::Info,
-            0,
-        );
-        mgr.notify(
-            "b".into(),
-            NotifyLevel::Warn,
-            0,
-        );
+        mgr.notify("a".into(), NotifyLevel::Info, 0);
+        mgr.notify("b".into(), NotifyLevel::Warn, 0);
         mgr.dismiss_latest();
         assert_eq!(mgr.visible().len(), 1);
     }
@@ -134,11 +115,7 @@ mod tests {
     #[test]
     fn gc_removes_dismissed() {
         let mut mgr = NotificationManager::new();
-        mgr.notify(
-            "a".into(),
-            NotifyLevel::Info,
-            0,
-        );
+        mgr.notify("a".into(), NotifyLevel::Info, 0);
         mgr.dismiss_all();
         mgr.gc();
         assert!(mgr.notifications.is_empty());

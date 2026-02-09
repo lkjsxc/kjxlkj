@@ -1,9 +1,7 @@
 //! Range parsing utilities for ex commands.
 
 /// Parse a simple key string to Key events.
-pub(crate) fn parse_key_string(
-    s: &str,
-) -> Vec<kjxlkj_core_types::Key> {
+pub(crate) fn parse_key_string(s: &str) -> Vec<kjxlkj_core_types::Key> {
     let mut keys = Vec::new();
     for ch in s.chars() {
         keys.push(kjxlkj_core_types::Key::char(ch));
@@ -22,11 +20,7 @@ pub(crate) fn parse_range(
 ) -> (usize, usize, String) {
     let args = args.trim();
     if args.is_empty() {
-        return (
-            current_line,
-            current_line + 1,
-            String::new(),
-        );
+        return (current_line, current_line + 1, String::new());
     }
     if args.starts_with('%') {
         let rest = args[1..].trim().to_string();
@@ -35,62 +29,37 @@ pub(crate) fn parse_range(
     if let Some(comma) = args.find(',') {
         let a = &args[..comma];
         let rest = &args[comma + 1..];
-        let s = parse_line_spec(
-            a, current_line, last_line,
-        );
+        let s = parse_line_spec(a, current_line, last_line);
         let end_str: String = rest
             .chars()
-            .take_while(|c| {
-                c.is_ascii_digit()
-                    || *c == '$'
-                    || *c == '.'
-            })
+            .take_while(|c| c.is_ascii_digit() || *c == '$' || *c == '.')
             .collect();
-        let e = parse_line_spec(
-            &end_str, current_line, last_line,
-        );
-        let remaining =
-            rest[end_str.len()..].trim().to_string();
+        let e = parse_line_spec(&end_str, current_line, last_line);
+        let remaining = rest[end_str.len()..].trim().to_string();
         (s, e + 1, remaining)
     } else {
         let line_str: String = args
             .chars()
-            .take_while(|c| {
-                c.is_ascii_digit()
-                    || *c == '$'
-                    || *c == '.'
-            })
+            .take_while(|c| c.is_ascii_digit() || *c == '$' || *c == '.')
             .collect();
         if line_str.is_empty() {
-            return (
-                current_line,
-                current_line + 1,
-                args.to_string(),
-            );
+            return (current_line, current_line + 1, args.to_string());
         }
-        let l = parse_line_spec(
-            &line_str, current_line, last_line,
-        );
-        let remaining =
-            args[line_str.len()..].trim().to_string();
+        let l = parse_line_spec(&line_str, current_line, last_line);
+        let remaining = args[line_str.len()..].trim().to_string();
         (l, l + 1, remaining)
     }
 }
 
-fn parse_line_spec(
-    s: &str,
-    current: usize,
-    last: usize,
-) -> usize {
+fn parse_line_spec(s: &str, current: usize, last: usize) -> usize {
     let s = s.trim();
     match s {
         "." => current,
         "$" => last,
-        _ => {
-            s.parse::<usize>()
-                .map(|n| n.saturating_sub(1))
-                .unwrap_or(current)
-        }
+        _ => s
+            .parse::<usize>()
+            .map(|n| n.saturating_sub(1))
+            .unwrap_or(current),
     }
 }
 

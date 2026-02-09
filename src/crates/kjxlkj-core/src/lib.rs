@@ -27,12 +27,11 @@ pub use kjxlkj_core_ui as ui;
 pub use kjxlkj_core_undo as undo;
 
 // Convenience re-exports of the most used types.
+pub use kjxlkj_core_state::EditorState;
 pub use kjxlkj_core_types::{
-    Action, BufferId, Key, KeyCode, KeyModifiers, Mode,
-    Motion, Operator, WindowId,
+    Action, BufferId, Key, KeyCode, KeyModifiers, Mode, Motion, Operator, WindowId,
 };
 pub use kjxlkj_core_ui::EditorSnapshot;
-pub use kjxlkj_core_state::EditorState;
 
 /// Crate version string.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

@@ -9,10 +9,7 @@ use crate::EditorState;
 
 impl EditorState {
     /// Start recording keystrokes into register `reg`.
-    pub(crate) fn do_record_macro(
-        &mut self,
-        reg: char,
-    ) {
+    pub(crate) fn do_record_macro(&mut self, reg: char) {
         if self.macro_recording.is_some() {
             self.do_stop_record_macro();
         }
@@ -24,21 +21,15 @@ impl EditorState {
     pub(crate) fn do_stop_record_macro(&mut self) {
         if let Some(reg) = self.macro_recording.take() {
             let content = keys_to_string(&self.macro_keys);
-            self.register_file.store(
-                RegisterName::Named(reg),
-                content,
-                false,
-            );
+            self.register_file
+                .store(RegisterName::Named(reg), content, false);
             self.register_file.set_last_macro(reg);
             self.macro_keys.clear();
         }
     }
 
     /// Record a key if macro recording is active.
-    pub(crate) fn record_key_if_needed(
-        &mut self,
-        key: &Key,
-    ) {
+    pub(crate) fn record_key_if_needed(&mut self, key: &Key) {
         if self.macro_recording.is_some() {
             self.macro_keys.push(key.clone());
         }
@@ -47,11 +38,7 @@ impl EditorState {
     /// Play a macro from register `reg`, `count` times.
     ///
     /// Supports recursive macros with a depth limit of 1000.
-    pub(crate) fn do_play_macro(
-        &mut self,
-        reg: char,
-        count: u32,
-    ) {
+    pub(crate) fn do_play_macro(&mut self, reg: char, count: u32) {
         if self.macro_depth >= 1000 {
             return; // Recursion depth limit reached
         }
@@ -136,19 +123,13 @@ mod tests {
         ed.record_key_if_needed(&Key::esc());
         ed.do_stop_record_macro();
         assert!(ed.macro_recording.is_none());
-        let reg = ed.register_file.get(
-            RegisterName::Named('a'),
-        );
+        let reg = ed.register_file.get(RegisterName::Named('a'));
         assert!(reg.is_some());
     }
 
     #[test]
     fn keys_roundtrip() {
-        let keys = vec![
-            Key::char('a'),
-            Key::enter(),
-            Key::esc(),
-        ];
+        let keys = vec![Key::char('a'), Key::enter(), Key::esc()];
         let s = keys_to_string(&keys);
         let back = string_to_keys(&s);
         assert_eq!(back.len(), 3);

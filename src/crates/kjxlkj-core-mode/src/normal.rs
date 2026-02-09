@@ -1,9 +1,7 @@
 //! Normal mode state: count prefix, register prefix,
 //! and key dispatch.
 
-use kjxlkj_core_types::{
-    Action, Key, KeyCode, RegisterName,
-};
+use kjxlkj_core_types::{Action, Key, KeyCode, RegisterName};
 
 /// State maintained during Normal mode key processing.
 #[derive(Debug, Default)]
@@ -71,15 +69,11 @@ impl NormalModeState {
 
     /// Get the target register.
     pub fn target_register(&self) -> RegisterName {
-        self.register
-            .unwrap_or(RegisterName::Unnamed)
+        self.register.unwrap_or(RegisterName::Unnamed)
     }
 
     /// Process a key event in Normal mode.
-    pub fn process_key(
-        &mut self,
-        key: &Key,
-    ) -> Option<Action> {
+    pub fn process_key(&mut self, key: &Key) -> Option<Action> {
         // Handle pending sub-states first.
         if self.replace_char_pending {
             self.replace_char_pending = false;
@@ -96,15 +90,9 @@ impl NormalModeState {
             self.mark_pending = None;
             if let KeyCode::Char(c) = key.code {
                 let action = match mark_cmd {
-                    MarkCommand::Set => {
-                        Action::SetMark(c)
-                    }
-                    MarkCommand::JumpExact => {
-                        Action::JumpToMark(c)
-                    }
-                    MarkCommand::JumpLine => {
-                        Action::JumpToMarkLine(c)
-                    }
+                    MarkCommand::Set => Action::SetMark(c),
+                    MarkCommand::JumpExact => Action::JumpToMark(c),
+                    MarkCommand::JumpLine => Action::JumpToMarkLine(c),
                 };
                 self.reset();
                 return Some(action);
@@ -118,24 +106,14 @@ impl NormalModeState {
             if let KeyCode::Char(c) = key.code {
                 use kjxlkj_core_types::Motion;
                 let motion = match fcp {
-                    FindCharPending::Forward => {
-                        Motion::FindCharForward(c)
-                    }
-                    FindCharPending::Backward => {
-                        Motion::FindCharBackward(c)
-                    }
-                    FindCharPending::TillForward => {
-                        Motion::TillCharForward(c)
-                    }
-                    FindCharPending::TillBackward => {
-                        Motion::TillCharBackward(c)
-                    }
+                    FindCharPending::Forward => Motion::FindCharForward(c),
+                    FindCharPending::Backward => Motion::FindCharBackward(c),
+                    FindCharPending::TillForward => Motion::TillCharForward(c),
+                    FindCharPending::TillBackward => Motion::TillCharBackward(c),
                 };
                 let count = self.effective_count();
                 self.reset();
-                return Some(
-                    Action::MoveCursor(motion, count),
-                );
+                return Some(Action::MoveCursor(motion, count));
             }
             self.reset();
             return Some(Action::Nop);
@@ -148,8 +126,7 @@ impl NormalModeState {
         if self.register_pending {
             self.register_pending = false;
             if let KeyCode::Char(c) = key.code {
-                self.register =
-                    RegisterName::from_char(c);
+                self.register = RegisterName::from_char(c);
             }
             return None;
         }

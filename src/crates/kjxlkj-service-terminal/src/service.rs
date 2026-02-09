@@ -16,9 +16,7 @@ pub struct TerminalService {
 }
 
 impl TerminalService {
-    pub fn new(
-        response_tx: mpsc::Sender<ServiceResponse>,
-    ) -> Self {
+    pub fn new(response_tx: mpsc::Sender<ServiceResponse>) -> Self {
         Self {
             response_tx,
             screens: HashMap::new(),
@@ -34,11 +32,7 @@ impl TerminalService {
     }
 
     /// Create a new screen buffer.
-    pub fn create_screen(
-        &mut self,
-        cols: u16,
-        rows: u16,
-    ) -> TerminalId {
+    pub fn create_screen(&mut self, cols: u16, rows: u16) -> TerminalId {
         let id = self.alloc_id();
         let screen = ScreenBuffer::new(id, cols, rows);
         self.screens.insert(id, screen);
@@ -46,26 +40,17 @@ impl TerminalService {
     }
 
     /// Get screen buffer by ID.
-    pub fn get_screen(
-        &self,
-        id: TerminalId,
-    ) -> Option<&ScreenBuffer> {
+    pub fn get_screen(&self, id: TerminalId) -> Option<&ScreenBuffer> {
         self.screens.get(&id)
     }
 
     /// Get screen buffer mutably.
-    pub fn get_screen_mut(
-        &mut self,
-        id: TerminalId,
-    ) -> Option<&mut ScreenBuffer> {
+    pub fn get_screen_mut(&mut self, id: TerminalId) -> Option<&mut ScreenBuffer> {
         self.screens.get_mut(&id)
     }
 
     /// Run the terminal service loop.
-    pub async fn run(
-        self,
-        mut quit_rx: broadcast::Receiver<()>,
-    ) {
+    pub async fn run(self, mut quit_rx: broadcast::Receiver<()>) {
         loop {
             tokio::select! {
                 _ = quit_rx.recv() => break,

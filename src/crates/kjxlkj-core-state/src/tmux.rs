@@ -47,11 +47,7 @@ impl TmuxState {
     }
 
     /// Build a tmux send-keys command.
-    pub fn send_keys_cmd(
-        &self,
-        target: &str,
-        keys: &str,
-    ) -> Option<String> {
+    pub fn send_keys_cmd(&self, target: &str, keys: &str) -> Option<String> {
         if !self.inside_tmux {
             return None;
         }

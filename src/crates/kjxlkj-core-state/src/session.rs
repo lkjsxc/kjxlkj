@@ -26,25 +26,16 @@ pub enum SessionLayout {
 }
 
 /// Save session data to a JSON file.
-pub fn save_session(
-    path: &std::path::Path,
-    data: &SessionData,
-) -> Result<(), String> {
-    let json = serde_json::to_string_pretty(data)
-        .map_err(|e| format!("serialize: {e}"))?;
-    std::fs::write(path, json)
-        .map_err(|e| format!("write: {e}"))?;
+pub fn save_session(path: &std::path::Path, data: &SessionData) -> Result<(), String> {
+    let json = serde_json::to_string_pretty(data).map_err(|e| format!("serialize: {e}"))?;
+    std::fs::write(path, json).map_err(|e| format!("write: {e}"))?;
     Ok(())
 }
 
 /// Load session data from a JSON file.
-pub fn load_session(
-    path: &std::path::Path,
-) -> Result<SessionData, String> {
-    let json = std::fs::read_to_string(path)
-        .map_err(|e| format!("read: {e}"))?;
-    let data: SessionData = serde_json::from_str(&json)
-        .map_err(|e| format!("deserialize: {e}"))?;
+pub fn load_session(path: &std::path::Path) -> Result<SessionData, String> {
+    let json = std::fs::read_to_string(path).map_err(|e| format!("read: {e}"))?;
+    let data: SessionData = serde_json::from_str(&json).map_err(|e| format!("deserialize: {e}"))?;
     Ok(data)
 }
 
@@ -60,10 +51,8 @@ mod tests {
             active: 0,
             cwd: PathBuf::from("/tmp"),
         };
-        let json =
-            serde_json::to_string_pretty(&data).unwrap();
-        let loaded: SessionData =
-            serde_json::from_str(&json).unwrap();
+        let json = serde_json::to_string_pretty(&data).unwrap();
+        let loaded: SessionData = serde_json::from_str(&json).unwrap();
         assert_eq!(loaded.buffers.len(), 1);
         assert_eq!(loaded.active, 0);
     }

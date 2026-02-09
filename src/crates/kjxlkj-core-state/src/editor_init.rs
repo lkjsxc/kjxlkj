@@ -3,9 +3,7 @@
 use std::collections::HashMap;
 
 use kjxlkj_core_edit::RegisterFile;
-use kjxlkj_core_mode::{
-    InsertModeState, NormalModeState,
-};
+use kjxlkj_core_mode::{InsertModeState, NormalModeState};
 use kjxlkj_core_types::{BufferId, Mode, TabId, WindowId};
 
 use crate::after_dir::AfterDirConfig;
@@ -23,9 +21,7 @@ use crate::floating::FloatRegistry;
 use crate::folds_advanced::FoldState;
 use crate::git_features::GitState;
 use crate::ime::ImeState;
-use crate::keybinding_dsl::{
-    CommandPalette, LeaderConfig, WhichKeyState,
-};
+use crate::keybinding_dsl::{CommandPalette, LeaderConfig, WhichKeyState};
 use crate::live_grep::LiveGrepState;
 use crate::lsp_features::LspState;
 use crate::mappings::MappingRegistry;
@@ -38,8 +34,7 @@ use crate::regex_engine::RegexConfig;
 use crate::remote::RemoteState;
 use crate::search::SearchState;
 use crate::session_features::{
-    ExCommandBatch, ExpressionEval, MacroPersistence,
-    RegisterPersistence,
+    ExCommandBatch, ExpressionEval, MacroPersistence, RegisterPersistence,
 };
 use crate::snippets::{SnippetRegistry, SnippetState};
 use crate::spell::SpellChecker;
@@ -62,10 +57,8 @@ impl EditorState {
         let win_id = WindowId(1);
 
         let buf = BufferState::new(buf_id);
-        let mut win =
-            WindowState::new_buffer(win_id, buf_id);
-        win.viewport
-            .set_size(cols, rows.saturating_sub(2));
+        let mut win = WindowState::new_buffer(win_id, buf_id);
+        win.viewport.set_size(cols, rows.saturating_sub(2));
 
         let mut buffers = HashMap::new();
         buffers.insert(buf_id, buf);
@@ -140,8 +133,7 @@ impl EditorState {
             wm_state: WmState::detect(),
             view_registry: ViewRegistry::new(),
             macro_persistence: MacroPersistence::new(),
-            register_persistence:
-                RegisterPersistence::new(),
+            register_persistence: RegisterPersistence::new(),
             expr_eval: ExpressionEval::new(),
             ex_batch: ExCommandBatch::new(),
             ime_state: ImeState::new(),

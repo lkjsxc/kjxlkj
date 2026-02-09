@@ -18,12 +18,9 @@ impl SignalHandler {
         {
             use tokio::signal::unix::{signal, SignalKind};
 
-            let mut sigterm =
-                signal(SignalKind::terminate()).expect("SIGTERM");
-            let mut sigint =
-                signal(SignalKind::interrupt()).expect("SIGINT");
-            let mut sighup =
-                signal(SignalKind::hangup()).expect("SIGHUP");
+            let mut sigterm = signal(SignalKind::terminate()).expect("SIGTERM");
+            let mut sigint = signal(SignalKind::interrupt()).expect("SIGINT");
+            let mut sighup = signal(SignalKind::hangup()).expect("SIGHUP");
 
             tokio::select! {
                 _ = sigterm.recv() => {
@@ -40,9 +37,7 @@ impl SignalHandler {
 
         #[cfg(not(unix))]
         {
-            tokio::signal::ctrl_c()
-                .await
-                .expect("Ctrl-C handler");
+            tokio::signal::ctrl_c().await.expect("Ctrl-C handler");
             let _ = self.quit_tx.send(());
         }
     }
@@ -50,25 +45,16 @@ impl SignalHandler {
 
 /// Setup SIGWINCH handler that sends resize actions.
 #[cfg(unix)]
-pub async fn watch_sigwinch(
-    action_tx: tokio::sync::mpsc::Sender<
-        kjxlkj_core_types::Action,
-    >,
-) {
+pub async fn watch_sigwinch(action_tx: tokio::sync::mpsc::Sender<kjxlkj_core_types::Action>) {
     use tokio::signal::unix::{signal, SignalKind};
 
-    let mut sig =
-        signal(SignalKind::window_change()).expect("SIGWINCH");
+    let mut sig = signal(SignalKind::window_change()).expect("SIGWINCH");
 
     loop {
         sig.recv().await;
-        if let Ok((cols, rows)) =
-            crossterm::terminal::size()
-        {
+        if let Ok((cols, rows)) = crossterm::terminal::size() {
             let _ = action_tx
-                .send(kjxlkj_core_types::Action::Resize(
-                    cols, rows,
-                ))
+                .send(kjxlkj_core_types::Action::Resize(cols, rows))
                 .await;
         }
     }

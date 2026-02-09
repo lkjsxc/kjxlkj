@@ -30,53 +30,33 @@ impl EditorState {
             None => return,
         };
         // Switch buffer if needed.
-        if self.active_buffer_id() != Some(entry.buffer)
-        {
-            if let Some(w) = self.focused_window_mut()
-            {
-                w.content = crate::WindowContent::Buffer(
-                    entry.buffer,
-                );
+        if self.active_buffer_id() != Some(entry.buffer) {
+            if let Some(w) = self.focused_window_mut() {
+                w.content = crate::WindowContent::Buffer(entry.buffer);
             }
         }
         if let Some(w) = self.focused_window_mut() {
             w.cursor.line = entry.cursor.line;
-            w.cursor.grapheme_offset =
-                entry.cursor.grapheme_offset;
-            w.viewport.follow_cursor(
-                entry.cursor.line,
-                3,
-                0,
-            );
+            w.cursor.grapheme_offset = entry.cursor.grapheme_offset;
+            w.viewport.follow_cursor(entry.cursor.line, 3, 0);
         }
     }
 
     /// Jump to a mark's line (first non-blank).
-    pub(crate) fn do_jump_to_mark_line(
-        &mut self,
-        ch: char,
-    ) {
+    pub(crate) fn do_jump_to_mark_line(&mut self, ch: char) {
         let entry = match self.marks.get(&ch) {
             Some(e) => *e,
             None => return,
         };
-        if self.active_buffer_id() != Some(entry.buffer)
-        {
-            if let Some(w) = self.focused_window_mut()
-            {
-                w.content = crate::WindowContent::Buffer(
-                    entry.buffer,
-                );
+        if self.active_buffer_id() != Some(entry.buffer) {
+            if let Some(w) = self.focused_window_mut() {
+                w.content = crate::WindowContent::Buffer(entry.buffer);
             }
         }
         if let Some(w) = self.focused_window_mut() {
             w.cursor.line = entry.cursor.line;
             w.cursor.grapheme_offset = 0;
-            w.viewport.follow_cursor(
-                entry.cursor.line,
-                3,
-                0,
-            );
+            w.viewport.follow_cursor(entry.cursor.line, 3, 0);
         }
         // Move to first non-blank.
         self.do_motion(Motion::FirstNonBlank, 1);
@@ -93,8 +73,7 @@ impl EditorState {
         }
         let current = self.active_buffer_id();
         if let Some(w) = self.focused_window_mut() {
-            w.content =
-                crate::WindowContent::Buffer(alt);
+            w.content = crate::WindowContent::Buffer(alt);
             w.cursor.line = 0;
             w.cursor.grapheme_offset = 0;
         }
@@ -103,18 +82,13 @@ impl EditorState {
 
     /// Dot repeat: re-dispatch the last repeatable action.
     pub(crate) fn do_dot_repeat(&mut self) {
-        if let Some(action) =
-            self.last_repeatable.clone()
-        {
+        if let Some(action) = self.last_repeatable.clone() {
             self.dispatch(action);
         }
     }
 
     /// Store a repeatable action.
-    pub(crate) fn store_repeatable(
-        &mut self,
-        action: &Action,
-    ) {
+    pub(crate) fn store_repeatable(&mut self, action: &Action) {
         match action {
             Action::InsertChar(_)
             | Action::DeleteCharForward
@@ -130,8 +104,7 @@ impl EditorState {
             | Action::SubstituteChar
             | Action::SubstituteLine
             | Action::ChangeToEnd => {
-                self.last_repeatable =
-                    Some(action.clone());
+                self.last_repeatable = Some(action.clone());
                 self.update_dot_mark();
             }
             _ => {}

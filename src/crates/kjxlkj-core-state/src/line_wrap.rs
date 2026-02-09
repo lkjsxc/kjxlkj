@@ -4,8 +4,8 @@
 //! cells when a width-2 grapheme would be split across
 //! display rows.
 
-use unicode_segmentation::UnicodeSegmentation;
 use kjxlkj_core_text::display_width::grapheme_display_width;
+use unicode_segmentation::UnicodeSegmentation;
 
 /// A wrapped display row with source mapping.
 #[derive(Debug, Clone)]
@@ -32,10 +32,7 @@ pub enum WrapSegment {
 }
 
 /// Compute wrapped rows for a single buffer line.
-pub fn wrap_line(
-    line: &str,
-    cols: usize,
-) -> Vec<WrapRow> {
+pub fn wrap_line(line: &str, cols: usize) -> Vec<WrapRow> {
     if cols == 0 {
         return vec![WrapRow {
             segments: Vec::new(),
@@ -94,19 +91,11 @@ pub fn display_row_count(line: &str, cols: usize) -> usize {
 }
 
 /// Map a source grapheme offset to (display_row, display_col).
-pub fn source_to_display(
-    line: &str,
-    cols: usize,
-    grapheme_offset: usize,
-) -> (usize, usize) {
+pub fn source_to_display(line: &str, cols: usize, grapheme_offset: usize) -> (usize, usize) {
     let rows = wrap_line(line, cols);
     for (row_idx, row) in rows.iter().enumerate() {
         for seg in &row.segments {
-            if let WrapSegment::Grapheme {
-                source_offset,
-                ..
-            } = seg
-            {
+            if let WrapSegment::Grapheme { source_offset, .. } = seg {
                 if *source_offset == grapheme_offset {
                     let col: usize = row
                         .segments
@@ -121,9 +110,7 @@ pub fn source_to_display(
                             )
                         })
                         .map(|s| match s {
-                            WrapSegment::Grapheme { width, .. } => {
-                                *width as usize
-                            }
+                            WrapSegment::Grapheme { width, .. } => *width as usize,
                             WrapSegment::Padding => 1,
                         })
                         .sum();

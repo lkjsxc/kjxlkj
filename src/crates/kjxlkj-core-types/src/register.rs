@@ -102,10 +102,7 @@ mod tests {
 
     #[test]
     fn parse_named_register() {
-        assert_eq!(
-            RegisterName::from_char('a'),
-            Some(RegisterName::Named('a'))
-        );
+        assert_eq!(RegisterName::from_char('a'), Some(RegisterName::Named('a')));
     }
 
     #[test]
@@ -118,18 +115,9 @@ mod tests {
 
     #[test]
     fn parse_special_registers() {
-        assert_eq!(
-            RegisterName::from_char('"'),
-            Some(RegisterName::Unnamed)
-        );
-        assert_eq!(
-            RegisterName::from_char('_'),
-            Some(RegisterName::BlackHole)
-        );
-        assert_eq!(
-            RegisterName::from_char('+'),
-            Some(RegisterName::Clipboard)
-        );
+        assert_eq!(RegisterName::from_char('"'), Some(RegisterName::Unnamed));
+        assert_eq!(RegisterName::from_char('_'), Some(RegisterName::BlackHole));
+        assert_eq!(RegisterName::from_char('+'), Some(RegisterName::Clipboard));
     }
 
     #[test]

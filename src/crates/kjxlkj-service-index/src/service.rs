@@ -19,9 +19,7 @@ pub struct IndexService {
 }
 
 impl IndexService {
-    pub fn new(
-        response_tx: mpsc::Sender<ServiceResponse>,
-    ) -> Self {
+    pub fn new(response_tx: mpsc::Sender<ServiceResponse>) -> Self {
         Self {
             response_tx,
             files: Vec::new(),
@@ -50,10 +48,7 @@ impl IndexService {
     }
 
     /// Run the service loop.
-    pub async fn run(
-        self,
-        mut quit_rx: broadcast::Receiver<()>,
-    ) {
+    pub async fn run(self, mut quit_rx: broadcast::Receiver<()>) {
         loop {
             tokio::select! {
                 _ = quit_rx.recv() => break,

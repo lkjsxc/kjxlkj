@@ -48,8 +48,7 @@ impl CursorPosition {
         if grapheme_count == 0 {
             self.grapheme_offset = 0;
         } else {
-            self.grapheme_offset =
-                self.grapheme_offset.min(grapheme_count - 1);
+            self.grapheme_offset = self.grapheme_offset.min(grapheme_count - 1);
         }
     }
 
@@ -107,8 +106,7 @@ mod tests {
 
     #[test]
     fn desired_col_sticky() {
-        let c = CursorPosition::new(0, 10)
-            .with_desired_col(20);
+        let c = CursorPosition::new(0, 10).with_desired_col(20);
         assert_eq!(c.desired_col, Some(20));
     }
 }

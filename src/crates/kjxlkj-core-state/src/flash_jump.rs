@@ -34,10 +34,7 @@ impl FlashState {
     }
 
     /// Start flash mode with targets.
-    pub fn start(
-        &mut self,
-        targets: Vec<FlashTarget>,
-    ) {
+    pub fn start(&mut self, targets: Vec<FlashTarget>) {
         self.active = true;
         self.targets = targets;
         self.input.clear();
@@ -51,10 +48,7 @@ impl FlashState {
     }
 
     /// Feed a character and return matching target.
-    pub fn feed(
-        &mut self,
-        c: char,
-    ) -> Option<FlashTarget> {
+    pub fn feed(&mut self, c: char) -> Option<FlashTarget> {
         self.input.push(c);
         let matching: Vec<_> = self
             .targets
@@ -62,9 +56,7 @@ impl FlashState {
             .filter(|t| t.label.starts_with(&self.input))
             .cloned()
             .collect();
-        if matching.len() == 1
-            && matching[0].label == self.input
-        {
+        if matching.len() == 1 && matching[0].label == self.input {
             let target = matching[0].clone();
             self.cancel();
             return Some(target);
@@ -77,8 +69,7 @@ impl FlashState {
 }
 
 /// Label chars for generating labels.
-const LABEL_CHARS: &[u8] =
-    b"asdghklqwertyuiopzxcvbnmfj";
+const LABEL_CHARS: &[u8] = b"asdghklqwertyuiopzxcvbnmfj";
 
 impl EditorState {
     /// Activate flash jump mode.
@@ -91,15 +82,13 @@ impl EditorState {
             None => return,
         };
         let top = win.viewport.top_line;
-        let height =
-            win.viewport.height as usize;
+        let height = win.viewport.height as usize;
 
         let buf = match self.buffers.get(&buf_id) {
             Some(b) => b,
             None => return,
         };
-        let end = (top + height)
-            .min(buf.content.line_count());
+        let end = (top + height).min(buf.content.line_count());
 
         let mut targets = Vec::new();
         let mut label_idx = 0usize;
@@ -109,17 +98,13 @@ impl EditorState {
             // Target word beginnings.
             let mut prev_space = true;
             for (col, ch) in text.char_indices() {
-                let is_space =
-                    ch.is_whitespace();
+                let is_space = ch.is_whitespace();
                 if prev_space && !is_space {
                     if label_idx < LABEL_CHARS.len() {
                         targets.push(FlashTarget {
                             line,
                             col,
-                            label: String::from(
-                                LABEL_CHARS[label_idx]
-                                    as char,
-                            ),
+                            label: String::from(LABEL_CHARS[label_idx] as char),
                         });
                         label_idx += 1;
                     }

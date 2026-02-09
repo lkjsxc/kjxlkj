@@ -1,9 +1,7 @@
 //! Tests for CommandModeState.
 
 use crate::command::CommandModeState;
-use kjxlkj_core_types::{
-    Action, ActionCommandKind, Key, KeyCode,
-};
+use kjxlkj_core_types::{Action, ActionCommandKind, Key, KeyCode};
 
 #[test]
 fn prompt_characters() {

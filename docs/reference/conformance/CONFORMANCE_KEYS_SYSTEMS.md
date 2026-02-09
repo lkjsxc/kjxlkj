@@ -138,5 +138,5 @@ UI views, terminal, buffer, window, and theme system conformance entries.
 
 ## Related
 
-- Input modes: [/docs/reference/CONFORMANCE_KEYS_INPUT.md](/docs/reference/CONFORMANCE_KEYS_INPUT.md)
-- Infrastructure: [/docs/reference/CONFORMANCE_KEYS_INFRA.md](/docs/reference/CONFORMANCE_KEYS_INFRA.md)
+- Input modes: [/docs/reference/conformance/CONFORMANCE_KEYS_INPUT.md](/docs/reference/conformance/CONFORMANCE_KEYS_INPUT.md)
+- Infrastructure: [/docs/reference/conformance/CONFORMANCE_KEYS_INFRA.md](/docs/reference/conformance/CONFORMANCE_KEYS_INFRA.md)

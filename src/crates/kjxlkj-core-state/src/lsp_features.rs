@@ -41,8 +41,7 @@ impl EditorState {
         if self.focused_window().is_none() {
             return;
         }
-        self.lsp_state.rename_new_name =
-            Some(new_name.to_string());
+        self.lsp_state.rename_new_name = Some(new_name.to_string());
     }
 
     /// Trigger signature help.
@@ -70,14 +69,12 @@ impl EditorState {
 
     /// Toggle code lens display.
     pub fn do_lsp_code_lens(&mut self) {
-        self.lsp_state.code_lens_active =
-            !self.lsp_state.code_lens_active;
+        self.lsp_state.code_lens_active = !self.lsp_state.code_lens_active;
     }
 
     /// Toggle inlay hints display.
     pub fn do_lsp_inlay_hints(&mut self) {
-        self.lsp_state.inlay_hints_active =
-            !self.lsp_state.inlay_hints_active;
+        self.lsp_state.inlay_hints_active = !self.lsp_state.inlay_hints_active;
     }
 
     /// Show call hierarchy.
@@ -147,9 +144,6 @@ mod tests {
     fn lsp_rename() {
         let mut ed = EditorState::new(80, 24);
         ed.do_lsp_rename("new_name");
-        assert_eq!(
-            ed.lsp_state.rename_new_name.as_deref(),
-            Some("new_name"),
-        );
+        assert_eq!(ed.lsp_state.rename_new_name.as_deref(), Some("new_name"),);
     }
 }
