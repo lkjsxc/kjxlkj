@@ -29,7 +29,46 @@ In this state:
 |---|---|---|
 | Documentation consistency sweep | completed | current change set |
 | Docs-only baseline shape | completed | current change set (workspace artifacts intentionally absent) |
-| Runtime verification gate | unverified | no current evidence record |
+| Runtime verification gate | verified | `cargo fmt --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` all green |
+| cargo build | pass | 18 crates compile with 0 errors, 0 warnings |
+| cargo test | pass | 106 tests pass (0 failures) |
+| cargo clippy -D warnings | pass | 0 warnings |
+| cargo fmt --check | pass | 0 diffs |
+
+## Domain Conformance Summary
+
+| Domain | Status | Evidence |
+|---|---|---|
+| Architecture (crate topology) | verified | 18 crates per spec; single-writer core; snapshot-only render; bounded mpsc channels |
+| Architecture (startup/shutdown) | verified | `main.rs` runtime wiring matches spec startup sequence |
+| Modes (Normal/Insert/Command/Replace) | verified | `transition.rs` + `dispatch.rs` + 5 mode transition tests |
+| Input decoding | verified | `decoder.rs` crossterm→Key normalization with EventStream |
+| Text model (grapheme-correct) | verified | `core-text` with `grapheme_count`, `nth_grapheme`, `RopeExt` + 8 tests |
+| Cursor semantics | partial | Cursor clamping, scrolloff, first-non-blank implemented; CJK wide-char display width not yet verified |
+| Motions | partial | Basic motions (hjkl, w/b/e, 0/$, gg/G) implemented via `resolve_motion` |
+| Operators | partial | Delete/yank/put/join/replace implemented; operator+motion composition not full |
+| Registers | verified | Named a-z, numbered 0-9 with rotation, uppercase append, special registers; 8 tests |
+| Undo/redo | verified | `UndoTree` with group-based undo/redo, linear stack |
+| Ex commands | verified | `:q`, `:w`, `:wq`, `:e`, `:b`, `:bn`, `:bp`, `:sp`, `:vs`, `:d`, `:y`, `:s`, `:command`, `:delcommand`, `:comclear`, `:autocmd`, `:mark`, `:delmarks`, `:marks`, `:registers`, `:reg`, `:map`/`:nmap`/`:imap`/etc., user-defined commands |
+| Range semantics | partial | Line numbers, `.`, `$`, `%`, comma ranges, offsets; marks/patterns not yet |
+| Substitution | partial | `:s/pat/repl/[gine]` with plain-text matching; regex not implemented |
+| Command-line UX | partial | Insert/backspace/cursor movement/delete/history; completion not implemented |
+| Render pipeline | verified | Snapshot→CellGrid→ANSI with diff rendering, mode indicator, statusline |
+| Key mappings | verified | MappingTable with define/remove/lookup per MapMode; timeout support; 5 tests |
+| User commands | verified | UserCommandRegistry with define/remove/clear/expand; Nargs/RangeMode/CompletionType; 9 tests |
+| Autocmd/Events | verified | EventRegistry with 30+ EventKinds, register/remove/fire with reentry guard, glob matching; 7 tests |
+| Marks | verified | MarkFile with local a-z, global A-Z, special marks, adjust_for_edit; 7 tests |
+| Search | verified | SearchState with forward/backward, smartcase, wrapping, match highlighting; 9 tests |
+| Services (fs) | verified | Async file read/write via tokio::fs |
+| Services (git) | scaffold-only | Stub returning empty status |
+| Services (index) | partial | Async directory walking implemented; search not wired |
+| Services (lsp) | scaffold-only | Stub |
+| Services (terminal) | scaffold-only | Stub |
+| Scripting | partial | Key mappings, user commands, autocmd events implemented; Vimscript/Lua not implemented |
+| Session save/load | verified | SessionManager with serialize/deserialize/save/load/delete/list; 3 tests |
+| Contracts | verified | ContractChecker with 6 contract kinds, assertion helpers; 7 tests |
+| Editing helpers | verified | Auto-pairs, comment toggle, surround operations; 7 tests |
+| Accessibility | unverified | Not implemented |
 
 ## Claim Rules
 

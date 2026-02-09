@@ -9,15 +9,15 @@ Back: [/docs/todo/current/features/README.md](/docs/todo/current/features/README
 
 ## Inventory
 
-- [ ] Extract all editing-helper and UI feature requirements into requirement matrix.
+- [x] Extract all editing-helper and UI feature requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement editing helper features (auto-pairs, comments, snippets, spell, multicursor, etc.).
-- [ ] Implement UI feature set (viewport, statusline, notifications, popup, theming details).
-- [ ] Ensure feature behavior remains consistent with mode and command semantics.
+- [x] Implement editing helper features (auto-pairs, comments, snippets, spell, multicursor, etc.).
+- [x] Implement UI feature set (viewport, statusline, notifications, popup, theming details).
+- [x] Ensure feature behavior remains consistent with mode and command semantics.
 
 ## Verification
 
-- [ ] Add/refresh deterministic feature and boundary tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic feature and boundary tests.
+- [x] Record evidence in conformance and limitations ledgers.

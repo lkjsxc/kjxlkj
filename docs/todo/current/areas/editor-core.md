@@ -12,15 +12,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all editor-core requirements into requirement matrix.
+- [x] Extract all editor-core requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement buffer model, window model, and tab model per spec.
-- [ ] Implement spatial window behavior and lifecycle rules.
-- [ ] Implement buffer lifecycle, alternate buffer, and buffer-local semantics.
+- [x] Implement buffer model, window model, and tab model per spec.
+- [x] Implement spatial window behavior and lifecycle rules.
+- [x] Implement buffer lifecycle, alternate buffer, and buffer-local semantics.
 
 ## Verification
 
-- [ ] Add/refresh deterministic tests for split/tab/buffer workflows.
-- [ ] Record evidence in reference ledgers.
+- [x] Add/refresh deterministic tests for split/tab/buffer workflows.
+- [x] Record evidence in reference ledgers.

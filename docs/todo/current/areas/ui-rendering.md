@@ -15,15 +15,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all UI/rendering requirements into requirement matrix.
+- [x] Extract all UI/rendering requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement snapshot-to-frame pipeline per render spec.
-- [ ] Implement viewport, wrapping, CJK boundary, and cursor display invariants.
-- [ ] Implement statusline, popup, notification, and theming surfaces.
+- [x] Implement snapshot-to-frame pipeline per render spec.
+- [x] Implement viewport, wrapping, CJK boundary, and cursor display invariants.
+- [x] Implement statusline, popup, notification, and theming surfaces.
 
 ## Verification
 
-- [ ] Add/refresh deterministic rendering and viewport boundary tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic rendering and viewport boundary tests.
+- [x] Record evidence in conformance and limitations ledgers.

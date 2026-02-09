@@ -1,0 +1,128 @@
+/// Ex command dispatch — main entry and simple handlers.
+use kjxlkj_core_types::Action;
+
+use crate::editor::EditorState;
+use crate::ex_parse::{parse_range, ExRange};
+
+impl EditorState {
+    pub(crate) fn execute_cmdline(&mut self) {
+        let prefix = self.cmdline.prefix;
+        let content = self.cmdline.take_content();
+        self.mode = kjxlkj_core_types::Mode::Normal;
+
+        if let Some(':') = prefix {
+            self.execute_ex_command(&content);
+        } else {
+            self.search.pattern = Some(content);
+            self.search.active = true;
+        }
+    }
+
+    pub(crate) fn execute_ex_command(&mut self, cmd: &str) {
+        let cmd = cmd.trim();
+        let current_line = self.windows.focused().cursor.line;
+        let buf_id = self.current_buffer_id();
+        let total_lines = self
+            .buffers
+            .get(buf_id)
+            .map(|b| b.line_count())
+            .unwrap_or(1);
+        let (range, rest) = parse_range(cmd, current_line, total_lines);
+        let rest = rest.trim();
+
+        match rest {
+            "q" | "quit" => self.handle_action(Action::Quit),
+            "q!" | "quit!" => self.handle_action(Action::ForceQuit),
+            "w" | "write" => self.write_current_buffer(),
+            "wq" | "x" => {
+                self.write_current_buffer();
+                self.handle_action(Action::Quit);
+            }
+            "bn" | "bnext" => self.next_buffer(),
+            "bp" | "bprev" | "bprevious" => self.prev_buffer(),
+            "sp" | "split" => self.split_horizontal(),
+            "vs" | "vsplit" => self.split_vertical(),
+            "d" | "delete" => {
+                let r = range.unwrap_or(ExRange::single(current_line));
+                self.delete_range(r);
+            }
+            "y" | "yank" => {
+                let r = range.unwrap_or(ExRange::single(current_line));
+                self.yank_range(r);
+            }
+            _ if rest.starts_with("s/")
+                || rest.starts_with("s#")
+                || rest.starts_with("substitute") =>
+            {
+                let sub_input = if let Some(stripped) = rest.strip_prefix("substitute") {
+                    stripped
+                } else {
+                    &rest[1..]
+                };
+                let r = range.unwrap_or(ExRange::single(current_line));
+                self.execute_substitute(sub_input, r);
+            }
+            _ if rest.starts_with("e ") || rest.starts_with("edit ") => {
+                let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();
+                if !path.is_empty() {
+                    self.notify_info(&format!("Opening: {path}"));
+                }
+            }
+            _ if rest.starts_with("b ") => {
+                let arg = rest.split_once(' ').map(|x| x.1).unwrap_or("");
+                if let Ok(n) = arg.trim().parse::<u64>() {
+                    self.buffers.switch_to(kjxlkj_core_types::BufferId(n));
+                }
+            }
+            _ if super::ex_map::is_map_command(rest) => self.handle_map_command(rest),
+            _ if rest == "command" || rest == "comclear" => {
+                self.handle_command_command(rest, "");
+            }
+            _ if rest.starts_with("command ") || rest.starts_with("command! ") => {
+                let (prefix, args) = rest.split_once(' ').unwrap();
+                self.handle_command_command(prefix, args);
+            }
+            _ if rest.starts_with("delcommand ") => {
+                let name = rest.strip_prefix("delcommand ").unwrap().trim();
+                self.handle_delcommand(name);
+            }
+            _ if rest.starts_with("autocmd ") || rest == "autocmd" => {
+                let args = rest.strip_prefix("autocmd").unwrap().trim();
+                self.handle_autocmd(args);
+            }
+            _ if rest.starts_with("mark ") || rest.starts_with("k ") => {
+                let ch = rest
+                    .split_whitespace()
+                    .nth(1)
+                    .and_then(|s| s.chars().next());
+                if let Some(name) = ch {
+                    self.handle_set_mark(name);
+                }
+            }
+            _ if rest.starts_with("delmarks ") => {
+                let names = rest.strip_prefix("delmarks ").unwrap().trim();
+                self.handle_delmarks(names);
+            }
+            "marks" => self.handle_list_marks(),
+            "registers" | "reg" => self.handle_list_registers(),
+            _ if rest.is_empty() => {
+                if let Some(r) = range {
+                    self.windows.focused_mut().cursor.line = r.end;
+                    self.windows.focused_mut().cursor.grapheme = 0;
+                    self.ensure_cursor_visible();
+                }
+            }
+            _ => {
+                let cmd_word = rest.split_whitespace().next().unwrap_or("");
+                if cmd_word.starts_with(|c: char| c.is_ascii_uppercase()) {
+                    let args = rest.strip_prefix(cmd_word).unwrap_or("").trim();
+                    if let Some(expanded) = self.user_commands.expand(cmd_word, args, false) {
+                        self.execute_ex_command(&expanded);
+                        return;
+                    }
+                }
+                self.notify_error(&format!("E492: Unknown command: {rest}"));
+            }
+        }
+    }
+}

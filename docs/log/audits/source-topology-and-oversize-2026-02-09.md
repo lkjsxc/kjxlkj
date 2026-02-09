@@ -47,8 +47,18 @@ around-12 fan-out targets.
 ## Files Exceeding 200 Lines (Post-Compaction Snapshot)
 
 - Scope: `src/**/*.rs`
-- Result: none (0 files)
-- Evidence: [/docs/log/audits/verification-evidence-2026-02-09.md](/docs/log/audits/verification-evidence-2026-02-09.md)
+- Result: 7 files over 200 lines after editor.rs split
+
+| Lines | File | Notes |
+|---:|---|---|
+| 362 | `src/crates/kjxlkj-core-state/src/editing_ops.rs` | Split from editor.rs; many small methods |
+| 357 | `src/crates/kjxlkj-core-state/src/editor.rs` | Core dispatch hub; cannot reduce without losing cohesion |
+| 290 | `src/crates/kjxlkj-core-state/src/window_tree.rs` | Window layout tree; single concern |
+| 290 | `src/crates/kjxlkj-core-edit/src/motion.rs` | Motion resolver; inherently large match |
+| 261 | `src/crates/kjxlkj-render/src/grid.rs` | Grid builder; single function with setup |
+| 242 | `src/crates/kjxlkj-core-state/src/buffer_list.rs` | Buffer collection management |
+| 230 | `src/crates/kjxlkj-core-state/src/cursor_ops.rs` | Split from editor.rs; cursor methods |
+| 211 | `src/crates/kjxlkj/src/main.rs` | Entry point; startup/shutdown sequence |
 
 ## Required Decomposition Actions
 

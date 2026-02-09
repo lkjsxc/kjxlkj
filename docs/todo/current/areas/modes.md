@@ -14,15 +14,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all mode and transition requirements into requirement matrix.
+- [x] Extract all mode and transition requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement each mode's entry/exit behavior and invariant state transitions.
-- [ ] Implement transition edge cases (timeouts, cancels, nested prefixes).
-- [ ] Ensure mode behavior remains deterministic under async service load.
+- [x] Implement each mode's entry/exit behavior and invariant state transitions.
+- [x] Implement transition edge cases (timeouts, cancels, nested prefixes).
+- [x] Ensure mode behavior remains deterministic under async service load.
 
 ## Verification
 
-- [ ] Add/refresh deterministic mode transition and regression tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic mode transition and regression tests.
+- [x] Record evidence in conformance and limitations ledgers.

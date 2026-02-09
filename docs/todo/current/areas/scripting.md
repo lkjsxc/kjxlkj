@@ -12,15 +12,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all scripting requirements into requirement matrix.
+- [x] Extract all scripting requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement mappings and expansion semantics.
-- [ ] Implement user command/function registration and execution semantics.
-- [ ] Implement event/hook behavior and scheduler/debounce semantics.
+- [x] Implement mappings and expansion semantics.
+- [x] Implement user command/function registration and execution semantics.
+- [x] Implement event/hook behavior and scheduler/debounce semantics.
 
 ## Verification
 
-- [ ] Add/refresh deterministic tests for mappings, user commands/functions, and automation hooks.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic tests for mappings, user commands/functions, and automation hooks.
+- [x] Record evidence in conformance and limitations ledgers.

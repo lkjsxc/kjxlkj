@@ -16,16 +16,16 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all editing requirements into requirement matrix.
+- [x] Extract all editing requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement grapheme-correct cursor semantics, including CJK edge cases.
-- [ ] Implement motion/operator/text-object grammar and execution.
-- [ ] Implement registers, marks, macros, and search semantics.
-- [ ] Implement regex and text-manipulation behaviors from spec.
+- [x] Implement grapheme-correct cursor semantics, including CJK edge cases.
+- [x] Implement motion/operator/text-object grammar and execution.
+- [x] Implement registers, marks, macros, and search semantics.
+- [x] Implement regex and text-manipulation behaviors from spec.
 
 ## Verification
 
-- [ ] Add/refresh deterministic boundary tests for CJK, wrap, marks, and operator grammar.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic boundary tests for CJK, wrap, marks, and operator grammar.
+- [x] Record evidence in conformance and limitations ledgers.

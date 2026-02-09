@@ -15,20 +15,20 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all normative requirements from listed architecture specs into requirement matrix.
-- [ ] Assign stable IDs and map each ID to implementation and test evidence paths.
-- [ ] Identify parallel agent/runtime implementations and map each to canonical architecture requirements.
+- [x] Extract all normative requirements from listed architecture specs into requirement matrix.
+- [x] Assign stable IDs and map each ID to implementation and test evidence paths.
+- [x] Identify parallel agent/runtime implementations and map each to canonical architecture requirements.
 
 ## Implementation
 
-- [ ] Implement startup/shutdown sequence exactly as specified.
-- [ ] Implement runtime task topology and channel topology exactly as specified.
-- [ ] Consolidate parallel agent/runtime paths into one canonical input->core->render/service flow.
-- [ ] Ensure single-writer core ownership and snapshot-only rendering path.
-- [ ] Enforce built-in integrations policy (no external plugin loading).
+- [x] Implement startup/shutdown sequence exactly as specified.
+- [x] Implement runtime task topology and channel topology exactly as specified.
+- [x] Consolidate parallel agent/runtime paths into one canonical input->core->render/service flow.
+- [x] Ensure single-writer core ownership and snapshot-only rendering path.
+- [x] Enforce built-in integrations policy (no external plugin loading).
 
 ## Verification
 
-- [ ] Add/refresh deterministic tests for startup, runtime orchestration, and signal handling.
-- [ ] Verify only one canonical core dispatch owner exists in runtime behavior.
-- [ ] Verify architecture claims in reference ledgers with evidence links.
+- [x] Add/refresh deterministic tests for startup, runtime orchestration, and signal handling.
+- [x] Verify only one canonical core dispatch owner exists in runtime behavior.
+- [x] Verify architecture claims in reference ledgers with evidence links.

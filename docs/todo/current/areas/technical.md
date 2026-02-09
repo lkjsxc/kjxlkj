@@ -14,15 +14,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all technical contract requirements into requirement matrix.
+- [x] Extract all technical contract requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement required contract checks and invariants.
-- [ ] Implement required testing layers (unit, integration, headless E2E, PTY E2E, boundary).
-- [ ] Implement required latency/memory behavior and guardrails.
+- [x] Implement required contract checks and invariants.
+- [x] Implement required testing layers (unit, integration, headless E2E, PTY E2E, boundary).
+- [x] Implement required latency/memory behavior and guardrails.
 
 ## Verification
 
-- [ ] Add/refresh deterministic contract and performance regression tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic contract and performance regression tests.
+- [x] Record evidence in conformance and limitations ledgers.

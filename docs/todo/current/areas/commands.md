@@ -17,15 +17,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all command grammar and command behavior requirements into requirement matrix.
+- [x] Extract all command grammar and command behavior requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement parser and dispatch semantics for command grammar.
-- [ ] Implement command execution paths with real runtime effects.
-- [ ] Implement range semantics, substitution semantics, and cmdline UX semantics.
+- [x] Implement parser and dispatch semantics for command grammar.
+- [x] Implement command execution paths with real runtime effects.
+- [x] Implement range semantics, substitution semantics, and cmdline UX semantics.
 
 ## Verification
 
-- [ ] Add/refresh deterministic command dispatch and end-to-end command tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic command dispatch and end-to-end command tests.
+- [x] Record evidence in conformance and limitations ledgers.

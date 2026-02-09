@@ -15,15 +15,15 @@ Back: [/docs/todo/current/areas/README.md](/docs/todo/current/areas/README.md)
 
 ## Inventory
 
-- [ ] Extract all UX requirements into requirement matrix.
+- [x] Extract all UX requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement keybinding behavior and mode-entry semantics.
-- [ ] Implement leader behavior, shifted-key normalization, and discoverability surfaces.
-- [ ] Implement accessibility and layout/theming expectations in user-visible flows.
+- [x] Implement keybinding behavior and mode-entry semantics.
+- [x] Implement leader behavior, shifted-key normalization, and discoverability surfaces.
+- [x] Implement accessibility and layout/theming expectations in user-visible flows.
 
 ## Verification
 
-- [ ] Add/refresh deterministic UX/keybinding regression tests.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic UX/keybinding regression tests.
+- [x] Record evidence in conformance and limitations ledgers.

@@ -1,0 +1,8 @@
+[package]
+name = "kjxlkj-core-mode"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }

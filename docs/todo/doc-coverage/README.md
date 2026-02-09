@@ -12,16 +12,16 @@ This checklist set directly links every documentation markdown file currently in
 
 ## Inventory
 
-- Total tracked markdown docs: 466
+- Total tracked markdown docs: 473
 - Parts: 5
 
 ## Parts
 
-- [ ] [doc-coverage-1.md](doc-coverage-1.md)
-- [ ] [doc-coverage-2.md](doc-coverage-2.md)
-- [ ] [doc-coverage-3.md](doc-coverage-3.md)
-- [ ] [doc-coverage-4.md](doc-coverage-4.md)
-- [ ] [doc-coverage-5.md](doc-coverage-5.md)
+- [x] [doc-coverage-1.md](doc-coverage-1.md)
+- [x] [doc-coverage-2.md](doc-coverage-2.md)
+- [x] [doc-coverage-3.md](doc-coverage-3.md)
+- [x] [doc-coverage-4.md](doc-coverage-4.md)
+- [x] [doc-coverage-5.md](doc-coverage-5.md)
 
 ## Regeneration Rule
 
@@ -35,5 +35,5 @@ When documentation files are added, removed, or renamed:
 
 Before finishing a reconstruction wave:
 
-- [ ] confirm no documentation file is missing from these parts
-- [ ] confirm no stale links remain after docs updates
+- [x] confirm no documentation file is missing from these parts
+- [x] confirm no stale links remain after docs updates

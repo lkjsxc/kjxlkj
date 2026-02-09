@@ -11,15 +11,15 @@ Back: [/docs/todo/current/features/README.md](/docs/todo/current/features/README
 
 ## Inventory
 
-- [ ] Extract all core-integration requirements into requirement matrix.
+- [x] Extract all core-integration requirements into requirement matrix.
 
 ## Implementation
 
-- [ ] Implement terminal integration as real managed windows.
-- [ ] Implement session save/load behavior per session schema.
-- [ ] Implement window and buffer feature surfaces and interoperability.
+- [x] Implement terminal integration as real managed windows.
+- [x] Implement session save/load behavior per session schema.
+- [x] Implement window and buffer feature surfaces and interoperability.
 
 ## Verification
 
-- [ ] Add/refresh deterministic integration and E2E tests across terminal/session/window/buffer workflows.
-- [ ] Record evidence in conformance and limitations ledgers.
+- [x] Add/refresh deterministic integration and E2E tests across terminal/session/window/buffer workflows.
+- [x] Record evidence in conformance and limitations ledgers.
