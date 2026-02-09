@@ -9,6 +9,7 @@ fn test_serialize_deserialize_roundtrip() {
             cursor_line: 42,
             cursor_col: 10,
             was_modified: false,
+            local_marks: Vec::new(),
         }],
         cwd: Some(PathBuf::from("/home/user")),
         layout: SessionLayout::Single,

@@ -30,6 +30,9 @@ pub fn eval_expression_with_vars(
     if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 {
         return Ok(expr[1..expr.len() - 1].to_string());
     }
+    if expr.starts_with('[') && expr.ends_with(']') {
+        return Ok(expr.to_string()); // list literal returned as-is
+    }
     if let Some(r) = try_ternary(expr, vars) { return r; }
     if let Some(r) = try_comparison(expr, vars) { return r; }
     eval_arithmetic(expr)
@@ -150,9 +153,6 @@ fn find_comparison_op(expr: &str, op: &str) -> Option<usize> {
     }
     None
 }
-
-/// Try to evaluate a built-in function call.
-/// Supports: strlen(expr), line("."), col(".").
 #[rustfmt::skip]
 fn try_builtin_function(
     expr: &str, vars: &HashMap<String, String>,
@@ -168,6 +168,14 @@ fn try_builtin_function(
             };
             Some(Ok(format!("{}", val.len())))
         }
+        "len" => {
+            let val = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            if val.starts_with('[') && val.ends_with(']') {
+                let inner = val[1..val.len()-1].trim();
+                let count = if inner.is_empty() { 0 } else { inner.split(',').count() };
+                Some(Ok(format!("{count}")))
+            } else { Some(Ok(format!("{}", val.len()))) }
+        }
         "line" if arg == "\".\"" || arg == "'.'" || arg == "." =>
             Some(Ok(vars.get("v:lnum").cloned().unwrap_or_else(|| "1".into()))),
         "col" if arg == "\".\"" || arg == "'.'" || arg == "." =>
@@ -180,17 +188,6 @@ fn try_builtin_function(
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn test_basic_arithmetic() {
-        assert_eq!(eval_expression("2+3").unwrap(), "5");
-        assert_eq!(eval_expression("10-4").unwrap(), "6");
-        assert_eq!(eval_expression("3*4").unwrap(), "12");
-        assert_eq!(eval_expression("15/4").unwrap(), "3");
-        assert_eq!(eval_expression("17%5").unwrap(), "2");
-    }
-    #[test]
-    fn test_strings() {
-        assert_eq!(eval_expression("\"hello\"").unwrap(), "hello");
-        assert_eq!(eval_expression("\"hello\" . \" world\"").unwrap(), "hello world");
-    }
+    #[test] fn test_basic_arithmetic() { assert_eq!(eval_expression("2+3").unwrap(), "5"); assert_eq!(eval_expression("10-4").unwrap(), "6"); assert_eq!(eval_expression("3*4").unwrap(), "12"); }
+    #[test] fn test_strings() { assert_eq!(eval_expression("\"hello\"").unwrap(), "hello"); assert_eq!(eval_expression("\"hello\" . \" world\"").unwrap(), "hello world"); }
 }

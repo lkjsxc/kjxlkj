@@ -28,6 +28,8 @@ pub struct SessionFile {
     pub cursor_col: usize,
     /// Whether the file was modified when saved.
     pub was_modified: bool,
+    /// Local marks (a-z) for this buffer: (name, line, col).
+    pub local_marks: Vec<(char, usize, usize)>,
 }
 
 /// Window layout serialization.
@@ -66,6 +68,7 @@ impl SessionManager {
         for file in &data.files {
             let m = if file.was_modified { "m" } else { "-" };
             out.push_str(&format!("file {} {} {} {m}\n", file.path.display(), file.cursor_line, file.cursor_col));
+            for &(name, line, col) in &file.local_marks { out.push_str(&format!("localmark {name} {line} {col}\n")); }
         }
         for &(name, line, col) in &data.marks { out.push_str(&format!("mark {name} {line} {col}\n")); }
         match &data.layout {
@@ -100,7 +103,13 @@ impl SessionManager {
                         cursor_line: parts[2].parse().unwrap_or(0),
                         cursor_col: parts[3].parse().unwrap_or(0),
                         was_modified: parts.get(4) == Some(&"m"),
+                        local_marks: Vec::new(),
                     });
+                }
+                Some("localmark") if parts.len() >= 4 => {
+                    if let (Some(f), Some(name)) = (data.files.last_mut(), parts[1].chars().next()) {
+                        f.local_marks.push((name, parts[2].parse().unwrap_or(0), parts[3].parse().unwrap_or(0)));
+                    }
                 }
                 Some("mark") if parts.len() >= 4 => {
                     if let Some(name) = parts[1].chars().next() {
@@ -130,19 +139,11 @@ impl SessionManager {
     }
 
     /// Get session file path for a given name.
-    pub fn session_path(&self, name: &str) -> PathBuf {
-        self.session_dir.join(format!("{name}.session"))
-    }
-
+    pub fn session_path(&self, name: &str) -> PathBuf { self.session_dir.join(format!("{name}.session")) }
     /// Set current session name.
-    pub fn set_name(&mut self, name: String) {
-        self.current_name = Some(name);
-    }
-
+    pub fn set_name(&mut self, name: String) { self.current_name = Some(name); }
     /// Get current session name.
-    pub fn name(&self) -> Option<&str> {
-        self.current_name.as_deref()
-    }
+    pub fn name(&self) -> Option<&str> { self.current_name.as_deref() }
 
     /// List available sessions.
     pub fn list_sessions(&self) -> Vec<String> {

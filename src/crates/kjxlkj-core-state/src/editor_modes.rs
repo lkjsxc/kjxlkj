@@ -75,16 +75,25 @@ impl EditorState {
             popup_menu: if self.cmdline.completion.candidates.is_empty() {
                 None
             } else {
+                let sel = self.cmdline.completion.index.unwrap_or(0);
+                let max_vis = 10usize;
+                let scroll = if sel >= max_vis { sel - max_vis + 1 } else { 0 };
                 Some(kjxlkj_core_ui::PopupMenu {
                     items: self.cmdline.completion.candidates.clone(),
                     selected: self.cmdline.completion.index,
+                    row: self.terminal_size.1.saturating_sub(3),
+                    col: 1,
+                    max_visible: max_vis,
+                    scroll_offset: scroll,
                 })
             },
         }
     }
 
     fn compute_hlsearch(&self) -> Vec<(usize, usize, usize)> {
-        let active = self.options.get_bool("hlsearch") && self.search.active;
+        let hl = self.options.get_bool("hlsearch") && self.search.active;
+        let op_pending = matches!(self.mode, kjxlkj_core_types::Mode::OperatorPending(_));
+        let active = hl || (op_pending && self.search.pattern.is_some());
         let pat = match (&self.search.pattern, active) {
             (Some(p), true) if !p.is_empty() => p.clone(),
             _ => return Vec::new(),

@@ -52,6 +52,7 @@ pub mod ex_parse_substitute;
 mod ex_parse_tests;
 mod ex_scripting;
 mod ex_session_cmds;
+mod ex_sort;
 mod ex_substitute;
 mod ex_substitute_confirm;
 pub(crate) mod expr_eval;
@@ -128,6 +129,8 @@ mod wave17_tests;
 mod wave18_tests;
 #[cfg(test)]
 mod wave19_tests;
+#[cfg(test)]
+mod wave20_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

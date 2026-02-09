@@ -10,6 +10,11 @@ impl EditorState {
     /// If formatprg is set, uses external formatter (stub notification).
     /// Otherwise respects formatoptions: 'q' must be present for gq to work.
     pub(crate) fn format_lines(&mut self, start: usize, end: usize) {
+        let fexpr = self.options.get_str("formatexpr").to_string();
+        if !fexpr.is_empty() {
+            self.handle_call_function(&format!("call {fexpr}"));
+            return;
+        }
         let fprg = self.options.get_str("formatprg").to_string();
         if !fprg.is_empty() {
             self.format_via_external(&fprg, start, end);

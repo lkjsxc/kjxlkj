@@ -2,22 +2,13 @@
 use crate::editor::EditorState;
 
 impl EditorState {
+    #[rustfmt::skip]
     pub(crate) fn handle_command_command(&mut self, prefix: &str, args: &str) {
         use crate::user_commands_parse::parse_command_def;
-        if prefix == "comclear" {
-            self.user_commands.clear();
-            return self.notify_info("All user commands cleared");
-        }
-        if args.is_empty() {
-            let n = self.user_commands.list().len();
-            return self.notify_info(&format_user_cmd_count(n));
-        }
+        if prefix == "comclear" { self.user_commands.clear(); return self.notify_info("All user commands cleared"); }
+        if args.is_empty() { return self.notify_info(&format_user_cmd_count(self.user_commands.list().len())); }
         let overwrite = prefix == "command!";
-        let input = if overwrite {
-            format!("! {args}")
-        } else {
-            args.to_string()
-        };
+        let input = if overwrite { format!("! {args}") } else { args.to_string() };
         match parse_command_def(&input) {
             Ok((cmd, ow)) => {
                 let name = cmd.name.clone();
@@ -177,7 +168,11 @@ impl EditorState {
         let rest = rest.strip_prefix("call ").unwrap_or(rest).trim();
         let paren = match rest.find('(') { Some(i) => i, None => { self.notify_error("E107: Missing parentheses"); return; } };
         let name = rest[..paren].trim();
-        let body = if let Some(f) = self.functions.get(name) { f.body.clone() } else { self.notify_error(&format!("E117: Unknown function: {name}")); return; };
+        let close = rest.rfind(')').unwrap_or(rest.len());
+        let arg_str = rest[paren + 1..close].trim();
+        let (body, params) = if let Some(f) = self.functions.get(name) { (f.body.clone(), f.params.clone()) } else { self.notify_error(&format!("E117: Unknown function: {name}")); return; };
+        let args: Vec<String> = if arg_str.is_empty() { Vec::new() } else { arg_str.split(',').map(|s| s.trim().trim_matches('"').to_string()).collect() };
+        for (i, p) in params.iter().enumerate() { let val = args.get(i).cloned().unwrap_or_default(); self.options.set(&format!("a:{p}"), crate::options::OptionValue::Str(val)); }
         for line in &body { self.execute_ex_command(line); }
     }
 }

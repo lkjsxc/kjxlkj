@@ -83,25 +83,16 @@ impl EditorState {
             "bp" | "bprev" | "bprevious" => self.prev_buffer(),
             "sp" | "split" => self.split_horizontal(),
             "vs" | "vsplit" => self.split_vertical(),
-            "d" | "delete" => {
-                let r = range.unwrap_or(ExRange::single(current_line));
-                self.delete_range(r);
+            "d" | "delete" => { self.delete_range(range.unwrap_or(ExRange::single(current_line))); }
+            "y" | "yank" => { self.yank_range(range.unwrap_or(ExRange::single(current_line))); }
+            _ if rest.starts_with("s/") || rest.starts_with("s#") || rest.starts_with("substitute") => {
+                let sub_input = if let Some(stripped) = rest.strip_prefix("substitute") { stripped } else { &rest[1..] };
+                self.execute_substitute(sub_input, range.unwrap_or(ExRange::single(current_line)));
             }
-            "y" | "yank" => {
-                let r = range.unwrap_or(ExRange::single(current_line));
-                self.yank_range(r);
-            }
-            _ if rest.starts_with("s/")
-                || rest.starts_with("s#")
-                || rest.starts_with("substitute") =>
-            {
-                let sub_input = if let Some(stripped) = rest.strip_prefix("substitute") {
-                    stripped
-                } else {
-                    &rest[1..]
-                };
-                let r = range.unwrap_or(ExRange::single(current_line));
-                self.execute_substitute(sub_input, r);
+            _ if rest == "sort" || rest.starts_with("sort ") || rest.starts_with("sort!") => {
+                let flags = rest.strip_prefix("sort").unwrap_or("").trim();
+                let r = range.unwrap_or(ExRange { start: 0, end: total_lines.saturating_sub(1) });
+                self.handle_sort(flags, r);
             }
             _ if rest.starts_with("call cursor(") => {
                 self.handle_call_cursor(rest);

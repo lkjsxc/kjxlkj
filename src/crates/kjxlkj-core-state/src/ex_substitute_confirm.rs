@@ -117,6 +117,10 @@ impl EditorState {
     fn sub_confirm_advance(&mut self, mut state: crate::editor::SubConfirmState) {
         state.current_line_idx += 1;
         if state.current_line_idx < state.lines.len() {
+            let target_line = state.lines[state.current_line_idx];
+            self.windows.focused_mut().cursor.line = target_line;
+            self.windows.focused_mut().cursor.grapheme = 0;
+            self.ensure_cursor_visible();
             self.sub_confirm = Some(state);
             self.notify_info("Replace? (y/n/a/q/l)");
         }

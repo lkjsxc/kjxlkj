@@ -31,6 +31,10 @@ pub fn build_grid(snapshot: &EditorSnapshot) -> CellGrid {
         render_cmdline(&mut grid, cols, rows - 1, snapshot);
     }
 
+    if let Some(ref pm) = snapshot.popup_menu {
+        render_popup_menu(&mut grid, pm, &snapshot.theme.default_style);
+    }
+
     grid
 }
 
@@ -174,5 +178,19 @@ fn render_wildmenu(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSn
         let st = if sel == Some(i) { selected } else { normal };
         grid.set_str(col, row, item, st);
         col += item.len() as u16;
+    }
+}
+
+#[rustfmt::skip]
+fn render_popup_menu(grid: &mut CellGrid, pm: &kjxlkj_core_ui::PopupMenu, base: &Style) {
+    let normal = Style { bg: Color::Rgb(40, 40, 40), fg: Color::Rgb(200, 200, 200), bold: false, italic: false, underline: false, reverse: false };
+    let selected = Style { bg: Color::Rgb(80, 120, 200), fg: Color::Rgb(255, 255, 255), bold: true, italic: false, underline: false, reverse: false };
+    let _ = base;
+    let end = (pm.scroll_offset + pm.max_visible).min(pm.items.len());
+    for (vi, idx) in (pm.scroll_offset..end).enumerate() {
+        let r = pm.row.saturating_sub(vi as u16);
+        let st = if pm.selected == Some(idx) { selected } else { normal };
+        let label = format!(" {} ", &pm.items[idx]);
+        grid.set_str(pm.col, r, &label, st);
     }
 }

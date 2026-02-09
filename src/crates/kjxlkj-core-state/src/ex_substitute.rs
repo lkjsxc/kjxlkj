@@ -20,6 +20,11 @@ impl EditorState {
         }
         if sub_cmd.confirm {
             let lines: Vec<usize> = (range.start..=range.end).collect();
+            if let Some(&first) = lines.first() {
+                self.windows.focused_mut().cursor.line = first;
+                self.windows.focused_mut().cursor.grapheme = 0;
+                self.ensure_cursor_visible();
+            }
             self.sub_confirm = Some(crate::editor::SubConfirmState {
                 pattern: sub_cmd.pattern.clone(),
                 replacement: sub_cmd.replacement.clone(),

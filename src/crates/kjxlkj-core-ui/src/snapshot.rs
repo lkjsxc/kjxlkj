@@ -161,4 +161,12 @@ pub struct PopupMenu {
     pub items: Vec<String>,
     /// Index of currently selected item (if any).
     pub selected: Option<usize>,
+    /// Row position to render at (screen row).
+    pub row: u16,
+    /// Column position to render at (screen col).
+    pub col: u16,
+    /// Maximum visible items (scroll window).
+    pub max_visible: usize,
+    /// Scroll offset (first visible item index).
+    pub scroll_offset: usize,
 }

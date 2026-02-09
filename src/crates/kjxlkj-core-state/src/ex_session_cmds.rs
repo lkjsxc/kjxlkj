@@ -30,6 +30,17 @@ impl EditorState {
                 lines.push(format!("mark {} {} {}", name, pos.line + 1, pos.col + 1));
             }
         }
+        // Save local marks per buffer.
+        for buf in self.buffers.iter() {
+            let bid = buf.id.0 as usize;
+            for (name, pos) in self.marks.list_for_buffer(bid) {
+                if name.is_ascii_lowercase() {
+                    if let Some(ref p) = buf.path {
+                        lines.push(format!("\" localmark {} {} {} {}", p.display(), name, pos.line + 1, pos.col + 1));
+                    }
+                }
+            }
+        }
         // Save editor options that differ from defaults.
         for (name, val) in self.options.list() {
             lines.push(format!("set {}={}", name, val));
@@ -106,6 +117,16 @@ impl EditorState {
             }
             if let Some(pat) = trimmed.strip_prefix("\" search: ") {
                 self.search.pattern = Some(pat.to_string());
+                continue;
+            }
+            if let Some(rest) = trimmed.strip_prefix("\" localmark ") {
+                let ps: Vec<&str> = rest.splitn(4, ' ').collect();
+                if ps.len() == 4 {
+                    if let (Some(ch), Ok(l), Ok(c)) = (ps[1].chars().next(), ps[2].parse::<usize>(), ps[3].parse::<usize>()) {
+                        let bid = self.current_buffer_id().0 as usize;
+                        self.marks.set(ch, crate::marks::MarkPosition { buffer_id: bid, line: l.saturating_sub(1), col: c.saturating_sub(1) });
+                    }
+                }
                 continue;
             }
             if trimmed.starts_with('"') {
