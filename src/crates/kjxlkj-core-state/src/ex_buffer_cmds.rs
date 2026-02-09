@@ -4,119 +4,48 @@ use kjxlkj_core_types::{Action, ContentSource};
 use crate::editor::EditorState;
 use crate::ex_parse::ExRange;
 
+#[rustfmt::skip]
 impl EditorState {
     pub(crate) fn write_current_buffer(&mut self) {
         let buf_id = self.current_buffer_id();
         if let Some(buf) = self.buffers.get_mut(buf_id) {
-            if let Some(path) = &buf.path {
-                let content = buf.content.to_string();
-                let path = path.clone();
-                if let Ok(()) = std::fs::write(&path, &content) {
-                    buf.mark_saved();
-                    self.notify_info(&format!("Written: {}", path.display()));
-                } else {
-                    self.notify_error(&format!("E212: Failed to write: {}", path.display()));
-                }
-            } else {
-                self.notify_error("E32: No file name");
-            }
+            if let Some(path) = &buf.path { let (content, path) = (buf.content.to_string(), path.clone());
+                if let Ok(()) = std::fs::write(&path, &content) { buf.mark_saved(); self.notify_info(&format!("Written: {}", path.display())); }
+                else { self.notify_error(&format!("E212: Failed to write: {}", path.display())); }
+            } else { self.notify_error("E32: No file name"); }
         }
     }
-
-    pub(crate) fn next_buffer(&mut self) {
-        let bid = self.current_buffer_id();
-        let c = self.windows.focused().cursor;
-        self.marks.set_alternate(crate::marks::MarkPosition::new(bid.0 as usize, c.line, c.grapheme));
-        self.alternate_buffer = Some(bid);
-        self.buffers.next();
-        let buf_id = self.buffers.current_id();
-        self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
-    }
-
-    pub(crate) fn prev_buffer(&mut self) {
-        let bid = self.current_buffer_id();
-        let c = self.windows.focused().cursor;
-        self.marks.set_alternate(crate::marks::MarkPosition::new(bid.0 as usize, c.line, c.grapheme));
-        self.alternate_buffer = Some(bid);
-        self.buffers.prev();
-        let buf_id = self.buffers.current_id();
-        self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
-    }
-
-    pub(crate) fn split_horizontal(&mut self) {
-        let buf_id = self.current_buffer_id();
-        self.windows.split_horizontal(buf_id);
-    }
-
-    pub(crate) fn split_vertical(&mut self) {
-        let buf_id = self.current_buffer_id();
-        self.windows.split_vertical(buf_id);
-    }
-
-    pub(crate) fn close_window(&mut self) {
-        if !self.windows.close_focused() {
-            self.handle_action(Action::Quit);
-        }
-    }
-
-    pub(crate) fn has_unsaved_buffers(&self) -> bool {
-        self.buffers.iter().any(|b| b.modified)
-    }
+    fn switch_buffer_common(&mut self) { let bid = self.current_buffer_id(); let c = self.windows.focused().cursor; self.marks.set_alternate(crate::marks::MarkPosition::new(bid.0 as usize, c.line, c.grapheme)); self.alternate_buffer = Some(bid); }
+    pub(crate) fn next_buffer(&mut self) { self.switch_buffer_common(); self.buffers.next(); let buf_id = self.buffers.current_id(); self.windows.focused_mut().content = ContentSource::Buffer(buf_id); }
+    pub(crate) fn prev_buffer(&mut self) { self.switch_buffer_common(); self.buffers.prev(); let buf_id = self.buffers.current_id(); self.windows.focused_mut().content = ContentSource::Buffer(buf_id); }
+    pub(crate) fn split_horizontal(&mut self) { let buf_id = self.current_buffer_id(); self.windows.split_horizontal(buf_id); }
+    pub(crate) fn split_vertical(&mut self) { let buf_id = self.current_buffer_id(); self.windows.split_vertical(buf_id); }
+    pub(crate) fn close_window(&mut self) { if !self.windows.close_focused() { self.handle_action(Action::Quit); } }
+    pub(crate) fn has_unsaved_buffers(&self) -> bool { self.buffers.iter().any(|b| b.modified) }
 
     pub(crate) fn delete_range(&mut self, range: ExRange) {
-        let buf_id = self.current_buffer_id();
-        let cursor = self.windows.focused().cursor;
-
+        let (buf_id, cursor) = (self.current_buffer_id(), self.windows.focused().cursor);
         if let Some(buf) = self.buffers.get_mut(buf_id) {
-            let max_line = buf.content.len_lines().saturating_sub(1);
-            let start = range.start.min(max_line);
-            let end = (range.end + 1).min(buf.content.len_lines());
-
+            let (start, end) = (range.start.min(buf.content.len_lines().saturating_sub(1)), (range.end + 1).min(buf.content.len_lines()));
             buf.save_undo_checkpoint(cursor);
-
-            let start_byte = buf.content.line_to_byte(start);
-            let end_byte = if end >= buf.content.len_lines() {
-                buf.content.len_bytes()
-            } else {
-                buf.content.line_to_byte(end)
-            };
-
-            if start_byte < end_byte {
-                let start_char = buf.content.byte_to_char(start_byte);
-                let end_char = buf.content.byte_to_char(end_byte);
-                let yanked = buf.content.slice(start_char..end_char).to_string();
-                self.registers.set_unnamed(yanked, true);
-                buf.content.remove(start_char..end_char);
-                buf.increment_version();
+            let (sb, eb) = (buf.content.line_to_byte(start), if end >= buf.content.len_lines() { buf.content.len_bytes() } else { buf.content.line_to_byte(end) });
+            if sb < eb {
+                let (sc, ec) = (buf.content.byte_to_char(sb), buf.content.byte_to_char(eb));
+                self.registers.set_unnamed(buf.content.slice(sc..ec).to_string(), true);
+                buf.content.remove(sc..ec); buf.increment_version();
             }
         }
-
-        self.clamp_cursor();
-        self.ensure_cursor_visible();
+        self.clamp_cursor(); self.ensure_cursor_visible();
     }
-
     pub(crate) fn yank_range(&mut self, range: ExRange) {
         let buf_id = self.current_buffer_id();
-
         if let Some(buf) = self.buffers.get(buf_id) {
-            let max_line = buf.content.len_lines().saturating_sub(1);
-            let start = range.start.min(max_line);
-            let end = (range.end + 1).min(buf.content.len_lines());
-
-            let start_byte = buf.content.line_to_byte(start);
-            let end_byte = if end >= buf.content.len_lines() {
-                buf.content.len_bytes()
-            } else {
-                buf.content.line_to_byte(end)
-            };
-
-            if start_byte < end_byte {
-                let start_char = buf.content.byte_to_char(start_byte);
-                let end_char = buf.content.byte_to_char(end_byte);
-                let yanked = buf.content.slice(start_char..end_char).to_string();
-                self.registers.set_unnamed(yanked, true);
-                let count = range.line_count();
-                self.notify_info(&format!("{count} line(s) yanked"));
+            let (start, end) = (range.start.min(buf.content.len_lines().saturating_sub(1)), (range.end + 1).min(buf.content.len_lines()));
+            let (sb, eb) = (buf.content.line_to_byte(start), if end >= buf.content.len_lines() { buf.content.len_bytes() } else { buf.content.line_to_byte(end) });
+            if sb < eb {
+                let (sc, ec) = (buf.content.byte_to_char(sb), buf.content.byte_to_char(eb));
+                self.registers.set_unnamed(buf.content.slice(sc..ec).to_string(), true);
+                self.notify_info(&format!("{} line(s) yanked", range.line_count()));
             }
         }
     }
@@ -167,6 +96,45 @@ impl EditorState {
                 buf.increment_version();
             }
             self.notify_info(&format!(":retab — {changed} line(s) changed (tabstop={new_ts})"));
+        }
+    }
+
+    /// Handle `:center [width]`, `:left [indent]`, `:right [width]` — text alignment.
+    #[rustfmt::skip]
+    pub(crate) fn handle_alignment(&mut self, cmd: &str, range: crate::ex_parse::ExRange) {
+        let (kind, args) = if let Some(a) = cmd.strip_prefix("center") { ("center", a.trim()) }
+            else if let Some(a) = cmd.strip_prefix("left") { ("left", a.trim()) }
+            else if let Some(a) = cmd.strip_prefix("right") { ("right", a.trim()) }
+            else { return; };
+        let width: usize = if args.is_empty() { self.options.get_int("textwidth").max(1) } else { args.parse().unwrap_or(79).max(1) };
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get_mut(buf_id) {
+            buf.save_undo_checkpoint(cursor);
+            let text = buf.content.to_string();
+            let lines: Vec<&str> = text.lines().collect();
+            let mut result = String::with_capacity(text.len());
+            let mut changed = 0usize;
+            for (i, line) in lines.iter().enumerate() {
+                if i >= range.start && i <= range.end {
+                    let trimmed = line.trim();
+                    let new_line = match kind {
+                        "center" => { let pad = width.saturating_sub(trimmed.len()) / 2; format!("{}{}", " ".repeat(pad), trimmed) }
+                        "right" => { let pad = width.saturating_sub(trimmed.len()); format!("{}{}", " ".repeat(pad), trimmed) }
+                        _ /* left */ => { let indent: usize = if args.is_empty() { 0 } else { args.parse().unwrap_or(0) }; format!("{}{}", " ".repeat(indent), trimmed) }
+                    };
+                    if *line != new_line { changed += 1; }
+                    result.push_str(&new_line);
+                } else { result.push_str(line); }
+                if i + 1 < lines.len() || text.ends_with('\n') { result.push('\n'); }
+            }
+            if changed > 0 {
+                let len = buf.content.len_chars();
+                buf.content.remove(0..len);
+                buf.content.insert(0, &result);
+                buf.increment_version();
+            }
+            self.notify_info(&format!(":{kind} — {changed} line(s) aligned"));
         }
     }
 }

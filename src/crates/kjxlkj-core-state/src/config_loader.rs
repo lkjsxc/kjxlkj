@@ -1,155 +1,92 @@
-//! Config file loading (config.toml) on startup.
-//!
-//! Reads a simple key = value TOML-like format and applies
-//! settings to the OptionStore.
-
+//! Config file loading (config.toml), ftplugin, indent, exrc on startup.
 use crate::editor::EditorState;
 
 impl EditorState {
     /// Load configuration from the default config path.
-    pub fn load_config_default(&mut self) {
-        let paths = [
-            dirs_config("kjxlkj/config.toml"),
-            Some("config.toml".to_string()),
-        ];
-        for p in paths.iter().flatten() {
-            if std::path::Path::new(p).exists() {
-                self.load_config_file(p);
-                return;
-            }
-        }
-    }
-
-    /// Load ftplugin file for the given filetype (e.g., `ftplugin/rust.vim`).
-    /// Searches XDG config, then current directory, then runtime path.
-    pub fn load_ftplugin(&mut self, filetype: &str) {
-        let candidates = [
-            dirs_config(&format!("kjxlkj/ftplugin/{filetype}.vim")),
-            Some(format!("ftplugin/{filetype}.vim")),
-        ];
-        for p in candidates.iter().flatten() {
-            if std::path::Path::new(p).exists() {
-                self.handle_source(p);
-                return;
-            }
-        }
-    }
-
-    /// Load indent plugin for the given filetype from ftplugin/indent directory.
-    /// Sets indent-related options (shiftwidth, tabstop, expandtab, etc.).
     #[rustfmt::skip]
-    pub fn load_indent_plugin(&mut self, filetype: &str) {
-        let candidates = [
-            dirs_config(&format!("kjxlkj/indent/{filetype}.vim")),
-            Some(format!("indent/{filetype}.vim")),
-            dirs_config(&format!("kjxlkj/ftplugin/{filetype}_indent.vim")),
-            Some(format!("ftplugin/{filetype}_indent.vim")),
-        ];
-        for p in candidates.iter().flatten() {
+    pub fn load_config_default(&mut self) {
+        for p in [dirs_config("kjxlkj/config.toml"), Some("config.toml".into())].iter().flatten() {
+            if std::path::Path::new(p).exists() { self.load_config_file(p); return; }
+        }
+    }
+    /// Load ftplugin file for the given filetype.
+    #[rustfmt::skip]
+    pub fn load_ftplugin(&mut self, ft: &str) {
+        for p in [dirs_config(&format!("kjxlkj/ftplugin/{ft}.vim")), Some(format!("ftplugin/{ft}.vim"))].iter().flatten() {
             if std::path::Path::new(p).exists() { self.handle_source(p); return; }
         }
-        // Apply built-in indent defaults for common filetypes.
-        self.apply_builtin_indent(filetype);
     }
-
+    /// Load indent plugin then fall back to built-in defaults.
     #[rustfmt::skip]
-    fn apply_builtin_indent(&mut self, filetype: &str) {
+    pub fn load_indent_plugin(&mut self, ft: &str) {
+        for p in [dirs_config(&format!("kjxlkj/indent/{ft}.vim")), Some(format!("indent/{ft}.vim")),
+            dirs_config(&format!("kjxlkj/ftplugin/{ft}_indent.vim")), Some(format!("ftplugin/{ft}_indent.vim"))].iter().flatten() {
+            if std::path::Path::new(p).exists() { self.handle_source(p); return; }
+        }
+        self.apply_builtin_indent(ft);
+    }
+    #[rustfmt::skip]
+    fn apply_builtin_indent(&mut self, ft: &str) {
         use crate::options::OptionValue;
-        let (sw, ts, et) = match filetype {
-            "rust" | "go" | "c" | "cpp" | "java" => (4, 4, true),
-            "python" | "yaml" | "json" | "toml" => (4, 4, true),
-            "javascript" | "typescript" | "html" | "css" | "jsx" |
-            "typescriptreact" | "javascriptreact" => (2, 2, true),
-            "ruby" | "elixir" | "lua" | "dart" | "kotlin" | "swift" => (2, 2, true),
-            "haskell" | "ocaml" | "julia" | "r" => (2, 2, true),
-            "sh" | "vim" | "markdown" => (4, 4, true),
+        let (sw, ts, et) = match ft {
+            "rust" | "go" | "c" | "cpp" | "java" | "python" | "yaml" | "json" | "toml" | "sh" | "vim" | "markdown" => (4, 4, true),
+            "javascript" | "typescript" | "html" | "css" | "jsx" | "typescriptreact" | "javascriptreact" |
+            "ruby" | "elixir" | "lua" | "dart" | "kotlin" | "swift" | "haskell" | "ocaml" | "julia" | "r" => (2, 2, true),
             "makefile" => (8, 8, false),
             _ => return,
         };
         self.options.set("shiftwidth", OptionValue::Int(sw));
         self.options.set("tabstop", OptionValue::Int(ts));
         self.options.set("expandtab", OptionValue::Bool(et));
-        if let Some(cs) = commentstring_for_filetype(filetype) {
-            self.options.set("commentstring", OptionValue::Str(cs.into()));
-        }
+        if let Some(cs) = commentstring_for_filetype(ft) { self.options.set("commentstring", OptionValue::Str(cs.into())); }
     }
-
-    /// Try to auto-restore a session: load Session.vim if present in cwd.
-    pub fn try_auto_restore_session(&mut self) {
-        if std::path::Path::new("Session.vim").exists() { self.handle_source("Session.vim"); }
-    }
-
-    /// Load local vimrc (.exrc) from current directory if `exrc` option is set.
-    /// Also checks for `.vimrc` and `.nvimrc` in cwd.
+    pub fn try_auto_restore_session(&mut self) { if std::path::Path::new("Session.vim").exists() { self.handle_source("Session.vim"); } }
+    /// Load local exrc; when `secure` option is set, skip dangerous commands.
     pub fn load_local_exrc(&mut self) {
         if !self.options.get_bool("exrc") { return; }
+        let secure = self.options.get_bool("secure");
         for name in &[".exrc", ".vimrc", ".nvimrc"] {
             if std::path::Path::new(name).exists() {
-                self.handle_source(name);
+                if secure { self.handle_source_secure(name); } else { self.handle_source(name); }
                 return;
             }
         }
     }
-
-    /// Load configuration from a specific path.
-    /// Supports [section] headers; keys become "section.key".
+    /// Source file in secure mode — skip dangerous commands (!, autocmd, write, wq, source).
+    #[rustfmt::skip]
+    fn handle_source_secure(&mut self, path: &str) {
+        let content = match std::fs::read_to_string(path) { Ok(c) => c, Err(_) => return };
+        let dangerous = ["!", "autocmd", "write", "wq", "source", "call system("];
+        for line in content.lines() {
+            let t = line.trim();
+            if t.is_empty() || t.starts_with('"') { continue; }
+            if dangerous.iter().any(|d| t.starts_with(d) || t.contains(&format!(":{d}"))) { continue; }
+            self.execute_ex_command(t);
+        }
+    }
+    /// Load config file with [section] headers; keys become "section.key".
     pub fn load_config_file(&mut self, path: &str) {
-        let content = match std::fs::read_to_string(path) {
-            Ok(c) => c,
-            Err(_) => return,
-        };
+        let content = match std::fs::read_to_string(path) { Ok(c) => c, Err(_) => return };
         let mut section = String::new();
         for line in content.lines() {
-            let trimmed = line.trim();
-            if trimmed.is_empty() || trimmed.starts_with('#') {
-                continue;
-            }
-            // Section header: [section]
-            if trimmed.starts_with('[') && trimmed.ends_with(']') {
-                section = trimmed[1..trimmed.len() - 1].trim().to_string();
-                continue;
-            }
-            if let Some((key, value)) = trimmed.split_once('=') {
-                let key = key.trim();
-                let value = value.trim();
-                let full_key = if section.is_empty() {
-                    key.to_string()
-                } else {
-                    format!("{}.{}", section, key)
-                };
+            let t = line.trim();
+            if t.is_empty() || t.starts_with('#') { continue; }
+            if t.starts_with('[') && t.ends_with(']') { section = t[1..t.len()-1].trim().to_string(); continue; }
+            if let Some((key, value)) = t.split_once('=') {
+                let (key, value) = (key.trim(), value.trim());
+                let full_key = if section.is_empty() { key.to_string() } else { format!("{}.{}", section, key) };
                 self.apply_config_value(&full_key, value);
             }
         }
     }
-
+    #[rustfmt::skip]
     fn apply_config_value(&mut self, key: &str, value: &str) {
-        // Try bool.
-        if value == "true" || value == "false" {
-            let b = value == "true";
-            self.options.set(key, crate::options::OptionValue::Bool(b));
-            return;
-        }
-        // Try integer.
-        if let Ok(n) = value.parse::<usize>() {
-            self.options.set(key, crate::options::OptionValue::Int(n));
-            return;
-        }
-        // Array value: [a, b, c] → stored as comma-separated string.
-        if value.starts_with('[') && value.ends_with(']') {
-            let inner = &value[1..value.len() - 1];
-            let items: Vec<&str> = inner.split(',').map(|s| s.trim()).collect();
-            let joined = items.join(",");
-            self.options
-                .set(key, crate::options::OptionValue::Str(joined));
-            return;
-        }
-        // Strip quotes for string values.
-        let s = value
-            .strip_prefix('"')
-            .and_then(|v| v.strip_suffix('"'))
-            .unwrap_or(value);
-        self.options
-            .set(key, crate::options::OptionValue::Str(s.to_string()));
+        use crate::options::OptionValue;
+        if value == "true" || value == "false" { self.options.set(key, OptionValue::Bool(value == "true")); return; }
+        if let Ok(n) = value.parse::<usize>() { self.options.set(key, OptionValue::Int(n)); return; }
+        if value.starts_with('[') && value.ends_with(']') { let inner = &value[1..value.len()-1]; self.options.set(key, OptionValue::Str(inner.split(',').map(|s| s.trim()).collect::<Vec<_>>().join(","))); return; }
+        let s = value.strip_prefix('"').and_then(|v| v.strip_suffix('"')).unwrap_or(value);
+        self.options.set(key, OptionValue::Str(s.to_string()));
     }
 }
 

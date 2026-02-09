@@ -44,6 +44,7 @@ impl EditorState {
                     '=' => { self.visual_reindent(kind); return; }
                     'K' => { self.visual_keyword_lookup(kind); return; }
                     'I' | 'A' if kind == VisualKind::Block => { self.handle_visual_block_ia(*c == 'A'); return; }
+                    '$' if kind == VisualKind::Block => { self.block_dollar = true; self.visual_move(Motion::LineEnd); return; }
                     _ => {}
                 }
             }
@@ -85,6 +86,7 @@ impl EditorState {
 
     #[rustfmt::skip]
     fn visual_apply_operator(&mut self, op: Operator, kind: VisualKind) {
+        self.block_dollar = false;
         let anchor = match self.visual_anchor.take() {
             Some(a) => a,
             None => { self.mode = Mode::Normal; return; }

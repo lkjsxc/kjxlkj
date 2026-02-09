@@ -47,3 +47,38 @@ pub fn expr_substitute(arg: &str, vars: &HashMap<String, String>) -> Result<Stri
         Err(e) => Err(format!("E383: Invalid pattern: {e}")),
     }
 }
+
+/// Handle tr(string, fromchars, tochars) — character-by-character transliteration.
+pub fn expr_tr(arg: &str, vars: &HashMap<String, String>) -> Result<String, String> {
+    let (sa, rest) = match super::expr_eval::split_two_args_pub(arg) {
+        Some(p) => p,
+        None => return Err("tr() requires 3 args".into()),
+    };
+    let (fa, ta) = match super::expr_eval::split_two_args_pub(rest.trim()) {
+        Some(p) => p,
+        None => return Err("tr() requires 3 args".into()),
+    };
+    let s = super::expr_eval::eval_expression_with_vars(sa.trim(), vars)?;
+    let from: Vec<char> = super::expr_eval::eval_expression_with_vars(fa.trim(), vars)?.chars().collect();
+    let to: Vec<char> = super::expr_eval::eval_expression_with_vars(ta.trim(), vars)?.chars().collect();
+    let result: String = s.chars().map(|c| {
+        from.iter().position(|&f| f == c).and_then(|i| to.get(i).copied()).unwrap_or(c)
+    }).collect();
+    Ok(result)
+}
+
+/// Handle escape(string, chars) — prepend backslash before each occurrence of chars.
+pub fn expr_escape(arg: &str, vars: &HashMap<String, String>) -> Result<String, String> {
+    let (sa, ca) = match super::expr_eval::split_two_args_pub(arg) {
+        Some(p) => p,
+        None => return Err("escape() requires 2 args".into()),
+    };
+    let s = super::expr_eval::eval_expression_with_vars(sa.trim(), vars)?;
+    let esc_chars: Vec<char> = super::expr_eval::eval_expression_with_vars(ca.trim(), vars)?.chars().collect();
+    let mut result = String::with_capacity(s.len() * 2);
+    for c in s.chars() {
+        if esc_chars.contains(&c) { result.push('\\'); }
+        result.push(c);
+    }
+    Ok(result)
+}

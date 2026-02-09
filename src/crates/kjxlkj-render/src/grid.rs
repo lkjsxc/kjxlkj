@@ -79,7 +79,10 @@ fn render_wildmenu(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSn
     let sel = snapshot.cmdline.completion_index;
     let normal = snapshot.theme.statusline_style;
     let selected = Style { fg: Color::Rgb(0, 0, 0), bg: Color::Rgb(255, 255, 255), bold: false, italic: false, underline: false, reverse: false };
-    let items: Vec<String> = snapshot.cmdline.completions.iter().map(|s| format!(" {} ", s)).collect();
+    let items: Vec<String> = snapshot.cmdline.completions.iter().map(|s| {
+        let display = s.rsplit('/').next().unwrap_or(s);
+        format!(" {} ", display)
+    }).collect();
     let widths: Vec<u16> = items.iter().map(|s| s.len() as u16).collect();
     let total_w: u16 = widths.iter().sum();
     let scroll_start = if total_w <= cols { 0 } else {

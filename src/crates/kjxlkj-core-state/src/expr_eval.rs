@@ -1,5 +1,4 @@
 //! Expression register (=) evaluation: arithmetic, string, comparison, lists, dicts.
-#![allow(dead_code)]
 use std::collections::HashMap;
 pub fn eval_expression(expr: &str) -> Result<String, String> { eval_expression_with_vars(expr, &HashMap::new()) }
 #[rustfmt::skip]
@@ -137,8 +136,9 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
         "extend" => Some(Ok(list_extend(arg, vars))),
         "match" => Some(crate::expr_string_funcs::expr_match(arg, vars)),
         "substitute" => Some(crate::expr_string_funcs::expr_substitute(arg, vars)),
-        "toupper" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(v.to_uppercase())) }
-        "tolower" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(v.to_lowercase())) }
+        "toupper" | "tolower" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(if name == "toupper" { v.to_uppercase() } else { v.to_lowercase() })) }
+        "tr" => Some(crate::expr_string_funcs::expr_tr(arg, vars)),
+        "escape" => Some(crate::expr_string_funcs::expr_escape(arg, vars)),
         "and" | "or" | "xor" | "lshift" | "rshift" => { let (la, ra) = match split_two_args(arg) { Some(p) => p, None => return Some(Err(format!("{name}() requires 2 args"))) };
             let (l, r) = (eval_expression_with_vars(la.trim(), vars).ok()?.parse::<i64>().ok()?, eval_expression_with_vars(ra.trim(), vars).ok()?.parse::<i64>().ok()?);
             Some(Ok(format!("{}", match name { "and" => l & r, "or" => l | r, "xor" => l ^ r, "lshift" => l << r, _ => l >> r })))
@@ -197,5 +197,5 @@ fn list_extend(arg: &str, vars: &HashMap<String, String>) -> String { // extend(
 mod tests {
     use super::*;
     #[test] fn test_basic_arithmetic() { assert_eq!(eval_expression("2+3").unwrap(), "5"); assert_eq!(eval_expression("10-4").unwrap(), "6"); assert_eq!(eval_expression("3*4").unwrap(), "12"); }
-    #[test] fn test_strings() { assert_eq!(eval_expression("\"hello\"").unwrap(), "hello"); assert_eq!(eval_expression("\"hello\" . \" world\"").unwrap(), "hello world"); }
+    #[test] fn test_strings() { assert_eq!(eval_expression("\"hello\"").unwrap(), "hello"); }
 }

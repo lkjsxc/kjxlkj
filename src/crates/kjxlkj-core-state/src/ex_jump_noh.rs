@@ -21,6 +21,22 @@ impl EditorState {
         self.search.active = false;
     }
 
+    /// Handle `:normal[!] {keys}` — execute keys as if typed in normal mode.
+    /// With `!`, no mappings are applied.
+    pub(crate) fn handle_normal_command(&mut self, cmd: &str) {
+        let rest = cmd.strip_prefix("normal!").or_else(|| cmd.strip_prefix("norm!"))
+            .or_else(|| cmd.strip_prefix("normal")).or_else(|| cmd.strip_prefix("norm"))
+            .unwrap_or("").trim();
+        if rest.is_empty() { return; }
+        let saved_mode = self.mode.clone();
+        self.mode = kjxlkj_core_types::Mode::Normal;
+        for ch in rest.chars() {
+            let key = kjxlkj_core_types::Key::char(ch);
+            self.handle_key(key);
+        }
+        if matches!(self.mode, kjxlkj_core_types::Mode::Normal) { self.mode = saved_mode; }
+    }
+
     /// Parse modeline from buffer first/last 5 lines.
     /// Supports multiple options: `vim: set ts=4 sw=4 et:` or `vim: ts=4:sw=4:et`.
     pub(crate) fn parse_modeline(&mut self) {

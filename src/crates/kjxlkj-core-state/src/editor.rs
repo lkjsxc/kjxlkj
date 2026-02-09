@@ -104,6 +104,8 @@ pub struct EditorState {
     pub spell: crate::spell::SpellChecker,
     /// True if expression register = prompt was opened from insert mode.
     pub(crate) expr_from_insert: bool,
+    /// Visual block $ mode: extend selection to EOL on each line.
+    pub(crate) block_dollar: bool,
 }
 
 /// Accumulator for multi-line `function!`/`endfunction` blocks.
@@ -174,6 +176,7 @@ impl EditorState {
             macro_step_keys: None,
             spell: crate::spell::SpellChecker::new(),
             expr_from_insert: false,
+            block_dollar: false,
         };
         editor.load_viminfo_file();
         editor

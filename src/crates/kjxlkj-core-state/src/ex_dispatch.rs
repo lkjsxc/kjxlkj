@@ -122,6 +122,10 @@ impl EditorState {
                 match crate::expr_eval::eval_expression(arg) { Ok(cmd) => { let cmd = cmd.trim().to_string(); if !cmd.is_empty() { self.execute_ex_command(&cmd); } } Err(e) => self.notify_error(&format!("E15: {e}")), }
             }
             _ if rest == "retab" || rest.starts_with("retab ") || rest.starts_with("retab!") => { self.handle_retab(rest.strip_prefix("retab").unwrap_or("")); }
+            _ if rest.starts_with("normal ") || rest.starts_with("normal! ") || rest.starts_with("norm ") || rest.starts_with("norm! ") => { self.handle_normal_command(rest); }
+            _ if rest == "center" || rest.starts_with("center ") || rest == "left" || rest.starts_with("left ") || rest == "right" || rest.starts_with("right ") => {
+                self.handle_alignment(rest, range.unwrap_or(crate::ex_parse::ExRange::single(current_line)));
+            }
             _ if super::ex_map::is_map_command(rest) => self.handle_map_command(rest),
             _ if rest == "command" || rest == "comclear" => { self.handle_command_command(rest, ""); }
             _ if rest.starts_with("command ") || rest.starts_with("command! ") => {
