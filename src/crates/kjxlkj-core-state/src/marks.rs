@@ -56,20 +56,12 @@ impl MarkFile {
         }
     }
 
-    /// Set the last-change mark.
-    pub fn set_last_change(&mut self, pos: MarkPosition) {
-        self.special.insert('.', pos);
-    }
-
-    /// Set the jump-from mark.
-    pub fn set_jump_from(&mut self, pos: MarkPosition) {
-        self.special.insert('\'', pos);
-    }
-
-    /// Set the last insert position.
-    pub fn set_last_insert(&mut self, pos: MarkPosition) {
-        self.special.insert('^', pos);
-    }
+    pub fn set_last_change(&mut self, pos: MarkPosition) { self.special.insert('.', pos); }
+    pub fn set_jump_from(&mut self, pos: MarkPosition) { self.special.insert('\'', pos); }
+    pub fn set_last_insert(&mut self, pos: MarkPosition) { self.special.insert('^', pos); }
+    /// Set/get alternate file mark (#).
+    pub fn set_alternate(&mut self, pos: MarkPosition) { self.special.insert('#', pos); }
+    pub fn get_alternate(&self) -> Option<&MarkPosition> { self.special.get(&'#') }
 
     /// Set visual selection start/end marks.
     pub fn set_visual_start(&mut self, pos: MarkPosition) {

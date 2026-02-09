@@ -81,6 +81,12 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                     Some(other) => { out.push_str("\\_"); out.push(other); }
                     None => out.push_str("\\_"),
                 },
+                // \%[abc] collection → [abc], \%(…\) non-capturing group → (?:…)
+                Some('%') => match chars.peek() {
+                    Some('[') => { chars.next(); out.push('['); consume_until(&mut chars, &mut out, ']'); out.push(']'); }
+                    Some('(') => { chars.next(); group_starts.push(out.len()); out.push_str("(?:"); }
+                    _ => { out.push_str("\\%"); }
+                },
                 Some(other) => {
                     out.push('\\');
                     out.push(other);

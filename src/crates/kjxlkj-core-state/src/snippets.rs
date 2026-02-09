@@ -112,7 +112,7 @@ impl SnippetSession {
 /// Supports nested placeholders: ${1:outer ${2:inner}}.
 /// Duplicate stop numbers create mirror positions.
 /// Returns (stripped_text, sorted_offsets_for_stops_1_through_9_then_0).
-fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
+pub fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
     let mut out = String::with_capacity(body.len());
     let mut stops: Vec<(u8, usize)> = Vec::new();
     let mut defaults: std::collections::HashMap<u8, String> = std::collections::HashMap::new();
@@ -162,6 +162,21 @@ fn parse_tab_stops_inner(
                                     else { cur.push(ch); }
                                 }
                                 if let Some(first) = choices.first() { out.push_str(first); defaults.insert(stop_num, first.clone()); }
+                            } else if chars.peek() == Some(&'/') {
+                                chars.next(); // consume '/' → ${N/regex/replace/flags}
+                                let mut pat = String::new();
+                                while let Some(&ch) = chars.peek() { chars.next(); if ch == '/' { break; } pat.push(ch); }
+                                let mut rep = String::new();
+                                while let Some(&ch) = chars.peek() { chars.next(); if ch == '/' { break; } rep.push(ch); }
+                                let mut flags = String::new();
+                                while let Some(&ch) = chars.peek() { chars.next(); if ch == '}' { break; } flags.push(ch); }
+                                // Store transform as default text with placeholder for runtime application.
+                                if let Some(src) = defaults.get(&stop_num) {
+                                    if let Ok(re) = regex::Regex::new(&pat) {
+                                        let transformed = if flags.contains('g') { re.replace_all(src, rep.as_str()).to_string() } else { re.replace(src, rep.as_str()).to_string() };
+                                        out.push_str(&transformed);
+                                    }
+                                }
                             } else if chars.peek() == Some(&'}') {
                                 chars.next();
                                 if let Some(def) = defaults.get(&stop_num) { out.push_str(def); }

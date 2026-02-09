@@ -24,14 +24,20 @@ impl EditorState {
     }
 
     pub(crate) fn next_buffer(&mut self) {
-        self.alternate_buffer = Some(self.current_buffer_id());
+        let bid = self.current_buffer_id();
+        let c = self.windows.focused().cursor;
+        self.marks.set_alternate(crate::marks::MarkPosition::new(bid.0 as usize, c.line, c.grapheme));
+        self.alternate_buffer = Some(bid);
         self.buffers.next();
         let buf_id = self.buffers.current_id();
         self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
     }
 
     pub(crate) fn prev_buffer(&mut self) {
-        self.alternate_buffer = Some(self.current_buffer_id());
+        let bid = self.current_buffer_id();
+        let c = self.windows.focused().cursor;
+        self.marks.set_alternate(crate::marks::MarkPosition::new(bid.0 as usize, c.line, c.grapheme));
+        self.alternate_buffer = Some(bid);
         self.buffers.prev();
         let buf_id = self.buffers.current_id();
         self.windows.focused_mut().content = ContentSource::Buffer(buf_id);

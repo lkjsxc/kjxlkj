@@ -137,6 +137,10 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
         "extend" => Some(Ok(list_extend(arg, vars))),
         "match" => Some(crate::expr_string_funcs::expr_match(arg, vars)),
         "substitute" => Some(crate::expr_string_funcs::expr_substitute(arg, vars)),
+        "and" | "or" | "xor" => { let (la, ra) = match split_two_args(arg) { Some(p) => p, None => return Some(Err(format!("{name}() requires 2 args"))) };
+            let (l, r) = (eval_expression_with_vars(la.trim(), vars).ok()?.parse::<i64>().ok()?, eval_expression_with_vars(ra.trim(), vars).ok()?.parse::<i64>().ok()?);
+            Some(Ok(format!("{}", match name { "and" => l & r, "or" => l | r, _ => l ^ r })))
+        }
         _ => None,
     }
 }

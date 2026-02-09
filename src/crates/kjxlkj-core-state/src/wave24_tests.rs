@@ -111,7 +111,7 @@ mod tests {
         vars.insert("myline".into(), "3".into());
         let ctx = RangeContext {
             current_line: 0, total_lines: 5, lines: &lines,
-            mark_line: None, last_search: None, vars: Some(&vars),
+            mark_line: None, last_search: None, vars: Some(&vars), call_fn: None,
         };
         let (range, _rest) = parse_range_ctx("(myline)d", &ctx);
         let r = range.unwrap();

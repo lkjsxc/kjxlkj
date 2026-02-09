@@ -80,7 +80,7 @@ fn pattern_forward_range() {
         lines: &lines,
         mark_line: None,
         last_search: None,
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, rest) = parse_range_ctx("/bar/d", &ctx);
     let r = range.unwrap();
@@ -99,7 +99,7 @@ fn pattern_backward_range() {
         lines: &lines,
         mark_line: None,
         last_search: None,
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, _) = parse_range_ctx("?foo?d", &ctx);
     let r = range.unwrap();
@@ -123,7 +123,7 @@ fn mark_range() {
         lines: &lines,
         mark_line: Some(&mark_fn),
         last_search: None,
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, rest) = parse_range_ctx("'a,'ad", &ctx);
     let r = range.unwrap();
@@ -142,7 +142,7 @@ fn pattern_comma_pattern() {
         lines: &lines,
         mark_line: None,
         last_search: None,
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, rest) = parse_range_ctx("/bbb/,/ddd/d", &ctx);
     let r = range.unwrap();

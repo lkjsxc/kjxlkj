@@ -105,6 +105,7 @@ impl EditorState {
         let all_lines: Vec<&str> = content.lines().collect();
         let (mut i, mut skip_stack) = (0usize, Vec::<bool>::new());
         let mut while_stack: Vec<(usize, String)> = Vec::new(); // (line_idx, cond_expr)
+        let mut try_stack: Vec<bool> = Vec::new(); // true = in catch/error state
         while i < all_lines.len() {
             let trimmed = all_lines[i].trim(); i += 1;
             if trimmed.is_empty() { continue; }
@@ -135,6 +136,11 @@ impl EditorState {
                     } else { skip_stack.pop(); }
                 } continue;
             }
+            if trimmed == "try" { try_stack.push(false); continue; }
+            if trimmed.starts_with("catch") { if let Some(t) = try_stack.last_mut() { *t = !*t; } continue; }
+            if trimmed == "finally" { if let Some(t) = try_stack.last_mut() { *t = false; } continue; }
+            if trimmed == "endtry" { try_stack.pop(); continue; }
+            if try_stack.last() == Some(&true) { continue; } // skip catch body when no error
             if skip_stack.iter().any(|&s| s) { continue; }
             if let Some(e) = trimmed.strip_prefix("\" history: ") { self.cmdline.history.push(e.to_string()); continue; }
             if let Some(p) = trimmed.strip_prefix("\" search: ") { self.search.pattern = Some(p.to_string()); continue; }

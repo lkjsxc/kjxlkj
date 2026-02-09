@@ -142,6 +142,7 @@ mod wave24_tests;
 #[cfg(test)]
 mod wave25_tests;
 mod wave26_tests;
+mod wave27_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

@@ -94,7 +94,7 @@ impl EditorState {
             Action::ChangelistNewer => self.changelist_newer(),
             Action::JumpOlder => self.jump_older(),
             Action::JumpNewer => self.jump_newer(),
-            Action::DotRepeat => {}
+            Action::DotRepeat => { if let Some(r) = self.last_macro { self.play_macro(r, 1); } }
             Action::VisualReselect => self.restore_last_visual(),
             Action::LookupKeyword(count) => self.handle_keyword_lookup(count),
             _ => {}

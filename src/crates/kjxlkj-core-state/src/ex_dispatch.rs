@@ -48,16 +48,19 @@ impl EditorState {
         let text: String = self.buffers.get(buf_id).map(|b| b.content.to_string()).unwrap_or_default();
         let text_lines: Vec<&str> = text.lines().collect();
         let marks = &self.marks;
+        let funcs = &self.functions;
         let bid = buf_id.0 as usize;
         let mark_fn = |ch: char| -> Option<usize> { marks.get(ch, bid).map(|p| p.line) };
-        let ctx = RangeContext {
-            current_line,
-            total_lines,
-            lines: &text_lines,
-            mark_line: Some(&mark_fn),
-            last_search: self.search.pattern.as_deref(),
-            vars: None,
+        #[rustfmt::skip]
+        let call_fn = |expr: &str| -> Option<String> {
+            let p = expr.find('(')?; let c = expr.rfind(')')?;
+            let (name, args_s) = (expr[..p].trim(), expr[p+1..c].trim());
+            let f = funcs.get(name)?;
+            let args: Vec<String> = if args_s.is_empty() { vec![] } else { args_s.split(',').map(|s| s.trim().trim_matches('"').to_string()).collect() };
+            let vars: std::collections::HashMap<String,String> = f.params.iter().enumerate().map(|(i,p)| (format!("a:{p}"), args.get(i).cloned().unwrap_or_default())).collect();
+            f.body.iter().find_map(|l| l.trim().strip_prefix("return ").map(|e| crate::expr_eval::eval_expression_with_vars(e.trim(), &vars).unwrap_or_default()))
         };
+        let ctx = RangeContext { current_line, total_lines, lines: &text_lines, mark_line: Some(&mark_fn), last_search: self.search.pattern.as_deref(), vars: None, call_fn: Some(&call_fn) };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
         // Mark-not-set detection.
         if range.is_none() && cmd.contains('\'') {
@@ -152,15 +155,9 @@ impl EditorState {
                 self.handle_debug_macro(reg);
             }
             "mksession" => self.handle_mksession(None),
-            _ if rest.starts_with("mksession ") => {
-                let path = rest.strip_prefix("mksession ").unwrap().trim();
-                self.handle_mksession(Some(path));
-            }
+            _ if rest.starts_with("mksession ") => { self.handle_mksession(Some(rest.strip_prefix("mksession ").unwrap().trim())); }
             "source" => self.notify_error("E471: Argument required"),
-            _ if rest.starts_with("source ") => {
-                let path = rest.strip_prefix("source ").unwrap().trim();
-                self.handle_source(path);
-            }
+            _ if rest.starts_with("source ") => { self.handle_source(rest.strip_prefix("source ").unwrap().trim()); }
             _ if rest == "set" || rest.starts_with("set ") || rest.starts_with("set\t") => {
                 let args = rest.strip_prefix("set").unwrap_or("").trim();
                 self.handle_set_command(args);

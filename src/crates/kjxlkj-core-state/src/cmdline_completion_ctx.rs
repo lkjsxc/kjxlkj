@@ -80,29 +80,18 @@ impl EditorState {
     }
 
     /// Build buffer-name candidates for :b completion.
+    #[rustfmt::skip]
     fn build_buffer_candidates(&mut self) {
         let content = self.cmdline.content.clone();
-        let space = content.rfind(' ').unwrap_or(0) + 1;
-        let partial = &content[space..];
-        let mut matches: Vec<String> = Vec::new();
-        for buf in self.buffers.iter() {
-            let name = buf
-                .path
-                .as_ref()
-                .map(|p| p.display().to_string())
-                .unwrap_or_else(|| format!("[{}]", buf.id.0));
-            if name.contains(partial) || partial.is_empty() {
-                matches.push(name);
-            }
-        }
-        if matches.is_empty() {
-            return;
-        }
+        let partial = &content[content.rfind(' ').unwrap_or(0) + 1..];
+        let mut matches: Vec<String> = self.buffers.iter().filter_map(|buf| {
+            let name = buf.path.as_ref().map(|p| p.display().to_string()).unwrap_or_else(|| format!("[{}]", buf.id.0));
+            if name.contains(partial) || partial.is_empty() { Some(name) } else { None }
+        }).collect();
+        if matches.is_empty() { return; }
         matches.sort();
         let cs = &mut self.cmdline.completion;
-        cs.prefix = content;
-        cs.candidates = matches;
-        cs.index = Some(0);
+        cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
     }
 
     /// Build file-path candidates from the path prefix.
@@ -137,17 +126,25 @@ impl EditorState {
         for entry in entries.flatten() {
             let name = entry.file_name().to_string_lossy().to_string();
             if name.starts_with(prefix) {
-                let path = if dir == "./" {
-                    name.clone()
-                } else {
-                    format!("{}{}", dir, name)
-                };
-                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
-                    matches.push(format!("{}/", path));
-                } else {
-                    matches.push(path);
+                let path = if dir == "./" { name.clone() } else { format!("{}{}", dir, name) };
+                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) { matches.push(format!("{}/", path)); }
+                else { matches.push(path); }
+            }
+        }
+        // Fuzzy fallback: if no prefix matches, score all entries by subsequence match.
+        if matches.is_empty() && !prefix.is_empty() {
+            let mut scored: Vec<(i32, String)> = Vec::new();
+            if let Ok(ents) = std::fs::read_dir(dir) {
+                for entry in ents.flatten() {
+                    let name = entry.file_name().to_string_lossy().to_string();
+                    if let Some(sc) = fuzzy_score(prefix, &name) {
+                        let path = if dir == "./" { name } else { format!("{}{}", dir, name) };
+                        scored.push((sc, path));
+                    }
                 }
             }
+            scored.sort_by(|a, b| b.0.cmp(&a.0));
+            matches = scored.into_iter().map(|(_, p)| p).collect();
         }
         matches.sort();
         if matches.is_empty() {
@@ -190,4 +187,14 @@ impl EditorState {
         cs.candidates = matches;
         cs.index = Some(0);
     }
+}
+/// Fuzzy subsequence score: higher = better. Returns None if no subsequence match.
+#[rustfmt::skip]
+pub fn fuzzy_score(query: &str, target: &str) -> Option<i32> {
+    let (mut qi, qb, tb) = (0usize, query.as_bytes(), target.as_bytes());
+    let (mut score, ql) = (0i32, qb.len());
+    for (i, &b) in tb.iter().enumerate() {
+        if qi < ql && b.eq_ignore_ascii_case(&qb[qi]) { score += if i == 0 || tb[i-1] == b'_' || tb[i-1] == b'/' { 3 } else { 1 }; qi += 1; }
+    }
+    if qi == ql { Some(score) } else { None }
 }

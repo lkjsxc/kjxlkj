@@ -141,7 +141,7 @@ fn backslash_slash_uses_last_search() {
         lines: &lines,
         mark_line: None,
         last_search: Some("bar"),
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, rest) = parse_range_ctx("\\/d", &ctx);
     let r = range.unwrap();
@@ -159,7 +159,7 @@ fn backslash_question_uses_last_search() {
         lines: &lines,
         mark_line: None,
         last_search: Some("foo"),
-        vars: None,
+        vars: None, call_fn: None,
     };
     let (range, _) = parse_range_ctx("\\?d", &ctx);
     let r = range.unwrap();

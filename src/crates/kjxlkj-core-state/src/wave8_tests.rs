@@ -91,7 +91,7 @@ fn semicolon_range_sets_context() {
         lines: &lines,
         mark_line: None,
         last_search: None,
-        vars: None,
+        vars: None, call_fn: None,
     };
     // 2;/ddd/ means: addr1=line2(idx1), then set current=1 and search /ddd/
     let (range, _) = parse_range_ctx("2;/ddd/d", &ctx);
