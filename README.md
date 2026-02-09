@@ -2,7 +2,9 @@
 
 `kjxlkj` is a Neovim-inspired terminal editor with a documentation-first contract.
 
-## Project Contract
+## All in Docs
+
+Project contract:
 
 - `/docs/` is the canonical system definition.
 - Source code, CI, and packaging artifacts are derived outputs.
