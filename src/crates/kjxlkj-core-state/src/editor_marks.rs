@@ -3,7 +3,7 @@
 use kjxlkj_core_edit::CursorPosition;
 use kjxlkj_core_types::{Action, Mode, Motion};
 
-use crate::editor::MarkEntry;
+use crate::editor_types::MarkEntry;
 use crate::EditorState;
 
 impl EditorState {

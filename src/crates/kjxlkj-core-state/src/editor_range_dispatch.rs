@@ -1,7 +1,7 @@
 //! Range command dispatch helpers: parse command strings
 //! with range prefixes and delegate to range commands.
 
-use crate::editor_range_cmds::parse_range;
+use crate::editor_range_parse::parse_range;
 use crate::EditorState;
 
 impl EditorState {

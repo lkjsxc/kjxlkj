@@ -47,7 +47,7 @@ impl EditorState {
             .map(|b| b.content.line_count())
             .unwrap_or(1);
         let (start, end, cmd) =
-            crate::editor_range_cmds::parse_range(
+            crate::editor_range_parse::parse_range(
                 args, line, line_count,
             );
         if cmd.is_empty() {
