@@ -83,7 +83,7 @@ mod tests {
         let mut ed = editor_with("hello");
         ed.options.set("viminfofile", crate::options::OptionValue::Str(tmp.display().to_string()));
         // Set a global mark
-        ed.marks.set('A', crate::marks::MarkPosition { buffer_id: 0, line: 5, col: 3 });
+        ed.marks.set('A', crate::marks::MarkPosition::new(0, 5, 3 ));
         // Force quit triggers save_viminfo
         ed.handle_action(kjxlkj_core_types::Action::ForceQuit);
         // Verify file was written

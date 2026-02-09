@@ -32,27 +32,33 @@ fn split_concat(expr: &str) -> Option<Vec<&str>> {
     }
     if splits.is_empty() { None } else { splits.push(&expr[last..]); Some(splits) }
 }
-
 #[rustfmt::skip]
 fn eval_arithmetic(expr: &str) -> Result<String, String> {
     let expr = expr.trim();
     if let Some(pos) = find_op(expr, &['+', '-']) {
-        let (l, r) = (pi64(&eval_arithmetic(&expr[..pos])?)?, pi64(&eval_arithmetic(&expr[pos + 1..])?)?);
-        return Ok(format!("{}", if expr.as_bytes()[pos] == b'+' { l + r } else { l - r }));
+        let (l, r) = (&eval_arithmetic(&expr[..pos])?, &eval_arithmetic(&expr[pos + 1..])?);
+        return arith_op(l, r, expr.as_bytes()[pos]);
     }
     if let Some(pos) = find_op(expr, &['*', '/', '%']) {
-        let (l, r) = (pi64(&eval_arithmetic(&expr[..pos])?)?, pi64(&eval_arithmetic(&expr[pos + 1..])?)?);
-        if r == 0 && expr.as_bytes()[pos] != b'*' { return Err("Division by zero".into()); }
-        let res = match expr.as_bytes()[pos] { b'*' => l * r, b'/' => l / r, _ => l % r };
-        return Ok(format!("{res}"));
+        let (l, r) = (&eval_arithmetic(&expr[..pos])?, &eval_arithmetic(&expr[pos + 1..])?);
+        return arith_op(l, r, expr.as_bytes()[pos]);
     }
     if expr.starts_with('(') && expr.ends_with(')') { return eval_arithmetic(&expr[1..expr.len() - 1]); }
-    // Try builtin function calls within arithmetic (e.g., line("."))
     if let Some(r) = try_builtin_function(expr, &std::collections::HashMap::new()) { return r; }
-    pi64(expr).map(|_| expr.to_string())
+    parse_number(expr).map(|_| expr.trim().to_string())
 }
-fn pi64(s: &str) -> Result<i64, String> { s.trim().parse().map_err(|_| format!("Invalid number: {s}")) }
-
+#[rustfmt::skip]
+fn arith_op(l: &str, r: &str, op: u8) -> Result<String, String> {
+    if let (Ok(li), Ok(ri)) = (pi64(l), pi64(r)) {
+        if ri == 0 && (op == b'/' || op == b'%') { return Err("Division by zero".into()); }
+        return Ok(format!("{}", match op { b'+' => li+ri, b'-' => li-ri, b'*' => li*ri, b'/' => li/ri, _ => li%ri }));
+    }
+    let (lf, rf) = (parse_number(l)?, parse_number(r)?);
+    if rf == 0.0 && (op == b'/' || op == b'%') { return Err("Division by zero".into()); }
+    Ok(format!("{}", match op { b'+' => lf+rf, b'-' => lf-rf, b'*' => lf*rf, b'/' => lf/rf, _ => lf%rf }))
+}
+fn pi64(s: &str) -> Result<i64, std::num::ParseIntError> { s.trim().parse() }
+fn parse_number(s: &str) -> Result<f64, String> { s.trim().parse::<f64>().map_err(|e| e.to_string()) }
 /// Find rightmost op at top-level (not inside parens).
 #[rustfmt::skip]
 fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
@@ -63,7 +69,6 @@ fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
     }
     found
 }
-
 #[rustfmt::skip]
 fn try_ternary(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
     let qpos = find_top_level_char(expr, '?')?;
@@ -80,7 +85,6 @@ fn find_top_level_char(expr: &str, target: char) -> Option<usize> {
         if depth == 0 && b == target as u8 { return Some(i); }
     } None
 }
-
 #[rustfmt::skip]
 fn try_comparison(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
     for &op in &["==", "!=", "<=", ">=", "<", ">"] {
@@ -122,19 +126,12 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
         "type" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok((if v.starts_with('[') { "3" } else if v.starts_with('{') { "4" } else if v.parse::<i64>().is_ok() { "0" } else { "1" }).into())) }
         "has_key" => {
             let (da, ka) = match split_two_args(arg) { Some(p) => p, None => return Some(Err("has_key() requires 2 args".into())) };
-            let d = match eval_expression_with_vars(da.trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            let k = ka.trim().trim_matches('"');
+            let d = match eval_expression_with_vars(da.trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; let k = ka.trim().trim_matches('"');
             Some(Ok(if d.contains(&format!("\"{}\":", k)) || d.contains(&format!("\"{}\" :", k)) { "1" } else { "0" }.into()))
         }
         "function" => Some(Ok(arg.trim().trim_matches('"').to_string())),
-        "keys" => {
-            let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            Some(Ok(extract_dict_keys(&v)))
-        }
-        "values" => {
-            let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            Some(Ok(extract_dict_values(&v)))
-        }
+        "keys" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(extract_dict_keys(&v))) }
+        "values" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(extract_dict_values(&v))) }
         "map" => Some(Ok(list_map_filter(arg, vars, true))),
         "filter" => Some(Ok(list_map_filter(arg, vars, false))),
         "extend" => Some(Ok(list_extend(arg, vars))),
@@ -156,14 +153,12 @@ fn extract_dict_keys(dict: &str) -> String { // Extract all keys from a JSON-ish
     let keys: Vec<String> = inner.split(',').filter_map(|pair| { let k = pair.split(':').next()?.trim().trim_matches('"'); if k.is_empty() { None } else { Some(format!("\"{}\"", k)) } }).collect();
     format!("[{}]", keys.join(","))
 }
-/// Extract all values from a JSON-ish dict as a list string.
-fn extract_dict_values(dict: &str) -> String {
+fn extract_dict_values(dict: &str) -> String { // Extract all values from a JSON-ish dict as a list string.
     let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
     let vals: Vec<&str> = inner.split(',').filter_map(|pair| { let kv: Vec<&str> = pair.splitn(2, ':').collect(); if kv.len() < 2 { None } else { Some(kv[1].trim()) } }).collect();
     format!("[{}]", vals.join(","))
 }
-/// Split two function args at top-level comma (respects [] and {} nesting). Public wrapper also available.
-pub fn split_two_args_pub(arg: &str) -> Option<(&str, &str)> { split_two_args(arg) }
+pub fn split_two_args_pub(arg: &str) -> Option<(&str, &str)> { split_two_args(arg) } // public wrapper
 fn split_two_args(arg: &str) -> Option<(&str, &str)> {
     let (bytes, mut depth) = (arg.as_bytes(), 0i32);
     for (i, &b) in bytes.iter().enumerate() {

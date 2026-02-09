@@ -53,9 +53,7 @@ mod tests {
     fn delmarks_bang_clears_local() {
         let mut e = editor_with("line1\nline2\n");
         let bid = e.current_buffer_id();
-        e.marks.set('a', crate::marks::MarkPosition {
-            buffer_id: bid.0 as usize, line: 0, col: 0,
-        });
+        e.marks.set('a', crate::marks::MarkPosition::new(bid.0 as usize, 0, 0));
         assert!(e.marks.get('a', bid.0 as usize).is_some());
         e.execute_ex_command("delmarks!");
         assert!(e.marks.get('a', bid.0 as usize).is_none());

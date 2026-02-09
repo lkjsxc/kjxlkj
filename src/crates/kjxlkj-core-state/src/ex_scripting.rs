@@ -54,11 +54,7 @@ impl EditorState {
         let bid = self.current_buffer_id().0 as usize;
         self.marks.set(
             name,
-            crate::marks::MarkPosition {
-                buffer_id: bid,
-                line: c.line,
-                col: c.grapheme,
-            },
+            crate::marks::MarkPosition::new(bid, c.line, c.grapheme),
         );
         self.notify_info(&format!("Mark '{name}' set"));
     }
@@ -171,14 +167,18 @@ impl EditorState {
         ret_val
     }
 
-    /// Handle `:let l:var = expr` or `:let var = expr`.
+    /// Handle `:let var = expr`. Supports `:let @a = "text"` for register/macro sync.
+    #[rustfmt::skip]
     pub(crate) fn handle_let_command(&mut self, args: &str) {
         let args = args.trim();
         let eq = match args.find('=') { Some(i) => i, None => { self.notify_error("E15: Invalid let"); return; } };
-        let var = args[..eq].trim();
-        let expr = args[eq + 1..].trim();
+        let (var, expr) = (args[..eq].trim(), args[eq + 1..].trim());
         let opt_val = self.options.get_str(expr).to_string();
         let val = if !opt_val.is_empty() { opt_val } else { crate::expr_eval::eval_expression(expr).unwrap_or_default() };
+        if var.starts_with('@') && var.len() == 2 { let c = var.as_bytes()[1] as char; if c.is_ascii_lowercase() {
+            use kjxlkj_core_edit::{Register, RegisterName};
+            self.registers.set(RegisterName::Named(c), Register::new(val, false)); self.sync_register_to_macro(c); return;
+        } }
         self.options.set(var, crate::options::OptionValue::Str(val));
     }
 }

@@ -5,15 +5,17 @@
 
 use std::collections::HashMap;
 
-/// A mark position.
+/// A mark position with timestamp for conflict resolution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MarkPosition {
-    /// Buffer ID this mark belongs to.
     pub buffer_id: usize,
-    /// Line number (0-indexed).
     pub line: usize,
-    /// Column (0-indexed).
     pub col: usize,
+    /// Monotonic counter for viminfo merge conflict resolution.
+    pub timestamp: u64,
+}
+impl MarkPosition {
+    pub fn new(buffer_id: usize, line: usize, col: usize) -> Self { Self { buffer_id, line, col, timestamp: 0 } }
 }
 
 /// The mark file storing all marks.
@@ -127,16 +129,15 @@ impl MarkFile {
         self.global.insert('0', pos);
     }
 
-    /// Serialize global+numbered marks to viminfo format.
+    /// Serialize global+numbered marks to viminfo format (with timestamps).
     pub fn serialize_viminfo(&self) -> String {
         let mut out = String::from("# Viminfo Marks\n");
         for (&name, pos) in &self.global {
-            out.push_str(&format!("'{}  {}  {}  {}\n", name, pos.buffer_id, pos.line, pos.col));
+            out.push_str(&format!("'{}  {}  {}  {}  {}\n", name, pos.buffer_id, pos.line, pos.col, pos.timestamp));
         }
         out
     }
-
-    /// Load marks from viminfo format string.
+    /// Load marks from viminfo format string. Newer timestamps win on conflict.
     pub fn load_viminfo(&mut self, input: &str) {
         for line in input.lines() {
             let line = line.trim();
@@ -146,7 +147,9 @@ impl MarkFile {
                 let parts: Vec<&str> = line[2..].split_whitespace().collect();
                 if parts.len() >= 3 {
                     if let (Ok(bid), Ok(l), Ok(c)) = (parts[0].parse(), parts[1].parse(), parts[2].parse()) {
-                        self.global.insert(ch, MarkPosition { buffer_id: bid, line: l, col: c });
+                        let ts: u64 = parts.get(3).and_then(|s| s.parse().ok()).unwrap_or(0);
+                        let existing_ts = self.global.get(&ch).map(|p| p.timestamp).unwrap_or(0);
+                        if ts >= existing_ts { self.global.insert(ch, MarkPosition { buffer_id: bid, line: l, col: c, timestamp: ts }); }
                     }
                 }
             }

@@ -38,7 +38,7 @@ impl EditorState {
     pub(crate) fn push_jumplist(&mut self) {
         let bid = self.current_buffer_id().0 as usize;
         let c = self.windows.focused().cursor;
-        let mp = crate::marks::MarkPosition { buffer_id: bid, line: c.line, col: c.grapheme };
+        let mp = crate::marks::MarkPosition::new(bid, c.line, c.grapheme);
         self.marks.rotate_numbered(mp);
         self.jumplist.truncate(self.jumplist_idx);
         self.jumplist.push((bid, c.line, c.grapheme));

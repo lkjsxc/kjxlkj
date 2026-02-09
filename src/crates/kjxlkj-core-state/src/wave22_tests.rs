@@ -77,9 +77,9 @@ mod tests {
     #[test]
     fn viminfo_marks_roundtrip() {
         let mut marks = crate::marks::MarkFile::new();
-        let mp = crate::marks::MarkPosition { buffer_id: 0, line: 10, col: 5 };
+        let mp = crate::marks::MarkPosition::new(0, 10, 5 );
         marks.set('A', mp);
-        marks.set('B', crate::marks::MarkPosition { buffer_id: 1, line: 20, col: 3 });
+        marks.set('B', crate::marks::MarkPosition::new(1, 20, 3 ));
         let viminfo = marks.serialize_viminfo();
         assert!(viminfo.contains("'A"));
         assert!(viminfo.contains("'B"));

@@ -14,6 +14,12 @@ impl EditorState {
             if let KeyCode::Char('?') = &key.code { self.visual_apply_operator(Operator::Rot13, kind); return; }
             return;
         }
+        // Handle register selection: "x then operator.
+        if self.visual_register_pending {
+            self.visual_register_pending = false;
+            if let KeyCode::Char(c) = &key.code { self.pending_register = Some(*c); }
+            return;
+        }
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
                 if *c == ':' {
@@ -26,6 +32,7 @@ impl EditorState {
                     return;
                 }
                 if *c == 'g' { self.visual_g_pending = true; return; }
+                if *c == '"' { self.visual_register_pending = true; return; }
                 if *c == '~' { self.visual_apply_operator(Operator::ToggleCase, kind); return; }
                 if let Some(op) = char_to_operator(*c) { self.visual_apply_operator(op, kind); return; }
                 match *c {
@@ -52,8 +59,8 @@ impl EditorState {
             let cursor = self.windows.focused().cursor;
             let bid = self.current_buffer_id().0 as usize;
             let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) { (anchor, cursor) } else { (cursor, anchor) };
-            self.marks.set_visual_start(crate::marks::MarkPosition { buffer_id: bid, line: s.line, col: s.grapheme });
-            self.marks.set_visual_end(crate::marks::MarkPosition { buffer_id: bid, line: e.line, col: e.grapheme });
+            self.marks.set_visual_start(crate::marks::MarkPosition::new(bid, s.line, s.grapheme));
+            self.marks.set_visual_end(crate::marks::MarkPosition::new(bid, e.line, e.grapheme));
         }
     }
 

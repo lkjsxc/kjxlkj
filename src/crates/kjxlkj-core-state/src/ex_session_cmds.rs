@@ -97,39 +97,48 @@ impl EditorState {
     }
 
     /// Handle :source {file} — read and execute script commands.
+    #[rustfmt::skip]
     pub(crate) fn handle_source(&mut self, path: &str) {
         let content = match std::fs::read_to_string(path) {
-            Ok(c) => c,
-            Err(e) => { self.notify_error(&format!("E484: {path}: {e}")); return; }
+            Ok(c) => c, Err(e) => { self.notify_error(&format!("E484: {path}: {e}")); return; }
         };
-        let mut skip_stack: Vec<bool> = Vec::new(); // true = currently skipping
-        for line in content.lines() {
-            let trimmed = line.trim();
+        let all_lines: Vec<&str> = content.lines().collect();
+        let (mut i, mut skip_stack) = (0usize, Vec::<bool>::new());
+        let mut while_stack: Vec<(usize, String)> = Vec::new(); // (line_idx, cond_expr)
+        while i < all_lines.len() {
+            let trimmed = all_lines[i].trim(); i += 1;
             if trimmed.is_empty() { continue; }
             if trimmed == "finish" { break; }
-            // Handle if/elseif/else/endif conditional execution.
-            if let Some(cond_expr) = trimmed.strip_prefix("if ") {
-                let val = crate::expr_eval::eval_expression(cond_expr.trim()).unwrap_or_default();
-                skip_stack.push(val == "0" || val.is_empty());
-                continue;
+            if let Some(ce) = trimmed.strip_prefix("if ") {
+                let val = crate::expr_eval::eval_expression(ce.trim()).unwrap_or_default();
+                skip_stack.push(val == "0" || val.is_empty()); continue;
             }
-            if let Some(cond_expr) = trimmed.strip_prefix("elseif ") {
+            if let Some(ce) = trimmed.strip_prefix("elseif ") {
                 if let Some(top) = skip_stack.last_mut() {
-                    if *top { let val = crate::expr_eval::eval_expression(cond_expr.trim()).unwrap_or_default(); *top = val == "0" || val.is_empty(); }
+                    if *top { let val = crate::expr_eval::eval_expression(ce.trim()).unwrap_or_default(); *top = val == "0" || val.is_empty(); }
                     else { *top = true; }
-                }
-                continue;
+                } continue;
             }
-            if trimmed == "else" {
-                if let Some(top) = skip_stack.last_mut() { *top = !*top; }
-                continue;
-            }
+            if trimmed == "else" { if let Some(top) = skip_stack.last_mut() { *top = !*top; } continue; }
             if trimmed == "endif" { skip_stack.pop(); continue; }
+            if let Some(ce) = trimmed.strip_prefix("while ") {
+                let val = crate::expr_eval::eval_expression(ce.trim()).unwrap_or_default();
+                if val == "0" || val.is_empty() { skip_stack.push(true); while_stack.push((i, String::new())); }
+                else { while_stack.push((i, ce.trim().to_string())); }
+                continue;
+            }
+            if trimmed == "endwhile" {
+                if let Some((start, cond)) = while_stack.pop() {
+                    if !cond.is_empty() {
+                        let val = crate::expr_eval::eval_expression(&cond).unwrap_or_default();
+                        if val != "0" && !val.is_empty() { i = start; while_stack.push((start, cond)); continue; }
+                    } else { skip_stack.pop(); }
+                } continue;
+            }
             if skip_stack.iter().any(|&s| s) { continue; }
-            // Restore session history/search from special comments.
-            if let Some(entry) = trimmed.strip_prefix("\" history: ") { self.cmdline.history.push(entry.to_string()); continue; }
-            if let Some(pat) = trimmed.strip_prefix("\" search: ") { self.search.pattern = Some(pat.to_string()); continue; }
-            if let Some(rest) = trimmed.strip_prefix("\" localmark ") { self.source_restore_localmark(rest); continue; }
+            if let Some(e) = trimmed.strip_prefix("\" history: ") { self.cmdline.history.push(e.to_string()); continue; }
+            if let Some(p) = trimmed.strip_prefix("\" search: ") { self.search.pattern = Some(p.to_string()); continue; }
+            if let Some(r) = trimmed.strip_prefix("\" localmark ") { self.source_restore_localmark(r); continue; }
             if trimmed.starts_with('"') { continue; }
             self.execute_ex_command(trimmed);
         }
@@ -142,7 +151,7 @@ impl EditorState {
         if ps.len() == 4 {
             if let (Some(ch), Ok(l), Ok(c)) = (ps[1].chars().next(), ps[2].parse::<usize>(), ps[3].parse::<usize>()) {
                 let bid = self.current_buffer_id().0 as usize;
-                self.marks.set(ch, crate::marks::MarkPosition { buffer_id: bid, line: l.saturating_sub(1), col: c.saturating_sub(1) });
+                self.marks.set(ch, crate::marks::MarkPosition::new(bid, l.saturating_sub(1), c.saturating_sub(1)));
             }
         }
     }
@@ -176,14 +185,7 @@ impl EditorState {
             let l = parts[2].parse::<usize>().unwrap_or(1).saturating_sub(1);
             let c = parts[3].parse::<usize>().unwrap_or(1).saturating_sub(1);
             let bid = self.current_buffer_id().0 as usize;
-            self.marks.set(
-                name,
-                crate::marks::MarkPosition {
-                    buffer_id: bid,
-                    line: l,
-                    col: c,
-                },
-            );
+            self.marks.set(name, crate::marks::MarkPosition::new(bid, l, c));
         } else {
             self.handle_set_mark(name);
         }

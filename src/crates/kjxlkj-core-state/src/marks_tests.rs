@@ -4,11 +4,7 @@ use crate::marks::{MarkFile, MarkPosition};
 #[test]
 fn test_set_and_get_local_mark() {
     let mut mf = MarkFile::new();
-    let pos = MarkPosition {
-        buffer_id: 1,
-        line: 10,
-        col: 5,
-    };
+    let pos = MarkPosition::new(1, 10, 5);
     mf.set('a', pos);
     assert_eq!(mf.get('a', 1), Some(&pos));
     assert_eq!(mf.get('a', 2), None);
@@ -17,11 +13,7 @@ fn test_set_and_get_local_mark() {
 #[test]
 fn test_global_mark() {
     let mut mf = MarkFile::new();
-    let pos = MarkPosition {
-        buffer_id: 1,
-        line: 20,
-        col: 0,
-    };
+    let pos = MarkPosition::new(1, 20, 0);
     mf.set('A', pos);
     assert_eq!(mf.get('A', 1), Some(&pos));
     assert_eq!(mf.get('A', 2), Some(&pos));
@@ -32,11 +24,7 @@ fn test_delete_mark() {
     let mut mf = MarkFile::new();
     mf.set(
         'a',
-        MarkPosition {
-            buffer_id: 1,
-            line: 5,
-            col: 0,
-        },
+        MarkPosition::new(1, 5, 0),
     );
     assert!(mf.delete('a', 1));
     assert_eq!(mf.get('a', 1), None);
@@ -45,11 +33,7 @@ fn test_delete_mark() {
 #[test]
 fn test_special_marks() {
     let mut mf = MarkFile::new();
-    let pos = MarkPosition {
-        buffer_id: 1,
-        line: 15,
-        col: 3,
-    };
+    let pos = MarkPosition::new(1, 15, 3);
     mf.set_last_change(pos);
     assert_eq!(mf.get('.', 1), Some(&pos));
 }
@@ -59,11 +43,7 @@ fn test_adjust_for_insert() {
     let mut mf = MarkFile::new();
     mf.set(
         'a',
-        MarkPosition {
-            buffer_id: 1,
-            line: 10,
-            col: 0,
-        },
+        MarkPosition::new(1, 10, 0),
     );
     mf.adjust_for_edit(1, 5, 3);
     assert_eq!(mf.get('a', 1).unwrap().line, 13);
@@ -74,11 +54,7 @@ fn test_adjust_for_delete() {
     let mut mf = MarkFile::new();
     mf.set(
         'a',
-        MarkPosition {
-            buffer_id: 1,
-            line: 10,
-            col: 0,
-        },
+        MarkPosition::new(1, 10, 0),
     );
     mf.adjust_for_edit(1, 5, -3);
     assert_eq!(mf.get('a', 1).unwrap().line, 7);
@@ -89,19 +65,11 @@ fn test_list_for_buffer() {
     let mut mf = MarkFile::new();
     mf.set(
         'a',
-        MarkPosition {
-            buffer_id: 1,
-            line: 1,
-            col: 0,
-        },
+        MarkPosition::new(1, 1, 0),
     );
     mf.set(
         'b',
-        MarkPosition {
-            buffer_id: 1,
-            line: 2,
-            col: 0,
-        },
+        MarkPosition::new(1, 2, 0),
     );
     let list = mf.list_for_buffer(1);
     assert_eq!(list.len(), 2);

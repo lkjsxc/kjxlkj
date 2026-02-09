@@ -83,14 +83,12 @@ pub struct EditorState {
     pub(crate) visual_replace_pending: bool,
     /// `g` pressed in visual mode: next char selects g-prefixed action.
     pub(crate) visual_g_pending: bool,
+    /// `"` pressed in visual mode: next char selects register.
+    pub(crate) visual_register_pending: bool,
     /// Active snippet session for tab-stop navigation.
     pub(crate) snippet_session: Option<crate::snippets::SnippetSession>,
     /// Last visual selection for gv: (anchor, cursor, kind).
-    pub(crate) last_visual: Option<(
-        CursorPosition,
-        CursorPosition,
-        kjxlkj_core_types::VisualKind,
-    )>,
+    pub(crate) last_visual: Option<(CursorPosition, CursorPosition, kjxlkj_core_types::VisualKind)>,
     /// Pending substitute confirmation: (pattern, replacement, global, line_indices_remaining).
     pub(crate) sub_confirm: Option<SubConfirmState>,
     /// User-defined function registry.
@@ -170,6 +168,7 @@ impl EditorState {
             insert_register_pending: false,
             visual_replace_pending: false,
             visual_g_pending: false,
+            visual_register_pending: false,
             snippet_session: None,
             last_visual: None,
             sub_confirm: None,

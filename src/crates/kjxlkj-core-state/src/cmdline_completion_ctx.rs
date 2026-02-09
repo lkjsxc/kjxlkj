@@ -119,6 +119,11 @@ impl EditorState {
         } else {
             partial
         };
+        // Glob pattern expansion: if partial contains * or ?, expand as glob.
+        if partial.contains('*') || partial.contains('?') {
+            self.build_glob_candidates(&content, partial);
+            return;
+        }
         let (dir, prefix) = if let Some(slash) = partial.rfind('/') {
             (&partial[..=slash], &partial[slash + 1..])
         } else {
@@ -150,6 +155,38 @@ impl EditorState {
         }
         let cs = &mut self.cmdline.completion;
         cs.prefix = content;
+        cs.candidates = matches;
+        cs.index = Some(0);
+    }
+
+    /// Build candidates from glob pattern (e.g., *.rs, src/**/*.ts).
+    fn build_glob_candidates(&mut self, content: &str, pattern: &str) {
+        let (dir, glob_pat) = if let Some(slash) = pattern.rfind('/') {
+            (&pattern[..=slash], &pattern[slash + 1..])
+        } else {
+            ("./", pattern)
+        };
+        let entries = match std::fs::read_dir(dir) {
+            Ok(e) => e,
+            Err(_) => return,
+        };
+        let re_pat = glob_pat.replace('.', "\\.").replace('*', ".*").replace('?', ".");
+        let re = match regex::Regex::new(&format!("^{re_pat}$")) {
+            Ok(r) => r,
+            Err(_) => return,
+        };
+        let mut matches: Vec<String> = Vec::new();
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if re.is_match(&name) {
+                let path = if dir == "./" { name } else { format!("{}{}", dir, name) };
+                matches.push(path);
+            }
+        }
+        matches.sort();
+        if matches.is_empty() { return; }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content.to_string();
         cs.candidates = matches;
         cs.index = Some(0);
     }

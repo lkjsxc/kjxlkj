@@ -26,16 +26,8 @@ impl EditorState {
             return;
         }
         // Set change marks.
-        let sm = crate::marks::MarkPosition {
-            buffer_id: bid,
-            line: start.line,
-            col: start.grapheme,
-        };
-        let em = crate::marks::MarkPosition {
-            buffer_id: bid,
-            line: end.line,
-            col: end.grapheme,
-        };
+        let sm = crate::marks::MarkPosition::new(bid, start.line, start.grapheme);
+        let em = crate::marks::MarkPosition::new(bid, end.line, end.grapheme);
         self.marks.set_change_start(sm);
         self.marks.set_change_end(em);
         match op {

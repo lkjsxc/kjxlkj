@@ -6,11 +6,7 @@ impl EditorState {
     pub(crate) fn set_mark_at_cursor(&mut self, name: char) {
         let cursor = self.windows.focused().cursor;
         let buf_id = self.current_buffer_id();
-        let pos = crate::marks::MarkPosition {
-            buffer_id: buf_id.0 as usize,
-            line: cursor.line,
-            col: cursor.grapheme,
-        };
+        let pos = crate::marks::MarkPosition::new(buf_id.0 as usize, cursor.line, cursor.grapheme);
         self.marks.set(name, pos);
     }
 

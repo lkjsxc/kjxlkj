@@ -35,6 +35,14 @@ impl EditorState {
         }
     }
 
+    /// Try to auto-restore a session: load Session.vim if present in cwd.
+    pub fn try_auto_restore_session(&mut self) {
+        let path = "Session.vim";
+        if std::path::Path::new(path).exists() {
+            self.handle_source(path);
+        }
+    }
+
     /// Load configuration from a specific path.
     /// Supports [section] headers; keys become "section.key".
     pub fn load_config_file(&mut self, path: &str) {

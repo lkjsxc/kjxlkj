@@ -68,11 +68,11 @@ mod tests {
     fn viminfo_merge_preserves_old() {
         use crate::marks::{MarkFile, MarkPosition};
         let mut old = MarkFile::new();
-        old.set('A', MarkPosition { buffer_id: 0, line: 5, col: 3 });
+        old.set('A', MarkPosition::new(0, 5, 3 ));
         let old_str = old.serialize_viminfo();
         let mut merged = MarkFile::new();
         merged.load_viminfo(&old_str);
-        merged.set('B', MarkPosition { buffer_id: 1, line: 10, col: 0 });
+        merged.set('B', MarkPosition::new(1, 10, 0 ));
         let result = merged.serialize_viminfo();
         assert!(result.contains("'A"));
         assert!(result.contains("'B"));

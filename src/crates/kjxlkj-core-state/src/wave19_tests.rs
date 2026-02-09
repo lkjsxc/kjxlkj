@@ -72,7 +72,7 @@ mod tests {
         let mut ed = editor_with("line1\nline2\nline3\nline4\n");
         let bid = ed.current_buffer_id().0 as usize;
         for (i, ch) in ['a', 'b', 'c', 'd'].iter().enumerate() {
-            ed.marks.set(*ch, crate::marks::MarkPosition { buffer_id: bid, line: i, col: 0 });
+            ed.marks.set(*ch, crate::marks::MarkPosition::new(bid, i, 0 ));
         }
         ed.execute_ex_command("delmarks a-d");
         for ch in ['a', 'b', 'c', 'd'] {

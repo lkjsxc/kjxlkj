@@ -137,7 +137,7 @@ impl EditorState {
                 }
                 let cursor = self.windows.focused().cursor;
                 let bid = self.current_buffer_id().0 as usize;
-                let mp = crate::marks::MarkPosition { buffer_id: bid, line: cursor.line, col: cursor.grapheme };
+                let mp = crate::marks::MarkPosition::new(bid, cursor.line, cursor.grapheme);
                 self.marks.set_last_change(mp);
                 self.marks.set_last_insert(mp);
                 self.push_changelist(cursor.line, cursor.grapheme);
@@ -185,7 +185,7 @@ impl EditorState {
                     self.last_visual = Some((anchor, c, *vk));
                     let bid = self.current_buffer_id().0 as usize;
                     let (s, e) = if (anchor.line, anchor.grapheme) <= (c.line, c.grapheme) { (anchor, c) } else { (c, anchor) };
-                    let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition { buffer_id: bid, line: p.line, col: p.grapheme };
+                    let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition::new(bid, p.line, p.grapheme);
                     self.marks.set_visual_start(mk(s));
                     self.marks.set_visual_end(mk(e));
                 }

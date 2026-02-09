@@ -71,6 +71,16 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                 Some('r') => out.push_str("\\r"),
                 Some('c') => case_override = Some(false),
                 Some('C') => case_override = Some(true),
+                // Multi-line class atoms: \_s, \_d, \_w, \_.
+                Some('_') => match chars.next() {
+                    Some('s') => out.push_str("[\\s\\n]"),
+                    Some('S') => out.push_str("[^\\s]"),
+                    Some('d') => out.push_str("[\\d\\n]"),
+                    Some('w') => out.push_str("[\\w\\n]"),
+                    Some('.') => out.push_str("(?s:.)"),
+                    Some(other) => { out.push_str("\\_"); out.push(other); }
+                    None => out.push_str("\\_"),
+                },
                 Some(other) => {
                     out.push('\\');
                     out.push(other);
