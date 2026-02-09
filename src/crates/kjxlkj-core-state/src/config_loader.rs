@@ -88,3 +88,26 @@ fn dirs_config(sub: &str) -> Option<String> {
         .or_else(|| std::env::var("HOME").ok().map(|h| format!("{}/.config", h)))
         .map(|base| format!("{}/{}", base, sub))
 }
+
+/// Detect filetype from a file path based on extension.
+#[rustfmt::skip]
+pub fn detect_filetype(path: &str) -> Option<&'static str> {
+    let ext = std::path::Path::new(path).extension()?.to_str()?;
+    Some(match ext {
+        "rs" => "rust", "py" => "python", "js" => "javascript",
+        "ts" => "typescript", "tsx" => "typescriptreact",
+        "jsx" => "javascriptreact", "rb" => "ruby",
+        "go" => "go", "c" | "h" => "c", "cpp" | "cc" | "cxx" | "hpp" => "cpp",
+        "java" => "java", "lua" => "lua", "sh" | "bash" | "zsh" => "sh",
+        "json" => "json", "toml" => "toml", "yaml" | "yml" => "yaml",
+        "md" | "markdown" => "markdown", "html" | "htm" => "html",
+        "css" => "css", "xml" => "xml", "sql" => "sql",
+        "vim" => "vim", "el" => "lisp", "hs" => "haskell",
+        "ml" | "mli" => "ocaml", "ex" | "exs" => "elixir",
+        "erl" => "erlang", "zig" => "zig", "dart" => "dart",
+        "swift" => "swift", "kt" | "kts" => "kotlin",
+        "r" | "R" => "r", "jl" => "julia",
+        "txt" => "text", "csv" => "csv",
+        _ => return None,
+    })
+}

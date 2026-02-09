@@ -7,6 +7,15 @@ use crate::editor::EditorState;
 
 impl EditorState {
     pub(crate) fn dispatch_in_mode(&mut self, key: Key) {
+        // Sub-confirm intercept: awaiting y/n/a/q/l.
+        if self.sub_confirm.is_some() {
+            if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
+                self.handle_sub_confirm_key(*c);
+            } else {
+                self.sub_confirm = None; // cancel on non-char
+            }
+            return;
+        }
         match &self.mode {
             Mode::Normal => {
                 let result = self.dispatch.dispatch(&key);

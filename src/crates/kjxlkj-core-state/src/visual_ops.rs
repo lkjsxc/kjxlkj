@@ -25,6 +25,8 @@ impl EditorState {
                     'p' | 'P' => { self.visual_paste(kind); return; }
                     'r' => { self.visual_replace_pending = true; return; }
                     '*' | '#' => { self.visual_star_search(*c == '*', kind); return; }
+                    'J' => { self.visual_join(kind); return; }
+                    '=' => { self.visual_reindent(kind); return; }
                     'I' | 'A' if kind == VisualKind::Block => { self.handle_visual_block_ia(*c == 'A'); return; }
                     _ => {}
                 }

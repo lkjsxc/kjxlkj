@@ -105,12 +105,18 @@ impl EditorState {
     pub(crate) fn handle_list_marks(&mut self) {
         let bid = self.current_buffer_id().0 as usize;
         let marks = self.marks.list_for_buffer(bid);
-        let msg = if marks.is_empty() {
-            "No marks set".into()
-        } else {
-            format!("{} mark(s) set", marks.len())
-        };
-        self.notify_info(&msg);
+        if marks.is_empty() {
+            return self.notify_info("No marks set");
+        }
+        let mut lines = vec!["mark line  col".to_string()];
+        for (name, pos) in &marks {
+            lines.push(format!(
+                " {name}   {:>4}  {:>3}",
+                pos.line + 1,
+                pos.col + 1
+            ));
+        }
+        self.notify_info(&lines.join("\n"));
     }
 
     pub(crate) fn handle_list_registers(&mut self) {
@@ -160,22 +166,15 @@ impl EditorState {
     }
 
     fn append_readonly_regs(&self, lines: &mut Vec<String>) {
-        let pct = self
-            .buffers
-            .get(self.current_buffer_id())
-            .and_then(|b| b.path.as_ref())
-            .map(|p| p.display().to_string())
-            .unwrap_or_default();
-        if !pct.is_empty() {
-            lines.push(format!("\"%   {}", truncate(&pct, 40)));
+        if let Some(p) = self.buffers.get(self.current_buffer_id())
+            .and_then(|b| b.path.as_ref()) {
+            lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40)));
         }
         if !self.last_ex_command.is_empty() {
             lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40)));
         }
         if let Some(ref pat) = self.search.pattern {
-            if self.search.active {
-                lines.push(format!("\"/   {}", truncate(pat, 40)));
-            }
+            if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); }
         }
     }
 }

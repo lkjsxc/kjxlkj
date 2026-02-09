@@ -1,7 +1,8 @@
-/// Substitute command execution and helpers.
+/// Substitute command execution.
 use crate::editor::EditorState;
 use crate::ex_parse::ExRange;
 use crate::ex_parse_substitute::parse_substitute;
+use crate::ex_substitute_confirm::{count_via_regex, substitute_line_regex};
 use crate::regex_translate::compile_vim_pattern;
 
 impl EditorState {
@@ -13,60 +14,61 @@ impl EditorState {
                 return;
             }
         };
-
         if sub_cmd.count_only {
             self.substitute_count(&sub_cmd.pattern, range, sub_cmd.case_insensitive);
             return;
         }
-
+        if sub_cmd.confirm {
+            let lines: Vec<usize> = (range.start..=range.end).collect();
+            self.sub_confirm = Some(crate::editor::SubConfirmState {
+                pattern: sub_cmd.pattern.clone(),
+                replacement: sub_cmd.replacement.clone(),
+                global: sub_cmd.global,
+                lines,
+                current_line_idx: 0,
+            });
+            self.notify_info("Replace? (y/n/a/q/l)");
+            return;
+        }
         let case_sensitive = !sub_cmd.case_insensitive;
         let re = compile_vim_pattern(&sub_cmd.pattern, case_sensitive);
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
-
         if let Some(buf) = self.buffers.get_mut(buf_id) {
             buf.save_undo_checkpoint(cursor);
-            let mut total_replacements = 0;
-            let mut total_lines_changed = 0;
-
-            for line_idx in range.start..=range.end.min(buf.content.len_lines().saturating_sub(1)) {
-                let line_slice = buf.content.line(line_idx);
-                let line_str: String = line_slice.chars().collect();
-
-                let new_line = substitute_line_regex(
-                    &line_str,
-                    &sub_cmd.pattern,
-                    &sub_cmd.replacement,
-                    sub_cmd.global,
-                    re.as_ref(),
+            let mut total_subs = 0;
+            let mut total_lines = 0;
+            let end = range.end.min(buf.content.len_lines().saturating_sub(1));
+            for line_idx in range.start..=end {
+                let ls: String = buf.content.line(line_idx).chars().collect();
+                let new = substitute_line_regex(
+                    &ls, &sub_cmd.pattern, &sub_cmd.replacement,
+                    sub_cmd.global, re.as_ref(),
                 );
-
-                if new_line != line_str {
-                    let count =
-                        count_via_regex(&line_str, &sub_cmd.pattern, sub_cmd.global, re.as_ref());
-                    total_replacements += count;
-                    total_lines_changed += 1;
-                    let start_byte = buf.content.line_to_byte(line_idx);
-                    let end_byte = if line_idx + 1 < buf.content.len_lines() {
+                if new != ls {
+                    total_subs += count_via_regex(
+                        &ls, &sub_cmd.pattern, sub_cmd.global, re.as_ref(),
+                    );
+                    total_lines += 1;
+                    let sb = buf.content.line_to_byte(line_idx);
+                    let eb = if line_idx + 1 < buf.content.len_lines() {
                         buf.content.line_to_byte(line_idx + 1)
-                    } else {
-                        buf.content.len_bytes()
-                    };
-                    let start_char = buf.content.byte_to_char(start_byte);
-                    let end_char = buf.content.byte_to_char(end_byte);
-                    buf.content.remove(start_char..end_char);
-                    buf.content.insert(start_char, &new_line);
+                    } else { buf.content.len_bytes() };
+                    let sc = buf.content.byte_to_char(sb);
+                    let ec = buf.content.byte_to_char(eb);
+                    buf.content.remove(sc..ec);
+                    buf.content.insert(sc, &new);
                 }
             }
-
-            if total_replacements > 0 {
+            if total_subs > 0 {
                 buf.increment_version();
                 self.notify_info(&format!(
-                    "{total_replacements} substitution(s) on \
-                     {total_lines_changed} line(s)"
+                    "{total_subs} substitution(s) on {total_lines} line(s)"
                 ));
             } else if !sub_cmd.suppress_error {
-                self.notify_error(&format!("E486: Pattern not found: {}", sub_cmd.pattern));
+                self.notify_error(&format!(
+                    "E486: Pattern not found: {}", sub_cmd.pattern
+                ));
             }
         }
     }
@@ -76,51 +78,12 @@ impl EditorState {
         let buf_id = self.current_buffer_id();
         let mut total = 0;
         if let Some(buf) = self.buffers.get(buf_id) {
-            for l in range.start..=range.end.min(buf.content.len_lines().saturating_sub(1)) {
+            let end = range.end.min(buf.content.len_lines().saturating_sub(1));
+            for l in range.start..=end {
                 let s: String = buf.content.line(l).chars().collect();
                 total += count_via_regex(&s, pattern, true, re.as_ref());
             }
         }
         self.notify_info(&format!("{total} match(es) found"));
-    }
-}
-
-/// Substitute using regex if available, else plain text.
-fn substitute_line_regex(
-    line: &str,
-    pattern: &str,
-    replacement: &str,
-    global: bool,
-    re: Option<&regex::Regex>,
-) -> String {
-    if let Some(re) = re {
-        if global {
-            re.replace_all(line, replacement).into_owned()
-        } else {
-            re.replace(line, replacement).into_owned()
-        }
-    } else if global {
-        line.replace(pattern, replacement)
-    } else {
-        line.replacen(pattern, replacement, 1)
-    }
-}
-
-/// Count matches using regex if available.
-fn count_via_regex(line: &str, pattern: &str, global: bool, re: Option<&regex::Regex>) -> usize {
-    if let Some(re) = re {
-        if global {
-            re.find_iter(line).count()
-        } else if re.is_match(line) {
-            1
-        } else {
-            0
-        }
-    } else if global {
-        line.matches(pattern).count()
-    } else if line.contains(pattern) {
-        1
-    } else {
-        0
     }
 }

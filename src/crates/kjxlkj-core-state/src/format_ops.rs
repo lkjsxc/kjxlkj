@@ -75,6 +75,46 @@ impl EditorState {
             79
         }
     }
+
+    /// Reindent a range of lines based on the line above.
+    pub(crate) fn reindent_lines(&mut self, start: usize, end: usize) {
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        let sw = self.options.get_int("shiftwidth").max(1);
+        if let Some(buf) = self.buffers.get_mut(buf_id) {
+            buf.save_undo_checkpoint(cursor);
+            let total = buf.content.len_lines();
+            let end = end.min(total.saturating_sub(1));
+            // Get reference indent from line before start.
+            let base_indent = if start > 0 {
+                let ls = buf.content.line(start - 1);
+                let s: std::borrow::Cow<str> = ls.into();
+                s.chars().take_while(|c| *c == ' ').count()
+            } else {
+                0
+            };
+            for line_idx in start..=end {
+                if line_idx >= buf.content.len_lines() { break; }
+                let ls = buf.content.line(line_idx);
+                let s: std::borrow::Cow<str> = ls.into();
+                let old_indent = s.chars().take_while(|c| *c == ' ').count();
+                let trimmed = s.trim_start();
+                if trimmed.is_empty() || trimmed == "\n" { continue; }
+                // Apply base_indent, keeping relative offset within range.
+                let rel = if line_idx == start { 0 } else { sw.min(base_indent) };
+                let new_indent = base_indent + if line_idx > start { rel } else { 0 };
+                if new_indent != old_indent {
+                    let lb = buf.content.line_to_byte(line_idx);
+                    let sc = buf.content.byte_to_char(lb);
+                    let ec = buf.content.byte_to_char(lb + old_indent);
+                    buf.content.remove(sc..ec);
+                    let spaces = " ".repeat(new_indent);
+                    buf.content.insert(sc, &spaces);
+                }
+            }
+            buf.increment_version();
+        }
+    }
 }
 
 fn wrap_words(words: &[String], width: usize) -> String {

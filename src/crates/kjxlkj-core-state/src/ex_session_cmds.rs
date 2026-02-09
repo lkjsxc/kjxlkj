@@ -34,6 +34,14 @@ impl EditorState {
         for (name, val) in self.options.list() {
             lines.push(format!("set {}={}", name, val));
         }
+        // Save command-line history.
+        for entry in &self.cmdline.history {
+            lines.push(format!("\" history: {}", entry));
+        }
+        // Save search pattern.
+        if let Some(ref pat) = self.search.pattern {
+            lines.push(format!("\" search: {}", pat));
+        }
         // Save window layout.
         self.serialize_layout(&self.windows.layout().clone(), &mut lines);
         let content = lines.join("\n") + "\n";
@@ -88,7 +96,19 @@ impl EditorState {
         };
         for line in content.lines() {
             let trimmed = line.trim();
-            if trimmed.is_empty() || trimmed.starts_with('"') {
+            if trimmed.is_empty() {
+                continue;
+            }
+            // Restore session history/search from special comments.
+            if let Some(entry) = trimmed.strip_prefix("\" history: ") {
+                self.cmdline.history.push(entry.to_string());
+                continue;
+            }
+            if let Some(pat) = trimmed.strip_prefix("\" search: ") {
+                self.search.pattern = Some(pat.to_string());
+                continue;
+            }
+            if trimmed.starts_with('"') {
                 continue;
             }
             self.execute_ex_command(trimmed);

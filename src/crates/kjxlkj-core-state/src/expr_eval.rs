@@ -21,6 +21,10 @@ pub fn eval_expression_with_vars(
     if expr.is_empty() {
         return Ok(String::new());
     }
+    // Built-in function calls: strlen("..."), line("."), col(".").
+    if let Some(result) = try_builtin_function(expr, vars) {
+        return result;
+    }
     // Variable reference: g:name, b:name, etc.
     if let Some(rest) = expr
         .strip_prefix("g:")
@@ -142,10 +146,35 @@ fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
     found
 }
 
+/// Try to evaluate a built-in function call.
+/// Supports: strlen(expr), line("."), col(".").
+#[rustfmt::skip]
+fn try_builtin_function(
+    expr: &str, vars: &HashMap<String, String>,
+) -> Option<Result<String, String>> {
+    let paren = expr.find('(')?;
+    if !expr.ends_with(')') { return None; }
+    let name = expr[..paren].trim();
+    let arg = expr[paren + 1..expr.len() - 1].trim();
+    match name {
+        "strlen" => {
+            let val = match eval_expression_with_vars(arg, vars) {
+                Ok(v) => v, Err(e) => return Some(Err(e)),
+            };
+            Some(Ok(format!("{}", val.len())))
+        }
+        "line" if arg == "\".\"" || arg == "'.'" || arg == "." =>
+            Some(Ok(vars.get("v:lnum").cloned().unwrap_or_else(|| "1".into()))),
+        "col" if arg == "\".\"" || arg == "'.'" || arg == "." =>
+            Some(Ok(vars.get("v:col").cloned().unwrap_or_else(|| "1".into()))),
+        "line" | "col" => Some(Ok("0".into())),
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn test_basic_arithmetic() {
         assert_eq!(eval_expression("2+3").unwrap(), "5");
@@ -154,17 +183,12 @@ mod tests {
         assert_eq!(eval_expression("15/4").unwrap(), "3");
         assert_eq!(eval_expression("17%5").unwrap(), "2");
     }
-
     #[test]
     fn test_string_literal() {
         assert_eq!(eval_expression("\"hello\"").unwrap(), "hello");
     }
-
     #[test]
     fn test_string_concat() {
-        assert_eq!(
-            eval_expression("\"hello\" . \" world\"").unwrap(),
-            "hello world"
-        );
+        assert_eq!(eval_expression("\"hello\" . \" world\"").unwrap(), "hello world");
     }
 }

@@ -9,6 +9,7 @@ pub struct SubstituteCmd {
     pub case_insensitive: bool,
     pub count_only: bool,
     pub suppress_error: bool,
+    pub confirm: bool,
 }
 
 /// Parse a substitution command: s/pattern/replacement/flags
@@ -44,6 +45,7 @@ pub fn parse_substitute(input: &str) -> Option<SubstituteCmd> {
     let mut case_insensitive = false;
     let mut count_only = false;
     let mut suppress_error = false;
+    let mut confirm = false;
 
     for c in rest.chars() {
         match c {
@@ -52,6 +54,7 @@ pub fn parse_substitute(input: &str) -> Option<SubstituteCmd> {
             'I' => case_insensitive = false,
             'n' => count_only = true,
             'e' => suppress_error = true,
+            'c' => confirm = true,
             _ => break,
         }
     }
@@ -63,6 +66,7 @@ pub fn parse_substitute(input: &str) -> Option<SubstituteCmd> {
         case_insensitive,
         count_only,
         suppress_error,
+        confirm,
     })
 }
 

@@ -121,6 +121,23 @@ impl SearchState {
         }
         let cs = self.is_case_sensitive();
 
+        // Multi-line pattern: search joined text.
+        if pattern.contains("\\n") || pattern.contains('\n') {
+            let text = lines.join("\n");
+            let re = compile_vim_pattern(pattern, cs);
+            if let Some(re) = re {
+                for m in re.find_iter(&text) {
+                    let (line, col) = byte_to_line_col_in(&text, m.start());
+                    self.matches.push(SearchMatch {
+                        line,
+                        col_start: col,
+                        col_end: col + m.len(),
+                    });
+                }
+            }
+            return;
+        }
+
         for (line_idx, line) in lines.iter().enumerate() {
             for (s, e) in find_in_line(line, pattern, cs) {
                 self.matches.push(SearchMatch {
@@ -131,4 +148,20 @@ impl SearchState {
             }
         }
     }
+}
+
+/// Convert byte offset in full text to (line, col).
+fn byte_to_line_col_in(text: &str, offset: usize) -> (usize, usize) {
+    let mut line = 0;
+    let mut line_start = 0;
+    for (i, ch) in text.char_indices() {
+        if i == offset {
+            return (line, i - line_start);
+        }
+        if ch == '\n' {
+            line += 1;
+            line_start = i + 1;
+        }
+    }
+    (line, offset.saturating_sub(line_start))
 }

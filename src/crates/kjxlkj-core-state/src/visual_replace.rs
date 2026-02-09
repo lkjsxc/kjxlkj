@@ -149,4 +149,36 @@ impl EditorState {
             self.mode = kjxlkj_core_types::Mode::Visual(kind);
         }
     }
+
+    /// J in visual mode: join selected lines.
+    pub(crate) fn visual_join(&mut self, _kind: VisualKind) {
+        let anchor = match self.visual_anchor.take() {
+            Some(a) => a,
+            None => { self.mode = kjxlkj_core_types::Mode::Normal; return; }
+        };
+        let cursor = self.windows.focused().cursor;
+        let (start, end) = order(anchor, cursor);
+        for _ in start.line..end.line {
+            self.windows.focused_mut().cursor.line = start.line;
+            self.join_lines(true);
+        }
+        self.mode = kjxlkj_core_types::Mode::Normal;
+        self.clamp_cursor();
+        self.ensure_cursor_visible();
+    }
+
+    /// = in visual mode: reindent selected lines.
+    pub(crate) fn visual_reindent(&mut self, _kind: VisualKind) {
+        let anchor = match self.visual_anchor.take() {
+            Some(a) => a,
+            None => { self.mode = kjxlkj_core_types::Mode::Normal; return; }
+        };
+        let cursor = self.windows.focused().cursor;
+        let (start, end) = order(anchor, cursor);
+        self.reindent_lines(start.line, end.line);
+        self.mode = kjxlkj_core_types::Mode::Normal;
+        self.windows.focused_mut().cursor = start;
+        self.clamp_cursor();
+        self.ensure_cursor_visible();
+    }
 }

@@ -16,6 +16,8 @@ impl EditorState {
         if let Some(reg_name) = self.pending_register.take() {
             let name = RegisterName::Named(reg_name);
             self.registers.set(name, Register::new(content, linewise));
+            // Sync to macro store so @{reg} plays this text.
+            self.sync_register_to_macro(reg_name);
         } else {
             self.registers.set_unnamed(content, linewise);
         }
@@ -26,6 +28,7 @@ impl EditorState {
         if let Some(reg_name) = self.pending_register.take() {
             let name = RegisterName::Named(reg_name);
             self.registers.set(name, Register::new(content, linewise));
+            self.sync_register_to_macro(reg_name);
         } else {
             for i in (2..=9u8).rev() {
                 let prev = RegisterName::Numbered(i - 1);

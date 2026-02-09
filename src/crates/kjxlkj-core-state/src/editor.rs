@@ -87,6 +87,18 @@ pub struct EditorState {
         CursorPosition,
         kjxlkj_core_types::VisualKind,
     )>,
+    /// Pending substitute confirmation: (pattern, replacement, global, line_indices_remaining).
+    pub(crate) sub_confirm: Option<SubConfirmState>,
+}
+
+/// State for :s///c confirmation dialog.
+#[derive(Debug, Clone)]
+pub struct SubConfirmState {
+    pub pattern: String,
+    pub replacement: String,
+    pub global: bool,
+    pub lines: Vec<usize>,
+    pub current_line_idx: usize,
 }
 
 impl EditorState {
@@ -138,6 +150,7 @@ impl EditorState {
             insert_register_pending: false,
             visual_replace_pending: false,
             last_visual: None,
+            sub_confirm: None,
         }
     }
 
@@ -148,5 +161,10 @@ impl EditorState {
         self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
         self.alternate_buffer = Some(prev);
         self.parse_modeline();
+        // Detect filetype from extension.
+        if let Some(ft) = crate::config_loader::detect_filetype(path) {
+            self.options
+                .set("filetype", crate::options::OptionValue::Str(ft.to_string()));
+        }
     }
 }

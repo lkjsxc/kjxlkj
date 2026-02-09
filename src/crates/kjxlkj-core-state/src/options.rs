@@ -53,6 +53,7 @@ impl OptionStore {
         self.set("scrolloff", OptionValue::Int(0));
         self.set("textwidth", OptionValue::Int(79));
         self.set("formatoptions", OptionValue::Str("tcq".to_string()));
+        self.set("filetype", OptionValue::Str(String::new()));
     }
 
     /// Set an option value.
