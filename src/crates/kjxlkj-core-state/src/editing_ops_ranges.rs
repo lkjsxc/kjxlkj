@@ -70,6 +70,7 @@ impl EditorState {
             Operator::Format => {
                 self.format_lines(start.line, end.line);
             }
+            Operator::FormatKeepCursor => { let c = self.windows.focused().cursor; self.format_lines(start.line, end.line); self.windows.focused_mut().cursor = c; }
             _ => {}
         }
     }
@@ -111,6 +112,7 @@ impl EditorState {
             Operator::ToggleCase => self.toggle_case_lines(start, end),
             Operator::Rot13 => self.rot13_lines(start, end),
             Operator::Format => self.format_lines(start, end),
+            Operator::FormatKeepCursor => { let c = self.windows.focused().cursor; self.format_lines(start, end); self.windows.focused_mut().cursor = c; }
             _ => {}
         }
     }

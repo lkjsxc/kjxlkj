@@ -117,12 +117,9 @@ impl EditorState {
                     self.notify_info(&format!("Opening: {path}"));
                 }
             }
-            _ if rest.starts_with("b ") => {
-                let arg = rest.split_once(' ').map(|x| x.1).unwrap_or("");
-                if let Ok(n) = arg.trim().parse::<u64>() {
-                    self.buffers.switch_to(kjxlkj_core_types::BufferId(n));
-                }
-            }
+            _ if rest.starts_with("b ") => { if let Ok(n) = rest[2..].trim().parse::<u64>() { self.buffers.switch_to(kjxlkj_core_types::BufferId(n)); } }
+            _ if rest.starts_with("echo ") || rest == "echo" => { let msg = rest.strip_prefix("echo").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
+            _ if rest.starts_with("echon ") => { let msg = rest.strip_prefix("echon ").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
             _ if rest.starts_with("echoerr ") => { let msg = rest.strip_prefix("echoerr ").unwrap().trim().trim_matches('"'); self.notify_error(msg); }
             _ if rest.starts_with("throw ") => { let msg = rest.strip_prefix("throw ").unwrap().trim().trim_matches('"'); self.last_error = Some(msg.to_string()); self.notify_error(&format!("E605: Exception: {msg}")); }
             _ if super::ex_map::is_map_command(rest) => self.handle_map_command(rest),

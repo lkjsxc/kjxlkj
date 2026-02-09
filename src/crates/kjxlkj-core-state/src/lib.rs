@@ -53,7 +53,7 @@ mod ex_parse_tests;
 mod ex_scripting;
 mod ex_session_cmds;
 mod ex_sort;
-mod ex_substitute;
+pub mod ex_substitute;
 mod ex_substitute_confirm;
 pub(crate) mod expr_eval;
 pub(crate) mod expr_string_funcs;
@@ -144,6 +144,7 @@ mod wave25_tests;
 mod wave26_tests;
 mod wave27_tests;
 mod wave28_tests;
+mod wave29_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

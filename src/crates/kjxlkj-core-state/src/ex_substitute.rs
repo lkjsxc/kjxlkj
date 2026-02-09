@@ -5,6 +5,26 @@ use crate::ex_parse_substitute::parse_substitute;
 use crate::ex_substitute_confirm::{count_via_regex, substitute_line_regex};
 use crate::regex_translate::compile_vim_pattern;
 
+/// Translate Vim replacement syntax to Rust regex replacement syntax.
+/// `\1`-`\9` → `$1`-`$9`, `\0` or `&` → `$0`, `\n` → newline, `\t` → tab.
+#[rustfmt::skip]
+pub fn translate_vim_replacement(rep: &str) -> String {
+    let mut out = String::with_capacity(rep.len());
+    let mut chars = rep.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '\\' {
+            match chars.next() {
+                Some(d) if d.is_ascii_digit() => { out.push('$'); out.push(d); }
+                Some('n') => out.push('\n'), Some('t') => out.push('\t'),
+                Some('r') => out.push('\r'), Some(o) => { out.push('\\'); out.push(o); }
+                None => out.push('\\'),
+            }
+        } else if c == '&' { out.push_str("$0"); }
+        else { out.push(c); }
+    }
+    out
+}
+
 impl EditorState {
     pub(crate) fn execute_substitute(&mut self, input: &str, range: ExRange) {
         let sub_cmd = match parse_substitute(input) {
@@ -37,6 +57,7 @@ impl EditorState {
         }
         let case_sensitive = !sub_cmd.case_insensitive;
         let re = compile_vim_pattern(&sub_cmd.pattern, case_sensitive);
+        let replacement = translate_vim_replacement(&sub_cmd.replacement);
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get_mut(buf_id) {
@@ -47,7 +68,7 @@ impl EditorState {
             for line_idx in range.start..=end {
                 let ls: String = buf.content.line(line_idx).chars().collect();
                 let new = substitute_line_regex(
-                    &ls, &sub_cmd.pattern, &sub_cmd.replacement,
+                    &ls, &sub_cmd.pattern, &replacement,
                     sub_cmd.global, re.as_ref(),
                 );
                 if new != ls {

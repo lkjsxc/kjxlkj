@@ -183,6 +183,7 @@ impl EditorState {
             Operator::Lowercase => self.lowercase_lines(start, end),
             Operator::Uppercase => self.uppercase_lines(start, end),
             Operator::Format => self.format_lines(start, end),
+            Operator::FormatKeepCursor => { let c = self.windows.focused().cursor; self.format_lines(start, end); self.windows.focused_mut().cursor = c; }
             Operator::Reindent => self.reindent_lines(start, end),
             _ => {}
         }

@@ -90,10 +90,8 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                     Some('o') => { chars.next(); let s = collect_oct(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 8) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }
                     _ => { out.push_str("\\%"); }
                 },
-                Some(other) => {
-                    out.push('\\');
-                    out.push(other);
-                }
+                // \1-\9 backreferences pass through directly to Rust regex.
+                Some(other) => { out.push('\\'); out.push(other); }
                 None => out.push('\\'),
             }
         } else {

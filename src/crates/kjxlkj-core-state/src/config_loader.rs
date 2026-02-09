@@ -69,6 +69,9 @@ impl EditorState {
         self.options.set("shiftwidth", OptionValue::Int(sw));
         self.options.set("tabstop", OptionValue::Int(ts));
         self.options.set("expandtab", OptionValue::Bool(et));
+        if let Some(cs) = commentstring_for_filetype(filetype) {
+            self.options.set("commentstring", OptionValue::Str(cs.into()));
+        }
     }
 
     /// Try to auto-restore a session: load Session.vim if present in cwd.
@@ -146,6 +149,20 @@ fn dirs_config(sub: &str) -> Option<String> {
         .ok()
         .or_else(|| std::env::var("HOME").ok().map(|h| format!("{}/.config", h)))
         .map(|base| format!("{}/{}", base, sub))
+}
+
+/// Returns the commentstring for a given filetype (format: `// %s`, `# %s`, etc.).
+#[rustfmt::skip]
+pub fn commentstring_for_filetype(ft: &str) -> Option<&'static str> {
+    Some(match ft {
+        "rust" | "c" | "cpp" | "java" | "javascript" | "typescript" | "go" | "dart" |
+        "swift" | "kotlin" | "zig" | "css" | "typescriptreact" | "javascriptreact" => "// %s",
+        "python" | "ruby" | "sh" | "yaml" | "toml" | "elixir" | "r" | "julia" | "csv" => "# %s",
+        "lua" | "haskell" | "sql" => "-- %s",
+        "vim" => "\" %s", "lisp" | "clojure" => "; %s",
+        "html" | "xml" => "<!-- %s -->", "erlang" | "ocaml" => "(* %s *)",
+        _ => return None,
+    })
 }
 
 /// Detect filetype from a file path based on extension.

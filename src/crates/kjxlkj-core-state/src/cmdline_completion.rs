@@ -182,11 +182,11 @@ pub(crate) fn fuzzy_matches(needle: &str, haystack: &str) -> bool {
     true
 }
 
-/// Filter command list by fuzzy matching.
+/// Filter command list by fuzzy matching, ranked by score (highest first).
+#[rustfmt::skip]
 fn fuzzy_filter(needle: &str, commands: &[&str]) -> Vec<String> {
-    commands
-        .iter()
-        .filter(|c| fuzzy_matches(needle, c))
-        .map(|c| c.to_string())
-        .collect()
+    use crate::cmdline_completion_ctx::fuzzy_score;
+    let mut scored: Vec<_> = commands.iter().filter_map(|c| fuzzy_score(needle, c).map(|s| (s, c.to_string()))).collect();
+    scored.sort_by(|a, b| b.0.cmp(&a.0));
+    scored.into_iter().map(|(_, c)| c).collect()
 }

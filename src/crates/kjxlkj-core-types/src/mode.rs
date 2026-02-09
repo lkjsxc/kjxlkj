@@ -57,6 +57,7 @@ pub enum Operator {
     Dedent,
     Reindent,
     Format,
+    FormatKeepCursor,
     Lowercase,
     Uppercase,
     ToggleCase,

@@ -125,6 +125,9 @@ impl NormalDispatch {
             'q' => KeyDispatchResult::Action(Action::EnterOperatorPending(
                 kjxlkj_core_types::Operator::Format,
             )),
+            'w' => KeyDispatchResult::Action(Action::EnterOperatorPending(
+                kjxlkj_core_types::Operator::FormatKeepCursor,
+            )),
             'u' => KeyDispatchResult::Action(Action::EnterOperatorPending(
                 kjxlkj_core_types::Operator::Lowercase,
             )),

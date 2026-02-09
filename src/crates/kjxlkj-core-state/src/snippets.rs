@@ -96,13 +96,10 @@ impl SnippetSession {
     }
     /// Advance to next tab-stop. Returns true if there is a next stop.
     pub fn advance(&mut self) -> bool {
-        if self.current + 1 < self.stops.len() {
-            self.current += 1;
-            true
-        } else {
-            false
-        }
+        if self.current + 1 < self.stops.len() { self.current += 1; true } else { false }
     }
+    /// Returns true when at or past the final tab-stop ($0).
+    pub fn is_finished(&self) -> bool { self.current + 1 >= self.stops.len() }
 }
 
 /// Parse tab-stop markers ($0-$9, ${0}-${9}, ${N:default}) from body text.

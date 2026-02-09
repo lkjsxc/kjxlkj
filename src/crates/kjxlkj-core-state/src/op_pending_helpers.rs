@@ -17,6 +17,7 @@ pub(crate) fn is_doubled(op: Operator, key: &Key) -> bool {
             | (Operator::Dedent, KeyCode::Char('<'))
             | (Operator::Reindent, KeyCode::Char('='))
             | (Operator::Format, KeyCode::Char('q'))
+            | (Operator::FormatKeepCursor, KeyCode::Char('w'))
             | (Operator::Lowercase, KeyCode::Char('u'))
             | (Operator::Uppercase, KeyCode::Char('U'))
     )
