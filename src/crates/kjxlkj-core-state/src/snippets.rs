@@ -109,6 +109,7 @@ impl SnippetSession {
 }
 
 /// Parse tab-stop markers ($0-$9, ${0}-${9}, ${N:default}) from body text.
+/// Supports nested placeholders: ${1:outer ${2:inner}}.
 /// Duplicate stop numbers create mirror positions.
 /// Returns (stripped_text, sorted_offsets_for_stops_1_through_9_then_0).
 fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
@@ -116,47 +117,45 @@ fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
     let mut stops: Vec<(u8, usize)> = Vec::new();
     let mut defaults: std::collections::HashMap<u8, String> = std::collections::HashMap::new();
     let mut chars = body.chars().peekable();
+    parse_tab_stops_inner(&mut chars, &mut out, &mut stops, &mut defaults, false);
+    // Sort: $1, $2, ... $9, then $0 (end position).
+    stops.sort_by_key(|&(n, _)| if n == 0 { 10 } else { n });
+    let offsets = stops.into_iter().map(|(_, off)| off).collect();
+    (out, offsets)
+}
+
+#[rustfmt::skip]
+fn parse_tab_stops_inner(
+    chars: &mut std::iter::Peekable<std::str::Chars<'_>>,
+    out: &mut String, stops: &mut Vec<(u8, usize)>,
+    defaults: &mut std::collections::HashMap<u8, String>, nested: bool,
+) {
     while let Some(c) = chars.next() {
+        if nested && c == '}' { return; }
         if c == '$' {
             if let Some(&d) = chars.peek() {
                 if d.is_ascii_digit() {
-                    chars.next();
-                    let num = d as u8 - b'0';
-                    // Mirror: if this stop was seen with a default, insert default text here too
-                    if let Some(def) = defaults.get(&num) {
-                        let offset = out.len();
-                        out.push_str(def);
-                        stops.push((num, offset));
-                    } else {
-                        stops.push((num, out.len()));
-                    }
+                    chars.next(); let num = d as u8 - b'0';
+                    if let Some(def) = defaults.get(&num) { let offset = out.len(); out.push_str(def); stops.push((num, offset)); }
+                    else { stops.push((num, out.len())); }
                     continue;
                 }
                 if d == '{' {
                     chars.next();
                     if let Some(&n) = chars.peek() {
                         if n.is_ascii_digit() {
-                            chars.next();
-                            let stop_num = n as u8 - b'0';
-                            let offset = out.len();
+                            chars.next(); let stop_num = n as u8 - b'0'; let offset = out.len();
                             if chars.peek() == Some(&':') {
                                 chars.next();
-                                let mut def_text = String::new();
-                                while let Some(&pc) = chars.peek() {
-                                    if pc == '}' { chars.next(); break; }
-                                    def_text.push(pc); chars.next();
-                                }
-                                defaults.insert(stop_num, def_text.clone());
-                                out.push_str(&def_text);
+                                let before_len = out.len();
+                                parse_tab_stops_inner(chars, out, stops, defaults, true);
+                                let def_text: String = out[before_len..].to_string();
+                                defaults.insert(stop_num, def_text);
                             } else if chars.peek() == Some(&'}') {
                                 chars.next();
-                                // Mirror reference: insert default from earlier definition
-                                if let Some(def) = defaults.get(&stop_num) {
-                                    out.push_str(def);
-                                }
+                                if let Some(def) = defaults.get(&stop_num) { out.push_str(def); }
                             }
-                            stops.push((stop_num, offset));
-                            continue;
+                            stops.push((stop_num, offset)); continue;
                         }
                     }
                 }
@@ -164,8 +163,4 @@ fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
         }
         out.push(c);
     }
-    // Sort: $1, $2, ... $9, then $0 (end position).
-    stops.sort_by_key(|&(n, _)| if n == 0 { 10 } else { n });
-    let offsets = stops.into_iter().map(|(_, off)| off).collect();
-    (out, offsets)
 }

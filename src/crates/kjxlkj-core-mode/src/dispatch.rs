@@ -166,7 +166,7 @@ impl NormalDispatch {
             'x' => KeyDispatchResult::Action(Action::DeleteChar(count)),
             'X' => KeyDispatchResult::Action(Action::DeleteCharBack(count)),
             'J' => KeyDispatchResult::Action(Action::JoinLines),
-            'K' => KeyDispatchResult::Action(Action::LookupKeyword),
+            'K' => KeyDispatchResult::Action(Action::LookupKeyword(count)),
             '~' => KeyDispatchResult::Action(Action::ToggleCase),
             ';' => KeyDispatchResult::Action(Action::RepeatFindChar),
             ',' => KeyDispatchResult::Action(Action::RepeatFindCharReverse),

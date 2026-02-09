@@ -46,6 +46,8 @@ fn eval_arithmetic(expr: &str) -> Result<String, String> {
         return Ok(format!("{res}"));
     }
     if expr.starts_with('(') && expr.ends_with(')') { return eval_arithmetic(&expr[1..expr.len() - 1]); }
+    // Try builtin function calls within arithmetic (e.g., line("."))
+    if let Some(r) = try_builtin_function(expr, &std::collections::HashMap::new()) { return r; }
     pi64(expr).map(|_| expr.to_string())
 }
 fn pi64(s: &str) -> Result<i64, String> { s.trim().parse().map_err(|_| format!("Invalid number: {s}")) }
@@ -125,6 +127,14 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
             Some(Ok(if d.contains(&format!("\"{}\":", k)) || d.contains(&format!("\"{}\" :", k)) { "1" } else { "0" }.into()))
         }
         "function" => Some(Ok(arg.trim().trim_matches('"').to_string())),
+        "keys" => {
+            let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            Some(Ok(extract_dict_keys(&v)))
+        }
+        "values" => {
+            let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            Some(Ok(extract_dict_values(&v)))
+        }
         _ => None,
     }
 }
@@ -140,6 +150,28 @@ fn extract_dict_value(dict: &str, key: &str) -> String {
             after.split(&[',', '}'][..]).next().unwrap_or("").trim().to_string()
         }
     } else { String::new() }
+}
+
+/// Extract all keys from a JSON-ish dict as a list string.
+fn extract_dict_keys(dict: &str) -> String {
+    let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
+    let keys: Vec<&str> = inner.split(',').filter_map(|pair| {
+        let kv: Vec<&str> = pair.splitn(2, ':').collect();
+        if kv.is_empty() { return None; }
+        Some(kv[0].trim().trim_matches('"'))
+    }).filter(|k| !k.is_empty()).collect();
+    format!("[{}]", keys.iter().map(|k| format!("\"{}\"", k)).collect::<Vec<_>>().join(","))
+}
+
+/// Extract all values from a JSON-ish dict as a list string.
+fn extract_dict_values(dict: &str) -> String {
+    let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
+    let vals: Vec<&str> = inner.split(',').filter_map(|pair| {
+        let kv: Vec<&str> = pair.splitn(2, ':').collect();
+        if kv.len() < 2 { return None; }
+        Some(kv[1].trim())
+    }).collect();
+    format!("[{}]", vals.join(","))
 }
 
 #[cfg(test)]

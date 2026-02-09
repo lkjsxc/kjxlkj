@@ -124,7 +124,7 @@ impl EditorState {
         let buf_id = buffers.create_scratch();
         let windows = WindowTree::new(buf_id);
 
-        Self {
+        let mut editor = Self {
             buffers,
             windows,
             mode: Mode::Normal,
@@ -171,7 +171,9 @@ impl EditorState {
             sub_confirm: None,
             functions: crate::user_functions::FunctionRegistry::new(),
             function_body_acc: None,
-        }
+        };
+        editor.load_viminfo_file();
+        editor
     }
 
     /// Open file content into a buffer and display it.

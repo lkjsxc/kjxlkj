@@ -136,13 +136,9 @@ impl EditorState {
     }
 
     fn append_readonly_regs(&self, lines: &mut Vec<String>) {
-        if let Some(p) = self.buffers.get(self.current_buffer_id()).and_then(|b| b.path.as_ref()) {
-            lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40)));
-        }
+        if let Some(p) = self.buffers.get(self.current_buffer_id()).and_then(|b| b.path.as_ref()) { lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40))); }
         if !self.last_ex_command.is_empty() { lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40))); }
-        if let Some(ref pat) = self.search.pattern {
-            if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); }
-        }
+        if let Some(ref pat) = self.search.pattern { if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); } }
     }
 
     /// Handle `:call FuncName(args)`. Returns value if `:return` used.
@@ -153,7 +149,9 @@ impl EditorState {
         let name = rest[..paren].trim();
         let close = rest.rfind(')').unwrap_or(rest.len());
         let arg_str = rest[paren + 1..close].trim();
-        let (body, params) = if let Some(f) = self.functions.get(name) { (f.body.clone(), f.params.clone()) } else { self.notify_error(&format!("E117: Unknown function: {name}")); return None; };
+        // Autoload resolution: name#func → look up "func" from autoload/name.vim
+        let resolved_name = if name.contains('#') { name.rsplit('#').next().unwrap_or(name) } else { name };
+        let (body, params) = if let Some(f) = self.functions.get(resolved_name).or_else(|| self.functions.get(name)) { (f.body.clone(), f.params.clone()) } else { self.notify_error(&format!("E117: Unknown function: {name}")); return None; };
         let args: Vec<String> = if arg_str.is_empty() { Vec::new() } else { arg_str.split(',').map(|s| s.trim().trim_matches('"').to_string()).collect() };
         for (i, p) in params.iter().enumerate() { let val = args.get(i).cloned().unwrap_or_default(); self.options.set(&format!("a:{p}"), crate::options::OptionValue::Str(val)); }
         let mut ret_val = None;

@@ -98,7 +98,7 @@ mod tests {
         let mut ed = editor_with("hello world");
         // Set a non-existent program to exercise error path
         ed.options.set("keywordprg", crate::options::OptionValue::Str("__nonexistent_kp__".into()));
-        ed.handle_keyword_lookup();
+        ed.handle_keyword_lookup(1);
         let notif = ed.notifications.last();
         assert!(notif.is_some(), "should have notification about keyword lookup");
     }

@@ -12,8 +12,48 @@ impl EditorState {
         match cmd {
             "set" => self.build_option_candidates(),
             "b" | "buffer" | "bdelete" => self.build_buffer_candidates(),
+            "mark" | "delmarks" => self.build_mark_candidates(),
+            "reg" | "registers" => self.build_register_candidates(),
+            "help" => self.build_help_candidates(),
             _ => self.build_file_candidates(),
         }
+    }
+
+    /// Build mark name candidates for :mark/:delmarks completion.
+    fn build_mark_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let mut matches: Vec<String> = Vec::new();
+        for c in 'a'..='z' { let s = c.to_string(); if s.starts_with(partial) || partial.is_empty() { matches.push(s); } }
+        for c in 'A'..='Z' { let s = c.to_string(); if s.starts_with(partial) || partial.is_empty() { matches.push(s); } }
+        if matches.is_empty() { return; }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
+    }
+
+    /// Build register name candidates for :reg completion.
+    fn build_register_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let mut matches: Vec<String> = Vec::new();
+        matches.push("\"".to_string());
+        for c in 'a'..='z' { matches.push(c.to_string()); }
+        for i in 0..=9u8 { matches.push(i.to_string()); }
+        for s in &[".", "%", "#", ":", "/"] { matches.push(s.to_string()); }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
+    }
+
+    /// Build help topic candidates.
+    fn build_help_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let topics = ["insert", "normal", "visual", "ex", "pattern", "map", "set", "autocmd", "function", "syntax", "options", "registers", "marks", "motion", "change", "undo"];
+        let matches: Vec<String> = topics.iter().filter(|t| t.starts_with(partial) || partial.is_empty()).map(|t| t.to_string()).collect();
+        if matches.is_empty() { return; }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
     }
 
     /// Build option-name candidates for :set completion.

@@ -172,8 +172,8 @@ pub enum Action {
     // -- Register --
     SelectRegister(char),
 
-    /// Look up keyword under cursor using keywordprg.
-    LookupKeyword,
+    /// Look up keyword under cursor using keywordprg. Count acts as section argument.
+    LookupKeyword(usize),
 
     // -- Noop --
     Noop,

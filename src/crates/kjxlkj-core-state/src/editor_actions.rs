@@ -8,22 +8,12 @@ impl EditorState {
     pub fn handle_action(&mut self, action: Action) {
         match action {
             Action::Quit => {
-                if self.has_unsaved_buffers() {
-                    self.notify_error("Unsaved buffers. Use :q! to force quit.");
-                } else {
-                    self.quit_requested = true;
-                }
+                if self.has_unsaved_buffers() { self.notify_error("Unsaved buffers. Use :q! to force quit."); }
+                else { self.save_viminfo(); self.quit_requested = true; }
             }
-            Action::ForceQuit => {
-                self.quit_requested = true;
-            }
-            Action::WriteQuit => {
-                self.write_current_buffer();
-                self.quit_requested = true;
-            }
-            Action::Resize(cols, rows) => {
-                self.terminal_size = (cols, rows);
-            }
+            Action::ForceQuit => { self.save_viminfo(); self.quit_requested = true; }
+            Action::WriteQuit => { self.write_current_buffer(); self.save_viminfo(); self.quit_requested = true; }
+            Action::Resize(cols, rows) => { self.terminal_size = (cols, rows); }
             Action::Paste(text) => self.insert_text(&text),
             Action::MoveUp(n) => self.move_cursor_up(n),
             Action::MoveDown(n) => self.move_cursor_down(n),
@@ -136,19 +126,21 @@ impl EditorState {
             Action::JumpNewer => self.jump_newer(),
             Action::DotRepeat => {}
             Action::VisualReselect => self.restore_last_visual(),
-            Action::LookupKeyword => self.handle_keyword_lookup(),
+            Action::LookupKeyword(count) => self.handle_keyword_lookup(count),
             _ => {}
         }
     }
 
-    /// Handle K command: look up keyword under cursor with keywordprg.
-    pub(crate) fn handle_keyword_lookup(&mut self) {
+    /// Handle K command: look up keyword under cursor with keywordprg. Count = section.
+    pub(crate) fn handle_keyword_lookup(&mut self, count: usize) {
         let word = self.word_under_cursor();
         if word.is_empty() { return self.notify_error("E349: No identifier under cursor"); }
         let prg = self.options.get_str("keywordprg").to_string();
         let prg = if prg.is_empty() { "man".to_string() } else { prg };
         use std::process::Command;
-        match Command::new(&prg).arg(&word).output() {
+        let mut cmd = Command::new(&prg);
+        if count > 1 { cmd.arg(format!("{count}")); }
+        match cmd.arg(&word).output() {
             Ok(out) => {
                 let text = String::from_utf8_lossy(&out.stdout);
                 let first_line = text.lines().next().unwrap_or("(no output)");
@@ -176,4 +168,29 @@ impl EditorState {
         }
         String::new()
     }
+
+    /// Save global marks to viminfo file on exit.
+    pub(crate) fn save_viminfo(&self) {
+        let viminfo_path = self.viminfo_path();
+        let data = self.marks.serialize_viminfo();
+        let _ = std::fs::create_dir_all(viminfo_path.parent().unwrap_or(std::path::Path::new(".")));
+        let _ = std::fs::write(&viminfo_path, data);
+    }
+
+    /// Load global marks from viminfo file on startup.
+    pub(crate) fn load_viminfo_file(&mut self) {
+        let path = self.viminfo_path();
+        if let Ok(data) = std::fs::read_to_string(&path) { self.marks.load_viminfo(&data); }
+    }
+
+    /// Get the viminfo file path.
+    fn viminfo_path(&self) -> std::path::PathBuf {
+        let viminfo = self.options.get_str("viminfofile").to_string();
+        if !viminfo.is_empty() { std::path::PathBuf::from(viminfo) }
+        else { dirs_or_default().join(".viminfo") }
+    }
+}
+
+fn dirs_or_default() -> std::path::PathBuf {
+    std::env::var("HOME").map(std::path::PathBuf::from).unwrap_or_else(|_| std::path::PathBuf::from("."))
 }
