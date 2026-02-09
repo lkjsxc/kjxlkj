@@ -129,10 +129,10 @@ impl EditorState {
             }
             (Mode::Insert, Mode::Normal) => {
                 self.buffers.current_mut().undo_tree.end_group();
-                if let Some((sl, el, _col, at_end)) = self.block_insert_pending.take() {
+                if let Some((sl, el, col, at_end)) = self.block_insert_pending.take() {
                     let text = self.last_inserted_text.clone();
-                    let s = kjxlkj_core_types::CursorPosition::new(sl, 0);
-                    let e = kjxlkj_core_types::CursorPosition::new(el, 0);
+                    let s = kjxlkj_core_types::CursorPosition::new(sl, col);
+                    let e = kjxlkj_core_types::CursorPosition::new(el, col);
                     self.visual_block_insert(&text, s, e, at_end);
                 }
                 let cursor = self.windows.focused().cursor;

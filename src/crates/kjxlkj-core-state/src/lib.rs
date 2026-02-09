@@ -94,6 +94,7 @@ pub mod session;
 #[cfg(test)]
 mod session_tests;
 pub mod snippets;
+pub mod spell;
 pub(crate) mod text_objects;
 pub(crate) mod text_objects_argument;
 pub(crate) mod text_objects_class;
@@ -145,6 +146,8 @@ mod wave26_tests;
 mod wave27_tests;
 mod wave28_tests;
 mod wave29_tests;
+#[cfg(test)]
+mod wave30_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

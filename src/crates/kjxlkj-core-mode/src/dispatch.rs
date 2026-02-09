@@ -116,24 +116,19 @@ impl NormalDispatch {
         KeyDispatchResult::Unhandled
     }
 
+    #[rustfmt::skip]
     fn dispatch_g(c: char, count: usize) -> KeyDispatchResult {
+        use kjxlkj_core_types::Operator as Op;
         match c {
             'g' => KeyDispatchResult::Action(Action::MoveToTop),
             'j' => KeyDispatchResult::Action(Action::MoveDown(count)),
             'k' => KeyDispatchResult::Action(Action::MoveUp(count)),
             'v' => KeyDispatchResult::Action(Action::VisualReselect),
-            'q' => KeyDispatchResult::Action(Action::EnterOperatorPending(
-                kjxlkj_core_types::Operator::Format,
-            )),
-            'w' => KeyDispatchResult::Action(Action::EnterOperatorPending(
-                kjxlkj_core_types::Operator::FormatKeepCursor,
-            )),
-            'u' => KeyDispatchResult::Action(Action::EnterOperatorPending(
-                kjxlkj_core_types::Operator::Lowercase,
-            )),
-            'U' => KeyDispatchResult::Action(Action::EnterOperatorPending(
-                kjxlkj_core_types::Operator::Uppercase,
-            )),
+            'q' => KeyDispatchResult::Action(Action::EnterOperatorPending(Op::Format)),
+            'w' => KeyDispatchResult::Action(Action::EnterOperatorPending(Op::FormatKeepCursor)),
+            'u' => KeyDispatchResult::Action(Action::EnterOperatorPending(Op::Lowercase)),
+            'U' => KeyDispatchResult::Action(Action::EnterOperatorPending(Op::Uppercase)),
+            '?' => KeyDispatchResult::Action(Action::EnterOperatorPending(Op::Rot13)),
             ';' => KeyDispatchResult::Action(Action::ChangelistOlder),
             ',' => KeyDispatchResult::Action(Action::ChangelistNewer),
             '\'' | '`' => KeyDispatchResult::Action(Action::JumpFromMarkStack),

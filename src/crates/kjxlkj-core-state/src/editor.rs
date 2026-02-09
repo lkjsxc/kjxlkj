@@ -100,25 +100,19 @@ pub struct EditorState {
     pub(crate) autosave_counter: usize,
     /// Macro debug stepping state: remaining keys from `:debug @{reg}`.
     pub(crate) macro_step_keys: Option<Vec<Key>>,
+    /// Spell checking service.
+    pub spell: crate::spell::SpellChecker,
+    /// True if expression register = prompt was opened from insert mode.
+    pub(crate) expr_from_insert: bool,
 }
 
-/// Accumulator for f multi-line `function!`/`endfunction` blocks.
+/// Accumulator for multi-line `function!`/`endfunction` blocks.
 #[derive(Debug, Clone)]
-pub struct FunctionBodyAcc {
-    pub name: String,
-    pub params: Vec<String>,
-    pub body: Vec<String>,
-}
+pub struct FunctionBodyAcc { pub name: String, pub params: Vec<String>, pub body: Vec<String> }
 
 /// State for :s///c confirmation dialog.
 #[derive(Debug, Clone)]
-pub struct SubConfirmState {
-    pub pattern: String,
-    pub replacement: String,
-    pub global: bool,
-    pub lines: Vec<usize>,
-    pub current_line_idx: usize,
-}
+pub struct SubConfirmState { pub pattern: String, pub replacement: String, pub global: bool, pub lines: Vec<usize>, pub current_line_idx: usize }
 
 impl EditorState {
     /// Create a new editor with an initial scratch buffer.
@@ -178,6 +172,8 @@ impl EditorState {
             function_body_acc: None,
             autosave_counter: 0,
             macro_step_keys: None,
+            spell: crate::spell::SpellChecker::new(),
+            expr_from_insert: false,
         };
         editor.load_viminfo_file();
         editor

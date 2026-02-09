@@ -87,30 +87,25 @@ impl EditorState {
                 // Context-aware completion after a space.
                 self.build_arg_candidates();
             } else {
-                // Command name completion (builtin + user-defined).
+                // Command name completion with priority ordering:
+                // 1. Exact prefix (builtin) > 2. Exact prefix (user) > 3. Fuzzy (builtin) > 4. Fuzzy (user).
                 let prefix = content.to_string();
-                let mut matches: Vec<String> = COMMANDS
-                    .iter()
-                    .filter(|c| c.starts_with(&prefix))
-                    .map(|c| c.to_string())
-                    .collect();
-                // Add user-defined commands.
+                let mut pri_matches: Vec<(u8, String)> = Vec::new();
+                for c in COMMANDS.iter() {
+                    if c.starts_with(&prefix) { pri_matches.push((0, c.to_string())); }
+                }
                 for cmd in self.user_commands.list() {
-                    if cmd.name.starts_with(&prefix) {
-                        matches.push(cmd.name.clone());
-                    }
+                    if cmd.name.starts_with(&prefix) { pri_matches.push((1, cmd.name.clone())); }
                 }
-                // Fuzzy fallback if no prefix matches.
-                if matches.is_empty() {
-                    matches = fuzzy_filter(&prefix, COMMANDS);
+                if pri_matches.is_empty() {
+                    for (s, name) in fuzzy_filter_scored(&prefix, COMMANDS) { pri_matches.push((2 + (100 - s.min(100) as u8), name)); }
                     for cmd in self.user_commands.list() {
-                        if fuzzy_matches(&prefix, &cmd.name) {
-                            matches.push(cmd.name.clone());
-                        }
+                        if fuzzy_matches(&prefix, &cmd.name) { pri_matches.push((3, cmd.name.clone())); }
                     }
                 }
-                matches.sort();
-                matches.dedup();
+                pri_matches.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.cmp(&b.1)));
+                pri_matches.dedup_by(|a, b| a.1 == b.1);
+                let matches: Vec<String> = pri_matches.into_iter().map(|(_, n)| n).collect();
                 if matches.is_empty() {
                     return;
                 }
@@ -184,9 +179,16 @@ pub(crate) fn fuzzy_matches(needle: &str, haystack: &str) -> bool {
 
 /// Filter command list by fuzzy matching, ranked by score (highest first).
 #[rustfmt::skip]
+#[allow(dead_code)]
 fn fuzzy_filter(needle: &str, commands: &[&str]) -> Vec<String> {
+    fuzzy_filter_scored(needle, commands).into_iter().map(|(_, c)| c).collect()
+}
+
+/// Filter commands by fuzzy matching, returning (score, name) sorted by score descending.
+#[rustfmt::skip]
+fn fuzzy_filter_scored(needle: &str, commands: &[&str]) -> Vec<(i32, String)> {
     use crate::cmdline_completion_ctx::fuzzy_score;
     let mut scored: Vec<_> = commands.iter().filter_map(|c| fuzzy_score(needle, c).map(|s| (s, c.to_string()))).collect();
     scored.sort_by(|a, b| b.0.cmp(&a.0));
-    scored.into_iter().map(|(_, c)| c).collect()
+    scored
 }

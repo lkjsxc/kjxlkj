@@ -21,6 +21,10 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
     let mut chars = pattern.chars().peekable();
     let mut case_override = None;
     let mut group_starts: Vec<usize> = Vec::new();
+    let mut has_zs = false;
+    let mut has_ze = false;
+    let mut zs_pos: Option<usize> = None;
+    let mut ze_pos: Option<usize> = None;
 
     while let Some(c) = chars.next() {
         if c == '\\' {
@@ -71,6 +75,12 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                 Some('r') => out.push_str("\\r"),
                 Some('c') => case_override = Some(false),
                 Some('C') => case_override = Some(true),
+                // \zs/\ze match bounds: insert capture group markers.
+                Some('z') => match chars.peek() {
+                    Some('s') => { chars.next(); has_zs = true; zs_pos = Some(out.len()); }
+                    Some('e') => { chars.next(); has_ze = true; ze_pos = Some(out.len()); }
+                    _ => out.push_str("\\z"),
+                },
                 // Multi-line class atoms: \_s, \_d, \_w, \_.
                 Some('_') => match chars.next() {
                     Some('s') => out.push_str("[\\s\\n]"),
@@ -106,9 +116,23 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
         }
     }
 
+    // If \zs or \ze used, wrap: (?:prefix)(match)(?:suffix) using capture group 1 for the match bounds.
+    let pattern = if has_zs || has_ze {
+        let zs = zs_pos.unwrap_or(0);
+        let ze = ze_pos.unwrap_or(out.len());
+        let prefix = &out[..zs];
+        let middle = &out[zs..ze];
+        let suffix = &out[ze..];
+        if prefix.is_empty() && suffix.is_empty() { format!("({})", middle) }
+        else if suffix.is_empty() { format!("(?:{})({})", prefix, middle) }
+        else if prefix.is_empty() { format!("({})(?:{})", middle, suffix) }
+        else { format!("(?:{})({})(?:{})", prefix, middle, suffix) }
+    } else { out };
+
     TranslateResult {
-        pattern: out,
+        pattern,
         case_override,
+        has_match_bounds: has_zs || has_ze,
     }
 }
 
@@ -116,6 +140,9 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
 pub struct TranslateResult {
     pub pattern: String,
     pub case_override: Option<bool>,
+    /// If true, the match bounds (\zs/\ze) were used; capture group 1 is the actual match.
+    #[allow(dead_code)]
+    pub has_match_bounds: bool,
 }
 
 #[rustfmt::skip]

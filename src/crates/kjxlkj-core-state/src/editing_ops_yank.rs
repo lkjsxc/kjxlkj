@@ -65,6 +65,7 @@ impl EditorState {
             ':' if !self.last_ex_command.is_empty() => Some(Register::new(self.last_ex_command.clone(), false)),
             '/' if self.search.active => self.search.pattern.as_ref().map(|p| Register::new(p.clone(), false)),
             '.' => self.registers.get(RegisterName::LastInserted).cloned(),
+            '=' => self.registers.get(RegisterName::Expression).cloned(),
             _ => self.registers.get(RegisterName::Named(rn)).cloned(),
         }
     }

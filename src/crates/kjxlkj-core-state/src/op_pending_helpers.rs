@@ -20,6 +20,7 @@ pub(crate) fn is_doubled(op: Operator, key: &Key) -> bool {
             | (Operator::FormatKeepCursor, KeyCode::Char('w'))
             | (Operator::Lowercase, KeyCode::Char('u'))
             | (Operator::Uppercase, KeyCode::Char('U'))
+            | (Operator::Rot13, KeyCode::Char('?'))
     )
 }
 

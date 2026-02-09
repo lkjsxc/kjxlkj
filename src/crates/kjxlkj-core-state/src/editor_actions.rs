@@ -78,7 +78,7 @@ impl EditorState {
             Action::JumpToMark(c) => self.jump_to_mark(c),
             Action::JumpToMarkLine(c) => self.jump_to_mark_line(c),
             Action::JumpFromMarkStack => self.jump_from_mark_stack(),
-            Action::SelectRegister(c) => { self.pending_register = Some(c); }
+            Action::SelectRegister(c) => { if c == '=' { self.mode = Mode::Command(CommandKind::Ex); self.cmdline.open('='); } else { self.pending_register = Some(c); } }
             Action::StartRecording(c) => self.start_recording(c),
             Action::StopRecording => self.stop_recording(),
             Action::PlayMacro(c, count) => self.play_macro(c, count),

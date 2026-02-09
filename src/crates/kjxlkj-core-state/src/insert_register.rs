@@ -18,6 +18,7 @@ impl EditorState {
             // Expression register: open = prompt cmdline.
             self.mode = kjxlkj_core_types::Mode::Command(kjxlkj_core_types::CommandKind::Ex);
             self.cmdline.open('=');
+            self.expr_from_insert = true;
             return;
         }
         // Standard register insertion.

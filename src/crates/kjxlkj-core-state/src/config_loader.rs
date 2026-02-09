@@ -76,9 +76,18 @@ impl EditorState {
 
     /// Try to auto-restore a session: load Session.vim if present in cwd.
     pub fn try_auto_restore_session(&mut self) {
-        let path = "Session.vim";
-        if std::path::Path::new(path).exists() {
-            self.handle_source(path);
+        if std::path::Path::new("Session.vim").exists() { self.handle_source("Session.vim"); }
+    }
+
+    /// Load local vimrc (.exrc) from current directory if `exrc` option is set.
+    /// Also checks for `.vimrc` and `.nvimrc` in cwd.
+    pub fn load_local_exrc(&mut self) {
+        if !self.options.get_bool("exrc") { return; }
+        for name in &[".exrc", ".vimrc", ".nvimrc"] {
+            if std::path::Path::new(name).exists() {
+                self.handle_source(name);
+                return;
+            }
         }
     }
 

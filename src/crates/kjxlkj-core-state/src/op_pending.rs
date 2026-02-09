@@ -185,7 +185,8 @@ impl EditorState {
             Operator::Format => self.format_lines(start, end),
             Operator::FormatKeepCursor => { let c = self.windows.focused().cursor; self.format_lines(start, end); self.windows.focused_mut().cursor = c; }
             Operator::Reindent => self.reindent_lines(start, end),
-            _ => {}
+            Operator::ToggleCase => self.toggle_case_lines(start, end),
+            Operator::Rot13 => self.rot13_lines(start, end),
         }
     }
 }
