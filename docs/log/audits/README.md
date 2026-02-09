@@ -6,6 +6,7 @@ Verification records for structure and compliance checks.
 
 ## Entries
 
+- [wave4-audit-2026-02-10.md](wave4-audit-2026-02-10.md)
 - [oversize-resolution-2026-02-10.md](oversize-resolution-2026-02-10.md)
 - [source-topology-and-oversize-2026-02-09.md](source-topology-and-oversize-2026-02-09.md)
 - [source-topology-and-oversize-2026-02-10.md](source-topology-and-oversize-2026-02-10.md)

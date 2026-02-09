@@ -10,19 +10,19 @@ Core editing grammar and modal behavior wiring.
 
 | ID | Description | Spec Link | Status |
 |---|---|---|---|
-| REQ-OP-01 | Operator + motion composition (d{motion}, c{motion}, y{motion}) | `/docs/spec/editing/operators/operator-grammar.md` | `[ ]` |
-| REQ-OP-02 | Doubled operators (dd, cc, yy, >>, <<, ==) | `/docs/spec/editing/operators/operator-grammar.md` | `[ ]` |
-| REQ-OP-03 | Count multiplication ([count]op[count]motion) | `/docs/spec/editing/operators/operator-grammar.md` | `[ ]` |
-| REQ-VIS-01 | Visual char selection (v) with motions | `/docs/spec/modes/visual.md` | `[ ]` |
-| REQ-VIS-02 | Visual line selection (V) with motions | `/docs/spec/modes/visual.md` | `[ ]` |
-| REQ-VIS-03 | Operators in visual mode (d, c, y, >, <) | `/docs/spec/modes/visual.md` | `[ ]` |
-| REQ-VIS-04 | Visual `o` command (swap anchor/cursor) | `/docs/spec/modes/visual.md` | `[ ]` |
-| REQ-MARK-01 | Set marks with m{char} | `/docs/spec/editing/marks/README.md` | `[ ]` |
-| REQ-MARK-02 | Jump to mark with '{char} and `{char} | `/docs/spec/editing/marks/README.md` | `[ ]` |
-| REQ-REG-01 | Register prefix "{char} before operations | `/docs/spec/editing/registers/README.md` | `[ ]` |
-| REQ-SEARCH-01 | Search navigation with n/N | `/docs/spec/editing/search/README.md` | `[ ]` |
-| REQ-PREFIX-01 | g-prefix commands (gg) | `/docs/spec/editing/motions/motions.md` | `[ ]` |
-| REQ-PREFIX-02 | z-prefix commands (zz, zt, zb) | `/docs/spec/editing/motions/motions.md` | `[ ]` |
+| REQ-OP-01 | Operator + motion composition (d{motion}, c{motion}, y{motion}) | `/docs/spec/editing/operators/operator-grammar.md` | `[x]` |
+| REQ-OP-02 | Doubled operators (dd, cc, yy, >>, <<, ==) | `/docs/spec/editing/operators/operator-grammar.md` | `[x]` |
+| REQ-OP-03 | Count multiplication ([count]op[count]motion) | `/docs/spec/editing/operators/operator-grammar.md` | `[x]` |
+| REQ-VIS-01 | Visual char selection (v) with motions | `/docs/spec/modes/visual.md` | `[x]` |
+| REQ-VIS-02 | Visual line selection (V) with motions | `/docs/spec/modes/visual.md` | `[x]` |
+| REQ-VIS-03 | Operators in visual mode (d, c, y, >, <) | `/docs/spec/modes/visual.md` | `[x]` |
+| REQ-VIS-04 | Visual `o` command (swap anchor/cursor) | `/docs/spec/modes/visual.md` | `[x]` |
+| REQ-MARK-01 | Set marks with m{char} | `/docs/spec/editing/marks/README.md` | `[x]` |
+| REQ-MARK-02 | Jump to mark with '{char} and `{char} | `/docs/spec/editing/marks/README.md` | `[x]` |
+| REQ-REG-01 | Register prefix "{char} before operations | `/docs/spec/editing/registers/README.md` | `[x]` |
+| REQ-SEARCH-01 | Search navigation with n/N | `/docs/spec/editing/search/README.md` | `[x]` |
+| REQ-PREFIX-01 | g-prefix commands (gg) | `/docs/spec/editing/motions/motions.md` | `[x]` |
+| REQ-PREFIX-02 | z-prefix commands (zz, zt, zb) | `/docs/spec/editing/motions/motions.md` | `[x]` |
 
 ## Implementation Plan
 
