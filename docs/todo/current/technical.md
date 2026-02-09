@@ -28,6 +28,18 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] REG-07: CJK cursor never occupies half-cell position
 - [ ] REG-08: Width-2 grapheme at wrap boundary produces padding cell
 
+## Expert-level boundary additions
+
+- [ ] X-PTY-01: Real PTY `:terminal` spawn/output/resize/close lifecycle
+- [ ] X-WIN-01: Spatial window neighbor navigation on non-trivial split graph
+- [ ] X-EXP-01: Explorer toggle/open/split user flow with window focus checks
+- [ ] X-IO-01: Filesystem-backed `:w` and `:e` roundtrip with byte-level assertions
+- [ ] X-SES-01: `:SessionSave`/`:SessionLoad` end-to-end layout restore
+- [ ] X-IME-01: Japanese composition `Space` candidate cycle without leader leakage
+- [ ] X-WRAP-01: Width-2 wrap boundary padding determinism under resize storms
+
+See blueprint: [/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md](/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md)
+
 ## Technical contracts
 
 - [ ] Contracts per [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md)

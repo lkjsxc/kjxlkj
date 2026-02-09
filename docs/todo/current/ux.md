@@ -22,6 +22,7 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 - [ ] Features keybindings per [/docs/spec/ux/keybindings/features.md](/docs/spec/ux/keybindings/features.md)
 - [ ] Advanced keybindings per [/docs/spec/ux/keybindings/advanced.md](/docs/spec/ux/keybindings/advanced.md)
 - [ ] Leader key chords remain reachable (`<leader>e`, `<leader>t`) (REG-03)
+- [ ] Shifted printable key normalization (`Shift+a` -> `A`) per [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
 
 ## Keybinding DSL
 
