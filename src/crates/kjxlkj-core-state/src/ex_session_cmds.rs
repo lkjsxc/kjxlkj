@@ -34,9 +34,19 @@ impl EditorState {
 
     /// Serialize layout tree as session commands.
     fn serialize_layout(&self, node: &kjxlkj_core_types::LayoutNode, lines: &mut Vec<String>) {
-        use kjxlkj_core_types::LayoutNode;
+        use kjxlkj_core_types::{ContentSource, LayoutNode};
         match node {
-            LayoutNode::Leaf(_) => {}
+            LayoutNode::Leaf(wid) => {
+                if let Some(ws) = self.windows.get(*wid) {
+                    if let ContentSource::Buffer(bid) = &ws.content {
+                        if let Some(buf) = self.buffers.get(*bid) {
+                            if let Some(ref p) = buf.path {
+                                lines.push(format!("b {}", p.display()));
+                            }
+                        }
+                    }
+                }
+            }
             LayoutNode::HorizontalSplit { children, .. } => {
                 for (i, child) in children.iter().enumerate() {
                     if i > 0 {

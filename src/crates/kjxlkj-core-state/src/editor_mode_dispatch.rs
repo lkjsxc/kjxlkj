@@ -14,18 +14,34 @@ impl EditorState {
                     self.handle_action(action);
                 }
             }
-            Mode::Insert => match &key.code {
-                kjxlkj_core_types::KeyCode::Char(c) => self.insert_char(*c),
-                kjxlkj_core_types::KeyCode::Enter => self.insert_newline(),
-                kjxlkj_core_types::KeyCode::Backspace => {
-                    self.delete_char_backward();
+            Mode::Insert => {
+                if self.insert_register_pending {
+                    if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
+                        self.handle_insert_register(*c);
+                    } else {
+                        self.insert_register_pending = false;
+                    }
+                    return;
                 }
-                kjxlkj_core_types::KeyCode::Delete => {
-                    self.delete_char_forward();
+                match &key.code {
+                    kjxlkj_core_types::KeyCode::Char(c) => {
+                        if key.modifiers.contains(kjxlkj_core_types::Modifier::CTRL) && *c == 'r' {
+                            self.insert_register_prompt();
+                        } else {
+                            self.insert_char(*c);
+                        }
+                    }
+                    kjxlkj_core_types::KeyCode::Enter => self.insert_newline(),
+                    kjxlkj_core_types::KeyCode::Backspace => {
+                        self.delete_char_backward();
+                    }
+                    kjxlkj_core_types::KeyCode::Delete => {
+                        self.delete_char_forward();
+                    }
+                    kjxlkj_core_types::KeyCode::Tab => self.insert_text("    "),
+                    _ => {}
                 }
-                kjxlkj_core_types::KeyCode::Tab => self.insert_text("    "),
-                _ => {}
-            },
+            }
             Mode::Command(_) => self.dispatch_command_key(key),
             Mode::Replace => {
                 if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {

@@ -55,7 +55,8 @@ impl EditorState {
             self.jumplist.push((bid, c.line, c.grapheme));
         }
         self.jumplist_idx -= 1;
-        let (_, line, col) = self.jumplist[self.jumplist_idx];
+        let (bid, line, col) = self.jumplist[self.jumplist_idx];
+        self.switch_to_buffer_id(bid);
         self.windows.focused_mut().cursor = CursorPosition::new(line, col);
         self.ensure_cursor_visible();
     }
@@ -67,8 +68,21 @@ impl EditorState {
             return;
         }
         self.jumplist_idx += 1;
-        let (_, line, col) = self.jumplist[self.jumplist_idx];
+        let (bid, line, col) = self.jumplist[self.jumplist_idx];
+        self.switch_to_buffer_id(bid);
         self.windows.focused_mut().cursor = CursorPosition::new(line, col);
         self.ensure_cursor_visible();
+    }
+
+    /// Switch the focused window to a buffer by raw buffer ID.
+    fn switch_to_buffer_id(&mut self, bid: usize) {
+        let cur = self.current_buffer_id().0 as usize;
+        if bid != cur {
+            use kjxlkj_core_types::{BufferId, ContentSource};
+            let target = BufferId(bid as u64);
+            if self.buffers.get(target).is_some() {
+                self.windows.focused_mut().content = ContentSource::Buffer(target);
+            }
+        }
     }
 }

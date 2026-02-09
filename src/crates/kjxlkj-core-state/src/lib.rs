@@ -57,6 +57,8 @@ pub(crate) mod expr_eval;
 #[cfg(test)]
 mod findchar_tests;
 mod format_ops;
+mod incsearch;
+mod insert_register;
 pub(crate) mod key_notation;
 mod macros;
 #[cfg(test)]
@@ -89,6 +91,7 @@ pub mod session;
 #[cfg(test)]
 mod session_tests;
 pub(crate) mod text_objects;
+pub(crate) mod text_objects_argument;
 pub(crate) mod text_objects_delim;
 pub(crate) mod text_objects_sentence;
 pub(crate) mod text_objects_tag;
@@ -96,6 +99,7 @@ pub mod user_commands;
 pub mod user_commands_parse;
 #[cfg(test)]
 mod user_commands_tests;
+mod visual_block_insert;
 mod visual_ops;
 #[cfg(test)]
 mod visual_ops_tests;
@@ -104,6 +108,8 @@ mod wave10_tests;
 mod wave11_tests;
 #[cfg(test)]
 mod wave12_tests;
+#[cfg(test)]
+mod wave13_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

@@ -51,7 +51,7 @@ impl EditorState {
     }
 
     #[rustfmt::skip]
-    fn read_special_register(&self, rn: char) -> Option<Register> {
+    pub(crate) fn read_special_register(&self, rn: char) -> Option<Register> {
         match rn {
             '%' => self.buffers.get(self.current_buffer_id())
                 .and_then(|b| b.path.as_ref())

@@ -115,11 +115,13 @@ impl EditorState {
     }
 }
 
-/// Strip `\v` (very magic), `\m` (magic), `\M` (nomagic) prefix.
-/// Returns (pattern, mode) where mode: 'v'=very-magic, 'M'=nomagic, 'm'=magic/literal.
+/// Strip `\v` (very magic), `\m` (magic), `\M` (nomagic), `\V` (very-nomagic).
+/// Returns (pattern, mode): 'v'=very-magic, 'M'=nomagic, 'V'=very-nomagic, 'm'=magic.
 fn strip_magic_prefix(pattern: &str) -> (&str, char) {
     if let Some(rest) = pattern.strip_prefix("\\v") {
         (rest, 'v')
+    } else if let Some(rest) = pattern.strip_prefix("\\V") {
+        (rest, 'V')
     } else if let Some(rest) = pattern.strip_prefix("\\M") {
         (rest, 'M')
     } else if let Some(rest) = pattern.strip_prefix("\\m") {
@@ -149,23 +151,8 @@ fn nomagic_to_literal(pat: &str) -> String {
 fn find_pattern(text: &str, from: usize, pattern: &str, _fwd: bool) -> Option<(usize, usize)> {
     let (pat, mode) = strip_magic_prefix(pattern);
     match mode {
-        'v' => {
-            if let Ok(re) = regex::Regex::new(pat) {
-                if let Some(m) = re.find(&text[from..]) {
-                    return Some((from + m.start(), m.len()));
-                }
-            }
-            None
-        }
-        'M' => {
-            let escaped = nomagic_to_literal(pat);
-            if let Ok(re) = regex::Regex::new(&escaped) {
-                if let Some(m) = re.find(&text[from..]) {
-                    return Some((from + m.start(), m.len()));
-                }
-            }
-            None
-        }
+        'v' => regex_find_fwd(text, from, pat),
+        'M' => regex_find_fwd(text, from, &nomagic_to_literal(pat)),
         _ => text[from..].find(pat).map(|off| (from + off, pat.len())),
     }
 }
@@ -175,21 +162,24 @@ fn rfind_pattern(text: &str, before: usize, pattern: &str) -> Option<(usize, usi
     let (pat, mode) = strip_magic_prefix(pattern);
     let slice = &text[..before.min(text.len())];
     match mode {
-        'v' | 'M' => {
-            let rpat = if mode == 'M' {
-                nomagic_to_literal(pat)
-            } else {
-                pat.to_string()
-            };
-            if let Ok(re) = regex::Regex::new(&rpat) {
-                let mut last = None;
-                for m in re.find_iter(slice) {
-                    last = Some((m.start(), m.len()));
-                }
-                return last;
-            }
-            None
-        }
+        'v' => regex_find_last(slice, pat),
+        'M' => regex_find_last(slice, &nomagic_to_literal(pat)),
         _ => slice.rfind(pat).map(|off| (off, pat.len())),
     }
+}
+
+fn regex_find_fwd(text: &str, from: usize, pat: &str) -> Option<(usize, usize)> {
+    regex::Regex::new(pat)
+        .ok()
+        .and_then(|re| re.find(&text[from..]).map(|m| (from + m.start(), m.len())))
+}
+
+fn regex_find_last(slice: &str, pat: &str) -> Option<(usize, usize)> {
+    regex::Regex::new(pat).ok().and_then(|re| {
+        let mut last = None;
+        for m in re.find_iter(slice) {
+            last = Some((m.start(), m.len()));
+        }
+        last
+    })
 }

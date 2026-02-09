@@ -75,6 +75,10 @@ pub struct EditorState {
     pub(crate) jumplist_idx: usize,
     /// Alternate (previous) buffer id for # register.
     pub(crate) alternate_buffer: Option<kjxlkj_core_types::BufferId>,
+    /// Pending block insert info: (start_line, end_line, col, at_end).
+    pub(crate) block_insert_pending: Option<(usize, usize, usize, bool)>,
+    /// Ctrl-R pressed in insert mode: next char selects register.
+    pub(crate) insert_register_pending: bool,
 }
 
 impl EditorState {
@@ -122,6 +126,8 @@ impl EditorState {
             jumplist: Vec::new(),
             jumplist_idx: 0,
             alternate_buffer: None,
+            block_insert_pending: None,
+            insert_register_pending: false,
         }
     }
 

@@ -1,7 +1,4 @@
 //! Visual mode key dispatch.
-//!
-//! Motions extend the selection, operators act on it,
-//! and `o` swaps cursor with anchor.
 
 use kjxlkj_core_edit::{resolve_motion, Motion};
 use kjxlkj_core_types::{CursorPosition, Key, KeyCode, Mode, Modifier, Operator, VisualKind};
@@ -30,6 +27,10 @@ impl EditorState {
                 }
                 if *c == 'o' {
                     self.visual_swap_anchor();
+                    return;
+                }
+                if kind == VisualKind::Block && (*c == 'I' || *c == 'A') {
+                    self.handle_visual_block_ia(*c == 'A');
                     return;
                 }
             }
@@ -84,20 +85,15 @@ impl EditorState {
         }
     }
 
+    #[rustfmt::skip]
     fn visual_apply_operator(&mut self, op: Operator, kind: VisualKind) {
         let anchor = match self.visual_anchor.take() {
             Some(a) => a,
-            None => {
-                self.mode = Mode::Normal;
-                return;
-            }
+            None => { self.mode = Mode::Normal; return; }
         };
         let cursor = self.windows.focused().cursor;
-        let (start, end) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
-            (anchor, cursor)
-        } else {
-            (cursor, anchor)
-        };
+        let (start, end) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme)
+            { (anchor, cursor) } else { (cursor, anchor) };
         match kind {
             VisualKind::Block => self.apply_block_op(op, start, end),
             _ => {
@@ -105,9 +101,7 @@ impl EditorState {
                 self.apply_visual_op(op, start, end, linewise);
             }
         }
-        if !matches!(self.mode, Mode::Insert) {
-            self.mode = Mode::Normal;
-        }
+        if !matches!(self.mode, Mode::Insert) { self.mode = Mode::Normal; }
         self.clamp_cursor();
         self.ensure_cursor_visible();
     }
@@ -173,20 +167,21 @@ fn char_to_operator(c: char) -> Option<Operator> {
     }
 }
 
+#[rustfmt::skip]
 fn visual_key_to_motion(key: &Key) -> Option<Motion> {
     if key.modifiers != Modifier::NONE {
         return match &key.code {
-            KeyCode::Left => Some(Motion::Left(1)),
+            KeyCode::Left  => Some(Motion::Left(1)),
             KeyCode::Right => Some(Motion::Right(1)),
-            KeyCode::Up => Some(Motion::Up(1)),
-            KeyCode::Down => Some(Motion::Down(1)),
+            KeyCode::Up    => Some(Motion::Up(1)),
+            KeyCode::Down  => Some(Motion::Down(1)),
             _ => None,
         };
     }
     match &key.code {
-        KeyCode::Char('h') | KeyCode::Left => Some(Motion::Left(1)),
-        KeyCode::Char('j') | KeyCode::Down => Some(Motion::Down(1)),
-        KeyCode::Char('k') | KeyCode::Up => Some(Motion::Up(1)),
+        KeyCode::Char('h') | KeyCode::Left  => Some(Motion::Left(1)),
+        KeyCode::Char('j') | KeyCode::Down  => Some(Motion::Down(1)),
+        KeyCode::Char('k') | KeyCode::Up    => Some(Motion::Up(1)),
         KeyCode::Char('l') | KeyCode::Right => Some(Motion::Right(1)),
         KeyCode::Char('w') => Some(Motion::WordForward(1)),
         KeyCode::Char('b') => Some(Motion::WordBackward(1)),

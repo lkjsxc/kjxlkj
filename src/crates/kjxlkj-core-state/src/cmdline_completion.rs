@@ -100,6 +100,15 @@ impl EditorState {
                         matches.push(cmd.name.clone());
                     }
                 }
+                // Fuzzy fallback if no prefix matches.
+                if matches.is_empty() {
+                    matches = fuzzy_filter(&prefix, COMMANDS);
+                    for cmd in self.user_commands.list() {
+                        if fuzzy_matches(&prefix, &cmd.name) {
+                            matches.push(cmd.name.clone());
+                        }
+                    }
+                }
                 matches.sort();
                 matches.dedup();
                 if matches.is_empty() {
@@ -155,4 +164,29 @@ impl EditorState {
     pub(crate) fn cmdline_reset_completion(&mut self) {
         self.cmdline.completion.clear();
     }
+}
+
+/// Check if `needle` fuzzy-matches `haystack`: all chars appear in order.
+pub(crate) fn fuzzy_matches(needle: &str, haystack: &str) -> bool {
+    let mut hi = haystack.chars();
+    for nc in needle.chars() {
+        let nc_lower = nc.to_ascii_lowercase();
+        loop {
+            match hi.next() {
+                Some(hc) if hc.to_ascii_lowercase() == nc_lower => break,
+                Some(_) => continue,
+                None => return false,
+            }
+        }
+    }
+    true
+}
+
+/// Filter command list by fuzzy matching.
+fn fuzzy_filter(needle: &str, commands: &[&str]) -> Vec<String> {
+    commands
+        .iter()
+        .filter(|c| fuzzy_matches(needle, c))
+        .map(|c| c.to_string())
+        .collect()
 }

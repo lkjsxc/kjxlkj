@@ -1,7 +1,6 @@
 //! Text object resolution: iw, aw, ip, ap, is, as, it, at, i{delim}, a{delim}.
 use kjxlkj_core_text::Rope;
 use kjxlkj_core_types::CursorPosition;
-
 /// Text object kind.
 #[derive(Debug, Clone, Copy)]
 pub enum TextObjectKind {
@@ -30,6 +29,7 @@ pub fn resolve_text_object(
         'p' => resolve_paragraph(kind, pos, rope),
         's' => crate::text_objects_sentence::resolve_sentence(kind, pos, rope),
         't' => crate::text_objects_tag::resolve_tag_object(kind, pos, rope),
+        'a' => crate::text_objects_argument::resolve_argument(kind, pos, rope),
         '(' | ')' | 'b' | '[' | ']' | '{' | '}' | 'B' | '<' | '>' | '"' | '\'' | '`' => {
             crate::text_objects_delim::resolve_delim_object(kind, obj, pos, rope)
         }

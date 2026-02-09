@@ -99,16 +99,14 @@ impl EditorState {
         ranges
     }
 
+    #[rustfmt::skip]
     fn transition_mode(&mut self, new_mode: Mode, key: &Key) {
         match (&self.mode, &new_mode) {
             (Mode::Normal, Mode::Insert) => {
                 let c = self.windows.focused().cursor;
                 let ver = self.buffers.current().version;
                 let cnt = self.buffers.current().content.clone();
-                self.buffers
-                    .current_mut()
-                    .undo_tree
-                    .begin_group(ver, cnt, c.line, c.grapheme);
+                self.buffers.current_mut().undo_tree.begin_group(ver, cnt, c.line, c.grapheme);
                 if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
                     match c {
                         'a' => self.move_cursor_right(1),
@@ -124,13 +122,15 @@ impl EditorState {
             }
             (Mode::Insert, Mode::Normal) => {
                 self.buffers.current_mut().undo_tree.end_group();
+                if let Some((sl, el, _col, at_end)) = self.block_insert_pending.take() {
+                    let text = self.last_inserted_text.clone();
+                    let s = kjxlkj_core_types::CursorPosition::new(sl, 0);
+                    let e = kjxlkj_core_types::CursorPosition::new(el, 0);
+                    self.visual_block_insert(&text, s, e, at_end);
+                }
                 let cursor = self.windows.focused().cursor;
                 let bid = self.current_buffer_id().0 as usize;
-                let mp = crate::marks::MarkPosition {
-                    buffer_id: bid,
-                    line: cursor.line,
-                    col: cursor.grapheme,
-                };
+                let mp = crate::marks::MarkPosition { buffer_id: bid, line: cursor.line, col: cursor.grapheme };
                 self.marks.set_last_change(mp);
                 self.marks.set_last_insert(mp);
                 self.push_changelist(cursor.line, cursor.grapheme);
@@ -142,9 +142,7 @@ impl EditorState {
                     );
                 }
                 let cursor = &mut self.windows.focused_mut().cursor;
-                if cursor.grapheme > 0 {
-                    cursor.grapheme -= 1;
-                }
+                if cursor.grapheme > 0 { cursor.grapheme -= 1; }
             }
             (Mode::Normal, Mode::Command(kind)) => {
                 let ch = match kind {
@@ -155,15 +153,10 @@ impl EditorState {
                 self.cmdline.open(ch);
             }
             (Mode::Command(_), Mode::Normal) => {
-                if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) {
-                    self.execute_cmdline();
-                    return;
-                }
+                if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) { self.execute_cmdline(); return; }
                 self.cmdline.close();
             }
-            (Mode::Normal, Mode::Visual(_)) => {
-                self.visual_anchor = Some(self.windows.focused().cursor);
-            }
+            (Mode::Normal, Mode::Visual(_)) => { self.visual_anchor = Some(self.windows.focused().cursor); }
             (Mode::Normal, Mode::OperatorPending(_)) => {
                 self.op_count = self.dispatch.take_count();
                 self.motion_count = None;
@@ -173,16 +166,8 @@ impl EditorState {
                 if let Some(anchor) = self.visual_anchor {
                     let c = self.windows.focused().cursor;
                     let bid = self.current_buffer_id().0 as usize;
-                    let (s, e) = if (anchor.line, anchor.grapheme) <= (c.line, c.grapheme) {
-                        (anchor, c)
-                    } else {
-                        (c, anchor)
-                    };
-                    let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition {
-                        buffer_id: bid,
-                        line: p.line,
-                        col: p.grapheme,
-                    };
+                    let (s, e) = if (anchor.line, anchor.grapheme) <= (c.line, c.grapheme) { (anchor, c) } else { (c, anchor) };
+                    let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition { buffer_id: bid, line: p.line, col: p.grapheme };
                     self.marks.set_visual_start(mk(s));
                     self.marks.set_visual_end(mk(e));
                 }

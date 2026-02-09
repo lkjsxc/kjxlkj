@@ -52,5 +52,12 @@ impl EditorState {
             }
             _ => {}
         }
+        // Incremental search: update highlight while typing.
+        if matches!(
+            self.mode,
+            Mode::Command(kjxlkj_core_types::CommandKind::Search)
+        ) {
+            self.update_incsearch();
+        }
     }
 }
