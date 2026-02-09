@@ -8,6 +8,12 @@ impl EditorState {
     /// Dispatch a key while in visual mode.
     #[rustfmt::skip]
     pub(crate) fn dispatch_visual(&mut self, key: Key, kind: VisualKind) {
+        // Handle g-prefix second key.
+        if self.visual_g_pending {
+            self.visual_g_pending = false;
+            if let KeyCode::Char('?') = &key.code { self.visual_apply_operator(Operator::Rot13, kind); return; }
+            return;
+        }
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
                 if *c == ':' {
@@ -19,6 +25,8 @@ impl EditorState {
                     self.cmdline.cursor_pos = 5;
                     return;
                 }
+                if *c == 'g' { self.visual_g_pending = true; return; }
+                if *c == '~' { self.visual_apply_operator(Operator::ToggleCase, kind); return; }
                 if let Some(op) = char_to_operator(*c) { self.visual_apply_operator(op, kind); return; }
                 match *c {
                     'o' => { self.visual_swap_anchor(); return; }
@@ -37,30 +45,18 @@ impl EditorState {
         }
     }
 
+    #[rustfmt::skip]
     fn visual_set_marks_on_exit(&mut self) {
         if let Some(anchor) = self.visual_anchor {
             let cursor = self.windows.focused().cursor;
             let bid = self.current_buffer_id().0 as usize;
-            let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
-                (anchor, cursor)
-            } else {
-                (cursor, anchor)
-            };
-            let sm = crate::marks::MarkPosition {
-                buffer_id: bid,
-                line: s.line,
-                col: s.grapheme,
-            };
-            let em = crate::marks::MarkPosition {
-                buffer_id: bid,
-                line: e.line,
-                col: e.grapheme,
-            };
-            self.marks.set_visual_start(sm);
-            self.marks.set_visual_end(em);
+            let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) { (anchor, cursor) } else { (cursor, anchor) };
+            self.marks.set_visual_start(crate::marks::MarkPosition { buffer_id: bid, line: s.line, col: s.grapheme });
+            self.marks.set_visual_end(crate::marks::MarkPosition { buffer_id: bid, line: e.line, col: e.grapheme });
         }
     }
 
+    #[rustfmt::skip]
     fn visual_move(&mut self, motion: Motion) {
         let buf_id = self.current_buffer_id();
         if let Some(buf) = self.buffers.get(buf_id) {
@@ -68,8 +64,7 @@ impl EditorState {
             let (dest, _) = resolve_motion(&motion, cursor, &buf.content, self.viewport_height());
             self.windows.focused_mut().cursor = dest;
         }
-        self.clamp_cursor();
-        self.ensure_cursor_visible();
+        self.clamp_cursor(); self.ensure_cursor_visible();
     }
 
     fn visual_swap_anchor(&mut self) {

@@ -1,7 +1,7 @@
 //! Wave 14 tests: wildmenu, block change, search count,
 //! macro edit, global marks, range swap, class text obj, expr prompt.
 #[cfg(test)]
-mod wave14_tests {
+mod tests {
     use crate::editor::EditorState;
     use kjxlkj_core_types::{Key, Mode};
 

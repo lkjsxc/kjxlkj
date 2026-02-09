@@ -59,4 +59,6 @@ pub enum Operator {
     Format,
     Lowercase,
     Uppercase,
+    ToggleCase,
+    Rot13,
 }

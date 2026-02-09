@@ -149,4 +149,28 @@ impl EditorState {
             buf.increment_version();
         }
     }
+
+    /// Advance snippet session to next tab-stop.
+    pub(crate) fn advance_snippet(&mut self) {
+        let (advanced, offset, base_line, base_col) = {
+            if let Some(ref mut session) = self.snippet_session {
+                if session.advance() {
+                    let off = session.current_offset();
+                    (true, off, session.base_line, session.base_col)
+                } else { (false, None, 0, 0) }
+            } else { return; }
+        };
+        if !advanced { self.snippet_session = None; return; }
+        if let Some(offset) = offset {
+            let buf_id = self.current_buffer_id();
+            if let Some(buf) = self.buffers.get(buf_id) {
+                let base_byte = if base_line < buf.content.len_lines() { buf.content.line_to_byte(base_line) } else { 0 };
+                let target = (base_byte + base_col + offset).min(buf.content.len_bytes());
+                let line = buf.content.byte_to_line(target);
+                let col = target - buf.content.line_to_byte(line);
+                self.windows.focused_mut().cursor.line = line;
+                self.windows.focused_mut().cursor.grapheme = col;
+            }
+        }
+    }
 }

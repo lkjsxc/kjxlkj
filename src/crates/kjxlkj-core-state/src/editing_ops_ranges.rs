@@ -69,6 +69,12 @@ impl EditorState {
             Operator::Uppercase => {
                 self.case_range(buf_id, start, end, inclusive, true);
             }
+            Operator::ToggleCase => {
+                self.toggle_case_range(buf_id, start, end, inclusive);
+            }
+            Operator::Rot13 => {
+                self.rot13_range(buf_id, start, end, inclusive);
+            }
             Operator::Format => {
                 self.format_lines(start.line, end.line);
             }
@@ -110,6 +116,8 @@ impl EditorState {
             Operator::Dedent => self.dedent_lines_range(start, end),
             Operator::Lowercase => self.lowercase_lines(start, end),
             Operator::Uppercase => self.uppercase_lines(start, end),
+            Operator::ToggleCase => self.toggle_case_lines(start, end),
+            Operator::Rot13 => self.rot13_lines(start, end),
             Operator::Format => self.format_lines(start, end),
             _ => {}
         }
@@ -154,46 +162,29 @@ impl EditorState {
         }
     }
 
+    #[rustfmt::skip]
     pub(crate) fn extract_range(
-        &self,
-        buf_id: kjxlkj_core_types::BufferId,
-        start: CursorPosition,
-        end: CursorPosition,
-        inclusive: bool,
+        &self, buf_id: kjxlkj_core_types::BufferId,
+        start: CursorPosition, end: CursorPosition, inclusive: bool,
     ) -> String {
         if let Some(buf) = self.buffers.get(buf_id) {
             use kjxlkj_core_text::RopeExt;
-            let end_g = if inclusive {
-                end.grapheme + 1
-            } else {
-                end.grapheme
-            };
+            let end_g = if inclusive { end.grapheme + 1 } else { end.grapheme };
             let sb = buf.content.grapheme_pos_to_byte(start.line, start.grapheme);
             let eb = buf.content.grapheme_pos_to_byte(end.line, end_g);
-            if sb < eb {
-                let sc = buf.content.byte_to_char(sb);
-                let ec = buf.content.byte_to_char(eb);
-                buf.content.slice(sc..ec).to_string()
-            } else {
-                String::new()
-            }
-        } else {
-            String::new()
-        }
+            if sb < eb { let (sc, ec) = (buf.content.byte_to_char(sb), buf.content.byte_to_char(eb)); buf.content.slice(sc..ec).to_string() }
+            else { String::new() }
+        } else { String::new() }
     }
 
+    #[rustfmt::skip]
     pub(crate) fn delete_range_raw(
-        &mut self,
-        buf_id: kjxlkj_core_types::BufferId,
-        sl: usize,
-        sg: usize,
-        el: usize,
-        eg: usize,
+        &mut self, buf_id: kjxlkj_core_types::BufferId,
+        sl: usize, sg: usize, el: usize, eg: usize,
     ) {
         if let Some(buf) = self.buffers.get_mut(buf_id) {
             use kjxlkj_core_text::RopeExt;
-            buf.content.delete_grapheme_range(sl, sg, el, eg);
-            buf.increment_version();
+            buf.content.delete_grapheme_range(sl, sg, el, eg); buf.increment_version();
         }
     }
 }

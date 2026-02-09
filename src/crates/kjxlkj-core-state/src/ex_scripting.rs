@@ -31,10 +31,7 @@ impl EditorState {
     }
 
     pub(crate) fn handle_delcommand(&mut self, name: &str) {
-        match self.user_commands.remove(name) {
-            Ok(()) => self.notify_info(&format!("Command removed: {name}")),
-            Err(e) => self.notify_error(&e),
-        }
+        match self.user_commands.remove(name) { Ok(()) => self.notify_info(&format!("Command removed: {name}")), Err(e) => self.notify_error(&e) }
     }
 
     pub(crate) fn handle_autocmd(&mut self, args: &str) {
@@ -92,12 +89,19 @@ impl EditorState {
         self.notify_info(&format!("Mark '{name}' set"));
     }
 
+    #[rustfmt::skip]
     pub(crate) fn handle_delmarks(&mut self, names: &str) {
         let bid = self.current_buffer_id().0 as usize;
-        for ch in names.chars() {
-            if ch.is_alphanumeric() {
-                self.marks.delete(ch, bid);
-            }
+        let chars: Vec<char> = names.chars().collect();
+        let mut i = 0;
+        while i < chars.len() {
+            if i + 2 < chars.len() && chars[i + 1] == '-' && chars[i].is_alphanumeric() && chars[i + 2].is_alphanumeric() {
+                let (a, b) = (chars[i] as u8, chars[i + 2] as u8);
+                for c in a.min(b)..=a.max(b) { self.marks.delete(c as char, bid); }
+                i += 3;
+            } else if chars[i].is_alphanumeric() {
+                self.marks.delete(chars[i], bid); i += 1;
+            } else { i += 1; }
         }
         self.notify_info(&format!("Marks deleted: {names}"));
     }
@@ -105,17 +109,9 @@ impl EditorState {
     pub(crate) fn handle_list_marks(&mut self) {
         let bid = self.current_buffer_id().0 as usize;
         let marks = self.marks.list_for_buffer(bid);
-        if marks.is_empty() {
-            return self.notify_info("No marks set");
-        }
+        if marks.is_empty() { return self.notify_info("No marks set"); }
         let mut lines = vec!["mark line  col".to_string()];
-        for (name, pos) in &marks {
-            lines.push(format!(
-                " {name}   {:>4}  {:>3}",
-                pos.line + 1,
-                pos.col + 1
-            ));
-        }
+        for (name, pos) in &marks { lines.push(format!(" {name}   {:>4}  {:>3}", pos.line + 1, pos.col + 1)); }
         self.notify_info(&lines.join("\n"));
     }
 
@@ -166,16 +162,23 @@ impl EditorState {
     }
 
     fn append_readonly_regs(&self, lines: &mut Vec<String>) {
-        if let Some(p) = self.buffers.get(self.current_buffer_id())
-            .and_then(|b| b.path.as_ref()) {
+        if let Some(p) = self.buffers.get(self.current_buffer_id()).and_then(|b| b.path.as_ref()) {
             lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40)));
         }
-        if !self.last_ex_command.is_empty() {
-            lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40)));
-        }
+        if !self.last_ex_command.is_empty() { lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40))); }
         if let Some(ref pat) = self.search.pattern {
             if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); }
         }
+    }
+
+    /// Handle `:call FuncName(args)`.
+    #[rustfmt::skip]
+    pub(crate) fn handle_call_function(&mut self, rest: &str) {
+        let rest = rest.strip_prefix("call ").unwrap_or(rest).trim();
+        let paren = match rest.find('(') { Some(i) => i, None => { self.notify_error("E107: Missing parentheses"); return; } };
+        let name = rest[..paren].trim();
+        let body = if let Some(f) = self.functions.get(name) { f.body.clone() } else { self.notify_error(&format!("E117: Unknown function: {name}")); return; };
+        for line in &body { self.execute_ex_command(line); }
     }
 }
 

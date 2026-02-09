@@ -1,6 +1,5 @@
 //! Wave 16 tests: lookaround, block replace, snippet tab-stops,
 //! session options, expr vars, history filter, gv reselect, visual star.
-#![cfg(test)]
 
 use kjxlkj_core_types::{Key, KeyCode, Mode, Modifier, VisualKind};
 

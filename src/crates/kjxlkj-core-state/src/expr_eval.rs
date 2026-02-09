@@ -30,6 +30,7 @@ pub fn eval_expression_with_vars(
     if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 {
         return Ok(expr[1..expr.len() - 1].to_string());
     }
+    if let Some(r) = try_ternary(expr, vars) { return r; }
     if let Some(r) = try_comparison(expr, vars) { return r; }
     eval_arithmetic(expr)
 }
@@ -77,6 +78,33 @@ fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
             _ if depth == 0 && i > 0 && ops.contains(&(b as char)) => found = Some(i), _ => {} }
     }
     found
+}
+
+/// Try ternary: `cond ? then : else`.
+#[rustfmt::skip]
+fn try_ternary(expr: &str, vars: &HashMap<String, String>) -> Option<Result<String, String>> {
+    let qpos = find_top_level_char(expr, '?')?;
+    let rest = &expr[qpos + 1..];
+    let cpos = find_top_level_char(rest, ':')?;
+    let cond = expr[..qpos].trim();
+    let then_part = rest[..cpos].trim();
+    let else_part = rest[cpos + 1..].trim();
+    let cv = match eval_expression_with_vars(cond, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+    let truthy = cv != "0" && !cv.is_empty();
+    Some(eval_expression_with_vars(if truthy { then_part } else { else_part }, vars))
+}
+
+/// Find top-level char (not inside parens/quotes).
+#[rustfmt::skip]
+fn find_top_level_char(expr: &str, target: char) -> Option<usize> {
+    let (bytes, mut depth, mut in_str) = (expr.as_bytes(), 0i32, false);
+    for (i, &b) in bytes.iter().enumerate() {
+        if b == b'"' { in_str = !in_str; continue; }
+        if in_str { continue; }
+        match b { b'(' => depth += 1, b')' => depth -= 1, _ => {} }
+        if depth == 0 && b == target as u8 { return Some(i); }
+    }
+    None
 }
 
 /// Try to evaluate a comparison expression (==, !=, <=, >=, <, >).

@@ -12,9 +12,7 @@ impl EditorState {
     pub(crate) fn format_lines(&mut self, start: usize, end: usize) {
         let fprg = self.options.get_str("formatprg").to_string();
         if !fprg.is_empty() {
-            self.notify_info(&format!(
-                "formatprg={fprg} (external formatting not yet wired)"
-            ));
+            self.format_via_external(&fprg, start, end);
             return;
         }
         let fo = self.options.get_str("formatoptions").to_string();
@@ -147,4 +145,42 @@ fn wrap_words(words: &[String], width: usize) -> String {
         result.push('\n');
     }
     result
+}
+
+impl EditorState {
+    /// Pipe lines through external formatprg command.
+    #[rustfmt::skip]
+    fn format_via_external(&mut self, prog: &str, start: usize, end: usize) {
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        let input = if let Some(buf) = self.buffers.get(buf_id) {
+            let end = end.min(buf.content.len_lines().saturating_sub(1));
+            let mut s = String::new();
+            for li in start..=end { if li < buf.content.len_lines() { let line: std::borrow::Cow<str> = buf.content.line(li).into(); s.push_str(&line); } }
+            s
+        } else { return; };
+        let parts: Vec<&str> = prog.split_whitespace().collect();
+        let (cmd, args) = match parts.split_first() { Some((c, a)) => (*c, a), None => return };
+        use std::process::{Command, Stdio};
+        let mut child = match Command::new(cmd).args(args).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::null()).spawn() {
+            Ok(c) => c, Err(e) => { self.notify_error(&format!("E282: formatprg: {e}")); return; }
+        };
+        if let Some(mut stdin) = child.stdin.take() { use std::io::Write; let _ = stdin.write_all(input.as_bytes()); }
+        match child.wait_with_output() {
+            Ok(out) if out.status.success() => {
+                let new_text = String::from_utf8_lossy(&out.stdout);
+                if let Some(buf) = self.buffers.get_mut(buf_id) {
+                    buf.save_undo_checkpoint(cursor);
+                    let total = buf.content.len_lines();
+                    let end = end.min(total.saturating_sub(1));
+                    let sb = buf.content.line_to_byte(start);
+                    let eb = if end + 1 < total { buf.content.line_to_byte(end + 1) } else { buf.content.len_bytes() };
+                    let (sc, ec) = (buf.content.byte_to_char(sb), buf.content.byte_to_char(eb));
+                    buf.content.remove(sc..ec); buf.content.insert(sc, &new_text); buf.increment_version();
+                }
+            }
+            Ok(out) => self.notify_error(&format!("formatprg exit {}", out.status)),
+            Err(e) => self.notify_error(&format!("formatprg: {e}")),
+        }
+    }
 }

@@ -1,7 +1,7 @@
 //! Wave 15 tests: regex search count, session marks, block paste,
 //! wildmenu scroll, expr cmdline, formatprg, regex branches, snippets.
 #[cfg(test)]
-mod wave15_tests {
+mod tests {
     use crate::editor::EditorState;
     use kjxlkj_core_types::{Key, Mode};
 
@@ -81,7 +81,7 @@ mod wave15_tests {
     fn formatprg_option() {
         let mut ed = make_editor();
         ed.options
-            .set("formatprg", crate::options::OptionValue::Str("fmt".into()));
+            .set("formatprg", crate::options::OptionValue::Str("__nonexistent_fmt_prog__".into()));
         ed.format_lines(0, 1);
         let notif = ed.notifications.last();
         assert!(notif.is_some());

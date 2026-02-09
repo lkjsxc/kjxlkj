@@ -66,19 +66,19 @@ impl EditorState {
                     }
                 }
             }
-            LayoutNode::HorizontalSplit { children, .. } => {
+            LayoutNode::HorizontalSplit { children, weights } => {
+                let ws: Vec<String> = weights.iter().map(|w| format!("{w:.4}")).collect();
+                lines.push(format!("\" hsplit-weights: {}", ws.join(",")));
                 for (i, child) in children.iter().enumerate() {
-                    if i > 0 {
-                        lines.push("split".to_string());
-                    }
+                    if i > 0 { lines.push("split".to_string()); }
                     self.serialize_layout(child, lines);
                 }
             }
-            LayoutNode::VerticalSplit { children, .. } => {
+            LayoutNode::VerticalSplit { children, weights } => {
+                let ws: Vec<String> = weights.iter().map(|w| format!("{w:.4}")).collect();
+                lines.push(format!("\" vsplit-weights: {}", ws.join(",")));
                 for (i, child) in children.iter().enumerate() {
-                    if i > 0 {
-                        lines.push("vsplit".to_string());
-                    }
+                    if i > 0 { lines.push("vsplit".to_string()); }
                     self.serialize_layout(child, lines);
                 }
             }

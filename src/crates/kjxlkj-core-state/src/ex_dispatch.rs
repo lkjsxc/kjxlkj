@@ -106,6 +106,9 @@ impl EditorState {
             _ if rest.starts_with("call cursor(") => {
                 self.handle_call_cursor(rest);
             }
+            _ if rest.starts_with("call ") => {
+                self.handle_call_function(rest);
+            }
             _ if rest.starts_with("e ") || rest.starts_with("edit ") => {
                 let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();
                 if !path.is_empty() {

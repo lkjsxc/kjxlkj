@@ -37,9 +37,9 @@ pub enum SessionLayout {
     #[default]
     Single,
     /// Horizontal split with proportions.
-    Hsplit(Vec<SessionLayout>),
+    Hsplit(Vec<SessionLayout>, Vec<f64>),
     /// Vertical split with proportions.
-    Vsplit(Vec<SessionLayout>),
+    Vsplit(Vec<SessionLayout>, Vec<f64>),
 }
 
 /// Session manager for save/load/list operations.
@@ -58,36 +58,21 @@ impl SessionManager {
     }
 
     /// Serialize session data to a string format.
+    #[rustfmt::skip]
     pub fn serialize(data: &SessionData) -> String {
-        let mut out = String::new();
-        out.push_str("# Session file\n");
-
-        if let Some(ref cwd) = data.cwd {
-            out.push_str(&format!("cwd {}\n", cwd.display()));
-        }
-
+        let mut out = String::from("# Session file\n");
+        if let Some(ref cwd) = data.cwd { out.push_str(&format!("cwd {}\n", cwd.display())); }
         out.push_str(&format!("active {}\n", data.active_buffer));
-
         for file in &data.files {
-            out.push_str(&format!(
-                "file {} {} {} {}\n",
-                file.path.display(),
-                file.cursor_line,
-                file.cursor_col,
-                if file.was_modified { "m" } else { "-" }
-            ));
+            let m = if file.was_modified { "m" } else { "-" };
+            out.push_str(&format!("file {} {} {} {m}\n", file.path.display(), file.cursor_line, file.cursor_col));
         }
-
-        for &(name, line, col) in &data.marks {
-            out.push_str(&format!("mark {name} {line} {col}\n"));
-        }
-
+        for &(name, line, col) in &data.marks { out.push_str(&format!("mark {name} {line} {col}\n")); }
         match &data.layout {
             SessionLayout::Single => out.push_str("layout single\n"),
-            SessionLayout::Hsplit(_) => out.push_str("layout hsplit\n"),
-            SessionLayout::Vsplit(_) => out.push_str("layout vsplit\n"),
+            SessionLayout::Hsplit(_, w) => { let ws: Vec<String> = w.iter().map(|v| format!("{v:.4}")).collect(); out.push_str(&format!("layout hsplit {}\n", ws.join(","))); }
+            SessionLayout::Vsplit(_, w) => { let ws: Vec<String> = w.iter().map(|v| format!("{v:.4}")).collect(); out.push_str(&format!("layout vsplit {}\n", ws.join(","))); }
         }
-
         out
     }
 
@@ -124,6 +109,19 @@ impl SessionManager {
                         data.marks.push((name, line, col));
                     }
                 }
+                Some("layout") if parts.len() >= 2 => {
+                    data.layout = match parts[1] {
+                        "hsplit" => {
+                            let w = parts.get(2).map(|s| parse_weights(s)).unwrap_or_default();
+                            SessionLayout::Hsplit(Vec::new(), w)
+                        }
+                        "vsplit" => {
+                            let w = parts.get(2).map(|s| parse_weights(s)).unwrap_or_default();
+                            SessionLayout::Vsplit(Vec::new(), w)
+                        }
+                        _ => SessionLayout::Single,
+                    };
+                }
                 _ => {}
             }
         }
@@ -148,17 +146,11 @@ impl SessionManager {
 
     /// List available sessions.
     pub fn list_sessions(&self) -> Vec<String> {
-        let Ok(entries) = std::fs::read_dir(&self.session_dir) else {
-            return Vec::new();
-        };
-
-        entries
-            .filter_map(|e| e.ok())
-            .filter_map(|e| {
-                let name = e.file_name().to_string_lossy().to_string();
-                name.strip_suffix(".session").map(|s| s.to_string())
-            })
-            .collect()
+        let Ok(entries) = std::fs::read_dir(&self.session_dir) else { return Vec::new(); };
+        entries.filter_map(|e| e.ok()).filter_map(|e| {
+            let name = e.file_name().to_string_lossy().to_string();
+            name.strip_suffix(".session").map(|s| s.to_string())
+        }).collect()
     }
 
     /// Save session data to disk.
@@ -196,4 +188,8 @@ impl Default for SessionManager {
     fn default() -> Self {
         Self::new(PathBuf::from(".sessions"))
     }
+}
+
+fn parse_weights(s: &str) -> Vec<f64> {
+    s.split(',').filter_map(|w| w.trim().parse().ok()).collect()
 }

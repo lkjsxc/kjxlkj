@@ -81,6 +81,10 @@ pub struct EditorState {
     pub(crate) insert_register_pending: bool,
     /// `r` pressed in visual mode: next char replaces selection.
     pub(crate) visual_replace_pending: bool,
+    /// `g` pressed in visual mode: next char selects g-prefixed action.
+    pub(crate) visual_g_pending: bool,
+    /// Active snippet session for tab-stop navigation.
+    pub(crate) snippet_session: Option<crate::snippets::SnippetSession>,
     /// Last visual selection for gv: (anchor, cursor, kind).
     pub(crate) last_visual: Option<(
         CursorPosition,
@@ -161,6 +165,8 @@ impl EditorState {
             block_insert_pending: None,
             insert_register_pending: false,
             visual_replace_pending: false,
+            visual_g_pending: false,
+            snippet_session: None,
             last_visual: None,
             sub_confirm: None,
             functions: crate::user_functions::FunctionRegistry::new(),

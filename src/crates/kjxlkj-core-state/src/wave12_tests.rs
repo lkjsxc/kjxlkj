@@ -1,14 +1,10 @@
 #[cfg(test)]
-mod wave12_tests {
+mod tests {
     use crate::editor::EditorState;
-    use kjxlkj_core_types::{Key, KeyCode, Mode, Modifier};
+    use kjxlkj_core_types::{Key, Mode};
 
     fn state() -> EditorState {
         EditorState::new(80, 24)
-    }
-
-    fn ctrl(c: char) -> Key {
-        Key::new(KeyCode::Char(c), Modifier::CTRL)
     }
 
     #[test]

@@ -102,27 +102,35 @@ impl Default for SearchState {
     }
 }
 
-/// Parse a search input that may contain an offset: "pattern/e+1", "pattern/+3".
+/// Parse a search input that may contain an offset: "pattern/e+1", "pattern?e+1".
 /// Returns (pattern, SearchOffset).
 pub fn parse_search_with_offset(input: &str) -> (String, SearchOffset) {
-    // Find last unescaped '/' that separates pattern from offset.
+    parse_search_with_offset_sep(input, '/')
+        .or_else(|| parse_search_with_offset_sep(input, '?'))
+        .unwrap_or_else(|| (input.to_string(), SearchOffset::None))
+}
+
+fn parse_search_with_offset_sep(input: &str, sep: char) -> Option<(String, SearchOffset)> {
     let bytes = input.as_bytes();
+    let sb = sep as u8;
     let mut last_sep = None;
     let mut i = 0;
     while i < bytes.len() {
         if bytes[i] == b'\\' { i += 2; continue; }
-        if bytes[i] == b'/' { last_sep = Some(i); }
+        if bytes[i] == sb { last_sep = Some(i); }
         i += 1;
     }
-    if let Some(sep) = last_sep {
-        if sep > 0 {
-            let pat = &input[..sep];
-            let off_str = &input[sep + 1..];
+    if let Some(pos) = last_sep {
+        if pos > 0 {
+            let pat = &input[..pos];
+            let off_str = &input[pos + 1..];
             let offset = parse_offset_str(off_str);
-            return (pat.to_string(), offset);
+            if !matches!(offset, SearchOffset::None) || off_str.is_empty() {
+                return Some((pat.to_string(), offset));
+            }
         }
     }
-    (input.to_string(), SearchOffset::None)
+    None
 }
 
 fn parse_offset_str(s: &str) -> SearchOffset {

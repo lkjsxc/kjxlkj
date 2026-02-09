@@ -127,6 +127,8 @@ mod wave17_tests;
 #[cfg(test)]
 mod wave18_tests;
 #[cfg(test)]
+mod wave19_tests;
+#[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]
 mod wave8_tests;

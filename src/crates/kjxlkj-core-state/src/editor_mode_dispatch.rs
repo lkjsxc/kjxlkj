@@ -47,7 +47,13 @@ impl EditorState {
                     kjxlkj_core_types::KeyCode::Delete => {
                         self.delete_char_forward();
                     }
-                    kjxlkj_core_types::KeyCode::Tab => self.insert_text("    "),
+                    kjxlkj_core_types::KeyCode::Tab => {
+                        if self.snippet_session.is_some() {
+                            self.advance_snippet();
+                        } else {
+                            self.insert_text("    ");
+                        }
+                    }
                     _ => {}
                 }
             }
