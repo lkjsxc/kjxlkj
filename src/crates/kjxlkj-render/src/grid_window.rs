@@ -5,6 +5,7 @@ use kjxlkj_core_ui::{BufferSnapshot, Color, Style, WindowSnapshot};
 use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn render_window(
     grid: &mut CellGrid,
     ws: &WindowSnapshot,
@@ -13,6 +14,7 @@ pub(crate) fn render_window(
     default_style: &Style,
     line_num_style: &Style,
     cursor_style: &Style,
+    hl_ranges: &[(usize, usize, usize)],
 ) {
     let area = &ws.area;
     let buf_id = match &ws.content {
@@ -62,6 +64,7 @@ pub(crate) fn render_window(
                 ws,
                 default_style,
                 cursor_style,
+                hl_ranges,
             );
         } else {
             let screen_col = text_start_col;
@@ -96,6 +99,7 @@ fn render_line_content(
     ws: &WindowSnapshot,
     default_style: &Style,
     cursor_style: &Style,
+    hl_ranges: &[(usize, usize, usize)],
 ) {
     let line_slice = buf.content.line(buf_line);
     let line_str: std::borrow::Cow<str> = line_slice.into();
@@ -108,6 +112,17 @@ fn render_line_content(
         }
         let w = unicode_width::UnicodeWidthStr::width(grapheme) as u8;
         let mut style = *default_style;
+        // Apply search highlight.
+        if hl_ranges
+            .iter()
+            .any(|&(l, s, e)| l == buf_line && g_idx >= s && g_idx < e)
+        {
+            style = Style {
+                fg: Color::Rgb(0, 0, 0),
+                bg: Color::Rgb(255, 255, 0),
+                ..style
+            };
+        }
         if is_focused && buf_line == ws.cursor.line && g_idx == ws.cursor.grapheme {
             style = *cursor_style;
         }

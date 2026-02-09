@@ -99,6 +99,7 @@ mod visual_ops;
 mod visual_ops_tests;
 #[cfg(test)]
 mod wave10_tests;
+mod wave11_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

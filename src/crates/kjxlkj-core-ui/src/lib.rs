@@ -7,6 +7,6 @@ mod theme;
 
 pub use snapshot::{
     BufferSnapshot, CmdlineState, EditorSnapshot, Notification, NotificationLevel, SearchState,
-    TabSnapshot, WindowArea, WindowSnapshot,
+    TabSnapshot, VisualSelection, WindowArea, WindowSnapshot,
 };
 pub use theme::{Color, Style, Theme};

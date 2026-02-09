@@ -57,6 +57,16 @@ pub struct WindowSnapshot {
     pub show_line_numbers: bool,
     /// Whether text wraps.
     pub wrap: bool,
+    /// Visual selection range (anchor, cursor, kind) for rendering.
+    pub visual_selection: Option<VisualSelection>,
+}
+
+/// Visual selection info for rendering.
+#[derive(Debug, Clone)]
+pub struct VisualSelection {
+    pub anchor: CursorPosition,
+    pub cursor: CursorPosition,
+    pub kind: kjxlkj_core_types::VisualKind,
 }
 
 /// Window area rectangle in terminal coordinates.

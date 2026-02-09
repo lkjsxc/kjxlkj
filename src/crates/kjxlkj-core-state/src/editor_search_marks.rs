@@ -44,15 +44,17 @@ impl EditorState {
             let start = cursor.grapheme + 1;
             let text: String = buf.content.to_string();
             let sf = self.line_col_to_byte_offset(&text, cursor.line, start);
-            if let Some(off) = text[sf..].find(&pattern) {
-                let abs = sf + off;
+            if let Some((abs, _len)) = find_pattern(&text, sf, &pattern, true) {
                 let (l, c) = self.byte_offset_to_line_col(&text, abs);
                 self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
-            } else if let Some(off) = text[..sf].find(&pattern) {
-                let (l, c) = self.byte_offset_to_line_col(&text, off);
-                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
-                self.ensure_cursor_visible();
+            } else if let Some((off, _len)) = find_pattern(&text, 0, &pattern, true) {
+                if off < sf {
+                    let (l, c) = self.byte_offset_to_line_col(&text, off);
+                    self.windows.focused_mut().cursor =
+                        kjxlkj_core_types::CursorPosition::new(l, c);
+                    self.ensure_cursor_visible();
+                }
             }
         }
     }
@@ -67,15 +69,17 @@ impl EditorState {
         if let Some(buf) = self.buffers.get(buf_id) {
             let text: String = buf.content.to_string();
             let cur = self.line_col_to_byte_offset(&text, cursor.line, cursor.grapheme);
-            if let Some(off) = text[..cur].rfind(&pattern) {
+            if let Some((off, _)) = rfind_pattern(&text, cur, &pattern) {
                 let (l, c) = self.byte_offset_to_line_col(&text, off);
                 self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
-            } else if let Some(off) = text[cur..].rfind(&pattern) {
-                let abs = cur + off;
-                let (l, c) = self.byte_offset_to_line_col(&text, abs);
-                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
-                self.ensure_cursor_visible();
+            } else if let Some((off, _)) = rfind_pattern(&text, text.len(), &pattern) {
+                if off >= cur {
+                    let (l, c) = self.byte_offset_to_line_col(&text, off);
+                    self.windows.focused_mut().cursor =
+                        kjxlkj_core_types::CursorPosition::new(l, c);
+                    self.ensure_cursor_visible();
+                }
             }
         }
     }
@@ -105,4 +109,44 @@ impl EditorState {
         }
         (line, offset.saturating_sub(line_start))
     }
+}
+
+/// Strip `\v` prefix and return (pattern, is_regex).
+fn strip_vmagic(pattern: &str) -> (&str, bool) {
+    if let Some(rest) = pattern.strip_prefix("\\v") {
+        (rest, true)
+    } else {
+        (pattern, false)
+    }
+}
+
+/// Find pattern forward from `from` in `text`. Returns (offset, len).
+fn find_pattern(text: &str, from: usize, pattern: &str, _fwd: bool) -> Option<(usize, usize)> {
+    let (pat, is_re) = strip_vmagic(pattern);
+    if is_re {
+        if let Ok(re) = regex::Regex::new(pat) {
+            if let Some(m) = re.find(&text[from..]) {
+                return Some((from + m.start(), m.len()));
+            }
+        }
+        return None;
+    }
+    text[from..].find(pat).map(|off| (from + off, pat.len()))
+}
+
+/// Find pattern backward (last match before `before`).
+fn rfind_pattern(text: &str, before: usize, pattern: &str) -> Option<(usize, usize)> {
+    let (pat, is_re) = strip_vmagic(pattern);
+    let slice = &text[..before.min(text.len())];
+    if is_re {
+        if let Ok(re) = regex::Regex::new(pat) {
+            let mut last = None;
+            for m in re.find_iter(slice) {
+                last = Some((m.start(), m.len()));
+            }
+            return last;
+        }
+        return None;
+    }
+    slice.rfind(pat).map(|off| (off, pat.len()))
 }

@@ -92,11 +92,15 @@ impl EditorState {
         };
         self.last_macro = Some(reg);
         self.macro_depth += 1;
+        self.macro_error = false;
         for _ in 0..count {
-            if self.macro_depth > MAX_MACRO_DEPTH {
+            if self.macro_depth > MAX_MACRO_DEPTH || self.macro_error {
                 break;
             }
             for key in &keys {
+                if self.macro_error {
+                    break;
+                }
                 self.handle_key(key.clone());
             }
         }

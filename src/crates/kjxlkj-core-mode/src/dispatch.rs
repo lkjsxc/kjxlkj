@@ -129,6 +129,8 @@ impl NormalDispatch {
             'U' => KeyDispatchResult::Action(Action::EnterOperatorPending(
                 kjxlkj_core_types::Operator::Uppercase,
             )),
+            ';' => KeyDispatchResult::Action(Action::ChangelistOlder),
+            ',' => KeyDispatchResult::Action(Action::ChangelistNewer),
             _ => KeyDispatchResult::Unhandled,
         }
     }

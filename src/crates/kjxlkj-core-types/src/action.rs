@@ -158,6 +158,8 @@ pub enum Action {
     SetMark(char),
     JumpToMark(char),
     JumpToMarkLine(char),
+    ChangelistOlder,
+    ChangelistNewer,
 
     // -- Macros --
     StartRecording(char),

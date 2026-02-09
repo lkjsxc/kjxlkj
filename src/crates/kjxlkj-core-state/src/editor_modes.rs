@@ -39,7 +39,20 @@ impl EditorState {
         let (cols, rows) = self.terminal_size;
         let content_rows = rows.saturating_sub(2);
 
-        let win_snapshots = self.windows.snapshots(cols, content_rows);
+        let mut win_snapshots = self.windows.snapshots(cols, content_rows);
+        // Inject visual selection info into focused window.
+        if let Mode::Visual(kind) = &self.mode {
+            if let Some(anchor) = self.visual_anchor {
+                let fid = self.windows.focused_id();
+                if let Some(ws) = win_snapshots.get_mut(&fid) {
+                    ws.visual_selection = Some(kjxlkj_core_ui::VisualSelection {
+                        anchor,
+                        cursor: ws.cursor,
+                        kind: *kind,
+                    });
+                }
+            }
+        }
         let tab = TabSnapshot {
             layout: self.windows.layout().clone(),
             windows: win_snapshots,
@@ -89,15 +102,13 @@ impl EditorState {
     fn transition_mode(&mut self, new_mode: Mode, key: &Key) {
         match (&self.mode, &new_mode) {
             (Mode::Normal, Mode::Insert) => {
-                let cursor = self.windows.focused().cursor;
-                let version = self.buffers.current().version;
-                let content = self.buffers.current().content.clone();
-                self.buffers.current_mut().undo_tree.begin_group(
-                    version,
-                    content,
-                    cursor.line,
-                    cursor.grapheme,
-                );
+                let c = self.windows.focused().cursor;
+                let ver = self.buffers.current().version;
+                let cnt = self.buffers.current().content.clone();
+                self.buffers
+                    .current_mut()
+                    .undo_tree
+                    .begin_group(ver, cnt, c.line, c.grapheme);
                 if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
                     match c {
                         'a' => self.move_cursor_right(1),
@@ -122,6 +133,7 @@ impl EditorState {
                 };
                 self.marks.set_last_change(mp);
                 self.marks.set_last_insert(mp);
+                self.push_changelist(cursor.line, cursor.grapheme);
                 if !self.last_inserted_text.is_empty() {
                     let t = self.last_inserted_text.clone();
                     self.registers.set(
@@ -135,30 +147,22 @@ impl EditorState {
                 }
             }
             (Mode::Normal, Mode::Command(kind)) => {
-                let prefix = match kind {
+                let ch = match kind {
                     CommandKind::Ex => ':',
-                    CommandKind::Search => {
-                        if self.search.forward {
-                            '/'
-                        } else {
-                            '?'
-                        }
-                    }
+                    CommandKind::Search if self.search.forward => '/',
+                    _ => '?',
                 };
-                self.cmdline.open(prefix);
+                self.cmdline.open(ch);
             }
             (Mode::Command(_), Mode::Normal) => {
-                // Enter executes, Esc cancels.
                 if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) {
                     self.execute_cmdline();
-                    return; // execute_cmdline sets mode
+                    return;
                 }
-                // Esc: cancel
                 self.cmdline.close();
             }
             (Mode::Normal, Mode::Visual(_)) => {
-                let cursor = self.windows.focused().cursor;
-                self.visual_anchor = Some(cursor);
+                self.visual_anchor = Some(self.windows.focused().cursor);
             }
             (Mode::Normal, Mode::OperatorPending(_)) => {
                 self.op_count = self.dispatch.take_count();
@@ -167,32 +171,24 @@ impl EditorState {
             }
             (Mode::Visual(_), Mode::Normal) => {
                 if let Some(anchor) = self.visual_anchor {
-                    let cursor = self.windows.focused().cursor;
+                    let c = self.windows.focused().cursor;
                     let bid = self.current_buffer_id().0 as usize;
-                    let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme)
-                    {
-                        (anchor, cursor)
+                    let (s, e) = if (anchor.line, anchor.grapheme) <= (c.line, c.grapheme) {
+                        (anchor, c)
                     } else {
-                        (cursor, anchor)
+                        (c, anchor)
                     };
-                    let sm = crate::marks::MarkPosition {
+                    let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition {
                         buffer_id: bid,
-                        line: s.line,
-                        col: s.grapheme,
+                        line: p.line,
+                        col: p.grapheme,
                     };
-                    let em = crate::marks::MarkPosition {
-                        buffer_id: bid,
-                        line: e.line,
-                        col: e.grapheme,
-                    };
-                    self.marks.set_visual_start(sm);
-                    self.marks.set_visual_end(em);
+                    self.marks.set_visual_start(mk(s));
+                    self.marks.set_visual_end(mk(e));
                 }
                 self.visual_anchor = None;
             }
-            (Mode::Visual(_), Mode::Visual(_)) => {
-                // Switching visual sub-kind; keep anchor.
-            }
+            (Mode::Visual(_), Mode::Visual(_)) => {}
             _ => {}
         }
         self.mode = new_mode;

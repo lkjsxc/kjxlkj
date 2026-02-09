@@ -18,6 +18,7 @@ pub fn build_grid(snapshot: &EditorSnapshot) -> CellGrid {
                 &snapshot.theme.default_style,
                 &snapshot.theme.line_number_style,
                 &snapshot.theme.cursor_style,
+                &snapshot.search.highlight_ranges,
             );
         }
     }

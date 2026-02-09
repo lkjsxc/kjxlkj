@@ -41,6 +41,7 @@ impl WindowState {
             area,
             show_line_numbers: self.show_line_numbers,
             wrap: self.wrap,
+            visual_selection: None,
         }
     }
 }

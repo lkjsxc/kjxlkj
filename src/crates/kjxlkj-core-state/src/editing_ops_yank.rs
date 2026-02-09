@@ -44,11 +44,29 @@ impl EditorState {
     /// Read from pending register or unnamed.
     fn read_register(&mut self) -> Option<Register> {
         let reg = self.pending_register.take();
-        if let Some(reg_name) = reg {
-            let name = RegisterName::Named(reg_name);
-            self.registers.get(name).cloned()
-        } else {
-            self.registers.get_unnamed().cloned()
+        if let Some(rn) = reg {
+            return self.read_special_register(rn);
+        }
+        self.registers.get_unnamed().cloned()
+    }
+
+    fn read_special_register(&self, rn: char) -> Option<Register> {
+        match rn {
+            '%' => self
+                .buffers
+                .get(self.current_buffer_id())
+                .and_then(|b| b.path.as_ref())
+                .map(|p| Register::new(p.display().to_string(), false)),
+            ':' if !self.last_ex_command.is_empty() => {
+                Some(Register::new(self.last_ex_command.clone(), false))
+            }
+            '/' if self.search.active => self
+                .search
+                .pattern
+                .as_ref()
+                .map(|p| Register::new(p.clone(), false)),
+            '.' => self.registers.get(RegisterName::LastInserted).cloned(),
+            _ => self.registers.get(RegisterName::Named(rn)).cloned(),
         }
     }
 
@@ -56,20 +74,14 @@ impl EditorState {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         let bid = buf_id.0 as usize;
-        // Set change marks for lines being deleted.
-        let sm = crate::marks::MarkPosition {
+        let mk = |l: usize| crate::marks::MarkPosition {
             buffer_id: bid,
-            line: cursor.line,
+            line: l,
             col: 0,
         };
-        let end_l = cursor.line + count.saturating_sub(1);
-        let em = crate::marks::MarkPosition {
-            buffer_id: bid,
-            line: end_l,
-            col: 0,
-        };
-        self.marks.set_change_start(sm);
-        self.marks.set_change_end(em);
+        self.marks.set_change_start(mk(cursor.line));
+        self.marks
+            .set_change_end(mk(cursor.line + count.saturating_sub(1)));
         let yanked = if let Some(buf) = self.buffers.get_mut(buf_id) {
             buf.save_undo_checkpoint(cursor);
             let start_line = cursor.line;

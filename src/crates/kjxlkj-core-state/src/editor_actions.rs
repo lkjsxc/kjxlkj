@@ -130,6 +130,8 @@ impl EditorState {
             Action::RepeatFindChar => self.repeat_find_char(),
             Action::RepeatFindCharReverse => self.repeat_find_char_reverse(),
             Action::ToggleCase => self.toggle_case(),
+            Action::ChangelistOlder => self.changelist_older(),
+            Action::ChangelistNewer => self.changelist_newer(),
             Action::DotRepeat => {}
             _ => {}
         }

@@ -16,5 +16,8 @@ impl EditorState {
             message: msg.to_string(),
             level: NotificationLevel::Error,
         });
+        if self.macro_depth > 0 {
+            self.macro_error = true;
+        }
     }
 }

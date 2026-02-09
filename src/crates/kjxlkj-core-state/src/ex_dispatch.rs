@@ -21,6 +21,7 @@ impl EditorState {
 
     pub(crate) fn execute_ex_command(&mut self, cmd: &str) {
         let cmd = cmd.trim();
+        self.last_ex_command = cmd.to_string();
         let current_line = self.windows.focused().cursor.line;
         let buf_id = self.current_buffer_id();
         let total_lines = self
@@ -45,6 +46,25 @@ impl EditorState {
             last_search: self.search.pattern.as_deref(),
         };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
+        // Mark-not-set detection: if cmd has 'x and range is None.
+        if range.is_none() && cmd.contains('\'') && cmd.len() > 1 {
+            let has_mark_addr = cmd.as_bytes().contains(&b'\'');
+            if has_mark_addr {
+                let after = cmd.split('\'').nth(1).and_then(|s| s.chars().next());
+                if let Some(ch) = after {
+                    if ch.is_alphabetic() && marks.get(ch, bid).is_none() {
+                        self.notify_error(&format!("E20: Mark not set: {ch}"));
+                        return;
+                    }
+                }
+            }
+        }
+        if let Some(ref r) = range {
+            if r.start > r.end {
+                self.notify_error("E493: Backwards range given");
+                return;
+            }
+        }
         let rest = rest.trim();
 
         match rest {
@@ -78,6 +98,9 @@ impl EditorState {
                 };
                 let r = range.unwrap_or(ExRange::single(current_line));
                 self.execute_substitute(sub_input, r);
+            }
+            _ if rest.starts_with("call cursor(") => {
+                self.handle_call_cursor(rest);
             }
             _ if rest.starts_with("e ") || rest.starts_with("edit ") => {
                 let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();

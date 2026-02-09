@@ -61,6 +61,14 @@ pub struct EditorState {
     pub(crate) macro_depth: usize,
     /// Last inserted text for . register.
     pub(crate) last_inserted_text: String,
+    /// Last executed ex command for : register.
+    pub(crate) last_ex_command: String,
+    /// Changelist: positions of recent changes for g;/g, navigation.
+    pub(crate) changelist: Vec<(usize, usize, usize)>,
+    /// Current index in changelist (for g;/g,).
+    pub(crate) changelist_idx: usize,
+    /// Set during macro playback when an error occurs, to halt.
+    pub(crate) macro_error: bool,
 }
 
 impl EditorState {
@@ -101,6 +109,10 @@ impl EditorState {
             text_obj_prefix: None,
             macro_depth: 0,
             last_inserted_text: String::new(),
+            last_ex_command: String::new(),
+            changelist: Vec::new(),
+            changelist_idx: 0,
+            macro_error: false,
         }
     }
 
