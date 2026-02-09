@@ -15,6 +15,10 @@ pub struct SessionData {
     pub marks: Vec<(char, usize, usize)>,
     /// Current active buffer index.
     pub active_buffer: usize,
+    /// Number of tab pages.
+    pub tab_count: usize,
+    /// Active tab index (0-based).
+    pub active_tab: usize,
 }
 
 /// A file entry in a session.
@@ -65,6 +69,7 @@ impl SessionManager {
         let mut out = String::from("# Session file\n");
         if let Some(ref cwd) = data.cwd { out.push_str(&format!("cwd {}\n", cwd.display())); }
         out.push_str(&format!("active {}\n", data.active_buffer));
+        if data.tab_count > 1 { out.push_str(&format!("tabs {} {}\n", data.tab_count, data.active_tab)); }
         for file in &data.files {
             let m = if file.was_modified { "m" } else { "-" };
             out.push_str(&format!("file {} {} {} {m}\n", file.path.display(), file.cursor_line, file.cursor_col));
@@ -96,6 +101,10 @@ impl SessionManager {
                 }
                 Some("active") if parts.len() >= 2 => {
                     data.active_buffer = parts[1].parse().unwrap_or(0);
+                }
+                Some("tabs") if parts.len() >= 3 => {
+                    data.tab_count = parts[1].parse().unwrap_or(1);
+                    data.active_tab = parts[2].parse().unwrap_or(0);
                 }
                 Some("file") if parts.len() >= 4 => {
                     data.files.push(SessionFile {
@@ -155,41 +164,25 @@ impl SessionManager {
     }
 
     /// Save session data to disk.
+    #[rustfmt::skip]
     pub fn save(&self, name: &str, data: &SessionData) -> std::io::Result<()> {
         std::fs::create_dir_all(&self.session_dir)?;
-        let path = self.session_path(name);
-        let content = Self::serialize(data);
-        std::fs::write(path, content)
+        std::fs::write(self.session_path(name), Self::serialize(data))
     }
 
     /// Load session data from disk.
-    pub fn load(&self, name: &str) -> std::io::Result<SessionData> {
-        let path = self.session_path(name);
-        let content = std::fs::read_to_string(path)?;
-        Ok(Self::deserialize(&content))
-    }
+    pub fn load(&self, name: &str) -> std::io::Result<SessionData> { Ok(Self::deserialize(&std::fs::read_to_string(self.session_path(name))?)) }
 
     /// Delete a session file.
     pub fn delete(&self, name: &str) -> std::io::Result<()> {
-        let path = self.session_path(name);
-        if path.exists() {
-            std::fs::remove_file(path)
-        } else {
-            Ok(())
-        }
+        let p = self.session_path(name); if p.exists() { std::fs::remove_file(p) } else { Ok(()) }
     }
 
     /// Get session directory.
-    pub fn session_dir(&self) -> &Path {
-        &self.session_dir
-    }
+    pub fn session_dir(&self) -> &Path { &self.session_dir }
 }
 
-impl Default for SessionManager {
-    fn default() -> Self {
-        Self::new(PathBuf::from(".sessions"))
-    }
-}
+impl Default for SessionManager { fn default() -> Self { Self::new(PathBuf::from(".sessions")) } }
 
 fn parse_weights(s: &str) -> Vec<f64> {
     s.split(',').filter_map(|w| w.trim().parse().ok()).collect()

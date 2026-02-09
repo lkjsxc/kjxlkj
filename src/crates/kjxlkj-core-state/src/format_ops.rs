@@ -80,7 +80,13 @@ impl EditorState {
     }
 
     /// Reindent a range of lines based on the line above.
+    /// If `equalprg` is set, pipes through external program instead.
     pub(crate) fn reindent_lines(&mut self, start: usize, end: usize) {
+        let eprg = self.options.get_str("equalprg").to_string();
+        if !eprg.is_empty() {
+            self.format_via_external(&eprg, start, end);
+            return;
+        }
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         let sw = self.options.get_int("shiftwidth").max(1);

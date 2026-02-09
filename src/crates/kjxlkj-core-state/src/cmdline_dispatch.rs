@@ -14,6 +14,8 @@ impl EditorState {
                         'u' => self.cmdline.delete_to_start(),
                         'b' => self.cmdline.move_home(),
                         'e' => self.cmdline.move_end(),
+                        'n' => self.cmdline_complete_next(),
+                        'p' => self.cmdline_complete_prev(),
                         _ => {}
                     }
                 } else {

@@ -135,6 +135,16 @@ impl MarkFile {
         self.local.remove(&buffer_id);
     }
 
+    /// Rotate numbered marks: 8→9, 7→8, ..., 0→1, then set 0 to new pos.
+    pub fn rotate_numbered(&mut self, pos: MarkPosition) {
+        for i in (0..9).rev() {
+            let src = char::from(b'0' + i);
+            let dst = char::from(b'0' + i + 1);
+            if let Some(p) = self.global.get(&src).copied() { self.global.insert(dst, p); }
+        }
+        self.global.insert('0', pos);
+    }
+
     /// Adjust marks after lines are inserted or deleted in a buffer.
     pub fn adjust_for_edit(&mut self, buffer_id: usize, start_line: usize, lines_added: isize) {
         // Adjust local marks

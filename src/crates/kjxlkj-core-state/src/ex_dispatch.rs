@@ -68,7 +68,7 @@ impl EditorState {
                 }
             }
         }
-        let range = range.map(|mut r| { if r.start > r.end { std::mem::swap(&mut r.start, &mut r.end); } r });
+        let range = range.map(|mut r| { if r.start > r.end { std::mem::swap(&mut r.start, &mut r.end); self.notify_info("Backwards range corrected"); } r });
         let rest = rest.trim();
 
         match rest {
@@ -99,6 +99,10 @@ impl EditorState {
             }
             _ if rest.starts_with("call ") => {
                 self.handle_call_function(rest);
+            }
+            _ if rest.starts_with("let ") => {
+                let args = rest.strip_prefix("let ").unwrap();
+                self.handle_let_command(args);
             }
             _ if rest.starts_with("e ") || rest.starts_with("edit ") => {
                 let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();

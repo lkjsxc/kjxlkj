@@ -15,6 +15,8 @@ fn test_serialize_deserialize_roundtrip() {
         layout: SessionLayout::Single,
         marks: vec![('A', 5, 3)],
         active_buffer: 0,
+        tab_count: 1,
+        active_tab: 0,
     };
 
     let serialized = SessionManager::serialize(&data);

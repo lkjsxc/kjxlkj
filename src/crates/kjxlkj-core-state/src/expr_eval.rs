@@ -1,12 +1,9 @@
-//! Expression register (=) evaluation.
-//! Supports arithmetic, string ops, comparisons, variables.
+//! Expression register (=) evaluation: arithmetic, string, comparison, lists, dicts.
 #![allow(dead_code)]
 use std::collections::HashMap;
 
 /// Evaluate a simple expression for the = register.
-pub fn eval_expression(expr: &str) -> Result<String, String> {
-    eval_expression_with_vars(expr, &HashMap::new())
-}
+pub fn eval_expression(expr: &str) -> Result<String, String> { eval_expression_with_vars(expr, &HashMap::new()) }
 
 /// Evaluate expression with variable bindings.
 #[rustfmt::skip]
@@ -32,6 +29,9 @@ pub fn eval_expression_with_vars(
     }
     if expr.starts_with('[') && expr.ends_with(']') {
         return Ok(expr.to_string()); // list literal returned as-is
+    }
+    if expr.starts_with('{') && expr.ends_with('}') {
+        return Ok(expr.to_string()); // dict literal returned as-is
     }
     if let Some(r) = try_ternary(expr, vars) { return r; }
     if let Some(r) = try_comparison(expr, vars) { return r; }
@@ -181,6 +181,11 @@ fn try_builtin_function(
         "col" if arg == "\".\"" || arg == "'.'" || arg == "." =>
             Some(Ok(vars.get("v:col").cloned().unwrap_or_else(|| "1".into()))),
         "line" | "col" => Some(Ok("0".into())),
+        "type" => {
+            let val = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            let t = if val.starts_with('[') { "3" } else if val.starts_with('{') { "4" } else if val.parse::<i64>().is_ok() { "0" } else { "1" };
+            Some(Ok(t.into()))
+        }
         _ => None,
     }
 }

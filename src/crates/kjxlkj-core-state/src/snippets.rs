@@ -108,7 +108,7 @@ impl SnippetSession {
     }
 }
 
-/// Parse tab-stop markers ($0-$9, ${0}-${9}) from body text.
+/// Parse tab-stop markers ($0-$9, ${0}-${9}, ${N:default}) from body text.
 /// Returns (stripped_text, sorted_offsets_for_stops_1_through_9_then_0).
 fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
     let mut out = String::with_capacity(body.len());
@@ -127,10 +127,16 @@ fn parse_tab_stops(body: &str) -> (String, Vec<usize>) {
                     if let Some(&n) = chars.peek() {
                         if n.is_ascii_digit() {
                             chars.next();
-                            if chars.peek() == Some(&'}') {
-                                chars.next();
-                            }
-                            stops.push((n as u8 - b'0', out.len()));
+                            let stop_num = n as u8 - b'0';
+                            let offset = out.len();
+                            if chars.peek() == Some(&':') {
+                                chars.next(); // consume ':'
+                                while let Some(&pc) = chars.peek() {
+                                    if pc == '}' { chars.next(); break; }
+                                    out.push(pc); chars.next();
+                                }
+                            } else if chars.peek() == Some(&'}') { chars.next(); }
+                            stops.push((stop_num, offset));
                             continue;
                         }
                     }

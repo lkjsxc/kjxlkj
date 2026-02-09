@@ -25,45 +25,28 @@ impl EditorState {
         match self.user_commands.remove(name) { Ok(()) => self.notify_info(&format!("Command removed: {name}")), Err(e) => self.notify_error(&e) }
     }
 
+    #[rustfmt::skip]
     pub(crate) fn handle_autocmd(&mut self, args: &str) {
         use crate::events_types::EventKind;
-        if args.is_empty() {
-            return self.notify_info(&format!("{} autocmd(s) registered", self.events.len()));
-        }
+        if args.is_empty() { return self.notify_info(&format!("{} autocmd(s) registered", self.events.len())); }
         let parts: Vec<&str> = args.splitn(3, ' ').collect();
-        if parts.len() < 2 {
-            return self.notify_error("E471: Usage: autocmd {event} {pattern} {cmd}");
-        }
-        let event_name = parts[0];
-        let event = match event_name {
-            "BufNew" | "BufferNew" => EventKind::BufferNew,
-            "BufRead" | "BufferRead" => EventKind::BufferRead,
-            "BufWritePre" | "BufferWritePre" => EventKind::BufferWritePre,
-            "BufWrite" | "BufferWrite" => EventKind::BufferWrite,
-            "BufWritePost" | "BufferWritePost" => EventKind::BufferWritePost,
-            "BufEnter" | "BufferEnter" => EventKind::BufferEnter,
-            "BufLeave" | "BufferLeave" => EventKind::BufferLeave,
-            "BufDelete" | "BufferDelete" => EventKind::BufferDelete,
-            "WinNew" | "WindowNew" => EventKind::WindowNew,
-            "WinClosed" | "WindowClosed" => EventKind::WindowClosed,
-            "WinEnter" | "WindowEnter" => EventKind::WindowEnter,
-            "WinLeave" | "WindowLeave" => EventKind::WindowLeave,
-            "ModeChanged" => EventKind::ModeChanged,
-            "InsertEnter" => EventKind::InsertEnter,
-            "InsertLeave" => EventKind::InsertLeave,
-            "CursorMoved" => EventKind::CursorMoved,
-            "CursorHold" => EventKind::CursorHold,
-            "FileType" => EventKind::FileType,
-            "ExitPre" => EventKind::ExitPre,
-            _ => return self.notify_error(&format!("E216: Unknown event: {event_name}")),
+        if parts.len() < 2 { return self.notify_error("E471: Usage: autocmd {event} {pattern} {cmd}"); }
+        let en = parts[0];
+        let event = match en {
+            "BufNew" | "BufferNew" => EventKind::BufferNew, "BufRead" | "BufferRead" => EventKind::BufferRead,
+            "BufWritePre" | "BufferWritePre" => EventKind::BufferWritePre, "BufWrite" | "BufferWrite" => EventKind::BufferWrite,
+            "BufWritePost" | "BufferWritePost" => EventKind::BufferWritePost, "BufEnter" | "BufferEnter" => EventKind::BufferEnter,
+            "BufLeave" | "BufferLeave" => EventKind::BufferLeave, "BufDelete" | "BufferDelete" => EventKind::BufferDelete,
+            "WinNew" | "WindowNew" => EventKind::WindowNew, "WinClosed" | "WindowClosed" => EventKind::WindowClosed,
+            "WinEnter" | "WindowEnter" => EventKind::WindowEnter, "WinLeave" | "WindowLeave" => EventKind::WindowLeave,
+            "ModeChanged" => EventKind::ModeChanged, "InsertEnter" => EventKind::InsertEnter,
+            "InsertLeave" => EventKind::InsertLeave, "CursorMoved" => EventKind::CursorMoved,
+            "CursorHold" => EventKind::CursorHold, "FileType" => EventKind::FileType, "ExitPre" => EventKind::ExitPre,
+            _ => return self.notify_error(&format!("E216: Unknown event: {en}")),
         };
-        let (pattern, command) = if parts.len() == 3 {
-            (Some(parts[1].to_string()), parts[2].to_string())
-        } else {
-            (None, parts[1].to_string())
-        };
+        let (pattern, command) = if parts.len() == 3 { (Some(parts[1].to_string()), parts[2].to_string()) } else { (None, parts[1].to_string()) };
         self.events.register(event, command, pattern, None);
-        self.notify_info(&format!("Autocmd registered for {event_name}"));
+        self.notify_info(&format!("Autocmd registered for {en}"));
     }
 
     pub(crate) fn handle_set_mark(&mut self, name: char) {
@@ -162,18 +145,43 @@ impl EditorState {
         }
     }
 
-    /// Handle `:call FuncName(args)`.
+    /// Handle `:call FuncName(args)`. Returns value if `:return` used.
     #[rustfmt::skip]
-    pub(crate) fn handle_call_function(&mut self, rest: &str) {
+    pub(crate) fn handle_call_function(&mut self, rest: &str) -> Option<String> {
         let rest = rest.strip_prefix("call ").unwrap_or(rest).trim();
-        let paren = match rest.find('(') { Some(i) => i, None => { self.notify_error("E107: Missing parentheses"); return; } };
+        let paren = match rest.find('(') { Some(i) => i, None => { self.notify_error("E107: Missing parentheses"); return None; } };
         let name = rest[..paren].trim();
         let close = rest.rfind(')').unwrap_or(rest.len());
         let arg_str = rest[paren + 1..close].trim();
-        let (body, params) = if let Some(f) = self.functions.get(name) { (f.body.clone(), f.params.clone()) } else { self.notify_error(&format!("E117: Unknown function: {name}")); return; };
+        let (body, params) = if let Some(f) = self.functions.get(name) { (f.body.clone(), f.params.clone()) } else { self.notify_error(&format!("E117: Unknown function: {name}")); return None; };
         let args: Vec<String> = if arg_str.is_empty() { Vec::new() } else { arg_str.split(',').map(|s| s.trim().trim_matches('"').to_string()).collect() };
         for (i, p) in params.iter().enumerate() { let val = args.get(i).cloned().unwrap_or_default(); self.options.set(&format!("a:{p}"), crate::options::OptionValue::Str(val)); }
-        for line in &body { self.execute_ex_command(line); }
+        let mut ret_val = None;
+        for line in &body {
+            let trimmed = line.trim();
+            if let Some(expr) = trimmed.strip_prefix("return ").or_else(|| trimmed.strip_prefix("return")) {
+                let expr = expr.trim();
+                ret_val = Some(if expr.is_empty() { String::new() } else {
+                    let opt_val = self.options.get_str(expr).to_string();
+                    if !opt_val.is_empty() { opt_val } else { crate::expr_eval::eval_expression(expr).unwrap_or_default() }
+                });
+                break;
+            }
+            if let Some(rest) = trimmed.strip_prefix("let ") { self.handle_let_command(rest); continue; }
+            self.execute_ex_command(line);
+        }
+        ret_val
+    }
+
+    /// Handle `:let l:var = expr` or `:let var = expr`.
+    pub(crate) fn handle_let_command(&mut self, args: &str) {
+        let args = args.trim();
+        let eq = match args.find('=') { Some(i) => i, None => { self.notify_error("E15: Invalid let"); return; } };
+        let var = args[..eq].trim();
+        let expr = args[eq + 1..].trim();
+        let opt_val = self.options.get_str(expr).to_string();
+        let val = if !opt_val.is_empty() { opt_val } else { crate::expr_eval::eval_expression(expr).unwrap_or_default() };
+        self.options.set(var, crate::options::OptionValue::Str(val));
     }
 }
 
