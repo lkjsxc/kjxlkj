@@ -42,15 +42,42 @@ impl EditorState {
     }
     pub fn try_auto_restore_session(&mut self) { if std::path::Path::new("Session.vim").exists() { self.handle_source("Session.vim"); } }
     /// Load local exrc; when `secure` option is set, skip dangerous commands.
+    /// Checks per-directory trust store before sourcing.
     pub fn load_local_exrc(&mut self) {
         if !self.options.get_bool("exrc") { return; }
         let secure = self.options.get_bool("secure");
         for name in &[".exrc", ".vimrc", ".nvimrc"] {
             if std::path::Path::new(name).exists() {
+                if !self.is_directory_trusted(".") { self.notify_info("Untrusted directory — skipping exrc (use :trust to allow)"); return; }
                 if secure { self.handle_source_secure(name); } else { self.handle_source(name); }
                 return;
             }
         }
+    }
+
+    /// Check if a directory is in the trust store.
+    #[rustfmt::skip]
+    fn is_directory_trusted(&self, dir: &str) -> bool {
+        let trust_path = trust_store_path();
+        let content = match std::fs::read_to_string(&trust_path) { Ok(c) => c, Err(_) => return true /* no trust file = trust all */ };
+        let abs = std::fs::canonicalize(dir).unwrap_or_else(|_| std::path::PathBuf::from(dir));
+        let abs_str = abs.to_string_lossy();
+        content.lines().any(|l| { let l = l.trim(); !l.is_empty() && !l.starts_with('#') && abs_str.starts_with(l) })
+    }
+
+    /// Handle `:trust` — add current directory to trust store.
+    pub fn handle_trust_directory(&mut self) {
+        let cwd = std::env::current_dir().unwrap_or_default();
+        let cwd_str = cwd.to_string_lossy().to_string();
+        let trust_path = trust_store_path();
+        if let Ok(parent) = std::fs::canonicalize(std::path::Path::new(&trust_path).parent().unwrap_or(std::path::Path::new("."))) {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let existing = std::fs::read_to_string(&trust_path).unwrap_or_default();
+        if !existing.lines().any(|l| l.trim() == cwd_str) {
+            let _ = std::fs::write(&trust_path, format!("{}{}\n", existing, cwd_str));
+        }
+        self.notify_info(&format!("Directory trusted: {cwd_str}"));
     }
     /// Source file in secure mode — skip dangerous commands (!, autocmd, write, wq, source).
     #[rustfmt::skip]
@@ -88,6 +115,10 @@ impl EditorState {
         let s = value.strip_prefix('"').and_then(|v| v.strip_suffix('"')).unwrap_or(value);
         self.options.set(key, OptionValue::Str(s.to_string()));
     }
+}
+
+fn trust_store_path() -> String {
+    dirs_config("kjxlkj/trust").unwrap_or_else(|| "trust".into())
 }
 
 fn dirs_config(sub: &str) -> Option<String> {

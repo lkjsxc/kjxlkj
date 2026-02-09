@@ -137,4 +137,55 @@ impl EditorState {
             self.notify_info(&format!(":{kind} — {changed} line(s) aligned"));
         }
     }
+
+    /// Handle `:move {dest}` — move range of lines to after dest line.
+    #[rustfmt::skip]
+    pub(crate) fn handle_move_range(&mut self, range: crate::ex_parse::ExRange, dest: usize) {
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get_mut(buf_id) {
+            let total = buf.content.len_lines();
+            let (start, end) = (range.start.min(total.saturating_sub(1)), range.end.min(total.saturating_sub(1)));
+            buf.save_undo_checkpoint(cursor);
+            let mut lines = Vec::new();
+            for l in start..=end { lines.push(buf.content.line(l).to_string()); }
+            let text: String = lines.join("");
+            // Delete source lines.
+            let (sb, eb) = (buf.content.line_to_byte(start), if end + 1 >= total { buf.content.len_bytes() } else { buf.content.line_to_byte(end + 1) });
+            let (sc, ec) = (buf.content.byte_to_char(sb), buf.content.byte_to_char(eb));
+            buf.content.remove(sc..ec);
+            // Insert at destination (adjusted for removal).
+            let adj_dest = if dest > end { dest - (end - start + 1) } else { dest };
+            let ins_line = (adj_dest + 1).min(buf.content.len_lines());
+            let ins_byte = if ins_line >= buf.content.len_lines() { buf.content.len_bytes() } else { buf.content.line_to_byte(ins_line) };
+            let ins_char = buf.content.byte_to_char(ins_byte);
+            let ins_text = if ins_line >= buf.content.len_lines() && !text.ends_with('\n') { format!("\n{}", text) } else { text };
+            buf.content.insert(ins_char, &ins_text);
+            buf.increment_version();
+            self.notify_info(&format!("{} line(s) moved", end - start + 1));
+        }
+        self.clamp_cursor(); self.ensure_cursor_visible();
+    }
+
+    /// Handle `:copy {dest}` / `:t {dest}` — copy range of lines to after dest line.
+    #[rustfmt::skip]
+    pub(crate) fn handle_copy_range(&mut self, range: crate::ex_parse::ExRange, dest: usize) {
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get_mut(buf_id) {
+            let total = buf.content.len_lines();
+            let (start, end) = (range.start.min(total.saturating_sub(1)), range.end.min(total.saturating_sub(1)));
+            buf.save_undo_checkpoint(cursor);
+            let mut lines = Vec::new();
+            for l in start..=end { lines.push(buf.content.line(l).to_string()); }
+            let text: String = lines.join("");
+            let ins_line = (dest + 1).min(total);
+            let ins_byte = if ins_line >= total { buf.content.len_bytes() } else { buf.content.line_to_byte(ins_line) };
+            let ins_char = buf.content.byte_to_char(ins_byte);
+            let ins_text = if ins_line >= total && !text.ends_with('\n') { format!("\n{}", text) } else { text };
+            buf.content.insert(ins_char, &ins_text);
+            buf.increment_version();
+            self.notify_info(&format!("{} line(s) copied", end - start + 1));
+        }
+    }
 }

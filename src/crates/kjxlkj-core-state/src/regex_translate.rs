@@ -95,7 +95,7 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                 Some('%') => match chars.peek() {
                     Some('[') => { chars.next(); out.push('['); consume_until(&mut chars, &mut out, ']'); out.push(']'); }
                     Some('(') => { chars.next(); group_starts.push(out.len()); out.push_str("(?:"); }
-                    Some('V') | Some('l') | Some('c') => { chars.next(); /* runtime constraint no-ops in static regex */ }
+                    Some('V') | Some('l') | Some('c') | Some('#') => { chars.next(); /* runtime constraint no-ops in static regex */ }
                     Some(c2) if c2.is_ascii_digit() => { consume_digits(&mut chars); /* \%Nl or \%Nc: consume digits + trailing l/c/v */ if matches!(chars.peek(), Some('l') | Some('c') | Some('v')) { chars.next(); } }
                     Some('d') => { chars.next(); let n = collect_digits(&mut chars); if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } }
                     Some('x') => { chars.next(); let s = collect_hex(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 16) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }

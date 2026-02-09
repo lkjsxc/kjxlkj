@@ -9,7 +9,7 @@ pub fn eval_expression_with_vars(expr: &str, vars: &HashMap<String, String>) -> 
     if let Some(rest) = expr.strip_prefix("g:").or_else(|| expr.strip_prefix("b:"))
         .or_else(|| expr.strip_prefix("w:")).or_else(|| expr.strip_prefix("v:")).or_else(|| expr.strip_prefix("s:"))
     { return Ok(vars.get(&format!("{}{}", &expr[..2], rest)).cloned().unwrap_or_default()); }
-    if let Some(b) = expr.find("[\"") { if expr.ends_with("\"]") { return Ok(extract_dict_value(&eval_expression_with_vars(&expr[..b], vars)?, &expr[b+2..expr.len()-2])); } }
+    if let Some(b) = expr.find("[\"") { if b > 0 && expr.ends_with("\"]") { return Ok(extract_dict_value(&eval_expression_with_vars(&expr[..b], vars)?, &expr[b+2..expr.len()-2])); } }
     if expr.starts_with("function(\"") && expr.ends_with("\")") { return Ok(expr[10..expr.len()-2].to_string()); }
     if let Some(parts) = split_concat(expr) { let mut r = String::new(); for p in parts { r.push_str(&eval_expression_with_vars(p.trim(), vars)?); } return Ok(r); }
     if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 { return Ok(expr[1..expr.len()-1].to_string()); }
@@ -129,16 +129,16 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
             Some(Ok(if d.contains(&format!("\"{}\":", k)) || d.contains(&format!("\"{}\" :", k)) { "1" } else { "0" }.into()))
         }
         "function" => Some(Ok(arg.trim().trim_matches('"').to_string())),
-        "keys" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(extract_dict_keys(&v))) }
-        "values" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(extract_dict_values(&v))) }
-        "map" => Some(Ok(list_map_filter(arg, vars, true))),
-        "filter" => Some(Ok(list_map_filter(arg, vars, false))),
+        "keys" | "values" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(if name == "keys" { extract_dict_keys(&v) } else { extract_dict_values(&v) })) }
+        "map" | "filter" => Some(Ok(list_map_filter(arg, vars, name == "map"))),
         "extend" => Some(Ok(list_extend(arg, vars))),
-        "match" => Some(crate::expr_string_funcs::expr_match(arg, vars)),
-        "substitute" => Some(crate::expr_string_funcs::expr_substitute(arg, vars)),
+        "match" | "substitute" => Some(if name == "match" { crate::expr_string_funcs::expr_match(arg, vars) } else { crate::expr_string_funcs::expr_substitute(arg, vars) }),
         "toupper" | "tolower" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok(if name == "toupper" { v.to_uppercase() } else { v.to_lowercase() })) }
-        "tr" => Some(crate::expr_string_funcs::expr_tr(arg, vars)),
-        "escape" => Some(crate::expr_string_funcs::expr_escape(arg, vars)),
+        "tr" | "escape" | "printf" | "split" | "join" => Some(match name {
+            "tr" => crate::expr_string_funcs::expr_tr(arg, vars), "escape" => crate::expr_string_funcs::expr_escape(arg, vars),
+            "printf" => crate::expr_string_funcs::expr_printf(arg, vars), "split" => crate::expr_string_funcs::expr_split(arg, vars),
+            _ => crate::expr_string_funcs::expr_join(arg, vars),
+        }),
         "and" | "or" | "xor" | "lshift" | "rshift" => { let (la, ra) = match split_two_args(arg) { Some(p) => p, None => return Some(Err(format!("{name}() requires 2 args"))) };
             let (l, r) = (eval_expression_with_vars(la.trim(), vars).ok()?.parse::<i64>().ok()?, eval_expression_with_vars(ra.trim(), vars).ok()?.parse::<i64>().ok()?);
             Some(Ok(format!("{}", match name { "and" => l & r, "or" => l | r, "xor" => l ^ r, "lshift" => l << r, _ => l >> r })))

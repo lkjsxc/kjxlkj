@@ -5,6 +5,7 @@ use kjxlkj_core_types::{CursorPosition, Mode};
 impl EditorState {
     /// Insert text at block start (I) or end (A) of each line in block.
     /// Called after user exits insert mode, with the typed text.
+    /// If `count > 1`, the text is repeated count times.
     pub(crate) fn visual_block_insert(
         &mut self,
         text: &str,
@@ -12,6 +13,8 @@ impl EditorState {
         end: CursorPosition,
         at_end: bool,
     ) {
+        let count = self.op_count.max(1);
+        let effective_text = text.repeat(count);
         let col = if at_end {
             start.grapheme.max(end.grapheme) + 1
         } else {
@@ -29,7 +32,7 @@ impl EditorState {
                     let insert_col = col.min(line_str.trim_end_matches('\n').len());
                     let byte_pos = line_start + insert_col;
                     let char_idx = buf.content.byte_to_char(byte_pos);
-                    buf.content.insert(char_idx, text);
+                    buf.content.insert(char_idx, &effective_text);
                 }
             }
             buf.increment_version();

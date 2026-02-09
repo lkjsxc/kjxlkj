@@ -21,6 +21,39 @@ impl EditorState {
         self.search.active = false;
     }
 
+    /// Dispatch echo/echon/echomsg/echohl/echoerr commands.
+    #[rustfmt::skip]
+    pub(crate) fn dispatch_echo(&mut self, rest: &str) {
+        if let Some(msg) = rest.strip_prefix("echoerr ") { self.notify_error(msg.trim().trim_matches('"')); }
+        else if let Some(hl) = rest.strip_prefix("echohl ") { self.options.set("echohl", crate::options::OptionValue::Str(hl.trim().to_string())); }
+        else if rest == "echohl" { self.options.set("echohl", crate::options::OptionValue::Str(String::new())); }
+        else if let Some(msg) = rest.strip_prefix("echomsg ") { self.notify_info(msg.trim().trim_matches('"')); }
+        else if let Some(msg) = rest.strip_prefix("echon ") { self.notify_info(msg.trim().trim_matches('"')); }
+        else { self.notify_info(rest.strip_prefix("echo").unwrap_or("").trim().trim_matches('"')); }
+    }
+
+    /// Handle `:for var in list` — start accumulating loop body.
+    #[rustfmt::skip]
+    pub(crate) fn handle_for_start(&mut self, cmd: &str) {
+        let rest = cmd.strip_prefix("for ").unwrap_or("").trim();
+        if let Some((var, list_expr)) = rest.split_once(" in ") {
+            self.for_loop_acc = Some(crate::editor::ForLoopAcc { var: var.trim().to_string(), list_expr: list_expr.trim().to_string(), body: Vec::new() });
+        } else { self.notify_error("E690: Missing \"in\" after :for"); }
+    }
+
+    /// Execute accumulated :for loop body for each item in list.
+    #[rustfmt::skip]
+    pub(crate) fn execute_for_loop(&mut self, var: &str, list_expr: &str, body: &[String]) {
+        let list_val = crate::expr_eval::eval_expression(list_expr).unwrap_or_default();
+        let inner = list_val.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or(&list_val);
+        if inner.is_empty() { return; }
+        let items: Vec<&str> = inner.split(',').map(|s| s.trim().trim_matches('"')).collect();
+        for item in items {
+            self.options.set(var, crate::options::OptionValue::Str(item.to_string()));
+            for line in body { self.execute_ex_command(line); }
+        }
+    }
+
     /// Handle `:normal[!] {keys}` — execute keys as if typed in normal mode.
     /// With `!`, no mappings are applied.
     pub(crate) fn handle_normal_command(&mut self, cmd: &str) {

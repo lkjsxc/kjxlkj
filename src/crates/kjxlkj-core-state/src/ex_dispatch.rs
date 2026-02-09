@@ -45,6 +45,14 @@ impl EditorState {
             } else { acc.body.push(cmd.to_string()); }
             return;
         }
+        // Accumulate :for/:endfor loop body.
+        if let Some(ref mut acc) = self.for_loop_acc {
+            if cmd == "endfor" || cmd == "endfo" {
+                let a = self.for_loop_acc.take().unwrap();
+                self.execute_for_loop(&a.var, &a.list_expr, &a.body);
+            } else { acc.body.push(cmd.to_string()); }
+            return;
+        }
         self.last_ex_command = cmd.to_string();
         let current_line = self.windows.focused().cursor.line;
         let buf_id = self.current_buffer_id();
@@ -110,12 +118,7 @@ impl EditorState {
             _ if rest.starts_with("let ") => { self.handle_let_command(rest.strip_prefix("let ").unwrap()); }
             _ if rest.starts_with("e ") || rest.starts_with("edit ") => { let path = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim(); if !path.is_empty() { self.notify_info(&format!("Opening: {path}")); } }
             _ if rest.starts_with("b ") => { if let Ok(n) = rest[2..].trim().parse::<u64>() { self.buffers.switch_to(kjxlkj_core_types::BufferId(n)); } }
-            _ if rest.starts_with("echo ") || rest == "echo" => { let msg = rest.strip_prefix("echo").unwrap().trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echon ") => { let msg = rest[6..].trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echomsg ") => { let msg = rest[8..].trim().trim_matches('"'); self.notify_info(msg); }
-            _ if rest.starts_with("echohl ") => { let hl = rest[7..].trim(); self.options.set("echohl", crate::options::OptionValue::Str(hl.to_string())); }
-            _ if rest == "echohl" => { self.options.set("echohl", crate::options::OptionValue::Str(String::new())); }
-            _ if rest.starts_with("echoerr ") => { let msg = rest[8..].trim().trim_matches('"'); self.notify_error(msg); }
+            _ if rest.starts_with("echo") => { self.dispatch_echo(rest); }
             _ if rest.starts_with("throw ") => { let msg = rest[6..].trim().trim_matches('"'); self.last_error = Some(msg.to_string()); self.notify_error(&format!("E605: Exception: {msg}")); }
             _ if rest.starts_with("execute ") || rest.starts_with("exe ") => {
                 let arg = rest.split_once(' ').map(|x| x.1).unwrap_or("").trim();
@@ -123,6 +126,9 @@ impl EditorState {
             }
             _ if rest == "retab" || rest.starts_with("retab ") || rest.starts_with("retab!") => { self.handle_retab(rest.strip_prefix("retab").unwrap_or("")); }
             _ if rest.starts_with("normal ") || rest.starts_with("normal! ") || rest.starts_with("norm ") || rest.starts_with("norm! ") => { self.handle_normal_command(rest); }
+            _ if rest.starts_with("for ") => { self.handle_for_start(rest); }
+            _ if rest.starts_with("move ") || rest.starts_with("m ") => { let dest: usize = rest.split_once(' ').and_then(|(_,d)| d.trim().parse::<usize>().ok()).unwrap_or(1).saturating_sub(1); self.handle_move_range(range.unwrap_or(ExRange::single(current_line)), dest); }
+            _ if rest.starts_with("copy ") || rest.starts_with("co ") || rest.starts_with("t ") => { let dest: usize = rest.split_once(' ').and_then(|(_,d)| d.trim().parse::<usize>().ok()).unwrap_or(1).saturating_sub(1); self.handle_copy_range(range.unwrap_or(ExRange::single(current_line)), dest); }
             _ if rest == "center" || rest.starts_with("center ") || rest == "left" || rest.starts_with("left ") || rest == "right" || rest.starts_with("right ") => {
                 self.handle_alignment(rest, range.unwrap_or(crate::ex_parse::ExRange::single(current_line)));
             }
@@ -156,6 +162,7 @@ impl EditorState {
             _ if rest.starts_with("mksession ") => { self.handle_mksession(Some(rest.strip_prefix("mksession ").unwrap().trim())); }
             "source" => self.notify_error("E471: Argument required"),
             _ if rest.starts_with("source ") => { self.handle_source(rest.strip_prefix("source ").unwrap().trim()); }
+            "trust" => self.handle_trust_directory(),
             _ if rest == "set" || rest.starts_with("set ") || rest.starts_with("set\t") => {
                 let args = rest.strip_prefix("set").unwrap_or("").trim();
                 self.handle_set_command(args);

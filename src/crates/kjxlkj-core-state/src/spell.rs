@@ -60,9 +60,17 @@ impl EditorState {
     }
 
     /// Try to load default spell dictionary from XDG or cwd paths.
+    /// Supports comma-separated languages in `spelllang` option (e.g., "en,fr").
     #[rustfmt::skip]
     fn try_load_spell_dictionary(&mut self) {
-        let lang = self.spell.lang.clone();
+        let lang_str = self.options.get_str("spelllang").to_string();
+        let default_lang = self.spell.lang.clone();
+        let langs: Vec<String> = if lang_str.is_empty() { vec![default_lang] } else { lang_str.split(',').map(|s| s.trim().to_string()).collect() };
+        for lang in &langs { self.load_spell_for_lang(lang); }
+    }
+
+    #[rustfmt::skip]
+    fn load_spell_for_lang(&mut self, lang: &str) {
         let cands = [format!("spell/{lang}.dic"), format!("spell/{lang}.utf-8.spl")];
         if let Some(base) = std::env::var("XDG_CONFIG_HOME").ok().or_else(|| std::env::var("HOME").ok().map(|h| format!("{h}/.config"))) {
             for c in &cands { let p = format!("{base}/kjxlkj/{c}");

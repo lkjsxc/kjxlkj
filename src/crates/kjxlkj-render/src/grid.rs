@@ -110,10 +110,12 @@ fn render_popup_menu(grid: &mut CellGrid, pm: &kjxlkj_core_ui::PopupMenu, base: 
     let selected = Style { bg: Color::Rgb(80, 120, 200), fg: Color::Rgb(255, 255, 255), bold: true, italic: false, underline: false, reverse: false };
     let _ = base;
     let end = (pm.scroll_offset + pm.max_visible).min(pm.items.len());
+    let max_w = (grid.width() as usize).saturating_sub(pm.col as usize).max(4);
     for (vi, idx) in (pm.scroll_offset..end).enumerate() {
         let r = pm.row.saturating_sub(vi as u16);
         let st = if pm.selected == Some(idx) { selected } else { normal };
-        let label = format!(" {} ", &pm.items[idx]);
-        grid.set_str(pm.col, r, &label, st);
+        let raw = &pm.items[idx];
+        let truncated = if raw.len() + 2 > max_w { format!(" {}…", &raw[..max_w.saturating_sub(3)]) } else { format!(" {} ", raw) };
+        grid.set_str(pm.col, r, &truncated, st);
     }
 }

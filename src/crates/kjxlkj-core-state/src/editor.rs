@@ -32,32 +32,19 @@ pub struct EditorState {
     pub events: EventRegistry,
     pub user_commands: UserCommandRegistry,
     pub(crate) dispatch: NormalDispatch,
-    /// Anchor position for visual mode selection.
     pub visual_anchor: Option<CursorPosition>,
-    /// Count saved from before operator key.
     pub(crate) op_count: usize,
-    /// Motion count accumulating in operator-pending mode.
     pub(crate) motion_count: Option<usize>,
-    /// g-prefix flag for operator-pending mode.
     pub(crate) g_prefix: bool,
-    /// Pending register for next yank/delete/put.
     pub(crate) pending_register: Option<char>,
-    /// Editor options (:set).
     pub options: OptionStore,
-    /// Macro recording target register (None = not recording).
     pub(crate) recording_macro: Option<char>,
-    /// Keys recorded during current macro recording.
     pub(crate) macro_buffer: Vec<Key>,
-    /// Per-register macro key storage.
     pub(crate) macro_store: std::collections::HashMap<char, Vec<Key>>,
-    /// Last executed macro register for @@ replay.
     pub(crate) last_macro: Option<char>,
-    /// Last f/t/F/T motion for ; and , repeat: (kind, char).
-    /// kind: 'f'=forward, 'F'=backward, 't'=till fwd, 'T'=till bck.
+    /// Last f/t/F/T motion: (kind, char). kind: 'f'/'F'/'t'/'T'.
     pub(crate) last_ft: Option<(char, char)>,
-    /// Text-object prefix: 'i' (inner) or 'a' (around) in op-pending.
     pub(crate) text_obj_prefix: Option<char>,
-    /// Macro recursion depth counter.
     pub(crate) macro_depth: usize,
     /// Last inserted text for . register.
     pub(crate) last_inserted_text: String,
@@ -106,11 +93,16 @@ pub struct EditorState {
     pub(crate) expr_from_insert: bool,
     /// Visual block $ mode: extend selection to EOL on each line.
     pub(crate) block_dollar: bool,
+    /// Accumulator for :for/:endfor loop body.
+    pub(crate) for_loop_acc: Option<ForLoopAcc>,
 }
 
 /// Accumulator for multi-line `function!`/`endfunction` blocks.
 #[derive(Debug, Clone)]
 pub struct FunctionBodyAcc { pub name: String, pub params: Vec<String>, pub body: Vec<String> }
+/// Accumulator for `:for var in list` / `:endfor` loops.
+#[derive(Debug, Clone)]
+pub struct ForLoopAcc { pub var: String, pub list_expr: String, pub body: Vec<String> }
 
 /// State for :s///c confirmation dialog.
 #[derive(Debug, Clone)]
@@ -177,6 +169,7 @@ impl EditorState {
             spell: crate::spell::SpellChecker::new(),
             expr_from_insert: false,
             block_dollar: false,
+            for_loop_acc: None,
         };
         editor.load_viminfo_file();
         editor
