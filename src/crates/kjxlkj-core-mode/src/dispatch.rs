@@ -133,6 +133,7 @@ impl NormalDispatch {
             )),
             ';' => KeyDispatchResult::Action(Action::ChangelistOlder),
             ',' => KeyDispatchResult::Action(Action::ChangelistNewer),
+            '\'' | '`' => KeyDispatchResult::Action(Action::JumpFromMarkStack),
             _ => KeyDispatchResult::Unhandled,
         }
     }

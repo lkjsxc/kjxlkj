@@ -85,17 +85,17 @@ impl EditorState {
         self.notify_info(&lines.join("\n"));
     }
 
-    pub(crate) fn handle_list_registers(&mut self) {
+    pub(crate) fn handle_list_registers_filtered(&mut self, filter: &str) {
         use kjxlkj_core_edit::RegisterName;
+        let filter_chars: Vec<char> = filter.chars().collect();
+        let show = |c: char| -> bool { filter_chars.is_empty() || filter_chars.contains(&c) };
         let mut lines = Vec::new();
         lines.push("--- Registers ---".to_string());
-        // Show unnamed.
-        if let Some(r) = self.registers.get_unnamed() {
-            let s = r.content.replace('\n', "^J");
-            lines.push(format!("\"\"   {}", truncate(&s, 40)));
-        }
-        // Named a-z.
+        if show('"') { if let Some(r) = self.registers.get_unnamed() {
+            let s = r.content.replace('\n', "^J"); lines.push(format!("\"\"   {}", truncate(&s, 40)));
+        } }
         for c in 'a'..='z' {
+            if !show(c) { continue; }
             let name = RegisterName::Named(c);
             if let Some(r) = self.registers.get(name) {
                 let s = r.content.replace('\n', "^J");
@@ -105,21 +105,18 @@ impl EditorState {
                 lines.push(format!("\"{c}   {}", truncate(&s, 40)));
             }
         }
-        // Numbered 0-9.
         for i in 0..=9u8 {
+            if !show((b'0' + i) as char) { continue; }
             let name = RegisterName::Numbered(i);
             if let Some(r) = self.registers.get(name) {
                 let s = r.content.replace('\n', "^J");
                 lines.push(format!("\"{i}   {}", truncate(&s, 40)));
             }
         }
-        // Last-inserted text (. register).
-        if let Some(r) = self.registers.get(RegisterName::LastInserted) {
-            let s = r.content.replace('\n', "^J");
-            lines.push(format!("\".   {}", truncate(&s, 40)));
-        }
-        // Read-only registers.
-        self.append_readonly_regs(&mut lines);
+        if show('.') { if let Some(r) = self.registers.get(RegisterName::LastInserted) {
+            let s = r.content.replace('\n', "^J"); lines.push(format!("\".   {}", truncate(&s, 40)));
+        } }
+        self.append_readonly_regs_filtered(&mut lines, &show);
         self.notify_info(&lines.join("\n"));
     }
 
@@ -131,10 +128,10 @@ impl EditorState {
         }
     }
 
-    fn append_readonly_regs(&self, lines: &mut Vec<String>) {
-        if let Some(p) = self.buffers.get(self.current_buffer_id()).and_then(|b| b.path.as_ref()) { lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40))); }
-        if !self.last_ex_command.is_empty() { lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40))); }
-        if let Some(ref pat) = self.search.pattern { if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); } }
+    fn append_readonly_regs_filtered(&self, lines: &mut Vec<String>, show: &dyn Fn(char) -> bool) {
+        if show('%') { if let Some(p) = self.buffers.get(self.current_buffer_id()).and_then(|b| b.path.as_ref()) { lines.push(format!("\"%   {}", truncate(&p.display().to_string(), 40))); } }
+        if show(':') && !self.last_ex_command.is_empty() { lines.push(format!("\":   {}", truncate(&self.last_ex_command, 40))); }
+        if show('/') { if let Some(ref pat) = self.search.pattern { if self.search.active { lines.push(format!("\"/   {}", truncate(pat, 40))); } } }
     }
 
     /// Handle `:call FuncName(args)`. Returns value if `:return` used.

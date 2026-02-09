@@ -51,6 +51,11 @@ impl EditorState {
         let funcs = &self.functions;
         let bid = buf_id.0 as usize;
         let mark_fn = |ch: char| -> Option<usize> { marks.get(ch, bid).map(|p| p.line) };
+        let mut reg_vars = std::collections::HashMap::new(); // @a..@z register vars for expression addresses
+        for c in b'a'..=b'z' {
+            let ch = c as char;
+            if let Some(r) = self.registers.get(kjxlkj_core_edit::RegisterName::Named(ch)) { reg_vars.insert(format!("@{ch}"), r.content.clone()); }
+        }
         #[rustfmt::skip]
         let call_fn = |expr: &str| -> Option<String> {
             let p = expr.find('(')?; let c = expr.rfind(')')?;
@@ -60,7 +65,7 @@ impl EditorState {
             let vars: std::collections::HashMap<String,String> = f.params.iter().enumerate().map(|(i,p)| (format!("a:{p}"), args.get(i).cloned().unwrap_or_default())).collect();
             f.body.iter().find_map(|l| l.trim().strip_prefix("return ").map(|e| crate::expr_eval::eval_expression_with_vars(e.trim(), &vars).unwrap_or_default()))
         };
-        let ctx = RangeContext { current_line, total_lines, lines: &text_lines, mark_line: Some(&mark_fn), last_search: self.search.pattern.as_deref(), vars: None, call_fn: Some(&call_fn) };
+        let ctx = RangeContext { current_line, total_lines, lines: &text_lines, mark_line: Some(&mark_fn), last_search: self.search.pattern.as_deref(), vars: Some(&reg_vars), call_fn: Some(&call_fn) };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
         // Mark-not-set detection.
         if range.is_none() && cmd.contains('\'') {
@@ -118,22 +123,16 @@ impl EditorState {
                     self.buffers.switch_to(kjxlkj_core_types::BufferId(n));
                 }
             }
+            _ if rest.starts_with("echoerr ") => { let msg = rest.strip_prefix("echoerr ").unwrap().trim().trim_matches('"'); self.notify_error(msg); }
+            _ if rest.starts_with("throw ") => { let msg = rest.strip_prefix("throw ").unwrap().trim().trim_matches('"'); self.last_error = Some(msg.to_string()); self.notify_error(&format!("E605: Exception: {msg}")); }
             _ if super::ex_map::is_map_command(rest) => self.handle_map_command(rest),
-            _ if rest == "command" || rest == "comclear" => {
-                self.handle_command_command(rest, "");
-            }
+            _ if rest == "command" || rest == "comclear" => { self.handle_command_command(rest, ""); }
             _ if rest.starts_with("command ") || rest.starts_with("command! ") => {
                 let (prefix, args) = rest.split_once(' ').unwrap();
                 self.handle_command_command(prefix, args);
             }
-            _ if rest.starts_with("delcommand ") => {
-                let name = rest.strip_prefix("delcommand ").unwrap().trim();
-                self.handle_delcommand(name);
-            }
-            _ if rest.starts_with("autocmd ") || rest == "autocmd" => {
-                let args = rest.strip_prefix("autocmd").unwrap().trim();
-                self.handle_autocmd(args);
-            }
+            _ if rest.starts_with("delcommand ") => { self.handle_delcommand(rest.strip_prefix("delcommand ").unwrap().trim()); }
+            _ if rest.starts_with("autocmd ") || rest == "autocmd" => { self.handle_autocmd(rest.strip_prefix("autocmd").unwrap().trim()); }
             _ if rest.starts_with("mark ") || rest.starts_with("k ") => {
                 self.handle_mark_command(rest);
             }
@@ -147,7 +146,10 @@ impl EditorState {
                 self.notify_info("All local marks cleared");
             }
             "marks" => self.handle_list_marks(),
-            "registers" | "reg" => self.handle_list_registers(),
+            _ if rest == "registers" || rest == "reg" || rest.starts_with("registers ") || rest.starts_with("reg ") => {
+                let filter = rest.split_once(' ').map(|x| x.1.trim()).unwrap_or("");
+                self.handle_list_registers_filtered(filter);
+            }
             "jumps" => self.handle_list_jumps(),
             "noh" | "nohlsearch" => self.handle_nohlsearch(),
             _ if rest.starts_with("debug @") => {

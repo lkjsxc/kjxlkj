@@ -35,6 +35,42 @@ impl EditorState {
         }
     }
 
+    /// Load indent plugin for the given filetype from ftplugin/indent directory.
+    /// Sets indent-related options (shiftwidth, tabstop, expandtab, etc.).
+    #[rustfmt::skip]
+    pub fn load_indent_plugin(&mut self, filetype: &str) {
+        let candidates = [
+            dirs_config(&format!("kjxlkj/indent/{filetype}.vim")),
+            Some(format!("indent/{filetype}.vim")),
+            dirs_config(&format!("kjxlkj/ftplugin/{filetype}_indent.vim")),
+            Some(format!("ftplugin/{filetype}_indent.vim")),
+        ];
+        for p in candidates.iter().flatten() {
+            if std::path::Path::new(p).exists() { self.handle_source(p); return; }
+        }
+        // Apply built-in indent defaults for common filetypes.
+        self.apply_builtin_indent(filetype);
+    }
+
+    #[rustfmt::skip]
+    fn apply_builtin_indent(&mut self, filetype: &str) {
+        use crate::options::OptionValue;
+        let (sw, ts, et) = match filetype {
+            "rust" | "go" | "c" | "cpp" | "java" => (4, 4, true),
+            "python" | "yaml" | "json" | "toml" => (4, 4, true),
+            "javascript" | "typescript" | "html" | "css" | "jsx" |
+            "typescriptreact" | "javascriptreact" => (2, 2, true),
+            "ruby" | "elixir" | "lua" | "dart" | "kotlin" | "swift" => (2, 2, true),
+            "haskell" | "ocaml" | "julia" | "r" => (2, 2, true),
+            "sh" | "vim" | "markdown" => (4, 4, true),
+            "makefile" => (8, 8, false),
+            _ => return,
+        };
+        self.options.set("shiftwidth", OptionValue::Int(sw));
+        self.options.set("tabstop", OptionValue::Int(ts));
+        self.options.set("expandtab", OptionValue::Bool(et));
+    }
+
     /// Try to auto-restore a session: load Session.vim if present in cwd.
     pub fn try_auto_restore_session(&mut self) {
         let path = "Session.vim";

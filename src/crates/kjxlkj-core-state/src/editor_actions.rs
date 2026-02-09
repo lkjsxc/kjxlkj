@@ -77,6 +77,7 @@ impl EditorState {
             Action::SetMark(c) => self.set_mark_at_cursor(c),
             Action::JumpToMark(c) => self.jump_to_mark(c),
             Action::JumpToMarkLine(c) => self.jump_to_mark_line(c),
+            Action::JumpFromMarkStack => self.jump_from_mark_stack(),
             Action::SelectRegister(c) => { self.pending_register = Some(c); }
             Action::StartRecording(c) => self.start_recording(c),
             Action::StopRecording => self.stop_recording(),
@@ -101,12 +102,16 @@ impl EditorState {
         }
     }
 
-    /// Handle K command: look up keyword under cursor with keywordprg.
+    /// Handle K command: look up keyword under cursor with keywordprg. Supports URL templates.
     #[rustfmt::skip]
     pub(crate) fn handle_keyword_lookup(&mut self, count: usize) {
         let word = self.word_under_cursor();
         if word.is_empty() { return self.notify_error("E349: No identifier under cursor"); }
         let prg = { let p = self.options.get_str("keywordprg").to_string(); if p.is_empty() { "man".into() } else { p } };
+        if prg.starts_with("http://") || prg.starts_with("https://") {
+            let url = if prg.contains("{keyword}") { prg.replace("{keyword}", &word) } else { format!("{prg}/{word}") };
+            return self.notify_info(&format!("K: open {url}"));
+        }
         use std::process::Command;
         let mut cmd = Command::new(&prg);
         if count > 1 { cmd.arg(format!("{count}")); }
@@ -154,18 +159,11 @@ impl EditorState {
 
     /// Execute next step in macro debug session.
     #[allow(dead_code)]
+    #[rustfmt::skip]
     pub(crate) fn macro_step_next(&mut self) {
         if let Some(ref mut keys) = self.macro_step_keys {
-            if let Some(key) = keys.first().cloned() {
-                let remaining = keys.len() - 1;
-                keys.remove(0);
-                self.notify_info(&format!("Step: {:?} ({remaining} remaining)", key));
-                self.handle_key(key);
-            }
-            if self.macro_step_keys.as_ref().map(|k| k.is_empty()).unwrap_or(true) {
-                self.macro_step_keys = None;
-                self.notify_info("Macro stepping complete");
-            }
+            if let Some(key) = keys.first().cloned() { let r = keys.len() - 1; keys.remove(0); self.notify_info(&format!("Step: {:?} ({r} remaining)", key)); self.handle_key(key); }
+            if self.macro_step_keys.as_ref().map(|k| k.is_empty()).unwrap_or(true) { self.macro_step_keys = None; self.notify_info("Macro stepping complete"); }
         }
     }
 

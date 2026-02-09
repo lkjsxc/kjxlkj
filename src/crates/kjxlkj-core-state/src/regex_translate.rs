@@ -81,10 +81,13 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                     Some(other) => { out.push_str("\\_"); out.push(other); }
                     None => out.push_str("\\_"),
                 },
-                // \%[abc] collection → [abc], \%(…\) non-capturing group → (?:…)
+                // \%[abc] collection → [abc], \%(…\) non-capturing group → (?:…), \%dN/\%xH/\%oO equivalence
                 Some('%') => match chars.peek() {
                     Some('[') => { chars.next(); out.push('['); consume_until(&mut chars, &mut out, ']'); out.push(']'); }
                     Some('(') => { chars.next(); group_starts.push(out.len()); out.push_str("(?:"); }
+                    Some('d') => { chars.next(); let n = collect_digits(&mut chars); if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } }
+                    Some('x') => { chars.next(); let s = collect_hex(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 16) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }
+                    Some('o') => { chars.next(); let s = collect_oct(&mut chars); if let Ok(n) = u32::from_str_radix(&s, 8) { if let Some(ch) = char::from_u32(n) { push_escaped_char(&mut out, ch); } } }
                     _ => { out.push_str("\\%"); }
                 },
                 Some(other) => {
@@ -113,88 +116,54 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
 
 /// Result of translating a Vim pattern.
 pub struct TranslateResult {
-    /// Rust regex pattern.
     pub pattern: String,
-    /// Case override from \c (false) or \C (true); None=use option.
     pub case_override: Option<bool>,
 }
 
-fn consume_until(
-    chars: &mut std::iter::Peekable<std::str::Chars<'_>>,
-    out: &mut String,
-    end: char,
-) {
-    for c in chars.by_ref() {
-        if c == end {
-            return;
-        }
-        out.push(c);
-    }
+#[rustfmt::skip]
+fn consume_until(chars: &mut std::iter::Peekable<std::str::Chars<'_>>, out: &mut String, end: char) {
+    for c in chars.by_ref() { if c == end { return; } out.push(c); }
 }
 
-/// Check for `\@=`, `\@!`, `\@<=`, `\@<!` after a group close
-/// and convert the group to a Rust regex lookaround.
-fn apply_lookaround(
-    chars: &mut std::iter::Peekable<std::str::Chars<'_>>,
-    out: &mut String,
-    group_start: usize,
-) {
-    // Check if next is \@
-    if chars.peek() != Some(&'\\') {
-        return;
-    }
-    let mut probe = chars.clone();
-    probe.next(); // consume '\'
-    if probe.peek() != Some(&'@') {
-        return;
-    }
-    probe.next(); // consume '@'
-    let prefix = match probe.peek() {
-        Some('=') => {
-            probe.next();
-            "(?="
-        }
-        Some('!') => {
-            probe.next();
-            "(?!"
-        }
-        Some('>') => {
-            probe.next();
-            // Atomic group: Rust regex doesn't support (?>...) natively,
-            // translate to non-capturing group (?:...) as best approximation.
-            "(?:"
-        }
-        Some('<') => {
-            probe.next();
-            match probe.peek() {
-                Some('=') => {
-                    probe.next();
-                    "(?<="
-                }
-                Some('!') => {
-                    probe.next();
-                    "(?<!"
-                }
-                _ => return,
-            }
-        }
+/// Check for `\@=`, `\@!`, `\@<=`, `\@<!`, `\@>` after group close and convert to Rust lookaround.
+#[rustfmt::skip]
+fn apply_lookaround(chars: &mut std::iter::Peekable<std::str::Chars<'_>>, out: &mut String, group_start: usize) {
+    if chars.peek() != Some(&'\\') { return; }
+    let mut p = chars.clone(); p.next();
+    if p.peek() != Some(&'@') { return; } p.next();
+    let pfx = match p.peek() {
+        Some('=') => { p.next(); "(?=" } Some('!') => { p.next(); "(?!" } Some('>') => { p.next(); "(?:" }
+        Some('<') => { p.next(); match p.peek() { Some('=') => { p.next(); "(?<=" } Some('!') => { p.next(); "(?<!" } _ => return } }
         _ => return,
     };
-    // Commit: advance real iterator to match probe position.
-    *chars = probe;
-    // Replace the '(' at group_start with the lookaround prefix.
-    out.replace_range(group_start..group_start + 1, prefix);
+    *chars = p;
+    out.replace_range(group_start..group_start + 1, pfx);
 }
 
-/// Compile a Vim magic pattern to a regex::Regex.
-/// Returns None if the pattern is invalid.
+/// Compile a Vim magic pattern to a regex::Regex. Returns None if invalid.
 pub fn compile_vim_pattern(pattern: &str, case_sensitive: bool) -> Option<regex::Regex> {
-    let result = translate_vim_to_rust(pattern);
-    let effective_case = result.case_override.unwrap_or(case_sensitive);
-    let final_pattern = if !effective_case {
-        format!("(?i){}", result.pattern)
-    } else {
-        result.pattern
-    };
-    regex::Regex::new(&final_pattern).ok()
+    let r = translate_vim_to_rust(pattern);
+    let cs = r.case_override.unwrap_or(case_sensitive);
+    let p = if !cs { format!("(?i){}", r.pattern) } else { r.pattern };
+    regex::Regex::new(&p).ok()
+}
+#[rustfmt::skip]
+fn collect_digits(chars: &mut std::iter::Peekable<std::str::Chars<'_>>) -> u32 {
+    let mut s = String::new();
+    while let Some(&c) = chars.peek() { if c.is_ascii_digit() { s.push(c); chars.next(); } else { break; } }
+    s.parse().unwrap_or(0)
+}
+#[rustfmt::skip]
+fn collect_hex(chars: &mut std::iter::Peekable<std::str::Chars<'_>>) -> String {
+    let mut s = String::new();
+    while let Some(&c) = chars.peek() { if c.is_ascii_hexdigit() { s.push(c); chars.next(); } else { break; } } s
+}
+#[rustfmt::skip]
+fn collect_oct(chars: &mut std::iter::Peekable<std::str::Chars<'_>>) -> String {
+    let mut s = String::new();
+    while let Some(&c) = chars.peek() { if matches!(c, '0'..='7') { s.push(c); chars.next(); } else { break; } } s
+}
+#[rustfmt::skip]
+fn push_escaped_char(out: &mut String, ch: char) {
+    if "\\.|*+?()[]{}^$-".contains(ch) { out.push('\\'); } out.push(ch);
 }

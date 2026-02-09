@@ -60,6 +60,13 @@ impl SnippetRegistry {
         let (text, stops) = parse_tab_stops(&s.body);
         Some((text, stops))
     }
+    /// Expand snippet with variable substitution ($TM_FILENAME, $CLIPBOARD, etc.).
+    #[rustfmt::skip]
+    pub fn expand_with_vars(&self, trigger: &str, vars: &HashMap<String, String>) -> Option<(String, Vec<usize>)> {
+        let s = self.snippets.get(trigger)?;
+        let body = expand_snippet_vars(&s.body, vars);
+        Some(parse_tab_stops(&body))
+    }
 
     pub fn list(&self) -> Vec<&Snippet> {
         self.snippets.values().collect()
@@ -74,20 +81,10 @@ impl SnippetRegistry {
     /// Expand trigger at a position, returning (text, SnippetSession).
     /// Session starts at first tab-stop ($1). Caller inserts text and
     /// positions cursor at `session.cursor_offset()`.
-    pub fn expand_at(
-        &self,
-        trigger: &str,
-        base_line: usize,
-        base_col: usize,
-    ) -> Option<(String, SnippetSession)> {
+    #[rustfmt::skip]
+    pub fn expand_at(&self, trigger: &str, base_line: usize, base_col: usize) -> Option<(String, SnippetSession)> {
         let (text, stops) = self.expand(trigger)?;
-        let session = SnippetSession {
-            stops,
-            current: 0,
-            base_line,
-            base_col,
-        };
-        Some((text, session))
+        Some((text, SnippetSession { stops, current: 0, base_line, base_col }))
     }
 }
 
@@ -189,4 +186,12 @@ fn parse_tab_stops_inner(
         }
         out.push(c);
     }
+}
+/// Expand snippet variables (e.g., $TM_FILENAME, $CLIPBOARD, $TM_CURRENT_LINE).
+#[rustfmt::skip]
+pub fn expand_snippet_vars(body: &str, vars: &HashMap<String, String>) -> String {
+    let known = ["TM_FILENAME", "TM_FILEPATH", "TM_DIRECTORY", "TM_LINE_INDEX", "TM_LINE_NUMBER", "TM_CURRENT_LINE", "TM_CURRENT_WORD", "TM_SELECTED_TEXT", "CLIPBOARD", "WORKSPACE_NAME"];
+    let mut out = body.to_string();
+    for k in &known { if let Some(v) = vars.get(*k) { out = out.replace(&format!("${k}"), v).replace(&format!("${{{k}}}"), v); } }
+    out
 }

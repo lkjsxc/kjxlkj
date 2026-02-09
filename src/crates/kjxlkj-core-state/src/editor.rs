@@ -63,6 +63,7 @@ pub struct EditorState {
     pub(crate) last_inserted_text: String,
     /// Last executed ex command for : register.
     pub(crate) last_ex_command: String,
+    pub(crate) last_error: Option<String>,
     /// Changelist: positions of recent changes for g;/g, navigation.
     pub(crate) changelist: Vec<(usize, usize, usize)>,
     /// Current index in changelist (for g;/g,).
@@ -158,6 +159,7 @@ impl EditorState {
             macro_depth: 0,
             last_inserted_text: String::new(),
             last_ex_command: String::new(),
+            last_error: None,
             changelist: Vec::new(),
             changelist_idx: 0,
             macro_error: false,

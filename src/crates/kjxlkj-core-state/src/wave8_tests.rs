@@ -120,7 +120,7 @@ fn registers_display_includes_content() {
     let mut e = ed();
     e.handle_key(Key::char('y'));
     e.handle_key(Key::char('y'));
-    e.handle_list_registers();
+    e.handle_list_registers_filtered("");
     // Should set notification
     assert!(!e.notifications.is_empty());
 }

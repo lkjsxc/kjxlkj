@@ -21,12 +21,11 @@ impl MarkPosition {
 /// The mark file storing all marks.
 #[derive(Debug, Clone, Default)]
 pub struct MarkFile {
-    /// Buffer-local marks (a-z) per buffer.
     local: HashMap<usize, HashMap<char, MarkPosition>>,
-    /// Global marks (A-Z, 0-9).
     global: HashMap<char, MarkPosition>,
-    /// Special marks.
     special: HashMap<char, MarkPosition>,
+    /// Stack for g'/g` navigation (previous jump positions).
+    mark_stack: Vec<MarkPosition>,
 }
 
 impl MarkFile {
@@ -62,6 +61,10 @@ impl MarkFile {
     /// Set/get alternate file mark (#).
     pub fn set_alternate(&mut self, pos: MarkPosition) { self.special.insert('#', pos); }
     pub fn get_alternate(&self) -> Option<&MarkPosition> { self.special.get(&'#') }
+    /// Push position onto mark stack for g'/g` navigation.
+    pub fn push_mark_stack(&mut self, pos: MarkPosition) { if self.mark_stack.len() >= 100 { self.mark_stack.remove(0); } self.mark_stack.push(pos); }
+    /// Pop most recent position from mark stack. Returns None if empty.
+    pub fn pop_mark_stack(&mut self) -> Option<MarkPosition> { self.mark_stack.pop() }
 
     /// Set visual selection start/end marks.
     pub fn set_visual_start(&mut self, pos: MarkPosition) {

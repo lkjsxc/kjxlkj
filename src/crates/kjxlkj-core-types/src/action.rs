@@ -159,6 +159,7 @@ pub enum Action {
     SetMark(char),
     JumpToMark(char),
     JumpToMarkLine(char),
+    JumpFromMarkStack,
     ChangelistOlder,
     ChangelistNewer,
     JumpOlder,

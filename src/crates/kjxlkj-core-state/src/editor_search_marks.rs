@@ -13,6 +13,8 @@ impl EditorState {
     pub(crate) fn jump_to_mark(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
+            let cur = self.windows.focused().cursor;
+            self.marks.push_mark_stack(crate::marks::MarkPosition::new(buf_id.0 as usize, cur.line, cur.grapheme));
             self.push_jumplist();
             if pos.buffer_id != buf_id.0 as usize {
                 self.switch_to_buffer_id(pos.buffer_id);
@@ -27,6 +29,8 @@ impl EditorState {
     pub(crate) fn jump_to_mark_line(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
+            let cur = self.windows.focused().cursor;
+            self.marks.push_mark_stack(crate::marks::MarkPosition::new(buf_id.0 as usize, cur.line, cur.grapheme));
             self.push_jumplist();
             if pos.buffer_id != buf_id.0 as usize {
                 self.switch_to_buffer_id(pos.buffer_id);
@@ -36,12 +40,17 @@ impl EditorState {
             self.ensure_cursor_visible();
         }
     }
+    /// Pop mark stack and jump (g'/g`).
+    pub(crate) fn jump_from_mark_stack(&mut self) {
+        if let Some(pos) = self.marks.pop_mark_stack() {
+            if pos.buffer_id != self.current_buffer_id().0 as usize { self.switch_to_buffer_id(pos.buffer_id); }
+            self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(pos.line, pos.col);
+            self.clamp_cursor(); self.ensure_cursor_visible();
+        }
+    }
 
     pub(crate) fn search_next(&mut self) {
-        let pattern = match &self.search.pattern {
-            Some(p) if !p.is_empty() => p.clone(),
-            _ => return,
-        };
+        let pattern = match &self.search.pattern { Some(p) if !p.is_empty() => p.clone(), _ => return };
         self.push_jumplist();
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
@@ -52,15 +61,12 @@ impl EditorState {
             if let Some((abs, len)) = find_pattern(&text, sf, &pattern, true) {
                 let (l, c) = self.byte_offset_to_line_col(&text, abs);
                 self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
-                self.apply_search_offset(&text, abs, len);
-                self.ensure_cursor_visible();
+                self.apply_search_offset(&text, abs, len); self.ensure_cursor_visible();
             } else if let Some((off, len)) = find_pattern(&text, 0, &pattern, true) {
                 if off < sf {
                     let (l, c) = self.byte_offset_to_line_col(&text, off);
-                    self.windows.focused_mut().cursor =
-                        kjxlkj_core_types::CursorPosition::new(l, c);
-                    self.apply_search_offset(&text, off, len);
-                    self.ensure_cursor_visible();
+                    self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
+                    self.apply_search_offset(&text, off, len); self.ensure_cursor_visible();
                 }
             }
         }
@@ -68,10 +74,7 @@ impl EditorState {
     }
 
     pub(crate) fn search_prev(&mut self) {
-        let pattern = match &self.search.pattern {
-            Some(p) if !p.is_empty() => p.clone(),
-            _ => return,
-        };
+        let pattern = match &self.search.pattern { Some(p) if !p.is_empty() => p.clone(), _ => return };
         self.push_jumplist();
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
@@ -81,15 +84,12 @@ impl EditorState {
             if let Some((off, len)) = rfind_pattern(&text, cur, &pattern) {
                 let (l, c) = self.byte_offset_to_line_col(&text, off);
                 self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
-                self.apply_search_offset(&text, off, len);
-                self.ensure_cursor_visible();
+                self.apply_search_offset(&text, off, len); self.ensure_cursor_visible();
             } else if let Some((off, len)) = rfind_pattern(&text, text.len(), &pattern) {
                 if off >= cur {
                     let (l, c) = self.byte_offset_to_line_col(&text, off);
-                    self.windows.focused_mut().cursor =
-                        kjxlkj_core_types::CursorPosition::new(l, c);
-                    self.apply_search_offset(&text, off, len);
-                    self.ensure_cursor_visible();
+                    self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
+                    self.apply_search_offset(&text, off, len); self.ensure_cursor_visible();
                 }
             }
         }
