@@ -89,6 +89,18 @@ pub struct EditorState {
     )>,
     /// Pending substitute confirmation: (pattern, replacement, global, line_indices_remaining).
     pub(crate) sub_confirm: Option<SubConfirmState>,
+    /// User-defined function registry.
+    pub functions: crate::user_functions::FunctionRegistry,
+    /// Accumulator for multi-line function definition.
+    pub(crate) function_body_acc: Option<FunctionBodyAcc>,
+}
+
+/// Accumulator for f multi-line `function!`/`endfunction` blocks.
+#[derive(Debug, Clone)]
+pub struct FunctionBodyAcc {
+    pub name: String,
+    pub params: Vec<String>,
+    pub body: Vec<String>,
 }
 
 /// State for :s///c confirmation dialog.
@@ -151,6 +163,8 @@ impl EditorState {
             visual_replace_pending: false,
             last_visual: None,
             sub_confirm: None,
+            functions: crate::user_functions::FunctionRegistry::new(),
+            function_body_acc: None,
         }
     }
 

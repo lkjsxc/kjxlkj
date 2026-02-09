@@ -30,6 +30,8 @@ pub struct EditorSnapshot {
     pub terminal_size: (u16, u16),
     /// Focused window ID.
     pub focused_window: WindowId,
+    /// Popup completion menu (if active).
+    pub popup_menu: Option<PopupMenu>,
 }
 
 /// Snapshot of a single tab page.
@@ -120,6 +122,21 @@ pub struct SearchState {
     pub highlight_ranges: Vec<(usize, usize, usize)>,
     /// Search match count: (current_match, total_matches).
     pub match_count: Option<(usize, usize)>,
+    /// Search offset parsed from /pattern/e+N style syntax.
+    pub offset: SearchOffset,
+}
+
+/// Search offset: /pattern/e+N, /pattern/+N, etc.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum SearchOffset {
+    #[default]
+    None,
+    /// Line offset from match start.
+    Lines(i32),
+    /// Character offset from end of match.
+    End(i32),
+    /// Character offset from start of match.
+    Start(i32),
 }
 
 /// Notification message.
@@ -135,4 +152,13 @@ pub enum NotificationLevel {
     Info,
     Warning,
     Error,
+}
+
+/// Popup completion menu for rendering.
+#[derive(Debug, Clone)]
+pub struct PopupMenu {
+    /// Candidate items to display.
+    pub items: Vec<String>,
+    /// Index of currently selected item (if any).
+    pub selected: Option<usize>,
 }

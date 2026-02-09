@@ -26,6 +26,21 @@ Lookaround atoms assert that certain text exists (or does not exist) ahead of or
 
 Lookbehind with variable-length patterns can be expensive. The regex engine must try all possible lengths. Use `\@123<=` to limit the maximum lookbehind width to 123 bytes.
 
+## Implementation limitation — variable-length lookbehind
+
+The underlying Rust `regex` crate does **not** support variable-length lookbehind.  
+Patterns such as `\(foo\|foobar\)\@<=` or `\(x\+\)\@<=` that require variable-length
+lookbehind will fail to compile at runtime; the editor will silently skip the
+search or report a regex error.  Fixed-length lookbehind (e.g., `\(foo\)\@<=`)
+works correctly.
+
+**Workaround**: rewrite variable-length lookbehind as a capturing group with
+`\zs` to set the match start instead:
+
+```
+\(foo\|foobar\)bar   →   \(foo\|foobar\)\zsbar
+```
+
 ## Examples
 
 | Pattern | Matches |

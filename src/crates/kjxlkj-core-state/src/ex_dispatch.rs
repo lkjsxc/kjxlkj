@@ -22,7 +22,9 @@ impl EditorState {
                 }
             }
             _ => {
-                self.search.pattern = Some(content);
+                let (pat, off) = crate::search_types::parse_search_with_offset(&content);
+                self.search.pattern = Some(pat);
+                self.search.offset = off;
                 self.search.active = true;
             }
         }
@@ -30,19 +32,20 @@ impl EditorState {
 
     pub(crate) fn execute_ex_command(&mut self, cmd: &str) {
         let cmd = cmd.trim();
+        // Accumulate function body lines.
+        if let Some(ref mut acc) = self.function_body_acc {
+            if cmd == "endfunction" || cmd == "endf" {
+                let a = self.function_body_acc.take().unwrap();
+                self.functions.define(crate::user_functions::UserFunction { name: a.name.clone(), params: a.params, body: a.body });
+                self.notify_info(&format!("Function defined: {}", a.name));
+            } else { acc.body.push(cmd.to_string()); }
+            return;
+        }
         self.last_ex_command = cmd.to_string();
         let current_line = self.windows.focused().cursor.line;
         let buf_id = self.current_buffer_id();
-        let total_lines = self
-            .buffers
-            .get(buf_id)
-            .map(|b| b.line_count())
-            .unwrap_or(1);
-        let text: String = self
-            .buffers
-            .get(buf_id)
-            .map(|b| b.content.to_string())
-            .unwrap_or_default();
+        let total_lines = self.buffers.get(buf_id).map(|b| b.line_count()).unwrap_or(1);
+        let text: String = self.buffers.get(buf_id).map(|b| b.content.to_string()).unwrap_or_default();
         let text_lines: Vec<&str> = text.lines().collect();
         let marks = &self.marks;
         let bid = buf_id.0 as usize;
@@ -55,25 +58,17 @@ impl EditorState {
             last_search: self.search.pattern.as_deref(),
         };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
-        // Mark-not-set detection: if cmd has 'x and range is None.
-        if range.is_none() && cmd.contains('\'') && cmd.len() > 1 {
-            let has_mark_addr = cmd.as_bytes().contains(&b'\'');
-            if has_mark_addr {
-                let after = cmd.split('\'').nth(1).and_then(|s| s.chars().next());
-                if let Some(ch) = after {
-                    if ch.is_alphabetic() && marks.get(ch, bid).is_none() {
-                        self.notify_error(&format!("E20: Mark not set: {ch}"));
-                        return;
-                    }
+        // Mark-not-set detection.
+        if range.is_none() && cmd.contains('\'') {
+            let after = cmd.split('\'').nth(1).and_then(|s| s.chars().next());
+            if let Some(ch) = after {
+                if ch.is_alphabetic() && marks.get(ch, bid).is_none() {
+                    self.notify_error(&format!("E20: Mark not set: {ch}"));
+                    return;
                 }
             }
         }
-        let range = range.map(|mut r| {
-            if r.start > r.end {
-                std::mem::swap(&mut r.start, &mut r.end);
-            }
-            r
-        });
+        let range = range.map(|mut r| { if r.start > r.end { std::mem::swap(&mut r.start, &mut r.end); } r });
         let rest = rest.trim();
 
         match rest {
@@ -146,6 +141,11 @@ impl EditorState {
                 let names = rest.strip_prefix("delmarks ").unwrap().trim();
                 self.handle_delmarks(names);
             }
+            "delmarks!" => {
+                let bid = self.current_buffer_id().0 as usize;
+                self.marks.clear_buffer(bid);
+                self.notify_info("All local marks cleared");
+            }
             "marks" => self.handle_list_marks(),
             "registers" | "reg" => self.handle_list_registers(),
             "jumps" => self.handle_list_jumps(),
@@ -169,6 +169,14 @@ impl EditorState {
                     self.windows.focused_mut().cursor.line = r.end;
                     self.windows.focused_mut().cursor.grapheme = 0;
                     self.ensure_cursor_visible();
+                }
+            }
+            _ if rest.starts_with("function!") || rest.starts_with("function ") => {
+                match crate::user_functions::parse_function_header(rest) {
+                    Ok((name, params)) => {
+                        self.function_body_acc = Some(crate::editor::FunctionBodyAcc { name, params, body: Vec::new() });
+                    }
+                    Err(e) => self.notify_error(&e),
                 }
             }
             _ => {

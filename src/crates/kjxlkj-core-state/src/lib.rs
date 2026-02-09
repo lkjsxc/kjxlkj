@@ -100,6 +100,7 @@ pub(crate) mod text_objects_sentence;
 pub(crate) mod text_objects_tag;
 pub mod user_commands;
 pub mod user_commands_parse;
+pub mod user_functions;
 #[cfg(test)]
 mod user_commands_tests;
 mod visual_block_insert;
@@ -124,6 +125,8 @@ mod wave16_tests;
 #[cfg(test)]
 mod wave17_tests;
 #[cfg(test)]
+mod wave18_tests;
+#[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]
 mod wave8_tests;
@@ -142,7 +145,8 @@ pub use events_types::{EventData, EventKind};
 pub use mappings::{KeyMapping, MapMode, MappingLookup, MappingTable};
 pub use marks::{MarkFile, MarkPosition};
 pub use registers::{RegisterContent, RegisterFile};
-pub use search_types::{CaseMode, SearchDirection, SearchMatch, SearchState};
+pub use search_types::{CaseMode, SearchDirection, SearchMatch, SearchOffset, SearchState};
 pub use session::{SessionData, SessionManager};
 pub use user_commands::{UserCommand, UserCommandRegistry};
+pub use user_functions::{FunctionRegistry, UserFunction};
 pub use window_tree::WindowTree;

@@ -30,6 +30,9 @@ pub enum CaseMode {
     SmartCase,
 }
 
+/// Re-export SearchOffset from UI crate.
+pub use kjxlkj_core_ui::SearchOffset;
+
 /// Search state.
 #[derive(Debug, Clone)]
 pub struct SearchState {
@@ -97,4 +100,46 @@ impl Default for SearchState {
     fn default() -> Self {
         Self::new()
     }
+}
+
+/// Parse a search input that may contain an offset: "pattern/e+1", "pattern/+3".
+/// Returns (pattern, SearchOffset).
+pub fn parse_search_with_offset(input: &str) -> (String, SearchOffset) {
+    // Find last unescaped '/' that separates pattern from offset.
+    let bytes = input.as_bytes();
+    let mut last_sep = None;
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'\\' { i += 2; continue; }
+        if bytes[i] == b'/' { last_sep = Some(i); }
+        i += 1;
+    }
+    if let Some(sep) = last_sep {
+        if sep > 0 {
+            let pat = &input[..sep];
+            let off_str = &input[sep + 1..];
+            let offset = parse_offset_str(off_str);
+            return (pat.to_string(), offset);
+        }
+    }
+    (input.to_string(), SearchOffset::None)
+}
+
+fn parse_offset_str(s: &str) -> SearchOffset {
+    if s.is_empty() { return SearchOffset::None; }
+    if let Some(rest) = s.strip_prefix('e') {
+        return SearchOffset::End(parse_offset_num(rest));
+    }
+    if let Some(rest) = s.strip_prefix('s') {
+        return SearchOffset::Start(parse_offset_num(rest));
+    }
+    if s.starts_with('+') || s.starts_with('-') || s.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false) {
+        return SearchOffset::Lines(parse_offset_num(s));
+    }
+    SearchOffset::None
+}
+
+fn parse_offset_num(s: &str) -> i32 {
+    if s.is_empty() { return 0; }
+    s.parse().unwrap_or(if s.starts_with('+') { 1 } else if s.starts_with('-') { -1 } else { 0 })
 }

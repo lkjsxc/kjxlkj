@@ -1,149 +1,126 @@
 //! Expression register (=) evaluation.
-//!
-//! Supports basic arithmetic, string operations and
-//! variable references (g:name) for the = register.
+//! Supports arithmetic, string ops, comparisons, variables.
 #![allow(dead_code)]
-
 use std::collections::HashMap;
 
 /// Evaluate a simple expression for the = register.
-/// Returns the result as a string, or an error message.
 pub fn eval_expression(expr: &str) -> Result<String, String> {
     eval_expression_with_vars(expr, &HashMap::new())
 }
 
 /// Evaluate expression with variable bindings.
+#[rustfmt::skip]
 pub fn eval_expression_with_vars(
-    expr: &str,
-    vars: &HashMap<String, String>,
+    expr: &str, vars: &HashMap<String, String>,
 ) -> Result<String, String> {
     let expr = expr.trim();
-    if expr.is_empty() {
-        return Ok(String::new());
-    }
-    // Built-in function calls: strlen("..."), line("."), col(".").
-    if let Some(result) = try_builtin_function(expr, vars) {
-        return result;
-    }
-    // Variable reference: g:name, b:name, etc.
-    if let Some(rest) = expr
-        .strip_prefix("g:")
-        .or_else(|| expr.strip_prefix("b:"))
-        .or_else(|| expr.strip_prefix("w:"))
-        .or_else(|| expr.strip_prefix("v:"))
+    if expr.is_empty() { return Ok(String::new()); }
+    if let Some(r) = try_builtin_function(expr, vars) { return r; }
+    if let Some(rest) = expr.strip_prefix("g:").or_else(|| expr.strip_prefix("b:"))
+        .or_else(|| expr.strip_prefix("w:")).or_else(|| expr.strip_prefix("v:"))
     {
-        let scope = &expr[..2];
-        let key = format!("{}{}", scope, rest);
+        let key = format!("{}{}", &expr[..2], rest);
         return Ok(vars.get(&key).cloned().unwrap_or_default());
     }
-    // String concatenation with . (check before string literal).
     if let Some(parts) = split_concat(expr) {
-        let mut result = String::new();
-        for part in parts {
-            result.push_str(&eval_expression_with_vars(part.trim(), vars)?);
-        }
-        return Ok(result);
+        let mut r = String::new();
+        for p in parts { r.push_str(&eval_expression_with_vars(p.trim(), vars)?); }
+        return Ok(r);
     }
-    // String literal: "..."
     if expr.starts_with('"') && expr.ends_with('"') && expr.len() >= 2 {
         return Ok(expr[1..expr.len() - 1].to_string());
     }
-    // Try arithmetic.
+    if let Some(r) = try_comparison(expr, vars) { return r; }
     eval_arithmetic(expr)
 }
 
-/// Split on ` . ` but only outside quotes.
+/// Split on ` . ` outside quotes.
+#[rustfmt::skip]
 fn split_concat(expr: &str) -> Option<Vec<&str>> {
-    let mut in_str = false;
-    let bytes = expr.as_bytes();
-    let mut splits = Vec::new();
-    let mut last = 0;
-    let mut i = 0;
+    let (mut in_str, bytes) = (false, expr.as_bytes());
+    let (mut splits, mut last, mut i) = (Vec::new(), 0usize, 0usize);
     while i < bytes.len() {
-        if bytes[i] == b'"' {
-            in_str = !in_str;
-        } else if !in_str && i + 3 <= bytes.len() && &bytes[i..i + 3] == b" . " {
-            splits.push(&expr[last..i]);
-            last = i + 3;
-            i += 3;
-            continue;
+        if bytes[i] == b'"' { in_str = !in_str; }
+        else if !in_str && i + 3 <= bytes.len() && &bytes[i..i + 3] == b" . " {
+            splits.push(&expr[last..i]); last = i + 3; i += 3; continue;
         }
         i += 1;
     }
-    if splits.is_empty() {
-        return None;
-    }
-    splits.push(&expr[last..]);
-    Some(splits)
+    if splits.is_empty() { return None; }
+    splits.push(&expr[last..]); Some(splits)
 }
 
+#[rustfmt::skip]
 fn eval_arithmetic(expr: &str) -> Result<String, String> {
     let expr = expr.trim();
-    // Handle addition/subtraction (lowest precedence).
     if let Some(pos) = find_op(expr, &['+', '-']) {
-        let left = eval_arithmetic(&expr[..pos])?;
-        let right = eval_arithmetic(&expr[pos + 1..])?;
-        let l: i64 = left
-            .parse()
-            .map_err(|_| format!("Invalid number: {left}"))?;
-        let r: i64 = right
-            .parse()
-            .map_err(|_| format!("Invalid number: {right}"))?;
-        let op = expr.as_bytes()[pos];
-        let res = if op == b'+' { l + r } else { l - r };
-        return Ok(format!("{res}"));
+        let (l, r) = (pi64(&eval_arithmetic(&expr[..pos])?)?, pi64(&eval_arithmetic(&expr[pos + 1..])?)?);
+        return Ok(format!("{}", if expr.as_bytes()[pos] == b'+' { l + r } else { l - r }));
     }
-    // Handle multiplication/division/modulo.
     if let Some(pos) = find_op(expr, &['*', '/', '%']) {
-        let left = eval_arithmetic(&expr[..pos])?;
-        let right = eval_arithmetic(&expr[pos + 1..])?;
-        let l: i64 = left
-            .parse()
-            .map_err(|_| format!("Invalid number: {left}"))?;
-        let r: i64 = right
-            .parse()
-            .map_err(|_| format!("Invalid number: {right}"))?;
-        let op = expr.as_bytes()[pos];
-        if r == 0 && (op == b'/' || op == b'%') {
-            return Err("Division by zero".to_string());
-        }
-        let res = match op {
-            b'*' => l * r,
-            b'/' => l / r,
-            b'%' => l % r,
-            _ => unreachable!(),
-        };
+        let (l, r) = (pi64(&eval_arithmetic(&expr[..pos])?)?, pi64(&eval_arithmetic(&expr[pos + 1..])?)?);
+        if r == 0 && expr.as_bytes()[pos] != b'*' { return Err("Division by zero".into()); }
+        let res = match expr.as_bytes()[pos] { b'*' => l * r, b'/' => l / r, _ => l % r };
         return Ok(format!("{res}"));
     }
-    // Parenthesized expression.
-    if expr.starts_with('(') && expr.ends_with(')') {
-        return eval_arithmetic(&expr[1..expr.len() - 1]);
-    }
-    // Plain number.
-    let _: i64 = expr
-        .parse()
-        .map_err(|_| format!("Invalid expression: {expr}"))?;
-    Ok(expr.to_string())
+    if expr.starts_with('(') && expr.ends_with(')') { return eval_arithmetic(&expr[1..expr.len() - 1]); }
+    pi64(expr).map(|_| expr.to_string())
 }
+fn pi64(s: &str) -> Result<i64, String> { s.trim().parse().map_err(|_| format!("Invalid number: {s}")) }
 
-/// Find the rightmost operator at top-level (not inside parens).
+/// Find rightmost op at top-level (not inside parens).
+#[rustfmt::skip]
 fn find_op(expr: &str, ops: &[char]) -> Option<usize> {
-    let bytes = expr.as_bytes();
-    let mut depth = 0i32;
-    let mut found = None;
+    let (bytes, mut depth, mut found) = (expr.as_bytes(), 0i32, None);
     for (i, &b) in bytes.iter().enumerate() {
-        match b {
-            b'(' => depth += 1,
-            b')' => depth -= 1,
-            _ if depth == 0 && i > 0 => {
-                if ops.contains(&(b as char)) {
-                    found = Some(i);
-                }
-            }
-            _ => {}
-        }
+        match b { b'(' => depth += 1, b')' => depth -= 1,
+            _ if depth == 0 && i > 0 && ops.contains(&(b as char)) => found = Some(i), _ => {} }
     }
     found
+}
+
+/// Try to evaluate a comparison expression (==, !=, <=, >=, <, >).
+/// Returns "1" for true, "0" for false.
+#[rustfmt::skip]
+fn try_comparison(
+    expr: &str, vars: &HashMap<String, String>,
+) -> Option<Result<String, String>> {
+    // Order matters: check two-char ops before single-char.
+    for &op in &["==", "!=", "<=", ">=", "<", ">"] {
+        if let Some(pos) = find_comparison_op(expr, op) {
+            let left = match eval_expression_with_vars(expr[..pos].trim(), vars) {
+                Ok(v) => v, Err(e) => return Some(Err(e)),
+            };
+            let right = match eval_expression_with_vars(expr[pos + op.len()..].trim(), vars) {
+                Ok(v) => v, Err(e) => return Some(Err(e)),
+            };
+            let result = match (left.parse::<i64>(), right.parse::<i64>()) {
+                (Ok(l), Ok(r)) => match op {
+                    "==" => l == r, "!=" => l != r, "<" => l < r,
+                    ">" => l > r, "<=" => l <= r, ">=" => l >= r, _ => false,
+                },
+                _ => match op {
+                    "==" => left == right, "!=" => left != right, "<" => left < right,
+                    ">" => left > right, "<=" => left <= right, ">=" => left >= right, _ => false,
+                },
+            };
+            return Some(Ok(if result { "1" } else { "0" }.to_string()));
+        }
+    }
+    None
+}
+
+/// Find comparison op at top-level (outside parens/quotes).
+#[rustfmt::skip]
+fn find_comparison_op(expr: &str, op: &str) -> Option<usize> {
+    let (bytes, ob, mut depth, mut in_str) = (expr.as_bytes(), op.as_bytes(), 0i32, false);
+    for i in 0..bytes.len() {
+        if bytes[i] == b'"' { in_str = !in_str; continue; }
+        if in_str { continue; }
+        match bytes[i] { b'(' => depth += 1, b')' => depth -= 1, _ => {} }
+        if depth == 0 && i > 0 && i + ob.len() <= bytes.len() && &bytes[i..i + ob.len()] == ob { return Some(i); }
+    }
+    None
 }
 
 /// Try to evaluate a built-in function call.
@@ -184,11 +161,8 @@ mod tests {
         assert_eq!(eval_expression("17%5").unwrap(), "2");
     }
     #[test]
-    fn test_string_literal() {
+    fn test_strings() {
         assert_eq!(eval_expression("\"hello\"").unwrap(), "hello");
-    }
-    #[test]
-    fn test_string_concat() {
         assert_eq!(eval_expression("\"hello\" . \" world\"").unwrap(), "hello world");
     }
 }

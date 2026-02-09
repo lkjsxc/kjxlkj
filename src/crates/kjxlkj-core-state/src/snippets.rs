@@ -70,6 +70,42 @@ impl SnippetRegistry {
     pub fn clear(&mut self) {
         self.snippets.clear();
     }
+
+    /// Expand trigger at a position, returning (text, SnippetSession).
+    /// Session starts at first tab-stop ($1). Caller inserts text and
+    /// positions cursor at `session.cursor_offset()`.
+    pub fn expand_at(
+        &self,
+        trigger: &str,
+        base_line: usize,
+        base_col: usize,
+    ) -> Option<(String, SnippetSession)> {
+        let (text, stops) = self.expand(trigger)?;
+        let session = SnippetSession {
+            stops,
+            current: 0,
+            base_line,
+            base_col,
+        };
+        Some((text, session))
+    }
+}
+
+impl SnippetSession {
+    /// Byte offset of the current tab-stop within the expanded text.
+    /// Returns None if all stops are exhausted.
+    pub fn current_offset(&self) -> Option<usize> {
+        self.stops.get(self.current).copied()
+    }
+    /// Advance to next tab-stop. Returns true if there is a next stop.
+    pub fn advance(&mut self) -> bool {
+        if self.current + 1 < self.stops.len() {
+            self.current += 1;
+            true
+        } else {
+            false
+        }
+    }
 }
 
 /// Parse tab-stop markers ($0-$9, ${0}-${9}) from body text.

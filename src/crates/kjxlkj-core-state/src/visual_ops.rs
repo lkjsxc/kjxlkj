@@ -161,6 +161,8 @@ fn char_to_operator(c: char) -> Option<Operator> {
         'y' => Some(Operator::Yank),
         '>' => Some(Operator::Indent),
         '<' => Some(Operator::Dedent),
+        'u' => Some(Operator::Lowercase),
+        'U' => Some(Operator::Uppercase),
         _ => None,
     }
 }

@@ -72,6 +72,14 @@ impl EditorState {
             theme: self.theme.clone(),
             terminal_size: self.terminal_size,
             focused_window: self.windows.focused_id(),
+            popup_menu: if self.cmdline.completion.candidates.is_empty() {
+                None
+            } else {
+                Some(kjxlkj_core_ui::PopupMenu {
+                    items: self.cmdline.completion.candidates.clone(),
+                    selected: self.cmdline.completion.index,
+                })
+            },
         }
     }
 
