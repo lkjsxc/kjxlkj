@@ -96,7 +96,7 @@ impl EditorState {
         }
     }
 
-    /// Handle :source {file} — read and execute commands.
+    /// Handle :source {file} — read and execute script commands.
     pub(crate) fn handle_source(&mut self, path: &str) {
         let content = match std::fs::read_to_string(path) {
             Ok(c) => c,
@@ -107,9 +107,8 @@ impl EditorState {
         };
         for line in content.lines() {
             let trimmed = line.trim();
-            if trimmed.is_empty() {
-                continue;
-            }
+            if trimmed.is_empty() { continue; }
+            if trimmed == "finish" { break; }
             // Restore session history/search from special comments.
             if let Some(entry) = trimmed.strip_prefix("\" history: ") {
                 self.cmdline.history.push(entry.to_string());
@@ -120,19 +119,23 @@ impl EditorState {
                 continue;
             }
             if let Some(rest) = trimmed.strip_prefix("\" localmark ") {
-                let ps: Vec<&str> = rest.splitn(4, ' ').collect();
-                if ps.len() == 4 {
-                    if let (Some(ch), Ok(l), Ok(c)) = (ps[1].chars().next(), ps[2].parse::<usize>(), ps[3].parse::<usize>()) {
-                        let bid = self.current_buffer_id().0 as usize;
-                        self.marks.set(ch, crate::marks::MarkPosition { buffer_id: bid, line: l.saturating_sub(1), col: c.saturating_sub(1) });
-                    }
-                }
+                self.source_restore_localmark(rest);
                 continue;
             }
-            if trimmed.starts_with('"') {
-                continue;
-            }
+            if trimmed.starts_with('"') { continue; }
             self.execute_ex_command(trimmed);
+        }
+        self.notify_info(&format!("Sourced: {path}"));
+    }
+
+    /// Restore a local mark from source comment.
+    fn source_restore_localmark(&mut self, rest: &str) {
+        let ps: Vec<&str> = rest.splitn(4, ' ').collect();
+        if ps.len() == 4 {
+            if let (Some(ch), Ok(l), Ok(c)) = (ps[1].chars().next(), ps[2].parse::<usize>(), ps[3].parse::<usize>()) {
+                let bid = self.current_buffer_id().0 as usize;
+                self.marks.set(ch, crate::marks::MarkPosition { buffer_id: bid, line: l.saturating_sub(1), col: c.saturating_sub(1) });
+            }
         }
     }
 

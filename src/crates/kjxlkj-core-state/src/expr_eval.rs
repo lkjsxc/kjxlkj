@@ -18,6 +18,7 @@ pub fn eval_expression_with_vars(expr: &str, vars: &HashMap<String, String>) -> 
     if expr.starts_with('{') && expr.ends_with('}') { return Ok(expr.to_string()); }
     if let Some(r) = try_ternary(expr, vars) { return r; }
     if let Some(r) = try_comparison(expr, vars) { return r; }
+    if let Some(v) = vars.get(expr) { return Ok(v.clone()); }
     eval_arithmetic(expr)
 }
 
@@ -120,10 +121,9 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
         "line" | "col" => Some(Ok("0".into())),
         "type" => { let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) }; Some(Ok((if v.starts_with('[') { "3" } else if v.starts_with('{') { "4" } else if v.parse::<i64>().is_ok() { "0" } else { "1" }).into())) }
         "has_key" => {
-            let ps: Vec<&str> = arg.splitn(2, ',').collect();
-            if ps.len() != 2 { return Some(Err("has_key() requires 2 args".into())); }
-            let d = match eval_expression_with_vars(ps[0].trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
-            let k = ps[1].trim().trim_matches('"');
+            let (da, ka) = match split_two_args(arg) { Some(p) => p, None => return Some(Err("has_key() requires 2 args".into())) };
+            let d = match eval_expression_with_vars(da.trim(), vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
+            let k = ka.trim().trim_matches('"');
             Some(Ok(if d.contains(&format!("\"{}\":", k)) || d.contains(&format!("\"{}\" :", k)) { "1" } else { "0" }.into()))
         }
         "function" => Some(Ok(arg.trim().trim_matches('"').to_string())),
@@ -135,45 +135,63 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
             let v = match eval_expression_with_vars(arg, vars) { Ok(v) => v, Err(e) => return Some(Err(e)) };
             Some(Ok(extract_dict_values(&v)))
         }
+        "map" => Some(Ok(list_map_filter(arg, vars, true))),
+        "filter" => Some(Ok(list_map_filter(arg, vars, false))),
+        "extend" => Some(Ok(list_extend(arg, vars))),
         _ => None,
     }
 }
-
 /// Extract a value from a JSON-ish dict string by key.
 fn extract_dict_value(dict: &str, key: &str) -> String {
     let needle = format!("\"{}\":", key);
     if let Some(pos) = dict.find(&needle) {
         let after = dict[pos + needle.len()..].trim_start();
-        if let Some(inner) = after.strip_prefix('"') {
-            inner.split('"').next().unwrap_or("").to_string()
-        } else {
-            after.split(&[',', '}'][..]).next().unwrap_or("").trim().to_string()
-        }
+        if let Some(inner) = after.strip_prefix('"') { inner.split('"').next().unwrap_or("").to_string() }
+        else { after.split(&[',', '}'][..]).next().unwrap_or("").trim().to_string() }
     } else { String::new() }
 }
-
 /// Extract all keys from a JSON-ish dict as a list string.
 fn extract_dict_keys(dict: &str) -> String {
     let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
-    let keys: Vec<&str> = inner.split(',').filter_map(|pair| {
-        let kv: Vec<&str> = pair.splitn(2, ':').collect();
-        if kv.is_empty() { return None; }
-        Some(kv[0].trim().trim_matches('"'))
-    }).filter(|k| !k.is_empty()).collect();
-    format!("[{}]", keys.iter().map(|k| format!("\"{}\"", k)).collect::<Vec<_>>().join(","))
+    let keys: Vec<String> = inner.split(',').filter_map(|pair| { let k = pair.split(':').next()?.trim().trim_matches('"'); if k.is_empty() { None } else { Some(format!("\"{}\"", k)) } }).collect();
+    format!("[{}]", keys.join(","))
 }
-
 /// Extract all values from a JSON-ish dict as a list string.
 fn extract_dict_values(dict: &str) -> String {
     let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
-    let vals: Vec<&str> = inner.split(',').filter_map(|pair| {
-        let kv: Vec<&str> = pair.splitn(2, ':').collect();
-        if kv.len() < 2 { return None; }
-        Some(kv[1].trim())
-    }).collect();
+    let vals: Vec<&str> = inner.split(',').filter_map(|pair| { let kv: Vec<&str> = pair.splitn(2, ':').collect(); if kv.len() < 2 { None } else { Some(kv[1].trim()) } }).collect();
     format!("[{}]", vals.join(","))
 }
-
+/// Split two function args at top-level comma (respects [] and {} nesting).
+fn split_two_args(arg: &str) -> Option<(&str, &str)> {
+    let (bytes, mut depth) = (arg.as_bytes(), 0i32);
+    for (i, &b) in bytes.iter().enumerate() {
+        match b { b'[' | b'{' | b'(' => depth += 1, b']' | b'}' | b')' => depth -= 1, b',' if depth == 0 => return Some((&arg[..i], &arg[i+1..])), _ => {} }
+    }
+    None
+}
+#[rustfmt::skip] // map(list, expr) applies expr; filter(list, expr) keeps items where expr != "0"
+fn list_map_filter(arg: &str, vars: &HashMap<String, String>, is_map: bool) -> String {
+    let (la, ea) = match split_two_args(arg) { Some(p) => p, None => return "[]".into() };
+    let list_str = eval_expression_with_vars(la.trim(), vars).unwrap_or_default();
+    let expr = ea.trim().trim_matches('"');
+    let inner = list_str.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or("");
+    if inner.is_empty() { return "[]".into(); }
+    let result: Vec<String> = inner.split(',').map(|s| s.trim()).filter_map(|item| {
+        let mut local = vars.clone(); local.insert("v:val".into(), item.trim_matches('"').to_string());
+        let val = eval_expression_with_vars(expr, &local).unwrap_or_default();
+        if is_map { Some(val) } else if val != "0" && !val.is_empty() { Some(item.to_string()) } else { None }
+    }).collect();
+    format!("[{}]", result.join(","))
+}
+/// extend(list1, list2) concatenates two lists.
+fn list_extend(arg: &str, vars: &HashMap<String, String>) -> String {
+    let (la, lb) = match split_two_args(arg) { Some(p) => p, None => return "[]".into() };
+    let (a, b) = (eval_expression_with_vars(la.trim(), vars).unwrap_or_default(), eval_expression_with_vars(lb.trim(), vars).unwrap_or_default());
+    let (ia, ib) = (a.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or(""), b.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or(""));
+    let items: Vec<&str> = [ia, ib].iter().filter(|s| !s.is_empty()).flat_map(|s| s.split(',').map(|x| x.trim())).collect();
+    format!("[{}]", items.join(","))
+}
 #[cfg(test)]
 mod tests {
     use super::*;

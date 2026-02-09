@@ -56,6 +56,7 @@ impl EditorState {
             lines: &text_lines,
             mark_line: Some(&mark_fn),
             last_search: self.search.pattern.as_deref(),
+            vars: None,
         };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
         // Mark-not-set detection.

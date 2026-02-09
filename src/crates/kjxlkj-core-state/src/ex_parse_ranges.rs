@@ -12,6 +12,8 @@ pub struct RangeContext<'a> {
     pub mark_line: Option<&'a dyn Fn(char) -> Option<usize>>,
     /// Last search pattern for `\/` and `\?`.
     pub last_search: Option<&'a str>,
+    /// Variables available for expression addresses.
+    pub vars: Option<&'a std::collections::HashMap<String, String>>,
 }
 
 #[rustfmt::skip]
@@ -30,7 +32,7 @@ pub fn parse_range_ctx<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<Ex
         }
         if let Some(rest2) = rest1.strip_prefix(';') {
             let rest2 = rest2.trim_start();
-            let ctx2 = RangeContext { current_line: start, total_lines: ctx.total_lines, lines: ctx.lines, mark_line: ctx.mark_line, last_search: ctx.last_search };
+            let ctx2 = RangeContext { current_line: start, total_lines: ctx.total_lines, lines: ctx.lines, mark_line: ctx.mark_line, last_search: ctx.last_search, vars: ctx.vars };
             let (addr2, rest3) = parse_address_ctx(rest2, &ctx2);
             if let Some(end) = addr2 { return (Some(ExRange { start, end }.clamp(ctx.total_lines)), rest3); }
             return (Some(ExRange::single(start).clamp(ctx.total_lines)), rest2);
@@ -78,12 +80,14 @@ fn parse_address_ctx<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<usiz
         }
     }
     if first == b'+' || first == b'-' { let (offset, rest) = parse_offset(input); return (Some((ctx.current_line as isize + offset).max(0) as usize), rest); }
-    // Expression address: (expr) evaluates to a line number.
+    // Expression address: (expr) evaluates to a line number. Supports variables via ctx.vars.
     if first == b'(' {
         if let Some(close) = input.find(')') {
             let expr = &input[1..close];
             let rest = &input[close + 1..];
-            if let Ok(val) = crate::expr_eval::eval_expression(expr) {
+            let empty = std::collections::HashMap::new();
+            let v = ctx.vars.unwrap_or(&empty);
+            if let Ok(val) = crate::expr_eval::eval_expression_with_vars(expr, v) {
                 if let Ok(n) = val.parse::<usize>() { return (Some(n.saturating_sub(1)), rest); }
             }
         }

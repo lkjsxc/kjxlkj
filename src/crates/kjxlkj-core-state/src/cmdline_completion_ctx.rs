@@ -61,19 +61,22 @@ impl EditorState {
         let content = self.cmdline.content.clone();
         let space = content.rfind(' ').unwrap_or(0) + 1;
         let partial = &content[space..];
-        let names = self.options.list();
-        let matches: Vec<String> = names
-            .iter()
-            .map(|(k, _)| k.clone())
-            .filter(|k| k.starts_with(partial))
-            .collect();
-        if matches.is_empty() {
+        // Filetype completion: "set filetype=" or "set ft="
+        if partial.starts_with("filetype=") || partial.starts_with("ft=") {
+            let eq = partial.find('=').unwrap_or(0) + 1;
+            let prefix = &partial[eq..];
+            let fts = ["c", "cpp", "css", "go", "html", "java", "javascript", "json", "lua", "markdown", "perl", "php", "python", "ruby", "rust", "sh", "sql", "toml", "typescript", "vim", "xml", "yaml", "zig"];
+            let matches: Vec<String> = fts.iter().filter(|f| f.starts_with(prefix) || prefix.is_empty()).map(|f| format!("{}={}", &partial[..eq], f)).collect();
+            if matches.is_empty() { return; }
+            let cs = &mut self.cmdline.completion;
+            cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
             return;
         }
+        let names = self.options.list();
+        let matches: Vec<String> = names.iter().map(|(k, _)| k.clone()).filter(|k| k.starts_with(partial)).collect();
+        if matches.is_empty() { return; }
         let cs = &mut self.cmdline.completion;
-        cs.prefix = content;
-        cs.candidates = matches;
-        cs.index = Some(0);
+        cs.prefix = content; cs.candidates = matches; cs.index = Some(0);
     }
 
     /// Build buffer-name candidates for :b completion.

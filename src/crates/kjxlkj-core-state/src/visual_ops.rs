@@ -35,6 +35,7 @@ impl EditorState {
                     '*' | '#' => { self.visual_star_search(*c == '*', kind); return; }
                     'J' => { self.visual_join(kind); return; }
                     '=' => { self.visual_reindent(kind); return; }
+                    'K' => { self.visual_keyword_lookup(kind); return; }
                     'I' | 'A' if kind == VisualKind::Block => { self.handle_visual_block_ia(*c == 'A'); return; }
                     _ => {}
                 }
@@ -99,40 +100,39 @@ impl EditorState {
     fn apply_block_op(&mut self, op: Operator, start: CursorPosition, end: CursorPosition) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
-        let col_start = start.grapheme.min(end.grapheme);
-        let col_end = start.grapheme.max(end.grapheme);
-        if let Some(buf) = self.buffers.get_mut(buf_id) {
-            buf.save_undo_checkpoint(cursor);
-        }
+        let (col_start, col_end) = (start.grapheme.min(end.grapheme), start.grapheme.max(end.grapheme));
+        if let Some(buf) = self.buffers.get_mut(buf_id) { buf.save_undo_checkpoint(cursor); }
         match op {
             Operator::Delete | Operator::Change => {
-                for line in (start.line..=end.line).rev() {
-                    let s = CursorPosition::new(line, col_start);
-                    let e = CursorPosition::new(line, col_end);
-                    self.delete_range_raw(buf_id, s.line, s.grapheme, e.line, e.grapheme + 1);
-                }
+                for line in (start.line..=end.line).rev() { self.delete_range_raw(buf_id, line, col_start, line, col_end + 1); }
                 self.windows.focused_mut().cursor = start;
-                if op == Operator::Change {
-                    self.block_insert_pending = Some((start.line, end.line, col_start, false));
-                    self.last_inserted_text.clear();
-                    self.mode = Mode::Insert;
-                }
+                if op == Operator::Change { self.block_insert_pending = Some((start.line, end.line, col_start, false)); self.last_inserted_text.clear(); self.mode = Mode::Insert; }
             }
             Operator::Yank => {
                 let mut text = String::new();
-                if let Some(buf) = self.buffers.get(buf_id) {
-                    for line in start.line..=end.line {
-                        let s = CursorPosition::new(line, col_start);
-                        let e = CursorPosition::new(line, col_end);
-                        let chunk = self.extract_range(buf_id, s, e, true);
-                        let _ = buf;
-                        text.push_str(&chunk);
-                        text.push('\n');
-                    }
+                if let Some(_buf) = self.buffers.get(buf_id) {
+                    for line in start.line..=end.line { let chunk = self.extract_range(buf_id, CursorPosition::new(line, col_start), CursorPosition::new(line, col_end), true); text.push_str(&chunk); text.push('\n'); }
                 }
                 self.store_register(text, false);
             }
             _ => {}
+        }
+    }
+
+    /// K in visual mode: look up selected text as keyword.
+    fn visual_keyword_lookup(&mut self, kind: VisualKind) {
+        let (start, end) = match self.visual_selection() { Some(s) => s, None => return };
+        let buf_id = self.current_buffer_id();
+        let word = self.extract_range(buf_id, start, end, kind == VisualKind::Line);
+        let word = word.trim().to_string();
+        if word.is_empty() { return; }
+        self.visual_anchor = None;
+        self.mode = Mode::Normal;
+        let prg = { let p = self.options.get_str("keywordprg").to_string(); if p.is_empty() { "man".into() } else { p } };
+        use std::process::Command;
+        match Command::new(&prg).arg(&word).output() {
+            Ok(out) => { let t = String::from_utf8_lossy(&out.stdout); self.notify_info(&format!("{prg} {word}: {}", t.lines().next().unwrap_or("(no output)"))); }
+            Err(e) => self.notify_error(&format!("E282: {prg}: {e}")),
         }
     }
 

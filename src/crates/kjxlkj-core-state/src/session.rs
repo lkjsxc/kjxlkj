@@ -23,6 +23,8 @@ pub struct SessionData {
     pub tab_layouts: Vec<SessionLayout>,
     /// Per-tab buffer associations (indices into files vec).
     pub tab_buffers: Vec<Vec<usize>>,
+    /// Argument list (file paths passed on command line).
+    pub arglist: Vec<std::path::PathBuf>,
 }
 
 /// A file entry in a session.
@@ -71,6 +73,7 @@ impl SessionManager {
         if data.tab_count > 1 { out.push_str(&format!("tabs {} {}\n", data.tab_count, data.active_tab)); }
         for (ti, tl) in data.tab_layouts.iter().enumerate() { out.push_str(&format!("tablayout {} {}\n", ti, serialize_layout(tl))); }
         for (ti, bufs) in data.tab_buffers.iter().enumerate() { let bs: Vec<String> = bufs.iter().map(|b| b.to_string()).collect(); out.push_str(&format!("tabbuf {} {}\n", ti, bs.join(","))); }
+        for arg in &data.arglist { out.push_str(&format!("arg {}\n", arg.display())); }
         for file in &data.files {
             let m = if file.was_modified { "m" } else { "-" };
             out.push_str(&format!("file {} {} {} {m}\n", file.path.display(), file.cursor_line, file.cursor_col));
@@ -112,6 +115,7 @@ impl SessionManager {
                     while data.tab_buffers.len() <= idx { data.tab_buffers.push(Vec::new()); }
                     data.tab_buffers[idx] = bufs;
                 }
+                Some("arg") if parts.len() >= 2 => { data.arglist.push(PathBuf::from(parts[1])); }
                 Some("file") if parts.len() >= 4 => {
                     data.files.push(SessionFile {
                         path: PathBuf::from(parts[1]),
@@ -165,11 +169,7 @@ impl SessionManager {
 
     /// Save session data to disk.
     #[rustfmt::skip]
-    pub fn save(&self, name: &str, data: &SessionData) -> std::io::Result<()> {
-        std::fs::create_dir_all(&self.session_dir)?;
-        std::fs::write(self.session_path(name), Self::serialize(data))
-    }
-
+    pub fn save(&self, name: &str, data: &SessionData) -> std::io::Result<()> { std::fs::create_dir_all(&self.session_dir)?; std::fs::write(self.session_path(name), Self::serialize(data)) }
     /// Load session data from disk.
     pub fn load(&self, name: &str) -> std::io::Result<SessionData> { Ok(Self::deserialize(&std::fs::read_to_string(self.session_path(name))?)) }
 

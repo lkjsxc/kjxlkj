@@ -151,6 +151,17 @@ fn parse_tab_stops_inner(
                                 parse_tab_stops_inner(chars, out, stops, defaults, true);
                                 let def_text: String = out[before_len..].to_string();
                                 defaults.insert(stop_num, def_text);
+                            } else if chars.peek() == Some(&'|') {
+                                chars.next(); // consume '|'
+                                let mut choices = Vec::new();
+                                let mut cur = String::new();
+                                while let Some(&ch) = chars.peek() {
+                                    chars.next();
+                                    if ch == '|' { if chars.peek() == Some(&'}') { chars.next(); } choices.push(std::mem::take(&mut cur)); break; }
+                                    else if ch == ',' { choices.push(std::mem::take(&mut cur)); }
+                                    else { cur.push(ch); }
+                                }
+                                if let Some(first) = choices.first() { out.push_str(first); defaults.insert(stop_num, first.clone()); }
                             } else if chars.peek() == Some(&'}') {
                                 chars.next();
                                 if let Some(def) = defaults.get(&stop_num) { out.push_str(def); }

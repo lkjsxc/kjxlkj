@@ -169,12 +169,14 @@ impl EditorState {
         String::new()
     }
 
-    /// Save global marks to viminfo file on exit.
+    /// Save global marks to viminfo file on exit, merging with existing data.
     pub(crate) fn save_viminfo(&self) {
-        let viminfo_path = self.viminfo_path();
-        let data = self.marks.serialize_viminfo();
-        let _ = std::fs::create_dir_all(viminfo_path.parent().unwrap_or(std::path::Path::new(".")));
-        let _ = std::fs::write(&viminfo_path, data);
+        let path = self.viminfo_path();
+        let mut merged = crate::marks::MarkFile::new();
+        if let Ok(existing) = std::fs::read_to_string(&path) { merged.load_viminfo(&existing); }
+        merged.load_viminfo(&self.marks.serialize_viminfo());
+        let _ = std::fs::create_dir_all(path.parent().unwrap_or(std::path::Path::new(".")));
+        let _ = std::fs::write(&path, merged.serialize_viminfo());
     }
 
     /// Load global marks from viminfo file on startup.
