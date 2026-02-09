@@ -20,6 +20,21 @@ impl EditorState {
         }
     }
 
+    /// Load ftplugin file for the given filetype (e.g., `ftplugin/rust.vim`).
+    /// Searches XDG config, then current directory, then runtime path.
+    pub fn load_ftplugin(&mut self, filetype: &str) {
+        let candidates = [
+            dirs_config(&format!("kjxlkj/ftplugin/{filetype}.vim")),
+            Some(format!("ftplugin/{filetype}.vim")),
+        ];
+        for p in candidates.iter().flatten() {
+            if std::path::Path::new(p).exists() {
+                self.handle_source(p);
+                return;
+            }
+        }
+    }
+
     /// Load configuration from a specific path.
     /// Supports [section] headers; keys become "section.key".
     pub fn load_config_file(&mut self, path: &str) {

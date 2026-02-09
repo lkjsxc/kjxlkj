@@ -76,10 +76,7 @@ impl EditorState {
             "q" | "quit" => self.handle_action(Action::Quit),
             "q!" | "quit!" => self.handle_action(Action::ForceQuit),
             "w" | "write" => self.write_current_buffer(),
-            "wq" | "x" => {
-                self.write_current_buffer();
-                self.handle_action(Action::Quit);
-            }
+            "wq" | "x" => { self.write_current_buffer(); self.handle_action(Action::Quit); }
             "bn" | "bnext" => self.next_buffer(),
             "bp" | "bprev" | "bprevious" => self.prev_buffer(),
             "sp" | "split" => self.split_horizontal(),
@@ -90,6 +87,7 @@ impl EditorState {
                 let sub_input = if let Some(stripped) = rest.strip_prefix("substitute") { stripped } else { &rest[1..] };
                 self.execute_substitute(sub_input, range.unwrap_or(ExRange::single(current_line)));
             }
+            _ if rest.starts_with('!') => { self.handle_filter_shell(rest[1..].trim(), range.unwrap_or(ExRange::single(current_line))); }
             _ if rest == "sort" || rest.starts_with("sort ") || rest.starts_with("sort!") => {
                 let flags = rest.strip_prefix("sort").unwrap_or("").trim();
                 let r = range.unwrap_or(ExRange { start: 0, end: total_lines.saturating_sub(1) });
@@ -149,6 +147,10 @@ impl EditorState {
             "registers" | "reg" => self.handle_list_registers(),
             "jumps" => self.handle_list_jumps(),
             "noh" | "nohlsearch" => self.handle_nohlsearch(),
+            _ if rest.starts_with("debug @") => {
+                let reg = rest.strip_prefix("debug @").unwrap().chars().next().unwrap_or('a');
+                self.handle_debug_macro(reg);
+            }
             "mksession" => self.handle_mksession(None),
             _ if rest.starts_with("mksession ") => {
                 let path = rest.strip_prefix("mksession ").unwrap().trim();

@@ -110,6 +110,15 @@ impl EditorState {
         let content = self.cmdline.content.clone();
         let space = content.rfind(' ').unwrap_or(0) + 1;
         let partial = &content[space..];
+        // Expand ~ to HOME.
+        let expanded;
+        let partial = if let Some(rest) = partial.strip_prefix('~') {
+            let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
+            expanded = format!("{}{}", home, rest);
+            &expanded
+        } else {
+            partial
+        };
         let (dir, prefix) = if let Some(slash) = partial.rfind('/') {
             (&partial[..=slash], &partial[slash + 1..])
         } else {

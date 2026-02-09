@@ -97,6 +97,10 @@ pub struct EditorState {
     pub functions: crate::user_functions::FunctionRegistry,
     /// Accumulator for multi-line function definition.
     pub(crate) function_body_acc: Option<FunctionBodyAcc>,
+    /// Action counter for session auto-save (0 = disabled).
+    pub(crate) autosave_counter: usize,
+    /// Macro debug stepping state: remaining keys from `:debug @{reg}`.
+    pub(crate) macro_step_keys: Option<Vec<Key>>,
 }
 
 /// Accumulator for f multi-line `function!`/`endfunction` blocks.
@@ -171,6 +175,8 @@ impl EditorState {
             sub_confirm: None,
             functions: crate::user_functions::FunctionRegistry::new(),
             function_body_acc: None,
+            autosave_counter: 0,
+            macro_step_keys: None,
         };
         editor.load_viminfo_file();
         editor
@@ -187,6 +193,7 @@ impl EditorState {
         if let Some(ft) = crate::config_loader::detect_filetype(path) {
             self.options
                 .set("filetype", crate::options::OptionValue::Str(ft.to_string()));
+            self.load_ftplugin(ft);
         }
     }
 }

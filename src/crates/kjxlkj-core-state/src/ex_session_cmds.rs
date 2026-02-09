@@ -100,28 +100,36 @@ impl EditorState {
     pub(crate) fn handle_source(&mut self, path: &str) {
         let content = match std::fs::read_to_string(path) {
             Ok(c) => c,
-            Err(e) => {
-                self.notify_error(&format!("E484: {path}: {e}"));
-                return;
-            }
+            Err(e) => { self.notify_error(&format!("E484: {path}: {e}")); return; }
         };
+        let mut skip_stack: Vec<bool> = Vec::new(); // true = currently skipping
         for line in content.lines() {
             let trimmed = line.trim();
             if trimmed.is_empty() { continue; }
             if trimmed == "finish" { break; }
+            // Handle if/elseif/else/endif conditional execution.
+            if let Some(cond_expr) = trimmed.strip_prefix("if ") {
+                let val = crate::expr_eval::eval_expression(cond_expr.trim()).unwrap_or_default();
+                skip_stack.push(val == "0" || val.is_empty());
+                continue;
+            }
+            if let Some(cond_expr) = trimmed.strip_prefix("elseif ") {
+                if let Some(top) = skip_stack.last_mut() {
+                    if *top { let val = crate::expr_eval::eval_expression(cond_expr.trim()).unwrap_or_default(); *top = val == "0" || val.is_empty(); }
+                    else { *top = true; }
+                }
+                continue;
+            }
+            if trimmed == "else" {
+                if let Some(top) = skip_stack.last_mut() { *top = !*top; }
+                continue;
+            }
+            if trimmed == "endif" { skip_stack.pop(); continue; }
+            if skip_stack.iter().any(|&s| s) { continue; }
             // Restore session history/search from special comments.
-            if let Some(entry) = trimmed.strip_prefix("\" history: ") {
-                self.cmdline.history.push(entry.to_string());
-                continue;
-            }
-            if let Some(pat) = trimmed.strip_prefix("\" search: ") {
-                self.search.pattern = Some(pat.to_string());
-                continue;
-            }
-            if let Some(rest) = trimmed.strip_prefix("\" localmark ") {
-                self.source_restore_localmark(rest);
-                continue;
-            }
+            if let Some(entry) = trimmed.strip_prefix("\" history: ") { self.cmdline.history.push(entry.to_string()); continue; }
+            if let Some(pat) = trimmed.strip_prefix("\" search: ") { self.search.pattern = Some(pat.to_string()); continue; }
+            if let Some(rest) = trimmed.strip_prefix("\" localmark ") { self.source_restore_localmark(rest); continue; }
             if trimmed.starts_with('"') { continue; }
             self.execute_ex_command(trimmed);
         }

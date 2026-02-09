@@ -41,9 +41,24 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                 Some('<') => out.push_str("\\b"),
                 Some('>') => out.push_str("\\b"),
                 Some('{') => {
-                    out.push('{');
-                    consume_until(&mut chars, &mut out, '}');
-                    out.push('}');
+                    // Check for \{-} non-greedy quantifier.
+                    if chars.peek() == Some(&'-') {
+                        let mut probe = chars.clone();
+                        probe.next(); // consume '-'
+                        if probe.peek() == Some(&'}') {
+                            probe.next(); // consume '}'
+                            chars = probe;
+                            out.push_str("*?"); // non-greedy
+                        } else {
+                            out.push('{');
+                            consume_until(&mut chars, &mut out, '}');
+                            out.push('}');
+                        }
+                    } else {
+                        out.push('{');
+                        consume_until(&mut chars, &mut out, '}');
+                        out.push('}');
+                    }
                 }
                 Some('d') => out.push_str("\\d"),
                 Some('D') => out.push_str("\\D"),
@@ -126,6 +141,12 @@ fn apply_lookaround(
         Some('!') => {
             probe.next();
             "(?!"
+        }
+        Some('>') => {
+            probe.next();
+            // Atomic group: Rust regex doesn't support (?>...) natively,
+            // translate to non-capturing group (?:...) as best approximation.
+            "(?:"
         }
         Some('<') => {
             probe.next();

@@ -138,11 +138,12 @@ fn try_builtin_function(expr: &str, vars: &HashMap<String, String>) -> Option<Re
         "map" => Some(Ok(list_map_filter(arg, vars, true))),
         "filter" => Some(Ok(list_map_filter(arg, vars, false))),
         "extend" => Some(Ok(list_extend(arg, vars))),
+        "match" => Some(crate::expr_string_funcs::expr_match(arg, vars)),
+        "substitute" => Some(crate::expr_string_funcs::expr_substitute(arg, vars)),
         _ => None,
     }
 }
-/// Extract a value from a JSON-ish dict string by key.
-fn extract_dict_value(dict: &str, key: &str) -> String {
+fn extract_dict_value(dict: &str, key: &str) -> String { // Extract a value from a JSON-ish dict string by key.
     let needle = format!("\"{}\":", key);
     if let Some(pos) = dict.find(&needle) {
         let after = dict[pos + needle.len()..].trim_start();
@@ -150,8 +151,7 @@ fn extract_dict_value(dict: &str, key: &str) -> String {
         else { after.split(&[',', '}'][..]).next().unwrap_or("").trim().to_string() }
     } else { String::new() }
 }
-/// Extract all keys from a JSON-ish dict as a list string.
-fn extract_dict_keys(dict: &str) -> String {
+fn extract_dict_keys(dict: &str) -> String { // Extract all keys from a JSON-ish dict as a list string.
     let inner = dict.trim().strip_prefix('{').and_then(|s| s.strip_suffix('}')).unwrap_or("");
     let keys: Vec<String> = inner.split(',').filter_map(|pair| { let k = pair.split(':').next()?.trim().trim_matches('"'); if k.is_empty() { None } else { Some(format!("\"{}\"", k)) } }).collect();
     format!("[{}]", keys.join(","))
@@ -162,7 +162,8 @@ fn extract_dict_values(dict: &str) -> String {
     let vals: Vec<&str> = inner.split(',').filter_map(|pair| { let kv: Vec<&str> = pair.splitn(2, ':').collect(); if kv.len() < 2 { None } else { Some(kv[1].trim()) } }).collect();
     format!("[{}]", vals.join(","))
 }
-/// Split two function args at top-level comma (respects [] and {} nesting).
+/// Split two function args at top-level comma (respects [] and {} nesting). Public wrapper also available.
+pub fn split_two_args_pub(arg: &str) -> Option<(&str, &str)> { split_two_args(arg) }
 fn split_two_args(arg: &str) -> Option<(&str, &str)> {
     let (bytes, mut depth) = (arg.as_bytes(), 0i32);
     for (i, &b) in bytes.iter().enumerate() {
@@ -184,8 +185,7 @@ fn list_map_filter(arg: &str, vars: &HashMap<String, String>, is_map: bool) -> S
     }).collect();
     format!("[{}]", result.join(","))
 }
-/// extend(list1, list2) concatenates two lists.
-fn list_extend(arg: &str, vars: &HashMap<String, String>) -> String {
+fn list_extend(arg: &str, vars: &HashMap<String, String>) -> String { // extend(list1, list2)
     let (la, lb) = match split_two_args(arg) { Some(p) => p, None => return "[]".into() };
     let (a, b) = (eval_expression_with_vars(la.trim(), vars).unwrap_or_default(), eval_expression_with_vars(lb.trim(), vars).unwrap_or_default());
     let (ia, ib) = (a.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or(""), b.trim().strip_prefix('[').and_then(|s| s.strip_suffix(']')).unwrap_or(""));

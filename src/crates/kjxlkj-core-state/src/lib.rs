@@ -56,6 +56,7 @@ mod ex_sort;
 mod ex_substitute;
 mod ex_substitute_confirm;
 pub(crate) mod expr_eval;
+pub(crate) mod expr_string_funcs;
 #[cfg(test)]
 mod findchar_tests;
 mod format_ops;
@@ -138,6 +139,8 @@ mod wave22_tests;
 mod wave23_tests;
 #[cfg(test)]
 mod wave24_tests;
+#[cfg(test)]
+mod wave25_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

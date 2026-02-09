@@ -6,6 +6,7 @@ use crate::editor::EditorState;
 impl EditorState {
     /// Process an action.
     pub fn handle_action(&mut self, action: Action) {
+        self.tick_autosave();
         match action {
             Action::Quit => {
                 if self.has_unsaved_buffers() { self.notify_error("Unsaved buffers. Use :q! to force quit."); }
@@ -42,46 +43,22 @@ impl EditorState {
             Action::InsertNewline => self.insert_newline(),
             Action::DeleteCharBackward => self.delete_char_backward(),
             Action::DeleteCharForward => self.delete_char_forward(),
-            Action::DeleteChar(n) => {
-                for _ in 0..n {
-                    self.delete_char_forward();
-                }
-            }
-            Action::DeleteCharBack(n) => {
-                for _ in 0..n {
-                    self.delete_char_backward();
-                }
-            }
+            Action::DeleteChar(n) => { for _ in 0..n { self.delete_char_forward(); } }
+            Action::DeleteCharBack(n) => { for _ in 0..n { self.delete_char_backward(); } }
             Action::Undo => self.undo(),
             Action::Redo => self.redo(),
             Action::JoinLines => self.join_lines(true),
             Action::JoinLinesNoSpace => self.join_lines(false),
             Action::DeleteLine(n) => self.delete_lines(n),
             Action::YankLine(n) => self.yank_lines(n),
-            Action::EnterNormal => {
-                self.mode = Mode::Normal;
-            }
-            Action::EnterCommandEx => {
-                self.mode = Mode::Command(CommandKind::Ex);
-                self.cmdline.open(':');
-            }
-            Action::EnterSearchForward => {
-                self.mode = Mode::Command(CommandKind::Search);
-                self.cmdline.open('/');
-                self.search.forward = true;
-            }
-            Action::EnterSearchBackward => {
-                self.mode = Mode::Command(CommandKind::Search);
-                self.cmdline.open('?');
-                self.search.forward = false;
-            }
+            Action::EnterNormal => { self.mode = Mode::Normal; }
+            Action::EnterCommandEx => { self.mode = Mode::Command(CommandKind::Ex); self.cmdline.open(':'); }
+            Action::EnterSearchForward => { self.mode = Mode::Command(CommandKind::Search); self.cmdline.open('/'); self.search.forward = true; }
+            Action::EnterSearchBackward => { self.mode = Mode::Command(CommandKind::Search); self.cmdline.open('?'); self.search.forward = false; }
             Action::CmdlineInsertChar(c) => self.cmdline.insert_char(c),
             Action::CmdlineBackspace => self.cmdline.backspace(),
             Action::CmdlineExecute => self.execute_cmdline(),
-            Action::CmdlineCancel => {
-                self.cmdline.close();
-                self.mode = Mode::Normal;
-            }
+            Action::CmdlineCancel => { self.cmdline.close(); self.mode = Mode::Normal; }
             Action::WriteBuffer => self.write_current_buffer(),
             Action::NextBuffer => self.next_buffer(),
             Action::PrevBuffer => self.prev_buffer(),
@@ -100,18 +77,11 @@ impl EditorState {
             Action::SetMark(c) => self.set_mark_at_cursor(c),
             Action::JumpToMark(c) => self.jump_to_mark(c),
             Action::JumpToMarkLine(c) => self.jump_to_mark_line(c),
-            Action::SelectRegister(c) => {
-                self.pending_register = Some(c);
-            }
+            Action::SelectRegister(c) => { self.pending_register = Some(c); }
             Action::StartRecording(c) => self.start_recording(c),
             Action::StopRecording => self.stop_recording(),
             Action::PlayMacro(c, count) => self.play_macro(c, count),
-            Action::EnterOperatorPending(op) => {
-                self.op_count = self.dispatch.take_count();
-                self.motion_count = None;
-                self.g_prefix = false;
-                self.mode = Mode::OperatorPending(op);
-            }
+            Action::EnterOperatorPending(op) => { self.op_count = self.dispatch.take_count(); self.motion_count = None; self.g_prefix = false; self.mode = Mode::OperatorPending(op); }
             Action::MoveToMatchingBracket => {}
             Action::FindCharForward(c) => self.find_char_forward(c),
             Action::FindCharBackward(c) => self.find_char_backward(c),
@@ -131,29 +101,25 @@ impl EditorState {
         }
     }
 
-    /// Handle K command: look up keyword under cursor with keywordprg. Count = section.
+    /// Handle K command: look up keyword under cursor with keywordprg.
+    #[rustfmt::skip]
     pub(crate) fn handle_keyword_lookup(&mut self, count: usize) {
         let word = self.word_under_cursor();
         if word.is_empty() { return self.notify_error("E349: No identifier under cursor"); }
-        let prg = self.options.get_str("keywordprg").to_string();
-        let prg = if prg.is_empty() { "man".to_string() } else { prg };
+        let prg = { let p = self.options.get_str("keywordprg").to_string(); if p.is_empty() { "man".into() } else { p } };
         use std::process::Command;
         let mut cmd = Command::new(&prg);
         if count > 1 { cmd.arg(format!("{count}")); }
         match cmd.arg(&word).output() {
-            Ok(out) => {
-                let text = String::from_utf8_lossy(&out.stdout);
-                let first_line = text.lines().next().unwrap_or("(no output)");
-                self.notify_info(&format!("{prg} {word}: {first_line}"));
-            }
+            Ok(out) => { let t = String::from_utf8_lossy(&out.stdout); self.notify_info(&format!("{prg} {word}: {}", t.lines().next().unwrap_or("(no output)"))); }
             Err(e) => self.notify_error(&format!("E282: {prg}: {e}")),
         }
     }
 
     /// Get the keyword (word) under the cursor.
+    #[rustfmt::skip]
     fn word_under_cursor(&self) -> String {
-        let buf_id = self.current_buffer_id();
-        let cursor = self.windows.focused().cursor;
+        let (buf_id, cursor) = (self.current_buffer_id(), self.windows.focused().cursor);
         if let Some(buf) = self.buffers.get(buf_id) {
             if cursor.line < buf.content.len_lines() {
                 let line: String = buf.content.line(cursor.line).chars().collect();
@@ -167,6 +133,40 @@ impl EditorState {
             }
         }
         String::new()
+    }
+
+    /// Check autosave interval and trigger mksession if due.
+    fn tick_autosave(&mut self) {
+        let interval = self.options.get_str("autosaveinterval").parse::<usize>().unwrap_or(0);
+        if interval == 0 { return; }
+        self.autosave_counter += 1;
+        if self.autosave_counter >= interval { self.autosave_counter = 0; self.handle_mksession(None); }
+    }
+
+    /// Start macro step debugging: `:debug @{reg}` queues keys one at a time.
+    pub(crate) fn handle_debug_macro(&mut self, reg: char) {
+        if let Some(keys) = self.macro_store.get(&reg).cloned() {
+            if keys.is_empty() { return self.notify_error(&format!("E748: Register {reg} is empty")); }
+            self.macro_step_keys = Some(keys);
+            self.notify_info(&format!("Stepping macro @{reg} ({} keys)", self.macro_step_keys.as_ref().unwrap().len()));
+        } else { self.notify_error(&format!("E748: No macro in register {reg}")); }
+    }
+
+    /// Execute next step in macro debug session.
+    #[allow(dead_code)]
+    pub(crate) fn macro_step_next(&mut self) {
+        if let Some(ref mut keys) = self.macro_step_keys {
+            if let Some(key) = keys.first().cloned() {
+                let remaining = keys.len() - 1;
+                keys.remove(0);
+                self.notify_info(&format!("Step: {:?} ({remaining} remaining)", key));
+                self.handle_key(key);
+            }
+            if self.macro_step_keys.as_ref().map(|k| k.is_empty()).unwrap_or(true) {
+                self.macro_step_keys = None;
+                self.notify_info("Macro stepping complete");
+            }
+        }
     }
 
     /// Save global marks to viminfo file on exit, merging with existing data.
