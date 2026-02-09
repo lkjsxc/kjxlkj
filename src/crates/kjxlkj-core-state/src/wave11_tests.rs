@@ -62,13 +62,13 @@ fn changelist_navigation() {
     assert_eq!(ed.changelist_idx, 1);
 }
 
-/// REQ-RANGERR-01: Backwards range gives error.
+/// REQ-RANGEPROMPT-01: Backwards range swaps instead of error.
 #[test]
-fn backwards_range_error() {
+fn backwards_range_swap() {
     let mut ed = make_editor();
     ed.execute_ex_command("3,1d");
     let has_err = ed.notifications.iter().any(|n| n.message.contains("E493"));
-    assert!(has_err, "Expected E493 backwards range error");
+    assert!(!has_err, "Backwards range should swap, not error");
 }
 
 /// REQ-RANGERR-01: Mark not set error.

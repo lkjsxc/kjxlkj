@@ -15,10 +15,14 @@ impl EditorState {
     pub(crate) fn handle_insert_register(&mut self, c: char) {
         self.insert_register_pending = false;
         if c == '=' {
-            // Expression register: prompt is not yet impl'd.
-            // For now, evaluate last_ex_command as expression.
-            // Real implementation would open a mini-prompt.
-            self.notify_info("Expression register: use := expression");
+            // Expression register: evaluate last_ex_command as expression.
+            let expr = self.last_ex_command.clone();
+            if !expr.is_empty() {
+                match crate::expr_eval::eval_expression(&expr) {
+                    Ok(result) => self.insert_text(&result),
+                    Err(e) => self.notify_error(&format!("E15: {e}")),
+                }
+            }
             return;
         }
         // Standard register insertion.

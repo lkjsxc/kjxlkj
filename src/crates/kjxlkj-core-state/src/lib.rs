@@ -92,6 +92,7 @@ pub mod session;
 mod session_tests;
 pub(crate) mod text_objects;
 pub(crate) mod text_objects_argument;
+pub(crate) mod text_objects_class;
 pub(crate) mod text_objects_delim;
 pub(crate) mod text_objects_sentence;
 pub(crate) mod text_objects_tag;
@@ -110,6 +111,8 @@ mod wave11_tests;
 mod wave12_tests;
 #[cfg(test)]
 mod wave13_tests;
+#[cfg(test)]
+mod wave14_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

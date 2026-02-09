@@ -111,6 +111,37 @@ impl EditorState {
     pub(crate) fn is_q_key(key: &Key) -> bool {
         key.modifiers == Modifier::NONE && matches!(key.code, KeyCode::Char('q'))
     }
+
+    /// Sync macro store → register: put macro as text into named register.
+    #[allow(dead_code)]
+    pub(crate) fn sync_macro_to_register(&mut self, reg: char) {
+        let r = reg.to_ascii_lowercase();
+        if let Some(keys) = self.macro_store.get(&r) {
+            let text: String = keys.iter().map(macro_key_to_char).collect();
+            self.registers.set(
+                kjxlkj_core_edit::RegisterName::Named(r),
+                kjxlkj_core_edit::Register::new(text, false),
+            );
+        }
+    }
+
+    /// Sync register → macro store: load text from named register as macro keys.
+    #[allow(dead_code)]
+    pub(crate) fn sync_register_to_macro(&mut self, reg: char) {
+        let r = reg.to_ascii_lowercase();
+        let text = self
+            .registers
+            .get(kjxlkj_core_edit::RegisterName::Named(r))
+            .map(|reg| reg.content.clone());
+        if let Some(text) = text {
+            let keys: Vec<Key> = text.chars().map(|c| match c {
+                '\n' => Key::new(KeyCode::Enter, Modifier::NONE),
+                '\x1b' => Key::esc(),
+                c => Key::char(c),
+            }).collect();
+            self.macro_store.insert(r, keys);
+        }
+    }
 }
 
 fn macro_key_to_char(key: &Key) -> char {

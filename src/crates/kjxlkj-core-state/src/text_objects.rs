@@ -30,13 +30,13 @@ pub fn resolve_text_object(
         's' => crate::text_objects_sentence::resolve_sentence(kind, pos, rope),
         't' => crate::text_objects_tag::resolve_tag_object(kind, pos, rope),
         'a' => crate::text_objects_argument::resolve_argument(kind, pos, rope),
+        'c' | 'f' => crate::text_objects_class::resolve_class_or_func(kind, obj, pos, rope),
         '(' | ')' | 'b' | '[' | ']' | '{' | '}' | 'B' | '<' | '>' | '"' | '\'' | '`' => {
             crate::text_objects_delim::resolve_delim_object(kind, obj, pos, rope)
         }
         _ => None,
     }
 }
-
 fn resolve_word(
     kind: TextObjectKind,
     pos: CursorPosition,

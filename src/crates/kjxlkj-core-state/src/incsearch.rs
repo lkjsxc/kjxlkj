@@ -60,4 +60,34 @@ impl EditorState {
         }
         (line, offset.saturating_sub(line_start))
     }
+
+    /// Compute search match count [current/total] and store in search state.
+    pub(crate) fn update_search_count(&mut self) {
+        let pattern = match &self.search.pattern {
+            Some(p) if !p.is_empty() => p.clone(),
+            _ => { self.search.match_count = None; return; }
+        };
+        let buf_id = self.current_buffer_id();
+        let buf = match self.buffers.get(buf_id) {
+            Some(b) => b,
+            None => return,
+        };
+        let text: String = buf.content.to_string();
+        let cursor = self.windows.focused().cursor;
+        let cursor_off = self.inc_line_col_to_byte(&text, cursor.line, cursor.grapheme);
+        let mut total = 0usize;
+        let mut current = 0usize;
+        let mut pos = 0;
+        while let Some(idx) = text[pos..].find(&*pattern) {
+            let abs = pos + idx;
+            total += 1;
+            if abs <= cursor_off { current = total; }
+            pos = abs + pattern.len().max(1);
+        }
+        if total > 0 {
+            self.search.match_count = Some((current, total));
+        } else {
+            self.search.match_count = None;
+        }
+    }
 }

@@ -123,6 +123,8 @@ impl EditorState {
                 }
                 self.windows.focused_mut().cursor = start;
                 if op == Operator::Change {
+                    self.block_insert_pending = Some((start.line, end.line, col_start, false));
+                    self.last_inserted_text.clear();
                     self.mode = Mode::Insert;
                 }
             }

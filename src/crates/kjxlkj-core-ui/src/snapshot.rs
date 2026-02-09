@@ -101,6 +101,10 @@ pub struct CmdlineState {
     pub cursor_pos: usize,
     /// Whether command line is active.
     pub active: bool,
+    /// Wildmenu completion candidates (for display).
+    pub completions: Vec<String>,
+    /// Selected completion index.
+    pub completion_index: Option<usize>,
 }
 
 /// Search state.
@@ -114,6 +118,8 @@ pub struct SearchState {
     pub forward: bool,
     /// Highlighted match positions (line, start_col, end_col) for hlsearch.
     pub highlight_ranges: Vec<(usize, usize, usize)>,
+    /// Search match count: (current_match, total_matches).
+    pub match_count: Option<(usize, usize)>,
 }
 
 /// Notification message.

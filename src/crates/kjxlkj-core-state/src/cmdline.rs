@@ -158,6 +158,8 @@ impl CmdlineHandler {
             content: self.content.clone(),
             cursor_pos: self.cursor_pos,
             active: self.active,
+            completions: self.completion.candidates.clone(),
+            completion_index: self.completion.index,
         }
     }
 }

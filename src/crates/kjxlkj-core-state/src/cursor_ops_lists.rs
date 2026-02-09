@@ -75,7 +75,7 @@ impl EditorState {
     }
 
     /// Switch the focused window to a buffer by raw buffer ID.
-    fn switch_to_buffer_id(&mut self, bid: usize) {
+    pub(crate) fn switch_to_buffer_id(&mut self, bid: usize) {
         let cur = self.current_buffer_id().0 as usize;
         if bid != cur {
             use kjxlkj_core_types::{BufferId, ContentSource};

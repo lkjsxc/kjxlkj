@@ -59,12 +59,10 @@ impl EditorState {
                 }
             }
         }
-        if let Some(ref r) = range {
-            if r.start > r.end {
-                self.notify_error("E493: Backwards range given");
-                return;
-            }
-        }
+        let range = range.map(|mut r| {
+            if r.start > r.end { std::mem::swap(&mut r.start, &mut r.end); }
+            r
+        });
         let rest = rest.trim();
 
         match rest {

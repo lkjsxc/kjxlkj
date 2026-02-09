@@ -18,6 +18,9 @@ impl EditorState {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
             self.push_jumplist();
+            if pos.buffer_id != buf_id.0 as usize {
+                self.switch_to_buffer_id(pos.buffer_id);
+            }
             self.windows.focused_mut().cursor =
                 kjxlkj_core_types::CursorPosition::new(pos.line, pos.col);
             self.clamp_cursor();
@@ -29,6 +32,9 @@ impl EditorState {
         let buf_id = self.current_buffer_id();
         if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
             self.push_jumplist();
+            if pos.buffer_id != buf_id.0 as usize {
+                self.switch_to_buffer_id(pos.buffer_id);
+            }
             self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(pos.line, 0);
             self.move_to_first_non_blank();
             self.ensure_cursor_visible();
@@ -60,6 +66,7 @@ impl EditorState {
                 }
             }
         }
+        self.update_search_count();
     }
 
     pub(crate) fn search_prev(&mut self) {
@@ -86,6 +93,7 @@ impl EditorState {
                 }
             }
         }
+        self.update_search_count();
     }
 
     fn line_col_to_byte_offset(&self, text: &str, line: usize, col: usize) -> usize {

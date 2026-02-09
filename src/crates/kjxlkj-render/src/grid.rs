@@ -89,7 +89,7 @@ fn render_statusline(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &Editor
     }
 }
 
-fn render_cmdline(grid: &mut CellGrid, _cols: u16, row: u16, snapshot: &EditorSnapshot) {
+fn render_cmdline(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
     if snapshot.cmdline.active {
         let prefix = snapshot
             .cmdline
@@ -98,6 +98,10 @@ fn render_cmdline(grid: &mut CellGrid, _cols: u16, row: u16, snapshot: &EditorSn
             .unwrap_or_default();
         let text = format!("{}{}", prefix, snapshot.cmdline.content);
         grid.set_str(0, row, &text, snapshot.theme.cmdline_style);
+        // Wildmenu: show completions on status bar row.
+        if !snapshot.cmdline.completions.is_empty() && row > 0 {
+            render_wildmenu(grid, cols, row - 1, snapshot);
+        }
     } else if let Some(notif) = snapshot.notifications.last() {
         let style = match notif.level {
             kjxlkj_core_ui::NotificationLevel::Error => Style {
@@ -111,5 +115,36 @@ fn render_cmdline(grid: &mut CellGrid, _cols: u16, row: u16, snapshot: &EditorSn
             _ => Style::default(),
         };
         grid.set_str(0, row, &notif.message, style);
+    }
+    // Search count display on cmdline row right side.
+    if let Some((cur, total)) = snapshot.search.match_count {
+        let count_str = format!("[{}/{}]", cur, total);
+        let len = count_str.len() as u16;
+        if cols > len {
+            grid.set_str(cols - len, row, &count_str, Style::default());
+        }
+    }
+}
+
+fn render_wildmenu(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
+    let sel = snapshot.cmdline.completion_index;
+    let normal = snapshot.theme.statusline_style;
+    let selected = Style {
+        fg: Color::Rgb(0, 0, 0),
+        bg: Color::Rgb(255, 255, 255),
+        bold: false,
+        italic: false,
+        underline: false,
+        reverse: false,
+    };
+    let mut col = 0u16;
+    for (i, item) in snapshot.cmdline.completions.iter().enumerate() {
+        if col >= cols {
+            break;
+        }
+        let st = if sel == Some(i) { selected } else { normal };
+        let display = format!(" {} ", item);
+        grid.set_str(col, row, &display, st);
+        col += display.len() as u16;
     }
 }
