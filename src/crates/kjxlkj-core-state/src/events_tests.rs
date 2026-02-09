@@ -20,8 +20,7 @@ fn test_register_and_fire() {
 fn test_fire_wrong_event() {
     let mut reg = EventRegistry::new();
     reg.register(EventKind::BufferNew, "cmd".to_string(), None, None);
-    let cmds =
-        reg.fire(EventKind::BufferLeave, &EventData::default());
+    let cmds = reg.fire(EventKind::BufferLeave, &EventData::default());
     assert!(cmds.is_empty());
 }
 
@@ -43,10 +42,7 @@ fn test_pattern_filter() {
         ..Default::default()
     };
     assert_eq!(reg.fire(EventKind::FileType, &data_match).len(), 1);
-    assert_eq!(
-        reg.fire(EventKind::FileType, &data_nomatch).len(),
-        0
-    );
+    assert_eq!(reg.fire(EventKind::FileType, &data_nomatch).len(), 0);
 }
 
 #[test]
@@ -58,12 +54,7 @@ fn test_clear_group() {
         None,
         Some("mygroup".to_string()),
     );
-    reg.register(
-        EventKind::BufferNew,
-        "cmd2".to_string(),
-        None,
-        None,
-    );
+    reg.register(EventKind::BufferNew, "cmd2".to_string(), None, None);
     reg.clear_group("mygroup");
     assert_eq!(reg.len(), 1);
 }
@@ -71,12 +62,7 @@ fn test_clear_group() {
 #[test]
 fn test_remove_by_id() {
     let mut reg = EventRegistry::new();
-    let id = reg.register(
-        EventKind::BufferNew,
-        "cmd".to_string(),
-        None,
-        None,
-    );
+    let id = reg.register(EventKind::BufferNew, "cmd".to_string(), None, None);
     assert!(reg.remove(id));
     assert!(reg.is_empty());
 }
@@ -85,12 +71,7 @@ fn test_remove_by_id() {
 fn test_reentry_guard() {
     let mut reg = EventRegistry::new();
     reg.set_max_depth(0);
-    reg.register(
-        EventKind::BufferNew,
-        "cmd".to_string(),
-        None,
-        None,
-    );
+    reg.register(EventKind::BufferNew, "cmd".to_string(), None, None);
     let cmds = reg.fire(EventKind::BufferNew, &EventData::default());
     assert!(cmds.is_empty());
 }

@@ -66,11 +66,7 @@ impl SearchState {
     }
 
     /// Set a new search pattern and add it to history.
-    pub fn set_pattern(
-        &mut self,
-        pattern: String,
-        direction: SearchDirection,
-    ) {
+    pub fn set_pattern(&mut self, pattern: String, direction: SearchDirection) {
         self.direction = direction;
         if self.history.first().map(|s| s.as_str()) != Some(&pattern) {
             self.history.insert(0, pattern.clone());

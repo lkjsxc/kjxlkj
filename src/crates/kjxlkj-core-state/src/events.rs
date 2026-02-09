@@ -54,8 +54,7 @@ impl EventRegistry {
 
     /// Clear all handlers in a group.
     pub fn clear_group(&mut self, group: &str) {
-        self.handlers
-            .retain(|h| h.group.as_deref() != Some(group));
+        self.handlers.retain(|h| h.group.as_deref() != Some(group));
     }
 
     /// Clear all handlers for a specific event.
@@ -70,11 +69,7 @@ impl EventRegistry {
 
     /// Fire an event — returns commands to execute.
     /// Checks re-entry depth to prevent infinite loops.
-    pub fn fire(
-        &mut self,
-        event: EventKind,
-        data: &EventData,
-    ) -> Vec<String> {
+    pub fn fire(&mut self, event: EventKind, data: &EventData) -> Vec<String> {
         if self.current_depth >= self.max_depth {
             return Vec::new();
         }
@@ -98,10 +93,7 @@ impl EventRegistry {
     }
 
     /// List all handlers, optionally filtered by event.
-    pub fn list(
-        &self,
-        event: Option<EventKind>,
-    ) -> Vec<&EventHandler> {
+    pub fn list(&self, event: Option<EventKind>) -> Vec<&EventHandler> {
         self.handlers
             .iter()
             .filter(|h| event.is_none() || event == Some(h.event))

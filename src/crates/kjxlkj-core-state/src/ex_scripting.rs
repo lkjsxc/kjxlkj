@@ -140,4 +140,12 @@ impl EditorState {
     pub(crate) fn handle_list_registers(&mut self) {
         self.notify_info("Registers: (use :reg to view)");
     }
+
+    pub(crate) fn handle_set_command(&mut self, args: &str) {
+        match crate::options::parse_set_command(&mut self.options, args) {
+            Ok(Some(msg)) => self.notify_info(&msg),
+            Ok(None) => {}
+            Err(e) => self.notify_error(&e),
+        }
+    }
 }

@@ -14,11 +14,7 @@ impl EditorState {
         };
 
         if sub_cmd.count_only {
-            self.substitute_count(
-                &sub_cmd.pattern,
-                range,
-                sub_cmd.case_insensitive,
-            );
+            self.substitute_count(&sub_cmd.pattern, range, sub_cmd.case_insensitive);
             return;
         }
 
@@ -31,9 +27,7 @@ impl EditorState {
             let mut total_replacements = 0;
             let mut total_lines_changed = 0;
 
-            for line_idx in
-                range.start..=range.end.min(buf.content.len_lines().saturating_sub(1))
-            {
+            for line_idx in range.start..=range.end.min(buf.content.len_lines().saturating_sub(1)) {
                 let line_slice = buf.content.line(line_idx);
                 let line_str: String = line_slice.chars().collect();
 
@@ -83,35 +77,20 @@ impl EditorState {
                      {total_lines_changed} line(s)"
                 ));
             } else if !sub_cmd.suppress_error {
-                self.notify_error(&format!(
-                    "E486: Pattern not found: {}",
-                    sub_cmd.pattern
-                ));
+                self.notify_error(&format!("E486: Pattern not found: {}", sub_cmd.pattern));
             }
         }
     }
 
-    fn substitute_count(
-        &mut self,
-        pattern: &str,
-        range: ExRange,
-        case_insensitive: bool,
-    ) {
+    fn substitute_count(&mut self, pattern: &str, range: ExRange, case_insensitive: bool) {
         let buf_id = self.current_buffer_id();
         let mut total = 0;
 
         if let Some(buf) = self.buffers.get(buf_id) {
-            for line_idx in
-                range.start..=range.end.min(buf.content.len_lines().saturating_sub(1))
-            {
+            for line_idx in range.start..=range.end.min(buf.content.len_lines().saturating_sub(1)) {
                 let line_slice = buf.content.line(line_idx);
                 let line_str: String = line_slice.chars().collect();
-                total += count_replacements(
-                    &line_str,
-                    pattern,
-                    true,
-                    case_insensitive,
-                );
+                total += count_replacements(&line_str, pattern, true, case_insensitive);
             }
         }
 

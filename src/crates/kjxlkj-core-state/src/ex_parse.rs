@@ -46,6 +46,7 @@ impl ExRange {
 
 /// Parse a range prefix from an ex command string.
 /// Returns (optional range, remaining command string).
+#[allow(dead_code)]
 pub fn parse_range(
     input: &str,
     current_line: usize,
@@ -91,6 +92,7 @@ pub fn parse_range(
 }
 
 /// Parse a single line address. Returns (line_number_0_indexed, remaining_input).
+#[allow(dead_code)]
 fn parse_address(input: &str, current_line: usize, total_lines: usize) -> (Option<usize>, &str) {
     let input = input.trim_start();
     if input.is_empty() {
@@ -131,7 +133,7 @@ fn parse_address(input: &str, current_line: usize, total_lines: usize) -> (Optio
 }
 
 /// Parse an optional +N or -N offset after an address.
-fn parse_offset(input: &str) -> (isize, &str) {
+pub fn parse_offset(input: &str) -> (isize, &str) {
     let input = input.trim_start();
     if input.is_empty() {
         return (0, input);

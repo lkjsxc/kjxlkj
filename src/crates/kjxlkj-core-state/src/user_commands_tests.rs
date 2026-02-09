@@ -112,8 +112,7 @@ fn test_remove_command() {
 
 #[test]
 fn test_parse_command_def() {
-    let (cmd, overwrite) =
-        parse_command_def("-nargs=1 Greet echo <args>").unwrap();
+    let (cmd, overwrite) = parse_command_def("-nargs=1 Greet echo <args>").unwrap();
     assert_eq!(cmd.name, "Greet");
     assert_eq!(cmd.replacement, "echo <args>");
     assert_eq!(cmd.nargs, Nargs::One);

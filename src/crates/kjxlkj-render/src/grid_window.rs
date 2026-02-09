@@ -47,9 +47,7 @@ pub(crate) fn render_window(
                 buf_line + 1,
                 width = gutter_width as usize - 1
             );
-            grid.set_str(
-                area.x, screen_row, &num_str, *line_num_style,
-            );
+            grid.set_str(area.x, screen_row, &num_str, *line_num_style);
         }
 
         if buf_line < buf.line_count {
@@ -108,13 +106,9 @@ fn render_line_content(
         if col >= text_width {
             break;
         }
-        let w =
-            unicode_width::UnicodeWidthStr::width(grapheme) as u8;
+        let w = unicode_width::UnicodeWidthStr::width(grapheme) as u8;
         let mut style = *default_style;
-        if is_focused
-            && buf_line == ws.cursor.line
-            && g_idx == ws.cursor.grapheme
-        {
+        if is_focused && buf_line == ws.cursor.line && g_idx == ws.cursor.grapheme {
             style = *cursor_style;
         }
         let screen_col = text_start_col + col;

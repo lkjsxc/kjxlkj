@@ -1,5 +1,7 @@
 use kjxlkj_core_ui::CmdlineState;
 
+use crate::cmdline_completion::CompletionState;
+
 /// Command-line handler for ex commands and search.
 #[derive(Debug)]
 pub struct CmdlineHandler {
@@ -9,6 +11,7 @@ pub struct CmdlineHandler {
     pub active: bool,
     pub history: Vec<String>,
     pub history_idx: Option<usize>,
+    pub completion: CompletionState,
 }
 
 impl CmdlineHandler {
@@ -20,6 +23,7 @@ impl CmdlineHandler {
             active: false,
             history: Vec::new(),
             history_idx: None,
+            completion: CompletionState::default(),
         }
     }
 

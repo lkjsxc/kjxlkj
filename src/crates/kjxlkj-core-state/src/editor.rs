@@ -1,7 +1,7 @@
 /// Central editor state: single mutable owner in core task.
 use kjxlkj_core_edit::RegisterFile;
 use kjxlkj_core_mode::NormalDispatch;
-use kjxlkj_core_types::{ContentSource, CursorPosition, Mode};
+use kjxlkj_core_types::{ContentSource, CursorPosition, Key, Mode};
 use kjxlkj_core_ui::{Notification, SearchState, Theme};
 
 use crate::buffer_list::BufferList;
@@ -9,6 +9,7 @@ use crate::cmdline::CmdlineHandler;
 use crate::events::EventRegistry;
 use crate::mappings::MappingTable;
 use crate::marks::MarkFile;
+use crate::options::OptionStore;
 use crate::user_commands::UserCommandRegistry;
 use crate::window_tree::WindowTree;
 
@@ -41,6 +42,16 @@ pub struct EditorState {
     pub(crate) g_prefix: bool,
     /// Pending register for next yank/delete/put.
     pub(crate) pending_register: Option<char>,
+    /// Editor options (:set).
+    pub options: OptionStore,
+    /// Macro recording target register (None = not recording).
+    pub(crate) recording_macro: Option<char>,
+    /// Keys recorded during current macro recording.
+    pub(crate) macro_buffer: Vec<Key>,
+    /// Per-register macro key storage.
+    pub(crate) macro_store: std::collections::HashMap<char, Vec<Key>>,
+    /// Last executed macro register for @@ replay.
+    pub(crate) last_macro: Option<char>,
 }
 
 impl EditorState {
@@ -72,14 +83,17 @@ impl EditorState {
             motion_count: None,
             g_prefix: false,
             pending_register: None,
+            options: OptionStore::new(),
+            recording_macro: None,
+            macro_buffer: Vec::new(),
+            macro_store: std::collections::HashMap::new(),
+            last_macro: None,
         }
     }
 
     /// Open file content into a buffer and display it.
     pub fn open_file(&mut self, path: &str, content: &str) {
-        let buf_id =
-            self.buffers
-                .open(content, std::path::PathBuf::from(path));
+        let buf_id = self.buffers.open(content, std::path::PathBuf::from(path));
         self.windows.focused_mut().content = ContentSource::Buffer(buf_id);
     }
 }

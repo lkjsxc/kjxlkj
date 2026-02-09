@@ -2,7 +2,8 @@
 use kjxlkj_core_types::Action;
 
 use crate::editor::EditorState;
-use crate::ex_parse::{parse_range, ExRange};
+use crate::ex_parse::ExRange;
+use crate::ex_parse_ranges::{parse_range_ctx, RangeContext};
 
 impl EditorState {
     pub(crate) fn execute_cmdline(&mut self) {
@@ -27,7 +28,22 @@ impl EditorState {
             .get(buf_id)
             .map(|b| b.line_count())
             .unwrap_or(1);
-        let (range, rest) = parse_range(cmd, current_line, total_lines);
+        let text: String = self
+            .buffers
+            .get(buf_id)
+            .map(|b| b.content.to_string())
+            .unwrap_or_default();
+        let text_lines: Vec<&str> = text.lines().collect();
+        let marks = &self.marks;
+        let bid = buf_id.0 as usize;
+        let mark_fn = |ch: char| -> Option<usize> { marks.get(ch, bid).map(|p| p.line) };
+        let ctx = RangeContext {
+            current_line,
+            total_lines,
+            lines: &text_lines,
+            mark_line: Some(&mark_fn),
+        };
+        let (range, rest) = parse_range_ctx(cmd, &ctx);
         let rest = rest.trim();
 
         match rest {
@@ -105,6 +121,10 @@ impl EditorState {
             }
             "marks" => self.handle_list_marks(),
             "registers" | "reg" => self.handle_list_registers(),
+            _ if rest == "set" || rest.starts_with("set ") || rest.starts_with("set\t") => {
+                let args = rest.strip_prefix("set").unwrap_or("").trim();
+                self.handle_set_command(args);
+            }
             _ if rest.is_empty() => {
                 if let Some(r) = range {
                     self.windows.focused_mut().cursor.line = r.end;

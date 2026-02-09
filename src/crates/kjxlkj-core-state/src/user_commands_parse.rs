@@ -3,9 +3,7 @@ use crate::user_commands::{CompletionType, Nargs, RangeMode, UserCommand};
 
 /// Parse a `:command` definition string into a UserCommand.
 /// Format: `:command [-flags ...] Name replacement`
-pub fn parse_command_def(
-    input: &str,
-) -> Result<(UserCommand, bool), String> {
+pub fn parse_command_def(input: &str) -> Result<(UserCommand, bool), String> {
     let input = input.trim();
     let mut nargs = Nargs::Zero;
     let mut range = RangeMode::None;
@@ -35,11 +33,7 @@ pub fn parse_command_def(
                 "*" => Nargs::Any,
                 "?" => Nargs::Optional,
                 "+" => Nargs::OneOrMore,
-                _ => {
-                    return Err(format!(
-                        "E176: Invalid -nargs value: {val}"
-                    ))
-                }
+                _ => return Err(format!("E176: Invalid -nargs value: {val}")),
             };
         } else if flag == "-range" {
             range = RangeMode::CurrentLine;

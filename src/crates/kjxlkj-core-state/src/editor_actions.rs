@@ -113,6 +113,9 @@ impl EditorState {
             Action::SelectRegister(c) => {
                 self.pending_register = Some(c);
             }
+            Action::StartRecording(c) => self.start_recording(c),
+            Action::StopRecording => self.stop_recording(),
+            Action::PlayMacro(c) => self.play_macro(c, 1),
             Action::MoveToMatchingBracket => {}
             Action::ToggleCase => {}
             Action::DotRepeat => {}

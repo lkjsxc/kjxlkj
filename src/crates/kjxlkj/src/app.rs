@@ -58,7 +58,14 @@ pub async fn run_inner(files: Vec<String>) -> anyhow::Result<()> {
     let _ = snapshot_tx.send(state.snapshot());
 
     // Step 11: Core select loop
-    core_loop(&mut state, &mut action_rx, &mut key_rx, &mut service_resp_rx, &snapshot_tx).await;
+    core_loop(
+        &mut state,
+        &mut action_rx,
+        &mut key_rx,
+        &mut service_resp_rx,
+        &snapshot_tx,
+    )
+    .await;
 
     // --- Shutdown Sequence ---
     let _ = quit_tx.send(());
@@ -123,7 +130,10 @@ async fn core_loop(
 
 fn handle_service_response(resp: ServiceResponse) {
     match resp {
-        ServiceResponse::FileRead { request_id, content } => {
+        ServiceResponse::FileRead {
+            request_id,
+            content,
+        } => {
             if let Ok(_text) = content {
                 tracing::info!("File read complete (req {})", request_id);
             }

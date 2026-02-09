@@ -58,14 +58,11 @@ pub fn resolve_motion(
             (CursorPosition::new(line, g), MotionKind::Linewise)
         }
         Motion::Down(n) => {
-            let line =
-                (pos.line + n).min(line_count.saturating_sub(1));
+            let line = (pos.line + n).min(line_count.saturating_sub(1));
             let g = clamp_grapheme(rope, line, pos.grapheme);
             (CursorPosition::new(line, g), MotionKind::Linewise)
         }
-        Motion::LineStart => {
-            (CursorPosition::new(pos.line, 0), MotionKind::Exclusive)
-        }
+        Motion::LineStart => (CursorPosition::new(pos.line, 0), MotionKind::Exclusive),
         Motion::FirstNonBlank => {
             let g = first_non_blank(rope, pos.line);
             (CursorPosition::new(pos.line, g), MotionKind::Exclusive)
@@ -110,8 +107,7 @@ pub fn resolve_motion(
         }
         Motion::PageDown(n) => {
             let lines = viewport_height * n;
-            let line =
-                (pos.line + lines).min(line_count.saturating_sub(1));
+            let line = (pos.line + lines).min(line_count.saturating_sub(1));
             let g = clamp_grapheme(rope, line, pos.grapheme);
             (CursorPosition::new(line, g), MotionKind::Linewise)
         }
@@ -123,8 +119,7 @@ pub fn resolve_motion(
         }
         Motion::HalfPageDown(n) => {
             let lines = (viewport_height / 2) * n;
-            let line =
-                (pos.line + lines).min(line_count.saturating_sub(1));
+            let line = (pos.line + lines).min(line_count.saturating_sub(1));
             let g = clamp_grapheme(rope, line, pos.grapheme);
             (CursorPosition::new(line, g), MotionKind::Linewise)
         }

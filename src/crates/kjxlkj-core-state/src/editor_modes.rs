@@ -8,18 +8,21 @@ use crate::editor::EditorState;
 impl EditorState {
     /// Process a key press.
     pub fn handle_key(&mut self, key: Key) {
-        // Pending prefix (m, g, z, ", ', `) bypasses transition.
-        if matches!(self.mode, Mode::Normal)
-            && self.dispatch.has_pending()
-        {
+        // If recording a macro, intercept `q` to stop recording.
+        if self.is_recording() && Self::is_q_key(&key) {
+            self.stop_recording();
+            return;
+        }
+        // Record the key for macro playback (before dispatch).
+        self.record_key(&key);
+
+        // Pending prefix (m, g, z, ", ', `, q, @) bypasses transition.
+        if matches!(self.mode, Mode::Normal) && self.dispatch.has_pending() {
             self.dispatch_in_mode(key);
             return;
         }
-        let in_terminal =
-            matches!(self.windows.focused().content, ContentSource::Terminal(_));
-        let mt = kjxlkj_core_mode::transition::transition(
-            &self.mode, &key, in_terminal,
-        );
+        let in_terminal = matches!(self.windows.focused().content, ContentSource::Terminal(_));
+        let mt = kjxlkj_core_mode::transition::transition(&self.mode, &key, in_terminal);
 
         match mt {
             ModeTransition::To(new_mode) => {
@@ -65,7 +68,10 @@ impl EditorState {
                 let version = self.buffers.current().version;
                 let content = self.buffers.current().content.clone();
                 self.buffers.current_mut().undo_tree.begin_group(
-                    version, content, cursor.line, cursor.grapheme,
+                    version,
+                    content,
+                    cursor.line,
+                    cursor.grapheme,
                 );
                 if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
                     match c {
@@ -99,6 +105,15 @@ impl EditorState {
                     }
                 };
                 self.cmdline.open(prefix);
+            }
+            (Mode::Command(_), Mode::Normal) => {
+                // Enter executes, Esc cancels.
+                if matches!(key.code, kjxlkj_core_types::KeyCode::Enter) {
+                    self.execute_cmdline();
+                    return; // execute_cmdline sets mode
+                }
+                // Esc: cancel
+                self.cmdline.close();
             }
             (Mode::Normal, Mode::Visual(_)) => {
                 let cursor = self.windows.focused().cursor;
@@ -155,44 +170,6 @@ impl EditorState {
                 let kind = *kind;
                 self.dispatch_visual(key, kind);
             }
-            _ => {}
-        }
-    }
-
-    fn dispatch_command_key(&mut self, key: Key) {
-        match &key.code {
-            kjxlkj_core_types::KeyCode::Char(c) => {
-                if key
-                    .modifiers
-                    .contains(kjxlkj_core_types::Modifier::CTRL)
-                {
-                    match c {
-                        'w' => self.cmdline.delete_word_backward(),
-                        'u' => self.cmdline.delete_to_start(),
-                        'b' => self.cmdline.move_home(),
-                        'e' => self.cmdline.move_end(),
-                        _ => {}
-                    }
-                } else {
-                    self.cmdline.insert_char(*c);
-                }
-            }
-            kjxlkj_core_types::KeyCode::Backspace => {
-                self.cmdline.backspace();
-                if self.cmdline.content.is_empty() {
-                    self.cmdline.close();
-                    self.mode = Mode::Normal;
-                }
-            }
-            kjxlkj_core_types::KeyCode::Delete => {
-                self.cmdline.delete_at_cursor();
-            }
-            kjxlkj_core_types::KeyCode::Left => self.cmdline.move_left(),
-            kjxlkj_core_types::KeyCode::Right => self.cmdline.move_right(),
-            kjxlkj_core_types::KeyCode::Home => self.cmdline.move_home(),
-            kjxlkj_core_types::KeyCode::End => self.cmdline.move_end(),
-            kjxlkj_core_types::KeyCode::Up => self.cmdline.history_prev(),
-            kjxlkj_core_types::KeyCode::Down => self.cmdline.history_next(),
             _ => {}
         }
     }

@@ -58,15 +58,13 @@ impl EditorState {
                 buf.content.insert(char_idx, "\n");
             } else {
                 buf.content.insert(
-                    buf.content
-                        .byte_to_char(buf.content.line_to_byte(line + 1)),
+                    buf.content.byte_to_char(buf.content.line_to_byte(line + 1)),
                     "\n",
                 );
             }
             buf.increment_version();
         }
-        self.windows.focused_mut().cursor =
-            CursorPosition::new(cursor.line + 1, 0);
+        self.windows.focused_mut().cursor = CursorPosition::new(cursor.line + 1, 0);
     }
 
     pub(crate) fn open_above_impl(&mut self) {
@@ -78,8 +76,7 @@ impl EditorState {
             buf.content.insert(char_idx, "\n");
             buf.increment_version();
         }
-        self.windows.focused_mut().cursor =
-            CursorPosition::new(cursor.line, 0);
+        self.windows.focused_mut().cursor = CursorPosition::new(cursor.line, 0);
     }
 
     pub(crate) fn insert_char(&mut self, c: char) {
@@ -123,19 +120,12 @@ impl EditorState {
             let new_line = cursor.line + lines.len() - 1;
             let last_len = lines
                 .last()
-                .map(|l| {
-                    unicode_segmentation::UnicodeSegmentation::graphemes(
-                        *l, true,
-                    )
-                    .count()
-                })
+                .map(|l| unicode_segmentation::UnicodeSegmentation::graphemes(*l, true).count())
                 .unwrap_or(0);
-            self.windows.focused_mut().cursor =
-                CursorPosition::new(new_line, last_len);
+            self.windows.focused_mut().cursor = CursorPosition::new(new_line, last_len);
         } else {
             let char_count =
-                unicode_segmentation::UnicodeSegmentation::graphemes(text, true)
-                    .count();
+                unicode_segmentation::UnicodeSegmentation::graphemes(text, true).count();
             self.windows.focused_mut().cursor.grapheme += char_count;
         }
     }

@@ -31,8 +31,7 @@ pub fn parse_substitute(input: &str) -> Option<SubstituteCmd> {
     let rest = &rest[pat_end + delim.len_utf8()..];
 
     // Find replacement
-    let repl_end =
-        find_unescaped(rest, delim).unwrap_or(rest.len());
+    let repl_end = find_unescaped(rest, delim).unwrap_or(rest.len());
     let replacement = rest[..repl_end].to_string();
     let rest = if repl_end < rest.len() {
         &rest[repl_end + delim.len_utf8()..]

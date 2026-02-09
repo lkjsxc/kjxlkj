@@ -33,12 +33,7 @@ pub fn build_grid(snapshot: &EditorSnapshot) -> CellGrid {
     grid
 }
 
-fn render_statusline(
-    grid: &mut CellGrid,
-    cols: u16,
-    row: u16,
-    snapshot: &EditorSnapshot,
-) {
+fn render_statusline(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSnapshot) {
     let style = snapshot.theme.statusline_style;
 
     for col in 0..cols {
@@ -65,8 +60,7 @@ fn render_statusline(
                     .buffers
                     .get(bid)
                     .map(|b| {
-                        let modified =
-                            if b.modified { "[+]" } else { "" };
+                        let modified = if b.modified { "[+]" } else { "" };
                         format!(" {}{} ", b.name, modified)
                     })
                     .unwrap_or_default()
@@ -84,44 +78,25 @@ fn render_statusline(
     grid.set_str(mode_len, row, &buf_name, style);
 
     if let Some(tab) = tab {
-        if let Some(ws) =
-            tab.windows.get(&snapshot.focused_window)
-        {
-            let pos_str = format!(
-                " {}:{} ",
-                ws.cursor.line + 1,
-                ws.cursor.grapheme + 1
-            );
+        if let Some(ws) = tab.windows.get(&snapshot.focused_window) {
+            let pos_str = format!(" {}:{} ", ws.cursor.line + 1, ws.cursor.grapheme + 1);
             let pos_len = pos_str.len() as u16;
             if cols > pos_len {
-                grid.set_str(
-                    cols - pos_len,
-                    row,
-                    &pos_str,
-                    style,
-                );
+                grid.set_str(cols - pos_len, row, &pos_str, style);
             }
         }
     }
 }
 
-fn render_cmdline(
-    grid: &mut CellGrid,
-    _cols: u16,
-    row: u16,
-    snapshot: &EditorSnapshot,
-) {
+fn render_cmdline(grid: &mut CellGrid, _cols: u16, row: u16, snapshot: &EditorSnapshot) {
     if snapshot.cmdline.active {
         let prefix = snapshot
             .cmdline
             .prefix
             .map(|c| c.to_string())
             .unwrap_or_default();
-        let text =
-            format!("{}{}", prefix, snapshot.cmdline.content);
-        grid.set_str(
-            0, row, &text, snapshot.theme.cmdline_style,
-        );
+        let text = format!("{}{}", prefix, snapshot.cmdline.content);
+        grid.set_str(0, row, &text, snapshot.theme.cmdline_style);
     } else if let Some(notif) = snapshot.notifications.last() {
         let style = match notif.level {
             kjxlkj_core_ui::NotificationLevel::Error => Style {

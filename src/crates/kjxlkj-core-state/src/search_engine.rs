@@ -3,11 +3,7 @@
 use crate::search_types::{SearchDirection, SearchMatch, SearchState};
 
 /// Match pattern against a line, returning (start, end) pairs.
-fn find_in_line(
-    line: &str,
-    pattern: &str,
-    case_sensitive: bool,
-) -> Vec<(usize, usize)> {
+fn find_in_line(line: &str, pattern: &str, case_sensitive: bool) -> Vec<(usize, usize)> {
     if case_sensitive {
         line.match_indices(pattern)
             .map(|(i, m)| (i, i + m.len()))

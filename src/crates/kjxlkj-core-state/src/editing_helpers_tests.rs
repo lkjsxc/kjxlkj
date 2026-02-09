@@ -1,17 +1,12 @@
 //! Tests for editing helpers.
-use crate::editing_helpers::{
-    default_pairs, should_auto_pair, should_skip_close, CommentConfig,
-};
+use crate::editing_helpers::{default_pairs, should_auto_pair, should_skip_close, CommentConfig};
 use crate::editing_helpers_surround::{surround_add, surround_delete};
 
 #[test]
 fn test_auto_pair_open() {
     let pairs = default_pairs();
     assert_eq!(should_auto_pair('(', None, &pairs), Some(')'));
-    assert_eq!(
-        should_auto_pair('(', Some(' '), &pairs),
-        Some(')')
-    );
+    assert_eq!(should_auto_pair('(', Some(' '), &pairs), Some(')'));
     assert_eq!(should_auto_pair('(', Some('a'), &pairs), None);
 }
 

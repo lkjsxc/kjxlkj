@@ -51,18 +51,16 @@ impl NormalDispatch {
         }
         if let KeyCode::Char(c) = &key.code {
             if key.modifiers == Modifier::NONE
-                && (('1'..='9').contains(c)
-                    || (*c == '0' && self.count.is_some()))
+                && (('1'..='9').contains(c) || (*c == '0' && self.count.is_some()))
             {
                 let digit = (*c as usize) - ('0' as usize);
-                self.count =
-                    Some(self.count.unwrap_or(0) * 10 + digit);
+                self.count = Some(self.count.unwrap_or(0) * 10 + digit);
                 return KeyDispatchResult::Consumed;
             }
         }
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
-                if matches!(c, 'g' | 'z' | 'm' | '\'' | '`' | '"') {
+                if matches!(c, 'g' | 'z' | 'm' | '\'' | '`' | '"' | '@' | 'q') {
                     self.pending = Some(*c);
                     return KeyDispatchResult::Consumed;
                 }
@@ -91,24 +89,18 @@ impl NormalDispatch {
         Self::dispatch_special(key, count)
     }
 
-    fn dispatch_prefix(
-        &self, prefix: char, key: &Key, count: usize,
-    ) -> KeyDispatchResult {
+    fn dispatch_prefix(&self, prefix: char, key: &Key, count: usize) -> KeyDispatchResult {
         if let KeyCode::Char(c) = &key.code {
             if key.modifiers == Modifier::NONE {
                 return match prefix {
                     'g' => Self::dispatch_g(*c, count),
                     'z' => Self::dispatch_z(*c),
                     'm' => KeyDispatchResult::Action(Action::SetMark(*c)),
-                    '\'' => KeyDispatchResult::Action(
-                        Action::JumpToMarkLine(*c),
-                    ),
-                    '`' => KeyDispatchResult::Action(
-                        Action::JumpToMark(*c),
-                    ),
-                    '"' => KeyDispatchResult::Action(
-                        Action::SelectRegister(*c),
-                    ),
+                    '\'' => KeyDispatchResult::Action(Action::JumpToMarkLine(*c)),
+                    '`' => KeyDispatchResult::Action(Action::JumpToMark(*c)),
+                    '"' => KeyDispatchResult::Action(Action::SelectRegister(*c)),
+                    '@' => KeyDispatchResult::Action(Action::PlayMacro(*c)),
+                    'q' => KeyDispatchResult::Action(Action::StartRecording(*c)),
                     _ => KeyDispatchResult::Unhandled,
                 };
             }
@@ -164,12 +156,8 @@ impl NormalDispatch {
             'u' => KeyDispatchResult::Action(Action::Undo),
             'p' => KeyDispatchResult::Action(Action::PutAfter),
             'P' => KeyDispatchResult::Action(Action::PutBefore),
-            'v' | 'V' | ':' | '/' | '?' | 'R' | 's' | 'S' | 'C' => {
-                KeyDispatchResult::Unhandled
-            }
-            'd' | 'c' | 'y' | '>' | '<' | '=' => {
-                KeyDispatchResult::Unhandled
-            }
+            'v' | 'V' | ':' | '/' | '?' | 'R' | 's' | 'S' | 'C' => KeyDispatchResult::Unhandled,
+            'd' | 'c' | 'y' | '>' | '<' | '=' => KeyDispatchResult::Unhandled,
             _ => KeyDispatchResult::Unhandled,
         }
     }

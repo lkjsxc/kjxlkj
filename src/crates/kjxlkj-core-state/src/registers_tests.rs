@@ -19,10 +19,7 @@ fn test_yank_uses_register_0() {
 fn test_delete_rotates_numbered() {
     let mut rf = RegisterFile::new();
     rf.delete(RegisterContent::Chars("first".to_string()), false);
-    rf.delete(
-        RegisterContent::Chars("second".to_string()),
-        false,
-    );
+    rf.delete(RegisterContent::Chars("second".to_string()), false);
     assert_eq!(rf.get('1').unwrap().to_string_content(), "second");
     assert_eq!(rf.get('2').unwrap().to_string_content(), "first");
 }
@@ -39,18 +36,12 @@ fn test_uppercase_appends() {
     let mut rf = RegisterFile::new();
     rf.set('a', RegisterContent::Chars("hello".to_string()));
     rf.set('A', RegisterContent::Chars(" world".to_string()));
-    assert_eq!(
-        rf.get('a').unwrap().to_string_content(),
-        "hello world"
-    );
+    assert_eq!(rf.get('a').unwrap().to_string_content(), "hello world");
 }
 
 #[test]
 fn test_linewise_content() {
-    let content = RegisterContent::Lines(vec![
-        "line1".to_string(),
-        "line2".to_string(),
-    ]);
+    let content = RegisterContent::Lines(vec!["line1".to_string(), "line2".to_string()]);
     assert!(content.is_linewise());
     assert_eq!(content.to_string_content(), "line1\nline2\n");
 }

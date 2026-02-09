@@ -4,11 +4,10 @@ use crate::mappings::{KeyMapping, MapMode};
 
 /// Known map command prefixes.
 const MAP_PREFIXES: &[&str] = &[
-    "nmap", "nnoremap", "nunmap", "imap", "inoremap", "iunmap",
-    "vmap", "vnoremap", "vunmap", "xmap", "xnoremap", "xunmap",
-    "cmap", "cnoremap", "cunmap", "omap", "onoremap", "ounmap",
-    "tmap", "tnoremap", "tunmap", "smap", "snoremap", "sunmap",
-    "map", "noremap", "unmap", "map!", "noremap!", "unmap!",
+    "nmap", "nnoremap", "nunmap", "imap", "inoremap", "iunmap", "vmap", "vnoremap", "vunmap",
+    "xmap", "xnoremap", "xunmap", "cmap", "cnoremap", "cunmap", "omap", "onoremap", "ounmap",
+    "tmap", "tnoremap", "tunmap", "smap", "snoremap", "sunmap", "map", "noremap", "unmap", "map!",
+    "noremap!", "unmap!",
 ];
 
 /// Check whether `cmd` is a mapping-related ex command.

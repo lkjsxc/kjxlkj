@@ -3,10 +3,7 @@ use kjxlkj_core_text::Rope;
 use kjxlkj_core_types::CursorPosition;
 use unicode_segmentation::UnicodeSegmentation;
 
-pub(crate) fn line_graphemes_excl_newline(
-    rope: &Rope,
-    line: usize,
-) -> usize {
+pub(crate) fn line_graphemes_excl_newline(rope: &Rope, line: usize) -> usize {
     if line >= rope.len_lines() {
         return 0;
     }
@@ -16,11 +13,7 @@ pub(crate) fn line_graphemes_excl_newline(
     trimmed.graphemes(true).count()
 }
 
-pub(crate) fn clamp_grapheme(
-    rope: &Rope,
-    line: usize,
-    desired: usize,
-) -> usize {
+pub(crate) fn clamp_grapheme(rope: &Rope, line: usize, desired: usize) -> usize {
     let max = line_graphemes_excl_newline(rope, line);
     desired.min(max.saturating_sub(1))
 }
@@ -39,11 +32,7 @@ pub(crate) fn first_non_blank(rope: &Rope, line: usize) -> usize {
     0
 }
 
-pub(crate) fn word_forward(
-    rope: &Rope,
-    mut pos: CursorPosition,
-    count: usize,
-) -> CursorPosition {
+pub(crate) fn word_forward(rope: &Rope, mut pos: CursorPosition, count: usize) -> CursorPosition {
     let line_count = rope.len_lines();
     for _ in 0..count {
         let max_g = line_graphemes_excl_newline(rope, pos.line);
@@ -59,11 +48,7 @@ pub(crate) fn word_forward(
     pos
 }
 
-pub(crate) fn word_backward(
-    rope: &Rope,
-    mut pos: CursorPosition,
-    count: usize,
-) -> CursorPosition {
+pub(crate) fn word_backward(rope: &Rope, mut pos: CursorPosition, count: usize) -> CursorPosition {
     for _ in 0..count {
         if pos.grapheme > 0 {
             pos.grapheme -= 1;
@@ -173,11 +158,7 @@ fn skip_word_chars_to_end(rope: &Rope, pos: &mut CursorPosition) {
     }
 }
 
-fn get_grapheme(
-    rope: &Rope,
-    line: usize,
-    grapheme_idx: usize,
-) -> Option<String> {
+fn get_grapheme(rope: &Rope, line: usize, grapheme_idx: usize) -> Option<String> {
     if line >= rope.len_lines() {
         return None;
     }

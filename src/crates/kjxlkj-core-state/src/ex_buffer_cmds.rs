@@ -15,10 +15,7 @@ impl EditorState {
                     buf.mark_saved();
                     self.notify_info(&format!("Written: {}", path.display()));
                 } else {
-                    self.notify_error(&format!(
-                        "E212: Failed to write: {}",
-                        path.display()
-                    ));
+                    self.notify_error(&format!("E212: Failed to write: {}", path.display()));
                 }
             } else {
                 self.notify_error("E32: No file name");

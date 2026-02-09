@@ -10,18 +10,14 @@ use crate::editor::EditorState;
 
 impl EditorState {
     /// Dispatch a key while in operator-pending mode.
-    pub(crate) fn dispatch_op_pending(
-        &mut self, key: Key, op: Operator,
-    ) {
+    pub(crate) fn dispatch_op_pending(&mut self, key: Key, op: Operator) {
         // Accumulate motion count digits.
         if let KeyCode::Char(c) = &key.code {
             if key.modifiers == Modifier::NONE
-                && (('1'..='9').contains(c)
-                    || (*c == '0' && self.motion_count.is_some()))
+                && (('1'..='9').contains(c) || (*c == '0' && self.motion_count.is_some()))
             {
                 let d = (*c as usize) - ('0' as usize);
-                self.motion_count =
-                    Some(self.motion_count.unwrap_or(0) * 10 + d);
+                self.motion_count = Some(self.motion_count.unwrap_or(0) * 10 + d);
                 return;
             }
         }
@@ -64,9 +60,7 @@ impl EditorState {
         self.mode = Mode::Normal;
     }
 
-    fn apply_op_motion(
-        &mut self, op: Operator, motion: &Motion, _count: usize,
-    ) {
+    fn apply_op_motion(&mut self, op: Operator, motion: &Motion, _count: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         let vh = self.viewport_height();
@@ -77,9 +71,7 @@ impl EditorState {
             };
             resolve_motion(motion, cursor, &buf.content, vh)
         };
-        let (start, end) = if (cursor.line, cursor.grapheme)
-            <= (dest.line, dest.grapheme)
-        {
+        let (start, end) = if (cursor.line, cursor.grapheme) <= (dest.line, dest.grapheme) {
             (cursor, dest)
         } else {
             (dest, cursor)
@@ -103,9 +95,7 @@ impl EditorState {
         self.apply_linewise_op(op, line, end);
     }
 
-    fn apply_linewise_op(
-        &mut self, op: Operator, start: usize, end: usize,
-    ) {
+    fn apply_linewise_op(&mut self, op: Operator, start: usize, end: usize) {
         let count = end - start + 1;
         match op {
             Operator::Delete => self.delete_lines(count),
@@ -151,9 +141,7 @@ fn key_to_motion(key: &Key, count: usize) -> Option<Motion> {
         KeyCode::Char('h') | KeyCode::Left => Some(Motion::Left(count)),
         KeyCode::Char('j') | KeyCode::Down => Some(Motion::Down(count)),
         KeyCode::Char('k') | KeyCode::Up => Some(Motion::Up(count)),
-        KeyCode::Char('l') | KeyCode::Right => {
-            Some(Motion::Right(count))
-        }
+        KeyCode::Char('l') | KeyCode::Right => Some(Motion::Right(count)),
         KeyCode::Char('w') => Some(Motion::WordForward(count)),
         KeyCode::Char('b') => Some(Motion::WordBackward(count)),
         KeyCode::Char('e') => Some(Motion::WordEndForward(count)),

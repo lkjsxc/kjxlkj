@@ -1,5 +1,7 @@
 use kjxlkj_core_text::Rope;
-use kjxlkj_core_types::{BufferId, BufferName, BufferVersion, CursorPosition, Encoding, LineEnding};
+use kjxlkj_core_types::{
+    BufferId, BufferName, BufferVersion, CursorPosition, Encoding, LineEnding,
+};
 use kjxlkj_core_undo::UndoTree;
 use std::path::PathBuf;
 

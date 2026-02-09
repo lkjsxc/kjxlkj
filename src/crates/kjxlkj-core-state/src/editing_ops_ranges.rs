@@ -28,8 +28,7 @@ impl EditorState {
             Operator::Delete => {
                 if let Some(buf) = self.buffers.get_mut(buf_id) {
                     buf.save_undo_checkpoint(cursor);
-                    let text =
-                        self.extract_range(buf_id, start, end, inclusive);
+                    let text = self.extract_range(buf_id, start, end, inclusive);
                     self.registers.set_unnamed(text, false);
                 }
                 self.delete_range_raw(buf_id, start.line, start.grapheme, end.line, end_g);
@@ -37,15 +36,13 @@ impl EditorState {
                 self.clamp_cursor();
             }
             Operator::Yank => {
-                let text =
-                    self.extract_range(buf_id, start, end, inclusive);
+                let text = self.extract_range(buf_id, start, end, inclusive);
                 self.registers.set_unnamed(text, false);
             }
             Operator::Change => {
                 if let Some(buf) = self.buffers.get_mut(buf_id) {
                     buf.save_undo_checkpoint(cursor);
-                    let text =
-                        self.extract_range(buf_id, start, end, inclusive);
+                    let text = self.extract_range(buf_id, start, end, inclusive);
                     self.registers.set_unnamed(text, false);
                 }
                 self.delete_range_raw(buf_id, start.line, start.grapheme, end.line, end_g);
@@ -71,9 +68,7 @@ impl EditorState {
         }
     }
 
-    fn apply_linewise_op_impl(
-        &mut self, op: Operator, start: usize, end: usize,
-    ) {
+    fn apply_linewise_op_impl(&mut self, op: Operator, start: usize, end: usize) {
         let count = end - start + 1;
         let saved = self.windows.focused().cursor;
         self.windows.focused_mut().cursor.line = start;
@@ -94,9 +89,7 @@ impl EditorState {
         }
     }
 
-    pub(crate) fn indent_lines_range(
-        &mut self, start: usize, end: usize,
-    ) {
+    pub(crate) fn indent_lines_range(&mut self, start: usize, end: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get_mut(buf_id) {
@@ -112,9 +105,7 @@ impl EditorState {
         }
     }
 
-    pub(crate) fn dedent_lines_range(
-        &mut self, start: usize, end: usize,
-    ) {
+    pub(crate) fn dedent_lines_range(&mut self, start: usize, end: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get_mut(buf_id) {
@@ -151,9 +142,7 @@ impl EditorState {
             } else {
                 end.grapheme
             };
-            let sb = buf.content.grapheme_pos_to_byte(
-                start.line, start.grapheme,
-            );
+            let sb = buf.content.grapheme_pos_to_byte(start.line, start.grapheme);
             let eb = buf.content.grapheme_pos_to_byte(end.line, end_g);
             if sb < eb {
                 let sc = buf.content.byte_to_char(sb);
@@ -170,7 +159,10 @@ impl EditorState {
     fn delete_range_raw(
         &mut self,
         buf_id: kjxlkj_core_types::BufferId,
-        sl: usize, sg: usize, el: usize, eg: usize,
+        sl: usize,
+        sg: usize,
+        el: usize,
+        eg: usize,
     ) {
         if let Some(buf) = self.buffers.get_mut(buf_id) {
             use kjxlkj_core_text::RopeExt;

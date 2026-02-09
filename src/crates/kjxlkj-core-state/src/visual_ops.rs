@@ -4,17 +4,13 @@
 //! and `o` swaps cursor with anchor.
 
 use kjxlkj_core_edit::{resolve_motion, Motion};
-use kjxlkj_core_types::{
-    CursorPosition, Key, KeyCode, Mode, Modifier, Operator, VisualKind,
-};
+use kjxlkj_core_types::{CursorPosition, Key, KeyCode, Mode, Modifier, Operator, VisualKind};
 
 use crate::editor::EditorState;
 
 impl EditorState {
     /// Dispatch a key while in visual mode.
-    pub(crate) fn dispatch_visual(
-        &mut self, key: Key, kind: VisualKind,
-    ) {
+    pub(crate) fn dispatch_visual(&mut self, key: Key, kind: VisualKind) {
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
                 // Operators act on selection.
@@ -39,8 +35,7 @@ impl EditorState {
         if let Some(buf) = self.buffers.get(buf_id) {
             let cursor = self.windows.focused().cursor;
             let vh = self.viewport_height();
-            let (dest, _) =
-                resolve_motion(&motion, cursor, &buf.content, vh);
+            let (dest, _) = resolve_motion(&motion, cursor, &buf.content, vh);
             self.windows.focused_mut().cursor = dest;
         }
         self.clamp_cursor();
@@ -55,9 +50,7 @@ impl EditorState {
         }
     }
 
-    fn visual_apply_operator(
-        &mut self, op: Operator, kind: VisualKind,
-    ) {
+    fn visual_apply_operator(&mut self, op: Operator, kind: VisualKind) {
         let anchor = match self.visual_anchor.take() {
             Some(a) => a,
             None => {
@@ -66,9 +59,7 @@ impl EditorState {
             }
         };
         let cursor = self.windows.focused().cursor;
-        let (start, end) = if (anchor.line, anchor.grapheme)
-            <= (cursor.line, cursor.grapheme)
-        {
+        let (start, end) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
             (anchor, cursor)
         } else {
             (cursor, anchor)
@@ -83,14 +74,10 @@ impl EditorState {
     }
 
     /// Compute ordered selection range for snapshot.
-    pub fn visual_selection(
-        &self,
-    ) -> Option<(CursorPosition, CursorPosition)> {
+    pub fn visual_selection(&self) -> Option<(CursorPosition, CursorPosition)> {
         let anchor = self.visual_anchor?;
         let cursor = self.windows.focused().cursor;
-        if (anchor.line, anchor.grapheme)
-            <= (cursor.line, cursor.grapheme)
-        {
+        if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
             Some((anchor, cursor))
         } else {
             Some((cursor, anchor))

@@ -15,10 +15,7 @@ mod tests {
     fn test_dd_deletes_line() {
         let mut ed = editor_with_text("aaa\nbbb\nccc\n");
         ed.handle_key(Key::char('d'));
-        assert!(matches!(
-            ed.mode,
-            Mode::OperatorPending(Operator::Delete)
-        ));
+        assert!(matches!(ed.mode, Mode::OperatorPending(Operator::Delete)));
         ed.handle_key(Key::char('d'));
         assert_eq!(ed.mode, Mode::Normal);
         let text = ed.buffers.current().content.to_string();
@@ -29,10 +26,7 @@ mod tests {
     fn test_yy_yanks_line() {
         let mut ed = editor_with_text("hello\nworld\n");
         ed.handle_key(Key::char('y'));
-        assert!(matches!(
-            ed.mode,
-            Mode::OperatorPending(Operator::Yank)
-        ));
+        assert!(matches!(ed.mode, Mode::OperatorPending(Operator::Yank)));
         ed.handle_key(Key::char('y'));
         assert_eq!(ed.mode, Mode::Normal);
         let reg = ed.registers.get_unnamed();
@@ -64,10 +58,7 @@ mod tests {
     fn test_operator_pending_esc_cancels() {
         let mut ed = editor_with_text("hello\n");
         ed.handle_key(Key::char('d'));
-        assert!(matches!(
-            ed.mode,
-            Mode::OperatorPending(Operator::Delete)
-        ));
+        assert!(matches!(ed.mode, Mode::OperatorPending(Operator::Delete)));
         ed.handle_key(Key::esc());
         assert_eq!(ed.mode, Mode::Normal);
     }

@@ -34,8 +34,7 @@ impl EditorState {
                 let end_char = buf.content.byte_to_char(line_start);
                 buf.content.remove(start_char..end_char);
                 buf.increment_version();
-                self.windows.focused_mut().cursor =
-                    CursorPosition::new(prev_line, prev_len);
+                self.windows.focused_mut().cursor = CursorPosition::new(prev_line, prev_len);
             }
         }
     }
@@ -76,10 +75,8 @@ impl EditorState {
                 );
                 buf.content = entry.content_before;
                 buf.version = entry.version_before;
-                self.windows.focused_mut().cursor = CursorPosition::new(
-                    entry.cursor_line,
-                    entry.cursor_grapheme,
-                );
+                self.windows.focused_mut().cursor =
+                    CursorPosition::new(entry.cursor_line, entry.cursor_grapheme);
             }
         }
     }
@@ -98,10 +95,8 @@ impl EditorState {
             ) {
                 buf.content = entry.content_before;
                 buf.version = entry.version_before;
-                self.windows.focused_mut().cursor = CursorPosition::new(
-                    entry.cursor_line,
-                    entry.cursor_grapheme,
-                );
+                self.windows.focused_mut().cursor =
+                    CursorPosition::new(entry.cursor_line, entry.cursor_grapheme);
             }
         }
     }
@@ -112,13 +107,10 @@ impl EditorState {
         if let Some(buf) = self.buffers.get_mut(buf_id) {
             if cursor.line + 1 < buf.content.len_lines() {
                 buf.save_undo_checkpoint(cursor);
-                let next_line_start =
-                    buf.content.line_to_byte(cursor.line + 1);
+                let next_line_start = buf.content.line_to_byte(cursor.line + 1);
                 let current_line_end = next_line_start - 1;
-                let start_char =
-                    buf.content.byte_to_char(current_line_end);
-                let end_char =
-                    buf.content.byte_to_char(next_line_start);
+                let start_char = buf.content.byte_to_char(current_line_end);
+                let end_char = buf.content.byte_to_char(next_line_start);
                 buf.content.remove(start_char..end_char);
                 if with_space {
                     buf.content.insert(start_char, " ");

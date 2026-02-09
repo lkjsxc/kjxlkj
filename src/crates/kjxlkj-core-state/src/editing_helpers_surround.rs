@@ -28,15 +28,10 @@ pub fn surround_add(text: &str, open: &str, close: &str) -> String {
 }
 
 /// Remove surround characters from text.
-pub fn surround_delete(
-    text: &str,
-    open: &str,
-    close: &str,
-) -> Option<String> {
+pub fn surround_delete(text: &str, open: &str, close: &str) -> Option<String> {
     let trimmed = text.trim();
     if trimmed.starts_with(open) && trimmed.ends_with(close) {
-        let inner =
-            &trimmed[open.len()..trimmed.len() - close.len()];
+        let inner = &trimmed[open.len()..trimmed.len() - close.len()];
         Some(inner.to_string())
     } else {
         None

@@ -30,14 +30,10 @@ pub(crate) fn compute_areas(
             let total_weight: f64 = weights.iter().sum();
             let mut cy = y;
             for (i, child) in children.iter().enumerate() {
-                let w =
-                    weights.get(i).copied().unwrap_or(1.0);
-                let h = ((height as f64) * w / total_weight)
-                    as u16;
+                let w = weights.get(i).copied().unwrap_or(1.0);
+                let h = ((height as f64) * w / total_weight) as u16;
                 let h = h.max(1);
-                compute_areas(
-                    child, x, cy, width, h, windows, out,
-                );
+                compute_areas(child, x, cy, width, h, windows, out);
                 cy += h;
             }
         }
@@ -45,14 +41,10 @@ pub(crate) fn compute_areas(
             let total_weight: f64 = weights.iter().sum();
             let mut cx = x;
             for (i, child) in children.iter().enumerate() {
-                let w =
-                    weights.get(i).copied().unwrap_or(1.0);
-                let cw = ((width as f64) * w / total_weight)
-                    as u16;
+                let w = weights.get(i).copied().unwrap_or(1.0);
+                let cw = ((width as f64) * w / total_weight) as u16;
                 let cw = cw.max(1);
-                compute_areas(
-                    child, cx, y, cw, height, windows, out,
-                );
+                compute_areas(child, cx, y, cw, height, windows, out);
                 cx += cw;
             }
         }
@@ -67,61 +59,40 @@ pub(crate) fn replace_leaf(
     match node {
         LayoutNode::Leaf(id) if *id == target => replacement,
         LayoutNode::Leaf(id) => LayoutNode::Leaf(*id),
-        LayoutNode::HorizontalSplit { children, weights } => {
-            LayoutNode::HorizontalSplit {
-                children: children
-                    .iter()
-                    .map(|c| {
-                        replace_leaf(c, target, replacement.clone())
-                    })
-                    .collect(),
-                weights: weights.clone(),
-            }
-        }
-        LayoutNode::VerticalSplit { children, weights } => {
-            LayoutNode::VerticalSplit {
-                children: children
-                    .iter()
-                    .map(|c| {
-                        replace_leaf(c, target, replacement.clone())
-                    })
-                    .collect(),
-                weights: weights.clone(),
-            }
-        }
+        LayoutNode::HorizontalSplit { children, weights } => LayoutNode::HorizontalSplit {
+            children: children
+                .iter()
+                .map(|c| replace_leaf(c, target, replacement.clone()))
+                .collect(),
+            weights: weights.clone(),
+        },
+        LayoutNode::VerticalSplit { children, weights } => LayoutNode::VerticalSplit {
+            children: children
+                .iter()
+                .map(|c| replace_leaf(c, target, replacement.clone()))
+                .collect(),
+            weights: weights.clone(),
+        },
     }
 }
 
-pub(crate) fn remove_leaf(
-    node: &LayoutNode,
-    target: WindowId,
-) -> LayoutNode {
+pub(crate) fn remove_leaf(node: &LayoutNode, target: WindowId) -> LayoutNode {
     match node {
-        LayoutNode::Leaf(id) if *id == target => {
-            LayoutNode::Leaf(*id)
-        }
+        LayoutNode::Leaf(id) if *id == target => LayoutNode::Leaf(*id),
         LayoutNode::Leaf(id) => LayoutNode::Leaf(*id),
         LayoutNode::HorizontalSplit { children, weights } => {
             let filtered: Vec<(LayoutNode, f64)> = children
                 .iter()
                 .zip(weights.iter())
-                .filter(|(c, _)| {
-                    !matches!(c, LayoutNode::Leaf(id) if *id == target)
-                })
+                .filter(|(c, _)| !matches!(c, LayoutNode::Leaf(id) if *id == target))
                 .map(|(c, w)| (remove_leaf(c, target), *w))
                 .collect();
             if filtered.len() == 1 {
                 filtered.into_iter().next().unwrap().0
             } else {
                 LayoutNode::HorizontalSplit {
-                    children: filtered
-                        .iter()
-                        .map(|(c, _)| c.clone())
-                        .collect(),
-                    weights: filtered
-                        .iter()
-                        .map(|(_, w)| *w)
-                        .collect(),
+                    children: filtered.iter().map(|(c, _)| c.clone()).collect(),
+                    weights: filtered.iter().map(|(_, w)| *w).collect(),
                 }
             }
         }
@@ -129,23 +100,15 @@ pub(crate) fn remove_leaf(
             let filtered: Vec<(LayoutNode, f64)> = children
                 .iter()
                 .zip(weights.iter())
-                .filter(|(c, _)| {
-                    !matches!(c, LayoutNode::Leaf(id) if *id == target)
-                })
+                .filter(|(c, _)| !matches!(c, LayoutNode::Leaf(id) if *id == target))
                 .map(|(c, w)| (remove_leaf(c, target), *w))
                 .collect();
             if filtered.len() == 1 {
                 filtered.into_iter().next().unwrap().0
             } else {
                 LayoutNode::VerticalSplit {
-                    children: filtered
-                        .iter()
-                        .map(|(c, _)| c.clone())
-                        .collect(),
-                    weights: filtered
-                        .iter()
-                        .map(|(_, w)| *w)
-                        .collect(),
+                    children: filtered.iter().map(|(c, _)| c.clone()).collect(),
+                    weights: filtered.iter().map(|(_, w)| *w).collect(),
                 }
             }
         }

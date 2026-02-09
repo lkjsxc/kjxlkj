@@ -5,6 +5,10 @@
 pub mod buffer;
 mod buffer_list;
 mod cmdline;
+mod cmdline_completion;
+mod cmdline_dispatch;
+#[cfg(test)]
+mod completion_range_tests;
 pub mod contracts;
 mod cursor_ops;
 mod cursor_ops_scroll;
@@ -26,22 +30,24 @@ mod editor_search_marks;
 mod editor_tests_basic;
 #[cfg(test)]
 mod editor_tests_ext;
-#[cfg(test)]
-mod search_engine_tests;
 pub mod events;
-pub mod events_types;
 #[cfg(test)]
 mod events_tests;
+pub mod events_types;
 mod ex_buffer_cmds;
 mod ex_dispatch;
 pub(crate) mod ex_map;
 mod ex_parse;
+mod ex_parse_ranges;
 pub mod ex_parse_substitute;
 #[cfg(test)]
 mod ex_parse_tests;
 mod ex_scripting;
 mod ex_substitute;
 pub(crate) mod key_notation;
+mod macros;
+#[cfg(test)]
+mod macros_tests;
 mod mappings;
 #[cfg(test)]
 mod mappings_tests;
@@ -52,10 +58,15 @@ mod notify;
 mod op_pending;
 #[cfg(test)]
 mod op_pending_tests;
+pub mod options;
+#[cfg(test)]
+mod options_tests;
 pub mod registers;
 #[cfg(test)]
 mod registers_tests;
 pub mod search_engine;
+#[cfg(test)]
+mod search_engine_tests;
 pub mod search_types;
 pub mod session;
 #[cfg(test)]

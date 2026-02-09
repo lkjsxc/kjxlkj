@@ -16,13 +16,9 @@ impl EditorState {
 
     pub(crate) fn jump_to_mark(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
-        if let Some(pos) =
-            self.marks.get(name, buf_id.0 as usize).copied()
-        {
+        if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
             self.windows.focused_mut().cursor =
-                kjxlkj_core_types::CursorPosition::new(
-                    pos.line, pos.col,
-                );
+                kjxlkj_core_types::CursorPosition::new(pos.line, pos.col);
             self.clamp_cursor();
             self.ensure_cursor_visible();
         }
@@ -30,11 +26,8 @@ impl EditorState {
 
     pub(crate) fn jump_to_mark_line(&mut self, name: char) {
         let buf_id = self.current_buffer_id();
-        if let Some(pos) =
-            self.marks.get(name, buf_id.0 as usize).copied()
-        {
-            self.windows.focused_mut().cursor =
-                kjxlkj_core_types::CursorPosition::new(pos.line, 0);
+        if let Some(pos) = self.marks.get(name, buf_id.0 as usize).copied() {
+            self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(pos.line, 0);
             self.move_to_first_non_blank();
             self.ensure_cursor_visible();
         }
@@ -50,21 +43,15 @@ impl EditorState {
         if let Some(buf) = self.buffers.get(buf_id) {
             let start = cursor.grapheme + 1;
             let text: String = buf.content.to_string();
-            let sf = self.line_col_to_byte_offset(
-                &text, cursor.line, start,
-            );
+            let sf = self.line_col_to_byte_offset(&text, cursor.line, start);
             if let Some(off) = text[sf..].find(&pattern) {
                 let abs = sf + off;
-                let (l, c) =
-                    self.byte_offset_to_line_col(&text, abs);
-                self.windows.focused_mut().cursor =
-                    kjxlkj_core_types::CursorPosition::new(l, c);
+                let (l, c) = self.byte_offset_to_line_col(&text, abs);
+                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
             } else if let Some(off) = text[..sf].find(&pattern) {
-                let (l, c) =
-                    self.byte_offset_to_line_col(&text, off);
-                self.windows.focused_mut().cursor =
-                    kjxlkj_core_types::CursorPosition::new(l, c);
+                let (l, c) = self.byte_offset_to_line_col(&text, off);
+                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
             }
         }
@@ -79,29 +66,21 @@ impl EditorState {
         let cursor = self.windows.focused().cursor;
         if let Some(buf) = self.buffers.get(buf_id) {
             let text: String = buf.content.to_string();
-            let cur = self.line_col_to_byte_offset(
-                &text, cursor.line, cursor.grapheme,
-            );
+            let cur = self.line_col_to_byte_offset(&text, cursor.line, cursor.grapheme);
             if let Some(off) = text[..cur].rfind(&pattern) {
-                let (l, c) =
-                    self.byte_offset_to_line_col(&text, off);
-                self.windows.focused_mut().cursor =
-                    kjxlkj_core_types::CursorPosition::new(l, c);
+                let (l, c) = self.byte_offset_to_line_col(&text, off);
+                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
             } else if let Some(off) = text[cur..].rfind(&pattern) {
                 let abs = cur + off;
-                let (l, c) =
-                    self.byte_offset_to_line_col(&text, abs);
-                self.windows.focused_mut().cursor =
-                    kjxlkj_core_types::CursorPosition::new(l, c);
+                let (l, c) = self.byte_offset_to_line_col(&text, abs);
+                self.windows.focused_mut().cursor = kjxlkj_core_types::CursorPosition::new(l, c);
                 self.ensure_cursor_visible();
             }
         }
     }
 
-    fn line_col_to_byte_offset(
-        &self, text: &str, line: usize, col: usize,
-    ) -> usize {
+    fn line_col_to_byte_offset(&self, text: &str, line: usize, col: usize) -> usize {
         let mut offset = 0;
         for (i, l) in text.split('\n').enumerate() {
             if i == line {
@@ -112,9 +91,7 @@ impl EditorState {
         text.len()
     }
 
-    fn byte_offset_to_line_col(
-        &self, text: &str, offset: usize,
-    ) -> (usize, usize) {
+    fn byte_offset_to_line_col(&self, text: &str, offset: usize) -> (usize, usize) {
         let mut line = 0;
         let mut line_start = 0;
         for (i, ch) in text.char_indices() {
