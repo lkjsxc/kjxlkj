@@ -1,0 +1,131 @@
+//! Search navigation and mark/register actions for EditorState.
+
+use crate::editor::EditorState;
+
+impl EditorState {
+    pub(crate) fn set_mark_at_cursor(&mut self, name: char) {
+        let cursor = self.windows.focused().cursor;
+        let buf_id = self.current_buffer_id();
+        let pos = crate::marks::MarkPosition {
+            buffer_id: buf_id.0 as usize,
+            line: cursor.line,
+            col: cursor.grapheme,
+        };
+        self.marks.set(name, pos);
+    }
+
+    pub(crate) fn jump_to_mark(&mut self, name: char) {
+        let buf_id = self.current_buffer_id();
+        if let Some(pos) =
+            self.marks.get(name, buf_id.0 as usize).copied()
+        {
+            self.windows.focused_mut().cursor =
+                kjxlkj_core_types::CursorPosition::new(
+                    pos.line, pos.col,
+                );
+            self.clamp_cursor();
+            self.ensure_cursor_visible();
+        }
+    }
+
+    pub(crate) fn jump_to_mark_line(&mut self, name: char) {
+        let buf_id = self.current_buffer_id();
+        if let Some(pos) =
+            self.marks.get(name, buf_id.0 as usize).copied()
+        {
+            self.windows.focused_mut().cursor =
+                kjxlkj_core_types::CursorPosition::new(pos.line, 0);
+            self.move_to_first_non_blank();
+            self.ensure_cursor_visible();
+        }
+    }
+
+    pub(crate) fn search_next(&mut self) {
+        let pattern = match &self.search.pattern {
+            Some(p) if !p.is_empty() => p.clone(),
+            _ => return,
+        };
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get(buf_id) {
+            let start = cursor.grapheme + 1;
+            let text: String = buf.content.to_string();
+            let sf = self.line_col_to_byte_offset(
+                &text, cursor.line, start,
+            );
+            if let Some(off) = text[sf..].find(&pattern) {
+                let abs = sf + off;
+                let (l, c) =
+                    self.byte_offset_to_line_col(&text, abs);
+                self.windows.focused_mut().cursor =
+                    kjxlkj_core_types::CursorPosition::new(l, c);
+                self.ensure_cursor_visible();
+            } else if let Some(off) = text[..sf].find(&pattern) {
+                let (l, c) =
+                    self.byte_offset_to_line_col(&text, off);
+                self.windows.focused_mut().cursor =
+                    kjxlkj_core_types::CursorPosition::new(l, c);
+                self.ensure_cursor_visible();
+            }
+        }
+    }
+
+    pub(crate) fn search_prev(&mut self) {
+        let pattern = match &self.search.pattern {
+            Some(p) if !p.is_empty() => p.clone(),
+            _ => return,
+        };
+        let buf_id = self.current_buffer_id();
+        let cursor = self.windows.focused().cursor;
+        if let Some(buf) = self.buffers.get(buf_id) {
+            let text: String = buf.content.to_string();
+            let cur = self.line_col_to_byte_offset(
+                &text, cursor.line, cursor.grapheme,
+            );
+            if let Some(off) = text[..cur].rfind(&pattern) {
+                let (l, c) =
+                    self.byte_offset_to_line_col(&text, off);
+                self.windows.focused_mut().cursor =
+                    kjxlkj_core_types::CursorPosition::new(l, c);
+                self.ensure_cursor_visible();
+            } else if let Some(off) = text[cur..].rfind(&pattern) {
+                let abs = cur + off;
+                let (l, c) =
+                    self.byte_offset_to_line_col(&text, abs);
+                self.windows.focused_mut().cursor =
+                    kjxlkj_core_types::CursorPosition::new(l, c);
+                self.ensure_cursor_visible();
+            }
+        }
+    }
+
+    fn line_col_to_byte_offset(
+        &self, text: &str, line: usize, col: usize,
+    ) -> usize {
+        let mut offset = 0;
+        for (i, l) in text.split('\n').enumerate() {
+            if i == line {
+                return offset + col.min(l.len());
+            }
+            offset += l.len() + 1;
+        }
+        text.len()
+    }
+
+    fn byte_offset_to_line_col(
+        &self, text: &str, offset: usize,
+    ) -> (usize, usize) {
+        let mut line = 0;
+        let mut line_start = 0;
+        for (i, ch) in text.char_indices() {
+            if i == offset {
+                return (line, i - line_start);
+            }
+            if ch == '\n' {
+                line += 1;
+                line_start = i + 1;
+            }
+        }
+        (line, offset.saturating_sub(line_start))
+    }
+}

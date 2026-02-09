@@ -105,6 +105,17 @@ impl EditorState {
             Action::ScrollCursorBottom => self.scroll_cursor_bottom(),
             Action::PutAfter => self.put_after(),
             Action::PutBefore => self.put_before(),
+            Action::SearchNext => self.search_next(),
+            Action::SearchPrev => self.search_prev(),
+            Action::SetMark(c) => self.set_mark_at_cursor(c),
+            Action::JumpToMark(c) => self.jump_to_mark(c),
+            Action::JumpToMarkLine(c) => self.jump_to_mark_line(c),
+            Action::SelectRegister(c) => {
+                self.pending_register = Some(c);
+            }
+            Action::MoveToMatchingBracket => {}
+            Action::ToggleCase => {}
+            Action::DotRepeat => {}
             _ => {}
         }
     }

@@ -14,10 +14,14 @@ pub mod editing_helpers_surround;
 mod editing_helpers_tests;
 mod editing_ops_insert;
 mod editing_ops_modify;
+mod editing_ops_ranges;
 mod editing_ops_yank;
 pub mod editor;
 mod editor_actions;
+#[cfg(test)]
+mod editor_actions_tests;
 mod editor_modes;
+mod editor_search_marks;
 #[cfg(test)]
 mod editor_tests_basic;
 #[cfg(test)]
@@ -45,6 +49,9 @@ pub mod marks;
 #[cfg(test)]
 mod marks_tests;
 mod notify;
+mod op_pending;
+#[cfg(test)]
+mod op_pending_tests;
 pub mod registers;
 #[cfg(test)]
 mod registers_tests;
@@ -57,6 +64,9 @@ pub mod user_commands;
 pub mod user_commands_parse;
 #[cfg(test)]
 mod user_commands_tests;
+mod visual_ops;
+#[cfg(test)]
+mod visual_ops_tests;
 mod window_tree;
 mod window_tree_layout;
 

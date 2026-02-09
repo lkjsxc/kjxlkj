@@ -17,7 +17,7 @@ pub fn transition(mode: &Mode, key: &Key, in_terminal_window: bool) -> ModeTrans
         Mode::Normal => normal_transition(key, in_terminal_window),
         Mode::Insert => insert_transition(key),
         Mode::Replace => replace_transition(key),
-        Mode::Visual(_) => visual_transition(key),
+        Mode::Visual(kind) => visual_transition(key, *kind),
         Mode::Command(_) => command_transition(key),
         Mode::OperatorPending(_) => op_pending_transition(key),
         Mode::TerminalInsert => terminal_insert_transition(key),
@@ -96,13 +96,29 @@ fn replace_transition(key: &Key) -> ModeTransition {
     }
 }
 
-fn visual_transition(key: &Key) -> ModeTransition {
+fn visual_transition(key: &Key, current: VisualKind) -> ModeTransition {
     match (&key.code, key.modifiers) {
         (KeyCode::Esc, _) => ModeTransition::To(Mode::Normal),
-        (KeyCode::Char('v'), Modifier::NONE) => ModeTransition::To(Mode::Visual(VisualKind::Char)),
-        (KeyCode::Char('V'), Modifier::NONE) => ModeTransition::To(Mode::Visual(VisualKind::Line)),
+        (KeyCode::Char('v'), Modifier::NONE) => {
+            if current == VisualKind::Char {
+                ModeTransition::To(Mode::Normal)
+            } else {
+                ModeTransition::To(Mode::Visual(VisualKind::Char))
+            }
+        }
+        (KeyCode::Char('V'), Modifier::NONE) => {
+            if current == VisualKind::Line {
+                ModeTransition::To(Mode::Normal)
+            } else {
+                ModeTransition::To(Mode::Visual(VisualKind::Line))
+            }
+        }
         (KeyCode::Char('v'), m) if m.contains(Modifier::CTRL) => {
-            ModeTransition::To(Mode::Visual(VisualKind::Block))
+            if current == VisualKind::Block {
+                ModeTransition::To(Mode::Normal)
+            } else {
+                ModeTransition::To(Mode::Visual(VisualKind::Block))
+            }
         }
         _ => ModeTransition::Stay,
     }

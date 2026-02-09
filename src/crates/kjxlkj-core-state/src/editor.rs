@@ -1,7 +1,7 @@
 /// Central editor state: single mutable owner in core task.
 use kjxlkj_core_edit::RegisterFile;
 use kjxlkj_core_mode::NormalDispatch;
-use kjxlkj_core_types::{ContentSource, Mode};
+use kjxlkj_core_types::{ContentSource, CursorPosition, Mode};
 use kjxlkj_core_ui::{Notification, SearchState, Theme};
 
 use crate::buffer_list::BufferList;
@@ -31,6 +31,16 @@ pub struct EditorState {
     pub events: EventRegistry,
     pub user_commands: UserCommandRegistry,
     pub(crate) dispatch: NormalDispatch,
+    /// Anchor position for visual mode selection.
+    pub visual_anchor: Option<CursorPosition>,
+    /// Count saved from before operator key.
+    pub(crate) op_count: usize,
+    /// Motion count accumulating in operator-pending mode.
+    pub(crate) motion_count: Option<usize>,
+    /// g-prefix flag for operator-pending mode.
+    pub(crate) g_prefix: bool,
+    /// Pending register for next yank/delete/put.
+    pub(crate) pending_register: Option<char>,
 }
 
 impl EditorState {
@@ -57,6 +67,11 @@ impl EditorState {
             events: EventRegistry::new(),
             user_commands: UserCommandRegistry::new(),
             dispatch: NormalDispatch::new(),
+            visual_anchor: None,
+            op_count: 1,
+            motion_count: None,
+            g_prefix: false,
+            pending_register: None,
         }
     }
 

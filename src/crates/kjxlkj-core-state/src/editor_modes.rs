@@ -8,6 +8,13 @@ use crate::editor::EditorState;
 impl EditorState {
     /// Process a key press.
     pub fn handle_key(&mut self, key: Key) {
+        // Pending prefix (m, g, z, ", ', `) bypasses transition.
+        if matches!(self.mode, Mode::Normal)
+            && self.dispatch.has_pending()
+        {
+            self.dispatch_in_mode(key);
+            return;
+        }
         let in_terminal =
             matches!(self.windows.focused().content, ContentSource::Terminal(_));
         let mt = kjxlkj_core_mode::transition::transition(
@@ -93,6 +100,21 @@ impl EditorState {
                 };
                 self.cmdline.open(prefix);
             }
+            (Mode::Normal, Mode::Visual(_)) => {
+                let cursor = self.windows.focused().cursor;
+                self.visual_anchor = Some(cursor);
+            }
+            (Mode::Normal, Mode::OperatorPending(_)) => {
+                self.op_count = self.dispatch.take_count();
+                self.motion_count = None;
+                self.g_prefix = false;
+            }
+            (Mode::Visual(_), Mode::Normal) => {
+                self.visual_anchor = None;
+            }
+            (Mode::Visual(_), Mode::Visual(_)) => {
+                // Switching visual sub-kind; keep anchor.
+            }
             _ => {}
         }
         self.mode = new_mode;
@@ -124,6 +146,14 @@ impl EditorState {
                     self.replace_char(*c);
                     self.move_cursor_right(1);
                 }
+            }
+            Mode::OperatorPending(op) => {
+                let op = *op;
+                self.dispatch_op_pending(key, op);
+            }
+            Mode::Visual(kind) => {
+                let kind = *kind;
+                self.dispatch_visual(key, kind);
             }
             _ => {}
         }
