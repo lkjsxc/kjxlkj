@@ -1,5 +1,4 @@
-//! Text object resolution: iw, aw, ip, ap, i{delim}, a{delim}.
-
+//! Text object resolution: iw, aw, ip, ap, is, as, it, at, i{delim}, a{delim}.
 use kjxlkj_core_text::Rope;
 use kjxlkj_core_types::CursorPosition;
 
@@ -29,6 +28,8 @@ pub fn resolve_text_object(
         'w' => resolve_word(kind, pos, rope, false),
         'W' => resolve_word(kind, pos, rope, true),
         'p' => resolve_paragraph(kind, pos, rope),
+        's' => crate::text_objects_sentence::resolve_sentence(kind, pos, rope),
+        't' => crate::text_objects_tag::resolve_tag_object(kind, pos, rope),
         '(' | ')' | 'b' | '[' | ']' | '{' | '}' | 'B' | '<' | '>' | '"' | '\'' | '`' => {
             crate::text_objects_delim::resolve_delim_object(kind, obj, pos, rope)
         }
@@ -159,10 +160,9 @@ pub fn apply_text_object(
     prefix: char,
     obj: char,
 ) {
-    let kind = if prefix == 'i' {
-        TextObjectKind::Inner
-    } else {
-        TextObjectKind::Around
+    let kind = match prefix {
+        'i' => TextObjectKind::Inner,
+        _ => TextObjectKind::Around,
     };
     let buf_id = state.current_buffer_id();
     let cursor = state.windows.focused().cursor;

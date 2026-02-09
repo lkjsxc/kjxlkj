@@ -16,6 +16,7 @@ impl EditorState {
     ) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
+        let bid = buf_id.0 as usize;
         let end_g = if inclusive {
             end.grapheme + 1
         } else {
@@ -24,6 +25,19 @@ impl EditorState {
         if start == end && !inclusive {
             return;
         }
+        // Set change marks.
+        let sm = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: start.line,
+            col: start.grapheme,
+        };
+        let em = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: end.line,
+            col: end.grapheme,
+        };
+        self.marks.set_change_start(sm);
+        self.marks.set_change_end(em);
         match op {
             Operator::Delete => {
                 if let Some(buf) = self.buffers.get_mut(buf_id) {

@@ -13,6 +13,16 @@ impl EditorState {
     pub(crate) fn dispatch_visual(&mut self, key: Key, kind: VisualKind) {
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
+                // : in visual mode opens cmdline with '<,'>
+                if *c == ':' {
+                    self.visual_set_marks_on_exit();
+                    self.visual_anchor = None;
+                    self.mode = Mode::Command(kjxlkj_core_types::CommandKind::Ex);
+                    self.cmdline.open(':');
+                    self.cmdline.content = "'<,'>".to_string();
+                    self.cmdline.cursor_pos = 5;
+                    return;
+                }
                 // Operators act on selection.
                 if let Some(op) = char_to_operator(*c) {
                     self.visual_apply_operator(op, kind);
@@ -27,6 +37,30 @@ impl EditorState {
         // Motions extend selection.
         if let Some(motion) = visual_key_to_motion(&key) {
             self.visual_move(motion);
+        }
+    }
+
+    fn visual_set_marks_on_exit(&mut self) {
+        if let Some(anchor) = self.visual_anchor {
+            let cursor = self.windows.focused().cursor;
+            let bid = self.current_buffer_id().0 as usize;
+            let (s, e) = if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
+                (anchor, cursor)
+            } else {
+                (cursor, anchor)
+            };
+            let sm = crate::marks::MarkPosition {
+                buffer_id: bid,
+                line: s.line,
+                col: s.grapheme,
+            };
+            let em = crate::marks::MarkPosition {
+                buffer_id: bid,
+                line: e.line,
+                col: e.grapheme,
+            };
+            self.marks.set_visual_start(sm);
+            self.marks.set_visual_end(em);
         }
     }
 

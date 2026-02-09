@@ -1,0 +1,104 @@
+//! File-path and context-sensitive argument completion.
+//!
+//! Extracted from cmdline_completion.rs to respect the
+//! 200-line file size cap.
+use crate::editor::EditorState;
+
+impl EditorState {
+    /// Dispatch argument completion by command context.
+    pub(crate) fn build_arg_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let cmd = content.split_whitespace().next().unwrap_or("");
+        match cmd {
+            "set" => self.build_option_candidates(),
+            "b" | "buffer" | "bdelete" => self.build_buffer_candidates(),
+            _ => self.build_file_candidates(),
+        }
+    }
+
+    /// Build option-name candidates for :set completion.
+    fn build_option_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let names = self.options.list();
+        let matches: Vec<String> = names
+            .iter()
+            .map(|(k, _)| k.clone())
+            .filter(|k| k.starts_with(partial))
+            .collect();
+        if matches.is_empty() {
+            return;
+        }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content;
+        cs.candidates = matches;
+        cs.index = Some(0);
+    }
+
+    /// Build buffer-name candidates for :b completion.
+    fn build_buffer_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let mut matches: Vec<String> = Vec::new();
+        for buf in self.buffers.iter() {
+            let name = buf
+                .path
+                .as_ref()
+                .map(|p| p.display().to_string())
+                .unwrap_or_else(|| format!("[{}]", buf.id.0));
+            if name.contains(partial) || partial.is_empty() {
+                matches.push(name);
+            }
+        }
+        if matches.is_empty() {
+            return;
+        }
+        matches.sort();
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content;
+        cs.candidates = matches;
+        cs.index = Some(0);
+    }
+
+    /// Build file-path candidates from the path prefix.
+    pub(crate) fn build_file_candidates(&mut self) {
+        let content = self.cmdline.content.clone();
+        let space = content.rfind(' ').unwrap_or(0) + 1;
+        let partial = &content[space..];
+        let (dir, prefix) = if let Some(slash) = partial.rfind('/') {
+            (&partial[..=slash], &partial[slash + 1..])
+        } else {
+            ("./", partial)
+        };
+        let entries = match std::fs::read_dir(dir) {
+            Ok(e) => e,
+            Err(_) => return,
+        };
+        let mut matches: Vec<String> = Vec::new();
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with(prefix) {
+                let path = if dir == "./" {
+                    name.clone()
+                } else {
+                    format!("{}{}", dir, name)
+                };
+                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                    matches.push(format!("{}/", path));
+                } else {
+                    matches.push(path);
+                }
+            }
+        }
+        matches.sort();
+        if matches.is_empty() {
+            return;
+        }
+        let cs = &mut self.cmdline.completion;
+        cs.prefix = content;
+        cs.candidates = matches;
+        cs.index = Some(0);
+    }
+}

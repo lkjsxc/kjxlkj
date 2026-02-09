@@ -45,6 +45,8 @@ impl EditorState {
             layout: self.windows.layout().clone(),
             windows: win_snapshots,
         };
+        let mut search = self.search.clone();
+        search.highlight_ranges = self.compute_hlsearch();
 
         EditorSnapshot {
             sequence: self.sequence,
@@ -54,11 +56,38 @@ impl EditorState {
             mode: self.mode.clone(),
             cmdline: self.cmdline.snapshot(),
             notifications: self.notifications.drain(..).collect(),
-            search: self.search.clone(),
+            search,
             theme: self.theme.clone(),
             terminal_size: self.terminal_size,
             focused_window: self.windows.focused_id(),
         }
+    }
+
+    fn compute_hlsearch(&self) -> Vec<(usize, usize, usize)> {
+        if !self.options.get_bool("hlsearch") || !self.search.active {
+            return Vec::new();
+        }
+        let pat = match &self.search.pattern {
+            Some(p) if !p.is_empty() => p.clone(),
+            _ => return Vec::new(),
+        };
+        let buf_id = self.current_buffer_id();
+        let buf = match self.buffers.get(buf_id) {
+            Some(b) => b,
+            None => return Vec::new(),
+        };
+        let mut ranges = Vec::new();
+        for line_idx in 0..buf.content.len_lines() {
+            let line_s: String = buf.content.line(line_idx).chars().collect();
+            let mut pos = 0;
+            while let Some(m) = line_s[pos..].find(&*pat) {
+                let start = pos + m;
+                let end = start + pat.len();
+                ranges.push((line_idx, start, end));
+                pos = end.max(start + 1);
+            }
+        }
+        ranges
     }
 
     fn transition_mode(&mut self, new_mode: Mode, key: &Key) {

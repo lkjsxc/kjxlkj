@@ -8,6 +8,7 @@ mod buffer_list;
 mod case_ops_tests;
 mod cmdline;
 mod cmdline_completion;
+mod cmdline_completion_ctx;
 mod cmdline_dispatch;
 #[cfg(test)]
 mod completion_range_tests;
@@ -86,6 +87,8 @@ pub mod session;
 mod session_tests;
 pub(crate) mod text_objects;
 pub(crate) mod text_objects_delim;
+pub(crate) mod text_objects_sentence;
+pub(crate) mod text_objects_tag;
 pub mod user_commands;
 pub mod user_commands_parse;
 #[cfg(test)]
@@ -97,6 +100,8 @@ mod visual_ops_tests;
 mod wave7_tests;
 #[cfg(test)]
 mod wave8_tests;
+#[cfg(test)]
+mod wave9_tests;
 mod window_tree;
 mod window_tree_layout;
 

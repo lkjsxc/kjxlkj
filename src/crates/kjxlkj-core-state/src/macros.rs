@@ -31,11 +31,27 @@ impl EditorState {
     pub(crate) fn stop_recording(&mut self) {
         if let Some(reg) = self.recording_macro.take() {
             let keys = std::mem::take(&mut self.macro_buffer);
+            // Convert keys to string for register unification.
+            let text: String = keys.iter().map(macro_key_to_char).collect();
             if reg.is_ascii_uppercase() {
                 let lower = reg.to_ascii_lowercase();
                 self.macro_store.entry(lower).or_default().extend(keys);
+                // Append text to register.
+                use kjxlkj_core_edit::{Register, RegisterName};
+                if let Some(existing) = self.registers.get(RegisterName::Named(lower)) {
+                    let mut s = existing.content.clone();
+                    s.push_str(&text);
+                    self.registers
+                        .set(RegisterName::Named(lower), Register::new(s, false));
+                } else {
+                    self.registers
+                        .set(RegisterName::Named(lower), Register::new(text, false));
+                }
             } else {
                 self.macro_store.insert(reg, keys);
+                use kjxlkj_core_edit::{Register, RegisterName};
+                self.registers
+                    .set(RegisterName::Named(reg), Register::new(text, false));
             }
         }
     }
@@ -80,5 +96,14 @@ impl EditorState {
     /// Check if a key is the bare `q` key (no modifiers).
     pub(crate) fn is_q_key(key: &Key) -> bool {
         key.modifiers == Modifier::NONE && matches!(key.code, KeyCode::Char('q'))
+    }
+}
+
+fn macro_key_to_char(key: &Key) -> char {
+    match &key.code {
+        KeyCode::Char(c) => *c,
+        KeyCode::Enter => '\n',
+        KeyCode::Esc => '\x1b',
+        _ => '?',
     }
 }

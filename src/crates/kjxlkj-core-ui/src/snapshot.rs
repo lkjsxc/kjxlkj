@@ -102,6 +102,8 @@ pub struct SearchState {
     pub active: bool,
     /// Search direction: true = forward.
     pub forward: bool,
+    /// Highlighted match positions (line, start_col, end_col) for hlsearch.
+    pub highlight_ranges: Vec<(usize, usize, usize)>,
 }
 
 /// Notification message.

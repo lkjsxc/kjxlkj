@@ -55,6 +55,21 @@ impl EditorState {
     pub(crate) fn delete_lines(&mut self, count: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
+        let bid = buf_id.0 as usize;
+        // Set change marks for lines being deleted.
+        let sm = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: cursor.line,
+            col: 0,
+        };
+        let end_l = cursor.line + count.saturating_sub(1);
+        let em = crate::marks::MarkPosition {
+            buffer_id: bid,
+            line: end_l,
+            col: 0,
+        };
+        self.marks.set_change_start(sm);
+        self.marks.set_change_end(em);
         let yanked = if let Some(buf) = self.buffers.get_mut(buf_id) {
             buf.save_undo_checkpoint(cursor);
             let start_line = cursor.line;

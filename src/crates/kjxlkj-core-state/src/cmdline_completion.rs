@@ -84,8 +84,8 @@ impl EditorState {
         let cs = &mut self.cmdline.completion;
         if cs.candidates.is_empty() {
             if content.contains(' ') {
-                // File-path completion after a space.
-                self.build_file_candidates();
+                // Context-aware completion after a space.
+                self.build_arg_candidates();
             } else {
                 // Command name completion.
                 let prefix = content.to_string();
@@ -146,45 +146,5 @@ impl EditorState {
     /// Reset completion when user types a new character.
     pub(crate) fn cmdline_reset_completion(&mut self) {
         self.cmdline.completion.clear();
-    }
-
-    /// Build file-path candidates from the path prefix.
-    fn build_file_candidates(&mut self) {
-        let content = self.cmdline.content.clone();
-        let space = content.rfind(' ').unwrap_or(0) + 1;
-        let partial = &content[space..];
-        let (dir, prefix) = if let Some(slash) = partial.rfind('/') {
-            (&partial[..=slash], &partial[slash + 1..])
-        } else {
-            ("./", partial)
-        };
-        let entries = match std::fs::read_dir(dir) {
-            Ok(e) => e,
-            Err(_) => return,
-        };
-        let mut matches: Vec<String> = Vec::new();
-        for entry in entries.flatten() {
-            let name = entry.file_name().to_string_lossy().to_string();
-            if name.starts_with(prefix) {
-                let path = if dir == "./" {
-                    name.clone()
-                } else {
-                    format!("{}{}", dir, name)
-                };
-                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
-                    matches.push(format!("{}/", path));
-                } else {
-                    matches.push(path);
-                }
-            }
-        }
-        matches.sort();
-        if matches.is_empty() {
-            return;
-        }
-        let cs = &mut self.cmdline.completion;
-        cs.prefix = content;
-        cs.candidates = matches;
-        cs.index = Some(0);
     }
 }
