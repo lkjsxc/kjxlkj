@@ -12,6 +12,7 @@ kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
 ropey = { workspace = true }
+regex = { workspace = true }
 unicode-segmentation = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }

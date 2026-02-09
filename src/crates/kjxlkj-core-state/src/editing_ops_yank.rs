@@ -1,13 +1,41 @@
 /// Line yank, delete-lines, put-after, put-before operations.
+use kjxlkj_core_edit::{Register, RegisterName};
 use kjxlkj_core_types::CursorPosition;
 
 use crate::editor::EditorState;
 
 impl EditorState {
+    /// Take pending register and clear it, or return None.
+    #[allow(dead_code)]
+    pub(crate) fn take_register(&mut self) -> Option<char> {
+        self.pending_register.take()
+    }
+
+    /// Store content into the appropriate register.
+    pub(crate) fn store_register(&mut self, content: String, linewise: bool) {
+        if let Some(reg_name) = self.pending_register.take() {
+            let name = RegisterName::Named(reg_name);
+            self.registers.set(name, Register::new(content, linewise));
+        } else {
+            self.registers.set_unnamed(content, linewise);
+        }
+    }
+
+    /// Read from pending register or unnamed.
+    fn read_register(&mut self) -> Option<Register> {
+        let reg = self.pending_register.take();
+        if let Some(reg_name) = reg {
+            let name = RegisterName::Named(reg_name);
+            self.registers.get(name).cloned()
+        } else {
+            self.registers.get_unnamed().cloned()
+        }
+    }
+
     pub(crate) fn delete_lines(&mut self, count: usize) {
         let buf_id = self.current_buffer_id();
         let cursor = self.windows.focused().cursor;
-        if let Some(buf) = self.buffers.get_mut(buf_id) {
+        let yanked = if let Some(buf) = self.buffers.get_mut(buf_id) {
             buf.save_undo_checkpoint(cursor);
             let start_line = cursor.line;
             let end_line = (start_line + count).min(buf.content.len_lines());
@@ -20,11 +48,18 @@ impl EditorState {
             if start_byte < end_byte {
                 let start_char = buf.content.byte_to_char(start_byte);
                 let end_char = buf.content.byte_to_char(end_byte);
-                let yanked = buf.content.slice(start_char..end_char).to_string();
-                self.registers.set_unnamed(yanked, true);
+                let text = buf.content.slice(start_char..end_char).to_string();
                 buf.content.remove(start_char..end_char);
                 buf.increment_version();
+                Some(text)
+            } else {
+                None
             }
+        } else {
+            None
+        };
+        if let Some(text) = yanked {
+            self.store_register(text, true);
         }
         self.clamp_cursor();
         self.ensure_cursor_visible();
@@ -46,13 +81,13 @@ impl EditorState {
                 let start_char = buf.content.byte_to_char(start_byte);
                 let end_char = buf.content.byte_to_char(end_byte);
                 let yanked = buf.content.slice(start_char..end_char).to_string();
-                self.registers.set_unnamed(yanked, true);
+                self.store_register(yanked, true);
             }
         }
     }
 
     pub(crate) fn put_after(&mut self) {
-        if let Some(reg) = self.registers.get_unnamed().cloned() {
+        if let Some(reg) = self.read_register() {
             if reg.linewise {
                 let cursor = self.windows.focused().cursor;
                 let buf_id = self.current_buffer_id();
@@ -83,7 +118,7 @@ impl EditorState {
     }
 
     pub(crate) fn put_before(&mut self) {
-        if let Some(reg) = self.registers.get_unnamed().cloned() {
+        if let Some(reg) = self.read_register() {
             if reg.linewise {
                 let cursor = self.windows.focused().cursor;
                 let buf_id = self.current_buffer_id();

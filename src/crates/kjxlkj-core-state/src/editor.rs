@@ -52,6 +52,9 @@ pub struct EditorState {
     pub(crate) macro_store: std::collections::HashMap<char, Vec<Key>>,
     /// Last executed macro register for @@ replay.
     pub(crate) last_macro: Option<char>,
+    /// Last f/t/F/T motion for ; and , repeat: (kind, char).
+    /// kind: 'f'=forward, 'F'=backward, 't'=till fwd, 'T'=till bck.
+    pub(crate) last_ft: Option<(char, char)>,
 }
 
 impl EditorState {
@@ -88,6 +91,7 @@ impl EditorState {
             macro_buffer: Vec::new(),
             macro_store: std::collections::HashMap::new(),
             last_macro: None,
+            last_ft: None,
         }
     }
 

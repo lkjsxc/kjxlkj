@@ -24,6 +24,10 @@ pub enum Motion {
     PageDown(usize),
     HalfPageUp(usize),
     HalfPageDown(usize),
+    FindCharForward(char),
+    FindCharBackward(char),
+    TillCharForward(char),
+    TillCharBackward(char),
 }
 
 /// Whether a motion result is inclusive or exclusive.
@@ -122,6 +126,56 @@ pub fn resolve_motion(
             let line = (pos.line + lines).min(line_count.saturating_sub(1));
             let g = clamp_grapheme(rope, line, pos.grapheme);
             (CursorPosition::new(line, g), MotionKind::Linewise)
+        }
+        Motion::FindCharForward(ch) => {
+            let max_g = line_graphemes_excl_newline(rope, pos.line);
+            let mut found = pos.grapheme;
+            let line_s: String = rope.line(pos.line).chars().collect();
+            let chars: Vec<char> = line_s.chars().collect();
+            for g in (pos.grapheme + 1)..max_g {
+                if g < chars.len() && chars[g] == *ch {
+                    found = g;
+                    break;
+                }
+            }
+            (CursorPosition::new(pos.line, found), MotionKind::Inclusive)
+        }
+        Motion::FindCharBackward(ch) => {
+            let line_s: String = rope.line(pos.line).chars().collect();
+            let chars: Vec<char> = line_s.chars().collect();
+            let mut found = pos.grapheme;
+            for g in (0..pos.grapheme).rev() {
+                if g < chars.len() && chars[g] == *ch {
+                    found = g;
+                    break;
+                }
+            }
+            (CursorPosition::new(pos.line, found), MotionKind::Exclusive)
+        }
+        Motion::TillCharForward(ch) => {
+            let max_g = line_graphemes_excl_newline(rope, pos.line);
+            let line_s: String = rope.line(pos.line).chars().collect();
+            let chars: Vec<char> = line_s.chars().collect();
+            let mut found = pos.grapheme;
+            for g in (pos.grapheme + 1)..max_g {
+                if g < chars.len() && chars[g] == *ch {
+                    found = g.saturating_sub(1);
+                    break;
+                }
+            }
+            (CursorPosition::new(pos.line, found), MotionKind::Inclusive)
+        }
+        Motion::TillCharBackward(ch) => {
+            let line_s: String = rope.line(pos.line).chars().collect();
+            let chars: Vec<char> = line_s.chars().collect();
+            let mut found = pos.grapheme;
+            for g in (0..pos.grapheme).rev() {
+                if g < chars.len() && chars[g] == *ch {
+                    found = g + 1;
+                    break;
+                }
+            }
+            (CursorPosition::new(pos.line, found), MotionKind::Exclusive)
         }
     }
 }

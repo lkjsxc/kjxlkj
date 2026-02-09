@@ -4,6 +4,8 @@
 /// and produces `EditorSnapshot` for rendering.
 pub mod buffer;
 mod buffer_list;
+#[cfg(test)]
+mod case_ops_tests;
 mod cmdline;
 mod cmdline_completion;
 mod cmdline_dispatch;
@@ -11,6 +13,7 @@ mod cmdline_dispatch;
 mod completion_range_tests;
 pub mod contracts;
 mod cursor_ops;
+mod cursor_ops_findchar;
 mod cursor_ops_scroll;
 pub mod editing_helpers;
 pub mod editing_helpers_surround;
@@ -44,6 +47,8 @@ pub mod ex_parse_substitute;
 mod ex_parse_tests;
 mod ex_scripting;
 mod ex_substitute;
+#[cfg(test)]
+mod findchar_tests;
 pub(crate) mod key_notation;
 mod macros;
 #[cfg(test)]
@@ -61,6 +66,9 @@ mod op_pending_tests;
 pub mod options;
 #[cfg(test)]
 mod options_tests;
+#[cfg(test)]
+mod regex_register_tests;
+pub(crate) mod regex_translate;
 pub mod registers;
 #[cfg(test)]
 mod registers_tests;

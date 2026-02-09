@@ -107,6 +107,8 @@ impl EditorState {
             }
             Operator::Indent => self.indent_lines_range(start, end),
             Operator::Dedent => self.dedent_lines_range(start, end),
+            Operator::Lowercase => self.lowercase_lines(start, end),
+            Operator::Uppercase => self.uppercase_lines(start, end),
             _ => {}
         }
     }
@@ -149,6 +151,10 @@ fn key_to_motion(key: &Key, count: usize) -> Option<Motion> {
         KeyCode::Char('^') => Some(Motion::FirstNonBlank),
         KeyCode::Char('$') => Some(Motion::LineEnd),
         KeyCode::Char('G') => Some(Motion::LastLine),
+        KeyCode::Char('f') => None, // f/t need pending char; handled separately
+        KeyCode::Char('F') => None,
+        KeyCode::Char('t') => None,
+        KeyCode::Char('T') => None,
         _ => None,
     }
 }

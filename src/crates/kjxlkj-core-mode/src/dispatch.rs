@@ -60,7 +60,10 @@ impl NormalDispatch {
         }
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
-                if matches!(c, 'g' | 'z' | 'm' | '\'' | '`' | '"' | '@' | 'q') {
+                if matches!(
+                    c,
+                    'g' | 'z' | 'm' | '\'' | '`' | '"' | '@' | 'q' | 'f' | 'F' | 't' | 'T'
+                ) {
                     self.pending = Some(*c);
                     return KeyDispatchResult::Consumed;
                 }
@@ -101,6 +104,10 @@ impl NormalDispatch {
                     '"' => KeyDispatchResult::Action(Action::SelectRegister(*c)),
                     '@' => KeyDispatchResult::Action(Action::PlayMacro(*c)),
                     'q' => KeyDispatchResult::Action(Action::StartRecording(*c)),
+                    'f' => KeyDispatchResult::Action(Action::FindCharForward(*c)),
+                    'F' => KeyDispatchResult::Action(Action::FindCharBackward(*c)),
+                    't' => KeyDispatchResult::Action(Action::TillCharForward(*c)),
+                    'T' => KeyDispatchResult::Action(Action::TillCharBackward(*c)),
                     _ => KeyDispatchResult::Unhandled,
                 };
             }
@@ -108,11 +115,17 @@ impl NormalDispatch {
         KeyDispatchResult::Unhandled
     }
 
-    fn dispatch_g(c: char, count: usize) -> KeyDispatchResult {
+    fn dispatch_g(c: char, _count: usize) -> KeyDispatchResult {
         match c {
             'g' => KeyDispatchResult::Action(Action::MoveToTop),
-            'j' => KeyDispatchResult::Action(Action::MoveDown(count)),
-            'k' => KeyDispatchResult::Action(Action::MoveUp(count)),
+            'j' => KeyDispatchResult::Action(Action::MoveDown(_count)),
+            'k' => KeyDispatchResult::Action(Action::MoveUp(_count)),
+            'u' => KeyDispatchResult::Action(Action::EnterOperatorPending(
+                kjxlkj_core_types::Operator::Lowercase,
+            )),
+            'U' => KeyDispatchResult::Action(Action::EnterOperatorPending(
+                kjxlkj_core_types::Operator::Uppercase,
+            )),
             _ => KeyDispatchResult::Unhandled,
         }
     }
@@ -152,6 +165,8 @@ impl NormalDispatch {
             'X' => KeyDispatchResult::Action(Action::DeleteCharBack(count)),
             'J' => KeyDispatchResult::Action(Action::JoinLines),
             '~' => KeyDispatchResult::Action(Action::ToggleCase),
+            ';' => KeyDispatchResult::Action(Action::RepeatFindChar),
+            ',' => KeyDispatchResult::Action(Action::RepeatFindCharReverse),
             '.' => KeyDispatchResult::Action(Action::DotRepeat),
             'u' => KeyDispatchResult::Action(Action::Undo),
             'p' => KeyDispatchResult::Action(Action::PutAfter),

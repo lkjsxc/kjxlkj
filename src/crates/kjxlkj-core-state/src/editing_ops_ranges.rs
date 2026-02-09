@@ -29,7 +29,7 @@ impl EditorState {
                 if let Some(buf) = self.buffers.get_mut(buf_id) {
                     buf.save_undo_checkpoint(cursor);
                     let text = self.extract_range(buf_id, start, end, inclusive);
-                    self.registers.set_unnamed(text, false);
+                    self.store_register(text, false);
                 }
                 self.delete_range_raw(buf_id, start.line, start.grapheme, end.line, end_g);
                 self.windows.focused_mut().cursor = start;
@@ -37,17 +37,23 @@ impl EditorState {
             }
             Operator::Yank => {
                 let text = self.extract_range(buf_id, start, end, inclusive);
-                self.registers.set_unnamed(text, false);
+                self.store_register(text, false);
             }
             Operator::Change => {
                 if let Some(buf) = self.buffers.get_mut(buf_id) {
                     buf.save_undo_checkpoint(cursor);
                     let text = self.extract_range(buf_id, start, end, inclusive);
-                    self.registers.set_unnamed(text, false);
+                    self.store_register(text, false);
                 }
                 self.delete_range_raw(buf_id, start.line, start.grapheme, end.line, end_g);
                 self.windows.focused_mut().cursor = start;
                 self.mode = Mode::Insert;
+            }
+            Operator::Lowercase => {
+                self.case_range(buf_id, start, end, inclusive, false);
+            }
+            Operator::Uppercase => {
+                self.case_range(buf_id, start, end, inclusive, true);
             }
             _ => {}
         }
@@ -85,6 +91,8 @@ impl EditorState {
             }
             Operator::Indent => self.indent_lines_range(start, end),
             Operator::Dedent => self.dedent_lines_range(start, end),
+            Operator::Lowercase => self.lowercase_lines(start, end),
+            Operator::Uppercase => self.uppercase_lines(start, end),
             _ => {}
         }
     }
@@ -128,7 +136,7 @@ impl EditorState {
         }
     }
 
-    fn extract_range(
+    pub(crate) fn extract_range(
         &self,
         buf_id: kjxlkj_core_types::BufferId,
         start: CursorPosition,

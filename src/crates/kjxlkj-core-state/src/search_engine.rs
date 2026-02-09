@@ -1,10 +1,13 @@
 //! Search engine: find_next, count_matches, build_all_matches.
 
+use crate::regex_translate::compile_vim_pattern;
 use crate::search_types::{SearchDirection, SearchMatch, SearchState};
 
-/// Match pattern against a line, returning (start, end) pairs.
+/// Match pattern against a line using regex, falling back to plain text.
 fn find_in_line(line: &str, pattern: &str, case_sensitive: bool) -> Vec<(usize, usize)> {
-    if case_sensitive {
+    if let Some(re) = compile_vim_pattern(pattern, case_sensitive) {
+        re.find_iter(line).map(|m| (m.start(), m.end())).collect()
+    } else if case_sensitive {
         line.match_indices(pattern)
             .map(|(i, m)| (i, i + m.len()))
             .collect()

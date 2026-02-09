@@ -116,8 +116,20 @@ impl EditorState {
             Action::StartRecording(c) => self.start_recording(c),
             Action::StopRecording => self.stop_recording(),
             Action::PlayMacro(c) => self.play_macro(c, 1),
+            Action::EnterOperatorPending(op) => {
+                self.op_count = self.dispatch.take_count();
+                self.motion_count = None;
+                self.g_prefix = false;
+                self.mode = Mode::OperatorPending(op);
+            }
             Action::MoveToMatchingBracket => {}
-            Action::ToggleCase => {}
+            Action::FindCharForward(c) => self.find_char_forward(c),
+            Action::FindCharBackward(c) => self.find_char_backward(c),
+            Action::TillCharForward(c) => self.till_char_forward(c),
+            Action::TillCharBackward(c) => self.till_char_backward(c),
+            Action::RepeatFindChar => self.repeat_find_char(),
+            Action::RepeatFindCharReverse => self.repeat_find_char_reverse(),
+            Action::ToggleCase => self.toggle_case(),
             Action::DotRepeat => {}
             _ => {}
         }
