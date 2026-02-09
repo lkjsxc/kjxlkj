@@ -135,6 +135,7 @@ impl EditorState {
             Action::JumpOlder => self.jump_older(),
             Action::JumpNewer => self.jump_newer(),
             Action::DotRepeat => {}
+            Action::VisualReselect => self.restore_last_visual(),
             _ => {}
         }
     }

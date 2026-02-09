@@ -30,6 +30,10 @@ impl EditorState {
                 lines.push(format!("mark {} {} {}", name, pos.line + 1, pos.col + 1));
             }
         }
+        // Save editor options that differ from defaults.
+        for (name, val) in self.options.list() {
+            lines.push(format!("set {}={}", name, val));
+        }
         // Save window layout.
         self.serialize_layout(&self.windows.layout().clone(), &mut lines);
         let content = lines.join("\n") + "\n";

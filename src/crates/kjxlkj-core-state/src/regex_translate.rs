@@ -20,6 +20,7 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
     let mut out = String::with_capacity(pattern.len());
     let mut chars = pattern.chars().peekable();
     let mut case_override = None;
+    let mut group_starts: Vec<usize> = Vec::new();
 
     while let Some(c) = chars.next() {
         if c == '\\' {
@@ -27,8 +28,16 @@ pub fn translate_vim_to_rust(pattern: &str) -> TranslateResult {
                 Some('+') => out.push('+'),
                 Some('?') | Some('=') => out.push('?'),
                 Some('|') => out.push('|'),
-                Some('(') => out.push('('),
-                Some(')') => out.push(')'),
+                Some('(') => {
+                    group_starts.push(out.len());
+                    out.push('(');
+                }
+                Some(')') => {
+                    out.push(')');
+                    if let Some(start) = group_starts.pop() {
+                        apply_lookaround(&mut chars, &mut out, start);
+                    }
+                }
                 Some('<') => out.push_str("\\b"),
                 Some('>') => out.push_str("\\b"),
                 Some('{') => {
@@ -90,6 +99,54 @@ fn consume_until(
         }
         out.push(c);
     }
+}
+
+/// Check for `\@=`, `\@!`, `\@<=`, `\@<!` after a group close
+/// and convert the group to a Rust regex lookaround.
+fn apply_lookaround(
+    chars: &mut std::iter::Peekable<std::str::Chars<'_>>,
+    out: &mut String,
+    group_start: usize,
+) {
+    // Check if next is \@
+    if chars.peek() != Some(&'\\') {
+        return;
+    }
+    let mut probe = chars.clone();
+    probe.next(); // consume '\'
+    if probe.peek() != Some(&'@') {
+        return;
+    }
+    probe.next(); // consume '@'
+    let prefix = match probe.peek() {
+        Some('=') => {
+            probe.next();
+            "(?="
+        }
+        Some('!') => {
+            probe.next();
+            "(?!"
+        }
+        Some('<') => {
+            probe.next();
+            match probe.peek() {
+                Some('=') => {
+                    probe.next();
+                    "(?<="
+                }
+                Some('!') => {
+                    probe.next();
+                    "(?<!"
+                }
+                _ => return,
+            }
+        }
+        _ => return,
+    };
+    // Commit: advance real iterator to match probe position.
+    *chars = probe;
+    // Replace the '(' at group_start with the lookaround prefix.
+    out.replace_range(group_start..group_start + 1, prefix);
 }
 
 /// Compile a Vim magic pattern to a regex::Regex.

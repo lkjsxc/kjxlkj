@@ -124,6 +124,7 @@ pub enum Action {
     // -- Visual mode --
     VisualSelectAll,
     VisualSwitchKind(crate::VisualKind),
+    VisualReselect,
 
     // -- Buffer management --
     OpenFile(String),

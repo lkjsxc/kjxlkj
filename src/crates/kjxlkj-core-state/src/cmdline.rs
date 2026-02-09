@@ -12,6 +12,8 @@ pub struct CmdlineHandler {
     pub history: Vec<String>,
     pub history_idx: Option<usize>,
     pub completion: CompletionState,
+    /// Saved prefix for history filtering.
+    pub(crate) history_prefix: Option<String>,
 }
 
 impl CmdlineHandler {
@@ -24,6 +26,7 @@ impl CmdlineHandler {
             history: Vec::new(),
             history_idx: None,
             completion: CompletionState::default(),
+            history_prefix: None,
         }
     }
 
@@ -33,6 +36,7 @@ impl CmdlineHandler {
         self.cursor_pos = 0;
         self.active = true;
         self.history_idx = None;
+        self.history_prefix = None;
     }
 
     pub fn close(&mut self) {
@@ -44,6 +48,7 @@ impl CmdlineHandler {
         self.cursor_pos = 0;
         self.active = false;
         self.history_idx = None;
+        self.history_prefix = None;
     }
 
     pub fn insert_char(&mut self, c: char) {
@@ -120,14 +125,25 @@ impl CmdlineHandler {
         if self.history.is_empty() {
             return;
         }
-        let idx = match self.history_idx {
-            Some(0) => return,
-            Some(i) => i - 1,
-            None => self.history.len() - 1,
+        let prefix = if self.history_idx.is_none() {
+            self.history_prefix = Some(self.content.clone());
+            self.content.clone()
+        } else {
+            self.history_prefix.clone().unwrap_or_default()
         };
-        self.history_idx = Some(idx);
-        self.content = self.history[idx].clone();
-        self.cursor_pos = self.content.len();
+        let start = match self.history_idx {
+            Some(0) => return,
+            Some(i) => i,
+            None => self.history.len(),
+        };
+        for idx in (0..start).rev() {
+            if self.history[idx].starts_with(&prefix) {
+                self.history_idx = Some(idx);
+                self.content = self.history[idx].clone();
+                self.cursor_pos = self.content.len();
+                return;
+            }
+        }
     }
 
     pub fn history_next(&mut self) {
@@ -135,15 +151,18 @@ impl CmdlineHandler {
             Some(i) => i + 1,
             None => return,
         };
-        if idx < self.history.len() {
-            self.history_idx = Some(idx);
-            self.content = self.history[idx].clone();
-            self.cursor_pos = self.content.len();
-        } else {
-            self.history_idx = None;
-            self.content.clear();
-            self.cursor_pos = 0;
+        let prefix = self.history_prefix.clone().unwrap_or_default();
+        for i in idx..self.history.len() {
+            if self.history[i].starts_with(&prefix) {
+                self.history_idx = Some(i);
+                self.content = self.history[i].clone();
+                self.cursor_pos = self.content.len();
+                return;
+            }
         }
+        self.history_idx = None;
+        self.content = self.history_prefix.take().unwrap_or_default();
+        self.cursor_pos = self.content.len();
     }
 
     pub fn take_content(&mut self) -> String {

@@ -6,10 +6,10 @@ use crate::editor::EditorState;
 
 impl EditorState {
     /// Dispatch a key while in visual mode.
+    #[rustfmt::skip]
     pub(crate) fn dispatch_visual(&mut self, key: Key, kind: VisualKind) {
         if key.modifiers == Modifier::NONE {
             if let KeyCode::Char(c) = &key.code {
-                // : in visual mode opens cmdline with '<,'>
                 if *c == ':' {
                     self.visual_set_marks_on_exit();
                     self.visual_anchor = None;
@@ -19,26 +19,17 @@ impl EditorState {
                     self.cmdline.cursor_pos = 5;
                     return;
                 }
-                // Operators act on selection.
-                if let Some(op) = char_to_operator(*c) {
-                    self.visual_apply_operator(op, kind);
-                    return;
-                }
-                if *c == 'o' {
-                    self.visual_swap_anchor();
-                    return;
-                }
-                if *c == 'p' || *c == 'P' {
-                    self.visual_paste(kind);
-                    return;
-                }
-                if kind == VisualKind::Block && (*c == 'I' || *c == 'A') {
-                    self.handle_visual_block_ia(*c == 'A');
-                    return;
+                if let Some(op) = char_to_operator(*c) { self.visual_apply_operator(op, kind); return; }
+                match *c {
+                    'o' => { self.visual_swap_anchor(); return; }
+                    'p' | 'P' => { self.visual_paste(kind); return; }
+                    'r' => { self.visual_replace_pending = true; return; }
+                    '*' | '#' => { self.visual_star_search(*c == '*', kind); return; }
+                    'I' | 'A' if kind == VisualKind::Block => { self.handle_visual_block_ia(*c == 'A'); return; }
+                    _ => {}
                 }
             }
         }
-        // Motions extend selection.
         if let Some(motion) = visual_key_to_motion(&key) {
             self.visual_move(motion);
         }
@@ -72,8 +63,7 @@ impl EditorState {
         let buf_id = self.current_buffer_id();
         if let Some(buf) = self.buffers.get(buf_id) {
             let cursor = self.windows.focused().cursor;
-            let vh = self.viewport_height();
-            let (dest, _) = resolve_motion(&motion, cursor, &buf.content, vh);
+            let (dest, _) = resolve_motion(&motion, cursor, &buf.content, self.viewport_height());
             self.windows.focused_mut().cursor = dest;
         }
         self.clamp_cursor();
@@ -81,10 +71,10 @@ impl EditorState {
     }
 
     fn visual_swap_anchor(&mut self) {
-        if let Some(anchor) = self.visual_anchor {
-            let cursor = self.windows.focused().cursor;
-            self.visual_anchor = Some(cursor);
-            self.windows.focused_mut().cursor = anchor;
+        if let Some(a) = self.visual_anchor {
+            let c = self.windows.focused().cursor;
+            self.visual_anchor = Some(c);
+            self.windows.focused_mut().cursor = a;
         }
     }
 
@@ -153,11 +143,12 @@ impl EditorState {
     pub fn visual_selection(&self) -> Option<(CursorPosition, CursorPosition)> {
         let anchor = self.visual_anchor?;
         let cursor = self.windows.focused().cursor;
-        if (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme) {
-            Some((anchor, cursor))
+        let ordered = (anchor.line, anchor.grapheme) <= (cursor.line, cursor.grapheme);
+        Some(if ordered {
+            (anchor, cursor)
         } else {
-            Some((cursor, anchor))
-        }
+            (cursor, anchor)
+        })
     }
 }
 

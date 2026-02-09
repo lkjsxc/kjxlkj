@@ -79,6 +79,14 @@ pub struct EditorState {
     pub(crate) block_insert_pending: Option<(usize, usize, usize, bool)>,
     /// Ctrl-R pressed in insert mode: next char selects register.
     pub(crate) insert_register_pending: bool,
+    /// `r` pressed in visual mode: next char replaces selection.
+    pub(crate) visual_replace_pending: bool,
+    /// Last visual selection for gv: (anchor, cursor, kind).
+    pub(crate) last_visual: Option<(
+        CursorPosition,
+        CursorPosition,
+        kjxlkj_core_types::VisualKind,
+    )>,
 }
 
 impl EditorState {
@@ -128,6 +136,8 @@ impl EditorState {
             alternate_buffer: None,
             block_insert_pending: None,
             insert_register_pending: false,
+            visual_replace_pending: false,
+            last_visual: None,
         }
     }
 

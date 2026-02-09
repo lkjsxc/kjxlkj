@@ -105,8 +105,9 @@ mod wave15_tests {
         let mut reg = crate::snippets::SnippetRegistry::new();
         reg.add("fn", "fn ${1}() {\n    $0\n}", "Function template");
         assert!(reg.get("fn").is_some());
-        let expanded = reg.expand("fn").unwrap();
-        assert!(expanded.contains("fn"), "Expansion should contain 'fn'");
-        assert!(!expanded.contains("$1"), "Tab stops should be stripped");
+        let (text, stops) = reg.expand("fn").unwrap();
+        assert!(text.contains("fn"), "Expansion should contain 'fn'");
+        assert!(!text.contains("$1"), "Tab stops should be stripped");
+        assert!(!stops.is_empty(), "Should have tab-stop offsets");
     }
 }

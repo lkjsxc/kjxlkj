@@ -106,6 +106,7 @@ mod visual_ops;
 #[cfg(test)]
 mod visual_ops_tests;
 mod visual_paste;
+mod visual_replace;
 #[cfg(test)]
 mod wave10_tests;
 mod wave11_tests;
@@ -117,6 +118,8 @@ mod wave13_tests;
 mod wave14_tests;
 #[cfg(test)]
 mod wave15_tests;
+#[cfg(test)]
+mod wave16_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]

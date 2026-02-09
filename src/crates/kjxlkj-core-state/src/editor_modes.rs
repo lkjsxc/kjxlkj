@@ -162,9 +162,10 @@ impl EditorState {
                 self.motion_count = None;
                 self.g_prefix = false;
             }
-            (Mode::Visual(_), Mode::Normal) => {
+            (Mode::Visual(vk), Mode::Normal) => {
                 if let Some(anchor) = self.visual_anchor {
                     let c = self.windows.focused().cursor;
+                    self.last_visual = Some((anchor, c, *vk));
                     let bid = self.current_buffer_id().0 as usize;
                     let (s, e) = if (anchor.line, anchor.grapheme) <= (c.line, c.grapheme) { (anchor, c) } else { (c, anchor) };
                     let mk = |p: kjxlkj_core_types::CursorPosition| crate::marks::MarkPosition { buffer_id: bid, line: p.line, col: p.grapheme };

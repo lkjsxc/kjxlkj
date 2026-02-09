@@ -12,7 +12,6 @@ pub enum KeyDispatchResult {
 }
 
 /// Normal mode key dispatcher.
-///
 /// Tracks count prefix and pending multi-key prefix.
 #[derive(Debug, Default)]
 pub struct NormalDispatch {
@@ -117,11 +116,12 @@ impl NormalDispatch {
         KeyDispatchResult::Unhandled
     }
 
-    fn dispatch_g(c: char, _count: usize) -> KeyDispatchResult {
+    fn dispatch_g(c: char, count: usize) -> KeyDispatchResult {
         match c {
             'g' => KeyDispatchResult::Action(Action::MoveToTop),
-            'j' => KeyDispatchResult::Action(Action::MoveDown(_count)),
-            'k' => KeyDispatchResult::Action(Action::MoveUp(_count)),
+            'j' => KeyDispatchResult::Action(Action::MoveDown(count)),
+            'k' => KeyDispatchResult::Action(Action::MoveUp(count)),
+            'v' => KeyDispatchResult::Action(Action::VisualReselect),
             'q' => KeyDispatchResult::Action(Action::EnterOperatorPending(
                 kjxlkj_core_types::Operator::Format,
             )),

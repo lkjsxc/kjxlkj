@@ -1,21 +1,42 @@
 //! Expression register (=) evaluation.
 //!
-//! Supports basic arithmetic and string operations
-//! for the = register: +, -, *, /, %, string concat.
+//! Supports basic arithmetic, string operations and
+//! variable references (g:name) for the = register.
 #![allow(dead_code)]
+
+use std::collections::HashMap;
 
 /// Evaluate a simple expression for the = register.
 /// Returns the result as a string, or an error message.
 pub fn eval_expression(expr: &str) -> Result<String, String> {
+    eval_expression_with_vars(expr, &HashMap::new())
+}
+
+/// Evaluate expression with variable bindings.
+pub fn eval_expression_with_vars(
+    expr: &str,
+    vars: &HashMap<String, String>,
+) -> Result<String, String> {
     let expr = expr.trim();
     if expr.is_empty() {
         return Ok(String::new());
     }
-    // String concatenation with . (check before single-string literal).
+    // Variable reference: g:name, b:name, etc.
+    if let Some(rest) = expr
+        .strip_prefix("g:")
+        .or_else(|| expr.strip_prefix("b:"))
+        .or_else(|| expr.strip_prefix("w:"))
+        .or_else(|| expr.strip_prefix("v:"))
+    {
+        let scope = &expr[..2];
+        let key = format!("{}{}", scope, rest);
+        return Ok(vars.get(&key).cloned().unwrap_or_default());
+    }
+    // String concatenation with . (check before string literal).
     if let Some(parts) = split_concat(expr) {
         let mut result = String::new();
         for part in parts {
-            result.push_str(&eval_expression(part.trim())?);
+            result.push_str(&eval_expression_with_vars(part.trim(), vars)?);
         }
         return Ok(result);
     }

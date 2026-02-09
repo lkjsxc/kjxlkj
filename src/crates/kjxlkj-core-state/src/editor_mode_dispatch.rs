@@ -55,6 +55,13 @@ impl EditorState {
             }
             Mode::Visual(kind) => {
                 let kind = *kind;
+                if self.visual_replace_pending {
+                    self.visual_replace_pending = false;
+                    if let kjxlkj_core_types::KeyCode::Char(c) = &key.code {
+                        self.visual_replace(*c, kind);
+                    }
+                    return;
+                }
                 self.dispatch_visual(key, kind);
             }
             _ => {}
