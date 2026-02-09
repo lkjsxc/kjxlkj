@@ -11,7 +11,14 @@ use crate::editor::EditorState;
 
 impl EditorState {
     /// Start recording keystrokes into the given register.
+    /// Lowercase: overwrite. Uppercase: append to lowercase reg.
     pub(crate) fn start_recording(&mut self, reg: char) {
+        if reg.is_ascii_uppercase() {
+            // Append mode: record into lowercase key.
+            self.recording_macro = Some(reg);
+            self.macro_buffer.clear();
+            return;
+        }
         let reg = reg.to_ascii_lowercase();
         if !reg.is_ascii_lowercase() {
             return;
@@ -24,7 +31,12 @@ impl EditorState {
     pub(crate) fn stop_recording(&mut self) {
         if let Some(reg) = self.recording_macro.take() {
             let keys = std::mem::take(&mut self.macro_buffer);
-            self.macro_store.insert(reg, keys);
+            if reg.is_ascii_uppercase() {
+                let lower = reg.to_ascii_lowercase();
+                self.macro_store.entry(lower).or_default().extend(keys);
+            } else {
+                self.macro_store.insert(reg, keys);
+            }
         }
     }
 

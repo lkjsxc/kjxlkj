@@ -4,13 +4,65 @@
 //! range, and applies the pending operator.
 
 use kjxlkj_core_edit::{resolve_motion, Motion, MotionKind};
-use kjxlkj_core_types::{Key, KeyCode, Mode, Modifier, Operator};
+use kjxlkj_core_types::{CursorPosition, Key, KeyCode, Mode, Modifier, Operator};
 
 use crate::editor::EditorState;
+use crate::op_pending_helpers::{is_doubled, key_to_motion};
+
+fn ordered(a: CursorPosition, b: CursorPosition) -> (CursorPosition, CursorPosition) {
+    if (a.line, a.grapheme) <= (b.line, b.grapheme) {
+        (a, b)
+    } else {
+        (b, a)
+    }
+}
 
 impl EditorState {
     /// Dispatch a key while in operator-pending mode.
     pub(crate) fn dispatch_op_pending(&mut self, key: Key, op: Operator) {
+        // Text object prefix (i/a) or mark/findchar handling.
+        if let Some(prefix) = self.text_obj_prefix.take() {
+            if let KeyCode::Char(obj) = &key.code {
+                match prefix {
+                    'i' | 'a' => self.apply_text_object(op, prefix, *obj),
+                    '\'' => {
+                        let buf_id = self.current_buffer_id().0 as usize;
+                        if let Some(pos) = self.marks.get(*obj, buf_id) {
+                            let dest = CursorPosition::new(pos.line, 0);
+                            let cursor = self.windows.focused().cursor;
+                            let (s, e) = ordered(cursor, dest);
+                            self.apply_linewise_op(op, s.line, e.line);
+                        }
+                    }
+                    '`' => {
+                        let buf_id = self.current_buffer_id().0 as usize;
+                        if let Some(pos) = self.marks.get(*obj, buf_id) {
+                            let dest = CursorPosition::new(pos.line, pos.col);
+                            let cursor = self.windows.focused().cursor;
+                            let (s, e) = ordered(cursor, dest);
+                            self.apply_charwise_op(op, s, e, true);
+                        }
+                    }
+                    'f' | 'F' | 't' | 'T' => {
+                        let m = match prefix {
+                            'f' => Motion::FindCharForward(*obj),
+                            'F' => Motion::FindCharBackward(*obj),
+                            't' => Motion::TillCharForward(*obj),
+                            _ => Motion::TillCharBackward(*obj),
+                        };
+                        self.last_ft = Some((prefix, *obj));
+                        self.apply_op_motion(op, &m, 1);
+                    }
+                    _ => {}
+                }
+                if !matches!(self.mode, Mode::Insert) {
+                    self.mode = Mode::Normal;
+                }
+                return;
+            }
+            self.mode = Mode::Normal;
+            return;
+        }
         // Accumulate motion count digits.
         if let KeyCode::Char(c) = &key.code {
             if key.modifiers == Modifier::NONE
@@ -56,6 +108,23 @@ impl EditorState {
             }
             return;
         }
+        // Text object prefix: i or a. Mark/findchar pending: '/`/f/F/t/T.
+        if key.modifiers == Modifier::NONE {
+            if let KeyCode::Char(c) = &key.code {
+                if *c == 'i'
+                    || *c == 'a'
+                    || *c == '\''
+                    || *c == '`'
+                    || *c == 'f'
+                    || *c == 'F'
+                    || *c == 't'
+                    || *c == 'T'
+                {
+                    self.text_obj_prefix = Some(*c);
+                    return;
+                }
+            }
+        }
         // Unrecognised key — cancel.
         self.mode = Mode::Normal;
     }
@@ -95,6 +164,10 @@ impl EditorState {
         self.apply_linewise_op(op, line, end);
     }
 
+    fn apply_text_object(&mut self, op: Operator, prefix: char, obj: char) {
+        crate::text_objects::apply_text_object(self, op, prefix, obj);
+    }
+
     fn apply_linewise_op(&mut self, op: Operator, start: usize, end: usize) {
         let count = end - start + 1;
         match op {
@@ -109,52 +182,8 @@ impl EditorState {
             Operator::Dedent => self.dedent_lines_range(start, end),
             Operator::Lowercase => self.lowercase_lines(start, end),
             Operator::Uppercase => self.uppercase_lines(start, end),
+            Operator::Format => self.format_lines(start, end),
             _ => {}
         }
-    }
-}
-
-fn is_doubled(op: Operator, key: &Key) -> bool {
-    if key.modifiers != Modifier::NONE {
-        return false;
-    }
-    matches!(
-        (op, &key.code),
-        (Operator::Delete, KeyCode::Char('d'))
-            | (Operator::Change, KeyCode::Char('c'))
-            | (Operator::Yank, KeyCode::Char('y'))
-            | (Operator::Indent, KeyCode::Char('>'))
-            | (Operator::Dedent, KeyCode::Char('<'))
-            | (Operator::Reindent, KeyCode::Char('='))
-    )
-}
-
-fn key_to_motion(key: &Key, count: usize) -> Option<Motion> {
-    if key.modifiers != Modifier::NONE {
-        return match &key.code {
-            KeyCode::Left => Some(Motion::Left(count)),
-            KeyCode::Right => Some(Motion::Right(count)),
-            KeyCode::Up => Some(Motion::Up(count)),
-            KeyCode::Down => Some(Motion::Down(count)),
-            _ => None,
-        };
-    }
-    match &key.code {
-        KeyCode::Char('h') | KeyCode::Left => Some(Motion::Left(count)),
-        KeyCode::Char('j') | KeyCode::Down => Some(Motion::Down(count)),
-        KeyCode::Char('k') | KeyCode::Up => Some(Motion::Up(count)),
-        KeyCode::Char('l') | KeyCode::Right => Some(Motion::Right(count)),
-        KeyCode::Char('w') => Some(Motion::WordForward(count)),
-        KeyCode::Char('b') => Some(Motion::WordBackward(count)),
-        KeyCode::Char('e') => Some(Motion::WordEndForward(count)),
-        KeyCode::Char('0') => Some(Motion::LineStart),
-        KeyCode::Char('^') => Some(Motion::FirstNonBlank),
-        KeyCode::Char('$') => Some(Motion::LineEnd),
-        KeyCode::Char('G') => Some(Motion::LastLine),
-        KeyCode::Char('f') => None, // f/t need pending char; handled separately
-        KeyCode::Char('F') => None,
-        KeyCode::Char('t') => None,
-        KeyCode::Char('T') => None,
-        _ => None,
     }
 }

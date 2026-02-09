@@ -42,6 +42,7 @@ impl EditorState {
             total_lines,
             lines: &text_lines,
             mark_line: Some(&mark_fn),
+            last_search: self.search.pattern.as_deref(),
         };
         let (range, rest) = parse_range_ctx(cmd, &ctx);
         let rest = rest.trim();

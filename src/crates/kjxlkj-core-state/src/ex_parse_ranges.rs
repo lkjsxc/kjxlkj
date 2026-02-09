@@ -13,6 +13,8 @@ pub struct RangeContext<'a> {
     pub lines: &'a [&'a str],
     /// Mark lookup: given a mark char, return its line.
     pub mark_line: Option<&'a dyn Fn(char) -> Option<usize>>,
+    /// Last search pattern for `\/` and `\?`.
+    pub last_search: Option<&'a str>,
 }
 
 /// Parse a range with full context (patterns, marks).
@@ -62,6 +64,26 @@ fn parse_address_ctx<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<usiz
     if first == b'?' {
         return parse_pattern_backward(input, ctx);
     }
+    // \/ and \? use the last search pattern.
+    if first == b'\\' && input.len() >= 2 {
+        let second = input.as_bytes()[1];
+        if second == b'/' {
+            if let Some(pat) = ctx.last_search {
+                let after = &input[2..];
+                let (offset, after) = parse_offset(after);
+                return search_forward(ctx, pat, offset, after);
+            }
+            return (None, &input[2..]);
+        }
+        if second == b'?' {
+            if let Some(pat) = ctx.last_search {
+                let after = &input[2..];
+                let (offset, after) = parse_offset(after);
+                return search_backward(ctx, pat, offset, after);
+            }
+            return (None, &input[2..]);
+        }
+    }
     if first == b'\'' && input.len() >= 2 {
         let mark_ch = input.as_bytes()[1] as char;
         let rest = &input[2..];
@@ -110,14 +132,7 @@ fn parse_pattern_forward<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<
         &rest[end..]
     };
     let (offset, after) = parse_offset(after);
-    for i in 1..ctx.total_lines {
-        let idx = (ctx.current_line + i) % ctx.total_lines;
-        if idx < ctx.lines.len() && ctx.lines[idx].contains(pattern) {
-            let l = (idx as isize + offset).max(0) as usize;
-            return (Some(l), after);
-        }
-    }
-    (None, after)
+    search_forward(ctx, pattern, offset, after)
 }
 
 fn parse_pattern_backward<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option<usize>, &'a str) {
@@ -130,6 +145,31 @@ fn parse_pattern_backward<'a>(input: &'a str, ctx: &RangeContext<'_>) -> (Option
         &rest[end..]
     };
     let (offset, after) = parse_offset(after);
+    search_backward(ctx, pattern, offset, after)
+}
+
+fn search_forward<'a>(
+    ctx: &RangeContext<'_>,
+    pattern: &str,
+    offset: isize,
+    after: &'a str,
+) -> (Option<usize>, &'a str) {
+    for i in 1..ctx.total_lines {
+        let idx = (ctx.current_line + i) % ctx.total_lines;
+        if idx < ctx.lines.len() && ctx.lines[idx].contains(pattern) {
+            let l = (idx as isize + offset).max(0) as usize;
+            return (Some(l), after);
+        }
+    }
+    (None, after)
+}
+
+fn search_backward<'a>(
+    ctx: &RangeContext<'_>,
+    pattern: &str,
+    offset: isize,
+    after: &'a str,
+) -> (Option<usize>, &'a str) {
     for i in 1..ctx.total_lines {
         let idx = (ctx.current_line + ctx.total_lines - i) % ctx.total_lines;
         if idx < ctx.lines.len() && ctx.lines[idx].contains(pattern) {

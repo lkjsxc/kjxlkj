@@ -120,6 +120,9 @@ impl NormalDispatch {
             'g' => KeyDispatchResult::Action(Action::MoveToTop),
             'j' => KeyDispatchResult::Action(Action::MoveDown(_count)),
             'k' => KeyDispatchResult::Action(Action::MoveUp(_count)),
+            'q' => KeyDispatchResult::Action(Action::EnterOperatorPending(
+                kjxlkj_core_types::Operator::Format,
+            )),
             'u' => KeyDispatchResult::Action(Action::EnterOperatorPending(
                 kjxlkj_core_types::Operator::Lowercase,
             )),

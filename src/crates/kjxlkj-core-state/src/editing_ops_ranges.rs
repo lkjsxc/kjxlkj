@@ -55,6 +55,9 @@ impl EditorState {
             Operator::Uppercase => {
                 self.case_range(buf_id, start, end, inclusive, true);
             }
+            Operator::Format => {
+                self.format_lines(start.line, end.line);
+            }
             _ => {}
         }
     }
@@ -93,6 +96,7 @@ impl EditorState {
             Operator::Dedent => self.dedent_lines_range(start, end),
             Operator::Lowercase => self.lowercase_lines(start, end),
             Operator::Uppercase => self.uppercase_lines(start, end),
+            Operator::Format => self.format_lines(start, end),
             _ => {}
         }
     }

@@ -21,6 +21,26 @@ impl EditorState {
         }
     }
 
+    /// Store content, rotating numbered regs 1→9 on delete.
+    pub(crate) fn store_register_delete(&mut self, content: String, linewise: bool) {
+        if let Some(reg_name) = self.pending_register.take() {
+            let name = RegisterName::Named(reg_name);
+            self.registers.set(name, Register::new(content, linewise));
+        } else {
+            for i in (2..=9u8).rev() {
+                let prev = RegisterName::Numbered(i - 1);
+                if let Some(r) = self.registers.get(prev).cloned() {
+                    self.registers.set(RegisterName::Numbered(i), r);
+                }
+            }
+            self.registers.set(
+                RegisterName::Numbered(1),
+                Register::new(content.clone(), linewise),
+            );
+            self.registers.set_unnamed(content, linewise);
+        }
+    }
+
     /// Read from pending register or unnamed.
     fn read_register(&mut self) -> Option<Register> {
         let reg = self.pending_register.take();
@@ -59,7 +79,7 @@ impl EditorState {
             None
         };
         if let Some(text) = yanked {
-            self.store_register(text, true);
+            self.store_register_delete(text, true);
         }
         self.clamp_cursor();
         self.ensure_cursor_visible();

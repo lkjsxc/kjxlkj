@@ -49,6 +49,7 @@ mod ex_scripting;
 mod ex_substitute;
 #[cfg(test)]
 mod findchar_tests;
+mod format_ops;
 pub(crate) mod key_notation;
 mod macros;
 #[cfg(test)]
@@ -61,6 +62,7 @@ pub mod marks;
 mod marks_tests;
 mod notify;
 mod op_pending;
+mod op_pending_helpers;
 #[cfg(test)]
 mod op_pending_tests;
 pub mod options;
@@ -79,6 +81,8 @@ pub mod search_types;
 pub mod session;
 #[cfg(test)]
 mod session_tests;
+pub(crate) mod text_objects;
+pub(crate) mod text_objects_delim;
 pub mod user_commands;
 pub mod user_commands_parse;
 #[cfg(test)]
@@ -86,6 +90,8 @@ mod user_commands_tests;
 mod visual_ops;
 #[cfg(test)]
 mod visual_ops_tests;
+#[cfg(test)]
+mod wave7_tests;
 mod window_tree;
 mod window_tree_layout;
 

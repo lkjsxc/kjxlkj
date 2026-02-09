@@ -55,6 +55,8 @@ pub struct EditorState {
     /// Last f/t/F/T motion for ; and , repeat: (kind, char).
     /// kind: 'f'=forward, 'F'=backward, 't'=till fwd, 'T'=till bck.
     pub(crate) last_ft: Option<(char, char)>,
+    /// Text-object prefix: 'i' (inner) or 'a' (around) in op-pending.
+    pub(crate) text_obj_prefix: Option<char>,
 }
 
 impl EditorState {
@@ -92,6 +94,7 @@ impl EditorState {
             macro_store: std::collections::HashMap::new(),
             last_macro: None,
             last_ft: None,
+            text_obj_prefix: None,
         }
     }
 
