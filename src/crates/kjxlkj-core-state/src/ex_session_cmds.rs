@@ -23,6 +23,13 @@ impl EditorState {
                 }
             }
         }
+        // Save global marks.
+        let bid = self.current_buffer_id().0 as usize;
+        for (name, pos) in self.marks.list_for_buffer(bid) {
+            if name.is_ascii_uppercase() {
+                lines.push(format!("mark {} {} {}", name, pos.line + 1, pos.col + 1));
+            }
+        }
         // Save window layout.
         self.serialize_layout(&self.windows.layout().clone(), &mut lines);
         let content = lines.join("\n") + "\n";
@@ -99,6 +106,30 @@ impl EditorState {
                 self.clamp_cursor();
                 self.ensure_cursor_visible();
             }
+        }
+    }
+
+    /// Handle :mark command — `mark X` or `mark X line col` (session restore).
+    pub(crate) fn handle_mark_command(&mut self, rest: &str) {
+        let parts: Vec<&str> = rest.split_whitespace().collect();
+        let name = match parts.get(1).and_then(|s| s.chars().next()) {
+            Some(c) => c,
+            None => return,
+        };
+        if parts.len() >= 4 {
+            let l = parts[2].parse::<usize>().unwrap_or(1).saturating_sub(1);
+            let c = parts[3].parse::<usize>().unwrap_or(1).saturating_sub(1);
+            let bid = self.current_buffer_id().0 as usize;
+            self.marks.set(
+                name,
+                crate::marks::MarkPosition {
+                    buffer_id: bid,
+                    line: l,
+                    col: c,
+                },
+            );
+        } else {
+            self.handle_set_mark(name);
         }
     }
 }

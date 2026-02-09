@@ -62,10 +62,14 @@ impl EditorState {
     }
 
     /// Compute search match count [current/total] and store in search state.
+    /// Uses regex for \v patterns, literal otherwise.
     pub(crate) fn update_search_count(&mut self) {
         let pattern = match &self.search.pattern {
             Some(p) if !p.is_empty() => p.clone(),
-            _ => { self.search.match_count = None; return; }
+            _ => {
+                self.search.match_count = None;
+                return;
+            }
         };
         let buf_id = self.current_buffer_id();
         let buf = match self.buffers.get(buf_id) {
@@ -77,17 +81,33 @@ impl EditorState {
         let cursor_off = self.inc_line_col_to_byte(&text, cursor.line, cursor.grapheme);
         let mut total = 0usize;
         let mut current = 0usize;
-        let mut pos = 0;
-        while let Some(idx) = text[pos..].find(&*pattern) {
-            let abs = pos + idx;
-            total += 1;
-            if abs <= cursor_off { current = total; }
-            pos = abs + pattern.len().max(1);
-        }
-        if total > 0 {
-            self.search.match_count = Some((current, total));
+        if let Some(vmpat) = pattern.strip_prefix("\\v") {
+            // Very-magic: use regex.
+            if let Ok(re) = regex::Regex::new(vmpat) {
+                for m in re.find_iter(&text) {
+                    total += 1;
+                    if m.start() <= cursor_off {
+                        current = total;
+                    }
+                }
+            }
         } else {
-            self.search.match_count = None;
+            // Literal search for magic/nomagic/very-nomagic.
+            let needle = pattern.strip_prefix("\\V").unwrap_or(&pattern);
+            let mut pos = 0;
+            while let Some(idx) = text[pos..].find(needle) {
+                let abs = pos + idx;
+                total += 1;
+                if abs <= cursor_off {
+                    current = total;
+                }
+                pos = abs + needle.len().max(1);
+            }
         }
+        self.search.match_count = if total > 0 {
+            Some((current, total))
+        } else {
+            None
+        };
     }
 }

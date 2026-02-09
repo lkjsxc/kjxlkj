@@ -15,14 +15,9 @@ impl EditorState {
     pub(crate) fn handle_insert_register(&mut self, c: char) {
         self.insert_register_pending = false;
         if c == '=' {
-            // Expression register: evaluate last_ex_command as expression.
-            let expr = self.last_ex_command.clone();
-            if !expr.is_empty() {
-                match crate::expr_eval::eval_expression(&expr) {
-                    Ok(result) => self.insert_text(&result),
-                    Err(e) => self.notify_error(&format!("E15: {e}")),
-                }
-            }
+            // Expression register: open = prompt cmdline.
+            self.mode = kjxlkj_core_types::Mode::Command(kjxlkj_core_types::CommandKind::Ex);
+            self.cmdline.open('=');
             return;
         }
         // Standard register insertion.

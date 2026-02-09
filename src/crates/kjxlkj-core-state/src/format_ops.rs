@@ -7,8 +7,16 @@ use crate::editor::EditorState;
 
 impl EditorState {
     /// Format (re-wrap) a range of lines at textwidth.
-    /// Respects formatoptions: 'q' must be present for gq to work.
+    /// If formatprg is set, uses external formatter (stub notification).
+    /// Otherwise respects formatoptions: 'q' must be present for gq to work.
     pub(crate) fn format_lines(&mut self, start: usize, end: usize) {
+        let fprg = self.options.get_str("formatprg").to_string();
+        if !fprg.is_empty() {
+            self.notify_info(&format!(
+                "formatprg={fprg} (external formatting not yet wired)"
+            ));
+            return;
+        }
         let fo = self.options.get_str("formatoptions").to_string();
         if !fo.contains('q') {
             return; // gq formatting disabled

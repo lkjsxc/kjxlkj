@@ -137,14 +137,42 @@ fn render_wildmenu(grid: &mut CellGrid, cols: u16, row: u16, snapshot: &EditorSn
         underline: false,
         reverse: false,
     };
+    // Compute item widths and find scroll start.
+    let items: Vec<String> = snapshot
+        .cmdline
+        .completions
+        .iter()
+        .map(|s| format!(" {} ", s))
+        .collect();
+    let widths: Vec<u16> = items.iter().map(|s| s.len() as u16).collect();
+    let total_w: u16 = widths.iter().sum();
+    let scroll_start = if total_w <= cols {
+        0
+    } else {
+        // Ensure selected item is visible.
+        let si = sel.unwrap_or(0);
+        let mut prefix: u16 = widths[..si].iter().sum();
+        if prefix + widths[si] > cols {
+            prefix = (prefix + widths[si]).saturating_sub(cols);
+        }
+        let mut start = 0usize;
+        let mut acc = 0u16;
+        for (i, &w) in widths.iter().enumerate() {
+            if acc + w > prefix {
+                start = i;
+                break;
+            }
+            acc += w;
+        }
+        start
+    };
     let mut col = 0u16;
-    for (i, item) in snapshot.cmdline.completions.iter().enumerate() {
+    for (i, item) in items.iter().enumerate().skip(scroll_start) {
         if col >= cols {
             break;
         }
         let st = if sel == Some(i) { selected } else { normal };
-        let display = format!(" {} ", item);
-        grid.set_str(col, row, &display, st);
-        col += display.len() as u16;
+        grid.set_str(col, row, item, st);
+        col += item.len() as u16;
     }
 }

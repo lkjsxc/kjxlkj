@@ -1,5 +1,4 @@
 //! Visual mode key dispatch.
-
 use kjxlkj_core_edit::{resolve_motion, Motion};
 use kjxlkj_core_types::{CursorPosition, Key, KeyCode, Mode, Modifier, Operator, VisualKind};
 
@@ -27,6 +26,10 @@ impl EditorState {
                 }
                 if *c == 'o' {
                     self.visual_swap_anchor();
+                    return;
+                }
+                if *c == 'p' || *c == 'P' {
+                    self.visual_paste(kind);
                     return;
                 }
                 if kind == VisualKind::Block && (*c == 'I' || *c == 'A') {

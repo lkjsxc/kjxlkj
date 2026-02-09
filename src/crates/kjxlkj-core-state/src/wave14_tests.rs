@@ -97,7 +97,10 @@ mod wave14_tests {
         let rope = kjxlkj_core_text::Rope::from(code);
         let pos = kjxlkj_core_types::CursorPosition::new(1, 0);
         let range = crate::text_objects_class::resolve_class_or_func(
-            crate::text_objects::TextObjectKind::Inner, 'c', pos, &rope,
+            crate::text_objects::TextObjectKind::Inner,
+            'c',
+            pos,
+            &rope,
         );
         assert!(range.is_some());
         let r = range.unwrap();
@@ -106,14 +109,20 @@ mod wave14_tests {
         assert!(r.linewise);
     }
 
-    /// REQ-EXPRPROMPT-01: Expression register evaluates arithmetic.
+    /// REQ-EXPRPROMPT-01: Expression register opens = prompt and evaluates.
     #[test]
     fn expr_register_eval() {
         let mut ed = make_editor();
-        // Put cursor at start, enter insert mode.
         ed.mode = Mode::Insert;
-        ed.last_ex_command = "2+3".to_string();
+        // Ctrl-R = opens expression prompt.
         ed.handle_insert_register('=');
+        assert!(ed.cmdline.active);
+        assert_eq!(ed.cmdline.prefix, Some('='));
+        // Type expression and execute.
+        ed.cmdline.insert_char('2');
+        ed.cmdline.insert_char('+');
+        ed.cmdline.insert_char('3');
+        ed.execute_cmdline();
         // The result "5" should be inserted as text.
         let buf_id = ed.current_buffer_id();
         let text = ed.buffers.get(buf_id).unwrap().content.to_string();

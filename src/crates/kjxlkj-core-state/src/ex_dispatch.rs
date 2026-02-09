@@ -11,11 +11,20 @@ impl EditorState {
         let content = self.cmdline.take_content();
         self.mode = kjxlkj_core_types::Mode::Normal;
 
-        if let Some(':') = prefix {
-            self.execute_ex_command(&content);
-        } else {
-            self.search.pattern = Some(content);
-            self.search.active = true;
+        match prefix {
+            Some(':') => self.execute_ex_command(&content),
+            Some('=') => {
+                // Expression prompt: evaluate and insert at cursor.
+                self.mode = kjxlkj_core_types::Mode::Insert;
+                match crate::expr_eval::eval_expression(&content) {
+                    Ok(result) => self.insert_text(&result),
+                    Err(e) => self.notify_error(&format!("E15: {e}")),
+                }
+            }
+            _ => {
+                self.search.pattern = Some(content);
+                self.search.active = true;
+            }
         }
     }
 
@@ -60,7 +69,9 @@ impl EditorState {
             }
         }
         let range = range.map(|mut r| {
-            if r.start > r.end { std::mem::swap(&mut r.start, &mut r.end); }
+            if r.start > r.end {
+                std::mem::swap(&mut r.start, &mut r.end);
+            }
             r
         });
         let rest = rest.trim();
@@ -129,13 +140,7 @@ impl EditorState {
                 self.handle_autocmd(args);
             }
             _ if rest.starts_with("mark ") || rest.starts_with("k ") => {
-                let ch = rest
-                    .split_whitespace()
-                    .nth(1)
-                    .and_then(|s| s.chars().next());
-                if let Some(name) = ch {
-                    self.handle_set_mark(name);
-                }
+                self.handle_mark_command(rest);
             }
             _ if rest.starts_with("delmarks ") => {
                 let names = rest.strip_prefix("delmarks ").unwrap().trim();

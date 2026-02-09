@@ -122,37 +122,24 @@ impl EditorState {
         (line, offset.saturating_sub(line_start))
     }
 }
-
-/// Strip `\v` (very magic), `\m` (magic), `\M` (nomagic), `\V` (very-nomagic).
-/// Returns (pattern, mode): 'v'=very-magic, 'M'=nomagic, 'V'=very-nomagic, 'm'=magic.
+/// Strip `\v`/`\m`/`\M`/`\V` prefix. Returns (pattern, mode char).
 fn strip_magic_prefix(pattern: &str) -> (&str, char) {
-    if let Some(rest) = pattern.strip_prefix("\\v") {
-        (rest, 'v')
-    } else if let Some(rest) = pattern.strip_prefix("\\V") {
-        (rest, 'V')
-    } else if let Some(rest) = pattern.strip_prefix("\\M") {
-        (rest, 'M')
-    } else if let Some(rest) = pattern.strip_prefix("\\m") {
-        (rest, 'm')
-    } else {
-        (pattern, 'm')
-    }
-}
-
-/// Escape a nomagic pattern: only ^ and $ are special.
-fn nomagic_to_literal(pat: &str) -> String {
-    let mut out = String::new();
-    for ch in pat.chars() {
-        if ch == '^' || ch == '$' {
-            out.push(ch);
-        } else if ".+*?{}[]()\\|".contains(ch) {
-            out.push('\\');
-            out.push(ch);
-        } else {
-            out.push(ch);
+    for (pfx, mode) in [("\\v", 'v'), ("\\V", 'V'), ("\\M", 'M'), ("\\m", 'm')] {
+        if let Some(rest) = pattern.strip_prefix(pfx) {
+            return (rest, mode);
         }
     }
-    out
+    (pattern, 'm')
+}
+/// Escape a nomagic pattern: only ^ and $ are special.
+fn nomagic_to_literal(pat: &str) -> String {
+    pat.chars().fold(String::new(), |mut out, ch| {
+        if ".+*?{}[]()\\|".contains(ch) && ch != '^' && ch != '$' {
+            out.push('\\');
+        }
+        out.push(ch);
+        out
+    })
 }
 
 /// Find pattern forward from `from` in `text`. Returns (offset, len).
@@ -161,7 +148,16 @@ fn find_pattern(text: &str, from: usize, pattern: &str, _fwd: bool) -> Option<(u
     match mode {
         'v' => regex_find_fwd(text, from, pat),
         'M' => regex_find_fwd(text, from, &nomagic_to_literal(pat)),
-        _ => text[from..].find(pat).map(|off| (from + off, pat.len())),
+        'V' => text[from..].find(pat).map(|off| (from + off, pat.len())),
+        _ => {
+            // Magic mode: use regex translation for \| etc.
+            if pat.contains('\\') {
+                let tr = crate::regex_translate::translate_vim_to_rust(pat);
+                regex_find_fwd(text, from, &tr.pattern)
+            } else {
+                text[from..].find(pat).map(|off| (from + off, pat.len()))
+            }
+        }
     }
 }
 
@@ -172,7 +168,15 @@ fn rfind_pattern(text: &str, before: usize, pattern: &str) -> Option<(usize, usi
     match mode {
         'v' => regex_find_last(slice, pat),
         'M' => regex_find_last(slice, &nomagic_to_literal(pat)),
-        _ => slice.rfind(pat).map(|off| (off, pat.len())),
+        'V' => slice.rfind(pat).map(|off| (off, pat.len())),
+        _ => {
+            if pat.contains('\\') {
+                let tr = crate::regex_translate::translate_vim_to_rust(pat);
+                regex_find_last(slice, &tr.pattern)
+            } else {
+                slice.rfind(pat).map(|off| (off, pat.len()))
+            }
+        }
     }
 }
 

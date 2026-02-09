@@ -134,11 +134,14 @@ impl EditorState {
             .get(kjxlkj_core_edit::RegisterName::Named(r))
             .map(|reg| reg.content.clone());
         if let Some(text) = text {
-            let keys: Vec<Key> = text.chars().map(|c| match c {
-                '\n' => Key::new(KeyCode::Enter, Modifier::NONE),
-                '\x1b' => Key::esc(),
-                c => Key::char(c),
-            }).collect();
+            let keys: Vec<Key> = text
+                .chars()
+                .map(|c| match c {
+                    '\n' => Key::new(KeyCode::Enter, Modifier::NONE),
+                    '\x1b' => Key::esc(),
+                    c => Key::char(c),
+                })
+                .collect();
             self.macro_store.insert(r, keys);
         }
     }

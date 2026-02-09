@@ -90,6 +90,7 @@ pub mod search_types;
 pub mod session;
 #[cfg(test)]
 mod session_tests;
+pub mod snippets;
 pub(crate) mod text_objects;
 pub(crate) mod text_objects_argument;
 pub(crate) mod text_objects_class;
@@ -104,6 +105,7 @@ mod visual_block_insert;
 mod visual_ops;
 #[cfg(test)]
 mod visual_ops_tests;
+mod visual_paste;
 #[cfg(test)]
 mod wave10_tests;
 mod wave11_tests;
@@ -113,6 +115,8 @@ mod wave12_tests;
 mod wave13_tests;
 #[cfg(test)]
 mod wave14_tests;
+#[cfg(test)]
+mod wave15_tests;
 #[cfg(test)]
 mod wave7_tests;
 #[cfg(test)]
