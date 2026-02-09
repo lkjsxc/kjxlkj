@@ -1,90 +1,60 @@
 # Canonical Specifications
 
 Back: [/docs/README.md](/docs/README.md)
-kjxlkj is an async-first terminal editor with all features built-in natively.
 
-These documents describe the **target** behavior.
+`/docs/spec/` defines the target system that reconstruction must deliver.
 
-The currently implemented surface is tracked in [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md). If the implementation diverges from the target spec, the divergence MUST be recorded there (and in [docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) when user-visible).
+## Authority
 
-## Directory Structure
+- `spec` states what MUST exist in the finished product.
+- `reference` states what is currently verified in this repository state.
+- When conflicts appear, reconcile via `reference` updates plus explicit TODO items.
 
-| Directory | Content |
-|-----------|---------|
-| [architecture/](architecture/README.md) | System design |
-| [commands/](commands/README.md) | Ex commands |
-| [editing/](editing/README.md) | Text editing |
-| [editor/](editor/README.md) | Editor core |
-| [features/](features/README.md) | Built-in features |
-| [modes/](modes/README.md) | Modal editing |
-| [overview/](overview/README.md) | High-level overview |
-| [scripting/](scripting/README.md) | Mappings and automation |
-| [technical/](technical/README.md) | Technical details |
-| [ui/](ui/README.md) | UI components |
-| [ux/](ux/README.md) | User experience |
+## Spec Domains
 
-## Core Principles
+| Domain | Scope |
+|---|---|
+| [architecture/](architecture/README.md) | Runtime model, crate topology, startup/shutdown |
+| [editor/](editor/README.md) | Buffers, windows, viewport ownership |
+| [modes/](modes/README.md) | Normal/Insert/Visual/Replace/Command behavior |
+| [editing/](editing/README.md) | Motions, operators, text objects, search, marks, registers |
+| [commands/](commands/README.md) | Ex command grammar and execution |
+| [features/](features/README.md) | Built-in product features (terminal, explorer, LSP, Git, UI) |
+| [scripting/](scripting/README.md) | Mappings, user commands/functions, automation |
+| [ui/](ui/README.md) | UI components and rendering surfaces |
+| [ux/](ux/README.md) | Keybindings, accessibility, layout expectations |
+| [technical/](technical/README.md) | Testing, latency, contracts, memory |
+| [overview/](overview/README.md) | Glossary and principles |
 
-| Constraint | Meaning |
-|------------|---------|
-| No plugins | Features are native components |
-| Single-writer core | Only core task mutates state |
-| Snapshot rendering | Rendering consumes immutable snapshots |
-| Async services | IO/compute isolated in Tokio services |
-| Deterministic edits | All edits serialized through core |
+## Normative Language
 
-## How to Read (Recommended)
+| Term | Meaning |
+|---|---|
+| `MUST` | Non-optional requirement |
+| `MUST NOT` | Forbidden behavior |
+| `SHOULD` | Preferred behavior unless justified otherwise |
+| `MAY` | Optional behavior |
 
-Suggested reading order for understanding the specification.
+## High-Risk Areas To Read First
 
-### Reading order
+1. [architecture/startup.md](architecture/startup.md)
+2. [architecture/runtime.md](architecture/runtime.md)
+3. [editing/cursor/README.md](editing/cursor/README.md)
+4. [features/ui/viewport.md](features/ui/viewport.md)
+5. [features/terminal/terminal.md](features/terminal/terminal.md)
+6. [editor/windows.md](editor/windows.md)
+7. [modes/insert/input/insert-japanese-ime.md](modes/insert/input/insert-japanese-ime.md)
+8. [technical/testing.md](technical/testing.md)
 
-| Order | Document | Purpose |
-|-------|----------|---------|
-| 1 | [README.md](README.md) | Spec index and core principles |
-| 2 | [architecture/README.md](architecture/README.md) | System shape overview |
-| 3 | [architecture/runtime.md](architecture/runtime.md) | Runtime and ordering model |
-| 4 | [features/README.md](features/README.md) | Built-in feature categories |
-| 5 | [ux/keybindings.md](ux/keybindings.md) | Keybinding reference |
+## Relationship To Implementation
 
-### Document types
+Use these documents together:
 
-| Type | Purpose | Examples |
-|------|---------|----------|
-| README.md | Directory index and navigation | Every directory |
-| Spec files | Normative requirements | commands/, editing/, modes/ |
-| Reference files | Lookup tables and mappings | ux/keybindings.md |
-
-### Spec language
-
-| Keyword | Meaning |
-|---------|---------|
-| MUST | Mandatory requirement |
-| MUST NOT | Prohibited behavior |
-| SHOULD | Recommended but not mandatory |
-| MAY | Optional behavior |
-
-### Navigation conventions
-
-| Link type | Pattern |
-|-----------|---------|
-| Parent | Links to parent directory `README.md` (use repo-root paths; avoid `../`) or parent section |
-| Children | Listed in `## Documents` or `## Directory Structure` |
-| Cross-references | Listed in `## Related` section |
-
-### Key concepts
-
-| Concept | Location |
-|---------|----------|
-| Core task | [architecture/runtime.md](architecture/runtime.md) |
-| Services | [architecture/runtime.md](architecture/runtime.md) |
-| Snapshots | [architecture/runtime.md](architecture/runtime.md) |
-| Modes | [modes/README.md](modes/README.md) |
-| Editing primitives | [editing/README.md](editing/README.md) |
-| Glossary | [overview/glossary.md](overview/glossary.md) |
+- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
+- Verified current behavior: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Known user-visible gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Related
 
-- Policy: [docs/policy/README.md](/docs/policy/README.md)
-- Overview: [docs/overview/README.md](/docs/overview/README.md)
-- Current conformance: [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Policy: [/docs/policy/README.md](/docs/policy/README.md)
+- TODO: [/docs/todo/current/README.md](/docs/todo/current/README.md)

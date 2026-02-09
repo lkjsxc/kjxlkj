@@ -1,66 +1,46 @@
 # Documentation
 
-kjxlkj is a Neovim-inspired TUI text editor with all features built-in.
+`/docs` is the canonical system definition for `kjxlkj`.
 
-## 「All in Docs」
+## Contract
 
-This repository uses an **「All in Docs」** approach:
+- The full product MUST be reconstructable from documentation alone.
+- Implementation files under `src/` are derived artifacts.
+- If implementation and docs diverge, documentation MUST be corrected first, then tracked in
+  `/docs/reference/CONFORMANCE.md` and `/docs/reference/LIMITATIONS.md`.
+- Documentation is written for AI-first reconstruction and verification.
 
-- The docs under `/docs/` are the **project** and the **source of truth**.
-- The implementation is **derived from the docs** (and may be deleted/rebuilt at any time).
-- The docs are intentionally written so that **the system can be reconstructed from docs alone**.
+## Canonical Reading Order
 
-Canonical explanation: [overview/all-in-docs.md](overview/all-in-docs.md).
+1. [policy/README.md](policy/README.md)
+2. [spec/README.md](spec/README.md)
+3. [reference/README.md](reference/README.md)
+4. [todo/README.md](todo/README.md)
+5. [log/README.md](log/README.md)
 
-This documentation is also optimized for machine (LLM) parsing. See [policy/README.md](policy/README.md).
+## Directory Map
 
-## Directory Structure
+| Directory | Role |
+|---|---|
+| [policy/](policy/README.md) | Normative rules for repository operation and document quality |
+| [spec/](spec/README.md) | Target product specification (what must exist) |
+| [reference/](reference/README.md) | Verified current implementation surface and known gaps |
+| [todo/](todo/README.md) | Reconstruction control plane with checklists |
+| [technical/](technical/README.md) | Engineering guidance and implementation notes |
+| [design/](design/README.md) | Rationale and decomposition guidance |
+| [guides/](guides/README.md) | Usage guides and operator workflows |
+| [overview/](overview/README.md) | Concepts and glossary |
+| [log/](log/README.md) | Non-canonical wave logs, audits, and proposals |
 
-| Directory | Content |
-|-----------|---------|
-| [spec/](spec/README.md) | Canonical specifications |
-| [policy/](policy/README.md) | Operating invariants and rules |
-| [design/](design/README.md) | Design rationale |
-| [guides/](guides/README.md) | User guides and tutorials |
-| [reference/](reference/README.md) | Reference materials |
-| [overview/](overview/README.md) | Project overview |
-| [technical/](technical/README.md) | Technical implementation |
-| [todo/](todo/README.md) | Structured TODO management |
-| [log/](log/README.md) | Implementation log and audits |
+## Reconstruction Discipline
 
-## Quick Start
+- Use `/docs/spec/` for target behavior.
+- Use `/docs/reference/` for what is currently proven in-repo.
+- Use `/docs/todo/current/` to plan and gate each reconstruction wave.
+- Do not mark TODO items complete without deterministic evidence.
 
-1. [spec/README.md](spec/README.md) - Canonical specifications
-2. [guides/QUICKSTART.md](guides/QUICKSTART.md) - Getting started
-3. [spec/ux/keybindings.md](spec/ux/keybindings.md) - Complete keybindings
-4. [todo/RECONSTRUCTION_PROMPT.md](todo/RECONSTRUCTION_PROMPT.md) - One-shot rebuild prompt
+## Related
 
-## Documentation Map
-
-```mermaid
-graph TD
-    Root[docs]
-
-    Root --> Spec[spec]
-    Root --> Policy[policy]
-    Root --> Design[design]
-    Root --> Guides[guides]
-    Root --> Reference[reference]
-    Root --> Overview[overview]
-    Root --> Technical[technical]
-    Root --> Log[log]
-
-    Spec --> Arch[architecture]
-    Spec --> Feat[features]
-    Spec --> UX[ux]
-    Spec --> Edit[editing]
-    Spec --> Mode[modes]
-    Spec --> Cmd[commands]
-
-```
-
-## Next
-
-- Canonical spec: [spec/README.md](spec/README.md)
-- Project policies/invariants: [policy/README.md](policy/README.md)
-- Getting started: [guides/QUICKSTART.md](guides/QUICKSTART.md)
+- All-in-docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
+- Structure policy: [policy/STRUCTURE.md](policy/STRUCTURE.md)
+- Root layout policy: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)

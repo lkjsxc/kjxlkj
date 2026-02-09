@@ -11,30 +11,30 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Testing
 
-- [x] Per-crate unit tests per testing-unit.md (68 required tests)
-- [x] Integration tests per testing-e2e.md (10 integration scenarios)
-- [x] Headless E2E tests per testing-e2e.md (9 headless scenarios)
-- [x] PTY E2E tests per testing-e2e.md (8 PTY scenarios)
-- [x] Boundary tests per testing-e2e.md (40 boundary scenarios including CJK, session, terminal, wiring)
+- [ ] Per-crate unit tests per testing-unit.md (68 required tests)
+- [ ] Integration tests per testing-e2e.md (10 integration scenarios)
+- [ ] Headless E2E tests per testing-e2e.md (9 headless scenarios)
+- [ ] PTY E2E tests per testing-e2e.md (8 PTY scenarios)
+- [ ] Boundary tests per testing-e2e.md (40 boundary scenarios including CJK, session, terminal, wiring)
 
 ## Mandatory regression scenarios
 
-- [x] REG-01: Append at EOL (`a`) never leaves floating cursor
-- [x] REG-02: Long line overflow wraps to next display row
-- [x] REG-03: Leader chords remain reachable (`<leader>e`, `<leader>t`)
-- [x] REG-04: Insert `Enter` persists newline through `:wq`
-- [x] REG-05: tmux/multiplexer smoke edit-save flow
-- [x] REG-06: Japanese/Unicode commit and cancel behavior
-- [x] REG-07: CJK cursor never occupies half-cell position
-- [x] REG-08: Width-2 grapheme at wrap boundary produces padding cell
+- [ ] REG-01: Append at EOL (`a`) never leaves floating cursor
+- [ ] REG-02: Long line overflow wraps to next display row
+- [ ] REG-03: Leader chords remain reachable (`<leader>e`, `<leader>t`)
+- [ ] REG-04: Insert `Enter` persists newline through `:wq`
+- [ ] REG-05: tmux/multiplexer smoke edit-save flow
+- [ ] REG-06: Japanese/Unicode commit and cancel behavior
+- [ ] REG-07: CJK cursor never occupies half-cell position
+- [ ] REG-08: Width-2 grapheme at wrap boundary produces padding cell
 
 ## Technical contracts
 
-- [x] Contracts per [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md)
-- [x] Latency requirements per [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
-- [x] Memory requirements per [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
-- [x] Profiling per [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
-- [x] Large files per [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
+- [ ] Contracts per [/docs/spec/technical/contracts.md](/docs/spec/technical/contracts.md)
+- [ ] Latency requirements per [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
+- [ ] Memory requirements per [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
+- [ ] Profiling per [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
+- [ ] Large files per [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 
 ## Technical documentation
 

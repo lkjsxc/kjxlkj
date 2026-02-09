@@ -2,22 +2,19 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-This directory stores non-canonical records that support iterative reconstruction.
-
-Canonical requirements remain under `/docs/spec/` and `/docs/policy/`.
+`/docs/log/` stores non-canonical records used to support reconstruction quality.
 
 ## Contents
 
 | Directory | Purpose |
 |---|---|
-| [proposals/](proposals/) | Open proposals not yet promoted to canonical specs |
-| [audits/](audits/) | Audit records tied to verification waves |
-| [reconstruction/](reconstruction/) | Structured records for spec hardening, test ideas, and consistency audits |
+| [audits/](audits/README.md) | Topology/compliance audits |
+| [proposals/](proposals/README.md) | Proposed improvements not yet promoted to canonical docs |
+| [reconstruction/](reconstruction/README.md) | Wave-specific spec sync, testing ideas, and mismatch audits |
 
-## Record hygiene
+## Hygiene Rules
 
-When a historical record becomes stale:
-
-1. Move required constraints into canonical docs.
-2. Keep only concise trace records.
-3. Delete obsolete detailed logs that can contradict current specs.
+- Promote durable requirements into `/docs/spec/` or `/docs/policy/`.
+- Keep logs concise and evidence-based.
+- Delete stale historical records once promoted to canonical docs.
+- Avoid contradictory status claims between logs and `reference` ledgers.

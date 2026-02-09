@@ -2,78 +2,91 @@
 
 Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
-This document is the normative testing contract for reconstruction. Detailed per-crate unit requirements are in [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md). Integration, end-to-end, and boundary scenarios are in [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
+This document defines the mandatory reconstruction testing contract.
 
 ## Goals
 
 | Goal | Requirement |
 |---|---|
-| Correctness | Critical editor behavior MUST be guarded by deterministic automated tests. |
-| Reproducibility | Test outcomes MUST be stable across repeated local runs in the same environment. |
-| Regression resistance | Every fixed bug MUST gain at least one test that fails on prior broken behavior. |
-| CJK fidelity | Wide-character rendering, cursor placement, and wrapping MUST have dedicated tests at every layer. |
-| Coverage gating | Each crate MUST include the minimum unit suites specified in [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md) before the crate is considered complete. |
+| Correctness | User-reachable behavior MUST be covered by deterministic tests. |
+| Drift prevention | Spec, implementation, and tests MUST remain synchronized. |
+| Boundary safety | Unicode, wrapping, windows, terminal, and session edges MUST be tested explicitly. |
+| Anti-shortcut | A feature is incomplete unless wired from real input path and verified. |
 
-## Required test layers
+## Required Layers
 
-| Layer | Purpose | Minimum scope |
-|---|---|---|
-| Unit | Validate local invariants, parsing, and algorithm behavior. | Every public function and every `unsafe` block. |
-| Integration | Validate multi-module state transitions and command flows. | At least one scenario per cross-crate API boundary. |
-| Headless E2E | Validate editor workflows without terminal transport variance. | All mandatory regression scenarios below. |
-| PTY E2E | Validate real interactive path: terminal input decode, dispatch, render side effects. | All boundary PTY scenarios in [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md). |
-
-## Determinism rules
-
-| Rule | Requirement |
+| Layer | Required Scope |
 |---|---|
-| Time bounds | Tests MUST use bounded waits and deterministic deadlines; no `sleep`-based synchronization. |
-| Verification target | Prefer persisted state assertions (file contents, serialized state) over screen scraping. |
-| Ordering | Input sequence ordering MUST be asserted for burst scenarios. |
-| Failure behavior | On timeout, tests MUST fail with actionable diagnostic context including test name, expected state, and actual state. |
-| Seed control | Any randomized or property-based test MUST accept a reproducible seed. |
+| Unit | Local invariants and parser/algorithm behavior for touched modules |
+| Integration | Cross-module and cross-crate behavior transitions |
+| Headless E2E | Full editing workflows without PTY transport |
+| PTY E2E | Real terminal input/output path and resize/focus behavior |
+| Boundary/Stress | Long lines, CJK width, resize storms, mode churn, session roundtrips |
 
-## Mandatory regression scenarios
+## Current In-Repo Baseline (2026-02-09)
 
-These scenarios MUST remain green at all times.
-
-| ID | Scenario | Defining spec |
-|---|---|---|
-| REG-01 | Append at EOL (`a`) and return with `Esc` never leaves floating cursor | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
-| REG-02 | Long line overflow wraps to next display row by default | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
-| REG-03 | Leader feature chords remain reachable (`<leader>e`, `<leader>t`) | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) |
-| REG-04 | Insert `Enter` persists newline through `:wq` | [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md) |
-| REG-05 | tmux/multiplexer smoke edit-save flow | [/docs/spec/features/terminal/tmux.md](/docs/spec/features/terminal/tmux.md) |
-| REG-06 | Japanese/Unicode commit and cancel behavior | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) |
-| REG-07 | CJK cursor never occupies a half-cell position | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) |
-| REG-08 | Width-2 grapheme at wrap boundary produces padding cell, not split | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) |
-
-## Baseline implemented suites (reference mapping)
-
-| Area | Existing suites |
+| Suite | Current File |
 |---|---|
-| Core workflows and E2E | `src/crates/kjxlkj-core/tests/e2e.rs`, `src/crates/kjxlkj-core/tests/extended_e2e.rs` |
-| Cursor/viewport regressions | `src/crates/kjxlkj-core-state/tests/viewport_regression.rs`, `src/crates/kjxlkj-core-state/tests/viewport_scroll_probes.rs` |
-| Command parsing/execution | `src/crates/kjxlkj-core-state/tests/command_parsing.rs`, `src/crates/kjxlkj-core-state/tests/cmdline_options.rs` |
-| Input and keybinding behavior | `src/crates/kjxlkj-input/tests/extended.rs`, `src/crates/kjxlkj-input/tests/comprehensive.rs` |
-| PTY harness and regressions | `src/crates/kjxlkj-host/src/pty_harness.rs`, `src/crates/kjxlkj-host/src/pty_regressions.rs` |
+| Dispatch coverage | `src/crates/kjxlkj-core-state/tests/dispatch_tests.rs` |
+| Integration scenarios | `src/crates/kjxlkj-core-state/tests/integration_tests.rs` |
+| Headless E2E | `src/crates/kjxlkj-core-state/tests/headless_e2e_tests.rs` |
+| PTY E2E (model-level) | `src/crates/kjxlkj-core-state/tests/pty_e2e_tests.rs` |
+| Regression scenarios | `src/crates/kjxlkj-core-state/tests/regression_tests.rs` |
+| Boundary scenarios | `src/crates/kjxlkj-core-state/tests/boundary_tests_1.rs` |
+| Boundary scenarios | `src/crates/kjxlkj-core-state/tests/boundary_tests_2.rs` |
+| Boundary scenarios | `src/crates/kjxlkj-core-state/tests/boundary_tests_3.rs` |
+| Contract/perf checks | `src/crates/kjxlkj-core-state/tests/contract_tests.rs` |
 
-## Incremental verification order
+## Preferred Existing Tests (High Signal)
 
-| Phase | Gate |
+These tests are currently the best reconstruction anchors and SHOULD be preserved first:
+
+| Category | Test |
 |---|---|
-| Per-leaf implementation | Local unit plus integration suites for touched area. |
-| Per-feature completion | Headless E2E plus any required PTY regressions. |
-| Iteration close | Full test suite, conformance update, and limitations update. |
+| Cursor safety | `reg01_append_eol` |
+| Wrap behavior | `reg02_long_line_wraps` |
+| Unicode handling | `reg06_unicode`, `reg07_cjk_half_cell`, `reg08_wrap_padding` |
+| Split lifecycle | `he06_split` |
+| Session serialization baseline | `he07_session`, `bd21_session_splits` |
+| Resize robustness | `pe05_resize_storm`, `bd16_resize_storm`, `bd17_resize_cjk` |
+| Window command reachability | `bd40_ex_commands` |
+| Mode churn stability | `bd10_mode_switch`, `bd11_visual_flicker` |
 
-## Traceability requirement
+## Mandatory Additions For Next Reconstruction
 
-Each mandatory scenario MUST be traceable across three artifacts: the defining spec document, the concrete test file path, and the conformance or limitations entry when applicable.
+The next implementation wave MUST add high-signal E2E tests from:
+
+- [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- [/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md](/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md)
+
+At minimum, add these missing coverage classes:
+
+1. Real PTY terminal spawn and process lifecycle (`:terminal`, close, SIGWINCH)
+2. Explorer open/split integration (`<leader>e`, open file, split from explorer)
+3. Shifted printable key normalization (`A`/`Shift+a`) through input decoder
+4. Session save/load command wiring (`:SessionSave`, `:SessionLoad`) with layout restore
+5. File write/read persistence (`:w`, `:e`) with filesystem assertions
+6. Japanese IME composition intercept under terminal input path
+
+## Determinism Rules
+
+- Use bounded timeouts; avoid blind sleeps.
+- Use persisted state assertions where possible.
+- For PTY tests, assert both behavioral output and process lifecycle.
+- Every bug fix MUST add a regression test that fails on old behavior.
+
+## Acceptance Gate
+
+No TODO checkbox may be marked complete unless:
+
+1. A target spec link exists.
+2. A passing deterministic test exists.
+3. The feature is reachable from runtime input path.
+4. Any remaining user-visible gap is listed in `LIMITATIONS`.
 
 ## Related
 
-- Unit test requirements: [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
-- E2E and boundary tests: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
-- Conformance ledger: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- Limitations ledger: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- Technical regression guidance: [/docs/technical/testing/regression.md](/docs/technical/testing/regression.md)
+- Unit coverage: [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
+- E2E and boundary matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- Current conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Current gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

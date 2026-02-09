@@ -1,87 +1,105 @@
-# File Explorer (nvim-tree Built-in)
+# File Explorer (Built-in)
 
-Native file tree explorer replacing nvim-tree.lua plugin.
+Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
 
-## User Intent
+The explorer is a native project tree view managed as an editor window.
 
-Navigate and manipulate project files without leaving the editor.
+## Goals
+
+- Navigate project files without leaving editor context.
+- Open targets in current window, splits, or tabs.
+- Keep explorer responsive on large directories.
+
+## Explorer Window Contract
+
+| Requirement | Detail |
+|---|---|
+| Window identity | Explorer MUST be represented as a regular window in the layout tree |
+| Focus behavior | `Ctrl-w` navigation MUST move between explorer, buffer, and terminal windows |
+| Width control | Explorer width is window-local and resizable |
+| Close behavior | Closing explorer MUST not close non-explorer windows |
 
 ## Activation
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>e` | Toggle | Toggle file explorer |
-| `<leader>E` | Reveal | Open at current file |
+| Key/Command | Required Behavior |
+|---|---|
+| `<leader>e` | Toggle explorer window |
+| `<leader>E` | Reveal current file in explorer |
+| `:Explorer` | Open explorer |
+| `:ExplorerClose` | Close explorer |
 
-## Navigation Keys
+## Core Navigation Keys
 
-| Key | Action |
-|-----|--------|
-| `j` / `k` | Move down/up |
-| `h` | Collapse / parent |
-| `l` | Expand / open |
-| `Enter` | Open or toggle |
-| `gg` / `G` | First / last |
+| Key | Behavior |
+|---|---|
+| `j` / `k` | Move selection down/up visible nodes |
+| `h` | Collapse directory or move to parent |
+| `l` | Expand directory or open file |
+| `Enter` | Open selected node |
+| `gg` / `G` | Jump to first/last visible node |
 
-## Opening Files
+## Open Targets
 
-| Key | Action |
-|-----|--------|
-| `o` | Open in current window |
-| `v` | Vertical split |
-| `s` | Horizontal split |
-| `t` | New tab |
+| Key | Behavior |
+|---|---|
+| `o` | Open selected file in current window |
+| `v` | Open in vertical split |
+| `s` | Open in horizontal split |
+| `t` | Open in new tab |
 
 ## File Operations
 
-| Key | Action |
-|-----|--------|
+| Key | Behavior |
+|---|---|
 | `a` | Create file |
 | `A` | Create directory |
-| `d` | Delete (trash) |
-| `D` | Force delete |
 | `r` | Rename |
+| `d` | Delete (safe mode) |
+| `D` | Force delete |
 | `x` / `c` / `p` | Cut / copy / paste |
-| `y` / `Y` / `gy` | Copy name / path / abs path |
+| `y` / `Y` / `gy` | Copy name / relative path / absolute path |
 
-## View Controls
+## Visual and Filter Controls
 
-| Key | Action |
-|-----|--------|
-| `R` | Refresh |
-| `H` | Toggle hidden |
-| `I` | Toggle gitignored |
-| `/` | Filter |
-| `q` | Close |
+| Key | Behavior |
+|---|---|
+| `R` | Refresh tree |
+| `H` | Toggle hidden files |
+| `I` | Toggle ignored files |
+| `/` | Filter by substring |
+| `q` | Close explorer |
 
-## Async Model
+## Data and Service Model
 
-| Work | Service | Notes |
-|------|---------|-------|
-| Directory listing | FS service | Incremental and cancellable |
-| File operations | FS service | Atomic where possible |
-| Git badges | Git service | Updated async |
-| Diagnostics | LSP service | Updated on publish |
+| Concern | Requirement |
+|---|---|
+| Directory traversal | MUST be incremental and cancellable |
+| Sort order | Directories first, files second, stable lexical order |
+| Hidden files | Controlled by explorer setting and filter |
+| Git badges | Async overlay from git service |
+| Diagnostic badges | Async overlay from diagnostics service |
 
-## Visual Indicators
+## Scalability Requirements
 
-| Indicator | Meaning |
-|-----------|---------|
-| `▶` / `▼` | Collapsed / expanded |
-| `[M]` `[+]` `[D]` `[?]` | Git status |
-| `●` / `○` | Diagnostics |
+| Scenario | Required Behavior |
+|---|---|
+| 10k-entry directory | Input remains responsive during listing |
+| Deep tree expansion | Expand/collapse operations are bounded and cancellable |
+| Large rename/move | Buffer paths and watchers update atomically |
 
-## Configuration
+## Required Verification
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `explorer.position` | `left` | Position |
-| `explorer.width` | `30` | Width |
-| `explorer.icons` | `true` | Show icons |
-| `explorer.show_hidden` | `false` | Show hidden |
+| ID | Scenario |
+|---|---|
+| EXP-01 | Toggle explorer, navigate, open file in same window |
+| EXP-02 | Open file from explorer into horizontal and vertical splits |
+| EXP-03 | Explorer with terminal and buffer windows under `Ctrl-w` navigation |
+| EXP-04 | Hidden/ignored toggles update visible set deterministically |
+| EXP-05 | Refresh after filesystem change updates tree without restart |
 
-## Acceptance Criteria
+## Related
 
-- Expanding 10k children MUST not freeze input
-- Rename/move MUST update buffers and watchers
-- Badges MUST degrade gracefully when offline
+- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
+- Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- Keybindings: [/docs/spec/ux/keybindings/navigation.md](/docs/spec/ux/keybindings/navigation.md)
+- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

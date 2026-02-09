@@ -23,6 +23,7 @@ Each proposal MUST:
 | [deep-wiring-checklist.md](deep-wiring-checklist.md) | Per-crate module/function wiring inventory (core, render, input, terminal) |
 | [deep-wiring-checklist-2.md](deep-wiring-checklist-2.md) | Per-crate module/function wiring inventory (binary, facade, host, services) |
 | [terminal-emulator-detail.md](terminal-emulator-detail.md) | Terminal emulator full-scratch implementation detail proposal |
+| [terminal-window-integration-plan.md](terminal-window-integration-plan.md) | Terminal as full window integration and PTY lifecycle closure plan |
 
 ## Archived
 

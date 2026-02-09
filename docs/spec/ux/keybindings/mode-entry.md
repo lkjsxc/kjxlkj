@@ -19,6 +19,16 @@ Complete nvim-compatible mode entry keybindings.
 | `cc` | Change line | Delete entire line, enter Insert |
 | `gi` | Insert at last | Resume Insert at last position |
 
+## Shifted printable key normalization
+
+For printable shifted keys (for example `Shift+a` -> `A`), input decoding MUST normalize to the
+documented command key semantics and MUST NOT require raw modifier matching in mode handlers.
+
+| Example | Required behavior |
+|---|---|
+| `Shift+a` in Normal mode | Must dispatch as `A` append-at-EOL command |
+| `Shift+o` in Normal mode | Must dispatch as `O` open-line-above command |
+
 ## Visual Mode Entry
 
 | Key | Action | Description |
@@ -58,4 +68,3 @@ Complete nvim-compatible mode entry keybindings.
 | `Ctrl-[` | Exit mode | Alternative Escape |
 | `Ctrl-c` | Cancel | Cancel operation, return to Normal |
 | `Ctrl-o` | Single command | Execute one Normal command in Insert |
-

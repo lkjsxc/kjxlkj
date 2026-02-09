@@ -2,40 +2,49 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-## Purpose
+All checkboxes below are intentionally unchecked for next full reconstruction.
 
-Active control surface for reconstruction waves. All items use checklist semantics (`- [ ]` pending, `- [x]` verified complete). Implementation MUST follow [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md).
+## Completion Preconditions
 
-## Rules
+- [ ] Feature is reachable from runtime entrypoint via real user input
+- [ ] Deterministic tests exist at required layers
+- [ ] `/docs/reference/CONFORMANCE.md` updated
+- [ ] `/docs/reference/LIMITATIONS.md` updated for any remaining user-visible gaps
+- [ ] Relevant links in `/docs/todo/doc-coverage/` confirmed
 
-- A `- [x]` item MUST have passing tests exercising real user paths.
-- A `- [x]` item MUST be reachable from the binary's `main` function.
-- Conformance and limitations MUST be updated in the same change.
-- Deferred items MUST record rationale in `/docs/log/proposals/`.
+## Area Checklists
 
-## Implementation areas
+- [ ] [architecture.md](architecture.md)
+- [ ] [editor-core.md](editor-core.md)
+- [ ] [modes.md](modes.md)
+- [ ] [editing.md](editing.md)
+- [ ] [commands.md](commands.md)
+- [ ] [features-core.md](features-core.md)
+- [ ] [features-services.md](features-services.md)
+- [ ] [features-editing.md](features-editing.md)
+- [ ] [scripting.md](scripting.md)
+- [ ] [ui-rendering.md](ui-rendering.md)
+- [ ] [ux.md](ux.md)
+- [ ] [technical.md](technical.md)
+- [ ] [verification.md](verification.md)
 
-| Area | Checklist | Primary specs |
-|---|---|---|
-| Architecture | [architecture.md](architecture.md) | [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md) |
-| Editor core | [editor-core.md](editor-core.md) | [/docs/spec/editor/README.md](/docs/spec/editor/README.md) |
-| Modes | [modes.md](modes.md) | [/docs/spec/modes/README.md](/docs/spec/modes/README.md) |
-| Editing | [editing.md](editing.md) | [/docs/spec/editing/README.md](/docs/spec/editing/README.md) |
-| Commands | [commands.md](commands.md) | [/docs/spec/commands/README.md](/docs/spec/commands/README.md) |
-| Features: core | [features-core.md](features-core.md) | Terminal, session, window specs |
-| Features: services | [features-services.md](features-services.md) | Git, LSP, navigation, syntax specs |
-| Features: editing | [features-editing.md](features-editing.md) | Auto-pairs, completion, snippets, etc. |
-| Scripting | [scripting.md](scripting.md) | [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md) |
-| UI and rendering | [ui-rendering.md](ui-rendering.md) | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) |
-| UX | [ux.md](ux.md) | [/docs/spec/ux/README.md](/docs/spec/ux/README.md) |
-| Technical | [technical.md](technical.md) | [/docs/spec/technical/README.md](/docs/spec/technical/README.md) |
+## Critical Gap Closures
 
-## Verification
+- [ ] Fix `A` / `Shift+a` append-at-EOL behavior per [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
+- [ ] Wire `:terminal` into real PTY-backed terminal windows per [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- [ ] Implement spatially correct split/window navigation graph per [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- [ ] Wire explorer toggle/open/split workflows per [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- [ ] Implement real filesystem-backed `:w` and `:e` behavior per [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
+- [ ] Wire `:SessionSave`/`:SessionLoad` command path per [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
+- [ ] Complete Japanese IME intercept/commit/cancel per [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
+- [ ] Guarantee wrapped rendering for long lines per [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 
-| Gate | Checklist |
-|---|---|
-| Verification | [verification.md](verification.md) |
+## Direct-Link Coverage
 
-## Completion handshake
+- [ ] [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
-When all implementation areas reach full conformance and verification is green, invoke `Ask` for the next objective.
+## Related
+
+- Reconstruction contract: [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
+- Current conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Current limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

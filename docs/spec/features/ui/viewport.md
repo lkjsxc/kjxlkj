@@ -41,6 +41,18 @@ Deterministic rules for mapping buffers to on-screen window regions.
 | `top_line` | `0` | Clamped per invariants. |
 | `left_col` | `0` | Used only when `wrap = false`. |
 
+## Long-line presentation contract
+
+When `wrap = true`, visible content MUST remain on-screen and MUST NOT extend beyond the
+window's right boundary.
+
+| Rule | Requirement |
+|---|---|
+| On-screen guarantee | Every rendered grapheme cell must map to a visible row/column in the window text area. |
+| No off-screen overflow | Renderer MUST emit continuation rows instead of letting content continue past `text_cols`. |
+| Continuation stability | Re-rendering without content/geometry changes MUST keep identical wrap breakpoints. |
+| Wide-grapheme safety | Width-2 graphemes must follow boundary padding rules; never split across rows. |
+
 ## Invariants
 
 | Rule | Requirement |

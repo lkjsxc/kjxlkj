@@ -1,22 +1,34 @@
-# Doc Coverage: All Documentation Files
+# Doc Coverage: Full Direct-Link Checklist
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
+This checklist set directly links every documentation file currently in the repository.
+
 ## Scope
 
-Complete direct-link index of every documentation file in the repository. Every `.md` file outside of `/docs/todo/` MUST appear here.
+- Includes root `README.md` and all `docs/**/*.md` files.
+- Includes TODO documents themselves.
+- Uses unchecked boxes by default for standby reconstruction mode.
 
-## Coverage files
+## Parts
 
-| Part | Scope |
-|---|---|
-| [doc-coverage-1.md](doc-coverage-1.md) | design, guides, log, overview, policy, reference |
-| [doc-coverage-2.md](doc-coverage-2.md) | spec: architecture, commands, editing |
-| [doc-coverage-3.md](doc-coverage-3.md) | spec: editor, features, modes |
-| [doc-coverage-4.md](doc-coverage-4.md) | spec: overview, scripting, technical, ui, ux + technical root |
+- [ ] [doc-coverage-1.md](doc-coverage-1.md)
+- [ ] [doc-coverage-2.md](doc-coverage-2.md)
+- [ ] [doc-coverage-3.md](doc-coverage-3.md)
+- [ ] [doc-coverage-4.md](doc-coverage-4.md)
+- [ ] [doc-coverage-5.md](doc-coverage-5.md)
 
-## Rules
+## Regeneration Rule
 
-- Every documentation file MUST be directly linked with a checkbox.
-- New documentation files MUST be added in the same change.
-- All items are unchecked until verified by a reconstruction wave.
+When documentation files are added, removed, or renamed:
+
+- regenerate these part files from filesystem inventory
+- keep direct links absolute (`/docs/...` or `/README.md`)
+- keep all entries unchecked until explicitly verified
+
+## Verification Rule
+
+Before finishing a reconstruction wave:
+
+- [ ] confirm no documentation file is missing from these parts
+- [ ] confirm no stale links remain after log cleanup

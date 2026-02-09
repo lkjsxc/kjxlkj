@@ -2,8 +2,13 @@
 
 Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
-Audit records for reconstruction verification waves. Old entries were pruned after key constraints were promoted to canonical specs.
+Spec-code-test drift audits for reconstruction waves.
 
 ## Entries
 
-No active audit entries. Next reconstruction wave will produce new entries here.
+- [2026-02-09-doc-sync-matrix.md](2026-02-09-doc-sync-matrix.md)
+
+## Related
+
+- Conformance ledger: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Limitations ledger: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

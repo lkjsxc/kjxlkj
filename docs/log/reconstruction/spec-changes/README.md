@@ -2,11 +2,8 @@
 
 Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
-Records of specification changes during documentation improvement phases.
+Records of recent specification updates that were promoted from reconstruction work.
 
 ## Entries
 
-- [documentation-overhaul-2026-02-08.md](documentation-overhaul-2026-02-08.md)
-- [documentation-overhaul-wave2-2026-02-08.md](documentation-overhaul-wave2-2026-02-08.md)
-- [documentation-overhaul-wave3-2026-02-09.md](documentation-overhaul-wave3-2026-02-09.md)
-- [documentation-overhaul-wave3s4-2026-02-09.md](documentation-overhaul-wave3s4-2026-02-09.md)
+- [2026-02-09-doc-rebuild-wave5.md](2026-02-09-doc-rebuild-wave5.md)

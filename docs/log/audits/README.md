@@ -2,10 +2,13 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-Verification records and compliance checks.
+Verification records for structure and compliance checks.
 
-## Active references
+## Entries
 
-- Reconstruction consistency audits: [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audits/README.md)
+- [source-topology-and-oversize-2026-02-09.md](source-topology-and-oversize-2026-02-09.md)
 
-Iteration-specific deep logs should be pruned after their essential constraints are promoted into canonical docs.
+## Related
+
+- Reconstruction audits: [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audits/README.md)
+- Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)

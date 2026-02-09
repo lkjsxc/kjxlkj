@@ -2,40 +2,46 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-Structured task tracking for reconstruction and continuous improvement.
+This directory is the reconstruction control plane.
+
+## Operating Rules
+
+- Every item MUST use checkbox form.
+- All items remain unchecked until deterministic evidence exists.
+- No checkbox may be checked from type-only or unreachable implementation work.
+- TODOs must remain stricter than MVP: target full feature wiring.
 
 ## Documents
 
-| Document | Content |
+| Document | Purpose |
 |---|---|
-| [current/README.md](current/README.md) | Active TODO list with implementation checklists |
-| [doc-coverage/README.md](doc-coverage/README.md) | Direct-link index of all repository documentation files |
-| [completed/README.md](completed/README.md) | Completed tasks archive |
-| [reading/README.md](reading/README.md) | Reading discipline |
-| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | One-shot rebuild prompt with evidence-gated closure contract |
+| [current/README.md](current/README.md) | Active reconstruction checklists |
+| [doc-coverage/README.md](doc-coverage/README.md) | Direct-link checklist for every documentation file |
+| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | Rebuild execution contract |
+| [reading/README.md](reading/README.md) | Reading discipline before implementation |
+| [completed/README.md](completed/README.md) | Optional archive for completed waves |
 
-## Workflow
+## Required Gate Sequence
 
-| Phase | Description |
+1. Read canonical docs.
+2. Build mismatch matrix.
+3. Select one coherent reconstruction slice.
+4. Implement via user-reachable paths.
+5. Run deterministic tests.
+6. Update conformance and limitations.
+7. Check only proven TODOs.
+
+## Anti-Shortcut Policy
+
+| Shortcut Pattern | Disallowed Outcome |
 |---|---|
-| Plan | Read docs and select reconstruction target scope |
-| Implement | Build one coherent slice via real user-reachable paths |
-| Verify | Run deterministic checks and synchronize conformance/limitations |
-| Audit | Record mismatch matrix and evidence under `/docs/log/reconstruction/audits/` |
-| Recurse | Carry forward explicit next-iteration tasks for deferred items |
-
-## Invariants
-
-| Rule | Requirement |
-|---|---|
-| Anti-MVP | Follow [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md) |
-| Testing | Follow [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) |
-| Evidence | No checkbox checked without passing tests on real user paths |
-| Second-to-last task | Always: Recreate the TODO list |
-| Last task | Always: Continue to next iteration |
+| Type scaffolding without runtime path | Cannot mark feature complete |
+| Passing only unit tests for UI/runtime behavior | Cannot mark E2E-related item complete |
+| Updating spec without limitations/conformance sync | Cannot mark item complete |
+| Ignoring known boundary behavior | Cannot mark parent area complete |
 
 ## Related
 
-- Policy: [/docs/policy/README.md](/docs/policy/README.md)
-- Spec: [/docs/spec/README.md](/docs/spec/README.md)
-- Anti-MVP measures: [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)
+- Policy: [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

@@ -2,60 +2,86 @@
 
 Back: [/docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md)
 
-This document specifies Japanese input behavior in Insert mode.
+This spec defines production-grade Japanese IME behavior for Insert mode.
 
 ## Scope
 
-Covers Hiragana, Katakana, Kanji conversion, and mixed Japanese/ASCII editing through terminal IME pipelines.
+- Hiragana/Katakana/Kanji composition in terminal environments
+- Commit/cancel semantics with modal safety
+- Interaction with leader mappings and command mode entry
+- Width-aware cursor and wrap behavior for committed text
 
-## Composition model
+## Composition State Machine (Normative)
 
-| Stage | Requirement |
+| State | Description | Buffer Mutation |
+|---|---|---|
+| `Idle` | No active composition | Direct insert for non-IME keys |
+| `Preedit` | IME candidate string in progress | MUST NOT mutate committed buffer text |
+| `CandidateSelect` | Candidate list/cycle active | MUST NOT mutate committed buffer text |
+| `Committed` | Candidate accepted | MUST atomically insert committed string |
+| `Cancelled` | Composition aborted | MUST leave committed buffer unchanged |
+
+## Input Routing Rules
+
+| Rule | Requirement |
 |---|---|
-| Preedit start | IME preedit text is transient UI state, not committed buffer text. |
-| Candidate conversion | Candidate cycling MUST not mutate buffer text until commit. |
-| Commit | Confirmed candidate string is inserted atomically at the insertion point. |
-| Cancel | Cancelling conversion discards transient preedit text and keeps committed buffer unchanged. |
+| Composition interception | While in `Preedit` or `CandidateSelect`, key events MUST be consumed by IME handler before Normal/leader mappings. |
+| Leader safety | `Space` used for candidate cycling MUST NOT trigger leader mappings. |
+| Escape priority | `Esc` MUST cancel composition first; only after composition is idle may it exit Insert mode. |
+| Enter behavior | `Enter` during composition MUST commit candidate; outside composition it inserts newline per Insert rules. |
+| Backspace behavior | During composition, `Backspace` edits preedit text; outside composition it edits committed buffer text. |
 
-## Key behavior requirements
+## Commit Semantics
 
-| Key | Requirement during Japanese composition |
+| Requirement | Detail |
 |---|---|
-| `Space` | Used for conversion/candidate cycling while composition is active. |
-| `Enter` | Commits current conversion candidate. |
-| `Esc` | Cancels composition first; only leaves Insert mode when no active composition remains. |
-| `Backspace` | Deletes within composition text before commit; after commit it acts on committed grapheme text. |
+| Atomic commit | Committed string (possibly multi-grapheme) MUST be inserted as one logical insert transaction. |
+| Undo behavior | A single composition commit SHOULD be undoable as one unit. |
+| Cursor placement | After commit, cursor insertion point MUST move to the end of committed grapheme sequence. |
+| UTF-8 integrity | Committed text MUST remain valid UTF-8 and preserve grapheme boundaries. |
 
-## Leader and command safety
+## Cancel Semantics
 
-Japanese composition MUST NOT leak intermediate key events into Normal-mode mappings.
-
-In particular:
-
-- `Space` used inside IME conversion MUST NOT trigger leader mappings.
-- Partial conversion sequences MUST NOT open command line or switch mode unexpectedly.
-
-## Width and wrapping
-
-| Topic | Requirement |
+| Requirement | Detail |
 |---|---|
-| Full-width glyphs | Cursor and viewport calculations MUST account for width-2 glyphs. |
-| Wrapped lines | Long Japanese lines that overflow width MUST wrap to next display row when `wrap = true`. |
-| Mixed scripts | Mixed Latin/Japanese text MUST keep deterministic cursor column mapping. |
+| No side effect | Cancelling composition MUST NOT alter committed buffer text. |
+| Mode continuity | Cancel MUST keep editor in Insert mode unless a second explicit mode-exit key is issued. |
+| UI cleanup | Preedit/candidate UI state MUST be cleared immediately on cancel. |
 
-## Required tests
+## Width and Wrapping
 
-| Category | Required scenarios |
+Committed Japanese text MUST follow cursor and viewport rules in:
+
+- [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+
+Additional requirements:
+
+- Wide graphemes MUST never produce half-cell cursor states.
+- Wrap boundary logic MUST pad when a width-2 grapheme would split rows.
+
+## Failure Handling
+
+| Failure | Required Behavior |
 |---|---|
-| PTY E2E | type Japanese text via IME path, commit, `:wq`, and verify UTF-8 file bytes |
-| PTY E2E | hold repeated `a`, type Japanese text, `Esc`, verify cursor clamps correctly |
-| Integration | cancellation path (`Esc`) during active preedit leaves buffer unchanged |
-| Integration | `Space` during conversion does not trigger leader mappings |
+| IME backend unavailable | Fall back to direct Unicode input with warning notification |
+| Candidate decode error | Abort composition safely; keep committed text unchanged |
+| Terminal transport ambiguity | Prefer composition cancellation over accidental mode transitions |
 
-If a platform cannot run IME PTY automation reliably, record the gap in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) and keep manual reproduction steps in `/docs/log/`.
+## Mandatory Test Coverage
+
+| ID | Scenario |
+|---|---|
+| JP-01 | Start composition, cycle candidates with `Space`, commit with `Enter` |
+| JP-02 | Start composition, cancel with `Esc`, verify no buffer mutation |
+| JP-03 | Composition active while leader key is configured; ensure no leader command fires |
+| JP-04 | Commit long Japanese phrase and verify wrap/cursor invariants |
+| JP-05 | Repeat `A`/append workflows after Japanese commit and ensure cursor clamp correctness |
+
+Detailed scenario drafts: [/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md](/docs/log/reconstruction/testing-ideas/2026-02-09-e2e-boundary-blueprint.md)
 
 ## Related
 
-- Unicode input: [/docs/spec/modes/insert/input/insert-unicode.md](/docs/spec/modes/insert/input/insert-unicode.md)
-- Keybinding contract: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
-- Viewport wrapping: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- Insert mode: [/docs/spec/modes/insert/insert.md](/docs/spec/modes/insert/insert.md)
+- Keybinding behavior: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- Known current gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

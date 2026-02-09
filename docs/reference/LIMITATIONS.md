@@ -2,98 +2,40 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-User-visible gaps and caveats relative to the target spec.
+This ledger tracks user-visible gaps between target spec and current implementation.
 
-## Purpose
+## Entry Rules
 
-The target behavior is defined in `/docs/spec/`. This document records user-visible drift and known rough edges in the current implementation.
+Each limitation includes:
 
-## Status sources
+- expected behavior link (`/docs/spec/...`)
+- observed behavior in current runtime
+- deterministic evidence path
+- concrete next action
 
-Do not infer "implemented" from target specs or placeholder feature lists. Authoritative sources for "what exists" are:
+## Open Limitations
 
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) (the supported surface)
-- The repository's automated tests (when an implementation workspace exists)
+| ID | Expected Behavior | Observed Behavior | Status | Evidence | Next Action |
+|---|---|---|---|---|---|
+| LIM-01 | [`A` appends at end-of-line](/docs/spec/modes/insert/insert.md) | `Shift+a` can fail because dispatch expects `KeyModifiers::NONE` for `Char('A')` | `open` | `src/crates/kjxlkj-core-mode/src/normal_commands.rs`, `src/crates/kjxlkj-input/src/decode.rs` | Normalize shifted printable keys before Normal-mode matching |
+| LIM-02 | [Terminal must be a real managed window](/docs/spec/features/terminal/terminal.md) | `Action::SpawnTerminal` is no-op in editor dispatch path | `open` | `src/crates/kjxlkj-core-state/src/action_dispatch2.rs` | Wire `SpawnTerminal` to create terminal window + PTY session |
+| LIM-03 | [Split/window movement must be spatial](/docs/spec/features/window/splits-windows.md) | Window focus/move uses map iteration order, not geometric adjacency | `open` | `src/crates/kjxlkj-core-state/src/editor_window_ops.rs` | Introduce explicit layout graph and directional neighbor resolution |
+| LIM-04 | [Explorer must be fully interactive](/docs/spec/features/navigation/file_explorer.md) | Explorer model exists but command/key integration is incomplete | `open` | `src/crates/kjxlkj-core-state/src/file_explorer.rs` | Bind explorer actions into runtime dispatch and rendering |
+| LIM-05 | [`:w` and related commands persist real bytes](/docs/spec/commands/file/write-commands.md) | `do_write` only clears modified flag | `open` | `src/crates/kjxlkj-core-state/src/editor_file_ops.rs` | Route writes through fs service with encoding and error handling |
+| LIM-06 | [Session save/load commands restore state](/docs/spec/features/session/sessions.md) | `SessionSave` and `SessionLoad` actions are placeholders in dispatch | `open` | `src/crates/kjxlkj-core-state/src/action_dispatch2.rs` | Implement runtime command handlers and persistence integration |
+| LIM-07 | [Leader UX expects documented default behaviors](/docs/spec/ux/keybindings.md) | Default leader is `\\`, while docs commonly expect Space-driven chord examples | `accepted-temporary` | `src/crates/kjxlkj-core-state/src/keybinding_dsl.rs` | Add configurable leader default and align docs/examples per profile |
+| LIM-08 | [Japanese IME composition must be end-to-end safe](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME model exists, but full terminal composition interception is incomplete | `open` | `src/crates/kjxlkj-core-state/src/ime.rs`, PTY tests are model-level | Integrate composition state into key-routing layer and PTY path |
+| LIM-09 | [Terminal emulator should be full-scratch and production-grade](/docs/spec/features/terminal/terminal.md) | PTY and parser modules exist but service/runtime integration is partial | `open` | `src/crates/kjxlkj-service-terminal/src/pty.rs`, `src/crates/kjxlkj-service-terminal/src/escape_parser.rs` | Connect service loop to editor actions and renderer snapshots |
+| LIM-10 | [Long lines must always wrap on-screen when wrap is enabled](/docs/spec/features/ui/viewport.md) | Core wrapping primitives exist; full UI path can still miss wrap behavior in some user flows | `partial` | `src/crates/kjxlkj-core-state/src/line_wrap.rs`, boundary tests | Make renderer consume wrap segments for all buffer views by default |
 
-## Entry discipline (normative)
+## Priority Order
 
-Each user-visible limitation entry MUST include:
-
-| Field | Requirement |
-|---|---|
-| Expected behavior | Exact `/docs/spec/...` link defining the target behavior. |
-| Observed behavior | What the user actually sees. |
-| Status | One of `open`, `partial`, or `accepted-temporary`. |
-| Evidence | Test path, failing repro command, or deterministic manual script. |
-| Next action | Fix path or explicit deferral plan. |
-
-Entries without evidence are allowed only as temporary triage notes.
-
-## Relationship to conformance (normative)
-
-- `CONFORMANCE` declares supported behavior.
-- `LIMITATIONS` records exceptions and gaps.
-
-If `CONFORMANCE` says `implemented` but a user-visible defect exists, change conformance to `partial` until the limitation is closed.
-
-## High-priority UX regression watchlist
-
-These scenarios are high risk because they can regress without being caught by headless-only checks.
-
-| Scenario | Expected behavior | Defining spec | Required evidence |
-|---|---|---|---|
-| Leader key reachability | `Space` acts as `<leader>` in Normal; `<leader>e` and `<leader>t` reachable | [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md) | PTY E2E |
-| Append at EOL (`a`) | `a` on last char enters Insert at true EOL; `Esc` returns without floating cursor | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | PTY E2E |
-| Soft wrap behavior | Long lines wrap when `wrap = true` (default) | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | PTY E2E |
-| CJK cursor correctness | Cursor never occupies half-cell of wide character | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | PTY E2E |
-| CJK wrap boundary | Width-2 char at row end produces padding, not split | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | PTY E2E |
-| Terminal as window | Terminal is a window navigable with `Ctrl-w` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | PTY E2E |
-| Session JSON roundtrip | `:SessionSave` then `:SessionLoad` restores layout | [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md) | Integration |
-| C language detection | Built-in detection includes C/C++ by extension | [/docs/spec/features/syntax/syntax-files.md](/docs/spec/features/syntax/syntax-files.md) | Integration |
-
-## Current implementation status
-
-The repository contains a functional Rust implementation across 18 crates with 523 passing tests covering:
-
-- All 7 editing modes (Normal, Insert, Visual, Visual-Line, Visual-Block, Replace, Command-Line)
-- Motion operators (delete, change, yank) with motions and text objects
-- CJK/Unicode support with wide-character cursor handling, wrap boundary padding, and IME composition
-- Terminal emulator (PTY spawn via `Action::SpawnTerminal`)
-- Session save/load (JSON serialization via `SessionData`)
-- Window management (split, cycle, close, resize)
-- Tmux integration (passthrough escape wrapping, session detection)
-- Macro recording and replay
-- Search and substitute (`:s`, `:%s`, `/`, `?`)
-- 33+ feature modules including LSP, DAP, Git, completion, treesitter, snippets, theming, statusline DSL
-- Undo/redo per buffer
-- Mark system (auto-marks, named marks, jump list)
-- Register system with named registers
-
-### Known gaps
-
-| Area | Gap | Status | Next action |
-|------|-----|--------|-------------|
-| Leader key | Default leader is `\` not `Space` | `accepted-temporary` | Add configurable leader via settings |
-| File I/O | `:w` / `:wq` use in-memory flag only | `partial` | Wire real filesystem write through buffer.path |
-| Clipboard | System clipboard integration not connected | `partial` | Wire `+`/`*` registers to OS clipboard |
-| LSP | Types exist but no actual LSP client process | `scaffold-only` | Implement LSP process spawn and protocol |
-| DAP | Types exist but no actual DAP adapter process | `scaffold-only` | Implement DAP adapter spawn |
-| Treesitter | Parser objects exist but no actual tree-sitter binding | `scaffold-only` | Integrate tree-sitter C library |
-| Terminal | PTY spawn recorded as action, no real fork/exec | `partial` | Wire `nix::pty::openpty` for Unix |
-| Startup | No real `main` binary entry point processing args | `partial` | Wire clap CLI + startup sequence |
-
-## Update protocol
-
-When the implementation changes:
-
-1. Update the relevant conformance entry.
-2. Update this document for user-visible gaps.
-3. Run verification from [/docs/reference/CI.md](/docs/reference/CI.md).
-4. Keep conformance and test reality synchronized.
+1. LIM-01, LIM-02, LIM-03, LIM-04
+2. LIM-05, LIM-06, LIM-08
+3. LIM-09, LIM-10, LIM-07
 
 ## Related
 
-- Conformance ledger: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- Spec index: [/docs/spec/README.md](/docs/spec/README.md)
-- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Anti-MVP measures: [/docs/log/proposals/anti-mvp-measures.md](/docs/log/proposals/anti-mvp-measures.md)
+- Current implementation claims: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- Target specification: [/docs/spec/README.md](/docs/spec/README.md)
+- Reconstruction control plane: [/docs/todo/current/README.md](/docs/todo/current/README.md)

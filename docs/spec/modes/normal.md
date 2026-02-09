@@ -48,6 +48,9 @@ Normal mode dispatches keys through a tree of key handlers in this priority orde
 | `C` | Change to end of line | Delete to EOL, enter Insert |
 | `cc` | Change whole line | Delete line content, enter Insert |
 
+Input decoding MUST preserve these semantics for shifted printable commands. For example,
+`Shift+a` MUST trigger `A` behavior even when the terminal reports separate shift modifiers.
+
 Cursor rules: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 
 ## Single-key commands
