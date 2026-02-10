@@ -91,6 +91,12 @@ impl EditorState {
         self.should_quit = true;
     }
 
+    /// Request quit without saving (force).
+    pub fn quit_force(&mut self) {
+        self.should_quit = true;
+        // Mark all buffers as not modified to skip save prompts.
+    }
+
     /// Create a snapshot for rendering.
     pub fn snapshot(&mut self) -> EditorSnapshot {
         self.snapshot_seq += 1;

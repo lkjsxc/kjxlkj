@@ -12,7 +12,7 @@ Shared window-tree behavior and non-buffer window reliability.
 - [x] fix mixed-window `Ctrl-w` directional and cyclic navigation behavior - dispatch implemented
 - [x] fix explorer launch/toggle/reveal command and key paths - ExplorerService implemented
 - [x] fix terminal launch and mixed-window navigation behavior - TerminalService with tests
-- [ ] validate close/resize/rebalance invariants across mixed windows
+- [x] validate close/resize/rebalance invariants across mixed windows
 - [x] close `LIM-BLOCK-WIN-02`, `LIM-BLOCK-NAV-02`, `LIM-BLOCK-EXP-02`, and `LIM-BLOCK-TERM-02`
 
 ## Required Spec Links

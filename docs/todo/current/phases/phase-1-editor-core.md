@@ -11,7 +11,7 @@ Core key routing, cursor semantics, and command/viewport correctness.
 - [x] enforce printable shift normalization through real input path
 - [x] guarantee `i`, `a`, and `A` semantic distinction at EOL - mode dispatch tests
 - [x] harden cursor display invariants across wrap and resize - wrap safety tests
-- [ ] validate command paths (`:w`, `:q`, `:e`, `:set`) in live runtime
+- [x] validate command paths (`:w`, `:q`, `:e`, `:set`) in live runtime
 - [x] close `LIM-BLOCK-KEY-02` and `LIM-BLOCK-CURSOR-02`
 
 ## Required Spec Links
