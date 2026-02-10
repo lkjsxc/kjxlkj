@@ -2,13 +2,13 @@
 
 Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
-## Session: 2026-02-10
+## Session: 2026-02-10 (continued)
 
 ### Completed Work
 
-- [x] Phase 0: Foundation (partial)
+- [x] Phase 0: Foundation (complete)
   - [x] Create workspace structure with grouped crate paths
-  - [x] Create all 18 crates in workspace
+  - [x] Create all 19 crates in workspace
   - [x] Implement core types (BufferId, WindowId, Mode, KeyEvent, etc.)
   - [x] Set up Tokio runtime architecture
   - [x] Create channel wiring (action, snapshot, quit)
@@ -19,49 +19,72 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
   - [x] Implement snapshot-based rendering
   - [x] Implement terminal host setup/teardown
   - [x] Wire up main app binary
-- [x] Refactor files over 200 lines
-  - [x] task.rs: 381 → 145 lines (extracted motion.rs, editing.rs, command.rs)
-  - [x] dispatch.rs: 261 → 35 lines (extracted normal.rs, insert.rs, other_modes.rs)
-  - [x] window.rs: 223 → 175 lines (extracted layout.rs)
-  - [x] buffer.rs: 211 → 135 lines (extracted buffer_list.rs, word_nav.rs)
-  - [x] painter.rs: 215 → 141 lines (extracted color.rs, grid.rs)
 
-### In Progress
+- [x] Phase 1: Editor Core (mostly complete)
+  - [x] Key normalization with 8 input decode tests
+  - [x] Mode dispatch with 10 mode tests
+  - [x] Cursor/wrap safety with 5 render tests
+  - [x] Multi-key prefix handling (gg, Ctrl-w, ZZ/ZQ)
 
-- [ ] Update reference documentation (DRIFT_MATRIX, CONFORMANCE, LIMITATIONS)
-- [ ] Add more unit tests
+- [x] Phase 2: Windows, Explorer, Terminal (mostly complete)
+  - [x] WindowTree with split/close/focus (7 tests)
+  - [x] ExplorerService crate (4 tests)
+  - [x] TerminalService with Screen and Parser (7 tests)
+  - [x] Ctrl-w dispatch implemented
+
+- [x] Documentation updates
+  - [x] Requirement matrix refreshed
+  - [x] Mismatch matrix refreshed
+  - [x] CONFORMANCE.md updated
+  - [x] LIMITATIONS.md updated
+  - [x] Phase progress files updated
 
 ### Test Results
 
-All 23 tests pass:
+All 48 tests pass:
 - kjxlkj-core-text: 8 tests (grapheme, rope_ext)
 - kjxlkj-input: 8 tests (decode - shift normalization, ctrl, special keys)
-- kjxlkj-core-mode: 6 tests (dispatch - mode entry, prefix handling)
+- kjxlkj-core-mode: 10 tests (dispatch - mode entry, prefix handling, insert mode)
 - kjxlkj-core-undo: 1 test (undo_redo)
+- kjxlkj-core-state: 7 tests (window tree operations)
+- kjxlkj-service-explorer: 4 tests (state, navigation)
+- kjxlkj-service-terminal: 7 tests (screen, parser)
+- kjxlkj-render: 5 tests (wrap safety)
 
-### Code Quality
+### Blockers Status
 
-- All clippy warnings resolved
-- All source files under 200 lines
+| ID | Status |
+|---|---|
+| LIM-BLOCK-KEY-02 | ✓ Resolved |
+| LIM-BLOCK-WIN-02 | ✓ Resolved |
+| LIM-BLOCK-NAV-02 | ✓ Resolved |
+| LIM-BLOCK-EXP-02 | ✓ Resolved |
+| LIM-BLOCK-TERM-02 | ✓ Resolved |
+| LIM-BLOCK-CURSOR-02 | ✓ Resolved |
+| LIM-BLOCK-WRAP-02 | ✓ Resolved |
+| LIM-BLOCK-TEST-01 | Open - E2E harness needed |
 
-### Files Exceeding 200 Lines
+### Code Statistics
 
-All source files are now under 200 lines.
+- 19 crates total
+- 6200+ lines of Rust
+- All files under 200 lines
 
-### Git Commits
+### Git Commits This Session
 
-- `91ce0112` feat: implement complete editor framework (82 files, 6128+ lines)
-- `e52ebdc5` refactor: split large files to stay under 200 lines
-- `f8c9b22f` style: apply clippy fixes
-- `b64342fc` feat: add more normal mode commands and word navigation
-- `eae8d034` docs: update progress log and fix crates.md typo
-- `f21c3382` docs: add wave 1 improvement ideas to logs
-- `3a947622` refactor: split painter.rs into color.rs and grid.rs
-- `c0abfd2c` feat: add gg, window commands, ZZ/ZQ, and multi-key prefix handling
-- `e6ba79fa` docs: update progress log with latest commit
-- `dfedae89` docs: update CONFORMANCE and LIMITATIONS to reflect implementation progress
-- `ace7bd21` test: add key decode and mode dispatch tests (23 total)
+- `5b380aaa` test: add insert mode dispatch tests (25 total)
+- `059564f7` feat: add window split and navigation operations
+- `a31400d1` test: add 7 window tree tests (32 total)
+- `76000e1f` feat: add explorer service crate
+- `36a1474e` test: add 4 explorer state tests (36 total)
+- `9a1306dd` test: add 7 terminal screen and parser tests (43 total)
+- `ee54c54a` test: add 5 wrap safety tests (48 total)
+- `d04e6492` docs: update TODO with all blockers resolved except E2E
+- `29794a11` docs: update phase-1 and phase-2 progress
+- `55f9ded6` docs: refresh requirement and mismatch matrices
 
-### Improvement Ideas
+### Remaining Work
 
-See subdirectories for categorized notes.
+- [ ] PTY E2E test harness for *R verification tests
+- [ ] IME composition tests
+- [ ] Live runtime command validation (:w, :q, :e, :set)
