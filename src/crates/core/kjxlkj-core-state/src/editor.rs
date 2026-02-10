@@ -2,8 +2,11 @@
 
 use crate::{BufferList, WindowTree};
 use kjxlkj_core_mode::ModeState;
-use kjxlkj_core_types::Mode;
-use kjxlkj_core_ui::{EditorSnapshot, TabSnapshot, LayoutNode as SnapLayout, BufferSnapshot};
+use kjxlkj_core_types::{Mode, Rect, WindowContent};
+use kjxlkj_core_ui::{
+    BufferSnapshot, CmdlineState, EditorSnapshot, LayoutNode as SnapLayout, TabSnapshot,
+    WindowContentSnapshot, WindowSnapshot,
+};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -95,22 +98,56 @@ impl EditorState {
         let mut buffers = HashMap::new();
         for id in self.buffers.ids() {
             if let Some(buffer) = self.buffers.get(id) {
-                let lines: Vec<String> = (0..buffer.line_count())
-                    .map(|i| buffer.line(i))
-                    .collect();
-                buffers.insert(id, BufferSnapshot {
+                let lines: Vec<String> =
+                    (0..buffer.line_count()).map(|i| buffer.line(i)).collect();
+                buffers.insert(
                     id,
-                    version: buffer.version().0,
-                    line_count: buffer.line_count(),
-                    path: buffer.meta.path.as_ref().map(|p| p.to_string_lossy().into_owned()),
-                    modified: buffer.meta.modified,
-                    lines,
-                });
+                    BufferSnapshot {
+                        id,
+                        version: buffer.version().0,
+                        line_count: buffer.line_count(),
+                        path: buffer
+                            .meta
+                            .path
+                            .as_ref()
+                            .map(|p| p.to_string_lossy().into_owned()),
+                        modified: buffer.meta.modified,
+                        lines,
+                    },
+                );
             }
         }
 
+        // Build layout with window info.
+        let layout = if let Some(window) = self.windows.focused() {
+            let content = match window.content {
+                WindowContent::Buffer(buffer_id) => WindowContentSnapshot::Buffer {
+                    buffer_id,
+                    top_line: window.viewport.top_line,
+                    cursor_line: window.cursor.line,
+                    cursor_grapheme: window.cursor.grapheme,
+                },
+                WindowContent::Terminal(terminal_id) => {
+                    WindowContentSnapshot::Terminal { terminal_id }
+                }
+                WindowContent::Explorer(_) => WindowContentSnapshot::Explorer { selected_index: 0 },
+            };
+            SnapLayout::Leaf(WindowSnapshot {
+                id: window.id,
+                rect: Rect {
+                    x: 0,
+                    y: 0,
+                    width: self.terminal_size.0,
+                    height: self.terminal_size.1.saturating_sub(2),
+                },
+                content,
+            })
+        } else {
+            SnapLayout::default()
+        };
+
         let tab = TabSnapshot {
-            layout: SnapLayout::default(),
+            layout,
             focused_window: self.windows.focused().map(|w| w.id),
         };
 
@@ -121,7 +158,7 @@ impl EditorState {
             buffers,
             terminals: HashMap::new(),
             mode: self.mode.mode.clone(),
-            cmdline: kjxlkj_core_ui::CmdlineState {
+            cmdline: CmdlineState {
                 prefix: match &self.mode.mode {
                     Mode::Command(kjxlkj_core_types::CommandKind::Ex) => Some(':'),
                     Mode::Command(kjxlkj_core_types::CommandKind::SearchForward) => Some('/'),

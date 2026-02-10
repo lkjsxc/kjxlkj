@@ -1,14 +1,15 @@
 //! Terminal painting.
 
+use crate::color::convert_color;
+use crate::grid::build_grid;
 use crossterm::{
     cursor::MoveTo,
     execute,
-    style::{Color as CtColor, Print, SetBackgroundColor, SetForegroundColor, ResetColor},
+    style::{Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{Clear, ClearType},
 };
-use kjxlkj_core_ui::{EditorSnapshot, Color, NamedColor, CellGrid, Cell, Style};
+use kjxlkj_core_ui::{EditorSnapshot, LayoutNode, Style, WindowContentSnapshot};
 use std::io::{self, Write};
-use unicode_width::UnicodeWidthStr;
 
 /// Paint a snapshot to the terminal.
 pub fn paint(snapshot: &EditorSnapshot) -> io::Result<()> {
@@ -45,8 +46,14 @@ pub fn paint(snapshot: &EditorSnapshot) -> io::Result<()> {
 
     let mode_str = snapshot.mode.name();
     let status = format!(" {} ", mode_str);
-    execute!(stdout, SetBackgroundColor(CtColor::Blue))?;
-    execute!(stdout, SetForegroundColor(CtColor::White))?;
+    execute!(
+        stdout,
+        SetBackgroundColor(crossterm::style::Color::Blue)
+    )?;
+    execute!(
+        stdout,
+        SetForegroundColor(crossterm::style::Color::White)
+    )?;
     execute!(stdout, Print(&status))?;
     execute!(stdout, ResetColor)?;
 
@@ -64,14 +71,9 @@ pub fn paint(snapshot: &EditorSnapshot) -> io::Result<()> {
         execute!(stdout, Print(&snapshot.cmdline.content))?;
     }
 
-    // Position cursor.
-    if let Some(tab) = snapshot.tabs.get(snapshot.active_tab) {
-        if let Some(_window_id) = tab.focused_window {
-            // Find window and cursor position.
-            // Simplified: just put cursor at top-left for now.
-            execute!(stdout, MoveTo(0, 0))?;
-        }
-    }
+    // Position cursor based on mode and window.
+    let cursor_pos = get_cursor_position(snapshot);
+    execute!(stdout, MoveTo(cursor_pos.0, cursor_pos.1))?;
 
     // Show cursor.
     execute!(stdout, crossterm::cursor::Show)?;
@@ -80,55 +82,53 @@ pub fn paint(snapshot: &EditorSnapshot) -> io::Result<()> {
     Ok(())
 }
 
-/// Build a cell grid from snapshot.
-fn build_grid(snapshot: &EditorSnapshot, cols: u16, rows: u16) -> CellGrid {
-    let mut grid = CellGrid::new(cols, rows);
+/// Get cursor position for terminal.
+fn get_cursor_position(snapshot: &EditorSnapshot) -> (u16, u16) {
+    let (cols, rows) = snapshot.terminal_size;
 
-    // For simplicity, render first buffer's content.
-    if let Some((_, buffer)) = snapshot.buffers.iter().next() {
-        let text_rows = (rows as usize).saturating_sub(2); // Reserve for status + cmdline.
+    // In command mode, cursor is on cmdline.
+    if snapshot.mode.is_command() {
+        let x = 1 + snapshot.cmdline.cursor as u16;
+        let y = rows.saturating_sub(1);
+        return (x.min(cols - 1), y);
+    }
 
-        for (y, line) in buffer.lines.iter().enumerate().take(text_rows) {
-            render_line_to_grid(&mut grid, line, y as u16, cols);
+    // Otherwise, find focused window cursor.
+    if let Some(tab) = snapshot.tabs.get(snapshot.active_tab) {
+        if let Some(pos) = find_cursor_in_layout(&tab.layout) {
+            return pos;
         }
     }
 
-    grid
+    (0, 0)
 }
 
-/// Render a line to the grid.
-fn render_line_to_grid(grid: &mut CellGrid, line: &str, y: u16, cols: u16) {
-    let mut x = 0u16;
-
-    for grapheme in unicode_segmentation::UnicodeSegmentation::graphemes(line, true) {
-        if x >= cols {
-            break;
-        }
-
-        let width = UnicodeWidthStr::width(grapheme);
-
-        if width == 0 {
-            continue;
-        }
-
-        // Check if we need to wrap wide character.
-        if width == 2 && x + 1 >= cols {
-            // Padding cell.
-            grid.set(x, y, Cell::padding(Style::default()));
-            break;
-        }
-
-        let cell = Cell::new(grapheme.to_string(), width as u8, Style::default());
-        grid.set(x, y, cell);
-
-        if width == 2 {
-            x += 1;
-            if x < cols {
-                grid.set(x, y, Cell::continuation(Style::default()));
+/// Find cursor position in layout tree.
+fn find_cursor_in_layout(node: &LayoutNode) -> Option<(u16, u16)> {
+    match node {
+        LayoutNode::Leaf(window) => {
+            if let WindowContentSnapshot::Buffer {
+                cursor_line,
+                cursor_grapheme,
+                top_line,
+                ..
+            } = &window.content
+            {
+                let x = window.rect.x + *cursor_grapheme as u16;
+                let y = window.rect.y + (*cursor_line - *top_line) as u16;
+                Some((x, y))
+            } else {
+                None
             }
         }
-
-        x += 1;
+        LayoutNode::Horizontal(children) | LayoutNode::Vertical(children) => {
+            for child in children {
+                if let Some(pos) = find_cursor_in_layout(child) {
+                    return Some(pos);
+                }
+            }
+            None
+        }
     }
 }
 
@@ -138,31 +138,4 @@ fn set_style(stdout: &mut io::Stdout, style: &Style) -> io::Result<()> {
     let bg = convert_color(&style.bg);
     execute!(stdout, SetForegroundColor(fg), SetBackgroundColor(bg))?;
     Ok(())
-}
-
-/// Convert our color to crossterm color.
-fn convert_color(color: &Color) -> CtColor {
-    match color {
-        Color::Default => CtColor::Reset,
-        Color::Named(named) => match named {
-            NamedColor::Black => CtColor::Black,
-            NamedColor::Red => CtColor::DarkRed,
-            NamedColor::Green => CtColor::DarkGreen,
-            NamedColor::Yellow => CtColor::DarkYellow,
-            NamedColor::Blue => CtColor::DarkBlue,
-            NamedColor::Magenta => CtColor::DarkMagenta,
-            NamedColor::Cyan => CtColor::DarkCyan,
-            NamedColor::White => CtColor::Grey,
-            NamedColor::BrightBlack => CtColor::DarkGrey,
-            NamedColor::BrightRed => CtColor::Red,
-            NamedColor::BrightGreen => CtColor::Green,
-            NamedColor::BrightYellow => CtColor::Yellow,
-            NamedColor::BrightBlue => CtColor::Blue,
-            NamedColor::BrightMagenta => CtColor::Magenta,
-            NamedColor::BrightCyan => CtColor::Cyan,
-            NamedColor::BrightWhite => CtColor::White,
-        },
-        Color::Indexed(i) => CtColor::AnsiValue(*i),
-        Color::Rgb(r, g, b) => CtColor::Rgb { r: *r, g: *g, b: *b },
-    }
 }
