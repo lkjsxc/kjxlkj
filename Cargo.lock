@@ -303,6 +303,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "kjxlkj-service-explorer"
+version = "0.1.0"
+dependencies = [
+ "kjxlkj-core-types",
+ "kjxlkj-service-fs",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "kjxlkj-service-fs"
 version = "0.1.0"
 dependencies = [

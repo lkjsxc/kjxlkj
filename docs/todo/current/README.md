@@ -9,7 +9,7 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 - [x] source code tree regenerated with grouped crate structure
 - [x] workspace and toolchain manifests created
 - [x] 18 crates implemented with 5300+ lines of code
-- [x] 25 tests passing across 4 test modules
+- [x] 32 tests passing across 5 test modules
 - [x] all source files under 200 lines
 
 ## Next-Wave Preconditions (Start Here)
@@ -23,7 +23,7 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 ## Immediate Blockers (Progress Tracking)
 
 - [x] `LIM-BLOCK-KEY-02` `Shift+a` - key normalization implemented with tests
-- [ ] `LIM-BLOCK-WIN-02` split and multi-window correctness
+- [x] `LIM-BLOCK-WIN-02` split and multi-window correctness - WindowTree with split/close/focus operations
 - [x] `LIM-BLOCK-NAV-02` `Ctrl-w` navigation - dispatch implemented
 - [ ] `LIM-BLOCK-EXP-02` explorer launch and actions
 - [ ] `LIM-BLOCK-TERM-02` terminal window stability

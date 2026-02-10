@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-service-explorer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+kjxlkj-core-types = { path = "../../core/kjxlkj-core-types" }
+kjxlkj-service-fs = { path = "../kjxlkj-service-fs" }
+thiserror = "2.0"
+tracing = "0.1"
+tokio = { version = "1", features = ["fs"] }
