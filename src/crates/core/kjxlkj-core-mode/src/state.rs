@@ -36,6 +36,10 @@ pub struct ModeState {
     pub cmdline: String,
     /// Command line cursor position.
     pub cmdline_cursor: usize,
+    /// IME composition state.
+    pub ime_composing: bool,
+    /// IME preedit text.
+    pub ime_preedit: String,
 }
 
 impl ModeState {
@@ -103,5 +107,39 @@ impl ModeState {
     /// Enter terminal insert mode.
     pub fn enter_terminal_insert(&mut self) {
         self.transition(Mode::TerminalInsert);
+    }
+
+    /// Start IME composition.
+    pub fn ime_start(&mut self) {
+        self.ime_composing = true;
+        self.ime_preedit.clear();
+    }
+
+    /// Update IME preedit text.
+    pub fn ime_update(&mut self, preedit: &str) {
+        self.ime_preedit = preedit.to_string();
+    }
+
+    /// Commit IME composition.
+    pub fn ime_commit(&mut self) -> Option<String> {
+        if self.ime_composing {
+            self.ime_composing = false;
+            let text = std::mem::take(&mut self.ime_preedit);
+            if !text.is_empty() {
+                return Some(text);
+            }
+        }
+        None
+    }
+
+    /// Cancel IME composition.
+    pub fn ime_cancel(&mut self) {
+        self.ime_composing = false;
+        self.ime_preedit.clear();
+    }
+
+    /// Check if IME is composing.
+    pub fn is_composing(&self) -> bool {
+        self.ime_composing
     }
 }

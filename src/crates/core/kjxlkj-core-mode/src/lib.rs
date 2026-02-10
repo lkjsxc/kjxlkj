@@ -4,7 +4,7 @@
 
 mod dispatch;
 mod handler;
-mod insert;
+pub mod insert;
 mod normal;
 mod other_modes;
 mod state;
