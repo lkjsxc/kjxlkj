@@ -59,6 +59,9 @@ These implemented tests are strong anchors and MUST remain:
 | `TC-LIVE-05` | terminal output flood while editing adjacent buffer |
 | `TC-LIVE-06` | IME composition races with leader mappings and window commands |
 
+Canonical `*R` test IDs for these classes are defined in
+[/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
+
 ## Bug-Fix Closure Contract
 
 For each fixed user-visible bug:
