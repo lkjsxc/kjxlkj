@@ -47,8 +47,10 @@ pub enum PendingOperator {
 
 /// Editor mode state.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Default)]
 pub enum Mode {
     /// Normal mode for navigation and commands.
+    #[default]
     Normal,
     /// Insert mode for text entry.
     Insert,
@@ -66,11 +68,6 @@ pub enum Mode {
     TerminalInsert,
 }
 
-impl Default for Mode {
-    fn default() -> Self {
-        Self::Normal
-    }
-}
 
 impl Mode {
     /// Check if this is an insert-like mode.

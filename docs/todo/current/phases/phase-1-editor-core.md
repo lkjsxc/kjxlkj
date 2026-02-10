@@ -8,7 +8,7 @@ Core key routing, cursor semantics, and command/viewport correctness.
 
 ## Tasks
 
-- [ ] enforce printable shift normalization through real input path
+- [x] enforce printable shift normalization through real input path
 - [ ] guarantee `i`, `a`, and `A` semantic distinction at EOL
 - [ ] harden cursor display invariants across wrap and resize
 - [ ] validate command paths (`:w`, `:q`, `:e`, `:set`) in live runtime

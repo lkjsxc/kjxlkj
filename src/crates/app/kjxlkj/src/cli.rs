@@ -17,8 +17,8 @@ pub struct Args {
 pub fn parse() -> Args {
     let mut args = Args::default();
 
-    let mut iter = std::env::args().skip(1);
-    while let Some(arg) = iter.next() {
+    let iter = std::env::args().skip(1);
+    for arg in iter {
         match arg.as_str() {
             "-R" | "--readonly" => {
                 args.read_only = true;

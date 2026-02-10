@@ -12,7 +12,7 @@ Inventory, drift classification, and deterministic harness setup.
 - [ ] refresh mismatch matrix with `M1`..`M5` classification
 - [ ] define requirement-to-test mapping including new `*R` cases
 - [ ] define PTY live E2E harness contract in technical specs
-- [ ] validate source topology blueprint and grouped crate paths
+- [x] validate source topology blueprint and grouped crate paths
 
 ## Required Evidence
 

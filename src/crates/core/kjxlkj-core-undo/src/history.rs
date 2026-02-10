@@ -62,17 +62,15 @@ impl UndoHistory {
 
     /// Pop the last group for undo.
     pub fn undo(&mut self) -> Option<UndoGroup> {
-        self.past.pop().map(|group| {
+        self.past.pop().inspect(|group| {
             self.future.push(group.clone());
-            group
         })
     }
 
     /// Pop the last undone group for redo.
     pub fn redo(&mut self) -> Option<UndoGroup> {
-        self.future.pop().map(|group| {
+        self.future.pop().inspect(|group| {
             self.past.push(group.clone());
-            group
         })
     }
 

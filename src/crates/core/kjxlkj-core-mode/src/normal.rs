@@ -7,13 +7,12 @@ use kjxlkj_core_types::{Key, KeyEvent, Modifiers, SpecialKey};
 pub fn dispatch_normal(state: &mut ModeState, key: &KeyEvent) -> HandleResult {
     // Handle count prefix.
     if let Key::Char(c) = key.key {
-        if c.is_ascii_digit() {
-            if c != '0' || state.count.is_some() {
+        if c.is_ascii_digit()
+            && (c != '0' || state.count.is_some()) {
                 let digit = c.to_digit(10).unwrap() as usize;
                 state.count = Some(state.count.unwrap_or(0) * 10 + digit);
                 return HandleResult::Consumed(vec![]);
             }
-        }
     }
 
     // Handle register prefix.

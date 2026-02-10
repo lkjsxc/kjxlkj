@@ -16,6 +16,7 @@ impl BufferId {
 
 /// Buffer version for change tracking.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Default)]
 pub struct BufferVersion(pub u64);
 
 impl BufferVersion {
@@ -30,26 +31,18 @@ impl BufferVersion {
     }
 }
 
-impl Default for BufferVersion {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 
 /// Buffer display name.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Default)]
 pub enum BufferName {
     /// Named buffer with a display name.
     Named(String),
     /// Unnamed scratch buffer.
+    #[default]
     Scratch,
 }
 
-impl Default for BufferName {
-    fn default() -> Self {
-        Self::Scratch
-    }
-}
 
 impl std::fmt::Display for BufferName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

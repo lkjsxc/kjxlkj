@@ -37,7 +37,7 @@ impl Parser {
             ParserState::Ground => {
                 if byte == 0x1b {
                     self.state = ParserState::Escape;
-                } else if byte >= 0x20 && byte < 0x7f {
+                } else if (0x20..0x7f).contains(&byte) {
                     actions.push(ParseAction::Print(byte as char));
                 } else if byte == b'\n' {
                     actions.push(ParseAction::Newline);
@@ -61,9 +61,9 @@ impl Parser {
                 }
             }
             ParserState::Csi => {
-                if byte >= 0x30 && byte <= 0x3f {
+                if (0x30..=0x3f).contains(&byte) {
                     self.params.push(byte);
-                } else if byte >= 0x40 && byte <= 0x7e {
+                } else if (0x40..=0x7e).contains(&byte) {
                     // Final byte.
                     actions.push(ParseAction::CsiDispatch(byte as char));
                     self.state = ParserState::Ground;

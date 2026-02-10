@@ -104,7 +104,7 @@ impl Screen {
     pub fn scroll_up(&mut self) {
         let width = self.width as usize;
         self.cells.drain(0..width);
-        self.cells.extend(std::iter::repeat(ScreenCell::default()).take(width));
+        self.cells.extend(std::iter::repeat_n(ScreenCell::default(), width));
     }
 
     /// Get cursor position.

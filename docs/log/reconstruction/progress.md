@@ -26,9 +26,15 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 ### In Progress
 
-- [ ] Run tests and fix failures
 - [ ] Update reference documentation
-- [ ] Mark TODO items as complete
+- [ ] Mark remaining TODO items as complete
+
+### Test Results
+
+All 11 tests pass:
+- kjxlkj-core-text: 8 tests (grapheme, rope_ext)
+- kjxlkj-input: 2 tests (decode)
+- kjxlkj-core-undo: 1 test (undo_redo)
 
 ### Files Exceeding 200 Lines
 
