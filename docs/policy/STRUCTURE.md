@@ -8,7 +8,7 @@ This document defines mandatory structural constraints for all documentation.
 |------------|-------|-----------|
 | Max items per directory | 12 | Cognitive load limit; enables quick scanning |
 | README.md per directory | Required | Navigation entry point for each topic |
-| Max lines per file | 200 (unless explicit exception) | Focused documents; split if exceeds |
+| Max lines per file | 200 | Focused documents; split if exceeds |
 | Soft max columns per line | 100 | Prevent horizontal scrolling; wrap long lines |
 
 ## Directory Hierarchy Requirements
@@ -40,12 +40,6 @@ When a file approaches or exceeds 200 lines:
 3. Create a parent file or README.md linking the split files
 4. Ensure all cross-references are updated
 
-## Explicit line-count exceptions
-
-These files are temporarily exempt from the 200-line cap and MUST be split in a future doc-topology wave:
-
-- `/docs/reference/LIMITATIONS.md`
-
 ## Navigation Requirements
 
 | Requirement | Description |
@@ -74,7 +68,7 @@ For any PR affecting documentation:
 
 - [ ] No directory exceeds 12 direct children
 - [ ] All directories contain exactly one README.md
-- [ ] No non-exempt file exceeds 200 lines
+- [ ] No file exceeds 200 lines
 - [ ] All documents are navigable from docs/README.md
 - [ ] No orphan documents exist
 - [ ] LLM meta-notes appear only in designated locations
