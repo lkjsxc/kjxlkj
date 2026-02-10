@@ -9,7 +9,7 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 - [x] source code tree regenerated with grouped crate structure
 - [x] workspace and toolchain manifests created
 - [x] 18 crates implemented with 5300+ lines of code
-- [x] 36 tests passing across 6 test modules
+- [x] 43 tests passing across 7 test modules
 - [x] all source files under 200 lines
 
 ## Next-Wave Preconditions (Start Here)
@@ -26,7 +26,7 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 - [x] `LIM-BLOCK-WIN-02` split and multi-window correctness - WindowTree with split/close/focus operations
 - [x] `LIM-BLOCK-NAV-02` `Ctrl-w` navigation - dispatch implemented
 - [x] `LIM-BLOCK-EXP-02` explorer launch and actions - ExplorerService and ExplorerState implemented
-- [ ] `LIM-BLOCK-TERM-02` terminal window stability
+- [x] `LIM-BLOCK-TERM-02` terminal window stability - Screen and Parser with tests
 - [x] `LIM-BLOCK-CURSOR-02` cursor display - grapheme-aware cursor implemented
 - [ ] `LIM-BLOCK-WRAP-02` long-line wrap safety in live UI
 - [ ] `LIM-BLOCK-TEST-01` verification gap (insufficient live E2E)
