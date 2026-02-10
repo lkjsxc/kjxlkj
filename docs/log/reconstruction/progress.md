@@ -33,9 +33,10 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 ### Test Results
 
-All 11 tests pass:
+All 23 tests pass:
 - kjxlkj-core-text: 8 tests (grapheme, rope_ext)
-- kjxlkj-input: 2 tests (decode)
+- kjxlkj-input: 8 tests (decode - shift normalization, ctrl, special keys)
+- kjxlkj-core-mode: 6 tests (dispatch - mode entry, prefix handling)
 - kjxlkj-core-undo: 1 test (undo_redo)
 
 ### Code Quality
@@ -57,6 +58,9 @@ All source files are now under 200 lines.
 - `f21c3382` docs: add wave 1 improvement ideas to logs
 - `3a947622` refactor: split painter.rs into color.rs and grid.rs
 - `c0abfd2c` feat: add gg, window commands, ZZ/ZQ, and multi-key prefix handling
+- `e6ba79fa` docs: update progress log with latest commit
+- `dfedae89` docs: update CONFORMANCE and LIMITATIONS to reflect implementation progress
+- `ace7bd21` test: add key decode and mode dispatch tests (23 total)
 
 ### Improvement Ideas
 
