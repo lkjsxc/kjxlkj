@@ -1,70 +1,89 @@
 # Keybindings: Mode Entry
 
-Complete nvim-compatible mode entry keybindings.
+Back: [/docs/spec/ux/keybindings/README.md](/docs/spec/ux/keybindings/README.md)
+
+Complete mode-entry keybindings and normalization rules.
 
 ## Insert Mode Entry
 
 | Key | Action | Description |
-|-----|--------|-------------|
-| `i` | Insert before | Enter Insert mode before cursor |
-| `I` | Insert at line start | Insert at first non-blank character |
-| `gI` | Insert at column 0 | Insert at column 0 (true line start) |
-| `a` | Append after | Enter Insert mode after cursor |
-| `A` | Append at line end | Append at end of line (Shift+a) |
-| `o` | Open below | New line below, enter Insert |
-| `O` | Open above | New line above, enter Insert |
-| `s` | Substitute char | Delete char, enter Insert |
-| `S` | Substitute line | Delete line, enter Insert |
-| `C` | Change to EOL | Delete to end, enter Insert |
-| `cc` | Change line | Delete entire line, enter Insert |
-| `gi` | Insert at last | Resume Insert at last position |
+|---|---|---|
+| `i` | Insert before | Enter Insert at current cursor offset |
+| `I` | Insert at first non-blank | Enter Insert at first non-blank |
+| `gI` | Insert at column 0 | Enter Insert at true line start |
+| `a` | Append after | Enter Insert after current grapheme |
+| `A` | Append at line end | Move to line end and append |
+| `o` | Open below | New line below, then Insert |
+| `O` | Open above | New line above, then Insert |
+| `s` | Substitute char | Replace char, then Insert |
+| `S` | Substitute line | Replace line, then Insert |
+| `C` | Change to EOL | Delete to EOL, then Insert |
+| `cc` | Change line | Change full line, then Insert |
+| `gi` | Resume last insert | Return to last Insert position |
 
-## Shifted printable key normalization
+## Shifted Printable Normalization
 
-For printable shifted keys (for example `Shift+a` -> `A`), input decoding MUST normalize to the
-documented command key semantics and MUST NOT require raw modifier matching in mode handlers.
-
-| Example | Required behavior |
+| Rule | Requirement |
 |---|---|
-| `Shift+a` in Normal mode | Must dispatch as `A` append-at-EOL command |
-| `Shift+o` in Normal mode | Must dispatch as `O` open-line-above command |
+| Printable shift normalization | Shifted printable keys MUST normalize before mode handler dispatch |
+| No raw-shift dependency | Mode handlers MUST NOT require raw Shift modifier matching for printable commands |
+
+| Input | Required Behavior |
+|---|---|
+| `Shift+a` in Normal mode | Dispatch as `A` append-at-EOL |
+| `Shift+o` in Normal mode | Dispatch as `O` open-line-above |
+| `Shift+i` in Normal mode | Dispatch as `I` insert-first-non-blank |
+
+## Critical Distinction
+
+`a` and `A` MUST NOT share identical behavior.
+
+| Key | Required cursor transition before Insert |
+|---|---|
+| `a` | move one grapheme right if possible |
+| `A` | move to end-of-line insertion point |
 
 ## Visual Mode Entry
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `v` | Visual char | Character-wise visual selection |
-| `V` | Visual line | Line-wise visual selection |
-| `Ctrl-v` | Visual block | Block/column visual selection |
-| `gv` | Reselect | Reselect last visual selection |
-| `gn` | Select match | Select next search match |
-| `gN` | Select prev match | Select previous search match |
+| Key | Action |
+|---|---|
+| `v` | Visual char |
+| `V` | Visual line |
+| `Ctrl-v` | Visual block |
+| `gv` | Reselect last visual area |
 
-## Replace Mode Entry
+## Replace and Command Entry
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `R` | Replace mode | Overwrite characters |
-| `gR` | Virtual replace | Replace with virtual space handling |
-| `r<char>` | Replace single | Replace single character with char |
-| `gr<char>` | Virtual replace | Virtual replace single character |
+| Key | Action |
+|---|---|
+| `R` | Replace mode |
+| `gR` | Virtual replace mode |
+| `:` | Ex command-line |
+| `/` | Forward search |
+| `?` | Backward search |
+| `q:` | Command-line window |
+| `q/` | Search history window |
 
-## Command Mode Entry
+## Exit Keys
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `:` | Command-line | Enter ex command mode |
-| `/` | Search forward | Enter forward search mode |
-| `?` | Search backward | Enter backward search mode |
-| `q:` | Command history | Open command-line window |
-| `q/` | Search history | Open search history window |
-| `@:` | Repeat command | Repeat last ex command |
+| Key | Action |
+|---|---|
+| `Esc` | Return to Normal |
+| `Ctrl-[` | Return to Normal |
+| `Ctrl-c` | Cancel current operation |
+| `Ctrl-o` | Execute one Normal command from Insert |
 
-## Exiting Modes
+## Mandatory Verification
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Esc` | Exit mode | Return to Normal mode |
-| `Ctrl-[` | Exit mode | Alternative Escape |
-| `Ctrl-c` | Cancel | Cancel operation, return to Normal |
-| `Ctrl-o` | Single command | Execute one Normal command in Insert |
+| ID | Scenario |
+|---|---|
+| KEYMODE-01 | `Shift+a` dispatches as `A` |
+| KEYMODE-02 | `a` at EOL differs from `i` |
+| KEYMODE-03 | `A` always appends at true end-of-line |
+| KEYMODE-04 | Normalization works through the real input decoder path |
+
+## Related
+
+- Cursor semantics: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- Testing matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

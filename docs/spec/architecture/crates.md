@@ -9,9 +9,9 @@ The implementation is a Cargo workspace under `src/crates/`.
 | Requirement | Value |
 |---|---|
 | Minimum workspace crates | 10 |
-| Target crate count | 18 (current design) |
-| Directory fan-out target | Around 12 direct children per code directory |
-| Source file line cap | 200 lines (split before exceeding) |
+| Target crate count | 18 |
+| Max direct children per source directory | around 12 |
+| Max source file length | 200 lines |
 
 ## Workspace Members
 
@@ -36,26 +36,22 @@ The implementation is a Cargo workspace under `src/crates/`.
 | `kjxlkj-service-index` | Index/finder service |
 | `kjxlkj-service-fs` | Filesystem service |
 
-## Decomposition Rules For Rebuild
+## Decomposition Rules
 
 | Rule | Requirement |
 |---|---|
-| Large-module split | Any source file over 200 lines MUST be split in the same implementation wave |
-| Dispatch split | Large dispatch files MUST split into domain-specific dispatch modules |
-| Test split | Large test files SHOULD split by concern (regression, boundary, workflow) |
-| Directory balancing | If a source directory grows far beyond 12 children, introduce submodules grouped by domain |
+| Split before overflow | Any source file trending toward 200 lines MUST be split in the same wave |
+| Domain dispatch split | Large dispatch logic MUST be split by domain (mode, command, service, UI) |
+| Test split | Test files SHOULD be split by concern (unit, integration, E2E, regression) |
+| Fan-out balancing | If a source directory exceeds around 12 direct children, create subdirectories by domain |
 
-## Current Hotspots To Split Next
+## Reconstruction Contract
 
-These are known high-risk structure hotspots to address during reimplementation:
-
-- `src/crates/kjxlkj-core-state/src/`
-- `src/crates/kjxlkj-core-edit/src/`
-- `src/crates/kjxlkj-core-mode/src/`
-
-Required split planning details are tracked in:
-
-- [/docs/log/audits/source-topology-and-oversize-2026-02-09.md](/docs/log/audits/source-topology-and-oversize-2026-02-09.md)
+- A TODO item MAY be closed only when the feature is wired from real input path
+  to observable behavior.
+- Every crate MUST expose a deterministic test entry for touched behaviors.
+- Any crate marked complete MUST satisfy the layout template in
+  [source-layout.md](source-layout.md).
 
 ## Workspace Overview
 
@@ -85,5 +81,5 @@ graph TD
 ## Related
 
 - Runtime model: [runtime.md](runtime.md)
-- Startup sequence: [startup.md](startup.md)
+- Source layout blueprint: [source-layout.md](source-layout.md)
 - Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)

@@ -2,120 +2,92 @@
 
 Back: [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
 
-Cursor behavior is core-owned, deterministic, and defined over buffer snapshots.
+Cursor behavior is core-owned, deterministic, and defined over grapheme clusters.
 
-## Fundamental model
+## Fundamental Model
 
-The cursor is a logical position `(line, grapheme_offset)` where `grapheme_offset` is the zero-based index into the line's grapheme cluster sequence.
+The cursor is a logical position `(line, grapheme_offset)`.
 
-The cursor MUST always rest on a grapheme boundary. There is no concept of a cursor positioned "inside" or on the "back half" of a grapheme cluster.
+The cursor MUST always rest on a grapheme boundary. Internal states that point
+inside a grapheme are forbidden.
 
-## Grapheme cluster model (normative)
-
-The text model MUST decompose each line into an ordered sequence of grapheme clusters (Unicode UAX #29). All cursor arithmetic operates on grapheme indices, never on byte offsets or code point indices directly.
+## Grapheme and Width Rules
 
 | Term | Definition |
 |---|---|
-| Grapheme cluster | The smallest user-perceived character unit (UAX #29). |
-| Grapheme index | Zero-based position in the line's grapheme sequence. |
-| Display width | The number of terminal columns a grapheme occupies (1 for most Latin/ASCII, 2 for CJK/fullwidth, 0 for combining marks attached to a base). |
-
-## Column model
-
-This project uses a mode-dependent column model defined over grapheme indices.
-
-### End-exclusive cursor (Normal, Visual, VisualLine, Replace)
-
-For a line with `G` grapheme clusters (`G > 0`): valid grapheme offsets are `0..G-1`.
-
-For an empty line (`G = 0`): only offset `0` is valid.
-
-### End-inclusive cursor (Insert)
-
-The cursor represents an insertion point between graphemes. For a line with `G` grapheme clusters: valid offsets are `0..G` (cursor may be placed after the last grapheme).
-
-## Wide character (CJK) cursor rules (normative)
-
-Wide characters (display width 2) occupy two terminal columns but are a single grapheme cluster at a single grapheme index. The cursor MUST obey:
+| Grapheme cluster | User-perceived character unit (UAX #29) |
+| Grapheme offset | Zero-based index in the line's grapheme sequence |
+| Display width | Cell width of a grapheme (ASCII 1, many CJK 2) |
 
 | Rule | Requirement |
 |---|---|
-| No half-cell cursor | The cursor MUST always be positioned at the start column of a grapheme cluster, never at the second column of a wide character. |
-| Motion atomicity | `h` and `l` motions MUST move one grapheme cluster at a time. On a line of CJK text, `l` advances the display position by 2 columns because each grapheme is width-2. |
-| Cursor rendering | When the cursor is on a width-2 grapheme, the block cursor MUST span 2 terminal columns. |
-| No phantom states | There MUST NOT exist any internal state where the cursor references a position between the two display columns of a single wide character. |
+| Width safety | Width-2 graphemes remain atomic for motion and rendering |
+| No half-cell cursor | Cursor never lands on second cell of width-2 grapheme |
+| Mixed script safety | Motions over ASCII+CJK always move one grapheme at a time |
 
-### Example: CJK cursor motion
+## Mode-Dependent Cursor Range
 
-Given line content: `あいうえお` (5 grapheme clusters, each width 2, display columns 0-9):
+| Mode Class | Valid Offsets for line with `G` graphemes |
+|---|---|
+| End-exclusive (Normal/Visual/Replace) | `0..G-1` when `G > 0`, otherwise `0` |
+| End-inclusive (Insert) | `0..G` |
 
-| Grapheme index | Character | Display columns |
-|---|---|---|
-| 0 | あ | 0-1 |
-| 1 | い | 2-3 |
-| 2 | う | 4-5 |
-| 3 | え | 6-7 |
-| 4 | お | 8-9 |
+When leaving Insert mode, cursor MUST clamp to end-exclusive range.
 
-`l` from grapheme index 0 moves to grapheme index 1 (display column 2). There is no state where the cursor is at display column 1.
+## Append and Insert Semantics
 
-### Mixed-width lines
+| Key | Required Behavior |
+|---|---|
+| `i` | Enter Insert at current grapheme offset |
+| `a` | Enter Insert at `min(current + 1, G)` |
+| `A` | Move to end-of-line grapheme `G-1`, then enter Insert at `G` |
 
-For a line containing mixed ASCII and CJK characters (e.g., `aあbいc`):
+### End-of-line append rule
 
-| Grapheme index | Character | Display columns |
-|---|---|---|
-| 0 | a | 0 |
-| 1 | あ | 1-2 |
-| 2 | b | 3 |
-| 3 | い | 4-5 |
-| 4 | c | 6 |
+If cursor is already on the last grapheme and `a` is pressed:
 
-`l` from index 0 moves to index 1. `l` from index 1 moves to index 2. The cursor always lands on a grapheme boundary.
+- Insert position MUST become `G` (after the last grapheme)
+- this MUST differ from `i`, which stays at current offset
 
-## Display column mapping (normative)
+### Shift normalization dependency
 
-The implementation MUST maintain a bidirectional mapping between grapheme indices and display columns:
+`Shift+a` in Normal mode MUST dispatch as `A`, not as literal `a`.
+
+## Wide Character Examples
+
+For `あいう`:
+
+| Grapheme Offset | Display Columns |
+|---|---|
+| 0 | 0-1 |
+| 1 | 2-3 |
+| 2 | 4-5 |
+
+`l` from offset 0 -> offset 1. No state at display column 1 is allowed.
+
+## Mapping Functions
 
 | Direction | Function |
 |---|---|
-| Grapheme to display | `display_col(grapheme_idx)` returns the starting display column. |
-| Display to grapheme | `grapheme_at_display_col(col)` returns the grapheme index whose display range contains `col`. |
+| Grapheme -> display | `display_col(grapheme_offset)` |
+| Display -> grapheme | `grapheme_at_display_col(col)` |
 
-For the second column of a wide character, `grapheme_at_display_col` MUST return the same grapheme index as for the first column.
+For a continuation cell of a width-2 grapheme, `grapheme_at_display_col` MUST
+return the owning grapheme offset.
 
-This mapping MUST be recomputed when buffer content changes on the line or tab width changes.
+## Mandatory Regression Tests
 
-## Append semantics (`a`)
-
-In Normal mode, `a` enters Insert mode with the insertion point after the grapheme under the cursor.
-
-Given a line with `G` grapheme clusters and current cursor at grapheme index `c`:
-
-- The insertion grapheme offset becomes `min(c + 1, G)`.
-- Mode becomes Insert.
-
-### Repeated `a` then `Esc` regression guard (normative)
-
-After repeated `a` and `Esc`, the Normal-mode cursor MUST clamp to the last grapheme of the line (or `0` on empty line). The cursor MUST NOT remain at a floating end-inclusive offset in Normal mode.
-
-| Line graphemes | Expected Normal-mode offset after `a ... Esc` |
+| ID | Scenario |
 |---|---|
-| `G = 0` | `0` |
-| `G > 0` | `G - 1` |
-
-## Mode transition clamping
-
-When transitioning into an end-exclusive mode (Normal/Visual/Replace), the cursor MUST be clamped into the end-exclusive range for the active buffer/line.
-
-This clamping rule is mandatory even after rapid mode churn.
-
-## Tab character handling
-
-Tab characters are single graphemes with variable display width. The cursor model treats each tab as one grapheme at one grapheme index, regardless of how many display columns it occupies.
+| CUR-01 | `a` at non-EOL inserts after cursor grapheme |
+| CUR-02 | `a` at EOL inserts after final grapheme |
+| CUR-03 | `i` at EOL differs from `a` at EOL |
+| CUR-04 | `Shift+a` dispatches to `A` and moves to line end before Insert |
+| CUR-05 | Repeated `a` and `Esc` never leaves floating end-inclusive cursor in Normal mode |
+| CUR-06 | Mixed ASCII+CJK append keeps cursor on grapheme boundaries |
 
 ## Related
 
-- Design rationale: [/docs/design/editing/README.md](/docs/design/editing/README.md)
+- Keybinding mode entry: [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
 - Viewport management: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 - Unicode guidance: [/docs/technical/unicode.md](/docs/technical/unicode.md)

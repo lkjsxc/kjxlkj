@@ -2,62 +2,52 @@
 
 Back: [/docs/spec/editing/regex/README.md](/docs/spec/editing/regex/README.md)
 
-Zero-width assertions that match based on surrounding text without consuming it.
-
-## Overview
-
-Lookaround atoms assert that certain text exists (or does not exist) ahead of or behind the current position, without including that text in the match.
+Zero-width assertions that match by context without consuming text.
 
 ## Lookahead
 
 | Atom | Name | Meaning |
 |---|---|---|
-| `\(pattern\)\@=` | Positive lookahead | Succeeds if `pattern` matches ahead |
-| `\(pattern\)\@!` | Negative lookahead | Succeeds if `pattern` does NOT match ahead |
+| `\(pattern\)\@=` | Positive lookahead | succeeds if `pattern` matches ahead |
+| `\(pattern\)\@!` | Negative lookahead | succeeds if `pattern` does not match ahead |
 
 ## Lookbehind
 
 | Atom | Name | Meaning |
 |---|---|---|
-| `\(pattern\)\@<=` | Positive lookbehind | Succeeds if `pattern` matches behind |
-| `\(pattern\)\@<!` | Negative lookbehind | Succeeds if `pattern` does NOT match behind |
+| `\(pattern\)\@<=` | Positive lookbehind | succeeds if `pattern` matches behind |
+| `\(pattern\)\@<!` | Negative lookbehind | succeeds if `pattern` does not match behind |
 
-## Performance note
+## Performance Note
 
-Lookbehind with variable-length patterns can be expensive. The regex engine must try all possible lengths. Use `\@123<=` to limit the maximum lookbehind width to 123 bytes.
+Variable-length lookbehind is expensive. Prefer bounded patterns when possible.
 
-## Implementation limitation — variable-length lookbehind
+## Implementation Limitation
 
-The underlying Rust `regex` crate does **not** support variable-length lookbehind.  
-Patterns such as `\(foo\|foobar\)\@<=` or `\(x\+\)\@<=` that require variable-length
-lookbehind will fail to compile at runtime; the editor will silently skip the
-search or report a regex error.  Fixed-length lookbehind (e.g., `\(foo\)\@<=`)
-works correctly.
+The underlying Rust `regex` engine does not support variable-length lookbehind.
+Patterns like `\(foo\|foobar\)\@<=bar` may fail to compile.
 
-**Workaround**: rewrite variable-length lookbehind as a capturing group with
-`\zs` to set the match start instead:
+Preferred rewrite uses `\zs` match-start control:
 
-```
-\(foo\|foobar\)bar   →   \(foo\|foobar\)\zsbar
-```
+| Original | Rewrite |
+|---|---|
+| `\(foo\|foobar\)bar` | `\(foo\|foobar\)\zsbar` |
 
 ## Examples
 
 | Pattern | Matches |
 |---|---|
 | `foo\(bar\)\@=` | `foo` only when followed by `bar` |
-| `foo\(bar\)\@!` | `foo` only when NOT followed by `bar` |
+| `foo\(bar\)\@!` | `foo` only when not followed by `bar` |
 | `\(foo\)\@<=bar` | `bar` only when preceded by `foo` |
-| `\(foo\)\@<!bar` | `bar` only when NOT preceded by `foo` |
+| `\(foo\)\@<!bar` | `bar` only when not preceded by `foo` |
 
-## Match boundary interaction
+## Boundary Interaction
 
-Lookaround atoms interact with `\zs` and `\ze`:
-
-| Pattern | Matches | Explanation |
-|---|---|---|
-| `\(TODO\)\@<=:.*` | `:...` after `TODO` | Lookbehind for `TODO`, match starts at `:` |
-| `.*\ze\(;\)` | Text before `;` | Lookahead for `;`, match ends before it |
+| Pattern | Behavior |
+|---|---|
+| `\(TODO\)\@<=:.*` | matches text after `TODO` starting at `:` |
+| `.*\ze\(;\)` | matches text before `;` |
 
 ## Related
 

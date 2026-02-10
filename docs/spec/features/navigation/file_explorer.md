@@ -4,48 +4,40 @@ Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/
 
 The explorer is a native project tree view managed as an editor window.
 
-## Goals
-
-- Navigate project files without leaving editor context.
-- Open targets in current window, splits, or tabs.
-- Keep explorer responsive on large directories.
-
-## Explorer Window Contract
+## Core Contract
 
 | Requirement | Detail |
 |---|---|
-| Window identity | Explorer MUST be represented as a regular window in the layout tree |
-| Focus behavior | `Ctrl-w` navigation MUST move between explorer, buffer, and terminal windows |
-| Width control | Explorer width is window-local and resizable |
-| Close behavior | Closing explorer MUST not close non-explorer windows |
+| Window identity | Explorer is a normal `WindowId` in the shared layout tree |
+| Launch wiring | Explorer commands and keys route through real runtime dispatch |
+| Mixed-window navigation | `Ctrl-w` navigation works across explorer, buffer, and terminal |
+| Deterministic refresh | Tree updates are explicit and reproducible |
 
-## Activation
+## Launch and Command Wiring
 
-| Key/Command | Required Behavior |
+| Trigger | Required Path |
 |---|---|
-| `<leader>e` | Toggle explorer window |
-| `<leader>E` | Reveal current file in explorer |
-| `:Explorer` | Open explorer |
-| `:ExplorerClose` | Close explorer |
+| `:Explorer` | command parser -> core action -> explorer window open |
+| `:ExplorerClose` | command parser -> core action -> explorer window close |
+| `:ExplorerReveal` | command parser -> reveal current buffer path in explorer |
+| `<leader>e` | keymap -> explorer toggle action |
+| `<leader>E` | keymap -> explorer reveal action |
 
-## Core Navigation Keys
+An explorer feature MUST NOT be marked complete if these triggers do not reach
+visible runtime behavior.
+
+## Navigation and Open Targets
 
 | Key | Behavior |
 |---|---|
-| `j` / `k` | Move selection down/up visible nodes |
+| `j` / `k` | Move selection down/up |
 | `h` | Collapse directory or move to parent |
 | `l` | Expand directory or open file |
-| `Enter` | Open selected node |
-| `gg` / `G` | Jump to first/last visible node |
-
-## Open Targets
-
-| Key | Behavior |
-|---|---|
-| `o` | Open selected file in current window |
-| `v` | Open in vertical split |
-| `s` | Open in horizontal split |
-| `t` | Open in new tab |
+| `Enter` / `o` | Open file in current window |
+| `v` | Open file in vertical split |
+| `s` | Open file in horizontal split |
+| `t` | Open file in new tab |
+| `q` | Close explorer window |
 
 ## File Operations
 
@@ -54,52 +46,44 @@ The explorer is a native project tree view managed as an editor window.
 | `a` | Create file |
 | `A` | Create directory |
 | `r` | Rename |
-| `d` | Delete (safe mode) |
+| `d` | Safe delete |
 | `D` | Force delete |
 | `x` / `c` / `p` | Cut / copy / paste |
 | `y` / `Y` / `gy` | Copy name / relative path / absolute path |
 
-## Visual and Filter Controls
+## Rendering and Overflow Rules
 
-| Key | Behavior |
+| Rule | Requirement |
 |---|---|
-| `R` | Refresh tree |
-| `H` | Toggle hidden files |
-| `I` | Toggle ignored files |
-| `/` | Filter by substring |
-| `q` | Close explorer |
+| No off-screen text | Visible explorer rows MUST stay inside window bounds |
+| Long node labels | Long labels MUST soft-wrap to continuation rows in the explorer window |
+| Selection identity | Wrapped continuation rows are visual-only and map to one node |
+| Badges | Git/diagnostic badges render without corrupting node labels |
 
 ## Data and Service Model
 
 | Concern | Requirement |
 |---|---|
-| Directory traversal | MUST be incremental and cancellable |
-| Sort order | Directories first, files second, stable lexical order |
-| Hidden files | Controlled by explorer setting and filter |
-| Git badges | Async overlay from git service |
-| Diagnostic badges | Async overlay from diagnostics service |
+| Directory traversal | Incremental, cancellable listing |
+| Sorting | Directories first, then files, stable lexical order |
+| Hidden/ignored toggles | Deterministic and reversible |
+| FS updates | Refresh reflects external file changes |
+| Large directories | Input remains responsive under high entry counts |
 
-## Scalability Requirements
-
-| Scenario | Required Behavior |
-|---|---|
-| 10k-entry directory | Input remains responsive during listing |
-| Deep tree expansion | Expand/collapse operations are bounded and cancellable |
-| Large rename/move | Buffer paths and watchers update atomically |
-
-## Required Verification
+## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| EXP-01 | Toggle explorer, navigate, open file in same window |
-| EXP-02 | Open file from explorer into horizontal and vertical splits |
-| EXP-03 | Explorer with terminal and buffer windows under `Ctrl-w` navigation |
-| EXP-04 | Hidden/ignored toggles update visible set deterministically |
-| EXP-05 | Refresh after filesystem change updates tree without restart |
+| EXP-01 | `:Explorer` opens explorer window |
+| EXP-02 | `<leader>e` toggle and `<leader>E` reveal work |
+| EXP-03 | Open selected file into current, horizontal, and vertical targets |
+| EXP-04 | `Ctrl-w` navigation across explorer/buffer/terminal |
+| EXP-05 | Long file names wrap in explorer window without off-screen overflow |
+| EXP-06 | Refresh reflects external file creation/rename/delete |
 
 ## Related
 
 - Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
 - Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- Keybindings: [/docs/spec/ux/keybindings/navigation.md](/docs/spec/ux/keybindings/navigation.md)
-- Known gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Keybindings: [/docs/spec/ux/keybindings/features.md](/docs/spec/ux/keybindings/features.md)
+- E2E tests: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
