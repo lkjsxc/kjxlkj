@@ -56,6 +56,7 @@ All source files are now under 200 lines.
 - `eae8d034` docs: update progress log and fix crates.md typo
 - `f21c3382` docs: add wave 1 improvement ideas to logs
 - `3a947622` refactor: split painter.rs into color.rs and grid.rs
+- `c0abfd2c` feat: add gg, window commands, ZZ/ZQ, and multi-key prefix handling
 
 ### Improvement Ideas
 
