@@ -2,7 +2,7 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/reference/` tracks current verified behavior and explicit gaps.
+`/docs/reference/` tracks the strongest currently available evidence.
 
 ## Authority
 
@@ -15,14 +15,20 @@ Within current-state reporting, use this order:
 
 `/docs/spec/` remains the target behavior contract.
 
+## Evidence Discipline
+
+- strongest evidence wins
+- user-reported runtime failure outranks weaker model-level test confidence
+- no domain may be marked `verified` when a high-severity blocker remains open
+
 ## Documents
 
 | Document | Role |
 |---|---|
-| [CONFORMANCE.md](CONFORMANCE.md) | current verified behavior summary |
-| [LIMITATIONS.md](LIMITATIONS.md) | open user-visible mismatches |
-| [DRIFT_MATRIX.md](DRIFT_MATRIX.md) | requirement-by-requirement mismatch matrix |
-| [CI.md](CI.md) | verification gate definition |
+| [CONFORMANCE.md](CONFORMANCE.md) | current verified and blocked status |
+| [LIMITATIONS.md](LIMITATIONS.md) | active user-visible mismatches |
+| [DRIFT_MATRIX.md](DRIFT_MATRIX.md) | requirement-by-requirement mismatch tracking |
+| [CI.md](CI.md) | verification profile definition |
 | [RELEASE.md](RELEASE.md) | release evidence process |
 | [conformance/README.md](conformance/README.md) | domain sub-ledgers |
 | [COMPARISON.md](COMPARISON.md) | non-authoritative comparison notes |
@@ -30,9 +36,9 @@ Within current-state reporting, use this order:
 
 ## Update Discipline
 
-- update conformance, limitations, and drift matrix together
+- update conformance, limitations, and drift matrix in the same change
 - every `verified` claim needs deterministic evidence
-- unknown behavior must be marked as `unverified`
+- unresolved behavior must stay `partial`, `blocked`, or `unverified`
 
 ## Related
 

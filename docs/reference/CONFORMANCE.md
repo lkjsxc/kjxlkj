@@ -2,70 +2,62 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger records what is currently verified.
+This ledger records what is currently verified with deterministic evidence.
 
 ## Status Vocabulary
 
 | Status | Meaning |
 |---|---|
 | `verified` | confirmed by deterministic evidence in current repo state |
-| `partial` | partly available with user-visible gaps |
-| `scaffold-only` | structural artifacts exist but runtime path is incomplete |
-| `unverified` | no current evidence |
+| `partial` | partly available but user-visible reliability is not yet acceptable |
+| `unverified` | no trustworthy evidence for production behavior |
+| `blocked` | known mismatch with user-visible failure |
 
-## Current Snapshot (2026-02-10, reconstructed)
+## Current Snapshot (2026-02-10)
 
-Repository is in active reconstruction state. Phase 5 (hardening) active.
+The repository has source code and passing automated tests, but it is NOT release-ready.
 
-## Build Verification
+User-reported runtime failures are currently treated as authoritative blockers for:
 
-| Check | Status | Evidence |
-|---|---|---|
-| Workspace builds | `verified` | `cargo build --workspace` passes, 18 crates |
-| Formatting clean | `verified` | `cargo fmt --all -- --check` passes |
-| Clippy clean | `verified` | `cargo clippy --workspace --all-targets` zero warnings |
-| All tests pass | `verified` | `cargo test --workspace` 230 tests pass |
-| CI workflow present | `verified` | `.github/workflows/ci.yml` exists |
-| All files under 200 lines | `verified` | max file is 200 lines (116 source files) |
-| Directory children ≤ 12 | `verified` | all src/ directories ≤ 12 direct children |
+- split view behavior
+- explorer launch and interaction
+- `Shift+a` action path
+- multi-window navigation stability
+- long-line wrapping and cursor display
+- explorer and terminal window reliability
+
+## Verification Evidence Available
+
+| Check | Status | Evidence Date | Evidence |
+|---|---|---|---|
+| `cargo test --workspace` | `verified` | 2026-02-10 | 230 tests passed |
+| Unit/service contracts | `verified` | 2026-02-10 | crate-local suites pass |
+| Real interactive PTY E2E | `unverified` | 2026-02-10 | no deterministic harness proving user-facing flows end-to-end |
+| Manual user acceptance | `blocked` | 2026-02-10 | user reports critical runtime failures |
 
 ## Domain Summary
 
 | Domain | Status | Note |
 |---|---|---|
-| Input decoding | `partial` | Shift normalization verified (WR-01), KI tests pass |
-| Mode transitions | `verified` | Normal/Insert/Visual/Command/Replace/OpPending verified; visual dispatch with operators; replace overwrite with backspace restore |
-| Cursor semantics | `partial` | a/A/I wired with CUR-01 through CUR-05 tests |
-| Editing primitives | `verified` | Insert/delete/motion/operator verified; named registers (RegisterSet) with numbered, special; CE tests + register_tests + gap_tests |
-| Text/rope model | `verified` | CT-01 through CT-11 all pass |
-| Undo tree | `partial` | Basic undo/redo verified |
-| Rendering | `partial` | Grid/cell model verified (RR tests), diff rendering exists |
-| Ex commands | `verified` | :w, :w path, :q, :e, :set, :split, :vsplit parsed, routed, and executed |
-| Window tree | `verified` | Splits, tab pages, cycling (w/W), geometric directional focus (h/j/k/l using layout rectangles); 230 tests pass |
-| Terminal service | `verified` | VT parser, screen model, alternate screen, CSI/SGR dispatch; ST-01 to ST-12, PE-01 to PE-06 tests pass |
-| Explorer | `verified` | Toggle/reveal, j/k/h/l nav (expand/collapse), file ops (create/rename/delete), dispatch_explorer_key; gap_tests |
-| LSP service | `verified` | LspService with lifecycle, crash recovery, request dispatch; 8 tests pass |
-| Git service | `verified` | GitService with status cache, hunk navigation, signs; 8 tests pass |
-| Index/Finder service | `verified` | IndexService with fuzzy matching, finder queries; 12 tests pass |
-| Syntax highlighting | `verified` | Language detection, keyword/string/comment highlighting; 18 tests pass |
-| I18N/IME | `verified` | IME composition model with leader isolation; wired into insert mode dispatch via route_ime_key; commit/cancel/consume routing; JP-01 to JP-05 + drift_tests pass |
-| Long-line wrap safety | `verified` | Width-2 boundary padding; paint_window->paint_wrap integration; BD-01 to BD-10 + rwrap01 integration test pass |
-| Session persistence | `verified` | SessionData serde with layout tree; auto-session save/load on exit/startup; gap_tests |
-| Boundary/stress | `verified` | BD-03 to BD-10 boundary tests pass (7 new + 3 existing) |
-| Source topology | `verified` | 18 crates, all dirs ≤ 12 children, all files ≤ 200 lines |
-| Spec authority | `verified` | `/docs/spec/` is canonical target |
-| Reconstruction controls | `verified` | `/docs/todo/` governs rebuild sequencing and gates |
+| Input decoding and key normalization | `partial` | model-level tests pass, but `Shift+a` is reported broken in real usage |
+| Cursor semantics and display | `partial` | grapheme tests pass, but cursor display/wrap behavior is reported unstable |
+| Window tree and split management | `blocked` | split and multi-window behavior reported broken |
+| Explorer window and actions | `blocked` | explorer and related actions reported non-working |
+| Terminal window integration | `partial` | service tests pass; user-facing window reliability still suspect |
+| Wrapping and viewport safety | `partial` | boundary tests pass; real-screen behavior still reported buggy |
+| Services (LSP/Git/Index/FS) | `verified` | service-level tests pass, no new blocker report yet |
+| Documentation and TODO integrity | `partial` | TODO previously over-claimed completion; now reset to blocker-first wave |
 
-## Claim Rules
+## Release Readiness Rule
 
-Any runtime conformance claim MUST remain absent until reimplementation produces:
+The implementation MUST NOT be considered conformant for release until all critical blockers in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) are closed with:
 
-1. reachable behavior from real input path
-2. deterministic verification evidence
-3. synchronized updates to `LIMITATIONS` and `DRIFT_MATRIX`
+1. deterministic live E2E evidence
+2. reproduced bug regression tests
+3. synchronized `CONFORMANCE`, `LIMITATIONS`, `DRIFT_MATRIX`, and TODO updates
 
 ## Related
 
-- Open gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- Mismatch matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- Reconstruction TODO: [/docs/todo/current/README.md](/docs/todo/current/README.md)
+- Open blockers: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- Reconstruction plan: [/docs/todo/current/README.md](/docs/todo/current/README.md)
