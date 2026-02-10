@@ -6,8 +6,8 @@ This checklist directly links every markdown document in the repository.
 
 ## Inventory
 
-- Total tracked markdown docs: 446
-- Parts: 5
+- [x] Total tracked markdown docs: 439
+- [x] Parts: 5
 
 ## Parts
 
@@ -25,5 +25,5 @@ This checklist directly links every markdown document in the repository.
 
 ## Verification Rule
 
-- [x] no markdown document missing from part files
-- [x] no stale links in part files
+- [ ] no markdown document is missing from part files
+- [ ] no stale links remain in part files
