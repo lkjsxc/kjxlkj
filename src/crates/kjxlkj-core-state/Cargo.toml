@@ -11,6 +11,7 @@ kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }
 kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-input = { path = "../kjxlkj-input" }
 ropey = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

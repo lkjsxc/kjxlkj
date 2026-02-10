@@ -6,6 +6,7 @@
 mod buffer_list;
 mod editor;
 pub mod explorer;
+pub mod focus;
 pub mod session;
 mod tab_page;
 mod window_tree;

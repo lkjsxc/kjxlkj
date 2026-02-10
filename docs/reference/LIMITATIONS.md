@@ -9,7 +9,7 @@ reconstructed state.
 
 | ID | Observed State | Expected State | Severity | Next Action |
 |---|---|---|---|---|
-| LIM-BASELINE-01 | 18 crates reconstructed, 207 tests pass, services implemented, boundary tests pass | Full implementation conforming to all spec areas | low | close remaining C2/C3 gaps |
+| LIM-BASELINE-01 | 18 crates reconstructed, 230 tests pass, all drift items closed | Full implementation conforming to all spec areas | low | none — all drift items closed |
 
 ## Closed Blockers (This Wave)
 
@@ -19,9 +19,9 @@ reconstructed state.
 | LIM-BLOCK-CURSOR-01 | `a` at end-of-line differs from `i` | CUR-01 through CUR-05 tests pass in kjxlkj-core-state | **closed** |
 | LIM-BLOCK-EXP-01 | Explorer launch and split-open wired | HE-04, HE-05, WR-05, BD-08 tests pass | **closed** |
 | LIM-BLOCK-TERM-01 | Terminal window with VT parser | ST-01 to ST-12, PE-01 to PE-06, WR-03, WR-04 tests pass; alternate screen support added | **closed** |
-| LIM-BLOCK-WIN-01 | Mixed-window Ctrl-w navigation | WR-06 test passes; Ctrl-w w/W/s/v/c/q navigation for buffer/explorer/terminal | **closed** |
-| LIM-BLOCK-I18N-01 | IME composition and leader isolation | JP-01 to JP-05, PE-04 tests pass; composition model verified | **closed** |
-| LIM-BLOCK-WRAP-01 | Long lines never render off-screen | BD-01, BD-02, BD-03, BD-10, WR-07 tests pass; width-2 boundary padding verified | **closed** |
+| LIM-BLOCK-WIN-01 | Mixed-window Ctrl-w navigation | WR-06 test passes; Ctrl-w w/W/s/v/c/q + geometric h/j/k/l directional focus (230 tests) | **closed** |
+| LIM-BLOCK-I18N-01 | IME composition and leader isolation | JP-01 to JP-05, PE-04, drift_tests pass; IME wired into insert mode dispatch | **closed** |
+| LIM-BLOCK-WRAP-01 | Long lines never render off-screen | BD-01 to BD-10, WR-07, rwrap01 integration tests pass; paint_window delegates to paint_wrap | **closed** |
 
 ## Remaining Gaps (Deferred)
 

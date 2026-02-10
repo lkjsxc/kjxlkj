@@ -145,10 +145,16 @@ fn dispatch_window_key(key: &Key) -> DispatchResult {
             KeyCode::Char('c') | KeyCode::Char('q') => {
                 DispatchResult::Action(KeyAction::WindowClose)
             }
-            KeyCode::Char('h') | KeyCode::Left => DispatchResult::Action(KeyAction::WindowNext),
-            KeyCode::Char('j') | KeyCode::Down => DispatchResult::Action(KeyAction::WindowNext),
-            KeyCode::Char('k') | KeyCode::Up => DispatchResult::Action(KeyAction::WindowPrev),
-            KeyCode::Char('l') | KeyCode::Right => DispatchResult::Action(KeyAction::WindowNext),
+            KeyCode::Char('h') | KeyCode::Left => {
+                DispatchResult::Action(KeyAction::WindowFocusLeft)
+            }
+            KeyCode::Char('j') | KeyCode::Down => {
+                DispatchResult::Action(KeyAction::WindowFocusDown)
+            }
+            KeyCode::Char('k') | KeyCode::Up => DispatchResult::Action(KeyAction::WindowFocusUp),
+            KeyCode::Char('l') | KeyCode::Right => {
+                DispatchResult::Action(KeyAction::WindowFocusRight)
+            }
             KeyCode::Char('n') => DispatchResult::Action(KeyAction::WindowSplitH),
             KeyCode::Esc => DispatchResult::Noop,
             _ => DispatchResult::Noop,

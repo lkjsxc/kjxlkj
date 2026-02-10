@@ -3,6 +3,7 @@
 use kjxlkj_core_mode::DispatchResult;
 use kjxlkj_core_types::{Action, Key, KeyAction, Mode};
 use kjxlkj_core_ui::WindowContent;
+use kjxlkj_input::ime_route::{route_ime_key, ImeResult};
 
 use super::cursor_ops;
 use crate::editor::EditorState;
@@ -26,6 +27,20 @@ impl EditorState {
         if let Mode::Command(_) = &self.mode {
             self.process_cmdline_key(&key);
             return;
+        }
+        // IME routing: in Insert mode, route through IME before dispatch.
+        if self.mode == Mode::Insert && self.ime.is_composing() {
+            match route_ime_key(&mut self.ime, &key.code) {
+                ImeResult::Consumed => return,
+                ImeResult::Commit(text) => {
+                    for c in text.chars() {
+                        self.do_insert_char(c);
+                    }
+                    return;
+                }
+                ImeResult::Cancelled => return,
+                ImeResult::PassThrough => {} // fall through to normal dispatch
+            }
         }
         // Explorer-focused window: use explorer dispatch in Normal mode
         if self.mode == Mode::Normal {
@@ -70,6 +85,22 @@ impl EditorState {
             KeyAction::ExCommand(cmd) => self.execute_ex(&cmd),
             KeyAction::WindowNext => self.windows.active_tab_mut().next_window(),
             KeyAction::WindowPrev => self.windows.active_tab_mut().prev_window(),
+            KeyAction::WindowFocusLeft => self
+                .windows
+                .active_tab_mut()
+                .focus_direction(crate::focus::FocusDir::Left),
+            KeyAction::WindowFocusRight => self
+                .windows
+                .active_tab_mut()
+                .focus_direction(crate::focus::FocusDir::Right),
+            KeyAction::WindowFocusUp => self
+                .windows
+                .active_tab_mut()
+                .focus_direction(crate::focus::FocusDir::Up),
+            KeyAction::WindowFocusDown => self
+                .windows
+                .active_tab_mut()
+                .focus_direction(crate::focus::FocusDir::Down),
             KeyAction::WindowSplitH => self.do_window_split_h(),
             KeyAction::WindowSplitV => self.do_window_split_v(),
             KeyAction::WindowClose => self.do_window_close(),

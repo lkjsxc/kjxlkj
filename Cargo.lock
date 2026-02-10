@@ -225,6 +225,7 @@ dependencies = [
  "kjxlkj-core-types",
  "kjxlkj-core-ui",
  "kjxlkj-core-undo",
+ "kjxlkj-input",
  "kjxlkj-service-terminal",
  "ropey",
  "serde",

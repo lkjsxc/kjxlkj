@@ -3,6 +3,7 @@
 use kjxlkj_core_types::WindowId;
 use kjxlkj_core_ui::{LayoutChild, LayoutNode};
 
+use crate::focus::{find_focus, FocusDir};
 use crate::window_tree::Window;
 
 /// A tab page containing a layout tree.
@@ -106,6 +107,19 @@ impl TabPage {
             } else {
                 self.active_window - 1
             };
+        }
+    }
+
+    /// Navigate to nearest window in the given direction.
+    pub fn focus_direction(&mut self, dir: FocusDir) {
+        if self.windows.len() <= 1 {
+            return;
+        }
+        let cur_id = self.windows[self.active_window].id;
+        if let Some(target) = find_focus(&self.layout, cur_id, dir) {
+            if let Some(idx) = self.windows.iter().position(|w| w.id == target) {
+                self.active_window = idx;
+            }
         }
     }
 

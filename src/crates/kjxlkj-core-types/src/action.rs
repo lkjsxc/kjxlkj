@@ -97,6 +97,11 @@ pub enum KeyAction {
     ReplaceChar(char),
     /// Backspace in replace mode (restores original).
     ReplaceBackspace,
+    /// Window focus direction (Ctrl-w h/j/k/l).
+    WindowFocusLeft,
+    WindowFocusRight,
+    WindowFocusUp,
+    WindowFocusDown,
     /// Delete the selected visual region.
     VisualOperator(crate::mode::Operator),
 }

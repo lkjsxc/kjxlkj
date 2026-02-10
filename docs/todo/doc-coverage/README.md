@@ -20,8 +20,8 @@ This checklist directly links every markdown document in the repository.
 ## Regeneration Rule
 
 - [x] regenerate part files after any docs add/remove/rename
-- [ ] keep direct links absolute (`/docs/...` or `/README.md`)
-- [ ] keep entries unchecked until verified in an implementation wave
+- [x] keep direct links absolute (`/docs/...` or `/README.md`)
+- [x] keep entries unchecked until verified in an implementation wave
 
 ## Verification Rule
 

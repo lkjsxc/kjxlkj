@@ -2,6 +2,7 @@
 
 mod boundary_tests;
 mod cursor_ops_tests;
+mod drift_tests;
 mod editor_core_tests;
 mod feature_tests;
 mod gap_tests;

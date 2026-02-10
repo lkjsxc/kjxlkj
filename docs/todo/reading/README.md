@@ -9,17 +9,17 @@ unnecessary historical noise.
 
 ## Required Priority
 
-- [ ] `/docs/policy/` first
-- [ ] `/docs/spec/` second
-- [ ] `/docs/reference/` third
-- [ ] `/docs/todo/current/` fourth
+- [x] `/docs/policy/` first
+- [x] `/docs/spec/` second
+- [x] `/docs/reference/` third
+- [x] `/docs/todo/current/` fourth
 
 ## Rules
 
-- [ ] read canonical docs before any behavior-changing implementation work
-- [ ] resolve contradictions in canonical docs first, not in temporary notes
-- [ ] if a gap is intentionally deferred, record it in limitations and TODO
-- [ ] avoid creating long-lived historical notes when canonical docs can be updated directly
+- [x] read canonical docs before any behavior-changing implementation work
+- [x] resolve contradictions in canonical docs first, not in temporary notes
+- [x] if a gap is intentionally deferred, record it in limitations and TODO
+- [x] avoid creating long-lived historical notes when canonical docs can be updated directly
 
 ## Minimal Recording
 

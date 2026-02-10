@@ -11,6 +11,7 @@ use kjxlkj_core_ui::{
     WindowContent, WindowSnapshot,
 };
 use kjxlkj_core_undo::UndoTree;
+use kjxlkj_input::ime::ImeComposition;
 
 use crate::buffer_list::BufferList;
 use crate::explorer::ExplorerState;
@@ -34,6 +35,7 @@ pub struct EditorState {
     pub explorer: ExplorerState,
     pub visual_anchor: Option<(usize, usize)>,
     pub replace_stack: Vec<Option<char>>,
+    pub ime: ImeComposition,
     next_terminal_id: u64,
 }
 
@@ -57,6 +59,7 @@ impl EditorState {
             explorer: ExplorerState::default(),
             visual_anchor: None,
             replace_stack: Vec::new(),
+            ime: ImeComposition::new(),
             next_terminal_id: 1,
         };
         state.init_scratch();

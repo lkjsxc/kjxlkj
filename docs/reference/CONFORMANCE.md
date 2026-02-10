@@ -24,7 +24,7 @@ Repository is in active reconstruction state. Phase 5 (hardening) active.
 | Workspace builds | `verified` | `cargo build --workspace` passes, 18 crates |
 | Formatting clean | `verified` | `cargo fmt --all -- --check` passes |
 | Clippy clean | `verified` | `cargo clippy --workspace --all-targets` zero warnings |
-| All tests pass | `verified` | `cargo test --workspace` 224 tests pass |
+| All tests pass | `verified` | `cargo test --workspace` 230 tests pass |
 | CI workflow present | `verified` | `.github/workflows/ci.yml` exists |
 | All files under 200 lines | `verified` | max file is 200 lines (116 source files) |
 | Directory children ≤ 12 | `verified` | all src/ directories ≤ 12 direct children |
@@ -41,15 +41,15 @@ Repository is in active reconstruction state. Phase 5 (hardening) active.
 | Undo tree | `partial` | Basic undo/redo verified |
 | Rendering | `partial` | Grid/cell model verified (RR tests), diff rendering exists |
 | Ex commands | `verified` | :w, :w path, :q, :e, :set, :split, :vsplit parsed, routed, and executed |
-| Window tree | `partial` | Splits, tab pages, window navigation present |
+| Window tree | `verified` | Splits, tab pages, cycling (w/W), geometric directional focus (h/j/k/l using layout rectangles); 230 tests pass |
 | Terminal service | `verified` | VT parser, screen model, alternate screen, CSI/SGR dispatch; ST-01 to ST-12, PE-01 to PE-06 tests pass |
 | Explorer | `verified` | Toggle/reveal, j/k/h/l nav (expand/collapse), file ops (create/rename/delete), dispatch_explorer_key; gap_tests |
 | LSP service | `verified` | LspService with lifecycle, crash recovery, request dispatch; 8 tests pass |
 | Git service | `verified` | GitService with status cache, hunk navigation, signs; 8 tests pass |
 | Index/Finder service | `verified` | IndexService with fuzzy matching, finder queries; 12 tests pass |
 | Syntax highlighting | `verified` | Language detection, keyword/string/comment highlighting; 18 tests pass |
-| I18N/IME | `verified` | IME composition model with leader isolation; JP-01 to JP-05 tests pass |
-| Long-line wrap safety | `verified` | Width-2 boundary padding; BD-01 through BD-10 tests pass |
+| I18N/IME | `verified` | IME composition model with leader isolation; wired into insert mode dispatch via route_ime_key; commit/cancel/consume routing; JP-01 to JP-05 + drift_tests pass |
+| Long-line wrap safety | `verified` | Width-2 boundary padding; paint_window->paint_wrap integration; BD-01 to BD-10 + rwrap01 integration test pass |
 | Session persistence | `verified` | SessionData serde with layout tree; auto-session save/load on exit/startup; gap_tests |
 | Boundary/stress | `verified` | BD-03 to BD-10 boundary tests pass (7 new + 3 existing) |
 | Source topology | `verified` | 18 crates, all dirs ≤ 12 children, all files ≤ 200 lines |

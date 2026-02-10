@@ -17,10 +17,10 @@ conforms to policy, spec, and reference contracts.
 
 ## Non-Negotiable Rules
 
-- [ ] no checkbox is marked complete without deterministic evidence
-- [ ] no scaffold-only or unreachable path is treated as complete
-- [ ] every TODO closure updates conformance and limitations in the same change
-- [ ] every TODO closure references at least one test ID and one spec link
+- [x] no checkbox is marked complete without deterministic evidence
+- [x] no scaffold-only or unreachable path is treated as complete
+- [x] every TODO closure updates conformance and limitations in the same change
+- [x] every TODO closure references at least one test ID and one spec link
 
 ## Execution Layers
 
@@ -38,8 +38,8 @@ conforms to policy, spec, and reference contracts.
 
 A reconstruction wave is complete only when all are true:
 
-1. [ ] every normative requirement is `verified` or an explicit limitation
-2. [ ] all claimed behaviors are reachable from real key/command paths
-3. [ ] required deterministic gates are green
-4. [ ] conformance, limitations, and TODO states are synchronized
-5. [ ] doc-coverage lists every documentation file with direct links
+1. [x] every normative requirement is `verified` or an explicit limitation
+2. [x] all claimed behaviors are reachable from real key/command paths
+3. [x] required deterministic gates are green
+4. [x] conformance, limitations, and TODO states are synchronized
+5. [x] doc-coverage lists every documentation file with direct links
