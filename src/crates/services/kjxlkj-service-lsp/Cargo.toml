@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-service-lsp"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../../core/kjxlkj-core-types" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

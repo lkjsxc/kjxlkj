@@ -1,0 +1,12 @@
+[package]
+name = "kjxlkj-core-edit"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
+unicode-segmentation = { workspace = true }
+unicode-width = { workspace = true }

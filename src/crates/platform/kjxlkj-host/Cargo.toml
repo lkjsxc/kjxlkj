@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-host"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../../core/kjxlkj-core-types" }
+crossterm = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }

@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-service-git"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../../core/kjxlkj-core-types" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }

@@ -1,0 +1,13 @@
+[package]
+name = "kjxlkj-services"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kjxlkj-service-fs = { path = "../kjxlkj-service-fs" }
+kjxlkj-service-git = { path = "../kjxlkj-service-git" }
+kjxlkj-service-index = { path = "../kjxlkj-service-index" }
+kjxlkj-service-lsp = { path = "../kjxlkj-service-lsp" }
+kjxlkj-service-terminal = { path = "../kjxlkj-service-terminal" }
+tokio.workspace = true
+tracing.workspace = true
