@@ -123,4 +123,50 @@ mod tests {
         let decoded = decode_key(ct_event);
         assert_eq!(decoded.key, Key::Char('a'));
     }
+
+    #[test]
+    fn test_ctrl_w() {
+        let ct_event = make_key_event(KeyCode::Char('w'), KeyModifiers::CONTROL);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Char('w'));
+        assert!(decoded.modifiers.ctrl);
+        assert!(!decoded.modifiers.shift);
+    }
+
+    #[test]
+    fn test_ctrl_shift_v() {
+        let ct_event = make_key_event(KeyCode::Char('V'), KeyModifiers::CONTROL | KeyModifiers::SHIFT);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Char('V'));
+        assert!(decoded.modifiers.ctrl);
+        assert!(!decoded.modifiers.shift); // Shift absorbed into char.
+    }
+
+    #[test]
+    fn test_escape() {
+        let ct_event = make_key_event(KeyCode::Esc, KeyModifiers::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Special(SpecialKey::Escape));
+    }
+
+    #[test]
+    fn test_enter() {
+        let ct_event = make_key_event(KeyCode::Enter, KeyModifiers::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Special(SpecialKey::Enter));
+    }
+
+    #[test]
+    fn test_arrow_keys() {
+        let ct_event = make_key_event(KeyCode::Up, KeyModifiers::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Special(SpecialKey::Up));
+    }
+
+    #[test]
+    fn test_f_keys() {
+        let ct_event = make_key_event(KeyCode::F(5), KeyModifiers::NONE);
+        let decoded = decode_key(ct_event);
+        assert_eq!(decoded.key, Key::Special(SpecialKey::F(5)));
+    }
 }
