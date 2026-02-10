@@ -2,6 +2,25 @@
 
 use kjxlkj_core_types::{Mode, VisualKind, CommandKind, PendingOperator};
 
+/// Pending prefix for multi-key sequences.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PendingPrefix {
+    #[default]
+    None,
+    /// 'g' prefix for 'gg', 'ge', etc.
+    G,
+    /// '"' register prefix.
+    Register,
+    /// 'm' mark set prefix.
+    Mark,
+    /// '\'' mark jump prefix.
+    MarkJump,
+    /// 'Z' prefix for ZZ/ZQ.
+    Z,
+    /// Ctrl-w window prefix.
+    Window,
+}
+
 /// Mode state with additional context.
 #[derive(Debug, Clone, Default)]
 pub struct ModeState {
@@ -11,6 +30,8 @@ pub struct ModeState {
     pub count: Option<usize>,
     /// Selected register.
     pub register: Option<char>,
+    /// Pending prefix for multi-key sequences.
+    pub pending_prefix: PendingPrefix,
     /// Command line content (for Command mode).
     pub cmdline: String,
     /// Command line cursor position.
@@ -32,6 +53,7 @@ impl ModeState {
     pub fn reset_prefix(&mut self) {
         self.count = None;
         self.register = None;
+        self.pending_prefix = PendingPrefix::None;
     }
 
     /// Transition to a new mode.

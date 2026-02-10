@@ -66,10 +66,10 @@ Prohibited:
 
 <source_layout_contract>
 Workspace members MUST follow grouped crate paths:
-- [ ] /src/crates/app/
-- [ ] /src/crates/core/
-- [ ] /src/crates/platform/
-- [ ] /src/crates/services/
+- [x] /src/crates/app/
+- [x] /src/crates/core/
+- [x] /src/crates/platform/
+- [x] /src/crates/services/
 
 Keep each source directory around 12 direct children and each source file at or below 200 lines.
 </source_layout_contract>

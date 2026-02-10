@@ -46,6 +46,10 @@ pub enum ModeAction {
     Quit { force: bool },
     /// Write buffer.
     Write(Option<String>),
+    /// Write and quit.
+    WriteAndQuit,
+    /// Quit without saving.
+    QuitWithoutSave,
     /// Open file.
     OpenFile(String),
     /// Open explorer.
@@ -53,11 +57,11 @@ pub enum ModeAction {
     /// Open terminal.
     OpenTerminal,
     /// Split window.
-    Split(kjxlkj_core_types::SplitDirection),
+    SplitWindow(kjxlkj_core_types::SplitDirection),
     /// Close window.
-    CloseWindow,
-    /// Focus window.
-    FocusWindow(WindowTarget),
+    CloseWindow(WindowTarget),
+    /// Focus window by direction.
+    FocusWindow(FocusDirection),
     /// Scroll viewport.
     Scroll(ScrollAction),
     /// Set mark.
@@ -95,21 +99,13 @@ pub enum InsertPosition {
     NewLineAbove,
 }
 
-/// Window focus target.
+/// Window target for close operations.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WindowTarget {
-    /// Focus by direction.
-    Direction(FocusDirection),
-    /// Next window.
-    Next,
-    /// Previous window.
-    Previous,
-    /// Last focused window.
-    Last,
-    /// Top-left window.
-    TopLeft,
-    /// Bottom-right window.
-    BottomRight,
+    /// Current window.
+    Current,
+    /// All other windows.
+    Others,
 }
 
 /// Focus direction.
@@ -123,6 +119,10 @@ pub enum FocusDirection {
     Up,
     /// Down.
     Down,
+    /// Next window (cycle).
+    Next,
+    /// Previous window (cycle).
+    Previous,
 }
 
 /// Scroll action.
