@@ -1,9 +1,0 @@
-target/
-docs/
-.git/
-.github/
-.gitignore
-.dockerignore
-Dockerfile
-README.md
-LICENSE

@@ -2,11 +2,18 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
+## Gate -1: Standby Baseline
+
+- [x] docs-only baseline is active
+- [x] source/workspace artifacts are absent by design
+- [x] reconstructed-profile CI workflow is absent by design
+- [x] conformance/limitations/drift are synchronized to standby state
+
 ## Gate 0: Inventory and Drift
 
-- [x] requirement matrix links canonical spec for high-risk domains
-- [x] mismatch matrix classifies drift using `M1`..`M5`
-- [x] limitations are synchronized with user-reported blockers
+- [ ] requirement matrix links canonical spec for high-risk domains
+- [ ] mismatch matrix classifies drift using `M1`..`M5`
+- [ ] limitations are synchronized with observed runtime evidence
 
 ## Gate 1: Reachability
 

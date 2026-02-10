@@ -28,12 +28,15 @@ Canonical explanation:
 - Docs-only baseline: canonical docs are present; derived artifacts may be absent.
 - Reconstructed implementation: workspace and automation artifacts are regenerated from docs.
 
+Current state: docs-only baseline active.
+
 ## Reconstructing the Implementation
 
 Follow:
 
 - [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
 - [docs/todo/README.md](docs/todo/README.md)
+- [docs/todo/current/README.md](docs/todo/current/README.md)
 
 When reconstructed, the Rust workspace is expected under `src/crates/` with
 grouped crate roots:

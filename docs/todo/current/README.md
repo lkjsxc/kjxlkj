@@ -2,17 +2,24 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: active blocker-closure wave (2026-02-10).
+Status: docs-only standby baseline active (2026-02-10).
 
-## Global Preconditions
+## Standby Baseline (Completed)
 
-- [x] canonical docs read in required order
-- [x] requirement matrix refreshed for high-risk domains
-- [x] mismatch matrix refreshed with `M1`..`M5` classes
-- [x] existing automated test evidence captured (`cargo test --workspace`)
-- [x] user-reported runtime failures promoted to open limitations
+- [x] source code tree removed from repository baseline
+- [x] workspace/toolchain/build manifests removed from root baseline
+- [x] reconstructed-profile CI workflow removed for regeneration
+- [x] reference ledgers synchronized to docs-only state
 
-## Immediate Blockers (Must Close First)
+## Next-Wave Preconditions (Start Here)
+
+- [ ] read canonical docs in required order
+- [ ] regenerate workspace using grouped crate roots
+- [ ] refresh requirement matrix for high-risk domains
+- [ ] refresh mismatch matrix with current implementation evidence
+- [ ] identify highest-risk user-visible workflows first
+
+## Immediate Blockers (Must Close First After Regeneration)
 
 - [ ] `LIM-BLOCK-KEY-02` `Shift+a` real runtime path
 - [ ] `LIM-BLOCK-WIN-02` split and multi-window correctness

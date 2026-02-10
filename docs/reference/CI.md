@@ -10,6 +10,11 @@ Reproducible verification profiles.
 
 In docs-only baseline state, this workflow may be absent and must be regenerated.
 
+## Current Baseline State (2026-02-10)
+
+- active profile: `Docs-only`
+- reconstructed-profile workflow file is intentionally absent
+
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
