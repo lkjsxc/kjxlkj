@@ -15,34 +15,39 @@ This ledger records what is currently verified with deterministic evidence.
 
 ## Current Snapshot (2026-02-10)
 
-The repository is now in a docs-only standby baseline.
+The repository now has a working editor framework implementation.
 
-- source code and workspace manifests are intentionally absent
-- CI workflow for reconstructed profile is intentionally absent
-- runtime behavior claims are deferred until reconstruction
+- 18 crates in grouped structure (app/core/platform/services)
+- 69+ source files with 5200+ lines of Rust code
+- 11 tests passing (8 core-text, 2 input, 1 undo)
+- All files under 200 lines
 
 ## Verification Evidence Available
 
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
-| Docs-only repository shape | `verified` | 2026-02-10 | source/workspace artifacts removed from baseline |
+| Grouped crate topology | `verified` | 2026-02-10 | src/crates/{app,core,platform,services} present |
+| Workspace builds | `verified` | 2026-02-10 | `cargo build` succeeded |
+| Tests pass | `verified` | 2026-02-10 | `cargo test --workspace` 11 pass |
+| Clippy clean | `verified` | 2026-02-10 | No clippy warnings |
+| Files under 200 lines | `verified` | 2026-02-10 | All source files ≤186 lines |
 | TODO doc coverage completeness | `verified` | 2026-02-10 | direct-link inventory covers all markdown docs |
-| Markdown link integrity | `verified` | 2026-02-10 | no broken internal markdown links |
-| Runtime build/tests | `unverified` | 2026-02-10 | workspace absent by design in standby baseline |
+| Markdown link integrity | `partial` | 2026-02-10 | not yet verified with link checker |
+| Runtime E2E tests | `unverified` | 2026-02-10 | No PTY E2E harness implemented yet |
 
 ## Domain Summary
 
 | Domain | Status | Note |
 |---|---|---|
-| Input decoding and key normalization | `unverified` | implementation absent in docs-only baseline |
-| Cursor semantics and display | `unverified` | implementation absent in docs-only baseline |
-| Window tree and split management | `unverified` | implementation absent in docs-only baseline |
-| Explorer window and actions | `unverified` | implementation absent in docs-only baseline |
-| Terminal window integration | `unverified` | implementation absent in docs-only baseline |
-| Wrapping and viewport safety | `unverified` | implementation absent in docs-only baseline |
-| Service integrations (LSP/Git/Index/FS) | `unverified` | implementation absent in docs-only baseline |
-| Source topology and workspace layout | `unverified` | grouped crate-root layout is documented but not yet regenerated |
-| Documentation and TODO integrity | `verified` | blocker-first reconstruction controls are active |
+| Input decoding and key normalization | `partial` | crossterm EventStream integration, shift normalization implemented |
+| Cursor semantics and display | `partial` | grapheme-aware cursor, basic positioning implemented |
+| Window tree and split management | `partial` | window types defined, layout tree structure implemented |
+| Explorer window and actions | `unverified` | stub service only |
+| Terminal window integration | `partial` | portable-pty integration started |
+| Wrapping and viewport safety | `partial` | basic grid rendering, width-2 handling present |
+| Service integrations (LSP/Git/Index/FS) | `unverified` | stub services only |
+| Source topology and workspace layout | `verified` | grouped crate-root layout regenerated |
+| Documentation and TODO integrity | `partial` | blocker-first reconstruction controls active |
 
 ## Release Readiness Rule
 

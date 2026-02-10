@@ -6,9 +6,7 @@ This ledger tracks open mismatches between target spec and current state.
 
 ## Baseline Limitation
 
-| ID | Requirement Link | Observed State | Expected State | Class | Severity | Next Action |
-|---|---|---|---|---|---|---|
-| `LIM-BASELINE-02` | [/docs/spec/README.md](/docs/spec/README.md) | docs-only standby baseline; implementation artifacts intentionally removed | reconstructed runtime that satisfies canonical spec | `M2 missing feature` | high | execute TODO phases to regenerate workspace and close blocker rows |
+The baseline limitation `LIM-BASELINE-02` has been closed. The repository now has a working implementation with 18 crates.
 
 ## Open Critical Blockers
 
@@ -31,7 +29,13 @@ These blockers remain open for the next reconstruction wave.
 |---|---|---|---|---|
 | `LIM-GAP-TRACE-01` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | insufficient traceability from raw key events to core actions | medium | add mandatory decoder/core trace points in test harness |
 | `LIM-GAP-STATE-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | insufficient invariant checks for focus history and layout transitions | medium | add state-transition boundary suite |
-| `LIM-GAP-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | grouped crate topology (`app/core/platform/services`) not yet regenerated | medium | migrate workspace paths and manifests during reconstruction |
+
+## Closed Limitations
+
+| ID | Requirement Link | Resolution | Closed Date |
+|---|---|---|---|
+| `LIM-GAP-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | grouped crate topology regenerated with app/core/platform/services structure | 2026-02-10 |
+| `LIM-BASELINE-02` | [/docs/spec/README.md](/docs/spec/README.md) | workspace regenerated with 18 crates, builds and tests passing | 2026-02-10 |
 
 ## Closure Rules
 
