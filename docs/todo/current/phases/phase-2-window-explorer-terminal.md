@@ -9,10 +9,11 @@ Shared window-tree behavior and non-buffer window reliability.
 ## Tasks
 
 - [ ] fix split lifecycle and geometric focus behavior
+- [ ] fix mixed-window `Ctrl-w` directional and cyclic navigation behavior
 - [ ] fix explorer launch/toggle/reveal command and key paths
 - [ ] fix terminal launch and mixed-window navigation behavior
 - [ ] validate close/resize/rebalance invariants across mixed windows
-- [ ] close `LIM-BLOCK-WIN-02`, `LIM-BLOCK-EXP-02`, and `LIM-BLOCK-TERM-02`
+- [ ] close `LIM-BLOCK-WIN-02`, `LIM-BLOCK-NAV-02`, `LIM-BLOCK-EXP-02`, and `LIM-BLOCK-TERM-02`
 
 ## Required Spec Links
 

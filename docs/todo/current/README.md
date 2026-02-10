@@ -16,6 +16,7 @@ Status: active blocker-closure wave (2026-02-10).
 
 - [ ] `LIM-BLOCK-KEY-02` `Shift+a` real runtime path
 - [ ] `LIM-BLOCK-WIN-02` split and multi-window correctness
+- [ ] `LIM-BLOCK-NAV-02` mixed-window `Ctrl-w` navigation correctness
 - [ ] `LIM-BLOCK-EXP-02` explorer launch and actions
 - [ ] `LIM-BLOCK-TERM-02` terminal window stability
 - [ ] `LIM-BLOCK-CURSOR-02` cursor display correctness
