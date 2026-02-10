@@ -16,8 +16,8 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 
 - [x] read canonical docs in required order
 - [x] regenerate workspace using grouped crate roots
-- [ ] refresh requirement matrix for high-risk domains
-- [ ] refresh mismatch matrix with current implementation evidence
+- [x] refresh requirement matrix for high-risk domains
+- [x] refresh mismatch matrix with current implementation evidence
 - [ ] identify highest-risk user-visible workflows first
 
 ## Immediate Blockers (Progress Tracking)
