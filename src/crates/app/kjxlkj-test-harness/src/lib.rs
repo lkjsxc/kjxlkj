@@ -9,6 +9,8 @@ use kjxlkj_core_state::WindowTree;
 
 #[cfg(test)]
 mod wr_tests;
+#[cfg(test)]
+mod ime_tests;
 
 /// Test harness for headless state testing
 pub struct StateHarness {
