@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "src/crates/app/kjxlkj",
+    "src/crates/app/kjxlkj-test-harness",
     "src/crates/core/kjxlkj-core",
     "src/crates/core/kjxlkj-core-types",
     "src/crates/core/kjxlkj-core-text",

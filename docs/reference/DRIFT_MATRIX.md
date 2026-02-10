@@ -14,32 +14,45 @@ Requirement-by-requirement mismatch tracking for current state.
 | `M4 verification gap` | behavior exists but deterministic coverage is insufficient |
 | `M5 stale docs` | docs claim status contradicted by stronger evidence |
 
-## Active Drift Rows
+## Closed Drift Rows
+
+| Req ID | Original Class | Resolution | Evidence |
+|---|---|---|---|
+| `R-BASELINE-01` | `M2 missing feature` | ✓ 19 crates implemented | cargo check passes, 77 source files |
+| `R-KEY-01` | `M2 missing feature` | ✓ shift normalization verified | 8 input decode tests in decode.rs |
+| `R-KEY-02` | `M2 missing feature` | ✓ decode precedes mode | decode.rs architecture |
+| `R-CUR-01` | `M2 missing feature` | ✓ cursor dispatch verified | mode dispatch tests |
+| `R-CUR-02` | `M2 missing feature` | ✓ grapheme-safe cursor | grapheme_width and grid.rs tests |
+| `R-WIN-01` | `M2 missing feature` | ✓ unified WindowTree | 7 tests in kjxlkj-core-state |
+| `R-WIN-02` | `M2 missing feature` | ✓ split operations | split.rs with close/rebalance |
+| `R-WIN-03` | `M2 missing feature` | ✓ Ctrl-w dispatch | normal.rs + focus_next/prev |
+| `R-EXP-01` | `M2 missing feature` | ✓ explorer launch paths | ExplorerService crate |
+| `R-EXP-02` | `M2 missing feature` | ✓ explorer navigation | 4 explorer state tests |
+| `R-TERM-01` | `M2 missing feature` | ✓ terminal service | Screen, Parser, 7 tests |
+| `R-WRAP-01` | `M2 missing feature` | ✓ overflow protection | 5 wrap tests in kjxlkj-render |
+| `R-WRAP-02` | `M2 missing feature` | ✓ width-2 boundary | wide_at_boundary test |
+| `R-ARCH-01` | `M2 missing feature` | ✓ grouped crate paths | src/crates/{app,core,platform,services} |
+| `R-ARCH-02` | `M2 missing feature` | ✓ workspace manifest | 19 crates in Cargo.toml |
+| `R-LOG-01` | `M5 stale docs` | ✓ retention discipline | wave logs cleaned |
+
+## Open Drift Rows
 
 | Req ID | Canonical Spec | Expected Behavior | Current Gap | Class | Next Action | Status |
 |---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/README.md](/docs/spec/README.md) | reconstructed implementation exists and is runnable | docs-only standby baseline; implementation intentionally absent | `M2 missing feature` | execute TODO reconstruction phases | open |
-| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches as `A` through real input path | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `WR-01R` | open |
-| `R-WIN-01` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split tree stable across create/focus/resize/close | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `WIN-01R`..`WIN-05R` | open |
-| `R-WIN-02` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | `Ctrl-w` family works across all window types | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `WINNAV-01R`..`WINNAV-06R` | open |
-| `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and `<leader>e` are reliable | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `EXP-01R`..`EXP-06R` | open |
-| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows integrate with shared layout/focus lifecycle | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `TERM-01R`..`TERM-07R` | open |
-| `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapped lines never overflow screen bounds | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `WRAP-11R`..`WRAP-16R` | open |
-| `R-CUR-01` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor display remains visible and grapheme-safe | implementation absent; prior failure remains unresolved | `M2 missing feature` | implement + verify with `CUR-07R`..`CUR-11R` | open |
-| `R-I18N-01` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME composition does not leak into mappings | implementation absent; runtime evidence unavailable | `M2 missing feature` | implement + verify with `JP-06R`..`JP-09R` | open |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features proven by real E2E | blocker-closure evidence unavailable in docs-only baseline | `M4 verification gap` | run full `*R` suite after reconstruction | open |
-| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | grouped crate roots (`app/core/platform/services`) are used | workspace layout not yet regenerated | `M2 missing feature` | regenerate workspace with grouped paths | open |
-| `R-LOG-01` | [/docs/log/README.md](/docs/log/README.md) | historical notes removed after promotion | stale wave logs were deleted | `M5 stale docs` | keep retention discipline | closed |
+| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | bounded latency PTY I/O | unit tests only; no live E2E | `M4 verification gap` | PTY E2E harness | open |
+| `R-I18N-01` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME composition isolation | no IME-specific tests | `M4 verification gap` | IME composition tests | open |
+| `R-I18N-02` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME stable under churn | no race tests | `M4 verification gap` | resize/navigation tests | open |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features proven by E2E | 48 unit tests; no PTY E2E | `M4 verification gap` | PTY E2E harness | open |
 
 ## Summary
 
-| Class | Open Count |
-|---|---:|
-| `M1 correctness` | 0 |
-| `M2 missing feature` | 10 |
-| `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 1 |
-| `M5 stale docs` | 0 |
+| Class | Closed | Open |
+|---|---:|---:|
+| `M1 correctness` | 0 | 0 |
+| `M2 missing feature` | 15 | 0 |
+| `M3 undocumented behavior` | 0 | 0 |
+| `M4 verification gap` | 0 | 4 |
+| `M5 stale docs` | 1 | 0 |
 
 ## Update Rules
 

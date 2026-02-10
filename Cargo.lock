@@ -381,6 +381,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "kjxlkj-test-harness"
+version = "0.1.0"
+dependencies = [
+ "kjxlkj-core-mode",
+ "kjxlkj-core-state",
+ "kjxlkj-core-text",
+ "kjxlkj-core-types",
+ "kjxlkj-service-explorer",
+ "kjxlkj-service-terminal",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
