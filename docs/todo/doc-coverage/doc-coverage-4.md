@@ -2,6 +2,7 @@
 
 Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
+- [ ] [/docs/spec/features/ui/font-rendering.md](/docs/spec/features/ui/font-rendering.md)
 - [ ] [/docs/spec/features/ui/icons.md](/docs/spec/features/ui/icons.md)
 - [ ] [/docs/spec/features/ui/indent-guides.md](/docs/spec/features/ui/indent-guides.md)
 - [ ] [/docs/spec/features/ui/ligatures.md](/docs/spec/features/ui/ligatures.md)
@@ -101,4 +102,3 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/ux/keybindings/lsp.md](/docs/spec/ux/keybindings/lsp.md)
 - [ ] [/docs/spec/ux/keybindings/macros-registers.md](/docs/spec/ux/keybindings/macros-registers.md)
 - [ ] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
-- [ ] [/docs/spec/ux/keybindings/navigation.md](/docs/spec/ux/keybindings/navigation.md)

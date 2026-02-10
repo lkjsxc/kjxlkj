@@ -7,6 +7,7 @@ Active audit snapshots.
 ## Entries
 
 - [2026-02-10-canonical-audit.md](2026-02-10-canonical-audit.md)
+- [2026-02-10-standby-reset.md](2026-02-10-standby-reset.md)
 
 ## Related
 

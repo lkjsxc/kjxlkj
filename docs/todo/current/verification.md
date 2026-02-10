@@ -2,11 +2,18 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
+## Gate -1: Standby Baseline (Completed)
+
+- [x] docs-only baseline is active
+- [x] source/workspace artifacts are absent by design
+- [x] conformance and limitations are synchronized to standby state
+- [x] TODO remains in unchecked implementation mode
+
 ## Gate 0: Requirement Inventory
 
 - [ ] requirement matrix includes every normative spec area
 - [ ] each requirement has stable ID and spec link
-- [ ] each requirement has status (`verified`, `partial`, `scaffold-only`, `unverified`)
+- [ ] each requirement has explicit status
 
 ## Gate 1: Reachability
 
@@ -29,5 +36,5 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 ## Gate 4: TODO Integrity
 
 - [ ] every checked TODO item has linked evidence
-- [ ] no checked TODO conflicts with an open limitation
-- [ ] doc-coverage includes direct links to every documentation file
+- [ ] no checked TODO item conflicts with open limitations
+- [ ] doc coverage includes direct links to every documentation file

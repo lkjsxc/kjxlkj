@@ -8,42 +8,43 @@ This ledger records what is currently verified.
 
 | Status | Meaning |
 |---|---|
-| `verified` | reachable behavior confirmed with deterministic evidence |
-| `partial` | behavior exists but has user-visible gaps |
-| `scaffold-only` | stubs/types exist but user path is incomplete |
-| `unverified` | no current deterministic evidence |
+| `verified` | confirmed by deterministic evidence in current repo state |
+| `partial` | partly available with user-visible gaps |
+| `scaffold-only` | structural artifacts exist but runtime path is incomplete |
+| `unverified` | no current evidence |
 
 ## Current Snapshot (2026-02-10)
 
-This repository is in documentation-first reconstruction mode.
+Repository is intentionally in docs-only standby baseline.
+
+## Baseline Verification
+
+| Check | Status | Evidence |
+|---|---|---|
+| Source artifacts removed | `verified` | repository root contains docs-first baseline only |
+| Workspace/build manifests removed | `verified` | no `Cargo.toml`, `Cargo.lock`, `src/` |
+| CI/release workflow artifacts removed | `verified` | `.github/workflows/` reset for future regeneration |
+| TODO standby state | `verified` | all implementation-phase items remain unchecked |
+| Doc integrity rules | `verified` | no broken links, no `../` links, full TODO doc coverage |
 
 ## Domain Summary
 
-| Domain | Status | Notes |
+| Domain | Status | Note |
 |---|---|---|
-| Architecture contracts | `partial` | crate topology defined; runtime wiring needs re-verification |
-| Core editing and modes | `partial` | known `a`/`A` and shifted key regressions remain |
-| Command dispatch | `partial` | essential paths exist, but launch wiring gaps remain |
-| Window/split behavior | `partial` | mixed-window navigation and integration gaps remain |
-| Explorer integration | `partial` | launch and split-open wiring not reliably closed |
-| Terminal integration | `scaffold-only` | PTY-backed first-class window path not verified end-to-end |
-| Unicode/CJK/IME | `partial` | Japanese composition and leader isolation issues open |
-| Rendering and wrapping | `partial` | no-overflow guarantee requires stricter verification |
-| Session restore | `partial` | behavior exists, but mixed window restoration needs closure |
-| LSP/Git/Index services | `scaffold-only` | service surface incomplete |
-| Accessibility | `unverified` | no deterministic evidence yet |
+| Runtime behavior domains | `unverified` | no source implementation present in standby baseline |
+| Spec authority | `verified` | `/docs/spec/` is canonical target for reimplementation |
+| Reconstruction controls | `verified` | `/docs/todo/` governs rebuild sequencing and gates |
 
-## Evidence Rules
+## Claim Rules
 
-A claim is valid only when all are true:
+Any runtime conformance claim MUST remain absent until reimplementation produces:
 
-1. linked normative spec exists
-2. behavior is reachable from real input path
-3. deterministic verification evidence exists
-4. any remaining user-visible gap is listed in `LIMITATIONS`
+1. reachable behavior from real input path
+2. deterministic verification evidence
+3. synchronized updates to `LIMITATIONS` and `DRIFT_MATRIX`
 
 ## Related
 
 - Open gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - Mismatch matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
+- Reconstruction TODO: [/docs/todo/current/README.md](/docs/todo/current/README.md)

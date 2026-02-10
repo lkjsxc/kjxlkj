@@ -2,6 +2,7 @@
 
 Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
+- [ ] [/docs/spec/editing/visual/visual-selections.md](/docs/spec/editing/visual/visual-selections.md)
 - [ ] [/docs/spec/editor/README.md](/docs/spec/editor/README.md)
 - [ ] [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
 - [ ] [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
@@ -101,4 +102,3 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
 - [ ] [/docs/spec/features/ui/color-picker.md](/docs/spec/features/ui/color-picker.md)
 - [ ] [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md)
-- [ ] [/docs/spec/features/ui/font-rendering.md](/docs/spec/features/ui/font-rendering.md)

@@ -2,6 +2,7 @@
 
 Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
+- [ ] [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
 - [ ] [/docs/spec/editing/macros/recursive-macros.md](/docs/spec/editing/macros/recursive-macros.md)
 - [ ] [/docs/spec/editing/macros/register-macros.md](/docs/spec/editing/macros/register-macros.md)
 - [ ] [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md)
@@ -101,4 +102,3 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/editing/visual/README.md](/docs/spec/editing/visual/README.md)
 - [ ] [/docs/spec/editing/visual/blockwise-visual.md](/docs/spec/editing/visual/blockwise-visual.md)
 - [ ] [/docs/spec/editing/visual/column-block.md](/docs/spec/editing/visual/column-block.md)
-- [ ] [/docs/spec/editing/visual/visual-selections.md](/docs/spec/editing/visual/visual-selections.md)

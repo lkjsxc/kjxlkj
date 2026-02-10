@@ -2,6 +2,7 @@
 
 Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 
+- [ ] [/docs/spec/ux/keybindings/navigation.md](/docs/spec/ux/keybindings/navigation.md)
 - [ ] [/docs/spec/ux/keybindings/text-objects.md](/docs/spec/ux/keybindings/text-objects.md)
 - [ ] [/docs/spec/ux/keybindings/visual.md](/docs/spec/ux/keybindings/visual.md)
 - [ ] [/docs/spec/ux/keybindings/windows-tabs.md](/docs/spec/ux/keybindings/windows-tabs.md)
