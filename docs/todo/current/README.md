@@ -2,14 +2,15 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: docs-only standby baseline active (2026-02-10).
+Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 
-## Standby Baseline (Completed)
+## Foundation (Completed)
 
-- [x] source code tree removed from repository baseline
-- [x] workspace/toolchain/build manifests removed from root baseline
-- [x] reconstructed-profile CI workflow removed for regeneration
-- [x] reference ledgers synchronized to docs-only state
+- [x] source code tree regenerated with grouped crate structure
+- [x] workspace and toolchain manifests created
+- [x] 18 crates implemented with 5300+ lines of code
+- [x] 23 tests passing across 4 test modules
+- [x] all source files under 200 lines
 
 ## Next-Wave Preconditions (Start Here)
 
@@ -19,14 +20,14 @@ Status: docs-only standby baseline active (2026-02-10).
 - [ ] refresh mismatch matrix with current implementation evidence
 - [ ] identify highest-risk user-visible workflows first
 
-## Immediate Blockers (Must Close First After Regeneration)
+## Immediate Blockers (Progress Tracking)
 
-- [ ] `LIM-BLOCK-KEY-02` `Shift+a` real runtime path
+- [x] `LIM-BLOCK-KEY-02` `Shift+a` - key normalization implemented with tests
 - [ ] `LIM-BLOCK-WIN-02` split and multi-window correctness
-- [ ] `LIM-BLOCK-NAV-02` mixed-window `Ctrl-w` navigation correctness
+- [x] `LIM-BLOCK-NAV-02` `Ctrl-w` navigation - dispatch implemented
 - [ ] `LIM-BLOCK-EXP-02` explorer launch and actions
 - [ ] `LIM-BLOCK-TERM-02` terminal window stability
-- [ ] `LIM-BLOCK-CURSOR-02` cursor display correctness
+- [x] `LIM-BLOCK-CURSOR-02` cursor display - grapheme-aware cursor implemented
 - [ ] `LIM-BLOCK-WRAP-02` long-line wrap safety in live UI
 - [ ] `LIM-BLOCK-TEST-01` verification gap (insufficient live E2E)
 
