@@ -1,0 +1,24 @@
+[package]
+name = "kjxlkj"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "kjxlkj"
+path = "src/main.rs"
+
+[dependencies]
+kjxlkj-core = { path = "../kjxlkj-core" }
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-state = { path = "../kjxlkj-core-state" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-host = { path = "../kjxlkj-host" }
+kjxlkj-input = { path = "../kjxlkj-input" }
+kjxlkj-render = { path = "../kjxlkj-render" }
+kjxlkj-services = { path = "../kjxlkj-services" }
+kjxlkj-service-terminal = { path = "../kjxlkj-service-terminal" }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }

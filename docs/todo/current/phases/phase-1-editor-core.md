@@ -8,24 +8,24 @@ Core editing behavior, mode transitions, command dispatch, and cursor semantics.
 
 ## Tasks
 
-- [ ] implement full `i`, `a`, and `A` semantics from cursor and keybinding specs
-- [ ] enforce shifted printable normalization in input decoding
-- [ ] complete mode transition clamping rules
-- [ ] wire essential command paths (`:w`, `:q`, `:e`, `:set`) through runtime
-- [ ] ensure long-line viewport behavior follows on-screen rules
+- [x] implement full `i`, `a`, and `A` semantics from cursor and keybinding specs
+- [x] enforce shifted printable normalization in input decoding
+- [x] complete mode transition clamping rules
+- [x] wire essential command paths (`:w`, `:q`, `:e`, `:set`) through runtime
+- [x] ensure long-line viewport behavior follows on-screen rules
 
 ## Required Spec Links
 
-- [ ] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- [ ] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
-- [ ] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- [ ] [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- [x] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [x] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
+- [x] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- [x] [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
 
 ## Required Tests
 
-- [ ] `WR-01`
-- [ ] `WR-02`
-- [ ] `WR-07`
-- [ ] `WR-08`
-- [ ] `HE-01`
-- [ ] `HE-08`
+- [x] `WR-01`
+- [x] `WR-02`
+- [x] `WR-07`
+- [x] `WR-08`
+- [x] `HE-01`
+- [x] `HE-08`

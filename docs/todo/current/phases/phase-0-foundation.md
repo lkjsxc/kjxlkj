@@ -8,20 +8,20 @@ Inventory, drift classification, and baseline harness setup.
 
 ## Tasks
 
-- [ ] build requirement matrix for all `/docs/spec/` normative files
-- [ ] build mismatch matrix with mismatch class per requirement
-- [ ] define test mapping from requirement IDs to deterministic test IDs
-- [ ] establish docs-only and reconstructed verification command sets
-- [ ] confirm source layout plan from `/docs/spec/architecture/source-layout.md`
+- [x] build requirement matrix for all `/docs/spec/` normative files
+- [x] build mismatch matrix with mismatch class per requirement
+- [x] define test mapping from requirement IDs to deterministic test IDs
+- [x] establish docs-only and reconstructed verification command sets
+- [x] confirm source layout plan from `/docs/spec/architecture/source-layout.md`
 
 ## Required Evidence
 
-- [ ] updated [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [ ] updated [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] updated [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [x] updated [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] updated [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] updated [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Required Tests
 
-- [ ] `HE-01`
-- [ ] `WR-01`
-- [ ] `WR-03`
+- [x] `HE-01`
+- [x] `WR-01`
+- [x] `WR-03`

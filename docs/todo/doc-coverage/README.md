@@ -6,7 +6,7 @@ This checklist directly links every markdown document in the repository.
 
 ## Inventory
 
-- Total tracked markdown docs: 441
+- Total tracked markdown docs: 446
 - Parts: 5
 
 ## Parts
@@ -19,11 +19,11 @@ This checklist directly links every markdown document in the repository.
 
 ## Regeneration Rule
 
-- [ ] regenerate part files after any docs add/remove/rename
+- [x] regenerate part files after any docs add/remove/rename
 - [ ] keep direct links absolute (`/docs/...` or `/README.md`)
 - [ ] keep entries unchecked until verified in an implementation wave
 
 ## Verification Rule
 
-- [ ] no markdown document missing from part files
-- [ ] no stale links in part files
+- [x] no markdown document missing from part files
+- [x] no stale links in part files

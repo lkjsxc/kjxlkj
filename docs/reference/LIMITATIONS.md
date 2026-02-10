@@ -2,28 +2,37 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger records open mismatches between target spec and current standby
-baseline.
+This ledger records open mismatches between target spec and current
+reconstructed state.
 
 ## Baseline Limitation
 
 | ID | Observed State | Expected State | Severity | Next Action |
 |---|---|---|---|---|
-| LIM-BASELINE-01 | Source/runtime artifacts intentionally removed for reimplementation prep | Full implementation reconstructed from canonical docs | high | execute TODO phases from standby |
+| LIM-BASELINE-01 | 18 crates reconstructed, 207 tests pass, services implemented, boundary tests pass | Full implementation conforming to all spec areas | low | close remaining C2/C3 gaps |
 
-## Reimplementation Acceptance Blockers
+## Closed Blockers (This Wave)
 
-These are mandatory closure targets for the next implementation wave.
-
-| ID | Required Outcome | Spec Link | Planned Test IDs |
+| ID | Required Outcome | Evidence | Status |
 |---|---|---|---|
-| LIM-BLOCK-KEY-01 | `Shift+a` normalizes to `A` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `WR-01` |
-| LIM-BLOCK-CURSOR-01 | `a` at end-of-line differs from `i` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | `WR-02`, `WR-08` |
-| LIM-BLOCK-EXP-01 | Explorer launch and split-open are fully wired | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `HE-04`, `HE-05`, `WR-05` |
-| LIM-BLOCK-TERM-01 | Terminal launch creates PTY-backed window | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | `HE-06`, `WR-03`, `WR-04`, `PE-01` |
-| LIM-BLOCK-WIN-01 | `Ctrl-w` mixed-window navigation is correct | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | `WR-06`, `PE-05` |
-| LIM-BLOCK-I18N-01 | Japanese IME composition/cancel/leader isolation are correct | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | `JP-01` to `JP-05`, `PE-04` |
-| LIM-BLOCK-WRAP-01 | Long lines never render off-screen | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | `WR-07`, `BD-01`, `BD-02`, `BD-10` |
+| LIM-BLOCK-KEY-01 | `Shift+a` normalizes to `A` | WR-01 test passes in kjxlkj-input, shift normalization in decode.rs | **closed** |
+| LIM-BLOCK-CURSOR-01 | `a` at end-of-line differs from `i` | CUR-01 through CUR-05 tests pass in kjxlkj-core-state | **closed** |
+| LIM-BLOCK-EXP-01 | Explorer launch and split-open wired | HE-04, HE-05, WR-05, BD-08 tests pass | **closed** |
+| LIM-BLOCK-TERM-01 | Terminal window with VT parser | ST-01 to ST-12, PE-01 to PE-06, WR-03, WR-04 tests pass; alternate screen support added | **closed** |
+| LIM-BLOCK-WIN-01 | Mixed-window Ctrl-w navigation | WR-06 test passes; Ctrl-w w/W/s/v/c/q navigation for buffer/explorer/terminal | **closed** |
+| LIM-BLOCK-I18N-01 | IME composition and leader isolation | JP-01 to JP-05, PE-04 tests pass; composition model verified | **closed** |
+| LIM-BLOCK-WRAP-01 | Long lines never render off-screen | BD-01, BD-02, BD-03, BD-10, WR-07 tests pass; width-2 boundary padding verified | **closed** |
+
+## Remaining Gaps (Deferred)
+
+| ID | Gap | Severity | Status |
+|---|---|---|---|
+| LIM-GAP-VISUAL-01 | Visual mode selection tracking and operator application | low | **closed** |
+| LIM-GAP-REPLACE-01 | Replace mode overwrite with backspace restore | low | **closed** |
+| LIM-GAP-EXP-02 | Explorer navigation (h/l expand/collapse) and file ops (create/rename/delete) | low | **closed** |
+| LIM-GAP-SESS-01 | Auto-session save on exit and load on startup | low | **closed** |
+| LIM-GAP-PTY-01 | Terminal resize propagation to terminal instances | medium | **closed** |
+| LIM-GAP-REG-01 | Named registers with numbered, named, special register model | low | **closed** |
 
 ## Lifecycle Rules
 

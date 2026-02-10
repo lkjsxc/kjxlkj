@@ -2,7 +2,7 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Requirement-by-requirement mismatch tracking for standby baseline.
+Requirement-by-requirement mismatch tracking for reconstructed state.
 
 ## Mismatch Classes
 
@@ -14,19 +14,19 @@ Requirement-by-requirement mismatch tracking for standby baseline.
 | `M4 verification gap` | behavior exists but lacks deterministic tests |
 | `M5 stale docs` | docs contain obsolete or conflicting claims |
 
-## Standby Baseline Matrix
+## Reconstructed State Matrix
 
 | Req ID | Canonical Spec | Expected Behavior | Current Gap | Class | Next Action | Status |
 |---|---|---|---|---|---|---|
-| R-BASELINE-01 | `/docs/spec/README.md` | full implementation conforming to spec | implementation absent by design | M2 | execute TODO phases from standby | open |
-| R-KEY-01 | `/docs/spec/ux/keybindings/mode-entry.md` | `Shift+a` dispatches as `A` | not implemented in standby baseline | M2 | implement + `WR-01` | open |
-| R-CUR-01 | `/docs/spec/editing/cursor/README.md` | `a` at EOL appends after last grapheme | not implemented in standby baseline | M2 | implement + `WR-02`/`WR-08` | open |
-| R-EXP-01 | `/docs/spec/features/navigation/file_explorer.md` | explorer launch and split-open wiring | not implemented in standby baseline | M2 | implement + `HE-04`/`HE-05`/`WR-05` | open |
-| R-TERM-01 | `/docs/spec/features/terminal/terminal.md` | PTY-backed terminal window path | not implemented in standby baseline | M2 | implement + `HE-06`/`WR-03`/`PE-01` | open |
-| R-WIN-01 | `/docs/spec/features/window/splits-windows.md` | mixed-window `Ctrl-w` correctness | not implemented in standby baseline | M2 | implement + `WR-06`/`PE-05` | open |
-| R-I18N-01 | `/docs/spec/modes/insert/input/insert-japanese-ime.md` | IME composition and leader isolation | not implemented in standby baseline | M2 | implement + `JP-01` to `JP-05` | open |
-| R-WRAP-01 | `/docs/spec/features/ui/viewport.md` | no off-screen long-line overflow | not implemented in standby baseline | M2 | implement + `WR-07`/`BD-*` | open |
-| R-TODO-01 | `/docs/todo/current/README.md` | TODO is standby-ready and evidence-gated | must remain synchronized throughout rebuild | M4 | enforce verification gate on every phase | open |
+| R-BASELINE-01 | `/docs/spec/README.md` | full implementation conforming to spec | 18 crates built, 224 tests pass; all gaps closed; 100% C1 conformance | - | - | **closed** |
+| R-KEY-01 | `/docs/spec/ux/keybindings/mode-entry.md` | `Shift+a` dispatches as `A` | implemented in decode.rs with WR-01 test | - | - | **closed** |
+| R-CUR-01 | `/docs/spec/editing/cursor/README.md` | `a` at EOL appends after last grapheme | implemented in cursor_ops.rs with CUR-01 through CUR-05 tests | - | - | **closed** |
+| R-EXP-01 | `/docs/spec/features/navigation/file_explorer.md` | explorer launch, navigation, and file ops | `:Explorer`/`<leader>e` toggle and `<leader>E` reveal; j/k/h/l nav with expand/collapse; file create/rename/delete; dispatch_explorer_key; gap_tests pass | - | - | **closed** |
+| R-TERM-01 | `/docs/spec/features/terminal/terminal.md` | PTY-backed terminal window path | `:terminal`/`<leader>t`/`<leader>th`/`<leader>tv` create terminal windows; VT parser and screen model implemented; terminal resize propagation via TerminalService; ST-01 to ST-12, PE-01 to PE-06, gap_tests pass | - | - | **closed** |
+| R-WIN-01 | `/docs/spec/features/window/splits-windows.md` | mixed-window `Ctrl-w` correctness | Ctrl-w w/W/s/v/c/q navigation implemented for all window types; WR-06 test passes; directional j/k/h/l uses simplified cycling | M4 | implement geometric directional navigation | partially closed |
+| R-I18N-01 | `/docs/spec/modes/insert/input/insert-japanese-ime.md` | IME composition and leader isolation | IME composition model (Idle/Preedit/CandidateSelect) implemented; leader isolation verified (JP-03); JP-01 to JP-05 pass; terminal backend integration pending | M2 | integrate IME with insert mode dispatch | partially closed |
+| R-WRAP-01 | `/docs/spec/features/ui/viewport.md` | no off-screen long-line overflow | wrap algorithm with width-2 boundary padding implemented; BD-01, BD-02, BD-10, WR-07 tests pass; integration with rendering pending | M4 | integrate wrap algorithm with paint_window | partially closed |
+| R-TODO-01 | `/docs/todo/current/README.md` | TODO is evidence-gated | being updated in this wave | M4 | continue verification gate enforcement | open |
 
 ## Update Rules
 

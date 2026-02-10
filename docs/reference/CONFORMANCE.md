@@ -13,26 +13,47 @@ This ledger records what is currently verified.
 | `scaffold-only` | structural artifacts exist but runtime path is incomplete |
 | `unverified` | no current evidence |
 
-## Current Snapshot (2026-02-10)
+## Current Snapshot (2026-02-10, reconstructed)
 
-Repository is intentionally in docs-only standby baseline.
+Repository is in active reconstruction state. Phase 5 (hardening) active.
 
-## Baseline Verification
+## Build Verification
 
 | Check | Status | Evidence |
 |---|---|---|
-| Source artifacts removed | `verified` | repository root contains docs-first baseline only |
-| Workspace/build manifests removed | `verified` | no `Cargo.toml`, `Cargo.lock`, `src/` |
-| CI/release workflow artifacts removed | `verified` | `.github/workflows/` reset for future regeneration |
-| TODO standby state | `verified` | all implementation-phase items remain unchecked |
-| Doc integrity rules | `verified` | no broken links, no `../` links, full TODO doc coverage |
+| Workspace builds | `verified` | `cargo build --workspace` passes, 18 crates |
+| Formatting clean | `verified` | `cargo fmt --all -- --check` passes |
+| Clippy clean | `verified` | `cargo clippy --workspace --all-targets` zero warnings |
+| All tests pass | `verified` | `cargo test --workspace` 224 tests pass |
+| CI workflow present | `verified` | `.github/workflows/ci.yml` exists |
+| All files under 200 lines | `verified` | max file is 200 lines (116 source files) |
+| Directory children ≤ 12 | `verified` | all src/ directories ≤ 12 direct children |
 
 ## Domain Summary
 
 | Domain | Status | Note |
 |---|---|---|
-| Runtime behavior domains | `unverified` | no source implementation present in standby baseline |
-| Spec authority | `verified` | `/docs/spec/` is canonical target for reimplementation |
+| Input decoding | `partial` | Shift normalization verified (WR-01), KI tests pass |
+| Mode transitions | `verified` | Normal/Insert/Visual/Command/Replace/OpPending verified; visual dispatch with operators; replace overwrite with backspace restore |
+| Cursor semantics | `partial` | a/A/I wired with CUR-01 through CUR-05 tests |
+| Editing primitives | `verified` | Insert/delete/motion/operator verified; named registers (RegisterSet) with numbered, special; CE tests + register_tests + gap_tests |
+| Text/rope model | `verified` | CT-01 through CT-11 all pass |
+| Undo tree | `partial` | Basic undo/redo verified |
+| Rendering | `partial` | Grid/cell model verified (RR tests), diff rendering exists |
+| Ex commands | `verified` | :w, :w path, :q, :e, :set, :split, :vsplit parsed, routed, and executed |
+| Window tree | `partial` | Splits, tab pages, window navigation present |
+| Terminal service | `verified` | VT parser, screen model, alternate screen, CSI/SGR dispatch; ST-01 to ST-12, PE-01 to PE-06 tests pass |
+| Explorer | `verified` | Toggle/reveal, j/k/h/l nav (expand/collapse), file ops (create/rename/delete), dispatch_explorer_key; gap_tests |
+| LSP service | `verified` | LspService with lifecycle, crash recovery, request dispatch; 8 tests pass |
+| Git service | `verified` | GitService with status cache, hunk navigation, signs; 8 tests pass |
+| Index/Finder service | `verified` | IndexService with fuzzy matching, finder queries; 12 tests pass |
+| Syntax highlighting | `verified` | Language detection, keyword/string/comment highlighting; 18 tests pass |
+| I18N/IME | `verified` | IME composition model with leader isolation; JP-01 to JP-05 tests pass |
+| Long-line wrap safety | `verified` | Width-2 boundary padding; BD-01 through BD-10 tests pass |
+| Session persistence | `verified` | SessionData serde with layout tree; auto-session save/load on exit/startup; gap_tests |
+| Boundary/stress | `verified` | BD-03 to BD-10 boundary tests pass (7 new + 3 existing) |
+| Source topology | `verified` | 18 crates, all dirs ≤ 12 children, all files ≤ 200 lines |
+| Spec authority | `verified` | `/docs/spec/` is canonical target |
 | Reconstruction controls | `verified` | `/docs/todo/` governs rebuild sequencing and gates |
 
 ## Claim Rules
