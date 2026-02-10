@@ -1,9 +1,9 @@
 //! Window tree and layout management.
 
+use crate::layout::LayoutNode;
 use kjxlkj_core_types::{
-    BufferId, WindowId, TerminalId, ExplorerStateId,
-    WindowContent, Viewport, WindowOptions, SplitDirection,
-    CursorPosition,
+    BufferId, CursorPosition, ExplorerStateId, TerminalId, Viewport, WindowContent, WindowId,
+    WindowOptions,
 };
 
 /// Window state.
@@ -57,41 +57,6 @@ impl Window {
             viewport: Viewport::default(),
             options: WindowOptions::default(),
             last_focus_seq: 0,
-        }
-    }
-}
-
-/// Layout tree node.
-#[derive(Debug, Clone)]
-pub enum LayoutNode {
-    /// Leaf window.
-    Leaf(WindowId),
-    /// Container with split direction.
-    Container {
-        direction: SplitDirection,
-        children: Vec<LayoutNode>,
-    },
-}
-
-impl LayoutNode {
-    /// Create a leaf node.
-    pub fn leaf(id: WindowId) -> Self {
-        LayoutNode::Leaf(id)
-    }
-
-    /// Create a horizontal container.
-    pub fn horizontal(children: Vec<LayoutNode>) -> Self {
-        LayoutNode::Container {
-            direction: SplitDirection::Horizontal,
-            children,
-        }
-    }
-
-    /// Create a vertical container.
-    pub fn vertical(children: Vec<LayoutNode>) -> Self {
-        LayoutNode::Container {
-            direction: SplitDirection::Vertical,
-            children,
         }
     }
 }
@@ -159,7 +124,6 @@ impl WindowTree {
         id
     }
 
-    /// Set root if empty.
     fn set_root_if_empty(&mut self, id: WindowId) {
         if self.root.is_none() {
             self.root = Some(LayoutNode::leaf(id));
@@ -211,7 +175,6 @@ impl WindowTree {
     /// Close a window.
     pub fn close(&mut self, id: WindowId) -> bool {
         if self.windows.remove(&id).is_some() {
-            // Simplified: just remove from tree.
             if self.focused == Some(id) {
                 self.focused = self.windows.keys().next().copied();
             }

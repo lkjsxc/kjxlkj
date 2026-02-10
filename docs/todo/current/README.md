@@ -13,8 +13,8 @@ Status: docs-only standby baseline active (2026-02-10).
 
 ## Next-Wave Preconditions (Start Here)
 
-- [ ] read canonical docs in required order
-- [ ] regenerate workspace using grouped crate roots
+- [x] read canonical docs in required order
+- [x] regenerate workspace using grouped crate roots
 - [ ] refresh requirement matrix for high-risk domains
 - [ ] refresh mismatch matrix with current implementation evidence
 - [ ] identify highest-risk user-visible workflows first

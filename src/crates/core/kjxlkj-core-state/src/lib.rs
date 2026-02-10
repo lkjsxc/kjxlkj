@@ -4,8 +4,10 @@
 
 mod buffer;
 mod editor;
+mod layout;
 mod window;
 
 pub use buffer::*;
 pub use editor::*;
+pub use layout::*;
 pub use window::*;

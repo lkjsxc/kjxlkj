@@ -4,6 +4,9 @@
 
 mod dispatch;
 mod handler;
+mod insert;
+mod normal;
+mod other_modes;
 mod state;
 
 pub use dispatch::*;
