@@ -1,6 +1,6 @@
 //! Motion application.
 
-use kjxlkj_core_edit::Motion;
+use kjxlkj_core_edit::{Direction, Motion};
 use kjxlkj_core_state::Buffer;
 use kjxlkj_core_types::CursorPosition;
 
@@ -46,6 +46,10 @@ pub fn apply_motion(buffer: &Buffer, cursor: CursorPosition, motion: &Motion) ->
             }
         }
         Motion::LineStart => CursorPosition::new(cursor.line, 0),
+        Motion::FirstNonBlank => {
+            let first = buffer.first_non_blank(cursor.line);
+            CursorPosition::new(cursor.line, first)
+        }
         Motion::LineEnd => {
             let max = if line_len > 0 { line_len - 1 } else { 0 };
             CursorPosition::new(cursor.line, max)
@@ -55,6 +59,29 @@ pub fn apply_motion(buffer: &Buffer, cursor: CursorPosition, motion: &Motion) ->
             let last_line = line_count.saturating_sub(1);
             CursorPosition::new(last_line, 0)
         }
+        Motion::Line(n) => {
+            let target = (*n).saturating_sub(1).min(line_count.saturating_sub(1));
+            let first = buffer.first_non_blank(target);
+            CursorPosition::new(target, first)
+        }
+        Motion::LastLine => {
+            let target = line_count.saturating_sub(1);
+            let first = buffer.first_non_blank(target);
+            CursorPosition::new(target, first)
+        }
+        Motion::GoToLine(n) => {
+            let target = (*n).saturating_sub(1).min(line_count.saturating_sub(1));
+            let first = buffer.first_non_blank(target);
+            CursorPosition::new(target, first)
+        }
+        Motion::WordStart(Direction::Forward) => buffer.next_word_start(cursor),
+        Motion::WordStart(Direction::Backward) => buffer.prev_word_start(cursor),
+        Motion::WordEnd(Direction::Forward) => buffer.next_word_end(cursor),
+        Motion::WordEnd(Direction::Backward) => buffer.prev_word_end(cursor),
+        Motion::BigWordStart(Direction::Forward) => buffer.next_big_word_start(cursor),
+        Motion::BigWordStart(Direction::Backward) => buffer.prev_big_word_start(cursor),
+        Motion::BigWordEnd(Direction::Forward) => buffer.next_big_word_end(cursor),
+        Motion::BigWordEnd(Direction::Backward) => buffer.prev_big_word_end(cursor),
         _ => cursor,
     }
 }

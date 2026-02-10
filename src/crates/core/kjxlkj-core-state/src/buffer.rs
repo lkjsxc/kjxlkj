@@ -1,6 +1,7 @@
 //! Buffer state management.
 
-use kjxlkj_core_text::{Rope, empty_rope, line_content, line_grapheme_count};
+use crate::word_nav;
+use kjxlkj_core_text::{empty_rope, line_content, line_grapheme_count, Rope};
 use kjxlkj_core_types::{BufferId, BufferMeta, BufferVersion, CursorPosition};
 use kjxlkj_core_undo::UndoHistory;
 use std::path::PathBuf;
@@ -52,11 +53,8 @@ impl Buffer {
 
     /// Insert text at position.
     pub fn insert(&mut self, pos: CursorPosition, text: &str) {
-        let byte_offset = kjxlkj_core_text::position_to_byte(
-            &self.content,
-            pos.line,
-            pos.grapheme,
-        );
+        let byte_offset =
+            kjxlkj_core_text::position_to_byte(&self.content, pos.line, pos.grapheme);
         self.content.insert(byte_offset, text);
         self.meta.version.increment();
         self.meta.modified = true;
@@ -84,81 +82,54 @@ impl Buffer {
     pub fn version(&self) -> BufferVersion {
         self.meta.version
     }
-}
 
-/// Buffer list.
-#[derive(Debug, Default)]
-pub struct BufferList {
-    /// All buffers.
-    buffers: Vec<Buffer>,
-    /// Next buffer ID.
-    next_id: u64,
-}
-
-impl BufferList {
-    /// Create a new buffer list.
-    pub fn new() -> Self {
-        Self::default()
+    /// Get first non-blank grapheme on a line.
+    pub fn first_non_blank(&self, line: usize) -> usize {
+        let content = self.line(line);
+        content
+            .char_indices()
+            .find(|(_, c)| !c.is_whitespace())
+            .map(|(i, _)| kjxlkj_core_text::byte_to_grapheme_offset(&content, i))
+            .unwrap_or(0)
     }
 
-    /// Add a scratch buffer.
-    pub fn add_scratch(&mut self) -> BufferId {
-        let id = BufferId::new(self.next_id);
-        self.next_id += 1;
-        self.buffers.push(Buffer::scratch(id));
-        id
+    /// Find next word start.
+    pub fn next_word_start(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::next_word_start(&self.content, pos, false)
     }
 
-    /// Add a buffer with content.
-    pub fn add_with_content(&mut self, content: &str) -> BufferId {
-        let id = BufferId::new(self.next_id);
-        self.next_id += 1;
-        let mut buffer = Buffer::scratch(id);
-        buffer.content = Rope::from_str(content);
-        self.buffers.push(buffer);
-        id
+    /// Find previous word start.
+    pub fn prev_word_start(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::prev_word_start(&self.content, pos, false)
     }
 
-    /// Add a buffer from file.
-    pub fn add_from_path(&mut self, path: PathBuf, content: String) -> BufferId {
-        let id = BufferId::new(self.next_id);
-        self.next_id += 1;
-        self.buffers.push(Buffer::from_path(id, path, content));
-        id
+    /// Find next word end.
+    pub fn next_word_end(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::next_word_end(&self.content, pos, false)
     }
 
-    /// Get buffer by ID.
-    pub fn get(&self, id: BufferId) -> Option<&Buffer> {
-        self.buffers.iter().find(|b| b.meta.id == id)
+    /// Find previous word end.
+    pub fn prev_word_end(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::prev_word_end(&self.content, pos, false)
     }
 
-    /// Get mutable buffer by ID.
-    pub fn get_mut(&mut self, id: BufferId) -> Option<&mut Buffer> {
-        self.buffers.iter_mut().find(|b| b.meta.id == id)
+    /// Find next big word start.
+    pub fn next_big_word_start(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::next_word_start(&self.content, pos, true)
     }
 
-    /// Remove buffer by ID.
-    pub fn remove(&mut self, id: BufferId) -> bool {
-        if let Some(pos) = self.buffers.iter().position(|b| b.meta.id == id) {
-            self.buffers.remove(pos);
-            true
-        } else {
-            false
-        }
+    /// Find previous big word start.
+    pub fn prev_big_word_start(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::prev_word_start(&self.content, pos, true)
     }
 
-    /// Get all buffer IDs.
-    pub fn ids(&self) -> Vec<BufferId> {
-        self.buffers.iter().map(|b| b.meta.id).collect()
+    /// Find next big word end.
+    pub fn next_big_word_end(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::next_word_end(&self.content, pos, true)
     }
 
-    /// Get buffer count.
-    pub fn len(&self) -> usize {
-        self.buffers.len()
-    }
-
-    /// Check if empty.
-    pub fn is_empty(&self) -> bool {
-        self.buffers.is_empty()
+    /// Find previous big word end.
+    pub fn prev_big_word_end(&self, pos: CursorPosition) -> CursorPosition {
+        word_nav::prev_word_end(&self.content, pos, true)
     }
 }

@@ -40,7 +40,11 @@ pub enum Motion {
     DocumentStart,
     /// Move to end of document.
     DocumentEnd,
-    /// Move to specific line.
+    /// Move to specific line (1-indexed).
+    Line(usize),
+    /// Move to last line.
+    LastLine,
+    /// Move to specific line (legacy alias).
     GoToLine(usize),
     /// Move to matching bracket.
     MatchingBracket,

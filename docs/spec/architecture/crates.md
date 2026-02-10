@@ -29,7 +29,7 @@ The implementation is a Cargo workspace under `src/crates/`.
 | platform | `kjxlkj-host` | `src/crates/platform/kjxlkj-host` |
 | platform | `kjxlkj-input` | `src/crates/platform/kjxlkj-input` |
 | platform | `kjxlkj-render` | `src/crates/platform/kjxlkj-render` |
-| platform | `kjxlkj-services` | `src/crates/platform/kjxlkj-services` |
+| services | `kjxlkj-services` | `src/crates/services/kjxlkj-services` |
 | services | `kjxlkj-service-fs` | `src/crates/services/kjxlkj-service-fs` |
 | services | `kjxlkj-service-git` | `src/crates/services/kjxlkj-service-git` |
 | services | `kjxlkj-service-index` | `src/crates/services/kjxlkj-service-index` |

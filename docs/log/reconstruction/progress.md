@@ -26,8 +26,8 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 ### In Progress
 
-- [ ] Update reference documentation
-- [ ] Mark remaining TODO items as complete
+- [ ] Update reference documentation (DRIFT_MATRIX, CONFORMANCE, LIMITATIONS)
+- [ ] Add more unit tests
 
 ### Test Results
 
@@ -36,6 +36,11 @@ All 11 tests pass:
 - kjxlkj-input: 2 tests (decode)
 - kjxlkj-core-undo: 1 test (undo_redo)
 
+### Code Quality
+
+- All clippy warnings resolved
+- All source files under 200 lines
+
 ### Files Exceeding 200 Lines
 
 All source files are now under 200 lines.
@@ -43,6 +48,8 @@ All source files are now under 200 lines.
 ### Git Commits
 
 - `91ce0112` feat: implement complete editor framework (82 files, 6128+ lines)
+- `e52ebdc5` refactor: split large files to stay under 200 lines
+- `f8c9b22f` style: apply clippy fixes
 
 ### Improvement Ideas
 
