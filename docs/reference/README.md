@@ -10,34 +10,29 @@ Within current-state reporting, use this order:
 
 1. [CONFORMANCE.md](CONFORMANCE.md)
 2. [LIMITATIONS.md](LIMITATIONS.md)
-3. Evidence artifacts linked from those files
-4. Supporting sub-ledgers in [conformance/](conformance/README.md)
+3. [DRIFT_MATRIX.md](DRIFT_MATRIX.md)
+4. domain sub-ledgers in [conformance/](conformance/README.md)
 
 `/docs/spec/` remains the target behavior contract.
-
-## Purpose of This Directory
-
-- prevent stale "implemented" claims
-- make current gaps explicit and actionable
-- provide evidence links for every current-state assertion
 
 ## Documents
 
 | Document | Role |
 |---|---|
-| [CONFORMANCE.md](CONFORMANCE.md) | Current verified behavior ledger |
-| [LIMITATIONS.md](LIMITATIONS.md) | Open user-visible mismatches |
-| [CI.md](CI.md) | Verification gate definition |
-| [RELEASE.md](RELEASE.md) | Release evidence process |
-| [conformance/README.md](conformance/README.md) | Domain-specific conformance sub-ledgers |
-| [COMPARISON.md](COMPARISON.md) | Non-authoritative comparison notes |
-| [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | Non-authoritative migration notes |
+| [CONFORMANCE.md](CONFORMANCE.md) | current verified behavior summary |
+| [LIMITATIONS.md](LIMITATIONS.md) | open user-visible mismatches |
+| [DRIFT_MATRIX.md](DRIFT_MATRIX.md) | requirement-by-requirement mismatch matrix |
+| [CI.md](CI.md) | verification gate definition |
+| [RELEASE.md](RELEASE.md) | release evidence process |
+| [conformance/README.md](conformance/README.md) | domain sub-ledgers |
+| [COMPARISON.md](COMPARISON.md) | non-authoritative comparison notes |
+| [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | non-authoritative migration notes |
 
 ## Update Discipline
 
-- Update conformance and limitations together.
-- Every claim needs evidence links.
-- Unknown or unverified behavior must be marked explicitly as unverified.
+- update conformance, limitations, and drift matrix together
+- every `verified` claim needs deterministic evidence
+- unknown behavior must be marked as `unverified`
 
 ## Related
 
