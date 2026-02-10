@@ -35,7 +35,13 @@ Follow:
 - [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
 - [docs/todo/README.md](docs/todo/README.md)
 
-When reconstructed, the Rust workspace is expected under `src/crates/`.
+When reconstructed, the Rust workspace is expected under `src/crates/` with
+grouped crate roots:
+
+- `src/crates/app/`
+- `src/crates/core/`
+- `src/crates/platform/`
+- `src/crates/services/`
 
 ## Build and Verification (When Workspace Exists)
 
