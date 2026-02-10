@@ -2,25 +2,24 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/log/` contains historical records and working notes.
+`/docs/log/` stores non-canonical operational records.
 
 ## Authority
 
-Files in this directory are non-canonical. They do not override policy, spec, reference, or todo documents.
+Log files do not override policy, spec, reference, or TODO documents.
 
-## Contents
+## Retention Rule
+
+Past records are deleted after their necessary constraints are promoted into
+canonical documents.
+
+## Sections
 
 | Directory | Purpose |
 |---|---|
-| [audits/](audits/README.md) | Historical audits and evidence snapshots |
-| [proposals/](proposals/README.md) | Improvement proposals not yet promoted |
-| [reconstruction/](reconstruction/README.md) | Wave-specific notes and sync audits |
-
-## Hygiene
-
-- Promote durable requirements into canonical docs.
-- Keep logs evidence-oriented and dated.
-- Avoid using logs as current-state authority.
+| [audits/](audits/README.md) | active audit snapshots |
+| [proposals/](proposals/README.md) | unresolved proposals only |
+| [reconstruction/](reconstruction/README.md) | active reconstruction notes |
 
 ## Related
 
