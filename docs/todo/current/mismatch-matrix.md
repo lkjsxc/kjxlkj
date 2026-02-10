@@ -32,7 +32,8 @@ Spec-code-test drift tracking for active blocker wave.
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | no off-screen overflow for long lines | wrap engine + render integration | `WRAP-11R`,`WRAP-14R`,`WRAP-16R` | contradiction | `M1 correctness` | implement | frame bounds oracle |
 | `R-CUR-02` | [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md) | cursor remains visible and atomic on wide chars | cursor overlay + grid painter | `CUR-07R`..`CUR-11R` | contradiction | `M1 correctness` | implement | cursor cell assertions on captured frames |
 | `R-I18N-01` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME composition isolates leader mappings | IME gate + key mapping resolver | `JP-06R`,`JP-07R` | test-gap | `M4 verification gap` | test-add | PTY composition race proofs |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | critical blockers require live E2E | test harness topology | all `*R` rows | contradiction | `M5 stale docs` | spec-update | updated testing contract + TODO gates |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | critical blockers require live E2E | test harness topology | all `*R` rows | test-gap | `M4 verification gap` | test-add | blocker closure requires passing live E2E rows |
+| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | workspace follows grouped crate roots | workspace layout and manifests still use flat crate paths | spec-only | `M2 missing feature` | implement | grouped path migration with build + test proof |
 
 ## Priority Rule
 
@@ -44,5 +45,5 @@ Resolve rows in this order:
 
 ## Related
 
-- Requirement matrix: [/docs/todo/current/requirement-matrix.md](/docs/todo/current/requirement-matrix.md)
-- Reference drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] Requirement matrix: [/docs/todo/current/requirement-matrix.md](/docs/todo/current/requirement-matrix.md)
+- [x] Reference drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

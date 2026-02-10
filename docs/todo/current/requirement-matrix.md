@@ -53,6 +53,6 @@ High-risk reconstruction requirements derived from canonical specs.
 
 ## Related
 
-- Drift matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)
-- Reference drift ledger: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- Verification gates: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)
+- [x] Drift matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)
+- [x] Reference drift ledger: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] Verification gates: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)

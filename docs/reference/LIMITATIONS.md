@@ -23,6 +23,7 @@ This ledger tracks open, user-visible mismatches between target spec and real be
 |---|---|---|---|---|
 | `LIM-GAP-TRACE-01` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | insufficient traceability from raw key events to core actions | medium | add mandatory decoder/core trace points in test harness |
 | `LIM-GAP-STATE-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | insufficient invariant checks for focus history and layout transitions | medium | add state-transition boundary suite |
+| `LIM-GAP-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | grouped crate topology (`app/core/platform/services`) is specified but current source tree is still flat | medium | migrate workspace paths and manifests to grouped layout in next reconstruction wave |
 
 ## Evidence Notes
 

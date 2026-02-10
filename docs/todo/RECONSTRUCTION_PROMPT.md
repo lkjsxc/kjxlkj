@@ -29,47 +29,47 @@ When instructions conflict, apply this order:
 
 <mandatory_execution_model>
 Gate 0: inventory and mismatch audit
-- refresh requirement matrix for high-risk domains
-- refresh mismatch matrix with `M1`..`M5` classes
+- [ ] refresh requirement matrix for high-risk domains
+- [ ] refresh mismatch matrix with `M1`..`M5` classes
 
 Gate 1: blocker-first planning
-- pick one active blocker row from reference limitations
-- define acceptance criteria with requirement IDs and test IDs
+- [ ] pick one active blocker row from reference limitations
+- [ ] define acceptance criteria with requirement IDs and test IDs
 
 Gate 2: implementation
-- implement only user-reachable behavior
-- preserve architecture invariants and source-layout constraints
+- [ ] implement only user-reachable behavior
+- [ ] preserve architecture invariants and source-layout constraints
 
 Gate 3: verification
-- run targeted deterministic regression tests
-- run required live PTY E2E tests (`*R`) for touched blockers
-- run profile-appropriate full gate from /docs/reference/CI.md
+- [ ] run targeted deterministic regression tests
+- [ ] run required live PTY E2E tests (`*R`) for touched blockers
+- [ ] run profile-appropriate full gate from /docs/reference/CI.md
 
 Gate 4: documentation synchronization
-- update CONFORMANCE, LIMITATIONS, and DRIFT_MATRIX in same change
-- update TODO checkboxes only with linked evidence
+- [ ] update CONFORMANCE, LIMITATIONS, and DRIFT_MATRIX in same change
+- [ ] update TODO checkboxes only with linked evidence
 
 Gate 5: coverage integrity
-- regenerate /docs/todo/doc-coverage/ direct-link lists
-- verify no stale links and no missing docs
+- [ ] regenerate /docs/todo/doc-coverage/ direct-link lists
+- [ ] verify no stale links and no missing docs
 </mandatory_execution_model>
 
 <anti_gaming_rules>
 Prohibited:
-- evidence-free completion claims
-- type-only/stub-only completion claims
-- unreachable behavior marked complete
-- stale conformance or limitation ledgers
-- checked TODO items without test evidence
-- closing high-severity blocker without matching live E2E proof
+- [x] evidence-free completion claims
+- [x] type-only/stub-only completion claims
+- [x] unreachable behavior marked complete
+- [x] stale conformance or limitation ledgers
+- [x] checked TODO items without test evidence
+- [x] closing high-severity blocker without matching live E2E proof
 </anti_gaming_rules>
 
 <source_layout_contract>
 Workspace members MUST follow grouped crate paths:
-- /src/crates/app/
-- /src/crates/core/
-- /src/crates/platform/
-- /src/crates/services/
+- [ ] /src/crates/app/
+- [ ] /src/crates/core/
+- [ ] /src/crates/platform/
+- [ ] /src/crates/services/
 
 Keep each source directory around 12 direct children and each source file at or below 200 lines.
 </source_layout_contract>

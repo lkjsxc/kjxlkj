@@ -46,6 +46,7 @@ User-reported runtime failures are currently treated as authoritative blockers f
 | Terminal window integration | `partial` | service tests pass; user-facing window reliability still suspect |
 | Wrapping and viewport safety | `partial` | boundary tests pass; real-screen behavior still reported buggy |
 | Services (LSP/Git/Index/FS) | `verified` | service-level tests pass, no new blocker report yet |
+| Source topology and workspace layout | `partial` | grouped crate-root topology is specified, but current source tree remains flat and requires migration |
 | Documentation and TODO integrity | `partial` | TODO previously over-claimed completion; now reset to blocker-first wave |
 
 ## Release Readiness Rule

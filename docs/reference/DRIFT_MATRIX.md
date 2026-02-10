@@ -28,18 +28,19 @@ Requirement-by-requirement mismatch tracking for current state.
 | `R-CUR-01` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor display remains visible and grapheme-safe | cursor display bugs reported | `M1 correctness` | add cursor overlay + wide-char wrap E2E (`CUR-07R`..`CUR-11R`) | open |
 | `R-I18N-01` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME composition does not leak into mappings | high-risk due key-routing overlap | `M4 verification gap` | extend PTY IME scenarios with leader/keymap conflicts (`JP-06R`..`JP-09R`) | open |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features must be proven by real E2E | current suite passes but misses field failures | `M4 verification gap` | enforce live-path mandatory E2E gate in TODO phase closure | open |
+| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | workspace uses grouped crate roots (`app/core/platform/services`) | current source tree still uses flat crate layout under `src/crates/*` | `M2 missing feature` | migrate workspace manifest and crate paths during reconstruction wave | open |
 | `R-DOC-01` | [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | conformance claims reflect strongest evidence | prior docs over-claimed full closure | `M5 stale docs` | keep blocker-first status until closure evidence exists | closed |
-| `R-LOG-01` | [/docs/log/README.md](/docs/log/README.md) | historical notes removed after promotion | stale wave logs remained | `M5 stale docs` | delete past records after canonical promotion | in_progress |
+| `R-LOG-01` | [/docs/log/README.md](/docs/log/README.md) | historical notes removed after promotion | stale wave logs remained | `M5 stale docs` | delete past records after canonical promotion | closed |
 
 ## Summary
 
 | Class | Open Count |
 |---|---:|
 | `M1 correctness` | 7 |
-| `M2 missing feature` | 0 |
+| `M2 missing feature` | 1 |
 | `M3 undocumented behavior` | 0 |
 | `M4 verification gap` | 2 |
-| `M5 stale docs` | 1 |
+| `M5 stale docs` | 0 |
 
 ## Update Rules
 
