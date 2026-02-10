@@ -53,6 +53,7 @@ impl ExplorerState {
         state.nodes.insert(root_id, root_node);
         state.root_node = Some(root_id);
         state.expanded.insert(root_id);
+        state.rebuild_visible();
 
         state
     }

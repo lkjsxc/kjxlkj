@@ -25,7 +25,7 @@ Status: Phase 0 complete, Phase 1 in progress (2026-02-10).
 - [x] `LIM-BLOCK-KEY-02` `Shift+a` - key normalization implemented with tests
 - [x] `LIM-BLOCK-WIN-02` split and multi-window correctness - WindowTree with split/close/focus operations
 - [x] `LIM-BLOCK-NAV-02` `Ctrl-w` navigation - dispatch implemented
-- [ ] `LIM-BLOCK-EXP-02` explorer launch and actions
+- [x] `LIM-BLOCK-EXP-02` explorer launch and actions - ExplorerService and ExplorerState implemented
 - [ ] `LIM-BLOCK-TERM-02` terminal window stability
 - [x] `LIM-BLOCK-CURSOR-02` cursor display - grapheme-aware cursor implemented
 - [ ] `LIM-BLOCK-WRAP-02` long-line wrap safety in live UI

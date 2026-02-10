@@ -370,6 +370,7 @@ dependencies = [
 name = "kjxlkj-services"
 version = "0.1.0"
 dependencies = [
+ "kjxlkj-service-explorer",
  "kjxlkj-service-fs",
  "kjxlkj-service-git",
  "kjxlkj-service-index",

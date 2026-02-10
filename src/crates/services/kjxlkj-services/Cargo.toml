@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+kjxlkj-service-explorer = { path = "../kjxlkj-service-explorer" }
 kjxlkj-service-fs = { path = "../kjxlkj-service-fs" }
 kjxlkj-service-git = { path = "../kjxlkj-service-git" }
 kjxlkj-service-index = { path = "../kjxlkj-service-index" }
