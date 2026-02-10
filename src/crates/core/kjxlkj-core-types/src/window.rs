@@ -4,7 +4,7 @@ use crate::BufferId;
 use serde::{Deserialize, Serialize};
 
 /// Unique window identifier.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]
 pub struct WindowId(pub u64);
 
 impl WindowId {

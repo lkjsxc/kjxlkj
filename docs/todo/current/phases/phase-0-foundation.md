@@ -17,8 +17,8 @@ Inventory, drift classification, and deterministic harness setup.
 ## Required Evidence
 
 - [ ] [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) updated
-- [ ] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) updated
-- [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) updated
+- [x] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) updated
+- [x] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) updated
 
 ## Required Tests
 
