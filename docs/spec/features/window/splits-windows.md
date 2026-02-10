@@ -85,6 +85,10 @@ Directional focus MUST use rectangle overlap and distance rules from [/docs/spec
 | `WIN-05R` | session roundtrip restores layout and focus |
 | `WINNAV-01R` | `Ctrl-w h/j/k/l` golden trace against known geometry |
 | `WINNAV-02R` | `Ctrl-w w/W/p/t/b` sequence determinism |
+| `WINNAV-03R` | previous-focus pointer remains valid after close/reopen churn |
+| `WINNAV-04R` | `Ctrl-w t/b` selects deterministic boundary windows |
+| `WINNAV-05R` | `Ctrl-w` remains stable across terminal insert/normal transitions |
+| `WINNAV-06R` | long navigation replay produces identical focus traces |
 
 ## Related
 
