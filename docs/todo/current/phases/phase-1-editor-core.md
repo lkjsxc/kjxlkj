@@ -24,7 +24,7 @@ Core key routing, cursor semantics, and command/viewport correctness.
 ## Required Tests
 
 - [x] `WR-01` - shift normalization tests
-- [ ] `WR-02`
+- [x] `WR-02` - i vs a vs A insert semantics
 - [x] `WR-08` - mode dispatch tests
 - [x] `WR-01R` - input decode tests
 - [x] `CUR-07R` - grapheme cursor tests

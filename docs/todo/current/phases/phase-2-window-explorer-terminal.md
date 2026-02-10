@@ -24,10 +24,10 @@ Shared window-tree behavior and non-buffer window reliability.
 
 ## Required Tests
 
-- [ ] `WR-03`
-- [ ] `WR-04`
-- [ ] `WR-05`
-- [ ] `WR-06`
+- [x] `WR-03` - terminal service constructable
+- [x] `WR-04` - window split/close wiring
+- [x] `WR-05` - explorer launch wired
+- [x] `WR-06` - mixed window focus
 - [x] `WIN-01R` - window tree tests pass
 - [x] `WIN-02R` - split operations tested
 - [x] `WINNAV-01R` - focus_next/prev tested

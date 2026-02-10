@@ -73,6 +73,33 @@ mod tests {
         // Service exists and is functional
     }
 
+    /// WR-04: Window split and close operations wired
+    #[test]
+    fn wr_04_window_split_close_wired() {
+        let mut tree = WindowTree::new();
+        
+        // Add initial window
+        let first = tree.add_buffer_window(BufferId(1));
+        assert_eq!(tree.count(), 1);
+        
+        // Split horizontal creates new window
+        let second = tree.split_horizontal(BufferId(2));
+        assert_eq!(tree.count(), 2);
+        assert_ne!(first, second);
+        
+        // Split vertical creates new window
+        let _third = tree.split_vertical(BufferId(3));
+        assert_eq!(tree.count(), 3);
+        
+        // Close focused removes one window
+        tree.close_focused();
+        assert_eq!(tree.count(), 2);
+        
+        // Close others leaves one
+        tree.close_others();
+        assert_eq!(tree.count(), 1);
+    }
+
     /// WR-05: Explorer launch path is wired
     #[test]
     fn wr_05_explorer_launch_wired() {
@@ -100,6 +127,70 @@ mod tests {
                 assert!(actions.iter().any(|a| {
                     matches!(a, ModeAction::EnterInsert(InsertPosition::EndOfLine))
                 }));
+            }
+            _ => panic!("Expected Consumed result"),
+        }
+    }
+
+    /// WR-02: 'a' at EOL differs from 'i' - append vs insert semantics
+    #[test]
+    fn wr_02_a_vs_i_semantics() {
+        // 'i' enters insert at Before cursor
+        let mut harness = StateHarness::new();
+        let result_i = harness.send_key(key('i'));
+        
+        let insert_before = match result_i {
+            HandleResult::Consumed(actions) => {
+                actions.iter().any(|a| {
+                    matches!(a, ModeAction::EnterInsert(InsertPosition::Before))
+                })
+            }
+            _ => false,
+        };
+        assert!(insert_before, "'i' should enter insert Before cursor");
+
+        // 'a' enters insert at After cursor
+        let mut harness2 = StateHarness::new();
+        let result_a = harness2.send_key(key('a'));
+        
+        let insert_after = match result_a {
+            HandleResult::Consumed(actions) => {
+                actions.iter().any(|a| {
+                    matches!(a, ModeAction::EnterInsert(InsertPosition::After))
+                })
+            }
+            _ => false,
+        };
+        assert!(insert_after, "'a' should enter insert After cursor");
+
+        // 'A' enters insert at EndOfLine
+        let mut harness3 = StateHarness::new();
+        let result_a_upper = harness3.send_key(key('A'));
+        
+        let insert_eol = match result_a_upper {
+            HandleResult::Consumed(actions) => {
+                actions.iter().any(|a| {
+                    matches!(a, ModeAction::EnterInsert(InsertPosition::EndOfLine))
+                })
+            }
+            _ => false,
+        };
+        assert!(insert_eol, "'A' should enter insert at EndOfLine");
+    }
+
+    /// WR-08: Command mode colon entry
+    #[test]
+    fn wr_08_command_mode_entry() {
+        let mut harness = StateHarness::new();
+        
+        // ':' in normal mode should enter command mode
+        let result = harness.send_key(key(':'));
+        
+        match result {
+            HandleResult::Consumed(actions) => {
+                assert!(actions.iter().any(|a| {
+                    matches!(a, ModeAction::EnterCommand(_))
+                }), "':' should enter command mode");
             }
             _ => panic!("Expected Consumed result"),
         }
