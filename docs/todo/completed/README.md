@@ -1,15 +1,14 @@
-# Completed Work
+# Completed Work Archive
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Purpose
 
-Archive completed iteration TODOs and major documentation milestones.
+Store only high-value completed wave summaries.
 
-## Archive Structure
+## Archive Policy
 
-- Iterations SHOULD be recorded as directories under `/docs/todo/completed/`.
-- Each iteration directory MUST contain one `README.md` with:
-  - completed tasks list
-  - key documents updated (as links)
-  - follow-up TODOs created
+- [ ] archive entries include closed requirement IDs
+- [ ] archive entries include test evidence references
+- [ ] archive entries link canonical docs updated by that wave
+- [ ] stale or superseded archive notes are removed after canonical promotion

@@ -6,7 +6,8 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Objective
 
-Following TODO items exactly MUST produce a complete reconstructed implementation that conforms to all normative docs.
+Following TODO items exactly MUST produce a complete implementation that
+conforms to policy, spec, and reference contracts.
 
 ## Normative Inputs
 
@@ -16,26 +17,29 @@ Following TODO items exactly MUST produce a complete reconstructed implementatio
 
 ## Non-Negotiable Rules
 
-- Every checkbox stays unchecked until evidence exists.
-- No type-only or unreachable work may be marked complete.
-- Conformance and limitations must be updated with every verified behavior change.
-- Requirement coverage must be explicit and auditable.
+- [ ] no checkbox is marked complete without deterministic evidence
+- [ ] no scaffold-only or unreachable path is treated as complete
+- [ ] every TODO closure updates conformance and limitations in the same change
+- [ ] every TODO closure references at least one test ID and one spec link
 
 ## Execution Layers
 
 | Layer | Purpose |
 |---|---|
-| [current/README.md](current/README.md) | Standby baseline checks and active wave gates |
-| [doc-coverage/README.md](doc-coverage/README.md) | Documentation file coverage tracking |
-| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | Execution contract for full rebuild runs |
-| [reading/README.md](reading/README.md) | Mandatory reading discipline |
-| [completed/README.md](completed/README.md) | Archived waves |
+| [current/README.md](current/README.md) | active reconstruction phases and global gates |
+| [current/verification.md](current/verification.md) | hard verification checkpoints |
+| [current/phases/README.md](current/phases/README.md) | phase-by-phase implementation checklists |
+| [doc-coverage/README.md](doc-coverage/README.md) | direct-link checklist to every documentation file |
+| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | machine-execution contract |
+| [reading/README.md](reading/README.md) | deterministic read-before-implement discipline |
+| [completed/README.md](completed/README.md) | archive policy for completed waves |
 
 ## Completion Definition
 
-A wave is complete only when all are true:
+A reconstruction wave is complete only when all are true:
 
-1. Every normative requirement has coverage status (`verified` or explicit limitation).
-2. Runtime behavior is user-reachable.
-3. Deterministic verification gate is green for reconstructed profile.
-4. Reference ledgers and TODO status are synchronized.
+1. [ ] every normative requirement is `verified` or an explicit limitation
+2. [ ] all claimed behaviors are reachable from real key/command paths
+3. [ ] required deterministic gates are green
+4. [ ] conformance, limitations, and TODO states are synchronized
+5. [ ] doc-coverage lists every documentation file with direct links

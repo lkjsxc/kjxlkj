@@ -4,30 +4,27 @@ Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Purpose
 
-Maintain a deterministic “read before implement” discipline without keeping long-lived historical logs that can become noise.
+Maintain deterministic read-before-implement behavior without accumulating
+unnecessary historical noise.
 
-The canonical traversal mechanism is the doc coverage set:
+## Required Priority
 
-- [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
+- [ ] `/docs/policy/` first
+- [ ] `/docs/spec/` second
+- [ ] `/docs/reference/` third
+- [ ] `/docs/todo/current/` fourth
 
-## Normative rules
+## Rules
 
-- Reading MUST be performed before implementation work that changes observable behavior.
-- Reading MUST prioritize:
-  - `/docs/policy/` (constraints)
-  - `/docs/spec/` (target behavior)
-  - `/docs/reference/` (current surface and known gaps)
-  - `/docs/todo/current/` (execution plan)
-- Contradictions MUST be resolved by:
-  - updating the canonical spec/policy document, and/or
-  - recording user-visible drift in `/docs/reference/LIMITATIONS.md`, and/or
-  - creating a proposal under `/docs/log/proposals/` when design work is required.
+- [ ] read canonical docs before any behavior-changing implementation work
+- [ ] resolve contradictions in canonical docs first, not in temporary notes
+- [ ] if a gap is intentionally deferred, record it in limitations and TODO
+- [ ] avoid creating long-lived historical notes when canonical docs can be updated directly
 
-## Minimal recording (only when useful)
+## Minimal Recording
 
-If an iteration requires recording what was read, keep it minimal and non-historical:
+When recording is required, store concise evidence only in canonical ledgers:
 
-- add a short note to an audit under `/docs/log/audits/` describing:
-  - which doc subtree was reviewed
-  - what contradictions were found
-  - what canonical edits were made
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

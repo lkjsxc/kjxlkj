@@ -2,38 +2,28 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-This checklist set directly links every documentation markdown file currently in the repository.
-
-## Scope
-
-- Includes root `README.md` and all `docs/**/*.md` files.
-- Includes TODO documents themselves.
-- Uses unchecked boxes by default for standby reconstruction mode.
+This checklist directly links every markdown document in the repository.
 
 ## Inventory
 
-- Total tracked markdown docs: 473
+- Total tracked markdown docs: 440
 - Parts: 5
 
 ## Parts
 
-- [x] [doc-coverage-1.md](doc-coverage-1.md)
-- [x] [doc-coverage-2.md](doc-coverage-2.md)
-- [x] [doc-coverage-3.md](doc-coverage-3.md)
-- [x] [doc-coverage-4.md](doc-coverage-4.md)
-- [x] [doc-coverage-5.md](doc-coverage-5.md)
+- [ ] [doc-coverage-1.md](doc-coverage-1.md)
+- [ ] [doc-coverage-2.md](doc-coverage-2.md)
+- [ ] [doc-coverage-3.md](doc-coverage-3.md)
+- [ ] [doc-coverage-4.md](doc-coverage-4.md)
+- [ ] [doc-coverage-5.md](doc-coverage-5.md)
 
 ## Regeneration Rule
 
-When documentation files are added, removed, or renamed:
-
-- regenerate these part files from filesystem inventory
-- keep direct links absolute (`/docs/...` or `/README.md`)
-- keep all entries unchecked until explicitly verified
+- [ ] regenerate part files after any docs add/remove/rename
+- [ ] keep direct links absolute (`/docs/...` or `/README.md`)
+- [ ] keep entries unchecked until verified in an implementation wave
 
 ## Verification Rule
 
-Before finishing a reconstruction wave:
-
-- [x] confirm no documentation file is missing from these parts
-- [x] confirm no stale links remain after docs updates
+- [ ] no markdown document missing from part files
+- [ ] no stale links in part files
