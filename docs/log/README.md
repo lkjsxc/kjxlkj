@@ -2,26 +2,31 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/log/` stores non-canonical operational records.
+`/docs/log/` stores temporary, non-canonical records only.
 
 ## Authority
 
-Log files do not override policy, spec, reference, or TODO documents.
+Log files never override policy, spec, reference, or TODO documents.
 
 ## Retention Rule
 
-Past records are deleted after their necessary constraints are promoted into
-canonical documents.
+- promote necessary constraints into canonical docs immediately
+- delete historical records after promotion
+- keep only active, unresolved notes
 
 ## Sections
 
 | Directory | Purpose |
 |---|---|
-| [audits/](audits/README.md) | active audit snapshots |
+| [audits/](audits/README.md) | unresolved audits only |
 | [proposals/](proposals/README.md) | unresolved proposals only |
-| [reconstruction/](reconstruction/README.md) | active reconstruction notes |
+| [reconstruction/](reconstruction/README.md) | active temporary reconstruction notes only |
+
+## Current State
+
+No active historical records are retained.
 
 ## Related
 
 - Canonical docs index: [/docs/README.md](/docs/README.md)
-- Current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)
+- Reference ledgers: [/docs/reference/README.md](/docs/reference/README.md)

@@ -2,32 +2,33 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Defines the reproducible verification gate.
+Reproducible verification profiles.
 
 ## Canonical Location
 
 - `/.github/workflows/ci.yml`
 
-In docs-only baseline state, this file may be intentionally absent and must be
-regenerated during reconstruction.
+In docs-only baseline state, this workflow may be absent and must be regenerated.
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| Docs-only | Source artifacts absent by design | internal doc link/path checks, policy checks |
-| Reconstructed | Workspace exists | docs checks + `cargo fmt --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
+| Docs-only | source artifacts absent by design | docs link/path checks + policy checks |
+| Reconstructed-basic | workspace exists, blocker work not yet complete | docs checks + `cargo fmt --all -- --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
+| Blocker-closure | high-severity blocker rows are being closed | reconstructed-basic checks + blocker regression tests + live PTY E2E tests (`*R`) |
+| Release | preparing release tag | blocker-closure checks + no high-severity open limitations |
 
 ## Local Reproduction
 
 Run the profile-appropriate checks from repository root.
 
-If running in reconstructed profile, minimum gate is:
-
-1. `cargo fmt --all -- --check`
-2. `cargo clippy --workspace --all-targets`
-3. `cargo test --workspace`
+For blocker-closure and release profiles, include live E2E scenarios from [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
 
 ## Evidence Rule
 
-CI status claims in `CONFORMANCE` or release docs MUST include a dated evidence pointer.
+CI status claims in `CONFORMANCE` or release docs MUST include:
+
+- check profile name
+- absolute date
+- key pass signal (for example test totals or blocker suite summary)

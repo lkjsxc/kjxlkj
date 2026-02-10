@@ -2,46 +2,45 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: reconstruction complete — all phases closed.
+Status: active blocker-closure wave (2026-02-10).
 
-## Standby Readiness (Completed)
+## Global Preconditions
 
-- [x] source code removed from repository baseline
-- [x] workspace/build artifacts removed from repository baseline
-- [x] previous CI/release workflow files removed for regeneration in next wave
-- [x] reference ledgers reset to docs-only baseline state
-- [x] TODO checklists reset to implementation standby mode
+- [x] canonical docs read in required order
+- [x] requirement matrix refreshed for high-risk domains
+- [x] mismatch matrix refreshed with `M1`..`M5` classes
+- [x] existing automated test evidence captured (`cargo test --workspace`)
+- [x] user-reported runtime failures promoted to open limitations
 
-## Global Preconditions (Start Here For Next Wave)
+## Immediate Blockers (Must Close First)
 
-- [x] read canonical docs in required order
-- [x] build requirement matrix for all normative specs
-- [x] build mismatch matrix (spec vs implementation vs tests)
-- [x] identify highest-risk user-visible workflows first
-
-## Immediate Blockers (Must Close Early)
-
-- [x] `Shift+a` normalization (`Shift+a` must dispatch as `A`)
-- [x] `a` at end-of-line behavior (`a` must not behave like `i`)
-- [x] explorer launch wiring (`:Explorer`, `<leader>e`)
-- [x] terminal launch wiring (`:terminal`, `<leader>t`)
-- [x] mixed-window `Ctrl-w` navigation (buffer/explorer/terminal)
-- [x] Japanese IME composition and leader isolation
-- [x] long-line on-screen wrap safety (no off-screen overflow)
+- [ ] `LIM-BLOCK-KEY-02` `Shift+a` real runtime path
+- [ ] `LIM-BLOCK-WIN-02` split and multi-window correctness
+- [ ] `LIM-BLOCK-EXP-02` explorer launch and actions
+- [ ] `LIM-BLOCK-TERM-02` terminal window stability
+- [ ] `LIM-BLOCK-CURSOR-02` cursor display correctness
+- [ ] `LIM-BLOCK-WRAP-02` long-line wrap safety in live UI
+- [ ] `LIM-BLOCK-TEST-01` verification gap (insufficient live E2E)
 
 ## Phase Checklist
 
-- [x] [phases/phase-0-foundation.md](phases/phase-0-foundation.md)
-- [x] [phases/phase-1-editor-core.md](phases/phase-1-editor-core.md)
-- [x] [phases/phase-2-window-explorer-terminal.md](phases/phase-2-window-explorer-terminal.md)
-- [x] [phases/phase-3-i18n-wrap-ime.md](phases/phase-3-i18n-wrap-ime.md)
-- [x] [phases/phase-4-services-and-features.md](phases/phase-4-services-and-features.md)
-- [x] [phases/phase-5-hardening-release.md](phases/phase-5-hardening-release.md)
-- [x] [verification.md](verification.md)
+- [ ] [phases/phase-0-foundation.md](phases/phase-0-foundation.md)
+- [ ] [phases/phase-1-editor-core.md](phases/phase-1-editor-core.md)
+- [ ] [phases/phase-2-window-explorer-terminal.md](phases/phase-2-window-explorer-terminal.md)
+- [ ] [phases/phase-3-i18n-wrap-ime.md](phases/phase-3-i18n-wrap-ime.md)
+- [ ] [phases/phase-4-services-and-features.md](phases/phase-4-services-and-features.md)
+- [ ] [phases/phase-5-hardening-release.md](phases/phase-5-hardening-release.md)
+- [ ] [verification.md](verification.md)
+
+## Working Matrices
+
+- [ ] [requirement-matrix.md](requirement-matrix.md)
+- [ ] [mismatch-matrix.md](mismatch-matrix.md)
 
 ## Exit Criteria
 
-- [x] no core feature remains scaffold-only
-- [x] no checked TODO item lacks deterministic evidence
-- [x] no direct-link coverage gap remains in `/docs/todo/doc-coverage/`
-- [x] no blocker above remains open
+- [ ] no high-severity limitation remains open
+- [ ] blocker regression tests (`*R`) pass deterministically
+- [ ] mixed-window and wrap/cursor behavior verified in PTY harness
+- [ ] TODO checkboxes are fully evidence-backed
+- [ ] doc-coverage is complete and has no stale links

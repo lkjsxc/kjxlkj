@@ -4,32 +4,32 @@ Back: [/docs/todo/current/phases/README.md](/docs/todo/current/phases/README.md)
 
 ## Scope
 
-Japanese input correctness, CJK width safety, and overflow-free rendering.
+IME isolation, CJK-safe wrapping, and cursor visibility under stress.
 
 ## Tasks
 
-- [x] implement IME composition state model and routing priority
-- [x] prevent leader leakage during IME candidate operations
-- [x] guarantee no half-cell cursor state on width-2 graphemes
-- [x] enforce wrap padding rule at width-2 boundary split risk
-- [x] validate long-line rendering stays on-screen in all window types
+- [ ] enforce IME-first key routing while composing
+- [ ] block leader leakage during candidate operations
+- [ ] guarantee width-2 wrap padding and no half-cell cursor state
+- [ ] verify mixed-window wrap safety for editor/explorer/terminal views
+- [ ] close `LIM-BLOCK-WRAP-02` and remaining IME verification gaps
 
 ## Required Spec Links
 
-- [x] [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
-- [x] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- [x] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- [x] [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
+- [ ] [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md)
+- [ ] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- [ ] [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md)
+- [ ] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 
 ## Required Tests
 
-- [x] `JP-01`
-- [x] `JP-02`
-- [x] `JP-03`
-- [x] `JP-04`
-- [x] `JP-05`
-- [x] `BD-01`
-- [x] `BD-02`
-- [x] `BD-10`
-- [x] `PE-04`
-- [x] `PE-06`
+- [ ] `JP-03`
+- [ ] `JP-04`
+- [ ] `JP-06R`
+- [ ] `JP-07R`
+- [ ] `JP-09R`
+- [ ] `WRAP-11R`
+- [ ] `WRAP-14R`
+- [ ] `WRAP-16R`
+- [ ] `CUR-08R`
+- [ ] `CUR-10R`

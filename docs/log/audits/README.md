@@ -2,12 +2,15 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-Active audit snapshots.
+Active audit snapshots only.
 
 ## Entries
 
-- [2026-02-10-canonical-audit.md](2026-02-10-canonical-audit.md)
-- [2026-02-10-standby-reset.md](2026-02-10-standby-reset.md)
+No unresolved audit records are active.
+
+## Rule
+
+When an audit finding is promoted into canonical docs, delete the audit snapshot.
 
 ## Related
 

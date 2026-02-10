@@ -4,28 +4,28 @@ Back: [/docs/todo/current/phases/README.md](/docs/todo/current/phases/README.md)
 
 ## Scope
 
-Core editing behavior, mode transitions, command dispatch, and cursor semantics.
+Core key routing, cursor semantics, and command/viewport correctness.
 
 ## Tasks
 
-- [x] implement full `i`, `a`, and `A` semantics from cursor and keybinding specs
-- [x] enforce shifted printable normalization in input decoding
-- [x] complete mode transition clamping rules
-- [x] wire essential command paths (`:w`, `:q`, `:e`, `:set`) through runtime
-- [x] ensure long-line viewport behavior follows on-screen rules
+- [ ] enforce printable shift normalization through real input path
+- [ ] guarantee `i`, `a`, and `A` semantic distinction at EOL
+- [ ] harden cursor display invariants across wrap and resize
+- [ ] validate command paths (`:w`, `:q`, `:e`, `:set`) in live runtime
+- [ ] close `LIM-BLOCK-KEY-02` and `LIM-BLOCK-CURSOR-02`
 
 ## Required Spec Links
 
-- [x] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- [x] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
-- [x] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- [x] [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- [ ] [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
+- [ ] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [ ] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
+- [ ] [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
 
 ## Required Tests
 
-- [x] `WR-01`
-- [x] `WR-02`
-- [x] `WR-07`
-- [x] `WR-08`
-- [x] `HE-01`
-- [x] `HE-08`
+- [ ] `WR-01`
+- [ ] `WR-02`
+- [ ] `WR-08`
+- [ ] `WR-01R`
+- [ ] `CUR-07R`
+- [ ] `CUR-10R`

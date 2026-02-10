@@ -2,28 +2,35 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-This blueprint defines the reconstruction target for source topology.
+Blueprint for reconstruction source topology.
 
 ## Goals
 
-- Keep each source directory at around 12 direct children.
-- Keep each source file below 200 lines.
-- Group modules by runtime responsibility so wiring is traceable.
+- keep source directories around 12 direct children
+- keep source files below 200 lines
+- make runtime wiring traceable by domain grouping
 
-## Workspace Skeleton
+## Canonical Directory Tree
 
-| Path | Direct Children Target | Notes |
+| Path | Target Direct Children | Notes |
 |---|---:|---|
-| `src/crates/` | 18 | One crate directory per workspace member |
-| `src/crates/kjxlkj/src/` | 6-10 | Binary orchestration modules |
-| `src/crates/kjxlkj-core-state/src/` | 10-12 | Split by state/dispatch domains |
-| `src/crates/kjxlkj-core-edit/src/` | 8-12 | Operators, motions, text objects, helpers |
-| `src/crates/kjxlkj-core-mode/src/` | 8-12 | Per-mode dispatch and transitions |
-| `src/crates/kjxlkj-render/src/` | 8-12 | Grid, wrapping, decorations, diff |
-| `src/crates/kjxlkj-input/src/` | 8-12 | decode, mapping, leader/count, IME gates |
-| `src/crates/kjxlkj-service-terminal/src/` | 8-12 | parser, screen, PTY, lifecycle |
+| `src/` | 1-4 | implementation root |
+| `src/crates/` | 4 | grouped crate domains |
+| `src/crates/app/` | 1-4 | shipped binary crates |
+| `src/crates/core/` | 8-12 | core model and editing crates |
+| `src/crates/platform/` | 4-8 | host/input/render/supervision crates |
+| `src/crates/services/` | 5-8 | external integration service crates |
 
-## Binary Crate Layout (`kjxlkj/src`)
+## Crate Grouping (normative)
+
+| Group Path | Required Members |
+|---|---|
+| `src/crates/app/` | `kjxlkj` |
+| `src/crates/core/` | `kjxlkj-core`, `kjxlkj-core-types`, `kjxlkj-core-text`, `kjxlkj-core-edit`, `kjxlkj-core-mode`, `kjxlkj-core-undo`, `kjxlkj-core-ui`, `kjxlkj-core-state` |
+| `src/crates/platform/` | `kjxlkj-host`, `kjxlkj-input`, `kjxlkj-render`, `kjxlkj-services` |
+| `src/crates/services/` | `kjxlkj-service-fs`, `kjxlkj-service-git`, `kjxlkj-service-index`, `kjxlkj-service-lsp`, `kjxlkj-service-terminal` |
+
+## Binary Crate Layout (`src/crates/app/kjxlkj/src`)
 
 | Module | Responsibility |
 |---|---|
@@ -34,47 +41,33 @@ This blueprint defines the reconstruction target for source topology.
 | `signals.rs` | process signal orchestration |
 | `cli.rs` | command-line arguments |
 
-## Core-State Layout (`kjxlkj-core-state/src`)
+## High-Risk Module Layout Targets
 
-| Module Group | Required Files |
-|---|---|
-| state model | `editor.rs`, `buffer_list.rs`, `window_tree.rs`, `session.rs` |
-| dispatch | `editor_actions.rs`, `editor_mode_dispatch.rs`, `ex_dispatch.rs` |
-| editing ops | `editing_ops_insert.rs`, `editing_ops_modify.rs`, `editing_ops_yank.rs` |
-| search and navigation | `search_engine.rs`, `cursor_ops.rs`, `cursor_ops_scroll.rs`, `cursor_ops_findchar.rs` |
-| scripting | `mappings.rs`, `user_commands.rs`, `user_functions.rs`, `events.rs` |
-| persistence and marks | `registers.rs`, `marks.rs`, `config_loader.rs` |
-| tests | `*_tests.rs` split by domain (no monolithic test file) |
+| Path | Direct Children Target | Notes |
+|---|---:|---|
+| `src/crates/core/kjxlkj-core-state/src/` | 10-12 | use `ops/` and `tests/` subdirs |
+| `src/crates/core/kjxlkj-core-edit/src/` | 8-12 | split operators/motions/tests |
+| `src/crates/core/kjxlkj-core-mode/src/` | 8-12 | split dispatch and per-mode logic |
+| `src/crates/platform/kjxlkj-render/src/` | 8-12 | use `paint/` subdir |
+| `src/crates/platform/kjxlkj-input/src/` | 8-12 | decode/mapping/IME separation |
+| `src/crates/services/kjxlkj-service-terminal/src/` | 8-12 | parser/screen/PTY separation |
 
-## Terminal Service Layout (`kjxlkj-service-terminal/src`)
-
-| Module | Responsibility |
-|---|---|
-| `task.rs` | service event loop |
-| `pty.rs` | process spawn/read/write/resize/cleanup |
-| `parser.rs` | VT state machine and UTF-8 integration |
-| `csi.rs` | CSI dispatch |
-| `osc.rs` | OSC handling |
-| `screen.rs` | screen buffer and scrollback |
-| `attrs.rs` | SGR attributes and style state |
-| `tests_*.rs` | parser/screen/lifecycle unit tests |
-
-## Directory Overflow Procedure
+## Overflow Procedure
 
 | Trigger | Required Action |
 |---|---|
-| direct children > 12 | create subdirectory by domain and move related files |
-| file length > 200 | extract focused module and keep old file as thin facade |
-| mixed concerns in one file | split by input path, state mutation, and IO side effects |
+| direct children > 12 | create domain subdirectory and move related files |
+| file length > 200 | extract focused module and keep thin facade |
+| mixed concerns | split by state mutation, dispatch, and IO side effects |
 
 ## Verification Rules
 
-- Every split MUST preserve public API behavior.
-- Every split MUST include deterministic tests for moved logic.
-- TODO entries for topology work MUST link this file directly.
+- every topology split preserves API and behavior
+- moved logic receives deterministic tests in same change
+- TODO topology items link this file directly
 
 ## Related
 
 - Crate topology: [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
-- Workflow gates: [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
-- Reconstruction TODO: [/docs/todo/current/README.md](/docs/todo/current/README.md)
+- Workspace members: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)

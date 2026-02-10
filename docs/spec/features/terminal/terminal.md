@@ -2,93 +2,96 @@
 
 Back: [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
 
-The terminal subsystem MUST be a full-scratch implementation and a first-class
-window type.
+The terminal subsystem is a first-class window type with real PTY behavior.
 
 ## Non-Negotiable Contract
 
 | Requirement | Detail |
 |---|---|
-| Terminal is a window | Every terminal instance is a `WindowId` in the shared window tree |
-| No simplified stub | PTY lifecycle, parser, screen model, and rendering MUST be real runtime behavior |
-| Shared navigation | `Ctrl-w` navigation works identically across buffer, explorer, and terminal windows |
-| Non-blocking IO | Heavy terminal output MUST NOT stall editing in other windows |
+| Terminal is a window | each terminal instance is a `WindowId` leaf in the shared tree |
+| No stub path | PTY lifecycle + parser + screen model must be real runtime behavior |
+| Shared navigation | `Ctrl-w` works identically across buffer/explorer/terminal leaves |
+| Non-blocking IO | terminal output MUST NOT stall editing in other windows |
 
 ## Launch and Wiring
 
 | Trigger | Required Path |
 |---|---|
-| `:terminal` | command parser -> core action -> terminal service spawn -> window tree insert |
-| `<leader>t` | keymap -> action resolver -> same spawn path as `:terminal` |
-| `<leader>tv` | keymap -> vertical split creation -> terminal content binding |
-| `<leader>th` | keymap -> horizontal split creation -> terminal content binding |
-
-`terminal` features MUST NOT be considered implemented unless these triggers reach
-real PTY-backed behavior.
+| `:terminal` | command parser -> core action -> terminal service spawn -> leaf insert |
+| `<leader>t` | keymap -> same spawn path as `:terminal` |
+| `<leader>tv` | vertical split create -> terminal content binding |
+| `<leader>th` | horizontal split create -> terminal content binding |
 
 ## Runtime Components
 
 | Layer | Responsibility |
 |---|---|
-| Core-state | Owns terminal window metadata and focus/layout state |
-| Terminal service | PTY process spawn/read/write/resize/cleanup |
-| Parser | UTF-8 decode + VT state machine + CSI/OSC dispatch |
-| Screen model | Main/alternate grids, cursor, scrollback, style attrs |
-| Renderer | Maps terminal cells to window cells in frame output |
+| Core-state | terminal leaf metadata, focus, and layout ownership |
+| Terminal service | PTY spawn/read/write/resize/cleanup |
+| Parser | UTF-8 + VT state machine + CSI/OSC dispatch |
+| Screen model | main/alternate buffers, cursor, styles, scrollback |
+| Renderer | maps terminal cells into window cell region |
 
-## Screen and Overflow Rules
+## Input Routing Modes
+
+| Mode | Behavior |
+|---|---|
+| TerminalInsert | printable/control keys go to PTY input stream |
+| TerminalNormal | window commands and editor navigation active |
+| Escape chord | `Ctrl-\\ Ctrl-n` transitions TerminalInsert -> TerminalNormal |
+
+While terminal leaf is focused, `Ctrl-w` family MUST remain available in both modes.
+
+## Screen and Wrap Safety
 
 | Rule | Requirement |
 |---|---|
-| On-screen rendering | Cell output MUST stay within the window text area |
-| Long output lines | Output that exceeds window width MUST wrap to continuation rows |
-| Wide graphemes | Width-2 graphemes MUST never split across rows |
-| Continuation cell | Width-2 trailing cell MUST be marked continuation and non-addressable |
-| Scrollback bound | Scrollback MUST be capped by `terminal.scrollback_lines` |
+| On-screen rendering | terminal cells remain within text area bounds |
+| Long output | wrap to continuation rows; no right-edge overflow |
+| Wide grapheme safety | width-2 cells never split across rows |
+| Continuation cell | width-2 trailing cell is continuation and non-addressable |
+| Scrollback bound | enforce `terminal.scrollback_lines` hard cap |
 
 ## PTY Lifecycle Rules
 
 | Stage | Requirement |
 |---|---|
-| Spawn | Child process starts with window size and configured shell |
-| Read | Async reads feed parser without blocking core task |
-| Write | Terminal-insert keys forward to PTY input stream |
-| Resize | Window resize sends PTY resize (`SIGWINCH`) and grid recompute |
-| Close | Closing terminal window sends hangup/terminate and reaps child |
-
-## Interaction Rules
-
-| Context | Behavior |
-|---|---|
-| Terminal insert | Printable/control keys go to PTY, except dedicated escape chord |
-| Escape chord | `Ctrl-\\ Ctrl-n` exits terminal insert to Normal mode |
-| Window commands | `Ctrl-w` family remains available while terminal focused |
-| Session restore | Restores terminal window nodes; process restarts (no process snapshot restore) |
+| Spawn | child starts with configured shell and initial terminal size |
+| Read | async reads feed parser without blocking core |
+| Write | terminal input writes are ordered and non-blocking |
+| Resize | window resize sends PTY resize (`SIGWINCH`) |
+| Close | window close triggers hangup/terminate and child reap |
 
 ## Failure Handling
 
 | Failure | Required Behavior |
 |---|---|
-| PTY spawn failure | Window creation fails with explicit error notification |
-| Child exit | Window shows exited state without crashing editor |
-| Parser invalid sequence | Invalid escape sequence is ignored safely |
-| Output flood | Backpressure prevents unbounded memory growth |
+| PTY spawn failure | terminal leaf is not created; user gets explicit error |
+| Child unexpected exit | leaf shows exited state; editor remains stable |
+| Invalid escape sequence | safely ignored with parser state recovery |
+| Output flood | bounded channels/backpressure prevent unbounded memory growth |
+
+## Session Behavior
+
+- terminal leaves are persisted as window nodes
+- process state is not snapshotted; restart creates new process instance
+- restored leaves MUST re-enter deterministic lifecycle state
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| TERM-01 | `:terminal` launches PTY-backed window |
-| TERM-02 | `<leader>t` and split variants use same runtime path |
-| TERM-03 | `Ctrl-w` navigation across buffer/explorer/terminal |
-| TERM-04 | Resize sends PTY resize and preserves cursor visibility |
-| TERM-05 | Close reaps child process without zombie leak |
-| TERM-06 | Concurrent terminal output while editing adjacent buffer |
-| TERM-07 | CJK terminal output wraps correctly with no half-cell cursor state |
+| `TERM-01R` | `:terminal` launches PTY-backed terminal window |
+| `TERM-02R` | `<leader>t` and split variants use same runtime path |
+| `TERM-03R` | mixed `Ctrl-w` navigation across buffer/explorer/terminal |
+| `TERM-04R` | resize propagates to PTY and preserves cursor visibility |
+| `TERM-05R` | close reaps child without zombie leak |
+| `TERM-06R` | heavy terminal output while editing adjacent buffer |
+| `TERM-07R` | CJK terminal output wraps with no half-cell state |
 
 ## Related
 
 - Escape parser: [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md)
-- Windows model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
+- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
 - Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- E2E tests: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- E2E matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

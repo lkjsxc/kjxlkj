@@ -6,8 +6,7 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Objective
 
-Following TODO items exactly MUST produce a complete implementation that
-conforms to policy, spec, and reference contracts.
+Following TODO items exactly MUST produce an implementation that conforms to policy and spec, with blocker-first verification.
 
 ## Normative Inputs
 
@@ -19,27 +18,28 @@ conforms to policy, spec, and reference contracts.
 
 - [x] no checkbox is marked complete without deterministic evidence
 - [x] no scaffold-only or unreachable path is treated as complete
-- [x] every TODO closure updates conformance and limitations in the same change
+- [x] every TODO closure updates conformance, limitations, and drift matrix in same change
 - [x] every TODO closure references at least one test ID and one spec link
+- [x] high-severity user-reported failures remain open until reproduced and fixed
 
 ## Execution Layers
 
 | Layer | Purpose |
 |---|---|
-| [current/README.md](current/README.md) | active reconstruction phases and global gates |
-| [current/verification.md](current/verification.md) | hard verification checkpoints |
-| [current/phases/README.md](current/phases/README.md) | phase-by-phase implementation checklists |
+| [current/README.md](current/README.md) | active blocker-first reconstruction plan |
+| [current/verification.md](current/verification.md) | verification gates and closure checks |
+| [current/phases/README.md](current/phases/README.md) | phase-by-phase implementation checklist |
 | [doc-coverage/README.md](doc-coverage/README.md) | direct-link checklist to every documentation file |
-| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | machine-execution contract |
-| [reading/README.md](reading/README.md) | deterministic read-before-implement discipline |
+| [RECONSTRUCTION_PROMPT.md](RECONSTRUCTION_PROMPT.md) | machine execution contract |
+| [reading/README.md](reading/README.md) | read-before-implement discipline |
 | [completed/README.md](completed/README.md) | archive policy for completed waves |
 
 ## Completion Definition
 
 A reconstruction wave is complete only when all are true:
 
-1. [x] every normative requirement is `verified` or an explicit limitation
-2. [x] all claimed behaviors are reachable from real key/command paths
-3. [x] required deterministic gates are green
-4. [x] conformance, limitations, and TODO states are synchronized
-5. [x] doc-coverage lists every documentation file with direct links
+1. [ ] all high-severity limitations are closed with live E2E evidence
+2. [ ] all blocker IDs in current phase docs are checked
+3. [ ] no TODO checkbox lacks direct proof
+4. [ ] doc coverage links every markdown document directly
+5. [ ] topology and file-size constraints are met per architecture policy

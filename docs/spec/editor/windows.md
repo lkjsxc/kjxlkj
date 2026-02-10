@@ -2,89 +2,118 @@
 
 Back: [/docs/spec/editor/README.md](/docs/spec/editor/README.md)
 
-Windows are viewports over content sources (buffers or terminal PTY screens). They are core-owned layout state.
+Windows are core-owned viewports over content sources.
 
 ## Requirements
 
-- Core owns the window tree / split layout.
-- Rendering uses window snapshots; renderer never mutates layout.
-- Cursor and viewport semantics are deterministic and mode-aware.
+- core owns one shared window tree for buffer, explorer, and terminal windows
+- renderer consumes immutable window snapshots and MUST NOT mutate layout
+- exactly one tiled window is focused at any time
 
-## Window types
+## Window Types
 
-| Type | Content source | Description |
+| Type | Content Source | Description |
 |---|---|---|
-| Buffer window | `BufferId` | Displays a text buffer; standard editing window. |
-| Terminal window | `TerminalId` | Displays a terminal emulator screen backed by a PTY process. |
+| Buffer window | `BufferId` | text editing viewport |
+| Explorer window | `ExplorerStateId` | project tree viewport |
+| Terminal window | `TerminalId` | PTY-backed terminal viewport |
 
-Both window types share the same `WindowId`, layout tree, navigation, resize, and split semantics. The renderer selects the appropriate rendering path based on the content source type.
+All types participate in the same `WindowId` graph, split operations, and `Ctrl-w` navigation.
 
-## Window model
-
-A window is defined by:
+## Window Model
 
 | Field | Type | Description |
 |---|---|---|
-| `window_id` | `WindowId` | Stable unique identifier. |
-| `content` | enum: `Buffer(BufferId)` or `Terminal(TerminalId)` | What this window displays. |
-| `cursor` | cursor state | Per-window cursor position. For buffer windows, this is a grapheme-based position. For terminal windows, this is the terminal cursor. |
-| `viewport` | viewport state | Top line, left column, text area dimensions. |
-| `options` | per-window options | wrap, line numbers, scrolloff, sidescrolloff. |
+| `window_id` | `WindowId` | stable unique identity |
+| `content` | enum | `Buffer`, `Explorer`, or `Terminal` |
+| `cursor` | content-local cursor | grapheme cursor, explorer row, or terminal cursor |
+| `viewport` | viewport state | top/left offset and text-area dimensions |
+| `options` | window options | wrap, line numbers, scroll margins |
+| `last_focus_seq` | monotonic integer | tie-breaker for focus history |
 
-## Layout tree
+## Layout Tree
 
-The layout is a recursive tree of splits and leaf windows:
+The layout is a recursive split tree of leaves and containers.
 
-| Node type | Description |
+| Node Type | Meaning |
 |---|---|
-| Leaf | A single window (`WindowId`). |
-| Horizontal split | Children arranged top-to-bottom, each with a height weight. |
-| Vertical split | Children arranged left-to-right, each with a width weight. |
+| `Leaf(WindowId)` | one tiled window |
+| `Horizontal(children)` | children arranged top-to-bottom |
+| `Vertical(children)` | children arranged left-to-right |
 
-The layout tree MUST support:
+## Geometry Rules
 
-- Arbitrary nesting depth of splits.
-- Integer cell rounding from floating-point weights for terminal output.
-- Minimum window size enforcement (at least 1 row and 1 column for text area).
+| Rule | Requirement |
+|---|---|
+| Full coverage | tiled windows and separators fill editor grid |
+| No overlap | tiled windows do not overlap |
+| Minimum size | text area remains at least 1x1 |
+| Stable IDs | `WindowId` survives split/resize/rebalance operations |
 
-## Window navigation
+## Directional Focus Algorithm (normative)
+
+For `Ctrl-w h/j/k/l`, focus resolution MUST use geometry, not cyclic order.
+
+1. derive virtual rectangles for each leaf from current layout tree
+2. collect candidate windows strictly in requested direction
+3. discard candidates with zero orthogonal overlap, unless no-overlap fallback is needed
+4. rank candidates by:
+   - smallest primary-axis distance
+   - largest orthogonal overlap
+   - most recent `last_focus_seq` (tie-break)
+5. select first ranked candidate
+
+If no directional candidate exists, focus MUST remain unchanged.
+
+## Window Navigation
 
 | Key | Action |
 |---|---|
-| `Ctrl-w h` | Focus window to the left |
-| `Ctrl-w j` | Focus window below |
-| `Ctrl-w k` | Focus window above |
-| `Ctrl-w l` | Focus window to the right |
-| `Ctrl-w w` | Cycle to next window |
-| `Ctrl-w W` | Cycle to previous window |
-| `Ctrl-w p` | Focus previous (last active) window |
+| `Ctrl-w h/j/k/l` | focus directional neighbor by geometry |
+| `Ctrl-w w/W` | cycle next/previous in deterministic traversal order |
+| `Ctrl-w p` | return to previously focused window |
+| `Ctrl-w t/b` | focus top-left / bottom-right leaf |
 
-Navigation works identically for buffer and terminal windows.
+Navigation semantics are identical across buffer, explorer, and terminal windows.
 
-## Window operations
+## Split and Close Semantics
 
-| Operation | Description |
+| Operation | Requirement |
 |---|---|
-| Split | Create a new split, dividing the current window's space. |
-| Close | Remove window from tree; rebalance layout. For terminal windows, send `SIGHUP` to PTY. |
-| Resize | Change weight allocation; enforce minimums. For terminal windows, send `SIGWINCH`. |
-| Move | Relocate window to a different edge of the layout (`Ctrl-w H/J/K/L`). |
-| Zoom | Temporarily maximize a window to fill the entire editor grid. |
+| Split create | parent leaf becomes split container with two leaves |
+| Close leaf | close current leaf and rebalance nearest valid ancestor |
+| Close terminal leaf | close triggers PTY hangup + child reap |
+| Close explorer leaf | explorer state detaches cleanly from focus graph |
+| `:only` | close all non-pinned tiled leaves except current |
 
-## Invariants
+## Resize and Reflow
 
-| Invariant | Requirement |
+- resize updates leaf rectangles and clamps viewports
+- terminal leaf resize propagates to PTY (`SIGWINCH`)
+- wrapped views recompute display rows after geometry change
+
+## Session Persistence Contract
+
+Sessions MUST persist and restore:
+
+- tab order and active tab
+- split tree and leaf `WindowId` mappings
+- content bindings for buffer/explorer/terminal leaves
+- focused window identity when valid on restore
+
+## Mandatory Verification
+
+| ID | Scenario |
 |---|---|
-| No overlap | Windows MUST NOT overlap in the rendered grid (except floating windows). |
-| Full coverage | The editor grid MUST be fully covered by windows plus separators. |
-| Focus uniqueness | Exactly one window is focused at any time. |
-| Stable IDs | `WindowId` values MUST remain stable across layout changes. |
+| `WIN-01R` | split create/close lifecycle preserves focus uniqueness |
+| `WIN-02R` | directional focus on nested mixed-orientation tree |
+| `WIN-03R` | mixed buffer/explorer/terminal `Ctrl-w` navigation |
+| `WIN-04R` | resize storm preserves geometry invariants and cursor visibility |
+| `WIN-05R` | session roundtrip restores focused window and split structure |
 
 ## Related
 
-- UI views/components: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
-- Layout UX: [/docs/spec/ux/layout.md](/docs/spec/ux/layout.md)
-- Viewport behavior: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- Terminal as window: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
-- Window features: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
-- Session persistence: [/docs/spec/features/session/sessions.md](/docs/spec/features/session/sessions.md)
+- Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- Explorer view: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- Terminal view: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)

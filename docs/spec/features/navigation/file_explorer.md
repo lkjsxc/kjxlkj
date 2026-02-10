@@ -2,88 +2,105 @@
 
 Back: [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
 
-The explorer is a native project tree view managed as an editor window.
+The explorer is a first-class editor window in the shared layout tree.
 
 ## Core Contract
 
 | Requirement | Detail |
 |---|---|
-| Window identity | Explorer is a normal `WindowId` in the shared layout tree |
-| Launch wiring | Explorer commands and keys route through real runtime dispatch |
-| Mixed-window navigation | `Ctrl-w` navigation works across explorer, buffer, and terminal |
-| Deterministic refresh | Tree updates are explicit and reproducible |
+| Window identity | explorer is a normal `WindowId` leaf |
+| Launch wiring | command and key triggers must reach visible runtime behavior |
+| Mixed navigation | `Ctrl-w` works across explorer/buffer/terminal leaves |
+| Deterministic refresh | tree updates are explicit and reproducible |
 
-## Launch and Command Wiring
+## Launch and Wiring
 
 | Trigger | Required Path |
 |---|---|
-| `:Explorer` | command parser -> core action -> explorer window open |
-| `:ExplorerClose` | command parser -> core action -> explorer window close |
-| `:ExplorerReveal` | command parser -> reveal current buffer path in explorer |
+| `:Explorer` | command parser -> core action -> explorer leaf open/focus |
+| `:ExplorerClose` | command parser -> core action -> close explorer leaf |
+| `:ExplorerReveal` | command parser -> reveal active buffer path in tree |
 | `<leader>e` | keymap -> explorer toggle action |
 | `<leader>E` | keymap -> explorer reveal action |
 
-An explorer feature MUST NOT be marked complete if these triggers do not reach
-visible runtime behavior.
+An explorer feature MUST NOT be marked complete if these triggers do not produce visible behavior.
+
+## Explorer State Model
+
+| Field | Requirement |
+|---|---|
+| root path | normalized absolute project root |
+| visible nodes | deterministic flattening of expanded tree nodes |
+| selected node index | clamped to visible range |
+| expansion set | stable expanded directory IDs |
+| clipboard state | optional cut/copy pending node set |
 
 ## Navigation and Open Targets
 
 | Key | Behavior |
 |---|---|
-| `j` / `k` | Move selection down/up |
-| `h` | Collapse directory or move to parent |
-| `l` | Expand directory or open file |
-| `Enter` / `o` | Open file in current window |
-| `v` | Open file in vertical split |
-| `s` | Open file in horizontal split |
-| `t` | Open file in new tab |
-| `q` | Close explorer window |
+| `j` / `k` | move selection down/up |
+| `h` | collapse directory or move to parent node |
+| `l` | expand directory or open file |
+| `Enter` / `o` | open file in current window |
+| `v` | open file in vertical split |
+| `s` | open file in horizontal split |
+| `t` | open file in new tab |
+| `q` | close explorer window |
+
+Open target behavior MUST keep explorer state valid and focus deterministic.
 
 ## File Operations
 
 | Key | Behavior |
 |---|---|
-| `a` | Create file |
-| `A` | Create directory |
-| `r` | Rename |
-| `d` | Safe delete |
-| `D` | Force delete |
-| `x` / `c` / `p` | Cut / copy / paste |
-| `y` / `Y` / `gy` | Copy name / relative path / absolute path |
+| `a` | create file |
+| `A` | create directory |
+| `r` | rename |
+| `d` | safe delete |
+| `D` | force delete |
+| `x` / `c` / `p` | cut / copy / paste |
+| `y` / `Y` / `gy` | copy name / relative path / absolute path |
 
-## Rendering and Overflow Rules
+All mutating operations MUST be routed through filesystem service calls and reflected by refresh.
+
+## Refresh and External Drift
+
+| Scenario | Requirement |
+|---|---|
+| external file create/rename/delete | refresh updates visible tree deterministically |
+| missing path during reveal | fallback to nearest existing ancestor node |
+| permission denied | operation fails with explicit diagnostic and no state corruption |
+
+## Rendering and Overflow
 
 | Rule | Requirement |
 |---|---|
-| No off-screen text | Visible explorer rows MUST stay inside window bounds |
-| Long node labels | Long labels MUST soft-wrap to continuation rows in the explorer window |
-| Selection identity | Wrapped continuation rows are visual-only and map to one node |
-| Badges | Git/diagnostic badges render without corrupting node labels |
+| On-screen guarantee | rendered rows stay inside explorer text area |
+| Long node labels | labels wrap to continuation rows, never overflow right boundary |
+| Selection identity | wrapped continuation rows map to one logical node |
+| Badge safety | git/diagnostic badges never corrupt node text alignment |
 
-## Data and Service Model
+## Error Handling
 
-| Concern | Requirement |
-|---|---|
-| Directory traversal | Incremental, cancellable listing |
-| Sorting | Directories first, then files, stable lexical order |
-| Hidden/ignored toggles | Deterministic and reversible |
-| FS updates | Refresh reflects external file changes |
-| Large directories | Input remains responsive under high entry counts |
+- invalid path operations fail with actionable messages
+- failed rename/delete does not mutate in-memory tree state
+- refresh cancellation leaves prior visible state intact
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| EXP-01 | `:Explorer` opens explorer window |
-| EXP-02 | `<leader>e` toggle and `<leader>E` reveal work |
-| EXP-03 | Open selected file into current, horizontal, and vertical targets |
-| EXP-04 | `Ctrl-w` navigation across explorer/buffer/terminal |
-| EXP-05 | Long file names wrap in explorer window without off-screen overflow |
-| EXP-06 | Refresh reflects external file creation/rename/delete |
+| `EXP-01R` | `:Explorer` opens explorer window from real command path |
+| `EXP-02R` | `<leader>e` toggle and `<leader>E` reveal are wired |
+| `EXP-03R` | open selected file in current/horizontal/vertical targets |
+| `EXP-04R` | `Ctrl-w` navigation across explorer/buffer/terminal |
+| `EXP-05R` | long labels wrap safely with stable selection identity |
+| `EXP-06R` | external FS change refresh reflects create/rename/delete |
 
 ## Related
 
 - Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
 - Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- Keybindings: [/docs/spec/ux/keybindings/features.md](/docs/spec/ux/keybindings/features.md)
-- E2E tests: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- E2E matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

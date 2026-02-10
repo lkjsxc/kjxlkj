@@ -1,78 +1,72 @@
 # Workspace Manifest (Cargo)
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-Normative requirements for reconstructing the root Cargo workspace.
 
-## Files (root)
+Normative requirements for reconstructing root Cargo workspace.
+
+## Root Files
 
 | Path | Requirement |
-|------|-------------|
-| `Cargo.toml` | MUST define the workspace and its members |
-| `Cargo.lock` | SHOULD be committed for reproducible builds |
-| `.gitignore` | SHOULD ignore build artifacts (`/target`) |
+|---|---|
+| `Cargo.toml` | must define workspace and all members |
+| `Cargo.lock` | should be committed for reproducible builds |
+| `.gitignore` | should ignore derived build artifacts |
 
-## Workspace settings
-
-The root manifest (`Cargo.toml`) MUST define:
+## Workspace Settings
 
 | Field | Requirement |
-|-------|-------------|
-| `workspace.resolver` | MUST be `"2"` |
-| `workspace.members` | MUST include all crates under `src/crates/` listed below |
+|---|---|
+| `workspace.resolver` | must be `"2"` |
+| `workspace.members` | must include all grouped crate paths below |
 
-## Workspace members
+## Workspace Members
 
-The workspace MUST include these members (paths are relative to repo root):
+| Member Path | Crate |
+|---|---|
+| `src/crates/app/kjxlkj` | `kjxlkj` |
+| `src/crates/core/kjxlkj-core` | `kjxlkj-core` |
+| `src/crates/core/kjxlkj-core-types` | `kjxlkj-core-types` |
+| `src/crates/core/kjxlkj-core-text` | `kjxlkj-core-text` |
+| `src/crates/core/kjxlkj-core-edit` | `kjxlkj-core-edit` |
+| `src/crates/core/kjxlkj-core-mode` | `kjxlkj-core-mode` |
+| `src/crates/core/kjxlkj-core-undo` | `kjxlkj-core-undo` |
+| `src/crates/core/kjxlkj-core-ui` | `kjxlkj-core-ui` |
+| `src/crates/core/kjxlkj-core-state` | `kjxlkj-core-state` |
+| `src/crates/platform/kjxlkj-host` | `kjxlkj-host` |
+| `src/crates/platform/kjxlkj-input` | `kjxlkj-input` |
+| `src/crates/platform/kjxlkj-render` | `kjxlkj-render` |
+| `src/crates/platform/kjxlkj-services` | `kjxlkj-services` |
+| `src/crates/services/kjxlkj-service-fs` | `kjxlkj-service-fs` |
+| `src/crates/services/kjxlkj-service-git` | `kjxlkj-service-git` |
+| `src/crates/services/kjxlkj-service-index` | `kjxlkj-service-index` |
+| `src/crates/services/kjxlkj-service-lsp` | `kjxlkj-service-lsp` |
+| `src/crates/services/kjxlkj-service-terminal` | `kjxlkj-service-terminal` |
 
-| Member path | Crate |
-|-------------|-------|
-| `src/crates/kjxlkj` | `kjxlkj` |
-| `src/crates/kjxlkj-core` | `kjxlkj-core` |
-| `src/crates/kjxlkj-core-types` | `kjxlkj-core-types` |
-| `src/crates/kjxlkj-core-text` | `kjxlkj-core-text` |
-| `src/crates/kjxlkj-core-edit` | `kjxlkj-core-edit` |
-| `src/crates/kjxlkj-core-mode` | `kjxlkj-core-mode` |
-| `src/crates/kjxlkj-core-undo` | `kjxlkj-core-undo` |
-| `src/crates/kjxlkj-core-ui` | `kjxlkj-core-ui` |
-| `src/crates/kjxlkj-core-state` | `kjxlkj-core-state` |
-| `src/crates/kjxlkj-host` | `kjxlkj-host` |
-| `src/crates/kjxlkj-input` | `kjxlkj-input` |
-| `src/crates/kjxlkj-render` | `kjxlkj-render` |
-| `src/crates/kjxlkj-services` | `kjxlkj-services` |
-| `src/crates/kjxlkj-service-lsp` | `kjxlkj-service-lsp` |
-| `src/crates/kjxlkj-service-git` | `kjxlkj-service-git` |
-| `src/crates/kjxlkj-service-index` | `kjxlkj-service-index` |
-| `src/crates/kjxlkj-service-fs` | `kjxlkj-service-fs` |
-| `src/crates/kjxlkj-service-terminal` | `kjxlkj-service-terminal` |
-
-## Workspace package defaults
-
-The workspace SHOULD define shared package metadata (used by member crates):
+## Workspace Package Defaults
 
 | Field | Value |
-|-------|-------|
+|---|---|
 | Edition | `2021` |
-| Versioning | Semver (`0.1.0` initial is acceptable) |
+| Versioning | semver |
 | License | `Apache-2.0` |
 
-## Dependency policy
+## Dependency Policy
 
-The workspace SHOULD define shared dependency versions to keep the implementation consistent across crates.
-
-Recommended baseline set (version ranges are intentionally broad):
+Shared dependency versions should be defined in workspace scope for consistency.
 
 | Dependency | Purpose |
-|------------|---------|
-| `tokio` | Async runtime and service supervision |
-| `crossterm` | Terminal IO and events |
-| `ropey` | Rope text storage |
-| `unicode-segmentation` | Word/grapheme segmentation helpers |
-| `unicode-width` | Display width calculations |
-| `serde` + `serde_json` | Headless scripts and structured IO for tests |
-| `thiserror` / `anyhow` | Error types and propagation |
-| `tracing` + `tracing-subscriber` | Structured logging |
+|---|---|
+| `tokio` | async runtime and supervision |
+| `crossterm` | terminal IO and events |
+| `ropey` | rope text storage |
+| `unicode-segmentation` | grapheme segmentation |
+| `unicode-width` | display width calculations |
+| `serde` + `serde_json` | structured state and session IO |
+| `thiserror` / `anyhow` | error propagation |
+| `tracing` + `tracing-subscriber` | structured logging |
 
 ## Related
 
-- Root layout allowlist: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
-- Crate topology: [crates.md](crates.md)
+- Root layout: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+- Crate topology: [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- Source layout: [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)

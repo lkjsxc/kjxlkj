@@ -1,96 +1,71 @@
 # Cursor Customization
 
-Cursor appearance and visibility rules.
+Back: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
+
+Cursor appearance and visibility requirements.
 
 ## Scope
 
-- The focused cursor MUST be visible at all times while the editor has focus.
-- Cursor styling MUST be deterministic and derived from snapshots.
-- Mouse-driven cursor interactions are out of scope; mouse input is ignored.
+- focused cursor/caret MUST remain visible at all times
+- cursor styling MUST be deterministic from snapshot data
+- cursor rendering MUST stay correct with wide graphemes and wrapped rows
 
-## Cursor shapes
+## Mode Defaults
 
-| Shape | Meaning | Notes |
-|-------|---------|-------|
-| `block` | Cursor covers the cell at the cursor position. | Default for Normal. |
-| `bar` | Cursor is a thin vertical bar at the cursor position. | Default for Insert. |
-| `underline` | Cursor is a thin underline at the cursor position. | Default for Replace. |
-| `hollow` | Cursor is an outlined block. | Default for Visual; MAY be emulated via styling if terminal lacks support. |
+| Mode | Default Shape | Requirement |
+|---|---|---|
+| Normal | `block` | distinct from selection/search highlights |
+| Insert | `bar` | visible at end-inclusive insertion points |
+| Visual | `hollow` | selection remains visible beneath cursor |
+| Replace | `underline` | visible while overwriting |
+| Command | `bar` | tracks command-line caret |
 
-## Defaults per mode
+## Rendering Priority (normative)
 
-| Mode | Default shape | Requirement |
-|------|---------------|-------------|
-| Normal | `block` | Distinct from selection and search highlights. |
-| Insert | `bar` | Must remain visible at insertion points (end-inclusive model). |
-| Visual | `hollow` | Selection highlight MUST remain visible under cursor styling. |
-| Replace | `underline` | Must remain visible while overwriting. |
-| Command | `bar` | Cursor tracks the command-line caret position. |
+Rendering order MUST be:
 
-## Rendering contract (normative)
+1. content cells
+2. selection/search/diagnostic highlights
+3. cursor overlay (highest priority)
 
-The cursor is a render-layer with the highest priority:
+Later draws MUST NOT erase cursor visibility.
 
-1. Content rendering (text, folds, conceal)
-2. Highlight layers (selection, search, diagnostics)
-3. Cursor rendering (primary cursor + secondary cursors)
-
-Cursor rendering MUST NOT be overwritten by any later drawing operation.
-
-## Terminal cursor vs drawn cursor
-
-| Technique | Requirement |
-|----------|-------------|
-| Terminal cursor | The implementation SHOULD set the terminal cursor position and shape when supported. |
-| Drawn cursor | The implementation MUST be able to render a visible cursor style in the cell grid. |
-
-If the terminal cursor is unavailable or visually ambiguous under a theme, the drawn cursor MUST still ensure the cursor remains visible.
-
-## Colors and contrast
+## Wide Grapheme Cursor Rules
 
 | Rule | Requirement |
-|------|-------------|
-| Contrast | Cursor styling MUST remain visible under all built-in themes. |
-| Fallback | If a configured cursor color is unreadable, the implementation MUST fall back to an invert or high-contrast style. |
+|---|---|
+| Atomic highlight | if cursor targets width-2 grapheme, both cells are highlighted |
+| No continuation targeting | cursor MUST NOT target continuation cell directly |
+| Wrap safety | cursor display never appears split across two rows |
 
-## Blinking
+## Terminal Cursor vs Drawn Cursor
 
-| Setting | Default | Requirement |
-|---------|---------|-------------|
-| `ui.cursor.blink` | `true` | If disabled, cursor MUST be steady. |
-| `ui.cursor.blink_rate_ms` | `500` | Must clamp to a safe range to avoid flicker. |
+| Technique | Requirement |
+|---|---|
+| Native terminal cursor | SHOULD be configured when terminal supports it |
+| Drawn cursor fallback | MUST remain visible even when terminal cursor shape is unsupported |
 
-## Cursor line / column
+If configured cursor style is low contrast, fallback MUST switch to high-contrast invert or explicit outline.
 
-| Feature | Setting | Requirement |
-|---------|---------|-------------|
-| Cursor line | `ui.cursorline` | When enabled, the focused line MUST be highlighted without obscuring cursor visibility. |
-| Cursor column | `ui.cursorcolumn` | When enabled, the focused column MUST be highlighted without obscuring cursor visibility. |
-| Crosshair | `ui.crosshair` | Equivalent to cursorline + cursorcolumn. |
+## Multi-Window Focus Rule
 
-## Virtual cursor (past end-of-line)
+Only the focused window may render primary cursor style.
 
-Cursor column semantics are defined in `/docs/spec/editing/cursor/README.md`.
+- unfocused windows MAY render subtle caret markers
+- secondary cursors (multicursor) MUST be visually distinct and never drive viewport follow
 
-Rendering requirements:
+## Mandatory Verification
 
-- In Insert mode (end-inclusive), an insertion point at column `N` MUST render as a cursor positioned immediately after the last grapheme on the line.
-- If that position would fall outside the visible text area, the viewport MUST be adjusted per `/docs/spec/features/ui/viewport.md`.
-
-## Multi-cursor
-
-| Cursor | Requirement |
-|--------|-------------|
-| Primary | Uses the mode-specific cursor shape and participates in viewport follow. |
-| Secondary | MUST be visible via a distinct highlight style and MUST NOT change the viewport. |
-
-## Visibility invariants
-
-- The cursor MUST remain visible across redraws, mode transitions, and overlays.
-- If the UI focus moves to a non-editor view, the cursor MUST move to that view’s focus caret location.
+| ID | Scenario |
+|---|---|
+| `CUR-07R` | cursor remains visible through mode churn and redraw cycles |
+| `CUR-08R` | width-2 grapheme cursor highlights both cells |
+| `CUR-09R` | no cursor appears on continuation cell |
+| `CUR-10R` | wrap boundary preserves cursor visibility |
+| `CUR-11R` | mixed-window focus changes keep one primary cursor |
 
 ## Related
 
 - Cursor semantics: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- Viewport follow and clamping: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- Keybinding cursor indicators: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)

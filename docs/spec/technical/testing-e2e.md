@@ -2,83 +2,83 @@
 
 Back: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
-This matrix is the required high-leverage E2E set.
+High-leverage E2E matrix for blocker-first reconstruction.
 
-## Critical Workflow Tests (Happy Path)
+## Harness Levels
 
-| ID | Scenario | Acceptance Criterion |
+| Harness | Description | Required For |
 |---|---|---|
-| HE-01 | create, edit, save, quit | file bytes on disk match inserted content |
-| HE-02 | open, navigate, quit without save | cursor reaches target line; file unchanged |
-| HE-03 | split and edit | split exists; edits land in intended window |
-| HE-04 | explorer open file | selected file opens in current window |
-| HE-05 | explorer open split | selected file opens in horizontal and vertical targets |
-| HE-06 | terminal open and command | terminal window opens and displays command output |
-| HE-07 | session save/load roundtrip | layout, focused window, and cursors are restored |
-| HE-08 | command-line option change | `:set` updates next rendered frame deterministically |
+| Headless state harness | drives core actions directly, no PTY | baseline integration |
+| PTY process harness | runs full binary in PTY, sends key bytes, captures frames | blocker closure and release gate |
 
-## Wiring Regression Tests (Known Failures)
+All `*R` tests in this file require the PTY process harness.
 
-| ID | Scenario | Acceptance Criterion |
-|---|---|---|
-| WR-01 | `Shift+a` in Normal mode | dispatches as `A` append-at-EOL |
-| WR-02 | `a` at end-of-line | insertion point moves after last grapheme, not `i` semantics |
-| WR-03 | `:terminal` command route | parser -> action -> service -> visible terminal window |
-| WR-04 | `<leader>t` route | key route reaches same terminal spawn path as `:terminal` |
-| WR-05 | `:Explorer` and `<leader>e` route | both routes produce visible explorer window |
-| WR-06 | `Ctrl-w` mixed windows | directional focus works across buffer/explorer/terminal |
-| WR-07 | long-line display safety | no rendered text extends beyond window bounds |
-| WR-08 | repeated `a` + `Esc` | no floating end-inclusive cursor in Normal mode |
+## Selected Existing Tests (Keep)
 
-## Locale and IME Tests
-
-| ID | Scenario | Acceptance Criterion |
-|---|---|---|
-| JP-01 | IME compose and commit | committed Japanese text inserted atomically |
-| JP-02 | IME cancel | committed buffer unchanged |
-| JP-03 | IME `Space` with leader configured | candidate cycling does not trigger leader mapping |
-| JP-04 | CJK append after commit | `a` and `A` retain correct semantics |
-| JP-05 | mixed ASCII/CJK search and edit | cursor and highlight remain grapheme-safe |
-
-## Boundary and Stress Tests
-
-| ID | Scenario | Acceptance Criterion |
-|---|---|---|
-| BD-01 | 10k ASCII line with wrap | deterministic continuation rows; no overflow |
-| BD-02 | 10k CJK line with wrap | no split wide grapheme across rows |
-| BD-03 | no-wrap long line | horizontal follow keeps cursor visible |
-| BD-04 | rapid resize storm | final geometry and cursor visibility correct |
-| BD-05 | resize to 1 column and 1 row | no panic; deterministic clamping |
-| BD-06 | terminal output flood + adjacent edit | editing remains responsive |
-| BD-07 | terminal close during output | child reaped; no zombie process |
-| BD-08 | explorer with 10k entries | navigation remains responsive |
-| BD-09 | session load with missing file | warning shown; remaining layout restored |
-| BD-10 | wrap boundary with width-2 remainder | padding cell inserted; no half-cell cursor |
-
-## PTY-Specific Tests
-
-| ID | Scenario | Acceptance Criterion |
-|---|---|---|
-| PE-01 | PTY terminal spawn and output | output appears in terminal window grid |
-| PE-02 | PTY resize integration | resize sends signal and updates terminal grid |
-| PE-03 | PTY alternate screen app | enter and exit alternate screen safely |
-| PE-04 | PTY IME leader isolation | composition keys do not trigger leader actions |
-| PE-05 | PTY mixed window navigation | focus and input routes remain correct |
-| PE-06 | PTY append mode churn | repeated append cycles keep cursor clamped |
-
-## Infrastructure Requirements
-
-| Requirement | Detail |
+| ID | Why It Stays |
 |---|---|
-| PTY harness | spawn editor in PTY, send bytes, read frames with bounded timeout |
-| Frame assertions | cell-grid helper with grapheme width checks |
-| Resize helper | deterministic resize trigger and final geometry assertion |
-| Diagnostic output | failures report mode, window type, cursor, and visible frame excerpt |
+| `WR-01` | detects key normalization regression quickly |
+| `WR-03` / `WR-04` / `WR-05` | verify command/key wiring for terminal and explorer |
+| `WR-06` | mixed-window focus path sanity |
+| `WR-07` / `BD-10` | catches wrap overflow and width-2 boundary issues |
+| `JP-03` | protects IME leader isolation |
+| `PE-02` / `PE-05` | terminal resize + mixed-window behavior baseline |
+
+## New Mandatory Live Regression Tests
+
+Risk score format: `impact/regression/detection/determinism/cost` (0-3 each).
+
+| ID | Risk Score | Scenario | Deterministic Assertions |
+|---|---|---|---|
+| `WR-01R` | `3/3/3/2/2` | send raw `Shift+a` in Normal mode at non-empty line | decode trace shows `A`; buffer result matches append-at-EOL semantics |
+| `WIN-01R` | `3/3/3/2/2` | create nested splits (`s`,`v`,`s`), close and reopen leaves | no orphan focus, valid tree, deterministic focused `WindowId` |
+| `WIN-02R` | `3/3/3/2/2` | directional `Ctrl-w h/j/k/l` over asymmetric mixed tree | focus trace matches geometric oracle |
+| `WINNAV-01R` | `3/3/2/3/2` | `Ctrl-w w/W/p/t/b` sequence on mixed windows | sequence of focused windows exactly matches golden list |
+| `EXP-01R` | `3/3/3/2/2` | run `:Explorer` then `<leader>e` toggle | explorer visibility toggles deterministically |
+| `EXP-03R` | `3/3/3/2/2` | open selected file with `Enter`, `v`, `s` | target window type and file path match expected |
+| `EXP-06R` | `2/3/3/2/2` | external file create/rename/delete while explorer open | refresh updates tree without focus corruption |
+| `TERM-01R` | `3/3/3/2/2` | `:terminal` launch, run command, capture output | PTY output appears in terminal leaf within timeout |
+| `TERM-04R` | `3/2/3/2/2` | resize terminal split repeatedly | PTY resize events observed; cursor remains visible |
+| `TERM-06R` | `3/3/3/2/2` | flood terminal output while editing adjacent buffer | editor input latency stays bounded; no deadlock |
+| `CUR-10R` | `3/3/3/2/1` | place cursor at wrap boundary with width-2 grapheme | no continuation-cell cursor; visible cursor highlight |
+| `WRAP-14R` | `3/3/3/2/2` | resize storm with long ASCII+CJK lines | no off-screen cell writes; deterministic wrapped rows |
+| `WRAP-16R` | `3/2/2/2/2` | long lines in editor/explorer/terminal simultaneously | all windows respect bounds and preserve focus state |
+| `JP-06R` | `3/3/3/2/2` | IME composition with `<leader>e` sequence | no explorer toggle while composition active |
+| `JP-07R` | `3/3/3/2/2` | IME composition with `<leader>t` sequence | no terminal spawn while composition active |
+| `JP-09R` | `2/2/2/2/2` | IME composition during terminal resize + split navigation | composition state preserved; no accidental mode escape |
+
+## Creative Boundary and Race Suite
+
+| ID | Scenario | Acceptance Criterion |
+|---|---|---|
+| `BD-RACE-01` | simultaneous terminal flood + explorer refresh + split resize | no panic, bounded latency, consistent focus |
+| `BD-RACE-02` | alternating wrap on/off during rapid cursor motion in CJK text | no half-cell cursor state and no overflow |
+| `BD-RACE-03` | repeated open/close explorer and terminal in 100-cycle loop | stable memory growth and no stale window IDs |
+| `BD-RACE-04` | command-line `:Explorer` and `:terminal` issued back-to-back under IME input | command routing remains deterministic |
+
+## Test Diagnostics (mandatory)
+
+Every failing E2E test MUST print:
+
+- active mode
+- focused window ID and window type
+- layout tree summary
+- cursor/caret position
+- top visible frame excerpt
+- last 20 input events and resolved actions
+
+## Release Gate Addendum
+
+Release gate is green only when:
+
+1. existing retained tests remain green
+2. all `*R` tests in this file pass
+3. no high-severity row remains open in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Related
 
 - Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - Cursor semantics: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
 - Explorer spec: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
 - Terminal spec: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
