@@ -90,4 +90,31 @@ mod tests {
             _ => panic!("Expected consumed"),
         }
     }
+
+    #[test]
+    fn test_insert_mode_escape_returns_normal() {
+        let mut state = ModeState::new();
+        state.mode = kjxlkj_core_types::Mode::Insert;
+        let esc = KeyEvent { key: Key::Special(kjxlkj_core_types::SpecialKey::Escape), modifiers: Modifiers::NONE };
+        let result = dispatch_key(&mut state, &esc);
+        match result {
+            HandleResult::Consumed(actions) => {
+                assert!(actions.iter().any(|a| matches!(a, ModeAction::ReturnNormal)));
+            }
+            _ => panic!("Expected consumed"),
+        }
+    }
+
+    #[test]
+    fn test_insert_mode_char_inserts() {
+        let mut state = ModeState::new();
+        state.mode = kjxlkj_core_types::Mode::Insert;
+        let result = dispatch_key(&mut state, &key('x'));
+        match result {
+            HandleResult::Consumed(actions) => {
+                assert!(actions.iter().any(|a| matches!(a, ModeAction::InsertText(_))));
+            }
+            _ => panic!("Expected consumed"),
+        }
+    }
 }
