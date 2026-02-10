@@ -50,6 +50,7 @@ All source files are now under 200 lines.
 - `91ce0112` feat: implement complete editor framework (82 files, 6128+ lines)
 - `e52ebdc5` refactor: split large files to stay under 200 lines
 - `f8c9b22f` style: apply clippy fixes
+- `b64342fc` feat: add more normal mode commands and word navigation
 
 ### Improvement Ideas
 
