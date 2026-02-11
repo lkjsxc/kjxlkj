@@ -92,15 +92,10 @@ pub enum Action {
     ToggleCase,
     /// Replace character under cursor.
     ReplaceChar(char),
-    /// Put register after cursor.
     PutAfter,
-    /// Put register before cursor.
     PutBefore,
-    /// Scroll cursor to center.
     ScrollCenter,
-    /// Scroll cursor to top.
     ScrollTop,
-    /// Scroll cursor to bottom.
     ScrollBottom,
     /// Delete word backward (insert mode Ctrl-w).
     DeleteWordBackward,
@@ -122,6 +117,8 @@ pub enum Action {
     YankCurrentLine,
     /// Join lines without space (gJ).
     JoinLinesNoSpace,
+    /// Show register contents (:registers).
+    ShowRegisters,
 }
 
 /// Cursor motion.

@@ -12,7 +12,10 @@ impl EditorState {
     /// Apply a typed action to editor state.
     pub fn apply_action(&mut self, action: Action) {
         match action {
-            Action::InsertChar(c) => self.insert_char(c),
+            Action::InsertChar(c) => {
+                self.insert_text.push(c);
+                self.insert_char(c);
+            }
             Action::DeleteCharForward => {
                 self.delete_char_forward()
             }
@@ -107,6 +110,9 @@ impl EditorState {
             }
             Action::PutBefore => {
                 self.put_before();
+            }
+            Action::ShowRegisters => {
+                // Stub: register display would feed to UI.
             }
             _ => {}
         }

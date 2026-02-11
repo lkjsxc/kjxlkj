@@ -102,6 +102,8 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         // Explorer / terminal.
         "Explorer" | "Ex" => Action::OpenExplorer,
         "terminal" | "term" => Action::OpenTerminal,
+        // Register display.
+        "registers" | "reg" | "display" | "di" => Action::ShowRegisters,
         _ => Action::Noop,
     }
 }
@@ -155,5 +157,13 @@ mod tests {
     fn parse_empty() {
         assert_eq!(parse_ex_command(""), Action::Noop);
         assert_eq!(parse_ex_command("  "), Action::Noop);
+    }
+
+    #[test]
+    fn parse_registers() {
+        assert_eq!(parse_ex_command("registers"), Action::ShowRegisters);
+        assert_eq!(parse_ex_command("reg"), Action::ShowRegisters);
+        assert_eq!(parse_ex_command("display"), Action::ShowRegisters);
+        assert_eq!(parse_ex_command("di"), Action::ShowRegisters);
     }
 }
