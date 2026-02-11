@@ -2,10 +2,11 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: Reconstruction wave reopened on 2026-02-11 due high-severity runtime regressions.
+Status: Docs-only baseline active on 2026-02-11. Full implementation reconstruction pending.
 
 ## Active Blockers
 
+- [ ] `LIM-BASELINE-IMPL-03` regenerate workspace manifests and grouped source tree
 - [ ] `LIM-BLOCK-KEY-03` `Shift+a` end-to-end append semantics are correct
 - [ ] `LIM-BLOCK-WIN-03` split lifecycle preserves deterministic layout/focus
 - [ ] `LIM-BLOCK-NAV-03` `Ctrl-w` navigation works across mixed windows

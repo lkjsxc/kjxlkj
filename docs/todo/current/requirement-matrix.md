@@ -8,7 +8,7 @@ High-risk reconstruction requirements from canonical specs.
 
 | Status | Meaning |
 |---|---|
-| `open-blocker` | user-visible failure reported or contradicted by strong evidence |
+| `open-blocker` | high-severity requirement is not yet implemented or validated |
 | `open-validation` | no trusted live evidence yet; must be verified in this wave |
 | `aligned` | requirement is closed with deterministic evidence |
 
@@ -37,11 +37,12 @@ High-risk reconstruction requirements from canonical specs.
 
 | ID | Spec Source | Requirement | Priority | Tests | Status |
 |---|---|---|---|---|---|
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree are reconstructed | high | topology + build gate | `open-blocker` |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closures require matching PTY E2E evidence | high | all blocker `*R` | `open-blocker` |
 | `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | bug closure follows reproduce-fix-verify discipline | high | regression + matching `*R` | `open-validation` |
 | `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source directories remain around 12 children | medium | topology audit | `open-validation` |
 | `R-ARCH-02` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace members follow grouped crate paths | medium | build + manifest audit | `open-validation` |
-| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO directly links every markdown file | high | doc coverage audit | `open-validation` |
+| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO directly links every markdown file | high | doc coverage audit | `aligned` |
 
 ## Related
 

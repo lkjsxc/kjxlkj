@@ -15,44 +15,40 @@ This ledger records the strongest verified state as of the snapshot date.
 
 ## Current Snapshot (2026-02-11)
 
-Implementation artifacts exist in this repository, but conformance is blocked by multiple
-user-reported runtime failures in high-risk domains.
+Docs-only baseline is active. Implementation artifacts are intentionally absent.
 
-Strongest evidence order applied in this snapshot:
+Repository evidence in this snapshot:
 
-1. user-reported live runtime failures
-2. deterministic integration/unit tests
-3. static code-path inspection
+- `src/` is absent
+- `Cargo.toml`, `Cargo.lock`, and `rust-toolchain.toml` are absent
+- `/docs` control-plane and canonical specs are present
 
-Because high-severity blockers remain open, no affected domain may be marked `verified`.
+Because runtime artifacts are absent, runtime behavior domains cannot be marked `verified`.
 
 ## Evidence Summary
 
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
-| Workspace grouping contract is documented | `verified` | 2026-02-11 | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) |
-| Runtime E2E gate for blocker closure | `partial` | 2026-02-11 | matrix defined, implementation evidence incomplete |
-| `Shift+a` append semantics | `blocked` | 2026-02-11 | user-reported failure; blocker `LIM-BLOCK-KEY-03` |
-| Mixed-window split and navigation correctness | `blocked` | 2026-02-11 | user-reported failure; blockers `LIM-BLOCK-WIN-03` and `LIM-BLOCK-NAV-03` |
-| Explorer launch/actions | `blocked` | 2026-02-11 | user-reported failure; blocker `LIM-BLOCK-EXP-03` |
-| Terminal leaf lifecycle and integration | `blocked` | 2026-02-11 | user-reported instability; blocker `LIM-BLOCK-TERM-03` |
-| Wrap and cursor display stability | `blocked` | 2026-02-11 | user-reported failures; blockers `LIM-BLOCK-WRAP-03` and `LIM-BLOCK-CURSOR-03` |
+| Docs-only baseline is active | `verified` | 2026-02-11 | root source/workspace artifacts absent by design |
+| Reconstruction requirements are specified | `verified` | 2026-02-11 | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md), [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) |
+| Runtime E2E gate for blocker closure is defined | `partial` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) |
+| Runtime feature conformance | `unverified` | 2026-02-11 | runtime artifacts intentionally absent |
 
 ## Domain Status
 
 | Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `blocked` | `Shift+a` behavior not trusted end-to-end |
-| Window tree and split lifecycle | `blocked` | split/focus/close correctness reported broken |
-| Mixed-window navigation (`Ctrl-w`) | `blocked` | directional and cyclic behavior unstable |
-| Explorer window and actions | `blocked` | launch and actions not working reliably |
-| Terminal window integration | `blocked` | lifecycle and mixed-window behavior unstable |
-| Viewport wrap safety | `blocked` | long-line behavior reported buggy |
-| Cursor visibility and grapheme safety | `blocked` | cursor display issues reported in churn scenarios |
-| IME interaction around leader/window commands | `partial` | contract exists; live blocker evidence still required |
-| Source topology and workspace policy | `partial` | structure exists but must be revalidated during rebuild |
-| Documentation coverage and TODO integrity | `partial` | regenerated in this wave; requires verification gate pass |
+| Input decoding and key normalization | `unverified` | runtime implementation absent |
+| Window tree and split lifecycle | `unverified` | runtime implementation absent |
+| Mixed-window navigation (`Ctrl-w`) | `unverified` | runtime implementation absent |
+| Explorer window and actions | `unverified` | runtime implementation absent |
+| Terminal window integration | `unverified` | runtime implementation absent |
+| Viewport wrap safety | `unverified` | runtime implementation absent |
+| Cursor visibility and grapheme safety | `unverified` | runtime implementation absent |
+| IME interaction around leader/window commands | `unverified` | runtime implementation absent |
+| Source topology and workspace policy | `blocked` | required source/workspace tree not reconstructed |
+| Documentation coverage and TODO integrity | `partial` | docs present; implementation-gate verification pending |
 
 ## Release Rule
 

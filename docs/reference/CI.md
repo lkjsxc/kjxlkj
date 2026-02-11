@@ -10,10 +10,11 @@ Reproducible verification profiles.
 
 In docs-only baseline state, this workflow may be absent and must be regenerated.
 
-## Current Baseline State (2026-02-10)
+## Current Baseline State (2026-02-11)
 
 - active profile: `Docs-only`
-- reconstructed-profile workflow file is intentionally absent
+- source/workspace artifacts are intentionally absent
+- reconstructed-profile workflow may be absent and is regenerated during implementation wave
 
 ## Verification Profiles
 
@@ -28,11 +29,12 @@ In docs-only baseline state, this workflow may be absent and must be regenerated
 
 Run the profile-appropriate checks from repository root.
 
-For blocker-closure and release profiles, include live E2E scenarios from [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
+For blocker-closure and release profiles, include live E2E scenarios from
+[/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
 
 ## Evidence Rule
 
-CI status claims in `CONFORMANCE` or release docs MUST include:
+CI status claims in `CONFORMANCE` or release docs must include:
 
 - check profile name
 - absolute date
