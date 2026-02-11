@@ -30,8 +30,10 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01` and `WR-01R`) |
 | `cargo test -p kjxlkj-core-state` | pass (window-tree split/focus/geometry invariants foundation tests) |
 | `cargo test -p kjxlkj-test-harness --test window_nav_e2e` | pass (`WIN-01R` split lifecycle baseline and `WINNAV-06R` replay determinism baseline) |
+| `cargo test -p kjxlkj-test-harness --test window_nav_more_e2e` | pass (`WIN-02R`, `WIN-03R`, `WIN-04R`, `WINNAV-01R`..`WINNAV-04R`) |
+| `cargo test -p kjxlkj-test-harness --test window_nav_session_terminal_e2e` | pass (`WIN-05R`, `WINNAV-05R`) |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
-| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 184 lines) |
+| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 199 lines) |
 
 ## Improvement Ideas
 
@@ -42,3 +44,5 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `IDEA-KEY-TRACE-01` | capture last 20 raw events and resolved actions in PTY failure diagnostics | aligns with blocker diagnostic contract and speeds root-cause analysis | phase-1 follow-up |
 | `IDEA-WIN-RUNTIME-01` | wire `Ctrl-w` prefix through runtime to `WindowTree` and emit focus trace ids | enables live `WIN*R` and `WINNAV*R` closure path | phase-2 focus |
 | `IDEA-WIN-RUNTIME-02` | add mixed buffer/explorer/terminal leaf binding in runtime setup and PTY scripts | required to close `WIN-03R` and `WINNAV-05R` semantics | phase-2 focus |
+| `IDEA-WIN-SESSION-01` | persist window session dumps as a compact deterministic codec with version tags | enables stable roundtrip checks and future migration testing | phase-2 follow-up |
+| `IDEA-WIN-TEST-DSL-01` | add a compact PTY script DSL helper shared by all `WIN*R` tests | reduces duplicate byte-script builders and improves diagnostics | phase-3 hardening |

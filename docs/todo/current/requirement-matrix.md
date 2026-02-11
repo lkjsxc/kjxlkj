@@ -25,9 +25,9 @@ High-risk reconstruction requirements from canonical specs.
 
 | ID | Spec Source | Requirement | Priority | Tests | Status |
 |---|---|---|---|---|---|
-| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | shared window tree supports buffer/explorer/terminal leaves | high | `WIN-01R`, `WIN-05R` | `open-blocker` |
-| `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic | high | `WIN-01R`..`WIN-04R` | `open-blocker` |
-| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | full `Ctrl-w` family works on mixed windows | high | `WINNAV-01R`..`WINNAV-06R` | `open-blocker` |
+| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | shared window tree supports buffer/explorer/terminal leaves | high | `WIN-01R`, `WIN-05R` | `aligned` |
+| `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic | high | `WIN-01R`..`WIN-04R` | `aligned` |
+| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | full `Ctrl-w` family works on mixed windows | high | `WINNAV-01R`..`WINNAV-06R` | `aligned` |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are reachable | high | `EXP-01R`, `EXP-02R` | `open-blocker` |
 | `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer navigation, split-open, and file actions are reliable | high | `EXP-03R`..`EXP-06R` | `open-blocker` |
 | `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal launch and PTY lifecycle are stable | high | `TERM-01R`..`TERM-05R` | `open-blocker` |

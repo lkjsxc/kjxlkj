@@ -24,7 +24,8 @@ Repository evidence in this snapshot:
 - workspace membership resolves for all required crate paths
 - deterministic topology/file-size smoke tests pass in `kjxlkj-test-harness`
 
-Because runtime feature logic is not yet reconstructed, runtime behavior domains cannot be marked `verified`.
+Runtime feature logic for window-tree and mixed `Ctrl-w` behavior is now reconstructed and live-tested.
+Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain blocked.
 
 ## Evidence Summary
 
@@ -36,7 +37,7 @@ Because runtime feature logic is not yet reconstructed, runtime behavior domains
 | Source topology and source-file-size smoke checks pass | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness` includes grouped-path, fan-out, and `<=200` line assertions |
 | Shift-normalization append path is wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `WR-01R`) |
 | Runtime E2E gate for blocker closure is reconstructed and exercised | `verified` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
-| Window-tree split/navigation runtime path is reachable with initial live coverage | `partial` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e` |
+| Window-tree split/navigation runtime path is reachable with live coverage | `verified` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
 | Runtime feature conformance | `unverified` | 2026-02-11 | runtime crates are scaffolded; behavior blockers remain open |
 
 ## Domain Status
@@ -44,15 +45,15 @@ Because runtime feature logic is not yet reconstructed, runtime behavior domains
 | Domain | Status | Reason |
 |---|---|---|
 | Input decoding and key normalization | `partial` | `Shift+a -> A` normalization and append dispatch are verified; broader keymap domains remain open |
-| Window tree and split lifecycle | `partial` | core window-tree model and initial live split lifecycle coverage exist; required `WIN-02R`..`WIN-05R` remain open |
-| Mixed-window navigation (`Ctrl-w`) | `partial` | `Ctrl-w` runtime prefix is reachable and replay determinism baseline exists; full `WINNAV-01R`..`WINNAV-05R` remain open |
+| Window tree and split lifecycle | `verified` | deterministic split/create/close/only/session-roundtrip coverage is passing (`WIN-01R`..`WIN-05R`) |
+| Mixed-window navigation (`Ctrl-w`) | `verified` | directional/cyclic/previous/boundary/terminal-transition/replay cases are passing (`WINNAV-01R`..`WINNAV-06R`) |
 | Explorer window and actions | `unverified` | blocker behavior not yet implemented |
 | Terminal window integration | `unverified` | blocker behavior not yet implemented |
 | Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
 | Cursor visibility and grapheme safety | `unverified` | blocker behavior not yet implemented |
 | IME interaction around leader/window commands | `unverified` | blocker behavior not yet implemented |
 | Source topology and workspace policy | `verified` | grouped tree, workspace manifests, and topology audits are passing |
-| Documentation coverage and TODO integrity | `partial` | baseline blocker closed; runtime blocker closures pending |
+| Documentation coverage and TODO integrity | `partial` | baseline plus window/navigation blockers are closed; explorer/terminal/cursor/wrap blockers remain |
 
 ## Release Rule
 

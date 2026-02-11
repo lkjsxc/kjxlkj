@@ -8,8 +8,8 @@ Status: Reconstructed foundation baseline active on 2026-02-11. Runtime blocker 
 
 - [x] `LIM-BASELINE-IMPL-03` regenerate workspace manifests and grouped source tree (evidence: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audits/README.md))
 - [x] `LIM-BLOCK-KEY-03` `Shift+a` end-to-end append semantics are correct (evidence: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), `cargo test -p kjxlkj-test-harness --test key_mode_e2e`)
-- [ ] `LIM-BLOCK-WIN-03` split lifecycle preserves deterministic layout/focus
-- [ ] `LIM-BLOCK-NAV-03` `Ctrl-w` navigation works across mixed windows
+- [x] `LIM-BLOCK-WIN-03` split lifecycle preserves deterministic layout/focus (evidence: `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e`)
+- [x] `LIM-BLOCK-NAV-03` `Ctrl-w` navigation works across mixed windows (evidence: `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e`)
 - [ ] `LIM-BLOCK-EXP-03` explorer launch and actions are reachable and stable
 - [ ] `LIM-BLOCK-TERM-03` terminal windows obey shared lifecycle and remain responsive
 - [ ] `LIM-BLOCK-CURSOR-03` cursor remains visible and grapheme-safe in churn

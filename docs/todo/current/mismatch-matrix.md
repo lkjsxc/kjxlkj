@@ -19,8 +19,6 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Action | Required evidence |
 |---|---|---|---|---|---|
-| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | spec-only | `M2 missing feature` | implement + test-add | `WIN-01R` and `WIN-04R` focus/geometry invariants |
-| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | spec-only | `M2 missing feature` | implement + test-add | `WINNAV-01R`..`WINNAV-06R` deterministic focus traces |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | spec-only | `M2 missing feature` | implement + test-add | `EXP-01R` and `EXP-02R` command/key reachability |
 | `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | spec-only | `M2 missing feature` | implement + test-add | `EXP-03R`..`EXP-06R` stable explorer interactions |
 | `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | spec-only | `M2 missing feature` | implement + test-add | `TERM-01R`..`TERM-05R` spawn/resize/close lifecycle |
@@ -34,6 +32,9 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 |---|---|---|---|---|
 | `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | aligned | none | `cargo metadata --no-deps`; `cargo check --workspace`; `cargo test -p kjxlkj-test-harness` |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
+| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` (`WIN-01R`, `WIN-04R`, `WIN-05R`) |
+| `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e` (`WIN-01R`..`WIN-04R`) |
+| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` (`WINNAV-01R`..`WINNAV-06R`) |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | aligned | none | PTY harness operations implemented in `src/crates/app/kjxlkj-test-harness/src/pty.rs` and `WR-01R` evidence passing |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 440/440 markdown files directly linked in coverage parts |
 

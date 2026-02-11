@@ -13,8 +13,6 @@ crate topology are present, while runtime behavior blockers remain open.
 
 | ID | Requirement Link | Expected State | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BLOCK-WIN-03` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split/create/close/rebalance preserves deterministic focus and geometry | `M2 missing feature` | high | implement and pass `WIN-01R`..`WIN-05R` |
-| `LIM-BLOCK-NAV-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | `Ctrl-w h/j/k/l/w/W/p/t/b` deterministic across window types | `M2 missing feature` | high | implement and pass `WINNAV-01R`..`WINNAV-06R` |
 | `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | implement and pass `EXP-01R`..`EXP-06R` |
 | `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | implement and pass `TERM-01R`..`TERM-07R` |
 | `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | implement and pass `CUR-07R`..`CUR-11R` |
@@ -26,6 +24,8 @@ crate topology are present, while runtime behavior blockers remain open.
 |---|---|---|---|
 | `LIM-BASELINE-IMPL-03` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | 2026-02-11 | root workspace manifests created, `src/crates/...` grouped tree created, `cargo test -p kjxlkj-test-harness`, and reconstructed-basic verification checks passing |
 | `LIM-BLOCK-KEY-03` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | 2026-02-11 | decode-normalize-dispatch path implemented in runtime, `KEY-TRACE-01` and `WR-01R` PTY tests passing in `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
+| `LIM-BLOCK-WIN-03` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | 2026-02-11 | deterministic window tree plus session roundtrip is passing via `WIN-01R`..`WIN-05R` in `src/crates/app/kjxlkj-test-harness/tests/window_nav_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/window_nav_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/window_nav_session_terminal_e2e.rs` |
+| `LIM-BLOCK-NAV-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | 2026-02-11 | mixed-window `Ctrl-w` behavior including terminal insert transition is passing via `WINNAV-01R`..`WINNAV-06R` in `src/crates/app/kjxlkj-test-harness/tests/window_nav_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/window_nav_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/window_nav_session_terminal_e2e.rs` |
 | `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | 2026-02-11 | PTY harness operations are implemented (`spawn`, `send raw`, `send symbolic`, `resize`, `capture frame`, `quit`) and blocker closure for key path is proven by passing `WR-01R` and `KEY-TRACE-01` |
 
 ## Open Secondary Gaps
