@@ -54,6 +54,12 @@ pub enum Action {
     SetOption(String, String),
     // Visual
     VisualOperator(Operator), VisualSwapAnchor,
+    // Completion
+    CompletionTrigger(Option<String>), CompletionNext, CompletionPrev,
+    CompletionAccept, CompletionCancel,
+    // Insert sub-modes
+    InsertDigraph(char, char), InsertLiteral(char), InsertRegister(char),
+    SnippetNext, SnippetPrev, SnippetCancel,
 }
 
 /// Cursor motion.

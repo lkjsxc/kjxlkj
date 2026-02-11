@@ -177,6 +177,15 @@ impl EditorState {
             }
         }
     }
+
+    /// Insert the contents of register `reg` at cursor position.
+    pub(crate) fn insert_register_contents(&mut self, reg: char) {
+        let text = match self.registers.get(reg) {
+            Some(e) => e.text.clone(),
+            None => return,
+        };
+        for ch in text.chars() { self.insert_char(ch); }
+    }
 }
 
 fn ordered_range(

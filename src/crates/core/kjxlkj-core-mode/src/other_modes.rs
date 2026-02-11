@@ -13,6 +13,14 @@ pub(crate) fn handle_insert_key(key: &Key, mods: &KeyModifiers) -> (Action, Opti
         Key::Char('o') => (Action::Noop, Some(Mode::InsertNormal)),
         Key::Char('w') => (Action::DeleteWordBackward, None),
         Key::Char('u') => (Action::DeleteToLineStart, None),
+        Key::Char('n') => (Action::CompletionNext, None),
+        Key::Char('p') => (Action::CompletionPrev, None),
+        Key::Char('y') => (Action::CompletionAccept, None),
+        Key::Char('e') => (Action::CompletionCancel, None),
+        Key::Char('x') => (Action::CompletionTrigger(None), None),
+        Key::Char('k') => (Action::Noop, None), // digraph entry → sub-state
+        Key::Char('v') => (Action::Noop, None), // literal entry → sub-state
+        Key::Char('r') => (Action::Noop, None), // register insert → sub-state
         _ => (Action::Noop, None),
     }; }
     match key {

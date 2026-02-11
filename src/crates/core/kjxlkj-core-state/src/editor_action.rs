@@ -35,9 +35,7 @@ impl EditorState {
                     _ => self.apply_cursor_motion(motion),
                 }
             }
-            Action::Quit => self.quit_requested = true,
-            Action::ForceQuit => self.quit_requested = true,
-            Action::WriteQuit => self.quit_requested = true,
+            Action::Quit | Action::ForceQuit | Action::WriteQuit => self.quit_requested = true,
             Action::Resize(cols, rows) => self.terminal_size = (cols, rows),
             Action::AppendEndOfLine => self.cursor_to_eol(),
             Action::InsertFirstNonBlank => self.cursor_to_first_nonblank(),
@@ -98,9 +96,7 @@ impl EditorState {
             Action::CloseExplorer => self.close_explorer(),
             Action::OpenTerminal => self.open_terminal(),
             Action::FocusCycleReverse => self.focus_cycle_reverse(),
-            Action::WindowMoveEdge(_) => {} // placeholder
-            Action::WindowRotate(_) => {} // placeholder
-            Action::WindowExchange => {} // placeholder
+            Action::WindowMoveEdge(_) | Action::WindowRotate(_) | Action::WindowExchange => {}
             Action::JumpOlder | Action::JumpNewer => self.navigate_jumplist(&action),
             Action::ChangeOlder | Action::ChangeNewer => self.navigate_changelist(&action),
             Action::SetMark(c) => self.set_mark_at_cursor(c),
@@ -123,6 +119,21 @@ impl EditorState {
             | Action::TabFirst | Action::TabLast | Action::TabGoto(_)
             | Action::TabMove(_) => {} // tab dispatch deferred to integration layer
             Action::ZoomToggle => {} // zoom dispatch deferred to integration layer
+            // Completion actions — dispatch deferred to completion integration
+            Action::CompletionTrigger(_) | Action::CompletionNext
+            | Action::CompletionPrev | Action::CompletionAccept
+            | Action::CompletionCancel => {}
+            // Insert sub-mode actions
+            Action::InsertDigraph(c1, c2) => {
+                if let Some(ch) = kjxlkj_core_ui::digraph::lookup(c1, c2) {
+                    self.insert_char(ch);
+                } else {
+                    self.insert_char(c2);
+                }
+            }
+            Action::InsertLiteral(c) => self.insert_char(c),
+            Action::InsertRegister(reg) => self.insert_register_contents(reg),
+            Action::SnippetNext | Action::SnippetPrev | Action::SnippetCancel => {}
             _ => {}
         }
     }
@@ -131,16 +142,9 @@ impl EditorState {
         let wid = self.focus.focused;
         let win = self.windows.get(&wid).unwrap();
         if let ContentKind::Buffer(buf_id) = win.content {
-            if let Some(buf) =
-                self.buffers.get(&buf_id)
-            {
-                let cur = win.cursor;
-                let new_cur =
-                    apply_motion(&cur, motion, buf);
-                self.windows
-                    .get_mut(&wid)
-                    .unwrap()
-                    .cursor = new_cur;
+            if let Some(buf) = self.buffers.get(&buf_id) {
+                let new_cur = apply_motion(&win.cursor, motion, buf);
+                self.windows.get_mut(&wid).unwrap().cursor = new_cur;
             }
         }
     }

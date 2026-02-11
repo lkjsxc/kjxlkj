@@ -16,6 +16,9 @@ pub mod tabs;
 pub mod zoom;
 pub mod mode_config;
 pub mod completion;
+pub mod insert_state;
+pub mod snippet;
+pub mod digraph;
 
 #[cfg(test)]
 mod completion_tests;
