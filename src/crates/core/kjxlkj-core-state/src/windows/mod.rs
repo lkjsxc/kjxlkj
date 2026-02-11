@@ -85,6 +85,10 @@ impl WindowTree {
             .unwrap_or(WindowKind::Buffer)
     }
 
+    pub fn set_focused_kind(&mut self, kind: WindowKind) {
+        self.kinds.insert(self.focused, kind);
+    }
+
     pub fn split_focused(&mut self, axis: Axis, kind: WindowKind) -> u64 {
         let old = self.focused;
         let new_id = self.next_id;

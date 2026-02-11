@@ -1,9 +1,11 @@
 mod command_routes;
+mod input_routes;
 
 use std::io::{self, Read, Write};
 
 use command_routes::action_from_command;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use input_routes::{action_from_key, format_key};
 use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
 use kjxlkj_input::{decode_byte, Key};
@@ -85,7 +87,11 @@ fn run() -> io::Result<()> {
             if decoded.normalized_key == Key::Ctrl('n') {
                 EditorAction::TerminalExitToNormal
             } else {
-                action_from_key(state.mode(), decoded.normalized_key)
+                action_from_key(
+                    state.mode(),
+                    decoded.normalized_key,
+                    state.focused_window_kind(),
+                )
             }
         } else if state.mode() == Mode::TerminalInsert && decoded.normalized_key == Key::Ctrl('\\')
         {
@@ -124,7 +130,11 @@ fn run() -> io::Result<()> {
             awaiting_wincmd = false;
             awaiting_leader = false;
             awaiting_terminal_leader_suffix = false;
-            action_from_key(state.mode(), decoded.normalized_key)
+            action_from_key(
+                state.mode(),
+                decoded.normalized_key,
+                state.focused_window_kind(),
+            )
         };
         if !command_mode {
             command_buffer.clear();
@@ -162,34 +172,4 @@ fn run() -> io::Result<()> {
         state.window_session_dump()
     )?;
     stdout.flush()
-}
-
-fn action_from_key(mode: Mode, key: Key) -> EditorAction {
-    match mode {
-        Mode::Normal => match key {
-            Key::Char(ch) => EditorAction::NormalModeKey(ch),
-            Key::Ctrl('c') => EditorAction::Quit,
-            _ => EditorAction::Ignore,
-        },
-        Mode::Insert => match key {
-            Key::Char(ch) => EditorAction::InsertChar(ch),
-            Key::Esc => EditorAction::Esc,
-            Key::Ctrl('c') => EditorAction::Quit,
-            _ => EditorAction::Ignore,
-        },
-        Mode::TerminalInsert => match key {
-            Key::Ctrl('c') => EditorAction::Quit,
-            _ => EditorAction::Ignore,
-        },
-    }
-}
-
-fn format_key(key: Key) -> String {
-    match key {
-        Key::Char(ch) => ch.to_string(),
-        Key::Esc => "Esc".to_string(),
-        Key::Enter => "Enter".to_string(),
-        Key::Ctrl(ch) => format!("Ctrl+{ch}"),
-        Key::Unknown(byte) => format!("Unknown({byte})"),
-    }
 }

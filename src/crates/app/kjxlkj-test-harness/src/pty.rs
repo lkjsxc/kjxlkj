@@ -160,7 +160,7 @@ impl PtySession {
     }
 
     pub fn quit(&mut self) -> Result<String> {
-        self.send_raw(b"\x1Bq")
+        self.send_raw(b"\x03")
             .context("failed sending quit sequence")?;
         self.wait_for_pattern("FINAL", Duration::from_secs(1))
     }

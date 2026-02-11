@@ -29,6 +29,20 @@ impl EditorState {
                     .split_focused(Axis::Horizontal, WindowKind::Terminal);
                 "WinSplitTerminalHorizontal".to_string()
             }
+            'O' => {
+                self.windows.set_focused_kind(WindowKind::Buffer);
+                "ExplorerOpenCurrent".to_string()
+            }
+            'V' => {
+                self.windows
+                    .split_focused(Axis::Vertical, WindowKind::Buffer);
+                "ExplorerOpenVertical".to_string()
+            }
+            'S' => {
+                self.windows
+                    .split_focused(Axis::Horizontal, WindowKind::Buffer);
+                "ExplorerOpenHorizontal".to_string()
+            }
             'c' | 'q' => {
                 self.windows.close_focused();
                 "WinClose".to_string()

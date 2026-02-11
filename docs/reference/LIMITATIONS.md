@@ -13,8 +13,8 @@ crate topology are present, while runtime behavior blockers remain open.
 
 | ID | Requirement Link | Expected State | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | route baseline is live (`:Explorer`, `<leader>e`, `<leader>E`); complete explorer interaction and stability coverage `EXP-03R`..`EXP-06R` |
-| `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | route baseline is live (`:terminal`, `<leader>t`, `<leader>th`, `<leader>tv`); complete PTY lifecycle/responsiveness coverage `TERM-03R`..`TERM-07R` |
+| `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | route baseline is live (`:Explorer`, `<leader>e`, `<leader>E`) and open-target baseline is reachable (`EXP-03R`); complete stable explorer interactions `EXP-04R`..`EXP-06R` and full target semantics |
+| `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | route and mixed `Ctrl-w` navigation baselines are live (`TERM-01R`..`TERM-03R`); complete PTY lifecycle/responsiveness coverage `TERM-04R`..`TERM-07R` |
 | `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | implement and pass `CUR-07R`..`CUR-11R` |
 | `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | implement and pass `WRAP-11R`..`WRAP-16R` |
 

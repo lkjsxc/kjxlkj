@@ -25,6 +25,39 @@ fn exp_02r_leader_e_and_upper_e_routes_are_reachable() {
 }
 
 #[test]
+fn exp_03r_open_targets_current_vertical_and_horizontal_are_reachable() {
+    let current = run_raw_script(b":Explorer\r\r");
+    assert!(
+        current.contains("resolved_action=ExplorerOpenCurrent"),
+        "EXP-03R expected Enter open-target route. Output:\n{current}"
+    );
+    assert!(
+        current.contains("focused_window_type=Buffer"),
+        "EXP-03R current-target route should focus buffer window. Output:\n{current}"
+    );
+
+    let vertical = run_raw_script(b":Explorer\rv");
+    assert!(
+        vertical.contains("resolved_action=ExplorerOpenVertical"),
+        "EXP-03R expected v open-target route. Output:\n{vertical}"
+    );
+    assert!(
+        vertical.contains("focused_window_type=Buffer"),
+        "EXP-03R vertical-target route should focus buffer window. Output:\n{vertical}"
+    );
+
+    let horizontal = run_raw_script(b":Explorer\rs");
+    assert!(
+        horizontal.contains("resolved_action=ExplorerOpenHorizontal"),
+        "EXP-03R expected s open-target route. Output:\n{horizontal}"
+    );
+    assert!(
+        horizontal.contains("focused_window_type=Buffer"),
+        "EXP-03R horizontal-target route should focus buffer window. Output:\n{horizontal}"
+    );
+}
+
+#[test]
 fn term_01r_colon_terminal_opens_terminal_and_focuses_it() {
     let output = run_raw_script(b":terminal\r");
     assert!(
@@ -51,6 +84,24 @@ fn term_02r_leader_terminal_routes_are_reachable() {
     assert!(
         count_occurrences(&output, "resolved_action=WinSplitTerminal") >= 2,
         "TERM-02R expected <leader>t and <leader>tv to route terminal actions. Output:\n{output}"
+    );
+}
+
+#[test]
+fn term_03r_ctrl_w_navigation_remains_mixed_window_consistent() {
+    let output = run_raw_script(b":terminal\r\x17h\x17l");
+    assert!(
+        output.contains("focused_window_type=Terminal"),
+        "TERM-03R expected terminal focus in trace. Output:\n{output}"
+    );
+    assert!(
+        output.contains("focused_window_type=Buffer"),
+        "TERM-03R expected buffer focus in trace. Output:\n{output}"
+    );
+    assert!(
+        output.contains("resolved_action=WinFocusLeft")
+            && output.contains("resolved_action=WinFocusRight"),
+        "TERM-03R expected left/right Ctrl-w navigation actions. Output:\n{output}"
     );
 }
 

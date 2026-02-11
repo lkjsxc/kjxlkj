@@ -32,7 +32,7 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `cargo test -p kjxlkj-test-harness --test window_nav_e2e` | pass (`WIN-01R` split lifecycle baseline and `WINNAV-06R` replay determinism baseline) |
 | `cargo test -p kjxlkj-test-harness --test window_nav_more_e2e` | pass (`WIN-02R`, `WIN-03R`, `WIN-04R`, `WINNAV-01R`..`WINNAV-04R`) |
 | `cargo test -p kjxlkj-test-harness --test window_nav_session_terminal_e2e` | pass (`WIN-05R`, `WINNAV-05R`) |
-| `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` | pass (route reachability baselines for `EXP-01R`, `EXP-02R`, `TERM-01R`, `TERM-02R`) |
+| `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` | pass (route/open-target/mixed-navigation baselines for `EXP-01R`..`EXP-03R`, `TERM-01R`..`TERM-03R`) |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
 | source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 199 lines) |
 
