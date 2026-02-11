@@ -11,6 +11,7 @@ use kjxlkj_core_types::{
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 use kjxlkj_service_explorer::ExplorerState;
 
+use crate::marks::MarkStore;
 use crate::navlist::PositionList;
 use crate::register::RegisterStore;
 use crate::search::SearchState;
@@ -38,17 +39,16 @@ pub struct EditorState {
     pub explorer_states: HashMap<ExplorerStateId, ExplorerState>,
     pub jumplist: PositionList,
     pub changelist: PositionList,
+    pub marks: MarkStore,
 }
 
 impl EditorState {
     /// Create initial editor state with one scratch buffer.
     pub fn new(cols: u16, rows: u16) -> Self {
-        let buf_id = BufferId(0);
-        let win_id = WindowId(1);
+        let (buf_id, win_id) = (BufferId(0), WindowId(1));
         let buf = Buffer::new_scratch(buf_id);
         let content = ContentKind::Buffer(buf_id);
-        let mut buffers = HashMap::new();
-        buffers.insert(buf_id, buf);
+        let mut buffers = HashMap::new(); buffers.insert(buf_id, buf);
         let layout = LayoutTree::single(win_id, content);
         let focus = FocusState::new(win_id);
         let mut windows = HashMap::new();
@@ -64,8 +64,8 @@ impl EditorState {
             insert_text: String::new(),
             visual_anchor: None, alternate_buffer: None,
             explorer_states: HashMap::new(),
-            jumplist: PositionList::new(100),
-            changelist: PositionList::new(100),
+            jumplist: PositionList::new(100), changelist: PositionList::new(100),
+            marks: MarkStore::new(),
         }
     }
 

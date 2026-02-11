@@ -77,10 +77,25 @@ pub(crate) fn resolve_partial(
                 (Action::Noop, None)
             }
         }
-        PartialKey::SetMark
-        | PartialKey::GotoMarkLine
-        | PartialKey::GotoMarkExact
-        | PartialKey::MacroRecord
+        PartialKey::SetMark => {
+            if let Key::Char(c) = key {
+                pending.clear();
+                (Action::SetMark(*c), None)
+            } else { pending.clear(); (Action::Noop, None) }
+        }
+        PartialKey::GotoMarkLine => {
+            if let Key::Char(c) = key {
+                pending.clear();
+                (Action::GotoMarkLine(*c), None)
+            } else { pending.clear(); (Action::Noop, None) }
+        }
+        PartialKey::GotoMarkExact => {
+            if let Key::Char(c) = key {
+                pending.clear();
+                (Action::GotoMarkExact(*c), None)
+            } else { pending.clear(); (Action::Noop, None) }
+        }
+        PartialKey::MacroRecord
         | PartialKey::MacroPlay => {
             pending.clear();
             (Action::Noop, None)

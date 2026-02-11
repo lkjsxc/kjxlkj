@@ -25,6 +25,7 @@ mod editor_ops;
 mod editor_snapshot;
 mod editor_visual;
 mod editor_window;
+mod marks;
 mod navlist;
 mod register;
 mod search;
@@ -60,5 +61,7 @@ mod editor_stage04b_tests;
 mod editor_stage04c_tests;
 #[cfg(test)]
 mod editor_stage04d_tests;
+#[cfg(test)]
+mod editor_stage04e_tests;
 #[cfg(test)]
 mod editor_wincmd_tests;

@@ -86,8 +86,9 @@ fn handle_normal_command(key: &Key, pending: &mut PendingState) -> (Action, Opti
         Key::Char('#') => cleared(pending, Action::StarSearchBackward),
         Key::Char(';') => cleared(pending, Action::Motion(Motion::RepeatFind)),
         Key::Char(',') => cleared(pending, Action::Motion(Motion::RepeatFindReverse)),
-        Key::Escape => { pending.clear(); (Action::Noop, None) }
-        _ => { pending.clear(); (Action::Noop, None) }
+        Key::Char('\'') => { pending.partial = PartialKey::GotoMarkLine; (Action::Noop, None) }
+        Key::Char('`') => { pending.partial = PartialKey::GotoMarkExact; (Action::Noop, None) }
+        Key::Escape | _ => { pending.clear(); (Action::Noop, None) }
     }
 }
 
@@ -142,16 +143,13 @@ fn op_pending(p: &mut PendingState, op: Operator) -> (Action, Option<Mode>) {
 mod tests {
     use super::*;
 
-    #[test]
-    fn shift_a_triggers_append_eol() {
+    #[test] fn shift_a_triggers_append_eol() {
         let mut ps = PendingState::default();
         let (action, mode) = handle_normal_key(&Key::Char('A'), &KeyModifiers::default(), &mut ps);
-        assert_eq!(action, Action::AppendEndOfLine);
-        assert_eq!(mode, Some(Mode::Insert));
+        assert_eq!(action, Action::AppendEndOfLine); assert_eq!(mode, Some(Mode::Insert));
     }
 
-    #[test]
-    fn colon_enters_command_mode() {
+    #[test] fn colon_enters_command_mode() {
         let mut ps = PendingState::default();
         let (_, mode) = handle_normal_key(&Key::Char(':'), &KeyModifiers::default(), &mut ps);
         assert_eq!(mode, Some(Mode::Command(CommandKind::Ex)));

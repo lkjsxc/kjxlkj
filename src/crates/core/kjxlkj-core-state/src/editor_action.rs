@@ -125,6 +125,9 @@ impl EditorState {
             Action::WindowExchange => {} // placeholder
             Action::JumpOlder | Action::JumpNewer => self.navigate_jumplist(&action),
             Action::ChangeOlder | Action::ChangeNewer => self.navigate_changelist(&action),
+            Action::SetMark(c) => self.set_mark_at_cursor(c),
+            Action::GotoMarkLine(c) => self.goto_mark_line(c),
+            Action::GotoMarkExact(c) => self.goto_mark_exact(c),
             _ => {}
         }
     }
