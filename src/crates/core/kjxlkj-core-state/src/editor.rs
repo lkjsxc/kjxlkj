@@ -6,11 +6,12 @@ use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition, PendingState};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
     Action, BufferId, CmdlineState, ContentKind, ExplorerStateId,
-    Key, KeyModifiers, Mode, VisualKind, WindowId,
+    Key, KeyModifiers, Mode, Motion, VisualKind, WindowId,
 };
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 use kjxlkj_service_explorer::ExplorerState;
 
+use crate::navlist::PositionList;
 use crate::register::RegisterStore;
 use crate::search::SearchState;
 use crate::window_state::WindowState;
@@ -35,6 +36,8 @@ pub struct EditorState {
     pub visual_anchor: Option<kjxlkj_core_edit::Cursor>,
     pub alternate_buffer: Option<BufferId>,
     pub explorer_states: HashMap<ExplorerStateId, ExplorerState>,
+    pub jumplist: PositionList,
+    pub changelist: PositionList,
 }
 
 impl EditorState {
@@ -61,6 +64,8 @@ impl EditorState {
             insert_text: String::new(),
             visual_anchor: None, alternate_buffer: None,
             explorer_states: HashMap::new(),
+            jumplist: PositionList::new(100),
+            changelist: PositionList::new(100),
         }
     }
 
@@ -107,7 +112,11 @@ impl EditorState {
         // Remember if we were in visual mode before apply_action (which may change self.mode).
         let was_visual = matches!(self.mode, Mode::Visual(_));
         // Apply action BEFORE clearing visual anchor (operator needs it).
-        if is_text_changing(&action) { self.last_change = Some(action.clone()); }
+        if is_text_changing(&action) {
+            self.record_change();
+            self.last_change = Some(action.clone());
+        }
+        if is_jump_action(&action) { self.record_jump(); }
         self.apply_action(action);
         // Clear anchor when leaving visual mode (after action applied).
         if !matches!(resolved, Mode::Visual(_)) && was_visual {
@@ -131,7 +140,6 @@ impl EditorState {
         }
     }
 }
-
 /// Whether an action changes buffer text (for dot-repeat).
 fn is_text_changing(a: &Action) -> bool {
     matches!(a,
@@ -139,8 +147,17 @@ fn is_text_changing(a: &Action) -> bool {
         | Action::DeleteLine | Action::OperatorLine(_) | Action::OperatorMotion(_, _, _)
         | Action::SubstituteChar | Action::SubstituteLine | Action::ChangeToEnd
         | Action::DeleteToEnd | Action::JoinLines | Action::JoinLinesNoSpace
-        | Action::ReplaceChar(_) | Action::ToggleCase | Action::DeleteWordBackward
-        | Action::DeleteToLineStart
+        | Action::ReplaceChar(_) | Action::ToggleCase
+        | Action::DeleteWordBackward | Action::DeleteToLineStart
+    )
+}
+
+/// Whether an action is a jump (recorded in jumplist).
+fn is_jump_action(a: &Action) -> bool {
+    matches!(a,
+        Action::Motion(Motion::GotoLine(_) | Motion::GotoFirstLine
+            | Motion::GotoLastLine | Motion::SearchNext | Motion::SearchPrev)
+        | Action::StarSearchForward | Action::StarSearchBackward
     )
 }
 
@@ -156,8 +173,8 @@ mod tests {
     #[test] fn insert_and_exit() {
         let mut s = ed();
         s.handle_key(&Key::Char('i'), &m()); assert_eq!(s.mode, Mode::Insert);
-        s.handle_key(&Key::Char('x'), &m()); s.handle_key(&Key::Escape, &m());
-        assert_eq!(s.mode, Mode::Normal);
+        s.handle_key(&Key::Char('x'), &m());
+        s.handle_key(&Key::Escape, &m()); assert_eq!(s.mode, Mode::Normal);
     }
     #[test] fn shift_a_appends_at_eol() {
         let mut s = ed();

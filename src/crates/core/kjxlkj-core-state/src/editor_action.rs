@@ -17,12 +17,8 @@ impl EditorState {
                 self.insert_text.push(c);
                 self.insert_char(c);
             }
-            Action::DeleteCharForward => {
-                self.delete_char_forward()
-            }
-            Action::DeleteCharBackward => {
-                self.delete_char_backward()
-            }
+            Action::DeleteCharForward => self.delete_char_forward(),
+            Action::DeleteCharBackward => self.delete_char_backward(),
             Action::Motion(ref motion) => {
                 match motion {
                     Motion::SearchNext => {
@@ -40,15 +36,9 @@ impl EditorState {
                 }
             }
             Action::Quit => self.quit_requested = true,
-            Action::ForceQuit => {
-                self.quit_requested = true
-            }
-            Action::WriteQuit => {
-                self.quit_requested = true
-            }
-            Action::Resize(cols, rows) => {
-                self.terminal_size = (cols, rows);
-            }
+            Action::ForceQuit => self.quit_requested = true,
+            Action::WriteQuit => self.quit_requested = true,
+            Action::Resize(cols, rows) => self.terminal_size = (cols, rows),
             Action::AppendEndOfLine => {
                 self.cursor_to_eol();
             }
@@ -130,9 +120,11 @@ impl EditorState {
             Action::CloseExplorer => self.close_explorer(),
             Action::OpenTerminal => self.open_terminal(),
             Action::FocusCycleReverse => self.focus_cycle_reverse(),
-            Action::WindowMoveEdge(_) => {} // placeholder: layout rearrangement
-            Action::WindowRotate(_) => {} // placeholder: sibling rotation
-            Action::WindowExchange => {} // placeholder: sibling exchange
+            Action::WindowMoveEdge(_) => {} // placeholder
+            Action::WindowRotate(_) => {} // placeholder
+            Action::WindowExchange => {} // placeholder
+            Action::JumpOlder | Action::JumpNewer => self.navigate_jumplist(&action),
+            Action::ChangeOlder | Action::ChangeNewer => self.navigate_changelist(&action),
             _ => {}
         }
     }

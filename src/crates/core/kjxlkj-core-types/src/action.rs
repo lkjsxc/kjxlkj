@@ -19,6 +19,7 @@ pub enum Action {
     WindowMaxHeight, WindowMaxWidth,
     WindowMoveEdge(Direction), WindowRotate(bool), WindowExchange,
     OpenExplorer, CloseExplorer, OpenTerminal,
+    JumpOlder, JumpNewer, ChangeOlder, ChangeNewer,
     Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),
     // Buffer management

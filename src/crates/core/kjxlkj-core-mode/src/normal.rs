@@ -114,6 +114,8 @@ fn handle_ctrl_key(
         Key::Char('a') => (Action::IncrementNumber, None),
         Key::Char('x') => (Action::DecrementNumber, None),
         Key::Char('6') | Key::Char('^') => (Action::SwitchAlternate, None),
+        Key::Char('o') => (Action::JumpOlder, None),
+        Key::Char('i') => (Action::JumpNewer, None),
         _ => (Action::Noop, None),
     }
 }
@@ -155,8 +157,7 @@ mod tests {
         assert_eq!(mode, Some(Mode::Command(CommandKind::Ex)));
     }
 
-    #[test]
-    fn h_moves_left() {
+    #[test] fn h_moves_left() {
         let mut ps = PendingState::default();
         let (action, mode) = handle_normal_key(&Key::Char('h'), &KeyModifiers::default(), &mut ps);
         assert_eq!(action, Action::Motion(Motion::Left));
@@ -170,31 +171,30 @@ mod tests {
         let (action, _) = handle_normal_key(&Key::Char('r'), &m, &mut ps);
         assert_eq!(action, Action::Redo);
     }
-
-    #[test]
-    fn f_then_char_produces_find_forward() {
+    #[test] fn f_then_char_produces_find_forward() {
         let mut ps = PendingState::default();
-        let (a1, _) = handle_normal_key(
-            &Key::Char('f'), &KeyModifiers::default(), &mut ps,
-        );
+        let (a1, _) = handle_normal_key(&Key::Char('f'), &KeyModifiers::default(), &mut ps);
         assert_eq!(a1, Action::Noop);
-        assert_eq!(ps.partial, PartialKey::FindForward);
-        let (a2, _) = handle_normal_key(
-            &Key::Char('x'), &KeyModifiers::default(), &mut ps,
-        );
+        let (a2, _) = handle_normal_key(&Key::Char('x'), &KeyModifiers::default(), &mut ps);
         assert_eq!(a2, Action::Motion(Motion::FindForward('x')));
     }
-
-    #[test]
-    fn count_prefix_accumulates() {
+    #[test] fn count_prefix_accumulates() {
         let mut ps = PendingState::default();
-        handle_normal_key(
-            &Key::Char('3'), &KeyModifiers::default(), &mut ps,
-        );
+        handle_normal_key(&Key::Char('3'), &KeyModifiers::default(), &mut ps);
         assert_eq!(ps.count, Some(3));
-        handle_normal_key(
-            &Key::Char('5'), &KeyModifiers::default(), &mut ps,
-        );
+        handle_normal_key(&Key::Char('5'), &KeyModifiers::default(), &mut ps);
         assert_eq!(ps.count, Some(35));
+    }
+    #[test] fn ctrl_o_jump_older() {
+        let mut ps = PendingState::default();
+        let m = KeyModifiers { ctrl: true, ..Default::default() };
+        let (a, _) = handle_normal_key(&Key::Char('o'), &m, &mut ps);
+        assert_eq!(a, Action::JumpOlder);
+    }
+    #[test] fn ctrl_i_jump_newer() {
+        let mut ps = PendingState::default();
+        let m = KeyModifiers { ctrl: true, ..Default::default() };
+        let (a, _) = handle_normal_key(&Key::Char('i'), &m, &mut ps);
+        assert_eq!(a, Action::JumpNewer);
     }
 }

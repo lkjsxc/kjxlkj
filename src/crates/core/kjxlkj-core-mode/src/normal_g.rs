@@ -86,6 +86,10 @@ pub(crate) fn handle_g_key(
             pending.clear();
             (Action::GStarSearchBackward, None)
         }
+        // g; → jump to older change position.
+        Key::Char(';') => { pending.clear(); (Action::ChangeOlder, None) }
+        // g, → jump to newer change position.
+        Key::Char(',') => { pending.clear(); (Action::ChangeNewer, None) }
         _ => {
             pending.clear();
             (Action::Noop, None)
@@ -97,101 +101,65 @@ pub(crate) fn handle_g_key(
 mod tests {
     use super::*;
 
-    #[test]
-    fn gg_goes_to_first_line() {
+    #[test] fn gg_goes_to_first_line() {
         let mut ps = PendingState::default();
         let (action, _) = handle_g_key(&Key::Char('g'), &mut ps);
         assert_eq!(action, Action::Motion(Motion::GotoFirstLine));
     }
-
-    #[test]
-    fn g_underscore_last_nonblank() {
+    #[test] fn g_underscore_last_nonblank() {
         let mut ps = PendingState::default();
-        let (action, _) =
-            handle_g_key(&Key::Char('_'), &mut ps);
-        assert_eq!(
-            action,
-            Action::Motion(Motion::LastNonBlank)
-        );
+        let (a, _) = handle_g_key(&Key::Char('_'), &mut ps);
+        assert_eq!(a, Action::Motion(Motion::LastNonBlank));
     }
-
-    #[test]
-    fn ge_word_end_backward() {
+    #[test] fn ge_word_end_backward() {
         let mut ps = PendingState::default();
-        let (action, _) =
-            handle_g_key(&Key::Char('e'), &mut ps);
-        assert_eq!(
-            action,
-            Action::Motion(Motion::WordEndBackward)
-        );
+        let (a, _) = handle_g_key(&Key::Char('e'), &mut ps);
+        assert_eq!(a, Action::Motion(Motion::WordEndBackward));
     }
-
-    #[test]
-    fn gu_enters_lowercase_op() {
+    #[test] fn gu_enters_lowercase_op() {
         let mut ps = PendingState::default();
-        let (_, mode) =
-            handle_g_key(&Key::Char('u'), &mut ps);
-        assert_eq!(
-            mode,
-            Some(Mode::OperatorPending(Operator::Lowercase))
-        );
+        let (_, m) = handle_g_key(&Key::Char('u'), &mut ps);
+        assert_eq!(m, Some(Mode::OperatorPending(Operator::Lowercase)));
     }
-
-    #[test]
-    fn g_upper_u_enters_uppercase_op() {
+    #[test] fn g_upper_u_enters_uppercase_op() {
         let mut ps = PendingState::default();
-        let (_, mode) =
-            handle_g_key(&Key::Char('U'), &mut ps);
-        assert_eq!(
-            mode,
-            Some(Mode::OperatorPending(Operator::Uppercase))
-        );
+        let (_, m) = handle_g_key(&Key::Char('U'), &mut ps);
+        assert_eq!(m, Some(Mode::OperatorPending(Operator::Uppercase)));
     }
-
-    #[test]
-    fn g_tilde_enters_toggle_case_op() {
+    #[test] fn g_tilde_enters_toggle_case_op() {
         let mut ps = PendingState::default();
-        let (_, mode) =
-            handle_g_key(&Key::Char('~'), &mut ps);
-        assert_eq!(
-            mode,
-            Some(Mode::OperatorPending(
-                Operator::ToggleCase
-            ))
-        );
+        let (_, m) = handle_g_key(&Key::Char('~'), &mut ps);
+        assert_eq!(m, Some(Mode::OperatorPending(Operator::ToggleCase)));
     }
-
-    #[test]
-    fn gq_enters_format_op() {
+    #[test] fn gq_enters_format_op() {
         let mut ps = PendingState::default();
-        let (_, mode) =
-            handle_g_key(&Key::Char('q'), &mut ps);
-        assert_eq!(
-            mode,
-            Some(Mode::OperatorPending(Operator::Format))
-        );
+        let (_, m) = handle_g_key(&Key::Char('q'), &mut ps);
+        assert_eq!(m, Some(Mode::OperatorPending(Operator::Format)));
     }
-
-    #[test]
-    fn g_j_join_no_space() {
+    #[test] fn g_j_join_no_space() {
         let mut ps = PendingState::default();
-        let (action, _) =
-            handle_g_key(&Key::Char('J'), &mut ps);
-        assert_eq!(action, Action::JoinLinesNoSpace);
+        let (a, _) = handle_g_key(&Key::Char('J'), &mut ps);
+        assert_eq!(a, Action::JoinLinesNoSpace);
     }
-
-    #[test]
-    fn g_star_partial_match_forward() {
+    #[test] fn g_star_partial_match_forward() {
         let mut ps = PendingState::default();
-        let (action, _) = handle_g_key(&Key::Char('*'), &mut ps);
-        assert_eq!(action, Action::GStarSearchForward);
+        let (a, _) = handle_g_key(&Key::Char('*'), &mut ps);
+        assert_eq!(a, Action::GStarSearchForward);
     }
-
-    #[test]
-    fn g_hash_partial_match_backward() {
+    #[test] fn g_hash_partial_match_backward() {
         let mut ps = PendingState::default();
-        let (action, _) = handle_g_key(&Key::Char('#'), &mut ps);
-        assert_eq!(action, Action::GStarSearchBackward);
+        let (a, _) = handle_g_key(&Key::Char('#'), &mut ps);
+        assert_eq!(a, Action::GStarSearchBackward);
+    }
+    #[test] fn g_semicolon_change_older() {
+        let mut ps = PendingState::default();
+        let (a, _) = handle_g_key(&Key::Char(';'), &mut ps);
+        assert_eq!(a, Action::ChangeOlder);
+    }
+    #[test] fn g_comma_change_newer() {
+        let mut ps = PendingState::default();
+        let (a, _) = handle_g_key(&Key::Char(','), &mut ps);
+        assert_eq!(a, Action::ChangeNewer);
     }
 }
 
