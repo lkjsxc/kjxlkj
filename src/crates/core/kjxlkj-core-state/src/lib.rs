@@ -25,6 +25,7 @@ mod editor_ops;
 mod editor_snapshot;
 mod editor_visual;
 mod editor_window;
+mod folds;
 mod macros;
 mod marks;
 mod navlist;
@@ -66,5 +67,7 @@ mod editor_stage04d_tests;
 mod editor_stage04e_tests;
 #[cfg(test)]
 mod editor_stage04f_tests;
+#[cfg(test)]
+mod editor_stage04g_tests;
 #[cfg(test)]
 mod editor_wincmd_tests;

@@ -11,7 +11,7 @@ use kjxlkj_core_types::{
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 use kjxlkj_service_explorer::ExplorerState;
 
-use crate::{macros::MacroState, marks::MarkStore, navlist::PositionList};
+use crate::{folds::FoldState, macros::MacroState, marks::MarkStore, navlist::PositionList};
 use crate::{register::RegisterStore, search::SearchState, window_state::WindowState};
 
 /// The single mutable editor state.
@@ -34,6 +34,7 @@ pub struct EditorState {
     pub explorer_states: HashMap<ExplorerStateId, ExplorerState>,
     pub jumplist: PositionList, pub changelist: PositionList,
     pub marks: MarkStore, pub macro_state: MacroState,
+    pub fold_state: FoldState,
 }
 
 impl EditorState {
@@ -60,6 +61,7 @@ impl EditorState {
             explorer_states: HashMap::new(),
             jumplist: PositionList::new(100), changelist: PositionList::new(100),
             marks: MarkStore::new(), macro_state: MacroState::new(),
+            fold_state: FoldState::new(),
         }
     }
 

@@ -22,6 +22,9 @@ pub enum Action {
     JumpOlder, JumpNewer, ChangeOlder, ChangeNewer,
     SetMark(char), GotoMarkLine(char), GotoMarkExact(char),
     MacroRecordStart(char), MacroRecordStop, MacroPlay(char),
+    // Folding
+    FoldOpen, FoldClose, FoldToggle, FoldOpenAll, FoldCloseAll,
+    FoldReduce, FoldMore, FoldNext, FoldPrev,
     Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),
     // Buffer management

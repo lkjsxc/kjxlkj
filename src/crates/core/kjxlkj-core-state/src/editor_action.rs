@@ -39,45 +39,23 @@ impl EditorState {
             Action::ForceQuit => self.quit_requested = true,
             Action::WriteQuit => self.quit_requested = true,
             Action::Resize(cols, rows) => self.terminal_size = (cols, rows),
-            Action::AppendEndOfLine => {
-                self.cursor_to_eol();
-            }
-            Action::InsertFirstNonBlank => {
-                self.cursor_to_first_nonblank();
-            }
-            Action::OpenLineBelow => {
-                self.open_line_below();
-            }
-            Action::OpenLineAbove => {
-                self.open_line_above();
-            }
-            Action::SplitVertical => {
-                self.split_vertical();
-            }
-            Action::SplitHorizontal => {
-                self.split_horizontal();
-            }
-            Action::CloseWindow => {
-                self.close_window();
-            }
+            Action::AppendEndOfLine => self.cursor_to_eol(),
+            Action::InsertFirstNonBlank => self.cursor_to_first_nonblank(),
+            Action::OpenLineBelow => self.open_line_below(),
+            Action::OpenLineAbove => self.open_line_above(),
+            Action::SplitVertical => self.split_vertical(),
+            Action::SplitHorizontal => self.split_horizontal(),
+            Action::CloseWindow => self.close_window(),
             Action::ExitToNormal => {
                 self.mode = Mode::Normal;
                 let win = self.focused_window_mut();
-                if win.cursor.col > 0 {
-                    win.cursor.col -= 1;
-                }
+                if win.cursor.col > 0 { win.cursor.col -= 1; }
             }
-            Action::OperatorLine(op) => {
-                self.apply_operator_line(op);
-            }
+            Action::OperatorLine(op) => self.apply_operator_line(op),
             Action::OperatorMotion(op, motion, count) => {
-                self.apply_operator_motion(
-                    op, motion, count,
-                );
+                self.apply_operator_motion(op, motion, count);
             }
-            Action::SubstituteChar => {
-                self.delete_char_forward();
-            }
+            Action::SubstituteChar => self.delete_char_forward(),
             Action::SubstituteLine => self.delete_current_line_content(),
             Action::ChangeToEnd => self.delete_to_eol(),
             Action::DeleteWordBackward => self.delete_word_backward(),
@@ -131,6 +109,15 @@ impl EditorState {
             Action::MacroRecordStart(c) => self.start_macro_recording(c),
             Action::MacroRecordStop => self.stop_macro_recording(),
             Action::MacroPlay(c) => self.play_macro(c),
+            Action::FoldOpen => self.fold_open(),
+            Action::FoldClose => self.fold_close(),
+            Action::FoldToggle => self.fold_toggle(),
+            Action::FoldOpenAll => self.fold_state.open_all(),
+            Action::FoldCloseAll => self.fold_close_all(),
+            Action::FoldReduce => self.fold_state.reduce(),
+            Action::FoldMore => self.fold_state.more(),
+            Action::FoldNext => self.fold_next(),
+            Action::FoldPrev => self.fold_prev(),
             _ => {}
         }
     }

@@ -1,4 +1,4 @@
-//! Jumplist, changelist, mark, and macro navigation for EditorState.
+//! Jumplist, changelist, mark, macro, and fold navigation for EditorState.
 
 use kjxlkj_core_types::{Action, ContentKind, Key, KeyModifiers, RangeType};
 
@@ -14,20 +14,7 @@ impl EditorState {
             Action::JumpNewer => self.jumplist.go_newer(),
             _ => return,
         };
-        if let Some(p) = pos {
-            let wid = self.focus.focused;
-            if let Some(win) = self.windows.get_mut(&wid) {
-                if let ContentKind::Buffer(buf_id) = win.content {
-                    if let Some(buf) = self.buffers.get(&buf_id) {
-                        let lines = buf.line_count();
-                        let line = p.line.min(lines.saturating_sub(1));
-                        let cols = buf.line(line).map(|l| l.len()).unwrap_or(0);
-                        win.cursor.line = line;
-                        win.cursor.col = p.col.min(cols.saturating_sub(1));
-                    }
-                }
-            }
-        }
+        self.apply_nav_position(pos);
     }
 
     /// Navigate changelist (g; / g,).
@@ -37,23 +24,25 @@ impl EditorState {
             Action::ChangeNewer => self.changelist.go_newer(),
             _ => return,
         };
-        if let Some(p) = pos {
-            let wid = self.focus.focused;
-            if let Some(win) = self.windows.get_mut(&wid) {
-                if let ContentKind::Buffer(buf_id) = win.content {
-                    if let Some(buf) = self.buffers.get(&buf_id) {
-                        let lines = buf.line_count();
-                        let line = p.line.min(lines.saturating_sub(1));
-                        let cols = buf.line(line).map(|l| l.len()).unwrap_or(0);
-                        win.cursor.line = line;
-                        win.cursor.col = p.col.min(cols.saturating_sub(1));
-                    }
+        self.apply_nav_position(pos);
+    }
+
+    /// Apply a navigation position to the focused window cursor.
+    fn apply_nav_position(&mut self, pos: Option<Position>) {
+        let p = match pos { Some(p) => p, None => return };
+        let wid = self.focus.focused;
+        if let Some(win) = self.windows.get_mut(&wid) {
+            if let ContentKind::Buffer(buf_id) = win.content {
+                if let Some(buf) = self.buffers.get(&buf_id) {
+                    let line = p.line.min(buf.line_count().saturating_sub(1));
+                    let cols = buf.line(line).map(|l| l.len()).unwrap_or(0);
+                    win.cursor.line = line;
+                    win.cursor.col = p.col.min(cols.saturating_sub(1));
                 }
             }
         }
     }
 
-    /// Record current cursor position in the jumplist.
     pub(crate) fn record_jump(&mut self) {
         let wid = self.focus.focused;
         if let Some(win) = self.windows.get(&wid) {
@@ -61,7 +50,6 @@ impl EditorState {
         }
     }
 
-    /// Record current cursor position in the changelist.
     pub(crate) fn record_change(&mut self) {
         let wid = self.focus.focused;
         if let Some(win) = self.windows.get(&wid) {
@@ -69,7 +57,6 @@ impl EditorState {
         }
     }
 
-    /// Set mark `c` at the current cursor position (`m{a-z}`).
     pub(crate) fn set_mark_at_cursor(&mut self, c: char) {
         let wid = self.focus.focused;
         if let Some(win) = self.windows.get(&wid) {
@@ -77,35 +64,28 @@ impl EditorState {
         }
     }
 
-    /// Go to mark line, placing cursor at first non-blank (`'{a-z}`).
     pub(crate) fn goto_mark_line(&mut self, c: char) {
         let pos = match self.marks.get(c) { Some(p) => p, None => return };
         let wid = self.focus.focused;
         if let Some(win) = self.windows.get_mut(&wid) {
             if let ContentKind::Buffer(buf_id) = win.content {
                 if let Some(buf) = self.buffers.get(&buf_id) {
-                    let lines = buf.line_count();
-                    let line = pos.line.min(lines.saturating_sub(1));
+                    let line = pos.line.min(buf.line_count().saturating_sub(1));
                     win.cursor.line = line;
-                    // First non-blank on the target line.
-                    let col = buf.line(line)
-                        .map(|l| l.find(|ch: char| !ch.is_ascii_whitespace()).unwrap_or(0))
-                        .unwrap_or(0);
+                    let col = buf.line(line).map(|l| l.find(|ch: char| !ch.is_ascii_whitespace()).unwrap_or(0)).unwrap_or(0);
                     win.cursor.col = col;
                 }
             }
         }
     }
 
-    /// Go to exact mark position (`\`{a-z}`).
     pub(crate) fn goto_mark_exact(&mut self, c: char) {
         let pos = match self.marks.get(c) { Some(p) => p, None => return };
         let wid = self.focus.focused;
         if let Some(win) = self.windows.get_mut(&wid) {
             if let ContentKind::Buffer(buf_id) = win.content {
                 if let Some(buf) = self.buffers.get(&buf_id) {
-                    let lines = buf.line_count();
-                    let line = pos.line.min(lines.saturating_sub(1));
+                    let line = pos.line.min(buf.line_count().saturating_sub(1));
                     let cols = buf.line(line).map(|l| l.len()).unwrap_or(0);
                     win.cursor.line = line;
                     win.cursor.col = pos.col.min(cols.saturating_sub(1));
@@ -114,12 +94,8 @@ impl EditorState {
         }
     }
 
-    /// Start macro recording into register `c`.
-    pub(crate) fn start_macro_recording(&mut self, c: char) {
-        self.macro_state.start(c);
-    }
+    pub(crate) fn start_macro_recording(&mut self, c: char) { self.macro_state.start(c); }
 
-    /// Stop macro recording and save captured keys to the register.
     pub(crate) fn stop_macro_recording(&mut self) {
         if let Some((reg, keys)) = self.macro_state.stop() {
             let text = macros::keys_to_string(&keys);
@@ -127,41 +103,51 @@ impl EditorState {
         }
     }
 
-    /// Play macro from register `c`: replay captured key sequence.
     pub(crate) fn play_macro(&mut self, c: char) {
         let entry = match self.registers.get(c) { Some(e) => e, None => return };
         let text = entry.text.clone();
-        let keys = parse_macro_keys(&text);
-        for mk in &keys {
-            self.handle_key(&mk.0, &mk.1);
+        for mk in &parse_macro_keys(&text) { self.handle_key(&mk.0, &mk.1); }
+    }
+
+    pub(crate) fn fold_open(&mut self) { let l = self.focused_cursor_line(); self.fold_state.open(l); }
+    pub(crate) fn fold_close(&mut self) { let l = self.focused_cursor_line(); self.fold_state.close(l); }
+    pub(crate) fn fold_toggle(&mut self) { let l = self.focused_cursor_line(); self.fold_state.toggle(l); }
+    pub(crate) fn fold_close_all(&mut self) { self.fold_state.close_all(); }
+
+    pub(crate) fn fold_next(&mut self) {
+        let line = self.focused_cursor_line();
+        if let Some(t) = self.fold_state.next_closed(line) {
+            if let Some(w) = self.windows.get_mut(&self.focus.focused) { w.cursor.line = t; }
         }
+    }
+
+    pub(crate) fn fold_prev(&mut self) {
+        let line = self.focused_cursor_line();
+        if let Some(t) = self.fold_state.prev_closed(line) {
+            if let Some(w) = self.windows.get_mut(&self.focus.focused) { w.cursor.line = t; }
+        }
+    }
+
+    fn focused_cursor_line(&self) -> usize {
+        self.windows.get(&self.focus.focused).map(|w| w.cursor.line).unwrap_or(0)
     }
 }
 
-/// Parse a macro string back into key events.
 fn parse_macro_keys(s: &str) -> Vec<(Key, KeyModifiers)> {
     let mut keys = Vec::new();
     let mut chars = s.chars().peekable();
     while let Some(c) = chars.next() {
         match c {
-            '^' => {
-                if let Some(&next) = chars.peek() {
-                    chars.next();
-                    keys.push((Key::Char(next), KeyModifiers { ctrl: true, ..Default::default() }));
-                }
-            }
+            '^' => { if let Some(&next) = chars.peek() { chars.next(); keys.push((Key::Char(next), KeyModifiers { ctrl: true, ..Default::default() })); } }
             '\n' => keys.push((Key::Enter, KeyModifiers::default())),
             '\t' => keys.push((Key::Tab, KeyModifiers::default())),
             '<' => {
                 let mut tag = String::new();
-                while let Some(&ch) = chars.peek() {
-                    if ch == '>' { chars.next(); break; }
-                    tag.push(ch); chars.next();
-                }
+                while let Some(&ch) = chars.peek() { if ch == '>' { chars.next(); break; } tag.push(ch); chars.next(); }
                 match tag.as_str() {
                     "Esc" => keys.push((Key::Escape, KeyModifiers::default())),
                     "BS" => keys.push((Key::Backspace, KeyModifiers::default())),
-                    _ => {} // unknown tag — skip
+                    _ => {}
                 }
             }
             _ => keys.push((Key::Char(c), KeyModifiers::default())),
