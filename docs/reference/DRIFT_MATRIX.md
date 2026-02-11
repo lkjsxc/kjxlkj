@@ -33,13 +33,14 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-VISUAL-01` | [/docs/spec/modes/visual.md](/docs/spec/modes/visual.md) | Visual mode charwise/linewise/blockwise selection and operators | unit + integration tests | partial | `M4` | test-add | v/V/Ctrl-v entry, sub-mode switching, operators d/x/y/c/s/>/</~/u/U/J/p, anchor swap o, charwise inclusive→exclusive dispatch, linewise multi-line delete/yank, blockwise stub (delegates to charwise); 2 unit tests + 11 integration tests; T2 pending |
 | `R-BUF-01` | [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md) | Buffer navigation, alternate buffer, deletion, file open | unit + integration tests | partial | `M4` | test-add | :bn/:bp/:bd/:b N, Ctrl-^, :ls/:buffers, :e file, :bfirst/:blast, alternate tracking, sorted ordering, delete fallback; 5 unit tests + 13 integration tests; T2 pending |
 | `R-RACE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | Race condition and boundary safety coverage | unit tests | partial | `M4` | test-add | 10 stress tests (rapid mode/visual/command toggle 100 cycles each, insert preserves text, split-close cycle, buffer create-delete cycle, alternate stress, resize boundary/churn) + 7 boundary tests (deterministic replay, delete/motion on empty buffer, unknown ex command, sequential ex, Ctrl-6 without alternate, force quit); T2 pending |
+| `R-EDIT-01` | [/docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md) | Auto-pairs, surround, comment toggle, clipboard sync, format-on-paste, format-on-type | n/a | spec-only | `M2` | implement | editing helper features (auto-pairs, surround, gcc/gc comment toggle, clipboard "+/"* system sync, format-on-paste, format-on-type) not yet implemented; deferred to later stages |
 
 ## Summary
 
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 2 |
+| `M2 missing feature` | 3 |
 | `M3 undocumented behavior` | 0 |
 | `M4 verification gap` | 12 |
 | `M5 stale docs` | 0 |
