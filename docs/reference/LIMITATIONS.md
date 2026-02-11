@@ -100,6 +100,17 @@ Theme/highlight model: HlGroup enum (35 groups: 13 syntax + 22 UI), Color RGB,
 Style with builder pattern, Theme with HashMap lookup, default_dark() One Dark
 inspired. 20 new tests (5 lifecycle + 8 diagnostic + 7 theme) bringing total to
 493 tests.
+Git sign state model (wave-042): GitSignState with per-buffer hunk tracking,
+SignType(Add/Change/Delete/TopDelete/ChangeDelete) with display char and highlight
+group, Hunk(start/count/sign), GitBase(Index/Head), set_hunks with auto-count
+(added/modified/removed), sign_at query, next_hunk/prev_hunk wrapping, summary.
+Statusline data model: Segment enum (12 variants: Mode/File/Modified/ReadOnly/
+FileType/Position/Percent/Encoding/FileFormat/Diagnostics/Git/Text) with render(),
+StatuslineData with left/center/right section arrays, from_state builder.
+Message/notification model: MsgLevel(Debug/Info/Warn/Error, ordered), Message
+(id/level/text), MessageStore (push/info/warn/error, current display, history
+cap 200, clear_current/clear_history, by_level filter). 22 new tests (7 gitsigns
++ 7 statusline + 8 messages) bringing total to 515 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

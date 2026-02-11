@@ -252,3 +252,35 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
     cursor-customization.md, font-rendering.md, icons.md
   - Ledger sync: CONFORMANCE (473→493), LIMITATIONS, DRIFT_MATRIX
     (+R-LSP-01, +R-THEME-01, M4 17→19, M2 4→5)
+
+### Wave 042: State Model and Data Flow Design
+- Status: COMPLETE
+- Committed: 66317c56
+- Evidence: 515 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Git sign state model: GitSignState with per-buffer hunk tracking, SignType
+    (Add/Change/Delete/TopDelete/ChangeDelete) with display char and highlight
+    group name, Hunk (start/count/sign), GitBase (Index/Head), set_hunks with
+    auto-count (added/modified/removed), sign_at line query, next_hunk/prev_hunk
+    wrapping navigation, summary string "+n ~n -n". 7 unit tests
+  - gitsigns.rs split: model (159 lines), tests to gitsigns_tests.rs (75 lines)
+  - Statusline data model: Segment enum (12 variants: Mode/File/Modified/
+    ReadOnly/FileType/Position/Percent/Encoding/FileFormat/Diagnostics/Git/Text)
+    with render(), StatuslineData with left/center/right section arrays,
+    separator, active flag, from_state builder for default layout, render_left/
+    render_center/render_right methods. 7 unit tests
+  - Message/notification model: MsgLevel (Debug/Info/Warn/Error, ordered) with
+    highlight group mapping, Message (id/level/text), MessageStore with push/
+    info/warn/error, current command-line message (cleared on keypress), history
+    with 200-entry cap, clear_current/clear_history, by_level filter. 8 unit tests
+  - statusline.rs (178 lines, NEW) in kjxlkj-core-ui
+  - messages.rs (182 lines, NEW) in kjxlkj-core-ui
+  - gitsigns.rs (159 lines, NEW) in kjxlkj-service-git
+  - gitsigns_tests.rs (75 lines, NEW) in kjxlkj-service-git
+  - lib.rs (kjxlkj-service-git) 11→14: +pub mod gitsigns;
+  - lib.rs (kjxlkj-core-ui) 12→14: +pub mod statusline; +pub mod messages;
+  - Tier-C docs read: indent-guides.md, ligatures.md, notifications.md,
+    popup-api.md, scroll-customization.md, statusline/README.md,
+    statusline-config.md
+  - Ledger sync: CONFORMANCE (493→515), LIMITATIONS, DRIFT_MATRIX
+    (+R-GIT-01, +R-STATUSLINE-01, M4 19→21, M2 5→6)
