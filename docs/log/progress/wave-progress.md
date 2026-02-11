@@ -106,3 +106,20 @@ Stage 00 (Foundation), Stage 01 (Architecture Core), and Stage 02
   - 5 unit tests: cycling, alternate toggle, delete fallback, last-buffer guard
   - Tier-C docs read: features/buffer/* (alternate-file, arglist, buffer-advanced,
     buffer-groups, buffer-local-options)
+
+### Wave 029: Unit and Integration Coverage
+- Status: COMPLETE
+- Committed: 723f4ee4
+- Evidence: 223 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - :bfirst/:bf and :blast/:bl commands for first/last buffer navigation
+  - FirstBuffer and LastBuffer Action variants added to action.rs (200 lines)
+  - first_buffer() and last_buffer() methods in editor_buffer.rs (194 lines)
+  - FirstBuffer/LastBuffer dispatch wired in editor_action.rs (200 lines)
+  - command_parse.rs compacted (merged 3 tests into 1): 194 lines
+  - editor_buffer_tests.rs (153 lines): 13 integration tests covering buffer
+    cycling, alternate toggle, deletion fallback, switch by ID, Ctrl-6 via
+    handle_key, bfirst/blast navigation, open file dedup, delete-last-is-noop,
+    ex command parsing for bf/bl/ls/buffers, delete updates alternate
+  - Tier-C docs read: buffer-switching, bufferline, config/README, after-dir,
+    audio, autocommands, command-palette

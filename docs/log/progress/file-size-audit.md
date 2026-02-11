@@ -7,7 +7,7 @@ All files are now ≤ 200 lines.
 
 | File | Lines | Status |
 |------|-------|--------|
-| `action.rs` (kjxlkj-core-types) | 199 | OK |
+| `action.rs` (kjxlkj-core-types) | 200 | OK |
 | `search.rs` (kjxlkj-core-state) | 191 | OK |
 | `editor.rs` (kjxlkj-core-state) | 200 | OK |
 | `editor_search_tests.rs` (kjxlkj-core-state) | 200 | OK |
@@ -22,18 +22,19 @@ All files are now ≤ 200 lines.
 | `register.rs` (kjxlkj-core-state) | 198 | OK |
 | `pending.rs` (kjxlkj-core-mode) | 179 | OK |
 | `frame.rs` (kjxlkj-render) | 159 | OK |
-| `command_parse.rs` (kjxlkj-core-state) | 200 | OK |
+| `command_parse.rs` (kjxlkj-core-state) | 194 | OK |
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 186 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 198 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 200 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 | `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
 | `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
 | `editor_textobj_tests.rs` (kjxlkj-core-state) | 111 | OK |
 | `editor_visual.rs` (kjxlkj-core-state) | 197 | OK |
 | `editor_visual_tests.rs` (kjxlkj-core-state) | 139 | OK |
-| `editor_buffer.rs` (kjxlkj-core-state) | 182 | OK |
+| `editor_buffer.rs` (kjxlkj-core-state) | 194 | OK |
+| `editor_buffer_tests.rs` (kjxlkj-core-state) | 153 | OK |
 
 ## Splits Performed
 
@@ -62,3 +63,4 @@ All files are now ≤ 200 lines.
 - Wave-026 changes: `text_object.rs` 199→195 (merged word tests, +p/s dispatch to text_object_ext), `editor_textobj_tests.rs` 90→111 (+dip/dis integration tests). New file: `text_object_ext.rs` (126, paragraph/sentence range computation, 5 unit tests).
 - Wave-027 changes: `action.rs` 194→198 (+VisualOperator/VisualSwapAnchor), `editor.rs` 185→200 (+visual_anchor, visual lifecycle, compacted doc comment), `other_modes.rs` 142→184 (expanded handle_visual_key), `editor_action.rs` 189→191 (+VisualOperator/VisualSwapAnchor wiring). New files: `editor_visual.rs` (197, visual operator dispatch, 2 unit tests), `editor_visual_tests.rs` (139, 11 integration tests).
 - Wave-028 changes: `action.rs` 198→199 (+SwitchAlternate/ListBuffers, removed 3 doc comments), `command_parse.rs` 199→200 (+:ls/:buffers, compacted doc), `editor.rs` 200→200 (+alternate_buffer, compacted comments), `editor_action.rs` 191→198 (+buffer action dispatch), `normal.rs` 200→200 (+Ctrl-6/^ mapping, merged wildcard). New file: `editor_buffer.rs` (182, buffer management, 5 unit tests).
+- Wave-029 changes: `action.rs` 199→200 (+FirstBuffer/LastBuffer on single line), `command_parse.rs` 200→194 (+:bf/:bfirst/:bl/:blast, merged 3 tests into 1 for compaction), `editor_buffer.rs` 182→194 (+first_buffer/last_buffer), `editor_action.rs` 198→200 (+FirstBuffer/LastBuffer dispatch). New file: `editor_buffer_tests.rs` (153, 13 integration tests).
