@@ -8,7 +8,7 @@ This ledger tracks open mismatches between target spec and current repository st
 
 The repository is currently in reconstructed foundation state. Workspace artifacts and grouped
 crate topology are present, and blocker-plus-secondary reconstruction gaps are closed with live PTY
-and deterministic unit evidence.
+and deterministic unit evidence. Profiling and performance observability baselines are now wired.
 
 ## Open Critical Blockers
 
@@ -31,6 +31,7 @@ and deterministic unit evidence.
 | `LIM-GAP-STATE-02` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | 2026-02-11 | focus-history and nested-rebalance invariants are covered by deterministic unit tests in `src/crates/core/kjxlkj-core-state/src/windows/tests.rs` |
 | `LIM-GAP-TRACE-02` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | 2026-02-11 | failure traces include `layout_summary`, bounded `frame_excerpt`, and bounded raw+normalized action history in `src/crates/app/kjxlkj/src/main.rs`; covered by `KEY-TRACE-05` and `KEY-TRACE-07` in `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | 2026-02-11 | PTY harness operations are implemented (`spawn`, `send raw`, `send symbolic`, `resize`, `capture frame`, `quit`) and blocker closure for key path is proven by passing `WR-01R` and `KEY-TRACE-01` |
+| `LIM-DEF-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | 2026-02-11 | opt-in runtime profiling metrics and probes are emitted via `PROFILE` line in `src/crates/app/kjxlkj/src/profiling.rs`, integrated in `src/crates/app/kjxlkj/src/main.rs`, and verified by `PERF-01R`..`PERF-03R` in `src/crates/app/kjxlkj-test-harness/tests/profiling_e2e.rs` |
 
 ## Open Secondary Gaps
 
@@ -44,7 +45,7 @@ Deferred only if not user-visible and not correctness-critical.
 
 | ID | Link | Rationale | Next Review |
 |---|---|---|---|
-| `LIM-DEF-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | performance tuning is intentionally deferred until secondary medium gaps close | after medium gaps close |
+| none | n/a | no deferred limitation remains open in this wave | monitor release-profile regressions on each behavior change |
 
 ## Closure Rules
 

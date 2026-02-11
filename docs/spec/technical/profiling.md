@@ -20,6 +20,11 @@ Instrumentation MUST be:
 - zero/near-zero overhead when disabled
 - deterministic with respect to core behavior (instrumentation must not change edit semantics)
 
+The runtime MUST expose an opt-in profile switch:
+
+- `KJXLKJ_PROFILE=1` enables per-cycle profiling output
+- unset or falsy values keep profiling disabled
+
 ## Required metrics (normative)
 
 The implementation MUST be able to record, at minimum, the following per input/update cycle:
@@ -39,6 +44,19 @@ If the renderer is cell-based, it SHOULD also record:
 | Cells written | Number of terminal cells written per frame |
 | Dirty region size | Area of the screen that changed |
 
+## Runtime profile record contract (normative)
+
+When profiling is enabled and the process exits, output MUST include one `PROFILE` line with:
+
+- `events_processed`
+- `core_update_count`
+- `snapshot_duration_ns`
+- `render_duration_ns`
+- `snapshot_materialized_lines_max`
+- `cells_written_total`
+- `dirty_region_cells_total`
+- idle and probe booleans (`idle_busy_loop`, viewport-bound checks)
+
 ## Required probes (normative)
 
 The implementation MUST support probes that can be exercised by tests/benchmarks:
@@ -55,10 +73,15 @@ The implementation MUST support probes that can be exercised by tests/benchmarks
 2. Given a very large buffer, when producing a snapshot, then the recorded “materialized lines” MUST be bounded by the viewport height (plus a small constant margin).
 3. Given no input for an extended period, when instrumentation is enabled, then the idle CPU probe MUST report no continuous redraw loop.
 
+## Required live verification IDs
+
+- `PERF-01R`: burst input emits required profile metrics
+- `PERF-02R`: large-buffer materialized lines stay viewport-bounded
+- `PERF-03R`: idle probe reports no busy-loop redraw
+
 ## Related
 
 - Latency ordering: [/docs/spec/technical/latency.md](/docs/spec/technical/latency.md)
 - Large-file posture: [/docs/spec/technical/large-files.md](/docs/spec/technical/large-files.md)
 - Memory posture: [/docs/spec/technical/memory.md](/docs/spec/technical/memory.md)
 - Test strategy: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-

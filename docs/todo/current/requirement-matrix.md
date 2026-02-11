@@ -40,6 +40,7 @@ High-risk reconstruction requirements from canonical specs.
 | `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree are reconstructed | high | topology + build gate | `aligned` |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closures require matching PTY E2E evidence | high | all blocker `*R` | `aligned` |
 | `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | bug closure follows reproduce-fix-verify discipline | high | regression + matching `*R` | `aligned` |
+| `R-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | opt-in profiling metrics and probes are emitted for burst/large-buffer/idle cycles | high | `PERF-01R`..`PERF-03R` | `aligned` |
 | `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source directories remain around 12 children | medium | topology audit | `aligned` |
 | `R-ARCH-02` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace members follow grouped crate paths | medium | build + manifest audit | `aligned` |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO directly links every markdown file | high | doc coverage audit | `aligned` |

@@ -53,6 +53,9 @@ All `*R` tests below require PTY harness.
 | `WRAP-14R` | resize storm overflow | narrow/wide resize churn | repeated resize | on-screen guarantee preserved |
 | `WRAP-15R` | tiny geometry panic | repeated 1x1/narrow sizes | render updates | no panic; deterministic clamping |
 | `WRAP-16R` | cross-window bound safety | editor + explorer + terminal long content | render all panes | all panes respect bounds |
+| `PERF-01R` | missing per-burst observability | profiling enabled | send burst input then exit | `PROFILE` line includes snapshot/render duration and required counters |
+| `PERF-02R` | hidden O(file) snapshot behavior | profiling enabled + large multiline buffer + small viewport | render one cycle then exit | `snapshot_materialized_lines_max` is bounded by viewport height plus small margin |
+| `PERF-03R` | idle redraw busy-loop regression | profiling enabled | remain idle, then quit | idle probe reports no continuous redraw loop |
 | `JP-06R` | IME leader leakage | active composition | send leader sequence | no explorer action during composition |
 | `JP-07R` | IME terminal leakage | active composition | send terminal leader sequence | no terminal action during composition |
 | `JP-08R` | composition cancel semantics | active composition | cancel + `Esc` | composition cancels before mode exit |

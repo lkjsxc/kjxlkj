@@ -6,7 +6,7 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 | ID | Date | Scope | Status |
 |---|---|---|---|
-| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | verified for blocker and secondary-gap closure (deferred performance work remains) |
+| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | verified for blocker, secondary-gap, and deferred profiling closure |
 
 Detailed per-wave records are stored in [waves/README.md](waves/README.md).
 
@@ -39,13 +39,14 @@ Detailed per-wave records are stored in [waves/README.md](waves/README.md).
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_stress_e2e` | pass (`EXP-05R`, `EXP-06R`, `BD-RACE-01`) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-05` raw+normalized trace capture, `KEY-TRACE-06` UTF-8 multibyte decode, and `KEY-TRACE-07` layout/frame diagnostics fields) |
+| `cargo test -p kjxlkj-test-harness --test profiling_e2e` | pass (`PERF-01R`, `PERF-02R`, `PERF-03R`) |
 | `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` | pass (`WRAP-11R`..`WRAP-13R`, `CUR-07R`..`CUR-11R`) |
 | `cargo test -p kjxlkj-test-harness --test cursor_wrap_more_e2e` | pass (`WRAP-14R`..`WRAP-16R`) |
 | `cargo test -p kjxlkj-render` | pass (render diagnostics regression coverage including wide-span cursor assertions) |
 | `cargo test -p kjxlkj-core-state` | pass (focus-history and nested-rebalance invariants) |
 | runtime final trace bundle | includes bounded `recent_events` plus `cursor_span` diagnostics for failure triage |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
-| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 200 lines) |
+| source files over 200 lines | none (`cargo test -p kjxlkj-test-harness` topology check passes) |
 
 ## Improvement Ideas
 
@@ -62,3 +63,4 @@ Detailed per-wave records are stored in [waves/README.md](waves/README.md).
 | `IDEA-TERM-LIFECYCLE-01` | introduce explicit terminal-child lifecycle model and reaping assertions in harness | needed to convert current terminal baselines into full lifecycle conformance evidence | phase-3 focus |
 | `IDEA-CURSOR-WRAP-01` | emit compact JSON failure artifacts for cursor/wrap churn cases | simplifies external triage tooling and baseline diffing |
 | `IDEA-TRACE-RAW-01` | add adaptive compression for `recent_events` when long sessions exceed PTY buffers | keeps diagnostics rich while reducing log pressure |
+| `IDEA-PERF-OBS-01` | add per-cycle histogram buckets for snapshot and render durations in profile output | improves regression detection sensitivity without timing flake sensitivity | phase-5 hardening |

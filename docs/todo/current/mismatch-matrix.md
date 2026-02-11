@@ -39,7 +39,8 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e --test cursor_wrap_more_e2e` (`WRAP-11R`..`WRAP-16R`) |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | aligned | none | PTY harness operations implemented in `src/crates/app/kjxlkj-test-harness/src/pty.rs` and `WR-01R` evidence passing |
 | `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | aligned | none | reproduce-fix-verify loop executed in this wave with targeted suites and full gate (`cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace`) |
-| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 442/442 markdown files directly linked in coverage parts |
+| `R-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | aligned | none | opt-in profile metrics/probes are verified by `cargo test -p kjxlkj-test-harness --test profiling_e2e` (`PERF-01R`..`PERF-03R`) |
+| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 444/444 markdown files directly linked in coverage parts |
 
 ## Priority Rule
 

@@ -2,7 +2,7 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: Reconstructed foundation baseline active on 2026-02-11. High-severity blockers and medium reconstruction gaps are closed.
+Status: Reconstructed foundation baseline active on 2026-02-11. High-severity blockers, medium reconstruction gaps, and deferred profiling observability work are closed.
 
 ## Active Blockers
 
@@ -15,6 +15,10 @@ Status: Reconstructed foundation baseline active on 2026-02-11. High-severity bl
 - [x] `LIM-BLOCK-CURSOR-03` cursor remains visible and grapheme-safe in churn (evidence: `cargo test -p kjxlkj-render`; `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e`)
 - [x] `LIM-BLOCK-WRAP-03` long-line wrap never overflows and never splits wide graphemes (evidence: `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e --test cursor_wrap_more_e2e`)
 - [x] `LIM-BLOCK-TEST-03` blocker closure is backed by matching PTY E2E tests (evidence: `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `cargo test -p kjxlkj-test-harness --test key_mode_e2e`)
+
+## Closed Deferred Items
+
+- [x] `LIM-DEF-PERF-01` profiling observability is implemented and PTY-verified (evidence: `cargo test -p kjxlkj-test-harness --test profiling_e2e`; [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))
 
 ## Working Matrices
 
