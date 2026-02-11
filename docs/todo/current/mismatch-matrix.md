@@ -19,9 +19,9 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Action | Required evidence |
 |---|---|---|---|---|---|
-| `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | test-gap | `M2 missing feature` | implement + test-add | baseline `EXP-03R` routes are reachable; complete stable explorer interactions `EXP-04R`..`EXP-06R` and full target semantics |
-| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | test-gap | `M2 missing feature` | implement + test-add | baseline route + mixed navigation + resize evidence for `TERM-01R`..`TERM-04R`; complete `TERM-05R` lifecycle |
-| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | spec-only | `M2 missing feature` | implement + test-add | `TERM-06R` and `BD-RACE-01` responsiveness proof |
+| `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `EXP-03R` and `EXP-04R` are reachable; complete stable explorer interactions `EXP-05R` and `EXP-06R` with full target semantics |
+| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `TERM-01R`..`TERM-05R` are reachable; complete real PTY lifecycle semantics (child reap and leak checks) |
+| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `TERM-06R` and `TERM-07R` are reachable; complete `BD-RACE-01` and bounded-latency proof |
 | `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | spec-only | `M2 missing feature` | implement + test-add | `CUR-07R`..`CUR-11R` visibility and half-cell exclusion |
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | spec-only | `M2 missing feature` | implement + test-add | `WRAP-11R`..`WRAP-16R` no overflow and no split-wide cells |
 

@@ -33,6 +33,7 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `cargo test -p kjxlkj-test-harness --test window_nav_more_e2e` | pass (`WIN-02R`, `WIN-03R`, `WIN-04R`, `WINNAV-01R`..`WINNAV-04R`) |
 | `cargo test -p kjxlkj-test-harness --test window_nav_session_terminal_e2e` | pass (`WIN-05R`, `WINNAV-05R`) |
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` | pass (route/open-target/mixed-navigation/resize baselines for `EXP-01R`..`EXP-03R`, `TERM-01R`..`TERM-04R`) |
+| `cargo test -p kjxlkj-test-harness --test explorer_terminal_more_e2e` | pass (mixed focus + close/flood/CJK baselines for `EXP-04R`, `TERM-05R`..`TERM-07R`) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
 | source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 199 lines) |
@@ -49,3 +50,4 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `IDEA-WIN-SESSION-01` | persist window session dumps as a compact deterministic codec with version tags | enables stable roundtrip checks and future migration testing | phase-2 follow-up |
 | `IDEA-WIN-TEST-DSL-01` | add a compact PTY script DSL helper shared by all `WIN*R` tests | reduces duplicate byte-script builders and improves diagnostics | phase-3 hardening |
 | `IDEA-EXPTERM-ROUTES-01` | extract command and leader routing state machine from app loop into dedicated module with timeout-aware prefixes | needed for full `<leader>t` ambiguity handling and richer command coverage | phase-2 follow-up |
+| `IDEA-TERM-LIFECYCLE-01` | introduce explicit terminal-child lifecycle model and reaping assertions in harness | needed to convert current terminal baselines into full lifecycle conformance evidence | phase-3 focus |
