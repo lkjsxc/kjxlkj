@@ -14,6 +14,9 @@ text objects deferred.
 Visual mode (v/V/Ctrl-v) with charwise/linewise selection operators, sub-mode
 switching, anchor swap (o), operators d/x/y/c/s/>/</~/u/U/J/p. Blockwise visual
 operations delegate to charwise (full block ops deferred).
+Buffer management: alternate buffer tracking (Ctrl-^), :bn/:bp/:bd/:b N
+navigation, :ls/:buffers listing, :e file opening, deletion with fallback.
+213 unit/integration tests pass after wave-028.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,

@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 208 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 213 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | T1 unit tests pass; T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | spec-only | `M2`, `M4` | implement + test-add | explorer crate is stub |
@@ -31,6 +31,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-TEXTOBJ-01` | [/docs/spec/editing/text-objects/README.md](/docs/spec/editing/text-objects/README.md) | Text object selection with operator composition | unit + integration tests | partial | `M4` | test-add | iw/aw/iW/aW word objects, i(/a)/ib bracket objects (nesting-aware multiline), i{/a}/iB, i[/a], i</a>, i"/a"/i'/a'/i`/a` quote objects, ip/ap paragraph objects (contiguous non-blank lines, trailing blank inclusion), is/as sentence objects (period/exclamation/question boundary); operator-pending 'i'/'a' prefix dispatch; text_obj_range + text_object_ext in kjxlkj-core-edit; 12 unit tests + 9 integration tests; tree-sitter (ic/ac, if/af) and tag (it/at) objects deferred; T2 pending |
 | `R-SEARCH-01` | [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md) | Forward/backward search, star/hash word search, hlsearch, match count | unit + integration tests | partial | `M4` | test-add | SearchState with find_next/find_prev, set_raw_pattern, hlsearch flag, clear_highlight, match_count, word_at; * and # word search with \b boundaries, g*/g# partial match, :nohlsearch/:noh; search history tracking, ignorecase/smartcase case flags; % bracket forward scan; :set/:se/:setlocal for ignorecase/smartcase/hlsearch options; text objects (iw/aw/bracket/quote/paragraph/sentence) via operator-pending dispatch; 10 search unit tests + 19 integration tests + 9 textobj integration tests; T2 pending |
 | `R-VISUAL-01` | [/docs/spec/modes/visual.md](/docs/spec/modes/visual.md) | Visual mode charwise/linewise/blockwise selection and operators | unit + integration tests | partial | `M4` | test-add | v/V/Ctrl-v entry, sub-mode switching, operators d/x/y/c/s/>/</~/u/U/J/p, anchor swap o, charwise inclusive→exclusive dispatch, linewise multi-line delete/yank, blockwise stub (delegates to charwise); 2 unit tests + 11 integration tests; T2 pending |
+| `R-BUF-01` | [/docs/spec/features/buffer/README.md](/docs/spec/features/buffer/README.md) | Buffer navigation, alternate buffer, deletion, file open | unit tests | partial | `M4` | test-add | :bn/:bp/:bd/:b N, Ctrl-^, :ls/:buffers, :e file, alternate tracking, sorted ordering, delete fallback; 5 unit tests; T2 pending |
 
 ## Summary
 
@@ -39,7 +40,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 2 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 10 |
+| `M4 verification gap` | 11 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

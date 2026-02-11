@@ -89,3 +89,20 @@ Stage 00 (Foundation), Stage 01 (Architecture Core), and Stage 02
   - Blockwise visual operations delegate to charwise (full block ops deferred)
   - editor.rs compacted to 200 lines (doc comment 3→1 line)
   - Tier-C docs read: visual/*, editor/*
+
+### Wave 028: Boundary and Error Semantics
+- Status: COMPLETE
+- Committed: eabd7898
+- Evidence: 213 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Buffer management: alternate buffer tracking, next/prev/delete/switch/open
+  - Action variants: SwitchAlternate, ListBuffers added to action.rs
+  - Ctrl-^/Ctrl-6 mapped to SwitchAlternate in normal.rs
+  - :ls/:buffers command parsing in command_parse.rs
+  - alternate_buffer field in EditorState for Ctrl-^ toggling
+  - editor_buffer.rs (184 lines): switch_to_buffer, next/prev_buffer, delete_buffer,
+    open_file (dedup-aware), switch_alternate, sorted_buffer_ids, current_buffer_id
+  - All buffer actions wired in editor_action.rs dispatch
+  - 5 unit tests: cycling, alternate toggle, delete fallback, last-buffer guard
+  - Tier-C docs read: features/buffer/* (alternate-file, arglist, buffer-advanced,
+    buffer-groups, buffer-local-options)
