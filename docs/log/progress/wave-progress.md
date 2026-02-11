@@ -121,5 +121,24 @@ Tracks completion of each wave with evidence.
   - editor_action.rs updated to 138 lines (InsertChar tracking, ShowRegisters stub)
   - action.rs compacted to 197 lines (ShowRegisters variant)
 
-### Waves 022–023
+### Wave 022: Live E2E and Race Validation
+- Status: COMPLETE
+- Committed: 3b3c77a4
+- Evidence: 167 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Star search (*): word under cursor forward search with \b word boundaries
+  - Hash search (#): word under cursor backward search with \b word boundaries
+  - :nohlsearch/:noh command for clearing search highlighting
+  - hlsearch state in SearchState, automatically re-enabled on new search
+  - match_count() for total match reporting
+  - set_raw_pattern() for direct Rust regex pattern injection (star/hash)
+  - word_at() word-under-cursor extraction in search_util.rs
+  - Search integration tests: star forward, star wrap, hash backward,
+    n repeats, N reverses, nohlsearch clears, new search reactivates,
+    star on non-word noop, star sets "/" register, multiline search,
+    multiline wrap, empty buffer, match count after star
+  - search.rs split: helper functions extracted to search_util.rs
+  - Boundary tests: empty buffer, non-word cursor, no-match patterns
+
+### Waves 023
 - Status: NOT STARTED
