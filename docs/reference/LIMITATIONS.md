@@ -68,6 +68,14 @@ and parse_macro_keys deserializer for register storage (Ctrl/Escape/BS/Enter/Tab
 support). Uppercase register rejected. Race/boundary tests covering macro+mark+
 jumplist+changelist+split interactions under stress. 5 unit tests + 15 integration
 tests bringing total to 411 tests.
+Fold commands (wave-039): z-prefix dispatch for zo (open fold), zc (close fold),
+za (toggle fold), zR (open all), zM (close all), zr (reduce fold level), zm
+(increase fold level), zj (jump next closed fold), zk (jump prev closed fold).
+FoldState with indent-based fold computation, fold_level tracking, per-line
+open/close/toggle. 9 z-prefix unit tests + 6 FoldState unit tests + 16
+integration tests (including macro+fold, mark+fold, reduce/more cycle, combined
+stress 20x). Tree-sitter and expression fold methods deferred. 31 new tests
+bringing total to 442 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

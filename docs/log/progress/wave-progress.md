@@ -146,3 +146,40 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
   - Tier-C docs read: macros.md, project-config.md, registers.md (session),
     sessions.md, undo_tree.md, view-management.md, workspaces.md
   - Ledger sync: CONFORMANCE (391→411), LIMITATIONS, DRIFT_MATRIX (+R-MACRO-01)
+
+### Wave 039: Ledger Synchronization and Stage Exit
+- Status: COMPLETE
+- Committed: b0509062
+- Evidence: 442 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Fold commands: zo (open), zc (close), za (toggle), zR (open all), zM (close
+    all), zr (reduce fold level), zm (increase fold level), zj (next closed fold),
+    zk (prev closed fold)
+  - folds.rs (184 lines, NEW): FoldState with indent-based fold computation
+    (compute_indent_folds), FoldRegion (start/end/level), fold_level with
+    reduce/more, open/close/toggle per-line, open_all/close_all, next_closed/
+    prev_closed, is_hidden. indent_level (4-space), fold_end helper. 6 unit tests
+  - Action variants: FoldOpen, FoldClose, FoldToggle, FoldOpenAll, FoldCloseAll,
+    FoldReduce, FoldMore, FoldNext, FoldPrev in action.rs (116→119)
+  - normal_z.rs (43→115): +zo/zc/za/zR/zM/zr/zm/zj/zk dispatch, +9 unit tests
+  - editor.rs (194→196): +fold_state: FoldState field
+  - editor_action.rs (197→184): +fold dispatch, compacted single-method arms
+  - editor_nav.rs (171→157): +fold_open/fold_close/fold_toggle/fold_close_all/
+    fold_next/fold_prev/focused_cursor_line, +apply_nav_position shared helper
+    (extracted from duplicate jumplist/changelist code), all methods compacted
+  - lib.rs (core-state) 70→73 (+folds, +editor_stage04g_tests)
+  - editor_stage04g_tests.rs (169 lines, NEW): 16 integration tests — fold
+    dispatch (zo/zc/za/zR/zM), fold navigation (zj/zk), zj noop, fold_is_hidden,
+    rapid fold toggle 100x, non-fold line noop, empty buffer safety, macro+fold
+    interaction, mark+fold interaction, reduce/more cycle, combined stress 20x
+  - Tier-C docs read: folding.md, folds-advanced.md, highlight-groups.md,
+    colorscheme-creation.md, inlay-hints.md, semantic-tokens.md, syntax/README.md
+  - Tree-sitter and expression fold methods deferred (only indent-based)
+  - Wave-039 changes: `action.rs` 116→119 (+9 fold variants), `normal_z.rs` 43→115
+    (+zo/zc/za/zR/zM/zr/zm/zj/zk dispatch, +9 unit tests), `editor.rs` 194→196
+    (+fold_state field), `editor_action.rs` 197→184 (+fold dispatch, compacted
+    existing arms), `editor_nav.rs` 171→157 (+fold methods, +apply_nav_position
+    shared helper, refactored and compacted), `lib.rs` (core-state) 70→73
+    (+folds, +editor_stage04g_tests). New files: `folds.rs` (184, FoldState,
+    6 tests), `editor_stage04g_tests.rs` (169, 16 integration tests)
+  - Ledger sync: CONFORMANCE (411→442), LIMITATIONS, DRIFT_MATRIX (+R-FOLD-01)

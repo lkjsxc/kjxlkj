@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 411 deterministic unit and integration tests covering key normalization,
+through 442 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -145,6 +145,15 @@ unset register playback, overwrite, uppercase rejection, mode switch stress, mar
 record/stop cycles (100×), deterministic replay, combined mark/split/jumplist
 stress, mode churn with marks (50×), changelist stress (20 deletes + navigate).
 5 unit tests + 15 integration tests.
+Fold commands (z-prefix): zo open fold, zc close fold, za toggle fold, zR open all
+folds, zM close all folds, zr reduce fold level, zm increase fold level, zj jump
+to next closed fold, zk jump to previous closed fold. FoldState with indent-based
+fold computation (compute_indent_folds), FoldRegion tracking, fold_level with
+reduce/more, open_all/close_all/toggle per-line. 9 z-prefix unit tests + 6
+FoldState unit tests + 16 integration tests (fold dispatch, navigation, empty
+buffer safety, macro+fold interaction, mark+fold interaction, reduce/more cycle,
+combined stress 20x). Tree-sitter and expression fold methods deferred (only
+indent-based implemented).
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -153,7 +162,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (411 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (442 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
