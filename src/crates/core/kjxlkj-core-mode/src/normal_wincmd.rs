@@ -21,6 +21,7 @@ pub(crate) fn handle_wincmd_key(
         Key::Char('l') => (Action::FocusDirection(Direction::Right), None),
         // Navigation: cycle / previous / boundary
         Key::Char('w') => (Action::FocusCycle, None),
+        Key::Char('W') => (Action::FocusCycleReverse, None),
         Key::Char('p') => (Action::FocusPrevious, None),
         Key::Char('t') => (Action::FocusTopLeft, None),
         Key::Char('b') => (Action::FocusBottomRight, None),
@@ -38,6 +39,14 @@ pub(crate) fn handle_wincmd_key(
         Key::Char('=') => (Action::WindowEqualize, None),
         Key::Char('_') => (Action::WindowMaxHeight, None),
         Key::Char('|') => (Action::WindowMaxWidth, None),
+        // Layout rearrangement
+        Key::Char('H') => (Action::WindowMoveEdge(Direction::Left), None),
+        Key::Char('J') => (Action::WindowMoveEdge(Direction::Down), None),
+        Key::Char('K') => (Action::WindowMoveEdge(Direction::Up), None),
+        Key::Char('L') => (Action::WindowMoveEdge(Direction::Right), None),
+        Key::Char('r') => (Action::WindowRotate(false), None),
+        Key::Char('R') => (Action::WindowRotate(true), None),
+        Key::Char('x') => (Action::WindowExchange, None),
         _ => (Action::Noop, None),
     }
 }
@@ -133,5 +142,30 @@ mod tests {
     fn wincmd_pipe_max_width() {
         let mut ps = PendingState::default();
         assert_eq!(handle_wincmd_key(&Key::Char('|'), &mut ps).0, Action::WindowMaxWidth);
+    }
+
+    #[test] fn wincmd_big_w_reverse_cycle() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('W'), &mut ps).0, Action::FocusCycleReverse);
+    }
+    #[test] fn wincmd_big_h_move_left() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('H'), &mut ps).0, Action::WindowMoveEdge(Direction::Left));
+    }
+    #[test] fn wincmd_big_l_move_right() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('L'), &mut ps).0, Action::WindowMoveEdge(Direction::Right));
+    }
+    #[test] fn wincmd_r_rotate() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('r'), &mut ps).0, Action::WindowRotate(false));
+    }
+    #[test] fn wincmd_big_r_rotate_reverse() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('R'), &mut ps).0, Action::WindowRotate(true));
+    }
+    #[test] fn wincmd_x_exchange() {
+        let mut ps = PendingState::default();
+        assert_eq!(handle_wincmd_key(&Key::Char('x'), &mut ps).0, Action::WindowExchange);
     }
 }

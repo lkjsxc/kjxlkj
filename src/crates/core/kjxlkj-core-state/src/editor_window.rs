@@ -63,6 +63,14 @@ impl EditorState {
         self.focus.set_focus(ids[(pos + 1) % ids.len()]);
     }
 
+    pub(crate) fn focus_cycle_reverse(&mut self) {
+        let ids = self.layout.window_ids();
+        if ids.len() <= 1 { return; }
+        let pos = ids.iter().position(|&id| id == self.focus.focused).unwrap_or(0);
+        let prev = if pos == 0 { ids.len() - 1 } else { pos - 1 };
+        self.focus.set_focus(ids[prev]);
+    }
+
     pub(crate) fn focus_direction(&mut self, dir: Direction) {
         let rects = self.leaf_rects();
         let cr = match rects.iter().find(|(id, _, _)| *id == self.focus.focused) {
@@ -134,6 +142,17 @@ impl EditorState {
                 }
             }
         }
+    }
+
+    /// :terminal — open a terminal window in a horizontal split.
+    pub(crate) fn open_terminal(&mut self) {
+        let tid = kjxlkj_core_types::TerminalId(self.next_id());
+        let tc = ContentKind::Terminal(tid);
+        let target = self.focus.focused;
+        let nw = WindowId(self.next_id());
+        self.layout.split_vertical(target, nw, tc);
+        self.windows.insert(nw, WindowState::new(nw, tc));
+        self.focus.set_focus(nw);
     }
 }
 

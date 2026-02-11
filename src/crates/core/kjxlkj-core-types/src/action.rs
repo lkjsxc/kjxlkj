@@ -14,9 +14,10 @@ pub enum Action {
     // Window management
     SplitHorizontal, SplitVertical, CloseWindow,
     FocusDirection(Direction), FocusCycle, FocusPrevious,
-    WindowOnly, FocusTopLeft, FocusBottomRight,
+    WindowOnly, FocusTopLeft, FocusBottomRight, FocusCycleReverse,
     WindowEqualize, WindowResize(ResizeEdge, i16),
     WindowMaxHeight, WindowMaxWidth,
+    WindowMoveEdge(Direction), WindowRotate(bool), WindowExchange,
     OpenExplorer, CloseExplorer, OpenTerminal,
     Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),

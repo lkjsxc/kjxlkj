@@ -128,6 +128,11 @@ impl EditorState {
             Action::WindowMaxWidth => self.window_max_width(),
             Action::OpenExplorer => self.open_explorer(),
             Action::CloseExplorer => self.close_explorer(),
+            Action::OpenTerminal => self.open_terminal(),
+            Action::FocusCycleReverse => self.focus_cycle_reverse(),
+            Action::WindowMoveEdge(_) => {} // placeholder: layout rearrangement
+            Action::WindowRotate(_) => {} // placeholder: sibling rotation
+            Action::WindowExchange => {} // placeholder: sibling exchange
             _ => {}
         }
     }
