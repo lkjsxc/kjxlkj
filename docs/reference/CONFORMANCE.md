@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 515 deterministic unit and integration tests covering key normalization,
+through 538 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -198,6 +198,19 @@ Message/notification model: MsgLevel (Debug/Info/Warn/Error, ordered) with
 highlight group mapping, Message (id/level/text), MessageStore (push/info/warn/
 error, current command-line message, history with 200-entry cap, clear_current/
 clear_history, by_level filter).
+Viewport state model: ViewportState with per-window scrolloff/sidescrolloff/wrap/
+text_rows/text_cols/top_line/left_col, ensure_visible cursor-follow with margin
+clamping, scroll_center (zz), scroll_top (zt), scroll_bottom (zb), is_line_visible
+query, horizontal scroll for nowrap mode.
+Floating window model: FloatAnchor (Editor/Cursor/Window/NW/NE/SW/SE), BorderStyle
+(None/Single/Double/Rounded/Solid/Shadow/Custom), FloatKind (Dialog/Tooltip/
+Preview/Completion), FloatConfig with sizing/position/zindex/title/footer/focus
+behavior, FloatWindow instance, FloatLayer manager with open/close/render_order
+(z-index sorted with creation tiebreak)/focusable query.
+Statusline DSL parser: DslToken (Literal/Separator/FilePath/FilePathAbsolute/
+Modified/ReadOnly/Line/Column/Percent/FileType/Highlight), DslVars for variable
+substitution, parse_format tokenizer for %f/%F/%m/%r/%l/%c/%p/%y/%%/%=/
+%#Group# directives, render_tokens with separator markers.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -206,7 +219,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (515 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (538 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

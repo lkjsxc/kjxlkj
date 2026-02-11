@@ -111,6 +111,21 @@ Message/notification model: MsgLevel(Debug/Info/Warn/Error, ordered), Message
 (id/level/text), MessageStore (push/info/warn/error, current display, history
 cap 200, clear_current/clear_history, by_level filter). 22 new tests (7 gitsigns
 + 7 statusline + 8 messages) bringing total to 515 tests.
+Viewport state model (wave-043): ViewportState with per-window viewport parameters
+(scrolloff/sidescrolloff/wrap/text_rows/text_cols/top_line/left_col),
+ensure_visible cursor-follow with margin clamping (vertical scrolloff and
+horizontal sidescrolloff), scroll_center (zz), scroll_top (zt), scroll_bottom
+(zb), bottom_line, is_line_visible query, clamp_top safety. Floating window
+model: FloatAnchor (Editor/Cursor/Window/NW/NE/SW/SE), BorderStyle (None/Single/
+Double/Rounded/Solid/Shadow/Custom), FloatKind (Dialog/Tooltip/Preview/Completion),
+FloatConfig with sizing/position/zindex/title/footer/focus/close behavior,
+FloatWindow instance, FloatLayer manager with open/close/render_order (z-index
+ascending with creation order tiebreak)/focusable filtering. Statusline DSL
+parser: DslToken enum (Literal/Separator/FilePath/FilePathAbsolute/Modified/
+ReadOnly/Line/Column/Percent/FileType/Highlight), DslVars for variable values,
+parse_format tokenizer for %f/%F/%m/%r/%l/%c/%p/%y/%%/%=/%#Group# directives,
+render_tokens with separator markers and variable substitution. 23 new tests
+(8 viewport + 7 float_win + 8 statusline_dsl) bringing total to 538 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

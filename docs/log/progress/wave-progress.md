@@ -284,3 +284,42 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
     statusline-config.md
   - Ledger sync: CONFORMANCE (493→515), LIMITATIONS, DRIFT_MATRIX
     (+R-GIT-01, +R-STATUSLINE-01, M4 19→21, M2 5→6)
+
+### Wave 043: Command and Route Wiring
+- Status: COMPLETE
+- Committed: 0f5e2c7f
+- Evidence: 538 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Viewport state model: ViewportState with per-window scrolloff (default 5),
+    sidescrolloff, wrap flag, text_rows/text_cols, top_line/left_col. Methods:
+    ensure_visible (cursor-follow with vertical scrolloff and horizontal
+    sidescrolloff margin clamping), scroll_center (zz), scroll_top (zt),
+    scroll_bottom (zb), bottom_line, is_line_visible, clamp_top safety.
+    8 unit tests
+  - viewport.rs (156 lines, NEW) in kjxlkj-core-ui
+  - viewport_tests.rs (64 lines, NEW, extracted tests)
+  - Floating window model: FloatAnchor (Editor/Cursor/Window/NW/NE/SW/SE),
+    BorderStyle (None/Single/Double/Rounded/Solid/Shadow/Custom), FloatKind
+    (Dialog/Tooltip/Preview/Completion), FloatConfig with width/height/row/col/
+    anchor/center/border/focusable/enter/zindex/title/footer/kind/close_on_focus_loss,
+    dialog() and tooltip() factory constructors. FloatWindow instance with
+    window_id/buffer_id/config/creation_order. FloatLayer manager with open/close/
+    render_order (ascending zindex, creation tiebreak)/focusable query/count/
+    is_empty. 7 unit tests
+  - float_win.rs (146 lines, NEW) in kjxlkj-core-ui
+  - float_win_tests.rs (72 lines, NEW, extracted tests)
+  - Statusline DSL parser: DslToken enum (Literal/Separator/FilePath/
+    FilePathAbsolute/Modified/ReadOnly/Line/Column/Percent/FileType/Highlight),
+    DslVars struct for variable values. parse_format tokenizer: %f/%F/%m/%r/
+    %l/%c/%p/%y variable expansion, %% literal percent, %= separator, %#Group#
+    highlight groups. variable_token lookup table. render_tokens with separator
+    marker (\x00), conditional [+]/[-] flags. 8 unit tests
+  - statusline_dsl.rs (114 lines, NEW) in kjxlkj-core-ui
+  - statusline_dsl_tests.rs (89 lines, NEW, extracted tests)
+  - lib.rs (kjxlkj-core-ui) 14→17: +pub mod viewport; +pub mod float_win;
+    +pub mod statusline_dsl;
+  - Tier-C docs read: statusline-dsl.md, statusline.md (re-read), viewport.md,
+    window/README.md, floating-windows.md, splits-advanced.md, splits-windows.md
+    (re-read)
+  - Ledger sync: CONFORMANCE (515→538), LIMITATIONS, DRIFT_MATRIX
+    (+R-VIEWPORT-01, +R-FLOAT-01, +R-DSL-01, M4 21→24, M2 6→7)
