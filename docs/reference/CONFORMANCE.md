@@ -15,7 +15,7 @@ This ledger records the strongest verified state as of the snapshot date.
 
 ## Current Snapshot (2026-02-11)
 
-Reconstructed foundation baseline is active. Workspace and grouped crate topology are present, while runtime feature behavior remains in early scaffold state.
+Reconstructed foundation baseline is active. Workspace and grouped crate topology are present, window/navigation behavior is reconstructed, and explorer/terminal routes are partially wired.
 
 Repository evidence in this snapshot:
 
@@ -38,7 +38,8 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Shift-normalization append path is wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `WR-01R`) |
 | Runtime E2E gate for blocker closure is reconstructed and exercised | `verified` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | Window-tree split/navigation runtime path is reachable with live coverage | `verified` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
-| Runtime feature conformance | `unverified` | 2026-02-11 | runtime crates are scaffolded; behavior blockers remain open |
+| Explorer and terminal route reachability baseline is wired | `partial` | 2026-02-11 | `src/crates/app/kjxlkj/src/main.rs`, `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` |
+| Runtime feature conformance | `partial` | 2026-02-11 | windows/navigation are verified; explorer/terminal lifecycle and cursor/wrap blockers remain open |
 
 ## Domain Status
 
@@ -47,8 +48,8 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Input decoding and key normalization | `partial` | `Shift+a -> A` normalization and append dispatch are verified; broader keymap domains remain open |
 | Window tree and split lifecycle | `verified` | deterministic split/create/close/only/session-roundtrip coverage is passing (`WIN-01R`..`WIN-05R`) |
 | Mixed-window navigation (`Ctrl-w`) | `verified` | directional/cyclic/previous/boundary/terminal-transition/replay cases are passing (`WINNAV-01R`..`WINNAV-06R`) |
-| Explorer window and actions | `unverified` | blocker behavior not yet implemented |
-| Terminal window integration | `unverified` | blocker behavior not yet implemented |
+| Explorer window and actions | `partial` | command and leader launch routes are reachable; interaction and stability suites remain open |
+| Terminal window integration | `partial` | command and leader launch routes are reachable; PTY lifecycle and flood/wrap suites remain open |
 | Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
 | Cursor visibility and grapheme safety | `unverified` | blocker behavior not yet implemented |
 | IME interaction around leader/window commands | `unverified` | blocker behavior not yet implemented |

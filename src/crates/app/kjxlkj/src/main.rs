@@ -1,5 +1,8 @@
+mod command_routes;
+
 use std::io::{self, Read, Write};
 
+use command_routes::action_from_command;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
@@ -41,6 +44,10 @@ fn run() -> io::Result<()> {
     let mut seq: u64 = 0;
     let mut awaiting_wincmd = false;
     let mut awaiting_terminal_exit = false;
+    let mut awaiting_leader = false;
+    let mut awaiting_terminal_leader_suffix = false;
+    let mut command_mode = false;
+    let mut command_buffer = String::new();
     let mut stdin = io::stdin().lock();
     let mut stdout = io::stdout().lock();
 
@@ -52,7 +59,28 @@ fn run() -> io::Result<()> {
         seq += 1;
         let decoded = decode_byte(one[0]);
         let supports_wincmd = matches!(state.mode(), Mode::Normal | Mode::TerminalInsert);
-        let action = if state.mode() == Mode::TerminalInsert && awaiting_terminal_exit {
+        let action = if command_mode {
+            match decoded.normalized_key {
+                Key::Enter => {
+                    command_mode = false;
+                    action_from_command(&command_buffer)
+                }
+                Key::Esc => {
+                    command_mode = false;
+                    command_buffer.clear();
+                    EditorAction::Ignore
+                }
+                Key::Char(ch) => {
+                    command_buffer.push(ch);
+                    EditorAction::Ignore
+                }
+                _ => EditorAction::Ignore,
+            }
+        } else if state.mode() == Mode::Normal && decoded.normalized_key == Key::Char(':') {
+            command_mode = true;
+            command_buffer.clear();
+            EditorAction::Ignore
+        } else if state.mode() == Mode::TerminalInsert && awaiting_terminal_exit {
             awaiting_terminal_exit = false;
             if decoded.normalized_key == Key::Ctrl('n') {
                 EditorAction::TerminalExitToNormal
@@ -72,10 +100,35 @@ fn run() -> io::Result<()> {
         } else if supports_wincmd && decoded.normalized_key == Key::Ctrl('w') {
             awaiting_wincmd = true;
             EditorAction::Ignore
+        } else if state.mode() == Mode::Normal && awaiting_terminal_leader_suffix {
+            awaiting_terminal_leader_suffix = false;
+            match decoded.normalized_key {
+                Key::Char('h') => EditorAction::WindowCommand('H'),
+                Key::Char('v') | Key::Enter => EditorAction::WindowCommand('T'),
+                _ => EditorAction::WindowCommand('T'),
+            }
+        } else if state.mode() == Mode::Normal && awaiting_leader {
+            awaiting_leader = false;
+            match decoded.normalized_key {
+                Key::Char('e') | Key::Char('E') => EditorAction::WindowCommand('E'),
+                Key::Char('t') => {
+                    awaiting_terminal_leader_suffix = true;
+                    EditorAction::Ignore
+                }
+                _ => EditorAction::Ignore,
+            }
+        } else if state.mode() == Mode::Normal && decoded.normalized_key == Key::Char(' ') {
+            awaiting_leader = true;
+            EditorAction::Ignore
         } else {
             awaiting_wincmd = false;
+            awaiting_leader = false;
+            awaiting_terminal_leader_suffix = false;
             action_from_key(state.mode(), decoded.normalized_key)
         };
+        if !command_mode {
+            command_buffer.clear();
+        }
         let result = state.apply(action);
         writeln!(
             stdout,

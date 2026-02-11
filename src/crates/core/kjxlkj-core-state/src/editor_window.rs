@@ -24,6 +24,11 @@ impl EditorState {
                     .split_focused(Axis::Vertical, WindowKind::Terminal);
                 "WinSplitTerminal".to_string()
             }
+            'H' => {
+                self.windows
+                    .split_focused(Axis::Horizontal, WindowKind::Terminal);
+                "WinSplitTerminalHorizontal".to_string()
+            }
             'c' | 'q' => {
                 self.windows.close_focused();
                 "WinClose".to_string()
