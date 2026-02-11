@@ -6,9 +6,13 @@
 //! 3. Build Tokio runtime
 //! 4. Enter async run()
 
+mod channels;
+mod core_task;
+mod input_task;
+mod render_task;
 mod run;
+mod signal;
 
-use anyhow::Result;
 use std::panic;
 
 fn main() {

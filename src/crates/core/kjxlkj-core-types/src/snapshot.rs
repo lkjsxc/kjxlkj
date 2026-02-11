@@ -28,6 +28,21 @@ pub struct EditorSnapshot {
     pub window_contents: Vec<WindowContent>,
 }
 
+impl Default for EditorSnapshot {
+    fn default() -> Self {
+        Self {
+            sequence: 0,
+            mode: Mode::Normal,
+            terminal_size: (80, 24),
+            cmdline: CmdlineState::default(),
+            notifications: Vec::new(),
+            layout_summary: String::new(),
+            focused_window: WindowId(0),
+            window_contents: Vec::new(),
+        }
+    }
+}
+
 /// Command-line state.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CmdlineState {

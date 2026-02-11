@@ -24,7 +24,7 @@ Explorer and terminal service crates are stubs.
 
 | ID | Requirement Link | Gap | Severity | Next Action |
 |---|---|---|---|---|
-| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology matches spec; 2 files exceed 200 lines (editor.rs ~310, layout.rs ~280) | medium | split editor.rs action handlers into submodule |
+| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology matches spec; all files now ≤ 200 lines | closed | n/a |
 
 ## Deferred Items
 
