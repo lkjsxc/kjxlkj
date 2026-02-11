@@ -6,7 +6,9 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 | ID | Date | Scope | Status |
 |---|---|---|---|
-| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | partial (topology and key blocker closed, runtime blockers still open) |
+| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | verified for high-severity blocker closure (medium hardening gaps remain) |
+
+Detailed per-wave records are stored in [waves/README.md](waves/README.md).
 
 ## Evidence Snapshot
 
@@ -34,11 +36,14 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `cargo test -p kjxlkj-test-harness --test window_nav_session_terminal_e2e` | pass (`WIN-05R`, `WINNAV-05R`) |
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` | pass (route/open-target/mixed-navigation/resize baselines for `EXP-01R`..`EXP-03R`, `TERM-01R`..`TERM-04R`) |
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_more_e2e` | pass (mixed focus + close/flood/CJK baselines for `EXP-04R`, `TERM-05R`..`TERM-07R`) |
+| `cargo test -p kjxlkj-test-harness --test explorer_terminal_stress_e2e` | pass (`EXP-05R`, `EXP-06R`, `BD-RACE-01`) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
-| `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` | pass (`WRAP-11R`..`WRAP-13R` and `CUR-07R`, `CUR-09R`, `CUR-11R` baselines) |
-| runtime final trace bundle | includes bounded `recent_events` (last 20 normalized key/action entries) for failure diagnostics |
+| `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` | pass (`WRAP-11R`..`WRAP-13R`, `CUR-07R`..`CUR-11R`) |
+| `cargo test -p kjxlkj-test-harness --test cursor_wrap_more_e2e` | pass (`WRAP-14R`..`WRAP-16R`) |
+| `cargo test -p kjxlkj-render` | pass (render diagnostics regression coverage including wide-span cursor assertions) |
+| runtime final trace bundle | includes bounded `recent_events` plus `cursor_span` diagnostics for failure triage |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
-| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 199 lines) |
+| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 200 lines) |
 
 ## Improvement Ideas
 
@@ -53,4 +58,5 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `IDEA-WIN-TEST-DSL-01` | add a compact PTY script DSL helper shared by all `WIN*R` tests | reduces duplicate byte-script builders and improves diagnostics | phase-3 hardening |
 | `IDEA-EXPTERM-ROUTES-01` | extract command and leader routing state machine from app loop into dedicated module with timeout-aware prefixes | needed for full `<leader>t` ambiguity handling and richer command coverage | phase-2 follow-up |
 | `IDEA-TERM-LIFECYCLE-01` | introduce explicit terminal-child lifecycle model and reaping assertions in harness | needed to convert current terminal baselines into full lifecycle conformance evidence | phase-3 focus |
-| `IDEA-CURSOR-WRAP-01` | add renderer-backed focus-follow viewport state into core so resize churn updates are runtime-driven instead of static-env-only | required for fully faithful `CUR-08R`/`CUR-10R` and `WRAP-14R`..`WRAP-16R` closure |
+| `IDEA-CURSOR-WRAP-01` | include layout-tree summary and top-frame excerpt in every failing live diagnostic line | closes remaining medium trace gap and speeds failure triage |
+| `IDEA-TRACE-RAW-01` | append bounded raw-input bytes alongside normalized key/action history | satisfies full failure-diagnostic contract from `testing-e2e` matrix |

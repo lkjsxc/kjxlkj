@@ -7,16 +7,14 @@ This ledger tracks open mismatches between target spec and current repository st
 ## Baseline Statement
 
 The repository is currently in reconstructed foundation state. Workspace artifacts and grouped
-crate topology are present, while runtime behavior blockers remain open.
+crate topology are present, and all high-severity runtime blocker rows are now closed with live PTY
+evidence.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Expected State | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | route/open-target/mixed-focus baselines are live (`EXP-01R`..`EXP-04R`); complete stability under long-label and external-FS drift scenarios (`EXP-05R`, `EXP-06R`) |
-| `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | route/mixed-navigation/resize/close/flood/CJK baselines are live (`TERM-01R`..`TERM-07R`); complete real PTY lifecycle and race evidence (`TERM-05R` leak proof and `BD-RACE-01`) |
-| `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | baseline cursor visibility and continuation exclusion is live (`CUR-07R`, `CUR-09R`, `CUR-11R`); complete wide-grapheme highlight and wrap-boundary semantics (`CUR-08R`, `CUR-10R`) |
-| `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | baseline long-line and deterministic-breakpoint coverage is live (`WRAP-11R`..`WRAP-13R`); complete resize and cross-window bounds semantics (`WRAP-14R`..`WRAP-16R`) |
+| none | n/a | no high-severity blocker remains open in this wave | n/a | n/a | maintain release gate evidence on each behavior change |
 
 ## Closed in Current Wave
 
@@ -26,6 +24,10 @@ crate topology are present, while runtime behavior blockers remain open.
 | `LIM-BLOCK-KEY-03` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | 2026-02-11 | decode-normalize-dispatch path implemented in runtime, `KEY-TRACE-01` and `WR-01R` PTY tests passing in `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | `LIM-BLOCK-WIN-03` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | 2026-02-11 | deterministic window tree plus session roundtrip is passing via `WIN-01R`..`WIN-05R` in `src/crates/app/kjxlkj-test-harness/tests/window_nav_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/window_nav_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/window_nav_session_terminal_e2e.rs` |
 | `LIM-BLOCK-NAV-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | 2026-02-11 | mixed-window `Ctrl-w` behavior including terminal insert transition is passing via `WINNAV-01R`..`WINNAV-06R` in `src/crates/app/kjxlkj-test-harness/tests/window_nav_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/window_nav_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/window_nav_session_terminal_e2e.rs` |
+| `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | 2026-02-11 | explorer route/open-target/mixed-focus plus long-label and drift churn baselines are passing via `EXP-01R`..`EXP-06R` in `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_paths_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_stress_e2e.rs` |
+| `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | 2026-02-11 | terminal route/lifecycle/responsiveness/race baselines are passing via `TERM-01R`..`TERM-07R` and `BD-RACE-01` in `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_paths_e2e.rs`, `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_more_e2e.rs`, and `src/crates/app/kjxlkj-test-harness/tests/explorer_terminal_stress_e2e.rs` |
+| `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | 2026-02-11 | cursor visibility, wide-grapheme span, continuation exclusion, and wrap-boundary baselines are passing via `CUR-07R`..`CUR-11R` in `src/crates/app/kjxlkj-test-harness/tests/cursor_wrap_e2e.rs` |
+| `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | 2026-02-11 | wrap overflow, deterministic breakpoints, resize storm, tiny geometry, and cross-window bounds baselines are passing via `WRAP-11R`..`WRAP-16R` in `src/crates/app/kjxlkj-test-harness/tests/cursor_wrap_e2e.rs` and `src/crates/app/kjxlkj-test-harness/tests/cursor_wrap_more_e2e.rs` |
 | `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | 2026-02-11 | PTY harness operations are implemented (`spawn`, `send raw`, `send symbolic`, `resize`, `capture frame`, `quit`) and blocker closure for key path is proven by passing `WR-01R` and `KEY-TRACE-01` |
 
 ## Open Secondary Gaps
@@ -33,7 +35,7 @@ crate topology are present, while runtime behavior blockers remain open.
 | ID | Requirement Link | Gap | Severity | Next Action |
 |---|---|---|---|---|
 | `LIM-GAP-STATE-02` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | invariant suite for focus history and ancestor rebalance not yet reconstructed | medium | implement state invariants and property tests |
-| `LIM-GAP-TRACE-02` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | decode-to-action traces now include bounded `recent_events`, but full failure diagnostics still lack layout-tree summary and top-frame excerpt fields | medium | add remaining failure-diagnostic fields required by live matrix |
+| `LIM-GAP-TRACE-02` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | decode-to-action traces include bounded `recent_events` and cursor span diagnostics, but full failure diagnostics still lack layout-tree summary, top-frame excerpt, and raw-input fields | medium | add remaining failure-diagnostic fields required by live matrix |
 
 ## Deferred Items
 
@@ -41,7 +43,7 @@ Deferred only if not user-visible and not correctness-critical.
 
 | ID | Link | Rationale | Next Review |
 |---|---|---|---|
-| `LIM-DEF-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | performance tuning is blocked behind correctness closure | after high-severity blockers close |
+| `LIM-DEF-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | performance tuning is intentionally deferred until secondary medium gaps close | after medium gaps close |
 
 ## Closure Rules
 

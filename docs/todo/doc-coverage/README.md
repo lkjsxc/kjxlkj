@@ -6,7 +6,7 @@ This checklist directly links every markdown document in the repository.
 
 ## Inventory
 
-- [ ] Total tracked markdown docs (including root README): 440
+- [ ] Total tracked markdown docs (including root README): 442
 - [ ] Parts: 5
 
 ## Parts

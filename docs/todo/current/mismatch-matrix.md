@@ -19,11 +19,7 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Action | Required evidence |
 |---|---|---|---|---|---|
-| `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `EXP-03R` and `EXP-04R` are reachable; complete stable explorer interactions `EXP-05R` and `EXP-06R` with full target semantics |
-| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `TERM-01R`..`TERM-05R` are reachable; complete real PTY lifecycle semantics (child reap and leak checks) |
-| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `TERM-06R` and `TERM-07R` are reachable; complete `BD-RACE-01` and bounded-latency proof |
-| `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `CUR-07R`, `CUR-09R`, and `CUR-11R` are reachable; complete `CUR-08R` and `CUR-10R` wide-grapheme display semantics |
-| `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | test-gap | `M2 missing feature` | implement + test-add | baselines `WRAP-11R`..`WRAP-13R` are reachable; complete `WRAP-14R`..`WRAP-16R` resize and cross-window bounds semantics |
+| none | n/a | aligned | none | monitor | no open mismatch rows remain in this wave |
 
 ## Closed Rows
 
@@ -36,8 +32,14 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e` (`WIN-01R`..`WIN-04R`) |
 | `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` (`WINNAV-01R`..`WINNAV-06R`) |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` (`EXP-01R`, `EXP-02R`) |
+| `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e --test explorer_terminal_stress_e2e` (`EXP-03R`..`EXP-06R`) |
+| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e` (`TERM-01R`..`TERM-05R`) |
+| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test explorer_terminal_more_e2e --test explorer_terminal_stress_e2e` (`TERM-06R`, `TERM-07R`, `BD-RACE-01`) |
+| `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | aligned | none | `cargo test -p kjxlkj-render`; `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` (`CUR-08R`..`CUR-11R`) |
+| `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e --test cursor_wrap_more_e2e` (`WRAP-11R`..`WRAP-16R`) |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | aligned | none | PTY harness operations implemented in `src/crates/app/kjxlkj-test-harness/src/pty.rs` and `WR-01R` evidence passing |
-| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 440/440 markdown files directly linked in coverage parts |
+| `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | aligned | none | reproduce-fix-verify loop executed in this wave with targeted suites and full gate (`cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace`) |
+| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 442/442 markdown files directly linked in coverage parts |
 
 ## Priority Rule
 

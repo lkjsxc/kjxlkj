@@ -12,9 +12,9 @@ In docs-only baseline state, this workflow may be absent and must be regenerated
 
 ## Current Baseline State (2026-02-11)
 
-- active profile: `Reconstructed-basic`
+- active profile: `Release`
 - source/workspace artifacts are present in grouped crate topology
-- blocker-closure PTY suites are still pending
+- blocker-closure PTY suites are closed and release gate checks pass
 
 ## Verification Profiles
 
