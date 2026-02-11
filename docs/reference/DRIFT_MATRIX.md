@@ -2,7 +2,7 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Requirement-by-requirement mismatch tracking for the current reconstructed foundation baseline.
+Requirement-level mismatch tracking for the current reconstruction state.
 
 ## Mismatch Classes
 
@@ -11,47 +11,37 @@ Requirement-by-requirement mismatch tracking for the current reconstructed found
 | `M1 correctness` | runtime behavior violates canonical spec |
 | `M2 missing feature` | required capability is absent or unreachable |
 | `M3 undocumented behavior` | behavior exists but is not specified canonically |
-| `M4 verification gap` | behavior exists but deterministic regression evidence is insufficient |
+| `M4 verification gap` | behavior exists but deterministic evidence is insufficient |
 | `M5 stale docs` | documentation claims are contradicted by stronger evidence |
 
 ## Matrix
 
-| Req ID | Canonical Document | Requirement | Expected Code Path(s) | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
-|---|---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree exist | `Cargo.toml`, `src/crates/...` | topology and build gate | aligned | none | monitor | `cargo metadata --no-deps`; `cargo check --workspace`; `cargo test -p kjxlkj-test-harness` |
-| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches as `A` append semantics | `src/crates/platform/kjxlkj-input/src/lib.rs`, `src/crates/core/kjxlkj-core-mode/src/lib.rs`, `src/crates/app/kjxlkj/src/main.rs` | `WR-01R`, `KEY-TRACE-01` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
-| `R-CUR-01` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | `i`, `a`, and `A` insertion semantics are observably distinct and grapheme-safe | `src/crates/core/kjxlkj-core-state/src/editor.rs` | `CUR-01`..`CUR-07R` | aligned | none | monitor | `cargo test -p kjxlkj-core-state`; `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` |
-| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | shared tree preserves deterministic focus and geometry invariants | `src/crates/core/kjxlkj-core-state/src/windows/` | `WIN-01R`, `WIN-04R`, `WIN-05R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
-| `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance and focus lifecycle are deterministic | `src/crates/core/kjxlkj-core-state/src/windows/`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `WIN-01R`..`WIN-04R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e` |
-| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | full `Ctrl-w` family works across mixed windows | `src/crates/app/kjxlkj/src/main.rs`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `WINNAV-01R`..`WINNAV-06R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
-| `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer command/key paths are reachable | `src/crates/app/kjxlkj/src/main.rs`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `EXP-01R`, `EXP-02R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` |
-| `R-EXP-02` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer open-target actions and reliability hold under churn | `src/crates/app/kjxlkj/src/main.rs`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `EXP-03R`..`EXP-06R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e --test explorer_terminal_stress_e2e` |
-| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal launch and close-path lifecycle are stable | `src/crates/app/kjxlkj/src/main.rs`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `TERM-01R`..`TERM-05R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e` |
-| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal responsiveness and CJK churn stay stable | `src/crates/app/kjxlkj/src/main.rs`, `src/crates/core/kjxlkj-core-state/src/editor_window.rs` | `TERM-06R`, `TERM-07R`, `BD-RACE-01` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test explorer_terminal_more_e2e --test explorer_terminal_stress_e2e` |
-| `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | long lines and wide graphemes wrap without overflow | `src/crates/platform/kjxlkj-render/src/grid.rs`, `src/crates/app/kjxlkj/src/main.rs` | `WRAP-11R`..`WRAP-16R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e --test cursor_wrap_more_e2e` |
-| `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and grapheme-safe in churn | `src/crates/core/kjxlkj-core-state/src/editor.rs`, `src/crates/platform/kjxlkj-render/src/grid.rs`, `src/crates/app/kjxlkj/src/main.rs` | `CUR-07R`..`CUR-11R` | aligned | none | monitor | `cargo test -p kjxlkj-render`; `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires PTY E2E evidence | `src/crates/app/kjxlkj-test-harness/` | all `*R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
-| `R-PERF-01` | [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md) | opt-in profiling records required metrics and probes for burst, large-buffer, and idle flows | `src/crates/app/kjxlkj/src/profiling.rs`, `src/crates/app/kjxlkj/src/main.rs` | `PERF-01R`..`PERF-03R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test profiling_e2e` |
-| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO coverage links every markdown file directly | `docs/todo/doc-coverage/` | link audit | aligned | none | monitor | 444/444 links present |
+| Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
+|---|---|---|---|---|---|---|---|
+| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` must dispatch exactly as `A` | `WR-01R`, `KEYMODE-01` | contradiction | `M1`, `M4`, `M5` | implement + test-add | user runtime report (2026-02-11) conflicts with passing trace-centric `key_mode_e2e` |
+| `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-04R` | contradiction | `M1`, `M4`, `M5` | implement + test-add | user runtime report (2026-02-11) conflicts with passing trace-centric `window_nav_e2e` |
+| `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | contradiction | `M1`, `M4`, `M5` | implement + test-add | user runtime report (2026-02-11) conflicts with passing trace-centric `explorer_terminal_paths_e2e` |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure must be based on user-like E2E screen assertions | all `*R` blocker rows | test-gap | `M4`, `M5` | spec-update + test-add | old closure relied on action traces without strict frame/state assertions |
+| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source dirs stay near 12 children and files stay <=200 lines | topology checks | partial | `M4` | test-add | policy exists; release-level enforcement sequence needs checklist hardening |
 
 ## Summary
 
 | Class | Open |
 |---|---:|
-| `M1 correctness` | 0 |
+| `M1 correctness` | 3 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 0 |
-| `M5 stale docs` | 0 |
+| `M4 verification gap` | 5 |
+| `M5 stale docs` | 4 |
 
 ## Update Rules
 
-- close a row only with reproducible evidence
-- close high-severity rows before release-oriented work
-- update this file together with `CONFORMANCE`, `LIMITATIONS`, and active TODO docs
+- if a user-visible contradiction appears, downgrade status immediately
+- close a row only with reproducible evidence from real runtime paths
+- synchronize updates with `CONFORMANCE`, `LIMITATIONS`, and `/docs/todo/`
 
 ## Related
 
 - Conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - Limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- TODO mismatch matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)
+- Reconstruction checklist: [/docs/todo/README.md](/docs/todo/README.md)

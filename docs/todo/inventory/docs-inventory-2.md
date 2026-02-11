@@ -1,10 +1,9 @@
-# Doc Coverage Part 2
+# Documentation Inventory Part 2
 
-Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
+Back: [/docs/todo/inventory/README.md](/docs/todo/inventory/README.md)
 
-- [ ] [/docs/spec/commands/substitute/substitute-flags.md](/docs/spec/commands/substitute/substitute-flags.md)
-- [ ] [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
-- [ ] [/docs/spec/commands/substitute/vglobal-command.md](/docs/spec/commands/substitute/vglobal-command.md)
+## Direct Link Checklist
+
 - [ ] [/docs/spec/commands/syntax.md](/docs/spec/commands/syntax.md)
 - [ ] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
 - [ ] [/docs/spec/editing/macros/macros-advanced.md](/docs/spec/editing/macros/macros-advanced.md)
@@ -90,3 +89,13 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/editing/text-manipulation/increment-decrement.md](/docs/spec/editing/text-manipulation/increment-decrement.md)
 - [ ] [/docs/spec/editing/text-manipulation/join-split.md](/docs/spec/editing/text-manipulation/join-split.md)
 - [ ] [/docs/spec/editing/text-manipulation/ranges.md](/docs/spec/editing/text-manipulation/ranges.md)
+- [ ] [/docs/spec/editing/text-manipulation/README.md](/docs/spec/editing/text-manipulation/README.md)
+- [ ] [/docs/spec/editing/text-manipulation/sorting-alignment.md](/docs/spec/editing/text-manipulation/sorting-alignment.md)
+- [ ] [/docs/spec/editing/text-manipulation/substitute.md](/docs/spec/editing/text-manipulation/substitute.md)
+- [ ] [/docs/spec/editing/text-manipulation/text-manipulation.md](/docs/spec/editing/text-manipulation/text-manipulation.md)
+- [ ] [/docs/spec/editing/text-manipulation/undo.md](/docs/spec/editing/text-manipulation/undo.md)
+- [ ] [/docs/spec/editing/text-objects/argument-text-objects.md](/docs/spec/editing/text-objects/argument-text-objects.md)
+- [ ] [/docs/spec/editing/text-objects/around-text-objects.md](/docs/spec/editing/text-objects/around-text-objects.md)
+- [ ] [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)
+- [ ] [/docs/spec/editing/text-objects/class-text-objects.md](/docs/spec/editing/text-objects/class-text-objects.md)
+- [ ] [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)

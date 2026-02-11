@@ -1,6 +1,8 @@
-# Doc Coverage Part 1
+# Documentation Inventory Part 1
 
-Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
+Back: [/docs/todo/inventory/README.md](/docs/todo/inventory/README.md)
+
+## Direct Link Checklist
 
 - [ ] [/README.md](/README.md)
 - [ ] [/docs/design/editing/motions-detailed.md](/docs/design/editing/motions-detailed.md)
@@ -94,3 +96,6 @@ Back: [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
 - [ ] [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
 - [ ] [/docs/spec/commands/substitute/substitute-command.md](/docs/spec/commands/substitute/substitute-command.md)
 - [ ] [/docs/spec/commands/substitute/substitute-expressions.md](/docs/spec/commands/substitute/substitute-expressions.md)
+- [ ] [/docs/spec/commands/substitute/substitute-flags.md](/docs/spec/commands/substitute/substitute-flags.md)
+- [ ] [/docs/spec/commands/substitute/substitute-specials.md](/docs/spec/commands/substitute/substitute-specials.md)
+- [ ] [/docs/spec/commands/substitute/vglobal-command.md](/docs/spec/commands/substitute/vglobal-command.md)
