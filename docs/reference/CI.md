@@ -12,9 +12,9 @@ In docs-only baseline state, this workflow may be absent and must be regenerated
 
 ## Current Baseline State (2026-02-11)
 
-- active profile: `Docs-only`
-- source/workspace artifacts are intentionally absent
-- reconstructed-profile workflow may be absent and is regenerated during implementation wave
+- active profile: `Reconstructed-basic`
+- source/workspace artifacts are present in grouped crate topology
+- blocker-closure PTY suites are still pending
 
 ## Verification Profiles
 

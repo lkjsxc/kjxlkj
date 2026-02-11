@@ -83,6 +83,30 @@ pub fn rust_source_files_over_line_limit(root: &Path, line_limit: usize) -> Vec<
         .collect()
 }
 
+pub fn source_directories_over_fanout_limit(root: &Path, fanout_limit: usize) -> Vec<String> {
+    let mut directories = Vec::new();
+    collect_directories(&root.join("src"), &mut directories);
+    directories
+        .into_iter()
+        .filter_map(|dir| {
+            let Ok(entries) = fs::read_dir(&dir) else {
+                return None;
+            };
+            let count = entries.flatten().count();
+            if count > fanout_limit {
+                let rel = dir
+                    .strip_prefix(root)
+                    .expect("directory should be under workspace root")
+                    .display()
+                    .to_string();
+                Some(format!("{rel}:{count}"))
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
 fn collect_rs_files(dir: &Path, output: &mut Vec<PathBuf>) {
     if !dir.exists() {
         return;
@@ -96,6 +120,22 @@ fn collect_rs_files(dir: &Path, output: &mut Vec<PathBuf>) {
             collect_rs_files(&path, output);
         } else if path.extension().is_some_and(|ext| ext == "rs") {
             output.push(path);
+        }
+    }
+}
+
+fn collect_directories(dir: &Path, output: &mut Vec<PathBuf>) {
+    if !dir.exists() {
+        return;
+    }
+    output.push(dir.to_path_buf());
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            collect_directories(&path, output);
         }
     }
 }
@@ -130,6 +170,16 @@ mod tests {
         assert!(
             over_limit.is_empty(),
             "source files over 200 lines: {}",
+            over_limit.join(", ")
+        );
+    }
+
+    #[test]
+    fn source_directories_stay_within_12_direct_children() {
+        let over_limit = source_directories_over_fanout_limit(&repo_root(), 12);
+        assert!(
+            over_limit.is_empty(),
+            "source directories over 12 direct children: {}",
             over_limit.join(", ")
         );
     }

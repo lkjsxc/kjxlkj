@@ -6,7 +6,7 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 
 | ID | Date | Scope | Status |
 |---|---|---|---|
-| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | open |
+| `AUD-2026-02-11-BASELINE-01` | 2026-02-11 | baseline reconstruction for workspace and grouped crate topology | partial (topology closed, runtime blockers open) |
 
 ## Evidence Snapshot
 
@@ -17,9 +17,21 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | root `Cargo.lock` presence before wave | absent |
 | `rust-toolchain.toml` presence before wave | absent |
 
+## Post-Reconstruction Evidence
+
+| Check | Result |
+|---|---|
+| `cargo metadata --no-deps --format-version 1` | pass (all 20 required members resolve) |
+| `cargo check --workspace` | pass |
+| `cargo fmt --all -- --check` | pass |
+| `cargo clippy --workspace --all-targets -- -D warnings` | pass |
+| `cargo test --workspace` | pass |
+| `cargo test -p kjxlkj-test-harness` | pass (group roots, member paths, fan-out, and `<=200` file lines) |
+| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 136 lines) |
+
 ## Improvement Ideas
 
 | ID | Idea | Rationale | Target |
 |---|---|---|---|
 | `IDEA-BASELINE-LOG-01` | persist per-wave evidence rows under reconstruction audits | keeps closure evidence local to active wave | current wave |
-| `IDEA-BASELINE-LOG-02` | add topology and file-size audit checklist links in each wave record | prevents missing `<=200` source file checks | phase-5 hardening |
+| `IDEA-BASELINE-LOG-02` | extend topology audit with per-directory trend reporting over time | provides early warning before fan-out pressure exceeds policy | phase-5 hardening |

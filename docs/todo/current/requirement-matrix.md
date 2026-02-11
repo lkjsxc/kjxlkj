@@ -37,15 +37,15 @@ High-risk reconstruction requirements from canonical specs.
 
 | ID | Spec Source | Requirement | Priority | Tests | Status |
 |---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree are reconstructed | high | topology + build gate | `open-blocker` |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree are reconstructed | high | topology + build gate | `aligned` |
 | `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closures require matching PTY E2E evidence | high | all blocker `*R` | `open-blocker` |
 | `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | bug closure follows reproduce-fix-verify discipline | high | regression + matching `*R` | `open-validation` |
-| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source directories remain around 12 children | medium | topology audit | `open-validation` |
-| `R-ARCH-02` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace members follow grouped crate paths | medium | build + manifest audit | `open-validation` |
+| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source directories remain around 12 children | medium | topology audit | `aligned` |
+| `R-ARCH-02` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace members follow grouped crate paths | medium | build + manifest audit | `aligned` |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO directly links every markdown file | high | doc coverage audit | `aligned` |
 
 ## Related
 
-- [ ] Mismatch matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)
-- [ ] Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [ ] Verification gates: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)
+- [x] Mismatch matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)
+- [x] Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] Verification gates: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)

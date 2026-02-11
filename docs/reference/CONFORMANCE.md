@@ -15,40 +15,42 @@ This ledger records the strongest verified state as of the snapshot date.
 
 ## Current Snapshot (2026-02-11)
 
-Docs-only baseline is active. Implementation artifacts are intentionally absent.
+Reconstructed foundation baseline is active. Workspace and grouped crate topology are present, while runtime feature behavior remains in early scaffold state.
 
 Repository evidence in this snapshot:
 
-- `src/` is absent
-- `Cargo.toml`, `Cargo.lock`, and `rust-toolchain.toml` are absent
-- `/docs` control-plane and canonical specs are present
+- `src/crates/` grouped roots (`app`, `core`, `platform`, `services`) are present
+- root `Cargo.toml`, `Cargo.lock`, and `rust-toolchain.toml` are present
+- workspace membership resolves for all required crate paths
+- deterministic topology/file-size smoke tests pass in `kjxlkj-test-harness`
 
-Because runtime artifacts are absent, runtime behavior domains cannot be marked `verified`.
+Because runtime feature logic is not yet reconstructed, runtime behavior domains cannot be marked `verified`.
 
 ## Evidence Summary
 
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
-| Docs-only baseline is active | `verified` | 2026-02-11 | root source/workspace artifacts absent by design |
-| Reconstruction requirements are specified | `verified` | 2026-02-11 | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md), [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) |
+| Workspace and grouped source tree are reconstructed | `verified` | 2026-02-11 | root `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, and `src/crates/...` tree |
+| Reconstructed-basic verification profile checks pass | `verified` | 2026-02-11 | `cargo check --workspace`; `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace` |
+| Source topology and source-file-size smoke checks pass | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness` includes grouped-path, fan-out, and `<=200` line assertions |
 | Runtime E2E gate for blocker closure is defined | `partial` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) |
-| Runtime feature conformance | `unverified` | 2026-02-11 | runtime artifacts intentionally absent |
+| Runtime feature conformance | `unverified` | 2026-02-11 | runtime crates are scaffolded; behavior blockers remain open |
 
 ## Domain Status
 
 | Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `unverified` | runtime implementation absent |
-| Window tree and split lifecycle | `unverified` | runtime implementation absent |
-| Mixed-window navigation (`Ctrl-w`) | `unverified` | runtime implementation absent |
-| Explorer window and actions | `unverified` | runtime implementation absent |
-| Terminal window integration | `unverified` | runtime implementation absent |
-| Viewport wrap safety | `unverified` | runtime implementation absent |
-| Cursor visibility and grapheme safety | `unverified` | runtime implementation absent |
-| IME interaction around leader/window commands | `unverified` | runtime implementation absent |
-| Source topology and workspace policy | `blocked` | required source/workspace tree not reconstructed |
-| Documentation coverage and TODO integrity | `partial` | docs present; implementation-gate verification pending |
+| Input decoding and key normalization | `unverified` | blocker behavior not yet implemented |
+| Window tree and split lifecycle | `unverified` | blocker behavior not yet implemented |
+| Mixed-window navigation (`Ctrl-w`) | `unverified` | blocker behavior not yet implemented |
+| Explorer window and actions | `unverified` | blocker behavior not yet implemented |
+| Terminal window integration | `unverified` | blocker behavior not yet implemented |
+| Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
+| Cursor visibility and grapheme safety | `unverified` | blocker behavior not yet implemented |
+| IME interaction around leader/window commands | `unverified` | blocker behavior not yet implemented |
+| Source topology and workspace policy | `verified` | grouped tree, workspace manifests, and topology audits are passing |
+| Documentation coverage and TODO integrity | `partial` | baseline blocker closed; runtime blocker closures pending |
 
 ## Release Rule
 

@@ -2,7 +2,7 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
-Spec-code-test drift tracking for the active docs-only reconstruction wave.
+Spec-code-test drift tracking for the active reconstructed foundation wave.
 
 ## Matrix Schema
 
@@ -19,7 +19,6 @@ Spec-code-test drift tracking for the active docs-only reconstruction wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Action | Required evidence |
 |---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | spec-only | `M2 missing feature` | implement | reconstructed `Cargo.toml` and grouped `src/crates/...` tree |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | spec-only | `M2 missing feature` | implement + test-add | `WR-01R` PTY trace proving `Shift+a -> A` before dispatch |
 | `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | spec-only | `M2 missing feature` | implement + test-add | `WIN-01R` and `WIN-04R` focus/geometry invariants |
 | `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | spec-only | `M2 missing feature` | implement + test-add | `WINNAV-01R`..`WINNAV-06R` deterministic focus traces |
@@ -35,6 +34,7 @@ Spec-code-test drift tracking for the active docs-only reconstruction wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Closure Evidence |
 |---|---|---|---|---|
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | aligned | none | `cargo metadata --no-deps`; `cargo check --workspace`; `cargo test -p kjxlkj-test-harness` |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 440/440 markdown files directly linked in coverage parts |
 
 ## Priority Rule
@@ -45,5 +45,5 @@ Spec-code-test drift tracking for the active docs-only reconstruction wave.
 
 ## Related
 
-- [ ] Requirement matrix: [/docs/todo/current/requirement-matrix.md](/docs/todo/current/requirement-matrix.md)
-- [ ] Reference drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] Requirement matrix: [/docs/todo/current/requirement-matrix.md](/docs/todo/current/requirement-matrix.md)
+- [x] Reference drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

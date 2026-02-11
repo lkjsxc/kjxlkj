@@ -8,17 +8,17 @@ Inventory, drift classification, and deterministic harness setup.
 
 ## Tasks
 
-- [ ] refresh requirement matrix from canonical high-risk specs
-- [ ] refresh mismatch matrix with `M1`..`M5` classification
-- [ ] map each blocker ID to concrete test IDs
+- [x] refresh requirement matrix from canonical high-risk specs
+- [x] refresh mismatch matrix with `M1`..`M5` classification
+- [x] map each blocker ID to concrete test IDs
 - [ ] define PTY harness diagnostics required by blocker suites
-- [ ] verify source topology blueprint and grouped crate paths
+- [x] verify source topology blueprint and grouped crate paths
 
 ## Required Evidence
 
-- [ ] [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) updated
-- [ ] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) updated
-- [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) updated
+- [x] [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) updated
+- [x] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) updated
+- [x] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) updated
 
 ## Required Tests
 

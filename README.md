@@ -28,7 +28,7 @@ Canonical explanation:
 - Docs-only baseline: canonical docs are present; derived artifacts may be absent.
 - Reconstructed implementation: workspace and automation artifacts are regenerated from docs.
 
-Current state: docs-only baseline active.
+Current state: reconstructed foundation baseline active (workspace topology rebuilt on 2026-02-11).
 
 ## Reconstructing the Implementation
 

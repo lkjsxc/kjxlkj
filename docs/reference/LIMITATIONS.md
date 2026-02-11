@@ -6,14 +6,13 @@ This ledger tracks open mismatches between target spec and current repository st
 
 ## Baseline Statement
 
-The repository is currently in docs-only baseline state. Runtime implementation artifacts are
-intentionally absent until reconstruction starts.
+The repository is currently in reconstructed foundation state. Workspace artifacts and grouped
+crate topology are present, while runtime behavior blockers remain open.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Expected State | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BASELINE-IMPL-03` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and source tree are reconstructed | `M2 missing feature` | high | regenerate workspace manifests and `src/crates/...` tree |
 | `LIM-BLOCK-KEY-03` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` decodes to `A` and produces append semantics | `M2 missing feature` | high | implement decode and dispatch, then pass `WR-01R`, `KEY-TRACE-01` |
 | `LIM-BLOCK-WIN-03` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split/create/close/rebalance preserves deterministic focus and geometry | `M2 missing feature` | high | implement and pass `WIN-01R`..`WIN-05R` |
 | `LIM-BLOCK-NAV-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | `Ctrl-w h/j/k/l/w/W/p/t/b` deterministic across window types | `M2 missing feature` | high | implement and pass `WINNAV-01R`..`WINNAV-06R` |
@@ -22,6 +21,12 @@ intentionally absent until reconstruction starts.
 | `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | implement and pass `CUR-07R`..`CUR-11R` |
 | `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | implement and pass `WRAP-11R`..`WRAP-16R` |
 | `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires true PTY E2E evidence | `M4 verification gap` | high | reconstruct PTY harness and enforce blocker gate |
+
+## Closed in Current Wave
+
+| ID | Requirement Link | Closure Date | Closure Evidence |
+|---|---|---|---|
+| `LIM-BASELINE-IMPL-03` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | 2026-02-11 | root workspace manifests created, `src/crates/...` grouped tree created, `cargo test -p kjxlkj-test-harness`, and reconstructed-basic verification checks passing |
 
 ## Open Secondary Gaps
 
