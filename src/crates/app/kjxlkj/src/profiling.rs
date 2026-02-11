@@ -6,6 +6,16 @@ use kjxlkj_render::RenderDiagnostics;
 
 const MATERIALIZED_MARGIN: usize = 1;
 
+pub struct CycleSample<'a> {
+    pub state: &'a EditorState,
+    pub rows: u16,
+    pub cols: u16,
+    pub render: RenderDiagnostics,
+    pub resolved_action: &'a str,
+    pub snapshot_duration: Duration,
+    pub render_duration: Duration,
+}
+
 #[derive(Debug, Clone)]
 pub struct PerfProfile {
     enabled: bool,
@@ -26,34 +36,26 @@ impl PerfProfile {
         Self::new(env_flag_enabled("KJXLKJ_PROFILE"))
     }
 
-    pub fn record_cycle(
-        &mut self,
-        state: &EditorState,
-        rows: u16,
-        cols: u16,
-        render: RenderDiagnostics,
-        resolved_action: &str,
-        snapshot_duration: Duration,
-        render_duration: Duration,
-    ) {
+    pub fn record_cycle(&mut self, sample: CycleSample<'_>) {
         if !self.enabled {
             return;
         }
 
         self.events_processed += 1;
-        self.core_update_count += u64::from(resolved_action != "Ignore");
-        self.snapshot_duration_ns_total += snapshot_duration.as_nanos();
-        self.render_duration_ns_total += render_duration.as_nanos();
+        self.core_update_count += u64::from(sample.resolved_action != "Ignore");
+        self.snapshot_duration_ns_total += sample.snapshot_duration.as_nanos();
+        self.render_duration_ns_total += sample.render_duration.as_nanos();
 
-        let total_lines = state.line().lines().count().max(1);
-        let materialized = total_lines.min(usize::from(rows).saturating_add(MATERIALIZED_MARGIN));
+        let total_lines = sample.state.line().lines().count().max(1);
+        let materialized =
+            total_lines.min(usize::from(sample.rows).saturating_add(MATERIALIZED_MARGIN));
         self.snapshot_materialized_lines_max =
             self.snapshot_materialized_lines_max.max(materialized);
 
-        let viewport_cells = u64::from(rows) * u64::from(cols);
-        let line_cells = state.line().chars().count() as u64;
+        let viewport_cells = u64::from(sample.rows) * u64::from(sample.cols);
+        let line_cells = sample.state.line().chars().count() as u64;
         let cells_written = line_cells.min(viewport_cells);
-        let dirty_region_cells = if render.bounds_ok {
+        let dirty_region_cells = if sample.render.bounds_ok {
             cells_written
         } else {
             viewport_cells

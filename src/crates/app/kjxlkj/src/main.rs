@@ -10,7 +10,7 @@ use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
 use kjxlkj_input::{ByteStreamDecoder, Key};
 use kjxlkj_render::compute_render_diagnostics;
-use profiling::PerfProfile;
+use profiling::{CycleSample, PerfProfile};
 use std::collections::VecDeque;
 use std::io::{self, Read, Write};
 use std::time::Instant;
@@ -167,15 +167,15 @@ fn run() -> io::Result<()> {
         emit_trace(&mut stdout, seq, &result, &state, render, &normalized_key)?;
         stdout.flush()?;
         let render_duration = render_start.elapsed();
-        profile.record_cycle(
-            &state,
+        profile.record_cycle(CycleSample {
+            state: &state,
             rows,
             cols,
             render,
-            &result.resolved_action,
+            resolved_action: &result.resolved_action,
             snapshot_duration,
             render_duration,
-        );
+        });
         if result.should_quit {
             break;
         }
