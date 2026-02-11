@@ -37,10 +37,7 @@ pub fn handle_normal_key(
 }
 
 /// Single-key commands, mode entries, and operators.
-fn handle_normal_command(
-    key: &Key,
-    pending: &mut PendingState,
-) -> (Action, Option<Mode>) {
+fn handle_normal_command(key: &Key, pending: &mut PendingState) -> (Action, Option<Mode>) {
     match key {
         Key::Char('i') => done(pending, Action::EnterMode(Mode::Insert), Mode::Insert),
         Key::Char('a') => done(pending, Action::EnterMode(Mode::Insert), Mode::Insert),
@@ -85,6 +82,8 @@ fn handle_normal_command(
         Key::Char('.') => cleared(pending, Action::DotRepeat),
         Key::Char('n') => cleared(pending, Action::Motion(Motion::SearchNext)),
         Key::Char('N') => cleared(pending, Action::Motion(Motion::SearchPrev)),
+        Key::Char('*') => cleared(pending, Action::StarSearchForward),
+        Key::Char('#') => cleared(pending, Action::StarSearchBackward),
         Key::Char(';') => cleared(pending, Action::Motion(Motion::RepeatFind)),
         Key::Char(',') => cleared(pending, Action::Motion(Motion::RepeatFindReverse)),
         Key::Escape => { pending.clear(); (Action::Noop, None) }

@@ -23,9 +23,13 @@ mod editor_snapshot;
 mod editor_window;
 mod register;
 mod search;
+pub(crate) mod search_util;
 mod window_state;
 
 pub use editor::EditorState;
 pub use register::RegisterStore;
 pub use search::{SearchDirection, SearchState};
 pub use window_state::WindowState;
+
+#[cfg(test)]
+mod editor_search_tests;

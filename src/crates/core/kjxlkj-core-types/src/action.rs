@@ -58,11 +58,8 @@ pub enum Action {
     OpenTerminal,
     /// Navigate to previous focus.
     FocusPrevious,
-    /// Undo last edit.
     Undo,
-    /// Redo last undo.
     Redo,
-    /// Dot-repeat last text-changing command.
     DotRepeat,
     /// No-op (unhandled key).
     Noop,
@@ -119,6 +116,12 @@ pub enum Action {
     JoinLinesNoSpace,
     /// Show register contents (:registers).
     ShowRegisters,
+    /// Search forward for word under cursor (*).
+    StarSearchForward,
+    /// Search backward for word under cursor (#).
+    StarSearchBackward,
+    /// Clear search highlighting (:nohlsearch).
+    ClearSearchHighlight,
 }
 
 /// Cursor motion.

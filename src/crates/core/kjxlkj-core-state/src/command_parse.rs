@@ -104,6 +104,8 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         "terminal" | "term" => Action::OpenTerminal,
         // Register display.
         "registers" | "reg" | "display" | "di" => Action::ShowRegisters,
+        // Search highlight clear.
+        "nohlsearch" | "noh" => Action::ClearSearchHighlight,
         _ => Action::Noop,
     }
 }
@@ -165,5 +167,11 @@ mod tests {
         assert_eq!(parse_ex_command("reg"), Action::ShowRegisters);
         assert_eq!(parse_ex_command("display"), Action::ShowRegisters);
         assert_eq!(parse_ex_command("di"), Action::ShowRegisters);
+    }
+
+    #[test]
+    fn parse_nohlsearch() {
+        assert_eq!(parse_ex_command("nohlsearch"), Action::ClearSearchHighlight);
+        assert_eq!(parse_ex_command("noh"), Action::ClearSearchHighlight);
     }
 }

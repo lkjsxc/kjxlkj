@@ -179,7 +179,6 @@ mod tests {
     #[test]
     fn filename_register_populated() {
         let mut s = ed();
-        // After any key, "%" should be set to buffer name.
         s.handle_key(&Key::Char('j'), &m());
         assert_eq!(s.registers.get('%').unwrap().text, "[No Name]");
     }

@@ -7,6 +7,7 @@ use kjxlkj_core_types::{Action, ContentKind, Mode, Motion};
 
 use crate::editor::EditorState;
 use crate::search::SearchDirection;
+use crate::search_util::word_at;
 
 impl EditorState {
     /// Apply a typed action to editor state.
@@ -114,6 +115,9 @@ impl EditorState {
             Action::ShowRegisters => {
                 // Stub: register display would feed to UI.
             }
+            Action::StarSearchForward => self.star_search(SearchDirection::Forward),
+            Action::StarSearchBackward => self.star_search(SearchDirection::Backward),
+            Action::ClearSearchHighlight => self.search.clear_highlight(),
             _ => {}
         }
     }
@@ -133,6 +137,23 @@ impl EditorState {
                     .unwrap()
                     .cursor = new_cur;
             }
+        }
+    }
+
+    /// Search for word under cursor (* or #).
+    fn star_search(&mut self, dir: SearchDirection) {
+        let wid = self.focus.focused;
+        let win = match self.windows.get(&wid) { Some(w) => w, None => return };
+        let buf_id = match win.content { ContentKind::Buffer(id) => id, _ => return };
+        let buf = match self.buffers.get(&buf_id) { Some(b) => b, None => return };
+        let col = win.cursor.col;
+        let line = match buf.line(win.cursor.line) { Some(l) => l, None => return };
+        let word = match word_at(&line, col) { Some(w) => w, None => return };
+        let display = format!(r"\<{}\>", word);
+        let rust_pat = format!(r"\b{}\b", regex::escape(&word));
+        if self.search.set_raw_pattern(&display, &rust_pat, dir).is_ok() {
+            self.registers.set_readonly('/', display);
+            self.jump_to_match(dir);
         }
     }
 }
