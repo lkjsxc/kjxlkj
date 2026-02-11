@@ -2,6 +2,7 @@
 pub enum Mode {
     Normal,
     Insert,
+    TerminalInsert,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

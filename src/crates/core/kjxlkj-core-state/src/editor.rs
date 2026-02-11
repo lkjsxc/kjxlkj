@@ -1,12 +1,13 @@
 use kjxlkj_core_mode::{Mode, NormalResolvedAction};
 
-use crate::windows::{Rect, WindowTree};
+use crate::windows::{Rect, WindowKind, WindowTree};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum EditorAction {
     NormalModeKey(char),
     WindowCommand(char),
     InsertChar(char),
+    TerminalExitToNormal,
     Esc,
     Quit,
     Ignore,
@@ -66,11 +67,28 @@ impl EditorState {
         match self.mode {
             Mode::Normal => self.normal_cursor,
             Mode::Insert => self.insert_cursor,
+            Mode::TerminalInsert => self.normal_cursor,
         }
     }
 
     pub fn focused_window_id(&self) -> u64 {
         self.windows.focused()
+    }
+
+    pub fn focused_window_kind(&self) -> &'static str {
+        self.windows.focused_kind().as_str()
+    }
+
+    pub fn window_geometry_ok(&self) -> bool {
+        self.windows.geometry_invariants_hold(self.window_area)
+    }
+
+    pub fn window_session_dump(&self) -> String {
+        self.windows.session_dump()
+    }
+
+    pub fn restore_window_session(&mut self, dump: &str) -> Result<(), String> {
+        self.windows.restore_session(dump)
     }
 
     pub fn set_window_area(&mut self, rows: u16, cols: u16) {
@@ -88,12 +106,24 @@ impl EditorState {
                 should_quit = quit;
                 resolved
             }
-            EditorAction::WindowCommand(ch) if self.mode == Mode::Normal => {
-                self.apply_window_command(ch)
+            EditorAction::WindowCommand(ch)
+                if self.mode == Mode::Normal || self.mode == Mode::TerminalInsert =>
+            {
+                let resolved = self.apply_window_command(ch);
+                if self.mode == Mode::TerminalInsert
+                    && self.windows.focused_kind() != WindowKind::Terminal
+                {
+                    self.mode = Mode::Normal;
+                }
+                resolved
             }
             EditorAction::InsertChar(ch) if self.mode == Mode::Insert => {
                 self.insert_char(ch);
                 "InsertChar".to_string()
+            }
+            EditorAction::TerminalExitToNormal if self.mode == Mode::TerminalInsert => {
+                self.mode = Mode::Normal;
+                "TerminalExitToNormal".to_string()
             }
             EditorAction::Esc if self.mode == Mode::Insert => {
                 self.exit_insert();
@@ -117,9 +147,14 @@ impl EditorState {
     fn apply_normal_action(&mut self, ch: char) -> (String, bool) {
         match kjxlkj_core_mode::resolve_normal_char(ch) {
             NormalResolvedAction::EnterInsertAtCursor => {
-                self.mode = Mode::Insert;
-                self.insert_cursor = self.normal_cursor;
-                ("EnterInsertAtCursor".to_string(), false)
+                if self.windows.focused_kind() == WindowKind::Terminal {
+                    self.mode = Mode::TerminalInsert;
+                    ("EnterTerminalInsert".to_string(), false)
+                } else {
+                    self.mode = Mode::Insert;
+                    self.insert_cursor = self.normal_cursor;
+                    ("EnterInsertAtCursor".to_string(), false)
+                }
             }
             NormalResolvedAction::EnterInsertAfterCursor => {
                 self.mode = Mode::Insert;

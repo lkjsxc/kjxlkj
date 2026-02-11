@@ -1,5 +1,7 @@
 mod focus;
 mod node_ops;
+mod session;
+mod session_codec;
 
 use std::collections::HashMap;
 
@@ -24,6 +26,16 @@ pub enum WindowKind {
     Buffer,
     Explorer,
     Terminal,
+}
+
+impl WindowKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            WindowKind::Buffer => "Buffer",
+            WindowKind::Explorer => "Explorer",
+            WindowKind::Terminal => "Terminal",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,6 +76,13 @@ impl WindowTree {
 
     pub fn focused(&self) -> u64 {
         self.focused
+    }
+
+    pub fn focused_kind(&self) -> WindowKind {
+        self.kinds
+            .get(&self.focused)
+            .copied()
+            .unwrap_or(WindowKind::Buffer)
     }
 
     pub fn split_focused(&mut self, axis: Axis, kind: WindowKind) -> u64 {

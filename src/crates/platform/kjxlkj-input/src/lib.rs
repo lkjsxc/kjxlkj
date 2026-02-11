@@ -32,6 +32,10 @@ pub fn decode_byte(raw_byte: u8) -> DecodedEvent {
         0x1B => Key::Esc,
         0x0D => Key::Enter,
         0x01..=0x1A => Key::Ctrl((raw_byte + 96) as char),
+        0x1C => Key::Ctrl('\\'),
+        0x1D => Key::Ctrl(']'),
+        0x1E => Key::Ctrl('^'),
+        0x1F => Key::Ctrl('_'),
         0x20..=0x7E => {
             let printable = raw_byte as char;
             Key::Char(normalize_printable(RawPrintableKey {
@@ -70,5 +74,11 @@ mod tests {
     fn ctrl_w_remains_control_key() {
         let decoded = decode_byte(0x17);
         assert_eq!(decoded.normalized_key, Key::Ctrl('w'));
+    }
+
+    #[test]
+    fn ctrl_backslash_is_decoded() {
+        let decoded = decode_byte(0x1C);
+        assert_eq!(decoded.normalized_key, Key::Ctrl('\\'));
     }
 }

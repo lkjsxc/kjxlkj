@@ -74,3 +74,21 @@ fn top_and_bottom_targets_are_deterministic() {
     assert_eq!(top, 1);
     assert_eq!(bottom, 3);
 }
+
+#[test]
+fn session_dump_roundtrip_restores_tree_focus_and_kinds() {
+    let mut original = WindowTree::new();
+    original.split_focused(Axis::Horizontal, WindowKind::Explorer);
+    original.split_focused(Axis::Vertical, WindowKind::Terminal);
+    original.focus_top_left(area());
+    let snapshot = original.session_dump();
+
+    let mut restored = WindowTree::new();
+    restored
+        .restore_session(&snapshot)
+        .expect("session dump should restore");
+    assert_eq!(restored.focused(), original.focused());
+    assert_eq!(restored.focused_kind(), original.focused_kind());
+    assert_eq!(restored.session_dump(), snapshot);
+    assert!(restored.geometry_invariants_hold(area()));
+}

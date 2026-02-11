@@ -27,3 +27,22 @@ fn upper_a_enters_insert_at_true_eol() {
     assert_eq!(result.resolved_action, "EnterInsertAtEol");
     assert_eq!(state.cursor(), 3);
 }
+
+#[test]
+fn i_on_terminal_window_enters_terminal_insert_mode() {
+    let mut state = EditorState::new("abc".to_string(), 0);
+    state.apply(EditorAction::WindowCommand('T'));
+    let result = state.apply(EditorAction::NormalModeKey('i'));
+    assert_eq!(result.resolved_action, "EnterTerminalInsert");
+    assert_eq!(state.mode(), Mode::TerminalInsert);
+}
+
+#[test]
+fn terminal_exit_to_normal_is_applied() {
+    let mut state = EditorState::new("abc".to_string(), 0);
+    state.apply(EditorAction::WindowCommand('T'));
+    state.apply(EditorAction::NormalModeKey('i'));
+    let result = state.apply(EditorAction::TerminalExitToNormal);
+    assert_eq!(result.resolved_action, "TerminalExitToNormal");
+    assert_eq!(state.mode(), Mode::Normal);
+}
