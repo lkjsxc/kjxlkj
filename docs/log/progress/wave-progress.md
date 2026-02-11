@@ -70,3 +70,37 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: git/git.md, gitsigns.md, merge-conflicts.md, vimdiff.md,
     lsp/README.md, code-actions.md, code-lens.md
   - Ledger sync: CONFORMANCE (271→295), LIMITATIONS, DRIFT_MATRIX updated
+
+### Wave 034: State Model and Data Flow Design
+- Status: COMPLETE
+- Committed: 38aa6893 (impl) + 1228f52e (tests)
+- Evidence: 327 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Explorer service (kjxlkj-service-explorer) rewritten from stub:
+    - lib.rs (197 lines): ExplorerState with root_path, tree, expansion_set,
+      selected_index, cached visible rows, NodeId-based identity; VisibleRow struct;
+      new/alloc_node_id/set_root/visible_rows/row_count/rebuild_visible_rows/flatten/
+      clamp_selection; 4 unit tests
+    - explorer_tree.rs (95 lines): NodeId(u64), ExplorerNode with id/name/is_dir/
+      depth/path/children, file()/dir() constructors, find()/parent_of()/sort_children();
+      3 unit tests
+    - explorer_nav.rs (181 lines): ExplorerAction enum (MoveDown/MoveUp/CollapseOrParent/
+      ExpandOrOpen/Toggle/Close), apply_action/move_down/move_up/collapse_or_parent/
+      expand_or_open/toggle; 5 unit tests
+  - Terminal service (kjxlkj-service-terminal) upgraded from stub:
+    - lib.rs (77 lines): TerminalState with id/shell/title/exited/exit_code/cols/rows,
+      new/set_exited/resize; TerminalService stub; 2 unit tests
+  - Core-state wiring:
+    - editor.rs (183 lines): +explorer_states HashMap, +explorer key interception
+    - editor_explorer.rs (123 lines, NEW): focused_explorer_id(), handle_explorer_key()
+      mapping j/k/h/l/Enter/o/q to ExplorerAction; 5 unit tests
+    - editor_window.rs (157 lines): open_explorer creates ExplorerState, close_explorer
+      cleans up explorer_states HashMap
+    - lib.rs (58 lines): +editor_explorer, +editor_stage04b_tests modules
+  - 13 integration tests in editor_stage04b_tests.rs (168 lines): explorer state
+    lifecycle (populate/cleanup/reuse), key dispatch through handle_key
+    (j/k/l/h/q/Enter), wincmd from explorer window, buffer key isolation,
+    terminal state lifecycle/size
+  - Tier-C docs read: completion.md, diagnostics.md, formatting.md, hover.md,
+    lsp.md, navigation/README.md, call-hierarchy.md
+  - Ledger sync: CONFORMANCE (295→327), LIMITATIONS, DRIFT_MATRIX updated

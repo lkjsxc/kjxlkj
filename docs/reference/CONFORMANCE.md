@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 295 deterministic unit and integration tests covering key normalization,
+through 327 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -109,6 +109,15 @@ no-op placeholder). Explorer routing: open_explorer creates ContentKind::Explore
 leaf, close_explorer removes it, :ExplorerClose ex command. Split semantics
 corrected: :split creates top/bottom layout, :vsplit creates side-by-side layout.
 15 unit tests + 26 integration tests covering all wincmd paths.
+Explorer state model: ExplorerState with root_path, tree, expansion_set,
+selected_index, cached visible rows, NodeId-based identity. ExplorerNode tree
+with find/parent_of/sort_children. ExplorerAction enum (MoveDown/MoveUp/
+CollapseOrParent/ExpandOrOpen/Toggle/Close). Explorer key routing intercepts
+j/k/h/l/Enter/o/q in Normal mode on explorer-focused windows. 12 explorer
+service unit tests + 5 editor_explorer unit tests + 13 integration tests.
+Terminal state model: TerminalState with id, shell, title, exited, exit_code,
+cols, rows. TerminalService stub. 2 terminal service unit tests + 2 integration
+tests.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -117,7 +126,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (295 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (327 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
@@ -127,8 +136,8 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|
 | Input decoding and key normalization | `partial` | Shift+a normalization implemented and unit-tested; T2 pending |
 | Window tree and split lifecycle | `partial` | layout tree with split/close/rebalance implemented and unit-tested; T2 pending |
-| Explorer window and actions | `partial` | explorer open/close routing implemented and T1-tested; state model and tree data pending |
-| Terminal window integration | `unverified` | stub crate only; PTY not yet implemented |
+| Explorer window and actions | `partial` | explorer open/close routing, state model (ExplorerState/ExplorerNode/NodeId), tree with expansion/flattening, navigation actions (j/k/h/l/Enter/o/q), key routing implemented and T1-tested; filesystem integration pending |
+| Terminal window integration | `partial` | TerminalState model with id/shell/title/exited/exit_code/cols/rows implemented; PTY spawn/read/write not yet implemented |
 | Viewport wrap and cursor safety | `unverified` | basic cursor motion; wrap not yet implemented |
 | Test harness fidelity | `partial` | T1 headless harness with step dumps; T2 PTY harness pending |
 | Source topology and workspace policy | `verified` | 20-crate grouped tree matches spec; all files ≤ 200 lines; multi-task runtime |
