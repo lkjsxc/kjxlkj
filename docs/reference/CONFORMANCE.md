@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 374 deterministic unit and integration tests covering key normalization,
+through 391 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -128,6 +128,11 @@ PositionList data structure (100 entry cap, go_older/go_newer/push, dedup).
 Jump recording on GotoLine/GotoFirstLine/GotoLastLine/Search/StarSearch.
 Change recording on all text-changing actions.
 Boundary tests: empty list, past-end, single window, explorer close, terminal open.
+Mark system: m{a-z} set mark at cursor, '{a-z} goto mark line (first non-blank),
+`{a-z} goto mark exact position. MarkStore with HashMap<char, MarkPos>, lowercase
+a-z only (uppercase ignored). Marks persist across mode changes. Goto unset mark
+is no-op. Buffer-bounds clamping on goto when lines deleted. 5 unit tests + 12
+integration tests.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -136,7 +141,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (374 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (391 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

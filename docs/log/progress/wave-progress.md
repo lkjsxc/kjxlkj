@@ -166,3 +166,32 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: changelist.md, jumplist.md, finder.md, flash.md,
     include-search.md
   - Ledger sync: CONFORMANCE (348→374), LIMITATIONS, DRIFT_MATRIX updated
+
+### Wave 037: Unit and Integration Coverage
+- Status: COMPLETE
+- Committed: f896418a
+- Evidence: 391 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Mark system: m{a-z} set mark, '{a-z} goto mark line (first non-blank),
+    `{a-z} goto mark exact position
+  - MarkStore in marks.rs (88 lines): HashMap<char, MarkPos>, set/get/remove/list,
+    lowercase a-z only (uppercase silently ignored). 5 unit tests
+  - Action variants: SetMark(char), GotoMarkLine(char), GotoMarkExact(char) in
+    kjxlkj-core-types action.rs (114→115)
+  - Partial key dispatch: m→SetMark, '→GotoMarkLine, `→GotoMarkExact in
+    normal.rs (200→198) and normal_partial.rs (93→108)
+  - EditorState: marks field (MarkStore) in editor.rs (200, at limit)
+  - editor_nav.rs expanded (70→115): +set_mark_at_cursor, +goto_mark_line (first
+    non-blank using find for non-whitespace), +goto_mark_exact (buffer-bounds
+    clamping)
+  - editor_action.rs (191→194): +SetMark/GotoMarkLine/GotoMarkExact dispatch
+  - editor_stage04e_tests.rs (130 lines, NEW): 12 integration tests — mark set
+    and goto exact (1), mark set and goto line with first-non-blank (1), goto
+    unset mark no-op (2: exact + line), mark overwrite (1), mark persistence
+    across insert mode (1), uppercase mark ignored (1), multiple marks
+    independent (1), goto exact clamps when lines deleted (1), goto line with
+    tabs first-non-blank (1), action API direct (1), goto line on empty line (1)
+  - lib.rs (core-state) 64→67 (+marks module, +editor_stage04e_tests)
+  - Tier-C docs read: marks.md, quickfix.md, tags.md, session/README.md,
+    auto_save.md, ex-commands-detailed.md, expression-register.md
+  - Ledger sync: CONFORMANCE (374→391), LIMITATIONS, DRIFT_MATRIX (+R-MARK-01)

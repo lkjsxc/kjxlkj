@@ -52,6 +52,13 @@ GotoLastLine/Search/StarSearch. Change recording on all text-changing actions.
 navigate_jumplist/navigate_changelist with buffer-bounds clamping. Boundary tests
 for empty list, past-end, single window, explorer close, terminal open. 26 new
 tests bringing total to 374 tests.
+Unit and integration coverage (wave-037): Mark system — m{a-z} set mark at cursor,
+'{a-z} goto mark line (first non-blank), `{a-z} goto mark exact position.
+MarkStore with HashMap<char, MarkPos>, lowercase a-z only (uppercase ignored).
+Marks persist across mode changes. Goto unset mark is no-op. Buffer-bounds
+clamping on goto. SetMark/GotoMarkLine/GotoMarkExact action variants; partial key
+dispatch for m/' /` prefixes. 5 unit tests + 12 integration tests bringing total
+to 391 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
