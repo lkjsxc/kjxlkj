@@ -17,7 +17,9 @@ mod editor_ext;
 mod editor_ops;
 mod editor_snapshot;
 mod editor_window;
+mod register;
 mod window_state;
 
 pub use editor::EditorState;
+pub use register::RegisterStore;
 pub use window_state::WindowState;

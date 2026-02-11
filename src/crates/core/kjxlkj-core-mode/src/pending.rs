@@ -1,8 +1,12 @@
 //! Normal-mode pending state for multi-key sequences.
 //!
-//! Tracks count prefix, register prefix, and partial keys
-//! (g-prefix, f/t/r char, z-commands, bracket-commands).
+//! Tracks count prefix, register prefix, force modifier,
+//! and partial keys (g-prefix, f/t/r char, z-commands, etc).
 //! See /docs/spec/modes/normal.md for the key dispatch model.
+//! See /docs/spec/editing/operators/operator-modifiers.md
+//! for force modifier handling.
+
+use kjxlkj_core_types::ForceModifier;
 
 /// Pending normal-mode input accumulator.
 #[derive(Debug, Clone, Default)]
@@ -11,6 +15,15 @@ pub struct PendingState {
     pub count: Option<usize>,
     /// Partial key state for multi-key sequences.
     pub partial: PartialKey,
+    /// Pre-operator count for count multiplication.
+    /// Stored when entering OperatorPending mode.
+    /// `2d3w` → pre_op_count=2, count=3 → effective=6.
+    pub pre_op_count: Option<usize>,
+    /// Force modifier (v/V/Ctrl-v) pressed between
+    /// operator and motion in OperatorPending mode.
+    pub force: Option<ForceModifier>,
+    /// Selected register name from `"x` prefix.
+    pub register: Option<char>,
 }
 
 /// What kind of partial key sequence we are waiting for.
@@ -61,6 +74,17 @@ impl PendingState {
     pub fn clear(&mut self) {
         self.count = None;
         self.partial = PartialKey::None;
+        self.pre_op_count = None;
+        self.force = None;
+        self.register = None;
+    }
+
+    /// Save current count as pre-operator count and
+    /// reset count for post-operator accumulation.
+    /// Called when entering OperatorPending mode.
+    pub fn save_pre_op_count(&mut self) {
+        self.pre_op_count = self.count;
+        self.count = None;
     }
 
     /// Accumulate a digit into the count prefix.
@@ -79,6 +103,14 @@ impl PendingState {
     /// Get effective count (1 if none entered).
     pub fn effective_count(&self) -> usize {
         self.count.unwrap_or(1)
+    }
+
+    /// Compute multiplied count: pre_op × post_op.
+    /// Both default to 1 if not set.
+    pub fn multiplied_count(&self) -> usize {
+        let pre = self.pre_op_count.unwrap_or(1);
+        let post = self.count.unwrap_or(1);
+        pre * post
     }
 }
 
@@ -115,8 +147,29 @@ mod tests {
         let mut ps = PendingState::default();
         ps.push_digit(5);
         ps.partial = PartialKey::G;
+        ps.register = Some('a');
         ps.clear();
         assert_eq!(ps.count, None);
         assert_eq!(ps.partial, PartialKey::None);
+        assert!(ps.register.is_none());
+        assert!(ps.pre_op_count.is_none());
+        assert!(ps.force.is_none());
+    }
+
+    #[test]
+    fn pre_op_count_multiplication() {
+        let mut ps = PendingState::default();
+        ps.push_digit(2);
+        ps.save_pre_op_count();
+        assert_eq!(ps.pre_op_count, Some(2));
+        assert_eq!(ps.count, None);
+        ps.push_digit(3);
+        assert_eq!(ps.multiplied_count(), 6);
+    }
+
+    #[test]
+    fn multiplied_count_defaults() {
+        let ps = PendingState::default();
+        assert_eq!(ps.multiplied_count(), 1);
     }
 }

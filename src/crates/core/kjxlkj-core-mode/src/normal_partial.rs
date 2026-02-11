@@ -63,10 +63,21 @@ pub(crate) fn resolve_partial(
                 (Action::Noop, None)
             }
         }
+        PartialKey::Register => {
+            if let Key::Char(c) = key {
+                // Store selected register, return to
+                // normal key dispatch (not partial).
+                pending.partial = PartialKey::None;
+                pending.register = Some(*c);
+                (Action::Noop, None)
+            } else {
+                pending.clear();
+                (Action::Noop, None)
+            }
+        }
         PartialKey::SetMark
         | PartialKey::GotoMarkLine
         | PartialKey::GotoMarkExact
-        | PartialKey::Register
         | PartialKey::MacroRecord
         | PartialKey::MacroPlay => {
             pending.clear();

@@ -32,6 +32,19 @@ pub enum Operator {
     Lowercase,
     Uppercase,
     ToggleCase,
+    Filter,
+}
+
+/// Force modifier pressed between operator and motion (v/V/Ctrl-v).
+/// See /docs/spec/editing/operators/operator-modifiers.md.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ForceModifier {
+    /// Force characterwise (v).
+    Characterwise,
+    /// Force linewise (V).
+    Linewise,
+    /// Force blockwise (Ctrl-v).
+    Blockwise,
 }
 
 /// Motion scope type for operator range resolution.

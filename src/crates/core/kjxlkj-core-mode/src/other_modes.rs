@@ -1,9 +1,8 @@
-//! Non-Normal mode handlers.
-//!
-//! Insert, Command, Visual, Replace, OperatorPending, TerminalInsert.
+//! Non-Normal mode handlers: Insert, Command, Visual,
+//! Replace, OperatorPending, TerminalInsert.
 
 use kjxlkj_core_types::{
-    Action, Key, KeyModifiers, Mode, Operator,
+    Action, ForceModifier, Key, KeyModifiers, Mode, Operator,
 };
 
 use crate::normal_motions;
@@ -91,7 +90,7 @@ pub(crate) fn handle_operator_pending(
 ) -> (Action, Option<Mode>) {
     if let Mode::OperatorPending(op) = mode {
         // Double-operator detection: dd, cc, yy, >>, <<,
-        // ==, guu, gUU, g~~, gqq
+        // ==, guu, gUU, g~~, gqq, !!
         let op_char = match op {
             Operator::Delete => Some('d'),
             Operator::Change => Some('c'),
@@ -103,6 +102,7 @@ pub(crate) fn handle_operator_pending(
             Operator::Uppercase => Some('U'),
             Operator::ToggleCase => Some('~'),
             Operator::Format => Some('q'),
+            Operator::Filter => Some('!'),
         };
         if !mods.ctrl {
             if let Key::Char(c) = key {
@@ -112,6 +112,24 @@ pub(crate) fn handle_operator_pending(
                         Action::OperatorLine(op),
                         Some(Mode::Normal),
                     );
+                }
+                // Force modifiers: v/V between operator and motion.
+                if *c == 'v' && pending.force.is_none() {
+                    pending.force = Some(ForceModifier::Characterwise);
+                    return (Action::Noop, None);
+                }
+                if *c == 'V' && pending.force.is_none() {
+                    pending.force = Some(ForceModifier::Linewise);
+                    return (Action::Noop, None);
+                }
+            }
+        }
+        // Ctrl-v force blockwise modifier.
+        if mods.ctrl {
+            if let Key::Char('v') = key {
+                if pending.force.is_none() {
+                    pending.force = Some(ForceModifier::Blockwise);
+                    return (Action::Noop, None);
                 }
             }
         }
@@ -135,9 +153,11 @@ pub(crate) fn handle_operator_pending(
                 normal_motions::motion_for_key(key)
             {
                 if let Action::Motion(m) = action {
-                    if let Mode::OperatorPending(op) = mode {
+                    if let Mode::OperatorPending(op) =
+                        mode
+                    {
                         let cnt =
-                            pending.effective_count();
+                            pending.multiplied_count();
                         pending.clear();
                         let target_mode =
                             if op == Operator::Change {

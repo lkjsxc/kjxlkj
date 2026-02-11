@@ -1,13 +1,6 @@
 //! Central editor state owned by the core task.
-//!
-//! See /docs/spec/architecture/runtime.md for ownership model.
-//! See /docs/spec/editor/README.md for state overview.
-//!
-//! Split per /docs/spec/architecture/source-layout.md:
-//! - editor_action.rs: apply_action dispatch
-//! - editor_edit.rs: text editing operations
-//! - editor_snapshot.rs: snapshot construction
-//! - editor_window.rs: window management
+//! See /docs/spec/architecture/runtime.md and
+//! /docs/spec/editor/README.md.
 
 use std::collections::HashMap;
 
@@ -19,6 +12,7 @@ use kjxlkj_core_types::{
 };
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 
+use crate::register::RegisterStore;
 use crate::window_state::WindowState;
 
 /// The single mutable editor state.
@@ -35,6 +29,10 @@ pub struct EditorState {
     pub(crate) id_counter: u64,
     /// Multi-key pending state for normal mode.
     pub pending: PendingState,
+    /// Register store for yank/delete/put.
+    pub registers: RegisterStore,
+    /// Last text-changing action for dot-repeat.
+    pub(crate) last_change: Option<Action>,
 }
 
 impl EditorState {
@@ -69,6 +67,8 @@ impl EditorState {
             sequence: 0,
             id_counter: 2,
             pending: PendingState::default(),
+            registers: RegisterStore::new(),
+            last_change: None,
         }
     }
 
@@ -78,6 +78,9 @@ impl EditorState {
         key: &Key,
         mods: &KeyModifiers,
     ) {
+        // Capture register selection before dispatch
+        // may clear it.
+        let reg = self.pending.register;
         let (action, new_mode) =
             dispatch_key(
                 self.mode,
@@ -85,11 +88,43 @@ impl EditorState {
                 mods,
                 &mut self.pending,
             );
+        // Transfer register from pending to register
+        // store selection for the upcoming action.
+        if let Some(r) = reg {
+            self.registers.selected = Some(r);
+        }
         self.mode =
             resolve_mode_transition(self.mode, new_mode);
+        // Record text-changing actions for dot-repeat.
+        if is_text_changing(&action) {
+            self.last_change = Some(action.clone());
+        }
         self.apply_action(action);
         self.sequence += 1;
     }
+}
+
+/// Whether an action changes buffer text (for dot-repeat).
+fn is_text_changing(action: &Action) -> bool {
+    matches!(
+        action,
+        Action::InsertChar(_)
+            | Action::DeleteCharForward
+            | Action::DeleteCharBackward
+            | Action::DeleteLine
+            | Action::OperatorLine(_)
+            | Action::OperatorMotion(_, _, _)
+            | Action::SubstituteChar
+            | Action::SubstituteLine
+            | Action::ChangeToEnd
+            | Action::DeleteToEnd
+            | Action::JoinLines
+            | Action::JoinLinesNoSpace
+            | Action::ReplaceChar(_)
+            | Action::ToggleCase
+            | Action::DeleteWordBackward
+            | Action::DeleteToLineStart
+    )
 }
 
 #[cfg(test)]

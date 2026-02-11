@@ -13,7 +13,7 @@ mod window;
 pub use action::{Action, Direction, Motion};
 pub use ids::{BufferId, ExplorerStateId, TerminalId, WindowId};
 pub use key::{Key, KeyModifiers};
-pub use mode::{CommandKind, Inclusivity, Mode, Operator, RangeType, VisualKind};
+pub use mode::{CommandKind, ForceModifier, Inclusivity, Mode, Operator, RangeType, VisualKind};
 pub use motion_info::{motion_inclusivity, motion_range_type};
 pub use snapshot::{CmdlineState, EditorSnapshot, Rect, WindowContent};
 pub use window::{ContentKind, WindowType};

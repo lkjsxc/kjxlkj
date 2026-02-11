@@ -39,7 +39,7 @@ pub(crate) fn handle_g_key(
         }
         // gu → lowercase operator.
         Key::Char('u') => {
-            pending.clear();
+            pending.save_pre_op_count();
             (
                 Action::Noop,
                 Some(Mode::OperatorPending(Operator::Lowercase)),
@@ -47,7 +47,7 @@ pub(crate) fn handle_g_key(
         }
         // gU → uppercase operator.
         Key::Char('U') => {
-            pending.clear();
+            pending.save_pre_op_count();
             (
                 Action::Noop,
                 Some(Mode::OperatorPending(Operator::Uppercase)),
@@ -55,7 +55,7 @@ pub(crate) fn handle_g_key(
         }
         // g~ → toggle case operator.
         Key::Char('~') => {
-            pending.clear();
+            pending.save_pre_op_count();
             (
                 Action::Noop,
                 Some(Mode::OperatorPending(
@@ -65,7 +65,7 @@ pub(crate) fn handle_g_key(
         }
         // gq → format operator.
         Key::Char('q') => {
-            pending.clear();
+            pending.save_pre_op_count();
             (
                 Action::Noop,
                 Some(Mode::OperatorPending(Operator::Format)),

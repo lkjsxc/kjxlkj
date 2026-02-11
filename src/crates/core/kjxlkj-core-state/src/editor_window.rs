@@ -2,7 +2,7 @@
 //!
 //! See /docs/spec/features/window/splits-windows.md.
 
-use kjxlkj_core_types::{ContentKind, WindowId};
+use kjxlkj_core_types::WindowId;
 
 use crate::editor::EditorState;
 use crate::window_state::WindowState;

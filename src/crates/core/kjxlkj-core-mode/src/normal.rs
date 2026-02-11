@@ -1,6 +1,4 @@
-//! Normal mode key dispatch.
-//!
-//! See /docs/spec/modes/normal.md for normative key tables.
+//! Normal mode key dispatch. See /docs/spec/modes/normal.md.
 
 use kjxlkj_core_types::{
     Action, CommandKind, Key, KeyModifiers, Mode, Motion,
@@ -55,12 +53,13 @@ fn handle_normal_command(
         Key::Char('C') => done(pending, Action::ChangeToEnd, Mode::Insert),
         Key::Char('D') => cleared(pending, Action::DeleteToEnd),
         Key::Char('Y') => cleared(pending, Action::YankCurrentLine),
-        Key::Char('d') => (Action::Noop, Some(Mode::OperatorPending(Operator::Delete))),
-        Key::Char('c') => (Action::Noop, Some(Mode::OperatorPending(Operator::Change))),
-        Key::Char('y') => (Action::Noop, Some(Mode::OperatorPending(Operator::Yank))),
-        Key::Char('>') => (Action::Noop, Some(Mode::OperatorPending(Operator::Indent))),
-        Key::Char('<') => (Action::Noop, Some(Mode::OperatorPending(Operator::Dedent))),
-        Key::Char('=') => (Action::Noop, Some(Mode::OperatorPending(Operator::Reindent))),
+        Key::Char('d') => op_pending(pending, Operator::Delete),
+        Key::Char('c') => op_pending(pending, Operator::Change),
+        Key::Char('y') => op_pending(pending, Operator::Yank),
+        Key::Char('>') => op_pending(pending, Operator::Indent),
+        Key::Char('<') => op_pending(pending, Operator::Dedent),
+        Key::Char('=') => op_pending(pending, Operator::Reindent),
+        Key::Char('!') => op_pending(pending, Operator::Filter),
         Key::Char('v') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Char)), Mode::Visual(VisualKind::Char)),
         Key::Char('V') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Line)), Mode::Visual(VisualKind::Line)),
         Key::Char(':') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Ex)), Mode::Command(CommandKind::Ex)),
@@ -75,6 +74,7 @@ fn handle_normal_command(
         Key::Char('T') => { pending.partial = PartialKey::TillBackward; (Action::Noop, None) }
         Key::Char('r') => { pending.partial = PartialKey::ReplaceChar; (Action::Noop, None) }
         Key::Char('m') => { pending.partial = PartialKey::SetMark; (Action::Noop, None) }
+        Key::Char('"') => { pending.partial = PartialKey::Register; (Action::Noop, None) }
         Key::Char('x') => cleared(pending, Action::DeleteCharForward),
         Key::Char('X') => cleared(pending, Action::DeleteCharBackward),
         Key::Char('u') => cleared(pending, Action::Undo),
@@ -126,6 +126,12 @@ fn cleared(p: &mut PendingState, a: Action) -> (Action, Option<Mode>) {
     (a, None)
 }
 
+/// Helper: enter OperatorPending, saving pre-operator count.
+fn op_pending(p: &mut PendingState, op: Operator) -> (Action, Option<Mode>) {
+    p.save_pre_op_count();
+    (Action::Noop, Some(Mode::OperatorPending(op)))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,9 +139,8 @@ mod tests {
     #[test]
     fn shift_a_triggers_append_eol() {
         let mut ps = PendingState::default();
-        let (action, mode) = handle_normal_key(
-            &Key::Char('A'), &KeyModifiers::default(), &mut ps,
-        );
+        let m = KeyModifiers::default();
+        let (action, mode) = handle_normal_key(&Key::Char('A'), &m, &mut ps);
         assert_eq!(action, Action::AppendEndOfLine);
         assert_eq!(mode, Some(Mode::Insert));
     }
@@ -143,18 +148,16 @@ mod tests {
     #[test]
     fn colon_enters_command_mode() {
         let mut ps = PendingState::default();
-        let (_, mode) = handle_normal_key(
-            &Key::Char(':'), &KeyModifiers::default(), &mut ps,
-        );
+        let m = KeyModifiers::default();
+        let (_, mode) = handle_normal_key(&Key::Char(':'), &m, &mut ps);
         assert_eq!(mode, Some(Mode::Command(CommandKind::Ex)));
     }
 
     #[test]
     fn h_moves_left() {
         let mut ps = PendingState::default();
-        let (action, mode) = handle_normal_key(
-            &Key::Char('h'), &KeyModifiers::default(), &mut ps,
-        );
+        let m = KeyModifiers::default();
+        let (action, mode) = handle_normal_key(&Key::Char('h'), &m, &mut ps);
         assert_eq!(action, Action::Motion(Motion::Left));
         assert_eq!(mode, None);
     }
@@ -162,11 +165,8 @@ mod tests {
     #[test]
     fn ctrl_r_redo() {
         let mut ps = PendingState::default();
-        let (action, _) = handle_normal_key(
-            &Key::Char('r'),
-            &KeyModifiers { ctrl: true, ..Default::default() },
-            &mut ps,
-        );
+        let m = KeyModifiers { ctrl: true, ..Default::default() };
+        let (action, _) = handle_normal_key(&Key::Char('r'), &m, &mut ps);
         assert_eq!(action, Action::Redo);
     }
 
