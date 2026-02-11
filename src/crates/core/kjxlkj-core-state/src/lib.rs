@@ -1,5 +1,7 @@
 use kjxlkj_core_mode::{Mode, NormalResolvedAction};
 
+pub mod windows;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum EditorAction {
     NormalModeKey(char),
