@@ -15,33 +15,31 @@ This ledger reports the strongest verified state as of the snapshot date.
 
 ## Current Snapshot (2026-02-11)
 
-The workspace and core verification harness exist, and targeted tests pass.
-However, user runtime reports on 2026-02-11 indicate split view, explorer,
-and `Shift+a` are not working in practical editor sessions. Release conformance
-is therefore blocked until stronger live E2E evidence closes those reports.
+A docs-only baseline is active. Source and build artifacts are intentionally
+absent so implementation can be regenerated from canonical documentation.
+Runtime conformance is therefore unverified by design until reconstruction.
 
 ## Evidence Summary
 
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
-| Workspace and crate topology are present | `verified` | 2026-02-11 | root manifests + grouped `src/crates/` tree |
-| Targeted high-risk PTY suites currently pass | `partial` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e --test window_nav_e2e --test explorer_terminal_paths_e2e` |
-| Split/explorer/`Shift+a` runtime behavior is user-reported broken | `blocked` | 2026-02-11 | direct user runtime report; stronger than trace-only confidence |
-| Live E2E fidelity is screen-assertion complete | `blocked` | 2026-02-11 | existing tests are trace-centric; full screen-state oracle is incomplete |
+| TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md) |
+| Implementation workspace is present | `unverified` | 2026-02-11 | intentionally absent in docs-only preparation state |
+| Runtime blocker behavior (`Shift+a`, split, explorer) | `unverified` | 2026-02-11 | no executable artifact in current baseline |
+| Live E2E screen-oracle closure | `unverified` | 2026-02-11 | pending reconstruction and execution |
 
 ## Domain Status
 
 | Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `blocked` | `Shift+a` has contradictory evidence between current tests and user runtime |
-| Window tree and split lifecycle | `blocked` | split view is user-reported non-working |
-| Explorer window and actions | `blocked` | explorer is user-reported non-working |
-| Terminal window integration | `partial` | covered by tests, but blocked domains share routing and focus paths |
-| Viewport wrap safety | `partial` | no direct contradictory report, but mixed-window behavior needs revalidation |
-| Cursor and grapheme safety | `partial` | no direct contradictory report, but tied to blocked mode-entry flow |
-| Test harness fidelity | `blocked` | required screen-state E2E oracle is not yet the primary closure path |
-| Source topology and workspace policy | `verified` | workspace structure exists and is testable |
+| Input decoding and key normalization | `unverified` | implementation absent in docs-only baseline |
+| Window tree and split lifecycle | `unverified` | implementation absent in docs-only baseline |
+| Explorer window and actions | `unverified` | implementation absent in docs-only baseline |
+| Terminal window integration | `unverified` | implementation absent in docs-only baseline |
+| Viewport wrap and cursor safety | `unverified` | implementation absent in docs-only baseline |
+| Test harness fidelity | `unverified` | harness absent until reconstruction |
+| Source topology and workspace policy | `blocked` | grouped workspace tree not present in docs-only state |
 
 ## Release Rule
 
@@ -55,7 +53,7 @@ A release may proceed only when all are true:
    [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and
    [/docs/todo/README.md](/docs/todo/README.md) are synchronized in the same change
 
-Current state (2026-02-11): blocked.
+Current state (2026-02-11): blocked (docs-only baseline).
 
 ## Related
 

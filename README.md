@@ -28,8 +28,8 @@ Canonical explanation:
 - Docs-only baseline: canonical docs are present; derived artifacts may be absent.
 - Reconstructed implementation: workspace and automation artifacts are regenerated from docs.
 
-Current state on February 11, 2026: workspace exists, but release is blocked by
-open high-severity runtime limitations (`Shift+a`, split view, explorer).
+Current state on February 11, 2026: docs-only baseline is active for clean
+reconstruction; implementation artifacts are intentionally removed.
 
 ## Reconstructing the Implementation
 
@@ -46,7 +46,7 @@ When reconstructed, the Rust workspace is expected under `src/crates/` with grou
 - `src/crates/platform/`
 - `src/crates/services/`
 
-## Build and Verification (When Workspace Exists)
+## Build and Verification (After Reconstruction)
 
 Build:
 

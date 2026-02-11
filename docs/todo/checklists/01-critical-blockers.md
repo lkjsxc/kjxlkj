@@ -4,6 +4,7 @@ Back: [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
 
 ## Blocker Scope
 
+- [ ] `LIM-BASELINE-IMPL-04` from [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [ ] `LIM-BLOCK-KEY-04` from [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [ ] `LIM-BLOCK-WIN-04` from [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [ ] `LIM-BLOCK-EXP-04` from [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
@@ -11,6 +12,7 @@ Back: [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
 
 ## Required Spec Inputs
 
+- [ ] [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
 - [ ] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
 - [ ] [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - [ ] [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
@@ -20,8 +22,9 @@ Back: [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
 
 ## Required Runtime Closures
 
+- [ ] reconstruct grouped workspace and crate topology from docs
 - [ ] `Shift+a` and physical `A` are indistinguishable in mode dispatch and screen result
-- [ ] split create/close/only operations produce the expected visible pane layout after each input
+- [ ] split create/close/only operations produce expected visible pane layout after each input
 - [ ] explorer open/toggle/reveal and open-target actions are visibly correct in mixed window layouts
 - [ ] blocker E2E suites compare screen snapshots and state dumps, not only action traces
 

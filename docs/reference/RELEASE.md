@@ -14,14 +14,18 @@ Release is valid only for a reconstructed and blocker-free state.
 
 ## Current Gate (2026-02-11)
 
-Release is blocked by open rows in
-[/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md).
+Release is blocked.
+
+Reason:
+
+- docs-only baseline is active; implementation artifacts are intentionally absent
+- open high-severity rows remain in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Release Steps
 
-1. freeze docs and implementation together
+1. reconstruct implementation from documentation
 2. run release profile and capture deterministic evidence
-3. confirm no contradiction remains between user reports and test evidence
+3. confirm no contradictions remain between user behavior and test evidence
 4. create release commit and tag
 5. publish artifacts
 6. record release evidence links in reference ledgers

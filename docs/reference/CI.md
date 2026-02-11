@@ -12,9 +12,9 @@ In docs-only baseline state, this workflow may be absent and must be regenerated
 
 ## Current Baseline State (2026-02-11)
 
-- active profile target: `Blocker-revalidation`
-- workspace artifacts exist in grouped crate topology
-- release profile is blocked by open high-severity limitations
+- active profile target: `Docs-only`
+- implementation workspace is intentionally absent
+- release profile is blocked until reconstruction closes high-severity rows
 
 ## Verification Profiles
 
@@ -29,7 +29,8 @@ In docs-only baseline state, this workflow may be absent and must be regenerated
 
 Run checks from repository root.
 
-For blocker-revalidation and release profiles, include required cases from
+For docs-only profile, run documentation integrity checks only.
+For reconstructed profiles, include required cases from
 [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
 
 ## Evidence Rule

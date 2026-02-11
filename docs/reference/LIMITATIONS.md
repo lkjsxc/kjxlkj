@@ -2,28 +2,28 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger tracks open mismatches between target spec and current runtime confidence.
+This ledger tracks open mismatches between target spec and current baseline state.
 
 ## Baseline Statement (2026-02-11)
 
-The workspace and automated suites exist, but release confidence is blocked by
-contradictory evidence: user runtime reports indicate split view, explorer, and
-`Shift+a` do not work as expected in practical sessions.
+The repository is intentionally prepared as docs-only baseline. Implementation
+artifacts were removed so the next implementation can be regenerated from docs.
 
 ## Open Critical Blockers
 
-| ID | Requirement Link | Observed Runtime Gap | Class | Severity | Mandatory Next Action |
+| ID | Requirement Link | Observed Gap | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` behavior is unreliable in user-like runtime sessions | `M1 correctness` + `M4 verification gap` | high | implement screen-state PTY checks for `KEYMODE-01`, `WR-01R`, `WR-02R`; close only with deterministic screen snapshots |
-| `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split view behavior is reported non-working under real usage | `M1 correctness` + `M4 verification gap` | high | add user-like split lifecycle E2E (`WIN-01R`..`WIN-04R`) with frame assertions per key input |
-| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reported non-working under real usage | `M1 correctness` + `M4 verification gap` | high | add screen-validated explorer route/open/action E2E (`EXP-01R`..`EXP-06R`) including visible panel checks |
-| `LIM-BLOCK-E2E-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | existing `*R` tests are too trace-centric and can miss UI-visible breakage | `M4 verification gap` | high | make screen-state oracle mandatory and fail-fast on render/layout mismatches |
+| `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree are intentionally absent in docs-only baseline | `M2 missing feature` | high | regenerate grouped workspace from TODO checklist chain |
+| `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` runtime behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement key path and close with `KEYMODE-01`, `WR-01R` screen assertions |
+| `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split lifecycle behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement split tree and close with `WIN-01R`..`WIN-05R` |
+| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement explorer routes/state and close with `EXP-01R`..`EXP-06R` |
+| `LIM-BLOCK-E2E-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | screen-state E2E closure is unverified because harness/runtime are absent | `M2 missing feature` + `M4 verification gap` | high | rebuild harness and enforce per-key state + frame assertions |
 
 ## Open Secondary Gaps
 
 | ID | Requirement Link | Gap | Severity | Next Action |
 |---|---|---|---|---|
-| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology limits are documented but not yet enforced as hard release gate for every wave | medium | require topology checkboxes in TODO phase completion before final sign-off |
+| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology constraints cannot be validated until implementation is rebuilt | medium | run topology audits after regeneration |
 
 ## Deferred Items
 
@@ -31,7 +31,7 @@ Deferred items must not be correctness-critical or user-blocking.
 
 | ID | Link | Rationale | Next Review |
 |---|---|---|---|
-| none | n/a | no non-critical defer items are active | after blocker closure |
+| none | n/a | no deferred non-critical items are active | after baseline regeneration |
 
 ## Closure Rules
 
