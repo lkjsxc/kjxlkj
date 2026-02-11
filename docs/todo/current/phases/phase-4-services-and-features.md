@@ -4,24 +4,24 @@ Back: [/docs/todo/current/phases/README.md](/docs/todo/current/phases/README.md)
 
 ## Scope
 
-Service-backed features and cross-surface integration after core blockers are closed.
+Service-backed features and cross-surface integration after core blocker fixes.
 
 ## Tasks
 
-- [x] revalidate LSP, Git, index, and FS service behavior against updated contracts
-- [x] ensure service features remain stable with new window and input fixes
-- [x] add cross-surface E2E where service output affects editor/explorer/terminal views
-- [x] close any new `M2` or `M4` rows found during blocker closure
+- [ ] revalidate LSP, Git, index, and FS service behavior against updated contracts
+- [ ] ensure service output remains stable with new window/input fixes
+- [ ] add cross-surface E2E where service output affects visible windows
+- [ ] close newly discovered `M2` or `M4` rows before phase closure
 
 ## Required Spec Links
 
-- [x] [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
-- [x] [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
-- [x] [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
-- [x] [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
+- [ ] [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
+- [ ] [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+- [ ] [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- [ ] [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
 
 ## Required Tests
 
-- [x] existing domain integration suites remain green
-- [x] at least one live E2E workflow per service family
-- [x] no service regression under `BD-RACE-01` conditions
+- [ ] service integration suites remain green
+- [ ] at least one live E2E workflow per service family
+- [ ] `BD-RACE-01` remains green after service integration

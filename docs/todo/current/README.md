@@ -2,54 +2,47 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: All 5 phases complete (2026-02-10). 89 tests passing.
+Status: Reconstruction wave reopened on 2026-02-11 due high-severity runtime regressions.
 
-## Foundation (Completed)
+## Active Blockers
 
-- [x] source code tree regenerated with grouped crate structure
-- [x] workspace and toolchain manifests created
-- [x] 20 crates implemented with 7500+ lines of code
-- [x] 89 tests passing across 12 test modules
-- [x] all source files under 200 lines
+- [ ] `LIM-BLOCK-KEY-03` `Shift+a` end-to-end append semantics are correct
+- [ ] `LIM-BLOCK-WIN-03` split lifecycle preserves deterministic layout/focus
+- [ ] `LIM-BLOCK-NAV-03` `Ctrl-w` navigation works across mixed windows
+- [ ] `LIM-BLOCK-EXP-03` explorer launch and actions are reachable and stable
+- [ ] `LIM-BLOCK-TERM-03` terminal windows obey shared lifecycle and remain responsive
+- [ ] `LIM-BLOCK-CURSOR-03` cursor remains visible and grapheme-safe in churn
+- [ ] `LIM-BLOCK-WRAP-03` long-line wrap never overflows and never splits wide graphemes
+- [ ] `LIM-BLOCK-TEST-03` blocker closure is backed by matching PTY E2E tests
 
-## Next-Wave Preconditions (Complete)
+## Working Matrices
 
-- [x] read canonical docs in required order
-- [x] regenerate workspace using grouped crate roots
-- [x] refresh requirement matrix for high-risk domains
-- [x] refresh mismatch matrix with current implementation evidence
-- [x] identify highest-risk user-visible workflows first
+- [ ] [requirement-matrix.md](requirement-matrix.md)
+- [ ] [mismatch-matrix.md](mismatch-matrix.md)
 
-## Immediate Blockers (All Closed)
+## Execution Gates
 
-- [x] `LIM-BLOCK-KEY-02` `Shift+a` - key normalization implemented with tests
-- [x] `LIM-BLOCK-WIN-02` split and multi-window correctness - WindowTree with split/close/focus operations
-- [x] `LIM-BLOCK-NAV-02` `Ctrl-w` navigation - dispatch implemented
-- [x] `LIM-BLOCK-EXP-02` explorer launch and actions - ExplorerService and ExplorerState implemented
-- [x] `LIM-BLOCK-TERM-02` terminal window stability - Screen and Parser with tests
-- [x] `LIM-BLOCK-CURSOR-02` cursor display - grapheme-aware cursor implemented
-- [x] `LIM-BLOCK-WRAP-02` long-line wrap safety in live UI - wide grapheme padding with tests
-- [x] `LIM-BLOCK-TEST-01` verification gap - 89 unit/integration tests covering all domains
+- [ ] [verification.md](verification.md)
+- [ ] [phases/README.md](phases/README.md)
 
-## Phase Checklist (All Complete)
+## Required Traceability Docs
 
-- [x] [phases/phase-0-foundation.md](phases/phase-0-foundation.md)
-- [x] [phases/phase-1-editor-core.md](phases/phase-1-editor-core.md)
-- [x] [phases/phase-2-window-explorer-terminal.md](phases/phase-2-window-explorer-terminal.md)
-- [x] [phases/phase-3-i18n-wrap-ime.md](phases/phase-3-i18n-wrap-ime.md)
-- [x] [phases/phase-4-services-and-features.md](phases/phase-4-services-and-features.md)
-- [x] [phases/phase-5-hardening-release.md](phases/phase-5-hardening-release.md)
-- [x] [verification.md](verification.md)
+- [ ] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
-## Working Matrices (Updated)
+## Doc Coverage Direct Links
 
-- [x] [requirement-matrix.md](requirement-matrix.md)
-- [x] [mismatch-matrix.md](mismatch-matrix.md)
+- [ ] [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md)
+- [ ] [/docs/todo/doc-coverage/doc-coverage-1.md](/docs/todo/doc-coverage/doc-coverage-1.md)
+- [ ] [/docs/todo/doc-coverage/doc-coverage-2.md](/docs/todo/doc-coverage/doc-coverage-2.md)
+- [ ] [/docs/todo/doc-coverage/doc-coverage-3.md](/docs/todo/doc-coverage/doc-coverage-3.md)
+- [ ] [/docs/todo/doc-coverage/doc-coverage-4.md](/docs/todo/doc-coverage/doc-coverage-4.md)
+- [ ] [/docs/todo/doc-coverage/doc-coverage-5.md](/docs/todo/doc-coverage/doc-coverage-5.md)
 
-## Exit Criteria (Met)
+## Exit Criteria
 
-- [x] no high-severity limitation remains open
-- [x] blocker regression tests (`*R`) pass deterministically
-- [x] mixed-window and wrap/cursor behavior verified in PTY harness
-- [x] TODO checkboxes are fully evidence-backed
-- [x] doc-coverage is complete and has no stale links
+- [ ] no high-severity limitation remains open
+- [ ] all mandatory `*R` tests for closed blockers pass deterministically
+- [ ] matrices and reference ledgers are synchronized in one change
+- [ ] doc-coverage includes every markdown document directly

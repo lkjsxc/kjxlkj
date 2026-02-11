@@ -2,21 +2,21 @@
 
 Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
-Do not advance to the next phase while current phase has unchecked blockers.
+Do not advance while the current phase has unchecked blocker-critical items.
 
 ## Phases
 
-- [x] [phase-0-foundation.md](phase-0-foundation.md)
-- [x] [phase-1-editor-core.md](phase-1-editor-core.md)
-- [x] [phase-2-window-explorer-terminal.md](phase-2-window-explorer-terminal.md)
-- [x] [phase-3-i18n-wrap-ime.md](phase-3-i18n-wrap-ime.md)
-- [x] [phase-4-services-and-features.md](phase-4-services-and-features.md)
-- [x] [phase-5-hardening-release.md](phase-5-hardening-release.md)
+- [ ] [phase-0-foundation.md](phase-0-foundation.md)
+- [ ] [phase-1-editor-core.md](phase-1-editor-core.md)
+- [ ] [phase-2-window-explorer-terminal.md](phase-2-window-explorer-terminal.md)
+- [ ] [phase-3-i18n-wrap-ime.md](phase-3-i18n-wrap-ime.md)
+- [ ] [phase-4-services-and-features.md](phase-4-services-and-features.md)
+- [ ] [phase-5-hardening-release.md](phase-5-hardening-release.md)
 
 ## Phase Closure Rule
 
-A phase may be checked complete only when:
+A phase may be marked complete only when:
 
-- [x] all phase tasks are checked
-- [x] all phase-required tests are passing with deterministic evidence
-- [x] conformance, limitations, and drift matrix are synchronized
+- [ ] all phase tasks are checked
+- [ ] all phase-required tests pass deterministically
+- [ ] conformance, limitations, drift matrix, and TODO are synchronized

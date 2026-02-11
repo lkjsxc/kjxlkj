@@ -2,66 +2,51 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Requirement-by-requirement mismatch tracking for current state.
+Requirement-by-requirement mismatch tracking for the current blocker wave.
 
 ## Mismatch Classes
 
 | Class | Meaning |
 |---|---|
-| `M1 correctness` | runtime behavior violates spec |
-| `M2 missing feature` | required behavior is not implemented or not reachable |
-| `M3 undocumented behavior` | behavior exists without canonical spec |
-| `M4 verification gap` | behavior exists but deterministic coverage is insufficient |
-| `M5 stale docs` | docs claim status contradicted by stronger evidence |
+| `M1 correctness` | runtime behavior violates canonical spec |
+| `M2 missing feature` | required capability is absent or unreachable |
+| `M3 undocumented behavior` | behavior exists but is not specified canonically |
+| `M4 verification gap` | behavior exists but deterministic regression evidence is insufficient |
+| `M5 stale docs` | documentation claims are contradicted by stronger evidence |
 
-## Closed Drift Rows
+## Matrix
 
-| Req ID | Original Class | Resolution | Evidence |
-|---|---|---|---|
-| `R-BASELINE-01` | `M2 missing feature` | ✓ 19 crates implemented | cargo check passes, 77 source files |
-| `R-KEY-01` | `M2 missing feature` | ✓ shift normalization verified | 8 input decode tests in decode.rs |
-| `R-KEY-02` | `M2 missing feature` | ✓ decode precedes mode | decode.rs architecture |
-| `R-CUR-01` | `M2 missing feature` | ✓ cursor dispatch verified | mode dispatch tests |
-| `R-CUR-02` | `M2 missing feature` | ✓ grapheme-safe cursor | grapheme_width and grid.rs tests |
-| `R-WIN-01` | `M2 missing feature` | ✓ unified WindowTree | 7 tests in kjxlkj-core-state |
-| `R-WIN-02` | `M2 missing feature` | ✓ split operations | split.rs with close/rebalance |
-| `R-WIN-03` | `M2 missing feature` | ✓ Ctrl-w dispatch | normal.rs + focus_next/prev |
-| `R-EXP-01` | `M2 missing feature` | ✓ explorer launch paths | ExplorerService crate |
-| `R-EXP-02` | `M2 missing feature` | ✓ explorer navigation | 4 explorer state tests |
-| `R-TERM-01` | `M2 missing feature` | ✓ terminal service | Screen, Parser, 7 tests |
-| `R-WRAP-01` | `M2 missing feature` | ✓ overflow protection | 5 wrap tests in kjxlkj-render |
-| `R-WRAP-02` | `M2 missing feature` | ✓ width-2 boundary | wide_at_boundary test |
-| `R-ARCH-01` | `M2 missing feature` | ✓ grouped crate paths | src/crates/{app,core,platform,services} |
-| `R-ARCH-02` | `M2 missing feature` | ✓ workspace manifest | 19 crates in Cargo.toml |
-| `R-LOG-01` | `M5 stale docs` | ✓ retention discipline | wave logs cleaned |
-| `R-I18N-01` | `M4 verification gap` | ✓ IME composition isolation | JP-03, JP-04, JP-05, JP-06, JP-07 tests |
-| `R-I18N-02` | `M4 verification gap` | ✓ IME stable under churn | JP-08R, JP-09R tests |
-
-## Open Drift Rows
-
-| Req ID | Canonical Spec | Expected Behavior | Current Gap | Class | Next Action | Status |
-|---|---|---|---|---|---|---|
-| `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | bounded latency PTY I/O | unit tests only; no live E2E | `M4 verification gap` | PTY E2E harness | open |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features proven by E2E | 89 unit tests; no PTY E2E | `M4 verification gap` | PTY E2E harness | open |
+| Req ID | Canonical Document | Requirement | Code Path(s) | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
+|---|---|---|---|---|---|---|---|---|
+| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` must dispatch as `A` append semantics | `src/crates/platform/kjxlkj-input/src/decode.rs`, `src/crates/core/kjxlkj-core-mode/src/normal.rs` | `WR-01R`, `KEY-TRACE-01` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | shared tree preserves deterministic focus and geometry invariants | `src/crates/core/kjxlkj-core-state/src/tree.rs`, `src/crates/core/kjxlkj-core-state/src/split.rs` | `WIN-01R`, `WIN-04R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | full `Ctrl-w` family works across mixed windows | `src/crates/core/kjxlkj-core-mode/src/normal.rs` | `WINNAV-01R`..`WINNAV-06R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer command/key paths are reachable | `src/crates/services/kjxlkj-service-explorer/src/state.rs` | `EXP-01R`, `EXP-02R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal lifecycle and mixed-window behavior are stable | `src/crates/services/kjxlkj-service-terminal/src/service.rs` | `TERM-01R`..`TERM-07R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | long lines and wide graphemes wrap without overflow | `src/crates/platform/kjxlkj-render/src/grid.rs` | `WRAP-11R`..`WRAP-16R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and grapheme-safe in churn | `src/crates/core/kjxlkj-core-state/src/editor.rs`, `src/crates/platform/kjxlkj-render/src/grid.rs` | `CUR-07R`..`CUR-11R` | contradiction | `M1 correctness` | implement + test-add | open |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires PTY E2E evidence | `src/crates/app/kjxlkj-test-harness/` | all `*R` | test-gap | `M4 verification gap` | test-add | open |
+| `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source topology stays within fan-out and file size policy | `src/crates/` tree | topology audit | aligned | none | monitor | pending verification |
+| `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO coverage links every markdown file directly | `docs/todo/doc-coverage/` | link audit | contradiction | `M5 stale docs` | spec-update | open |
 
 ## Summary
 
-| Class | Closed | Open |
-|---|---:|---:|
-| `M1 correctness` | 0 | 0 |
-| `M2 missing feature` | 15 | 0 |
-| `M3 undocumented behavior` | 0 | 0 |
-| `M4 verification gap` | 2 | 2 |
-| `M5 stale docs` | 1 | 0 |
+| Class | Open |
+|---|---:|
+| `M1 correctness` | 7 |
+| `M2 missing feature` | 0 |
+| `M3 undocumented behavior` | 0 |
+| `M4 verification gap` | 1 |
+| `M5 stale docs` | 1 |
 
 ## Update Rules
 
 - close a row only with reproducible evidence
-- close high-severity rows before release claims
-- update this file together with `CONFORMANCE`, `LIMITATIONS`, and TODO state
+- close `M1` rows before release-oriented work
+- update this file together with `CONFORMANCE`, `LIMITATIONS`, and active TODO docs
 
 ## Related
 
 - Conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - Limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- TODO verification gates: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)
+- TODO mismatch matrix: [/docs/todo/current/mismatch-matrix.md](/docs/todo/current/mismatch-matrix.md)

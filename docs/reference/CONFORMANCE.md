@@ -2,69 +2,74 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger records what is currently verified with deterministic evidence.
+This ledger records the strongest verified state as of the snapshot date.
 
 ## Status Vocabulary
 
 | Status | Meaning |
 |---|---|
-| `verified` | confirmed by deterministic evidence in current repo state |
-| `partial` | partly available but not yet release-safe |
-| `unverified` | no trustworthy runtime evidence is currently available |
-| `blocked` | known high-severity mismatch remains open |
+| `verified` | deterministic evidence exists and no high-severity contradiction is known |
+| `partial` | behavior exists but verification or reachability is incomplete |
+| `blocked` | high-severity mismatch is known and not yet closed |
+| `unverified` | no trustworthy evidence currently exists |
 
-## Current Snapshot (2026-02-10)
+## Current Snapshot (2026-02-11)
 
-The repository now has a complete editor framework implementation.
+Implementation artifacts exist in this repository, but conformance is blocked by multiple
+user-reported runtime failures in high-risk domains.
 
-- 20 crates in grouped structure (app/core/platform/services)
-- 83 source files with 7500+ lines of Rust code
-- 89 tests passing across all crates
-- All source files under 200 lines
-- All 5 reconstruction phases complete
+Strongest evidence order applied in this snapshot:
 
-## Verification Evidence Available
+1. user-reported live runtime failures
+2. deterministic integration/unit tests
+3. static code-path inspection
+
+Because high-severity blockers remain open, no affected domain may be marked `verified`.
+
+## Evidence Summary
 
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
-| Grouped crate topology | `verified` | 2026-02-10 | src/crates/{app,core,platform,services} present |
-| Workspace builds | `verified` | 2026-02-10 | `cargo build` succeeded |
-| Tests pass | `verified` | 2026-02-10 | `cargo test --workspace` 89 pass |
-| Clippy clean | `verified` | 2026-02-10 | No clippy warnings |
-| Files under 200 lines | `verified` | 2026-02-10 | All source files ≤188 lines |
-| Directory children under 12 | `verified` | 2026-02-10 | No directory exceeds 12 children |
-| TODO doc coverage completeness | `verified` | 2026-02-10 | direct-link inventory covers all markdown docs |
-| IME composition isolation | `verified` | 2026-02-10 | JP-03 through JP-09R tests pass |
-| Wrap boundary safety | `verified` | 2026-02-10 | WRAP-11R through WRAP-16R tests pass |
-| Service integration | `verified` | 2026-02-10 | SVC-01 through SVC-07 tests pass |
-| Markdown link integrity | `partial` | 2026-02-10 | not yet verified with link checker |
-| Runtime E2E tests | `partial` | 2026-02-10 | Unit-level harness; PTY E2E pending |
+| Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
+| Workspace grouping contract is documented | `verified` | 2026-02-11 | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) |
+| Runtime E2E gate for blocker closure | `partial` | 2026-02-11 | matrix defined, implementation evidence incomplete |
+| `Shift+a` append semantics | `blocked` | 2026-02-11 | user-reported failure; blocker `LIM-BLOCK-KEY-03` |
+| Mixed-window split and navigation correctness | `blocked` | 2026-02-11 | user-reported failure; blockers `LIM-BLOCK-WIN-03` and `LIM-BLOCK-NAV-03` |
+| Explorer launch/actions | `blocked` | 2026-02-11 | user-reported failure; blocker `LIM-BLOCK-EXP-03` |
+| Terminal leaf lifecycle and integration | `blocked` | 2026-02-11 | user-reported instability; blocker `LIM-BLOCK-TERM-03` |
+| Wrap and cursor display stability | `blocked` | 2026-02-11 | user-reported failures; blockers `LIM-BLOCK-WRAP-03` and `LIM-BLOCK-CURSOR-03` |
 
-## Domain Summary
+## Domain Status
 
-| Domain | Status | Note |
+| Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `verified` | crossterm EventStream, shift normalization, 8 decode tests |
-| Cursor semantics and display | `verified` | grapheme-aware cursor, CUR-08R/CUR-10R tests |
-| Window tree and split management | `verified` | WindowTree with 7 tests, focus tracking |
-| Explorer window and actions | `verified` | ExplorerState with 4 tests, file tree navigation |
-| Terminal window integration | `verified` | Screen, Parser with 7 tests, resize handling |
-| Wrapping and viewport safety | `verified` | grid rendering, width-2 padding, 5 wrap tests |
-| IME composition | `verified` | IME-first routing, leader blocking, 7 IME tests |
-| Service integrations (LSP/Git/Index/FS) | `verified` | 10 service tests, lifecycle management |
-| Source topology and workspace layout | `verified` | grouped crate-root layout, all constraints met |
-| Documentation and TODO integrity | `verified` | all 5 phases complete with [x] markers |
+| Input decoding and key normalization | `blocked` | `Shift+a` behavior not trusted end-to-end |
+| Window tree and split lifecycle | `blocked` | split/focus/close correctness reported broken |
+| Mixed-window navigation (`Ctrl-w`) | `blocked` | directional and cyclic behavior unstable |
+| Explorer window and actions | `blocked` | launch and actions not working reliably |
+| Terminal window integration | `blocked` | lifecycle and mixed-window behavior unstable |
+| Viewport wrap safety | `blocked` | long-line behavior reported buggy |
+| Cursor visibility and grapheme safety | `blocked` | cursor display issues reported in churn scenarios |
+| IME interaction around leader/window commands | `partial` | contract exists; live blocker evidence still required |
+| Source topology and workspace policy | `partial` | structure exists but must be revalidated during rebuild |
+| Documentation coverage and TODO integrity | `partial` | regenerated in this wave; requires verification gate pass |
 
-## Release Readiness Rule
+## Release Rule
 
-The implementation MUST NOT be considered conformant for release until all critical blockers in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) are closed with:
+Release conformance is not met while any high-severity limitation is open.
 
-1. reconstructed runtime behavior from real input paths
-2. deterministic regression and live E2E evidence
-3. synchronized `CONFORMANCE`, `LIMITATIONS`, `DRIFT_MATRIX`, and TODO updates
+Release status may switch from blocked only when all are true:
+
+1. all high-severity rows in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+   are closed
+2. matching `*R` E2E tests in [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+   pass deterministically
+3. [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md),
+   [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and
+   [/docs/todo/current/README.md](/docs/todo/current/README.md) are synchronized in the same change
 
 ## Related
 
-- Open blockers: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- Reconstruction plan: [/docs/todo/current/README.md](/docs/todo/current/README.md)
+- Open limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Drift rows: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- Active TODO wave: [/docs/todo/current/README.md](/docs/todo/current/README.md)
