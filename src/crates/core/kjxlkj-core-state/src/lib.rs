@@ -20,6 +20,7 @@ mod editor_edit;
 mod editor_ext;
 mod editor_ops;
 mod editor_snapshot;
+mod editor_visual;
 mod editor_window;
 mod register;
 mod search;
@@ -35,3 +36,5 @@ pub use window_state::WindowState;
 mod editor_search_tests;
 #[cfg(test)]
 mod editor_textobj_tests;
+#[cfg(test)]
+mod editor_visual_tests;

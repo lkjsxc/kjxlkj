@@ -1,6 +1,4 @@
-//! Central editor state owned by the core task.
-//! See /docs/spec/architecture/runtime.md and
-//! /docs/spec/editor/README.md.
+//! Central editor state. See /docs/spec/architecture/runtime.md.
 
 use std::collections::HashMap;
 
@@ -8,7 +6,7 @@ use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition, PendingState};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
     Action, BufferId, CmdlineState, ContentKind,
-    Key, KeyModifiers, Mode, WindowId,
+    Key, KeyModifiers, Mode, VisualKind, WindowId,
 };
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 
@@ -38,6 +36,8 @@ pub struct EditorState {
     pub search: SearchState,
     /// Text accumulated during current insert session.
     pub(crate) insert_text: String,
+    /// Visual selection anchor position (set when entering visual mode).
+    pub visual_anchor: Option<kjxlkj_core_edit::Cursor>,
 }
 
 impl EditorState {
@@ -62,6 +62,7 @@ impl EditorState {
             registers: RegisterStore::new(),
             last_change: None, search: SearchState::new(),
             insert_text: String::new(),
+            visual_anchor: None,
         }
     }
 
@@ -90,9 +91,23 @@ impl EditorState {
         if resolved == Mode::Insert && self.mode != Mode::Insert {
             self.insert_text.clear();
         }
-        self.mode = resolved;
+        // Set visual anchor when entering visual mode.
+        if matches!(resolved, Mode::Visual(_)) && !matches!(self.mode, Mode::Visual(_)) {
+            let cur = self.windows.get(&self.focus.focused)
+                .map(|w| w.cursor)
+                .unwrap_or_default();
+            self.visual_anchor = Some(cur);
+        }
+        // Remember if we were in visual mode before apply_action (which may change self.mode).
+        let was_visual = matches!(self.mode, Mode::Visual(_));
+        // Apply action BEFORE clearing visual anchor (operator needs it).
         if is_text_changing(&action) { self.last_change = Some(action.clone()); }
         self.apply_action(action);
+        // Clear anchor when leaving visual mode (after action applied).
+        if !matches!(resolved, Mode::Visual(_)) && was_visual {
+            self.visual_anchor = None;
+        }
+        self.mode = resolved;
         self.update_filename_register();
         self.sequence += 1;
     }

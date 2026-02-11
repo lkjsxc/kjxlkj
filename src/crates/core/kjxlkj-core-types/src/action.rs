@@ -122,6 +122,10 @@ pub enum Action {
     DecrementNumber,
     /// Set an editor option (:set opt=val).
     SetOption(String, String),
+    /// Apply operator on visual selection.
+    VisualOperator(Operator),
+    /// Swap visual anchor and cursor.
+    VisualSwapAnchor,
 }
 
 /// Cursor motion.

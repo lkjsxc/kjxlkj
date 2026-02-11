@@ -123,6 +123,8 @@ impl EditorState {
             Action::IncrementNumber => self.increment_number(),
             Action::DecrementNumber => self.decrement_number(),
             Action::SetOption(ref name, ref val) => self.apply_set_option(name, val),
+            Action::VisualOperator(op) => self.apply_visual_operator(op),
+            Action::VisualSwapAnchor => self.swap_visual_anchor(),
             _ => {}
         }
     }

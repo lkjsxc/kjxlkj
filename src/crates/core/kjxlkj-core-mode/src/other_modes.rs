@@ -2,7 +2,7 @@
 //! Replace, OperatorPending, TerminalInsert.
 
 use kjxlkj_core_types::{
-    Action, ForceModifier, Key, KeyModifiers, Mode, Motion, Operator,
+    Action, ForceModifier, Key, KeyModifiers, Mode, Motion, Operator, VisualKind,
 };
 
 use crate::normal_motions;
@@ -34,11 +34,53 @@ pub(crate) fn handle_command_key(key: &Key, _mods: &KeyModifiers) -> (Action, Op
     }
 }
 
-pub(crate) fn handle_visual_key(key: &Key, _mods: &KeyModifiers, _mode: Mode) -> (Action, Option<Mode>) {
-    match key {
-        Key::Escape => (Action::ExitToNormal, Some(Mode::Normal)),
-        _ => (Action::Noop, None),
+pub(crate) fn handle_visual_key(key: &Key, mods: &KeyModifiers, mode: Mode) -> (Action, Option<Mode>) {
+    let kind = match mode { Mode::Visual(k) => k, _ => VisualKind::Char };
+    if !mods.ctrl {
+        if let Key::Char(c) = key {
+            // Sub-mode switching or exit.
+            match *c {
+                'v' => return if kind == VisualKind::Char {
+                    (Action::ExitToNormal, Some(Mode::Normal))
+                } else {
+                    (Action::EnterMode(Mode::Visual(VisualKind::Char)), Some(Mode::Visual(VisualKind::Char)))
+                },
+                'V' => return if kind == VisualKind::Line {
+                    (Action::ExitToNormal, Some(Mode::Normal))
+                } else {
+                    (Action::EnterMode(Mode::Visual(VisualKind::Line)), Some(Mode::Visual(VisualKind::Line)))
+                },
+                'o' => return (Action::VisualSwapAnchor, None),
+                'd' | 'x' => return (Action::VisualOperator(Operator::Delete), Some(Mode::Normal)),
+                'y' => return (Action::VisualOperator(Operator::Yank), Some(Mode::Normal)),
+                'c' | 's' => return (Action::VisualOperator(Operator::Change), Some(Mode::Insert)),
+                '>' => return (Action::VisualOperator(Operator::Indent), Some(Mode::Normal)),
+                '<' => return (Action::VisualOperator(Operator::Dedent), Some(Mode::Normal)),
+                '~' => return (Action::VisualOperator(Operator::ToggleCase), Some(Mode::Normal)),
+                'u' => return (Action::VisualOperator(Operator::Lowercase), Some(Mode::Normal)),
+                'U' => return (Action::VisualOperator(Operator::Uppercase), Some(Mode::Normal)),
+                'J' => return (Action::JoinLines, Some(Mode::Normal)),
+                'p' => return (Action::PutAfter, Some(Mode::Normal)),
+                _ => {}
+            }
+        }
     }
+    if mods.ctrl {
+        if let Key::Char('v') = key {
+            return if kind == VisualKind::Block {
+                (Action::ExitToNormal, Some(Mode::Normal))
+            } else {
+                (Action::EnterMode(Mode::Visual(VisualKind::Block)), Some(Mode::Visual(VisualKind::Block)))
+            };
+        }
+    }
+    // Escape exits visual mode.
+    if matches!(key, Key::Escape) { return (Action::ExitToNormal, Some(Mode::Normal)); }
+    // Try motions.
+    if let Some(action) = normal_motions::motion_for_key(key) {
+        return (action, None);
+    }
+    (Action::Noop, None)
 }
 
 pub(crate) fn handle_replace_key(key: &Key, _mods: &KeyModifiers) -> (Action, Option<Mode>) {
