@@ -18,6 +18,7 @@ mod editor_action;
 mod editor_buffer;
 mod editor_cmdline;
 mod editor_edit;
+mod editor_explorer;
 mod editor_ext;
 mod editor_ops;
 mod editor_snapshot;

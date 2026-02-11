@@ -5,10 +5,11 @@ use std::collections::HashMap;
 use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition, PendingState};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
-    Action, BufferId, CmdlineState, ContentKind,
+    Action, BufferId, CmdlineState, ContentKind, ExplorerStateId,
     Key, KeyModifiers, Mode, VisualKind, WindowId,
 };
 use kjxlkj_core_ui::{FocusState, LayoutTree};
+use kjxlkj_service_explorer::ExplorerState;
 
 use crate::register::RegisterStore;
 use crate::search::SearchState;
@@ -26,18 +27,14 @@ pub struct EditorState {
     pub quit_requested: bool,
     pub sequence: u64,
     pub(crate) id_counter: u64,
-    pub pending: PendingState, // Multi-key pending state for normal mode.
-    pub registers: RegisterStore, // Register store for yank/delete/put.
-    /// Last text-changing action for dot-repeat.
+    pub pending: PendingState,
+    pub registers: RegisterStore,
     pub(crate) last_change: Option<Action>,
-    /// Search state for / and ? patterns.
     pub search: SearchState,
-    /// Text accumulated during current insert session.
     pub(crate) insert_text: String,
-    /// Visual selection anchor (set when entering visual mode).
     pub visual_anchor: Option<kjxlkj_core_edit::Cursor>,
-    /// Alternate buffer for Ctrl-^ / # register.
     pub alternate_buffer: Option<BufferId>,
+    pub explorer_states: HashMap<ExplorerStateId, ExplorerState>,
 }
 
 impl EditorState {
@@ -63,6 +60,7 @@ impl EditorState {
             last_change: None, search: SearchState::new(),
             insert_text: String::new(),
             visual_anchor: None, alternate_buffer: None,
+            explorer_states: HashMap::new(),
         }
     }
 
@@ -72,6 +70,14 @@ impl EditorState {
         if let Mode::Command(kind) = self.mode {
             self.handle_command_input(key, mods, kind);
             return;
+        }
+        // Explorer key routing: intercept j/k/h/l/q/Enter in normal mode
+        // when focused on an explorer window. Ctrl-w still passes through.
+        if self.mode == Mode::Normal && !mods.ctrl {
+            if self.handle_explorer_key(key, mods) {
+                self.sequence += 1;
+                return;
+            }
         }
         let reg = self.pending.register;
         let (action, new_mode) = dispatch_key(self.mode, key, mods, &mut self.pending);
@@ -144,57 +150,34 @@ mod tests {
     use kjxlkj_core_types::EditorSnapshot;
     fn ed() -> EditorState { EditorState::new(80, 24) }
     fn m() -> KeyModifiers { KeyModifiers::default() }
-    #[test]
-    fn initial_state() {
-        let s = ed();
-        assert_eq!(s.mode, Mode::Normal);
-        assert_eq!(s.buffers.len(), 1);
-        assert!(!s.quit_requested);
+    #[test] fn initial_state() {
+        let s = ed(); assert_eq!(s.mode, Mode::Normal); assert!(!s.quit_requested);
     }
-    #[test]
-    fn insert_and_exit() {
+    #[test] fn insert_and_exit() {
         let mut s = ed();
-        s.handle_key(&Key::Char('i'), &m());
-        assert_eq!(s.mode, Mode::Insert);
-        s.handle_key(&Key::Char('x'), &m());
-        s.handle_key(&Key::Escape, &m());
+        s.handle_key(&Key::Char('i'), &m()); assert_eq!(s.mode, Mode::Insert);
+        s.handle_key(&Key::Char('x'), &m()); s.handle_key(&Key::Escape, &m());
         assert_eq!(s.mode, Mode::Normal);
     }
-    #[test]
-    fn shift_a_appends_at_eol() {
+    #[test] fn shift_a_appends_at_eol() {
         let mut s = ed();
         s.buffers.get_mut(&BufferId(0)).unwrap().insert(0, 0, "hello").unwrap();
-        s.handle_key(&Key::Char('A'), &m());
-        assert_eq!(s.mode, Mode::Insert);
+        s.handle_key(&Key::Char('A'), &m()); assert_eq!(s.mode, Mode::Insert);
         assert_eq!(s.windows.get(&s.focus.focused).unwrap().cursor.col, 5);
     }
-    #[test]
-    fn snapshot_works() {
-        let s = ed();
-        let snap = s.snapshot();
-        assert_eq!(snap.terminal_size, (80, 24));
+    #[test] fn snapshot_works() { let s = ed(); assert_eq!(s.snapshot().terminal_size, (80, 24)); }
+    #[test] fn split_and_close() {
+        let mut s = ed(); s.apply_action(Action::SplitVertical); assert_eq!(s.windows.len(), 2);
+        s.apply_action(Action::CloseWindow); assert_eq!(s.windows.len(), 1);
     }
-    #[test]
-    fn split_and_close() {
-        let mut s = ed();
-        s.apply_action(Action::SplitVertical);
-        assert_eq!(s.windows.len(), 2);
-        s.apply_action(Action::CloseWindow);
-        assert_eq!(s.windows.len(), 1);
-    }
-    #[test]
-    fn insert_text_recorded_to_dot_register() {
-        let mut s = ed();
-        s.handle_key(&Key::Char('i'), &m());
-        s.handle_key(&Key::Char('a'), &m());
-        s.handle_key(&Key::Char('b'), &m());
+    #[test] fn insert_text_recorded_to_dot_register() {
+        let mut s = ed(); s.handle_key(&Key::Char('i'), &m());
+        s.handle_key(&Key::Char('a'), &m()); s.handle_key(&Key::Char('b'), &m());
         s.handle_key(&Key::Escape, &m());
         assert_eq!(s.registers.get('.').unwrap().text, "ab");
     }
-    #[test]
-    fn filename_register_populated() {
-        let mut s = ed();
-        s.handle_key(&Key::Char('j'), &m());
+    #[test] fn filename_register_populated() {
+        let mut s = ed(); s.handle_key(&Key::Char('j'), &m());
         assert_eq!(s.registers.get('%').unwrap().text, "[No Name]");
     }
 }

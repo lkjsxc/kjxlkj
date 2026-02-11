@@ -11,4 +11,5 @@ kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }
 kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
 kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
 kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-service-explorer = { path = "../../services/kjxlkj-service-explorer" }
 regex = { workspace = true }

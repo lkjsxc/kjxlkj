@@ -99,12 +99,16 @@ impl EditorState {
 
     /// :Explorer — opens or focuses explorer window.
     pub(crate) fn open_explorer(&mut self) {
-        let ec = ContentKind::Explorer(ExplorerStateId(0));
         for (&wid, ws) in &self.windows {
             if matches!(ws.content, ContentKind::Explorer(_)) {
                 self.focus.set_focus(wid); return;
             }
         }
+        let eid = ExplorerStateId(self.next_id());
+        let ec = ContentKind::Explorer(eid);
+        let root = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
+        let estate = kjxlkj_service_explorer::ExplorerState::new(root);
+        self.explorer_states.insert(eid, estate);
         let target = self.layout.window_ids().first().copied().unwrap_or(self.focus.focused);
         let nw = WindowId(self.next_id());
         self.layout.split_horizontal(target, nw, ec);
@@ -112,15 +116,18 @@ impl EditorState {
         self.focus.set_focus(nw);
     }
 
-    /// :ExplorerClose
+    /// :ExplorerClose — removes explorer and its state.
     pub(crate) fn close_explorer(&mut self) {
         let ew = self.windows.iter()
             .find(|(_, ws)| matches!(ws.content, ContentKind::Explorer(_)))
-            .map(|(&w, _)| w);
-        if let Some(wid) = ew {
+            .map(|(&w, _)| (w, self.windows.get(&w).unwrap().content));
+        if let Some((wid, content)) = ew {
             if self.layout.window_ids().len() <= 1 { return; }
             if self.layout.close_window(wid) {
                 self.windows.remove(&wid);
+                if let ContentKind::Explorer(eid) = content {
+                    self.explorer_states.remove(&eid);
+                }
                 if self.focus.focused == wid {
                     let fb = self.layout.window_ids().first().copied().unwrap_or(WindowId(0));
                     self.focus.on_window_closed(wid, fb);
