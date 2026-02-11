@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] Ex command grammar, ranges, substitution, and command execution determinism.
+- [ ] Ex command system, command execution pipeline, ranges, and substitution safety.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- [ ] [/docs/spec/commands/syntax.md](/docs/spec/commands/syntax.md)
+- [ ] [/docs/spec/commands/essential.md](/docs/spec/commands/essential.md)
+- [ ] [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+- [ ] [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
+- [ ] [/docs/spec/commands/ranges/README.md](/docs/spec/commands/ranges/README.md)
+- [ ] [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
+- [ ] [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-03-commands-and-ranges/wave-030.md](/docs/todo/waves/stage-03-commands-and-ranges/wave-030.md)
 - [ ] [/docs/todo/waves/stage-03-commands-and-ranges/wave-031.md](/docs/todo/waves/stage-03-commands-and-ranges/wave-031.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-04-window-explorer-terminal/README.md](/docs/todo/waves/stage-04-window-explorer-terminal/README.md)

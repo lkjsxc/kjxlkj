@@ -2,18 +2,16 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-This program is a multi-stage, dozens-of-waves execution chain for full reconstruction.
+This multi-stage program defines full reconstruction end-to-end.
 
-## Global Wave Rules
+## Execution Rules
 
 - [ ] execute stages in listed order only
 - [ ] execute waves in each stage in listed order only
-- [ ] do not skip direct document-read checkboxes
-- [ ] close correctness and reachability before optimization
-- [ ] update reference ledgers in lock-step with TODO status
-- [ ] treat every wave as evidence-gated, not assumption-gated
-- [ ] if contradictions are found, downgrade ledgers immediately and continue
-- [ ] maintain topology and file-size constraints during implementation
+- [ ] do not check completion boxes without deterministic evidence
+- [ ] prioritize correctness and user-visible behavior over convenience
+- [ ] keep ledgers synchronized with wave status
+- [ ] keep source directories near 12 direct children and split files before 200 lines
 
 ## Ordered Stages
 
@@ -29,6 +27,5 @@ This program is a multi-stage, dozens-of-waves execution chain for full reconstr
 
 ## Program Exit
 
-- [ ] all stage readmes are fully checked
-- [ ] all wave files are fully checked with deterministic evidence
-- [ ] continue to inventory closure: [/docs/todo/inventory/README.md](/docs/todo/inventory/README.md)
+- [ ] all stage and wave files are completed with evidence
+- [ ] continue to release ledger closure in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

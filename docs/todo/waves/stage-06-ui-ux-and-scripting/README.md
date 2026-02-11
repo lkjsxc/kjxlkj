@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] UI rendering behavior, UX guarantees, mapping DSL, and scripting semantics.
+- [ ] User-facing UI contracts, keybinding UX, theming, and scripting/mapping behavior.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- [ ] [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
+- [ ] [/docs/spec/ui/components.md](/docs/spec/ui/components.md)
+- [ ] [/docs/spec/ux/README.md](/docs/spec/ux/README.md)
+- [ ] [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- [ ] [/docs/spec/ux/keybindings/README.md](/docs/spec/ux/keybindings/README.md)
+- [ ] [/docs/spec/scripting/README.md](/docs/spec/scripting/README.md)
+- [ ] [/docs/spec/scripting/mappings/README.md](/docs/spec/scripting/mappings/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-06-ui-ux-and-scripting/wave-054.md](/docs/todo/waves/stage-06-ui-ux-and-scripting/wave-054.md)
 - [ ] [/docs/todo/waves/stage-06-ui-ux-and-scripting/wave-055.md](/docs/todo/waves/stage-06-ui-ux-and-scripting/wave-055.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-07-technical-hardening/README.md](/docs/todo/waves/stage-07-technical-hardening/README.md)

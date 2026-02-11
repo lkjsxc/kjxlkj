@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] Split lifecycle, explorer/terminal routing, and mixed-pane focus invariants.
+- [ ] Split lifecycle, mixed-pane focus, explorer behavior, and terminal integration.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
+- [ ] [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
+- [ ] [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- [ ] [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
+- [ ] [/docs/spec/features/navigation/README.md](/docs/spec/features/navigation/README.md)
+- [ ] [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- [ ] [/docs/spec/features/terminal/README.md](/docs/spec/features/terminal/README.md)
+- [ ] [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-04-window-explorer-terminal/wave-038.md](/docs/todo/waves/stage-04-window-explorer-terminal/wave-038.md)
 - [ ] [/docs/todo/waves/stage-04-window-explorer-terminal/wave-039.md](/docs/todo/waves/stage-04-window-explorer-terminal/wave-039.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-05-services-and-features/README.md](/docs/todo/waves/stage-05-services-and-features/README.md)

@@ -14,7 +14,7 @@ Check current status first:
 If the repo is docs-only (no workspace artifacts), reconstruct first:
 
 - [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Build and Run
 

@@ -24,7 +24,7 @@ Runtime conformance is therefore unverified by design until reconstruction.
 | Check | Status | Evidence Date | Evidence |
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
-| TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md) |
+| TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
 | Implementation workspace is present | `unverified` | 2026-02-11 | intentionally absent in docs-only preparation state |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `unverified` | 2026-02-11 | no executable artifact in current baseline |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | pending reconstruction and execution |

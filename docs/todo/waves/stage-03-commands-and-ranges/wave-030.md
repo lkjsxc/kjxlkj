@@ -7,115 +7,92 @@ Back: [/docs/todo/waves/stage-03-commands-and-ranges/README.md](/docs/todo/waves
 - [ ] Wave ID: `W030`
 - [ ] Stage: `Stage 03: Commands and Ranges`
 - [ ] Focus: Live E2E and Race Validation
-- [ ] Scope statement is understood: Ex command grammar, ranges, substitution, and command execution determinism.
+- [ ] Stage scope understood: Ex command system, command execution pipeline, ranges, and substitution safety.
 
-## Mandatory Document Reads (Direct Links)
+## Tier-A Critical Docs (Highest Priority, Re-read)
 
-- [ ] [/docs/spec/editing/text-objects/around-text-objects.md](/docs/spec/editing/text-objects/around-text-objects.md)
-- [ ] [/docs/spec/editing/text-objects/bracket-text-objects.md](/docs/spec/editing/text-objects/bracket-text-objects.md)
-- [ ] [/docs/spec/editing/text-objects/class-text-objects.md](/docs/spec/editing/text-objects/class-text-objects.md)
-- [ ] [/docs/spec/editing/text-objects/function-text-objects.md](/docs/spec/editing/text-objects/function-text-objects.md)
-- [ ] [/docs/spec/editing/text-objects/inner-text-objects.md](/docs/spec/editing/text-objects/inner-text-objects.md)
-- [ ] [/docs/spec/editing/text-objects/quote-text-objects.md](/docs/spec/editing/text-objects/quote-text-objects.md)
+- [ ] [/README.md](/README.md)
+- [ ] [/docs/README.md](/docs/README.md)
+- [ ] [/docs/policy/README.md](/docs/policy/README.md)
+- [ ] [/docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md)
+- [ ] [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [ ] [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [ ] [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+- [ ] [/docs/spec/README.md](/docs/spec/README.md)
+- [ ] [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- [ ] [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- [ ] [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)
+- [ ] [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
+- [ ] [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
+- [ ] [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- [ ] [/docs/reference/README.md](/docs/reference/README.md)
+- [ ] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [ ] [/docs/todo/README.md](/docs/todo/README.md)
+- [ ] [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Requirement Normalization
+## Tier-B Stage Docs (Stage Priority, Re-read)
 
-- [ ] extract normative `MUST` and `MUST NOT` statements from all wave docs
-- [ ] record ambiguous terms and normalize into deterministic language
-- [ ] map each requirement to expected user-visible behavior
-- [ ] map each requirement to expected state transition
-- [ ] classify requirement risk: correctness, reachability, or verification
-- [ ] identify required command/key entry paths
-- [ ] identify required data structures and invariants
-- [ ] identify failure modes and explicit negative behavior
-- [ ] identify persistence/session expectations where relevant
-- [ ] identify cross-domain dependencies and required order
-- [ ] identify required diagnostics and failure artifacts
-- [ ] identify mandatory test IDs from technical specs
-- [ ] identify any policy constraints impacting implementation shape
-- [ ] identify required ledger updates for closure evidence
-- [ ] record unresolved contradictions for later drift entries
-- [ ] confirm wave scope is minimal but complete for assigned docs
+- [ ] [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- [ ] [/docs/spec/commands/syntax.md](/docs/spec/commands/syntax.md)
+- [ ] [/docs/spec/commands/essential.md](/docs/spec/commands/essential.md)
+- [ ] [/docs/spec/commands/execution/README.md](/docs/spec/commands/execution/README.md)
+- [ ] [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
+- [ ] [/docs/spec/commands/ranges/README.md](/docs/spec/commands/ranges/README.md)
+- [ ] [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
+- [ ] [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 
-## Implementation Decomposition
+## Tier-C Wave Direct Docs (Coverage Slice)
 
-- [ ] define concrete module boundaries before coding
-- [ ] keep each touched source directory near 12 direct children
-- [ ] split files before they exceed 200 lines
-- [ ] separate state mutation from IO side effects
-- [ ] separate parsing from dispatch and rendering paths
-- [ ] define deterministic action routing for each entry path
-- [ ] wire real user-reachable paths before auxiliary helpers
-- [ ] implement explicit error paths for invalid or partial states
-- [ ] preserve backward-compatible behavior where required by spec
-- [ ] make behavior reproducible across repeated runs
-- [ ] add or update structured diagnostics for failure triage
-- [ ] avoid hidden global state and implicit coupling
-- [ ] document any intentional defer decisions in ledgers
-- [ ] confirm each requirement has an implementation hook or explicit TODO
-- [ ] verify no placeholder/stub-only paths are treated as complete
-- [ ] prepare small cohesive commits scoped to one logical closure unit
+- [ ] [/docs/spec/features/config/filetype.md](/docs/spec/features/config/filetype.md)
+- [ ] [/docs/spec/features/config/ftconfig.md](/docs/spec/features/config/ftconfig.md)
+- [ ] [/docs/spec/features/config/hooks-events.md](/docs/spec/features/config/hooks-events.md)
+- [ ] [/docs/spec/features/config/implementation.md](/docs/spec/features/config/implementation.md)
+- [ ] [/docs/spec/features/config/keybinding_hints.md](/docs/spec/features/config/keybinding_hints.md)
+- [ ] [/docs/spec/features/config/mouse-support.md](/docs/spec/features/config/mouse-support.md)
+- [ ] [/docs/spec/features/config/which-key.md](/docs/spec/features/config/which-key.md)
 
-## Unit and Integration Verification
+## Implementation Tasks
 
-- [ ] design failing regression tests before or with the fix
-- [ ] cover boundary conditions and state transitions
-- [ ] cover invalid inputs and expected error behavior
-- [ ] cover deterministic replay and idempotent operations
-- [ ] cover persistence/restore where applicable
-- [ ] cover mixed-feature interaction where applicable
-- [ ] cover Unicode or width-sensitive behavior when relevant
-- [ ] cover race-prone interactions with deterministic deadlines
-- [ ] attach each test to requirement IDs and wave ID
-- [ ] verify test names and IDs remain stable and searchable
-- [ ] remove redundant low-signal tests if superseded by stronger coverage
-- [ ] document residual gaps explicitly if any test cannot be added now
-- [ ] confirm no checkbox is checked without direct test evidence
-- [ ] ensure test output artifacts are sufficient for debugging
+- [ ] extract and normalize all normative requirements from Tier-A/B/C docs
+- [ ] map requirements to concrete modules and public contracts
+- [ ] define deterministic command/key entry paths for touched behaviors
+- [ ] implement reachable user-visible behavior before convenience paths
+- [ ] enforce explicit error handling and deterministic fallback paths
+- [ ] preserve topology and file-size constraints during implementation
+- [ ] avoid stub-only or dead-path completion claims
+- [ ] split modules/files early when growth risk appears
+- [ ] keep behavior reproducible across repeated runs and scripts
+- [ ] document unresolved contradictions as explicit drift rows
 
-## Live E2E and Boundary Validation
+## Verification Tasks
 
-- [ ] run user-like PTY flows for all touched blocker behaviors
-- [ ] dump state after each key input for touched E2E cases
-- [ ] assert screen output rows against explicit expectations
-- [ ] assert cursor/caret coordinates and focused pane type
-- [ ] assert pane geometry/layout summary consistency
-- [ ] assert raw input to normalized action mapping correctness
-- [ ] assert no hidden regressions in mixed-feature scripts
-- [ ] run at least one stress or race scenario for touched domains
-- [ ] capture bounded failure artifacts for every failing run
-- [ ] confirm blocker closure is not based on trace-only evidence
-- [ ] rerun same script twice and verify deterministic outcome
-- [ ] record exact commands and pass/fail signals in evidence notes
-- [ ] update E2E matrix references if IDs or scope changed
-- [ ] leave unchecked if any required E2E scenario remains unproven
+- [ ] add or update failing regression tests for touched requirements
+- [ ] run unit and integration suites for touched modules
+- [ ] run required `*R` E2E cases for touched blocker surfaces
+- [ ] dump state after each key input in blocker E2E tests
+- [ ] assert screen output rows, focus, cursor/caret, and pane geometry
+- [ ] run at least one boundary/race scenario relevant to this wave
+- [ ] capture deterministic failure artifacts for failing cases
+- [ ] rerun key scripts to verify deterministic replay equivalence
+- [ ] record exact command outputs and pass/fail signals for evidence
 
-## Drift, Ledger, and Traceability Sync
+## Ledger Sync Tasks
 
-- [ ] update limitation rows for newly discovered gaps
-- [ ] update drift rows with status and mismatch class
-- [ ] update conformance claims to strongest current evidence only
-- [ ] ensure requirement IDs map to code paths and test paths
-- [ ] ensure evidence links are deterministic and reproducible
-- [ ] ensure TODO checkboxes align with ledger status
+- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) with strongest evidence only
+- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) for open/closed rows
+- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) row statuses and classes
+- [ ] ensure wave completion checkboxes match ledger truth
 - [ ] ensure no stale green claims remain after contradictory evidence
-- [ ] record deferred items with rationale and concrete next action
-- [ ] cross-check with policy/spec precedence before closure
-- [ ] confirm this wave produced no orphaned documentation links
 
-## Wave Exit Gate
+## Wave Exit
 
-- [ ] all mandatory document reads are completed
-- [ ] all in-wave requirements are implemented or explicitly deferred
-- [ ] all mandatory tests for in-wave requirements pass
-- [ ] all mandatory E2E for in-wave blockers pass with screen assertions
-- [ ] reference ledgers are synchronized in same logical change
-- [ ] inventory links remain complete and valid
-- [ ] no file-size or fan-out policy violations were introduced
-- [ ] remaining risks are documented explicitly with follow-up IDs
-- [ ] all evidence commands and proof snippets are recorded
-- [ ] next wave handoff is concrete and deterministic
-
-## Next Wave
-
+- [ ] all Tier-A/B/C docs above were read directly
+- [ ] implementation tasks are complete or explicitly deferred with rationale
+- [ ] verification tasks are complete with deterministic evidence
+- [ ] ledger sync tasks are complete in the same logical closure change
 - [ ] continue: [/docs/todo/waves/stage-03-commands-and-ranges/wave-031.md](/docs/todo/waves/stage-03-commands-and-ranges/wave-031.md)

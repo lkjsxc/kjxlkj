@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] Core editing behavior, modal transitions, and key normalization correctness.
+- [ ] Modal behavior, editing primitives, cursor semantics, and text transformation determinism.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
+- [ ] [/docs/spec/modes/normal.md](/docs/spec/modes/normal.md)
+- [ ] [/docs/spec/modes/insert/README.md](/docs/spec/modes/insert/README.md)
+- [ ] [/docs/spec/modes/transitions.md](/docs/spec/modes/transitions.md)
+- [ ] [/docs/spec/editing/README.md](/docs/spec/editing/README.md)
+- [ ] [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
+- [ ] [/docs/spec/editing/motions/README.md](/docs/spec/editing/motions/README.md)
+- [ ] [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-02-editing-and-modes/wave-022.md](/docs/todo/waves/stage-02-editing-and-modes/wave-022.md)
 - [ ] [/docs/todo/waves/stage-02-editing-and-modes/wave-023.md](/docs/todo/waves/stage-02-editing-and-modes/wave-023.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-03-commands-and-ranges/README.md](/docs/todo/waves/stage-03-commands-and-ranges/README.md)

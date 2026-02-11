@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] End-to-end release evidence, conformance closure, and operational readiness.
+- [ ] Release closure, operational guides, drift ledgers, and final conformance synchronization.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [ ] [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [ ] [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] [/docs/guides/README.md](/docs/guides/README.md)
+- [ ] [/docs/guides/QUICKSTART.md](/docs/guides/QUICKSTART.md)
+- [ ] [/docs/guides/INSTALL_WINDOWS.md](/docs/guides/INSTALL_WINDOWS.md)
+- [ ] [/docs/log/README.md](/docs/log/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-08-release-and-ops/wave-070.md](/docs/todo/waves/stage-08-release-and-ops/wave-070.md)
 - [ ] [/docs/todo/waves/stage-08-release-and-ops/wave-071.md](/docs/todo/waves/stage-08-release-and-ops/wave-071.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

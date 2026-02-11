@@ -36,8 +36,7 @@ reconstruction; implementation artifacts are intentionally removed.
 Follow the TODO chain in order:
 
 - [docs/todo/README.md](docs/todo/README.md)
-- [docs/todo/checklists/README.md](docs/todo/checklists/README.md)
-- [docs/todo/inventory/README.md](docs/todo/inventory/README.md)
+- [docs/todo/waves/README.md](docs/todo/waves/README.md)
 
 When reconstructed, the Rust workspace is expected under `src/crates/` with grouped roots:
 

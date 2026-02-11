@@ -11,7 +11,7 @@ For current supported behavior and known gaps, check:
 If this repository is in a docs-only baseline (no `src/` or Cargo workspace), reconstruct first:
 
 - [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Pre-built binaries
 

@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] LSP, git, finder, syntax, and service-backed feature integration closure.
+- [ ] Service-backed features including LSP, git, finder, syntax, and session behavior.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/features/README.md](/docs/spec/features/README.md)
+- [ ] [/docs/spec/features/lsp/README.md](/docs/spec/features/lsp/README.md)
+- [ ] [/docs/spec/features/git/README.md](/docs/spec/features/git/README.md)
+- [ ] [/docs/spec/features/navigation/finder.md](/docs/spec/features/navigation/finder.md)
+- [ ] [/docs/spec/features/syntax/README.md](/docs/spec/features/syntax/README.md)
+- [ ] [/docs/spec/features/session/README.md](/docs/spec/features/session/README.md)
+- [ ] [/docs/spec/features/config/README.md](/docs/spec/features/config/README.md)
+- [ ] [/docs/spec/features/editing/README.md](/docs/spec/features/editing/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-05-services-and-features/wave-046.md](/docs/todo/waves/stage-05-services-and-features/wave-046.md)
 - [ ] [/docs/todo/waves/stage-05-services-and-features/wave-047.md](/docs/todo/waves/stage-05-services-and-features/wave-047.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-06-ui-ux-and-scripting/README.md](/docs/todo/waves/stage-06-ui-ux-and-scripting/README.md)

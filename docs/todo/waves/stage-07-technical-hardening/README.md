@@ -4,7 +4,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] Performance, memory, error recovery, and deterministic failure diagnostics.
+- [ ] Testing rigor, performance profiling, stability boundaries, and diagnostics hardening.
+
+## Stage-Critical Documents (Re-read Every Wave)
+
+- [ ] [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
+- [ ] [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- [ ] [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
+- [ ] [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)
+- [ ] [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
+- [ ] [/docs/technical/README.md](/docs/technical/README.md)
+- [ ] [/docs/technical/testing/README.md](/docs/technical/testing/README.md)
 
 ## Ordered Waves
 
@@ -17,7 +28,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] [/docs/todo/waves/stage-07-technical-hardening/wave-062.md](/docs/todo/waves/stage-07-technical-hardening/wave-062.md)
 - [ ] [/docs/todo/waves/stage-07-technical-hardening/wave-063.md](/docs/todo/waves/stage-07-technical-hardening/wave-063.md)
 
-## Stage Exit Rule
+## Stage Exit
 
-- [ ] do not leave this stage while any wave-level blocker checkbox remains unchecked
-- [ ] before moving forward, ledger updates are synchronized and evidence-backed
+- [ ] all eight waves are completed in order
+- [ ] all stage-critical docs were re-read in every wave
+- [ ] ledger updates match stage outcomes
+- [ ] continue: [/docs/todo/waves/stage-08-release-and-ops/README.md](/docs/todo/waves/stage-08-release-and-ops/README.md)
