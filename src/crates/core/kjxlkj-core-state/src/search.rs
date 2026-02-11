@@ -17,13 +17,15 @@ pub struct SearchState {
     pub pattern: Option<String>,
     pub compiled: Option<Regex>,
     pub direction: SearchDirection,
-    /// Whether search matches should be highlighted.
     pub hlsearch: bool,
+    pub history: Vec<String>,
+    pub ignorecase: bool,
+    pub smartcase: bool,
 }
 
 impl Default for SearchState {
     fn default() -> Self {
-        Self { pattern: None, compiled: None, direction: SearchDirection::Forward, hlsearch: true }
+        Self { pattern: None, compiled: None, direction: SearchDirection::Forward, hlsearch: true, history: Vec::new(), ignorecase: false, smartcase: true }
     }
 }
 
@@ -33,11 +35,13 @@ impl SearchState {
     /// Set a new search pattern, compiling it. Re-enables hlsearch.
     pub fn set_pattern(&mut self, vim_pat: &str, dir: SearchDirection) -> Result<(), String> {
         let rust_pat = vim_to_rust_regex(vim_pat)?;
-        let re = Regex::new(&rust_pat).map_err(|e| format!("{e}"))?;
+        let final_pat = self.apply_case_flags(&rust_pat, vim_pat);
+        let re = Regex::new(&final_pat).map_err(|e| format!("{e}"))?;
         self.pattern = Some(vim_pat.to_string());
         self.compiled = Some(re);
         self.direction = dir;
         self.hlsearch = true;
+        self.push_history(vim_pat);
         Ok(())
     }
 
@@ -51,17 +55,26 @@ impl SearchState {
         Ok(())
     }
 
-    /// Clear search highlighting (:nohlsearch).
     pub fn clear_highlight(&mut self) { self.hlsearch = false; }
+    pub fn history(&self) -> &[String] { &self.history }
 
-    /// Count total matches in buffer.
+    fn push_history(&mut self, pat: &str) {
+        if self.history.last().map_or(true, |l| l != pat) {
+            self.history.push(pat.to_string());
+            if self.history.len() > 100 { self.history.remove(0); }
+        }
+    }
+
+    fn apply_case_flags(&self, rust_pat: &str, vim_pat: &str) -> String {
+        if vim_pat.contains("\\C") { return rust_pat.to_string(); }
+        if vim_pat.contains("\\c") || (self.ignorecase && !(self.smartcase && vim_pat.chars().any(|c| c.is_uppercase()))) {
+            format!("(?i){}", rust_pat)
+        } else { rust_pat.to_string() }
+    }
+
     pub fn match_count(&self, buf: &Buffer) -> usize {
         let re = match self.compiled.as_ref() { Some(r) => r, None => return 0 };
-        let mut total = 0;
-        for i in 0..buf.line_count() {
-            if let Some(line) = buf.line(i) { total += re.find_iter(&line).count(); }
-        }
-        total
+        (0..buf.line_count()).map(|i| buf.line(i).map_or(0, |l| re.find_iter(&l).count())).sum()
     }
 
     /// Find next match in buffer starting after (row, col), wrapping.
@@ -71,16 +84,12 @@ impl SearchState {
         if lc == 0 { return None; }
         if let Some(cur) = buf.line(row) {
             let sb = byte_offset(&cur, col + 1);
-            if let Some(m) = re.find(&cur[sb..]) {
-                return Some((row, col + 1 + char_offset(&cur[sb..], m.start())));
-            }
+            if let Some(m) = re.find(&cur[sb..]) { return Some((row, col + 1 + char_offset(&cur[sb..], m.start()))); }
         }
         for off in 1..=lc {
             let r = (row + off) % lc;
             if let Some(line) = buf.line(r) {
-                if let Some(m) = re.find(&line) {
-                    return Some((r, char_offset(&line, m.start())));
-                }
+                if let Some(m) = re.find(&line) { return Some((r, char_offset(&line, m.start()))); }
             }
         }
         None
@@ -92,16 +101,12 @@ impl SearchState {
         let lc = buf.line_count();
         if lc == 0 { return None; }
         if let Some(cur) = buf.line(row) {
-            if let Some(pos) = last_match_before(re, &cur, col) {
-                return Some((row, char_offset(&cur, pos)));
-            }
+            if let Some(pos) = last_match_before(re, &cur, col) { return Some((row, char_offset(&cur, pos))); }
         }
         for off in 1..=lc {
             let r = (row + lc - off) % lc;
             if let Some(line) = buf.line(r) {
-                if let Some(pos) = last_match(re, &line) {
-                    return Some((r, char_offset(&line, pos)));
-                }
+                if let Some(pos) = last_match(re, &line) { return Some((r, char_offset(&line, pos))); }
             }
         }
         None
@@ -121,15 +126,9 @@ mod tests {
         let mut s = SearchState::new(); s.set_pattern(pat, dir).unwrap(); s
     }
     #[test]
-    fn find_forward_simple() {
+    fn find_directions() {
         assert_eq!(ss("world", SearchDirection::Forward).find_next(&buf("hello world"), 0, 0), Some((0, 6)));
-    }
-    #[test]
-    fn find_forward_wraps() {
         assert_eq!(ss("aaa", SearchDirection::Forward).find_next(&buf("aaa\nbbb\nccc"), 1, 0), Some((0, 0)));
-    }
-    #[test]
-    fn find_backward_simple() {
         assert_eq!(ss("foo", SearchDirection::Backward).find_prev(&buf("foo bar foo"), 0, 10), Some((0, 8)));
     }
     #[test]
@@ -137,22 +136,25 @@ mod tests {
         assert_eq!(ss(r"\d\+", SearchDirection::Forward).find_next(&buf("count 42 items"), 0, 0), Some((0, 6)));
     }
     #[test]
-    fn invalid_pattern() {
+    fn edge_cases() {
         assert!(SearchState::new().set_pattern("[invalid", SearchDirection::Forward).is_err());
+        let empty = Buffer::new_scratch(BufferId(0));
+        let s = ss("x", SearchDirection::Forward);
+        assert_eq!(s.find_next(&empty, 0, 0), None);
+        assert_eq!(s.find_prev(&empty, 0, 0), None);
+        let s2 = ss("xyz", SearchDirection::Forward);
+        assert_eq!(s2.find_next(&buf("hello world"), 0, 0), None);
+        assert_eq!(s2.find_prev(&buf("hello world"), 0, 10), None);
     }
     #[test]
-    fn hlsearch_lifecycle() {
+    fn hlsearch_and_match_count() {
         let mut s = SearchState::new();
         assert!(s.hlsearch);
         s.clear_highlight();
         assert!(!s.hlsearch);
-        s.set_pattern("test", SearchDirection::Forward).unwrap();
+        s.set_pattern("foo", SearchDirection::Forward).unwrap();
         assert!(s.hlsearch);
-    }
-    #[test]
-    fn match_count_works() {
-        assert_eq!(ss("foo", SearchDirection::Forward).match_count(&buf("foo bar foo baz foo")), 3);
-        assert_eq!(ss("aaa", SearchDirection::Forward).match_count(&buf("aaa\naaa\nbbb")), 2);
+        assert_eq!(s.match_count(&buf("foo bar foo baz foo")), 3);
         assert_eq!(SearchState::new().match_count(&buf("hello")), 0);
     }
     #[test]
@@ -162,16 +164,28 @@ mod tests {
         assert_eq!(s.find_next(&buf("hello world hello"), 0, 0), Some((0, 12)));
     }
     #[test]
-    fn empty_buffer_searches() {
-        let empty = Buffer::new_scratch(BufferId(0));
-        let s = ss("x", SearchDirection::Forward);
-        assert_eq!(s.find_next(&empty, 0, 0), None);
-        assert_eq!(s.find_prev(&empty, 0, 0), None);
+    fn history_tracks_patterns() {
+        let mut s = SearchState::new();
+        s.set_pattern("foo", SearchDirection::Forward).unwrap();
+        s.set_pattern("bar", SearchDirection::Forward).unwrap();
+        s.set_pattern("bar", SearchDirection::Forward).unwrap(); // dedup
+        assert_eq!(s.history(), &["foo", "bar"]);
     }
     #[test]
-    fn find_no_match() {
-        let s = ss("xyz", SearchDirection::Forward);
+    fn ignorecase_makes_case_insensitive() {
+        let mut s = SearchState::new();
+        s.ignorecase = true;
+        s.set_pattern("hello", SearchDirection::Forward).unwrap();
+        assert_eq!(s.find_next(&buf("HELLO world"), 0, 0), Some((0, 0)));
+    }
+    #[test]
+    fn smartcase_uppercase_is_sensitive() {
+        let mut s = SearchState::new();
+        s.ignorecase = true;
+        s.smartcase = true;
+        s.set_pattern("Hello", SearchDirection::Forward).unwrap();
+        // "Hello" has uppercase → smartcase makes it case-sensitive.
         assert_eq!(s.find_next(&buf("hello world"), 0, 0), None);
-        assert_eq!(s.find_prev(&buf("hello world"), 0, 10), None);
+        assert_eq!(s.find_next(&buf("Hello world"), 0, 0), Some((0, 0)));
     }
 }

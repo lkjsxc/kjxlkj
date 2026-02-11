@@ -24,15 +24,11 @@ pub enum Action {
     ExitToNormal,
     /// Execute an ex command string.
     ExCommand(String),
-    /// Resize terminal.
     Resize(u16, u16),
     /// Paste text from bracketed paste.
     Paste(String),
-    /// Focus gained.
     FocusGained,
-    /// Focus lost.
     FocusLost,
-    /// Quit the editor.
     Quit,
     /// Force quit without saving.
     ForceQuit,
@@ -122,6 +118,10 @@ pub enum Action {
     StarSearchBackward,
     /// Clear search highlighting (:nohlsearch).
     ClearSearchHighlight,
+    /// g* forward (partial match, no word boundaries).
+    GStarSearchForward,
+    /// g# backward (partial match, no word boundaries).
+    GStarSearchBackward,
 }
 
 /// Cursor motion.

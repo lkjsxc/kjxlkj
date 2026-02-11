@@ -76,6 +76,16 @@ pub(crate) fn handle_g_key(
             pending.clear();
             (Action::JoinLinesNoSpace, None)
         }
+        // g* → partial match forward (no word boundaries).
+        Key::Char('*') => {
+            pending.clear();
+            (Action::GStarSearchForward, None)
+        }
+        // g# → partial match backward (no word boundaries).
+        Key::Char('#') => {
+            pending.clear();
+            (Action::GStarSearchBackward, None)
+        }
         _ => {
             pending.clear();
             (Action::Noop, None)
@@ -90,12 +100,8 @@ mod tests {
     #[test]
     fn gg_goes_to_first_line() {
         let mut ps = PendingState::default();
-        let (action, _) =
-            handle_g_key(&Key::Char('g'), &mut ps);
-        assert_eq!(
-            action,
-            Action::Motion(Motion::GotoFirstLine)
-        );
+        let (action, _) = handle_g_key(&Key::Char('g'), &mut ps);
+        assert_eq!(action, Action::Motion(Motion::GotoFirstLine));
     }
 
     #[test]
@@ -172,6 +178,20 @@ mod tests {
         let (action, _) =
             handle_g_key(&Key::Char('J'), &mut ps);
         assert_eq!(action, Action::JoinLinesNoSpace);
+    }
+
+    #[test]
+    fn g_star_partial_match_forward() {
+        let mut ps = PendingState::default();
+        let (action, _) = handle_g_key(&Key::Char('*'), &mut ps);
+        assert_eq!(action, Action::GStarSearchForward);
+    }
+
+    #[test]
+    fn g_hash_partial_match_backward() {
+        let mut ps = PendingState::default();
+        let (action, _) = handle_g_key(&Key::Char('#'), &mut ps);
+        assert_eq!(action, Action::GStarSearchBackward);
     }
 }
 

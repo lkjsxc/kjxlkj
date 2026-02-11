@@ -135,3 +135,57 @@ fn match_count_after_star() {
     let buf = s.buffers.get(&BufferId(0)).unwrap();
     assert_eq!(s.search.match_count(buf), 3);
 }
+
+#[test]
+fn g_star_partial_match_forward() {
+    // g* should match "foo" inside "foobar" (no word boundaries).
+    let mut s = ed_with("foo foobar baz");
+    s.handle_key(&Key::Char('g'), &m());
+    s.handle_key(&Key::Char('*'), &m());
+    // First match after col 0 is "foo" within "foobar" at col 4.
+    assert_eq!(cursor_col(&s), 4);
+}
+
+#[test]
+fn g_hash_partial_match_backward() {
+    let mut s = ed_with("foobar foo");
+    // Move cursor to col 7 (the 'f' of second "foo").
+    for _ in 0..7 { s.handle_key(&Key::Char('l'), &m()); }
+    s.handle_key(&Key::Char('g'), &m());
+    s.handle_key(&Key::Char('#'), &m());
+    // g# backward should find "foo" inside "foobar" at col 0.
+    assert_eq!(cursor_col(&s), 0);
+}
+
+#[test]
+fn percent_scans_forward_for_bracket() {
+    // % on non-bracket char should scan forward to first bracket on line.
+    let mut s = ed_with("abc(def)ghi");
+    // Cursor at col 0 ('a'), not a bracket → scan forward finds '(' at col 3.
+    s.handle_key(&Key::Char('%'), &m());
+    // Should jump to matching ')' at col 7.
+    assert_eq!(cursor_col(&s), 7);
+}
+
+#[test]
+fn search_history_recorded() {
+    let mut s = ed_with("hello world");
+    // Do a / search.
+    s.mode = Mode::Command(CommandKind::SearchForward);
+    s.activate_cmdline(CommandKind::SearchForward);
+    for c in "world".chars() { s.handle_command_input(&Key::Char(c), &m(), CommandKind::SearchForward); }
+    s.handle_command_input(&Key::Enter, &m(), CommandKind::SearchForward);
+    assert_eq!(s.search.history(), &["world"]);
+}
+
+#[test]
+fn ignorecase_search_via_handle_key() {
+    let mut s = ed_with("Hello world");
+    s.search.ignorecase = true;
+    s.mode = Mode::Command(CommandKind::SearchForward);
+    s.activate_cmdline(CommandKind::SearchForward);
+    for c in "hello".chars() { s.handle_command_input(&Key::Char(c), &m(), CommandKind::SearchForward); }
+    s.handle_command_input(&Key::Enter, &m(), CommandKind::SearchForward);
+    // ignorecase=true, so "hello" matches "Hello" at col 0.
+    assert_eq!(cursor_col(&s), 0);
+}

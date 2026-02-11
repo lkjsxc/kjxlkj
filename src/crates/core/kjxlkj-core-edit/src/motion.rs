@@ -181,6 +181,16 @@ mod tests {
     }
 
     #[test]
+    fn match_paren_scans_forward_for_bracket() {
+        // When cursor is not on a bracket, % scans forward.
+        let b = Buffer::from_text(BufferId(0), "t", "ab(cd)ef");
+        let c = Cursor::new(0, 0);
+        let nc = apply_motion(&c, &Motion::MatchParen, &b);
+        // Scans forward from col 0, finds '(' at col 2, jumps to ')' at col 5.
+        assert_eq!(nc.col, 5);
+    }
+
+    #[test]
     fn paragraph_forward_to_blank() {
         let b = Buffer::from_text(BufferId(0), "t", "abc\ndef\n\nghi");
         let c = Cursor::new(0, 0);

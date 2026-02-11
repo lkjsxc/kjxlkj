@@ -118,6 +118,8 @@ impl EditorState {
             Action::StarSearchForward => self.star_search(SearchDirection::Forward),
             Action::StarSearchBackward => self.star_search(SearchDirection::Backward),
             Action::ClearSearchHighlight => self.search.clear_highlight(),
+            Action::GStarSearchForward => self.g_star_search(SearchDirection::Forward),
+            Action::GStarSearchBackward => self.g_star_search(SearchDirection::Backward),
             _ => {}
         }
     }
@@ -153,6 +155,22 @@ impl EditorState {
         let rust_pat = format!(r"\b{}\b", regex::escape(&word));
         if self.search.set_raw_pattern(&display, &rust_pat, dir).is_ok() {
             self.registers.set_readonly('/', display);
+            self.jump_to_match(dir);
+        }
+    }
+
+    /// g* / g# search — partial match (no word boundaries).
+    fn g_star_search(&mut self, dir: SearchDirection) {
+        let wid = self.focus.focused;
+        let win = match self.windows.get(&wid) { Some(w) => w, None => return };
+        let buf_id = match win.content { ContentKind::Buffer(id) => id, _ => return };
+        let buf = match self.buffers.get(&buf_id) { Some(b) => b, None => return };
+        let col = win.cursor.col;
+        let line = match buf.line(win.cursor.line) { Some(l) => l, None => return };
+        let word = match word_at(&line, col) { Some(w) => w, None => return };
+        let rust_pat = regex::escape(&word);
+        if self.search.set_raw_pattern(&word, &rust_pat, dir).is_ok() {
+            self.registers.set_readonly('/', word);
             self.jump_to_match(dir);
         }
     }
