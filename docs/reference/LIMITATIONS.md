@@ -59,6 +59,15 @@ Marks persist across mode changes. Goto unset mark is no-op. Buffer-bounds
 clamping on goto. SetMark/GotoMarkLine/GotoMarkExact action variants; partial key
 dispatch for m/' /` prefixes. 5 unit tests + 12 integration tests bringing total
 to 391 tests.
+Live E2E and race validation (wave-038): Macro recording and playback system —
+q{a-z} starts recording, q stops, @{a-z} plays. MacroState with recording flag,
+register, and key buffer. MacroRecordStart/MacroRecordStop/MacroPlay action
+variants. Key capture integrated into handle_key pipeline (before dispatch);
+stop-q intercept in Normal mode when recording active. keys_to_string serializer
+and parse_macro_keys deserializer for register storage (Ctrl/Escape/BS/Enter/Tab
+support). Uppercase register rejected. Race/boundary tests covering macro+mark+
+jumplist+changelist+split interactions under stress. 5 unit tests + 15 integration
+tests bringing total to 411 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

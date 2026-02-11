@@ -17,93 +17,12 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
 
 ## Stage 04: Window, Explorer, Terminal
 
-### Wave 032: Scope Freeze and Input Mapping
-- Status: COMPLETE
-- Committed: 183769d2
-- Evidence: 271 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Ctrl-w window command dispatch via PartialKey::WinCmd two-key prefix
-  - normal_wincmd.rs (87 lines): resolves Ctrl-w + second key into window actions —
-    h/j/k/l directional focus, w cycle, p previous, s/n split horizontal, v split
-    vertical, c/q close window, o window only
-  - Directional focus with geometry-based resolution: compute_rects() on layout tree,
-    find nearest neighbor in requested direction using Manhattan distance
-  - WindowOnly, FocusCycle, FocusPrevious, FocusDirection dispatch wired in
-    editor_action.rs
-  - window_only(), focus_cycle(), focus_direction() implemented in editor_window.rs
-    (128 lines)
-  - Split semantics corrected for Vim convention: :split (SplitHorizontal) now creates
-    top/bottom layout, :vsplit (SplitVertical) now creates side-by-side layout
-  - 7 unit tests in normal_wincmd.rs, 12 integration tests in editor_wincmd_tests.rs
-    (144 lines) covering all wincmd paths with directional focus on asymmetric splits
-  - normal.rs compacted (200 lines): Ctrl-w branch avoids clearing pending state
-  - normal_partial.rs: WinCmd arm delegates to normal_wincmd module
-  - pending.rs: WinCmd variant added (181 lines)
-  - lib.rs (core-mode) expanded: +normal_wincmd module (147 lines)
-  - lib.rs (core-state) expanded: +editor_wincmd_tests module (53 lines)
-  - Tier-C docs read: multicursor, snippets, spell, surround, templates, git/README,
-    git/diff-mode
-  - Ledger sync: CONFORMANCE (252→271), LIMITATIONS, DRIFT_MATRIX updated
+### Waves 032–034 (Archived)
 
-### Wave 033: Requirement Extraction and Normalization
-- Status: COMPLETE
-- Committed: 61039489 (impl) + df018219 (tests)
-- Evidence: 295 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Boundary focus: Ctrl-w t (top-left) and b (bottom-right) using geometry-based
-    min/max of (y*10000+x) across compute_rects leaf positions
-  - Resize dispatch: Ctrl-w +/-/>/<  mapped to WindowResize(ResizeEdge, delta);
-    equalize (=) delegates to layout.equalize(); maximize _/| as no-op placeholders
-  - ResizeEdge enum added to kjxlkj-core-types (Height, Width)
-  - Explorer routing: open_explorer creates ContentKind::Explorer(ExplorerStateId(0))
-    leaf via split_horizontal on leftmost window; close_explorer finds explorer by
-    ContentKind match; :ExplorerClose ex command added to command_parse.rs
-  - action.rs compacted from 200→112 lines (removed per-variant doc comments,
-    grouped variants with section comments)
-  - layout_resize.rs created (127 lines): equalize(), find_container_info(),
-    contains_leaf(), is_in_axis_split() with 3 unit tests
-  - normal_wincmd.rs expanded (87→137): +10 dispatch arms, +8 unit tests
-  - editor_window.rs expanded then compacted (128→150): +focus_top_left/bottom_right,
-    equalize/resize/max placeholders, open/close explorer, leaf_rects() helper
-  - editor_stage04_tests.rs created (189 lines): 14 integration tests covering
-    boundary focus, resize, equalize, explorer lifecycle, :ExplorerClose command
-  - Tier-C docs read: git/git.md, gitsigns.md, merge-conflicts.md, vimdiff.md,
-    lsp/README.md, code-actions.md, code-lens.md
-  - Ledger sync: CONFORMANCE (271→295), LIMITATIONS, DRIFT_MATRIX updated
-
-### Wave 034: State Model and Data Flow Design
-- Status: COMPLETE
-- Committed: 38aa6893 (impl) + 1228f52e (tests)
-- Evidence: 327 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Explorer service (kjxlkj-service-explorer) rewritten from stub:
-    - lib.rs (197 lines): ExplorerState with root_path, tree, expansion_set,
-      selected_index, cached visible rows, NodeId-based identity; VisibleRow struct;
-      new/alloc_node_id/set_root/visible_rows/row_count/rebuild_visible_rows/flatten/
-      clamp_selection; 4 unit tests
-    - explorer_tree.rs (95 lines): NodeId(u64), ExplorerNode with id/name/is_dir/
-      depth/path/children, file()/dir() constructors, find()/parent_of()/sort_children();
-      3 unit tests
-    - explorer_nav.rs (181 lines): ExplorerAction enum (MoveDown/MoveUp/CollapseOrParent/
-      ExpandOrOpen/Toggle/Close), apply_action/move_down/move_up/collapse_or_parent/
-      expand_or_open/toggle; 5 unit tests
-  - Terminal service (kjxlkj-service-terminal) upgraded from stub:
-    - lib.rs (77 lines): TerminalState with id/shell/title/exited/exit_code/cols/rows,
-      new/set_exited/resize; TerminalService stub; 2 unit tests
-  - Core-state wiring:
-    - editor.rs (183 lines): +explorer_states HashMap, +explorer key interception
-    - editor_explorer.rs (123 lines, NEW): focused_explorer_id(), handle_explorer_key()
-      mapping j/k/h/l/Enter/o/q to ExplorerAction; 5 unit tests
-    - editor_window.rs (157 lines): open_explorer creates ExplorerState, close_explorer
-      cleans up explorer_states HashMap
-    - lib.rs (58 lines): +editor_explorer, +editor_stage04b_tests modules
-  - 13 integration tests in editor_stage04b_tests.rs (168 lines): explorer state
-    lifecycle (populate/cleanup/reuse), key dispatch through handle_key
-    (j/k/l/h/q/Enter), wincmd from explorer window, buffer key isolation,
-    terminal state lifecycle/size
-  - Tier-C docs read: completion.md, diagnostics.md, formatting.md, hover.md,
-    lsp.md, navigation/README.md, call-hierarchy.md
-  - Ledger sync: CONFORMANCE (295→327), LIMITATIONS, DRIFT_MATRIX updated
+See [wave-progress-stage-04-early.md](wave-progress-stage-04-early.md) for
+Waves 032 (Scope Freeze and Input Mapping, 271 tests),
+033 (Requirement Extraction, 295 tests), and
+034 (State Model and Data Flow, 327 tests).
 
 ### Wave 035: Command and Route Wiring
 - Status: COMPLETE
@@ -195,3 +114,35 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: marks.md, quickfix.md, tags.md, session/README.md,
     auto_save.md, ex-commands-detailed.md, expression-register.md
   - Ledger sync: CONFORMANCE (374→391), LIMITATIONS, DRIFT_MATRIX (+R-MARK-01)
+
+### Wave 038: Live E2E and Race Validation
+- Status: COMPLETE
+- Committed: 3cdbc363
+- Evidence: 411 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Macro recording and playback: q{a-z} starts recording, q stops, @{a-z} plays
+  - macros.rs (117 lines, NEW): MacroState with recording/buffer, MacroKey struct,
+    start/stop/capture/is_recording, keys_to_string serializer. 5 unit tests
+  - Action variants: MacroRecordStart(char), MacroRecordStop, MacroPlay(char) in
+    kjxlkj-core-types action.rs (115→116)
+  - Key dispatch: q→MacroRecord partial, @→MacroPlay partial in normal.rs (198→200)
+  - normal_partial.rs (108→115): MacroRecord→MacroRecordStart, MacroPlay→MacroPlay
+  - EditorState: macro_state field (MacroState) in editor.rs (200→194, compacted)
+  - handle_key integration: stop-q intercept when recording active in Normal mode,
+    key capture via macro_state.capture() before dispatch
+  - editor_nav.rs (115→171): +start_macro_recording, +stop_macro_recording (saves
+    to register via keys_to_string), +play_macro (reads register, parse_macro_keys,
+    replays via handle_key), +parse_macro_keys (Ctrl/Esc/BS/Enter/Tab support)
+  - editor_action.rs (194→197): +MacroRecordStart/MacroRecordStop/MacroPlay dispatch
+  - editor_stage04f_tests.rs (190 lines, NEW): 15 integration tests — macro record
+    and play (1), insert mode recording (1), unset register playback noop (1), stop
+    without start (1), multiple records overwrite (1), uppercase rejected (1), mode
+    switch stress during recording (1), mark+macro interaction (1), jumplist+macro
+    interaction (1), split+macro interaction (1), rapid record/stop 100x (1),
+    deterministic replay (1), mark/split/jumplist combined stress (1), mode churn
+    with marks 50x (1), changelist stress 20 deletes (1)
+  - lib.rs (core-state) 67→70 (+macros, +editor_stage04f_tests)
+  - wave-progress.md split: waves 032-034 archived to wave-progress-stage-04-early.md
+  - Tier-C docs read: macros.md, project-config.md, registers.md (session),
+    sessions.md, undo_tree.md, view-management.md, workspaces.md
+  - Ledger sync: CONFORMANCE (391→411), LIMITATIONS, DRIFT_MATRIX (+R-MACRO-01)

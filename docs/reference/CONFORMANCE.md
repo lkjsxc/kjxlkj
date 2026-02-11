@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 391 deterministic unit and integration tests covering key normalization,
+through 411 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -133,6 +133,18 @@ Mark system: m{a-z} set mark at cursor, '{a-z} goto mark line (first non-blank),
 a-z only (uppercase ignored). Marks persist across mode changes. Goto unset mark
 is no-op. Buffer-bounds clamping on goto when lines deleted. 5 unit tests + 12
 integration tests.
+Macro recording and playback: q{a-z} starts recording into register, subsequent q
+stops recording and saves to register. @{a-z} plays macro by replaying captured
+key sequence. MacroState tracks recording flag, register, and key buffer.
+Uppercase register rejected. Keys serialized via keys_to_string/parse_macro_keys
+with support for Ctrl, Escape, Backspace, Enter, Tab. Macro capture hooks into
+handle_key pipeline before dispatch; stop-q intercept in Normal mode. Race
+validation with 15 integration tests covering record/play, insert mode recording,
+unset register playback, overwrite, uppercase rejection, mode switch stress, mark
++ macro interaction, jumplist + macro interaction, split interaction, rapid
+record/stop cycles (100×), deterministic replay, combined mark/split/jumplist
+stress, mode churn with marks (50×), changelist stress (20 deletes + navigate).
+5 unit tests + 15 integration tests.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -141,7 +153,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (391 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (411 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

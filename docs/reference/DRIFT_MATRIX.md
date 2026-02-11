@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 391 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 411 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | Ctrl-w dispatch implemented (h/j/k/l/w/W/p/t/b/s/v/n/c/q/o/+/-/>/</_/|/=/H/J/K/L/r/R/x), directional focus with geometry, boundary focus (t/b), equalize (=), resize/max as no-op placeholders, W reverse cycle, H/J/K/L move-to-edge/r/R rotate/x exchange as no-op placeholders, split semantics corrected; T1 unit + integration tests pass (21 wincmd unit + 40 integration tests); T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | partial | `M2`, `M4` | implement + test-add | explorer open/close routing (ContentKind::Explorer leaf creation, :ExplorerClose ex command), state model (ExplorerState/ExplorerNode/NodeId, expansion_set/visible_rows/flatten), navigation (ExplorerAction enum with MoveDown/MoveUp/CollapseOrParent/ExpandOrOpen/Toggle/Close), key routing (j/k/h/l/Enter/o/v/s/q intercept in Normal mode, v/s open selected file in vertical/horizontal split), 13 service tests + 5 editor_explorer tests + 27 integration tests; filesystem integration (actual dir listing) pending; T2 PTY E2E pending |
@@ -37,6 +37,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | Terminal emulation and PTY integration | `TERM-01R`..`TERM-04R` | partial | `M2`, `M4` | implement + test-add | TerminalState model (id/shell/title/exited/exit_code/cols/rows) implemented with new/set_exited/resize; terminal window creation via open_terminal (ContentKind::Terminal leaf); TerminalService stub; 2 service tests + 5 integration tests; PTY spawn/read/write pending |
 | `R-NAV-01` | [/docs/spec/features/navigation/jumplist.md](/docs/spec/features/navigation/jumplist.md) | Jumplist and changelist navigation | unit + integration tests | partial | `M4` | test-add | PositionList data structure (100 entry cap, go_older/go_newer/push, dedup); Ctrl-o/Ctrl-i jumplist navigation, g;/g, changelist navigation; jump recording on GotoLine/GotoFirstLine/GotoLastLine/Search/StarSearch; change recording on text-changing actions; navigate_jumplist/navigate_changelist with buffer-bounds clamping; 6 unit tests + 10 boundary integration tests; T2 pending |
 | `R-MARK-01` | [/docs/spec/editing/marks/README.md](/docs/spec/editing/marks/README.md) | Mark set/goto with m{a-z}/'{a-z}/`{a-z} | unit + integration tests | partial | `M4` | test-add | MarkStore with HashMap<char, MarkPos>, lowercase a-z only; set_mark_at_cursor/goto_mark_line (first non-blank)/goto_mark_exact; SetMark/GotoMarkLine/GotoMarkExact action variants; partial key dispatch for m/'/` prefixes; marks persist across mode changes; goto unset mark is no-op; buffer-bounds clamping; uppercase marks deferred; 5 unit tests + 12 integration tests; T2 pending |
+| `R-MACRO-01` | [/docs/spec/features/session/macros.md](/docs/spec/features/session/macros.md) | Macro recording q{a-z} and playback @{a-z} | unit + integration tests | partial | `M4` | test-add | MacroState with recording/buffer, MacroRecordStart/MacroRecordStop/MacroPlay actions; key capture in handle_key pipeline, stop-q intercept, keys_to_string/parse_macro_keys serialization, uppercase rejected; 5 unit tests + 15 integration tests (including race/boundary stress); macro persistence across sessions deferred; T2 pending |
 
 ## Summary
 
@@ -45,7 +46,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 4 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 14 |
+| `M4 verification gap` | 15 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

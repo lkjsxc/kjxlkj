@@ -7,11 +7,11 @@ All files are now ≤ 200 lines.
 
 | File | Lines | Status |
 |------|-------|--------|
-| `action.rs` (kjxlkj-core-types) | 115 | OK |
+| `action.rs` (kjxlkj-core-types) | 116 | OK |
 | `search.rs` (kjxlkj-core-state) | 191 | OK |
-| `editor.rs` (kjxlkj-core-state) | 200 | OK |
+| `editor.rs` (kjxlkj-core-state) | 194 | OK |
 | `editor_search_tests.rs` (kjxlkj-core-state) | 200 | OK |
-| `normal.rs` (kjxlkj-core-mode) | 198 | OK |
+| `normal.rs` (kjxlkj-core-mode) | 200 | OK |
 | `other_modes.rs` (kjxlkj-core-mode) | 184 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 174 | OK |
 | `editor_cmdline.rs` (kjxlkj-core-state) | 150 | OK |
@@ -26,7 +26,7 @@ All files are now ≤ 200 lines.
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 186 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 194 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 197 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 | `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
 | `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
@@ -43,7 +43,7 @@ All files are now ≤ 200 lines.
 | `editor_window.rs` (kjxlkj-core-state) | 176 | OK |
 | `editor_explorer.rs` (kjxlkj-core-state) | 170 | OK |
 | `normal_wincmd.rs` (kjxlkj-core-mode) | 171 | OK |
-| `lib.rs` (kjxlkj-core-state) | 67 | OK |
+| `lib.rs` (kjxlkj-core-state) | 70 | OK |
 | `lib.rs` (kjxlkj-core-mode) | 147 | OK |
 | `layout_resize.rs` (kjxlkj-core-ui) | 127 | OK |
 | `editor_stage04_tests.rs` (kjxlkj-core-state) | 189 | OK |
@@ -55,11 +55,13 @@ All files are now ≤ 200 lines.
 | `explorer_nav.rs` (kjxlkj-service-explorer) | 181 | OK |
 | `lib.rs` (kjxlkj-service-terminal) | 77 | OK |
 | `navlist.rs` (kjxlkj-core-state) | 128 | OK |
-| `editor_nav.rs` (kjxlkj-core-state) | 115 | OK |
+| `editor_nav.rs` (kjxlkj-core-state) | 171 | OK |
 | `editor_stage04d_tests.rs` (kjxlkj-core-state) | 151 | OK |
 | `marks.rs` (kjxlkj-core-state) | 88 | OK |
 | `editor_stage04e_tests.rs` (kjxlkj-core-state) | 130 | OK |
-| `normal_partial.rs` (kjxlkj-core-mode) | 108 | OK |
+| `normal_partial.rs` (kjxlkj-core-mode) | 115 | OK |
+| `macros.rs` (kjxlkj-core-state) | 133 | OK |
+| `editor_stage04f_tests.rs` (kjxlkj-core-state) | 190 | OK |
 
 ## Splits Performed
 
@@ -97,3 +99,4 @@ All files are now ≤ 200 lines.
 - Wave-035 changes: `action.rs` 112→113 (+FocusCycleReverse/WindowMoveEdge/WindowRotate/WindowExchange), `normal_wincmd.rs` 137→171 (+9 dispatch arms, +6 tests), `editor_action.rs` 194→199 (+5 dispatch arms), `editor_window.rs` 157→176 (+focus_cycle_reverse, +open_terminal), `editor_explorer.rs` 123→170 (enhanced with ExplorerKeyResult enum, +v/s split-open keys), `lib.rs` (kjxlkj-service-explorer) 197→126 (tests extracted to explorer_state_tests.rs), `lib.rs` (core-state) 58→60 (+editor_stage04c_tests). New files: `editor_stage04c_tests.rs` (193, 14 integration tests), `explorer_state_tests.rs` (87, 5 extracted tests + 1 new).
 - Wave-036 changes: `action.rs` 113→114 (+JumpOlder/JumpNewer/ChangeOlder/ChangeNewer), `normal.rs` 200→200 (compacted tests, +Ctrl-o/Ctrl-i dispatch, +2 tests), `normal_g.rs` 197→165 (all tests to inline format, +g;/g, dispatch, +2 tests), `editor.rs` 183→200 (+jumplist/changelist fields, +is_jump_action, +record_jump/record_change), `editor_action.rs` 199→191 (compacted single-statement arms, +JumpOlder/JumpNewer/ChangeOlder/ChangeNewer dispatch), `lib.rs` (core-state) 60→64 (+navlist, +editor_nav, +editor_stage04d_tests). New files: `navlist.rs` (128, PositionList data structure, 6 tests), `editor_nav.rs` (70, navigate_jumplist/navigate_changelist/record_jump/record_change), `editor_stage04d_tests.rs` (151, 16 boundary tests).
 - Wave-037 changes: `action.rs` 114→115 (+SetMark/GotoMarkLine/GotoMarkExact), `normal.rs` 200→198 (+'→GotoMarkLine, +`→GotoMarkExact, merged Escape/_ arms), `normal_partial.rs` 93→108 (+SetMark/GotoMarkLine/GotoMarkExact emit real actions), `editor.rs` 200→200 (+marks: MarkStore field, compacted constructor), `editor_action.rs` 191→194 (+SetMark/GotoMarkLine/GotoMarkExact dispatch), `editor_nav.rs` 70→115 (+set_mark_at_cursor/goto_mark_line/goto_mark_exact), `lib.rs` (core-state) 64→67 (+marks, +editor_stage04e_tests). New files: `marks.rs` (88, MarkStore, 5 tests), `editor_stage04e_tests.rs` (130, 12 integration tests).
+- Wave-038 changes: `action.rs` 115→116 (+MacroRecordStart/MacroRecordStop/MacroPlay), `normal.rs` 198→200 (+q→MacroRecord, +@→MacroPlay), `normal_partial.rs` 108→115 (MacroRecord/MacroPlay emit real actions), `editor.rs` 200→194 (compacted imports/struct/comments, +macro_state field, +stop-q intercept, +capture call), `editor_action.rs` 194→197 (+MacroRecordStart/MacroRecordStop/MacroPlay dispatch), `editor_nav.rs` 115→171 (+start/stop_macro_recording, +play_macro, +parse_macro_keys), `lib.rs` (core-state) 67→70 (+macros, +editor_stage04f_tests). New files: `macros.rs` (133, MacroState, 5 tests), `editor_stage04f_tests.rs` (190, 15 integration tests). Wave-progress.md split: waves 032-034 archived to wave-progress-stage-04-early.md.
