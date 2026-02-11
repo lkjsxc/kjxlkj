@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 173 deterministic unit and integration tests covering key normalization,
+through 175 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -68,6 +68,9 @@ g*/g# partial match star search (no word boundaries). Search history tracking
 with deduplication (capped at 100). ignorecase/smartcase settings with in-pattern
 \c/\C override. Bracket matching (%) scans forward on current line when cursor
 is not on a bracket character. bracket_pair() helper for bracket-type lookup.
+Ctrl-a/Ctrl-x increment/decrement numbers under/after cursor with forward scan,
+negative number and multi-digit support. :set/:se/:setlocal command for
+ignorecase/smartcase/hlsearch options with no-prefix and key=value parsing.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -76,7 +79,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (173 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (175 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

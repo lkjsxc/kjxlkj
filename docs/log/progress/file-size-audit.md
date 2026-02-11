@@ -10,22 +10,23 @@ All files are now ≤ 200 lines.
 | `action.rs` (kjxlkj-core-types) | 200 | OK |
 | `search.rs` (kjxlkj-core-state) | 191 | OK |
 | `editor.rs` (kjxlkj-core-state) | 185 | OK |
-| `normal.rs` (kjxlkj-core-mode) | 198 | OK |
+| `editor_search_tests.rs` (kjxlkj-core-state) | 200 | OK |
+| `normal.rs` (kjxlkj-core-mode) | 200 | OK |
 | `other_modes.rs` (kjxlkj-core-mode) | 196 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 174 | OK |
 | `editor_cmdline.rs` (kjxlkj-core-state) | 150 | OK |
 | `layout_ops.rs` (kjxlkj-core-ui) | 191 | OK |
 | `motion.rs` (kjxlkj-core-edit) | 200 | OK |
-| `editor_edit.rs` (kjxlkj-core-state) | 179 | OK |
+| `editor_edit.rs` (kjxlkj-core-state) | 199 | OK |
 | `normal_g.rs` (kjxlkj-core-mode) | 197 | OK |
 | `register.rs` (kjxlkj-core-state) | 198 | OK |
 | `pending.rs` (kjxlkj-core-mode) | 175 | OK |
 | `frame.rs` (kjxlkj-render) | 159 | OK |
-| `command_parse.rs` (kjxlkj-core-state) | 177 | OK |
+| `command_parse.rs` (kjxlkj-core-state) | 199 | OK |
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 152 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 177 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 189 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 
 ## Splits Performed
@@ -42,7 +43,7 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `action.rs` (200), `motion.rs` (200), `register.rs` (198), `normal.rs` (198), `normal_g.rs` (197), `other_modes.rs` (196) as they approach the limit.
+- Monitor `action.rs` (200), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `command_parse.rs` (199), `editor_edit.rs` (199), `register.rs` (198), `normal_g.rs` (197), `other_modes.rs` (196) as they approach the limit.
 - New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
 - New files added in wave-018: `register.rs` (140→176), `pending.rs` expanded to 175.
 - New files added in wave-019: `regex_compile.rs` (187→120 refactored), `command_parse.rs` (159), `search.rs` (200), `editor_cmdline.rs` (195).
@@ -50,3 +51,4 @@ All files are now ≤ 200 lines.
 - Wave-021 changes: `register.rs` 176→198, `editor.rs` 200→186, `editor_cmdline.rs` 195→150, `action.rs` 200→197, `command_parse.rs` 159→169, `editor_action.rs` 132→138.
 - Wave-022 changes: `search.rs` 200→177 (helpers extracted to `search_util.rs`), `action.rs` 197→200, `normal.rs` 199→198, `command_parse.rs` 169→177, `editor_action.rs` 138→159, `editor.rs` 186→185. New files: `search_util.rs` (73), `editor_search_tests.rs` (105).
 - Wave-023 changes: `search.rs` 177→191 (+history, ignorecase/smartcase, compacted tests), `action.rs` 200→200 (added GStarSearchForward/GStarSearchBackward, removed 4 doc comments), `normal_g.rs` 177→197 (+g*/g# dispatch, 2 new tests), `motion_find.rs` 196→174 (compacted paragraphs, bracket_pair helper, % forward scan), `motion.rs` 190→200 (+% forward scan test), `editor_action.rs` 159→177 (+g_star_search dispatch), `editor_search_tests.rs` 137→191 (+5 integration tests: g*, g#, %, history, ignorecase).
+- Wave-024 changes: `command_parse.rs` 177→199 (+parse_set_option, +test), `editor_action.rs` 177→189 (+IncrementNumber/DecrementNumber/SetOption dispatch, +apply_set_option), `editor_edit.rs` 179→199 (+increment_number/decrement_number/modify_number, +find_number, compacted cursor/clamp), `editor_search_tests.rs` 191→200 (merged star boundary tests, +ctrl_a_increments_number, +set_option_via_ex_command), `normal.rs` 198→200 (+Ctrl-a/Ctrl-x).

@@ -157,3 +157,21 @@ Tracks completion of each wave with evidence.
   - Integration tests: g* partial match, g# partial match, % forward scan,
     search history through cmdline, ignorecase via handle_key
   - motion.rs test: % scans forward for bracket from non-bracket position
+
+## Stage 03: Commands and Ranges
+
+### Wave 024: Scope Freeze and Input Mapping
+- Status: COMPLETE
+- Committed: 67b0bb9c
+- Evidence: 175 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Ctrl-a (IncrementNumber) and Ctrl-x (DecrementNumber) normal mode dispatch
+  - Number increment/decrement implementation: find_number() scans forward from cursor,
+    parses decimal integers (including negative), modifies value, replaces in buffer
+  - :set/:se/:setlocal command parsing via parse_set_option(): boolean (set ignorecase),
+    negation (set noignorecase), key=value (set tabstop=4)
+  - apply_set_option() handles ignorecase/ic, smartcase/scs, hlsearch/hls options
+  - Action::IncrementNumber, Action::DecrementNumber, Action::SetOption(String,String)
+  - Integration tests: ctrl_a_increments_number, set_option_via_ex_command
+  - Unit test: parse_set_option_forms in command_parse.rs
+  - Compacted editor_edit.rs: tuple destructuring for cursor, min() for clamping
