@@ -39,6 +39,7 @@ pub fn ensure_kjxlkj_built() -> Result<PathBuf> {
 
 pub struct PtySession {
     child: Box<dyn portable_pty::Child + Send>,
+    master: Box<dyn portable_pty::MasterPty + Send>,
     writer: Box<dyn Write + Send>,
     output: Arc<Mutex<Vec<u8>>>,
     _reader_thread: thread::JoinHandle<()>,
@@ -72,6 +73,7 @@ impl PtySession {
             .master
             .take_writer()
             .context("failed to open PTY writer")?;
+        let master = pair.master;
         let output = Arc::new(Mutex::new(Vec::new()));
         let output_copy = Arc::clone(&output);
         let reader_thread = thread::spawn(move || {
@@ -92,6 +94,7 @@ impl PtySession {
         });
         Ok(Self {
             child,
+            master,
             writer,
             output,
             _reader_thread: reader_thread,
@@ -103,6 +106,18 @@ impl PtySession {
             .write_all(bytes)
             .context("failed writing raw bytes to PTY")?;
         self.writer.flush().context("failed flushing PTY writer")
+    }
+
+    pub fn send_symbolic_key(&mut self, key: &str) -> Result<()> {
+        let bytes = match key {
+            "a" => b"a".as_slice(),
+            "A" => b"A".as_slice(),
+            "Ctrl-w" => b"\x17".as_slice(),
+            "Esc" => b"\x1B".as_slice(),
+            "Enter" => b"\x0D".as_slice(),
+            _ => return Err(anyhow!("unknown symbolic key: {key}")),
+        };
+        self.send_raw(bytes)
     }
 
     pub fn wait_for_pattern(&self, pattern: &str, timeout: Duration) -> Result<String> {
@@ -127,6 +142,27 @@ impl PtySession {
             .lock()
             .expect("output lock should not be poisoned");
         String::from_utf8_lossy(&output).into_owned()
+    }
+
+    pub fn capture_frame(&self) -> String {
+        self.snapshot()
+    }
+
+    pub fn resize(&self, cols: u16, rows: u16) -> Result<()> {
+        self.master
+            .resize(PtySize {
+                rows,
+                cols,
+                pixel_width: 0,
+                pixel_height: 0,
+            })
+            .context("failed resizing PTY")
+    }
+
+    pub fn quit(&mut self) -> Result<String> {
+        self.send_raw(b"\x1Bq")
+            .context("failed sending quit sequence")?;
+        self.wait_for_pattern("FINAL", Duration::from_secs(1))
     }
 
     pub fn terminate(&mut self) -> Result<()> {
