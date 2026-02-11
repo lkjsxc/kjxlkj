@@ -8,48 +8,47 @@ The explorer is a first-class window in the shared layout tree.
 
 | Requirement | Detail |
 |---|---|
-| Window identity | explorer is a normal `WindowId` leaf |
-| Launch reachability | command and key triggers must produce visible behavior |
-| Mixed navigation | `Ctrl-w` works across explorer, buffer, and terminal leaves |
-| Deterministic refresh | file tree updates are explicit, reproducible, and bounded |
+| Window identity | explorer is a normal `WindowId` leaf in the split tree |
+| Launch reachability | command and key routes must produce visible pane changes |
+| Mixed navigation | `Ctrl-w` navigation works across buffer, explorer, and terminal panes |
+| Deterministic refresh | file-tree updates are explicit and reproducible |
+| Screen-observable closure | feature is closed only with frame-level assertions |
 
-## Launch and Wiring
+## Launch and Routing
 
-| Trigger | Required Path |
-|---|---|
-| `:Explorer` | command parser -> core action -> explorer leaf open/focus |
-| `:ExplorerClose` | command parser -> close explorer leaf |
-| `:ExplorerReveal` | command parser -> reveal active buffer path |
-| `<leader>e` | mapping resolver -> explorer toggle |
-| `<leader>E` | mapping resolver -> explorer reveal |
+| Trigger | Required Path | Visible Result |
+|---|---|---|
+| `:Explorer` | command parser -> action -> explorer open/focus | explorer pane appears and is focused |
+| `:ExplorerClose` | command parser -> close explorer leaf | explorer pane disappears |
+| `:ExplorerReveal` | command parser -> reveal active file | target node is visible and selected |
+| `<leader>e` | mapping resolver -> explorer toggle | pane toggles open/closed |
+| `<leader>E` | mapping resolver -> reveal action | pane opens and highlights active file |
 
-No trigger above may be marked complete unless reachable via live runtime path.
-
-## Explorer State Model
+## State Model
 
 | Field | Requirement |
 |---|---|
-| root path | normalized absolute project root |
-| node index | deterministic node IDs and parent/child linkage |
+| root path | normalized absolute workspace root |
+| node IDs | deterministic parent/child relationship |
 | expansion set | stable expanded directory IDs |
-| visible list | flattened view derived only from expansion set |
-| selected index | clamped to visible range after every mutation |
-| clipboard state | optional cut/copy payload with explicit source IDs |
+| visible rows | flattened from tree + expansion set only |
+| selected row | clamped after every mutation |
+| pending operation | explicit create/rename/delete state |
 
 ## Navigation and Open Targets
 
 | Key | Behavior |
 |---|---|
 | `j` / `k` | move selection down/up |
-| `h` | collapse dir or move to parent |
-| `l` | expand dir or open file |
-| `Enter` / `o` | open in current window |
+| `h` | collapse directory or move to parent |
+| `l` | expand directory or open file |
+| `Enter` / `o` | open in current target pane |
 | `v` | open file in vertical split |
 | `s` | open file in horizontal split |
 | `t` | open file in new tab |
-| `q` | close explorer window |
+| `q` | close explorer pane |
 
-Open-target actions must preserve deterministic focus and explorer selection state.
+Open-target actions must preserve deterministic focus and selection identity.
 
 ## File Operations
 
@@ -63,39 +62,42 @@ Open-target actions must preserve deterministic focus and explorer selection sta
 | `x` / `c` / `p` | cut / copy / paste |
 | `y` / `Y` / `gy` | copy name / relative path / absolute path |
 
-Mutations must route through filesystem service and then refresh explorer state.
+File mutations route through filesystem service, then refresh explorer state.
 
-## External Drift and Errors
+## Error and Drift Handling
 
 | Scenario | Required Behavior |
 |---|---|
-| external create/rename/delete | refresh updates visible tree deterministically |
+| external create/rename/delete | refresh updates visible rows deterministically |
 | reveal target missing | fallback to nearest existing ancestor |
-| permission denied | operation fails with explicit diagnostics and no in-memory corruption |
-| partial refresh failure | previous visible state remains valid |
+| permission denied | explicit error with no in-memory tree corruption |
+| partial refresh failure | previous valid tree state remains usable |
 
-## Rendering and Wrap Safety
+## Rendering Rules
 
 | Rule | Requirement |
 |---|---|
-| on-screen guarantee | explorer rows stay within text area bounds |
-| long labels | wrap to continuation rows without overflow |
-| selection identity | continuation rows map back to one logical node |
-| badge safety | git/diagnostic badges do not corrupt alignment |
+| on-screen guarantee | rows stay inside pane bounds |
+| long labels | wrap without overflow and keep node identity |
+| selection marker | exactly one selected node row is visible |
+| badge safety | git and diagnostics badges preserve alignment |
 
-## Mandatory Verification
+## Mandatory E2E Verification
 
-| ID | Scenario |
-|---|---|
-| `EXP-01R` | `:Explorer` opens explorer via real command path |
-| `EXP-02R` | `<leader>e` and `<leader>E` toggle/reveal wiring |
-| `EXP-03R` | open selected file via current/horizontal/vertical targets |
-| `EXP-04R` | `Ctrl-w` navigation across mixed window types |
-| `EXP-05R` | long label wrapping with stable selection identity |
-| `EXP-06R` | external FS drift refresh without focus corruption |
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `EXP-01R` | run `:Explorer` | pane appears and focus marker moves to explorer |
+| `EXP-02R` | run `<leader>e` and `<leader>E` | toggle/reveal routes are visible and deterministic |
+| `EXP-03R` | open by `Enter`, `v`, `s` | target pane type/path and focus are correct per step |
+| `EXP-04R` | mixed `Ctrl-w` navigation | focus path across pane types is deterministic |
+| `EXP-05R` | long labels + badges | wrapped rows remain bounded and selectable |
+| `EXP-06R` | external FS drift | refreshed rows match filesystem state without corruption |
+| `EXP-SCREEN-01` | pane visibility oracle | rendered pane map includes explorer region when expected |
+| `EXP-SCREEN-02` | open-target screen oracle | active pane and opened file path match expected frame |
 
 ## Related
 
 - Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
 - Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
 - Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- E2E contract: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

@@ -6,27 +6,27 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Authority
 
-Log files never override policy, spec, reference, or TODO documents.
+- log files never override policy, spec, reference, or TODO documents
+- when constraints are promoted into canonical docs, matching log entries are deleted
 
 ## Retention Rule
 
-- promote necessary constraints into canonical docs immediately
-- delete historical records after promotion
-- keep only active, unresolved notes
+- keep only unresolved notes
+- delete historical wave records after promotion
+- avoid duplicate status narratives in log and reference ledgers
 
-## Sections
+## Active Sections
 
 | Directory | Purpose |
 |---|---|
-| [audits/](audits/README.md) | unresolved audits only |
-| [proposals/](proposals/README.md) | unresolved proposals only |
-| [reconstruction/](reconstruction/README.md) | active temporary reconstruction notes only |
+| [audits/](audits/README.md) | unresolved audit notes only |
+| [proposals/](proposals/README.md) | unresolved change proposals only |
 
-## Current State
+## Current State (2026-02-11)
 
-Active reconstruction audit and testing-idea records are open for the current wave.
+No unresolved log entries are active.
 
 ## Related
 
 - Canonical docs index: [/docs/README.md](/docs/README.md)
-- Reference ledgers: [/docs/reference/README.md](/docs/reference/README.md)
+- Current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)

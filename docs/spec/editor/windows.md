@@ -10,6 +10,7 @@ Windows are core-owned viewports over buffer, explorer, and terminal content.
 - exactly one tiled window is focused at all times
 - renderer consumes immutable snapshots and must not mutate layout
 - split, close, and focus behavior is deterministic across runs
+- every window mutation is observable through per-step state dumps
 
 ## Window Types
 
@@ -29,15 +30,15 @@ All types participate in one `WindowId` graph and one `Ctrl-w` command model.
 | `content` | `Buffer`, `Explorer`, or `Terminal` |
 | `viewport` | top/left offsets and text-area geometry |
 | `cursor` | content-local cursor/caret |
-| `last_focus_seq` | monotonic sequence used for deterministic tie-break |
+| `last_focus_seq` | monotonic sequence for deterministic tie-break |
 
 ## Layout Tree Model
 
 | Node | Meaning |
 |---|---|
 | `Leaf(WindowId)` | one tiled pane |
-| `Horizontal(children)` | stacked top-to-bottom |
-| `Vertical(children)` | arranged left-to-right |
+| `Horizontal(children)` | arranged left-to-right |
+| `Vertical(children)` | arranged top-to-bottom |
 
 ## Geometry Invariants
 
@@ -46,7 +47,7 @@ All types participate in one `WindowId` graph and one `Ctrl-w` command model.
 | full coverage | panes and separators cover editor tile region |
 | no overlap | pane rectangles do not overlap |
 | minimum area | each pane has at least `1x1` text area |
-| stable identity | `WindowId` persists across resize/rebalance when leaf survives |
+| stable identity | surviving leaves keep original `WindowId` |
 
 ## Focus Resolution (normative)
 
@@ -64,18 +65,18 @@ Cyclic focus (`Ctrl-w w/W`) MUST use deterministic depth-first leaf order.
 
 | Operation | Required Behavior |
 |---|---|
-| split create | focused leaf becomes container with old leaf + new leaf |
+| split create | focused leaf becomes container with old + new leaf |
 | close leaf | remove leaf, collapse unary containers, rebalance ancestors |
 | close last leaf | disallowed unless editor is quitting |
-| close terminal leaf | trigger terminal lifecycle cleanup before leaf removal |
-| close explorer leaf | detach explorer state from window focus graph cleanly |
-| `:only` | close all non-pinned leaves except current focus |
+| close terminal leaf | run terminal cleanup before leaf removal |
+| close explorer leaf | detach explorer state safely from focus graph |
+| `:only` | close all non-focused leaves |
 
 ## History Semantics
 
 - `Ctrl-w p` jumps to previous valid focused window
 - if previous target is gone, fallback is deterministic nearest neighbor
-- focus history must never point to deleted IDs after close/reopen churn
+- focus history never points to deleted IDs after churn
 
 ## Resize and Reflow
 
@@ -85,7 +86,7 @@ On geometry change:
 2. clamp per-window viewport offsets
 3. trigger wrap reflow in affected panes
 4. propagate PTY resize to terminal leaves
-5. ensure focused cursor/caret remains visible
+5. keep focused cursor/caret visible
 
 ## Session Persistence
 
@@ -98,13 +99,13 @@ Sessions MUST persist and restore:
 
 ## Mandatory Verification
 
-| ID | Scenario |
-|---|---|
-| `WIN-01R` | split create/close lifecycle keeps one valid focus |
-| `WIN-02R` | directional focus on nested mixed-orientation trees |
-| `WIN-03R` | mixed buffer/explorer/terminal directional navigation |
-| `WIN-04R` | resize storm preserves geometry invariants |
-| `WIN-05R` | session restore preserves split tree and focused leaf |
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `WIN-01R` | split create/close lifecycle | one valid focus and expected pane map each step |
+| `WIN-02R` | directional focus on nested tree | focus path matches geometry oracle |
+| `WIN-03R` | mixed pane navigation | pane type transitions are deterministic |
+| `WIN-04R` | resize storm | geometry invariants remain true |
+| `WIN-05R` | session restore | restored layout/focus equal saved state |
 
 ## Related
 

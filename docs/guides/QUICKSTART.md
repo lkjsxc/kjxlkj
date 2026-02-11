@@ -13,7 +13,8 @@ Check current status first:
 
 If the repo is docs-only (no workspace artifacts), reconstruct first:
 
-- [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
 
 ## Build and Run
 
@@ -38,7 +39,7 @@ Use these only if current conformance marks the command surface as supported.
 
 ## Expected Gaps
 
-Feature availability is reconstruction-dependent and must be read from ledgers, not assumed from guide text.
+Feature availability is reconstruction-dependent and must be read from ledgers.
 
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

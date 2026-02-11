@@ -12,18 +12,18 @@ Mode-entry keybindings and normalization rules.
 | `I` | Insert at first non-blank | enter Insert at first non-blank |
 | `gI` | Insert at column 0 | enter Insert at true line start |
 | `a` | Append after | enter Insert after current grapheme |
-| `A` | Append at line end | move to line end and append |
-| `o` | Open below | new line below, then Insert |
-| `O` | Open above | new line above, then Insert |
+| `A` | Append at line end | move to true line end and enter Insert |
+| `o` | Open below | insert new line below, then Insert |
+| `O` | Open above | insert new line above, then Insert |
 | `s` | Substitute char | replace char, then Insert |
 | `S` | Substitute line | replace line, then Insert |
 | `C` | Change to EOL | delete to EOL, then Insert |
 | `cc` | Change line | change full line, then Insert |
 | `gi` | Resume last insert | return to last insert position |
 
-## Printable Shift Normalization
+## Printable Shift Normalization (normative)
 
-Normalization of printable shifted keys is mandatory and happens before mode handler dispatch.
+Normalization of printable shifted keys is mandatory before mode dispatch.
 
 | Raw Input | Required Dispatch |
 |---|---|
@@ -31,18 +31,27 @@ Normalization of printable shifted keys is mandatory and happens before mode han
 | `Shift+o` | `O` |
 | `Shift+i` | `I` |
 
-Mode handlers MUST NOT depend on raw shift modifier for printable commands.
+Mode handlers MUST consume normalized keys only.
 
-## Critical Distinction
+## Critical Behavioral Distinction
 
-`a` and `A` MUST NOT share behavior.
+`i`, `a`, and `A` are distinct and must remain distinct.
 
-| Key | Required Cursor Transition Before Insert |
+| Key | Pre-Insert Cursor Transition | Expected First Insert Cell |
+|---|---|---|
+| `i` | no move | current cursor cell |
+| `a` | advance one grapheme when possible | cell after current grapheme |
+| `A` | jump to true line end insertion point | end-of-line insertion point |
+
+## Screen-Visible Guarantees
+
+| Guarantee | Required Observation |
 |---|---|
-| `a` | move one grapheme right if possible |
-| `A` | move to true end-of-line insertion point |
+| `A` append | inserted text appears at line end, not at cursor+1 unless cursor already at EOL |
+| normalization symmetry | physical `A` and `Shift+a` produce identical state dumps and frames |
+| mode switch timing | mode indicator changes to Insert before inserted text appears |
 
-## Visual, Replace, Command Entry
+## Visual, Replace, and Command Entry
 
 | Key | Action |
 |---|---|
@@ -64,12 +73,13 @@ Mode handlers MUST NOT depend on raw shift modifier for printable commands.
 
 ## Mandatory Verification
 
-| ID | Scenario |
-|---|---|
-| `KEYMODE-01` | `Shift+a` dispatches as `A` through real decoder path |
-| `KEYMODE-02` | `a` at EOL differs from `i` |
-| `KEYMODE-03` | `A` appends at true end-of-line |
-| `KEYMODE-04` | normalization remains correct with IME and leader mappings |
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `KEYMODE-01` | `Shift+a` dispatches as `A` | normalized key is `A` and resulting frame equals physical `A` run |
+| `KEYMODE-02` | `a` at EOL differs from `i` | inserted text position differs exactly as specified |
+| `KEYMODE-03` | `A` appends at true EOL | final line content equals append-at-EOL expectation |
+| `WR-01R` | raw key path for `Shift+a` | per-step state dump shows decode -> normalize -> dispatch -> frame |
+| `KEY-SCREEN-01` | user-like append check | frame snapshots after each key match oracle |
 
 ## Related
 

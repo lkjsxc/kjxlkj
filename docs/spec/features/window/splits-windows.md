@@ -4,76 +4,79 @@ Back: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.m
 
 This document defines split, close, resize, and traversal behavior for all tiled windows.
 
-## Unified Window Graph
+## Core Contract
 
 | Requirement | Detail |
 |---|---|
 | Single tree | buffer, explorer, and terminal leaves share one tree |
-| Stable identity | leaf IDs remain stable while leaf survives |
-| Deterministic focus | exactly one focused leaf at all times |
-| Core ownership | core computes tree and geometry; renderer is read-only |
+| Stable identity | `WindowId` survives resize and rebalance while leaf survives |
+| Deterministic focus | exactly one focused leaf exists at all times |
+| Observable state | every mutation emits `layout_summary`, `focused_window_id`, and pane rectangles |
+| User-visible correctness | behavior is closed only when screen-state assertions pass |
 
-## Split Creation
+## Split Creation Semantics
 
-| Command/Key | Required Behavior |
-|---|---|
-| `:split`, `Ctrl-w s` | create horizontal split from focused leaf |
-| `:vsplit`, `Ctrl-w v` | create vertical split from focused leaf |
-| `:new`, `Ctrl-w n` | split and bind new empty buffer |
-| `:split {path}` | split and open `{path}` in new leaf |
-| `:vsplit {path}` | vertical split and open `{path}` |
+| Trigger | Required Mutation | Focus Result | Visible Result |
+|---|---|---|---|
+| `:split`, `Ctrl-w s` | focused leaf becomes vertical stack container | focus new leaf | two rows become visible |
+| `:vsplit`, `Ctrl-w v` | focused leaf becomes horizontal row container | focus new leaf | two columns become visible |
+| `:new`, `Ctrl-w n` | split + new empty buffer binding | focus new leaf | new empty buffer pane is visible |
+| `:split {path}` | split + open path in new leaf | focus new leaf | opened file path visible in new pane |
+| `:vsplit {path}` | vertical split + open path in new leaf | focus new leaf | opened file path visible in new pane |
 
-Split create must focus the new leaf unless explicitly overridden.
+The old leaf keeps its `WindowId`; the new leaf gets a fresh `WindowId`.
 
 ## Close and Rebalance
 
 | Operation | Required Behavior |
 |---|---|
-| `Ctrl-w c`, `Ctrl-w q` | close focused leaf and rebalance ancestors |
-| unary container collapse | container with one child is replaced by child |
-| `Ctrl-w o` / `:only` | close all other leaves and keep focused leaf |
-| terminal close | child process cleanup must complete or produce explicit error |
-| explorer close | focus graph remains valid with deterministic fallback |
+| `Ctrl-w c`, `Ctrl-w q` | close focused leaf, collapse unary parents, rebalance siblings |
+| `Ctrl-w o`, `:only` | keep focused leaf, close all others, preserve focused binding |
+| close explorer leaf | detach explorer state without dangling focus pointers |
+| close terminal leaf | perform PTY cleanup before removing leaf |
 
-## Focus Commands
+After each close operation, pane rectangles must still tile the full editor region.
+
+## Focus and Navigation
 
 | Key | Required Behavior |
 |---|---|
-| `Ctrl-w h/j/k/l` | geometry-based directional focus |
+| `Ctrl-w h/j/k/l` | geometry-based directional focus selection |
 | `Ctrl-w w/W` | deterministic next/previous leaf cycle |
-| `Ctrl-w p` | previous valid focus target |
+| `Ctrl-w p` | previous valid focus target or deterministic fallback |
 | `Ctrl-w t/b` | deterministic top-left / bottom-right leaf |
 
-Directional focus and fallback rules are defined in [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md).
+Focus transition must always emit previous and next `WindowId` in diagnostics.
 
-## Resize Commands
+## Resize Semantics
 
-| Key/Command | Required Behavior |
+| Trigger | Required Behavior |
 |---|---|
-| `Ctrl-w + - > <` | relative resize with minimum-size clamp |
-| `{n}Ctrl-w _` | set or maximize height |
-| `{n}Ctrl-w |` | set or maximize width |
-| `Ctrl-w =` | equalize sibling leaf sizes |
-| `:resize`, `:vertical resize` | command-driven resize |
+| `Ctrl-w + - > <` | relative resize with min-size clamp |
+| `{n}Ctrl-w _`, `{n}Ctrl-w |` | set or maximize height/width |
+| `Ctrl-w =` | equalize sibling dimensions |
+| `:resize`, `:vertical resize` | command-driven resize with deterministic clamp |
 
-Any resize must preserve geometry invariants and visible cursor/caret targets.
+Resize must never create zero-size panes and must preserve one focused pane.
 
-## Determinism Invariants
+## Failure Prevention Invariants
 
-- same initial tree + same input sequence yields same final tree and focus
-- close/reopen churn does not leave stale focus pointers
-- tree mutation must not lose surviving leaf content bindings
+- same initial state + same key sequence yields byte-identical layout timeline
+- no mutation may leave stale `WindowId` references in focus history
+- pane rectangles must not overlap or leave uncovered gaps
+- pane content binding must survive unrelated neighbor mutations
 
-## Mandatory Verification
+## Mandatory E2E Verification
 
-| ID | Scenario |
-|---|---|
-| `WIN-01R` | multi-split create/close/only lifecycle |
-| `WIN-02R` | directional focus correctness on asymmetric trees |
-| `WIN-03R` | mixed window navigation across all window types |
-| `WIN-04R` | resize storm and equalize churn |
-| `WIN-05R` | session roundtrip of complex split layout |
-| `WINNAV-01R`..`WINNAV-06R` | directional/cyclic/previous-focus determinism |
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `WIN-01R` | split-create-close-only lifecycle | pane count/geometry and focused pane match expected timeline |
+| `WIN-02R` | directional focus on asymmetric tree | focus transitions match geometry oracle after each key |
+| `WIN-03R` | mixed buffer/explorer/terminal navigation | focused type and `WindowId` sequence is deterministic |
+| `WIN-04R` | resize/equalize storm | no invalid geometry and no focus loss |
+| `WIN-05R` | save and restore complex split tree | restored layout and focus match pre-save state |
+| `WIN-SCREEN-01` | visible pane map oracle | screen snapshot panes match computed rectangles |
+| `WIN-SCREEN-02` | replay determinism | repeated run yields identical per-step dumps |
 
 ## Related
 
@@ -81,3 +84,4 @@ Any resize must preserve geometry invariants and visible cursor/caret targets.
 - Wincmd catalog: [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
 - Explorer integration: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
 - Terminal integration: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- E2E contract: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

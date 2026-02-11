@@ -19,27 +19,27 @@ Canonical explanation:
 - Documentation index: [docs/README.md](docs/README.md)
 - Policies: [docs/policy/README.md](docs/policy/README.md)
 - Specifications: [docs/spec/README.md](docs/spec/README.md)
-- Current verified status: [docs/reference/CONFORMANCE.md](docs/reference/CONFORMANCE.md)
-- Known gaps: [docs/reference/LIMITATIONS.md](docs/reference/LIMITATIONS.md)
-- Reconstruction contract: [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
+- Current-state conformance: [docs/reference/CONFORMANCE.md](docs/reference/CONFORMANCE.md)
+- Active limitations: [docs/reference/LIMITATIONS.md](docs/reference/LIMITATIONS.md)
+- Reconstruction checklist chain: [docs/todo/README.md](docs/todo/README.md)
 
 ## Repository States
 
 - Docs-only baseline: canonical docs are present; derived artifacts may be absent.
 - Reconstructed implementation: workspace and automation artifacts are regenerated from docs.
 
-Current state: reconstructed foundation baseline active (workspace topology rebuilt on 2026-02-11).
+Current state on February 11, 2026: workspace exists, but release is blocked by
+open high-severity runtime limitations (`Shift+a`, split view, explorer).
 
 ## Reconstructing the Implementation
 
-Follow:
+Follow the TODO chain in order:
 
-- [docs/todo/RECONSTRUCTION_PROMPT.md](docs/todo/RECONSTRUCTION_PROMPT.md)
 - [docs/todo/README.md](docs/todo/README.md)
-- [docs/todo/current/README.md](docs/todo/current/README.md)
+- [docs/todo/checklists/README.md](docs/todo/checklists/README.md)
+- [docs/todo/inventory/README.md](docs/todo/inventory/README.md)
 
-When reconstructed, the Rust workspace is expected under `src/crates/` with
-grouped crate roots:
+When reconstructed, the Rust workspace is expected under `src/crates/` with grouped roots:
 
 - `src/crates/app/`
 - `src/crates/core/`

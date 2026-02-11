@@ -13,6 +13,7 @@ graph LR
   NORM --> IME[IME Gate]
   IME --> MAP[Mapping and Prefix Resolver]
   MAP --> CORE[Typed Core Action]
+  CORE --> DUMP[Per-step State Dump]
 ```
 
 ## Stage Order (normative)
@@ -24,6 +25,7 @@ For every key event, stages MUST run in this exact order:
 3. run IME gate when Insert composition is active
 4. resolve mappings, prefixes, counts, and operator continuations
 5. emit one typed action to core
+6. capture deterministic post-action state dump for E2E assertions
 
 No later stage may reinterpret printable identity from an earlier stage.
 
@@ -39,44 +41,27 @@ No later stage may reinterpret printable identity from an earlier stage.
 | `Mouse(_)` | ignored deterministically |
 
 UTF-8 printable bytes MUST be assembled into one scalar-char key event before
-normalization and routing. Valid multibyte printable input MUST NOT emit
-per-byte `Unknown(...)` events.
+normalization and routing.
 
 ## Printable Normalization Rules
 
 | Rule | Requirement |
 |---|---|
-| Alpha shift | printable shifted alpha keys become uppercase chars (`A`..`Z`) |
+| Alpha shift | printable shifted alpha keys become uppercase chars |
 | Modifier collapse | printable shift modifier is absorbed into normalized char |
-| Dispatch precedence | mode handlers consume normalized key, not raw shift pair |
-| Symmetry | `Shift+a` and physical `A` must be indistinguishable downstream |
-
-### Required Examples
-
-| Raw Key | Normalized Key |
-|---|---|
-| `Shift+a` | `A` |
-| `Shift+o` | `O` |
-| `Shift+i` | `I` |
-| UTF-8 bytes for `あ` | `あ` |
-| `Ctrl+w` | `Ctrl+w` |
-| `Esc` | `Esc` |
+| Dispatch precedence | mode handlers consume normalized key, not raw modifier pair |
+| Symmetry | physical `A` and `Shift+a` are indistinguishable downstream |
 
 ## Prefix and Mapping Resolver
 
-Resolver behavior MUST be deterministic and bounded.
-
 | Surface | Requirement |
 |---|---|
-| Prefix buffers | explicit state machine with timeout and deterministic fallback |
+| Prefix buffers | explicit state machine with deterministic timeout fallback |
 | Counts | parsed before final command dispatch |
-| Operator pending | accepts only valid motion/text-object continuation |
+| Operator pending | accepts only valid continuation tokens |
 | Leader mappings | evaluated only when IME gate returns `pass` |
 
-Timeout handling MUST produce one of two outcomes only:
-
-1. resolved mapping action
-2. deterministic fallback to literal key actions
+Timeout handling must produce either resolved mapping or deterministic literal fallback.
 
 ## IME Gate Contract
 
@@ -84,44 +69,40 @@ IME gate runs after normalization and before mapping resolution.
 
 | Context | Behavior |
 |---|---|
-| Insert + composition active | IME handler gets first consume/pass decision |
-| `Space` during composition | consumed by IME candidate workflow; no leader mapping |
+| Insert + composition active | IME gets first consume/pass decision |
+| `Space` during composition | consumed by IME candidate workflow |
 | `Esc` during composition | cancels composition before mode transition |
 | Insert + no composition | pass to mapping resolver |
 
-## Trace and Diagnostics Contract
+## State Dump Contract for E2E
 
-Decoder and dispatch layers MUST emit trace points for:
-
-- raw terminal event
-- normalized key
-- IME gate decision (`consume` or `pass`)
-- mapping resolution decision
-- final typed action
-
-These trace fields are mandatory in blocker diagnostics:
+After each key input, dump rows must include:
 
 - `event_seq`
 - `mode_before`
-- `focused_window_id`
-- `focused_window_type`
+- `mode_after`
+- `raw_key`
 - `normalized_key`
 - `resolved_action`
+- `focused_window_id`
+- `focused_window_type`
 - `layout_summary`
 - `frame_excerpt`
-- `recent_events` (bounded raw byte + normalized key + resolved action entries)
+- `cursor_or_caret`
+- `recent_events` (bounded)
 
 ## Mandatory Verification
 
-| ID | Scenario |
-|---|---|
-| `KEY-TRACE-01` | raw `Shift+a` yields normalized `A` before mode dispatch |
-| `KEY-TRACE-02` | IME composition `Space` consumes and emits no leader action |
-| `KEY-TRACE-03` | `:Explorer` and `<leader>e` paths appear in action trace |
-| `KEY-TRACE-04` | `:terminal` and `<leader>t` paths appear in action trace |
-| `KEY-TRACE-06` | UTF-8 multibyte input is decoded as one normalized char event |
-| `KEY-TRACE-07` | trace lines include `layout_summary` and bounded `frame_excerpt` fields |
-| `WR-01R` | PTY raw bytes for `Shift+a` produce append semantics in runtime |
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `KEY-TRACE-01` | raw `Shift+a` yields normalized `A` before mode dispatch | dump ordering proves normalize-before-dispatch |
+| `KEY-TRACE-02` | IME composition `Space` is consumed | no leader action in dump timeline |
+| `KEY-TRACE-03` | `:Explorer` and `<leader>e` routing | route and pane outcome appear in dumps |
+| `KEY-TRACE-04` | `:terminal` and `<leader>t` routing | route and pane outcome appear in dumps |
+| `KEY-TRACE-06` | UTF-8 multibyte input | one normalized scalar-char event only |
+| `KEY-TRACE-07` | diagnostics completeness | dump includes `layout_summary` and `frame_excerpt` |
+| `KEY-SCREEN-02` | normalization symmetry | frame timeline for physical `A` equals `Shift+a` timeline |
+| `WR-01R` | user-like append flow | final frame matches append-at-EOL oracle |
 
 ## Related
 

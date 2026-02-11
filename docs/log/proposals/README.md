@@ -2,9 +2,13 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-No unresolved proposals are currently active.
+Unresolved structural proposals only.
+
+## Active Entries
+
+- none
 
 ## Rule
 
-Create a proposal here only when a requirement cannot be directly promoted into
-canonical policy/spec/reference/TODO docs.
+- create an entry only when canonical docs cannot be updated directly
+- delete proposal entries immediately after canonical promotion

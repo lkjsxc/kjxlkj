@@ -10,7 +10,7 @@ Back: [/docs/todo/README.md](/docs/todo/README.md)
 
 ## Inventory Summary
 
-- [ ] total markdown files: 437
+- [ ] total markdown files: 429
 - [ ] total parts: 5
 
 ## Parts

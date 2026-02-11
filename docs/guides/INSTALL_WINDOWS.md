@@ -8,9 +8,10 @@ For current supported behavior and known gaps, check:
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
-If this repository is in a docs-only baseline (no `src/`/Cargo workspace), reconstruct the implementation first:
+If this repository is in a docs-only baseline (no `src/` or Cargo workspace), reconstruct first:
 
-- [/docs/todo/RECONSTRUCTION_PROMPT.md](/docs/todo/RECONSTRUCTION_PROMPT.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/checklists/README.md](/docs/todo/checklists/README.md)
 
 ## Pre-built binaries
 

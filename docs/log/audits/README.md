@@ -2,17 +2,14 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-Active audit snapshots only.
+Unresolved audit snapshots only.
 
-## Entries
+## Active Entries
 
-No unresolved audit records are active.
+- none
 
 ## Rule
 
-When an audit finding is promoted into canonical docs, delete the audit snapshot.
-
-## Related
-
-- Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- TODO verification: [/docs/todo/current/verification.md](/docs/todo/current/verification.md)
+- if an audit finding is promoted into canonical docs, delete the audit note
+- keep drift truth in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- keep blocker truth in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

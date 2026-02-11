@@ -4,14 +4,6 @@ Back: [/docs/todo/inventory/README.md](/docs/todo/inventory/README.md)
 
 ## Direct Link Checklist
 
-- [ ] [/docs/spec/technical/profiling.md](/docs/spec/technical/profiling.md)
-- [ ] [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
-- [ ] [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
-- [ ] [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [ ] [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)
-- [ ] [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
-- [ ] [/docs/spec/ui/components.md](/docs/spec/ui/components.md)
-- [ ] [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - [ ] [/docs/spec/ui/themes.md](/docs/spec/ui/themes.md)
 - [ ] [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
 - [ ] [/docs/spec/ux/accessibility.md](/docs/spec/ux/accessibility.md)

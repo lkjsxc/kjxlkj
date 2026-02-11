@@ -6,8 +6,8 @@ Contract for the live PTY process harness used by blocker `*R` tests.
 
 ## Purpose
 
-The harness runs the full `kjxlkj` binary in a pseudo-terminal, sends raw input bytes,
-and captures rendered frames for deterministic assertions.
+The harness runs the full `kjxlkj` binary in a pseudo-terminal, sends real key
+input bytes, captures per-key state dumps, and validates screen output.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ and captures rendered frames for deterministic assertions.
 graph TD
   DRIVER[Test Driver] -->|spawn + raw bytes| PTY[PTY Master]
   PTY --> APP[kjxlkj Child Process]
-  APP -->|rendered output| PTY
+  APP -->|rendered output + dumps| PTY
   PTY --> DRIVER
 ```
 
@@ -28,10 +28,11 @@ Harness implementation lives in `src/crates/app/kjxlkj-test-harness/`.
 | Operation | Requirement |
 |---|---|
 | spawn | create PTY process with explicit `cols` and `rows` |
-| send raw bytes | inject exact byte stream without key abstraction loss |
-| send symbolic key | helper layer maps key string to canonical bytes |
+| send raw bytes | inject exact byte stream without abstraction loss |
+| send symbolic key | helper maps key labels to canonical bytes |
+| step and dump | after each key, collect state dump + frame snapshot |
 | wait for pattern | bounded wait with explicit timeout diagnostics |
-| capture frame | return current frame text and cursor coordinates |
+| capture frame | return full frame text and cursor coordinates |
 | resize | change PTY geometry and await propagation |
 | quit | graceful exit within deadline |
 
@@ -46,12 +47,24 @@ Harness implementation lives in `src/crates/app/kjxlkj-test-harness/`.
 | `Enter` | `0x0D` |
 | arrows | ANSI escape sequences |
 
+## Per-Key Artifact Requirements
+
+Each step artifact must include:
+
+- input bytes sent for this step
+- normalized key and resolved action
+- mode before/after
+- focused pane ID/type
+- layout summary and pane rectangles
+- full frame or deterministic frame excerpt
+- cursor/caret coordinates
+
 ## Timeout and Boundedness Policy
 
 | Operation | Default Timeout | Failure Signal |
 |---|---:|---|
 | spawn | 5s | startup timeout |
-| pattern wait | 2s | expected pattern missing |
+| step and dump | 2s | expected dump or frame missing |
 | frame capture | 500ms | output stalled |
 | quit | 1s | graceful shutdown timeout |
 
@@ -61,18 +74,19 @@ Harness implementation lives in `src/crates/app/kjxlkj-test-harness/`.
 - fixed PTY geometry per test unless resize is under test
 - isolate filesystem fixtures per test case
 - block external network dependency in E2E tests
+- repeated identical scripts must produce byte-identical dump timelines
 
 ## Required Failure Diagnostics
 
-On failure, harness must include:
+On failure, harness output must include:
 
-- mode
-- focused window ID and type
-- layout tree summary
+- mode before/after
+- focused pane ID/type
+- layout tree summary and pane rectangles
 - cursor/caret position
 - last 20 raw input events
 - last 20 resolved actions
-- frame excerpt
+- failing frame excerpt and expected-vs-actual diff summary
 
 ## CI Policy
 
