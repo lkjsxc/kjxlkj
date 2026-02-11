@@ -175,3 +175,23 @@ Tracks completion of each wave with evidence.
   - Integration tests: ctrl_a_increments_number, set_option_via_ex_command
   - Unit test: parse_set_option_forms in command_parse.rs
   - Compacted editor_edit.rs: tuple destructuring for cursor, min() for clamping
+
+### Wave 025: Requirement Extraction and Normalization
+- Status: COMPLETE
+- Committed: 03f43e07
+- Evidence: 189 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Text objects: iw/aw/iW/aW (word/WORD), i(/a)/ib, i{/a}/iB, i[/a], i</a>,
+    i"/a", i'/a', i`/a` — 13 text object types with inner/around variants
+  - text_object.rs in kjxlkj-core-edit: text_obj_range dispatcher, word_obj_range
+    (big-word support), bracket_obj_range (nesting-aware, multiline, newline-trimmed),
+    quote_obj_range (line-scoped quote pair search), byte_to_cursor helper (7 unit tests)
+  - TextObjInner(char)/TextObjAround(char) Motion variants in action.rs
+  - TextObjectInner/TextObjectAround PartialKey variants in pending.rs
+  - Operator-pending text object dispatch: 'i'/'a' prefix → PartialKey → char → Motion
+  - apply_operator_text_obj in editor_ops.rs: case ops, yank, delete/change with
+    inclusive→exclusive range conversion (ecol+1)
+  - other_modes.rs full rewrite: compacted all simple handlers, added text object
+    partial resolution, double-op detection, force modifiers
+  - Integration tests (editor_textobj_tests.rs): diw, daw, ciw, yiw, di(, ci{,
+    operator_pending_i_a_prefix_keys (7 tests)
