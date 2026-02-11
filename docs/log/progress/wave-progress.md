@@ -152,3 +152,21 @@ Stage 00 (Foundation), Stage 01 (Architecture Core), and Stage 02
   - lib.rs expanded to 47 lines (+editor_race_tests, +editor_boundary_tests modules)
   - Tier-C docs read: config/filetype, ftconfig, hooks-events, implementation,
     keybinding_hints, mouse-support, which-key
+
+### Wave 031: Ledger Synchronization and Stage Exit
+- Status: COMPLETE
+- Committed: fdab3a88
+- Evidence: 252 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Stage-03 exit integration tests: 12 tests split across 2 files
+  - editor_stage03_tests.rs (134 lines): 7 tests — ex command pipeline (bn/bp/bd),
+    insert text persistence after escape, d$ operator+motion, search forward with
+    /pattern and n, :set ignorecase toggle, star search pattern, yy register recording
+  - editor_stage03_edit_tests.rs (108 lines): 5 tests — diw text object, Ctrl-a
+    increment, bfirst/blast buffer navigation, visual yank register recording,
+    bracket match (%) cursor movement
+  - DRIFT_MATRIX: R-EDIT-01 row for editing helpers (M2, spec-only), M2 count 2→3
+  - File split: original 215-line file → 134+108 to comply with 200-line policy
+  - lib.rs expanded to 51 lines (+2 test modules)
+  - Ledger sync: CONFORMANCE (240→252), LIMITATIONS, DRIFT_MATRIX updated
+  - Stage 03 closure: all 8 waves (024-031) complete

@@ -37,7 +37,9 @@ All files are now ≤ 200 lines.
 | `editor_buffer_tests.rs` (kjxlkj-core-state) | 153 | OK |
 | `editor_race_tests.rs` (kjxlkj-core-state) | 140 | OK |
 | `editor_boundary_tests.rs` (kjxlkj-core-state) | 83 | OK |
-| `lib.rs` (kjxlkj-core-state) | 47 | OK |
+| `editor_stage03_tests.rs` (kjxlkj-core-state) | 134 | OK |
+| `editor_stage03_edit_tests.rs` (kjxlkj-core-state) | 108 | OK |
+| `lib.rs` (kjxlkj-core-state) | 51 | OK |
 
 ## Splits Performed
 
@@ -68,3 +70,4 @@ All files are now ≤ 200 lines.
 - Wave-028 changes: `action.rs` 198→199 (+SwitchAlternate/ListBuffers, removed 3 doc comments), `command_parse.rs` 199→200 (+:ls/:buffers, compacted doc), `editor.rs` 200→200 (+alternate_buffer, compacted comments), `editor_action.rs` 191→198 (+buffer action dispatch), `normal.rs` 200→200 (+Ctrl-6/^ mapping, merged wildcard). New file: `editor_buffer.rs` (182, buffer management, 5 unit tests).
 - Wave-029 changes: `action.rs` 199→200 (+FirstBuffer/LastBuffer on single line), `command_parse.rs` 200→194 (+:bf/:bfirst/:bl/:blast, merged 3 tests into 1 for compaction), `editor_buffer.rs` 182→194 (+first_buffer/last_buffer), `editor_action.rs` 198→200 (+FirstBuffer/LastBuffer dispatch). New file: `editor_buffer_tests.rs` (153, 13 integration tests).
 - Wave-030 changes: No existing files modified (test-only wave). New files: `editor_race_tests.rs` (140, 10 stress tests), `editor_boundary_tests.rs` (83, 7 boundary safety tests), `lib.rs` (core-state) 43→47 (+2 test modules).
+- Wave-031 changes: `lib.rs` (core-state) 47→51 (+2 test modules). New files: `editor_stage03_tests.rs` (134, 7 stage-03 exit tests), `editor_stage03_edit_tests.rs` (108, 5 stage-03 edit tests). Original single file (215 lines) split to comply with ≤ 200 policy.

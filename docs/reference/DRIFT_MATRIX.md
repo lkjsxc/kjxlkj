@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 240 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 252 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | T1 unit tests pass; T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | spec-only | `M2`, `M4` | implement + test-add | explorer crate is stub |

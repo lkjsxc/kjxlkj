@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 240 deterministic unit and integration tests covering key normalization,
+through 252 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -71,6 +71,10 @@ is not on a bracket character. bracket_pair() helper for bracket-type lookup.
 Ctrl-a/Ctrl-x increment/decrement numbers under/after cursor with forward scan,
 negative number and multi-digit support. :set/:se/:setlocal command for
 ignorecase/smartcase/hlsearch options with no-prefix and key=value parsing.
+Stage-03 exit integration tests: ex command pipeline (bn/bp/bd), insert text
+persistence, d$ operator+motion, search forward with /pattern and n, :set
+ignorecase toggle, star search pattern, yy register recording, diw text object,
+Ctrl-a increment, bfirst/blast navigation, visual yank, bracket match (%).
 Text objects (iw/aw/iW/aW, i(/a(/i{/a{/i[/a[/i</a</i>/a>, i"/a"/i'/a'/i`/a`)
 with word, bracket (nesting-aware, multiline), and quote range computation.
 Operator-pending text object dispatch via 'i'/'a' prefix keys.
@@ -104,7 +108,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (240 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (252 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

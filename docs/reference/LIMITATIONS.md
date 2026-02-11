@@ -20,6 +20,9 @@ navigation, :ls/:buffers listing, :e file opening, deletion with fallback,
 223 unit/integration tests pass after wave-029.
 Race and boundary validation: 17 additional tests (10 stress + 7 safety) pass
 after wave-030, bringing total to 240 tests.
+Stage-03 exit integration tests (wave-031): 12 tests covering ex command pipeline,
+insert persistence, d$, search forward/n, :set ignorecase, star search, yy, diw,
+Ctrl-a, bfirst/blast, visual yank, bracket match (%), bringing total to 252 tests.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
