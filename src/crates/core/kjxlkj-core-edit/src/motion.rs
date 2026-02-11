@@ -1,6 +1,7 @@
 //! Motion execution against a buffer.
 
 use crate::cursor::Cursor;
+use crate::motion_word;
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::Motion;
 use unicode_segmentation::UnicodeSegmentation;
@@ -70,10 +71,10 @@ pub fn apply_motion(
             c.desired_col = c.col;
         }
         Motion::WordForward => {
-            word_forward(&mut c, buffer);
+            motion_word::word_forward(&mut c, buffer);
         }
         Motion::WordBackward => {
-            word_backward(&mut c, buffer);
+            motion_word::word_backward(&mut c, buffer);
         }
         _ => {
             // Other motions are progressive implementation targets.
@@ -82,10 +83,11 @@ pub fn apply_motion(
     c
 }
 
-fn line_max_col(buffer: &Buffer, line: usize) -> usize {
-    let gc = buffer.line_grapheme_count(line);
-    // In normal mode, cursor can't go past last char.
-    // Newline is not a selectable grapheme.
+/// Max cursor column on a line (0-based, last visible grapheme).
+pub(crate) fn line_max_col(
+    buffer: &Buffer,
+    line: usize,
+) -> usize {
     let text = buffer.line(line).unwrap_or_default();
     let trimmed = text.trim_end_matches('\n');
     let visible: usize = trimmed.graphemes(true).count();
@@ -96,7 +98,11 @@ fn line_max_col(buffer: &Buffer, line: usize) -> usize {
     }
 }
 
-fn first_nonblank_col(buffer: &Buffer, line: usize) -> usize {
+/// First non-blank grapheme column on a line.
+pub(crate) fn first_nonblank_col(
+    buffer: &Buffer,
+    line: usize,
+) -> usize {
     let text = buffer.line(line).unwrap_or_default();
     for (i, g) in text.graphemes(true).enumerate() {
         if !g.chars().all(|c| c == ' ' || c == '\t') {
@@ -104,81 +110,6 @@ fn first_nonblank_col(buffer: &Buffer, line: usize) -> usize {
         }
     }
     0
-}
-
-fn word_forward(c: &mut Cursor, buffer: &Buffer) {
-    let text = buffer.line(c.line).unwrap_or_default();
-    let graphemes: Vec<&str> = text.graphemes(true).collect();
-    let mut col = c.col + 1;
-    // Skip to next word boundary or next line.
-    while col < graphemes.len() {
-        let g = graphemes[col];
-        if g == "\n" {
-            break;
-        }
-        if is_word_boundary(
-            graphemes.get(col.wrapping_sub(1)).copied(),
-            Some(g),
-        ) {
-            c.col = col;
-            c.desired_col = col;
-            return;
-        }
-        col += 1;
-    }
-    // Move to next line.
-    if c.line + 1 < buffer.line_count() {
-        c.line += 1;
-        c.col = first_nonblank_col(buffer, c.line);
-        c.desired_col = c.col;
-    }
-}
-
-fn word_backward(c: &mut Cursor, buffer: &Buffer) {
-    if c.col > 0 {
-        let text = buffer.line(c.line).unwrap_or_default();
-        let graphemes: Vec<&str> = text.graphemes(true).collect();
-        let mut col = c.col - 1;
-        while col > 0 {
-            if is_word_boundary(
-                graphemes.get(col.wrapping_sub(1)).copied(),
-                graphemes.get(col).copied(),
-            ) {
-                c.col = col;
-                c.desired_col = col;
-                return;
-            }
-            col -= 1;
-        }
-        c.col = 0;
-        c.desired_col = 0;
-    } else if c.line > 0 {
-        c.line -= 1;
-        let max = line_max_col(buffer, c.line);
-        c.col = max;
-        c.desired_col = max;
-    }
-}
-
-fn is_word_boundary(
-    prev: Option<&str>,
-    curr: Option<&str>,
-) -> bool {
-    match (prev, curr) {
-        (Some(p), Some(c)) => {
-            let p_word = is_word_char(p);
-            let c_word = is_word_char(c);
-            p_word != c_word
-        }
-        _ => false,
-    }
-}
-
-fn is_word_char(g: &str) -> bool {
-    g.chars()
-        .next()
-        .map(|c| c.is_alphanumeric() || c == '_')
-        .unwrap_or(false)
 }
 
 #[cfg(test)]
@@ -199,7 +130,7 @@ mod tests {
         let b = Buffer::from_text(BufferId(0), "t", "hi");
         let c = Cursor::new(0, 1);
         let nc = apply_motion(&c, &Motion::Right, &b);
-        assert_eq!(nc.col, 1); // "hi" max col=1
+        assert_eq!(nc.col, 1);
     }
 
     #[test]

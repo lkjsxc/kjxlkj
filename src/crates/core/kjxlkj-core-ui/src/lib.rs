@@ -3,6 +3,7 @@
 //! See /docs/spec/editor/windows.md for normative layout tree.
 
 mod layout;
+mod layout_ops;
 mod focus;
 
 pub use layout::{LayoutNode, LayoutTree};

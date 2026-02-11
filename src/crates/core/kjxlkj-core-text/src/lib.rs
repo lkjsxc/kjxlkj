@@ -3,6 +3,7 @@
 //! See /docs/spec/editor/buffers.md for normative requirements.
 
 mod buffer;
+mod buffer_edit;
 mod grapheme;
 mod line;
 

@@ -3,9 +3,11 @@
 //! See /docs/spec/modes/normal.md for normative key tables.
 
 use kjxlkj_core_types::{
-    Action, CommandKind, Key, KeyModifiers, Mode, Motion, Operator,
-    VisualKind, Direction,
+    Action, CommandKind, Key, KeyModifiers, Mode, Operator,
+    VisualKind,
 };
+
+use crate::normal_motions;
 
 /// Handle a key in Normal mode.
 ///
@@ -19,6 +21,11 @@ pub fn handle_normal_key(
     // Ctrl combinations first.
     if mods.ctrl {
         return handle_ctrl_key(key);
+    }
+
+    // Check motion keys (extracted to normal_motions module).
+    if let Some(action) = normal_motions::motion_for_key(key) {
+        return (action, None);
     }
 
     match key {
@@ -85,59 +92,6 @@ pub fn handle_normal_key(
             (Action::EnterMode(Mode::Replace), Some(Mode::Replace))
         }
 
-        // Motions.
-        Key::Char('h') | Key::Left => {
-            (Action::Motion(Motion::Left), None)
-        }
-        Key::Char('l') | Key::Right => {
-            (Action::Motion(Motion::Right), None)
-        }
-        Key::Char('k') | Key::Up => {
-            (Action::Motion(Motion::Up), None)
-        }
-        Key::Char('j') | Key::Down => {
-            (Action::Motion(Motion::Down), None)
-        }
-        Key::Char('0') => {
-            (Action::Motion(Motion::LineStart), None)
-        }
-        Key::Char('$') => {
-            (Action::Motion(Motion::LineEnd), None)
-        }
-        Key::Char('^') => {
-            (Action::Motion(Motion::FirstNonBlank), None)
-        }
-        Key::Char('w') => {
-            (Action::Motion(Motion::WordForward), None)
-        }
-        Key::Char('b') => {
-            (Action::Motion(Motion::WordBackward), None)
-        }
-        Key::Char('e') => {
-            (Action::Motion(Motion::WordEndForward), None)
-        }
-        Key::Char('W') => {
-            (Action::Motion(Motion::BigWordForward), None)
-        }
-        Key::Char('B') => {
-            (Action::Motion(Motion::BigWordBackward), None)
-        }
-        Key::Char('E') => {
-            (Action::Motion(Motion::BigWordEndForward), None)
-        }
-        Key::Char('G') => {
-            (Action::Motion(Motion::GotoLastLine), None)
-        }
-        Key::Char('{') => {
-            (Action::Motion(Motion::ParagraphBackward), None)
-        }
-        Key::Char('}') => {
-            (Action::Motion(Motion::ParagraphForward), None)
-        }
-        Key::Char('%') => {
-            (Action::Motion(Motion::MatchParen), None)
-        }
-
         // Single-key commands.
         Key::Char('x') => (Action::DeleteCharForward, None),
         Key::Char('X') => (Action::DeleteCharBackward, None),
@@ -147,12 +101,6 @@ pub fn handle_normal_key(
         Key::Char('J') => (Action::JoinLines, None),
         Key::Char('~') => (Action::ToggleCase, None),
         Key::Char('.') => (Action::DotRepeat, None),
-
-        // Scrolling.
-        Key::PageDown => {
-            (Action::Motion(Motion::PageDown), None)
-        }
-        Key::PageUp => (Action::Motion(Motion::PageUp), None),
 
         Key::Escape => (Action::Noop, None),
         _ => (Action::Noop, None),
@@ -183,13 +131,15 @@ fn handle_ctrl_key(key: &Key) -> (Action, Option<Mode>) {
     }
 }
 
+// Re-import Motion for ctrl handler above.
+use kjxlkj_core_types::Motion;
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn shift_a_triggers_append_eol() {
-        // After normalization, Shift+a == Key::Char('A').
         let (action, mode) = handle_normal_key(
             &Key::Char('A'),
             &KeyModifiers::default(),
@@ -200,7 +150,7 @@ mod tests {
 
     #[test]
     fn physical_a_triggers_append() {
-        let (action, mode) = handle_normal_key(
+        let (_, mode) = handle_normal_key(
             &Key::Char('a'),
             &KeyModifiers::default(),
         );

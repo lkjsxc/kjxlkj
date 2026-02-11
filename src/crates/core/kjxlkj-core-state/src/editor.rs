@@ -4,13 +4,13 @@
 //! See /docs/spec/editor/README.md for state overview.
 //!
 //! Split per /docs/spec/architecture/source-layout.md:
+//! - editor_action.rs: apply_action dispatch
 //! - editor_edit.rs: text editing operations
 //! - editor_snapshot.rs: snapshot construction
 //! - editor_window.rs: window management
 
 use std::collections::HashMap;
 
-use kjxlkj_core_edit::{apply_motion, Cursor};
 use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
@@ -81,79 +81,6 @@ impl EditorState {
             resolve_mode_transition(self.mode, new_mode);
         self.apply_action(action);
         self.sequence += 1;
-    }
-
-    /// Apply a typed action to editor state.
-    pub fn apply_action(&mut self, action: Action) {
-        match action {
-            Action::InsertChar(c) => self.insert_char(c),
-            Action::DeleteCharForward => {
-                self.delete_char_forward()
-            }
-            Action::DeleteCharBackward => {
-                self.delete_char_backward()
-            }
-            Action::Motion(motion) => {
-                let wid = self.focus.focused;
-                let win =
-                    self.windows.get(&wid).unwrap();
-                if let ContentKind::Buffer(buf_id) =
-                    win.content
-                {
-                    if let Some(buf) =
-                        self.buffers.get(&buf_id)
-                    {
-                        let cur = win.cursor;
-                        let new_cur = apply_motion(
-                            &cur, &motion, buf,
-                        );
-                        self.windows
-                            .get_mut(&wid)
-                            .unwrap()
-                            .cursor = new_cur;
-                    }
-                }
-            }
-            Action::Quit => self.quit_requested = true,
-            Action::ForceQuit => {
-                self.quit_requested = true
-            }
-            Action::WriteQuit => {
-                self.quit_requested = true
-            }
-            Action::Resize(cols, rows) => {
-                self.terminal_size = (cols, rows);
-            }
-            Action::AppendEndOfLine => {
-                self.cursor_to_eol();
-            }
-            Action::InsertFirstNonBlank => {
-                self.cursor_to_first_nonblank();
-            }
-            Action::OpenLineBelow => {
-                self.open_line_below();
-            }
-            Action::OpenLineAbove => {
-                self.open_line_above();
-            }
-            Action::SplitVertical => {
-                self.split_vertical();
-            }
-            Action::SplitHorizontal => {
-                self.split_horizontal();
-            }
-            Action::CloseWindow => {
-                self.close_window();
-            }
-            Action::ExitToNormal => {
-                self.mode = Mode::Normal;
-                let win = self.focused_window_mut();
-                if win.cursor.col > 0 {
-                    win.cursor.col -= 1;
-                }
-            }
-            _ => {}
-        }
     }
 }
 

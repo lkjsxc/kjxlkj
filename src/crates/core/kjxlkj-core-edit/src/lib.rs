@@ -4,6 +4,7 @@
 
 mod cursor;
 mod motion;
+mod motion_word;
 
 pub use cursor::Cursor;
 pub use motion::apply_motion;

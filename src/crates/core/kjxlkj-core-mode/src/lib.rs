@@ -3,6 +3,7 @@
 //! See /docs/spec/modes/transitions.md for the normative transition table.
 
 mod normal;
+mod normal_motions;
 mod resolver;
 
 pub use normal::handle_normal_key;
