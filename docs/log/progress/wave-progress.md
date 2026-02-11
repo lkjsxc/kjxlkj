@@ -141,4 +141,19 @@ Tracks completion of each wave with evidence.
   - Boundary tests: empty buffer, non-word cursor, no-match patterns
 
 ### Waves 023
-- Status: NOT STARTED
+- Status: COMPLETE
+- Committed: 25bcc66d
+- Evidence: 173 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - g* partial match forward search (no word boundaries)
+  - g# partial match backward search (no word boundaries)
+  - Search history tracking with consecutive deduplication (capped at 100)
+  - ignorecase/smartcase settings in SearchState
+  - Case flag application: in-pattern \c/\C override, smartcase uppercase detection
+  - % bracket matching forward scan: when cursor is not on bracket, scan forward
+    on current line for first bracket character
+  - bracket_pair() helper function for bracket type lookup
+  - Paragraph motion compaction (for/rev loops)
+  - Integration tests: g* partial match, g# partial match, % forward scan,
+    search history through cmdline, ignorecase via handle_key
+  - motion.rs test: % scans forward for bracket from non-bracket position
