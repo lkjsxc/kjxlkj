@@ -130,6 +130,33 @@ fn key_trace_05_recent_events_capture_raw_and_normalized_paths() {
     );
 }
 
+#[test]
+fn key_trace_06_multibyte_utf8_input_decodes_to_single_normalized_char() {
+    let binary = ensure_kjxlkj_built().expect("binary build should succeed");
+    let mut session = PtySession::spawn(
+        &binary,
+        100,
+        30,
+        &[("KJXLKJ_INITIAL_LINE", "abc"), ("KJXLKJ_START_CURSOR", "0")],
+    )
+    .expect("PTY session should spawn");
+    std::thread::sleep(Duration::from_millis(120));
+    session
+        .send_raw("あ".as_bytes())
+        .expect("multibyte UTF-8 sequence should send");
+    let output = session.quit().expect("quit should succeed");
+    assert!(
+        output.contains("normalized_key=あ"),
+        "KEY-TRACE-06 expected decoded UTF-8 normalized key entry. Output:\n{output}"
+    );
+    assert!(
+        !output.contains("normalized_key=Unknown(227)")
+            && !output.contains("normalized_key=Unknown(129)")
+            && !output.contains("normalized_key=Unknown(130)"),
+        "KEY-TRACE-06 expected no per-byte unknown spam for valid UTF-8. Output:\n{output}"
+    );
+}
+
 fn count_occurrences(text: &str, needle: &str) -> usize {
     text.match_indices(needle).count()
 }

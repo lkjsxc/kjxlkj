@@ -6,7 +6,7 @@ use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use input_routes::{action_from_key, format_key};
 use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
-use kjxlkj_input::{decode_byte, Key};
+use kjxlkj_input::{ByteStreamDecoder, Key};
 use kjxlkj_render::compute_render_diagnostics;
 use std::collections::VecDeque;
 use std::io::{self, Read, Write};
@@ -52,6 +52,7 @@ fn run() -> io::Result<()> {
     let mut command_mode = false;
     let mut command_buffer = String::new();
     let mut recent_events: VecDeque<String> = VecDeque::new();
+    let mut key_decoder = ByteStreamDecoder::new();
     let mut stdin = io::stdin().lock();
     let mut stdout = io::stdout().lock();
 
@@ -60,8 +61,10 @@ fn run() -> io::Result<()> {
         if stdin.read_exact(&mut one).is_err() {
             break;
         }
+        let Some(decoded) = key_decoder.decode_stream_byte(one[0]) else {
+            continue;
+        };
         seq += 1;
-        let decoded = decode_byte(one[0]);
         let supports_wincmd = matches!(state.mode(), Mode::Normal | Mode::TerminalInsert);
         let action = if command_mode {
             match decoded.normalized_key {
