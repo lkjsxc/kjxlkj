@@ -55,4 +55,6 @@ mod editor_stage04_tests;
 #[cfg(test)]
 mod editor_stage04b_tests;
 #[cfg(test)]
+mod editor_stage04c_tests;
+#[cfg(test)]
 mod editor_wincmd_tests;

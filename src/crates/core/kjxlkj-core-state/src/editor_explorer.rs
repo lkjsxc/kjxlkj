@@ -7,6 +7,18 @@ use kjxlkj_service_explorer::ExplorerAction;
 
 use crate::editor::EditorState;
 
+/// Result of an explorer key press that the editor must handle.
+enum ExplorerKeyResult {
+    /// No action needed — explorer consumed the key internally.
+    Consumed,
+    /// Close the explorer pane.
+    Close,
+    /// Open the selected file in a vertical split (side-by-side).
+    OpenVerticalSplit(std::path::PathBuf),
+    /// Open the selected file in a horizontal split (top-bottom).
+    OpenHorizontalSplit(std::path::PathBuf),
+}
+
 impl EditorState {
     /// Check if the focused window is an explorer window.
     pub(crate) fn focused_explorer_id(&self) -> Option<ExplorerStateId> {
@@ -26,24 +38,59 @@ impl EditorState {
             Some(id) => id,
             None => return false,
         };
-        let action = match key {
-            Key::Char('j') => ExplorerAction::MoveDown,
-            Key::Char('k') => ExplorerAction::MoveUp,
-            Key::Char('h') => ExplorerAction::CollapseOrParent,
-            Key::Char('l') | Key::Enter => ExplorerAction::ExpandOrOpen,
-            Key::Char('o') => ExplorerAction::ExpandOrOpen,
-            Key::Char('q') => ExplorerAction::Close,
-            _ => return false,
+        // Handle split-open keys (v/s) separately — they need the selected path.
+        let result = match key {
+            Key::Char('v') | Key::Char('s') => {
+                let estate = match self.explorer_states.get(&eid) {
+                    Some(s) => s,
+                    None => return false,
+                };
+                match estate.selected_row() {
+                    Some(row) if !row.is_dir => {
+                        let path = row.path.clone();
+                        if *key == Key::Char('v') {
+                            ExplorerKeyResult::OpenVerticalSplit(path)
+                        } else {
+                            ExplorerKeyResult::OpenHorizontalSplit(path)
+                        }
+                    }
+                    _ => ExplorerKeyResult::Consumed, // dir or empty — no-op
+                }
+            }
+            _ => {
+                let action = match key {
+                    Key::Char('j') => ExplorerAction::MoveDown,
+                    Key::Char('k') => ExplorerAction::MoveUp,
+                    Key::Char('h') => ExplorerAction::CollapseOrParent,
+                    Key::Char('l') | Key::Enter => ExplorerAction::ExpandOrOpen,
+                    Key::Char('o') => ExplorerAction::ExpandOrOpen,
+                    Key::Char('q') => ExplorerAction::Close,
+                    _ => return false,
+                };
+                let estate = match self.explorer_states.get_mut(&eid) {
+                    Some(s) => s,
+                    None => return false,
+                };
+                if estate.apply_action(action) {
+                    ExplorerKeyResult::Close
+                } else {
+                    ExplorerKeyResult::Consumed
+                }
+            }
         };
-        let should_close = {
-            let estate = match self.explorer_states.get_mut(&eid) {
-                Some(s) => s,
-                None => return false,
-            };
-            estate.apply_action(action)
-        };
-        if should_close {
-            self.close_explorer();
+        match result {
+            ExplorerKeyResult::Consumed => {}
+            ExplorerKeyResult::Close => self.close_explorer(),
+            ExplorerKeyResult::OpenVerticalSplit(path) => {
+                let p = path.to_string_lossy().to_string();
+                self.split_vertical();
+                self.open_file(&p);
+            }
+            ExplorerKeyResult::OpenHorizontalSplit(path) => {
+                let p = path.to_string_lossy().to_string();
+                self.split_horizontal();
+                self.open_file(&p);
+            }
         }
         true
     }
