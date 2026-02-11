@@ -131,6 +131,8 @@ impl EditorState {
             Action::DeleteBuffer => self.delete_buffer(),
             Action::OpenFile(ref path) => { let p = path.clone(); self.open_file(&p); }
             Action::SwitchAlternate => self.switch_alternate(),
+            Action::FirstBuffer => self.first_buffer(),
+            Action::LastBuffer => self.last_buffer(),
             Action::ListBuffers => {} // Display handled by snapshot.
             _ => {}
         }

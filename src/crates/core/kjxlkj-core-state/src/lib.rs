@@ -34,6 +34,8 @@ pub use search::{SearchDirection, SearchState};
 pub use window_state::WindowState;
 
 #[cfg(test)]
+mod editor_buffer_tests;
+#[cfg(test)]
 mod editor_search_tests;
 #[cfg(test)]
 mod editor_textobj_tests;

@@ -77,6 +77,18 @@ impl EditorState {
         }
     }
 
+    /// Switch to first buffer (:bfirst).
+    pub(crate) fn first_buffer(&mut self) {
+        let ids = self.sorted_buffer_ids();
+        if let Some(&id) = ids.first() { self.switch_to_buffer(id); }
+    }
+
+    /// Switch to last buffer (:blast).
+    pub(crate) fn last_buffer(&mut self) {
+        let ids = self.sorted_buffer_ids();
+        if let Some(&id) = ids.last() { self.switch_to_buffer(id); }
+    }
+
     /// Open a file path into a new buffer and switch to it.
     pub(crate) fn open_file(&mut self, path: &str) {
         // Check if already open.

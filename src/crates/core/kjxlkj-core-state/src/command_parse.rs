@@ -70,6 +70,8 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         "bn" | "bnext" => Action::NextBuffer,
         "bp" | "bprevious" | "bprev" => Action::PreviousBuffer,
         "bd" | "bdelete" => Action::DeleteBuffer,
+        "bf" | "bfirst" => Action::FirstBuffer,
+        "bl" | "blast" => Action::LastBuffer,
         "b" | "buffer" => {
             if let Ok(n) = args.parse::<u64>() {
                 Action::SwitchBuffer(
@@ -131,18 +133,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parse_quit() {
+    fn parse_quit_and_write() {
         assert_eq!(parse_ex_command("q"), Action::Quit);
         assert_eq!(parse_ex_command("quit"), Action::Quit);
-    }
-
-    #[test]
-    fn parse_force_quit() {
         assert_eq!(parse_ex_command("q!"), Action::ForceQuit);
-    }
-
-    #[test]
-    fn parse_write() {
         assert_eq!(parse_ex_command("w"), Action::Write);
     }
 

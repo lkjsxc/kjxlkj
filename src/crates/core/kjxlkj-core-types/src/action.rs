@@ -127,6 +127,7 @@ pub enum Action {
     SwitchAlternate,
     /// List buffers (:ls/:buffers).
     ListBuffers,
+    FirstBuffer, LastBuffer,
 }
 
 /// Cursor motion.
