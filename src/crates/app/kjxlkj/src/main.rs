@@ -1,5 +1,6 @@
 mod command_routes;
 mod input_routes;
+mod profiling;
 mod trace_output;
 
 use command_routes::action_from_command;
@@ -9,8 +10,10 @@ use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
 use kjxlkj_input::{ByteStreamDecoder, Key};
 use kjxlkj_render::compute_render_diagnostics;
+use profiling::PerfProfile;
 use std::collections::VecDeque;
 use std::io::{self, Read, Write};
+use std::time::Instant;
 use trace_output::{emit_final, emit_trace};
 
 fn main() -> io::Result<()> {
@@ -55,6 +58,7 @@ fn run() -> io::Result<()> {
     let mut command_buffer = String::new();
     let mut recent_events: VecDeque<String> = VecDeque::new();
     let mut key_decoder = ByteStreamDecoder::new();
+    let mut profile = PerfProfile::from_env();
     let mut stdin = io::stdin().lock();
     let mut stdout = io::stdout().lock();
 
@@ -147,7 +151,9 @@ fn run() -> io::Result<()> {
             command_buffer.clear();
         }
         let result = state.apply(action);
+        let snapshot_start = Instant::now();
         let render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
+        let snapshot_duration = snapshot_start.elapsed();
         let normalized_key = format_key(decoded.normalized_key);
         recent_events.push_back(format!(
             "{seq}:0x{:02X}:{normalized_key}->{action}",
@@ -157,8 +163,19 @@ fn run() -> io::Result<()> {
         if recent_events.len() > 20 {
             recent_events.pop_front();
         }
+        let render_start = Instant::now();
         emit_trace(&mut stdout, seq, &result, &state, render, &normalized_key)?;
         stdout.flush()?;
+        let render_duration = render_start.elapsed();
+        profile.record_cycle(
+            &state,
+            rows,
+            cols,
+            render,
+            &result.resolved_action,
+            snapshot_duration,
+            render_duration,
+        );
         if result.should_quit {
             break;
         }
@@ -166,6 +183,7 @@ fn run() -> io::Result<()> {
 
     let final_render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
     let recent_joined = recent_events.into_iter().collect::<Vec<_>>().join("|");
+    profile.emit_final(&mut stdout, rows)?;
     emit_final(&mut stdout, &state, final_render, &recent_joined)?;
     stdout.flush()
 }
