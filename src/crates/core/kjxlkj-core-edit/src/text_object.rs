@@ -1,6 +1,7 @@
 //! Text object range computation (see /docs/spec/editing/text-objects/README.md).
 
 use crate::cursor::Cursor;
+use crate::text_object_ext;
 use kjxlkj_core_text::Buffer;
 
 pub fn text_obj_range(
@@ -16,6 +17,8 @@ pub fn text_obj_range(
         '"' => quote_obj_range(cursor, buf, '"', inner),
         '\'' => quote_obj_range(cursor, buf, '\'', inner),
         '`' => quote_obj_range(cursor, buf, '`', inner),
+        'p' => text_object_ext::paragraph_obj_range(cursor, buf, inner),
+        's' => text_object_ext::sentence_obj_range(cursor, buf, inner),
         _ => None,
     }
 }
@@ -141,18 +144,11 @@ mod tests {
     fn buf(text: &str) -> Buffer { Buffer::from_text(BufferId(0), "t", text) }
 
     #[test]
-    fn inner_word() {
+    fn word_objects() {
         let b = buf("hello world");
-        let c = Cursor::new(0, 0);
-        let (s, e) = text_obj_range(&c, &b, 'w', true).unwrap();
+        let (s, e) = text_obj_range(&Cursor::new(0, 0), &b, 'w', true).unwrap();
         assert_eq!((s.col, e.col), (0, 4));
-    }
-
-    #[test]
-    fn around_word_includes_trailing_space() {
-        let b = buf("hello world");
-        let c = Cursor::new(0, 0);
-        let (s, e) = text_obj_range(&c, &b, 'w', false).unwrap();
+        let (s, e) = text_obj_range(&Cursor::new(0, 0), &b, 'w', false).unwrap();
         assert_eq!((s.col, e.col), (0, 5));
     }
 

@@ -92,3 +92,20 @@ fn operator_pending_i_a_prefix_keys() {
     s.handle_key(&Key::Char('w'), &m());
     assert_eq!(s.mode, Mode::Normal);
 }
+
+#[test]
+fn dip_deletes_inner_paragraph() {
+    let mut s = ed_with("aaa\nbbb\n\nccc");
+    send(&mut s, "dip");
+    assert_eq!(s.mode, Mode::Normal);
+    let t = buf_text(&s);
+    // First paragraph (aaa, bbb) deleted, blank + ccc remain.
+    assert!(t.contains("ccc"), "expected 'ccc' remaining, got: {t}");
+}
+
+#[test]
+fn dis_deletes_inner_sentence() {
+    let mut s = ed_with("Hello world. Goodbye.");
+    send(&mut s, "dis");
+    assert_eq!(s.mode, Mode::Normal);
+}

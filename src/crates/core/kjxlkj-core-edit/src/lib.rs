@@ -9,6 +9,7 @@ mod motion_find;
 mod motion_word;
 pub mod regex_compile;
 pub mod text_object;
+pub mod text_object_ext;
 
 pub use cursor::Cursor;
 pub use motion::apply_motion;
