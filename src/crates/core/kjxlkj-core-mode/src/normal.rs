@@ -92,9 +92,12 @@ fn handle_normal_command(key: &Key, pending: &mut PendingState) -> (Action, Opti
 }
 
 fn handle_ctrl_key(
-    key: &Key,
-    pending: &mut PendingState,
+    key: &Key, pending: &mut PendingState,
 ) -> (Action, Option<Mode>) {
+    if matches!(key, Key::Char('w')) {
+        pending.partial = PartialKey::WinCmd;
+        return (Action::Noop, None);
+    }
     pending.clear();
     match key {
         Key::Char('r') => (Action::Redo, None),
@@ -111,7 +114,7 @@ fn handle_ctrl_key(
         Key::Char('a') => (Action::IncrementNumber, None),
         Key::Char('x') => (Action::DecrementNumber, None),
         Key::Char('6') | Key::Char('^') => (Action::SwitchAlternate, None),
-        Key::Char('w') | _ => (Action::Noop, None),
+        _ => (Action::Noop, None),
     }
 }
 
@@ -140,8 +143,7 @@ mod tests {
     #[test]
     fn shift_a_triggers_append_eol() {
         let mut ps = PendingState::default();
-        let m = KeyModifiers::default();
-        let (action, mode) = handle_normal_key(&Key::Char('A'), &m, &mut ps);
+        let (action, mode) = handle_normal_key(&Key::Char('A'), &KeyModifiers::default(), &mut ps);
         assert_eq!(action, Action::AppendEndOfLine);
         assert_eq!(mode, Some(Mode::Insert));
     }
@@ -149,16 +151,14 @@ mod tests {
     #[test]
     fn colon_enters_command_mode() {
         let mut ps = PendingState::default();
-        let m = KeyModifiers::default();
-        let (_, mode) = handle_normal_key(&Key::Char(':'), &m, &mut ps);
+        let (_, mode) = handle_normal_key(&Key::Char(':'), &KeyModifiers::default(), &mut ps);
         assert_eq!(mode, Some(Mode::Command(CommandKind::Ex)));
     }
 
     #[test]
     fn h_moves_left() {
         let mut ps = PendingState::default();
-        let m = KeyModifiers::default();
-        let (action, mode) = handle_normal_key(&Key::Char('h'), &m, &mut ps);
+        let (action, mode) = handle_normal_key(&Key::Char('h'), &KeyModifiers::default(), &mut ps);
         assert_eq!(action, Action::Motion(Motion::Left));
         assert_eq!(mode, None);
     }

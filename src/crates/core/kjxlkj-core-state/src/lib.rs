@@ -49,3 +49,5 @@ mod editor_stage03_edit_tests;
 mod editor_textobj_tests;
 #[cfg(test)]
 mod editor_visual_tests;
+#[cfg(test)]
+mod editor_wincmd_tests;

@@ -3,7 +3,7 @@
 //! Extracted from editor.rs to keep each file ≤ 200 lines.
 
 use kjxlkj_core_edit::apply_motion;
-use kjxlkj_core_types::{Action, ContentKind, Mode, Motion};
+use kjxlkj_core_types::{Action, ContentKind, Direction, Mode, Motion};
 
 use crate::editor::EditorState;
 use crate::search::SearchDirection;
@@ -88,33 +88,15 @@ impl EditorState {
             Action::SubstituteChar => {
                 self.delete_char_forward();
             }
-            Action::SubstituteLine => {
-                self.delete_current_line_content();
-            }
-            Action::ChangeToEnd => {
-                self.delete_to_eol();
-            }
-            Action::DeleteWordBackward => {
-                self.delete_word_backward();
-            }
-            Action::DeleteToLineStart => {
-                self.delete_to_line_start();
-            }
-            Action::DeleteToEnd => {
-                self.delete_to_eol();
-            }
-            Action::JoinLinesNoSpace => {
-                self.join_lines_no_space();
-            }
-            Action::PutAfter => {
-                self.put_after();
-            }
-            Action::PutBefore => {
-                self.put_before();
-            }
-            Action::ShowRegisters => {
-                // Stub: register display would feed to UI.
-            }
+            Action::SubstituteLine => self.delete_current_line_content(),
+            Action::ChangeToEnd => self.delete_to_eol(),
+            Action::DeleteWordBackward => self.delete_word_backward(),
+            Action::DeleteToLineStart => self.delete_to_line_start(),
+            Action::DeleteToEnd => self.delete_to_eol(),
+            Action::JoinLinesNoSpace => self.join_lines_no_space(),
+            Action::PutAfter => self.put_after(),
+            Action::PutBefore => self.put_before(),
+            Action::ShowRegisters => {}
             Action::StarSearchForward => self.star_search(SearchDirection::Forward),
             Action::StarSearchBackward => self.star_search(SearchDirection::Backward),
             Action::ClearSearchHighlight => self.search.clear_highlight(),
@@ -133,7 +115,11 @@ impl EditorState {
             Action::SwitchAlternate => self.switch_alternate(),
             Action::FirstBuffer => self.first_buffer(),
             Action::LastBuffer => self.last_buffer(),
-            Action::ListBuffers => {} // Display handled by snapshot.
+            Action::ListBuffers => {}
+            Action::WindowOnly => self.window_only(),
+            Action::FocusCycle => self.focus_cycle(),
+            Action::FocusPrevious => self.focus.toggle_previous(),
+            Action::FocusDirection(dir) => self.focus_direction(dir),
             _ => {}
         }
     }

@@ -65,6 +65,8 @@ pub enum PartialKey {
     TextObjectInner,
     /// After `a` in operator-pending, awaiting text object char.
     TextObjectAround,
+    /// After `Ctrl-w`, awaiting wincmd char.
+    WinCmd,
 }
 
 impl Default for PartialKey {

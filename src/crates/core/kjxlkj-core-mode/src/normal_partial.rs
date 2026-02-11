@@ -6,6 +6,7 @@
 use kjxlkj_core_types::{Action, Key, Mode, Motion};
 
 use crate::normal_g;
+use crate::normal_wincmd;
 use crate::normal_z;
 use crate::pending::{PartialKey, PendingState};
 
@@ -18,6 +19,7 @@ pub(crate) fn resolve_partial(
     match partial {
         PartialKey::G => normal_g::handle_g_key(key, pending),
         PartialKey::Z => normal_z::handle_z_key(key, pending),
+        PartialKey::WinCmd => normal_wincmd::handle_wincmd_key(key, pending),
         PartialKey::FindForward => {
             if let Key::Char(c) = key {
                 pending.clear();

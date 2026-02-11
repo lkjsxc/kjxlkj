@@ -7,6 +7,7 @@ mod normal;
 mod normal_g;
 mod normal_motions;
 mod normal_partial;
+mod normal_wincmd;
 mod normal_z;
 mod other_modes;
 mod pending;
