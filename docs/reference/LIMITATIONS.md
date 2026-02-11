@@ -126,6 +126,20 @@ ReadOnly/Line/Column/Percent/FileType/Highlight), DslVars for variable values,
 parse_format tokenizer for %f/%F/%m/%r/%l/%c/%p/%y/%%/%=/%#Group# directives,
 render_tokens with separator markers and variable substitution. 23 new tests
 (8 viewport + 7 float_win + 8 statusline_dsl) bringing total to 538 tests.
+Tab page model (wave-044): TabPage (id/layout/active_window/label/modified),
+TabId, TabList with ordered tab management (tab_new inserts after current,
+tab_close refuses last tab, tab_only keeps current, tab_next/tab_prev wrapping,
+tab_goto 1-indexed with range validation, tab_first/tab_last, tab_move absolute
+with clamping, tab_move_relative). Zoom state: ZoomState with saved_layout/
+zoomed_window, zoom_in saves and replaces tree with single leaf, restore
+reinstates saved layout (collapsed-unary cleanup for closed windows), toggle
+cycles in/out, indicator \"[Z]\", on_window_closed removes from saved layout.
+Tab/zoom ex commands added to command_parse: :tabnew/:tabe/:tabedit/:tabclose/
+:tabc/:tabonly/:tabo/:tabnext/:tabn/:tabprevious/:tabprev/:tabp/:tabfirst/:tabfir/
+:tabrewind/:tabr/:tablast/:tabl/:tabmove/:tabm/:ZoomToggle/:ZoomHeight/:ZoomWidth.
+Action variants: TabNew/TabClose/TabCloseForce/TabOnly/TabNext/TabPrev/TabFirst/
+TabLast/TabGoto/TabMove/ZoomToggle. 18 new tests (11 tabs + 7 zoom) bringing
+total to 556 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

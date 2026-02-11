@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 538 deterministic unit and integration tests covering key normalization,
+through 556 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -211,6 +211,19 @@ Statusline DSL parser: DslToken (Literal/Separator/FilePath/FilePathAbsolute/
 Modified/ReadOnly/Line/Column/Percent/FileType/Highlight), DslVars for variable
 substitution, parse_format tokenizer for %f/%F/%m/%r/%l/%c/%p/%y/%%/%=/
 %#Group# directives, render_tokens with separator markers.
+Tab page model: TabPage (id/layout/active_window/label/modified), TabId, TabList
+with ordered tab management (tab_new/tab_close/tab_only/tab_next/tab_prev/
+tab_goto/tab_first/tab_last/tab_move/tab_move_relative), tabline visibility
+calculation, 1-indexed tab goto with range validation.
+Zoom state: ZoomState with saved_layout/zoomed_window, zoom_in saves layout tree
+and replaces with single-window leaf, restore reinstates saved layout (with
+closed-window cleanup), toggle cycles in/out, indicator returns "[Z]" when zoomed,
+on_window_closed removes windows from saved layout.
+Tab/zoom ex commands: :tabnew/:tabe/:tabedit, :tabclose/:tabc (with ! force),
+:tabonly/:tabo, :tabnext/:tabn, :tabprevious/:tabprev/:tabp, :tabfirst/:tabfir,
+:tablast/:tabl, :tabmove/:tabm (absolute/relative/$/+N/-N), :ZoomToggle,
+:ZoomHeight, :ZoomWidth. Action variants: TabNew/TabClose/TabCloseForce/TabOnly/
+TabNext/TabPrev/TabFirst/TabLast/TabGoto/TabMove/ZoomToggle.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -219,7 +232,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (538 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (556 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

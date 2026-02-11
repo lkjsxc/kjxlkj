@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 538 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 556 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | Ctrl-w dispatch implemented (h/j/k/l/w/W/p/t/b/s/v/n/c/q/o/+/-/>/</_/|/=/H/J/K/L/r/R/x), directional focus with geometry, boundary focus (t/b), equalize (=), resize/max as no-op placeholders, W reverse cycle, H/J/K/L move-to-edge/r/R rotate/x exchange as no-op placeholders, split semantics corrected; T1 unit + integration tests pass (21 wincmd unit + 40 integration tests); T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | partial | `M2`, `M4` | implement + test-add | explorer open/close routing (ContentKind::Explorer leaf creation, :ExplorerClose ex command), state model (ExplorerState/ExplorerNode/NodeId, expansion_set/visible_rows/flatten), navigation (ExplorerAction enum with MoveDown/MoveUp/CollapseOrParent/ExpandOrOpen/Toggle/Close), key routing (j/k/h/l/Enter/o/v/s/q intercept in Normal mode, v/s open selected file in vertical/horizontal split), 13 service tests + 5 editor_explorer tests + 27 integration tests; filesystem integration (actual dir listing) pending; T2 PTY E2E pending |
@@ -47,6 +47,8 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-VIEWPORT-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | Viewport state model with scroll margins and cursor-follow | unit tests | partial | `M4` | test-add | ViewportState with scrolloff/sidescrolloff/wrap/text_rows/text_cols/top_line/left_col; ensure_visible with vertical scrolloff and horizontal sidescrolloff margin clamping; scroll_center (zz)/scroll_top (zt)/scroll_bottom (zb); is_line_visible/bottom_line/clamp_top; 8 unit tests; T2 pending |
 | `R-FLOAT-01` | [/docs/spec/features/window/floating-windows.md](/docs/spec/features/window/floating-windows.md) | Floating window model and layer management | unit tests | partial | `M2`, `M4` | implement + test-add | FloatAnchor (Editor/Cursor/Window/NW/NE/SW/SE), BorderStyle (6 presets + Custom), FloatKind (Dialog/Tooltip/Preview/Completion), FloatConfig with dialog()/tooltip() constructors, FloatWindow instance, FloatLayer with open/close/render_order (z-index + creation tiebreak)/focusable query; actual float rendering and focus integration pending; 7 unit tests; T2 pending |
 | `R-DSL-01` | [/docs/spec/features/ui/statusline/statusline-dsl.md](/docs/spec/features/ui/statusline/statusline-dsl.md) | Statusline DSL parser and renderer | unit tests | partial | `M4` | test-add | DslToken enum (11 variants), DslVars for variable values, parse_format tokenizer for %f/%F/%m/%r/%l/%c/%p/%y/%%/%=/%#Group# directives, render_tokens with separator markers; 8 unit tests; T2 pending |
+| `R-TAB-01` | [/docs/spec/features/window/tabs.md](/docs/spec/features/window/tabs.md) | Tab page model with ordered tab management | unit tests | partial | `M4` | test-add | TabPage (id/layout/active_window/label/modified), TabList with tab_new/tab_close/tab_only/tab_next/tab_prev/tab_goto/tab_first/tab_last/tab_move/tab_move_relative, tabline visibility; ex commands :tabnew/:tabclose/:tabonly/:tabnext/:tabprev/:tabfirst/:tablast/:tabmove; 11 unit tests; actual editor integration pending; T2 pending |
+| `R-ZOOM-01` | [/docs/spec/features/window/window-zoom.md](/docs/spec/features/window/window-zoom.md) | Window zoom toggle with layout save/restore | unit tests | partial | `M4` | test-add | ZoomState with saved_layout/zoomed_window, zoom_in/restore/toggle, indicator "[Z]", on_window_closed cleanup; :ZoomToggle ex command; 7 unit tests; actual editor integration pending; T2 pending |
 
 ## Summary
 
@@ -55,7 +57,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 7 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 24 |
+| `M4 verification gap` | 26 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

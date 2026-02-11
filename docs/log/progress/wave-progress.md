@@ -24,266 +24,23 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
 033 (Requirement Extraction, 295 tests), and
 034 (State Model and Data Flow, 327 tests).
 
-### Wave 035: Command and Route Wiring
-- Status: COMPLETE
-- Committed: cc415d57 (impl) + f9f81ec8 (tests)
-- Evidence: 348 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Wincmd expanded: W (reverse cycle), H/J/K/L (move-to-edge placeholder), r/R
-    (rotate placeholder), x (exchange placeholder)
-  - normal_wincmd.rs (137→171): +9 dispatch arms (W/H/J/K/L/r/R/x), +6 unit tests
-  - FocusCycleReverse, WindowMoveEdge(Direction), WindowRotate(bool), WindowExchange
-    action variants added to kjxlkj-core-types action.rs (112→113)
-  - editor_action.rs (194→199): +5 dispatch arms (OpenTerminal, FocusCycleReverse,
-    WindowMoveEdge, WindowRotate, WindowExchange)
-  - editor_window.rs (157→176): +focus_cycle_reverse() wrapping backward through
-    window ID list, +open_terminal() creating ContentKind::Terminal(TerminalId) leaf
-    via split_vertical below current window
-  - Explorer v/s split-open keys: editor_explorer.rs (123→170) enhanced with
-    ExplorerKeyResult enum for split-open routing; v opens selected file in vertical
-    split, s opens in horizontal split; directory targets are no-ops
-  - ExplorerState.selected_row() accessor added to explorer service lib.rs
-  - Explorer service lib.rs split: tests extracted to explorer_state_tests.rs (87 lines)
-    to keep lib.rs at 126 lines; +1 new test (selected_row_returns_correct)
-  - editor_stage04c_tests.rs (193 lines, NEW): 14 integration tests — wincmd W
-    reverse cycle (2), H/J/K/L/r/R/x no-crash (3), terminal window creation (3),
-    focus cycle reverse (2), explorer v/s split-open (4)
-  - Tier-C docs read: document-links.md, document-symbols.md, references.md,
-    type-hierarchy.md, workspace-symbols.md, rename.md, signature-help.md
-  - Ledger sync: CONFORMANCE (327→348), LIMITATIONS, DRIFT_MATRIX updated
+### Waves 035–039 (Archived)
 
-### Wave 036: Boundary and Error Semantics
-- Status: COMPLETE
-- Committed: b5245bc6
-- Evidence: 374 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Jumplist navigation (Ctrl-o/Ctrl-i) and changelist navigation (g;/g,)
-  - PositionList data structure in navlist.rs (128 lines): 100 entry cap,
-    go_older/go_newer/push, duplicate consecutive dedup, capacity enforcement
-  - Action variants: JumpOlder, JumpNewer, ChangeOlder, ChangeNewer in
-    kjxlkj-core-types action.rs (113→114)
-  - Key dispatch: Ctrl-o→JumpOlder, Ctrl-i→JumpNewer in normal.rs;
-    g;→ChangeOlder, g,→ChangeNewer in normal_g.rs
-  - EditorState: jumplist + changelist fields (PositionList), record_jump/
-    record_change methods in editor_nav.rs (70 lines)
-  - navigate_jumplist/navigate_changelist with buffer-bounds clamping
-  - Jump recording on GotoLine/GotoFirstLine/GotoLastLine/SearchNext/SearchPrev/
-    StarSearchForward/StarSearchBackward via is_jump_action()
-  - Change recording on all text-changing actions via is_text_changing()
-  - editor_action.rs compacted (199→191): merged single-statement braced arms
-  - normal.rs compacted (202→200): merged test formatting, +2 tests
-  - normal_g.rs compacted (201→165): all tests to inline format, +2 tests
-  - editor.rs expanded (183→200): +jumplist/changelist fields, +is_jump_action,
-    +record_jump/record_change calls
-  - editor_stage04d_tests.rs (151 lines, NEW): 16 boundary tests — jumplist
-    empty/past-end (4), jumplist recording on G/Ctrl-o (2), changelist empty/
-    recording/navigate (4), window close/only/focus boundary (4), explorer close
-    when none (1), terminal open (1)
-  - navlist.rs unit tests (6): push_and_go_older, go_newer_after_older,
-    push_truncates_future, capacity_cap, duplicate_consecutive_ignored,
-    empty_list_returns_none
-  - Tier-C docs read: changelist.md, jumplist.md, finder.md, flash.md,
-    include-search.md
-  - Ledger sync: CONFORMANCE (348→374), LIMITATIONS, DRIFT_MATRIX updated
-
-### Wave 037: Unit and Integration Coverage
-- Status: COMPLETE
-- Committed: f896418a
-- Evidence: 391 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Mark system: m{a-z} set mark, '{a-z} goto mark line (first non-blank),
-    `{a-z} goto mark exact position
-  - MarkStore in marks.rs (88 lines): HashMap<char, MarkPos>, set/get/remove/list,
-    lowercase a-z only (uppercase silently ignored). 5 unit tests
-  - Action variants: SetMark(char), GotoMarkLine(char), GotoMarkExact(char) in
-    kjxlkj-core-types action.rs (114→115)
-  - Partial key dispatch: m→SetMark, '→GotoMarkLine, `→GotoMarkExact in
-    normal.rs (200→198) and normal_partial.rs (93→108)
-  - EditorState: marks field (MarkStore) in editor.rs (200, at limit)
-  - editor_nav.rs expanded (70→115): +set_mark_at_cursor, +goto_mark_line (first
-    non-blank using find for non-whitespace), +goto_mark_exact (buffer-bounds
-    clamping)
-  - editor_action.rs (191→194): +SetMark/GotoMarkLine/GotoMarkExact dispatch
-  - editor_stage04e_tests.rs (130 lines, NEW): 12 integration tests — mark set
-    and goto exact (1), mark set and goto line with first-non-blank (1), goto
-    unset mark no-op (2: exact + line), mark overwrite (1), mark persistence
-    across insert mode (1), uppercase mark ignored (1), multiple marks
-    independent (1), goto exact clamps when lines deleted (1), goto line with
-    tabs first-non-blank (1), action API direct (1), goto line on empty line (1)
-  - lib.rs (core-state) 64→67 (+marks module, +editor_stage04e_tests)
-  - Tier-C docs read: marks.md, quickfix.md, tags.md, session/README.md,
-    auto_save.md, ex-commands-detailed.md, expression-register.md
-  - Ledger sync: CONFORMANCE (374→391), LIMITATIONS, DRIFT_MATRIX (+R-MARK-01)
-
-### Wave 038: Live E2E and Race Validation
-- Status: COMPLETE
-- Committed: 3cdbc363
-- Evidence: 411 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Macro recording and playback: q{a-z} starts recording, q stops, @{a-z} plays
-  - macros.rs (117 lines, NEW): MacroState with recording/buffer, MacroKey struct,
-    start/stop/capture/is_recording, keys_to_string serializer. 5 unit tests
-  - Action variants: MacroRecordStart(char), MacroRecordStop, MacroPlay(char) in
-    kjxlkj-core-types action.rs (115→116)
-  - Key dispatch: q→MacroRecord partial, @→MacroPlay partial in normal.rs (198→200)
-  - normal_partial.rs (108→115): MacroRecord→MacroRecordStart, MacroPlay→MacroPlay
-  - EditorState: macro_state field (MacroState) in editor.rs (200→194, compacted)
-  - handle_key integration: stop-q intercept when recording active in Normal mode,
-    key capture via macro_state.capture() before dispatch
-  - editor_nav.rs (115→171): +start_macro_recording, +stop_macro_recording (saves
-    to register via keys_to_string), +play_macro (reads register, parse_macro_keys,
-    replays via handle_key), +parse_macro_keys (Ctrl/Esc/BS/Enter/Tab support)
-  - editor_action.rs (194→197): +MacroRecordStart/MacroRecordStop/MacroPlay dispatch
-  - editor_stage04f_tests.rs (190 lines, NEW): 15 integration tests — macro record
-    and play (1), insert mode recording (1), unset register playback noop (1), stop
-    without start (1), multiple records overwrite (1), uppercase rejected (1), mode
-    switch stress during recording (1), mark+macro interaction (1), jumplist+macro
-    interaction (1), split+macro interaction (1), rapid record/stop 100x (1),
-    deterministic replay (1), mark/split/jumplist combined stress (1), mode churn
-    with marks 50x (1), changelist stress 20 deletes (1)
-  - lib.rs (core-state) 67→70 (+macros, +editor_stage04f_tests)
-  - wave-progress.md split: waves 032-034 archived to wave-progress-stage-04-early.md
-  - Tier-C docs read: macros.md, project-config.md, registers.md (session),
-    sessions.md, undo_tree.md, view-management.md, workspaces.md
-  - Ledger sync: CONFORMANCE (391→411), LIMITATIONS, DRIFT_MATRIX (+R-MACRO-01)
-
-### Wave 039: Ledger Synchronization and Stage Exit
-- Status: COMPLETE
-- Committed: b0509062
-- Evidence: 442 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Fold commands: zo (open), zc (close), za (toggle), zR (open all), zM (close
-    all), zr (reduce fold level), zm (increase fold level), zj (next closed fold),
-    zk (prev closed fold)
-  - folds.rs (184 lines, NEW): FoldState with indent-based fold computation
-    (compute_indent_folds), FoldRegion (start/end/level), fold_level with
-    reduce/more, open/close/toggle per-line, open_all/close_all, next_closed/
-    prev_closed, is_hidden. indent_level (4-space), fold_end helper. 6 unit tests
-  - Action variants: FoldOpen, FoldClose, FoldToggle, FoldOpenAll, FoldCloseAll,
-    FoldReduce, FoldMore, FoldNext, FoldPrev in action.rs (116→119)
-  - normal_z.rs (43→115): +zo/zc/za/zR/zM/zr/zm/zj/zk dispatch, +9 unit tests
-  - editor.rs (194→196): +fold_state: FoldState field
-  - editor_action.rs (197→184): +fold dispatch, compacted single-method arms
-  - editor_nav.rs (171→157): +fold_open/fold_close/fold_toggle/fold_close_all/
-    fold_next/fold_prev/focused_cursor_line, +apply_nav_position shared helper
-    (extracted from duplicate jumplist/changelist code), all methods compacted
-  - lib.rs (core-state) 70→73 (+folds, +editor_stage04g_tests)
-  - editor_stage04g_tests.rs (169 lines, NEW): 16 integration tests — fold
-    dispatch (zo/zc/za/zR/zM), fold navigation (zj/zk), zj noop, fold_is_hidden,
-    rapid fold toggle 100x, non-fold line noop, empty buffer safety, macro+fold
-    interaction, mark+fold interaction, reduce/more cycle, combined stress 20x
-  - Tier-C docs read: folding.md, folds-advanced.md, highlight-groups.md,
-    colorscheme-creation.md, inlay-hints.md, semantic-tokens.md, syntax/README.md
-  - Tree-sitter and expression fold methods deferred (only indent-based)
-  - Wave-039 changes: `action.rs` 116→119 (+9 fold variants), `normal_z.rs` 43→115
-    (+zo/zc/za/zR/zM/zr/zm/zj/zk dispatch, +9 unit tests), `editor.rs` 194→196
-    (+fold_state field), `editor_action.rs` 197→184 (+fold dispatch, compacted
-    existing arms), `editor_nav.rs` 171→157 (+fold methods, +apply_nav_position
-    shared helper, refactored and compacted), `lib.rs` (core-state) 70→73
-    (+folds, +editor_stage04g_tests). New files: `folds.rs` (184, FoldState,
-    6 tests), `editor_stage04g_tests.rs` (169, 16 integration tests)
-  - Ledger sync: CONFORMANCE (411→442), LIMITATIONS, DRIFT_MATRIX (+R-FOLD-01)
+See [wave-progress-stage-04-late.md](wave-progress-stage-04-late.md) for
+Waves 035 (Command and Route Wiring, 348 tests),
+036 (Boundary and Error Semantics, 374 tests),
+037 (Unit and Integration Coverage, 391 tests),
+038 (Live E2E and Race Validation, 411 tests), and
+039 (Ledger Synchronization and Stage Exit, 442 tests).
 
 ## Stage 05: Services and Features
 
-### Wave 040: Scope Freeze and Input Mapping
-- Status: COMPLETE
-- Committed: 81b889f5
-- Evidence: 473 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - VT100/xterm escape parser (13 states): Ground, Escape, EscapeIntermediate,
-    CsiEntry, CsiParam, CsiIntermediate, CsiIgnore, OscString, DcsEntry,
-    DcsParam, DcsPassthrough, DcsIgnore, SosPmApc
-  - CSI dispatch: CUU/CUD/CUF/CUB/CUP/CNL/CPL/CHA/VPA, ED/EL/ECH, SU/SD,
-    IL/DL, ICH/DCH, SGR, DECSTBM, cursor save/restore
-  - SGR: bold/dim/italic/underline/reverse/strikethrough, basic 8 + bright 8
-    + 256-color + RGB for fg/bg
-  - Private modes: DECTCEM (cursor visibility), alt screen (47/1049),
-    bracketed paste (2004)
-  - OSC title (0;/2; prefix), escape dispatch (M/D/E/7/8/c), UTF-8 accumulation
-  - Screen model: Cell grid with char/fg/bg/6 style attributes, cursor,
-    scroll region, saved cursor, alt-screen, bracketed-paste. Operations:
-    put_char (line wrap), linefeed (scroll), CR, BS, tab (8-col), reverse
-    index, erase display/line/chars, insert/delete chars, scroll up/down,
-    insert/delete lines, save/restore cursor, reset
-  - Filetype detection: 15 languages by extension (rs/py/js/jsx/ts/tsx/go/
-    c/h/cpp/cc/cxx/hpp/hh/hxx/md/json/yaml/yml/toml/html/htm/css/sh/bash/lua)
-    + shebang fallback (python/node/bash/lua)
-  - escape_parser.rs split: Parser core (170 lines), CSI dispatch extracted
-    to csi.rs (98 lines), tests to parser_tests.rs (51 lines)
-  - screen.rs split: Screen model (177 lines), tests to screen_tests.rs (46)
-  - lib.rs (terminal) 77→81: +pub mod csi/escape_parser/screen
-  - lib.rs (index) 11→12: +pub mod filetype
-  - New files: escape_parser.rs (170), csi.rs (98), parser_tests.rs (51),
-    screen.rs (177), screen_tests.rs (46), filetype.rs (81)
-  - Tier-C docs read: syntax-files.md, syntax.md, dap.md, escape-parser.md,
-    remote.md, terminal.md
-  - Ledger sync: CONFORMANCE (442→473), LIMITATIONS, DRIFT_MATRIX
-    (+R-FILETYPE-01, R-TERM-01 updated, M4 16→17)
+### Waves 040–042 (Archived)
 
-### Wave 041: Requirement Extraction and Normalization
-- Status: COMPLETE
-- Committed: 611219bf
-- Evidence: 493 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - LSP lifecycle model: LspServerState with phase machine (Starting/Initializing/
-    Running/ShuttingDown/Stopped/Failed), ServerCapabilities (17 boolean fields:
-    completion, hover, definition, references, rename, code_action, formatting,
-    range_formatting, signature_help, code_lens, inlay_hints, document_symbols,
-    workspace_symbols, declaration, type_definition, implementation, diagnostics),
-    LspServerConfig (language/command/root_markers/filetypes), crash tracking
-    (3-retry limit), restart reset. 5 unit tests
-  - Diagnostic model: DiagnosticStore with replace_for_file (LSP push semantics),
-    append (incremental), alloc_id auto-increment, sort by severity→file→line→col,
-    next_in_file/prev_in_file wrapping navigation, count_by_severity, for_file
-    filter. Severity(Error/Warning/Info/Hint, ordered), DiagnosticKind(Diagnostic/
-    Build/Grep/Todo/Quickfix), DiagnosticLocation with optional end position.
-    8 unit tests
-  - Theme/highlight model: HlGroup enum (35 groups: 13 syntax + 22 UI), Color
-    (u8,u8,u8) RGB, Style with builder pattern (fg/bg/bold/italic/underline/
-    strikethrough/reverse), Theme with HashMap<HlGroup,Style>, default_dark()
-    One Dark inspired with 30 styled groups. 7 unit tests
-  - lifecycle.rs (130 lines, NEW) in kjxlkj-service-lsp
-  - diagnostic.rs (177 lines, NEW) in kjxlkj-service-lsp
-  - theme.rs (156 lines, NEW) in kjxlkj-core-ui
-  - lib.rs (kjxlkj-service-lsp) 9→13: +pub mod diagnostic; +pub mod lifecycle;
-  - lib.rs (kjxlkj-core-ui) 10→12: +pub mod theme;
-  - Tier-C docs read: tmux.md, wm-integration.md, ui/README.md, color-picker.md,
-    cursor-customization.md, font-rendering.md, icons.md
-  - Ledger sync: CONFORMANCE (473→493), LIMITATIONS, DRIFT_MATRIX
-    (+R-LSP-01, +R-THEME-01, M4 17→19, M2 4→5)
-
-### Wave 042: State Model and Data Flow Design
-- Status: COMPLETE
-- Committed: 66317c56
-- Evidence: 515 tests pass, all files ≤ 200 lines
-- Key deliverables:
-  - Git sign state model: GitSignState with per-buffer hunk tracking, SignType
-    (Add/Change/Delete/TopDelete/ChangeDelete) with display char and highlight
-    group name, Hunk (start/count/sign), GitBase (Index/Head), set_hunks with
-    auto-count (added/modified/removed), sign_at line query, next_hunk/prev_hunk
-    wrapping navigation, summary string "+n ~n -n". 7 unit tests
-  - gitsigns.rs split: model (159 lines), tests to gitsigns_tests.rs (75 lines)
-  - Statusline data model: Segment enum (12 variants: Mode/File/Modified/
-    ReadOnly/FileType/Position/Percent/Encoding/FileFormat/Diagnostics/Git/Text)
-    with render(), StatuslineData with left/center/right section arrays,
-    separator, active flag, from_state builder for default layout, render_left/
-    render_center/render_right methods. 7 unit tests
-  - Message/notification model: MsgLevel (Debug/Info/Warn/Error, ordered) with
-    highlight group mapping, Message (id/level/text), MessageStore with push/
-    info/warn/error, current command-line message (cleared on keypress), history
-    with 200-entry cap, clear_current/clear_history, by_level filter. 8 unit tests
-  - statusline.rs (178 lines, NEW) in kjxlkj-core-ui
-  - messages.rs (182 lines, NEW) in kjxlkj-core-ui
-  - gitsigns.rs (159 lines, NEW) in kjxlkj-service-git
-  - gitsigns_tests.rs (75 lines, NEW) in kjxlkj-service-git
-  - lib.rs (kjxlkj-service-git) 11→14: +pub mod gitsigns;
-  - lib.rs (kjxlkj-core-ui) 12→14: +pub mod statusline; +pub mod messages;
-  - Tier-C docs read: indent-guides.md, ligatures.md, notifications.md,
-    popup-api.md, scroll-customization.md, statusline/README.md,
-    statusline-config.md
-  - Ledger sync: CONFORMANCE (493→515), LIMITATIONS, DRIFT_MATRIX
-    (+R-GIT-01, +R-STATUSLINE-01, M4 19→21, M2 5→6)
+See [wave-progress-stage-05-early.md](wave-progress-stage-05-early.md) for
+Waves 040 (Scope Freeze and Input Mapping, 473 tests),
+041 (Requirement Extraction and Normalization, 493 tests), and
+042 (State Model and Data Flow Design, 515 tests).
 
 ### Wave 043: Command and Route Wiring
 - Status: COMPLETE
@@ -323,3 +80,41 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
     (re-read)
   - Ledger sync: CONFORMANCE (515→538), LIMITATIONS, DRIFT_MATRIX
     (+R-VIEWPORT-01, +R-FLOAT-01, +R-DSL-01, M4 21→24, M2 6→7)
+
+### Wave 044: Boundary and Error Semantics
+- Status: COMPLETE
+- Committed: 805a0315
+- Evidence: 556 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Tab page model: TabPage (id/layout/active_window/label/modified), TabId,
+    TabList with ordered tab management (tab_new inserts after current, tab_close
+    refuses last tab, tab_only keeps current, tab_next/tab_prev wrapping,
+    tab_goto 1-indexed with range validation, tab_first/tab_last, tab_move
+    absolute with clamping, tab_move_relative). Tabline visibility calculation.
+    11 unit tests
+  - tabs.rs (104 lines, NEW) in kjxlkj-core-ui
+  - tabs_tests.rs (94 lines, NEW, extracted tests)
+  - Zoom state: ZoomState with saved_layout/zoomed_window, zoom_in saves layout
+    tree and replaces with single-window leaf, restore reinstates saved layout
+    (with closed-window cleanup via remove_window_from_node/collapse_unary),
+    toggle cycles in/out, indicator "[Z]" when zoomed, on_window_closed removes
+    windows from saved layout. 7 unit tests
+  - zoom.rs (87 lines, NEW) in kjxlkj-core-ui
+  - zoom_tests.rs (67 lines, NEW, extracted tests)
+  - Tab/zoom ex commands: :tabnew/:tabe/:tabedit, :tabclose/:tabc (with !),
+    :tabonly/:tabo, :tabnext/:tabn, :tabprevious/:tabprev/:tabp/:tabNext/:tabN,
+    :tabfirst/:tabfir/:tabrewind/:tabr, :tablast/:tabl, :tabmove/:tabm
+    (absolute/relative/$/+N/-N), :ZoomToggle, :ZoomHeight, :ZoomWidth
+  - Action variants: TabNew(Option<String>), TabClose, TabCloseForce, TabOnly,
+    TabNext, TabPrev, TabFirst, TabLast, TabGoto(usize), TabMove(i32),
+    ZoomToggle in kjxlkj-core-types action.rs (119→125)
+  - command_parse.rs compacted (195→155): collapsed verbose match arms into
+    single-line forms, added tab/zoom commands (+parse_tab_goto, +parse_tab_move
+    helpers)
+  - editor_action.rs (184→189): +tab/zoom action dispatch (deferred to
+    integration layer)
+  - lib.rs (kjxlkj-core-ui) 17→19: +pub mod tabs; +pub mod zoom;
+  - Tier-C docs read: tabs.md, wincmd.md, window-layouts.md, window-presets.md,
+    window-resize-modes.md, window-zoom.md, window_resizer.md
+  - Ledger sync: CONFORMANCE (538→556), LIMITATIONS, DRIFT_MATRIX
+    (+R-TAB-01, +R-ZOOM-01, M4 24→26)
