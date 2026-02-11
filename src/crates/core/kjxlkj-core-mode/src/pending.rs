@@ -61,6 +61,10 @@ pub enum PartialKey {
     MacroRecord,
     /// After pressing `@`, awaiting register for macro play.
     MacroPlay,
+    /// After `i` in operator-pending, awaiting text object char.
+    TextObjectInner,
+    /// After `a` in operator-pending, awaiting text object char.
+    TextObjectAround,
 }
 
 impl Default for PartialKey {

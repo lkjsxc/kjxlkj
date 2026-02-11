@@ -30,7 +30,7 @@ impl EditorState {
                         }
                         self.registers.record_delete(text, RangeType::Linewise);
                     }
-                    _ => {} // Indent/Dedent/Reindent/Format/Filter: TODO
+                    _ => {}
                 }
             }
         }
@@ -39,38 +39,35 @@ impl EditorState {
     pub(crate) fn apply_operator_motion(
         &mut self, op: Operator, motion: Motion, count: usize,
     ) {
+        // Text object dispatch.
+        match motion {
+            Motion::TextObjInner(ch) => { self.apply_operator_text_obj(op, ch, true); return; }
+            Motion::TextObjAround(ch) => { self.apply_operator_text_obj(op, ch, false); return; }
+            _ => {}
+        }
         let win = self.windows.get(&self.focus.focused).unwrap();
         if let ContentKind::Buffer(buf_id) = win.content {
             let start = win.cursor;
             let mut end = start;
             if let Some(buf) = self.buffers.get(&buf_id) {
-                for _ in 0..count {
-                    end = apply_motion(&end, &motion, buf);
-                }
+                for _ in 0..count { end = apply_motion(&end, &motion, buf); }
             }
-            let (sl, sc, el, ec) = ordered_range(
-                start.line, start.col, end.line, end.col,
-            );
+            let (sl, sc, el, ec) = ordered_range(start.line, start.col, end.line, end.col);
             if matches!(op, Operator::Uppercase | Operator::Lowercase | Operator::ToggleCase) {
                 self.apply_range_case_op(op, sl, sc, el, ec);
                 let w = self.focused_window_mut();
-                w.cursor.line = sl;
-                w.cursor.col = sc;
+                w.cursor.line = sl; w.cursor.col = sc;
                 return;
             }
-            // Extract text for register before mutating buffer.
             let text = if let Some(buf) = self.buffers.get(&buf_id) {
                 buf.text_range(sl, sc, el, ec)
-            } else {
-                String::new()
-            };
+            } else { String::new() };
             let scope = if sl != el { RangeType::Linewise } else { RangeType::Characterwise };
             match op {
                 Operator::Yank => {
                     self.registers.record_yank(text, scope);
                     let w = self.focused_window_mut();
-                    w.cursor.line = sl;
-                    w.cursor.col = sc;
+                    w.cursor.line = sl; w.cursor.col = sc;
                 }
                 Operator::Delete | Operator::Change => {
                     if let Some(buf) = self.buffers.get_mut(&buf_id) {
@@ -78,15 +75,52 @@ impl EditorState {
                     }
                     self.registers.record_delete(text, scope);
                     let w = self.focused_window_mut();
-                    w.cursor.line = sl;
-                    w.cursor.col = sc;
+                    w.cursor.line = sl; w.cursor.col = sc;
                 }
                 _ => {
-                    // Indent/Dedent/Reindent/Format/Filter: TODO
                     let w = self.focused_window_mut();
-                    w.cursor.line = sl;
-                    w.cursor.col = sc;
+                    w.cursor.line = sl; w.cursor.col = sc;
                 }
+            }
+        }
+    }
+
+    fn apply_operator_text_obj(&mut self, op: Operator, ch: char, inner: bool) {
+        let win = self.windows.get(&self.focus.focused).unwrap();
+        let buf_id = match win.content { ContentKind::Buffer(id) => id, _ => return };
+        let cursor = win.cursor;
+        let range = if let Some(buf) = self.buffers.get(&buf_id) {
+            kjxlkj_core_edit::text_obj_range(&cursor.into(), buf, ch, inner)
+        } else { return };
+        let (sc, ec) = match range { Some((s, e)) => (s, e), None => return };
+        let (sl, scol, el, ecol) = (sc.line, sc.col, ec.line, ec.col);
+        if matches!(op, Operator::Uppercase | Operator::Lowercase | Operator::ToggleCase) {
+            self.apply_range_case_op(op, sl, scol, el, ecol + 1);
+            let w = self.focused_window_mut();
+            w.cursor.line = sl; w.cursor.col = scol;
+            return;
+        }
+        let text = if let Some(buf) = self.buffers.get(&buf_id) {
+            buf.text_range(sl, scol, el, ecol + 1)
+        } else { String::new() };
+        let scope = if sl != el { RangeType::Linewise } else { RangeType::Characterwise };
+        match op {
+            Operator::Yank => {
+                self.registers.record_yank(text, scope);
+                let w = self.focused_window_mut();
+                w.cursor.line = sl; w.cursor.col = scol;
+            }
+            Operator::Delete | Operator::Change => {
+                if let Some(buf) = self.buffers.get_mut(&buf_id) {
+                    let _ = buf.delete(sl, scol, el, ecol + 1);
+                }
+                self.registers.record_delete(text, scope);
+                let w = self.focused_window_mut();
+                w.cursor.line = sl; w.cursor.col = scol;
+            }
+            _ => {
+                let w = self.focused_window_mut();
+                w.cursor.line = sl; w.cursor.col = scol;
             }
         }
     }

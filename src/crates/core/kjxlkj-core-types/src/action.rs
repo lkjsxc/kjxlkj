@@ -169,15 +169,9 @@ pub enum Motion {
     WindowTop,
     WindowMiddle,
     WindowBottom,
-    // Match motions
     MatchParen,
-    // Scroll motions
-    PageDown,
-    PageUp,
-    HalfPageDown,
-    HalfPageUp,
-    ScrollDown,
-    ScrollUp,
+    PageDown, PageUp, HalfPageDown, HalfPageUp, ScrollDown, ScrollUp,
+    TextObjInner(char), TextObjAround(char),
 }
 
 /// Directional focus for window navigation.
