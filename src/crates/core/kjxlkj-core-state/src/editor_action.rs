@@ -102,6 +102,12 @@ impl EditorState {
             Action::JoinLinesNoSpace => {
                 self.join_lines_no_space();
             }
+            Action::PutAfter => {
+                self.put_after();
+            }
+            Action::PutBefore => {
+                self.put_before();
+            }
             _ => {}
         }
     }

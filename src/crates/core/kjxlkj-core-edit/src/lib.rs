@@ -12,3 +12,4 @@ pub mod regex_compile;
 pub use cursor::Cursor;
 pub use motion::apply_motion;
 pub use regex_compile::vim_to_rust_regex;
+pub use regex_compile::vim_to_rust_regex_ex;

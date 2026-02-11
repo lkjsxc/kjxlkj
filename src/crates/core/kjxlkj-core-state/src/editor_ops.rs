@@ -3,7 +3,7 @@
 //! See /docs/spec/editing/operators/operators.md.
 
 use kjxlkj_core_edit::apply_motion;
-use kjxlkj_core_types::{ContentKind, Motion, Operator};
+use kjxlkj_core_types::{ContentKind, Motion, Operator, RangeType};
 
 use crate::editor::EditorState;
 
@@ -17,14 +17,21 @@ impl EditorState {
         if let ContentKind::Buffer(buf_id) = win.content {
             let line = win.cursor.line;
             if let Some(buf) = self.buffers.get_mut(&buf_id) {
-                let gc = buf.line_grapheme_count(line);
-                if matches!(op, Operator::Delete | Operator::Change) {
-                    let _ = buf.delete(line, 0, line, gc);
-                    if buf.line_count() > 1 {
-                        let _ = buf.delete(line, 0, line, 1);
+                let text = buf.line(line).unwrap_or_default();
+                match op {
+                    Operator::Yank => {
+                        self.registers.record_yank(text, RangeType::Linewise);
                     }
+                    Operator::Delete | Operator::Change => {
+                        let gc = buf.line_grapheme_count(line);
+                        let _ = buf.delete(line, 0, line, gc);
+                        if buf.line_count() > 1 {
+                            let _ = buf.delete(line, 0, line, 1);
+                        }
+                        self.registers.record_delete(text, RangeType::Linewise);
+                    }
+                    _ => {} // Indent/Dedent/Reindent/Format/Filter: TODO
                 }
-                // Yank/Indent/Dedent/Reindent/Format: TODO
             }
         }
     }
@@ -51,14 +58,35 @@ impl EditorState {
                 w.cursor.col = sc;
                 return;
             }
-            if let Some(buf) = self.buffers.get_mut(&buf_id) {
-                if matches!(op, Operator::Delete | Operator::Change) {
-                    let _ = buf.delete(sl, sc, el, ec);
+            // Extract text for register before mutating buffer.
+            let text = if let Some(buf) = self.buffers.get(&buf_id) {
+                buf.text_range(sl, sc, el, ec)
+            } else {
+                String::new()
+            };
+            let scope = if sl != el { RangeType::Linewise } else { RangeType::Characterwise };
+            match op {
+                Operator::Yank => {
+                    self.registers.record_yank(text, scope);
+                    let w = self.focused_window_mut();
+                    w.cursor.line = sl;
+                    w.cursor.col = sc;
                 }
-                // Yank/Indent/Dedent/Reindent/Format: TODO
-                let w = self.focused_window_mut();
-                w.cursor.line = sl;
-                w.cursor.col = sc;
+                Operator::Delete | Operator::Change => {
+                    if let Some(buf) = self.buffers.get_mut(&buf_id) {
+                        let _ = buf.delete(sl, sc, el, ec);
+                    }
+                    self.registers.record_delete(text, scope);
+                    let w = self.focused_window_mut();
+                    w.cursor.line = sl;
+                    w.cursor.col = sc;
+                }
+                _ => {
+                    // Indent/Dedent/Reindent/Format/Filter: TODO
+                    let w = self.focused_window_mut();
+                    w.cursor.line = sl;
+                    w.cursor.col = sc;
+                }
             }
         }
     }

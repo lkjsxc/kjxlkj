@@ -58,8 +58,10 @@ impl RegisterStore {
     }
 
     /// Record a yank: writes to unnamed `"` and `0`.
+    /// Blackhole `_` suppresses all writes.
     pub fn record_yank(&mut self, text: String, scope: RangeType) {
         let reg = self.effective();
+        if reg == '_' { self.clear_selection(); return; }
         self.write(reg, text.clone(), scope);
         if reg == '"' { self.write('0', text, scope); }
         self.clear_selection();
@@ -67,8 +69,10 @@ impl RegisterStore {
 
     /// Record a delete: writes to unnamed `"`, rotates
     /// 1–9 if linewise/multiline, else writes to `-`.
+    /// Blackhole `_` suppresses all writes.
     pub fn record_delete(&mut self, text: String, scope: RangeType) {
         let reg = self.effective();
+        if reg == '_' { self.clear_selection(); return; }
         self.write(reg, text.clone(), scope);
         if reg == '"' {
             if scope == RangeType::Linewise || text.contains('\n') {
@@ -136,5 +140,37 @@ mod tests {
         rs.record_yank("text".into(), RangeType::Characterwise);
         assert_eq!(rs.get('a').unwrap().text, "text");
         assert!(rs.selected.is_none());
+    }
+
+    #[test]
+    fn blackhole_yank_suppresses() {
+        let mut rs = RegisterStore::new();
+        rs.record_yank("before".into(), RangeType::Characterwise);
+        rs.selected = Some('_');
+        rs.record_yank("gone".into(), RangeType::Characterwise);
+        // Unnamed should still have "before", not "gone"
+        assert_eq!(rs.get('"').unwrap().text, "before");
+        assert!(rs.get('_').is_none());
+    }
+
+    #[test]
+    fn blackhole_delete_suppresses() {
+        let mut rs = RegisterStore::new();
+        rs.record_yank("keep".into(), RangeType::Characterwise);
+        rs.selected = Some('_');
+        rs.record_delete("discard".into(), RangeType::Characterwise);
+        assert_eq!(rs.get('"').unwrap().text, "keep");
+        assert!(rs.get('-').is_none());
+    }
+
+    #[test]
+    fn clipboard_regs_store_normally() {
+        let mut rs = RegisterStore::new();
+        rs.selected = Some('+');
+        rs.record_yank("clip".into(), RangeType::Characterwise);
+        assert_eq!(rs.get('+').unwrap().text, "clip");
+        rs.selected = Some('*');
+        rs.record_yank("sel".into(), RangeType::Characterwise);
+        assert_eq!(rs.get('*').unwrap().text, "sel");
     }
 }
