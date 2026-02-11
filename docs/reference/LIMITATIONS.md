@@ -7,11 +7,13 @@ This ledger tracks open mismatches between target spec and current baseline stat
 ## Baseline Statement (2026-02-11)
 
 Workspace reconstructed with 20 crates matching source-layout.md spec.
-91 unit/integration tests pass. PTY E2E harness not yet reconstructed.
+98 unit/integration tests pass. PTY E2E harness not yet reconstructed.
 Explorer and terminal service crates are stubs.
-Motion system expanded to ~40 variants. Operator enum expanded to 10 variants.
+Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
+RegisterStore with named/numbered/unnamed/small-delete registers.
+ForceModifier enum and pre-operator count multiplication implemented.
 All source files ≤ 200 lines.
 
 ## Open Critical Blockers

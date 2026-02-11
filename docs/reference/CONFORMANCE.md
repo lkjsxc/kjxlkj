@@ -16,21 +16,29 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 91 deterministic unit and integration tests covering key normalization,
+through 98 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
-classification, case operators, and g-prefix operator dispatch.
+classification, case operators, g-prefix operator dispatch, register system,
+force modifiers, and count multiplication.
 Multi-task runtime architecture implemented (input/core/render tasks with bounded
 channels, signal handlers, proper shutdown).
 All source files comply with ≤ 200 line limit.
 Motion system expanded to ~40 variants including find/till/paragraph/match-paren.
-Operator enum expanded to 10 variants (Delete, Change, Yank, Indent, Dedent,
-Reindent, Format, Lowercase, Uppercase, ToggleCase).
+Operator enum expanded to 11 variants (Delete, Change, Yank, Indent, Dedent,
+Reindent, Format, Lowercase, Uppercase, ToggleCase, Filter).
 Operator composition implemented (linewise dd/yy/cc/guu/gUU/g~~/gqq,
 operator+motion d3w/cw, D/Y/gJ special forms).
 RangeType/Inclusivity classification system for motions implemented and tested.
 Case transform operators (gu/gU/g~) on lines and ranges implemented.
 PendingState system for multi-key normal mode sequences (count, g/z/f/t/r/m).
+RegisterStore with named (a-z), numbered (0-9), unnamed, and small-delete
+registers; yank records to unnamed+0, delete rotates 1-9 for linewise or writes
+small-delete for non-linewise; A-Z append supported.
+ForceModifier enum (Characterwise, Linewise, Blockwise) for v/V/Ctrl-v between
+operator and motion in operator-pending mode.
+Pre-operator count multiplication (e.g. 2d3w → count 6).
+Dot-repeat recording via last_change tracking in EditorState.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -39,7 +47,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (91 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (98 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
