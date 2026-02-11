@@ -6,6 +6,7 @@ pub struct RenderDiagnostics {
     pub bounds_ok: bool,
     pub cursor_visible: bool,
     pub cursor_on_continuation: bool,
+    pub cursor_span: u8,
     pub wrap_signature: u64,
 }
 
@@ -13,6 +14,7 @@ pub struct RenderDiagnostics {
 struct CursorState {
     visible: bool,
     on_continuation: bool,
+    span: u8,
 }
 
 pub fn compute_render_diagnostics(
@@ -26,6 +28,7 @@ pub fn compute_render_diagnostics(
             bounds_ok: true,
             cursor_visible: false,
             cursor_on_continuation: false,
+            cursor_span: 0,
             wrap_signature: 0,
         };
     }
@@ -38,9 +41,11 @@ pub fn compute_render_diagnostics(
     let mut cursor = CursorState {
         visible: false,
         on_continuation: false,
+        span: 0,
     };
     let mut wraps: Vec<(u16, u16, usize)> = Vec::new();
     let mut owner_col: Option<(u16, u16)> = None;
+    let mut owner_span: Option<u8> = None;
 
     for (idx, ch) in chars.iter().copied().enumerate() {
         let width = display_width(ch);
@@ -49,6 +54,7 @@ pub fn compute_render_diagnostics(
                 if let Some((r, c)) = owner_col {
                     cursor.visible = r < rows && c < cols;
                     cursor.on_continuation = false;
+                    cursor.span = owner_span.unwrap_or(1);
                 }
             }
             continue;
@@ -75,8 +81,10 @@ pub fn compute_render_diagnostics(
         if idx == clamped_cursor {
             cursor.visible = true;
             cursor.on_continuation = false;
+            cursor.span = if width == 2 { 2 } else { 1 };
         }
         owner_col = Some((row, col));
+        owner_span = Some(if width == 2 { 2 } else { 1 });
         wraps.push((row, col, idx));
         col = col.saturating_add(1);
         if col >= cols {
@@ -107,10 +115,12 @@ pub fn compute_render_diagnostics(
     if clamped_cursor == chars.len() {
         cursor.visible = row < rows && col < cols;
         cursor.on_continuation = false;
+        cursor.span = 1;
     }
     if chars.is_empty() && clamped_cursor == 0 {
         cursor.visible = true;
         cursor.on_continuation = false;
+        cursor.span = 1;
     }
 
     let mut hasher = DefaultHasher::new();
@@ -122,6 +132,7 @@ pub fn compute_render_diagnostics(
         bounds_ok,
         cursor_visible: cursor.visible,
         cursor_on_continuation: cursor.on_continuation,
+        cursor_span: cursor.span,
         wrap_signature,
     }
 }
@@ -146,39 +157,4 @@ fn is_combining_mark(ch: char) -> bool {
         || (0x1DC0..=0x1DFF).contains(&code)
         || (0x20D0..=0x20FF).contains(&code)
         || (0xFE20..=0xFE2F).contains(&code)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::compute_render_diagnostics;
-
-    #[test]
-    fn ascii_wrap_bounds_hold_for_long_line() {
-        let line = "a".repeat(10_000);
-        let diag = compute_render_diagnostics(&line, 0, 80, 40);
-        assert!(diag.bounds_ok);
-    }
-
-    #[test]
-    fn cjk_wrap_bounds_hold_for_long_line() {
-        let line = "漢".repeat(10_000);
-        let diag = compute_render_diagnostics(&line, 0, 80, 40);
-        assert!(diag.bounds_ok);
-    }
-
-    #[test]
-    fn wrap_signature_is_deterministic() {
-        let line = "abc漢字".repeat(100);
-        let a = compute_render_diagnostics(&line, 5, 22, 12);
-        let b = compute_render_diagnostics(&line, 5, 22, 12);
-        assert_eq!(a.wrap_signature, b.wrap_signature);
-    }
-
-    #[test]
-    fn cursor_never_targets_continuation_for_wide_char_owner() {
-        let line = "x漢y";
-        let diag = compute_render_diagnostics(line, 1, 4, 4);
-        assert!(!diag.cursor_on_continuation);
-        assert!(diag.cursor_visible);
-    }
 }

@@ -154,7 +154,7 @@ fn run() -> io::Result<()> {
         }
         writeln!(
             stdout,
-            "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={}",
+            "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} cursor_span={} wrap_sig={} line={}",
             seq,
             result.mode_before,
             state.focused_window_id(),
@@ -167,6 +167,7 @@ fn run() -> io::Result<()> {
             render.bounds_ok,
             render.cursor_visible,
             render.cursor_on_continuation,
+            render.cursor_span,
             render.wrap_signature,
             state.line()
         )?;
@@ -180,7 +181,7 @@ fn run() -> io::Result<()> {
     let recent_joined = recent_events.into_iter().collect::<Vec<_>>().join("|");
     writeln!(
         stdout,
-        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={} window_session={} recent_events={}",
+        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} cursor_span={} wrap_sig={} line={} window_session={} recent_events={}",
         state.mode(),
         state.cursor(),
         state.focused_window_id(),
@@ -189,6 +190,7 @@ fn run() -> io::Result<()> {
         final_render.bounds_ok,
         final_render.cursor_visible,
         final_render.cursor_on_continuation,
+        final_render.cursor_span,
         final_render.wrap_signature,
         state.line(),
         state.window_session_dump(),

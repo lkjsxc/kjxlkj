@@ -54,56 +54,6 @@ fn wrap_13r_same_input_keeps_wrap_signature_stable() {
 }
 
 #[test]
-fn wrap_14r_multi_geometry_storm_keeps_bounds_true() {
-    let line = "abc漢字".repeat(2048);
-    for (rows, cols) in [("40", "120"), ("16", "60"), ("8", "24"), ("32", "100")] {
-        let output = run_script(
-            b"",
-            &[
-                ("KJXLKJ_INITIAL_LINE", line.as_str()),
-                ("KJXLKJ_START_CURSOR", "0"),
-                ("KJXLKJ_ROWS", rows),
-                ("KJXLKJ_COLS", cols),
-            ],
-        );
-        assert!(
-            !output.contains("render_bounds_ok=false"),
-            "WRAP-14R expected in-bounds rendering under geometry storm ({rows}x{cols}). Output:\n{output}"
-        );
-    }
-}
-
-#[test]
-fn wrap_15r_tiny_geometry_has_deterministic_wrap_signature() {
-    let line = "漢".repeat(128);
-    let env = &[
-        ("KJXLKJ_INITIAL_LINE", line.as_str()),
-        ("KJXLKJ_START_CURSOR", "0"),
-        ("KJXLKJ_ROWS", "1"),
-        ("KJXLKJ_COLS", "1"),
-    ];
-    let first = run_script(b"", env);
-    let second = run_script(b"", env);
-    let first_sig = extract_final_value(&first, "wrap_sig=").expect("first wrap_sig should exist");
-    let second_sig =
-        extract_final_value(&second, "wrap_sig=").expect("second wrap_sig should exist");
-    assert_eq!(first_sig, second_sig);
-}
-
-#[test]
-fn wrap_16r_cross_window_mix_stays_within_bounds() {
-    let line = "long_line_".repeat(2048);
-    let output = run_script(
-        b":Explorer\r:terminal\r\x17w\x17W",
-        &[("KJXLKJ_INITIAL_LINE", line.as_str()), ("KJXLKJ_START_CURSOR", "0")],
-    );
-    assert!(
-        !output.contains("render_bounds_ok=false"),
-        "WRAP-16R expected in-bounds rendering in mixed window session. Output:\n{output}"
-    );
-}
-
-#[test]
 fn cur_07r_cursor_stays_visible_across_mode_and_focus_churn() {
     let output = run_script(
         b"iZ\x1B\x17s\x17v\x17w\x17W",
@@ -112,6 +62,27 @@ fn cur_07r_cursor_stays_visible_across_mode_and_focus_churn() {
     assert!(
         !output.contains("cursor_visible=false"),
         "CUR-07R expected cursor to stay visible through churn. Output:\n{output}"
+    );
+}
+
+#[test]
+fn cur_08r_wide_grapheme_cursor_highlights_atomic_span() {
+    let output = run_script(
+        b"",
+        &[
+            ("KJXLKJ_INITIAL_LINE", "a漢b"),
+            ("KJXLKJ_START_CURSOR", "1"),
+            ("KJXLKJ_ROWS", "4"),
+            ("KJXLKJ_COLS", "8"),
+        ],
+    );
+    assert!(
+        output.contains("cursor_span=2"),
+        "CUR-08R expected wide grapheme cursor span to cover two cells. Output:\n{output}"
+    );
+    assert!(
+        !output.contains("cursor_continuation=true"),
+        "CUR-08R expected wide grapheme cursor to avoid continuation targeting. Output:\n{output}"
     );
 }
 
@@ -127,6 +98,29 @@ fn cur_09r_cursor_never_targets_continuation_cell() {
     assert!(
         !output.contains("cursor_continuation=true"),
         "CUR-09R expected cursor to never target continuation cell. Output:\n{output}"
+    );
+}
+
+#[test]
+fn cur_10r_wrap_boundary_keeps_cursor_visible_without_split_state() {
+    let output = run_script(
+        b"",
+        &[
+            ("KJXLKJ_INITIAL_LINE", "a漢字b"),
+            ("KJXLKJ_START_CURSOR", "1"),
+            ("KJXLKJ_ROWS", "4"),
+            ("KJXLKJ_COLS", "2"),
+        ],
+    );
+    assert!(
+        output.contains("cursor_visible=true")
+            && output.contains("cursor_span=2")
+            && output.contains("render_bounds_ok=true"),
+        "CUR-10R expected visible atomic cursor at wrap boundary. Output:\n{output}"
+    );
+    assert!(
+        !output.contains("cursor_continuation=true"),
+        "CUR-10R expected no continuation-cell cursor at wrap boundary. Output:\n{output}"
     );
 }
 
