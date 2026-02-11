@@ -7,10 +7,13 @@ This ledger tracks open mismatches between target spec and current baseline stat
 ## Baseline Statement (2026-02-11)
 
 Workspace reconstructed with 20 crates matching source-layout.md spec.
-189 unit/integration tests pass. PTY E2E harness not yet reconstructed.
+208 unit/integration tests pass. PTY E2E harness not yet reconstructed.
 Text objects (iw/aw, bracket, quote, paragraph ip/ap, sentence is/as) implemented
 with operator-pending dispatch. Tree-sitter (ic/ac, if/af) and tag (it/at)
 text objects deferred.
+Visual mode (v/V/Ctrl-v) with charwise/linewise selection operators, sub-mode
+switching, anchor swap (o), operators d/x/y/c/s/>/</~/u/U/J/p. Blockwise visual
+operations delegate to charwise (full block ops deferred).
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,

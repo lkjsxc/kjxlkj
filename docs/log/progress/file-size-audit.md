@@ -7,12 +7,12 @@ All files are now ≤ 200 lines.
 
 | File | Lines | Status |
 |------|-------|--------|
-| `action.rs` (kjxlkj-core-types) | 194 | OK |
+| `action.rs` (kjxlkj-core-types) | 198 | OK |
 | `search.rs` (kjxlkj-core-state) | 191 | OK |
-| `editor.rs` (kjxlkj-core-state) | 185 | OK |
+| `editor.rs` (kjxlkj-core-state) | 200 | OK |
 | `editor_search_tests.rs` (kjxlkj-core-state) | 200 | OK |
 | `normal.rs` (kjxlkj-core-mode) | 200 | OK |
-| `other_modes.rs` (kjxlkj-core-mode) | 142 | OK |
+| `other_modes.rs` (kjxlkj-core-mode) | 184 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 174 | OK |
 | `editor_cmdline.rs` (kjxlkj-core-state) | 150 | OK |
 | `layout_ops.rs` (kjxlkj-core-ui) | 191 | OK |
@@ -26,11 +26,13 @@ All files are now ≤ 200 lines.
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 186 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 189 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 191 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 | `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
 | `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
 | `editor_textobj_tests.rs` (kjxlkj-core-state) | 111 | OK |
+| `editor_visual.rs` (kjxlkj-core-state) | 197 | OK |
+| `editor_visual_tests.rs` (kjxlkj-core-state) | 139 | OK |
 
 ## Splits Performed
 
@@ -46,7 +48,7 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `command_parse.rs` (199), `editor_edit.rs` (199), `text_object.rs` (199), `register.rs` (198), `normal_g.rs` (197), `action.rs` (194) as they approach the limit.
+- Monitor `editor.rs` (200), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `command_parse.rs` (199), `editor_edit.rs` (199), `action.rs` (198), `register.rs` (198), `editor_visual.rs` (197), `normal_g.rs` (197), `text_object.rs` (195) as they approach the limit.
 - New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
 - New files added in wave-018: `register.rs` (140→176), `pending.rs` expanded to 175.
 - New files added in wave-019: `regex_compile.rs` (187→120 refactored), `command_parse.rs` (159), `search.rs` (200), `editor_cmdline.rs` (195).
@@ -57,3 +59,4 @@ All files are now ≤ 200 lines.
 - Wave-024 changes: `command_parse.rs` 177→199 (+parse_set_option, +test), `editor_action.rs` 177→189 (+IncrementNumber/DecrementNumber/SetOption dispatch, +apply_set_option), `editor_edit.rs` 179→199 (+increment_number/decrement_number/modify_number, +find_number, compacted cursor/clamp), `editor_search_tests.rs` 191→200 (merged star boundary tests, +ctrl_a_increments_number, +set_option_via_ex_command), `normal.rs` 198→200 (+Ctrl-a/Ctrl-x).
 - Wave-025 changes: `action.rs` 200→194 (removed comments, compacted scrolls, +TextObjInner/TextObjAround), `pending.rs` 175→179 (+TextObjectInner/TextObjectAround), `other_modes.rs` 196→142 (full rewrite: compacted all handlers, +text object dispatch), `editor_ops.rs` 152→186 (+apply_operator_text_obj, +text object branch). New files: `text_object.rs` (199, word/bracket/quote range computation, 7 tests), `editor_textobj_tests.rs` (90, 7 integration tests).
 - Wave-026 changes: `text_object.rs` 199→195 (merged word tests, +p/s dispatch to text_object_ext), `editor_textobj_tests.rs` 90→111 (+dip/dis integration tests). New file: `text_object_ext.rs` (126, paragraph/sentence range computation, 5 unit tests).
+- Wave-027 changes: `action.rs` 194→198 (+VisualOperator/VisualSwapAnchor), `editor.rs` 185→200 (+visual_anchor, visual lifecycle, compacted doc comment), `other_modes.rs` 142→184 (expanded handle_visual_key), `editor_action.rs` 189→191 (+VisualOperator/VisualSwapAnchor wiring). New files: `editor_visual.rs` (197, visual operator dispatch, 2 unit tests), `editor_visual_tests.rs` (139, 11 integration tests).
