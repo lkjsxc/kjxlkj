@@ -15,7 +15,7 @@ This multi-stage program defines full reconstruction end-to-end.
 
 ## Ordered Stages
 
-- [ ] Stage 00: Foundation Ingestion: [/docs/todo/waves/stage-00-foundation-ingestion/README.md](/docs/todo/waves/stage-00-foundation-ingestion/README.md)
+- [x] Stage 00: Foundation Ingestion: [/docs/todo/waves/stage-00-foundation-ingestion/README.md](/docs/todo/waves/stage-00-foundation-ingestion/README.md)
 - [ ] Stage 01: Architecture Core: [/docs/todo/waves/stage-01-architecture-core/README.md](/docs/todo/waves/stage-01-architecture-core/README.md)
 - [ ] Stage 02: Editing and Modes: [/docs/todo/waves/stage-02-editing-and-modes/README.md](/docs/todo/waves/stage-02-editing-and-modes/README.md)
 - [ ] Stage 03: Commands and Ranges: [/docs/todo/waves/stage-03-commands-and-ranges/README.md](/docs/todo/waves/stage-03-commands-and-ranges/README.md)
