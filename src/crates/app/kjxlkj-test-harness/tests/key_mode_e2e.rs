@@ -56,3 +56,57 @@ fn wr_01r_shift_a_has_append_at_eol_semantics() {
         "WR-01R expected trace to include normalized A. Output:\n{frame}"
     );
 }
+
+#[test]
+fn key_trace_03_explorer_command_and_leader_routes_emit_trace_actions() {
+    let binary = ensure_kjxlkj_built().expect("binary build should succeed");
+    let mut session = PtySession::spawn(
+        &binary,
+        100,
+        30,
+        &[("KJXLKJ_INITIAL_LINE", "abc"), ("KJXLKJ_START_CURSOR", "0")],
+    )
+    .expect("PTY session should spawn");
+    std::thread::sleep(Duration::from_millis(120));
+    session
+        .send_raw(b":Explorer\r e")
+        .expect("explorer command and leader sequence should send");
+    let output = session.quit().expect("quit should succeed");
+    assert!(
+        output.contains("normalized_key=:"),
+        "KEY-TRACE-03 expected command prefix in trace. Output:\n{output}"
+    );
+    assert!(
+        count_occurrences(&output, "resolved_action=WinSplitExplorer") >= 2,
+        "KEY-TRACE-03 expected command and leader explorer actions. Output:\n{output}"
+    );
+}
+
+#[test]
+fn key_trace_04_terminal_command_and_leader_routes_emit_trace_actions() {
+    let binary = ensure_kjxlkj_built().expect("binary build should succeed");
+    let mut session = PtySession::spawn(
+        &binary,
+        100,
+        30,
+        &[("KJXLKJ_INITIAL_LINE", "abc"), ("KJXLKJ_START_CURSOR", "0")],
+    )
+    .expect("PTY session should spawn");
+    std::thread::sleep(Duration::from_millis(120));
+    session
+        .send_raw(b":terminal\r t\r")
+        .expect("terminal command and leader sequence should send");
+    let output = session.quit().expect("quit should succeed");
+    assert!(
+        output.contains("normalized_key=:"),
+        "KEY-TRACE-04 expected command prefix in trace. Output:\n{output}"
+    );
+    assert!(
+        count_occurrences(&output, "resolved_action=WinSplitTerminal") >= 2,
+        "KEY-TRACE-04 expected command and leader terminal actions. Output:\n{output}"
+    );
+}
+
+fn count_occurrences(text: &str, needle: &str) -> usize {
+    text.match_indices(needle).count()
+}

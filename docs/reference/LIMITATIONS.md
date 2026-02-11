@@ -33,7 +33,7 @@ crate topology are present, while runtime behavior blockers remain open.
 | ID | Requirement Link | Gap | Severity | Next Action |
 |---|---|---|---|---|
 | `LIM-GAP-STATE-02` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | invariant suite for focus history and ancestor rebalance not yet reconstructed | medium | implement state invariants and property tests |
-| `LIM-GAP-TRACE-02` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | decode-to-action trace diagnostics not yet reconstructed | medium | implement required trace fields in harness |
+| `LIM-GAP-TRACE-02` | [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md) | baseline decode-to-action route traces are wired, but full failure diagnostics (last-20 event bundle) remain incomplete | medium | complete failure-diagnostic bundle required by live matrix |
 
 ## Deferred Items
 
