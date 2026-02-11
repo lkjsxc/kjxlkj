@@ -54,6 +54,56 @@ fn wrap_13r_same_input_keeps_wrap_signature_stable() {
 }
 
 #[test]
+fn wrap_14r_multi_geometry_storm_keeps_bounds_true() {
+    let line = "abc漢字".repeat(2048);
+    for (rows, cols) in [("40", "120"), ("16", "60"), ("8", "24"), ("32", "100")] {
+        let output = run_script(
+            b"",
+            &[
+                ("KJXLKJ_INITIAL_LINE", line.as_str()),
+                ("KJXLKJ_START_CURSOR", "0"),
+                ("KJXLKJ_ROWS", rows),
+                ("KJXLKJ_COLS", cols),
+            ],
+        );
+        assert!(
+            !output.contains("render_bounds_ok=false"),
+            "WRAP-14R expected in-bounds rendering under geometry storm ({rows}x{cols}). Output:\n{output}"
+        );
+    }
+}
+
+#[test]
+fn wrap_15r_tiny_geometry_has_deterministic_wrap_signature() {
+    let line = "漢".repeat(128);
+    let env = &[
+        ("KJXLKJ_INITIAL_LINE", line.as_str()),
+        ("KJXLKJ_START_CURSOR", "0"),
+        ("KJXLKJ_ROWS", "1"),
+        ("KJXLKJ_COLS", "1"),
+    ];
+    let first = run_script(b"", env);
+    let second = run_script(b"", env);
+    let first_sig = extract_final_value(&first, "wrap_sig=").expect("first wrap_sig should exist");
+    let second_sig =
+        extract_final_value(&second, "wrap_sig=").expect("second wrap_sig should exist");
+    assert_eq!(first_sig, second_sig);
+}
+
+#[test]
+fn wrap_16r_cross_window_mix_stays_within_bounds() {
+    let line = "long_line_".repeat(2048);
+    let output = run_script(
+        b":Explorer\r:terminal\r\x17w\x17W",
+        &[("KJXLKJ_INITIAL_LINE", line.as_str()), ("KJXLKJ_START_CURSOR", "0")],
+    );
+    assert!(
+        !output.contains("render_bounds_ok=false"),
+        "WRAP-16R expected in-bounds rendering in mixed window session. Output:\n{output}"
+    );
+}
+
+#[test]
 fn cur_07r_cursor_stays_visible_across_mode_and_focus_churn() {
     let output = run_script(
         b"iZ\x1B\x17s\x17v\x17w\x17W",
