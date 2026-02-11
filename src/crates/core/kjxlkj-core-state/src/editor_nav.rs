@@ -1,8 +1,9 @@
-//! Jumplist and changelist navigation for EditorState.
+//! Jumplist, changelist, mark, and macro navigation for EditorState.
 
-use kjxlkj_core_types::{Action, ContentKind};
+use kjxlkj_core_types::{Action, ContentKind, Key, KeyModifiers, RangeType};
 
 use crate::editor::EditorState;
+use crate::macros;
 use crate::navlist::Position;
 
 impl EditorState {
@@ -112,4 +113,59 @@ impl EditorState {
             }
         }
     }
+
+    /// Start macro recording into register `c`.
+    pub(crate) fn start_macro_recording(&mut self, c: char) {
+        self.macro_state.start(c);
+    }
+
+    /// Stop macro recording and save captured keys to the register.
+    pub(crate) fn stop_macro_recording(&mut self) {
+        if let Some((reg, keys)) = self.macro_state.stop() {
+            let text = macros::keys_to_string(&keys);
+            self.registers.write(reg, text, RangeType::Characterwise);
+        }
+    }
+
+    /// Play macro from register `c`: replay captured key sequence.
+    pub(crate) fn play_macro(&mut self, c: char) {
+        let entry = match self.registers.get(c) { Some(e) => e, None => return };
+        let text = entry.text.clone();
+        let keys = parse_macro_keys(&text);
+        for mk in &keys {
+            self.handle_key(&mk.0, &mk.1);
+        }
+    }
+}
+
+/// Parse a macro string back into key events.
+fn parse_macro_keys(s: &str) -> Vec<(Key, KeyModifiers)> {
+    let mut keys = Vec::new();
+    let mut chars = s.chars().peekable();
+    while let Some(c) = chars.next() {
+        match c {
+            '^' => {
+                if let Some(&next) = chars.peek() {
+                    chars.next();
+                    keys.push((Key::Char(next), KeyModifiers { ctrl: true, ..Default::default() }));
+                }
+            }
+            '\n' => keys.push((Key::Enter, KeyModifiers::default())),
+            '\t' => keys.push((Key::Tab, KeyModifiers::default())),
+            '<' => {
+                let mut tag = String::new();
+                while let Some(&ch) = chars.peek() {
+                    if ch == '>' { chars.next(); break; }
+                    tag.push(ch); chars.next();
+                }
+                match tag.as_str() {
+                    "Esc" => keys.push((Key::Escape, KeyModifiers::default())),
+                    "BS" => keys.push((Key::Backspace, KeyModifiers::default())),
+                    _ => {} // unknown tag — skip
+                }
+            }
+            _ => keys.push((Key::Char(c), KeyModifiers::default())),
+        }
+    }
+    keys
 }

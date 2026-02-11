@@ -88,6 +88,8 @@ fn handle_normal_command(key: &Key, pending: &mut PendingState) -> (Action, Opti
         Key::Char(',') => cleared(pending, Action::Motion(Motion::RepeatFindReverse)),
         Key::Char('\'') => { pending.partial = PartialKey::GotoMarkLine; (Action::Noop, None) }
         Key::Char('`') => { pending.partial = PartialKey::GotoMarkExact; (Action::Noop, None) }
+        Key::Char('q') => { pending.partial = PartialKey::MacroRecord; (Action::Noop, None) }
+        Key::Char('@') => { pending.partial = PartialKey::MacroPlay; (Action::Noop, None) }
         Key::Escape | _ => { pending.clear(); (Action::Noop, None) }
     }
 }

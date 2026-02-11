@@ -21,6 +21,7 @@ pub enum Action {
     OpenExplorer, CloseExplorer, OpenTerminal,
     JumpOlder, JumpNewer, ChangeOlder, ChangeNewer,
     SetMark(char), GotoMarkLine(char), GotoMarkExact(char),
+    MacroRecordStart(char), MacroRecordStop, MacroPlay(char),
     Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),
     // Buffer management

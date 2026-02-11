@@ -95,10 +95,17 @@ pub(crate) fn resolve_partial(
                 (Action::GotoMarkExact(*c), None)
             } else { pending.clear(); (Action::Noop, None) }
         }
-        PartialKey::MacroRecord
-        | PartialKey::MacroPlay => {
-            pending.clear();
-            (Action::Noop, None)
+        PartialKey::MacroRecord => {
+            if let Key::Char(c) = key {
+                pending.clear();
+                (Action::MacroRecordStart(*c), None)
+            } else { pending.clear(); (Action::Noop, None) }
+        }
+        PartialKey::MacroPlay => {
+            if let Key::Char(c) = key {
+                pending.clear();
+                (Action::MacroPlay(*c), None)
+            } else { pending.clear(); (Action::Noop, None) }
         }
         _ => {
             pending.clear();

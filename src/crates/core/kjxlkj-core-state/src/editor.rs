@@ -6,16 +6,13 @@ use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition, PendingState};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
     Action, BufferId, CmdlineState, ContentKind, ExplorerStateId,
-    Key, KeyModifiers, Mode, Motion, VisualKind, WindowId,
+    Key, KeyModifiers, Mode, Motion, WindowId,
 };
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 use kjxlkj_service_explorer::ExplorerState;
 
-use crate::marks::MarkStore;
-use crate::navlist::PositionList;
-use crate::register::RegisterStore;
-use crate::search::SearchState;
-use crate::window_state::WindowState;
+use crate::{macros::MacroState, marks::MarkStore, navlist::PositionList};
+use crate::{register::RegisterStore, search::SearchState, window_state::WindowState};
 
 /// The single mutable editor state.
 pub struct EditorState {
@@ -31,15 +28,12 @@ pub struct EditorState {
     pub(crate) id_counter: u64,
     pub pending: PendingState,
     pub registers: RegisterStore,
-    pub(crate) last_change: Option<Action>,
-    pub search: SearchState,
+    pub(crate) last_change: Option<Action>, pub search: SearchState,
     pub(crate) insert_text: String,
-    pub visual_anchor: Option<kjxlkj_core_edit::Cursor>,
-    pub alternate_buffer: Option<BufferId>,
+    pub visual_anchor: Option<kjxlkj_core_edit::Cursor>, pub alternate_buffer: Option<BufferId>,
     pub explorer_states: HashMap<ExplorerStateId, ExplorerState>,
-    pub jumplist: PositionList,
-    pub changelist: PositionList,
-    pub marks: MarkStore,
+    pub jumplist: PositionList, pub changelist: PositionList,
+    pub marks: MarkStore, pub macro_state: MacroState,
 }
 
 impl EditorState {
@@ -65,7 +59,7 @@ impl EditorState {
             visual_anchor: None, alternate_buffer: None,
             explorer_states: HashMap::new(),
             jumplist: PositionList::new(100), changelist: PositionList::new(100),
-            marks: MarkStore::new(),
+            marks: MarkStore::new(), macro_state: MacroState::new(),
         }
     }
 
@@ -84,6 +78,11 @@ impl EditorState {
                 return;
             }
         }
+        // Macro: stop recording on bare `q`, or capture key.     
+        if self.macro_state.is_recording() && self.mode == Mode::Normal
+            && !mods.ctrl && matches!(key, Key::Char('q'))
+        { self.stop_macro_recording(); self.sequence += 1; return; }
+        self.macro_state.capture(key, mods);
         let reg = self.pending.register;
         let (action, new_mode) = dispatch_key(self.mode, key, mods, &mut self.pending);
         if let Some(r) = reg { self.registers.selected = Some(r); }
@@ -92,16 +91,11 @@ impl EditorState {
             if self.mode != resolved { self.activate_cmdline(kind); }
         }
         // Track insert session text for "." register.
-        if self.mode == Mode::Insert && resolved == Mode::Normal {
-            if !self.insert_text.is_empty() {
-                let txt = self.insert_text.clone();
-                self.registers.set_readonly('.', txt);
-                self.insert_text.clear();
-            }
+        if self.mode == Mode::Insert && resolved == Mode::Normal && !self.insert_text.is_empty() {
+            let txt = self.insert_text.clone();
+            self.registers.set_readonly('.', txt); self.insert_text.clear();
         }
-        if resolved == Mode::Insert && self.mode != Mode::Insert {
-            self.insert_text.clear();
-        }
+        if resolved == Mode::Insert && self.mode != Mode::Insert { self.insert_text.clear(); }
         // Set visual anchor when entering visual mode.
         if matches!(resolved, Mode::Visual(_)) && !matches!(self.mode, Mode::Visual(_)) {
             let cur = self.windows.get(&self.focus.focused)

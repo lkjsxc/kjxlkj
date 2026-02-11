@@ -128,6 +128,9 @@ impl EditorState {
             Action::SetMark(c) => self.set_mark_at_cursor(c),
             Action::GotoMarkLine(c) => self.goto_mark_line(c),
             Action::GotoMarkExact(c) => self.goto_mark_exact(c),
+            Action::MacroRecordStart(c) => self.start_macro_recording(c),
+            Action::MacroRecordStop => self.stop_macro_recording(),
+            Action::MacroPlay(c) => self.play_macro(c),
             _ => {}
         }
     }
