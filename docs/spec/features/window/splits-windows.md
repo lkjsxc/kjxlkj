@@ -2,97 +2,82 @@
 
 Back: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
 
-The split system manages all tiled panes, including buffer, explorer, and terminal windows.
+This document defines split, close, resize, and traversal behavior for all tiled windows.
 
 ## Unified Window Graph
 
 | Requirement | Detail |
 |---|---|
-| Single layout tree | every tiled leaf belongs to one shared tree |
-| Stable identity | each leaf has stable `WindowId` |
-| Deterministic focus | one focused leaf at all times |
-| Geometry ownership | core computes rectangles; renderer consumes snapshots |
+| Single tree | buffer, explorer, and terminal leaves share one tree |
+| Stable identity | leaf IDs remain stable while leaf survives |
+| Deterministic focus | exactly one focused leaf at all times |
+| Core ownership | core computes tree and geometry; renderer is read-only |
 
 ## Split Creation
 
 | Command/Key | Required Behavior |
 |---|---|
-| `:split`, `Ctrl-w s` | create horizontal split |
-| `:vsplit`, `Ctrl-w v` | create vertical split |
-| `:new`, `Ctrl-w n` | create split with new empty buffer |
-| `:split {path}` | create split and open file in new leaf |
-| `:vsplit {path}` | create vertical split and open file in new leaf |
+| `:split`, `Ctrl-w s` | create horizontal split from focused leaf |
+| `:vsplit`, `Ctrl-w v` | create vertical split from focused leaf |
+| `:new`, `Ctrl-w n` | split and bind new empty buffer |
+| `:split {path}` | split and open `{path}` in new leaf |
+| `:vsplit {path}` | vertical split and open `{path}` |
 
-Split creation MUST place focus on the new leaf unless command explicitly requests otherwise.
+Split create must focus the new leaf unless explicitly overridden.
 
-## Mixed Window Participation
+## Close and Rebalance
 
-| Window Type | Split Requirements |
+| Operation | Required Behavior |
 |---|---|
-| Buffer | full edit viewport with independent cursor/scroll |
-| Explorer | tree viewport with open-in-target commands |
-| Terminal | PTY viewport with lifecycle hooks |
+| `Ctrl-w c`, `Ctrl-w q` | close focused leaf and rebalance ancestors |
+| unary container collapse | container with one child is replaced by child |
+| `Ctrl-w o` / `:only` | close all other leaves and keep focused leaf |
+| terminal close | child process cleanup must complete or produce explicit error |
+| explorer close | focus graph remains valid with deterministic fallback |
 
-All three types MUST be navigable through the same `Ctrl-w` family.
-
-## Focus Navigation
+## Focus Commands
 
 | Key | Required Behavior |
 |---|---|
 | `Ctrl-w h/j/k/l` | geometry-based directional focus |
-| `Ctrl-w w/W` | deterministic traversal next/previous |
-| `Ctrl-w p` | previous focused leaf |
-| `Ctrl-w t/b` | top-left / bottom-right leaf |
+| `Ctrl-w w/W` | deterministic next/previous leaf cycle |
+| `Ctrl-w p` | previous valid focus target |
+| `Ctrl-w t/b` | deterministic top-left / bottom-right leaf |
 
-Directional focus MUST use rectangle overlap and distance rules from [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md).
+Directional focus and fallback rules are defined in [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md).
 
-## Resize and Rearrangement
+## Resize Commands
 
 | Key/Command | Required Behavior |
 |---|---|
 | `Ctrl-w + - > <` | relative resize with minimum-size clamp |
-| `{n}Ctrl-w _` | set/maximize height |
-| `{n}Ctrl-w |` | set/maximize width |
-| `Ctrl-w =` | equalize sibling sizes |
+| `{n}Ctrl-w _` | set or maximize height |
+| `{n}Ctrl-w |` | set or maximize width |
+| `Ctrl-w =` | equalize sibling leaf sizes |
 | `:resize`, `:vertical resize` | command-driven resize |
-| `Ctrl-w H/J/K/L` | move current window to edge |
-| `Ctrl-w r/R` | rotate siblings deterministically |
-| `Ctrl-w x` | exchange current leaf with sibling |
 
-## Close and Rebalance Rules
+Any resize must preserve geometry invariants and visible cursor/caret targets.
 
-- `Ctrl-w c` and `Ctrl-w q` close current leaf
-- closing leaf rebalances nearest valid ancestor split
-- closing terminal leaf MUST trigger PTY cleanup
-- closing explorer leaf MUST keep focus graph valid
-- after close, focus MUST resolve deterministically to a surviving leaf
+## Determinism Invariants
 
-## Invariants
-
-- no overlap among tiled panes
-- full editor area coverage by panes and separators
-- minimum pane size enforcement
-- no orphan focus after create/close/move/resize
+- same initial tree + same input sequence yields same final tree and focus
+- close/reopen churn does not leave stale focus pointers
+- tree mutation must not lose surviving leaf content bindings
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
 | `WIN-01R` | multi-split create/close/only lifecycle |
-| `WIN-02R` | directional focus correctness on non-trivial tree |
-| `WIN-03R` | mixed buffer/explorer/terminal focus and movement |
-| `WIN-04R` | resize storm keeps layout integrity |
-| `WIN-05R` | session roundtrip restores layout and focus |
-| `WINNAV-01R` | `Ctrl-w h/j/k/l` golden trace against known geometry |
-| `WINNAV-02R` | `Ctrl-w w/W/p/t/b` sequence determinism |
-| `WINNAV-03R` | previous-focus pointer remains valid after close/reopen churn |
-| `WINNAV-04R` | `Ctrl-w t/b` selects deterministic boundary windows |
-| `WINNAV-05R` | `Ctrl-w` remains stable across terminal insert/normal transitions |
-| `WINNAV-06R` | long navigation replay produces identical focus traces |
+| `WIN-02R` | directional focus correctness on asymmetric trees |
+| `WIN-03R` | mixed window navigation across all window types |
+| `WIN-04R` | resize storm and equalize churn |
+| `WIN-05R` | session roundtrip of complex split layout |
+| `WINNAV-01R`..`WINNAV-06R` | directional/cyclic/previous-focus determinism |
 
 ## Related
 
 - Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
-- Explorer window: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
-- Terminal window: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
 - Wincmd catalog: [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
+- Explorer integration: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- Terminal integration: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)

@@ -8,23 +8,23 @@ Cursor behavior is core-owned, deterministic, and grapheme-based.
 
 Cursor position is `(line, grapheme_offset)`.
 
-- cursor MUST always rest on a grapheme boundary
-- internal half-grapheme positions are forbidden
-- display-column mapping is derived, not authoritative state
+- cursor must always rest on a grapheme boundary
+- half-grapheme or continuation-cell positions are forbidden
+- display-column mapping is derived from grapheme position
 
 ## Grapheme and Width Rules
 
 | Term | Definition |
 |---|---|
-| Grapheme cluster | user-perceived character unit (UAX #29) |
+| Grapheme cluster | user-perceived character unit |
 | Grapheme offset | zero-based index in line grapheme sequence |
-| Display width | rendered cell width for grapheme (ASCII 1, many CJK 2) |
+| Display width | rendered width for grapheme (`1` or `2`) |
 
 | Rule | Requirement |
 |---|---|
-| Width safety | width-2 graphemes remain atomic for motion and rendering |
-| No half-cell cursor | cursor never lands on second cell of width-2 grapheme |
-| Mixed script safety | ASCII+CJK motion always moves one grapheme at a time |
+| width safety | width-2 graphemes are atomic in motion and rendering |
+| no continuation target | cursor never lands on width-2 continuation cell |
+| mixed-script safety | motion steps by grapheme, not by byte |
 
 ## Mode-Dependent Valid Range
 
@@ -35,7 +35,7 @@ For line with `G` graphemes:
 | Normal / Visual / Replace | `0..G-1` when `G>0`, otherwise `0` |
 | Insert | `0..G` |
 
-Leaving Insert MUST clamp to Normal-valid range.
+Leaving Insert must clamp to Normal-valid range.
 
 ## Insert/Append Semantics
 
@@ -43,18 +43,16 @@ Leaving Insert MUST clamp to Normal-valid range.
 |---|---|
 | `i` | enter Insert at current grapheme offset |
 | `a` | enter Insert at `min(current + 1, G)` |
-| `A` | move to end-of-line then enter Insert at `G` |
+| `A` | move to end-of-line and enter Insert at `G` |
 
-### End-of-line Rule
+### End-of-Line Rule
 
-If cursor is on last grapheme and `a` is pressed:
+If cursor is on last grapheme and `a` is pressed, insertion offset becomes `G`.
+`i` at EOL keeps current offset and must differ observably.
 
-- insertion offset becomes `G`
-- this MUST differ from `i`, which keeps current offset
+### Shift Dependency
 
-### Shift Normalization Dependency
-
-`Shift+a` in Normal mode MUST be decoded as `A` before mode dispatch.
+`Shift+a` in Normal mode must normalize to `A` before mode dispatch.
 
 ## Mapping Functions
 
@@ -63,11 +61,16 @@ If cursor is on last grapheme and `a` is pressed:
 | Grapheme -> display | `display_col(grapheme_offset)` |
 | Display -> grapheme | `grapheme_at_display_col(col)` |
 
-For continuation cell of width-2 grapheme, `grapheme_at_display_col` MUST return the owning grapheme offset.
+For continuation cell columns, `grapheme_at_display_col` returns owner grapheme offset.
 
 ## Cursor Display Integration
 
-Cursor rendering must follow [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md) and wrap rules in [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md).
+Cursor rendering follows:
+
+- [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md)
+- [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+
+Exactly one primary cursor is visible in focused context.
 
 ## Mandatory Regression Tests
 
@@ -77,13 +80,16 @@ Cursor rendering must follow [/docs/spec/features/ui/cursor-customization.md](/d
 | `CUR-02` | `a` at EOL inserts after final grapheme |
 | `CUR-03` | `i` at EOL differs from `a` at EOL |
 | `CUR-04` | `Shift+a` dispatches to `A` before Insert |
-| `CUR-05` | repeated `a` + `Esc` never leaves floating insert-range cursor |
-| `CUR-06` | mixed ASCII+CJK append keeps grapheme-safe boundaries |
-| `CUR-07R` | cursor remains visible across wrap and resize churn |
+| `CUR-05` | repeated `a` + `Esc` never leaves invalid offset |
+| `CUR-06` | mixed ASCII+CJK append remains grapheme-safe |
+| `CUR-07R` | cursor remains visible across wrap/resize churn |
 | `CUR-08R` | width-2 grapheme highlight covers both cells |
+| `CUR-09R` | cursor never targets continuation cell |
+| `CUR-10R` | wrap-boundary cursor has no split artifact |
+| `CUR-11R` | rapid focus changes preserve one primary cursor |
 
 ## Related
 
 - Mode entry keys: [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
+- Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
-- Cursor display: [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md)

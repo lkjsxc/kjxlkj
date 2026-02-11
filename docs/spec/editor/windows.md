@@ -2,118 +2,113 @@
 
 Back: [/docs/spec/editor/README.md](/docs/spec/editor/README.md)
 
-Windows are core-owned viewports over content sources.
+Windows are core-owned viewports over buffer, explorer, and terminal content.
 
 ## Requirements
 
-- core owns one shared window tree for buffer, explorer, and terminal windows
-- renderer consumes immutable window snapshots and MUST NOT mutate layout
-- exactly one tiled window is focused at any time
+- core owns one shared tiled window tree for all window types
+- exactly one tiled window is focused at all times
+- renderer consumes immutable snapshots and must not mutate layout
+- split, close, and focus behavior is deterministic across runs
 
 ## Window Types
 
-| Type | Content Source | Description |
+| Type | Content Source | Cursor Target |
 |---|---|---|
-| Buffer window | `BufferId` | text editing viewport |
-| Explorer window | `ExplorerStateId` | project tree viewport |
-| Terminal window | `TerminalId` | PTY-backed terminal viewport |
+| Buffer window | `BufferId` | grapheme cursor |
+| Explorer window | `ExplorerStateId` | selected node row |
+| Terminal window | `TerminalId` | terminal cursor |
 
-All types participate in the same `WindowId` graph, split operations, and `Ctrl-w` navigation.
+All types participate in one `WindowId` graph and one `Ctrl-w` command model.
 
-## Window Model
+## State Model
 
-| Field | Type | Description |
-|---|---|---|
-| `window_id` | `WindowId` | stable unique identity |
-| `content` | enum | `Buffer`, `Explorer`, or `Terminal` |
-| `cursor` | content-local cursor | grapheme cursor, explorer row, or terminal cursor |
-| `viewport` | viewport state | top/left offset and text-area dimensions |
-| `options` | window options | wrap, line numbers, scroll margins |
-| `last_focus_seq` | monotonic integer | tie-breaker for focus history |
-
-## Layout Tree
-
-The layout is a recursive split tree of leaves and containers.
-
-| Node Type | Meaning |
+| Field | Meaning |
 |---|---|
-| `Leaf(WindowId)` | one tiled window |
-| `Horizontal(children)` | children arranged top-to-bottom |
-| `Vertical(children)` | children arranged left-to-right |
+| `window_id` | stable identity for tree leaf |
+| `content` | `Buffer`, `Explorer`, or `Terminal` |
+| `viewport` | top/left offsets and text-area geometry |
+| `cursor` | content-local cursor/caret |
+| `last_focus_seq` | monotonic sequence used for deterministic tie-break |
 
-## Geometry Rules
+## Layout Tree Model
+
+| Node | Meaning |
+|---|---|
+| `Leaf(WindowId)` | one tiled pane |
+| `Horizontal(children)` | stacked top-to-bottom |
+| `Vertical(children)` | arranged left-to-right |
+
+## Geometry Invariants
 
 | Rule | Requirement |
 |---|---|
-| Full coverage | tiled windows and separators fill editor grid |
-| No overlap | tiled windows do not overlap |
-| Minimum size | text area remains at least 1x1 |
-| Stable IDs | `WindowId` survives split/resize/rebalance operations |
+| full coverage | panes and separators cover editor tile region |
+| no overlap | pane rectangles do not overlap |
+| minimum area | each pane has at least `1x1` text area |
+| stable identity | `WindowId` persists across resize/rebalance when leaf survives |
 
-## Directional Focus Algorithm (normative)
+## Focus Resolution (normative)
 
-For `Ctrl-w h/j/k/l`, focus resolution MUST use geometry, not cyclic order.
+Directional focus (`Ctrl-w h/j/k/l`) MUST use geometry.
 
-1. derive virtual rectangles for each leaf from current layout tree
-2. collect candidate windows strictly in requested direction
-3. discard candidates with zero orthogonal overlap, unless no-overlap fallback is needed
-4. rank candidates by:
-   - smallest primary-axis distance
-   - largest orthogonal overlap
-   - most recent `last_focus_seq` (tie-break)
-5. select first ranked candidate
+1. derive rectangles for each leaf from current tree
+2. select candidates strictly in requested direction
+3. rank by primary-axis distance, then orthogonal overlap, then `last_focus_seq`
+4. choose top-ranked candidate
+5. if no candidate exists, keep focus unchanged
 
-If no directional candidate exists, focus MUST remain unchanged.
+Cyclic focus (`Ctrl-w w/W`) MUST use deterministic depth-first leaf order.
 
-## Window Navigation
+## Mutation Semantics
 
-| Key | Action |
+| Operation | Required Behavior |
 |---|---|
-| `Ctrl-w h/j/k/l` | focus directional neighbor by geometry |
-| `Ctrl-w w/W` | cycle next/previous in deterministic traversal order |
-| `Ctrl-w p` | return to previously focused window |
-| `Ctrl-w t/b` | focus top-left / bottom-right leaf |
+| split create | focused leaf becomes container with old leaf + new leaf |
+| close leaf | remove leaf, collapse unary containers, rebalance ancestors |
+| close last leaf | disallowed unless editor is quitting |
+| close terminal leaf | trigger terminal lifecycle cleanup before leaf removal |
+| close explorer leaf | detach explorer state from window focus graph cleanly |
+| `:only` | close all non-pinned leaves except current focus |
 
-Navigation semantics are identical across buffer, explorer, and terminal windows.
+## History Semantics
 
-## Split and Close Semantics
-
-| Operation | Requirement |
-|---|---|
-| Split create | parent leaf becomes split container with two leaves |
-| Close leaf | close current leaf and rebalance nearest valid ancestor |
-| Close terminal leaf | close triggers PTY hangup + child reap |
-| Close explorer leaf | explorer state detaches cleanly from focus graph |
-| `:only` | close all non-pinned tiled leaves except current |
+- `Ctrl-w p` jumps to previous valid focused window
+- if previous target is gone, fallback is deterministic nearest neighbor
+- focus history must never point to deleted IDs after close/reopen churn
 
 ## Resize and Reflow
 
-- resize updates leaf rectangles and clamps viewports
-- terminal leaf resize propagates to PTY (`SIGWINCH`)
-- wrapped views recompute display rows after geometry change
+On geometry change:
 
-## Session Persistence Contract
+1. recompute all leaf rectangles
+2. clamp per-window viewport offsets
+3. trigger wrap reflow in affected panes
+4. propagate PTY resize to terminal leaves
+5. ensure focused cursor/caret remains visible
+
+## Session Persistence
 
 Sessions MUST persist and restore:
 
 - tab order and active tab
-- split tree and leaf `WindowId` mappings
-- content bindings for buffer/explorer/terminal leaves
-- focused window identity when valid on restore
+- split tree structure and leaf IDs
+- content bindings for each leaf
+- focused leaf identity when valid
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| `WIN-01R` | split create/close lifecycle preserves focus uniqueness |
-| `WIN-02R` | directional focus on nested mixed-orientation tree |
-| `WIN-03R` | mixed buffer/explorer/terminal `Ctrl-w` navigation |
-| `WIN-04R` | resize storm preserves geometry invariants and cursor visibility |
-| `WIN-05R` | session roundtrip restores focused window and split structure |
+| `WIN-01R` | split create/close lifecycle keeps one valid focus |
+| `WIN-02R` | directional focus on nested mixed-orientation trees |
+| `WIN-03R` | mixed buffer/explorer/terminal directional navigation |
+| `WIN-04R` | resize storm preserves geometry invariants |
+| `WIN-05R` | session restore preserves split tree and focused leaf |
 
 ## Related
 
 - Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- Explorer view: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
-- Terminal view: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
-- Viewport rules: [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md)
+- Wincmd semantics: [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md)
+- Explorer behavior: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- Terminal behavior: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)

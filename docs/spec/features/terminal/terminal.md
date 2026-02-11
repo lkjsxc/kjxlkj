@@ -8,19 +8,19 @@ The terminal subsystem is a first-class window type with real PTY behavior.
 
 | Requirement | Detail |
 |---|---|
-| Terminal is a window | each terminal instance is a `WindowId` leaf in the shared tree |
-| No stub path | PTY lifecycle + parser + screen model must be real runtime behavior |
-| Shared navigation | `Ctrl-w` works identically across buffer/explorer/terminal leaves |
-| Non-blocking IO | terminal output MUST NOT stall editing in other windows |
+| Terminal is a window | each terminal instance is a `WindowId` leaf |
+| No stub path | PTY lifecycle, parser, and screen model must be runtime-reachable |
+| Shared navigation | `Ctrl-w` semantics are identical across all window types |
+| Non-blocking IO | terminal output must not stall editing or explorer input |
 
 ## Launch and Wiring
 
 | Trigger | Required Path |
 |---|---|
 | `:terminal` | command parser -> core action -> terminal service spawn -> leaf insert |
-| `<leader>t` | keymap -> same spawn path as `:terminal` |
-| `<leader>tv` | vertical split create -> terminal content binding |
-| `<leader>th` | horizontal split create -> terminal content binding |
+| `<leader>t` | mapping resolver -> same spawn path as `:terminal` |
+| `<leader>tv` | vertical split create -> terminal binding |
+| `<leader>th` | horizontal split create -> terminal binding |
 
 ## Runtime Components
 
@@ -28,70 +28,63 @@ The terminal subsystem is a first-class window type with real PTY behavior.
 |---|---|
 | Core-state | terminal leaf metadata, focus, and layout ownership |
 | Terminal service | PTY spawn/read/write/resize/cleanup |
-| Parser | UTF-8 + VT state machine + CSI/OSC dispatch |
-| Screen model | main/alternate buffers, cursor, styles, scrollback |
-| Renderer | maps terminal cells into window cell region |
+| Parser | UTF-8 + VT escape handling |
+| Screen model | main/alt buffers, cursor, styles, scrollback |
+| Renderer | maps terminal cells into window bounds |
 
 ## Input Routing Modes
 
 | Mode | Behavior |
 |---|---|
 | TerminalInsert | printable/control keys go to PTY input stream |
-| TerminalNormal | window commands and editor navigation active |
+| TerminalNormal | editor/window commands active |
 | Escape chord | `Ctrl-\\ Ctrl-n` transitions TerminalInsert -> TerminalNormal |
 
-While terminal leaf is focused, `Ctrl-w` family MUST remain available in both modes.
-
-## Screen and Wrap Safety
-
-| Rule | Requirement |
-|---|---|
-| On-screen rendering | terminal cells remain within text area bounds |
-| Long output | wrap to continuation rows; no right-edge overflow |
-| Wide grapheme safety | width-2 cells never split across rows |
-| Continuation cell | width-2 trailing cell is continuation and non-addressable |
-| Scrollback bound | enforce `terminal.scrollback_lines` hard cap |
+`Ctrl-w` commands must stay available in both terminal modes.
 
 ## PTY Lifecycle Rules
 
 | Stage | Requirement |
 |---|---|
-| Spawn | child starts with configured shell and initial terminal size |
+| Spawn | child starts with configured shell and window size |
 | Read | async reads feed parser without blocking core |
-| Write | terminal input writes are ordered and non-blocking |
-| Resize | window resize sends PTY resize (`SIGWINCH`) |
-| Close | window close triggers hangup/terminate and child reap |
+| Write | input writes preserve order and bounded latency |
+| Resize | terminal window resize propagates to PTY (`SIGWINCH`) |
+| Close | close triggers hangup/terminate and child reap |
+
+## Screen and Wrap Safety
+
+| Rule | Requirement |
+|---|---|
+| on-screen rendering | emitted terminal cells stay within viewport bounds |
+| long output | wraps to continuation rows without right-edge overflow |
+| wide grapheme safety | width-2 cells never split across rows |
+| continuation semantics | continuation cells are non-addressable cursor targets |
+| scrollback cap | `terminal.scrollback_lines` is hard-bounded |
 
 ## Failure Handling
 
 | Failure | Required Behavior |
 |---|---|
-| PTY spawn failure | terminal leaf is not created; user gets explicit error |
-| Child unexpected exit | leaf shows exited state; editor remains stable |
-| Invalid escape sequence | safely ignored with parser state recovery |
-| Output flood | bounded channels/backpressure prevent unbounded memory growth |
-
-## Session Behavior
-
-- terminal leaves are persisted as window nodes
-- process state is not snapshotted; restart creates new process instance
-- restored leaves MUST re-enter deterministic lifecycle state
+| PTY spawn failure | no terminal leaf is created; explicit error shown |
+| child exits unexpectedly | leaf enters exited state and editor remains stable |
+| invalid escape sequence | parser recovers safely without corrupting screen state |
+| output flood | bounded queues/backpressure prevent unbounded memory growth |
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| `TERM-01R` | `:terminal` launches PTY-backed terminal window |
-| `TERM-02R` | `<leader>t` and split variants use same runtime path |
-| `TERM-03R` | mixed `Ctrl-w` navigation across buffer/explorer/terminal |
-| `TERM-04R` | resize propagates to PTY and preserves cursor visibility |
-| `TERM-05R` | close reaps child without zombie leak |
-| `TERM-06R` | heavy terminal output while editing adjacent buffer |
-| `TERM-07R` | CJK terminal output wraps with no half-cell state |
+| `TERM-01R` | `:terminal` launches PTY-backed terminal |
+| `TERM-02R` | leader launch variants use identical runtime semantics |
+| `TERM-03R` | mixed `Ctrl-w` navigation across terminal leaves |
+| `TERM-04R` | resize propagation preserves cursor visibility |
+| `TERM-05R` | close during output reaps child with no zombie leak |
+| `TERM-06R` | output flood while editing adjacent buffer remains responsive |
+| `TERM-07R` | CJK terminal output wraps without half-cell states |
 
 ## Related
 
 - Escape parser: [/docs/spec/features/terminal/escape-parser.md](/docs/spec/features/terminal/escape-parser.md)
 - Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
-- Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
 - E2E matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)

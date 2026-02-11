@@ -2,73 +2,71 @@
 
 Back: [/docs/spec/features/window/README.md](/docs/spec/features/window/README.md)
 
-Comprehensive reference for `Ctrl-w` window commands.
+Normative command semantics for the `Ctrl-w` family.
 
-## Navigation
+## Navigation Commands
 
-| Key | Command | Description |
+| Key | Command | Required Behavior |
 |---|---|---|
-| `Ctrl-w h` | `:wincmd h` | Move focus to window left |
-| `Ctrl-w j` | `:wincmd j` | Move focus to window below |
-| `Ctrl-w k` | `:wincmd k` | Move focus to window above |
-| `Ctrl-w l` | `:wincmd l` | Move focus to window right |
-| `Ctrl-w w` | `:wincmd w` | Cycle focus to next window |
-| `Ctrl-w W` | `:wincmd W` | Cycle focus to previous window |
-| `Ctrl-w t` | `:wincmd t` | Move focus to top-left window |
-| `Ctrl-w b` | `:wincmd b` | Move focus to bottom-right window |
-| `Ctrl-w p` | `:wincmd p` | Move focus to previous (last accessed) window |
+| `Ctrl-w h` | `:wincmd h` | focus geometry-left leaf |
+| `Ctrl-w j` | `:wincmd j` | focus geometry-below leaf |
+| `Ctrl-w k` | `:wincmd k` | focus geometry-above leaf |
+| `Ctrl-w l` | `:wincmd l` | focus geometry-right leaf |
+| `Ctrl-w w` | `:wincmd w` | cycle to next leaf in deterministic order |
+| `Ctrl-w W` | `:wincmd W` | cycle to previous leaf |
+| `Ctrl-w t` | `:wincmd t` | focus top-left leaf |
+| `Ctrl-w b` | `:wincmd b` | focus bottom-right leaf |
+| `Ctrl-w p` | `:wincmd p` | focus previous valid leaf |
 
-## Splitting
+## Split and Close Commands
 
-| Key | Command | Description |
+| Key | Command | Required Behavior |
 |---|---|---|
-| `Ctrl-w s` | `:split` | Horizontal split current window |
-| `Ctrl-w v` | `:vsplit` | Vertical split current window |
-| `Ctrl-w n` | `:new` | New horizontal split with empty buffer |
+| `Ctrl-w s` | `:split` | split horizontal from focused leaf |
+| `Ctrl-w v` | `:vsplit` | split vertical from focused leaf |
+| `Ctrl-w n` | `:new` | split and bind new empty buffer |
+| `Ctrl-w c` | `:close` | close focused leaf with rebalance |
+| `Ctrl-w q` | `:quit` | close focused leaf with quit semantics |
+| `Ctrl-w o` | `:only` | close all other leaves |
 
-## Closing
+## Resize and Rearrangement Commands
 
-| Key | Command | Description |
-|---|---|---|
-| `Ctrl-w c` | `:close` | Close current window |
-| `Ctrl-w q` | `:quit` | Quit current window |
-| `Ctrl-w o` | `:only` | Close all other windows |
-
-## Moving windows
-
-| Key | Description |
+| Key | Required Behavior |
 |---|---|
-| `Ctrl-w H` | Move current window to far left (becomes full-height vertical split) |
-| `Ctrl-w J` | Move current window to very bottom (becomes full-width horizontal split) |
-| `Ctrl-w K` | Move current window to very top (becomes full-width horizontal split) |
-| `Ctrl-w L` | Move current window to far right (becomes full-height vertical split) |
-| `Ctrl-w r` | Rotate windows downward/rightward |
-| `Ctrl-w R` | Rotate windows upward/leftward |
-| `Ctrl-w x` | Exchange current window with next |
-| `Ctrl-w T` | Move current window to a new tab |
+| `Ctrl-w + - > <` | relative resize by count or default step |
+| `Ctrl-w =` | equalize sibling leaf sizes |
+| `Ctrl-w _` | maximize/set height |
+| `Ctrl-w |` | maximize/set width |
+| `Ctrl-w H/J/K/L` | move focused leaf to edge and preserve bindings |
+| `Ctrl-w r/R` | rotate siblings deterministically |
+| `Ctrl-w x` | exchange focused leaf with sibling target |
 
-## Resizing
+## Count Prefix Rules
 
-| Key | Description |
+Count prefix applies to navigation and resize commands.
+
+| Example | Required Behavior |
 |---|---|
-| `Ctrl-w +` | Increase height by 1 (or count) |
-| `Ctrl-w -` | Decrease height by 1 (or count) |
-| `Ctrl-w >` | Increase width by 1 (or count) |
-| `Ctrl-w <` | Decrease width by 1 (or count) |
-| `Ctrl-w =` | Equalize all window sizes |
-| `Ctrl-w _` | Maximize height of current window |
-| `Ctrl-w \|` | Maximize width of current window |
+| `3 Ctrl-w j` | move three directional steps or stop deterministically |
+| `5 Ctrl-w +` | increase height by five units with clamps |
 
-## Count prefix
+## Cross-Window-Type Rule
 
-All wincmd commands accept a count prefix. For navigation, `3 Ctrl-w j` moves 3 windows down. For resize, `5 Ctrl-w +` increases height by 5.
+All commands in this file apply equally to buffer, explorer, and terminal leaves.
+No command path may special-case by window type unless explicitly stated.
 
-## Terminal window interaction
+## Mandatory Verification
 
-All wincmd navigation works identically for terminal and buffer windows. Terminal windows participate in the same window tree and layout.
+| ID | Scenario |
+|---|---|
+| `WINNAV-01R` | directional focus golden trace |
+| `WINNAV-02R` | cyclic and directional consistency |
+| `WINNAV-03R` | previous-focus stability after churn |
+| `WINNAV-04R` | `t` and `b` deterministic boundary targets |
+| `WINNAV-05R` | command behavior in terminal insert/normal transitions |
+| `WINNAV-06R` | replay determinism across repeated runs |
 
 ## Related
 
-- Window management: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
-- Splits: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)
-- Window layouts: [/docs/spec/features/window/window-layouts.md](/docs/spec/features/window/window-layouts.md)
+- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
+- Split behavior: [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md)

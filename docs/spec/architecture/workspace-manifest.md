@@ -2,15 +2,15 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative requirements for reconstructing root Cargo workspace.
+Normative requirements for reconstructing root workspace manifests.
 
 ## Root Files
 
 | Path | Requirement |
 |---|---|
-| `Cargo.toml` | must define workspace and all members |
-| `Cargo.lock` | should be committed for reproducible builds |
-| `.gitignore` | should ignore derived build artifacts |
+| `Cargo.toml` | defines workspace resolver and members |
+| `Cargo.lock` | committed for reproducible builds |
+| `.gitignore` | excludes derived build artifacts |
 
 ## Workspace Settings
 
@@ -18,12 +18,14 @@ Normative requirements for reconstructing root Cargo workspace.
 |---|---|
 | `workspace.resolver` | must be `"2"` |
 | `workspace.members` | must include all grouped crate paths below |
+| `workspace.package.edition` | must be `"2021"` |
 
-## Workspace Members
+## Required Workspace Members
 
 | Member Path | Crate |
 |---|---|
 | `src/crates/app/kjxlkj` | `kjxlkj` |
+| `src/crates/app/kjxlkj-test-harness` | `kjxlkj-test-harness` |
 | `src/crates/core/kjxlkj-core` | `kjxlkj-core` |
 | `src/crates/core/kjxlkj-core-types` | `kjxlkj-core-types` |
 | `src/crates/core/kjxlkj-core-text` | `kjxlkj-core-text` |
@@ -35,24 +37,17 @@ Normative requirements for reconstructing root Cargo workspace.
 | `src/crates/platform/kjxlkj-host` | `kjxlkj-host` |
 | `src/crates/platform/kjxlkj-input` | `kjxlkj-input` |
 | `src/crates/platform/kjxlkj-render` | `kjxlkj-render` |
-| `src/crates/platform/kjxlkj-services` | `kjxlkj-services` |
+| `src/crates/services/kjxlkj-services` | `kjxlkj-services` |
+| `src/crates/services/kjxlkj-service-explorer` | `kjxlkj-service-explorer` |
 | `src/crates/services/kjxlkj-service-fs` | `kjxlkj-service-fs` |
 | `src/crates/services/kjxlkj-service-git` | `kjxlkj-service-git` |
 | `src/crates/services/kjxlkj-service-index` | `kjxlkj-service-index` |
 | `src/crates/services/kjxlkj-service-lsp` | `kjxlkj-service-lsp` |
 | `src/crates/services/kjxlkj-service-terminal` | `kjxlkj-service-terminal` |
 
-## Workspace Package Defaults
-
-| Field | Value |
-|---|---|
-| Edition | `2021` |
-| Versioning | semver |
-| License | `Apache-2.0` |
-
 ## Dependency Policy
 
-Shared dependency versions should be defined in workspace scope for consistency.
+Shared dependency versions should live in workspace scope.
 
 | Dependency | Purpose |
 |---|---|
@@ -61,9 +56,9 @@ Shared dependency versions should be defined in workspace scope for consistency.
 | `ropey` | rope text storage |
 | `unicode-segmentation` | grapheme segmentation |
 | `unicode-width` | display width calculations |
-| `serde` + `serde_json` | structured state and session IO |
-| `thiserror` / `anyhow` | error propagation |
-| `tracing` + `tracing-subscriber` | structured logging |
+| `serde` + `serde_json` | structured state/session IO |
+| `thiserror` + `anyhow` | error propagation |
+| `tracing` + `tracing-subscriber` | structured diagnostics |
 
 ## Related
 

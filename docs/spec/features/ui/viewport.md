@@ -2,51 +2,49 @@
 
 Back: [/docs/spec/features/ui/README.md](/docs/spec/features/ui/README.md)
 
-Deterministic rules for mapping content to visible window cells.
+Deterministic mapping from logical content to visible window cells.
 
 ## Scope
 
 - viewport state is core-owned and window-local
-- focused cursor/caret must remain visible after any state transition
-- wrapping and overflow behavior must be deterministic for editor, explorer, and terminal views
+- focused cursor/caret remains visible after every state transition
+- wrapping behavior is deterministic for editor, explorer, and terminal views
 
 ## Viewport State (per window)
 
-| Field | Type | Meaning |
-|---|---|---|
-| `top_line` | integer | first logical content line/row in view |
-| `left_col` | integer | first display column (no-wrap mode only) |
-| `wrap` | boolean | soft-wrap lines to view width |
-| `text_rows` | integer | visible content rows |
-| `text_cols` | integer | visible content columns |
-| `scrolloff` | integer | vertical cursor margin |
-| `sidescrolloff` | integer | horizontal cursor margin |
-
-## Defaults
-
-| Field | Default | Rule |
-|---|---|---|
-| `wrap` | `true` | if `true`, `left_col` MUST be `0` |
-| `top_line` | `0` | clamped by content extent |
-| `left_col` | `0` | used only when `wrap=false` |
+| Field | Meaning |
+|---|---|
+| `top_line` | first logical content line/row in view |
+| `left_col` | first display column when `wrap=false` |
+| `wrap` | soft-wrap lines to visible width |
+| `text_rows` | visible content rows |
+| `text_cols` | visible content columns |
+| `scrolloff` | vertical focus margin |
+| `sidescrolloff` | horizontal focus margin |
 
 ## Long-Line Safety Contract
 
 When `wrap=true`:
 
-- rendered content MUST NOT exceed right boundary of text area
-- overflow MUST produce continuation rows, never off-screen cells
-- wide graphemes MUST remain atomic across row boundaries
+- no rendered cell may exceed right boundary
+- overflow becomes continuation rows, not off-screen cells
+- width-2 graphemes remain atomic across row boundaries
 
-## Wide Grapheme Boundary Rule
+## Wrap Algorithm (normative)
 
-If only one column remains and next grapheme has width 2:
+For each grapheme in display order:
 
-1. current row receives one padding cell
-2. grapheme is rendered at start of next row
-3. no half-cell cursor position may exist
+1. compute display width (`1` or `2`, zero-width marks merge with owner)
+2. if width is `2` and only one column remains:
+   - emit one padding cell at row end
+   - continue grapheme on next row at column `0`
+3. emit grapheme head cell and continuation cell (if width `2`)
+4. if row fills, advance to next row
+5. stop emitting when viewport row budget is exhausted
 
-## Cursor/Caret Visibility Rules
+Continuation cells are non-addressable for cursor placement.
+
+## Cursor/Caret Visibility
 
 | View Type | Focus Target |
 |---|---|
@@ -54,54 +52,40 @@ If only one column remains and next grapheme has width 2:
 | Explorer | selected node row |
 | Terminal | terminal cursor |
 
-After cursor/caret change, resize, wrap toggle, or focus change, viewport must be re-clamped and visibility re-evaluated.
+After any cursor move, wrap toggle, resize, split change, or focus change:
 
-## Cursor-Follow (normative)
-
-For focused window:
-
-1. compute effective vertical/horizontal margins from `scrolloff` and `sidescrolloff`
-2. if focused row is above top margin, decrease `top_line`
-3. if focused row is below bottom margin, increase `top_line`
-4. when `wrap=false`, apply equivalent horizontal follow for `left_col`
-5. clamp resulting offsets to valid ranges
+1. clamp viewport offsets to valid ranges
+2. recompute wrapped row mapping
+3. apply cursor-follow margins
+4. assert focused target is visible or clamp deterministically
 
 ## Explicit Positioning Commands
 
 | Command | Requirement |
 |---|---|
-| `zz` | cursor display row becomes center |
-| `zt` | cursor display row becomes top row |
-| `zb` | cursor display row becomes bottom row |
-
-## Resize Handling
-
-On geometry change:
-
-- recompute `text_rows` and `text_cols`
-- recompute wrapped display rows where needed
-- clamp viewport offsets
-- rerun cursor-follow to maintain visibility
+| `zz` | focused display row becomes center |
+| `zt` | focused display row becomes top |
+| `zb` | focused display row becomes bottom |
 
 ## Determinism Invariants
 
 | Rule | Requirement |
 |---|---|
-| Same input, same output | identical snapshot + geometry yields identical visible rows |
-| No hidden overflow | no emitted cell outside viewport bounds |
-| Stable breakpoints | without content/geometry change, wrap points remain identical |
-| Focus safety | exactly one focused caret target per window |
+| same input, same output | identical snapshot + geometry yields identical visible rows |
+| no hidden overflow | no emitted cell outside viewport bounds |
+| stable breakpoints | unchanged content/geometry keeps same wrap points |
+| focus safety | exactly one focused target per window |
 
 ## Mandatory Verification
 
 | ID | Scenario |
 |---|---|
-| `WRAP-11R` | 10k ASCII line wraps without overflow |
-| `WRAP-12R` | 10k CJK line wraps without split wide grapheme |
-| `WRAP-13R` | wrap->nowrap->wrap toggling preserves deterministic breakpoints |
+| `WRAP-11R` | 10k ASCII line wraps with no overflow |
+| `WRAP-12R` | 10k CJK line wraps with no split-wide artifact |
+| `WRAP-13R` | wrap->nowrap->wrap preserves deterministic breakpoints |
 | `WRAP-14R` | resize storm preserves on-screen guarantees |
-| `WRAP-15R` | 1x1 geometry clamp has no panic and deterministic output |
-| `WRAP-16R` | mixed editor/explorer/terminal windows all obey bounds |
+| `WRAP-15R` | repeated narrow geometries have deterministic clamping |
+| `WRAP-16R` | editor/explorer/terminal all obey viewport bounds |
 
 ## Related
 

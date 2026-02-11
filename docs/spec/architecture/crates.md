@@ -2,22 +2,23 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-The implementation is a Cargo workspace under `src/crates/`.
+The implementation is a Cargo workspace rooted at `src/crates/`.
 
 ## Topology Requirements
 
 | Requirement | Value |
 |---|---|
-| Target crate count | 18 |
+| Target crate count | 20 |
+| Group roots | `app`, `core`, `platform`, `services` |
 | Directory fan-out target | around 12 direct children |
-| Source file length limit | 200 lines |
-| Grouped crate roots | `app`, `core`, `platform`, `services` |
+| Source file limit | each source file should remain <=200 lines |
 
 ## Workspace Members by Group
 
 | Group | Crate | Path |
 |---|---|---|
 | app | `kjxlkj` | `src/crates/app/kjxlkj` |
+| app | `kjxlkj-test-harness` | `src/crates/app/kjxlkj-test-harness` |
 | core | `kjxlkj-core` | `src/crates/core/kjxlkj-core` |
 | core | `kjxlkj-core-types` | `src/crates/core/kjxlkj-core-types` |
 | core | `kjxlkj-core-text` | `src/crates/core/kjxlkj-core-text` |
@@ -30,6 +31,7 @@ The implementation is a Cargo workspace under `src/crates/`.
 | platform | `kjxlkj-input` | `src/crates/platform/kjxlkj-input` |
 | platform | `kjxlkj-render` | `src/crates/platform/kjxlkj-render` |
 | services | `kjxlkj-services` | `src/crates/services/kjxlkj-services` |
+| services | `kjxlkj-service-explorer` | `src/crates/services/kjxlkj-service-explorer` |
 | services | `kjxlkj-service-fs` | `src/crates/services/kjxlkj-service-fs` |
 | services | `kjxlkj-service-git` | `src/crates/services/kjxlkj-service-git` |
 | services | `kjxlkj-service-index` | `src/crates/services/kjxlkj-service-index` |
@@ -40,19 +42,18 @@ The implementation is a Cargo workspace under `src/crates/`.
 
 | Rule | Requirement |
 |---|---|
-| Split before overflow | files trending toward 200 lines split in same wave |
-| Dispatch decomposition | large dispatch logic split by mode/command/service/UI |
-| Test decomposition | test files split by concern before exceeding limits |
-| Fan-out balancing | if directory grows beyond around 12 children, create domain subdirs |
+| split before overflow | if file trends toward 200 lines, extract focused modules early |
+| fan-out balancing | if directory exceeds around 12 children, create domain subdirectories |
+| test partitioning | split tests by concern before directories exceed fan-out target |
+| IO separation | keep state mutation, dispatch, and external IO in separate modules |
 
 ## Reconstruction Contract
 
-- TODO item closes only when behavior is user-reachable
-- touched crates must include deterministic tests
-- crate completion must satisfy [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- TODO closure requires user-reachable behavior
+- touched crates must add deterministic tests
+- topology and module splits must satisfy [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
 
 ## Related
 
-- Source layout blueprint: [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
-- Workspace manifest policy: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
-- Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- Source layout: [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- Workspace manifest: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)

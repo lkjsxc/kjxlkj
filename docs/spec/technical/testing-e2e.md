@@ -2,105 +2,91 @@
 
 Back: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
-High-leverage E2E matrix for blocker-first reconstruction.
+High-leverage live matrix for blocker-first reconstruction.
 
 ## Harness Levels
 
 | Harness | Description | Required For |
 |---|---|---|
-| Headless state harness | drives core actions directly, no PTY | baseline integration |
-| PTY process harness | runs full binary in PTY, sends key bytes, captures frames | blocker closure and release gate |
+| Headless state harness | drives core actions without PTY | baseline integration (`T1`) |
+| PTY process harness | full binary in PTY, raw key bytes, frame capture | blocker closure and release (`T2`) |
 
-All `*R` tests in this file require the PTY process harness.
-
-## Retained Existing Tests (Keep)
-
-| ID | Why It Stays |
-|---|---|
-| `WR-01` | catches key normalization regressions quickly |
-| `WR-03` / `WR-04` / `WR-05` | verifies command/key wiring for terminal and explorer |
-| `WR-06` | mixed-window focus baseline |
-| `WR-07` / `BD-10` | catches wrap overflow and width-2 boundary issues |
-| `JP-03` | protects IME leader isolation |
-| `PE-02` / `PE-05` | terminal resize + mixed-window behavior baseline |
+All `*R` tests below require PTY harness.
 
 ## Mandatory Live Regression Suite (`*R`)
 
-| ID | Scenario | Deterministic Assertions |
-|---|---|---|
-| `WR-01R` | raw `Shift+a` in Normal mode | decoder trace shows `A`; result matches append-at-EOL semantics |
-| `WIN-01R` | nested split create/close lifecycle | no orphan focus; valid tree; deterministic focused `WindowId` |
-| `WIN-02R` | directional `Ctrl-w h/j/k/l` on asymmetric tree | focus trace matches geometric oracle |
-| `WIN-03R` | mixed buffer/explorer/terminal directional transitions | direction moves to correct window type/ID |
-| `WIN-04R` | repeated split resize/equalize/close | geometry invariants preserved |
-| `WIN-05R` | session roundtrip with complex layout | focused window and split structure restored |
-| `WINNAV-01R` | `Ctrl-w w/W/p/t/b` sequence on mixed windows | focus order matches golden sequence |
-| `WINNAV-02R` | `Ctrl-w h/j/k/l` then cycle commands | directional and cyclic models stay consistent |
-| `WINNAV-03R` | `Ctrl-w p` after close/reopen churn | previous-focus pointer remains valid |
-| `WINNAV-04R` | top-left and bottom-right focus under nested splits | `t`/`b` select deterministic leaves |
-| `WINNAV-05R` | `Ctrl-w` navigation with terminal insert transitions | navigation works before and after mode escape chord |
-| `WINNAV-06R` | long navigation sequence replayed twice | second run focus trace exactly matches first |
-| `EXP-01R` | `:Explorer` command launch | explorer leaf appears and is focused deterministically |
-| `EXP-02R` | `<leader>e` toggle and `<leader>E` reveal | toggle/reveal path is wired and visible |
-| `EXP-03R` | open selected entry via `Enter`, `v`, `s` | target window type and file path match expectation |
-| `EXP-04R` | `Ctrl-w` navigation across explorer/buffer/terminal | focus transitions remain valid |
-| `EXP-05R` | long explorer labels + badges | on-screen wrap safety; stable selection identity |
-| `EXP-06R` | external create/rename/delete while explorer visible | refresh updates tree without focus corruption |
-| `TERM-01R` | `:terminal` launch and output capture | PTY output appears in terminal leaf within timeout |
-| `TERM-02R` | `<leader>t`, `<leader>th`, `<leader>tv` launch paths | all routes hit same spawn path semantics |
-| `TERM-03R` | `Ctrl-w` navigation across focused terminal leaf | window commands work identically in mixed layout |
-| `TERM-04R` | resize terminal split repeatedly | PTY resize signal observed; cursor remains visible |
-| `TERM-05R` | close terminal during active output | child reaped; no zombie; editor stable |
-| `TERM-06R` | terminal output flood while editing adjacent buffer | bounded input latency; no deadlock |
-| `TERM-07R` | CJK output near wrap boundary in terminal | no half-cell state; correct continuation behavior |
-| `CUR-07R` | mode churn with frequent redraw | primary cursor remains visible and stable |
-| `CUR-08R` | width-2 grapheme cursor highlight | both grapheme cells highlighted |
-| `CUR-09R` | cursor placement near continuation cell | cursor never targets continuation cell |
-| `CUR-10R` | cursor at wrap boundary with width-2 grapheme | no split cursor artifact |
-| `CUR-11R` | rapid focus changes across windows | exactly one primary cursor visible |
-| `WRAP-11R` | 10k ASCII line in wrap mode | no overflow; deterministic continuation rows |
-| `WRAP-12R` | 10k CJK line in wrap mode | no split wide grapheme |
-| `WRAP-13R` | wrap -> nowrap -> wrap toggling | stable and deterministic rewrap points |
-| `WRAP-14R` | resize storm with long mixed-script lines | no off-screen writes |
-| `WRAP-15R` | repeated 1x1 and narrow geometries | no panic; deterministic clamping |
-| `WRAP-16R` | long lines in editor/explorer/terminal simultaneously | all windows respect bounds |
-| `JP-06R` | IME composition with `<leader>e` sequence | no explorer action during composition |
-| `JP-07R` | IME composition with `<leader>t` sequence | no terminal action during composition |
-| `JP-08R` | composition cancel then `Esc` | cancels composition first; exits Insert once |
-| `JP-09R` | IME composition during resize + window navigation | composition state preserved; no accidental mode exit |
+| ID | Risk Addressed | Setup | Action | Deterministic Assertions |
+|---|---|---|---|---|
+| `WR-01R` | `Shift+a` decode drift | Normal mode at EOL | send raw shifted bytes | normalized key trace is `A`; append semantics match `A` |
+| `WIN-01R` | split lifecycle corruption | nested split tree | create/close/only operations | one valid focus; no orphan IDs |
+| `WIN-02R` | directional focus ambiguity | asymmetric geometry tree | replay `Ctrl-w h/j/k/l` | focus trace matches geometry oracle |
+| `WIN-03R` | mixed-window focus bugs | buffer + explorer + terminal leaves | directional navigation | correct type/ID transitions |
+| `WIN-04R` | resize instability | 3+ split tree with long lines | resize/equalize storm | geometry invariants hold |
+| `WIN-05R` | session restore drift | save complex layout snapshot | reload session | focused leaf and tree restored |
+| `WINNAV-01R` | cyclic navigation drift | mixed-window layout | replay `w/W/p/t/b` script | deterministic golden focus order |
+| `WINNAV-02R` | directional + cyclic mismatch | same as above | interleave directional and cyclic commands | no model divergence |
+| `WINNAV-03R` | stale previous-focus pointer | close/reopen churn | invoke `Ctrl-w p` after churn | previous target valid or deterministic fallback |
+| `WINNAV-04R` | boundary target ambiguity | nested orientation tree | `Ctrl-w t` and `Ctrl-w b` | deterministic top-left and bottom-right targets |
+| `WINNAV-05R` | terminal-mode navigation regressions | focused terminal leaf | navigate before/after `Ctrl-\\ Ctrl-n` | identical navigation semantics |
+| `WINNAV-06R` | nondeterministic replay | fixed initial state | run same long script twice | traces are byte-identical |
+| `EXP-01R` | explorer launch unreachable | normal editing session | run `:Explorer` | explorer leaf appears and is focused |
+| `EXP-02R` | leader mapping route breakage | configured leader mappings | run `<leader>e`, `<leader>E` | toggle/reveal paths visible |
+| `EXP-03R` | open target routing bugs | explorer on project tree | open via `Enter`, `v`, `s` | correct target window and file path |
+| `EXP-04R` | mixed focus corruption | explorer + buffer + terminal | run mixed `Ctrl-w` routes | focus transitions remain valid |
+| `EXP-05R` | long-label wrap corruption | deep paths + badges | scroll/select/wrap | no overflow; stable node identity |
+| `EXP-06R` | external FS drift race | explorer visible | create/rename/delete outside editor | refresh reflects changes without corruption |
+| `TERM-01R` | terminal launch path breakage | normal editing session | run `:terminal` | PTY output appears in leaf |
+| `TERM-02R` | launch route inconsistency | leader mappings configured | run `<leader>t`, `th`, `tv` | equivalent spawn semantics |
+| `TERM-03R` | terminal leaf navigation drift | mixed-window session | run `Ctrl-w` commands | identical behavior across window types |
+| `TERM-04R` | PTY resize mismatch | active terminal split | repeated resize | PTY resize observed; cursor visible |
+| `TERM-05R` | zombie process leak | terminal with active output | close terminal leaf | child is reaped within deadline |
+| `TERM-06R` | output flood deadlock | terminal flood + editing neighbor | interleave typing and flood | bounded input latency maintained |
+| `TERM-07R` | CJK wrap split artifacts | terminal outputs mixed-script long lines | resize and scroll | no half-cell continuation artifacts |
+| `CUR-07R` | cursor disappearance | mode/focus churn scenario | replay churn script | primary cursor remains visible |
+| `CUR-08R` | width-2 highlight mismatch | line with wide grapheme | move cursor onto wide grapheme | both cells highlighted |
+| `CUR-09R` | continuation-cell targeting | narrow geometry + wide text | repeated cursor moves | cursor never targets continuation cell |
+| `CUR-10R` | wrap-boundary cursor artifact | wide grapheme at boundary | move across boundary | no split cursor state |
+| `CUR-11R` | multi-window cursor ambiguity | rapid focus switching | switch focus repeatedly | exactly one primary cursor visible |
+| `WRAP-11R` | long-line overflow | 10k ASCII line | render and scroll | no off-screen writes |
+| `WRAP-12R` | wide-grapheme split | 10k CJK line | render and resize | no split-wide artifacts |
+| `WRAP-13R` | unstable rewrap | long mixed-script line | wrap->nowrap->wrap | breakpoints deterministic |
+| `WRAP-14R` | resize storm overflow | narrow/wide resize churn | repeated resize | on-screen guarantee preserved |
+| `WRAP-15R` | tiny geometry panic | repeated 1x1/narrow sizes | render updates | no panic; deterministic clamping |
+| `WRAP-16R` | cross-window bound safety | editor + explorer + terminal long content | render all panes | all panes respect bounds |
+| `JP-06R` | IME leader leakage | active composition | send leader sequence | no explorer action during composition |
+| `JP-07R` | IME terminal leakage | active composition | send terminal leader sequence | no terminal action during composition |
+| `JP-08R` | composition cancel semantics | active composition | cancel + `Esc` | composition cancels before mode exit |
+| `JP-09R` | IME state churn | composition + resize + navigation | replay churn | composition state preserved |
 
 ## Creative Boundary and Race Suite
 
 | ID | Scenario | Acceptance Criterion |
 |---|---|---|
-| `BD-RACE-01` | terminal flood + explorer refresh + split resize | no panic; bounded latency; consistent focus |
-| `BD-RACE-02` | wrap on/off churn during rapid CJK motion | no half-cell cursor state and no overflow |
-| `BD-RACE-03` | 100-cycle explorer/terminal open-close loop | stable memory profile and no stale window IDs |
+| `BD-RACE-01` | terminal flood + explorer refresh + split resize | no panic; bounded latency; deterministic focus |
+| `BD-RACE-02` | wrap on/off churn during rapid CJK cursor moves | no half-cell cursor states and no overflow |
+| `BD-RACE-03` | 100-cycle explorer/terminal open-close loop | no stale IDs, no leak symptoms |
 | `BD-RACE-04` | `:Explorer` and `:terminal` interleaved under IME activity | routing remains deterministic |
 
-## Test Diagnostics (mandatory)
+## Mandatory Failure Diagnostics
 
-Every failing live E2E test MUST report:
+Every failing live case must report:
 
-- active mode
+- current mode
 - focused window ID and type
 - layout tree summary
-- cursor/caret position
+- cursor/caret coordinates
 - top frame excerpt
-- last 20 input events and resolved actions
+- last 20 raw input and resolved action events
 
 ## Release Gate Addendum
 
 Release gate is green only when:
 
 1. retained baseline tests remain green
-2. all `*R` tests in this file pass
+2. all required `*R` cases pass
 3. no high-severity row remains open in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 
 ## Related
 
 - Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Cursor semantics: [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md)
-- Window model: [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md)
-- Explorer spec: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
-- Terminal spec: [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md)
+- PTY harness: [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)
