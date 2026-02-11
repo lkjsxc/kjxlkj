@@ -11,6 +11,10 @@ use kjxlkj_core_state::WindowTree;
 mod wr_tests;
 #[cfg(test)]
 mod ime_tests;
+#[cfg(test)]
+mod ime_advanced_tests;
+#[cfg(test)]
+mod wrap_tests;
 
 /// Test harness for headless state testing
 pub struct StateHarness {
