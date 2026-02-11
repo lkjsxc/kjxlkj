@@ -2,6 +2,10 @@
 //!
 //! See /docs/spec/features/terminal/terminal.md.
 
+pub mod csi;
+pub mod escape_parser;
+pub mod screen;
+
 use kjxlkj_core_types::TerminalId;
 
 /// Terminal instance state.

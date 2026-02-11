@@ -1,5 +1,7 @@
 //! File indexing service for search/grep.
 
+pub mod filetype;
+
 /// Placeholder for index service state.
 pub struct IndexService;
 
