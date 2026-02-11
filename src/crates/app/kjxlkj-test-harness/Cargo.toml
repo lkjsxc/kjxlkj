@@ -12,5 +12,8 @@ kjxlkj-core-state = { path = "../../core/kjxlkj-core-state" }
 kjxlkj-core-text = { path = "../../core/kjxlkj-core-text" }
 kjxlkj-service-explorer = { path = "../../services/kjxlkj-service-explorer" }
 kjxlkj-service-terminal = { path = "../../services/kjxlkj-service-terminal" }
+kjxlkj-service-lsp = { path = "../../services/kjxlkj-service-lsp" }
+kjxlkj-service-git = { path = "../../services/kjxlkj-service-git" }
+kjxlkj-service-index = { path = "../../services/kjxlkj-service-index" }
 
 [dev-dependencies]

@@ -10,7 +10,7 @@ Do not advance to the next phase while current phase has unchecked blockers.
 - [x] [phase-1-editor-core.md](phase-1-editor-core.md)
 - [x] [phase-2-window-explorer-terminal.md](phase-2-window-explorer-terminal.md)
 - [x] [phase-3-i18n-wrap-ime.md](phase-3-i18n-wrap-ime.md)
-- [ ] [phase-4-services-and-features.md](phase-4-services-and-features.md)
+- [x] [phase-4-services-and-features.md](phase-4-services-and-features.md)
 - [ ] [phase-5-hardening-release.md](phase-5-hardening-release.md)
 
 ## Phase Closure Rule

@@ -389,6 +389,9 @@ dependencies = [
  "kjxlkj-core-text",
  "kjxlkj-core-types",
  "kjxlkj-service-explorer",
+ "kjxlkj-service-git",
+ "kjxlkj-service-index",
+ "kjxlkj-service-lsp",
  "kjxlkj-service-terminal",
 ]
 

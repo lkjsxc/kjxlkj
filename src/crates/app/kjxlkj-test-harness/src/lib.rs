@@ -15,6 +15,8 @@ mod ime_tests;
 mod ime_advanced_tests;
 #[cfg(test)]
 mod wrap_tests;
+#[cfg(test)]
+mod service_tests;
 
 /// Test harness for headless state testing
 pub struct StateHarness {
