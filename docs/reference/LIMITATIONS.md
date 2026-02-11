@@ -40,6 +40,11 @@ key routing intercepts j/k/h/l/Enter/o/q in Normal mode on explorer-focused
 windows. TerminalState model with id/shell/title/exited/exit_code/cols/rows.
 32 new tests bringing total to 327 tests.
 Explorer and terminal service crates upgraded from stubs to state models.
+Command and route wiring (wave-035): Wincmd W reverse cycle, H/J/K/L move-to-edge
+(placeholder), r/R rotate (placeholder), x exchange (placeholder). Terminal window
+creation via open_terminal. Explorer v/s split-open keys for opening files in
+horizontal/vertical splits. Focus cycle reverse. 21 new tests bringing total to
+348 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

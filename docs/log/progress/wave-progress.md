@@ -104,3 +104,31 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: completion.md, diagnostics.md, formatting.md, hover.md,
     lsp.md, navigation/README.md, call-hierarchy.md
   - Ledger sync: CONFORMANCE (295→327), LIMITATIONS, DRIFT_MATRIX updated
+
+### Wave 035: Command and Route Wiring
+- Status: COMPLETE
+- Committed: cc415d57 (impl) + f9f81ec8 (tests)
+- Evidence: 348 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Wincmd expanded: W (reverse cycle), H/J/K/L (move-to-edge placeholder), r/R
+    (rotate placeholder), x (exchange placeholder)
+  - normal_wincmd.rs (137→171): +9 dispatch arms (W/H/J/K/L/r/R/x), +6 unit tests
+  - FocusCycleReverse, WindowMoveEdge(Direction), WindowRotate(bool), WindowExchange
+    action variants added to kjxlkj-core-types action.rs (112→113)
+  - editor_action.rs (194→199): +5 dispatch arms (OpenTerminal, FocusCycleReverse,
+    WindowMoveEdge, WindowRotate, WindowExchange)
+  - editor_window.rs (157→176): +focus_cycle_reverse() wrapping backward through
+    window ID list, +open_terminal() creating ContentKind::Terminal(TerminalId) leaf
+    via split_vertical below current window
+  - Explorer v/s split-open keys: editor_explorer.rs (123→170) enhanced with
+    ExplorerKeyResult enum for split-open routing; v opens selected file in vertical
+    split, s opens in horizontal split; directory targets are no-ops
+  - ExplorerState.selected_row() accessor added to explorer service lib.rs
+  - Explorer service lib.rs split: tests extracted to explorer_state_tests.rs (87 lines)
+    to keep lib.rs at 126 lines; +1 new test (selected_row_returns_correct)
+  - editor_stage04c_tests.rs (193 lines, NEW): 14 integration tests — wincmd W
+    reverse cycle (2), H/J/K/L/r/R/x no-crash (3), terminal window creation (3),
+    focus cycle reverse (2), explorer v/s split-open (4)
+  - Tier-C docs read: document-links.md, document-symbols.md, references.md,
+    type-hierarchy.md, workspace-symbols.md, rename.md, signature-help.md
+  - Ledger sync: CONFORMANCE (327→348), LIMITATIONS, DRIFT_MATRIX updated

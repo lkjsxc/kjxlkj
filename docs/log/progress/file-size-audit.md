@@ -7,7 +7,7 @@ All files are now ≤ 200 lines.
 
 | File | Lines | Status |
 |------|-------|--------|
-| `action.rs` (kjxlkj-core-types) | 112 | OK |
+| `action.rs` (kjxlkj-core-types) | 113 | OK |
 | `search.rs` (kjxlkj-core-state) | 191 | OK |
 | `editor.rs` (kjxlkj-core-state) | 183 | OK |
 | `editor_search_tests.rs` (kjxlkj-core-state) | 200 | OK |
@@ -26,7 +26,7 @@ All files are now ≤ 200 lines.
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 186 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 194 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 199 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 | `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
 | `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
@@ -40,15 +40,17 @@ All files are now ≤ 200 lines.
 | `editor_stage03_tests.rs` (kjxlkj-core-state) | 134 | OK |
 | `editor_stage03_edit_tests.rs` (kjxlkj-core-state) | 108 | OK |
 | `editor_wincmd_tests.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_window.rs` (kjxlkj-core-state) | 157 | OK |
-| `editor_explorer.rs` (kjxlkj-core-state) | 123 | OK |
-| `normal_wincmd.rs` (kjxlkj-core-mode) | 137 | OK |
-| `lib.rs` (kjxlkj-core-state) | 58 | OK |
+| `editor_window.rs` (kjxlkj-core-state) | 176 | OK |
+| `editor_explorer.rs` (kjxlkj-core-state) | 170 | OK |
+| `normal_wincmd.rs` (kjxlkj-core-mode) | 171 | OK |
+| `lib.rs` (kjxlkj-core-state) | 60 | OK |
 | `lib.rs` (kjxlkj-core-mode) | 147 | OK |
 | `layout_resize.rs` (kjxlkj-core-ui) | 127 | OK |
 | `editor_stage04_tests.rs` (kjxlkj-core-state) | 189 | OK |
 | `editor_stage04b_tests.rs` (kjxlkj-core-state) | 168 | OK |
-| `lib.rs` (kjxlkj-service-explorer) | 197 | OK |
+| `editor_stage04c_tests.rs` (kjxlkj-core-state) | 193 | OK |
+| `lib.rs` (kjxlkj-service-explorer) | 126 | OK |
+| `explorer_state_tests.rs` (kjxlkj-service-explorer) | 87 | OK |
 | `explorer_tree.rs` (kjxlkj-service-explorer) | 95 | OK |
 | `explorer_nav.rs` (kjxlkj-service-explorer) | 181 | OK |
 | `lib.rs` (kjxlkj-service-terminal) | 77 | OK |
@@ -86,3 +88,4 @@ All files are now ≤ 200 lines.
 - Wave-032 changes: `pending.rs` 179→181 (+WinCmd variant), `normal.rs` 200→200 (compacted tests, +Ctrl-w dispatch), `normal_partial.rs` 91→93 (+WinCmd arm), `editor_action.rs` 200→186 (compacted dispatchers, +4 window actions), `editor_window.rs` 65→128 (+window_only/focus_cycle/focus_direction), `lib.rs` (core-mode) 146→147 (+normal_wincmd), `lib.rs` (core-state) 51→53 (+editor_wincmd_tests). New files: `normal_wincmd.rs` (87, wincmd key dispatch, 7 tests), `editor_wincmd_tests.rs` (144, 12 integration tests).
 - Wave-033 changes: `action.rs` 200→112 (massive compaction: removed per-variant doc comments, grouped variants on shared lines), `normal_wincmd.rs` 87→137 (+10 dispatch arms, +8 tests), `editor_window.rs` 128→150 (+focus_top_left/focus_bottom_right/equalize/resize/max/open_explorer/close_explorer, compacted with leaf_rects helper), `editor_action.rs` 186→194 (+8 dispatch arms), `command_parse.rs` 194→195 (+ExplorerClose), `lib.rs` (core-state) 53→55 (+editor_stage04_tests). New files: `layout_resize.rs` (127, equalize/axis helpers, 3 tests), `editor_stage04_tests.rs` (189, 14 integration tests).
 - Wave-034 changes: `editor.rs` 200→183 (added explorer_states HashMap, explorer key interception, compacted struct comments and tests), `editor_window.rs` 150→157 (proper ExplorerState creation/cleanup in open/close), `lib.rs` (core-state) 55→58 (+editor_explorer, +editor_stage04b_tests). New files: `editor_explorer.rs` (123, explorer key routing, 5 tests), `editor_stage04b_tests.rs` (168, 13 integration tests), `lib.rs` (kjxlkj-service-explorer) rewritten from stub (197, ExplorerState model, 4 tests), `explorer_tree.rs` (95, ExplorerNode tree model, 3 tests), `explorer_nav.rs` (181, navigation actions, 5 tests), `lib.rs` (kjxlkj-service-terminal) expanded from stub (77, TerminalState model, 2 tests).
+- Wave-035 changes: `action.rs` 112→113 (+FocusCycleReverse/WindowMoveEdge/WindowRotate/WindowExchange), `normal_wincmd.rs` 137→171 (+9 dispatch arms, +6 tests), `editor_action.rs` 194→199 (+5 dispatch arms), `editor_window.rs` 157→176 (+focus_cycle_reverse, +open_terminal), `editor_explorer.rs` 123→170 (enhanced with ExplorerKeyResult enum, +v/s split-open keys), `lib.rs` (kjxlkj-service-explorer) 197→126 (tests extracted to explorer_state_tests.rs), `lib.rs` (core-state) 58→60 (+editor_stage04c_tests). New files: `editor_stage04c_tests.rs` (193, 14 integration tests), `explorer_state_tests.rs` (87, 5 extracted tests + 1 new).
