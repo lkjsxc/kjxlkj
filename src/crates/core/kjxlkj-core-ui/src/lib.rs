@@ -9,6 +9,9 @@ mod focus;
 pub mod theme;
 pub mod statusline;
 pub mod messages;
+pub mod viewport;
+pub mod float_win;
+pub mod statusline_dsl;
 
 pub use layout::{LayoutNode, LayoutTree};
 pub use focus::FocusState;
