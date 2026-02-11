@@ -134,6 +134,7 @@ dependencies = [
  "kjxlkj-core-mode",
  "kjxlkj-core-state",
  "kjxlkj-input",
+ "kjxlkj-render",
 ]
 
 [[package]]

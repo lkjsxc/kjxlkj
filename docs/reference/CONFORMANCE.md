@@ -36,6 +36,7 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Reconstructed-basic verification profile checks pass | `verified` | 2026-02-11 | `cargo check --workspace`; `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace` |
 | Source topology and source-file-size smoke checks pass | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness` includes grouped-path, fan-out, and `<=200` line assertions |
 | Key normalization and route trace baselines are wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
+| Cursor and wrap render diagnostics baselines are wired | `partial` | 2026-02-11 | `src/crates/platform/kjxlkj-render/src/grid.rs`, `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` |
 | Runtime E2E gate for blocker closure is reconstructed and exercised | `verified` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | Window-tree split/navigation runtime path is reachable with live coverage | `verified` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
 | Explorer and terminal route reachability baseline is wired | `partial` | 2026-02-11 | `src/crates/app/kjxlkj/src/main.rs`, `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e` (`EXP-01R`..`EXP-04R`, `TERM-01R`..`TERM-07R` baselines) |
@@ -50,8 +51,8 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Mixed-window navigation (`Ctrl-w`) | `verified` | directional/cyclic/previous/boundary/terminal-transition/replay cases are passing (`WINNAV-01R`..`WINNAV-06R`) |
 | Explorer window and actions | `partial` | command/leader launch, open-target, and mixed-focus routes are reachable; long-label and external-FS drift suites remain open |
 | Terminal window integration | `partial` | launch/navigation/resize/close/flood/CJK baselines are reachable; strict PTY lifecycle and race suites remain open |
-| Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
-| Cursor visibility and grapheme safety | `unverified` | blocker behavior not yet implemented |
+| Viewport wrap safety | `partial` | long-line and deterministic-breakpoint baselines are live; resize and cross-window bounds suites remain open |
+| Cursor visibility and grapheme safety | `partial` | visibility and continuation exclusion baselines are live; wide highlight and wrap-boundary suites remain open |
 | IME interaction around leader/window commands | `unverified` | blocker behavior not yet implemented |
 | Source topology and workspace policy | `verified` | grouped tree, workspace manifests, and topology audits are passing |
 | Documentation coverage and TODO integrity | `partial` | baseline plus window/navigation blockers are closed; explorer/terminal/cursor/wrap blockers remain |

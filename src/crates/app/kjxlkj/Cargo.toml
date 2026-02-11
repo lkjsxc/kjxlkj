@@ -8,3 +8,4 @@ crossterm = { workspace = true }
 kjxlkj-core-mode = { path = "../../core/kjxlkj-core-mode" }
 kjxlkj-core-state = { path = "../../core/kjxlkj-core-state" }
 kjxlkj-input = { path = "../../platform/kjxlkj-input" }
+kjxlkj-render = { path = "../../platform/kjxlkj-render" }

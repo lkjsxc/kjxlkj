@@ -15,8 +15,8 @@ crate topology are present, while runtime behavior blockers remain open.
 |---|---|---|---|---|---|
 | `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | route/open-target/mixed-focus baselines are live (`EXP-01R`..`EXP-04R`); complete stability under long-label and external-FS drift scenarios (`EXP-05R`, `EXP-06R`) |
 | `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | route/mixed-navigation/resize/close/flood/CJK baselines are live (`TERM-01R`..`TERM-07R`); complete real PTY lifecycle and race evidence (`TERM-05R` leak proof and `BD-RACE-01`) |
-| `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | implement and pass `CUR-07R`..`CUR-11R` |
-| `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | implement and pass `WRAP-11R`..`WRAP-16R` |
+| `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | baseline cursor visibility and continuation exclusion is live (`CUR-07R`, `CUR-09R`, `CUR-11R`); complete wide-grapheme highlight and wrap-boundary semantics (`CUR-08R`, `CUR-10R`) |
+| `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | baseline long-line and deterministic-breakpoint coverage is live (`WRAP-11R`..`WRAP-13R`); complete resize and cross-window bounds semantics (`WRAP-14R`..`WRAP-16R`) |
 
 ## Closed in Current Wave
 

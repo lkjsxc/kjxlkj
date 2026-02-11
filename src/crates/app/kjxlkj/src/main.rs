@@ -9,6 +9,7 @@ use input_routes::{action_from_key, format_key};
 use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
 use kjxlkj_input::{decode_byte, Key};
+use kjxlkj_render::compute_render_diagnostics;
 
 fn main() -> io::Result<()> {
     enable_raw_mode()?;
@@ -140,9 +141,10 @@ fn run() -> io::Result<()> {
             command_buffer.clear();
         }
         let result = state.apply(action);
+        let render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
         writeln!(
             stdout,
-            "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} line={}",
+            "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={}",
             seq,
             result.mode_before,
             state.focused_window_id(),
@@ -152,6 +154,10 @@ fn run() -> io::Result<()> {
             result.cursor_before,
             result.cursor_after,
             state.window_geometry_ok(),
+            render.bounds_ok,
+            render.cursor_visible,
+            render.cursor_on_continuation,
+            render.wrap_signature,
             state.line()
         )?;
         stdout.flush()?;
@@ -160,14 +166,19 @@ fn run() -> io::Result<()> {
         }
     }
 
+    let final_render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
     writeln!(
         stdout,
-        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} line={} window_session={}",
+        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={} window_session={}",
         state.mode(),
         state.cursor(),
         state.focused_window_id(),
         state.focused_window_kind(),
         state.window_geometry_ok(),
+        final_render.bounds_ok,
+        final_render.cursor_visible,
+        final_render.cursor_on_continuation,
+        final_render.wrap_signature,
         state.line(),
         state.window_session_dump()
     )?;
