@@ -11,11 +11,11 @@ This checklist directly links every markdown document in the repository.
 
 ## Parts
 
-- [ ] [doc-coverage-1.md](doc-coverage-1.md)
-- [ ] [doc-coverage-2.md](doc-coverage-2.md)
-- [ ] [doc-coverage-3.md](doc-coverage-3.md)
-- [ ] [doc-coverage-4.md](doc-coverage-4.md)
-- [ ] [doc-coverage-5.md](doc-coverage-5.md)
+- [x] [doc-coverage-1.md](doc-coverage-1.md)
+- [x] [doc-coverage-2.md](doc-coverage-2.md)
+- [x] [doc-coverage-3.md](doc-coverage-3.md)
+- [x] [doc-coverage-4.md](doc-coverage-4.md)
+- [x] [doc-coverage-5.md](doc-coverage-5.md)
 
 ## Regeneration Rule
 
@@ -25,5 +25,5 @@ This checklist directly links every markdown document in the repository.
 
 ## Verification Rule
 
-- [ ] no markdown document is missing from part files
-- [ ] no stale links remain in part files
+- [x] no markdown document is missing from part files
+- [x] no stale links remain in part files
