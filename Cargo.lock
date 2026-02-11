@@ -141,6 +141,7 @@ dependencies = [
  "kjxlkj-core-ui",
  "kjxlkj-core-undo",
  "kjxlkj-service-explorer",
+ "kjxlkj-service-terminal",
  "regex",
 ]
 
