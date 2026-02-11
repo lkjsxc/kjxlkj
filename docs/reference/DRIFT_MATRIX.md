@@ -34,15 +34,15 @@ Requirement-by-requirement mismatch tracking for current state.
 | `R-ARCH-01` | `M2 missing feature` | ✓ grouped crate paths | src/crates/{app,core,platform,services} |
 | `R-ARCH-02` | `M2 missing feature` | ✓ workspace manifest | 19 crates in Cargo.toml |
 | `R-LOG-01` | `M5 stale docs` | ✓ retention discipline | wave logs cleaned |
+| `R-I18N-01` | `M4 verification gap` | ✓ IME composition isolation | JP-03, JP-04, JP-05, JP-06, JP-07 tests |
+| `R-I18N-02` | `M4 verification gap` | ✓ IME stable under churn | JP-08R, JP-09R tests |
 
 ## Open Drift Rows
 
 | Req ID | Canonical Spec | Expected Behavior | Current Gap | Class | Next Action | Status |
 |---|---|---|---|---|---|---|
 | `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | bounded latency PTY I/O | unit tests only; no live E2E | `M4 verification gap` | PTY E2E harness | open |
-| `R-I18N-01` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME composition isolation | no IME-specific tests | `M4 verification gap` | IME composition tests | open |
-| `R-I18N-02` | [/docs/spec/modes/insert/input/insert-japanese-ime.md](/docs/spec/modes/insert/input/insert-japanese-ime.md) | IME stable under churn | no race tests | `M4 verification gap` | resize/navigation tests | open |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features proven by E2E | 48 unit tests; no PTY E2E | `M4 verification gap` | PTY E2E harness | open |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | high-risk features proven by E2E | 89 unit tests; no PTY E2E | `M4 verification gap` | PTY E2E harness | open |
 
 ## Summary
 
@@ -51,7 +51,7 @@ Requirement-by-requirement mismatch tracking for current state.
 | `M1 correctness` | 0 | 0 |
 | `M2 missing feature` | 15 | 0 |
 | `M3 undocumented behavior` | 0 | 0 |
-| `M4 verification gap` | 0 | 4 |
+| `M4 verification gap` | 2 | 2 |
 | `M5 stale docs` | 1 | 0 |
 
 ## Update Rules
