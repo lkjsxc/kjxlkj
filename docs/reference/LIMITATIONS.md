@@ -6,24 +6,25 @@ This ledger tracks open mismatches between target spec and current baseline stat
 
 ## Baseline Statement (2026-02-11)
 
-The repository is intentionally prepared as docs-only baseline. Implementation
-artifacts were removed so the next implementation can be regenerated from docs.
+Workspace reconstructed with 20 crates matching source-layout.md spec.
+57 unit/integration tests pass. PTY E2E harness not yet reconstructed.
+Explorer and terminal service crates are stubs.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Observed Gap | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree are intentionally absent in docs-only baseline | `M2 missing feature` | high | regenerate grouped workspace from TODO wave chain |
-| `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` runtime behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement key path and close with `KEYMODE-01`, `WR-01R` screen assertions |
-| `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split lifecycle behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement split tree and close with `WIN-01R`..`WIN-05R` |
-| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement explorer routes/state and close with `EXP-01R`..`EXP-06R` |
-| `LIM-BLOCK-E2E-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | screen-state E2E closure is unverified because harness/runtime are absent | `M2 missing feature` + `M4 verification gap` | high | rebuild harness and enforce per-key state + frame assertions |
+| `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree reconstructed; 20 crates, compiles clean | `M2 missing feature` | closed | n/a |
+| `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` normalization implemented and T1-tested; T2 PTY verification pending | `M4 verification gap` | medium | close with `KEYMODE-01`, `WR-01R` T2 screen assertions |
+| `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split lifecycle implemented and T1-tested; T2 PTY verification pending | `M4 verification gap` | medium | close with `WIN-01R`..`WIN-05R` T2 screen assertions |
+| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer service crate is stub; state model and routes not yet implemented | `M2 missing feature` + `M4 verification gap` | high | implement explorer routes/state and close with `EXP-01R`..`EXP-06R` |
+| `LIM-BLOCK-E2E-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | T1 headless harness implemented; T2 PTY harness not yet rebuilt | `M2 missing feature` + `M4 verification gap` | high | rebuild PTY harness and enforce per-key state + frame assertions |
 
 ## Open Secondary Gaps
 
 | ID | Requirement Link | Gap | Severity | Next Action |
 |---|---|---|---|---|
-| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology constraints cannot be validated until implementation is rebuilt | medium | run topology audits after regeneration |
+| `LIM-GAP-TOPO-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | topology matches spec; 2 files exceed 200 lines (editor.rs ~310, layout.rs ~280) | medium | split editor.rs action handlers into submodule |
 
 ## Deferred Items
 

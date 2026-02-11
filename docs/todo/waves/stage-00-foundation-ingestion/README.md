@@ -19,7 +19,7 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-00-foundation-ingestion/wave-000.md](/docs/todo/waves/stage-00-foundation-ingestion/wave-000.md)
+- [x] [/docs/todo/waves/stage-00-foundation-ingestion/wave-000.md](/docs/todo/waves/stage-00-foundation-ingestion/wave-000.md)
 - [ ] [/docs/todo/waves/stage-00-foundation-ingestion/wave-001.md](/docs/todo/waves/stage-00-foundation-ingestion/wave-001.md)
 - [ ] [/docs/todo/waves/stage-00-foundation-ingestion/wave-002.md](/docs/todo/waves/stage-00-foundation-ingestion/wave-002.md)
 - [ ] [/docs/todo/waves/stage-00-foundation-ingestion/wave-003.md](/docs/todo/waves/stage-00-foundation-ingestion/wave-003.md)

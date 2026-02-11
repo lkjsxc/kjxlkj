@@ -15,9 +15,10 @@ This ledger reports the strongest verified state as of the snapshot date.
 
 ## Current Snapshot (2026-02-11)
 
-A docs-only baseline is active. Source and build artifacts are intentionally
-absent so implementation can be regenerated from canonical documentation.
-Runtime conformance is therefore unverified by design until reconstruction.
+Workspace reconstructed with 20 crates. Runtime conformance is partially verified
+through 57 deterministic unit and integration tests covering key normalization,
+mode dispatch, cursor motion, text buffer operations, layout tree, and editor state.
+PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
 
@@ -25,21 +26,21 @@ Runtime conformance is therefore unverified by design until reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `unverified` | 2026-02-11 | intentionally absent in docs-only preparation state |
-| Runtime blocker behavior (`Shift+a`, split, explorer) | `unverified` | 2026-02-11 | no executable artifact in current baseline |
-| Live E2E screen-oracle closure | `unverified` | 2026-02-11 | pending reconstruction and execution |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (57 pass) |
+| Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
+| Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
 ## Domain Status
 
 | Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `unverified` | implementation absent in docs-only baseline |
-| Window tree and split lifecycle | `unverified` | implementation absent in docs-only baseline |
-| Explorer window and actions | `unverified` | implementation absent in docs-only baseline |
-| Terminal window integration | `unverified` | implementation absent in docs-only baseline |
-| Viewport wrap and cursor safety | `unverified` | implementation absent in docs-only baseline |
-| Test harness fidelity | `unverified` | harness absent until reconstruction |
-| Source topology and workspace policy | `blocked` | grouped workspace tree not present in docs-only state |
+| Input decoding and key normalization | `partial` | Shift+a normalization implemented and unit-tested; T2 pending |
+| Window tree and split lifecycle | `partial` | layout tree with split/close/rebalance implemented and unit-tested; T2 pending |
+| Explorer window and actions | `unverified` | stub crate only; explorer state model not yet implemented |
+| Terminal window integration | `unverified` | stub crate only; PTY not yet implemented |
+| Viewport wrap and cursor safety | `unverified` | basic cursor motion; wrap not yet implemented |
+| Test harness fidelity | `partial` | T1 headless harness with step dumps; T2 PTY harness pending |
+| Source topology and workspace policy | `partial` | 20-crate grouped tree matches spec; some files exceed 200 lines |
 
 ## Release Rule
 
