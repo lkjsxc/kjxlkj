@@ -11,7 +11,7 @@
 
 use std::collections::HashMap;
 
-use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition};
+use kjxlkj_core_mode::{dispatch_key, resolve_mode_transition, PendingState};
 use kjxlkj_core_text::Buffer;
 use kjxlkj_core_types::{
     Action, BufferId, CmdlineState, ContentKind,
@@ -33,6 +33,8 @@ pub struct EditorState {
     pub quit_requested: bool,
     pub sequence: u64,
     pub(crate) id_counter: u64,
+    /// Multi-key pending state for normal mode.
+    pub pending: PendingState,
 }
 
 impl EditorState {
@@ -66,6 +68,7 @@ impl EditorState {
             quit_requested: false,
             sequence: 0,
             id_counter: 2,
+            pending: PendingState::default(),
         }
     }
 
@@ -76,7 +79,12 @@ impl EditorState {
         mods: &KeyModifiers,
     ) {
         let (action, new_mode) =
-            dispatch_key(self.mode, key, mods);
+            dispatch_key(
+                self.mode,
+                key,
+                mods,
+                &mut self.pending,
+            );
         self.mode =
             resolve_mode_transition(self.mode, new_mode);
         self.apply_action(action);

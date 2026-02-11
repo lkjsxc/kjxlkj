@@ -2,7 +2,7 @@
 //!
 //! See /docs/spec/architecture/input-decoding.md for the pipeline.
 
-use crate::{BufferId, Key, KeyModifiers, Mode, WindowId};
+use crate::{BufferId, Key, KeyModifiers, Mode, Operator, WindowId};
 use serde::{Deserialize, Serialize};
 
 /// Typed editor action emitted after input decode and mapping resolution.
@@ -104,34 +104,76 @@ pub enum Action {
     ScrollTop,
     /// Scroll cursor to bottom.
     ScrollBottom,
+    /// Delete word backward (insert mode Ctrl-w).
+    DeleteWordBackward,
+    /// Delete to line start (insert mode Ctrl-u).
+    DeleteToLineStart,
+    /// Operator applied linewise (e.g. dd, yy, cc).
+    OperatorLine(Operator),
+    /// Operator applied with a counted motion.
+    OperatorMotion(Operator, Motion, usize),
+    /// Substitute char (s): delete char + enter insert.
+    SubstituteChar,
+    /// Substitute line (S): delete line content + enter insert.
+    SubstituteLine,
+    /// Change to end of line (C).
+    ChangeToEnd,
 }
 
 /// Cursor motion.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Motion {
+    // Character motions
     Left,
     Right,
     Up,
     Down,
+    // Line motions
     LineStart,
     LineEnd,
     FirstNonBlank,
+    LastNonBlank,
+    // Word/WORD motions
     WordForward,
     WordBackward,
     WordEndForward,
+    WordEndBackward,
     BigWordForward,
     BigWordBackward,
     BigWordEndForward,
+    BigWordEndBackward,
+    // Sentence/paragraph motions
+    SentenceForward,
+    SentenceBackward,
     ParagraphForward,
     ParagraphBackward,
+    // Find/till motions
+    FindForward(char),
+    FindBackward(char),
+    TillForward(char),
+    TillBackward(char),
+    RepeatFind,
+    RepeatFindReverse,
+    // Search repeat motions
+    SearchNext,
+    SearchPrev,
+    // Document motions
     GotoLine(usize),
     GotoFirstLine,
     GotoLastLine,
+    // Window motions
+    WindowTop,
+    WindowMiddle,
+    WindowBottom,
+    // Match motions
     MatchParen,
+    // Scroll motions
     PageDown,
     PageUp,
     HalfPageDown,
     HalfPageUp,
+    ScrollDown,
+    ScrollUp,
 }
 
 /// Directional focus for window navigation.

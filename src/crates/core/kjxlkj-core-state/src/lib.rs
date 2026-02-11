@@ -13,6 +13,7 @@
 mod editor;
 mod editor_action;
 mod editor_edit;
+mod editor_ops;
 mod editor_snapshot;
 mod editor_window;
 mod window_state;

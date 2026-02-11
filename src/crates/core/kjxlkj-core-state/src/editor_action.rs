@@ -77,6 +77,29 @@ impl EditorState {
                     win.cursor.col -= 1;
                 }
             }
+            Action::OperatorLine(op) => {
+                self.apply_operator_line(op);
+            }
+            Action::OperatorMotion(op, motion, count) => {
+                self.apply_operator_motion(
+                    op, motion, count,
+                );
+            }
+            Action::SubstituteChar => {
+                self.delete_char_forward();
+            }
+            Action::SubstituteLine => {
+                self.delete_current_line_content();
+            }
+            Action::ChangeToEnd => {
+                self.delete_to_eol();
+            }
+            Action::DeleteWordBackward => {
+                self.delete_word_backward();
+            }
+            Action::DeleteToLineStart => {
+                self.delete_to_line_start();
+            }
             _ => {}
         }
     }

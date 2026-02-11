@@ -1,138 +1,130 @@
 //! Normal mode key dispatch.
 //!
 //! See /docs/spec/modes/normal.md for normative key tables.
+//! Handles count prefixes, multi-key sequences (g/z/f/t/r/m),
+//! operator entry, and mode transitions.
 
 use kjxlkj_core_types::{
-    Action, CommandKind, Key, KeyModifiers, Mode, Operator,
-    VisualKind,
+    Action, CommandKind, Key, KeyModifiers, Mode, Motion,
+    Operator, VisualKind,
 };
 
 use crate::normal_motions;
+use crate::normal_partial;
+use crate::pending::{PartialKey, PendingState};
 
 /// Handle a key in Normal mode.
-///
-/// Returns (Action, Option<new Mode>).
-/// `Shift+a` is already normalized to `Key::Char('A')` by the input
-/// pipeline before this function is called.
 pub fn handle_normal_key(
     key: &Key,
     mods: &KeyModifiers,
+    pending: &mut PendingState,
 ) -> (Action, Option<Mode>) {
-    // Ctrl combinations first.
     if mods.ctrl {
-        return handle_ctrl_key(key);
+        return handle_ctrl_key(key, pending);
     }
-
-    // Check motion keys (extracted to normal_motions module).
+    if pending.partial != PartialKey::None {
+        return normal_partial::resolve_partial(key, pending);
+    }
+    if let Key::Char(c) = key {
+        if c.is_ascii_digit() {
+            let d = *c as u8 - b'0';
+            if pending.push_digit(d) {
+                return (Action::Noop, None);
+            }
+        }
+    }
     if let Some(action) = normal_motions::motion_for_key(key) {
+        pending.clear();
         return (action, None);
     }
+    handle_normal_command(key, pending)
+}
 
+/// Single-key commands, mode entries, and operators.
+fn handle_normal_command(
+    key: &Key,
+    pending: &mut PendingState,
+) -> (Action, Option<Mode>) {
     match key {
-        // Insert entry keys.
-        Key::Char('i') => {
-            (Action::EnterMode(Mode::Insert), Some(Mode::Insert))
-        }
-        Key::Char('a') => {
-            (Action::EnterMode(Mode::Insert), Some(Mode::Insert))
-        }
-        Key::Char('A') => {
-            (Action::AppendEndOfLine, Some(Mode::Insert))
-        }
-        Key::Char('I') => {
-            (Action::InsertFirstNonBlank, Some(Mode::Insert))
-        }
-        Key::Char('o') => {
-            (Action::OpenLineBelow, Some(Mode::Insert))
-        }
-        Key::Char('O') => {
-            (Action::OpenLineAbove, Some(Mode::Insert))
-        }
-
-        // Operator keys.
-        Key::Char('d') => (
-            Action::Noop,
-            Some(Mode::OperatorPending(Operator::Delete)),
-        ),
-        Key::Char('c') => (
-            Action::Noop,
-            Some(Mode::OperatorPending(Operator::Change)),
-        ),
-        Key::Char('y') => (
-            Action::Noop,
-            Some(Mode::OperatorPending(Operator::Yank)),
-        ),
-
-        // Visual mode.
-        Key::Char('v') => (
-            Action::EnterMode(Mode::Visual(VisualKind::Char)),
-            Some(Mode::Visual(VisualKind::Char)),
-        ),
-        Key::Char('V') => (
-            Action::EnterMode(Mode::Visual(VisualKind::Line)),
-            Some(Mode::Visual(VisualKind::Line)),
-        ),
-
-        // Command mode.
-        Key::Char(':') => (
-            Action::EnterMode(Mode::Command(CommandKind::Ex)),
-            Some(Mode::Command(CommandKind::Ex)),
-        ),
-        Key::Char('/') => (
-            Action::EnterMode(Mode::Command(CommandKind::Search)),
-            Some(Mode::Command(CommandKind::Search)),
-        ),
-        Key::Char('?') => (
-            Action::EnterMode(Mode::Command(CommandKind::Search)),
-            Some(Mode::Command(CommandKind::Search)),
-        ),
-
-        // Replace mode.
-        Key::Char('R') => {
-            (Action::EnterMode(Mode::Replace), Some(Mode::Replace))
-        }
-
-        // Single-key commands.
-        Key::Char('x') => (Action::DeleteCharForward, None),
-        Key::Char('X') => (Action::DeleteCharBackward, None),
-        Key::Char('u') => (Action::Undo, None),
-        Key::Char('p') => (Action::PutAfter, None),
-        Key::Char('P') => (Action::PutBefore, None),
-        Key::Char('J') => (Action::JoinLines, None),
-        Key::Char('~') => (Action::ToggleCase, None),
-        Key::Char('.') => (Action::DotRepeat, None),
-
-        Key::Escape => (Action::Noop, None),
-        _ => (Action::Noop, None),
+        Key::Char('i') => done(pending, Action::EnterMode(Mode::Insert), Mode::Insert),
+        Key::Char('a') => done(pending, Action::EnterMode(Mode::Insert), Mode::Insert),
+        Key::Char('A') => done(pending, Action::AppendEndOfLine, Mode::Insert),
+        Key::Char('I') => done(pending, Action::InsertFirstNonBlank, Mode::Insert),
+        Key::Char('o') => done(pending, Action::OpenLineBelow, Mode::Insert),
+        Key::Char('O') => done(pending, Action::OpenLineAbove, Mode::Insert),
+        Key::Char('s') => done(pending, Action::SubstituteChar, Mode::Insert),
+        Key::Char('S') => done(pending, Action::SubstituteLine, Mode::Insert),
+        Key::Char('C') => done(pending, Action::ChangeToEnd, Mode::Insert),
+        Key::Char('d') => (Action::Noop, Some(Mode::OperatorPending(Operator::Delete))),
+        Key::Char('c') => (Action::Noop, Some(Mode::OperatorPending(Operator::Change))),
+        Key::Char('y') => (Action::Noop, Some(Mode::OperatorPending(Operator::Yank))),
+        Key::Char('>') => (Action::Noop, Some(Mode::OperatorPending(Operator::Indent))),
+        Key::Char('<') => (Action::Noop, Some(Mode::OperatorPending(Operator::Dedent))),
+        Key::Char('=') => (Action::Noop, Some(Mode::OperatorPending(Operator::Reindent))),
+        Key::Char('v') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Char)), Mode::Visual(VisualKind::Char)),
+        Key::Char('V') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Line)), Mode::Visual(VisualKind::Line)),
+        Key::Char(':') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Ex)), Mode::Command(CommandKind::Ex)),
+        Key::Char('/') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Search)), Mode::Command(CommandKind::Search)),
+        Key::Char('?') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Search)), Mode::Command(CommandKind::Search)),
+        Key::Char('R') => done(pending, Action::EnterMode(Mode::Replace), Mode::Replace),
+        Key::Char('g') => { pending.partial = PartialKey::G; (Action::Noop, None) }
+        Key::Char('z') => { pending.partial = PartialKey::Z; (Action::Noop, None) }
+        Key::Char('f') => { pending.partial = PartialKey::FindForward; (Action::Noop, None) }
+        Key::Char('F') => { pending.partial = PartialKey::FindBackward; (Action::Noop, None) }
+        Key::Char('t') => { pending.partial = PartialKey::TillForward; (Action::Noop, None) }
+        Key::Char('T') => { pending.partial = PartialKey::TillBackward; (Action::Noop, None) }
+        Key::Char('r') => { pending.partial = PartialKey::ReplaceChar; (Action::Noop, None) }
+        Key::Char('m') => { pending.partial = PartialKey::SetMark; (Action::Noop, None) }
+        Key::Char('x') => cleared(pending, Action::DeleteCharForward),
+        Key::Char('X') => cleared(pending, Action::DeleteCharBackward),
+        Key::Char('u') => cleared(pending, Action::Undo),
+        Key::Char('p') => cleared(pending, Action::PutAfter),
+        Key::Char('P') => cleared(pending, Action::PutBefore),
+        Key::Char('J') => cleared(pending, Action::JoinLines),
+        Key::Char('~') => cleared(pending, Action::ToggleCase),
+        Key::Char('.') => cleared(pending, Action::DotRepeat),
+        Key::Char('n') => cleared(pending, Action::Motion(Motion::SearchNext)),
+        Key::Char('N') => cleared(pending, Action::Motion(Motion::SearchPrev)),
+        Key::Char(';') => cleared(pending, Action::Motion(Motion::RepeatFind)),
+        Key::Char(',') => cleared(pending, Action::Motion(Motion::RepeatFindReverse)),
+        Key::Escape => { pending.clear(); (Action::Noop, None) }
+        _ => { pending.clear(); (Action::Noop, None) }
     }
 }
 
-fn handle_ctrl_key(key: &Key) -> (Action, Option<Mode>) {
+fn handle_ctrl_key(
+    key: &Key,
+    pending: &mut PendingState,
+) -> (Action, Option<Mode>) {
+    pending.clear();
     match key {
         Key::Char('r') => (Action::Redo, None),
-        Key::Char('w') => {
-            // Window command prefix; will be handled by prefix
-            // resolver. For now, emit noop.
-            (Action::Noop, None)
-        }
-        Key::Char('d') => {
-            (Action::Motion(Motion::HalfPageDown), None)
-        }
-        Key::Char('u') => {
-            (Action::Motion(Motion::HalfPageUp), None)
-        }
-        Key::Char('f') => {
-            (Action::Motion(Motion::PageDown), None)
-        }
-        Key::Char('b') => {
-            (Action::Motion(Motion::PageUp), None)
-        }
+        Key::Char('v') => (
+            Action::EnterMode(Mode::Visual(VisualKind::Block)),
+            Some(Mode::Visual(VisualKind::Block)),
+        ),
+        Key::Char('d') => (Action::Motion(Motion::HalfPageDown), None),
+        Key::Char('u') => (Action::Motion(Motion::HalfPageUp), None),
+        Key::Char('f') => (Action::Motion(Motion::PageDown), None),
+        Key::Char('b') => (Action::Motion(Motion::PageUp), None),
+        Key::Char('e') => (Action::Motion(Motion::ScrollDown), None),
+        Key::Char('y') => (Action::Motion(Motion::ScrollUp), None),
+        Key::Char('w') => (Action::Noop, None),
         _ => (Action::Noop, None),
     }
 }
 
-// Re-import Motion for ctrl handler above.
-use kjxlkj_core_types::Motion;
+/// Helper: clear pending, return action with mode transition.
+fn done(p: &mut PendingState, a: Action, m: Mode) -> (Action, Option<Mode>) {
+    p.clear();
+    (a, Some(m))
+}
+
+/// Helper: clear pending, return action, stay in same mode.
+fn cleared(p: &mut PendingState, a: Action) -> (Action, Option<Mode>) {
+    p.clear();
+    (a, None)
+}
 
 #[cfg(test)]
 mod tests {
@@ -140,37 +132,28 @@ mod tests {
 
     #[test]
     fn shift_a_triggers_append_eol() {
+        let mut ps = PendingState::default();
         let (action, mode) = handle_normal_key(
-            &Key::Char('A'),
-            &KeyModifiers::default(),
+            &Key::Char('A'), &KeyModifiers::default(), &mut ps,
         );
         assert_eq!(action, Action::AppendEndOfLine);
         assert_eq!(mode, Some(Mode::Insert));
     }
 
     #[test]
-    fn physical_a_triggers_append() {
-        let (_, mode) = handle_normal_key(
-            &Key::Char('a'),
-            &KeyModifiers::default(),
-        );
-        assert_eq!(mode, Some(Mode::Insert));
-    }
-
-    #[test]
     fn colon_enters_command_mode() {
+        let mut ps = PendingState::default();
         let (_, mode) = handle_normal_key(
-            &Key::Char(':'),
-            &KeyModifiers::default(),
+            &Key::Char(':'), &KeyModifiers::default(), &mut ps,
         );
         assert_eq!(mode, Some(Mode::Command(CommandKind::Ex)));
     }
 
     #[test]
     fn h_moves_left() {
+        let mut ps = PendingState::default();
         let (action, mode) = handle_normal_key(
-            &Key::Char('h'),
-            &KeyModifiers::default(),
+            &Key::Char('h'), &KeyModifiers::default(), &mut ps,
         );
         assert_eq!(action, Action::Motion(Motion::Left));
         assert_eq!(mode, None);
@@ -178,13 +161,39 @@ mod tests {
 
     #[test]
     fn ctrl_r_redo() {
+        let mut ps = PendingState::default();
         let (action, _) = handle_normal_key(
             &Key::Char('r'),
-            &KeyModifiers {
-                ctrl: true,
-                ..Default::default()
-            },
+            &KeyModifiers { ctrl: true, ..Default::default() },
+            &mut ps,
         );
         assert_eq!(action, Action::Redo);
+    }
+
+    #[test]
+    fn f_then_char_produces_find_forward() {
+        let mut ps = PendingState::default();
+        let (a1, _) = handle_normal_key(
+            &Key::Char('f'), &KeyModifiers::default(), &mut ps,
+        );
+        assert_eq!(a1, Action::Noop);
+        assert_eq!(ps.partial, PartialKey::FindForward);
+        let (a2, _) = handle_normal_key(
+            &Key::Char('x'), &KeyModifiers::default(), &mut ps,
+        );
+        assert_eq!(a2, Action::Motion(Motion::FindForward('x')));
+    }
+
+    #[test]
+    fn count_prefix_accumulates() {
+        let mut ps = PendingState::default();
+        handle_normal_key(
+            &Key::Char('3'), &KeyModifiers::default(), &mut ps,
+        );
+        assert_eq!(ps.count, Some(3));
+        handle_normal_key(
+            &Key::Char('5'), &KeyModifiers::default(), &mut ps,
+        );
+        assert_eq!(ps.count, Some(35));
     }
 }
