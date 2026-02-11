@@ -14,6 +14,7 @@ Close high-severity reconstructed runtime blockers for explorer, terminal, curso
 - `cargo test -p kjxlkj-render`
 - `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e --test cursor_wrap_more_e2e`
 - `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e --test explorer_terminal_more_e2e --test explorer_terminal_stress_e2e`
+- `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-05`, `KEY-TRACE-06`, `KEY-TRACE-07`)
 
 ## Closed IDs
 

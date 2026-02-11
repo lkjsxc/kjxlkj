@@ -104,8 +104,12 @@ These trace fields are mandatory in blocker diagnostics:
 - `event_seq`
 - `mode_before`
 - `focused_window_id`
+- `focused_window_type`
 - `normalized_key`
 - `resolved_action`
+- `layout_summary`
+- `frame_excerpt`
+- `recent_events` (bounded raw byte + normalized key + resolved action entries)
 
 ## Mandatory Verification
 
@@ -116,6 +120,7 @@ These trace fields are mandatory in blocker diagnostics:
 | `KEY-TRACE-03` | `:Explorer` and `<leader>e` paths appear in action trace |
 | `KEY-TRACE-04` | `:terminal` and `<leader>t` paths appear in action trace |
 | `KEY-TRACE-06` | UTF-8 multibyte input is decoded as one normalized char event |
+| `KEY-TRACE-07` | trace lines include `layout_summary` and bounded `frame_excerpt` fields |
 | `WR-01R` | PTY raw bytes for `Shift+a` produce append semantics in runtime |
 
 ## Related

@@ -38,7 +38,7 @@ Detailed per-wave records are stored in [waves/README.md](waves/README.md).
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_more_e2e` | pass (mixed focus + close/flood/CJK baselines for `EXP-04R`, `TERM-05R`..`TERM-07R`) |
 | `cargo test -p kjxlkj-test-harness --test explorer_terminal_stress_e2e` | pass (`EXP-05R`, `EXP-06R`, `BD-RACE-01`) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
-| `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-05` raw+normalized trace capture and `KEY-TRACE-06` UTF-8 multibyte decode) |
+| `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-05` raw+normalized trace capture, `KEY-TRACE-06` UTF-8 multibyte decode, and `KEY-TRACE-07` layout/frame diagnostics fields) |
 | `cargo test -p kjxlkj-test-harness --test cursor_wrap_e2e` | pass (`WRAP-11R`..`WRAP-13R`, `CUR-07R`..`CUR-11R`) |
 | `cargo test -p kjxlkj-test-harness --test cursor_wrap_more_e2e` | pass (`WRAP-14R`..`WRAP-16R`) |
 | `cargo test -p kjxlkj-render` | pass (render diagnostics regression coverage including wide-span cursor assertions) |
