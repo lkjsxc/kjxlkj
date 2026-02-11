@@ -1,0 +1,10 @@
+[package]
+name = "kjxlkj-test-harness"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../../core/kjxlkj-core-types" }
+kjxlkj-core-state = { path = "../../core/kjxlkj-core-state" }
+serde_json = { workspace = true }

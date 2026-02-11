@@ -1,0 +1,9 @@
+[package]
+name = "kjxlkj-host"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+crossterm = { workspace = true }
+anyhow = { workspace = true }

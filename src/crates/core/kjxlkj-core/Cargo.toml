@@ -1,0 +1,14 @@
+[package]
+name = "kjxlkj-core"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-core-types = { path = "../kjxlkj-core-types" }
+kjxlkj-core-text = { path = "../kjxlkj-core-text" }
+kjxlkj-core-edit = { path = "../kjxlkj-core-edit" }
+kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
+kjxlkj-core-undo = { path = "../kjxlkj-core-undo" }
+kjxlkj-core-ui = { path = "../kjxlkj-core-ui" }
+kjxlkj-core-state = { path = "../kjxlkj-core-state" }
