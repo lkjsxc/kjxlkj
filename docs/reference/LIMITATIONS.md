@@ -7,14 +7,17 @@ This ledger tracks open mismatches between target spec and current baseline stat
 ## Baseline Statement (2026-02-11)
 
 Workspace reconstructed with 20 crates matching source-layout.md spec.
-125 unit/integration tests pass. PTY E2E harness not yet reconstructed.
+132 unit/integration tests pass. PTY E2E harness not yet reconstructed.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
-RegisterStore with named/numbered/unnamed/small-delete registers.
+RegisterStore with named/numbered/unnamed/small-delete/blackhole/clipboard registers.
+Blackhole register ("_) suppresses all writes. Clipboard registers ("+, "*) store locally.
 ForceModifier enum and pre-operator count multiplication implemented.
-Vim regex compiler, ex command parser, search system, command-line wiring.
+Vim regex compiler (with \c/\C case flags, \o/\O/\H atoms), ex command parser,
+search system, command-line wiring. Put operations (p/P) paste from registers.
+Operators wired to RegisterStore for yank/delete recording. Cursor clamping.
 All source files ≤ 200 lines.
 
 ## Open Critical Blockers

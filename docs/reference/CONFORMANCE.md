@@ -16,12 +16,15 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 125 deterministic unit and integration tests covering key normalization,
+through 132 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
 force modifiers, count multiplication, Vim regex compilation, ex command parsing,
-search forward/backward with wrapping, and command-line input handling.
+search forward/backward with wrapping, command-line input handling, blackhole
+register suppression, clipboard register stubs, \c/\C case sensitivity flags,
+\o/\O octal and \H non-head atoms, put (p/P) paste operations, register-wired
+yank/delete operators, and cursor boundary clamping.
 Multi-task runtime architecture implemented (input/core/render tasks with bounded
 channels, signal handlers, proper shutdown).
 All source files comply with ≤ 200 line limit.
@@ -35,16 +38,22 @@ Case transform operators (gu/gU/g~) on lines and ranges implemented.
 PendingState system for multi-key normal mode sequences (count, g/z/f/t/r/m).
 RegisterStore with named (a-z), numbered (0-9), unnamed, and small-delete
 registers; yank records to unnamed+0, delete rotates 1-9 for linewise or writes
-small-delete for non-linewise; A-Z append supported.
+small-delete for non-linewise; A-Z append supported. Blackhole register ("_)
+suppresses all register writes. Clipboard registers ("+, "*) store locally
+(real clipboard integration deferred).
 ForceModifier enum (Characterwise, Linewise, Blockwise) for v/V/Ctrl-v between
 operator and motion in operator-pending mode.
 Pre-operator count multiplication (e.g. 2d3w → count 6).
 Dot-repeat recording via last_change tracking in EditorState.
 Vim regex compiler translating magic-mode patterns to Rust regex (shortcut atoms,
-word boundaries, grouping, alternation, quantifiers, \v very-magic switch).
+word boundaries, grouping, alternation, quantifiers, \v very-magic switch, \c/\C
+case sensitivity flags, \o/\O octal atoms, \H non-head atom, \= synonym for \?).
 Ex command parser with abbreviation-based dispatch and ! force flag support.
 Search system with forward/backward wrapping and compiled Vim regex patterns.
 Command-line input handling for :, /, ? prefixes with mode transitions.
+Put operations (p/P) paste from effective register with linewise/characterwise
+handling. Operators wired to RegisterStore for yank/delete recording. Cursor
+boundary clamping for post-edit safety.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -53,7 +62,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (125 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (132 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

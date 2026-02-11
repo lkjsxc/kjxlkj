@@ -82,5 +82,21 @@ Tracks completion of each wave with evidence.
   - regex crate added to workspace dependencies
   - New files: regex_compile.rs, command_parse.rs, search.rs, editor_cmdline.rs
 
-### Waves 020–023
+### Wave 020: Boundary and Error Semantics
+- Status: COMPLETE
+- Committed: d265278d
+- Evidence: 132 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Blackhole register ("_): record_yank/record_delete skip all writes when register is '_' (3 tests)
+  - Clipboard registers ("+, "*): store locally as named registers (real clipboard deferred)
+  - Regex compiler refactored: emit_escaped/emit_brace helpers, compacted to 120 lines
+  - \c/\C case sensitivity flags with vim_to_rust_regex_ex() returning case_flag
+  - \o/\O octal atom, \H non-head-of-word atom, \= synonym for \? (4 tests)
+  - Put operations: put_after (p) and put_before (P) with linewise/characterwise handling
+  - Operators wired to RegisterStore: yank calls record_yank, delete/change call record_delete
+  - Cursor boundary clamping: clamp_cursor() enforces valid bounds after mutations
+  - Text extraction before mutation: text_range() collects text before buffer modification
+  - editor_edit.rs: get_put_entry() helper, compacted to 175→179 lines
+
+### Waves 021–023
 - Status: NOT STARTED
