@@ -38,7 +38,7 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Key normalization and route trace baselines are wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `KEY-TRACE-03`, `KEY-TRACE-04`, `WR-01R`) |
 | Runtime E2E gate for blocker closure is reconstructed and exercised | `verified` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | Window-tree split/navigation runtime path is reachable with live coverage | `verified` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e --test window_nav_more_e2e --test window_nav_session_terminal_e2e` |
-| Explorer and terminal route reachability baseline is wired | `partial` | 2026-02-11 | `src/crates/app/kjxlkj/src/main.rs`, `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` (`EXP-01R`..`EXP-03R`, `TERM-01R`..`TERM-03R`) |
+| Explorer and terminal route reachability baseline is wired | `partial` | 2026-02-11 | `src/crates/app/kjxlkj/src/main.rs`, `cargo test -p kjxlkj-test-harness --test explorer_terminal_paths_e2e` (`EXP-01R`..`EXP-03R`, `TERM-01R`..`TERM-04R`) |
 | Runtime feature conformance | `partial` | 2026-02-11 | windows/navigation are verified; explorer/terminal lifecycle and cursor/wrap blockers remain open |
 
 ## Domain Status
@@ -49,7 +49,7 @@ Explorer, terminal lifecycle, cursor safety, and wrap safety domains remain bloc
 | Window tree and split lifecycle | `verified` | deterministic split/create/close/only/session-roundtrip coverage is passing (`WIN-01R`..`WIN-05R`) |
 | Mixed-window navigation (`Ctrl-w`) | `verified` | directional/cyclic/previous/boundary/terminal-transition/replay cases are passing (`WINNAV-01R`..`WINNAV-06R`) |
 | Explorer window and actions | `partial` | command/leader launch and open-target routes are reachable; interaction and stability suites remain open |
-| Terminal window integration | `partial` | command/leader launch and mixed-window `Ctrl-w` baselines are reachable; PTY lifecycle and flood/wrap suites remain open |
+| Terminal window integration | `partial` | command/leader launch, mixed-window `Ctrl-w`, and resize baselines are reachable; PTY close/flood/wrap suites remain open |
 | Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
 | Cursor visibility and grapheme safety | `unverified` | blocker behavior not yet implemented |
 | IME interaction around leader/window commands | `unverified` | blocker behavior not yet implemented |

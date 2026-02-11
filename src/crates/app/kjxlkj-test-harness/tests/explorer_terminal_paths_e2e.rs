@@ -105,6 +105,40 @@ fn term_03r_ctrl_w_navigation_remains_mixed_window_consistent() {
     );
 }
 
+#[test]
+fn term_04r_resize_with_terminal_focus_keeps_geometry_invariants() {
+    let binary = ensure_kjxlkj_built().expect("binary build should succeed");
+    let mut session = PtySession::spawn(
+        &binary,
+        100,
+        30,
+        &[("KJXLKJ_INITIAL_LINE", "abc"), ("KJXLKJ_START_CURSOR", "0")],
+    )
+    .expect("PTY session should spawn");
+    std::thread::sleep(Duration::from_millis(120));
+    session
+        .send_raw(b":terminal\r")
+        .expect("terminal command should send");
+    session
+        .resize(80, 20)
+        .expect("resize to 80x20 should succeed");
+    session
+        .resize(120, 40)
+        .expect("resize to 120x40 should succeed");
+    session
+        .resize(60, 16)
+        .expect("resize to 60x16 should succeed");
+    let output = session.quit().expect("quit should succeed");
+    assert!(
+        !output.contains("geometry_ok=false"),
+        "TERM-04R expected geometry invariants to stay true during terminal resizes. Output:\n{output}"
+    );
+    assert!(
+        output.contains("focused_window_type=Terminal"),
+        "TERM-04R expected terminal focus to stay observable in trace. Output:\n{output}"
+    );
+}
+
 fn run_raw_script(script: &[u8]) -> String {
     let binary = ensure_kjxlkj_built().expect("binary build should succeed");
     let mut session = PtySession::spawn(
