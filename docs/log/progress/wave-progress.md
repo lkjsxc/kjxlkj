@@ -132,3 +132,37 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: document-links.md, document-symbols.md, references.md,
     type-hierarchy.md, workspace-symbols.md, rename.md, signature-help.md
   - Ledger sync: CONFORMANCE (327→348), LIMITATIONS, DRIFT_MATRIX updated
+
+### Wave 036: Boundary and Error Semantics
+- Status: COMPLETE
+- Committed: b5245bc6
+- Evidence: 374 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Jumplist navigation (Ctrl-o/Ctrl-i) and changelist navigation (g;/g,)
+  - PositionList data structure in navlist.rs (128 lines): 100 entry cap,
+    go_older/go_newer/push, duplicate consecutive dedup, capacity enforcement
+  - Action variants: JumpOlder, JumpNewer, ChangeOlder, ChangeNewer in
+    kjxlkj-core-types action.rs (113→114)
+  - Key dispatch: Ctrl-o→JumpOlder, Ctrl-i→JumpNewer in normal.rs;
+    g;→ChangeOlder, g,→ChangeNewer in normal_g.rs
+  - EditorState: jumplist + changelist fields (PositionList), record_jump/
+    record_change methods in editor_nav.rs (70 lines)
+  - navigate_jumplist/navigate_changelist with buffer-bounds clamping
+  - Jump recording on GotoLine/GotoFirstLine/GotoLastLine/SearchNext/SearchPrev/
+    StarSearchForward/StarSearchBackward via is_jump_action()
+  - Change recording on all text-changing actions via is_text_changing()
+  - editor_action.rs compacted (199→191): merged single-statement braced arms
+  - normal.rs compacted (202→200): merged test formatting, +2 tests
+  - normal_g.rs compacted (201→165): all tests to inline format, +2 tests
+  - editor.rs expanded (183→200): +jumplist/changelist fields, +is_jump_action,
+    +record_jump/record_change calls
+  - editor_stage04d_tests.rs (151 lines, NEW): 16 boundary tests — jumplist
+    empty/past-end (4), jumplist recording on G/Ctrl-o (2), changelist empty/
+    recording/navigate (4), window close/only/focus boundary (4), explorer close
+    when none (1), terminal open (1)
+  - navlist.rs unit tests (6): push_and_go_older, go_newer_after_older,
+    push_truncates_future, capacity_cap, duplicate_consecutive_ignored,
+    empty_list_returns_none
+  - Tier-C docs read: changelist.md, jumplist.md, finder.md, flash.md,
+    include-search.md
+  - Ledger sync: CONFORMANCE (348→374), LIMITATIONS, DRIFT_MATRIX updated

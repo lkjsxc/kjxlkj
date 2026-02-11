@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 348 deterministic unit and integration tests covering key normalization,
+through 374 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -123,6 +123,11 @@ integration tests.
 Wincmd expanded: W reverse cycle, H/J/K/L move-to-edge (placeholder), r/R rotate
 (placeholder), x exchange (placeholder). Focus cycle reverse implemented.
 21 wincmd unit tests + 40 wincmd integration tests.
+Jumplist navigation (Ctrl-o/Ctrl-i) and changelist navigation (g;/g,) with
+PositionList data structure (100 entry cap, go_older/go_newer/push, dedup).
+Jump recording on GotoLine/GotoFirstLine/GotoLastLine/Search/StarSearch.
+Change recording on all text-changing actions.
+Boundary tests: empty list, past-end, single window, explorer close, terminal open.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -131,7 +136,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (348 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (374 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

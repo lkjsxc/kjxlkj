@@ -45,6 +45,13 @@ Command and route wiring (wave-035): Wincmd W reverse cycle, H/J/K/L move-to-edg
 creation via open_terminal. Explorer v/s split-open keys for opening files in
 horizontal/vertical splits. Focus cycle reverse. 21 new tests bringing total to
 348 tests.
+Boundary and error semantics (wave-036): Jumplist navigation (Ctrl-o/Ctrl-i) and
+changelist navigation (g;/g,) with PositionList data structure (100 entry cap,
+go_older/go_newer/push, dedup). Jump recording on GotoLine/GotoFirstLine/
+GotoLastLine/Search/StarSearch. Change recording on all text-changing actions.
+navigate_jumplist/navigate_changelist with buffer-bounds clamping. Boundary tests
+for empty list, past-end, single window, explorer close, terminal open. 26 new
+tests bringing total to 374 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
