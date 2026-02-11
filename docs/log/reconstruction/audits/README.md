@@ -29,8 +29,9 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `cargo test -p kjxlkj-test-harness` | pass (group roots, member paths, fan-out, and `<=200` file lines) |
 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` | pass (`KEY-TRACE-01` and `WR-01R`) |
 | `cargo test -p kjxlkj-core-state` | pass (window-tree split/focus/geometry invariants foundation tests) |
+| `cargo test -p kjxlkj-test-harness --test window_nav_e2e` | pass (`WIN-01R` split lifecycle baseline and `WINNAV-06R` replay determinism baseline) |
 | PTY harness API contract surface | implemented (`spawn`, `send raw`, `send symbolic`, `wait pattern`, `capture frame`, `resize`, `quit`) |
-| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 178 lines) |
+| source files over 200 lines | none (`find src -type f -name '*.rs' ...` top file is 184 lines) |
 
 ## Improvement Ideas
 
@@ -40,3 +41,4 @@ Back: [/docs/log/reconstruction/README.md](/docs/log/reconstruction/README.md)
 | `IDEA-BASELINE-LOG-02` | extend topology audit with per-directory trend reporting over time | provides early warning before fan-out pressure exceeds policy | phase-5 hardening |
 | `IDEA-KEY-TRACE-01` | capture last 20 raw events and resolved actions in PTY failure diagnostics | aligns with blocker diagnostic contract and speeds root-cause analysis | phase-1 follow-up |
 | `IDEA-WIN-RUNTIME-01` | wire `Ctrl-w` prefix through runtime to `WindowTree` and emit focus trace ids | enables live `WIN*R` and `WINNAV*R` closure path | phase-2 focus |
+| `IDEA-WIN-RUNTIME-02` | add mixed buffer/explorer/terminal leaf binding in runtime setup and PTY scripts | required to close `WIN-03R` and `WINNAV-05R` semantics | phase-2 focus |

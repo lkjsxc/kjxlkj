@@ -36,6 +36,7 @@ Because runtime feature logic is not yet reconstructed, runtime behavior domains
 | Source topology and source-file-size smoke checks pass | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness` includes grouped-path, fan-out, and `<=200` line assertions |
 | Shift-normalization append path is wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `WR-01R`) |
 | Runtime E2E gate for blocker closure is reconstructed and exercised | `verified` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
+| Window-tree split/navigation runtime path is reachable with initial live coverage | `partial` | 2026-02-11 | `src/crates/core/kjxlkj-core-state/src/windows/`, `cargo test -p kjxlkj-test-harness --test window_nav_e2e` |
 | Runtime feature conformance | `unverified` | 2026-02-11 | runtime crates are scaffolded; behavior blockers remain open |
 
 ## Domain Status
@@ -43,8 +44,8 @@ Because runtime feature logic is not yet reconstructed, runtime behavior domains
 | Domain | Status | Reason |
 |---|---|---|
 | Input decoding and key normalization | `partial` | `Shift+a -> A` normalization and append dispatch are verified; broader keymap domains remain open |
-| Window tree and split lifecycle | `unverified` | blocker behavior not yet implemented |
-| Mixed-window navigation (`Ctrl-w`) | `unverified` | blocker behavior not yet implemented |
+| Window tree and split lifecycle | `partial` | core window-tree model and initial live split lifecycle coverage exist; required `WIN-02R`..`WIN-05R` remain open |
+| Mixed-window navigation (`Ctrl-w`) | `partial` | `Ctrl-w` runtime prefix is reachable and replay determinism baseline exists; full `WINNAV-01R`..`WINNAV-05R` remain open |
 | Explorer window and actions | `unverified` | blocker behavior not yet implemented |
 | Terminal window integration | `unverified` | blocker behavior not yet implemented |
 | Viewport wrap safety | `unverified` | blocker behavior not yet implemented |
