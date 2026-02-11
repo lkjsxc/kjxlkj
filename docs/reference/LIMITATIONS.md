@@ -76,6 +76,15 @@ open/close/toggle. 9 z-prefix unit tests + 6 FoldState unit tests + 16
 integration tests (including macro+fold, mark+fold, reduce/more cycle, combined
 stress 20x). Tree-sitter and expression fold methods deferred. 31 new tests
 bringing total to 442 tests.
+Terminal escape parser and screen model (wave-040): VT100/xterm parser with 13
+states, CSI dispatch (cursor/erase/scroll/insert/delete/SGR/scroll-region/
+save-restore), SGR attributes (basic+bright+256+RGB fg/bg, bold/dim/italic/
+underline/reverse/strikethrough), private modes (DECTCEM/alt-screen/bracketed-
+paste), OSC title, escape dispatch (reverse-index/linefeed/next-line/cursor-
+save-restore/reset), UTF-8 multi-byte accumulation. Screen model with cell grid,
+cursor, scroll region, saved cursor, alt-screen, bracketed-paste. Filetype
+detection: 15 languages by extension + shebang fallback. 31 new tests bringing
+total to 473 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

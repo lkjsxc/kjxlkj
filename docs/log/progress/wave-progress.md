@@ -183,3 +183,40 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
     (+folds, +editor_stage04g_tests). New files: `folds.rs` (184, FoldState,
     6 tests), `editor_stage04g_tests.rs` (169, 16 integration tests)
   - Ledger sync: CONFORMANCE (411→442), LIMITATIONS, DRIFT_MATRIX (+R-FOLD-01)
+
+## Stage 05: Services and Features
+
+### Wave 040: Scope Freeze and Input Mapping
+- Status: COMPLETE
+- Committed: 81b889f5
+- Evidence: 473 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - VT100/xterm escape parser (13 states): Ground, Escape, EscapeIntermediate,
+    CsiEntry, CsiParam, CsiIntermediate, CsiIgnore, OscString, DcsEntry,
+    DcsParam, DcsPassthrough, DcsIgnore, SosPmApc
+  - CSI dispatch: CUU/CUD/CUF/CUB/CUP/CNL/CPL/CHA/VPA, ED/EL/ECH, SU/SD,
+    IL/DL, ICH/DCH, SGR, DECSTBM, cursor save/restore
+  - SGR: bold/dim/italic/underline/reverse/strikethrough, basic 8 + bright 8
+    + 256-color + RGB for fg/bg
+  - Private modes: DECTCEM (cursor visibility), alt screen (47/1049),
+    bracketed paste (2004)
+  - OSC title (0;/2; prefix), escape dispatch (M/D/E/7/8/c), UTF-8 accumulation
+  - Screen model: Cell grid with char/fg/bg/6 style attributes, cursor,
+    scroll region, saved cursor, alt-screen, bracketed-paste. Operations:
+    put_char (line wrap), linefeed (scroll), CR, BS, tab (8-col), reverse
+    index, erase display/line/chars, insert/delete chars, scroll up/down,
+    insert/delete lines, save/restore cursor, reset
+  - Filetype detection: 15 languages by extension (rs/py/js/jsx/ts/tsx/go/
+    c/h/cpp/cc/cxx/hpp/hh/hxx/md/json/yaml/yml/toml/html/htm/css/sh/bash/lua)
+    + shebang fallback (python/node/bash/lua)
+  - escape_parser.rs split: Parser core (170 lines), CSI dispatch extracted
+    to csi.rs (98 lines), tests to parser_tests.rs (51 lines)
+  - screen.rs split: Screen model (177 lines), tests to screen_tests.rs (46)
+  - lib.rs (terminal) 77→81: +pub mod csi/escape_parser/screen
+  - lib.rs (index) 11→12: +pub mod filetype
+  - New files: escape_parser.rs (170), csi.rs (98), parser_tests.rs (51),
+    screen.rs (177), screen_tests.rs (46), filetype.rs (81)
+  - Tier-C docs read: syntax-files.md, syntax.md, dap.md, escape-parser.md,
+    remote.md, terminal.md
+  - Ledger sync: CONFORMANCE (442→473), LIMITATIONS, DRIFT_MATRIX
+    (+R-FILETYPE-01, R-TERM-01 updated, M4 16→17)
