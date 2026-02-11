@@ -123,3 +123,32 @@ Stage 00 (Foundation), Stage 01 (Architecture Core), and Stage 02
     ex command parsing for bf/bl/ls/buffers, delete updates alternate
   - Tier-C docs read: buffer-switching, bufferline, config/README, after-dir,
     audio, autocommands, command-palette
+
+### Wave 030: Live E2E and Race Validation
+- Status: COMPLETE
+- Committed: 8e6d7881
+- Evidence: 240 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Race condition stress tests: 10 tests in editor_race_tests.rs (140 lines)
+    - rapid_mode_toggle_100_cycles: Normal→Insert→Normal 100 times
+    - rapid_visual_toggle_100_cycles: Normal→Visual→Normal 100 times
+    - command_mode_enter_exit_100_cycles: Normal→Command→Normal 100 times
+    - insert_escape_preserves_text: typed text survives mode cycle
+    - split_close_cycle_10_times: split→close→split 10 cycles
+    - buffer_create_delete_cycle_20: open→delete→open 20 cycles
+    - alternate_buffer_stress: 50 cycles of alternate buffer switching
+    - resize_boundary_1x1: editor handles 1×1 terminal size
+    - resize_boundary_large: editor handles 1000×1000 terminal size
+    - resize_churn_50_cycles: rapid resize oscillation 50 cycles
+  - Boundary safety tests: 7 tests in editor_boundary_tests.rs (83 lines)
+    - deterministic_replay_insert_delete: identical key replay gives identical state
+    - delete_on_empty_buffer_is_safe: delete char on empty buffer is no-op
+    - motion_on_empty_buffer_is_safe: cursor motion on empty buffer stays at 0
+    - ex_unknown_command_is_noop: unknown ex command does not crash
+    - sequential_ex_commands: multiple ex commands execute in order
+    - ctrl_6_without_alternate: Ctrl-6 with no alternate buffer is no-op
+    - force_quit_sets_flag: :q! sets force_quit flag
+  - Split editor_race_tests.rs (originally 218 lines) into race (140) + boundary (83)
+  - lib.rs expanded to 47 lines (+editor_race_tests, +editor_boundary_tests modules)
+  - Tier-C docs read: config/filetype, ftconfig, hooks-events, implementation,
+    keybinding_hints, mouse-support, which-key

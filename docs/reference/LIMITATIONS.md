@@ -18,6 +18,8 @@ Buffer management: alternate buffer tracking (Ctrl-^), :bn/:bp/:bd/:b N
 navigation, :ls/:buffers listing, :e file opening, deletion with fallback,
 :bfirst/:blast first/last buffer navigation.
 223 unit/integration tests pass after wave-029.
+Race and boundary validation: 17 additional tests (10 stress + 7 safety) pass
+after wave-030, bringing total to 240 tests.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
