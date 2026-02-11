@@ -14,7 +14,7 @@ Temporary reconstruction notes that are not yet promoted.
 
 ## Current State
 
-No unresolved reconstruction records are active.
+Active reconstruction records are open for the 2026-02-11 baseline wave.
 
 ## Cleanup Rule
 

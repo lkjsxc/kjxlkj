@@ -24,7 +24,7 @@ Log files never override policy, spec, reference, or TODO documents.
 
 ## Current State
 
-No active historical records are retained.
+Active reconstruction audit and testing-idea records are open for the current wave.
 
 ## Related
 
