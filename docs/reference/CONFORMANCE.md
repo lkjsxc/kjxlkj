@@ -16,11 +16,15 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 60 deterministic unit and integration tests covering key normalization,
-mode dispatch, cursor motion, text buffer operations, layout tree, and editor state.
+through 76 deterministic unit and integration tests covering key normalization,
+mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
+multi-key sequences, operator composition, and motion execution.
 Multi-task runtime architecture implemented (input/core/render tasks with bounded
 channels, signal handlers, proper shutdown).
 All source files comply with ≤ 200 line limit.
+Motion system expanded to ~40 variants including find/till/paragraph/match-paren.
+Operator composition implemented (linewise dd/yy/cc, operator+motion d3w/cw).
+PendingState system for multi-key normal mode sequences (count, g/z/f/t/r/m).
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -29,7 +33,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (60 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (76 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

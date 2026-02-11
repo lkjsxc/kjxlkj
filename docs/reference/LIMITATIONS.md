@@ -7,8 +7,10 @@ This ledger tracks open mismatches between target spec and current baseline stat
 ## Baseline Statement (2026-02-11)
 
 Workspace reconstructed with 20 crates matching source-layout.md spec.
-57 unit/integration tests pass. PTY E2E harness not yet reconstructed.
+76 unit/integration tests pass. PTY E2E harness not yet reconstructed.
 Explorer and terminal service crates are stubs.
+Motion system expanded to ~40 variants. Operator composition implemented.
+All source files ≤ 199 lines.
 
 ## Open Critical Blockers
 
