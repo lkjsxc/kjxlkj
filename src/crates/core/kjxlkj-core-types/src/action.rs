@@ -22,10 +22,8 @@ pub enum Action {
     EnterMode(Mode),
     /// Return to Normal mode.
     ExitToNormal,
-    /// Execute an ex command string.
     ExCommand(String),
     Resize(u16, u16),
-    /// Paste text from bracketed paste.
     Paste(String),
     FocusGained,
     FocusLost,
@@ -36,13 +34,9 @@ pub enum Action {
     Write,
     /// Write and quit.
     WriteQuit,
-    /// Split window horizontally.
     SplitHorizontal,
-    /// Split window vertically.
     SplitVertical,
-    /// Close current window.
     CloseWindow,
-    /// Focus window in direction.
     FocusDirection(Direction),
     /// Cycle focus to next window.
     FocusCycle,
@@ -122,6 +116,12 @@ pub enum Action {
     GStarSearchForward,
     /// g# backward (partial match, no word boundaries).
     GStarSearchBackward,
+    /// Increment number under/after cursor (<C-a>).
+    IncrementNumber,
+    /// Decrement number under/after cursor (<C-x>).
+    DecrementNumber,
+    /// Set an editor option (:set opt=val).
+    SetOption(String, String),
 }
 
 /// Cursor motion.

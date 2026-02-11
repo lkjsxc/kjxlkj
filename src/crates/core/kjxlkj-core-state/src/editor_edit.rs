@@ -1,9 +1,7 @@
 //! Text editing operations on the focused buffer.
-//! See /docs/spec/editing/README.md.
 
 use kjxlkj_core_types::{ContentKind, RangeType};
-use crate::editor::EditorState;
-use crate::window_state::WindowState;
+use crate::{editor::EditorState, window_state::WindowState};
 
 impl EditorState {
     pub(crate) fn focused_window_mut(&mut self) -> &mut WindowState {
@@ -58,8 +56,7 @@ impl EditorState {
                 let text = buf.line(win.cursor.line).unwrap_or_default();
                 let vc = text.trim_end_matches('\n').chars().count();
                 let w = self.focused_window_mut();
-                w.cursor.col = vc;
-                w.cursor.desired_col = vc;
+                (w.cursor.col, w.cursor.desired_col) = (vc, vc);
             }
         }
     }
@@ -71,8 +68,7 @@ impl EditorState {
                 let text = buf.line(win.cursor.line).unwrap_or_default();
                 let col = text.chars().position(|c| !c.is_whitespace()).unwrap_or(0);
                 let w = self.focused_window_mut();
-                w.cursor.col = col;
-                w.cursor.desired_col = col;
+                (w.cursor.col, w.cursor.desired_col) = (col, col);
             }
         }
     }
@@ -102,7 +98,6 @@ impl EditorState {
         }
     }
 
-    /// Put from effective register after cursor.
     pub(crate) fn put_after(&mut self) {
         let entry = match self.get_put_entry() { Some(e) => e, None => return };
         let win = self.windows.get(&self.focus.focused).unwrap();
@@ -124,7 +119,6 @@ impl EditorState {
         }
     }
 
-    /// Put from effective register before cursor.
     pub(crate) fn put_before(&mut self) {
         let entry = match self.get_put_entry() { Some(e) => e, None => return };
         let win = self.windows.get(&self.focus.focused).unwrap();
@@ -148,32 +142,58 @@ impl EditorState {
         }
     }
 
-    /// Get the register entry for put, falling back to unnamed.
     fn get_put_entry(&mut self) -> Option<crate::register::RegisterEntry> {
         let reg = self.registers.effective();
-        let entry = self.registers.get(reg)
-            .or_else(|| self.registers.get('"'))
-            .cloned();
+        let entry = self.registers.get(reg).or_else(|| self.registers.get('"')).cloned();
         self.registers.clear_selection();
         entry
     }
 
-    /// Clamp cursor to valid buffer bounds.
     pub(crate) fn clamp_cursor(&mut self) {
         let win = self.windows.get(&self.focus.focused).unwrap();
         if let ContentKind::Buffer(buf_id) = win.content {
-            let cur_line = win.cursor.line;
-            let cur_col = win.cursor.col;
+            let (cur_line, cur_col) = (win.cursor.line, win.cursor.col);
             if let Some(buf) = self.buffers.get(&buf_id) {
                 let lc = buf.line_count().max(1);
-                let clamped_line = if cur_line >= lc { lc - 1 } else { cur_line };
-                let gc = buf.line_grapheme_count(clamped_line);
-                let max_col = if gc > 0 { gc - 1 } else { 0 };
-                let clamped_col = if cur_col > max_col { max_col } else { cur_col };
+                let clamped_line = cur_line.min(lc - 1);
+                let max_col = buf.line_grapheme_count(clamped_line).saturating_sub(1);
+                let clamped_col = cur_col.min(max_col);
                 let w = self.focused_window_mut();
                 w.cursor.line = clamped_line;
                 w.cursor.col = clamped_col;
             }
         }
     }
+
+    pub(crate) fn increment_number(&mut self) { self.modify_number(1); }
+    pub(crate) fn decrement_number(&mut self) { self.modify_number(-1); }
+    fn modify_number(&mut self, delta: i64) {
+        let win = self.windows.get(&self.focus.focused).unwrap();
+        let buf_id = match win.content { ContentKind::Buffer(id) => id, _ => return };
+        let (line, col) = (win.cursor.line, win.cursor.col);
+        let text = match self.buffers.get(&buf_id).and_then(|b| b.line(line)) {
+            Some(t) => t, None => return,
+        };
+        let (start, end, val) = match find_number(&text, col) {
+            Some(t) => t, None => return,
+        };
+        let new_text = (val + delta).to_string();
+        if let Some(buf) = self.buffers.get_mut(&buf_id) {
+            let _ = buf.delete(line, start, line, end);
+            let _ = buf.insert(line, start, &new_text);
+            self.focused_window_mut().cursor.col = start + new_text.len().saturating_sub(1);
+        }
+    }
+}
+
+fn find_number(text: &str, col: usize) -> Option<(usize, usize, i64)> {
+    let b = text.as_bytes();
+    let mut i = col;
+    while i < b.len() && !b[i].is_ascii_digit() { i += 1; }
+    if i >= b.len() { return None; }
+    let (mut s, mut e) = (i, i + 1);
+    while s > 0 && b[s - 1].is_ascii_digit() { s -= 1; }
+    if s > 0 && b[s - 1] == b'-' { s -= 1; }
+    while e < b.len() && b[e].is_ascii_digit() { e += 1; }
+    text[s..e].parse::<i64>().ok().map(|v| (s, e, v))
 }

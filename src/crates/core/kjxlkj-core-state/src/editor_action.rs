@@ -120,6 +120,9 @@ impl EditorState {
             Action::ClearSearchHighlight => self.search.clear_highlight(),
             Action::GStarSearchForward => self.g_star_search(SearchDirection::Forward),
             Action::GStarSearchBackward => self.g_star_search(SearchDirection::Backward),
+            Action::IncrementNumber => self.increment_number(),
+            Action::DecrementNumber => self.decrement_number(),
+            Action::SetOption(ref name, ref val) => self.apply_set_option(name, val),
             _ => {}
         }
     }
@@ -156,6 +159,15 @@ impl EditorState {
         if self.search.set_raw_pattern(&display, &rust_pat, dir).is_ok() {
             self.registers.set_readonly('/', display);
             self.jump_to_match(dir);
+        }
+    }
+
+    fn apply_set_option(&mut self, name: &str, val: &str) {
+        match name {
+            "ignorecase" | "ic" => self.search.ignorecase = val == "true",
+            "smartcase" | "scs" => self.search.smartcase = val == "true",
+            "hlsearch" | "hls" => self.search.hlsearch = val == "true",
+            _ => {}
         }
     }
 

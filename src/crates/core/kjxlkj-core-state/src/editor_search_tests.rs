@@ -30,7 +30,6 @@ fn star_search_jumps_to_next_word() {
 #[test]
 fn star_search_wraps_around() {
     let mut s = ed_with("foo bar baz");
-    // Only one "foo", so * wraps back to col 0.
     s.handle_key(&Key::Char('*'), &m());
     assert_eq!(cursor_col(&s), 0);
 }
@@ -38,7 +37,6 @@ fn star_search_wraps_around() {
 #[test]
 fn hash_search_backward() {
     let mut s = ed_with("foo bar foo");
-    // # from col 0 wraps backward to last "foo" at col 8.
     s.handle_key(&Key::Char('#'), &m());
     assert_eq!(cursor_col(&s), 8);
 }
@@ -86,19 +84,13 @@ fn new_search_reactivates_highlight() {
 }
 
 #[test]
-fn star_on_non_word_char_is_noop() {
+fn star_boundary_cases() {
     let mut s = ed_with("   spaces");
-    // Cursor at col 0 which is a space — not a word char.
     s.handle_key(&Key::Char('*'), &m());
-    assert_eq!(cursor_col(&s), 0);
-}
-
-#[test]
-fn star_sets_slash_register() {
-    let mut s = ed_with("hello world hello");
-    s.handle_key(&Key::Char('*'), &m());
-    let reg = s.registers.get('/').unwrap();
-    assert!(reg.text.contains("hello"));
+    assert_eq!(cursor_col(&s), 0); // space is not a word char
+    let mut s2 = ed_with("hello world hello");
+    s2.handle_key(&Key::Char('*'), &m());
+    assert!(s2.registers.get('/').unwrap().text.contains("hello"));
 }
 
 #[test]
@@ -188,4 +180,21 @@ fn ignorecase_search_via_handle_key() {
     s.handle_command_input(&Key::Enter, &m(), CommandKind::SearchForward);
     // ignorecase=true, so "hello" matches "Hello" at col 0.
     assert_eq!(cursor_col(&s), 0);
+}
+
+#[test]
+fn ctrl_a_increments_number() {
+    let mut s = ed_with("val = 42 end");
+    for _ in 0..6 { s.handle_key(&Key::Char('l'), &m()); }
+    let ctrl = KeyModifiers { ctrl: true, ..Default::default() };
+    s.handle_key(&Key::Char('a'), &ctrl);
+    assert!(s.buffers.get(&BufferId(0)).unwrap().line(0).unwrap().contains("43"));
+}
+
+#[test]
+fn set_option_via_ex_command() {
+    let mut s = ed_with("Hello");
+    assert!(!s.search.ignorecase);
+    type_ex(&mut s, "set ignorecase");
+    assert!(s.search.ignorecase);
 }

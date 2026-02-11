@@ -106,8 +106,23 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         "registers" | "reg" | "display" | "di" => Action::ShowRegisters,
         // Search highlight clear.
         "nohlsearch" | "noh" => Action::ClearSearchHighlight,
+        // Set option.
+        "set" | "se" => parse_set_option(args),
+        "setlocal" => parse_set_option(args),
         _ => Action::Noop,
     }
+}
+
+fn parse_set_option(args: &str) -> Action {
+    let args = args.trim();
+    if args.is_empty() { return Action::Noop; }
+    if let Some((k, v)) = args.split_once('=') {
+        return Action::SetOption(k.to_string(), v.to_string());
+    }
+    if let Some(name) = args.strip_prefix("no") {
+        return Action::SetOption(name.to_string(), "false".to_string());
+    }
+    Action::SetOption(args.to_string(), "true".to_string())
 }
 
 #[cfg(test)]
@@ -173,5 +188,12 @@ mod tests {
     fn parse_nohlsearch() {
         assert_eq!(parse_ex_command("nohlsearch"), Action::ClearSearchHighlight);
         assert_eq!(parse_ex_command("noh"), Action::ClearSearchHighlight);
+    }
+
+    #[test]
+    fn parse_set_option_forms() {
+        assert_eq!(parse_ex_command("set ignorecase"), Action::SetOption("ignorecase".into(), "true".into()));
+        assert_eq!(parse_ex_command("set noignorecase"), Action::SetOption("ignorecase".into(), "false".into()));
+        assert_eq!(parse_ex_command("set tabstop=4"), Action::SetOption("tabstop".into(), "4".into()));
     }
 }
