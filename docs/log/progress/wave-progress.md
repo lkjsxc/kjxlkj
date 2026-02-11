@@ -220,3 +220,35 @@ Waves 032 (Scope Freeze and Input Mapping, 271 tests),
     remote.md, terminal.md
   - Ledger sync: CONFORMANCE (442→473), LIMITATIONS, DRIFT_MATRIX
     (+R-FILETYPE-01, R-TERM-01 updated, M4 16→17)
+
+### Wave 041: Requirement Extraction and Normalization
+- Status: COMPLETE
+- Committed: 611219bf
+- Evidence: 493 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - LSP lifecycle model: LspServerState with phase machine (Starting/Initializing/
+    Running/ShuttingDown/Stopped/Failed), ServerCapabilities (17 boolean fields:
+    completion, hover, definition, references, rename, code_action, formatting,
+    range_formatting, signature_help, code_lens, inlay_hints, document_symbols,
+    workspace_symbols, declaration, type_definition, implementation, diagnostics),
+    LspServerConfig (language/command/root_markers/filetypes), crash tracking
+    (3-retry limit), restart reset. 5 unit tests
+  - Diagnostic model: DiagnosticStore with replace_for_file (LSP push semantics),
+    append (incremental), alloc_id auto-increment, sort by severity→file→line→col,
+    next_in_file/prev_in_file wrapping navigation, count_by_severity, for_file
+    filter. Severity(Error/Warning/Info/Hint, ordered), DiagnosticKind(Diagnostic/
+    Build/Grep/Todo/Quickfix), DiagnosticLocation with optional end position.
+    8 unit tests
+  - Theme/highlight model: HlGroup enum (35 groups: 13 syntax + 22 UI), Color
+    (u8,u8,u8) RGB, Style with builder pattern (fg/bg/bold/italic/underline/
+    strikethrough/reverse), Theme with HashMap<HlGroup,Style>, default_dark()
+    One Dark inspired with 30 styled groups. 7 unit tests
+  - lifecycle.rs (130 lines, NEW) in kjxlkj-service-lsp
+  - diagnostic.rs (177 lines, NEW) in kjxlkj-service-lsp
+  - theme.rs (156 lines, NEW) in kjxlkj-core-ui
+  - lib.rs (kjxlkj-service-lsp) 9→13: +pub mod diagnostic; +pub mod lifecycle;
+  - lib.rs (kjxlkj-core-ui) 10→12: +pub mod theme;
+  - Tier-C docs read: tmux.md, wm-integration.md, ui/README.md, color-picker.md,
+    cursor-customization.md, font-rendering.md, icons.md
+  - Ledger sync: CONFORMANCE (473→493), LIMITATIONS, DRIFT_MATRIX
+    (+R-LSP-01, +R-THEME-01, M4 17→19, M2 4→5)

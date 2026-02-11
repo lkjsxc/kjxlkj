@@ -72,6 +72,11 @@ All files are now ≤ 200 lines.
 | `screen_tests.rs` (kjxlkj-service-terminal) | 46 | OK |
 | `filetype.rs` (kjxlkj-service-index) | 81 | OK |
 | `lib.rs` (kjxlkj-service-index) | 12 | OK |
+| `lifecycle.rs` (kjxlkj-service-lsp) | 130 | OK |
+| `diagnostic.rs` (kjxlkj-service-lsp) | 177 | OK |
+| `lib.rs` (kjxlkj-service-lsp) | 13 | OK |
+| `theme.rs` (kjxlkj-core-ui) | 156 | OK |
+| `lib.rs` (kjxlkj-core-ui) | 12 | OK |
 
 ## Splits Performed
 
@@ -87,7 +92,7 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `editor.rs` (196), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `command_parse.rs` (195), `editor_edit.rs` (199), `register.rs` (198), `editor_visual.rs` (197), `text_object.rs` (195), `editor_buffer.rs` (194), `editor_stage04c_tests.rs` (193), `layout_ops.rs` (191), `editor_stage04f_tests.rs` (190), `editor_stage04_tests.rs` (189), `editor_ops.rs` (186), `other_modes.rs` (184), `editor_action.rs` (184), `folds.rs` (184), `explorer_nav.rs` (181), `screen.rs` (177), `editor_window.rs` (176), `escape_parser.rs` (170) as they approach the limit.
+- Monitor `editor.rs` (196), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `command_parse.rs` (195), `editor_edit.rs` (199), `register.rs` (198), `editor_visual.rs` (197), `text_object.rs` (195), `editor_buffer.rs` (194), `editor_stage04c_tests.rs` (193), `layout_ops.rs` (191), `editor_stage04f_tests.rs` (190), `editor_stage04_tests.rs` (189), `editor_ops.rs` (186), `other_modes.rs` (184), `editor_action.rs` (184), `folds.rs` (184), `explorer_nav.rs` (181), `screen.rs` (177), `diagnostic.rs` (177), `editor_window.rs` (176), `escape_parser.rs` (170), `theme.rs` (156) as they approach the limit.
 - New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
 - New files added in wave-018: `register.rs` (140→176), `pending.rs` expanded to 175.
 - New files added in wave-019: `regex_compile.rs` (187→120 refactored), `command_parse.rs` (159), `search.rs` (200), `editor_cmdline.rs` (195).
@@ -112,3 +117,4 @@ All files are now ≤ 200 lines.
 - Wave-038 changes: `action.rs` 115→116 (+MacroRecordStart/MacroRecordStop/MacroPlay), `normal.rs` 198→200 (+q→MacroRecord, +@→MacroPlay), `normal_partial.rs` 108→115 (MacroRecord/MacroPlay emit real actions), `editor.rs` 200→194 (compacted imports/struct/comments, +macro_state field, +stop-q intercept, +capture call), `editor_action.rs` 194→197 (+MacroRecordStart/MacroRecordStop/MacroPlay dispatch), `editor_nav.rs` 115→171 (+start/stop_macro_recording, +play_macro, +parse_macro_keys), `lib.rs` (core-state) 67→70 (+macros, +editor_stage04f_tests). New files: `macros.rs` (133, MacroState, 5 tests), `editor_stage04f_tests.rs` (190, 15 integration tests). Wave-progress.md split: waves 032-034 archived to wave-progress-stage-04-early.md.
 - Wave-039 changes: `action.rs` 116→119 (+9 fold variants), `normal_z.rs` 43→115 (+zo/zc/za/zR/zM/zr/zm/zj/zk dispatch, +9 unit tests), `editor.rs` 194→196 (+fold_state field), `editor_action.rs` 197→184 (+fold dispatch, compacted existing arms), `editor_nav.rs` 171→157 (+fold methods, +apply_nav_position shared helper, refactored and compacted), `lib.rs` (core-state) 70→73 (+folds, +editor_stage04g_tests). New files: `folds.rs` (184, FoldState, 6 tests), `editor_stage04g_tests.rs` (169, 16 integration tests).
 - Wave-040 changes: `lib.rs` (kjxlkj-service-terminal) 77→81 (+pub mod csi/escape_parser/screen), `lib.rs` (kjxlkj-service-index) 11→12 (+pub mod filetype). New files: `escape_parser.rs` (170, VT100 parser core), `csi.rs` (98, CSI dispatch + SGR), `parser_tests.rs` (51, 6 parser tests), `screen.rs` (177, cell grid model), `screen_tests.rs` (46, 5 screen tests), `filetype.rs` (81, 15-language detection, 20 tests).
+- Wave-041 changes: `lib.rs` (kjxlkj-service-lsp) 9→13 (+pub mod diagnostic; +pub mod lifecycle;), `lib.rs` (kjxlkj-core-ui) 10→12 (+pub mod theme;). New files: `lifecycle.rs` (130, LSP lifecycle state machine, 5 tests), `diagnostic.rs` (177, diagnostic data model, 8 tests), `theme.rs` (156, highlight/theme model, 7 tests).

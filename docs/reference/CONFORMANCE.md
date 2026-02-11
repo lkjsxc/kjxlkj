@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 473 deterministic unit and integration tests covering key normalization,
+through 493 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -174,6 +174,18 @@ delete chars, scroll up/down, insert/delete lines, cursor save/restore, reset.
 Filetype detection: extension-based language mapping for 15 languages (rust,
 python, javascript, typescript, go, c, cpp, markdown, json, yaml, toml, html,
 css, bash, lua) with shebang fallback (python, node, bash, lua).
+LSP lifecycle model: LspServerState with phase machine (Starting/Initializing/
+Running/ShuttingDown/Stopped/Failed), ServerCapabilities (17 boolean fields),
+LspServerConfig (language/command/root_markers/filetypes), crash tracking with
+3-retry limit, restart reset. Diagnostic model: DiagnosticStore with
+replace_for_file (LSP push semantics), append (incremental), alloc_id auto-
+increment, sort by severity→file→line→col, next_in_file/prev_in_file wrapping
+navigation, count_by_severity, for_file filter. Severity enum (Error/Warning/
+Info/Hint, ordered), DiagnosticKind (Diagnostic/Build/Grep/Todo/Quickfix),
+DiagnosticLocation with optional end position. Theme/highlight model: HlGroup
+enum (35 groups: 13 syntax + 22 UI), Color(u8,u8,u8) RGB, Style with builder
+pattern (fg/bg/bold/italic/underline/strikethrough/reverse), Theme with
+HashMap<HlGroup,Style>, default_dark() One Dark inspired with 30 styled groups.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -182,7 +194,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (473 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (493 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

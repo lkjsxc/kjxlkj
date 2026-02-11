@@ -85,6 +85,21 @@ save-restore/reset), UTF-8 multi-byte accumulation. Screen model with cell grid,
 cursor, scroll region, saved cursor, alt-screen, bracketed-paste. Filetype
 detection: 15 languages by extension + shebang fallback. 31 new tests bringing
 total to 473 tests.
+LSP lifecycle model (wave-041): LspServerState with phase machine (Starting/
+Initializing/Running/ShuttingDown/Stopped/Failed), ServerCapabilities (17 boolean
+fields: completion, hover, definition, references, rename, code_action, formatting,
+range_formatting, signature_help, code_lens, inlay_hints, document_symbols,
+workspace_symbols, declaration, type_definition, implementation, diagnostics),
+LspServerConfig (language/command/root_markers/filetypes), crash tracking with
+3-retry limit and restart reset. Diagnostic model: DiagnosticStore with
+replace_for_file (LSP push semantics), append (incremental), sort by severity→
+file→line→col, next_in_file/prev_in_file wrapping navigation, count_by_severity,
+for_file filter. Severity(Error/Warning/Info/Hint), DiagnosticKind(Diagnostic/
+Build/Grep/Todo/Quickfix), DiagnosticLocation with optional end position.
+Theme/highlight model: HlGroup enum (35 groups: 13 syntax + 22 UI), Color RGB,
+Style with builder pattern, Theme with HashMap lookup, default_dark() One Dark
+inspired. 20 new tests (5 lifecycle + 8 diagnostic + 7 theme) bringing total to
+493 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
