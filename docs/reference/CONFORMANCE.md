@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 189 deterministic unit and integration tests covering key normalization,
+through 195 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -74,6 +74,10 @@ ignorecase/smartcase/hlsearch options with no-prefix and key=value parsing.
 Text objects (iw/aw/iW/aW, i(/a(/i{/a{/i[/a[/i</a</i>/a>, i"/a"/i'/a'/i`/a`)
 with word, bracket (nesting-aware, multiline), and quote range computation.
 Operator-pending text object dispatch via 'i'/'a' prefix keys.
+Paragraph text objects (ip/ap) with contiguous non-blank line detection and
+trailing blank inclusion for around variant. Sentence text objects (is/as) with
+period/exclamation/question boundary detection and trailing whitespace inclusion.
+Tree-sitter text objects (ic/ac, if/af) and tag objects (it/at) deferred.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -82,7 +86,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (189 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (195 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

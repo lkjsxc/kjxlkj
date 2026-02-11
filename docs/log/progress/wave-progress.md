@@ -195,3 +195,19 @@ Tracks completion of each wave with evidence.
     partial resolution, double-op detection, force modifiers
   - Integration tests (editor_textobj_tests.rs): diw, daw, ciw, yiw, di(, ci{,
     operator_pending_i_a_prefix_keys (7 tests)
+
+### Wave 026: State Model and Data Flow Design
+- Status: COMPLETE
+- Committed: e97095dc
+- Evidence: 195 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Paragraph text objects (ip/ap): contiguous non-blank line detection with is_blank_line
+    helper, around variant includes trailing blank lines
+  - Sentence text objects (is/as): line-scoped sentence boundary at .!? characters,
+    around variant includes trailing whitespace
+  - text_object_ext.rs (126 lines): paragraph_obj_range, sentence_obj_range, 5 unit tests
+  - text_object.rs updated: 'p' and 's' match arms delegating to text_object_ext
+  - Integration tests: dip_deletes_inner_paragraph, dis_deletes_inner_sentence
+  - Tree-sitter text objects (ic/ac, if/af) deferred (requires tree-sitter integration)
+  - Tag text objects (it/at) deferred (requires HTML parser)
+  - Tier-C docs read: class, function, inner, quote, tag, text_objects, treesitter

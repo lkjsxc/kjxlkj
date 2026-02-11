@@ -28,8 +28,9 @@ All files are now ≤ 200 lines.
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
 | `editor_action.rs` (kjxlkj-core-state) | 189 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
-| `text_object.rs` (kjxlkj-core-edit) | 199 | OK |
-| `editor_textobj_tests.rs` (kjxlkj-core-state) | 90 | OK |
+| `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
+| `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
+| `editor_textobj_tests.rs` (kjxlkj-core-state) | 111 | OK |
 
 ## Splits Performed
 
@@ -55,3 +56,4 @@ All files are now ≤ 200 lines.
 - Wave-023 changes: `search.rs` 177→191 (+history, ignorecase/smartcase, compacted tests), `action.rs` 200→200 (added GStarSearchForward/GStarSearchBackward, removed 4 doc comments), `normal_g.rs` 177→197 (+g*/g# dispatch, 2 new tests), `motion_find.rs` 196→174 (compacted paragraphs, bracket_pair helper, % forward scan), `motion.rs` 190→200 (+% forward scan test), `editor_action.rs` 159→177 (+g_star_search dispatch), `editor_search_tests.rs` 137→191 (+5 integration tests: g*, g#, %, history, ignorecase).
 - Wave-024 changes: `command_parse.rs` 177→199 (+parse_set_option, +test), `editor_action.rs` 177→189 (+IncrementNumber/DecrementNumber/SetOption dispatch, +apply_set_option), `editor_edit.rs` 179→199 (+increment_number/decrement_number/modify_number, +find_number, compacted cursor/clamp), `editor_search_tests.rs` 191→200 (merged star boundary tests, +ctrl_a_increments_number, +set_option_via_ex_command), `normal.rs` 198→200 (+Ctrl-a/Ctrl-x).
 - Wave-025 changes: `action.rs` 200→194 (removed comments, compacted scrolls, +TextObjInner/TextObjAround), `pending.rs` 175→179 (+TextObjectInner/TextObjectAround), `other_modes.rs` 196→142 (full rewrite: compacted all handlers, +text object dispatch), `editor_ops.rs` 152→186 (+apply_operator_text_obj, +text object branch). New files: `text_object.rs` (199, word/bracket/quote range computation, 7 tests), `editor_textobj_tests.rs` (90, 7 integration tests).
+- Wave-026 changes: `text_object.rs` 199→195 (merged word tests, +p/s dispatch to text_object_ext), `editor_textobj_tests.rs` 90→111 (+dip/dis integration tests). New file: `text_object_ext.rs` (126, paragraph/sentence range computation, 5 unit tests).
