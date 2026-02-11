@@ -21,7 +21,7 @@ Canonical explanation:
 - Specifications: [docs/spec/README.md](docs/spec/README.md)
 - Current-state conformance: [docs/reference/CONFORMANCE.md](docs/reference/CONFORMANCE.md)
 - Active limitations: [docs/reference/LIMITATIONS.md](docs/reference/LIMITATIONS.md)
-- Reconstruction checklist chain: [docs/todo/README.md](docs/todo/README.md)
+- Reconstruction wave chain: [docs/todo/README.md](docs/todo/README.md)
 
 ## Repository States
 

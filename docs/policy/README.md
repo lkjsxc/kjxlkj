@@ -24,7 +24,15 @@ Operating invariants for documentation and reconstruction.
 
 ## Documentation Content Rule
 
-Documentation under `/docs/` MUST NOT include fenced code blocks except `mermaid` fences.
+Documentation under `/docs/` SHOULD prioritize structured prose and tables.
+
+Fenced blocks are allowed when they improve precision:
+
+- `mermaid` diagrams for system shape and flow
+- shell command examples for reproducible execution
+- short structured snippets where plain prose is ambiguous
+
+Large implementation code dumps are not allowed in canonical docs.
 
 Allowed forms:
 
@@ -33,6 +41,7 @@ Allowed forms:
 - inline code spans
 - links to canonical documents
 - mermaid diagrams
+- concise fenced examples when needed for deterministic interpretation
 
 ## Repository States
 

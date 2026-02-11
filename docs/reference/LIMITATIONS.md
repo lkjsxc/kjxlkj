@@ -13,7 +13,7 @@ artifacts were removed so the next implementation can be regenerated from docs.
 
 | ID | Requirement Link | Observed Gap | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree are intentionally absent in docs-only baseline | `M2 missing feature` | high | regenerate grouped workspace from TODO checklist chain |
+| `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree are intentionally absent in docs-only baseline | `M2 missing feature` | high | regenerate grouped workspace from TODO wave chain |
 | `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` runtime behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement key path and close with `KEYMODE-01`, `WR-01R` screen assertions |
 | `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split lifecycle behavior is unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement split tree and close with `WIN-01R`..`WIN-05R` |
 | `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are unverified because runtime is absent | `M2 missing feature` + `M4 verification gap` | high | implement explorer routes/state and close with `EXP-01R`..`EXP-06R` |
