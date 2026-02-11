@@ -63,8 +63,8 @@ fn handle_normal_command(
         Key::Char('v') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Char)), Mode::Visual(VisualKind::Char)),
         Key::Char('V') => done(pending, Action::EnterMode(Mode::Visual(VisualKind::Line)), Mode::Visual(VisualKind::Line)),
         Key::Char(':') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Ex)), Mode::Command(CommandKind::Ex)),
-        Key::Char('/') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Search)), Mode::Command(CommandKind::Search)),
-        Key::Char('?') => done(pending, Action::EnterMode(Mode::Command(CommandKind::Search)), Mode::Command(CommandKind::Search)),
+        Key::Char('/') => done(pending, Action::EnterMode(Mode::Command(CommandKind::SearchForward)), Mode::Command(CommandKind::SearchForward)),
+        Key::Char('?') => done(pending, Action::EnterMode(Mode::Command(CommandKind::SearchBackward)), Mode::Command(CommandKind::SearchBackward)),
         Key::Char('R') => done(pending, Action::EnterMode(Mode::Replace), Mode::Replace),
         Key::Char('g') => { pending.partial = PartialKey::G; (Action::Noop, None) }
         Key::Char('z') => { pending.partial = PartialKey::Z; (Action::Noop, None) }

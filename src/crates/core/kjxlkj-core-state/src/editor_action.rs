@@ -3,9 +3,10 @@
 //! Extracted from editor.rs to keep each file ≤ 200 lines.
 
 use kjxlkj_core_edit::apply_motion;
-use kjxlkj_core_types::{Action, ContentKind, Mode};
+use kjxlkj_core_types::{Action, ContentKind, Mode, Motion};
 
 use crate::editor::EditorState;
+use crate::search::SearchDirection;
 
 impl EditorState {
     /// Apply a typed action to editor state.
@@ -18,25 +19,20 @@ impl EditorState {
             Action::DeleteCharBackward => {
                 self.delete_char_backward()
             }
-            Action::Motion(motion) => {
-                let wid = self.focus.focused;
-                let win =
-                    self.windows.get(&wid).unwrap();
-                if let ContentKind::Buffer(buf_id) =
-                    win.content
-                {
-                    if let Some(buf) =
-                        self.buffers.get(&buf_id)
-                    {
-                        let cur = win.cursor;
-                        let new_cur = apply_motion(
-                            &cur, &motion, buf,
-                        );
-                        self.windows
-                            .get_mut(&wid)
-                            .unwrap()
-                            .cursor = new_cur;
+            Action::Motion(ref motion) => {
+                match motion {
+                    Motion::SearchNext => {
+                        let d = self.search.direction;
+                        self.jump_to_match(d);
                     }
+                    Motion::SearchPrev => {
+                        let d = match self.search.direction {
+                            SearchDirection::Forward => SearchDirection::Backward,
+                            SearchDirection::Backward => SearchDirection::Forward,
+                        };
+                        self.jump_to_match(d);
+                    }
+                    _ => self.apply_cursor_motion(motion),
                 }
             }
             Action::Quit => self.quit_requested = true,
@@ -103,13 +99,28 @@ impl EditorState {
             Action::DeleteToEnd => {
                 self.delete_to_eol();
             }
-            Action::YankCurrentLine => {
-                // yank register (TODO: register store)
-            }
             Action::JoinLinesNoSpace => {
                 self.join_lines_no_space();
             }
             _ => {}
+        }
+    }
+
+    fn apply_cursor_motion(&mut self, motion: &Motion) {
+        let wid = self.focus.focused;
+        let win = self.windows.get(&wid).unwrap();
+        if let ContentKind::Buffer(buf_id) = win.content {
+            if let Some(buf) =
+                self.buffers.get(&buf_id)
+            {
+                let cur = win.cursor;
+                let new_cur =
+                    apply_motion(&cur, motion, buf);
+                self.windows
+                    .get_mut(&wid)
+                    .unwrap()
+                    .cursor = new_cur;
+            }
         }
     }
 }

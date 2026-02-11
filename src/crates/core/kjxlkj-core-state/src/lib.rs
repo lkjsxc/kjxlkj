@@ -9,17 +9,23 @@
 //! - editor_edit.rs: text editing operations
 //! - editor_snapshot.rs: snapshot construction
 //! - editor_window.rs: window management
+//! - command_parse.rs: ex command parser
+//! - search.rs: search state and execution
 
+mod command_parse;
 mod editor;
 mod editor_action;
+mod editor_cmdline;
 mod editor_edit;
 mod editor_ext;
 mod editor_ops;
 mod editor_snapshot;
 mod editor_window;
 mod register;
+mod search;
 mod window_state;
 
 pub use editor::EditorState;
 pub use register::RegisterStore;
+pub use search::{SearchDirection, SearchState};
 pub use window_state::WindowState;

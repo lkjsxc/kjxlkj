@@ -16,7 +16,8 @@ pub enum VisualKind {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CommandKind {
     Ex,
-    Search,
+    SearchForward,
+    SearchBackward,
 }
 
 /// Pending operator awaiting motion/text-object.
@@ -92,7 +93,8 @@ impl Mode {
             Self::Visual(VisualKind::Line) => "V-LINE",
             Self::Visual(VisualKind::Block) => "V-BLOCK",
             Self::Command(CommandKind::Ex) => "COMMAND",
-            Self::Command(CommandKind::Search) => "SEARCH",
+            Self::Command(CommandKind::SearchForward) => "SEARCH",
+            Self::Command(CommandKind::SearchBackward) => "SEARCH",
             Self::OperatorPending(_) => "OP-PENDING",
             Self::TerminalInsert => "TERMINAL",
             Self::InsertNormal => "INS-NORMAL",

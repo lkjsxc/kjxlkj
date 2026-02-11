@@ -13,6 +13,7 @@ use kjxlkj_core_types::{
 use kjxlkj_core_ui::{FocusState, LayoutTree};
 
 use crate::register::RegisterStore;
+use crate::search::SearchState;
 use crate::window_state::WindowState;
 
 /// The single mutable editor state.
@@ -33,6 +34,8 @@ pub struct EditorState {
     pub registers: RegisterStore,
     /// Last text-changing action for dot-repeat.
     pub(crate) last_change: Option<Action>,
+    /// Search state for / and ? patterns.
+    pub search: SearchState,
 }
 
 impl EditorState {
@@ -69,6 +72,7 @@ impl EditorState {
             pending: PendingState::default(),
             registers: RegisterStore::new(),
             last_change: None,
+            search: SearchState::new(),
         }
     }
 
@@ -78,6 +82,12 @@ impl EditorState {
         key: &Key,
         mods: &KeyModifiers,
     ) {
+        // Command-line modes are handled directly
+        // without going through mode dispatch.
+        if let Mode::Command(kind) = self.mode {
+            self.handle_command_input(key, mods, kind);
+            return;
+        }
         // Capture register selection before dispatch
         // may clear it.
         let reg = self.pending.register;
@@ -93,8 +103,15 @@ impl EditorState {
         if let Some(r) = reg {
             self.registers.selected = Some(r);
         }
-        self.mode =
+        let resolved =
             resolve_mode_transition(self.mode, new_mode);
+        // Activate cmdline when entering Command mode.
+        if let Mode::Command(kind) = resolved {
+            if self.mode != resolved {
+                self.activate_cmdline(kind);
+            }
+        }
+        self.mode = resolved;
         // Record text-changing actions for dot-repeat.
         if is_text_changing(&action) {
             self.last_change = Some(action.clone());
@@ -144,19 +161,11 @@ mod tests {
     #[test]
     fn insert_and_exit() {
         let mut s = EditorState::new(80, 24);
-        s.handle_key(
-            &Key::Char('i'),
-            &KeyModifiers::default(),
-        );
+        let m = KeyModifiers::default();
+        s.handle_key(&Key::Char('i'), &m);
         assert_eq!(s.mode, Mode::Insert);
-        s.handle_key(
-            &Key::Char('x'),
-            &KeyModifiers::default(),
-        );
-        s.handle_key(
-            &Key::Escape,
-            &KeyModifiers::default(),
-        );
+        s.handle_key(&Key::Char('x'), &m);
+        s.handle_key(&Key::Escape, &m);
         assert_eq!(s.mode, Mode::Normal);
     }
 
@@ -164,18 +173,11 @@ mod tests {
     fn shift_a_appends_at_eol() {
         let mut s = EditorState::new(80, 24);
         let buf_id = BufferId(0);
-        s.buffers
-            .get_mut(&buf_id)
-            .unwrap()
-            .insert(0, 0, "hello")
-            .unwrap();
-        s.handle_key(
-            &Key::Char('A'),
-            &KeyModifiers::default(),
-        );
+        s.buffers.get_mut(&buf_id).unwrap()
+            .insert(0, 0, "hello").unwrap();
+        s.handle_key(&Key::Char('A'), &KeyModifiers::default());
         assert_eq!(s.mode, Mode::Insert);
-        let win =
-            s.windows.get(&s.focus.focused).unwrap();
+        let win = s.windows.get(&s.focus.focused).unwrap();
         assert_eq!(win.cursor.col, 5);
     }
 

@@ -8,3 +8,4 @@ license.workspace = true
 kjxlkj-core-types = { path = "../kjxlkj-core-types" }
 kjxlkj-core-text = { path = "../kjxlkj-core-text" }
 unicode-segmentation = { workspace = true }
+regex = { workspace = true }
