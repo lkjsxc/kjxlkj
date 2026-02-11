@@ -50,4 +50,6 @@ mod editor_textobj_tests;
 #[cfg(test)]
 mod editor_visual_tests;
 #[cfg(test)]
+mod editor_stage04_tests;
+#[cfg(test)]
 mod editor_wincmd_tests;
