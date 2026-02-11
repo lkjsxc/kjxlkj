@@ -98,5 +98,28 @@ Tracks completion of each wave with evidence.
   - Text extraction before mutation: text_range() collects text before buffer modification
   - editor_edit.rs: get_put_entry() helper, compacted to 175→179 lines
 
-### Waves 021–023
+### Wave 021: Unit and Integration Coverage
+- Status: COMPLETE
+- Committed: 4a33e9fe
+- Evidence: 142 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Read-only registers: ". (last insert text), "% (filename), "# (alternate file),
+    ": (last Ex command), "/ (last search pattern)
+  - set_readonly() for system-internal writes to read-only registers
+  - list_all() returns sorted register listing for :registers command
+  - Insert-text session tracking: insert_text accumulator in EditorState, cleared on
+    insert entry, written to ". register on insert exit
+  - update_filename_register() writes "% register
+  - ":" register wired in dispatch_cmdline() for Ex commands
+  - "/" register wired in execute_search() for search patterns
+  - :registers/:reg/:display/:di → Action::ShowRegisters command
+  - InsertChar pushes to insert_text accumulator
+  - register.rs compacted to 198 lines with 14 tests (6 new)
+  - editor.rs compacted to 186 lines with 7 tests (2 new)
+  - editor_cmdline.rs compacted to 150 lines with 6 tests (2 new)
+  - command_parse.rs updated to 169 lines with 9 tests (1 new)
+  - editor_action.rs updated to 138 lines (InsertChar tracking, ShowRegisters stub)
+  - action.rs compacted to 197 lines (ShowRegisters variant)
+
+### Waves 022–023
 - Status: NOT STARTED
