@@ -1,7 +1,0 @@
-[package]
-name = "kjxlkj-core-state"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-kjxlkj-core-mode = { path = "../kjxlkj-core-mode" }
