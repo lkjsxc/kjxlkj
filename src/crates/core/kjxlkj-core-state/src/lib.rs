@@ -44,6 +44,8 @@ mod editor_search_tests;
 #[cfg(test)]
 mod editor_stage03_tests;
 #[cfg(test)]
+mod editor_stage03_edit_tests;
+#[cfg(test)]
 mod editor_textobj_tests;
 #[cfg(test)]
 mod editor_visual_tests;
