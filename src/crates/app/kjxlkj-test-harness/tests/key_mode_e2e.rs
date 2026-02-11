@@ -107,6 +107,29 @@ fn key_trace_04_terminal_command_and_leader_routes_emit_trace_actions() {
     );
 }
 
+#[test]
+fn key_trace_05_recent_events_capture_raw_and_normalized_paths() {
+    let binary = ensure_kjxlkj_built().expect("binary build should succeed");
+    let mut session = PtySession::spawn(
+        &binary,
+        100,
+        30,
+        &[("KJXLKJ_INITIAL_LINE", "abc"), ("KJXLKJ_START_CURSOR", "0")],
+    )
+    .expect("PTY session should spawn");
+    std::thread::sleep(Duration::from_millis(120));
+    session
+        .send_raw(b":Explorer\r")
+        .expect("explorer command sequence should send");
+    let output = session.quit().expect("quit should succeed");
+    assert!(
+        output.contains("recent_events=")
+            && output.contains("0x3A::->Ignore")
+            && output.contains("0x0D:Enter->WinSplitExplorer"),
+        "KEY-TRACE-05 expected raw byte + normalized key + resolved action tuples. Output:\n{output}"
+    );
+}
+
 fn count_occurrences(text: &str, needle: &str) -> usize {
     text.match_indices(needle).count()
 }

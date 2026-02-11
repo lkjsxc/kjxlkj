@@ -1,4 +1,5 @@
 use super::{Axis, Direction, Rect, WindowKind, WindowTree};
+use std::collections::HashSet;
 
 fn area() -> Rect {
     Rect {
@@ -91,4 +92,48 @@ fn session_dump_roundtrip_restores_tree_focus_and_kinds() {
     assert_eq!(restored.focused_kind(), original.focused_kind());
     assert_eq!(restored.session_dump(), snapshot);
     assert!(restored.geometry_invariants_hold(area()));
+}
+
+#[test]
+fn focus_history_pointer_stays_valid_through_split_close_churn() {
+    let mut tree = WindowTree::new();
+    for step in 0..12 {
+        let axis = if step % 2 == 0 {
+            Axis::Horizontal
+        } else {
+            Axis::Vertical
+        };
+        let kind = if step % 3 == 0 {
+            WindowKind::Explorer
+        } else {
+            WindowKind::Terminal
+        };
+        tree.split_focused(axis, kind);
+        tree.cycle_prev();
+        tree.focus_previous();
+        let _ = tree.close_focused();
+        assert!(tree.leaf_ids().contains(&tree.focused()));
+        if let Some(prev) = tree.previous {
+            assert!(tree.leaf_ids().contains(&prev));
+        }
+        assert!(tree.geometry_invariants_hold(area()));
+    }
+}
+
+#[test]
+fn nested_rebalance_keeps_unique_leaf_ids_and_full_coverage() {
+    let mut tree = WindowTree::new();
+    tree.split_focused(Axis::Horizontal, WindowKind::Explorer);
+    tree.split_focused(Axis::Vertical, WindowKind::Terminal);
+    tree.split_focused(Axis::Horizontal, WindowKind::Buffer);
+    tree.split_focused(Axis::Vertical, WindowKind::Explorer);
+    for _ in 0..3 {
+        assert!(tree.close_focused());
+        tree.cycle_next();
+        let ids = tree.leaf_ids();
+        let uniq: HashSet<u64> = ids.iter().copied().collect();
+        assert_eq!(uniq.len(), ids.len());
+        assert!(ids.contains(&tree.focused()));
+        assert!(tree.geometry_invariants_hold(area()));
+    }
 }

@@ -24,8 +24,7 @@ Close high-severity reconstructed runtime blockers for explorer, terminal, curso
 
 ## Remaining Medium Gaps
 
-- `LIM-GAP-STATE-02`
-- `LIM-GAP-TRACE-02`
+- none
 
 ## Improvement Ideas
 

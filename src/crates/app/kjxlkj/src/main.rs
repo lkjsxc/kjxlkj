@@ -1,9 +1,6 @@
 mod command_routes;
 mod input_routes;
 
-use std::collections::VecDeque;
-use std::io::{self, Read, Write};
-
 use command_routes::action_from_command;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use input_routes::{action_from_key, format_key};
@@ -11,6 +8,8 @@ use kjxlkj_core_mode::Mode;
 use kjxlkj_core_state::{EditorAction, EditorState};
 use kjxlkj_input::{decode_byte, Key};
 use kjxlkj_render::compute_render_diagnostics;
+use std::collections::VecDeque;
+use std::io::{self, Read, Write};
 
 fn main() -> io::Result<()> {
     enable_raw_mode()?;
@@ -146,7 +145,8 @@ fn run() -> io::Result<()> {
         let render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
         let normalized_key = format_key(decoded.normalized_key);
         recent_events.push_back(format!(
-            "{seq}:{normalized_key}->{action}",
+            "{seq}:0x{:02X}:{normalized_key}->{action}",
+            one[0],
             action = result.resolved_action
         ));
         if recent_events.len() > 20 {

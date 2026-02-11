@@ -2,7 +2,7 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Status: Reconstructed foundation baseline active on 2026-02-11. High-severity blocker reconstruction is closed; medium hardening remains.
+Status: Reconstructed foundation baseline active on 2026-02-11. High-severity blockers and medium reconstruction gaps are closed.
 
 ## Active Blockers
 

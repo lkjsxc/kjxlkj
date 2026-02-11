@@ -109,14 +109,17 @@ impl WindowTree {
             return false;
         }
         let closing = self.focused;
+        let prior_previous = self.previous;
         self.root = remove_leaf(&self.root, closing).expect("multi-leaf tree keeps root");
         self.kinds.remove(&closing);
         self.focus_seq.remove(&closing);
-        let fallback = self
-            .previous
+        let fallback = prior_previous
             .filter(|id| self.kinds.contains_key(id))
             .unwrap_or_else(|| self.leaf_ids()[0]);
-        self.focus_window(fallback);
+        self.focused = fallback;
+        self.seq += 1;
+        self.focus_seq.insert(fallback, self.seq);
+        self.previous = prior_previous.filter(|id| self.kinds.contains_key(id) && *id != fallback);
         true
     }
 
