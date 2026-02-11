@@ -17,6 +17,6 @@ Do not advance to the next phase while current phase has unchecked blockers.
 
 A phase may be checked complete only when:
 
-- [ ] all phase tasks are checked
-- [ ] all phase-required tests are passing with deterministic evidence
-- [ ] conformance, limitations, and drift matrix are synchronized
+- [x] all phase tasks are checked
+- [x] all phase-required tests are passing with deterministic evidence
+- [x] conformance, limitations, and drift matrix are synchronized
