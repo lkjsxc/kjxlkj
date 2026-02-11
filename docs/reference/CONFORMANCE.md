@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 586 deterministic unit and integration tests covering key normalization,
+through 627 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -241,6 +241,17 @@ Buffer/Tag/Dictionary/Line/Include) with priority ordering. CompletionItem with
 label/insert_text/detail/source/sort_key. CompletionState menu machine with
 start (sorts by source priority then sort_key), next/prev wrapping selection,
 confirm (returns insert_text), dismiss, narrow (prefix filter with auto-dismiss).
+Insert sub-state machine: InsertSubState enum (Normal/DigraphFirst/DigraphSecond/
+LiteralPending/LiteralNumeric/RegisterPending/CtrlXPending) for multi-key insert
+sequences. LiteralRadix (Decimal/Octal/Hex/Unicode4/Unicode8) with resolve and
+parse_digit. Ctrl-n/p/y/e/x completion keys mapped in insert mode.
+Snippet session: SnippetSession parser for $N and ${N:placeholder} syntax with
+tabstop ordering ($0 last), forward/backward navigation, cancel. Tabstop struct
+with index/offset/placeholder_len.
+Digraph table: RFC 1345 subset (55+ entries) covering Latin accented (umlauts,
+accents), symbols (©/®/™/€/£/¥/°/§/±), arrows, math comparisons (≠/≥/≤), Greek
+(α/β/γ/δ/π/λ/σ/Σ/Ω), check/cross marks. lookup(c1,c2) with fallback to second
+char on miss. InsertDigraph/InsertLiteral/InsertRegister action dispatch.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -249,7 +260,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (586 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (627 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 

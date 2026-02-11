@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 586 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 627 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | Ctrl-w dispatch implemented (h/j/k/l/w/W/p/t/b/s/v/n/c/q/o/+/-/>/</_/|/=/H/J/K/L/r/R/x), directional focus with geometry, boundary focus (t/b), equalize (=), resize/max as no-op placeholders, W reverse cycle, H/J/K/L move-to-edge/r/R rotate/x exchange as no-op placeholders, split semantics corrected; T1 unit + integration tests pass (21 wincmd unit + 40 integration tests); T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | partial | `M2`, `M4` | implement + test-add | explorer open/close routing (ContentKind::Explorer leaf creation, :ExplorerClose ex command), state model (ExplorerState/ExplorerNode/NodeId, expansion_set/visible_rows/flatten), navigation (ExplorerAction enum with MoveDown/MoveUp/CollapseOrParent/ExpandOrOpen/Toggle/Close), key routing (j/k/h/l/Enter/o/v/s/q intercept in Normal mode, v/s open selected file in vertical/horizontal split), 13 service tests + 5 editor_explorer tests + 27 integration tests; filesystem integration (actual dir listing) pending; T2 PTY E2E pending |
@@ -52,6 +52,9 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-MODECONF-01` | [/docs/spec/modes/configuration.md](/docs/spec/modes/configuration.md) | Cursor shape per mode and mode indicator text | unit tests | partial | `M4` | test-add | CursorShape enum (7 variants) with DECSCUSR codes, cursor_shape_for_mode for all modes, mode_indicator for statusline text, cursor_restore_sequence; 13 unit tests; T2 pending |
 | `R-CMDLINE-01` | [/docs/spec/modes/command.md](/docs/spec/modes/command.md) | Command-line editing keys and cursor movement | unit + integration tests | partial | `M4` | test-add | Left/Right/Home/End cursor, Ctrl-b/Ctrl-e beginning/end, Ctrl-w word-backward delete, Ctrl-u delete-to-start, Ctrl-c cancel, Delete under cursor, mid-string insert; 13 unit tests (extracted to editor_cmdline_tests); T2 pending |
 | `R-COMPLETION-01` | [/docs/spec/modes/insert/completion/insert-completion-sources.md](/docs/spec/modes/insert/completion/insert-completion-sources.md) | Insert completion source model and menu state | unit tests | partial | `M4` | test-add | CompletionSource (8 types priority-ordered), CompletionItem, CompletionState with start/next/prev/confirm/dismiss/narrow; 11 unit tests; actual completion triggering pending; T2 pending |
+| `R-INSERTSTATE-01` | [/docs/spec/modes/insert/input/README.md](/docs/spec/modes/insert/input/README.md) | Insert sub-state machine for multi-key input | unit + integration tests | partial | `M4` | test-add | InsertSubState enum (Normal/DigraphFirst/DigraphSecond/LiteralPending/LiteralNumeric/RegisterPending/CtrlXPending), LiteralRadix with resolve/parse_digit; Ctrl-n/p/y/e/x completion keys; InsertDigraph/InsertLiteral/InsertRegister action dispatch; 13 unit + 12 integration tests; T2 pending |
+| `R-SNIPPET-01` | [/docs/spec/modes/insert/completion/insert-snippets.md](/docs/spec/modes/insert/completion/insert-snippets.md) | Snippet session with tabstop parsing and navigation | unit tests | partial | `M4` | test-add | SnippetSession parser for $N and ${N:placeholder} syntax, tabstop ordering ($0 last), next/prev/cancel navigation; 8 unit tests; actual snippet trigger integration pending; T2 pending |
+| `R-DIGRAPH-01` | [/docs/spec/modes/insert/input/insert-digraphs.md](/docs/spec/modes/insert/input/insert-digraphs.md) | Digraph table and lookup | unit tests | partial | `M4` | test-add | RFC 1345 subset (55+ entries) covering Latin accented, symbols, arrows, math, Greek, check/cross marks; lookup(c1,c2) with fallback; 9 unit tests; T2 pending |
 
 ## Summary
 
@@ -60,7 +63,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 7 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 29 |
+| `M4 verification gap` | 32 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

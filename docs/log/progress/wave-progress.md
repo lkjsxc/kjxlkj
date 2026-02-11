@@ -149,3 +149,26 @@ Waves 040 (Scope Freeze and Input Mapping, 473 tests),
     insert-completion-sources.md
   - Ledger sync: CONFORMANCE (556→586), LIMITATIONS, DRIFT_MATRIX
     (+R-MODECONF-01, +R-CMDLINE-01, +R-COMPLETION-01, M4 26→29)
+
+### Wave 046: Live E2E and Race Validation
+- **Tests**: 586 → 627 (+41)
+- **Files changed**: action.rs 125→131 (+6 completion/insert sub-mode variants),
+    other_modes.rs 184→192 (+Ctrl-n/p/y/e/x completion keys in insert mode),
+    editor_action.rs 189→193 (+InsertDigraph/InsertLiteral/InsertRegister dispatch,
+    compacted), editor_ops.rs 186→195 (+insert_register_contents),
+    lib.rs (core-ui) 24→27, lib.rs (core-state) 75→77
+- **New files**:
+  - insert_state.rs (170 lines, NEW) in kjxlkj-core-ui: InsertSubState enum
+    (Normal/DigraphFirst/DigraphSecond/LiteralPending/LiteralNumeric/
+    RegisterPending/CtrlXPending), LiteralRadix with resolve/parse_digit.
+    13 unit tests
+  - snippet.rs (184 lines, NEW) in kjxlkj-core-ui: SnippetSession parser for
+    $N and ${N:placeholder} syntax, tabstop ordering, next/prev/cancel. 8 tests
+  - digraph.rs (119 lines, NEW) in kjxlkj-core-ui: RFC 1345 subset (55+ entries).
+    9 unit tests
+  - editor_stage05_tests.rs (135 lines, NEW) in kjxlkj-core-state:
+    12 integration tests (digraph/literal/register insert, completion dispatch)
+  - Tier-C docs read: insert-completion.md, insert-snippets.md, insert-digraphs.md,
+    insert-japanese-ime.md, insert-literal.md, insert-registers.md
+  - Ledger sync: CONFORMANCE (586→627), LIMITATIONS, DRIFT_MATRIX
+    (+R-INSERTSTATE-01, +R-SNIPPET-01, +R-DIGRAPH-01, M4 29→32)

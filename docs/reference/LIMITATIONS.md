@@ -136,6 +136,12 @@ model: CompletionSource (8 sources priority-ordered), CompletionItem, Completion
 menu machine with start/next/prev/confirm/dismiss/narrow. 30 new tests (13
 mode_config + 11 completion + 7 cmdline editing—extracted from editor_cmdline to
 editor_cmdline_tests) bringing total to 586 tests.
+Insert sub-state machine (wave-046): InsertSubState enum for multi-key insert
+sequences (digraph/literal/register/Ctrl-x). Ctrl-n/p/y/e/x completion key
+mapping. Snippet session with tabstop parsing and navigation. Digraph table (55+
+RFC 1345 entries). InsertDigraph/InsertLiteral/InsertRegister action dispatch.
+41 new tests (13 insert_state + 8 snippet + 9 digraph + 12 integration) bringing
+total to 627 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.
