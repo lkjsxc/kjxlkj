@@ -32,5 +32,20 @@ Tracks completion of each wave with evidence.
   - File splits: other_modes, normal_partial,
     motion_find, motion_big_word, editor_ops
 
-### Waves 017–023
+### Wave 017: Requirement Extraction and Normalization
+- Status: COMPLETE
+- Committed: 032b0aec
+- Evidence: 91 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Operator enum expanded to 10 variants (+Lowercase, Uppercase, ToggleCase)
+  - RangeType (Characterwise, Linewise, Blockwise) and Inclusivity (Inclusive, Exclusive) enums
+  - motion_range_type() and motion_inclusivity() classification functions (7 tests)
+  - g-prefix operators: gu→Lowercase, gU→Uppercase, g~→ToggleCase, gq→Format, gJ→JoinLinesNoSpace (5 new tests)
+  - D→DeleteToEnd and Y→YankCurrentLine normal mode dispatch
+  - Double-operator forms for all 10 operators (guu/gUU/g~~/gqq)
+  - Case transform operators on lines and ranges (editor_ext.rs, 3 tests)
+  - text_range() method on Buffer for range extraction
+  - New files: motion_info.rs, editor_ext.rs
+
+### Waves 018–023
 - Status: NOT STARTED

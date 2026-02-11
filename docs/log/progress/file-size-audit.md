@@ -7,16 +7,18 @@ All files are now ≤ 200 lines.
 
 | File | Lines | Status |
 |------|-------|--------|
+| `action.rs` (kjxlkj-core-types) | 200 | OK |
 | `normal.rs` (kjxlkj-core-mode) | 199 | OK |
-| `action.rs` (kjxlkj-core-types) | 196 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 196 | OK |
 | `layout_ops.rs` (kjxlkj-core-ui) | 191 | OK |
 | `motion.rs` (kjxlkj-core-edit) | 190 | OK |
-| `editor_ops.rs` (kjxlkj-core-state) | 173 | OK |
-| `other_modes.rs` (kjxlkj-core-mode) | 168 | OK |
+| `normal_g.rs` (kjxlkj-core-mode) | 177 | OK |
+| `other_modes.rs` (kjxlkj-core-mode) | 176 | OK |
 | `editor.rs` (kjxlkj-core-state) | 163 | OK |
 | `frame.rs` (kjxlkj-render) | 159 | OK |
+| `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_edit.rs` (kjxlkj-core-state) | 151 | OK |
+| `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
 
 ## Splits Performed
 
@@ -32,4 +34,5 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `normal.rs` (199), `action.rs` (196), `motion_find.rs` (196), `layout_ops.rs` (191), `motion.rs` (190) as they approach the limit.
+- Monitor `action.rs` (200), `normal.rs` (199), `motion_find.rs` (196), `layout_ops.rs` (191), `motion.rs` (190) as they approach the limit.
+- New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
