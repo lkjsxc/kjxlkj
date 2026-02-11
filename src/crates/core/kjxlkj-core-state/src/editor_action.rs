@@ -3,7 +3,7 @@
 //! Extracted from editor.rs to keep each file ≤ 200 lines.
 
 use kjxlkj_core_edit::apply_motion;
-use kjxlkj_core_types::{Action, ContentKind, Direction, Mode, Motion};
+use kjxlkj_core_types::{Action, ContentKind, Mode, Motion};
 
 use crate::editor::EditorState;
 use crate::search::SearchDirection;
@@ -120,6 +120,14 @@ impl EditorState {
             Action::FocusCycle => self.focus_cycle(),
             Action::FocusPrevious => self.focus.toggle_previous(),
             Action::FocusDirection(dir) => self.focus_direction(dir),
+            Action::FocusTopLeft => self.focus_top_left(),
+            Action::FocusBottomRight => self.focus_bottom_right(),
+            Action::WindowEqualize => self.window_equalize(),
+            Action::WindowResize(edge, delta) => self.window_resize(edge, delta),
+            Action::WindowMaxHeight => self.window_max_height(),
+            Action::WindowMaxWidth => self.window_max_width(),
+            Action::OpenExplorer => self.open_explorer(),
+            Action::CloseExplorer => self.close_explorer(),
             _ => {}
         }
     }

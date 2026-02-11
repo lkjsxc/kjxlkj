@@ -1,9 +1,8 @@
-//! Window management operations: split, close, focus.
+//! Window management: split, close, focus, resize, explorer.
 //!
 //! See /docs/spec/features/window/splits-windows.md.
-//! See /docs/spec/features/window/wincmd.md.
 
-use kjxlkj_core_types::{Direction, Rect, WindowId};
+use kjxlkj_core_types::{ContentKind, Direction, ExplorerStateId, Rect, ResizeEdge, WindowId};
 
 use crate::editor::EditorState;
 use crate::window_state::WindowState;
@@ -15,105 +14,128 @@ impl EditorState {
         id
     }
 
-    /// Split current window horizontally (:split).
-    /// Creates a top/bottom arrangement (horizontal divider).
-    pub(crate) fn split_horizontal(&mut self) {
-        let focused = self.focus.focused;
-        let win = self.windows.get(&focused).unwrap();
-        let content = win.content;
-        let new_wid = WindowId(self.next_id());
-        // LayoutNode::Vertical stacks children top-to-bottom.
-        self.layout.split_vertical(focused, new_wid, content);
-        self.windows.insert(new_wid, WindowState::new(new_wid, content));
-        self.focus.set_focus(new_wid);
+    fn leaf_rects(&self) -> Vec<(WindowId, ContentKind, Rect)> {
+        let (c, r) = self.terminal_size;
+        self.layout.compute_rects(Rect::new(0, 0, c, r))
     }
 
-    /// Split current window vertically (:vsplit).
-    /// Creates a left/right arrangement (vertical divider).
+    /// :split — top/bottom arrangement.
+    pub(crate) fn split_horizontal(&mut self) {
+        let f = self.focus.focused;
+        let content = self.windows.get(&f).unwrap().content;
+        let nw = WindowId(self.next_id());
+        self.layout.split_vertical(f, nw, content);
+        self.windows.insert(nw, WindowState::new(nw, content));
+        self.focus.set_focus(nw);
+    }
+
+    /// :vsplit — left/right arrangement.
     pub(crate) fn split_vertical(&mut self) {
-        let focused = self.focus.focused;
-        let win = self.windows.get(&focused).unwrap();
-        let content = win.content;
-        let new_wid = WindowId(self.next_id());
-        // LayoutNode::Horizontal lays children side-by-side.
-        self.layout.split_horizontal(focused, new_wid, content);
-        self.windows.insert(new_wid, WindowState::new(new_wid, content));
-        self.focus.set_focus(new_wid);
+        let f = self.focus.focused;
+        let content = self.windows.get(&f).unwrap().content;
+        let nw = WindowId(self.next_id());
+        self.layout.split_horizontal(f, nw, content);
+        self.windows.insert(nw, WindowState::new(nw, content));
+        self.focus.set_focus(nw);
     }
 
     pub(crate) fn close_window(&mut self) {
-        let focused = self.focus.focused;
-        let ids = self.layout.window_ids();
-        if ids.len() <= 1 {
-            return;
-        }
-        if self.layout.close_window(focused) {
-            self.windows.remove(&focused);
-            let remaining = self.layout.window_ids();
-            let fallback = remaining.first().copied().unwrap_or(WindowId(0));
-            self.focus.on_window_closed(focused, fallback);
+        let f = self.focus.focused;
+        if self.layout.window_ids().len() <= 1 { return; }
+        if self.layout.close_window(f) {
+            self.windows.remove(&f);
+            let fb = self.layout.window_ids().first().copied().unwrap_or(WindowId(0));
+            self.focus.on_window_closed(f, fb);
         }
     }
 
-    /// Close all windows except the focused one (:only).
     pub(crate) fn window_only(&mut self) {
-        let focused = self.focus.focused;
-        let ids = self.layout.window_ids();
-        for wid in ids {
-            if wid != focused {
-                self.layout.close_window(wid);
-                self.windows.remove(&wid);
-            }
+        let f = self.focus.focused;
+        for wid in self.layout.window_ids() {
+            if wid != f { self.layout.close_window(wid); self.windows.remove(&wid); }
         }
     }
 
-    /// Cycle focus to the next window in layout order.
     pub(crate) fn focus_cycle(&mut self) {
         let ids = self.layout.window_ids();
-        if ids.len() <= 1 {
-            return;
-        }
-        let cur = self.focus.focused;
-        let pos = ids.iter().position(|&id| id == cur).unwrap_or(0);
-        let next = ids[(pos + 1) % ids.len()];
-        self.focus.set_focus(next);
+        if ids.len() <= 1 { return; }
+        let pos = ids.iter().position(|&id| id == self.focus.focused).unwrap_or(0);
+        self.focus.set_focus(ids[(pos + 1) % ids.len()]);
     }
 
-    /// Focus the nearest window in the given direction
-    /// using geometry-based resolution.
     pub(crate) fn focus_direction(&mut self, dir: Direction) {
-        let (cols, rows) = self.terminal_size;
-        let area = Rect::new(0, 0, cols, rows);
-        let rects = self.layout.compute_rects(area);
-        let cur = self.focus.focused;
-        let cur_rect = match rects.iter().find(|(id, _, _)| *id == cur) {
-            Some((_, _, r)) => *r,
-            None => return,
+        let rects = self.leaf_rects();
+        let cr = match rects.iter().find(|(id, _, _)| *id == self.focus.focused) {
+            Some((_, _, r)) => *r, None => return,
         };
         let mut best: Option<(WindowId, u32)> = None;
         for &(wid, _, ref r) in &rects {
-            if wid == cur { continue; }
-            if !is_in_direction(&cur_rect, r, dir) { continue; }
-            let dist = rect_distance(&cur_rect, r);
-            if best.map_or(true, |(_, d)| dist < d) {
-                best = Some((wid, dist));
+            if wid == self.focus.focused { continue; }
+            if !is_in_direction(&cr, r, dir) { continue; }
+            let d = rect_distance(&cr, r);
+            if best.map_or(true, |(_, bd)| d < bd) { best = Some((wid, d)); }
+        }
+        if let Some((t, _)) = best { self.focus.set_focus(t); }
+    }
+
+    pub(crate) fn focus_top_left(&mut self) {
+        let rects = self.leaf_rects();
+        if let Some(&(w, _, _)) = rects.iter().min_by_key(|(_, _, r)| {
+            (r.y as u32) * 10000 + r.x as u32
+        }) { self.focus.set_focus(w); }
+    }
+
+    pub(crate) fn focus_bottom_right(&mut self) {
+        let rects = self.leaf_rects();
+        if let Some(&(w, _, _)) = rects.iter().max_by_key(|(_, _, r)| {
+            (r.y as u32 + r.height as u32) * 10000 + r.x as u32 + r.width as u32
+        }) { self.focus.set_focus(w); }
+    }
+
+    pub(crate) fn window_equalize(&mut self) { self.layout.equalize(); }
+    pub(crate) fn window_resize(&mut self, _e: ResizeEdge, _d: i16) {}
+    pub(crate) fn window_max_height(&mut self) {}
+    pub(crate) fn window_max_width(&mut self) {}
+
+    /// :Explorer — opens or focuses explorer window.
+    pub(crate) fn open_explorer(&mut self) {
+        let ec = ContentKind::Explorer(ExplorerStateId(0));
+        for (&wid, ws) in &self.windows {
+            if matches!(ws.content, ContentKind::Explorer(_)) {
+                self.focus.set_focus(wid); return;
             }
         }
-        if let Some((target, _)) = best {
-            self.focus.set_focus(target);
+        let target = self.layout.window_ids().first().copied().unwrap_or(self.focus.focused);
+        let nw = WindowId(self.next_id());
+        self.layout.split_horizontal(target, nw, ec);
+        self.windows.insert(nw, WindowState::new(nw, ec));
+        self.focus.set_focus(nw);
+    }
+
+    /// :ExplorerClose
+    pub(crate) fn close_explorer(&mut self) {
+        let ew = self.windows.iter()
+            .find(|(_, ws)| matches!(ws.content, ContentKind::Explorer(_)))
+            .map(|(&w, _)| w);
+        if let Some(wid) = ew {
+            if self.layout.window_ids().len() <= 1 { return; }
+            if self.layout.close_window(wid) {
+                self.windows.remove(&wid);
+                if self.focus.focused == wid {
+                    let fb = self.layout.window_ids().first().copied().unwrap_or(WindowId(0));
+                    self.focus.on_window_closed(wid, fb);
+                }
+            }
         }
     }
 }
 
-/// Check if `candidate` is in the specified direction from `origin`.
-fn is_in_direction(origin: &Rect, candidate: &Rect, dir: Direction) -> bool {
+fn is_in_direction(origin: &Rect, cand: &Rect, dir: Direction) -> bool {
     let (ox, oy) = center(origin);
-    let (cx, cy) = center(candidate);
+    let (cx, cy) = center(cand);
     match dir {
-        Direction::Left => cx < ox,
-        Direction::Right => cx > ox,
-        Direction::Up => cy < oy,
-        Direction::Down => cy > oy,
+        Direction::Left => cx < ox, Direction::Right => cx > ox,
+        Direction::Up => cy < oy, Direction::Down => cy > oy,
     }
 }
 
@@ -124,5 +146,5 @@ fn center(r: &Rect) -> (i32, i32) {
 fn rect_distance(a: &Rect, b: &Rect) -> u32 {
     let (ax, ay) = center(a);
     let (bx, by) = center(b);
-    ((ax - bx).unsigned_abs() + (ay - by).unsigned_abs())
+    (ax - bx).unsigned_abs() + (ay - by).unsigned_abs()
 }

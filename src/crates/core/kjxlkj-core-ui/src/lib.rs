@@ -4,6 +4,7 @@
 
 mod layout;
 mod layout_ops;
+mod layout_resize;
 mod focus;
 
 pub use layout::{LayoutNode, LayoutTree};

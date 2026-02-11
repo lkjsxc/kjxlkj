@@ -6,128 +6,41 @@ use serde::{Deserialize, Serialize};
 /// Typed editor action emitted after input decode and mapping resolution.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Action {
-    /// Insert a character at cursor position.
-    InsertChar(char),
-    DeleteCharForward,
-    DeleteCharBackward,
-    /// Delete current line.
-    DeleteLine,
-    /// Yank current line.
-    YankLine,
-    Motion(Motion),
-    /// Enter a specific mode.
-    EnterMode(Mode),
-    /// Return to Normal mode.
-    ExitToNormal,
-    ExCommand(String),
-    Resize(u16, u16),
-    Paste(String),
-    FocusGained,
-    FocusLost,
-    Quit,
-    /// Force quit without saving.
-    ForceQuit,
-    /// Write current buffer.
-    Write,
-    /// Write and quit.
-    WriteQuit,
-    SplitHorizontal,
-    SplitVertical,
-    CloseWindow,
-    FocusDirection(Direction),
-    /// Cycle focus to next window.
-    FocusCycle,
-    /// Only keep current window.
-    WindowOnly,
-    /// Open explorer.
-    OpenExplorer,
-    /// Open terminal.
-    OpenTerminal,
-    /// Navigate to previous focus.
-    FocusPrevious,
-    Undo,
-    Redo,
-    DotRepeat,
-    /// No-op (unhandled key).
-    Noop,
-    /// Raw key forwarded (for terminal insert mode).
+    InsertChar(char), DeleteCharForward, DeleteCharBackward,
+    DeleteLine, YankLine, Motion(Motion),
+    EnterMode(Mode), ExitToNormal,
+    ExCommand(String), Resize(u16, u16), Paste(String),
+    FocusGained, FocusLost, Quit, ForceQuit, Write, WriteQuit,
+    // Window management
+    SplitHorizontal, SplitVertical, CloseWindow,
+    FocusDirection(Direction), FocusCycle, FocusPrevious,
+    WindowOnly, FocusTopLeft, FocusBottomRight,
+    WindowEqualize, WindowResize(ResizeEdge, i16),
+    WindowMaxHeight, WindowMaxWidth,
+    OpenExplorer, CloseExplorer, OpenTerminal,
+    Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),
-    /// Open a file by path.
-    OpenFile(String),
-    /// Switch to buffer by ID.
-    SwitchBuffer(BufferId),
-    /// Next buffer.
-    NextBuffer,
-    /// Previous buffer.
-    PreviousBuffer,
-    /// Delete buffer.
-    DeleteBuffer,
-    /// Append at end of line (A command).
-    AppendEndOfLine,
-    /// Insert at first non-blank (I command).
-    InsertFirstNonBlank,
-    /// Open line below.
-    OpenLineBelow,
-    /// Open line above.
-    OpenLineAbove,
-    /// Join lines.
-    JoinLines,
-    /// Toggle case of character under cursor.
-    ToggleCase,
-    /// Replace character under cursor.
-    ReplaceChar(char),
-    PutAfter,
-    PutBefore,
-    ScrollCenter,
-    ScrollTop,
-    ScrollBottom,
-    /// Delete word backward (insert mode Ctrl-w).
-    DeleteWordBackward,
-    /// Delete to line start (insert mode Ctrl-u).
-    DeleteToLineStart,
-    /// Operator applied linewise (e.g. dd, yy, cc).
-    OperatorLine(Operator),
-    /// Operator applied with a counted motion.
-    OperatorMotion(Operator, Motion, usize),
-    /// Substitute char (s): delete char + enter insert.
-    SubstituteChar,
-    /// Substitute line (S): delete line content + enter insert.
-    SubstituteLine,
-    /// Change to end of line (C).
-    ChangeToEnd,
-    /// Delete to end of line (D).
-    DeleteToEnd,
-    /// Yank current line (Y).
-    YankCurrentLine,
-    /// Join lines without space (gJ).
-    JoinLinesNoSpace,
-    /// Show register contents (:registers).
-    ShowRegisters,
-    /// Search forward for word under cursor (*).
-    StarSearchForward,
-    /// Search backward for word under cursor (#).
-    StarSearchBackward,
-    /// Clear search highlighting (:nohlsearch).
-    ClearSearchHighlight,
-    /// g* forward (partial match, no word boundaries).
-    GStarSearchForward,
-    /// g# backward (partial match, no word boundaries).
-    GStarSearchBackward,
-    /// Increment number under/after cursor (<C-a>).
-    IncrementNumber,
-    /// Decrement number under/after cursor (<C-x>).
-    DecrementNumber,
-    /// Set an editor option (:set opt=val).
+    // Buffer management
+    OpenFile(String), SwitchBuffer(BufferId),
+    NextBuffer, PreviousBuffer, DeleteBuffer,
+    SwitchAlternate, ListBuffers, FirstBuffer, LastBuffer,
+    // Editing actions
+    AppendEndOfLine, InsertFirstNonBlank,
+    OpenLineBelow, OpenLineAbove, JoinLines,
+    ToggleCase, ReplaceChar(char),
+    PutAfter, PutBefore,
+    ScrollCenter, ScrollTop, ScrollBottom,
+    DeleteWordBackward, DeleteToLineStart,
+    OperatorLine(Operator), OperatorMotion(Operator, Motion, usize),
+    SubstituteChar, SubstituteLine, ChangeToEnd, DeleteToEnd,
+    YankCurrentLine, JoinLinesNoSpace, ShowRegisters,
+    // Search
+    StarSearchForward, StarSearchBackward,
+    ClearSearchHighlight, GStarSearchForward, GStarSearchBackward,
+    IncrementNumber, DecrementNumber,
     SetOption(String, String),
-    /// Apply operator on visual selection.
-    VisualOperator(Operator),
-    /// Swap visual anchor and cursor.
-    VisualSwapAnchor,
-    /// Switch to alternate buffer (Ctrl-^).
-    SwitchAlternate,
-    /// List buffers (:ls/:buffers).
-    ListBuffers,
-    FirstBuffer, LastBuffer,
+    // Visual
+    VisualOperator(Operator), VisualSwapAnchor,
 }
 
 /// Cursor motion.
@@ -182,12 +95,11 @@ pub enum Motion {
 
 /// Directional focus for window navigation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Direction {
-    Left,
-    Right,
-    Up,
-    Down,
-}
+pub enum Direction { Left, Right, Up, Down }
+
+/// Edge for window resize operations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ResizeEdge { Height, Width }
 
 #[cfg(test)]
 mod tests {

@@ -102,6 +102,7 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         "vnew" => Action::SplitVertical,
         // Explorer / terminal.
         "Explorer" | "Ex" => Action::OpenExplorer,
+        "ExplorerClose" => Action::CloseExplorer,
         "terminal" | "term" => Action::OpenTerminal,
         // Register display.
         "registers" | "reg" | "display" | "di" => Action::ShowRegisters,

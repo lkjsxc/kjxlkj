@@ -10,7 +10,7 @@ mod motion_info;
 mod snapshot;
 mod window;
 
-pub use action::{Action, Direction, Motion};
+pub use action::{Action, Direction, Motion, ResizeEdge};
 pub use ids::{BufferId, ExplorerStateId, TerminalId, WindowId};
 pub use key::{Key, KeyModifiers};
 pub use mode::{CommandKind, ForceModifier, Inclusivity, Mode, Operator, RangeType, VisualKind};
