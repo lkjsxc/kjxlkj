@@ -1,6 +1,8 @@
 //! Git integration service.
 //!
-//! Provides diff hunks and branch info asynchronously.
+//! Provides diff hunks, branch info, and gutter signs asynchronously.
+
+pub mod gitsigns;
 
 /// Placeholder for git service state.
 pub struct GitService;

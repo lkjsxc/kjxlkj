@@ -7,6 +7,8 @@ mod layout_ops;
 mod layout_resize;
 mod focus;
 pub mod theme;
+pub mod statusline;
+pub mod messages;
 
 pub use layout::{LayoutNode, LayoutTree};
 pub use focus::FocusState;
