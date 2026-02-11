@@ -23,6 +23,10 @@ after wave-030, bringing total to 240 tests.
 Stage-03 exit integration tests (wave-031): 12 tests covering ex command pipeline,
 insert persistence, d$, search forward/n, :set ignorecase, star search, yy, diw,
 Ctrl-a, bfirst/blast, visual yank, bracket match (%), bringing total to 252 tests.
+Window command dispatch (wave-032): Ctrl-w prefix key dispatch with directional
+focus (h/j/k/l geometry-based), cycle (w), previous (p), split (s/v/n), close
+(c/q), only (o). Split semantics corrected for Vim convention. 19 new tests
+bringing total to 271 tests.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,

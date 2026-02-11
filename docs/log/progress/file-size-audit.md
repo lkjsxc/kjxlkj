@@ -20,13 +20,13 @@ All files are now ≤ 200 lines.
 | `editor_edit.rs` (kjxlkj-core-state) | 199 | OK |
 | `normal_g.rs` (kjxlkj-core-mode) | 197 | OK |
 | `register.rs` (kjxlkj-core-state) | 198 | OK |
-| `pending.rs` (kjxlkj-core-mode) | 179 | OK |
+| `pending.rs` (kjxlkj-core-mode) | 181 | OK |
 | `frame.rs` (kjxlkj-render) | 159 | OK |
 | `command_parse.rs` (kjxlkj-core-state) | 194 | OK |
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_ops.rs` (kjxlkj-core-state) | 186 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
-| `editor_action.rs` (kjxlkj-core-state) | 200 | OK |
+| `editor_action.rs` (kjxlkj-core-state) | 186 | OK |
 | `regex_compile.rs` (kjxlkj-core-edit) | 120 | OK |
 | `text_object.rs` (kjxlkj-core-edit) | 195 | OK |
 | `text_object_ext.rs` (kjxlkj-core-edit) | 126 | OK |
@@ -39,7 +39,11 @@ All files are now ≤ 200 lines.
 | `editor_boundary_tests.rs` (kjxlkj-core-state) | 83 | OK |
 | `editor_stage03_tests.rs` (kjxlkj-core-state) | 134 | OK |
 | `editor_stage03_edit_tests.rs` (kjxlkj-core-state) | 108 | OK |
-| `lib.rs` (kjxlkj-core-state) | 51 | OK |
+| `editor_wincmd_tests.rs` (kjxlkj-core-state) | 144 | OK |
+| `editor_window.rs` (kjxlkj-core-state) | 128 | OK |
+| `normal_wincmd.rs` (kjxlkj-core-mode) | 87 | OK |
+| `lib.rs` (kjxlkj-core-state) | 53 | OK |
+| `lib.rs` (kjxlkj-core-mode) | 147 | OK |
 
 ## Splits Performed
 
@@ -71,3 +75,4 @@ All files are now ≤ 200 lines.
 - Wave-029 changes: `action.rs` 199→200 (+FirstBuffer/LastBuffer on single line), `command_parse.rs` 200→194 (+:bf/:bfirst/:bl/:blast, merged 3 tests into 1 for compaction), `editor_buffer.rs` 182→194 (+first_buffer/last_buffer), `editor_action.rs` 198→200 (+FirstBuffer/LastBuffer dispatch). New file: `editor_buffer_tests.rs` (153, 13 integration tests).
 - Wave-030 changes: No existing files modified (test-only wave). New files: `editor_race_tests.rs` (140, 10 stress tests), `editor_boundary_tests.rs` (83, 7 boundary safety tests), `lib.rs` (core-state) 43→47 (+2 test modules).
 - Wave-031 changes: `lib.rs` (core-state) 47→51 (+2 test modules). New files: `editor_stage03_tests.rs` (134, 7 stage-03 exit tests), `editor_stage03_edit_tests.rs` (108, 5 stage-03 edit tests). Original single file (215 lines) split to comply with ≤ 200 policy.
+- Wave-032 changes: `pending.rs` 179→181 (+WinCmd variant), `normal.rs` 200→200 (compacted tests, +Ctrl-w dispatch), `normal_partial.rs` 91→93 (+WinCmd arm), `editor_action.rs` 200→186 (compacted dispatchers, +4 window actions), `editor_window.rs` 65→128 (+window_only/focus_cycle/focus_direction), `lib.rs` (core-mode) 146→147 (+normal_wincmd), `lib.rs` (core-state) 51→53 (+editor_wincmd_tests). New files: `normal_wincmd.rs` (87, wincmd key dispatch, 7 tests), `editor_wincmd_tests.rs` (144, 12 integration tests).

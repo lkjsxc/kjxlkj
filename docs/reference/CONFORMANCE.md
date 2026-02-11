@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 252 deterministic unit and integration tests covering key normalization,
+through 271 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -24,7 +24,7 @@ force modifiers, count multiplication, Vim regex compilation, ex command parsing
 search forward/backward with wrapping, command-line input handling, blackhole
 register suppression, clipboard register stubs, \c/\C case sensitivity flags,
 \o/\O octal and \H non-head atoms, put (p/P) paste operations, register-wired
-yank/delete operators, and cursor boundary clamping.
+yank/delete operators, cursor boundary clamping, and window command dispatch.
 Multi-task runtime architecture implemented (input/core/render tasks with bounded
 channels, signal handlers, proper shutdown).
 All source files comply with ≤ 200 line limit.
@@ -100,6 +100,13 @@ resize churn 50 cycles) and 7 boundary safety tests (deterministic replay
 insert-delete, delete on empty buffer, motion on empty buffer, unknown ex
 command is noop, sequential ex commands, Ctrl-6 without alternate, force quit
 flag).
+Window command dispatch (Ctrl-w prefix): PartialKey::WinCmd enables two-key
+Ctrl-w sequences. Directional focus (h/j/k/l) with geometry-based resolution,
+focus cycle (w), focus previous (p), split horizontal (s/n), split vertical (v),
+close window (c/q), window only (o). Split semantics corrected: :split creates
+top/bottom layout (horizontal divider), :vsplit creates side-by-side layout
+(vertical divider). 7 unit tests + 12 integration tests covering all wincmd
+paths and directional focus with asymmetric splits.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -108,7 +115,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (252 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (271 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
