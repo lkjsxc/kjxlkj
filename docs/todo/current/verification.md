@@ -10,14 +10,14 @@ Back: [/docs/todo/current/README.md](/docs/todo/current/README.md)
 
 ## Gate 1: Reachability
 
-- [ ] each blocker fix is reachable from real key or command paths
-- [ ] each claimed fix changes visible runtime behavior
-- [ ] no closure is based on dead or type-only paths
+- [x] each blocker fix is reachable from real key or command paths
+- [x] each claimed fix changes visible runtime behavior
+- [x] no closure is based on dead or type-only paths
 
 ## Gate 2: Deterministic Verification
 
 - [x] targeted regression tests for touched blockers pass
-- [ ] matching live PTY E2E tests (`*R`) pass
+- [x] matching live PTY E2E tests (`*R`) pass
 - [x] profile-appropriate full gate from [/docs/reference/CI.md](/docs/reference/CI.md) passes
 
 ## Gate 3: Reference Synchronization

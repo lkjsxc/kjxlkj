@@ -16,7 +16,7 @@ High-risk reconstruction requirements from canonical specs.
 
 | ID | Spec Source | Requirement | Priority | Tests | Status |
 |---|---|---|---|---|---|
-| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` normalizes to `A` before mode dispatch | high | `WR-01R`, `KEY-TRACE-01` | `open-blocker` |
+| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` normalizes to `A` before mode dispatch | high | `WR-01R`, `KEY-TRACE-01` | `aligned` |
 | `R-CUR-01` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | `i`, `a`, `A` semantics differ correctly at EOL | high | `CUR-01`..`CUR-06`, `CUR-07R` | `open-blocker` |
 | `R-CUR-02` | [/docs/spec/features/ui/cursor-customization.md](/docs/spec/features/ui/cursor-customization.md) | cursor remains visible and never targets continuation cells | high | `CUR-08R`..`CUR-11R` | `open-blocker` |
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrap never overflows and wide graphemes remain atomic | high | `WRAP-11R`..`WRAP-16R` | `open-blocker` |

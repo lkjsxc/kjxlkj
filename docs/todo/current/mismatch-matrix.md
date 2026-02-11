@@ -19,7 +19,6 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 
 | Requirement ID | Canonical document | Observed status | Mismatch class | Action | Required evidence |
 |---|---|---|---|---|---|
-| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | spec-only | `M2 missing feature` | implement + test-add | `WR-01R` PTY trace proving `Shift+a -> A` before dispatch |
 | `R-WIN-01` | [/docs/spec/editor/windows.md](/docs/spec/editor/windows.md) | spec-only | `M2 missing feature` | implement + test-add | `WIN-01R` and `WIN-04R` focus/geometry invariants |
 | `R-WIN-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | spec-only | `M2 missing feature` | implement + test-add | `WINNAV-01R`..`WINNAV-06R` deterministic focus traces |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | spec-only | `M2 missing feature` | implement + test-add | `EXP-01R` and `EXP-02R` command/key reachability |
@@ -35,6 +34,7 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 | Requirement ID | Canonical document | Observed status | Mismatch class | Closure Evidence |
 |---|---|---|---|---|
 | `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | aligned | none | `cargo metadata --no-deps`; `cargo check --workspace`; `cargo test -p kjxlkj-test-harness` |
+| `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 440/440 markdown files directly linked in coverage parts |
 
 ## Priority Rule

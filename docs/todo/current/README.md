@@ -7,7 +7,7 @@ Status: Reconstructed foundation baseline active on 2026-02-11. Runtime blocker 
 ## Active Blockers
 
 - [x] `LIM-BASELINE-IMPL-03` regenerate workspace manifests and grouped source tree (evidence: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), [/docs/log/reconstruction/audits/README.md](/docs/log/reconstruction/audits/README.md))
-- [ ] `LIM-BLOCK-KEY-03` `Shift+a` end-to-end append semantics are correct
+- [x] `LIM-BLOCK-KEY-03` `Shift+a` end-to-end append semantics are correct (evidence: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), `cargo test -p kjxlkj-test-harness --test key_mode_e2e`)
 - [ ] `LIM-BLOCK-WIN-03` split lifecycle preserves deterministic layout/focus
 - [ ] `LIM-BLOCK-NAV-03` `Ctrl-w` navigation works across mixed windows
 - [ ] `LIM-BLOCK-EXP-03` explorer launch and actions are reachable and stable
@@ -44,6 +44,6 @@ Status: Reconstructed foundation baseline active on 2026-02-11. Runtime blocker 
 ## Exit Criteria
 
 - [ ] no high-severity limitation remains open
-- [ ] all mandatory `*R` tests for closed blockers pass deterministically
+- [x] all mandatory `*R` tests for closed blockers pass deterministically
 - [x] matrices and reference ledgers are synchronized in one change
 - [x] doc-coverage includes every markdown document directly

@@ -13,20 +13,20 @@ crate topology are present, while runtime behavior blockers remain open.
 
 | ID | Requirement Link | Expected State | Class | Severity | Mandatory Next Action |
 |---|---|---|---|---|---|
-| `LIM-BLOCK-KEY-03` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` decodes to `A` and produces append semantics | `M2 missing feature` | high | implement decode and dispatch, then pass `WR-01R`, `KEY-TRACE-01` |
 | `LIM-BLOCK-WIN-03` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split/create/close/rebalance preserves deterministic focus and geometry | `M2 missing feature` | high | implement and pass `WIN-01R`..`WIN-05R` |
 | `LIM-BLOCK-NAV-03` | [/docs/spec/features/window/wincmd.md](/docs/spec/features/window/wincmd.md) | `Ctrl-w h/j/k/l/w/W/p/t/b` deterministic across window types | `M2 missing feature` | high | implement and pass `WINNAV-01R`..`WINNAV-06R` |
 | `LIM-BLOCK-EXP-03` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer launch/actions are reachable and stable | `M2 missing feature` | high | implement and pass `EXP-01R`..`EXP-06R` |
 | `LIM-BLOCK-TERM-03` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal windows obey shared lifecycle and remain responsive | `M2 missing feature` | high | implement and pass `TERM-01R`..`TERM-07R` |
 | `LIM-BLOCK-CURSOR-03` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and never targets half-cell continuation states | `M2 missing feature` | high | implement and pass `CUR-07R`..`CUR-11R` |
 | `LIM-BLOCK-WRAP-03` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | wrapping never overflows and preserves wide-grapheme atomicity | `M2 missing feature` | high | implement and pass `WRAP-11R`..`WRAP-16R` |
-| `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires true PTY E2E evidence | `M4 verification gap` | high | reconstruct PTY harness and enforce blocker gate |
+| `LIM-BLOCK-TEST-03` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires true PTY E2E evidence | `M4 verification gap` | high | extend reconstructed PTY harness coverage and enforce blocker gate for remaining blockers |
 
 ## Closed in Current Wave
 
 | ID | Requirement Link | Closure Date | Closure Evidence |
 |---|---|---|---|
 | `LIM-BASELINE-IMPL-03` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | 2026-02-11 | root workspace manifests created, `src/crates/...` grouped tree created, `cargo test -p kjxlkj-test-harness`, and reconstructed-basic verification checks passing |
+| `LIM-BLOCK-KEY-03` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | 2026-02-11 | decode-normalize-dispatch path implemented in runtime, `KEY-TRACE-01` and `WR-01R` PTY tests passing in `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 
 ## Open Secondary Gaps
 

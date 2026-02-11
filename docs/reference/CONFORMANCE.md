@@ -34,14 +34,15 @@ Because runtime feature logic is not yet reconstructed, runtime behavior domains
 | Workspace and grouped source tree are reconstructed | `verified` | 2026-02-11 | root `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, and `src/crates/...` tree |
 | Reconstructed-basic verification profile checks pass | `verified` | 2026-02-11 | `cargo check --workspace`; `cargo fmt --all -- --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace` |
 | Source topology and source-file-size smoke checks pass | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness` includes grouped-path, fan-out, and `<=200` line assertions |
-| Runtime E2E gate for blocker closure is defined | `partial` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) |
+| Shift-normalization append path is wired and PTY-verified | `verified` | 2026-02-11 | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` (`KEY-TRACE-01`, `WR-01R`) |
+| Runtime E2E gate for blocker closure is defined and partially reconstructed | `partial` | 2026-02-11 | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md), `src/crates/app/kjxlkj-test-harness/tests/key_mode_e2e.rs` |
 | Runtime feature conformance | `unverified` | 2026-02-11 | runtime crates are scaffolded; behavior blockers remain open |
 
 ## Domain Status
 
 | Domain | Status | Reason |
 |---|---|---|
-| Input decoding and key normalization | `unverified` | blocker behavior not yet implemented |
+| Input decoding and key normalization | `partial` | `Shift+a -> A` normalization and append dispatch are verified; broader keymap domains remain open |
 | Window tree and split lifecycle | `unverified` | blocker behavior not yet implemented |
 | Mixed-window navigation (`Ctrl-w`) | `unverified` | blocker behavior not yet implemented |
 | Explorer window and actions | `unverified` | blocker behavior not yet implemented |
