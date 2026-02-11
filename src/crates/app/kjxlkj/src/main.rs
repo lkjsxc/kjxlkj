@@ -1,6 +1,7 @@
 mod command_routes;
 mod input_routes;
 
+use std::collections::VecDeque;
 use std::io::{self, Read, Write};
 
 use command_routes::action_from_command;
@@ -51,6 +52,7 @@ fn run() -> io::Result<()> {
     let mut awaiting_terminal_leader_suffix = false;
     let mut command_mode = false;
     let mut command_buffer = String::new();
+    let mut recent_events: VecDeque<String> = VecDeque::new();
     let mut stdin = io::stdin().lock();
     let mut stdout = io::stdout().lock();
 
@@ -142,6 +144,14 @@ fn run() -> io::Result<()> {
         }
         let result = state.apply(action);
         let render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
+        let normalized_key = format_key(decoded.normalized_key);
+        recent_events.push_back(format!(
+            "{seq}:{normalized_key}->{action}",
+            action = result.resolved_action
+        ));
+        if recent_events.len() > 20 {
+            recent_events.pop_front();
+        }
         writeln!(
             stdout,
             "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={}",
@@ -149,7 +159,7 @@ fn run() -> io::Result<()> {
             result.mode_before,
             state.focused_window_id(),
             state.focused_window_kind(),
-            format_key(decoded.normalized_key),
+            normalized_key,
             result.resolved_action,
             result.cursor_before,
             result.cursor_after,
@@ -167,9 +177,10 @@ fn run() -> io::Result<()> {
     }
 
     let final_render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
+    let recent_joined = recent_events.into_iter().collect::<Vec<_>>().join("|");
     writeln!(
         stdout,
-        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={} window_session={}",
+        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} wrap_sig={} line={} window_session={} recent_events={}",
         state.mode(),
         state.cursor(),
         state.focused_window_id(),
@@ -180,7 +191,8 @@ fn run() -> io::Result<()> {
         final_render.cursor_on_continuation,
         final_render.wrap_signature,
         state.line(),
-        state.window_session_dump()
+        state.window_session_dump(),
+        recent_joined
     )?;
     stdout.flush()
 }
