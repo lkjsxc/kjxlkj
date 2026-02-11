@@ -4,8 +4,7 @@
 
 use kjxlkj_core_types::Action;
 
-/// Parse an ex command string and return a typed Action.
-/// The input should NOT include the leading `:`.
+/// Parse an ex command string (without leading `:`) into a typed Action.
 pub fn parse_ex_command(input: &str) -> Action {
     let input = input.trim();
     if input.is_empty() {
@@ -104,6 +103,8 @@ fn match_command(name: &str, args: &str, bang: bool) -> Action {
         "terminal" | "term" => Action::OpenTerminal,
         // Register display.
         "registers" | "reg" | "display" | "di" => Action::ShowRegisters,
+        // Buffer listing.
+        "ls" | "buffers" => Action::ListBuffers,
         // Search highlight clear.
         "nohlsearch" | "noh" => Action::ClearSearchHighlight,
         // Set option.

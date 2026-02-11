@@ -15,6 +15,7 @@
 mod command_parse;
 mod editor;
 mod editor_action;
+mod editor_buffer;
 mod editor_cmdline;
 mod editor_edit;
 mod editor_ext;

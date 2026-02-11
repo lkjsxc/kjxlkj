@@ -8,15 +8,12 @@ use serde::{Deserialize, Serialize};
 pub enum Action {
     /// Insert a character at cursor position.
     InsertChar(char),
-    /// Delete character under cursor (forward).
     DeleteCharForward,
-    /// Delete character before cursor (backward).
     DeleteCharBackward,
     /// Delete current line.
     DeleteLine,
     /// Yank current line.
     YankLine,
-    /// Move cursor by motion.
     Motion(Motion),
     /// Enter a specific mode.
     EnterMode(Mode),
@@ -126,6 +123,10 @@ pub enum Action {
     VisualOperator(Operator),
     /// Swap visual anchor and cursor.
     VisualSwapAnchor,
+    /// Switch to alternate buffer (Ctrl-^).
+    SwitchAlternate,
+    /// List buffers (:ls/:buffers).
+    ListBuffers,
 }
 
 /// Cursor motion.

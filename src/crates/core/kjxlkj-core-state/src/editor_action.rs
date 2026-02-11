@@ -125,6 +125,13 @@ impl EditorState {
             Action::SetOption(ref name, ref val) => self.apply_set_option(name, val),
             Action::VisualOperator(op) => self.apply_visual_operator(op),
             Action::VisualSwapAnchor => self.swap_visual_anchor(),
+            Action::NextBuffer => self.next_buffer(),
+            Action::PreviousBuffer => self.prev_buffer(),
+            Action::SwitchBuffer(id) => self.switch_to_buffer(id),
+            Action::DeleteBuffer => self.delete_buffer(),
+            Action::OpenFile(ref path) => { let p = path.clone(); self.open_file(&p); }
+            Action::SwitchAlternate => self.switch_alternate(),
+            Action::ListBuffers => {} // Display handled by snapshot.
             _ => {}
         }
     }

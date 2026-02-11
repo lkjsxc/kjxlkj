@@ -26,18 +26,18 @@ pub struct EditorState {
     pub quit_requested: bool,
     pub sequence: u64,
     pub(crate) id_counter: u64,
-    /// Multi-key pending state for normal mode.
-    pub pending: PendingState,
-    /// Register store for yank/delete/put.
-    pub registers: RegisterStore,
+    pub pending: PendingState, // Multi-key pending state for normal mode.
+    pub registers: RegisterStore, // Register store for yank/delete/put.
     /// Last text-changing action for dot-repeat.
     pub(crate) last_change: Option<Action>,
     /// Search state for / and ? patterns.
     pub search: SearchState,
     /// Text accumulated during current insert session.
     pub(crate) insert_text: String,
-    /// Visual selection anchor position (set when entering visual mode).
+    /// Visual selection anchor (set when entering visual mode).
     pub visual_anchor: Option<kjxlkj_core_edit::Cursor>,
+    /// Alternate buffer for Ctrl-^ / # register.
+    pub alternate_buffer: Option<BufferId>,
 }
 
 impl EditorState {
@@ -62,7 +62,7 @@ impl EditorState {
             registers: RegisterStore::new(),
             last_change: None, search: SearchState::new(),
             insert_text: String::new(),
-            visual_anchor: None,
+            visual_anchor: None, alternate_buffer: None,
         }
     }
 

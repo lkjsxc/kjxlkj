@@ -110,8 +110,8 @@ fn handle_ctrl_key(
         Key::Char('y') => (Action::Motion(Motion::ScrollUp), None),
         Key::Char('a') => (Action::IncrementNumber, None),
         Key::Char('x') => (Action::DecrementNumber, None),
-        Key::Char('w') => (Action::Noop, None),
-        _ => (Action::Noop, None),
+        Key::Char('6') | Key::Char('^') => (Action::SwitchAlternate, None),
+        Key::Char('w') | _ => (Action::Noop, None),
     }
 }
 
