@@ -44,3 +44,29 @@ See [wave-progress-stage-03.md](wave-progress-stage-03.md) for Stage 03
   - Tier-C docs read: multicursor, snippets, spell, surround, templates, git/README,
     git/diff-mode
   - Ledger sync: CONFORMANCE (252→271), LIMITATIONS, DRIFT_MATRIX updated
+
+### Wave 033: Requirement Extraction and Normalization
+- Status: COMPLETE
+- Committed: 61039489 (impl) + df018219 (tests)
+- Evidence: 295 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Boundary focus: Ctrl-w t (top-left) and b (bottom-right) using geometry-based
+    min/max of (y*10000+x) across compute_rects leaf positions
+  - Resize dispatch: Ctrl-w +/-/>/<  mapped to WindowResize(ResizeEdge, delta);
+    equalize (=) delegates to layout.equalize(); maximize _/| as no-op placeholders
+  - ResizeEdge enum added to kjxlkj-core-types (Height, Width)
+  - Explorer routing: open_explorer creates ContentKind::Explorer(ExplorerStateId(0))
+    leaf via split_horizontal on leftmost window; close_explorer finds explorer by
+    ContentKind match; :ExplorerClose ex command added to command_parse.rs
+  - action.rs compacted from 200→112 lines (removed per-variant doc comments,
+    grouped variants with section comments)
+  - layout_resize.rs created (127 lines): equalize(), find_container_info(),
+    contains_leaf(), is_in_axis_split() with 3 unit tests
+  - normal_wincmd.rs expanded (87→137): +10 dispatch arms, +8 unit tests
+  - editor_window.rs expanded then compacted (128→150): +focus_top_left/bottom_right,
+    equalize/resize/max placeholders, open/close explorer, leaf_rects() helper
+  - editor_stage04_tests.rs created (189 lines): 14 integration tests covering
+    boundary focus, resize, equalize, explorer lifecycle, :ExplorerClose command
+  - Tier-C docs read: git/git.md, gitsigns.md, merge-conflicts.md, vimdiff.md,
+    lsp/README.md, code-actions.md, code-lens.md
+  - Ledger sync: CONFORMANCE (271→295), LIMITATIONS, DRIFT_MATRIX updated

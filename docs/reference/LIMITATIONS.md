@@ -27,6 +27,11 @@ Window command dispatch (wave-032): Ctrl-w prefix key dispatch with directional
 focus (h/j/k/l geometry-based), cycle (w), previous (p), split (s/v/n), close
 (c/q), only (o). Split semantics corrected for Vim convention. 19 new tests
 bringing total to 271 tests.
+Boundary focus and resize dispatch (wave-033): Ctrl-w t/b for top-left/bottom-right
+focus, +/-/>/<  resize (no-op placeholder), = equalize, _/| maximize (no-op
+placeholder). Explorer open/close routing: open_explorer creates
+ContentKind::Explorer leaf, close_explorer removes it, :ExplorerClose ex command.
+24 new tests bringing total to 295 tests.
 Explorer and terminal service crates are stubs.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
@@ -46,7 +51,7 @@ All source files ≤ 200 lines.
 | `LIM-BASELINE-IMPL-04` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace and source tree reconstructed; 20 crates, compiles clean | `M2 missing feature` | closed | n/a |
 | `LIM-BLOCK-KEY-04` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` normalization implemented and T1-tested; T2 PTY verification pending | `M4 verification gap` | medium | close with `KEYMODE-01`, `WR-01R` T2 screen assertions |
 | `LIM-BLOCK-WIN-04` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split lifecycle implemented and T1-tested; T2 PTY verification pending | `M4 verification gap` | medium | close with `WIN-01R`..`WIN-05R` T2 screen assertions |
-| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer service crate is stub; state model and routes not yet implemented | `M2 missing feature` + `M4 verification gap` | high | implement explorer routes/state and close with `EXP-01R`..`EXP-06R` |
+| `LIM-BLOCK-EXP-04` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | explorer open/close routing implemented and T1-tested; state model/tree data not yet implemented | `M2 missing feature` + `M4 verification gap` | high | implement explorer state model, tree data, key navigation and close with `EXP-01R`..`EXP-06R` |
 | `LIM-BLOCK-E2E-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | T1 headless harness implemented; T2 PTY harness not yet rebuilt | `M2 missing feature` + `M4 verification gap` | high | rebuild PTY harness and enforce per-key state + frame assertions |
 
 ## Open Secondary Gaps

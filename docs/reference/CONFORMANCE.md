@@ -16,7 +16,7 @@ This ledger reports the strongest verified state as of the snapshot date.
 ## Current Snapshot (2026-02-11)
 
 Workspace reconstructed with 20 crates. Runtime conformance is partially verified
-through 271 deterministic unit and integration tests covering key normalization,
+through 295 deterministic unit and integration tests covering key normalization,
 mode dispatch, cursor motion, text buffer operations, layout tree, editor state,
 multi-key sequences, operator composition, motion execution, motion type
 classification, case operators, g-prefix operator dispatch, register system,
@@ -102,11 +102,13 @@ command is noop, sequential ex commands, Ctrl-6 without alternate, force quit
 flag).
 Window command dispatch (Ctrl-w prefix): PartialKey::WinCmd enables two-key
 Ctrl-w sequences. Directional focus (h/j/k/l) with geometry-based resolution,
-focus cycle (w), focus previous (p), split horizontal (s/n), split vertical (v),
-close window (c/q), window only (o). Split semantics corrected: :split creates
-top/bottom layout (horizontal divider), :vsplit creates side-by-side layout
-(vertical divider). 7 unit tests + 12 integration tests covering all wincmd
-paths and directional focus with asymmetric splits.
+focus cycle (w), focus previous (p), focus top-left (t), focus bottom-right (b),
+split horizontal (s/n), split vertical (v), close window (c/q), window only (o),
+resize (+/-/>/<, no-op placeholder), equalize (=), maximize height/width (_/|,
+no-op placeholder). Explorer routing: open_explorer creates ContentKind::Explorer
+leaf, close_explorer removes it, :ExplorerClose ex command. Split semantics
+corrected: :split creates top/bottom layout, :vsplit creates side-by-side layout.
+15 unit tests + 26 integration tests covering all wincmd paths.
 PTY-level E2E verification pending harness reconstruction.
 
 ## Evidence Summary
@@ -115,7 +117,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|---|
 | Docs authority and precedence are defined | `verified` | 2026-02-11 | [/docs/README.md](/docs/README.md), [/docs/policy/README.md](/docs/policy/README.md) |
 | TODO reconstruction chain is present | `verified` | 2026-02-11 | [/docs/todo/README.md](/docs/todo/README.md), [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (271 pass) |
+| Implementation workspace is present | `verified` | 2026-02-11 | 20-crate workspace, `cargo check --workspace` and `cargo test --workspace` (295 pass) |
 | Runtime blocker behavior (`Shift+a`, split, explorer) | `partial` | 2026-02-11 | T1 headless harness tests pass; T2 PTY harness pending |
 | Live E2E screen-oracle closure | `unverified` | 2026-02-11 | PTY harness not yet reconstructed |
 
@@ -125,7 +127,7 @@ PTY-level E2E verification pending harness reconstruction.
 |---|---|---|
 | Input decoding and key normalization | `partial` | Shift+a normalization implemented and unit-tested; T2 pending |
 | Window tree and split lifecycle | `partial` | layout tree with split/close/rebalance implemented and unit-tested; T2 pending |
-| Explorer window and actions | `unverified` | stub crate only; explorer state model not yet implemented |
+| Explorer window and actions | `partial` | explorer open/close routing implemented and T1-tested; state model and tree data pending |
 | Terminal window integration | `unverified` | stub crate only; PTY not yet implemented |
 | Viewport wrap and cursor safety | `unverified` | basic cursor motion; wrap not yet implemented |
 | Test harness fidelity | `partial` | T1 headless harness with step dumps; T2 PTY harness pending |
