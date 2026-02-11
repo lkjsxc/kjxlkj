@@ -38,6 +38,10 @@ No later stage may reinterpret printable identity from an earlier stage.
 | `FocusLost` | `Action::FocusLost` |
 | `Mouse(_)` | ignored deterministically |
 
+UTF-8 printable bytes MUST be assembled into one scalar-char key event before
+normalization and routing. Valid multibyte printable input MUST NOT emit
+per-byte `Unknown(...)` events.
+
 ## Printable Normalization Rules
 
 | Rule | Requirement |
@@ -54,6 +58,7 @@ No later stage may reinterpret printable identity from an earlier stage.
 | `Shift+a` | `A` |
 | `Shift+o` | `O` |
 | `Shift+i` | `I` |
+| UTF-8 bytes for `あ` | `あ` |
 | `Ctrl+w` | `Ctrl+w` |
 | `Esc` | `Esc` |
 
@@ -110,6 +115,7 @@ These trace fields are mandatory in blocker diagnostics:
 | `KEY-TRACE-02` | IME composition `Space` consumes and emits no leader action |
 | `KEY-TRACE-03` | `:Explorer` and `<leader>e` paths appear in action trace |
 | `KEY-TRACE-04` | `:terminal` and `<leader>t` paths appear in action trace |
+| `KEY-TRACE-06` | UTF-8 multibyte input is decoded as one normalized char event |
 | `WR-01R` | PTY raw bytes for `Shift+a` produce append semantics in runtime |
 
 ## Related

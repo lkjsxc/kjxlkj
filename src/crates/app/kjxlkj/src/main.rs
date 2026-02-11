@@ -1,5 +1,6 @@
 mod command_routes;
 mod input_routes;
+mod trace_output;
 
 use command_routes::action_from_command;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
@@ -10,6 +11,7 @@ use kjxlkj_input::{ByteStreamDecoder, Key};
 use kjxlkj_render::compute_render_diagnostics;
 use std::collections::VecDeque;
 use std::io::{self, Read, Write};
+use trace_output::{emit_final, emit_trace};
 
 fn main() -> io::Result<()> {
     enable_raw_mode()?;
@@ -155,25 +157,7 @@ fn run() -> io::Result<()> {
         if recent_events.len() > 20 {
             recent_events.pop_front();
         }
-        writeln!(
-            stdout,
-            "TRACE event_seq={} mode_before={:?} focused_window_id={} focused_window_type={} normalized_key={} resolved_action={} cursor_before={} cursor_after={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} cursor_span={} wrap_sig={} line={}",
-            seq,
-            result.mode_before,
-            state.focused_window_id(),
-            state.focused_window_kind(),
-            normalized_key,
-            result.resolved_action,
-            result.cursor_before,
-            result.cursor_after,
-            state.window_geometry_ok(),
-            render.bounds_ok,
-            render.cursor_visible,
-            render.cursor_on_continuation,
-            render.cursor_span,
-            render.wrap_signature,
-            state.line()
-        )?;
+        emit_trace(&mut stdout, seq, &result, &state, render, &normalized_key)?;
         stdout.flush()?;
         if result.should_quit {
             break;
@@ -182,22 +166,6 @@ fn run() -> io::Result<()> {
 
     let final_render = compute_render_diagnostics(state.line(), state.cursor(), cols, rows);
     let recent_joined = recent_events.into_iter().collect::<Vec<_>>().join("|");
-    writeln!(
-        stdout,
-        "FINAL mode={:?} cursor={} focused_window_id={} focused_window_type={} geometry_ok={} render_bounds_ok={} cursor_visible={} cursor_continuation={} cursor_span={} wrap_sig={} line={} window_session={} recent_events={}",
-        state.mode(),
-        state.cursor(),
-        state.focused_window_id(),
-        state.focused_window_kind(),
-        state.window_geometry_ok(),
-        final_render.bounds_ok,
-        final_render.cursor_visible,
-        final_render.cursor_on_continuation,
-        final_render.cursor_span,
-        final_render.wrap_signature,
-        state.line(),
-        state.window_session_dump(),
-        recent_joined
-    )?;
+    emit_final(&mut stdout, &state, final_render, &recent_joined)?;
     stdout.flush()
 }
