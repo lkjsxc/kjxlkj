@@ -1,8 +1,6 @@
 //! Normal mode key dispatch.
 //!
 //! See /docs/spec/modes/normal.md for normative key tables.
-//! Handles count prefixes, multi-key sequences (g/z/f/t/r/m),
-//! operator entry, and mode transitions.
 
 use kjxlkj_core_types::{
     Action, CommandKind, Key, KeyModifiers, Mode, Motion,
@@ -55,6 +53,8 @@ fn handle_normal_command(
         Key::Char('s') => done(pending, Action::SubstituteChar, Mode::Insert),
         Key::Char('S') => done(pending, Action::SubstituteLine, Mode::Insert),
         Key::Char('C') => done(pending, Action::ChangeToEnd, Mode::Insert),
+        Key::Char('D') => cleared(pending, Action::DeleteToEnd),
+        Key::Char('Y') => cleared(pending, Action::YankCurrentLine),
         Key::Char('d') => (Action::Noop, Some(Mode::OperatorPending(Operator::Delete))),
         Key::Char('c') => (Action::Noop, Some(Mode::OperatorPending(Operator::Change))),
         Key::Char('y') => (Action::Noop, Some(Mode::OperatorPending(Operator::Yank))),

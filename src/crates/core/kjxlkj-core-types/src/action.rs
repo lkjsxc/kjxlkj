@@ -1,8 +1,6 @@
 //! Typed actions emitted by the input pipeline.
-//!
-//! See /docs/spec/architecture/input-decoding.md for the pipeline.
 
-use crate::{BufferId, Key, KeyModifiers, Mode, Operator, WindowId};
+use crate::{BufferId, Key, KeyModifiers, Mode, Operator};
 use serde::{Deserialize, Serialize};
 
 /// Typed editor action emitted after input decode and mapping resolution.
@@ -118,6 +116,12 @@ pub enum Action {
     SubstituteLine,
     /// Change to end of line (C).
     ChangeToEnd,
+    /// Delete to end of line (D).
+    DeleteToEnd,
+    /// Yank current line (Y).
+    YankCurrentLine,
+    /// Join lines without space (gJ).
+    JoinLinesNoSpace,
 }
 
 /// Cursor motion.

@@ -112,6 +112,33 @@ impl Buffer {
     pub fn snapshot_rope(&self) -> Rope {
         self.content.clone()
     }
+
+    /// Extract text in a grapheme range as a String.
+    pub fn text_range(
+        &self,
+        start_line: usize,
+        start_grapheme: usize,
+        end_line: usize,
+        end_grapheme: usize,
+    ) -> String {
+        let start = self
+            .grapheme_to_absolute_byte(
+                start_line,
+                start_grapheme,
+            )
+            .unwrap_or(0);
+        let end = self
+            .grapheme_to_absolute_byte(
+                end_line,
+                end_grapheme,
+            )
+            .unwrap_or(start);
+        if end <= start {
+            return String::new();
+        }
+        let s = self.content.byte_slice(start..end);
+        s.to_string()
+    }
 }
 
 #[cfg(test)]

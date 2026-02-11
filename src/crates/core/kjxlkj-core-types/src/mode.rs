@@ -29,6 +29,24 @@ pub enum Operator {
     Dedent,
     Reindent,
     Format,
+    Lowercase,
+    Uppercase,
+    ToggleCase,
+}
+
+/// Motion scope type for operator range resolution.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RangeType {
+    Characterwise,
+    Linewise,
+    Blockwise,
+}
+
+/// Whether a motion's endpoint is included in the operation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Inclusivity {
+    Inclusive,
+    Exclusive,
 }
 
 /// The editing mode state machine.

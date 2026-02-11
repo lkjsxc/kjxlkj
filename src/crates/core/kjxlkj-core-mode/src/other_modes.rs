@@ -85,30 +85,38 @@ pub(crate) fn handle_replace_key(
 
 pub(crate) fn handle_operator_pending(
     key: &Key,
-    _mods: &KeyModifiers,
+    mods: &KeyModifiers,
     mode: Mode,
     pending: &mut PendingState,
 ) -> (Action, Option<Mode>) {
     if let Mode::OperatorPending(op) = mode {
+        // Double-operator detection: dd, cc, yy, >>, <<,
+        // ==, guu, gUU, g~~, gqq
         let op_char = match op {
-            Operator::Delete => 'd',
-            Operator::Change => 'c',
-            Operator::Yank => 'y',
-            Operator::Indent => '>',
-            Operator::Dedent => '<',
-            Operator::Reindent => '=',
-            Operator::Format => 'q',
+            Operator::Delete => Some('d'),
+            Operator::Change => Some('c'),
+            Operator::Yank => Some('y'),
+            Operator::Indent => Some('>'),
+            Operator::Dedent => Some('<'),
+            Operator::Reindent => Some('='),
+            Operator::Lowercase => Some('u'),
+            Operator::Uppercase => Some('U'),
+            Operator::ToggleCase => Some('~'),
+            Operator::Format => Some('q'),
         };
-        if let Key::Char(c) = key {
-            if *c == op_char {
-                pending.clear();
-                return (
-                    Action::OperatorLine(op),
-                    Some(Mode::Normal),
-                );
+        if !mods.ctrl {
+            if let Key::Char(c) = key {
+                if Some(*c) == op_char {
+                    pending.clear();
+                    return (
+                        Action::OperatorLine(op),
+                        Some(Mode::Normal),
+                    );
+                }
             }
         }
     }
+    // Count accumulation in operator-pending
     if let Key::Char(c) = key {
         if c.is_ascii_digit() {
             let d = *c as u8 - b'0';

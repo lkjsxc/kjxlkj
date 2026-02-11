@@ -100,6 +100,15 @@ impl EditorState {
             Action::DeleteToLineStart => {
                 self.delete_to_line_start();
             }
+            Action::DeleteToEnd => {
+                self.delete_to_eol();
+            }
+            Action::YankCurrentLine => {
+                // yank register (TODO: register store)
+            }
+            Action::JoinLinesNoSpace => {
+                self.join_lines_no_space();
+            }
             _ => {}
         }
     }
