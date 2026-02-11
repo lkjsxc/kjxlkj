@@ -18,7 +18,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 
 | Req ID | Canonical Document | Requirement | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
 |---|---|---|---|---|---|---|---|
-| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 98 tests pass (2026-02-11) |
+| `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | grouped workspace and crate tree exist | topology + build gate | verified | closed | implement | 20-crate workspace, `cargo check --workspace` passes, 125 tests pass (2026-02-11) |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | `Shift+a` dispatches exactly as `A` | `WR-01R`, `KEYMODE-01` | partial | `M4` | test-add | T1 headless test passes; T2 PTY harness pending |
 | `R-WIN-02` | [/docs/spec/features/window/splits-windows.md](/docs/spec/features/window/splits-windows.md) | split create/close/rebalance is deterministic and visible | `WIN-01R`..`WIN-05R` | partial | `M4` | test-add | T1 unit tests pass; T2 PTY harness pending |
 | `R-EXP-01` | [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md) | `:Explorer` and leader routes are user-visible and reliable | `EXP-01R`..`EXP-06R` | spec-only | `M2`, `M4` | implement + test-add | explorer crate is stub |
@@ -26,6 +26,9 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source dirs stay near 12 children and files stay <=200 lines | topology checks | verified | closed | implement | all files ≤ 200 lines, multi-task runtime, topology matches spec (2026-02-11) |
 | `R-OP-01` | [/docs/spec/editing/operators/README.md](/docs/spec/editing/operators/README.md) | operator grammar, g-prefix ops, double forms, case transforms | unit tests | partial | `M4` | test-add | 11-variant Operator enum, gu/gU/g~/gq/gJ/D/Y/! dispatch, RangeType/Inclusivity classification, ForceModifier, count multiplication; T2 pending |
 | `R-REG-01` | [/docs/spec/editing/registers/README.md](/docs/spec/editing/registers/README.md) | register store with named/numbered/unnamed/small-delete | unit tests | partial | `M4` | test-add | RegisterStore with record_yank/record_delete, numbered rotation, A-Z append; 5 unit tests; T2 pending |
+| `R-REGEX-01` | [/docs/spec/editing/regex/magic-modes.md](/docs/spec/editing/regex/magic-modes.md) | Vim regex magic-mode translation to Rust regex | unit tests | partial | `M4` | test-add | vim_to_rust_regex with shortcut atoms, word boundaries, grouping, alternation, quantifiers, \v very-magic; 10 unit tests; T2 pending |
+| `R-CMD-01` | [/docs/spec/commands/syntax.md](/docs/spec/commands/syntax.md) | Ex command parsing with abbreviation dispatch | unit tests | partial | `M4` | test-add | parse_ex_command with q/w/wq/x/e/bn/bp/bd/b/sp/vsp/clo/on/new/vnew/Explorer/terminal, ! flag; 8 unit tests; T2 pending |
+| `R-SEARCH-01` | [/docs/spec/editing/search/README.md](/docs/spec/editing/search/README.md) | Forward/backward search with compiled Vim regex | unit tests | partial | `M4` | test-add | SearchState with find_next/find_prev, line wrapping, last_match_before; 5 unit tests; T2 pending |
 
 ## Summary
 
@@ -34,7 +37,7 @@ Requirement-level mismatch tracking for the current docs-only baseline.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 2 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 5 |
+| `M4 verification gap` | 8 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

@@ -61,5 +61,26 @@ Tracks completion of each wave with evidence.
   - Register prefix ("x) via PartialKey::Register dispatch
   - New file: register.rs in core-state
 
-### Waves 019–023
+### Wave 019: Command and Route Wiring
+- Status: COMPLETE
+- Committed: 7306f5a9
+- Evidence: 125 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Vim regex compiler (regex_compile.rs): magic-mode → Rust regex translation with
+    \v very-magic switch, shortcut atoms (\d,\w,\s,\a,\l,\u,\x,\h), word boundaries,
+    grouping (\(...\)→(...)), alternation (\|→|), quantifiers (\+→+, \?→?),
+    \{n,m} brace quantifiers (10 tests)
+  - Ex command parser (command_parse.rs): abbreviation-based dispatch for
+    q/w/wq/x/e/bn/bp/bd/b/sp/vsp/clo/on/new/vnew/Explorer/terminal, ! force flag (8 tests)
+  - Search system (search.rs): SearchState with direction, Vim regex compilation,
+    find_next() forward with wrapping, find_prev() backward with last_match_before(),
+    byte/char offset helpers (5 tests)
+  - Command-line input (editor_cmdline.rs): handle_command_input() for char accumulation,
+    Escape/Enter/Backspace transitions, activate_cmdline() for :/?? prefixes,
+    dispatch_cmdline() routing, jump_to_match() cursor movement (4 tests)
+  - CommandKind::Search split into SearchForward/SearchBackward
+  - regex crate added to workspace dependencies
+  - New files: regex_compile.rs, command_parse.rs, search.rs, editor_cmdline.rs
+
+### Waves 020–023
 - Status: NOT STARTED

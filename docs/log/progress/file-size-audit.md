@@ -8,15 +8,19 @@ All files are now ≤ 200 lines.
 | File | Lines | Status |
 |------|-------|--------|
 | `action.rs` (kjxlkj-core-types) | 200 | OK |
+| `search.rs` (kjxlkj-core-state) | 200 | OK |
+| `editor.rs` (kjxlkj-core-state) | 200 | OK |
 | `normal.rs` (kjxlkj-core-mode) | 199 | OK |
-| `editor.rs` (kjxlkj-core-state) | 198 | OK |
 | `other_modes.rs` (kjxlkj-core-mode) | 196 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 196 | OK |
+| `editor_cmdline.rs` (kjxlkj-core-state) | 195 | OK |
 | `layout_ops.rs` (kjxlkj-core-ui) | 191 | OK |
 | `motion.rs` (kjxlkj-core-edit) | 190 | OK |
+| `regex_compile.rs` (kjxlkj-core-edit) | 187 | OK |
 | `normal_g.rs` (kjxlkj-core-mode) | 177 | OK |
 | `pending.rs` (kjxlkj-core-mode) | 175 | OK |
 | `frame.rs` (kjxlkj-render) | 159 | OK |
+| `command_parse.rs` (kjxlkj-core-state) | 159 | OK |
 | `buffer.rs` (kjxlkj-core-text) | 156 | OK |
 | `editor_edit.rs` (kjxlkj-core-state) | 151 | OK |
 | `editor_ext.rs` (kjxlkj-core-state) | 144 | OK |
@@ -36,6 +40,7 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `action.rs` (200), `normal.rs` (199), `editor.rs` (198), `other_modes.rs` (196), `motion_find.rs` (196) as they approach the limit.
+- Monitor `action.rs` (200), `search.rs` (200), `editor.rs` (200), `normal.rs` (199), `other_modes.rs` (196), `motion_find.rs` (196), `editor_cmdline.rs` (195) as they approach the limit.
 - New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
 - New files added in wave-018: `register.rs` (140), `pending.rs` expanded to 175.
+- New files added in wave-019: `regex_compile.rs` (187), `command_parse.rs` (159), `search.rs` (200), `editor_cmdline.rs` (195).
