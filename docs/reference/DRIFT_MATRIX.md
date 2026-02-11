@@ -26,7 +26,7 @@ Requirement-by-requirement mismatch tracking for the current reconstructed found
 | `R-TERM-01` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | terminal lifecycle and mixed-window behavior are stable | `src/crates/services/kjxlkj-service-terminal/src/service.rs` | `TERM-01R`..`TERM-07R` | spec-only | `M2 missing feature` | implement + test-add | open |
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | long lines and wide graphemes wrap without overflow | `src/crates/platform/kjxlkj-render/src/grid.rs` | `WRAP-11R`..`WRAP-16R` | spec-only | `M2 missing feature` | implement + test-add | open |
 | `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | cursor remains visible and grapheme-safe in churn | `src/crates/core/kjxlkj-core-state/src/editor.rs`, `src/crates/platform/kjxlkj-render/src/grid.rs` | `CUR-07R`..`CUR-11R` | spec-only | `M2 missing feature` | implement + test-add | open |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires PTY E2E evidence | `src/crates/app/kjxlkj-test-harness/` | all `*R` | test-gap | `M4 verification gap` | implement + test-add | open |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closure requires PTY E2E evidence | `src/crates/app/kjxlkj-test-harness/` | all `*R` | aligned | none | monitor | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | TODO coverage links every markdown file directly | `docs/todo/doc-coverage/` | link audit | aligned | none | monitor | 440/440 links present |
 
 ## Summary
@@ -36,7 +36,7 @@ Requirement-by-requirement mismatch tracking for the current reconstructed found
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 6 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 1 |
+| `M4 verification gap` | 0 |
 | `M5 stale docs` | 0 |
 
 ## Update Rules

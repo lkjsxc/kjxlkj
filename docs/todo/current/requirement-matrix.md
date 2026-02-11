@@ -38,7 +38,7 @@ High-risk reconstruction requirements from canonical specs.
 | ID | Spec Source | Requirement | Priority | Tests | Status |
 |---|---|---|---|---|---|
 | `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace manifests and grouped source tree are reconstructed | high | topology + build gate | `aligned` |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closures require matching PTY E2E evidence | high | all blocker `*R` | `open-blocker` |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | blocker closures require matching PTY E2E evidence | high | all blocker `*R` | `aligned` |
 | `R-TEST-02` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | bug closure follows reproduce-fix-verify discipline | high | regression + matching `*R` | `open-validation` |
 | `R-ARCH-01` | [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) | source directories remain around 12 children | medium | topology audit | `aligned` |
 | `R-ARCH-02` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | workspace members follow grouped crate paths | medium | build + manifest audit | `aligned` |

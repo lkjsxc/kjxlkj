@@ -27,7 +27,6 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 | `R-TERM-02` | [/docs/spec/features/terminal/terminal.md](/docs/spec/features/terminal/terminal.md) | spec-only | `M2 missing feature` | implement + test-add | `TERM-06R` and `BD-RACE-01` responsiveness proof |
 | `R-CUR-02` | [/docs/spec/editing/cursor/README.md](/docs/spec/editing/cursor/README.md) | spec-only | `M2 missing feature` | implement + test-add | `CUR-07R`..`CUR-11R` visibility and half-cell exclusion |
 | `R-WRAP-01` | [/docs/spec/features/ui/viewport.md](/docs/spec/features/ui/viewport.md) | spec-only | `M2 missing feature` | implement + test-add | `WRAP-11R`..`WRAP-16R` no overflow and no split-wide cells |
-| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | test-gap | `M4 verification gap` | implement + test-add | blocker closure PRs include matching `*R` evidence |
 
 ## Closed Rows
 
@@ -35,6 +34,7 @@ Spec-code-test drift tracking for the active reconstructed foundation wave.
 |---|---|---|---|---|
 | `R-BASELINE-01` | [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md) | aligned | none | `cargo metadata --no-deps`; `cargo check --workspace`; `cargo test -p kjxlkj-test-harness` |
 | `R-KEY-01` | [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md) | aligned | none | `cargo test -p kjxlkj-test-harness --test key_mode_e2e` |
+| `R-TEST-01` | [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md) | aligned | none | PTY harness operations implemented in `src/crates/app/kjxlkj-test-harness/src/pty.rs` and `WR-01R` evidence passing |
 | `R-DOC-01` | [/docs/todo/doc-coverage/README.md](/docs/todo/doc-coverage/README.md) | aligned | none | 440/440 markdown files directly linked in coverage parts |
 
 ## Priority Rule

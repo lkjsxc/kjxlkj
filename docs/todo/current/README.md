@@ -14,7 +14,7 @@ Status: Reconstructed foundation baseline active on 2026-02-11. Runtime blocker 
 - [ ] `LIM-BLOCK-TERM-03` terminal windows obey shared lifecycle and remain responsive
 - [ ] `LIM-BLOCK-CURSOR-03` cursor remains visible and grapheme-safe in churn
 - [ ] `LIM-BLOCK-WRAP-03` long-line wrap never overflows and never splits wide graphemes
-- [ ] `LIM-BLOCK-TEST-03` blocker closure is backed by matching PTY E2E tests
+- [x] `LIM-BLOCK-TEST-03` blocker closure is backed by matching PTY E2E tests (evidence: `src/crates/app/kjxlkj-test-harness/src/pty.rs`, `cargo test -p kjxlkj-test-harness --test key_mode_e2e`)
 
 ## Working Matrices
 
