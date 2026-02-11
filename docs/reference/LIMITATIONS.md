@@ -7,26 +7,11 @@ This ledger tracks open mismatches between target spec and current baseline stat
 ## Baseline Statement (2026-02-11)
 
 Workspace reconstructed with 20 crates matching source-layout.md spec.
-208 unit/integration tests pass. PTY E2E harness not yet reconstructed.
-Text objects (iw/aw, bracket, quote, paragraph ip/ap, sentence is/as) implemented
-with operator-pending dispatch. Tree-sitter (ic/ac, if/af) and tag (it/at)
-text objects deferred.
-Visual mode (v/V/Ctrl-v) with charwise/linewise selection operators, sub-mode
-switching, anchor swap (o), operators d/x/y/c/s/>/</~/u/U/J/p. Blockwise visual
-operations delegate to charwise (full block ops deferred).
-Buffer management: alternate buffer tracking (Ctrl-^), :bn/:bp/:bd/:b N
-navigation, :ls/:buffers listing, :e file opening, deletion with fallback,
-:bfirst/:blast first/last buffer navigation.
-223 unit/integration tests pass after wave-029.
-Race and boundary validation: 17 additional tests (10 stress + 7 safety) pass
-after wave-030, bringing total to 240 tests.
-Stage-03 exit integration tests (wave-031): 12 tests covering ex command pipeline,
-insert persistence, d$, search forward/n, :set ignorecase, star search, yy, diw,
-Ctrl-a, bfirst/blast, visual yank, bracket match (%), bringing total to 252 tests.
-Window command dispatch (wave-032): Ctrl-w prefix key dispatch with directional
-focus (h/j/k/l geometry-based), cycle (w), previous (p), split (s/v/n), close
-(c/q), only (o). Split semantics corrected for Vim convention. 19 new tests
-bringing total to 271 tests.
+Text objects (iw/aw/iW/aW, bracket, quote, paragraph, sentence) implemented;
+tree-sitter/tag text objects deferred. Visual mode (v/V/Ctrl-v) with operators;
+blockwise delegates to charwise. Buffer management with alternate tracking,
+:bn/:bp/:bd/:b N/:ls/:e/:bfirst/:blast. Race/boundary validation (17 tests).
+Stage-03 exit tests (12 tests). Window command dispatch (Ctrl-w prefix, 19 tests).
 Boundary focus and resize dispatch (wave-033): Ctrl-w t/b for top-left/bottom-right
 focus, +/-/>/<  resize (no-op placeholder), = equalize, _/| maximize (no-op
 placeholder). Explorer open/close routing: open_explorer creates
@@ -140,6 +125,17 @@ Tab/zoom ex commands added to command_parse: :tabnew/:tabe/:tabedit/:tabclose/
 Action variants: TabNew/TabClose/TabCloseForce/TabOnly/TabNext/TabPrev/TabFirst/
 TabLast/TabGoto/TabMove/ZoomToggle. 18 new tests (11 tabs + 7 zoom) bringing
 total to 556 tests.
+Mode configuration model (wave-045): CursorShape enum with DECSCUSR codes for all
+modes (Normal→BlockBlink, Insert→BarBlink, Visual→BlockSteady, Replace→UnderBlink,
+Command→BarBlink, OperatorPending→BlockSteady, TerminalInsert→BarBlink), mode
+indicator text for statusline, cursor restore sequence for exit. Command-line
+editing enhanced: Left/Right cursor movement, Home/End, Ctrl-b/Ctrl-e
+beginning/end, Ctrl-w word-backward delete, Ctrl-u delete-to-start, Ctrl-c
+cancel, Delete under cursor, mid-string character insertion. Insert completion
+model: CompletionSource (8 sources priority-ordered), CompletionItem, CompletionState
+menu machine with start/next/prev/confirm/dismiss/narrow. 30 new tests (13
+mode_config + 11 completion + 7 cmdline editing—extracted from editor_cmdline to
+editor_cmdline_tests) bringing total to 586 tests.
 Motion system expanded to ~40 variants. Operator enum expanded to 11 variants.
 Operator composition implemented with g-prefix operators, D/Y/gJ special forms,
 case transforms (gu/gU/g~), and RangeType/Inclusivity classification.

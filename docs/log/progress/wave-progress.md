@@ -118,3 +118,34 @@ Waves 040 (Scope Freeze and Input Mapping, 473 tests),
     window-resize-modes.md, window-zoom.md, window_resizer.md
   - Ledger sync: CONFORMANCE (538→556), LIMITATIONS, DRIFT_MATRIX
     (+R-TAB-01, +R-ZOOM-01, M4 24→26)
+
+### Wave 045: Unit and Integration Coverage
+- Status: COMPLETE
+- Committed: 9d9aba78
+- Evidence: 586 tests pass, all files ≤ 200 lines
+- Key deliverables:
+  - Mode configuration model: CursorShape enum (BlockBlink/BlockSteady/
+    UnderBlink/UnderSteady/BarBlink/BarSteady/Default) with DECSCUSR codes,
+    cursor_shape_for_mode for all 8 modes, mode_indicator for statusline text,
+    cursor_restore_sequence. 13 unit tests
+  - mode_config.rs (140 lines, NEW) in kjxlkj-core-ui
+  - Command-line editing enhanced: Left/Right cursor, Home/End, Ctrl-b/Ctrl-e
+    beginning/end, Ctrl-w word-backward delete, Ctrl-u delete-to-start, Ctrl-c
+    cancel, Delete under cursor, mid-string character insertion. Tests extracted
+    to editor_cmdline_tests.rs. 13 tests (7 new + 6 existing)
+  - editor_cmdline.rs (150→122, tests extracted)
+  - editor_cmdline_tests.rs (145 lines, NEW)
+  - Insert completion model: CompletionSource (8 sources: Lsp/Snippet/Path/
+    Buffer/Tag/Dictionary/Line/Include) priority-ordered, CompletionItem,
+    CompletionState menu machine with start/next/prev/confirm/dismiss/narrow.
+    11 unit tests
+  - completion.rs (114 lines, NEW) in kjxlkj-core-ui
+  - completion_tests.rs (92 lines, NEW, extracted tests)
+  - lib.rs (kjxlkj-core-ui) 19→24: +pub mod mode_config; +pub mod completion;
+    +#[cfg(test)] mod completion_tests;
+  - lib.rs (kjxlkj-core-state) 73→75: +#[cfg(test)] mod editor_cmdline_tests;
+  - Tier-C docs read: modes/README.md, command.md, configuration.md,
+    insert/README.md, completion/README.md, insert-abbreviations.md,
+    insert-completion-sources.md
+  - Ledger sync: CONFORMANCE (556→586), LIMITATIONS, DRIFT_MATRIX
+    (+R-MODECONF-01, +R-CMDLINE-01, +R-COMPLETION-01, M4 26→29)

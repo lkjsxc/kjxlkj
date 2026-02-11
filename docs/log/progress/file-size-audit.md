@@ -14,7 +14,7 @@ All files are now ≤ 200 lines.
 | `normal.rs` (kjxlkj-core-mode) | 200 | OK |
 | `other_modes.rs` (kjxlkj-core-mode) | 184 | OK |
 | `motion_find.rs` (kjxlkj-core-edit) | 174 | OK |
-| `editor_cmdline.rs` (kjxlkj-core-state) | 150 | OK |
+| `editor_cmdline.rs` (kjxlkj-core-state) | 122 | OK |
 | `layout_ops.rs` (kjxlkj-core-ui) | 191 | OK |
 | `motion.rs` (kjxlkj-core-edit) | 200 | OK |
 | `editor_edit.rs` (kjxlkj-core-state) | 199 | OK |
@@ -43,7 +43,7 @@ All files are now ≤ 200 lines.
 | `editor_window.rs` (kjxlkj-core-state) | 176 | OK |
 | `editor_explorer.rs` (kjxlkj-core-state) | 170 | OK |
 | `normal_wincmd.rs` (kjxlkj-core-mode) | 171 | OK |
-| `lib.rs` (kjxlkj-core-state) | 73 | OK |
+| `lib.rs` (kjxlkj-core-state) | 75 | OK |
 | `lib.rs` (kjxlkj-core-mode) | 147 | OK |
 | `layout_resize.rs` (kjxlkj-core-ui) | 127 | OK |
 | `editor_stage04_tests.rs` (kjxlkj-core-state) | 189 | OK |
@@ -78,7 +78,6 @@ All files are now ≤ 200 lines.
 | `theme.rs` (kjxlkj-core-ui) | 156 | OK |
 | `statusline.rs` (kjxlkj-core-ui) | 178 | OK |
 | `messages.rs` (kjxlkj-core-ui) | 182 | OK |
-| `lib.rs` (kjxlkj-core-ui) | 14 | OK |
 | `gitsigns.rs` (kjxlkj-service-git) | 159 | OK |
 | `gitsigns_tests.rs` (kjxlkj-service-git) | 75 | OK |
 | `lib.rs` (kjxlkj-service-git) | 14 | OK |
@@ -92,7 +91,11 @@ All files are now ≤ 200 lines.
 | `tabs_tests.rs` (kjxlkj-core-ui) | 94 | OK |
 | `zoom.rs` (kjxlkj-core-ui) | 87 | OK |
 | `zoom_tests.rs` (kjxlkj-core-ui) | 67 | OK |
-| `lib.rs` (kjxlkj-core-ui) | 19 | OK |
+| `mode_config.rs` (kjxlkj-core-ui) | 140 | OK |
+| `completion.rs` (kjxlkj-core-ui) | 114 | OK |
+| `completion_tests.rs` (kjxlkj-core-ui) | 92 | OK |
+| `editor_cmdline_tests.rs` (kjxlkj-core-state) | 145 | OK |
+| `lib.rs` (kjxlkj-core-ui) | 24 | OK |
 
 ## Splits Performed
 
@@ -108,7 +111,7 @@ All files are now ≤ 200 lines.
 ## Notes
 
 - All source files now comply with the ≤ 200 line policy.
-- Monitor `editor.rs` (196), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `editor_edit.rs` (199), `register.rs` (198), `editor_visual.rs` (197), `text_object.rs` (195), `editor_buffer.rs` (194), `editor_stage04c_tests.rs` (193), `layout_ops.rs` (191), `editor_stage04f_tests.rs` (190), `editor_stage04_tests.rs` (189), `editor_action.rs` (189), `editor_ops.rs` (186), `other_modes.rs` (184), `folds.rs` (184), `messages.rs` (182), `explorer_nav.rs` (181), `statusline.rs` (178), `screen.rs` (177), `diagnostic.rs` (177), `editor_window.rs` (176), `escape_parser.rs` (170), `gitsigns.rs` (159), `theme.rs` (156), `viewport.rs` (156), `command_parse.rs` (155), `float_win.rs` (146) as they approach the limit.
+- Monitor `editor.rs` (196), `motion.rs` (200), `normal.rs` (200), `editor_search_tests.rs` (200), `editor_edit.rs` (199), `register.rs` (198), `editor_visual.rs` (197), `text_object.rs` (195), `editor_buffer.rs` (194), `editor_stage04c_tests.rs` (193), `layout_ops.rs` (191), `editor_stage04f_tests.rs` (190), `editor_stage04_tests.rs` (189), `editor_action.rs` (189), `LIMITATIONS.md` (189), `editor_ops.rs` (186), `other_modes.rs` (184), `folds.rs` (184), `messages.rs` (182), `explorer_nav.rs` (181), `statusline.rs` (178), `screen.rs` (177), `diagnostic.rs` (177), `editor_window.rs` (176), `escape_parser.rs` (170), `gitsigns.rs` (159), `theme.rs` (156), `viewport.rs` (156), `command_parse.rs` (155), `float_win.rs` (146), `editor_cmdline_tests.rs` (145), `mode_config.rs` (140) as they approach the limit.
 - New files added in wave-017: `motion_info.rs` (98), `editor_ext.rs` (144).
 - New files added in wave-018: `register.rs` (140→176), `pending.rs` expanded to 175.
 - New files added in wave-019: `regex_compile.rs` (187→120 refactored), `command_parse.rs` (159), `search.rs` (200), `editor_cmdline.rs` (195).
@@ -137,3 +140,4 @@ All files are now ≤ 200 lines.
 - Wave-042 changes: `lib.rs` (kjxlkj-service-git) 11→14 (+pub mod gitsigns;), `lib.rs` (kjxlkj-core-ui) 12→14 (+pub mod statusline; +pub mod messages;). New files: `gitsigns.rs` (159, git sign state model, tests extracted), `gitsigns_tests.rs` (75, 7 tests), `statusline.rs` (178, statusline data model, 7 tests), `messages.rs` (182, message/notification model, 8 tests).
 - Wave-043 changes: `lib.rs` (kjxlkj-core-ui) 14→17 (+pub mod viewport; +pub mod float_win; +pub mod statusline_dsl;). New files: `viewport.rs` (156, viewport state model, tests extracted), `viewport_tests.rs` (64, 8 tests), `float_win.rs` (146, floating window model, tests extracted), `float_win_tests.rs` (72, 7 tests), `statusline_dsl.rs` (114, DSL parser and renderer, tests extracted), `statusline_dsl_tests.rs` (89, 8 tests).
 - Wave-044 changes: `action.rs` 119→125 (+11 tab/zoom variants), `command_parse.rs` 195→155 (compacted + tab/zoom commands), `editor_action.rs` 184→189 (+tab/zoom dispatch), `lib.rs` (core-ui) 17→19 (+pub mod tabs; +pub mod zoom;). New files: `tabs.rs` (104, tab page model), `tabs_tests.rs` (94, 11 tests), `zoom.rs` (87, zoom state), `zoom_tests.rs` (67, 7 tests).
+- Wave-045 changes: `editor_cmdline.rs` 150→122 (tests extracted, +cmdline editing keys), `lib.rs` (core-ui) 19→24 (+mode_config, +completion, +completion_tests), `lib.rs` (core-state) 73→75 (+editor_cmdline_tests). New files: `mode_config.rs` (140, cursor shapes/mode indicator), `completion.rs` (114, completion model), `completion_tests.rs` (92, 11 tests), `editor_cmdline_tests.rs` (145, 13 tests).
