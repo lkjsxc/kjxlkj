@@ -12,6 +12,8 @@ pub mod messages;
 pub mod viewport;
 pub mod float_win;
 pub mod statusline_dsl;
+pub mod tabs;
+pub mod zoom;
 
 pub use layout::{LayoutNode, LayoutTree};
 pub use focus::FocusState;

@@ -27,6 +27,12 @@ pub enum Action {
     FoldReduce, FoldMore, FoldNext, FoldPrev,
     Undo, Redo, DotRepeat, Noop,
     ForwardKey(Key, KeyModifiers),
+    // Tab management
+    TabNew(Option<String>), TabClose, TabCloseForce, TabOnly,
+    TabNext, TabPrev, TabFirst, TabLast,
+    TabGoto(usize), TabMove(i32),
+    // Zoom
+    ZoomToggle,
     // Buffer management
     OpenFile(String), SwitchBuffer(BufferId),
     NextBuffer, PreviousBuffer, DeleteBuffer,

@@ -118,6 +118,11 @@ impl EditorState {
             Action::FoldMore => self.fold_state.more(),
             Action::FoldNext => self.fold_next(),
             Action::FoldPrev => self.fold_prev(),
+            Action::TabNew(_) | Action::TabClose | Action::TabCloseForce
+            | Action::TabOnly | Action::TabNext | Action::TabPrev
+            | Action::TabFirst | Action::TabLast | Action::TabGoto(_)
+            | Action::TabMove(_) => {} // tab dispatch deferred to integration layer
+            Action::ZoomToggle => {} // zoom dispatch deferred to integration layer
             _ => {}
         }
     }
