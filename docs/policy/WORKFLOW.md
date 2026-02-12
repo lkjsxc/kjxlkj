@@ -12,6 +12,7 @@ Reconstruction workflow and verification gates.
 4. Implement only user-reachable behavior in that slice.
 5. Run deterministic tests for touched behavior and relevant global gates.
 6. Update reference ledgers and TODO state in the same change.
+7. Commit progress frequently as small, auditable git commits.
 
 ## Verification Gate
 
