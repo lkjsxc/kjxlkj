@@ -2,52 +2,60 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/reference/` records the strongest current-state evidence.
+`/docs/reference/` is the canonical truth for current verified state.
 
 ## Authority
 
 For current-state claims, use this precedence:
 
-1. [CONFORMANCE.md](CONFORMANCE.md)
-2. [LIMITATIONS.md](LIMITATIONS.md)
-3. [DRIFT_MATRIX.md](DRIFT_MATRIX.md)
-4. [CI.md](CI.md)
-5. [RELEASE.md](RELEASE.md)
+1. [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+2. [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+3. [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+4. [/docs/reference/CI.md](/docs/reference/CI.md)
+5. [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
 
 `/docs/spec/` remains the target behavior contract.
 
+## Snapshot (2026-02-12)
+
+The repository is in reconstruction-prep mode.
+
+- Documentation is canonical.
+- Existing source code is non-authoritative and may be discarded.
+- Runtime behavior must not be treated as verified unless explicitly proven.
+
 ## Evidence Rules
 
-- strongest evidence wins
-- user-reported runtime failure outranks weaker automated confidence
-- no domain may be `verified` without deterministic evidence
-- in docs-only baseline, implementation claims are `unverified` or `spec-only`
-
-## Current Snapshot (2026-02-11)
-
-The repository is intentionally in docs-only baseline state for reconstruction.
-Implementation artifacts were removed to prepare clean regeneration from docs.
+- strongest reproducible evidence wins
+- user-reported runtime failure outranks stale passing tests
+- blocker rows close only with deterministic tests and matching PTY `*R` evidence
+- reference, TODO, and spec updates must stay synchronized
 
 ## Documents
 
 | Document | Role |
 |---|---|
-| [CONFORMANCE.md](CONFORMANCE.md) | current verified and blocked status |
-| [LIMITATIONS.md](LIMITATIONS.md) | active user-visible and baseline mismatches |
-| [DRIFT_MATRIX.md](DRIFT_MATRIX.md) | requirement-level mismatch tracking |
-| [CI.md](CI.md) | verification profile definitions |
-| [RELEASE.md](RELEASE.md) | release evidence and gate rules |
-| [conformance/README.md](conformance/README.md) | consolidation policy |
-| [COMPARISON.md](COMPARISON.md) | non-authoritative comparison notes |
-| [PLUGIN_MAPPING.md](PLUGIN_MAPPING.md) | non-authoritative migration notes |
+| [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | current verified/unverified status by domain |
+| [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) | open user-visible blockers and closure requirements |
+| [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) | requirement-level mismatch matrix |
+| [/docs/reference/CI.md](/docs/reference/CI.md) | verification profile definitions |
+| [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | release gate and evidence rules |
+| [/docs/reference/conformance/README.md](/docs/reference/conformance/README.md) | consolidation policy |
+| [/docs/reference/COMPARISON.md](/docs/reference/COMPARISON.md) | non-normative comparison framing |
+| [/docs/reference/PLUGIN_MAPPING.md](/docs/reference/PLUGIN_MAPPING.md) | non-normative plugin mapping framing |
 
-## Update Discipline
+## Synchronization Rule
 
-- update `CONFORMANCE`, `LIMITATIONS`, and `DRIFT_MATRIX` together
-- when implementation state changes, refresh snapshot date and baseline statement
-- never keep stale implementation status after major repo-state transitions
+Whenever a blocker status changes, update all of:
+
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+
+in one logical change.
 
 ## Related
 
-- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
-- Reconstruction checklist: [/docs/todo/README.md](/docs/todo/README.md)
+- target behavior: [/docs/spec/README.md](/docs/spec/README.md)
+- reconstruction execution: [/docs/todo/README.md](/docs/todo/README.md)
