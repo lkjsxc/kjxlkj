@@ -20,6 +20,7 @@ For authority, use:
 | [QUICKSTART.md](QUICKSTART.md) | first-run local workflow |
 | [DOCKER.md](DOCKER.md) | single-container compose workflow |
 | [API.md](API.md) | API usage and discovery pointers |
+| [LIBRARIAN.md](LIBRARIAN.md) | configure and operate autonomous librarian runs |
 
 ## Related
 

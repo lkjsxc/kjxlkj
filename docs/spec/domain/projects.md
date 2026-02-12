@@ -12,6 +12,8 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 
 - Notes MAY reference `project_id`.
 - If `project_id` is set, note workspace MUST equal project workspace.
+- Project scoping is a data concern; baseline UX MUST NOT assume or require a
+ dedicated project-navigation pane.
 - Project deletion MUST NOT hard-delete note streams.
 - On project deletion, project-scoped notes MUST remain reachable through workspace
  views until reassigned or archived.

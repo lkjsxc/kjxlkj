@@ -16,11 +16,13 @@ Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/
 - [ ] implement command palette action model and shortcuts
 - [ ] wire create/open/move/tag/run-rule commands to APIs
 - [ ] preserve deterministic success/failure feedback states
+- [ ] ensure setup-locked state renders login-only UI without setup-like visuals
 
 ## Verification Tasks
 
 - [ ] run `E2E-03` and targeted keyboard-navigation checks
 - [ ] run command failure-path scenarios
+- [ ] run `E2E-11` login/setup presentation split checks
 
 ## Evidence Placeholder
 

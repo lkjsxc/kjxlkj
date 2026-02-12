@@ -34,6 +34,8 @@ The implementation is a Cargo workspace rooted at `src/crates/`.
 - DB repositories MUST be isolated from route-layer request types.
 - Authorization decisions MUST flow through `rbac` checks.
 - Automation orchestration MUST stay in `automation` services.
+- Librarian provider adapters and protocol parsing MUST stay in automation-level
+  services, not UI handlers.
 
 ## Related
 

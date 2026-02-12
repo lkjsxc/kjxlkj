@@ -10,6 +10,8 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 - Search SHOULD provide ranked results for best-match ordering.
 - Search MUST include eligible `settings` notes and media-note metadata in query scope.
 - Search results MUST be filtered by workspace scope and caller permissions.
+- Librarian-generated notes and rewrites MUST be indexed in the same commit cycle
+  as their accepted operations.
 
 ## Backlinks
 

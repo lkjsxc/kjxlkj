@@ -19,6 +19,7 @@ Migrations MUST cover:
 - note projections and snapshots
 - tags and backlinks projections
 - automation rules and run history
+- librarian run reports and operation audit logs
 - attachments and chunks
 
 ## Safety Rules

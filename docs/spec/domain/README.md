@@ -3,7 +3,7 @@
 Back: [/docs/spec/README.md](/docs/spec/README.md)
 
 Normative rules for workspace lifecycle, notes, events, permissions,
-automation, attachments, and search.
+automation, librarian structuring, attachments, and search.
 
 ## Documents
 

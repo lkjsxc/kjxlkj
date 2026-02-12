@@ -18,21 +18,26 @@ This ledger reports only currently verified behavior.
 
 High-confidence statement:
 
-- Runtime and frontend reconstruction artifacts are present in workspace.
-- Canonical API/WS paths are unversioned (`/api`, `/ws`).
-- Release gate remains open pending full acceptance/performance/ops evidence.
+- Repository is intentionally docs-only for reimplementation preparation.
+- Runtime/source/deployment artifacts are intentionally absent.
+- Canonical UX improvements from implementation/user findings are reflected in spec docs
+  (including auth presentation split, compact-screen editor focus toggle,
+  optional dashboard/workspace surfaces, title-rename propagation, and minimal editor chrome).
+- Canonical librarian-agent contracts are documented, including provider modes
+  (`openrouter`, `lmstudio`) and attribute-less XML-like protocol requirements.
 
 ## Domain Status
 
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
 | Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | docs-first rules and execution policy are present |
-| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | runtime routes reachable in container smoke (`/api/readyz`, auth, notes, workspace suite endpoints) |
-| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | `GET /ws` websocket upgrade returns `101` in smoke run |
-| Domain model | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `partial` | reconstructed schema/services for users/workspaces/projects/notes/views/automation |
-| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `partial` | React/Vite workspace shell rebuilt with autosave + command palette + responsive panes |
-| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `partial` | Cargo workspace + Actix server + SQL migrations + container runtime restored |
-| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | compile/tests + container smoke evidence present; full acceptance/perf/ops suites pending |
+| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | endpoints and OpenAPI are synchronized; runtime absent |
+| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | protocol includes replay and workspace streams; runtime absent |
+| Domain model | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `spec-only` | workspace/project/notes/automation docs are linked |
+| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `spec-only` | updated UX requirements are specified in canonical docs |
+| Librarian AI contract | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `spec-only` | provider and protocol contracts are documented; runtime absent |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `spec-only` | implementation artifacts absent in current state |
+| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | acceptance pack defined; runtime evidence pending |
 
 ## Conformance Closure Rule
 
@@ -47,3 +52,4 @@ No `spec-only` row may move to `verified` without:
 - Open limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 - Findings audit: [/docs/log/audits/2026-02-12-implementation-user-findings.md](/docs/log/audits/2026-02-12-implementation-user-findings.md)
+- Librarian doc-sync audit: [/docs/log/audits/2026-02-12-librarian-doc-sync.md](/docs/log/audits/2026-02-12-librarian-doc-sync.md)

@@ -13,7 +13,7 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] implement saved views and dashboards APIs and persistence
+- [ ] implement saved views APIs and persistence; keep dashboards optional
 - [ ] deliver command palette, graph explorer, and responsive shell UX
 - [ ] preserve autosave and conflict-safe collaboration UX
 

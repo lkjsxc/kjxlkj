@@ -32,8 +32,16 @@ Ordered recursive migration stages for the hard pivot.
  [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 - [ ] Stage 04: M4 Automation and Jobs
  [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
-- [ ] Stage 05: M5 Final Hardening and Release Proof
+- [ ] Stage 05: M5 Core Security and Reliability Baseline
  [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
+- [ ] Stage 06: M6 Librarian REST and Provider Layer
+ [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
+- [ ] Stage 07: M7 Librarian Realtime and Replay
+ [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
+- [ ] Stage 08: M8 Librarian UX and Static Delivery
+ [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
+- [ ] Stage 09: M9 Final Release Closure
+ [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Program Exit
 

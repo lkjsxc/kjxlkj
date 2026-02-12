@@ -11,6 +11,7 @@ Release is valid only for a blocker-free reconstructed state.
 3. conformance claims are evidence-backed and synchronized.
 4. drift matrix has no open high-severity `M1` or `M2` rows.
 5. acceptance suites in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
+6. `Librarian-small-model` CI profile is green when librarian feature is in scope.
 
 ## Current Gate (2026-02-12)
 
@@ -18,8 +19,9 @@ Release is blocked.
 
 Reasons:
 
-- acceptance/performance/operations release evidence is incomplete
-- verification-gap rows remain open in limitations/drift ledgers
+- runtime implementation artifacts are not yet reconstructed
+- high-severity `M2` rows remain open in limitations
+- librarian runtime and parser regression evidence are not yet reconstructed
 
 ## Release Steps
 

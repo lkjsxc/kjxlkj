@@ -5,9 +5,14 @@ projects, automation, and knowledge workflows.
 
 ## Current Product Contract
 
-- This repository now includes reconstructed runtime and frontend artifacts.
-- Canonical behavior remains defined in `/docs`.
-- Remaining release-gate closure depends on full acceptance/performance/ops evidence.
+- This repository is intentionally in docs-only reconstruction mode.
+- Runtime and deployment artifacts are intentionally absent.
+- Canonical behavior is defined in `/docs` and MUST be reconstructed from specs and TODO waves.
+- Recent UX findings from implementation/user interaction are captured in canonical UI specs.
+- Canonical specs include an autonomous Librarian AI agent for advanced
+  documentation structuring via OpenRouter or LM Studio compatible models.
+- Librarian model interaction uses a strict attribute-less XML-like protocol for
+  compatibility with small-parameter LLMs.
 
 ## Documentation
 

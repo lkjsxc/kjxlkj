@@ -15,9 +15,12 @@ Shared terms used across policy/spec/reference/todo.
 | Patch operation | Retain/insert/delete operation in patch stream protocol. |
 | Backlink | Reverse link index from target note to referring notes. |
 | Saved view | Persisted query/filter/sort definition for workspace navigation. |
-| Dashboard widget | Configurable panel shown in workspace dashboards. |
+| Dashboard widget | Optional configurable panel shown in workspace dashboards. |
 | Automation rule | Trigger-condition-action definition for deterministic background work. |
 | Automation run | Auditable execution record for one rule trigger event. |
+| Librarian agent | Automation action that restructures notes/docs with LLM-guided operations. |
+| Attribute-less XML-like protocol | Tag-only envelope format without XML attributes (`xml_attrless_v1`). |
+| Provider adapter | OpenAI-compatible integration layer for OpenRouter and LM Studio. |
 | Typed metadata | Keyed structured data attached to a note. |
 | Single-tenant multi-user auth | One deployment tenant with multiple authenticated users/roles. |
 | First-run registration | Setup endpoint active only before first owner account exists. |

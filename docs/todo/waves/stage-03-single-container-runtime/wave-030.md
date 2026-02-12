@@ -1,4 +1,4 @@
-# Wave 030: Saved Views and Dashboards
+# Wave 030: Saved Views and Optional Widgets
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
@@ -14,12 +14,12 @@ Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/
 ## Implementation Tasks
 
 - [ ] implement saved view APIs and persistence model
-- [ ] implement dashboard list and widget upsert flows
-- [ ] enforce role-based access for view/dashboard mutations
+- [ ] keep dashboard list/widget flows optional extension scope
+- [ ] enforce role-based access for view mutations
 
 ## Verification Tasks
 
-- [ ] run `API-VIEW-01` and `API-DASH-01`
+- [ ] run `API-VIEW-01` (`API-DASH-01` only when optional widget scope is enabled)
 - [ ] run role-denial integration tests
 
 ## Evidence Placeholder

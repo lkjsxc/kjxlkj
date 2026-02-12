@@ -21,6 +21,8 @@ For state claims, use this precedence:
 The repository is in hard-pivot reconstruction mode.
 
 - Canonical docs target a multi-user workspace platform on `/api` and `/ws`.
+- Canonical docs include librarian-agent contracts for autonomous documentation
+  structuring with OpenRouter/LM Studio compatible providers.
 - Runtime and deployment artifacts remain intentionally absent in this baseline.
 
 ## Synchronization Rule

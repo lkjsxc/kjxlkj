@@ -12,6 +12,7 @@ Cross-cutting requirements for testing, performance, migrations, and operations.
 | [performance.md](performance.md) | latency and load targets |
 | [migrations.md](migrations.md) | SQLx migration discipline |
 | [operations.md](operations.md) | backup/recovery/observability rules |
+| [librarian-agent.md](librarian-agent.md) | LLM provider, prompt protocol, and structuring pipeline |
 
 ## Related
 

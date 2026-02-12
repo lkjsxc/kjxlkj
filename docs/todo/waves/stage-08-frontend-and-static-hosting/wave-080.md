@@ -1,0 +1,29 @@
+# Wave 080: Librarian Control Panel and Rule Authoring UX
+
+Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
+
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
+## Implementation Tasks
+
+- [ ] add librarian rule form for provider, model, and strict-mode settings
+- [ ] add run launch and run status panels in workspace shell
+- [ ] add deterministic validation feedback for invalid librarian configs
+
+## Verification Tasks
+
+- [ ] run UX flow checks for create/edit/disable librarian rules
+- [ ] run provider-mode form boundary cases
+
+## Evidence Placeholder
+
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

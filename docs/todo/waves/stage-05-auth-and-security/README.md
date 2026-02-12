@@ -1,4 +1,4 @@
-# Stage 05: M5 Final Hardening and Release Proof
+# Stage 05: M5 Core Security and Reliability Baseline
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
@@ -14,8 +14,8 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 ## Stage Scope
 
 - [ ] close residual reliability, security, and performance gaps
-- [ ] run full acceptance, performance, and operations gates
-- [ ] produce release evidence and ledger closure
+- [ ] run core acceptance, performance, and operations baseline gates
+- [ ] prepare librarian-specific expansion stages with synchronized ledgers
 
 ## Ordered Waves
 
@@ -25,6 +25,6 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Exit
 
-- [ ] release profile is green
-- [ ] no high-severity limitations remain open
-- [ ] release closure is recorded in reference ledgers
+- [ ] core security and reliability evidence is archived
+- [ ] stage blockers are closed or explicitly deferred
+- [ ] handoff to Stage 06 is traceable in ledgers

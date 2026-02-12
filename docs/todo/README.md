@@ -26,18 +26,20 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Immediate Blocker Pack
 
-- [x] `LIM-RUNTIME-02` runtime bootstrap and crate topology reconstruction
-- [x] `LIM-API-02` API implementation reconstruction
-- [x] `LIM-WS-02` websocket realtime reconstruction
-- [x] `LIM-UI-02` workspace suite frontend reconstruction
-- [x] `LIM-RBAC-01` role-based authorization reconstruction
-- [x] `LIM-AUTO-01` automation rule and run engine reconstruction
+- [ ] `LIM-RUNTIME-02` runtime bootstrap and crate topology reconstruction
+- [ ] `LIM-API-02` API implementation reconstruction
+- [ ] `LIM-WS-02` websocket realtime reconstruction
+- [ ] `LIM-UI-02` workspace suite frontend reconstruction
+- [ ] `LIM-RBAC-01` role-based authorization reconstruction
+- [ ] `LIM-AUTO-01` automation rule and run engine reconstruction
+- [ ] `LIM-LIB-01` librarian AI structuring engine reconstruction
 - [ ] `LIM-ISSUE-GUARD-02` regression guards for `IMP-*` and `USR-*` findings
+- [ ] `LIM-LIB-GUARD-01` parser and small-model librarian regression guards
 
 ## Recursive Wave Program
 
 - [ ] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [ ] execute stages and waves in order
+- [ ] execute stages and waves in order (Stage 00 through Stage 09)
 - [ ] do not mark work complete without deterministic evidence
 - [ ] synchronize reference ledgers with status changes
 

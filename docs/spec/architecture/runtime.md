@@ -10,12 +10,14 @@ graph TD
  RT --> HTTP[Actix HTTP Server]
  RT --> WS[Actix WebSocket Handlers]
  RT --> BG[Background Jobs and Automation]
+ RT --> LLM[LLM Provider Adapters]
  RT --> DBPOOL[SQLx PgPool]
 
  HTTP --> CORE[Domain Services]
  WS --> CORE
  CORE --> DBPOOL
  BG --> DBPOOL
+ BG --> LLM
 ```
 
 ## Startup Sequence (normative)
@@ -25,7 +27,8 @@ graph TD
 3. initialize PostgreSQL pool
 4. run pending SQL migrations
 5. start Actix server with HTTP + WS routes
-6. start background workers (automation/export/backup/job polling)
+6. initialize LLM provider adapters (OpenRouter/LM Studio)
+7. start background workers (automation/export/backup/job polling)
 
 ## Shutdown Sequence
 
@@ -38,6 +41,7 @@ graph TD
 
 - Writes to one note stream MUST serialize by note ID lock or transaction strategy.
 - Automation writes MUST serialize by target stream identity.
+- Librarian operation application MUST serialize by workspace + target note stream.
 - Cross-stream writes MAY run in parallel.
 - WS broadcast ordering MUST follow committed event sequence.
 - Slow clients MUST NOT block global broadcast loops.
@@ -46,4 +50,5 @@ graph TD
 
 - Domain events: [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
 - Automation: [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 - Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

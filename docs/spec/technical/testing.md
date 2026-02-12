@@ -30,9 +30,11 @@ Mandatory verification contract for reconstruction.
 | `API-SEARCH-01` | wiki link and backlink search correctness |
 | `API-SEARCH-02` | full-text search over title/body/settings/media metadata |
 | `API-VIEW-01` | saved view create/update/delete lifecycle |
-| `API-DASH-01` | dashboard widget upsert/list behavior |
+| `API-DASH-01` | dashboard widget upsert/list behavior (optional extension) |
 | `API-AUTO-01` | automation rule CRUD and deterministic validation |
 | `API-AUTO-02` | automation run status retrieval and audit linkage |
+| `API-AUTO-03` | librarian rule validation for provider mode (`openrouter`, `lmstudio`) |
+| `API-AUTO-04` | librarian XML protocol parse/retry/fail semantics (`xml_attrless_v1`) |
 | `API-ATT-01` | 500 MB attachment upload path |
 | `API-ATT-02` | >500 MB deterministic reject |
 | `WS-01` | subscribe and ordered replay for note stream |
@@ -40,18 +42,25 @@ Mandatory verification contract for reconstruction.
 | `WS-03` | patch conflict (`patch_rejected`) behavior |
 | `WS-04` | idempotent retransmit returns same commit identity |
 | `WS-05` | reconnect + ack cursor replay without full reload |
+| `WS-06` | librarian automation events stream in commit order with replay cursor support |
 | `E2E-01` | owner setup + invite admin/editor/viewer + login |
 | `E2E-02` | concurrent multi-user editing conflict resolution |
 | `E2E-03` | command palette create/open/move/tag/run-rule workflow |
 | `E2E-04` | graph explorer traversal and return-context behavior |
-| `E2E-05` | dashboard widget configuration persistence |
+| `E2E-05` | dashboard widget configuration persistence (optional extension) |
 | `E2E-06` | autosave and title edit without manual-save dependency |
 | `E2E-07` | independent pane scroll in responsive layout |
 | `E2E-08` | 320px width adaptive layout without mobile/desktop fork |
 | `E2E-09` | automation trigger, run status, and audit visibility |
 | `E2E-10` | session expiry and re-auth without data loss |
+| `E2E-11` | setup-locked state MUST render login-only UI (no setup-like appearance) |
+| `E2E-12` | small-screen menu toggle collapses/restores navigation to enlarge editor |
+| `E2E-13` | note title rename propagates immediately to notes list and related surfaces |
+| `E2E-14` | default editor chrome omits inline version/save/delete controls |
+| `E2E-15` | librarian run restructures documentation notes with deterministic audit trail |
 | `PERF-01` | CRUD/search latency under target scale |
 | `PERF-02` | sustained WS stream soak with ordering integrity |
+| `PERF-03` | librarian batch structuring throughput under bounded token/time budgets |
 | `OPS-01` | backup/export job lifecycle and artifact retrieval |
 | `OPS-02` | restart recovery with no lost committed events |
 
@@ -60,6 +69,7 @@ Mandatory verification contract for reconstruction.
 - use bounded timeouts and explicit diagnostics
 - avoid unbounded sleeps
 - capture request IDs and WS sequence evidence on failures
+- capture provider kind/model/prompt-hash evidence for librarian runs
 
 ## Related
 

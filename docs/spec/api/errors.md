@@ -25,11 +25,18 @@ Error responses MUST return JSON:
 | `413` | payload too large | `ATTACHMENT_TOO_LARGE` |
 | `422` | semantically invalid state | `RULE_INVALID`, `PROJECT_SCOPE_INVALID` |
 | `429` | rate limited | `RATE_LIMITED` |
+| `502` | upstream provider failure | `LLM_UPSTREAM_ERROR`, `LLM_PROVIDER_UNREACHABLE` |
 | `500` | internal error | `INTERNAL_ERROR` |
 
 ## WebSocket Error Rule
 
 WS `error` messages MUST include `code`, `message`, and `request_id`.
+
+Librarian-specific machine codes SHOULD include:
+
+- `LIBRARIAN_PROTOCOL_INVALID`
+- `LIBRARIAN_PARSE_FAILED`
+- `LIBRARIAN_OPERATION_REJECTED`
 
 ## Related
 

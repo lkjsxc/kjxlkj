@@ -57,7 +57,7 @@ Base path: `/api`
 | `GET` | `/notes/{id}/backlinks` | backlinks for note |
 | `GET` | `/search` | full-text and filter search |
 
-## Views, Dashboards, Automation
+## Views, Optional Dashboards, Automation
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -65,13 +65,13 @@ Base path: `/api`
 | `POST` | `/views` | create saved view |
 | `PATCH` | `/views/{id}` | update saved view |
 | `DELETE` | `/views/{id}` | delete saved view |
-| `GET` | `/dashboards` | list workspace dashboards |
-| `POST` | `/dashboards/widgets` | create or update dashboard widget |
+| `GET` | `/dashboards` | list workspace dashboards (optional extension) |
+| `POST` | `/dashboards/widgets` | create or update dashboard widget (optional extension) |
 | `GET` | `/automation/rules` | list automation rules |
-| `POST` | `/automation/rules` | create automation rule |
-| `PATCH` | `/automation/rules/{id}` | update automation rule |
+| `POST` | `/automation/rules` | create automation rule (includes librarian structuring rules) |
+| `PATCH` | `/automation/rules/{id}` | update automation rule (includes provider/prompt contract) |
 | `DELETE` | `/automation/rules/{id}` | delete automation rule |
-| `GET` | `/automation/runs/{id}` | automation run status/details |
+| `GET` | `/automation/runs/{id}` | automation run status/details (includes librarian operations) |
 
 ## Attachments and Admin Operations
 
@@ -98,6 +98,10 @@ Base path: `/api`
 - `DELETE /notes/{id}` MUST return `204` on successful soft-delete.
 - `DELETE /notes/{id}/metadata/{key}` MUST return `204`.
 - Version conflicts MUST return `409` with current server version context.
+- Librarian rules MUST validate provider mode (`openrouter` or `lmstudio`) and
+  reject unknown providers with deterministic `422`.
+- Librarian actions MUST use the attribute-less XML-like protocol from
+  [librarian-xml.md](librarian-xml.md).
 
 ## Related
 

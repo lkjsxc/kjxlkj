@@ -7,7 +7,7 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - The app MUST use one responsive layout model across desktop and mobile.
 - Left pane and right pane MUST scroll independently.
 - The right pane MUST allow inline editing of note title and note content.
-- Workspace-level surfaces (command palette, dashboards, graph explorer)
+- Workspace-level surfaces (command palette, graph explorer, optional dashboards)
  MUST preserve the same component tree across breakpoints.
 
 ## Responsive Rules
@@ -15,6 +15,8 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - Separate mobile/desktop implementations are forbidden.
 - Small screens MUST preserve independent vertical scrolling for navigation and
  content regions.
+- On constrained screen area, a menu toggle button MUST allow collapsing and
+ restoring upper/navigation regions so the note editor can take primary space.
 - Touch targets MUST remain reachable without horizontal scrolling at widths down
  to 320px.
 - Editor width and typography MUST adapt fluidly by viewport without mode switching.

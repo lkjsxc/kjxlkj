@@ -16,11 +16,15 @@ Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/
 - [ ] implement backlink graph explorer with scope-aware filters
 - [ ] implement return-context preserving navigation
 - [ ] enforce single responsive component-tree behavior
+- [ ] add compact-screen menu toggle to collapse/restore upper navigation areas
+- [ ] ensure note title rename propagates to list and related surfaces
+- [ ] keep default editor chrome minimal (no required inline version/save/delete controls)
 
 ## Verification Tasks
 
 - [ ] run `E2E-04`, `E2E-06`, `E2E-07`, `E2E-08`
 - [ ] run 320px interaction boundary checks
+- [ ] run `E2E-12`, `E2E-13`, `E2E-14`
 
 ## Evidence Placeholder
 

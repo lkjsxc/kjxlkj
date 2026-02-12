@@ -8,12 +8,15 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 - WebSocket: [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - Types: [/docs/spec/api/types.md](/docs/spec/api/types.md)
 - Errors: [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 
 ## Integration Notes
 
 - API base path is `/api`.
 - Authenticated browser flows use cookie session + CSRF.
 - Real-time updates use `GET /ws`.
+- Librarian automation rules are created via `/api/automation/rules` with
+  `action_json.kind = \"librarian_structure\"`.
 
 ## Related
 
