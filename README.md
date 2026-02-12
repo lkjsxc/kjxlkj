@@ -1,6 +1,6 @@
 # kjxlkj
 
-A Vim-compatible terminal text editor specified from documentation first.
+A Vim-compatible terminal text editor specified from documentation first, following an All in Docs approach.
 
 ## Documentation
 
