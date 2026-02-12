@@ -4,6 +4,14 @@ Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
 
 The `:edit` command opens files for editing in the current window.
 
+## Scope and Target (normative)
+
+`edit` is a focused-window command.
+
+- it retargets only the focused window buffer binding
+- it MUST NOT change buffer bindings in other windows
+- it MAY reuse an existing buffer object for the same file path
+
 ## Syntax (normative)
 
 | Command | Action |
@@ -37,6 +45,9 @@ The `:edit` command opens files for editing in the current window.
 | File does not exist | Create a new buffer with that path; file created on first `:w` |
 | File is already open in a buffer | Reuse the existing buffer (do not create a duplicate) |
 
+If two windows show the same buffer and one window runs `:e other.txt`, only the
+focused window is retargeted. The other window remains on the original buffer.
+
 ## Encoding (normative)
 
 | Option | Behavior |
@@ -48,10 +59,26 @@ The `:edit` command opens files for editing in the current window.
 
 While typing the file argument, `Tab` completes file names from the cwd. Double-tab shows all matches in a completion menu.
 
+## Error Handling (normative)
+
+| Error | Required Behavior |
+|---|---|
+| pending unsaved changes and no `!` | reject command and keep original focused buffer |
+| read failure (permission, decoding, I/O) | keep original focused buffer; surface explicit error |
+| invalid `+{command}` payload | reject with usage error; no state mutation |
+
+## Mandatory Verification
+
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `CMD-02R` | run `:e` in one pane of two-pane layout | non-focused pane buffer binding is unchanged |
+| `FS-01` | run `:e missing-file` | buffer opens as unnamed-on-disk target and writes on first `:w` |
+| `FS-02` | run `:e` with unsaved changes and no `!` | command is rejected with no buffer retarget |
+
 ## Related
 
 - File operations: [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
 - Write commands: [/docs/spec/commands/file/write-commands.md](/docs/spec/commands/file/write-commands.md)
 - Buffer model: [/docs/spec/editor/buffers.md](/docs/spec/editor/buffers.md)
-
+- Execution context: [/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md)
 

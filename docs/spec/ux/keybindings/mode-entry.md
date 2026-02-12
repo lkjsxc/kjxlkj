@@ -43,6 +43,19 @@ Mode handlers MUST consume normalized keys only.
 | `a` | advance one grapheme when possible | cell after current grapheme |
 | `A` | jump to true line end insertion point | end-of-line insertion point |
 
+## End-of-Line Append Boundary (normative)
+
+Given line `abc` with cursor on `c`:
+
+| Input | Expected Result |
+|---|---|
+| `iX<Esc>` | `abXc` |
+| `aX<Esc>` | `abcX` |
+| `AX<Esc>` | `abcX` |
+
+Given empty line with cursor at column `0`, `i`, `a`, and `A` all insert at
+column `0`, but mode-entry trace IDs must still distinguish command identity.
+
 ## Screen-Visible Guarantees
 
 | Guarantee | Required Observation |
@@ -78,6 +91,7 @@ Mode handlers MUST consume normalized keys only.
 | `KEYMODE-01` | `Shift+a` dispatches as `A` | normalized key is `A` and resulting frame equals physical `A` run |
 | `KEYMODE-02` | `a` at EOL differs from `i` | inserted text position differs exactly as specified |
 | `KEYMODE-03` | `A` appends at true EOL | final line content equals append-at-EOL expectation |
+| `KEYMODE-04R` | `i` vs `a` at EOL replay | per-key dump timeline proves different cursor transition before first insert |
 | `WR-01R` | raw key path for `Shift+a` | per-step state dump shows decode -> normalize -> dispatch -> frame |
 | `KEY-SCREEN-01` | user-like append check | frame snapshots after each key match oracle |
 

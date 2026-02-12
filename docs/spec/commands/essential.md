@@ -3,6 +3,11 @@ This is the target minimum Ex command surface.
 
 For the currently supported subset (when a reconstructed implementation exists), see [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md).
 
+## Scope Rule (normative)
+
+Unless explicitly global, essential commands operate on the focused window
+context. See [/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md).
+
 ## File commands (normative)
 
 | Command | Description | Notes |

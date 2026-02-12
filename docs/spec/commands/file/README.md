@@ -19,5 +19,6 @@ File operations and exploration commands.
 
 ## Related
 
-- Commands overview: [docs/spec/commands/README.md](/docs/spec/commands/README.md)
-- File explorer: [docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)
+- Commands overview: [/docs/spec/commands/README.md](/docs/spec/commands/README.md)
+- Execution context: [/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md)
+- File explorer: [/docs/spec/features/navigation/file_explorer.md](/docs/spec/features/navigation/file_explorer.md)

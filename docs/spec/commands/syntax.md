@@ -26,6 +26,17 @@ A command string has this grammar:
 | `!` suffix | Optional | Force flag | `:w!`, `:q!` |
 | Arguments | Optional | Command-specific parameters | filename, pattern, flags |
 
+## Execution context (normative)
+
+Ex command scope is defined in
+[/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md).
+
+Default rule:
+
+- non-global commands execute against the focused window context
+- only explicit-global commands (`:qa`, `:wa`, `:wqa`, `:xa`) may cross window scope
+- command traces MUST include focused window ID and target buffer ID
+
 ## Command name abbreviation (normative)
 
 Commands can be abbreviated to their shortest unambiguous prefix:
@@ -87,3 +98,4 @@ Errors are displayed in the command-line area without blocking input. The user c
 - Substitute: [/docs/spec/commands/substitute/README.md](/docs/spec/commands/substitute/README.md)
 - Command-line editing: [/docs/spec/commands/cmdline/README.md](/docs/spec/commands/cmdline/README.md)
 - Essential commands: [/docs/spec/commands/essential.md](/docs/spec/commands/essential.md)
+- Execution context: [/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md)

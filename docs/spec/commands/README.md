@@ -20,6 +20,7 @@ Ex commands are a first-class interface layered atop the same intent system.
 | Document | Content |
 |----------|---------|
 | [syntax.md](syntax.md) | Command syntax |
+| [execution-context.md](execution-context.md) | Focused-window vs explicit-global execution scope |
 | [essential.md](essential.md) | Essential commands |
 | [quit-commands.md](quit-commands.md) | Quit and exit commands |
 
@@ -48,5 +49,5 @@ The UI MUST show progress and allow cancellation.
 
 ## Related
 
-- Modes: [docs/spec/modes/README.md](/docs/spec/modes/README.md)
-- Features: [docs/spec/features/README.md](/docs/spec/features/README.md)
+- Modes: [/docs/spec/modes/README.md](/docs/spec/modes/README.md)
+- Features: [/docs/spec/features/README.md](/docs/spec/features/README.md)

@@ -81,7 +81,7 @@ stateDiagram-v2
 | Widget | Requirement |
 |---|---|
 | Statusline | MUST render at the bottom of the editor area. MUST display mode, file name, cursor position, encoding, and file type. Segments MUST be configurable. |
-| Gutter | MUST render to the left of each editor view. MUST support line numbers, sign column, and fold indicators. Width MUST adjust to accommodate the highest line number. |
+| Gutter | MUST render to the left of each editor view. MUST support line numbers, sign column, and fold indicators. Every visible buffer row MUST show deterministic line identity. Width MUST adjust to accommodate the highest visible line number. |
 | Breadcrumbs | SHOULD render above the editor view showing the file path and symbol hierarchy. Clicking a segment SHOULD navigate to that scope. |
 | Scrollbar | SHOULD render on the right edge of scrollable views. The thumb size MUST be proportional to visible-to-total content ratio. |
 
@@ -107,3 +107,4 @@ stateDiagram-v2
 - View taxonomy: [/docs/spec/ui/views.md](/docs/spec/ui/views.md)
 - Themes: [/docs/spec/ui/themes.md](/docs/spec/ui/themes.md)
 - Floating windows: [/docs/spec/features/window/floating-windows.md](/docs/spec/features/window/floating-windows.md)
+- Gutter numbering: [/docs/spec/features/ui/gutter-line-numbers.md](/docs/spec/features/ui/gutter-line-numbers.md)

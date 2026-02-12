@@ -2,92 +2,82 @@
 
 Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
-Mandatory verification contract for blocker-first reconstruction waves.
+Mandatory verification contract for reconstruction.
 
 ## Objectives
 
 | Objective | Requirement |
 |---|---|
-| Correctness | user-reachable behavior is proven by deterministic tests |
-| Drift prevention | spec, code, tests, and TODO remain synchronized |
-| Boundary safety | Unicode, wrapping, windows, terminal, and IME edges are covered |
-| Anti-shortcut | no blocker closes without screen-asserted live PTY E2E evidence |
+| correctness | user-visible behavior is proven by deterministic tests |
+| reproducibility | same scenario yields identical traces and frame assertions |
+| regression prevention | every bug fix adds a stable failing-then-passing test |
+| closure discipline | blocker rows close only with matching `T0` + `T1` + `T2` evidence |
 
 ## Verification Tiers
 
 | Tier | Purpose | Required Evidence |
 |---|---|---|
-| `T0` | unit invariants | deterministic crate-level tests |
-| `T1` | cross-module integration | action/state/snapshot integration tests |
-| `T2` | live runtime E2E | full binary in PTY with per-key state + screen assertions |
+| `T0` | local invariants | deterministic unit tests |
+| `T1` | cross-module behavior | state/action integration tests |
+| `T2` | user-like runtime proof | PTY E2E with per-key frame/state assertions |
 
-High-severity blocker closure requires matching `T2` evidence.
+High-severity blocker closure requires `T2`.
 
-## Retained High-Signal Implemented Suites
+## Selected Existing Suites (Retain)
 
-| Domain | Current Suite | Required Upgrade |
+These existing tests are high-signal and must be retained during rebuild.
+
+| Domain | Preferred Existing Tests | Why High Leverage |
 |---|---|---|
-| input decode | `key_mode_e2e` | add per-key frame oracle checks |
-| split/navigation | `window_nav_e2e`, `window_nav_more_e2e`, `window_nav_session_terminal_e2e` | assert pane geometry timeline per input |
-| explorer/terminal routes | `explorer_terminal_paths_e2e`, `explorer_terminal_more_e2e` | assert visible pane outcomes, not only trace routes |
-| churn/races | `explorer_terminal_stress_e2e` | add frame-diff oracle and stale-ID assertions |
-| wrap/cursor | `cursor_wrap_e2e`, `cursor_wrap_more_e2e` | keep as baseline and add mixed-pane screen checks |
-| profiling | `profiling_e2e` | keep probe checks with bounded-noise assertions |
+| mode-entry append | `src/crates/core/kjxlkj-core-state/src/editor.rs` (`shift_a_appends_at_eol`) | directly probes known `a`/`A` path |
+| command-line execution | `src/crates/core/kjxlkj-core-state/src/editor_cmdline_tests.rs` | validates command pipeline editing and register side effects |
+| window navigation | `src/crates/core/kjxlkj-core-state/src/editor_wincmd_tests.rs` | deterministic `Ctrl-w` behavior coverage |
+| split/explorer lifecycle | `src/crates/core/kjxlkj-core-state/src/editor_stage04_tests.rs`, `editor_stage04b_tests.rs` | catches mixed-pane regressions |
+| race and boundaries | `src/crates/core/kjxlkj-core-state/src/editor_race_tests.rs`, `editor_boundary_tests.rs` | high failure-detection density |
+| viewport behavior | `src/crates/core/kjxlkj-core-ui/src/viewport_tests.rs` | wrap/scroll clamp invariants |
+| key normalization | `src/crates/platform/kjxlkj-input/src/normalize.rs` tests | critical `Shift+a -> A` normalization proof |
+| terminal parser/screen | `src/crates/services/kjxlkj-service-terminal/src/parser_tests.rs`, `screen_tests.rs` | escape/render baseline correctness |
 
-## Mandatory New Coverage Classes
+## Mandatory Blocker Regression Pack
 
-| ID | Gap Closed | Required Tier |
-|---|---|---|
-| `TC-LIVE-01` | real PTY proof of `Shift+a` correctness with frame-level equality vs physical `A` | `T2` |
-| `TC-LIVE-02` | split/explorer/terminal behavior in one mixed-window flow with pane map checks | `T2` |
-| `TC-LIVE-03` | cursor correctness under wrap and resize churn with visual cursor oracle | `T2` |
-| `TC-LIVE-04` | explorer operations under external FS drift with visible tree oracle | `T2` |
-| `TC-LIVE-05` | terminal flood while editing adjacent pane with latency + frame coherence checks | `T2` |
-| `TC-LIVE-06` | IME composition races with leader/window commands and no leakage | `T2` |
-| `TC-LIVE-07` | replay determinism by comparing complete per-key dump timelines | `T2` |
+| ID | Target Failure | Minimum Tier | Notes |
+|---|---|---|---|
+| `KEYMODE-04R` | `a` at EOL behaves like `i` | `T2` | compare per-key cursor transition and resulting frame |
+| `CMD-02R` | `:q`, `:e`, `:w` wrong scope | `T2` | verify focused-window-only behavior in split layout |
+| `WRAP-11R` | long-line overflow | `T2` | assert no off-screen cells |
+| `FS-03R` | read/write round-trip failure | `T2` | verify content persistence and modified flag transitions |
+| `JP-09R` | Japanese rendering/composition instability | `T2` | combine IME composition with resize churn |
+| `UI-02R` | line-number/continuation drift under wrap | `T2` | assert gutter row identity under resize and rewrap |
 
-Canonical IDs are specified in [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
+## Bug-Fix Closure Workflow
 
-## Boundary-First Selection Rule
+For every user-visible bug:
 
-Candidate tests are scored on:
-
-- user impact
-- regression probability
-- unique detection power
-- determinism
-- maintenance cost
-
-Select the smallest set that covers each high-risk surface at least once.
-
-## Bug-Fix Closure Contract
-
-For each fixed user-visible bug:
-
-1. add or update a failing regression case that reproduces the bug
-2. implement fix
-3. pass regression plus matching live `*R` E2E case with screen-state assertions
-4. update TODO and reference ledgers with direct evidence links
+1. reproduce in `T1` integration test
+2. reproduce in matching `T2` PTY test when blocker severity is high
+3. implement fix
+4. pass new regression tests and retained baseline suites
+5. synchronize reference and TODO ledgers in the same change
 
 ## Determinism Rules
 
-- use bounded deadlines with explicit diagnostics
-- avoid blind sleep; poll with deterministic timeout windows
-- capture failure context: mode, focus, layout summary, cursor/caret, frame excerpt, recent input trace
-- avoid hidden external dependencies in blocker tests
+- use bounded waits with explicit timeout diagnostics
+- avoid blind sleeps in `T2`
+- capture failure artifacts: mode, focused pane, layout summary, cursor, frame diff, recent input
+- do not rely on external network state
 
 ## Completion Gate
 
 A TODO checkbox may be marked complete only when all are true:
 
-1. linked normative requirement exists
+1. linked spec requirement exists
 2. required tier evidence exists (`T2` for blockers)
-3. behavior is reachable from real key/command paths
-4. screen-state assertions pass for blocker E2E tests
-5. limitations and drift rows are synchronized in the same change
+3. behavior is reachable through user-visible key/command paths
+4. frame assertions pass for matching E2E rows
+5. `CONFORMANCE`, `LIMITATIONS`, `DRIFT_MATRIX`, and TODO rows are synchronized
 
 ## Related
 
-- E2E matrix: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
-- PTY harness contract: [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)
-- Unit requirements: [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
+- unit baseline: [/docs/spec/technical/testing-unit.md](/docs/spec/technical/testing-unit.md)
+- E2E baseline: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- PTY harness: [/docs/spec/technical/testing-pty-harness.md](/docs/spec/technical/testing-pty-harness.md)

@@ -10,6 +10,7 @@ User interface components and visual behavior.
 |---|---|
 | [statusline/](statusline/README.md) | statusline contracts |
 | [viewport.md](viewport.md) | viewport follow, wrap, and overflow rules |
+| [gutter-line-numbers.md](gutter-line-numbers.md) | line-number rendering contract |
 | [cursor-customization.md](cursor-customization.md) | cursor visibility and style invariants |
 | [scroll-customization.md](scroll-customization.md) | scroll behavior and options |
 | [notifications.md](notifications.md) | notification delivery and rendering |

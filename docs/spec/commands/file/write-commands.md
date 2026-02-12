@@ -4,6 +4,16 @@ Back: [/docs/spec/commands/file/README.md](/docs/spec/commands/file/README.md)
 
 Commands for saving buffer content to files.
 
+## Scope and Target (normative)
+
+Write commands obey
+[/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md).
+
+| Command family | Scope |
+|---|---|
+| `:w`, `:w!`, `:w {file}`, `:wq`, `:x` | focused-window command on focused buffer |
+| `:wa`, `:wa!`, `:wqa`, `:xa` | explicit-global across all eligible buffers |
+
 ## Basic write
 
 | Command | Description |
@@ -54,6 +64,9 @@ Commands for saving buffer content to files.
 | Post-write | Fire `BufWritePost` autocommand |
 | State | Clear modified flag |
 
+When write fails, modified flag MUST remain unchanged and no partial success
+state may be reported.
+
 ## Backup options
 
 | Setting | Default | Description |
@@ -84,7 +97,22 @@ Line endings are written according to the `fileformat` option:
 | Disk full | Error with message |
 | Permission denied | Error with message |
 
+## Multi-Window Invariants
+
+- writing from one window MUST NOT change focus in other windows
+- windows sharing the same buffer MUST observe the same post-write modified state
+- `:w` MUST NOT write unrelated modified buffers
+
+## Mandatory Verification
+
+| ID | Scenario | Required Assertions |
+|---|---|---|
+| `CMD-02R` | run `:w` in one pane of two-pane layout | only focused buffer write request is emitted |
+| `FS-03R` | read-write round trip | `:e` then edits then `:w` persist content and clear modified flag |
+| `FS-04` | write failure (permission denied) | modified flag remains true and path content is unchanged |
+
 ## Related
 
 - File operations: [/docs/spec/commands/file/file-operations.md](/docs/spec/commands/file/file-operations.md)
 - Quit commands: [/docs/spec/commands/quit-commands.md](/docs/spec/commands/quit-commands.md)
+- Execution context: [/docs/spec/commands/execution-context.md](/docs/spec/commands/execution-context.md)

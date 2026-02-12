@@ -10,6 +10,7 @@ Production-grade Japanese IME behavior for terminal Insert mode.
 - commit/cancel safety under modal editing
 - leader mapping isolation during composition
 - width/wrap correctness after commit
+- deterministic rendering in mixed Japanese + ASCII lines
 
 ## Composition State Model
 
@@ -43,6 +44,9 @@ Only after returning to `Idle` may normal Insert key handling continue.
 | Cursor placement | cursor moves to end of committed grapheme sequence |
 | UTF-8 validity | committed text remains valid UTF-8 |
 
+After commit, `a` and `A` entry behavior MUST remain correct at the resulting
+cursor location (no fallback to `i`-like behavior).
+
 ## Width and Wrapping Rules
 
 Committed text MUST satisfy:
@@ -54,6 +58,17 @@ Additional requirements:
 
 - width-2 graphemes MUST NOT create half-cell cursor states
 - wrap boundaries MUST pad instead of splitting width-2 graphemes
+- combining marks in Japanese text MUST stay attached to owning grapheme cluster
+- continuation rows MUST preserve line-number identity in gutter
+
+## Rendering and Input Isolation Rules
+
+| Rule | Required Behavior |
+|---|---|
+| preedit visibility | preedit text is visible but not committed in buffer |
+| candidate UI isolation | candidate selection overlay MUST NOT steal non-IME focus |
+| composition cancel | cancel restores exact pre-composition buffer bytes |
+| command isolation | `:` and window commands must not execute until composition is `Idle` |
 
 ## Failure Handling
 
@@ -76,9 +91,11 @@ Additional requirements:
 | `JP-07R` | IME + `<leader>t` race does not trigger terminal action |
 | `JP-08R` | composition cancel followed by `Esc` exits Insert exactly once |
 | `JP-09R` | mixed IME composition under resize keeps cursor visible |
+| `JP-10R` | composition while executing window-local command chains | command is deferred or rejected until IME returns `Idle` |
 
 ## Related
 
 - Input decoding: [/docs/spec/architecture/input-decoding.md](/docs/spec/architecture/input-decoding.md)
 - Mode entry keybindings: [/docs/spec/ux/keybindings/mode-entry.md](/docs/spec/ux/keybindings/mode-entry.md)
 - E2E testing: [/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md)
+- Gutter numbering: [/docs/spec/features/ui/gutter-line-numbers.md](/docs/spec/features/ui/gutter-line-numbers.md)
