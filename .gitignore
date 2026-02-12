@@ -1,9 +1,0 @@
-target/
-**/target/
-.env
-.env.*
-node_modules/
-frontend/dist/
-.DS_Store
-*.log
-coverage/
