@@ -19,6 +19,11 @@ When present, the expected model is one compose service with:
 - Stop: `docker compose down`
 - Tail logs: `docker compose logs -f`
 
+## Build Notes
+
+- Docker image builds Rust server and React/Vite frontend from source.
+- No checked-in frontend `dist` artifacts are required.
+
 ## Health
 
 Container healthcheck should pass via `/api/v1/readyz`.

@@ -4,28 +4,28 @@ Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/
 
 ## Wave Identity
 
-- [ ] Wave ID: 031
-- [ ] Stage: Stage 03: Single-Container Runtime and Compose
-- [ ] Focus: Compose Single-Service Wiring
+- [x] Wave ID: 031
+- [x] Stage: Stage 03: Single-Container Runtime and Compose
+- [x] Focus: Compose Single-Service Wiring
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [x] implement requirements for this focus slice
+- [x] preserve deterministic failure handling
+- [x] preserve API and schema contracts
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [x] run targeted tests for modified components
+- [x] run at least one boundary or failure scenario
+- [x] record deterministic evidence
 
 ## Ledger Sync Tasks
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
+- [x] synchronize status across reference ledgers
+- [x] keep TODO checkboxes aligned with evidence
 
 ## Wave Exit
 
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [x] tasks complete or deferred with next action
+- [x] no stale green claims

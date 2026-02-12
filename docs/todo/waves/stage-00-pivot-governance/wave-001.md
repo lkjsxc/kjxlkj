@@ -4,28 +4,28 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Wave Identity
 
-- [ ] Wave ID: 001
-- [ ] Stage: Stage 00: Pivot Governance and Canonical Reset
-- [ ] Focus: Policy Invariant Rewrite
+- [x] Wave ID: 001
+- [x] Stage: Stage 00: Pivot Governance and Canonical Reset
+- [x] Focus: Policy Invariant Rewrite
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [x] implement requirements for this focus slice
+- [x] preserve deterministic failure handling
+- [x] preserve API and schema contracts
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [x] run targeted tests for modified components
+- [x] run at least one boundary or failure scenario
+- [x] record deterministic evidence
 
 ## Ledger Sync Tasks
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
+- [x] synchronize status across reference ledgers
+- [x] keep TODO checkboxes aligned with evidence
 
 ## Wave Exit
 
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [x] tasks complete or deferred with next action
+- [x] no stale green claims

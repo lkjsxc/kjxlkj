@@ -6,27 +6,24 @@ Open mismatches between target spec and trusted current behavior.
 
 ## Baseline (2026-02-12)
 
-- The canonical product pivot is complete at docs level only.
-- Runtime artifacts are not yet available.
-- All runtime requirement rows are open until reconstruction evidence exists.
+- Runtime is implemented and deployable, but release-grade verification is incomplete.
+- High-severity gaps are concentrated in WS replay/recovery and acceptance/perf/ops coverage.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Observed Gap | Class | Severity | Required Tests | Mandatory Next Action |
 |---|---|---|---|---|---|---|
-| `LIM-BOOTSTRAP-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | Actix/Tokio runtime not implemented | `M2 missing feature` | high | `E2E-01` | scaffold workspace and server bootstrap |
-| `LIM-API-CORE-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | REST endpoints not implemented | `M2 missing feature` | high | `API-SETUP-01`, `API-NOTE-03` | implement API v1 contracts |
-| `LIM-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS patch stream not implemented | `M2 missing feature` | high | `WS-01..05` | implement authenticated WS note protocol |
-| `LIM-DB-01` | [/docs/spec/domain/events.md](/docs/spec/domain/events.md) | SQLx schema/migrations absent | `M2 missing feature` | high | `API-NOTE-04`, `E2E-04` | add migration set and repositories |
-| `LIM-AUTH-01` | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | setup/login/session/CSRF flows absent | `M2 missing feature` | high | `API-AUTH-02`, `E2E-01` | implement auth/session middleware |
-| `LIM-DEPLOY-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | single-container compose path absent | `M2 missing feature` | high | `OPS-01` | add Dockerfile + compose + supervisor flow |
+| `LIM-WS-VERIFY-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | Replay path is implemented via `ack` cursor, but deterministic WS suite (`WS-01..05`) is still incomplete | `M4 verification gap` | high | `WS-01..05` | add automated WS integration suite for subscribe/patch/conflict/replay/idempotency |
+| `LIM-ACCEPTANCE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | Mandatory acceptance pack is only partially automated (T0 complete; T1/T2 incomplete) | `M4 verification gap` | high | `API-*`, `WS-*`, `E2E-*` | add runnable contract/E2E suites and record evidence |
+| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | P95 and WS soak targets are not yet measured | `M4 verification gap` | high | `PERF-01`, `PERF-02` | run load and soak tests with evidence capture |
+| `LIM-OPS-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | Backup/restore parity and restart recovery drills are not yet recorded | `M4 verification gap` | high | `OPS-01`, `OPS-02` | execute backup+restore and restart drills, then sync ledgers |
 
 ## Open Secondary Gaps
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-OPENAPI-01` | [/docs/spec/api/openapi.md](/docs/spec/api/openapi.md) | canonical OpenAPI file exists but CI schema validation is not yet proven | `M4 verification gap` | medium | run OpenAPI validation in CI profile |
-| `LIM-SPA-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | SPA assets not yet reconstructed | `M2 missing feature` | medium | build React/Vite shell and static hosting |
+| `LIM-DB-TEST-01` | [/docs/spec/domain/events.md](/docs/spec/domain/events.md) | DB-backed integration tests are present but `ignored` by default because `DATABASE_URL` is not guaranteed | `M4 verification gap` | medium | run ignored DB tests in Postgres-enabled profile and promote to required |
+| `LIM-OBS-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | request-id/principal structured logging coverage is partial | `M4 verification gap` | medium | add request-id propagation middleware and context-rich structured logs |
 
 ## Closure Rules
 

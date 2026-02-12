@@ -4,27 +4,27 @@ Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/wa
 
 ## Wave Identity
 
-- [ ] Wave ID: 042
-- [ ] Stage: Stage 04: PostgreSQL Schema and Projections
-- [ ] Focus: Attachment Chunk Schema
+- [x] Wave ID: 042
+- [x] Stage: Stage 04: PostgreSQL Schema and Projections
+- [x] Focus: Attachment Chunk Schema
 
 ## Implementation Tasks
 
-- [ ] close remaining gaps in this stage
-- [ ] prepare handoff to next stage
-- [ ] update docs/contracts if behavior changed
+- [x] close remaining gaps in this stage
+- [x] prepare handoff to next stage
+- [x] update docs/contracts if behavior changed
 
 ## Verification Tasks
 
-- [ ] rerun required suites for closure
-- [ ] verify deterministic replay where applicable
-- [ ] archive command/test evidence
+- [x] rerun required suites for closure
+- [x] verify deterministic replay where applicable
+- [x] archive command/test evidence
 
 ## Ledger Sync Tasks
 
-- [ ] sync conformance, limitations, and drift matrix
-- [ ] ensure stage readiness for next stage
+- [x] sync conformance, limitations, and drift matrix
+- [x] ensure stage readiness for next stage
 
 ## Wave Exit
 
-- [ ] stage handoff is explicit and evidence-backed
+- [x] stage handoff is explicit and evidence-backed

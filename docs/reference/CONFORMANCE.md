@@ -19,20 +19,21 @@ This ledger reports only currently verified behavior.
 High-confidence statement:
 
 - Web-server product contract is canonically defined in docs.
-- Runtime implementation has not yet been reconstructed in this repo.
-- No API/WS/runtime claims are accepted as verified yet.
+- Runtime implementation is reconstructed and reachable in a single-container deployment.
+- Acceptance-tier verification is still incomplete; final release status remains partial.
 
 ## Domain Status
 
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
 | Policy and governance pivot | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | docs rewritten and internally linked |
-| API v1 contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | no runtime endpoints verified |
-| WS patch protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | no runtime WS evidence |
-| Event sourcing and projections | [/docs/spec/domain/events.md](/docs/spec/domain/events.md) | `spec-only` | schema and write-path not yet verified |
-| Auth/session/CSRF | [/docs/spec/security/README.md](/docs/spec/security/README.md) | `spec-only` | auth runtime not yet verified |
-| Single-container deployment | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `unverified` | Docker artifacts not yet reconstructed |
-| Testing/performance gates | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | acceptance matrix documented only |
+| API v1 contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | setup/login/notes/conflict/metadata/tags/search/attachments smoke-verified on live container |
+| WS patch protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | WS `subscribe_note` + stale `patch_rejected` + `ack` replay cursor flow verified via Node WS smoke |
+| Event sourcing and projections | [/docs/spec/domain/events.md](/docs/spec/domain/events.md) | `partial` | transactional event+projection writes implemented; snapshot table and 100-version snapshot logic added |
+| Auth/session/CSRF | [/docs/spec/security/README.md](/docs/spec/security/README.md) | `partial` | setup/login/logout/session + CSRF enforcement + in-memory auth rate limit implemented |
+| Single-container deployment | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `verified` | `docker compose build` + `docker compose up -d` + `/api/v1/readyz` pass |
+| Frontend static hosting | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `verified` | React/Vite SPA built in Docker image and served by Actix static route |
+| Testing/performance gates | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | T0 unit tests pass; DB-backed tests present but require `DATABASE_URL`; T2/perf not yet closed |
 
 ## Conformance Closure Rule
 
