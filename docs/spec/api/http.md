@@ -2,21 +2,40 @@
 
 Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
-Base path: `/api/v1`
+Base path: `/api`
 
 ## Setup and Auth
 
 | Method | Path | Purpose |
 |---|---|---|
-| `POST` | `/setup/register` | first-run account bootstrap |
+| `POST` | `/setup/register` | first-run owner account bootstrap |
 | `POST` | `/auth/login` | create authenticated session |
 | `POST` | `/auth/logout` | revoke active session |
 | `GET` | `/auth/session` | return current session identity |
 
-## Notes and History
+## Users, Roles, Workspaces
 
 | Method | Path | Purpose |
 |---|---|---|
+| `GET` | `/users` | list users in tenant |
+| `POST` | `/users` | create user account |
+| `PATCH` | `/users/{id}/role` | change global role |
+| `DELETE` | `/users/{id}` | disable or remove user |
+| `GET` | `/workspaces` | list workspaces |
+| `POST` | `/workspaces` | create workspace |
+| `PATCH` | `/workspaces/{id}` | update workspace |
+| `DELETE` | `/workspaces/{id}` | delete workspace |
+| `GET` | `/workspaces/{id}/members` | list workspace members |
+| `PUT` | `/workspaces/{id}/members/{user_id}` | upsert member role |
+
+## Projects and Notes
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/projects` | list projects |
+| `POST` | `/projects` | create project |
+| `PATCH` | `/projects/{id}` | update project |
+| `DELETE` | `/projects/{id}` | delete project |
 | `POST` | `/notes` | create note stream |
 | `POST` | `/notes/media` | create standalone media note from upload |
 | `GET` | `/notes` | list notes |
@@ -27,7 +46,7 @@ Base path: `/api/v1`
 | `GET` | `/notes/{id}/history` | list event history |
 | `POST` | `/notes/{id}/rollback` | rollback to selected version |
 
-## Records, Tags, Links, Search
+## Metadata, Links, Search
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -37,6 +56,22 @@ Base path: `/api/v1`
 | `PUT` | `/notes/{id}/tags` | replace tags for note |
 | `GET` | `/notes/{id}/backlinks` | backlinks for note |
 | `GET` | `/search` | full-text and filter search |
+
+## Views, Dashboards, Automation
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/views` | list saved views |
+| `POST` | `/views` | create saved view |
+| `PATCH` | `/views/{id}` | update saved view |
+| `DELETE` | `/views/{id}` | delete saved view |
+| `GET` | `/dashboards` | list workspace dashboards |
+| `POST` | `/dashboards/widgets` | create or update dashboard widget |
+| `GET` | `/automation/rules` | list automation rules |
+| `POST` | `/automation/rules` | create automation rule |
+| `PATCH` | `/automation/rules/{id}` | update automation rule |
+| `DELETE` | `/automation/rules/{id}` | delete automation rule |
+| `GET` | `/automation/runs/{id}` | automation run status/details |
 
 ## Attachments and Admin Operations
 
@@ -55,6 +90,14 @@ Base path: `/api/v1`
 |---|---|---|
 | `GET` | `/healthz` | liveness check |
 | `GET` | `/readyz` | readiness check (DB + migrations) |
+
+## Contract Rules
+
+- Global roles and workspace roles MUST be evaluated on every user-scoped route.
+- Setup MUST lock after first owner account registration.
+- `DELETE /notes/{id}` MUST return `204` on successful soft-delete.
+- `DELETE /notes/{id}/metadata/{key}` MUST return `204`.
+- Version conflicts MUST return `409` with current server version context.
 
 ## Related
 

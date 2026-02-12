@@ -2,11 +2,11 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/reference/` is the canonical truth for current verified state.
+`/docs/reference/` is the canonical truth for verified repository state.
 
 ## Authority
 
-For current-state claims, use this precedence:
+For state claims, use this precedence:
 
 1. [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 2. [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
@@ -18,11 +18,10 @@ For current-state claims, use this precedence:
 
 ## Snapshot (2026-02-12)
 
-The repository is in pivot reconstruction mode.
+The repository is in hard-pivot reconstruction mode.
 
-- Canonical docs target a web-notes server.
-- Legacy terminal-editor behavior is out of scope.
-- Runtime and deployment artifacts are intentionally absent in this docs-only reconstruction baseline.
+- Canonical docs target a multi-user workspace platform on `/api` and `/ws`.
+- Runtime and deployment artifacts remain intentionally absent in this baseline.
 
 ## Synchronization Rule
 

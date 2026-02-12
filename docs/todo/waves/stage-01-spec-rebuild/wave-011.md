@@ -1,31 +1,29 @@
-# Wave 011: API and WS Normative Contracts
+# Wave 011: Auth and Session Baseline
 
 Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 011
-- [ ] Stage: Stage 01: Spec Rebuild (Docs-First)
-- [ ] Focus: API and WS Normative Contracts
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] implement setup lockout for owner bootstrap
+- [ ] implement login/logout/session with secure cookie rules
+- [ ] add rate limiting for setup/login
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] run `API-AUTH-01` and `API-AUTH-02`
+- [ ] run negative-path authentication checks
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

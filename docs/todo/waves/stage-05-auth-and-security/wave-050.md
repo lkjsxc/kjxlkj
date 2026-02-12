@@ -1,32 +1,29 @@
-# Wave 050: First-Run Registration Locking
+# Wave 050: Reliability Regression Guard Pack
 
 Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 050
-- [ ] Stage: Stage 05: Auth, Session, Security
-- [ ] Focus: First-Run Registration Locking
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] keep behavior user-reachable
-- [ ] keep docs, tests, and status synchronized
+- [ ] map `IMP-*` and `USR-*` findings to concrete regression tests
+- [ ] add missing boundary tests for replay/idempotency/conflict paths
+- [ ] close `LIM-ISSUE-GUARD-02` when evidence is complete
 
 ## Verification Tasks
 
-- [ ] add or update deterministic tests
-- [ ] execute relevant tier checks (T0/T1/T2 as required)
-- [ ] capture pass/fail evidence links
+- [ ] run full reliability regression suite
+- [ ] verify no flaky or nondeterministic failures
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-
-## Wave Exit
-
-- [ ] tasks complete or explicitly deferred with rationale
-- [ ] evidence recorded
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

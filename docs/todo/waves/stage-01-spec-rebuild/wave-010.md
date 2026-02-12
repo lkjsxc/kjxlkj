@@ -1,32 +1,29 @@
-# Wave 010: Spec Taxonomy Bootstrap
+# Wave 010: Runtime and Workspace Bootstrap
 
 Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 010
-- [ ] Stage: Stage 01: Spec Rebuild (Docs-First)
-- [ ] Focus: Spec Taxonomy Bootstrap
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] keep behavior user-reachable
-- [ ] keep docs, tests, and status synchronized
+- [ ] scaffold workspace crates (`workspace`, `rbac`) and wire into app runtime
+- [ ] add base DB migrations for users, workspaces, membership, projects
+- [ ] expose readiness/liveness for new topology
 
 ## Verification Tasks
 
-- [ ] add or update deterministic tests
-- [ ] execute relevant tier checks (T0/T1/T2 as required)
-- [ ] capture pass/fail evidence links
+- [ ] run migration and startup smoke checks
+- [ ] run T1 ownership invariants checks
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-
-## Wave Exit
-
-- [ ] tasks complete or explicitly deferred with rationale
-- [ ] evidence recorded
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

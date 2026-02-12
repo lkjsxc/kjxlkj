@@ -1,32 +1,29 @@
-# Wave 040: Core Schema and Event Store
+# Wave 040: Automation Rules and Validation
 
 Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 040
-- [ ] Stage: Stage 04: PostgreSQL Schema and Projections
-- [ ] Focus: Core Schema and Event Store
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] keep behavior user-reachable
-- [ ] keep docs, tests, and status synchronized
+- [ ] implement automation rule CRUD APIs
+- [ ] validate trigger/condition/action deterministically
+- [ ] enforce workspace role checks on rule mutation
 
 ## Verification Tasks
 
-- [ ] add or update deterministic tests
-- [ ] execute relevant tier checks (T0/T1/T2 as required)
-- [ ] capture pass/fail evidence links
+- [ ] run `API-AUTO-01`
+- [ ] run invalid-rule and forbidden-path checks
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-
-## Wave Exit
-
-- [ ] tasks complete or explicitly deferred with rationale
-- [ ] evidence recorded
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

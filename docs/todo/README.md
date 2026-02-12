@@ -2,6 +2,15 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 `/docs/todo/` is the execution contract for rebuilding `kjxlkj` from docs.
 
 ## Start Gate
@@ -17,14 +26,13 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Immediate Blocker Pack
 
-- [ ] `LIM-RUNTIME-01` runtime bootstrap and deployment reconstruction
-- [ ] `LIM-API-01` API v1 implementation reconstruction
-- [ ] `LIM-WS-01` websocket realtime reconstruction
-- [ ] `LIM-UI-01` UX-focused frontend reconstruction
-- [ ] `LIM-TYPES-01` typed note model reconstruction (`settings`, media kinds)
-- [ ] `LIM-SEARCH-01` full-text search reconstruction
-- [ ] `LIM-DEL-01` user-reachable note deletion reconstruction
-- [ ] `LIM-ISSUE-GUARD-01` regression guards for recorded findings
+- [ ] `LIM-RUNTIME-02` runtime bootstrap and crate topology reconstruction
+- [ ] `LIM-API-02` API implementation reconstruction
+- [ ] `LIM-WS-02` websocket realtime reconstruction
+- [ ] `LIM-UI-02` workspace suite frontend reconstruction
+- [ ] `LIM-RBAC-01` role-based authorization reconstruction
+- [ ] `LIM-AUTO-01` automation rule and run engine reconstruction
+- [ ] `LIM-ISSUE-GUARD-02` regression guards for `IMP-*` and `USR-*` findings
 
 ## Recursive Wave Program
 

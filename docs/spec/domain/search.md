@@ -9,6 +9,7 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 - Search MUST include title and markdown body content.
 - Search SHOULD provide ranked results for best-match ordering.
 - Search MUST include eligible `settings` notes and media-note metadata in query scope.
+- Search results MUST be filtered by workspace scope and caller permissions.
 
 ## Backlinks
 

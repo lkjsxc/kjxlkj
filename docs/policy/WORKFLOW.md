@@ -6,13 +6,21 @@ Reconstruction workflow and verification gates.
 
 ## Gate Sequence
 
-1. Read policy, spec, reference, and todo indexes.
+1. Read policy, spec, reference, and TODO indexes.
 2. Build mismatch matrix (spec vs implementation vs tests).
 3. Select one coherent migration slice.
 4. Implement only user-reachable behavior in that slice.
 5. Run deterministic tests for touched behavior and relevant global gates.
 6. Update reference ledgers and TODO state in the same change.
 7. Commit progress frequently as small, auditable git commits.
+
+## TODO Authoring Rule
+
+When creating or editing TODO files:
+
+- use Markdown syntax only
+- include `## Relevant Documents`
+- add direct Markdown links to all relevant files for that TODO
 
 ## Verification Gate
 

@@ -1,32 +1,30 @@
-# Wave 000: Scope Freeze and Proposal Logging
+# Wave 000: API and WS Canonical Reset
 
 Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 000
-- [ ] Stage: Stage 00: Pivot Governance and Canonical Reset
-- [ ] Focus: Scope Freeze and Proposal Logging
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] keep behavior user-reachable
-- [ ] keep docs, tests, and status synchronized
+- [ ] set API base path to `/api` in canonical docs
+- [ ] set WS endpoint to `/ws` in canonical docs
+- [ ] align OpenAPI document with HTTP and WS contracts
+- [ ] enforce `DELETE /notes/{id}` soft-delete path consistency
 
 ## Verification Tasks
 
-- [ ] add or update deterministic tests
-- [ ] execute relevant tier checks (T0/T1/T2 as required)
-- [ ] capture pass/fail evidence links
+- [ ] link-check `api/` docs and OpenAPI references
+- [ ] verify no remaining version-labeled API paths in canonical docs
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-
-## Wave Exit
-
-- [ ] tasks complete or explicitly deferred with rationale
-- [ ] evidence recorded
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

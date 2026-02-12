@@ -1,31 +1,29 @@
-# Wave 051: Session Cookie Lifecycle
+# Wave 051: Security and Access Hardening
 
 Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 051
-- [ ] Stage: Stage 05: Auth, Session, Security
-- [ ] Focus: Session Cookie Lifecycle
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] enforce CSRF/session/cookie hardening in production profile
+- [ ] verify role boundary enforcement across all mutation routes
+- [ ] harden setup/login/rule-trigger rate limiting
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] run security-focused integration suite
+- [ ] run forbidden and session-expiry E2E scenarios
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

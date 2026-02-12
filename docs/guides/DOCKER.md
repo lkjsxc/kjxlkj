@@ -21,7 +21,7 @@ When present, the expected model is one compose service with:
 
 ## Health
 
-Container healthcheck should pass via `/api/v1/readyz`.
+Container healthcheck should pass via `/api/readyz`.
 
 In docs-only reconstruction baseline, these artifacts may be absent and MUST be rebuilt from specs.
 

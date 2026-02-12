@@ -1,31 +1,29 @@
-# Wave 021: Crate Layout and Module Boundaries
+# Wave 021: Realtime Patch and Replay Protocol
 
 Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 021
-- [ ] Stage: Stage 02: Workspace and Build Bootstrap
-- [ ] Focus: Crate Layout and Module Boundaries
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] implement `subscribe_note` and `subscribe_workspace`
+- [ ] implement `apply_patch` with replay-safe idempotency semantics
+- [ ] implement ack-cursor replay and deterministic conflict rejection
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] run `WS-01..05`
+- [ ] run reconnect and duplicate retransmit boundary cases
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

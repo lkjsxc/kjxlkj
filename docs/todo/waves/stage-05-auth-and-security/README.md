@@ -1,10 +1,21 @@
-# Stage 05: Auth, Session, Security
+# Stage 05: M5 Final Hardening and Release Proof
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 ## Stage Scope
 
-- [ ] Implement first-run auth, session model, and CSRF protections.
+- [ ] close residual reliability, security, and performance gaps
+- [ ] run full acceptance, performance, and operations gates
+- [ ] produce release evidence and ledger closure
 
 ## Ordered Waves
 
@@ -14,6 +25,6 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Exit
 
-- [ ] all waves are completed in order
-- [ ] stage-critical requirements are satisfied
-- [ ] ledger updates match stage outcomes
+- [ ] release profile is green
+- [ ] no high-severity limitations remain open
+- [ ] release closure is recorded in reference ledgers

@@ -18,6 +18,7 @@ Attachments are stored in PostgreSQL as chunk rows.
 - Server MUST reject files larger than max with `413`.
 - Completed upload MUST persist metadata and chunk rows transactionally.
 - Image/video uploads MUST support standalone media-note creation flows.
+- Upload and download access MUST enforce workspace permission checks.
 
 ## Download Rules
 

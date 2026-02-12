@@ -1,31 +1,29 @@
-# Wave 031: Compose Single-Service Wiring
+# Wave 031: Command Palette and Navigation UX
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 031
-- [ ] Stage: Stage 03: Single-Container Runtime and Compose
-- [ ] Focus: Compose Single-Service Wiring
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] implement command palette action model and shortcuts
+- [ ] wire create/open/move/tag/run-rule commands to APIs
+- [ ] preserve deterministic success/failure feedback states
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] run `E2E-03` and targeted keyboard-navigation checks
+- [ ] run command failure-path scenarios
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

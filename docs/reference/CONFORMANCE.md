@@ -18,25 +18,25 @@ This ledger reports only currently verified behavior.
 
 High-confidence statement:
 
-- Repository is intentionally reset to docs-only state for reconstruction.
+- Repository is intentionally docs-only for reconstruction.
 - Runtime/source/deployment artifacts are intentionally absent.
-- Implementation and user findings are captured in audit logs and enforced through updated specs.
+- Contracts and execution waves are synchronized in docs.
 
 ## Domain Status
 
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
-| Policy and governance pivot | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy and docs-first model are present and linked |
-| API v1 contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | endpoints specified; runtime intentionally removed |
-| WS patch protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | protocol specified with replay/latency expectations |
-| Domain model (notes/types/media/search) | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `spec-only` | note types and UX-driven feature requirements are specified |
-| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `verified` | responsive, autosave, markdown editor, and layout rules specified |
-| Deployment/runtime artifacts | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `unverified` | implementation artifacts intentionally deleted |
-| Testing/performance gates | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | acceptance pack expanded; no runtime evidence yet |
+| Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | docs-first rules and execution policy are present |
+| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | endpoints and OpenAPI are synchronized; runtime absent |
+| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | protocol includes replay and workspace streams; runtime absent |
+| Domain model | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `spec-only` | workspace/project/notes/automation docs are linked |
+| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `spec-only` | workspace suite UX contracts are specified |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `spec-only` | implementation artifacts absent in current state |
+| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | acceptance pack defined; runtime evidence pending |
 
 ## Conformance Closure Rule
 
-No `spec-only` or `unverified` row may move to `verified` without:
+No `spec-only` row may move to `verified` without:
 
 1. deterministic test evidence
 2. runtime reachability from documented APIs

@@ -9,6 +9,8 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 - Tags are explicit normalized labels, independent of inline markdown hashtags.
 - Note title MUST be mutable and independently editable from body.
 - Each note stream MUST include `note_kind` from [note-types.md](note-types.md).
+- Each note stream MUST include `workspace_id`.
+- Notes MAY include `project_id` and MUST set `access_scope`.
 
 ## Stream Lifecycle
 
@@ -19,9 +21,10 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 
 Deletion rules:
 
-- Users MUST be able to delete notes from normal UI flows.
+- Users with delete permission MUST be able to delete notes.
 - Deletion MUST be soft-delete at stream level by default.
-- Deleted notes MUST be excluded from default search/list queries unless explicit include-deleted mode is requested.
+- Deleted notes MUST be excluded from default search/list queries unless
+ explicit include-deleted mode is requested.
 
 ## Write Rules
 
@@ -40,4 +43,5 @@ Deletion rules:
 ## Related
 
 - Events: [events.md](events.md)
+- Permissions: [permissions.md](permissions.md)
 - API websocket: [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)

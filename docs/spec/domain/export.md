@@ -4,7 +4,7 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 
 ## Markdown Export
 
-- Export job MUST create markdown files representing current projections.
+- Export job MUST create workspace-scoped markdown files representing current projections.
 - File paths SHOULD be deterministic by note title + ID.
 - Job status MUST be queryable via `GET /admin/export/{job_id}`.
 

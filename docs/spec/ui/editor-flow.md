@@ -6,12 +6,20 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 - Local edits produce patch operations.
 - Editor MUST autosave local note changes with a bounded debounce window.
-- Editor implementation MUST be built from scratch for Markdown authoring behavior (not a wrapped off-the-shelf full editor runtime).
+- Editor implementation MUST be built from scratch for Markdown authoring behavior.
 - Patch submissions use WS `apply_patch` when connection is active.
 - HTTP fallback MAY be used when WS is unavailable.
 - Manual save MAY be exposed as an explicit user action.
-- Client idempotency keys MUST remain available even when `crypto.randomUUID` is unavailable.
-- Markdown interactions SHOULD include syntax-aware affordances (headings, lists, code fences, links) without breaking plain-text flow.
+- Client idempotency keys MUST remain available even when `crypto.randomUUID`
+ is unavailable.
+- Markdown interactions SHOULD include syntax-aware affordances without breaking
+ plain-text flow.
+
+## Presence and Collaboration Rules
+
+- Active editors in the same note SHOULD appear in a presence strip.
+- Presence updates MUST NOT alter note version state.
+- Remote note changes MUST appear as ordered updates.
 
 ## Conflict UX
 
@@ -19,12 +27,6 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 |---|---|
 | `patch_rejected` or HTTP `409` | show conflict state and offer refresh/reapply |
 | reconnect after disconnect | replay missing events before accepting new patch |
-
-## Multi-Device Behavior
-
-- Changes from another session MUST appear as ordered remote updates.
-- Duplicate retransmit MUST NOT duplicate content.
-- Normal editing sync latency SHOULD feel near-real-time under healthy network conditions.
 
 ## Related
 

@@ -8,8 +8,8 @@ The implementation is a Cargo workspace rooted at `src/crates/`.
 
 | Requirement | Value |
 |---|---|
-| Canonical crate set | 7 primary crates |
-| Group roots | `app`, `http`, `ws`, `domain`, `db`, `auth`, `search` |
+| Canonical crate set | 10 primary crates |
+| Group roots | `app`, `http`, `ws`, `domain`, `db`, `auth`, `search`, `rbac`, `automation`, `workspace` |
 | Expansion rule | additional crates MAY be added only with spec justification |
 
 ## Canonical Workspace Members
@@ -23,13 +23,17 @@ The implementation is a Cargo workspace rooted at `src/crates/`.
 | db | `kjxlkj-db` | `src/crates/db/kjxlkj-db` |
 | auth | `kjxlkj-auth` | `src/crates/auth/kjxlkj-auth` |
 | search | `kjxlkj-search` | `src/crates/search/kjxlkj-search` |
+| rbac | `kjxlkj-rbac` | `src/crates/rbac/kjxlkj-rbac` |
+| automation | `kjxlkj-automation` | `src/crates/automation/kjxlkj-automation` |
+| workspace | `kjxlkj-workspace` | `src/crates/workspace/kjxlkj-workspace` |
 
 ## Decomposition Rules
 
 - Runtime wiring MUST stay in `app`.
 - HTTP/WS transport code MUST stay outside domain core logic.
 - DB repositories MUST be isolated from route-layer request types.
-- Note editor and UX semantics MUST remain spec-driven and test-backed.
+- Authorization decisions MUST flow through `rbac` checks.
+- Automation orchestration MUST stay in `automation` services.
 
 ## Related
 

@@ -1,7 +1,7 @@
 # kjxlkj
 
-A documentation-first web application platform for notes and records,
-with an Obsidian-style knowledge workflow.
+A documentation-first workspace-suite web platform for collaborative notes,
+projects, automation, and knowledge workflows.
 
 ## Current Product Contract
 

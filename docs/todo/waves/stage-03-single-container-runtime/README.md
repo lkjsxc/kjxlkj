@@ -1,10 +1,21 @@
-# Stage 03: Single-Container Runtime and Compose
+# Stage 03: M3 Workspace Suite
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 ## Stage Scope
 
-- [ ] Deliver Dockerfile/compose and multi-process startup orchestration.
+- [ ] implement saved views and dashboards APIs and persistence
+- [ ] deliver command palette, graph explorer, and responsive shell UX
+- [ ] preserve autosave and conflict-safe collaboration UX
 
 ## Ordered Waves
 
@@ -14,6 +25,5 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Exit
 
-- [ ] all waves are completed in order
-- [ ] stage-critical requirements are satisfied
-- [ ] ledger updates match stage outcomes
+- [ ] workspace modules are user-reachable and evidence-backed
+- [ ] key UX E2E flows pass on desktop and 320px width

@@ -11,9 +11,9 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Integration Notes
 
-- API version is `/api/v1`.
+- API base path is `/api`.
 - Authenticated browser flows use cookie session + CSRF.
-- Real-time note updates use `GET /ws/v1/notes`.
+- Real-time updates use `GET /ws`.
 
 ## Related
 

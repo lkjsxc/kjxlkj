@@ -6,13 +6,13 @@ Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
 The canonical OpenAPI document is:
 
-- [openapi.v1.yaml](openapi.v1.yaml)
+- [openapi.yaml](openapi.yaml)
 
-## Versioning Rules
+## Change Rules
 
-- OpenAPI `info.version` MUST match API major version (`v1`).
-- Breaking changes MUST create `/api/v2` and a new OpenAPI document.
-- Non-breaking additions MAY extend `v1` schemas and paths.
+- OpenAPI `info.version` MUST reflect the active contract revision.
+- Breaking contract changes MUST update `openapi.yaml` and all linked specs.
+- Contract additions MUST remain synchronized with `http.md` and `types.md`.
 
 ## Validation Gate
 

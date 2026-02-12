@@ -1,30 +1,29 @@
-# Wave 032: Startup, Readiness, and Restart Behavior
+# Wave 032: Graph Explorer and Responsive Shell
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 032
-- [ ] Stage: Stage 03: Single-Container Runtime and Compose
-- [ ] Focus: Startup, Readiness, and Restart Behavior
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] close remaining gaps in this stage
-- [ ] prepare handoff to next stage
-- [ ] update docs/contracts if behavior changed
+- [ ] implement backlink graph explorer with scope-aware filters
+- [ ] implement return-context preserving navigation
+- [ ] enforce single responsive component-tree behavior
 
 ## Verification Tasks
 
-- [ ] rerun required suites for closure
-- [ ] verify deterministic replay where applicable
-- [ ] archive command/test evidence
+- [ ] run `E2E-04`, `E2E-06`, `E2E-07`, `E2E-08`
+- [ ] run 320px interaction boundary checks
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] sync conformance, limitations, and drift matrix
-- [ ] ensure stage readiness for next stage
-
-## Wave Exit
-
-- [ ] stage handoff is explicit and evidence-backed
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

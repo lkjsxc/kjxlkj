@@ -1,10 +1,21 @@
-# Stage 04: PostgreSQL Schema and Projections
+# Stage 04: M4 Automation and Jobs
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 ## Stage Scope
 
-- [ ] Implement SQLx migrations for event store, projections, and search.
+- [ ] implement automation rule and run lifecycle
+- [ ] integrate automation with workspace events and notes writes
+- [ ] harden export/backup jobs and observability signals
 
 ## Ordered Waves
 
@@ -14,6 +25,5 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Exit
 
-- [ ] all waves are completed in order
-- [ ] stage-critical requirements are satisfied
-- [ ] ledger updates match stage outcomes
+- [ ] automation deterministic tests pass
+- [ ] ops job lifecycle and observability evidence is recorded

@@ -22,7 +22,7 @@ Use this order for decisions:
 ## Status Model
 
 - `policy` and `spec` are normative.
-- `reference` is normative for currently verified state.
+- `reference` is normative for verified state.
 - `todo` is normative for staged execution and closure gates.
 - `guides` and `overview` are explanatory unless referenced by policy/spec.
 - `log` is historical and non-authoritative.
@@ -41,13 +41,13 @@ Use this order for decisions:
 
 | Directory | Role |
 |---|---|
-| [policy/](policy/README.md) | Repository invariants and guardrails |
-| [spec/](spec/README.md) | Target web product behavior |
-| [reference/](reference/README.md) | Current verified state and open gaps |
-| [todo/](todo/README.md) | Recursive migration execution contract |
-| [guides/](guides/README.md) | Operator workflows |
-| [overview/](overview/README.md) | Product concepts and vocabulary |
-| [log/](log/README.md) | Proposals and audits |
+| [policy/](policy/README.md) | repository invariants and guardrails |
+| [spec/](spec/README.md) | target workspace-suite behavior |
+| [reference/](reference/README.md) | verified state and open gaps |
+| [todo/](todo/README.md) | recursive migration execution contract |
+| [guides/](guides/README.md) | operator workflows |
+| [overview/](overview/README.md) | product concepts and vocabulary |
+| [log/](log/README.md) | proposals and audits |
 
 ## Related
 

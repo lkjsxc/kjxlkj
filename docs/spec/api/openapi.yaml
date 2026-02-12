@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  title: kjxlkj API
+  version: latest
+servers: [{ url: /api }]
+paths:
+  /setup/register:
+    post:
+      summary: First-run owner registration
+      responses: { '201': { description: Owner created }, '409': { description: Setup locked } }
+  /auth/login:
+    post:
+      summary: Login
+      responses: { '200': { description: Session created }, '401': { description: Invalid credentials } }
+  /auth/logout:
+    post:
+      summary: Logout
+      responses: { '204': { description: Session revoked } }
+  /auth/session:
+    get:
+      summary: Get current session
+      responses: { '200': { description: Session payload }, '401': { description: Unauthenticated } }
+  /users:
+    get:
+      summary: List users
+      responses: { '200': { description: User list } }
+    post:
+      summary: Create user
+      responses: { '201': { description: User created } }
+  /users/{id}/role:
+    patch:
+      summary: Update user role
+      responses: { '200': { description: Role updated }, '403': { description: Forbidden } }
+  /users/{id}:
+    delete:
+      summary: Disable or remove user
+      responses: { '204': { description: User removed } }
+  /workspaces:
+    get:
+      summary: List workspaces
+      responses: { '200': { description: Workspace list } }
+    post:
+      summary: Create workspace
+      responses: { '201': { description: Workspace created } }
+  /workspaces/{id}:
+    patch:
+      summary: Update workspace
+      responses: { '200': { description: Workspace updated } }
+    delete:
+      summary: Delete workspace
+      responses: { '204': { description: Workspace deleted } }
+  /workspaces/{id}/members:
+    get:
+      summary: List workspace members
+      responses: { '200': { description: Member list } }
+  /workspaces/{id}/members/{user_id}:
+    put:
+      summary: Upsert workspace member role
+      responses: { '200': { description: Membership updated } }
+  /projects:
+    get:
+      summary: List projects
+      responses: { '200': { description: Project list } }
+    post:
+      summary: Create project
+      responses: { '201': { description: Project created } }
+  /projects/{id}:
+    patch:
+      summary: Update project
+      responses: { '200': { description: Project updated } }
+    delete:
+      summary: Delete project
+      responses: { '204': { description: Project deleted } }
+  /notes:
+    post:
+      summary: Create note
+      responses: { '201': { description: Note created } }
+    get:
+      summary: List notes
+      responses: { '200': { description: Notes list } }
+  /notes/media:
+    post:
+      summary: Create standalone media note
+      responses: { '201': { description: Media note created }, '413': { description: Payload too large } }
+  /notes/{id}:
+    get:
+      summary: Get note projection
+      responses: { '200': { description: Note projection } }
+    patch:
+      summary: Update note with optimistic versioning
+      responses: { '200': { description: Note updated }, '409': { description: Version conflict } }
+    delete:
+      summary: Soft-delete note
+      responses: { '204': { description: Note deleted } }
+  /notes/{id}/title:
+    patch:
+      summary: Update note title with optimistic versioning
+      responses: { '200': { description: Title updated }, '409': { description: Version conflict } }
+  /notes/{id}/history:
+    get:
+      summary: Get note history
+      responses: { '200': { description: Event history } }
+  /notes/{id}/rollback:
+    post:
+      summary: Rollback note to prior version
+      responses: { '200': { description: Rollback applied } }
+  /notes/{id}/metadata/{key}:
+    put:
+      summary: Upsert typed metadata
+      responses: { '200': { description: Metadata updated } }
+    delete:
+      summary: Delete metadata key
+      responses: { '204': { description: Metadata removed } }
+  /tags:
+    get:
+      summary: List tags
+      responses: { '200': { description: Tags list } }
+  /notes/{id}/tags:
+    put:
+      summary: Replace tags for note
+      responses: { '200': { description: Tags updated } }
+  /notes/{id}/backlinks:
+    get:
+      summary: List backlinks for note
+      responses: { '200': { description: Backlinks list } }
+  /search:
+    get:
+      summary: Search notes
+      responses: { '200': { description: Search results } }
+  /views:
+    get:
+      summary: List saved views
+      responses: { '200': { description: Saved view list } }
+    post:
+      summary: Create saved view
+      responses: { '201': { description: Saved view created } }
+  /views/{id}:
+    patch:
+      summary: Update saved view
+      responses: { '200': { description: Saved view updated } }
+    delete:
+      summary: Delete saved view
+      responses: { '204': { description: Saved view deleted } }
+  /dashboards:
+    get:
+      summary: List dashboards
+      responses: { '200': { description: Dashboard list } }
+  /dashboards/widgets:
+    post:
+      summary: Upsert dashboard widget
+      responses: { '200': { description: Dashboard widget saved } }
+  /automation/rules:
+    get:
+      summary: List automation rules
+      responses: { '200': { description: Rule list } }
+    post:
+      summary: Create automation rule
+      responses: { '201': { description: Rule created } }
+  /automation/rules/{id}:
+    patch:
+      summary: Update automation rule
+      responses: { '200': { description: Rule updated } }
+    delete:
+      summary: Delete automation rule
+      responses: { '204': { description: Rule deleted } }
+  /automation/runs/{id}:
+    get:
+      summary: Get automation run status
+      responses: { '200': { description: Run status } }
+  /notes/{id}/attachments:
+    post:
+      summary: Upload attachment
+      responses: { '201': { description: Attachment created }, '413': { description: Attachment too large } }
+  /attachments/{id}:
+    get:
+      summary: Download attachment
+      responses: { '200': { description: Attachment stream } }
+    delete:
+      summary: Delete attachment
+      responses: { '204': { description: Attachment deleted } }
+  /admin/export/markdown:
+    post:
+      summary: Launch markdown export job
+      responses: { '202': { description: Job accepted } }
+  /admin/export/{job_id}:
+    get:
+      summary: Get export job status
+      responses: { '200': { description: Job status } }
+  /admin/backup/sql:
+    post:
+      summary: Launch SQL backup job
+      responses: { '202': { description: Backup job accepted } }
+  /healthz:
+    get:
+      summary: Liveness check
+      responses: { '200': { description: Liveness OK } }
+  /readyz:
+    get:
+      summary: Readiness check
+      responses: { '200': { description: Ready } }

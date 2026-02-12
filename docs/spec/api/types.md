@@ -6,13 +6,21 @@ Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
 | Type | Required fields |
 |---|---|
-| `NoteStream` | `id`, `title`, `note_kind`, `created_at`, `updated_at`, `current_version`, `deleted_at` |
-| `NoteProjection` | `note_id`, `title`, `note_kind`, `version`, `markdown`, `rendered_html`, `metadata_json`, `search_vector` |
+| `User` | `id`, `email`, `display_name`, `role`, `status`, `created_at` |
+| `Workspace` | `id`, `slug`, `name`, `owner_user_id`, `created_at` |
+| `WorkspaceMember` | `workspace_id`, `user_id`, `role`, `joined_at` |
+| `Project` | `id`, `workspace_id`, `name`, `description`, `created_at` |
+| `SavedView` | `id`, `workspace_id`, `query_json`, `sort`, `filters`, `owner_user_id` |
+| `DashboardWidget` | `id`, `workspace_id`, `type`, `config_json`, `layout` |
+| `AutomationRule` | `id`, `workspace_id`, `trigger`, `condition_json`, `action_json`, `enabled` |
+| `AutomationRun` | `id`, `rule_id`, `status`, `started_at`, `finished_at`, `result_json` |
+| `NoteStream` | `id`, `workspace_id`, `project_id`, `title`, `note_kind`, `access_scope`, `created_at`, `updated_at`, `current_version`, `deleted_at` |
+| `NoteProjection` | `note_id`, `workspace_id`, `project_id`, `title`, `note_kind`, `version`, `markdown`, `rendered_html`, `metadata_json`, `search_vector` |
 | `NoteEvent` | `event_id`, `note_id`, `seq`, `event_type`, `payload_json`, `actor_id`, `created_at` |
 | `Attachment` | `id`, `note_id`, `filename`, `mime`, `size_bytes`, `sha256`, `chunk_count` |
 | `AttachmentChunk` | `attachment_id`, `chunk_index`, `bytes` |
 
-## Note Kind Type
+## Enum Types
 
 `note_kind` MUST be one of:
 
@@ -20,6 +28,19 @@ Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 - `settings`
 - `media_image`
 - `media_video`
+
+`role` MUST be one of:
+
+- `owner`
+- `admin`
+- `editor`
+- `viewer`
+
+`access_scope` MUST be one of:
+
+- `workspace`
+- `project`
+- `private`
 
 ## Patch Type
 

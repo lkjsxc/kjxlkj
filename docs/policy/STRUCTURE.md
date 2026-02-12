@@ -8,10 +8,10 @@ Mandatory structural constraints for documentation.
 
 | Constraint | Value | Rationale |
 |---|---|---|
-| Max items per directory | 12 | Enables fast scanning and deterministic navigation |
-| README.md per directory | Required | Every directory has an index entry point |
-| Max lines per file | 200 | Keeps documents focused |
-| Soft max columns per line | 100 | Prevents horizontal scrolling |
+| Max items per directory | 12 | enables fast scanning and deterministic navigation |
+| README.md per directory | Required | every directory has an index entry point |
+| Max lines per file | 200 | keeps documents focused |
+| Soft max columns per line | 100 | prevents horizontal scrolling |
 
 ## Directory Hierarchy Requirements
 
@@ -27,10 +27,24 @@ The README.md MUST:
 
 | Requirement | Description |
 |---|---|
-| Reachability | Every document MUST be reachable from `docs/README.md` |
-| Bidirectional links | Parent README links to children; children link to parent |
-| No orphan documents | No unlinked document is allowed |
-| Link validation | Internal links MUST be verified on change |
+| Reachability | every document MUST be reachable from `docs/README.md` |
+| Bidirectional links | parent README links to children; children link to parent |
+| No orphan documents | no unlinked document is allowed |
+| Link validation | internal links MUST be verified on change |
+
+## TODO Link Policy
+
+All TODO markdown files under `docs/todo/` MUST include a section titled
+`## Relevant Documents` with direct Markdown links to all documents required to
+complete that TODO.
+
+Required minimum links in each TODO file:
+
+- canonical spec index
+- testing contract
+- conformance ledger
+- limitations ledger
+- TODO index and wave program
 
 ## Compliance Checklist
 
@@ -41,3 +55,4 @@ For any documentation change:
 - [ ] no file exceeds 200 lines
 - [ ] all docs are reachable from `docs/README.md`
 - [ ] no orphan docs exist
+- [ ] every TODO file includes `## Relevant Documents` with Markdown links

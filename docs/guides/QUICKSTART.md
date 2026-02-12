@@ -12,7 +12,7 @@ Quick local startup for reconstructed runtime states.
 2. Provide required environment values.
 3. Start stack: `docker compose up --build`.
 4. Open app origin and perform first-run registration.
-5. Verify readiness endpoint: `GET /api/v1/readyz`.
+5. Verify readiness endpoint: `GET /api/readyz`.
 
 ## Notes
 

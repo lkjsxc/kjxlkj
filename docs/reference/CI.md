@@ -20,8 +20,8 @@ Reproducible verification profiles.
 |---|---|---|
 | `Docs-integrity` | documentation changes | deterministic link and structure checks for `/docs` |
 | `Workspace-bootstrap` | workspace appears | `Docs-integrity` + workspace compile checks |
-| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + `cargo test --workspace -- --nocapture` + `docker compose up -d --build` + `/api/v1/readyz` smoke |
-| `Realtime` | WS implementation claims | `Core-runtime` + WS subscribe/patch/conflict verification |
+| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + `cargo test --workspace -- --nocapture` + `docker compose up -d --build` + `/api/readyz` smoke |
+| `Realtime` | WS implementation claims | `Core-runtime` + WS subscribe/patch/conflict/replay verification |
 | `Release` | release candidate | all above + perf/ops drills + no high-severity limitations |
 
 ## Evidence Rule

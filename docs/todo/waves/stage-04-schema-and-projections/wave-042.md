@@ -1,30 +1,29 @@
-# Wave 042: Attachment Chunk Schema
+# Wave 042: Export, Backup, and Job Observability
 
 Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 042
-- [ ] Stage: Stage 04: PostgreSQL Schema and Projections
-- [ ] Focus: Attachment Chunk Schema
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] close remaining gaps in this stage
-- [ ] prepare handoff to next stage
-- [ ] update docs/contracts if behavior changed
+- [ ] harden markdown export and SQL backup job execution
+- [ ] expose deterministic job status and artifact paths
+- [ ] emit structured start/finish/failure telemetry signals
 
 ## Verification Tasks
 
-- [ ] rerun required suites for closure
-- [ ] verify deterministic replay where applicable
-- [ ] archive command/test evidence
+- [ ] run `OPS-01`
+- [ ] run export/backup failure-path checks
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] sync conformance, limitations, and drift matrix
-- [ ] ensure stage readiness for next stage
-
-## Wave Exit
-
-- [ ] stage handoff is explicit and evidence-backed
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

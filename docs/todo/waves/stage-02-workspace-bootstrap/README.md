@@ -1,10 +1,21 @@
-# Stage 02: Workspace and Build Bootstrap
+# Stage 02: M2 Collaborative Notes Core
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 ## Stage Scope
 
-- [ ] Create Cargo workspace and baseline crate decomposition.
+- [ ] implement notes CRUD with workspace/project scope
+- [ ] implement WS patching, replay, idempotency, conflict behavior
+- [ ] implement history, rollback, metadata, tags, backlinks, and search
 
 ## Ordered Waves
 
@@ -14,6 +25,5 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Exit
 
-- [ ] all waves are completed in order
-- [ ] stage-critical requirements are satisfied
-- [ ] ledger updates match stage outcomes
+- [ ] API and WS acceptance tests for notes are passing
+- [ ] replay/idempotency/conflict defects are regression-guarded

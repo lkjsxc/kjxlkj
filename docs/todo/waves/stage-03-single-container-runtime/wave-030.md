@@ -1,32 +1,29 @@
-# Wave 030: Container Process Supervision
+# Wave 030: Saved Views and Dashboards
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 030
-- [ ] Stage: Stage 03: Single-Container Runtime and Compose
-- [ ] Focus: Container Process Supervision
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] keep behavior user-reachable
-- [ ] keep docs, tests, and status synchronized
+- [ ] implement saved view APIs and persistence model
+- [ ] implement dashboard list and widget upsert flows
+- [ ] enforce role-based access for view/dashboard mutations
 
 ## Verification Tasks
 
-- [ ] add or update deterministic tests
-- [ ] execute relevant tier checks (T0/T1/T2 as required)
-- [ ] capture pass/fail evidence links
+- [ ] run `API-VIEW-01` and `API-DASH-01`
+- [ ] run role-denial integration tests
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] update [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] update [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] update [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-
-## Wave Exit
-
-- [ ] tasks complete or explicitly deferred with rationale
-- [ ] evidence recorded
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

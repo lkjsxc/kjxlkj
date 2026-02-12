@@ -2,27 +2,33 @@
 
 Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
-## Two-Pane Layout Rules
+## Layout Rules
 
 - The app MUST use one responsive layout model across desktop and mobile.
-- Left pane (navigation/list) and right pane (editor/detail) MUST scroll independently.
+- Left pane and right pane MUST scroll independently.
 - The right pane MUST allow inline editing of note title and note content.
-- Bottom action chrome (save button/version bar) MAY exist for diagnostics but MUST NOT be required for normal authoring.
+- Workspace-level surfaces (command palette, dashboards, graph explorer)
+ MUST preserve the same component tree across breakpoints.
 
 ## Responsive Rules
 
-- The same component tree MUST adapt by container size; separate mobile/desktop implementations are forbidden.
-- Small screens MUST preserve independent vertical scrolling behavior for navigation and content regions.
-- Touch targets MUST remain reachable without horizontal scrolling at widths down to 320px.
+- Separate mobile/desktop implementations are forbidden.
+- Small screens MUST preserve independent vertical scrolling for navigation and
+ content regions.
+- Touch targets MUST remain reachable without horizontal scrolling at widths down
+ to 320px.
 - Editor width and typography MUST adapt fluidly by viewport without mode switching.
 
-## Visual Design Rules
+## Visual and Interaction Rules
 
-- UI MUST follow modern flat design principles: low-noise surfaces, clear spacing rhythm, and restrained shadow use.
-- Visual hierarchy MUST prioritize readability of notes and title editing over chrome.
-- Interaction feedback (saving, sync, conflict) MUST be visible but unobtrusive.
+- UI MUST follow modern flat design principles with low-noise surfaces.
+- Visual hierarchy MUST prioritize content readability over chrome.
+- Interaction feedback for save, sync, conflict, and automation status MUST be
+ visible and unobtrusive.
+- Keyboard-first flows via command palette SHOULD be available in all major views.
 
 ## Related
 
 - Web app shell: [web-app.md](web-app.md)
+- Workspace suite: [workspace-suite.md](workspace-suite.md)
 - Editor flow: [editor-flow.md](editor-flow.md)

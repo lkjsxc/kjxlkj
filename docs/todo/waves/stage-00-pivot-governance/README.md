@@ -1,10 +1,21 @@
-# Stage 00: Pivot Governance and Canonical Reset
+# Stage 00: Canonical Reset
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
+## Relevant Documents
+
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
 ## Stage Scope
 
-- [ ] Pivot control docs, policy rewrite, and canonical index replacement.
+- [ ] replace version-labeled canonical contracts with unversioned contracts
+- [ ] remove historical contract artifacts from active documentation paths
+- [ ] close cross-document contract contradictions in spec docs
 
 ## Ordered Waves
 
@@ -15,5 +26,5 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 ## Stage Exit
 
 - [ ] all waves are completed in order
-- [ ] stage-critical requirements are satisfied
-- [ ] ledger updates match stage outcomes
+- [ ] canonical docs are self-consistent
+- [ ] ledgers reflect new baseline

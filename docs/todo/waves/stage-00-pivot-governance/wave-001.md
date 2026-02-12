@@ -1,31 +1,29 @@
-# Wave 001: Policy Invariant Rewrite
+# Wave 001: Domain and UX Canonical Reset
 
 Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 001
-- [ ] Stage: Stage 00: Pivot Governance and Canonical Reset
-- [ ] Focus: Policy Invariant Rewrite
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] add domain contracts for workspaces, projects, permissions, automation
+- [ ] extend note model with workspace/project/access scope requirements
+- [ ] add workspace suite UX contract (dashboards, command palette, graph, views)
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] verify `domain/` and `ui/` readmes include all new docs
+- [ ] verify no orphan docs were introduced
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

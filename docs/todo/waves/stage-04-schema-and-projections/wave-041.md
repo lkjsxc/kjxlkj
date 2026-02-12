@@ -1,31 +1,29 @@
-# Wave 041: Projection and Search Indexes
+# Wave 041: Automation Run Engine and Events
 
 Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 041
-- [ ] Stage: Stage 04: PostgreSQL Schema and Projections
-- [ ] Focus: Projection and Search Indexes
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] implement requirements for this focus slice
-- [ ] preserve deterministic failure handling
-- [ ] preserve API and schema contracts
+- [ ] implement rule trigger evaluation and run state machine
+- [ ] enforce idempotent run execution per triggering event
+- [ ] emit WS automation events and audit logs
 
 ## Verification Tasks
 
-- [ ] run targeted tests for modified components
-- [ ] run at least one boundary or failure scenario
-- [ ] record deterministic evidence
+- [ ] run `API-AUTO-02` and `E2E-09`
+- [ ] run run-idempotency boundary tests
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] synchronize status across reference ledgers
-- [ ] keep TODO checkboxes aligned with evidence
-
-## Wave Exit
-
-- [ ] tasks complete or deferred with next action
-- [ ] no stale green claims
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

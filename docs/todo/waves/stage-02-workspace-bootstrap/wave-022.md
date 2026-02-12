@@ -1,30 +1,29 @@
-# Wave 022: Runtime Bootstrap and Smoke Checks
+# Wave 022: Search, Tags, Backlinks, Metadata
 
 Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 
-## Wave Identity
+## Relevant Documents
 
-- [ ] Wave ID: 022
-- [ ] Stage: Stage 02: Workspace and Build Bootstrap
-- [ ] Focus: Runtime Bootstrap and Smoke Checks
+- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Implementation Tasks
 
-- [ ] close remaining gaps in this stage
-- [ ] prepare handoff to next stage
-- [ ] update docs/contracts if behavior changed
+- [ ] implement metadata and tags APIs with deterministic response semantics
+- [ ] implement backlink extraction and query APIs
+- [ ] implement full-text search across note and media metadata
 
 ## Verification Tasks
 
-- [ ] rerun required suites for closure
-- [ ] verify deterministic replay where applicable
-- [ ] archive command/test evidence
+- [ ] run `API-REC-01`, `API-SEARCH-01`, `API-SEARCH-02`
+- [ ] run deletion/filter boundary scenarios
 
-## Ledger Sync Tasks
+## Evidence Placeholder
 
-- [ ] sync conformance, limitations, and drift matrix
-- [ ] ensure stage readiness for next stage
-
-## Wave Exit
-
-- [ ] stage handoff is explicit and evidence-backed
+- [ ] `Check:`
+- [ ] `Result:`
+- [ ] `Proof:`

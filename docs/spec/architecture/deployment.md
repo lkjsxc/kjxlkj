@@ -29,9 +29,9 @@ The container image MUST include a supervisor or equivalent launcher that:
 
 ## Health Rules
 
-- `/healthz` verifies app process liveness.
-- `/readyz` verifies DB connectivity and migration compatibility.
-- Compose healthcheck MUST use `/readyz`.
+- `/api/healthz` verifies app process liveness.
+- `/api/readyz` verifies DB connectivity and migration compatibility.
+- Compose healthcheck MUST use `/api/readyz`.
 
 ## Related
 

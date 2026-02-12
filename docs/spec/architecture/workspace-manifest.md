@@ -35,5 +35,6 @@ Normative requirements for reconstructing workspace manifests.
 
 ## Related
 
+- Crate topology: [crates.md](crates.md)
 - Root layout: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
 - Source layout: [source-layout.md](source-layout.md)

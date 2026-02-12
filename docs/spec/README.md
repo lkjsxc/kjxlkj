@@ -2,12 +2,12 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/spec/` defines target behavior for the web-notes platform.
+`/docs/spec/` defines target behavior for the workspace-suite platform.
 
 ## Authority
 
 - `spec` defines what the implementation MUST do.
-- `reference` defines what is currently verified.
+- `reference` defines what is verified in the repository.
 - `todo` defines staged execution toward conformance.
 
 ## Intra-Spec Conflict Rule
@@ -23,12 +23,12 @@ If two spec files conflict:
 
 | Domain | Scope |
 |---|---|
-| [architecture/](architecture/README.md) | Runtime, workspace, deployment shape |
+| [architecture/](architecture/README.md) | runtime, workspace, deployment shape |
 | [api/](api/README.md) | HTTP and WebSocket contracts |
-| [domain/](domain/README.md) | Notes, events, metadata, attachments, search |
-| [security/](security/README.md) | Auth, sessions, CSRF, transport policy |
-| [technical/](technical/README.md) | Testing, performance, migrations, operations |
-| [ui/](ui/README.md) | Web app interaction and static hosting boundary |
+| [domain/](domain/README.md) | notes, events, metadata, attachments, search |
+| [security/](security/README.md) | auth, sessions, CSRF, transport policy |
+| [technical/](technical/README.md) | testing, performance, migrations, operations |
+| [ui/](ui/README.md) | web app interaction and static hosting boundary |
 
 ## Normative Language
 

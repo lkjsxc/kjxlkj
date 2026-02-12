@@ -20,6 +20,7 @@ Back: [/docs/spec/security/README.md](/docs/spec/security/README.md)
 
 - Session state MUST be persisted in PostgreSQL.
 - Session revocation MUST take effect immediately for new requests.
+- Session records MUST bind to user identity and role-evaluation context.
 
 ## Related
 

@@ -9,14 +9,15 @@ Normative external interfaces for HTTP and WebSocket clients.
 | Document | Purpose |
 |---|---|
 | [http.md](http.md) | REST endpoints and semantics |
-| [websocket.md](websocket.md) | WS protocol and message flow |
+| [websocket.md](websocket.md) | WebSocket protocol and message flow |
 | [types.md](types.md) | External payload schemas |
 | [errors.md](errors.md) | Error model and status code contract |
 | [openapi.md](openapi.md) | OpenAPI source-of-truth contract |
 
 ## Interface Principles
 
-- API versioning MUST be path-based (`/api/v1`).
+- API base path MUST be `/api`.
+- WebSocket endpoint MUST be `GET /ws`.
 - JSON payloads MUST be UTF-8 and schema-valid.
 - Write endpoints MUST enforce optimistic version checks where applicable.
 - WebSocket ordering MUST reflect committed event sequence.

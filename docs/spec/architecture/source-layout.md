@@ -17,10 +17,13 @@ Blueprint for implementation topology and sizing constraints.
 | `src/crates/app/kjxlkj-server/` | application entrypoint and route wiring |
 | `src/crates/http/kjxlkj-http/` | HTTP handlers, DTO mapping, middleware |
 | `src/crates/ws/kjxlkj-ws/` | WebSocket protocol and session routing |
-| `src/crates/domain/kjxlkj-domain/` | note/event/record business rules |
+| `src/crates/domain/kjxlkj-domain/` | note/workspace/project business rules |
 | `src/crates/db/kjxlkj-db/` | SQLx repositories and migrations integration |
 | `src/crates/auth/kjxlkj-auth/` | setup/login/session/CSRF logic |
-| `src/crates/search/kjxlkj-search/` | FTS and backlink query services |
+| `src/crates/search/kjxlkj-search/` | FTS, backlinks, graph query services |
+| `src/crates/rbac/kjxlkj-rbac/` | role model and authorization guards |
+| `src/crates/automation/kjxlkj-automation/` | rule evaluation and run orchestration |
+| `src/crates/workspace/kjxlkj-workspace/` | workspace/project/view/dashboard services |
 
 ## Layout Constraints
 

@@ -8,10 +8,11 @@ This document defines hard rules for reconstruction sessions.
 
 - Follow precedence from [/docs/README.md](/docs/README.md).
 - Treat `/docs/spec/` as target behavior.
-- Treat `/docs/reference/` as current verified behavior.
+- Treat `/docs/reference/` as verified repository behavior.
 - Do not mark work complete without deterministic evidence.
 - Keep policy/spec/reference/todo synchronized when behavior or status changes.
 - Commit to git frequently in small, coherent units with clear messages.
+- Use Markdown syntax only in documentation files.
 
 ## Prohibited Outcomes
 
@@ -19,6 +20,7 @@ This document defines hard rules for reconstruction sessions.
 - Runtime behavior not reachable from documented API/WS paths.
 - Stale conformance claims that contradict open limitations.
 - TODO checkboxes marked complete without matching proof.
+- TODO files without a `## Relevant Documents` section of direct Markdown links.
 
 ## Completion Minimum
 
