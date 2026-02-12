@@ -18,44 +18,24 @@ For current-state claims, use this precedence:
 
 ## Snapshot (2026-02-12)
 
-The repository is in reconstruction-prep mode.
+The repository is in pivot reconstruction mode.
 
-- Documentation is canonical.
-- Implementation artifacts are intentionally removed.
-- Runtime behavior must not be treated as verified unless explicitly proven.
-
-## Evidence Rules
-
-- strongest reproducible evidence wins
-- user-reported runtime failure outranks stale passing tests
-- blocker rows close only with deterministic tests and matching PTY `*R` evidence
-- reference, TODO, and spec updates must stay synchronized
-
-## Documents
-
-| Document | Role |
-|---|---|
-| [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) | current verified/unverified status by domain |
-| [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) | open user-visible blockers and closure requirements |
-| [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) | requirement-level mismatch matrix |
-| [/docs/reference/CI.md](/docs/reference/CI.md) | verification profile definitions |
-| [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | release gate and evidence rules |
-| [/docs/reference/conformance/README.md](/docs/reference/conformance/README.md) | consolidation policy |
-| [/docs/reference/COMPARISON.md](/docs/reference/COMPARISON.md) | non-normative comparison framing |
-| [/docs/reference/PLUGIN_MAPPING.md](/docs/reference/PLUGIN_MAPPING.md) | non-normative plugin mapping framing |
+- Canonical docs target a web-notes server.
+- Legacy terminal-editor behavior is out of scope.
+- Implementation status is unverified until rebuilt and tested.
 
 ## Synchronization Rule
 
-Whenever a blocker status changes, update all of:
+Whenever status changes, synchronize:
 
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
+- `CONFORMANCE.md`
+- `LIMITATIONS.md`
+- `DRIFT_MATRIX.md`
+- `/docs/todo/README.md`
 
 in one logical change.
 
 ## Related
 
-- target behavior: [/docs/spec/README.md](/docs/spec/README.md)
-- reconstruction execution: [/docs/todo/README.md](/docs/todo/README.md)
+- Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
+- Execution contract: [/docs/todo/README.md](/docs/todo/README.md)

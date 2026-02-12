@@ -1,32 +1,21 @@
-# Documentation Log
+# Log
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/log/` stores unresolved temporary notes only.
+Historical proposals and audits.
 
 ## Authority
 
-- log files never override policy, spec, reference, or TODO documents
-- when constraints are promoted into canonical docs, matching log entries are deleted
+This directory is non-authoritative.
 
-## Retention Rule
-
-- keep only unresolved notes
-- do not keep historical progress narratives here
-- avoid duplicate status claims across log and reference ledgers
-
-## Current State (2026-02-12)
-
-Historical progress logs were removed after promotion into canonical docs.
-
-## Active Sections
+## Directories
 
 | Directory | Purpose |
 |---|---|
-| [/docs/log/audits/README.md](/docs/log/audits/README.md) | unresolved audit notes only |
-| [/docs/log/proposals/README.md](/docs/log/proposals/README.md) | unresolved change proposals only |
+| [proposals/](proposals/README.md) | planned changes and pivot rationale |
+| [audits/](audits/README.md) | post-change assessments |
 
 ## Related
 
-- canonical docs index: [/docs/README.md](/docs/README.md)
-- current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)
+- Policy: [/docs/policy/README.md](/docs/policy/README.md)
+- TODO: [/docs/todo/README.md](/docs/todo/README.md)

@@ -7,10 +7,10 @@ Reconstruction workflow and verification gates.
 ## Gate Sequence
 
 1. Read policy, spec, reference, and todo indexes.
-2. Build a mismatch matrix (spec vs implementation vs tests).
-3. Select one coherent reconstruction slice.
+2. Build mismatch matrix (spec vs implementation vs tests).
+3. Select one coherent migration slice.
 4. Implement only user-reachable behavior in that slice.
-5. Run deterministic tests for touched behavior and full verification gate.
+5. Run deterministic tests for touched behavior and relevant global gates.
 6. Update reference ledgers and TODO state in the same change.
 
 ## Verification Gate
@@ -33,7 +33,8 @@ When mismatch is found:
 
 ## Docs-Only Baseline Rule
 
-In docs-only state, missing CI/workspace artifacts are acceptable, but TODO and reference docs MUST explicitly describe what must be regenerated for a shippable state.
+In docs-only state, missing implementation artifacts are acceptable,
+but TODO and reference documents MUST explicitly define regeneration steps.
 
 ## Related
 

@@ -1,41 +1,23 @@
-# Design Principles Graph
+# Principles
 
 Back: [/docs/overview/README.md](/docs/overview/README.md)
 
-Visual overview of how design principles relate to each other.
+Core principles for the web-notes platform.
 
-## Principles Topology
+## Principles (normative)
 
-```mermaid
-graph TD
-    Root["Design Principles"]
-    
-    subgraph CoreValues ["Core Values"]
-        Vim["Vim-Compatible"]
-        Native["All-Native (No Plugins)"]
-        Perf["Performance First"]
-        Det["Deterministic"]
-    end
-
-    subgraph Interaction ["Interaction Model"]
-        Kbd["Keyboard-Only (No Mouse)"]
-        Modal["Modal Editing"]
-        Prog["Progressive Disclosure"]
-    end
-
-    subgraph Visuals ["Visual Identity"]
-        Term["Terminal-Native (Square Corners)"]
-        Minimal["Minimal Chrome"]
-        Semantic["Semantic Coloring"]
-    end
-
-    Root --> CoreValues
-    Root --> Interaction
-    Root --> Visuals
-
-```
+| Principle | Meaning | Consequence |
+|---|---|---|
+| Deterministic writes | Note mutations are serialized per note stream. | Stable ordering and replay semantics. |
+| Async-first runtime | IO and long-running work are non-blocking Tokio tasks. | HTTP/WS responsiveness under load. |
+| Event-sourced history | Write path appends immutable events. | Auditable history and rollback support. |
+| Projection reads | Read APIs use projection tables. | Fast query and search behavior. |
+| Explicit conflicts | Version mismatch returns deterministic `409` or WS reject. | No hidden last-write-wins corruption. |
+| Docs-first governance | Docs are authoritative over implementation claims. | Traceable, reconstructable system behavior. |
+| Security baseline | Auth, sessions, and CSRF are mandatory in browser flows. | Safe single-tenant operation. |
 
 ## Related
 
-- Overview index: [README.md](README.md)
-- Design rationale: [docs/design/README.md](/docs/design/README.md)
+- Architecture: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- API: [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- Security: [/docs/spec/security/README.md](/docs/spec/security/README.md)

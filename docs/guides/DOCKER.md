@@ -2,37 +2,28 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-Container workflow for reconstructed repository states that include Docker artifacts.
+Single-service container workflow.
 
 ## Scope
 
-`Dockerfile` and `.dockerignore` are derived artifacts.
+`Dockerfile` and `docker-compose.yml` are derived artifacts.
 
-- They may be absent in docs-only baseline states.
-- When present, this guide describes expected usage.
+When present, the expected model is one compose service with:
 
-Root artifact expectations are defined in:
+- PostgreSQL process
+- `kjxlkj` app process
 
-- [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+## Runtime Commands
 
-## Build an image
+- Build/start: `docker compose up --build`
+- Stop: `docker compose down`
+- Tail logs: `docker compose logs -f`
 
-- Build: `docker build -t kjxlkj:dev .`
+## Health
 
-## Run interactive TUI
+Container healthcheck should pass via `/api/v1/readyz`.
 
-- Run: `docker run --rm -it kjxlkj:dev`
+## Related
 
-## Run with host files
-
-- Example: `docker run --rm -it -v "$PWD":/work -w /work kjxlkj:dev path/to/file.txt`
-
-## Notes
-
-- If a headless mode is implemented, its behavior must be tracked in conformance.
-- If Docker artifacts are missing, reconstruct via `/docs/todo/` workflow first.
-
-Status ledgers:
-
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- Deployment spec: [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- Operations spec: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

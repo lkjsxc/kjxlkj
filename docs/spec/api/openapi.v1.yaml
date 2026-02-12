@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: kjxlkj API
+  version: v1
+  description: API contract for kjxlkj web notes server.
+servers:
+  - url: /api/v1
+paths:
+  /setup/register:
+    post:
+      summary: First-run registration
+      responses:
+        '201': { description: Account created }
+  /auth/login:
+    post:
+      summary: Login
+      responses:
+        '200': { description: Session created }
+  /auth/logout:
+    post:
+      summary: Logout
+      responses:
+        '204': { description: Session revoked }
+  /auth/session:
+    get:
+      summary: Get current session
+      responses:
+        '200': { description: Session payload }
+  /notes:
+    post:
+      summary: Create note
+      responses:
+        '201': { description: Note created }
+    get:
+      summary: List notes
+      responses:
+        '200': { description: Notes list }
+  /notes/{id}:
+    get:
+      summary: Get note projection
+      responses:
+        '200': { description: Note projection }
+    patch:
+      summary: Update note with optimistic versioning
+      responses:
+        '200': { description: Note updated }
+        '409': { description: Version conflict }
+    delete:
+      summary: Soft-delete note
+      responses:
+        '204': { description: Note deleted }
+  /notes/{id}/history:
+    get:
+      summary: Get note history
+      responses:
+        '200': { description: Event history }
+  /notes/{id}/rollback:
+    post:
+      summary: Rollback note to prior version
+      responses:
+        '200': { description: Rollback applied }
+  /notes/{id}/metadata/{key}:
+    put:
+      summary: Upsert typed metadata
+      responses:
+        '200': { description: Metadata updated }
+    delete:
+      summary: Delete metadata key
+      responses:
+        '204': { description: Metadata removed }
+  /tags:
+    get:
+      summary: List tags
+      responses:
+        '200': { description: Tags list }
+  /notes/{id}/tags:
+    put:
+      summary: Replace tags for note
+      responses:
+        '200': { description: Tags updated }
+  /notes/{id}/backlinks:
+    get:
+      summary: List backlinks for note
+      responses:
+        '200': { description: Backlinks list }
+  /search:
+    get:
+      summary: Search notes
+      responses:
+        '200': { description: Search results }
+  /notes/{id}/attachments:
+    post:
+      summary: Upload attachment
+      responses:
+        '201': { description: Attachment created }
+        '413': { description: Attachment too large }
+  /attachments/{id}:
+    get:
+      summary: Download attachment
+      responses:
+        '200': { description: Attachment stream }
+    delete:
+      summary: Delete attachment
+      responses:
+        '204': { description: Attachment deleted }
+  /admin/export/markdown:
+    post:
+      summary: Launch markdown export job
+      responses:
+        '202': { description: Job accepted }
+  /admin/export/{job_id}:
+    get:
+      summary: Get export job status
+      responses:
+        '200': { description: Job status }
+  /admin/backup/sql:
+    post:
+      summary: Launch SQL backup job
+      responses:
+        '202': { description: Backup job accepted }
+  /healthz:
+    get:
+      summary: Liveness check
+      responses:
+        '200': { description: Liveness OK }
+  /readyz:
+    get:
+      summary: Readiness check
+      responses:
+        '200': { description: Ready }

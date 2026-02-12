@@ -2,7 +2,7 @@
 
 Back: [/docs/policy/README.md](/docs/policy/README.md)
 
-This document defines hard rules for any reconstruction session.
+This document defines hard rules for reconstruction sessions.
 
 ## Hard Rules
 
@@ -15,18 +15,18 @@ This document defines hard rules for any reconstruction session.
 ## Prohibited Outcomes
 
 - Evidence-free completion claims.
-- Runtime features that are unreachable from real user input.
-- Stale conformance claims that contradict limitations.
+- Runtime behavior not reachable from documented API/WS paths.
+- Stale conformance claims that contradict open limitations.
 - TODO checkboxes marked complete without matching proof.
 
 ## Completion Minimum
 
 A feature is complete only when all are true:
 
-1. Behavior matches linked spec requirements.
-2. Runtime path is user-reachable.
-3. Deterministic tests cover success and boundaries.
-4. Reference ledgers are updated in the same change.
+1. behavior matches linked spec requirements
+2. runtime path is user-reachable
+3. deterministic tests cover success and boundaries
+4. reference ledgers are updated in the same change
 
 ## Related
 

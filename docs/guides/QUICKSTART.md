@@ -1,50 +1,25 @@
-# kjxlkj Quick Start Guide
+# Quickstart
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-Practical first-run guide for the currently reconstructed surface.
+## Scope
 
-## Before You Start
+Quick local startup for reconstructed runtime states.
 
-Check current status first:
+## Steps
 
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+1. Ensure Docker and Docker Compose are available.
+2. Provide required environment values.
+3. Start stack: `docker compose up --build`.
+4. Open app origin and perform first-run registration.
+5. Verify readiness endpoint: `GET /api/v1/readyz`.
 
-If the repo is docs-only (no workspace artifacts), reconstruct first:
+## Notes
 
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-
-## Build and Run
-
-1. Install Rust stable (or pinned toolchain if `rust-toolchain.toml` exists).
-2. Build with `cargo build`.
-3. Run with `cargo run -- <optional-file-path>`.
-
-If Docker artifacts exist, see:
-
-- [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
-
-## Common First Commands
-
-Use these only if current conformance marks the command surface as supported.
-
-| Workflow | Typical command |
-|---|---|
-| Open file | `:e {file}` |
-| Write file | `:w` or `:w {file}` |
-| Write + quit | `:wq` or `:x` |
-| Quit | `:q` or `:q!` |
-
-## Expected Gaps
-
-Feature availability is reconstruction-dependent and must be read from ledgers.
-
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- In docs-only baseline state, runtime artifacts may be absent.
+- Use `/docs/todo/` waves to reconstruct missing artifacts.
 
 ## Related
 
-- Docs index: [/docs/README.md](/docs/README.md)
-- Keybinding target: [/docs/spec/ux/keybindings.md](/docs/spec/ux/keybindings.md)
+- Docker guide: [DOCKER.md](DOCKER.md)
+- TODO waves: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)

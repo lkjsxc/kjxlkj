@@ -1,26 +1,36 @@
 # kjxlkj
 
-A Vim-compatible terminal text editor specified from documentation first, following an All in Docs approach.
+A documentation-first web application platform for notes and records,
+with an Obsidian-style knowledge workflow.
+
+## Current Product Contract
+
+- Runtime: Rust, Tokio, Actix Web.
+- Persistence: PostgreSQL.
+- Delivery: REST + WebSocket API and static SPA hosting.
+- Deployment: single Docker Compose service container running app + database.
 
 ## Documentation
 
 All canonical system definitions live in [`docs/`](docs/README.md).
 
-This repository is intentionally prepared in docs-only standby mode.
-Implementation artifacts are regenerated from documentation during reconstruction.
+Implementation artifacts are derived from canonical documentation.
+When documentation and implementation diverge, documentation is updated first
+and drift is recorded in reference ledgers.
 
 ## Reconstruction Start
 
 1. Read [`docs/todo/README.md`](docs/todo/README.md).
-2. Follow staged waves in [`docs/todo/waves/README.md`](docs/todo/waves/README.md).
-3. Close blocker-ledger rows in [`docs/reference/LIMITATIONS.md`](docs/reference/LIMITATIONS.md).
+2. Execute waves in [`docs/todo/waves/README.md`](docs/todo/waves/README.md).
+3. Keep ledgers synchronized in [`docs/reference/`](docs/reference/README.md).
 
 ## Project Structure
 
 | Path | Purpose |
 |---|---|
-| `docs/` | Canonical specification and policies |
-| `.github/` | CI/workflow definitions for reconstruction lifecycle |
+| `docs/` | Canonical policy, spec, reference, and execution docs |
+| `src/` | Reconstructed Rust workspace (derived) |
+| `docker-compose.yml` | Single-service deployment entry (derived) |
 | `README.md` | Top-level project entry |
 
 ## License

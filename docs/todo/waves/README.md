@@ -2,40 +2,40 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
-Ordered reconstruction stages.
+Ordered recursive migration stages.
 
 ## Execution Rules
 
 - [ ] execute stages in listed order only
 - [ ] execute waves in each stage in listed order only
-- [ ] blocker fixes are prioritized before feature expansion
-- [ ] each completed wave includes linked test evidence
-- [ ] source layout constraints are enforced (near-12 children, file split before 200 lines)
+- [ ] each completed wave includes deterministic evidence links
 - [ ] reference ledgers are updated with each blocker status change
 
 ## Ordered Stages
 
-- [ ] Stage 00: Foundation Ingestion
-  [/docs/todo/waves/stage-00-foundation-ingestion/README.md](/docs/todo/waves/stage-00-foundation-ingestion/README.md)
-- [ ] Stage 01: Architecture Core
-  [/docs/todo/waves/stage-01-architecture-core/README.md](/docs/todo/waves/stage-01-architecture-core/README.md)
-- [ ] Stage 02: Editing and Modes
-  [/docs/todo/waves/stage-02-editing-and-modes/README.md](/docs/todo/waves/stage-02-editing-and-modes/README.md)
-- [ ] Stage 03: Commands and Ranges
-  [/docs/todo/waves/stage-03-commands-and-ranges/README.md](/docs/todo/waves/stage-03-commands-and-ranges/README.md)
-- [ ] Stage 04: Window, Explorer, Terminal
-  [/docs/todo/waves/stage-04-window-explorer-terminal/README.md](/docs/todo/waves/stage-04-window-explorer-terminal/README.md)
-- [ ] Stage 05: Services and Features
-  [/docs/todo/waves/stage-05-services-and-features/README.md](/docs/todo/waves/stage-05-services-and-features/README.md)
-- [ ] Stage 06: UI, UX, and Scripting
-  [/docs/todo/waves/stage-06-ui-ux-and-scripting/README.md](/docs/todo/waves/stage-06-ui-ux-and-scripting/README.md)
-- [ ] Stage 07: Technical Hardening
-  [/docs/todo/waves/stage-07-technical-hardening/README.md](/docs/todo/waves/stage-07-technical-hardening/README.md)
-- [ ] Stage 08: Release and Ops
-  [/docs/todo/waves/stage-08-release-and-ops/README.md](/docs/todo/waves/stage-08-release-and-ops/README.md)
+- [ ] Stage 00: Pivot Governance and Canonical Reset
+  [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [ ] Stage 01: Spec Rebuild (Docs-First)
+  [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
+- [ ] Stage 02: Workspace and Build Bootstrap
+  [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
+- [ ] Stage 03: Single-Container Runtime and Compose
+  [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
+- [ ] Stage 04: PostgreSQL Schema and Projections
+  [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
+- [ ] Stage 05: Auth, Session, Security
+  [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
+- [ ] Stage 06: REST API Implementation
+  [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
+- [ ] Stage 07: WebSocket Patch Stream
+  [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
+- [ ] Stage 08: Frontend and Static Hosting
+  [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
+- [ ] Stage 09: CI, Performance, and Release Cutover
+  [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Program Exit
 
 - [ ] all wave files are complete with evidence links
-- [ ] all blocker `*R` rows are green
+- [ ] all high-severity blockers are closed
 - [ ] release closure is recorded in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

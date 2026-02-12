@@ -1,24 +1,17 @@
-# UI Architecture
+# UI Specifications
 
 Back: [/docs/spec/README.md](/docs/spec/README.md)
+
+Defines web-app interaction boundaries served by the Actix backend.
+
 ## Documents
 
-| Document | Content |
-|----------|---------|
-| [components.md](components.md) | UI components |
-| [views.md](views.md) | View system |
-| [themes.md](themes.md) | Theme system |
+| Document | Purpose |
+|---|---|
+| [web-app.md](web-app.md) | SPA shell, auth flow, and navigation model |
+| [editor-flow.md](editor-flow.md) | note editing and sync UX contract |
 
-## Map
+## Related
 
-```mermaid
-graph TD
-  UI[ui]
-  UI --> C[components]
-  UI --> V[views]
-  UI --> T[themes]
-
-  C --> CC[components.md]
-  V --> VV[views.md]
-  T --> TT[themes.md]
-```
+- API: [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- Domain: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)

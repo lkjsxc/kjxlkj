@@ -8,29 +8,31 @@ Reproducible verification profiles.
 
 - `/.github/workflows/ci.yml`
 
-If workflow files are missing or stale, regenerate from this contract.
-
 ## Baseline State (2026-02-12)
 
-- active profile target: `Reconstruction-prep`
-- documentation is canonical
-- implementation artifacts are intentionally absent
-- release profile is blocked until high-severity limitations close
+- Active profile target: `Docs-pivot`.
+- Runtime profiles are blocked until source workspace is reconstructed.
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| `Docs-integrity` | documentation updates | link/path checks + structural policy checks |
-| `Reconstructed-basic` | workspace rebuild in progress | `Docs-integrity` + `cargo fmt --all -- --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
-| `Blocker-revalidation` | blocker fix is claimed | `Reconstructed-basic` + targeted blocker regressions + matching PTY `*R` tests |
-| `Release` | release candidate | `Blocker-revalidation` + no open high-severity limitation rows |
+| `Docs-integrity` | documentation changes | link validation + structure checks |
+| `Workspace-bootstrap` | workspace appears | `Docs-integrity` + `cargo check --workspace` |
+| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + unit/integration tests |
+| `Realtime` | WS implementation claims | `Core-runtime` + WS sync tests |
+| `Release` | release candidate | all above + perf/ops evidence and no high-severity limitations |
 
 ## Evidence Rule
 
-CI status claims in reference ledgers must include:
+CI status claims in ledgers MUST include:
 
 - profile name
 - absolute date
-- key pass/fail signals
-- explicit mention of open blocker rows
+- pass/fail signal
+- explicit note on open high-severity limitations
+
+## Related
+
+- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- Release gate: [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

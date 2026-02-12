@@ -2,13 +2,10 @@
 
 Back: [/docs/log/README.md](/docs/log/README.md)
 
-Unresolved structural proposals only.
+Documents that justify major direction changes.
 
-## Active Entries
+## Documents
 
-- none
-
-## Rule
-
-- create an entry only when canonical docs cannot be updated directly
-- delete proposal entries immediately after canonical promotion
+| Document | Purpose |
+|---|---|
+| [2026-02-12-web-pivot.md](2026-02-12-web-pivot.md) | pivot from CLI editor to web-notes server |
