@@ -7,6 +7,8 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 - Note body MUST be Markdown UTF-8 text.
 - Wiki-link syntax `[[target]]` MUST be parsed for backlinks.
 - Tags are explicit normalized labels, independent of inline markdown hashtags.
+- Note title MUST be mutable and independently editable from body.
+- Each note stream MUST include `note_kind` from [note-types.md](note-types.md).
 
 ## Stream Lifecycle
 
@@ -15,11 +17,18 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 | Active | readable and writable |
 | SoftDeleted | hidden from default list, recoverable via history |
 
+Deletion rules:
+
+- Users MUST be able to delete notes from normal UI flows.
+- Deletion MUST be soft-delete at stream level by default.
+- Deleted notes MUST be excluded from default search/list queries unless explicit include-deleted mode is requested.
+
 ## Write Rules
 
 - Every write MUST include `base_version`.
 - If `base_version != current_version`, server MUST reject with conflict.
 - Accepted write increments note version by exactly 1.
+- Title-only updates MUST follow the same optimistic version rules.
 
 ## Conflict Contract
 

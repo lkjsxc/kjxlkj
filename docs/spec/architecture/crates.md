@@ -8,50 +8,28 @@ The implementation is a Cargo workspace rooted at `src/crates/`.
 
 | Requirement | Value |
 |---|---|
-| Target crate count | 20 |
-| Group roots | `app`, `core`, `platform`, `services` |
-| Directory fan-out target | around 12 direct children |
-| Source file limit | each source file should remain <=200 lines |
+| Canonical crate set | 7 primary crates |
+| Group roots | `app`, `http`, `ws`, `domain`, `db`, `auth`, `search` |
+| Expansion rule | additional crates MAY be added only with spec justification |
 
-## Workspace Members by Group
+## Canonical Workspace Members
 
 | Group | Crate | Path |
 |---|---|---|
-| app | `kjxlkj` | `src/crates/app/kjxlkj` |
-| app | `kjxlkj-test-harness` | `src/crates/app/kjxlkj-test-harness` |
-| core | `kjxlkj-core` | `src/crates/core/kjxlkj-core` |
-| core | `kjxlkj-core-types` | `src/crates/core/kjxlkj-core-types` |
-| core | `kjxlkj-core-text` | `src/crates/core/kjxlkj-core-text` |
-| core | `kjxlkj-core-edit` | `src/crates/core/kjxlkj-core-edit` |
-| core | `kjxlkj-core-mode` | `src/crates/core/kjxlkj-core-mode` |
-| core | `kjxlkj-core-undo` | `src/crates/core/kjxlkj-core-undo` |
-| core | `kjxlkj-core-ui` | `src/crates/core/kjxlkj-core-ui` |
-| core | `kjxlkj-core-state` | `src/crates/core/kjxlkj-core-state` |
-| platform | `kjxlkj-host` | `src/crates/platform/kjxlkj-host` |
-| platform | `kjxlkj-input` | `src/crates/platform/kjxlkj-input` |
-| platform | `kjxlkj-render` | `src/crates/platform/kjxlkj-render` |
-| services | `kjxlkj-services` | `src/crates/services/kjxlkj-services` |
-| services | `kjxlkj-service-explorer` | `src/crates/services/kjxlkj-service-explorer` |
-| services | `kjxlkj-service-fs` | `src/crates/services/kjxlkj-service-fs` |
-| services | `kjxlkj-service-git` | `src/crates/services/kjxlkj-service-git` |
-| services | `kjxlkj-service-index` | `src/crates/services/kjxlkj-service-index` |
-| services | `kjxlkj-service-lsp` | `src/crates/services/kjxlkj-service-lsp` |
-| services | `kjxlkj-service-terminal` | `src/crates/services/kjxlkj-service-terminal` |
+| app | `kjxlkj-server` | `src/crates/app/kjxlkj-server` |
+| http | `kjxlkj-http` | `src/crates/http/kjxlkj-http` |
+| ws | `kjxlkj-ws` | `src/crates/ws/kjxlkj-ws` |
+| domain | `kjxlkj-domain` | `src/crates/domain/kjxlkj-domain` |
+| db | `kjxlkj-db` | `src/crates/db/kjxlkj-db` |
+| auth | `kjxlkj-auth` | `src/crates/auth/kjxlkj-auth` |
+| search | `kjxlkj-search` | `src/crates/search/kjxlkj-search` |
 
 ## Decomposition Rules
 
-| Rule | Requirement |
-|---|---|
-| split before overflow | if file trends toward 200 lines, extract focused modules early |
-| fan-out balancing | if directory exceeds around 12 children, create domain subdirectories |
-| test partitioning | split tests by concern before directories exceed fan-out target |
-| IO separation | keep state mutation, dispatch, and external IO in separate modules |
-
-## Reconstruction Contract
-
-- TODO closure requires user-reachable behavior
-- touched crates must add deterministic tests
-- topology and module splits must satisfy [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- Runtime wiring MUST stay in `app`.
+- HTTP/WS transport code MUST stay outside domain core logic.
+- DB repositories MUST be isolated from route-layer request types.
+- Note editor and UX semantics MUST remain spec-driven and test-backed.
 
 ## Related
 

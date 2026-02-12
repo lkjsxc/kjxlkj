@@ -6,24 +6,29 @@ Open mismatches between target spec and trusted current behavior.
 
 ## Baseline (2026-02-12)
 
-- Runtime is implemented and deployable, but release-grade verification is incomplete.
-- High-severity gaps are concentrated in WS replay/recovery and acceptance/perf/ops coverage.
+- Repository is intentionally docs-only.
+- All runtime-facing behavior is currently unimplemented in this state.
+- Previously discovered implementation and user issues are captured and must be prevented during reconstruction.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Observed Gap | Class | Severity | Required Tests | Mandatory Next Action |
 |---|---|---|---|---|---|---|
-| `LIM-WS-VERIFY-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | Replay path is implemented via `ack` cursor, but deterministic WS suite (`WS-01..05`) is still incomplete | `M4 verification gap` | high | `WS-01..05` | add automated WS integration suite for subscribe/patch/conflict/replay/idempotency |
-| `LIM-ACCEPTANCE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | Mandatory acceptance pack is only partially automated (T0 complete; T1/T2 incomplete) | `M4 verification gap` | high | `API-*`, `WS-*`, `E2E-*` | add runnable contract/E2E suites and record evidence |
-| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | P95 and WS soak targets are not yet measured | `M4 verification gap` | high | `PERF-01`, `PERF-02` | run load and soak tests with evidence capture |
-| `LIM-OPS-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | Backup/restore parity and restart recovery drills are not yet recorded | `M4 verification gap` | high | `OPS-01`, `OPS-02` | execute backup+restore and restart drills, then sync ledgers |
+| `LIM-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process model absent | `M2 missing feature` | high | `E2E-01` | rebuild runtime bootstrap from docs |
+| `LIM-API-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints absent | `M2 missing feature` | high | `API-*` | reconstruct REST handlers and DB integration |
+| `LIM-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS real-time sync absent | `M2 missing feature` | high | `WS-01..05` | reconstruct WS subscribe/patch/replay flows |
+| `LIM-UI-01` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | UI absent (autosave, markdown editor, responsive split layout, title editing, deletion UX) | `M2 missing feature` | high | `E2E-06..08` | reconstruct frontend shell and editor UX contracts |
+| `LIM-TYPES-01` | [/docs/spec/domain/note-types.md](/docs/spec/domain/note-types.md) | note type model absent (`settings`, media note types) | `M2 missing feature` | high | `API-NOTE-07`, `API-MEDIA-*` | implement typed note streams and media-note flows |
+| `LIM-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | full-text search runtime absent | `M2 missing feature` | high | `API-SEARCH-*` | implement indexed search and ranking |
+| `LIM-DEL-01` | [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md) | note deletion behavior absent | `M2 missing feature` | high | `API-NOTE-06` | implement soft-delete and default filtering |
 
-## Open Secondary Gaps
+## Open Quality and Regression Guards
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-DB-TEST-01` | [/docs/spec/domain/events.md](/docs/spec/domain/events.md) | DB-backed integration tests are present but `ignored` by default because `DATABASE_URL` is not guaranteed | `M4 verification gap` | medium | run ignored DB tests in Postgres-enabled profile and promote to required |
-| `LIM-OBS-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | request-id/principal structured logging coverage is partial | `M4 verification gap` | medium | add request-id propagation middleware and context-rich structured logs |
+| `LIM-ISSUE-GUARD-01` | [/docs/log/audits/2026-02-12-implementation-user-findings.md](/docs/log/audits/2026-02-12-implementation-user-findings.md) | historical implementation/user findings are documented but not guarded by automated runtime tests | `M4 verification gap` | high | add explicit regression tests mapped to `IMP-*` and `USR-*` findings |
+| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance and WS soak evidence absent | `M4 verification gap` | medium | run `PERF-01` and `PERF-02` after reconstruction |
+| `LIM-OPS-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore and restart recovery evidence absent | `M4 verification gap` | medium | execute `OPS-01` and `OPS-02` in release gate |
 
 ## Closure Rules
 

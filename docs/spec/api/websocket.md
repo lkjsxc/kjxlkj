@@ -30,6 +30,8 @@ Endpoint: `GET /ws/v1/notes`
 - Server broadcasts MUST follow commit order.
 - Duplicate `idempotency_key` for same note MUST be idempotent.
 - Conflicting `base_version` MUST return `patch_rejected`.
+- Under healthy network and server conditions, patch propagation SHOULD feel near-real-time for active subscribers.
+- Reconnect flows MUST support replay from acknowledged cursor without requiring full note reload.
 
 ## Related
 

@@ -35,6 +35,12 @@ paths:
       summary: List notes
       responses:
         '200': { description: Notes list }
+  /notes/media:
+    post:
+      summary: Create standalone media note
+      responses:
+        '201': { description: Media note created }
+        '413': { description: Payload too large }
   /notes/{id}:
     get:
       summary: Get note projection
@@ -44,6 +50,12 @@ paths:
       summary: Update note with optimistic versioning
       responses:
         '200': { description: Note updated }
+        '409': { description: Version conflict }
+  /notes/{id}/title:
+    patch:
+      summary: Update note title with optimistic versioning
+      responses:
+        '200': { description: Title updated }
         '409': { description: Version conflict }
     delete:
       summary: Soft-delete note

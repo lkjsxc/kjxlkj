@@ -9,6 +9,7 @@ Normative rules for note lifecycle, event sourcing, records, attachments, and se
 | Document | Purpose |
 |---|---|
 | [notes.md](notes.md) | note lifecycle and optimistic conflict rules |
+| [note-types.md](note-types.md) | note-kind taxonomy including markdown/settings/media |
 | [events.md](events.md) | event sourcing and snapshot policy |
 | [metadata.md](metadata.md) | typed metadata records model |
 | [attachments.md](attachments.md) | chunked file storage and limits |

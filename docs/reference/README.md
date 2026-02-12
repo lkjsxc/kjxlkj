@@ -22,7 +22,7 @@ The repository is in pivot reconstruction mode.
 
 - Canonical docs target a web-notes server.
 - Legacy terminal-editor behavior is out of scope.
-- Runtime and deployment artifacts exist; verification status is tracked per-domain.
+- Runtime and deployment artifacts are intentionally absent in this docs-only reconstruction baseline.
 
 ## Synchronization Rule
 

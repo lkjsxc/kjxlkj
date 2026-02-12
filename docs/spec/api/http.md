@@ -18,9 +18,11 @@ Base path: `/api/v1`
 | Method | Path | Purpose |
 |---|---|---|
 | `POST` | `/notes` | create note stream |
+| `POST` | `/notes/media` | create standalone media note from upload |
 | `GET` | `/notes` | list notes |
 | `GET` | `/notes/{id}` | fetch note projection |
 | `PATCH` | `/notes/{id}` | apply note mutation with version check |
+| `PATCH` | `/notes/{id}/title` | update note title with version check |
 | `DELETE` | `/notes/{id}` | soft-delete note stream |
 | `GET` | `/notes/{id}/history` | list event history |
 | `POST` | `/notes/{id}/rollback` | rollback to selected version |

@@ -11,15 +11,15 @@ Reproducible verification profiles.
 
 ## Baseline State (2026-02-12)
 
-- Active profile target: `Core-runtime`.
-- `Realtime` and `Release` remain partial until WS replay/perf/ops gates are complete.
+- Active profile target: `Docs-integrity`.
+- Runtime profiles are blocked until workspace/runtime artifacts are reconstructed.
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| `Docs-integrity` | documentation changes | `scripts/check-doc-links.sh` |
-| `Workspace-bootstrap` | workspace changes | `Docs-integrity` + `cargo fmt --all --check` + `cargo check --workspace` |
+| `Docs-integrity` | documentation changes | deterministic link and structure checks for `/docs` |
+| `Workspace-bootstrap` | workspace appears | `Docs-integrity` + workspace compile checks |
 | `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + `cargo test --workspace -- --nocapture` + `docker compose up -d --build` + `/api/v1/readyz` smoke |
 | `Realtime` | WS implementation claims | `Core-runtime` + WS subscribe/patch/conflict verification |
 | `Release` | release candidate | all above + perf/ops drills + no high-severity limitations |

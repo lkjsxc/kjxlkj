@@ -17,6 +17,7 @@ Attachments are stored in PostgreSQL as chunk rows.
 - Upload MUST stream without loading entire file in memory.
 - Server MUST reject files larger than max with `413`.
 - Completed upload MUST persist metadata and chunk rows transactionally.
+- Image/video uploads MUST support standalone media-note creation flows.
 
 ## Download Rules
 
@@ -26,6 +27,7 @@ Attachments are stored in PostgreSQL as chunk rows.
 ## Deletion Rules
 
 - Deleting attachment MUST remove chunk rows and metadata row atomically.
+- Deleting a standalone media note MUST also remove primary media payload atomically.
 
 ## Related
 

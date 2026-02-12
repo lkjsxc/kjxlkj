@@ -6,6 +6,9 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 
 - Search MUST use PostgreSQL `tsvector` with GIN index.
 - Projection updates MUST refresh indexed vector deterministically.
+- Search MUST include title and markdown body content.
+- Search SHOULD provide ranked results for best-match ordering.
+- Search MUST include eligible `settings` notes and media-note metadata in query scope.
 
 ## Backlinks
 

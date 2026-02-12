@@ -5,10 +5,9 @@ with an Obsidian-style knowledge workflow.
 
 ## Current Product Contract
 
-- Runtime: Rust, Tokio, Actix Web.
-- Persistence: PostgreSQL.
-- Delivery: REST + WebSocket API and static SPA hosting.
-- Deployment: single Docker Compose service container running app + database.
+- This repository is intentionally in docs-only reconstruction mode.
+- Runtime and deployment artifacts are intentionally absent.
+- Canonical behavior is defined in `/docs` and MUST be reconstructed from specs and TODO waves.
 
 ## Documentation
 
@@ -29,10 +28,4 @@ and drift is recorded in reference ledgers.
 | Path | Purpose |
 |---|---|
 | `docs/` | Canonical policy, spec, reference, and execution docs |
-| `src/` | Reconstructed Rust workspace (derived) |
-| `docker-compose.yml` | Single-service deployment entry (derived) |
 | `README.md` | Top-level project entry |
-
-## License
-
-See [LICENSE](LICENSE).

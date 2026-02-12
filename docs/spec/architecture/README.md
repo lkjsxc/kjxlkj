@@ -7,6 +7,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | Document | Purpose |
 |---|---|
 | [runtime.md](runtime.md) | Tokio/Actix runtime topology and supervision |
+| [crates.md](crates.md) | canonical crate decomposition |
 | [source-layout.md](source-layout.md) | Workspace and module decomposition constraints |
 | [workspace-manifest.md](workspace-manifest.md) | Cargo workspace policy |
 | [deployment.md](deployment.md) | Single-container compose/process model |
