@@ -17,14 +17,14 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Immediate Blocker Pack
 
-- [x] runtime bootstrap and single-container deployment
-- [x] API v1 implementation baseline
-- [x] auth/session/csrf baseline
-- [x] schema/migration baseline
-- [ ] `LIM-WS-VERIFY-01` websocket replay/consistency verification suite
-- [ ] `LIM-ACCEPTANCE-01` acceptance-pack automation
-- [ ] `LIM-PERF-01` performance and soak evidence
-- [ ] `LIM-OPS-01` backup/restart recovery drills
+- [ ] `LIM-RUNTIME-01` runtime bootstrap and deployment reconstruction
+- [ ] `LIM-API-01` API v1 implementation reconstruction
+- [ ] `LIM-WS-01` websocket realtime reconstruction
+- [ ] `LIM-UI-01` UX-focused frontend reconstruction
+- [ ] `LIM-TYPES-01` typed note model reconstruction (`settings`, media kinds)
+- [ ] `LIM-SEARCH-01` full-text search reconstruction
+- [ ] `LIM-DEL-01` user-reachable note deletion reconstruction
+- [ ] `LIM-ISSUE-GUARD-01` regression guards for recorded findings
 
 ## Recursive Wave Program
 
