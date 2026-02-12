@@ -1,33 +1,27 @@
 # kjxlkj
 
-A Vim-compatible terminal text editor. Single native Rust binary, keyboard-driven, no external plugins.
+A Vim-compatible terminal text editor specified from documentation first.
 
 ## Documentation
 
 All canonical system definitions live in [`docs/`](docs/README.md).
 
-Source code and automation artifacts are derived outputs reconstructed from documentation.
+This repository is intentionally prepared in docs-only standby mode.
+Implementation artifacts are regenerated from documentation during reconstruction.
 
-## Quick Start
+## Reconstruction Start
 
-```sh
-cargo build --release
-./target/release/kjxlkj [file...]
-```
-
-## Build Requirements
-
-- Rust stable (edition 2021)
-- Tokio async runtime
-- POSIX terminal (or Windows ConPTY)
+1. Read [`docs/todo/README.md`](docs/todo/README.md).
+2. Follow staged waves in [`docs/todo/waves/README.md`](docs/todo/waves/README.md).
+3. Close blocker-ledger rows in [`docs/reference/LIMITATIONS.md`](docs/reference/LIMITATIONS.md).
 
 ## Project Structure
 
 | Path | Purpose |
 |---|---|
 | `docs/` | Canonical specification and policies |
-| `src/crates/` | Rust workspace crates |
-| `Cargo.toml` | Workspace manifest |
+| `.github/` | CI/workflow definitions for reconstruction lifecycle |
+| `README.md` | Top-level project entry |
 
 ## License
 

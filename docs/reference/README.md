@@ -21,7 +21,7 @@ For current-state claims, use this precedence:
 The repository is in reconstruction-prep mode.
 
 - Documentation is canonical.
-- Existing source code is non-authoritative and may be discarded.
+- Implementation artifacts are intentionally removed.
 - Runtime behavior must not be treated as verified unless explicitly proven.
 
 ## Evidence Rules

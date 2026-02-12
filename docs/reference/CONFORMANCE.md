@@ -19,6 +19,7 @@ This ledger reports only what is currently verified with strong evidence.
 Current high-confidence statement:
 
 - Documentation baseline is coherent enough to drive reconstruction.
+- Implementation artifacts are intentionally removed pending reconstruction.
 - Runtime conformance is not accepted as verified at this time.
 - User-reported defects are treated as open until closed by new evidence.
 

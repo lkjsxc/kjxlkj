@@ -14,6 +14,7 @@ If workflow files are missing or stale, regenerate from this contract.
 
 - active profile target: `Reconstruction-prep`
 - documentation is canonical
+- implementation artifacts are intentionally absent
 - release profile is blocked until high-severity limitations close
 
 ## Verification Profiles

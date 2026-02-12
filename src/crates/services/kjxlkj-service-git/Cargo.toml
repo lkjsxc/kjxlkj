@@ -1,8 +1,0 @@
-[package]
-name = "kjxlkj-service-git"
-edition.workspace = true
-version.workspace = true
-license.workspace = true
-
-[dependencies]
-tokio = { workspace = true }
