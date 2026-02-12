@@ -8,36 +8,28 @@ Reproducible verification profiles.
 
 - `/.github/workflows/ci.yml`
 
-In docs-only baseline state, this workflow may be absent and must be regenerated.
+If workflow files are missing or stale, regenerate from this contract.
 
-## Current Baseline State (2026-02-11)
+## Baseline State (2026-02-12)
 
-- active profile target: `Docs-only`
-- implementation workspace is intentionally absent
-- release profile is blocked until reconstruction closes high-severity rows
+- active profile target: `Reconstruction-prep`
+- documentation is canonical
+- release profile is blocked until high-severity limitations close
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| Docs-only | source artifacts absent by design | docs link/path checks + policy checks |
-| Reconstructed-basic | workspace exists, blocker work not yet complete | docs checks + `cargo fmt --all -- --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
-| Blocker-revalidation | contradiction exists between user report and existing tests | reconstructed-basic + targeted bug repro + live PTY `*R` tests with screen-state assertions |
-| Release | preparing release tag | blocker-revalidation + no high-severity open limitations |
-
-## Local Reproduction
-
-Run checks from repository root.
-
-For docs-only profile, run documentation integrity checks only.
-For reconstructed profiles, include required cases from
-[/docs/spec/technical/testing-e2e.md](/docs/spec/technical/testing-e2e.md).
+| `Docs-integrity` | documentation updates | link/path checks + structural policy checks |
+| `Reconstructed-basic` | workspace rebuild in progress | `Docs-integrity` + `cargo fmt --all -- --check` + `cargo clippy --workspace --all-targets` + `cargo test --workspace` |
+| `Blocker-revalidation` | blocker fix is claimed | `Reconstructed-basic` + targeted blocker regressions + matching PTY `*R` tests |
+| `Release` | release candidate | `Blocker-revalidation` + no open high-severity limitation rows |
 
 ## Evidence Rule
 
-CI status claims in `CONFORMANCE` or release docs must include:
+CI status claims in reference ledgers must include:
 
-- check profile name
+- profile name
 - absolute date
 - key pass/fail signals
-- explicit mention of open blocker rows, if any
+- explicit mention of open blocker rows

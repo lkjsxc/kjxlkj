@@ -2,7 +2,7 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/log/` stores temporary, non-canonical records only.
+`/docs/log/` stores unresolved temporary notes only.
 
 ## Authority
 
@@ -12,21 +12,21 @@ Back: [/docs/README.md](/docs/README.md)
 ## Retention Rule
 
 - keep only unresolved notes
-- delete historical wave records after promotion
-- avoid duplicate status narratives in log and reference ledgers
+- do not keep historical progress narratives here
+- avoid duplicate status claims across log and reference ledgers
+
+## Current State (2026-02-12)
+
+Historical progress logs were removed after promotion into canonical docs.
 
 ## Active Sections
 
 | Directory | Purpose |
 |---|---|
-| [audits/](audits/README.md) | unresolved audit notes only |
-| [proposals/](proposals/README.md) | unresolved change proposals only |
-
-## Current State (2026-02-11)
-
-No unresolved log entries are active.
+| [/docs/log/audits/README.md](/docs/log/audits/README.md) | unresolved audit notes only |
+| [/docs/log/proposals/README.md](/docs/log/proposals/README.md) | unresolved change proposals only |
 
 ## Related
 
-- Canonical docs index: [/docs/README.md](/docs/README.md)
-- Current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)
+- canonical docs index: [/docs/README.md](/docs/README.md)
+- current-state ledgers: [/docs/reference/README.md](/docs/reference/README.md)
