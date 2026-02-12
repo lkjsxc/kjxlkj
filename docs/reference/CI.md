@@ -11,8 +11,8 @@ Reproducible verification profiles.
 
 ## Baseline State (2026-02-12)
 
-- Active profile target: `Docs-integrity`.
-- Runtime profiles are blocked until workspace/runtime artifacts are reconstructed.
+- Active profile target: `Core-runtime`.
+- Runtime artifacts are reconstructed; full release profile evidence remains pending.
 
 ## Verification Profiles
 

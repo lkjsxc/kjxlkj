@@ -6,21 +6,20 @@ Open mismatches between target spec and trusted current behavior.
 
 ## Baseline (2026-02-12)
 
-- Repository remains docs-only after canonical reset.
-- Runtime-facing behavior remains unimplemented in this state.
+- Runtime and frontend artifacts are reconstructed but not fully release-verified.
 - Historical implementation and user findings remain mandatory regression targets.
 
 ## Open Critical Blockers
 
 | ID | Requirement Link | Observed Gap | Class | Severity | Required Tests | Mandatory Next Action |
 |---|---|---|---|---|---|---|
-| `LIM-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process model absent | `M2 missing feature` | high | `E2E-01` | rebuild runtime bootstrap from specs |
-| `LIM-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints absent | `M2 missing feature` | high | `API-*` | reconstruct REST handlers and DB integration |
-| `LIM-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket realtime sync absent | `M2 missing feature` | high | `WS-01..05` | reconstruct WS subscribe/patch/replay flows |
-| `LIM-UI-02` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | workspace suite UI absent | `M2 missing feature` | high | `E2E-03..08` | reconstruct frontend shell, editor, and workspace modules |
-| `LIM-RBAC-01` | [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) | role-based authz runtime absent | `M2 missing feature` | high | `API-USER-01`, `API-WSPACE-02` | implement route/domain authorization guards |
-| `LIM-AUTO-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rules/runs runtime absent | `M2 missing feature` | high | `API-AUTO-01`, `API-AUTO-02`, `E2E-09` | implement deterministic rule/run engine |
-| `LIM-SEARCH-02` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | full-text and backlink search runtime absent | `M2 missing feature` | high | `API-SEARCH-01`, `API-SEARCH-02` | implement indexed search and ranking |
+| `LIM-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime restored but shutdown/recovery proofs are incomplete | `M4 verification gap` | medium | `E2E-01`, `OPS-02` | collect deterministic lifecycle evidence |
+| `LIM-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API surface is implemented, but full acceptance matrix is not yet automated | `M4 verification gap` | medium | `API-*` | add and run full acceptance suite |
+| `LIM-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS upgrade and core flows exist, but soak/replay matrix evidence is incomplete | `M4 verification gap` | medium | `WS-01..05`, `PERF-02` | run full WS replay/idempotency/soak suites |
+| `LIM-UI-02` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | workspace suite shell rebuilt, but formal E2E coverage is incomplete | `M4 verification gap` | medium | `E2E-03..08` | add browser E2E assertions and archive runs |
+| `LIM-RBAC-01` | [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) | RBAC checks implemented, but exhaustive role-matrix tests are incomplete | `M4 verification gap` | medium | `API-USER-01`, `API-WSPACE-02` | add deterministic role matrix integration tests |
+| `LIM-AUTO-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | rule/run lifecycle implemented, but deterministic trigger/run assertions are incomplete | `M4 verification gap` | medium | `API-AUTO-01`, `API-AUTO-02`, `E2E-09` | strengthen automation acceptance coverage |
+| `LIM-SEARCH-02` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | FTS/backlinks implemented, ranking/filter edge coverage is incomplete | `M4 verification gap` | medium | `API-SEARCH-01`, `API-SEARCH-02` | expand search boundary tests |
 
 ## Open Quality and Regression Guards
 

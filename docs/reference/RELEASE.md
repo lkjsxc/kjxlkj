@@ -18,8 +18,8 @@ Release is blocked.
 
 Reasons:
 
-- runtime implementation artifacts are not yet reconstructed
-- high-severity `M2` rows remain open in limitations
+- acceptance/performance/operations release evidence is incomplete
+- verification-gap rows remain open in limitations/drift ledgers
 
 ## Release Steps
 

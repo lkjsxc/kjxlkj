@@ -5,9 +5,9 @@ projects, automation, and knowledge workflows.
 
 ## Current Product Contract
 
-- This repository is intentionally in docs-only reconstruction mode.
-- Runtime and deployment artifacts are intentionally absent.
-- Canonical behavior is defined in `/docs` and MUST be reconstructed from specs and TODO waves.
+- This repository now includes reconstructed runtime and frontend artifacts.
+- Canonical behavior remains defined in `/docs`.
+- Remaining release-gate closure depends on full acceptance/performance/ops evidence.
 
 ## Documentation
 
