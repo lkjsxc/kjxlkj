@@ -1,0 +1,17 @@
+[package]
+name = "kjxlkj-ws"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+actix-ws = { workspace = true }
+actix-rt = { workspace = true }
+tokio = { workspace = true }
+futures-util = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+time = { workspace = true }
+tracing = { workspace = true }
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
