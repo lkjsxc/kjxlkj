@@ -2,45 +2,58 @@
 
 Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
+## UX Intent
+
+- The baseline UI is note-first and low-noise.
+- Core editing confidence is prioritized over secondary panels.
+- Auth transitions MUST be deterministic and never ambiguous.
+
 ## Hosting Boundary
 
 - SPA assets are built with React + Vite.
-- Actix MUST serve static assets and API from same server origin.
+- Application and API are served from the same origin.
 
 ## Required Shell Views
 
 | View | Purpose |
 |---|---|
-| Setup | first-run owner account registration |
+| Setup | first-run owner registration only when setup is available |
 | Login | authenticated session entry when setup is locked |
 | Notes list | searchable note index within scope |
-| Note detail | markdown-native editor + title + metadata + backlinks |
+| Note detail | markdown-native editor with title, metadata, backlinks |
 | Jobs panel | export/backup/automation progress including librarian runs |
 
 ## Session UX Rules
 
-- Unauthenticated access redirects to login/setup flow.
-- `GET /api/auth/session` MAY return `401` before login; UI MUST treat this
- as unauthenticated state, not a fatal error.
-- Setup UI MUST be shown only when setup is actually available.
-- If setup is locked (for example deterministic `409` on setup attempt), the UI
- MUST switch to login-only presentation and MUST NOT reuse setup-like visuals.
-- Redundant authenticated-state banners/panels are optional and SHOULD be
- omitted unless they provide actionable value.
-- Session expiry triggers deterministic re-authentication path.
+- Unauthenticated access follows deterministic setup/login routing.
+- `GET /api/auth/session` MAY return `401` before login and MUST be treated as
+  expected unauthenticated state, not fatal error.
+- Setup UI MUST be shown only while setup is actually available.
+- If setup is locked (for example deterministic `409`), UI MUST switch to
+  login-only presentation with no setup-like visuals.
+- Session expiry MUST redirect to re-auth flow without draft loss.
 
-## Editing UX Rules
+## Editing Surface Rules
 
-- Note title MUST be editable in the detail surface.
-- Title edits MUST propagate to note lists and related navigation surfaces
- without requiring full-page refresh.
-- Autosave MUST be the default authoring path.
-- Manual save controls are optional and SHOULD remain hidden by default.
-- Inline delete controls in the editor are optional and SHOULD remain hidden by
- default.
+- Note title MUST be editable in detail view.
+- Title edits MUST propagate to lists and related navigation surfaces in the same
+  interaction cycle.
+- Autosave is the default authoring path.
+- Manual `Save Now`, inline `Delete`, and inline version badges are optional and
+  SHOULD remain hidden in default layout.
+- Secondary modules (dashboard/workspace switcher) MUST NOT displace baseline
+  note editing surfaces.
+
+## Findings Coverage
+
+| Finding IDs | Required Outcome |
+|---|---|
+| `USR-001`, `USR-004` | deterministic pre-auth/session and setup-lock presentation behavior |
+| `USR-006` | optional modules remain opt-in and low-noise |
+| `USR-007`, `USR-008` | immediate title propagation and minimal default editor chrome |
 
 ## Related
 
 - Workspace suite: [workspace-suite.md](workspace-suite.md)
-- Auth spec: [/docs/spec/security/auth.md](/docs/spec/security/auth.md)
-- HTTP contract: [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- Editor flow: [editor-flow.md](editor-flow.md)
+- Findings map: [findings-traceability.md](findings-traceability.md)

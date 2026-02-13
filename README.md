@@ -1,36 +1,29 @@
 # kjxlkj
 
-A documentation-first workspace-suite web platform for collaborative notes,
-projects, automation, and knowledge workflows.
+Documentation-first workspace-suite platform for collaborative notes, automation,
+and knowledge workflows.
 
-## Current Product Contract
+## Current Contract (2026-02-13)
 
-- This repository is intentionally in docs-only reconstruction mode.
+- Repository is intentionally in docs-only rebuild baseline.
 - Runtime and deployment artifacts are intentionally absent.
-- Canonical behavior is defined in `/docs` and MUST be reconstructed from specs and TODO waves.
-- Recent UX findings from implementation/user interaction are captured in canonical UI specs.
-- Canonical specs include an autonomous Librarian AI agent for advanced
-  documentation structuring via OpenRouter or LM Studio compatible models.
-- Librarian model interaction uses a strict attribute-less XML-like protocol for
-  compatibility with small-parameter LLMs.
+- Canonical behavior is defined in `/docs` and MUST be rebuilt from specs/TODO.
+- Implementation/user findings (`IMP-*`, `USR-*`) are canonically mapped in
+  [`/docs/spec/ui/findings-traceability.md`](docs/spec/ui/findings-traceability.md).
+- Deployment target is a single-container Docker Compose service defined by
+  [`/docs/spec/architecture/deployment.md`](docs/spec/architecture/deployment.md).
 
-## Documentation
-
-All canonical system definitions live in [`docs/`](docs/README.md).
-
-Implementation artifacts are derived from canonical documentation.
-When documentation and implementation diverge, documentation is updated first
-and drift is recorded in reference ledgers.
-
-## Reconstruction Start
+## Rebuild Start
 
 1. Read [`docs/todo/README.md`](docs/todo/README.md).
 2. Execute waves in [`docs/todo/waves/README.md`](docs/todo/waves/README.md).
-3. Keep ledgers synchronized in [`docs/reference/`](docs/reference/README.md).
+3. Rebuild runtime artifacts, then start with `docker compose up --build`.
+4. Keep ledgers synchronized in [`docs/reference/`](docs/reference/README.md).
 
-## Project Structure
+## Repository Layout
 
 | Path | Purpose |
 |---|---|
-| `docs/` | Canonical policy, spec, reference, and execution docs |
-| `README.md` | Top-level project entry |
+| `docs/` | canonical policy, spec, reference, and execution docs |
+| `README.md` | top-level index |
+| `LICENSE` | license text |

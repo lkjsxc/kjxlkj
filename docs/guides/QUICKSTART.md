@@ -4,22 +4,23 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Scope
 
-Quick local startup for reconstructed runtime states.
+Fast path for rebuilding and running the system with single-container Compose.
 
 ## Steps
 
-1. Ensure Docker and Docker Compose are available.
-2. Provide required environment values.
-3. Start stack: `docker compose up --build`.
-4. Open app origin and perform first-run registration.
-5. Verify readiness endpoint: `GET /api/readyz`.
+1. Read [/docs/todo/README.md](/docs/todo/README.md) and execute rebuild waves in order.
+2. Reconstruct runtime artifacts (`src/`, `Dockerfile`, `docker-compose.yml`).
+3. Start stack: `docker compose up --build`
+4. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
+5. Validate key UX flows using acceptance IDs in
+   [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
 ## Notes
 
-- In docs-only baseline state, runtime artifacts may be absent.
-- Use `/docs/todo/` waves to reconstruct missing artifacts.
+- Current repository baseline is docs-only by design.
+- Runtime startup is possible after reconstruction steps are completed.
 
 ## Related
 
 - Docker guide: [DOCKER.md](DOCKER.md)
-- TODO waves: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- Wave program: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)

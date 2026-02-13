@@ -53,9 +53,9 @@ Mandatory verification contract for reconstruction.
 | `E2E-08` | 320px width adaptive layout without mobile/desktop fork |
 | `E2E-09` | automation trigger, run status, and audit visibility |
 | `E2E-10` | session expiry and re-auth without data loss |
-| `E2E-11` | setup-locked state MUST render login-only UI (no setup-like appearance) |
+| `E2E-11` | setup-locked state renders login-only UI with no setup-like appearance |
 | `E2E-12` | small-screen menu toggle collapses/restores navigation to enlarge editor |
-| `E2E-13` | note title rename propagates immediately to notes list and related surfaces |
+| `E2E-13` | note title rename propagates immediately to notes list/related surfaces |
 | `E2E-14` | default editor chrome omits inline version/save/delete controls |
 | `E2E-15` | librarian run restructures documentation notes with deterministic audit trail |
 | `PERF-01` | CRUD/search latency under target scale |
@@ -63,6 +63,24 @@ Mandatory verification contract for reconstruction.
 | `PERF-03` | librarian batch structuring throughput under bounded token/time budgets |
 | `OPS-01` | backup/export job lifecycle and artifact retrieval |
 | `OPS-02` | restart recovery with no lost committed events |
+
+## Finding Regression Pack
+
+| ID | Finding | Required Scenario |
+|---|---|---|
+| `REG-IMP-001` | `IMP-001` | synced/draft split prevents incorrect patch base |
+| `REG-IMP-002` | `IMP-002` | duplicate idempotency key replay returns same commit identity |
+| `REG-IMP-003` | `IMP-003` | metadata delete returns strict `204` contract |
+| `REG-IMP-004` | `IMP-004` | reconnect ack-cursor replay is deterministic |
+| `REG-IMP-005` | `IMP-005` | attachment stream continuity enforcement rejects partial/corrupt output |
+| `REG-USR-001` | `USR-001` | session `401` is non-fatal pre-auth path |
+| `REG-USR-002` | `USR-002` | idempotency key fallback works without `crypto.randomUUID` |
+| `REG-USR-003` | `USR-003` | autosave-first markdown editing confidence path |
+| `REG-USR-004` | `USR-004` | setup-lock shows login-only view with no setup-like UI |
+| `REG-USR-005` | `USR-005` | compact layout collapse/restore expands editor area |
+| `REG-USR-006` | `USR-006` | baseline UX remains note-first without mandatory dashboard clutter |
+| `REG-USR-007` | `USR-007` | title rename propagates same-cycle across list/navigation |
+| `REG-USR-008` | `USR-008` | default editor chrome remains minimal |
 
 ## Determinism Rules
 
@@ -73,5 +91,6 @@ Mandatory verification contract for reconstruction.
 
 ## Related
 
+- Findings map: [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md)
 - Performance targets: [performance.md](performance.md)
 - CI profiles: [/docs/reference/CI.md](/docs/reference/CI.md)

@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-r
 
 ## Implementation Tasks
 
-- [x] implement `xml_attrless` parser and required-tag validation
-- [x] implement bounded parser repair retries and deterministic failure states
-- [x] retain raw model output and parse diagnostics in run audit fields
+- [ ] implement `xml_attrless` parser and required-tag validation
+- [ ] implement bounded parser repair retries and deterministic failure states
+- [ ] retain raw model output and parse diagnostics in run audit fields
 
 ## Verification Tasks
 
-- [x] run `API-AUTO-04`
-- [x] run malformed nesting, missing-tag, and overflow operation tests
+- [ ] run `API-AUTO-04`
+- [ ] run malformed nesting, missing-tag, and overflow operation tests
 
 ## Evidence Placeholder
 
-- [x] `Check:` `cargo test -p kjxlkj-server --test automation_provider_adapter -- --nocapture`
-- [x] `Result:` pass (`5 passed; 0 failed`) including parser malformed nesting, missing-tag retry failure diagnostics, and overflow rejection assertions
-- [x] `Proof:` deterministic run records preserve `raw_model_outputs` + `parse_diagnostics`; malformed nesting fails with `LIBRARIAN_PROTOCOL_INVALID`; missing required tags fail with `LIBRARIAN_PARSE_FAILED`
+- [ ] `Check:` `cargo test -p kjxlkj-server --test automation_provider_adapter -- --nocapture`
+- [ ] `Result:` pass (`5 passed; 0 failed`) including parser malformed nesting, missing-tag retry failure diagnostics, and overflow rejection assertions
+- [ ] `Proof:` deterministic run records preserve `raw_model_outputs` + `parse_diagnostics`; malformed nesting fails with `LIBRARIAN_PROTOCOL_INVALID`; missing required tags fail with `LIBRARIAN_PARSE_FAILED`

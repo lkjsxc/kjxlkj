@@ -2,30 +2,46 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-Single-service container workflow.
+Single-container Docker Compose workflow.
 
 ## Scope
 
-`Dockerfile` and `docker-compose.yml` are derived artifacts.
+- one compose service named `kjxlkj`
+- one container running both PostgreSQL and app process
+- one command startup path for operators
 
-When present, the expected model is one compose service with:
+## Files To Rebuild
 
-- PostgreSQL process
-- `kjxlkj` app process
+The following runtime artifacts are required for executable startup:
 
-## Runtime Commands
+- `Dockerfile`
+- `docker-compose.yml`
+- supervisor/entrypoint script used by container startup
 
-- Build/start: `docker compose up --build`
-- Stop: `docker compose down`
-- Tail logs: `docker compose logs -f`
+Use canonical template and rules from:
 
-## Health
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
 
-Container healthcheck should pass via `/api/readyz`.
+## Startup
 
-In docs-only reconstruction baseline, these artifacts may be absent and MUST be rebuilt from specs.
+1. Reconstruct runtime artifacts from specs/TODO waves.
+2. Build and start: `docker compose up --build`
+3. Confirm health: `docker compose ps`
+4. Confirm readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
+
+## Shutdown and Logs
+
+- Stop/remove: `docker compose down`
+- Follow logs: `docker compose logs -f`
+
+## Acceptance Checklist
+
+- exactly one compose service exists
+- container transitions to `healthy`
+- `/api/readyz` succeeds
+- graceful stop leaves no orphan DB process
 
 ## Related
 
+- Quickstart: [QUICKSTART.md](QUICKSTART.md)
 - Deployment spec: [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
-- Operations spec: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

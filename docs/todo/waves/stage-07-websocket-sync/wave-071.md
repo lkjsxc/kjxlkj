@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Implementation Tasks
 
-- [x] integrate librarian events into ack-cursor replay protocol
-- [x] enforce idempotent retransmit semantics for event emissions
-- [x] reject stale cursors with deterministic error payloads
+- [ ] integrate librarian events into ack-cursor replay protocol
+- [ ] enforce idempotent retransmit semantics for event emissions
+- [ ] reject stale cursors with deterministic error payloads
 
 ## Verification Tasks
 
-- [x] run reconnect + replay boundary checks
-- [x] run duplicate cursor and retransmit scenarios
+- [ ] run reconnect + replay boundary checks
+- [ ] run duplicate cursor and retransmit scenarios
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR`
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture`
+- [ ] `Result:` pass
+- [ ] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR`

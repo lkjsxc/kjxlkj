@@ -4,33 +4,38 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## Layout Rules
 
-- The app MUST use one responsive layout model across desktop and mobile.
-- Left pane and right pane MUST scroll independently.
-- The right pane MUST allow inline editing of note title and note content.
-- Workspace-level surfaces (command palette, graph explorer, optional dashboards)
- MUST preserve the same component tree across breakpoints.
+- The app MUST use one responsive component tree across desktop and mobile.
+- Navigation/list and editor/content regions MUST support independent scrolling.
+- Right pane MUST support inline title/content editing with predictable focus.
+- Optional workspace modules MUST NOT crowd baseline note editing surfaces.
 
 ## Responsive Rules
 
 - Separate mobile/desktop implementations are forbidden.
-- Small screens MUST preserve independent vertical scrolling for navigation and
- content regions.
-- On constrained screen area, a menu toggle button MUST allow collapsing and
- restoring upper/navigation regions so the note editor can take primary space.
-- Touch targets MUST remain reachable without horizontal scrolling at widths down
- to 320px.
-- Editor width and typography MUST adapt fluidly by viewport without mode switching.
+- Small screens MUST preserve independent vertical scrolling.
+- On constrained screens, a menu toggle MUST collapse/restore navigation regions
+  so editor can take primary space.
+- Touch targets MUST be reachable without horizontal scrolling at widths down to
+  `320px`.
+- Typography and editor width MUST adapt fluidly without mode forks.
 
-## Visual and Interaction Rules
+## Interaction Quality Rules
 
-- UI MUST follow modern flat design principles with low-noise surfaces.
-- Visual hierarchy MUST prioritize content readability over chrome.
-- Interaction feedback for save, sync, conflict, and automation status MUST be
- visible and unobtrusive.
-- Keyboard-first flows via command palette SHOULD be available in all major views.
+- Visual hierarchy MUST prioritize note content over chrome.
+- Save/sync/conflict/automation state feedback MUST be visible and unobtrusive.
+- Keyboard-first command palette flows SHOULD remain available in major views.
+- Focus changes MUST be deterministic when panels are toggled.
+
+## Findings Coverage
+
+| Finding IDs | Required Outcome |
+|---|---|
+| `USR-003` | editing confidence via autosave-first interaction model |
+| `USR-005` | constrained-screen collapse/restore behavior |
+| `USR-006` | low-noise surface hierarchy with optional secondary modules |
 
 ## Related
 
 - Web app shell: [web-app.md](web-app.md)
 - Workspace suite: [workspace-suite.md](workspace-suite.md)
-- Editor flow: [editor-flow.md](editor-flow.md)
+- Findings map: [findings-traceability.md](findings-traceability.md)

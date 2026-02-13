@@ -2,16 +2,16 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
+`/docs/todo/` is the execution contract for rebuilding `kjxlkj` from docs.
+
 ## Relevant Documents
 
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-
-`/docs/todo/` is the execution contract for rebuilding `kjxlkj` from docs.
 
 ## Start Gate
 
@@ -26,26 +26,25 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Immediate Blocker Pack
 
-- [ ] `LIM-RUNTIME-02` runtime bootstrap and crate topology reconstruction
-- [ ] `LIM-API-02` API implementation reconstruction
-- [ ] `LIM-WS-02` websocket realtime reconstruction
-- [ ] `LIM-UI-02` workspace suite frontend reconstruction
-- [ ] `LIM-RBAC-01` role-based authorization reconstruction
-- [ ] `LIM-AUTO-01` automation rule and run engine reconstruction
-- [ ] `LIM-LIB-01` librarian AI structuring engine reconstruction
-- [ ] `LIM-ISSUE-GUARD-02` regression guards for `IMP-*` and `USR-*` findings
-- [ ] `LIM-LIB-GUARD-01` parser and small-model librarian regression guards
+- [ ] `LIM-BOOT-01` workspace/runtime reconstruction
+- [ ] `LIM-DOCKER-01` single-container compose artifact reconstruction
+- [ ] `LIM-API-01` API reconstruction
+- [ ] `LIM-WS-01` websocket reconstruction
+- [ ] `LIM-UI-01` UX shell/editor reconstruction
+- [ ] `LIM-LIB-01` librarian runtime reconstruction
+- [ ] `LIM-ISSUE-GUARD-01` `IMP-*`/`USR-*` regression guard pack
 
 ## Recursive Wave Program
 
 - [ ] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] execute stages and waves in order (Stage 00 through Stage 09)
 - [ ] do not mark work complete without deterministic evidence
-- [ ] synchronize reference ledgers with status changes
+- [ ] synchronize reference ledgers with every status change
 
 ## Completion Gate
 
 - [ ] all stage and wave checklists are complete in order
-- [ ] all high-severity limitation rows are closed
+- [ ] no open high-severity limitation remains
 - [ ] acceptance tests in technical spec pass
+- [ ] single-container compose startup passes (`docker compose up --build`)
 - [ ] release gate in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) is satisfied

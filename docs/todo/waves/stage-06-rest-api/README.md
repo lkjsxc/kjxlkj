@@ -14,17 +14,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [x] implement provider adapters for OpenRouter and LM Studio
-- [x] wire librarian action schema through automation rule APIs
-- [x] enforce attribute-less XML-like protocol parsing and validation
+- [ ] implement provider adapters for OpenRouter and LM Studio
+- [ ] wire librarian action schema through automation rule APIs
+- [ ] enforce attribute-less XML-like protocol parsing and validation
 
 ## Ordered Waves
 
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
+- [ ] [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
+- [ ] [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
+- [ ] [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
 
 ## Stage Exit
 
-- [x] `API-AUTO-03` and `API-AUTO-04` pass with deterministic evidence
-- [x] `LIM-LIB-01` remains explicitly deferred for operation-apply/runtime stream closure (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))
+- [ ] `API-AUTO-03` and `API-AUTO-04` pass with deterministic evidence
+- [ ] `LIM-LIB-01` remains explicitly deferred for operation-apply/runtime stream closure (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))

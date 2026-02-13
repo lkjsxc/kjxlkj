@@ -16,14 +16,16 @@ For state claims, use this precedence:
 
 `/docs/spec/` remains the target behavior contract.
 
-## Snapshot (2026-02-12)
+## Snapshot (2026-02-13)
 
-The repository is in hard-pivot reconstruction mode.
+The repository is in docs-only rebuild baseline.
 
-- Canonical docs target a multi-user workspace platform on `/api` and `/ws`.
+- Canonical docs target a workspace platform on `/api` and `/ws`.
 - Canonical docs include librarian-agent contracts for autonomous documentation
   structuring with OpenRouter/LM Studio compatible providers.
-- Runtime and deployment artifacts remain intentionally absent in this baseline.
+- Canonical docs include UX-focused requirements mapped from `IMP-*` and `USR-*`
+  findings.
+- Runtime and deployment artifacts are intentionally absent until waves rebuild them.
 
 ## Synchronization Rule
 

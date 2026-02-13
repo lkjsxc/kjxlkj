@@ -2,41 +2,59 @@
 
 Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
+## State Model
+
+- Editor MUST maintain separate state for:
+  - synced server snapshot (last accepted version)
+  - local draft buffer (user input not yet confirmed)
+- Patch generation MUST use synced snapshot + draft diff, never mutable UI text
+  as implicit source of truth.
+
 ## Editing Rules
 
-- Local edits produce patch operations.
-- Editor MUST autosave local note changes with a bounded debounce window.
-- Editor implementation MUST be built from scratch for Markdown authoring behavior.
-- Patch submissions use WS `apply_patch` when connection is active.
+- Local edits produce deterministic patch operations.
+- Editor MUST autosave within a bounded debounce window.
+- Markdown-native authoring affordances SHOULD exist without breaking plain text.
+- WS `apply_patch` is primary mutation path when connected.
 - HTTP fallback MAY be used when WS is unavailable.
 - Manual save is optional and SHOULD remain hidden by default.
-- Client idempotency keys MUST remain available even when `crypto.randomUUID`
- is unavailable.
-- Markdown interactions SHOULD include syntax-aware affordances without breaking
- plain-text flow.
-- Editor chrome SHOULD prioritize content focus over controls.
-- Editor view SHOULD NOT require visible version indicators, inline `Save Now`,
- or inline `Delete` controls in the default layout.
-- Note title changes MUST be reflected in the note list and related UI surfaces
- in the same interaction cycle.
-- If a librarian run proposes rewrites to the active note, UI MUST present
-  deterministic diff and apply/reject controls without dropping local draft state.
+- Client idempotency keys MUST work even when `crypto.randomUUID` is unavailable.
+- Title changes MUST propagate to list/navigation surfaces in the same cycle.
+- Default editor chrome SHOULD omit inline version/save/delete controls.
 
-## Presence and Collaboration Rules
+## Replay and Idempotency Rules
 
-- Active editors in the same note SHOULD appear in a presence strip.
-- Presence updates MUST NOT alter note version state.
-- Remote note changes MUST appear as ordered updates.
+- Duplicate `idempotency_key` for same note and base commit MUST replay existing
+  commit identity.
+- Reconnect MUST replay from acknowledged cursor before accepting new local patch.
+- Stale cursor submits MUST produce deterministic conflict/error payloads.
+
+## Librarian Interaction Rules
+
+- If librarian review proposes note rewrites, UI MUST present deterministic diff
+  and accept/reject controls.
+- Applying librarian changes MUST preserve unresolved local draft state and MUST
+  not silently discard user edits.
 
 ## Conflict UX
 
 | Condition | Required UX |
 |---|---|
-| `patch_rejected` or HTTP `409` | show conflict state and offer refresh/reapply |
-| reconnect after disconnect | replay missing events before accepting new patch |
+| `patch_rejected` or HTTP `409` | show conflict state and offer refresh/reapply path |
+| reconnect after disconnect | replay missing events before new patch submit |
+| idempotent retransmit | surface stable commit identity rather than duplicate success state |
+
+## Findings Coverage
+
+| Finding IDs | Required Outcome |
+|---|---|
+| `IMP-001` | explicit synced/draft split |
+| `IMP-002`, `IMP-004` | replay-safe idempotency and deterministic reconnect cursor handling |
+| `USR-002`, `USR-003` | compatible key generation fallback and autosave-first markdown UX |
+| `USR-007`, `USR-008` | same-cycle title propagation and minimal default chrome |
 
 ## Related
 
 - WS protocol: [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - Notes domain: [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
-- Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- Findings map: [findings-traceability.md](findings-traceability.md)

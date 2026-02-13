@@ -13,19 +13,19 @@ Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/
 
 ## Implementation Tasks
 
-- [x] implement command palette action model and shortcuts
-- [x] wire create/open/move/tag/run-rule commands to APIs
-- [x] preserve deterministic success/failure feedback states
-- [x] ensure setup-locked state renders login-only UI without setup-like visuals
+- [ ] implement command palette action model and shortcuts
+- [ ] wire create/open/move/tag/run-rule commands to APIs
+- [ ] preserve deterministic success/failure feedback states
+- [ ] ensure setup-locked state renders login-only UI without setup-like visuals
 
 ## Verification Tasks
 
-- [x] run `E2E-03` and targeted keyboard-navigation checks
-- [x] run command failure-path scenarios
-- [x] run `E2E-11` login/setup presentation split checks
+- [ ] run `E2E-03` and targeted keyboard-navigation checks
+- [ ] run command failure-path scenarios
+- [ ] run `E2E-11` login/setup presentation split checks
 
 ## Evidence Placeholder
 
-- [x] `Check: command workflow integration + keyboard shortcut/shell marker + setup-lock deterministic checks`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md](/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md)`
+- [ ] `Check: command workflow integration + keyboard shortcut/shell marker + setup-lock deterministic checks`
+- [ ] `Result: pass`
+- [ ] `Proof: [/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md](/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md)`

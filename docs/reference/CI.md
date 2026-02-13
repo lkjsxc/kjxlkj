@@ -7,25 +7,25 @@ Reproducible verification profiles.
 ## Canonical Location
 
 - CI workflow files are intentionally absent in this repository state.
-- Verification is executed through command profiles and recorded in ledgers.
+- Verification is defined as command profiles and evidence ledgers.
 
 ## Baseline State (2026-02-13)
 
-- Active profile target: `Release`.
-- `Librarian-runtime` and `Librarian-small-model` deterministic fixture checks are passing.
-- `Release` profile is green with Stage 09 Wave 090/091/092 evidence archived.
+- Repository is in docs-only rebuild baseline.
+- Only `Docs-integrity` is directly executable in this baseline.
+- Runtime profiles are blocked until reconstruction restores source/runtime artifacts.
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| `Docs-integrity` | documentation changes | deterministic link and structure checks for `/docs` |
-| `Workspace-bootstrap` | workspace appears | `Docs-integrity` + workspace compile checks |
-| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + `cargo test --workspace -- --nocapture` + `docker compose up -d --build` + `/api/readyz` smoke |
-| `Realtime` | WS implementation claims | `Core-runtime` + WS subscribe/patch/conflict/replay verification |
-| `Librarian-runtime` | librarian feature implementation claims | `Realtime` + `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` |
-| `Librarian-small-model` | small-parameter model compatibility claims | `Librarian-runtime` + parser fixture pack with malformed/underspecified XML outputs |
-| `Release` | release candidate | all above + perf/ops drills + no high-severity limitations |
+| `Docs-integrity` | documentation changes | deterministic link/structure checks for `/docs` and root docs |
+| `Workspace-bootstrap` | source tree reconstructed | `Docs-integrity` + workspace compile checks |
+| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + integration tests + `docker compose up --build` + `/api/readyz` smoke |
+| `Realtime` | WS implementation claims | `Core-runtime` + replay/idempotency/cursor checks |
+| `Librarian-runtime` | librarian feature claims | `Realtime` + `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` |
+| `Librarian-small-model` | small-model compatibility claims | `Librarian-runtime` + malformed/underspecified XML parser fixture pack |
+| `Release` | release candidate | all above + perf/ops drills + no open high-severity limitations |
 
 ## Evidence Rule
 

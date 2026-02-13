@@ -2,7 +2,7 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Requirement-level mismatch tracking for reconstruction.
+Requirement-level mismatch tracking for rebuild.
 
 ## Mismatch Classes
 
@@ -11,42 +11,32 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | runtime behavior violates canonical spec |
 | `M2 missing feature` | required capability is absent |
 | `M3 undocumented behavior` | behavior exists but is not canonically specified |
-| `M4 verification gap` | deterministic evidence is insufficient |
+| `M4 verification gap` | behavior exists but deterministic evidence is missing |
 | `M5 stale docs` | docs and stronger evidence contradict |
 
 ## Matrix
 
-| Req ID | Canonical Document | Requirement | Observed Status | Mismatch Class | Action |
-|---|---|---|---|---|---|
-| `R-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime startup and supervision path exists | partial | `M2` | extend to full single-service supervision and worker topology |
-| `R-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints are reachable | partial | `M2` | extend implemented route set from Stage 01-04 baseline (`notes/views/automation/admin-jobs`) to full canonical surface |
-| `R-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket protocol is reachable | partial | `M2` | extend Stage 02/04/07 note/workspace + automation replay baseline to full canonical message families |
-| `R-UI-03` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | focused notes modules are user-reachable in one responsive tree | partial | `M2` | harden shell behaviors and broaden E2E coverage to close remaining UX depth gaps |
-| `R-UI-LOCK-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | setup-locked state must render login-only UI with no setup-like appearance | aligned | closed | keep synchronized |
-| `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | constrained screens must provide menu-toggle collapse/restore to expand editor area | aligned | closed | keep synchronized |
-| `R-UI-MODULES-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | dashboards/workspace switcher are optional and project-navigation pane is not baseline | aligned | closed | keep synchronized |
-| `R-UI-RENAME-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | note title rename must propagate immediately to list/navigation surfaces | aligned | closed | keep synchronized |
-| `R-UI-CHROME-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | default editor chrome omits required inline version/save/delete controls | aligned | closed | keep synchronized |
-| `R-RBAC-01` | [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) | role-based authorization is enforced | partial | `M2` | expand authz enforcement to all remaining mutation routes |
-| `R-AUTO-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | deterministic automation rules and runs exist | partial | `M2` | extend Stage 04 rule/run baseline with Stage 06 parser/apply execution and broader trigger/action coverage |
-| `R-LIB-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | autonomous librarian structuring runs are reachable and auditable | partial | `M2` | complete full operation-kind apply execution breadth beyond provider+payload-contract+xml parser+ws+review baseline |
-| `R-LIB-PROTO-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | attribute-less XML-like protocol parsing and validation are enforced | aligned | closed | keep synchronized |
-| `R-SEARCH-02` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | full-text and backlink search exists | partial | `M2` | harden ranking/indexing behavior and broaden acceptance coverage |
-| `R-MEDIA-02` | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | standalone media note uploads are supported | spec-only | `M2` | implement |
-| `R-ISSUE-02` | [/docs/log/audits/2026-02-12-implementation-user-findings.md](/docs/log/audits/2026-02-12-implementation-user-findings.md) | historical findings are covered by regression tests | aligned | closed | keep synchronized and extend as new finding families land |
-| `R-LIB-GUARD-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | librarian parser/retry and operation safety regressions are covered by tests | partial | `M4` | extend deterministic coverage from parser-retry/ws/review boundaries to full operation-kind apply safety suites |
-| `R-PERF-02` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is archived | partial | `M4` | extend current `PERF-01`/`PERF-02`/`PERF-03` baseline to full target-scale envelope and archived resource telemetry |
-| `R-OPS-02` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart recovery evidence is archived | partial | `M4` | extend current export/backup/restart baseline evidence to include restore-drill parity proof |
-| `R-DOC-PIVOT-02` | [/docs/spec/README.md](/docs/spec/README.md) | hard-pivot docs are canonical | aligned | closed | keep synchronized |
+| Req ID | Canonical Document | Requirement Statement | Code Path(s) | Test Path(s) | Observed Status | Mismatch Class | Action | Verification Evidence |
+|---|---|---|---|---|---|---|---|---|
+| `R-DOC-ISSUE-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | implementation/user findings are canonically incorporated | n/a (docs baseline) | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `aligned` | `n/a` | `spec-update` | findings map includes `IMP-001..005`, `USR-001..008` |
+| `R-DEPLOY-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | single-container Docker Compose contract is defined | n/a (docs baseline) | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `aligned` | `n/a` | `spec-update` | architecture + guide include template and startup checks |
+| `R-DEPLOY-02` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | runnable `docker compose up --build` path exists | pending reconstruction | `OPS-01`, `E2E-01` | `spec-only` | `M2 missing feature` | `implement` | no runnable artifacts in docs-only baseline |
+| `R-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime topology is implemented and reachable | pending reconstruction | `Core-runtime` | `spec-only` | `M2 missing feature` | `implement` | implementation tree intentionally absent |
+| `R-API-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP surface is user-reachable | pending reconstruction | `API-*` | `spec-only` | `M2 missing feature` | `implement` | no current API runtime |
+| `R-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS replay/idempotency contract is user-reachable | pending reconstruction | `WS-01..06` | `spec-only` | `M2 missing feature` | `implement` | no current WS runtime |
+| `R-UI-01` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | UX shell/editor flows are user-reachable | pending reconstruction | `E2E-03`, `E2E-06..15` | `spec-only` | `M2 missing feature` | `implement` | no current frontend runtime |
+| `R-LIB-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian provider/parser/review flows are reachable | pending reconstruction | `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` | `spec-only` | `M2 missing feature` | `implement` | no current librarian runtime |
+| `R-ISSUE-REG-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | finding-mapped regressions are executable | pending reconstruction | `REG-IMP-*`, `REG-USR-*` | `test-gap` | `M4 verification gap` | `test-add` | test pack defined but not implemented |
+| `R-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | perf/ops evidence is regenerated for rebuilt runtime | pending reconstruction | `PERF-01..03`, `OPS-01..02` | `test-gap` | `M4 verification gap` | `test-add` | no current reproducible runtime for perf/ops checks |
 
 ## Summary
 
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 9 |
+| `M2 missing feature` | 6 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 3 |
+| `M4 verification gap` | 2 |
 | `M5 stale docs` | 0 |
 
 ## Related
