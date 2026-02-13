@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] implement notes CRUD with workspace/project scope
-- [ ] implement WS patching, replay, idempotency, conflict behavior
-- [ ] implement history, rollback, metadata, tags, backlinks, and search
+- [x] implement notes CRUD with workspace/project scope
+- [x] implement WS patching, replay, idempotency, conflict behavior
+- [x] implement history, rollback, metadata, tags, backlinks, and search
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md)
-- [ ] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md)
-- [ ] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md)
+- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md)
+- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md)
+- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md)
 
 ## Stage Exit
 
-- [ ] API and WS acceptance tests for notes are passing
-- [ ] replay/idempotency/conflict defects are regression-guarded
+- [x] API and WS acceptance tests for notes are passing
+- [x] replay/idempotency/conflict defects are regression-guarded

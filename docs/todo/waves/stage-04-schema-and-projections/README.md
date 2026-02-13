@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] implement automation rule and run lifecycle
-- [ ] integrate automation with workspace events and notes writes
-- [ ] harden export/backup jobs and observability signals
+- [x] implement automation rule and run lifecycle
+- [x] integrate automation with workspace events and notes writes
+- [x] harden export/backup jobs and observability signals
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-04-schema-and-projections/wave-040.md](/docs/todo/waves/stage-04-schema-and-projections/wave-040.md)
-- [ ] [/docs/todo/waves/stage-04-schema-and-projections/wave-041.md](/docs/todo/waves/stage-04-schema-and-projections/wave-041.md)
-- [ ] [/docs/todo/waves/stage-04-schema-and-projections/wave-042.md](/docs/todo/waves/stage-04-schema-and-projections/wave-042.md)
+- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-040.md](/docs/todo/waves/stage-04-schema-and-projections/wave-040.md)
+- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-041.md](/docs/todo/waves/stage-04-schema-and-projections/wave-041.md)
+- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-042.md](/docs/todo/waves/stage-04-schema-and-projections/wave-042.md)
 
 ## Stage Exit
 
-- [ ] automation deterministic tests pass
-- [ ] ops job lifecycle and observability evidence is recorded
+- [x] automation deterministic tests pass
+- [x] ops job lifecycle and observability evidence is recorded

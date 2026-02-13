@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Implementation Tasks
 
-- [ ] add librarian rule form for provider, model, and strict-mode settings
-- [ ] add run launch and run status panels in workspace shell
-- [ ] add deterministic validation feedback for invalid librarian configs
+- [x] add librarian rule form for provider, model, and strict-mode settings
+- [x] add run launch and run status panels in workspace shell
+- [x] add deterministic validation feedback for invalid librarian configs
 
 ## Verification Tasks
 
-- [ ] run UX flow checks for create/edit/disable librarian rules
-- [ ] run provider-mode form boundary cases
+- [x] run UX flow checks for create/edit/disable librarian rules
+- [x] run provider-mode form boundary cases
 
 ## Evidence Placeholder
 
-- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ui_shell --test automation_rules_api --test automation_run_flow -- --nocapture`
-- [ ] `Result:` pass
-- [ ] `Proof:` librarian panel markup + rule create/update/disable + invalid-provider validation passed with deterministic API/UI feedback
+- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ui_shell --test automation_rules_api --test automation_run_flow -- --nocapture`
+- [x] `Result:` pass
+- [x] `Proof:` librarian panel markup + rule create/update/disable + invalid-provider validation passed with deterministic API/UI feedback
