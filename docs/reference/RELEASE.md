@@ -15,15 +15,15 @@ Release is valid only for a blocker-free reconstructed state.
 
 ## Current Gate (2026-02-13)
 
-Release gate is green.
+Release gate is blocked.
 
-Evidence summary:
+Blocking reasons:
 
-- `Release` profile command pass: `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --tests -- --nocapture`
-- Librarian profile matrix and rerun stability pass (Wave 090 audit)
-- `PERF-01`/`PERF-02`/`PERF-03` and `OPS-01`/`OPS-02` evidence archived (Wave 091 audit)
-- final release-ledger sync and closure evidence archived (Wave 092 audit)
-- limitations ledger has no open `high` severity rows
+- Repository is intentionally docs-only and runtime artifacts are absent.
+- High-severity `M2` rows are open in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md).
+- High-severity limitations remain open in
+  [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md).
+- No current runtime evidence exists for mandatory acceptance suites.
 
 ## Release Steps
 

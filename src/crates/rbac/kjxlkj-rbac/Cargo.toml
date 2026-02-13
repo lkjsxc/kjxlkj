@@ -1,9 +1,0 @@
-[package]
-name = "kjxlkj-rbac"
-version.workspace = true
-edition.workspace = true
-
-[dependencies]
-thiserror.workspace = true
-kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
-

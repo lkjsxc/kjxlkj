@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/wa
 
 ## Implementation Tasks
 
-- [x] execute `PERF-01`, `PERF-02`, and `PERF-03`
-- [x] execute `OPS-01` and `OPS-02`
-- [x] archive throughput, replay, and provider-failure evidence artifacts
+- [ ] execute `PERF-01`, `PERF-02`, and `PERF-03`
+- [ ] execute `OPS-01` and `OPS-02`
+- [ ] archive throughput, replay, and provider-failure evidence artifacts
 
 ## Verification Tasks
 
-- [x] validate performance envelope against target limits
-- [x] validate backup/restore and restart recovery proofs
+- [ ] validate performance envelope against target limits
+- [ ] validate backup/restore and restart recovery proofs
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test performance_smoke --test ops_recovery --test admin_jobs_api --test automation_provider_adapter -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `performance_smoke`: `2 passed` (`PERF-01`, `PERF-02`, `PERF-03`); `ops_recovery`: `1 passed`; `admin_jobs_api`: `1 passed`; `automation_provider_adapter`: `5 passed` including provider-failure and retry envelope diagnostics
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test performance_smoke --test ops_recovery --test admin_jobs_api --test automation_provider_adapter -- --nocapture`
+- [ ] `Result:` pass
+- [ ] `Proof:` `performance_smoke`: `2 passed` (`PERF-01`, `PERF-02`, `PERF-03`); `ops_recovery`: `1 passed`; `admin_jobs_api`: `1 passed`; `automation_provider_adapter`: `5 passed` including provider-failure and retry envelope diagnostics

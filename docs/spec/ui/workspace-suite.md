@@ -20,11 +20,14 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## UX Safety Rules
 
-- Optional modules MUST be off by default in baseline note-first mode.
+- Optional modules MUST be off by default in baseline note-first mode
+  (`UX-NAV-01`).
 - Feature-rich panels MUST NOT break baseline note editing flow.
-- Command palette actions MUST return deterministic success/failure feedback.
+- Command palette actions MUST return deterministic success/failure feedback
+  (`UX-NAV-02`).
 - Graph navigation MUST preserve return path to prior note/view context.
-- Librarian previews MUST support per-operation accept/reject in review mode.
+- Librarian previews MUST support per-operation accept/reject in review mode
+  (`UX-LIB-01`).
 - Project scoping MAY exist in data model, but dedicated project-navigation pane
   is out of baseline scope and MUST NOT be assumed.
 
@@ -37,6 +40,7 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## Related
 
+- UX requirements: [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md)
 - Layout contract: [layout-and-interaction.md](layout-and-interaction.md)
 - Workspaces domain: [/docs/spec/domain/workspaces.md](/docs/spec/domain/workspaces.md)
 - Findings map: [findings-traceability.md](findings-traceability.md)

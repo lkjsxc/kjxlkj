@@ -11,9 +11,10 @@ Reproducible verification profiles.
 
 ## Baseline State (2026-02-13)
 
-- Active profile target: `Release`.
-- `Librarian-runtime` and `Librarian-small-model` deterministic fixture checks are passing.
-- `Release` profile is green with Stage 09 Wave 090/091/092 evidence archived.
+- Repository is in docs-only reconstruction reset mode.
+- Active immediate profile target: `Docs-integrity`.
+- Runtime-oriented profiles are blocked until reconstruction restores executable
+  runtime artifacts.
 
 ## Verification Profiles
 

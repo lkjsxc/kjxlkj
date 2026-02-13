@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Implementation Tasks
 
-- [x] keep one canonical OpenAPI document under `/docs/spec/api/`
-- [x] update log index and proposal references to unversioned contract language
-- [x] synchronize TODO and reference ledgers to unversioned terminology
+- [ ] keep one canonical OpenAPI document under `/docs/spec/api/`
+- [ ] update log index and proposal references to unversioned contract language
+- [ ] synchronize TODO and reference ledgers to unversioned terminology
 
 ## Verification Tasks
 
-- [x] verify log and proposal docs are reachable from `/docs/log/README.md`
-- [x] verify active canonical docs use unversioned API and WS paths
+- [ ] verify log and proposal docs are reachable from `/docs/log/README.md`
+- [ ] verify active canonical docs use unversioned API and WS paths
 
 ## Evidence Placeholder
 
-- [x] `Check: deterministic index reachability and canonical unversioned-path scans`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [ ] `Check: deterministic index reachability and canonical unversioned-path scans`
+- [ ] `Result: pass`
+- [ ] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`

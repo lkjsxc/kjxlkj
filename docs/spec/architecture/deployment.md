@@ -2,16 +2,42 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Single-Container Compose Contract
+## Current Baseline: Documentation Container
 
-Deployment MUST use one Docker Compose service that runs both:
+In the docs-only reconstruction baseline, Docker Compose MUST run exactly one
+service that serves repository documentation.
+
+### Baseline Compose Template (Normative for current repo state)
+
+```yaml
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kjxlkj-docs
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+```
+
+### Baseline Acceptance
+
+1. `docker compose up --build` starts exactly one service.
+2. `http://127.0.0.1:8080` serves repository docs content.
+3. `docker compose down` exits cleanly.
+
+## Reconstruction Target: Single-Container Runtime
+
+Deployment target after reconstruction remains one Docker Compose service that
+runs both:
 
 - PostgreSQL process
 - `kjxlkj` application process
 
 This shape is mandatory for baseline operations and local-first rebuild.
 
-## Process Supervision Contract
+## Process Supervision Contract (Runtime Target)
 
 Container entrypoint MUST:
 
@@ -21,7 +47,7 @@ Container entrypoint MUST:
 4. start application server
 5. forward termination signals and stop both processes cleanly
 
-## Compose Template (Normative)
+## Runtime Compose Template (Target)
 
 ```yaml
 services:
@@ -49,7 +75,7 @@ volumes:
   kjxlkj_pg:
 ```
 
-## Storage Layout
+## Storage Layout (Runtime Target)
 
 | Path | Purpose |
 |---|---|
@@ -57,20 +83,11 @@ volumes:
 | `/app/static` | built SPA assets |
 | `/app/config` | runtime configuration (optional mount) |
 
-## Health Rules
+## Health Rules (Runtime Target)
 
 - `/api/healthz` verifies application liveness.
 - `/api/readyz` verifies DB connectivity and migration compatibility.
 - Compose healthcheck MUST use `/api/readyz`.
-
-## Rebuild Acceptance
-
-Single-container deployment is accepted only when all pass:
-
-1. `docker compose up --build` starts exactly one service
-2. service health becomes `healthy`
-3. `/api/readyz` returns success
-4. shutdown (`docker compose down`) exits cleanly without orphan DB process
 
 ## Related
 

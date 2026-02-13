@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Implementation Tasks
 
-- [x] add domain contracts for workspaces, projects, permissions, automation
-- [x] extend note model with workspace/project/access scope requirements
-- [x] add workspace suite UX contract (dashboards, command palette, graph, views)
+- [ ] add domain contracts for workspaces, projects, permissions, automation
+- [ ] extend note model with workspace/project/access scope requirements
+- [ ] add workspace suite UX contract (dashboards, command palette, graph, views)
 
 ## Verification Tasks
 
-- [x] verify `domain/` and `ui/` readmes include all new docs
-- [x] verify no orphan docs were introduced
+- [ ] verify `domain/` and `ui/` readmes include all new docs
+- [ ] verify no orphan docs were introduced
 
 ## Evidence Placeholder
 
-- [x] `Check: deterministic README coverage and orphan scan for /docs/spec/domain and /docs/spec/ui`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [ ] `Check: deterministic README coverage and orphan scan for /docs/spec/domain and /docs/spec/ui`
+- [ ] `Result: pass`
+- [ ] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`

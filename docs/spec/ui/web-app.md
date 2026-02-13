@@ -27,22 +27,23 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 - Unauthenticated access follows deterministic setup/login routing.
 - `GET /api/auth/session` MAY return `401` before login and MUST be treated as
-  expected unauthenticated state, not fatal error.
+  expected unauthenticated state, not fatal error (`UX-AUTH-01`).
 - Setup UI MUST be shown only while setup is actually available.
 - If setup is locked (for example deterministic `409`), UI MUST switch to
-  login-only presentation with no setup-like visuals.
-- Session expiry MUST redirect to re-auth flow without draft loss.
+  login-only presentation with no setup-like visuals (`UX-AUTH-02`).
+- Session expiry MUST redirect to re-auth flow with explicit draft recovery path
+  (`UX-AUTH-03`).
 
 ## Editing Surface Rules
 
 - Note title MUST be editable in detail view.
 - Title edits MUST propagate to lists and related navigation surfaces in the same
-  interaction cycle.
-- Autosave is the default authoring path.
+  interaction cycle (`UX-EDIT-04`).
+- Autosave is the default authoring path (`UX-EDIT-02`).
 - Manual `Save Now`, inline `Delete`, and inline version badges are optional and
-  SHOULD remain hidden in default layout.
+  SHOULD remain hidden in default layout (`UX-EDIT-05`).
 - Secondary modules (dashboard/workspace switcher) MUST NOT displace baseline
-  note editing surfaces.
+  note editing surfaces (`UX-NAV-01`).
 
 ## Findings Coverage
 
@@ -54,6 +55,7 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## Related
 
+- UX requirements: [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md)
 - Workspace suite: [workspace-suite.md](workspace-suite.md)
 - Editor flow: [editor-flow.md](editor-flow.md)
 - Findings map: [findings-traceability.md](findings-traceability.md)

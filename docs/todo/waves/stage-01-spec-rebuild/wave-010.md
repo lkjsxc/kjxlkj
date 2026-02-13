@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-
 
 ## Implementation Tasks
 
-- [x] scaffold workspace crates (`workspace`, `rbac`) and wire into app runtime
-- [x] add base DB migrations for users, workspaces, membership, projects
-- [x] expose readiness/liveness for new topology
+- [ ] scaffold workspace crates (`workspace`, `rbac`) and wire into app runtime
+- [ ] add base DB migrations for users, workspaces, membership, projects
+- [ ] expose readiness/liveness for new topology
 
 ## Verification Tasks
 
-- [x] run migration and startup smoke checks
-- [x] run T1 ownership invariants checks
+- [ ] run migration and startup smoke checks
+- [ ] run T1 ownership invariants checks
 
 ## Evidence Placeholder
 
-- [x] `Check: cargo workspace compile + migration smoke + readiness startup smoke + ownership invariants`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md](/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md)`
+- [ ] `Check: cargo workspace compile + migration smoke + readiness startup smoke + ownership invariants`
+- [ ] `Result: pass`
+- [ ] `Proof: [/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md](/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md)`

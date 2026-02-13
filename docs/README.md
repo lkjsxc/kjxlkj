@@ -8,6 +8,7 @@
 - Canonical behavior and policy are defined before implementation.
 - Completion claims MUST be backed by deterministic evidence.
 - Reference and TODO ledgers MUST stay synchronized with implementation status.
+- `IMP-*` and `USR-*` findings are mandatory reconstruction inputs.
 
 ## Authority and Precedence
 
@@ -51,6 +52,8 @@ Use this order for decisions:
 
 ## Related
 
+- Findings traceability: [spec/ui/findings-traceability.md](spec/ui/findings-traceability.md)
+- UX requirements: [spec/ui/reconstruction-ux-requirements.md](spec/ui/reconstruction-ux-requirements.md)
 - All-in-docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
 - Structure rules: [policy/STRUCTURE.md](policy/STRUCTURE.md)
 - Root layout rules: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)

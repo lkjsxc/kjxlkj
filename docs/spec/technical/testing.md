@@ -58,6 +58,13 @@ Mandatory verification contract for reconstruction.
 | `E2E-13` | note title rename propagates immediately to notes list/related surfaces |
 | `E2E-14` | default editor chrome omits inline version/save/delete controls |
 | `E2E-15` | librarian run restructures documentation notes with deterministic audit trail |
+| `E2E-16` | pre-auth session probe `401` path is non-fatal and action-guided |
+| `E2E-17` | editor status rail (`saving/saved/conflict/offline`) and draft integrity remain consistent |
+| `E2E-18` | conflict recovery actions (`reload/reapply/copy`) work without draft loss |
+| `E2E-19` | compact layout at `320px` preserves collapse/restore and no horizontal overflow |
+| `E2E-20` | baseline note-first mode stays usable with optional modules disabled |
+| `E2E-21` | keyboard-first and focus-order flows remain deterministic across panel toggles/review flows |
+| `E2E-22` | accessible names/roles/status announcements exist for async-critical controls |
 | `PERF-01` | CRUD/search latency under target scale |
 | `PERF-02` | sustained WS stream soak with ordering integrity |
 | `PERF-03` | librarian batch structuring throughput under bounded token/time budgets |
@@ -82,6 +89,18 @@ Mandatory verification contract for reconstruction.
 | `REG-USR-007` | `USR-007` | title rename propagates same-cycle across list/navigation |
 | `REG-USR-008` | `USR-008` | default editor chrome remains minimal |
 
+## UX Reconstruction Regression Pack
+
+| ID | Requirement Link | Required Scenario |
+|---|---|---|
+| `REG-UX-001` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-AUTH-01..03` | auth transitions and pre-auth `401` are deterministic and non-fatal |
+| `REG-UX-002` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-EDIT-01..07` | editor state model, autosave, idempotency replay, and conflict recovery are deterministic |
+| `REG-UX-003` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-LAYOUT-01..04` | responsive behavior at desktop and `320px` preserves editing flow |
+| `REG-UX-004` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-NAV-01..02` | note-first baseline with optional modules and keyboard-first command flows |
+| `REG-UX-005` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-FEEDBACK-01..02` | save/conflict/offline feedback and actionable error states are present |
+| `REG-UX-006` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-A11Y-01..02` | focus order and accessibility semantics are validated |
+| `REG-UX-007` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-LIB-01..02` | librarian review/apply flow preserves user control and draft safety |
+
 ## Determinism Rules
 
 - use bounded timeouts and explicit diagnostics
@@ -91,6 +110,7 @@ Mandatory verification contract for reconstruction.
 
 ## Related
 
+- UX requirements: [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
 - Findings map: [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md)
 - Performance targets: [performance.md](performance.md)
 - CI profiles: [/docs/reference/CI.md](/docs/reference/CI.md)

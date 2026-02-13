@@ -1,3 +1,0 @@
-ALTER TABLE automation_runs
-    ADD COLUMN IF NOT EXISTS provider_kind TEXT NULL,
-    ADD COLUMN IF NOT EXISTS model TEXT NULL;

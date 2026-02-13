@@ -8,6 +8,7 @@ Post-change audits and evidence summaries.
 
 | Document | Purpose |
 |---|---|
+| [2026-02-13-reconstruction-reset-sync.md](2026-02-13-reconstruction-reset-sync.md) | spec/code/todo reset audit for docs-only reconstruction baseline, UX requirement consolidation, and ledger synchronization |
 | [2026-02-12-implementation-user-findings.md](2026-02-12-implementation-user-findings.md) | consolidated defects and UX gaps discovered during implementation and user feedback |
 | [2026-02-12-librarian-doc-sync.md](2026-02-12-librarian-doc-sync.md) | mismatch closure audit for librarian-agent documentation and ledger sync |
 | [2026-02-12-stage-00-canonical-reset.md](2026-02-12-stage-00-canonical-reset.md) | deterministic closure evidence for Stage 00 canonical reset waves |

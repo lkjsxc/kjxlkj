@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/wa
 
 ## Implementation Tasks
 
-- [x] wire `Librarian-runtime` and `Librarian-small-model` profile execution
-- [x] enforce deterministic fixture sets for parser and provider error paths
-- [x] eliminate flaky signals in librarian test suites
+- [ ] wire `Librarian-runtime` and `Librarian-small-model` profile execution
+- [ ] enforce deterministic fixture sets for parser and provider error paths
+- [ ] eliminate flaky signals in librarian test suites
 
 ## Verification Tasks
 
-- [x] run CI profile matrix on clean environment
-- [x] run rerun stability checks for nondeterminism
+- [ ] run CI profile matrix on clean environment
+- [ ] run rerun stability checks for nondeterminism
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture` and `for i in 1 2 3; do TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture; done`
-- [x] `Result:` pass
-- [x] `Proof:` profile matrix and 3x rerun stability checks passed with no nondeterministic failures (`automation_provider_adapter: 5 passed`, `automation_run_flow: 1 passed`, `ws_flow: 1 passed`)
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture` and `for i in 1 2 3; do TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture; done`
+- [ ] `Result:` pass
+- [ ] `Proof:` profile matrix and 3x rerun stability checks passed with no nondeterministic failures (`automation_provider_adapter: 5 passed`, `automation_run_flow: 1 passed`, `ws_flow: 1 passed`)

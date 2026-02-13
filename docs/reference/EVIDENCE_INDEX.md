@@ -7,6 +7,7 @@ Deterministic mapping from reconstruction stages to proof documents and checks.
 ## Purpose
 
 This index is the fast path for reconstructing source/runtime confidence from docs.
+Evidence listed here is historical and MUST be revalidated after docs-only reset.
 
 ## Stage Evidence Map
 

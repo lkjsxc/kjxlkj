@@ -17,25 +17,26 @@ For state claims, use this precedence:
 
 `/docs/spec/` remains the target behavior contract.
 
-## Snapshot (2026-02-12)
+## Snapshot (2026-02-13)
 
-The repository is in hard-pivot reconstruction mode.
+The repository is in docs-only reconstruction reset mode.
 
-- Canonical docs target a multi-user workspace platform on `/api` and `/ws`.
-- Canonical docs include librarian-agent contracts for autonomous documentation
-  structuring with OpenRouter/LM Studio compatible providers.
-- Runtime and deployment artifacts remain intentionally absent in this baseline.
+- Runtime and source artifacts are intentionally removed.
+- Historical implementation/user findings (`IMP-*`, `USR-*`) are preserved and
+  mandatory for rebuild regression packs.
+- UX requirements are consolidated under
+  [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md).
+- Docker Compose currently launches the documentation environment only.
 
 ## Synchronization Rule
 
-Whenever status changes, synchronize:
+Whenever status changes, synchronize these in one logical change:
 
 - `CONFORMANCE.md`
 - `LIMITATIONS.md`
 - `DRIFT_MATRIX.md`
+- `RELEASE.md`
 - `/docs/todo/README.md`
-
-in one logical change.
 
 ## Related
 
