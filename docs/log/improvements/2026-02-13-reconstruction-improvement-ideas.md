@@ -8,7 +8,7 @@ Improvements that increase deterministic reconstruction quality from docs-only b
 
 ## Ideas
 
-1. Add a generated `docs/reference/EVIDENCE_INDEX.md` that maps each TODO wave to
+1. [x] Add a generated `docs/reference/EVIDENCE_INDEX.md` that maps each TODO wave to
    required verification commands and latest passing audit document.
 2. Add a deterministic `docs-integrity` script that enforces:
    - every TODO file has `## Relevant Documents`

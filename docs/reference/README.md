@@ -13,6 +13,7 @@ For state claims, use this precedence:
 3. [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 4. [/docs/reference/CI.md](/docs/reference/CI.md)
 5. [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+6. [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
 `/docs/spec/` remains the target behavior contract.
 
@@ -40,3 +41,4 @@ in one logical change.
 
 - Target behavior: [/docs/spec/README.md](/docs/spec/README.md)
 - Execution contract: [/docs/todo/README.md](/docs/todo/README.md)
+- Stage-proof map: [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
