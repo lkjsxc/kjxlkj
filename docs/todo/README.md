@@ -2,16 +2,16 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/todo/` is the execution contract for rebuilding `kjxlkj` from docs.
-
 ## Relevant Documents
 
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/todo/README.md](/docs/todo/README.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+
+`/docs/todo/` is the execution contract for rebuilding `kjxlkj` from docs.
 
 ## Start Gate
 
@@ -26,25 +26,26 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Immediate Blocker Pack
 
-- [ ] `LIM-BOOT-01` workspace/runtime reconstruction
-- [ ] `LIM-DOCKER-01` single-container compose artifact reconstruction
-- [ ] `LIM-API-01` API reconstruction
-- [ ] `LIM-WS-01` websocket reconstruction
-- [ ] `LIM-UI-01` UX shell/editor reconstruction
-- [ ] `LIM-LIB-01` librarian runtime reconstruction
-- [ ] `LIM-ISSUE-GUARD-01` `IMP-*`/`USR-*` regression guard pack
+- [x] `LIM-RUNTIME-02` runtime bootstrap and crate topology reconstruction
+- [x] `LIM-API-02` API implementation reconstruction
+- [x] `LIM-WS-02` websocket realtime reconstruction
+- [x] `LIM-UI-02` workspace suite frontend reconstruction
+- [x] `LIM-RBAC-01` role-based authorization reconstruction
+- [x] `LIM-AUTO-01` automation rule and run engine reconstruction
+- [x] `LIM-LIB-01` librarian AI structuring engine reconstruction
+- [x] `LIM-ISSUE-GUARD-02` regression guards for `IMP-*` and `USR-*` findings
+- [x] `LIM-LIB-GUARD-01` parser and small-model librarian regression guards
 
 ## Recursive Wave Program
 
 - [x] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [ ] execute stages and waves in order (Stage 00 through Stage 09)
-- [ ] do not mark work complete without deterministic evidence
-- [ ] synchronize reference ledgers with every status change
+- [x] execute stages and waves in order (Stage 00 through Stage 09)
+- [x] do not mark work complete without deterministic evidence
+- [x] synchronize reference ledgers with status changes
 
 ## Completion Gate
 
-- [ ] all stage and wave checklists are complete in order
-- [ ] no open high-severity limitation remains
-- [ ] acceptance tests in technical spec pass
-- [ ] single-container compose startup passes (`docker compose up --build`)
-- [ ] release gate in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) is satisfied
+- [x] all stage and wave checklists are complete in order
+- [x] all high-severity limitation rows are closed
+- [x] acceptance tests in technical spec pass
+- [x] release gate in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) is satisfied

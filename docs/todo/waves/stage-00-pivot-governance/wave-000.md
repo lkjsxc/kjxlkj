@@ -13,18 +13,18 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Implementation Tasks
 
-- [ ] set API base path to `/api` in canonical docs
-- [ ] set WS endpoint to `/ws` in canonical docs
-- [ ] align OpenAPI document with HTTP and WS contracts
-- [ ] enforce `DELETE /notes/{id}` soft-delete path consistency
+- [x] set API base path to `/api` in canonical docs
+- [x] set WS endpoint to `/ws` in canonical docs
+- [x] align OpenAPI document with HTTP and WS contracts
+- [x] enforce `DELETE /notes/{id}` soft-delete path consistency
 
 ## Verification Tasks
 
-- [ ] link-check `api/` docs and OpenAPI references
-- [ ] verify no remaining version-labeled API paths in canonical docs
+- [x] link-check `api/` docs and OpenAPI references
+- [x] verify no remaining version-labeled API paths in canonical docs
 
 ## Evidence Placeholder
 
-- [ ] `Check: deterministic Stage 00 validation pack for API/WS/OpenAPI contract parity and path rules`
-- [ ] `Result: pass`
-- [ ] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [x] `Check: deterministic Stage 00 validation pack for API/WS/OpenAPI contract parity and path rules`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`

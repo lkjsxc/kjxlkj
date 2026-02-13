@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Implementation Tasks
 
-- [ ] implement workspace-scoped note create/list/get/update/title/delete
-- [ ] implement note history and rollback APIs
-- [ ] enforce optimistic versioning semantics
+- [x] implement workspace-scoped note create/list/get/update/title/delete
+- [x] implement note history and rollback APIs
+- [x] enforce optimistic versioning semantics
 
 ## Verification Tasks
 
-- [ ] run `API-NOTE-01..04`
-- [ ] run version conflict boundary tests
+- [x] run `API-NOTE-01..04`
+- [x] run version conflict boundary tests
 
 ## Evidence Placeholder
 
-- [ ] `Check: note lifecycle + history/rollback + version conflict integration coverage`
-- [ ] `Result: pass`
-- [ ] `Proof: [/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md](/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md)`
+- [x] `Check: note lifecycle + history/rollback + version conflict integration coverage`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md](/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md)`

@@ -23,5 +23,19 @@ Improvements that increase deterministic reconstruction quality from docs-only b
 
 ## Source-Length Note
 
-- No runtime source files are currently present in this repository baseline.
-- Therefore, there are no runtime source files exceeding 200 lines at this time.
+- Runtime source files exceeding 200 lines in current state:
+   - `src/crates/app/kjxlkj-server/src/handlers/automation.rs` (2159)
+   - `src/crates/app/kjxlkj-server/tests/automation_provider_adapter.rs` (1274)
+   - `src/crates/app/kjxlkj-server/static/index.html` (1239)
+   - `src/crates/db/kjxlkj-db/src/repos/notes.rs` (804)
+   - `src/crates/app/kjxlkj-server/src/handlers/notes.rs` (658)
+   - `src/crates/app/kjxlkj-server/src/handlers/ws.rs` (538)
+   - `src/crates/app/kjxlkj-server/tests/ws_flow.rs` (477)
+   - `src/crates/db/kjxlkj-db/src/repos/automation.rs` (465)
+   - `src/crates/app/kjxlkj-server/tests/performance_smoke.rs` (426)
+   - `src/crates/app/kjxlkj-server/src/handlers/admin.rs` (331)
+   - `src/crates/app/kjxlkj-server/tests/automation_run_flow.rs` (325)
+   - `src/crates/app/kjxlkj-server/tests/security_hardening.rs` (319)
+   - `src/crates/app/kjxlkj-server/src/handlers/auth.rs` (277)
+   - `src/crates/app/kjxlkj-server/tests/automation_rules_api.rs` (273)
+   - `src/crates/app/kjxlkj-server/src/handlers/views.rs` (215)
