@@ -4,76 +4,56 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Purpose
 
-Deterministic scaffold guide for rebuilding source artifacts from docs-only baseline.
+Deterministic scaffold guide for rebuilding typed runtime artifacts from canon.
 
 ## Relevant Canonical Inputs
 
 - [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
 - [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
 - [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Baseline Assumption
 
-Current repository state is docs-only. This guide defines the minimum bootstrap that
-must exist before stage-wave implementation work can begin.
+Current repository state may contain only canonical docs and docs-launch artifacts.
 
 ## Phase 1: Root Scaffold
 
-1. Create root derived files:
+1. Create derived runtime manifests:
    - `Cargo.toml`
    - `Cargo.lock`
-   - `.dockerignore`
-   - `Dockerfile`
-   - `docker-compose.yml`
-2. Ensure root paths stay compliant with
-   [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md).
-3. Keep all newly created docs and source files under 200 lines by design.
+   - `package.json`
+   - `tsconfig.json`
+2. Keep root compliant with [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md).
 
-## Phase 2: Workspace Topology
+## Phase 2: Typed Topology
 
-1. Create workspace root: `src/crates/`.
-2. Create canonical group roots:
-   - `src/crates/app/`
-   - `src/crates/core/`
-   - `src/crates/platform/`
-   - `src/crates/services/`
-3. Scaffold all required crate directories from
-   [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md).
-4. Add crate-local `Cargo.toml` and minimal `lib.rs`/`main.rs` entry points.
+1. Create backend workspace root: `src/backend/crates/`
+2. Create frontend root: `src/frontend/`
+3. Scaffold required backend crates from [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md).
+4. Ensure frontend source uses `.ts`/`.tsx` only.
 
 ## Phase 3: Manifest Wiring
 
-1. Set workspace resolver to `2`.
-2. Set workspace package edition to `2021`.
-3. Register all canonical members from crate topology docs.
-4. Add shared dependencies listed in
-   [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md).
+1. Configure Rust workspace members and shared dependencies.
+2. Configure TypeScript strict settings (`strict`, `noImplicitAny`, `allowJs: false`).
+3. Register typed API/WS contract packages if shared.
 
-## Phase 4: Compile-Ready Gate
+## Phase 4: Type and Compile Gate
 
 Minimum deterministic checks before feature implementation:
 
-1. `cargo metadata` succeeds.
-2. `cargo check --workspace` succeeds.
-3. No source file exceeds 200 lines.
-4. Directory fan-out remains around 12 direct children.
+1. backend compile: `cargo check --workspace`
+2. frontend type-check: `tsc --noEmit`
+3. no direct JavaScript runtime source
 
 ## Phase 5: Wave-Driven Implementation
 
 1. Start with [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md).
 2. Implement behavior in wave order only.
-3. For each wave:
-   - implement user-reachable behavior
-   - run mapped tests from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-   - update ledgers and TODO state in the same change
-
-## Completion Rule
-
-Do not mark implementation wave tasks complete until deterministic evidence exists
-and linked ledgers are synchronized.
+3. Update ledgers and TODO state in the same change.
 
 ## Related
 

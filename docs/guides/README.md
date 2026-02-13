@@ -2,7 +2,7 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-Operator-facing guides for setup and operation.
+Operator-facing guides for baseline use and reconstruction.
 
 ## Authority
 
@@ -17,11 +17,11 @@ For authority, use:
 
 | Document | Purpose |
 |---|---|
-| [QUICKSTART.md](QUICKSTART.md) | first-run local workflow |
-| [DOCKER.md](DOCKER.md) | single-container compose workflow |
+| [QUICKSTART.md](QUICKSTART.md) | first-run All in Docs workflow |
+| [DOCKER.md](DOCKER.md) | Docker artifact regeneration workflow |
 | [API.md](API.md) | API usage and discovery pointers |
-| [LIBRARIAN.md](LIBRARIAN.md) | configure and operate autonomous librarian runs |
-| [RECONSTRUCTION_BOOTSTRAP.md](RECONSTRUCTION_BOOTSTRAP.md) | file-by-file bootstrap path from docs-only baseline to compile-ready workspace |
+| [LIBRARIAN.md](LIBRARIAN.md) | configure and operate librarian automation |
+| [RECONSTRUCTION_BOOTSTRAP.md](RECONSTRUCTION_BOOTSTRAP.md) | typed runtime bootstrap from canonical docs |
 
 ## Related
 

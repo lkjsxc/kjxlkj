@@ -1,18 +1,26 @@
 # Documentation
 
-`/docs` is the canonical system definition for `kjxlkj`.
+`/docs` is the product for `kjxlkj`.
 
 ## Contract
 
-- The product MUST be reconstructable from documentation.
-- Canonical behavior and policy are defined before implementation.
-- Completion claims MUST be backed by deterministic evidence.
-- Reference and TODO ledgers MUST stay synchronized with implementation status.
-- `IMP-*` and `USR-*` findings are mandatory reconstruction inputs.
+- All in Docs is mandatory: docs are the value, code is derivative.
+- Policy and spec define requirements before any implementation.
+- Reference and TODO ledgers define truth of execution state.
+- Completion claims require deterministic evidence.
+- Typed implementation contract is normative:
+  - frontend MUST be TypeScript only
+  - backend MUST be Rust only
+  - direct JavaScript app source MUST NOT be committed
+
+## All in Docs vs Docs-Only
+
+- `All in Docs`: governance model. Docs remain canonical even when code exists.
+- `docs-only`: one possible repository state where derivatives are absent.
+
+`All in Docs` is permanent policy. `docs-only` is optional state.
 
 ## Authority and Precedence
-
-Use this order for decisions:
 
 1. [/docs/policy/](policy/README.md)
 2. [/docs/spec/](spec/README.md)
@@ -22,38 +30,26 @@ Use this order for decisions:
 
 ## Status Model
 
-- `policy` and `spec` are normative.
-- `reference` is normative for verified state.
-- `todo` is normative for staged execution and closure gates.
-- `guides` and `overview` are explanatory unless referenced by policy/spec.
-- `log` is historical and non-authoritative.
-
-## Canonical Reading Order
-
-1. [policy/README.md](policy/README.md)
-2. [spec/README.md](spec/README.md)
-3. [reference/README.md](reference/README.md)
-4. [todo/README.md](todo/README.md)
-5. [guides/README.md](guides/README.md)
-6. [overview/README.md](overview/README.md)
-7. [log/README.md](log/README.md)
+- `policy` and `spec` are normative requirements.
+- `reference` is normative for verified current state.
+- `todo` is normative for execution order and closure.
+- `guides` and `overview` are explanatory unless explicitly referenced by policy/spec.
+- `log` is historical evidence.
 
 ## Directory Map
 
 | Directory | Role |
 |---|---|
-| [policy/](policy/README.md) | repository invariants and guardrails |
-| [spec/](spec/README.md) | target workspace-suite behavior |
+| [policy/](policy/README.md) | invariants and guardrails |
+| [spec/](spec/README.md) | target behavior and implementation contracts |
 | [reference/](reference/README.md) | verified state and open gaps |
-| [todo/](todo/README.md) | recursive migration execution contract |
-| [guides/](guides/README.md) | operator workflows |
-| [overview/](overview/README.md) | product concepts and vocabulary |
-| [log/](log/README.md) | proposals and audits |
+| [todo/](todo/README.md) | staged execution contract |
+| [guides/](guides/README.md) | operational walkthroughs |
+| [overview/](overview/README.md) | concepts and terminology |
+| [log/](log/README.md) | audit/proposal/improvement history |
 
 ## Related
 
-- Findings traceability: [spec/ui/findings-traceability.md](spec/ui/findings-traceability.md)
-- UX requirements: [spec/ui/reconstruction-ux-requirements.md](spec/ui/reconstruction-ux-requirements.md)
-- All-in-docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
+- All in Docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
+- Type safety contract: [spec/technical/type-safety.md](spec/technical/type-safety.md)
 - Structure rules: [policy/STRUCTURE.md](policy/STRUCTURE.md)
-- Root layout rules: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)

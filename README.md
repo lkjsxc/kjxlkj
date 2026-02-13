@@ -1,39 +1,37 @@
 # kjxlkj
 
-Documentation-first workspace-suite platform for collaborative notes, automation,
-and knowledge workflows.
+All in Docs knowledge-workspace platform.
 
 ## Current Contract (2026-02-13)
 
-- Repository is intentionally in a docs-only reconstruction baseline.
-- Runtime and deployment implementation artifacts are intentionally absent.
-- Canonical behavior is defined in `/docs` and MUST be rebuilt from specs/TODO.
-- Implementation/user findings (`IMP-*`, `USR-*`) are canonical and mapped in
-  [`/docs/spec/ui/findings-traceability.md`](docs/spec/ui/findings-traceability.md).
-- UX reconstruction requirements are normative in
-  [`/docs/spec/ui/reconstruction-ux-requirements.md`](docs/spec/ui/reconstruction-ux-requirements.md).
+- Only documentation is canonical product value.
+- Implementation artifacts are disposable derivatives of `/docs`.
+- A repository state with no runtime source code is valid by design.
+- Rebuild claims are valid only with deterministic evidence and synchronized ledgers.
+- Frontend and backend implementation targets are statically typed only:
+  - frontend: TypeScript (`strict`)
+  - backend: Rust + PostgreSQL
+  - direct JavaScript application source is forbidden
 
-## Launch Documentation (Single Container)
+## Documentation Access
 
-```bash
-docker compose up --build
-```
+Read directly from `docs/` in the repository.
 
-Then open `http://127.0.0.1:8080`.
+Docker launch artifacts are intentionally absent in this baseline and can be
+regenerated from `docs/guides/DOCKER.md`.
 
-## Rebuild Start
+## Canonical Reading Order
 
-1. Read [`docs/todo/README.md`](docs/todo/README.md).
-2. Execute waves in [`docs/todo/waves/README.md`](docs/todo/waves/README.md).
-3. Rebuild runtime artifacts from canonical docs.
-4. Keep ledgers synchronized in [`docs/reference/`](docs/reference/README.md).
+1. `docs/policy/README.md`
+2. `docs/spec/README.md`
+3. `docs/reference/README.md`
+4. `docs/todo/README.md`
+5. `docs/guides/README.md`
 
 ## Repository Layout
 
 | Path | Purpose |
 |---|---|
-| `docs/` | canonical policy, spec, reference, and execution docs |
-| `Dockerfile` | docs container image |
-| `docker-compose.yml` | one-container docs launch |
-| `README.md` | top-level index |
+| `docs/` | canonical product definition |
+| `README.md` | top-level entry point |
 | `LICENSE` | license text |

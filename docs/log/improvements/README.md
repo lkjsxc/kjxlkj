@@ -9,3 +9,4 @@ Structured improvement ideas and reconstruction quality notes.
 | Document | Purpose |
 |---|---|
 | [2026-02-13-reconstruction-improvement-ideas.md](2026-02-13-reconstruction-improvement-ideas.md) | prioritized ideas for reconstructability, evidence automation, and policy compliance |
+| [2026-02-13-file-size-compliance.md](2026-02-13-file-size-compliance.md) | baseline file-length compliance status for docs and derived-runtime policy |

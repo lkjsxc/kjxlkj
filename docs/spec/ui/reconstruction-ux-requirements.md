@@ -2,7 +2,7 @@
 
 Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
-Canonical UX requirements for rebuilding `kjxlkj` from a docs-only baseline.
+Canonical UX requirements for rebuilding `kjxlkj` from an All in Docs baseline.
 
 ## Scope
 

@@ -8,8 +8,9 @@ Post-change audits and evidence summaries.
 
 | Document | Purpose |
 |---|---|
-| [2026-02-13-docs-launch-and-todo-start-gate.md](2026-02-13-docs-launch-and-todo-start-gate.md) | deterministic reconciliation of docs-launch artifacts, top-level TODO start-gate checks, and unchecked blocker retention in docs-only baseline |
-| [2026-02-13-reconstruction-reset-sync.md](2026-02-13-reconstruction-reset-sync.md) | spec/code/todo reset audit for docs-only reconstruction baseline, UX requirement consolidation, and ledger synchronization |
+| [2026-02-13-all-in-docs-baseline-reset.md](2026-02-13-all-in-docs-baseline-reset.md) | spec/code/todo reset audit for All in Docs baseline, typed-language policy hardening, and ledger synchronization |
+| [2026-02-13-docs-launch-and-todo-start-gate.md](2026-02-13-docs-launch-and-todo-start-gate.md) | deterministic reconciliation of docs-launch artifacts and TODO start-gate checks |
+| [2026-02-13-reconstruction-reset-sync.md](2026-02-13-reconstruction-reset-sync.md) | historical reset-sync audit captured before the All in Docs hard reset |
 | [2026-02-12-implementation-user-findings.md](2026-02-12-implementation-user-findings.md) | consolidated defects and UX gaps discovered during implementation and user feedback |
 | [2026-02-12-librarian-doc-sync.md](2026-02-12-librarian-doc-sync.md) | mismatch closure audit for librarian-agent documentation and ledger sync |
 | [2026-02-12-stage-00-canonical-reset.md](2026-02-12-stage-00-canonical-reset.md) | deterministic closure evidence for Stage 00 canonical reset waves |

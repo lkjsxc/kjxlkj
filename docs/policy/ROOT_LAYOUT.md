@@ -6,44 +6,35 @@ Allowed top-level layout and derived artifact placement.
 
 ## Root Allowlist
 
-The repository root SHOULD contain only:
-
 | Path | Purpose |
 |---|---|
 | `README.md` | project index |
 | `LICENSE` | license |
-| `docs/` | canonical documentation |
-| `src/` | Rust workspace (derived) |
-| `Cargo.toml` | workspace manifest (derived) |
-| `Cargo.lock` | dependency lockfile (derived) |
-| `.gitignore` | ignore rules |
-| `docker-compose.yml` | single-service deployment file (derived) |
-| `Dockerfile` | container image definition (derived) |
-| `.dockerignore` | docker context filter (derived) |
+| `docs/` | canonical product definition |
+| `.gitignore` | repository hygiene |
+| `.github/` | optional workflow/instructions metadata |
 
-Additional root entries require explicit rationale in `/docs/log/proposals/`.
+Additional root entries require rationale in `/docs/log/proposals/`.
 
-## Docs-Only Baseline
+## Derived Runtime Artifacts
 
-A docs-only baseline MAY temporarily contain only:
+Derived runtime artifacts are optional and disposable.
 
-- `docs/`
-- `README.md`
-- `LICENSE`
-- minimal repository hygiene files
+Allowed derived runtime roots when reconstruction is active:
 
-Derived artifacts (`src/`, compose files, and manifests) are regenerated during waves.
+- `src/`
+- `Cargo.toml`
+- `Cargo.lock`
+- frontend package manifests (`package.json`, `pnpm-lock.yaml`, `tsconfig.json`)
+- Docker artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`)
 
-## Deployment Layout Rule
+Their absence does not reduce canonical product value.
 
-Deployment MUST use a single compose service container that runs:
+## Repository State Rule
 
-- PostgreSQL process
-- `kjxlkj` application server process
-
-This non-standard shape is intentional and mandatory for this product.
+A valid baseline MAY contain only documentation and repository hygiene files.
 
 ## Related
 
 - Structure constraints: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
-- Workspace members: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- All in Docs doctrine: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)

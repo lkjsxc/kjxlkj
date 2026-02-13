@@ -2,33 +2,31 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Runtime Topology
+## Runtime Topology (Derived Snapshot)
 
 ```mermaid
 graph TD
  RT[Tokio Runtime]
  RT --> HTTP[Actix HTTP Server]
- RT --> WS[Actix WebSocket Handlers]
- RT --> BG[Background Jobs and Automation]
- RT --> LLM[LLM Provider Adapters]
+ RT --> WS[Actix WebSocket]
+ RT --> BG[Background Jobs]
  RT --> DBPOOL[SQLx PgPool]
-
- HTTP --> CORE[Domain Services]
+ UI[TypeScript SPA] --> HTTP
+ UI --> WS
+ HTTP --> CORE[Rust Domain Services]
  WS --> CORE
  CORE --> DBPOOL
- BG --> DBPOOL
- BG --> LLM
+ BG --> CORE
 ```
 
-## Startup Sequence (normative)
+## Startup Sequence
 
 1. load and validate configuration
-2. initialize tracing and error handling
+2. initialize tracing
 3. initialize PostgreSQL pool
-4. run pending SQL migrations
-5. start Actix server with HTTP + WS routes
-6. initialize LLM provider adapters (OpenRouter/LM Studio)
-7. start background workers (automation/export/backup/job polling)
+4. run pending migrations
+5. start HTTP + WS services
+6. start background workers
 
 ## Shutdown Sequence
 
@@ -39,16 +37,18 @@ graph TD
 
 ## Concurrency Rules
 
-- Writes to one note stream MUST serialize by note ID lock or transaction strategy.
-- Automation writes MUST serialize by target stream identity.
-- Librarian operation application MUST serialize by workspace + target note stream.
-- Cross-stream writes MAY run in parallel.
-- WS broadcast ordering MUST follow committed event sequence.
-- Slow clients MUST NOT block global broadcast loops.
+- note writes MUST serialize by note stream identity
+- automation writes MUST serialize by target stream identity
+- websocket broadcast ordering MUST follow committed event sequence
+- slow clients MUST NOT block global broadcast loops
+
+## Typed Boundary Rule
+
+- API payloads MUST map to typed backend structs and frontend TypeScript contracts
+- ad-hoc untyped runtime JSON handling is forbidden in core flows
 
 ## Related
 
-- Domain events: [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
-- Automation: [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- Deployment: [deployment.md](deployment.md)
+- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

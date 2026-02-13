@@ -4,58 +4,42 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 ## UX Intent
 
-- The baseline UI is note-first and low-noise.
-- Core editing confidence is prioritized over secondary panels.
-- Auth transitions MUST be deterministic and never ambiguous.
+- baseline UI is note-first and low-noise
+- editing confidence has priority over secondary modules
+- auth transitions MUST be deterministic and explicit
 
-## Hosting Boundary
+## Hosting and Language Boundary
 
-- SPA assets are built with React + Vite.
-- Application and API are served from the same origin.
+- frontend runtime MUST be TypeScript (`strict`) and single-page web app
+- application and API are served from the same origin
+- direct JavaScript runtime source is forbidden
 
 ## Required Shell Views
 
 | View | Purpose |
 |---|---|
-| Setup | first-run owner registration only when setup is available |
-| Login | authenticated session entry when setup is locked |
-| Notes list | searchable note index within scope |
-| Note detail | markdown-native editor with title, metadata, backlinks |
-| Jobs panel | export/backup/automation progress including librarian runs |
+| Setup | first-run owner registration while setup is available |
+| Login | session entry when setup is locked |
+| Notes list | searchable index within current scope |
+| Note detail | markdown editor with deterministic save/conflict feedback |
+| Jobs panel | export/backup/automation/librarian run visibility |
 
 ## Session UX Rules
 
-- Unauthenticated access follows deterministic setup/login routing.
-- `GET /api/auth/session` MAY return `401` before login and MUST be treated as
-  expected unauthenticated state, not fatal error (`UX-AUTH-01`).
-- Setup UI MUST be shown only while setup is actually available.
-- If setup is locked (for example deterministic `409`), UI MUST switch to
-  login-only presentation with no setup-like visuals (`UX-AUTH-02`).
-- Session expiry MUST redirect to re-auth flow with explicit draft recovery path
-  (`UX-AUTH-03`).
+- unauthenticated access follows deterministic setup/login routing
+- `GET /api/auth/session` may return `401` pre-auth and MUST be handled as expected state
+- setup UI MUST appear only while setup is available
+- locked setup state MUST switch to login-only presentation
 
 ## Editing Surface Rules
 
-- Note title MUST be editable in detail view.
-- Title edits MUST propagate to lists and related navigation surfaces in the same
-  interaction cycle (`UX-EDIT-04`).
-- Autosave is the default authoring path (`UX-EDIT-02`).
-- Manual `Save Now`, inline `Delete`, and inline version badges are optional and
-  SHOULD remain hidden in default layout (`UX-EDIT-05`).
-- Secondary modules (dashboard/workspace switcher) MUST NOT displace baseline
-  note editing surfaces (`UX-NAV-01`).
-
-## Findings Coverage
-
-| Finding IDs | Required Outcome |
-|---|---|
-| `USR-001`, `USR-004` | deterministic pre-auth/session and setup-lock presentation behavior |
-| `USR-006` | optional modules remain opt-in and low-noise |
-| `USR-007`, `USR-008` | immediate title propagation and minimal default editor chrome |
+- title MUST be editable in detail view
+- title edits MUST propagate to list/navigation in the same interaction cycle
+- autosave is default authoring path
+- default editor chrome SHOULD remain minimal
 
 ## Related
 
 - UX requirements: [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md)
-- Workspace suite: [workspace-suite.md](workspace-suite.md)
 - Editor flow: [editor-flow.md](editor-flow.md)
-- Findings map: [findings-traceability.md](findings-traceability.md)
+- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)

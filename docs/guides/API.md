@@ -12,13 +12,13 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Integration Notes
 
-- API base path is `/api`.
-- Authenticated browser flows use cookie session + CSRF.
-- Real-time updates use `GET /ws`.
-- Librarian automation rules are created via `/api/automation/rules` with
-  `action_json.kind = \"librarian_structure\"`.
+- API base path is `/api`
+- browser flows use cookie session + CSRF
+- real-time updates use `GET /ws`
+- clients SHOULD consume API using typed contracts (Rust structs / TypeScript interfaces)
 
 ## Related
 
 - Security specs: [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- Type safety contract: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - Domain specs: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)

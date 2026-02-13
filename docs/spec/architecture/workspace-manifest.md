@@ -1,40 +1,41 @@
-# Workspace Manifest (Cargo)
+# Workspace Manifest Policy
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative requirements for reconstructing workspace manifests.
+Normative requirements for derived runtime manifests.
 
-## Root Files
+## Root Files (When Runtime Snapshot Exists)
 
 | Path | Requirement |
 |---|---|
-| `Cargo.toml` | defines workspace resolver and members |
-| `Cargo.lock` | committed for reproducibility |
-| `.gitignore` | excludes derived build artifacts |
+| `Cargo.toml` | Rust workspace resolver and members |
+| `Cargo.lock` | committed for Rust reproducibility |
+| `package.json` | frontend workspace/package manifest |
+| `tsconfig.json` | TypeScript compiler settings with `strict: true` |
 
-## Workspace Settings
+## Rust Workspace Settings
 
 | Field | Requirement |
 |---|---|
 | `workspace.resolver` | MUST be `"2"` |
-| `workspace.package.edition` | MUST be `"2021"` |
-| `workspace.members` | MUST include canonical crate paths |
+| `workspace.package.edition` | MUST be `"2021"` or newer approved edition |
+| members | MUST include required backend crates |
 
-## Shared Dependencies
+## Frontend TypeScript Settings
 
-| Dependency | Purpose |
+| Field | Requirement |
 |---|---|
-| `actix-web` | HTTP server |
-| `actix-web-actors` | WebSocket actor support |
-| `tokio` | async runtime |
-| `sqlx` | async PostgreSQL access and migrations |
-| `serde`, `serde_json` | schema serialization |
-| `tracing`, `tracing-subscriber` | diagnostics |
-| `thiserror`, `anyhow` | error handling |
-| `uuid`, `time` | identifiers and timestamps |
+| `compilerOptions.strict` | MUST be `true` |
+| `compilerOptions.noImplicitAny` | MUST be `true` |
+| `allowJs` | MUST be `false` |
+
+## Dependency Direction Rule
+
+- frontend packages MUST depend on typed shared contracts, not ad-hoc JSON shapes
+- backend crates MUST expose typed DTO contracts used by API docs
 
 ## Related
 
-- Crate topology: [crates.md](crates.md)
-- Root layout: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
 - Source layout: [source-layout.md](source-layout.md)
+- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- Root layout: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)

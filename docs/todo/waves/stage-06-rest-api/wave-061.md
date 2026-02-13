@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-r
 
 ## Implementation Tasks
 
-- [x] validate `librarian_structure` action schema in automation routes
-- [x] persist parsed operation reports in run status payloads
-- [x] enforce scope and safety guards before operation application
+- [ ] validate `librarian_structure` action schema in automation routes
+- [ ] persist parsed operation reports in run status payloads
+- [ ] enforce scope and safety guards before operation application
 
 ## Verification Tasks
 
-- [x] run `API-AUTO-03`
-- [x] run malformed action payload rejection boundary tests
+- [ ] run `API-AUTO-03`
+- [ ] run malformed action payload rejection boundary tests
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32771/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `automation_provider_adapter`: `3 passed`; `automation_rules_api`: `1 passed`; `automation_run_flow`: `1 passed`
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32771/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow -- --nocapture`
+- [ ] `Result:` pass
+- [ ] `Proof:` `automation_provider_adapter`: `3 passed`; `automation_rules_api`: `1 passed`; `automation_run_flow`: `1 passed`

@@ -2,7 +2,7 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Release is valid only for a blocker-free reconstructed state.
+Release is valid only for blocker-free reconstructed runtime state.
 
 ## Preconditions
 
@@ -11,7 +11,7 @@ Release is valid only for a blocker-free reconstructed state.
 3. conformance claims are evidence-backed and synchronized.
 4. drift matrix has no open high-severity `M1` or `M2` rows.
 5. acceptance suites in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
-6. `Librarian-small-model` CI profile is green when librarian feature is in scope.
+6. typed gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
 
 ## Current Gate (2026-02-13)
 
@@ -19,22 +19,20 @@ Release gate is blocked.
 
 Blocking reasons:
 
-- Repository is intentionally docs-only and runtime artifacts are absent.
-- High-severity `M2` rows are open in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md).
-- High-severity limitations remain open in
-  [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md).
-- No current runtime evidence exists for mandatory acceptance suites.
+- reset baseline has open high-severity reconstruction blockers
+- runtime/API/WS/UI evidence is not currently re-established
+- typed runtime gates (`TYPE-01..03`) are not currently closed in this baseline
 
 ## Release Steps
 
-1. reconstruct implementation from canonical docs
-2. run `Release` profile and archive deterministic evidence
+1. reconstruct runtime from canonical docs
+2. run required profiles and archive deterministic evidence
 3. verify no contradictions remain between runtime and docs
-4. create release commit and tag
-5. publish artifacts
-6. synchronize release evidence in reference ledgers
+4. synchronize ledgers and TODO closure
+5. create release commit/tag
 
 ## Related
 
 - Conformance: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - Limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- CI profiles: [/docs/reference/CI.md](/docs/reference/CI.md)

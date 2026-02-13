@@ -2,7 +2,7 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-This ledger reports only currently verified behavior.
+This ledger reports currently verified behavior only.
 
 ## Status Vocabulary
 
@@ -18,43 +18,36 @@ This ledger reports only currently verified behavior.
 
 High-confidence statement:
 
-- Repository is intentionally reset to docs-only reconstruction baseline.
-- Runtime/source artifacts are intentionally absent.
-- Implementation findings (`IMP-*`) and user-reported findings (`USR-*`) are
-  integrated in canonical UI/spec/testing docs and remain mandatory regression
-  targets for rebuild.
-- UX requirements are consolidated as normative requirements in
-  [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md).
-- Release gate is not open until runtime reconstruction and deterministic
-  acceptance evidence are re-established.
+- All in Docs governance is active and canonical.
+- TODO/wave ledgers are reset to open reconstruction state.
+- Docker artifacts are intentionally absent in baseline.
+- Runtime conformance is not currently re-established.
 
 ## Domain Status
 
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
-| Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | docs-first rules and execution policy are present |
-| Findings integration (`IMP-*`/`USR-*`) | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `verified` | canonical finding-to-requirement mapping exists and links to acceptance IDs |
-| UX reconstruction requirements | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | `verified` | consolidated UX matrix and closure rules are present |
-| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | runtime currently absent |
-| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | runtime currently absent |
-| Domain model | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `spec-only` | runtime currently absent |
-| UI/UX contract execution | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `spec-only` | runtime currently absent |
-| Librarian AI contract | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `spec-only` | runtime currently absent |
-| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `unverified` | runtime currently absent |
-| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `unverified` | no current runtime tests to execute in docs-only baseline |
-| Docker Compose docs launch | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `verified` | `docker compose up -d --build` reaches `healthy`, serves `/docs/README.md`, and shuts down cleanly |
+| Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy set defines All in Docs and typed constraints |
+| All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine distinguishes governance from repository shape |
+| Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | explicit Rust + TypeScript + no direct JS rule exists |
+| No direct JS runtime source | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | repository scan shows no `.js` runtime source files |
+| Docker artifact generation guidance | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `verified` | guide defines regeneration workflow from canonical docs |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `unverified` | reconstruction evidence pending |
+| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | runtime routes not currently verified in baseline |
+| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | runtime WS path not currently verified in baseline |
+| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | TypeScript runtime evidence pending |
+| Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `unverified` | required acceptance suites not currently passing in baseline |
 
 ## Conformance Closure Rule
 
-No `spec-only` row may move to `verified` without:
+No `spec-only` or `unverified` row may move to `verified` without:
 
 1. deterministic test evidence
-2. runtime reachability from documented APIs
+2. runtime reachability from documented paths
 3. synchronized reference and TODO updates
 
 ## Related
 
 - Open limitations: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - Drift matrix: [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- Findings audit: [/docs/log/audits/2026-02-12-implementation-user-findings.md](/docs/log/audits/2026-02-12-implementation-user-findings.md)
-- Reset sync audit: [/docs/log/audits/2026-02-13-reconstruction-reset-sync.md](/docs/log/audits/2026-02-13-reconstruction-reset-sync.md)
+- Reset audit: [/docs/log/audits/2026-02-13-all-in-docs-baseline-reset.md](/docs/log/audits/2026-02-13-all-in-docs-baseline-reset.md)

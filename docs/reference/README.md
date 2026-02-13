@@ -2,11 +2,11 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
-`/docs/reference/` is the canonical truth for verified repository state.
+`/docs/reference/` is the canonical truth for verified current state.
 
 ## Authority
 
-For state claims, use this precedence:
+For state claims, use this order:
 
 1. [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 2. [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
@@ -19,18 +19,15 @@ For state claims, use this precedence:
 
 ## Snapshot (2026-02-13)
 
-The repository is in docs-only reconstruction reset mode.
-
-- Runtime and source artifacts are intentionally removed.
-- Historical implementation/user findings (`IMP-*`, `USR-*`) are preserved and
-  mandatory for rebuild regression packs.
-- UX requirements are consolidated under
-  [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md).
-- Docker Compose currently launches the documentation environment only.
+- All in Docs governance is active.
+- Canonical value is documentation.
+- Reconstruction TODO has been reset to open state.
+- Runtime conformance is currently blocked pending new reconstruction evidence.
+- Docker artifacts are currently absent and treated as regenerable derivatives.
 
 ## Synchronization Rule
 
-Whenever status changes, synchronize these in one logical change:
+Whenever state changes, update these in one logical change:
 
 - `CONFORMANCE.md`
 - `LIMITATIONS.md`

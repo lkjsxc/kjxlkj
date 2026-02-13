@@ -2,32 +2,42 @@
 
 Back: [/docs/overview/README.md](/docs/overview/README.md)
 
-`kjxlkj` is documentation-first by contract.
+`kjxlkj` uses All in Docs as a permanent doctrine.
 
-## Product Contract
+## Doctrine
 
-- Canonical behavior is defined under `/docs` before implementation.
-- Build artifacts and source code are derived outputs.
-- Reconstruction MUST be possible from canonical docs plus deterministic tooling.
-- Behavior changes MUST update policy/spec/reference/todo in one logical change.
+- Documentation is the product.
+- Source code, binaries, and containers are derived projections.
+- Derived projections may be deleted and rebuilt without losing product value.
+- Authority never shifts away from `/docs`.
 
-## Scope Pivot
+## Important Nuance
 
-The current canonical product is a web application server for notes and records.
-Legacy terminal-editor behavior is out of scope.
+This doctrine is not the same as `docs-only`.
 
-## Evidence Rule
+- `All in Docs`: always true governance rule.
+- `docs-only`: temporary repository shape when derived artifacts are absent.
 
-No feature is complete unless:
+## Reconstruction Rule
 
-1. behavior is defined in spec
-2. implementation path is user-reachable
+A reconstruction is valid only when:
+
+1. policy/spec requirements are implemented
+2. typed language constraints are satisfied
 3. deterministic tests pass
 4. reference and TODO ledgers are synchronized
+
+## Typed Language Rule
+
+Runtime reconstruction MUST use statically typed languages only:
+
+- frontend: TypeScript (`strict`)
+- backend: Rust
+
+Direct JavaScript source for application runtime is forbidden.
 
 ## Related
 
 - Policy: [/docs/policy/README.md](/docs/policy/README.md)
 - Spec: [/docs/spec/README.md](/docs/spec/README.md)
-- Reference: [/docs/reference/README.md](/docs/reference/README.md)
-- TODO: [/docs/todo/README.md](/docs/todo/README.md)
+- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)

@@ -2,19 +2,18 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-Single-container Docker Compose workflow.
+How to regenerate Docker artifacts from canonical docs.
 
-## Current Baseline Scope
+## Baseline Scope
 
-- one compose service named `docs`
-- one container serving repository documentation on port `8080`
-- one command startup path for operators
+- Docker files are intentionally absent in current baseline.
+- Docker artifacts are derived outputs and may be regenerated when needed.
 
-## Startup (Current Baseline)
+## Regeneration Steps (Docs Container)
 
-1. Start docs container: `docker compose up --build`
-2. Open docs: `http://127.0.0.1:8080`
-3. Check container status: `docker compose ps`
+1. Generate root `Dockerfile` and `docker-compose.yml` from deployment/docs specs.
+2. Build/start: `docker compose up --build`
+3. Verify docs endpoint and health.
 
 ## Shutdown and Logs
 
@@ -23,9 +22,8 @@ Single-container Docker Compose workflow.
 
 ## Reconstruction Target Scope
 
-After runtime reconstruction, Compose target returns to one service named
-`kjxlkj` running PostgreSQL + app process in one container (see deployment
-spec).
+After runtime reconstruction, target deployment remains one service named
+`kjxlkj` running PostgreSQL + Rust app with typed frontend assets.
 
 ## Related
 

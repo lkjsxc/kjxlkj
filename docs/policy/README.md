@@ -6,28 +6,28 @@ Operating invariants for documentation and reconstruction.
 
 ## Core Invariants
 
-1. Documentation under `/docs/` is authoritative.
-2. The shipped runtime is a Rust Actix/Tokio server with PostgreSQL persistence.
-3. API and WebSocket contracts are explicitly documented in canonical specs.
-4. Event consistency and conflict behavior are deterministic.
-5. Claims of completion require deterministic evidence.
-6. Legacy terminal-editor behavior is out of scope.
+1. `/docs/` is authoritative over all other artifacts.
+2. All in Docs governance is permanent.
+3. Implementation artifacts are disposable derivatives.
+4. Runtime target is Rust backend + PostgreSQL + TypeScript frontend.
+5. Direct JavaScript runtime source is forbidden.
+6. Completion claims require deterministic evidence and synchronized ledgers.
 
 ## Normative Policy Set
 
 | Document | Purpose |
 |---|---|
 | [INSTRUCT.md](INSTRUCT.md) | session-level operating contract |
-| [WORKFLOW.md](WORKFLOW.md) | reconstruction workflow and completion gates |
-| [STRUCTURE.md](STRUCTURE.md) | documentation and source topology limits |
-| [ROOT_LAYOUT.md](ROOT_LAYOUT.md) | root-level repository layout rules |
+| [WORKFLOW.md](WORKFLOW.md) | execution gates and drift handling |
+| [STRUCTURE.md](STRUCTURE.md) | topology and document hygiene constraints |
+| [ROOT_LAYOUT.md](ROOT_LAYOUT.md) | root-level repository layout policy |
 
 ## Repository States
 
 | State | Description |
 |---|---|
-| Docs-only baseline | canonical docs exist; derived source artifacts may be absent |
-| Reconstructed implementation | source, compose, and automation regenerated from docs |
+| All in Docs baseline | docs are canonical; derived artifacts may be absent |
+| Derived runtime snapshot | typed implementation artifacts exist as generated projections |
 
 ## Related
 

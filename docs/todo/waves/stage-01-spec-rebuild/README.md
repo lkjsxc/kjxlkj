@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [x] bootstrap workspace runtime topology and crate scaffolding
-- [x] implement auth/session and user/workspace/project primitives
-- [x] enforce role-based authorization baseline
+- [ ] bootstrap workspace runtime topology and crate scaffolding
+- [ ] implement auth/session and user/workspace/project primitives
+- [ ] enforce role-based authorization baseline
 
 ## Ordered Waves
 
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
+- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
+- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
+- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
 
 ## Stage Exit
 
-- [x] T0/T1 evidence exists for authz and ownership boundaries
-- [x] stage limitations are closed or explicitly deferred with rationale
+- [ ] T0/T1 evidence exists for authz and ownership boundaries
+- [ ] stage limitations are closed or explicitly deferred with rationale

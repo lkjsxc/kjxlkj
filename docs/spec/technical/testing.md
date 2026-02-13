@@ -101,6 +101,14 @@ Mandatory verification contract for reconstruction.
 | `REG-UX-006` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-A11Y-01..02` | focus order and accessibility semantics are validated |
 | `REG-UX-007` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) `UX-LIB-01..02` | librarian review/apply flow preserves user control and draft safety |
 
+## Typed Contract Verification
+
+| ID | Scenario |
+|---|---|
+| `TYPE-01` | backend compile/type gate passes (`cargo check --workspace`) |
+| `TYPE-02` | frontend TypeScript strict type-check passes (`tsc --noEmit`) |
+| `TYPE-03` | repository contains no direct JavaScript runtime source |
+
 ## Determinism Rules
 
 - use bounded timeouts and explicit diagnostics

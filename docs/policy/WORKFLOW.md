@@ -6,47 +6,40 @@ Reconstruction workflow and verification gates.
 
 ## Gate Sequence
 
-1. Read policy, spec, reference, and TODO indexes.
+1. Read policy/spec/reference/todo indexes.
 2. Build mismatch matrix (spec vs implementation vs tests).
 3. Select one coherent migration slice.
 4. Implement only user-reachable behavior in that slice.
-5. Run deterministic tests for touched behavior and relevant global gates.
+5. Run deterministic checks mapped to touched acceptance IDs.
 6. Update reference ledgers and TODO state in the same change.
-7. Commit progress frequently as small, auditable git commits.
-
-## TODO Authoring Rule
-
-When creating or editing TODO files:
-
-- use Markdown syntax only
-- include `## Relevant Documents`
-- add direct Markdown links to all relevant files for that TODO
-
-## Verification Gate
-
-The baseline gate is defined in [/docs/reference/CI.md](/docs/reference/CI.md).
-
-A change is complete only if:
-
-- required checks are green for the targeted state
-- conformance and limitations are synchronized
-- TODO updates are evidence-backed
+7. Record evidence and commit in small auditable units.
 
 ## Drift Handling
 
 When mismatch is found:
 
-- classify mismatch type
-- prioritize correctness and user-visible behavior first
-- either close mismatch now or record explicit defer rationale with next action
+- classify by `M1..M5`
+- resolve `M1` then user-facing `M2`
+- close now or defer with explicit rationale and next action
 
-## Docs-Only Baseline Rule
+## All in Docs Rule
 
-In docs-only state, missing implementation artifacts are acceptable,
-but TODO and reference documents MUST explicitly define regeneration steps.
+At any time, repository validity is measured by docs integrity first.
+
+- derived source/runtime artifacts may be removed
+- removal is valid if ledgers and TODO reflect the state truthfully
+- reconstruction restarts from docs without loss of canonical intent
+
+## Typed Reconstruction Gate
+
+Any runtime reconstruction claim is invalid unless all are true:
+
+1. backend is Rust
+2. frontend is TypeScript with strict typing
+3. direct JavaScript runtime source is absent
 
 ## Related
 
 - Operating contract: [INSTRUCT.md](INSTRUCT.md)
 - CI baseline: [/docs/reference/CI.md](/docs/reference/CI.md)
-- Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)
+- Execution plan: [/docs/todo/README.md](/docs/todo/README.md)
