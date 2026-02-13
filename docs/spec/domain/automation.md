@@ -18,7 +18,7 @@ The autonomous librarian agent is modeled as an automation action.
 `action_json.kind = "librarian_structure"` MUST include:
 
 - provider config (`openrouter` or `lmstudio`)
-- protocol marker `xml_attrless_v1`
+- protocol marker `xml_attrless`
 - structuring plan (taxonomy, style profile, operation limits)
 - guardrails (`allow_delete`, `strict_mode`, `max_operations`)
 

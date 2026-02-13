@@ -12,7 +12,7 @@ Normative protocol for LLM interaction used by the autonomous librarian agent.
 
 ## Version and Mode
 
-- Protocol name is `xml_attrless_v1`.
+- Protocol name is `xml_attrless`.
 - Payload MUST be UTF-8 plain text.
 - Tags MUST NOT include XML attributes.
 - Unknown tags MAY appear, but MUST be ignored by parser unless strict mode is enabled.
@@ -89,7 +89,7 @@ Each `<operation>` block MUST contain:
 <max_operations>12</max_operations>
 <allow_delete>false</allow_delete>
 </constraints>
-<output_contract>xml_attrless_v1</output_contract>
+<output_contract>xml_attrless</output_contract>
 </librarian_request>
 ```
 

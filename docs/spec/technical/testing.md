@@ -34,7 +34,7 @@ Mandatory verification contract for reconstruction.
 | `API-AUTO-01` | automation rule CRUD and deterministic validation |
 | `API-AUTO-02` | automation run status retrieval and audit linkage |
 | `API-AUTO-03` | librarian rule validation for provider mode (`openrouter`, `lmstudio`) |
-| `API-AUTO-04` | librarian XML protocol parse/retry/fail semantics (`xml_attrless_v1`) |
+| `API-AUTO-04` | librarian XML protocol parse/retry/fail semantics (`xml_attrless`) |
 | `API-ATT-01` | 500 MB attachment upload path |
 | `API-ATT-02` | >500 MB deterministic reject |
 | `WS-01` | subscribe and ordered replay for note stream |

@@ -21,7 +21,7 @@ Create rule via `POST /api/automation/rules`.
   "condition_json": { "workspace_id": "ws_01" },
   "action_json": {
     "kind": "librarian_structure",
-    "protocol": "xml_attrless_v1",
+    "protocol": "xml_attrless",
     "provider": {
       "provider_kind": "openrouter",
       "base_url": "https://openrouter.ai/api/v1",

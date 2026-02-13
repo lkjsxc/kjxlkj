@@ -17,7 +17,7 @@ Technical requirements for autonomous information structuring with LLM providers
 |---|---|
 | `ingest` | normalize markdown/settings/media-note metadata into source bundle |
 | `plan` | generate taxonomy-aware structuring plan using deterministic prompt contract |
-| `propose` | emit candidate operations in `xml_attrless_v1` |
+| `propose` | emit candidate operations in `xml_attrless` |
 | `validate` | parse and enforce scope/safety/size constraints |
 | `apply` | execute accepted operations with optimistic version checks |
 | `index` | refresh search/backlink projections and emit automation events |

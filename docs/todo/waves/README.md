@@ -22,17 +22,17 @@ Ordered recursive migration stages for the hard pivot.
 
 ## Ordered Stages
 
-- [ ] Stage 00: M0 Canonical Reset
+- [x] Stage 00: M0 Canonical Reset
  [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
-- [ ] Stage 01: M1 Workspace Foundation
+- [x] Stage 01: M1 Workspace Foundation
  [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
-- [ ] Stage 02: M2 Collaborative Notes Core
+- [x] Stage 02: M2 Collaborative Notes Core
  [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
-- [ ] Stage 03: M3 Workspace Suite
+- [x] Stage 03: M3 Workspace Suite
  [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
-- [ ] Stage 04: M4 Automation and Jobs
+- [x] Stage 04: M4 Automation and Jobs
  [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
-- [ ] Stage 05: M5 Core Security and Reliability Baseline
+- [x] Stage 05: M5 Core Security and Reliability Baseline
  [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
 - [ ] Stage 06: M6 Librarian REST and Provider Layer
  [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)

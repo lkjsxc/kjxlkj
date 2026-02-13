@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Implementation Tasks
 
-- [ ] implement metadata and tags APIs with deterministic response semantics
-- [ ] implement backlink extraction and query APIs
-- [ ] implement full-text search across note and media metadata
+- [x] implement metadata and tags APIs with deterministic response semantics
+- [x] implement backlink extraction and query APIs
+- [x] implement full-text search across note and media metadata
 
 ## Verification Tasks
 
-- [ ] run `API-REC-01`, `API-SEARCH-01`, `API-SEARCH-02`
-- [ ] run deletion/filter boundary scenarios
+- [x] run `API-REC-01`, `API-SEARCH-01`, `API-SEARCH-02`
+- [x] run deletion/filter boundary scenarios
 
 ## Evidence Placeholder
 
-- [ ] `Check:`
-- [ ] `Result:`
-- [ ] `Proof:`
+- [x] `Check: metadata/tags/backlinks/search integration coverage including delete/filter boundaries`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md](/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md)`

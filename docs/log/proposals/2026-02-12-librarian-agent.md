@@ -15,7 +15,7 @@ using LLM providers through a strict attribute-less XML-like protocol.
 
 - use automation domain for librarian rules and run lifecycle
 - support provider modes for OpenRouter and LM Studio
-- define deterministic parser and retry contract for `xml_attrless_v1`
+- define deterministic parser and retry contract for `xml_attrless`
 - add staged reconstruction plan and ledger tracking for librarian runtime
 
 ## Rationale

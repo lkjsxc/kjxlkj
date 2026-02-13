@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-
 
 ## Implementation Tasks
 
-- [ ] implement global role update and workspace membership APIs
-- [ ] enforce route-level and domain-level authorization guards
-- [ ] emit auditable security events for role/membership mutations
+- [x] implement global role update and workspace membership APIs
+- [x] enforce route-level and domain-level authorization guards
+- [x] emit auditable security events for role/membership mutations
 
 ## Verification Tasks
 
-- [ ] run permission matrix tests across owner/admin/editor/viewer
-- [ ] run forbidden-path integration checks
+- [x] run permission matrix tests across owner/admin/editor/viewer
+- [x] run forbidden-path integration checks
 
 ## Evidence Placeholder
 
-- [ ] `Check:`
-- [ ] `Result:`
-- [ ] `Proof:`
+- [x] `Check: role/membership mutation matrix with allowed and forbidden paths plus audit event assertions`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md](/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md)`

@@ -19,7 +19,7 @@ Shared terms used across policy/spec/reference/todo.
 | Automation rule | Trigger-condition-action definition for deterministic background work. |
 | Automation run | Auditable execution record for one rule trigger event. |
 | Librarian agent | Automation action that restructures notes/docs with LLM-guided operations. |
-| Attribute-less XML-like protocol | Tag-only envelope format without XML attributes (`xml_attrless_v1`). |
+| Attribute-less XML-like protocol | Tag-only envelope format without XML attributes (`xml_attrless`). |
 | Provider adapter | OpenAI-compatible integration layer for OpenRouter and LM Studio. |
 | Typed metadata | Keyed structured data attached to a note. |
 | Single-tenant multi-user auth | One deployment tenant with multiple authenticated users/roles. |

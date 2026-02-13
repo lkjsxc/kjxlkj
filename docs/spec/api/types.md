@@ -75,7 +75,7 @@ Patch arrays MUST be applied in order and validated against base document length
 - `kind = "librarian_structure"`
 - `provider` matching `LibrarianProviderConfig`
 - `plan` matching `LibrarianStructuringPlan`
-- `protocol = "xml_attrless_v1"`
+- `protocol = "xml_attrless"`
 
 ## Timestamp and ID Types
 

@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/s
 
 ## Implementation Tasks
 
-- [ ] map `IMP-*` and `USR-*` findings to concrete regression tests
-- [ ] add missing boundary tests for replay/idempotency/conflict paths
-- [ ] close `LIM-ISSUE-GUARD-02` when evidence is complete
+- [x] map `IMP-*` and `USR-*` findings to concrete regression tests
+- [x] add missing boundary tests for replay/idempotency/conflict paths
+- [x] close `LIM-ISSUE-GUARD-02` when evidence is complete
 
 ## Verification Tasks
 
-- [ ] run full reliability regression suite
-- [ ] verify no flaky or nondeterministic failures
+- [x] run full reliability regression suite
+- [x] verify no flaky or nondeterministic failures
 
 ## Evidence Placeholder
 
-- [ ] `Check:`
-- [ ] `Result:`
-- [ ] `Proof:`
+- [x] `Check: finding-mapped regression suite + double-run non-flake verification + UI guard markers`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-13-stage-05-wave-050-reliability-guards.md](/docs/log/audits/2026-02-13-stage-05-wave-050-reliability-guards.md)`
