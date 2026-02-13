@@ -14,17 +14,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] add librarian control and run review UX
-- [ ] expose operation diffs with apply/reject decisions
-- [ ] preserve responsive behavior and 320px usability constraints
+- [x] add librarian control and run review UX
+- [x] expose operation diffs with apply/reject decisions
+- [x] preserve responsive behavior and 320px usability constraints
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
-- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
-- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
+- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
+- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
+- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
 
 ## Stage Exit
 
-- [ ] `E2E-15` passes with deterministic evidence
-- [ ] librarian UX respects responsive and accessibility constraints
+- [x] `E2E-15` passes with deterministic evidence
+- [x] librarian UX respects responsive and accessibility constraints

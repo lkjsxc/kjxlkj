@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Implementation Tasks
 
-- [ ] show per-operation diffs for create/rewrite/retitle/relink actions
-- [ ] support accept/reject decisions with deterministic audit linkage
-- [ ] prevent apply when active editor has unresolved local draft conflicts
+- [x] show per-operation diffs for create/rewrite/retitle/relink actions
+- [x] support accept/reject decisions with deterministic audit linkage
+- [x] prevent apply when active editor has unresolved local draft conflicts
 
 ## Verification Tasks
 
-- [ ] run apply/reject race-condition and stale-version scenarios
-- [ ] run audit trail visibility checks
+- [x] run apply/reject race-condition and stale-version scenarios
+- [x] run audit trail visibility checks
 
 ## Evidence Placeholder
 
-- [ ] `Check:`
-- [ ] `Result:`
-- [ ] `Proof:`
+- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_run_flow --test ws_flow -- --nocapture`
+- [x] `Result:` pass
+- [x] `Proof:` run review endpoint validates decisions deterministically, records `automation_run_reviewed` workspace events, and enforces UI-side unresolved-draft apply guard behavior

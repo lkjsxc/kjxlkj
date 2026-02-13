@@ -115,6 +115,25 @@ pub async fn get_run(pool: &PgPool, run_id: Uuid) -> Result<Option<DbAutomationR
     .await
 }
 
+pub async fn list_runs(
+    pool: &PgPool,
+    workspace_id: Uuid,
+    limit: i64,
+) -> Result<Vec<DbAutomationRun>, sqlx::Error> {
+    sqlx::query_as::<_, DbAutomationRun>(
+        "SELECT id, rule_id, workspace_id, triggering_event_id, status, provider_kind, model, result_json,
+                error_code, error_detail, started_at, finished_at, created_at
+         FROM automation_runs
+         WHERE workspace_id = $1
+         ORDER BY created_at DESC
+         LIMIT $2",
+    )
+    .bind(workspace_id)
+    .bind(limit)
+    .fetch_all(pool)
+    .await
+}
+
 pub async fn list_enabled_rules_by_trigger(
     pool: &PgPool,
     workspace_id: Uuid,
@@ -168,10 +187,13 @@ pub async fn queue_run(
             actor_id,
             "automation_run_queued",
             json!({
+                "event_code": "LIBRARIAN_RUN_QUEUED",
                 "run_id": run.id,
                 "rule_id": run.rule_id,
                 "triggering_event_id": run.triggering_event_id,
                 "status": run.status,
+                "provider_kind": run.provider_kind,
+                "model": run.model,
             }),
         )
         .await?;
@@ -220,10 +242,13 @@ pub async fn mark_run_running(
             actor_id,
             "automation_run_running",
             json!({
+                "event_code": "LIBRARIAN_RUN_RUNNING",
                 "run_id": run_row.id,
                 "rule_id": run_row.rule_id,
                 "triggering_event_id": run_row.triggering_event_id,
                 "status": run_row.status,
+                "provider_kind": run_row.provider_kind,
+                "model": run_row.model,
             }),
         )
         .await?;
@@ -260,12 +285,7 @@ pub async fn mark_run_succeeded(
             run_row.workspace_id,
             actor_id,
             "automation_run_succeeded",
-            json!({
-                "run_id": run_row.id,
-                "rule_id": run_row.rule_id,
-                "triggering_event_id": run_row.triggering_event_id,
-                "status": run_row.status,
-            }),
+            automation_run_event_payload(run_row, "LIBRARIAN_RUN_SUCCEEDED"),
         )
         .await?;
     }
@@ -306,12 +326,62 @@ pub async fn mark_run_failed(
             run_row.workspace_id,
             actor_id,
             "automation_run_failed",
+            automation_run_event_payload(run_row, "LIBRARIAN_RUN_FAILED"),
+        )
+        .await?;
+    }
+
+    tx.commit().await?;
+    Ok(run)
+}
+
+pub async fn record_run_review(
+    pool: &PgPool,
+    run_id: Uuid,
+    actor_id: Uuid,
+    apply: bool,
+    decisions: Vec<serde_json::Value>,
+    result_json: serde_json::Value,
+) -> Result<Option<DbAutomationRun>, sqlx::Error> {
+    let mut tx = pool.begin().await?;
+
+    let run = sqlx::query_as::<_, DbAutomationRun>(
+        "UPDATE automation_runs
+         SET result_json = $2
+         WHERE id = $1
+         RETURNING id, rule_id, workspace_id, triggering_event_id, status, provider_kind, model, result_json,
+                   error_code, error_detail, started_at, finished_at, created_at",
+    )
+    .bind(run_id)
+    .bind(result_json)
+    .fetch_optional(&mut *tx)
+    .await?;
+
+    if let Some(ref run_row) = run {
+        append_workspace_event_tx(
+            &mut tx,
+            run_row.workspace_id,
+            actor_id,
+            "automation_run_reviewed",
             json!({
+                "event_code": "LIBRARIAN_RUN_REVIEWED",
                 "run_id": run_row.id,
                 "rule_id": run_row.rule_id,
-                "triggering_event_id": run_row.triggering_event_id,
                 "status": run_row.status,
-                "error_code": run_row.error_code,
+                "apply": apply,
+                "decisions": decisions,
+                "applied_count": run_row
+                    .result_json
+                    .get("operation_report")
+                    .and_then(|value| value.get("applied_operations"))
+                    .and_then(|value| value.as_array())
+                    .map_or(0, Vec::len),
+                "rejected_count": run_row
+                    .result_json
+                    .get("operation_report")
+                    .and_then(|value| value.get("rejected_operations"))
+                    .and_then(|value| value.as_array())
+                    .map_or(0, Vec::len),
             }),
         )
         .await?;
@@ -348,4 +418,48 @@ async fn append_workspace_event_tx(
     .await?;
 
     Ok(())
+}
+
+fn automation_run_event_payload(
+    run: &DbAutomationRun,
+    event_code: &str,
+) -> serde_json::Value {
+    let operation_preview = operation_report_values(&run.result_json, "parsed_operations");
+    let operation_applied = operation_report_values(&run.result_json, "applied_operations");
+    let operation_rejected = operation_report_values(&run.result_json, "rejected_operations");
+
+    json!({
+        "event_code": event_code,
+        "run_id": run.id,
+        "rule_id": run.rule_id,
+        "triggering_event_id": run.triggering_event_id,
+        "status": run.status,
+        "provider_kind": run.provider_kind,
+        "model": run.model,
+        "error_code": run.error_code,
+        "error_detail": run.error_detail,
+        "operation_preview": operation_preview,
+        "operation_applied": operation_applied,
+        "operation_rejected": operation_rejected,
+        "operation_preview_count": operation_report_count(&run.result_json, "parsed_operations"),
+        "operation_applied_count": operation_report_count(&run.result_json, "applied_operations"),
+        "operation_rejected_count": operation_report_count(&run.result_json, "rejected_operations"),
+    })
+}
+
+fn operation_report_count(result_json: &serde_json::Value, key: &str) -> usize {
+    result_json
+        .get("operation_report")
+        .and_then(|value| value.get(key))
+        .and_then(|value| value.as_array())
+        .map_or(0, Vec::len)
+}
+
+fn operation_report_values(result_json: &serde_json::Value, key: &str) -> Vec<serde_json::Value> {
+    result_json
+        .get("operation_report")
+        .and_then(|value| value.get(key))
+        .and_then(|value| value.as_array())
+        .cloned()
+        .unwrap_or_default()
 }

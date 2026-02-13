@@ -129,6 +129,31 @@
       grid-template-columns: 1fr auto;
       gap: 8px;
     }
+    .librarian-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .librarian-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .review-item {
+      border: 1px solid #dde2eb;
+      border-radius: 8px;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+    .review-meta {
+      font-size: 12px;
+      color: #4a556d;
+      display: grid;
+      gap: 2px;
+    }
+    .review-decision {
+      max-width: 220px;
+    }
     .editor {
       min-height: 52vh;
       resize: vertical;
@@ -177,6 +202,9 @@
         min-height: 56vh;
       }
       .workspace-controls {
+        grid-template-columns: 1fr;
+      }
+      .librarian-actions {
         grid-template-columns: 1fr;
       }
     }
@@ -233,6 +261,27 @@
           <strong>Graph</strong>
           <ul id="backlinksList" class="list"></ul>
         </div>
+        <div class="card">
+          <strong>Librarian</strong>
+          <div class="librarian-grid">
+            <select id="librarianProvider">
+              <option value="openrouter">openrouter</option>
+              <option value="lmstudio">lmstudio</option>
+            </select>
+            <input id="librarianModel" placeholder="Model (required)" />
+            <label><input id="librarianStrictMode" type="checkbox" checked /> Strict mode</label>
+            <div class="librarian-actions">
+              <button id="librarianSaveRule" type="button">Save Rule</button>
+              <button id="librarianDisableRule" type="button">Disable</button>
+              <button id="librarianLaunchRun" type="button">Launch Run</button>
+            </div>
+            <div id="librarianStatus" class="status"></div>
+            <strong>Rules</strong>
+            <ul id="librarianRulesList" class="list"></ul>
+            <strong>Runs</strong>
+            <ul id="librarianRunsList" class="list"></ul>
+          </div>
+        </div>
       </aside>
 
       <main class="right-pane">
@@ -242,13 +291,19 @@
         <div class="card">
           <textarea id="noteEditor" class="editor" placeholder="Start writing..."></textarea>
         </div>
+        <div class="card">
+          <strong>Run Review</strong>
+          <div id="runReviewStatus" class="status"></div>
+          <div id="runReviewOps" class="list"></div>
+          <button id="applyRunDecisions" type="button">Apply Decisions</button>
+        </div>
       </main>
     </div>
   </div>
 
   <div id="commandPalette" hidden>
     <div class="palette-box">
-      <input id="paletteInput" placeholder="create <title> | open <note-id> | move <project-id|none> | tag <tag1,tag2> | run-rule <id>" />
+      <input id="paletteInput" placeholder="create <title> | open <note-id> | move <project-id|none> | tag <tag1,tag2> | run-rule <id|selected> | review-run <id|selected>" />
       <div class="hint">
         <div>Enter executes command, Esc closes.</div>
         <div>Commands use API-backed behavior with deterministic status feedback.</div>
@@ -268,6 +323,12 @@
       contextStack: [],
       saveTimer: null,
       titleTimer: null,
+      librarianRules: [],
+      librarianRuns: [],
+      selectedRuleId: null,
+      selectedRunId: null,
+      selectedRun: null,
+      reviewDecisions: {},
     };
 
     const authView = document.getElementById('authView');
@@ -297,6 +358,18 @@
     const commandPalette = document.getElementById('commandPalette');
     const paletteToggle = document.getElementById('paletteToggle');
     const paletteInput = document.getElementById('paletteInput');
+    const librarianProvider = document.getElementById('librarianProvider');
+    const librarianModel = document.getElementById('librarianModel');
+    const librarianStrictMode = document.getElementById('librarianStrictMode');
+    const librarianSaveRule = document.getElementById('librarianSaveRule');
+    const librarianDisableRule = document.getElementById('librarianDisableRule');
+    const librarianLaunchRun = document.getElementById('librarianLaunchRun');
+    const librarianStatus = document.getElementById('librarianStatus');
+    const librarianRulesList = document.getElementById('librarianRulesList');
+    const librarianRunsList = document.getElementById('librarianRunsList');
+    const runReviewStatus = document.getElementById('runReviewStatus');
+    const runReviewOps = document.getElementById('runReviewOps');
+    const applyRunDecisions = document.getElementById('applyRunDecisions');
 
     function setStatus(target, text, type = 'info') {
       target.textContent = text;
@@ -319,6 +392,228 @@
 
     function closePalette() {
       commandPalette.hidden = true;
+    }
+
+    function hasUnresolvedDraft() {
+      return Boolean(state.currentNoteId) && noteEditor.value !== state.currentMarkdown;
+    }
+
+    function actionPayloadFromForm() {
+      return {
+        kind: 'librarian_structure',
+        protocol: 'xml_attrless',
+        provider: {
+          provider_kind: librarianProvider.value,
+          model: librarianModel.value.trim(),
+          timeout_ms: 2000,
+          retry_limit: 1,
+        },
+        plan: {
+          goal: 'Structure workspace notes for deterministic navigation',
+          scope: state.currentNoteId ? `note:${state.currentNoteId}` : 'workspace',
+          taxonomy_json: { mode: 'baseline' },
+          style_profile: 'default',
+          strict_mode: librarianStrictMode.checked,
+          max_operations: 32,
+          allow_delete: false,
+        },
+      };
+    }
+
+    function applyRuleToForm(rule) {
+      const action = rule.action_json || {};
+      const provider = action.provider || {};
+      librarianProvider.value = provider.provider_kind || action.provider_kind || 'openrouter';
+      librarianModel.value = provider.model || action.model || '';
+      librarianStrictMode.checked = Boolean(action.plan?.strict_mode);
+    }
+
+    function renderLibrarianRules() {
+      librarianRulesList.innerHTML = '';
+      for (const rule of state.librarianRules) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        const marker = rule.enabled ? 'enabled' : 'disabled';
+        button.textContent = `${rule.trigger} · ${marker} · ${String(rule.id).slice(0, 8)}`;
+        if (rule.id === state.selectedRuleId) {
+          button.classList.add('active-item');
+        }
+        button.addEventListener('click', () => {
+          state.selectedRuleId = rule.id;
+          applyRuleToForm(rule);
+          renderLibrarianRules();
+        });
+        li.appendChild(button);
+        librarianRulesList.appendChild(li);
+      }
+    }
+
+    function renderLibrarianRuns() {
+      librarianRunsList.innerHTML = '';
+      for (const run of state.librarianRuns) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = `${run.status} · ${String(run.id).slice(0, 8)}`;
+        if (run.id === state.selectedRunId) {
+          button.classList.add('active-item');
+        }
+        button.addEventListener('click', async () => {
+          await selectRun(run.id);
+        });
+        li.appendChild(button);
+        librarianRunsList.appendChild(li);
+      }
+    }
+
+    function updateApplyButtonState() {
+      const noRun = !state.selectedRun;
+      const noOps = !Array.isArray(state.selectedRun?.result_json?.operation_report?.parsed_operations)
+        || state.selectedRun.result_json.operation_report.parsed_operations.length === 0;
+      applyRunDecisions.disabled = noRun || noOps || hasUnresolvedDraft();
+    }
+
+    function renderRunReview() {
+      runReviewOps.innerHTML = '';
+      if (!state.selectedRun) {
+        setStatus(runReviewStatus, 'Select a run to review operations.', 'info');
+        updateApplyButtonState();
+        return;
+      }
+
+      const operations = state.selectedRun.result_json?.operation_report?.parsed_operations || [];
+      if (!Array.isArray(operations) || operations.length === 0) {
+        setStatus(runReviewStatus, 'Selected run has no parsed operations.', 'info');
+        updateApplyButtonState();
+        return;
+      }
+
+      if (hasUnresolvedDraft()) {
+        setStatus(runReviewStatus, 'Resolve local draft changes before apply/reject.', 'error');
+      } else {
+        setStatus(runReviewStatus, `Reviewing ${operations.length} operation(s).`, 'info');
+      }
+
+      for (const operation of operations) {
+        const operationId = operation.operation_id || `op-${Math.random().toString(16).slice(2)}`;
+        if (!state.reviewDecisions[operationId]) {
+          state.reviewDecisions[operationId] = 'reject';
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'review-item';
+
+        const meta = document.createElement('div');
+        meta.className = 'review-meta';
+        const target = operation.target_note_id || operation.target_path || 'workspace';
+        meta.innerHTML = `<strong>${operation.kind || 'operation'}</strong><span>${target}</span><span>${operation.reason || ''}</span>`;
+
+        const decision = document.createElement('select');
+        decision.className = 'review-decision';
+        decision.innerHTML = '<option value="accept">accept</option><option value="reject">reject</option>';
+        decision.value = state.reviewDecisions[operationId];
+        decision.addEventListener('change', () => {
+          state.reviewDecisions[operationId] = decision.value;
+          updateApplyButtonState();
+        });
+
+        wrapper.appendChild(meta);
+        wrapper.appendChild(decision);
+        runReviewOps.appendChild(wrapper);
+      }
+
+      updateApplyButtonState();
+    }
+
+    async function loadLibrarianRules() {
+      if (!state.workspaceId) {
+        state.librarianRules = [];
+        state.selectedRuleId = null;
+        renderLibrarianRules();
+        return;
+      }
+      const response = await request(`/api/automation/rules?workspace_id=${encodeURIComponent(state.workspaceId)}`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Rules load failed (${response.status}).`, 'error');
+        return;
+      }
+      state.librarianRules = response.data.rules || [];
+      if (!state.selectedRuleId || !state.librarianRules.find((item) => item.id === state.selectedRuleId)) {
+        state.selectedRuleId = state.librarianRules[0]?.id || null;
+      }
+      const selectedRule = state.librarianRules.find((item) => item.id === state.selectedRuleId);
+      if (selectedRule) {
+        applyRuleToForm(selectedRule);
+      }
+      renderLibrarianRules();
+    }
+
+    async function loadLibrarianRuns() {
+      if (!state.workspaceId) {
+        state.librarianRuns = [];
+        state.selectedRunId = null;
+        state.selectedRun = null;
+        renderLibrarianRuns();
+        renderRunReview();
+        return;
+      }
+
+      const response = await request(`/api/automation/runs?workspace_id=${encodeURIComponent(state.workspaceId)}&limit=20`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Runs load failed (${response.status}).`, 'error');
+        return;
+      }
+      state.librarianRuns = response.data.runs || [];
+      if (!state.selectedRunId || !state.librarianRuns.find((item) => item.id === state.selectedRunId)) {
+        state.selectedRunId = state.librarianRuns[0]?.id || null;
+      }
+      renderLibrarianRuns();
+      if (state.selectedRunId) {
+        await selectRun(state.selectedRunId);
+      } else {
+        state.selectedRun = null;
+        renderRunReview();
+      }
+    }
+
+    async function selectRun(runId) {
+      const response = await request(`/api/automation/runs/${encodeURIComponent(runId)}`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Run open failed (${response.status}).`, 'error');
+        return;
+      }
+      state.selectedRunId = runId;
+      state.selectedRun = response.data.run;
+      state.reviewDecisions = {};
+      renderLibrarianRuns();
+      renderRunReview();
+    }
+
+    async function loadLibrarianPanel() {
+      await loadLibrarianRules();
+      await loadLibrarianRuns();
+    }
+
+    async function launchRuleRun(ruleId) {
+      const response = await request(`/api/automation/rules/${encodeURIComponent(ruleId)}/launch`, {
+        method: 'POST',
+        headers: mutationHeaders(),
+        body: JSON.stringify({
+          workspace_id: state.workspaceId,
+          note_id: state.currentNoteId,
+        }),
+      });
+
+      if (!response.ok) {
+        setStatus(librarianStatus, `Launch failed (${response.status}).`, 'error');
+        return false;
+      }
+
+      state.selectedRunId = response.data.run.id;
+      await loadLibrarianRuns();
+      setStatus(librarianStatus, `Run launched (${response.data.run.status}).`, 'success');
+      return true;
     }
 
     async function request(path, options = {}) {
@@ -363,6 +658,7 @@
         await loadNotes();
       } else {
         setStatus(appStatus, 'Enter workspace UUID and load notes.', 'info');
+        setStatus(librarianStatus, 'Load a workspace to manage librarian rules.', 'info');
       }
     }
 
@@ -387,6 +683,7 @@
 
       state.notes = response.data.notes || [];
       renderNotes();
+      await loadLibrarianPanel();
       if (state.currentNoteId && state.notes.find((item) => item.id === state.currentNoteId)) {
         await openNote(state.currentNoteId, false);
       } else if (state.notes.length > 0) {
@@ -441,6 +738,7 @@
       noteEditor.value = payload.markdown || '';
       renderNotes();
       await refreshBacklinks();
+      updateApplyButtonState();
       setStatus(appStatus, `Opened note ${state.currentNoteId}.`, 'success');
     }
 
@@ -561,6 +859,7 @@
 
       state.currentVersion = response.data.version;
       state.currentMarkdown = nextMarkdown;
+      updateApplyButtonState();
       setStatus(appStatus, 'Autosaved.', 'success');
     }
 
@@ -651,12 +950,26 @@
       }
 
       if (command === 'run-rule') {
-        const response = await request('/api/automation/rules');
-        if (!response.ok) {
-          setStatus(appStatus, `Run-rule failed (${response.status}) with deterministic API feedback.`, 'error');
+        const ruleId = value || state.selectedRuleId;
+        if (!ruleId) {
+          setStatus(appStatus, 'Run-rule requires rule id or selected rule.', 'error');
           return;
         }
-        setStatus(appStatus, 'Run-rule command executed.', 'success');
+        const launched = await launchRuleRun(ruleId);
+        if (launched) {
+          setStatus(appStatus, 'Run-rule command executed.', 'success');
+        }
+        return;
+      }
+
+      if (command === 'review-run') {
+        const runId = value || state.selectedRunId;
+        if (!runId) {
+          setStatus(appStatus, 'Review-run requires run id or selected run.', 'error');
+          return;
+        }
+        await selectRun(runId);
+        setStatus(appStatus, 'Review-run command selected run.', 'success');
         return;
       }
 
@@ -724,16 +1037,133 @@
       state.notes = [];
       state.contextStack = [];
       contextBack.disabled = true;
+      state.librarianRules = [];
+      state.librarianRuns = [];
+      state.selectedRuleId = null;
+      state.selectedRunId = null;
+      state.selectedRun = null;
+      state.reviewDecisions = {};
+      renderLibrarianRules();
+      renderLibrarianRuns();
+      renderRunReview();
       showAuth();
     });
 
     loadWorkspaceButton.addEventListener('click', loadNotes);
+
+    librarianSaveRule.addEventListener('click', async () => {
+      if (!state.workspaceId) {
+        setStatus(librarianStatus, 'Workspace UUID is required.', 'error');
+        return;
+      }
+
+      const model = librarianModel.value.trim();
+      if (!model) {
+        setStatus(librarianStatus, 'Model is required for librarian config.', 'error');
+        return;
+      }
+
+      const actionJson = actionPayloadFromForm();
+      const selectedRule = state.librarianRules.find((item) => item.id === state.selectedRuleId);
+
+      const response = selectedRule
+        ? await request(`/api/automation/rules/${encodeURIComponent(selectedRule.id)}`, {
+            method: 'PATCH',
+            headers: mutationHeaders(),
+            body: JSON.stringify({
+              action_json: actionJson,
+              enabled: true,
+            }),
+          })
+        : await request('/api/automation/rules', {
+            method: 'POST',
+            headers: mutationHeaders(),
+            body: JSON.stringify({
+              workspace_id: state.workspaceId,
+              trigger: 'note_patched',
+              condition_json: {},
+              action_json: actionJson,
+              enabled: true,
+            }),
+          });
+
+      if (!response.ok) {
+        const detail = response.data?.details?.detail || response.data?.message || 'invalid librarian provider config';
+        setStatus(librarianStatus, `Rule save failed (${response.status}): ${detail}`, 'error');
+        return;
+      }
+
+      state.selectedRuleId = response.data.rule.id;
+      await loadLibrarianRules();
+      setStatus(librarianStatus, 'Librarian rule saved.', 'success');
+    });
+
+    librarianDisableRule.addEventListener('click', async () => {
+      if (!state.selectedRuleId) {
+        setStatus(librarianStatus, 'Select a rule first.', 'error');
+        return;
+      }
+      const response = await request(`/api/automation/rules/${encodeURIComponent(state.selectedRuleId)}`, {
+        method: 'PATCH',
+        headers: mutationHeaders(),
+        body: JSON.stringify({ enabled: false }),
+      });
+      if (!response.ok) {
+        setStatus(librarianStatus, `Disable failed (${response.status}).`, 'error');
+        return;
+      }
+      await loadLibrarianRules();
+      setStatus(librarianStatus, 'Rule disabled.', 'success');
+    });
+
+    librarianLaunchRun.addEventListener('click', async () => {
+      if (!state.selectedRuleId) {
+        setStatus(librarianStatus, 'Select a rule before launch.', 'error');
+        return;
+      }
+      await launchRuleRun(state.selectedRuleId);
+    });
+
+    applyRunDecisions.addEventListener('click', async () => {
+      if (!state.selectedRun) {
+        setStatus(runReviewStatus, 'Select a run to review first.', 'error');
+        return;
+      }
+
+      if (hasUnresolvedDraft()) {
+        setStatus(runReviewStatus, 'Resolve local draft changes before apply/reject.', 'error');
+        updateApplyButtonState();
+        return;
+      }
+
+      const operations = state.selectedRun.result_json?.operation_report?.parsed_operations || [];
+      const decisions = operations.map((operation) => ({
+        operation_id: operation.operation_id,
+        decision: state.reviewDecisions[operation.operation_id] || 'reject',
+      }));
+
+      const response = await request(`/api/automation/runs/${encodeURIComponent(state.selectedRun.id)}/review`, {
+        method: 'POST',
+        headers: mutationHeaders(),
+        body: JSON.stringify({ apply: true, decisions }),
+      });
+
+      if (!response.ok) {
+        setStatus(runReviewStatus, `Apply failed (${response.status}).`, 'error');
+        return;
+      }
+
+      state.selectedRun = response.data.run;
+      await loadLibrarianRuns();
+      setStatus(runReviewStatus, 'Review decisions applied with audit linkage.', 'success');
+    });
 
     noteEditor.addEventListener('input', () => {
       clearTimeout(state.saveTimer);
       state.saveTimer = setTimeout(() => {
         saveMarkdown();
       }, 500);
+      updateApplyButtonState();
     });
 
     noteTitle.addEventListener('input', () => {
@@ -798,6 +1228,10 @@
         closePalette();
       }
     });
+
+    renderLibrarianRules();
+    renderLibrarianRuns();
+    renderRunReview();
 
     checkSession();
   </script>

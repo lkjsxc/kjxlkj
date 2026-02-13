@@ -51,6 +51,22 @@ High-confidence statement:
 - Stage 06 Wave 062 includes deterministic evidence for `xml_attrless`
   response parsing/required-tag validation, bounded repair retries,
   deterministic parse failure codes, and failed-run diagnostics retention.
+- Stage 07 includes deterministic evidence for typed `automation_event`
+  websocket emissions, stable automation event payload vocabulary,
+  stale-cursor deterministic `ack` rejection, mixed note+librarian ordering,
+  unknown-event compatibility, and `WS-06` replay acceptance.
+- Stage 08 includes deterministic evidence for librarian rule/run control UX,
+  manual run launch/list/review API surfaces, operation review decision
+  persistence with audit-linked workspace events, and responsive keyboard-first
+  shell flows aligned to Stage 08 constraints.
+- Stage 09 Wave 090 includes deterministic librarian profile-matrix execution
+  and rerun stability evidence for `Librarian-runtime`/`Librarian-small-model`
+  verification paths.
+- Stage 09 Wave 091 includes deterministic `PERF-01`/`PERF-02`/`PERF-03`
+  and `OPS-01`/`OPS-02` evidence archival, including provider-failure/retry
+  diagnostics and restart/export/backup lifecycle proof.
+- Stage 09 Wave 092 includes full `Release` profile pass evidence,
+  synchronized release ledgers, and closure of high-severity blocker class.
 - Canonical UX improvements from implementation/user findings are reflected in spec docs
   (including auth presentation split, compact-screen editor focus toggle,
   optional dashboard/workspace surfaces, title-rename propagation, and minimal editor chrome).
@@ -62,13 +78,13 @@ High-confidence statement:
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
 | Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | docs-first rules and execution policy are present |
-| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | Stage 01+02 plus Stage 03/04 baseline routes are runtime-reachable and tested (`setup/auth/users/workspaces-members/health/notes/history/rollback/metadata/tags/search/backlinks/views/automation-rules/automation-runs{id}/admin-export-markdown/admin-export-{id}/admin-backup-sql`), including automation and job lifecycle baselines; attachments/media and deeper librarian surfaces remain pending |
-| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | note/workspace subscribe, patch apply, ack replay, idempotent retransmit, conflict responses, and workspace replay of automation run lifecycle events are runtime-reachable and integration-tested |
+| API contract | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | Stage 01+02 plus Stage 03/04 baseline routes and Stage 08 librarian UX APIs are runtime-reachable and tested (`setup/auth/users/workspaces-members/health/notes/history/rollback/metadata/tags/search/backlinks/views/automation-rules/automation-runs{list,id,review}/automation-rules{id}/launch/admin-export-markdown/admin-export-{id}/admin-backup-sql`); attachments/media and final release breadth remain pending |
+| WS protocol | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | note/workspace subscribe, patch apply, ack replay, idempotent retransmit, stale-cursor deterministic rejection, conflict responses, typed `automation_event` lifecycle emissions, unknown-event replay compatibility, and `WS-06` mixed-order replay checks are runtime-reachable and integration-tested |
 | Domain model | [/docs/spec/domain/README.md](/docs/spec/domain/README.md) | `partial` | users/workspaces/membership/projects, notes/events/metadata/tags/backlinks/search baseline, saved views baseline, and automation rule/run lifecycle baseline are implemented |
-| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `partial` | root-served responsive shell, command palette model, setup-lock login-only switch, graph/context pane, and autosave/title propagation behaviors are implemented and integration-tested |
-| Librarian AI contract | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | Stage 06 Wave 060/061/062 provider + payload-contract + xml parser/retry diagnostics are runtime-reachable; operation-apply execution and stream/E2E closure remain pending |
+| UI/UX contract | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | `partial` | root-served responsive shell, command palette model, setup-lock login-only switch, graph/context pane, autosave/title propagation, librarian control panel, and run-review decision surfaces are implemented and integration-tested |
+| Librarian AI contract | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | Stage 06 provider/payload/parser-retry baseline, Stage 07 stream/replay baseline, and Stage 08 review/apply decision UI+API baseline are runtime-reachable; full operation-kind apply breadth remains pending |
 | Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `partial` | Actix+SQLx startup sequence, Stage 01 auth/workspace APIs, Stage 02 notes+WS baseline handlers, Stage 03 root-served shell + views APIs, Stage 04 automation rule/run engine baseline, Stage 04 export/backup job handlers, and Stage 06 Wave 060 provider adapter execution path are implemented |
-| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | Stage 01 deterministic tests, Stage 02 notes/search/websocket integration suites, Stage 03 saved-view/command-shell integration suites, Stage 04 automation/job integration suites, Stage 05 reliability/security/perf-ops smoke suites, and Stage 06 provider/payload-contract/xml parser-retry integration checks (`API-AUTO-03`, `API-AUTO-04`) are passing; full target-scale acceptance/performance packs remain pending |
+| Testing/performance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `verified` | Stage 01-08 deterministic suites plus Stage 09 Wave 090 librarian profile matrix, Wave 091 perf/ops evidence (`PERF-01`/`PERF-02`/`PERF-03`, `OPS-01`/`OPS-02`), and Wave 092 full `Release` profile run are passing with synchronized ledgers |
 
 ## Conformance Closure Rule
 
@@ -98,3 +114,8 @@ No `spec-only` row may move to `verified` without:
 - Stage 06 Wave 060 audit: [/docs/log/audits/2026-02-13-stage-06-wave-060-provider-adapter.md](/docs/log/audits/2026-02-13-stage-06-wave-060-provider-adapter.md)
 - Stage 06 Wave 061 audit: [/docs/log/audits/2026-02-13-stage-06-wave-061-librarian-payload-contract.md](/docs/log/audits/2026-02-13-stage-06-wave-061-librarian-payload-contract.md)
 - Stage 06 Wave 062 audit: [/docs/log/audits/2026-02-13-stage-06-wave-062-xml-parser-retry.md](/docs/log/audits/2026-02-13-stage-06-wave-062-xml-parser-retry.md)
+- Stage 07 audit: [/docs/log/audits/2026-02-13-stage-07-websocket-sync.md](/docs/log/audits/2026-02-13-stage-07-websocket-sync.md)
+- Stage 08 audit: [/docs/log/audits/2026-02-13-stage-08-librarian-ux-and-static-delivery.md](/docs/log/audits/2026-02-13-stage-08-librarian-ux-and-static-delivery.md)
+- Stage 09 Wave 090 audit: [/docs/log/audits/2026-02-13-stage-09-wave-090-ci-librarian-profiles.md](/docs/log/audits/2026-02-13-stage-09-wave-090-ci-librarian-profiles.md)
+- Stage 09 Wave 091 audit: [/docs/log/audits/2026-02-13-stage-09-wave-091-perf-ops-archive.md](/docs/log/audits/2026-02-13-stage-09-wave-091-perf-ops-archive.md)
+- Stage 09 Wave 092 audit: [/docs/log/audits/2026-02-13-stage-09-wave-092-release-closure.md](/docs/log/audits/2026-02-13-stage-09-wave-092-release-closure.md)

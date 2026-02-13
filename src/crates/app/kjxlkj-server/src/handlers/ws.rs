@@ -89,6 +89,45 @@ impl WsSession {
         );
     }
 
+    fn send_workspace_stream_event(
+        ctx: &mut ws::WebsocketContext<Self>,
+        workspace_id: &serde_json::Value,
+        event_seq: &serde_json::Value,
+        event_type: &serde_json::Value,
+        payload: &serde_json::Value,
+    ) {
+        let is_automation = event_type
+            .as_str()
+            .map(|value| value.starts_with("automation_"))
+            .unwrap_or(false);
+
+        if is_automation {
+            Self::send_json(
+                ctx,
+                json!({
+                    "type": "automation_event",
+                    "workspace_id": workspace_id,
+                    "run_id": payload.get("run_id"),
+                    "status": payload.get("status"),
+                    "event_seq": event_seq,
+                    "event_type": event_type,
+                    "payload": payload,
+                }),
+            );
+        } else {
+            Self::send_json(
+                ctx,
+                json!({
+                    "type": "workspace_event",
+                    "workspace_id": workspace_id,
+                    "event_seq": event_seq,
+                    "event_type": event_type,
+                    "payload": payload,
+                }),
+            );
+        }
+    }
+
     fn on_client_message(&mut self, message: ClientMessage, ctx: &mut ws::WebsocketContext<Self>) {
         match message {
             ClientMessage::SubscribeNote { note_id } => {
@@ -231,15 +270,12 @@ impl WsSession {
 
                             if let Some(events) = payload.get("events").and_then(|value| value.as_array()) {
                                 for event in events {
-                                    Self::send_json(
+                                    Self::send_workspace_stream_event(
                                         ctx,
-                                        json!({
-                                            "type": "workspace_event",
-                                            "workspace_id": event["workspace_id"],
-                                            "event_seq": event["event_seq"],
-                                            "event_type": event["event_type"],
-                                            "payload": event["payload"],
-                                        }),
+                                        &event["workspace_id"],
+                                        &event["event_seq"],
+                                        &event["event_type"],
+                                        &event["payload"],
                                     );
                                 }
                             }
@@ -414,15 +450,12 @@ impl WsSession {
                                         .and_then(|value| value.as_array())
                                     {
                                         for event in workspace_events {
-                                            Self::send_json(
+                                            Self::send_workspace_stream_event(
                                                 ctx,
-                                                json!({
-                                                    "type": "workspace_event",
-                                                    "workspace_id": event["workspace_id"],
-                                                    "event_seq": event["seq"],
-                                                    "event_type": event["event_type"],
-                                                    "payload": event["payload_json"],
-                                                }),
+                                                &event["workspace_id"],
+                                                &event["seq"],
+                                                &event["event_type"],
+                                                &event["payload_json"],
                                             );
                                         }
                                     }
@@ -435,8 +468,23 @@ impl WsSession {
                 );
             }
             ClientMessage::Ack { stream_id, event_seq } => {
-                self.state
-                    .set_ws_ack_cursor(self.identity.user_id, &stream_id, event_seq);
+                if let Err(current_cursor) = self
+                    .state
+                    .set_ws_ack_cursor(self.identity.user_id, &stream_id, event_seq)
+                {
+                    Self::send_json(
+                        ctx,
+                        json!({
+                            "type": "error",
+                            "code": "STALE_CURSOR",
+                            "message": "stale ack cursor",
+                            "request_id": Uuid::now_v7(),
+                            "stream_id": stream_id,
+                            "event_seq": event_seq,
+                            "current_cursor": current_cursor,
+                        }),
+                    );
+                }
             }
             ClientMessage::UnsubscribeNote { note_id } => {
                 let _ = note_id;

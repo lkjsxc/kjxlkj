@@ -38,10 +38,20 @@ impl AppState {
             .unwrap_or(0)
     }
 
-    pub fn set_ws_ack_cursor(&self, user_id: Uuid, stream_id: &str, event_seq: i32) {
-        self.ws_ack_cursor
-            .lock()
-            .expect("ws cursor mutex poisoned")
-            .insert((user_id, stream_id.to_owned()), event_seq);
+    pub fn set_ws_ack_cursor(
+        &self,
+        user_id: Uuid,
+        stream_id: &str,
+        event_seq: i32,
+    ) -> Result<i32, i32> {
+        let mut lock = self.ws_ack_cursor.lock().expect("ws cursor mutex poisoned");
+        let entry = lock.entry((user_id, stream_id.to_owned())).or_insert(0);
+
+        if event_seq < *entry {
+            return Err(*entry);
+        }
+
+        *entry = event_seq;
+        Ok(*entry)
     }
 }

@@ -9,10 +9,11 @@ Reproducible verification profiles.
 - CI workflow files are intentionally absent in this repository state.
 - Verification is executed through command profiles and recorded in ledgers.
 
-## Baseline State (2026-02-12)
+## Baseline State (2026-02-13)
 
-- Active profile target: `Docs-integrity`.
-- Runtime profiles are blocked until workspace/runtime artifacts are reconstructed.
+- Active profile target: `Release`.
+- `Librarian-runtime` and `Librarian-small-model` deterministic fixture checks are passing.
+- `Release` profile is green with Stage 09 Wave 090/091/092 evidence archived.
 
 ## Verification Profiles
 

@@ -9,6 +9,7 @@ use kjxlkj_domain::Role;
 use kjxlkj_rbac::{ensure_automation_manage, ensure_workspace_member_read};
 use serde::Deserialize;
 use serde_json::json;
+use std::collections::HashMap;
 use std::str::FromStr;
 use std::time::Duration;
 use time::format_description::well_known::Rfc3339;
@@ -17,6 +18,12 @@ use uuid::Uuid;
 #[derive(Debug, Deserialize)]
 struct ListRulesQuery {
     workspace_id: Uuid,
+}
+
+#[derive(Debug, Deserialize)]
+struct ListRunsQuery {
+    workspace_id: Uuid,
+    limit: Option<i64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,6 +41,24 @@ struct UpdateRuleRequest {
     condition_json: Option<serde_json::Value>,
     action_json: Option<serde_json::Value>,
     enabled: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+struct LaunchRunRequest {
+    workspace_id: Uuid,
+    note_id: Option<Uuid>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ReviewDecision {
+    operation_id: String,
+    decision: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ReviewRunRequest {
+    apply: bool,
+    decisions: Vec<ReviewDecision>,
 }
 
 #[derive(Debug, Clone)]
@@ -125,7 +150,33 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
         .route("/automation/rules", web::post().to(create_rule))
         .route("/automation/rules/{id}", web::patch().to(update_rule))
         .route("/automation/rules/{id}", web::delete().to(delete_rule))
+        .route("/automation/rules/{id}/launch", web::post().to(launch_rule_run))
+        .route("/automation/runs", web::get().to(list_runs))
+        .route("/automation/runs/{id}/review", web::post().to(review_run))
         .route("/automation/runs/{id}", web::get().to(get_run));
+}
+
+async fn list_runs(
+    req: HttpRequest,
+    query: web::Query<ListRunsQuery>,
+    state: web::Data<AppState>,
+) -> Result<HttpResponse, ApiError> {
+    let request_id = new_request_id();
+    let identity = require_identity(&req, &state, false).await?;
+
+    let workspace_role = actor_workspace_role(&state, query.workspace_id, identity.user_id).await?;
+    ensure_workspace_member_read(workspace_role)
+        .map_err(|_| ApiError::new(StatusCode::FORBIDDEN, "ROLE_FORBIDDEN", "forbidden"))?;
+
+    let limit = query.limit.unwrap_or(20).clamp(1, 100);
+    let runs = repos::automation::list_runs(&state.pool, query.workspace_id, limit)
+        .await
+        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?;
+
+    Ok(HttpResponse::Ok().json(json!({
+        "runs": runs.into_iter().map(run_json).collect::<Vec<_>>(),
+        "request_id": request_id,
+    })))
 }
 
 async fn list_rules(
@@ -297,20 +348,428 @@ async fn get_run(
         .map_err(|_| ApiError::new(StatusCode::FORBIDDEN, "ROLE_FORBIDDEN", "forbidden"))?;
 
     Ok(HttpResponse::Ok().json(json!({
-        "run": {
-            "rule_id": run.rule_id,
-            "workspace_id": run.workspace_id,
-            "triggering_event_id": run.triggering_event_id,
+        "run": run_json(run),
+        "request_id": request_id,
+    })))
+}
+
+async fn launch_rule_run(
+    req: HttpRequest,
+    path: web::Path<Uuid>,
+    state: web::Data<AppState>,
+    body: web::Json<LaunchRunRequest>,
+) -> Result<HttpResponse, ApiError> {
+    let request_id = new_request_id();
+    enforce_automation_rate_limit(&state, &req, "automation-run-launch", &request_id)?;
+    let identity = require_identity(&req, &state, true).await?;
+    let rule_id = path.into_inner();
+
+    let rule = repos::automation::get_rule(&state.pool, rule_id)
+        .await
+        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+        .ok_or_else(|| ApiError::new(StatusCode::NOT_FOUND, "RULE_NOT_FOUND", "automation rule not found"))?;
+
+    if rule.workspace_id != body.workspace_id {
+        return Err(ApiError::new(
+            StatusCode::BAD_REQUEST,
+            "BAD_REQUEST",
+            "workspace mismatch for rule launch",
+        ));
+    }
+
+    if !rule.enabled {
+        return Err(ApiError::new(
+            StatusCode::UNPROCESSABLE_ENTITY,
+            "RULE_DISABLED",
+            "automation rule is disabled",
+        ));
+    }
+
+    let workspace_role = actor_workspace_role(&state, rule.workspace_id, identity.user_id).await?;
+    ensure_automation_manage(workspace_role)
+        .map_err(|_| ApiError::new(StatusCode::FORBIDDEN, "ROLE_FORBIDDEN", "forbidden"))?;
+
+    let (provider_kind, model) = extract_rule_provider_metadata(&rule);
+    let triggering_event_id = format!("manual:{}:{}", rule.id, Uuid::now_v7());
+    let queued = repos::automation::queue_run(
+        &state.pool,
+        rule.id,
+        rule.workspace_id,
+        &triggering_event_id,
+        provider_kind.as_deref(),
+        model.as_deref(),
+        identity.user_id,
+    )
+    .await
+    .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?;
+
+    let run = if let Some(running) = repos::automation::mark_run_running(&state.pool, queued.id, identity.user_id)
+        .await
+        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+    {
+        let event_payload = json!({
+            "workspace_id": rule.workspace_id,
+            "note_id": body.note_id,
+            "source": "manual_launch",
+            "rule_id": rule.id,
+        });
+
+        match execute_rule_action(&state, &rule, &event_payload).await {
+            Ok(result_json) => repos::automation::mark_run_succeeded(
+                &state.pool,
+                running.id,
+                identity.user_id,
+                result_json,
+            )
+            .await
+            .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+            .unwrap_or(running),
+            Err(error) => repos::automation::mark_run_failed(
+                &state.pool,
+                running.id,
+                identity.user_id,
+                &error.code,
+                &error.detail,
+                error.result_json,
+            )
+            .await
+            .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+            .unwrap_or(running),
+        }
+    } else {
+        queued
+    };
+
+    let _ = repos::audit::emit_security_event(
+        &state.pool,
+        &request_id,
+        Some(identity.user_id),
+        Some(rule.workspace_id),
+        "automation_run_launch",
+        json!({
+            "rule_id": rule.id,
+            "run_id": run.id,
             "status": run.status,
-            "provider_kind": run.provider_kind,
-            "model": run.model,
-            "result_json": run.result_json,
-            "error_code": run.error_code,
-            "error_detail": run.error_detail,
-            "started_at": run.started_at.and_then(|value| value.format(&Rfc3339).ok()),
-            "finished_at": run.finished_at.and_then(|value| value.format(&Rfc3339).ok()),
-            "created_at": run.created_at.format(&Rfc3339).unwrap_or_else(|_| run.created_at.to_string()),
-        },
+            "triggering_event_id": run.triggering_event_id,
+        }),
+    )
+    .await;
+
+    Ok(HttpResponse::Ok().json(json!({
+        "run": run_json(run),
+        "request_id": request_id,
+    })))
+}
+
+async fn review_run(
+    req: HttpRequest,
+    path: web::Path<Uuid>,
+    state: web::Data<AppState>,
+    body: web::Json<ReviewRunRequest>,
+) -> Result<HttpResponse, ApiError> {
+    let request_id = new_request_id();
+    enforce_automation_rate_limit(&state, &req, "automation-run-review", &request_id)?;
+    let identity = require_identity(&req, &state, true).await?;
+    let run_id = path.into_inner();
+
+    let run = repos::automation::get_run(&state.pool, run_id)
+        .await
+        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+        .ok_or_else(|| ApiError::new(StatusCode::NOT_FOUND, "RUN_NOT_FOUND", "automation run not found"))?;
+
+    let workspace_role = actor_workspace_role(&state, run.workspace_id, identity.user_id).await?;
+    ensure_automation_manage(workspace_role)
+        .map_err(|_| ApiError::new(StatusCode::FORBIDDEN, "ROLE_FORBIDDEN", "forbidden"))?;
+
+    let mut decisions_payload = Vec::with_capacity(body.decisions.len());
+    let mut decision_map: HashMap<String, String> = HashMap::with_capacity(body.decisions.len());
+    for decision in &body.decisions {
+        if decision.operation_id.trim().is_empty() {
+            return Err(ApiError::new(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "BAD_REQUEST",
+                "operation_id is required",
+            ));
+        }
+
+        if !matches!(decision.decision.as_str(), "accept" | "reject") {
+            return Err(ApiError::new(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "BAD_REQUEST",
+                "decision must be accept or reject",
+            ));
+        }
+
+        decisions_payload.push(json!({
+            "operation_id": decision.operation_id,
+            "decision": decision.decision,
+        }));
+        decision_map.insert(decision.operation_id.clone(), decision.decision.clone());
+    }
+
+    let parsed_operations = run
+        .result_json
+        .get("operation_report")
+        .and_then(|value| value.get("parsed_operations"))
+        .and_then(|value| value.as_array())
+        .cloned()
+        .unwrap_or_default();
+
+    let mut applied_operations: Vec<serde_json::Value> = Vec::new();
+    let mut rejected_operations: Vec<serde_json::Value> = Vec::new();
+
+    if body.apply {
+        for (index, operation) in parsed_operations.iter().enumerate() {
+            let operation_id = operation
+                .get("operation_id")
+                .and_then(|value| value.as_str())
+                .filter(|value| !value.is_empty())
+                .map(ToOwned::to_owned)
+                .unwrap_or_else(|| format!("op-{}", index + 1));
+
+            let kind = operation
+                .get("kind")
+                .and_then(|value| value.as_str())
+                .unwrap_or("unknown")
+                .to_owned();
+
+            if decision_map
+                .get(&operation_id)
+                .map(|value| value.as_str())
+                != Some("accept")
+            {
+                rejected_operations.push(json!({
+                    "operation_id": operation_id,
+                    "kind": kind,
+                    "reason": "USER_REJECTED",
+                }));
+                continue;
+            }
+
+            match kind.as_str() {
+                "create_note" => {
+                    let title = operation
+                        .get("title")
+                        .and_then(|value| value.as_str())
+                        .map(str::trim)
+                        .filter(|value| !value.is_empty())
+                        .unwrap_or("Generated note")
+                        .to_owned();
+
+                    let markdown = operation
+                        .get("body_markdown")
+                        .and_then(|value| value.as_str())
+                        .unwrap_or_default()
+                        .to_owned();
+
+                    match repos::notes::create_note(
+                        &state.pool,
+                        identity.user_id,
+                        repos::notes::CreateNoteInput {
+                            workspace_id: run.workspace_id,
+                            project_id: None,
+                            title,
+                            note_kind: "markdown".to_owned(),
+                            access_scope: "workspace".to_owned(),
+                            markdown,
+                        },
+                    )
+                    .await
+                    {
+                        Ok((stream, _)) => applied_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "note_id": stream.id,
+                            "result": "created",
+                        })),
+                        Err(_) => rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "APPLY_FAILED",
+                        })),
+                    }
+                }
+                "rewrite_note" => {
+                    let target_note_id = operation
+                        .get("target_note_id")
+                        .and_then(|value| value.as_str())
+                        .and_then(|value| Uuid::parse_str(value).ok());
+
+                    let Some(target_note_id) = target_note_id else {
+                        rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "MISSING_TARGET_NOTE",
+                        }));
+                        continue;
+                    };
+
+                    let Some((stream, projection)) = repos::notes::get_note(&state.pool, target_note_id)
+                        .await
+                        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+                    else {
+                        rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "TARGET_NOTE_NOT_FOUND",
+                        }));
+                        continue;
+                    };
+
+                    let next_markdown = operation
+                        .get("body_markdown")
+                        .and_then(|value| value.as_str())
+                        .unwrap_or_default();
+
+                    let mut patch_ops: Vec<repos::notes_patch::PatchOp> = Vec::new();
+                    if !projection.markdown.is_empty() {
+                        patch_ops.push(repos::notes_patch::PatchOp::Delete {
+                            delete: projection.markdown.chars().count(),
+                        });
+                    }
+                    if !next_markdown.is_empty() {
+                        patch_ops.push(repos::notes_patch::PatchOp::Insert {
+                            insert: next_markdown.to_owned(),
+                        });
+                    }
+
+                    if patch_ops.is_empty() {
+                        applied_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "note_id": target_note_id,
+                            "result": "no_change",
+                        }));
+                        continue;
+                    }
+
+                    match repos::notes::apply_note_patch(
+                        &state.pool,
+                        identity.user_id,
+                        target_note_id,
+                        stream.current_version,
+                        &patch_ops,
+                        &format!("run-review:{}:{}", run.id, operation_id),
+                    )
+                    .await
+                    {
+                        Ok(result) => applied_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "note_id": target_note_id,
+                            "version": result.version,
+                            "event_seq": result.event_seq,
+                            "result": "rewritten",
+                        })),
+                        Err(_) => rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "APPLY_FAILED",
+                        })),
+                    }
+                }
+                "retitle_note" => {
+                    let target_note_id = operation
+                        .get("target_note_id")
+                        .and_then(|value| value.as_str())
+                        .and_then(|value| Uuid::parse_str(value).ok());
+                    let title = operation
+                        .get("title")
+                        .and_then(|value| value.as_str())
+                        .map(str::trim)
+                        .filter(|value| !value.is_empty());
+
+                    let (Some(target_note_id), Some(title)) = (target_note_id, title) else {
+                        rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "INVALID_RETITLE_PAYLOAD",
+                        }));
+                        continue;
+                    };
+
+                    let Some((stream, _)) = repos::notes::get_note(&state.pool, target_note_id)
+                        .await
+                        .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+                    else {
+                        rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "TARGET_NOTE_NOT_FOUND",
+                        }));
+                        continue;
+                    };
+
+                    match repos::notes::update_note_title(
+                        &state.pool,
+                        identity.user_id,
+                        target_note_id,
+                        stream.current_version,
+                        title,
+                    )
+                    .await
+                    {
+                        Ok(result) => applied_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "note_id": target_note_id,
+                            "version": result.version,
+                            "event_seq": result.event_seq,
+                            "result": "retitled",
+                        })),
+                        Err(_) => rejected_operations.push(json!({
+                            "operation_id": operation_id,
+                            "kind": kind,
+                            "reason": "APPLY_FAILED",
+                        })),
+                    }
+                }
+                _ => rejected_operations.push(json!({
+                    "operation_id": operation_id,
+                    "kind": kind,
+                    "reason": "UNSUPPORTED_APPLY_KIND",
+                })),
+            }
+        }
+    }
+
+    let mut result_json = run.result_json.clone();
+    result_json["review"] = json!({
+        "apply": body.apply,
+        "decisions": decisions_payload.clone(),
+    });
+    result_json["operation_report"]["applied_operations"] = json!(applied_operations);
+    result_json["operation_report"]["rejected_operations"] = json!(rejected_operations);
+
+    let reviewed = repos::automation::record_run_review(
+        &state.pool,
+        run_id,
+        identity.user_id,
+        body.apply,
+        decisions_payload,
+        result_json,
+    )
+    .await
+    .map_err(|_| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "internal error"))?
+    .ok_or_else(|| ApiError::new(StatusCode::NOT_FOUND, "RUN_NOT_FOUND", "automation run not found"))?;
+
+    let _ = repos::audit::emit_security_event(
+        &state.pool,
+        &request_id,
+        Some(identity.user_id),
+        Some(reviewed.workspace_id),
+        "automation_run_reviewed",
+        json!({
+            "run_id": reviewed.id,
+            "rule_id": reviewed.rule_id,
+            "apply": body.apply,
+            "decision_count": body.decisions.len(),
+        }),
+    )
+    .await;
+
+    Ok(HttpResponse::Ok().json(json!({
+        "run": run_json(reviewed),
         "request_id": request_id,
     })))
 }
@@ -386,6 +845,24 @@ fn rule_json(rule: kjxlkj_db::models::DbAutomationRule) -> serde_json::Value {
         "updated_by": rule.updated_by,
         "created_at": rule.created_at.format(&Rfc3339).unwrap_or_else(|_| rule.created_at.to_string()),
         "updated_at": rule.updated_at.format(&Rfc3339).unwrap_or_else(|_| rule.updated_at.to_string()),
+    })
+}
+
+fn run_json(run: kjxlkj_db::models::DbAutomationRun) -> serde_json::Value {
+    json!({
+        "id": run.id,
+        "rule_id": run.rule_id,
+        "workspace_id": run.workspace_id,
+        "triggering_event_id": run.triggering_event_id,
+        "status": run.status,
+        "provider_kind": run.provider_kind,
+        "model": run.model,
+        "result_json": run.result_json,
+        "error_code": run.error_code,
+        "error_detail": run.error_detail,
+        "started_at": run.started_at.and_then(|value| value.format(&Rfc3339).ok()),
+        "finished_at": run.finished_at.and_then(|value| value.format(&Rfc3339).ok()),
+        "created_at": run.created_at.format(&Rfc3339).unwrap_or_else(|_| run.created_at.to_string()),
     })
 }
 

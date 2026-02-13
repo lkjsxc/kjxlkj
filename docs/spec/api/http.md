@@ -71,7 +71,10 @@ Base path: `/api`
 | `POST` | `/automation/rules` | create automation rule (includes librarian structuring rules) |
 | `PATCH` | `/automation/rules/{id}` | update automation rule (includes provider/prompt contract) |
 | `DELETE` | `/automation/rules/{id}` | delete automation rule |
+| `POST` | `/automation/rules/{id}/launch` | manually launch an automation run for selected rule |
+| `GET` | `/automation/runs` | list automation runs for workspace |
 | `GET` | `/automation/runs/{id}` | automation run status/details (includes librarian operations) |
+| `POST` | `/automation/runs/{id}/review` | persist apply/reject decisions and optional apply execution summary |
 
 ## Attachments and Admin Operations
 

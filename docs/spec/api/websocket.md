@@ -26,7 +26,7 @@ Endpoint: `GET /ws`
 | `note_event` | `note_id`, `event_seq`, `version`, `event_type`, `payload` | committed note stream event |
 | `workspace_event` | `workspace_id`, `event_seq`, `event_type`, `payload` | project/view/member/dashboard activity |
 | `presence_event` | `workspace_id`, `note_id`, `user_id`, `state`, `server_ts` | collaborator presence state |
-| `automation_event` | `workspace_id`, `run_id`, `status`, `payload` | automation run updates |
+| `automation_event` | `workspace_id`, `run_id`, `status`, `event_seq`, `event_type`, `payload` | automation run updates |
 | `heartbeat` | `server_ts` | keepalive |
 | `error` | `code`, `message`, `request_id` | protocol or authorization error |
 
@@ -37,7 +37,9 @@ Endpoint: `GET /ws`
 - Duplicate `idempotency_key` for the same note MUST replay-safe-return existing commit identity.
 - Conflicting `base_version` MUST return `patch_rejected`.
 - Reconnect flows MUST replay from acknowledged cursor without full-note reload.
+- Stale `ack` cursor regressions (`event_seq < replay_cursor`) MUST return `error` with `code=STALE_CURSOR` and include `stream_id`, attempted `event_seq`, and `current_cursor`.
 - Presence events MAY be lossy, but note and workspace events MUST be lossless.
+- Clients MUST tolerate unknown `event_type` values on `workspace_event`/`automation_event` and continue processing stream order by `event_seq`.
 
 ## Related
 

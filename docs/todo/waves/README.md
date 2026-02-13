@@ -34,17 +34,17 @@ Ordered recursive migration stages for the hard pivot.
  [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 - [x] Stage 05: M5 Core Security and Reliability Baseline
  [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
-- [ ] Stage 06: M6 Librarian REST and Provider Layer
+- [x] Stage 06: M6 Librarian REST and Provider Layer
  [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
-- [ ] Stage 07: M7 Librarian Realtime and Replay
+- [x] Stage 07: M7 Librarian Realtime and Replay
  [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
-- [ ] Stage 08: M8 Librarian UX and Static Delivery
+- [x] Stage 08: M8 Librarian UX and Static Delivery
  [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
-- [ ] Stage 09: M9 Final Release Closure
+- [x] Stage 09: M9 Final Release Closure
  [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Program Exit
 
-- [ ] all wave files are complete with evidence links
-- [ ] all high-severity blockers are closed
-- [ ] release closure is recorded in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [x] all wave files are complete with evidence links
+- [x] all high-severity blockers are closed
+- [x] release closure is recorded in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

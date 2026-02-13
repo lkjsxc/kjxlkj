@@ -32,6 +32,10 @@ Error responses MUST return JSON:
 
 WS `error` messages MUST include `code`, `message`, and `request_id`.
 
+Replay-specific machine codes SHOULD include:
+
+- `STALE_CURSOR`
+
 Librarian-specific machine codes SHOULD include:
 
 - `LIBRARIAN_PROTOCOL_INVALID`

@@ -177,6 +177,91 @@ async fn automation_run_idempotency_status_and_ws_event_replay() {
         .expect("parse run status body");
     assert_eq!(run_status_body["run"]["status"], json!("succeeded"));
 
+    let list_runs = client
+        .get(format!("{base_url}/api/automation/runs"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .query(&[("workspace_id", workspace.id.to_string()), ("limit", "10".to_owned())])
+        .send()
+        .await
+        .expect("list automation runs request");
+    assert_eq!(list_runs.status(), StatusCode::OK);
+
+    let listed_runs: serde_json::Value = list_runs
+        .json()
+        .await
+        .expect("parse listed runs response");
+    assert!(listed_runs["runs"]
+        .as_array()
+        .map(|runs| runs.iter().any(|run| run["id"] == json!(run_id.to_string())))
+        .unwrap_or(false));
+
+    let launch_run = client
+        .post(format!("{base_url}/api/automation/rules/{rule_id}/launch"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .header("x-csrf-token", &csrf_token)
+        .json(&json!({
+            "workspace_id": workspace.id,
+            "note_id": note_id,
+        }))
+        .send()
+        .await
+        .expect("launch automation run request");
+    assert_eq!(launch_run.status(), StatusCode::OK);
+
+    let launch_run_body: serde_json::Value = launch_run
+        .json()
+        .await
+        .expect("parse launch run response");
+    let launched_run_id = launch_run_body["run"]["id"]
+        .as_str()
+        .expect("launched run id string")
+        .to_owned();
+    assert_eq!(launch_run_body["run"]["status"], json!("succeeded"));
+
+    let review_run = client
+        .post(format!("{base_url}/api/automation/runs/{launched_run_id}/review"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .header("x-csrf-token", &csrf_token)
+        .json(&json!({
+            "apply": false,
+            "decisions": [],
+        }))
+        .send()
+        .await
+        .expect("review automation run request");
+    assert_eq!(review_run.status(), StatusCode::OK);
+
+    let review_run_body: serde_json::Value = review_run
+        .json()
+        .await
+        .expect("parse review run response");
+    assert_eq!(review_run_body["run"]["result_json"]["review"]["apply"], json!(false));
+
+    let invalid_review = client
+        .post(format!("{base_url}/api/automation/runs/{launched_run_id}/review"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .header("x-csrf-token", &csrf_token)
+        .json(&json!({
+            "apply": false,
+            "decisions": [{
+                "operation_id": "op-invalid",
+                "decision": "maybe"
+            }],
+        }))
+        .send()
+        .await
+        .expect("invalid review decision request");
+    assert_eq!(invalid_review.status(), StatusCode::UNPROCESSABLE_ENTITY);
+
+    let reviewed_events: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM workspace_events WHERE workspace_id = $1 AND event_type = 'automation_run_reviewed'",
+    )
+    .bind(workspace.id)
+    .fetch_one(&pool)
+    .await
+    .expect("count automation_run_reviewed events");
+    assert!(reviewed_events >= 1);
+
     let ws_url = format!("ws://{}/ws", address);
     let mut request = ws_url
         .clone()
@@ -211,12 +296,19 @@ async fn automation_run_idempotency_status_and_ws_event_replay() {
 
         if let Message::Text(text) = next {
             let parsed: serde_json::Value = serde_json::from_str(&text).expect("valid websocket json");
-            if parsed["type"] == "workspace_event"
+            let is_workspace_automation = parsed["type"] == "workspace_event"
                 && parsed["event_type"]
                     .as_str()
                     .map(|value| value.starts_with("automation_run_"))
-                    .unwrap_or(false)
-            {
+                    .unwrap_or(false);
+
+            let is_typed_automation = parsed["type"] == "automation_event"
+                && parsed["event_type"]
+                    .as_str()
+                    .map(|value| value.starts_with("automation_run_"))
+                    .unwrap_or(false);
+
+            if is_workspace_automation || is_typed_automation {
                 found_automation_event = true;
                 break;
             }

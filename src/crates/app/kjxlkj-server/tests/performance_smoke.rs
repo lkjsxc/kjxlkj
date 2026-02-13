@@ -1,4 +1,4 @@
-use actix_web::{web, App, HttpServer};
+use actix_web::{web, App, HttpResponse, HttpServer};
 use futures_util::{SinkExt, StreamExt};
 use kjxlkj_auth::{hash_password, new_csrf_token, new_session_id, session_expiry};
 use kjxlkj_db::repos;
@@ -184,6 +184,215 @@ async fn perf_01_and_perf_02_smoke_baseline() {
 
     socket.close(None).await.expect("close websocket");
     server_handle.stop(true).await;
+}
+
+#[tokio::test]
+async fn perf_03_librarian_throughput_and_retry_envelope() {
+    let database_url = std::env::var("TEST_DATABASE_URL")
+        .or_else(|_| std::env::var("DATABASE_URL"))
+        .expect("set TEST_DATABASE_URL or DATABASE_URL for integration tests");
+
+    let pool = sqlx::postgres::PgPoolOptions::new()
+        .max_connections(8)
+        .connect(&database_url)
+        .await
+        .expect("connect postgres");
+
+    kjxlkj_db::migrations::run(&pool)
+        .await
+        .expect("apply migrations");
+
+    let token = uuid::Uuid::now_v7().simple().to_string();
+    let owner_hash = hash_password("owner-password").expect("hash owner password");
+    let (owner, workspace) = repos::auth::create_owner_with_workspace(
+        &pool,
+        &format!("owner-perf03-{token}@example.com"),
+        "Owner",
+        &owner_hash,
+        &format!("ws-perf03-{token}"),
+        "Workspace",
+    )
+    .await
+    .expect("create owner/workspace");
+
+    let session_id = new_session_id();
+    let csrf_token = new_csrf_token();
+    repos::auth::create_session(&pool, session_id, owner.id, &csrf_token, session_expiry(7))
+        .await
+        .expect("create owner session");
+
+    let provider_listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind provider server");
+    let provider_address = provider_listener
+        .local_addr()
+        .expect("read provider address");
+
+    let provider_server = HttpServer::new(|| {
+        App::new().route(
+            "/v1/chat/completions",
+            web::post().to(|| async {
+                HttpResponse::Ok().json(json!({
+                    "choices": [{
+                        "message": {
+                            "content": "<librarian_response><request_id>perf03</request_id><status>ok</status><summary>batch</summary><operations></operations><warnings></warnings></librarian_response>"
+                        }
+                    }]
+                }))
+            }),
+        )
+    })
+    .listen(provider_listener)
+    .expect("listen provider")
+    .run();
+
+    let provider_handle = provider_server.handle();
+    let _provider_task = tokio::spawn(provider_server);
+
+    let state = AppState::new(pool.clone(), false);
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind app server");
+    let address = listener.local_addr().expect("read app address");
+
+    let server = HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(state.clone()))
+            .configure(handlers::configure)
+    })
+    .listen(listener)
+    .expect("listen app")
+    .run();
+
+    let server_handle = server.handle();
+    let _server_task = tokio::spawn(server);
+
+    let client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .expect("build reqwest client");
+
+    let base_url = format!("http://{}", address);
+
+    let create_rule = client
+        .post(format!("{base_url}/api/automation/rules"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .header("x-csrf-token", &csrf_token)
+        .json(&json!({
+            "workspace_id": workspace.id,
+            "trigger": "note_patched",
+            "condition_json": {"always": true},
+            "action_json": {
+                "kind": "librarian_structure",
+                "protocol": "xml_attrless",
+                "provider": {
+                    "provider_kind": "openrouter",
+                    "model": "openrouter/perf03-model",
+                    "base_url": format!("http://{provider_address}/v1/chat/completions"),
+                    "timeout_ms": 400,
+                    "retry_limit": 1
+                },
+                "plan": {
+                    "goal": "Perf batch",
+                    "scope": "workspace",
+                    "taxonomy_json": {"topics": ["perf"]},
+                    "style_profile": "concise",
+                    "strict_mode": false,
+                    "max_operations": 8,
+                    "allow_delete": false
+                }
+            },
+            "enabled": true
+        }))
+        .send()
+        .await
+        .expect("create perf03 rule request");
+    assert_eq!(create_rule.status(), StatusCode::CREATED);
+
+    let create_rule_body: serde_json::Value = create_rule
+        .json()
+        .await
+        .expect("parse perf03 rule response");
+    let rule_id = uuid::Uuid::parse_str(
+        create_rule_body["rule"]["id"]
+            .as_str()
+            .expect("perf03 rule id"),
+    )
+    .expect("parse perf03 rule id");
+
+    let create_note = client
+        .post(format!("{base_url}/api/notes"))
+        .header("Cookie", format!("kjxlkj_session={session_id}"))
+        .header("x-csrf-token", &csrf_token)
+        .json(&json!({
+            "workspace_id": workspace.id,
+            "project_id": null,
+            "title": "Perf03 note",
+            "note_kind": "markdown",
+            "access_scope": "workspace",
+            "markdown": "seed"
+        }))
+        .send()
+        .await
+        .expect("create perf03 note request");
+    assert_eq!(create_note.status(), StatusCode::CREATED);
+
+    let create_note_body: serde_json::Value = create_note
+        .json()
+        .await
+        .expect("parse perf03 note response");
+    let note_id = create_note_body["note_id"]
+        .as_str()
+        .expect("perf03 note id")
+        .to_owned();
+    let mut version = create_note_body["version"].as_i64().expect("perf03 version") as i32;
+
+    let start = Instant::now();
+    for idx in 0..50 {
+        let patch = client
+            .patch(format!("{base_url}/api/notes/{note_id}"))
+            .header("Cookie", format!("kjxlkj_session={session_id}"))
+            .header("x-csrf-token", &csrf_token)
+            .json(&json!({
+                "base_version": version,
+                "patch_ops": [{"delete": 4}, {"insert": "seed"}],
+                "idempotency_key": format!("perf03-{idx}")
+            }))
+            .send()
+            .await
+            .expect("perf03 patch request");
+        assert_eq!(patch.status(), StatusCode::OK);
+
+        let patch_body: serde_json::Value = patch.json().await.expect("parse perf03 patch response");
+        version = patch_body["version"].as_i64().expect("perf03 updated version") as i32;
+    }
+    let elapsed = start.elapsed();
+    assert!(
+        elapsed.as_secs() < 90,
+        "expected PERF-03 batch under 90s, got {}s",
+        elapsed.as_secs()
+    );
+
+    let metrics: (i64, Option<i64>, Option<f64>) = sqlx::query_as(
+        "SELECT
+            COUNT(*) AS total_runs,
+            SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_runs,
+            AVG(COALESCE((result_json->>'attempts')::float, 0)) AS avg_attempts
+         FROM automation_runs
+         WHERE rule_id = $1",
+    )
+    .bind(rule_id)
+    .fetch_one(&pool)
+    .await
+    .expect("query perf03 run metrics");
+
+    assert_eq!(metrics.0, 50, "expected one run per patched source event");
+    assert_eq!(metrics.1.unwrap_or(0), 0, "expected zero parse/provider failures in perf batch");
+
+    let average_attempts = metrics.2.unwrap_or(0.0);
+    assert!(
+        average_attempts <= 2.0,
+        "expected retry envelope avg attempts <= 2, got {average_attempts}"
+    );
+
+    server_handle.stop(true).await;
+    provider_handle.stop(true).await;
 }
 
 fn percentile_95(values: &[u128]) -> u128 {
