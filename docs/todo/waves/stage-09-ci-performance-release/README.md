@@ -14,18 +14,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] run full CI profile stack including librarian compatibility profiles
-- [ ] complete performance and operations evidence archive
-- [ ] close release ledgers with deterministic proof
+- [x] run full CI profile stack including librarian compatibility profiles
+- [x] complete performance and operations evidence archive
+- [x] close release ledgers with deterministic proof
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-09-ci-performance-release/wave-090.md](/docs/todo/waves/stage-09-ci-performance-release/wave-090.md)
-- [ ] [/docs/todo/waves/stage-09-ci-performance-release/wave-091.md](/docs/todo/waves/stage-09-ci-performance-release/wave-091.md)
-- [ ] [/docs/todo/waves/stage-09-ci-performance-release/wave-092.md](/docs/todo/waves/stage-09-ci-performance-release/wave-092.md)
+- [x] [/docs/todo/waves/stage-09-ci-performance-release/wave-090.md](/docs/todo/waves/stage-09-ci-performance-release/wave-090.md)
+- [x] [/docs/todo/waves/stage-09-ci-performance-release/wave-091.md](/docs/todo/waves/stage-09-ci-performance-release/wave-091.md)
+- [x] [/docs/todo/waves/stage-09-ci-performance-release/wave-092.md](/docs/todo/waves/stage-09-ci-performance-release/wave-092.md)
 
 ## Stage Exit
 
-- [ ] `Release` profile is green with librarian profiles included
-- [ ] no high-severity limitations remain open
-- [ ] release closure is recorded in reference ledgers
+- [x] `Release` profile is green with librarian profiles included
+- [x] no high-severity limitations remain open
+- [x] release closure is recorded in reference ledgers

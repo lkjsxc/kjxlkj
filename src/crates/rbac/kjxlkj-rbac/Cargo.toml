@@ -1,0 +1,11 @@
+[package]
+name = "kjxlkj-rbac"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+kjxlkj-db = { path = "../../db/kjxlkj-db" }
+sqlx = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }

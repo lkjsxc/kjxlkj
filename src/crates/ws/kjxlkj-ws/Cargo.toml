@@ -1,0 +1,21 @@
+[package]
+name = "kjxlkj-ws"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+kjxlkj-db = { path = "../../db/kjxlkj-db" }
+kjxlkj-auth = { path = "../../auth/kjxlkj-auth" }
+kjxlkj-rbac = { path = "../../rbac/kjxlkj-rbac" }
+actix-web = { workspace = true }
+actix-ws = { workspace = true }
+actix-rt = { workspace = true }
+sqlx = { workspace = true }
+uuid = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+time = { workspace = true }
+futures-util = { workspace = true }

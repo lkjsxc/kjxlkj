@@ -1,0 +1,90 @@
+/* kjxlkj workspace suite — layout and component styles */
+/* UX-LAYOUT-01: one responsive tree for desktop+mobile */
+
+/* Shell */
+.shell{display:flex;height:100vh;flex-direction:column}
+.header{height:var(--hdr-h);display:flex;align-items:center;gap:12px;
+padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--bg3);flex-shrink:0}
+.header .logo{font-weight:700;font-size:1.1rem;color:var(--accent)}
+.header .spacer{flex:1}
+.header .status{font-size:.8rem;color:var(--fg2)}
+.header .user-badge{font-size:.85rem}
+.body-wrap{display:flex;flex:1;overflow:hidden}
+
+/* Nav sidebar */
+.nav{width:var(--nav-w);background:var(--bg2);border-right:1px solid var(--bg3);
+display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;transition:width .2s}
+.nav.collapsed{width:0;overflow:hidden}
+.nav .section{padding:8px 12px;font-size:.75rem;text-transform:uppercase;color:var(--fg2)}
+.nav .item{padding:8px 16px;cursor:pointer;border-left:3px solid transparent;
+font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .item:hover{background:var(--bg3)}
+.nav .item.active{border-left-color:var(--accent);background:var(--bg)}
+.nav .create-btn{margin:8px 12px;text-align:center;background:var(--accent);color:#fff}
+
+/* Editor area */
+.editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.editor-toolbar{display:flex;align-items:center;gap:8px;padding:8px 16px;
+background:var(--bg2);border-bottom:1px solid var(--bg3);flex-shrink:0}
+.editor-toolbar .title-input{flex:1;font-size:1.1rem;font-weight:600;
+background:transparent;border:none;color:var(--fg);outline:none}
+.editor-toolbar .save-status{font-size:.75rem;padding:2px 8px;border-radius:12px}
+.editor-toolbar .save-status.saved{color:var(--ok)}
+.editor-toolbar .save-status.saving{color:var(--warn)}
+.editor-toolbar .save-status.conflict{color:var(--err)}
+.editor-toolbar .save-status.offline{color:var(--fg2)}
+.editor-body{flex:1;overflow-y:auto;padding:16px}
+.editor-body textarea{width:100%;height:100%;min-height:300px;border:none;
+background:transparent;font-size:.95rem;line-height:1.6;outline:none;resize:none}
+
+/* Auth screens */
+.auth-screen{display:flex;align-items:center;justify-content:center;height:100vh;
+flex-direction:column;gap:16px}
+.auth-screen .card{background:var(--bg2);padding:32px;border-radius:8px;
+width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px}
+.auth-screen h2{font-size:1.3rem;text-align:center}
+.auth-screen .error{color:var(--err);font-size:.85rem;text-align:center}
+.auth-screen button{background:var(--accent);color:#fff;padding:10px}
+
+/* Lists */
+.list-view{padding:16px;overflow-y:auto;flex:1}
+.list-view h3{margin-bottom:12px}
+.list-item{padding:10px 12px;border:1px solid var(--bg3);border-radius:6px;
+margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.list-item:hover{background:var(--bg3)}
+.list-item .meta{font-size:.8rem;color:var(--fg2)}
+
+/* Command palette UX-NAV-02 */
+.cmd-palette{position:fixed;top:20%;left:50%;transform:translateX(-50%);
+width:90%;max-width:500px;background:var(--bg2);border:1px solid var(--bg3);
+border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:1000;display:none}
+.cmd-palette.open{display:block}
+.cmd-palette input{border:none;border-bottom:1px solid var(--bg3);border-radius:8px 8px 0 0;
+padding:12px 16px;font-size:1rem}
+.cmd-palette .results{max-height:300px;overflow-y:auto}
+.cmd-palette .result-item{padding:8px 16px;cursor:pointer;font-size:.9rem}
+.cmd-palette .result-item:hover,.cmd-palette .result-item.selected{background:var(--bg3)}
+
+/* Conflict dialog UX-EDIT-06 */
+.conflict-dialog{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+background:var(--bg2);border:1px solid var(--err);border-radius:8px;padding:24px;
+z-index:1001;max-width:400px;width:90%;display:none}
+.conflict-dialog.open{display:block}
+.conflict-dialog h3{color:var(--err);margin-bottom:12px}
+.conflict-dialog .actions{display:flex;gap:8px;margin-top:16px}
+.conflict-dialog .actions button{flex:1}
+
+/* Responsive UX-LAYOUT-02,04 */
+.menu-toggle{display:none;background:transparent;padding:4px 8px;font-size:1.2rem}
+@media(max-width:768px){
+.nav{position:fixed;top:var(--hdr-h);left:0;bottom:0;z-index:100;width:var(--nav-w)}
+.nav.collapsed{width:0}
+.menu-toggle{display:inline-block}
+}
+@media(max-width:320px){
+.header{padding:0 8px;gap:6px}
+.nav{width:100%}
+.editor-toolbar{padding:4px 8px}
+.editor-body{padding:8px}
+.auth-screen .card{padding:16px;margin:0 8px}
+}
