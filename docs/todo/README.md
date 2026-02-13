@@ -15,14 +15,14 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Start Gate
 
-- [ ] read [/README.md](/README.md)
-- [ ] read [/docs/README.md](/docs/README.md)
-- [ ] read [/docs/policy/README.md](/docs/policy/README.md)
-- [ ] read [/docs/spec/README.md](/docs/spec/README.md)
-- [ ] read [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] read [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] read [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [ ] read [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [x] read [/README.md](/README.md)
+- [x] read [/docs/README.md](/docs/README.md)
+- [x] read [/docs/policy/README.md](/docs/policy/README.md)
+- [x] read [/docs/spec/README.md](/docs/spec/README.md)
+- [x] read [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] read [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [x] read [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] read [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
 ## Immediate Blocker Pack
 
@@ -36,7 +36,7 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Recursive Wave Program
 
-- [ ] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [x] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [ ] execute stages and waves in order (Stage 00 through Stage 09)
 - [ ] do not mark work complete without deterministic evidence
 - [ ] synchronize reference ledgers with every status change
