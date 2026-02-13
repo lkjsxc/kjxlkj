@@ -15,13 +15,14 @@ Release is valid only for blocker-free reconstructed runtime state.
 
 ## Current Gate (2026-02-13)
 
-Release gate is blocked.
+Release gate is satisfied.
 
-Blocking reasons:
+Evidence:
 
-- reset baseline has open high-severity reconstruction blockers
-- runtime/API/WS/UI evidence is not currently re-established
-- typed runtime gates (`TYPE-01..03`) are not currently closed in this baseline
+- All stages (00-09) completed with deterministic proof links
+- All high-severity limitations closed (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))
+- Full server integration suite passed with release-profile coverage
+- Wave evidence archived in [/docs/log/audits/](/docs/log/audits/)
 
 ## Release Steps
 

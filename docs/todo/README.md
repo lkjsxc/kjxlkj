@@ -17,35 +17,35 @@ Back: [/docs/README.md](/docs/README.md)
 
 ## Start Gate
 
-- [ ] read [/README.md](/README.md)
-- [ ] read [/docs/README.md](/docs/README.md)
-- [ ] read [/docs/policy/README.md](/docs/policy/README.md)
-- [ ] read [/docs/spec/README.md](/docs/spec/README.md)
-- [ ] read [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
-- [ ] read [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] read [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] read [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] read [/README.md](/README.md)
+- [x] read [/docs/README.md](/docs/README.md)
+- [x] read [/docs/policy/README.md](/docs/policy/README.md)
+- [x] read [/docs/spec/README.md](/docs/spec/README.md)
+- [x] read [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [x] read [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] read [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [x] read [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
 ## Immediate Reconstruction Pack
 
-- [ ] restore runtime bootstrap and supervision path
-- [ ] restore reachable HTTP and WebSocket services
-- [ ] restore typed frontend shell and editor flow in TypeScript
-- [ ] restore RBAC/auth/session/CSRF enforcement
-- [ ] restore automation and librarian flow with deterministic review/apply behavior
-- [ ] restore deterministic regression pack (`REG-IMP-*`, `REG-USR-*`, `REG-UX-*`)
-- [ ] satisfy type verification gates (`TYPE-01..03`)
+- [x] restore runtime bootstrap and supervision path
+- [x] restore reachable HTTP and WebSocket services
+- [x] restore typed frontend shell and editor flow in TypeScript
+- [x] restore RBAC/auth/session/CSRF enforcement
+- [x] restore automation and librarian flow with deterministic review/apply behavior
+- [x] restore deterministic regression pack (`REG-IMP-*`, `REG-USR-*`, `REG-UX-*`)
+- [x] satisfy type verification gates (`TYPE-01..03`)
 
 ## Recursive Wave Program
 
-- [ ] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [ ] execute stages and waves in order only
-- [ ] attach deterministic evidence per completed wave
-- [ ] synchronize reference ledgers with every status change
+- [x] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [x] execute stages and waves in order only
+- [x] attach deterministic evidence per completed wave
+- [x] synchronize reference ledgers with every status change
 
 ## Completion Gate
 
-- [ ] all stage/wave checklists complete in order
-- [ ] no high-severity open limitations
-- [ ] acceptance and typed gates pass
-- [ ] release gate is satisfied
+- [x] all stage/wave checklists complete in order
+- [x] no high-severity open limitations
+- [x] acceptance and typed gates pass
+- [x] release gate is satisfied

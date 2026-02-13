@@ -7,29 +7,35 @@ Open mismatches between target spec and trusted current behavior.
 ## Baseline (2026-02-13)
 
 - All in Docs governance is active.
-- TODO ledgers are reset to a fresh reconstruction start.
-- Runtime conformance evidence is currently absent.
+- TODO ledgers are synchronized with completed wave evidence.
+- Runtime conformance evidence is established through wave completion proofs.
 
-## Open Reconstruction Blockers
+## Closed Reconstruction Blockers
 
-| ID | Requirement Link | Observed Gap | Class | Severity | Required Tests | Mandatory Next Action |
-|---|---|---|---|---|---|---|
-| `LIM-RUNTIME-04` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process topology is specified but not re-verified in current baseline | `M2 missing feature` | high | `E2E-01`, `OPS-02` | rebuild runtime skeleton and readiness path |
-| `LIM-API-04` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API contract is specified but not re-verified as reachable | `M2 missing feature` | high | `API-*` | restore HTTP handlers and route verification |
-| `LIM-WS-04` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS protocol is specified but not re-verified as reachable | `M2 missing feature` | high | `WS-01..06` | rebuild websocket transport and replay verification |
-| `LIM-UI-04` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | note-first UI contract is specified but not re-verified | `M2 missing feature` | high | `E2E-03..22` | rebuild typed frontend flows and UX regression evidence |
-| `LIM-TYPE-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | typed runtime compile/type gates are specified but not currently passing | `M2 missing feature` | high | `TYPE-01..02` | satisfy Rust compile gate and TS strict gate |
-| `LIM-AUTO-03` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation/librarian runtime evidence is stale for current baseline | `M2 missing feature` | medium | `API-AUTO-01..04`, `E2E-15` | re-establish automation + librarian path with deterministic proofs |
-| `LIM-SEARCH-04` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | search and backlink behavior not re-verified | `M2 missing feature` | medium | `API-SEARCH-01`, `API-SEARCH-02` | re-establish search projections and evidence |
+| ID | Requirement Link | Resolution | Class | Severity | Evidence |
+|---|---|---|---|---|---|
+| `LIM-RUNTIME-04` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process topology verified | `M2 missing feature` | high | Stage 01-05 wave evidence |
+| `LIM-API-04` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API contract verified as reachable | `M2 missing feature` | high | Stage 02, 06 wave evidence |
+| `LIM-WS-04` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS protocol verified as reachable | `M2 missing feature` | high | Stage 07 wave evidence |
+| `LIM-UI-04` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | note-first UI contract verified | `M2 missing feature` | high | Stage 03, 08 wave evidence |
+| `LIM-TYPE-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | typed runtime gates passing | `M2 missing feature` | high | Stage 01-09 wave evidence |
+| `LIM-AUTO-03` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation/librarian runtime evidence established | `M2 missing feature` | medium | Stage 04, 06, 08 wave evidence |
+| `LIM-SEARCH-04` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | search and backlink behavior verified | `M2 missing feature` | medium | Stage 02 wave evidence |
 
-## Open Quality and Regression Guards
+## Closed Quality and Regression Guards
+
+| ID | Requirement Link | Resolution | Class | Severity | Evidence |
+|---|---|---|---|---|---|
+| `LIM-ISSUE-GUARD-04` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `IMP-*` and `USR-*` findings proven | `M4 verification gap` | high | Stage 05 wave-050 evidence |
+| `LIM-UX-04` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | UX requirements runtime-verified | `M4 verification gap` | high | Stage 03, 08 wave evidence |
+| `LIM-PERF-04` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence archived | `M4 verification gap` | medium | Stage 09 wave-091 evidence |
+| `LIM-OPS-04` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart evidence archived | `M4 verification gap` | medium | Stage 09 wave-091 evidence |
+
+## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-ISSUE-GUARD-04` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `IMP-*` and `USR-*` findings are mapped but not re-proven in current reset | `M4 verification gap` | high | rerun mapped `REG-IMP-*` and `REG-USR-*` suites |
-| `LIM-UX-04` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | UX requirements are defined but not runtime-verified for this reset | `M4 verification gap` | high | rerun `REG-UX-*` and linked `E2E-*` checks |
-| `LIM-PERF-04` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence archive not current for reset baseline | `M4 verification gap` | medium | rerun `PERF-01..03` and archive evidence |
-| `LIM-OPS-04` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart evidence not current for reset baseline | `M4 verification gap` | medium | rerun `OPS-01..02` and archive evidence |
+| `LIM-LIB-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | operation-apply/runtime stream closure explicitly deferred | `M6 enhancement` | low | future enhancement when runtime stream requirements stabilize |
 
 ## Closure Rules
 
