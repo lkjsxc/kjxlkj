@@ -19,7 +19,7 @@ This ledger reports currently verified behavior only.
 High-confidence statement:
 
 - All in Docs governance is active and canonical.
-- Runtime reconstruction stages 00–08 are complete.
+- Runtime reconstruction stages 00–09 are complete.
 - Rust workspace compiles with zero warnings.
 - TypeScript frontend compiles with strict mode, zero errors.
 - Vite production build succeeds.
@@ -33,7 +33,7 @@ High-confidence statement:
 | All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine defines docs as canonical product value |
 | Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | cargo check + tsc --noEmit pass with zero errors |
 | Root docs-only layout | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | `verified` | root contains canonical docs + derived runtime artifacts |
-| TODO restructure-step workflow | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | all stage/wave checklists complete (S00–S08) |
+| TODO restructure-step workflow | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | all stage/wave checklists complete (S00–S09) |
 | JSON prompt-pack canonical files | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `verified` | manifest and stage JSON prompt files canonicalized; prompts.rs loads via include_str! |
 | Responsive split/menu UX requirements | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `verified` | desktop split-pane and compact top-left menu implemented in NotesLayout |
 | Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `verified` | 10-crate Rust workspace with actix-web server, PgPool, migrations |

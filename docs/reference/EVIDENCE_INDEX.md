@@ -34,7 +34,7 @@ complete in TODO ledgers and promoted in conformance ledgers.
 | Stage 06 | REST contract completion and librarian provider/prompt path | [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md) | `API-AUTO-03`, `API-AUTO-04`, OpenAPI parity checks | complete |
 | Stage 07 | workspace realtime sync/replay closure | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | `WS-06`, replay/idempotency/stale-cursor boundaries | complete |
 | Stage 08 | frontend librarian UX and static delivery | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | `E2E-15`, responsive + accessibility checks | complete |
-| Stage 09 | CI/perf/release closure | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass + release gate closure | in progress |
+| Stage 09 | CI/perf/release closure | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass + release gate closure | complete |
 
 ## Verification Profiles
 

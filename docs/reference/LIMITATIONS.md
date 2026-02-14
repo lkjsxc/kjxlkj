@@ -7,7 +7,7 @@ Open mismatches between target spec and trusted current behavior.
 ## Baseline (2025-01-20)
 
 - All in Docs governance is active.
-- Runtime reconstruction stages 00–08 complete.
+- Runtime reconstruction stages 00–09 complete.
 - Rust workspace compiles; TypeScript strict mode passes.
 - CI workflow defined. Integration test infrastructure pending.
 

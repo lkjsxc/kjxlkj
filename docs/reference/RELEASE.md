@@ -19,13 +19,13 @@ Release gate is partially satisfied.
 
 Completed:
 
-- runtime reconstruction stages 00–08 complete
+- runtime reconstruction stages 00–09 complete
 - Rust workspace compiles with zero warnings (cargo check --workspace)
 - TypeScript strict mode passes (tsc --noEmit)
 - Vite production build succeeds
 - CI workflow defined (.github/workflows/ci.yml)
 - no high-severity M1 or M2 drift rows remain
-- all TODO waves marked complete (S00–S08)
+- all TODO waves marked complete (S00–S09)
 
 Remaining for full release:
 
