@@ -1,0 +1,31 @@
+[package]
+name = "kjxlkj-server"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "kjxlkj"
+path = "src/main.rs"
+
+[dependencies]
+kjxlkj-http = { path = "../../http/kjxlkj-http" }
+kjxlkj-ws = { path = "../../ws/kjxlkj-ws" }
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+kjxlkj-db = { path = "../../db/kjxlkj-db" }
+kjxlkj-auth = { path = "../../auth/kjxlkj-auth" }
+kjxlkj-search = { path = "../../search/kjxlkj-search" }
+kjxlkj-rbac = { path = "../../rbac/kjxlkj-rbac" }
+kjxlkj-automation = { path = "../../automation/kjxlkj-automation" }
+kjxlkj-workspace = { path = "../../workspace/kjxlkj-workspace" }
+actix-web.workspace = true
+actix-web-actors.workspace = true
+tokio.workspace = true
+sqlx.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true
+uuid.workspace = true
+time.workspace = true

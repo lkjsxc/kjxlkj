@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = [
+    "src/crates/app/kjxlkj-server",
+    "src/crates/http/kjxlkj-http",
+    "src/crates/ws/kjxlkj-ws",
+    "src/crates/domain/kjxlkj-domain",
+    "src/crates/db/kjxlkj-db",
+    "src/crates/auth/kjxlkj-auth",
+    "src/crates/search/kjxlkj-search",
+    "src/crates/rbac/kjxlkj-rbac",
+    "src/crates/automation/kjxlkj-automation",
+    "src/crates/workspace/kjxlkj-workspace",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+license = "MIT"
+
+[workspace.dependencies]
+actix-web = "4"
+actix-web-actors = "4"
+actix-rt = "2"
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "uuid", "time", "json", "migrate"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+thiserror = "2"
+anyhow = "1"
+uuid = { version = "1", features = ["v7", "serde"] }
+time = { version = "0.3", features = ["serde", "formatting", "parsing"] }
+argon2 = "0.5"
+rand = "0.8"
