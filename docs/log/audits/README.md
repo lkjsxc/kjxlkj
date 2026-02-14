@@ -8,9 +8,17 @@ Post-change audits and evidence summaries.
 
 | Document | Purpose |
 |---|---|
+| [2026-02-14-api-saved-views-contract.md](2026-02-14-api-saved-views-contract.md) | deterministic evidence for replacing saved-view API stubs with executable CRUD behavior, auth/csrf/role enforcement, and lifecycle test coverage |
+| [2026-02-14-automation-librarian-contract-sync.md](2026-02-14-automation-librarian-contract-sync.md) | deterministic evidence for automation/librarian rule/run/review baseline execution, provider/protocol validation, and ledger synchronization |
+| [2026-02-14-regression-pack-slice.md](2026-02-14-regression-pack-slice.md) | deterministic evidence for restored frontend/backend regression execution covering idempotency fallback, pre-auth `401` behavior, title propagation, status-rail errors, and backend replay/conflict contracts |
 | [2026-02-13-docker-artifact-contract-sync.md](2026-02-13-docker-artifact-contract-sync.md) | deterministic mismatch closure for app-runtime Docker contract, TODO gate hardening, and verified health/readiness startup flow |
 | [2026-02-13-all-in-docs-baseline-reset.md](2026-02-13-all-in-docs-baseline-reset.md) | spec/code/todo reset audit for All in Docs baseline, typed-language policy hardening, and ledger synchronization |
 | [2026-02-13-docs-launch-and-todo-start-gate.md](2026-02-13-docs-launch-and-todo-start-gate.md) | deterministic reconciliation of docs-launch artifacts and TODO start-gate checks |
+| [2026-02-14-frontend-shell-editor-flow.md](2026-02-14-frontend-shell-editor-flow.md) | deterministic evidence for typed note-first shell restoration, synced/draft editor state model, autosave debounce, title propagation, and save-status rail behavior |
+| [2026-02-14-http-ws-security-contract.md](2026-02-14-http-ws-security-contract.md) | deterministic evidence for reachable HTTP+WS contract slice, setup/session/csrf/rbac enforcement, note conflict semantics, and ws idempotency replay behavior |
+| [2026-02-14-runtime-bootstrap-and-docker-gate.md](2026-02-14-runtime-bootstrap-and-docker-gate.md) | deterministic evidence for runtime bootstrap restoration, root Docker artifact compliance, compose config validation, and health/readiness smoke checks |
+| [2026-02-14-structure-contract-slice.md](2026-02-14-structure-contract-slice.md) | deterministic evidence for final-file-structure alignment of backend crate topology, frontend TypeScript module paths, workspace manifest members, and <=200-line runtime source compliance |
+| [2026-02-14-todo-start-gate-ledger-sync.md](2026-02-14-todo-start-gate-ledger-sync.md) | deterministic synchronization of TODO start-gate closure, reference ledgers, and recursive documentation logging structure |
 | [2026-02-13-reconstruction-reset-sync.md](2026-02-13-reconstruction-reset-sync.md) | historical reset-sync audit captured before the All in Docs hard reset |
 | [2026-02-12-implementation-user-findings.md](2026-02-12-implementation-user-findings.md) | consolidated defects and UX gaps discovered during implementation and user feedback |
 | [2026-02-12-librarian-doc-sync.md](2026-02-12-librarian-doc-sync.md) | mismatch closure audit for librarian-agent documentation and ledger sync |

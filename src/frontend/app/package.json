@@ -1,0 +1,16 @@
+{
+  "name": "@kjxlkj/app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --project tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  }
+}

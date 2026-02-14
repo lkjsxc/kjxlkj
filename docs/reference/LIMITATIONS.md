@@ -7,19 +7,20 @@ Open mismatches between target spec and trusted current behavior.
 ## Baseline (2026-02-14)
 
 - All in Docs governance is active.
-- Runtime source has been reset and is currently absent by design.
-- TODO ledgers are reset and documentation-linked for deterministic rebuild.
+- Runtime scaffold exists but does not yet satisfy full spec topology.
+- TODO ledgers are documentation-linked for deterministic rebuild.
+- top-level start-gate read/open rows are complete; reconstruction rows remain open.
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-RUNTIME-05` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process topology is not implemented in repository | `M2 missing feature` | high | reconstruct `src/` using Stage 01 onward |
-| `LIM-API-05` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP API routes are not currently runnable | `M2 missing feature` | high | rebuild HTTP crate and run API acceptance pack |
-| `LIM-WS-05` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS endpoint and replay protocol are not currently runnable | `M2 missing feature` | high | rebuild WS crate and run WS acceptance pack |
-| `LIM-UI-05` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | TypeScript web app runtime is not currently present | `M2 missing feature` | high | rebuild frontend app from Stage 08 TODO waves |
-| `LIM-TYPE-02` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `TYPE-01` and `TYPE-02` gates cannot pass without runtime source | `M2 missing feature` | high | restore Rust workspace and TypeScript app tree |
-| `LIM-AUTO-04` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation/librarian runtime contract is not currently executable | `M2 missing feature` | medium | reconstruct Stage 04 and Stage 06 runtime flow |
+| `LIM-RUNTIME-05` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime bootstrap exists, but WS/background/domain supervision topology is incomplete | `M2 missing feature` | high | extend scaffold to full runtime topology from staged wave program |
+| `LIM-API-05` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP route surface is restored with saved-view CRUD executable, but attachment/admin/export paths and full acceptance coverage remain incomplete | `M2 missing feature` | high | complete non-stub attachment/admin semantics and run full API acceptance pack |
+| `LIM-WS-05` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS endpoint is runnable for subscribe/ack/patch and reconnect `ack_cursor` replay, but full presence/automation ordering contract remains incomplete | `M2 missing feature` | high | complete WS replay/ordering matrix and run `WS-01..06` pack |
+| `LIM-UI-05` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | note-first shell, title propagation, and autosave status are implemented, but full responsive/accessibility/librarian UX matrix remains incomplete | `M2 missing feature` | high | complete Stage 08 UX matrix and associated `REG-USR-*` / `REG-UX-*` proofs |
+| `LIM-SEC-05` | [/docs/spec/security/README.md](/docs/spec/security/README.md) | core auth/session/csrf/rbac guards are present, but full security matrix and transport/session persistence hardening are incomplete | `M2 missing feature` | medium | execute Stage 05 wave matrix with deterministic security regression coverage |
+| `LIM-AUTO-04` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rules/runs/review flows are executable, but full librarian parser/retry/apply-operation safety matrix is incomplete | `M2 missing feature` | medium | complete Stage 06 XML parser/retry/apply matrix and expand deterministic run diagnostics |
 | `LIM-PERF-05` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun Stage 09 performance and archive new proof |
 | `LIM-OPS-05` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | operations and recovery evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun operations evidence set after rebuild |
 

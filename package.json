@@ -1,0 +1,10 @@
+{
+  "name": "kjxlkj-root",
+  "private": true,
+  "workspaces": [
+    "src/frontend/app"
+  ],
+  "scripts": {
+    "typecheck": "npm run -w src/frontend/app typecheck"
+  }
+}
