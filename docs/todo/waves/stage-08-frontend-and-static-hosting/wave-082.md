@@ -13,13 +13,13 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Restructure Steps
 
-- [ ] restructure-step S08-W082-01: satisfy static build/serve boundaries from [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
-- [ ] restructure-step S08-W082-02: satisfy dockerized delivery workflow from [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
-- [ ] restructure-step S08-W082-03: enforce responsive split/menu behavior from [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
-- [ ] restructure-step S08-W082-04: enforce keyboard and accessibility requirements from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
-- [ ] restructure-step S08-W082-05: enforce strict frontend type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [x] restructure-step S08-W082-01: satisfy static build/serve boundaries from [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [x] restructure-step S08-W082-02: satisfy dockerized delivery workflow from [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [x] restructure-step S08-W082-03: enforce responsive split/menu behavior from [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [x] restructure-step S08-W082-04: enforce keyboard and accessibility requirements from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [x] restructure-step S08-W082-05: enforce strict frontend type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S08-W082-V01: run responsive/a11y/static-hosting checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [ ] restructure-step S08-W082-V02: sync frontend delivery status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] restructure-step S08-W082-V01: run responsive/a11y/static-hosting checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [x] restructure-step S08-W082-V02: sync frontend delivery status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

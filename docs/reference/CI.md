@@ -6,14 +6,15 @@ Reproducible verification profiles.
 
 ## Canonical Location
 
-- CI workflow files are intentionally absent in this repository state.
-- Verification is executed through command profiles and recorded in ledgers.
+- CI workflow: `.github/workflows/ci.yml`
+- Jobs: docs-integrity → workspace-bootstrap → core-runtime → release-gate
 
-## Baseline State (2026-02-13)
+## Baseline State (2025-01-20)
 
 - Active profile target: `Release`.
-- `Librarian-runtime` and `Librarian-small-model` deterministic fixture checks are passing.
-- `Release` profile is green with Stage 09 Wave 090/091/092 evidence archived.
+- `Workspace-bootstrap` profile passes: cargo check + tsc --noEmit + vite build.
+- `Core-runtime` profile passes: cargo test --workspace.
+- Integration test infrastructure for DB-connected acceptance suites is pending.
 
 ## Verification Profiles
 

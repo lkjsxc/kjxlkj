@@ -13,13 +13,13 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Restructure Steps
 
-- [ ] restructure-step S07-W072-01: close `WS-06` acceptance expectations from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [ ] restructure-step S07-W072-02: validate ordered interleave of note and automation events from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [ ] restructure-step S07-W072-03: validate replay correctness after reconnect from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
-- [ ] restructure-step S07-W072-04: validate unknown workspace/automation event forward compatibility from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [ ] restructure-step S07-W072-05: map achieved proof to stage evidence contract in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [x] restructure-step S07-W072-01: close `WS-06` acceptance expectations from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [x] restructure-step S07-W072-02: validate ordered interleave of note and automation events from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [x] restructure-step S07-W072-03: validate replay correctness after reconnect from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [x] restructure-step S07-W072-04: validate unknown workspace/automation event forward compatibility from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [x] restructure-step S07-W072-05: map achieved proof to stage evidence contract in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S07-W072-V01: run WS acceptance and soak checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [ ] restructure-step S07-W072-V02: sync realtime closure status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] restructure-step S07-W072-V01: run WS acceptance and soak checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [x] restructure-step S07-W072-V02: sync realtime closure status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

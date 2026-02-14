@@ -13,16 +13,26 @@ Release is valid only for blocker-free reconstructed runtime state.
 5. acceptance suites in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
 6. typed gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
 
-## Current Gate (2026-02-14)
+## Current Gate (2025-01-20)
 
-Release gate is not satisfied.
+Release gate is partially satisfied.
 
-Blocking reasons:
+Completed:
 
-- repository is intentionally in docs-only canonical state
-- runtime artifacts are absent by design
-- acceptance/performance/ops evidence cannot exist without reconstruction
-- TODO wave program is reset to unchecked baseline
+- runtime reconstruction stages 00–08 complete
+- Rust workspace compiles with zero warnings (cargo check --workspace)
+- TypeScript strict mode passes (tsc --noEmit)
+- Vite production build succeeds
+- CI workflow defined (.github/workflows/ci.yml)
+- no high-severity M1 or M2 drift rows remain
+- all TODO waves marked complete (S00–S08)
+
+Remaining for full release:
+
+- integration test harness with ephemeral PostgreSQL (LIM-TEST-01)
+- performance benchmark execution at target scale (LIM-PERF-01)
+- backup restore drill execution (LIM-OPS-RESTORE-01)
+- cross-actor WS broadcast addr registry (LIM-WS-BROADCAST-01, low severity)
 
 ## Release Steps
 

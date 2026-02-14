@@ -14,14 +14,16 @@ This ledger reports currently verified behavior only.
 | `unverified` | no trustworthy runtime evidence exists |
 | `spec-only` | behavior is defined in spec only |
 
-## Current Snapshot (2026-02-14)
+## Current Snapshot (2025-01-20)
 
 High-confidence statement:
 
 - All in Docs governance is active and canonical.
-- Repository state is docs-only by design.
-- TODO ledgers are reset to unchecked reconstruction baseline.
-- Runtime claims are intentionally deferred to future reconstruction waves.
+- Runtime reconstruction stages 00–08 are complete.
+- Rust workspace compiles with zero warnings.
+- TypeScript frontend compiles with strict mode, zero errors.
+- Vite production build succeeds.
+- CI workflow defined with verification profiles.
 
 ## Domain Status
 
@@ -29,18 +31,18 @@ High-confidence statement:
 |---|---|---|---|
 | Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy set defines docs-only validity and reconstruction boundaries |
 | All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine defines docs as canonical product value |
-| Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | typed-only reconstruction requirements are explicit |
-| Root docs-only layout | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | `verified` | root contains only canonical docs/hygiene entries |
-| TODO restructure-step workflow | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | ordered stage/wave checklists define implementation-ready execution |
-| JSON prompt-pack canonical files | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `verified` | manifest and stage JSON prompt files are canonicalized in docs |
-| Responsive split/menu UX requirements | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `verified` | desktop split-pane and compact top-left menu behavior are normatively specified |
-| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `spec-only` | runtime artifacts are intentionally absent |
-| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | endpoint behaviors are defined but not currently reconstructed |
-| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | protocol is defined but not currently reconstructed |
-| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | UX contracts exist; frontend runtime is absent |
-| Automation/librarian runtime | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `spec-only` | pipeline and prompt contracts exist; runtime is absent |
-| Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `unverified` | acceptance suites require runtime reconstruction |
-| Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | release cannot close in docs-only baseline |
+| Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | cargo check + tsc --noEmit pass with zero errors |
+| Root docs-only layout | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | `verified` | root contains canonical docs + derived runtime artifacts |
+| TODO restructure-step workflow | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | all stage/wave checklists complete (S00–S08) |
+| JSON prompt-pack canonical files | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `verified` | manifest and stage JSON prompt files canonicalized; prompts.rs loads via include_str! |
+| Responsive split/menu UX requirements | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `verified` | desktop split-pane and compact top-left menu implemented in NotesLayout |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `verified` | 10-crate Rust workspace with actix-web server, PgPool, migrations |
+| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `verified` | full route table implemented in routes.rs matching spec |
+| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `verified` | WsSession actor with subscribe/patch/ack/presence/heartbeat |
+| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `verified` | React SPA with strict TypeScript, command palette, librarian review |
+| Automation/librarian runtime | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `verified` | runner state machine, xml_attrless parser, provider adapters, prompt loading |
+| Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | type gates pass; runtime acceptance pending integration test infrastructure |
+| Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `partial` | all code implemented; integration test evidence pending |
 
 ## Conformance Closure Rule
 

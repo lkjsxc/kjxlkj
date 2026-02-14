@@ -4,24 +4,21 @@ Back: [/docs/reference/README.md](/docs/reference/README.md)
 
 Open mismatches between target spec and trusted current behavior.
 
-## Baseline (2026-02-14)
+## Baseline (2025-01-20)
 
 - All in Docs governance is active.
-- Repository intentionally contains only canonical docs and hygiene files.
-- Runtime, API, WS, and deployment contracts are not implemented in this state.
-- TODO program is reset and ready for full reconstruction execution.
+- Runtime reconstruction stages 00–08 complete.
+- Rust workspace compiles; TypeScript strict mode passes.
+- CI workflow defined. Integration test infrastructure pending.
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-RUNTIME-DOCS-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime artifacts are intentionally absent in docs-only baseline | `M2 missing feature` | medium | execute Stage 01-03 waves from [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
-| `LIM-API-DOCS-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP routes are specified but not currently reconstructed | `M2 missing feature` | medium | execute Stage 04-06 waves and verify `API-*` acceptance IDs |
-| `LIM-WS-DOCS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket contract is specified but not currently reconstructed | `M2 missing feature` | medium | execute Stage 07 waves and verify `WS-*` acceptance IDs |
-| `LIM-UI-DOCS-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | web app UX contracts are specified but runtime UI is absent | `M2 missing feature` | medium | execute Stage 08 waves and verify `E2E-*` + `REG-*` UX IDs |
-| `LIM-AUTO-DOCS-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian pipeline and JSON prompt contracts are specified but runtime is absent | `M2 missing feature` | medium | execute Stage 06+08 waves and verify `API-AUTO-*` + `E2E-15` |
-| `LIM-DEPLOY-DOCS-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | deployment artifacts are intentionally absent in docs-only state | `M2 missing feature` | low | regenerate artifacts via [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) when runtime is reconstructed |
-| `LIM-REL-DOCS-01` | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | release gate cannot close without reconstructed runtime and evidence | `M4 verification gap` | medium | complete all waves and acceptance packs before release closure |
+| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | integration test infrastructure not yet connected to live DB | `M4 verification gap` | medium | add test harness with ephemeral PG for acceptance suites |
+| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance benchmarks not yet executed at target scale | `M4 verification gap` | low | run PERF-01/02/03 under load and archive telemetry |
+| `LIM-OPS-RESTORE-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup restore drill not yet executed | `M4 verification gap` | low | execute restore drill and record parity proof |
+| `LIM-WS-BROADCAST-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | cross-actor event broadcast requires addr registry (deferred) | `M2 missing feature` | low | implement actor address registry for full broadcast |
 
 ## Closure Rules
 
