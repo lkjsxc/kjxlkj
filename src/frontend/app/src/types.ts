@@ -65,6 +65,25 @@ export interface AutomationRun {
   status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
 }
 
+export interface LibrarianOperation {
+  id: string;
+  run_id: string;
+  operation_index: number;
+  kind: string;
+  target_note_id?: string;
+  title?: string;
+  body_markdown?: string;
+  reason?: string;
+  confidence?: number;
+  status: 'pending' | 'accepted' | 'rejected' | 'applied';
+  review_decision?: 'accept' | 'reject';
+}
+
+export interface RunDetail {
+  run: AutomationRun;
+  operations: LibrarianOperation[];
+}
+
 export interface SavedView {
   id: string;
   workspace_id: string;

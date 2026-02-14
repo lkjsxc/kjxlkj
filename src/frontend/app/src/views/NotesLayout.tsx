@@ -4,12 +4,14 @@
 // UX-LAYOUT-03: independent pane scrolling.
 // UX-NAV-01: note-first baseline; no dashboard/workspace switcher.
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../api';
 import type { SessionInfo, Workspace } from '../types';
 import MenuToggle from '../components/MenuToggle';
+import CommandPalette, { type CommandAction } from '../components/CommandPalette';
 import NotesList from './NotesList';
 import NoteDetail from './NoteDetail';
+import LibrarianReview from './LibrarianReview';
 
 interface Props {
   session: SessionInfo;
@@ -22,6 +24,7 @@ export default function NotesLayout({ session }: Props) {
   const [titleOverrides, setTitleOverrides] = useState(
     () => new Map<string, string>(),
   );
+  const [reviewRunId, setReviewRunId] = useState<string | null>(null);
 
   // Load first workspace for the user
   useEffect(() => {
@@ -68,8 +71,50 @@ export default function NotesLayout({ session }: Props) {
     }
   }
 
+  // UX-NAV-02: command palette actions
+  const paletteActions: CommandAction[] = useMemo(
+    () => [
+      {
+        id: 'create-note',
+        label: 'Create New Note',
+        shortcut: 'Ctrl+N',
+        handler: handleCreateNote,
+      },
+      {
+        id: 'toggle-sidebar',
+        label: 'Toggle Sidebar',
+        shortcut: 'Ctrl+B',
+        handler: () => setSidebarOpen((o) => !o),
+      },
+      {
+        id: 'launch-librarian',
+        label: 'Launch Librarian Run',
+        handler: async () => {
+          if (!workspace) return;
+          const runs = await api.get<{ id: string }[]>(
+            `/api/workspaces/${workspace.id}/automation/runs`,
+          );
+          if (runs.length > 0 && runs[0]) setReviewRunId(runs[0].id);
+        },
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [workspace],
+  );
+
   return (
     <div className="app-layout">
+      {/* UX-NAV-02: keyboard-first command palette */}
+      <CommandPalette actions={paletteActions} />
+
+      {/* Librarian review overlay */}
+      {reviewRunId && (
+        <LibrarianReview
+          runId={reviewRunId}
+          onClose={() => setReviewRunId(null)}
+        />
+      )}
+
       {/* UX-LAYOUT-06: top-left menu button on compact screens */}
       <MenuToggle
         sidebarOpen={sidebarOpen}
