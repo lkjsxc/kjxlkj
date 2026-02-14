@@ -31,11 +31,18 @@ async fn main() -> anyhow::Result<()> {
     let static_dir = std::env::var("STATIC_DIR").unwrap_or_else(|_| "./static".into());
     tracing::info!(static_dir = %static_dir, "serving SPA from static dir");
 
+    // Shared WebSocket session manager
+    let ws_mgr = kjxlkj_ws::session_mgr::SessionManager::new();
+
     HttpServer::new(move || {
         let static_dir = static_dir.clone();
         App::new()
+            .wrap(kjxlkj_auth::headers::SecurityHeaders)
             .app_data(web::Data::new(pool.clone()))
+            .app_data(web::Data::new(ws_mgr.clone()))
             .configure(kjxlkj_http::routes::configure)
+            // WebSocket endpoint
+            .route("/ws", web::get().to(kjxlkj_ws::handler::ws_handler))
             // SPA: serve static assets, fallback to index.html for client routing
             .service(
                 Files::new("/", &static_dir)

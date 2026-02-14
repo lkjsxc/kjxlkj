@@ -9,6 +9,7 @@ kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
 kjxlkj-db = { path = "../../db/kjxlkj-db" }
 kjxlkj-auth = { path = "../../auth/kjxlkj-auth" }
 kjxlkj-rbac = { path = "../../rbac/kjxlkj-rbac" }
+actix.workspace = true
 actix-web.workspace = true
 actix-web-actors.workspace = true
 serde.workspace = true
@@ -18,3 +19,4 @@ tracing.workspace = true
 thiserror.workspace = true
 uuid.workspace = true
 time.workspace = true
+tokio.workspace = true

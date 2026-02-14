@@ -112,6 +112,9 @@ impl FromRequest for AuthSession {
                 .map_err(|_| auth_error("INTERNAL_ERROR", "DB error"))?
                 .ok_or_else(|| auth_error("AUTH_REQUIRED", "User not found"))?;
 
+            // Rolling session renewal per /docs/spec/security/sessions.md
+            let _ = sessions::renew_session(pool.get_ref(), session_id).await;
+
             // CSRF enforcement per /docs/spec/security/csrf.md
             // State-changing methods MUST include valid CSRF token
             let method = req.method().as_str();

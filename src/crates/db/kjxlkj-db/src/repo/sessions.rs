@@ -50,3 +50,24 @@ pub async fn revoke_all_for_user(pool: &PgPool, user_id: Uuid) -> Result<(), sql
         .await?;
     Ok(())
 }
+
+/// Rolling renewal: extend session TTL by 7 days from now.
+/// Per /docs/spec/security/sessions.md: Session TTL default is 7 days
+/// with rolling renewal.
+pub async fn renew_session(pool: &PgPool, id: Uuid) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        "UPDATE sessions SET expires_at = now() + interval '7 days' WHERE id = $1",
+    )
+    .bind(id)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
+/// Clean up expired sessions.
+pub async fn cleanup_expired(pool: &PgPool) -> Result<u64, sqlx::Error> {
+    let result = sqlx::query("DELETE FROM sessions WHERE expires_at <= now()")
+        .execute(pool)
+        .await?;
+    Ok(result.rows_affected())
+}

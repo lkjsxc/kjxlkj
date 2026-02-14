@@ -8,7 +8,9 @@ version = "0.13.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de7fa236829ba0841304542f7614c42b80fca007455315c45c785ccfa873a85b"
 dependencies = [
+ "actix-macros",
  "actix-rt",
+ "actix_derive",
  "bitflags",
  "bytes",
  "crossbeam-channel",
@@ -244,6 +246,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f591380e2e68490b5dfaf1dd1aa0ebe78d84ba7067078512b4ea6e4492d622b8"
 dependencies = [
  "actix-router",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "actix_derive"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6ac1e58cded18cb28ddc17143c4dea5345b3ad575e14f32f66e4054a56eb271"
+dependencies = [
  "proc-macro2",
  "quote",
  "syn",
@@ -1237,6 +1250,7 @@ dependencies = [
 name = "kjxlkj-ws"
 version = "0.1.0"
 dependencies = [
+ "actix",
  "actix-web",
  "actix-web-actors",
  "kjxlkj-auth",
@@ -1248,6 +1262,7 @@ dependencies = [
  "sqlx",
  "thiserror",
  "time",
+ "tokio",
  "tracing",
  "uuid",
 ]

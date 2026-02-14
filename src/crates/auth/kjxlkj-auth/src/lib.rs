@@ -4,3 +4,4 @@
 pub mod password;
 pub mod session;
 pub mod middleware;
+pub mod headers;
