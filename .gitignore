@@ -1,4 +1,5 @@
-.github/copilot-instructions.md
+/.github/copilot-instructions.md
+/GEMINI.md
 /target
 **/*.rs.bk
 *.swp
