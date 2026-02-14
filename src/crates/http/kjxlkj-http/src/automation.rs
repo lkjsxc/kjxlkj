@@ -160,3 +160,116 @@ pub async fn list_runs(
 pub struct WsFilter {
     pub workspace_id: Uuid,
 }
+
+/// GET /api/automation/runs/{id} — run status/details with librarian operations
+pub async fn run_detail(
+    pool: web::Data<PgPool>,
+    _auth: AuthSession,
+    path: web::Path<Uuid>,
+) -> HttpResponse {
+    let run_id = path.into_inner();
+    let rid = Uuid::now_v7().to_string();
+
+    let run_row: Option<(String, Option<String>, Option<serde_json::Value>)> =
+        sqlx::query_as(
+            "SELECT status, error_detail, result_json FROM automation_runs WHERE id = $1",
+        )
+        .bind(run_id)
+        .fetch_optional(pool.get_ref())
+        .await
+        .unwrap_or(None);
+
+    let Some((status, error_detail, result_json)) = run_row else {
+        return HttpResponse::NotFound().json(ErrorBody {
+            code: "NOT_FOUND".into(),
+            message: "Run not found".into(),
+            details: None,
+            request_id: rid,
+        });
+    };
+
+    // Fetch librarian operations if any
+    let ops: Vec<(Uuid, i32, String, Option<Uuid>, Option<String>, Option<f32>, String)> =
+        sqlx::query_as(
+            "SELECT id, operation_index, kind, target_note_id, title, confidence, status
+             FROM librarian_operations WHERE run_id = $1 ORDER BY operation_index",
+        )
+        .bind(run_id)
+        .fetch_all(pool.get_ref())
+        .await
+        .unwrap_or_default();
+
+    let operations: Vec<serde_json::Value> = ops
+        .iter()
+        .map(|(id, idx, kind, target, title, conf, st)| {
+            serde_json::json!({
+                "id": id,
+                "index": idx,
+                "kind": kind,
+                "target_note_id": target,
+                "title": title,
+                "confidence": conf,
+                "status": st,
+            })
+        })
+        .collect();
+
+    HttpResponse::Ok().json(serde_json::json!({
+        "run_id": run_id,
+        "status": status,
+        "error_detail": error_detail,
+        "result_json": result_json,
+        "operations": operations,
+    }))
+}
+
+/// POST /api/automation/runs/{id}/review — persist accept/reject decisions
+pub async fn review_run(
+    pool: web::Data<PgPool>,
+    auth: AuthSession,
+    path: web::Path<Uuid>,
+    body: web::Json<ReviewRequest>,
+) -> HttpResponse {
+    let run_id = path.into_inner();
+    let rid = Uuid::now_v7().to_string();
+    let reviewer_id = auth.user.id;
+
+    for decision in &body.decisions {
+        let status = if decision.accept { "accepted" } else { "rejected" };
+        if let Err(e) = sqlx::query(
+            "UPDATE librarian_operations
+             SET status = $1, review_decision = $1, reviewer_id = $2, reviewed_at = now()
+             WHERE run_id = $3 AND id = $4",
+        )
+        .bind(status)
+        .bind(reviewer_id)
+        .bind(run_id)
+        .bind(decision.operation_id)
+        .execute(pool.get_ref())
+        .await
+        {
+            return HttpResponse::InternalServerError().json(ErrorBody {
+                code: "INTERNAL_ERROR".into(),
+                message: e.to_string(),
+                details: None,
+                request_id: rid,
+            });
+        }
+    }
+
+    HttpResponse::Ok().json(serde_json::json!({
+        "run_id": run_id,
+        "reviewed_count": body.decisions.len()
+    }))
+}
+
+#[derive(serde::Deserialize)]
+pub struct ReviewRequest {
+    pub decisions: Vec<ReviewDecision>,
+}
+
+#[derive(serde::Deserialize)]
+pub struct ReviewDecision {
+    pub operation_id: Uuid,
+    pub accept: bool,
+}

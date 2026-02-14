@@ -13,3 +13,6 @@ pub mod views;
 pub mod automation;
 pub mod ops;
 pub mod dto;
+pub mod tags;
+pub mod attachments;
+pub mod admin;

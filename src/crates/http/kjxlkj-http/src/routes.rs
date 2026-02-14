@@ -34,18 +34,27 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             .route("/projects/{id}", web::delete().to(super::projects::delete))
             // Notes
             .route("/notes", web::post().to(super::notes::create))
+            .route("/notes/media", web::post().to(super::notes::create_media))
             .route("/notes", web::get().to(super::notes::list))
             .route("/notes/{id}", web::get().to(super::notes::get))
             .route("/notes/{id}", web::patch().to(super::notes::update))
             .route("/notes/{id}/title", web::patch().to(super::notes::update_title))
             .route("/notes/{id}", web::delete().to(super::notes::delete))
             .route("/notes/{id}/history", web::get().to(super::notes::history))
+            .route("/notes/{id}/rollback", web::post().to(super::notes::rollback))
             // Metadata
             .route("/notes/{id}/metadata/{key}", web::put().to(super::notes::upsert_metadata))
             .route("/notes/{id}/metadata/{key}", web::delete().to(super::notes::delete_metadata))
             // Search
             .route("/search", web::get().to(super::search::search))
             .route("/notes/{id}/backlinks", web::get().to(super::search::backlinks))
+            // Tags
+            .route("/tags", web::get().to(super::tags::list))
+            .route("/notes/{id}/tags", web::put().to(super::tags::replace_tags))
+            // Attachments
+            .route("/notes/{id}/attachments", web::post().to(super::attachments::upload))
+            .route("/attachments/{id}", web::get().to(super::attachments::download))
+            .route("/attachments/{id}", web::delete().to(super::attachments::delete))
             // Workspace-scoped note and search aliases (frontend convenience)
             .route("/workspaces/{ws_id}/notes", web::get().to(super::notes::list))
             .route("/workspaces/{ws_id}/notes", web::post().to(super::notes::create))
@@ -63,5 +72,11 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             .route("/automation/rules/{id}", web::delete().to(super::automation::delete_rule))
             .route("/automation/rules/{id}/launch", web::post().to(super::automation::launch_run))
             .route("/automation/runs", web::get().to(super::automation::list_runs))
+            .route("/automation/runs/{id}", web::get().to(super::automation::run_detail))
+            .route("/automation/runs/{id}/review", web::post().to(super::automation::review_run))
+            // Admin
+            .route("/admin/export/markdown", web::post().to(super::admin::launch_export))
+            .route("/admin/export/{job_id}", web::get().to(super::admin::export_status))
+            .route("/admin/backup/sql", web::post().to(super::admin::launch_backup))
     );
 }

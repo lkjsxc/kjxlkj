@@ -295,3 +295,116 @@ pub async fn delete_metadata(
 pub struct WsFilter {
     pub workspace_id: Uuid,
 }
+
+/// POST /api/notes/media — create standalone media note from upload
+pub async fn create_media(
+    pool: web::Data<PgPool>,
+    auth: AuthSession,
+    body: web::Json<CreateNoteRequest>,
+) -> HttpResponse {
+    let rid = Uuid::now_v7().to_string();
+    if require_role(&auth, Role::Editor).is_err() {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(),
+            message: "Editor role required".into(),
+            details: None,
+            request_id: rid,
+        });
+    }
+    let kind = match body.note_kind.as_deref() {
+        Some("media_image") => NoteKind::MediaImage,
+        Some("media_video") => NoteKind::MediaVideo,
+        _ => NoteKind::MediaImage,
+    };
+    let note = NoteStream {
+        id: Uuid::now_v7(),
+        workspace_id: body.workspace_id,
+        project_id: body.project_id,
+        title: body.title.clone(),
+        note_kind: kind,
+        access_scope: AccessScope::Workspace,
+        created_at: String::new(),
+        updated_at: String::new(),
+        current_version: 0,
+        deleted_at: None,
+    };
+    match note_repo::insert_note_stream(pool.get_ref(), &note).await {
+        Ok(()) => HttpResponse::Created().json(serde_json::json!({
+            "id": note.id, "title": note.title, "note_kind": body.note_kind
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(ErrorBody {
+            code: "INTERNAL_ERROR".into(),
+            message: e.to_string(),
+            details: None,
+            request_id: rid,
+        }),
+    }
+}
+
+/// POST /api/notes/{id}/rollback — rollback to selected version
+pub async fn rollback(
+    pool: web::Data<PgPool>,
+    auth: AuthSession,
+    path: web::Path<Uuid>,
+    body: web::Json<RollbackRequest>,
+) -> HttpResponse {
+    let rid = Uuid::now_v7().to_string();
+    let note_id = path.into_inner();
+    let target_version = body.target_version;
+    let actor_id = auth.user.id;
+
+    // Find snapshot or reconstruct from events up to target_version
+    let snapshot: Option<(String,)> = sqlx::query_as(
+        "SELECT markdown FROM note_snapshots
+         WHERE note_id = $1 AND version <= $2
+         ORDER BY version DESC LIMIT 1",
+    )
+    .bind(note_id)
+    .bind(target_version)
+    .fetch_optional(pool.get_ref())
+    .await
+    .unwrap_or(None);
+
+    let markdown = snapshot.map(|(m,)| m).unwrap_or_default();
+
+    let payload = serde_json::json!({
+        "rollback_to_version": target_version
+    });
+
+    match note_repo::apply_mutation(
+        pool.get_ref(),
+        note_id,
+        note_repo::current_version(pool.get_ref(), note_id)
+            .await
+            .unwrap_or(0),
+        &markdown,
+        actor_id,
+        "rollback",
+        &payload,
+    )
+    .await
+    {
+        Ok(Some(version)) => HttpResponse::Ok().json(serde_json::json!({
+            "note_id": note_id,
+            "version": version,
+            "rollback_to": target_version
+        })),
+        Ok(None) => HttpResponse::Conflict().json(ErrorBody {
+            code: "VERSION_CONFLICT".into(),
+            message: "Concurrent modification during rollback".into(),
+            details: None,
+            request_id: rid,
+        }),
+        Err(e) => HttpResponse::InternalServerError().json(ErrorBody {
+            code: "INTERNAL_ERROR".into(),
+            message: e.to_string(),
+            details: None,
+            request_id: rid,
+        }),
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub struct RollbackRequest {
+    pub target_version: i64,
+}

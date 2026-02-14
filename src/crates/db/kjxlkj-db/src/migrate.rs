@@ -1,19 +1,54 @@
 // Database migration support per /docs/spec/technical/migrations.md
+// Migrations MUST be ordered and deterministic.
+// Forward migrations MUST be idempotent in deployment scripts.
+// Migration failures MUST fail startup readiness.
 use sqlx::PgPool;
 
 /// Run all migrations in order.
 /// Covers schema domains from /docs/spec/technical/migrations.md.
 pub async fn run_migrations(pool: &PgPool) -> Result<(), sqlx::Error> {
-    sqlx::query(SCHEMA_SQL).execute(pool).await?;
+    // Create migration tracking table
+    sqlx::query(MIGRATION_TABLE_SQL).execute(pool).await?;
+
+    // Apply each migration in order, skipping already-applied ones
+    for (version, name, sql) in MIGRATIONS {
+        let applied: bool = sqlx::query_scalar(
+            "SELECT EXISTS(SELECT 1 FROM _migrations WHERE version = $1)",
+        )
+        .bind(version)
+        .fetch_one(pool)
+        .await?;
+
+        if !applied {
+            sqlx::query(sql).execute(pool).await?;
+            sqlx::query("INSERT INTO _migrations (version, name) VALUES ($1, $2)")
+                .bind(version)
+                .bind(name)
+                .execute(pool)
+                .await?;
+            tracing::info!(version, name, "migration applied");
+        }
+    }
     tracing::info!("database migrations applied successfully");
     Ok(())
 }
 
-/// Full schema SQL covering all migration domains:
-/// users, sessions, workspaces, membership, projects,
-/// views, notes, events, projections, tags, backlinks,
-/// automation, attachments.
-const SCHEMA_SQL: &str = r#"
+const MIGRATION_TABLE_SQL: &str = r#"
+CREATE TABLE IF NOT EXISTS _migrations (
+    version INT PRIMARY KEY,
+    name TEXT NOT NULL,
+    applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+"#;
+
+/// Ordered migrations. Each tuple: (version, name, sql).
+const MIGRATIONS: &[(i32, &str, &str)] = &[
+    (1, "initial_schema", SCHEMA_V1),
+    (2, "librarian_and_jobs", SCHEMA_V2),
+];
+
+/// V1: Core schema covering all initial domains.
+const SCHEMA_V1: &str = r#"
 -- Users and sessions
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
@@ -191,4 +226,69 @@ CREATE TABLE IF NOT EXISTS attachment_chunks (
     data BYTEA NOT NULL,
     PRIMARY KEY (attachment_id, chunk_index)
 );
+"#;
+
+/// V2: Librarian run reports, operation audit logs, export/backup jobs.
+/// Per /docs/spec/domain/automation.md and /docs/spec/domain/export.md.
+const SCHEMA_V2: &str = r#"
+-- Librarian run reports (per /docs/spec/technical/librarian-agent.md)
+CREATE TABLE IF NOT EXISTS librarian_run_reports (
+    run_id UUID PRIMARY KEY REFERENCES automation_runs(id),
+    provider_kind TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_hash TEXT NOT NULL,
+    parser_version TEXT NOT NULL DEFAULT '1',
+    raw_request TEXT,
+    raw_response TEXT,
+    parse_warnings JSONB NOT NULL DEFAULT '[]',
+    operations_proposed INT NOT NULL DEFAULT 0,
+    operations_accepted INT NOT NULL DEFAULT 0,
+    operations_rejected INT NOT NULL DEFAULT 0
+);
+
+-- Librarian operation audit logs
+CREATE TABLE IF NOT EXISTS librarian_operations (
+    id UUID PRIMARY KEY,
+    run_id UUID NOT NULL REFERENCES automation_runs(id),
+    operation_index INT NOT NULL,
+    kind TEXT NOT NULL,
+    target_note_id UUID,
+    title TEXT,
+    body_markdown TEXT,
+    reason TEXT,
+    confidence REAL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    review_decision TEXT,
+    reviewer_id UUID REFERENCES users(id),
+    reviewed_at TIMESTAMPTZ,
+    UNIQUE(run_id, operation_index)
+);
+
+-- Add triggering event tracking to automation_runs
+ALTER TABLE automation_runs
+    ADD COLUMN IF NOT EXISTS triggering_event_id UUID,
+    ADD COLUMN IF NOT EXISTS error_detail TEXT;
+
+-- Unique constraint for idempotent runs per (rule_id, triggering_event_id)
+CREATE UNIQUE INDEX IF NOT EXISTS idx_runs_idempotent
+    ON automation_runs(rule_id, triggering_event_id)
+    WHERE triggering_event_id IS NOT NULL;
+
+-- Export/backup jobs (per /docs/spec/domain/export.md)
+CREATE TABLE IF NOT EXISTS jobs (
+    id UUID PRIMARY KEY,
+    job_type TEXT NOT NULL,
+    workspace_id UUID REFERENCES workspaces(id),
+    status TEXT NOT NULL DEFAULT 'queued',
+    started_at TIMESTAMPTZ,
+    finished_at TIMESTAMPTZ,
+    artifact_path TEXT,
+    error_detail TEXT,
+    created_by UUID NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Add workspace event sequence tracking
+CREATE SEQUENCE IF NOT EXISTS workspace_event_seq;
+CREATE SEQUENCE IF NOT EXISTS note_event_seq;
 "#;
