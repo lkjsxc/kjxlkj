@@ -76,11 +76,13 @@ async fn main() -> std::io::Result<()> {
         pool,
         jwt_secret: config.jwt_secret,
     });
+    let db_pool = web::Data::new(state.pool.clone());
 
     // Start server
     HttpServer::new(move || {
         App::new()
             .app_data(state.clone())
+            .app_data(db_pool.clone())
             .configure(configure_routes)
     })
     .bind((config.bind_address.as_str(), config.port))?

@@ -2,49 +2,55 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Current Baseline: Documentation Container
+## Current Baseline: App Runtime Container
 
-When Docker artifacts are generated in All in Docs baseline mode, Compose runs
-one `docs` service.
+When Docker artifacts are generated in current baseline mode, Compose runs one
+app service.
+
+### Baseline Artifact Set
+
+Required root artifacts:
+
+- `Dockerfile`
+- `docker-compose.yml`
+- `.dockerignore`
 
 ### Baseline Compose Template
 
 ```yaml
 services:
-  docs:
+  kjxlkj:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: kjxlkj-docs
+    container_name: kjxlkj-app
+    environment:
+      BIND_ADDRESS: 0.0.0.0
+      PORT: "8080"
+      DATABASE_URL: sqlite:/data/kjxlkj.db?mode=rwc
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
     ports:
       - "8080:8080"
+    volumes:
+      - kjxlkj-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     restart: unless-stopped
+
+volumes:
+  kjxlkj-data:
 ```
 
 ### Baseline Acceptance
 
-1. `docker compose up --build` starts exactly one service
-2. `http://127.0.0.1:8080` serves docs content
-3. `docker compose down` exits cleanly
-
-## Reconstruction Target: Single-Container Runtime
-
-After reconstruction, deployment target remains one compose service running:
-
-- PostgreSQL process
-- Rust application process
-
-Typed frontend assets are served by the same app origin.
-
-## Process Supervision Contract (Runtime Target)
-
-Container entrypoint MUST:
-
-1. initialize PostgreSQL data directory if missing
-2. start PostgreSQL and wait for readiness
-3. run migrations
-4. start application server
-5. forward termination signals and stop processes cleanly
+1. `docker compose up -d --build` starts exactly one service (`kjxlkj`)
+2. `GET /api/healthz` returns `200`
+3. `GET /api/readyz` returns `200` after migrations complete
+4. `docker compose down` exits cleanly
 
 ## Runtime Health Rules
 

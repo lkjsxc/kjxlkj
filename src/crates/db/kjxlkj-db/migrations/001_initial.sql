@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
     display_name TEXT,
     global_role TEXT NOT NULL DEFAULT 'viewer',
     is_active BOOLEAN NOT NULL DEFAULT true,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Workspaces table
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS workspaces (
     name TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     is_active BOOLEAN NOT NULL DEFAULT true,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Workspace memberships
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS workspace_memberships (
     workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     role TEXT NOT NULL DEFAULT 'viewer',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (workspace_id, user_id)
 );
 
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS projects (
     name TEXT NOT NULL,
     description TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Sessions table
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token TEXT NOT NULL UNIQUE,
     expires_at TIMESTAMPTZ NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Security events table
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS security_events (
     ip_address TEXT,
     user_agent TEXT,
     details JSONB,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Notes table
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS notes (
     access_scope TEXT NOT NULL DEFAULT 'workspace',
     state TEXT NOT NULL DEFAULT 'active',
     version BIGINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Note history
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS note_history (
     body TEXT,
     version BIGINT NOT NULL,
     actor_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Note metadata
@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS note_metadata (
     note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     key TEXT NOT NULL,
     value JSONB NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (note_id, key)
 );
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS note_metadata (
 CREATE TABLE IF NOT EXISTS note_tags (
     note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     tag TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (note_id, tag)
 );
 
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS backlinks (
     source_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     target_note_id UUID NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     link_text TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (source_note_id, target_note_id)
 );
 
@@ -125,8 +125,8 @@ CREATE TABLE IF NOT EXISTS saved_views (
     filters JSONB NOT NULL DEFAULT '{}',
     sort TEXT,
     created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Automation rules
@@ -139,8 +139,8 @@ CREATE TABLE IF NOT EXISTS automation_rules (
     action JSONB NOT NULL,
     state TEXT NOT NULL DEFAULT 'enabled',
     created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Automation runs
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS automation_runs (
     provider_metadata JSONB,
     started_at TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Attachments
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     content_type TEXT NOT NULL,
     size BIGINT NOT NULL,
     storage_path TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Indexes

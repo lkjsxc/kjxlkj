@@ -17,8 +17,9 @@ All in Docs knowledge-workspace platform.
 
 Read directly from `docs/` in the repository.
 
-Docker launch artifacts are intentionally absent in this baseline and can be
-regenerated from `docs/guides/DOCKER.md`.
+Docker launch artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`)
+are required repository-root derivatives and must stay synchronized with
+`docs/guides/DOCKER.md`.
 
 ## Canonical Reading Order
 

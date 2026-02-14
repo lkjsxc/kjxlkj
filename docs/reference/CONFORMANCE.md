@@ -19,9 +19,9 @@ This ledger reports currently verified behavior only.
 High-confidence statement:
 
 - All in Docs governance is active and canonical.
-- TODO/wave ledgers are reset to open reconstruction state.
-- Docker artifacts are intentionally absent in baseline.
-- Runtime conformance is not currently re-established.
+- TODO/wave ledgers are in completed state with linked wave evidence.
+- Docker app-runtime artifacts are present and synchronized with guidance.
+- Runtime conformance is partially re-established (startup and health checks verified).
 
 ## Domain Status
 
@@ -31,9 +31,9 @@ High-confidence statement:
 | All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine distinguishes governance from repository shape |
 | Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | explicit Rust + TypeScript + no direct JS rule exists |
 | No direct JS runtime source | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | repository scan shows no `.js` runtime source files |
-| Docker artifact generation guidance | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `verified` | guide defines regeneration workflow from canonical docs |
-| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `unverified` | reconstruction evidence pending |
-| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | runtime routes not currently verified in baseline |
+| Docker artifact guidance and root presence | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `verified` | root Docker artifacts exist, app container builds, and service reaches healthy state |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `partial` | runtime startup and DB migration path verified through container launch |
+| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | `/api/healthz`, `/api/readyz`, and `/api/setup/register` verified via Docker smoke |
 | WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | runtime WS path not currently verified in baseline |
 | Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | TypeScript runtime evidence pending |
 | Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `unverified` | required acceptance suites not currently passing in baseline |

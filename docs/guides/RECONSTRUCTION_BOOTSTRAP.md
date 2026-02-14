@@ -17,7 +17,8 @@ Deterministic scaffold guide for rebuilding typed runtime artifacts from canon.
 
 ## Baseline Assumption
 
-Current repository state may contain only canonical docs and docs-launch artifacts.
+Current repository state may contain canonical docs plus synchronized app-launch
+Docker artifacts.
 
 ## Phase 1: Root Scaffold
 

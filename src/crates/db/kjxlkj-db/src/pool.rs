@@ -35,8 +35,8 @@ impl DbPool {
 
     /// Run migrations.
     pub async fn run_migrations(&self) -> Result<(), DbError> {
-        // Inline migration for initial schema
-        sqlx::query(include_str!("../migrations/001_initial.sql"))
+        // raw_sql executes the full migration script (multiple statements).
+        sqlx::raw_sql(include_str!("../migrations/001_initial.sql"))
             .execute(&self.pool)
             .await
             .map_err(|e: sqlx::Error| DbError::MigrationError(e.to_string()))?;
@@ -54,7 +54,7 @@ impl DbPool {
 
 /// Run migrations on a pool.
 pub async fn run_migrations(pool: &SqlitePool) -> Result<(), DbError> {
-    sqlx::query(include_str!("../migrations/001_initial.sql"))
+    sqlx::raw_sql(include_str!("../migrations/001_initial.sql"))
         .execute(pool)
         .await
         .map_err(|e: sqlx::Error| DbError::MigrationError(e.to_string()))?;

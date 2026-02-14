@@ -8,6 +8,7 @@ Post-change audits and evidence summaries.
 
 | Document | Purpose |
 |---|---|
+| [2026-02-13-docker-artifact-contract-sync.md](2026-02-13-docker-artifact-contract-sync.md) | deterministic mismatch closure for app-runtime Docker contract, TODO gate hardening, and verified health/readiness startup flow |
 | [2026-02-13-all-in-docs-baseline-reset.md](2026-02-13-all-in-docs-baseline-reset.md) | spec/code/todo reset audit for All in Docs baseline, typed-language policy hardening, and ledger synchronization |
 | [2026-02-13-docs-launch-and-todo-start-gate.md](2026-02-13-docs-launch-and-todo-start-gate.md) | deterministic reconciliation of docs-launch artifacts and TODO start-gate checks |
 | [2026-02-13-reconstruction-reset-sync.md](2026-02-13-reconstruction-reset-sync.md) | historical reset-sync audit captured before the All in Docs hard reset |

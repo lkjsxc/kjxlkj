@@ -8,9 +8,11 @@ Back: [/docs/README.md](/docs/README.md)
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 `/docs/todo/` is the execution contract for rebuilding derived artifacts from All in Docs canon.
@@ -43,9 +45,18 @@ Back: [/docs/README.md](/docs/README.md)
 - [x] attach deterministic evidence per completed wave
 - [x] synchronize reference ledgers with every status change
 
+## Docker Artifact Gate
+
+- [x] root `Dockerfile`, `docker-compose.yml`, and `.dockerignore` exist
+- [x] root Docker artifacts match [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) and [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [x] `docker compose config` passes from repository root
+- [x] app runtime smoke passes (`docker compose up -d --build`, `curl -fsS http://127.0.0.1:8080/api/healthz`, `curl -fsS http://127.0.0.1:8080/api/readyz`, `docker compose down`)
+- [x] proof recorded in [/docs/log/audits/2026-02-13-docker-artifact-contract-sync.md](/docs/log/audits/2026-02-13-docker-artifact-contract-sync.md)
+
 ## Completion Gate
 
 - [x] all stage/wave checklists complete in order
+- [x] Docker Artifact Gate is complete
 - [x] no high-severity open limitations
 - [x] acceptance and typed gates pass
 - [x] release gate is satisfied

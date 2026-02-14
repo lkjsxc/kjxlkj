@@ -21,9 +21,9 @@ For state claims, use this order:
 
 - All in Docs governance is active.
 - Canonical value is documentation.
-- Reconstruction TODO has been reset to open state.
-- Runtime conformance is currently blocked pending new reconstruction evidence.
-- Docker artifacts are currently absent and treated as regenerable derivatives.
+- Reconstruction TODO is in completed state with linked wave evidence.
+- Runtime conformance is partially re-established for startup and health checks.
+- Docker root artifacts are present and treated as synchronized derivatives.
 
 ## Synchronization Rule
 

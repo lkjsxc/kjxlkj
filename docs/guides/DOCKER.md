@@ -2,28 +2,63 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-How to regenerate Docker artifacts from canonical docs.
+Deterministic Docker artifact contract for the app runtime.
 
-## Baseline Scope
+## Required Root Artifacts
 
-- Docker files are intentionally absent in current baseline.
-- Docker artifacts are derived outputs and may be regenerated when needed.
+These files MUST exist at repository root:
 
-## Regeneration Steps (Docs Container)
+- `Dockerfile`
+- `docker-compose.yml`
+- `.dockerignore`
 
-1. Generate root `Dockerfile` and `docker-compose.yml` from deployment/docs specs.
-2. Build/start: `docker compose up --build`
-3. Verify docs endpoint and health.
+If any file is missing, regenerate it before marking TODO completion.
+
+## Baseline Contract (App Runtime)
+
+- Compose runs exactly one service named `kjxlkj`.
+- Container name is `kjxlkj-app`.
+- Host port mapping is `8080:8080`.
+- Healthcheck probes `http://127.0.0.1:8080/api/readyz`.
+- SQLite persistence is mounted at `/data` with named volume `kjxlkj-data`.
+- `docker compose config` must pass with no schema errors.
+
+## Regeneration Steps (App Runtime)
+
+1. Regenerate root files to match [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md).
+2. Validate config: `docker compose config`.
+3. Build/start: `docker compose up -d --build`.
+4. Verify liveness: `curl -fsS http://127.0.0.1:8080/api/healthz`.
+5. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`.
+6. Verify health status: `docker compose ps`.
+7. Stop/remove: `docker compose down`.
+
+## Implementation Reference
+
+`Dockerfile` MUST:
+
+- use a deterministic base image
+- build and run `kjxlkj-server` from workspace sources
+- run container process as non-root user
+- expose `8080`
+- define healthcheck against `/api/readyz`
+
+`docker-compose.yml` MUST:
+
+- define a single `kjxlkj` service
+- build from root `Dockerfile`
+- include `restart: unless-stopped`
+- include persistent `/data` volume for SQLite
+- include HTTP healthcheck for `/api/readyz`
 
 ## Shutdown and Logs
 
-- Stop/remove: `docker compose down`
 - Follow logs: `docker compose logs -f`
 
 ## Reconstruction Target Scope
 
 After runtime reconstruction, target deployment remains one service named
-`kjxlkj` running PostgreSQL + Rust app with typed frontend assets.
+`kjxlkj` running Rust app components with typed frontend assets.
 
 ## Related
 
