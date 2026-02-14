@@ -4,21 +4,12 @@
 
 ## Contract
 
-- All in Docs is mandatory: docs are the value, code is derivative.
-- Policy and spec define requirements before any implementation.
-- Reference and TODO ledgers define truth of execution state.
+- All in Docs is mandatory: docs are the value, runtime artifacts are disposable derivatives.
+- A docs-only repository is a fully valid canonical state.
+- Spec defines target behavior for future reconstruction.
+- Reference defines truthful current verification state.
+- TODO defines ordered execution for rebuilding derivatives.
 - Completion claims require deterministic evidence.
-- Typed implementation contract is normative:
-  - frontend MUST be TypeScript only
-  - backend MUST be Rust only
-  - direct JavaScript app source MUST NOT be committed
-
-## All in Docs vs Docs-Only
-
-- `All in Docs`: governance model. Docs remain canonical even when code exists.
-- `docs-only`: one possible repository state where derivatives are absent.
-
-`All in Docs` is permanent policy. `docs-only` is optional state.
 
 ## Authority and Precedence
 

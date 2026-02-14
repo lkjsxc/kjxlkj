@@ -19,7 +19,8 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 - [ ] [Add librarian control and run review UX](/docs/spec/ui/workspace-suite.md)
 - [ ] [Expose operation diffs with apply/reject decisions](/docs/spec/ui/editor-flow.md)
-- [ ] [Preserve responsive behavior and 320px usability constraints](/docs/spec/ui/layout-and-interaction.md)
+- [ ] [Preserve responsive behavior, desktop split layout, and 320px usability constraints](/docs/spec/ui/layout-and-interaction.md)
+- [ ] [Preserve compact top-left menu reveal flow for note-list navigation](/docs/spec/ui/web-app.md)
 
 ## Ordered Waves
 
@@ -30,4 +31,5 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 ## Stage Exit
 
 - [ ] [`E2E-15` passes with deterministic evidence](/docs/spec/technical/testing.md)
+- [ ] [`E2E-23` and `E2E-24` pass with deterministic evidence](/docs/spec/technical/testing.md)
 - [ ] [Librarian UX respects responsive and accessibility constraints](/docs/spec/ui/web-app.md)

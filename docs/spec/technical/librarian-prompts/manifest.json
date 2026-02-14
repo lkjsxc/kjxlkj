@@ -1,0 +1,19 @@
+{
+  "pack_version": "2026-02-14",
+  "protocol": "xml_attrless",
+  "stages": {
+    "ingest": "stage-ingest.json",
+    "plan": "stage-plan.json",
+    "propose": "stage-propose.json",
+    "validate_repair": "stage-validate-repair.json"
+  },
+  "hash_policy": {
+    "algorithm": "sha256",
+    "include_files": [
+      "stage-ingest.json",
+      "stage-plan.json",
+      "stage-propose.json",
+      "stage-validate-repair.json"
+    ]
+  }
+}

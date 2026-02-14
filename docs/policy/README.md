@@ -8,10 +8,11 @@ Operating invariants for documentation and reconstruction.
 
 1. `/docs/` is authoritative over all other artifacts.
 2. All in Docs governance is permanent.
-3. Implementation artifacts are disposable derivatives.
-4. Runtime target is Rust backend + PostgreSQL + TypeScript frontend.
-5. Direct JavaScript runtime source is forbidden.
-6. Completion claims require deterministic evidence and synchronized ledgers.
+3. Runtime artifacts are disposable derivatives with no canonical value.
+4. Docs-only baseline is always valid, even with zero runtime source files.
+5. Runtime reconstruction target is Rust backend + TypeScript frontend.
+6. Handwritten JavaScript runtime source is forbidden.
+7. Completion claims require deterministic evidence and synchronized ledgers.
 
 ## Normative Policy Set
 
@@ -26,8 +27,8 @@ Operating invariants for documentation and reconstruction.
 
 | State | Description |
 |---|---|
-| All in Docs baseline | docs are canonical; derived artifacts may be absent |
-| Derived runtime snapshot | typed implementation artifacts exist as generated projections |
+| Canonical docs-only state | only docs and hygiene files exist |
+| Reconstruction state | typed runtime artifacts are generated from docs |
 
 ## Related
 

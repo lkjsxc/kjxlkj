@@ -24,6 +24,6 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Evidence Placeholder
 
-- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] `Check:` `cargo test -p kjxlkj-server tests_ws -- --nocapture` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - [ ] `Result:` pass -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - [ ] `Proof:` `ws_flow`: `1 passed; 0 failed`; `automation_event` payload assertions include `operation_preview|operation_applied|operation_rejected`; unknown `future_workspace_event` replay assertion passed -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)

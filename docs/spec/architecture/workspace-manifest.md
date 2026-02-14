@@ -11,6 +11,7 @@ Normative requirements for derived runtime manifests.
 | `Cargo.toml` | Rust workspace resolver and members |
 | `Cargo.lock` | committed for Rust reproducibility |
 | `package.json` | frontend workspace/package manifest |
+| `package-lock.json` | npm workspace lockfile reproducibility |
 | `tsconfig.json` | TypeScript compiler settings with `strict: true` |
 
 ## Rust Workspace Settings

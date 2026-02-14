@@ -43,7 +43,8 @@ When runtime artifacts exist:
 
 - frontend runtime source MUST be `.ts` or `.tsx`
 - backend runtime source MUST be `.rs`
-- direct `.js` runtime source files are forbidden
+- handwritten `.js` runtime source files are forbidden
+- generated `src/frontend/app/dist/*.js` files are allowed
 
 ## Compliance Checklist
 

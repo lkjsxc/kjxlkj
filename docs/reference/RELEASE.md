@@ -19,10 +19,10 @@ Release gate is not satisfied.
 
 Blocking reasons:
 
-- runtime is partially reconstructed (core HTTP/WS/security implemented; full spec matrix still incomplete)
-- high-severity `M2` rows are open in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- high-severity limitations are open in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- acceptance suites cannot currently pass
+- repository is intentionally in docs-only canonical state
+- runtime artifacts are absent by design
+- acceptance/performance/ops evidence cannot exist without reconstruction
+- TODO wave program is reset to unchecked baseline
 
 ## Release Steps
 

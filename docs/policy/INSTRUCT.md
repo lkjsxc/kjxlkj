@@ -19,7 +19,8 @@ When runtime artifacts are produced:
 
 - frontend application code MUST be TypeScript (`.ts`/`.tsx`) with `strict` enabled
 - backend application code MUST be Rust
-- direct JavaScript runtime source (`.js` business logic) MUST NOT be committed
+- handwritten JavaScript runtime source (`.js` business logic) MUST NOT be committed
+- generated frontend bundles under `src/frontend/app/dist/` are allowed
 
 ## Prohibited Outcomes
 

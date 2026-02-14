@@ -17,8 +17,8 @@ Deterministic scaffold guide for rebuilding typed runtime artifacts from canon.
 
 ## Baseline Assumption
 
-Current repository state may contain canonical docs plus synchronized app-launch
-Docker artifacts.
+Current repository state may be docs-only canonical baseline with no runtime
+artifacts.
 
 ## Phase 1: Root Scaffold
 
@@ -48,7 +48,7 @@ Minimum deterministic checks before feature implementation:
 
 1. backend compile: `cargo check --workspace`
 2. frontend type-check: `tsc --noEmit`
-3. no direct JavaScript runtime source
+3. no handwritten JavaScript runtime source (`dist/*.js` is generated output)
 
 ## Phase 5: Wave-Driven Implementation
 

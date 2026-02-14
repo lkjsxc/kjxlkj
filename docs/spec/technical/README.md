@@ -13,7 +13,8 @@ Cross-cutting requirements for reconstruction quality and runtime discipline.
 | [performance.md](performance.md) | latency and load targets |
 | [migrations.md](migrations.md) | migration discipline |
 | [operations.md](operations.md) | backup/recovery/observability rules |
-| [librarian-agent.md](librarian-agent.md) | provider and structuring pipeline contract |
+| [librarian-agent.md](librarian-agent.md) | provider, prompt, and structuring pipeline contract |
+| [librarian-prompts/README.md](librarian-prompts/README.md) | JSON-only prompt pack contract for the AI agent cycle |
 
 ## Related
 

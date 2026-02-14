@@ -6,6 +6,8 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 
 - The app MUST use one responsive component tree across desktop and mobile
   (`UX-LAYOUT-01`).
+- At `>= 1024px`, note list MUST be rendered on the left and editor on the right
+  (`UX-LAYOUT-05`).
 - Navigation/list and editor/content regions MUST support independent scrolling
   when split-pane is active (`UX-LAYOUT-03`).
 - Right pane MUST support inline title/content editing with predictable focus.
@@ -15,9 +17,12 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 ## Responsive Rules
 
 - Separate mobile/desktop implementations are forbidden.
-- Small screens MUST preserve independent vertical scrolling.
-- On constrained screens, a menu toggle MUST collapse/restore navigation regions
-  so editor can take primary space (`UX-LAYOUT-02`).
+- Small screens MUST preserve independent vertical scrolling where applicable.
+- On constrained screens (`< 1024px`), editor MUST remain primary surface and a
+  top-left menu button MUST collapse/restore note-list navigation (`UX-LAYOUT-02`,
+  `UX-LAYOUT-06`).
+- Menu-toggle state changes MUST preserve deterministic focus handoff to either
+  note list (opened) or editor (closed) (`UX-A11Y-01`).
 - Touch targets MUST be reachable without horizontal scrolling at widths down to
   `320px` (`UX-LAYOUT-04`).
 - Typography and editor width MUST adapt fluidly without mode forks.
@@ -38,7 +43,7 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 | Finding IDs | Required Outcome |
 |---|---|
 | `USR-003` | editing confidence via autosave-first interaction model |
-| `USR-005` | constrained-screen collapse/restore behavior |
+| `USR-005` | constrained-screen collapse/restore behavior and top-left menu reveal flow |
 | `USR-006` | low-noise surface hierarchy with optional secondary modules |
 
 ## Related

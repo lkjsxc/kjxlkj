@@ -1,0 +1,19 @@
+{
+  "stage": "ingest",
+  "model_profile": "small_deterministic",
+  "temperature": 0.1,
+  "max_tokens": 800,
+  "system_prompt": "Normalize incoming note sources into canonical bundles without adding facts.",
+  "user_prompt_template": "Given {{source_bundle}}, output normalized source entries preserving IDs and markdown.",
+  "input_bindings": [
+    "source_bundle",
+    "scope",
+    "constraints"
+  ],
+  "output_contract": {
+    "format": "json",
+    "required_keys": [
+      "normalized_sources"
+    ]
+  }
+}

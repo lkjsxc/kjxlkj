@@ -2,15 +2,18 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Runtime Topology (Derived Snapshot)
+Runtime is a reconstruction target, not a canonical requirement for repository
+completeness.
+
+## Runtime Topology (When Reconstructed)
 
 ```mermaid
 graph TD
  RT[Tokio Runtime]
- RT --> HTTP[Actix HTTP Server]
- RT --> WS[Actix WebSocket]
+ RT --> HTTP[Axum HTTP Server]
+ RT --> WS[Axum WebSocket]
  RT --> BG[Background Jobs]
- RT --> DBPOOL[SQLx PgPool]
+ RT --> DBPOOL[SQLx SqlitePool]
  UI[TypeScript SPA] --> HTTP
  UI --> WS
  HTTP --> CORE[Rust Domain Services]
@@ -23,7 +26,7 @@ graph TD
 
 1. load and validate configuration
 2. initialize tracing
-3. initialize PostgreSQL pool
+3. initialize SQLite pool
 4. run pending migrations
 5. start HTTP + WS services
 6. start background workers
@@ -41,6 +44,7 @@ graph TD
 - automation writes MUST serialize by target stream identity
 - websocket broadcast ordering MUST follow committed event sequence
 - slow clients MUST NOT block global broadcast loops
+- root web shell MUST be reachable at `/` on the same origin as `/api` and `/ws`
 
 ## Typed Boundary Rule
 

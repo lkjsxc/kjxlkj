@@ -4,35 +4,41 @@ Back: [/docs/policy/README.md](/docs/policy/README.md)
 
 Allowed top-level layout and derived artifact placement.
 
-## Root Allowlist
+## Canonical Root Allowlist
 
 | Path | Purpose |
 |---|---|
+| `AGENTS.md` | local execution instructions for coding agents |
+| `GEMINI.md` | alternate-agent instruction mirror |
 | `README.md` | project index |
 | `LICENSE` | license |
-| `docs/` | canonical product definition |
 | `.gitignore` | repository hygiene |
-| `.github/` | optional workflow/instructions metadata |
+| `.github/` | optional workflow metadata |
+| `docs/` | canonical product definition |
 
 Additional root entries require rationale in `/docs/log/proposals/`.
 
 ## Derived Runtime Artifacts
 
-Derived runtime artifacts are optional and disposable.
-
-Allowed derived runtime roots when reconstruction is active:
+Derived runtime artifacts are optional and disposable. When reconstruction is active,
+these entries MAY temporarily exist at root:
 
 - `src/`
 - `Cargo.toml`
 - `Cargo.lock`
-- frontend package manifests (`package.json`, `pnpm-lock.yaml`, `tsconfig.json`)
-- Docker artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`)
+- `package.json`
+- `package-lock.json`
+- `tsconfig.json`
+- `Dockerfile`
+- `docker-compose.yml`
+- `.dockerignore`
 
-Their absence does not reduce canonical product value.
+Their absence does not reduce product completeness in docs-only mode.
 
 ## Repository State Rule
 
-A valid baseline MAY contain only documentation and repository hygiene files.
+A valid completion for canonical documentation work MAY contain only the allowlist
+entries in `Canonical Root Allowlist`.
 
 ## Related
 

@@ -19,42 +19,32 @@ This ledger reports currently verified behavior only.
 High-confidence statement:
 
 - All in Docs governance is active and canonical.
-- TODO ledgers are doc-link-driven for reconstruction.
-- top-level start-gate rows are complete.
-- Runtime scaffold is reconstructed (Rust app crate + TypeScript app scaffold).
-- HTTP route surface is reachable with core auth/users/workspaces/projects/notes flows.
-- Saved-view lifecycle endpoints are executable and deterministic-test verified.
-- WebSocket endpoint is reachable with subscribe/ack/apply-patch and idempotency replay.
-- WebSocket reconnect flow now supports deterministic subscribe-time `ack_cursor` replay behavior.
-- Typed frontend shell includes note list, title edit propagation, autosave debounce, and save/conflict/offline status rail.
-- Frontend deterministic regression tests now validate pre-auth handling, idempotency fallback, title propagation, and status-rail failure states.
-- Required backend/frontend path scaffolding for final structure contract is present.
-- Docker artifact gate checks are completed with deterministic proof.
-- Release gate is currently blocked by missing reconstructed runtime evidence.
+- Repository state is docs-only by design.
+- TODO ledgers are reset to unchecked reconstruction baseline.
+- Runtime claims are intentionally deferred to future reconstruction waves.
 
 ## Domain Status
 
 | Domain | Canonical Spec | Status | Evidence |
 |---|---|---|---|
-| Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy set defines All in Docs and typed constraints |
-| All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine distinguishes governance from repository shape |
-| Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | explicit Rust + TypeScript + no direct JS rule exists |
-| No direct JS runtime source | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | repository scan shows no direct `.js` runtime source |
-| TODO doc-link workflow | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `verified` | all checklist rows in `docs/todo/` contain docs links |
-| Final file structure path scaffolding | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | `partial` | required backend/frontend paths are present; full behavior-complete structure contract remains open |
-| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `partial` | startup/health/readiness runtime scaffold exists; full topology (WS/background/domain flow) remains open |
-| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | route surface is reachable; setup/login/session, users/workspaces/projects, notes conflict and metadata-delete contracts, and saved-view CRUD lifecycle are verified by deterministic tests |
-| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | `/ws` handshake and core subscribe/apply-patch/conflict/idempotency flows are implemented; reconnect subscribe with `ack_cursor` replay is test-covered |
-| Automation/librarian review flow | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | automation rule CRUD, provider/protocol validation, run launch/status, and review persistence are implemented and test-covered |
-| Security enforcement (auth/session/csrf/rbac) | [/docs/spec/security/README.md](/docs/spec/security/README.md) | `partial` | setup lockout, cookie sessions, csrf checks, and role guards are implemented; full security matrix remains open |
-| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `partial` | note-first shell and autosave editor flow are implemented in strict TypeScript; full UX/accessibility matrix remains open |
-| Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | targeted deterministic tests pass for auth/setup, note conflict + metadata delete, ws idempotency/conflict + reconnect cursor replay, saved-view CRUD, and frontend regression slices (`REG-IMP-001`, `REG-USR-001/002/003/007/008`, `REG-UX-005`); full acceptance pack remains open |
-| Type verification gates (`TYPE-01..03`) | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | `cargo check --workspace`, strict TypeScript typecheck, and no direct `.js` runtime source were verified |
-| Docker artifact guidance and root presence | [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) | `verified` | root artifacts, `docker compose config`, and compose runtime smoke (`healthz`/`readyz`) passed |
+| Policy and governance model | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy set defines docs-only validity and reconstruction boundaries |
+| All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine defines docs as canonical product value |
+| Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | typed-only reconstruction requirements are explicit |
+| Root docs-only layout | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | `verified` | root contains only canonical docs/hygiene entries |
+| TODO doc-link workflow | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `verified` | TODO checklist rows include direct requirement links |
+| JSON prompt-pack canonical files | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `verified` | manifest and stage JSON prompt files are canonicalized in docs |
+| Responsive split/menu UX requirements | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `verified` | desktop split-pane and compact top-left menu behavior are normatively specified |
+| Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `spec-only` | runtime artifacts are intentionally absent |
+| HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `spec-only` | endpoint behaviors are defined but not currently reconstructed |
+| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `spec-only` | protocol is defined but not currently reconstructed |
+| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | UX contracts exist; frontend runtime is absent |
+| Automation/librarian runtime | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `spec-only` | pipeline and prompt contracts exist; runtime is absent |
+| Deterministic acceptance evidence | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `unverified` | acceptance suites require runtime reconstruction |
+| Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | release cannot close in docs-only baseline |
 
 ## Conformance Closure Rule
 
-No `spec-only`, `unverified`, or `blocked` row may move to `verified` without:
+No row may move to `verified` without all of:
 
 1. deterministic test evidence
 2. runtime reachability from documented paths

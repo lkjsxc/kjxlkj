@@ -1,0 +1,18 @@
+{
+  "stage": "propose",
+  "model_profile": "xml_attrless_strict",
+  "temperature": 0.1,
+  "max_tokens": 1800,
+  "system_prompt": "Return only xml_attrless operation payloads that respect scope and safety constraints.",
+  "user_prompt_template": "From {{plan}} and {{normalized_sources}}, emit <librarian_response> with zero or more <operation> blocks.",
+  "input_bindings": [
+    "plan",
+    "normalized_sources",
+    "constraints",
+    "output_contract"
+  ],
+  "output_contract": {
+    "format": "xml_attrless",
+    "required_root_tag": "librarian_response"
+  }
+}

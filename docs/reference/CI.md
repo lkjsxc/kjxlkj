@@ -12,8 +12,8 @@ Reproducible verification profiles.
 ## Baseline State (2026-02-14)
 
 - All in Docs baseline is active.
-- Active required profiles: `Docs-integrity`, `Typed-skeleton`, and partial `Core-runtime`.
-- `Librarian-runtime` and `Release` remain blocked until high-severity limitations and acceptance gaps close.
+- Active required profile in docs-only mode: `Docs-integrity`.
+- `Typed-skeleton`, `Core-runtime`, `Librarian-runtime`, and `Release` remain blocked until reconstruction starts.
 
 ## Verification Profiles
 
@@ -21,7 +21,7 @@ Reproducible verification profiles.
 |---|---|---|
 | `Docs-integrity` | documentation changes | link integrity, structure policy, TODO checkbox hygiene |
 | `Typed-skeleton` | runtime scaffold claims | `Docs-integrity` + backend compile gate + frontend TS strict gate |
-| `Core-runtime` | API/WS/runtime claims | `Typed-skeleton` + runtime integration checks + deterministic frontend regression slice (`vitest`) |
+| `Core-runtime` | API/WS/runtime claims | `Typed-skeleton` + runtime integration checks (including root web reachability) + deterministic frontend regression slice (`vitest`) |
 | `Librarian-runtime` | librarian claims | `Core-runtime` + `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` |
 | `Release` | release candidate | all above + perf/ops drills + no high-severity limitations |
 

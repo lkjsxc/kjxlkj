@@ -36,7 +36,7 @@ Any runtime reconstruction claim is invalid unless all are true:
 
 1. backend is Rust
 2. frontend is TypeScript with strict typing
-3. direct JavaScript runtime source is absent
+3. handwritten JavaScript runtime source is absent
 
 ## Related
 

@@ -18,6 +18,7 @@ Mandatory verification contract for reconstruction.
 |---|---|
 | `API-AUTH-01` | first-run owner registration lockout behavior |
 | `API-AUTH-02` | session cookie issuance and revocation |
+| `API-AUTH-03` | setup availability status endpoint reflects owner lock state |
 | `API-USER-01` | user create/list/role update constraints |
 | `API-WSPACE-01` | workspace create/update/delete and ownership invariants |
 | `API-WSPACE-02` | workspace membership upsert and revoke semantics |
@@ -35,8 +36,10 @@ Mandatory verification contract for reconstruction.
 | `API-AUTO-02` | automation run status retrieval and audit linkage |
 | `API-AUTO-03` | librarian rule validation for provider mode (`openrouter`, `lmstudio`) |
 | `API-AUTO-04` | librarian XML protocol parse/retry/fail semantics (`xml_attrless`) |
+| `API-AUTO-05` | JSON prompt-pack manifest/stage loading and prompt-pack hash reporting |
 | `API-ATT-01` | 500 MB attachment upload path |
 | `API-ATT-02` | >500 MB deterministic reject |
+| `API-OPS-01` | admin export/backup launch and job-status retrieval |
 | `WS-01` | subscribe and ordered replay for note stream |
 | `WS-02` | subscribe and ordered replay for workspace stream |
 | `WS-03` | patch conflict (`patch_rejected`) behavior |
@@ -44,6 +47,7 @@ Mandatory verification contract for reconstruction.
 | `WS-05` | reconnect + ack cursor replay without full reload |
 | `WS-06` | librarian automation events stream in commit order with replay cursor support |
 | `E2E-01` | owner setup + invite admin/editor/viewer + login |
+| `E2E-ROOT-01` | site root serves usable setup/login/workspace shell |
 | `E2E-02` | concurrent multi-user editing conflict resolution |
 | `E2E-03` | command palette create/open/move/tag/run-rule workflow |
 | `E2E-04` | graph explorer traversal and return-context behavior |
@@ -65,6 +69,8 @@ Mandatory verification contract for reconstruction.
 | `E2E-20` | baseline note-first mode stays usable with optional modules disabled |
 | `E2E-21` | keyboard-first and focus-order flows remain deterministic across panel toggles/review flows |
 | `E2E-22` | accessible names/roles/status announcements exist for async-critical controls |
+| `E2E-23` | desktop layout (`>=1024px`) keeps note list left and editor right |
+| `E2E-24` | compact layout (`<1024px`) keeps editor primary and top-left menu reveals note list |
 | `PERF-01` | CRUD/search latency under target scale |
 | `PERF-02` | sustained WS stream soak with ordering integrity |
 | `PERF-03` | librarian batch structuring throughput under bounded token/time budgets |
@@ -107,7 +113,7 @@ Mandatory verification contract for reconstruction.
 |---|---|
 | `TYPE-01` | backend compile/type gate passes (`cargo check --workspace`) |
 | `TYPE-02` | frontend TypeScript strict type-check passes (`tsc --noEmit`) |
-| `TYPE-03` | repository contains no direct JavaScript runtime source |
+| `TYPE-03` | repository contains no handwritten JavaScript runtime source (generated `dist/*.js` allowed) |
 
 ## Determinism Rules
 

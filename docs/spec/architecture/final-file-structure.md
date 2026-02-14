@@ -2,33 +2,33 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Defines the full repository structure required for completion claims.
+Defines required repository structure for canonical completion and optional runtime reconstruction.
 
-## Completion Definition
+## Completion Definitions
 
-A completion claim is valid only when:
+A canonical documentation completion claim is valid only when:
 
-- canonical docs tree matches this contract
+- root tree matches docs-only canonical contract
+- `docs/` tree matches this contract
+- TODO, reference, and spec files are synchronized
+
+A runtime reconstruction claim is valid only when:
+
+- canonical docs completion is already satisfied
 - derived runtime tree exists and follows typed-language rules
-- no direct JavaScript runtime source exists
+- no handwritten JavaScript runtime source exists
 
-## Root Tree (Canonical + Derived)
+## Root Tree (Canonical Completion)
 
 ```text
 .
+├── AGENTS.md
+├── GEMINI.md
 ├── README.md
 ├── LICENSE
 ├── .gitignore
 ├── .github/
-├── docs/
-├── Cargo.toml
-├── Cargo.lock
-├── package.json
-├── tsconfig.json
-├── Dockerfile
-├── docker-compose.yml
-├── .dockerignore
-└── src/
+└── docs/
 ```
 
 ## Canonical Docs Tree
@@ -111,6 +111,13 @@ docs/
 │   ├── technical/
 │   │   ├── README.md
 │   │   ├── librarian-agent.md
+│   │   ├── librarian-prompts/
+│   │   │   ├── README.md
+│   │   │   ├── manifest.json
+│   │   │   ├── stage-ingest.json
+│   │   │   ├── stage-plan.json
+│   │   │   ├── stage-propose.json
+│   │   │   └── stage-validate-repair.json
 │   │   ├── migrations.md
 │   │   ├── operations.md
 │   │   ├── performance.md
@@ -126,6 +133,14 @@ docs/
 │       └── workspace-suite.md
 └── todo/
     ├── README.md
+    ├── doc-map/
+    │   ├── README.md
+    │   ├── core-and-guides.md
+    │   ├── policy-and-reference.md
+    │   ├── spec-api-architecture.md
+    │   ├── spec-domain-security-technical-ui.md
+    │   ├── log-and-overview.md
+    │   └── todo-and-waves.md
     └── waves/
         ├── README.md
         ├── stage-00-pivot-governance/{README.md,wave-000.md,wave-001.md,wave-002.md}
@@ -140,38 +155,43 @@ docs/
         └── stage-09-ci-performance-release/{README.md,wave-090.md,wave-091.md,wave-092.md}
 ```
 
-## Derived Runtime Tree (Required At Completion)
+## Derived Runtime Projection Tree (Optional)
+
+When reconstruction is active, the repository MAY additionally contain:
 
 ```text
-src/
-├── backend/
-│   └── crates/
-│       ├── app/kjxlkj-server/{Cargo.toml,src/main.rs}
-│       ├── http/kjxlkj-http/{Cargo.toml,src/lib.rs,src/dto.rs,src/handlers.rs,src/middleware.rs,src/error.rs}
-│       ├── ws/kjxlkj-ws/{Cargo.toml,src/lib.rs}
-│       ├── domain/kjxlkj-domain/{Cargo.toml,src/lib.rs}
-│       ├── db/kjxlkj-db/{Cargo.toml,migrations/001_initial.sql,src/lib.rs}
-│       ├── security/kjxlkj-security/{Cargo.toml,src/lib.rs}
-│       └── automation/kjxlkj-automation/{Cargo.toml,src/lib.rs}
-└── frontend/
-    └── app/
-        ├── package.json
-        ├── tsconfig.json
-        └── src/
-            ├── main.ts
-            ├── app.ts
-            ├── routes/{setup.ts,login.ts,workspace.ts}
-            ├── state/{session.ts,notes.ts,librarian.ts}
-            ├── api/{http-client.ts,ws-client.ts}
-            └── ui/{shell.ts,editor.ts,librarian.ts}
+.
+├── Cargo.toml
+├── Cargo.lock
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+└── src/
+    ├── backend/crates/
+    │   ├── app/kjxlkj-server/
+    │   ├── http/kjxlkj-http/
+    │   ├── ws/kjxlkj-ws/
+    │   ├── domain/kjxlkj-domain/
+    │   ├── db/kjxlkj-db/
+    │   ├── security/kjxlkj-security/
+    │   └── automation/kjxlkj-automation/
+    └── frontend/app/
+        ├── src/
+        ├── test/
+        └── dist/
 ```
+
+Exact reconstruction-path details: [source-layout.md](source-layout.md), [workspace-manifest.md](workspace-manifest.md), [crates.md](crates.md).
 
 ## Enforcement
 
-- Runtime file extensions MUST be `.rs`, `.ts`, or `.tsx` only.
-- Runtime directories and files above are mandatory once reconstruction starts.
-- Missing required paths block completion and release closure.
-
+- Runtime source file extensions MUST be `.rs`, `.ts`, or `.tsx`.
+- Generated frontend bundle outputs MAY exist under `src/frontend/app/dist/`.
+- Handwritten runtime `.js` source files are forbidden.
+- Missing derived runtime artifacts are allowed in canonical docs-only completion.
 ## Related
 
 - Source layout: [source-layout.md](source-layout.md)

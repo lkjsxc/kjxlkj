@@ -8,7 +8,8 @@ Mandatory language and typing constraints for reconstructed runtime artifacts.
 
 - Backend runtime MUST be implemented in Rust.
 - Frontend runtime MUST be implemented in TypeScript.
-- Direct JavaScript runtime source MUST NOT be committed.
+- Handwritten JavaScript runtime source MUST NOT be committed.
+- Generated JS bundles under `src/frontend/app/dist/` are allowed.
 
 ## Backend Requirements (Rust)
 
@@ -37,7 +38,7 @@ A runtime claim is invalid unless all pass:
 
 1. backend compile gate
 2. frontend type-check gate
-3. no direct JavaScript runtime source
+3. no handwritten JavaScript runtime source
 
 ## Related
 

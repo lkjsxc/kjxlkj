@@ -12,7 +12,7 @@ Backend runtime is a Rust workspace under `src/backend/crates/` when derived run
 | http | REST transport layer |
 | ws | realtime transport layer |
 | domain | business logic and invariants |
-| db | postgres repositories and migrations |
+| db | SQLite repositories and migrations |
 | security | auth/session/csrf/rbac services |
 | automation | rule and librarian orchestration |
 

@@ -10,6 +10,19 @@ This guide covers configuring librarian automation rules with:
 
 - OpenRouter-hosted models
 - LM Studio local models
+- JSON-only prompt pack configuration
+
+## JSON Prompt Pack First
+
+Before creating rules, set prompt pack files:
+
+- [/docs/spec/technical/librarian-prompts/manifest.json](/docs/spec/technical/librarian-prompts/manifest.json)
+- [/docs/spec/technical/librarian-prompts/stage-ingest.json](/docs/spec/technical/librarian-prompts/stage-ingest.json)
+- [/docs/spec/technical/librarian-prompts/stage-plan.json](/docs/spec/technical/librarian-prompts/stage-plan.json)
+- [/docs/spec/technical/librarian-prompts/stage-propose.json](/docs/spec/technical/librarian-prompts/stage-propose.json)
+- [/docs/spec/technical/librarian-prompts/stage-validate-repair.json](/docs/spec/technical/librarian-prompts/stage-validate-repair.json)
+
+Every LLM prompt in the cycle MUST come from this JSON prompt pack.
 
 ## Rule Payload Skeleton
 
@@ -30,6 +43,11 @@ Create rule via `POST /api/automation/rules`.
       "max_tokens": 1800,
       "temperature": 0.2,
       "fallback_models": ["openrouter/auto"]
+    },
+    "prompt_pack": {
+      "manifest_path": "docs/spec/technical/librarian-prompts/manifest.json",
+      "pack_version": "2026-02-14",
+      "hash_algorithm": "sha256"
     },
     "plan": {
       "goal": "Organize docs by architecture domain",

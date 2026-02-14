@@ -15,7 +15,7 @@ The canonical OpenAPI document is:
 - Contract additions MUST remain synchronized with `http.md` and `types.md`.
 - Librarian automation behavior MAY reuse existing automation paths, but
   `types.md` and `librarian-xml.md` MUST stay synchronized with any rule/run
-  payload updates.
+  payload updates, including prompt-pack configuration updates.
 
 ## Validation Gate
 
@@ -23,7 +23,7 @@ The canonical OpenAPI document is:
 - Example payloads SHOULD match `types.md` contracts.
 - Endpoint set MUST remain synchronized with `http.md`.
 - If librarian payload contracts evolve, update OpenAPI examples and
-  `librarian-xml.md` in the same change.
+  `librarian-xml.md` and prompt-pack references in the same change.
 
 ## Related
 

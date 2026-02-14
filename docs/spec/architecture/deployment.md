@@ -2,14 +2,15 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Current Baseline: App Runtime Container
+Deployment files are derived artifacts and may be absent in docs-only state.
 
-When Docker artifacts are generated in current baseline mode, Compose runs one
-app service.
+## Derived Baseline (When Reconstructed)
 
-### Baseline Artifact Set
+When runtime is reconstructed, Docker baseline uses one app service.
 
-Required root artifacts:
+### Derived Artifact Set
+
+Required root artifacts in reconstruction mode:
 
 - `Dockerfile`
 - `docker-compose.yml`
@@ -45,12 +46,13 @@ volumes:
   kjxlkj-data:
 ```
 
-### Baseline Acceptance
+## Baseline Acceptance (Reconstruction Mode)
 
 1. `docker compose up -d --build` starts exactly one service (`kjxlkj`)
-2. `GET /api/healthz` returns `200`
-3. `GET /api/readyz` returns `200` after migrations complete
-4. `docker compose down` exits cleanly
+2. `GET /` returns `200` and serves root web shell
+3. `GET /api/healthz` returns `200`
+4. `GET /api/readyz` returns `200` after migrations complete
+5. `docker compose down` exits cleanly
 
 ## Runtime Health Rules
 

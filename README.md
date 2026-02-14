@@ -1,27 +1,16 @@
 # kjxlkj
 
-All in Docs knowledge-workspace platform.
+All in Docs workspace specification.
 
-## Current Contract (2026-02-14)
+## Current Repository State (2026-02-14)
 
-- Only documentation is canonical product value.
-- Implementation artifacts are disposable derivatives of `/docs`.
-- A repository state with no runtime source code is valid by design.
-- Runtime source tree is intentionally absent in the current reset baseline.
-- Reconstruction TODO ledgers are reset to unchecked, doc-linked execution state.
-- Rebuild claims are valid only with deterministic evidence and synchronized ledgers.
-- Frontend and backend implementation targets are statically typed only:
-  - frontend: TypeScript (`strict`)
-  - backend: Rust + PostgreSQL
-  - direct JavaScript application source is forbidden
-
-## Documentation Access
-
-Read directly from `docs/` in the repository.
-
-Docker launch artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`)
-are required repository-root derivatives and must stay synchronized with
-`docs/guides/DOCKER.md`.
+- Documentation under `docs/` is the only canonical product value.
+- Runtime source and build artifacts are intentionally absent.
+- Rebuild work starts from `docs/todo/` and reconstructs disposable runtime artifacts.
+- Any generated runtime implementation must satisfy typed constraints:
+  - backend runtime source: Rust
+  - frontend runtime source: TypeScript (`strict`)
+  - handwritten JavaScript runtime source is forbidden
 
 ## Canonical Reading Order
 
@@ -36,5 +25,9 @@ are required repository-root derivatives and must stay synchronized with
 | Path | Purpose |
 |---|---|
 | `docs/` | canonical product definition |
-| `README.md` | top-level entry point |
+| `AGENTS.md` | local execution policy for coding agents |
+| `GEMINI.md` | alternate agent policy mirror |
+| `README.md` | repository entry point |
 | `LICENSE` | license text |
+| `.gitignore` | repository hygiene |
+| `.github/` | optional workflow metadata |

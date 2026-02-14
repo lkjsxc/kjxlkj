@@ -18,6 +18,7 @@ The autonomous librarian agent is modeled as an automation action.
 `action_json.kind = "librarian_structure"` MUST include:
 
 - provider config (`openrouter` or `lmstudio`)
+- prompt-pack config (`manifest_path`, `pack_version`, `hash_algorithm`)
 - protocol marker `xml_attrless`
 - structuring plan (taxonomy, style profile, operation limits)
 - guardrails (`allow_delete`, `strict_mode`, `max_operations`)
@@ -31,6 +32,7 @@ Librarian runs MUST parse and emit operations using
 - `lmstudio` mode MUST support local OpenAI-compatible server APIs.
 - Provider timeout and retry policy MUST be explicit and deterministic.
 - Provider selection MUST be auditable in each run record.
+- Prompt-pack version and hash MUST be auditable in each run record.
 
 ## Run Lifecycle
 

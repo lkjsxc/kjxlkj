@@ -23,6 +23,7 @@ Blueprint for derived runtime topology.
 | `src/backend/crates/security/` | auth/session/csrf/rbac logic |
 | `src/backend/crates/automation/` | rule/run/librarian orchestration |
 | `src/frontend/` | TypeScript app (`.ts`/`.tsx`) |
+| `src/frontend/app/dist/` | generated web-delivery bundle artifacts |
 
 ## Layout Constraints
 
@@ -31,7 +32,7 @@ Blueprint for derived runtime topology.
 | directory has >12 direct children | split by focused subdomain |
 | file >200 lines | extract cohesive module |
 | mixed IO + domain logic | separate adapter and service layers |
-| direct `.js` runtime source appears | replace with typed TypeScript module |
+| handwritten `.js` runtime source appears | replace with typed TypeScript module |
 
 ## Related
 

@@ -24,6 +24,6 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Evidence Placeholder
 
-- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] `Check:` `cargo test -p kjxlkj-server tests_ws_replay -- --nocapture` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - [ ] `Result:` pass -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 - [ ] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)

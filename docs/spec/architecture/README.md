@@ -6,21 +6,21 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 
 | Document | Purpose |
 |---|---|
-| [runtime.md](runtime.md) | runtime topology and supervision model |
-| [deployment.md](deployment.md) | baseline docs launch and runtime target deployment |
+| [runtime.md](runtime.md) | runtime topology and supervision target |
+| [deployment.md](deployment.md) | runtime deployment target contract |
 | [source-layout.md](source-layout.md) | derived runtime topology constraints |
-| [final-file-structure.md](final-file-structure.md) | full completion-state file tree contract |
+| [final-file-structure.md](final-file-structure.md) | canonical completion tree and reconstruction projection tree |
 | [workspace-manifest.md](workspace-manifest.md) | manifest policy for Rust + TypeScript stack |
 | [crates.md](crates.md) | backend Rust crate decomposition |
 
-## System Shape (Runtime Target)
+## System Shape (Reconstruction Target)
 
 ```mermaid
 graph TD
  HTTP[Typed HTTP API]
  WS[Typed WebSocket]
  APP[Rust Services]
- DB[(PostgreSQL)]
+ DB[(SQLite)]
  UI[TypeScript Web App]
 
  UI --> HTTP
@@ -32,9 +32,9 @@ graph TD
 
 ## Invariants
 
-- Request handling MUST be async and non-blocking.
+- Canonical docs-only state is valid without any runtime artifacts.
+- Any reconstructed runtime MUST be regenerated from docs and treated as disposable.
 - Mutation ordering MUST be deterministic per stream identity.
-- App and PostgreSQL runtime target remains one compose service.
 - Frontend/backend boundaries MUST be typed and versioned.
 
 ## Related

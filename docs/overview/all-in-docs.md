@@ -34,7 +34,8 @@ Runtime reconstruction MUST use statically typed languages only:
 - frontend: TypeScript (`strict`)
 - backend: Rust
 
-Direct JavaScript source for application runtime is forbidden.
+Direct handwritten JavaScript source for application runtime is forbidden.
+Generated bundles in `src/frontend/app/dist/` are allowed.
 
 ## Related
 

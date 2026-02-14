@@ -24,6 +24,6 @@ Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/wa
 
 ## Evidence Placeholder
 
-- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test performance_smoke --test ops_recovery --test admin_jobs_api --test automation_provider_adapter -- --nocapture` -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] `Check:` `cargo test -p kjxlkj-server tests_feature_endpoints tests_web_root -- --nocapture` -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [ ] `Result:` pass -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [ ] `Proof:` `performance_smoke`: `2 passed` (`PERF-01`, `PERF-02`, `PERF-03`); `ops_recovery`: `1 passed`; `admin_jobs_api`: `1 passed`; `automation_provider_adapter`: `5 passed` including provider-failure and retry envelope diagnostics -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

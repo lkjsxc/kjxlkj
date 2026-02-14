@@ -8,6 +8,7 @@ Base path: `/api`
 
 | Method | Path | Purpose |
 |---|---|---|
+| `GET` | `/setup/status` | discover whether first-run owner setup is still available |
 | `POST` | `/setup/register` | first-run owner account bootstrap |
 | `POST` | `/auth/login` | create authenticated session |
 | `POST` | `/auth/logout` | revoke active session |
@@ -65,8 +66,8 @@ Base path: `/api`
 | `POST` | `/views` | create saved view |
 | `PATCH` | `/views/{id}` | update saved view |
 | `DELETE` | `/views/{id}` | delete saved view |
-| `GET` | `/dashboards` | list workspace dashboards (optional extension) |
-| `POST` | `/dashboards/widgets` | create or update dashboard widget (optional extension) |
+| `GET` | `/dashboards` | list workspace dashboard widgets |
+| `POST` | `/dashboards/widgets` | create or update dashboard widget |
 | `GET` | `/automation/rules` | list automation rules |
 | `POST` | `/automation/rules` | create automation rule (includes librarian structuring rules) |
 | `PATCH` | `/automation/rules/{id}` | update automation rule (includes provider/prompt contract) |
@@ -97,12 +98,18 @@ Base path: `/api`
 ## Contract Rules
 
 - Global roles and workspace roles MUST be evaluated on every user-scoped route.
+- `GET /setup/status` MUST return deterministic `setup_available` boolean.
 - Setup MUST lock after first owner account registration.
 - `DELETE /notes/{id}` MUST return `204` on successful soft-delete.
 - `DELETE /notes/{id}/metadata/{key}` MUST return `204`.
 - Version conflicts MUST return `409` with current server version context.
+- `POST /notes/{id}/attachments` MUST reject payloads greater than `500MB` with `413`.
+- `GET /attachments/{id}` MUST return deterministic attachment payload metadata and content fields.
+- export/backup launch endpoints MUST return `202` with created admin job payload.
 - Librarian rules MUST validate provider mode (`openrouter` or `lmstudio`) and
   reject unknown providers with deterministic `422`.
+- Librarian rules MUST validate `prompt_pack.manifest_path` and require all
+  referenced stage JSON files to exist and be parseable.
 - Librarian actions MUST use the attribute-less XML-like protocol from
   [librarian-xml.md](librarian-xml.md).
 

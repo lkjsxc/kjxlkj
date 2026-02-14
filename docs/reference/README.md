@@ -20,18 +20,10 @@ For state claims, use this order:
 ## Snapshot (2026-02-14)
 
 - All in Docs governance is active.
-- Runtime source scaffold has been partially reconstructed in Rust + TypeScript.
-- Top-level reconstruction start-gate read/open rows are checked.
-- Top-level HTTP, WebSocket, and security restoration rows are checked with deterministic evidence.
-- Top-level automation/librarian restoration row is checked with deterministic evidence.
-- Saved-view API lifecycle is executable and deterministic-test verified.
-- Frontend regression tests are executable with deterministic `REG-IMP/REG-USR/REG-UX` subset coverage.
-- Top-level typed frontend shell/editor-flow rows are checked with deterministic evidence.
-- Top-level runtime structure-alignment row is checked with deterministic evidence.
-- Deterministic regression pack and completion gate rows remain partially open.
-- Docker artifact gate rows are complete with deterministic evidence.
-- Every TODO checklist row in `docs/todo/` now links directly to a docs file.
-- Release gate is not satisfied until typed runtime reconstruction is complete.
+- Repository is intentionally in docs-only canonical state.
+- Runtime source, manifests, Docker artifacts, and build outputs are absent.
+- TODO program is reset to unchecked reconstruction baseline.
+- Release gate is blocked until runtime is reconstructed and verified.
 
 ## Synchronization Rule
 

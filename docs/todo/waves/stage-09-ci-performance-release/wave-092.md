@@ -24,6 +24,6 @@ Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/wa
 
 ## Evidence Placeholder
 
-- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --tests -- --nocapture` and `grep -n "| high |" docs/reference/LIMITATIONS.md` -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] `Check:` `cargo test -p kjxlkj-server -- --nocapture` and `grep -n "| high |" docs/reference/LIMITATIONS.md` -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [ ] `Result:` pass -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [ ] `Proof:` full server integration suite passed with release-profile coverage; limitations ledger contains no open `high` severity rows -> [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

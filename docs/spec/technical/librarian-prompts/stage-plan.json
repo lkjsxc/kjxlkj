@@ -1,0 +1,21 @@
+{
+  "stage": "plan",
+  "model_profile": "balanced_reasoning",
+  "temperature": 0.2,
+  "max_tokens": 1200,
+  "system_prompt": "Create a deterministic structuring plan using provided taxonomy and constraints.",
+  "user_prompt_template": "Using {{normalized_sources}} and {{taxonomy}}, produce a compact plan with ordered actions and rationale.",
+  "input_bindings": [
+    "normalized_sources",
+    "taxonomy",
+    "constraints",
+    "goal"
+  ],
+  "output_contract": {
+    "format": "json",
+    "required_keys": [
+      "plan_summary",
+      "ordered_actions"
+    ]
+  }
+}

@@ -4,15 +4,16 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 Deterministic Docker artifact contract for the app runtime.
 
-## Required Root Artifacts
+## Required Root Artifacts (Reconstruction Mode)
 
-These files MUST exist at repository root:
+When reconstruction reaches Docker Artifact Gate, these files MUST exist at
+repository root:
 
 - `Dockerfile`
 - `docker-compose.yml`
 - `.dockerignore`
 
-If any file is missing, regenerate it before marking TODO completion.
+If any file is missing, regenerate it before marking Docker gate completion.
 
 ## Baseline Contract (App Runtime)
 
@@ -28,10 +29,11 @@ If any file is missing, regenerate it before marking TODO completion.
 1. Regenerate root files to match [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md).
 2. Validate config: `docker compose config`.
 3. Build/start: `docker compose up -d --build`.
-4. Verify liveness: `curl -fsS http://127.0.0.1:8080/api/healthz`.
-5. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`.
-6. Verify health status: `docker compose ps`.
-7. Stop/remove: `docker compose down`.
+4. Verify root web shell: `curl -fsS http://127.0.0.1:8080/`.
+5. Verify liveness: `curl -fsS http://127.0.0.1:8080/api/healthz`.
+6. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`.
+7. Verify health status: `docker compose ps`.
+8. Stop/remove: `docker compose down`.
 
 ## Implementation Reference
 

@@ -16,12 +16,16 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Implementation Tasks
 
+- [ ] [Keep desktop split layout with note list left and editor right at `>= 1024px`](/docs/spec/ui/layout-and-interaction.md)
+- [ ] [Keep compact layout editor-primary with top-left menu button to reveal note list at `< 1024px`](/docs/spec/ui/web-app.md)
 - [ ] [Make librarian panels usable at 320px widths with no mode fork](/docs/spec/ui/layout-and-interaction.md)
 - [ ] [Ensure keyboard-first launch and review flows via command palette](/docs/spec/ui/workspace-suite.md)
 - [ ] [Preserve menu-toggle collapse/restore behavior during librarian sessions](/docs/spec/ui/layout-and-interaction.md)
 
 ## Verification Tasks
 
+- [ ] [Run desktop split-pane assertions for left-list/right-editor placement](/docs/spec/technical/testing.md)
+- [ ] [Run compact-width top-left menu reveal/hide flow assertions](/docs/spec/technical/testing.md)
 - [ ] [Run 320px interaction tests for librarian views](/docs/spec/technical/testing.md)
 - [ ] [Run command-palette invocation and focus-trap checks](/docs/spec/technical/testing.md)
 

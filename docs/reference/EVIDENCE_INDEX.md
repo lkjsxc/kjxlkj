@@ -8,8 +8,13 @@ Deterministic mapping from reconstruction stages to primary proof artifacts.
 
 This index maps wave stages to required evidence anchors.
 
-Historical evidence remains useful context but is not sufficient for current conformance.
-Current reset requires fresh evidence for closure.
+Historical evidence remains useful context but is not sufficient for new
+conformance claims.
+
+Latest canonical reset evidence:
+
+- [/docs/log/audits/2026-02-14-root-web-doc-map-reset.md](/docs/log/audits/2026-02-14-root-web-doc-map-reset.md)
+- [/docs/log/audits/2026-02-14-docs-only-reset.md](/docs/log/audits/2026-02-14-docs-only-reset.md)
 
 ## Stage Evidence Map
 

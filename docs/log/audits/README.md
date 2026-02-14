@@ -8,6 +8,8 @@ Post-change audits and evidence summaries.
 
 | Document | Purpose |
 |---|---|
+| [2026-02-14-docs-only-reset.md](2026-02-14-docs-only-reset.md) | deterministic evidence for docs-only canonical reset, responsive UX contract hardening, JSON prompt-pack specification, TODO link normalization, and runtime artifact removal |
+| [2026-02-14-root-web-doc-map-reset.md](2026-02-14-root-web-doc-map-reset.md) | deterministic evidence for root web delivery, API stub replacement, TODO reset, full doc-map linkage, and improvement-note retirement |
 | [2026-02-14-api-saved-views-contract.md](2026-02-14-api-saved-views-contract.md) | deterministic evidence for replacing saved-view API stubs with executable CRUD behavior, auth/csrf/role enforcement, and lifecycle test coverage |
 | [2026-02-14-automation-librarian-contract-sync.md](2026-02-14-automation-librarian-contract-sync.md) | deterministic evidence for automation/librarian rule/run/review baseline execution, provider/protocol validation, and ledger synchronization |
 | [2026-02-14-regression-pack-slice.md](2026-02-14-regression-pack-slice.md) | deterministic evidence for restored frontend/backend regression execution covering idempotency fallback, pre-auth `401` behavior, title propagation, status-rail errors, and backend replay/conflict contracts |

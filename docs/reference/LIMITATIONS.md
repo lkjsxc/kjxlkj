@@ -7,22 +7,21 @@ Open mismatches between target spec and trusted current behavior.
 ## Baseline (2026-02-14)
 
 - All in Docs governance is active.
-- Runtime scaffold exists but does not yet satisfy full spec topology.
-- TODO ledgers are documentation-linked for deterministic rebuild.
-- top-level start-gate read/open rows are complete; reconstruction rows remain open.
+- Repository intentionally contains only canonical docs and hygiene files.
+- Runtime, API, WS, and deployment contracts are not implemented in this state.
+- TODO program is reset and ready for full reconstruction execution.
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-RUNTIME-05` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime bootstrap exists, but WS/background/domain supervision topology is incomplete | `M2 missing feature` | high | extend scaffold to full runtime topology from staged wave program |
-| `LIM-API-05` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP route surface is restored with saved-view CRUD executable, but attachment/admin/export paths and full acceptance coverage remain incomplete | `M2 missing feature` | high | complete non-stub attachment/admin semantics and run full API acceptance pack |
-| `LIM-WS-05` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS endpoint is runnable for subscribe/ack/patch and reconnect `ack_cursor` replay, but full presence/automation ordering contract remains incomplete | `M2 missing feature` | high | complete WS replay/ordering matrix and run `WS-01..06` pack |
-| `LIM-UI-05` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | note-first shell, title propagation, and autosave status are implemented, but full responsive/accessibility/librarian UX matrix remains incomplete | `M2 missing feature` | high | complete Stage 08 UX matrix and associated `REG-USR-*` / `REG-UX-*` proofs |
-| `LIM-SEC-05` | [/docs/spec/security/README.md](/docs/spec/security/README.md) | core auth/session/csrf/rbac guards are present, but full security matrix and transport/session persistence hardening are incomplete | `M2 missing feature` | medium | execute Stage 05 wave matrix with deterministic security regression coverage |
-| `LIM-AUTO-04` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rules/runs/review flows are executable, but full librarian parser/retry/apply-operation safety matrix is incomplete | `M2 missing feature` | medium | complete Stage 06 XML parser/retry/apply matrix and expand deterministic run diagnostics |
-| `LIM-PERF-05` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun Stage 09 performance and archive new proof |
-| `LIM-OPS-05` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | operations and recovery evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun operations evidence set after rebuild |
+| `LIM-RUNTIME-DOCS-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime artifacts are intentionally absent in docs-only baseline | `M2 missing feature` | medium | execute Stage 01-03 waves from [/docs/todo/waves/README.md](/docs/todo/waves/README.md) |
+| `LIM-API-DOCS-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP routes are specified but not currently reconstructed | `M2 missing feature` | medium | execute Stage 04-06 waves and verify `API-*` acceptance IDs |
+| `LIM-WS-DOCS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket contract is specified but not currently reconstructed | `M2 missing feature` | medium | execute Stage 07 waves and verify `WS-*` acceptance IDs |
+| `LIM-UI-DOCS-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | web app UX contracts are specified but runtime UI is absent | `M2 missing feature` | medium | execute Stage 08 waves and verify `E2E-*` + `REG-*` UX IDs |
+| `LIM-AUTO-DOCS-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian pipeline and JSON prompt contracts are specified but runtime is absent | `M2 missing feature` | medium | execute Stage 06+08 waves and verify `API-AUTO-*` + `E2E-15` |
+| `LIM-DEPLOY-DOCS-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | deployment artifacts are intentionally absent in docs-only state | `M2 missing feature` | low | regenerate artifacts via [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md) when runtime is reconstructed |
+| `LIM-REL-DOCS-01` | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | release gate cannot close without reconstructed runtime and evidence | `M4 verification gap` | medium | complete all waves and acceptance packs before release closure |
 
 ## Closure Rules
 
