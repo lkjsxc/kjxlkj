@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Implementation Tasks
 
-- [x] implement workspace-scoped note create/list/get/update/title/delete
-- [x] implement note history and rollback APIs
-- [x] enforce optimistic versioning semantics
+- [ ] implement workspace-scoped note create/list/get/update/title/delete -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] implement note history and rollback APIs -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] enforce optimistic versioning semantics -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
 
 ## Verification Tasks
 
-- [x] run `API-NOTE-01..04`
-- [x] run version conflict boundary tests
+- [ ] run `API-NOTE-01..04` -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] run version conflict boundary tests -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
 
 ## Evidence Placeholder
 
-- [x] `Check: note lifecycle + history/rollback + version conflict integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md](/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md)`
+- [ ] `Check: note lifecycle + history/rollback + version conflict integration coverage` -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] `Result: pass` -> [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] `Proof: [/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md](/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md)`

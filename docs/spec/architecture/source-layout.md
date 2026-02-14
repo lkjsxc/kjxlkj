@@ -36,4 +36,5 @@ Blueprint for derived runtime topology.
 ## Related
 
 - Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- Full structure contract: [final-file-structure.md](final-file-structure.md)
 - Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)

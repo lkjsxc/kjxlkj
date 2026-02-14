@@ -6,6 +6,9 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
@@ -14,17 +17,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [x] add librarian control and run review UX
-- [x] expose operation diffs with apply/reject decisions
-- [x] preserve responsive behavior and 320px usability constraints
+- [ ] [Add librarian control and run review UX](/docs/spec/ui/workspace-suite.md)
+- [ ] [Expose operation diffs with apply/reject decisions](/docs/spec/ui/editor-flow.md)
+- [ ] [Preserve responsive behavior and 320px usability constraints](/docs/spec/ui/layout-and-interaction.md)
 
 ## Ordered Waves
 
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
+- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
+- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
+- [ ] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
 
 ## Stage Exit
 
-- [x] `E2E-15` passes with deterministic evidence
-- [x] librarian UX respects responsive and accessibility constraints
+- [ ] [`E2E-15` passes with deterministic evidence](/docs/spec/technical/testing.md)
+- [ ] [Librarian UX respects responsive and accessibility constraints](/docs/spec/ui/web-app.md)

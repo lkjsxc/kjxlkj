@@ -6,6 +6,9 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
@@ -13,17 +16,17 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Implementation Tasks
 
-- [x] make librarian panels usable at 320px widths with no mode fork
-- [x] ensure keyboard-first launch and review flows via command palette
-- [x] preserve menu-toggle collapse/restore behavior during librarian sessions
+- [ ] [Make librarian panels usable at 320px widths with no mode fork](/docs/spec/ui/layout-and-interaction.md)
+- [ ] [Ensure keyboard-first launch and review flows via command palette](/docs/spec/ui/workspace-suite.md)
+- [ ] [Preserve menu-toggle collapse/restore behavior during librarian sessions](/docs/spec/ui/layout-and-interaction.md)
 
 ## Verification Tasks
 
-- [x] run 320px interaction tests for librarian views
-- [x] run command-palette invocation and focus-trap checks
+- [ ] [Run 320px interaction tests for librarian views](/docs/spec/technical/testing.md)
+- [ ] [Run command-palette invocation and focus-trap checks](/docs/spec/technical/testing.md)
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ui_shell --test command_workflow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` responsive librarian action layout + command palette `run-rule`/`review-run` keyboard flow hooks + menu-collapse behavior validated in shell/command coverage
+- [ ] [Record verification command set and raw output for this wave](/docs/spec/technical/testing.md)
+- [ ] [Record pass/fail result in audit log entry](/docs/log/audits/README.md)
+- [ ] [Attach proof link in this wave file after verification](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)

@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-r
 
 ## Implementation Tasks
 
-- [x] validate `librarian_structure` action schema in automation routes
-- [x] persist parsed operation reports in run status payloads
-- [x] enforce scope and safety guards before operation application
+- [ ] validate `librarian_structure` action schema in automation routes -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] persist parsed operation reports in run status payloads -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] enforce scope and safety guards before operation application -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 
 ## Verification Tasks
 
-- [x] run `API-AUTO-03`
-- [x] run malformed action payload rejection boundary tests
+- [ ] run `API-AUTO-03` -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] run malformed action payload rejection boundary tests -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32771/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `automation_provider_adapter`: `3 passed`; `automation_rules_api`: `1 passed`; `automation_run_flow`: `1 passed`
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32771/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow -- --nocapture` -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] `Result:` pass -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] `Proof:` `automation_provider_adapter`: `3 passed`; `automation_rules_api`: `1 passed`; `automation_run_flow`: `1 passed` -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)

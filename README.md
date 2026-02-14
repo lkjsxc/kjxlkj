@@ -2,11 +2,13 @@
 
 All in Docs knowledge-workspace platform.
 
-## Current Contract (2026-02-13)
+## Current Contract (2026-02-14)
 
 - Only documentation is canonical product value.
 - Implementation artifacts are disposable derivatives of `/docs`.
 - A repository state with no runtime source code is valid by design.
+- Runtime source tree is intentionally absent in the current reset baseline.
+- Reconstruction TODO ledgers are reset to unchecked, doc-linked execution state.
 - Rebuild claims are valid only with deterministic evidence and synchronized ledgers.
 - Frontend and backend implementation targets are statically typed only:
   - frontend: TypeScript (`strict`)

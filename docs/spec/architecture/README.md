@@ -9,6 +9,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [runtime.md](runtime.md) | runtime topology and supervision model |
 | [deployment.md](deployment.md) | baseline docs launch and runtime target deployment |
 | [source-layout.md](source-layout.md) | derived runtime topology constraints |
+| [final-file-structure.md](final-file-structure.md) | full completion-state file tree contract |
 | [workspace-manifest.md](workspace-manifest.md) | manifest policy for Rust + TypeScript stack |
 | [crates.md](crates.md) | backend Rust crate decomposition |
 

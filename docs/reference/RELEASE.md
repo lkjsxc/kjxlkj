@@ -13,20 +13,20 @@ Release is valid only for blocker-free reconstructed runtime state.
 5. acceptance suites in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
 6. typed gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
 
-## Current Gate (2026-02-13)
+## Current Gate (2026-02-14)
 
-Release gate is satisfied.
+Release gate is not satisfied.
 
-Evidence:
+Blocking reasons:
 
-- All stages (00-09) completed with deterministic proof links
-- All high-severity limitations closed (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))
-- Full server integration suite passed with release-profile coverage
-- Wave evidence archived in [/docs/log/audits/](/docs/log/audits/)
+- runtime source tree is intentionally absent after reset
+- high-severity `M2` rows are open in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- high-severity limitations are open in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- acceptance and typed gates cannot currently pass
 
 ## Release Steps
 
-1. reconstruct runtime from canonical docs
+1. reconstruct runtime from canonical docs and `docs/todo/` waves
 2. run required profiles and archive deterministic evidence
 3. verify no contradictions remain between runtime and docs
 4. synchronize ledgers and TODO closure

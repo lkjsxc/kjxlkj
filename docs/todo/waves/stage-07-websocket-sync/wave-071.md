@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Implementation Tasks
 
-- [x] integrate librarian events into ack-cursor replay protocol
-- [x] enforce idempotent retransmit semantics for event emissions
-- [x] reject stale cursors with deterministic error payloads
+- [ ] integrate librarian events into ack-cursor replay protocol -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] enforce idempotent retransmit semantics for event emissions -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] reject stale cursors with deterministic error payloads -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 
 ## Verification Tasks
 
-- [x] run reconnect + replay boundary checks
-- [x] run duplicate cursor and retransmit scenarios
+- [ ] run reconnect + replay boundary checks -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] run duplicate cursor and retransmit scenarios -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 
 ## Evidence Placeholder
 
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR`
+- [ ] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] `Result:` pass -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR` -> [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)

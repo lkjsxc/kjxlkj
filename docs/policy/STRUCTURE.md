@@ -8,10 +8,15 @@ Mandatory structural constraints for docs and derived runtime topology.
 
 | Constraint | Value | Rationale |
 |---|---|---|
-| Max items per directory | 12 | predictable navigation |
+| Max items per directory | 12 (archive exception) | predictable navigation |
 | README per directory | Required | deterministic entry point |
 | Max lines per file | 200 | focused docs |
 | Soft max columns per line | 100 | readable diffs |
+
+Archive exception:
+
+- `docs/log/audits/` and `docs/log/proposals/` MAY exceed 12 children.
+- archive directories MUST keep date-prefixed filenames and indexed README tables.
 
 ## Navigation Requirements
 
@@ -42,7 +47,7 @@ When runtime artifacts exist:
 
 ## Compliance Checklist
 
-- [ ] no directory exceeds 12 direct children
+- [ ] no non-archive directory exceeds 12 direct children
 - [ ] every directory includes one `README.md`
 - [ ] no file exceeds 200 lines
 - [ ] no orphan docs exist

@@ -13,18 +13,18 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Implementation Tasks
 
-- [x] set API base path to `/api` in canonical docs
-- [x] set WS endpoint to `/ws` in canonical docs
-- [x] align OpenAPI document with HTTP and WS contracts
-- [x] enforce `DELETE /notes/{id}` soft-delete path consistency
+- [ ] set API base path to `/api` in canonical docs -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] set WS endpoint to `/ws` in canonical docs -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] align OpenAPI document with HTTP and WS contracts -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] enforce `DELETE /notes/{id}` soft-delete path consistency -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
 ## Verification Tasks
 
-- [x] link-check `api/` docs and OpenAPI references
-- [x] verify no remaining version-labeled API paths in canonical docs
+- [ ] link-check `api/` docs and OpenAPI references -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] verify no remaining version-labeled API paths in canonical docs -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
 ## Evidence Placeholder
 
-- [x] `Check: deterministic Stage 00 validation pack for API/WS/OpenAPI contract parity and path rules`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [ ] `Check: deterministic Stage 00 validation pack for API/WS/OpenAPI contract parity and path rules` -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] `Result: pass` -> [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`

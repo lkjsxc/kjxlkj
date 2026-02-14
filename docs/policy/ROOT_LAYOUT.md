@@ -37,4 +37,5 @@ A valid baseline MAY contain only documentation and repository hygiene files.
 ## Related
 
 - Structure constraints: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- Final completion structure: [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
 - All in Docs doctrine: [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)

@@ -13,18 +13,18 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [x] close residual reliability, security, and performance gaps
-- [x] run core acceptance, performance, and operations baseline gates
-- [x] prepare librarian-specific expansion stages with synchronized ledgers
+- [ ] close residual reliability, security, and performance gaps -> [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [ ] run core acceptance, performance, and operations baseline gates -> [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [ ] prepare librarian-specific expansion stages with synchronized ledgers -> [/docs/spec/security/README.md](/docs/spec/security/README.md)
 
 ## Ordered Waves
 
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-050.md](/docs/todo/waves/stage-05-auth-and-security/wave-050.md)
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-051.md](/docs/todo/waves/stage-05-auth-and-security/wave-051.md)
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-052.md](/docs/todo/waves/stage-05-auth-and-security/wave-052.md)
+- [ ] [/docs/todo/waves/stage-05-auth-and-security/wave-050.md](/docs/todo/waves/stage-05-auth-and-security/wave-050.md)
+- [ ] [/docs/todo/waves/stage-05-auth-and-security/wave-051.md](/docs/todo/waves/stage-05-auth-and-security/wave-051.md)
+- [ ] [/docs/todo/waves/stage-05-auth-and-security/wave-052.md](/docs/todo/waves/stage-05-auth-and-security/wave-052.md)
 
 ## Stage Exit
 
-- [x] core security and reliability evidence is archived
-- [x] stage blockers are closed or explicitly deferred
-- [x] handoff to Stage 06 is traceable in ledgers
+- [ ] core security and reliability evidence is archived -> [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [ ] stage blockers are closed or explicitly deferred -> [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [ ] handoff to Stage 06 is traceable in ledgers -> [/docs/spec/security/README.md](/docs/spec/security/README.md)

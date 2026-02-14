@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [x] implement saved views APIs and persistence; keep dashboards optional
-- [x] deliver command palette, graph explorer, and responsive shell UX
-- [x] preserve autosave and conflict-safe collaboration UX
+- [ ] implement saved views APIs and persistence; keep dashboards optional -> [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] deliver command palette, graph explorer, and responsive shell UX -> [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] preserve autosave and conflict-safe collaboration UX -> [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
 
 ## Ordered Waves
 
-- [x] [/docs/todo/waves/stage-03-single-container-runtime/wave-030.md](/docs/todo/waves/stage-03-single-container-runtime/wave-030.md)
-- [x] [/docs/todo/waves/stage-03-single-container-runtime/wave-031.md](/docs/todo/waves/stage-03-single-container-runtime/wave-031.md)
-- [x] [/docs/todo/waves/stage-03-single-container-runtime/wave-032.md](/docs/todo/waves/stage-03-single-container-runtime/wave-032.md)
+- [ ] [/docs/todo/waves/stage-03-single-container-runtime/wave-030.md](/docs/todo/waves/stage-03-single-container-runtime/wave-030.md)
+- [ ] [/docs/todo/waves/stage-03-single-container-runtime/wave-031.md](/docs/todo/waves/stage-03-single-container-runtime/wave-031.md)
+- [ ] [/docs/todo/waves/stage-03-single-container-runtime/wave-032.md](/docs/todo/waves/stage-03-single-container-runtime/wave-032.md)
 
 ## Stage Exit
 
-- [x] workspace modules are user-reachable and evidence-backed
-- [x] key UX E2E flows pass on desktop and 320px width
+- [ ] workspace modules are user-reachable and evidence-backed -> [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] key UX E2E flows pass on desktop and 320px width -> [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)

@@ -4,38 +4,24 @@ Back: [/docs/reference/README.md](/docs/reference/README.md)
 
 Open mismatches between target spec and trusted current behavior.
 
-## Baseline (2026-02-13)
+## Baseline (2026-02-14)
 
 - All in Docs governance is active.
-- TODO ledgers are synchronized with completed wave evidence.
-- Runtime conformance evidence is established through wave completion proofs.
-
-## Closed Reconstruction Blockers
-
-| ID | Requirement Link | Resolution | Class | Severity | Evidence |
-|---|---|---|---|---|---|
-| `LIM-RUNTIME-04` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process topology verified | `M2 missing feature` | high | Stage 01-05 wave evidence |
-| `LIM-API-04` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API contract verified as reachable | `M2 missing feature` | high | Stage 02, 06 wave evidence |
-| `LIM-WS-04` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS protocol verified as reachable | `M2 missing feature` | high | Stage 07 wave evidence |
-| `LIM-UI-04` | [/docs/spec/ui/README.md](/docs/spec/ui/README.md) | note-first UI contract verified | `M2 missing feature` | high | Stage 03, 08 wave evidence |
-| `LIM-TYPE-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | typed runtime gates passing | `M2 missing feature` | high | Stage 01-09 wave evidence |
-| `LIM-AUTO-03` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation/librarian runtime evidence established | `M2 missing feature` | medium | Stage 04, 06, 08 wave evidence |
-| `LIM-SEARCH-04` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | search and backlink behavior verified | `M2 missing feature` | medium | Stage 02 wave evidence |
-
-## Closed Quality and Regression Guards
-
-| ID | Requirement Link | Resolution | Class | Severity | Evidence |
-|---|---|---|---|---|---|
-| `LIM-ISSUE-GUARD-04` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `IMP-*` and `USR-*` findings proven | `M4 verification gap` | high | Stage 05 wave-050 evidence |
-| `LIM-UX-04` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | UX requirements runtime-verified | `M4 verification gap` | high | Stage 03, 08 wave evidence |
-| `LIM-PERF-04` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence archived | `M4 verification gap` | medium | Stage 09 wave-091 evidence |
-| `LIM-OPS-04` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart evidence archived | `M4 verification gap` | medium | Stage 09 wave-091 evidence |
+- Runtime source has been reset and is currently absent by design.
+- TODO ledgers are reset and documentation-linked for deterministic rebuild.
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-LIB-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | operation-apply/runtime stream closure explicitly deferred | `M6 enhancement` | low | future enhancement when runtime stream requirements stabilize |
+| `LIM-RUNTIME-05` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime process topology is not implemented in repository | `M2 missing feature` | high | reconstruct `src/` using Stage 01 onward |
+| `LIM-API-05` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP API routes are not currently runnable | `M2 missing feature` | high | rebuild HTTP crate and run API acceptance pack |
+| `LIM-WS-05` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS endpoint and replay protocol are not currently runnable | `M2 missing feature` | high | rebuild WS crate and run WS acceptance pack |
+| `LIM-UI-05` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | TypeScript web app runtime is not currently present | `M2 missing feature` | high | rebuild frontend app from Stage 08 TODO waves |
+| `LIM-TYPE-02` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `TYPE-01` and `TYPE-02` gates cannot pass without runtime source | `M2 missing feature` | high | restore Rust workspace and TypeScript app tree |
+| `LIM-AUTO-04` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation/librarian runtime contract is not currently executable | `M2 missing feature` | medium | reconstruct Stage 04 and Stage 06 runtime flow |
+| `LIM-PERF-05` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun Stage 09 performance and archive new proof |
+| `LIM-OPS-05` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | operations and recovery evidence is stale relative to reset baseline | `M4 verification gap` | medium | rerun operations evidence set after rebuild |
 
 ## Closure Rules
 

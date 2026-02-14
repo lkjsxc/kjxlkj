@@ -17,13 +17,13 @@ For state claims, use this order:
 
 `/docs/spec/` remains the target behavior contract.
 
-## Snapshot (2026-02-13)
+## Snapshot (2026-02-14)
 
 - All in Docs governance is active.
-- Canonical value is documentation.
-- Reconstruction TODO is in completed state with linked wave evidence.
-- Runtime conformance is partially re-established for startup and health checks.
-- Docker root artifacts are present and treated as synchronized derivatives.
+- Runtime source artifacts were intentionally removed on 2026-02-14.
+- Reconstruction TODO ledgers are reset to unchecked state.
+- Every TODO checklist row in `docs/todo/` now links directly to a docs file.
+- Release gate is not satisfied until typed runtime reconstruction is complete.
 
 ## Synchronization Rule
 

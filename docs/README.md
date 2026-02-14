@@ -46,7 +46,7 @@
 | [todo/](todo/README.md) | staged execution contract |
 | [guides/](guides/README.md) | operational walkthroughs |
 | [overview/](overview/README.md) | concepts and terminology |
-| [log/](log/README.md) | audit/proposal/improvement history |
+| [log/](log/README.md) | audit/proposal history |
 
 ## Related
 
