@@ -1,5 +1,6 @@
 // User handlers per /docs/spec/api/http.md
 use actix_web::{web, HttpResponse};
+use kjxlkj_auth::middleware::{require_role, AuthSession};
 use kjxlkj_auth::password;
 use kjxlkj_db::repo::users;
 use kjxlkj_domain::types::{Role, User, UserStatus};
@@ -8,8 +9,14 @@ use uuid::Uuid;
 
 use crate::dto::{CreateUserRequest, ErrorBody, UpdateRoleRequest};
 
-/// GET /api/users
-pub async fn list(pool: web::Data<PgPool>) -> HttpResponse {
+/// GET /api/users — admin+ only
+pub async fn list(pool: web::Data<PgPool>, auth: AuthSession) -> HttpResponse {
+    if let Err(_) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: Uuid::now_v7().to_string(),
+        });
+    }
     match users::list_users(pool.get_ref()).await {
         Ok(list) => HttpResponse::Ok().json(list),
         Err(e) => HttpResponse::InternalServerError().json(ErrorBody {
@@ -19,12 +26,19 @@ pub async fn list(pool: web::Data<PgPool>) -> HttpResponse {
     }
 }
 
-/// POST /api/users
+/// POST /api/users — admin+ only
 pub async fn create(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     body: web::Json<CreateUserRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     let role = match body.role.as_deref() {
         Some("admin") => Role::Admin,
         Some("editor") => Role::Editor,
@@ -70,13 +84,20 @@ pub async fn create(
     }
 }
 
-/// PATCH /api/users/{id}/role
+/// PATCH /api/users/{id}/role — owner only
 pub async fn update_role(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<UpdateRoleRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Owner) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Owner role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     let role = match body.role.as_str() {
         "admin" => Role::Admin,
         "editor" => Role::Editor,
@@ -102,12 +123,19 @@ pub async fn update_role(
     }
 }
 
-/// DELETE /api/users/{id}
+/// DELETE /api/users/{id} — owner only
 pub async fn delete(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Owner) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Owner role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     match users::disable_user(pool.get_ref(), path.into_inner()).await {
         Ok(true) => HttpResponse::NoContent().finish(),
         Ok(false) => HttpResponse::NotFound().json(ErrorBody {

@@ -1,18 +1,26 @@
 // Note handlers per /docs/spec/api/http.md
 use actix_web::{web, HttpResponse};
+use kjxlkj_auth::middleware::{require_role, AuthSession};
 use kjxlkj_db::repo::notes as note_repo;
-use kjxlkj_domain::types::{AccessScope, NoteKind, NoteStream};
+use kjxlkj_domain::types::{AccessScope, NoteKind, NoteStream, Role};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::dto::{CreateNoteRequest, ErrorBody, UpdateNoteRequest, UpdateTitleRequest, MetadataRequest};
 
-/// POST /api/notes
+/// POST /api/notes — editor+ only
 pub async fn create(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     body: web::Json<CreateNoteRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Editor) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Editor role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     let kind = match body.note_kind.as_deref() {
         Some("settings") => NoteKind::Settings,
         Some("media_image") => NoteKind::MediaImage,
@@ -50,6 +58,7 @@ pub async fn create(
 /// GET /api/notes
 pub async fn list(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     query: web::Query<WsFilter>,
 ) -> HttpResponse {
     match note_repo::list_notes(pool.get_ref(), query.workspace_id).await {
@@ -64,6 +73,7 @@ pub async fn list(
 /// GET /api/notes/{id}
 pub async fn get(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
@@ -83,6 +93,7 @@ pub async fn get(
 /// PATCH /api/notes/{id} — apply patch with version check
 pub async fn update(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<UpdateNoteRequest>,
 ) -> HttpResponse {
@@ -130,8 +141,7 @@ pub async fn update(
     };
 
     let payload = serde_json::json!({ "patch_ops": body.patch_ops });
-    // TODO: get actor_id from session
-    let actor_id = Uuid::nil();
+    let actor_id = auth.user.id;
 
     match note_repo::apply_mutation(
         pool.get_ref(), note_id, body.base_version, &new_markdown, actor_id, "updated", &payload,
@@ -161,12 +171,13 @@ pub async fn update(
 /// PATCH /api/notes/{id}/title
 pub async fn update_title(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<UpdateTitleRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
     let note_id = path.into_inner();
-    let actor_id = Uuid::nil(); // TODO: from session
+    let actor_id = auth.user.id;
 
     match note_repo::update_title(
         pool.get_ref(), note_id, body.base_version, &body.title, actor_id,
@@ -196,9 +207,16 @@ pub async fn update_title(
 /// DELETE /api/notes/{id} — returns 204 per spec
 pub async fn delete(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Editor) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Editor role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     match note_repo::soft_delete(pool.get_ref(), path.into_inner()).await {
         Ok(true) => HttpResponse::NoContent().finish(),
         Ok(false) => HttpResponse::NotFound().json(ErrorBody {
@@ -215,6 +233,7 @@ pub async fn delete(
 /// GET /api/notes/{id}/history
 pub async fn history(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     match note_repo::event_history(pool.get_ref(), path.into_inner()).await {
@@ -229,6 +248,7 @@ pub async fn history(
 /// PUT /api/notes/{id}/metadata/{key}
 pub async fn upsert_metadata(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<(Uuid, String)>,
     body: web::Json<MetadataRequest>,
 ) -> HttpResponse {
@@ -256,6 +276,7 @@ pub async fn upsert_metadata(
 /// DELETE /api/notes/{id}/metadata/{key} — returns 204 per spec
 pub async fn delete_metadata(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<(Uuid, String)>,
 ) -> HttpResponse {
     let (note_id, key) = path.into_inner();

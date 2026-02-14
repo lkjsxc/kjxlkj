@@ -1,5 +1,6 @@
 // Workspace handlers per /docs/spec/api/http.md
 use actix_web::{web, HttpResponse};
+use kjxlkj_auth::middleware::{require_role, AuthSession};
 use kjxlkj_db::repo::workspaces as ws_repo;
 use kjxlkj_domain::types::{Role, Workspace};
 use sqlx::PgPool;
@@ -8,7 +9,7 @@ use uuid::Uuid;
 use crate::dto::{CreateWorkspaceRequest, ErrorBody, UpdateWorkspaceRequest, UpsertMemberRequest};
 
 /// GET /api/workspaces
-pub async fn list(pool: web::Data<PgPool>) -> HttpResponse {
+pub async fn list(pool: web::Data<PgPool>, _auth: AuthSession) -> HttpResponse {
     match ws_repo::list_workspaces(pool.get_ref()).await {
         Ok(list) => HttpResponse::Ok().json(list),
         Err(e) => HttpResponse::InternalServerError().json(ErrorBody {
@@ -21,14 +22,21 @@ pub async fn list(pool: web::Data<PgPool>) -> HttpResponse {
 /// POST /api/workspaces
 pub async fn create(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     body: web::Json<CreateWorkspaceRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_e) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     let ws = Workspace {
         id: Uuid::now_v7(),
         slug: body.slug.clone(),
         name: body.name.clone(),
-        owner_user_id: Uuid::nil(), // TODO: from session
+        owner_user_id: auth.user.id,
         created_at: String::new(),
     };
     match ws_repo::insert_workspace(pool.get_ref(), &ws).await {
@@ -43,10 +51,17 @@ pub async fn create(
 /// PATCH /api/workspaces/{id}
 pub async fn update(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<UpdateWorkspaceRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     match ws_repo::update_workspace(pool.get_ref(), path.into_inner(), &body.name).await {
         Ok(true) => HttpResponse::Ok().json(serde_json::json!({"status": "updated"})),
         Ok(false) => HttpResponse::NotFound().json(ErrorBody {
@@ -63,9 +78,16 @@ pub async fn update(
 /// DELETE /api/workspaces/{id}
 pub async fn delete(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Owner) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Owner role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     match ws_repo::delete_workspace(pool.get_ref(), path.into_inner()).await {
         Ok(true) => HttpResponse::NoContent().finish(),
         Ok(false) => HttpResponse::NotFound().json(ErrorBody {
@@ -82,6 +104,7 @@ pub async fn delete(
 /// GET /api/workspaces/{id}/members
 pub async fn list_members(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     match ws_repo::list_members(pool.get_ref(), path.into_inner()).await {
@@ -96,11 +119,18 @@ pub async fn list_members(
 /// PUT /api/workspaces/{id}/members/{user_id}
 pub async fn upsert_member(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     path: web::Path<(Uuid, Uuid)>,
     body: web::Json<UpsertMemberRequest>,
 ) -> HttpResponse {
     let (ws_id, user_id) = path.into_inner();
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: rid,
+        });
+    }
     let role = match body.role.as_str() {
         "owner" => Role::Owner,
         "admin" => Role::Admin,

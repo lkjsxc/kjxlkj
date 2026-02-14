@@ -1,5 +1,6 @@
 // View handlers per /docs/spec/api/http.md
 use actix_web::{web, HttpResponse};
+use kjxlkj_auth::middleware::AuthSession;
 use kjxlkj_db::repo::views as view_repo;
 use kjxlkj_domain::types::SavedView;
 use sqlx::PgPool;
@@ -10,6 +11,7 @@ use crate::dto::{CreateViewRequest, ErrorBody, UpdateViewRequest};
 /// GET /api/views
 pub async fn list(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     query: web::Query<WsFilter>,
 ) -> HttpResponse {
     match view_repo::list_views(pool.get_ref(), query.workspace_id).await {
@@ -24,6 +26,7 @@ pub async fn list(
 /// POST /api/views
 pub async fn create(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     body: web::Json<CreateViewRequest>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
@@ -33,7 +36,7 @@ pub async fn create(
         query_json: body.query_json.clone(),
         sort: body.sort.clone(),
         filters: body.filters.clone(),
-        owner_user_id: Uuid::nil(), // TODO: from session
+        owner_user_id: auth.user.id,
     };
     match view_repo::insert_view(pool.get_ref(), &view).await {
         Ok(()) => HttpResponse::Created().json(&view),
@@ -47,6 +50,7 @@ pub async fn create(
 /// PATCH /api/views/{id}
 pub async fn update(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<UpdateViewRequest>,
 ) -> HttpResponse {
@@ -70,6 +74,7 @@ pub async fn update(
 /// DELETE /api/views/{id}
 pub async fn delete(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();

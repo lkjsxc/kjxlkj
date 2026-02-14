@@ -1,8 +1,9 @@
 // Automation handlers per /docs/spec/api/http.md
 use actix_web::{web, HttpResponse};
+use kjxlkj_auth::middleware::{require_role, AuthSession};
 use kjxlkj_automation::rules;
 use kjxlkj_db::repo::automation as auto_repo;
-use kjxlkj_domain::types::{AutomationRule, AutomationRun, RunStatus};
+use kjxlkj_domain::types::{AutomationRule, AutomationRun, Role, RunStatus};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -11,6 +12,7 @@ use crate::dto::ErrorBody;
 /// GET /api/automation/rules
 pub async fn list_rules(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     query: web::Query<WsFilter>,
 ) -> HttpResponse {
     match auto_repo::list_rules(pool.get_ref(), query.workspace_id).await {
@@ -22,12 +24,19 @@ pub async fn list_rules(
     }
 }
 
-/// POST /api/automation/rules
+/// POST /api/automation/rules — admin+ only
 pub async fn create_rule(
     pool: web::Data<PgPool>,
+    auth: AuthSession,
     body: web::Json<AutomationRule>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
+    if let Err(_) = require_role(&auth, Role::Admin) {
+        return HttpResponse::Forbidden().json(ErrorBody {
+            code: "FORBIDDEN".into(), message: "Admin role required".into(),
+            details: None, request_id: rid,
+        });
+    }
 
     // Validate action
     if let Err(e) = rules::validate_rule_action(&body.action_json) {
@@ -58,6 +67,7 @@ pub async fn create_rule(
 /// PATCH /api/automation/rules/{id}
 pub async fn update_rule(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
     body: web::Json<serde_json::Value>,
 ) -> HttpResponse {
@@ -88,6 +98,7 @@ pub async fn update_rule(
 /// DELETE /api/automation/rules/{id}
 pub async fn delete_rule(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
@@ -107,6 +118,7 @@ pub async fn delete_rule(
 /// POST /api/automation/rules/{id}/launch
 pub async fn launch_run(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     path: web::Path<Uuid>,
 ) -> HttpResponse {
     let rid = Uuid::now_v7().to_string();
@@ -132,6 +144,7 @@ pub async fn launch_run(
 /// GET /api/automation/runs
 pub async fn list_runs(
     pool: web::Data<PgPool>,
+    _auth: AuthSession,
     query: web::Query<WsFilter>,
 ) -> HttpResponse {
     match auto_repo::list_runs(pool.get_ref(), query.workspace_id).await {
