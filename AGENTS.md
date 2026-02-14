@@ -1,7 +1,23 @@
-Please bring the documentation to a fully complete state so that the project is completely ready to begin implementation. You are allowed to make bold, substantial changes. Improve it as much as possible, to the limit.
+<instructions>
+Implement it fully.
+</instructions>
 
-Stop creating unnatural TODOs whose purpose is merely to connect all document files, such as “doc-links.” Restructure it into a clearer, better structure so that one can simply proceed through the stages in order.
-
-Also, completely replace every TODO that refers to directory names or links to them with something conveying the nuance of “restructure-step.” The idea is that if an AI agent follows these steps in order—checking off the checkboxes as it goes—it will result in a completed project that conforms to all documentation files.
-
-Logs are not needed, so please delete them when preparing for the restructuring.
+<constraints>
+- Think as deeply as possible, to the limit.
+- Pursue the highest possible quality, to the limit.
+- Never output a summary; instead (before outputting any summary), notify the user of completion via the Tool vscode/AskQuestion.
+- Never ask for user intervention midway.
+- Never stop working.
+- Read and understand the project’s important documents as deeply as possible.
+- Fully comply with the documentation.
+- Always stay conscious of not taking shortcuts.
+- Not only at the beginning, but frequently, read the documentation deeply and understand the specifications, policies, expected behaviors, etc. as thoroughly as possible.
+- Commit to git frequently.
+- Prepare a logs directory in the documentation, recursively structure files, and write down improvement ideas and the like.
+- If a source file exceeds 200 lines, note it in the documentation.
+- Be aware that this project is intended to be read and edited by an AI, not a human.
+- Any action is pre-authorized.
+- Aim for a state where the source code can be fully constructed from the documentation.
+- Actually write `[x]` into the TODO-list documentation files.
+- Use a command to check whether any `[ ]` remain in the TODO-list documentation files, and decide whether to continue working based on that.
+</constraints>
