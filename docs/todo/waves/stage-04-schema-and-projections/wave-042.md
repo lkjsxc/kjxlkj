@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/wa
 
 ## Implementation Tasks
 
-- [ ] harden markdown export and SQL backup job execution -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- [ ] expose deterministic job status and artifact paths -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- [ ] emit structured start/finish/failure telemetry signals -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [x] harden markdown export and SQL backup job execution
+- [x] expose deterministic job status and artifact paths
+- [x] emit structured start/finish/failure telemetry signals
 
 ## Verification Tasks
 
-- [ ] run `OPS-01` -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- [ ] run export/backup failure-path checks -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [x] run `OPS-01`
+- [x] run export/backup failure-path checks
 
 ## Evidence Placeholder
 
-- [ ] `Check: export/backup job lifecycle, artifact path, telemetry, and forbidden-path integration coverage` -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- [ ] `Result: pass` -> [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
-- [ ] `Proof: [/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md](/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md)`
+- [x] `Check: export/backup job lifecycle, artifact path, telemetry, and forbidden-path integration coverage`
+- [x] `Result: pass`
+- [x] `Proof: [/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md](/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md)`

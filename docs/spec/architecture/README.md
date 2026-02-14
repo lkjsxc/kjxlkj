@@ -6,38 +6,38 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 
 | Document | Purpose |
 |---|---|
-| [runtime.md](runtime.md) | runtime topology and supervision target |
-| [deployment.md](deployment.md) | runtime deployment target contract |
-| [source-layout.md](source-layout.md) | derived runtime topology constraints |
-| [final-file-structure.md](final-file-structure.md) | canonical completion tree and reconstruction projection tree |
-| [workspace-manifest.md](workspace-manifest.md) | manifest policy for Rust + TypeScript stack |
-| [crates.md](crates.md) | backend Rust crate decomposition |
+| [runtime.md](runtime.md) | Tokio/Actix runtime topology and supervision |
+| [crates.md](crates.md) | canonical crate decomposition |
+| [source-layout.md](source-layout.md) | workspace and module decomposition constraints |
+| [workspace-manifest.md](workspace-manifest.md) | Cargo workspace policy |
+| [deployment.md](deployment.md) | single-container compose/process model |
 
-## System Shape (Reconstruction Target)
+## System Shape
 
 ```mermaid
 graph TD
- HTTP[Typed HTTP API]
- WS[Typed WebSocket]
- APP[Rust Services]
- DB[(SQLite)]
- UI[TypeScript Web App]
+ HTTP[Actix HTTP]
+ WS[Actix WS]
+ APP[Application Core]
+ DB[(PostgreSQL)]
+ SPA[Static SPA Assets]
 
- UI --> HTTP
- UI --> WS
  HTTP --> APP
  WS --> APP
  APP --> DB
+ HTTP --> SPA
 ```
 
 ## Invariants
 
-- Canonical docs-only state is valid without any runtime artifacts.
-- Any reconstructed runtime MUST be regenerated from docs and treated as disposable.
-- Mutation ordering MUST be deterministic per stream identity.
-- Frontend/backend boundaries MUST be typed and versioned.
+- Request handling MUST be async and non-blocking.
+- Note mutation ordering MUST be deterministic per note stream.
+- Automation mutation ordering MUST be deterministic per target stream.
+- Event append and projection updates MUST be transactional.
+- App and PostgreSQL MUST run in one compose service container.
 
 ## Related
 
-- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- Runtime: [runtime.md](runtime.md)
+- Deployment: [deployment.md](deployment.md)
 - Domain model: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)

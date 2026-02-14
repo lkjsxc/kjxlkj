@@ -1,17 +1,17 @@
 # Documentation
 
-`/docs` is the product for `kjxlkj`.
+`/docs` is the canonical system definition for `kjxlkj`.
 
 ## Contract
 
-- All in Docs is mandatory: docs are the value, runtime artifacts are disposable derivatives.
-- A docs-only repository is a fully valid canonical state.
-- Spec defines target behavior for future reconstruction.
-- Reference defines truthful current verification state.
-- TODO defines ordered execution for rebuilding derivatives.
-- Completion claims require deterministic evidence.
+- The product MUST be reconstructable from documentation.
+- Canonical behavior and policy are defined before implementation.
+- Completion claims MUST be backed by deterministic evidence.
+- Reference and TODO ledgers MUST stay synchronized with implementation status.
 
 ## Authority and Precedence
+
+Use this order for decisions:
 
 1. [/docs/policy/](policy/README.md)
 2. [/docs/spec/](spec/README.md)
@@ -21,26 +21,36 @@
 
 ## Status Model
 
-- `policy` and `spec` are normative requirements.
-- `reference` is normative for verified current state.
-- `todo` is normative for execution order and closure.
-- `guides` and `overview` are explanatory unless explicitly referenced by policy/spec.
-- `log` is historical evidence.
+- `policy` and `spec` are normative.
+- `reference` is normative for verified state.
+- `todo` is normative for staged execution and closure gates.
+- `guides` and `overview` are explanatory unless referenced by policy/spec.
+- `log` is historical and non-authoritative.
+
+## Canonical Reading Order
+
+1. [policy/README.md](policy/README.md)
+2. [spec/README.md](spec/README.md)
+3. [reference/README.md](reference/README.md)
+4. [todo/README.md](todo/README.md)
+5. [guides/README.md](guides/README.md)
+6. [overview/README.md](overview/README.md)
+7. [log/README.md](log/README.md)
 
 ## Directory Map
 
 | Directory | Role |
 |---|---|
-| [policy/](policy/README.md) | invariants and guardrails |
-| [spec/](spec/README.md) | target behavior and implementation contracts |
+| [policy/](policy/README.md) | repository invariants and guardrails |
+| [spec/](spec/README.md) | target workspace-suite behavior |
 | [reference/](reference/README.md) | verified state and open gaps |
-| [todo/](todo/README.md) | staged execution contract |
-| [guides/](guides/README.md) | operational walkthroughs |
-| [overview/](overview/README.md) | concepts and terminology |
-| [log/](log/README.md) | audit/proposal history |
+| [todo/](todo/README.md) | recursive migration execution contract |
+| [guides/](guides/README.md) | operator workflows |
+| [overview/](overview/README.md) | product concepts and vocabulary |
+| [log/](log/README.md) | proposals and audits |
 
 ## Related
 
-- All in Docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
-- Type safety contract: [spec/technical/type-safety.md](spec/technical/type-safety.md)
+- All-in-docs statement: [overview/all-in-docs.md](overview/all-in-docs.md)
 - Structure rules: [policy/STRUCTURE.md](policy/STRUCTURE.md)
+- Root layout rules: [policy/ROOT_LAYOUT.md](policy/ROOT_LAYOUT.md)

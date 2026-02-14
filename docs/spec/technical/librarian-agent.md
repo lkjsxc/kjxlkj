@@ -10,7 +10,6 @@ Technical requirements for autonomous information structuring with LLM providers
   cross-linked documentation artifacts.
 - The feature operates through automation rules and run state machine semantics.
 - Provider modes MUST support OpenRouter and LM Studio through OpenAI-compatible APIs.
-- Every prompt sent to an LLM in the agent cycle MUST be loaded from JSON files.
 
 ## Pipeline Stages
 
@@ -43,17 +42,6 @@ Technical requirements for autonomous information structuring with LLM providers
   `auth_failed`, `rate_limited`, `timeout`, `unreachable`, `invalid_payload`.
 - Failed primary model calls MAY fallback in configured order.
 
-## Prompt Configuration Rules (JSON-Only)
-
-- Prompt files MUST be JSON and MUST be the only prompt source.
-- Runtime MUST NOT embed prompt literals in source code.
-- Prompt pack root MUST be `docs/spec/technical/librarian-prompts/` in canonical
-  docs, and MAY be copied to runtime config path during reconstruction.
-- Prompt stage definitions MUST be referenced through
-  `docs/spec/technical/librarian-prompts/manifest.json`.
-- A prompt stage is valid only when all required keys exist in the stage JSON file.
-- Missing/malformed stage JSON MUST fail run start with deterministic config error.
-
 ## Prompt and Protocol Rules
 
 - Request/response format MUST follow
@@ -73,14 +61,12 @@ Technical requirements for autonomous information structuring with LLM providers
 ## Determinism and Reproducibility
 
 - Prompt payload hash MUST be recorded per run.
-- Prompt pack version + stage file hashes MUST be recorded per run.
 - Parser version MUST be recorded per run.
 - Run reports MUST include rejected operation reasons.
 - Validation retries MUST be bounded and deterministic.
 
 ## Related
 
-- Prompt pack: [librarian-prompts/README.md](librarian-prompts/README.md)
 - Automation domain: [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
 - API protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 - Testing: [testing.md](testing.md)

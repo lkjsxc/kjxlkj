@@ -4,21 +4,19 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 
 ## Markdown Export
 
-- Export launch endpoint (`POST /admin/export/markdown`) MUST create an admin job
-  record and return `202`.
-- Job payload MUST include deterministic `artifact_path`.
+- Export job MUST create workspace-scoped markdown files representing current projections.
+- File paths SHOULD be deterministic by note title + ID.
 - Job status MUST be queryable via `GET /admin/export/{job_id}`.
 
 ## SQL Backup
 
-- Backup launch endpoint (`POST /admin/backup/sql`) MUST create an admin job
-  record and return `202`.
-- Backup operations MUST be access-controlled.
+- Backup endpoint MUST trigger a PostgreSQL-consistent dump artifact.
+- Backup operations MUST be audited and access-controlled.
 
 ## Job Semantics
 
-- Export and backup endpoints MUST return admin job IDs.
-- Current baseline job status is deterministic `completed`.
+- Export and backup endpoints MAY return async job IDs.
+- Jobs MUST expose states: `queued`, `running`, `succeeded`, `failed`.
 
 ## Related
 

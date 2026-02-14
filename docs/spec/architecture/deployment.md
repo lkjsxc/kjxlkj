@@ -2,21 +2,26 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Deployment files are derived artifacts and may be absent in docs-only state.
+## Single-Container Compose Contract
 
-## Derived Baseline (When Reconstructed)
+Deployment MUST use one Docker Compose service that runs both:
 
-When runtime is reconstructed, Docker baseline uses one app service.
+- PostgreSQL process
+- `kjxlkj` application process
 
-### Derived Artifact Set
+This shape is mandatory for baseline operations and local-first rebuild.
 
-Required root artifacts in reconstruction mode:
+## Process Supervision Contract
 
-- `Dockerfile`
-- `docker-compose.yml`
-- `.dockerignore`
+Container entrypoint MUST:
 
-### Baseline Compose Template
+1. initialize PostgreSQL data directory if missing
+2. start PostgreSQL and wait for readiness
+3. run SQL migrations
+4. start application server
+5. forward termination signals and stop both processes cleanly
+
+## Compose Template (Normative)
 
 ```yaml
 services:
@@ -24,44 +29,51 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: kjxlkj-app
-    environment:
-      BIND_ADDRESS: 0.0.0.0
-      PORT: "8080"
-      DATABASE_URL: sqlite:/data/kjxlkj.db?mode=rwc
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+    container_name: kjxlkj
     ports:
       - "8080:8080"
+    environment:
+      KJXLKJ_BIND_ADDR: 0.0.0.0:8080
+      POSTGRES_DATA_DIR: /var/lib/postgresql/data
     volumes:
-      - kjxlkj-data:/data
+      - kjxlkj_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/readyz"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/api/readyz || exit 1"]
       interval: 10s
       timeout: 3s
-      retries: 5
-      start_period: 5s
+      retries: 12
+      start_period: 30s
     restart: unless-stopped
 
 volumes:
-  kjxlkj-data:
+  kjxlkj_pg:
 ```
 
-## Baseline Acceptance (Reconstruction Mode)
+## Storage Layout
 
-1. `docker compose up -d --build` starts exactly one service (`kjxlkj`)
-2. `GET /` returns `200` and serves root web shell
-3. `GET /api/healthz` returns `200`
-4. `GET /api/readyz` returns `200` after migrations complete
-5. `docker compose down` exits cleanly
+| Path | Purpose |
+|---|---|
+| `/var/lib/postgresql/data` | PostgreSQL persistent data |
+| `/app/static` | built SPA assets |
+| `/app/config` | runtime configuration (optional mount) |
 
-## Runtime Health Rules
+## Health Rules
 
-- `/api/healthz` verifies app liveness
-- `/api/readyz` verifies DB connectivity and migration compatibility
-- compose healthcheck MUST use `/api/readyz`
+- `/api/healthz` verifies application liveness.
+- `/api/readyz` verifies DB connectivity and migration compatibility.
+- Compose healthcheck MUST use `/api/readyz`.
+
+## Rebuild Acceptance
+
+Single-container deployment is accepted only when all pass:
+
+1. `docker compose up --build` starts exactly one service
+2. service health becomes `healthy`
+3. `/api/readyz` returns success
+4. shutdown (`docker compose down`) exits cleanly without orphan DB process
 
 ## Related
 
 - Docker guide: [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
 - Runtime model: [runtime.md](runtime.md)
-- Type safety: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

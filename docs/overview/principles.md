@@ -4,17 +4,18 @@ Back: [/docs/overview/README.md](/docs/overview/README.md)
 
 Core principles for the workspace-suite platform.
 
-## Principles
+## Principles (normative)
 
 | Principle | Meaning | Consequence |
 |---|---|---|
-| All in Docs governance | Docs are the canonical product. | Derived runtime can be rebuilt or discarded safely. |
-| Deterministic writes | Mutations serialize by target stream identity. | Stable ordering and replay semantics. |
-| Async-first runtime | IO and long-running work are non-blocking. | HTTP/WS responsiveness under load. |
-| Explicit conflict semantics | Version mismatch is deterministic (`409` or WS reject). | No hidden last-write-wins corruption. |
-| Typed boundaries only | Runtime source is statically typed end-to-end. | Lower ambiguity and safer refactors. |
-| Security baseline | Auth, sessions, CSRF, and RBAC are mandatory. | Safe multi-user operation. |
-| Evidence-backed closure | Completion claims require deterministic proof. | No status drift between docs and reality. |
+| Deterministic writes | Note and automation mutations are serialized by target stream. | Stable ordering and replay semantics. |
+| Async-first runtime | IO and long-running work are non-blocking Tokio tasks. | HTTP/WS responsiveness under load. |
+| Event-sourced history | Write path appends immutable events. | Auditable history and rollback support. |
+| Projection reads | Read APIs use projection tables. | Fast query, dashboard, and search behavior. |
+| Explicit conflicts | Version mismatch returns deterministic `409` or WS reject. | No hidden last-write-wins corruption. |
+| Docs-first governance | Docs are authoritative over implementation claims. | Traceable, reconstructable system behavior. |
+| Small-model protocol compatibility | LLM interaction uses attribute-less XML-like envelopes. | Stable behavior across local and remote low-parameter models. |
+| Security baseline | Auth, sessions, CSRF, and role checks are mandatory in browser flows. | Safe single-tenant multi-user operation. |
 
 ## Related
 

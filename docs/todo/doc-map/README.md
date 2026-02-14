@@ -16,13 +16,13 @@ file in the repository.
 
 ## Map Files
 
-- [ ] [/docs/todo/doc-map/core-and-guides.md](/docs/todo/doc-map/core-and-guides.md)
-- [ ] [/docs/todo/doc-map/policy-and-reference.md](/docs/todo/doc-map/policy-and-reference.md)
-- [ ] [/docs/todo/doc-map/spec-api-architecture.md](/docs/todo/doc-map/spec-api-architecture.md)
-- [ ] [/docs/todo/doc-map/spec-domain-security-technical-ui.md](/docs/todo/doc-map/spec-domain-security-technical-ui.md)
-- [ ] [/docs/todo/doc-map/log-and-overview.md](/docs/todo/doc-map/log-and-overview.md)
-- [ ] [/docs/todo/doc-map/todo-and-waves.md](/docs/todo/doc-map/todo-and-waves.md)
+- [x] [/docs/todo/doc-map/core-and-guides.md](/docs/todo/doc-map/core-and-guides.md)
+- [x] [/docs/todo/doc-map/policy-and-reference.md](/docs/todo/doc-map/policy-and-reference.md)
+- [x] [/docs/todo/doc-map/spec-api-architecture.md](/docs/todo/doc-map/spec-api-architecture.md)
+- [x] [/docs/todo/doc-map/spec-domain-security-technical-ui.md](/docs/todo/doc-map/spec-domain-security-technical-ui.md)
+- [x] [/docs/todo/doc-map/log-and-overview.md](/docs/todo/doc-map/log-and-overview.md)
+- [x] [/docs/todo/doc-map/todo-and-waves.md](/docs/todo/doc-map/todo-and-waves.md)
 
 ## Exit Rule
 
-- [ ] [Every documentation file listed in map files above is reachable and checked during execution](/docs/policy/STRUCTURE.md)
+- [x] [Every documentation file listed in map files above is reachable and checked during execution](/docs/policy/STRUCTURE.md)

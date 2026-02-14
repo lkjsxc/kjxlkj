@@ -2,19 +2,17 @@
 
 Back: [/docs/spec/README.md](/docs/spec/README.md)
 
-Cross-cutting requirements for reconstruction quality and runtime discipline.
+Cross-cutting requirements for testing, performance, migrations, and operations.
 
 ## Documents
 
 | Document | Purpose |
 |---|---|
-| [type-safety.md](type-safety.md) | mandatory typed-language contract |
 | [testing.md](testing.md) | deterministic verification contract |
 | [performance.md](performance.md) | latency and load targets |
-| [migrations.md](migrations.md) | migration discipline |
+| [migrations.md](migrations.md) | SQLx migration discipline |
 | [operations.md](operations.md) | backup/recovery/observability rules |
-| [librarian-agent.md](librarian-agent.md) | provider, prompt, and structuring pipeline contract |
-| [librarian-prompts/README.md](librarian-prompts/README.md) | JSON-only prompt pack contract for the AI agent cycle |
+| [librarian-agent.md](librarian-agent.md) | LLM provider, prompt protocol, and structuring pipeline |
 
 ## Related
 

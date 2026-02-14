@@ -6,29 +6,28 @@ Operating invariants for documentation and reconstruction.
 
 ## Core Invariants
 
-1. `/docs/` is authoritative over all other artifacts.
-2. All in Docs governance is permanent.
-3. Runtime artifacts are disposable derivatives with no canonical value.
-4. Docs-only baseline is always valid, even with zero runtime source files.
-5. Runtime reconstruction target is Rust backend + TypeScript frontend.
-6. Handwritten JavaScript runtime source is forbidden.
-7. Completion claims require deterministic evidence and synchronized ledgers.
+1. Documentation under `/docs/` is authoritative.
+2. The shipped runtime is a Rust Actix/Tokio server with PostgreSQL persistence.
+3. API and WebSocket contracts are explicitly documented in canonical specs.
+4. Event consistency and conflict behavior are deterministic.
+5. Claims of completion require deterministic evidence.
+6. Legacy terminal-editor behavior is out of scope.
 
 ## Normative Policy Set
 
 | Document | Purpose |
 |---|---|
 | [INSTRUCT.md](INSTRUCT.md) | session-level operating contract |
-| [WORKFLOW.md](WORKFLOW.md) | execution gates and drift handling |
-| [STRUCTURE.md](STRUCTURE.md) | topology and document hygiene constraints |
-| [ROOT_LAYOUT.md](ROOT_LAYOUT.md) | root-level repository layout policy |
+| [WORKFLOW.md](WORKFLOW.md) | reconstruction workflow and completion gates |
+| [STRUCTURE.md](STRUCTURE.md) | documentation and source topology limits |
+| [ROOT_LAYOUT.md](ROOT_LAYOUT.md) | root-level repository layout rules |
 
 ## Repository States
 
 | State | Description |
 |---|---|
-| Canonical docs-only state | only docs and hygiene files exist |
-| Reconstruction state | typed runtime artifacts are generated from docs |
+| Docs-only baseline | canonical docs exist; derived source artifacts may be absent |
+| Reconstructed implementation | source, compose, and automation regenerated from docs |
 
 ## Related
 

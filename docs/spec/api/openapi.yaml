@@ -4,10 +4,6 @@ info:
   version: latest
 servers: [{ url: /api }]
 paths:
-  /setup/status:
-    get:
-      summary: Setup availability status
-      responses: { '200': { description: Setup status payload } }
   /setup/register:
     post:
       summary: First-run owner registration
@@ -147,22 +143,22 @@ paths:
       responses: { '204': { description: Saved view deleted } }
   /dashboards:
     get:
-      summary: List dashboard widgets
-      responses: { '200': { description: Dashboard widget list } }
+      summary: List dashboards (optional extension)
+      responses: { '200': { description: Dashboard list (optional extension) } }
   /dashboards/widgets:
     post:
-      summary: Upsert dashboard widget
-      responses: { '200': { description: Dashboard widget saved } }
+      summary: Upsert dashboard widget (optional extension)
+      responses: { '200': { description: Dashboard widget saved (optional extension) } }
   /automation/rules:
     get:
       summary: List automation rules (including librarian structuring rules)
       responses: { '200': { description: Rule list } }
     post:
-      summary: Create automation rule (including librarian structuring and prompt-pack settings)
+      summary: Create automation rule (including librarian structuring rules)
       responses: { '201': { description: Rule created } }
   /automation/rules/{id}:
     patch:
-      summary: Update automation rule (including provider/protocol/prompt-pack settings)
+      summary: Update automation rule (including provider/protocol settings)
       responses: { '200': { description: Rule updated } }
     delete:
       summary: Delete automation rule

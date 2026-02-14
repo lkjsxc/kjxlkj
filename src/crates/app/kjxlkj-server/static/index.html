@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>kjxlkj</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f7f8fa;
+      color: #151a23;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #dde2eb;
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar .spacer { flex: 1; }
+    button, input, textarea {
+      font: inherit;
+    }
+    button {
+      border: 1px solid #c7cfdd;
+      background: #fff;
+      color: #1c2434;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #c7cfdd;
+      border-radius: 8px;
+      padding: 8px;
+      background: #fff;
+      color: #101522;
+    }
+    .status {
+      font-size: 12px;
+      color: #364154;
+      min-height: 18px;
+    }
+    .status.success { color: #046f46; }
+    .status.error { color: #ab2134; }
+    #authView {
+      max-width: 460px;
+      margin: 40px auto;
+      padding: 16px;
+      border: 1px solid #dde2eb;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    .auth-grid {
+      display: grid;
+      gap: 8px;
+    }
+    #appView[hidden], #authView[hidden], #commandPalette[hidden] {
+      display: none;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(240px, 320px) 1fr;
+      height: calc(100vh - 48px);
+    }
+    .left-pane {
+      border-right: 1px solid #dde2eb;
+      background: #fff;
+      overflow-y: auto;
+      padding: 10px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+    .right-pane {
+      overflow-y: auto;
+      padding: 12px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+    .card {
+      border: 1px solid #dde2eb;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+    }
+    .list button {
+      width: 100%;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .active-item {
+      border-color: #5f79ff;
+      color: #21368b;
+    }
+    .workspace-controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .librarian-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .librarian-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .review-item {
+      border: 1px solid #dde2eb;
+      border-radius: 8px;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+    .review-meta {
+      font-size: 12px;
+      color: #4a556d;
+      display: grid;
+      gap: 2px;
+    }
+    .review-decision {
+      max-width: 220px;
+    }
+    .editor {
+      min-height: 52vh;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    #commandPalette {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 23, 32, 0.45);
+      display: grid;
+      place-items: start center;
+      padding-top: 56px;
+      z-index: 20;
+    }
+    .palette-box {
+      width: min(680px, calc(100vw - 20px));
+      border: 1px solid #d9dfeb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .hint {
+      font-size: 12px;
+      color: #5c6982;
+      display: grid;
+      gap: 4px;
+    }
+    .nav-collapsed .left-pane {
+      display: none;
+    }
+    .nav-collapsed .shell {
+      grid-template-columns: 1fr;
+    }
+    @media (max-width: 640px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+      .left-pane {
+        max-height: 42vh;
+        border-right: 0;
+        border-bottom: 1px solid #dde2eb;
+      }
+      .right-pane {
+        min-height: 56vh;
+      }
+      .workspace-controls {
+        grid-template-columns: 1fr;
+      }
+      .librarian-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="authView" hidden>
+    <div class="auth-tabs">
+      <button id="tabLogin" type="button">Login</button>
+      <button id="tabSetup" type="button">Setup</button>
+    </div>
+    <div id="authStatus" class="status"></div>
+
+    <form id="loginPanel" class="auth-panel auth-grid active">
+      <input id="loginEmail" type="email" placeholder="Email" required />
+      <input id="loginPassword" type="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <form id="setupPanel" class="auth-panel auth-grid">
+      <input id="setupEmail" type="email" placeholder="Owner email" required />
+      <input id="setupName" type="text" placeholder="Display name" required />
+      <input id="setupPassword" type="password" placeholder="Password" required />
+      <input id="setupWorkspaceName" type="text" placeholder="Workspace name" />
+      <button type="submit">Create owner</button>
+    </form>
+  </div>
+
+  <div id="appView" hidden>
+    <div class="topbar">
+      <button id="menuToggle" type="button" aria-label="Toggle navigation">☰</button>
+      <button id="paletteToggle" type="button">⌘/Ctrl+K</button>
+      <div class="spacer"></div>
+      <button id="contextBack" type="button" disabled>Back Context</button>
+      <button id="logoutButton" type="button">Logout</button>
+    </div>
+    <div class="topbar" style="border-top:0; border-bottom:1px solid #dde2eb;">
+      <div id="appStatus" class="status"></div>
+    </div>
+
+    <div id="shellContainer" class="shell">
+      <aside class="left-pane">
+        <div class="card">
+          <div class="workspace-controls">
+            <input id="workspaceId" placeholder="Workspace UUID" />
+            <button id="loadWorkspace" type="button">Load</button>
+          </div>
+        </div>
+        <div class="card">
+          <strong>Notes</strong>
+          <ul id="notesList" class="list"></ul>
+        </div>
+        <div class="card">
+          <strong>Graph</strong>
+          <ul id="backlinksList" class="list"></ul>
+        </div>
+        <div class="card">
+          <strong>Librarian</strong>
+          <div class="librarian-grid">
+            <select id="librarianProvider">
+              <option value="openrouter">openrouter</option>
+              <option value="lmstudio">lmstudio</option>
+            </select>
+            <input id="librarianModel" placeholder="Model (required)" />
+            <label><input id="librarianStrictMode" type="checkbox" checked /> Strict mode</label>
+            <div class="librarian-actions">
+              <button id="librarianSaveRule" type="button">Save Rule</button>
+              <button id="librarianDisableRule" type="button">Disable</button>
+              <button id="librarianLaunchRun" type="button">Launch Run</button>
+            </div>
+            <div id="librarianStatus" class="status"></div>
+            <strong>Rules</strong>
+            <ul id="librarianRulesList" class="list"></ul>
+            <strong>Runs</strong>
+            <ul id="librarianRunsList" class="list"></ul>
+          </div>
+        </div>
+      </aside>
+
+      <main class="right-pane">
+        <div class="card">
+          <input id="noteTitle" placeholder="Note title" />
+        </div>
+        <div class="card">
+          <textarea id="noteEditor" class="editor" placeholder="Start writing..."></textarea>
+        </div>
+        <div class="card">
+          <strong>Run Review</strong>
+          <div id="runReviewStatus" class="status"></div>
+          <div id="runReviewOps" class="list"></div>
+          <button id="applyRunDecisions" type="button">Apply Decisions</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="commandPalette" hidden>
+    <div class="palette-box">
+      <input id="paletteInput" placeholder="create <title> | open <note-id> | move <project-id|none> | tag <tag1,tag2> | run-rule <id|selected> | review-run <id|selected>" />
+      <div class="hint">
+        <div>Enter executes command, Esc closes.</div>
+        <div>Commands use API-backed behavior with deterministic status feedback.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      csrfToken: null,
+      setupLocked: false,
+      workspaceId: localStorage.getItem('workspace_id') || '',
+      notes: [],
+      currentNoteId: null,
+      currentVersion: 0,
+      currentMarkdown: '',
+      contextStack: [],
+      saveTimer: null,
+      titleTimer: null,
+      librarianRules: [],
+      librarianRuns: [],
+      selectedRuleId: null,
+      selectedRunId: null,
+      selectedRun: null,
+      reviewDecisions: {},
+    };
+
+    const authView = document.getElementById('authView');
+    const appView = document.getElementById('appView');
+    const authStatus = document.getElementById('authStatus');
+    const appStatus = document.getElementById('appStatus');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSetup = document.getElementById('tabSetup');
+    const loginPanel = document.getElementById('loginPanel');
+    const setupPanel = document.getElementById('setupPanel');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const setupEmail = document.getElementById('setupEmail');
+    const setupName = document.getElementById('setupName');
+    const setupPassword = document.getElementById('setupPassword');
+    const setupWorkspaceName = document.getElementById('setupWorkspaceName');
+    const logoutButton = document.getElementById('logoutButton');
+    const workspaceIdInput = document.getElementById('workspaceId');
+    const loadWorkspaceButton = document.getElementById('loadWorkspace');
+    const notesList = document.getElementById('notesList');
+    const backlinksList = document.getElementById('backlinksList');
+    const noteTitle = document.getElementById('noteTitle');
+    const noteEditor = document.getElementById('noteEditor');
+    const menuToggle = document.getElementById('menuToggle');
+    const shellContainer = document.getElementById('shellContainer');
+    const contextBack = document.getElementById('contextBack');
+    const commandPalette = document.getElementById('commandPalette');
+    const paletteToggle = document.getElementById('paletteToggle');
+    const paletteInput = document.getElementById('paletteInput');
+    const librarianProvider = document.getElementById('librarianProvider');
+    const librarianModel = document.getElementById('librarianModel');
+    const librarianStrictMode = document.getElementById('librarianStrictMode');
+    const librarianSaveRule = document.getElementById('librarianSaveRule');
+    const librarianDisableRule = document.getElementById('librarianDisableRule');
+    const librarianLaunchRun = document.getElementById('librarianLaunchRun');
+    const librarianStatus = document.getElementById('librarianStatus');
+    const librarianRulesList = document.getElementById('librarianRulesList');
+    const librarianRunsList = document.getElementById('librarianRunsList');
+    const runReviewStatus = document.getElementById('runReviewStatus');
+    const runReviewOps = document.getElementById('runReviewOps');
+    const applyRunDecisions = document.getElementById('applyRunDecisions');
+
+    function setStatus(target, text, type = 'info') {
+      target.textContent = text;
+      target.className = type === 'success' ? 'status success' : type === 'error' ? 'status error' : 'status';
+    }
+
+    function setAuthMode(mode) {
+      loginPanel.classList.toggle('active', mode === 'login');
+      setupPanel.classList.toggle('active', mode === 'setup' && !state.setupLocked);
+      if (state.setupLocked) {
+        tabSetup.hidden = true;
+      }
+    }
+
+    function openPalette() {
+      commandPalette.hidden = false;
+      paletteInput.value = '';
+      paletteInput.focus();
+    }
+
+    function closePalette() {
+      commandPalette.hidden = true;
+    }
+
+    function hasUnresolvedDraft() {
+      return Boolean(state.currentNoteId) && noteEditor.value !== state.currentMarkdown;
+    }
+
+    function actionPayloadFromForm() {
+      return {
+        kind: 'librarian_structure',
+        protocol: 'xml_attrless',
+        provider: {
+          provider_kind: librarianProvider.value,
+          model: librarianModel.value.trim(),
+          timeout_ms: 2000,
+          retry_limit: 1,
+        },
+        plan: {
+          goal: 'Structure workspace notes for deterministic navigation',
+          scope: state.currentNoteId ? `note:${state.currentNoteId}` : 'workspace',
+          taxonomy_json: { mode: 'baseline' },
+          style_profile: 'default',
+          strict_mode: librarianStrictMode.checked,
+          max_operations: 32,
+          allow_delete: false,
+        },
+      };
+    }
+
+    function applyRuleToForm(rule) {
+      const action = rule.action_json || {};
+      const provider = action.provider || {};
+      librarianProvider.value = provider.provider_kind || action.provider_kind || 'openrouter';
+      librarianModel.value = provider.model || action.model || '';
+      librarianStrictMode.checked = Boolean(action.plan?.strict_mode);
+    }
+
+    function renderLibrarianRules() {
+      librarianRulesList.innerHTML = '';
+      for (const rule of state.librarianRules) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        const marker = rule.enabled ? 'enabled' : 'disabled';
+        button.textContent = `${rule.trigger} · ${marker} · ${String(rule.id).slice(0, 8)}`;
+        if (rule.id === state.selectedRuleId) {
+          button.classList.add('active-item');
+        }
+        button.addEventListener('click', () => {
+          state.selectedRuleId = rule.id;
+          applyRuleToForm(rule);
+          renderLibrarianRules();
+        });
+        li.appendChild(button);
+        librarianRulesList.appendChild(li);
+      }
+    }
+
+    function renderLibrarianRuns() {
+      librarianRunsList.innerHTML = '';
+      for (const run of state.librarianRuns) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = `${run.status} · ${String(run.id).slice(0, 8)}`;
+        if (run.id === state.selectedRunId) {
+          button.classList.add('active-item');
+        }
+        button.addEventListener('click', async () => {
+          await selectRun(run.id);
+        });
+        li.appendChild(button);
+        librarianRunsList.appendChild(li);
+      }
+    }
+
+    function updateApplyButtonState() {
+      const noRun = !state.selectedRun;
+      const noOps = !Array.isArray(state.selectedRun?.result_json?.operation_report?.parsed_operations)
+        || state.selectedRun.result_json.operation_report.parsed_operations.length === 0;
+      applyRunDecisions.disabled = noRun || noOps || hasUnresolvedDraft();
+    }
+
+    function renderRunReview() {
+      runReviewOps.innerHTML = '';
+      if (!state.selectedRun) {
+        setStatus(runReviewStatus, 'Select a run to review operations.', 'info');
+        updateApplyButtonState();
+        return;
+      }
+
+      const operations = state.selectedRun.result_json?.operation_report?.parsed_operations || [];
+      if (!Array.isArray(operations) || operations.length === 0) {
+        setStatus(runReviewStatus, 'Selected run has no parsed operations.', 'info');
+        updateApplyButtonState();
+        return;
+      }
+
+      if (hasUnresolvedDraft()) {
+        setStatus(runReviewStatus, 'Resolve local draft changes before apply/reject.', 'error');
+      } else {
+        setStatus(runReviewStatus, `Reviewing ${operations.length} operation(s).`, 'info');
+      }
+
+      for (const operation of operations) {
+        const operationId = operation.operation_id || `op-${Math.random().toString(16).slice(2)}`;
+        if (!state.reviewDecisions[operationId]) {
+          state.reviewDecisions[operationId] = 'reject';
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'review-item';
+
+        const meta = document.createElement('div');
+        meta.className = 'review-meta';
+        const target = operation.target_note_id || operation.target_path || 'workspace';
+        meta.innerHTML = `<strong>${operation.kind || 'operation'}</strong><span>${target}</span><span>${operation.reason || ''}</span>`;
+
+        const decision = document.createElement('select');
+        decision.className = 'review-decision';
+        decision.innerHTML = '<option value="accept">accept</option><option value="reject">reject</option>';
+        decision.value = state.reviewDecisions[operationId];
+        decision.addEventListener('change', () => {
+          state.reviewDecisions[operationId] = decision.value;
+          updateApplyButtonState();
+        });
+
+        wrapper.appendChild(meta);
+        wrapper.appendChild(decision);
+        runReviewOps.appendChild(wrapper);
+      }
+
+      updateApplyButtonState();
+    }
+
+    async function loadLibrarianRules() {
+      if (!state.workspaceId) {
+        state.librarianRules = [];
+        state.selectedRuleId = null;
+        renderLibrarianRules();
+        return;
+      }
+      const response = await request(`/api/automation/rules?workspace_id=${encodeURIComponent(state.workspaceId)}`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Rules load failed (${response.status}).`, 'error');
+        return;
+      }
+      state.librarianRules = response.data.rules || [];
+      if (!state.selectedRuleId || !state.librarianRules.find((item) => item.id === state.selectedRuleId)) {
+        state.selectedRuleId = state.librarianRules[0]?.id || null;
+      }
+      const selectedRule = state.librarianRules.find((item) => item.id === state.selectedRuleId);
+      if (selectedRule) {
+        applyRuleToForm(selectedRule);
+      }
+      renderLibrarianRules();
+    }
+
+    async function loadLibrarianRuns() {
+      if (!state.workspaceId) {
+        state.librarianRuns = [];
+        state.selectedRunId = null;
+        state.selectedRun = null;
+        renderLibrarianRuns();
+        renderRunReview();
+        return;
+      }
+
+      const response = await request(`/api/automation/runs?workspace_id=${encodeURIComponent(state.workspaceId)}&limit=20`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Runs load failed (${response.status}).`, 'error');
+        return;
+      }
+      state.librarianRuns = response.data.runs || [];
+      if (!state.selectedRunId || !state.librarianRuns.find((item) => item.id === state.selectedRunId)) {
+        state.selectedRunId = state.librarianRuns[0]?.id || null;
+      }
+      renderLibrarianRuns();
+      if (state.selectedRunId) {
+        await selectRun(state.selectedRunId);
+      } else {
+        state.selectedRun = null;
+        renderRunReview();
+      }
+    }
+
+    async function selectRun(runId) {
+      const response = await request(`/api/automation/runs/${encodeURIComponent(runId)}`);
+      if (!response.ok) {
+        setStatus(librarianStatus, `Run open failed (${response.status}).`, 'error');
+        return;
+      }
+      state.selectedRunId = runId;
+      state.selectedRun = response.data.run;
+      state.reviewDecisions = {};
+      renderLibrarianRuns();
+      renderRunReview();
+    }
+
+    async function loadLibrarianPanel() {
+      await loadLibrarianRules();
+      await loadLibrarianRuns();
+    }
+
+    async function launchRuleRun(ruleId) {
+      const response = await request(`/api/automation/rules/${encodeURIComponent(ruleId)}/launch`, {
+        method: 'POST',
+        headers: mutationHeaders(),
+        body: JSON.stringify({
+          workspace_id: state.workspaceId,
+          note_id: state.currentNoteId,
+        }),
+      });
+
+      if (!response.ok) {
+        setStatus(librarianStatus, `Launch failed (${response.status}).`, 'error');
+        return false;
+      }
+
+      state.selectedRunId = response.data.run.id;
+      await loadLibrarianRuns();
+      setStatus(librarianStatus, `Run launched (${response.data.run.status}).`, 'success');
+      return true;
+    }
+
+    async function request(path, options = {}) {
+      const response = await fetch(path, {
+        credentials: 'include',
+        ...options,
+      });
+      const isJson = (response.headers.get('content-type') || '').includes('application/json');
+      const data = isJson ? await response.json() : null;
+      return { ok: response.ok, status: response.status, data };
+    }
+
+    function mutationHeaders() {
+      return {
+        'content-type': 'application/json',
+        'x-csrf-token': state.csrfToken || '',
+      };
+    }
+
+    async function checkSession() {
+      const session = await request('/api/auth/session');
+      if (session.ok) {
+        state.csrfToken = session.data.csrf_token;
+        showApp();
+        return;
+      }
+      showAuth();
+    }
+
+    function showAuth() {
+      appView.hidden = true;
+      authView.hidden = false;
+      setAuthMode('login');
+      setStatus(authStatus, state.setupLocked ? 'Setup is locked. Login only.' : 'Login or first-run setup.', 'info');
+    }
+
+    async function showApp() {
+      authView.hidden = true;
+      appView.hidden = false;
+      workspaceIdInput.value = state.workspaceId;
+      if (state.workspaceId) {
+        await loadNotes();
+      } else {
+        setStatus(appStatus, 'Enter workspace UUID and load notes.', 'info');
+        setStatus(librarianStatus, 'Load a workspace to manage librarian rules.', 'info');
+      }
+    }
+
+    async function loadNotes() {
+      state.workspaceId = workspaceIdInput.value.trim();
+      localStorage.setItem('workspace_id', state.workspaceId);
+      if (!state.workspaceId) {
+        setStatus(appStatus, 'Workspace UUID is required.', 'error');
+        return;
+      }
+
+      const response = await request(`/api/notes?workspace_id=${encodeURIComponent(state.workspaceId)}`);
+      if (response.status === 401) {
+        state.csrfToken = null;
+        showAuth();
+        return;
+      }
+      if (!response.ok) {
+        setStatus(appStatus, `Failed to load notes (${response.status}).`, 'error');
+        return;
+      }
+
+      state.notes = response.data.notes || [];
+      renderNotes();
+      await loadLibrarianPanel();
+      if (state.currentNoteId && state.notes.find((item) => item.id === state.currentNoteId)) {
+        await openNote(state.currentNoteId, false);
+      } else if (state.notes.length > 0) {
+        await openNote(state.notes[0].id, false);
+      } else {
+        state.currentNoteId = null;
+        state.currentVersion = 0;
+        state.currentMarkdown = '';
+        noteTitle.value = '';
+        noteEditor.value = '';
+        backlinksList.innerHTML = '';
+        setStatus(appStatus, 'No notes yet. Use command palette: create <title>.', 'info');
+      }
+    }
+
+    function renderNotes() {
+      notesList.innerHTML = '';
+      for (const note of state.notes) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = note.title || note.id;
+        if (note.id === state.currentNoteId) {
+          button.classList.add('active-item');
+        }
+        button.addEventListener('click', () => openNote(note.id, true));
+        li.appendChild(button);
+        notesList.appendChild(li);
+      }
+    }
+
+    async function openNote(noteId, pushContext) {
+      if (!noteId) {
+        return;
+      }
+      if (pushContext && state.currentNoteId && state.currentNoteId !== noteId) {
+        state.contextStack.push(state.currentNoteId);
+        contextBack.disabled = state.contextStack.length === 0;
+      }
+
+      const response = await request(`/api/notes/${encodeURIComponent(noteId)}`);
+      if (!response.ok) {
+        setStatus(appStatus, `Open failed (${response.status}).`, 'error');
+        return;
+      }
+
+      const payload = response.data;
+      state.currentNoteId = payload.note_id;
+      state.currentVersion = payload.version;
+      state.currentMarkdown = payload.markdown || '';
+      noteTitle.value = payload.title || '';
+      noteEditor.value = payload.markdown || '';
+      renderNotes();
+      await refreshBacklinks();
+      updateApplyButtonState();
+      setStatus(appStatus, `Opened note ${state.currentNoteId}.`, 'success');
+    }
+
+    async function refreshBacklinks() {
+      backlinksList.innerHTML = '';
+      if (!state.currentNoteId) {
+        return;
+      }
+      const response = await request(`/api/notes/${encodeURIComponent(state.currentNoteId)}/backlinks`);
+      if (!response.ok) {
+        return;
+      }
+
+      for (const link of response.data.backlinks || []) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = link.target_title;
+        button.addEventListener('click', () => openFromGraph(link.target_title));
+        li.appendChild(button);
+        backlinksList.appendChild(li);
+      }
+    }
+
+    async function openFromGraph(targetTitle) {
+      if (state.currentNoteId) {
+        state.contextStack.push(state.currentNoteId);
+        contextBack.disabled = state.contextStack.length === 0;
+      }
+
+      const local = state.notes.find((item) => item.title === targetTitle);
+      if (local) {
+        await openNote(local.id, false);
+        return;
+      }
+
+      const search = await request(`/api/search?workspace_id=${encodeURIComponent(state.workspaceId)}&q=${encodeURIComponent(targetTitle)}`);
+      if (!search.ok || !search.data.results || search.data.results.length === 0) {
+        setStatus(appStatus, 'Graph target not found in this workspace.', 'error');
+        return;
+      }
+
+      await openNote(search.data.results[0].note_id, false);
+    }
+
+    async function saveTitle() {
+      if (!state.currentNoteId) {
+        return;
+      }
+      const nextTitle = noteTitle.value.trim();
+      const current = state.notes.find((item) => item.id === state.currentNoteId)?.title || '';
+      if (!nextTitle || nextTitle === current) {
+        return;
+      }
+
+      const response = await request(`/api/notes/${encodeURIComponent(state.currentNoteId)}/title`, {
+        method: 'PATCH',
+        headers: mutationHeaders(),
+        body: JSON.stringify({
+          base_version: state.currentVersion,
+          title: nextTitle,
+        }),
+      });
+
+      if (!response.ok) {
+        setStatus(appStatus, `Title update failed (${response.status}).`, 'error');
+        return;
+      }
+
+      state.currentVersion = response.data.version;
+      const idx = state.notes.findIndex((item) => item.id === state.currentNoteId);
+      if (idx >= 0) {
+        state.notes[idx].title = nextTitle;
+      }
+      renderNotes();
+      setStatus(appStatus, 'Title updated.', 'success');
+    }
+
+    async function saveMarkdown() {
+      if (!state.currentNoteId) {
+        return;
+      }
+      const nextMarkdown = noteEditor.value;
+      if (nextMarkdown === state.currentMarkdown) {
+        return;
+      }
+
+      const patchOps = [];
+      if (state.currentMarkdown.length > 0) {
+        patchOps.push({ delete: state.currentMarkdown.length });
+      }
+      if (nextMarkdown.length > 0) {
+        patchOps.push({ insert: nextMarkdown });
+      }
+      if (patchOps.length === 0) {
+        return;
+      }
+
+      const response = await request(`/api/notes/${encodeURIComponent(state.currentNoteId)}`, {
+        method: 'PATCH',
+        headers: mutationHeaders(),
+        body: JSON.stringify({
+          base_version: state.currentVersion,
+          patch_ops: patchOps,
+          idempotency_key: `ui-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        }),
+      });
+
+      if (response.status === 409) {
+        setStatus(appStatus, 'Conflict detected. Refreshing note.', 'error');
+        await openNote(state.currentNoteId, false);
+        return;
+      }
+      if (!response.ok) {
+        setStatus(appStatus, `Autosave failed (${response.status}).`, 'error');
+        return;
+      }
+
+      state.currentVersion = response.data.version;
+      state.currentMarkdown = nextMarkdown;
+      updateApplyButtonState();
+      setStatus(appStatus, 'Autosaved.', 'success');
+    }
+
+    async function executeCommand(text) {
+      const raw = text.trim();
+      if (!raw) {
+        return;
+      }
+
+      const [command, ...args] = raw.split(' ');
+      const value = args.join(' ').trim();
+
+      if (command === 'create') {
+        if (!state.workspaceId) {
+          setStatus(appStatus, 'Set workspace UUID before create.', 'error');
+          return;
+        }
+        const title = value || 'Untitled';
+        const response = await request('/api/notes', {
+          method: 'POST',
+          headers: mutationHeaders(),
+          body: JSON.stringify({
+            workspace_id: state.workspaceId,
+            project_id: null,
+            title,
+            note_kind: 'markdown',
+            access_scope: 'workspace',
+            markdown: '',
+          }),
+        });
+        if (!response.ok) {
+          setStatus(appStatus, `Create failed (${response.status}).`, 'error');
+          return;
+        }
+        await loadNotes();
+        await openNote(response.data.note_id, false);
+        setStatus(appStatus, 'Create succeeded.', 'success');
+        return;
+      }
+
+      if (command === 'open') {
+        if (!value) {
+          setStatus(appStatus, 'Open requires note id.', 'error');
+          return;
+        }
+        await openNote(value, true);
+        return;
+      }
+
+      if (command === 'move') {
+        if (!state.currentNoteId) {
+          setStatus(appStatus, 'Open a note before move.', 'error');
+          return;
+        }
+        const response = await request(`/api/notes/${encodeURIComponent(state.currentNoteId)}/metadata/project.move`, {
+          method: 'PUT',
+          headers: mutationHeaders(),
+          body: JSON.stringify({ project_id: value || null }),
+        });
+        if (!response.ok) {
+          setStatus(appStatus, `Move failed (${response.status}).`, 'error');
+          return;
+        }
+        setStatus(appStatus, 'Move command recorded.', 'success');
+        return;
+      }
+
+      if (command === 'tag') {
+        if (!state.currentNoteId) {
+          setStatus(appStatus, 'Open a note before tag.', 'error');
+          return;
+        }
+        const tags = value
+          .split(',')
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0);
+        const response = await request(`/api/notes/${encodeURIComponent(state.currentNoteId)}/tags`, {
+          method: 'PUT',
+          headers: mutationHeaders(),
+          body: JSON.stringify({ tags }),
+        });
+        if (!response.ok) {
+          setStatus(appStatus, `Tag failed (${response.status}).`, 'error');
+          return;
+        }
+        setStatus(appStatus, 'Tag command succeeded.', 'success');
+        return;
+      }
+
+      if (command === 'run-rule') {
+        const ruleId = value || state.selectedRuleId;
+        if (!ruleId) {
+          setStatus(appStatus, 'Run-rule requires rule id or selected rule.', 'error');
+          return;
+        }
+        const launched = await launchRuleRun(ruleId);
+        if (launched) {
+          setStatus(appStatus, 'Run-rule command executed.', 'success');
+        }
+        return;
+      }
+
+      if (command === 'review-run') {
+        const runId = value || state.selectedRunId;
+        if (!runId) {
+          setStatus(appStatus, 'Review-run requires run id or selected run.', 'error');
+          return;
+        }
+        await selectRun(runId);
+        setStatus(appStatus, 'Review-run command selected run.', 'success');
+        return;
+      }
+
+      setStatus(appStatus, `Unknown command: ${command}`, 'error');
+    }
+
+    tabLogin.addEventListener('click', () => setAuthMode('login'));
+    tabSetup.addEventListener('click', () => setAuthMode('setup'));
+
+    loginPanel.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const response = await request('/api/auth/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          email: loginEmail.value.trim(),
+          password: loginPassword.value,
+        }),
+      });
+      if (!response.ok) {
+        setStatus(authStatus, `Login failed (${response.status}).`, 'error');
+        return;
+      }
+      state.csrfToken = response.data.csrf_token;
+      await showApp();
+    });
+
+    setupPanel.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const response = await request('/api/setup/register', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          email: setupEmail.value.trim(),
+          display_name: setupName.value.trim(),
+          password: setupPassword.value,
+          workspace_name: setupWorkspaceName.value.trim() || null,
+        }),
+      });
+      if (response.status === 409) {
+        state.setupLocked = true;
+        setAuthMode('login');
+        setStatus(authStatus, 'Setup is locked. Login-only UI is active.', 'error');
+        return;
+      }
+      if (!response.ok) {
+        setStatus(authStatus, `Setup failed (${response.status}).`, 'error');
+        return;
+      }
+      state.csrfToken = response.data.csrf_token;
+      state.workspaceId = response.data.workspace_id || '';
+      localStorage.setItem('workspace_id', state.workspaceId);
+      await showApp();
+    });
+
+    logoutButton.addEventListener('click', async () => {
+      await request('/api/auth/logout', {
+        method: 'POST',
+        headers: mutationHeaders(),
+      });
+      state.csrfToken = null;
+      state.currentNoteId = null;
+      state.currentVersion = 0;
+      state.currentMarkdown = '';
+      state.notes = [];
+      state.contextStack = [];
+      contextBack.disabled = true;
+      state.librarianRules = [];
+      state.librarianRuns = [];
+      state.selectedRuleId = null;
+      state.selectedRunId = null;
+      state.selectedRun = null;
+      state.reviewDecisions = {};
+      renderLibrarianRules();
+      renderLibrarianRuns();
+      renderRunReview();
+      showAuth();
+    });
+
+    loadWorkspaceButton.addEventListener('click', loadNotes);
+
+    librarianSaveRule.addEventListener('click', async () => {
+      if (!state.workspaceId) {
+        setStatus(librarianStatus, 'Workspace UUID is required.', 'error');
+        return;
+      }
+
+      const model = librarianModel.value.trim();
+      if (!model) {
+        setStatus(librarianStatus, 'Model is required for librarian config.', 'error');
+        return;
+      }
+
+      const actionJson = actionPayloadFromForm();
+      const selectedRule = state.librarianRules.find((item) => item.id === state.selectedRuleId);
+
+      const response = selectedRule
+        ? await request(`/api/automation/rules/${encodeURIComponent(selectedRule.id)}`, {
+            method: 'PATCH',
+            headers: mutationHeaders(),
+            body: JSON.stringify({
+              action_json: actionJson,
+              enabled: true,
+            }),
+          })
+        : await request('/api/automation/rules', {
+            method: 'POST',
+            headers: mutationHeaders(),
+            body: JSON.stringify({
+              workspace_id: state.workspaceId,
+              trigger: 'note_patched',
+              condition_json: {},
+              action_json: actionJson,
+              enabled: true,
+            }),
+          });
+
+      if (!response.ok) {
+        const detail = response.data?.details?.detail || response.data?.message || 'invalid librarian provider config';
+        setStatus(librarianStatus, `Rule save failed (${response.status}): ${detail}`, 'error');
+        return;
+      }
+
+      state.selectedRuleId = response.data.rule.id;
+      await loadLibrarianRules();
+      setStatus(librarianStatus, 'Librarian rule saved.', 'success');
+    });
+
+    librarianDisableRule.addEventListener('click', async () => {
+      if (!state.selectedRuleId) {
+        setStatus(librarianStatus, 'Select a rule first.', 'error');
+        return;
+      }
+      const response = await request(`/api/automation/rules/${encodeURIComponent(state.selectedRuleId)}`, {
+        method: 'PATCH',
+        headers: mutationHeaders(),
+        body: JSON.stringify({ enabled: false }),
+      });
+      if (!response.ok) {
+        setStatus(librarianStatus, `Disable failed (${response.status}).`, 'error');
+        return;
+      }
+      await loadLibrarianRules();
+      setStatus(librarianStatus, 'Rule disabled.', 'success');
+    });
+
+    librarianLaunchRun.addEventListener('click', async () => {
+      if (!state.selectedRuleId) {
+        setStatus(librarianStatus, 'Select a rule before launch.', 'error');
+        return;
+      }
+      await launchRuleRun(state.selectedRuleId);
+    });
+
+    applyRunDecisions.addEventListener('click', async () => {
+      if (!state.selectedRun) {
+        setStatus(runReviewStatus, 'Select a run to review first.', 'error');
+        return;
+      }
+
+      if (hasUnresolvedDraft()) {
+        setStatus(runReviewStatus, 'Resolve local draft changes before apply/reject.', 'error');
+        updateApplyButtonState();
+        return;
+      }
+
+      const operations = state.selectedRun.result_json?.operation_report?.parsed_operations || [];
+      const decisions = operations.map((operation) => ({
+        operation_id: operation.operation_id,
+        decision: state.reviewDecisions[operation.operation_id] || 'reject',
+      }));
+
+      const response = await request(`/api/automation/runs/${encodeURIComponent(state.selectedRun.id)}/review`, {
+        method: 'POST',
+        headers: mutationHeaders(),
+        body: JSON.stringify({ apply: true, decisions }),
+      });
+
+      if (!response.ok) {
+        setStatus(runReviewStatus, `Apply failed (${response.status}).`, 'error');
+        return;
+      }
+
+      state.selectedRun = response.data.run;
+      await loadLibrarianRuns();
+      setStatus(runReviewStatus, 'Review decisions applied with audit linkage.', 'success');
+    });
+
+    noteEditor.addEventListener('input', () => {
+      clearTimeout(state.saveTimer);
+      state.saveTimer = setTimeout(() => {
+        saveMarkdown();
+      }, 500);
+      updateApplyButtonState();
+    });
+
+    noteTitle.addEventListener('input', () => {
+      clearTimeout(state.titleTimer);
+      state.titleTimer = setTimeout(() => {
+        saveTitle();
+      }, 400);
+    });
+
+    noteTitle.addEventListener('blur', () => saveTitle());
+
+    menuToggle.addEventListener('click', () => {
+      document.body.classList.toggle('nav-collapsed');
+    });
+
+    contextBack.addEventListener('click', async () => {
+      if (state.contextStack.length === 0) {
+        contextBack.disabled = true;
+        return;
+      }
+      const previous = state.contextStack.pop();
+      contextBack.disabled = state.contextStack.length === 0;
+      await openNote(previous, false);
+    });
+
+    paletteToggle.addEventListener('click', () => {
+      if (commandPalette.hidden) {
+        openPalette();
+      } else {
+        closePalette();
+      }
+    });
+
+    paletteInput.addEventListener('keydown', async (event) => {
+      if (event.key === 'Escape') {
+        closePalette();
+        return;
+      }
+      if (event.key === 'Enter') {
+        const value = paletteInput.value;
+        closePalette();
+        await executeCommand(value);
+      }
+    });
+
+    commandPalette.addEventListener('click', (event) => {
+      if (event.target === commandPalette) {
+        closePalette();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        if (commandPalette.hidden) {
+          openPalette();
+        } else {
+          closePalette();
+        }
+      }
+      if (event.key === 'Escape' && !commandPalette.hidden) {
+        closePalette();
+      }
+    });
+
+    renderLibrarianRules();
+    renderLibrarianRuns();
+    renderRunReview();
+
+    checkSession();
+  </script>
+</body>
+</html>

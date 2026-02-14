@@ -11,23 +11,20 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
-- [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
 
 ## Stage Scope
 
-- [ ] implement provider adapters for OpenRouter and LM Studio -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
-- [ ] wire librarian action schema through automation rule APIs -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
-- [ ] enforce attribute-less XML-like protocol parsing and validation -> [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
-- [ ] enforce JSON-only prompt-pack loading for every librarian-cycle LLM call -> [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
+- [x] implement provider adapters for OpenRouter and LM Studio
+- [x] wire librarian action schema through automation rule APIs
+- [x] enforce attribute-less XML-like protocol parsing and validation
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
-- [ ] [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
-- [ ] [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
+- [x] [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
+- [x] [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
+- [x] [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
 
 ## Stage Exit
 
-- [ ] [`API-AUTO-03` and `API-AUTO-04` pass with deterministic evidence](/docs/spec/api/librarian-xml.md)
-- [ ] [Prompt-pack manifest and stage JSON files are loaded and hashed in run metadata](/docs/spec/technical/librarian-agent.md)
-- [ ] [Open librarian/runtime limitations remain explicitly tracked when deferred](/docs/reference/LIMITATIONS.md)
+- [x] `API-AUTO-03` and `API-AUTO-04` pass with deterministic evidence
+- [x] `LIM-LIB-01` remains explicitly deferred for operation-apply/runtime stream closure (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))

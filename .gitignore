@@ -1,9 +1,6 @@
-/.github/copilot-instructions.md
-/GEMINI.md
-/AGENTS.md
-/target
-**/*.rs.bk
-*.swp
-*.swo
-*.db
-node_modules/
+target/
+**/target/
+.env
+.env.*
+*.log
+.DS_Store

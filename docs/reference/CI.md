@@ -6,28 +6,30 @@ Reproducible verification profiles.
 
 ## Canonical Location
 
-- Workflow files may be absent in baseline mode.
-- Verification claims must be recorded in reference ledgers with evidence lines.
+- CI workflow files are intentionally absent in this repository state.
+- Verification is executed through command profiles and recorded in ledgers.
 
-## Baseline State (2026-02-14)
+## Baseline State (2026-02-13)
 
-- All in Docs baseline is active.
-- Active required profile in docs-only mode: `Docs-integrity`.
-- `Typed-skeleton`, `Core-runtime`, `Librarian-runtime`, and `Release` remain blocked until reconstruction starts.
+- Active profile target: `Release`.
+- `Librarian-runtime` and `Librarian-small-model` deterministic fixture checks are passing.
+- `Release` profile is green with Stage 09 Wave 090/091/092 evidence archived.
 
 ## Verification Profiles
 
 | Profile | Applies When | Required Checks |
 |---|---|---|
-| `Docs-integrity` | documentation changes | link integrity, structure policy, TODO checkbox hygiene |
-| `Typed-skeleton` | runtime scaffold claims | `Docs-integrity` + backend compile gate + frontend TS strict gate |
-| `Core-runtime` | API/WS/runtime claims | `Typed-skeleton` + runtime integration checks (including root web reachability) + deterministic frontend regression slice (`vitest`) |
-| `Librarian-runtime` | librarian claims | `Core-runtime` + `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` |
+| `Docs-integrity` | documentation changes | deterministic link and structure checks for `/docs` |
+| `Workspace-bootstrap` | workspace appears | `Docs-integrity` + workspace compile checks |
+| `Core-runtime` | HTTP/API implementation claims | `Workspace-bootstrap` + `cargo test --workspace -- --nocapture` + `docker compose up -d --build` + `/api/readyz` smoke |
+| `Realtime` | WS implementation claims | `Core-runtime` + WS subscribe/patch/conflict/replay verification |
+| `Librarian-runtime` | librarian feature implementation claims | `Realtime` + `API-AUTO-03`, `API-AUTO-04`, `WS-06`, `E2E-15` |
+| `Librarian-small-model` | small-parameter model compatibility claims | `Librarian-runtime` + parser fixture pack with malformed/underspecified XML outputs |
 | `Release` | release candidate | all above + perf/ops drills + no high-severity limitations |
 
 ## Evidence Rule
 
-Each CI claim in ledgers MUST include:
+CI status claims in ledgers MUST include:
 
 - profile name
 - absolute date
@@ -37,5 +39,4 @@ Each CI claim in ledgers MUST include:
 ## Related
 
 - Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Type safety contract: [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - Release gate: [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

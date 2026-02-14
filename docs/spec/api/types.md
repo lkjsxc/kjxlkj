@@ -11,19 +11,18 @@ Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 | `WorkspaceMember` | `workspace_id`, `user_id`, `role`, `joined_at` |
 | `Project` | `id`, `workspace_id`, `name`, `description`, `created_at` |
 | `SavedView` | `id`, `workspace_id`, `query_json`, `sort`, `filters`, `owner_user_id` |
-| `DashboardWidget` | `id`, `workspace_id`, `widget_type`, `config_json`, `layout` |
+| `DashboardWidget` | `id`, `workspace_id`, `type`, `config_json`, `layout` (optional extension) |
 | `AutomationRule` | `id`, `workspace_id`, `trigger`, `condition_json`, `action_json`, `enabled` |
 | `AutomationRun` | `id`, `rule_id`, `status`, `started_at`, `finished_at`, `result_json` |
-| `AdminJob` | `id`, `kind`, `status`, `artifact_path`, `created_at` |
 | `LibrarianProviderConfig` | `provider_kind`, `model`, `base_url`, `timeout_ms`, `max_tokens`, `temperature`, `fallback_models` |
-| `LibrarianPromptPackConfig` | `manifest_path`, `pack_version`, `stage_files`, `hash_algorithm` |
 | `LibrarianStructuringPlan` | `goal`, `scope`, `taxonomy_json`, `style_profile`, `strict_mode`, `max_operations` |
 | `LibrarianOperation` | `operation_id`, `kind`, `target_note_id`, `target_path`, `title`, `body_markdown`, `reason`, `confidence` |
-| `LibrarianRunReport` | `run_id`, `provider_kind`, `model`, `prompt_hash`, `prompt_pack_hash`, `parsed_operations`, `applied_operations`, `rejected_operations`, `warnings` |
+| `LibrarianRunReport` | `run_id`, `provider_kind`, `model`, `prompt_hash`, `parsed_operations`, `applied_operations`, `rejected_operations`, `warnings` |
 | `NoteStream` | `id`, `workspace_id`, `project_id`, `title`, `note_kind`, `access_scope`, `created_at`, `updated_at`, `current_version`, `deleted_at` |
 | `NoteProjection` | `note_id`, `workspace_id`, `project_id`, `title`, `note_kind`, `version`, `markdown`, `rendered_html`, `metadata_json`, `search_vector` |
 | `NoteEvent` | `event_id`, `note_id`, `seq`, `event_type`, `payload_json`, `actor_id`, `created_at` |
-| `Attachment` | `id`, `note_id`, `filename`, `mime`, `size_bytes`, `content` |
+| `Attachment` | `id`, `note_id`, `filename`, `mime`, `size_bytes`, `sha256`, `chunk_count` |
+| `AttachmentChunk` | `attachment_id`, `chunk_index`, `bytes` |
 
 ## Enum Types
 
@@ -75,7 +74,6 @@ Patch arrays MUST be applied in order and validated against base document length
 
 - `kind = "librarian_structure"`
 - `provider` matching `LibrarianProviderConfig`
-- `prompt_pack` matching `LibrarianPromptPackConfig`
 - `plan` matching `LibrarianStructuringPlan`
 - `protocol = "xml_attrless"`
 
@@ -88,4 +86,3 @@ Patch arrays MUST be applied in order and validated against base document length
 
 - HTTP: [http.md](http.md)
 - WebSocket: [websocket.md](websocket.md)
-- Prompt pack: [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)

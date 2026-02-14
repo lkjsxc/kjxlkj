@@ -9,7 +9,6 @@ Normative protocol for LLM interaction used by the autonomous librarian agent.
 - Preserve deterministic parse behavior even with small-parameter models.
 - Avoid attribute parsing complexity by using tag-only envelopes.
 - Keep request and response contracts explicit and machine-validated.
-- Keep prompt text externalized in JSON prompt-pack files.
 
 ## Version and Mode
 
@@ -17,13 +16,6 @@ Normative protocol for LLM interaction used by the autonomous librarian agent.
 - Payload MUST be UTF-8 plain text.
 - Tags MUST NOT include XML attributes.
 - Unknown tags MAY appear, but MUST be ignored by parser unless strict mode is enabled.
-
-## Prompt-Pack Binding
-
-- The request-producing prompt MUST come from
-  [/docs/spec/technical/librarian-prompts/manifest.json](/docs/spec/technical/librarian-prompts/manifest.json).
-- Stage prompt definitions MUST be loaded from JSON files referenced by the manifest.
-- Implementations MUST hash prompt-pack files and record hash per run.
 
 ## Request Envelope
 
@@ -126,7 +118,6 @@ Each `<operation>` block MUST contain:
 
 ## Related
 
-- Prompt pack: [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
 - Automation domain: [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
 - Payload types: [types.md](types.md)
 - Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

@@ -13,17 +13,17 @@ Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Stage Scope
 
-- [ ] bootstrap workspace runtime topology and crate scaffolding -> [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-- [ ] implement auth/session and user/workspace/project primitives -> [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-- [ ] enforce role-based authorization baseline -> [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- [x] bootstrap workspace runtime topology and crate scaffolding
+- [x] implement auth/session and user/workspace/project primitives
+- [x] enforce role-based authorization baseline
 
 ## Ordered Waves
 
-- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
-- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
-- [ ] [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
+- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
+- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
+- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
 
 ## Stage Exit
 
-- [ ] T0/T1 evidence exists for authz and ownership boundaries -> [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
-- [ ] stage limitations are closed or explicitly deferred with rationale -> [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
+- [x] T0/T1 evidence exists for authz and ownership boundaries
+- [x] stage limitations are closed or explicitly deferred with rationale

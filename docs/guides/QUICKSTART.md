@@ -4,23 +4,21 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Scope
 
-Fast path for All in Docs baseline workflow.
+Fast path for rebuilding and running the system with single-container Compose.
 
 ## Steps
 
-1. Open canonical docs directly from repository `docs/`.
-2. Read core contracts:
-   - [/docs/todo/README.md](/docs/todo/README.md)
-   - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-   - [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
-3. Execute wave plan in order to reconstruct typed runtime artifacts.
-4. Re-verify acceptance IDs in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
-5. When entering Docker Artifact Gate, regenerate root Docker files via [DOCKER.md](DOCKER.md).
+1. Read [/docs/todo/README.md](/docs/todo/README.md) and execute rebuild waves in order.
+2. Reconstruct runtime artifacts (`src/`, `Dockerfile`, `docker-compose.yml`).
+3. Start stack: `docker compose up --build`
+4. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
+5. Validate key UX flows using acceptance IDs in
+   [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
 ## Notes
 
-- All in Docs governance is always active.
-- After runtime launch, open `/` for the web app and use `/api/healthz` and `/api/readyz` for service checks.
+- Current repository baseline is docs-only by design.
+- Runtime startup is possible after reconstruction steps are completed.
 
 ## Related
 

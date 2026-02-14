@@ -18,9 +18,7 @@ Back: [/docs/spec/security/README.md](/docs/spec/security/README.md)
 
 ## Session Storage
 
-- Session state MUST be persisted in runtime storage.
-- Current baseline persists session state in application store with SQLite-ready
-  runtime connectivity.
+- Session state MUST be persisted in PostgreSQL.
 - Session revocation MUST take effect immediately for new requests.
 - Session records MUST bind to user identity and role-evaluation context.
 

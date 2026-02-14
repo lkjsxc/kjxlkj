@@ -2,65 +2,44 @@
 
 Back: [/docs/guides/README.md](/docs/guides/README.md)
 
-Deterministic Docker artifact contract for the app runtime.
+Single-container Docker Compose workflow.
 
-## Required Root Artifacts (Reconstruction Mode)
+## Scope
 
-When reconstruction reaches Docker Artifact Gate, these files MUST exist at
-repository root:
+- one compose service named `kjxlkj`
+- one container running both PostgreSQL and app process
+- one command startup path for operators
+
+## Files To Rebuild
+
+The following runtime artifacts are required for executable startup:
 
 - `Dockerfile`
 - `docker-compose.yml`
-- `.dockerignore`
+- supervisor/entrypoint script used by container startup
 
-If any file is missing, regenerate it before marking Docker gate completion.
+Use canonical template and rules from:
 
-## Baseline Contract (App Runtime)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
 
-- Compose runs exactly one service named `kjxlkj`.
-- Container name is `kjxlkj-app`.
-- Host port mapping is `8080:8080`.
-- Healthcheck probes `http://127.0.0.1:8080/api/readyz`.
-- SQLite persistence is mounted at `/data` with named volume `kjxlkj-data`.
-- `docker compose config` must pass with no schema errors.
+## Startup
 
-## Regeneration Steps (App Runtime)
-
-1. Regenerate root files to match [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md).
-2. Validate config: `docker compose config`.
-3. Build/start: `docker compose up -d --build`.
-4. Verify root web shell: `curl -fsS http://127.0.0.1:8080/`.
-5. Verify liveness: `curl -fsS http://127.0.0.1:8080/api/healthz`.
-6. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`.
-7. Verify health status: `docker compose ps`.
-8. Stop/remove: `docker compose down`.
-
-## Implementation Reference
-
-`Dockerfile` MUST:
-
-- use a deterministic base image
-- build and run `kjxlkj-server` from workspace sources
-- run container process as non-root user
-- expose `8080`
-- define healthcheck against `/api/readyz`
-
-`docker-compose.yml` MUST:
-
-- define a single `kjxlkj` service
-- build from root `Dockerfile`
-- include `restart: unless-stopped`
-- include persistent `/data` volume for SQLite
-- include HTTP healthcheck for `/api/readyz`
+1. Reconstruct runtime artifacts from specs/TODO waves.
+2. Build and start: `docker compose up --build`
+3. Confirm health: `docker compose ps`
+4. Confirm readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
 
 ## Shutdown and Logs
 
+- Stop/remove: `docker compose down`
 - Follow logs: `docker compose logs -f`
 
-## Reconstruction Target Scope
+## Acceptance Checklist
 
-After runtime reconstruction, target deployment remains one service named
-`kjxlkj` running Rust app components with typed frontend assets.
+- exactly one compose service exists
+- container transitions to `healthy`
+- `/api/readyz` succeeds
+- graceful stop leaves no orphan DB process
 
 ## Related
 
