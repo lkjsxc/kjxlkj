@@ -14,7 +14,6 @@ This directory is non-authoritative.
 |---|---|
 | [proposals/](proposals/README.md) | planned changes and pivot rationale |
 | [audits/](audits/README.md) | post-change assessments |
-| [improvements/](improvements/README.md) | reconstruction quality ideas and deterministic process upgrades |
 
 ## Related
 
