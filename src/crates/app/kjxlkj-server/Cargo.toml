@@ -20,6 +20,7 @@ kjxlkj-automation = { path = "../../automation/kjxlkj-automation" }
 kjxlkj-workspace = { path = "../../workspace/kjxlkj-workspace" }
 actix-web.workspace = true
 actix-web-actors.workspace = true
+actix-files.workspace = true
 tokio.workspace = true
 sqlx.workspace = true
 serde.workspace = true

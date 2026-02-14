@@ -1,6 +1,7 @@
 // kjxlkj-server — single-container entry point
 // Per /docs/spec/architecture/runtime.md and /docs/spec/architecture/deployment.md
 use actix_web::{web, App, HttpServer};
+use actix_files::Files;
 use sqlx::PgPool;
 use tracing_subscriber::EnvFilter;
 
@@ -27,10 +28,31 @@ async fn main() -> anyhow::Result<()> {
     let bind = std::env::var("BIND_ADDR").unwrap_or_else(|_| "0.0.0.0:8080".into());
     tracing::info!(bind = %bind, "starting HTTP server");
 
+    let static_dir = std::env::var("STATIC_DIR").unwrap_or_else(|_| "./static".into());
+    tracing::info!(static_dir = %static_dir, "serving SPA from static dir");
+
     HttpServer::new(move || {
+        let static_dir = static_dir.clone();
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .configure(kjxlkj_http::routes::configure)
+            // SPA: serve static assets, fallback to index.html for client routing
+            .service(
+                Files::new("/", &static_dir)
+                    .index_file("index.html")
+                    .default_handler(
+                        actix_web::dev::fn_service(move |req: actix_web::dev::ServiceRequest| {
+                            let static_dir = static_dir.clone();
+                            async move {
+                                let (req, _) = req.into_parts();
+                                let index = std::path::Path::new(&static_dir).join("index.html");
+                                let file = actix_files::NamedFile::open(index)?;
+                                let resp = file.into_response(&req);
+                                Ok(actix_web::dev::ServiceResponse::new(req, resp))
+                            }
+                        })
+                    )
+            )
     })
     .bind(&bind)?
     .run()

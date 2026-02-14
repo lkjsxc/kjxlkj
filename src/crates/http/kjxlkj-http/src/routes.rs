@@ -9,6 +9,7 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             .route("/healthz", web::get().to(super::ops::healthz))
             .route("/readyz", web::get().to(super::ops::readyz))
             // Setup
+            .route("/setup/status", web::get().to(super::setup::status))
             .route("/setup/register", web::post().to(super::setup::register))
             // Auth
             .route("/auth/login", web::post().to(super::auth::login))
@@ -45,6 +46,11 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             // Search
             .route("/search", web::get().to(super::search::search))
             .route("/notes/{id}/backlinks", web::get().to(super::search::backlinks))
+            // Workspace-scoped note and search aliases (frontend convenience)
+            .route("/workspaces/{ws_id}/notes", web::get().to(super::notes::list))
+            .route("/workspaces/{ws_id}/notes", web::post().to(super::notes::create))
+            .route("/workspaces/{ws_id}/search", web::get().to(super::search::search))
+            .route("/workspaces/{ws_id}/automation/runs", web::get().to(super::automation::list_runs))
             // Views
             .route("/views", web::get().to(super::views::list))
             .route("/views", web::post().to(super::views::create))

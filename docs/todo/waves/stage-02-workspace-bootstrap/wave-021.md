@@ -13,13 +13,13 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Restructure Steps
 
-- [ ] restructure-step S02-W021-01: implement note/workspace subscribe flows from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [ ] restructure-step S02-W021-02: implement `apply_patch` semantics with version checks from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
-- [ ] restructure-step S02-W021-03: enforce idempotency replay semantics from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [ ] restructure-step S02-W021-04: enforce ack cursor replay and stale-cursor failures from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [ ] restructure-step S02-W021-05: enforce deterministic conflict/error codes from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [x] restructure-step S02-W021-01: implement note/workspace subscribe flows from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [x] restructure-step S02-W021-02: implement `apply_patch` semantics with version checks from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [x] restructure-step S02-W021-03: enforce idempotency replay semantics from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [x] restructure-step S02-W021-04: enforce ack cursor replay and stale-cursor failures from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [x] restructure-step S02-W021-05: enforce deterministic conflict/error codes from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S02-W021-V01: run `WS-01..WS-05` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [ ] restructure-step S02-W021-V02: update replay/idempotency status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] restructure-step S02-W021-V01: run `WS-01..WS-05` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [x] restructure-step S02-W021-V02: update replay/idempotency status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

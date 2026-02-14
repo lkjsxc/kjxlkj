@@ -8,6 +8,29 @@ use uuid::Uuid;
 
 use crate::dto::{ErrorBody, RegisterRequest};
 
+/// GET /api/setup/status — check whether setup is available.
+/// Returns 200 if setup available, 409 if locked.
+pub async fn status(pool: web::Data<PgPool>) -> HttpResponse {
+    let rid = Uuid::now_v7().to_string();
+    match users::owner_exists(pool.get_ref()).await {
+        Ok(true) => HttpResponse::Conflict().json(ErrorBody {
+            code: "SETUP_LOCKED".into(),
+            message: "Setup already completed".into(),
+            details: None,
+            request_id: rid,
+        }),
+        Ok(false) => HttpResponse::Ok().json(serde_json::json!({
+            "setup_available": true
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(ErrorBody {
+            code: "INTERNAL_ERROR".into(),
+            message: e.to_string(),
+            details: None,
+            request_id: rid,
+        }),
+    }
+}
+
 /// POST /api/setup/register — first-run owner creation
 /// Setup MUST lock after first owner per spec.
 pub async fn register(

@@ -1,7 +1,16 @@
 # Multi-stage Rust build + single-container runtime
 # Per /docs/spec/architecture/deployment.md
 
-# Stage 1: Build the Rust binary
+# Stage 1a: Build frontend SPA
+FROM node:22-bookworm-slim AS frontend
+
+WORKDIR /frontend
+COPY src/frontend/app/package.json src/frontend/app/package-lock.json ./
+RUN npm ci
+COPY src/frontend/app/ ./
+RUN npx vite build
+
+# Stage 1b: Build the Rust binary
 FROM rust:1.87-bookworm AS builder
 
 WORKDIR /build
@@ -26,6 +35,9 @@ WORKDIR /app
 
 # Copy built binary
 COPY --from=builder /build/target/release/kjxlkj /app/kjxlkj
+
+# Copy SPA dist
+COPY --from=frontend /frontend/dist /app/static
 
 # Copy entrypoint
 COPY docker/entrypoint.sh /app/entrypoint.sh

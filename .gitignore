@@ -8,3 +8,5 @@ node_modules/
 src/frontend/app/dist/
 *.swp
 *.swo
+node_modules/
+dist/
