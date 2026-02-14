@@ -22,18 +22,18 @@ All in Docs canon.
 
 ## Start Gate
 
-- [ ] restructure-step START-01: read governance contracts in [/docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md) and [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
-- [ ] restructure-step START-02: read architecture and API roots in [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md) and [/docs/spec/api/README.md](/docs/spec/api/README.md)
-- [ ] restructure-step START-03: read domain/security/ui roots in [/docs/spec/domain/README.md](/docs/spec/domain/README.md), [/docs/spec/security/README.md](/docs/spec/security/README.md), and [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
-- [ ] restructure-step START-04: read technical gates in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
-- [ ] restructure-step START-05: read current-state ledgers in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] restructure-step START-01: read governance contracts in [/docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md) and [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [x] restructure-step START-02: read architecture and API roots in [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md) and [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [x] restructure-step START-03: read domain/security/ui roots in [/docs/spec/domain/README.md](/docs/spec/domain/README.md), [/docs/spec/security/README.md](/docs/spec/security/README.md), and [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- [x] restructure-step START-04: read technical gates in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [x] restructure-step START-05: read current-state ledgers in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
 ## Ordered Stage Program
 
-- [ ] restructure-step S00: execute governance baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
-- [ ] restructure-step S00-W000: run canonical baseline wave in [/docs/todo/waves/stage-00-pivot-governance/wave-000.md](/docs/todo/waves/stage-00-pivot-governance/wave-000.md)
-- [ ] restructure-step S00-W001: run spec coherence wave in [/docs/todo/waves/stage-00-pivot-governance/wave-001.md](/docs/todo/waves/stage-00-pivot-governance/wave-001.md)
-- [ ] restructure-step S00-W002: run ledger alignment wave in [/docs/todo/waves/stage-00-pivot-governance/wave-002.md](/docs/todo/waves/stage-00-pivot-governance/wave-002.md)
+- [x] restructure-step S00: execute governance baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [x] restructure-step S00-W000: run canonical baseline wave in [/docs/todo/waves/stage-00-pivot-governance/wave-000.md](/docs/todo/waves/stage-00-pivot-governance/wave-000.md)
+- [x] restructure-step S00-W001: run spec coherence wave in [/docs/todo/waves/stage-00-pivot-governance/wave-001.md](/docs/todo/waves/stage-00-pivot-governance/wave-001.md)
+- [x] restructure-step S00-W002: run ledger alignment wave in [/docs/todo/waves/stage-00-pivot-governance/wave-002.md](/docs/todo/waves/stage-00-pivot-governance/wave-002.md)
 - [ ] restructure-step S01: execute workspace/auth foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 - [ ] restructure-step S01-W010: run runtime skeleton wave in [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
 - [ ] restructure-step S01-W011: run auth/session wave in [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)

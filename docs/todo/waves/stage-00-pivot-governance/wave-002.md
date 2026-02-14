@@ -15,13 +15,13 @@ Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/st
 
 ## Restructure Steps
 
-- [ ] restructure-step S00-W002-01: lock docs-only baseline claims in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] restructure-step S00-W002-02: lock explicit reconstruction gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] restructure-step S00-W002-03: lock mismatch classes and open rows in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [ ] restructure-step S00-W002-04: lock stage-level evidence contracts in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
-- [ ] restructure-step S00-W002-05: lock release-blocked state in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [x] restructure-step S00-W002-01: lock docs-only baseline claims in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [x] restructure-step S00-W002-02: lock explicit reconstruction gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [x] restructure-step S00-W002-03: lock mismatch classes and open rows in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [x] restructure-step S00-W002-04: lock stage-level evidence contracts in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [x] restructure-step S00-W002-05: lock release-blocked state in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S00-W002-V01: verify stage order and wave order in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [ ] restructure-step S00-W002-V02: verify TODO start/completion gates in [/docs/todo/README.md](/docs/todo/README.md)
+- [x] restructure-step S00-W002-V01: verify stage order and wave order in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [x] restructure-step S00-W002-V02: verify TODO start/completion gates in [/docs/todo/README.md](/docs/todo/README.md)

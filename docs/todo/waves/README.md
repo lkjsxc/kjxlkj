@@ -38,7 +38,7 @@ canonical documentation.
 
 ## Ordered Stages
 
-- [ ] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [x] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
 - [ ] restructure-step S01: Workspace and Auth Foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 - [ ] restructure-step S02: Notes and Realtime Core in [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 - [ ] restructure-step S03: Web App Shell and Editor UX in [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
