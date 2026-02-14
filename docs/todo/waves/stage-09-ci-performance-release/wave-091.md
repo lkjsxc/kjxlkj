@@ -1,29 +1,25 @@
-# Wave 091: Performance and Operations Evidence Archive
+# Wave 091: Conformance, Limitations, and Drift Closure
 
 Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] execute `PERF-01`, `PERF-02`, and `PERF-03`
-- [x] execute `OPS-01` and `OPS-02`
-- [x] archive throughput, replay, and provider-failure evidence artifacts
+- [ ] restructure-step S09-W091-01: promote verified domains in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) using evidence from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S09-W091-02: close resolved rows and leave explicit open gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] restructure-step S09-W091-03: close or reclassify mismatch rows in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step S09-W091-04: ensure stage-evidence mapping remains current in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] restructure-step S09-W091-05: ensure TODO closure state in [/docs/todo/README.md](/docs/todo/README.md) matches ledger closure state
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] validate performance envelope against target limits
-- [x] validate backup/restore and restart recovery proofs
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test performance_smoke --test ops_recovery --test admin_jobs_api --test automation_provider_adapter -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `performance_smoke`: `2 passed` (`PERF-01`, `PERF-02`, `PERF-03`); `ops_recovery`: `1 passed`; `admin_jobs_api`: `1 passed`; `automation_provider_adapter`: `5 passed` including provider-failure and retry envelope diagnostics
+- [ ] restructure-step S09-W091-V01: run ledger consistency checks against acceptance outputs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S09-W091-V02: verify no unresolved high-severity contradictions remain in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

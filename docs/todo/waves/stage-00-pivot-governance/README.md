@@ -1,30 +1,29 @@
-# Stage 00: Canonical Reset
+# Stage 00: Governance and Canonical Baseline
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/README.md](/docs/README.md)
+- [/docs/policy/README.md](/docs/policy/README.md)
+- [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] replace version-labeled canonical contracts with unversioned contracts
-- [x] remove historical contract artifacts from active documentation paths
-- [x] close cross-document contract contradictions in spec docs
+Lock the canonical documentation baseline so all implementation waves execute
+against one consistent, no-ambiguity contract.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-00-pivot-governance/wave-000.md](/docs/todo/waves/stage-00-pivot-governance/wave-000.md)
-- [x] [/docs/todo/waves/stage-00-pivot-governance/wave-001.md](/docs/todo/waves/stage-00-pivot-governance/wave-001.md)
-- [x] [/docs/todo/waves/stage-00-pivot-governance/wave-002.md](/docs/todo/waves/stage-00-pivot-governance/wave-002.md)
+- [ ] restructure-step S00-W000: complete baseline architecture and structure checks in [wave-000.md](wave-000.md)
+- [ ] restructure-step S00-W001: complete cross-spec coherence checks in [wave-001.md](wave-001.md)
+- [ ] restructure-step S00-W002: complete reference and TODO governance alignment in [wave-002.md](wave-002.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] all waves are completed in order
-- [x] canonical docs are self-consistent
-- [x] ledgers reflect new baseline
+- [ ] restructure-step S00-EXIT-01: docs tree matches [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [ ] restructure-step S00-EXIT-02: evidence rules are locked in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] restructure-step S00-EXIT-03: TODO execution order is locked in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)

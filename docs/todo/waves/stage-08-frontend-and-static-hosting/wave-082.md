@@ -1,29 +1,25 @@
-# Wave 082: Responsive Librarian UX and Keyboard Flows
+# Wave 082: Static Delivery, Responsive, and Accessibility Closure
 
 Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] make librarian panels usable at 320px widths with no mode fork
-- [x] ensure keyboard-first launch and review flows via command palette
-- [x] preserve menu-toggle collapse/restore behavior during librarian sessions
+- [ ] restructure-step S08-W082-01: satisfy static build/serve boundaries from [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [ ] restructure-step S08-W082-02: satisfy dockerized delivery workflow from [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [ ] restructure-step S08-W082-03: enforce responsive split/menu behavior from [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [ ] restructure-step S08-W082-04: enforce keyboard and accessibility requirements from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [ ] restructure-step S08-W082-05: enforce strict frontend type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run 320px interaction tests for librarian views
-- [x] run command-palette invocation and focus-trap checks
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ui_shell --test command_workflow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` responsive librarian action layout + command palette `run-rule`/`review-run` keyboard flow hooks + menu-collapse behavior validated in shell/command coverage
+- [ ] restructure-step S08-W082-V01: run responsive/a11y/static-hosting checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S08-W082-V02: sync frontend delivery status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

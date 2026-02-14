@@ -1,29 +1,25 @@
-# Wave 041: Automation Run Engine and Events
+# Wave 041: Automation Rule and Run State Machine
 
 Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement rule trigger evaluation and run state machine
-- [x] enforce idempotent run execution per triggering event
-- [x] emit WS automation events and audit logs
+- [ ] restructure-step S04-W041-01: implement automation rule CRUD semantics from [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [ ] restructure-step S04-W041-02: implement run state machine transitions from [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [ ] restructure-step S04-W041-03: enforce per-trigger idempotency and replay-safe run creation from [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [ ] restructure-step S04-W041-04: align HTTP payloads and errors with [/docs/spec/api/types.md](/docs/spec/api/types.md) and [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [ ] restructure-step S04-W041-05: emit deterministic automation events per [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-AUTO-02` and `E2E-09`
-- [x] run run-idempotency boundary tests
-
-## Evidence Placeholder
-
-- [x] `Check: automation run lifecycle/state machine, run-idempotency, and workspace-event replay coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-04-wave-041-automation-runs.md](/docs/log/audits/2026-02-13-stage-04-wave-041-automation-runs.md)`
+- [ ] restructure-step S04-W041-V01: run `API-AUTO-01` and `API-AUTO-02` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S04-W041-V02: sync automation status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

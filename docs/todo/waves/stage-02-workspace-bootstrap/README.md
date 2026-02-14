@@ -1,29 +1,29 @@
-# Stage 02: M2 Collaborative Notes Core
+# Stage 02: Notes and Realtime Core
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/domain/metadata.md](/docs/spec/domain/metadata.md)
+- [/docs/spec/domain/search.md](/docs/spec/domain/search.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] implement notes CRUD with workspace/project scope
-- [x] implement WS patching, replay, idempotency, conflict behavior
-- [x] implement history, rollback, metadata, tags, backlinks, and search
+Implement notes/event-stream core with deterministic HTTP and WebSocket replay
+semantics.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md)
-- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md)
-- [x] [/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md)
+- [ ] restructure-step S02-W020: complete note lifecycle and history baseline in [wave-020.md](wave-020.md)
+- [ ] restructure-step S02-W021: complete realtime patch/replay semantics in [wave-021.md](wave-021.md)
+- [ ] restructure-step S02-W022: complete metadata/search/attachment support in [wave-022.md](wave-022.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] API and WS acceptance tests for notes are passing
-- [x] replay/idempotency/conflict defects are regression-guarded
+- [ ] restructure-step S02-EXIT-01: notes and events follow [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md) and [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [ ] restructure-step S02-EXIT-02: replay/idempotency follows [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S02-EXIT-03: search and metadata align with [/docs/spec/domain/search.md](/docs/spec/domain/search.md) and [/docs/spec/domain/metadata.md](/docs/spec/domain/metadata.md)

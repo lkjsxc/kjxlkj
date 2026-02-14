@@ -1,29 +1,25 @@
-# Wave 050: Reliability Regression Guard Pack
+# Wave 050: Security Hardening Baseline
 
 Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/security/auth.md](/docs/spec/security/auth.md)
+- [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md)
+- [/docs/spec/security/transport.md](/docs/spec/security/transport.md)
+- [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] map `IMP-*` and `USR-*` findings to concrete regression tests
-- [x] add missing boundary tests for replay/idempotency/conflict paths
-- [x] close `LIM-ISSUE-GUARD-02` when evidence is complete
+- [ ] restructure-step S05-W050-01: enforce authentication boundaries from [/docs/spec/security/auth.md](/docs/spec/security/auth.md)
+- [ ] restructure-step S05-W050-02: enforce secure session cookie and expiry semantics from [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [ ] restructure-step S05-W050-03: enforce CSRF validation policy from [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md)
+- [ ] restructure-step S05-W050-04: enforce transport-level security and header policy from [/docs/spec/security/transport.md](/docs/spec/security/transport.md)
+- [ ] restructure-step S05-W050-05: enforce role-denied error semantics from [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) and [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run full reliability regression suite
-- [x] verify no flaky or nondeterministic failures
-
-## Evidence Placeholder
-
-- [x] `Check: finding-mapped regression suite + double-run non-flake verification + UI guard markers`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-05-wave-050-reliability-guards.md](/docs/log/audits/2026-02-13-stage-05-wave-050-reliability-guards.md)`
+- [ ] restructure-step S05-W050-V01: run security acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S05-W050-V02: sync security status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

@@ -1,29 +1,25 @@
-# Wave 040: Automation Rules and Validation
+# Wave 040: Migration and Projection Integrity
 
 Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md)
+- [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/domain/workspaces.md](/docs/spec/domain/workspaces.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement automation rule CRUD APIs
-- [x] validate trigger/condition/action deterministically
-- [x] enforce workspace role checks on rule mutation
+- [ ] restructure-step S04-W040-01: implement migration ordering and compatibility policy from [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md)
+- [ ] restructure-step S04-W040-02: enforce event append and projection update integrity from [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [ ] restructure-step S04-W040-03: enforce workspace and note projection boundaries from [/docs/spec/domain/workspaces.md](/docs/spec/domain/workspaces.md) and [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] restructure-step S04-W040-04: align projection payload contracts with [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [ ] restructure-step S04-W040-05: lock migration rollback expectations from [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-AUTO-01`
-- [x] run invalid-rule and forbidden-path checks
-
-## Evidence Placeholder
-
-- [x] `Check: automation rule lifecycle, deterministic validation, and forbidden-path integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-04-wave-040-automation-rules.md](/docs/log/audits/2026-02-13-stage-04-wave-040-automation-rules.md)`
+- [ ] restructure-step S04-W040-V01: run migration/projection checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S04-W040-V02: sync migration status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

@@ -1,30 +1,29 @@
-# Stage 08: M8 Librarian UX and Static Delivery
+# Stage 08: Frontend Delivery and Responsive Closure
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
 - [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] add librarian control and run review UX
-- [x] expose operation diffs with apply/reject decisions
-- [x] preserve responsive behavior and 320px usability constraints
+Deliver complete typed frontend behavior and static hosting boundaries while
+preserving the responsive UX rules from the canonical UI contracts.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
-- [x] [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
+- [ ] restructure-step S08-W080: complete note-first shell and optional modules in [wave-080.md](wave-080.md)
+- [ ] restructure-step S08-W081: complete librarian review UX and command flows in [wave-081.md](wave-081.md)
+- [ ] restructure-step S08-W082: complete static delivery, responsive, and accessibility closure in [wave-082.md](wave-082.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] `E2E-15` passes with deterministic evidence
-- [x] librarian UX respects responsive and accessibility constraints
+- [ ] restructure-step S08-EXIT-01: frontend shell aligns with [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S08-EXIT-02: responsive/a11y behavior aligns with [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [ ] restructure-step S08-EXIT-03: deployment/static hosting aligns with [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)

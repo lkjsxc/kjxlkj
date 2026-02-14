@@ -1,29 +1,25 @@
-# Wave 092: Final Ledger Sync and Release Closure
+# Wave 092: Release Gate and Final Structure Validation
 
 Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [/docs/reference/CI.md](/docs/reference/CI.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
+- [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] close resolved limitation rows and update drift matrix counts
-- [x] synchronize conformance, CI, and release ledgers in one change
-- [x] record final release proof references and publication metadata
+- [ ] restructure-step S09-W092-01: satisfy release preconditions in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [ ] restructure-step S09-W092-02: ensure required CI gates are green per [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] restructure-step S09-W092-03: ensure final repository tree matches [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [ ] restructure-step S09-W092-04: ensure type-safety contract remains satisfied per [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [ ] restructure-step S09-W092-05: ensure all stage and wave checklists are complete in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run full `Release` profile
-- [x] verify no open high-severity `M1`/`M2` rows remain
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --tests -- --nocapture` and `grep -n "| high |" docs/reference/LIMITATIONS.md`
-- [x] `Result:` pass
-- [x] `Proof:` full server integration suite passed with release-profile coverage; limitations ledger contains no open `high` severity rows
+- [ ] restructure-step S09-W092-V01: run final release profile and acceptance checks from [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] restructure-step S09-W092-V02: mark release closure state in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

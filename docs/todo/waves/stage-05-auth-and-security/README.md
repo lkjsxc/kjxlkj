@@ -1,30 +1,29 @@
-# Stage 05: M5 Core Security and Reliability Baseline
+# Stage 05: Security, Reliability, and Recovery
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md)
+- [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [/docs/spec/security/transport.md](/docs/spec/security/transport.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] close residual reliability, security, and performance gaps
-- [x] run core acceptance, performance, and operations baseline gates
-- [x] prepare librarian-specific expansion stages with synchronized ledgers
+Harden security boundaries and close deterministic reliability/performance/recovery
+gaps before advanced librarian and release stages.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-050.md](/docs/todo/waves/stage-05-auth-and-security/wave-050.md)
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-051.md](/docs/todo/waves/stage-05-auth-and-security/wave-051.md)
-- [x] [/docs/todo/waves/stage-05-auth-and-security/wave-052.md](/docs/todo/waves/stage-05-auth-and-security/wave-052.md)
+- [ ] restructure-step S05-W050: complete auth/session/csrf/transport hardening in [wave-050.md](wave-050.md)
+- [ ] restructure-step S05-W051: complete findings-driven regression closure in [wave-051.md](wave-051.md)
+- [ ] restructure-step S05-W052: complete performance and recovery baseline in [wave-052.md](wave-052.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] core security and reliability evidence is archived
-- [x] stage blockers are closed or explicitly deferred
-- [x] handoff to Stage 06 is traceable in ledgers
+- [ ] restructure-step S05-EXIT-01: security controls align with [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [ ] restructure-step S05-EXIT-02: regression coverage aligns with [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md)
+- [ ] restructure-step S05-EXIT-03: perf/ops checks align with [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) and [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

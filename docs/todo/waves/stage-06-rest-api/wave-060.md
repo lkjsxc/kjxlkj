@@ -1,29 +1,25 @@
-# Wave 060: Provider Adapter Baseline
+# Wave 060: REST Surface Parity and OpenAPI Sync
 
 Back: [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [/docs/spec/api/openapi.md](/docs/spec/api/openapi.md)
+- [/docs/spec/api/openapi.yaml](/docs/spec/api/openapi.yaml)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement provider adapter with `openrouter` and `lmstudio` modes
-- [x] enforce deterministic timeout, retry, and failure classification
-- [x] store provider and model metadata in automation run records
+- [ ] restructure-step S06-W060-01: implement missing HTTP routes from [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S06-W060-02: enforce external payload schemas from [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [ ] restructure-step S06-W060-03: enforce deterministic error envelopes from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [ ] restructure-step S06-W060-04: synchronize route and schema examples in [/docs/spec/api/openapi.yaml](/docs/spec/api/openapi.yaml)
+- [ ] restructure-step S06-W060-05: enforce OpenAPI change rules from [/docs/spec/api/openapi.md](/docs/spec/api/openapi.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run provider validation tests for both modes
-- [x] run upstream outage and timeout boundary checks
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `automation_provider_adapter`: `2 passed`; `automation_rules_api`: `1 passed`
+- [ ] restructure-step S06-W060-V01: run API acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S06-W060-V02: sync API parity status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

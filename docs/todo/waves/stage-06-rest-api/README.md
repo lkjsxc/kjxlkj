@@ -1,30 +1,30 @@
-# Stage 06: M6 Librarian REST and Provider Layer
+# Stage 06: REST and Librarian Provider Completion
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [/docs/spec/api/openapi.md](/docs/spec/api/openapi.md)
+- [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
+- [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
 - [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] implement provider adapters for OpenRouter and LM Studio
-- [x] wire librarian action schema through automation rule APIs
-- [x] enforce attribute-less XML-like protocol parsing and validation
+Close REST contract completeness and librarian provider/protocol integration,
+including JSON-driven prompt loading.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
-- [x] [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
+- [ ] restructure-step S06-W060: complete HTTP/type/error/openapi parity in [wave-060.md](wave-060.md)
+- [ ] restructure-step S06-W061: complete provider adapter and JSON prompt-pack loading in [wave-061.md](wave-061.md)
+- [ ] restructure-step S06-W062: complete xml_attrless parse/retry/apply safety in [wave-062.md](wave-062.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] `API-AUTO-03` and `API-AUTO-04` pass with deterministic evidence
-- [x] `LIM-LIB-01` remains explicitly deferred for operation-apply/runtime stream closure (see [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md))
+- [ ] restructure-step S06-EXIT-01: REST surface aligns with [/docs/spec/api/http.md](/docs/spec/api/http.md) and [/docs/spec/api/openapi.md](/docs/spec/api/openapi.md)
+- [ ] restructure-step S06-EXIT-02: prompt loading aligns with [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
+- [ ] restructure-step S06-EXIT-03: protocol safety aligns with [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)

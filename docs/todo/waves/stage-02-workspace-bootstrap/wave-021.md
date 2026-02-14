@@ -1,29 +1,25 @@
-# Wave 021: Realtime Patch and Replay Protocol
+# Wave 021: WebSocket Patch, Replay, and Idempotency
 
 Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement `subscribe_note` and `subscribe_workspace`
-- [x] implement `apply_patch` with replay-safe idempotency semantics
-- [x] implement ack-cursor replay and deterministic conflict rejection
+- [ ] restructure-step S02-W021-01: implement note/workspace subscribe flows from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S02-W021-02: implement `apply_patch` semantics with version checks from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S02-W021-03: enforce idempotency replay semantics from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S02-W021-04: enforce ack cursor replay and stale-cursor failures from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S02-W021-05: enforce deterministic conflict/error codes from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `WS-01..05`
-- [x] run reconnect and duplicate retransmit boundary cases
-
-## Evidence Placeholder
-
-- [x] `Check: websocket subscribe/patch/replay/idempotency/conflict integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md](/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md)`
+- [ ] restructure-step S02-W021-V01: run `WS-01..WS-05` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W021-V02: update replay/idempotency status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

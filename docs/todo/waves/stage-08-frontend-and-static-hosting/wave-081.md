@@ -1,29 +1,25 @@
-# Wave 081: Operation Diff Review and Apply Controls
+# Wave 081: Librarian Review UX and Command Flows
 
 Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] show per-operation diffs for create/rewrite/retitle/relink actions
-- [x] support accept/reject decisions with deterministic audit linkage
-- [x] prevent apply when active editor has unresolved local draft conflicts
+- [ ] restructure-step S08-W081-01: implement librarian run launch and review surfaces from [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] restructure-step S08-W081-02: support per-operation accept/reject decisions from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [ ] restructure-step S08-W081-03: preserve unresolved local drafts during apply flows from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S08-W081-04: align review/apply API semantics with [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S08-W081-05: align review progress events with [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run apply/reject race-condition and stale-version scenarios
-- [x] run audit trail visibility checks
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_run_flow --test ws_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` run review endpoint validates decisions deterministically, records `automation_run_reviewed` workspace events, and enforces UI-side unresolved-draft apply guard behavior
+- [ ] restructure-step S08-W081-V01: run `E2E-15` and command/review checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S08-W081-V02: sync librarian UX status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

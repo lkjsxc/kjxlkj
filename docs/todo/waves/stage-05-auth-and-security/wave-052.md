@@ -1,29 +1,25 @@
-# Wave 052: Performance and Operations Baseline Gate
+# Wave 052: Performance and Recovery Baseline
 
 Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md)
+- [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] execute performance scenarios (`PERF-01`, `PERF-02`, `PERF-03` prep plan)
-- [x] execute restart recovery and restore drills (`OPS-02`)
-- [x] synchronize conformance, limitation, and drift ledgers for Stage 06 handoff
+- [ ] restructure-step S05-W052-01: satisfy latency and throughput targets from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md)
+- [ ] restructure-step S05-W052-02: satisfy WS ordering/replay soak expectations from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S05-W052-03: satisfy backup/export/restart recovery expectations from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [ ] restructure-step S05-W052-04: verify deployment health and shutdown behavior from [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [ ] restructure-step S05-W052-05: align ops job constraints with [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `Core-runtime` and `Realtime` profiles
-- [x] verify Stage 05 blockers are closed or explicitly deferred
-
-## Evidence Placeholder
-
-- [x] `Check: perf/ops/security baseline suites + restart recovery + defer-recorded PERF-03 prep`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-05-wave-052-perf-ops-gate.md](/docs/log/audits/2026-02-13-stage-05-wave-052-perf-ops-gate.md)`
+- [ ] restructure-step S05-W052-V01: run `PERF-*` and `OPS-02` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S05-W052-V02: sync perf/ops status in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

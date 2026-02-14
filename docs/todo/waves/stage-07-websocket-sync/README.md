@@ -1,30 +1,29 @@
-# Stage 07: M7 Librarian Realtime and Replay
+# Stage 07: WebSocket Replay and Automation Events
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] stream librarian run progress and operation events over WS
-- [x] preserve ordering and replay semantics for librarian events
-- [x] keep ack-cursor recovery deterministic after disconnect
+Close realtime event ordering/replay guarantees, including librarian automation
+events and reconnect cursor determinism.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-07-websocket-sync/wave-070.md](/docs/todo/waves/stage-07-websocket-sync/wave-070.md)
-- [x] [/docs/todo/waves/stage-07-websocket-sync/wave-071.md](/docs/todo/waves/stage-07-websocket-sync/wave-071.md)
-- [x] [/docs/todo/waves/stage-07-websocket-sync/wave-072.md](/docs/todo/waves/stage-07-websocket-sync/wave-072.md)
+- [ ] restructure-step S07-W070: complete workspace and librarian event surfaces in [wave-070.md](wave-070.md)
+- [ ] restructure-step S07-W071: complete ack/replay/stale-cursor behavior in [wave-071.md](wave-071.md)
+- [ ] restructure-step S07-W072: complete end-to-end WS acceptance closure in [wave-072.md](wave-072.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] `WS-06` passes with replay and ordering evidence
-- [x] librarian run events are reachable in workspace subscriptions
+- [ ] restructure-step S07-EXIT-01: event types and order align with [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-EXIT-02: reconnect/idempotency behavior aligns with [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S07-EXIT-03: WS acceptance evidence aligns with [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)

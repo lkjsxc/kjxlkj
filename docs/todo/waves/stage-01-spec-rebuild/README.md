@@ -1,29 +1,29 @@
-# Stage 01: M1 Workspace Foundation
+# Stage 01: Workspace and Auth Foundation
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [/docs/spec/security/README.md](/docs/spec/security/README.md)
+- [/docs/spec/domain/workspaces.md](/docs/spec/domain/workspaces.md)
+- [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] bootstrap workspace runtime topology and crate scaffolding
-- [x] implement auth/session and user/workspace/project primitives
-- [x] enforce role-based authorization baseline
+Build a typed runtime skeleton with deterministic auth/session and RBAC
+foundations that later stages can safely extend.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
-- [x] [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
+- [ ] restructure-step S01-W010: complete runtime topology and crate skeleton in [wave-010.md](wave-010.md)
+- [ ] restructure-step S01-W011: complete auth/session and setup-lock behavior in [wave-011.md](wave-011.md)
+- [ ] restructure-step S01-W012: complete role/membership enforcement baseline in [wave-012.md](wave-012.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] T0/T1 evidence exists for authz and ownership boundaries
-- [x] stage limitations are closed or explicitly deferred with rationale
+- [ ] restructure-step S01-EXIT-01: runtime skeleton matches [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- [ ] restructure-step S01-EXIT-02: auth/session contracts match [/docs/spec/security/auth.md](/docs/spec/security/auth.md) and [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [ ] restructure-step S01-EXIT-03: role checks align with [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md)

@@ -2,49 +2,55 @@
 
 Back: [/docs/todo/README.md](/docs/todo/README.md)
 
+Ordered implementation workflow for reconstructing runtime artifacts from
+canonical documentation.
+
 ## Relevant Documents
 
+- [/docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md)
+- [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
 - [/docs/spec/README.md](/docs/spec/README.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
-Ordered recursive migration stages for the hard pivot.
+## Orientation References
+
+- [/docs/guides/README.md](/docs/guides/README.md)
+- [/docs/guides/QUICKSTART.md](/docs/guides/QUICKSTART.md)
+- [/docs/guides/API.md](/docs/guides/API.md)
+- [/docs/guides/LIBRARIAN.md](/docs/guides/LIBRARIAN.md)
+- [/docs/guides/RECONSTRUCTION_BOOTSTRAP.md](/docs/guides/RECONSTRUCTION_BOOTSTRAP.md)
+- [/docs/overview/README.md](/docs/overview/README.md)
+- [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md)
+- [/docs/overview/glossary.md](/docs/overview/glossary.md)
+- [/docs/overview/principles.md](/docs/overview/principles.md)
 
 ## Execution Rules
 
-- [x] execute stages in listed order only
-- [x] execute waves in each stage in listed order only
-- [x] each completed wave includes deterministic evidence links
-- [x] reference ledgers are updated with each blocker status change
+- [ ] restructure-step RULE-01: execute stages only in listed order per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [ ] restructure-step RULE-02: execute waves only in listed order within each stage per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [ ] restructure-step RULE-03: require deterministic evidence per wave from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step RULE-04: synchronize ledgers on each wave transition in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
 ## Ordered Stages
 
-- [x] Stage 00: M0 Canonical Reset
- [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
-- [x] Stage 01: M1 Workspace Foundation
- [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
-- [x] Stage 02: M2 Collaborative Notes Core
- [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
-- [x] Stage 03: M3 Workspace Suite
- [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
-- [x] Stage 04: M4 Automation and Jobs
- [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
-- [x] Stage 05: M5 Core Security and Reliability Baseline
- [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
-- [x] Stage 06: M6 Librarian REST and Provider Layer
- [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
-- [x] Stage 07: M7 Librarian Realtime and Replay
- [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
-- [x] Stage 08: M8 Librarian UX and Static Delivery
- [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
-- [x] Stage 09: M9 Final Release Closure
- [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
+- [ ] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [ ] restructure-step S01: Workspace and Auth Foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
+- [ ] restructure-step S02: Notes and Realtime Core in [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
+- [ ] restructure-step S03: Web App Shell and Editor UX in [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
+- [ ] restructure-step S04: Schema, Automation, and Jobs in [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
+- [ ] restructure-step S05: Security, Reliability, and Recovery in [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
+- [ ] restructure-step S06: REST and Librarian Provider Completion in [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
+- [ ] restructure-step S07: WebSocket Replay and Automation Events in [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
+- [ ] restructure-step S08: Frontend Delivery and Responsive Closure in [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
+- [ ] restructure-step S09: CI, Drift Closure, and Release in [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Program Exit
 
-- [x] all wave files are complete with evidence links
-- [x] all high-severity blockers are closed
-- [x] release closure is recorded in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+- [ ] restructure-step EXIT-01: confirm no unresolved high-severity blockers in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] restructure-step EXIT-02: confirm no unresolved high-severity `M1`/`M2` rows in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step EXIT-03: confirm release closure in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

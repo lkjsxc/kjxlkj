@@ -17,7 +17,7 @@ Use this order for decisions:
 2. [/docs/spec/](spec/README.md)
 3. [/docs/reference/](reference/README.md)
 4. [/docs/todo/](todo/README.md)
-5. [/docs/guides/](guides/README.md), [/docs/overview/](overview/README.md), [/docs/log/](log/README.md)
+5. [/docs/guides/](guides/README.md), [/docs/overview/](overview/README.md)
 
 ## Status Model
 
@@ -25,7 +25,8 @@ Use this order for decisions:
 - `reference` is normative for verified state.
 - `todo` is normative for staged execution and closure gates.
 - `guides` and `overview` are explanatory unless referenced by policy/spec.
-- `log` is historical and non-authoritative.
+
+Historical change context is kept in git history, not in a dedicated docs log tree.
 
 ## Canonical Reading Order
 
@@ -35,7 +36,6 @@ Use this order for decisions:
 4. [todo/README.md](todo/README.md)
 5. [guides/README.md](guides/README.md)
 6. [overview/README.md](overview/README.md)
-7. [log/README.md](log/README.md)
 
 ## Directory Map
 
@@ -44,10 +44,9 @@ Use this order for decisions:
 | [policy/](policy/README.md) | repository invariants and guardrails |
 | [spec/](spec/README.md) | target workspace-suite behavior |
 | [reference/](reference/README.md) | verified state and open gaps |
-| [todo/](todo/README.md) | recursive migration execution contract |
+| [todo/](todo/README.md) | staged reconstruction execution contract |
 | [guides/](guides/README.md) | operator workflows |
 | [overview/](overview/README.md) | product concepts and vocabulary |
-| [log/](log/README.md) | proposals and audits |
 
 ## Related
 

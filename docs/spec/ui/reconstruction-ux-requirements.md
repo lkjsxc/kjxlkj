@@ -60,7 +60,7 @@ Canonical UX requirements for rebuilding `kjxlkj` from an All in Docs baseline.
 A UX requirement is considered closed only when all are true:
 
 1. the requirement is mapped to at least one deterministic acceptance ID
-2. acceptance evidence is linked in wave/audit logs
+2. acceptance evidence is linked in wave checklists and reference ledgers
 3. limitation and drift ledgers are synchronized with status
 
 ## Related

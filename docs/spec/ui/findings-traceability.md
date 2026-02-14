@@ -6,9 +6,8 @@ Canonical mapping from implementation/user findings to normative requirements.
 
 ## Source Findings
 
-Primary source:
-
-- [/docs/log/audits/2026-02-12-implementation-user-findings.md](/docs/log/audits/2026-02-12-implementation-user-findings.md)
+The baseline finding set is embedded in this document to keep the canonical
+source self-contained in `/docs/spec/ui/`.
 
 ## Mapping Matrix
 

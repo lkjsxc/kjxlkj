@@ -1,29 +1,29 @@
-# Stage 04: M4 Automation and Jobs
+# Stage 04: Schema, Automation, and Jobs
 
 Back: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md)
+- [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
+- [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
 
-## Stage Scope
+## Stage Objective
 
-- [x] implement automation rule and run lifecycle
-- [x] integrate automation with workspace events and notes writes
-- [x] harden export/backup jobs and observability signals
+Complete schema/projection integrity plus automation and job orchestration
+foundations required by librarian and ops flows.
 
-## Ordered Waves
+## Ordered Wave Checklist
 
-- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-040.md](/docs/todo/waves/stage-04-schema-and-projections/wave-040.md)
-- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-041.md](/docs/todo/waves/stage-04-schema-and-projections/wave-041.md)
-- [x] [/docs/todo/waves/stage-04-schema-and-projections/wave-042.md](/docs/todo/waves/stage-04-schema-and-projections/wave-042.md)
+- [ ] restructure-step S04-W040: complete migration and projection structure in [wave-040.md](wave-040.md)
+- [ ] restructure-step S04-W041: complete automation rule/run state machine in [wave-041.md](wave-041.md)
+- [ ] restructure-step S04-W042: complete export/backup job lifecycle in [wave-042.md](wave-042.md)
 
-## Stage Exit
+## Stage Exit Checklist
 
-- [x] automation deterministic tests pass
-- [x] ops job lifecycle and observability evidence is recorded
+- [ ] restructure-step S04-EXIT-01: migration policy aligns with [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md)
+- [ ] restructure-step S04-EXIT-02: automation semantics align with [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [ ] restructure-step S04-EXIT-03: ops jobs align with [/docs/spec/domain/export.md](/docs/spec/domain/export.md) and [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

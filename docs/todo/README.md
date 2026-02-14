@@ -2,87 +2,78 @@
 
 Back: [/docs/README.md](/docs/README.md)
 
+`/docs/todo/` is the execution contract for rebuilding runtime artifacts from
+All in Docs canon.
+
 ## Relevant Documents
 
 - [/docs/policy/README.md](/docs/policy/README.md)
 - [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
 - [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
-- [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md)
-- [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
-- [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
-- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
-- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
-- [/docs/spec/security/README.md](/docs/spec/security/README.md)
-- [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
-- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [/docs/reference/README.md](/docs/reference/README.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
 - [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
-- [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
-- [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [/docs/todo/doc-map/README.md](/docs/todo/doc-map/README.md)
-
-`/docs/todo/` is the execution contract for rebuilding derived artifacts from All in Docs canon.
 
 ## Start Gate
 
-- [ ] read [/README.md](/README.md)
-- [ ] read [/docs/README.md](/docs/README.md)
-- [ ] read [/docs/policy/README.md](/docs/policy/README.md)
-- [ ] read [/docs/spec/README.md](/docs/spec/README.md)
-- [ ] read [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
-- [ ] read [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [ ] read [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [ ] read [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step START-01: read governance contracts in [/docs/policy/INSTRUCT.md](/docs/policy/INSTRUCT.md) and [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md)
+- [ ] restructure-step START-02: read architecture and API roots in [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md) and [/docs/spec/api/README.md](/docs/spec/api/README.md)
+- [ ] restructure-step START-03: read domain/security/ui roots in [/docs/spec/domain/README.md](/docs/spec/domain/README.md), [/docs/spec/security/README.md](/docs/spec/security/README.md), and [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
+- [ ] restructure-step START-04: read technical gates in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [ ] restructure-step START-05: read current-state ledgers in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
-## Documentation Link Coverage
+## Ordered Stage Program
 
-- [ ] open [/docs/todo/doc-map/README.md](/docs/todo/doc-map/README.md)
-- [ ] complete [/docs/todo/doc-map/core-and-guides.md](/docs/todo/doc-map/core-and-guides.md)
-- [ ] complete [/docs/todo/doc-map/policy-and-reference.md](/docs/todo/doc-map/policy-and-reference.md)
-- [ ] complete [/docs/todo/doc-map/spec-api-architecture.md](/docs/todo/doc-map/spec-api-architecture.md)
-- [ ] complete [/docs/todo/doc-map/spec-domain-security-technical-ui.md](/docs/todo/doc-map/spec-domain-security-technical-ui.md)
-- [ ] complete [/docs/todo/doc-map/log-and-overview.md](/docs/todo/doc-map/log-and-overview.md)
-- [ ] complete [/docs/todo/doc-map/todo-and-waves.md](/docs/todo/doc-map/todo-and-waves.md)
-- [ ] verify full documentation-file linkage via [/docs/todo/doc-map/README.md](/docs/todo/doc-map/README.md)
-
-## Reconstruction Pack
-
-- [ ] [Restore runtime bootstrap and supervision path](/docs/spec/architecture/runtime.md)
-- [ ] [Restore reachable HTTP service contract](/docs/spec/api/http.md)
-- [ ] [Restore reachable WebSocket service contract](/docs/spec/api/websocket.md)
-- [ ] [Restore typed frontend shell and editor flow in TypeScript](/docs/spec/ui/web-app.md)
-- [ ] [Restore editor interaction and autosave behavior](/docs/spec/ui/editor-flow.md)
-- [ ] [Restore responsive split-pane and top-left mobile menu navigation behavior](/docs/spec/ui/layout-and-interaction.md)
-- [ ] [Restore RBAC/auth/session/CSRF enforcement](/docs/spec/security/README.md)
-- [ ] [Restore automation and librarian review/apply behavior](/docs/spec/technical/librarian-agent.md)
-- [ ] [Load every librarian-cycle prompt from JSON prompt pack files](/docs/spec/technical/librarian-prompts/README.md)
-- [ ] [Restore deterministic regression pack (`REG-IMP-*`, `REG-USR-*`, `REG-UX-*`)](/docs/spec/technical/testing.md)
-- [ ] [Satisfy type verification gates (`TYPE-01..03`)](/docs/spec/technical/type-safety.md)
-- [ ] [Match runtime layout to final completion structure](/docs/spec/architecture/final-file-structure.md)
-
-## Recursive Wave Program
-
-- [ ] open [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-- [ ] [Execute stages and waves in strict order](/docs/policy/WORKFLOW.md)
-- [ ] [Attach deterministic evidence per completed wave](/docs/spec/technical/testing.md)
-- [ ] [Synchronize reference ledgers with every status change](/docs/reference/CONFORMANCE.md)
-
-## Docker Artifact Gate
-
-- [ ] [Regenerate root `Dockerfile`, `docker-compose.yml`, and `.dockerignore` when reconstruction enters deployment stage](/docs/spec/architecture/deployment.md)
-- [ ] [Ensure root Docker artifacts match deployment and Docker guide contracts](/docs/guides/DOCKER.md)
-- [ ] [`docker compose config` passes from repository root](/docs/guides/DOCKER.md)
-- [ ] [App runtime smoke passes (`/`, `healthz`, `readyz`)](/docs/spec/architecture/deployment.md)
-- [ ] [Record Docker gate proof in audit log](/docs/log/audits/README.md)
+- [ ] restructure-step S00: execute governance baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [ ] restructure-step S00-W000: run canonical baseline wave in [/docs/todo/waves/stage-00-pivot-governance/wave-000.md](/docs/todo/waves/stage-00-pivot-governance/wave-000.md)
+- [ ] restructure-step S00-W001: run spec coherence wave in [/docs/todo/waves/stage-00-pivot-governance/wave-001.md](/docs/todo/waves/stage-00-pivot-governance/wave-001.md)
+- [ ] restructure-step S00-W002: run ledger alignment wave in [/docs/todo/waves/stage-00-pivot-governance/wave-002.md](/docs/todo/waves/stage-00-pivot-governance/wave-002.md)
+- [ ] restructure-step S01: execute workspace/auth foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
+- [ ] restructure-step S01-W010: run runtime skeleton wave in [/docs/todo/waves/stage-01-spec-rebuild/wave-010.md](/docs/todo/waves/stage-01-spec-rebuild/wave-010.md)
+- [ ] restructure-step S01-W011: run auth/session wave in [/docs/todo/waves/stage-01-spec-rebuild/wave-011.md](/docs/todo/waves/stage-01-spec-rebuild/wave-011.md)
+- [ ] restructure-step S01-W012: run RBAC/membership wave in [/docs/todo/waves/stage-01-spec-rebuild/wave-012.md](/docs/todo/waves/stage-01-spec-rebuild/wave-012.md)
+- [ ] restructure-step S02: execute notes and replay core in [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
+- [ ] restructure-step S02-W020: run notes CRUD/history wave in [/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-020.md)
+- [ ] restructure-step S02-W021: run WebSocket patch/replay wave in [/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-021.md)
+- [ ] restructure-step S02-W022: run metadata/search/attachment wave in [/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md](/docs/todo/waves/stage-02-workspace-bootstrap/wave-022.md)
+- [ ] restructure-step S03: execute app shell/editor baseline in [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
+- [ ] restructure-step S03-W030: run web shell and setup/login wave in [/docs/todo/waves/stage-03-single-container-runtime/wave-030.md](/docs/todo/waves/stage-03-single-container-runtime/wave-030.md)
+- [ ] restructure-step S03-W031: run editor/conflict/findings wave in [/docs/todo/waves/stage-03-single-container-runtime/wave-031.md](/docs/todo/waves/stage-03-single-container-runtime/wave-031.md)
+- [ ] restructure-step S03-W032: run responsive split/menu layout wave in [/docs/todo/waves/stage-03-single-container-runtime/wave-032.md](/docs/todo/waves/stage-03-single-container-runtime/wave-032.md)
+- [ ] restructure-step S04: execute schema/automation/jobs core in [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md)
+- [ ] restructure-step S04-W040: run migration/projection wave in [/docs/todo/waves/stage-04-schema-and-projections/wave-040.md](/docs/todo/waves/stage-04-schema-and-projections/wave-040.md)
+- [ ] restructure-step S04-W041: run automation rule/run wave in [/docs/todo/waves/stage-04-schema-and-projections/wave-041.md](/docs/todo/waves/stage-04-schema-and-projections/wave-041.md)
+- [ ] restructure-step S04-W042: run export/backup/jobs wave in [/docs/todo/waves/stage-04-schema-and-projections/wave-042.md](/docs/todo/waves/stage-04-schema-and-projections/wave-042.md)
+- [ ] restructure-step S05: execute security/reliability hardening in [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md)
+- [ ] restructure-step S05-W050: run security transport/cookie wave in [/docs/todo/waves/stage-05-auth-and-security/wave-050.md](/docs/todo/waves/stage-05-auth-and-security/wave-050.md)
+- [ ] restructure-step S05-W051: run findings regression wave in [/docs/todo/waves/stage-05-auth-and-security/wave-051.md](/docs/todo/waves/stage-05-auth-and-security/wave-051.md)
+- [ ] restructure-step S05-W052: run performance/ops recovery wave in [/docs/todo/waves/stage-05-auth-and-security/wave-052.md](/docs/todo/waves/stage-05-auth-and-security/wave-052.md)
+- [ ] restructure-step S06: execute REST and librarian provider completion in [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
+- [ ] restructure-step S06-W060: run HTTP/OpenAPI parity wave in [/docs/todo/waves/stage-06-rest-api/wave-060.md](/docs/todo/waves/stage-06-rest-api/wave-060.md)
+- [ ] restructure-step S06-W061: run provider/prompt JSON loading wave in [/docs/todo/waves/stage-06-rest-api/wave-061.md](/docs/todo/waves/stage-06-rest-api/wave-061.md)
+- [ ] restructure-step S06-W062: run XML parse/retry/apply-safety wave in [/docs/todo/waves/stage-06-rest-api/wave-062.md](/docs/todo/waves/stage-06-rest-api/wave-062.md)
+- [ ] restructure-step S07: execute realtime replay closure in [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
+- [ ] restructure-step S07-W070: run workspace/librarian events wave in [/docs/todo/waves/stage-07-websocket-sync/wave-070.md](/docs/todo/waves/stage-07-websocket-sync/wave-070.md)
+- [ ] restructure-step S07-W071: run ack/replay/stale-cursor wave in [/docs/todo/waves/stage-07-websocket-sync/wave-071.md](/docs/todo/waves/stage-07-websocket-sync/wave-071.md)
+- [ ] restructure-step S07-W072: run WS acceptance wave in [/docs/todo/waves/stage-07-websocket-sync/wave-072.md](/docs/todo/waves/stage-07-websocket-sync/wave-072.md)
+- [ ] restructure-step S08: execute frontend/static delivery closure in [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
+- [ ] restructure-step S08-W080: run shell/workspace-suite wave in [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-080.md)
+- [ ] restructure-step S08-W081: run librarian review UX wave in [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-081.md)
+- [ ] restructure-step S08-W082: run responsive/a11y/static-hosting wave in [/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/wave-082.md)
+- [ ] restructure-step S09: execute CI/perf/release closure in [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
+- [ ] restructure-step S09-W090: run CI/type-safety closure wave in [/docs/todo/waves/stage-09-ci-performance-release/wave-090.md](/docs/todo/waves/stage-09-ci-performance-release/wave-090.md)
+- [ ] restructure-step S09-W091: run ledger/drift closure wave in [/docs/todo/waves/stage-09-ci-performance-release/wave-091.md](/docs/todo/waves/stage-09-ci-performance-release/wave-091.md)
+- [ ] restructure-step S09-W092: run release and final-structure wave in [/docs/todo/waves/stage-09-ci-performance-release/wave-092.md](/docs/todo/waves/stage-09-ci-performance-release/wave-092.md)
 
 ## Completion Gate
 
-- [ ] [All stage/wave checklists complete in order](/docs/todo/waves/README.md)
-- [ ] [Docker Artifact Gate is complete](/docs/spec/architecture/deployment.md)
-- [ ] [No high-severity open limitations remain](/docs/reference/LIMITATIONS.md)
-- [ ] [Acceptance and typed gates pass](/docs/spec/technical/testing.md)
-- [ ] [Release gate is satisfied](/docs/reference/RELEASE.md)
+- [ ] restructure-step DONE-01: verify all stages and waves are checked in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [ ] restructure-step DONE-02: verify required acceptance IDs and profiles from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] restructure-step DONE-03: verify ledger synchronization in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step DONE-04: verify release gate in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)

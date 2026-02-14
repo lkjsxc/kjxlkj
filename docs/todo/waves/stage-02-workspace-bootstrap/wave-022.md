@@ -1,29 +1,25 @@
-# Wave 022: Search, Tags, Backlinks, Metadata
+# Wave 022: Metadata, Search, Backlinks, and Attachments
 
 Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/domain/metadata.md](/docs/spec/domain/metadata.md)
+- [/docs/spec/domain/search.md](/docs/spec/domain/search.md)
+- [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md)
+- [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement metadata and tags APIs with deterministic response semantics
-- [x] implement backlink extraction and query APIs
-- [x] implement full-text search across note and media metadata
+- [ ] restructure-step S02-W022-01: implement metadata/tag upsert/delete semantics from [/docs/spec/domain/metadata.md](/docs/spec/domain/metadata.md)
+- [ ] restructure-step S02-W022-02: implement backlink and search behavior from [/docs/spec/domain/search.md](/docs/spec/domain/search.md)
+- [ ] restructure-step S02-W022-03: implement chunked attachment and media-note behavior from [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md)
+- [ ] restructure-step S02-W022-04: enforce attachment and metadata HTTP responses from [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S02-W022-05: enforce boundary error codes from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-REC-01`, `API-SEARCH-01`, `API-SEARCH-02`
-- [x] run deletion/filter boundary scenarios
-
-## Evidence Placeholder
-
-- [x] `Check: metadata/tags/backlinks/search integration coverage including delete/filter boundaries`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md](/docs/log/audits/2026-02-13-stage-02-collaborative-notes-core.md)`
+- [ ] restructure-step S02-W022-V01: run `API-REC-*`, `API-SEARCH-*`, and `API-ATT-*` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W022-V02: sync search/attachment gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

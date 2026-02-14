@@ -1,29 +1,25 @@
-# Wave 030: Saved Views and Optional Widgets
+# Wave 030: Shell Views, Session Routing, and Optional Modules
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/domain/workspaces.md](/docs/spec/domain/workspaces.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement saved view APIs and persistence model
-- [x] keep dashboard list/widget flows optional extension scope
-- [x] enforce role-based access for view mutations
+- [ ] restructure-step S03-W030-01: implement setup/login/notes/detail/jobs shell views from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S03-W030-02: enforce setup-lock and pre-auth session routing behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S03-W030-03: keep optional modules non-blocking per [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] restructure-step S03-W030-04: align session probe behavior with [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S03-W030-05: enforce UX principle mapping from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-VIEW-01` (`API-DASH-01` only when optional widget scope is enabled)
-- [x] run role-denial integration tests
-
-## Evidence Placeholder
-
-- [x] `Check: saved view API lifecycle and viewer role-denial integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-03-wave-030-saved-views.md](/docs/log/audits/2026-02-13-stage-03-wave-030-saved-views.md)`
+- [ ] restructure-step S03-W030-V01: run auth/shell acceptance flows from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S03-W030-V02: sync shell status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

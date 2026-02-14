@@ -4,26 +4,22 @@ Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/wa
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
+- [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] harden markdown export and SQL backup job execution
-- [x] expose deterministic job status and artifact paths
-- [x] emit structured start/finish/failure telemetry signals
+- [ ] restructure-step S04-W042-01: implement export and SQL backup launch contracts from [/docs/spec/domain/export.md](/docs/spec/domain/export.md)
+- [ ] restructure-step S04-W042-02: implement job status and artifact retrieval semantics from [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S04-W042-03: enforce job authorization and failure semantics from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [ ] restructure-step S04-W042-04: enforce ops observability and recovery hooks from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [ ] restructure-step S04-W042-05: keep deployment health endpoints aligned with [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `OPS-01`
-- [x] run export/backup failure-path checks
-
-## Evidence Placeholder
-
-- [x] `Check: export/backup job lifecycle, artifact path, telemetry, and forbidden-path integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md](/docs/log/audits/2026-02-13-stage-04-wave-042-export-backup-jobs.md)`
+- [ ] restructure-step S04-W042-V01: run `OPS-01` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S04-W042-V02: sync job/export status in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

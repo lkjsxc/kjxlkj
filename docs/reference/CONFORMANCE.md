@@ -31,7 +31,7 @@ High-confidence statement:
 | All in Docs doctrine | [/docs/overview/all-in-docs.md](/docs/overview/all-in-docs.md) | `verified` | doctrine defines docs as canonical product value |
 | Typed language contract | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | typed-only reconstruction requirements are explicit |
 | Root docs-only layout | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | `verified` | root contains only canonical docs/hygiene entries |
-| TODO doc-link workflow | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `verified` | TODO checklist rows include direct requirement links |
+| TODO restructure-step workflow | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | ordered stage/wave checklists define implementation-ready execution |
 | JSON prompt-pack canonical files | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `verified` | manifest and stage JSON prompt files are canonicalized in docs |
 | Responsive split/menu UX requirements | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `verified` | desktop split-pane and compact top-left menu behavior are normatively specified |
 | Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `spec-only` | runtime artifacts are intentionally absent |

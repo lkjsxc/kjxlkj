@@ -1,29 +1,25 @@
-# Wave 011: Auth and Session Baseline
+# Wave 011: Auth, Session, and Setup Lock Baseline
 
 Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/security/auth.md](/docs/spec/security/auth.md)
+- [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md)
+- [/docs/spec/security/transport.md](/docs/spec/security/transport.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement setup lockout for owner bootstrap
-- [x] implement login/logout/session with secure cookie rules
-- [x] add rate limiting for setup/login
+- [ ] restructure-step S01-W011-01: implement setup/register and setup-lock behavior from [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S01-W011-02: implement login/logout/session semantics from [/docs/spec/security/auth.md](/docs/spec/security/auth.md)
+- [ ] restructure-step S01-W011-03: enforce cookie/session lifecycle from [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
+- [ ] restructure-step S01-W011-04: enforce CSRF and transport boundaries from [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) and [/docs/spec/security/transport.md](/docs/spec/security/transport.md)
+- [ ] restructure-step S01-W011-05: enforce setup-locked login-only UI behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-AUTH-01` and `API-AUTH-02`
-- [x] run negative-path authentication checks
-
-## Evidence Placeholder
-
-- [x] `Check: end-to-end API auth flow (setup lockout, session lifecycle, invalid credential rejection)`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md](/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md)`
+- [ ] restructure-step S01-W011-V01: run auth/session acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S01-W011-V02: synchronize auth state in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) and [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)

@@ -1,29 +1,25 @@
-# Wave 071: Replay Cursor and Idempotency for Librarian Events
+# Wave 071: Ack Cursor, Replay, and Stale Cursor Handling
 
 Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] integrate librarian events into ack-cursor replay protocol
-- [x] enforce idempotent retransmit semantics for event emissions
-- [x] reject stale cursors with deterministic error payloads
+- [ ] restructure-step S07-W071-01: enforce monotonic per-stream replay cursors from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-02: enforce reconnect replay-before-new-submit behavior from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S07-W071-03: enforce deterministic stale-cursor error payload from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-04: enforce duplicate idempotency replay behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-05: align error envelope fields with [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run reconnect + replay boundary checks
-- [x] run duplicate cursor and retransmit scenarios
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ws_flow ws_subscribe_patch_replay_and_conflict_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` `ws_flow`: reconnect replay cursor asserts for `note:{id}` and `workspace:{id}` passed; idempotent retransmit preserved commit identity; stale `ack` emitted deterministic `error` with `code=STALE_CURSOR`
+- [ ] restructure-step S07-W071-V01: run reconnect/replay/idempotency boundary checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S07-W071-V02: sync replay-closure status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

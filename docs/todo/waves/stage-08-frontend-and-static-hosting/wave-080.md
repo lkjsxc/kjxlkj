@@ -1,29 +1,25 @@
-# Wave 080: Librarian Control Panel and Rule Authoring UX
+# Wave 080: Note-First Shell and Workspace Suite Baseline
 
 Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] add librarian rule form for provider, model, and strict-mode settings
-- [x] add run launch and run status panels in workspace shell
-- [x] add deterministic validation feedback for invalid librarian configs
+- [ ] restructure-step S08-W080-01: implement note-first shell modules from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S08-W080-02: keep dashboard/workspace switcher optional from [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md)
+- [ ] restructure-step S08-W080-03: preserve editor-priority visual hierarchy from [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [ ] restructure-step S08-W080-04: align frontend session/notes data usage with [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S08-W080-05: enforce strict TypeScript rules from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run UX flow checks for create/edit/disable librarian rules
-- [x] run provider-mode form boundary cases
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test ui_shell --test automation_rules_api --test automation_run_flow -- --nocapture`
-- [x] `Result:` pass
-- [x] `Proof:` librarian panel markup + rule create/update/disable + invalid-provider validation passed with deterministic API/UI feedback
+- [ ] restructure-step S08-W080-V01: run shell/workspace E2E checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S08-W080-V02: sync shell module status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

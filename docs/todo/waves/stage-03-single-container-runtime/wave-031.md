@@ -1,31 +1,25 @@
-# Wave 031: Command Palette and Navigation UX
+# Wave 031: Editor State Model and Findings Regression
 
 Back: [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md)
+- [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement command palette action model and shortcuts
-- [x] wire create/open/move/tag/run-rule commands to APIs
-- [x] preserve deterministic success/failure feedback states
-- [x] ensure setup-locked state renders login-only UI without setup-like visuals
+- [ ] restructure-step S03-W031-01: enforce synced-snapshot and local-draft split from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S03-W031-02: implement autosave/conflict/offline status transitions from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S03-W031-03: enforce title propagation and minimal default chrome from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S03-W031-04: enforce reconnect/idempotency behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
+- [ ] restructure-step S03-W031-05: map each implemented fix to findings in [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `E2E-03` and targeted keyboard-navigation checks
-- [x] run command failure-path scenarios
-- [x] run `E2E-11` login/setup presentation split checks
-
-## Evidence Placeholder
-
-- [x] `Check: command workflow integration + keyboard shortcut/shell marker + setup-lock deterministic checks`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md](/docs/log/audits/2026-02-13-stage-03-wave-031-command-palette.md)`
+- [ ] restructure-step S03-W031-V01: run `REG-IMP-*` and `REG-USR-*` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S03-W031-V02: sync regression closure state in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

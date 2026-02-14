@@ -1,29 +1,25 @@
-# Wave 090: CI Profile Integration and Stability
+# Wave 090: CI Profiles and Type-Safety Closure
 
 Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/reference/CI.md](/docs/reference/CI.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md)
+- [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] wire `Librarian-runtime` and `Librarian-small-model` profile execution
-- [x] enforce deterministic fixture sets for parser and provider error paths
-- [x] eliminate flaky signals in librarian test suites
+- [ ] restructure-step S09-W090-01: execute required CI profiles from [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] restructure-step S09-W090-02: execute acceptance suites from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S09-W090-03: execute Rust/TypeScript type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [ ] restructure-step S09-W090-04: execute performance and operations profiles from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) and [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- [ ] restructure-step S09-W090-05: map profile evidence to [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run CI profile matrix on clean environment
-- [x] run rerun stability checks for nondeterminism
-
-## Evidence Placeholder
-
-- [x] `Check:` `TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_rules_api --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture` and `for i in 1 2 3; do TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:32768/kjxlkj_test cargo test -p kjxlkj-server --test automation_provider_adapter --test automation_run_flow --test ws_flow -- --nocapture; done`
-- [x] `Result:` pass
-- [x] `Proof:` profile matrix and 3x rerun stability checks passed with no nondeterministic failures (`automation_provider_adapter: 5 passed`, `automation_run_flow: 1 passed`, `ws_flow: 1 passed`)
+- [ ] restructure-step S09-W090-V01: repeat profile runs to detect nondeterminism using [/docs/reference/CI.md](/docs/reference/CI.md)
+- [ ] restructure-step S09-W090-V02: sync profile outcomes in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

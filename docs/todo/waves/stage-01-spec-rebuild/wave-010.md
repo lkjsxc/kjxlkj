@@ -1,29 +1,25 @@
-# Wave 010: Runtime and Workspace Bootstrap
+# Wave 010: Runtime Topology and Typed Workspace Skeleton
 
 Back: [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
+- [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] scaffold workspace crates (`workspace`, `rbac`) and wire into app runtime
-- [x] add base DB migrations for users, workspaces, membership, projects
-- [x] expose readiness/liveness for new topology
+- [ ] restructure-step S01-W010-01: scaffold crate topology required by [/docs/spec/architecture/crates.md](/docs/spec/architecture/crates.md)
+- [ ] restructure-step S01-W010-02: wire runtime supervision boundaries from [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
+- [ ] restructure-step S01-W010-03: enforce workspace layout from [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
+- [ ] restructure-step S01-W010-04: enforce workspace manifest policy from [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- [ ] restructure-step S01-W010-05: enforce typed-language constraints from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run migration and startup smoke checks
-- [x] run T1 ownership invariants checks
-
-## Evidence Placeholder
-
-- [x] `Check: cargo workspace compile + migration smoke + readiness startup smoke + ownership invariants`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md](/docs/log/audits/2026-02-13-stage-01-workspace-foundation.md)`
+- [ ] restructure-step S01-W010-V01: run architecture/type checks required by [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S01-W010-V02: verify deployability path remains compatible with [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)

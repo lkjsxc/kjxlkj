@@ -1,3 +1,6 @@
+/.github/copilot-instructions.md
+/AGENTS.md
+/GEMINI.md
 target/
 **/target/
 .env

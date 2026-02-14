@@ -2,7 +2,8 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Defines required repository structure for canonical completion and optional runtime reconstruction.
+Defines required repository structure for canonical completion and optional
+runtime reconstruction.
 
 ## Completion Definitions
 
@@ -43,14 +44,6 @@ docs/
 │   ├── LIBRARIAN.md
 │   ├── QUICKSTART.md
 │   └── RECONSTRUCTION_BOOTSTRAP.md
-├── log/
-│   ├── README.md
-│   ├── proposals/
-│   │   ├── README.md
-│   │   └── YYYY-MM-DD-*.md
-│   └── audits/
-│       ├── README.md
-│       └── YYYY-MM-DD-*.md
 ├── overview/
 │   ├── README.md
 │   ├── all-in-docs.md
@@ -133,14 +126,6 @@ docs/
 │       └── workspace-suite.md
 └── todo/
     ├── README.md
-    ├── doc-map/
-    │   ├── README.md
-    │   ├── core-and-guides.md
-    │   ├── policy-and-reference.md
-    │   ├── spec-api-architecture.md
-    │   ├── spec-domain-security-technical-ui.md
-    │   ├── log-and-overview.md
-    │   └── todo-and-waves.md
     └── waves/
         ├── README.md
         ├── stage-00-pivot-governance/{README.md,wave-000.md,wave-001.md,wave-002.md}
@@ -170,21 +155,22 @@ When reconstruction is active, the repository MAY additionally contain:
 ├── docker-compose.yml
 ├── .dockerignore
 └── src/
-    ├── backend/crates/
+    ├── crates/
     │   ├── app/kjxlkj-server/
     │   ├── http/kjxlkj-http/
     │   ├── ws/kjxlkj-ws/
     │   ├── domain/kjxlkj-domain/
     │   ├── db/kjxlkj-db/
-    │   ├── security/kjxlkj-security/
-    │   └── automation/kjxlkj-automation/
+    │   ├── auth/kjxlkj-auth/
+    │   ├── search/kjxlkj-search/
+    │   ├── rbac/kjxlkj-rbac/
+    │   ├── automation/kjxlkj-automation/
+    │   └── workspace/kjxlkj-workspace/
     └── frontend/app/
         ├── src/
         ├── test/
         └── dist/
 ```
-
-Exact reconstruction-path details: [source-layout.md](source-layout.md), [workspace-manifest.md](workspace-manifest.md), [crates.md](crates.md).
 
 ## Enforcement
 
@@ -192,6 +178,7 @@ Exact reconstruction-path details: [source-layout.md](source-layout.md), [worksp
 - Generated frontend bundle outputs MAY exist under `src/frontend/app/dist/`.
 - Handwritten runtime `.js` source files are forbidden.
 - Missing derived runtime artifacts are allowed in canonical docs-only completion.
+
 ## Related
 
 - Source layout: [source-layout.md](source-layout.md)

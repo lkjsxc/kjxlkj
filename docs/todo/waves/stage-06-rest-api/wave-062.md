@@ -1,29 +1,25 @@
-# Wave 062: Attribute-Less XML Parser and Retry Loop
+# Wave 062: xml_attrless Parse, Retry, and Apply Safety
 
 Back: [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
+- [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
+- [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 - [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement `xml_attrless` parser and required-tag validation
-- [x] implement bounded parser repair retries and deterministic failure states
-- [x] retain raw model output and parse diagnostics in run audit fields
+- [ ] restructure-step S06-W062-01: implement attribute-less parser and required-tag validation from [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- [ ] restructure-step S06-W062-02: implement bounded repair retries and deterministic failure classes from [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)
+- [ ] restructure-step S06-W062-03: enforce operation safety policy (scope/delete/review) from [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
+- [ ] restructure-step S06-W062-04: enforce protocol and provider error mapping from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
+- [ ] restructure-step S06-W062-05: preserve unresolved local drafts when apply runs touch active notes per [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-AUTO-04`
-- [x] run malformed nesting, missing-tag, and overflow operation tests
-
-## Evidence Placeholder
-
-- [x] `Check:` `cargo test -p kjxlkj-server --test automation_provider_adapter -- --nocapture`
-- [x] `Result:` pass (`5 passed; 0 failed`) including parser malformed nesting, missing-tag retry failure diagnostics, and overflow rejection assertions
-- [x] `Proof:` deterministic run records preserve `raw_model_outputs` + `parse_diagnostics`; malformed nesting fails with `LIBRARIAN_PROTOCOL_INVALID`; missing required tags fail with `LIBRARIAN_PARSE_FAILED`
+- [ ] restructure-step S06-W062-V01: run `API-AUTO-04` and parser boundary checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S06-W062-V02: sync parser/apply safety status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)

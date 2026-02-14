@@ -1,29 +1,25 @@
-# Wave 020: Notes CRUD and Projection Baseline
+# Wave 020: Notes Lifecycle, Versions, and History
 
 Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [/docs/spec/domain/note-types.md](/docs/spec/domain/note-types.md)
+- [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
+- [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] implement workspace-scoped note create/list/get/update/title/delete
-- [x] implement note history and rollback APIs
-- [x] enforce optimistic versioning semantics
+- [ ] restructure-step S02-W020-01: implement note create/list/get/update/title/delete paths from [/docs/spec/api/http.md](/docs/spec/api/http.md)
+- [ ] restructure-step S02-W020-02: enforce note-kind and access-scope invariants from [/docs/spec/domain/note-types.md](/docs/spec/domain/note-types.md)
+- [ ] restructure-step S02-W020-03: implement history and rollback semantics from [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- [ ] restructure-step S02-W020-04: enforce optimistic version conflicts and payload types from [/docs/spec/api/types.md](/docs/spec/api/types.md)
+- [ ] restructure-step S02-W020-05: enforce deterministic error responses from [/docs/spec/api/errors.md](/docs/spec/api/errors.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] run `API-NOTE-01..04`
-- [x] run version conflict boundary tests
-
-## Evidence Placeholder
-
-- [x] `Check: note lifecycle + history/rollback + version conflict integration coverage`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md](/docs/log/audits/2026-02-13-stage-02-wave-020-notes-core.md)`
+- [ ] restructure-step S02-W020-V01: run `API-NOTE-*` checks defined in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W020-V02: sync notes-core status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)

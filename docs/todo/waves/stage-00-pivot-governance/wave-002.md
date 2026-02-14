@@ -1,29 +1,27 @@
-# Wave 002: Governance and Ledger Sync
+# Wave 002: Ledger and Workflow Baseline Lock
 
 Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [/docs/reference/README.md](/docs/reference/README.md)
 - [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
 - [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
 - [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] keep one canonical OpenAPI document under `/docs/spec/api/`
-- [x] update log index and proposal references to unversioned contract language
-- [x] synchronize TODO and reference ledgers to unversioned terminology
+- [ ] restructure-step S00-W002-01: lock docs-only baseline claims in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
+- [ ] restructure-step S00-W002-02: lock explicit reconstruction gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] restructure-step S00-W002-03: lock mismatch classes and open rows in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step S00-W002-04: lock stage-level evidence contracts in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] restructure-step S00-W002-05: lock release-blocked state in [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] verify log and proposal docs are reachable from `/docs/log/README.md`
-- [x] verify active canonical docs use unversioned API and WS paths
-
-## Evidence Placeholder
-
-- [x] `Check: deterministic index reachability and canonical unversioned-path scans`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [ ] restructure-step S00-W002-V01: verify stage order and wave order in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- [ ] restructure-step S00-W002-V02: verify TODO start/completion gates in [/docs/todo/README.md](/docs/todo/README.md)

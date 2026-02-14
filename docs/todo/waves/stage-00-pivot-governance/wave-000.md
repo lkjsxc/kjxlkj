@@ -1,30 +1,24 @@
-# Wave 000: API and WS Canonical Reset
+# Wave 000: Canonical Structure Baseline
 
 Back: [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md)
 
 ## Relevant Documents
 
-- [/docs/spec/README.md](/docs/spec/README.md)
-- [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [/docs/README.md](/docs/README.md)
+- [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+- [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
 - [/docs/todo/README.md](/docs/todo/README.md)
-- [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 
-## Implementation Tasks
+## Restructure Steps
 
-- [x] set API base path to `/api` in canonical docs
-- [x] set WS endpoint to `/ws` in canonical docs
-- [x] align OpenAPI document with HTTP and WS contracts
-- [x] enforce `DELETE /notes/{id}` soft-delete path consistency
+- [ ] restructure-step S00-W000-01: align root and docs tree with [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
+- [ ] restructure-step S00-W000-02: enforce directory constraints from [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [ ] restructure-step S00-W000-03: enforce root allowlist from [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+- [ ] restructure-step S00-W000-04: ensure docs index precedence is explicit in [/docs/README.md](/docs/README.md)
+- [ ] restructure-step S00-W000-05: ensure no obsolete workflow references remain in [/docs/todo/README.md](/docs/todo/README.md)
 
-## Verification Tasks
+## Verification Hooks
 
-- [x] link-check `api/` docs and OpenAPI references
-- [x] verify no remaining version-labeled API paths in canonical docs
-
-## Evidence Placeholder
-
-- [x] `Check: deterministic Stage 00 validation pack for API/WS/OpenAPI contract parity and path rules`
-- [x] `Result: pass`
-- [x] `Proof: [/docs/log/audits/2026-02-12-stage-00-canonical-reset.md](/docs/log/audits/2026-02-12-stage-00-canonical-reset.md)`
+- [ ] restructure-step S00-W000-V01: run structure and reachability checks required by [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [ ] restructure-step S00-W000-V02: record baseline alignment in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
