@@ -1,0 +1,8 @@
+target/
+node_modules/
+static/
+*.log
+.env
+src/frontend/app/dist/
+Cargo.lock
+package-lock.json
