@@ -12,13 +12,13 @@ Back: [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/to
 
 ## Restructure Steps
 
-- [x] restructure-step S10-W100-01: tune PostgreSQL pool sizing and timeout policy from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) [doc-link](/docs/spec/technical/performance.md)
-- [x] restructure-step S10-W100-02: enforce SQLx compile-time query checking strategy from [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md) [doc-link](/docs/spec/technical/migrations.md)
-- [x] restructure-step S10-W100-03: implement cross-actor WebSocket broadcast registry semantics from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
-- [x] restructure-step S10-W100-04: automate backup/restore drill workflow from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/operations.md)
-- [x] restructure-step S10-W100-05: synchronize hardening outcomes in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/LIMITATIONS.md)
+- [ ] restructure-step S10-W100-01: tune PostgreSQL pool sizing and timeout policy from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) [doc-link](/docs/spec/technical/performance.md)
+- [ ] restructure-step S10-W100-02: enforce SQLx compile-time query checking strategy from [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md) [doc-link](/docs/spec/technical/migrations.md)
+- [ ] restructure-step S10-W100-03: implement cross-actor WebSocket broadcast registry semantics from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [ ] restructure-step S10-W100-04: automate backup/restore drill workflow from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/operations.md)
+- [ ] restructure-step S10-W100-05: synchronize hardening outcomes in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/LIMITATIONS.md)
 
 ## Verification Hooks
 
-- [x] restructure-step S10-W100-V01: run architecture and operations acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [x] restructure-step S10-W100-V02: record evidence in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md) [doc-link](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] restructure-step S10-W100-V01: run architecture and operations acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S10-W100-V02: record evidence in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md) [doc-link](/docs/reference/EVIDENCE_INDEX.md)
