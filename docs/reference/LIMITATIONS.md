@@ -21,6 +21,9 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 08 frontend automation API, librarian review UX, CSRF client-side, Docker deployment compiled.
 - Stage 08 TypeScript strict compilation clean. All frontend files ≤ 200 lines.
 - TODO checklists for Stages 00–08 are fully checked.
+- Stage 09 CI workflow created and profiles executed locally.
+- Stage 09 file structure and type-safety gates verified.
+- Stage 09 TODO checklists S00–S08 marked in waves/README.md and todo/README.md.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -47,6 +50,7 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-DOCKER-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | Dockerfile and entrypoint created but not built/tested live | `M4 verification gap` | medium | build Docker image and run container end-to-end |
 | `LIM-LIBRARIAN-UX-01` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | librarian review component exists but not tested with live runs | `M4 verification gap` | medium | test review UX with live automation runs |
 | `LIM-FRONTEND-AUTO-API-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | typed automation API client compiled but not tested against live backend | `M4 verification gap` | medium | test API calls against running server |
+| `LIM-CI-GITHUB-01` | [/docs/reference/CI.md](/docs/reference/CI.md) | CI workflow created but not yet run in GitHub Actions | `M4 verification gap` | low | push to GitHub and verify Actions run |
 
 ## Closure Rules
 

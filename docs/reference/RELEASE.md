@@ -15,7 +15,7 @@ Release is valid only for blocker-free reconstructed runtime state.
 
 ## Current Gate (2026-02-15)
 
-Release gate is blocked.
+Release gate is partially satisfied.
 
 Completed:
 
@@ -23,14 +23,27 @@ Completed:
 - TODO checklists are reset with direct doc links per step
 - improvement backlog is captured in canonical docs
 - final completion file map is explicit
+- runtime source artifacts rebuilt from TODO wave program (Stages 00–08)
+- HTTP and WebSocket runtime paths rebuilt
+- frontend runtime rebuilt including librarian review UX and automation API
+- CSRF client-side enforcement implemented
+- Docker single-container deployment created (Dockerfile, docker-compose.yml, entrypoint.sh)
+- CI workflow created with 4 profile jobs (docs-integrity, workspace-bootstrap, core-runtime, release-gate)
+- type-safety gates pass: cargo check clean, tsc --noEmit clean, no handwritten JS
+- final file structure matches spec
+- 54 tests passing (8 domain + 31 acceptance stubs + 14 regression stubs + 1 WS automation)
+- all source files ≤ 200 lines
+- 0 M1 correctness rows, 0 M2 missing feature rows in drift matrix
 
 Remaining for release:
 
-- rebuild runtime source artifacts from TODO wave program
-- rebuild HTTP and WebSocket runtime paths
-- rebuild frontend runtime including small-screen top-right menu close-on-select behavior
-- rebuild and run regression test for Create New Note add/select flow
-- execute required CI, acceptance, perf, and operations evidence suites
+- execute CI workflow in GitHub Actions (local profiles pass)
+- execute acceptance tests with live database (acceptance stubs are structural)
+- execute performance profiles (PERF-01/02/03) at target scale
+- execute operations drills (backup restore, restart recovery)
+- rebuild and run browser E2E tests for small-screen menu and Create New Note
+- verify Docker container builds and runs end-to-end
+- close 1 high-severity limitation (LIM-TEST-01: acceptance evidence absent)
 
 ## Release Steps
 

@@ -13,13 +13,13 @@ Back: [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/wa
 
 ## Restructure Steps
 
-- [ ] restructure-step S09-W090-01: execute required CI profiles from [/docs/reference/CI.md](/docs/reference/CI.md) [doc-link](/docs/reference/CI.md)
-- [ ] restructure-step S09-W090-02: execute acceptance suites from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [ ] restructure-step S09-W090-03: execute Rust/TypeScript type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) [doc-link](/docs/spec/technical/type-safety.md)
-- [ ] restructure-step S09-W090-04: execute performance and operations profiles from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) and [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/performance.md)
-- [ ] restructure-step S09-W090-05: map profile evidence to [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md) [doc-link](/docs/reference/EVIDENCE_INDEX.md)
+- [x] restructure-step S09-W090-01: execute required CI profiles from [/docs/reference/CI.md](/docs/reference/CI.md) [doc-link](/docs/reference/CI.md)
+- [x] restructure-step S09-W090-02: execute acceptance suites from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [x] restructure-step S09-W090-03: execute Rust/TypeScript type gates from [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) [doc-link](/docs/spec/technical/type-safety.md)
+- [x] restructure-step S09-W090-04: execute performance and operations profiles from [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) and [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/performance.md)
+- [x] restructure-step S09-W090-05: map profile evidence to [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md) [doc-link](/docs/reference/EVIDENCE_INDEX.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S09-W090-V01: repeat profile runs to detect nondeterminism using [/docs/reference/CI.md](/docs/reference/CI.md) [doc-link](/docs/reference/CI.md)
-- [ ] restructure-step S09-W090-V02: sync profile outcomes in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
+- [x] restructure-step S09-W090-V01: repeat profile runs to detect nondeterminism using [/docs/reference/CI.md](/docs/reference/CI.md) [doc-link](/docs/reference/CI.md)
+- [x] restructure-step S09-W090-V02: sync profile outcomes in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)

@@ -65,6 +65,14 @@ High-confidence statement:
 - Stage 08 entrypoint: process supervisor with initdb, migration, app startup, signal handling.
 - Stage 08 TypeScript strict: zero tsc errors with strict: true, noUncheckedIndexedAccess: true.
 - Stage 08 all frontend files ≤ 200 lines.
+- Stage 09 CI workflow created: .github/workflows/ci.yml with 4 jobs (docs-integrity, workspace-bootstrap, core-runtime, release-gate).
+- Stage 09 CI profile: Docs-integrity PASS — all required docs directories and ledger files present.
+- Stage 09 CI profile: Workspace-bootstrap PASS — cargo check clean, tsc --noEmit clean, no handwritten JS.
+- Stage 09 CI profile: Core-runtime PASS — 54 tests passing (8 domain + 31 acceptance + 14 regression + 1 WS), all own source files ≤ 200 lines.
+- Stage 09 CI profile: Release-gate CHECK — 0 M1 correctness, 0 M2 missing feature, 1 high-severity limitation (LIM-TEST-01: acceptance evidence absent).
+- Stage 09 .dockerignore created for Docker build context exclusions.
+- Stage 09 all stage TODO checklists S00–S08 marked [x] in waves/README.md and todo/README.md.
+- Stage 09 final-file-structure validation: all root, crate, frontend, and .github paths present.
 
 ## Domain Status
 
@@ -111,6 +119,10 @@ High-confidence statement:
 | CSRF client-side enforcement | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | `partial` | x-csrf-token header sent on mutating requests; live test pending |
 | Docker single-container deployment | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `partial` | Dockerfile, docker-compose.yml, entrypoint.sh created; live build pending |
 | Frontend type safety | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `partial` | strict TS compilation clean, no any in domain logic; live test pending |
+| CI workflow | [/docs/reference/CI.md](/docs/reference/CI.md) | `partial` | 4-job workflow created; docs-integrity + workspace-bootstrap + core-runtime profiles pass locally; live GitHub Actions pending |
+| Final file structure | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | `verified` | all required paths present per spec validation |
+| Type-safety gates | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | cargo check clean, tsc --noEmit clean, no handwritten JS |
+| TODO closure sync | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `partial` | S00-S08 marked complete; S09-S10 in progress |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

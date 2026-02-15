@@ -63,6 +63,9 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-DOCKER-DEPLOY-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | single-container Docker deployment | partial | `M4` | build and test Docker image end-to-end |
 | `R-TYPE-SAFETY-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | strict TypeScript compilation with no any in domain | partial | `M4` | verify tsc --noEmit passes in CI |
 | `R-ENTRYPOINT-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | process supervisor with graceful shutdown | partial | `M4` | test entrypoint signal handling live |
+| `R-CI-WORKFLOW-01` | [/docs/reference/CI.md](/docs/reference/CI.md) | CI workflow with 4 profile jobs | partial | `M4` | run in GitHub Actions |
+| `R-FILE-STRUCTURE-01` | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | repository tree matches spec | aligned | closed | keep synchronized |
+| `R-TYPE-GATE-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | backend + frontend type gates pass | aligned | closed | keep synchronized |
 
 ## Summary
 
@@ -71,7 +74,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 38 |
+| `M4 verification gap` | 39 |
 | `M5 stale docs` | 0 |
 
 ## Related
