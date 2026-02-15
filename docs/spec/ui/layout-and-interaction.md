@@ -15,6 +15,8 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - Small screens MUST preserve independent vertical scrolling.
 - On constrained screens, a menu toggle MUST collapse/restore navigation regions
   so editor can take primary space.
+- On constrained screens, the menu toggle MUST be rendered in the top-right.
+- Selecting a note from constrained-screen navigation MUST close the menu.
 - Touch targets MUST be reachable without horizontal scrolling at widths down to
   `320px`.
 - Typography and editor width MUST adapt fluidly without mode forks.

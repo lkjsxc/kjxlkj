@@ -38,6 +38,9 @@ All TODO markdown files under `docs/todo/` MUST include a section titled
 `## Relevant Documents` with direct Markdown links to all documents required to
 complete that TODO.
 
+Every checklist item (`- [ ]` / `- [x]`) in `docs/todo/` MUST include at least
+one direct Markdown link to its governing documentation target.
+
 Required minimum links in each TODO file:
 
 - canonical spec index
@@ -56,3 +59,4 @@ For any documentation change:
 - [ ] all docs are reachable from `docs/README.md`
 - [ ] no orphan docs exist
 - [ ] every TODO file includes `## Relevant Documents` with Markdown links
+- [ ] every TODO checklist item links directly to governing docs

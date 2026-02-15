@@ -18,12 +18,12 @@ foundations that later stages can safely extend.
 
 ## Ordered Wave Checklist
 
-- [x] restructure-step S01-W010: complete runtime topology and crate skeleton in [wave-010.md](wave-010.md)
-- [x] restructure-step S01-W011: complete auth/session and setup-lock behavior in [wave-011.md](wave-011.md)
-- [x] restructure-step S01-W012: complete role/membership enforcement baseline in [wave-012.md](wave-012.md)
+- [ ] restructure-step S01-W010: complete runtime topology and crate skeleton in [wave-010.md](wave-010.md) [doc-link](wave-010.md)
+- [ ] restructure-step S01-W011: complete auth/session and setup-lock behavior in [wave-011.md](wave-011.md) [doc-link](wave-011.md)
+- [ ] restructure-step S01-W012: complete role/membership enforcement baseline in [wave-012.md](wave-012.md) [doc-link](wave-012.md)
 
 ## Stage Exit Checklist
 
-- [x] restructure-step S01-EXIT-01: runtime skeleton matches [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
-- [x] restructure-step S01-EXIT-02: auth/session contracts match [/docs/spec/security/auth.md](/docs/spec/security/auth.md) and [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md)
-- [x] restructure-step S01-EXIT-03: role checks align with [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md)
+- [ ] restructure-step S01-EXIT-01: runtime skeleton matches [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md) [doc-link](/docs/spec/architecture/source-layout.md)
+- [ ] restructure-step S01-EXIT-02: auth/session contracts match [/docs/spec/security/auth.md](/docs/spec/security/auth.md) and [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) [doc-link](/docs/spec/security/auth.md)
+- [ ] restructure-step S01-EXIT-03: role checks align with [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) [doc-link](/docs/spec/domain/permissions.md)

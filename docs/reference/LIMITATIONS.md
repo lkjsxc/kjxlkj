@@ -4,21 +4,23 @@ Back: [/docs/reference/README.md](/docs/reference/README.md)
 
 Open mismatches between target spec and trusted current behavior.
 
-## Baseline (2025-01-20)
+## Baseline (2026-02-15)
 
 - All in Docs governance is active.
-- Runtime reconstruction stages 00–09 complete.
-- Rust workspace compiles; TypeScript strict mode passes.
-- CI workflow defined. Integration test infrastructure pending.
+- Runtime source code has been intentionally removed.
+- TODO checklists are reset to unchecked reconstruction baseline.
+- Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | integration test infrastructure not yet connected to live DB | `M4 verification gap` | medium | add test harness with ephemeral PG for acceptance suites |
-| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance benchmarks not yet executed at target scale | `M4 verification gap` | low | run PERF-01/02/03 under load and archive telemetry |
-| `LIM-OPS-RESTORE-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup restore drill not yet executed | `M4 verification gap` | low | execute restore drill and record parity proof |
-| `LIM-WS-BROADCAST-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | cross-actor event broadcast requires addr registry (deferred) | `M2 missing feature` | low | implement actor address registry for full broadcast |
+| `LIM-RUNTIME-REBUILD-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime implementation is absent by design during reset | `M2 missing feature` | high | rebuild runtime by executing TODO waves in order |
+| `LIM-API-REBUILD-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP and WS endpoints are currently non-runnable because runtime source is absent | `M2 missing feature` | high | rebuild app/http/ws crates from specs and TODO |
+| `LIM-UI-REBUILD-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | web app runtime is absent; responsive menu behavior is spec-only | `M2 missing feature` | high | rebuild frontend runtime and verify `E2E-12`, `E2E-23` |
+| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic acceptance and integration evidence is absent in reset state | `M4 verification gap` | high | rebuild tests and run mandatory acceptance pack |
+| `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance benchmarks not yet executed at target scale | `M4 verification gap` | medium | run PERF-01/02/03 and archive telemetry |
+| `LIM-OPS-RESTORE-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup restore drill not yet executed | `M4 verification gap` | medium | execute restore drill and record parity proof |
 
 ## Closure Rules
 

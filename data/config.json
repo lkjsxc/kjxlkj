@@ -1,0 +1,61 @@
+{
+  "logging": {
+    "default_level": "info",
+    "json": true,
+    "request_log": true
+  },
+  "server": {
+    "bind_addr": "0.0.0.0:8080",
+    "static_dir": "./static",
+    "request_timeout_ms": 15000,
+    "max_request_body_mb": 16,
+    "cors_allowed_origins": [
+      "http://127.0.0.1:8080"
+    ]
+  },
+  "database": {
+    "app_name": "kjxlkj",
+    "max_connections": 20,
+    "min_connections": 2,
+    "connect_timeout_ms": 5000,
+    "idle_timeout_ms": 30000,
+    "statement_timeout_ms": 15000
+  },
+  "websocket": {
+    "heartbeat_interval_ms": 10000,
+    "client_timeout_ms": 30000,
+    "replay_batch_size": 200
+  },
+  "editor": {
+    "autosave_debounce_ms": 800,
+    "conflict_retry_limit": 2
+  },
+  "automation": {
+    "default_provider_kind": "lmstudio",
+    "base_url": "http://0.0.0.0:1234/v1",
+    "model": "zai-org/glm-4.7-flash",
+    "timeout_ms": 300000,
+    "max_tokens": 4096,
+    "temperature": 0.1,
+    "fallback_models": []
+  },
+  "storage": {
+    "attachments_dir": "./data/attachments",
+    "backups_dir": "./data/backups",
+    "max_attachment_mb": 500
+  },
+  "features": {
+    "dashboard_enabled": false,
+    "librarian_enabled": true,
+    "saved_views_enabled": true
+  },
+  "security": {
+    "secure_cookies": false,
+    "same_site": "lax",
+    "csrf_header": "X-CSRF-Token"
+  },
+  "health": {
+    "healthz_path": "/api/healthz",
+    "readyz_path": "/api/readyz"
+  }
+}

@@ -18,12 +18,12 @@ events and reconnect cursor determinism.
 
 ## Ordered Wave Checklist
 
-- [x] restructure-step S07-W070: complete workspace and librarian event surfaces in [wave-070.md](wave-070.md)
-- [x] restructure-step S07-W071: complete ack/replay/stale-cursor behavior in [wave-071.md](wave-071.md)
-- [x] restructure-step S07-W072: complete end-to-end WS acceptance closure in [wave-072.md](wave-072.md)
+- [ ] restructure-step S07-W070: complete workspace and librarian event surfaces in [wave-070.md](wave-070.md) [doc-link](wave-070.md)
+- [ ] restructure-step S07-W071: complete ack/replay/stale-cursor behavior in [wave-071.md](wave-071.md) [doc-link](wave-071.md)
+- [ ] restructure-step S07-W072: complete end-to-end WS acceptance closure in [wave-072.md](wave-072.md) [doc-link](wave-072.md)
 
 ## Stage Exit Checklist
 
-- [x] restructure-step S07-EXIT-01: event types and order align with [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md)
-- [x] restructure-step S07-EXIT-02: reconnect/idempotency behavior aligns with [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md)
-- [x] restructure-step S07-EXIT-03: WS acceptance evidence aligns with [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- [ ] restructure-step S07-EXIT-01: event types and order align with [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-EXIT-02: reconnect/idempotency behavior aligns with [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S07-EXIT-03: WS acceptance evidence aligns with [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)

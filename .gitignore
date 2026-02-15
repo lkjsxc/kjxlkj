@@ -1,7 +1,11 @@
+/.github/copilot-instructions.md
+/AGENTS.md
+/GEMINI.md
 target/
 **/target/
 .env
 .env.*
+!.env.example
 *.log
 .DS_Store
 node_modules/

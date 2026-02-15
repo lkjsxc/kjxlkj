@@ -22,13 +22,14 @@ graph TD
 
 ## Startup Sequence (normative)
 
-1. load and validate configuration
-2. initialize tracing and error handling
-3. initialize PostgreSQL pool
-4. run pending SQL migrations
-5. start Actix server with HTTP + WS routes
-6. initialize LLM provider adapters (OpenRouter/LM Studio)
-7. start background workers (automation/export/backup/job polling)
+1. load `.env` (secrets) and validate required secret keys
+2. load and validate non-secret runtime config from `data/config.json`
+3. initialize tracing and error handling
+4. initialize PostgreSQL pool
+5. run pending SQL migrations
+6. start Actix server with HTTP + WS routes
+7. initialize LLM provider adapters (OpenRouter/LM Studio)
+8. start background workers (automation/export/backup/job polling)
 
 ## Shutdown Sequence
 
@@ -51,4 +52,5 @@ graph TD
 - Domain events: [/docs/spec/domain/events.md](/docs/spec/domain/events.md)
 - Automation: [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md)
 - Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- Configuration: [configuration.md](configuration.md)
 - Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

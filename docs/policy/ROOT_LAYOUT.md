@@ -12,6 +12,8 @@ The repository root SHOULD contain only:
 |---|---|
 | `README.md` | project index |
 | `LICENSE` | license |
+| `.env.example` | local secret template (no real secrets) |
+| `data/` | non-secret runtime configuration |
 | `docs/` | canonical documentation |
 | `src/` | Rust/TypeScript runtime workspace (derived) |
 | `Cargo.toml` | workspace manifest (derived) |

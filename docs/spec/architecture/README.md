@@ -6,11 +6,13 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 
 | Document | Purpose |
 |---|---|
+| [configuration.md](configuration.md) | runtime configuration model (`data/config.json` + `.env` secrets) |
 | [runtime.md](runtime.md) | Tokio/Actix runtime topology and supervision |
 | [crates.md](crates.md) | canonical crate decomposition |
 | [source-layout.md](source-layout.md) | workspace and module decomposition constraints |
 | [workspace-manifest.md](workspace-manifest.md) | Cargo workspace policy |
 | [deployment.md](deployment.md) | single-container compose/process model |
+| [completion-file-map.md](completion-file-map.md) | required final repository tree with per-path intent |
 
 ## System Shape
 

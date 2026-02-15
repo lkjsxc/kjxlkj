@@ -17,6 +17,8 @@ The following runtime artifacts are required for executable startup:
 - `Dockerfile`
 - `docker-compose.yml`
 - supervisor/entrypoint script used by container startup
+- `data/config.json` (non-secret runtime config)
+- `.env` (secrets; create from `.env.example`)
 
 Use canonical template and rules from:
 
@@ -24,7 +26,7 @@ Use canonical template and rules from:
 
 ## Startup
 
-1. Reconstruct runtime artifacts from specs/TODO waves.
+1. Reconstruct runtime artifacts from specs/TODO waves (repo is currently docs-only reset state).
 2. Build and start: `docker compose up --build`
 3. Confirm health: `docker compose ps`
 4. Confirm readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`

@@ -38,6 +38,7 @@ Back: [/docs/spec/ui/README.md](/docs/spec/ui/README.md)
 - Note title MUST be editable in detail view.
 - Title edits MUST propagate to lists and related navigation surfaces in the same
   interaction cycle.
+- `Create New Note` MUST create a note and move focus to that note's editor view.
 - Autosave is the default authoring path.
 - Manual `Save Now`, inline `Delete`, and inline version badges are optional and
   SHOULD remain hidden in default layout.

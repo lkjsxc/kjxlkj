@@ -33,8 +33,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      KJXLKJ_BIND_ADDR: 0.0.0.0:8080
+      DATABASE_URL: ${DATABASE_URL}
       POSTGRES_DATA_DIR: /var/lib/postgresql/data
+      KJXLKJ_CONFIG_PATH: /app/data/config.json
     volumes:
       - kjxlkj_pg:/var/lib/postgresql/data
     healthcheck:
@@ -55,7 +56,7 @@ volumes:
 |---|---|
 | `/var/lib/postgresql/data` | PostgreSQL persistent data |
 | `/app/static` | built SPA assets |
-| `/app/config` | runtime configuration (optional mount) |
+| `/app/data/config.json` | non-secret runtime configuration |
 
 ## Health Rules
 
@@ -76,4 +77,5 @@ Single-container deployment is accepted only when all pass:
 
 - Docker guide: [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
 - Runtime model: [runtime.md](runtime.md)
+- Configuration contract: [configuration.md](configuration.md)
 - Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)

@@ -8,17 +8,19 @@ Fast path for rebuilding and running the system with single-container Compose.
 
 ## Steps
 
-1. Read [/docs/todo/README.md](/docs/todo/README.md) and execute rebuild waves in order.
-2. Reconstruct runtime artifacts (`src/`, `Dockerfile`, `docker-compose.yml`).
-3. Start stack: `docker compose up --build`
-4. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
-5. Validate key UX flows using acceptance IDs in
+1. Read [/docs/todo/README.md](/docs/todo/README.md) and execute waves in order.
+2. Configure non-secret settings in `data/config.json`.
+3. Copy `.env.example` to `.env` and set secrets.
+4. Start stack: `docker compose up --build`
+5. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
+6. Validate key UX flows using acceptance IDs in
    [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
 ## Notes
 
-- Current repository baseline is docs-only by design.
-- Runtime startup is possible after reconstruction steps are completed.
+- Repository is currently in a docs-only reset state with runtime source removed.
+- Runtime startup requires both `data/config.json` and `.env`.
+- `.env` is ignored by git and must not be committed.
 
 ## Related
 

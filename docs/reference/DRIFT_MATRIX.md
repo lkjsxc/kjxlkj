@@ -18,33 +18,26 @@ Requirement-level mismatch tracking for reconstruction.
 
 | Req ID | Canonical Document | Requirement | Observed Status | Mismatch Class | Action |
 |---|---|---|---|---|---|
-| `R-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime startup and supervision path exists | aligned | closed | keep synchronized |
-| `R-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints are reachable | aligned | closed | keep synchronized |
-| `R-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket protocol is reachable | aligned | closed | broadcast addr registry pending |
-| `R-UI-03` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | focused notes modules are user-reachable in one responsive tree | aligned | closed | keep synchronized |
-| `R-UI-LOCK-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | setup-locked state must render login-only UI with no setup-like appearance | aligned | closed | keep synchronized |
-| `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | constrained screens must provide menu-toggle collapse/restore to expand editor area | aligned | closed | keep synchronized |
-| `R-UI-MODULES-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | dashboards/workspace switcher are optional and project-navigation pane is not baseline | aligned | closed | keep synchronized |
-| `R-UI-RENAME-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | note title rename must propagate immediately to list/navigation surfaces | aligned | closed | keep synchronized |
-| `R-UI-CHROME-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | default editor chrome omits required inline version/save/delete controls | aligned | closed | keep synchronized |
-| `R-RBAC-01` | [/docs/spec/domain/permissions.md](/docs/spec/domain/permissions.md) | role-based authorization is enforced | aligned | closed | keep synchronized |
-| `R-AUTO-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | deterministic automation rules and runs exist | aligned | closed | keep synchronized |
-| `R-LIB-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | autonomous librarian structuring runs are reachable and auditable | aligned | closed | keep synchronized |
-| `R-LIB-PROTO-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | attribute-less XML-like protocol parsing and validation are enforced | aligned | closed | keep synchronized |
-| `R-SEARCH-02` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | full-text and backlink search exists | aligned | closed | keep synchronized |
-| `R-MEDIA-02` | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | standalone media note uploads are supported | aligned | closed | keep synchronized |
-| `R-ISSUE-02` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | canonical findings are covered by regression tests | aligned | closed | keep synchronized and extend as new finding families land |
-| `R-LIB-GUARD-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | librarian parser/retry and operation safety regressions are covered by tests | partial | `M4` | extend deterministic coverage to full operation-kind apply safety suites |
-| `R-PERF-02` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is archived | partial | `M4` | extend baseline to full target-scale envelope and archived telemetry |
-| `R-OPS-02` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart recovery evidence is archived | partial | `M4` | extend current evidence to include restore-drill parity proof |
-| `R-DOC-PIVOT-02` | [/docs/spec/README.md](/docs/spec/README.md) | hard-pivot docs are canonical | aligned | closed | keep synchronized |
+| `R-DOC-PIVOT-02` | [/docs/spec/README.md](/docs/spec/README.md) | documentation is canonical product contract | aligned | closed | keep synchronized |
+| `R-TODO-LINK-01` | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | every TODO checkbox item links directly to governing docs | aligned | closed | keep synchronized |
+| `R-FILEMAP-01` | [/docs/spec/architecture/completion-file-map.md](/docs/spec/architecture/completion-file-map.md) | final completion file structure is fully specified | aligned | closed | keep synchronized |
+| `R-CONFIG-01` | [/docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) | all non-secret runtime configuration lives in `data/config.json` | aligned | closed | keep synchronized |
+| `R-SECRET-01` | [/docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) | secrets are sourced from `.env` only | aligned | closed | keep synchronized |
+| `R-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime startup and supervision path exists | spec-only | `M2` | rebuild runtime crates and startup path |
+| `R-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints are reachable | spec-only | `M2` | rebuild HTTP routes and handlers |
+| `R-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket protocol is reachable | spec-only | `M2` | rebuild WS actor/session runtime |
+| `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | small-screen menu is top-right and closes on note select | spec-only | `M2` | rebuild responsive frontend behavior |
+| `R-UI-CREATE-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | Create New Note creates and selects the new note | spec-only | `M2` | rebuild notes layout create/select flow |
+| `R-TEST-NEWNOTE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic test verifies Create New Note adds a note | spec-only | `M4` | implement test during frontend rebuild |
+| `R-PERF-02` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is archived | partial | `M4` | execute PERF profiles and archive telemetry |
+| `R-OPS-02` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart recovery evidence is archived | partial | `M4` | execute restore drill and record parity proof |
 
 ## Summary
 
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 0 |
+| `M2 missing feature` | 5 |
 | `M3 undocumented behavior` | 0 |
 | `M4 verification gap` | 3 |
 | `M5 stale docs` | 0 |

@@ -54,10 +54,11 @@ Mandatory verification contract for reconstruction.
 | `E2E-09` | automation trigger, run status, and audit visibility |
 | `E2E-10` | session expiry and re-auth without data loss |
 | `E2E-11` | setup-locked state renders login-only UI with no setup-like appearance |
-| `E2E-12` | small-screen menu toggle collapses/restores navigation to enlarge editor |
+| `E2E-12` | small-screen top-right menu toggle collapses/restores navigation to enlarge editor |
 | `E2E-13` | note title rename propagates immediately to notes list/related surfaces |
 | `E2E-14` | default editor chrome omits inline version/save/delete controls |
 | `E2E-15` | librarian run restructures documentation notes with deterministic audit trail |
+| `E2E-23` | pressing Create New Note adds a note and selects it for editing |
 | `PERF-01` | CRUD/search latency under target scale |
 | `PERF-02` | sustained WS stream soak with ordering integrity |
 | `PERF-03` | librarian batch structuring throughput under bounded token/time budgets |
