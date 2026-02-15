@@ -1,8 +1,11 @@
-use kjxlkj_domain::ids::{EventId, NoteId, UserId, WorkspaceId};
+use kjxlkj_domain::ids::{NoteId, WorkspaceId};
 use sqlx::prelude::FromRow;
 use sqlx::PgPool;
 use time::OffsetDateTime;
 use uuid::Uuid;
+
+// Re-export event types and functions.
+pub use crate::repo_note_event::{append_note_event, list_note_events, NoteEventRow};
 
 #[derive(FromRow)]
 pub struct NoteStreamRow {
@@ -31,17 +34,6 @@ pub struct NoteProjectionRow {
     pub metadata_json: serde_json::Value,
 }
 
-#[derive(FromRow)]
-pub struct NoteEventRow {
-    pub event_id: Uuid,
-    pub note_id: Uuid,
-    pub seq: i64,
-    pub event_type: String,
-    pub payload_json: serde_json::Value,
-    pub actor_id: Uuid,
-    pub created_at: OffsetDateTime,
-}
-
 pub async fn create_note_stream(
     pool: &PgPool,
     id: NoteId,
@@ -59,7 +51,6 @@ pub async fn create_note_stream(
     .bind(note_kind)
     .execute(pool)
     .await?;
-    // Create initial projection
     sqlx::query(
         "INSERT INTO note_projections (note_id, workspace_id, title, note_kind)
          VALUES ($1, $2, $3, $4)",
@@ -119,31 +110,6 @@ pub async fn list_notes(
     .await
 }
 
-pub async fn append_note_event(
-    pool: &PgPool,
-    event_id: EventId,
-    note_id: NoteId,
-    seq: i64,
-    event_type: &str,
-    payload_json: &serde_json::Value,
-    actor_id: UserId,
-) -> Result<(), sqlx::Error> {
-    sqlx::query(
-        "INSERT INTO note_events
-         (event_id, note_id, seq, event_type, payload_json, actor_id)
-         VALUES ($1, $2, $3, $4, $5, $6)",
-    )
-    .bind(event_id.0)
-    .bind(note_id.0)
-    .bind(seq)
-    .bind(event_type)
-    .bind(payload_json)
-    .bind(actor_id.0)
-    .execute(pool)
-    .await?;
-    Ok(())
-}
-
 pub async fn update_note_projection(
     pool: &PgPool,
     note_id: NoteId,
@@ -169,7 +135,6 @@ pub async fn update_note_projection(
     .bind(metadata_json)
     .execute(pool)
     .await?;
-    // Update stream version and timestamp
     sqlx::query(
         "UPDATE note_streams SET current_version = $2,
          updated_at = now(), title = $3
@@ -195,19 +160,4 @@ pub async fn soft_delete_note(
     .execute(pool)
     .await?;
     Ok(result.rows_affected() > 0)
-}
-
-pub async fn list_note_events(
-    pool: &PgPool,
-    note_id: NoteId,
-) -> Result<Vec<NoteEventRow>, sqlx::Error> {
-    sqlx::query_as::<_, NoteEventRow>(
-        "SELECT event_id, note_id, seq, event_type,
-                payload_json, actor_id, created_at
-         FROM note_events WHERE note_id = $1
-         ORDER BY seq ASC",
-    )
-    .bind(note_id.0)
-    .fetch_all(pool)
-    .await
 }
