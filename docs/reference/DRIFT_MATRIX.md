@@ -57,6 +57,12 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-WS-REPLAY-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | monotonic cursors and stale-cursor error | partial | `M4` | test cursor replay and stale-cursor rejection |
 | `R-WS-ERROR-ENVELOPE-01` | [/docs/spec/api/errors.md](/docs/spec/api/errors.md) | WS error envelope with details field | partial | `M4` | test WS error payloads |
 | `R-WS-ACCEPTANCE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | WS-02/03/06 acceptance stubs | partial | `M4` | execute WS acceptance pack against live runtime |
+| `R-FRONTEND-AUTO-API-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | typed frontend automation API client | partial | `M4` | test API calls against live backend |
+| `R-LIBRARIAN-UX-01` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | librarian review per-operation accept/reject UX | partial | `M4` | test review component with live runs |
+| `R-CSRF-CLIENT-01` | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | CSRF token sent on mutating frontend requests | partial | `M4` | verify token lifecycle with live requests |
+| `R-DOCKER-DEPLOY-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | single-container Docker deployment | partial | `M4` | build and test Docker image end-to-end |
+| `R-TYPE-SAFETY-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | strict TypeScript compilation with no any in domain | partial | `M4` | verify tsc --noEmit passes in CI |
+| `R-ENTRYPOINT-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | process supervisor with graceful shutdown | partial | `M4` | test entrypoint signal handling live |
 
 ## Summary
 
@@ -65,7 +71,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 31 |
+| `M4 verification gap` | 38 |
 | `M5 stale docs` | 0 |
 
 ## Related

@@ -107,15 +107,28 @@ export interface PresenceEventMsg {
   server_ts: string;
 }
 
+/** Per /docs/spec/api/websocket.md: automation run lifecycle events. */
+export interface AutomationEventMsg {
+  type: "automation_event";
+  workspace_id: string;
+  run_id: string;
+  status: string;
+  event_seq: number;
+  event_type: string;
+  payload: Record<string, unknown>;
+}
+
 export interface Heartbeat {
   type: "heartbeat";
   server_ts: string;
 }
 
+/** Per /docs/spec/api/errors.md: error with optional details. */
 export interface WsError {
   type: "error";
   code: string;
   message: string;
+  details?: Record<string, unknown>;
   request_id?: string;
 }
 
@@ -126,5 +139,6 @@ export type ServerMessage =
   | NoteEventMsg
   | WorkspaceEventMsg
   | PresenceEventMsg
+  | AutomationEventMsg
   | Heartbeat
   | WsError;

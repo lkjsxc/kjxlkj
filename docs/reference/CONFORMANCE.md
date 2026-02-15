@@ -55,6 +55,16 @@ High-confidence statement:
 - Stage 07 error envelope alignment: details field added to WS Error per errors.md spec.
 - Stage 07 STALE_CURSOR error includes structured details (stream_id, attempted_seq, current_cursor).
 - Stage 07 acceptance stubs: WS-02, WS-03, WS-06, API-AUTO-04, API-VIEW-01, API-DASH-01, API-PROJ-01 added (31 total).
+- Stage 08 WS message types: AutomationEventMsg and details field added to frontend WS messages.
+- Stage 08 automation API: full typed client for rules, runs, and review with CSRF token header.
+- Stage 08 librarian review UX: per-operation accept/reject component with decision state.
+- Stage 08 jobs panel: real automation run listing with status colors and review navigation.
+- Stage 08 CSRF client-side: setCsrfToken() and x-csrf-token header on mutating requests.
+- Stage 08 Dockerfile: multi-stage build (Node → Rust → Debian runtime with PostgreSQL).
+- Stage 08 docker-compose: single-container deployment with healthcheck and pg volume.
+- Stage 08 entrypoint: process supervisor with initdb, migration, app startup, signal handling.
+- Stage 08 TypeScript strict: zero tsc errors with strict: true, noUncheckedIndexedAccess: true.
+- Stage 08 all frontend files ≤ 200 lines.
 
 ## Domain Status
 
@@ -96,6 +106,11 @@ High-confidence statement:
 | WS replay and cursor guarantees | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | monotonic cursors, stale-cursor error, idempotent retransmit compiled; live test pending |
 | WS error envelope | [/docs/spec/api/errors.md](/docs/spec/api/errors.md) | `partial` | details field added to WS error per spec; live test pending |
 | WS acceptance coverage | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | 31 acceptance stubs compiled and passing; runtime verification pending |
+| Frontend automation API | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | `partial` | typed API client for automation rules/runs/review compiled; live test pending |
+| Librarian review UX | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | `partial` | per-operation accept/reject review component compiled; live test pending |
+| CSRF client-side enforcement | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | `partial` | x-csrf-token header sent on mutating requests; live test pending |
+| Docker single-container deployment | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `partial` | Dockerfile, docker-compose.yml, entrypoint.sh created; live build pending |
+| Frontend type safety | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `partial` | strict TS compilation clean, no any in domain logic; live test pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

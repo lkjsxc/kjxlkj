@@ -14,15 +14,31 @@ export class ApiClientError extends Error {
   }
 }
 
+/** CSRF token cached from session response. */
+let csrfToken: string | null = null;
+
+/** Set CSRF token for mutating requests. */
+export function setCsrfToken(token: string | null): void {
+  csrfToken = token;
+}
+
 async function request<T>(
   method: string,
   path: string,
   body?: unknown,
 ): Promise<T> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  // Per /docs/spec/security/csrf.md: include x-csrf-token on
+  // mutating methods.
+  if (csrfToken && method !== "GET" && method !== "HEAD") {
+    headers["x-csrf-token"] = csrfToken;
+  }
   const opts: RequestInit = {
     method,
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
+    headers,
   };
   if (body !== undefined) {
     opts.body = JSON.stringify(body);

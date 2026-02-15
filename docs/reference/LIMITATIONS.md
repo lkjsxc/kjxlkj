@@ -18,7 +18,9 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 07 WS event surfaces, automation event classification, replay/cursor guarantees compiled.
 - Stage 07 error envelope aligned with details field per errors.md spec.
 - Stage 07 acceptance stubs: WS-02, WS-03, WS-06, API-AUTO-04, API-VIEW-01, API-DASH-01, API-PROJ-01 (31 total).
-- TODO checklists for Stages 00–07 are fully checked.
+- Stage 08 frontend automation API, librarian review UX, CSRF client-side, Docker deployment compiled.
+- Stage 08 TypeScript strict compilation clean. All frontend files ≤ 200 lines.
+- TODO checklists for Stages 00–08 are fully checked.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -42,6 +44,9 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-PROVIDER-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | provider adapters compiled but not tested against live LLM endpoints | `M4 verification gap` | medium | test with openrouter and lmstudio endpoints |
 | `LIM-XML-PARSER-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | xml_attrless parser compiled but not tested against representative payloads | `M4 verification gap` | medium | add unit tests with sample librarian response payloads |
 | `LIM-WS-AUTOMATION-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | automation event classification compiled but not tested with live WS stream | `M4 verification gap` | medium | test automation events via live WS connection |
+| `LIM-DOCKER-01` | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | Dockerfile and entrypoint created but not built/tested live | `M4 verification gap` | medium | build Docker image and run container end-to-end |
+| `LIM-LIBRARIAN-UX-01` | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | librarian review component exists but not tested with live runs | `M4 verification gap` | medium | test review UX with live automation runs |
+| `LIM-FRONTEND-AUTO-API-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | typed automation API client compiled but not tested against live backend | `M4 verification gap` | medium | test API calls against running server |
 
 ## Closure Rules
 
