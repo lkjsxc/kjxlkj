@@ -1,10 +1,14 @@
 pub mod dto;
+pub mod dto_automation;
 pub mod error_response;
 pub mod extractors;
 pub mod patch_ops;
 pub mod routes_attachments;
 pub mod routes_attachments_dl;
 pub mod routes_auth;
+pub mod routes_automation_rules;
+pub mod routes_automation_runs;
+pub mod routes_export;
 pub mod routes_health;
 pub mod routes_members;
 pub mod routes_metadata;

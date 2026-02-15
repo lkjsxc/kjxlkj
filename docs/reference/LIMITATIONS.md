@@ -10,7 +10,9 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 00 governance baseline complete.
 - Stage 01 crate skeleton scaffolded and compiling.
 - Stage 02 notes lifecycle, realtime WS, metadata, search, attachments compiled.
-- TODO checklists for Stages 00–02 are fully checked.
+- Stage 03 frontend web app shell compiled.
+- Stage 04 automation, export, librarian DB and HTTP routes compiled.
+- TODO checklists for Stages 00–04 are fully checked.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -26,6 +28,8 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-SEARCH-FTS-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | search is PostgreSQL FTS only; no vector/semantic search | `M4 verification gap` | low | evaluate vector extension if needed post-release |
 | `LIM-ATTACH-STREAM-01` | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | attachment download streams from DB chunks, not object store | `M4 verification gap` | low | consider S3/object-store backend for large files |
 | `LIM-WS-UNSAFE-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS actor uses unsafe raw pointer for &mut SubscriptionState across async boundary | `M3 undocumented behavior` | medium | refactor to safe actor message pattern |
+| `LIM-AUTO-REBUILD-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rule/run and librarian pipeline compiled but not acceptance-tested | `M4 verification gap` | medium | run automation acceptance tests |
+| `LIM-EXPORT-REBUILD-01` | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | export/backup jobs compiled but not acceptance-tested | `M4 verification gap` | medium | run export acceptance tests |
 
 ## Closure Rules
 

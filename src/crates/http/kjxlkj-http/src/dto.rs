@@ -190,3 +190,6 @@ pub struct MemberResponse {
     pub role: String,
     pub joined_at: String,
 }
+
+// Re-export automation/export DTOs from split module.
+pub use crate::dto_automation::*;

@@ -36,6 +36,10 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-TEST-NEWNOTE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic test verifies Create New Note adds a note | spec-only | `M4` | implement test during frontend rebuild |
 | `R-PERF-02` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is archived | partial | `M4` | execute PERF profiles and archive telemetry |
 | `R-OPS-02` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart recovery evidence is archived | partial | `M4` | execute restore drill and record parity proof |
+| `R-AUTO-RULE-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rule CRUD with provider validation | partial | `M4` | run acceptance tests for rule CRUD |
+| `R-AUTO-RUN-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | run state machine with idempotency | partial | `M4` | run acceptance tests for run lifecycle |
+| `R-EXPORT-01` | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | export/backup job lifecycle | partial | `M4` | run acceptance tests for export jobs |
+| `R-LIBRARIAN-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian report and operation audit | partial | `M4` | run acceptance tests for librarian pipeline |
 
 ## Summary
 
@@ -44,7 +48,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 10 |
+| `M4 verification gap` | 14 |
 | `M5 stale docs` | 0 |
 
 ## Related

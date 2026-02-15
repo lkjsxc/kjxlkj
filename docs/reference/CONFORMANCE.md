@@ -33,6 +33,12 @@ High-confidence statement:
 - Stage 02 WS realtime: subscribe/unsubscribe/ack/apply-patch with cursor-based replay compiled.
 - Stage 02 idempotency: key store/find/cleanup for WS patches compiled.
 - Stage 02 snapshots: store/find for event-sourced rollback compiled.
+- Stage 03 frontend: React/Vite SPA compiled with auth/editor/layout.
+- Stage 04 migration 008: librarian_run_reports, librarian_operations, status alignment.
+- Stage 04 automation rules: CRUD with provider validation compiled.
+- Stage 04 automation runs: launch/list/detail/review with idempotency compiled.
+- Stage 04 export/backup: markdown export and SQL backup job lifecycle compiled.
+- Stage 04 librarian reports and operations: audit log store and decision pipeline compiled.
 
 ## Domain Status
 
@@ -54,6 +60,9 @@ High-confidence statement:
 | Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `partial` | React/Vite SPA compiled; shell/auth/editor/layout implemented; live test pending |
 | Editor flow | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | `partial` | synced/draft split, autosave, conflict handling compiled; live test pending |
 | Responsive layout | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `partial` | split-pane at 1024px, compact menu toggle compiled; visual test pending |
+| Automation rules and runs | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | `partial` | rule CRUD, run state machine, idempotency, review compiled; live test pending |
+| Export and backup jobs | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | `partial` | markdown/SQL job lifecycle compiled; live test pending |
+| Librarian operations audit | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | report/operation store and decision pipeline compiled; live test pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

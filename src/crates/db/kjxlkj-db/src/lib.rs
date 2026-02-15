@@ -1,7 +1,12 @@
 pub mod pool;
 pub mod repo_attachment;
+pub mod repo_automation_rule;
+pub mod repo_automation_run;
 pub mod repo_backlink;
+pub mod repo_export_job;
 pub mod repo_idempotency;
+pub mod repo_librarian_operation;
+pub mod repo_librarian_report;
 pub mod repo_metadata;
 pub mod repo_note;
 pub mod repo_note_event;
