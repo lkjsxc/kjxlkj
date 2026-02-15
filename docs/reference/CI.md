@@ -9,12 +9,13 @@ Reproducible verification profiles.
 - CI workflow: `.github/workflows/ci.yml`
 - Jobs: docs-integrity → workspace-bootstrap → core-runtime → release-gate
 
-## Baseline State (2025-01-20)
+## Baseline State (2026-02-15)
 
 - Active profile target: `Release`.
 - `Workspace-bootstrap` profile passes: cargo check + tsc --noEmit + vite build.
 - `Core-runtime` profile passes: cargo test --workspace.
 - Integration test infrastructure for DB-connected acceptance suites is pending.
+- Runtime source code is intentionally absent; CI profiles are rebuild targets.
 
 ## Verification Profiles
 

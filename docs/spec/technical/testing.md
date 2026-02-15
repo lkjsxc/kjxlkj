@@ -58,6 +58,12 @@ Mandatory verification contract for reconstruction.
 | `E2E-13` | note title rename propagates immediately to notes list/related surfaces |
 | `E2E-14` | default editor chrome omits inline version/save/delete controls |
 | `E2E-15` | librarian run restructures documentation notes with deterministic audit trail |
+| `E2E-17` | editor save/sync/conflict/offline state transitions and draft integrity under contention |
+| `E2E-18` | session expiry redirect preserves draft recovery and conflict resolution paths |
+| `E2E-19` | compact-screen (320px) menu toggle, horizontal scroll avoidance, and reachable controls |
+| `E2E-20` | note-first baseline operates without dashboard/workspace-switcher/project-rail modules |
+| `E2E-21` | keyboard-first command palette and deterministic focus order when panels open/close |
+| `E2E-22` | interactive controls expose accessible names/roles and announce async state transitions |
 | `E2E-23` | pressing Create New Note adds a note and selects it for editing |
 | `PERF-01` | CRUD/search latency under target scale |
 | `PERF-02` | sustained WS stream soak with ordering integrity |
@@ -82,6 +88,7 @@ Mandatory verification contract for reconstruction.
 | `REG-USR-006` | `USR-006` | baseline UX remains note-first without mandatory dashboard clutter |
 | `REG-USR-007` | `USR-007` | title rename propagates same-cycle across list/navigation |
 | `REG-USR-008` | `USR-008` | default editor chrome remains minimal |
+| `REG-UX-003` | `USR-005` | desktop list-left/editor-right and compact editor-primary with top-right menu orientation |
 
 ## Determinism Rules
 

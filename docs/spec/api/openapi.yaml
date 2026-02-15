@@ -163,10 +163,22 @@ paths:
     delete:
       summary: Delete automation rule
       responses: { '204': { description: Rule deleted } }
+  /automation/rules/{id}/launch:
+    post:
+      summary: Manually launch an automation run for selected rule
+      responses: { '202': { description: Run launched } }
+  /automation/runs:
+    get:
+      summary: List automation runs for workspace
+      responses: { '200': { description: Run list } }
   /automation/runs/{id}:
     get:
       summary: Get automation run status (including librarian run reports)
       responses: { '200': { description: Run status } }
+  /automation/runs/{id}/review:
+    post:
+      summary: Persist apply/reject decisions and optional apply execution summary
+      responses: { '200': { description: Review persisted } }
   /notes/{id}/attachments:
     post:
       summary: Upload attachment

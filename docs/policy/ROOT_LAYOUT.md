@@ -21,6 +21,8 @@ The repository root SHOULD contain only:
 | `package.json` | frontend package manifest (derived) |
 | `package-lock.json` | frontend lockfile (derived) |
 | `tsconfig.json` | frontend type-check policy (derived) |
+| `vite.config.ts` | Vite build/dev/preview config (derived) |
+| `vitest.config.ts` | Vitest test runner config (derived) |
 | `.gitignore` | ignore rules |
 | `docker-compose.yml` | single-service deployment file (derived) |
 | `Dockerfile` | container image definition (derived) |

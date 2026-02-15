@@ -21,5 +21,5 @@ Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/s
 
 ## Verification Hooks
 
-- [ ] restructure-step S05-W051-V01: run `REG-IMP-*` and `REG-USR-*` packs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S05-W051-V01: run `REG-IMP-*`, `REG-USR-*`, and `REG-UX-003` packs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S05-W051-V02: sync regression closure status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
