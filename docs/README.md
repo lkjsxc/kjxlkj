@@ -47,6 +47,7 @@ Historical change context is kept in git history, not in a dedicated docs log tr
 | [todo/](todo/README.md) | staged reconstruction execution contract |
 | [guides/](guides/README.md) | operator workflows |
 | [overview/](overview/README.md) | product concepts and vocabulary |
+| [logs/](logs/README.md) | execution logs, audits, and improvement journals |
 
 ## Related
 
