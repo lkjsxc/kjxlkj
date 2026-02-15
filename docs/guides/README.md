@@ -21,6 +21,7 @@ For authority, use:
 | [DOCKER.md](DOCKER.md) | single-container compose workflow |
 | [API.md](API.md) | API usage and discovery pointers |
 | [LIBRARIAN.md](LIBRARIAN.md) | configure and operate autonomous librarian runs |
+| [RECONSTRUCTION_BOOTSTRAP.md](RECONSTRUCTION_BOOTSTRAP.md) | step-by-step bootstrap guide for AI-driven reconstruction |
 
 ## Related
 

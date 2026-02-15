@@ -13,6 +13,8 @@ Cross-cutting requirements for testing, performance, migrations, and operations.
 | [migrations.md](migrations.md) | SQLx migration discipline |
 | [operations.md](operations.md) | backup/recovery/observability rules |
 | [librarian-agent.md](librarian-agent.md) | LLM provider, prompt protocol, and structuring pipeline |
+| [type-safety.md](type-safety.md) | compile-time type gates and frontend strict mode |
+| [librarian-prompts/](librarian-prompts/README.md) | canonical prompt pack for librarian agent stages |
 
 ## Related
 

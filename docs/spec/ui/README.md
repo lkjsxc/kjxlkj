@@ -13,6 +13,7 @@ Defines web-app interaction boundaries for the rebuilt runtime.
 | [editor-flow.md](editor-flow.md) | note editing, sync, and conflict handling |
 | [layout-and-interaction.md](layout-and-interaction.md) | responsive layout, visual hierarchy, interaction feedback |
 | [findings-traceability.md](findings-traceability.md) | `IMP-*` and `USR-*` finding-to-requirement mapping |
+| [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md) | normative UX requirements matrix for reconstruction |
 
 ## Related
 
