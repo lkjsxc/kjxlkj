@@ -16,7 +16,6 @@ pub async fn ws_connect(
     pool: web::Data<PgPool>,
     ws_config: web::Data<WsConfig>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    // Extract session from cookie
     let cookie = req
         .cookie("kjxlkj_session")
         .ok_or_else(|| actix_web::error::ErrorUnauthorized("session required"))?;
@@ -36,6 +35,8 @@ pub async fn ws_connect(
         user_id.0,
         ws_config.heartbeat_interval_ms,
         ws_config.client_timeout_ms,
+        pool.get_ref().clone(),
+        ws_config.replay_batch_size,
     );
     ws::start(actor, &req, stream)
 }

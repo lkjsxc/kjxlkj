@@ -18,8 +18,18 @@ pub enum DomainError {
     #[error("not found: {0}")]
     NotFound(String),
 
+    #[error("workspace not found: {0}")]
+    WorkspaceNotFound(String),
+
     #[error("version conflict: expected {expected}, found {found}")]
     VersionConflict { expected: i64, found: i64 },
+
+    #[error("stale cursor: stream {stream_id}, attempted {attempted}, current {current}")]
+    StaleCursor {
+        stream_id: String,
+        attempted: i64,
+        current: i64,
+    },
 
     #[error("bad request: {0}")]
     BadRequest(String),
@@ -61,7 +71,9 @@ impl DomainError {
             Self::CsrfInvalid => "CSRF_INVALID",
             Self::RoleForbidden(_) => "ROLE_FORBIDDEN",
             Self::NotFound(_) => "NOTE_NOT_FOUND",
+            Self::WorkspaceNotFound(_) => "WORKSPACE_NOT_FOUND",
             Self::VersionConflict { .. } => "VERSION_CONFLICT",
+            Self::StaleCursor { .. } => "STALE_CURSOR",
             Self::BadRequest(_) => "BAD_REQUEST",
             Self::InvalidPatch => "INVALID_PATCH",
             Self::AttachmentTooLarge => "ATTACHMENT_TOO_LARGE",
@@ -80,8 +92,9 @@ impl DomainError {
         match self {
             Self::AuthRequired | Self::InvalidCredentials => 401,
             Self::CsrfInvalid | Self::RoleForbidden(_) => 403,
-            Self::NotFound(_) => 404,
+            Self::NotFound(_) | Self::WorkspaceNotFound(_) => 404,
             Self::VersionConflict { .. } | Self::MembershipConflict => 409,
+            Self::StaleCursor { .. } => 409,
             Self::BadRequest(_) | Self::InvalidPatch => 400,
             Self::AttachmentTooLarge => 413,
             Self::RateLimited => 429,

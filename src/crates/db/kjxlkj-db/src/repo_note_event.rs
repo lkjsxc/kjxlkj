@@ -1,3 +1,5 @@
+//! Note event functions split from repo_note.rs.
+
 use kjxlkj_domain::ids::{EventId, NoteId, UserId};
 use sqlx::prelude::FromRow;
 use sqlx::PgPool;

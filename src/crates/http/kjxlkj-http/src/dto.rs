@@ -76,8 +76,10 @@ pub struct WorkspaceResponse {
 #[derive(Debug, Deserialize)]
 pub struct CreateNoteRequest {
     pub workspace_id: uuid::Uuid,
+    pub project_id: Option<uuid::Uuid>,
     pub title: Option<String>,
     pub note_kind: Option<String>,
+    pub access_scope: Option<String>,
 }
 
 /// Note stream response.
@@ -118,6 +120,60 @@ pub struct PatchNoteRequest {
 pub struct PatchTitleRequest {
     pub base_version: i64,
     pub title: String,
+}
+
+/// Rollback note request per /docs/spec/api/http.md.
+#[derive(Debug, Deserialize)]
+pub struct RollbackNoteRequest {
+    pub target_version: i64,
+}
+
+/// Upsert metadata request per /docs/spec/domain/metadata.md.
+#[derive(Debug, Deserialize)]
+pub struct UpsertMetadataRequest {
+    pub value: serde_json::Value,
+}
+
+/// Replace tags request per /docs/spec/api/http.md.
+#[derive(Debug, Deserialize)]
+pub struct ReplaceTagsRequest {
+    pub tags: Vec<String>,
+}
+
+/// Tag response.
+#[derive(Debug, Serialize)]
+pub struct TagResponse {
+    pub id: uuid::Uuid,
+    pub workspace_id: uuid::Uuid,
+    pub name: String,
+}
+
+/// Search result response.
+#[derive(Debug, Serialize)]
+pub struct SearchResultResponse {
+    pub note_id: uuid::Uuid,
+    pub title: String,
+    pub rank: f32,
+}
+
+/// Backlink response.
+#[derive(Debug, Serialize)]
+pub struct BacklinkResponse {
+    pub source_note_id: uuid::Uuid,
+    pub title: String,
+}
+
+/// Attachment response.
+#[derive(Debug, Serialize)]
+pub struct AttachmentResponse {
+    pub id: uuid::Uuid,
+    pub note_id: uuid::Uuid,
+    pub filename: String,
+    pub mime: String,
+    pub size_bytes: i64,
+    pub sha256: String,
+    pub chunk_count: i32,
+    pub created_at: String,
 }
 
 /// Upsert member request.

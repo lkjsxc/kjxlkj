@@ -1,7 +1,10 @@
 use actix_files::Files;
 use actix_web::{web, App, HttpServer};
 use kjxlkj_db::pool;
-use kjxlkj_http::{routes_auth, routes_health, routes_notes, routes_users, routes_workspaces};
+use kjxlkj_http::{
+    routes_attachments, routes_auth, routes_health, routes_metadata,
+    routes_notes, routes_search, routes_users, routes_workspaces,
+};
 use kjxlkj_ws::route::{ws_connect, WsConfig};
 use tracing::info;
 
@@ -110,7 +113,10 @@ pub async fn run(config: AppConfig) -> anyhow::Result<()> {
             // Note routes
             .route("/api/notes", web::post().to(routes_notes::create_note))
             .route("/api/notes", web::get().to(routes_notes::list_notes))
-            .route("/api/notes/{id}", web::get().to(routes_notes::get_note))
+            .route(
+                "/api/notes/{id}",
+                web::get().to(routes_notes::get_note),
+            )
             .route(
                 "/api/notes/{id}",
                 web::patch().to(routes_notes::patch_note),
@@ -126,6 +132,49 @@ pub async fn run(config: AppConfig) -> anyhow::Result<()> {
             .route(
                 "/api/notes/{id}/history",
                 web::get().to(routes_notes::note_history),
+            )
+            .route(
+                "/api/notes/{id}/rollback",
+                web::post().to(routes_notes::rollback_note),
+            )
+            // Metadata & tags
+            .route(
+                "/api/notes/{id}/metadata/{key}",
+                web::put().to(routes_metadata::upsert_metadata),
+            )
+            .route(
+                "/api/notes/{id}/metadata/{key}",
+                web::delete().to(routes_metadata::delete_metadata),
+            )
+            .route(
+                "/api/notes/{id}/tags",
+                web::put().to(routes_metadata::replace_tags),
+            )
+            .route(
+                "/api/tags",
+                web::get().to(routes_metadata::list_tags),
+            )
+            // Search & backlinks
+            .route(
+                "/api/search",
+                web::get().to(routes_search::search),
+            )
+            .route(
+                "/api/notes/{id}/backlinks",
+                web::get().to(routes_search::get_backlinks),
+            )
+            // Attachments
+            .route(
+                "/api/notes/{id}/attachments",
+                web::post().to(routes_attachments::upload_attachment),
+            )
+            .route(
+                "/api/attachments/{id}",
+                web::get().to(routes_attachments::download_attachment),
+            )
+            .route(
+                "/api/attachments/{id}",
+                web::delete().to(routes_attachments::delete_attachment),
             )
             // WebSocket
             .route("/ws", web::get().to(ws_connect))
@@ -143,7 +192,6 @@ fn init_tracing(level: &str, json: bool) {
     use tracing_subscriber::{fmt, EnvFilter};
     let filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| EnvFilter::new(level));
-
     if json {
         fmt().with_env_filter(filter).json().init();
     } else {

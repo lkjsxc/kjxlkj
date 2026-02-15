@@ -4,9 +4,15 @@ use sqlx::PgPool;
 use time::OffsetDateTime;
 use uuid::Uuid;
 
-// Re-export event types and functions.
-pub use crate::repo_note_event::{append_note_event, list_note_events, NoteEventRow};
+// Re-export event types and functions for callers using repo_note::*.
+pub use crate::repo_note_event::{
+    append_note_event, list_note_events, NoteEventRow,
+};
+pub use crate::repo_note_snapshot::{
+    find_latest_snapshot, list_note_events_from, store_snapshot, SnapshotRow,
+};
 
+/// Note stream row per /docs/spec/domain/notes.md.
 #[derive(FromRow)]
 pub struct NoteStreamRow {
     pub id: Uuid,
@@ -38,25 +44,32 @@ pub async fn create_note_stream(
     pool: &PgPool,
     id: NoteId,
     workspace_id: WorkspaceId,
+    project_id: Option<Uuid>,
     title: &str,
     note_kind: &str,
+    access_scope: &str,
 ) -> Result<(), sqlx::Error> {
     sqlx::query(
-        "INSERT INTO note_streams (id, workspace_id, title, note_kind)
-         VALUES ($1, $2, $3, $4)",
+        "INSERT INTO note_streams
+         (id, workspace_id, project_id, title, note_kind, access_scope)
+         VALUES ($1, $2, $3, $4, $5, $6)",
     )
     .bind(id.0)
     .bind(workspace_id.0)
+    .bind(project_id)
     .bind(title)
     .bind(note_kind)
+    .bind(access_scope)
     .execute(pool)
     .await?;
     sqlx::query(
-        "INSERT INTO note_projections (note_id, workspace_id, title, note_kind)
-         VALUES ($1, $2, $3, $4)",
+        "INSERT INTO note_projections
+         (note_id, workspace_id, project_id, title, note_kind)
+         VALUES ($1, $2, $3, $4, $5)",
     )
     .bind(id.0)
     .bind(workspace_id.0)
+    .bind(project_id)
     .bind(title)
     .bind(note_kind)
     .execute(pool)

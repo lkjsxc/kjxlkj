@@ -26,6 +26,13 @@ High-confidence statement:
 - WebSocket session actor with heartbeat and connection upgrade.
 - All source files respect 200-line layout constraint.
 - Runtime not yet tested against live database (no integration test evidence).
+- Stage 02 notes lifecycle: create/list/get/patch/delete/rollback handlers compiled.
+- Stage 02 metadata & tags: upsert/delete/replace handlers compiled.
+- Stage 02 search & backlinks: FTS search and backlink extraction compiled.
+- Stage 02 attachments: chunked upload/download/delete with SHA-256 compiled.
+- Stage 02 WS realtime: subscribe/unsubscribe/ack/apply-patch with cursor-based replay compiled.
+- Stage 02 idempotency: key store/find/cleanup for WS patches compiled.
+- Stage 02 snapshots: store/find for event-sourced rollback compiled.
 
 ## Domain Status
 
@@ -38,7 +45,12 @@ High-confidence statement:
 | Runtime configuration split (`data/config.json` + `.env`) | [/docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) | `verified` | non-secret vs secret boundary is explicit and documented |
 | Runtime implementation | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `partial` | 10 crates compile; startup sequence coded; live DB test pending |
 | HTTP/API reachability | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | all route handlers compiled; acceptance tests pending |
-| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | session actor and upgrade handler compiled; replay pending |
+| WS protocol reachability | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | session actor, subscribe/ack replay, apply-patch compiled; live test pending |
+| Notes lifecycle (CRUD + rollback) | [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md) | `partial` | create/list/get/patch/delete/rollback handlers compiled; live test pending |
+| Metadata & tags | [/docs/spec/domain/metadata.md](/docs/spec/domain/metadata.md) | `partial` | upsert/delete/replace compiled; validation tests in domain crate |
+| Search & backlinks | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | `partial` | FTS and backlink extraction compiled; live test pending |
+| Attachments (chunked) | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | `partial` | upload/download/delete with SHA-256 compiled; live test pending |
+| Idempotency & snapshots | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | key store and snapshot store compiled; live test pending |
 | Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | frontend source intentionally absent |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |

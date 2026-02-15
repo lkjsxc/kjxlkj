@@ -1,5 +1,7 @@
+pub mod backlink;
 pub mod error;
 pub mod ids;
+pub mod metadata;
 pub mod note;
 pub mod permission;
 pub mod project;
