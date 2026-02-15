@@ -19,8 +19,15 @@ export function NotesLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [compact, setCompact] = useState(window.innerWidth < BREAKPOINT);
-  const { selectedId, select, create } = useNotes();
-  const { clear } = useEditor();
+  const {
+    notes,
+    selectedId,
+    loading,
+    select,
+    create,
+    search,
+  } = useNotes();
+  const { clear } = useEditor({ autosave: false });
 
   useEffect(() => {
     const onResize = () => setCompact(window.innerWidth < BREAKPOINT);
@@ -74,7 +81,14 @@ export function NotesLayout() {
       {/* Notes list pane */}
       {(!compact || menuOpen) && (
         <div style={compact ? styles.listCompact : styles.listDesktop}>
-          <NotesList onSelect={handleSelect} />
+          <NotesList
+            notes={notes}
+            selectedId={selectedId}
+            loading={loading}
+            onSelect={handleSelect}
+            onCreate={create}
+            onSearch={search}
+          />
         </div>
       )}
 

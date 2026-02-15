@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 
 export function LoginView() {
   const { login } = useAuth();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +18,7 @@ export function LoginView() {
     setError("");
     setSubmitting(true);
     try {
-      await login(username, password);
+      await login(email, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -32,10 +32,10 @@ export function LoginView() {
         <h1 style={styles.title}>Login</h1>
         <form onSubmit={(e) => void handleSubmit(e)} style={styles.form}>
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             autoFocus
             style={styles.input}

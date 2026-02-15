@@ -51,11 +51,17 @@ pub async fn run(config: AppConfig) -> anyhow::Result<()> {
             // Health
             .route("/api/healthz", web::get().to(routes_health::healthz))
             .route("/api/readyz", web::get().to(routes_health::readyz))
-            // Auth
+            // Auth (legacy + /api-prefixed compatibility)
+            .route("/setup/register", web::get().to(routes_auth::setup_status))
             .route("/setup/register", web::post().to(routes_auth::setup_register))
             .route("/auth/login", web::post().to(routes_auth::login))
             .route("/auth/logout", web::post().to(routes_auth::logout))
             .route("/auth/session", web::get().to(routes_auth::get_session))
+            .route("/api/setup/register", web::get().to(routes_auth::setup_status))
+            .route("/api/setup/register", web::post().to(routes_auth::setup_register))
+            .route("/api/auth/login", web::post().to(routes_auth::login))
+            .route("/api/auth/logout", web::post().to(routes_auth::logout))
+            .route("/api/auth/session", web::get().to(routes_auth::get_session))
             // Users
             .route("/api/users", web::get().to(routes_users::list_users))
             .route("/api/users", web::post().to(routes_users::create_user))

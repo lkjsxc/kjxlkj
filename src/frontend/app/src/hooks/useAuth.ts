@@ -15,16 +15,17 @@ export function useAuth() {
   const dispatch = useAuthDispatch();
 
   const login = useCallback(
-    async (username: string, password: string) => {
-      const session: Session = await apiLogin({ username, password });
+    async (email: string, password: string) => {
+      const session: Session = await apiLogin({ email, password });
       dispatch({ type: "authenticated", session });
     },
     [dispatch],
   );
 
   const register = useCallback(
-    async (username: string, password: string) => {
-      const session: Session = await apiRegister({ username, password });
+    async (email: string, displayName: string, password: string) => {
+      await apiRegister({ email, display_name: displayName, password });
+      const session: Session = await apiLogin({ email, password });
       dispatch({ type: "authenticated", session });
     },
     [dispatch],

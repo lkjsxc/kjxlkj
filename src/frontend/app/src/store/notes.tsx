@@ -43,7 +43,14 @@ function reducer(state: NotesState, action: NotesAction): NotesState {
       return {
         ...state,
         notes: state.notes.map((n) =>
-          n.id === action.note.id ? action.note : n,
+          n.id === action.note.id
+            ? {
+                ...n,
+                ...action.note,
+                created_at: action.note.created_at || n.created_at,
+                updated_at: action.note.updated_at || n.updated_at,
+              }
+            : n,
         ),
       };
     case "remove_note":

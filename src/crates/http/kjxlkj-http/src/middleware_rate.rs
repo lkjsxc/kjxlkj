@@ -70,7 +70,11 @@ where
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let path = req.path().to_owned();
-        if !path.starts_with("/auth/") && !path.starts_with("/setup/") {
+        let is_auth_path = path.starts_with("/auth/")
+            || path.starts_with("/setup/")
+            || path.starts_with("/api/auth/")
+            || path.starts_with("/api/setup/");
+        if !is_auth_path {
             let fut = self.service.call(req);
             return Box::pin(async move { fut.await });
         }

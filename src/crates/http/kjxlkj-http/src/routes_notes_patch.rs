@@ -11,6 +11,13 @@ use crate::error_response::{domain_error_response, new_request_id};
 use crate::extractors::extract_session;
 use crate::patch_ops::apply_patch_ops;
 
+fn is_unique_violation(err: &sqlx::Error) -> bool {
+    matches!(
+        err,
+        sqlx::Error::Database(db_err) if db_err.code().as_deref() == Some("23505")
+    )
+}
+
 /// PATCH /notes/{id} per /docs/spec/api/http.md.
 pub async fn patch_note(
     req: HttpRequest,
@@ -70,6 +77,19 @@ pub async fn patch_note(
     )
     .await
     {
+        if is_unique_violation(&e) {
+            let found = match repo_note::find_note_stream(pool.get_ref(), note_id).await {
+                Ok(Some(s)) => s.current_version.max(stream.current_version + 1),
+                _ => stream.current_version + 1,
+            };
+            return domain_error_response(
+                DomainError::VersionConflict {
+                    expected: body.base_version,
+                    found,
+                },
+                &rid,
+            );
+        }
         return domain_error_response(DomainError::Internal(e.to_string()), &rid);
     }
 
@@ -160,6 +180,19 @@ pub async fn patch_title(
     )
     .await
     {
+        if is_unique_violation(&e) {
+            let found = match repo_note::find_note_stream(pool.get_ref(), note_id).await {
+                Ok(Some(s)) => s.current_version.max(stream.current_version + 1),
+                _ => stream.current_version + 1,
+            };
+            return domain_error_response(
+                DomainError::VersionConflict {
+                    expected: body.base_version,
+                    found,
+                },
+                &rid,
+            );
+        }
         return domain_error_response(DomainError::Internal(e.to_string()), &rid);
     }
 

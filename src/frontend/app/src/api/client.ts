@@ -45,11 +45,29 @@ async function request<T>(
   }
   const res = await fetch(`/api${path}`, opts);
   if (res.status === 204) return undefined as T;
-  const json = (await res.json()) as T | ApiError;
-  if (!res.ok) {
-    throw new ApiClientError(res.status, json as ApiError);
+  const raw = await res.text();
+  let parsed: unknown = undefined;
+  if (raw.length > 0) {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      if (!res.ok) {
+        throw new ApiClientError(res.status, {
+          code: "HTTP_ERROR",
+          message: raw || `request failed with status ${res.status}`,
+        });
+      }
+      throw new Error(`Expected JSON response for ${method} ${path}`);
+    }
   }
-  return json as T;
+  if (!res.ok) {
+    const apiError = (parsed ?? {
+      code: "HTTP_ERROR",
+      message: `request failed with status ${res.status}`,
+    }) as ApiError;
+    throw new ApiClientError(res.status, apiError);
+  }
+  return parsed as T;
 }
 
 export function get<T>(path: string): Promise<T> {

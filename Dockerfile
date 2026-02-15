@@ -9,12 +9,12 @@ RUN npm ci
 COPY src/frontend/app/ ./
 RUN npm run build
 
-FROM rust:1.82-slim-bookworm AS backend
+FROM rust:1.88-slim-bookworm AS backend
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 COPY Cargo.toml Cargo.lock ./
 COPY src/crates/ src/crates/
-RUN cargo build --release --bin kjxlkj-server
+RUN cargo build --release -p kjxlkj-server --bin kjxlkj
 
 FROM debian:bookworm-slim
 RUN apt-get update && \
@@ -25,10 +25,10 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Copy built artifacts
-COPY --from=backend /build/target/release/kjxlkj-server /app/kjxlkj-server
+COPY --from=backend /build/target/release/kjxlkj /app/kjxlkj-server
 COPY --from=frontend /build/frontend/dist /app/static
 COPY data/config.json /app/data/config.json
-COPY src/migrations/ /app/migrations/
+COPY src/crates/db/kjxlkj-db/src/migrations/ /app/migrations/
 
 # Copy entrypoint
 COPY scripts/entrypoint.sh /app/entrypoint.sh

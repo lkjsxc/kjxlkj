@@ -31,6 +31,22 @@ pub async fn setup_register(
     }
 }
 
+/// GET /setup/register setup availability probe for deterministic setup/login routing.
+pub async fn setup_status(pool: web::Data<PgPool>) -> HttpResponse {
+    let rid = new_request_id();
+    match setup::is_setup_locked(pool.get_ref()).await {
+        Ok(true) => HttpResponse::Ok().json(serde_json::json!({
+            "setup_available": false,
+            "request_id": rid
+        })),
+        Ok(false) => HttpResponse::Ok().json(serde_json::json!({
+            "setup_available": true,
+            "request_id": rid
+        })),
+        Err(e) => domain_error_response(e, &rid),
+    }
+}
+
 /// POST /auth/login per /docs/spec/security/auth.md.
 pub async fn login(
     pool: web::Data<PgPool>,

@@ -4,27 +4,38 @@
  * Spec: Create New Note MUST create and move focus.
  */
 import { useState, type FormEvent } from "react";
-import { useNotes } from "../hooks/useNotes";
+import type { Note } from "../types";
 
 interface Props {
+  notes: Note[];
+  selectedId: string | null;
+  loading: boolean;
   onSelect: (id: string) => void;
+  onCreate: (title: string) => Promise<void>;
+  onSearch: (query: string) => Promise<void>;
 }
 
-export function NotesList({ onSelect }: Props) {
-  const { notes, selectedId, loading, create, search } = useNotes();
+export function NotesList({
+  notes,
+  selectedId,
+  loading,
+  onSelect,
+  onCreate,
+  onSearch,
+}: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [query, setQuery] = useState("");
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
-    await create(newTitle.trim());
+    await onCreate(newTitle.trim());
     setNewTitle("");
   };
 
   const handleSearch = (value: string) => {
     setQuery(value);
-    void search(value);
+    void onSearch(value);
   };
 
   return (
@@ -66,7 +77,9 @@ export function NotesList({ onSelect }: Props) {
               {note.title || "Untitled"}
             </span>
             <span style={styles.itemDate}>
-              {new Date(note.updated_at).toLocaleDateString()}
+              {note.updated_at
+                ? new Date(note.updated_at).toLocaleDateString()
+                : ""}
             </span>
           </button>
         ))}

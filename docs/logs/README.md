@@ -10,6 +10,7 @@ reconstruction sessions.
 | Document | Purpose |
 |---|---|
 | [2026-02-15-stage01-bootstrap.md](2026-02-15-stage01-bootstrap.md) | Stage 01 reconstruction session log |
+| [2026-02-15-autosave-conflict-hardening.md](2026-02-15-autosave-conflict-hardening.md) | Autosave PATCH conflict hardening and verification evidence |
 
 ## Related
 

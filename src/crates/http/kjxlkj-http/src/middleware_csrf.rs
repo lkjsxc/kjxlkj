@@ -63,6 +63,8 @@ where
         let path = req.path().to_owned();
         if path.starts_with("/setup/")
             || path.starts_with("/auth/")
+            || path.starts_with("/api/setup/")
+            || path.starts_with("/api/auth/")
             || path.starts_with("/api/healthz")
             || path.starts_with("/api/readyz")
         {

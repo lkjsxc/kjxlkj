@@ -11,11 +11,18 @@ import { ApiClientError } from "../api/client";
 
 const DEBOUNCE_MS = 800;
 
-export function useEditor() {
+interface UseEditorOptions {
+  autosave?: boolean;
+}
+
+export function useEditor(options: UseEditorOptions = {}) {
+  const autosave = options.autosave ?? true;
   const state = useEditorState();
   const editorDispatch = useEditorDispatch();
   const notesDispatch = useNotesDispatch();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveInFlightRef = useRef(false);
+  const saveQueuedRef = useRef(false);
   const stateRef = useRef(state);
   stateRef.current = state;
 
@@ -33,9 +40,10 @@ export function useEditor() {
     [editorDispatch],
   );
 
-  const save = useCallback(async () => {
+  const saveOnce = useCallback(async (): Promise<"noop" | "saved" | "conflict" | "error"> => {
     const s = stateRef.current;
-    if (!s.noteId || !s.dirty) return;
+    if (!s.noteId || !s.dirty) return "noop";
+    const saveNoteId = s.noteId;
     editorDispatch({ type: "saving" });
     try {
       let version = s.syncedVersion;
@@ -50,39 +58,68 @@ export function useEditor() {
       }
       if (s.draftBody !== s.syncedBody) {
         const n = await patchNote(s.noteId, {
+          base_body: s.syncedBody,
           body: s.draftBody,
           expected_version: version,
         });
         version = n.version;
         notesDispatch({ type: "update_note", note: n });
       }
-      editorDispatch({
-        type: "saved",
-        title: s.draftTitle,
-        body: s.draftBody,
-        version,
-      });
+      if (stateRef.current.noteId === saveNoteId) {
+        editorDispatch({
+          type: "saved",
+          title: s.draftTitle,
+          body: s.draftBody,
+          version,
+        });
+      }
+      return "saved";
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 409) {
-        editorDispatch({
-          type: "conflict",
-          serverVersion: (err.body.details?.["current_version"] as number) ?? 0,
-        });
+        if (stateRef.current.noteId === saveNoteId) {
+          editorDispatch({
+            type: "conflict",
+            serverVersion: (err.body.details?.["current_version"] as number) ?? 0,
+          });
+        }
+        return "conflict";
       } else {
-        editorDispatch({ type: "error" });
+        if (stateRef.current.noteId === saveNoteId) {
+          editorDispatch({ type: "error" });
+        }
+        return "error";
       }
     }
   }, [editorDispatch, notesDispatch]);
 
+  const save = useCallback(async () => {
+    if (saveInFlightRef.current) {
+      saveQueuedRef.current = true;
+      return;
+    }
+    saveInFlightRef.current = true;
+    try {
+      while (true) {
+        saveQueuedRef.current = false;
+        const outcome = await saveOnce();
+        if (outcome !== "saved") break;
+        if (!saveQueuedRef.current) break;
+      }
+    } finally {
+      saveInFlightRef.current = false;
+    }
+  }, [saveOnce]);
+
   // Autosave debounce
   useEffect(() => {
+    if (!autosave) return;
     if (!state.dirty) return;
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => void save(), DEBOUNCE_MS);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [state.draftTitle, state.draftBody, state.dirty, save]);
+  }, [autosave, state.draftTitle, state.draftBody, state.dirty, save]);
 
   const setTitle = useCallback(
     (title: string) => editorDispatch({ type: "draft_title", title }),

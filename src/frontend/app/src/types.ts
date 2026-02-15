@@ -2,8 +2,10 @@
 
 export interface Session {
   user_id: string;
-  username: string;
+  email: string;
+  display_name: string;
   role: string;
+  csrf_token: string;
 }
 
 export interface Note {

@@ -8,7 +8,8 @@ import { useAuth } from "../hooks/useAuth";
 
 export function SetupView() {
   const { register } = useAuth();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +19,7 @@ export function SetupView() {
     setError("");
     setSubmitting(true);
     try {
-      await register(username, password);
+      await register(email, displayName, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
@@ -33,12 +34,20 @@ export function SetupView() {
         <p style={styles.subtitle}>Create the owner account</p>
         <form onSubmit={(e) => void handleSubmit(e)} style={styles.form}>
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             autoFocus
+            style={styles.input}
+          />
+          <input
+            type="text"
+            placeholder="Display Name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            required
             style={styles.input}
           />
           <input

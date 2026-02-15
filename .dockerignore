@@ -5,5 +5,4 @@ src/frontend/app/dist/
 .env
 *.md
 docs/
-data/
 .github/
