@@ -1,21 +1,23 @@
-I’m thinking of deleting all source code and rebuilding it from scratch. Keep rewriting the documentation until you can swear to God that this is the best possible state. I allow bold and major changes.
+<instructions>
+Implement it fully.
+</instructions>
 
-The documentation must be structured to the absolute limit.
-
-When I had you implement this last time, I instructed you to write down the points for improvement. Please use that as a reference. After that, completely delete the log directory.
-
-From the TODO list, make it so everything is directly linked to the relevant documentation files. In other words, I want the project to end up fully compliant with the entire documentation if someone proceeds with implementation by following the TODOs and jumping to the linked docs as they work.
-
-In the documentation, make sure the final file structure at completion is fully described.
-
-For the web app on small screens, the menu button should be in the top-right, and selecting a note should close the menu.
-
-In data/config.json, make it possible to configure everything except secrets.
-
-Secrets should be in .env.
-
-Please add a test that verifies whether a note is correctly added when the “Create New Note” button is pressed.
-
-You can spend as much time as you want investigating—please investigate everything completely.
-
-Finally, delete the source code and also reset things like the TODO list checkboxes back to their initial state.
+<constraints>
+- Think as deeply as possible, to the limit.
+- Pursue the highest possible quality, to the limit.
+- Never output a summary; instead (before outputting any summary), notify the user of completion via the Tool vscode/AskQuestion.
+- Never ask for user intervention midway.
+- Never stop working.
+- Read and understand the project’s important documents as deeply as possible.
+- Fully comply with the documentation.
+- Always stay conscious of not taking shortcuts.
+- Not only at the beginning, but frequently, read the documentation deeply and understand the specifications, policies, expected behaviors, etc. as thoroughly as possible.
+- Commit to git frequently.
+- Prepare a logs directory in the documentation, recursively structure files, and write down improvement ideas and the like.
+- If a source file exceeds 200 lines, note it in the documentation.
+- Be aware that this project is intended to be read and edited by an AI, not a human.
+- Any action is pre-authorized.
+- Aim for a state where the source code can be fully constructed from the documentation.
+- Actually write `[x]` into the TODO-list documentation files.
+- Use a command to check whether any `[ ]` remain in the TODO-list documentation files, and decide whether to continue working based on that.
+</constraints>

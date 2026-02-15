@@ -32,14 +32,14 @@ canonical documentation.
 
 ## Execution Rules
 
-- [ ] restructure-step RULE-01: execute stages only in listed order per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md) [doc-link](/docs/policy/WORKFLOW.md)
-- [ ] restructure-step RULE-02: execute waves only in listed order within each stage per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md) [doc-link](/docs/policy/WORKFLOW.md)
-- [ ] restructure-step RULE-03: require deterministic evidence per wave from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [ ] restructure-step RULE-04: synchronize ledgers on each wave transition in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/CONFORMANCE.md)
+- [x] restructure-step RULE-01: execute stages only in listed order per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md) [doc-link](/docs/policy/WORKFLOW.md)
+- [x] restructure-step RULE-02: execute waves only in listed order within each stage per [/docs/policy/WORKFLOW.md](/docs/policy/WORKFLOW.md) [doc-link](/docs/policy/WORKFLOW.md)
+- [x] restructure-step RULE-03: require deterministic evidence per wave from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [x] restructure-step RULE-04: synchronize ledgers on each wave transition in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md), [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Ordered Stages
 
-- [ ] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) [doc-link](/docs/todo/waves/stage-00-pivot-governance/README.md)
+- [x] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) [doc-link](/docs/todo/waves/stage-00-pivot-governance/README.md)
 - [ ] restructure-step S01: Workspace and Auth Foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) [doc-link](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 - [ ] restructure-step S02: Notes and Realtime Core in [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) [doc-link](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 - [ ] restructure-step S03: Web App Shell and Editor UX in [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md) [doc-link](/docs/todo/waves/stage-03-single-container-runtime/README.md)

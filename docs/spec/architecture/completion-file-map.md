@@ -29,6 +29,7 @@ Normative map for the intended repository structure at completion.
 | `docs/spec/` | yes | normative system behavior |
 | `docs/reference/` | yes | evidence, drift, limitations, release state |
 | `docs/todo/` | yes | execution program and traceable checklists |
+| `docs/logs/` | yes | dated execution logs, audits, and improvement journals |
 | `docs/guides/` | yes | operator workflows |
 | `docs/overview/` | yes | conceptual orientation |
 
@@ -55,10 +56,10 @@ Normative map for the intended repository structure at completion.
 | committed `.env` | secret leak |
 | committed runtime secrets in `data/config.json` | non-secret config contract violation |
 | handwritten runtime `.js` source | type-safety policy violation |
-| `docs/logs/` | historical logs are kept in git history |
 
 ## Related
 
 - Final tree: [final-file-structure.md](final-file-structure.md)
+- Reconstruction manifest: [reconstruction-manifest.md](reconstruction-manifest.md)
 - Root allowlist: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
 - Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)
