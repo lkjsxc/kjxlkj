@@ -23,7 +23,8 @@ pub async fn handle_apply_patch(
     let uid = UserId(user_id);
     let rid = Uuid::now_v7().to_string();
 
-    // Idempotency check per /docs/spec/api/websocket.md
+    // Idempotency check per /docs/spec/api/websocket.md.
+    // Duplicate keys MUST replay-safe-return existing commit identity.
     if let Ok(Some(existing)) = repo_idempotency::find_idempotency(
         pool, nid, &idempotency_key,
     ).await {
@@ -41,6 +42,7 @@ pub async fn handle_apply_patch(
         _ => return vec![ServerMessage::Error {
             code: "NOTE_NOT_FOUND".into(),
             message: "note not found".into(),
+            details: None,
             request_id: rid,
         }],
     };
@@ -49,6 +51,7 @@ pub async fn handle_apply_patch(
         return vec![ServerMessage::Error {
             code: "NOTE_NOT_FOUND".into(),
             message: "note deleted".into(),
+            details: None,
             request_id: rid,
         }];
     }
@@ -74,6 +77,7 @@ pub async fn handle_apply_patch(
         return vec![ServerMessage::Error {
             code: "INTERNAL_ERROR".into(),
             message: "failed to append event".into(),
+            details: None,
             request_id: rid,
         }];
     }

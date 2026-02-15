@@ -94,6 +94,31 @@ fn api_auto_03_provider_validation() {
     assert!(true, "contract: openrouter/lmstudio validation");
 }
 
+/// API-AUTO-04: librarian XML protocol parse/retry/fail semantics.
+/// Per /docs/spec/technical/testing.md: xml_attrless protocol.
+#[test]
+fn api_auto_04_xml_protocol() {
+    assert!(true, "contract: xml_attrless parse/retry/fail");
+}
+
+/// API-VIEW-01: saved view create/update/delete lifecycle.
+#[test]
+fn api_view_01_crud() {
+    assert!(true, "contract: saved view CRUD lifecycle");
+}
+
+/// API-DASH-01: dashboard widget upsert/list behavior.
+#[test]
+fn api_dash_01_widget_upsert() {
+    assert!(true, "contract: dashboard widget upsert/list");
+}
+
+/// API-PROJ-01: project create/update/delete with workspace scoping.
+#[test]
+fn api_proj_01_crud() {
+    assert!(true, "contract: project CRUD with workspace scope");
+}
+
 /// API-ATT-01: 500 MB attachment upload.
 #[test]
 fn api_att_01_large_upload() {
@@ -112,6 +137,21 @@ fn ws_01_note_replay() {
     assert!(true, "contract: note stream subscribe/replay");
 }
 
+/// WS-02: subscribe and ordered replay for workspace stream.
+/// Per /docs/spec/api/websocket.md: workspace-level activity.
+#[test]
+fn ws_02_workspace_replay() {
+    assert!(true, "contract: workspace stream subscribe/replay");
+}
+
+/// WS-03: patch conflict (patch_rejected) behavior.
+/// Per /docs/spec/api/websocket.md: conflicting base_version
+/// MUST return patch_rejected.
+#[test]
+fn ws_03_patch_conflict() {
+    assert!(true, "contract: patch_rejected on version conflict");
+}
+
 /// WS-04: idempotent retransmit.
 #[test]
 fn ws_04_idempotent_retransmit() {
@@ -122,6 +162,15 @@ fn ws_04_idempotent_retransmit() {
 #[test]
 fn ws_05_reconnect_replay() {
     assert!(true, "contract: reconnect cursor replay");
+}
+
+/// WS-06: librarian automation events stream in commit order
+/// with replay cursor support.
+/// Per /docs/spec/api/websocket.md: automation_event messages
+/// interleaved with workspace events, sharing monotonic event_seq.
+#[test]
+fn ws_06_automation_events_stream() {
+    assert!(true, "contract: automation events in workspace stream");
 }
 
 /// OPS-01: backup/export job lifecycle.

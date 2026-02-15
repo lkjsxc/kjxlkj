@@ -69,12 +69,26 @@ pub enum ServerMessage {
         state: serde_json::Value,
         server_ts: String,
     },
+    /// Per /docs/spec/api/websocket.md: automation run lifecycle
+    /// events streamed in workspace commit order.
+    AutomationEvent {
+        workspace_id: Uuid,
+        run_id: Uuid,
+        status: String,
+        event_seq: i64,
+        event_type: String,
+        payload: serde_json::Value,
+    },
     Heartbeat {
         server_ts: String,
     },
+    /// Per /docs/spec/api/errors.md: error envelope with optional
+    /// structured details for machine-readable context.
     Error {
         code: String,
         message: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        details: Option<serde_json::Value>,
         request_id: String,
     },
 }

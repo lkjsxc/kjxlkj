@@ -1,5 +1,6 @@
 pub mod pool;
 pub mod repo_attachment;
+pub mod repo_automation_event;
 pub mod repo_automation_rule;
 pub mod repo_automation_run;
 pub mod repo_backlink;

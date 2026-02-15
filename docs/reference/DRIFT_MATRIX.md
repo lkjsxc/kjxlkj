@@ -52,6 +52,11 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-PROMPT-PACK-01` | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | JSON prompt loading and validation | partial | `M4` | test pack load with canonical prompts |
 | `R-XML-PARSER-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | xml_attrless parser with tag validation | partial | `M4` | test against representative payloads |
 | `R-PIPELINE-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian run pipeline with bounded retry | partial | `M4` | end-to-end pipeline test |
+| `R-WS-EVENT-FAMILY-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | workspace and automation event surface families | partial | `M4` | test workspace stream event families with live WS |
+| `R-AUTOMATION-EVENT-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation lifecycle events in workspace stream | partial | `M4` | test automation event emission and replay |
+| `R-WS-REPLAY-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | monotonic cursors and stale-cursor error | partial | `M4` | test cursor replay and stale-cursor rejection |
+| `R-WS-ERROR-ENVELOPE-01` | [/docs/spec/api/errors.md](/docs/spec/api/errors.md) | WS error envelope with details field | partial | `M4` | test WS error payloads |
+| `R-WS-ACCEPTANCE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | WS-02/03/06 acceptance stubs | partial | `M4` | execute WS acceptance pack against live runtime |
 
 ## Summary
 
@@ -60,7 +65,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 26 |
+| `M4 verification gap` | 31 |
 | `M5 stale docs` | 0 |
 
 ## Related

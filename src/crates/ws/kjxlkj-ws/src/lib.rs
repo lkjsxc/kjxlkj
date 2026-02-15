@@ -1,3 +1,4 @@
+pub mod automation_events;
 pub mod messages;
 pub mod protocol;
 pub mod protocol_patch;

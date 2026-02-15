@@ -49,6 +49,12 @@ High-confidence statement:
 - Stage 06 xml_attrless parser: tag extraction, attribute rejection, operation validation, confidence bounds compiled.
 - Stage 06 safety policy: delete prevention, cross-workspace rejection, scope constraints compiled.
 - Stage 06 run pipeline: ingest/plan/propose/validate stages with bounded repair retries compiled.
+- Stage 07 automation event classification: workspace events with automation prefix emitted as automation_event WS messages.
+- Stage 07 DB automation event helper: lifecycle emission into workspace stream with monotonic seq.
+- Stage 07 protocol refactor: deduplicated handle_apply_patch, added automation event detection in workspace replay.
+- Stage 07 error envelope alignment: details field added to WS Error per errors.md spec.
+- Stage 07 STALE_CURSOR error includes structured details (stream_id, attempted_seq, current_cursor).
+- Stage 07 acceptance stubs: WS-02, WS-03, WS-06, API-AUTO-04, API-VIEW-01, API-DASH-01, API-PROJ-01 added (31 total).
 
 ## Domain Status
 
@@ -85,6 +91,11 @@ High-confidence statement:
 | Prompt pack loading | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `partial` | manifest loader and stage validation compiled; live test pending |
 | xml_attrless parser | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | `partial` | parser with tag/attribute/confidence validation compiled; live test pending |
 | Librarian pipeline | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | full pipeline with bounded retry compiled; live test pending |
+| WS event surface families | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | workspace and automation event families compiled; live WS test pending |
+| Automation WS events | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | `partial` | automation lifecycle events emitted into workspace stream; live test pending |
+| WS replay and cursor guarantees | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | monotonic cursors, stale-cursor error, idempotent retransmit compiled; live test pending |
+| WS error envelope | [/docs/spec/api/errors.md](/docs/spec/api/errors.md) | `partial` | details field added to WS error per spec; live test pending |
+| WS acceptance coverage | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | 31 acceptance stubs compiled and passing; runtime verification pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

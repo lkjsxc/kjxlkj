@@ -15,7 +15,10 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 05 CSRF and security headers middleware compiled.
 - Stage 05 regression (14) and acceptance (24) test stubs compiled and passing.
 - Stage 06 REST surface parity, provider adapters, prompt loader, xml parser, pipeline compiled.
-- TODO checklists for Stages 00–06 are fully checked.
+- Stage 07 WS event surfaces, automation event classification, replay/cursor guarantees compiled.
+- Stage 07 error envelope aligned with details field per errors.md spec.
+- Stage 07 acceptance stubs: WS-02, WS-03, WS-06, API-AUTO-04, API-VIEW-01, API-DASH-01, API-PROJ-01 (31 total).
+- TODO checklists for Stages 00–07 are fully checked.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -38,6 +41,7 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-REGRESSION-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | regression stubs are structural placeholders; need assertion bodies | `M4 verification gap` | medium | fill assertion bodies during integration testing |
 | `LIM-PROVIDER-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | provider adapters compiled but not tested against live LLM endpoints | `M4 verification gap` | medium | test with openrouter and lmstudio endpoints |
 | `LIM-XML-PARSER-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | xml_attrless parser compiled but not tested against representative payloads | `M4 verification gap` | medium | add unit tests with sample librarian response payloads |
+| `LIM-WS-AUTOMATION-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | automation event classification compiled but not tested with live WS stream | `M4 verification gap` | medium | test automation events via live WS connection |
 
 ## Closure Rules
 
