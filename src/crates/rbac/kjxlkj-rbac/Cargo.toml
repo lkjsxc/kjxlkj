@@ -1,0 +1,8 @@
+[package]
+name = "kjxlkj-rbac"
+edition.workspace = true
+version.workspace = true
+
+[dependencies]
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+thiserror = { workspace = true }
