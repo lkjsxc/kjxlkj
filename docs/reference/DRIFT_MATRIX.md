@@ -31,8 +31,8 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | FTS search and backlink extraction | partial | `M4` | run acceptance tests for search and backlinks |
 | `R-ATTACH-01` | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | chunked attachment upload/download/delete | partial | `M4` | run acceptance tests for attachment lifecycle |
 | `R-IDEMP-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS idempotency keys and snapshot store | partial | `M4` | verify idempotency dedup and snapshot every-100 behavior |
-| `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | small-screen menu is top-right and closes on note select | spec-only | `M2` | rebuild responsive frontend behavior |
-| `R-UI-CREATE-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | Create New Note creates and selects the new note | spec-only | `M2` | rebuild notes layout create/select flow |
+| `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | small-screen menu is top-right and closes on note select | partial | `M4` | run visual test at 320px and 1024px breakpoints |
+| `R-UI-CREATE-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | Create New Note creates and selects the new note | partial | `M4` | run E2E-23 acceptance test |
 | `R-TEST-NEWNOTE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic test verifies Create New Note adds a note | spec-only | `M4` | implement test during frontend rebuild |
 | `R-PERF-02` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance evidence is archived | partial | `M4` | execute PERF profiles and archive telemetry |
 | `R-OPS-02` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup/restore/restart recovery evidence is archived | partial | `M4` | execute restore drill and record parity proof |
@@ -42,9 +42,9 @@ Requirement-level mismatch tracking for reconstruction.
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 2 |
+| `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 8 |
+| `M4 verification gap` | 10 |
 | `M5 stale docs` | 0 |
 
 ## Related

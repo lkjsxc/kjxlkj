@@ -51,7 +51,9 @@ High-confidence statement:
 | Search & backlinks | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | `partial` | FTS and backlink extraction compiled; live test pending |
 | Attachments (chunked) | [/docs/spec/domain/attachments.md](/docs/spec/domain/attachments.md) | `partial` | upload/download/delete with SHA-256 compiled; live test pending |
 | Idempotency & snapshots | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | key store and snapshot store compiled; live test pending |
-| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `spec-only` | frontend source intentionally absent |
+| Typed frontend runtime | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `partial` | React/Vite SPA compiled; shell/auth/editor/layout implemented; live test pending |
+| Editor flow | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | `partial` | synced/draft split, autosave, conflict handling compiled; live test pending |
+| Responsive layout | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `partial` | split-pane at 1024px, compact menu toggle compiled; visual test pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |
