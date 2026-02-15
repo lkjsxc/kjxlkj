@@ -4,6 +4,7 @@ pub mod dto_views;
 pub mod error_response;
 pub mod extractors;
 pub mod middleware_csrf;
+pub mod middleware_rate;
 pub mod middleware_security;
 pub mod patch_ops;
 pub mod routes_attachments;

@@ -106,6 +106,40 @@ Base path: `/api`
 - Librarian actions MUST use the attribute-less XML-like protocol from
   [librarian-xml.md](librarian-xml.md).
 
+## Request Flow Diagrams
+
+### Authenticated API Request
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant MW as Middleware
+    participant H as Handler
+    participant DB as PostgreSQL
+    C->>MW: POST /api/notes (cookie + x-csrf-token)
+    MW->>MW: SecurityHeaders
+    MW->>MW: CsrfEnforcer (validate token)
+    MW->>H: extract_session (validate cookie)
+    H->>DB: INSERT note / emit event
+    DB-->>H: result
+    H-->>C: 201 JSON + rid
+```
+
+### WebSocket Handshake
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant WS as WS Route
+    participant A as Session Actor
+    C->>WS: GET /ws (Upgrade)
+    WS->>WS: extract_session
+    WS->>A: spawn WsSession
+    A->>C: Heartbeat loop
+    C->>A: subscribe_workspace
+    A->>C: replay events
+```
+
 ## Related
 
 - Error model: [errors.md](errors.md)

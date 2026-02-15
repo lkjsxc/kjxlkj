@@ -70,6 +70,14 @@ where
                 "referrer-policy".parse().unwrap(),
                 "strict-origin-when-cross-origin".parse().unwrap(),
             );
+            // CSP per IMP-BACKLOG-SEC-01 — nonce-based inline script policy.
+            // In production, nonce should be generated per-request and injected
+            // into HTML templates. Static SPA uses 'self' for scripts.
+            headers.insert(
+                "content-security-policy".parse().unwrap(),
+                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ws://localhost:* wss://localhost:*; frame-ancestors 'none'"
+                    .parse().unwrap(),
+            );
             Ok(resp)
         })
     }

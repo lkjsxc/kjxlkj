@@ -1,0 +1,43 @@
+/* NotesLayout CSS module per /docs/spec/ui/layout-and-interaction.md */
+/* UX-LAYOUT-01: one responsive tree */
+.root {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.listDesktop {
+  width: 300px;
+  min-width: 240px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid #eee;
+}
+
+.listCompact {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #fff;
+  overflow-y: auto;
+  padding-top: 3rem;
+}
+
+.editor {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+}
+
+.hint {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}

@@ -49,6 +49,23 @@ Required minimum links in each TODO file:
 - limitations ledger
 - TODO index and wave program
 
+## Document Split Strategy for High-Line-Count Files
+
+When a document approaches the 200-line maximum:
+
+1. Identify logical sub-sections that can stand alone.
+2. Extract each section into a new file in the same directory.
+3. Update the parent file to reference the extracted files.
+4. Ensure the parent README links to all new files.
+5. Verify reachability from `docs/README.md` is preserved.
+
+For source code files:
+
+1. Extract functions/structs into separate modules.
+2. Re-export from the parent module's `mod.rs` or `lib.rs`.
+3. Keep each file under 200 lines.
+4. Update `lib.rs` with new module declarations.
+
 ## Compliance Checklist
 
 For any documentation change:

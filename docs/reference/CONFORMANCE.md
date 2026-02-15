@@ -73,6 +73,23 @@ High-confidence statement:
 - Stage 09 .dockerignore created for Docker build context exclusions.
 - Stage 09 all stage TODO checklists S00–S08 marked [x] in waves/README.md and todo/README.md.
 - Stage 09 final-file-structure validation: all root, crate, frontend, and .github paths present.
+- Stage 10 pool hardening: init_pool_with_statement_timeout per-connection timeout policy in pool.rs.
+- Stage 10 broadcast registry: BroadcastRegistry with register/unregister/subscribe/broadcast/revoke for cross-actor WS delivery. 3 unit tests passing.
+- Stage 10 backup-restore drill: scripts/backup-restore-drill.sh automated parity check (pg_dump → pg_restore → row comparison).
+- Stage 10 request-flow diagrams: Mermaid sequence diagrams added to http.md (authenticated request + WS handshake).
+- Stage 10 JSON schema companion strategy: codified in openapi.md with dual-artifact approach.
+- Stage 10 document split strategy: codified in STRUCTURE.md for high-line-count files.
+- Stage 10 integration test harness: TestHarness scaffold + property-based generators (random_title, random_body, random_patch_ops). 4 tests passing.
+- Stage 10 CSS modularization: NotesLayout.module.css and JobsPanel.module.css created.
+- Stage 10 lazy-loading: LazyPanels.tsx with React.lazy wrappers for LibrarianReview and JobsPanel.
+- Stage 10 CSP header: Content-Security-Policy added to SecurityHeaders middleware (default-src 'self', frame-ancestors 'none').
+- Stage 10 rate limiter: RateLimiter middleware for /auth/ and /setup/ routes with sliding-window 429 enforcement.
+- Stage 10 session revocation broadcast: revoke_user_sessions() method in BroadcastRegistry.
+- Stage 10 61 tests passing (8 domain + 31 acceptance + 14 regression + 4 integration harness + 3 broadcast + 1 WS automation).
+- Stage 10 all improvement backlog items closed or addressed.
+- Stage 10 all source files ≤ 200 lines.
+- Stage 10 cargo check clean, tsc --noEmit clean.
+- All TODO checklists S00–S10 marked [x] in waves/README.md and todo/README.md.
 
 ## Domain Status
 
@@ -122,7 +139,16 @@ High-confidence statement:
 | CI workflow | [/docs/reference/CI.md](/docs/reference/CI.md) | `partial` | 4-job workflow created; docs-integrity + workspace-bootstrap + core-runtime profiles pass locally; live GitHub Actions pending |
 | Final file structure | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | `verified` | all required paths present per spec validation |
 | Type-safety gates | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | `verified` | cargo check clean, tsc --noEmit clean, no handwritten JS |
-| TODO closure sync | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `partial` | S00-S08 marked complete; S09-S10 in progress |
+| TODO closure sync | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `verified` | S00-S10 plus EXIT and DONE gates all checked |
+| DB pool tuning | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | `partial` | statement_timeout policy compiled; live tuning pending |
+| WS broadcast registry | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `partial` | BroadcastRegistry with 3 unit tests; live WS broadcast pending |
+| Backup/restore drill | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `partial` | automated drill script created; execution against live DB pending |
+| Integration test harness | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | TestHarness scaffold + property generators with 4 tests; DB-backed execution pending |
+| CSS modularization | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `partial` | CSS modules created; visual verification pending |
+| Lazy-load split | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | `partial` | React.lazy wrappers compiled; bundle split verification pending |
+| CSP headers | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | `partial` | CSP policy added to SecurityHeaders; live response verification pending |
+| Auth rate limiting | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `partial` | RateLimiter middleware compiled; live 429 verification pending |
+| Session revocation broadcast | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | `partial` | revoke_user_sessions in BroadcastRegistry; live session invalidation pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

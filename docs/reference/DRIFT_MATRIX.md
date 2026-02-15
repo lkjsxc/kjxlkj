@@ -66,6 +66,15 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-CI-WORKFLOW-01` | [/docs/reference/CI.md](/docs/reference/CI.md) | CI workflow with 4 profile jobs | partial | `M4` | run in GitHub Actions |
 | `R-FILE-STRUCTURE-01` | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | repository tree matches spec | aligned | closed | keep synchronized |
 | `R-TYPE-GATE-01` | [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) | backend + frontend type gates pass | aligned | closed | keep synchronized |
+| `R-POOL-TUNE-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | DB pool sizing and statement_timeout | partial | `M4` | test pool under load with timeout policy |
+| `R-BROADCAST-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | cross-actor WS broadcast registry | partial | `M4` | test broadcast with live WS sessions |
+| `R-BACKUP-DRILL-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | automated backup/restore parity drill | partial | `M4` | execute drill against live PostgreSQL |
+| `R-INTEGRATION-HARNESS-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | DB-backed integration test harness | partial | `M4` | run harness with DATABASE_URL |
+| `R-CSS-MODULE-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | CSS module modularization | partial | `M4` | verify CSS isolation in browser |
+| `R-LAZY-LOAD-01` | [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) | React.lazy code splitting | partial | `M4` | verify bundle split in production build |
+| `R-CSP-01` | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | Content-Security-Policy header | partial | `M4` | verify CSP in live response headers |
+| `R-RATE-LIMIT-01` | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | auth endpoint rate limiting | partial | `M4` | verify 429 responses under burst |
+| `R-SESSION-REVOKE-01` | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | session revocation broadcast on password change | partial | `M4` | test revoke_user_sessions with live sessions |
 
 ## Summary
 
@@ -74,7 +83,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 39 |
+| `M4 verification gap` | 49 |
 | `M5 stale docs` | 0 |
 
 ## Related

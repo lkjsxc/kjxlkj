@@ -35,7 +35,7 @@ complete in TODO ledgers and promoted in conformance ledgers.
 | Stage 07 | workspace realtime sync/replay closure | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | `WS-06`, replay/idempotency/stale-cursor boundaries | archived evidence |
 | Stage 08 | frontend librarian UX and static delivery | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | `E2E-15`, `E2E-17`, `E2E-20`, `E2E-21`, `E2E-22`, `E2E-23`, responsive + accessibility checks | archived evidence |
 | Stage 09 | CI/perf/release closure | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass + release gate closure | archived evidence |
-| Stage 10 | hardening backlog closure | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | backlog closure plus additional evidence for perf/ops/security/frontend | planned |
+| Stage 10 | hardening backlog closure | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | backlog closure plus additional evidence for perf/ops/security/frontend | archived evidence |
 
 ## Verification Profiles
 

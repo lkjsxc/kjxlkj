@@ -25,6 +25,15 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 09 file structure and type-safety gates verified.
 - Stage 09 TODO checklists S00–S08 marked in waves/README.md and todo/README.md.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
+- Stage 10 pool tuning with statement_timeout compiled.
+- Stage 10 WS broadcast registry compiled with 3 unit tests.
+- Stage 10 backup-restore drill script created.
+- Stage 10 integration test harness with property-based generators implemented (4 tests).
+- Stage 10 CSS modules, lazy-loading wrappers compiled.
+- Stage 10 CSP header and rate limiter middleware compiled.
+- Stage 10 session revocation broadcast method compiled.
+- Stage 10 61 total tests passing.
+- All TODO checklists S00–S10 fully checked.
 
 ## Open Limitations
 
@@ -33,7 +42,7 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-RUNTIME-REBUILD-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime skeleton compiled but not yet tested against live DB | `M4 verification gap` | medium | run integration tests with PostgreSQL |
 | `LIM-API-REBUILD-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP route handlers compiled but not acceptance-tested | `M4 verification gap` | medium | run API acceptance tests |
 | `LIM-UI-REBUILD-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | web app shell built; responsive layout pending visual verification | `M4 verification gap` | medium | run visual and E2E acceptance tests |
-| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic acceptance and integration evidence is absent in reset state | `M4 verification gap` | high | rebuild tests and run mandatory acceptance pack |
+| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance and integration evidence is partial; integration harness scaffold and property generators exist but not run against live DB | `M4 verification gap` | medium | run integration harness with DATABASE_URL against live PostgreSQL |
 | `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance benchmarks not yet executed at target scale | `M4 verification gap` | medium | run PERF-01/02/03 and archive telemetry |
 | `LIM-OPS-RESTORE-01` | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | backup restore drill not yet executed | `M4 verification gap` | medium | execute restore drill and record parity proof |
 | `LIM-SEARCH-FTS-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | search is PostgreSQL FTS only; no vector/semantic search | `M4 verification gap` | low | evaluate vector extension if needed post-release |

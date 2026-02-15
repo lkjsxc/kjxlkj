@@ -25,6 +25,15 @@ The canonical OpenAPI document is:
 - If librarian payload contracts evolve, update OpenAPI examples and
   `librarian-xml.md` in the same change.
 
+## JSON Schema Companion Strategy
+
+- OpenAPI `components/schemas` definitions serve as the JSON Schema source.
+- TypeScript API interfaces MUST derive from OpenAPI schema definitions.
+- Rust DTO structs MUST align with OpenAPI schema properties.
+- Schema validation SHOULD be enforced in CI via `openapi-generator validate`.
+- When librarian payload contracts evolve, update JSON schema, OpenAPI,
+  `types.md`, and `librarian-xml.md` atomically.
+
 ## Related
 
 - HTTP contract: [http.md](http.md)
