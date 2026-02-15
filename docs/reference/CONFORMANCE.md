@@ -43,6 +43,12 @@ High-confidence statement:
 - Stage 05 security headers middleware: SecurityHeaders adds nosniff, DENY, no-store, XSS-protection, referrer-policy.
 - Stage 05 regression test stubs: 14 structural stubs for REG-IMP-*, REG-USR-*, REG-UX-003 compiled and passing.
 - Stage 05 acceptance test stubs: 24 structural stubs for API/WS/OPS/PERF acceptance pack compiled and passing.
+- Stage 06 REST surface parity: views, dashboards, projects CRUD, media notes routes compiled.
+- Stage 06 librarian provider adapters: openrouter/lmstudio chat completion with fallback chain compiled.
+- Stage 06 JSON prompt pack loader: manifest, stage definitions, template rendering, pack hash compiled.
+- Stage 06 xml_attrless parser: tag extraction, attribute rejection, operation validation, confidence bounds compiled.
+- Stage 06 safety policy: delete prevention, cross-workspace rejection, scope constraints compiled.
+- Stage 06 run pipeline: ingest/plan/propose/validate stages with bounded repair retries compiled.
 
 ## Domain Status
 
@@ -72,6 +78,13 @@ High-confidence statement:
 | Auth/session boundaries | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `partial` | extract_session guard and role checks compiled; live session lifecycle pending |
 | Regression closure | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `partial` | 14 regression stubs compiled and passing; runtime verification pending |
 | Acceptance test baseline | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | 24 acceptance stubs compiled and passing; runtime verification pending |
+| Saved views CRUD | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | list/create/update/delete views compiled; live test pending |
+| Dashboard widgets | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | list/upsert widgets compiled; live test pending |
+| Media note creation | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `partial` | POST /notes/media compiled; live test pending |
+| Provider adapter contract | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | openrouter/lmstudio adapters compiled; live test pending |
+| Prompt pack loading | [/docs/spec/technical/librarian-prompts/README.md](/docs/spec/technical/librarian-prompts/README.md) | `partial` | manifest loader and stage validation compiled; live test pending |
+| xml_attrless parser | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | `partial` | parser with tag/attribute/confidence validation compiled; live test pending |
+| Librarian pipeline | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | full pipeline with bounded retry compiled; live test pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |

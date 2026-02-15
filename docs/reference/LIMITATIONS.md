@@ -14,7 +14,8 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 04 automation, export, librarian DB and HTTP routes compiled.
 - Stage 05 CSRF and security headers middleware compiled.
 - Stage 05 regression (14) and acceptance (24) test stubs compiled and passing.
-- TODO checklists for Stages 00–05 are fully checked.
+- Stage 06 REST surface parity, provider adapters, prompt loader, xml parser, pipeline compiled.
+- TODO checklists for Stages 00–06 are fully checked.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -35,6 +36,8 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-CSRF-01` | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | CSRF middleware compiled but not tested against live mutating requests | `M4 verification gap` | medium | verify CSRF rejection with live requests |
 | `LIM-TRANSPORT-01` | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | security response headers middleware compiled but not verified live | `M4 verification gap` | low | verify response headers with live requests |
 | `LIM-REGRESSION-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | regression stubs are structural placeholders; need assertion bodies | `M4 verification gap` | medium | fill assertion bodies during integration testing |
+| `LIM-PROVIDER-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | provider adapters compiled but not tested against live LLM endpoints | `M4 verification gap` | medium | test with openrouter and lmstudio endpoints |
+| `LIM-XML-PARSER-01` | [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md) | xml_attrless parser compiled but not tested against representative payloads | `M4 verification gap` | medium | add unit tests with sample librarian response payloads |
 
 ## Closure Rules
 
