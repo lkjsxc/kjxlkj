@@ -15,8 +15,8 @@ Open mismatches between target spec and trusted current behavior.
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-RUNTIME-REBUILD-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime implementation is absent by design during reset | `M2 missing feature` | high | rebuild runtime by executing TODO waves in order |
-| `LIM-API-REBUILD-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP and WS endpoints are currently non-runnable because runtime source is absent | `M2 missing feature` | high | rebuild app/http/ws crates from specs and TODO |
+| `LIM-RUNTIME-REBUILD-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime skeleton compiled but not yet tested against live DB | `M4 verification gap` | medium | run integration tests with PostgreSQL |
+| `LIM-API-REBUILD-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP route handlers compiled but not acceptance-tested | `M4 verification gap` | medium | run API acceptance tests |
 | `LIM-UI-REBUILD-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | web app runtime is absent; responsive menu behavior is spec-only | `M2 missing feature` | high | rebuild frontend runtime and verify `E2E-12`, `E2E-23` |
 | `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic acceptance and integration evidence is absent in reset state | `M4 verification gap` | high | rebuild tests and run mandatory acceptance pack |
 | `LIM-PERF-01` | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | performance benchmarks not yet executed at target scale | `M4 verification gap` | medium | run PERF-01/02/03 and archive telemetry |

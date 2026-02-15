@@ -23,9 +23,9 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-FILEMAP-01` | [/docs/spec/architecture/completion-file-map.md](/docs/spec/architecture/completion-file-map.md) | final completion file structure is fully specified | aligned | closed | keep synchronized |
 | `R-CONFIG-01` | [/docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) | all non-secret runtime configuration lives in `data/config.json` | aligned | closed | keep synchronized |
 | `R-SECRET-01` | [/docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) | secrets are sourced from `.env` only | aligned | closed | keep synchronized |
-| `R-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime startup and supervision path exists | spec-only | `M2` | rebuild runtime crates and startup path |
-| `R-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints are reachable | spec-only | `M2` | rebuild HTTP routes and handlers |
-| `R-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket protocol is reachable | spec-only | `M2` | rebuild WS actor/session runtime |
+| `R-RUNTIME-02` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime startup and supervision path exists | partial | `M4` | run integration tests against live database |
+| `R-API-02` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | API endpoints are reachable | partial | `M4` | run acceptance tests for API-AUTH-* and CRUD routes |
+| `R-WS-02` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WebSocket protocol is reachable | partial | `M4` | test WS connection and heartbeat cycle |
 | `R-UI-SMALL-01` | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | small-screen menu is top-right and closes on note select | spec-only | `M2` | rebuild responsive frontend behavior |
 | `R-UI-CREATE-01` | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | Create New Note creates and selects the new note | spec-only | `M2` | rebuild notes layout create/select flow |
 | `R-TEST-NEWNOTE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | deterministic test verifies Create New Note adds a note | spec-only | `M4` | implement test during frontend rebuild |
@@ -37,7 +37,7 @@ Requirement-level mismatch tracking for reconstruction.
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 5 |
+| `M2 missing feature` | 2 |
 | `M3 undocumented behavior` | 0 |
 | `M4 verification gap` | 3 |
 | `M5 stale docs` | 0 |

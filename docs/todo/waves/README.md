@@ -40,7 +40,7 @@ canonical documentation.
 ## Ordered Stages
 
 - [x] restructure-step S00: Governance and Canonical Baseline in [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) [doc-link](/docs/todo/waves/stage-00-pivot-governance/README.md)
-- [ ] restructure-step S01: Workspace and Auth Foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) [doc-link](/docs/todo/waves/stage-01-spec-rebuild/README.md)
+- [x] restructure-step S01: Workspace and Auth Foundation in [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) [doc-link](/docs/todo/waves/stage-01-spec-rebuild/README.md)
 - [ ] restructure-step S02: Notes and Realtime Core in [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) [doc-link](/docs/todo/waves/stage-02-workspace-bootstrap/README.md)
 - [ ] restructure-step S03: Web App Shell and Editor UX in [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md) [doc-link](/docs/todo/waves/stage-03-single-container-runtime/README.md)
 - [ ] restructure-step S04: Schema, Automation, and Jobs in [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md) [doc-link](/docs/todo/waves/stage-04-schema-and-projections/README.md)
