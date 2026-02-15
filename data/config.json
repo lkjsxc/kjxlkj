@@ -27,17 +27,35 @@
     "replay_batch_size": 200
   },
   "editor": {
-    "autosave_debounce_ms": 800,
-    "conflict_retry_limit": 2
+    "autosave_debounce_ms": 600,
+    "conflict_retry_limit": 2,
+    "compact_menu_breakpoint_px": 1280
+  },
+  "search": {
+    "default_mode": "hybrid",
+    "embedding_provider": "lmstudio",
+    "embedding_model": "text-embedding-nomic-embed-text-v1.5",
+    "vector_dimensions": 768,
+    "semantic_enabled": true,
+    "reindex_batch_size": 200
   },
   "automation": {
     "default_provider_kind": "lmstudio",
-    "base_url": "http://0.0.0.0:1234/v1",
-    "model": "zai-org/glm-4.7-flash",
+    "base_url": "http://127.0.0.1:1234/v1",
+    "model": "nvidia/nemotron-3-nano",
     "timeout_ms": 300000,
     "max_tokens": 4096,
     "temperature": 0.1,
     "fallback_models": []
+  },
+  "agent": {
+    "name": "kjxlkj-agent",
+    "mode": "yolo",
+    "prompt_path": "./data/agent-prompt.json",
+    "memory_store_path": "./data/agent-kv-store.json",
+    "retain_full_conversation_logs": false,
+    "loop_delay_ms": 1500,
+    "idle_delay_ms": 5000
   },
   "storage": {
     "attachments_dir": "./data/attachments",

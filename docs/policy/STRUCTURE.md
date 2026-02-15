@@ -2,78 +2,43 @@
 
 Back: [/docs/policy/README.md](/docs/policy/README.md)
 
-Mandatory structural constraints for documentation.
+Mandatory structural constraints for documentation and rebuild artifacts.
 
 ## Directory Constraints
 
-| Constraint | Value | Rationale |
-|---|---|---|
-| Max items per directory | 12 | enables fast scanning and deterministic navigation |
-| README.md per directory | Required | every directory has an index entry point |
-| Max lines per file | 200 | keeps documents focused |
-| Soft max columns per line | 100 | prevents horizontal scrolling |
-
-## Directory Hierarchy Requirements
-
-Every directory under `docs/` MUST contain exactly one `README.md`.
-
-The README.md MUST:
-
-- introduce directory scope
-- link to all direct children
-- provide navigation back to parent
+| Constraint | Value |
+|---|---|
+| Max items per directory | 12 |
+| README.md per docs directory | required |
+| Max lines per docs file | 200 |
+| Source file line target | 200 |
 
 ## Navigation Requirements
 
-| Requirement | Description |
-|---|---|
-| Reachability | every document MUST be reachable from `docs/README.md` |
-| Bidirectional links | parent README links to children; children link to parent |
-| No orphan documents | no unlinked document is allowed |
-| Link validation | internal links MUST be verified on change |
+- Every doc file MUST be reachable from `docs/README.md`.
+- Parent READMEs MUST link to direct children.
+- TODO checklists MUST include direct links to governing docs.
 
 ## TODO Link Policy
 
-All TODO markdown files under `docs/todo/` MUST include a section titled
-`## Relevant Documents` with direct Markdown links to all documents required to
-complete that TODO.
+All TODO files under `docs/todo/` MUST:
 
-Every checklist item (`- [ ]` / `- [x]`) in `docs/todo/` MUST include at least
-one direct Markdown link to its governing documentation target.
+1. include `## Relevant Documents`
+2. link directly to required docs
+3. include checklist items with at least one direct doc link
 
-Required minimum links in each TODO file:
+## Source Length Audit Rule
 
-- canonical spec index
-- testing contract
-- conformance ledger
-- limitations ledger
-- TODO index and wave program
+During runtime rebuild, if any source file exceeds 200 lines:
 
-## Document Split Strategy for High-Line-Count Files
-
-When a document approaches the 200-line maximum:
-
-1. Identify logical sub-sections that can stand alone.
-2. Extract each section into a new file in the same directory.
-3. Update the parent file to reference the extracted files.
-4. Ensure the parent README links to all new files.
-5. Verify reachability from `docs/README.md` is preserved.
-
-For source code files:
-
-1. Extract functions/structs into separate modules.
-2. Re-export from the parent module's `mod.rs` or `lib.rs`.
-3. Keep each file under 200 lines.
-4. Update `lib.rs` with new module declarations.
+1. record file path and line count in reference docs
+2. add refactor task to improvement backlog
+3. add TODO item for module split
 
 ## Compliance Checklist
 
-For any documentation change:
-
-- [ ] no directory exceeds 12 direct children
-- [ ] all directories contain exactly one `README.md`
-- [ ] no file exceeds 200 lines
-- [ ] all docs are reachable from `docs/README.md`
-- [ ] no orphan docs exist
-- [ ] every TODO file includes `## Relevant Documents` with Markdown links
-- [ ] every TODO checklist item links directly to governing docs
+- [ ] docs directories satisfy max-item rule
+- [ ] every docs directory has README
+- [ ] no docs file exceeds 200 lines
+- [ ] TODO checklists link to governing docs
+- [ ] source >200 line exceptions are recorded when present

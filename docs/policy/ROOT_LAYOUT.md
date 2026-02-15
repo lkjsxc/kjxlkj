@@ -6,55 +6,36 @@ Allowed top-level layout and derived artifact placement.
 
 ## Root Allowlist
 
-The repository root SHOULD contain only:
-
 | Path | Purpose |
 |---|---|
 | `README.md` | project index |
 | `LICENSE` | license |
-| `.env.example` | local secret template (no real secrets) |
-| `data/` | non-secret runtime configuration |
+| `.env.example` | secret template |
+| `data/` | non-secret runtime and prompt config |
 | `docs/` | canonical documentation |
-| `src/` | Rust/TypeScript runtime workspace (derived) |
-| `Cargo.toml` | workspace manifest (derived) |
-| `Cargo.lock` | dependency lockfile (derived) |
-| `package.json` | frontend package manifest (derived) |
-| `package-lock.json` | frontend lockfile (derived) |
-| `tsconfig.json` | frontend type-check policy (derived) |
-| `vite.config.ts` | Vite build/dev/preview config (derived) |
-| `vitest.config.ts` | Vitest test runner config (derived) |
-| `.gitignore` | ignore rules |
-| `docker-compose.yml` | single-service deployment file (derived) |
-| `Dockerfile` | container image definition (derived) |
-| `.dockerignore` | docker context filter (derived) |
-
-Additional root entries require explicit rationale in:
-
-- [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
-- [/docs/todo/README.md](/docs/todo/README.md)
+| `src/` | derived runtime workspace |
+| `Cargo.toml` | derived workspace manifest |
+| `Cargo.lock` | derived lockfile |
+| `Dockerfile` | derived container build |
+| `docker-compose.yml` | derived orchestration |
+| `.gitignore` | repository hygiene |
 
 ## Docs-Only Baseline
 
-A docs-only baseline MAY temporarily contain only:
+Docs-only baseline MAY temporarily include only:
 
 - `docs/`
-- `README.md`
-- `LICENSE`
-- minimal repository hygiene files
+- `data/config.json`
+- `data/agent-prompt.json`
+- root hygiene files (`README.md`, `LICENSE`, `.env.example`, `.gitignore`)
 
-Derived artifacts (`src/`, compose files, and manifests) are regenerated during
-ordered TODO waves.
+## Forbidden Top-Level Paths
 
-## Deployment Layout Rule
-
-Deployment MUST use a single compose service container that runs:
-
-- PostgreSQL process
-- `kjxlkj` application server process
-
-This non-standard shape is intentional and mandatory for this product.
+- `tmp/`
+- `log/`
+- committed secrets
 
 ## Related
 
-- Structure constraints: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
-- Workspace members: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- Structure policy: [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- Final structure: [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md)

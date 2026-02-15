@@ -6,41 +6,23 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 
 | Document | Purpose |
 |---|---|
-| [configuration.md](configuration.md) | runtime configuration model (`data/config.json` + `.env` secrets) |
-| [runtime.md](runtime.md) | Tokio/Actix runtime topology and supervision |
-| [crates.md](crates.md) | canonical crate decomposition |
-| [source-layout.md](source-layout.md) | workspace and module decomposition constraints |
+| [configuration.md](configuration.md) | config and prompt JSON loading model |
+| [runtime.md](runtime.md) | runtime topology and startup order |
+| [crates.md](crates.md) | crate decomposition |
+| [source-layout.md](source-layout.md) | module and file split constraints |
 | [workspace-manifest.md](workspace-manifest.md) | Cargo workspace policy |
-| [deployment.md](deployment.md) | single-container compose/process model |
-| [completion-file-map.md](completion-file-map.md) | required final repository tree with per-path intent |
-| [final-file-structure.md](final-file-structure.md) | canonical file structure at project completion |
-
-## System Shape
-
-```mermaid
-graph TD
- HTTP[Actix HTTP]
- WS[Actix WS]
- APP[Application Core]
- DB[(PostgreSQL)]
- SPA[Static SPA Assets]
-
- HTTP --> APP
- WS --> APP
- APP --> DB
- HTTP --> SPA
-```
+| [deployment.md](deployment.md) | container/process model |
+| [completion-file-map.md](completion-file-map.md) | required path map |
+| [final-file-structure.md](final-file-structure.md) | docs-only and runtime target trees |
 
 ## Invariants
 
-- Request handling MUST be async and non-blocking.
-- Note mutation ordering MUST be deterministic per note stream.
-- Automation mutation ordering MUST be deterministic per target stream.
-- Event append and projection updates MUST be transactional.
-- App and PostgreSQL MUST run in one compose service container.
+- request handling MUST be async and non-blocking
+- note mutation ordering MUST be deterministic per note stream
+- agent and automation mutation ordering MUST be deterministic
+- docs-only baseline and runtime target are both first-class states
 
 ## Related
 
-- Runtime: [runtime.md](runtime.md)
-- Deployment: [deployment.md](deployment.md)
 - Domain model: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
+- Technical contracts: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)

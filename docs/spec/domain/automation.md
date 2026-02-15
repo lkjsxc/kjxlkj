@@ -11,26 +11,32 @@ Back: [/docs/spec/domain/README.md](/docs/spec/domain/README.md)
 | `action_json` | deterministic action definition |
 | `enabled` | controls active evaluation |
 
-## Librarian Action Contract
+## `kjxlkj-agent` Contract
 
-The autonomous librarian agent is modeled as an automation action.
+The canonical autonomous agent name MUST be `kjxlkj-agent`.
 
-`action_json.kind = "librarian_structure"` MUST include:
+`action_json.kind = "kjxlkj_agent"` MUST support:
 
+- JSON-defined prompt pack path
 - provider config (`openrouter` or `lmstudio`)
-- protocol marker `xml_attrless`
-- structuring plan (taxonomy, style profile, operation limits)
-- guardrails (`allow_delete`, `strict_mode`, `max_operations`)
+- operation mode (`reviewed` or `yolo`)
+- memory policy (`kv_store` persisted between loops)
+- bounded execution and retry controls
 
-Librarian runs MUST parse and emit operations using
-[/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md).
+In `yolo` mode, the agent MAY create/update/delete notes directly.
 
-## Provider Requirements
+## Memory and Logging Rules
 
-- `openrouter` mode MUST support remote OpenAI-compatible chat completion APIs.
-- `lmstudio` mode MUST support local OpenAI-compatible server APIs.
-- Provider timeout and retry policy MUST be explicit and deterministic.
-- Provider selection MUST be auditable in each run record.
+- Agent memory MUST use a mutable key-value store persisted across loops.
+- Memory keys MUST be freely add/update/delete capable by the agent.
+- Full conversation transcript logging MUST be disabled by default.
+- Run audit logs MUST keep operation summaries, not full raw chat history.
+
+## Prompt Rules
+
+- Prompt content MUST be fully loaded from JSON files.
+- Prompt configuration MUST be hot-reloadable or reload-on-start.
+- Prompt schema validation MUST fail fast on invalid JSON.
 
 ## Run Lifecycle
 
@@ -41,26 +47,15 @@ Librarian runs MUST parse and emit operations using
 | Succeeded | action completed and effects committed |
 | Failed | action failed and error is recorded |
 
-## Determinism Rules
+## Determinism and Safety
 
-- Rule evaluation MUST be deterministic for identical input events.
 - Runs MUST be idempotent per `(rule_id, triggering_event_id)`.
-- Failed runs MUST preserve error detail for audit and debugging.
-- Automation side-effects on notes MUST use the same optimistic concurrency rules
-  as user writes.
-- Librarian runs MUST reject malformed protocol output with stable error codes.
-- Librarian operation application order MUST be deterministic by operation list order.
-
-## Safety Rules
-
-- Librarian rules MUST default to `allow_delete = false`.
-- Operations that touch notes outside rule scope MUST be rejected.
-- A run MAY emit `defer` operations instead of unsafe or ambiguous writes.
-- Raw prompt/response text SHOULD be retained for replay-safe audit.
+- Agent side effects on notes MUST obey optimistic concurrency.
+- Cross-workspace writes MUST be rejected.
+- Every applied operation MUST be auditable with stable error codes.
 
 ## Related
 
-- Events: [events.md](events.md)
-- Permissions: [permissions.md](permissions.md)
-- Librarian protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
-- Operations: [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md)
+- Notes: [notes.md](notes.md)
+- API protocol: [/docs/spec/api/librarian-xml.md](/docs/spec/api/librarian-xml.md)
+- Agent technical contract: [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md)

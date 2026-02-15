@@ -2,42 +2,24 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-The implementation is a Cargo workspace rooted at `src/crates/`.
+Canonical Rust workspace decomposition.
 
-## Topology Requirements
+## Required Crates
 
-| Requirement | Value |
-|---|---|
-| Canonical crate set | 10 primary crates |
-| Group roots | `app`, `http`, `ws`, `domain`, `db`, `auth`, `search`, `rbac`, `automation`, `workspace` |
-| Expansion rule | additional crates MAY be added only with spec justification |
-
-## Canonical Workspace Members
-
-| Group | Crate | Path |
+| Group | Crate | Purpose |
 |---|---|---|
-| app | `kjxlkj-server` | `src/crates/app/kjxlkj-server` |
-| http | `kjxlkj-http` | `src/crates/http/kjxlkj-http` |
-| ws | `kjxlkj-ws` | `src/crates/ws/kjxlkj-ws` |
-| domain | `kjxlkj-domain` | `src/crates/domain/kjxlkj-domain` |
-| db | `kjxlkj-db` | `src/crates/db/kjxlkj-db` |
-| auth | `kjxlkj-auth` | `src/crates/auth/kjxlkj-auth` |
-| search | `kjxlkj-search` | `src/crates/search/kjxlkj-search` |
-| rbac | `kjxlkj-rbac` | `src/crates/rbac/kjxlkj-rbac` |
-| automation | `kjxlkj-automation` | `src/crates/automation/kjxlkj-automation` |
-| workspace | `kjxlkj-workspace` | `src/crates/workspace/kjxlkj-workspace` |
-
-## Decomposition Rules
-
-- Runtime wiring MUST stay in `app`.
-- HTTP/WS transport code MUST stay outside domain core logic.
-- DB repositories MUST be isolated from route-layer request types.
-- Authorization decisions MUST flow through `rbac` checks.
-- Automation orchestration MUST stay in `automation` services.
-- Librarian provider adapters and protocol parsing MUST stay in automation-level
-  services, not UI handlers.
+| app | `kjxlkj-server` | startup and route wiring |
+| http | `kjxlkj-http` | HTTP handlers |
+| ws | `kjxlkj-ws` | realtime protocol |
+| domain | `kjxlkj-domain` | entities and rules |
+| db | `kjxlkj-db` | persistence and migrations |
+| auth | `kjxlkj-auth` | auth/session/security |
+| search | `kjxlkj-search` | hybrid lexical/semantic retrieval |
+| automation | `kjxlkj-automation` | `kjxlkj-agent` loop and rule execution |
+| rbac | `kjxlkj-rbac` | permission checks |
+| workspace | `kjxlkj-workspace` | workspace/project services |
 
 ## Related
 
-- Source layout: [/docs/spec/architecture/source-layout.md](/docs/spec/architecture/source-layout.md)
-- Workspace manifest: [/docs/spec/architecture/workspace-manifest.md](/docs/spec/architecture/workspace-manifest.md)
+- Source layout: [source-layout.md](source-layout.md)
+- Runtime model: [runtime.md](runtime.md)

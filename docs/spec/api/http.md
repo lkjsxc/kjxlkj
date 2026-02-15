@@ -4,143 +4,69 @@ Back: [/docs/spec/api/README.md](/docs/spec/api/README.md)
 
 Base path: `/api`
 
-## Setup and Auth
+## Auth and Session
 
 | Method | Path | Purpose |
 |---|---|---|
-| `POST` | `/setup/register` | first-run owner account bootstrap |
-| `POST` | `/auth/login` | create authenticated session |
-| `POST` | `/auth/logout` | revoke active session |
-| `GET` | `/auth/session` | return current session identity |
+| `POST` | `/setup/register` | first-run owner bootstrap |
+| `POST` | `/auth/login` | create session |
+| `POST` | `/auth/logout` | revoke current session |
+| `GET` | `/auth/session` | current session identity |
 
-## Users, Roles, Workspaces
+## Core Workspace and Note APIs
 
 | Method | Path | Purpose |
 |---|---|---|
-| `GET` | `/users` | list users in tenant |
-| `POST` | `/users` | create user account |
-| `PATCH` | `/users/{id}/role` | change global role |
-| `DELETE` | `/users/{id}` | disable or remove user |
 | `GET` | `/workspaces` | list workspaces |
 | `POST` | `/workspaces` | create workspace |
-| `PATCH` | `/workspaces/{id}` | update workspace |
-| `DELETE` | `/workspaces/{id}` | delete workspace |
-| `GET` | `/workspaces/{id}/members` | list workspace members |
-| `PUT` | `/workspaces/{id}/members/{user_id}` | upsert member role |
-
-## Projects and Notes
-
-| Method | Path | Purpose |
-|---|---|---|
-| `GET` | `/projects` | list projects |
-| `POST` | `/projects` | create project |
-| `PATCH` | `/projects/{id}` | update project |
-| `DELETE` | `/projects/{id}` | delete project |
-| `POST` | `/notes` | create note stream |
-| `POST` | `/notes/media` | create standalone media note from upload |
 | `GET` | `/notes` | list notes |
-| `GET` | `/notes/{id}` | fetch note projection |
-| `PATCH` | `/notes/{id}` | apply note mutation with version check |
-| `PATCH` | `/notes/{id}/title` | update note title with version check |
-| `DELETE` | `/notes/{id}` | soft-delete note stream |
-| `GET` | `/notes/{id}/history` | list event history |
-| `POST` | `/notes/{id}/rollback` | rollback to selected version |
+| `POST` | `/notes` | create note |
+| `GET` | `/notes/{id}` | read note projection |
+| `PATCH` | `/notes/{id}` | patch note with version check |
+| `PATCH` | `/notes/{id}/title` | update title with version check |
+| `DELETE` | `/notes/{id}` | soft-delete note |
+| `GET` | `/notes/{id}/history` | event history |
 
-## Metadata, Links, Search
-
-| Method | Path | Purpose |
-|---|---|---|
-| `PUT` | `/notes/{id}/metadata/{key}` | upsert typed metadata |
-| `DELETE` | `/notes/{id}/metadata/{key}` | delete typed metadata key |
-| `GET` | `/tags` | list tags |
-| `PUT` | `/notes/{id}/tags` | replace tags for note |
-| `GET` | `/notes/{id}/backlinks` | backlinks for note |
-| `GET` | `/search` | full-text and filter search |
-
-## Views, Optional Dashboards, Automation
+## Search and Link APIs
 
 | Method | Path | Purpose |
 |---|---|---|
-| `GET` | `/views` | list saved views |
-| `POST` | `/views` | create saved view |
-| `PATCH` | `/views/{id}` | update saved view |
-| `DELETE` | `/views/{id}` | delete saved view |
-| `GET` | `/dashboards` | list workspace dashboards (optional extension) |
-| `POST` | `/dashboards/widgets` | create or update dashboard widget (optional extension) |
-| `GET` | `/automation/rules` | list automation rules |
-| `POST` | `/automation/rules` | create automation rule (includes librarian structuring rules) |
-| `PATCH` | `/automation/rules/{id}` | update automation rule (includes provider/prompt contract) |
-| `DELETE` | `/automation/rules/{id}` | delete automation rule |
-| `POST` | `/automation/rules/{id}/launch` | manually launch an automation run for selected rule |
-| `GET` | `/automation/runs` | list automation runs for workspace |
-| `GET` | `/automation/runs/{id}` | automation run status/details (includes librarian operations) |
-| `POST` | `/automation/runs/{id}/review` | persist apply/reject decisions and optional apply execution summary |
+| `GET` | `/search` | hybrid lexical+semantic note search |
+| `GET` | `/notes/{id}/backlinks` | backlink projections |
 
-## Attachments and Admin Operations
+`GET /search` MUST support:
+
+- `q` (required)
+- `mode` (`hybrid`, `lexical`, `semantic`)
+- `workspace_id` (required)
+- `project_id` (optional)
+- `limit` (optional)
+
+## Automation and Agent APIs
 
 | Method | Path | Purpose |
 |---|---|---|
-| `POST` | `/notes/{id}/attachments` | upload chunked attachment |
-| `GET` | `/attachments/{id}` | download attachment |
-| `DELETE` | `/attachments/{id}` | delete attachment |
-| `POST` | `/admin/export/markdown` | launch markdown export job |
-| `GET` | `/admin/export/{job_id}` | export job status/artifact |
-| `POST` | `/admin/backup/sql` | launch SQL backup job |
+| `GET` | `/automation/rules` | list rules |
+| `POST` | `/automation/rules` | create rule |
+| `PATCH` | `/automation/rules/{id}` | update rule |
+| `POST` | `/automation/rules/{id}/launch` | launch run |
+| `GET` | `/automation/runs` | list runs |
+| `GET` | `/automation/runs/{id}` | run status and audit |
+| `POST` | `/automation/runs/{id}/review` | apply/reject operation decisions |
 
-## Ops
-
-| Method | Path | Purpose |
-|---|---|---|
-| `GET` | `/healthz` | liveness check |
-| `GET` | `/readyz` | readiness check (DB + migrations) |
+Agent rule payloads MUST support `action_json.kind = "kjxlkj_agent"`.
 
 ## Contract Rules
 
-- Global roles and workspace roles MUST be evaluated on every user-scoped route.
-- Setup MUST lock after first owner account registration.
-- `DELETE /notes/{id}` MUST return `204` on successful soft-delete.
-- `DELETE /notes/{id}/metadata/{key}` MUST return `204`.
-- Version conflicts MUST return `409` with current server version context.
-- Librarian rules MUST validate provider mode (`openrouter` or `lmstudio`) and
-  reject unknown providers with deterministic `422`.
-- Librarian actions MUST use the attribute-less XML-like protocol from
-  [librarian-xml.md](librarian-xml.md).
-
-## Request Flow Diagrams
-
-### Authenticated API Request
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant MW as Middleware
-    participant H as Handler
-    participant DB as PostgreSQL
-    C->>MW: POST /api/notes (cookie + x-csrf-token)
-    MW->>MW: SecurityHeaders
-    MW->>MW: CsrfEnforcer (validate token)
-    MW->>H: extract_session (validate cookie)
-    H->>DB: INSERT note / emit event
-    DB-->>H: result
-    H-->>C: 201 JSON + rid
-```
-
-### WebSocket Handshake
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant WS as WS Route
-    participant A as Session Actor
-    C->>WS: GET /ws (Upgrade)
-    WS->>WS: extract_session
-    WS->>A: spawn WsSession
-    A->>C: Heartbeat loop
-    C->>A: subscribe_workspace
-    A->>C: replay events
-```
+- `POST /notes` without title MUST assign datetime title.
+- `note_id` MUST remain immutable and separate from `title`.
+- Version conflicts MUST return `409` with current version details.
+- Unknown search `mode` values MUST return deterministic `422`.
+- Agent YOLO mode MUST still honor permission and workspace boundaries.
 
 ## Related
 
-- Error model: [errors.md](errors.md)
-- Payload types: [types.md](types.md)
+- Types: [types.md](types.md)
+- Errors: [errors.md](errors.md)
+- Domain notes: [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md)
+- Domain search: [/docs/spec/domain/search.md](/docs/spec/domain/search.md)

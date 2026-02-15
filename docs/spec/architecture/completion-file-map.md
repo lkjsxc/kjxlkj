@@ -2,64 +2,53 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative map for the intended repository structure at completion.
+Normative per-path map for completion.
 
 ## Root Paths
 
-| Path | Required | Purpose | Governing Doc |
+| Path | Required in Docs-Only | Required in Runtime | Purpose |
 |---|---|---|---|
-| `README.md` | yes | project entrypoint and current operating model | [/docs/README.md](/docs/README.md) |
-| `LICENSE` | yes | license text | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) |
-| `.gitignore` | yes | repository hygiene rules | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) |
-| `.env.example` | yes | secret template for local runtime | [configuration.md](configuration.md) |
-| `data/config.json` | yes | non-secret runtime config | [configuration.md](configuration.md) |
-| `docs/` | yes | canonical policy/spec/reference/TODO contract | [/docs/README.md](/docs/README.md) |
-| `src/` | yes | Rust + TypeScript runtime implementation | [source-layout.md](source-layout.md) |
-| `Cargo.toml` | yes | Rust workspace manifest | [workspace-manifest.md](workspace-manifest.md) |
-| `Cargo.lock` | yes | Rust dependency lockfile | [workspace-manifest.md](workspace-manifest.md) |
-| `Dockerfile` | yes | single-container runtime image | [deployment.md](deployment.md) |
-| `docker-compose.yml` | yes | single-service orchestration | [deployment.md](deployment.md) |
-| `docker/entrypoint.sh` | yes | app+postgres supervisor script | [deployment.md](deployment.md) |
+| `README.md` | yes | yes | project index |
+| `LICENSE` | yes | yes | license |
+| `.env.example` | yes | yes | secret template |
+| `data/config.json` | yes | yes | non-secret runtime config |
+| `data/agent-prompt.json` | yes | yes | full agent prompt JSON |
+| `docs/` | yes | yes | canonical contract |
+| `src/` | no | yes | runtime source tree |
+| `Cargo.toml` | no | yes | workspace manifest |
+| `Cargo.lock` | no | yes | lockfile |
+| `Dockerfile` | no | yes | container build |
+| `docker-compose.yml` | no | yes | runtime orchestration |
 
 ## Documentation Paths
 
 | Path | Required | Purpose |
 |---|---|---|
-| `docs/policy/` | yes | governance, structure rules, precedence |
-| `docs/spec/` | yes | normative system behavior |
-| `docs/reference/` | yes | evidence, drift, limitations, release state |
-| `docs/todo/` | yes | execution program and traceable checklists |
-| `docs/logs/` | yes | dated execution logs, audits, and improvement journals |
+| `docs/policy/` | yes | governance and constraints |
+| `docs/spec/` | yes | target behavior |
+| `docs/reference/` | yes | verified current state |
+| `docs/todo/` | yes | rebuild execution contract |
 | `docs/guides/` | yes | operator workflows |
-| `docs/overview/` | yes | conceptual orientation |
+| `docs/overview/` | yes | orientation and glossary |
 
 ## Runtime Paths
 
 | Path | Required | Purpose |
 |---|---|---|
-| `src/crates/app/kjxlkj-server/` | yes | process startup and route/service wiring |
-| `src/crates/http/kjxlkj-http/` | yes | HTTP APIs and DTO contracts |
-| `src/crates/ws/kjxlkj-ws/` | yes | WebSocket protocol and session management |
-| `src/crates/domain/kjxlkj-domain/` | yes | core entities, events, patch semantics |
-| `src/crates/db/kjxlkj-db/` | yes | SQL schema/migrations/repositories |
-| `src/crates/auth/kjxlkj-auth/` | yes | auth/session/CSRF middleware |
-| `src/crates/search/kjxlkj-search/` | yes | search and backlink logic |
-| `src/crates/rbac/kjxlkj-rbac/` | yes | role/permission enforcement |
-| `src/crates/automation/kjxlkj-automation/` | yes | librarian prompt/provider/execution |
-| `src/crates/workspace/kjxlkj-workspace/` | yes | workspace/project/view services |
-| `src/frontend/app/` | yes | React/Vite web app |
+| `src/crates/search/kjxlkj-search/` | yes | hybrid lexical+semantic search |
+| `src/crates/automation/kjxlkj-automation/` | yes | `kjxlkj-agent` runtime loop |
+| `src/frontend/app/` | yes | Obsidian-like markdown UI |
 
-## Prohibited Paths
+## Forbidden Paths
 
-| Pattern | Reason |
+| Path/Pattern | Reason |
 |---|---|
-| committed `.env` | secret leak |
-| committed runtime secrets in `data/config.json` | non-secret config contract violation |
-| handwritten runtime `.js` source | type-safety policy violation |
+| `tmp/` | temporary intake material only |
+| `log/` | transient logs not canonical |
+| `docs/logs/` | replaced by reference ledgers |
+| committed secrets | policy violation |
 
 ## Related
 
-- Final tree: [final-file-structure.md](final-file-structure.md)
-- Reconstruction manifest: [reconstruction-manifest.md](reconstruction-manifest.md)
-- Root allowlist: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
-- Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)
+- Final structure: [final-file-structure.md](final-file-structure.md)
+- Root policy: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)

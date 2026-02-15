@@ -6,47 +6,30 @@ Reconstruction workflow and verification gates.
 
 ## Gate Sequence
 
-1. Read policy, spec, reference, and TODO indexes.
-2. Build mismatch matrix (spec vs implementation vs tests).
-3. Select one coherent migration slice.
-4. Implement only user-reachable behavior in that slice.
-5. Run deterministic tests for touched behavior and relevant global gates.
-6. Update reference ledgers and TODO state in the same change.
-7. Commit progress frequently as small, auditable git commits.
+1. read policy/spec/reference/todo roots
+2. build drift matrix from current state
+3. execute one TODO stage at a time
+4. run deterministic checks for touched scope
+5. update ledgers and TODO in same change
+6. commit progress
 
 ## TODO Authoring Rule
 
-When creating or editing TODO files:
+TODO files MUST include:
 
-- use Markdown syntax only
-- include `## Relevant Documents`
-- add direct Markdown links to all relevant files for that TODO
+- `## Relevant Documents`
+- direct links to required docs
+- checklist items with linked governing docs
 
-## Verification Gate
+## TODO Status Scan Rule
 
-The baseline gate is defined in [/docs/reference/CI.md](/docs/reference/CI.md).
+Use a command scan before completion decisions:
 
-A change is complete only if:
+- `rg -n "\\[ \\]" docs/todo`
 
-- required checks are green for the targeted state
-- conformance and limitations are synchronized
-- TODO updates are evidence-backed
-
-## Drift Handling
-
-When mismatch is found:
-
-- classify mismatch type
-- prioritize correctness and user-visible behavior first
-- either close mismatch now or record explicit defer rationale with next action
-
-## Docs-Only Baseline Rule
-
-In docs-only state, missing implementation artifacts are acceptable,
-but TODO and reference documents MUST explicitly define regeneration steps.
+If unchecked items remain, work is still pending unless explicitly reset by design.
 
 ## Related
 
-- Operating contract: [INSTRUCT.md](INSTRUCT.md)
 - CI baseline: [/docs/reference/CI.md](/docs/reference/CI.md)
-- Reconstruction plan: [/docs/todo/README.md](/docs/todo/README.md)
+- TODO contract: [/docs/todo/README.md](/docs/todo/README.md)

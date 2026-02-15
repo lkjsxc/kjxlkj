@@ -2,39 +2,20 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative requirements for reconstructing workspace manifests.
+Normative requirements for reconstructed Rust workspace manifests.
 
-## Root Files
+## Required Files
 
-| Path | Requirement |
-|---|---|
-| `Cargo.toml` | defines workspace resolver and members |
-| `Cargo.lock` | committed for reproducibility |
-| `.gitignore` | excludes derived build artifacts |
+- `Cargo.toml`
+- `Cargo.lock`
 
-## Workspace Settings
+## Required Settings
 
-| Field | Requirement |
-|---|---|
-| `workspace.resolver` | MUST be `"2"` |
-| `workspace.package.edition` | MUST be `"2021"` |
-| `workspace.members` | MUST include canonical crate paths |
-
-## Shared Dependencies
-
-| Dependency | Purpose |
-|---|---|
-| `actix-web` | HTTP server |
-| `actix-web-actors` | WebSocket actor support |
-| `tokio` | async runtime |
-| `sqlx` | async PostgreSQL access and migrations |
-| `serde`, `serde_json` | schema serialization |
-| `tracing`, `tracing-subscriber` | diagnostics |
-| `thiserror`, `anyhow` | error handling |
-| `uuid`, `time` | identifiers and timestamps |
+- `workspace.resolver = "2"`
+- `workspace.package.edition = "2021"`
+- workspace members include all canonical crates from [crates.md](crates.md)
 
 ## Related
 
 - Crate topology: [crates.md](crates.md)
-- Root layout: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
 - Source layout: [source-layout.md](source-layout.md)

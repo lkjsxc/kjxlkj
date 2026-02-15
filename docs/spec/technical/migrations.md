@@ -4,31 +4,23 @@ Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
 ## Tooling
 
-- Database schema migrations MUST use SQLx migration files.
-- Migrations MUST be ordered and deterministic.
+- Migrations MUST be deterministic and ordered.
+- Migrations MUST include forward-apply scripts.
 
-## Schema Domains
+## Required Schema Domains
 
-Migrations MUST cover:
-
-- users and sessions
-- workspaces, membership, and role bindings
-- projects, saved views, and dashboard widgets
-- note streams and note events
-- workspace events and automation events
-- note projections and snapshots
-- tags and backlinks projections
-- automation rules and run history
-- librarian run reports and operation audit logs
-- attachments and chunks
+- notes, events, projections
+- search lexical indexes and vector embedding storage
+- automation rules and runs
+- agent KV memory store and state tables
 
 ## Safety Rules
 
-- forward migrations MUST be idempotent in deployment scripts
-- rollback scripts SHOULD exist when feasible
 - migration failures MUST fail startup readiness
+- forward migrations MUST be idempotent in deployment scripts
+- rollback scripts SHOULD exist for high-risk changes
 
 ## Related
 
-- Runtime startup: [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
-- Deployment: [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
+- Search: [/docs/spec/domain/search.md](/docs/spec/domain/search.md)
+- Agent: [librarian-agent.md](librarian-agent.md)

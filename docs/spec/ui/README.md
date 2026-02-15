@@ -8,12 +8,12 @@ Defines web-app interaction boundaries for the rebuilt runtime.
 
 | Document | Purpose |
 |---|---|
-| [web-app.md](web-app.md) | shell, auth flow, and note-first navigation model |
-| [workspace-suite.md](workspace-suite.md) | workspace-level optional modules and power-user workflows |
-| [editor-flow.md](editor-flow.md) | note editing, sync, and conflict handling |
-| [layout-and-interaction.md](layout-and-interaction.md) | responsive layout, visual hierarchy, interaction feedback |
-| [findings-traceability.md](findings-traceability.md) | `IMP-*` and `USR-*` finding-to-requirement mapping |
-| [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md) | normative UX requirements matrix for reconstruction |
+| [web-app.md](web-app.md) | shell, auth flow, and note creation behavior |
+| [workspace-suite.md](workspace-suite.md) | optional workspace modules |
+| [editor-flow.md](editor-flow.md) | Obsidian-like markdown editing and sync/conflict model |
+| [layout-and-interaction.md](layout-and-interaction.md) | responsive layout and menu-threshold behavior |
+| [findings-traceability.md](findings-traceability.md) | finding-to-requirement mapping |
+| [reconstruction-ux-requirements.md](reconstruction-ux-requirements.md) | normative UX matrix |
 
 ## Related
 

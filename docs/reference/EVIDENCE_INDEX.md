@@ -2,48 +2,28 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Deterministic mapping from reconstruction stages to required proof artifacts.
-
-## Purpose
-
-This index defines what evidence must exist before each stage can be marked
-complete in TODO ledgers and promoted in conformance ledgers.
+Deterministic mapping from TODO stages to required proof artifacts.
 
 ## Evidence Rules
 
-- Evidence MUST be deterministic and reproducible.
-- Evidence MUST reference acceptance IDs from
+- Evidence MUST be reproducible.
+- Evidence MUST reference acceptance IDs in
   [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
-- Evidence MUST be reflected in
-  [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md),
-  [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md), and
-  [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md).
-- Wave completion in [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
-  MUST not outpace referenced evidence.
+- TODO stage completion MUST not outpace evidence capture.
 
 ## Stage Evidence Map
 
-| Stage | Scope | Primary TODO | Required Proof Contract | Status |
-|---|---|---|---|---|
-| Stage 00 | governance baseline and canonical docs integrity | [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) | docs reachability, structure, and final-file-structure checks | archived evidence |
-| Stage 01 | runtime skeleton, auth/session, RBAC foundations | [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) | `API-AUTH-*`, role/membership boundary checks, type gates | archived evidence |
-| Stage 02 | notes/event streams/search core | [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) | `API-NOTE-*`, `API-SEARCH-*`, `WS-01..05` | archived evidence |
-| Stage 03 | web shell/editor/responsive interaction baseline | [/docs/todo/waves/stage-03-single-container-runtime/README.md](/docs/todo/waves/stage-03-single-container-runtime/README.md) | `E2E-06`, `E2E-07`, `E2E-08`, `E2E-12`, `E2E-13`, `E2E-14`, `E2E-19`, `E2E-23` | archived evidence |
-| Stage 04 | automation, jobs, and projection consistency | [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md) | `API-AUTO-01`, `API-AUTO-02`, `OPS-01` | archived evidence |
-| Stage 05 | security, reliability, and recovery hardening | [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md) | `REG-IMP-*`, `REG-USR-*`, `REG-UX-003`, `E2E-18`, `PERF-*`, `OPS-02` | archived evidence |
-| Stage 06 | REST contract completion and librarian provider/prompt path | [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md) | `API-AUTO-03`, `API-AUTO-04`, OpenAPI parity checks | archived evidence |
-| Stage 07 | workspace realtime sync/replay closure | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | `WS-06`, replay/idempotency/stale-cursor boundaries | archived evidence |
-| Stage 08 | frontend librarian UX and static delivery | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | `E2E-15`, `E2E-17`, `E2E-20`, `E2E-21`, `E2E-22`, `E2E-23`, responsive + accessibility checks | archived evidence |
-| Stage 09 | CI/perf/release closure | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass + release gate closure | archived evidence |
-| Stage 10 | hardening backlog closure | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | backlog closure plus additional evidence for perf/ops/security/frontend | archived evidence |
-
-## Verification Profiles
-
-- Profiles: [/docs/reference/CI.md](/docs/reference/CI.md)
-- Acceptance IDs: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
-- Release closure: [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md)
+| Stage | Scope | Primary TODO | Required Proof |
+|---|---|---|---|
+| S00 | docs governance reset | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | docs integrity checks |
+| S01 | runtime scaffolding | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | compile/type gates |
+| S02 | notes + search | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `API-NOTE-*`, `API-SEARCH-*` |
+| S03 | editor + responsive UI | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `E2E-06`, `E2E-12`, `E2E-19`, `E2E-23` |
+| S04 | agent loop + automation | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `API-AUTO-*`, `WS-06` |
+| S05 | security/perf/ops closure | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `PERF-*`, `OPS-*`, security regression pack |
+| S06 | release gate | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | full CI profile pass |
 
 ## Related
 
-- Runtime trust state: [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md)
-- Open gaps: [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- CI profiles: [CI.md](CI.md)
+- Release gate: [RELEASE.md](RELEASE.md)

@@ -2,46 +2,31 @@
 
 Back: [/docs/spec/technical/README.md](/docs/spec/technical/README.md)
 
-Mandatory language and typing constraints for reconstructed runtime artifacts.
-
 ## Language Policy
 
-- Backend runtime MUST be implemented in Rust.
-- Frontend runtime MUST be implemented in TypeScript.
-- Handwritten JavaScript runtime source MUST NOT be committed.
-- Generated JS bundles under `src/frontend/app/dist/` are allowed.
+- Backend runtime MUST be Rust.
+- Frontend runtime MUST be TypeScript.
+- Handwritten runtime JavaScript source is forbidden.
 
-## Backend Requirements (Rust)
+## Backend Requirements
 
-- Compilation MUST pass with `cargo check --workspace`.
-- Public API payloads MUST use explicit typed structs/enums.
-- Fallible operations MUST return typed error variants.
+- `cargo check --workspace` MUST pass.
+- public payloads MUST use typed structs/enums.
+- agent prompt JSON parsing MUST use typed schema models.
 
-## Frontend Requirements (TypeScript)
+## Frontend Requirements
 
 - `strict: true` in `tsconfig.json` is mandatory.
 - `any` is forbidden in app-domain logic.
-- API and WS payloads MUST be represented by explicit interfaces/types.
-
-## Contract Surface
-
-Typed contracts MUST exist for:
-
-- auth/session payloads
-- note/workspace/project models
-- automation/librarian payloads
-- websocket message envelopes
+- search and editor contracts MUST use explicit interfaces.
 
 ## Verification Gate
 
-A runtime claim is invalid unless all pass:
-
 1. backend compile gate
 2. frontend type-check gate
-3. no handwritten JavaScript runtime source
+3. no handwritten runtime JS
 
 ## Related
 
-- Architecture runtime: [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md)
-- API types: [/docs/spec/api/types.md](/docs/spec/api/types.md)
-- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- Testing: [testing.md](testing.md)
+- Agent prompt schema: [agent-prompt-json.md](agent-prompt-json.md)
