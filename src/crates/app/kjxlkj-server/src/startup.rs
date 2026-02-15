@@ -2,6 +2,7 @@ use actix_files::Files;
 use actix_web::{web, App, HttpServer};
 use kjxlkj_db::pool;
 use kjxlkj_http::{
+    middleware_csrf, middleware_security,
     routes_attachments, routes_auth, routes_automation_rules,
     routes_automation_runs, routes_export, routes_health,
     routes_metadata, routes_notes, routes_search, routes_users,
@@ -51,6 +52,10 @@ pub async fn run(config: AppConfig) -> anyhow::Result<()> {
             .app_data(web::Data::new(db_pool.clone()))
             .app_data(web::Data::new(ws_config.clone()))
             .app_data(web::JsonConfig::default().limit(max_body))
+            // Security middleware per /docs/spec/security/transport.md
+            .wrap(middleware_security::SecurityHeaders)
+            // CSRF enforcement per /docs/spec/security/csrf.md
+            .wrap(middleware_csrf::CsrfEnforcer)
             // Health
             .route("/api/healthz", web::get().to(routes_health::healthz))
             .route("/api/readyz", web::get().to(routes_health::readyz))

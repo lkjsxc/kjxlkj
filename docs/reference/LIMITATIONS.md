@@ -12,7 +12,9 @@ Open mismatches between target spec and trusted current behavior.
 - Stage 02 notes lifecycle, realtime WS, metadata, search, attachments compiled.
 - Stage 03 frontend web app shell compiled.
 - Stage 04 automation, export, librarian DB and HTTP routes compiled.
-- TODO checklists for Stages 00–04 are fully checked.
+- Stage 05 CSRF and security headers middleware compiled.
+- Stage 05 regression (14) and acceptance (24) test stubs compiled and passing.
+- TODO checklists for Stages 00–05 are fully checked.
 - Improvement backlog is canonicalized in `IMPROVEMENT_BACKLOG.md`.
 
 ## Open Limitations
@@ -30,6 +32,9 @@ Open mismatches between target spec and trusted current behavior.
 | `LIM-WS-UNSAFE-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS actor uses unsafe raw pointer for &mut SubscriptionState across async boundary | `M3 undocumented behavior` | medium | refactor to safe actor message pattern |
 | `LIM-AUTO-REBUILD-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | automation rule/run and librarian pipeline compiled but not acceptance-tested | `M4 verification gap` | medium | run automation acceptance tests |
 | `LIM-EXPORT-REBUILD-01` | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | export/backup jobs compiled but not acceptance-tested | `M4 verification gap` | medium | run export acceptance tests |
+| `LIM-CSRF-01` | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | CSRF middleware compiled but not tested against live mutating requests | `M4 verification gap` | medium | verify CSRF rejection with live requests |
+| `LIM-TRANSPORT-01` | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | security response headers middleware compiled but not verified live | `M4 verification gap` | low | verify response headers with live requests |
+| `LIM-REGRESSION-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | regression stubs are structural placeholders; need assertion bodies | `M4 verification gap` | medium | fill assertion bodies during integration testing |
 
 ## Closure Rules
 

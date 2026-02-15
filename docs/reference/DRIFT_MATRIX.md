@@ -40,6 +40,11 @@ Requirement-level mismatch tracking for reconstruction.
 | `R-AUTO-RUN-01` | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | run state machine with idempotency | partial | `M4` | run acceptance tests for run lifecycle |
 | `R-EXPORT-01` | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | export/backup job lifecycle | partial | `M4` | run acceptance tests for export jobs |
 | `R-LIBRARIAN-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | librarian report and operation audit | partial | `M4` | run acceptance tests for librarian pipeline |
+| `R-CSRF-01` | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | CSRF token validation on mutating requests | partial | `M4` | verify CSRF rejection with live requests |
+| `R-TRANSPORT-01` | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | security response headers on all responses | partial | `M4` | verify response headers with live requests |
+| `R-SESSION-01` | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | session cookie and expiry semantics | partial | `M4` | verify session lifecycle with live requests |
+| `R-REGRESSION-01` | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | regression test stubs for all findings | partial | `M4` | execute regression pack against live runtime |
+| `R-ACCEPTANCE-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance test stubs for all API/WS/OPS/PERF areas | partial | `M4` | execute acceptance pack against live runtime |
 
 ## Summary
 
@@ -48,7 +53,7 @@ Requirement-level mismatch tracking for reconstruction.
 | `M1 correctness` | 0 |
 | `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 14 |
+| `M4 verification gap` | 19 |
 | `M5 stale docs` | 0 |
 
 ## Related

@@ -2,6 +2,8 @@ pub mod dto;
 pub mod dto_automation;
 pub mod error_response;
 pub mod extractors;
+pub mod middleware_csrf;
+pub mod middleware_security;
 pub mod patch_ops;
 pub mod routes_attachments;
 pub mod routes_attachments_dl;

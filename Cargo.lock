@@ -1187,6 +1187,7 @@ name = "kjxlkj-http"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "futures",
  "hex",
  "kjxlkj-auth",
  "kjxlkj-automation",

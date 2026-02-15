@@ -39,6 +39,10 @@ High-confidence statement:
 - Stage 04 automation runs: launch/list/detail/review with idempotency compiled.
 - Stage 04 export/backup: markdown export and SQL backup job lifecycle compiled.
 - Stage 04 librarian reports and operations: audit log store and decision pipeline compiled.
+- Stage 05 CSRF middleware: CsrfEnforcer validates x-csrf-token header on mutating requests; returns 403 CSRF_INVALID.
+- Stage 05 security headers middleware: SecurityHeaders adds nosniff, DENY, no-store, XSS-protection, referrer-policy.
+- Stage 05 regression test stubs: 14 structural stubs for REG-IMP-*, REG-USR-*, REG-UX-003 compiled and passing.
+- Stage 05 acceptance test stubs: 24 structural stubs for API/WS/OPS/PERF acceptance pack compiled and passing.
 
 ## Domain Status
 
@@ -63,6 +67,11 @@ High-confidence statement:
 | Automation rules and runs | [/docs/spec/domain/automation.md](/docs/spec/domain/automation.md) | `partial` | rule CRUD, run state machine, idempotency, review compiled; live test pending |
 | Export and backup jobs | [/docs/spec/domain/export.md](/docs/spec/domain/export.md) | `partial` | markdown/SQL job lifecycle compiled; live test pending |
 | Librarian operations audit | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `partial` | report/operation store and decision pipeline compiled; live test pending |
+| CSRF enforcement | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | `partial` | CsrfEnforcer middleware compiled; live request validation pending |
+| Transport security headers | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | `partial` | SecurityHeaders middleware compiled; response header verification pending |
+| Auth/session boundaries | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `partial` | extract_session guard and role checks compiled; live session lifecycle pending |
+| Regression closure | [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) | `partial` | 14 regression stubs compiled and passing; runtime verification pending |
+| Acceptance test baseline | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `partial` | 24 acceptance stubs compiled and passing; runtime verification pending |
 | Mobile menu top-right and close-on-select behavior | [/docs/spec/ui/layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | `spec-only` | requirement is documented; runtime implementation pending rebuild |
 | Create New Note regression test | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `spec-only` | requirement is documented as `E2E-23`; runtime test implementation pending rebuild |
 | Release gate | [/docs/reference/RELEASE.md](/docs/reference/RELEASE.md) | `blocked` | runtime and acceptance evidence must be reconstructed |
