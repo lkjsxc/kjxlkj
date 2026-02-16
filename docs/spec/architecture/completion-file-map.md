@@ -2,7 +2,7 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative per-path map for completion.
+Normative per-path map for baseline and reconstruction states.
 
 ## Root Paths
 
@@ -17,11 +17,8 @@ Normative per-path map for completion.
 | `src/` | no | yes | runtime source tree |
 | `Cargo.toml` | no | yes | workspace manifest |
 | `Cargo.lock` | no | yes | lockfile |
-| `Dockerfile` | no | yes | container build |
-| `docker-compose.yml` | no | yes | runtime orchestration |
-| `.dockerignore` | no | yes | container build context filter |
-| `scripts/entrypoint.sh` | no | yes | postgres+app startup supervisor |
-| `scripts/backup-restore-drill.sh` | no | yes | backup/restore parity drill helper |
+| `scripts/` | no | yes | operational helper scripts |
+| `.github/` | yes | yes | CI automation metadata |
 
 ## Documentation Paths
 
@@ -48,7 +45,8 @@ Normative per-path map for completion.
 |---|---|
 | `tmp/` | temporary intake material only |
 | `log/` | transient logs not canonical |
-| `docs/logs/` | replaced by reference ledgers |
+| `docs/logs/` | non-canonical logging area |
+| Docker artifacts | removed from canonical baseline |
 | committed secrets | policy violation |
 
 ## Related

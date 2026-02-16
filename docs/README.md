@@ -4,9 +4,9 @@
 
 ## Contract
 
-- The product MUST be reconstructable from documentation.
+- The system MUST be reconstructable from documentation alone.
 - Specs define target behavior; references define verified present state.
-- TODO checklists define executable rebuild order.
+- TODO waves define the only allowed implementation order.
 
 ## Authority and Precedence
 
@@ -22,14 +22,16 @@
 |---|---|
 | [policy/](policy/README.md) | invariants and guardrails |
 | [spec/](spec/README.md) | target product behavior |
-| [reference/](reference/README.md) | current-state evidence and drift |
-| [todo/](todo/README.md) | staged rebuild execution plan |
-| [guides/](guides/README.md) | operator workflows |
-| [overview/](overview/README.md) | concepts and vocabulary |
+| [reference/](reference/README.md) | verified current state and drift |
+| [todo/](todo/README.md) | staged reconstruction workflow |
+| [guides/](guides/README.md) | operator playbooks |
+| [overview/](overview/README.md) | concepts and glossary |
 
-## Notes
+## Baseline (2026-02-16)
 
-Historical execution logs are kept in git history and reference ledgers.
+- Repository is in docs-only reset mode.
+- Runtime source and Docker artifacts are intentionally absent.
+- All TODO waves are reset to unchecked and must be re-executed.
 
 ## Related
 

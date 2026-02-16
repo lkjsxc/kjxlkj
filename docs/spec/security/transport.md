@@ -4,8 +4,8 @@ Back: [/docs/spec/security/README.md](/docs/spec/security/README.md)
 
 ## TLS Boundary
 
-- App server runs HTTP inside the container/service network.
-- TLS termination is handled by reverse proxy in front of `kjxlkj`.
+- App server MAY run plain HTTP only on trusted internal interfaces.
+- TLS termination MUST be handled by a trusted reverse proxy or direct TLS endpoint.
 
 ## Header Expectations
 
@@ -16,10 +16,11 @@ When behind a trusted reverse proxy:
 
 ## Deployment Guidance
 
-- Do not expose plain HTTP publicly without trusted front proxy.
-- Use network controls to limit direct container access.
+- Do not expose plain HTTP publicly.
+- Restrict direct app and DB network access to trusted origins.
+- Validate host and origin boundaries for browser-facing routes.
 
 ## Related
 
 - Deployment: [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md)
-- Guides: [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
+- Auth: [/docs/spec/security/auth.md](/docs/spec/security/auth.md)

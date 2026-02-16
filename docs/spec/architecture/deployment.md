@@ -2,28 +2,31 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-## Compose Contract
+## Host Process Contract
 
-Baseline deployment uses a single compose service containing:
+Deployment MUST support two processes with explicit lifecycle control:
 
 - PostgreSQL process
 - application process
 
-## Entrypoint Contract
+## Startup Contract
 
-1. init DB directory if missing
+1. initialize data directory when absent
 2. start DB and wait for readiness
 3. run migrations
 4. start app server
-5. forward shutdown signals
+5. forward shutdown signals and drain in-flight requests
 
-## Required Artifacts
+## Required Runtime Artifacts
 
-- `Dockerfile`
-- `docker-compose.yml`
-- `.dockerignore`
-- `scripts/entrypoint.sh`
-- `scripts/backup-restore-drill.sh`
+- `src/` runtime source tree
+- `Cargo.toml` and `Cargo.lock`
+- optional helper scripts under `scripts/`
+
+## Prohibitions
+
+- Docker artifacts are not part of the canonical baseline.
+- Deployment semantics MUST NOT depend on container-only behavior.
 
 ## Related
 

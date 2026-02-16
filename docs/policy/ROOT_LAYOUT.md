@@ -13,29 +13,28 @@ Allowed top-level layout and derived artifact placement.
 | `.env.example` | secret template |
 | `data/` | non-secret runtime and prompt config |
 | `docs/` | canonical documentation |
-| `src/` | derived runtime workspace |
-| `Cargo.toml` | derived workspace manifest |
-| `Cargo.lock` | derived lockfile |
-| `Dockerfile` | derived container build |
-| `docker-compose.yml` | derived orchestration |
-| `.dockerignore` | derived docker context filter |
-| `scripts/` | derived operational and startup scripts |
+| `src/` | derived runtime workspace (optional until rebuilt) |
+| `Cargo.toml` | derived workspace manifest (optional until rebuilt) |
+| `Cargo.lock` | derived lockfile (optional until rebuilt) |
+| `scripts/` | derived operational scripts (optional until rebuilt) |
 | `.gitignore` | repository hygiene |
+| `.github/` | CI and automation metadata |
 
 ## Docs-Only Baseline
 
-Docs-only baseline MAY temporarily include only:
+Docs-only baseline MAY include only:
 
 - `docs/`
 - `data/config.json`
 - `data/agent-prompt.json`
 - root hygiene files (`README.md`, `LICENSE`, `.env.example`, `.gitignore`)
 
-## Forbidden Top-Level Paths
+## Prohibitions
 
-- `tmp/`
-- `log/`
-- committed secrets
+- `tmp/` MUST NOT exist in canonical state.
+- `log/` and `docs/logs/` MUST NOT exist.
+- Docker artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`) MUST NOT exist.
+- committed secrets are forbidden.
 
 ## Related
 

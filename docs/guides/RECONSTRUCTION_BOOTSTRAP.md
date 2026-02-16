@@ -17,16 +17,13 @@ Deterministic scaffold guide for rebuilding typed runtime artifacts from canon.
 
 ## Baseline Assumption
 
-Current repository state may be docs-only canonical baseline with no runtime
-artifacts.
+Current repository state may be docs-only with no runtime artifacts.
 
 ## Phase 1: Root Scaffold
 
 1. Create derived runtime manifests:
    - `Cargo.toml`
    - `Cargo.lock`
-   - `package.json`
-   - `tsconfig.json`
 2. Keep root compliant with [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md).
 
 ## Phase 2: Typed Topology
@@ -42,22 +39,20 @@ artifacts.
 2. Configure TypeScript strict settings (`strict`, `noImplicitAny`, `allowJs: false`).
 3. Register typed API/WS contract packages if shared.
 
-## Phase 4: Type and Compile Gate
+## Phase 4: Per-Wave Gates
 
-Minimum deterministic checks before feature implementation:
+For every wave completion attempt:
 
-1. backend compile: `cargo check --workspace`
-2. frontend type-check: `tsc --noEmit`
-3. no handwritten JavaScript runtime source (`dist/*.js` is generated output)
+1. run `cargo build --workspace`
+2. run `cargo test --workspace`
+3. run wave-specific acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
 
-## Phase 5: Wave-Driven Implementation
+## Phase 5: Ledger Sync
 
-1. Start with [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md).
-2. Implement behavior in wave order only.
-3. Update ledgers and TODO state in the same change.
+1. Update `/docs/reference` ledgers.
+2. Then and only then mark TODO checkboxes.
 
 ## Related
 
 - Quickstart: [QUICKSTART.md](QUICKSTART.md)
-- Docker workflow: [DOCKER.md](DOCKER.md)
 - Evidence map: [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

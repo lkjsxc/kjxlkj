@@ -24,5 +24,5 @@ Shared terms used across policy/spec/reference/todo.
 | Typed metadata | Keyed structured data attached to a note. |
 | Single-tenant multi-user auth | One deployment tenant with multiple authenticated users/roles. |
 | First-run registration | Setup endpoint active only before first owner account exists. |
-| Single-service container | One compose service process space running app and PostgreSQL. |
+| Host deployment | Non-container-specific process model for app and DB runtime lifecycle. |
 | Drift matrix | Requirement-level mismatch tracking ledger. |

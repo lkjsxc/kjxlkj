@@ -12,26 +12,19 @@ Release is valid only for blocker-free reconstructed runtime state.
 4. acceptance tests in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
 5. type-safety gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
 
-## Current Gate (2026-02-15)
+## Current Gate (2026-02-16)
 
-Release is partially unblocked.
+Release is blocked.
 
-Resolved:
+Blocking reasons:
 
-- runtime source fully reconstructed (10 crates, clean compilation, 16 tests pass)
-- hybrid search implemented (kjxlkj-search)
-- editor redesign implemented (app-shell.ts)
-- `kjxlkj-agent` runtime loop implemented (kjxlkj-automation)
-
-Remaining blockers:
-
-- CI workflow file not created (`.github/workflows/`)
-- DB-backed integration test suite not yet run against live PostgreSQL
-- browser E2E test suite not implemented
+- runtime source is intentionally absent
+- TODO waves are reset and unexecuted
+- acceptance test pack cannot run without runtime artifacts
 
 ## Release Steps
 
-1. execute TODO waves to rebuild runtime source
+1. execute TODO waves in order and satisfy each wave build/test gate
 2. run CI profiles and archive evidence
 3. close drift and limitation rows
 4. synchronize ledgers and TODO completion

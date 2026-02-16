@@ -11,7 +11,7 @@ Back: [/docs/spec/README.md](/docs/spec/README.md)
 | [crates.md](crates.md) | crate decomposition |
 | [source-layout.md](source-layout.md) | module and file split constraints |
 | [workspace-manifest.md](workspace-manifest.md) | Cargo workspace policy |
-| [deployment.md](deployment.md) | container/process model |
+| [deployment.md](deployment.md) | runtime process and host deployment contract |
 | [completion-file-map.md](completion-file-map.md) | required path map |
 | [final-file-structure.md](final-file-structure.md) | docs-only and runtime target trees |
 

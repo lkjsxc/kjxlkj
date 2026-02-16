@@ -5,7 +5,7 @@ Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 Defines canonical repository structure for:
 
 1. docs-only baseline (current authoritative state)
-2. fully reconstructed runtime state (completion target)
+2. reconstructed runtime target (completion target)
 
 ## State A: Docs-Only Baseline
 
@@ -36,12 +36,8 @@ Defines canonical repository structure for:
 .
 ├── Cargo.toml
 ├── Cargo.lock
-├── Dockerfile
-├── docker-compose.yml
-├── .dockerignore
 ├── scripts/
-│   ├── entrypoint.sh
-│   └── backup-restore-drill.sh
+│   └── (optional operational helpers)
 ├── src/
 │   ├── crates/
 │   │   ├── app/kjxlkj-server/
@@ -78,6 +74,7 @@ A completion claim is valid only when:
 
 - `tmp/` MUST NOT exist in completion state.
 - `log/` and `docs/logs/` MUST NOT exist in completion state.
+- Docker artifacts MUST NOT exist in canonical states.
 - handwritten runtime `.js` source is forbidden.
 
 ## Related

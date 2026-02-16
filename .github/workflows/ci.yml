@@ -14,101 +14,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify docs structure
+      - name: Verify canonical docs tree
         run: |
           set -e
-          echo "=== Docs-integrity profile ==="
-          # Required top-level docs directories
           for d in guides overview policy reference spec todo; do
             test -d "docs/$d" || { echo "FAIL: docs/$d missing"; exit 1; }
           done
-          # Required reference ledgers
-          for f in CI.md CONFORMANCE.md DRIFT_MATRIX.md EVIDENCE_INDEX.md LIMITATIONS.md RELEASE.md; do
+      - name: Verify required reference ledgers
+        run: |
+          set -e
+          for f in CI.md CONFORMANCE.md DRIFT_MATRIX.md EVIDENCE_INDEX.md LIMITATIONS.md RELEASE.md IMPROVEMENT_BACKLOG.md; do
             test -f "docs/reference/$f" || { echo "FAIL: docs/reference/$f missing"; exit 1; }
           done
-          # No broken internal doc links (basic check)
-          echo "Docs structure verified."
-
-  workspace-bootstrap:
-    name: Workspace Bootstrap
-    needs: docs-integrity
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Cargo check
-        run: cargo check --workspace
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install frontend deps
-        run: cd src/frontend/app && npm ci
-      - name: TypeScript type-check
-        run: cd src/frontend/app && npx tsc --noEmit
-      - name: Vite build
-        run: cd src/frontend/app && npx vite build
-      - name: No handwritten JS
+      - name: Verify TODO policy blocks
         run: |
           set -e
-          JS_FILES=$(find src/frontend/app/src -name '*.js' | head -5)
-          if [ -n "$JS_FILES" ]; then
-            echo "FAIL: handwritten JS found: $JS_FILES"
+          MISSING=$(rg -L "^## Relevant Documents" docs/todo -g '*.md' || true)
+          if [ -n "$MISSING" ]; then
+            echo "FAIL: missing '## Relevant Documents' in:"
+            echo "$MISSING"
+            exit 1
+          fi
+          WAVE_MISSING=$(rg -L "^## Mandatory Build and Test Gate" docs/todo/waves -g 'wave-*.md' || true)
+          if [ -n "$WAVE_MISSING" ]; then
+            echo "FAIL: missing build/test gate section in:"
+            echo "$WAVE_MISSING"
             exit 1
           fi
 
-  core-runtime:
-    name: Core Runtime
-    needs: workspace-bootstrap
+  runtime-build-and-test:
+    name: Runtime Build and Test
+    needs: docs-integrity
+    if: ${{ hashFiles('Cargo.toml') != '' && hashFiles('src/**') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+      - name: Cargo build
+        run: cargo build --workspace
       - name: Cargo test
         run: cargo test --workspace -- --nocapture
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install frontend deps
-        run: cd src/frontend/app && npm ci
-      - name: TypeScript strict check
-        run: cd src/frontend/app && npx tsc --noEmit
-      - name: File size gate (200 lines)
-        run: |
-          set -e
-          OVER=$(find src/ \( -name '*.rs' -o -name '*.ts' -o -name '*.tsx' \) \
-            -not -path '*/node_modules/*' -not -path '*/dist/*' | \
-            xargs wc -l | grep -v total | awk '$1 > 200 {print}')
-          if [ -n "$OVER" ]; then
-            echo "FAIL: files exceed 200 lines:"
-            echo "$OVER"
-            exit 1
-          fi
-
-  release-gate:
-    name: Release Gate
-    needs: core-runtime
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: No open M1 or M2 drift
-        run: |
-          set -e
-          M1=$(grep -c '| `M1' docs/reference/DRIFT_MATRIX.md || true)
-          M2=$(grep -c '| `M2' docs/reference/DRIFT_MATRIX.md || true)
-          echo "M1 correctness rows: $M1"
-          echo "M2 missing feature rows: $M2"
-          # M1/M2 rows should be 0 for release
-          if [ "$M1" -gt 0 ] || [ "$M2" -gt 0 ]; then
-            echo "WARN: open M1/M2 drift rows exist"
-          fi
-      - name: Check high-severity limitations
-        run: |
-          set -e
-          HIGH=$(grep -c '| high |' docs/reference/LIMITATIONS.md || true)
-          echo "High-severity limitations: $HIGH"
-      - name: Summary
-        run: echo "Release gate check complete."

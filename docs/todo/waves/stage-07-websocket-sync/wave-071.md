@@ -13,13 +13,19 @@ Back: [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stag
 
 ## Restructure Steps
 
-- [x] restructure-step S07-W071-01: enforce monotonic per-stream replay cursors from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
-- [x] restructure-step S07-W071-02: enforce reconnect replay-before-new-submit behavior from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
-- [x] restructure-step S07-W071-03: enforce deterministic stale-cursor error payload from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
-- [x] restructure-step S07-W071-04: enforce duplicate idempotency replay behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
-- [x] restructure-step S07-W071-05: align error envelope fields with [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
+- [ ] restructure-step S07-W071-01: enforce monotonic per-stream replay cursors from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-02: enforce reconnect replay-before-new-submit behavior from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
+- [ ] restructure-step S07-W071-03: enforce deterministic stale-cursor error payload from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-04: enforce duplicate idempotency replay behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [ ] restructure-step S07-W071-05: align error envelope fields with [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
 
 ## Verification Hooks
 
-- [x] restructure-step S07-W071-V01: run reconnect/replay/idempotency boundary checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [x] restructure-step S07-W071-V02: sync replay-closure status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
+- [ ] restructure-step S07-W071-V01: run reconnect/replay/idempotency boundary checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S07-W071-V02: sync replay-closure status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
+
+## Mandatory Build and Test Gate
+
+- [ ] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
+- [ ] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
+- [ ] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

@@ -16,12 +16,12 @@ For state claims, use this order:
 6. [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md)
 7. [IMPROVEMENT_BACKLOG.md](IMPROVEMENT_BACKLOG.md)
 
-## Snapshot (2026-02-15)
+## Snapshot (2026-02-16)
 
-- Repository is intentionally in docs-only baseline.
-- Runtime source tree is removed and must be rebuilt from docs.
-- `tmp/` intake material is transitional and must be deleted after capture.
-- Canonical improvement points are tracked in `IMPROVEMENT_BACKLOG.md`.
+- Repository is intentionally in docs-only reset state.
+- Runtime source tree is absent and must be rebuilt from TODO waves.
+- Docker artifacts are intentionally removed from this baseline.
+- Improvement points are preserved in `IMPROVEMENT_BACKLOG.md`.
 
 ## Synchronization Rule
 

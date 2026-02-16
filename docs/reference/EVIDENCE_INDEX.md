@@ -9,19 +9,23 @@ Deterministic mapping from TODO stages to required proof artifacts.
 - Evidence MUST be reproducible.
 - Evidence MUST reference acceptance IDs in
   [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
-- TODO stage completion MUST not outpace evidence capture.
+- TODO completion MUST not outpace evidence capture.
 
 ## Stage Evidence Map
 
 | Stage | Scope | Primary TODO | Required Proof | Status |
 |---|---|---|---|---|
-| S00 | docs governance reset | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | docs integrity checks | **done** — tree structured per final-file-structure.md |
-| S01 | runtime scaffolding | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | compile/type gates | **done** — `cargo check --workspace` zero errors/warnings |
-| S02 | notes + search | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `API-NOTE-*`, `API-SEARCH-*` | **done** — 16 unit tests pass; route handlers implemented |
-| S03 | editor + responsive UI | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `E2E-06`, `E2E-12`, `E2E-19`, `E2E-23` | **done** — app-shell.ts scaffold with responsive breakpoint |
-| S04 | agent loop + automation | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `API-AUTO-*`, `WS-06` | **done** — 4 automation unit tests pass |
-| S05 | security/perf/ops closure | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | `PERF-*`, `OPS-*`, security regression pack | **done** — auth crate test; backup script |
-| S06 | release gate | [/docs/todo/waves/README.md](/docs/todo/waves/README.md) | full CI profile pass | **partial** — CI workflow file pending |
+| `S00` | governance baseline | [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) | docs integrity checks | `reset` |
+| `S01` | runtime scaffold | [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) | build and type gates | `reset` |
+| `S02` | notes + search | [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) | `API-NOTE-*`, `API-SEARCH-*` | `reset` |
+| `S03` | runtime integration | [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves/stage-03-runtime-integration/README.md) | DB and service integration tests | `reset` |
+| `S04` | automation + agent | [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md) | `API-AUTO-*`, `AGENT-*` | `reset` |
+| `S05` | security closure | [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md) | auth/session/csrf tests | `reset` |
+| `S06` | REST contract closure | [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md) | API acceptance set | `reset` |
+| `S07` | websocket sync | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | WS replay/idempotency set | `reset` |
+| `S08` | frontend and hosting | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | E2E + build checks | `reset` |
+| `S09` | CI and release | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass | `reset` |
+| `S10` | hardening backlog | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | targeted hardening proofs | `reset` |
 
 ## Related
 

@@ -4,25 +4,24 @@ Back: [/docs/guides/README.md](/docs/guides/README.md)
 
 ## Scope
 
-Fast path for rebuilding and running the system with single-container Compose.
+Fast path for rebuilding the runtime from the docs-only baseline.
 
 ## Steps
 
-1. Read [/docs/todo/README.md](/docs/todo/README.md) and execute waves in order.
-2. Configure non-secret settings in `data/config.json`.
-3. Copy `.env.example` to `.env` and set secrets.
-4. Start stack: `docker compose up --build`
-5. Verify readiness: `curl -fsS http://127.0.0.1:8080/api/readyz`
-6. Validate key UX flows using acceptance IDs in
-   [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+1. Read [/docs/todo/README.md](/docs/todo/README.md).
+2. Execute waves in [/docs/todo/waves/README.md](/docs/todo/waves/README.md) in order.
+3. Configure non-secret settings in `data/config.json`.
+4. Copy `.env.example` to `.env` and set secrets.
+5. For each wave, run build and test gates from [/docs/reference/CI.md](/docs/reference/CI.md).
+6. Keep reference ledgers synchronized before checking any wave item.
 
 ## Notes
 
-- Repository is currently in a docs-only reset state with runtime source removed.
-- Runtime startup requires both `data/config.json` and `.env`.
+- Repository starts in docs-only reset state.
+- Runtime startup is expected only after scaffold waves complete.
 - `.env` is ignored by git and must not be committed.
 
 ## Related
 
-- Docker guide: [DOCKER.md](DOCKER.md)
 - Wave program: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
+- Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
