@@ -3,10 +3,12 @@
 /// This module assembles the full API router from per-resource modules.
 /// Each resource module stays under 200 lines per /docs/policy/STRUCTURE.md.
 use axum::{
+    middleware as axum_mw,
     routing::{get, patch, post},
     Router,
 };
 
+use crate::middleware::csrf_middleware;
 use crate::routes_auth;
 use crate::routes_automation;
 use crate::routes_health;
@@ -43,4 +45,6 @@ pub fn api_router() -> Router<AppState> {
         // Health
         .route("/api/healthz", get(routes_health::healthz))
         .route("/api/readyz", get(routes_health::readyz))
+        // CSRF middleware per /docs/spec/security/csrf.md
+        .layer(axum_mw::from_fn(csrf_middleware))
 }

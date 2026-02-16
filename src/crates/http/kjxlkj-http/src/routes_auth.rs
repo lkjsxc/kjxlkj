@@ -95,14 +95,31 @@ pub async fn auth_login(
 
 /// POST /api/auth/logout
 /// Per /docs/spec/security/sessions.md: delete session row and clear cookie.
-pub async fn auth_logout() -> impl IntoResponse {
+pub async fn auth_logout(
+    State(state): State<AppState>,
+    req: axum::extract::Request,
+) -> impl IntoResponse {
+    if let Some(token) = crate::middleware::extract_session_token(&req) {
+        let _ = state.session_repo.delete_session(&token);
+    }
     StatusCode::NO_CONTENT
 }
 
 /// GET /api/auth/session
 /// Per /docs/spec/api/http.md: returns current user info or unauthenticated.
-pub async fn auth_session() -> impl IntoResponse {
-    Json(serde_json::json!({
-        "authenticated": false
-    }))
+pub async fn auth_session(
+    State(state): State<AppState>,
+    req: axum::extract::Request,
+) -> impl IntoResponse {
+    if let Some(token) = crate::middleware::extract_session_token(&req) {
+        if let Ok(Some(session)) = state.session_repo.get_session_by_token(&token) {
+            return Json(serde_json::json!({
+                "authenticated": true,
+                "user_id": session.user_id,
+                "role": format!("{:?}", session.role),
+                "expires_at": session.expires_at.to_string(),
+            }));
+        }
+    }
+    Json(serde_json::json!({ "authenticated": false }))
 }
