@@ -13,19 +13,19 @@ Back: [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves
 
 ## Restructure Steps
 
-- [x] restructure-step S03-W030-01: implement setup/login/notes/detail/jobs shell views from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
-- [x] restructure-step S03-W030-02: enforce setup-lock and pre-auth session routing behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
-- [x] restructure-step S03-W030-03: keep optional modules non-blocking per [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) [doc-link](/docs/spec/ui/workspace-suite.md)
-- [x] restructure-step S03-W030-04: align session probe behavior with [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
-- [x] restructure-step S03-W030-05: enforce UX principle mapping from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) [doc-link](/docs/spec/ui/reconstruction-ux-requirements.md)
+- [ ] restructure-step S03-W030-01: implement setup/login/notes/detail/jobs shell views from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S03-W030-02: enforce setup-lock and pre-auth session routing behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
+- [ ] restructure-step S03-W030-03: keep optional modules non-blocking per [/docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) [doc-link](/docs/spec/ui/workspace-suite.md)
+- [ ] restructure-step S03-W030-04: align session probe behavior with [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
+- [ ] restructure-step S03-W030-05: enforce UX principle mapping from [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) [doc-link](/docs/spec/ui/reconstruction-ux-requirements.md)
 
 ## Verification Hooks
 
-- [x] restructure-step S03-W030-V01: run auth/shell acceptance flows from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [x] restructure-step S03-W030-V02: sync shell status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
+- [ ] restructure-step S03-W030-V01: run auth/shell acceptance flows from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S03-W030-V02: sync shell status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate
 
-- [x] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
-- [x] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
-- [x] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
+- [ ] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
+- [ ] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

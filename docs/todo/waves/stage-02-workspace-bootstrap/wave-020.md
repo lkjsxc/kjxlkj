@@ -13,19 +13,19 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Restructure Steps
 
-- [x] restructure-step S02-W020-01: implement note create/list/get/update/title/delete paths from [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
-- [x] restructure-step S02-W020-02: enforce note-kind and access-scope invariants from [/docs/spec/domain/note-types.md](/docs/spec/domain/note-types.md) [doc-link](/docs/spec/domain/note-types.md)
-- [x] restructure-step S02-W020-03: implement history and rollback semantics from [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md) [doc-link](/docs/spec/domain/notes.md)
-- [x] restructure-step S02-W020-04: enforce optimistic version conflicts and payload types from [/docs/spec/api/types.md](/docs/spec/api/types.md) [doc-link](/docs/spec/api/types.md)
-- [x] restructure-step S02-W020-05: enforce deterministic error responses from [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
+- [ ] restructure-step S02-W020-01: implement note create/list/get/update/title/delete paths from [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
+- [ ] restructure-step S02-W020-02: enforce note-kind and access-scope invariants from [/docs/spec/domain/note-types.md](/docs/spec/domain/note-types.md) [doc-link](/docs/spec/domain/note-types.md)
+- [ ] restructure-step S02-W020-03: implement history and rollback semantics from [/docs/spec/domain/notes.md](/docs/spec/domain/notes.md) [doc-link](/docs/spec/domain/notes.md)
+- [ ] restructure-step S02-W020-04: enforce optimistic version conflicts and payload types from [/docs/spec/api/types.md](/docs/spec/api/types.md) [doc-link](/docs/spec/api/types.md)
+- [ ] restructure-step S02-W020-05: enforce deterministic error responses from [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
 
 ## Verification Hooks
 
-- [x] restructure-step S02-W020-V01: run `API-NOTE-*` checks defined in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [x] restructure-step S02-W020-V02: sync notes-core status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
+- [ ] restructure-step S02-W020-V01: run `API-NOTE-*` checks defined in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W020-V02: sync notes-core status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate
 
-- [x] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
-- [x] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
-- [x] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [ ] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
+- [ ] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
+- [ ] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

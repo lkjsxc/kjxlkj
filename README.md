@@ -3,7 +3,7 @@
 All-in-docs workspace-suite platform for collaborative notes, search, and
 `kjxlkj-agent` automation.
 
-## Current Contract (2026-02-15)
+## Contract
 
 - Canonical behavior is defined in `/docs`.
 - Runtime source code is intentionally removed (docs-only baseline).
