@@ -29,10 +29,9 @@
 
 ## Baseline (2026-02-16)
 
-- Repository is in reconstructed-runtime mode.
-- Runtime source, scripts, and Cargo workspace manifests are present.
-- Docker artifacts remain intentionally absent per policy.
-- TODO waves are currently marked complete and synchronized with reference ledgers.
+- Repository is in docs-only reset mode.
+- Runtime source and Docker artifacts are intentionally absent.
+- All TODO waves are reset to unchecked and must be re-executed.
 
 ## Related
 

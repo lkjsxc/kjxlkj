@@ -15,14 +15,13 @@ For state claims, use this order:
 5. [RELEASE.md](RELEASE.md)
 6. [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md)
 7. [IMPROVEMENT_BACKLOG.md](IMPROVEMENT_BACKLOG.md)
-8. [logs/README.md](logs/README.md)
 
 ## Snapshot (2026-02-16)
 
-- Repository is in reconstructed-runtime state.
-- Runtime source tree, Cargo manifests, and scripts are present.
-- Docker artifacts are intentionally absent per policy.
-- Evidence and improvement logs are stored under `docs/reference/logs/`.
+- Repository is intentionally in docs-only reset state.
+- Runtime source tree is absent and must be rebuilt from TODO waves.
+- Docker artifacts are intentionally removed from this baseline.
+- Improvement points are preserved in `IMPROVEMENT_BACKLOG.md`.
 
 ## Synchronization Rule
 

@@ -4,8 +4,8 @@ Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
 Defines canonical repository structure for:
 
-1. docs-only baseline (reset/rebuild state)
-2. reconstructed runtime target (implementation-complete state)
+1. docs-only baseline (current authoritative state)
+2. reconstructed runtime target (completion target)
 
 ## State A: Docs-Only Baseline
 
