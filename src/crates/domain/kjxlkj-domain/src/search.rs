@@ -12,6 +12,14 @@ pub enum SearchMode {
 }
 
 impl SearchMode {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Hybrid => "hybrid",
+            Self::Lexical => "lexical",
+            Self::Semantic => "semantic",
+        }
+    }
+
     pub fn from_str(s: &str) -> Option<Self> {
         match s {
             "hybrid" => Some(Self::Hybrid),

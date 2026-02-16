@@ -27,3 +27,4 @@ sha2 = { workspace = true }
 [dev-dependencies]
 tokio = { workspace = true }
 http-body-util = "0.1"
+tower = { workspace = true }
