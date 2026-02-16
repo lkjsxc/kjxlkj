@@ -7,8 +7,8 @@ Canonical backlog for the next full rebuild.
 ## Governance
 
 - This is the only durable source for improvement ideas.
-- Entries below were harvested from the prior reconstruction logs.
-- `docs/logs/` is non-canonical and has been removed after this capture.
+- Entries below are synchronized with [/docs/reference/logs/improvements/README.md](/docs/reference/logs/improvements/README.md).
+- Supporting audit artifacts live under [/docs/reference/logs/audits/README.md](/docs/reference/logs/audits/README.md).
 - Each row MUST map to a TODO wave before implementation starts.
 
 ## Backlog Matrix
@@ -32,10 +32,10 @@ Canonical backlog for the next full rebuild.
 | `IMP-OPS-03` | Implement graceful shutdown with in-flight drain handling | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `S10/W100` | `open` |
 | `IMP-STRUCT-01` | Split >200-line runtime modules during reconstruction waves | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `S10/W101` | `open` |
 
-## Historical Large-File Split Targets
+## Current Large-File Split Targets
 
-The last runtime reconstruction produced these high-risk files over 200 lines.
-Treat these as required split targets when source code is regenerated.
+Current runtime contains these high-risk files over 200 lines.
+Treat these as required split targets in hardening waves.
 
 | Historical Path | Prior Lines | Priority |
 |---|---:|---|
@@ -44,6 +44,8 @@ Treat these as required split targets when source code is regenerated.
 | `src/crates/db/kjxlkj-db/src/repo_note.rs` | 302 | high |
 | `src/crates/ws/kjxlkj-ws/src/session.rs` | 229 | medium |
 | `src/crates/db/kjxlkj-db/src/repo_automation.rs` | 205 | medium |
+
+See full audit entry: [/docs/reference/logs/audits/large-files.md](/docs/reference/logs/audits/large-files.md)
 
 ## Related
 

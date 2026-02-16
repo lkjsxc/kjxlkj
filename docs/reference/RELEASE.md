@@ -14,13 +14,20 @@ Release is valid only for blocker-free reconstructed runtime state.
 
 ## Current Gate (2026-02-16)
 
-Release is blocked.
+Release is partially unblocked.
 
-Blocking reasons:
+Resolved:
 
-- runtime source is intentionally absent
-- TODO waves are reset and unexecuted
-- acceptance test pack cannot run without runtime artifacts
+- runtime source reconstructed (`src/`, `Cargo.toml`, `Cargo.lock`, `scripts/`)
+- TODO wave checklists are marked complete
+- `cargo build --workspace` and `cargo test --workspace` pass
+- frontend strict type-check and production build pass
+
+Remaining blockers:
+
+- acceptance ID suite in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) is not fully automated/executed
+- DB-backed integration profile is not yet reproducible in-repo
+- browser E2E suite for required `E2E-*` IDs is not yet implemented
 
 ## Release Steps
 

@@ -6,20 +6,28 @@ Open gaps between target spec and current repository behavior.
 
 ## Baseline (2026-02-16)
 
-- Repository intentionally contains no runtime source code.
-- Runtime verification is pending until TODO waves are executed.
+- Runtime source tree is reconstructed.
+- Core workspace and frontend build gates pass.
+- Remaining gaps are verification depth (integration + browser E2E).
+
+## Closed Limitations
+
+| ID | Requirement Link | Gap | Resolution |
+|---|---|---|---|
+| `LIM-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime topology not reconstructed | **closed** — `src/`, `Cargo.toml`, `Cargo.lock`, and `scripts/` restored |
+| `LIM-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP API unreachable | **closed** — `kjxlkj-http` crate restored and workspace build/test pass |
+| `LIM-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS sync/replay contract not implemented | **closed** — `kjxlkj-ws` crate restored and compiled |
+| `LIM-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | hybrid search pipeline missing | **closed** — `kjxlkj-search` crate restored with passing unit tests |
+| `LIM-UI-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | editor UX runtime missing | **closed** — frontend app restored, strict check/build pass |
+| `LIM-AGENT-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | agent runtime loop absent | **closed** — `kjxlkj-automation` restored with passing parser tests |
 
 ## Open Limitations
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |---|---|---|---|---|---|
-| `LIM-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime topology is not reconstructed | `M2 missing feature` | high | execute waves `S01` through `S10` |
-| `LIM-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP API behavior is not runtime-reachable | `M2 missing feature` | high | execute `S06` wave set |
-| `LIM-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS sync/replay contract not implemented | `M2 missing feature` | high | execute `S07` wave set |
-| `LIM-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | hybrid search pipeline not reconstructed | `M2 missing feature` | high | execute `S02/W022` |
-| `LIM-UI-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | editor UX not reconstructed | `M2 missing feature` | high | execute `S08` wave set |
-| `LIM-AGENT-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | agent runtime loop absent | `M2 missing feature` | high | execute `S04` wave set |
-| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance suite cannot run before runtime rebuild | `M4 verification gap` | medium | run per-wave build/test gates |
+| `LIM-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | full acceptance pack IDs are not yet automated/executed end-to-end | `M4 verification gap` | medium | add acceptance harness and archived run outputs |
+| `LIM-INTDB-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | DB-backed integration profile is not yet reproducible in-repo | `M4 verification gap` | medium | add ephemeral PostgreSQL integration harness |
+| `LIM-E2E-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | browser E2E IDs are not yet implemented in test suite | `M4 verification gap` | medium | add Playwright/Vitest E2E coverage for `E2E-*` IDs |
 
 ## Closure Rules
 

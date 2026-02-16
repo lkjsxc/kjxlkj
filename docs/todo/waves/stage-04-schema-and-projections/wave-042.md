@@ -13,19 +13,19 @@ Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/wa
 
 ## Restructure Steps
 
-- [ ] restructure-step S04-W042-01: implement export and SQL backup launch contracts from [/docs/spec/domain/export.md](/docs/spec/domain/export.md) [doc-link](/docs/spec/domain/export.md)
-- [ ] restructure-step S04-W042-02: implement job status and artifact retrieval semantics from [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
-- [ ] restructure-step S04-W042-03: enforce job authorization and failure semantics from [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
-- [ ] restructure-step S04-W042-04: enforce ops observability and recovery hooks from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/operations.md)
-- [ ] restructure-step S04-W042-05: keep deployment health endpoints aligned with [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) [doc-link](/docs/spec/architecture/deployment.md)
+- [x] restructure-step S04-W042-01: implement export and SQL backup launch contracts from [/docs/spec/domain/export.md](/docs/spec/domain/export.md) [doc-link](/docs/spec/domain/export.md)
+- [x] restructure-step S04-W042-02: implement job status and artifact retrieval semantics from [/docs/spec/api/http.md](/docs/spec/api/http.md) [doc-link](/docs/spec/api/http.md)
+- [x] restructure-step S04-W042-03: enforce job authorization and failure semantics from [/docs/spec/api/errors.md](/docs/spec/api/errors.md) [doc-link](/docs/spec/api/errors.md)
+- [x] restructure-step S04-W042-04: enforce ops observability and recovery hooks from [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) [doc-link](/docs/spec/technical/operations.md)
+- [x] restructure-step S04-W042-05: keep deployment health endpoints aligned with [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) [doc-link](/docs/spec/architecture/deployment.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S04-W042-V01: run `OPS-01` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [ ] restructure-step S04-W042-V02: sync job/export status in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) [doc-link](/docs/reference/LIMITATIONS.md)
+- [x] restructure-step S04-W042-V01: run `OPS-01` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [x] restructure-step S04-W042-V02: sync job/export status in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) [doc-link](/docs/reference/LIMITATIONS.md)
 
 ## Mandatory Build and Test Gate
 
-- [ ] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
-- [ ] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
-- [ ] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [x] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
+- [x] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
+- [x] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

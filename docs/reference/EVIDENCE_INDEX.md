@@ -15,17 +15,25 @@ Deterministic mapping from TODO stages to required proof artifacts.
 
 | Stage | Scope | Primary TODO | Required Proof | Status |
 |---|---|---|---|---|
-| `S00` | governance baseline | [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) | docs integrity checks | `reset` |
-| `S01` | runtime scaffold | [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) | build and type gates | `reset` |
-| `S02` | notes + search | [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) | `API-NOTE-*`, `API-SEARCH-*` | `reset` |
-| `S03` | runtime integration | [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves/stage-03-runtime-integration/README.md) | DB and service integration tests | `reset` |
-| `S04` | automation + agent | [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md) | `API-AUTO-*`, `AGENT-*` | `reset` |
-| `S05` | security closure | [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md) | auth/session/csrf tests | `reset` |
-| `S06` | REST contract closure | [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md) | API acceptance set | `reset` |
-| `S07` | websocket sync | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | WS replay/idempotency set | `reset` |
-| `S08` | frontend and hosting | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | E2E + build checks | `reset` |
-| `S09` | CI and release | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass | `reset` |
-| `S10` | hardening backlog | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | targeted hardening proofs | `reset` |
+| `S00` | governance baseline | [/docs/todo/waves/stage-00-pivot-governance/README.md](/docs/todo/waves/stage-00-pivot-governance/README.md) | docs integrity checks | `complete` |
+| `S01` | runtime scaffold | [/docs/todo/waves/stage-01-spec-rebuild/README.md](/docs/todo/waves/stage-01-spec-rebuild/README.md) | build and type gates | `complete` |
+| `S02` | notes + search | [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves/stage-02-workspace-bootstrap/README.md) | `API-NOTE-*`, `API-SEARCH-*` | `partial` |
+| `S03` | runtime integration | [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves/stage-03-runtime-integration/README.md) | DB and service integration tests | `partial` |
+| `S04` | automation + agent | [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/waves/stage-04-schema-and-projections/README.md) | `API-AUTO-*`, `AGENT-*` | `partial` |
+| `S05` | security closure | [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/stage-05-auth-and-security/README.md) | auth/session/csrf tests | `partial` |
+| `S06` | REST contract closure | [/docs/todo/waves/stage-06-rest-api/README.md](/docs/todo/waves/stage-06-rest-api/README.md) | API acceptance set | `partial` |
+| `S07` | websocket sync | [/docs/todo/waves/stage-07-websocket-sync/README.md](/docs/todo/waves/stage-07-websocket-sync/README.md) | WS replay/idempotency set | `partial` |
+| `S08` | frontend and hosting | [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md) | E2E + build checks | `partial` |
+| `S09` | CI and release | [/docs/todo/waves/stage-09-ci-performance-release/README.md](/docs/todo/waves/stage-09-ci-performance-release/README.md) | full profile pass | `partial` |
+| `S10` | hardening backlog | [/docs/todo/waves/stage-10-hardening-and-investigation/README.md](/docs/todo/waves/stage-10-hardening-and-investigation/README.md) | targeted hardening proofs | `partial` |
+
+## Execution Evidence (2026-02-16)
+
+- `cargo build --workspace` passed.
+- `cargo test --workspace` passed (`16` tests).
+- `npm --prefix src/frontend/app run check` passed.
+- `npm --prefix src/frontend/app run build` passed.
+- Detailed command log: [/docs/reference/logs/reconstruction/2026/02/2026-02-16-runtime-restoration.md](/docs/reference/logs/reconstruction/2026/02/2026-02-16-runtime-restoration.md)
 
 ## Related
 

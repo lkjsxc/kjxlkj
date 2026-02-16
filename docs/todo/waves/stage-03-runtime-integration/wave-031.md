@@ -13,20 +13,20 @@ Back: [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves
 
 ## Restructure Steps
 
-- [ ] restructure-step S03-W031-01: enforce synced-snapshot and local-draft split from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
-- [ ] restructure-step S03-W031-02: implement autosave/conflict/offline status transitions from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
-- [ ] restructure-step S03-W031-03: enforce title propagation and minimal default chrome from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
-- [ ] restructure-step S03-W031-04: enforce reconnect/idempotency behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
-- [ ] restructure-step S03-W031-05: map each implemented fix to findings in [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) [doc-link](/docs/spec/ui/findings-traceability.md)
-- [ ] restructure-step S03-W031-06: add regression test for Create New Note add/select behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) and [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/ui/web-app.md)
+- [x] restructure-step S03-W031-01: enforce synced-snapshot and local-draft split from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
+- [x] restructure-step S03-W031-02: implement autosave/conflict/offline status transitions from [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) [doc-link](/docs/spec/ui/editor-flow.md)
+- [x] restructure-step S03-W031-03: enforce title propagation and minimal default chrome from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) [doc-link](/docs/spec/ui/web-app.md)
+- [x] restructure-step S03-W031-04: enforce reconnect/idempotency behavior from [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) [doc-link](/docs/spec/api/websocket.md)
+- [x] restructure-step S03-W031-05: map each implemented fix to findings in [/docs/spec/ui/findings-traceability.md](/docs/spec/ui/findings-traceability.md) [doc-link](/docs/spec/ui/findings-traceability.md)
+- [x] restructure-step S03-W031-06: add regression test for Create New Note add/select behavior from [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) and [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/ui/web-app.md)
 
 ## Verification Hooks
 
-- [ ] restructure-step S03-W031-V01: run `REG-IMP-*`, `REG-USR-*`, and `E2E-23` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
-- [ ] restructure-step S03-W031-V02: sync regression closure state in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
+- [x] restructure-step S03-W031-V01: run `REG-IMP-*`, `REG-USR-*`, and `E2E-23` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [x] restructure-step S03-W031-V02: sync regression closure state in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
 
 ## Mandatory Build and Test Gate
 
-- [ ] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
-- [ ] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
-- [ ] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+- [x] run wave build gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo build --workspace`
+- [x] run wave test gate from [/docs/reference/CI.md](/docs/reference/CI.md): `cargo test --workspace`
+- [x] run wave acceptance IDs from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and archive proof in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)

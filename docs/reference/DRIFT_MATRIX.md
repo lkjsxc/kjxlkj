@@ -20,23 +20,25 @@ Requirement-level mismatch tracking for reconstruction.
 |---|---|---|---|---|---|
 | `R-DOC-01` | [/docs/README.md](/docs/README.md) | docs are canonical contract | aligned | closed | maintain |
 | `R-TODO-01` | [/docs/todo/README.md](/docs/todo/README.md) | TODO drives deterministic rebuild with direct links | aligned | closed | maintain |
-| `R-ROOT-01` | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | docs-only root excludes Docker artifacts | aligned | closed | maintain |
-| `R-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime services are reconstructed and reachable | spec-only | `M2` | implement |
-| `R-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP contract is live and testable | spec-only | `M2` | implement |
-| `R-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS replay/idempotency contract is live | spec-only | `M2` | implement |
-| `R-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | hybrid search is live | spec-only | `M2` | implement |
-| `R-UI-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | editor UX contract is implemented | spec-only | `M2` | implement |
-| `R-AGENT-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | agent loop contract is implemented | spec-only | `M2` | implement |
-| `R-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance pack is executable | spec-only | `M4` | test-add |
+| `R-ROOT-01` | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | runtime target includes Cargo, scripts, and `src/`; Docker remains absent | aligned | closed | maintain |
+| `R-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime services are reconstructed and reachable | implemented | closed | maintain |
+| `R-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP contract is live and testable | implemented | closed | maintain |
+| `R-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS replay/idempotency contract is live | implemented | closed | maintain |
+| `R-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | hybrid search is live | implemented | closed | maintain |
+| `R-UI-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | editor UX contract is implemented | implemented | closed | maintain |
+| `R-AGENT-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | agent loop contract is implemented | implemented | closed | maintain |
+| `R-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance pack is executable end-to-end | partial | `M4` | add integration/e2e evidence |
+| `R-E2E-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | browser E2E IDs are automated | partial | `M4` | implement frontend E2E suite |
+| `R-INTDB-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | DB-backed integration profile is reproducible | partial | `M4` | add ephemeral PostgreSQL harness |
 
 ## Summary
 
 | Class | Open |
 |---|---:|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 6 |
+| `M2 missing feature` | 0 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 1 |
+| `M4 verification gap` | 3 |
 | `M5 stale docs` | 0 |
 
 ## Related
