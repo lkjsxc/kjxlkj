@@ -1,11 +1,13 @@
 /**
  * Application state management per /docs/spec/ui/web-app.md
  *
- * Manages session, notes list, active note, and editor state.
+ * Manages session, notes list, active note, editor, preview, and conflict state.
  * Per /docs/spec/ui/editor-flow.md: autosave-first, draft recovery.
  */
 
 import type { NoteStream, NoteProjection, SessionInfo, Workspace } from './types.js';
+import type { PreviewMode } from './preview.js';
+import type { ConflictState } from './conflict.js';
 
 /** Application view per /docs/spec/ui/web-app.md */
 export type AppView = 'setup' | 'login' | 'notes_list' | 'note_detail' | 'agent_runs';
@@ -30,6 +32,9 @@ export interface AppState {
   readonly editor: EditorState | null;
   readonly menuOpen: boolean;
   readonly searchQuery: string;
+  readonly previewMode: PreviewMode;
+  readonly conflict: ConflictState;
+  readonly backlinks: ReadonlyArray<{ id: string; title: string }>;
 }
 
 /** Create initial state per /docs/spec/ui/web-app.md */
@@ -44,6 +49,9 @@ export function createInitialState(): AppState {
     editor: null,
     menuOpen: false,
     searchQuery: '',
+    previewMode: 'edit',
+    conflict: { hasConflict: false, localBody: '', serverBody: '', serverVersion: 0 },
+    backlinks: [],
   };
 }
 
