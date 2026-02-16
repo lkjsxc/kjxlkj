@@ -1,0 +1,16 @@
+[package]
+name = "kjxlkj-workspace"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+kjxlkj-db = { path = "../../db/kjxlkj-db" }
+kjxlkj-rbac = { path = "../../rbac/kjxlkj-rbac" }
+uuid = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
