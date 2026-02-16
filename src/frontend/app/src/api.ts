@@ -20,8 +20,8 @@ import type {
 
 /** API result type: either success data or error envelope */
 export type ApiResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: ErrorResponse };
+  | { ok: true; status: number; data: T }
+  | { ok: false; status: number; error: ErrorResponse };
 
 /** Base URL for API requests */
 const API_BASE = '/api';
@@ -38,9 +38,9 @@ async function request<T>(
   });
   const body: unknown = await response.json();
   if (!response.ok) {
-    return { ok: false, error: body as ErrorResponse };
+    return { ok: false, status: response.status, error: body as ErrorResponse };
   }
-  return { ok: true, data: body as T };
+  return { ok: true, status: response.status, data: body as T };
 }
 
 /** POST /api/setup/register */
