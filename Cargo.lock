@@ -680,12 +680,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fastrand"
-version = "2.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
-
-[[package]]
 name = "find-msvc-tools"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1288,6 +1282,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "sqlx",
  "thiserror",
  "tokio",
  "tracing",
@@ -1304,6 +1299,7 @@ dependencies = [
  "sqlx",
  "thiserror",
  "time",
+ "tokio",
  "tracing",
  "uuid",
 ]
@@ -1324,9 +1320,6 @@ name = "kjxlkj-http"
 version = "0.1.0"
 dependencies = [
  "actix-web",
- "fastrand",
- "futures",
- "hex",
  "kjxlkj-auth",
  "kjxlkj-automation",
  "kjxlkj-db",
@@ -1336,7 +1329,6 @@ dependencies = [
  "kjxlkj-workspace",
  "serde",
  "serde_json",
- "sha2",
  "sqlx",
  "time",
  "tracing",
@@ -1360,9 +1352,12 @@ version = "0.1.0"
 dependencies = [
  "kjxlkj-db",
  "kjxlkj-domain",
+ "reqwest",
  "serde",
  "serde_json",
  "sqlx",
+ "thiserror",
+ "tokio",
  "tracing",
  "uuid",
 ]
@@ -1373,7 +1368,6 @@ version = "0.1.0"
 dependencies = [
  "actix-files",
  "actix-web",
- "anyhow",
  "dotenvy",
  "kjxlkj-auth",
  "kjxlkj-automation",
@@ -1390,6 +1384,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
@@ -1398,11 +1393,10 @@ version = "0.1.0"
 dependencies = [
  "kjxlkj-db",
  "kjxlkj-domain",
- "kjxlkj-rbac",
  "serde",
  "serde_json",
  "sqlx",
- "tracing",
+ "time",
  "uuid",
 ]
 
@@ -1420,7 +1414,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sqlx",
- "time",
+ "tokio",
  "tracing",
  "uuid",
 ]
