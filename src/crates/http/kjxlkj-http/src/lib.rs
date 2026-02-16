@@ -1,0 +1,9 @@
+pub mod routes_auth;
+pub mod routes_workspace;
+pub mod routes_note;
+pub mod routes_search;
+pub mod routes_automation;
+pub mod routes_health;
+pub mod extract;
+pub mod response;
+pub mod config;
