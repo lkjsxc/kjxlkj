@@ -37,8 +37,8 @@ During runtime rebuild, if any source file exceeds 200 lines:
 
 ## Compliance Checklist
 
-- [ ] docs directories satisfy max-item rule
-- [ ] every docs directory has README
-- [ ] no docs file exceeds 200 lines
-- [ ] TODO checklists link to governing docs
-- [ ] source >200 line exceptions are recorded when present
+- [x] docs directories satisfy max-item rule
+- [x] every docs directory has README
+- [x] no docs file exceeds 200 lines
+- [x] TODO checklists link to governing docs
+- [x] source >200 line exceptions are recorded when present
