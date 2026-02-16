@@ -45,4 +45,8 @@ pub trait SessionRepo: Send + Sync {
     fn create_session(&self, session: &SessionRecord) -> Result<(), DomainError>;
     fn get_session_by_token(&self, token: &str) -> Result<Option<SessionRecord>, DomainError>;
     fn delete_session(&self, token: &str) -> Result<(), DomainError>;
+    /// Revoke all sessions for a user (IMP-SEC-03).
+    /// Per /docs/spec/security/sessions.md: session revocation takes effect
+    /// immediately. Returns the count of revoked sessions.
+    fn revoke_user_sessions(&self, user_id: Uuid) -> Result<usize, DomainError>;
 }

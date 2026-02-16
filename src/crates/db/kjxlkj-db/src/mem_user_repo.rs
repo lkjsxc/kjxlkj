@@ -97,6 +97,13 @@ impl SessionRepo for InMemorySessionRepo {
         sessions.remove(token);
         Ok(())
     }
+
+    fn revoke_user_sessions(&self, user_id: Uuid) -> Result<usize, DomainError> {
+        let mut sessions = self.sessions.write().unwrap();
+        let before = sessions.len();
+        sessions.retain(|_, s| s.user_id != user_id);
+        Ok(before - sessions.len())
+    }
 }
 
 #[cfg(test)]
@@ -149,5 +156,31 @@ mod tests {
         assert!(repo.get_session_by_token("tok-123").unwrap().is_some());
         repo.delete_session("tok-123").unwrap();
         assert!(repo.get_session_by_token("tok-123").unwrap().is_none());
+    }
+
+    #[test]
+    fn test_revoke_user_sessions() {
+        let repo = InMemorySessionRepo::new();
+        let user_id = Uuid::new_v4();
+        let other_user_id = Uuid::new_v4();
+        for (i, uid) in [(0, user_id), (1, user_id), (2, other_user_id)] {
+            let session = SessionRecord {
+                id: Uuid::new_v4(),
+                user_id: uid,
+                token: format!("tok-{i}"),
+                csrf_token: format!("csrf-{i}"),
+                role: Role::Owner,
+                expires_at: chrono::Utc::now().naive_utc(),
+                created_at: chrono::Utc::now().naive_utc(),
+            };
+            repo.create_session(&session).unwrap();
+        }
+        let revoked = repo.revoke_user_sessions(user_id).unwrap();
+        assert_eq!(revoked, 2, "should revoke 2 sessions for user");
+        // Other user's session should remain
+        assert!(repo.get_session_by_token("tok-2").unwrap().is_some());
+        // Revoked sessions should be gone
+        assert!(repo.get_session_by_token("tok-0").unwrap().is_none());
+        assert!(repo.get_session_by_token("tok-1").unwrap().is_none());
     }
 }

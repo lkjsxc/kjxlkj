@@ -3,9 +3,10 @@
 /// - Injects a request_id into every request
 /// - Creates a tracing span with request_id, method, path
 /// - Logs request completion with status and latency
+/// - Records metrics counters per IMP-OPS-02
 /// - Includes user_id/workspace_id when available from headers
 use axum::{
-    extract::Request,
+    extract::{Request, State},
     middleware::Next,
     response::Response,
 };
@@ -18,7 +19,12 @@ pub const REQUEST_ID_HEADER: &str = "x-request-id";
 /// Tracing middleware that wraps each request in a span with request_id.
 /// Per /docs/spec/technical/operations.md: structured logs MUST include
 /// request_id, and error logs MUST include stable error code.
-pub async fn tracing_middleware(req: Request, next: Next) -> Response {
+/// Also records metrics (IMP-OPS-02) into AppState.metrics.
+pub async fn tracing_middleware(
+    State(state): State<crate::state::AppState>,
+    req: Request,
+    next: Next,
+) -> Response {
     let request_id = req
         .headers()
         .get(REQUEST_ID_HEADER)
@@ -47,20 +53,20 @@ pub async fn tracing_middleware(req: Request, next: Next) -> Response {
     );
 
     let _guard = span.enter();
-
     tracing::debug!("request started");
-
-    // Drop the guard before await (cannot hold across await)
     drop(_guard);
 
     let response = next.run(req).await;
 
-    let latency_ms = start.elapsed().as_millis();
+    let elapsed = start.elapsed();
+    let latency_ms = elapsed.as_millis();
+    let latency_us = elapsed.as_micros() as u64;
     let status = response.status().as_u16();
 
-    // Re-enter span for completion log
-    let _guard2 = span.enter();
+    // Record metrics per IMP-OPS-02
+    state.metrics.record(status, latency_us);
 
+    let _guard2 = span.enter();
     if status >= 500 {
         tracing::error!(status, latency_ms, "request completed with server error");
     } else if status >= 400 {
@@ -69,7 +75,6 @@ pub async fn tracing_middleware(req: Request, next: Next) -> Response {
         tracing::info!(status, latency_ms, "request completed");
     }
 
-    // Attach request_id to response headers for debugging
     let mut response = response;
     response.headers_mut().insert(
         REQUEST_ID_HEADER,

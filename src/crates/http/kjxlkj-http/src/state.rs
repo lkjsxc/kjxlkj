@@ -4,6 +4,7 @@
 /// Passed as axum State to all route handlers.
 ///
 /// Spec: /docs/spec/architecture/runtime.md
+use crate::metrics::Metrics;
 use crate::rate_limit::{RateLimitConfig, RateLimiter};
 use kjxlkj_db::mem_attachment_repo::InMemoryAttachmentRepo;
 use kjxlkj_db::mem_automation_repo::InMemoryAutomationRepo;
@@ -29,6 +30,8 @@ pub struct AppState {
     pub auth_rate_limiter: Arc<RateLimiter>,
     /// Attachment repository per /docs/spec/domain/attachments.md
     pub attachment_repo: Arc<InMemoryAttachmentRepo>,
+    /// Request metrics per /docs/spec/technical/performance.md (IMP-OPS-02)
+    pub metrics: Arc<Metrics>,
 }
 
 /// Stored idempotency result per /docs/spec/api/websocket.md WS-04
@@ -52,6 +55,7 @@ impl AppState {
             idempotency_keys: Arc::new(RwLock::new(HashMap::new())),
             auth_rate_limiter: Arc::new(RateLimiter::new(RateLimitConfig::default())),
             attachment_repo: Arc::new(InMemoryAttachmentRepo::new()),
+            metrics: Arc::new(Metrics::new()),
         }
     }
 }
