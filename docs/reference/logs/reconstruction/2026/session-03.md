@@ -34,11 +34,13 @@ Session cookie management, CSRF validation, YOLO scope guardrails, rich editor U
 24. **PG repos (IMP-PG-01)**: pg_note_repo.rs (full CRUD with optimistic locking), pg_user_repo.rs (user/session CRUD + revocation), pg_workspace_repo.rs (workspace CRUD). Shared pg_rows.rs with FromRow types and pg_err helper.
 25. **Domain as_str methods**: AccessScope::as_str, NoteState::as_str, ActorType::as_str, NoteEventType::as_str for PG serialization.
 26. **File structure compliance**: Split e2e_acceptance.rs (330 lines) → e2e_notes.rs + e2e_misc.rs. All source files verified ≤ 200 lines.
+27. **Embedding provider (IMP-EMBED-01)**: EmbeddingProvider trait (embed, embed_batch, dimensions, is_available). StubEmbeddingProvider (deterministic hash-based unit vectors), NullEmbeddingProvider (disabled fallback), HttpEmbeddingProvider (OpenAI-compatible stub). EmbeddingStore for nearest-neighbor cosine similarity. SearchService.semantic_search with degradation. Hybrid search merges lexical+semantic in routes, degraded flag in response. Note create/delete indexes/removes embeddings. 18 new tests.
 
 ## Metrics
 
-- Rust tests: 152 passing, 0 failures, 0 warnings
+- Rust tests: 170 passing, 0 failures, 0 warnings
 - Frontend TS tests: 9 files, 80+ assertions, all pass
 - Open M2 (missing feature): 0
 - Improvement backlog: 16 of 16 items done
+- Session-02 ideas: 19 of 19 items done
 - Files over 200 lines: 0

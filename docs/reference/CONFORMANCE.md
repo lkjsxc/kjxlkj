@@ -22,7 +22,7 @@ High-confidence statement:
 - Frontend TypeScript scaffold is present at src/frontend/app/.
 - Docker artifacts are intentionally absent.
 - TODO waves are partially executed.
-- 152 backend tests pass (unit + T1 integration + property + snapshot + E2E), 0 warnings.
+- 170 backend tests pass (unit + T1 integration + property + snapshot + E2E + embedding), 0 warnings.
 - 9 frontend TS test files pass (80+ assertions).
 - CI workflow and operational scripts are present.
 - SQL migrations cover all schema domains (8 files).
@@ -42,6 +42,9 @@ High-confidence statement:
 - Session revocation (revoke_user_sessions).
 - Metrics endpoint with request/error/latency counters.
 - Offline/PWA module with pending draft queue and connection tracking.
+- Embedding provider trait with stub, null, HTTP implementations.
+- In-memory embedding store with cosine similarity nearest-neighbor search.
+- Hybrid search route merges lexical + semantic with graceful degradation.
 - Export and backup job endpoints with lifecycle management.
 - PostgreSQL repository implementations (note, user, workspace).
 - DB-backed integration test harness (containerless).

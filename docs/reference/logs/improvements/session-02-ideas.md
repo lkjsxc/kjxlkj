@@ -19,7 +19,7 @@
 - [x] IMP-CSRF-01: CSRF token validation middleware
 - [x] IMP-SESSION-01: Session extraction middleware from cookie/header
 - [x] IMP-PG-01: PostgreSQL repository implementations via sqlx
-- [ ] IMP-EMBED-01: Embedding provider integration for semantic search
+- [x] IMP-EMBED-01: Embedding provider integration for semantic search
 - [x] IMP-E2E-01: E2E acceptance tests (E2E-06/12/17/19/23/24/25)
 - [x] IMP-ATTACH-01: Attachment upload/download streaming endpoints
 - [x] IMP-EXPORT-01: Export and backup job endpoints
