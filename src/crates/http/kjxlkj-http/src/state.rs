@@ -4,6 +4,7 @@
 /// Passed as axum State to all route handlers.
 ///
 /// Spec: /docs/spec/architecture/runtime.md
+use crate::rate_limit::{RateLimitConfig, RateLimiter};
 use kjxlkj_db::mem_automation_repo::InMemoryAutomationRepo;
 use kjxlkj_db::mem_note_repo::InMemoryNoteRepo;
 use kjxlkj_db::mem_search_repo::InMemorySearchRepo;
@@ -23,6 +24,8 @@ pub struct AppState {
     pub search_repo: Arc<InMemorySearchRepo>,
     /// Idempotency key cache for WS patches (key -> (note_id, version, seq))
     pub idempotency_keys: Arc<RwLock<HashMap<String, IdempotencyRecord>>>,
+    /// Rate limiter for auth endpoints per IMP-SEC-02
+    pub auth_rate_limiter: Arc<RateLimiter>,
 }
 
 /// Stored idempotency result per /docs/spec/api/websocket.md WS-04
@@ -44,6 +47,7 @@ impl AppState {
             automation_repo: Arc::new(InMemoryAutomationRepo::new()),
             search_repo: Arc::new(InMemorySearchRepo::new()),
             idempotency_keys: Arc::new(RwLock::new(HashMap::new())),
+            auth_rate_limiter: Arc::new(RateLimiter::new(RateLimitConfig::default())),
         }
     }
 }

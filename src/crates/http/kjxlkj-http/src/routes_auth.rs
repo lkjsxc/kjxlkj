@@ -1,19 +1,20 @@
 /// Auth and session route handlers per /docs/spec/api/http.md
 ///
 /// POST /api/setup/register — first-user owner registration
-/// POST /api/auth/login     — session creation
+/// POST /api/auth/login     — session creation (rate-limited per IMP-SEC-02)
 /// POST /api/auth/logout    — session destruction
 /// GET  /api/auth/session   — current session check
 use crate::error_response::domain_error_response;
 use crate::state::AppState;
 use axum::{
-    extract::{Json, State},
+    extract::{ConnectInfo, Json, State},
     http::{header, StatusCode},
     response::{IntoResponse, Response},
 };
 use kjxlkj_auth::AuthService;
 use kjxlkj_db::user_repo::{UserRepo, SessionRepo};
 use serde::Deserialize;
+use std::net::SocketAddr;
 
 /// POST /api/setup/register payload per /docs/spec/api/http.md
 #[derive(Deserialize)]
@@ -29,13 +30,34 @@ pub struct LoginInput {
     pub password: String,
 }
 
+/// Extract client IP for rate limiting.
+/// Falls back to "unknown" if ConnectInfo is not available.
+fn client_ip(addr: Option<&SocketAddr>) -> String {
+    addr.map(|a| a.ip().to_string()).unwrap_or_else(|| "unknown".to_string())
+}
+
 /// POST /api/setup/register
 /// Per /docs/spec/security/auth.md: first user becomes owner.
-/// Check user_count == 0 precondition.
+/// Rate-limited per IMP-SEC-02.
 pub async fn setup_register(
     State(state): State<AppState>,
+    connect_info: Option<ConnectInfo<SocketAddr>>,
     Json(input): Json<RegisterInput>,
 ) -> Response {
+    // Rate limit check
+    let ip = client_ip(connect_info.as_ref().map(|c| &c.0));
+    if let Err(retry_after) = state.auth_rate_limiter.check(&ip) {
+        return (
+            StatusCode::TOO_MANY_REQUESTS,
+            [(header::RETRY_AFTER, retry_after.to_string())],
+            Json(serde_json::json!({
+                "code": "RATE_LIMITED",
+                "message": "Too many requests. Try again later.",
+                "details": null,
+                "request_id": ""
+            })),
+        ).into_response();
+    }
     let count = match state.user_repo.user_count() {
         Ok(c) => c,
         Err(e) => return domain_error_response(e),
@@ -61,10 +83,26 @@ pub async fn setup_register(
 
 /// POST /api/auth/login
 /// Per /docs/spec/security/sessions.md: create session cookie with 7-day TTL.
+/// Rate-limited per IMP-SEC-02.
 pub async fn auth_login(
     State(state): State<AppState>,
+    connect_info: Option<ConnectInfo<SocketAddr>>,
     Json(input): Json<LoginInput>,
 ) -> Response {
+    // Rate limit check
+    let ip = client_ip(connect_info.as_ref().map(|c| &c.0));
+    if let Err(retry_after) = state.auth_rate_limiter.check(&ip) {
+        return (
+            StatusCode::TOO_MANY_REQUESTS,
+            [(header::RETRY_AFTER, retry_after.to_string())],
+            Json(serde_json::json!({
+                "code": "RATE_LIMITED",
+                "message": "Too many requests. Try again later.",
+                "details": null,
+                "request_id": ""
+            })),
+        ).into_response();
+    }
     let user = match state.user_repo.get_user_by_username(&input.username) {
         Ok(Some(u)) => u,
         Ok(None) => {

@@ -16,3 +16,4 @@ pub mod routes_workspace;
 pub mod note_events;
 pub mod error_response;
 pub mod middleware;
+pub mod rate_limit;

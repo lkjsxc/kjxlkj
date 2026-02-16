@@ -7,20 +7,24 @@ use http_body_util::BodyExt;
 use kjxlkj_http::{routes::api_router, state::AppState};
 use tower::ServiceExt;
 
+#[allow(dead_code)]
 pub fn build_app() -> Router {
     api_router(AppState::new())
 }
 
+#[allow(dead_code)]
 pub fn build_app_with_state(state: AppState) -> Router {
     api_router(state)
 }
 
+#[allow(dead_code)]
 pub async fn json_body(resp: axum::response::Response) -> serde_json::Value {
     let bytes = resp.into_body().collect().await.unwrap().to_bytes();
     serde_json::from_slice(&bytes).unwrap_or(serde_json::Value::Null)
 }
 
 /// Register first user and login. Returns (token, csrf_token).
+#[allow(dead_code)]
 pub async fn register_and_login(state: &AppState) -> (String, String) {
     let app = build_app_with_state(state.clone());
     app.oneshot(

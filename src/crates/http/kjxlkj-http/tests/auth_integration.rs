@@ -4,7 +4,10 @@
 mod test_helpers;
 
 use axum::{body::Body, http::{Request, StatusCode}};
+use kjxlkj_http::rate_limit::{RateLimitConfig, RateLimiter};
 use kjxlkj_http::state::AppState;
+use std::sync::Arc;
+use std::time::Duration;
 use test_helpers::*;
 use tower::ServiceExt;
 
@@ -101,4 +104,44 @@ async fn auth_logout_clears_cookie() {
         .to_str()
         .unwrap();
     assert!(cookie.contains("Max-Age=0"), "cookie must expire");
+}
+
+/// Per IMP-SEC-02: auth endpoint rate limiting.
+/// After exceeding max_requests, login returns 429 Too Many Requests.
+#[tokio::test]
+async fn auth_rate_limit_rejects_excess() {
+    let mut state = AppState::new();
+    // Set very low limit for testing: 2 requests per 60s
+    state.auth_rate_limiter = Arc::new(RateLimiter::new(RateLimitConfig {
+        max_requests: 2,
+        window: Duration::from_secs(60),
+    }));
+    // First two requests should succeed (invalid credentials, but not rate-limited)
+    for _ in 0..2 {
+        let app = build_app_with_state(state.clone());
+        let resp = app
+            .oneshot(
+                Request::post("/api/auth/login")
+                    .header("content-type", "application/json")
+                    .body(Body::from(r#"{"username":"x","password":"y"}"#))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_ne!(resp.status(), StatusCode::TOO_MANY_REQUESTS);
+    }
+    // Third request should be rate-limited
+    let app3 = build_app_with_state(state.clone());
+    let resp3 = app3
+        .oneshot(
+            Request::post("/api/auth/login")
+                .header("content-type", "application/json")
+                .body(Body::from(r#"{"username":"x","password":"y"}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp3.status(), StatusCode::TOO_MANY_REQUESTS);
+    let retry_after = resp3.headers().get("retry-after");
+    assert!(retry_after.is_some(), "must include Retry-After header");
 }
