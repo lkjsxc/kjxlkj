@@ -12,3 +12,5 @@ pub mod mem_workspace_repo;
 pub mod mem_automation_repo;
 pub mod mem_search_repo;
 pub mod mem_attachment_repo;
+pub mod mem_export_repo;
+pub mod db_test_harness;

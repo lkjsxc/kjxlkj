@@ -7,6 +7,7 @@
 use crate::metrics::Metrics;
 use crate::rate_limit::{RateLimitConfig, RateLimiter};
 use kjxlkj_db::mem_attachment_repo::InMemoryAttachmentRepo;
+use kjxlkj_db::mem_export_repo::InMemoryExportRepo;
 use kjxlkj_db::mem_automation_repo::InMemoryAutomationRepo;
 use kjxlkj_db::mem_note_repo::InMemoryNoteRepo;
 use kjxlkj_db::mem_search_repo::InMemorySearchRepo;
@@ -32,6 +33,8 @@ pub struct AppState {
     pub attachment_repo: Arc<InMemoryAttachmentRepo>,
     /// Request metrics per /docs/spec/technical/performance.md (IMP-OPS-02)
     pub metrics: Arc<Metrics>,
+    /// Export job repository per /docs/spec/domain/export.md
+    pub export_repo: Arc<InMemoryExportRepo>,
 }
 
 /// Stored idempotency result per /docs/spec/api/websocket.md WS-04
@@ -56,6 +59,7 @@ impl AppState {
             auth_rate_limiter: Arc::new(RateLimiter::new(RateLimitConfig::default())),
             attachment_repo: Arc::new(InMemoryAttachmentRepo::new()),
             metrics: Arc::new(Metrics::new()),
+            export_repo: Arc::new(InMemoryExportRepo::new()),
         }
     }
 }

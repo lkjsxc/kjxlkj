@@ -49,6 +49,8 @@ pub enum DomainError {
     PayloadTooLarge,
     #[error("stale cursor")]
     StaleCursor,
+    #[error("export not found")]
+    ExportNotFound,
     #[error("internal error: {0}")]
     Internal(String),
 }
@@ -80,6 +82,7 @@ impl DomainError {
             Self::EmbeddingProviderError(_) => "EMBEDDING_PROVIDER_ERROR",
             Self::PayloadTooLarge => "PAYLOAD_TOO_LARGE",
             Self::StaleCursor => "STALE_CURSOR",
+            Self::ExportNotFound => "EXPORT_NOT_FOUND",
             Self::Internal(_) => "INTERNAL_ERROR",
         }
     }
@@ -90,7 +93,8 @@ impl DomainError {
             Self::BadRequest(_) | Self::InvalidPatch => 400,
             Self::AuthRequired | Self::InvalidCredentials => 401,
             Self::RoleForbidden | Self::WorkspaceForbidden => 403,
-            Self::NoteNotFound | Self::WorkspaceNotFound | Self::ProjectNotFound => 404,
+            Self::NoteNotFound | Self::WorkspaceNotFound | Self::ProjectNotFound
+            | Self::ExportNotFound => 404,
             Self::VersionConflict { .. } => 409,
             Self::PayloadTooLarge => 413,
             Self::RuleInvalid(_)

@@ -12,5 +12,6 @@ pub mod search;
 pub mod automation;
 pub mod attachment;
 pub mod config;
+pub mod export;
 
 pub use error::DomainError;

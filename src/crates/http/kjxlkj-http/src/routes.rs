@@ -15,6 +15,7 @@ use crate::routes_automation;
 use crate::routes_health;
 use crate::routes_note;
 use crate::routes_search;
+use crate::routes_export;
 use crate::routes_workspace;
 use crate::state::AppState;
 use crate::tracing_mw::tracing_middleware;
@@ -56,6 +57,9 @@ pub fn api_router(state: AppState) -> Router {
         // Health
         .route("/api/healthz", get(routes_health::healthz))
         .route("/api/readyz", get(routes_health::readyz))
+        // Export per /docs/spec/domain/export.md (IMP-EXPORT-01)
+        .route("/api/admin/export", post(routes_export::create_export).get(routes_export::list_exports))
+        .route("/api/admin/export/:job_id", get(routes_export::get_export))
         // Metrics per /docs/spec/technical/performance.md (IMP-OPS-02)
         .route("/api/metrics", get(metrics::metrics_handler))
         // CSRF middleware per /docs/spec/security/csrf.md
