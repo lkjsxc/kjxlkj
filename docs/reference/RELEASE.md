@@ -12,15 +12,17 @@ Release is valid only for blocker-free reconstructed runtime state.
 4. acceptance tests in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
 5. type-safety gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
 
-## Current Gate (2026-02-16)
+## Current Gate (2026-02-17)
 
 Release is blocked.
 
 Blocking reasons:
 
-- runtime source is intentionally absent
-- TODO waves are reset and unexecuted
-- acceptance test pack cannot run without runtime artifacts
+- HTTP handlers are stub implementations (not DB-wired)
+- WebSocket replay engine not implemented
+- Frontend lacks rich editor integration
+- DB-backed integration tests not present
+- TODO waves partially executed
 
 ## Release Steps
 
