@@ -13,9 +13,10 @@ use crate::routes_health;
 use crate::routes_note;
 use crate::routes_search;
 use crate::routes_workspace;
+use crate::state::AppState;
 
 /// Build the complete API router per /docs/spec/api/http.md
-pub fn api_router() -> Router {
+pub fn api_router() -> Router<AppState> {
     Router::new()
         // Auth and Session
         .route("/api/setup/register", post(routes_auth::setup_register))

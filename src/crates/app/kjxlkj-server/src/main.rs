@@ -10,6 +10,7 @@
 /// 7. start kjxlkj-agent loop
 use kjxlkj_domain::config::AppConfig;
 use kjxlkj_http::routes::api_router;
+use kjxlkj_http::state::AppState;
 use kjxlkj_ws::handler::ws_handler;
 use tracing_subscriber::EnvFilter;
 
@@ -38,9 +39,14 @@ async fn main() {
         .expect("failed to load agent prompt");
     tracing::info!("agent prompt validated");
 
-    // Build router: HTTP + WS
+    // Step 4: create application state with in-memory repositories
+    let state = AppState::new();
+    tracing::info!("application state initialized");
+
+    // Build router: HTTP + WS with shared state
     let app = api_router()
-        .route("/ws", axum::routing::get(ws_handler));
+        .route("/ws", axum::routing::get(ws_handler))
+        .with_state(state);
 
     // Step 5: bind and serve
     let listener = tokio::net::TcpListener::bind(&config.server.bind_addr)

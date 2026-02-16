@@ -4,11 +4,15 @@
 /// POST /api/auth/login     — session creation
 /// POST /api/auth/logout    — session destruction
 /// GET  /api/auth/session   — current session check
+use crate::error_response::domain_error_response;
+use crate::state::AppState;
 use axum::{
-    extract::Json,
+    extract::{Json, State},
     http::StatusCode,
-    response::IntoResponse,
+    response::{IntoResponse, Response},
 };
+use kjxlkj_auth::AuthService;
+use kjxlkj_db::user_repo::{UserRepo, SessionRepo};
 use serde::Deserialize;
 
 /// POST /api/setup/register payload per /docs/spec/api/http.md
@@ -28,19 +32,65 @@ pub struct LoginInput {
 /// POST /api/setup/register
 /// Per /docs/spec/security/auth.md: first user becomes owner.
 /// Check user_count == 0 precondition.
-pub async fn setup_register(Json(input): Json<RegisterInput>) -> impl IntoResponse {
+pub async fn setup_register(
+    State(state): State<AppState>,
+    Json(input): Json<RegisterInput>,
+) -> Response {
+    let count = match state.user_repo.user_count() {
+        Ok(c) => c,
+        Err(e) => return domain_error_response(e),
+    };
+    if count > 0 {
+        return domain_error_response(
+            kjxlkj_domain::DomainError::SetupAlreadyCompleted,
+        );
+    }
+    let user = match AuthService::build_owner_user(&input.username, &input.password) {
+        Ok(u) => u,
+        Err(e) => return domain_error_response(e),
+    };
+    if let Err(e) = state.user_repo.create_user(&user) {
+        return domain_error_response(e);
+    }
     (StatusCode::CREATED, Json(serde_json::json!({
         "message": "owner created",
-        "username": input.username,
-    })))
+        "username": user.username,
+        "id": user.id,
+    }))).into_response()
 }
 
 /// POST /api/auth/login
 /// Per /docs/spec/security/sessions.md: create session cookie with 7-day TTL.
-pub async fn auth_login(Json(_input): Json<LoginInput>) -> impl IntoResponse {
+pub async fn auth_login(
+    State(state): State<AppState>,
+    Json(input): Json<LoginInput>,
+) -> Response {
+    let user = match state.user_repo.get_user_by_username(&input.username) {
+        Ok(Some(u)) => u,
+        Ok(None) => {
+            return domain_error_response(kjxlkj_domain::DomainError::InvalidCredentials)
+        }
+        Err(e) => return domain_error_response(e),
+    };
+    if user.disabled {
+        return domain_error_response(kjxlkj_domain::DomainError::InvalidCredentials);
+    }
+    let valid = match AuthService::verify_password(&input.password, &user.password_hash) {
+        Ok(v) => v,
+        Err(e) => return domain_error_response(e),
+    };
+    if !valid {
+        return domain_error_response(kjxlkj_domain::DomainError::InvalidCredentials);
+    }
+    let session = AuthService::build_session(user.id, user.role);
+    if let Err(e) = state.session_repo.create_session(&session) {
+        return domain_error_response(e);
+    }
     (StatusCode::OK, Json(serde_json::json!({
-        "message": "session created"
-    })))
+        "message": "session created",
+        "token": session.token,
+        "expires_at": session.expires_at.to_string(),
+    }))).into_response()
 }
 
 /// POST /api/auth/logout
