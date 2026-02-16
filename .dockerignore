@@ -1,0 +1,13 @@
+target/
+.git/
+.env
+docs/
+*.md
+!README.md
+tmp/
+node_modules/
+src/frontend/app/node_modules/
+src/frontend/app/src/
+src/frontend/app/test/
+.cargo/
+.github/
