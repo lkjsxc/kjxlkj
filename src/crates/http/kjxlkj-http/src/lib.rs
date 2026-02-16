@@ -13,5 +13,6 @@ pub mod routes_health;
 pub mod routes_note;
 pub mod routes_search;
 pub mod routes_workspace;
+pub mod note_events;
 pub mod error_response;
 pub mod middleware;

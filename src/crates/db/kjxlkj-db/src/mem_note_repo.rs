@@ -142,83 +142,46 @@ mod tests {
     use super::*;
     use kjxlkj_domain::event::{ActorType, NoteEventType};
 
-    fn make_event(note_id: Uuid, seq: i64, event_type: NoteEventType) -> NoteEvent {
+    fn evt(note_id: Uuid, seq: i64, t: NoteEventType) -> NoteEvent {
         NoteEvent {
-            id: Uuid::new_v4(),
-            note_id,
-            seq,
-            event_type,
-            actor_type: ActorType::User,
-            actor_id: Uuid::new_v4(),
-            payload: serde_json::json!({}),
-            created_at: chrono::Utc::now().naive_utc(),
+            id: Uuid::new_v4(), note_id, seq, event_type: t,
+            actor_type: ActorType::User, actor_id: Uuid::new_v4(),
+            payload: serde_json::json!({}), created_at: chrono::Utc::now().naive_utc(),
+        }
+    }
+    fn stream(id: Uuid, ws: Uuid, title: &str) -> NoteStream {
+        let now = chrono::Utc::now().naive_utc();
+        NoteStream {
+            id, workspace_id: ws, project_id: None, title: title.into(),
+            note_kind: NoteKind::Markdown, access_scope: AccessScope::Workspace,
+            state: NoteState::Active, current_version: 1, created_at: now, updated_at: now,
+        }
+    }
+    fn proj(id: Uuid, title: &str, md: &str) -> NoteProjection {
+        NoteProjection {
+            note_id: id, title: title.into(), version: 1, markdown: md.into(),
+            metadata_json: serde_json::json!({}), updated_at: chrono::Utc::now().naive_utc(),
         }
     }
 
     #[test]
     fn test_create_and_get() {
         let repo = InMemoryNoteRepo::new();
-        let id = Uuid::new_v4();
-        let ws_id = Uuid::new_v4();
-        let now = chrono::Utc::now().naive_utc();
-        let stream = NoteStream {
-            id,
-            workspace_id: ws_id,
-            project_id: None,
-            title: "Test".into(),
-            note_kind: NoteKind::Markdown,
-            access_scope: AccessScope::Workspace,
-            state: NoteState::Active,
-            current_version: 1,
-            created_at: now,
-            updated_at: now,
-        };
-        let proj = NoteProjection {
-            note_id: id,
-            title: "Test".into(),
-            version: 1,
-            markdown: "# Hello".into(),
-            metadata_json: serde_json::json!({}),
-            updated_at: now,
-        };
-        let evt = make_event(id, 1, NoteEventType::Created);
-        repo.create_note(&stream, &proj, &evt).unwrap();
-
-        let got = repo.get_note_stream(id).unwrap().unwrap();
-        assert_eq!(got.title, "Test");
-        let got_proj = repo.get_note_projection(id).unwrap().unwrap();
-        assert_eq!(got_proj.markdown, "# Hello");
+        let (id, ws) = (Uuid::new_v4(), Uuid::new_v4());
+        repo.create_note(&stream(id, ws, "Test"), &proj(id, "Test", "# Hello"),
+            &evt(id, 1, NoteEventType::Created)).unwrap();
+        assert_eq!(repo.get_note_stream(id).unwrap().unwrap().title, "Test");
+        assert_eq!(repo.get_note_projection(id).unwrap().unwrap().markdown, "# Hello");
     }
 
     #[test]
     fn test_version_conflict() {
         let repo = InMemoryNoteRepo::new();
         let id = Uuid::new_v4();
-        let now = chrono::Utc::now().naive_utc();
-        let stream = NoteStream {
-            id,
-            workspace_id: Uuid::new_v4(),
-            project_id: None,
-            title: "T".into(),
-            note_kind: NoteKind::Markdown,
-            access_scope: AccessScope::Workspace,
-            state: NoteState::Active,
-            current_version: 1,
-            created_at: now,
-            updated_at: now,
-        };
-        let proj = NoteProjection {
-            note_id: id,
-            title: "T".into(),
-            version: 1,
-            markdown: "".into(),
-            metadata_json: serde_json::json!({}),
-            updated_at: now,
-        };
-        repo.create_note(&stream, &proj, &make_event(id, 1, NoteEventType::Created)).unwrap();
-
-        let evt = make_event(id, 2, NoteEventType::BodyUpdated);
-        let result = repo.update_note(id, 99, Some("new"), None, &evt);
+        repo.create_note(&stream(id, Uuid::new_v4(), "T"), &proj(id, "T", ""),
+            &evt(id, 1, NoteEventType::Created)).unwrap();
+        let result = repo.update_note(id, 99, Some("new"), None,
+            &evt(id, 2, NoteEventType::BodyUpdated));
         assert!(matches!(result, Err(DomainError::VersionConflict { .. })));
     }
 }
