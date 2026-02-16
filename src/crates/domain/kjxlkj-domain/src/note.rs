@@ -42,12 +42,30 @@ pub enum AccessScope {
     Project,
 }
 
+impl AccessScope {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Workspace => "workspace",
+            Self::Project => "project",
+        }
+    }
+}
+
 /// Note stream state per /docs/spec/domain/notes.md
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NoteState {
     Active,
     SoftDeleted,
+}
+
+impl NoteState {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Active => "active",
+            Self::SoftDeleted => "soft_deleted",
+        }
+    }
 }
 
 /// NoteStream: the append-only identity for a note

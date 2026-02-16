@@ -12,6 +12,16 @@ pub enum ActorType {
     System,
 }
 
+impl ActorType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::User => "user",
+            Self::Agent => "agent",
+            Self::System => "system",
+        }
+    }
+}
+
 /// Note event types
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -22,6 +32,19 @@ pub enum NoteEventType {
     MetadataUpdated,
     SoftDeleted,
     Restored,
+}
+
+impl NoteEventType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Created => "created",
+            Self::BodyUpdated => "body_updated",
+            Self::TitleUpdated => "title_updated",
+            Self::MetadataUpdated => "metadata_updated",
+            Self::SoftDeleted => "soft_deleted",
+            Self::Restored => "restored",
+        }
+    }
 }
 
 /// NoteEvent row (append-only) per /docs/spec/domain/events.md

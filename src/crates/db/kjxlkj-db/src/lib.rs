@@ -14,3 +14,7 @@ pub mod mem_search_repo;
 pub mod mem_attachment_repo;
 pub mod mem_export_repo;
 pub mod db_test_harness;
+pub mod pg_rows;
+pub mod pg_note_repo;
+pub mod pg_user_repo;
+pub mod pg_workspace_repo;
