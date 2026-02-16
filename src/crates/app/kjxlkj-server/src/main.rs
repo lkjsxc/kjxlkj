@@ -53,9 +53,37 @@ async fn main() {
         .expect("failed to bind");
     tracing::info!(addr = %config.server.bind_addr, "listening");
 
+    // IMP-OPS-03: graceful shutdown with in-flight drain
     axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .expect("server error");
+
+    tracing::info!("server shut down gracefully");
+}
+
+/// Wait for a shutdown signal (SIGTERM or Ctrl-C).
+/// Per /docs/spec/technical/operations.md (IMP-OPS-03):
+/// graceful shutdown drains in-flight requests before exiting.
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install SIGTERM handler")
+            .recv()
+            .await;
+    };
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+    tokio::select! {
+        () = ctrl_c => tracing::info!("received Ctrl+C, starting graceful shutdown"),
+        () = terminate => tracing::info!("received SIGTERM, starting graceful shutdown"),
+    }
 }
 
 /// Load .env file if it exists (non-fatal)

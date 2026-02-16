@@ -17,6 +17,8 @@ use crate::routes_note;
 use crate::routes_search;
 use crate::routes_workspace;
 use crate::state::AppState;
+use crate::tracing_mw::tracing_middleware;
+use crate::csp::csp_middleware;
 
 /// Build the complete API router per /docs/spec/api/http.md
 ///
@@ -55,5 +57,9 @@ pub fn api_router(state: AppState) -> Router {
         .route("/api/readyz", get(routes_health::readyz))
         // CSRF middleware per /docs/spec/security/csrf.md
         .layer(axum_mw::from_fn_with_state(state.clone(), csrf_middleware))
+        // Tracing middleware per /docs/spec/technical/operations.md (IMP-OPS-01)
+        .layer(axum_mw::from_fn(tracing_middleware))
+        // CSP nonce per /docs/spec/security/transport.md (IMP-SEC-01)
+        .layer(axum_mw::from_fn(csp_middleware))
         .with_state(state)
 }
