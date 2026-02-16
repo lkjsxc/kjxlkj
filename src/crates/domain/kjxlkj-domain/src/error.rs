@@ -99,9 +99,9 @@ impl DomainError {
             | Self::SearchModeInvalid(_)
             | Self::SetupAlreadyCompleted => 422,
             Self::RateLimited => 429,
+            Self::AgentYoloPolicyViolation(_) => 403,
             Self::Internal(_)
-            | Self::AgentMemoryStoreError(_)
-            | Self::AgentYoloPolicyViolation(_) => 500,
+            | Self::AgentMemoryStoreError(_) => 500,
             Self::LlmUpstreamError(_) | Self::EmbeddingProviderError(_) => 502,
             Self::SearchEmbeddingDegraded => 502,
             Self::StaleCursor => 409,

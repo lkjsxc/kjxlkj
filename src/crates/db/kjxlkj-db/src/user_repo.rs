@@ -25,6 +25,8 @@ pub struct SessionRecord {
     pub id: Uuid,
     pub user_id: Uuid,
     pub token: String,
+    /// CSRF token bound to this session per /docs/spec/security/csrf.md
+    pub csrf_token: String,
     pub role: Role,
     pub expires_at: NaiveDateTime,
     pub created_at: NaiveDateTime,

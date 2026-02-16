@@ -8,7 +8,7 @@ use crate::error_response::domain_error_response;
 use crate::state::AppState;
 use axum::{
     extract::{Json, State},
-    http::StatusCode,
+    http::{header, StatusCode},
     response::{IntoResponse, Response},
 };
 use kjxlkj_auth::AuthService;
@@ -86,11 +86,21 @@ pub async fn auth_login(
     if let Err(e) = state.session_repo.create_session(&session) {
         return domain_error_response(e);
     }
-    (StatusCode::OK, Json(serde_json::json!({
-        "message": "session created",
-        "token": session.token,
-        "expires_at": session.expires_at.to_string(),
-    }))).into_response()
+    // Per /docs/spec/security/sessions.md: HttpOnly, SameSite=Lax, path=/
+    let cookie_value = format!(
+        "kjxlkj_session={}; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800",
+        session.token
+    );
+    (
+        StatusCode::OK,
+        [(header::SET_COOKIE, cookie_value)],
+        Json(serde_json::json!({
+            "message": "session created",
+            "token": session.token,
+            "csrf_token": session.csrf_token,
+            "expires_at": session.expires_at.to_string(),
+        })),
+    ).into_response()
 }
 
 /// POST /api/auth/logout
@@ -102,7 +112,9 @@ pub async fn auth_logout(
     if let Some(token) = crate::middleware::extract_session_token(&req) {
         let _ = state.session_repo.delete_session(&token);
     }
-    StatusCode::NO_CONTENT
+    // Clear cookie per /docs/spec/security/sessions.md
+    let clear_cookie = "kjxlkj_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0";
+    (StatusCode::NO_CONTENT, [(header::SET_COOKIE, clear_cookie)])
 }
 
 /// GET /api/auth/session
@@ -117,6 +129,7 @@ pub async fn auth_session(
                 "authenticated": true,
                 "user_id": session.user_id,
                 "role": format!("{:?}", session.role),
+                "csrf_token": session.csrf_token,
                 "expires_at": session.expires_at.to_string(),
             }));
         }

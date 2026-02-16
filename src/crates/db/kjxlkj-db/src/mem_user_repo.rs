@@ -140,6 +140,7 @@ mod tests {
             id: Uuid::new_v4(),
             user_id: Uuid::new_v4(),
             token: "tok-123".into(),
+            csrf_token: "csrf-abc".into(),
             role: Role::Owner,
             expires_at: chrono::Utc::now().naive_utc(),
             created_at: chrono::Utc::now().naive_utc(),

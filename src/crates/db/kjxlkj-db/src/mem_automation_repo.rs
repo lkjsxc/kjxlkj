@@ -43,7 +43,7 @@ impl AutomationRepo for InMemoryAutomationRepo {
         let rules = self.rules.read().unwrap();
         let results: Vec<AutomationRule> = rules
             .values()
-            .filter(|r| r.workspace_id == workspace_id)
+            .filter(|r| workspace_id.is_nil() || r.workspace_id == workspace_id)
             .cloned()
             .collect();
         Ok(results)
@@ -65,8 +65,11 @@ impl AutomationRepo for InMemoryAutomationRepo {
         &self,
         workspace_id: Uuid,
     ) -> Result<Vec<AutomationRun>, DomainError> {
-        let rules = self.rules.read().unwrap();
         let runs = self.runs.read().unwrap();
+        if workspace_id.is_nil() {
+            return Ok(runs.values().cloned().collect());
+        }
+        let rules = self.rules.read().unwrap();
         let ws_rule_ids: Vec<Uuid> = rules
             .values()
             .filter(|r| r.workspace_id == workspace_id)

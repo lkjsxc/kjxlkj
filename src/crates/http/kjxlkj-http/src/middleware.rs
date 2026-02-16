@@ -36,7 +36,9 @@ pub fn extract_session_token<B>(req: &Request<B>) -> Option<String> {
             for pair in cookie_str.split(';') {
                 let pair = pair.trim();
                 if let Some(val) = pair.strip_prefix("kjxlkj_session=") {
-                    return Some(val.to_string());
+                    if !val.is_empty() {
+                        return Some(val.to_string());
+                    }
                 }
             }
         }
@@ -52,11 +54,23 @@ pub fn extract_session_token<B>(req: &Request<B>) -> Option<String> {
     None
 }
 
+/// Extract CSRF token header value from request.
+fn extract_csrf_header<B>(req: &Request<B>) -> Option<String> {
+    req.headers()
+        .get("x-csrf-token")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
+}
+
 /// CSRF validation middleware.
 /// Per /docs/spec/security/csrf.md: mutating requests must include
 /// X-CSRF-Token header matching session-bound token.
 /// Public/setup endpoints are exempt.
-pub async fn csrf_middleware(req: Request, next: Next) -> Response {
+pub async fn csrf_middleware(
+    state: axum::extract::State<crate::state::AppState>,
+    req: Request,
+    next: Next,
+) -> Response {
     let method = req.method().as_str().to_string();
     let path = req.uri().path().to_string();
     // Exempt: safe methods, setup/login/health
@@ -68,13 +82,33 @@ pub async fn csrf_middleware(req: Request, next: Next) -> Response {
     {
         return next.run(req).await;
     }
-    // For now: if session token is present but no CSRF header, reject.
-    // This is a stub — full implementation ties CSRF token to session.
-    let has_session = extract_session_token(&req).is_some();
-    let has_csrf = req.headers().contains_key("x-csrf-token");
-    if has_session && !has_csrf {
-        return StatusCode::FORBIDDEN.into_response();
+    // If session token present via cookie (browser session),
+    // CSRF header must match session's csrf_token.
+    let has_cookie_session = req
+        .headers()
+        .get(header::COOKIE)
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.contains("kjxlkj_session="))
+        .unwrap_or(false);
+    if has_cookie_session {
+        let session_token = extract_session_token(&req);
+        let csrf_header = extract_csrf_header(&req);
+        if let (Some(stok), Some(ctok)) = (&session_token, &csrf_header) {
+            // Validate against stored session
+            use kjxlkj_db::user_repo::SessionRepo;
+            if let Ok(Some(sess)) = state.session_repo.get_session_by_token(stok) {
+                if sess.csrf_token != *ctok {
+                    return StatusCode::FORBIDDEN.into_response();
+                }
+            } else {
+                return StatusCode::FORBIDDEN.into_response();
+            }
+        } else if session_token.is_some() && csrf_header.is_none() {
+            return StatusCode::FORBIDDEN.into_response();
+        }
     }
+    // Bearer-token API requests are exempt from CSRF
+    // (not browser-originated, per /docs/spec/security/csrf.md)
     next.run(req).await
 }
 
@@ -114,6 +148,21 @@ mod tests {
     fn extract_token_none() {
         let req = Request::builder().body(()).unwrap();
         assert_eq!(extract_session_token(&req), None);
+    }
+
+    #[test]
+    fn extract_csrf_header_present() {
+        let req = Request::builder()
+            .header("x-csrf-token", "abc-123")
+            .body(())
+            .unwrap();
+        assert_eq!(extract_csrf_header(&req), Some("abc-123".into()));
+    }
+
+    #[test]
+    fn extract_csrf_header_absent() {
+        let req = Request::builder().body(()).unwrap();
+        assert_eq!(extract_csrf_header(&req), None);
     }
 }
 

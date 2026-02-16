@@ -18,7 +18,10 @@ use crate::routes_workspace;
 use crate::state::AppState;
 
 /// Build the complete API router per /docs/spec/api/http.md
-pub fn api_router() -> Router<AppState> {
+///
+/// Takes AppState so CSRF middleware can validate tokens against
+/// session store per /docs/spec/security/csrf.md.
+pub fn api_router(state: AppState) -> Router {
     Router::new()
         // Auth and Session
         .route("/api/setup/register", post(routes_auth::setup_register))
@@ -46,5 +49,6 @@ pub fn api_router() -> Router<AppState> {
         .route("/api/healthz", get(routes_health::healthz))
         .route("/api/readyz", get(routes_health::readyz))
         // CSRF middleware per /docs/spec/security/csrf.md
-        .layer(axum_mw::from_fn(csrf_middleware))
+        .layer(axum_mw::from_fn_with_state(state.clone(), csrf_middleware))
+        .with_state(state)
 }

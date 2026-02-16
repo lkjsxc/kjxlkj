@@ -54,12 +54,18 @@ impl AuthService {
         })
     }
 
+    /// Generate a CSRF token bound to session per /docs/spec/security/csrf.md
+    pub fn generate_csrf_token() -> String {
+        Uuid::new_v4().to_string()
+    }
+
     /// Build a session record with 7-day TTL per /docs/spec/security/sessions.md
     pub fn build_session(user_id: Uuid, role: Role) -> SessionRecord {
         SessionRecord {
             id: Uuid::new_v4(),
             user_id,
             token: Self::generate_session_token(),
+            csrf_token: Self::generate_csrf_token(),
             role,
             expires_at: (Utc::now() + Duration::days(7)).naive_utc(),
             created_at: Utc::now().naive_utc(),

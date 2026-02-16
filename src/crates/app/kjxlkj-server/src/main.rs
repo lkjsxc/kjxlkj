@@ -44,9 +44,8 @@ async fn main() {
     tracing::info!("application state initialized");
 
     // Build router: HTTP + WS with shared state
-    let app = api_router()
-        .route("/ws", axum::routing::get(ws_handler))
-        .with_state(state);
+    let app = api_router(state)
+        .route("/ws", axum::routing::get(ws_handler));
 
     // Step 5: bind and serve
     let listener = tokio::net::TcpListener::bind(&config.server.bind_addr)
