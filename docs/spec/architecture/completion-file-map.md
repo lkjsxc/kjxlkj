@@ -19,6 +19,9 @@ Normative per-path map for completion.
 | `Cargo.lock` | no | yes | lockfile |
 | `Dockerfile` | no | yes | container build |
 | `docker-compose.yml` | no | yes | runtime orchestration |
+| `.dockerignore` | no | yes | container build context filter |
+| `scripts/entrypoint.sh` | no | yes | postgres+app startup supervisor |
+| `scripts/backup-restore-drill.sh` | no | yes | backup/restore parity drill helper |
 
 ## Documentation Paths
 

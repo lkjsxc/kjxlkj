@@ -39,6 +39,9 @@ Defines canonical repository structure for:
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
+├── scripts/
+│   ├── entrypoint.sh
+│   └── backup-restore-drill.sh
 ├── src/
 │   ├── crates/
 │   │   ├── app/kjxlkj-server/

@@ -16,7 +16,9 @@ The following runtime artifacts are required for executable startup:
 
 - `Dockerfile`
 - `docker-compose.yml`
-- supervisor/entrypoint script used by container startup
+- `.dockerignore`
+- `scripts/entrypoint.sh` (container supervisor/entrypoint)
+- `scripts/backup-restore-drill.sh` (operations drill helper)
 - `data/config.json` (non-secret runtime config)
 - `.env` (secrets; create from `.env.example`)
 

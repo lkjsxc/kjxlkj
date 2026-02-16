@@ -18,6 +18,8 @@ Allowed top-level layout and derived artifact placement.
 | `Cargo.lock` | derived lockfile |
 | `Dockerfile` | derived container build |
 | `docker-compose.yml` | derived orchestration |
+| `.dockerignore` | derived docker context filter |
+| `scripts/` | derived operational and startup scripts |
 | `.gitignore` | repository hygiene |
 
 ## Docs-Only Baseline

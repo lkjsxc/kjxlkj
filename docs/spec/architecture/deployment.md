@@ -21,7 +21,9 @@ Baseline deployment uses a single compose service containing:
 
 - `Dockerfile`
 - `docker-compose.yml`
-- entrypoint script
+- `.dockerignore`
+- `scripts/entrypoint.sh`
+- `scripts/backup-restore-drill.sh`
 
 ## Related
 
