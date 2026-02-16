@@ -9,6 +9,7 @@ use axum::{
 };
 
 use crate::middleware::csrf_middleware;
+use crate::routes_attachment;
 use crate::routes_auth;
 use crate::routes_automation;
 use crate::routes_health;
@@ -36,6 +37,10 @@ pub fn api_router(state: AppState) -> Router {
         .route("/api/notes/:id/title", patch(routes_note::update_title))
         .route("/api/notes/:id/history", get(routes_note::note_history))
         .route("/api/notes/:id/backlinks", get(routes_note::note_backlinks))
+        // Attachments per /docs/spec/domain/attachments.md
+        .route("/api/notes/:id/attachments", post(routes_attachment::upload_attachment).get(routes_attachment::list_attachments))
+        .route("/api/attachments/:id/download", get(routes_attachment::download_attachment))
+        .route("/api/attachments/:id", axum::routing::delete(routes_attachment::delete_attachment))
         // Search
         .route("/api/search", get(routes_search::search_notes))
         // Automation

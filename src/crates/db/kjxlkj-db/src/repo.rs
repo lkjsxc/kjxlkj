@@ -2,11 +2,13 @@
 ///
 /// Spec: /docs/spec/domain/events.md (transaction rule)
 /// Spec: /docs/spec/domain/notes.md (write rules)
+/// Spec: /docs/spec/domain/attachments.md (chunk storage)
 use kjxlkj_domain::note::*;
 use kjxlkj_domain::workspace::*;
 use kjxlkj_domain::event::*;
 use kjxlkj_domain::search::*;
 use kjxlkj_domain::automation::*;
+use kjxlkj_domain::attachment::*;
 use kjxlkj_domain::DomainError;
 use uuid::Uuid;
 
@@ -65,4 +67,20 @@ pub trait AutomationRepo: Send + Sync {
     fn list_runs(&self, workspace_id: Uuid) -> Result<Vec<AutomationRun>, DomainError>;
     fn get_run(&self, id: Uuid) -> Result<Option<AutomationRun>, DomainError>;
     fn update_run(&self, run: &AutomationRun) -> Result<(), DomainError>;
+}
+
+/// Attachment repository operations per /docs/spec/domain/attachments.md
+pub trait AttachmentRepo: Send + Sync {
+    /// Store attachment metadata. Must be called before chunks.
+    fn create_attachment(&self, meta: &AttachmentMeta) -> Result<(), DomainError>;
+    /// Store a single chunk.
+    fn store_chunk(&self, chunk: &AttachmentChunk) -> Result<(), DomainError>;
+    /// Get attachment metadata by ID.
+    fn get_attachment(&self, id: Uuid) -> Result<Option<AttachmentMeta>, DomainError>;
+    /// List attachments for a note.
+    fn list_attachments(&self, note_id: Uuid) -> Result<Vec<AttachmentMeta>, DomainError>;
+    /// Get chunks for an attachment, ordered by chunk_index.
+    fn get_chunks(&self, attachment_id: Uuid) -> Result<Vec<AttachmentChunk>, DomainError>;
+    /// Delete attachment and all chunks atomically.
+    fn delete_attachment(&self, id: Uuid) -> Result<(), DomainError>;
 }

@@ -5,6 +5,7 @@
 ///
 /// Spec: /docs/spec/architecture/runtime.md
 use crate::rate_limit::{RateLimitConfig, RateLimiter};
+use kjxlkj_db::mem_attachment_repo::InMemoryAttachmentRepo;
 use kjxlkj_db::mem_automation_repo::InMemoryAutomationRepo;
 use kjxlkj_db::mem_note_repo::InMemoryNoteRepo;
 use kjxlkj_db::mem_search_repo::InMemorySearchRepo;
@@ -26,6 +27,8 @@ pub struct AppState {
     pub idempotency_keys: Arc<RwLock<HashMap<String, IdempotencyRecord>>>,
     /// Rate limiter for auth endpoints per IMP-SEC-02
     pub auth_rate_limiter: Arc<RateLimiter>,
+    /// Attachment repository per /docs/spec/domain/attachments.md
+    pub attachment_repo: Arc<InMemoryAttachmentRepo>,
 }
 
 /// Stored idempotency result per /docs/spec/api/websocket.md WS-04
@@ -48,6 +51,7 @@ impl AppState {
             search_repo: Arc::new(InMemorySearchRepo::new()),
             idempotency_keys: Arc::new(RwLock::new(HashMap::new())),
             auth_rate_limiter: Arc::new(RateLimiter::new(RateLimitConfig::default())),
+            attachment_repo: Arc::new(InMemoryAttachmentRepo::new()),
         }
     }
 }

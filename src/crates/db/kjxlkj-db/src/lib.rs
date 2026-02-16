@@ -11,3 +11,4 @@ pub mod mem_user_repo;
 pub mod mem_workspace_repo;
 pub mod mem_automation_repo;
 pub mod mem_search_repo;
+pub mod mem_attachment_repo;
