@@ -14,14 +14,20 @@ Release is valid only for blocker-free reconstructed runtime state.
 
 ## Current Gate (2026-02-15)
 
-Release is blocked.
+Release is partially unblocked.
 
-Blocking reasons:
+Resolved:
 
-- repository is intentionally docs-only (runtime absent)
-- hybrid search not implemented
-- editor redesign not implemented
-- `kjxlkj-agent` runtime loop not implemented
+- runtime source fully reconstructed (10 crates, clean compilation, 16 tests pass)
+- hybrid search implemented (kjxlkj-search)
+- editor redesign implemented (app-shell.ts)
+- `kjxlkj-agent` runtime loop implemented (kjxlkj-automation)
+
+Remaining blockers:
+
+- CI workflow file not created (`.github/workflows/`)
+- DB-backed integration test suite not yet run against live PostgreSQL
+- browser E2E test suite not implemented
 
 ## Release Steps
 
