@@ -75,7 +75,7 @@ mod tests {
     #[test]
     fn ws_04_duplicate_idempotency_key() {
         // Acceptance: WS-04
-        let msg = ClientMessage::ApplyPatch {
+        let _msg = ClientMessage::ApplyPatch {
             note_id: Uuid::new_v4(),
             base_version: 1,
             patch_ops: serde_json::json!({}),

@@ -3,7 +3,7 @@
 /// This module assembles the full API router from per-resource modules.
 /// Each resource module stays under 200 lines per /docs/policy/STRUCTURE.md.
 use axum::{
-    routing::{get, patch, post, delete},
+    routing::{get, patch, post},
     Router,
 };
 
@@ -24,27 +24,22 @@ pub fn api_router() -> Router<AppState> {
         .route("/api/auth/logout", post(routes_auth::auth_logout))
         .route("/api/auth/session", get(routes_auth::auth_session))
         // Workspaces
-        .route("/api/workspaces", get(routes_workspace::list_workspaces))
-        .route("/api/workspaces", post(routes_workspace::create_workspace))
-        // Notes
-        .route("/api/notes", get(routes_note::list_notes))
-        .route("/api/notes", post(routes_note::create_note))
-        .route("/api/notes/{id}", get(routes_note::get_note))
-        .route("/api/notes/{id}", patch(routes_note::patch_note))
-        .route("/api/notes/{id}", delete(routes_note::delete_note))
-        .route("/api/notes/{id}/title", patch(routes_note::update_title))
-        .route("/api/notes/{id}/history", get(routes_note::note_history))
-        .route("/api/notes/{id}/backlinks", get(routes_note::note_backlinks))
+        .route("/api/workspaces", get(routes_workspace::list_workspaces).post(routes_workspace::create_workspace))
+        // Notes — combine methods on same path, use :param (matchit 0.7)
+        .route("/api/notes", get(routes_note::list_notes).post(routes_note::create_note))
+        .route("/api/notes/:id", get(routes_note::get_note).patch(routes_note::patch_note).delete(routes_note::delete_note))
+        .route("/api/notes/:id/title", patch(routes_note::update_title))
+        .route("/api/notes/:id/history", get(routes_note::note_history))
+        .route("/api/notes/:id/backlinks", get(routes_note::note_backlinks))
         // Search
         .route("/api/search", get(routes_search::search_notes))
         // Automation
-        .route("/api/automation/rules", get(routes_automation::list_rules))
-        .route("/api/automation/rules", post(routes_automation::create_rule))
-        .route("/api/automation/rules/{id}", patch(routes_automation::update_rule))
-        .route("/api/automation/rules/{id}/launch", post(routes_automation::launch_rule))
+        .route("/api/automation/rules", get(routes_automation::list_rules).post(routes_automation::create_rule))
+        .route("/api/automation/rules/:id", patch(routes_automation::update_rule))
+        .route("/api/automation/rules/:id/launch", post(routes_automation::launch_rule))
         .route("/api/automation/runs", get(routes_automation::list_runs))
-        .route("/api/automation/runs/{id}", get(routes_automation::get_run))
-        .route("/api/automation/runs/{id}/review", post(routes_automation::review_run))
+        .route("/api/automation/runs/:id", get(routes_automation::get_run))
+        .route("/api/automation/runs/:id/review", post(routes_automation::review_run))
         // Health
         .route("/api/healthz", get(routes_health::healthz))
         .route("/api/readyz", get(routes_health::readyz))
