@@ -36,6 +36,9 @@ Defines canonical repository structure for:
 .
 ├── Cargo.toml
 ├── Cargo.lock
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── scripts/
 │   └── (optional operational helpers)
 ├── src/
@@ -69,12 +72,12 @@ A completion claim is valid only when:
 - behavior conforms to `/docs/spec`
 - ledgers in `/docs/reference` show synchronized evidence
 - TODO checklists are completed with linked proofs
+- Docker tooling remains optional and non-authoritative for semantics
 
 ## Prohibitions
 
 - `tmp/` MUST NOT exist in completion state.
 - `log/` and `docs/logs/` MUST NOT exist in completion state.
-- Docker artifacts MUST NOT exist in canonical states.
 - handwritten runtime `.js` source is forbidden.
 
 ## Related

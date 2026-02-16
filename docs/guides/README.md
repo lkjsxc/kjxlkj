@@ -18,6 +18,7 @@ For authority, use:
 | Document | Purpose |
 |---|---|
 | [QUICKSTART.md](QUICKSTART.md) | first-run reconstruction workflow |
+| [DOCKER.md](DOCKER.md) | optional Docker Compose local runtime |
 | [API.md](API.md) | API usage and discovery pointers |
 | [LIBRARIAN.md](LIBRARIAN.md) | configure and operate autonomous librarian runs |
 | [RECONSTRUCTION_BOOTSTRAP.md](RECONSTRUCTION_BOOTSTRAP.md) | step-by-step bootstrap guide for AI-driven reconstruction |

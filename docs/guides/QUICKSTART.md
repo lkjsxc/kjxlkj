@@ -14,14 +14,17 @@ Fast path for rebuilding the runtime from the docs-only baseline.
 4. Copy `.env.example` to `.env` and set secrets.
 5. For each wave, run build and test gates from [/docs/reference/CI.md](/docs/reference/CI.md).
 6. Keep reference ledgers synchronized before checking any wave item.
+7. Optional local runtime: use Docker Compose from [DOCKER.md](DOCKER.md).
 
 ## Notes
 
 - Repository starts in docs-only reset state.
 - Runtime startup is expected only after scaffold waves complete.
 - `.env` is ignored by git and must not be committed.
+- Docker tooling is optional and must not change canonical behavior semantics.
 
 ## Related
 
 - Wave program: [/docs/todo/waves/README.md](/docs/todo/waves/README.md)
 - Testing contract: [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+- Docker guide: [DOCKER.md](DOCKER.md)

@@ -29,5 +29,5 @@
 - [ ] IMP-FE-EMBED-01: Frontend search UI for semantic mode toggle
 - [ ] IMP-AUTH-RBAC-01: Full RBAC middleware with role-based route guards
 - [ ] IMP-MIGRATE-01: Auto-migration runner in server startup
-- [ ] IMP-DOCKER-01: Dockerfile and compose for local development
+- [x] IMP-DOCKER-01: Dockerfile and compose for local development
 - [ ] IMP-PERF-01: Load test harness with criterion benchmarks

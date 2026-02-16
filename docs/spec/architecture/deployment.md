@@ -23,9 +23,13 @@ Deployment MUST support two processes with explicit lifecycle control:
 - `Cargo.toml` and `Cargo.lock`
 - optional helper scripts under `scripts/`
 
+## Optional Container Tooling
+
+- `Dockerfile` and `docker-compose.yml` MAY be provided for local orchestration.
+- Startup semantics MUST remain aligned with this document regardless of host or container launch mode.
+
 ## Prohibitions
 
-- Docker artifacts are not part of the canonical baseline.
 - Deployment semantics MUST NOT depend on container-only behavior.
 
 ## Related

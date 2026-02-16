@@ -18,6 +18,7 @@ Canonical backlog for the next full rebuild.
 | `IMP-ARC-01` | Enable SQLx compile-time query checking with offline cache | [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md) | `S10/W100` | `done` |
 | `IMP-ARC-02` | Add cross-session WebSocket broadcast registry | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `S07/W071` | `done` |
 | `IMP-ARC-03` | Tune DB pool (`max_connections`, timeout policy) from measured load | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | `S09/W090` | `done` |
+| `IMP-DOCKER-01` | Add Dockerfile and compose for local development | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `S10/W102` | `done` |
 | `IMP-FE-01` | Split monolithic UI shell into focused components | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `S08/W080` | `done` |
 | `IMP-FE-02` | Integrate rich markdown editor (CodeMirror/ProseMirror class) | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | `S08/W081` | `done` |
 | `IMP-FE-03` | Add offline/PWA support with local cache and reconnect sync | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | `S08/W082` | `done` |

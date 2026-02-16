@@ -40,6 +40,7 @@ Every documentation artifact is directly linked below. Following this list while
 executing the staged checklist MUST cover the full canonical contract.
 - [x] [/docs/README.md](/docs/README.md)
 - [x] [/docs/guides/API.md](/docs/guides/API.md)
+- [x] [/docs/guides/DOCKER.md](/docs/guides/DOCKER.md)
 - [x] [/docs/guides/LIBRARIAN.md](/docs/guides/LIBRARIAN.md)
 - [x] [/docs/guides/QUICKSTART.md](/docs/guides/QUICKSTART.md)
 - [x] [/docs/guides/README.md](/docs/guides/README.md)

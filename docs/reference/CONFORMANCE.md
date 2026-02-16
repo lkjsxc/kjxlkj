@@ -13,14 +13,14 @@ This ledger reports currently verified behavior only.
 | `spec-only` | specified but not currently implemented |
 | `blocked` | contradicted or impossible in current state |
 
-## Current Snapshot (2026-02-17)
+## Current Snapshot (2026-02-16)
 
 High-confidence statement:
 
 - Docs governance and precedence are active.
 - Runtime source tree is reconstructed with 10 crates.
 - Frontend TypeScript scaffold is present at src/frontend/app/.
-- Docker artifacts are intentionally absent.
+- Dockerfile, docker-compose, and .dockerignore are present as optional local tooling.
 - TODO waves are partially executed.
 - 170 backend tests pass (unit + T1 integration + property + snapshot + E2E + embedding), 0 warnings.
 - 9 frontend TS test files pass (80+ assertions).

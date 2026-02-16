@@ -1,0 +1,10 @@
+.git
+.github
+target
+node_modules
+src/frontend/app/node_modules
+src/frontend/app/dist
+docs
+.env
+.env.*
+*.log

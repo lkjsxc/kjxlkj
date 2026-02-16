@@ -18,9 +18,9 @@ For state claims, use this order:
 
 ## Snapshot (2026-02-16)
 
-- Repository is intentionally in docs-only reset state.
-- Runtime source tree is absent and must be rebuilt from TODO waves.
-- Docker artifacts are intentionally removed from this baseline.
+- Repository may be in docs-only or reconstructed-runtime state.
+- Runtime source tree status is tracked in `CONFORMANCE.md`.
+- Docker artifacts may exist as optional local deployment helpers.
 - Improvement points are preserved in `IMPROVEMENT_BACKLOG.md`.
 
 ## Synchronization Rule

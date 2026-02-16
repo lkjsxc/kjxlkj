@@ -29,9 +29,9 @@
 
 ## Baseline (2026-02-16)
 
-- Repository is in docs-only reset mode.
-- Runtime source and Docker artifacts are intentionally absent.
-- All TODO waves are reset to unchecked and must be re-executed.
+- Repository supports docs-only baseline and reconstructed-runtime states.
+- Runtime source and Docker tooling may be present after reconstruction.
+- All behavior claims must remain anchored to policy/spec/reference/todo precedence.
 
 ## Related
 

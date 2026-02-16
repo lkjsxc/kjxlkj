@@ -17,6 +17,9 @@ Allowed top-level layout and derived artifact placement.
 | `Cargo.toml` | derived workspace manifest (optional until rebuilt) |
 | `Cargo.lock` | derived lockfile (optional until rebuilt) |
 | `scripts/` | derived operational scripts (optional until rebuilt) |
+| `Dockerfile` | optional container image helper for local deployment |
+| `docker-compose.yml` | optional multi-service local runtime orchestration |
+| `.dockerignore` | optional Docker build-context hygiene |
 | `.gitignore` | repository hygiene |
 | `.github/` | CI and automation metadata |
 
@@ -33,7 +36,6 @@ Docs-only baseline MAY include only:
 
 - `tmp/` MUST NOT exist in canonical state.
 - `log/` and `docs/logs/` MUST NOT exist.
-- Docker artifacts (`Dockerfile`, `docker-compose.yml`, `.dockerignore`) MUST NOT exist.
 - committed secrets are forbidden.
 
 ## Related

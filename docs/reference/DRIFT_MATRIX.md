@@ -20,7 +20,7 @@ Requirement-level mismatch tracking for reconstruction.
 |---|---|---|---|---|---|
 | `R-DOC-01` | [/docs/README.md](/docs/README.md) | docs are canonical contract | aligned | closed | maintain |
 | `R-TODO-01` | [/docs/todo/README.md](/docs/todo/README.md) | TODO drives deterministic rebuild with direct links | aligned | closed | maintain |
-| `R-ROOT-01` | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | docs-only root excludes Docker artifacts | aligned | closed | maintain |
+| `R-ROOT-01` | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | root layout allowlist includes optional Docker helpers without making semantics container-dependent | aligned | closed | maintain |
 | `R-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime services are reconstructed and reachable | aligned — 10 crates, 170 tests, AppState DI | closed | maintain |
 | `R-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP contract is live and testable | aligned — all routes wired, T1 integration tests | closed | maintain |
 | `R-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS replay/idempotency contract is live | aligned — cursor replay + idempotency tested | closed | maintain |

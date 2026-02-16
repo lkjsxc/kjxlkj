@@ -6,7 +6,7 @@ All-in-docs workspace-suite platform for collaborative notes, search, and
 ## Contract
 
 - Canonical behavior is defined in `/docs`.
-- Runtime source code is intentionally removed (docs-only baseline).
+- Runtime source code is reconstructed from the docs-only baseline.
 - Rebuild execution order is defined in [`/docs/todo/README.md`](docs/todo/README.md).
 - Non-secret runtime config is defined in `data/config.json`.
 - Agent prompt is fully defined in `data/agent-prompt.json`.
@@ -27,3 +27,13 @@ All-in-docs workspace-suite platform for collaborative notes, search, and
 | `data/agent-prompt.json` | `kjxlkj-agent` prompt definition |
 | `.env.example` | local secret template |
 | `src/` | regenerated runtime source tree after reconstruction |
+
+## Optional Docker Compose
+
+Run local PostgreSQL + migrations + server:
+
+```bash
+docker compose up --build
+```
+
+Guide: [`docs/guides/DOCKER.md`](docs/guides/DOCKER.md)

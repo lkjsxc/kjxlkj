@@ -18,6 +18,9 @@ Normative per-path map for baseline and reconstruction states.
 | `Cargo.toml` | no | yes | workspace manifest |
 | `Cargo.lock` | no | yes | lockfile |
 | `scripts/` | no | yes | operational helper scripts |
+| `Dockerfile` | no | no | optional image build helper |
+| `docker-compose.yml` | no | no | optional local runtime orchestration |
+| `.dockerignore` | no | no | optional Docker build-context pruning |
 | `.github/` | yes | yes | CI automation metadata |
 
 ## Documentation Paths
@@ -46,7 +49,6 @@ Normative per-path map for baseline and reconstruction states.
 | `tmp/` | temporary intake material only |
 | `log/` | transient logs not canonical |
 | `docs/logs/` | non-canonical logging area |
-| Docker artifacts | removed from canonical baseline |
 | committed secrets | policy violation |
 
 ## Related
