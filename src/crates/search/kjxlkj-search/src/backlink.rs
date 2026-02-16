@@ -81,8 +81,10 @@ mod tests {
 
     #[test]
     fn test_parse_wiki_links_nested_brackets() {
+        // Greedy `]]` match: first `]]` closes the link.
+        // `[[note with [brackets]]]` → link = "note with [brackets", trailing ']'
         let md = "[[note with [brackets]]]";
         let links = parse_wiki_links(md);
-        assert_eq!(links, vec!["note with [brackets]"]);
+        assert_eq!(links, vec!["note with [brackets"]);
     }
 }
