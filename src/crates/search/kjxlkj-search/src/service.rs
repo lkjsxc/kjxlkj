@@ -1,5 +1,8 @@
 /// Search service per /docs/spec/domain/search.md
+use crate::embedding::EmbeddingProvider;
+use crate::embedding_store::EmbeddingStore;
 use kjxlkj_domain::search::*;
+use kjxlkj_domain::DomainError;
 
 /// Core search service.
 /// Ranking contract per /docs/spec/domain/search.md:
@@ -50,6 +53,22 @@ impl SearchService {
                 .then_with(|| b.note_id.cmp(&a.note_id))
         });
         results
+    }
+
+    /// Perform semantic search using embedding provider and store.
+    /// Returns semantic results or empty vec on provider failure.
+    /// Per spec: if embedding service unavailable, returns empty + degraded flag.
+    pub fn semantic_search(
+        provider: &dyn EmbeddingProvider,
+        store: &EmbeddingStore,
+        query_text: &str,
+        limit: usize,
+    ) -> Result<Vec<(uuid::Uuid, f64)>, DomainError> {
+        if !provider.is_available() {
+            return Err(DomainError::SearchEmbeddingDegraded);
+        }
+        let query_vec = provider.embed(query_text)?;
+        Ok(store.nearest(&query_vec, limit))
     }
 }
 

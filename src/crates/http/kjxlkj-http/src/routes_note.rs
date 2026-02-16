@@ -73,6 +73,10 @@ pub async fn create_note(State(s): State<AppState>, Json(input): Json<CreateNote
         return domain_error_response(e);
     }
     s.search_repo.index_note(id, input.workspace_id, &title, &md);
+    // Index embedding for semantic search per /docs/spec/domain/search.md
+    if let Ok(vec) = s.embedding_provider.embed(&format!("{} {}", title, md)) {
+        s.embedding_store.upsert(id, vec);
+    }
     (StatusCode::CREATED, Json(serde_json::json!({
         "id": id, "title": title, "workspace_id": input.workspace_id,
         "note_kind": kind.as_str(), "current_version": 1,
@@ -102,6 +106,7 @@ pub async fn delete_note(State(s): State<AppState>, Path(id): Path<Uuid>) -> Res
     match s.note_repo.soft_delete_note(id, &evt) {
         Ok(()) => {
             s.search_repo.remove_note(id);
+            s.embedding_store.remove(id);
             Json(serde_json::json!({"note_id": id, "state": "soft_deleted"})).into_response()
         }
         Err(e) => domain_error_response(e),

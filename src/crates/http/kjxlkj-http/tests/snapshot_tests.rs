@@ -109,7 +109,7 @@ async fn snapshot_search_empty() {
     .unwrap();
     let (status, json) = send(app(), req).await;
     assert_eq!(status, StatusCode::OK);
-    assert!(json.is_array(), "search results must be array");
+    assert!(json["results"].is_array(), "search results must be array");
 }
 
 /// Snapshot: session check returns authenticated: false

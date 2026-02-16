@@ -13,6 +13,8 @@ use kjxlkj_db::mem_note_repo::InMemoryNoteRepo;
 use kjxlkj_db::mem_search_repo::InMemorySearchRepo;
 use kjxlkj_db::mem_user_repo::{InMemorySessionRepo, InMemoryUserRepo};
 use kjxlkj_db::mem_workspace_repo::InMemoryWorkspaceRepo;
+use kjxlkj_search::embedding::{EmbeddingProvider, StubEmbeddingProvider};
+use kjxlkj_search::embedding_store::EmbeddingStore;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
@@ -35,6 +37,10 @@ pub struct AppState {
     pub metrics: Arc<Metrics>,
     /// Export job repository per /docs/spec/domain/export.md
     pub export_repo: Arc<InMemoryExportRepo>,
+    /// Embedding provider for semantic search per /docs/spec/domain/search.md
+    pub embedding_provider: Arc<dyn EmbeddingProvider>,
+    /// Embedding vector store for nearest-neighbor lookup
+    pub embedding_store: Arc<EmbeddingStore>,
 }
 
 /// Stored idempotency result per /docs/spec/api/websocket.md WS-04
@@ -60,6 +66,8 @@ impl AppState {
             attachment_repo: Arc::new(InMemoryAttachmentRepo::new()),
             metrics: Arc::new(Metrics::new()),
             export_repo: Arc::new(InMemoryExportRepo::new()),
+            embedding_provider: Arc::new(StubEmbeddingProvider::new(768)),
+            embedding_store: Arc::new(EmbeddingStore::new()),
         }
     }
 }

@@ -146,7 +146,7 @@ async fn api_search_01_lexical_deterministic() {
         .unwrap();
     assert_eq!(resp.status(), StatusCode::OK);
     let body = json_body(resp).await;
-    let results = body.as_array().unwrap();
+    let results = body["results"].as_array().unwrap();
     assert!(!results.is_empty());
 }
 
