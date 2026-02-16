@@ -1,6 +1,5 @@
 /// Search service per /docs/spec/domain/search.md
 use kjxlkj_domain::search::*;
-use kjxlkj_domain::DomainError;
 
 /// Core search service.
 /// Ranking contract per /docs/spec/domain/search.md:

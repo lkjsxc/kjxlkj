@@ -4,11 +4,9 @@
 /// Spec: /docs/spec/domain/notes.md (write rules)
 use kjxlkj_domain::note::*;
 use kjxlkj_domain::workspace::*;
-use kjxlkj_domain::project::*;
 use kjxlkj_domain::event::*;
 use kjxlkj_domain::search::*;
 use kjxlkj_domain::automation::*;
-use kjxlkj_domain::metadata::*;
 use kjxlkj_domain::DomainError;
 use uuid::Uuid;
 

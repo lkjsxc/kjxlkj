@@ -1,6 +1,5 @@
 /// HTTP middleware per /docs/spec/security/csrf.md
 /// Request ID generation and CSRF validation.
-use axum::http::Request;
 use uuid::Uuid;
 
 /// Generate a request ID for correlation
