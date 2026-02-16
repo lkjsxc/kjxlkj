@@ -22,7 +22,7 @@ High-confidence statement:
 - Frontend TypeScript scaffold is present at src/frontend/app/.
 - Docker artifacts are intentionally absent.
 - TODO waves are partially executed.
-- 88 backend tests pass (unit + T1 integration), 0 warnings.
+- 100 backend tests pass (unit + T1 integration), 0 warnings.
 - 7 frontend TS test files pass (55+ assertions).
 - CI workflow and operational scripts are present.
 - SQL migrations cover all schema domains (8 files).
@@ -33,6 +33,8 @@ High-confidence statement:
 - Session cookie management (HttpOnly, SameSite=Lax, path=/).
 - CSRF token bound to session, validated for browser mutations.
 - Agent YOLO mode scope guardrails (cross-workspace rejection).
+- Auth endpoint rate limiting (sliding window per-IP, 429 with Retry-After).
+- Attachment upload/download/delete with chunked storage and SHA-256 checksum.
 
 ## Domain Status
 
@@ -41,7 +43,7 @@ High-confidence statement:
 | Docs governance and precedence | [/docs/policy/README.md](/docs/policy/README.md) | `verified` | policy tree present and linked |
 | Docs-only baseline contract | [/docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) | `verified` | root tree matches State B target |
 | TODO reset workflow | [/docs/todo/README.md](/docs/todo/README.md) | `verified` | all TODO checkboxes marked [x] |
-| Runtime crates and services | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `verified` | 10 crates compile, 88 tests pass, 0 warnings |
+| Runtime crates and services | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `verified` | 10 crates compile, 100 tests pass, 0 warnings |
 | HTTP API behavior | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `verified` | all routes wired, T1 integration tests for notes/auth/search/409 |
 | WebSocket behavior | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `verified` | cursor replay, idempotency dedup tested (WS-04, WS-05) |
 | Hybrid search behavior | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | `verified` | merge_and_rank tested, in-memory lexical search in API |

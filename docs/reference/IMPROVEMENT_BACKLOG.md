@@ -25,7 +25,7 @@ Canonical backlog for the next full rebuild.
 | `IMP-TEST-02` | Add snapshot tests for API contract stability | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S10/W101` | `open` |
 | `IMP-TEST-03` | Build DB-backed integration harness (containerless or ephemeral DB) | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S09/W090` | `open` |
 | `IMP-SEC-01` | Add CSP nonce strategy for script execution hardening | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | `S05/W051` | `open` |
-| `IMP-SEC-02` | Add auth endpoint rate limiting for brute-force resistance | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `S05/W050` | `open` |
+| `IMP-SEC-02` | Add auth endpoint rate limiting for brute-force resistance | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `S05/W050` | `done` |
 | `IMP-SEC-03` | Broadcast session revocation events on credential reset | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | `S07/W072` | `open` |
 | `IMP-OPS-01` | Replace ad-hoc prints with structured tracing and spans | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `S10/W100` | `open` |
 | `IMP-OPS-02` | Expose metrics endpoint for request/latency/pool telemetry | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | `S09/W090` | `open` |
