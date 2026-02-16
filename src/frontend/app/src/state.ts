@@ -8,6 +8,8 @@
 import type { NoteStream, NoteProjection, SessionInfo, Workspace } from './types.js';
 import type { PreviewMode } from './preview.js';
 import type { ConflictState } from './conflict.js';
+import type { OfflineState } from './offline.js';
+import { createOfflineState } from './offline.js';
 
 /** Application view per /docs/spec/ui/web-app.md */
 export type AppView = 'setup' | 'login' | 'notes_list' | 'note_detail' | 'agent_runs';
@@ -35,6 +37,8 @@ export interface AppState {
   readonly previewMode: PreviewMode;
   readonly conflict: ConflictState;
   readonly backlinks: ReadonlyArray<{ id: string; title: string }>;
+  /** Offline/PWA state per IMP-FE-03 */
+  readonly offline: OfflineState;
 }
 
 /** Create initial state per /docs/spec/ui/web-app.md */
@@ -52,6 +56,7 @@ export function createInitialState(): AppState {
     previewMode: 'edit',
     conflict: { hasConflict: false, localBody: '', serverBody: '', serverVersion: 0 },
     backlinks: [],
+    offline: createOfflineState(),
   };
 }
 

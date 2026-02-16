@@ -16,3 +16,5 @@ export { noConflict, enterConflict, resolveConflict, renderConflictBanner, saveC
 export type { ConflictState, ConflictResolution, CursorPosition } from './conflict.js';
 export * from './types.js';
 export * from './api.js';
+export { createOfflineState, savePendingDraft, clearPendingDraft, setConnectionState, pendingCount, registerServiceWorker, watchConnection, renderConnectionBadge } from './offline.js';
+export type { ConnectionState, OfflineState, PendingDraft } from './offline.js';

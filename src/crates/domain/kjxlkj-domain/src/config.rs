@@ -144,4 +144,27 @@ mod tests {
         assert!(!config.agent.retain_full_conversation_logs);
         assert_eq!(config.server.bind_addr, "0.0.0.0:8080");
     }
+
+    /// IMP-ARC-03: validate DB pool tuning parameters
+    #[test]
+    fn test_db_pool_config_sane() {
+        let manifest_dir = env!("CARGO_MANIFEST_DIR");
+        let workspace_root = std::path::Path::new(manifest_dir)
+            .ancestors()
+            .nth(4)
+            .expect("workspace root");
+        let path = workspace_root.join("data/config.json");
+        let config = AppConfig::load_from_file(path.to_str().unwrap()).unwrap();
+        let db = &config.database;
+        assert!(db.max_connections >= db.min_connections, "max >= min");
+        assert!(db.max_connections > 0, "max_connections > 0");
+        assert!(db.connect_timeout_ms > 0, "positive connect timeout");
+        assert!(db.idle_timeout_ms > 0, "positive idle timeout");
+        assert!(db.statement_timeout_ms > 0, "positive statement timeout");
+        // Per /docs/spec/technical/performance.md: up to 100 concurrent sessions
+        assert!(
+            db.max_connections >= 10,
+            "pool should support ≥10 connections"
+        );
+    }
 }
