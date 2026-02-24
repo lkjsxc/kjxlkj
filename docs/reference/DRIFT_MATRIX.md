@@ -1,47 +1,55 @@
 # Drift Matrix
 
-Back: [/docs/reference/README.md](/docs/reference/README.md)
+**Back:** [Reference Root](/docs/reference/README.md)
 
-Requirement-level mismatch tracking for reconstruction.
+---
 
 ## Mismatch Classes
 
 | Class | Meaning |
-|---|---|
-| `M1 correctness` | runtime behavior violates spec |
-| `M2 missing feature` | specified capability absent |
-| `M3 undocumented behavior` | implementation exists without spec |
-| `M4 verification gap` | behavior exists but evidence insufficient |
-| `M5 stale docs` | docs contradict stronger evidence |
+|-------|---------|
+| `M1 correctness` | Runtime behavior violates spec |
+| `M2 missing feature` | Specified capability absent |
+| `M3 undocumented behavior` | Implementation exists without spec |
+| `M4 verification gap` | Behavior exists but evidence insufficient |
+| `M5 stale docs` | Docs contradict stronger evidence |
 
-## Matrix
+---
+
+## Matrix (Docs-Only Baseline)
 
 | Req ID | Canonical Document | Requirement | Observed Status | Mismatch Class | Action |
-|---|---|---|---|---|---|
-| `R-DOC-01` | [/docs/README.md](/docs/README.md) | docs are canonical contract | aligned | closed | maintain |
-| `R-TODO-01` | [/docs/todo/README.md](/docs/todo/README.md) | TODO drives deterministic rebuild with direct links | aligned | closed | maintain |
-| `R-ROOT-01` | [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) | root layout allowlist includes optional Docker helpers without making semantics container-dependent | aligned | closed | maintain |
-| `R-RUNTIME-01` | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | runtime services are reconstructed and reachable | aligned — 10 crates, 170 tests, AppState DI | closed | maintain |
-| `R-HTTP-01` | [/docs/spec/api/http.md](/docs/spec/api/http.md) | HTTP contract is live and testable | aligned — all routes wired, T1 integration tests | closed | maintain |
-| `R-WS-01` | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | WS replay/idempotency contract is live | aligned — cursor replay + idempotency tested | closed | maintain |
-| `R-SEARCH-01` | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | hybrid search is live | aligned — lexical in-memory, embedding provider, cosine similarity, merge_and_rank | closed | wire PG vectors |
-| `R-UI-01` | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | editor UX contract is implemented | aligned — autosave, preview, wiki-links, backlinks, shortcuts, conflict UX, note-list | closed | maintain |
-| `R-AGENT-01` | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | agent loop contract is implemented | aligned — XML parser, KV, loop, LLM providers | closed | wire real LLM |
-| `R-TEST-01` | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | acceptance pack is executable | aligned — 170 tests, T0+T1+property+snapshot+E2E+embedding, 18+ acceptance IDs | closed | maintain |
-| `R-CSRF-01` | [/docs/spec/security/csrf.md](/docs/spec/security/csrf.md) | CSRF token validation for mutations | aligned — token bound to session, validated in middleware | closed | maintain |
-| `R-SESSION-01` | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | cookie session extraction | aligned — HttpOnly, SameSite=Lax, path=/, 7-day TTL, cookie clear on logout | closed | maintain |
+|--------|-------------------|-------------|-----------------|----------------|--------|
+| `R-DOC-01` | [Docs Root](/docs/README.md) | Docs are canonical contract | Aligned — docs present | Closed | Maintain |
+| `R-TODO-01` | [TODO Root](/docs/todo/README.md) | TODO drives rebuild with direct links | Aligned — all links present | Closed | Maintain |
+| `R-ROOT-01` | [Root Layout](/docs/policy/ROOT_LAYOUT.md) | Root allowlist compliant | Aligned — no forbidden paths | Closed | Maintain |
+| `R-RUNTIME-01` | [Runtime Model](/docs/spec/architecture/runtime.md) | Runtime services reachable | Source deleted — S01 pending | `M2` | Execute S01 |
+| `R-HTTP-01` | [HTTP Contract](/docs/spec/api/http.md) | HTTP contract live | Not implemented — S06 pending | `M2` | Execute S06 |
+| `R-WS-01` | [WebSocket](/docs/spec/api/websocket.md) | WS replay/idempotency live | Not implemented — S07 pending | `M2` | Execute S07 |
+| `R-SEARCH-01` | [Search Spec](/docs/spec/domain/search.md) | Hybrid search live | Redesigned — S02-W022 pending | `M2` | Execute S02 |
+| `R-UI-01` | [Editor Flow](/docs/spec/ui/editor-flow.md) | Editor UX implemented | Obsidian-like — S08 pending | `M2` | Execute S08 |
+| `R-AGENT-01` | [Agent Contract](/docs/spec/technical/librarian-agent.md) | Agent loop implemented | JSON+KV spec — S04 pending | `M2` | Execute S04 |
+| `R-TEST-01` | [Testing](/docs/spec/technical/testing.md) | Acceptance pack executable | Tests deleted — S09 pending | `M4` | Execute S09 |
+| `R-AUTH-01` | [Security](/docs/spec/security/README.md) | Auth/session/CSRF live | Not implemented — S05 pending | `M2` | Execute S05 |
+
+---
 
 ## Summary
 
 | Class | Open |
-|---|---:|
+|-------|------|
 | `M1 correctness` | 0 |
-| `M2 missing feature` | 0 |
+| `M2 missing feature` | 8 |
 | `M3 undocumented behavior` | 0 |
-| `M4 verification gap` | 0 |
+| `M4 verification gap` | 1 |
 | `M5 stale docs` | 0 |
+
+**All open items are expected** — repository is in docs-only baseline state ready for reconstruction.
+
+---
 
 ## Related
 
-- Conformance: [CONFORMANCE.md](CONFORMANCE.md)
-- Limitations: [LIMITATIONS.md](LIMITATIONS.md)
+- [Conformance](CONFORMANCE.md) — verified state
+- [Limitations](LIMITATIONS.md) — open gaps
+- [TODO Contract](/docs/todo/README.md) — execution order

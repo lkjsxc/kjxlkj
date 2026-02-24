@@ -1,39 +1,54 @@
 # Release Process
 
-Back: [/docs/reference/README.md](/docs/reference/README.md)
+**Back:** [Reference Root](/docs/reference/README.md)
 
-Release is valid only for blocker-free reconstructed runtime state.
+---
 
 ## Preconditions
 
-1. `Release` CI profile is green.
-2. no open high-severity limitations.
-3. drift matrix has no open `M1` or `M2` rows.
-4. acceptance tests in [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) pass.
-5. type-safety gates in [/docs/spec/technical/type-safety.md](/docs/spec/technical/type-safety.md) pass.
+1. `Release` CI profile is green
+2. No open high-severity limitations
+3. Drift matrix has no open `M1` or `M2` rows
+4. Acceptance tests in [Testing](/docs/spec/technical/testing.md) pass
+5. Type-safety gates in [Type Safety](/docs/spec/technical/type-safety.md) pass
 
-## Current Gate (2026-02-17)
+---
 
-Release is blocked.
+## Current Gate (Docs-Only Baseline)
 
-Blocking reasons:
+**Release is blocked.**
 
-- HTTP handlers are stub implementations (not DB-wired)
-- WebSocket replay engine not implemented
-- Frontend lacks rich editor integration
-- DB-backed integration tests not present
-- TODO waves partially executed
+**Expected state:** Repository is in docs-only baseline — source code deleted for clean rebuild.
+
+### Blocking Reasons
+
+| Blocker | Resolution Stage |
+|---------|------------------|
+| Source code deleted | Stage S01 (runtime scaffold) |
+| HTTP handlers not implemented | Stage S06 (REST API) |
+| WebSocket replay not implemented | Stage S07 (WS sync) |
+| Frontend not implemented | Stage S08 (frontend) |
+| kjxlkj-agent not implemented | Stage S04 (automation) |
+| Auth/session not implemented | Stage S05 (security) |
+| Tests not present | Stage S09 (CI) |
+| TODO waves not executed | All stages pending |
+
+---
 
 ## Release Steps
 
-1. execute TODO waves in order and satisfy each wave build/test gate
-2. run CI profiles and archive evidence
-3. close drift and limitation rows
-4. synchronize ledgers and TODO completion
-5. tag release
+1. Execute TODO waves in order (S00 → S10)
+2. Satisfy each wave build/test gate
+3. Run CI profiles and archive evidence
+4. Close drift and limitation rows
+5. Synchronize ledgers and TODO completion
+6. Tag release
+
+---
 
 ## Related
 
-- Conformance: [CONFORMANCE.md](CONFORMANCE.md)
-- Limitations: [LIMITATIONS.md](LIMITATIONS.md)
-- Drift matrix: [DRIFT_MATRIX.md](DRIFT_MATRIX.md)
+- [Conformance](CONFORMANCE.md) — verified state
+- [Limitations](LIMITATIONS.md) — open gaps
+- [Drift Matrix](DRIFT_MATRIX.md) — mismatch tracking
+- [TODO Program](/docs/todo/README.md) — execution order
