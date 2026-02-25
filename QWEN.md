@@ -4,13 +4,39 @@
 
 **kjxlkj** is an all-in-docs workspace-suite platform for collaborative notes, search, and `kjxlkj-agent` automation. It is a **docs-first** system where canonical behavior is defined in `/docs` and runtime source code is reconstructed from documentation specs.
 
-### Current State: Docs-Only Baseline
+---
+
+## Current State: Docs-Only Baseline (Clean Rebuild)
 
 **Repository is in docs-only baseline state** — source code deleted for clean rebuild.
 
+### Completed Cleanup Actions
+
 - ✅ All specifications updated with latest requirements
+- ✅ Search redesigned with next-gen vectorization techniques
+- ✅ Editor spec enhanced for Obsidian-like workflows
+- ✅ Agent spec updated with KV memory and YOLO mode
+- ✅ Layout spec defines 2/3 threshold (1280px)
+- ✅ Root URL accessibility fully specified
 - ✅ TODO list reset with direct links to every documentation file
-- ✅ Following TODOs organically produces full spec compliance
+- ✅ Source code deleted (`src/crates/`, `src/frontend/`)
+- ✅ `tmp/` directory does NOT exist
+- ✅ `log/` directory does NOT exist
+- ✅ `docs/logs/` does NOT exist
+- ✅ Reference ledgers synchronized (CONFORMANCE, LIMITATIONS, DRIFT_MATRIX, RELEASE)
+
+### Documentation Count
+
+| Layer | Files |
+|-------|-------|
+| Policy | 5 |
+| Overview | 4 |
+| Specification | 50 |
+| Reference | 8 |
+| Guides | 6 |
+| TODO Waves | 46 |
+| docs/README.md | 1 |
+| **Total** | **120** |
 
 ---
 
@@ -28,15 +54,17 @@
 - **Lexical:** PostgreSQL tsvector + GIN + BM25 scoring
 - **Semantic:** HNSW vector index (pgvector) + cosine similarity
 - **Fusion:** Reciprocal Rank Fusion (RRF) with k=60
+- **Advanced:** ColBERT late interaction, HyDE, query multi-vector
 - **Degradation:** Falls back to lexical-only if embedding service unavailable
 
 ### 3. Obsidian-Like Markdown Editor
 - **Plain markdown source** as first-class editing surface
 - **Live preview** (split-pane or toggle)
 - **Wiki-link autocomplete** on `[[` trigger
-- **Command palette** (Cmd/Ctrl+P)
+- **Command palette** (Cmd/Ctrl+P) with 12+ commands
 - **Keyboard shortcuts:** Headings, lists, code fences, blockquotes
 - **Dual-buffer:** Synced snapshot + local draft with autosave (600ms debounce)
+- **Conflict resolution:** Explicit resolution with merge view
 
 ### 4. Real-Time Sync (WebSocket)
 - **Cursor replay:** Reconnect replays from acknowledged event_seq
@@ -101,10 +129,10 @@ cat docs/todo/README.md
 
 ### Policy Layer (Governance)
 - [`docs/policy/README.md`](docs/policy/README.md) — Governance index
-- [`INSTRUCT.md`](docs/policy/INSTRUCT.md) — Operating contract
-- [`WORKFLOW.md`](docs/policy/WORKFLOW.md) — Gate sequence
-- [`STRUCTURE.md`](docs/policy/STRUCTURE.md) — Directory/file constraints (≤12 items, ≤200 lines)
-- [`ROOT_LAYOUT.md`](docs/policy/ROOT_LAYOUT.md) — Allowed root paths
+- [`docs/policy/INSTRUCT.md`](docs/policy/INSTRUCT.md) — Operating contract
+- [`docs/policy/WORKFLOW.md`](docs/policy/WORKFLOW.md) — Gate sequence
+- [`docs/policy/STRUCTURE.md`](docs/policy/STRUCTURE.md) — Directory/file constraints (≤12 items, ≤200 lines)
+- [`docs/policy/ROOT_LAYOUT.md`](docs/policy/ROOT_LAYOUT.md) — Allowed root paths
 
 ### Specification Layer (Target Behavior)
 - [`docs/spec/README.md`](docs/spec/README.md) — Specification index
@@ -117,25 +145,27 @@ cat docs/todo/README.md
 
 ### Reference Layer (Verified State)
 - [`docs/reference/README.md`](docs/reference/README.md) — State index
-- [`CONFORMANCE.md`](docs/reference/CONFORMANCE.md) — Verified behavior
-- [`LIMITATIONS.md`](docs/reference/LIMITATIONS.md) — Open gaps
-- [`DRIFT_MATRIX.md`](docs/reference/DRIFT_MATRIX.md) — Mismatch tracking
-- [`CI.md`](docs/reference/CI.md) — Verification profiles
-- [`RELEASE.md`](docs/reference/RELEASE.md) — Release gate
-- [`EVIDENCE_INDEX.md`](docs/reference/EVIDENCE_INDEX.md) — Proof artifacts
+- [`docs/reference/CONFORMANCE.md`](docs/reference/CONFORMANCE.md) — Verified behavior
+- [`docs/reference/LIMITATIONS.md`](docs/reference/LIMITATIONS.md) — Open gaps
+- [`docs/reference/DRIFT_MATRIX.md`](docs/reference/DRIFT_MATRIX.md) — Mismatch tracking
+- [`docs/reference/CI.md`](docs/reference/CI.md) — Verification profiles
+- [`docs/reference/RELEASE.md`](docs/reference/RELEASE.md) — Release gate
+- [`docs/reference/EVIDENCE_INDEX.md`](docs/reference/EVIDENCE_INDEX.md) — Proof artifacts
+- [`docs/reference/IMPROVEMENT_BACKLOG.md`](docs/reference/IMPROVEMENT_BACKLOG.md) — Backlog
 
 ### Overview Layer (Orientation)
 - [`docs/overview/README.md`](docs/overview/README.md) — Orientation index
-- [`all-in-docs.md`](docs/overview/all-in-docs.md) — Docs-first doctrine
-- [`principles.md`](docs/overview/principles.md) — Design principles
-- [`glossary.md`](docs/overview/glossary.md) — Shared terms
+- [`docs/overview/all-in-docs.md`](docs/overview/all-in-docs.md) — Docs-first doctrine
+- [`docs/overview/principles.md`](docs/overview/principles.md) — Design principles
+- [`docs/overview/glossary.md`](docs/overview/glossary.md) — Shared terms
 
 ### Guides Layer (Operator Playbooks)
 - [`docs/guides/README.md`](docs/guides/README.md) — Guides index
-- [`QUICKSTART.md`](docs/guides/QUICKSTART.md) — First-run workflow
-- [`DOCKER.md`](docs/guides/DOCKER.md) — Local orchestration
-- [`API.md`](docs/guides/API.md) — API usage
-- [`LIBRARIAN.md`](docs/guides/LIBRARIAN.md) — Agent operation
+- [`docs/guides/QUICKSTART.md`](docs/guides/QUICKSTART.md) — First-run workflow
+- [`docs/guides/DOCKER.md`](docs/guides/DOCKER.md) — Local orchestration
+- [`docs/guides/API.md`](docs/guides/API.md) — API usage
+- [`docs/guides/LIBRARIAN.md`](docs/guides/LIBRARIAN.md) — Agent operation
+- [`docs/guides/RECONSTRUCTION_BOOTSTRAP.md`](docs/guides/RECONSTRUCTION_BOOTSTRAP.md) — Scaffold guide
 
 ---
 
@@ -149,7 +179,7 @@ cat docs/todo/README.md
 Query → Normalization → [Lexical (BM25) + Semantic (HNSW)] → RRF Fusion → Re-rank → Results
 ```
 
-- **Embedding:** 768-dim, OpenAI-compatible API (LMStudio/OpenRouter)
+- **Embedding:** 768-dim, OpenAI-compatible API (LMStudio/OpenRouter/Ollama)
 - **Index:** pgvector HNSW for ANN search
 - **Fusion:** Reciprocal Rank Fusion with k=60
 - **Fallback:** Lexical-only if embedding service unavailable
@@ -254,26 +284,31 @@ docker compose up --build
 ├── LICENSE             # MIT license
 ├── .env.example        # Secret template
 ├── .gitignore          # Repository hygiene
+├── Cargo.toml          # Workspace manifests
+├── Cargo.lock          # Dependency lock
+├── docker-compose.yml  # Optional orchestration
+├── Dockerfile          # Container build
 ├── QWEN.md             # This file — project context
 ├── data/
 │   ├── config.json     # Non-secret runtime config
 │   └── agent-prompt.json  # kjxlkj-agent prompts
-├── docs/               # Canonical contract (120+ files)
+├── docs/               # Canonical contract (114 files)
 │   ├── policy/         # Governance
 │   ├── spec/           # Target behavior
 │   ├── reference/      # Verified state
 │   ├── todo/           # Execution order
 │   ├── overview/       # Orientation
 │   └── guides/         # Playbooks
-└── .github/            # CI automation
+├── migrations/         # PostgreSQL schemas
+├── src/                # Empty (deleted for rebuild)
+└── static/             # Frontend assets
 ```
 
 **After reconstruction (State B):**
-- `Cargo.toml`, `Cargo.lock` — Workspace manifests
 - `src/crates/` — 10 Rust crates
 - `src/frontend/` — TypeScript app
-- `migrations/` — PostgreSQL schemas
-- `Dockerfile`, `docker-compose.yml` — Optional orchestration
+- `migrations/` — PostgreSQL schemas (applied)
+- Docker artifacts — Optional orchestration
 
 ---
 

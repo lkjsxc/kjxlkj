@@ -1,0 +1,88 @@
+# kjxlkj Docker Compose
+# Local development and testing environment
+
+services:
+  # PostgreSQL with pgvector
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: kjxlkj-postgres
+    environment:
+      POSTGRES_USER: kjxlkj
+      POSTGRES_PASSWORD: kjxlkj_dev_password
+      POSTGRES_DB: kjxlkj
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kjxlkj -d kjxlkj"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kjxlkj-network
+
+  # kjxlkj Server
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kjxlkj-server
+    environment:
+      DATABASE_URL: postgres://kjxlkj:kjxlkj_dev_password@postgres:5432/kjxlkj
+      RUST_LOG: info
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data:ro
+      - ./static:/app/static:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - kjxlkj-network
+    restart: unless-stopped
+
+  # LMStudio (optional - for local embeddings)
+  lmstudio:
+    image: ghcr.io/lmstudio-ai/lmstudio:latest
+    container_name: kjxlkj-lmstudio
+    ports:
+      - "1234:1234"
+    volumes:
+      - lmstudio_models:/home/user/.cache/lmstudio
+    profiles:
+      - with-embeddings
+    networks:
+      - kjxlkj-network
+
+  # Frontend development server (optional)
+  frontend-dev:
+    image: node:20-alpine
+    container_name: kjxlkj-frontend-dev
+    working_dir: /app
+    volumes:
+      - ./src/frontend/app:/app:ro
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "3000:3000"
+    profiles:
+      - development
+    networks:
+      - kjxlkj-network
+
+volumes:
+  postgres_data:
+    driver: local
+  lmstudio_models:
+    driver: local
+
+networks:
+  kjxlkj-network:
+    driver: bridge

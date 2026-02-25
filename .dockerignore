@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Rust
+target/
+**/target/
+# Cargo.lock is now needed for reproducible builds
+# Cargo.lock
+
+# Node.js
+node_modules/
+src/frontend/app/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Documentation (not needed in container)
+docs/
+README.md
+QWEN.md
+LICENSE
+
+# Tests
+coverage/
+*.lcov
+
+# Temporary
+tmp/
+temp/

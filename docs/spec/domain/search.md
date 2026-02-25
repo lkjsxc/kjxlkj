@@ -1,123 +1,360 @@
-# Search and Backlinks — Redesigned
+# Search and Backlinks — Next-Generation Hybrid Pipeline
 
 **Back:** [Domain Root](/docs/spec/domain/README.md)
 
 ---
 
-## Search Model — Next-Generation Hybrid Pipeline
+## Search Model — State-of-the-Art Retrieval
 
-Search MUST use a **multi-stage retrieval pipeline** with modern vectorization:
+Search MUST use a **four-stage neural retrieval pipeline** with modern vectorization and fusion techniques:
 
-### Stage 1: Query Understanding
-1. **Query normalization** — lowercase, Unicode NFC, strip diacritics
-2. **Intent classification** — navigational vs informational vs transactional
-3. **Query expansion** — synonym injection via configurable thesaurus
+### Stage 1: Query Understanding and Expansion
+
+#### 1.1 Query Normalization
+- **Unicode NFC normalization** — canonical form for all text
+- **Case folding** — lowercase for lexical matching
+- **Diacritic stripping** — remove accents for broader matching
+- **Punctuation normalization** — standardize special characters
+
+#### 1.2 Intent Classification
+- **Navigational** — user seeks specific note (high confidence in title match)
+- **Informational** — user seeks content on topic (broad semantic match)
+- **Transactional** — user seeks actionable content (filter by note-type)
+
+#### 1.3 Query Expansion
+- **Synonym injection** — configurable thesaurus (e.g., "meeting" → "sync,standup,review")
+- **Hyponym expansion** — include specific instances (e.g., "database" → "postgres,mysql")
+- **Acronym resolution** — expand common acronyms (e.g., "API" → "application programming interface")
+- **Spelling correction** — Levenshtein-based fuzzy match for typos (max edit distance: 2)
+
+---
 
 ### Stage 2: Parallel Retrieval
 
-#### 2A. Lexical Retrieval (PostgreSQL)
-- **tsvector + GIN index** on title + markdown body
-- **BM25 scoring** with field weights: title (2.0), headings (1.5), body (1.0)
-- **Phrase matching** for quoted queries
-- **Prefix matching** for autocomplete scenarios
+#### 2A. Lexical Retrieval (PostgreSQL BM25)
+
+**Index Structure:**
+```sql
+-- Title + body tsvector with field weights
+CREATE INDEX note_projections_tsv_idx ON note_projections USING GIN (tsv);
+
+-- Title-only index for navigational queries
+CREATE INDEX note_projections_title_tsv_idx ON note_projections USING GIN (title_tsv);
+```
+
+**Scoring Formula:**
+```
+lexical_score = (
+  ts_rank(title_tsv, query) * 2.0 +      -- Title weight
+  ts_rank(headings_tsv, query) * 1.5 +   -- Heading weight
+  ts_rank(body_tsv, query) * 1.0         -- Body weight
+)
+```
+
+**Features:**
+- **Phrase matching** — exact phrase queries with `<->` operator
+- **Prefix matching** — autocomplete with `:*` suffix
+- **Proximity search** — `<N>` operator for word proximity
+- **Boost recent** — time-decay factor for `updated_at`
 
 #### 2B. Semantic Retrieval (Vector Index)
-- **Embedding model:** Configurable (default: 768-dim, compatible with `nomic-embed-text-v1.5`)
-- **Vector index:** PostgreSQL `pgvector` with HNSW (Hierarchical Navigable Small World)
-- **Distance metric:** Cosine similarity (normalized dot product)
-- **Late interaction:** Optional ColBERT-style token-level similarity for re-ranking
 
-### Stage 3: Fusion + Re-Ranking
-1. **Deduplication** by note ID
-2. **Reciprocal Rank Fusion (RRF)** for combining lexical + semantic rankings
-3. **Neural re-ranking** (optional) — cross-encoder for top-K candidates
-4. **Deterministic tie-breaking** by `updated_at DESC`, then `note_id ASC`
+**Embedding Model:**
+- **Default:** `nomic-embed-text-v1.5` (768-dim, 8192 context)
+- **Alternative:** `mxbai-embed-large-v1` (1024-dim, 512 context)
+- **Provider:** OpenAI-compatible API (LMStudio, OpenRouter, Ollama)
 
-### Stage 4: Post-Processing
-1. **Permission filtering** — remove inaccessible notes
-2. **Snippet extraction** — context-aware highlights with query terms
-3. **Backlink injection** — include incoming link count as boost signal
+**Index Structure:**
+```sql
+-- HNSW index for approximate nearest neighbor search
+CREATE INDEX note_embeddings_vector_idx ON note_embeddings
+USING hnsw (vector vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+```
+
+**Distance Metric:**
+- **Cosine similarity** — normalized dot product (default)
+- **Inner product** — for unnormalized embeddings
+- **L2 distance** — Euclidean distance (alternative)
+
+**Advanced Techniques:**
+
+1. **Late Interaction (ColBERT-style):**
+   - Store token-level embeddings (max 128 tokens)
+   - Compute MaxSim score at query time
+   - Re-rank top-100 candidates with fine-grained similarity
+
+2. **HyDE (Hypothetical Document Embeddings):**
+   - Generate hypothetical answer embedding
+   - Use as query vector for semantic search
+   - Improves recall for question queries
+
+3. **Query Multi-Vector:**
+   - Embed query with multiple augmentations
+   - Average or max-pool embeddings
+   - Robust to query phrasing variations
+
+#### 2C. Metadata Filtering
+
+**Pre-Filter (before retrieval):**
+- `workspace_id` — mandatory scope
+- `project_id` — optional narrowing
+- `note_kind` — filter by type (note, template, etc.)
+- `access_scope` — permission-based filtering
+
+**Post-Filter (after retrieval):**
+- `updated_at` — recency threshold
+- `backlink_count` — popularity threshold
+- `word_count` — length constraints
 
 ---
 
-## Indexing Rules
+### Stage 3: Fusion and Re-Ranking
 
-### Lexical Index
-- Title and markdown body MUST be indexed for lexical retrieval
-- tsvector update MUST occur in same transaction as note write
-- Trigger-based: `note_projections_tsv_trigger` on INSERT/UPDATE
+#### 3.1 Deduplication
+- Merge results by `note_id`
+- Keep highest score per note
+- Preserve rank from both lexical and semantic lists
 
-### Vector Index
-- Each searchable note revision MUST have an embedding vector payload
-- Embeddings MUST be regenerated whenever title OR body changes
-- **Batch reindexing** MUST be resumable and idempotent
-- **Async queue** for embedding generation (non-blocking writes)
+#### 3.2 Reciprocal Rank Fusion (RRF)
 
-### Backlink Index
-- Wiki links `[[target]]` MUST update backlink projections atomically
-- Backlinks MUST converge within one committed write cycle
-- Backlink reads MUST be permission-filtered to caller scope
+**Formula:**
+```
+RRF_score(note) = Σ 1 / (k + rank_i)
+
+where:
+  k = 60 (standard constant, balances lexical vs semantic)
+  rank_i = position in result list i (1-indexed)
+```
+
+**Example:**
+```
+Note A: lexical_rank=5, semantic_rank=10
+RRF = 1/(60+5) + 1/(60+10) = 0.0154 + 0.0143 = 0.0297
+
+Note B: lexical_rank=3, semantic_rank=50
+RRF = 1/(60+3) + 1/(60+50) = 0.0159 + 0.0091 = 0.0250
+
+Result: A ranks higher despite B's better lexical rank
+```
+
+#### 3.3 Neural Re-Ranking (Optional)
+
+**Cross-Encoder Model:**
+- **Model:** `ms-marco-MiniLM-L-6-v2` or similar
+- **Input:** (query, document) pair
+- **Output:** Relevance score (0-1)
+- **Apply to:** Top-K candidates (K=20 default)
+
+**Features for Re-Ranker:**
+- Query-document token overlap
+- Semantic similarity score
+- Lexical BM25 score
+- Recency (days since update)
+- Backlink count
+- Note length (penalize very short/long)
+
+#### 3.4 Final Sorting
+
+**Primary Sort:** `score_final DESC`
+**Tie-Breaker 1:** `updated_at DESC` (recent first)
+**Tie-Breaker 2:** `note_id ASC` (deterministic)
 
 ---
 
-## Query Contract
+### Stage 4: Post-Processing and Presentation
 
-### Endpoint: `GET /search`
+#### 4.1 Permission Filtering
+- Remove notes outside user's access scope
+- Apply workspace and project filters
+- Respect RBAC permissions
 
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| `q` | yes | — | Search query string |
-| `workspace_id` | yes | — | Scope to workspace |
-| `project_id` | no | — | Further scope to project |
-| `limit` | no | 20 | Max results (1-100) |
-| `mode` | no | `hybrid` | `hybrid`, `lexical`, `semantic` |
-| `offset` | no | 0 | Pagination offset |
+#### 4.2 Snippet Extraction
 
-### Response Shape
+**Algorithm:**
+1. Find query term positions in document
+2. Extract context window (±50 characters)
+3. Highlight query terms with `<mark>` tags
+4. Truncate to max 200 characters
+5. Prefer snippet with most query term matches
+
+**Example:**
+```json
+{
+  "snippet": "...discussed in the <mark>meeting</mark> about project timeline...",
+  "highlight_positions": [23, 30]
+}
+```
+
+#### 4.3 Backlink Injection
+- Count incoming links to each result
+- Boost score by `log(1 + backlink_count)`
+- Display backlink count in UI
+
+#### 4.4 Response Assembly
 
 ```json
 {
   "results": [
     {
       "note_id": "uuid",
-      "title": "string",
-      "snippet": "string with <mark>highlights</mark>",
-      "score_lexical": 0.0,
-      "score_semantic": 0.0,
-      "score_final": 0.0,
-      "backlink_count": 0,
-      "updated_at": "ISO8601"
+      "title": "Meeting Notes 2026-02-24",
+      "snippet": "Discussed project timeline in the <mark>meeting</mark>...",
+      "score_lexical": 8.5,
+      "score_semantic": 0.87,
+      "score_rrf": 0.0297,
+      "score_rerank": 0.92,
+      "score_final": 0.92,
+      "backlink_count": 5,
+      "updated_at": "2026-02-24T14:30:00Z",
+      "note_kind": "note",
+      "workspace_id": "uuid"
     }
   ],
-  "total": 0,
+  "total": 1,
   "mode": "hybrid",
   "degraded": false,
-  "degraded_reason": null
+  "degraded_reason": null,
+  "query_normalized": "meeting notes",
+  "query_expanded": ["meeting notes", "sync notes", "standup notes"]
 }
 ```
 
-### Endpoint: `GET /notes/{id}/backlinks`
+---
 
-Returns all notes that link TO the specified note, sorted by `updated_at DESC`.
+## Indexing Rules
+
+### Lexical Index Maintenance
+
+**Trigger-Based Update:**
+```sql
+CREATE OR REPLACE FUNCTION update_note_tsv() RETURNS trigger AS $$
+BEGIN
+  NEW.tsv :=
+    setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||
+    setweight(to_tsvector('english', COALESCE(NEW.headings, '')), 'B') ||
+    setweight(to_tsvector('english', COALESCE(NEW.markdown, '')), 'C');
+  NEW.title_tsv := to_tsvector('english', COALESCE(NEW.title, ''));
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER note_projections_tsv_trigger
+BEFORE INSERT OR UPDATE ON note_projections
+FOR EACH ROW EXECUTE FUNCTION update_note_tsv();
+```
+
+**Transaction Guarantee:**
+- TSV update MUST occur in same transaction as note write
+- No orphaned or stale lexical indexes allowed
+
+### Vector Index Maintenance
+
+**Embedding Generation:**
+```
+Note Write → Queue Embedding Job → Call Embedding API → Update Vector Index
+```
+
+**Rules:**
+- Embeddings MUST regenerate on title OR body change
+- Batch reindexing MUST be resumable (checkpoint by `note_id`)
+- Batch reindexing MUST be idempotent (upsert by `note_id`)
+- Async queue prevents blocking writes
+
+**Embedding Content:**
+```
+embedding_input = title + "\n\n" + first_2000_chars(markdown)
+```
+
+**Vector Storage:**
+```sql
+CREATE TABLE note_embeddings (
+    note_id       UUID PRIMARY KEY REFERENCES note_streams(id) ON DELETE CASCADE,
+    vector        vector(768),  -- or 1024 depending on model
+    model_name    TEXT NOT NULL,
+    model_version TEXT NOT NULL,
+    indexed_at    TIMESTAMP NOT NULL DEFAULT now()
+);
+```
+
+### Backlink Index
+
+**Storage Schema:**
+```sql
+CREATE TABLE backlinks (
+    source_note_id  UUID NOT NULL REFERENCES note_streams(id) ON DELETE CASCADE,
+    target_note_id  UUID NOT NULL REFERENCES note_streams(id) ON DELETE CASCADE,
+    created_at      TIMESTAMP NOT NULL DEFAULT now(),
+    link_text       TEXT,  -- anchor text from wiki-link
+    PRIMARY KEY (source_note_id, target_note_id)
+);
+
+CREATE INDEX backlinks_target_idx ON backlinks(target_note_id);
+```
+
+**Update Rules:**
+- Parse `[[target]]` and `[[target|alias]]` syntax
+- Resolve by title first, then by ID if ambiguous
+- Update atomically with note write
+- Remove orphaned backlinks on target deletion
 
 ---
 
-## Ranking Contract — Reciprocal Rank Fusion
+## Query Contract
 
-**Hybrid mode MUST:**
+### Endpoint: `GET /api/search`
 
-1. Fetch top-N lexical candidates (N = limit × 2)
-2. Fetch top-N semantic candidates (N = limit × 2)
-3. Deduplicate by note ID
-4. Compute RRF score: `RRF = Σ 1 / (k + rank_i)` where k=60 (standard)
-5. Return stable order for equal scores by `updated_at DESC`, then `note_id ASC`
+**Query Parameters:**
 
-**Formula:**
+| Parameter | Required | Default | Validation | Description |
+|-----------|----------|---------|------------|-------------|
+| `q` | yes | — | 1-500 chars | Search query string |
+| `workspace_id` | yes | — | UUID | Scope to workspace |
+| `project_id` | no | — | UUID | Further scope to project |
+| `limit` | no | 20 | 1-100 | Max results |
+| `offset` | no | 0 | ≥0 | Pagination offset |
+| `mode` | no | `hybrid` | enum | `hybrid`, `lexical`, `semantic` |
+| `note_kind` | no | — | enum | Filter by note type |
+| `sort` | no | `relevance` | enum | `relevance`, `updated_at` |
+
+**Response Shape:**
+
+```json
+{
+  "results": [],
+  "total": 0,
+  "mode": "hybrid",
+  "degraded": false,
+  "degraded_reason": null,
+  "query_normalized": "",
+  "query_expanded": [],
+  "timing_ms": {
+    "lexical": 12,
+    "semantic": 85,
+    "fusion": 3,
+    "rerank": 45,
+    "total": 145
+  }
+}
 ```
-lexical_rank = position in lexical results (1-indexed)
-semantic_rank = position in semantic results (1-indexed)
-RRF_score = 1/(60 + lexical_rank) + 1/(60 + semantic_rank)
-final_rank = sort by RRF_score DESC
+
+### Endpoint: `GET /api/notes/{id}/backlinks`
+
+**Response:**
+```json
+{
+  "note_id": "uuid",
+  "backlinks": [
+    {
+      "source_note_id": "uuid",
+      "source_title": "Linking Note",
+      "link_text": "custom alias",
+      "snippet": "...context with [[Linking Note|custom alias]] reference...",
+      "updated_at": "2026-02-24T14:30:00Z"
+    }
+  ],
+  "total": 1
+}
 ```
 
 ---
@@ -126,12 +363,14 @@ final_rank = sort by RRF_score DESC
 
 ### Supported Providers
 
-| Provider | Kind | Base URL | Use Case |
-|----------|------|----------|----------|
-| **LMStudio** | `lmstudio` | `http://127.0.0.1:1234/v1` | Local models |
-| **OpenRouter** | `openrouter` | `https://openrouter.ai/api/v1` | Cloud models |
-| **Stub** | `stub` | N/A | Testing (deterministic) |
-| **Null** | `null` | N/A | Disabled semantic search |
+| Provider | Kind | Base URL | Auth | Use Case |
+|----------|------|----------|------|----------|
+| **LMStudio** | `lmstudio` | `http://127.0.0.1:1234/v1` | None | Local models |
+| **Ollama** | `ollama` | `http://127.0.0.1:11434/api` | None | Local models |
+| **OpenRouter** | `openrouter` | `https://openrouter.ai/api/v1` | Bearer | Cloud models |
+| **OpenAI** | `openai` | `https://api.openai.com/v1` | Bearer | Cloud models |
+| **Stub** | `stub` | N/A | N/A | Testing (deterministic) |
+| **Null** | `null` | N/A | N/A | Disabled semantic search |
 
 ### API Shape (OpenAI-Compatible)
 
@@ -139,8 +378,9 @@ final_rank = sort by RRF_score DESC
 ```json
 POST /v1/embeddings
 {
-  "model": "text-embedding-nomic-embed-text-v1.5",
-  "input": ["text to embed"]
+  "model": "nomic-embed-text-v1.5",
+  "input": ["text to embed"],
+  "encoding_format": "float"
 }
 ```
 
@@ -148,75 +388,130 @@ POST /v1/embeddings
 ```json
 {
   "data": [
-    { "embedding": [0.1, 0.2, ...] }
-  ]
+    {
+      "object": "embedding",
+      "index": 0,
+      "embedding": [0.1, 0.2, ...]
+    }
+  ],
+  "model": "nomic-embed-text-v1.5",
+  "usage": {
+    "prompt_tokens": 10,
+    "total_tokens": 10
+  }
 }
 ```
 
 ### Degradation Contract
 
-- If embedding service is unavailable, lexical search MUST continue
-- Response MUST include `degraded: true` and `degraded_reason` machine code
-- Semantic failure codes: `EMBEDDING_UNAVAILABLE`, `EMBEDDING_TIMEOUT`, `EMBEDDING_INVALID`
+**Failure Modes:**
 
----
+| Failure | Detection | Fallback | Response Code |
+|---------|-----------|----------|---------------|
+| Embedding service timeout | 30s timeout | Lexical-only | 200 (degraded) |
+| Embedding service unavailable | Connection refused | Lexical-only | 200 (degraded) |
+| Invalid embedding response | Schema validation fail | Lexical-only | 200 (degraded) |
+| pgvector extension missing | SQL error on vector query | Lexical-only | 200 (degraded) |
+| Semantic mode requested + unavailable | Mode check | 422 error | 422 |
 
-## Backlinks
-
-### Storage Schema
-
-```sql
-CREATE TABLE backlinks (
-    source_note_id  UUID NOT NULL REFERENCES note_streams(id) ON DELETE CASCADE,
-    target_note_id  UUID NOT NULL REFERENCES note_streams(id) ON DELETE CASCADE,
-    created_at      TIMESTAMP NOT NULL DEFAULT now(),
-    PRIMARY KEY (source_note_id, target_note_id)
-);
+**Response on Degradation:**
+```json
+{
+  "degraded": true,
+  "degraded_reason": "EMBEDDING_UNAVAILABLE",
+  "mode": "lexical",
+  "message": "Semantic search unavailable, returning lexical results only"
+}
 ```
-
-### Update Rules
-
-- Backlinks MUST update atomically with note write
-- Parse `[[note title]]` and `[[note_id|alias]]` syntax
-- Resolve by title first, then by ID if ambiguous
-- Orphaned backlinks (target deleted) MUST be removed on target deletion
-
----
-
-## Safety and Scope Rules
-
-- Search results MUST be filtered by workspace and authorization scope
-- Search MUST include `settings` and media-note metadata where relevant
-- Search MUST include kjxlkj-agent-generated note updates
-- Search MUST NOT leak inaccessible note existence through score counts
-
----
-
-## Failure and Fallback Rules
-
-| Failure Mode | Fallback Behavior |
-|--------------|-------------------|
-| Embedding service timeout | Return lexical-only with `degraded: true` |
-| Vector index unavailable | Return lexical-only with diagnostic |
-| Reindex job failure | Retry with exponential backoff (max 3) |
-| pgvector extension missing | Disable semantic mode, return 422 for `mode=semantic` |
-
-### Reindex Contract
-
-- Reindex jobs MUST be resumable (checkpoint by note_id)
-- Reindex jobs MUST be idempotent (upsert by note_id)
-- Reindex batch size configurable (default: 200)
 
 ---
 
 ## Performance Targets
 
-| Metric | Target (P95) |
-|--------|--------------|
-| Lexical search latency | < 50ms at 100k notes |
-| Semantic search latency | < 150ms (embedding + HNSW) |
-| Hybrid search latency | < 200ms (fusion + re-rank) |
-| Backlink query latency | < 30ms |
+| Metric | P50 | P95 | P99 |
+|--------|-----|-----|-----|
+| Lexical search latency | 20ms | 50ms | 100ms |
+| Semantic search latency | 50ms | 150ms | 300ms |
+| Hybrid search (no rerank) | 80ms | 200ms | 400ms |
+| Hybrid search (with rerank) | 120ms | 300ms | 600ms |
+| Backlink query latency | 10ms | 30ms | 60ms |
+| Reindex batch (100 notes) | 5s | 15s | 30s |
+
+**Scale Targets:**
+- 100k notes: P95 < 500ms hybrid search
+- 1M notes: P95 < 1s hybrid search (with sharding)
+
+---
+
+## Safety and Scope Rules
+
+### Permission Enforcement
+- Search results MUST be filtered by workspace scope
+- Search MUST respect `access_scope` (private, workspace, public)
+- Search MUST NOT leak inaccessible note existence through scores
+
+### Content Inclusion
+- Search MUST include note title and markdown body
+- Search MAY include metadata fields (configurable)
+- Search MUST include kjxlkj-agent-generated notes
+- Search MUST exclude soft-deleted notes (unless `include_deleted=true`)
+
+### Query Sanitization
+- Max query length: 500 characters
+- Strip potentially dangerous characters (SQL injection prevention)
+- Rate limit: 10 queries/second per user
+
+---
+
+## Failure and Fallback Rules
+
+### Reindex Job Contract
+
+**Resumability:**
+```json
+{
+  "job_id": "uuid",
+  "status": "running",
+  "checkpoint_note_id": "uuid",
+  "processed_count": 5000,
+  "total_count": 10000,
+  "started_at": "2026-02-24T10:00:00Z",
+  "updated_at": "2026-02-24T10:05:00Z"
+}
+```
+
+**Retry Policy:**
+- Max retries: 3
+- Backoff: exponential (1s, 2s, 4s)
+- On final failure: mark job as failed, alert operator
+
+### Health Checks
+
+**Embedding Provider Health:**
+```
+GET /health/embedding
+
+Response:
+{
+  "status": "healthy",
+  "provider": "lmstudio",
+  "latency_ms": 45,
+  "last_check": "2026-02-24T14:30:00Z"
+}
+```
+
+**Vector Index Health:**
+```
+GET /health/vector-index
+
+Response:
+{
+  "status": "healthy",
+  "indexed_notes": 9850,
+  "total_notes": 10000,
+  "coverage": 0.985
+}
+```
 
 ---
 
@@ -226,3 +521,4 @@ CREATE TABLE backlinks (
 - [API HTTP contract](/docs/spec/api/http.md) — search endpoint
 - [Performance targets](/docs/spec/technical/performance.md) — latency budgets
 - [Migration contract](/docs/spec/technical/migrations.md) — schema + indexes
+- [Automation](automation.md) — kjxlkj-agent note creation

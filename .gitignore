@@ -1,16 +1,47 @@
-/.github/copilot-instructions.md
-/AGENTS.md
-/GEMINI.md
-target/
+# Rust
+/target/
 **/target/
-.env
-.env.*
-!.env.example
-*.log
-.DS_Store
-node_modules/
-src/frontend/app/dist/
-*.swp
-*.swo
+Cargo.lock
+
+# Node.js
 node_modules/
 dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+*.lcov
+
+# Temporary
+tmp/
+temp/
+
+# Build artifacts
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Database
+*.db
+*.sqlite

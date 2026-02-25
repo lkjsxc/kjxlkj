@@ -1,4 +1,4 @@
-# Web App Shell
+# Web App Shell — Root URL Contract
 
 **Back:** [UI Root](/docs/spec/ui/README.md)
 
@@ -17,34 +17,59 @@
 
 ### Entry Point: `GET /`
 
-The application MUST be fully functional when accessing the root URL directly:
+The application **MUST** be fully functional when accessing the root URL directly.
 
-1. **Unauthenticated user:**
-   - If setup is incomplete → redirect to `/setup`
-   - If setup is complete → redirect to `/login`
-   - After login → redirect to `/` (now shows notes)
+#### Unauthenticated User Flow
 
-2. **Authenticated user:**
-   - Redirect to `/` which renders the full app shell
-   - Most recent note selected (or empty state if none)
-   - Editor immediately usable
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     GET / (Unauthenticated)                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Client requests GET /                                        │
+│  2. Server serves static index.html (app shell)                 │
+│  3. App loads, checks session via GET /api/auth/session         │
+│  4. If 401 → render Login View                                  │
+│  5. If setup incomplete → render Setup View                     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Authenticated User Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     GET / (Authenticated)                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Client requests GET /                                        │
+│  2. Server serves static index.html (app shell)                 │
+│  3. App loads, checks session via GET /api/auth/session         │
+│  4. If 200 → render Notes List + Editor                         │
+│  5. Most recent note selected (or empty state)                  │
+│  6. Editor immediately usable                                   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### URL Structure
 
-| Path | Purpose | Auth Required |
-|------|---------|---------------|
-| `/` | App shell (notes + editor) | Yes |
-| `/setup` | First-run registration | No (setup-locked only) |
-| `/login` | Login form | No |
-| `/notes` | Note list view (optional) | Yes |
-| `/notes/{id}` | Direct note link | Yes |
-| `/search?q=...` | Search results view | Yes |
+| Path | Purpose | Auth Required | Component |
+|------|---------|---------------|-----------|
+| `/` | App shell (notes + editor) | No (graceful degradation) | `AppShell` |
+| `/setup` | First-run registration | No (setup-locked only) | `SetupForm` |
+| `/login` | Login form | No | `LoginForm` |
+| `/notes` | Note list view | Yes | `NotesList` |
+| `/notes/:id` | Direct note link | Yes | `NoteEditor` |
+| `/search?q=...` | Search results view | Yes | `SearchResults` |
+| `/agent` | Agent runs (optional) | Yes | `AgentRuns` |
 
 ### Client-Side Routing
 
-- Use HTML5 History API (`pushState`, `popstate`)
-- Root `/` serves the app shell; client handles sub-routes
-- 404 for unknown routes → redirect to `/`
+- **Use HTML5 History API** (`pushState`, `popstate`)
+- **Root `/`** serves the app shell; client handles sub-routes
+- **404 for unknown routes** → redirect to `/`
+- **Deep linking** supported (`/notes/:id` works on refresh)
 
 ---
 
@@ -53,28 +78,51 @@ The application MUST be fully functional when accessing the root URL directly:
 ### View 1: Setup (First-Run Only)
 
 **Route:** `/setup`
-**Condition:** No owner account exists
+**Condition:** No owner account exists (detected via API)
 
 ```
-┌─────────────────────────────────────────┐
-│                                         │
-│   Welcome to kjxlkj                     │
-│                                         │
-│   Create Owner Account                  │
-│   ┌─────────────────────────────────┐  │
-│   │ Email                           │  │
-│   │ Password                        │  │
-│   │ Confirm Password                │  │
-│   └─────────────────────────────────┘  │
-│                                         │
-│   [ Create Account ]                    │
-│                                         │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│   Welcome to kjxlkj                                     │
+│   All-in-docs workspace platform                        │
+│                                                         │
+│   Create Owner Account                                  │
+│   ┌─────────────────────────────────────────────────┐  │
+│   │ Email                                           │  │
+│   │ ●●●●●●●●●●●●●●●●                                │  │
+│   │ ●●●●●●●●●●●●●●●● (confirm)                      │  │
+│   └─────────────────────────────────────────────────┘  │
+│                                                         │
+│   [ Create Account ]                                    │
+│                                                         │
+│   Already have an account? Sign in                      │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
 **Behavior:**
 - Only available while setup is incomplete
 - After submission → lock setup, create owner session, redirect to `/`
+- Subsequent visits to `/setup` → redirect to `/`
+
+**API Contract:**
+```
+POST /api/setup/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "password_confirm": "securepassword"
+}
+
+Response: 201 Created
+{
+  "user_id": "uuid",
+  "email": "user@example.com",
+  "session_token": "..."
+}
+```
 
 ### View 2: Login
 
@@ -82,26 +130,45 @@ The application MUST be fully functional when accessing the root URL directly:
 **Condition:** Setup complete, no active session
 
 ```
-┌─────────────────────────────────────────┐
-│                                         │
-│   Sign in to kjxlkj                     │
-│                                         │
-│   ┌─────────────────────────────────┐  │
-│   │ Email                           │  │
-│   │ Password                        │  │
-│   └─────────────────────────────────┘  │
-│                                         │
-│   [ Sign In ]                           │
-│                                         │
-│   Forgot password? (future)             │
-│                                         │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│   Sign in to kjxlkj                                     │
+│                                                         │
+│   ┌─────────────────────────────────────────────────┐  │
+│   │ email@example.com                               │  │
+│   │ ●●●●●●●●●●●●●●●●                                │  │
+│   └─────────────────────────────────────────────────┘  │
+│                                                         │
+│   [ Sign In ]                                           │
+│                                                         │
+│   Forgot password? (future)                             │
+│   Don't have an account? Contact administrator          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
 **Behavior:**
 - Pre-auth `GET /api/auth/session` returns `401` (expected, non-fatal)
 - On success → redirect to `/`
-- On failure → show error inline
+- On failure → show error inline (no redirect loop)
+
+**API Contract:**
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "email": "user@example.com",
+  "session_token": "..."
+}
+```
 
 ### View 3: Notes List (Default View)
 
@@ -110,42 +177,66 @@ The application MUST be fully functional when accessing the root URL directly:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Header: kjxlkj                        [Sync] [☰] [User] │
+│ Header: kjxlkj                        [●] [☰] [User ▼]  │
 ├──────────────┬──────────────────────────────────────────┤
 │ ┌──────────┐ │  No note selected                        │
-│ │ Search   │ │                                          │
+│ │ 🔍 Search│ │                                          │
 │ ├──────────┤ │  Select a note from the list or         │
 │ │ Note 1   │ │  create a new one.                       │
 │ │ Note 2   │ │                                          │
-│ │ Note 3   │ │  [ Create New Note ]                     │
+│ │ Note 3   │ │  [+ Create New Note]                     │
 │ │ ...      │ │                                          │
 │ └──────────┘ │                                          │
 └──────────────┴──────────────────────────────────────────┘
+
+Legend: [●] = sync status, [☰] = menu toggle (mobile)
 ```
 
 **Behavior:**
-- Search filters list in real-time
-- Click note → navigate to `/notes/{id}`, show editor
-- "Create New Note" → POST `/notes`, navigate to new note
+- Search filters list in real-time (debounced, 300ms)
+- Click note → navigate to `/notes/:id`, show editor
+- "Create New Note" → POST `/api/notes`, navigate to new note
+- Empty state shown when no notes exist
+
+**API Contract:**
+```
+GET /api/notes?workspace_id=uuid&limit=50
+
+Response: 200 OK
+{
+  "notes": [
+    {
+      "note_id": "uuid",
+      "title": "Meeting Notes",
+      "updated_at": "2026-02-24T14:30:00Z"
+    }
+  ]
+}
+```
 
 ### View 4: Note Detail (Editor)
 
-**Route:** `/notes/{id}` or `/` (with note selected)
+**Route:** `/notes/:id` or `/` (with note selected)
 **Condition:** Authenticated, note selected
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Header: kjxlkj                        [Sync] [☰] [User] │
+│ Header: kjxlkj                        [●] [☰] [User ▼]  │
 ├──────────────┬──────────────────────────────────────────┤
 │ ┌──────────┐ │  ┌────────────────────────────────────┐ │
-│ │ Search   │ │  │ Note Title (editable)              │ │
+│ │ 🔍 Search│ │  │ Meeting Notes 2026-02-24      [✎] │ │
 │ ├──────────┤ │  ├────────────────────────────────────┤ │
 │ │ Note 1   │ │  │                                    │ │
-│ │ Note 2   │ │  │ Markdown editor content...         │ │
+│ │ Note 2   │ │  │ # Meeting Notes                    │ │
 │ │ ● Note 3 │ │  │                                    │ │
-│ │ Note 4   │ │  │                                    │ │
-│ └──────────┘ │  └────────────────────────────────────┘ │
+│ │ Note 4   │ │  │ ## Attendees                       │ │
+│ │          │ │  │ - John                             │ │
+│ │          │ │  │ - Jane                             │ │
+│ └──────────┘ │  │                                    │ │
+│              │  └────────────────────────────────────┘ │
 └──────────────┴──────────────────────────────────────────┘
+
+Legend: [●] = sync status, [✎] = edit mode indicator
 ```
 
 **Behavior:**
@@ -153,11 +244,26 @@ The application MUST be fully functional when accessing the root URL directly:
 - Autosave on keystroke (600ms debounce)
 - Wiki-link autocomplete on `[[`
 - Backlink panel (optional, right sidebar)
+- Keyboard shortcuts (Cmd/Ctrl+P for commands)
+
+**API Contract:**
+```
+GET /api/notes/:id
+
+Response: 200 OK
+{
+  "note_id": "uuid",
+  "title": "Meeting Notes 2026-02-24",
+  "markdown": "# Meeting Notes\n\n...",
+  "version": 5,
+  "updated_at": "2026-02-24T14:30:00Z"
+}
+```
 
 ### View 5: Agent Runs (Optional Module)
 
-**Route:** `/agent` (optional)
-**Condition:** Authenticated, automation enabled
+**Route:** `/agent`
+**Condition:** Authenticated, automation enabled (`features.librarian_enabled`)
 
 Shows kjxlkj-agent run history, status, and review queue.
 
@@ -192,21 +298,40 @@ Shows kjxlkj-agent run history, status, and review queue.
 **Trigger:** Click "Create New Note" button or Cmd/Ctrl+N
 
 **Steps:**
-1. `POST /notes` with optional payload
+1. `POST /api/notes` with optional payload
 2. If no title provided → server assigns datetime title
 3. Response includes `note_id` and assigned title
 4. Immediately select new note in list
-5. Navigate to `/notes/{id}`
+5. Navigate to `/notes/:id`
 6. Focus title input for quick rename
 
 ### Default Title Rule
 
-When creating a note without explicit title:
+When creating a note **without** an explicit title:
 
-- **Server assigns:** Current timestamp as title
-- **Format:** `YYYY-MM-DD HH:mm:ss` (server local timezone)
-- **Returned in:** Create response and projection reads
-- **User can:** Immediately edit title after creation
+| Field | Value |
+|-------|-------|
+| **Server assigns** | Current timestamp as title |
+| **Format** | `YYYY-MM-DD HH:mm:ss` (server local timezone) |
+| **Returned in** | Create response and projection reads |
+| **User can** | Immediately edit title after creation |
+
+**Example:**
+```
+POST /api/notes
+{
+  "workspace_id": "uuid",
+  "markdown": "Content here..."
+}
+
+Response: 201 Created
+{
+  "note_id": "note-uuid",
+  "title": "2026-02-24 14:30:00",
+  "markdown": "Content here...",
+  "version": 1
+}
+```
 
 ### Note ID vs Title
 
@@ -252,6 +377,39 @@ When creating a note without explicit title:
 
 ---
 
+## Responsive Shell
+
+### Desktop (>1280px)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Header: Title                    [Sync] [User]          │
+├──────────────┬──────────────────────────────────────────┤
+│ Navigation   │  Editor                                  │
+│ (persistent) │  (full width remaining)                  │
+│ - 280px      │                                          │
+│ - scroll     │                                          │
+└──────────────┴──────────────────────────────────────────┘
+```
+
+### Mobile (≤1280px)
+
+```
+┌─────────────────────────────────────────┐
+│ Header: Title         [Sync] [☰] [User] │
+├─────────────────────────────────────────┤
+│                                         │
+│  Editor (full width)                    │
+│                                         │
+│  [Navigation opens as overlay]          │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+**Per:** [layout-and-interaction.md](layout-and-interaction.md)
+
+---
+
 ## Optional Modules
 
 ### Module Policy
@@ -262,11 +420,88 @@ When creating a note without explicit title:
 
 ### Module List
 
-| Module | Feature Flag | Description |
-|--------|--------------|-------------|
-| Dashboard | `dashboard_enabled` | Workspace overview, stats |
-| Librarian | `librarian_enabled` | Agent run review queue |
-| Saved Views | `saved_views_enabled` | Persisted filters/sorts |
+| Module | Feature Flag | Route | Description |
+|--------|--------------|-------|-------------|
+| Dashboard | `dashboard_enabled` | `/dashboard` | Workspace overview, stats |
+| Librarian | `librarian_enabled` | `/agent` | Agent run review queue |
+| Saved Views | `saved_views_enabled` | `/views` | Persisted filters/sorts |
+
+---
+
+## Component Structure
+
+### App Shell (`AppShell.tsx`)
+
+```tsx
+// Main application container
+// - Header (always visible)
+// - Navigation (conditional, per responsive rules)
+// - Main content area (notes list or editor)
+// - Overlay (mobile navigation backdrop)
+```
+
+### Header (`Header.tsx`)
+
+```tsx
+// Top navigation bar (56px desktop, 48px mobile)
+// - App title / workspace name
+// - Sync status indicator
+// - Menu toggle (mobile only)
+// - User menu
+```
+
+### Navigation (`Navigation.tsx`)
+
+```tsx
+// Note list sidebar (280px desktop, full-width overlay mobile)
+// - Search box
+// - Note list (scrollable)
+// - Create new note button
+```
+
+### Editor (`MarkdownEditor.tsx`)
+
+```tsx
+// Main editing surface
+// - Title input
+// - Markdown editor (CodeMirror/ProseMirror)
+// - Toolbar (optional)
+// - Preview pane (optional, split)
+```
+
+---
+
+## Accessibility Requirements
+
+### Keyboard Navigation
+
+| Key | Context | Action |
+|-----|---------|--------|
+| `Tab` | Anywhere | Cycle through interactive elements |
+| `Shift+Tab` | Anywhere | Cycle backwards |
+| `Escape` | Navigation open | Close navigation |
+| `Escape` | Command palette | Close palette |
+| `Enter` | Note list | Open selected note |
+| `Arrow keys` | Note list | Navigate up/down |
+
+### Screen Reader Support
+
+- Editor MUST have `role="textbox"` and `aria-multiline="true"`
+- Title input MUST have `aria-label="Note title"`
+- Sync status MUST use `aria-live="polite"` region
+- Conflict banner MUST use `role="alert"`
+
+---
+
+## Performance Targets
+
+| Metric | Target |
+|--------|--------|
+| Initial app load | < 2s (3G), < 500ms (cached) |
+| Route transition | < 100ms |
+| Note list render | < 200ms (100 notes) |
+| Editor initial load | < 500ms |
+| Keystroke to render | < 16ms (60fps) |
 
 ---
 
@@ -276,3 +511,4 @@ When creating a note without explicit title:
 - [Layout contract](layout-and-interaction.md) — responsive behavior
 - [Notes domain](/docs/spec/domain/notes.md) — ID/title separation
 - [HTTP API](/docs/spec/api/http.md) — note endpoints
+- [Sessions](/docs/spec/security/sessions.md) — auth contract

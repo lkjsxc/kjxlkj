@@ -1,54 +1,105 @@
-# Release Process
+# Release Gate
 
 **Back:** [Reference Root](/docs/reference/README.md)
 
 ---
 
-## Preconditions
+## Purpose
 
-1. `Release` CI profile is green
-2. No open high-severity limitations
-3. Drift matrix has no open `M1` or `M2` rows
-4. Acceptance tests in [Testing](/docs/spec/technical/testing.md) pass
-5. Type-safety gates in [Type Safety](/docs/spec/technical/type-safety.md) pass
+Defines the gate criteria for declaring a release-ready state.
 
 ---
 
-## Current Gate (Docs-Only Baseline)
+## Current State: Docs-Only Baseline
 
-**Release is blocked.**
+**Status:** 🔴 NOT READY FOR RELEASE
 
-**Expected state:** Repository is in docs-only baseline — source code deleted for clean rebuild.
-
-### Blocking Reasons
-
-| Blocker | Resolution Stage |
-|---------|------------------|
-| Source code deleted | Stage S01 (runtime scaffold) |
-| HTTP handlers not implemented | Stage S06 (REST API) |
-| WebSocket replay not implemented | Stage S07 (WS sync) |
-| Frontend not implemented | Stage S08 (frontend) |
-| kjxlkj-agent not implemented | Stage S04 (automation) |
-| Auth/session not implemented | Stage S05 (security) |
-| Tests not present | Stage S09 (CI) |
-| TODO waves not executed | All stages pending |
+**Reason:** Source code deleted. Rebuild required from docs-only baseline.
 
 ---
 
-## Release Steps
+## Release Criteria
 
-1. Execute TODO waves in order (S00 → S10)
-2. Satisfy each wave build/test gate
-3. Run CI profiles and archive evidence
-4. Close drift and limitation rows
-5. Synchronize ledgers and TODO completion
-6. Tag release
+All criteria MUST be true for release:
+
+### Documentation Gate
+- [x] All 114 documentation files complete and linked
+- [x] TODO list reset with direct links to every doc
+- [x] Reference ledgers synchronized (CONFORMANCE, LIMITATIONS, DRIFT_MATRIX)
+- [x] No high-severity limitations open
+
+### Runtime Gate
+- [ ] Cargo workspace builds without errors (`cargo build --workspace`)
+- [ ] All tests pass (`cargo test --workspace`)
+- [ ] Docker Compose orchestration works (`docker compose up`)
+- [ ] Health endpoint responds (`GET /api/healthz`)
+
+### API Gate
+- [ ] All HTTP endpoints functional per [http.md](/docs/spec/api/http.md)
+- [ ] WebSocket protocol works per [websocket.md](/docs/spec/api/websocket.md)
+- [ ] Acceptance IDs verified per [testing.md](/docs/spec/technical/testing.md)
+
+### UX Gate
+- [ ] Root URL accessible (`GET /` serves app)
+- [ ] Editor works per [editor-flow.md](/docs/spec/ui/editor-flow.md)
+- [ ] Layout responsive per [layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
+- [ ] 2/3 threshold (1280px) activates correctly
+- [ ] 320px minimum width supported
+
+### Agent Gate
+- [ ] kjxlkj-agent loads prompts from JSON
+- [ ] KV memory persists across loops
+- [ ] YOLO mode can create/edit notes
+- [ ] Conversation logs disabled by default
+
+### Security Gate
+- [ ] Auth/session functional per [security/README.md](/docs/spec/security/README.md)
+- [ ] CSRF protection enabled
+- [ ] Rate limiting active
+- [ ] CSP headers set
+
+### Performance Gate
+- [ ] P95 latency targets met per [performance.md](/docs/spec/technical/performance.md)
+- [ ] Search P95 < 200ms (hybrid mode)
+- [ ] Editor keystroke-to-render < 16ms
+
+### Verification Gate
+- [ ] No high-severity rows in [LIMITATIONS.md](/docs/reference/LIMITATIONS.md)
+- [ ] No open M1/M2 in [DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
+- [ ] All source files ≤200 lines per [STRUCTURE.md](/docs/policy/STRUCTURE.md)
+- [ ] `tmp/`, `log/`, `docs/logs/` do NOT exist
+
+---
+
+## Release Checklist
+
+| Stage | Gate | Status | Evidence |
+|-------|------|--------|----------|
+| S00 | Governance | ✅ Complete | Policy docs complete |
+| S01 | Runtime Skeleton | 🔴 Pending | Execute TODO |
+| S02 | Notes + Search | 🔴 Pending | Execute TODO |
+| S03 | Realtime | 🔴 Pending | Execute TODO |
+| S04 | Agent | 🔴 Pending | Execute TODO |
+| S05 | Security | 🔴 Pending | Execute TODO |
+| S06 | REST API | 🔴 Pending | Execute TODO |
+| S07 | WebSocket | 🔴 Pending | Execute TODO |
+| S08 | Frontend | 🔴 Pending | Execute TODO |
+| S09 | CI + Perf | 🔴 Pending | Execute TODO |
+| S10 | Hardening | 🔴 Pending | Execute TODO |
+
+---
+
+## Next Steps
+
+1. Execute TODO stages in order (S00 → S10)
+2. Sync ledgers after each stage
+3. Verify acceptance IDs
+4. Re-evaluate release gate
 
 ---
 
 ## Related
 
+- [TODO Contract](/docs/todo/README.md) — execution order
+- [CI Profiles](CI.md) — verification profiles
 - [Conformance](CONFORMANCE.md) — verified state
-- [Limitations](LIMITATIONS.md) — open gaps
-- [Drift Matrix](DRIFT_MATRIX.md) — mismatch tracking
-- [TODO Program](/docs/todo/README.md) — execution order
