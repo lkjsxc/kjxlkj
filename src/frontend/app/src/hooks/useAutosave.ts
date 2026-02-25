@@ -9,7 +9,7 @@ export function useAutosave() {
   const dispatch = useDispatch()
   const currentNote = useSelector((state: RootState) => state.note.currentNote)
   const hasUnsavedChanges = useSelector((state: RootState) => state.note.hasUnsavedChanges)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const debouncedSave = useCallback(() => {
     if (timeoutRef.current) {

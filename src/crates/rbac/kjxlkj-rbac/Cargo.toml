@@ -6,4 +6,6 @@ license.workspace = true
 
 [dependencies]
 kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+serde.workspace = true
+uuid.workspace = true
 thiserror.workspace = true

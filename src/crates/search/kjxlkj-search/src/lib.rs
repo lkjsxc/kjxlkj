@@ -101,7 +101,7 @@ impl SearchService {
             mode: mode_str.to_string(),
             degraded,
             degraded_reason,
-            query_normalized: normalized,
+            query_normalized: normalized.clone(),
             query_expanded: vec![normalized.clone()],
             timing_ms: timing,
         })

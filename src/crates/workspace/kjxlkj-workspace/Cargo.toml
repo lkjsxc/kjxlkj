@@ -6,6 +6,7 @@ license.workspace = true
 
 [dependencies]
 kjxlkj-domain = { path = "../../domain/kjxlkj-domain" }
+kjxlkj-db = { path = "../../db/kjxlkj-db" }
 kjxlkj-rbac = { path = "../../rbac/kjxlkj-rbac" }
 tokio.workspace = true
 serde.workspace = true

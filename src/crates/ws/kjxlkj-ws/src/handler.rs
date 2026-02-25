@@ -1,19 +1,17 @@
 //! WebSocket handler
 
 use axum::{
-    extract::{ws::{WebSocket, WebSocketUpgrade, Message, CloseFrame}, State},
+    extract::{ws::{WebSocket, WebSocketUpgrade, Message}, State},
     response::IntoResponse,
     Extension,
 };
 use futures::{sink::SinkExt, stream::StreamExt};
-use tokio::sync::broadcast;
 use uuid::Uuid;
 
-use kjxlkj_domain::{DomainEvent, Actor};
+use kjxlkj_domain::Actor;
 use kjxlkj_db::{NoteRepo, IdempotencyRepo};
-use crate::protocol::{WsMessage, PatchOp};
+use crate::protocol::WsMessage;
 use crate::session::{WsSession, SessionRegistry, BroadcastRegistry};
-use crate::routes::WsState;
 
 /// Upgrade to WebSocket
 pub async fn ws_handler(
@@ -30,7 +28,6 @@ async fn handle_socket(socket: WebSocket, state: WsState, user_id: Uuid) {
     let session = WsSession::new(user_id);
     state.session_registry.add(session).await;
 
-    // Spawn task to handle incoming messages
     let mut recv = receiver;
     let state_clone = state.clone();
     let session_id = Uuid::new_v4();
@@ -59,10 +56,7 @@ async fn handle_socket(socket: WebSocket, state: WsState, user_id: Uuid) {
         }
     });
 
-    // Wait for handle task to complete
     let _ = handle_task.await;
-    
-    // Cleanup on disconnect
     state.session_registry.remove(session_id).await;
 }
 
@@ -74,16 +68,12 @@ async fn handle_message(
     let msg: WsMessage = serde_json::from_str(text)?;
 
     let response = match msg {
-        WsMessage::Ack { note_id, event_seq, version } => {
-            // Update cursor
+        WsMessage::Ack { event_seq, .. } => {
             state.session_registry.update_cursor(session_id, event_seq).await;
-            
             WsMessage::Pong
         }
-        WsMessage::ApplyPatch { note_id, base_version, patch_ops, idempotency_key, client_ts } => {
-            // Check idempotency
+        WsMessage::ApplyPatch { note_id, base_version, idempotency_key, .. } => {
             if state.idempotency_repo.exists(&idempotency_key).await {
-                // Return cached response (simplified)
                 WsMessage::PatchCommitted {
                     note_id,
                     version: base_version + 1,
@@ -91,19 +81,12 @@ async fn handle_message(
                     idempotency_key,
                 }
             } else {
-                // Apply patch
                 let note_repo = NoteRepo::new();
-                let actor = Actor::User { user_id: Uuid::new_v4() };
-                
                 match note_repo.get(note_id).await {
                     Ok(Some(mut note)) => {
                         if note.version == base_version {
-                            // Apply patch
                             note.version += 1;
-                            
-                            // Store idempotency key
                             state.idempotency_repo.set(&idempotency_key, "committed").await;
-                            
                             WsMessage::PatchCommitted {
                                 note_id,
                                 version: note.version,

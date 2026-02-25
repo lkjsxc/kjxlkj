@@ -4,13 +4,12 @@ use axum::{
     extract::State,
     http::StatusCode,
     response::Json,
-    Extension,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use kjxlkj_domain::Workspace;
-use crate::state::{HttpResult, HttpError};
+use crate::state::HttpResult;
 use crate::routes::HttpState;
 
 /// Create workspace request
@@ -27,8 +26,7 @@ pub struct ListWorkspacesResponse {
 
 /// List all workspaces
 pub async fn list_workspaces(
-    State(state): State<HttpState>,
-    Extension(user_id): Extension<Uuid>,
+    State(_state): State<HttpState>,
 ) -> HttpResult<Json<ListWorkspacesResponse>> {
     // Stub implementation
     Ok(Json(ListWorkspacesResponse {
@@ -38,11 +36,10 @@ pub async fn list_workspaces(
 
 /// Create workspace
 pub async fn create_workspace(
-    State(state): State<HttpState>,
-    Extension(user_id): Extension<Uuid>,
+    State(_state): State<HttpState>,
     Json(req): Json<CreateWorkspaceRequest>,
 ) -> HttpResult<(StatusCode, Json<Workspace>)> {
     // Stub implementation
-    let workspace = Workspace::new(req.name, user_id);
+    let workspace = Workspace::new(req.name, Uuid::new_v4());
     Ok((StatusCode::CREATED, Json(workspace)))
 }

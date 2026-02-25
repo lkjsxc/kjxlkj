@@ -34,7 +34,13 @@ async fn main() -> Result<()> {
     info!("Starting kjxlkj-server...");
 
     // Load configuration
-    let config = config::load_config()?;
+    let config = match config::load_config() {
+        Ok(c) => c,
+        Err(e) => {
+            error!("Failed to load config: {}", e);
+            return Err(anyhow::anyhow!("Config load failed: {}", e));
+        }
+    };
     info!("Configuration loaded");
 
     // Initialize database pool
@@ -42,8 +48,8 @@ async fn main() -> Result<()> {
     info!("Database pool initialized");
 
     // Initialize repositories
-    let note_repo = NoteRepo::new();
-    let workspace_repo = WorkspaceRepo::new();
+    let _note_repo = NoteRepo::new();
+    let _workspace_repo = WorkspaceRepo::new();
     info!("Repositories initialized");
 
     // Initialize session store
@@ -69,11 +75,7 @@ async fn main() -> Result<()> {
         .with_state(ws_state);
 
     // Static file serving
-    let static_router = tower_http::services::ServeDir::new(&config.server.static_dir)
-        .not_found_service(axum::routing::get_serve_dir_index_file(
-            &config.server.static_dir,
-            axum::http::StatusCode::NOT_FOUND,
-        ));
+    let static_router = tower_http::services::ServeDir::new(&config.server.static_dir);
 
     // Combine all routers
     let app = Router::new()

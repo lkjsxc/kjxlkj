@@ -4,13 +4,10 @@ use axum::{
     extract::State,
     http::{StatusCode, HeaderMap},
     response::Json,
-    Extension,
 };
-use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use kjxlkj_auth::{Session, SessionStore, generate_csrf_token};
 use crate::state::{HttpResult, HttpError};
 use crate::routes::HttpState;
 
@@ -52,31 +49,23 @@ pub struct SessionResponse {
 
 /// Login handler
 pub async fn login(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
     Json(req): Json<LoginRequest>,
-) -> HttpResult<(StatusCode, Json<LoginResponse>, HeaderMap)> {
+) -> HttpResult<(StatusCode, Json<LoginResponse>)> {
     // Stub implementation - accept any credentials
     let user_id = Uuid::new_v4();
-    
-    // Create session
-    let csrf_token = generate_csrf_token();
-    let session = Session::new(user_id, csrf_token, 24);
-    state.session_store.create(session).await;
-
-    let mut headers = HeaderMap::new();
-    // In production, set session cookie here
 
     let response = LoginResponse {
         user_id,
         email: req.email,
     };
 
-    Ok((StatusCode::OK, Json(response), headers))
+    Ok((StatusCode::OK, Json(response)))
 }
 
 /// Logout handler
 pub async fn logout(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
 ) -> HttpResult<StatusCode> {
     // Stub implementation
     Ok(StatusCode::NO_CONTENT)
@@ -84,7 +73,7 @@ pub async fn logout(
 
 /// Get current session handler
 pub async fn get_session(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
 ) -> HttpResult<Json<SessionResponse>> {
     // Stub implementation - return test user
     Ok(Json(SessionResponse {
@@ -95,7 +84,7 @@ pub async fn get_session(
 
 /// Register handler (first-run setup)
 pub async fn register(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
     Json(req): Json<RegisterRequest>,
 ) -> HttpResult<(StatusCode, Json<RegisterResponse>)> {
     if req.password != req.password_confirm {

@@ -1,15 +1,14 @@
 //! Search handlers
 
 use axum::{
-    extract::{Query, State},
+    extract::Query,
     response::Json,
 };
 use serde::Deserialize;
 use uuid::Uuid;
 
 use kjxlkj_domain::{SearchQuery, SearchMode, SearchSort};
-use crate::state::{HttpResult, HttpError};
-use crate::routes::HttpState;
+use crate::state::HttpResult;
 
 /// Search query params
 #[derive(Debug, Deserialize)]
@@ -26,7 +25,6 @@ pub struct SearchQueryParams {
 
 /// Search response
 pub async fn search(
-    State(state): State<HttpState>,
     Query(params): Query<SearchQueryParams>,
 ) -> HttpResult<Json<kjxlkj_domain::SearchResponse>> {
     let mode = match params.mode.as_deref() {

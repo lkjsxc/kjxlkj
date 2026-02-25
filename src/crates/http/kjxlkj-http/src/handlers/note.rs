@@ -60,7 +60,6 @@ pub struct NoteSummary {
 
 /// Create a new note
 pub async fn create_note(
-    State(state): State<HttpState>,
     Extension(user_id): Extension<Uuid>,
     Json(req): Json<CreateNoteRequest>,
 ) -> HttpResult<(StatusCode, Json<CreateNoteResponse>)> {
@@ -101,7 +100,6 @@ pub async fn create_note(
 
 /// List notes
 pub async fn list_notes(
-    State(state): State<HttpState>,
     Query(params): Query<ListNotesQuery>,
 ) -> HttpResult<Json<ListNotesResponse>> {
     let note_repo = NoteRepo::new();
@@ -148,7 +146,7 @@ pub async fn get_note(
 
 /// Update note
 pub async fn update_note(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
     Path(note_id): Path<Uuid>,
     Extension(user_id): Extension<Uuid>,
     Json(req): Json<UpdateNoteRequest>,
@@ -156,11 +154,12 @@ pub async fn update_note(
     let note_repo = NoteRepo::new();
     
     let actor = Actor::User { user_id };
+    let markdown = req.markdown.clone();
     
     let updated = note_repo
         .update(note_id, req.base_version, |note| {
-            if let Some(markdown) = req.markdown {
-                note.markdown = markdown;
+            if let Some(_md) = &markdown {
+                note.markdown = _md.clone();
                 Some(kjxlkj_domain::NoteEvent::Updated {
                     patch_ops: vec![],
                     new_version: note.version + 1,
@@ -177,7 +176,7 @@ pub async fn update_note(
 
 /// Update title only
 pub async fn update_title(
-    State(state): State<HttpState>,
+    State(_state): State<HttpState>,
     Path(note_id): Path<Uuid>,
     Extension(user_id): Extension<Uuid>,
     Json(req): Json<UpdateTitleRequest>,
@@ -185,14 +184,15 @@ pub async fn update_title(
     let note_repo = NoteRepo::new();
     
     let actor = Actor::User { user_id };
+    let new_title = req.title.clone();
     
     let updated = note_repo
         .update(note_id, req.base_version, |note| {
             let old_title = note.title.clone();
-            note.set_title(req.title.clone());
+            note.set_title(new_title.clone());
             Some(kjxlkj_domain::NoteEvent::TitleChanged {
                 old_title,
-                new_title: req.title,
+                new_title: new_title.clone(),
             })
         }, &actor)
         .await

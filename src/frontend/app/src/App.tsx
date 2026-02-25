@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { AppShell } from './components/app-shell/AppShell'
 import { MarkdownEditor } from './components/editor/MarkdownEditor'
 import { CommandPalette } from './components/command-palette/CommandPalette'
@@ -11,14 +11,14 @@ import { SearchResults } from './components/search/SearchResults'
 import { useWebSocket } from './hooks/useWebSocket'
 import { useAutosave } from './hooks/useAutosave'
 import { RootState } from './state/store'
-import { selectCurrentNote, saveNote } from './state/noteSlice'
+import { selectCurrentNote } from './state/noteSlice'
 import { toggleNavigation, toggleCommandPalette } from './state/uiSlice'
+import { fetchNotes, selectNote } from './state/noteSlice'
 
 function App() {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const location = useLocation()
-  const { id: noteId } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>()
   
   const currentNote = useSelector(selectCurrentNote)
   const isAuthenticated = useSelector((state: RootState) => state.note.isAuthenticated)
@@ -43,9 +43,7 @@ function App() {
       // Cmd/Ctrl+S: Manual save
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault()
-        if (currentNote) {
-          dispatch(saveNote(currentNote))
-        }
+        // Autosave hook handles saving
       }
       // Escape: Close navigation/palette
       if (e.key === 'Escape') {
