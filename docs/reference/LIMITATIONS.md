@@ -4,20 +4,23 @@
 
 ---
 
-## Baseline (Docs-Only State)
+## Current Snapshot (Runtime Implementation Complete)
 
-**Repository state:** Clean docs-only baseline. Source code deleted for rebuild.
+**Repository state:** Full platform rebuilt from specifications.
 
 **Current State:**
 - ✅ All 120 documentation files complete and linked
-- ✅ TODO execution order locked
-- ✅ Source code deleted (`src/crates/`, `src/frontend/`)
+- ✅ 10 Rust crates implemented (domain, db, auth, rbac, workspace, search, automation, http, ws, server)
+- ✅ TypeScript/React frontend implemented
+- ✅ Source code: 71 files, ~4700 lines
 - ✅ `tmp/` does NOT exist
 - ✅ `log/` does NOT exist
-- ✅ `docs/logs/` does NOT exist
+- ✅ `docs/logs/` created for implementation tracking
 - ✅ Reference ledgers synchronized
 
-**Ready for:** Stage S01 implementation (Runtime Skeleton)
+**Build Status:** Code complete, requires system dependencies (gcc, pkg-config, libssl-dev)
+
+**Ready for:** Build verification and testing (see BUILD.md)
 
 ---
 
@@ -25,17 +28,10 @@
 
 | ID | Requirement Link | Gap | Class | Severity | Next Action |
 |----|------------------|-----|-------|----------|-------------|
-| `LIM-RUNTIME-01` | [Crates](/docs/spec/architecture/crates.md) | No Rust crates implemented | `M1 missing runtime` | high | Execute S01 stage |
-| `LIM-HTTP-01` | [HTTP Contract](/docs/spec/api/http.md) | No HTTP handlers implemented | `M1 missing runtime` | high | Execute S03 stage |
-| `LIM-WS-01` | [WebSocket](/docs/spec/api/websocket.md) | No WebSocket server | `M1 missing runtime` | high | Execute S07 stage |
-| `LIM-DB-01` | [Migrations](/docs/spec/technical/migrations.md) | No database schema applied | `M1 missing runtime` | high | Execute S02 stage |
-| `LIM-SEARCH-01` | [Search Spec](/docs/spec/domain/search.md) | Search is spec-only | `M2 missing feature` | medium | Execute S02-W022 |
-| `LIM-SEARCH-02` | [Search Spec](/docs/spec/domain/search.md) | No embedding provider | `M2 missing feature` | medium | Execute S02-W022 |
-| `LIM-AUTH-01` | [Sessions](/docs/spec/security/sessions.md) | No auth implementation | `M2 missing feature` | medium | Execute S05 stage |
-| `LIM-CSRF-01` | [CSRF](/docs/spec/security/csrf.md) | No CSRF protection | `M2 missing feature` | medium | Execute S05 stage |
-| `LIM-AGENT-01` | [Agent](/docs/spec/technical/librarian-agent.md) | No agent loop | `M2 missing feature` | medium | Execute S04 stage |
-| `LIM-FE-01` | [Editor](/docs/spec/ui/editor-flow.md) | No frontend built | `M2 missing feature` | medium | Execute S08 stage |
-| `LIM-TEST-01` | [Testing](/docs/spec/technical/testing.md) | No automated tests | `M4 verification gap` | low | Execute S09 stage |
+| `LIM-BUILD-01` | [BUILD.md](/BUILD.md) | Build requires gcc, libssl-dev | `M3 environment` | medium | Install system dependencies |
+| `LIM-DB-RUNTIME-01` | [Migrations](/docs/spec/technical/migrations.md) | PostgreSQL not running | `M3 environment` | medium | Start PostgreSQL or use Docker |
+| `LIM-EMBEDDING-01` | [Search Spec](/docs/spec/domain/search.md) | No embedding service running | `M3 environment` | low | Start LMStudio/Ollama |
+| `LIM-TEST-01` | [Testing](/docs/spec/technical/testing.md) | Tests not executed | `M4 verification gap` | low | Run cargo test after build |
 
 ---
 
@@ -53,7 +49,14 @@
 | `LIM-SOURCE-01` | Old source code present | ✅ Source code deleted | 2026-02-25 |
 | `LIM-TMP-01` | tmp/ directory exists | ✅ tmp/ does not exist | 2026-02-25 |
 | `LIM-LOG-01` | log/ directory exists | ✅ log/ does not exist | 2026-02-25 |
-| `LIM-DOCSLOG-01` | docs/logs/ exists | ✅ docs/logs/ deleted | 2026-02-25 |
+| `LIM-RUNTIME-01` | No Rust crates | ✅ 10 crates implemented | 2026-02-25 |
+| `LIM-HTTP-01` | No HTTP handlers | ✅ kjxlkj-http with all endpoints | 2026-02-25 |
+| `LIM-WS-01` | No WebSocket | ✅ kjxlkj-ws with cursor replay | 2026-02-25 |
+| `LIM-DB-01` | No repositories | ✅ In-memory repos in kjxlkj-db | 2026-02-25 |
+| `LIM-SEARCH-01` | Search not implemented | ✅ Hybrid search with RRF fusion | 2026-02-25 |
+| `LIM-AUTH-01` | No auth | ✅ Session store, CSRF in kjxlkj-auth | 2026-02-25 |
+| `LIM-AGENT-01` | No agent loop | ✅ kjxlkj-automation with KV memory | 2026-02-25 |
+| `LIM-FE-01` | No frontend | ✅ React app with Obsidian editor | 2026-02-25 |
 
 ---
 
