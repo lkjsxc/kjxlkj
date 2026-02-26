@@ -3,8 +3,8 @@
 **Back:** [Architecture Root](/docs/spec/architecture/README.md)
 
 Defines canonical repository structure for:
-1. **State A:** Docs-only baseline (current authoritative state)
-2. **State B:** Reconstructed runtime target (completion target)
+1. **State A:** docs-only reset baseline
+2. **State B:** reconstructed runtime target
 
 ---
 
@@ -13,33 +13,27 @@ Defines canonical repository structure for:
 ```
 kjxlkj/
 ├── README.md                    # Project index
-├── LICENSE                      # MIT license
+├── LICENSE                      # License
 ├── .gitignore                   # Repository hygiene
 ├── .env.example                 # Secret template
-├── QWEN.md                      # Project context
-├── Cargo.toml                   # Workspace manifests
-├── Cargo.lock                   # Dependency lock
-├── Dockerfile                   # Container build
-├── docker-compose.yml           # Optional orchestration
-├── .dockerignore                # Build context hygiene
 ├── data/
 │   ├── config.json              # Non-secret runtime config
 │   └── agent-prompt.json        # kjxlkj-agent prompts
-└── docs/                        # Canonical contract (120 files)
+└── docs/                        # Canonical contract
     ├── README.md                # Documentation index
     ├── policy/                  # Governance (5 files)
     ├── overview/                # Orientation (4 files)
-    ├── spec/                    # Target behavior (50 files)
-    ├── reference/               # Verified state (8 files)
+    ├── spec/                    # Target behavior
+    ├── reference/               # Verified state
     ├── guides/                  # Operator playbooks (6 files)
-    └── todo/                    # Execution order (46 files)
+    └── todo/                    # Execution order
 ```
 
 **Constraints:**
 - `tmp/` MUST NOT exist
 - `log/` MUST NOT exist
 - `docs/logs/` MUST NOT exist
-- `src/` MAY exist but MUST be empty or contain only reconstructible scaffolding
+- `src/`, `migrations/`, `static/`, and `target/` MUST NOT exist in canonical docs-only commits
 
 ---
 
@@ -47,20 +41,19 @@ kjxlkj/
 
 ```
 kjxlkj/
-├── README.md                    # Project index
-├── LICENSE                      # MIT license
-├── .gitignore                   # Repository hygiene
-├── .env.example                 # Secret template
-├── QWEN.md                      # Project context
-├── Cargo.toml                   # Workspace manifests
-├── Cargo.lock                   # Dependency lock
-├── Dockerfile                   # Container build
-├── docker-compose.yml           # Optional orchestration
-├── .dockerignore                # Build context hygiene
+├── README.md
+├── LICENSE
+├── .gitignore
+├── .env.example
+├── Cargo.toml                   # Regenerated from workspace-manifest spec
+├── Cargo.lock
+├── Dockerfile                   # Optional
+├── docker-compose.yml           # Optional
+├── .dockerignore                # Optional
 ├── data/
-│   ├── config.json              # Non-secret runtime config
-│   └── agent-prompt.json        # kjxlkj-agent prompts
-├── migrations/                  # PostgreSQL schemas (8 files)
+│   ├── config.json
+│   └── agent-prompt.json
+├── migrations/                  # Regenerated from migrations spec
 │   ├── 001_users_sessions.sql
 │   ├── 002_workspaces.sql
 │   ├── 003_projects.sql
@@ -209,20 +202,13 @@ kjxlkj/
 │                   ├── debounce.ts
 │                   ├── diff.ts
 │                   └── markdown.ts
-├── static/                      # Built frontend assets
+├── static/                      # Built frontend assets (derived)
 │   ├── index.html
 │   ├── assets/
 │   │   ├── index-[hash].js
 │   │   └── index-[hash].css
 │   └── manifest.json
-└── docs/                        # Canonical contract (120 files)
-    ├── README.md
-    ├── policy/
-    ├── overview/
-    ├── spec/
-    ├── reference/
-    ├── guides/
-    └── todo/
+└── docs/
 ```
 
 ---
@@ -233,9 +219,9 @@ Per [STRUCTURE.md](/docs/policy/STRUCTURE.md):
 
 | Constraint | Limit | Action |
 |------------|-------|--------|
-| Source file (.rs, .ts, .tsx) | ≤200 lines | Split into submodules |
-| Directory children | ≤12 items | Group by subdomain |
-| Test files | ≤300 lines | Split by test scenario |
+| Source file (.rs, .ts, .tsx) | <=200 lines | Split into submodules |
+| Directory children | <=12 items | Group by subdomain |
+| Test files | <=300 lines | Split by scenario |
 
 **Historical Split Targets:**
 
@@ -251,14 +237,14 @@ Per [STRUCTURE.md](/docs/policy/STRUCTURE.md):
 
 ## Completion Interpretation
 
-A completion claim is **valid only when**:
+A completion claim is valid only when:
 
-1. **Runtime tree matches State B** — all directories and files present
-2. **Behavior conforms to `/docs/spec`** — all acceptance tests pass
-3. **Ledgers in `/docs/reference/` show synchronized evidence** — CONFORMANCE.md, LIMITATIONS.md, DRIFT_MATRIX.md updated
-4. **TODO checklists are completed with linked proofs** — all waves executed
-5. **File size constraints enforced** — no file exceeds 200 lines
-6. **Docker tooling remains optional** — not authoritative for semantics
+1. runtime tree matches State B
+2. behavior conforms to `/docs/spec`
+3. mandatory `T0`, `T1`, and `T2` suites are green
+4. TODO trace matrix is fully satisfied
+5. evidence ledgers are synchronized
+6. file size constraints are respected
 
 ---
 
@@ -313,3 +299,4 @@ Per [ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md) and [web-app.md](/docs/spec/ui
 - TODO execution: [/docs/todo/README.md](/docs/todo/README.md)
 - Source layout: [source-layout.md](source-layout.md)
 - Crates: [crates.md](crates.md)
+- Build sequence: [BUILD_SEQUENCE.md](BUILD_SEQUENCE.md)

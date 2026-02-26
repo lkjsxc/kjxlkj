@@ -2,51 +2,52 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
-Canonical backlog for the next full rebuild.
+Canonical backlog for full reconstruction from docs-only baseline.
 
 ## Governance
 
 - This is the only durable source for improvement ideas.
 - Entries below were harvested from the prior reconstruction logs.
-- `docs/logs/` is non-canonical and has been removed after this capture.
+- `docs/logs/` is non-canonical and MUST remain deleted.
 - Each row MUST map to a TODO wave before implementation starts.
+
+## Priority Focus
+
+1. Communication-layer correctness and determinism.
+2. Full `T0/T1/T2` test quality and evidence discipline.
+3. Runtime regeneration from docs with no hidden assumptions.
 
 ## Backlog Matrix
 
 | Backlog ID | Improvement | Canonical Docs | Proposed Wave | Status |
 |---|---|---|---|---|
-| `IMP-ARC-01` | Enable SQLx compile-time query checking with offline cache | [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md) | `S10/W100` | `done` |
-| `IMP-ARC-02` | Add cross-session WebSocket broadcast registry | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `S07/W071` | `done` |
-| `IMP-ARC-03` | Tune DB pool (`max_connections`, timeout policy) from measured load | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | `S09/W090` | `done` |
-| `IMP-DOCKER-01` | Add Dockerfile and compose for local development | [/docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) | `S10/W102` | `done` |
-| `IMP-FE-01` | Split monolithic UI shell into focused components | [/docs/spec/ui/web-app.md](/docs/spec/ui/web-app.md) | `S08/W080` | `done` |
-| `IMP-FE-02` | Integrate rich markdown editor (CodeMirror/ProseMirror class) | [/docs/spec/ui/editor-flow.md](/docs/spec/ui/editor-flow.md) | `S08/W081` | `done` |
-| `IMP-FE-03` | Add offline/PWA support with local cache and reconnect sync | [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) | `S08/W082` | `done` |
-| `IMP-TEST-01` | Add property-based tests for domain invariants | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S10/W101` | `done` |
-| `IMP-TEST-02` | Add snapshot tests for API contract stability | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S10/W101` | `done` |
-| `IMP-TEST-03` | Build DB-backed integration harness (containerless or ephemeral DB) | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S09/W090` | `done` |
-| `IMP-SEC-01` | Add CSP nonce strategy for script execution hardening | [/docs/spec/security/transport.md](/docs/spec/security/transport.md) | `S05/W051` | `done` |
-| `IMP-SEC-02` | Add auth endpoint rate limiting for brute-force resistance | [/docs/spec/security/auth.md](/docs/spec/security/auth.md) | `S05/W050` | `done` |
-| `IMP-SEC-03` | Broadcast session revocation events on credential reset | [/docs/spec/security/sessions.md](/docs/spec/security/sessions.md) | `S07/W072` | `done` |
-| `IMP-OPS-01` | Replace ad-hoc prints with structured tracing and spans | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `S10/W100` | `done` |
-| `IMP-OPS-02` | Expose metrics endpoint for request/latency/pool telemetry | [/docs/spec/technical/performance.md](/docs/spec/technical/performance.md) | `S09/W090` | `done` |
-| `IMP-OPS-03` | Implement graceful shutdown with in-flight drain handling | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `S10/W100` | `done` |
-| `IMP-STRUCT-01` | Split >200-line runtime modules during reconstruction waves | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `S10/W101` | `done` |
+| `IMP-COMM-01` | Implement HTTP request-id propagation and deterministic error envelopes | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `S06/W060` | `planned` |
+| `IMP-COMM-02` | Implement WebSocket replay semantics with explicit stale cursor contract | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `S07/W071` | `planned` |
+| `IMP-COMM-03` | Implement full idempotency repository semantics (scope, TTL, deterministic replay) | [/docs/spec/api/websocket.md](/docs/spec/api/websocket.md) | `S07/W072` | `planned` |
+| `IMP-COMM-04` | Implement endpoint-level auth/csrf enforcement table exactly as specified | [/docs/spec/security/README.md](/docs/spec/security/README.md) | `S05/W051` | `planned` |
+| `IMP-COMM-05` | Add deterministic 429 behavior with Retry-After on constrained routes | [/docs/spec/api/http.md](/docs/spec/api/http.md) | `S05/W052` | `planned` |
+| `IMP-DB-01` | Regenerate migrations from migration spec and revalidate ordering | [/docs/spec/technical/migrations.md](/docs/spec/technical/migrations.md) | `S01/W012` | `planned` |
+| `IMP-DB-02` | Replace in-memory stores with PostgreSQL-backed repositories | [/docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) | `S03/W030` | `planned` |
+| `IMP-SEARCH-01` | Implement semantic retrieval + lexical fallback diagnostics | [/docs/spec/domain/search.md](/docs/spec/domain/search.md) | `S02/W022` | `planned` |
+| `IMP-AGENT-01` | Implement prompt JSON validation + strict agent mode handling | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `S04/W041` | `planned` |
+| `IMP-AGENT-02` | Implement KV memory durability and mutation API | [/docs/spec/technical/librarian-agent.md](/docs/spec/technical/librarian-agent.md) | `S04/W042` | `planned` |
+| `IMP-TEST-01` | Build mandatory full `T0/T1/T2` matrix with communication dominance | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S09/W091` | `planned` |
+| `IMP-TEST-02` | Add fuzz/chaos communication tests (malformed WS, retry storms, reconnect churn) | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `S10/W101` | `planned` |
+| `IMP-STRUCT-01` | Enforce <=200 line source files during rebuild | [/docs/policy/STRUCTURE.md](/docs/policy/STRUCTURE.md) | `S10/W100` | `planned` |
+| `IMP-OPS-01` | Add structured tracing, metrics, and graceful shutdown behavior | [/docs/spec/technical/operations.md](/docs/spec/technical/operations.md) | `S10/W102` | `planned` |
 
-## Historical Large-File Split Targets
+## Imported Historical Notes
 
-The last runtime reconstruction produced these high-risk files over 200 lines.
-Treat these as required split targets when source code is regenerated.
+The following legacy notes were absorbed from deleted implementation logs and re-scoped as backlog inputs:
 
-| Historical Path | Prior Lines | Priority |
-|---|---:|---|
-| `src/frontend/app/src/components/app-shell.ts` | 422 | high |
-| `src/crates/http/kjxlkj-http/src/routes_note.rs` | 306 | high |
-| `src/crates/db/kjxlkj-db/src/repo_note.rs` | 302 | high |
-| `src/crates/ws/kjxlkj-ws/src/session.rs` | 229 | medium |
-| `src/crates/db/kjxlkj-db/src/repo_automation.rs` | 205 | medium |
+- in-memory repositories were used as temporary baseline
+- embedding provider integration was partial and required degradation semantics
+- session/cookie behavior needed stricter security treatment
+- websocket reconnect/idempotency needed stronger deterministic guarantees
+- large-file split targets required systematic enforcement
 
 ## Related
 
 - TODO execution plan: [/docs/todo/README.md](/docs/todo/README.md)
 - Drift ledger: [DRIFT_MATRIX.md](DRIFT_MATRIX.md)
+- Test matrix: [TEST_MATRIX.md](TEST_MATRIX.md)

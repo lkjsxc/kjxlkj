@@ -12,6 +12,8 @@ Mandatory verification contract for reconstruction.
 | `T1` | cross-module behavior | integration tests (HTTP/WS/DB/services) |
 | `T2` | user-like proof | browser E2E + API/WS assertions |
 
+All three tiers are mandatory release gates.
+
 ## Mandatory Acceptance Pack
 
 | ID | Scenario |
@@ -38,6 +40,21 @@ Mandatory verification contract for reconstruction.
 | `AGENT-03` | YOLO mode can create/edit notes inside scope guardrails |
 | `AGENT-04` | full conversation transcript retention remains disabled |
 
+## Communication Layer Priority Pack
+
+The following acceptance IDs are high-criticality and MUST pass before any release candidate:
+
+- `API-NOTE-01`
+- `API-NOTE-02`
+- `API-SEARCH-01`
+- `API-SEARCH-02`
+- `API-SEARCH-03`
+- `WS-04`
+- `WS-05`
+- `WS-06`
+- `API-AUTO-03`
+- `API-AUTO-04`
+
 ## Determinism Rules
 
 - use bounded timeouts and explicit diagnostics
@@ -45,7 +62,27 @@ Mandatory verification contract for reconstruction.
 - capture request IDs and event sequence evidence on failures
 - capture prompt hash and parser version for agent runs
 
+## Required Suite Categories
+
+| Category | Tier | Required Focus |
+|---|---|---|
+| domain property tests | `T0` | ID immutability, version increments, soft-delete invariants |
+| error envelope tests | `T0` | `code/message/details/request_id` shape and status mapping |
+| auth/session/csrf tests | `T1` | login/logout, cookie rules, csrf coverage |
+| HTTP contract tests | `T1` | endpoint status, idempotency, conflict and rate-limit paths |
+| WebSocket protocol tests | `T1` | replay ordering, stale cursor, idempotent patch replay |
+| degraded dependency tests | `T1` | embedding/LLM outage fallback behavior |
+| end-to-end editor tests | `T2` | autosave, conflict recovery, compact mode behavior |
+| multi-client sync tests | `T2` | reconnect, replay, convergence assertions |
+
+## Evidence Contract
+
+- Every acceptance ID MUST map to one primary test suite in [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md).
+- Every completed wave MUST append evidence links in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md).
+- No TODO checkbox may be marked complete when mapped acceptance IDs lack evidence.
+
 ## Related
 
 - UX requirements: [/docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md)
 - CI profiles: [/docs/reference/CI.md](/docs/reference/CI.md)
+- Error model: [/docs/spec/api/errors.md](/docs/spec/api/errors.md)

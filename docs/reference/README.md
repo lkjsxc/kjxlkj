@@ -15,13 +15,15 @@ For state claims, use this order:
 5. [RELEASE.md](RELEASE.md)
 6. [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md)
 7. [IMPROVEMENT_BACKLOG.md](IMPROVEMENT_BACKLOG.md)
+8. [TEST_MATRIX.md](TEST_MATRIX.md)
+9. [TODO_TRACE_MATRIX.md](TODO_TRACE_MATRIX.md)
 
-## Snapshot (2026-02-16)
+## Snapshot (2026-02-25)
 
-- Repository may be in docs-only or reconstructed-runtime state.
-- Runtime source tree status is tracked in `CONFORMANCE.md`.
-- Docker artifacts may exist as optional local deployment helpers.
-- Improvement points are preserved in `IMPROVEMENT_BACKLOG.md`.
+- Repository is managed as docs-first with runtime rebuilt only through TODO waves.
+- Runtime status and readiness are tracked in `CONFORMANCE.md` and `RELEASE.md`.
+- Acceptance coverage is tracked in `TEST_MATRIX.md`.
+- TODO-to-artifact traceability is tracked in `TODO_TRACE_MATRIX.md`.
 
 ## Synchronization Rule
 
@@ -31,6 +33,8 @@ Whenever status changes, update in one logical change:
 - `LIMITATIONS.md`
 - `DRIFT_MATRIX.md`
 - `RELEASE.md`
+- `TEST_MATRIX.md`
+- `TODO_TRACE_MATRIX.md`
 - `/docs/todo/README.md`
 
 ## Related

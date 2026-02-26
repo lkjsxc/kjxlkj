@@ -8,7 +8,7 @@
 
 Tracks mismatches between:
 1. **Spec** — target behavior defined in `/docs/spec`
-2. **Runtime** — actual implementation (currently absent)
+2. **Runtime** — actual implementation (currently absent by design)
 3. **Reference** — verified state in `/docs/reference`
 
 ---
@@ -16,8 +16,8 @@ Tracks mismatches between:
 ## Current State: Docs-Only Baseline
 
 **Runtime:** Absent (source code deleted for clean rebuild)  
-**Spec:** Complete (114 documentation files)  
-**Drift:** N/A (no runtime to compare against)
+**Spec:** Complete and execution-ready  
+**Drift:** Deferred until runtime reconstruction begins
 
 ---
 
@@ -34,22 +34,22 @@ When runtime exists:
 
 ---
 
-## Historical Drift (Pre-Deletion)
+## Historical Drift Inputs (Imported)
 
-These drifts were resolved by deleting source code and resetting:
+These drift themes were imported from prior implementation notes and must be revalidated in the new rebuild:
 
 | ID | Spec | Prior Runtime | Resolution |
 |----|------|---------------|------------|
-| `DRIFT-001` | [search.md](/docs/spec/domain/search.md) | Stub implementation | ✅ Deleted, spec redesigned |
-| `DRIFT-002` | [editor-flow.md](/docs/spec/ui/editor-flow.md) | Basic editor | ✅ Deleted, spec enhanced |
-| `DRIFT-003` | [librarian-agent.md](/docs/spec/technical/librarian-agent.md) | Partial agent | ✅ Deleted, spec updated |
-| `DRIFT-004` | [layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md) | Wrong threshold | ✅ Deleted, spec corrected |
+| `DRIFT-001` | [search.md](/docs/spec/domain/search.md) | semantic provider degradation behavior | carry into `S02/W022` |
+| `DRIFT-002` | [websocket.md](/docs/spec/api/websocket.md) | replay/idempotency ambiguity | carry into `S07/W071` |
+| `DRIFT-003` | [auth.md](/docs/spec/security/auth.md) | auth/session stubbing risk | carry into `S05/W050` |
+| `DRIFT-004` | [testing.md](/docs/spec/technical/testing.md) | acceptance evidence incompleteness | carry into `S09/W091` |
 
 ---
 
 ## Active Drifts
 
-**None** — No runtime exists to drift from spec.
+No runtime drift rows yet. Runtime has not been rebuilt.
 
 ---
 
@@ -61,6 +61,15 @@ After runtime reconstruction, this matrix will track:
 |----|-----------|--------------|------------|----------|-----------------|
 | — | — | — | — | — | — |
 
+## Minimum Reporting Rule
+
+When runtime exists, every closed TODO wave MUST include:
+
+- touched spec file list
+- touched runtime paths
+- drift classification (`M0`-`M3`)
+- evidence pointer in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+
 ---
 
 ## Related
@@ -68,3 +77,4 @@ After runtime reconstruction, this matrix will track:
 - [Conformance](CONFORMANCE.md) — verified state
 - [Limitations](LIMITATIONS.md) — open gaps
 - [TODO Program](/docs/todo/README.md) — rebuild execution order
+- [TODO Trace Matrix](TODO_TRACE_MATRIX.md) — TODO-to-runtime mapping

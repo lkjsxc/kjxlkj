@@ -14,7 +14,7 @@ Defines the gate criteria for declaring a release-ready state.
 
 **Status:** 🔴 NOT READY FOR RELEASE
 
-**Reason:** Source code deleted. Rebuild required from docs-only baseline.
+**Reason:** Runtime rebuild not executed yet; this repository is in docs-first reconstruction mode.
 
 ---
 
@@ -23,10 +23,10 @@ Defines the gate criteria for declaring a release-ready state.
 All criteria MUST be true for release:
 
 ### Documentation Gate
-- [x] All 114 documentation files complete and linked
+- [x] Canonical docs are present and cross-linked
 - [x] TODO list reset with direct links to every doc
 - [x] Reference ledgers synchronized (CONFORMANCE, LIMITATIONS, DRIFT_MATRIX)
-- [x] No high-severity limitations open
+- [x] `docs/logs/` prohibited by policy
 
 ### Runtime Gate
 - [ ] Cargo workspace builds without errors (`cargo build --workspace`)
@@ -38,6 +38,7 @@ All criteria MUST be true for release:
 - [ ] All HTTP endpoints functional per [http.md](/docs/spec/api/http.md)
 - [ ] WebSocket protocol works per [websocket.md](/docs/spec/api/websocket.md)
 - [ ] Acceptance IDs verified per [testing.md](/docs/spec/technical/testing.md)
+- [ ] Deterministic error envelope and request-id propagation verified
 
 ### UX Gate
 - [ ] Root URL accessible (`GET /` serves app)
@@ -68,6 +69,8 @@ All criteria MUST be true for release:
 - [ ] No open M1/M2 in [DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md)
 - [ ] All source files ≤200 lines per [STRUCTURE.md](/docs/policy/STRUCTURE.md)
 - [ ] `tmp/`, `log/`, `docs/logs/` do NOT exist
+- [ ] All TODO trace rows closed in [TODO_TRACE_MATRIX.md](TODO_TRACE_MATRIX.md)
+- [ ] All acceptance rows closed in [TEST_MATRIX.md](TEST_MATRIX.md)
 
 ---
 
@@ -94,7 +97,8 @@ All criteria MUST be true for release:
 1. Execute TODO stages in order (S00 → S10)
 2. Sync ledgers after each stage
 3. Verify acceptance IDs
-4. Re-evaluate release gate
+4. Close TODO and test matrix rows
+5. Re-evaluate release gate
 
 ---
 
@@ -103,3 +107,5 @@ All criteria MUST be true for release:
 - [TODO Contract](/docs/todo/README.md) — execution order
 - [CI Profiles](CI.md) — verification profiles
 - [Conformance](CONFORMANCE.md) — verified state
+- [TODO Trace Matrix](TODO_TRACE_MATRIX.md) — implementation trace closure
+- [Test Matrix](TEST_MATRIX.md) — test coverage closure

@@ -24,12 +24,12 @@ Every file in `/docs` is linked below. Clicking links during implementation will
 - [docs/overview/principles.md](/docs/overview/principles.md) — Design principles
 - [docs/overview/glossary.md](/docs/overview/glossary.md) — Shared terms
 
-### Specification Layer (Target Behavior — 50 files)
+### Specification Layer (Target Behavior — 52 files)
 
 #### Spec Root
 - [docs/spec/README.md](/docs/spec/README.md) — Specification index
 
-#### Architecture (9 files)
+#### Architecture (11 files)
 - [docs/spec/architecture/README.md](/docs/spec/architecture/README.md) — Architecture index
 - [docs/spec/architecture/configuration.md](/docs/spec/architecture/configuration.md) — Config loading (`data/config.json`)
 - [docs/spec/architecture/runtime.md](/docs/spec/architecture/runtime.md) — Startup sequence
@@ -39,6 +39,8 @@ Every file in `/docs` is linked below. Clicking links during implementation will
 - [docs/spec/architecture/deployment.md](/docs/spec/architecture/deployment.md) — Process hosting, Docker
 - [docs/spec/architecture/completion-file-map.md](/docs/spec/architecture/completion-file-map.md) — Path requirements
 - [docs/spec/architecture/final-file-structure.md](/docs/spec/architecture/final-file-structure.md) — Tree states (State A/B)
+- [docs/spec/architecture/BUILD_SEQUENCE.md](/docs/spec/architecture/BUILD_SEQUENCE.md) — Deterministic reconstruction order
+- [docs/spec/architecture/SPEC_INTERACTIONS.md](/docs/spec/architecture/SPEC_INTERACTIONS.md) — Cross-spec dependency graph
 
 #### API (7 files)
 - [docs/spec/api/README.md](/docs/spec/api/README.md) — API index
@@ -90,7 +92,7 @@ Every file in `/docs` is linked below. Clicking links during implementation will
 - [docs/spec/ui/reconstruction-ux-requirements.md](/docs/spec/ui/reconstruction-ux-requirements.md) — UX matrix
 - [docs/spec/ui/workspace-suite.md](/docs/spec/ui/workspace-suite.md) — Optional modules
 
-### Reference Layer (Verified State — 8 files)
+### Reference Layer (Verified State — 10 files)
 - [docs/reference/README.md](/docs/reference/README.md) — State index
 - [docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) — Verified behavior
 - [docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) — Open gaps
@@ -99,6 +101,8 @@ Every file in `/docs` is linked below. Clicking links during implementation will
 - [docs/reference/RELEASE.md](/docs/reference/RELEASE.md) — Release gate
 - [docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md) — Proof artifacts
 - [docs/reference/IMPROVEMENT_BACKLOG.md](/docs/reference/IMPROVEMENT_BACKLOG.md) — Backlog
+- [docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md) — Acceptance-to-suite matrix
+- [docs/reference/TODO_TRACE_MATRIX.md](/docs/reference/TODO_TRACE_MATRIX.md) — TODO-to-spec trace matrix
 
 ### Guides Layer (Operator Playbooks — 6 files)
 - [docs/guides/README.md](/docs/guides/README.md) — Guides index
@@ -123,6 +127,8 @@ Every file in `/docs` is linked below. Clicking links during implementation will
 5. **TODO link policy** — every checkbox MUST link to governing doc — per [STRUCTURE.md](/docs/policy/STRUCTURE.md)
 6. **File size enforcement** — all .rs/.ts files ≤200 lines — per [STRUCTURE.md](/docs/policy/STRUCTURE.md)
 7. **Root URL accessibility** — app MUST be fully functional at `http://localhost:8080/` — per [web-app.md](/docs/spec/ui/web-app.md)
+8. **Trace closure** — every completed TODO row MUST close in [TODO_TRACE_MATRIX.md](/docs/reference/TODO_TRACE_MATRIX.md)
+9. **Test closure** — every acceptance row MUST close in [TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md)
 
 ---
 

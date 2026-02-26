@@ -2,56 +2,71 @@
 
 Back: [/docs/spec/architecture/README.md](/docs/spec/architecture/README.md)
 
-Normative per-path map for baseline and reconstruction states.
+Normative path classification for docs-only reset and runtime reconstruction.
 
-## Root Paths
+## Classification Legend
 
-| Path | Required in Docs-Only | Required in Runtime | Purpose |
-|---|---|---|---|
-| `README.md` | yes | yes | project index |
-| `LICENSE` | yes | yes | license |
-| `.env.example` | yes | yes | secret template |
-| `data/config.json` | yes | yes | non-secret runtime config |
-| `data/agent-prompt.json` | yes | yes | full agent prompt JSON |
-| `docs/` | yes | yes | canonical contract |
-| `src/` | no | yes | runtime source tree |
-| `Cargo.toml` | no | yes | workspace manifest |
-| `Cargo.lock` | no | yes | lockfile |
-| `scripts/` | no | yes | operational helper scripts |
-| `Dockerfile` | no | no | optional image build helper |
-| `docker-compose.yml` | no | no | optional local runtime orchestration |
-| `.dockerignore` | no | no | optional Docker build-context pruning |
-| `.github/` | yes | yes | CI automation metadata |
-
-## Documentation Paths
-
-| Path | Required | Purpose |
-|---|---|---|
-| `docs/policy/` | yes | governance and constraints |
-| `docs/spec/` | yes | target behavior |
-| `docs/reference/` | yes | verified current state |
-| `docs/todo/` | yes | rebuild execution contract |
-| `docs/guides/` | yes | operator workflows |
-| `docs/overview/` | yes | orientation and glossary |
-
-## Runtime Paths
-
-| Path | Required | Purpose |
-|---|---|---|
-| `src/crates/search/kjxlkj-search/` | yes | hybrid lexical+semantic search |
-| `src/crates/automation/kjxlkj-automation/` | yes | `kjxlkj-agent` runtime loop |
-| `src/frontend/app/` | yes | Obsidian-like markdown UI |
-
-## Forbidden Paths
-
-| Path/Pattern | Reason |
+| Class | Meaning |
 |---|---|
-| `tmp/` | temporary intake material only |
-| `log/` | transient logs not canonical |
-| `docs/logs/` | non-canonical logging area |
-| committed secrets | policy violation |
+| `A0 canonical` | MUST exist in every state |
+| `A1 docs-only` | MUST exist in docs-only baseline |
+| `B0 runtime-core` | MUST exist in reconstructed runtime |
+| `B1 runtime-derived` | Generated during build/deploy, MUST NOT be committed |
+| `OPT` | Optional helper |
+| `FORBIDDEN` | Must never exist in canonical repo state |
+
+## Root Map
+
+| Path | Class | Notes |
+|---|---|---|
+| `README.md` | `A0 canonical` | project index |
+| `LICENSE` | `A0 canonical` | licensing |
+| `.gitignore` | `A0 canonical` | hygiene |
+| `.env.example` | `A0 canonical` | secret template |
+| `docs/` | `A0 canonical` | source of truth |
+| `data/config.json` | `A1 docs-only` | runtime config contract |
+| `data/agent-prompt.json` | `A1 docs-only` | agent prompt contract |
+| `src/` | `B0 runtime-core` | runtime implementation tree |
+| `migrations/` | `B0 runtime-core` | regenerated schema history |
+| `Cargo.toml` | `B0 runtime-core` | workspace manifest |
+| `Cargo.lock` | `B0 runtime-core` | dependency lock |
+| `Dockerfile` | `OPT` | local image helper |
+| `docker-compose.yml` | `OPT` | local stack helper |
+| `.dockerignore` | `OPT` | Docker hygiene |
+| `.github/` | `OPT` | CI workflows |
+| `target/` | `B1 runtime-derived` | cargo build output |
+| `static/` | `B1 runtime-derived` | built frontend assets |
+| `node_modules/` | `B1 runtime-derived` | package cache |
+
+## Documentation Subtrees
+
+| Path | Class | Notes |
+|---|---|---|
+| `docs/policy/` | `A0 canonical` | governance |
+| `docs/overview/` | `A0 canonical` | orientation |
+| `docs/spec/` | `A0 canonical` | target behavior |
+| `docs/reference/` | `A0 canonical` | evidence and status |
+| `docs/guides/` | `A0 canonical` | operator procedures |
+| `docs/todo/` | `A0 canonical` | implementation order |
+
+## Prohibited Paths
+
+| Path | Class | Reason |
+|---|---|---|
+| `tmp/` | `FORBIDDEN` | temp sprawl |
+| `log/` | `FORBIDDEN` | non-canonical runtime logs |
+| `docs/logs/` | `FORBIDDEN` | violates root policy |
+| `*.log` | `FORBIDDEN` | runtime artifact leakage |
+| committed secrets | `FORBIDDEN` | security violation |
+
+## Gate Rules
+
+- A docs-only reset is valid only when all `A0` and `A1` paths exist and no `FORBIDDEN` paths exist.
+- Runtime completion is valid only when all `B0` paths are present and acceptance evidence is green.
+- `B1` paths MAY exist during execution but MUST be removed before release commits.
 
 ## Related
 
 - Final structure: [final-file-structure.md](final-file-structure.md)
 - Root policy: [/docs/policy/ROOT_LAYOUT.md](/docs/policy/ROOT_LAYOUT.md)
+- Build sequence: [BUILD_SEQUENCE.md](BUILD_SEQUENCE.md)

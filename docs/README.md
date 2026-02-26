@@ -27,10 +27,10 @@
 | [guides/](guides/README.md) | operator playbooks |
 | [overview/](overview/README.md) | concepts and glossary |
 
-## Baseline (2026-02-16)
+## Baseline (2026-02-25)
 
-- Repository supports docs-only baseline and reconstructed-runtime states.
-- Runtime source and Docker tooling may be present after reconstruction.
+- Repository is currently in docs-only baseline mode.
+- Runtime code and build artifacts are intentionally removed and rebuilt through TODO waves.
 - All behavior claims must remain anchored to policy/spec/reference/todo precedence.
 
 ## Related

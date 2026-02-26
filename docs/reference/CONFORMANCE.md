@@ -15,28 +15,19 @@
 
 ---
 
-## Current Snapshot (Runtime Implementation Complete)
+## Current Snapshot (Docs-Only Rebuild Baseline)
 
-**Repository state:** Full platform rebuilt from specifications.
+**Repository state:** documentation rewritten for reconstruction; runtime artifacts intentionally removable/rebuildable.
 
-- ✅ Docs governance active (120 documentation files)
-- ✅ All specifications implemented in source code
-- ✅ 10 Rust crates implemented (domain, db, auth, rbac, workspace, search, automation, http, ws, server)
-- ✅ TypeScript/React frontend implemented (Obsidian-like editor)
-- ✅ Search: 4-stage pipeline with RRF fusion (k=60)
-- ✅ Editor: Markdown with wiki-link autocomplete, command palette
-- ✅ kjxlkj-agent: KV memory, YOLO mode, JSON prompts, XML attrless protocol
-- ✅ Layout: 2/3 threshold at 1280px breakpoint
-- ✅ Notes: ID/title separation, datetime default title
-- ✅ Root URL: Full app at `http://localhost:8080/`
-- ✅ HTTP API: All endpoints (notes, search, auth, workspace)
-- ✅ WebSocket: Realtime sync with cursor replay
-- ✅ Reference ledgers synchronized
-- ✅ Source code: 71 files, ~4700 lines
-- ✅ `tmp/` does NOT exist
-- ✅ `log/` does NOT exist
-- ✅ `docs/logs/` created for implementation tracking
-- ✅ Build requires: gcc, pkg-config, libssl-dev (see BUILD.md)
+- ✅ governance and TODO sequencing remain canonical
+- ✅ architecture includes explicit build sequence and cross-spec dependency map
+- ✅ communication contracts rewritten with deterministic HTTP/WS/error semantics
+- ✅ security contracts rewritten with explicit auth/session/csrf rules
+- ✅ testing contract upgraded to mandatory full `T0/T1/T2`
+- ✅ CI gate updated to enforce acceptance mapping and evidence discipline
+- ✅ `docs/logs/` is prohibited by policy and removed
+- ✅ reconstructable runtime/build artifacts were removed for docs-only reset
+- ⏳ runtime implementation status intentionally deferred to reconstruction waves
 
 ---
 
@@ -44,25 +35,21 @@
 
 | Domain | Canonical Spec | Status | Evidence |
 |--------|----------------|--------|----------|
-| Docs governance | [Policy Root](/docs/policy/README.md) | `verified` | 120 docs, all linked |
-| Search (redesigned) | [Search Spec](/docs/spec/domain/search.md) | `verified` | 4-stage pipeline, RRF fusion implemented |
-| Editor (Obsidian-like) | [Editor Spec](/docs/spec/ui/editor-flow.md) | `verified` | CodeMirror, wiki-links, command palette |
-| kjxlkj-agent | [Agent Contract](/docs/spec/technical/librarian-agent.md) | `verified` | KV store, XML parser, prompt loader |
-| Layout (2/3 threshold) | [Layout Spec](/docs/spec/ui/layout-and-interaction.md) | `verified` | 1280px breakpoint, responsive CSS |
-| Notes (ID + title) | [Notes Spec](/docs/spec/domain/notes.md) | `verified` | UUID + mutable title, datetime default |
-| Root URL | [Web App Spec](/docs/spec/ui/web-app.md) | `verified` | Full app shell at `/` |
-| HTTP API | [HTTP Spec](/docs/spec/api/http.md) | `verified` | All endpoints in kjxlkj-http |
-| WebSocket | [WS Spec](/docs/spec/api/websocket.md) | `verified` | Cursor replay, idempotency in kjxlkj-ws |
-| Auth/Sessions | [Security Spec](/docs/spec/security/auth.md) | `verified` | Session store, CSRF in kjxlkj-auth |
-| RBAC | [Permissions Spec](/docs/spec/domain/permissions.md) | `verified` | Policy engine in kjxlkj-rbac |
-| Event sourcing | [Events Spec](/docs/spec/domain/events.md) | `verified` | DomainEvent, event history in kjxlkj-domain |
-| WebSocket | [WS Spec](/docs/spec/api/websocket.md) | `spec-only` | Protocol specified |
+| Docs governance | [Policy Root](/docs/policy/README.md) | `verified` | policy and TODO invariants |
+| Architecture sequencing | [/docs/spec/architecture/BUILD_SEQUENCE.md](/docs/spec/architecture/BUILD_SEQUENCE.md) | `verified` | explicit dependency order |
+| Spec interactions | [/docs/spec/architecture/SPEC_INTERACTIONS.md](/docs/spec/architecture/SPEC_INTERACTIONS.md) | `verified` | cross-spec ownership map |
+| HTTP contract | [HTTP Spec](/docs/spec/api/http.md) | `verified` | endpoint-level auth/csrf/idempotency table |
+| WebSocket contract | [WS Spec](/docs/spec/api/websocket.md) | `verified` | replay + stale cursor schema |
+| Error model | [Error Spec](/docs/spec/api/errors.md) | `verified` | deterministic HTTP/WS code mapping |
+| Auth/session/csrf | [/docs/spec/security/README.md](/docs/spec/security/README.md) | `verified` | deterministic security outcomes |
+| Testing contract | [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) | `verified` | mandatory full `T0/T1/T2` |
+| Runtime implementation | [/docs/todo/README.md](/docs/todo/README.md) | `spec-only` | rebuilt via waves |
 
 ---
 
 ## Acceptance Test Coverage (Target)
 
-All acceptance tests are **specified and ready for implementation**:
+All acceptance tests are specified and mapped. Runtime evidence is pending reconstruction.
 
 | Acceptance ID | Status | Governing Spec |
 |---------------|--------|----------------|
@@ -85,118 +72,9 @@ All acceptance tests are **specified and ready for implementation**:
 
 ---
 
-## Specification Highlights
-
-### Search — Next-Generation Pipeline
-
-**Spec:** [search.md](/docs/spec/domain/search.md)
-
-```
-Query → Normalization → [Lexical (BM25) + Semantic (HNSW)] → RRF Fusion → Re-rank → Results
-```
-
-- **4-stage pipeline:** Query understanding → Parallel retrieval → Fusion → Re-ranking
-- **Lexical:** PostgreSQL tsvector + GIN + BM25 scoring
-- **Semantic:** HNSW vector index (pgvector) + cosine similarity
-- **Fusion:** Reciprocal Rank Fusion (RRF) with k=60
-- **Advanced:** ColBERT late interaction, HyDE, query multi-vector
-- **Degradation:** Falls back to lexical-only if embedding service unavailable
-
-### Editor — Obsidian-Like Markdown Workspace
-
-**Spec:** [editor-flow.md](/docs/spec/ui/editor-flow.md)
-
-- **Plain markdown source** as first-class editing surface
-- **Live preview** (split-pane or toggle)
-- **Wiki-link autocomplete** on `[[` trigger
-- **Command palette** (Cmd/Ctrl+P) with 12+ commands
-- **Dual-buffer:** Synced snapshot + local draft with autosave (600ms debounce)
-- **Conflict resolution** with merge view UI
-- **Backlink panel** showing incoming links
-
-### kjxlkj-agent — JSON Prompts + KV Memory
-
-**Spec:** [librarian-agent.md](/docs/spec/technical/librarian-agent.md)
-
-- **Prompts fully defined** in `data/agent-prompt.json`
-- **KV memory** persists across loops (think_log, plan, steps, context)
-- **YOLO mode:** Direct note create/edit within workspace scope
-- **XML protocol:** Attribute-less tags (state_add, ram_add, record_add, etc.)
-- **No conversation logs:** Only KV store persists (privacy-first)
-
-### Layout — 2/3 Threshold
-
-**Spec:** [layout-and-interaction.md](/docs/spec/ui/layout-and-interaction.md)
-
-- **>1280px:** Persistent split navigation
-- **≤1280px:** Compact mode with top-right toggle
-- **Auto-close:** On note selection (compact mode)
-- **Touch targets:** ≥44px minimum
-- **320px support:** No horizontal scroll
-
-### Notes — ID + Title Separation
-
-**Spec:** [notes.md](/docs/spec/domain/notes.md)
-
-- **note_id:** Immutable UUID (stable identity)
-- **title:** Mutable display name
-- **Default title:** Auto-names with datetime (`YYYY-MM-DD HH:mm:ss`) when untitled
-- **Optimistic concurrency:** Version-based conflict detection (409 on mismatch)
-- **Event sourcing:** Immutable event history per note stream
-
-### Root URL — Full App Accessibility
-
-**Spec:** [web-app.md](/docs/spec/ui/web-app.md)
-
-- **`GET /`** serves complete app shell
-- **Unauthenticated:** Graceful degradation to login view
-- **Authenticated:** Full notes + editor immediately available
-- **Client-side routing:** HTML5 History API
-- **Deep linking:** `/notes/:id` works on refresh
-
----
-
-## File Structure
-
-**Current State (Docs-Only Baseline — State A):**
-
-```
-kjxlkj/
-├── README.md
-├── LICENSE
-├── .env.example
-├── .gitignore
-├── Cargo.toml (workspace manifest)
-├── Cargo.lock
-├── docker-compose.yml
-├── Dockerfile
-├── .dockerignore
-├── QWEN.md
-├── data/
-│   ├── config.json
-│   └── agent-prompt.json
-├── migrations/ (SQL schemas)
-├── src/ (empty — deleted for rebuild)
-├── static/ (empty — to be populated by frontend build)
-└── docs/ (120 files)
-    ├── README.md
-    ├── policy/ (5 files)
-    ├── overview/ (4 files)
-    ├── spec/ (50 files)
-    ├── reference/ (8 files)
-    ├── guides/ (6 files)
-    └── todo/ (46 files)
-```
-
-**Target State (Reconstructed Runtime — State B):**
-
-See [final-file-structure.md](/docs/spec/architecture/final-file-structure.md)
-
----
-
 ## Implementation Readiness
 
-All specifications are **complete and ready for implementation**:
+All specifications are ready for execution in wave order:
 
 | Stage | Status | Governing Docs |
 |-------|--------|----------------|
@@ -222,6 +100,7 @@ No row may move to `verified` without:
 2. **Runtime reachability** — behavior implemented and accessible
 3. **Synchronized reference updates** — CONFORMANCE.md, LIMITATIONS.md, DRIFT_MATRIX.md updated
 4. **TODO completion** — wave checklists completed with linked proofs
+5. **Trace matrix closure** — TODO and test matrices have no unresolved rows
 
 ---
 
@@ -231,3 +110,4 @@ No row may move to `verified` without:
 - [Drift Matrix](DRIFT_MATRIX.md) — mismatch tracking
 - [TODO Contract](/docs/todo/README.md) — execution order
 - [Release Gate](RELEASE.md) — release criteria
+- [TODO Trace Matrix](TODO_TRACE_MATRIX.md) — TODO-to-spec-to-artifact mapping
