@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Verification Hooks
 
-- [ ] restructure-step S08-W082-V01: run `E2E-19`, `E2E-21`, `E2E-22`, and `REG-UX-003` responsive/a11y checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S08-W082-V01: run `E2E-12`, `E2E-19`, and `E2E-25` responsive/a11y checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S08-W082-V02: sync frontend delivery status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate

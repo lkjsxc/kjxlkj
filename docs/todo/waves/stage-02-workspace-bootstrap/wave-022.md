@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Verification Hooks
 
-- [ ] restructure-step S02-W022-V01: run `API-REC-*`, `API-SEARCH-*`, and `API-ATT-*` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W022-V01: run `API-SEARCH-01`, `API-SEARCH-02`, and `API-SEARCH-03` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S02-W022-V02: sync search/attachment gaps in [/docs/reference/LIMITATIONS.md](/docs/reference/LIMITATIONS.md) [doc-link](/docs/reference/LIMITATIONS.md)
 
 ## Mandatory Build and Test Gate

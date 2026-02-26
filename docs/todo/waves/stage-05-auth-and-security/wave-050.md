@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-05-auth-and-security/README.md](/docs/todo/waves/s
 
 ## Verification Hooks
 
-- [ ] restructure-step S05-W050-V01: run `API-AUTH-01`, `API-AUTH-02`, `E2E-10`, and `E2E-18` security acceptance checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S05-W050-V01: run `auth/session/csrf tests` and `http_rate_limit_integration` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S05-W050-V02: sync security status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate

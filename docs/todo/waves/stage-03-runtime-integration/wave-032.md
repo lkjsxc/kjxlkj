@@ -22,7 +22,7 @@ Back: [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves
 
 ## Verification Hooks
 
-- [ ] restructure-step S03-W032-V01: run `E2E-07`, `E2E-08`, `E2E-12`, and `E2E-19` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S03-W032-V01: run `E2E-12`, `E2E-19`, and `E2E-25` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S03-W032-V02: sync responsive UX status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate

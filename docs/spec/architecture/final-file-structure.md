@@ -162,9 +162,36 @@ kjxlkj/
 │               ├── main.tsx
 │               ├── App.tsx
 │               ├── index.css
+│               ├── app/
+│               │   ├── router.tsx
+│               │   ├── providers.tsx
+│               │   └── guards/
+│               │       ├── RequireAuth.tsx
+│               │       └── RequireSetupState.tsx
 │               ├── api/
 │               │   ├── client.ts
-│               │   └── types.ts
+│               │   ├── types.ts
+│               │   ├── errors.ts
+│               │   └── contracts/
+│               │       ├── auth.contract.ts
+│               │       ├── notes.contract.ts
+│               │       └── search.contract.ts
+│               ├── communication/
+│               │   ├── http/
+│               │   │   ├── request-id.ts
+│               │   │   ├── csrf.ts
+│               │   │   ├── idempotency.ts
+│               │   │   ├── retry-policy.ts
+│               │   │   └── error-envelope.ts
+│               │   ├── ws/
+│               │   │   ├── client.ts
+│               │   │   ├── protocol.ts
+│               │   │   ├── replay.ts
+│               │   │   ├── reconnect.ts
+│               │   │   └── stale-cursor.ts
+│               │   └── diagnostics/
+│               │       ├── request-log.ts
+│               │       └── transport-metrics.ts
 │               ├── components/
 │               │   ├── app-shell/
 │               │   │   ├── AppShell.tsx
@@ -189,6 +216,17 @@ kjxlkj/
 │               │       ├── LoginForm.tsx
 │               │       ├── SetupForm.tsx
 │               │       └── SessionProvider.tsx
+│               ├── features/
+│               │   ├── notes/
+│               │   │   ├── list/
+│               │   │   ├── create/
+│               │   │   └── detail/
+│               │   ├── editor/
+│               │   │   ├── autosave/
+│               │   │   ├── conflict/
+│               │   │   └── wikilink/
+│               │   ├── search/
+│               │   └── automation/
 │               ├── hooks/
 │               │   ├── useAutosave.ts
 │               │   ├── useWebSocket.ts
@@ -196,12 +234,29 @@ kjxlkj/
 │               │   └── useResponsive.ts
 │               ├── state/
 │               │   ├── store.ts
+│               │   ├── sessionSlice.ts
 │               │   ├── noteSlice.ts
+│               │   ├── editorSlice.ts
+│               │   ├── communicationSlice.ts
 │               │   └── uiSlice.ts
-│               └── utils/
+│               ├── utils/
 │                   ├── debounce.ts
 │                   ├── diff.ts
 │                   └── markdown.ts
+│               └── tests/
+│                   ├── contract/
+│                   │   ├── frontend_http_client_contract.test.ts
+│                   │   ├── frontend_error_envelope_contract.test.ts
+│                   │   └── frontend_ws_protocol_contract.test.ts
+│                   ├── integration/
+│                   │   ├── frontend_retry_idempotency.test.ts
+│                   │   ├── frontend_stale_cursor_recovery.test.ts
+│                   │   └── frontend_auth_session_rotation.test.ts
+│                   └── e2e/
+│                       ├── editor_autosave.e2e.ts
+│                       ├── conflict_integrity.e2e.ts
+│                       ├── compact_menu.e2e.ts
+│                       └── mobile_320px.e2e.ts
 ├── static/                      # Built frontend assets (derived)
 │   ├── index.html
 │   ├── assets/

@@ -9,6 +9,7 @@ Canonical traceability ledger from TODO checkboxes to authoritative docs, expect
 - Every TODO checkbox MUST link to authoritative documentation.
 - Every TODO wave MUST declare expected implementation artifacts.
 - Every completed TODO checkbox MUST map to evidence rows in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md).
+- Every completed TODO checkbox MUST map to acceptance IDs or required suite categories from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md).
 
 ## Wave-to-Artifact Map
 
@@ -22,7 +23,7 @@ Canonical traceability ledger from TODO checkboxes to authoritative docs, expect
 | `S05/W050-052` | auth + sessions + csrf + transport | login/session middleware, CSRF enforcement, rate limiter | security integration pack | `pending` |
 | `S06/W060-062` | api/http + api/errors + types | full REST contract implementation | HTTP acceptance pack | `pending` |
 | `S07/W070-072` | websocket + events + errors | WS stream manager, replay logic, idempotency store | `WS-04`, `WS-05`, `WS-06` | `pending` |
-| `S08/W080-082` | editor-flow + layout + web-app | frontend shell/editor, responsive behavior, autosave/conflict UX | `E2E-*` pack | `pending` |
+| `S08/W080-082` | editor-flow + layout + web-app | frontend shell/editor, responsive behavior, autosave/conflict UX | `E2E-*` + frontend communication supplemental suites | `pending` |
 | `S09/W090-092` | CI + performance + testing | CI profiles, integration harness, performance checks | full `T0/T1/T2` | `pending` |
 | `S10/W100-102` | backlog + structure + release | hardening refactors, advanced tests, release closure | hardening/chaos pack | `pending` |
 
@@ -55,6 +56,7 @@ A wave is closable only when:
 2. mapped acceptance IDs are green in [TEST_MATRIX.md](TEST_MATRIX.md)
 3. evidence rows are present in [EVIDENCE_INDEX.md](EVIDENCE_INDEX.md)
 4. drift/limitations ledgers are synchronized
+5. checkbox-level evidence rows are present for all completed checklist entries
 
 ## Related
 

@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-04-schema-and-projections/README.md](/docs/todo/wa
 
 ## Verification Hooks
 
-- [ ] restructure-step S04-W041-V01: run `API-AUTO-01` and `API-AUTO-02` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S04-W041-V01: run `API-AUTO-03` and `AGENT-01` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S04-W041-V02: sync automation status in [/docs/reference/CONFORMANCE.md](/docs/reference/CONFORMANCE.md) [doc-link](/docs/reference/CONFORMANCE.md)
 
 ## Mandatory Build and Test Gate

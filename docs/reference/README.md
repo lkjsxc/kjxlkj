@@ -17,11 +17,13 @@ For state claims, use this order:
 7. [IMPROVEMENT_BACKLOG.md](IMPROVEMENT_BACKLOG.md)
 8. [TEST_MATRIX.md](TEST_MATRIX.md)
 9. [TODO_TRACE_MATRIX.md](TODO_TRACE_MATRIX.md)
+10. [LEGACY_RUNTIME_SNAPSHOT.md](LEGACY_RUNTIME_SNAPSHOT.md)
 
-## Snapshot (2026-02-25)
+## Snapshot (2026-02-26)
 
-- Repository is managed as docs-first with runtime rebuilt only through TODO waves.
+- Repository is in docs-only reset baseline; runtime is rebuilt only through TODO waves.
 - Runtime status and readiness are tracked in `CONFORMANCE.md` and `RELEASE.md`.
+- Legacy pre-reset runtime context is archived in `LEGACY_RUNTIME_SNAPSHOT.md`.
 - Acceptance coverage is tracked in `TEST_MATRIX.md`.
 - TODO-to-artifact traceability is tracked in `TODO_TRACE_MATRIX.md`.
 

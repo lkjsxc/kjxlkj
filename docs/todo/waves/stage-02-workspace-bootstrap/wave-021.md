@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-02-workspace-bootstrap/README.md](/docs/todo/waves
 
 ## Verification Hooks
 
-- [ ] restructure-step S02-W021-V01: run `WS-01..WS-05` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S02-W021-V01: run `WS-04`, `WS-05`, and `ws_stale_cursor_integration` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S02-W021-V02: update replay/idempotency status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
 
 ## Mandatory Build and Test Gate

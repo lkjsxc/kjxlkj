@@ -27,7 +27,7 @@
 | [guides/](guides/README.md) | operator playbooks |
 | [overview/](overview/README.md) | concepts and glossary |
 
-## Baseline (2026-02-25)
+## Baseline (2026-02-26)
 
 - Repository is currently in docs-only baseline mode.
 - Runtime code and build artifacts are intentionally removed and rebuilt through TODO waves.

@@ -55,6 +55,19 @@ The following acceptance IDs are high-criticality and MUST pass before any relea
 - `API-AUTO-03`
 - `API-AUTO-04`
 
+## Frontend Communication Quality Pack
+
+The frontend transport layer is high-risk and MUST be verified with dedicated suites:
+
+| Suite | Tier | Quality Bar |
+|---|---|---|
+| `frontend_http_client_contract` | `T1` | validates request-id propagation, csrf handling, idempotency-key reuse, and deterministic error envelope parsing |
+| `frontend_ws_replay_contract` | `T1` | validates reconnect replay ordering, stale-cursor recovery, and idempotent patch replay behavior |
+| `frontend_comm_degradation_e2e` | `T2` | validates offline/retry/degraded-state UX convergence with no data loss |
+| `frontend_auth_session_rotation` | `T2` | validates setup/login/session-expiry transitions and local draft preservation |
+
+These suites are release-blocking and must be tracked in [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md).
+
 ## Determinism Rules
 
 - use bounded timeouts and explicit diagnostics
@@ -72,6 +85,7 @@ The following acceptance IDs are high-criticality and MUST pass before any relea
 | HTTP contract tests | `T1` | endpoint status, idempotency, conflict and rate-limit paths |
 | WebSocket protocol tests | `T1` | replay ordering, stale cursor, idempotent patch replay |
 | degraded dependency tests | `T1` | embedding/LLM outage fallback behavior |
+| frontend communication contract tests | `T1/T2` | request-id/csrf/idempotency, ws replay/reconnect, session-expiry recovery |
 | end-to-end editor tests | `T2` | autosave, conflict recovery, compact mode behavior |
 | multi-client sync tests | `T2` | reconnect, replay, convergence assertions |
 
@@ -80,6 +94,8 @@ The following acceptance IDs are high-criticality and MUST pass before any relea
 - Every acceptance ID MUST map to one primary test suite in [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md).
 - Every completed wave MUST append evidence links in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md).
 - No TODO checkbox may be marked complete when mapped acceptance IDs lack evidence.
+- Every completed TODO checkbox MUST record explicit evidence linkage (test/suite run, result, and timestamp) in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md).
+- Generic wave commands (for example `cargo test --workspace`) do not replace checkbox-level acceptance evidence.
 
 ## Related
 

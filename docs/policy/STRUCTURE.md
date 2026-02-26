@@ -27,6 +27,18 @@ All TODO files under `docs/todo/` MUST:
 2. link directly to required docs
 3. include checklist items with at least one direct doc link
 
+## Evidence and Traceability Policy
+
+Every implementation checkbox under `docs/todo/` and `docs/todo/waves/` MUST satisfy all rules below before being marked complete:
+
+1. bind to at least one acceptance ID or required suite category from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md)
+2. map to a row in [/docs/reference/TODO_TRACE_MATRIX.md](/docs/reference/TODO_TRACE_MATRIX.md)
+3. map to a row in [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md) when acceptance IDs are used
+4. include evidence pointer(s) in [/docs/reference/EVIDENCE_INDEX.md](/docs/reference/EVIDENCE_INDEX.md)
+5. update corresponding ledger status in the same change
+
+Wave-level build/test commands are necessary but not sufficient; checkbox closure requires explicit acceptance/suite evidence.
+
 ## Source Length Audit Rule
 
 During runtime rebuild, if any source file exceeds 200 lines:
@@ -42,3 +54,4 @@ During runtime rebuild, if any source file exceeds 200 lines:
 - [x] no docs file exceeds 200 lines
 - [x] TODO checklists link to governing docs
 - [x] source >200 line exceptions are recorded when present
+- [x] TODO checkboxes require acceptance/suite binding and evidence linkage

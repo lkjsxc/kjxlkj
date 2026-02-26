@@ -21,7 +21,7 @@ Back: [/docs/todo/waves/stage-08-frontend-and-static-hosting/README.md](/docs/to
 
 ## Verification Hooks
 
-- [ ] restructure-step S08-W081-V01: run `E2E-15`, `E2E-21`, and `E2E-17` command/review/draft checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S08-W081-V01: run `E2E-06`, `E2E-17`, `E2E-24`, `frontend_ws_replay_contract`, and `frontend_comm_degradation_e2e` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) and [/docs/reference/TEST_MATRIX.md](/docs/reference/TEST_MATRIX.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S08-W081-V02: sync librarian UX status in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
 
 ## Mandatory Build and Test Gate

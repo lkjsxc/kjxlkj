@@ -46,6 +46,10 @@ These suites are mandatory for release even when not tied to one acceptance ID.
 | `http_rate_limit_integration` | `T1` | verify 429 + Retry-After | `S05/W052` | `pending` |
 | `ws_stale_cursor_integration` | `T1` | stale cursor schema and recovery path | `S07/W071` | `pending` |
 | `ws_reconnect_storm_chaos` | `T2` | reconnect churn + convergence | `S10/W101` | `pending` |
+| `frontend_http_client_contract` | `T1` | verify x-request-id, csrf, idempotency-key, and error-envelope handling in frontend transport | `S08/W080` | `pending` |
+| `frontend_ws_replay_contract` | `T1` | verify reconnect replay, ack cursor, and stale-cursor handling in frontend client | `S08/W081` | `pending` |
+| `frontend_comm_degradation_e2e` | `T2` | verify offline/retry/degraded communication UX convergence | `S08/W081` | `pending` |
+| `frontend_auth_session_rotation` | `T2` | verify setup/login/session-expiry recovery path and draft preservation | `S08/W080` | `pending` |
 
 ## Related
 

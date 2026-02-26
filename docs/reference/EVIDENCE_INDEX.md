@@ -48,6 +48,24 @@ For each wave completion, archive:
 - **Screenshots/Logs:** (if applicable)
 ```
 
+## Per-Checkbox Evidence Contract
+
+Every completed TODO checkbox MUST add an evidence row using this format:
+
+```markdown
+### Evidence Row: SXX-WXXX-NN
+
+- **Checkbox ID:** `SXX-WXXX-NN`
+- **Acceptance IDs / Suites:** `API-*` or suite category name
+- **Command:** exact test command/profile used
+- **Result:** pass/fail
+- **Timestamp:** ISO8601
+- **Artifacts:** log path, report path, or captured output digest
+- **Trace Links:** row in `TODO_TRACE_MATRIX.md` and row in `TEST_MATRIX.md`
+```
+
+Wave-level build/test output is required, but does not replace checkbox-level evidence rows.
+
 ---
 
 ## Related

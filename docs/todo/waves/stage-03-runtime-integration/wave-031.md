@@ -22,7 +22,7 @@ Back: [/docs/todo/waves/stage-03-runtime-integration/README.md](/docs/todo/waves
 
 ## Verification Hooks
 
-- [ ] restructure-step S03-W031-V01: run `REG-IMP-*`, `REG-USR-*`, and `E2E-23` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
+- [ ] restructure-step S03-W031-V01: run `E2E-06`, `E2E-17`, and `E2E-23` checks from [/docs/spec/technical/testing.md](/docs/spec/technical/testing.md) [doc-link](/docs/spec/technical/testing.md)
 - [ ] restructure-step S03-W031-V02: sync regression closure state in [/docs/reference/DRIFT_MATRIX.md](/docs/reference/DRIFT_MATRIX.md) [doc-link](/docs/reference/DRIFT_MATRIX.md)
 
 ## Mandatory Build and Test Gate
