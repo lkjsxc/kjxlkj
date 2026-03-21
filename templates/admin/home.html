@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"><title>Admin Editor</title>
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<link rel="stylesheet" href="/static/css/site.css">
+</head>
+<body>
+<header>
+<h1>Admin Editor</h1>
+<form method="post" action="/logout"><button type="submit">Logout</button></form>
+</header>
+<main class="grid">
+<section>
+<h2>Files</h2>
+<ul id="files">
+{% for a in articles %}
+<li>
+<button onclick="openArticle('{{ a.slug }}')">{{ a.slug }}</button>
+{% if a.private %}<strong>private</strong>{% endif %}
+</li>
+{% endfor %}
+</ul>
+</section>
+<section>
+<h2>Editor</h2>
+<input id="slug" placeholder="slug">
+<input id="title" placeholder="title">
+<label><input id="private" type="checkbox"> private</label>
+<textarea id="body" rows="20"></textarea>
+<div>
+<button onclick="createArticle()">Create</button>
+<button onclick="saveArticle()">Save</button>
+<button onclick="renameArticle()">Rename</button>
+<button onclick="deleteArticle()">Delete</button>
+<button onclick="togglePrivate()">Toggle Private</button>
+</div>
+<pre id="status"></pre>
+</section>
+</main>
+<script src="/static/js/admin.js"></script>
+</body>
+</html>

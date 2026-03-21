@@ -1,0 +1,4 @@
+body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 1rem auto; padding: 0 1rem; }
+.grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
+textarea { width: 100%; font-family: ui-monospace, monospace; }
+input, button, textarea { margin: 0.25rem 0; }
