@@ -1,12 +1,18 @@
 use actix_web::{web, HttpRequest, HttpResponse};
 
 use crate::core::content::VisibilityContext;
-use crate::web::handlers::common::internal_error;
+use crate::web::handlers::common::{has_admin_user, internal_error, redirect_to_setup};
 use crate::web::render::render_markdown_html;
 use crate::web::session::valid_session;
 use crate::web::state::WebState;
 
 pub async fn handle_get_home(request: HttpRequest, state: web::Data<WebState>) -> HttpResponse {
+    match has_admin_user(&state).await {
+        Ok(false) => return redirect_to_setup(),
+        Ok(true) => {}
+        Err(response) => return response,
+    }
+
     let context = match valid_session(&request, &state).await {
         Ok(Some(_)) => VisibilityContext::Admin,
         Ok(None) => VisibilityContext::Public,

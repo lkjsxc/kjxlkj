@@ -20,6 +20,34 @@ async fn public_and_admin_visibility_is_enforced() {
     )
     .await;
 
+    let public_home_before_setup =
+        test::call_service(&app, test::TestRequest::get().uri("/").to_request()).await;
+    assert_eq!(public_home_before_setup.status(), StatusCode::FOUND);
+    assert_eq!(
+        public_home_before_setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/setup")
+    );
+
+    let setup = test::call_service(
+        &app,
+        test::TestRequest::post()
+            .uri("/setup")
+            .set_form([("username", "admin"), ("password", "s3cret")])
+            .to_request(),
+    )
+    .await;
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
+
     let public_home =
         test::call_service(&app, test::TestRequest::get().uri("/").to_request()).await;
     assert_eq!(public_home.status(), StatusCode::OK);
@@ -38,16 +66,6 @@ async fn public_and_admin_visibility_is_enforced() {
     )
     .await;
     assert_eq!(private_for_guest.status(), StatusCode::NOT_FOUND);
-
-    let setup = test::call_service(
-        &app,
-        test::TestRequest::post()
-            .uri("/setup")
-            .set_form([("username", "admin"), ("password", "s3cret")])
-            .to_request(),
-    )
-    .await;
-    assert_eq!(setup.status(), StatusCode::CREATED);
 
     let login = test::call_service(
         &app,

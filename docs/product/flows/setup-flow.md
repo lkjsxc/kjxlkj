@@ -6,9 +6,10 @@
 
 ## Required Flow
 
-1. User visits `/setup`.
-2. User submits initial admin credentials.
-3. System creates admin record and enables normal auth flow.
+1. If user visits `/` before setup completion, system redirects to `/setup`.
+2. User visits `/setup` and receives the full setup page (not placeholder-only content).
+3. User submits initial admin credentials.
+4. System creates admin record and enables normal auth flow.
 
 ## Guardrails
 

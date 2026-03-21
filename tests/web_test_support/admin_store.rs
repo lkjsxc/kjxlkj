@@ -20,6 +20,10 @@ impl MockAdminStore {
             password_hash: password_hash.to_owned(),
         });
     }
+
+    pub fn admin(&self) -> Option<AdminUser> {
+        self.inner.lock().expect("admin lock poisoned").clone()
+    }
 }
 
 #[async_trait]

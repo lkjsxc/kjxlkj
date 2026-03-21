@@ -1,52 +1,41 @@
 # Runtime Test Wave Evidence
 
-This document records final closure evidence for todo `runtime-final-validation-doc-sync`.
-It confirms persistent-runtime contracts remain green across cargo, compose, and CLI validation gates.
+This document records closure evidence for todo `setup-evidence-sync` after the setup UX fix and setup-flow test split.
 
-## Required Final Validation Suite
+## Runtime Contract Alignment
 
-| Command | Result | Notes |
+- Setup-first invariant reference: [Setup-First Contract](../vision/setup-first.md)
+- Runtime routing reference: [Route Topology](../architecture/runtime/route-topology.md)
+- User flow references:
+  - [Setup Flow](../product/flows/setup-flow.md)
+  - [Public Site Flow](../product/flows/public-site.md)
+  - [Product Surface Map](../product/surface-map.md)
+
+## Current Test Evidence (post-split)
+
+| Scope | Result | Evidence |
 | --- | --- | --- |
-| `cargo fmt -- --check` | **PASS** | Exit 0 |
-| `cargo clippy --all-targets -- -D warnings` | **PASS** | Exit 0 |
-| `cargo test` | **PASS** | Exit 0; all suites green |
-| `cargo build --release` | **PASS** | Exit 0; release build succeeded |
-| `docker compose config --quiet` | **PASS** | Exit 0; compose config valid |
-| `docker compose build app` | **PASS** | Exit 0; app image built |
-| `docker compose --profile verify run --rm verify` | **PASS** | Exit 0; verify profile run completed |
-| `cargo run --bin kjxlkj -- docs validate-topology` | **PASS** | Exit 0; `violations=0` |
-| `cargo run --bin kjxlkj -- quality check-lines` | **PASS** | Exit 0; `violations=0` |
-| `cargo run --bin kjxlkj -- compose verify` | **PASS** | Exit 0; all compose.verify steps passed |
+| Setup-flow integration suite | **PASS** | Entrypoint: [tests/setup_flow.rs](../../tests/setup_flow.rs). Modules: [tests/setup_flow/get_routes.rs](../../tests/setup_flow/get_routes.rs), [tests/setup_flow/post_setup.rs](../../tests/setup_flow/post_setup.rs), [tests/setup_flow/setup_lock.rs](../../tests/setup_flow/setup_lock.rs). |
+| Public/private visibility regression | **PASS** | [tests/public_private_visibility.rs](../../tests/public_private_visibility.rs) confirms pre-setup redirect behavior and post-setup visibility rules. |
 
-## Gate Highlights
+### Key setup-flow outcomes captured
 
-- `cargo test` completed with no failures across lib/integration/doc-test runs.
-  - lib tests: 22 passed
-  - integration tests: 9 passed
-  - total executed tests: 31 passed
-- CLI JSON summaries remained deterministic:
+- `GET /` before setup returns `302 Found` with `Location: /setup`.
+- `GET /setup` returns `200 OK` and renders full HTML setup form.
+- Valid `POST /setup` returns `303 See Other` with `Location: /login`.
+- Invalid setup payloads return deterministic validation output.
+- After first admin creation, setup is locked (`GET`/`POST /setup` return `404 Not Found`).
 
-```json
-{"command":"docs.validate-topology","directories_checked":21,"status":"pass","violations":0}
-{"command":"quality.check-lines","docs_files_checked":68,"status":"pass","test_source_files_checked":0,"violations":0}
-{"command":"compose.verify","exit_code":0,"status":"pass","step":"config-quiet"}
-{"command":"compose.verify","exit_code":0,"status":"pass","step":"build-app"}
-{"command":"compose.verify","exit_code":0,"status":"pass","step":"verify-profile-run"}
-{"command":"compose.verify","status":"pass","steps_passed":3,"steps_total":3}
-```
+## Docker Functional Recheck Evidence
 
-## Documentation and Contract Sync
+Recorded docker-functional-recheck outcomes:
 
-- Root `README.md` and `docs/README.md` are coherent on document-first authority with persistent runtime artifacts permitted when contract-aligned.
-- Repository governance/structure contracts now define persistent-runtime root classes in `docs/repository/structure/root-layout.md`.
-- Compose contracts reference root governance and preserve prebuild + `./data` mount policy.
-- Relative links in touched docs resolve.
+- `302` `/ -> /setup` check: **PASS**
+- `200` setup HTML form check: **PASS**
+- `303` setup `POST` redirect to `/login` check: **PASS**
+- Verify profile run (`docker compose --profile verify run --rm verify`): **PASS**
+- CLI compose verify (`cargo run --bin kjxlkj -- compose verify`): **PASS**
 
-## Constraint Checks
+## Documentation Constraint Check
 
-- Markdown max under `docs/`: `docs/containers/compose/build-storage-contract.md` at **106** lines (**<300**).
-- Rust source max under `src/`: `src/web/stores.rs` at **172** lines (**<200**).
-
-## Fixes Required During Final Gate
-
-None. All required validation commands passed on first run; no root-cause fix iteration was needed.
+- This document is concise and remains well under the 300-line limit.

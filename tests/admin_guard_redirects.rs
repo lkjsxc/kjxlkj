@@ -36,7 +36,14 @@ async fn admin_routes_redirect_by_setup_and_session_state() {
             .to_request(),
     )
     .await;
-    assert_eq!(setup.status(), StatusCode::CREATED);
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
 
     let without_session =
         test::call_service(&app, test::TestRequest::get().uri("/admin").to_request()).await;

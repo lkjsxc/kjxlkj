@@ -26,7 +26,14 @@ async fn login_logout_session_lifecycle_behaves_as_expected() {
             .to_request(),
     )
     .await;
-    assert_eq!(setup.status(), StatusCode::CREATED);
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
 
     let login = test::call_service(
         &app,

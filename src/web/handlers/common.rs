@@ -20,9 +20,7 @@ pub async fn has_admin_user(state: &web::Data<WebState>) -> Result<bool, HttpRes
 pub async fn enforce_setup_completion(state: &web::Data<WebState>) -> Result<(), HttpResponse> {
     match has_admin_user(state).await {
         Ok(true) => Ok(()),
-        Ok(false) => Err(HttpResponse::Found()
-            .append_header((header::LOCATION, "/setup"))
-            .finish()),
+        Ok(false) => Err(redirect_to_setup()),
         Err(response) => Err(response),
     }
 }
@@ -72,6 +70,12 @@ pub fn internal_error(error: AppError) -> HttpResponse {
 pub fn redirect_to_login() -> HttpResponse {
     HttpResponse::Found()
         .append_header((header::LOCATION, "/login"))
+        .finish()
+}
+
+pub fn redirect_to_setup() -> HttpResponse {
+    HttpResponse::Found()
+        .append_header((header::LOCATION, "/setup"))
         .finish()
 }
 

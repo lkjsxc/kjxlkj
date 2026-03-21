@@ -19,6 +19,23 @@ async fn public_routes_hide_private_content_for_logged_out_users() {
     )
     .await;
 
+    let setup = test::call_service(
+        &app,
+        test::TestRequest::post()
+            .uri("/setup")
+            .set_form([("username", "admin"), ("password", "secret")])
+            .to_request(),
+    )
+    .await;
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
+
     let home = test::call_and_read_body(&app, test::TestRequest::get().uri("/").to_request()).await;
     let home_text = String::from_utf8(home.to_vec()).expect("utf8");
     assert!(home_text.contains("public-post"));
@@ -64,7 +81,14 @@ async fn logged_in_admin_can_view_private_content() {
             .to_request(),
     )
     .await;
-    assert_eq!(setup.status(), StatusCode::CREATED);
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
 
     let login = test::call_service(
         &app,

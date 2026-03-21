@@ -2,7 +2,8 @@
 
 ## Logged-Out Behavior
 
-- `GET /` shows non-private articles only.
+- Before first admin exists, `GET /` redirects to `/setup`.
+- After setup completion, `GET /` shows non-private articles only.
 - `GET /article/{slug}` returns 404 for private articles.
 
 ## Logged-In Admin Behavior

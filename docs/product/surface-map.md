@@ -2,12 +2,12 @@
 
 ## Public Surface
 
-- `GET /` lists visible articles.
+- `GET /` lists visible articles after setup completion; before any admin exists, it redirects to `/setup`.
 - `GET /article/{slug}` renders a single visible article.
 
 ## Authentication Surface
 
-- `GET /setup` initializes first admin when none exists.
+- `GET /setup` renders the complete first-admin setup page when none exists.
 - `GET /login` authenticates existing admin after setup completion.
 - `POST /logout` destroys the admin session.
 

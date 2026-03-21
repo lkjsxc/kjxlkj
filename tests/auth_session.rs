@@ -24,7 +24,14 @@ async fn login_creates_session_cookie_and_logout_clears_it() {
             .to_request(),
     )
     .await;
-    assert_eq!(setup.status(), StatusCode::CREATED);
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        setup
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/login")
+    );
 
     let bad_login = test::call_service(
         &app,
