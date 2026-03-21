@@ -1,39 +1,25 @@
-# Documentation
+# kjxlkj Documentation
 
-`/docs` is the canonical system definition for `kjxlkj`.
+This directory is the canonical contract for the new `kjxlkj` project.
 
-## Contract
+## Product Summary
 
-- The system MUST be reconstructable from documentation alone.
-- Specs define target behavior; references define verified present state.
-- TODO waves define the only allowed implementation order.
+`kjxlkj` is a single-admin Markdown publishing system.
 
-## Authority and Precedence
+- Logged-out users can browse public articles.
+- Logged-in admin can edit Markdown files directly in a web UI.
+- Each article can be marked private with frontmatter `private: true`.
+- CLI commands are optimized for AI agent workflows.
 
-1. [/docs/policy/](policy/README.md)
-2. [/docs/spec/](spec/README.md)
-3. [/docs/reference/](reference/README.md)
-4. [/docs/todo/](todo/README.md)
-5. [/docs/guides/](guides/README.md), [/docs/overview/](overview/README.md)
+## Directory Table of Contents
 
-## Directory Map
+- [architecture/README.md](architecture/README.md)
+- [product/README.md](product/README.md)
+- [operations/README.md](operations/README.md)
 
-| Directory | Role |
-|---|---|
-| [policy/](policy/README.md) | invariants and guardrails |
-| [spec/](spec/README.md) | target product behavior |
-| [reference/](reference/README.md) | verified current state and drift |
-| [todo/](todo/README.md) | staged reconstruction workflow |
-| [guides/](guides/README.md) | operator playbooks |
-| [overview/](overview/README.md) | concepts and glossary |
+## Global Constraints
 
-## Baseline (2026-02-26)
-
-- Repository is currently in docs-only baseline mode.
-- Runtime code and build artifacts are intentionally removed and rebuilt through TODO waves.
-- All behavior claims must remain anchored to policy/spec/reference/todo precedence.
-
-## Related
-
-- All-in-docs doctrine: [overview/all-in-docs.md](overview/all-in-docs.md)
-- Structure policy: [policy/STRUCTURE.md](policy/STRUCTURE.md)
+- Every docs file must be 300 lines or fewer.
+- Every source code file must be 200 lines or fewer.
+- Every docs directory with multiple child docs/subdirectories must contain exactly one `README.md` as TOC.
+- Docker Compose is the default verification entrypoint.
