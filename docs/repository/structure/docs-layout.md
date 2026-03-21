@@ -8,6 +8,7 @@
 - `docs/containers/`
 - `docs/operations/`
 - `docs/repository/`
+- `docs/restructuring/`
 
 ## Recursive Rule
 

@@ -7,6 +7,8 @@ docker compose build app
 docker compose up
 ```
 
+The app image is built from `Dockerfile` and includes baked migration SQL from `migrations/`.
+
 ## Verification
 
 ```bash

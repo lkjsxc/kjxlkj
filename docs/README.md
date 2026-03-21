@@ -21,6 +21,7 @@ This directory is the authoritative contract tree for `kjxlkj`.
 | [containers/README.md](containers/README.md) | Docker Compose and verification container contracts |
 | [operations/README.md](operations/README.md) | CLI, testing, quality, and operational checks |
 | [repository/README.md](repository/README.md) | Repository layout, docs authoring, and governance |
+| [restructuring/README.md](restructuring/README.md) | Deterministic restructuring phases, tests, and full docs coverage matrix |
 
 ## Recommended Reading Order
 
@@ -32,3 +33,4 @@ This directory is the authoritative contract tree for `kjxlkj`.
 6. [containers/README.md](containers/README.md)
 7. [operations/README.md](operations/README.md)
 8. [repository/README.md](repository/README.md)
+9. [restructuring/README.md](restructuring/README.md)

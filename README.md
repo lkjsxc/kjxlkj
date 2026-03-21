@@ -18,6 +18,7 @@ Status: **documentation-contract-only** repository.
 - Container contracts: [docs/containers/README.md](docs/containers/README.md)
 - Operations contracts: [docs/operations/README.md](docs/operations/README.md)
 - Repository governance: [docs/repository/README.md](docs/repository/README.md)
+- Restructuring program: [docs/restructuring/README.md](docs/restructuring/README.md)
 
 ## Start Here (Compact Flow)
 
@@ -27,6 +28,7 @@ Status: **documentation-contract-only** repository.
 4. [Route Topology](docs/architecture/runtime/route-topology.md) + [Content Visibility](docs/architecture/data/content-visibility.md) — enforcement details.
 5. [Compose Commands](docs/containers/compose/commands.md) + [Local Verification Runbook](docs/containers/verification/local-runbook.md) — container execution path.
 6. [Operations Automation](docs/operations/automation.md) + [Change Policy](docs/repository/governance/change-policy.md) — validation and governance.
+7. [Restructuring Program](docs/restructuring/README.md) — deterministic phases, tests, and docs coverage.
 
 ## Required Product Behavior
 
