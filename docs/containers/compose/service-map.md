@@ -1,10 +1,16 @@
 # Compose Service Map
 
+## Scope
+
+- This map applies to services defined in repository-root `docker-compose.yml`.
+- Build and storage rules are canonical in [build-storage-contract.md](build-storage-contract.md).
+
 ## App Service
 
 - Hosts web application runtime.
-- MUST be built from repository `Dockerfile` as documented in [build-storage-contract.md](build-storage-contract.md).
-- Uses data mounts under `./data/` only when host mounts are required.
+- MUST be built from repository `Dockerfile` with prebuild flow (`docker compose build app` before `docker compose up`).
+- Uses host mounts under `./data/` only when host mounts are required.
+- SHOULD consume image-baked migrations instead of compose migration mounts.
 
 ## PostgreSQL Service
 

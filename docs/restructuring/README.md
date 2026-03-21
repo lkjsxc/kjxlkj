@@ -15,7 +15,7 @@ This section defines a deterministic documentation-restructuring program.
 | [phases/README.md](phases/README.md) | Ordered phase contracts (`00`..`09`) with interleaved test gates |
 | [tests/README.md](tests/README.md) | Fundamental intent catalog and deterministic interleaved test schedule |
 | [coverage/README.md](coverage/README.md) | Coverage controls and full markdown reference matrix |
-| [runtime-test-wave-evidence.md](runtime-test-wave-evidence.md) | Runtime/container verification evidence mapped to restructuring intent IDs |
+| [runtime-test-wave-evidence.md](runtime-test-wave-evidence.md) | Runtime/container verification and final validation evidence for persistent-runtime closure |
 
 ## Deterministic Reading Order
 

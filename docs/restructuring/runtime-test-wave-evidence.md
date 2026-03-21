@@ -1,38 +1,52 @@
 # Runtime Test Wave Evidence
 
-This note records the temporary runtime test wave against restructuring intents and
-the final cleanup that restores docs-only authority.
+This document records final closure evidence for todo `runtime-final-validation-doc-sync`.
+It confirms persistent-runtime contracts remain green across cargo, compose, and CLI validation gates.
 
-## Command-to-Intent Mapping
+## Required Final Validation Suite
 
-| Check command | Outcome | Intent mapping |
+| Command | Result | Notes |
 | --- | --- | --- |
-| `cargo fmt --check` | Passed | `T16-final-audit` evidence entry; supports `FI-08` repeatable validation. |
-| `cargo clippy --all-targets -- -D warnings` | Passed | `T16-final-audit` evidence entry; supports `FI-08` repeatable validation. |
-| `cargo test` | Passed (all tests, including compose contract tests) | `T16-final-audit` evidence entry; supports `FI-08` repeatable validation. |
-| `docker compose config --quiet` | Passed | `T16-final-audit` evidence entry for deterministic compose config validity. |
-| `docker compose build app` | Passed | `T16-final-audit` evidence entry for buildability contract. |
-| `docker compose up` default-profile validation | Passed (`verify` not auto-started) | `T16-final-audit` evidence entry for profile contract. |
-| `docker compose --profile verify run --rm verify` | Passed | `T16-final-audit` evidence entry for verify profile execution. |
-| SQL status update (`UPDATE todos SET status='done' WHERE id='final-docs-only-closure'`) | Completed | `T17-status-update` terminal-state requirement. |
+| `cargo fmt -- --check` | **PASS** | Exit 0 |
+| `cargo clippy --all-targets -- -D warnings` | **PASS** | Exit 0 |
+| `cargo test` | **PASS** | Exit 0; all suites green |
+| `cargo build --release` | **PASS** | Exit 0; release build succeeded |
+| `docker compose config --quiet` | **PASS** | Exit 0; compose config valid |
+| `docker compose build app` | **PASS** | Exit 0; app image built |
+| `docker compose --profile verify run --rm verify` | **PASS** | Exit 0; verify profile run completed |
+| `cargo run --bin kjxlkj -- docs validate-topology` | **PASS** | Exit 0; `violations=0` |
+| `cargo run --bin kjxlkj -- quality check-lines` | **PASS** | Exit 0; `violations=0` |
+| `cargo run --bin kjxlkj -- compose verify` | **PASS** | Exit 0; all compose.verify steps passed |
 
-## Notes
+## Gate Highlights
 
-- The restructuring test catalog has no compose-specific `Txx` ID, so runtime/container checks are mapped under `T16-final-audit` as explicit validation outcomes.
-- Terminal SQL update is tracked separately by `T17-status-update`.
+- `cargo test` completed with no failures across lib/integration/doc-test runs.
+  - lib tests: 22 passed
+  - integration tests: 9 passed
+  - total executed tests: 31 passed
+- CLI JSON summaries remained deterministic:
 
-## Cleanup Closure Evidence
+```json
+{"command":"docs.validate-topology","directories_checked":21,"status":"pass","violations":0}
+{"command":"quality.check-lines","docs_files_checked":68,"status":"pass","test_source_files_checked":0,"violations":0}
+{"command":"compose.verify","exit_code":0,"status":"pass","step":"config-quiet"}
+{"command":"compose.verify","exit_code":0,"status":"pass","step":"build-app"}
+{"command":"compose.verify","exit_code":0,"status":"pass","step":"verify-profile-run"}
+{"command":"compose.verify","status":"pass","steps_passed":3,"steps_total":3}
+```
 
-- Runtime-phase artifacts were removed from repository root:
-  - `.dockerignore`
-  - `Cargo.lock`
-  - `Cargo.toml`
-  - `Dockerfile`
-  - `docker-compose.yml`
-  - `data/`
-  - `migrations/`
-  - `src/`
-  - `target/`
-  - `tests/`
-- Post-cleanup root keep-set is exact: `.gitignore`, `LICENSE`, `README.md`, and `docs/`.
-- Post-cleanup validation checks passed for topology, line limits (`<300`), and README/restructuring link sanity.
+## Documentation and Contract Sync
+
+- Root `README.md` and `docs/README.md` are coherent on document-first authority with persistent runtime artifacts permitted when contract-aligned.
+- Repository governance/structure contracts now define persistent-runtime root classes in `docs/repository/structure/root-layout.md`.
+- Compose contracts reference root governance and preserve prebuild + `./data` mount policy.
+- Relative links in touched docs resolve.
+
+## Constraint Checks
+
+- Markdown max under `docs/`: `docs/containers/compose/build-storage-contract.md` at **106** lines (**<300**).
+- Rust source max under `src/`: `src/web/stores.rs` at **172** lines (**<200**).
+
+## Fixes Required During Final Gate
+
+None. All required validation commands passed on first run; no root-cause fix iteration was needed.

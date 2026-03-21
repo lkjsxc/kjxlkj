@@ -1,0 +1,27 @@
+[package]
+name = "kjxlkj"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+autobins = false
+
+[dependencies]
+actix-web = "4.9.0"
+ammonia = "4.0.0"
+argon2 = "0.5.3"
+async-trait = "0.1.86"
+chrono = { version = "0.4.39", default-features = false, features = ["clock"] }
+pulldown-cmark = "0.13.0"
+serde = { version = "1.0.218", features = ["derive"] }
+serde_json = "1.0.138"
+sqlx = { version = "0.8.2", default-features = false, features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono"] }
+tokio = { version = "1.43.0", features = ["fs", "macros", "rt-multi-thread"] }
+uuid = { version = "1.11.0", features = ["v4"] }
+
+[[bin]]
+name = "kjxlkj"
+path = "src/bin/kjxlkj.rs"
+
+[[bin]]
+name = "kjxlkj-app"
+path = "src/main.rs"

@@ -1,13 +1,13 @@
-# kjxlkj — Documentation Contract Repository
+# kjxlkj — Document-First Contract Repository
 
-Status: **documentation-contract-only** repository.
+Status: **document-first** repository.
 
-## Repository Contract (Normative)
+## Repository Model (Normative)
 
-1. The canonical source of truth is `docs/`.
-2. Root keep-set is fixed to `.gitignore`, `LICENSE`, `README.md`, and `docs/`.
-3. Runtime and infrastructure artifacts are intentionally removed from repository root.
-4. If documentation and runtime behavior disagree, documentation contracts define the intended target behavior.
+1. The canonical source of target behavior is `docs/`.
+2. Documentation defines behavior first; implementation is expected to converge to documented contracts.
+3. Runtime and infrastructure artifacts are allowed in repository root when they align with documented contracts.
+4. If documentation and runtime behavior disagree, documentation defines the intended target behavior until runtime is aligned.
 
 ## Quick Navigation
 
@@ -48,5 +48,5 @@ To reduce memory pressure and retrieval errors for LLM agents:
 
 ## Repository Scope
 
-- In scope: maintaining clear, deterministic contracts in `docs/`.
-- Out of scope: storing runtime implementation artifacts in repository root.
+- In scope: maintaining clear, deterministic contracts in `docs/` and aligning runtime artifacts with those contracts.
+- Out of scope: introducing runtime behavior changes without corresponding contract updates in `docs/`.

@@ -8,8 +8,9 @@ This directory is the authoritative contract tree for `kjxlkj`.
 2. Each docs directory has multiple children.
 3. Each docs file is under 300 lines.
 4. Definitions are canonical in one place and referenced elsewhere.
-5. Runtime-file deletion has been completed; contracts in `docs/` are authoritative.
-6. Root keep/delete requirements and deletion sequencing are defined in `docs/repository/`.
+5. Contracts in `docs/` define target behavior first; implementation follows documented contracts.
+6. Runtime artifacts may exist in repository root in final state when they align with documented contracts.
+7. Root governance, including repository structure expectations and change sequencing, is defined in `docs/repository/`.
 
 ## Topical Directories
 
