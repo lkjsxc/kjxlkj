@@ -1,25 +1,34 @@
-# kjxlkj Documentation
+# Documentation Tree TOC
 
-This directory is the canonical contract for the new `kjxlkj` project.
+This directory is the authoritative contract tree for `kjxlkj`.
 
-## Product Summary
+## Global Rules
 
-`kjxlkj` is a single-admin Markdown publishing system.
+1. Every docs directory has exactly one `README.md` TOC.
+2. Each docs directory has multiple children.
+3. Each docs file is under 300 lines.
+4. Definitions are canonical in one place and referenced elsewhere.
+5. Runtime-file deletion has been completed; contracts in `docs/` are authoritative.
+6. Root keep/delete requirements and deletion sequencing are defined in `docs/repository/`.
 
-- Logged-out users can browse public articles.
-- Logged-in admin can edit Markdown files directly in a web UI.
-- Each article can be marked private with frontmatter `private: true`.
-- CLI commands are optimized for AI agent workflows.
+## Topical Directories
 
-## Directory Table of Contents
+| Directory | Purpose |
+| --- | --- |
+| [vision/README.md](vision/README.md) | Project intent, setup-first invariants, LLM constraints |
+| [product/README.md](product/README.md) | User-visible behavior and policy contracts |
+| [architecture/README.md](architecture/README.md) | Runtime, module, routing, and data contracts |
+| [containers/README.md](containers/README.md) | Docker Compose and verification container contracts |
+| [operations/README.md](operations/README.md) | CLI, testing, quality, and operational checks |
+| [repository/README.md](repository/README.md) | Repository layout, docs authoring, and governance |
 
-- [architecture/README.md](architecture/README.md)
-- [product/README.md](product/README.md)
-- [operations/README.md](operations/README.md)
+## Recommended Reading Order
 
-## Global Constraints
-
-- Every docs file must be 300 lines or fewer.
-- Every source code file must be 200 lines or fewer.
-- Every docs directory with multiple child docs/subdirectories must contain exactly one `README.md` as TOC.
-- Docker Compose is the default verification entrypoint.
+1. [vision/README.md](vision/README.md)
+2. [product/flows/setup-flow.md](product/flows/setup-flow.md)
+3. [product/surface-map.md](product/surface-map.md)
+4. [architecture/runtime/route-topology.md](architecture/runtime/route-topology.md)
+5. [architecture/data/README.md](architecture/data/README.md)
+6. [containers/README.md](containers/README.md)
+7. [operations/README.md](operations/README.md)
+8. [repository/README.md](repository/README.md)
