@@ -6,40 +6,11 @@ use super::CommandResult;
 pub const COMPOSE_VERIFY_STEP_COUNT: usize = 4;
 const DETAIL_LIMIT: usize = 200;
 
-struct ComposeStep {
+struct ComposeStep<'a> {
     name: &'static str,
+    program: &'a str,
     args: &'static [&'static str],
 }
-
-const COMPOSE_STEPS: &[ComposeStep] = &[
-    ComposeStep {
-        name: "config-quiet",
-        args: &["compose", "config", "--quiet"],
-    },
-    ComposeStep {
-        name: "build-app",
-        args: &["compose", "build", "app"],
-    },
-    ComposeStep {
-        name: "verify-profile-run",
-        args: &["compose", "--profile", "verify", "run", "--rm", "verify"],
-    },
-    ComposeStep {
-        name: "docs-validate-terms",
-        args: &[
-            "run",
-            "--rm",
-            "verify",
-            "cargo",
-            "run",
-            "--bin",
-            "kjxlkj",
-            "--",
-            "docs",
-            "validate-terms",
-        ],
-    },
-];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CommandExecution {
@@ -98,11 +69,11 @@ impl ComposeVerifyReport {
     }
 }
 
-pub fn verify_compose<R: CommandRunner>(runner: &R) -> ComposeVerifyReport {
+pub fn verify_compose<R: CommandRunner>(runner: &R, cli_program: &str) -> ComposeVerifyReport {
     let mut steps = Vec::new();
 
-    for step in COMPOSE_STEPS {
-        match runner.run("docker", step.args) {
+    for step in compose_steps(cli_program) {
+        match runner.run(step.program, step.args) {
             Ok(execution) if execution.success => {
                 steps.push(ComposeStepResult {
                     step: step.name,
@@ -145,6 +116,31 @@ pub fn verify_compose<R: CommandRunner>(runner: &R) -> ComposeVerifyReport {
         steps,
         failed_step: None,
     }
+}
+
+fn compose_steps(cli_program: &str) -> [ComposeStep<'_>; COMPOSE_VERIFY_STEP_COUNT] {
+    [
+        ComposeStep {
+            name: "docs-validate-topology",
+            program: cli_program,
+            args: &["docs", "validate-topology"],
+        },
+        ComposeStep {
+            name: "docs-validate-terms",
+            program: cli_program,
+            args: &["docs", "validate-terms"],
+        },
+        ComposeStep {
+            name: "quality-check-lines",
+            program: cli_program,
+            args: &["quality", "check-lines"],
+        },
+        ComposeStep {
+            name: "verify-profile-run",
+            program: "docker",
+            args: &["compose", "--profile", "verify", "run", "--rm", "verify"],
+        },
+    ]
 }
 
 fn compact_detail(detail: &str) -> Option<String> {

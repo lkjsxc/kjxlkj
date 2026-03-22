@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::io;
+use std::io::ErrorKind;
 
 use super::compose::{verify_compose, CommandExecution, CommandRunner};
 use super::CommandResult;
@@ -40,27 +41,77 @@ impl CommandRunner for StubRunner {
 fn verify_compose_reports_pass_when_all_steps_succeed() {
     let runner = StubRunner::new(vec![success(), success(), success(), success()]);
 
-    let report = verify_compose(&runner);
+    let report = verify_compose(&runner, "target/release/kjxlkj");
 
     assert_eq!(report.result(), CommandResult::Pass);
     assert_eq!(report.steps_passed(), 4);
     assert_eq!(report.steps.len(), 4);
     assert_eq!(report.failed_step, None);
-    assert_eq!(runner.calls().len(), 4);
+    assert_eq!(
+        runner.calls(),
+        vec![
+            vec![
+                "target/release/kjxlkj".to_owned(),
+                "docs".to_owned(),
+                "validate-topology".to_owned(),
+            ],
+            vec![
+                "target/release/kjxlkj".to_owned(),
+                "docs".to_owned(),
+                "validate-terms".to_owned(),
+            ],
+            vec![
+                "target/release/kjxlkj".to_owned(),
+                "quality".to_owned(),
+                "check-lines".to_owned(),
+            ],
+            vec![
+                "docker".to_owned(),
+                "compose".to_owned(),
+                "--profile".to_owned(),
+                "verify".to_owned(),
+                "run".to_owned(),
+                "--rm".to_owned(),
+                "verify".to_owned(),
+            ],
+        ]
+    );
 }
 
 #[test]
 fn verify_compose_stops_on_first_failure() {
-    let runner = StubRunner::new(vec![success(), failed(Some(17), "build failed"), success()]);
+    let runner = StubRunner::new(vec![
+        success(),
+        failed(Some(17), "terminology mismatch"),
+        success(),
+    ]);
 
-    let report = verify_compose(&runner);
+    let report = verify_compose(&runner, "target/release/kjxlkj");
 
     assert_eq!(report.result(), CommandResult::Fail);
     assert_eq!(report.steps_passed(), 1);
     assert_eq!(report.steps.len(), 2);
-    assert_eq!(report.failed_step, Some("build-app"));
+    assert_eq!(report.failed_step, Some("docs-validate-terms"));
     assert_eq!(report.steps[1].result, CommandResult::Fail);
     assert_eq!(runner.calls().len(), 2);
+}
+
+#[test]
+fn verify_compose_reports_command_spawn_errors() {
+    let runner = StubRunner::new(vec![Err(io::Error::new(
+        ErrorKind::NotFound,
+        "docker: command not found",
+    ))]);
+
+    let report = verify_compose(&runner, "target/release/kjxlkj");
+
+    assert_eq!(report.result(), CommandResult::Fail);
+    assert_eq!(report.failed_step, Some("docs-validate-topology"));
+    assert_eq!(report.steps.len(), 1);
+    assert!(report.steps[0]
+        .detail
+        .as_ref()
+        .is_some_and(|detail| detail.contains("docker: command not found")));
 }
 
 fn success() -> io::Result<CommandExecution> {
