@@ -8,6 +8,7 @@ use crate::web::session::{session_id_from_request, SessionState};
 use crate::web::state::WebState;
 
 pub const SESSION_COOKIE_NAME: &str = "session_id";
+const HTML_CONTENT_TYPE: &str = "text/html; charset=utf-8";
 
 pub async fn has_admin_user(state: &web::Data<WebState>) -> Result<bool, HttpResponse> {
     state
@@ -28,7 +29,7 @@ pub async fn enforce_setup_completion(state: &web::Data<WebState>) -> Result<(),
 pub async fn enforce_setup_pending(state: &web::Data<WebState>) -> Result<(), HttpResponse> {
     match has_admin_user(state).await {
         Ok(false) => Ok(()),
-        Ok(true) => Err(HttpResponse::NotFound().finish()),
+        Ok(true) => Err(setup_locked_response()),
         Err(response) => Err(response),
     }
 }
@@ -81,6 +82,14 @@ pub fn redirect_to_setup() -> HttpResponse {
     HttpResponse::Found()
         .append_header((header::LOCATION, "/setup"))
         .finish()
+}
+
+fn setup_locked_response() -> HttpResponse {
+    HttpResponse::NotFound()
+        .content_type(HTML_CONTENT_TYPE)
+        .body(
+            r#"<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Setup unavailable</title></head><body><main id="setup-locked-page"><h1>Setup already completed</h1><p>The setup route is no longer available. Continue with admin login.</p><p><a href="/login">Go to login</a></p></main></body></html>"#,
+        )
 }
 
 pub fn is_hx_request(request: &HttpRequest) -> bool {
