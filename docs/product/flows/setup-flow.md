@@ -10,6 +10,7 @@
 2. User visits `/setup` and receives the full setup page (not placeholder-only content).
 3. User submits initial admin credentials.
 4. System creates admin record and enables normal auth flow.
+5. Setup accepts only `username=admin`; password is required.
 
 ## Guardrails
 

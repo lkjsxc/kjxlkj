@@ -12,6 +12,8 @@
 - Admin can view both public and private articles.
 - Public URLs remain unchanged regardless of session state.
 - `GET /search` may include public and private matches.
+- Article pages include inline editor controls for admin only.
+- Article history pages are admin-only.
 
 ## Rendering Rules
 
@@ -19,3 +21,4 @@
 - Rendered HTML is sanitized before response.
 - Article pages should expose stable canonical links.
 - Shared navigation shell is rendered on page surfaces after setup completion.
+- Article page shows last updated date and previous/next links.

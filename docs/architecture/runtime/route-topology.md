@@ -4,6 +4,7 @@
 
 - `/`
 - `/article/{slug}`
+- `/article/{slug}/history`
 - `/search`
 
 ## Auth Routes
@@ -15,29 +16,23 @@
 ## Admin Routes
 
 - `/admin`
-- `/admin/settings`
-- `/admin/trash`
-- `/admin/open/{slug}`
-- `/admin/preview`
 - `/admin/create`
-- `/admin/save`
 - `/admin/rename`
 - `/admin/delete/{slug}`
 - `/admin/toggle-private/{slug}`
+- `/admin/settings`
 - `/admin/settings/save`
 - `/admin/settings/reindex`
+- `/admin/trash`
 - `/admin/trash/restore/{slug}`
 - `/admin/trash/delete-permanent/{slug}`
 
-## Route Mode Constraint
+## Inline Edit Routes
 
-- `GET /admin` returns a complete page for non-HTMX navigation.
-- Admin interaction routes return HTMX fragments when `HX-Request: true` is present.
+- `/article/{slug}/edit`
+- `/article/{slug}/history/restore`
 
-## Routing Order Constraint
+## Routing Constraints
 
-- Setup-first gating must run before normal login/admin routing when no admin user exists.
-- Before setup completion, root-route handling for `GET /` must redirect to `/setup`.
-- Before setup completion, `GET /setup` must render the complete setup page contract.
-- See [Setup-First Contract](../../vision/setup-first.md) for the invariant.
-- See [Product Surface Map](../../product/surface-map.md) for route semantics.
+- Setup-first gate runs before normal auth/admin flow.
+- Inline editing is admin-only and mounted on article routes.

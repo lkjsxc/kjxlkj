@@ -36,7 +36,7 @@ are layered on top.
 
 - Root container: `<main id="setup-page">`.
 - Form ID: `#setup-form` with fields:
-  - `username`
+  - hidden `username` with fixed value `admin`
   - `password`
 - Error region: `#setup-errors` with `aria-live="polite"`.
 - `POST /setup` outcomes:
@@ -48,7 +48,6 @@ are layered on top.
 
 - Root container: `<main id="login-page">`.
 - Form ID: `#login-form` with fields:
-  - `username`
   - `password`
 - Error region: `#login-errors` with `aria-live="polite"`.
 - `POST /login` outcomes:
@@ -59,21 +58,11 @@ are layered on top.
 ## `/admin` Page Contract
 
 - Root container: `<main id="admin-page">`.
-- Required shell regions:
+- Required dashboard regions:
+  - `#admin-create-form`
   - `#admin-article-list`
-  - `#admin-editor-pane`
-  - `#admin-preview-pane`
-  - `#admin-status-banner`
-  - `#admin-conflict-banner`
-- Editor form contract:
-  - Form ID `#admin-editor-form`.
-  - Required fields: `slug`, `title`, `body`, `private`, `last_known_revision`.
-- Preview pane contract:
-  - Preview HTML is rendered server-side and injected via HTMX.
-  - Client-side markdown rendering is not authoritative.
-- Progressive enhancement:
-  - Base form submission works without JavaScript.
-  - HTMX and JavaScript enhancements MUST target the same stable IDs.
+- Dashboard does not host dedicated edit/preview panes.
+- Editing is performed on `/article/{slug}` via inline editor.
 
 ## `/search` Page Contract
 

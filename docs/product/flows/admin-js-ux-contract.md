@@ -1,60 +1,26 @@
-# Admin JavaScript UX Contract
+# Inline Editing UX Contract
 
-This document defines richer `/admin` JavaScript behavior layered on server-rendered and HTMX contracts.
+## Progressive Enhancement
 
-## Progressive Enhancement Boundary
-
-- `/admin` remains usable without JavaScript through normal form submissions.
-- JavaScript enhancements MUST not change server validation or authorization rules.
-- HTMX remains the transport for fragment swaps; JavaScript orchestrates when requests are sent.
-- Responsive shell toggle behavior MAY be JavaScript-enhanced but base navigation remains available.
-
-## Editor State Contract
-
-- Client state tracks:
-  - active `slug`
-  - `last_known_revision`
-  - dirty flag (`has_unsaved_changes`)
-  - autosave timer handle
-- Dirty state becomes `true` on user edits to `title`, `body`, or `private`.
-- Dirty state resets only after successful save/open/create/rename that returns a fresh revision.
+- Inline editing works with plain form submission.
+- JavaScript enhancement adds autosave timing and unload protection.
+- Behavior stays deterministic with or without JavaScript.
 
 ## Autosave Contract
 
-- Trigger autosave after `2s` debounce from the latest edit.
-- Trigger autosave immediately on blur for title/body/private fields when dirty.
-- Trigger autosave attempt during `beforeunload` when dirty.
-- Autosave uses `POST /admin/save` and follows the same conflict contract as manual saves.
-- Autosave requests are skipped when no unsaved changes exist.
+- Dirty state toggles on `title`, `private`, and `body` edits.
+- Autosave triggers after 2 seconds idle.
+- Blur triggers immediate save when dirty.
+- Before unload triggers save attempt and unload warning when dirty.
 
-## Unsaved-Changes Guard Contract
+## Accessibility Contract
 
-- Guard navigation-triggering actions (`open`, `create`, `rename`, `delete`, leaving `/admin`) when dirty.
-- Show confirmation before discarding unsaved edits.
-- If a save is in flight during navigation, guard waits for completion or explicit discard.
+- Inline status region uses `aria-live="polite"`.
+- History and navigation links remain keyboard reachable.
+- Editing controls appear only for authenticated admin.
 
-## Keyboard Shortcut Contract
+## Removed Behaviors
 
-Primary modifier:
-- `Ctrl` on Windows/Linux
-- `Cmd` on macOS
-
-| Shortcut | Required behavior |
-| --- | --- |
-| `Primary+S` | Save current document immediately and prevent browser default save dialog |
-| `Primary+N` | Open new-article flow and focus first create input |
-| `Primary+Shift+P` | Request fresh server-side preview (`POST /admin/preview`) |
-| `Primary+K` | Focus quick-open/filter input for article navigation |
-
-## Banner and Accessibility Contract
-
-- `#admin-status-banner` uses `aria-live="polite"` for normal save and autosave outcomes.
-- `#admin-conflict-banner` uses `aria-live="assertive"` and `role="alert"` for conflicts.
-- Keyboard shortcuts and autosave updates MUST preserve editor focus/caret where possible.
-- Narrow-screen menu toggle MUST preserve deterministic focus handoff when opening/closing drawer.
-
-## Cross-References
-
-- HTMX transport and fragment shapes: [admin-htmx-contracts.md](admin-htmx-contracts.md)
-- Conflict semantics: [admin-conflict-warning.md](admin-conflict-warning.md)
-- Base page shell IDs: [page-contracts.md](page-contracts.md)
+- No save button.
+- No preview button.
+- No split-pane preview surface.

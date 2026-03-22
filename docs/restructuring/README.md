@@ -7,6 +7,7 @@ This section defines a deterministic documentation-restructuring program.
 - This program only changes documentation under `docs/` and root `README.md` links.
 - Runtime implementation code is intentionally out of scope.
 - Execution order is fixed and must remain deterministic for LLM readability.
+- Runtime convergence is validated through linked operations/quality contracts, not by changing this program scope.
 
 ## Directory TOC
 

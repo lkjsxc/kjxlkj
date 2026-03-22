@@ -1,35 +1,26 @@
 # Direct Edit Mode Contract
 
-This contract defines v1 direct-edit behavior for markdown authoring.
-
 ## Mode Model
 
-- v1 direct editing MUST use deterministic split-view mode.
-- Editor pane remains markdown-authoritative input.
-- Preview pane remains server-rendered authoritative output.
-
-## Split-View Requirements
-
-- Editor pane ID: `#admin-editor-pane`.
-- Preview pane ID: `#admin-preview-pane`.
-- Optional synchronized navigation between panes MAY be provided.
-- Mode toggle control MAY exist but must not break base form behavior.
+- Direct editing is inline on `/article/{slug}` for authenticated admin.
+- No dedicated editor page exists.
+- Canonical source remains Markdown; no HTML-first storage.
 
 ## Interaction Rules
 
-- Preview updates are triggered by:
-  - explicit preview action
-  - save response refresh
-- Autosave, conflict handling, and unsaved-change guards remain active.
-- Direct-edit enhancements MUST preserve keyboard shortcut contracts.
+- Inline editor fields include `title`, `private`, `body`, `last_known_revision`.
+- Private toggle is positioned above body in edit form.
+- Save and preview buttons are removed.
+- Autosave runs after 2 seconds of inactivity and on blur.
+- Before unload, dirty state triggers save attempt and warning.
 
-## Non-Admin Rule
+## Visibility Rules
 
-- Non-admin users are read-only.
-- No editing or suggestion submission surface is provided in v1.
+- Non-admin users never receive editing controls.
+- Private articles are hidden from non-admin users.
 
-## Cross-References
+## History Rules
 
-- Admin editor flow: [admin-editor.md](admin-editor.md)
-- JavaScript UX contract: [admin-js-ux-contract.md](admin-js-ux-contract.md)
-- Runtime interaction invariants: [../../architecture/runtime/ui-interaction-contract.md](../../architecture/runtime/ui-interaction-contract.md)
+- Every article exposes history at `/article/{slug}/history` for admin.
+- Restore endpoint exists at `/article/{slug}/history/restore`.
+- History backend is Git with at most one commit per article per 60 seconds.

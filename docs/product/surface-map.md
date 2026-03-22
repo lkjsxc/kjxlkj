@@ -3,36 +3,35 @@
 ## Public Surface
 
 - `GET /` lists visible articles after setup completion; before any admin exists, it redirects to `/setup`.
-- `GET /article/{slug}` renders a single visible article.
-- `GET /search` renders the dedicated search page with role-aware result filtering.
+- `GET /article/{slug}` renders an article with last-updated metadata and previous/next navigation.
+- `GET /article/{slug}/history` renders article history for authenticated admin only.
+- `GET /search` renders role-aware result filtering.
 
 ## Authentication Surface
 
-- `GET /setup` renders the complete first-admin setup page when none exists.
-- `GET /login` renders admin login after setup completion.
-- `POST /logout` destroys the admin session.
+- `GET /setup` renders setup page when no admin exists.
+- `POST /setup` creates fixed username `admin` with password.
+- `GET /login` renders login form.
+- `POST /login` authenticates `admin` by password.
+- `POST /logout` destroys admin session.
 
 ## Admin Surface
 
-- `GET /admin` renders the full editor shell page for authenticated admins.
-- `GET /admin/settings` renders admin settings page.
-- `GET /admin/trash` renders admin trash page.
-- `GET /admin/open/{slug}` loads editor content for a slug.
-- `POST /admin/preview` returns server-rendered preview fragments for HTMX swaps.
-- `POST /admin/save` persists edits with last-write-wins conflict signaling.
-- `POST /admin/create`, `POST /admin/rename`, `POST /admin/delete/{slug}`, and `POST /admin/toggle-private/{slug}` mutate content state.
-- `POST /admin/settings/save` persists operational settings.
-- `POST /admin/settings/reindex` triggers search index rebuild.
-- `POST /admin/trash/restore/{slug}` restores soft-deleted articles.
-- `POST /admin/trash/delete-permanent/{slug}` permanently deletes trashed articles.
+- `GET /admin` renders admin dashboard with article list and create form.
+- `POST /admin/create` creates new article; private defaults to true.
+- `POST /admin/rename` renames article slug.
+- `POST /admin/delete/{slug}` moves article to trash.
+- `POST /admin/toggle-private/{slug}` toggles privacy.
+- `GET /admin/settings`, `POST /admin/settings/save`, `POST /admin/settings/reindex`.
+- `GET /admin/trash`, `POST /admin/trash/restore/{slug}`, `POST /admin/trash/delete-permanent/{slug}`.
 
-## UX Contract Layers
+## Inline Editing Surface
 
-- Server-rendered page contracts: [flows/page-contracts.md](flows/page-contracts.md)
-- HTMX admin contracts: [flows/admin-htmx-contracts.md](flows/admin-htmx-contracts.md)
-- JavaScript UX contracts: [flows/admin-js-ux-contract.md](flows/admin-js-ux-contract.md)
-- Conflict warning contract: [flows/admin-conflict-warning.md](flows/admin-conflict-warning.md)
+- `POST /article/{slug}/edit` persists inline edits.
+- `POST /article/{slug}/history/restore` restores a historical revision.
+- Editing is admin-only and preserves canonical Markdown.
+- Save and preview buttons are removed; autosave is deterministic.
 
 ## Contract Priority
 
-- Setup-first rules override normal auth entry rules until setup is complete.
+- Setup-first rules override normal auth flow until setup completion.

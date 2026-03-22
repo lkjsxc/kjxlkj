@@ -2,20 +2,19 @@
 
 ## Serve
 
-- `serve`: runs the HTTP server.
-
-## Content
-
-- `content list --include-private`
-- `content validate`
-- `content set-private <slug> --value <true|false>`
+- `serve` runs HTTP server (`kjxlkj-app` binary).
 
 ## Docs and Quality
 
 - `docs validate-topology`
+- `docs validate-terms`
 - `quality check-lines`
 
-## System and Containers
+## Container Verification
 
-- `system doctor`
 - `compose verify`
+
+## Notes
+
+- CLI outputs deterministic JSON lines.
+- Non-zero exit code means contract failure.

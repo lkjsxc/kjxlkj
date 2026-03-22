@@ -3,35 +3,29 @@
 ## Unit Tests
 
 - Frontmatter parse/serialize behavior.
-- Slug and path conversion behavior.
-- Visibility filtering behavior.
+- Draft placeholder title/slug generation.
+- Slug validation and path conversion.
+- CLI topology/line-limit/term-scan logic.
 
 ## Integration Tests
 
-- Setup lock behavior.
-- Login/logout session flow.
-- Admin route guard behavior.
-- Public/private route behavior.
+- Setup-first lifecycle and setup lock.
+- Password-only login/logout session lifecycle.
+- Private-by-default article visibility.
+- Inline edit save flow on article page.
+- Article navigation and history routes.
+- Admin create/rename/delete/toggle flows.
+- Trash and settings flows.
 
 ## UI Contract Coverage
 
-- Server-rendered page contracts for `/`, `/setup`, `/login`, and `/admin`.
-- Server-rendered page contracts for `/search`, `/admin/settings`, and `/admin/trash`.
-- Responsive navigation shell contracts (wide left nav and narrow topbar toggle).
-- HTMX fragment contracts for open/preview/save/create/rename/delete/toggle admin flows.
-- HTMX settings and trash flows.
-- Conflict handling contract: last-write-wins plus visible warning banner.
-- JavaScript UX contracts:
-  - autosave trigger model (2s debounce, blur, before unload)
-  - unsaved-change guard behavior
-  - shortcut bindings (`Ctrl/Cmd+S`, `Ctrl/Cmd+N`, `Ctrl/Cmd+Shift+P`, `Ctrl/Cmd+K`)
-- Search behavior contracts:
-  - role-filtered results
-  - ranking and snippet output
-
-## Manual Verification Checklist
-
-- Follow [ui-contract-verification.md](ui-contract-verification.md) for deterministic page, HTMX, and JS checks.
+- `/admin` is dashboard only (no dedicated editor pane).
+- `/article/{slug}` exposes inline editor only for admin.
+- Save/preview buttons are absent.
+- Private toggle is above body in inline form.
+- Last updated date is displayed.
+- Previous/next links are present.
+- History page and restore path are present.
 
 ## Compose Verification
 

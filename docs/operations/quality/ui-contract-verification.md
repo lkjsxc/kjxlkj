@@ -1,60 +1,37 @@
 # UI Contract Verification Checklist
 
-## Scope
+## Core Page Checks
 
-Use this checklist to verify UI contracts defined in product and architecture docs before and after implementation changes.
+1. `GET /` redirects to `/setup` before setup completion.
+2. `GET /setup` renders password-first setup form with fixed admin username.
+3. `GET /login` renders password-only login form.
+4. `GET /admin` renders dashboard, not dedicated editor page.
+5. `GET /article/{slug}` renders last-updated and prev/next links.
 
-## Server-Rendered Page Checks
+## Inline Edit Checks
 
-1. `GET /` follows setup-first redirect rules and renders full home page after setup.
-2. `GET /setup` renders full setup form only while setup is pending.
-3. `GET /login` renders full login page only after setup completion.
-4. `GET /search` renders full search page after setup completion for public and admin users.
-5. `GET /admin` renders full admin shell only for authenticated admins.
-6. `GET /admin/settings` and `GET /admin/trash` require authenticated admin session.
-7. Each page exposes stable root IDs from [../../product/flows/page-contracts.md](../../product/flows/page-contracts.md).
+1. Authenticated admin sees inline edit form on article page.
+2. Edit form fields include `title`, `private`, `body`, `last_known_revision`.
+3. Private toggle appears above body field.
+4. Save and preview buttons do not exist.
+5. Autosave trigger window is 2 seconds and blur-triggered.
 
-## HTMX Admin Checks
+## History Checks
 
-1. `POST /admin/preview` updates `#admin-preview-pane` with server-rendered sanitized HTML.
-2. `GET /admin/open/{slug}` returns editor and preview fragments with stable IDs.
-3. `POST /admin/save` returns status fragment and updated revision token.
-4. Create/rename/delete/toggle flows update list/editor fragments deterministically.
-5. Settings save/reindex flows return deterministic status updates.
-6. Trash restore/permanent-delete flows update trash and active lists deterministically.
-7. Auth failures on HTMX requests return deterministic redirect signaling.
+1. `GET /article/{slug}/history` is admin-only.
+2. History list shows commit ID, timestamp, and message.
+3. `POST /article/{slug}/history/restore` restores selected revision.
 
-## Navigation Shell Checks
+## Privacy and Visibility Checks
 
-1. Wide viewport shows persistent left navigation.
-2. Narrow viewport shows top bar and `#app-nav-toggle`.
-3. Non-admin users can open menu and access search/list navigation.
-4. Non-admin users do not see private articles or admin-only menu actions.
-5. Admin users see settings and trash menu entries.
-
-## JavaScript UX Checks
-
-1. Autosave fires after 2 seconds of idle editing.
-2. Autosave fires immediately on blur when dirty.
-3. Before unload triggers save attempt or unload warning when dirty.
-4. Unsaved-change guards protect open/create/rename/delete and route-exit actions.
-5. Shortcut bindings are enforced:
-   - `Ctrl/Cmd+S`
-   - `Ctrl/Cmd+N`
-   - `Ctrl/Cmd+Shift+P`
-   - `Ctrl/Cmd+K`
-6. Narrow-screen menu toggle opens/closes nav drawer with deterministic focus behavior.
-
-## Conflict Warning Checks
-
-1. Stale save is persisted (last-write-wins).
-2. Conflict response makes `#admin-conflict-banner` visible.
-3. Conflict banner includes overwritten and current revision context.
-4. `#admin-status-banner` still reports save completion.
+1. New articles default to private.
+2. Public users cannot access private articles.
+3. Admin sees private/public markers across dashboard/home.
 
 ## Required Validation Commands
 
 ```bash
 cargo run --bin kjxlkj -- docs validate-topology
+cargo run --bin kjxlkj -- docs validate-terms
 cargo run --bin kjxlkj -- quality check-lines
 ```
