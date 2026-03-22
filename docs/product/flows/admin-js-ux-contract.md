@@ -7,6 +7,7 @@ This document defines richer `/admin` JavaScript behavior layered on server-rend
 - `/admin` remains usable without JavaScript through normal form submissions.
 - JavaScript enhancements MUST not change server validation or authorization rules.
 - HTMX remains the transport for fragment swaps; JavaScript orchestrates when requests are sent.
+- Responsive shell toggle behavior MAY be JavaScript-enhanced but base navigation remains available.
 
 ## Editor State Contract
 
@@ -50,6 +51,7 @@ Primary modifier:
 - `#admin-status-banner` uses `aria-live="polite"` for normal save and autosave outcomes.
 - `#admin-conflict-banner` uses `aria-live="assertive"` and `role="alert"` for conflicts.
 - Keyboard shortcuts and autosave updates MUST preserve editor focus/caret where possible.
+- Narrow-screen menu toggle MUST preserve deterministic focus handoff when opening/closing drawer.
 
 ## Cross-References
 

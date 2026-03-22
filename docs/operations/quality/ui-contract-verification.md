@@ -9,8 +9,10 @@ Use this checklist to verify UI contracts defined in product and architecture do
 1. `GET /` follows setup-first redirect rules and renders full home page after setup.
 2. `GET /setup` renders full setup form only while setup is pending.
 3. `GET /login` renders full login page only after setup completion.
-4. `GET /admin` renders full admin shell only for authenticated admins.
-5. Each page exposes stable root IDs from [../../product/flows/page-contracts.md](../../product/flows/page-contracts.md).
+4. `GET /search` renders full search page after setup completion for public and admin users.
+5. `GET /admin` renders full admin shell only for authenticated admins.
+6. `GET /admin/settings` and `GET /admin/trash` require authenticated admin session.
+7. Each page exposes stable root IDs from [../../product/flows/page-contracts.md](../../product/flows/page-contracts.md).
 
 ## HTMX Admin Checks
 
@@ -18,7 +20,17 @@ Use this checklist to verify UI contracts defined in product and architecture do
 2. `GET /admin/open/{slug}` returns editor and preview fragments with stable IDs.
 3. `POST /admin/save` returns status fragment and updated revision token.
 4. Create/rename/delete/toggle flows update list/editor fragments deterministically.
-5. Auth failures on HTMX requests return deterministic redirect signaling.
+5. Settings save/reindex flows return deterministic status updates.
+6. Trash restore/permanent-delete flows update trash and active lists deterministically.
+7. Auth failures on HTMX requests return deterministic redirect signaling.
+
+## Navigation Shell Checks
+
+1. Wide viewport shows persistent left navigation.
+2. Narrow viewport shows top bar and `#app-nav-toggle`.
+3. Non-admin users can open menu and access search/list navigation.
+4. Non-admin users do not see private articles or admin-only menu actions.
+5. Admin users see settings and trash menu entries.
 
 ## JavaScript UX Checks
 
@@ -31,6 +43,7 @@ Use this checklist to verify UI contracts defined in product and architecture do
    - `Ctrl/Cmd+N`
    - `Ctrl/Cmd+Shift+P`
    - `Ctrl/Cmd+K`
+6. Narrow-screen menu toggle opens/closes nav drawer with deterministic focus behavior.
 
 ## Conflict Warning Checks
 

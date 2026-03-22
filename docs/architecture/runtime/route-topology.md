@@ -4,6 +4,7 @@
 
 - `/`
 - `/article/{slug}`
+- `/search`
 
 ## Auth Routes
 
@@ -14,6 +15,8 @@
 ## Admin Routes
 
 - `/admin`
+- `/admin/settings`
+- `/admin/trash`
 - `/admin/open/{slug}`
 - `/admin/preview`
 - `/admin/create`
@@ -21,6 +24,10 @@
 - `/admin/rename`
 - `/admin/delete/{slug}`
 - `/admin/toggle-private/{slug}`
+- `/admin/settings/save`
+- `/admin/settings/reindex`
+- `/admin/trash/restore/{slug}`
+- `/admin/trash/delete-permanent/{slug}`
 
 ## Route Mode Constraint
 

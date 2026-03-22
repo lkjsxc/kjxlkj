@@ -3,5 +3,8 @@
 - [postgres-schema.md](postgres-schema.md)
 - [markdown-frontmatter.md](markdown-frontmatter.md)
 - [content-visibility.md](content-visibility.md)
+- [settings-storage.md](settings-storage.md)
+- [search-index.md](search-index.md)
+- [trash-state.md](trash-state.md)
 
 This section defines persistent data contracts and content metadata rules.

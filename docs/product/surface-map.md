@@ -4,6 +4,7 @@
 
 - `GET /` lists visible articles after setup completion; before any admin exists, it redirects to `/setup`.
 - `GET /article/{slug}` renders a single visible article.
+- `GET /search` renders the dedicated search page with role-aware result filtering.
 
 ## Authentication Surface
 
@@ -14,10 +15,16 @@
 ## Admin Surface
 
 - `GET /admin` renders the full editor shell page for authenticated admins.
+- `GET /admin/settings` renders admin settings page.
+- `GET /admin/trash` renders admin trash page.
 - `GET /admin/open/{slug}` loads editor content for a slug.
 - `POST /admin/preview` returns server-rendered preview fragments for HTMX swaps.
 - `POST /admin/save` persists edits with last-write-wins conflict signaling.
 - `POST /admin/create`, `POST /admin/rename`, `POST /admin/delete/{slug}`, and `POST /admin/toggle-private/{slug}` mutate content state.
+- `POST /admin/settings/save` persists operational settings.
+- `POST /admin/settings/reindex` triggers search index rebuild.
+- `POST /admin/trash/restore/{slug}` restores soft-deleted articles.
+- `POST /admin/trash/delete-permanent/{slug}` permanently deletes trashed articles.
 
 ## UX Contract Layers
 

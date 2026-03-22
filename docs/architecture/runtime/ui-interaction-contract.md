@@ -4,9 +4,9 @@ This runtime contract binds page rendering, HTMX fragments, and JavaScript orche
 
 ## Interaction Tiers
 
-1. Server-rendered page tier for `/`, `/setup`, `/login`, and `/admin`.
-2. HTMX tier for admin open/preview/save/create/rename/delete/toggle interactions.
-3. JavaScript tier for autosave, unsaved-change guards, and keyboard shortcuts.
+1. Server-rendered page tier for `/`, `/setup`, `/login`, `/search`, `/admin`, `/admin/settings`, and `/admin/trash`.
+2. HTMX tier for admin open/preview/save/create/rename/delete/toggle/settings/trash interactions.
+3. JavaScript tier for autosave, unsaved-change guards, keyboard shortcuts, and responsive menu toggle behavior.
 
 ## Runtime Invariants
 
@@ -14,6 +14,7 @@ This runtime contract binds page rendering, HTMX fragments, and JavaScript orche
 - HTMX responses target stable DOM IDs defined in product contracts.
 - JavaScript enhancements are additive and must degrade to server-rendered behavior.
 - Auth and setup guards execute before any tier-specific handler logic.
+- Shared shell IDs remain stable across page surfaces.
 
 ## Preview Rendering Invariant
 
@@ -35,3 +36,4 @@ This runtime contract binds page rendering, HTMX fragments, and JavaScript orche
 - Page contracts: [../../product/flows/page-contracts.md](../../product/flows/page-contracts.md)
 - HTMX fragment contracts: [../../product/flows/admin-htmx-contracts.md](../../product/flows/admin-htmx-contracts.md)
 - JS behavior contracts: [../../product/flows/admin-js-ux-contract.md](../../product/flows/admin-js-ux-contract.md)
+- Navigation shell contract: [../../product/flows/navigation-shell.md](../../product/flows/navigation-shell.md)

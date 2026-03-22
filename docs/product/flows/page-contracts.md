@@ -1,7 +1,8 @@
 # Server-Rendered Page Contracts
 
-This document defines target full-page contracts for `/`, `/setup`, `/login`, and `/admin`
-before richer HTMX and JavaScript behaviors are layered on top.
+This document defines target full-page contracts for `/`, `/setup`, `/login`, `/search`,
+`/admin`, `/admin/settings`, and `/admin/trash` before richer HTMX and JavaScript behaviors
+are layered on top.
 
 ## Global Page Rules
 
@@ -17,7 +18,10 @@ before richer HTMX and JavaScript behaviors are layered on top.
 | `GET /` | `302` to `/setup` | `200` home page | `200` home page with admin visibility |
 | `GET /setup` | `200` setup page | `404` | `404` |
 | `GET /login` | `302` to `/setup` | `200` login page | `303` to `/admin` |
+| `GET /search` | `302` to `/setup` | `200` search page | `200` search page |
 | `GET /admin` | `302` to `/setup` | `302` to `/login` | `200` admin shell page |
+| `GET /admin/settings` | `302` to `/setup` | `302` to `/login` | `200` admin settings page |
+| `GET /admin/trash` | `302` to `/setup` | `302` to `/login` | `200` admin trash page |
 
 ## `/` Home Page Contract
 
@@ -26,6 +30,7 @@ before richer HTMX and JavaScript behaviors are layered on top.
 - Logged-out rendering includes only public articles.
 - Logged-in admin rendering may include private items and admin affordances.
 - Article links always use canonical `/article/{slug}` URLs.
+- Page is rendered within shared shell IDs from [navigation-shell.md](navigation-shell.md).
 
 ## `/setup` Page Contract
 
@@ -69,3 +74,33 @@ before richer HTMX and JavaScript behaviors are layered on top.
 - Progressive enhancement:
   - Base form submission works without JavaScript.
   - HTMX and JavaScript enhancements MUST target the same stable IDs.
+
+## `/search` Page Contract
+
+- Root container: `<main id="search-page">`.
+- Required regions:
+  - `#search-form`
+  - `#search-query`
+  - `#search-results`
+- Search page is available to non-admin and admin users after setup completion.
+- Privacy filtering applies to results based on session role.
+- Page is rendered within shared shell IDs from [navigation-shell.md](navigation-shell.md).
+
+## `/admin/settings` Page Contract
+
+- Root container: `<main id="admin-settings-page">`.
+- Required regions:
+  - `#admin-settings-form`
+  - `#admin-settings-status`
+  - `#admin-settings-errors`
+- Route is admin-only and uses standard admin guards.
+- Page is rendered within shared shell IDs from [navigation-shell.md](navigation-shell.md).
+
+## `/admin/trash` Page Contract
+
+- Root container: `<main id="admin-trash-page">`.
+- Required regions:
+  - `#admin-trash-list`
+  - `#admin-trash-status`
+- Route is admin-only and uses standard admin guards.
+- Page is rendered within shared shell IDs from [navigation-shell.md](navigation-shell.md).
