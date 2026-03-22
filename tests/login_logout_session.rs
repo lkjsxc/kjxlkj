@@ -43,7 +43,14 @@ async fn login_logout_session_lifecycle_behaves_as_expected() {
             .to_request(),
     )
     .await;
-    assert_eq!(login.status(), StatusCode::OK);
+    assert_eq!(login.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        login
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
 
     let set_cookie = login
         .headers()

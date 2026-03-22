@@ -1,6 +1,17 @@
 pub mod admin;
+mod admin_actions;
+mod admin_fragments;
+mod admin_html;
 mod admin_input;
+mod admin_mutation;
+mod admin_page;
+pub mod admin_preview;
+mod admin_response;
+mod admin_runtime;
 pub mod auth;
 mod common;
+mod home_page;
+mod login_page;
 pub mod public;
 pub mod setup;
+pub mod static_assets;

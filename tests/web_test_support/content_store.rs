@@ -4,9 +4,11 @@ use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
 
-use kjxlkj::core::content::{Frontmatter, ParsedMarkdown};
+use kjxlkj::core::content::{
+    revision_token, serialize_markdown_document, Frontmatter, ParsedMarkdown,
+};
 use kjxlkj::error::AppError;
-use kjxlkj::web::state::ContentStore;
+use kjxlkj::web::state::{ContentStore, SaveConflict, SaveOutcome};
 
 #[derive(Clone, Default)]
 pub struct MockContentStore {
@@ -53,8 +55,39 @@ impl ContentStore for MockContentStore {
         title: Option<String>,
         body: &str,
         private: bool,
-    ) -> Result<(), AppError> {
-        self.create_article(slug, title, body, private).await
+        last_known_revision: Option<&str>,
+    ) -> Result<SaveOutcome, AppError> {
+        let persisted_revision = self
+            .inner
+            .lock()
+            .expect("content lock poisoned")
+            .get(slug)
+            .map(article_revision);
+        let submitted_revision = last_known_revision
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(ToOwned::to_owned);
+        self.create_article(slug, title, body, private).await?;
+        let saved_revision = self
+            .inner
+            .lock()
+            .expect("content lock poisoned")
+            .get(slug)
+            .map(article_revision)
+            .ok_or_else(|| {
+                AppError::content_io(slug.to_owned(), io::Error::from(io::ErrorKind::NotFound))
+            })?;
+        let conflict = match (submitted_revision, persisted_revision) {
+            (Some(submitted), Some(persisted)) if submitted != persisted => Some(SaveConflict {
+                persisted_revision: persisted,
+                submitted_revision: submitted,
+            }),
+            _ => None,
+        };
+        Ok(SaveOutcome {
+            revision: saved_revision,
+            conflict,
+        })
     }
 
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError> {
@@ -81,6 +114,13 @@ impl ContentStore for MockContentStore {
         article.frontmatter.private = !article.frontmatter.private;
         Ok(article.frontmatter.private)
     }
+}
+
+fn article_revision(article: &ParsedMarkdown) -> String {
+    revision_token(&serialize_markdown_document(
+        &article.frontmatter,
+        &article.body,
+    ))
 }
 
 impl MockContentStore {

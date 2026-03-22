@@ -42,6 +42,11 @@ async fn login_creates_session_cookie_and_logout_clears_it() {
     )
     .await;
     assert_eq!(bad_login.status(), StatusCode::UNAUTHORIZED);
+    let bad_login_body = test::read_body(bad_login).await;
+    let bad_login_text = String::from_utf8(bad_login_body.to_vec()).expect("utf8");
+    assert!(bad_login_text.contains("<main id=\"login-page\">"));
+    assert!(bad_login_text.contains("<section id=\"login-errors\" aria-live=\"polite\">"));
+    assert!(bad_login_text.contains("invalid username or password"));
 
     let good_login = test::call_service(
         &app,
@@ -51,7 +56,14 @@ async fn login_creates_session_cookie_and_logout_clears_it() {
             .to_request(),
     )
     .await;
-    assert_eq!(good_login.status(), StatusCode::OK);
+    assert_eq!(good_login.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        good_login
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
 
     let cookie_header = good_login
         .headers()

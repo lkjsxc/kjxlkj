@@ -1,12 +1,13 @@
 use actix_web::web;
 
-use crate::web::handlers::{admin, auth, public, setup};
+use crate::web::handlers::{admin, admin_preview, auth, public, setup, static_assets};
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg.configure(configure_setup_routes)
         .configure(configure_auth_routes)
         .configure(configure_public_routes)
-        .configure(configure_admin_routes);
+        .configure(configure_admin_routes)
+        .configure(configure_static_routes);
 }
 
 fn configure_setup_routes(cfg: &mut web::ServiceConfig) {
@@ -37,6 +38,10 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
             .route("", web::get().to(admin::handle_get_admin_shell))
             .route("/", web::get().to(admin::handle_get_admin_shell))
             .route("/open/{slug}", web::get().to(admin::handle_get_admin_open))
+            .route(
+                "/preview",
+                web::post().to(admin_preview::handle_post_admin_preview),
+            )
             .route("/create", web::post().to(admin::handle_post_admin_create))
             .route("/save", web::post().to(admin::handle_post_admin_save))
             .route("/rename", web::post().to(admin::handle_post_admin_rename))
@@ -48,5 +53,20 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
                 "/toggle-private/{slug}",
                 web::post().to(admin::handle_post_admin_toggle_private),
             ),
+    );
+}
+
+fn configure_static_routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::resource("/static/admin-runtime-core.js")
+            .route(web::get().to(static_assets::handle_get_admin_runtime_core_js)),
+    )
+    .service(
+        web::resource("/static/admin-runtime-autosave.js")
+            .route(web::get().to(static_assets::handle_get_admin_runtime_autosave_js)),
+    )
+    .service(
+        web::resource("/static/admin-runtime-shortcuts.js")
+            .route(web::get().to(static_assets::handle_get_admin_runtime_shortcuts_js)),
     );
 }

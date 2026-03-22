@@ -9,11 +9,13 @@ use crate::adapters::filesystem::FilesystemAdapter;
 use crate::app_state::AppState;
 use crate::core::auth::{AdminUser, SessionRecord};
 use crate::core::content::{
-    parse_markdown_document, path_for_slug, serialize_markdown_document, Frontmatter,
-    ParsedMarkdown,
+    parse_markdown_document, path_for_slug, revision_token, serialize_markdown_document,
+    Frontmatter, ParsedMarkdown,
 };
 use crate::error::AppError;
-use crate::web::state::{AdminStore, ContentStore, SessionStore, WebState};
+use crate::web::state::{
+    AdminStore, ContentStore, SaveConflict, SaveOutcome, SessionStore, WebState,
+};
 
 pub fn build_runtime_web_state(app_state: AppState) -> WebState {
     let admin_store: Arc<dyn AdminStore> = Arc::new(RuntimeAdminStore {
@@ -132,12 +134,33 @@ impl ContentStore for RuntimeContentStore {
         title: Option<String>,
         body: &str,
         private: bool,
-    ) -> Result<(), AppError> {
+        last_known_revision: Option<&str>,
+    ) -> Result<SaveOutcome, AppError> {
         let path = path_for_slug(self.filesystem.root(), slug)?;
+        let persisted_revision = match fs::read_to_string(&path).await {
+            Ok(markdown) => Some(revision_token(&markdown)),
+            Err(source) if source.kind() == std::io::ErrorKind::NotFound => None,
+            Err(source) => return Err(AppError::content_io(path.display().to_string(), source)),
+        };
         let markdown = serialize_markdown_document(&Frontmatter { title, private }, body);
-        fs::write(&path, markdown)
+        fs::write(&path, &markdown)
             .await
-            .map_err(|source| AppError::content_io(path.display().to_string(), source))
+            .map_err(|source| AppError::content_io(path.display().to_string(), source))?;
+
+        let submitted_revision = last_known_revision
+            .map(str::trim)
+            .filter(|value| !value.is_empty());
+        let conflict = match (submitted_revision, persisted_revision.as_deref()) {
+            (Some(submitted), Some(persisted)) if submitted != persisted => Some(SaveConflict {
+                persisted_revision: persisted.to_owned(),
+                submitted_revision: submitted.to_owned(),
+            }),
+            _ => None,
+        };
+        Ok(SaveOutcome {
+            revision: revision_token(&markdown),
+            conflict,
+        })
     }
 
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError> {

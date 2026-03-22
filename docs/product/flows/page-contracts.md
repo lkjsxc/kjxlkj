@@ -1,0 +1,71 @@
+# Server-Rendered Page Contracts
+
+This document defines target full-page contracts for `/`, `/setup`, `/login`, and `/admin`
+before richer HTMX and JavaScript behaviors are layered on top.
+
+## Global Page Rules
+
+- Non-HTMX requests to page routes return complete HTML documents (`<!doctype html>` through `</html>`).
+- Every page exposes one stable root container ID for automation and enhancement hooks.
+- Validation and auth errors re-render the same page route with deterministic error containers.
+- Forms remain functional without JavaScript.
+
+## Route Matrix
+
+| Route | Setup incomplete | Setup complete + logged out | Setup complete + admin session |
+| --- | --- | --- | --- |
+| `GET /` | `302` to `/setup` | `200` home page | `200` home page with admin visibility |
+| `GET /setup` | `200` setup page | `404` | `404` |
+| `GET /login` | `302` to `/setup` | `200` login page | `303` to `/admin` |
+| `GET /admin` | `302` to `/setup` | `302` to `/login` | `200` admin shell page |
+
+## `/` Home Page Contract
+
+- Root container: `<main id="home-page">`.
+- Article list container: `#home-article-list`.
+- Logged-out rendering includes only public articles.
+- Logged-in admin rendering may include private items and admin affordances.
+- Article links always use canonical `/article/{slug}` URLs.
+
+## `/setup` Page Contract
+
+- Root container: `<main id="setup-page">`.
+- Form ID: `#setup-form` with fields:
+  - `username`
+  - `password`
+- Error region: `#setup-errors` with `aria-live="polite"`.
+- `POST /setup` outcomes:
+  - `400` + setup page re-render for missing/invalid inputs.
+  - `303` redirect to `/login` when first admin is created.
+  - deterministic failure signal when setup is locked after first admin creation.
+
+## `/login` Page Contract
+
+- Root container: `<main id="login-page">`.
+- Form ID: `#login-form` with fields:
+  - `username`
+  - `password`
+- Error region: `#login-errors` with `aria-live="polite"`.
+- `POST /login` outcomes:
+  - `400` for malformed payloads (same page re-rendered).
+  - `401` for invalid credentials (same page re-rendered).
+  - `303` redirect to `/admin` on success with session cookie set.
+
+## `/admin` Page Contract
+
+- Root container: `<main id="admin-page">`.
+- Required shell regions:
+  - `#admin-article-list`
+  - `#admin-editor-pane`
+  - `#admin-preview-pane`
+  - `#admin-status-banner`
+  - `#admin-conflict-banner`
+- Editor form contract:
+  - Form ID `#admin-editor-form`.
+  - Required fields: `slug`, `title`, `body`, `private`, `last_known_revision`.
+- Preview pane contract:
+  - Preview HTML is rendered server-side and injected via HTMX.
+  - Client-side markdown rendering is not authoritative.
+- Progressive enhancement:
+  - Base form submission works without JavaScript.
+  - HTMX and JavaScript enhancements MUST target the same stable IDs.

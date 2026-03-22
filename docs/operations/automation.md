@@ -3,14 +3,76 @@
 ## Automation Goals
 
 - Provide deterministic command interfaces for humans and agents.
-- Fail fast with clear exit codes and concise diagnostics.
+- Fail fast with stable exit codes and concise diagnostics.
+- Stop code-change work immediately when any gate returns non-zero.
 
 ## Canonical Entrypoints
 
-- `kjxlkj docs validate-topology`
-- `kjxlkj quality check-lines`
-- `kjxlkj compose verify`
+- `cargo run --bin kjxlkj -- docs validate-topology`
+- `cargo run --bin kjxlkj -- quality check-lines`
+- `docker compose --profile verify run --rm verify`
+- `cargo run --bin kjxlkj -- compose verify` (optional wrapper with JSON summaries)
 
-## Execution Rule
+## Required Gate Sequence
 
-- Operational checks must be scriptable and stable across environments.
+### 1) Docs topology gate
+
+```bash
+cargo run --bin kjxlkj -- docs validate-topology
+```
+
+Expected result:
+
+- Exit code `0`.
+- Final JSON event includes `"command":"docs.validate-topology"`, `"status":"pass"`, and `"violations":0`.
+
+### 2) Line-limit gate
+
+```bash
+cargo run --bin kjxlkj -- quality check-lines
+```
+
+Expected result:
+
+- Exit code `0`.
+- Final JSON event includes `"command":"quality.check-lines"`, `"status":"pass"`, and `"violations":0`.
+
+### 3) Docker acceptance gate
+
+1. Complete first-time startup in [../containers/compose/commands.md](../containers/compose/commands.md).
+2. Complete setup/login/admin verification in [../containers/verification/local-runbook.md](../containers/verification/local-runbook.md).
+3. Run docker acceptance checks:
+
+```bash
+docker compose --profile verify run --rm verify
+```
+
+Expected result:
+
+- Exit code `0`.
+- Verify profile completes formatting, linting, tests, build, docs topology, and line-limit checks.
+
+Optional wrapper command (same contract, machine-readable output):
+
+```bash
+cargo run --bin kjxlkj -- compose verify
+```
+
+Expected summary on success:
+
+```json
+{"command":"compose.verify","status":"pass","steps_passed":3,"steps_total":3}
+```
+
+## Failure Handling Rule
+
+If any gate fails:
+
+1. Stop code changes.
+2. Capture deterministic diagnostics:
+
+```bash
+docker compose logs --no-color --tail=120 app postgres
+```
+
+3. Fix the failing contract and rerun the full gate sequence.

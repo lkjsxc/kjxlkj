@@ -14,7 +14,18 @@
 ## Admin Routes
 
 - `/admin`
-- `/admin/*` mutation and content operations
+- `/admin/open/{slug}`
+- `/admin/preview`
+- `/admin/create`
+- `/admin/save`
+- `/admin/rename`
+- `/admin/delete/{slug}`
+- `/admin/toggle-private/{slug}`
+
+## Route Mode Constraint
+
+- `GET /admin` returns a complete page for non-HTMX navigation.
+- Admin interaction routes return HTMX fragments when `HX-Request: true` is present.
 
 ## Routing Order Constraint
 

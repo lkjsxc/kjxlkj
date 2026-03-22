@@ -63,6 +63,15 @@ pub fn serialize_markdown_document(frontmatter: &Frontmatter, body: &str) -> Str
     }
 }
 
+pub fn revision_token(markdown: &str) -> String {
+    let mut hash = 0xcbf29ce484222325_u64;
+    for byte in markdown.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    format!("{hash:016x}")
+}
+
 fn parse_frontmatter_lines(lines: &[String]) -> Result<Frontmatter, ContentValidationError> {
     let mut title = None;
     let mut private = false;

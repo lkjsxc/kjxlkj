@@ -55,6 +55,9 @@ async fn public_and_admin_visibility_is_enforced() {
         .await
         .expect("public home body");
     let public_home_text = std::str::from_utf8(&public_home_body).expect("utf8 body");
+    assert!(public_home_text.contains("<main id=\"home-page\">"));
+    assert!(public_home_text.contains("<section id=\"home-article-list\">"));
+    assert!(public_home_text.contains("href=\"/article/public-post\""));
     assert!(public_home_text.contains("public-post"));
     assert!(!public_home_text.contains("private-post"));
 
@@ -75,7 +78,14 @@ async fn public_and_admin_visibility_is_enforced() {
             .to_request(),
     )
     .await;
-    assert_eq!(login.status(), StatusCode::OK);
+    assert_eq!(login.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        login
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
     let session_cookie = login
         .headers()
         .get(header::SET_COOKIE)
@@ -96,6 +106,9 @@ async fn public_and_admin_visibility_is_enforced() {
         .await
         .expect("admin home body");
     let admin_home_text = std::str::from_utf8(&admin_home_body).expect("utf8 body");
+    assert!(admin_home_text.contains("<main id=\"home-page\">"));
+    assert!(admin_home_text.contains("<section id=\"home-article-list\">"));
+    assert!(admin_home_text.contains("admin-affordance"));
     assert!(admin_home_text.contains("public-post"));
     assert!(admin_home_text.contains("private-post"));
 

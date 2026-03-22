@@ -5,20 +5,31 @@ See [Access Control Contract](../policies/access-control.md) for route/session r
 
 ## Access Rules
 
-- `/admin` requires a valid authenticated admin session.
+- `/admin` requires a valid authenticated admin session after setup completion.
 - Unauthorized access is redirected to `/login` after setup completion.
+- Before setup completion, `/admin` redirects to `/setup`.
+
+## Contract Decomposition
+
+- Full server-rendered page contracts: [page-contracts.md](page-contracts.md).
+- HTMX admin request/fragment contracts: [admin-htmx-contracts.md](admin-htmx-contracts.md).
+- JavaScript UX contracts (autosave, guards, shortcuts): [admin-js-ux-contract.md](admin-js-ux-contract.md).
+- Conflict warning behavior: [admin-conflict-warning.md](admin-conflict-warning.md).
 
 ## Core Capabilities
 
 - List Markdown articles.
 - Open and edit Markdown content.
-- Save content atomically.
+- Render server-side preview pane updates through HTMX.
+- Save content atomically with last-write-wins conflict handling.
 - Create, rename, and delete Markdown files.
 - Toggle frontmatter `private` visibility.
 
-## Editor Endpoints
+## Endpoint Surface
 
+- `GET /admin`
 - `GET /admin/open/{slug}`
+- `POST /admin/preview`
 - `POST /admin/create`
 - `POST /admin/save`
 - `POST /admin/rename`

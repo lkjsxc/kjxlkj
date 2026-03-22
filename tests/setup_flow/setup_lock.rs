@@ -52,7 +52,30 @@ async fn setup_lock_is_enforced_after_admin_creation() {
 
     let login = test::call_service(&app, test::TestRequest::get().uri("/login").to_request()).await;
     assert_eq!(login.status(), StatusCode::OK);
+    assert_eq!(
+        login
+            .headers()
+            .get(header::CONTENT_TYPE)
+            .and_then(|value| value.to_str().ok()),
+        Some("text/html; charset=utf-8")
+    );
+    let login_body = test::read_body(login).await;
+    let login_text = String::from_utf8(login_body.to_vec()).expect("utf8 body");
+    assert!(login_text.contains("<main id=\"login-page\">"));
+    assert!(login_text.contains("<form id=\"login-form\" method=\"post\" action=\"/login\">"));
+    assert!(login_text.contains("<section id=\"login-errors\" aria-live=\"polite\"></section>"));
+    assert!(login_text.contains("<!doctype html>"));
 
     let home = test::call_service(&app, test::TestRequest::get().uri("/").to_request()).await;
     assert_eq!(home.status(), StatusCode::OK);
+    assert_eq!(
+        home.headers()
+            .get(header::CONTENT_TYPE)
+            .and_then(|value| value.to_str().ok()),
+        Some("text/html; charset=utf-8")
+    );
+    let home_body = test::read_body(home).await;
+    let home_text = String::from_utf8(home_body.to_vec()).expect("utf8 body");
+    assert!(home_text.contains("<main id=\"home-page\">"));
+    assert!(home_text.contains("<section id=\"home-article-list\">"));
 }

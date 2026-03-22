@@ -69,7 +69,14 @@ async fn admin_routes_redirect_when_not_authenticated() {
             .to_request(),
     )
     .await;
-    assert_eq!(login.status(), StatusCode::OK);
+    assert_eq!(login.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        login
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
     let session_cookie = login
         .headers()
         .get(header::SET_COOKIE)
@@ -89,6 +96,32 @@ async fn admin_routes_redirect_when_not_authenticated() {
     )
     .await;
     assert_eq!(admin_auth.status(), StatusCode::OK);
+    assert_eq!(
+        admin_auth
+            .headers()
+            .get(header::CONTENT_TYPE)
+            .and_then(|value| value.to_str().ok()),
+        Some("text/html; charset=utf-8")
+    );
+    let admin_body = test::read_body(admin_auth).await;
+    let admin_text = String::from_utf8(admin_body.to_vec()).expect("utf8");
+    assert!(admin_text.contains("<main id=\"admin-page\">"));
+    assert!(admin_text.contains("<section id=\"admin-article-list\">"));
+    assert!(admin_text.contains("<section id=\"admin-editor-pane\""));
+    assert!(admin_text.contains("<section id=\"admin-preview-pane\"></section>"));
+    assert!(
+        admin_text.contains("<section id=\"admin-status-banner\" aria-live=\"polite\"></section>")
+    );
+    assert!(admin_text.contains(
+        "<section id=\"admin-conflict-banner\" role=\"alert\" aria-live=\"assertive\" data-conflict=\"false\"></section>"
+    ));
+    assert!(admin_text
+        .contains("<form id=\"admin-editor-form\" method=\"post\" action=\"/admin/save\""));
+    assert!(admin_text.contains("name=\"slug\""));
+    assert!(admin_text.contains("name=\"title\""));
+    assert!(admin_text.contains("name=\"body\""));
+    assert!(admin_text.contains("name=\"private\""));
+    assert!(admin_text.contains("name=\"last_known_revision\""));
 
     let create_auth = test::call_service(
         &app,

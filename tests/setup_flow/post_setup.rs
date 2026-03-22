@@ -40,6 +40,8 @@ async fn post_setup_invalid_payload_returns_deterministic_validation_message() {
         .expect("password validation message");
     assert!(username_index < password_index);
     assert!(first_text.contains("Unable to complete setup:"));
+    assert!(first_text.contains("<main id=\"setup-page\">"));
+    assert!(first_text.contains("<section id=\"setup-errors\" aria-live=\"polite\">"));
 
     let second_response = test::call_service(
         &app,
@@ -110,7 +112,14 @@ async fn post_setup_valid_payload_creates_admin_and_redirects_to_login() {
             .to_request(),
     )
     .await;
-    assert_eq!(login_response.status(), StatusCode::OK);
+    assert_eq!(login_response.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        login_response
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
     assert!(login_response
         .headers()
         .get(header::SET_COOKIE)

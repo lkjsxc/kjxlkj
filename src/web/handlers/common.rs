@@ -37,10 +37,14 @@ pub async fn require_admin_session(
     request: &HttpRequest,
     state: &web::Data<WebState>,
 ) -> Result<SessionState, HttpResponse> {
-    enforce_setup_completion(state).await?;
+    match has_admin_user(state).await {
+        Ok(true) => {}
+        Ok(false) => return Err(guard_redirect_response(request, "/setup")),
+        Err(response) => return Err(response),
+    }
 
     let Some(session_id) = session_id_from_request(request) else {
-        return Err(redirect_to_login());
+        return Err(guard_redirect_response(request, "/login"));
     };
 
     let now = Utc::now();
@@ -50,11 +54,11 @@ pub async fn require_admin_session(
         .await
         .map_err(internal_error)?;
     let Some(session) = session else {
-        return Err(redirect_to_login());
+        return Err(guard_redirect_response(request, "/login"));
     };
     if session.expires_at <= now {
         let _ = state.session_store.delete_session(session_id).await;
-        return Err(redirect_to_login());
+        return Err(guard_redirect_response(request, "/login"));
     }
 
     Ok(SessionState {
@@ -77,6 +81,30 @@ pub fn redirect_to_setup() -> HttpResponse {
     HttpResponse::Found()
         .append_header((header::LOCATION, "/setup"))
         .finish()
+}
+
+pub fn is_hx_request(request: &HttpRequest) -> bool {
+    request
+        .headers()
+        .get("HX-Request")
+        .and_then(|value| value.to_str().ok())
+        .is_some_and(|value| value.eq_ignore_ascii_case("true"))
+}
+
+fn guard_redirect_response(request: &HttpRequest, location: &str) -> HttpResponse {
+    if is_hx_request(request) {
+        HttpResponse::Unauthorized()
+            .append_header(("HX-Redirect", location))
+            .finish()
+    } else if location == "/login" {
+        redirect_to_login()
+    } else if location == "/setup" {
+        redirect_to_setup()
+    } else {
+        HttpResponse::Found()
+            .append_header((header::LOCATION, location))
+            .finish()
+    }
 }
 
 pub fn session_cookie(session_id: Uuid) -> Cookie<'static> {

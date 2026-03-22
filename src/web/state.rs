@@ -48,10 +48,23 @@ pub trait ContentStore: Send + Sync {
         title: Option<String>,
         body: &str,
         private: bool,
-    ) -> Result<(), AppError>;
+        last_known_revision: Option<&str>,
+    ) -> Result<SaveOutcome, AppError>;
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError>;
     async fn delete_article(&self, slug: &str) -> Result<(), AppError>;
     async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError>;
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SaveConflict {
+    pub persisted_revision: String,
+    pub submitted_revision: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SaveOutcome {
+    pub revision: String,
+    pub conflict: Option<SaveConflict>,
 }
 
 #[derive(Clone)]

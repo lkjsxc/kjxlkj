@@ -16,6 +16,15 @@ pub struct SaveForm {
     pub title: Option<String>,
     pub body: String,
     pub private: Option<bool>,
+    pub last_known_revision: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PreviewForm {
+    pub slug: String,
+    pub title: Option<String>,
+    pub body: String,
+    pub private: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -24,14 +33,12 @@ pub struct RenameForm {
     pub new_slug: String,
 }
 
-pub fn normalize_slug_input(value: &str, field_name: &str) -> Result<String, HttpResponse> {
+pub fn normalize_slug_input(value: &str, field_name: &str) -> Result<String, String> {
     let Some(slug) = normalize_required(value) else {
-        return Err(HttpResponse::BadRequest().body(format!("{field_name} is required")));
+        return Err(format!("{field_name} is required"));
     };
     if slug_from_stem(&slug).is_err() {
-        return Err(
-            HttpResponse::BadRequest().body(format!("{field_name} must be lowercase kebab-case"))
-        );
+        return Err(format!("{field_name} must be lowercase kebab-case"));
     }
     Ok(slug)
 }

@@ -51,8 +51,10 @@ async fn get_setup_returns_full_html_form() {
     assert!(text.contains("<!doctype html>"));
     assert!(text.contains("<html lang=\"en\">"));
     assert!(text.contains("<title>Initial setup</title>"));
+    assert!(text.contains("<main id=\"setup-page\">"));
+    assert!(text.contains("<section id=\"setup-errors\" aria-live=\"polite\"></section>"));
     assert!(text.contains("<h1>Set up first admin account</h1>"));
-    assert!(text.contains("<form method=\"post\" action=\"/setup\">"));
+    assert!(text.contains("<form id=\"setup-form\" method=\"post\" action=\"/setup\">"));
     assert!(text.contains("<label for=\"username\">Username</label>"));
     assert!(text.contains(
         "<input id=\"username\" name=\"username\" type=\"text\" autocomplete=\"username\" value=\"\" />"

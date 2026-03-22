@@ -112,11 +112,11 @@ fn render_setup_page(username: &str, errors: &[&str]) -> String {
   <title>Initial setup</title>
 </head>
 <body>
-  <main>
+  <main id="setup-page">
     <h1>Set up first admin account</h1>
     <p>Create the initial administrator credentials to unlock login.</p>
     {error_block}
-    <form method="post" action="/setup">
+    <form id="setup-form" method="post" action="/setup">
       <label for="username">Username</label>
       <input id="username" name="username" type="text" autocomplete="username" value="{escaped_username}" />
       <label for="password">Password</label>
@@ -131,7 +131,7 @@ fn render_setup_page(username: &str, errors: &[&str]) -> String {
 
 fn render_error_block(errors: &[&str]) -> String {
     if errors.is_empty() {
-        return String::new();
+        return r#"<section id="setup-errors" aria-live="polite"></section>"#.to_owned();
     }
 
     let items = errors
@@ -139,7 +139,7 @@ fn render_error_block(errors: &[&str]) -> String {
         .map(|error| format!("<li>{}</li>", escape_html(error)))
         .collect::<String>();
     format!(
-        r#"<section aria-live="polite">
+        r#"<section id="setup-errors" aria-live="polite">
       <p>Unable to complete setup:</p>
       <ul>{items}</ul>
     </section>"#

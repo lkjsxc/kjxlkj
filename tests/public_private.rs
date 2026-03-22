@@ -38,6 +38,9 @@ async fn public_routes_hide_private_content_for_logged_out_users() {
 
     let home = test::call_and_read_body(&app, test::TestRequest::get().uri("/").to_request()).await;
     let home_text = String::from_utf8(home.to_vec()).expect("utf8");
+    assert!(home_text.contains("<main id=\"home-page\">"));
+    assert!(home_text.contains("<section id=\"home-article-list\">"));
+    assert!(home_text.contains("href=\"/article/public-post\""));
     assert!(home_text.contains("public-post"));
     assert!(!home_text.contains("private-post"));
 
@@ -98,6 +101,14 @@ async fn logged_in_admin_can_view_private_content() {
             .to_request(),
     )
     .await;
+    assert_eq!(login.status(), StatusCode::SEE_OTHER);
+    assert_eq!(
+        login
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|value| value.to_str().ok()),
+        Some("/admin")
+    );
     let session_cookie = login
         .headers()
         .get(header::SET_COOKIE)
@@ -117,6 +128,9 @@ async fn logged_in_admin_can_view_private_content() {
     )
     .await;
     let home_text = String::from_utf8(home.to_vec()).expect("utf8");
+    assert!(home_text.contains("<main id=\"home-page\">"));
+    assert!(home_text.contains("<section id=\"home-article-list\">"));
+    assert!(home_text.contains("admin-affordance"));
     assert!(home_text.contains("public-post"));
     assert!(home_text.contains("private-post"));
 

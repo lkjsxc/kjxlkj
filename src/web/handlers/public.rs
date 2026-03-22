@@ -2,6 +2,7 @@ use actix_web::{web, HttpRequest, HttpResponse};
 
 use crate::core::content::VisibilityContext;
 use crate::web::handlers::common::{has_admin_user, internal_error, redirect_to_setup};
+use crate::web::handlers::home_page::render_home_page;
 use crate::web::render::render_markdown_html;
 use crate::web::session::valid_session;
 use crate::web::state::WebState;
@@ -25,7 +26,12 @@ pub async fn handle_get_home(request: HttpRequest, state: web::Data<WebState>) -
     };
 
     match result {
-        Ok(slugs) => HttpResponse::Ok().body(slugs.join("\n")),
+        Ok(slugs) => HttpResponse::Ok()
+            .content_type("text/html; charset=utf-8")
+            .body(render_home_page(
+                &slugs,
+                matches!(context, VisibilityContext::Admin),
+            )),
         Err(error) => internal_error(error),
     }
 }
