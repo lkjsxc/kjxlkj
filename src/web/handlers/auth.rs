@@ -45,6 +45,7 @@ pub async fn handle_get_login(request: HttpRequest, state: web::Data<WebState>) 
 }
 
 pub async fn handle_post_login(
+    request: HttpRequest,
     state: web::Data<WebState>,
     form: web::Form<LoginForm>,
 ) -> HttpResponse {
@@ -95,7 +96,7 @@ pub async fn handle_post_login(
 
     HttpResponse::SeeOther()
         .append_header((header::LOCATION, "/admin"))
-        .cookie(session_cookie(session.id))
+        .cookie(session_cookie(session.id, &request))
         .finish()
 }
 
@@ -109,7 +110,7 @@ pub async fn handle_post_logout(request: HttpRequest, state: web::Data<WebState>
     }
 
     HttpResponse::NoContent()
-        .cookie(clear_session_cookie())
+        .cookie(clear_session_cookie(&request))
         .finish()
 }
 

@@ -445,3 +445,59 @@ fn parse_session_id(cookie: &str) -> Uuid {
         .expect("session id cookie value");
     Uuid::parse_str(value).expect("valid session uuid")
 }
+
+#[actix_web::test]
+async fn session_cookie_secure_flag_follows_request_scheme() {
+    let (state, _, _, _) = make_web_state();
+    let app = test::init_service(
+        App::new()
+            .app_data(web::Data::new(state))
+            .configure(configure_routes),
+    )
+    .await;
+
+    let setup = test::call_service(
+        &app,
+        test::TestRequest::post()
+            .uri("/setup")
+            .set_form([("password", "s3cret")])
+            .to_request(),
+    )
+    .await;
+    assert_eq!(setup.status(), StatusCode::SEE_OTHER);
+
+    let login_http = test::call_service(
+        &app,
+        test::TestRequest::post()
+            .uri("/login")
+            .set_form([("password", "s3cret")])
+            .to_request(),
+    )
+    .await;
+    assert_eq!(login_http.status(), StatusCode::SEE_OTHER);
+    let cookie_http = login_http
+        .headers()
+        .get(header::SET_COOKIE)
+        .and_then(|value| value.to_str().ok())
+        .expect("http login set-cookie")
+        .to_ascii_lowercase();
+    assert!(!cookie_http.contains("; secure"));
+
+    let login_https = test::call_service(
+        &app,
+        test::TestRequest::post()
+            .uri("/login")
+            .insert_header(("x-forwarded-proto", "https"))
+            .set_form([("password", "s3cret")])
+            .to_request(),
+    )
+    .await;
+    assert_eq!(login_https.status(), StatusCode::SEE_OTHER);
+    let cookie_https = login_https
+        .headers()
+        .get(header::SET_COOKIE)
+        .and_then(|value| value.to_str().ok())
+        .expect("https login set-cookie")
+        .to_ascii_lowercase();
+    assert!(cookie_https.contains("; secure"));
+}

@@ -107,19 +107,26 @@ fn guard_redirect_response(request: &HttpRequest, location: &str) -> HttpRespons
     }
 }
 
-pub fn session_cookie(session_id: Uuid) -> Cookie<'static> {
+pub fn session_cookie(session_id: Uuid, request: &HttpRequest) -> Cookie<'static> {
     Cookie::build(SESSION_COOKIE_NAME, session_id.to_string())
         .path("/")
         .http_only(true)
-        .secure(true)
+        .secure(request_uses_https(request))
         .finish()
 }
 
-pub fn clear_session_cookie() -> Cookie<'static> {
+pub fn clear_session_cookie(request: &HttpRequest) -> Cookie<'static> {
     Cookie::build(SESSION_COOKIE_NAME, "")
         .path("/")
         .http_only(true)
-        .secure(true)
+        .secure(request_uses_https(request))
         .max_age(CookieDuration::seconds(0))
         .finish()
+}
+
+fn request_uses_https(request: &HttpRequest) -> bool {
+    request
+        .connection_info()
+        .scheme()
+        .eq_ignore_ascii_case("https")
 }
