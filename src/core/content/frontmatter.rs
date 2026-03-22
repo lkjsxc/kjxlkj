@@ -1,9 +1,24 @@
 use super::errors::ContentValidationError;
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Frontmatter {
     pub title: Option<String>,
     pub private: bool,
+}
+
+impl Frontmatter {
+    pub fn private_default() -> Self {
+        Self {
+            title: None,
+            private: true,
+        }
+    }
+}
+
+impl Default for Frontmatter {
+    fn default() -> Self {
+        Self::private_default()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -16,7 +31,7 @@ pub fn parse_markdown_document(markdown: &str) -> Result<ParsedMarkdown, Content
     let normalized = markdown.replace("\r\n", "\n");
     if !normalized.starts_with("---\n") {
         return Ok(ParsedMarkdown {
-            frontmatter: Frontmatter::default(),
+            frontmatter: Frontmatter::private_default(),
             body: normalized,
         });
     }
@@ -74,7 +89,7 @@ pub fn revision_token(markdown: &str) -> String {
 
 fn parse_frontmatter_lines(lines: &[String]) -> Result<Frontmatter, ContentValidationError> {
     let mut title = None;
-    let mut private = false;
+    let mut private = true;
     let mut private_seen = false;
 
     for (line_index, line) in lines.iter().enumerate() {

@@ -5,10 +5,16 @@ mod tests {
     };
 
     #[test]
-    fn parse_without_frontmatter_defaults_private_to_false() {
+    fn parse_without_frontmatter_defaults_private_to_true() {
         let parsed = parse_markdown_document("# Hello").unwrap();
 
-        assert_eq!(parsed.frontmatter, Frontmatter::default());
+        assert_eq!(
+            parsed.frontmatter,
+            Frontmatter {
+                title: None,
+                private: true
+            }
+        );
         assert_eq!(parsed.body, "# Hello");
     }
 

@@ -1,36 +1,18 @@
-use async_trait::async_trait;
+use chrono::Utc;
 use tokio::fs;
 
 use crate::adapters::filesystem::FilesystemAdapter;
-use crate::app_state::AppState;
 use crate::core::content::{
     parse_markdown_document, path_for_slug, revision_token, serialize_markdown_document,
-    Frontmatter, ParsedMarkdown,
+    Frontmatter,
 };
 use crate::error::AppError;
-use crate::web::state::{ContentStore, SaveConflict, SaveOutcome, SearchHit};
-use crate::web::stores::content_index::{index_saved_article, reindex_all};
+use crate::web::state::{SaveConflict, SaveOutcome};
+use crate::web::stores::content::RuntimeContentStore;
+use crate::web::stores::content_index::index_saved_article;
 
-#[derive(Clone)]
-pub struct RuntimeContentStore {
-    pub app_state: AppState,
-}
-
-#[async_trait]
-impl ContentStore for RuntimeContentStore {
-    async fn list_public_slugs(&self) -> Result<Vec<String>, AppError> {
-        self.app_state.filesystem.list_public_slugs().await
-    }
-
-    async fn list_admin_slugs(&self) -> Result<Vec<String>, AppError> {
-        self.app_state.filesystem.list_admin_slugs().await
-    }
-
-    async fn read_article(&self, slug: &str) -> Result<ParsedMarkdown, AppError> {
-        self.app_state.filesystem.read_article(slug).await
-    }
-
-    async fn create_article(
+impl RuntimeContentStore {
+    pub async fn create_article_impl(
         &self,
         slug: &str,
         title: Option<String>,
@@ -40,6 +22,7 @@ impl ContentStore for RuntimeContentStore {
         let path = path_for_slug(self.app_state.filesystem.root(), slug)?;
         let frontmatter = Frontmatter { title, private };
         let markdown = serialize_markdown_document(&frontmatter, body);
+        let created_at = Utc::now();
         fs::write(&path, markdown)
             .await
             .map_err(|source| AppError::content_io(path.display().to_string(), source))?;
@@ -47,10 +30,14 @@ impl ContentStore for RuntimeContentStore {
             .postgres
             .search()
             .index_article(slug, frontmatter.title.as_deref(), body, private, false)
-            .await
+            .await?;
+        self.sync_article_metadata(slug, created_at, created_at)
+            .await?;
+        self.maybe_commit_history(slug, "create")?;
+        Ok(())
     }
 
-    async fn save_article(
+    pub async fn save_article_impl(
         &self,
         slug: &str,
         title: Option<String>,
@@ -59,33 +46,26 @@ impl ContentStore for RuntimeContentStore {
         last_known_revision: Option<&str>,
     ) -> Result<SaveOutcome, AppError> {
         let path = path_for_slug(self.app_state.filesystem.root(), slug)?;
-        let persisted_revision = match fs::read_to_string(&path).await {
-            Ok(markdown) => Some(revision_token(&markdown)),
-            Err(source) if source.kind() == std::io::ErrorKind::NotFound => None,
-            Err(source) => return Err(AppError::content_io(path.display().to_string(), source)),
-        };
+        let persisted_revision = read_persisted_revision(&path).await?;
         let markdown = serialize_markdown_document(&Frontmatter { title, private }, body);
         fs::write(&path, &markdown)
             .await
             .map_err(|source| AppError::content_io(path.display().to_string(), source))?;
         index_saved_article(&self.app_state, slug, &markdown).await?;
-        let submitted_revision = last_known_revision
-            .map(str::trim)
-            .filter(|value| !value.is_empty());
-        let conflict = match (submitted_revision, persisted_revision.as_deref()) {
-            (Some(submitted), Some(persisted)) if submitted != persisted => Some(SaveConflict {
-                persisted_revision: persisted.to_owned(),
-                submitted_revision: submitted.to_owned(),
-            }),
-            _ => None,
-        };
+        let updated_at = Utc::now();
+        let created_at = self.read_or_assign_created_at(slug, updated_at).await?;
+        self.sync_article_metadata(slug, created_at, updated_at)
+            .await?;
+        let conflict = build_conflict(last_known_revision, persisted_revision.as_deref());
+        self.maybe_commit_history(slug, "save")?;
         Ok(SaveOutcome {
             revision: revision_token(&markdown),
             conflict,
+            updated_at,
         })
     }
 
-    async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError> {
+    pub async fn rename_article_impl(&self, slug: &str, new_slug: &str) -> Result<(), AppError> {
         let current = path_for_slug(self.app_state.filesystem.root(), slug)?;
         let next = path_for_slug(self.app_state.filesystem.root(), new_slug)?;
         fs::rename(&current, &next)
@@ -98,7 +78,7 @@ impl ContentStore for RuntimeContentStore {
             .await
     }
 
-    async fn delete_article(&self, slug: &str) -> Result<(), AppError> {
+    pub async fn delete_article_impl(&self, slug: &str) -> Result<(), AppError> {
         let path = path_for_slug(self.app_state.filesystem.root(), slug)?;
         let trash_root = self.app_state.filesystem.root().join(".trash");
         let trash_path = path_for_slug(&trash_root, slug)?;
@@ -115,7 +95,7 @@ impl ContentStore for RuntimeContentStore {
             .await
     }
 
-    async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError> {
+    pub async fn toggle_article_private_impl(&self, slug: &str) -> Result<bool, AppError> {
         let path = path_for_slug(self.app_state.filesystem.root(), slug)?;
         let markdown = fs::read_to_string(&path)
             .await
@@ -138,22 +118,26 @@ impl ContentStore for RuntimeContentStore {
                 false,
             )
             .await?;
+        let updated_at = Utc::now();
+        let created_at = self.read_or_assign_created_at(slug, updated_at).await?;
+        self.sync_article_metadata(slug, created_at, updated_at)
+            .await?;
         Ok(next_value)
     }
 
-    async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError> {
+    pub async fn list_trashed_admin_slugs_impl(&self) -> Result<Vec<String>, AppError> {
         let trash_root = self.app_state.filesystem.root().join(".trash");
         FilesystemAdapter::new(trash_root).list_admin_slugs().await
     }
 
-    async fn restore_article(&self, slug: &str) -> Result<(), AppError> {
+    pub async fn restore_article_impl(&self, slug: &str) -> Result<(), AppError> {
         let trash_root = self.app_state.filesystem.root().join(".trash");
         let src = path_for_slug(&trash_root, slug)?;
         let dst = path_for_slug(self.app_state.filesystem.root(), slug)?;
         match fs::rename(&src, &dst).await {
             Ok(()) => {}
             Err(source) if source.kind() == std::io::ErrorKind::NotFound => {
-                return Err(AppError::content_io(src.display().to_string(), source))
+                return Err(AppError::content_io(src.display().to_string(), source));
             }
             Err(source) => return Err(AppError::content_io(src.display().to_string(), source)),
         }
@@ -164,24 +148,40 @@ impl ContentStore for RuntimeContentStore {
             .await
     }
 
-    async fn permanent_delete_article(&self, slug: &str) -> Result<(), AppError> {
+    pub async fn permanent_delete_article_impl(&self, slug: &str) -> Result<(), AppError> {
         let trash_root = self.app_state.filesystem.root().join(".trash");
         let path = path_for_slug(&trash_root, slug)?;
         match fs::remove_file(&path).await {
             Ok(()) => {}
             Err(source) if source.kind() == std::io::ErrorKind::NotFound => {
-                return Err(AppError::content_io(path.display().to_string(), source))
+                return Err(AppError::content_io(path.display().to_string(), source));
             }
             Err(source) => return Err(AppError::content_io(path.display().to_string(), source)),
         }
         self.app_state.postgres.search().delete_article(slug).await
     }
+}
 
-    async fn search_articles(&self, query: &str, admin: bool) -> Result<Vec<SearchHit>, AppError> {
-        self.app_state.postgres.search().search(query, admin).await
+fn build_conflict(
+    last_known_revision: Option<&str>,
+    persisted_revision: Option<&str>,
+) -> Option<SaveConflict> {
+    let submitted_revision = last_known_revision
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    match (submitted_revision, persisted_revision) {
+        (Some(submitted), Some(persisted)) if submitted != persisted => Some(SaveConflict {
+            persisted_revision: persisted.to_owned(),
+            submitted_revision: submitted.to_owned(),
+        }),
+        _ => None,
     }
+}
 
-    async fn trigger_search_reindex(&self) -> Result<(), AppError> {
-        reindex_all(&self.app_state).await
+async fn read_persisted_revision(path: &std::path::Path) -> Result<Option<String>, AppError> {
+    match fs::read_to_string(path).await {
+        Ok(markdown) => Ok(Some(revision_token(&markdown))),
+        Err(source) if source.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(source) => Err(AppError::content_io(path.display().to_string(), source)),
     }
 }

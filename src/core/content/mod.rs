@@ -1,3 +1,6 @@
+mod draft;
+#[cfg(test)]
+mod draft_tests;
 mod errors;
 mod frontmatter;
 #[cfg(test)]
@@ -9,6 +12,7 @@ mod visibility;
 #[cfg(test)]
 mod visibility_tests;
 
+pub use draft::draft_title_and_slug;
 pub use errors::ContentValidationError;
 pub use frontmatter::{
     parse_markdown_document, revision_token, serialize_markdown_document, Frontmatter,

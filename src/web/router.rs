@@ -1,8 +1,7 @@
 use actix_web::web;
 
 use crate::web::handlers::{
-    admin, admin_preview, auth, public, search_page, settings_page, setup, static_assets,
-    trash_page,
+    admin, article_edit, auth, public, search_page, settings_page, setup, static_assets, trash_page,
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
@@ -33,7 +32,19 @@ fn configure_auth_routes(cfg: &mut web::ServiceConfig) {
 fn configure_public_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/").route(web::get().to(public::handle_get_home)))
         .service(web::resource("/search").route(web::get().to(search_page::handle_get_search)))
-        .service(web::resource("/article/{slug}").route(web::get().to(public::handle_get_article)));
+        .service(web::resource("/article/{slug}").route(web::get().to(public::handle_get_article)))
+        .service(
+            web::resource("/article/{slug}/edit")
+                .route(web::post().to(article_edit::handle_post_article_edit)),
+        )
+        .service(
+            web::resource("/article/{slug}/history")
+                .route(web::get().to(public::handle_get_article_history)),
+        )
+        .service(
+            web::resource("/article/{slug}/history/restore")
+                .route(web::post().to(article_edit::handle_post_article_restore)),
+        );
 }
 
 fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
@@ -41,11 +52,6 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
         web::scope("/admin")
             .route("", web::get().to(admin::handle_get_admin_shell))
             .route("/", web::get().to(admin::handle_get_admin_shell))
-            .route("/open/{slug}", web::get().to(admin::handle_get_admin_open))
-            .route(
-                "/preview",
-                web::post().to(admin_preview::handle_post_admin_preview),
-            )
             .route("/create", web::post().to(admin::handle_post_admin_create))
             .route("/save", web::post().to(admin::handle_post_admin_save))
             .route("/rename", web::post().to(admin::handle_post_admin_rename))
@@ -83,18 +89,6 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
 
 fn configure_static_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
-        web::resource("/static/admin-runtime-core.js")
-            .route(web::get().to(static_assets::handle_get_admin_runtime_core_js)),
-    )
-    .service(
-        web::resource("/static/admin-runtime-autosave.js")
-            .route(web::get().to(static_assets::handle_get_admin_runtime_autosave_js)),
-    )
-    .service(
-        web::resource("/static/admin-runtime-shortcuts.js")
-            .route(web::get().to(static_assets::handle_get_admin_runtime_shortcuts_js)),
-    )
-    .service(
         web::resource("/static/app-shell.js")
             .route(web::get().to(static_assets::handle_get_app_shell_js)),
     )

@@ -2,6 +2,7 @@ use actix_web::{http::header, web, HttpResponse};
 use serde::Deserialize;
 
 use crate::web::handlers::common::{enforce_setup_pending, internal_error};
+use crate::web::handlers::page_html::escape_html;
 use crate::web::password::hash_password;
 use crate::web::state::WebState;
 
@@ -9,23 +10,10 @@ const HTML_CONTENT_TYPE: &str = "text/html; charset=utf-8";
 
 #[derive(Debug, Deserialize)]
 pub struct SetupForm {
-    username: Option<String>,
     password: Option<String>,
 }
 
 impl SetupForm {
-    fn username_for_display(&self) -> String {
-        self.username
-            .as_deref()
-            .map(str::trim)
-            .unwrap_or_default()
-            .to_owned()
-    }
-
-    fn normalized_username(&self) -> Option<String> {
-        normalize_required(self.username.as_deref())
-    }
-
     fn normalized_password(&self) -> Option<String> {
         normalize_required(self.password.as_deref())
     }
@@ -37,7 +25,7 @@ pub async fn handle_get_setup(state: web::Data<WebState>) -> HttpResponse {
     }
     HttpResponse::Ok()
         .content_type(HTML_CONTENT_TYPE)
-        .body(render_setup_page("", &[]))
+        .body(render_setup_page(&[]))
 }
 
 pub async fn handle_post_setup(
@@ -48,17 +36,13 @@ pub async fn handle_post_setup(
         return response;
     }
 
-    let username = form.normalized_username();
     let password = form.normalized_password();
-    let errors = setup_validation_errors(username.is_some(), password.is_some());
+    let errors = setup_validation_errors(password.is_some());
     if !errors.is_empty() {
         return HttpResponse::BadRequest()
             .content_type(HTML_CONTENT_TYPE)
-            .body(render_setup_page(&form.username_for_display(), &errors));
+            .body(render_setup_page(&errors));
     }
-    let Some(username) = username else {
-        return HttpResponse::BadRequest().finish();
-    };
     let Some(password) = password else {
         return HttpResponse::BadRequest().finish();
     };
@@ -70,7 +54,7 @@ pub async fn handle_post_setup(
 
     match state
         .admin_store
-        .create_admin(&username, &password_hash)
+        .create_admin("admin", &password_hash)
         .await
     {
         Ok(_) => HttpResponse::SeeOther()
@@ -89,19 +73,15 @@ fn normalize_required(value: Option<&str>) -> Option<String> {
     }
 }
 
-fn setup_validation_errors(has_username: bool, has_password: bool) -> Vec<&'static str> {
+fn setup_validation_errors(has_password: bool) -> Vec<&'static str> {
     let mut errors = Vec::new();
-    if !has_username {
-        errors.push("username is required");
-    }
     if !has_password {
         errors.push("password is required");
     }
     errors
 }
 
-fn render_setup_page(username: &str, errors: &[&str]) -> String {
-    let escaped_username = escape_html(username);
+fn render_setup_page(errors: &[&str]) -> String {
     let error_block = render_error_block(errors);
     format!(
         r#"<!doctype html>
@@ -114,11 +94,10 @@ fn render_setup_page(username: &str, errors: &[&str]) -> String {
 <body>
   <main id="setup-page">
     <h1>Set up first admin account</h1>
-    <p>Create the initial administrator credentials to unlock login.</p>
+    <p>Create password for fixed admin account <code>admin</code>.</p>
     {error_block}
     <form id="setup-form" method="post" action="/setup">
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" autocomplete="username" value="{escaped_username}" />
+      <input type="hidden" name="username" value="admin" />
       <label for="password">Password</label>
       <input id="password" name="password" type="password" autocomplete="new-password" />
       <button type="submit">Create admin account</button>
@@ -144,19 +123,4 @@ fn render_error_block(errors: &[&str]) -> String {
       <ul>{items}</ul>
     </section>"#
     )
-}
-
-fn escape_html(value: &str) -> String {
-    let mut escaped = String::with_capacity(value.len());
-    for ch in value.chars() {
-        match ch {
-            '&' => escaped.push_str("&amp;"),
-            '<' => escaped.push_str("&lt;"),
-            '>' => escaped.push_str("&gt;"),
-            '"' => escaped.push_str("&quot;"),
-            '\'' => escaped.push_str("&#39;"),
-            _ => escaped.push(ch),
-        }
-    }
-    escaped
 }

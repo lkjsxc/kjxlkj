@@ -1,44 +1,42 @@
-mod helpers;
-mod query;
-mod state;
+mod base;
+mod history;
+mod mutation;
+mod timeline;
 
 use async_trait::async_trait;
 
-use kjxlkj::core::content::ParsedMarkdown;
-use kjxlkj::error::AppError;
-use kjxlkj::web::state::{
+use crate::app_state::AppState;
+use crate::core::content::ParsedMarkdown;
+use crate::error::AppError;
+use crate::web::state::{
     ArticleHistory, ArticleNavigation, ArticleSummary, ContentStore, SaveOutcome, SearchHit,
 };
 
-use self::helpers::missing;
-use self::query::search_hits;
-use self::state::MockContentState;
-
-#[derive(Clone, Default)]
-pub struct MockContentStore {
-    state: MockContentState,
+#[derive(Clone)]
+pub struct RuntimeContentStore {
+    pub app_state: AppState,
 }
 
 #[async_trait]
-impl ContentStore for MockContentStore {
+impl ContentStore for RuntimeContentStore {
     async fn list_public_slugs(&self) -> Result<Vec<String>, AppError> {
-        Ok(self.state.list_slugs(false))
+        self.load_slug_list(false).await
     }
 
     async fn list_admin_slugs(&self) -> Result<Vec<String>, AppError> {
-        Ok(self.state.list_slugs(true))
+        self.load_slug_list(true).await
     }
 
     async fn list_public_articles(&self) -> Result<Vec<ArticleSummary>, AppError> {
-        Ok(self.state.list_articles(false))
+        self.load_articles(false).await
     }
 
     async fn list_admin_articles(&self) -> Result<Vec<ArticleSummary>, AppError> {
-        Ok(self.state.list_articles(true))
+        self.load_articles(true).await
     }
 
     async fn read_article(&self, slug: &str) -> Result<ParsedMarkdown, AppError> {
-        self.state.read(slug).ok_or_else(|| missing(slug))
+        self.read_article_impl(slug).await
     }
 
     async fn create_article(
@@ -48,8 +46,7 @@ impl ContentStore for MockContentStore {
         body: &str,
         private: bool,
     ) -> Result<(), AppError> {
-        self.state.upsert(slug, title, body, private);
-        Ok(())
+        self.create_article_impl(slug, title, body, private).await
     }
 
     async fn save_article(
@@ -60,55 +57,40 @@ impl ContentStore for MockContentStore {
         private: bool,
         last_known_revision: Option<&str>,
     ) -> Result<SaveOutcome, AppError> {
-        self.state
-            .save(slug, title, body, private, last_known_revision)
+        self.save_article_impl(slug, title, body, private, last_known_revision)
+            .await
     }
 
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError> {
-        self.state.rename(slug, new_slug);
-        Ok(())
+        self.rename_article_impl(slug, new_slug).await
     }
 
     async fn delete_article(&self, slug: &str) -> Result<(), AppError> {
-        self.state.move_to_trash(slug);
-        Ok(())
+        self.delete_article_impl(slug).await
     }
 
     async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError> {
-        self.state.toggle_private(slug).ok_or_else(|| missing(slug))
+        self.toggle_article_private_impl(slug).await
     }
 
     async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError> {
-        Ok(self.state.list_trash_slugs())
+        self.list_trashed_admin_slugs_impl().await
     }
 
     async fn restore_article(&self, slug: &str) -> Result<(), AppError> {
-        if self
-            .state
-            .trash
-            .lock()
-            .expect("trash lock poisoned")
-            .contains_key(slug)
-        {
-            self.state.restore(slug);
-            return Ok(());
-        }
-        Err(missing(slug))
+        self.restore_article_impl(slug).await
     }
 
     async fn permanent_delete_article(&self, slug: &str) -> Result<(), AppError> {
-        if self.state.remove_from_trash(slug) {
-            return Ok(());
-        }
-        Err(missing(slug))
+        self.permanent_delete_article_impl(slug).await
     }
 
     async fn search_articles(&self, query: &str, admin: bool) -> Result<Vec<SearchHit>, AppError> {
-        Ok(search_hits(&self.state, query, admin))
+        self.search_articles_impl(query, admin).await
     }
 
     async fn trigger_search_reindex(&self) -> Result<(), AppError> {
-        Ok(())
+        self.trigger_search_reindex_impl().await
     }
 
     async fn article_navigation(
@@ -116,20 +98,14 @@ impl ContentStore for MockContentStore {
         slug: &str,
         admin: bool,
     ) -> Result<ArticleNavigation, AppError> {
-        Ok(self.state.navigation_for(slug, admin))
+        self.article_navigation_impl(slug, admin).await
     }
 
     async fn article_history(&self, slug: &str) -> Result<ArticleHistory, AppError> {
-        Ok(self.state.history_for(slug))
+        self.article_history_impl(slug).await
     }
 
     async fn restore_article_version(&self, slug: &str, commit_id: &str) -> Result<(), AppError> {
-        self.state.restore_version(slug, commit_id)
-    }
-}
-
-impl MockContentStore {
-    pub fn insert_article(&self, slug: &str, private: bool, body: &str) {
-        self.state.insert_simple(slug, private, body);
+        self.restore_article_version_impl(slug, commit_id).await
     }
 }

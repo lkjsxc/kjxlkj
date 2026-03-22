@@ -11,18 +11,18 @@ pub fn search_hits(state: &MockContentState, query: &str, admin: bool) -> Vec<Se
     let content = state.active.lock().expect("content lock poisoned");
     let mut hits = content
         .iter()
-        .filter(|(_, parsed)| admin || !parsed.frontmatter.private)
-        .filter_map(|(slug, parsed)| {
-            let title = parsed.frontmatter.title.clone().unwrap_or_default();
-            let haystack = format!("{slug} {title} {}", parsed.body).to_lowercase();
+        .filter(|(_, entry)| admin || !entry.parsed.frontmatter.private)
+        .filter_map(|(slug, entry)| {
+            let title = entry.parsed.frontmatter.title.clone().unwrap_or_default();
+            let haystack = format!("{slug} {title} {}", entry.parsed.body).to_lowercase();
             if !haystack.contains(&query) {
                 return None;
             }
             Some(SearchHit {
                 slug: slug.clone(),
-                title: parsed.frontmatter.title.clone(),
-                snippet: snippet_for(&parsed.body, &query),
-                private: parsed.frontmatter.private,
+                title: entry.parsed.frontmatter.title.clone(),
+                snippet: snippet_for(&entry.parsed.body, &query),
+                private: entry.parsed.frontmatter.private,
             })
         })
         .collect::<Vec<_>>();

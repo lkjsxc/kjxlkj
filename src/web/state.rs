@@ -39,6 +39,8 @@ pub trait SessionStore: Send + Sync {
 pub trait ContentStore: Send + Sync {
     async fn list_public_slugs(&self) -> Result<Vec<String>, AppError>;
     async fn list_admin_slugs(&self) -> Result<Vec<String>, AppError>;
+    async fn list_public_articles(&self) -> Result<Vec<ArticleSummary>, AppError>;
+    async fn list_admin_articles(&self) -> Result<Vec<ArticleSummary>, AppError>;
     async fn read_article(&self, slug: &str) -> Result<ParsedMarkdown, AppError>;
     async fn create_article(
         &self,
@@ -63,6 +65,13 @@ pub trait ContentStore: Send + Sync {
     async fn permanent_delete_article(&self, slug: &str) -> Result<(), AppError>;
     async fn search_articles(&self, query: &str, admin: bool) -> Result<Vec<SearchHit>, AppError>;
     async fn trigger_search_reindex(&self) -> Result<(), AppError>;
+    async fn article_navigation(
+        &self,
+        slug: &str,
+        admin: bool,
+    ) -> Result<ArticleNavigation, AppError>;
+    async fn article_history(&self, slug: &str) -> Result<ArticleHistory, AppError>;
+    async fn restore_article_version(&self, slug: &str, commit_id: &str) -> Result<(), AppError>;
 }
 
 #[async_trait]
@@ -85,6 +94,34 @@ pub struct SearchHit {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArticleSummary {
+    pub slug: String,
+    pub title: Option<String>,
+    pub private: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArticleHistoryEntry {
+    pub commit_id: String,
+    pub committed_at: DateTime<Utc>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArticleHistory {
+    pub slug: String,
+    pub entries: Vec<ArticleHistoryEntry>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArticleNavigation {
+    pub previous_slug: Option<String>,
+    pub next_slug: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SaveConflict {
     pub persisted_revision: String,
     pub submitted_revision: String,
@@ -94,6 +131,7 @@ pub struct SaveConflict {
 pub struct SaveOutcome {
     pub revision: String,
     pub conflict: Option<SaveConflict>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Clone)]

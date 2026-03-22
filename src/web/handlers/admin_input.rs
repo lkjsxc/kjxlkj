@@ -1,4 +1,3 @@
-use actix_web::HttpResponse;
 use serde::Deserialize;
 
 use crate::core::content::slug_from_stem;
@@ -8,6 +7,7 @@ pub struct CreateForm {
     pub slug: String,
     pub title: Option<String>,
     pub body: String,
+    pub private: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -17,14 +17,6 @@ pub struct SaveForm {
     pub body: String,
     pub private: Option<bool>,
     pub last_known_revision: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct PreviewForm {
-    pub slug: String,
-    pub title: Option<String>,
-    pub body: String,
-    pub private: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -41,14 +33,6 @@ pub fn normalize_slug_input(value: &str, field_name: &str) -> Result<String, Str
         return Err(format!("{field_name} must be lowercase kebab-case"));
     }
     Ok(slug)
-}
-
-pub fn valid_path_slug(slug: String) -> Result<String, HttpResponse> {
-    if slug_from_stem(&slug).is_ok() {
-        Ok(slug)
-    } else {
-        Err(HttpResponse::NotFound().finish())
-    }
 }
 
 fn normalize_required(value: &str) -> Option<String> {

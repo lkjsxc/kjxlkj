@@ -38,7 +38,7 @@ fn render_nav(article_slugs: &[String], is_admin: bool) -> String {
         "<li><a href=\"/search\">Search</a></li>".to_owned(),
     ];
     if is_admin {
-        action_rows.push("<li><a href=\"/admin\">Editor</a></li>".to_owned());
+        action_rows.push("<li><a href=\"/admin\">Admin</a></li>".to_owned());
         action_rows.push("<li><a href=\"/admin/settings\">Settings</a></li>".to_owned());
         action_rows.push("<li><a href=\"/admin/trash\">Trash</a></li>".to_owned());
     }

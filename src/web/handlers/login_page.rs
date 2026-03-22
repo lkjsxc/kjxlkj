@@ -1,5 +1,6 @@
-pub fn render_login_page(username: &str, errors: &[&str]) -> String {
-    let escaped_username = escape_html(username);
+use crate::web::handlers::page_html::escape_html;
+
+pub fn render_login_page(errors: &[&str]) -> String {
     let error_block = render_error_block(errors);
     format!(
         r#"<!doctype html>
@@ -12,11 +13,9 @@ pub fn render_login_page(username: &str, errors: &[&str]) -> String {
 <body>
   <main id="login-page">
     <h1>Admin login</h1>
-    <p>Sign in with the admin account created during setup.</p>
+    <p>Username is fixed as <code>admin</code>. Enter password to continue.</p>
     {error_block}
     <form id="login-form" method="post" action="/login">
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" autocomplete="username" value="{escaped_username}" />
       <label for="password">Password</label>
       <input id="password" name="password" type="password" autocomplete="current-password" />
       <button type="submit">Sign in</button>
@@ -42,19 +41,4 @@ fn render_error_block(errors: &[&str]) -> String {
       <ul>{items}</ul>
     </section>"#
     )
-}
-
-fn escape_html(value: &str) -> String {
-    let mut escaped = String::with_capacity(value.len());
-    for ch in value.chars() {
-        match ch {
-            '&' => escaped.push_str("&amp;"),
-            '<' => escaped.push_str("&lt;"),
-            '>' => escaped.push_str("&gt;"),
-            '"' => escaped.push_str("&quot;"),
-            '\'' => escaped.push_str("&#39;"),
-            _ => escaped.push(ch),
-        }
-    }
-    escaped
 }

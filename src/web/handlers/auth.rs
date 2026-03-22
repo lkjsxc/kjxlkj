@@ -11,27 +11,14 @@ use crate::web::session::{session_id_from_request, valid_session};
 use crate::web::state::WebState;
 
 const HTML_CONTENT_TYPE: &str = "text/html; charset=utf-8";
-const INVALID_CREDENTIALS_ERROR: &str = "invalid username or password";
+const INVALID_CREDENTIALS_ERROR: &str = "invalid password";
 
 #[derive(Debug, Deserialize)]
 pub struct LoginForm {
-    username: Option<String>,
     password: Option<String>,
 }
 
 impl LoginForm {
-    fn username_for_display(&self) -> String {
-        self.username
-            .as_deref()
-            .map(str::trim)
-            .unwrap_or_default()
-            .to_owned()
-    }
-
-    fn normalized_username(&self) -> Option<String> {
-        normalize_required(self.username.as_deref())
-    }
-
     fn normalized_password(&self) -> Option<String> {
         normalize_required(self.password.as_deref())
     }
@@ -54,7 +41,7 @@ pub async fn handle_get_login(request: HttpRequest, state: web::Data<WebState>) 
 
     HttpResponse::Ok()
         .content_type(HTML_CONTENT_TYPE)
-        .body(render_login_page("", &[]))
+        .body(render_login_page(&[]))
 }
 
 pub async fn handle_post_login(
@@ -65,30 +52,18 @@ pub async fn handle_post_login(
         return response;
     }
 
-    let username_for_display = form.username_for_display();
-    let Some(username) = form.normalized_username() else {
-        return HttpResponse::BadRequest()
-            .content_type(HTML_CONTENT_TYPE)
-            .body(render_login_page(
-                &username_for_display,
-                &["username is required"],
-            ));
-    };
     let Some(password) = form.normalized_password() else {
         return HttpResponse::BadRequest()
             .content_type(HTML_CONTENT_TYPE)
-            .body(render_login_page(
-                &username_for_display,
-                &["password is required"],
-            ));
+            .body(render_login_page(&["password is required"]));
     };
 
-    let admin = match state.admin_store.find_admin_by_username(&username).await {
+    let admin = match state.admin_store.find_admin_by_username("admin").await {
         Ok(Some(admin)) => admin,
         Ok(None) => {
             return HttpResponse::Unauthorized()
                 .content_type(HTML_CONTENT_TYPE)
-                .body(render_login_page(&username, &[INVALID_CREDENTIALS_ERROR]));
+                .body(render_login_page(&[INVALID_CREDENTIALS_ERROR]));
         }
         Err(error) => return internal_error(error),
     };
@@ -100,7 +75,7 @@ pub async fn handle_post_login(
     if !verified {
         return HttpResponse::Unauthorized()
             .content_type(HTML_CONTENT_TYPE)
-            .body(render_login_page(&username, &[INVALID_CREDENTIALS_ERROR]));
+            .body(render_login_page(&[INVALID_CREDENTIALS_ERROR]));
     }
 
     let settings = match state.settings_store.load_settings().await {
