@@ -2,7 +2,7 @@
 
 ## Objective
 
-Freeze the current documentation baseline and declare non-runtime scope for restructuring work.
+Freeze the documentation baseline and declare deterministic convergence scope for replay.
 
 ## Inputs
 
@@ -13,7 +13,7 @@ Freeze the current documentation baseline and declare non-runtime scope for rest
 ## Ordered Steps
 
 1. Record all markdown files under `docs/` in deterministic lexical order.
-2. Confirm restructuring scope is documentation-only and excludes runtime code changes.
+2. Audit runtime/test/CLI references to confirm linked surfaces and files still exist.
 3. Publish baseline assumptions that later phases can reference without reinterpretation.
 
 ## Interleaved Tests

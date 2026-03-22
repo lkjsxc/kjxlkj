@@ -16,20 +16,20 @@ curl -sS -D - -o /dev/null http://127.0.0.1:8080/ | tr -d '\r' | awk 'NR==1 || t
 2. Complete setup with fixed admin:
 
 ```bash
-curl -sS -D - -o /dev/null -X POST http://127.0.0.1:8080/setup -H 'Content-Type: application/x-www-form-urlencoded' --data 'username=admin&password=s3cret'
+curl -sS -D - -o /dev/null -X POST http://127.0.0.1:8080/setup -H 'Content-Type: application/x-www-form-urlencoded' --data 'password=s3cret'
 ```
 
 3. Login (password-only semantics):
 
 ```bash
-curl -sS -D /tmp/kjxlkj.login.headers -o /tmp/kjxlkj.login.body -X POST http://127.0.0.1:8080/login -H 'Content-Type: application/x-www-form-urlencoded' --data 'username=admin&password=s3cret'
+curl -sS -D /tmp/kjxlkj.login.headers -o /tmp/kjxlkj.login.body -X POST http://127.0.0.1:8080/login -H 'Content-Type: application/x-www-form-urlencoded' --data 'password=s3cret'
 export KJXLKJ_SESSION_ID="$(awk -F 'session_id=|;' 'tolower($1) ~ /^set-cookie: / {print $2}' /tmp/kjxlkj.login.headers | head -n 1)"
 ```
 
-4. Create private article by default:
+4. Create article without explicit privacy flag (must default private):
 
 ```bash
-curl -sS -o /dev/null -w 'code=%{http_code}\n' -H "Cookie: session_id=$KJXLKJ_SESSION_ID" -X POST http://127.0.0.1:8080/admin/create -H 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'slug=smoke-post' --data-urlencode 'title=Smoke Post' --data-urlencode 'private=true' --data-urlencode 'body=# Smoke'
+curl -sS -o /dev/null -w 'code=%{http_code}\n' -H "Cookie: session_id=$KJXLKJ_SESSION_ID" -X POST http://127.0.0.1:8080/admin/create -H 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'slug=smoke-post' --data-urlencode 'title=Smoke Post' --data-urlencode 'body=# Smoke'
 ```
 
 5. Verify inline editor and history pages:

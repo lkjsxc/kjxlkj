@@ -19,7 +19,6 @@
 - `/admin/create`
 - `/admin/rename`
 - `/admin/delete/{slug}`
-- `/admin/toggle-private/{slug}`
 - `/admin/settings`
 - `/admin/settings/save`
 - `/admin/settings/reindex`

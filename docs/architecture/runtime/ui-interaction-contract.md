@@ -4,27 +4,32 @@ This runtime contract binds page rendering, HTMX fragments, and JavaScript orche
 
 ## Interaction Tiers
 
-1. Server-rendered page tier for `/`, `/setup`, `/login`, `/search`, `/admin`, `/admin/settings`, and `/admin/trash`.
-2. HTMX tier for admin open/preview/save/create/rename/delete/toggle/settings/trash interactions.
-3. JavaScript tier for autosave, unsaved-change guards, keyboard shortcuts, and responsive menu toggle behavior.
+1. Server-rendered page tier for `/`, `/setup`, `/login`, `/search`, `/admin`,
+   `/admin/settings`, `/admin/trash`, `/article/{slug}`, and `/article/{slug}/history`.
+2. HTMX tier for admin create/rename/delete/toggle/settings/trash interactions plus inline
+   article edit and history restore.
+3. JavaScript tier for autosave-first inline editing, unsaved-change guards, keyboard
+   shortcuts, and responsive menu toggle behavior.
 
 ## Runtime Invariants
 
-- Server-side HTML is canonical for all page and preview output.
+- Server-side HTML is canonical for all page output and inline fragment output.
 - HTMX responses target stable DOM IDs defined in product contracts.
 - JavaScript enhancements are additive and must degrade to server-rendered behavior.
 - Auth and setup guards execute before any tier-specific handler logic.
 - Shared shell IDs remain stable across page surfaces.
-
-## Preview Rendering Invariant
-
-- Markdown preview is rendered on the server and delivered as HTMX fragment swaps.
-- Browser-side markdown rendering is non-authoritative and must not diverge from server output.
-- Sanitization rules for article rendering also apply to preview rendering.
+- `/admin` remains a dashboard and never hosts a dedicated editor page.
+- Editing occurs inline on `/article/{slug}` only.
+- Inline editor field order is `title`, `private`, `body`, `last_known_revision`.
+- The `private` toggle is rendered above the `body` field.
+- Article pages always expose last-updated metadata and previous/next navigation links.
+- Article history routes (`GET /article/{slug}/history`,
+  `POST /article/{slug}/history/restore`) are admin-only.
 
 ## Conflict Handling Invariant
 
-- `POST /admin/save` accepts `last_known_revision`.
+- `POST /article/{slug}/edit` accepts `last_known_revision`.
+- Saves are autosave-first (idle + blur), with plain form submission as non-JS fallback.
 - On stale revision mismatch:
   - server persists incoming write (last-write-wins),
   - response includes a visible conflict warning fragment.

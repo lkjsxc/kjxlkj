@@ -16,6 +16,7 @@
 ## Validation Rules
 
 - Run `kjxlkj docs validate-topology` after topology edits.
+- Run `kjxlkj docs validate-terms` after user-visible wording edits.
 - Run `kjxlkj quality check-lines` after content edits.
 
 ## Executable-Intent Preservation Rules

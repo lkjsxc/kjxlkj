@@ -4,7 +4,8 @@
 
 1. Update affected directory TOCs.
 2. Keep links valid and relative.
-3. Re-run topology and line-limit checks for touched docs.
+3. Re-run topology, restricted-language, and line-limit checks for touched docs.
+4. Treat any `docs validate-terms` failure as a merge blocker until wording is corrected.
 
 ## Required for Behavior Changes
 

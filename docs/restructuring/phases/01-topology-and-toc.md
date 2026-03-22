@@ -18,7 +18,7 @@ Create the restructuring directory tree with one TOC README per directory.
 ## Interleaved Tests
 
 - `T01-readme-per-dir` from [interleaved schedule](../tests/interleaved-schedule.md)
-- `T08-entrypoint-links` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T21-toc-child-links` from [interleaved schedule](../tests/interleaved-schedule.md)
 
 ## Fundamental Intent
 

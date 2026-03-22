@@ -43,6 +43,7 @@ This contract defines the shared site navigation shell used by public and admin 
 
 - Non-admin users MUST NOT see private articles in menu listings.
 - Admin users MAY see both public and private entries with clear private labeling.
+- Shell/article navigation labels must not include author attribution/byline display.
 
 ## Cross-References
 

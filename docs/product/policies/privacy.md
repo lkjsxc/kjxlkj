@@ -14,7 +14,9 @@ private: true
 - Public article routes must deny private pages to logged-out users.
 - Admin sessions may read and edit private articles.
 - Non-admin menu and search surfaces must omit private articles.
+- Public article rendering must not display author attribution/byline metadata.
 
 ## Default Behavior
 
-- Missing frontmatter `private` is treated as `false`.
+- Articles are private by default.
+- Missing frontmatter `private` is treated as `true`.

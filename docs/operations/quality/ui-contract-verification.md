@@ -20,13 +20,16 @@
 
 1. `GET /article/{slug}/history` is admin-only.
 2. History list shows commit ID, timestamp, and message.
-3. `POST /article/{slug}/history/restore` restores selected revision.
+3. History rows include restore action targeting `/article/{slug}/history/restore`.
+4. `POST /article/{slug}/history/restore` restores selected revision.
+5. Restore success responds with `303` redirect to `/article/{slug}`.
 
 ## Privacy and Visibility Checks
 
 1. New articles default to private.
 2. Public users cannot access private articles.
 3. Admin sees private/public markers across dashboard/home.
+4. Article and search surfaces do not display author attribution/byline metadata.
 
 ## Required Validation Commands
 

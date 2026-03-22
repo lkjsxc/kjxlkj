@@ -23,4 +23,6 @@
 
 - Every article exposes history at `/article/{slug}/history` for admin.
 - Restore endpoint exists at `/article/{slug}/history/restore`.
+- History list rows render commit ID, timestamp, message, and restore action.
+- Successful restore returns `303` redirect to `/article/{slug}`.
 - History backend is Git with at most one commit per article per 60 seconds.

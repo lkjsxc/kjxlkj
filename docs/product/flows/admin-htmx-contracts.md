@@ -13,7 +13,6 @@
 | `POST /admin/create` | `slug`, `title`, `private`, `body` | `303` redirect to `/article/{slug}` |
 | `POST /admin/rename` | `slug`, `new_slug` | `303` redirect to `/article/{new_slug}` |
 | `POST /admin/delete/{slug}` | path slug | `204` for non-fragment callers |
-| `POST /admin/toggle-private/{slug}` | path slug | privacy toggled, redirect/readback |
 
 ## Inline Edit Mutations
 

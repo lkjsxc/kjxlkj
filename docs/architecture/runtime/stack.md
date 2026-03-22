@@ -13,3 +13,5 @@
 - Keep request handling explicit and testable.
 - Keep domain logic isolated from framework-specific concerns.
 - Keep content rendering predictable for public and admin flows.
+- Keep auth semantics fixed to username `admin` with password-only login input.
+- Keep content visibility private-by-default with no author attribution display.

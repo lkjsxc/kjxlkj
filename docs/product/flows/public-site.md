@@ -3,7 +3,7 @@
 ## Logged-Out Behavior
 
 - Before first admin exists, `GET /` redirects to `/setup`.
-- After setup completion, `GET /` shows non-private articles only.
+- After setup completion, `GET /` shows only non-private articles (articles are private by default).
 - `GET /article/{slug}` returns 404 for private articles.
 - `GET /search` is available and only returns public matches.
 
@@ -22,3 +22,4 @@
 - Article pages should expose stable canonical links.
 - Shared navigation shell is rendered on page surfaces after setup completion.
 - Article page shows last updated date and previous/next links.
+- Article pages must not display author attribution/byline metadata.

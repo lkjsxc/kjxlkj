@@ -8,9 +8,10 @@
 
 1. If user visits `/` before setup completion, system redirects to `/setup`.
 2. User visits `/setup` and receives the full setup page (not placeholder-only content).
-3. User submits initial admin credentials.
+3. User submits initial fixed-admin password.
 4. System creates admin record and enables normal auth flow.
-5. Setup accepts only `username=admin`; password is required.
+5. Setup accepts password-only input and always provisions fixed username `admin`.
+6. Post-setup login uses password-only form semantics for fixed identity `admin`.
 
 ## Guardrails
 

@@ -34,6 +34,7 @@ Each result row MUST include:
 - Non-admin users MUST receive only public matches.
 - Admin users MAY receive public and private matches.
 - Private-match labeling MAY be shown to admins.
+- Search results and linked article surfaces must not display author attribution/byline metadata.
 
 ## Menu Integration
 

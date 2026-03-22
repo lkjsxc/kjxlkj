@@ -21,5 +21,5 @@ private: false
 
 ## Parsing Rules
 
-- Missing `private` defaults to `false`.
+- Missing `private` defaults to `true` (private-by-default).
 - Invalid frontmatter must surface deterministic validation errors.

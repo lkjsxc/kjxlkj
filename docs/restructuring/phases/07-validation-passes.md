@@ -2,7 +2,7 @@
 
 ## Objective
 
-Run deterministic validation checks for topology, line limits, and link sanity.
+Run deterministic CLI validation checks required for docs/runtime convergence replay.
 
 ## Inputs
 
@@ -11,15 +11,15 @@ Run deterministic validation checks for topology, line limits, and link sanity.
 
 ## Ordered Steps
 
-1. Run topology check: every `docs/**/` directory contains `README.md`.
-2. Run line-limit check: every markdown file under `docs/` has fewer than 300 lines.
-3. Run link sanity checks focused on README and restructuring paths.
+1. Run topology gate: `cargo run --bin kjxlkj -- docs validate-topology`.
+2. Run terms gate: `cargo run --bin kjxlkj -- docs validate-terms`.
+3. Run line-limit gate: `cargo run --bin kjxlkj -- quality check-lines`.
 
 ## Interleaved Tests
 
 - `T12-topology-check` from [interleaved schedule](../tests/interleaved-schedule.md)
-- `T13-line-limit-check` from [interleaved schedule](../tests/interleaved-schedule.md)
-- `T14-link-sanity` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T13-terms-check` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T14-line-limit-check` from [interleaved schedule](../tests/interleaved-schedule.md)
 
 ## Fundamental Intent
 
@@ -28,4 +28,4 @@ Run deterministic validation checks for topology, line limits, and link sanity.
 ## Evidence
 
 - Validation command output captured in task report.
-- No failing checks in topology, line-limit, or link sanity.
+- No failing checks in topology, terms, or line-limit gates.

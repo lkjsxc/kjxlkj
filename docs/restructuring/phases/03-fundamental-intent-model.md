@@ -11,7 +11,7 @@ Define and stabilize explicit fundamental intents that each phase must preserve.
 
 ## Ordered Steps
 
-1. Define intent IDs (`FI-00`..`FI-09`) with single authoritative statements.
+1. Define intent IDs (`FI-00`..`FI-10`) with single authoritative statements.
 2. Map each phase to at least one intent ID.
 3. Cross-link intents into phase docs so intent validation is machine-readable.
 

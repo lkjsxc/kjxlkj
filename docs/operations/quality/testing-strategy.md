@@ -12,6 +12,7 @@
 - Setup-first lifecycle and setup lock.
 - Password-only login/logout session lifecycle.
 - Private-by-default article visibility.
+- No author attribution display on article/search/public surfaces.
 - Inline edit save flow on article page.
 - Article navigation and history routes.
 - Admin create/rename/delete/toggle flows.

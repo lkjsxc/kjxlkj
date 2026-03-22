@@ -4,6 +4,9 @@
 
 - Admin-only routes require a valid session.
 - Session invalidation must occur on logout.
+- System has exactly one admin identity with fixed username `admin`.
+- Post-setup login authenticates the fixed `admin` identity using password-only input.
+- Both `/setup` and `/login` are password-only inputs; identity is fixed to `admin` in runtime behavior.
 
 ## Route-Level Expectations
 

@@ -10,6 +10,9 @@
 
 - Markdown files are the source of truth for article content.
 - PostgreSQL is the source of truth for admin and session state.
+- Authentication model is fixed-identity `admin` with password-only login semantics.
+- Article visibility model is private-by-default.
+- Article rendering does not expose author attribution/byline display.
 
 ## Change Constraints
 

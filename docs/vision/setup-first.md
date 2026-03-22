@@ -19,4 +19,5 @@
 ## Post-Exit Behavior
 
 - Login and admin-editor flows proceed according to [product contracts](../product/README.md).
+- Login semantics remain password-only for fixed identity `admin`.
 - Public content rendering proceeds according to [Public Site Flow](../product/flows/public-site.md).

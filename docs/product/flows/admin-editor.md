@@ -11,13 +11,14 @@
 - Admin dashboard is not a dedicated editor page.
 - Dashboard manages article lifecycle and links into inline article editing.
 - The system has one user identity: fixed username `admin`.
+- Login to that identity is password-only.
 
 ## Core Capabilities
 
 - List all articles including private.
 - Create article with datetime-derived placeholder title and slug.
 - Private toggle is available at creation and edit.
-- Rename, soft-delete, and privacy-toggle actions exist.
+- Rename and soft-delete actions exist.
 - Settings and trash views remain in admin surface.
 
 ## Endpoint Surface
@@ -26,7 +27,6 @@
 - `POST /admin/create`
 - `POST /admin/rename`
 - `POST /admin/delete/{slug}`
-- `POST /admin/toggle-private/{slug}`
 
 ## Editing Path
 

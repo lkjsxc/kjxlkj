@@ -1,12 +1,14 @@
-# Admin Conflict Warning Contract
+# Inline Edit Conflict Warning Contract
 
-This document is the canonical contract for save conflicts in `/admin`.
+This document is the canonical contract for conflicts in inline article editing on
+`/article/{slug}`.
 
 ## Concurrency Model
 
-- Saves are optimistic and carry `last_known_revision` from the editor.
+- Saves are optimistic and carry `last_known_revision` from the inline editor form.
 - A conflict exists when submitted `last_known_revision` differs from the persisted revision at save time.
-- Conflict detection happens server-side for all save requests, including autosave.
+- Conflict detection happens server-side for `POST /article/{slug}/edit` writes, including
+  autosave and non-JS form submission fallback.
 
 ## Resolution Policy
 
@@ -16,23 +18,18 @@ This document is the canonical contract for save conflicts in `/admin`.
 
 ## Warning Banner Contract
 
-- Conflict response makes `#admin-conflict-banner` visible.
-- Banner attributes:
-  - `id="admin-conflict-banner"`
-  - `role="alert"`
-  - `aria-live="assertive"`
-  - `data-conflict="true"`
-- Banner content requirements:
+- Conflict response returns the inline editor fragment and surfaces conflict details in
+  `#article-edit-status`.
+- Status messaging requirements:
   - clear warning that a stale editor snapshot was saved
   - previously persisted revision identifier or time (if available)
   - newly persisted revision identifier or time
-  - action links or buttons: reload latest, continue editing
+  - preserves visible save-success semantics for last-write-wins behavior
 
 ## Interaction Rules
 
-- Conflict banner appears for manual saves and autosaves.
-- `#admin-status-banner` still reports save success so last-write-wins behavior is visible.
-- Banner remains visible until:
+- Conflict warning appears for autosaves and explicit form submissions.
+- Warning remains visible until:
   - user dismisses it, or
   - next non-conflicting save clears it.
 

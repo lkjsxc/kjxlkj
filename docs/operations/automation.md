@@ -9,6 +9,7 @@
 ## Canonical Entrypoints
 
 - `cargo run --bin kjxlkj -- docs validate-topology`
+- `cargo run --bin kjxlkj -- docs validate-terms`
 - `cargo run --bin kjxlkj -- quality check-lines`
 - `docker compose --profile verify run --rm verify`
 - `cargo run --bin kjxlkj -- compose verify` (optional wrapper with JSON summaries)
@@ -26,7 +27,18 @@ Expected result:
 - Exit code `0`.
 - Final JSON event includes `"command":"docs.validate-topology"`, `"status":"pass"`, and `"violations":0`.
 
-### 2) Line-limit gate
+### 2) Language-compliance gate
+
+```bash
+cargo run --bin kjxlkj -- docs validate-terms
+```
+
+Expected result:
+
+- Exit code `0`.
+- Final JSON event includes `"command":"docs.validate-terms"`, `"status":"pass"`, and `"violations":0`.
+
+### 3) Line-limit gate
 
 ```bash
 cargo run --bin kjxlkj -- quality check-lines
@@ -37,7 +49,7 @@ Expected result:
 - Exit code `0`.
 - Final JSON event includes `"command":"quality.check-lines"`, `"status":"pass"`, and `"violations":0`.
 
-### 3) Docker acceptance gate
+### 4) Docker acceptance gate
 
 1. Complete first-time startup in [../containers/compose/commands.md](../containers/compose/commands.md).
 2. Complete setup/login/admin verification in [../containers/verification/local-runbook.md](../containers/verification/local-runbook.md).
@@ -61,7 +73,7 @@ cargo run --bin kjxlkj -- compose verify
 Expected summary on success:
 
 ```json
-{"command":"compose.verify","status":"pass","steps_passed":3,"steps_total":3}
+{"command":"compose.verify","status":"pass","steps_passed":4,"steps_total":4}
 ```
 
 ## Failure Handling Rule

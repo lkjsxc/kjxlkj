@@ -30,13 +30,13 @@ are layered on top.
 - Logged-out rendering includes only public articles.
 - Logged-in admin rendering may include private items and admin affordances.
 - Article links always use canonical `/article/{slug}` URLs.
+- Article rendering does not display author/byline attribution.
 - Page is rendered within shared shell IDs from [navigation-shell.md](navigation-shell.md).
 
 ## `/setup` Page Contract
 
 - Root container: `<main id="setup-page">`.
 - Form ID: `#setup-form` with fields:
-  - hidden `username` with fixed value `admin`
   - `password`
 - Error region: `#setup-errors` with `aria-live="polite"`.
 - `POST /setup` outcomes:
@@ -49,6 +49,7 @@ are layered on top.
 - Root container: `<main id="login-page">`.
 - Form ID: `#login-form` with fields:
   - `password`
+- Login form does not accept or require username input; identity is fixed to `admin`.
 - Error region: `#login-errors` with `aria-live="polite"`.
 - `POST /login` outcomes:
   - `400` for malformed payloads (same page re-rendered).

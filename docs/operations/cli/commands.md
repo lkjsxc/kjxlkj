@@ -13,6 +13,12 @@
 ## Container Verification
 
 - `compose verify`
+  - Runs convergence checks in this order:
+    1. `docs validate-topology`
+    2. `docs validate-terms`
+    3. `quality check-lines`
+    4. `docker compose --profile verify run --rm verify`
+  - Emits one JSON line per step plus a final summary.
 
 ## Notes
 

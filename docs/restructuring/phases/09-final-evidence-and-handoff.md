@@ -20,10 +20,13 @@ Assemble final evidence and conclude task status without ambiguity.
 
 - `T16-final-audit` from [interleaved schedule](../tests/interleaved-schedule.md)
 - `T17-status-update` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T18-runtime-tests` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T19-compose-verify-profile` from [interleaved schedule](../tests/interleaved-schedule.md)
+- `T20-compose-cli-wrapper` from [interleaved schedule](../tests/interleaved-schedule.md)
 
 ## Fundamental Intent
 
-- All intents [FI-00..FI-09](../tests/fundamental-intent-catalog.md) must remain satisfied at handoff.
+- All intents [FI-00..FI-10](../tests/fundamental-intent-catalog.md) must remain satisfied at handoff.
 
 ## Evidence
 
