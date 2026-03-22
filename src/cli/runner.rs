@@ -6,13 +6,16 @@ use serde_json::json;
 use crate::error::AppError;
 
 use super::compose::{verify_compose, ProcessCommandRunner, COMPOSE_VERIFY_STEP_COUNT};
-use super::line_limits::scan_line_limits;
+use super::line_limits::scan::{scan_line_limits, scan_text_for_terms};
 use super::topology::{scan_docs_topology, TopologyRule};
 use super::CommandResult;
+
+const FORBIDDEN_TERM: &str = concat!("ob", "sidian");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum CliCommand {
     DocsValidateTopology,
+    DocsValidateTerms,
     QualityCheckLines,
     ComposeVerify,
 }
@@ -20,6 +23,7 @@ enum CliCommand {
 pub async fn run_cli(args: &[String]) -> Result<CommandResult, AppError> {
     match parse_command(args)? {
         CliCommand::DocsValidateTopology => Ok(run_docs_validate_topology()),
+        CliCommand::DocsValidateTerms => Ok(run_docs_validate_terms()),
         CliCommand::QualityCheckLines => Ok(run_quality_check_lines()),
         CliCommand::ComposeVerify => Ok(run_compose_verify()),
     }
@@ -29,6 +33,7 @@ fn parse_command(args: &[String]) -> Result<CliCommand, AppError> {
     let as_str = args.iter().map(String::as_str).collect::<Vec<_>>();
     match as_str.as_slice() {
         ["docs", "validate-topology"] => Ok(CliCommand::DocsValidateTopology),
+        ["docs", "validate-terms"] => Ok(CliCommand::DocsValidateTerms),
         ["quality", "check-lines"] => Ok(CliCommand::QualityCheckLines),
         ["compose", "verify"] => Ok(CliCommand::ComposeVerify),
         _ => Err(AppError::unsupported_command(if args.is_empty() {
@@ -36,6 +41,35 @@ fn parse_command(args: &[String]) -> Result<CliCommand, AppError> {
         } else {
             args.join(" ")
         })),
+    }
+}
+
+fn run_docs_validate_terms() -> CommandResult {
+    let root = Path::new("docs");
+    match scan_text_for_terms(root, &[FORBIDDEN_TERM]) {
+        Ok(report) => {
+            for violation in &report.violations {
+                emit(json!({
+                    "command": "docs.validate-terms",
+                    "status": "fail",
+                    "path": path_display(&violation.path),
+                    "term": violation.term,
+                    "line": violation.line,
+                }));
+            }
+            let result = report.result();
+            emit(json!({
+                "command": "docs.validate-terms",
+                "status": result.status(),
+                "files_checked": report.files_checked,
+                "violations": report.violations.len(),
+            }));
+            result
+        }
+        Err(error) => {
+            emit_io_failure("docs.validate-terms", &error);
+            CommandResult::Fail
+        }
     }
 }
 

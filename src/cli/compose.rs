@@ -3,7 +3,7 @@ use std::process::Command;
 
 use super::CommandResult;
 
-pub const COMPOSE_VERIFY_STEP_COUNT: usize = 3;
+pub const COMPOSE_VERIFY_STEP_COUNT: usize = 4;
 const DETAIL_LIMIT: usize = 200;
 
 struct ComposeStep {
@@ -23,6 +23,21 @@ const COMPOSE_STEPS: &[ComposeStep] = &[
     ComposeStep {
         name: "verify-profile-run",
         args: &["compose", "--profile", "verify", "run", "--rm", "verify"],
+    },
+    ComposeStep {
+        name: "docs-validate-terms",
+        args: &[
+            "run",
+            "--rm",
+            "verify",
+            "cargo",
+            "run",
+            "--bin",
+            "kjxlkj",
+            "--",
+            "docs",
+            "validate-terms",
+        ],
     },
 ];
 

@@ -2,8 +2,11 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use super::line_limits::{scan_line_limits, LineScope};
+use super::line_limits::model::LineScope;
+use super::line_limits::scan::scan_line_limits;
 use super::CommandResult;
+
+const FORBIDDEN_TERM: &str = concat!("ob", "sidian");
 
 #[test]
 fn scan_line_limits_reports_docs_and_source_violations() {
@@ -78,4 +81,21 @@ fn create_temp_dir(prefix: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!("kjxlkj-{prefix}-{nanos}"));
     fs::create_dir_all(&path).unwrap();
     path
+}
+
+#[test]
+fn term_scan_reports_forbidden_term() {
+    let root = create_temp_dir("term-scan");
+    let docs = root.join("docs");
+    fs::create_dir_all(&docs).unwrap();
+    fs::write(
+        docs.join("README.md"),
+        format!("avoid {FORBIDDEN_TERM} wording\n"),
+    )
+    .unwrap();
+    let report = super::line_limits::scan::scan_text_for_terms(&docs, &[FORBIDDEN_TERM]).unwrap();
+    assert_eq!(report.files_checked, 1);
+    assert_eq!(report.violations.len(), 1);
+    assert_eq!(report.violations[0].term, FORBIDDEN_TERM);
+    fs::remove_dir_all(root).unwrap();
 }

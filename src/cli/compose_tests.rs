@@ -38,15 +38,15 @@ impl CommandRunner for StubRunner {
 
 #[test]
 fn verify_compose_reports_pass_when_all_steps_succeed() {
-    let runner = StubRunner::new(vec![success(), success(), success()]);
+    let runner = StubRunner::new(vec![success(), success(), success(), success()]);
 
     let report = verify_compose(&runner);
 
     assert_eq!(report.result(), CommandResult::Pass);
-    assert_eq!(report.steps_passed(), 3);
-    assert_eq!(report.steps.len(), 3);
+    assert_eq!(report.steps_passed(), 4);
+    assert_eq!(report.steps.len(), 4);
     assert_eq!(report.failed_step, None);
-    assert_eq!(runner.calls().len(), 3);
+    assert_eq!(runner.calls().len(), 4);
 }
 
 #[test]
