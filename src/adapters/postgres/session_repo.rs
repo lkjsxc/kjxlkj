@@ -15,8 +15,12 @@ impl SessionRepository {
         Self { pool }
     }
 
-    pub async fn create(&self, admin_id: i64) -> Result<SessionRecord, AppError> {
-        let session = Self::build_new_session(admin_id, Utc::now());
+    pub async fn create(
+        &self,
+        admin_id: i64,
+        timeout_minutes: i32,
+    ) -> Result<SessionRecord, AppError> {
+        let session = Self::build_new_session(admin_id, Utc::now(), timeout_minutes);
         let (id, admin_id, expires_at, created_at) =
             sqlx::query_as::<_, (Uuid, i64, DateTime<Utc>, DateTime<Utc>)>(
                 "INSERT INTO sessions (id, admin_id, expires_at, created_at)
@@ -78,8 +82,17 @@ impl SessionRepository {
         Ok(result.rows_affected())
     }
 
-    fn build_new_session(admin_id: i64, created_at: DateTime<Utc>) -> SessionRecord {
-        SessionRecord::new(Uuid::new_v4(), admin_id, created_at)
+    fn build_new_session(
+        admin_id: i64,
+        created_at: DateTime<Utc>,
+        timeout_minutes: i32,
+    ) -> SessionRecord {
+        SessionRecord::new_with_timeout_minutes(
+            Uuid::new_v4(),
+            admin_id,
+            created_at,
+            i64::from(timeout_minutes),
+        )
     }
 }
 
@@ -92,7 +105,7 @@ mod tests {
     #[test]
     fn session_builder_sets_24_hour_expiry() {
         let created_at = Utc.with_ymd_and_hms(2025, 2, 1, 0, 0, 0).unwrap();
-        let session = SessionRepository::build_new_session(9, created_at);
+        let session = SessionRepository::build_new_session(9, created_at, 24 * 60);
 
         assert_eq!(session.admin_id, 9);
         assert_eq!(session.expires_at, created_at + Duration::hours(24));

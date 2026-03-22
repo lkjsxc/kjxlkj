@@ -26,9 +26,15 @@ pub async fn handle_get_admin_shell(
     }
 
     match state.content_store.list_admin_slugs().await {
-        Ok(slugs) => HttpResponse::Ok()
-            .content_type(HTML_CONTENT_TYPE)
-            .body(render_admin_shell(&slugs)),
+        Ok(slugs) => {
+            let settings = match state.settings_store.load_settings().await {
+                Ok(settings) => settings,
+                Err(error) => return internal_error(error),
+            };
+            HttpResponse::Ok()
+                .content_type(HTML_CONTENT_TYPE)
+                .body(render_admin_shell(&settings.site_title, &slugs))
+        }
         Err(error) => internal_error(error),
     }
 }

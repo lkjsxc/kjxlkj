@@ -70,7 +70,7 @@ fn run_docs_validate_topology() -> CommandResult {
 }
 
 fn run_quality_check_lines() -> CommandResult {
-    match scan_line_limits(Path::new("docs"), Path::new("src/tests")) {
+    match scan_line_limits(Path::new("docs"), Path::new("src")) {
         Ok(report) => {
             for violation in &report.violations {
                 emit(json!({
@@ -88,7 +88,7 @@ fn run_quality_check_lines() -> CommandResult {
                 "command": "quality.check-lines",
                 "status": result.status(),
                 "docs_files_checked": report.docs_files_checked,
-                "test_source_files_checked": report.test_source_files_checked,
+                "source_files_checked": report.source_files_checked,
                 "violations": report.violations.len(),
             }));
             result

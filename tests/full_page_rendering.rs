@@ -80,6 +80,10 @@ async fn full_page_routes_render_expected_contracts_across_setup_and_auth_states
     let home_public_text =
         String::from_utf8(test::read_body(home_public).await.to_vec()).expect("utf8");
     assert!(home_public_text.contains("<!doctype html>"));
+    assert!(home_public_text.contains("id=\"app-shell\""));
+    assert!(home_public_text.contains("id=\"app-nav\""));
+    assert!(home_public_text.contains("id=\"app-topbar\""));
+    assert!(home_public_text.contains("href=\"/search\""));
     assert!(home_public_text.contains("<main id=\"home-page\">"));
     assert!(home_public_text.contains("<section id=\"home-article-list\">"));
     assert!(home_public_text.contains("public-post"));
@@ -143,6 +147,8 @@ async fn full_page_routes_render_expected_contracts_across_setup_and_auth_states
     assert!(home_admin_text.contains("public-post"));
     assert!(home_admin_text.contains("private-post"));
     assert!(home_admin_text.contains("admin-affordance"));
+    assert!(home_admin_text.contains("href=\"/admin/settings\""));
+    assert!(home_admin_text.contains("href=\"/admin/trash\""));
 
     let admin = test::call_service(
         &app,

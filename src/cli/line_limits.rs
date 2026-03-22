@@ -6,8 +6,8 @@ use std::path::{Path, PathBuf};
 use super::CommandResult;
 
 const DOC_LINE_LIMIT: usize = 300;
-const TEST_SOURCE_LINE_LIMIT: usize = 200;
-const TEST_SOURCE_EXTENSIONS: &[&str] = &[
+const SOURCE_LINE_LIMIT: usize = 200;
+const SOURCE_EXTENSIONS: &[&str] = &[
     "c", "cc", "cpp", "cxx", "go", "h", "hpp", "java", "js", "jsx", "kt", "kts", "php", "py", "rb",
     "rs", "sh", "swift", "ts", "tsx",
 ];
@@ -15,14 +15,14 @@ const TEST_SOURCE_EXTENSIONS: &[&str] = &[
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LineScope {
     DocsMarkdown,
-    TestSource,
+    SourceCode,
 }
 
 impl LineScope {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::DocsMarkdown => "docs_markdown",
-            Self::TestSource => "test_source",
+            Self::SourceCode => "source_code",
         }
     }
 }
@@ -38,7 +38,7 @@ pub struct LineLimitViolation {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LineLimitReport {
     pub docs_files_checked: usize,
-    pub test_source_files_checked: usize,
+    pub source_files_checked: usize,
     pub violations: Vec<LineLimitViolation>,
 }
 
@@ -48,9 +48,9 @@ impl LineLimitReport {
     }
 }
 
-pub fn scan_line_limits(docs_root: &Path, tests_root: &Path) -> io::Result<LineLimitReport> {
+pub fn scan_line_limits(docs_root: &Path, src_root: &Path) -> io::Result<LineLimitReport> {
     let docs_files = collect_files(docs_root, is_markdown_file, false)?;
-    let test_source_files = collect_files(tests_root, is_test_source_file, true)?;
+    let source_files = collect_files(src_root, is_source_file, false)?;
     let mut violations = Vec::new();
 
     for file in &docs_files {
@@ -65,21 +65,21 @@ pub fn scan_line_limits(docs_root: &Path, tests_root: &Path) -> io::Result<LineL
         }
     }
 
-    for file in &test_source_files {
+    for file in &source_files {
         let line_count = count_lines(file)?;
-        if line_count > TEST_SOURCE_LINE_LIMIT {
+        if line_count > SOURCE_LINE_LIMIT {
             violations.push(LineLimitViolation {
                 path: file.clone(),
-                scope: LineScope::TestSource,
+                scope: LineScope::SourceCode,
                 line_count,
-                limit: TEST_SOURCE_LINE_LIMIT,
+                limit: SOURCE_LINE_LIMIT,
             });
         }
     }
 
     Ok(LineLimitReport {
         docs_files_checked: docs_files.len(),
-        test_source_files_checked: test_source_files.len(),
+        source_files_checked: source_files.len(),
         violations,
     })
 }
@@ -153,12 +153,12 @@ fn is_markdown_file(path: &Path) -> bool {
     path.extension().and_then(OsStr::to_str) == Some("md")
 }
 
-fn is_test_source_file(path: &Path) -> bool {
+fn is_source_file(path: &Path) -> bool {
     let Some(extension) = path.extension().and_then(OsStr::to_str) else {
         return false;
     };
 
-    TEST_SOURCE_EXTENSIONS
+    SOURCE_EXTENSIONS
         .iter()
         .any(|allowed| extension.eq_ignore_ascii_case(allowed))
 }

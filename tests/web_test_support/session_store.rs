@@ -25,8 +25,17 @@ impl MockSessionStore {
 
 #[async_trait]
 impl SessionStore for MockSessionStore {
-    async fn create_session(&self, admin_id: i64) -> Result<SessionRecord, AppError> {
-        let session = SessionRecord::new(Uuid::new_v4(), admin_id, Utc::now());
+    async fn create_session(
+        &self,
+        admin_id: i64,
+        timeout_minutes: i32,
+    ) -> Result<SessionRecord, AppError> {
+        let session = SessionRecord::new_with_timeout_minutes(
+            Uuid::new_v4(),
+            admin_id,
+            Utc::now(),
+            i64::from(timeout_minutes),
+        );
         self.inner
             .lock()
             .expect("session lock poisoned")

@@ -25,7 +25,7 @@ This document records closure evidence for todo `final-docs-evidence-sync` after
 | Full-page routing + setup/auth guards | [src/web/router.rs](../../src/web/router.rs), [src/web/handlers/admin_page.rs](../../src/web/handlers/admin_page.rs) | [tests/full_page_rendering.rs](../../tests/full_page_rendering.rs), [tests/public_private_visibility.rs](../../tests/public_private_visibility.rs), [tests/setup_flow.rs](../../tests/setup_flow.rs), [tests/setup_flow/get_routes.rs](../../tests/setup_flow/get_routes.rs), [tests/setup_flow/post_setup.rs](../../tests/setup_flow/post_setup.rs), [tests/setup_flow/setup_lock.rs](../../tests/setup_flow/setup_lock.rs) | **PASS** |
 | HTMX admin open/preview/save/create/rename/delete/toggle flows | [src/web/router.rs](../../src/web/router.rs), [src/web/handlers/admin.rs](../../src/web/handlers/admin.rs), [src/web/handlers/admin_fragments.rs](../../src/web/handlers/admin_fragments.rs) | [tests/admin_htmx_open_preview_create.rs](../../tests/admin_htmx_open_preview_create.rs), [tests/admin_htmx_save_mutations.rs](../../tests/admin_htmx_save_mutations.rs), [tests/admin_htmx_runtime.rs](../../tests/admin_htmx_runtime.rs), [tests/admin_htmx_guards.rs](../../tests/admin_htmx_guards.rs) | **PASS** |
 | JavaScript autosave/unsaved-guard/shortcut runtime | [src/web/static/admin_runtime_core.js](../../src/web/static/admin_runtime_core.js), [src/web/static/admin_runtime_autosave.js](../../src/web/static/admin_runtime_autosave.js), [src/web/static/admin_runtime_shortcuts.js](../../src/web/static/admin_runtime_shortcuts.js), [src/web/handlers/admin_page.rs](../../src/web/handlers/admin_page.rs) | [tests/admin_js_runtime.rs](../../tests/admin_js_runtime.rs), [tests/admin_js_contracts.rs](../../tests/admin_js_contracts.rs) | **PASS** |
-| Last-write-wins conflict signaling + telemetry | [src/web/stores.rs](../../src/web/stores.rs), [src/web/handlers/admin_fragments.rs](../../src/web/handlers/admin_fragments.rs) | [tests/admin_conflict_warning.rs](../../tests/admin_conflict_warning.rs), [tests/admin_htmx_runtime.rs](../../tests/admin_htmx_runtime.rs), [tests/admin_htmx_save_mutations.rs](../../tests/admin_htmx_save_mutations.rs) | **PASS** |
+| Last-write-wins conflict signaling + telemetry | [src/web/stores/mod.rs](../../src/web/stores/mod.rs), [src/web/handlers/admin_fragments.rs](../../src/web/handlers/admin_fragments.rs) | [tests/admin_conflict_warning.rs](../../tests/admin_conflict_warning.rs), [tests/admin_htmx_runtime.rs](../../tests/admin_htmx_runtime.rs), [tests/admin_htmx_save_mutations.rs](../../tests/admin_htmx_save_mutations.rs) | **PASS** |
 
 ## Docker Acceptance Verification Outcomes
 
@@ -44,7 +44,7 @@ Docker acceptance followed [Compose Commands](../containers/compose/commands.md)
 | Gate | Command | Outcome | Recorded output |
 | --- | --- | --- | --- |
 | Topology | `cargo run --bin kjxlkj -- docs validate-topology` | **PASS** | `{"command":"docs.validate-topology","directories_checked":21,"status":"pass","violations":0}` |
-| Line limits | `cargo run --bin kjxlkj -- quality check-lines` | **PASS** | `{"command":"quality.check-lines","docs_files_checked":74,"status":"pass","test_source_files_checked":0,"violations":0}` |
+| Line limits | `cargo run --bin kjxlkj -- quality check-lines` | **PASS** | `{"command":"quality.check-lines","docs_files_checked":82,"source_files_checked":74,"status":"pass","violations":0}` |
 
 Gate decision: **PASS** — docs-first hardening, runtime implementation evidence, docker acceptance, and final quality checks are synchronized.
 
@@ -58,7 +58,7 @@ Gate decision: **PASS** — docs-first hardening, runtime implementation evidenc
   - [src/web/router.rs](../../src/web/router.rs)
   - [src/web/handlers/admin_page.rs](../../src/web/handlers/admin_page.rs)
   - [src/web/handlers/admin_fragments.rs](../../src/web/handlers/admin_fragments.rs)
-  - [src/web/stores.rs](../../src/web/stores.rs)
+  - [src/web/stores/mod.rs](../../src/web/stores/mod.rs)
   - [src/web/static/admin_runtime_core.js](../../src/web/static/admin_runtime_core.js)
   - [src/web/static/admin_runtime_autosave.js](../../src/web/static/admin_runtime_autosave.js)
   - [src/web/static/admin_runtime_shortcuts.js](../../src/web/static/admin_runtime_shortcuts.js)

@@ -134,6 +134,7 @@ async fn htmx_save_rename_toggle_and_delete_return_expected_fragments() {
     assert!(delete_body.contains("id=\"admin-editor-pane\""));
     assert!(delete_body.contains("No article selected"));
     assert!(delete_body.contains("id=\"admin-preview-pane\""));
+    assert!(delete_body.contains("Article moved to trash."));
 }
 
 fn extract_revision(html: &str) -> String {

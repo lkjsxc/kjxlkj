@@ -60,6 +60,11 @@ async fn admin_shell_includes_runtime_assets_and_unsaved_indicator() {
     assert!(admin_text.contains("/static/admin-runtime-core.js"));
     assert!(admin_text.contains("/static/admin-runtime-autosave.js"));
     assert!(admin_text.contains("/static/admin-runtime-shortcuts.js"));
+    assert!(admin_text.contains("id=\"app-shell\""));
+    assert!(admin_text.contains("id=\"app-nav\""));
+    assert!(admin_text.contains("id=\"app-topbar\""));
+    assert!(admin_text.contains("id=\"app-nav-toggle\""));
+    assert!(admin_text.contains("/static/app-shell.js"));
     assert!(admin_text.contains("id=\"admin-quick-open\""));
     assert!(admin_text.contains("id=\"admin-create-panel\""));
     assert!(admin_text.contains("id=\"admin-create-slug\""));
@@ -92,6 +97,26 @@ async fn admin_runtime_assets_are_served() {
     );
     let core_text = String::from_utf8(test::read_body(core).await.to_vec()).expect("utf8");
     assert!(core_text.contains("AdminRuntimeShared"));
+
+    let shell_js = test::call_service(
+        &app,
+        test::TestRequest::get()
+            .uri("/static/app-shell.js")
+            .to_request(),
+    )
+    .await;
+    assert_eq!(shell_js.status(), StatusCode::OK);
+    let shell_js_text = String::from_utf8(test::read_body(shell_js).await.to_vec()).expect("utf8");
+    assert!(shell_js_text.contains("app-nav-toggle"));
+
+    let css = test::call_service(
+        &app,
+        test::TestRequest::get().uri("/static/app.css").to_request(),
+    )
+    .await;
+    assert_eq!(css.status(), StatusCode::OK);
+    let css_text = String::from_utf8(test::read_body(css).await.to_vec()).expect("utf8");
+    assert!(css_text.contains("#app-shell"));
 
     let autosave = test::call_service(
         &app,

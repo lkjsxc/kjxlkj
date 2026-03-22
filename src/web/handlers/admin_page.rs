@@ -1,8 +1,9 @@
 use crate::web::handlers::admin_fragments::{
     escape_html, render_admin_editor_pane, render_admin_preview_empty,
 };
+use crate::web::handlers::app_shell::render_shell_page;
 
-pub fn render_admin_shell(slugs: &[String]) -> String {
+pub fn render_admin_shell(site_title: &str, slugs: &[String]) -> String {
     let list_items = slugs
         .iter()
         .map(|slug| {
@@ -15,16 +16,8 @@ pub fn render_admin_shell(slugs: &[String]) -> String {
     let editor = render_admin_editor_pane("", None, "", false, "", false);
     let preview = render_admin_preview_empty(false);
 
-    format!(
-        r#"<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin editor</title>
-</head>
-<body>
-  <main id="admin-page">
+    let main = format!(
+        r#"<main id="admin-page">
     <h1>Admin editor</h1>
     <section id="admin-status-banner" aria-live="polite"></section>
     <section id="admin-conflict-banner" role="alert" aria-live="assertive" data-conflict="false"></section>
@@ -47,11 +40,7 @@ pub fn render_admin_shell(slugs: &[String]) -> String {
     </aside>
     {editor}
     {preview}
-  </main>
-  <script src="/static/admin-runtime-core.js" defer></script>
-  <script src="/static/admin-runtime-autosave.js" defer></script>
-  <script src="/static/admin-runtime-shortcuts.js" defer></script>
-</body>
-</html>"#
-    )
+  </main><script src="/static/admin-runtime-core.js" defer></script><script src="/static/admin-runtime-autosave.js" defer></script><script src="/static/admin-runtime-shortcuts.js" defer></script>"#
+    );
+    render_shell_page(site_title, "Admin editor", &main, slugs, true)
 }

@@ -1,17 +1,23 @@
 pub mod admin_repo;
+pub mod search_repo;
 pub mod session_repo;
+pub mod settings_repo;
 
 use sqlx::postgres::PgPoolOptions;
 
 use crate::error::AppError;
 
 use self::admin_repo::AdminRepository;
+use self::search_repo::SearchRepository;
 use self::session_repo::SessionRepository;
+use self::settings_repo::SettingsRepository;
 
 #[derive(Debug, Clone)]
 pub struct PostgresAdapter {
     admin_repo: AdminRepository,
     session_repo: SessionRepository,
+    settings_repo: SettingsRepository,
+    search_repo: SearchRepository,
 }
 
 impl PostgresAdapter {
@@ -23,7 +29,9 @@ impl PostgresAdapter {
 
         Ok(Self {
             admin_repo: AdminRepository::new(pool.clone()),
-            session_repo: SessionRepository::new(pool),
+            session_repo: SessionRepository::new(pool.clone()),
+            settings_repo: SettingsRepository::new(pool.clone()),
+            search_repo: SearchRepository::new(pool),
         })
     }
 
@@ -33,6 +41,14 @@ impl PostgresAdapter {
 
     pub fn sessions(&self) -> &SessionRepository {
         &self.session_repo
+    }
+
+    pub fn settings(&self) -> &SettingsRepository {
+        &self.settings_repo
+    }
+
+    pub fn search(&self) -> &SearchRepository {
+        &self.search_repo
     }
 
     pub async fn has_admin_user(&self) -> Result<bool, AppError> {

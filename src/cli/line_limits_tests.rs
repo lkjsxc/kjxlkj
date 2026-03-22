@@ -6,23 +6,23 @@ use super::line_limits::{scan_line_limits, LineScope};
 use super::CommandResult;
 
 #[test]
-fn scan_line_limits_reports_docs_and_test_source_violations() {
+fn scan_line_limits_reports_docs_and_source_violations() {
     let root = create_temp_dir("line-limits-fail");
     let docs = root.join("docs");
-    let tests = root.join("src/tests");
+    let src = root.join("src");
 
     fs::create_dir_all(&docs).unwrap();
-    fs::create_dir_all(&tests).unwrap();
+    fs::create_dir_all(&src).unwrap();
 
     fs::write(docs.join("README.md"), "# docs\n").unwrap();
     fs::write(docs.join("long.md"), generate_lines(301)).unwrap();
-    fs::write(tests.join("case.rs"), generate_lines(201)).unwrap();
-    fs::write(tests.join("note.txt"), generate_lines(1000)).unwrap();
+    fs::write(src.join("case.rs"), generate_lines(201)).unwrap();
+    fs::write(src.join("note.txt"), generate_lines(1000)).unwrap();
 
-    let report = scan_line_limits(&docs, &tests).unwrap();
+    let report = scan_line_limits(&docs, &src).unwrap();
 
     assert_eq!(report.docs_files_checked, 2);
-    assert_eq!(report.test_source_files_checked, 1);
+    assert_eq!(report.source_files_checked, 1);
     assert_eq!(report.result(), CommandResult::Fail);
     assert_eq!(report.violations.len(), 2);
 
@@ -33,7 +33,7 @@ fn scan_line_limits_reports_docs_and_test_source_violations() {
             && violation.limit == 300
     }));
     assert!(report.violations.iter().any(|violation| {
-        violation.scope == LineScope::TestSource
+        violation.scope == LineScope::SourceCode
             && violation.path.ends_with("case.rs")
             && violation.line_count == 201
             && violation.limit == 200
@@ -43,18 +43,20 @@ fn scan_line_limits_reports_docs_and_test_source_violations() {
 }
 
 #[test]
-fn scan_line_limits_passes_when_src_tests_directory_is_missing() {
+fn scan_line_limits_passes_when_src_directory_is_present_and_small() {
     let root = create_temp_dir("line-limits-pass");
     let docs = root.join("docs");
-    let tests = root.join("src/tests");
+    let src = root.join("src");
 
     fs::create_dir_all(&docs).unwrap();
+    fs::create_dir_all(&src).unwrap();
     fs::write(docs.join("README.md"), "# docs\n").unwrap();
+    fs::write(src.join("main.rs"), "fn main() {}\n").unwrap();
 
-    let report = scan_line_limits(&docs, &tests).unwrap();
+    let report = scan_line_limits(&docs, &src).unwrap();
 
     assert_eq!(report.docs_files_checked, 1);
-    assert_eq!(report.test_source_files_checked, 0);
+    assert_eq!(report.source_files_checked, 1);
     assert_eq!(report.result(), CommandResult::Pass);
 
     fs::remove_dir_all(root).unwrap();

@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::app_state::AppState;
 use crate::core::auth::{AdminUser, SessionRecord};
 use crate::core::content::ParsedMarkdown;
+use crate::core::settings::SiteSettings;
 use crate::error::AppError;
 
 use super::stores::build_runtime_web_state;
@@ -24,7 +25,11 @@ pub trait AdminStore: Send + Sync {
 
 #[async_trait]
 pub trait SessionStore: Send + Sync {
-    async fn create_session(&self, admin_id: i64) -> Result<SessionRecord, AppError>;
+    async fn create_session(
+        &self,
+        admin_id: i64,
+        timeout_minutes: i32,
+    ) -> Result<SessionRecord, AppError>;
     async fn lookup_session(&self, session_id: Uuid) -> Result<Option<SessionRecord>, AppError>;
     async fn delete_session(&self, session_id: Uuid) -> Result<bool, AppError>;
     async fn cleanup_expired(&self, now: DateTime<Utc>) -> Result<u64, AppError>;
@@ -53,6 +58,30 @@ pub trait ContentStore: Send + Sync {
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError>;
     async fn delete_article(&self, slug: &str) -> Result<(), AppError>;
     async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError>;
+    async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError>;
+    async fn restore_article(&self, slug: &str) -> Result<(), AppError>;
+    async fn permanent_delete_article(&self, slug: &str) -> Result<(), AppError>;
+    async fn search_articles(&self, query: &str, admin: bool) -> Result<Vec<SearchHit>, AppError>;
+    async fn trigger_search_reindex(&self) -> Result<(), AppError>;
+}
+
+#[async_trait]
+pub trait SettingsStore: Send + Sync {
+    async fn load_settings(&self) -> Result<SiteSettings, AppError>;
+    async fn save_settings(
+        &self,
+        site_title: &str,
+        session_timeout_minutes: i32,
+    ) -> Result<SiteSettings, AppError>;
+    async fn touch_reindex_timestamp(&self, at: DateTime<Utc>) -> Result<SiteSettings, AppError>;
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SearchHit {
+    pub slug: String,
+    pub title: Option<String>,
+    pub snippet: String,
+    pub private: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -72,6 +101,7 @@ pub struct WebState {
     pub admin_store: Arc<dyn AdminStore>,
     pub session_store: Arc<dyn SessionStore>,
     pub content_store: Arc<dyn ContentStore>,
+    pub settings_store: Arc<dyn SettingsStore>,
 }
 
 impl WebState {
@@ -83,11 +113,13 @@ impl WebState {
         admin_store: Arc<dyn AdminStore>,
         session_store: Arc<dyn SessionStore>,
         content_store: Arc<dyn ContentStore>,
+        settings_store: Arc<dyn SettingsStore>,
     ) -> Self {
         Self {
             admin_store,
             session_store,
             content_store,
+            settings_store,
         }
     }
 }

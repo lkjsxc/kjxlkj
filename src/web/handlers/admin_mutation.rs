@@ -36,7 +36,7 @@ pub async fn handle_post_admin_delete(
                     render_admin_article_list(&items, None, false),
                     render_admin_editor_placeholder(true),
                     render_admin_preview_empty(true),
-                    render_admin_status_banner("Article deleted.", "deleted", true),
+                    render_admin_status_banner("Article moved to trash.", "deleted", true),
                     render_admin_conflict_clear(true)
                 ),
             ),

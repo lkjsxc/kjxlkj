@@ -1,6 +1,9 @@
 use actix_web::web;
 
-use crate::web::handlers::{admin, admin_preview, auth, public, setup, static_assets};
+use crate::web::handlers::{
+    admin, admin_preview, auth, public, search_page, settings_page, setup, static_assets,
+    trash_page,
+};
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg.configure(configure_setup_routes)
@@ -29,6 +32,7 @@ fn configure_auth_routes(cfg: &mut web::ServiceConfig) {
 
 fn configure_public_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/").route(web::get().to(public::handle_get_home)))
+        .service(web::resource("/search").route(web::get().to(search_page::handle_get_search)))
         .service(web::resource("/article/{slug}").route(web::get().to(public::handle_get_article)));
 }
 
@@ -45,6 +49,27 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
             .route("/create", web::post().to(admin::handle_post_admin_create))
             .route("/save", web::post().to(admin::handle_post_admin_save))
             .route("/rename", web::post().to(admin::handle_post_admin_rename))
+            .route(
+                "/settings",
+                web::get().to(settings_page::handle_get_admin_settings),
+            )
+            .route(
+                "/settings/save",
+                web::post().to(settings_page::handle_post_admin_settings_save),
+            )
+            .route(
+                "/settings/reindex",
+                web::post().to(settings_page::handle_post_admin_settings_reindex),
+            )
+            .route("/trash", web::get().to(trash_page::handle_get_admin_trash))
+            .route(
+                "/trash/restore/{slug}",
+                web::post().to(trash_page::handle_post_admin_trash_restore),
+            )
+            .route(
+                "/trash/delete-permanent/{slug}",
+                web::post().to(trash_page::handle_post_admin_trash_delete_permanent),
+            )
             .route(
                 "/delete/{slug}",
                 web::post().to(admin::handle_post_admin_delete),
@@ -68,5 +93,12 @@ fn configure_static_routes(cfg: &mut web::ServiceConfig) {
     .service(
         web::resource("/static/admin-runtime-shortcuts.js")
             .route(web::get().to(static_assets::handle_get_admin_runtime_shortcuts_js)),
+    )
+    .service(
+        web::resource("/static/app-shell.js")
+            .route(web::get().to(static_assets::handle_get_app_shell_js)),
+    )
+    .service(
+        web::resource("/static/app.css").route(web::get().to(static_assets::handle_get_app_css)),
     );
 }

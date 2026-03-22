@@ -1,6 +1,7 @@
 use actix_web::{http::header, web, HttpRequest, HttpResponse};
 use serde::Deserialize;
 
+use crate::core::settings::SiteSettings;
 use crate::web::handlers::common::{
     clear_session_cookie, enforce_setup_completion, internal_error, session_cookie,
 };
@@ -102,7 +103,17 @@ pub async fn handle_post_login(
             .body(render_login_page(&username, &[INVALID_CREDENTIALS_ERROR]));
     }
 
-    let session = match state.session_store.create_session(admin.id).await {
+    let settings = match state.settings_store.load_settings().await {
+        Ok(settings) => settings,
+        Err(error) => return internal_error(error),
+    };
+    let timeout_minutes =
+        SiteSettings::normalized_timeout_minutes(settings.session_timeout_minutes);
+    let session = match state
+        .session_store
+        .create_session(admin.id, timeout_minutes)
+        .await
+    {
         Ok(session) => session,
         Err(error) => return internal_error(error),
     };
