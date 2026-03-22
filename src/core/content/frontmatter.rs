@@ -1,5 +1,11 @@
 use super::errors::ContentValidationError;
 
+pub const PRIVATE_DEFAULT: bool = true;
+
+pub fn private_or_default(value: Option<bool>) -> bool {
+    value.unwrap_or(PRIVATE_DEFAULT)
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Frontmatter {
     pub title: Option<String>,
@@ -10,7 +16,7 @@ impl Frontmatter {
     pub fn private_default() -> Self {
         Self {
             title: None,
-            private: true,
+            private: PRIVATE_DEFAULT,
         }
     }
 }
@@ -60,7 +66,7 @@ pub fn parse_markdown_document(markdown: &str) -> Result<ParsedMarkdown, Content
 }
 
 pub fn serialize_markdown_document(frontmatter: &Frontmatter, body: &str) -> String {
-    if frontmatter.title.is_none() && !frontmatter.private {
+    if frontmatter.title.is_none() && frontmatter.private == PRIVATE_DEFAULT {
         return body.to_owned();
     }
 
@@ -89,7 +95,7 @@ pub fn revision_token(markdown: &str) -> String {
 
 fn parse_frontmatter_lines(lines: &[String]) -> Result<Frontmatter, ContentValidationError> {
     let mut title = None;
-    let mut private = true;
+    let mut private = PRIVATE_DEFAULT;
     let mut private_seen = false;
 
     for (line_index, line) in lines.iter().enumerate() {

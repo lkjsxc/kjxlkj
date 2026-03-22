@@ -15,6 +15,7 @@ use super::helpers::{article_revision, missing};
 pub struct MockContentState {
     pub active: Arc<Mutex<HashMap<String, ArticleEntry>>>,
     pub trash: Arc<Mutex<HashMap<String, ArticleEntry>>>,
+    pub revision_seed: Arc<Mutex<u64>>,
 }
 
 #[derive(Clone)]
@@ -23,6 +24,7 @@ pub struct ArticleEntry {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub history: Vec<ArticleHistoryEntry>,
+    pub revisions: HashMap<String, ParsedMarkdown>,
 }
 
 impl MockContentState {
@@ -36,6 +38,11 @@ impl MockContentState {
 
     pub fn upsert(&self, slug: &str, title: Option<String>, body: &str, private: bool) {
         let now = Utc::now();
+        let parsed = ParsedMarkdown {
+            frontmatter: Frontmatter { title, private },
+            body: body.to_owned(),
+        };
+        let commit_id = self.next_commit_id(slug);
         let mut active = self.active.lock().expect("content lock poisoned");
         let created_at = active
             .get(slug)
@@ -45,24 +52,27 @@ impl MockContentState {
             .get(slug)
             .map(|entry| entry.history.clone())
             .unwrap_or_default();
+        let mut revisions = active
+            .get(slug)
+            .map(|entry| entry.revisions.clone())
+            .unwrap_or_default();
         history.insert(
             0,
             ArticleHistoryEntry {
-                commit_id: format!("{slug}-{}", now.timestamp_millis()),
+                commit_id: commit_id.clone(),
                 committed_at: now,
                 message: "autosave".to_owned(),
             },
         );
+        revisions.insert(commit_id, parsed.clone());
         active.insert(
             slug.to_owned(),
             ArticleEntry {
-                parsed: ParsedMarkdown {
-                    frontmatter: Frontmatter { title, private },
-                    body: body.to_owned(),
-                },
+                parsed,
                 created_at,
                 updated_at: now,
                 history,
+                revisions,
             },
         );
     }
@@ -131,14 +141,6 @@ impl MockContentState {
         }
     }
 
-    pub fn toggle_private(&self, slug: &str) -> Option<bool> {
-        let mut content = self.active.lock().expect("content lock poisoned");
-        let article = content.get_mut(slug)?;
-        article.parsed.frontmatter.private = !article.parsed.frontmatter.private;
-        article.updated_at = Utc::now();
-        Some(article.parsed.frontmatter.private)
-    }
-
     pub fn list_trash_slugs(&self) -> Vec<String> {
         let mut slugs = self
             .trash
@@ -173,29 +175,26 @@ impl MockContentState {
         self.upsert(slug, None, body, private);
     }
 
+    pub fn set_timeline(
+        &self,
+        slug: &str,
+        created_at: DateTime<Utc>,
+        updated_at: DateTime<Utc>,
+    ) -> bool {
+        let mut active = self.active.lock().expect("content lock poisoned");
+        let Some(entry) = active.get_mut(slug) else {
+            return false;
+        };
+        entry.created_at = created_at;
+        entry.updated_at = updated_at;
+        true
+    }
+
     pub fn list_slugs(&self, include_private: bool) -> Vec<String> {
-        let hidden = self
-            .trash
-            .lock()
-            .expect("trash lock poisoned")
-            .keys()
-            .cloned()
-            .collect::<HashSet<_>>();
-        let mut slugs = self
-            .active
-            .lock()
-            .expect("content lock poisoned")
-            .iter()
-            .filter_map(|(slug, entry)| {
-                if hidden.contains(slug) || (!include_private && entry.parsed.frontmatter.private) {
-                    None
-                } else {
-                    Some(slug.to_owned())
-                }
-            })
-            .collect::<Vec<_>>();
-        slugs.sort();
-        slugs
+        self.list_articles(include_private)
+            .into_iter()
+            .map(|article| article.slug)
+            .collect::<Vec<_>>()
     }
 
     pub fn list_articles(&self, include_private: bool) -> Vec<ArticleSummary> {
@@ -264,14 +263,20 @@ impl MockContentState {
         let Some(article) = active.get_mut(slug) else {
             return Err(missing(slug));
         };
-        if article
-            .history
-            .iter()
-            .any(|entry| entry.commit_id == commit_id)
-        {
+        if let Some(parsed) = article.revisions.get(commit_id).cloned() {
+            article.parsed = parsed;
             article.updated_at = Utc::now();
             return Ok(());
         }
         Err(missing(slug))
+    }
+
+    fn next_commit_id(&self, slug: &str) -> String {
+        let mut revision_seed = self
+            .revision_seed
+            .lock()
+            .expect("revision seed lock poisoned");
+        *revision_seed = revision_seed.saturating_add(1);
+        format!("{slug}-{revision_seed:020}")
     }
 }

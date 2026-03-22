@@ -74,10 +74,6 @@ impl ContentStore for MockContentStore {
         Ok(())
     }
 
-    async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError> {
-        self.state.toggle_private(slug).ok_or_else(|| missing(slug))
-    }
-
     async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError> {
         Ok(self.state.list_trash_slugs())
     }
@@ -131,5 +127,14 @@ impl ContentStore for MockContentStore {
 impl MockContentStore {
     pub fn insert_article(&self, slug: &str, private: bool, body: &str) {
         self.state.insert_simple(slug, private, body);
+    }
+
+    pub fn set_article_timeline(
+        &self,
+        slug: &str,
+        created_at: chrono::DateTime<chrono::Utc>,
+        updated_at: chrono::DateTime<chrono::Utc>,
+    ) -> bool {
+        self.state.set_timeline(slug, created_at, updated_at)
     }
 }

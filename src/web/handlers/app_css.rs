@@ -1,5 +1,5 @@
 pub const APP_CSS: &str = r#"
-:root { --bg: #121212; --panel: #1e1e1e; --text: #dddddd; --muted: #9a9a9a; --accent: #7a7a7a; }
+:root { --bg: #121212; --panel: #1e1e1e; --text: #dddddd; --muted: #9a9a9a; }
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--text); background: var(--bg); font-family: ui-sans-serif,system-ui; }
 a { color: var(--text); text-decoration: none; }

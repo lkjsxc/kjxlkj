@@ -1,6 +1,7 @@
 use actix_web::{http::header, web, HttpResponse};
 use serde::Deserialize;
 
+use crate::core::auth::FIXED_ADMIN_USERNAME;
 use crate::web::handlers::common::{enforce_setup_pending, internal_error};
 use crate::web::handlers::page_html::escape_html;
 use crate::web::password::hash_password;
@@ -52,11 +53,7 @@ pub async fn handle_post_setup(
         Err(error) => return internal_error(error),
     };
 
-    match state
-        .admin_store
-        .create_admin("admin", &password_hash)
-        .await
-    {
+    match state.admin_store.create_admin(&password_hash).await {
         Ok(_) => HttpResponse::SeeOther()
             .append_header((header::LOCATION, "/login"))
             .finish(),
@@ -94,17 +91,17 @@ fn render_setup_page(errors: &[&str]) -> String {
 <body>
   <main id="setup-page">
     <h1>Set up first admin account</h1>
-    <p>Create password for fixed admin account <code>admin</code>.</p>
+    <p>Create password for fixed admin account <code>{}</code>.</p>
     {error_block}
     <form id="setup-form" method="post" action="/setup">
-      <input type="hidden" name="username" value="admin" />
       <label for="password">Password</label>
       <input id="password" name="password" type="password" autocomplete="new-password" />
       <button type="submit">Create admin account</button>
     </form>
   </main>
 </body>
-</html>"#
+</html>"#,
+        escape_html(FIXED_ADMIN_USERNAME),
     )
 }
 

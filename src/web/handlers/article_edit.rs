@@ -1,7 +1,7 @@
 use actix_web::{web, HttpRequest, HttpResponse};
 use serde::Deserialize;
 
-use crate::core::content::{revision_token, serialize_markdown_document};
+use crate::core::content::{private_or_default, revision_token, serialize_markdown_document};
 use crate::web::handlers::common::{internal_error, require_admin_session};
 use crate::web::handlers::page_html::escape_html;
 use crate::web::state::WebState;
@@ -33,7 +33,7 @@ pub async fn handle_post_article_edit(
         return response;
     }
     let slug = slug.into_inner();
-    let private = form.private.unwrap_or(true);
+    let private = private_or_default(form.private);
     let outcome = match state
         .content_store
         .save_article(

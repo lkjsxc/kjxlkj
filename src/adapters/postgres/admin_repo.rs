@@ -1,6 +1,6 @@
 use sqlx::PgPool;
 
-use crate::core::auth::AdminUser;
+use crate::core::auth::{AdminUser, FIXED_ADMIN_USERNAME};
 use crate::error::AppError;
 
 #[derive(Debug, Clone)]
@@ -20,38 +20,30 @@ impl AdminRepository {
             .map_err(AppError::database_query)
     }
 
-    pub async fn find_by_username(&self, username: &str) -> Result<Option<AdminUser>, AppError> {
-        let admin = sqlx::query_as::<_, (i64, String, String)>(
-            "SELECT id, username, password_hash FROM admin_users WHERE username = $1",
+    pub async fn load_fixed_admin(&self) -> Result<Option<AdminUser>, AppError> {
+        let admin = sqlx::query_as::<_, (i64, String)>(
+            "SELECT id, password_hash FROM admin_users WHERE username = $1 LIMIT 1",
         )
-        .bind(username)
+        .bind(FIXED_ADMIN_USERNAME)
         .fetch_optional(&self.pool)
         .await
         .map_err(AppError::database_query)?;
 
-        Ok(admin.map(|(id, username, password_hash)| AdminUser {
-            id,
-            username,
-            password_hash,
-        }))
+        Ok(admin.map(|(id, password_hash)| AdminUser { id, password_hash }))
     }
 
-    pub async fn create(&self, username: &str, password_hash: &str) -> Result<AdminUser, AppError> {
-        let (id, username, password_hash) = sqlx::query_as::<_, (i64, String, String)>(
+    pub async fn create_fixed_admin(&self, password_hash: &str) -> Result<AdminUser, AppError> {
+        let (id, password_hash) = sqlx::query_as::<_, (i64, String)>(
             "INSERT INTO admin_users (username, password_hash)
              VALUES ($1, $2)
-             RETURNING id, username, password_hash",
+             RETURNING id, password_hash",
         )
-        .bind(username)
+        .bind(FIXED_ADMIN_USERNAME)
         .bind(password_hash)
         .fetch_one(&self.pool)
         .await
         .map_err(AppError::database_query)?;
 
-        Ok(AdminUser {
-            id,
-            username,
-            password_hash,
-        })
+        Ok(AdminUser { id, password_hash })
     }
 }

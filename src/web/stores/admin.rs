@@ -16,23 +16,15 @@ impl AdminStore for RuntimeAdminStore {
         self.app_state.postgres.has_admin_user().await
     }
 
-    async fn find_admin_by_username(&self, username: &str) -> Result<Option<AdminUser>, AppError> {
-        self.app_state
-            .postgres
-            .admins()
-            .find_by_username(username)
-            .await
+    async fn load_admin(&self) -> Result<Option<AdminUser>, AppError> {
+        self.app_state.postgres.admins().load_fixed_admin().await
     }
 
-    async fn create_admin(
-        &self,
-        username: &str,
-        password_hash: &str,
-    ) -> Result<AdminUser, AppError> {
+    async fn create_admin(&self, password_hash: &str) -> Result<AdminUser, AppError> {
         self.app_state
             .postgres
             .admins()
-            .create(username, password_hash)
+            .create_fixed_admin(password_hash)
             .await
     }
 }

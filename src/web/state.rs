@@ -15,12 +15,8 @@ use super::stores::build_runtime_web_state;
 #[async_trait]
 pub trait AdminStore: Send + Sync {
     async fn has_admin_user(&self) -> Result<bool, AppError>;
-    async fn find_admin_by_username(&self, username: &str) -> Result<Option<AdminUser>, AppError>;
-    async fn create_admin(
-        &self,
-        username: &str,
-        password_hash: &str,
-    ) -> Result<AdminUser, AppError>;
+    async fn load_admin(&self) -> Result<Option<AdminUser>, AppError>;
+    async fn create_admin(&self, password_hash: &str) -> Result<AdminUser, AppError>;
 }
 
 #[async_trait]
@@ -59,7 +55,6 @@ pub trait ContentStore: Send + Sync {
     ) -> Result<SaveOutcome, AppError>;
     async fn rename_article(&self, slug: &str, new_slug: &str) -> Result<(), AppError>;
     async fn delete_article(&self, slug: &str) -> Result<(), AppError>;
-    async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError>;
     async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError>;
     async fn restore_article(&self, slug: &str) -> Result<(), AppError>;
     async fn permanent_delete_article(&self, slug: &str) -> Result<(), AppError>;

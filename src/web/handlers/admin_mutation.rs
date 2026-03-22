@@ -32,33 +32,3 @@ pub async fn handle_post_admin_delete(
         Err(error) => internal_error(error),
     }
 }
-
-pub async fn handle_post_admin_toggle_private(
-    request: HttpRequest,
-    state: web::Data<WebState>,
-    slug: web::Path<String>,
-) -> HttpResponse {
-    if let Err(response) = require_admin_session(&request, &state).await {
-        return response;
-    }
-
-    let slug = match normalize_slug_input(&slug.into_inner(), "slug") {
-        Ok(slug) => slug,
-        Err(message) => return HttpResponse::BadRequest().body(message),
-    };
-
-    match state.content_store.toggle_article_private(&slug).await {
-        Ok(private) if !is_hx_request(&request) => {
-            HttpResponse::Ok().body(format!("private={private}"))
-        }
-        Ok(_) => HttpResponse::SeeOther()
-            .append_header(("Location", format!("/article/{slug}")))
-            .finish(),
-        Err(crate::error::AppError::ContentIo { source, .. })
-            if source.kind() == std::io::ErrorKind::NotFound =>
-        {
-            HttpResponse::NotFound().finish()
-        }
-        Err(error) => internal_error(error),
-    }
-}

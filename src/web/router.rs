@@ -53,7 +53,6 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
             .route("", web::get().to(admin::handle_get_admin_shell))
             .route("/", web::get().to(admin::handle_get_admin_shell))
             .route("/create", web::post().to(admin::handle_post_admin_create))
-            .route("/save", web::post().to(admin::handle_post_admin_save))
             .route("/rename", web::post().to(admin::handle_post_admin_rename))
             .route(
                 "/settings",
@@ -79,10 +78,6 @@ fn configure_admin_routes(cfg: &mut web::ServiceConfig) {
             .route(
                 "/delete/{slug}",
                 web::post().to(admin::handle_post_admin_delete),
-            )
-            .route(
-                "/toggle-private/{slug}",
-                web::post().to(admin::handle_post_admin_toggle_private),
             ),
     );
 }

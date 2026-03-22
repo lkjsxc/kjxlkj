@@ -2,11 +2,11 @@ use chrono::{DateTime, Duration, Utc};
 use uuid::Uuid;
 
 pub const SESSION_TTL_HOURS: i64 = 24;
+pub const FIXED_ADMIN_USERNAME: &str = "admin";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AdminUser {
     pub id: i64,
-    pub username: String,
     pub password_hash: String,
 }
 

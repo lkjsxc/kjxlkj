@@ -1,9 +1,10 @@
 use actix_web::{web, HttpRequest, HttpResponse};
 
+use crate::core::content::private_or_default;
 use crate::web::handlers::common::{internal_error, require_admin_session};
 use crate::web::state::WebState;
 
-use super::admin_input::{normalize_slug_input, CreateForm, RenameForm, SaveForm};
+use super::admin_input::{normalize_slug_input, CreateForm, RenameForm};
 
 pub async fn handle_post_admin_create(
     request: HttpRequest,
@@ -27,46 +28,11 @@ pub async fn handle_post_admin_create(
             &slug,
             form.title.clone(),
             &form.body,
-            form.private.unwrap_or(true),
+            private_or_default(form.private),
         )
         .await
     {
         Ok(()) => HttpResponse::SeeOther()
-            .append_header(("Location", format!("/article/{slug}")))
-            .finish(),
-        Err(error) => internal_error(error),
-    }
-}
-
-pub async fn handle_post_admin_save(
-    request: HttpRequest,
-    state: web::Data<WebState>,
-    form: web::Form<SaveForm>,
-) -> HttpResponse {
-    if let Err(response) = require_admin_session(&request, &state).await {
-        return response;
-    }
-
-    let slug = match normalize_slug_input(&form.slug, "slug") {
-        Ok(slug) => slug,
-        Err(message) => {
-            return HttpResponse::BadRequest().body(message);
-        }
-    };
-    let private = form.private.unwrap_or(true);
-
-    match state
-        .content_store
-        .save_article(
-            &slug,
-            form.title.clone(),
-            &form.body,
-            private,
-            form.last_known_revision.as_deref(),
-        )
-        .await
-    {
-        Ok(_) => HttpResponse::SeeOther()
             .append_header(("Location", format!("/article/{slug}")))
             .finish(),
         Err(error) => internal_error(error),

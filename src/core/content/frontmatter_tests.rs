@@ -1,7 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::core::content::{
-        parse_markdown_document, serialize_markdown_document, ContentValidationError, Frontmatter,
+        parse_markdown_document, private_or_default, serialize_markdown_document,
+        ContentValidationError, Frontmatter,
     };
 
     #[test]
@@ -40,6 +41,37 @@ mod tests {
             serialized,
             "---\ntitle: \"Welcome\"\nprivate: true\n---\n# Body"
         );
+    }
+
+    #[test]
+    fn serialize_omits_frontmatter_for_private_default_without_title() {
+        let frontmatter = Frontmatter {
+            title: None,
+            private: true,
+        };
+        let serialized = serialize_markdown_document(&frontmatter, "# Body");
+
+        assert_eq!(serialized, "# Body");
+    }
+
+    #[test]
+    fn serialize_preserves_public_flag_without_title() {
+        let frontmatter = Frontmatter {
+            title: None,
+            private: false,
+        };
+        let serialized = serialize_markdown_document(&frontmatter, "# Body");
+        let reparsed = parse_markdown_document(&serialized).unwrap();
+
+        assert_eq!(serialized, "---\nprivate: false\n---\n# Body");
+        assert!(!reparsed.frontmatter.private);
+    }
+
+    #[test]
+    fn private_or_default_uses_private_true_for_unspecified_input() {
+        assert!(private_or_default(None));
+        assert!(private_or_default(Some(true)));
+        assert!(!private_or_default(Some(false)));
     }
 
     #[test]

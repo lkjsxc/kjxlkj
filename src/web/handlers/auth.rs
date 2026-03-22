@@ -58,7 +58,7 @@ pub async fn handle_post_login(
             .body(render_login_page(&["password is required"]));
     };
 
-    let admin = match state.admin_store.find_admin_by_username("admin").await {
+    let admin = match state.admin_store.load_admin().await {
         Ok(Some(admin)) => admin,
         Ok(None) => {
             return HttpResponse::Unauthorized()

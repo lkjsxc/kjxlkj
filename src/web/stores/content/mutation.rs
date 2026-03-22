@@ -3,8 +3,7 @@ use tokio::fs;
 
 use crate::adapters::filesystem::FilesystemAdapter;
 use crate::core::content::{
-    parse_markdown_document, path_for_slug, revision_token, serialize_markdown_document,
-    Frontmatter,
+    path_for_slug, revision_token, serialize_markdown_document, Frontmatter,
 };
 use crate::error::AppError;
 use crate::web::state::{SaveConflict, SaveOutcome};
@@ -93,36 +92,6 @@ impl RuntimeContentStore {
             .search()
             .set_trashed(slug, true)
             .await
-    }
-
-    pub async fn toggle_article_private_impl(&self, slug: &str) -> Result<bool, AppError> {
-        let path = path_for_slug(self.app_state.filesystem.root(), slug)?;
-        let markdown = fs::read_to_string(&path)
-            .await
-            .map_err(|source| AppError::content_io(path.display().to_string(), source))?;
-        let mut parsed = parse_markdown_document(&markdown)?;
-        parsed.frontmatter.private = !parsed.frontmatter.private;
-        let next_value = parsed.frontmatter.private;
-        let output = serialize_markdown_document(&parsed.frontmatter, &parsed.body);
-        fs::write(&path, output)
-            .await
-            .map_err(|source| AppError::content_io(path.display().to_string(), source))?;
-        self.app_state
-            .postgres
-            .search()
-            .index_article(
-                slug,
-                parsed.frontmatter.title.as_deref(),
-                &parsed.body,
-                parsed.frontmatter.private,
-                false,
-            )
-            .await?;
-        let updated_at = Utc::now();
-        let created_at = self.read_or_assign_created_at(slug, updated_at).await?;
-        self.sync_article_metadata(slug, created_at, updated_at)
-            .await?;
-        Ok(next_value)
     }
 
     pub async fn list_trashed_admin_slugs_impl(&self) -> Result<Vec<String>, AppError> {

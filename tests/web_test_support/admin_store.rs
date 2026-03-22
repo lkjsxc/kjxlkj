@@ -12,11 +12,10 @@ pub struct MockAdminStore {
 }
 
 impl MockAdminStore {
-    pub fn set_admin(&self, username: &str, password_hash: &str) {
+    pub fn set_admin(&self, password_hash: &str) {
         let mut admin = self.inner.lock().expect("admin lock poisoned");
         *admin = Some(AdminUser {
             id: 1,
-            username: username.to_owned(),
             password_hash: password_hash.to_owned(),
         });
     }
@@ -32,20 +31,15 @@ impl AdminStore for MockAdminStore {
         Ok(self.inner.lock().expect("admin lock poisoned").is_some())
     }
 
-    async fn find_admin_by_username(&self, username: &str) -> Result<Option<AdminUser>, AppError> {
+    async fn load_admin(&self) -> Result<Option<AdminUser>, AppError> {
         let admin = self.inner.lock().expect("admin lock poisoned");
-        Ok(admin.clone().filter(|value| value.username == username))
+        Ok(admin.clone())
     }
 
-    async fn create_admin(
-        &self,
-        username: &str,
-        password_hash: &str,
-    ) -> Result<AdminUser, AppError> {
+    async fn create_admin(&self, password_hash: &str) -> Result<AdminUser, AppError> {
         let mut admin = self.inner.lock().expect("admin lock poisoned");
         let next = AdminUser {
             id: 1,
-            username: username.to_owned(),
             password_hash: password_hash.to_owned(),
         };
         *admin = Some(next.clone());

@@ -7,10 +7,8 @@ use super::admin_page::render_admin_shell;
 
 const HTML_CONTENT_TYPE: &str = "text/html; charset=utf-8";
 
-pub use super::admin_actions::{
-    handle_post_admin_create, handle_post_admin_rename, handle_post_admin_save,
-};
-pub use super::admin_mutation::{handle_post_admin_delete, handle_post_admin_toggle_private};
+pub use super::admin_actions::{handle_post_admin_create, handle_post_admin_rename};
+pub use super::admin_mutation::handle_post_admin_delete;
 
 pub async fn handle_get_admin_shell(
     request: HttpRequest,

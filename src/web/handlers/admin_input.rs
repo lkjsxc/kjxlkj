@@ -11,15 +11,6 @@ pub struct CreateForm {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct SaveForm {
-    pub slug: String,
-    pub title: Option<String>,
-    pub body: String,
-    pub private: Option<bool>,
-    pub last_known_revision: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
 pub struct RenameForm {
     pub slug: String,
     pub new_slug: String,

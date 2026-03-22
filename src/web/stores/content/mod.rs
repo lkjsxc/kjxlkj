@@ -69,10 +69,6 @@ impl ContentStore for RuntimeContentStore {
         self.delete_article_impl(slug).await
     }
 
-    async fn toggle_article_private(&self, slug: &str) -> Result<bool, AppError> {
-        self.toggle_article_private_impl(slug).await
-    }
-
     async fn list_trashed_admin_slugs(&self) -> Result<Vec<String>, AppError> {
         self.list_trashed_admin_slugs_impl().await
     }
