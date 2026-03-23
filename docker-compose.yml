@@ -1,34 +1,17 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: kjxlkj
-      POSTGRES_USER: kjxlkj
-      POSTGRES_PASSWORD: kjxlkj
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 12
-
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
-      DATABASE_URL: postgres://kjxlkj:kjxlkj@postgres:5432/kjxlkj
       BIND_HOST: 0.0.0.0
       BIND_PORT: "8080"
-      CONTENT_ROOT: /app/data/content
+      DATA_ROOT: /app/data
+      ADMIN_TOKEN: local-dev-token
     ports:
       - "8080:8080"
     volumes:
-      - ./data/content:/app/data/content
+      - ./data/records:/app/data/records
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/healthz >/dev/null"]
       interval: 5s
@@ -51,4 +34,5 @@ services:
         cargo test &&
         cargo build --release &&
         ./target/release/kjxlkj docs validate-topology &&
+        ./target/release/kjxlkj docs validate-terms &&
         ./target/release/kjxlkj quality check-lines

@@ -14,4 +14,10 @@ Capture pre-rebuild gate status before structural rewrite.
 
 ## Update Rule
 
-Populate this file with concrete outputs during implementation.
+## Baseline Snapshot
+
+- `cargo run --bin kjxlkj -- docs validate-topology` -> pass (`violations: 0`)
+- `cargo run --bin kjxlkj -- docs validate-terms` -> pass (`violations: 0`)
+- `cargo run --bin kjxlkj -- quality check-lines` -> pass (`violations: 0`)
+- `cargo test` -> pass
+- `docker compose --profile verify run --rm verify` -> pass
