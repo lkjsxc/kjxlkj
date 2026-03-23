@@ -1,8 +1,5 @@
-# Runtime TOC
+# Runtime Architecture TOC
 
 - [stack.md](stack.md)
-- [module-boundaries.md](module-boundaries.md)
-- [route-topology.md](route-topology.md)
-- [ui-interaction-contract.md](ui-interaction-contract.md)
-
-This section defines runtime technologies and path/module organization.
+- [module-map.md](module-map.md)
+- [route-map.md](route-map.md)

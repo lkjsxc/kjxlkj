@@ -1,10 +1,5 @@
-# Data TOC
+# Data Architecture TOC
 
-- [postgres-schema.md](postgres-schema.md)
-- [markdown-frontmatter.md](markdown-frontmatter.md)
-- [content-visibility.md](content-visibility.md)
-- [settings-storage.md](settings-storage.md)
-- [search-index.md](search-index.md)
-- [trash-state.md](trash-state.md)
-
-This section defines persistent data contracts and content metadata rules.
+- [storage-model.md](storage-model.md)
+- [id-rules.md](id-rules.md)
+- [consistency-rules.md](consistency-rules.md)

@@ -3,15 +3,13 @@
 ## Technologies
 
 - Rust stable toolchain.
-- Actix Web with Tokio runtime.
-- Server-rendered HTML plus HTMX and minimal JavaScript.
-- PostgreSQL for authentication/session data.
-- Filesystem-backed Markdown content.
+- Actix Web for HTTP routing.
+- Tokio runtime for async I/O.
+- Serde and serde_json for payload contracts.
+- Local filesystem as canonical persistence layer.
 
 ## Runtime Intent
 
-- Keep request handling explicit and testable.
-- Keep domain logic isolated from framework-specific concerns.
-- Keep content rendering predictable for public and admin flows.
-- Keep auth semantics fixed to username `admin` with password-only login input.
-- Keep content visibility private-by-default with no author attribution display.
+- Keep request handling explicit and composable.
+- Separate domain logic from transport and storage adapters.
+- Keep process startup deterministic via environment-driven config.

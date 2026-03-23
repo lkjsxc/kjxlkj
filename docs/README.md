@@ -1,37 +1,33 @@
 # Documentation Tree TOC
 
-This directory is the authoritative contract tree for `kjxlkj`.
+This tree is the canonical contract for `kjxlkj`.
 
 ## Global Rules
 
-1. Every docs directory has exactly one `README.md` TOC.
-2. Each docs directory has multiple children.
-3. Each docs file is under 300 lines.
-4. Definitions are canonical in one place and referenced elsewhere.
-5. Contracts in `docs/` define target behavior first; implementation follows documented contracts.
-6. Runtime artifacts may exist in repository root in final state when they align with documented contracts.
-7. Root governance, including repository structure expectations and change sequencing, is defined in `docs/repository/`.
+1. `docs/` is authoritative for intended behavior.
+2. Every docs directory contains exactly one `README.md` TOC.
+3. Every docs directory contains multiple child entries.
+4. Each docs file is 300 lines or fewer.
+5. Each source file is 200 lines or fewer.
+6. Definitions are canonical in one location and linked elsewhere.
+7. Contracts are optimized for LLM retrieval and deterministic execution.
 
-## Topical Directories
+## Top-Level Directories
 
-| Directory | Purpose |
-| --- | --- |
-| [vision/README.md](vision/README.md) | Project intent, setup-first invariants, LLM constraints |
-| [product/README.md](product/README.md) | User-visible behavior and policy contracts |
-| [architecture/README.md](architecture/README.md) | Runtime, module, routing, and data contracts |
-| [containers/README.md](containers/README.md) | Docker Compose and verification container contracts |
-| [operations/README.md](operations/README.md) | CLI, testing, quality, and operational checks |
-| [repository/README.md](repository/README.md) | Repository layout, docs authoring, and governance |
-| [restructuring/README.md](restructuring/README.md) | Deterministic restructuring phases, tests, and full docs coverage matrix |
+- [vision/README.md](vision/README.md)
+- [product/README.md](product/README.md)
+- [architecture/README.md](architecture/README.md)
+- [operations/README.md](operations/README.md)
+- [containers/README.md](containers/README.md)
+- [repository/README.md](repository/README.md)
+- [restructuring/README.md](restructuring/README.md)
 
-## Recommended Reading Order
+## Reading Order
 
-1. [vision/README.md](vision/README.md)
-2. [product/flows/setup-flow.md](product/flows/setup-flow.md)
-3. [product/surface-map.md](product/surface-map.md)
-4. [architecture/runtime/route-topology.md](architecture/runtime/route-topology.md)
-5. [architecture/data/README.md](architecture/data/README.md)
-6. [containers/README.md](containers/README.md)
-7. [operations/README.md](operations/README.md)
-8. [repository/README.md](repository/README.md)
-9. [restructuring/README.md](restructuring/README.md)
+1. [vision/purpose.md](vision/purpose.md)
+2. [product/surface/routes.md](product/surface/routes.md)
+3. [architecture/runtime/route-map.md](architecture/runtime/route-map.md)
+4. [operations/quality/gates.md](operations/quality/gates.md)
+5. [containers/compose/commands.md](containers/compose/commands.md)
+6. [repository/workflow/phase-plan.md](repository/workflow/phase-plan.md)
+7. [restructuring/phases/README.md](restructuring/phases/README.md)

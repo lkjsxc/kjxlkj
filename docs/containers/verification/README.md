@@ -1,6 +1,4 @@
-# Verification TOC
+# Verification Container TOC
 
-- [verify-pipeline.md](verify-pipeline.md)
-- [local-runbook.md](local-runbook.md)
-
-This section defines what verification checks run and how to run them locally.
+- [verify-service.md](verify-service.md)
+- [acceptance.md](acceptance.md)

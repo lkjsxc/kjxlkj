@@ -1,16 +1,18 @@
-# Vision Purpose
+# Purpose Contract
 
 ## Goal
 
-- Converge this repository to documentation contracts as the final source of truth.
-- Keep runtime intent fully represented in documentation contracts.
+`kjxlkj` is a deterministic record service designed for LLM-operated workflows.
 
-## Success Criteria
+## Product Intent
 
-- Contracts are explicit, short, and linkable.
-- Behavioral requirements are deterministic.
-- Agents can retrieve required facts without scanning large narrative documents.
+- Serve structured records over HTTP JSON endpoints.
+- Keep read paths public and write paths token-protected.
+- Preserve records durably on local filesystem storage.
+- Keep outputs deterministic for automation and replay.
 
 ## Non-Goals
 
-- No undocumented behavior changes.
+- No browser-first UX requirements.
+- No backward compatibility guarantees.
+- No mutable behavior outside documented contracts.
