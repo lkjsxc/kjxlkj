@@ -1,15 +1,21 @@
 use actix_web::web;
 
 use crate::web::handlers::{
-    admin, article_edit, auth, public, search_page, settings_page, setup, static_assets, trash_page,
+    admin, article_edit, auth, health, public, search_page, settings_page, setup, static_assets,
+    trash_page,
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
-    cfg.configure(configure_setup_routes)
+    cfg.configure(configure_health_routes)
+        .configure(configure_setup_routes)
         .configure(configure_auth_routes)
         .configure(configure_public_routes)
         .configure(configure_admin_routes)
         .configure(configure_static_routes);
+}
+
+fn configure_health_routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(web::resource("/healthz").route(web::get().to(health::handle_get_healthz)));
 }
 
 fn configure_setup_routes(cfg: &mut web::ServiceConfig) {

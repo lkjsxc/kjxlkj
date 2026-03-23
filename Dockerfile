@@ -26,7 +26,7 @@ CMD ["/bin/bash", "-c", "cargo fmt -- --check && cargo clippy --all-targets -- -
 FROM debian:bookworm-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates postgresql-client \
+    && apt-get install -y --no-install-recommends ca-certificates curl postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -19,10 +19,10 @@ curl -sS -D - -o /dev/null http://127.0.0.1:8080/ | tr -d '\r' | awk 'NR==1 || t
 curl -sS -D - -o /dev/null -X POST http://127.0.0.1:8080/setup -H 'Content-Type: application/x-www-form-urlencoded' --data 'password=s3cret'
 ```
 
-3. Confirm setup lock page (no blank response):
+3. Confirm setup lock redirect:
 
 ```bash
-curl -sS http://127.0.0.1:8080/setup | grep -E 'setup-locked-page|Go to login'
+curl -sS -D - -o /dev/null http://127.0.0.1:8080/setup | tr -d '\r' | awk 'NR==1 || tolower($1)=="location:"'
 ```
 
 4. Login (password-only semantics):

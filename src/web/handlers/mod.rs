@@ -10,6 +10,7 @@ mod article_history_page;
 mod article_page;
 pub mod auth;
 mod common;
+pub mod health;
 mod home_page;
 mod login_page;
 mod page_html;

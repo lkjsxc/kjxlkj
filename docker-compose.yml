@@ -29,6 +29,11 @@ services:
       - "8080:8080"
     volumes:
       - ./data/content:/app/data/content
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/healthz >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   verify:
     build:

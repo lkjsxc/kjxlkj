@@ -16,7 +16,7 @@ are layered on top.
 | Route | Setup incomplete | Setup complete + logged out | Setup complete + admin session |
 | --- | --- | --- | --- |
 | `GET /` | `302` to `/setup` | `200` home page | `200` home page with admin visibility |
-| `GET /setup` | `200` setup page | `404` setup-locked page | `404` setup-locked page |
+| `GET /setup` | `200` setup page | `302` to `/login` | `302` to `/login` |
 | `GET /login` | `302` to `/setup` | `200` login page | `303` to `/admin` |
 | `GET /search` | `302` to `/setup` | `200` search page | `200` search page |
 | `GET /admin` | `302` to `/setup` | `302` to `/login` | `200` admin shell page |
@@ -36,15 +36,13 @@ are layered on top.
 ## `/setup` Page Contract
 
 - Root container: `<main id="setup-page">`.
-- Locked setup container after completion: `<main id="setup-locked-page">`.
 - Form ID: `#setup-form` with fields:
   - `password`
 - Error region: `#setup-errors` with `aria-live="polite"`.
-- Setup-locked rendering must include a deterministic link to `/login`.
 - `POST /setup` outcomes:
   - `400` + setup page re-render for missing/invalid inputs.
   - `303` redirect to `/login` when first admin is created.
-  - deterministic failure signal when setup is locked after first admin creation.
+  - `302` redirect to `/login` when setup is already completed.
 
 ## `/login` Page Contract
 

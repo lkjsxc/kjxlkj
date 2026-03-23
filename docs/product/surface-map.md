@@ -3,6 +3,7 @@
 ## Public Surface
 
 - `GET /` lists visible articles after setup completion; before any admin exists, it redirects to `/setup`.
+- `GET /healthz` returns `200` plain-text liveness signal (`ok`) for runtime health checks.
 - `GET /article/{slug}` renders an article with last-updated metadata and previous/next navigation, without author attribution display.
 - `GET /article/{slug}/history` renders article history for authenticated admin only.
 - `GET /search` renders role-aware result filtering.

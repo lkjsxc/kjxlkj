@@ -51,11 +51,14 @@ async fn setup_login_and_inline_article_edit_workflow() {
 
     let setup_locked =
         test::call_service(&app, test::TestRequest::get().uri("/setup").to_request()).await;
-    assert_eq!(setup_locked.status(), StatusCode::NOT_FOUND);
-    let setup_locked_text =
-        String::from_utf8(test::read_body(setup_locked).await.to_vec()).expect("utf8");
-    assert!(setup_locked_text.contains("id=\"setup-locked-page\""));
-    assert!(setup_locked_text.contains("href=\"/login\""));
+    assert_eq!(setup_locked.status(), StatusCode::FOUND);
+    assert_eq!(
+        setup_locked
+            .headers()
+            .get(header::LOCATION)
+            .and_then(|v| v.to_str().ok()),
+        Some("/login")
+    );
 
     let login_get =
         test::call_service(&app, test::TestRequest::get().uri("/login").to_request()).await;

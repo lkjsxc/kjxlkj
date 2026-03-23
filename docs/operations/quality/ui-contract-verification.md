@@ -2,11 +2,12 @@
 
 ## Core Page Checks
 
-1. `GET /` redirects to `/setup` before setup completion.
-2. `GET /setup` renders password-first setup form with fixed admin username.
-3. `GET /login` renders password-only login form.
-4. `GET /admin` renders dashboard, not dedicated editor page.
-5. `GET /article/{slug}` renders last-updated and prev/next links.
+1. `GET /healthz` returns `200` with plain-text body.
+2. `GET /` redirects to `/setup` before setup completion.
+3. `GET /setup` renders password-first setup form with fixed admin username.
+4. `GET /login` renders password-only login form.
+5. `GET /admin` renders dashboard, not dedicated editor page.
+6. `GET /article/{slug}` renders last-updated and prev/next links.
 
 ## Inline Edit Checks
 

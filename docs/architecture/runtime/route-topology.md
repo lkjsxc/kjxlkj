@@ -3,6 +3,7 @@
 ## Public Routes
 
 - `/`
+- `/healthz`
 - `/article/{slug}`
 - `/article/{slug}/history`
 - `/search`

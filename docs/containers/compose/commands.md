@@ -80,6 +80,19 @@ Expected result:
 - Home request returns `302 Found` with `location: /setup`.
 - Setup response contains both HTML markers.
 
+### 7) Confirm app liveness endpoint
+
+```bash
+curl -sS -D - -o /dev/null http://127.0.0.1:8080/healthz \
+  | tr -d '\r' \
+  | awk 'NR==1'
+```
+
+Expected result:
+
+- `HTTP/1.1 200 OK`.
+- Used by compose-level health checks to avoid false-positive "running but unreachable" states.
+
 ## Functional Verification Handoff
 
 - Continue with [../verification/local-runbook.md](../verification/local-runbook.md) for deterministic setup/login/admin checks and recovery procedures.
