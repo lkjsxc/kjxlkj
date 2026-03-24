@@ -11,5 +11,5 @@ Commit after each major documentation batch:
 
 ## Preconditions
 
-- Relevant gates for the phase must pass.
+- Relevant gates for the stage must pass as defined in [../../restructuring/checkpoints/gate-checklist.md](../../restructuring/checkpoints/gate-checklist.md).
 - Commit message summarizes changed contracts and behavior.
