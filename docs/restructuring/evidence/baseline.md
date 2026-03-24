@@ -2,22 +2,17 @@
 
 ## Purpose
 
-Capture pre-rebuild gate status before structural rewrite.
+Capture the pre-overhaul state of restructuring contracts before deep expansion.
 
-## Snapshot Fields
+## Baseline Summary
 
-- docs topology status
-- docs term status
-- line-limit status
-- cargo test status
-- compose verify status
+- Previous tree shape: `phases/`, `checkpoints/`, `evidence/`.
+- Previous docs depth: high-level phase/checkpoint contracts.
+- Historical staged semantics available only by snapshot summary mapping.
 
-## Update Rule
+## Baseline Status
 
-## Baseline Snapshot
-
-- `cargo run --bin kjxlkj -- docs validate-topology` -> pass (`violations: 0`)
-- `cargo run --bin kjxlkj -- docs validate-terms` -> pass (`violations: 0`)
-- `cargo run --bin kjxlkj -- quality check-lines` -> pass (`violations: 0`)
-- `cargo test` -> pass
-- `docker compose --profile verify run --rm verify` -> pass
+- Structure audit: pass (`directories checked: 17`)
+- Link audit: pass (`restructuring markdown links resolved`)
+- Line-limit audit: pass (`max lines observed: 59`)
+- Compose verification: blocked (`docker compose` could not run because `docker-compose.yml` is missing)

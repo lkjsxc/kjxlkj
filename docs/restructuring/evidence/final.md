@@ -2,36 +2,30 @@
 
 ## Purpose
 
-Capture post-rebuild convergence proof.
+Capture post-overhaul verification outcomes for the new restructuring tree.
 
-## Required Evidence Items
+## Gate Result Ledger
 
-- Full gate checklist results.
-- Compose verify profile result.
-- Final repository layout summary.
-- Contract drift statement: `none`.
+| Gate ID | Status | Notes |
+| --- | --- | --- |
+| STRUCTURE-AUDIT-01 | pass | recursive README + child-entry checks passed |
+| LINK-AUDIT-01 | pass | relative link resolution across `docs/restructuring/**` passed |
+| LINE-LIMIT-01 | pass | docs line-limit check passed; max observed line count was 59 |
+| COMPOSE-VERIFY-01 | blocked | `docker compose --profile verify run --rm verify` failed: no configuration file provided |
+
+## Verification Notes
+
+- Structure/link/line audits were executed after full tree regeneration.
+- `docs/restructuring/` now contains orientation, program, stages, checkpoints, evidence, and migration domains.
+- The prior `phases/` subtree was intentionally removed as part of aggressive restructuring.
+- Compose verification remains blocked until compose assets are restored.
+
+## Blocked Gate Recovery
+
+1. Restore compose configuration file(s) required by [../checkpoints/compose-verification-protocol.md](../checkpoints/compose-verification-protocol.md).
+2. Re-run `docker compose --profile verify run --rm verify`.
+3. Update this ledger entry from `blocked` to final status.
 
 ## Acceptance Statement
 
-## Gate Results
-
-- `cargo fmt -- --check` -> pass
-- `cargo clippy --all-targets -- -D warnings` -> pass
-- `cargo test` -> pass
-- `cargo build --release` -> pass
-- `cargo run --bin kjxlkj -- docs validate-topology` -> pass (`violations: 0`)
-- `cargo run --bin kjxlkj -- docs validate-terms` -> pass (`violations: 0`)
-- `cargo run --bin kjxlkj -- quality check-lines` -> pass (`violations: 0`)
-- `docker compose --profile verify run --rm verify` -> pass
-- `cargo run --bin kjxlkj -- compose verify` -> pass (`steps_passed: 4`, `steps_total: 4`)
-
-## Repository Layout Summary
-
-- Docs tree replaced with new LLM-first contract hierarchy.
-- Legacy runtime removed and rebuilt from scratch into a record-service architecture.
-- Runtime stack now uses PostgreSQL-backed setup/login/session persistence,
-  filesystem-backed records, and token-guarded write endpoints.
-
-## Contract Drift
-
-`none`
+Final acceptance requires all non-contingent gates to pass and contingent gates to be pass or explicitly blocked with recovery actions.

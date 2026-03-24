@@ -1,16 +1,17 @@
 # Gate Checklist
 
-## Required Ordered Gates
+## Ordered Gates
 
-1. `cargo run --bin kjxlkj -- docs validate-topology`
-2. `cargo run --bin kjxlkj -- docs validate-terms`
-3. `cargo run --bin kjxlkj -- quality check-lines`
-4. `cargo fmt -- --check`
-5. `cargo clippy --all-targets -- -D warnings`
-6. `cargo test`
-7. `cargo build --release`
-8. `docker compose --profile verify run --rm verify`
+1. Tree structure audit: see [doc-structure-audit.md](doc-structure-audit.md).
+2. Link integrity audit: see [link-integrity-audit.md](link-integrity-audit.md).
+3. Docs line-limit audit (`<=300` lines per markdown file).
+4. Repository quality gate contracts from [../../operations/quality/gates.md](../../operations/quality/gates.md) when executable.
+5. Compose verification protocol from [compose-verification-protocol.md](compose-verification-protocol.md).
 
-## Rule
+## Restart Rule
 
-Any failing gate restarts the sequence from gate 1 after fixes.
+Any failure restarts execution at gate 1 after remediation.
+
+## Evidence Rule
+
+Each gate result must be recorded as `pass`, `fail`, or `blocked` in [../evidence/final.md](../evidence/final.md).

@@ -2,20 +2,28 @@
 
 ## Required Fields
 
-- `phase`
-- `command`
-- `status`
-- `exit_code`
+- `stage_id`
+- `wave_id` (or `none` for global gates)
+- `gate_id`
+- `status` (`pass` | `fail` | `blocked`)
 - `summary`
+- `artifacts`
+- `next_action`
 
-## Example
+## JSON Template
 
 ```json
 {
-  "phase": "phase-04-verify",
-  "command": "docker compose --profile verify run --rm verify",
+  "stage_id": "S03",
+  "wave_id": "W031",
+  "gate_id": "LINK-AUDIT-01",
   "status": "pass",
-  "exit_code": 0,
-  "summary": "all gates passed"
+  "summary": "all touched links resolve",
+  "artifacts": ["docs/restructuring/stages/stage-03-web-shell-and-editor/wave-031.md"],
+  "next_action": "proceed"
 }
 ```
+
+## Blocking Entry Rule
+
+When status is `blocked`, `summary` must include the direct cause and `next_action` must be concrete.
