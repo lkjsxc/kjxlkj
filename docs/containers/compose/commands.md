@@ -6,11 +6,13 @@
 docker compose build app
 ```
 
-## Run App
+## Start Services
 
 ```bash
-docker compose up -d app
+docker compose up -d
 ```
+
+Starts `postgres` and `app` services.
 
 ## Run Verify Profile
 
@@ -22,4 +24,16 @@ docker compose --profile verify run --rm verify
 
 ```bash
 docker compose down
+```
+
+## Stop with Volume Cleanup
+
+```bash
+docker compose down -v
+```
+
+## View Logs
+
+```bash
+docker compose logs -f app
 ```

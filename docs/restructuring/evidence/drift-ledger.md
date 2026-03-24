@@ -16,6 +16,10 @@ Track unresolved mismatches between intended contracts and current restructuring
 | --- | --- | --- | --- | --- | --- |
 | DRIFT-000 | L | initialization | closed | docs-agent | ledger bootstrapped |
 | DRIFT-001 | H | compose verification | open | infra-owner | missing compose config blocks required compose gate |
+| DRIFT-002 | H | source implementation | open | impl-agent | no Rust source code exists yet |
+| DRIFT-003 | M | html-pages | closed | docs-agent | added html-pages.md to product/surface |
+| DRIFT-004 | M | postgres-schema | closed | docs-agent | added postgres-schema.md to architecture/data |
+| DRIFT-005 | M | password-contract | closed | docs-agent | added password-contract.md to architecture/integrations |
 
 ## Update Rule
 
