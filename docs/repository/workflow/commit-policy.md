@@ -2,12 +2,12 @@
 
 ## Frequency
 
-Commit after each major phase:
+Commit after each major documentation batch:
 
-- docs
-- prune
-- rebuild
-- verify
+- restructuring tree scaffold
+- stage and wave authoring batches
+- checkpoints and evidence updates
+- validation and consistency sweep
 
 ## Preconditions
 

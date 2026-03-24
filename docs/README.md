@@ -30,4 +30,5 @@ This tree is the canonical contract for `kjxlkj`.
 4. [operations/quality/gates.md](operations/quality/gates.md)
 5. [containers/compose/commands.md](containers/compose/commands.md)
 6. [repository/workflow/phase-plan.md](repository/workflow/phase-plan.md)
-7. [restructuring/phases/README.md](restructuring/phases/README.md)
+7. [restructuring/README.md](restructuring/README.md)
+8. [restructuring/stages/README.md](restructuring/stages/README.md)
