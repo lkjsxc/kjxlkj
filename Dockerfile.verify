@@ -1,0 +1,11 @@
+# Verification stage Dockerfile
+FROM rust:1.77-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache musl-dev
+
+COPY verify.sh /verify.sh
+RUN chmod +x /verify.sh
+
+ENTRYPOINT ["/verify.sh"]

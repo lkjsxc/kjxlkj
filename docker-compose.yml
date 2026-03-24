@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: kjxlkj
+      POSTGRES_PASSWORD: kjxlkj
+      POSTGRES_DB: kjxlkj
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kjxlkj"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      BIND_HOST: "0.0.0.0"
+      BIND_PORT: "8080"
+      DATA_ROOT: /app/data
+      DATABASE_URL: postgres://kjxlkj:kjxlkj@postgres:5432/kjxlkj
+      ADMIN_TOKEN: local-dev-token
+      SESSION_TIMEOUT_MINUTES: "1440"
+    volumes:
+      - appdata:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile.verify
+    profiles:
+      - verify
+    volumes:
+      - .:/app:ro
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  appdata:
