@@ -14,6 +14,7 @@ This repository is operated from documentation contracts in `docs/`.
 
 - Rust runtime and CLI
 - Docker Compose verification workflow
+- PostgreSQL-backed setup/login/session state
 - Filesystem-backed record storage
 
 ## Contract Rule

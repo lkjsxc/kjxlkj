@@ -4,13 +4,8 @@ use serde_json::json;
 
 use crate::core::RecordInput;
 use crate::error::AppError;
-use crate::storage::FsStore;
 
-#[derive(Clone)]
-pub struct AppState {
-    pub admin_token: String,
-    pub store: FsStore,
-}
+use super::state::AppState;
 
 pub async fn get_health() -> impl Responder {
     HttpResponse::Ok()

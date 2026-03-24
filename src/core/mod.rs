@@ -1,3 +1,4 @@
+pub mod auth;
 mod model;
 #[cfg(test)]
 mod tests;

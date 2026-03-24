@@ -29,7 +29,8 @@ Capture post-rebuild convergence proof.
 
 - Docs tree replaced with new LLM-first contract hierarchy.
 - Legacy runtime removed and rebuilt from scratch into a record-service architecture.
-- Runtime stack now uses filesystem-backed records and token-guarded write endpoints.
+- Runtime stack now uses PostgreSQL-backed setup/login/session persistence,
+  filesystem-backed records, and token-guarded write endpoints.
 
 ## Contract Drift
 

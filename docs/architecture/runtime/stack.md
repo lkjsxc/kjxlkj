@@ -6,7 +6,8 @@
 - Actix Web for HTTP routing.
 - Tokio runtime for async I/O.
 - Serde and serde_json for payload contracts.
-- Local filesystem as canonical persistence layer.
+- PostgreSQL for admin setup/login/session persistence.
+- Local filesystem as record persistence layer.
 
 ## Runtime Intent
 

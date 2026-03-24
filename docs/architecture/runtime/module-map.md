@@ -8,7 +8,7 @@
 - `src/error.rs`: application error taxonomy.
 - `src/core/`: domain models and validation.
 - `src/storage/`: filesystem-backed persistence adapter.
-- `src/web/`: route definitions and handlers.
+- `src/web/`: route definitions, handlers, and PostgreSQL auth/session adapter.
 - `src/cli/`: docs and quality gate commands.
 
 ## File Size Constraint

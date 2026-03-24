@@ -4,7 +4,9 @@ use super::FsStore;
 
 #[tokio::test]
 async fn store_upsert_list_get_delete_lifecycle() {
-    let root = std::env::temp_dir().join(format!("kjxlkj-store-{}", uuid::Uuid::new_v4()));
+    let root = std::path::PathBuf::from("tmp")
+        .join("tests")
+        .join(format!("kjxlkj-store-{}", uuid::Uuid::new_v4()));
     tokio::fs::create_dir_all(&root).await.expect("mkdir");
     let store = FsStore::new(root.clone());
     store.ensure_ready().await.expect("ready");

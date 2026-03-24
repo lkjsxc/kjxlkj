@@ -39,6 +39,7 @@ RUN mkdir -p /app/data/records
 ENV BIND_HOST=0.0.0.0 \
     BIND_PORT=8080 \
     DATA_ROOT=/app/data \
+    DATABASE_URL=postgresql://kjxlkj:kjxlkj@postgres:5432/kjxlkj \
     ADMIN_TOKEN=local-dev-token
 
 EXPOSE 8080

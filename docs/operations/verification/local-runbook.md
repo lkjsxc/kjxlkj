@@ -30,3 +30,25 @@ curl -sS -X PUT http://127.0.0.1:8080/v1/records/demo-note   -H 'Content-Type: a
 ```
 
 Expected: `201` for first create.
+
+## Verify Setup/Login Routes
+
+```bash
+curl -sS -D - -o /dev/null http://127.0.0.1:8080/
+curl -sS -D - -o /dev/null http://127.0.0.1:8080/setup
+curl -sS -D - -o /dev/null http://127.0.0.1:8080/login
+```
+
+Expected before setup:
+
+- `/` redirects to `/setup`
+- `/setup` returns `200` HTML
+- `/login` redirects to `/setup`
+
+## Verify Postgres Dependency
+
+```bash
+docker compose ps postgres
+```
+
+Expected: `postgres` is healthy before app tests are executed.

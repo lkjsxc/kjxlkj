@@ -7,6 +7,7 @@ pub enum AppError {
     InvalidRequest(String),
     Unauthorized,
     NotFound(String),
+    Database(String),
     Io(std::io::Error),
     Serde(serde_json::Error),
 }
@@ -19,6 +20,7 @@ impl AppError {
             Self::InvalidRequest(_) => "invalid_request",
             Self::Unauthorized => "unauthorized",
             Self::NotFound(_) => "not_found",
+            Self::Database(_) => "database_error",
             Self::Io(_) => "storage_error",
             Self::Serde(_) => "storage_error",
         }
@@ -33,6 +35,7 @@ impl Display for AppError {
             Self::InvalidRequest(message) => write!(f, "{message}"),
             Self::Unauthorized => write!(f, "x-admin-token is missing or invalid"),
             Self::NotFound(message) => write!(f, "{message}"),
+            Self::Database(message) => write!(f, "{message}"),
             Self::Io(error) => write!(f, "{error}"),
             Self::Serde(error) => write!(f, "{error}"),
         }
@@ -50,5 +53,11 @@ impl From<std::io::Error> for AppError {
 impl From<serde_json::Error> for AppError {
     fn from(value: serde_json::Error) -> Self {
         Self::Serde(value)
+    }
+}
+
+impl From<sqlx::Error> for AppError {
+    fn from(value: sqlx::Error) -> Self {
+        Self::Database(value.to_string())
     }
 }
