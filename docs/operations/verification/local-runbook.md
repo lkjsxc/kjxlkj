@@ -98,6 +98,18 @@ Expected:
 - HTML contains the `Public` checkbox
 - HTML contains editor markup
 
+## Verify Browser Visual Checks
+
+```bash
+docker compose --profile verify run --rm visual-verify
+```
+
+Expected:
+
+- desktop screenshots pass dark-shell assertions
+- compact screenshots pass drawer and icon-control assertions
+- visual verification exits `0`
+
 ## Verify JSON Navigation
 
 ```bash

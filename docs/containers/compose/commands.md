@@ -20,6 +20,12 @@ Starts `postgres` and `app` services.
 docker compose --profile verify run --rm verify
 ```
 
+## Run Visual Verify Profile
+
+```bash
+docker compose --profile verify run --rm visual-verify
+```
+
 ## Stop
 
 ```bash

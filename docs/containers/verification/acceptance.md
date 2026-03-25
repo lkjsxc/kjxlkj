@@ -9,6 +9,7 @@
 5. Guest note pages expose previous/next and public history links for public notes.
 6. Admin note pages expose dashboard navigation, history navigation, and the `Public` checkbox.
 7. Write endpoints enforce session auth.
+8. Browser-rendered desktop and compact screenshots pass visual checks.
 
 ## Completion Rule
 

@@ -10,7 +10,7 @@
 - Enable live editing with auto-save for authenticated admins.
 - Support private (default) and public visibility per note.
 - Maintain complete revision history for every note.
-- Display rendered Markdown with a dark-themed UI.
+- Display rendered Markdown with a dark-first knowledge-workbench UI.
 
 ## Non-Goals
 

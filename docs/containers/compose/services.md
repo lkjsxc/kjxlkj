@@ -5,6 +5,7 @@
 - `postgres`: PostgreSQL database for auth/sessions.
 - `app`: runtime service exposing port `8080`.
 - `verify`: profile-gated quality verification service.
+- `visual-verify`: profile-gated browser screenshot verification service.
 
 ## Service Dependencies
 
@@ -21,4 +22,4 @@
 ## Profile Rule
 
 - Default `docker compose up` starts `postgres` and `app`.
-- `verify` runs only with `--profile verify`.
+- `verify` and `visual-verify` run only with `--profile verify`.
