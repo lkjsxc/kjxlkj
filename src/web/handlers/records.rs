@@ -110,7 +110,7 @@ async fn generate_unique_slug(pool: &DbPool) -> Result<String, AppError> {
         return Ok(base);
     }
     for i in 2..100 {
-        let slug = format!("{}-{}", base, i);
+        let slug = format!("{base}-{i}");
         if db::get_record(pool, &slug).await?.is_none() {
             return Ok(slug);
         }
