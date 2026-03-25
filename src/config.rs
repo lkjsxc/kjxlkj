@@ -62,7 +62,11 @@ impl Config {
 
     /// Get bind address as string
     pub fn bind_addr(&self) -> String {
-        format!("{}:{}", self.bind_host, self.bind_port)
+        format!(
+            "{host}:{port}",
+            host = self.bind_host,
+            port = self.bind_port
+        )
     }
 }
 

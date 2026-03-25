@@ -1,9 +1,10 @@
 # Verification stage Dockerfile
-FROM rust:1.77-alpine
+FROM rust:1.88-alpine
 
 WORKDIR /app
 
 RUN apk add --no-cache musl-dev
+RUN rustup component add rustfmt clippy
 
 COPY verify.sh /verify.sh
 RUN chmod +x /verify.sh

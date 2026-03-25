@@ -25,7 +25,7 @@ pub async fn fetch(
 
     match storage.get(&id).await? {
         Some(record) => Ok(HttpResponse::Ok().json(record)),
-        None => Err(AppError::NotFound(format!("record '{}' not found", id))),
+        None => Err(AppError::NotFound(format!("record '{id}' not found"))),
     }
 }
 
@@ -76,7 +76,7 @@ pub async fn remove(
     if storage.delete(&id).await? {
         Ok(HttpResponse::NoContent().finish())
     } else {
-        Err(AppError::NotFound(format!("record '{}' not found", id)))
+        Err(AppError::NotFound(format!("record '{id}' not found")))
     }
 }
 

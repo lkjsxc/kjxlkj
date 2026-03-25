@@ -25,7 +25,7 @@ impl FilesystemStorage {
     }
 
     fn record_path(&self, id: &str) -> PathBuf {
-        self.records_dir().join(format!("{}.json", id))
+        self.records_dir().join(format!("{id}.json"))
     }
 }
 
@@ -63,7 +63,7 @@ impl Storage for FilesystemStorage {
         let created = !path.exists();
 
         let json = serde_json::to_string_pretty(&record)?;
-        let temp_path = self.records_dir().join(format!(".{}.tmp", id));
+        let temp_path = self.records_dir().join(format!(".{id}.tmp"));
         fs::write(&temp_path, &json).await?;
         fs::rename(&temp_path, &path).await?;
 

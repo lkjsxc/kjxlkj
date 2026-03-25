@@ -1,5 +1,5 @@
 # Build stage
-FROM rust:1.77-alpine AS builder
+FROM rust:1.88-alpine AS builder
 
 WORKDIR /build
 
@@ -15,7 +15,7 @@ RUN touch src/main.rs && cargo build --release
 # Runtime stage
 FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates curl
 
 RUN addgroup -S app && adduser -S app -G app
 

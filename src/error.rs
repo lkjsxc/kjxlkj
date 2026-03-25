@@ -24,11 +24,11 @@ struct ErrorResponse {
 impl fmt::Display for AppError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            AppError::Unauthorized(msg) => write!(f, "unauthorized: {}", msg),
-            AppError::InvalidRequest(msg) => write!(f, "invalid_request: {}", msg),
-            AppError::NotFound(msg) => write!(f, "not_found: {}", msg),
-            AppError::StorageError(msg) => write!(f, "storage_error: {}", msg),
-            AppError::DatabaseError(msg) => write!(f, "database_error: {}", msg),
+            AppError::Unauthorized(msg) => write!(f, "unauthorized: {msg}"),
+            AppError::InvalidRequest(msg) => write!(f, "invalid_request: {msg}"),
+            AppError::NotFound(msg) => write!(f, "not_found: {msg}"),
+            AppError::StorageError(msg) => write!(f, "storage_error: {msg}"),
+            AppError::DatabaseError(msg) => write!(f, "database_error: {msg}"),
         }
     }
 }

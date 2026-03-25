@@ -37,8 +37,9 @@ fn validate_dir_recursive(dir: &Path, errors: &mut Vec<String>) -> Result<(), st
         .collect();
 
     let has_readme = entries.iter().any(|e| e.file_name() == "README.md");
+    let dir_display = dir.display();
     if !has_readme {
-        errors.push(format!("{}: missing README.md", dir.display()));
+        errors.push(format!("{dir_display}: missing README.md"));
     }
 
     let child_count = entries.len();

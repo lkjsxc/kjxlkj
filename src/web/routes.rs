@@ -46,10 +46,10 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(records::remove)
     })
     .bind(&bind_addr)
-    .map_err(|e| AppError::StorageError(format!("Failed to bind: {}", e)))?
+    .map_err(|e| AppError::StorageError(format!("Failed to bind: {e}")))?
     .run()
     .await
-    .map_err(|e| AppError::StorageError(format!("Server error: {}", e)))?;
+    .map_err(|e| AppError::StorageError(format!("Server error: {e}")))?;
 
     Ok(())
 }

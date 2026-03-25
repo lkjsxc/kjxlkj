@@ -11,14 +11,14 @@ pub type DbPool = Pool;
 pub async fn create_pool(database_url: &str) -> Result<DbPool, AppError> {
     let config: tokio_postgres::Config = database_url
         .parse()
-        .map_err(|e| AppError::DatabaseError(format!("Invalid database URL: {}", e)))?;
+        .map_err(|e| AppError::DatabaseError(format!("Invalid database URL: {e}")))?;
 
     let manager = Manager::new(config, NoTls);
     let pool = Pool::builder(manager)
         .max_size(16)
         .runtime(Runtime::Tokio1)
         .build()
-        .map_err(|e| AppError::DatabaseError(format!("Pool creation failed: {}", e)))?;
+        .map_err(|e| AppError::DatabaseError(format!("Pool creation failed: {e}")))?;
 
     run_migrations(&pool).await?;
     Ok(pool)
@@ -29,7 +29,7 @@ async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
     let client = pool
         .get()
         .await
-        .map_err(|e| AppError::DatabaseError(format!("Connection failed: {}", e)))?;
+        .map_err(|e| AppError::DatabaseError(format!("Connection failed: {e}")))?;
 
     client
         .batch_execute(
@@ -53,7 +53,7 @@ async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             "#,
         )
         .await
-        .map_err(|e| AppError::DatabaseError(format!("Migration failed: {}", e)))?;
+        .map_err(|e| AppError::DatabaseError(format!("Migration failed: {e}")))?;
 
     Ok(())
 }
@@ -76,7 +76,7 @@ pub async fn is_setup(pool: &DbPool) -> Result<bool, AppError> {
 /// Create admin user
 pub async fn create_admin(pool: &DbPool, username: &str, password: &str) -> Result<Uuid, AppError> {
     let hash = bcrypt::hash(password, 12)
-        .map_err(|e| AppError::StorageError(format!("Password hash failed: {}", e)))?;
+        .map_err(|e| AppError::StorageError(format!("Password hash failed: {e}")))?;
 
     let client = pool
         .get()

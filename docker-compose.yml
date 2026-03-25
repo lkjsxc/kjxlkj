@@ -32,10 +32,11 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/healthz"]
       interval: 10s
       timeout: 5s
       retries: 3
+      start_period: 5s
 
   verify:
     build:
@@ -43,8 +44,11 @@ services:
       dockerfile: Dockerfile.verify
     profiles:
       - verify
+    working_dir: /workspace
     volumes:
-      - .:/app:ro
+      - .:/workspace:ro
+      - verify-cargo:/usr/local/cargo/registry
+      - verify-target:/workspace/target
     depends_on:
       app:
         condition: service_healthy
@@ -52,3 +56,5 @@ services:
 volumes:
   pgdata:
   appdata:
+  verify-cargo:
+  verify-target:
