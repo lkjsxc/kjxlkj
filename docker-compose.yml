@@ -49,6 +49,22 @@ services:
       app:
         condition: service_healthy
 
+  visual-verify:
+    build:
+      context: .
+      dockerfile: Dockerfile.visual
+    profiles:
+      - verify
+    environment:
+      APP_URL: http://app:8080
+      DATABASE_URL: postgres://kjxlkj:kjxlkj@postgres:5432/kjxlkj
+      ARTIFACT_DIR: /artifacts
+    volumes:
+      - ./tmp/visual-artifacts:/artifacts
+    depends_on:
+      app:
+        condition: service_healthy
+
 volumes:
   pgdata:
   verify-cargo:
