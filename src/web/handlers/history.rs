@@ -19,7 +19,7 @@ pub async fn history_page(
     let slug = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
     let Some(record) = accessible_record(&pool, &slug, is_admin).await? else {
-        return Ok(html(templates::not_found_page()));
+        return Ok(not_found());
     };
     let revisions = db::get_record_revisions(&pool, &slug).await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
@@ -43,13 +43,13 @@ pub async fn revision_page(
     let (slug, revision_number) = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
     let Some(record) = accessible_record(&pool, &slug, is_admin).await? else {
-        return Ok(html(templates::not_found_page()));
+        return Ok(not_found());
     };
     let Some(revision) = db::get_record_revision(&pool, &slug, revision_number).await? else {
-        return Ok(html(templates::not_found_page()));
+        return Ok(not_found());
     };
     if revision.is_private && !is_admin {
-        return Ok(html(templates::not_found_page()));
+        return Ok(not_found());
     }
     let revisions = db::get_record_revisions(&pool, &slug).await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
@@ -81,4 +81,10 @@ fn html(body: String) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(body)
+}
+
+fn not_found() -> HttpResponse {
+    HttpResponse::NotFound()
+        .content_type("text/html; charset=utf-8")
+        .body(templates::not_found_page())
 }

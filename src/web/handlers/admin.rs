@@ -66,10 +66,10 @@ pub async fn note_page(
     let is_admin = session::check_session(&req, &pool).await?;
     let record = match db::get_record(&pool, &slug).await? {
         Some(r) => r,
-        None => return Ok(html(templates::not_found_page())),
+        None => return Ok(not_found()),
     };
     if record.is_private && !is_admin {
-        return Ok(html(templates::not_found_page()));
+        return Ok(not_found());
     }
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
     Ok(html(templates::note_page(&record, &chrome, is_admin)))
@@ -85,4 +85,10 @@ fn html(body: String) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(body)
+}
+
+fn not_found() -> HttpResponse {
+    HttpResponse::NotFound()
+        .content_type("text/html; charset=utf-8")
+        .body(templates::not_found_page())
 }
