@@ -20,7 +20,7 @@ pub fn history_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> Str
     };
     let content = format!(
         r#"<header class="page-head">
-<div>
+<div class="page-title-stack">
 <p class="eyebrow">Revision history</p>
 <h1>{}</h1>
 </div>
@@ -54,7 +54,7 @@ pub fn revision_page(
         .unwrap_or_else(|| format!("Revision {}", revision.revision_number));
     let content = format!(
         r#"<header class="page-head">
-<div>
+<div class="page-title-stack">
 <p class="eyebrow">Historical snapshot</p>
 <h1>{}</h1>
 </div>
@@ -63,7 +63,7 @@ pub fn revision_page(
 <small>{}</small>
 </div>
 </header>
-<section class="surface prose">{}</section>
+<section class="surface note-surface prose">{}</section>
 <footer class="page-tail">
 <a href="{}" class="btn">Back to history</a>
 <a href="/{}" class="btn btn-primary">Current note</a>
@@ -95,9 +95,9 @@ pub fn revision_page(
 fn history_row(entry: &HistoryLink) -> String {
     format!(
         r#"<a href="{}" class="index-card">
-<div>
+<div class="card-body">
 <p class="card-title">{}</p>
-<p class="card-slug">{}</p>
+<p class="card-summary">{}</p>
 </div>
 <div class="card-meta">
 <span class="status-pill">{}</span>
@@ -150,6 +150,7 @@ mod tests {
         assert!(html.contains("Revision history"));
         assert!(html.contains("/demo-note/history/2"));
         assert!(html.contains("Current note"));
+        assert!(html.contains("aria-label=\"Open navigation\""));
     }
 
     #[test]

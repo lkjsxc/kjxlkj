@@ -8,8 +8,8 @@ pub fn home_page(notes: &[IndexItem], is_admin: bool) -> String {
         .iter()
         .map(|note| {
             format!(
-                r#"<a href="{}" class="rail-link"><span>{}</span><small>{}</small></a>"#,
-                note.href, note.title, note.slug
+                r#"<a href="{}" class="rail-link"><span>{}</span><small>{}</small><small class="rail-summary">{}</small></a>"#,
+                note.href, note.title, note.slug, note.summary
             )
         })
         .collect();
@@ -34,12 +34,18 @@ pub fn home_page(notes: &[IndexItem], is_admin: bool) -> String {
         }
     );
     let content = format!(
-        r#"<section class="hero">
-<p class="eyebrow">Markdown note system</p>
+        r#"<section class="surface hero-panel">
+<p class="eyebrow">Dark workbench</p>
 <h1>Notes stay readable first.</h1>
-<p class="hero-copy">Server-rendered pages, revision history, and a compact shell built for AI-assisted editing.</p>
+<p class="hero-copy">Server-rendered Markdown, revision history, and a denser shell tuned for focused reading and editing.</p>
+<div class="hero-grid">
+<div class="hero-fact"><strong>{}</strong><span>public notes</span></div>
+<div class="hero-fact"><strong>Dark-first</strong><span>single canonical theme</span></div>
+<div class="hero-fact"><strong>History</strong><span>current and past snapshots</span></div>
+</div>
 <div class="hero-actions">{}</div>
 </section>"#,
+        notes.len(),
         if is_admin {
             r#"<a href="/admin" class="btn btn-primary">Manage notes</a>"#
         } else {
@@ -48,7 +54,12 @@ pub fn home_page(notes: &[IndexItem], is_admin: bool) -> String {
     );
     base(
         "Home",
-        &shell_page("Guest", &rail, &content, "home-page"),
+        &shell_page(
+            if is_admin { "Admin" } else { "Guest" },
+            &rail,
+            &content,
+            "home-page",
+        ),
         "",
         "",
     )

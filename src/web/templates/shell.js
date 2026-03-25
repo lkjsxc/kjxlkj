@@ -1,4 +1,8 @@
 (function () {
+    function isCompact() {
+        return window.innerWidth <= 900;
+    }
+
     function appShell() {
         return document.querySelector('.app-shell');
     }
@@ -12,8 +16,11 @@
         var trigger = button();
         if (!shell || !trigger) return;
         shell.classList.remove('drawer-open');
+        document.body.classList.remove('nav-open');
         trigger.setAttribute('aria-expanded', 'false');
-        document.getElementById('shell-rail')?.setAttribute('aria-hidden', 'true');
+        document
+            .getElementById('shell-rail')
+            ?.setAttribute('aria-hidden', isCompact() ? 'true' : 'false');
     }
 
     function openMenu() {
@@ -21,16 +28,31 @@
         var trigger = button();
         if (!shell || !trigger) return;
         shell.classList.add('drawer-open');
+        document.body.classList.add('nav-open');
         trigger.setAttribute('aria-expanded', 'true');
         document.getElementById('shell-rail')?.setAttribute('aria-hidden', 'false');
+        document.querySelector('.rail-close')?.focus();
     }
 
     function syncState() {
+        var shell = appShell();
         var trigger = button();
-        if (!trigger) return;
-        trigger.setAttribute('aria-expanded', 'false');
-        if (window.innerWidth <= 900) {
-            document.getElementById('shell-rail')?.setAttribute('aria-hidden', 'true');
+        var rail = document.getElementById('shell-rail');
+        if (!shell || !trigger || !rail) return;
+        if (isCompact()) {
+            trigger.setAttribute(
+                'aria-expanded',
+                shell.classList.contains('drawer-open') ? 'true' : 'false'
+            );
+            rail.setAttribute(
+                'aria-hidden',
+                shell.classList.contains('drawer-open') ? 'false' : 'true'
+            );
+        } else {
+            shell.classList.remove('drawer-open');
+            document.body.classList.remove('nav-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            rail.setAttribute('aria-hidden', 'false');
         }
     }
 
@@ -44,7 +66,7 @@
     });
 
     window.addEventListener('resize', function () {
-        if (window.innerWidth > 900) closeMenu();
+        syncState();
     });
 
     syncState();

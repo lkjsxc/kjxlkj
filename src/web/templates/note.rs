@@ -17,7 +17,7 @@ pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String
     };
     let editor = if is_admin {
         format!(
-            r#"<section class="surface editor-surface">
+            r#"<section class="surface editor-surface note-surface">
 <div class="editor-toolbar-row">
 <label class="check-row" for="public-toggle">
 <input type="checkbox" id="public-toggle" {} onchange="togglePublic()">
@@ -44,19 +44,23 @@ syncVisibilityHint();
         )
     } else {
         format!(
-            r#"<section class="surface prose">{}</section>"#,
+            r#"<section class="surface note-surface prose">{}</section>"#,
             render_markdown(&record.body)
         )
     };
     let content = format!(
         r#"<header class="page-head">
-<div>
+<div class="page-title-stack">
 <p class="eyebrow">{}</p>
 <h1>{}</h1>
+<div class="title-tags">
+<span class="status-pill">{}</span>
+<span class="meta-pill">{}</span>
+</div>
 </div>
 <div class="page-meta">
-<span class="status-pill">{}</span>
-<small>{}</small>
+<small>Created {}</small>
+<small>Updated {}</small>
 </div>
 </header>
 {}
@@ -72,6 +76,8 @@ syncVisibilityHint();
         chrome.title,
         chrome.visibility,
         chrome.slug,
+        chrome.created_at,
+        chrome.updated_at,
         editor,
         chrome.history_href
     );
@@ -136,9 +142,12 @@ mod tests {
     fn guest_note_page_uses_shell_without_editor() {
         let html = note_page(&sample_record(), &sample_chrome(), false);
         assert!(html.contains("data-menu-toggle"));
+        assert!(html.contains("aria-label=\"Open navigation\""));
         assert!(html.contains("/demo-note/history"));
         assert!(!html.contains("SimpleMDE"));
         assert!(!html.contains("public-toggle"));
+        assert!(!html.contains(">Menu<"));
+        assert!(!html.contains(">Close<"));
     }
 
     #[test]

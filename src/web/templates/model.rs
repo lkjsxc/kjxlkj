@@ -40,6 +40,7 @@ impl NoteChrome {
 pub struct IndexItem {
     pub href: String,
     pub title: String,
+    pub summary: String,
     pub slug: String,
     pub meta: String,
     pub status: &'static str,

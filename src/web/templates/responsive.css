@@ -1,16 +1,17 @@
 @media (max-width: 900px) {
     .shell-main {
-        padding: 88px 20px 32px;
+        padding: 74px 16px 28px;
     }
 
     html.js .menu-button {
         display: inline-flex;
         position: fixed;
-        right: 18px;
-        top: 18px;
+        right: 14px;
+        top: 14px;
         z-index: 30;
-        border-color: rgba(24, 52, 60, 0.15);
-        background: rgba(255, 250, 241, 0.96);
+        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(12, 15, 19, 0.68);
+        backdrop-filter: blur(18px);
     }
 
     html.js .app-shell {
@@ -31,14 +32,22 @@
         transform: translateX(0);
     }
 
+    html.js .app-shell.drawer-open .menu-button {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     html.js .rail-close {
         display: inline-flex;
+        justify-self: end;
+        background: rgba(255, 255, 255, 0.04);
+        border-color: transparent;
     }
 
     html.js .drawer-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(16, 37, 43, 0.38);
+        background: rgba(3, 5, 8, 0.54);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.2s ease;
@@ -49,5 +58,39 @@
         display: block;
         opacity: 1;
         pointer-events: auto;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-head,
+    .page-tail,
+    .editor-toolbar-row {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .page-meta,
+    .card-meta {
+        justify-items: start;
+        text-align: left;
+    }
+}
+
+@media (max-width: 560px) {
+    .shell-main {
+        padding-top: 68px;
+    }
+
+    .surface,
+    .index-card,
+    .hero-panel {
+        border-radius: 20px;
+        padding: 16px;
+    }
+
+    .page-title-stack h1 {
+        font-size: 1.75rem;
     }
 }

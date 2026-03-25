@@ -10,8 +10,8 @@ pub fn admin_page(notes: &[IndexItem]) -> String {
         .iter()
         .map(|note| {
             format!(
-                r#"<a href="{}" class="rail-link"><span>{}</span><small>{} · {}</small></a>"#,
-                note.href, note.title, note.status, note.slug
+                r#"<a href="{}" class="rail-link"><span>{}</span><small>{} · {}</small><small class="rail-summary">{}</small></a>"#,
+                note.href, note.title, note.status, note.slug, note.summary
             )
         })
         .collect();
@@ -38,8 +38,9 @@ pub fn admin_page(notes: &[IndexItem]) -> String {
         .map(|note| {
             format!(
                 r#"<a href="{}" class="index-card">
-<div>
+<div class="card-body">
 <p class="card-title">{}</p>
+<p class="card-summary">{}</p>
 <p class="card-slug">{}</p>
 </div>
 <div class="card-meta">
@@ -47,15 +48,16 @@ pub fn admin_page(notes: &[IndexItem]) -> String {
 <small>{}</small>
 </div>
 </a>"#,
-                note.href, note.title, note.slug, note.status, note.meta
+                note.href, note.title, note.summary, note.slug, note.status, note.meta
             )
         })
         .collect();
     let content = format!(
         r#"<header class="page-head">
 <div>
-<p class="eyebrow">Admin workspace</p>
+<p class="eyebrow">Knowledge console</p>
 <h1>All notes</h1>
+<p class="page-summary">Dense note operations, full visibility context, and direct paths back into editing.</p>
 </div>
 <button type="button" class="btn btn-primary" onclick="createNote()">New note</button>
 </header>

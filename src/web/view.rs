@@ -11,6 +11,7 @@ pub fn index_item(record: &Record) -> IndexItem {
     IndexItem {
         href: format!("/{}", record.slug),
         title: title_for(record),
+        summary: summary_for(record),
         slug: record.slug.clone(),
         meta: format!(
             "Created {} · Updated {}",
@@ -85,6 +86,16 @@ fn title_for(record: &Record) -> String {
     extract_title(&record.body).unwrap_or_else(|| record.slug.clone())
 }
 
+fn summary_for(record: &Record) -> String {
+    record
+        .body
+        .lines()
+        .map(str::trim)
+        .find(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(shorten)
+        .unwrap_or_else(|| "No summary yet.".to_string())
+}
+
 fn filtered_history_links(
     record: &Record,
     revisions: &[RecordRevision],
@@ -108,5 +119,15 @@ pub fn visibility_label(is_private: bool) -> &'static str {
         "Private"
     } else {
         "Public"
+    }
+}
+
+fn shorten(line: &str) -> String {
+    const LIMIT: usize = 96;
+    if line.chars().count() <= LIMIT {
+        line.to_string()
+    } else {
+        let prefix: String = line.chars().take(LIMIT - 1).collect();
+        format!("{prefix}…")
     }
 }

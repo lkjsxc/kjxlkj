@@ -1,0 +1,183 @@
+.shell-main {
+    padding: 44px 52px 56px;
+}
+
+.home-page,
+.dashboard-page,
+.note-page,
+.history-page {
+    display: grid;
+    align-content: start;
+    gap: 20px;
+}
+
+.surface,
+.index-card,
+.hero-panel {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(23, 31, 39, 0.94), rgba(17, 23, 30, 0.98));
+    box-shadow: var(--shadow);
+}
+
+.surface,
+.index-card {
+    padding: 18px 20px;
+}
+
+.hero-panel {
+    padding: 28px;
+    max-width: 920px;
+}
+
+.hero-panel h1 {
+    font-size: clamp(2.3rem, 5vw, 4rem);
+}
+
+.hero-grid,
+.stack {
+    display: grid;
+    gap: 14px;
+}
+
+.hero-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 20px 0 12px;
+}
+
+.hero-fact {
+    display: grid;
+    gap: 4px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.hero-fact strong {
+    font: 700 1rem/1.1 var(--sans);
+}
+
+.page-head,
+.page-tail,
+.hero-actions,
+.page-title-stack,
+.title-tags,
+.card-meta,
+.editor-toolbar-row {
+    display: flex;
+    gap: 12px;
+}
+
+.page-head,
+.page-tail,
+.editor-toolbar-row {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-head {
+    align-items: end;
+}
+
+.page-title-stack,
+.card-body {
+    display: grid;
+    gap: 8px;
+}
+
+.page-title-stack h1,
+.card-title {
+    font-family: var(--sans);
+}
+
+.page-title-stack h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+}
+
+.title-tags {
+    flex-wrap: wrap;
+}
+
+.page-meta,
+.card-meta {
+    display: grid;
+    gap: 6px;
+    justify-items: end;
+    text-align: right;
+}
+
+.index-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.card-title,
+.card-summary,
+.card-slug,
+.prose h1,
+.prose h2,
+.prose h3 {
+    margin: 0;
+}
+
+.card-title,
+.prose h1,
+.prose h2,
+.prose h3 {
+    line-height: 1.18;
+}
+
+.card-title {
+    font-size: 1.08rem;
+}
+
+.card-summary,
+.card-slug {
+    font-size: 0.92rem;
+}
+
+.note-surface {
+    max-width: 1100px;
+}
+
+.prose p,
+.prose br {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.prose h1 {
+    font-size: 2rem;
+}
+
+.prose h2 {
+    font-size: 1.45rem;
+}
+
+.prose h3 {
+    font-size: 1.18rem;
+}
+
+.check-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    color: var(--text);
+}
+
+.check-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.save-status[data-state="saved"] {
+    color: var(--success);
+}
+
+.save-status[data-state="error"] {
+    color: var(--danger);
+}

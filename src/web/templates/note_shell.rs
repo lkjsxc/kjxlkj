@@ -39,13 +39,13 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
         chrome.visibility,
         optional_link(chrome.previous.as_ref(), "No older accessible note."),
         optional_link(chrome.next.as_ref(), "No newer accessible note."),
-        history_links(&chrome.history),
+        history_links(&chrome.history, active_href),
         chrome.history_href,
         action_section(chrome.slug.as_str(), is_admin)
     )
 }
 
-fn history_links(history: &[HistoryLink]) -> String {
+fn history_links(history: &[HistoryLink], active_href: &str) -> String {
     if history.is_empty() {
         return r#"<p class="rail-empty">No saved revisions yet.</p>"#.to_string();
     }
@@ -56,7 +56,11 @@ fn history_links(history: &[HistoryLink]) -> String {
             format!(
                 r#"<a href="{}" class="rail-link{}"><span>{}</span><small>{} · {}</small></a>"#,
                 entry.href,
-                if entry.active { " active" } else { "" },
+                if entry.active || entry.href == active_href {
+                    " active"
+                } else {
+                    ""
+                },
                 entry.label,
                 entry.status,
                 entry.meta

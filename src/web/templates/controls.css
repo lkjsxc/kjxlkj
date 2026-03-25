@@ -1,0 +1,142 @@
+.auth-container {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.auth-card {
+    width: min(100%, 440px);
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(20, 27, 34, 0.96), rgba(14, 19, 25, 0.98));
+    box-shadow: var(--shadow);
+}
+
+.auth-card h1,
+.page-head h1,
+.hero-panel h1 {
+    margin: 0;
+    font-family: var(--sans);
+    line-height: 1.05;
+}
+
+.subtitle,
+.hero-copy,
+.page-summary,
+.page-meta,
+.surface-empty,
+.rail-empty,
+.card-slug,
+.card-summary,
+.visibility-hint,
+.save-status {
+    color: var(--text-soft);
+}
+
+.form-group {
+    margin-top: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font: 500 0.94rem/1.2 var(--sans);
+}
+
+.form-group input,
+#editor {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+}
+
+.btn,
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.btn {
+    min-height: 40px;
+    padding: 10px 16px;
+}
+
+.btn:hover,
+.icon-button:hover {
+    border-color: rgba(140, 184, 255, 0.28);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary {
+    border-color: transparent;
+    background: linear-gradient(135deg, #a7c9ff, #86ddb8);
+    color: var(--accent-ink);
+    font-weight: 700;
+}
+
+.btn-danger {
+    border-color: rgba(255, 125, 116, 0.28);
+    background: var(--danger-soft);
+    color: #ffd5d1;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+}
+
+.icon-svg {
+    width: 17px;
+    height: 17px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+}
+
+.eyebrow,
+.status-pill,
+.meta-pill,
+.mode-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font: 600 0.75rem/1 var(--sans);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.eyebrow,
+.status-pill,
+.meta-pill {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.mode-pill {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-soft);
+}
+
+.error {
+    margin: 16px 0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: rgba(255, 125, 116, 0.12);
+    color: #ffd5d1;
+}

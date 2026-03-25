@@ -1,10 +1,14 @@
 //! Layout and helper functions
 
 const BASE_CSS: &str = include_str!("base.css");
+const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
+const SURFACES_CSS: &str = include_str!("surfaces.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
 const SHELL_JS: &str = include_str!("shell.js");
+const MENU_ICON: &str = r#"<svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h12"/></svg>"#;
+const CLOSE_ICON: &str = r#"<svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>"#;
 
 pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(
@@ -16,7 +20,9 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <script>document.documentElement.classList.add('js');</script>
 <title>{title} - kjxlkj</title>
 <style>{BASE_CSS}
+{CONTROLS_CSS}
 {SHELL_CSS}
+{SURFACES_CSS}
 {RESPONSIVE_CSS}
 {EDITOR_CSS}</style>
 {extra_head}
@@ -40,13 +46,13 @@ pub fn not_found_page() -> String {
 pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) -> String {
     format!(
         r#"<div class="app-shell">
-<button type="button" class="menu-button" data-menu-toggle aria-expanded="false" aria-controls="shell-rail" aria-label="Open navigation">Menu</button>
+<button type="button" class="menu-button icon-button" data-menu-toggle aria-expanded="false" aria-controls="shell-rail" aria-label="Open navigation">{MENU_ICON}<span class="visually-hidden">Open navigation</span></button>
 <div class="drawer-backdrop" data-menu-close></div>
 <aside id="shell-rail" class="shell-rail" aria-hidden="false">
 <div class="rail-head">
 <a href="/" class="brand">kjxlkj</a>
 <span class="mode-pill">{mode_label}</span>
-<button type="button" class="rail-close" data-menu-close aria-label="Close navigation">Close</button>
+<button type="button" class="rail-close icon-button" data-menu-close aria-label="Close navigation">{CLOSE_ICON}<span class="visually-hidden">Close navigation</span></button>
 </div>
 <div class="rail-body">{rail}</div>
 </aside>

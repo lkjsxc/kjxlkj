@@ -3,20 +3,50 @@
     gap: 14px;
 }
 
-.visibility-hint,
-.save-status {
-    color: var(--ink-soft);
+.editor-toolbar-row {
+    align-items: center;
 }
 
-.save-status[data-state="saved"] {
-    color: var(--success);
-}
-
-.save-status[data-state="error"] {
-    color: var(--danger);
+.CodeMirror,
+.editor-toolbar,
+.editor-statusbar {
+    border: 1px solid var(--line) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--text) !important;
+    box-shadow: none !important;
 }
 
 .CodeMirror,
 .editor-toolbar {
-    border-radius: 14px;
+    border-radius: 18px;
+}
+
+.editor-toolbar {
+    padding: 6px 10px !important;
+}
+
+.editor-toolbar::before,
+.editor-toolbar::after {
+    display: none !important;
+}
+
+.editor-toolbar a,
+.editor-toolbar i.separator {
+    color: var(--text-soft) !important;
+}
+
+.editor-toolbar a:hover,
+.editor-toolbar a.active {
+    background: rgba(140, 184, 255, 0.12) !important;
+    border-color: transparent !important;
+}
+
+.CodeMirror-cursor {
+    border-color: var(--text) !important;
+}
+
+.CodeMirror-gutters,
+.editor-statusbar {
+    background: transparent !important;
+    color: var(--text-muted) !important;
 }
