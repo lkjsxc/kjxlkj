@@ -1,0 +1,22 @@
+.editor-surface {
+    display: grid;
+    gap: 14px;
+}
+
+.visibility-hint,
+.save-status {
+    color: var(--ink-soft);
+}
+
+.save-status[data-state="saved"] {
+    color: var(--success);
+}
+
+.save-status[data-state="error"] {
+    color: var(--danger);
+}
+
+.CodeMirror,
+.editor-toolbar {
+    border-radius: 14px;
+}

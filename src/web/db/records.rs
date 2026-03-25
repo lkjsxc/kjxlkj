@@ -1,28 +1,8 @@
 //! Record database operations
 
+use super::models::Record;
 use super::DbPool;
 use crate::error::AppError;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-
-/// A record stored in the database
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Record {
-    pub slug: String,
-    pub body: String,
-    pub is_private: bool,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-}
-
-/// A revision of a record
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RecordRevision {
-    pub revision_number: i32,
-    pub body: String,
-    pub is_private: bool,
-    pub created_at: DateTime<Utc>,
-}
 
 /// List records with optional privacy filter
 pub async fn list_records(
@@ -135,34 +115,6 @@ pub async fn delete_record(pool: &DbPool, slug: &str) -> Result<bool, AppError> 
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(count > 0)
-}
-
-/// Get revisions for a record
-pub async fn get_record_revisions(
-    pool: &DbPool,
-    slug: &str,
-) -> Result<Vec<RecordRevision>, AppError> {
-    let client = pool
-        .get()
-        .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    let rows = client
-        .query(
-            "SELECT revision_number, body, is_private, created_at FROM record_revisions \
-             WHERE record_slug = $1 ORDER BY revision_number DESC",
-            &[&slug],
-        )
-        .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(rows
-        .into_iter()
-        .map(|row| RecordRevision {
-            revision_number: row.get("revision_number"),
-            body: row.get("body"),
-            is_private: row.get("is_private"),
-            created_at: row.get("created_at"),
-        })
-        .collect())
 }
 
 fn row_to_record(row: tokio_postgres::Row) -> Record {

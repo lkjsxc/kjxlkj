@@ -1,11 +1,11 @@
 //! Admin and home page handlers
 
-use crate::core::extract_title;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
+use crate::web::handlers::session;
 use crate::web::templates;
+use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
-use uuid::Uuid;
 
 /// Admin dashboard handler
 #[get("/admin")]
@@ -32,17 +32,11 @@ async fn admin_page_impl(
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
-    if !check_session(&req, &pool).await? {
+    if !session::check_session(&req, &pool).await? {
         return Ok(redirect("/login"));
     }
     let records = db::list_records(&pool, true, 100).await?;
-    let entries: Vec<_> = records
-        .iter()
-        .map(|r| {
-            let title = extract_title(&r.body).unwrap_or_else(|| r.slug.clone());
-            (r.slug.clone(), title, r.is_private, r.updated_at)
-        })
-        .collect();
+    let entries: Vec<_> = records.iter().map(view::index_item).collect();
     Ok(html(templates::admin_page(&entries)))
 }
 
@@ -52,15 +46,9 @@ pub async fn home(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpRespo
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
-    let is_admin = check_session(&req, &pool).await?;
+    let is_admin = session::check_session(&req, &pool).await?;
     let records = db::list_records(&pool, false, 100).await?;
-    let entries: Vec<_> = records
-        .iter()
-        .map(|r| {
-            let title = extract_title(&r.body).unwrap_or_else(|| r.slug.clone());
-            (r.slug.clone(), title)
-        })
-        .collect();
+    let entries: Vec<_> = records.iter().map(view::index_item).collect();
     Ok(html(templates::home_page(&entries, is_admin)))
 }
 
@@ -75,7 +63,7 @@ pub async fn note_page(
         return Ok(redirect("/setup"));
     }
     let slug = path.into_inner();
-    let is_admin = check_session(&req, &pool).await?;
+    let is_admin = session::check_session(&req, &pool).await?;
     let record = match db::get_record(&pool, &slug).await? {
         Some(r) => r,
         None => return Ok(html(templates::not_found_page())),
@@ -83,20 +71,8 @@ pub async fn note_page(
     if record.is_private && !is_admin {
         return Ok(html(templates::not_found_page()));
     }
-    Ok(html(templates::note_page(&record, is_admin)))
-}
-
-async fn check_session(req: &HttpRequest, pool: &DbPool) -> Result<bool, AppError> {
-    let cookie = match req.cookie("session_id") {
-        Some(c) => c,
-        None => return Ok(false),
-    };
-    let session_id = match Uuid::parse_str(cookie.value()) {
-        Ok(id) => id,
-        Err(_) => return Ok(false),
-    };
-    let user_id = db::validate_session(pool, session_id).await?;
-    Ok(user_id.is_some())
+    let chrome = view::note_chrome(&pool, &record, is_admin).await?;
+    Ok(html(templates::note_page(&record, &chrome, is_admin)))
 }
 
 fn redirect(location: &str) -> HttpResponse {

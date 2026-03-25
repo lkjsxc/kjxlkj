@@ -1,0 +1,131 @@
+:root {
+    --paper: #f4eee2;
+    --paper-strong: #fffaf1;
+    --ink: #1f2628;
+    --ink-soft: #5f6b6c;
+    --line: #d9ccb6;
+    --rail: #18343c;
+    --rail-soft: #28515b;
+    --rail-ink: #f5efe5;
+    --accent: #c45d33;
+    --accent-soft: #f0d1bf;
+    --danger: #a63a2b;
+    --success: #2f6b4f;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+    --serif: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    background: radial-gradient(circle at top, #fbf6ee, var(--paper) 55%);
+    font: 16px/1.6 var(--serif);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+.auth-container {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.auth-card,
+.surface,
+.index-card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(255, 250, 241, 0.94);
+    box-shadow: 0 18px 45px rgba(31, 38, 40, 0.08);
+}
+
+.auth-card {
+    width: min(100%, 440px);
+    padding: 32px;
+}
+
+.auth-card h1,
+.page-head h1,
+.hero h1 {
+    margin: 0;
+    font-family: var(--sans);
+    line-height: 1.1;
+}
+
+.subtitle,
+.hero-copy,
+.page-meta,
+.surface-empty,
+.rail-empty,
+.card-slug {
+    color: var(--ink-soft);
+}
+
+.form-group {
+    margin-top: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+}
+
+.form-group input,
+#editor {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: var(--paper-strong);
+    color: var(--ink);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.btn-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fffaf6;
+}
+
+.btn-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.error {
+    margin: 16px 0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff0eb;
+    color: var(--danger);
+}

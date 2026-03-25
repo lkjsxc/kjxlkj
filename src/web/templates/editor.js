@@ -20,6 +20,7 @@ function saveNote() {
     
     var status = document.getElementById('save-status');
     status.textContent = 'Saving...';
+    status.dataset.state = 'saving';
     
     fetch('/records/' + currentSlug, {
         method: 'PUT',
@@ -32,21 +33,29 @@ function saveNote() {
     .then(r => {
         if (r.ok) {
             status.textContent = 'Saved';
+            status.dataset.state = 'saved';
             setTimeout(() => { status.textContent = ''; }, 2000);
         } else {
-            status.textContent = 'Error saving';
+            status.textContent = 'Save failed';
+            status.dataset.state = 'error';
         }
     })
     .catch(() => {
-        status.textContent = 'Error saving';
+        status.textContent = 'Save failed';
+        status.dataset.state = 'error';
     });
 }
 
-function togglePrivate() {
-    var checkbox = document.getElementById('private-toggle');
-    isPrivate = checkbox.checked;
-    var label = checkbox.nextElementSibling;
-    label.textContent = isPrivate ? 'Private' : 'Public';
+function syncVisibilityHint() {
+    var hint = document.getElementById('visibility-hint');
+    if (!hint) return;
+    hint.textContent = isPrivate ? 'Admin-only' : 'Guest-readable';
+}
+
+function togglePublic() {
+    var checkbox = document.getElementById('public-toggle');
+    isPrivate = !checkbox.checked;
+    syncVisibilityHint();
     saveNote();
 }
 

@@ -1,19 +1,27 @@
 //! Layout and helper functions
 
-const CSS: &str = include_str!("style.css");
+const BASE_CSS: &str = include_str!("base.css");
+const SHELL_CSS: &str = include_str!("shell.css");
+const RESPONSIVE_CSS: &str = include_str!("responsive.css");
+const EDITOR_CSS: &str = include_str!("editor.css");
+const SHELL_JS: &str = include_str!("shell.js");
 
-pub fn base(title: &str, content: &str, extra_head: &str) -> String {
+pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(
         r#"<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>document.documentElement.classList.add('js');</script>
 <title>{title} - kjxlkj</title>
-<style>{CSS}</style>
+<style>{BASE_CSS}
+{SHELL_CSS}
+{RESPONSIVE_CSS}
+{EDITOR_CSS}</style>
 {extra_head}
 </head>
-<body>{content}</body>
+<body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
 </html>"#
     )
 }
@@ -26,34 +34,24 @@ pub fn not_found_page() -> String {
 <a href="/" class="btn btn-primary">Go Home</a>
 </div>
 </div>"#;
-    base("Not Found", content, "")
+    base("Not Found", content, "", "")
 }
 
-pub fn build_sidebar(notes: &[(String, String)], active: Option<&str>, is_admin: bool) -> String {
-    let items: String = notes
-        .iter()
-        .map(|(slug, title)| {
-            let class = if active == Some(slug.as_str()) {
-                " active"
-            } else {
-                ""
-            };
-            format!(r#"<a href="/{slug}" class="sidebar-item{class}">{title}</a>"#)
-        })
-        .collect();
-    let logout = if is_admin {
-        r#"<form method="POST" action="/logout" class="logout-form">
-<button type="submit" class="btn btn-sm">Logout</button>
-</form>"#
-    } else {
-        ""
-    };
+pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) -> String {
     format!(
-        r#"<nav class="sidebar">
-<div class="logo"><a href="/">kjxlkj</a></div>
-<div class="sidebar-items">{items}</div>
-{logout}
-</nav>"#
+        r#"<div class="app-shell">
+<button type="button" class="menu-button" data-menu-toggle aria-expanded="false" aria-controls="shell-rail" aria-label="Open navigation">Menu</button>
+<div class="drawer-backdrop" data-menu-close></div>
+<aside id="shell-rail" class="shell-rail" aria-hidden="false">
+<div class="rail-head">
+<a href="/" class="brand">kjxlkj</a>
+<span class="mode-pill">{mode_label}</span>
+<button type="button" class="rail-close" data-menu-close aria-label="Close navigation">Close</button>
+</div>
+<div class="rail-body">{rail}</div>
+</aside>
+<main class="shell-main {page_class}">{main}</main>
+</div>"#
     )
 }
 

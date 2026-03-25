@@ -30,7 +30,7 @@ pub fn setup_page(error: Option<&str>) -> String {
 </div>
 </div>"#
     );
-    base("Setup", &content, "")
+    base("Setup", &content, "", "")
 }
 
 pub fn login_page(error: Option<&str>) -> String {
@@ -57,5 +57,5 @@ pub fn login_page(error: Option<&str>) -> String {
 </div>
 </div>"#
     );
-    base("Login", &content, "")
+    base("Login", &content, "", "")
 }

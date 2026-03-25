@@ -1,0 +1,190 @@
+.app-shell {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.shell-rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 24px 18px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--rail), #10252b);
+    color: var(--rail-ink);
+}
+
+.rail-head,
+.page-head,
+.page-tail,
+.hero-actions,
+.rail-actions,
+.editor-toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.brand,
+.card-title,
+.rail-link span {
+    font-family: var(--sans);
+    font-weight: 600;
+}
+
+.mode-pill,
+.status-pill,
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.mode-pill {
+    background: rgba(245, 239, 229, 0.12);
+}
+
+.shell-main {
+    padding: 56px 72px;
+}
+
+.home-page,
+.dashboard-page,
+.note-page,
+.history-page {
+    display: grid;
+    align-content: start;
+    gap: 24px;
+}
+
+.hero {
+    max-width: 720px;
+}
+
+.hero h1 {
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+}
+
+.page-head {
+    align-items: end;
+}
+
+.page-meta {
+    display: grid;
+    gap: 6px;
+    text-align: right;
+}
+
+.stack {
+    display: grid;
+    gap: 16px;
+}
+
+.index-card,
+.surface {
+    padding: 20px 22px;
+}
+
+.index-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.card-meta {
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+}
+
+.rail-section + .rail-section {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(245, 239, 229, 0.12);
+}
+
+.rail-section h2 {
+    margin: 0 0 12px;
+    font: 600 0.95rem/1.2 var(--sans);
+}
+
+.rail-list,
+.rail-actions {
+    display: grid;
+    gap: 10px;
+}
+
+.rail-link {
+    display: grid;
+    gap: 2px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(245, 239, 229, 0.06);
+}
+
+.rail-link.active {
+    background: rgba(240, 209, 191, 0.18);
+}
+
+.rail-link small,
+.rail-facts span {
+    color: rgba(245, 239, 229, 0.72);
+}
+
+.rail-facts {
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.92rem;
+}
+
+.rail-facts p {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+}
+
+.status-pill,
+.eyebrow {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+    font-family: var(--sans);
+    line-height: 1.2;
+}
+
+.prose p,
+.prose br {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.check-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+}
+
+.check-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.menu-button,
+.rail-close,
+.drawer-backdrop {
+    display: none;
+}

@@ -3,7 +3,7 @@
 use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
-use crate::web::handlers::{admin, health, login, logout, records, setup};
+use crate::web::handlers::{admin, health, history, login, logout, records, setup};
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 
@@ -30,10 +30,14 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(logout::logout)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
+            .service(history::history_page)
+            .service(history::revision_page)
             .service(records::create)
             .service(records::update)
             .service(records::remove)
             .service(records::history)
+            .service(records::previous)
+            .service(records::next)
             .service(admin::home)
             .service(admin::note_page)
     })

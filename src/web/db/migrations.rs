@@ -43,6 +43,7 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             );
 
             CREATE INDEX IF NOT EXISTS idx_records_updated ON records(updated_at DESC);
+            CREATE INDEX IF NOT EXISTS idx_records_created ON records(created_at ASC, slug ASC);
             CREATE INDEX IF NOT EXISTS idx_records_active ON records(deleted_at)
                 WHERE deleted_at IS NULL;
 

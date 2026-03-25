@@ -1,0 +1,53 @@
+@media (max-width: 900px) {
+    .shell-main {
+        padding: 88px 20px 32px;
+    }
+
+    html.js .menu-button {
+        display: inline-flex;
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 30;
+        border-color: rgba(24, 52, 60, 0.15);
+        background: rgba(255, 250, 241, 0.96);
+    }
+
+    html.js .app-shell {
+        display: block;
+    }
+
+    html.js .shell-rail {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: min(86vw, 340px);
+        transform: translateX(-105%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+    }
+
+    html.js .app-shell.drawer-open .shell-rail {
+        transform: translateX(0);
+    }
+
+    html.js .rail-close {
+        display: inline-flex;
+    }
+
+    html.js .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(16, 37, 43, 0.38);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 20;
+    }
+
+    html.js .app-shell.drawer-open .drawer-backdrop {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+}

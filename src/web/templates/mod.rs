@@ -1,9 +1,19 @@
 //! HTML templates
 
 mod auth;
+mod dashboard;
+mod history;
+mod home;
 mod layout;
-mod notes;
+mod model;
+mod note;
+mod note_shell;
 
 pub use auth::{login_page, setup_page};
+pub use dashboard::admin_page;
+pub use history::{history_page, revision_page};
+pub use home::home_page;
+pub use layout::format_date;
 pub use layout::not_found_page;
-pub use notes::{admin_page, home_page, note_page};
+pub use model::{HistoryLink, IndexItem, NavLink, NoteChrome};
+pub use note::note_page;
