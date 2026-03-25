@@ -7,7 +7,7 @@
 
 ## Primary Outcome
 
-Document auth-aware shell transitions, editor lifecycle, and responsive interaction constraints.
+Document auth-aware shell transitions, editor lifecycle, public-history browsing, and responsive drawer behavior.
 
 ## In Scope
 

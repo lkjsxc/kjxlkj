@@ -7,6 +7,7 @@
 - If slug collision, append counter: `2026-03-25-0134-2`.
 - Request body may include `body` and `is_private`.
 - Defaults: `body = "# New Note"`, `is_private = true`.
+- In user-facing copy, this default is expressed as `Public = unchecked`.
 - Returns `201` with created note.
 
 ## Update (`PUT /records/{slug}`)
@@ -17,6 +18,13 @@
 - Creates a new revision before applying changes.
 - Updates `updated_at` timestamp.
 - Returns `200` with updated note.
+
+## Public Visibility Control
+
+- The canonical UI control is a checkbox labeled `Public`.
+- Checked maps to `is_private = false`.
+- Unchecked maps to `is_private = true`.
+- Toggling visibility triggers an immediate save.
 
 ## Delete (`DELETE /records/{slug}`)
 
@@ -32,6 +40,7 @@
 - Revisions store: `body`, `is_private`, `revision_number`, `created_at`.
 - Revision numbers increment from 1.
 - Revisions are immutable and never deleted.
+- Historical visibility is evaluated per snapshot, not from the current note only.
 
 ## Update Timestamp
 

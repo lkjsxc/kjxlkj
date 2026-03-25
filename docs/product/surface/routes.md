@@ -40,6 +40,15 @@
   - note is private and no session: `404` HTML not found page
   - note is private with valid session: `200` HTML note page (editable)
   - note is public: `200` HTML note page (read-only for guests, editable for admin)
+- `GET /{slug}/history`:
+  - note not found: `404` HTML not found page
+  - note is private and no session: `404` HTML not found page
+  - accessible note: `200` HTML history index
+- `GET /{slug}/history/{revision_number}`:
+  - note not found: `404` HTML not found page
+  - revision not found: `404` HTML not found page
+  - revision is private and no session: `404` HTML not found page
+  - accessible revision: `200` HTML history snapshot
 
 ## Note Management (Admin Only)
 
@@ -62,12 +71,14 @@
   - note not found: `404` JSON error
   - valid session: `200` JSON array of revisions
 
-## Navigation (Admin Only)
+## Navigation JSON
 
 - `GET /records/{slug}/prev`:
-  - returns JSON with previous note's slug (by updated_at order)
+  - note not found or inaccessible: `404` JSON error
+  - returns JSON with previous accessible note's slug by `created_at` order
 - `GET /records/{slug}/next`:
-  - returns JSON with next note's slug (by updated_at order)
+  - note not found or inaccessible: `404` JSON error
+  - returns JSON with next accessible note's slug by `created_at` order
 
 ## Health Check
 
@@ -76,5 +87,5 @@
 ## Content Type
 
 - `/healthz` returns plain text.
-- Setup/session/admin routes return HTML.
+- Setup/session/admin/note/history routes return HTML.
 - `/records/*` endpoints return JSON.

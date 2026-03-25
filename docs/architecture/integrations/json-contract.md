@@ -19,11 +19,13 @@ All `/records/*` endpoints return JSON.
 ## History Success
 
 - `GET /records/{slug}/history` returns JSON array of revisions.
+- History JSON is admin-only.
 
 ## Navigation Success
 
 - `GET /records/{slug}/prev` returns `{ "slug": "..." }` or `{ "slug": null }`.
 - `GET /records/{slug}/next` returns `{ "slug": "..." }` or `{ "slug": null }`.
+- Navigation uses accessible neighbors by `created_at` order.
 
 ## Error Payloads
 

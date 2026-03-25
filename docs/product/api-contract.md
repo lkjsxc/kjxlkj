@@ -24,6 +24,12 @@ The system manages `note` resources (internally called `record`).
 - `created_at`: UTC RFC3339 timestamp. Set on creation, never modified.
 - `updated_at`: UTC RFC3339 timestamp. Updated on every save.
 
+## UI Semantics
+
+- The public-facing control is `Public`.
+- `Public = checked` maps to `is_private = false`.
+- `Public = unchecked` maps to `is_private = true`.
+
 ## Title Extraction
 
 The display title is extracted from the body:
@@ -46,3 +52,15 @@ Every update creates a new revision:
 ```
 
 Revisions are immutable snapshots of past states.
+
+## Navigation Payload
+
+The previous and next JSON endpoints return:
+
+```json
+{
+  "slug": "2026-03-25-0134"
+}
+```
+
+When no accessible neighbor exists, `slug` is `null`.

@@ -7,6 +7,7 @@
 | `S08-EXIT-01` | Frontend shell behavior is complete and testable. |
 | `S08-EXIT-02` | Responsive and accessibility rules are explicit. |
 | `S08-EXIT-03` | Static delivery boundaries are documented with verification hooks. |
+| `S08-EXIT-04` | Guest and admin note-history flows are explicit and testable. |
 
 ## Closure Conditions
 

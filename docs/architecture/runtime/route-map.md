@@ -9,6 +9,8 @@
 - `/logout` -> logout POST handler.
 - `/admin` and `/admin/` -> admin dashboard handler.
 - `/{slug}` -> note view/edit handler.
+- `/{slug}/history` -> history index handler.
+- `/{slug}/history/{revision_number}` -> history snapshot handler.
 - `/records` -> note create handler (POST).
 - `/records/{slug}` -> note update (PUT), delete (DELETE) handlers.
 - `/records/{slug}/history` -> revision history handler.
@@ -20,10 +22,11 @@
 - Setup/login/landing handlers use setup guards.
 - Admin dashboard uses session guard.
 - Note view handler checks `is_private` flag against session.
+- History HTML handlers check current-note access and snapshot visibility.
 - `/records/*` handlers require session guard.
 
 ## Response Model
 
 - `/healthz` returns plain text.
-- Setup/login/admin/note pages return HTML.
+- Setup/login/admin/note/history pages return HTML.
 - `/records/*` endpoints return JSON.

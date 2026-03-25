@@ -7,7 +7,7 @@
 
 ## Primary Outcome
 
-Document shell completeness, review UX, and static delivery contracts.
+Document shell completeness, note-review UX, public/admin history flows, and static delivery contracts.
 
 ## In Scope
 
