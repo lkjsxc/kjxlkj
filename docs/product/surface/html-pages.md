@@ -2,22 +2,25 @@
 
 ## Design System
 
-### Color Palette
+### Color Palette (Dark Theme)
 
-- Primary: `#1a1a2e` (deep navy)
-- Secondary: `#16213e` (dark blue)
-- Accent: `#0f3460` (medium blue)
-- Highlight: `#e94560` (coral red)
-- Success: `#00d9a5` (mint green)
-- Warning: `#ffc107` (amber)
-- Error: `#dc3545` (red)
-- Text Primary: `#f8f9fa` (off-white)
-- Text Secondary: `#a0aec0` (gray)
-- Background: `#0f0f1a` (near black)
+- Background Primary: `#1e1e1e` (main background)
+- Background Secondary: `#252526` (sidebar)
+- Background Tertiary: `#2d2d30` (cards, inputs)
+- Accent Primary: `#7c3aed` (purple - active items)
+- Accent Secondary: `#a78bfa` (light purple - hover)
+- Success: `#22c55e` (green)
+- Warning: `#f59e0b` (amber)
+- Error: `#ef4444` (red)
+- Text Primary: `#e4e4e7` (off-white)
+- Text Secondary: `#a1a1aa` (gray)
+- Text Muted: `#71717a` (dark gray)
+- Border: `#3f3f46` (subtle borders)
 
 ### Typography
 
 - Font Family: `system-ui, -apple-system, sans-serif`
+- Monospace: `ui-monospace, Consolas, monospace`
 - Heading Weight: 600
 - Body Weight: 400
 - Base Size: 16px
@@ -35,11 +38,93 @@
 ### Border Radius
 
 - Small: 4px
-- Medium: 8px
-- Large: 12px
-- Full: 9999px
+- Medium: 6px
+- Large: 8px
 
 ## Page Contracts
+
+### Landing Page (`GET /`)
+
+#### Layout
+
+- Full-height two-column layout
+- Left sidebar (250px width)
+- Main content area
+
+#### Sidebar Elements
+
+1. Logo/brand: "kjxlkj" at top
+2. List of public notes (title extracted from first `# heading`)
+3. Login link at bottom (if not logged in)
+
+#### Main Content
+
+- Welcome message or featured note
+- Link to login for admin access
+
+### Note Page (`GET /{slug}`)
+
+#### Layout
+
+- Same two-column layout as landing page
+- Sidebar persistent across pages
+
+#### Header Elements
+
+1. Back navigation (to `/` or `/admin`)
+2. Visibility toggle (admin only, above content)
+3. Note slug display
+
+#### Main Content
+
+1. Rendered Markdown body
+2. If admin: SimpleMDE editor (live-editable)
+3. If guest: Read-only rendered Markdown
+
+#### Footer Elements
+
+1. Last updated date: "March 25, 2026 at 1:34 AM"
+2. Previous/Next navigation links
+
+### Admin Dashboard (`GET /admin`)
+
+#### Layout
+
+- Same two-column layout
+- Sidebar shows ALL notes (including private)
+
+#### Header Elements
+
+1. "Admin" indicator
+2. Logout button
+3. Create New Note button (accent color)
+
+#### Main Content: Notes List
+
+1. Flat list of all notes
+2. Each item shows:
+   - Title (from first `# heading`)
+   - Last updated date
+   - Visibility indicator (lock icon for private)
+3. Click to navigate to note
+4. Empty state: "No notes yet" with create CTA
+
+### History Page (`GET /records/{slug}/history`)
+
+#### Layout
+
+- Single-column modal or page
+- Overlays note view
+
+#### Elements
+
+1. Header: "Revision History for {slug}"
+2. List of revisions:
+   - Revision number
+   - Created timestamp
+   - Preview of first line
+3. Click to view full revision content
+4. Close/back button
 
 ### Setup Page (`GET /setup`)
 
@@ -58,13 +143,6 @@
    - Password input (required, minlength 8)
    - Confirm password input (required)
 4. Submit button: "Create Account"
-5. Footer text with version
-
-#### Validation States
-
-- Empty field: red border, error message below
-- Password mismatch: error message below confirm field
-- Success: redirect to `/login`
 
 ### Login Page (`GET /login`)
 
@@ -76,102 +154,33 @@
 #### Elements
 
 1. Logo/title header: "kjxlkj"
-2. Subtitle: "Sign in to admin panel"
+2. Subtitle: "Sign in"
 3. Form fields:
    - Username input (required)
    - Password input (required)
 4. Submit button: "Sign In"
 5. Error banner (hidden by default)
 
-#### Error States
+## Interaction Contracts
 
-- Invalid credentials: red banner with message
-- Session expired: amber banner with message
+### Auto-Save on Blur
 
-### Admin Page (`GET /admin`)
+- Editor triggers save when focus is lost
+- Save indicator shows status: "Saving...", "Saved", "Error"
+- Debounce: 500ms after blur before save
 
-#### Layout
+### Visibility Toggle
 
-- Full-width responsive layout
-- Sidebar navigation (collapsible on mobile)
-- Main content area with header
+- Toggle switch positioned above editor
+- Label: "Private" (locked) / "Public" (unlocked)
+- Immediate save on toggle change
+- Icon changes based on state
 
-#### Header Elements
+### Navigation
 
-1. Logo: "kjxlkj admin"
-2. User indicator
-3. Logout button
-
-#### Sidebar Elements
-
-1. Dashboard link
-2. Records link (active indicator)
-3. Settings link (future)
-
-#### Main Content: Records View
-
-1. Page title: "Records"
-2. Action bar:
-   - Create Record button (highlight color)
-   - Search input
-3. Records table:
-   - Columns: ID, Title, Tags, Revision, Updated
-   - Row actions: View, Edit, Delete
-4. Empty state: "No records found" with create CTA
-
-#### Record Create/Edit Modal
-
-1. Modal overlay (dark backdrop)
-2. Modal card (max-width 600px)
-3. Form fields:
-   - Title input (required)
-   - Body textarea (resizable)
-   - Tags input (comma-separated)
-4. Action buttons:
-   - Cancel (secondary)
-   - Save (primary)
-
-#### Delete Confirmation Modal
-
-1. Warning icon
-2. Confirmation text with record ID
-3. Cancel and Delete buttons
-
-### Home Page (`GET /`)
-
-#### Before Setup
-
-- Redirect to `/setup`
-
-#### After Setup (Public Mode)
-
-- Minimal page with service name
-- "Records available at /v1/records"
-- Login link
-
-#### After Setup (Admin Session)
-
-- Redirect to `/admin`
-
-## Animation Contracts
-
-### Transitions
-
-- Default duration: 200ms
-- Easing: ease-out
-- Apply to: hover states, focus states, modals
-
-### Hover Effects
-
-- Buttons: slight brightness increase
-- Links: underline appearance
-- Table rows: subtle background change
-
-### Modal Behavior
-
-- Fade in backdrop
-- Scale up modal from 95% to 100%
-- Focus trap within modal
+- Previous/Next arrows in footer
+- Keyboard shortcuts: Left/Right arrows (when not editing)
+- Updates URL without full page reload
 
 ## Accessibility
 
@@ -179,4 +188,3 @@
 - ARIA labels on interactive elements
 - Keyboard navigation support
 - Color contrast ratio >= 4.5:1
-- Form validation messages linked to inputs

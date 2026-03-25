@@ -17,3 +17,9 @@
 
 - Docs files: <= 300 lines.
 - Source files: <= 200 lines.
+
+## Note Content Rules
+
+- Title is extracted from the first `# heading` line in the body.
+- Slug is auto-generated from the current datetime on creation.
+- All notes are private by default.

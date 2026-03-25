@@ -1,14 +1,29 @@
 # JSON Integration Contract
 
-## Read Success
+## Note Management Endpoints
 
-- `GET /v1/records` returns JSON array.
-- `GET /v1/records/{id}` returns JSON object.
+All `/records/*` endpoints return JSON.
 
-## Write Success
+## Create Success
 
-- `PUT` returns JSON object with persisted values.
-- `DELETE` returns no body with status `204`.
+- `POST /records` returns JSON object with created note.
+
+## Update Success
+
+- `PUT /records/{slug}` returns JSON object with updated note.
+
+## Delete Success
+
+- `DELETE /records/{slug}` returns no body with status `204`.
+
+## History Success
+
+- `GET /records/{slug}/history` returns JSON array of revisions.
+
+## Navigation Success
+
+- `GET /records/{slug}/prev` returns `{ "slug": "..." }` or `{ "slug": null }`.
+- `GET /records/{slug}/next` returns `{ "slug": "..." }` or `{ "slug": null }`.
 
 ## Error Payloads
 

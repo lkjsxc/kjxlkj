@@ -1,13 +1,16 @@
 # List and Fetch Behavior
 
-## List (`GET /v1/records`)
+## List (Admin Dashboard)
 
-- Returns all persisted records.
-- Sort order is lexicographic ascending by `id`.
-- Response payload is deterministic for identical storage state.
+- Returns all notes for authenticated admin.
+- Returns only public notes for unauthenticated users.
+- Sort order is by `updated_at` descending (most recent first).
+- Response includes: slug, body (first 200 chars for preview), is_private, updated_at.
+- Cursor-based pagination using `updated_at` + `slug` as cursor.
 
-## Fetch (`GET /v1/records/{id}`)
+## Fetch (`GET /{slug}`)
 
-- Returns exact stored record if present.
-- Returns `404` with JSON error if not present.
-- Response must include current `revision` and `updated_at`.
+- Returns full note content if accessible.
+- Returns `404` if note does not exist.
+- Returns `404` if note is private and user is not authenticated.
+- Response must include `body`, `is_private`, `created_at`, `updated_at`.

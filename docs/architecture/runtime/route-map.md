@@ -3,21 +3,27 @@
 ## Route to Handler Mapping
 
 - `/healthz` -> health handler.
-- `/` -> setup-first home handler.
+- `/` -> landing page handler.
 - `/setup` -> setup GET/POST handlers.
 - `/login` -> login GET/POST handlers.
 - `/logout` -> logout POST handler.
-- `/admin` and `/admin/` -> admin shell guard handler.
-- `/v1/records` -> list handler.
-- `/v1/records/{id}` -> fetch, upsert, delete handlers.
+- `/admin` and `/admin/` -> admin dashboard handler.
+- `/{slug}` -> note view/edit handler.
+- `/records` -> note create handler (POST).
+- `/records/{slug}` -> note update (PUT), delete (DELETE) handlers.
+- `/records/{slug}/history` -> revision history handler.
+- `/records/{slug}/prev` -> previous note handler.
+- `/records/{slug}/next` -> next note handler.
 
 ## Guarding Model
 
-- Setup/login/home/admin handlers use setup and session guards.
-- HTML routes use cookie session guard (`session_id`) for admin transitions.
-- Record API read handlers are unguarded.
-- Write handlers call token guard before mutation.
+- Setup/login/landing handlers use setup guards.
+- Admin dashboard uses session guard.
+- Note view handler checks `is_private` flag against session.
+- `/records/*` handlers require session guard.
 
 ## Response Model
 
-Handlers return deterministic status codes and payload shapes (HTML for setup/session pages, JSON for record APIs).
+- `/healthz` returns plain text.
+- Setup/login/admin/note pages return HTML.
+- `/records/*` endpoints return JSON.

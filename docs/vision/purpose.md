@@ -2,17 +2,18 @@
 
 ## Goal
 
-`kjxlkj` is a deterministic record service designed for LLM-operated workflows.
+`kjxlkj` is a Markdown note-taking web application with direct URL access, live editing, and revision history.
 
 ## Product Intent
 
-- Serve structured records over HTTP JSON endpoints.
-- Keep read paths public and write paths token-protected.
-- Preserve records durably on local filesystem storage.
-- Keep outputs deterministic for automation and replay.
+- Serve Markdown notes at clean URLs (e.g., `/{slug}`).
+- Enable live editing with auto-save for authenticated admins.
+- Support private (default) and public visibility per note.
+- Maintain complete revision history for every note.
+- Display rendered Markdown with a dark-themed UI.
 
 ## Non-Goals
 
-- No browser-first UX requirements.
+- No multi-user collaboration (single admin model).
+- No offline support.
 - No backward compatibility guarantees.
-- No mutable behavior outside documented contracts.
