@@ -22,12 +22,8 @@ services:
     environment:
       BIND_HOST: "0.0.0.0"
       BIND_PORT: "8080"
-      DATA_ROOT: /app/data
       DATABASE_URL: postgres://kjxlkj:kjxlkj@postgres:5432/kjxlkj
-      ADMIN_TOKEN: local-dev-token
       SESSION_TIMEOUT_MINUTES: "1440"
-    volumes:
-      - appdata:/app/data
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,6 +51,5 @@ services:
 
 volumes:
   pgdata:
-  appdata:
   verify-cargo:
   verify-target:

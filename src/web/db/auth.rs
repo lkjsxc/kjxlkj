@@ -1,62 +1,8 @@
-//! PostgreSQL database adapter
+//! Authentication database operations
 
+use super::DbPool;
 use crate::error::AppError;
-use deadpool_postgres::{Manager, Pool, Runtime};
-use tokio_postgres::NoTls;
 use uuid::Uuid;
-
-pub type DbPool = Pool;
-
-/// Create a database connection pool
-pub async fn create_pool(database_url: &str) -> Result<DbPool, AppError> {
-    let config: tokio_postgres::Config = database_url
-        .parse()
-        .map_err(|e| AppError::DatabaseError(format!("Invalid database URL: {e}")))?;
-
-    let manager = Manager::new(config, NoTls);
-    let pool = Pool::builder(manager)
-        .max_size(16)
-        .runtime(Runtime::Tokio1)
-        .build()
-        .map_err(|e| AppError::DatabaseError(format!("Pool creation failed: {e}")))?;
-
-    run_migrations(&pool).await?;
-    Ok(pool)
-}
-
-/// Run database migrations
-async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
-    let client = pool
-        .get()
-        .await
-        .map_err(|e| AppError::DatabaseError(format!("Connection failed: {e}")))?;
-
-    client
-        .batch_execute(
-            r#"
-            CREATE TABLE IF NOT EXISTS admin_user (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                username VARCHAR(255) NOT NULL UNIQUE,
-                password_hash VARCHAR(255) NOT NULL,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-            );
-
-            CREATE TABLE IF NOT EXISTS sessions (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_id UUID NOT NULL REFERENCES admin_user(id) ON DELETE CASCADE,
-                expires_at TIMESTAMPTZ NOT NULL,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-            );
-
-            CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
-            CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
-            "#,
-        )
-        .await
-        .map_err(|e| AppError::DatabaseError(format!("Migration failed: {e}")))?;
-
-    Ok(())
-}
 
 /// Check if admin setup is complete
 pub async fn is_setup(pool: &DbPool) -> Result<bool, AppError> {

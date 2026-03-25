@@ -19,9 +19,7 @@ pub enum ConfigError {
 pub struct Config {
     pub bind_host: String,
     pub bind_port: u16,
-    pub data_root: String,
     pub database_url: String,
-    pub admin_token: String,
     pub session_timeout_minutes: u32,
 }
 
@@ -34,13 +32,8 @@ impl Config {
             .parse::<u16>()
             .map_err(|_| ConfigError::InvalidPort("BIND_PORT must be valid port".to_string()))?;
 
-        let data_root = env::var("DATA_ROOT").unwrap_or_else(|_| "/app/data".to_string());
-
         let database_url = env::var("DATABASE_URL")
             .map_err(|_| ConfigError::MissingVar("DATABASE_URL".to_string()))?;
-
-        let admin_token = env::var("ADMIN_TOKEN")
-            .map_err(|_| ConfigError::MissingVar("ADMIN_TOKEN".to_string()))?;
 
         let session_timeout_minutes = env::var("SESSION_TIMEOUT_MINUTES")
             .unwrap_or_else(|_| "1440".to_string())
@@ -53,9 +46,7 @@ impl Config {
         Ok(Self {
             bind_host,
             bind_port,
-            data_root,
             database_url,
-            admin_token,
             session_timeout_minutes,
         })
     }
@@ -77,7 +68,6 @@ mod tests {
     #[test]
     fn timeout_clamping() {
         env::set_var("DATABASE_URL", "postgres://test");
-        env::set_var("ADMIN_TOKEN", "test-token");
         env::set_var("SESSION_TIMEOUT_MINUTES", "1");
 
         let config = Config::from_env().unwrap();

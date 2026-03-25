@@ -59,14 +59,8 @@ impl ResponseError for AppError {
     }
 }
 
-impl From<crate::storage::StorageError> for AppError {
-    fn from(err: crate::storage::StorageError) -> Self {
-        AppError::StorageError(err.to_string())
-    }
-}
-
-impl From<crate::core::IdError> for AppError {
-    fn from(err: crate::core::IdError) -> Self {
+impl From<crate::core::SlugError> for AppError {
+    fn from(err: crate::core::SlugError) -> Self {
         AppError::InvalidRequest(err.to_string())
     }
 }
