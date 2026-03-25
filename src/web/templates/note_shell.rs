@@ -88,11 +88,10 @@ fn action_section(slug: &str, is_admin: bool) -> String {
 <div class="rail-actions">
 <a href="/admin" class="btn btn-primary">Dashboard</a>
 <button type="button" class="btn" onclick="createNote()">New note</button>
-<button type="button" class="btn btn-danger" onclick="deleteNote('{}')">Delete note</button>
+<button type="button" class="btn btn-danger" onclick="deleteNote('{slug}')">Delete note</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>
 </div>
-</section>"#,
-            slug
+</section>"#
         )
     } else {
         r#"<section class="rail-section">
