@@ -2,17 +2,17 @@
 
 ## History Index
 
-- History pages inherit the same dark shell as note pages.
-- Revision rows are compact and information-rich.
-- Current note access remains present but secondary to the history list.
+- History pages inherit the same note rail as current note pages.
+- History access is rail-first; no duplicate footer button is rendered below the note body.
+- Each entry shows revision number, visibility state, and browser-local 24-hour time.
 
 ## Snapshot Pages
 
-- Historical snapshots are read-only dark reading surfaces.
-- Visibility state stays explicit on the snapshot page.
-- Historical navigation never hides the route back to the current note.
+- Snapshot pages keep the current-note rail context.
+- Guests see only public revisions.
+- Admins see all revisions.
 
-## Guest Filtering
+## Rail Limits
 
-- Guests see only public revisions in both the rail and the history index.
-- Hidden revisions must not leave empty visual gaps that suggest broken layout.
+- Rail history is intentionally short and current-context focused.
+- Full history browsing happens in the dedicated history index, not by rendering every revision in the rail.

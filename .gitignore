@@ -46,4 +46,4 @@ temp/
 *.sqlite
 
 # Container runtime data
-data/
+/data/

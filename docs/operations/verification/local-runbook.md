@@ -9,56 +9,24 @@ docker compose ps
 
 Expected: `postgres` and `app` are running.
 
-## Verify Postgres Health
-
-```bash
-docker compose exec postgres pg_isready
-```
-
-Expected: `/var/run/postgresql:5432 - accepting connections`
-
-## Verify Health
-
-```bash
-curl -sS -D - -o /dev/null http://127.0.0.1:8080/healthz
-```
-
-Expected: `HTTP/1.1 200 OK` and body `ok`.
-
-## Verify Setup Flow (Fresh Instance)
+## Verify Setup + Login
 
 ```bash
 curl -sS -D - -o /dev/null http://127.0.0.1:8080/
-curl -sS -D - -o /dev/null http://127.0.0.1:8080/setup
-curl -sS -D - -o /dev/null http://127.0.0.1:8080/login
-```
-
-Expected before setup:
-
-- `/` redirects to `/setup`
-- `/setup` returns `200` HTML
-- `/login` redirects to `/setup`
-
-## Complete Setup
-
-```bash
 curl -sS -X POST http://127.0.0.1:8080/setup \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'username=admin&password=adminpass&confirm_password=adminpass'
-```
-
-Expected: `303` redirect to `/login`.
-
-## Login
-
-```bash
 curl -sS -X POST http://127.0.0.1:8080/login \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'username=admin&password=adminpass' \
   -c cookies.txt
 ```
 
-Expected: `303` redirect to `/admin`, sets `session_id` cookie.
+Expected:
+
+- `/` returns the public index after setup
+- setup redirects to `/login`
+- login redirects to `/admin`
 
 ## Create a Note
 
@@ -69,34 +37,46 @@ curl -sS -X POST http://127.0.0.1:8080/records \
   -d '{}'
 ```
 
-Expected: `201` with JSON body containing `slug`.
+Expected: `201` with JSON body containing `id`.
 
-## Verify Guest Note Shell
-
-Use the returned slug from the previous step.
+## Verify Public Root Search
 
 ```bash
-curl -sS http://127.0.0.1:8080/<slug>
-```
-
-Expected after making the note public:
-
-- HTML contains previous/next shell slots
-- HTML contains a history link
-- HTML does not contain editor controls for guests
-
-## Verify Admin Note Shell
-
-```bash
-curl -sS http://127.0.0.1:8080/<slug> -b cookies.txt
+curl -sS 'http://127.0.0.1:8080/?q=new'
 ```
 
 Expected:
 
-- HTML contains dashboard navigation
-- HTML contains revision history navigation
-- HTML contains the `Public` checkbox
-- HTML contains editor markup
+- HTML contains a dense note list
+- HTML does not contain the public rail shell
+- HTML does not expose raw note IDs in normal list rows
+
+## Verify Admin Dashboard Search
+
+```bash
+curl -sS 'http://127.0.0.1:8080/admin?q=new' -b cookies.txt
+```
+
+Expected:
+
+- HTML contains admin list rows
+- HTML contains search controls
+- HTML uses text-style actions
+
+## Verify Admin Note Shell
+
+Use the returned `id` from create.
+
+```bash
+curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
+```
+
+Expected:
+
+- HTML contains `Prev` / `Next` labels
+- HTML does not contain toolbar controls
+- HTML does not contain helper text next to `Public`
+- HTML does not render a footer history button below the note body
 
 ## Verify Browser Visual Checks
 
@@ -106,18 +86,9 @@ docker compose --profile verify run --rm visual-verify
 
 Expected:
 
-- desktop screenshots pass dark-shell assertions
-- compact screenshots pass drawer and icon-control assertions
+- desktop screenshots pass list/note assertions
+- compact screenshots pass drawer assertions
 - visual verification exits `0`
-
-## Verify JSON Navigation
-
-```bash
-curl -sS http://127.0.0.1:8080/records/<slug>/prev -b cookies.txt
-curl -sS http://127.0.0.1:8080/records/<slug>/next -b cookies.txt
-```
-
-Expected: JSON object with `slug` or `null`.
 
 ## Cleanup
 

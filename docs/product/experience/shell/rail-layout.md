@@ -2,27 +2,26 @@
 
 ## Desktop Rail
 
-- Desktop keeps a persistent left rail.
-- The rail is narrower and denser than the current beige implementation.
-- The rail uses layered dark panels instead of large flat sections.
+- Note and history pages keep a persistent left rail on desktop.
+- Rail width stays compact and must not be used for large note indexes.
+- Scrollable rails must keep metadata readable without line wrapping collisions.
 
 ## Rail Sections
 
 - Brand and session mode.
 - Current note context.
 - Created and updated metadata.
-- Previous and next navigation.
+- `Prev` and `Next` navigation cards with explicit relationship labels.
 - Revision history links.
-- Mode-specific actions.
+- Mode-specific text actions.
 
-## Hierarchy Rules
+## Metadata Rules
 
-- Current note context is the strongest item in the rail.
-- Navigation and history entries are compact stacked cards.
-- Actions are grouped but visually subordinate to note context.
+- Created and updated values render as browser-local 24-hour time.
+- Timestamp layout must stack or grid safely; it may not wrap awkward fragments.
+- Raw note IDs are not shown in normal rail metadata.
 
 ## Action Treatment
 
-- Admin actions are readable and aligned with the rail width.
-- Guest actions stay minimal.
-- No action group may render unreadable text against its background.
+- Dashboard, Home, New note, Logout, and Delete use text-style controls.
+- Compact navigation trigger and close controls remain icon-only ghost controls.

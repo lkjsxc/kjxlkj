@@ -1,32 +1,21 @@
-# JSON Integration Contract
+# JSON Contract
 
-## Note Management Endpoints
+## Note Success
 
-All `/records/*` endpoints return JSON.
-
-## Create Success
-
-- `POST /records` returns JSON object with created note.
-
-## Update Success
-
-- `PUT /records/{slug}` returns JSON object with updated note.
-
-## Delete Success
-
-- `DELETE /records/{slug}` returns no body with status `204`.
+- `POST /records` returns the created note object with `id`.
+- `PUT /records/{id}` returns the updated note object with `id`.
+- `DELETE /records/{id}` returns `204` with no body.
 
 ## History Success
 
-- `GET /records/{slug}/history` returns JSON array of revisions.
-- History JSON is admin-only.
+- `GET /records/{id}/history` returns JSON array of revisions.
+- History JSON remains admin-only.
 
 ## Navigation Success
 
-- `GET /records/{slug}/prev` returns `{ "slug": "..." }` or `{ "slug": null }`.
-- `GET /records/{slug}/next` returns `{ "slug": "..." }` or `{ "slug": null }`.
-- Navigation uses accessible neighbors by `created_at` order.
+- `GET /records/{id}/prev` returns `{ "id": "..." }` or `{ "id": null }`.
+- `GET /records/{id}/next` returns `{ "id": "..." }` or `{ "id": null }`.
 
-## Error Payloads
+## Error Shape
 
-Error payload shape is defined in [product/behavior/errors.md](../../product/behavior/errors.md).
+- Error responses stay machine-readable and non-HTML on `/records/*`.

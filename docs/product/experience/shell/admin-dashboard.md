@@ -2,22 +2,25 @@
 
 ## Dashboard Intent
 
-- `GET /admin` is a dense operations view, not a marketing landing page.
-- The dashboard should feel closer to a knowledge console than a card showroom.
+- `GET /admin` is the scalable admin index.
+- The dashboard is for search, scan, and entry into note editing, not for large decorative cards.
 
-## Desktop Layout
+## Layout
 
-- Rail lists notes and actions.
-- Main content focuses on the note index.
-- Rows highlight title, visibility, and timestamps without oversized spacing.
+- No all-notes side rail.
+- Header contains search, result context, and restrained text actions.
+- Main content is a dense paginated list.
+
+## Row Content
+
+- Title.
+- Summary preview.
+- Created and updated time.
+- Visibility state for admins.
+- No visible raw IDs in normal rows.
 
 ## Visual Rules
 
-- Note rows use dark raised panels with explicit hover and active states.
-- Visibility chips remain readable on dark surfaces.
-- Primary actions are visible immediately but do not dominate the page.
-
-## Empty State
-
-- Empty states stay compact and matter-of-fact.
-- The create-note call to action is still obvious.
+- Actions are text-only.
+- Search and pagination controls are quieter than note content.
+- Empty and no-result states remain compact and factual.

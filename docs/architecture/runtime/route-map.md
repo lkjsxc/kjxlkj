@@ -1,32 +1,20 @@
-# Route Map Contract
+# Runtime Route Map
 
-## Route to Handler Mapping
-
+- `/setup`, `/login`, `/logout` -> setup/session handlers.
+- `/` -> public searchable index handler.
+- `/admin` and `/admin/` -> admin searchable index handler.
+- `/{id}` -> note view/edit handler.
+- `/{id}/history` -> history index handler.
+- `/{id}/history/{revision_number}` -> history snapshot handler.
+- `/records` -> note create handler.
+- `/records/{id}` -> note update (PUT), delete (DELETE) handlers.
+- `/records/{id}/history` -> revision history handler.
+- `/records/{id}/prev` -> previous note handler.
+- `/records/{id}/next` -> next note handler.
 - `/healthz` -> health handler.
-- `/` -> landing page handler.
-- `/setup` -> setup GET/POST handlers.
-- `/login` -> login GET/POST handlers.
-- `/logout` -> logout POST handler.
-- `/admin` and `/admin/` -> admin dashboard handler.
-- `/{slug}` -> note view/edit handler.
-- `/{slug}/history` -> history index handler.
-- `/{slug}/history/{revision_number}` -> history snapshot handler.
-- `/records` -> note create handler (POST).
-- `/records/{slug}` -> note update (PUT), delete (DELETE) handlers.
-- `/records/{slug}/history` -> revision history handler.
-- `/records/{slug}/prev` -> previous note handler.
-- `/records/{slug}/next` -> next note handler.
 
-## Guarding Model
+## Access Notes
 
-- Setup/login/landing handlers use setup guards.
+- Public root lists public notes only.
 - Admin dashboard uses session guard.
-- Note view handler checks `is_private` flag against session.
-- History HTML handlers check current-note access and snapshot visibility.
-- `/records/*` handlers require session guard.
-
-## Response Model
-
-- `/healthz` returns plain text.
-- Setup/login/admin/note/history pages return HTML.
-- `/records/*` endpoints return JSON.
+- Note/history handlers check current-note access and snapshot visibility.

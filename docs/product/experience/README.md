@@ -9,5 +9,6 @@
 ## Canonical Subtrees
 
 - [theme/README.md](theme/README.md)
+- [index/README.md](index/README.md)
 - [shell/README.md](shell/README.md)
 - [responsive/README.md](responsive/README.md)

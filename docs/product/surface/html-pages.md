@@ -1,25 +1,15 @@
 # HTML Pages Contract
 
-## Canonical Ownership
+## Canonical Pages
 
-- Route and status behavior is defined in [routes.md](routes.md).
-- Theme and contrast rules are defined in [../experience/theme/README.md](../experience/theme/README.md).
-- Note and dashboard shell rules are defined in [../experience/shell/README.md](../experience/shell/README.md).
-- Responsive behavior is defined in [../experience/responsive/README.md](../experience/responsive/README.md).
+- `/`: public searchable note index.
+- `/admin`: admin searchable note index.
+- `/{id}`: current note page.
+- `/{id}/history`: note history index.
+- `/{id}/history/{revision_number}`: historical snapshot page.
 
-## Page Inventory
+## Shared Rules
 
-- `/`: landing page with guest or admin-aware shell.
-- `/admin`: admin dashboard.
-- `/{slug}`: current note page.
-- `/{slug}/history`: note history index.
-- `/{slug}/history/{revision_number}`: historical snapshot page.
-- `/setup`: initial admin setup.
-- `/login`: session login.
-
-## HTML Rendering Rules
-
-- All HTML pages render server-side.
-- Note and history pages remain readable without JavaScript.
-- JavaScript enhances autosave, drawer toggling, and destructive actions.
-- Dark mode is the default and only documented theme.
+- List pages are list-first, not rail-first.
+- Note and history shell rules are defined in [../experience/shell/README.md](../experience/shell/README.md).
+- Public root list rules are defined in [../experience/index/README.md](../experience/index/README.md).

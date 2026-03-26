@@ -1,31 +1,41 @@
 # List and Fetch Behavior
 
-## List (Admin Dashboard)
+## Public Root List
 
-- Returns all notes for authenticated admin.
-- Returns only public notes for unauthenticated users.
-- Sort order is by `updated_at` descending (most recent first).
-- Response includes: slug, body (first 200 chars for preview), is_private, updated_at.
-- Cursor-based pagination using `updated_at` + `slug` as cursor.
+- `GET /` returns the public searchable index after setup completes.
+- Unauthenticated users see only public notes.
+- Authenticated admins may still open `/`, but it remains the public index surface.
+- The route accepts `q`, `cursor`, and `limit`.
 
-## Fetch (`GET /{slug}`)
+## Admin Dashboard List
+
+- `GET /admin` returns the admin searchable index.
+- Admin dashboard includes public and private notes.
+- Dashboard list is dense and paginated; it does not mirror all notes in a side rail.
+
+## Default Ordering
+
+- Index pages sort by `updated_at DESC, id ASC`.
+- Search keeps the same ordering after filtering matches.
+
+## Fetch (`GET /{id}`)
 
 - Returns full note content if accessible.
 - Returns `404` if note does not exist.
 - Returns `404` if note is private and user is not authenticated.
-- Response must include `body`, `is_private`, `created_at`, `updated_at`.
+- Response includes `body`, `is_private`, `created_at`, and `updated_at`.
 
 ## Note Navigation
 
-- Previous and next note relationships use `created_at` order, not `updated_at`.
-- Previous means the nearest older accessible note.
-- Next means the nearest newer accessible note.
+- `Prev` and `Next` relationships use `created_at` order, not `updated_at`.
+- `Prev` means the nearest older accessible note.
+- `Next` means the nearest newer accessible note.
 - Guest navigation skips private notes.
 - Admin navigation includes private notes.
 
 ## History Fetch
 
 - History index returns the current note plus visible revisions.
-- Revision snapshots are ordered by `revision_number` descending.
+- Revision snapshots are ordered by `revision_number DESC`.
 - Guests can fetch only revisions whose stored state is public.
 - Admins can fetch all revisions.

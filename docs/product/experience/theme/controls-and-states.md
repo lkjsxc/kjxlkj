@@ -1,27 +1,25 @@
 # Controls and States Contract
 
-## Button Variants
+## Action Style
 
-- Primary buttons use a filled treatment with guaranteed readable text.
-- Secondary buttons use a dark raised surface with explicit text color.
-- Ghost buttons are reserved for low-emphasis controls such as compact navigation.
-- Destructive buttons remain legible without overpowering the rest of the rail.
+- Standard actions render as text-only controls.
+- Filled buttons are not the default action language.
+- Delete may use color emphasis, but still reads as text-first.
 
 ## Compact Navigation Controls
 
-- The narrow-screen menu trigger is a ghost icon button in the top-right corner.
-- The drawer close control is also a ghost icon button.
-- Visible text labels are not shown on those controls.
-- Accessible names are still required through ARIA or screen-reader-only text.
+- Narrow-screen menu and close controls stay icon-only.
+- Their background and border remain quiet relative to the page.
+- ARIA labels remain required.
 
 ## State Treatments
 
 - Hover, focus, and active states are visible on every control.
-- Disabled or unavailable navigation states use muted text, not hidden layout shifts.
-- Save status messaging is explicit for idle, saving, saved, and failed states.
+- Disabled navigation stays readable and muted.
+- Save status messaging is explicit for saving, saved, and failed states.
 
-## Checkbox and Form Rules
+## Form Rules
 
-- The `Public` checkbox remains the canonical visibility control.
-- Inputs, editors, and toolbar controls must inherit dark-surface styling.
-- No form control may rely on user-agent default colors in dark mode.
+- `Public` remains the only visibility control.
+- No helper sentence appears next to the checkbox.
+- The editor surface must not expose a Markdown formatting toolbar in this pass.

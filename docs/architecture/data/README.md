@@ -1,5 +1,6 @@
 # Data Architecture TOC
 
 - [postgres-schema.md](postgres-schema.md)
-- [slug-rules.md](slug-rules.md)
+- [id-rules.md](id-rules.md)
+- [search-indexing.md](search-indexing.md)
 - [consistency-rules.md](consistency-rules.md)

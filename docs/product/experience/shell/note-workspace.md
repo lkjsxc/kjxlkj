@@ -2,25 +2,32 @@
 
 ## Overall Feel
 
-- The note page should feel like a dark reading and editing workspace.
+- Note pages remain dark, dense, and document-first.
 - Header chrome is compact and informative.
-- The main content surface sits clearly above the page background.
+- History access belongs in the rail, not below the note body.
 
 ## Header Content
 
 - Mode eyebrow or context marker.
 - Title extracted from the note body.
-- Visibility status and slug metadata.
-- On admin pages, the visibility checkbox and save state stay inside the editing surface.
+- Visibility state.
+- Created and updated time.
+- No visible raw ID chips in normal UI.
 
-## Content Surface
+## Admin Editing Surface
 
-- Guest view renders Markdown on a dark elevated panel.
-- Admin view renders the editor and toolbar on dark matched surfaces.
-- The toolbar, editor frame, and content area must read as one coherent workspace.
+- Admin editing uses a plain Markdown editor surface.
+- The formatting toolbar is not visible.
+- The editor uses the default UI font stack, not a separate branded UI font.
+- Public checkbox stays inside the editing surface.
 
-## Footer and Secondary Actions
+## Live Chrome Sync
 
-- History access remains present but low-emphasis.
-- Secondary navigation never competes visually with the note title or editor.
-- Empty or short notes still preserve the same shell hierarchy.
+- Heading edits update page title, browser title, and current-note rail title immediately.
+- Public checkbox toggles update visibility chips and related chrome immediately.
+- The removed helper text (`Guest-readable`, `Admin-only`) does not return.
+
+## Guest View
+
+- Guests see rendered Markdown only.
+- Markdown typography may use a dedicated content stack separate from UI chrome.
