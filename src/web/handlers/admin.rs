@@ -1,33 +1,42 @@
-//! Admin and home page handlers
+//! Public index, admin dashboard, and note handlers
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool};
+use crate::web::db::{self, DbPool, ListRequest};
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
+use serde::Deserialize;
 
-/// Admin dashboard handler
+#[derive(Clone, Debug, Deserialize)]
+pub struct ListParams {
+    pub q: Option<String>,
+    pub cursor: Option<String>,
+    pub limit: Option<i64>,
+}
+
 #[get("/admin")]
 pub async fn admin_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
+    params: web::Query<ListParams>,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, req).await
+    admin_page_impl(pool, req, params.into_inner()).await
 }
 
-/// Admin dashboard with trailing slash
 #[get("/admin/")]
 pub async fn admin_page_slash(
     pool: web::Data<DbPool>,
     req: HttpRequest,
+    params: web::Query<ListParams>,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, req).await
+    admin_page_impl(pool, req, params.into_inner()).await
 }
 
 async fn admin_page_impl(
     pool: web::Data<DbPool>,
     req: HttpRequest,
+    params: ListParams,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
@@ -35,25 +44,45 @@ async fn admin_page_impl(
     if !session::check_session(&req, &pool).await? {
         return Ok(redirect("/login"));
     }
-    let records = db::list_records(&pool, true, 100).await?;
-    let entries: Vec<_> = records.iter().map(view::index_item).collect();
-    Ok(html(templates::admin_page(&entries)))
+    let page = db::list_records(&pool, &list_request(params.clone(), true)).await?;
+    let entries: Vec<_> = page
+        .records
+        .iter()
+        .map(|record| view::index_item(record, true))
+        .collect();
+    Ok(html(templates::admin_page(
+        &entries,
+        page.next_cursor.as_deref(),
+        params.q.as_deref(),
+    )))
 }
 
-/// Home/landing page handler
 #[get("/")]
-pub async fn home(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpResponse, AppError> {
+pub async fn home(
+    pool: web::Data<DbPool>,
+    req: HttpRequest,
+    params: web::Query<ListParams>,
+) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
     let is_admin = session::check_session(&req, &pool).await?;
-    let records = db::list_records(&pool, false, 100).await?;
-    let entries: Vec<_> = records.iter().map(view::index_item).collect();
-    Ok(html(templates::home_page(&entries, is_admin)))
+    let params = params.into_inner();
+    let page = db::list_records(&pool, &list_request(params.clone(), false)).await?;
+    let entries: Vec<_> = page
+        .records
+        .iter()
+        .map(|record| view::index_item(record, false))
+        .collect();
+    Ok(html(templates::home_page(
+        &entries,
+        page.next_cursor.as_deref(),
+        params.q.as_deref(),
+        is_admin,
+    )))
 }
 
-/// Note viewing page handler
-#[get("/{slug}")]
+#[get("/{id}")]
 pub async fn note_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -62,10 +91,10 @@ pub async fn note_page(
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
-    let slug = path.into_inner();
+    let id = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
-    let record = match db::get_record(&pool, &slug).await? {
-        Some(r) => r,
+    let record = match db::get_record(&pool, &id).await? {
+        Some(record) => record,
         None => return Ok(not_found()),
     };
     if record.is_private && !is_admin {
@@ -73,6 +102,15 @@ pub async fn note_page(
     }
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
     Ok(html(templates::note_page(&record, &chrome, is_admin)))
+}
+
+fn list_request(params: ListParams, include_private: bool) -> ListRequest {
+    ListRequest {
+        include_private,
+        limit: params.limit.unwrap_or(50),
+        query: params.q,
+        cursor: params.cursor,
+    }
 }
 
 fn redirect(location: &str) -> HttpResponse {

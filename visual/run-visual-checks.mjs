@@ -19,10 +19,10 @@ async function main() {
 
     const browser = await chromium.launch({ headless: true });
     try {
-        const slugs = await prepareState(browser);
-        await captureAdminScreens(browser, slugs.middle.slug);
-        await captureGuestScreens(browser, slugs);
-        await captureCompactScreens(browser, slugs.middle.slug);
+        const notes = await prepareState(browser);
+        await captureAdminScreens(browser, notes.middle.id);
+        await captureGuestScreens(browser, notes);
+        await captureCompactScreens(browser, notes.middle.id);
     } finally {
         await browser.close();
     }
@@ -46,13 +46,13 @@ async function prepareState(browser) {
 
     await context.close();
     return {
-        oldest: { slug: oldest.slug, title: 'Atlas Entry' },
-        middle: { slug: middle.slug, title: 'Orbit Ledger' },
-        newest: { slug: newest.slug, title: 'Beacon Log' },
+        oldest: { id: oldest.id, title: 'Atlas Entry' },
+        middle: { id: middle.id, title: 'Orbit Ledger' },
+        newest: { id: newest.id, title: 'Beacon Log' },
     };
 }
 
-async function captureAdminScreens(browser, slug) {
+async function captureAdminScreens(browser, id) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } });
     const page = await context.newPage();
     await login(page);
@@ -61,38 +61,38 @@ async function captureAdminScreens(browser, slug) {
     await expectDarkShell(page);
     await capture(page, 'desktop-admin-dashboard.png');
 
-    await page.goto(`${appUrl}/${slug}`, { waitUntil: 'networkidle' });
+    await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
     await page.waitForSelector('#public-toggle');
-    await expectAdminNote(page, slug);
+    await expectAdminNote(page);
     await capture(page, 'desktop-admin-note.png');
 
-    await page.goto(`${appUrl}/${slug}/history/3`, { waitUntil: 'networkidle' });
+    await page.goto(`${appUrl}/${id}/history/3`, { waitUntil: 'networkidle' });
     await assertVisibleText(page, 'Shared release');
     await context.close();
 }
 
-async function captureGuestScreens(browser, slugs) {
+async function captureGuestScreens(browser, notes) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } });
     const page = await context.newPage();
 
-    await page.goto(`${appUrl}/${slugs.middle.slug}`, { waitUntil: 'networkidle' });
-    await expectGuestNote(page, slugs.oldest.title, slugs.newest.title);
+    await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
+    await expectGuestNote(page, notes.oldest.title, notes.newest.title);
     await capture(page, 'desktop-guest-note.png');
 
-    const publicRevision = await page.goto(`${appUrl}/${slugs.middle.slug}/history/3`, { waitUntil: 'networkidle' });
+    const publicRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/3`, { waitUntil: 'networkidle' });
     assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
 
-    const privateRevision = await page.goto(`${appUrl}/${slugs.middle.slug}/history/2`, { waitUntil: 'networkidle' });
+    const privateRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/2`, { waitUntil: 'networkidle' });
     assert.equal(privateRevision?.status(), 404, 'private revision should return 404');
     await assertVisibleText(page, 'Note not found');
     await context.close();
 }
 
-async function captureCompactScreens(browser, slug) {
+async function captureCompactScreens(browser, id) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
 
-    await page.goto(`${appUrl}/${slug}`, { waitUntil: 'networkidle' });
+    await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
     await expectCompactTrigger(page, '[data-menu-toggle]');
     await capture(page, 'compact-note-closed.png');
 
@@ -105,9 +105,9 @@ async function captureCompactScreens(browser, slug) {
 
 async function createHistoryNote(page) {
     const note = await createNote(page, '# Orbit Ledger\n\nPrivate draft.', true);
-    await updateNote(page, note.slug, '# Orbit Ledger\n\nSecond private draft.', true);
-    await updateNote(page, note.slug, '# Orbit Ledger\n\nShared release.', false);
-    await updateNote(page, note.slug, '# Orbit Ledger\n\nCurrent shared revision.', false);
+    await updateNote(page, note.id, '# Orbit Ledger\n\nSecond private draft.', true);
+    await updateNote(page, note.id, '# Orbit Ledger\n\nShared release.', false);
+    await updateNote(page, note.id, '# Orbit Ledger\n\nCurrent shared revision.', false);
     return note;
 }
 
@@ -160,19 +160,19 @@ async function createNote(page, body, isPrivate) {
     );
 }
 
-async function updateNote(page, slug, body, isPrivate) {
+async function updateNote(page, id, body, isPrivate) {
     const status = await page.evaluate(
-        async ({ noteSlug, noteBody, notePrivate }) => {
-            const response = await fetch(`/records/${noteSlug}`, {
+        async ({ noteId, noteBody, notePrivate }) => {
+            const response = await fetch(`/records/${noteId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body: noteBody, is_private: notePrivate }),
             });
             return response.status;
         },
-        { noteSlug: slug, noteBody: body, notePrivate: isPrivate }
+        { noteId: id, noteBody: body, notePrivate: isPrivate }
     );
-    assert.equal(status, 200, `note update should succeed for ${slug}`);
+    assert.equal(status, 200, `note update should succeed for ${id}`);
 }
 
 async function capture(page, name) {

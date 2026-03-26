@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 /// A record stored in the database
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Record {
-    pub slug: String,
+    pub id: String,
+    pub title: String,
+    pub summary: String,
     pub body: String,
     pub is_private: bool,
     pub created_at: DateTime<Utc>,

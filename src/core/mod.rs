@@ -2,4 +2,6 @@
 
 mod validation;
 
-pub use validation::{extract_title, generate_slug, validate_slug, SlugError};
+pub use validation::{
+    derive_summary, derive_title, extract_title, generate_id, validate_id, IdError,
+};

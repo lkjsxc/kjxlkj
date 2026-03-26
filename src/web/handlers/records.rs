@@ -1,6 +1,6 @@
 //! Record management handlers
 
-use crate::core::{generate_slug, validate_slug};
+use crate::core::{generate_id, validate_id};
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
 use crate::web::handlers::session;
@@ -21,10 +21,9 @@ pub struct UpdateInput {
 
 #[derive(Serialize)]
 pub struct NavResponse {
-    pub slug: Option<String>,
+    pub id: Option<String>,
 }
 
-/// Create a new record
 #[post("/records")]
 pub async fn create(
     pool: web::Data<DbPool>,
@@ -32,18 +31,17 @@ pub async fn create(
     body: web::Json<CreateInput>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    let slug = generate_unique_slug(&pool).await?;
+    let id = generate_unique_id(&pool).await?;
     let content = body
         .body
         .clone()
         .unwrap_or_else(|| "# New Note\n".to_string());
     let is_private = body.is_private.unwrap_or(true);
-    let record = db::create_record(&pool, &slug, &content, is_private).await?;
+    let record = db::create_record(&pool, &id, &content, is_private).await?;
     Ok(HttpResponse::Created().json(record))
 }
 
-/// Update a record
-#[put("/records/{slug}")]
+#[put("/records/{id}")]
 pub async fn update(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -51,50 +49,47 @@ pub async fn update(
     body: web::Json<UpdateInput>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    let slug = path.into_inner();
-    validate_slug(&slug)?;
-    match db::update_record(&pool, &slug, &body.body, body.is_private).await? {
+    let id = path.into_inner();
+    validate_id(&id)?;
+    match db::update_record(&pool, &id, &body.body, body.is_private).await? {
         Some(record) => Ok(HttpResponse::Ok().json(record)),
-        None => Err(AppError::NotFound(format!("note '{slug}' not found"))),
+        None => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }
 }
 
-/// Soft delete a record
-#[delete("/records/{slug}")]
+#[delete("/records/{id}")]
 pub async fn remove(
     pool: web::Data<DbPool>,
     req: HttpRequest,
     path: web::Path<String>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    let slug = path.into_inner();
-    validate_slug(&slug)?;
-    if db::delete_record(&pool, &slug).await? {
+    let id = path.into_inner();
+    validate_id(&id)?;
+    if db::delete_record(&pool, &id).await? {
         Ok(HttpResponse::NoContent().finish())
     } else {
-        Err(AppError::NotFound(format!("note '{slug}' not found")))
+        Err(AppError::NotFound(format!("note '{id}' not found")))
     }
 }
 
-/// Get revision history
-#[get("/records/{slug}/history")]
+#[get("/records/{id}/history")]
 pub async fn history(
     pool: web::Data<DbPool>,
     req: HttpRequest,
     path: web::Path<String>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    let slug = path.into_inner();
-    validate_slug(&slug)?;
-    if db::get_record(&pool, &slug).await?.is_none() {
-        return Err(AppError::NotFound(format!("note '{slug}' not found")));
+    let id = path.into_inner();
+    validate_id(&id)?;
+    if db::get_record(&pool, &id).await?.is_none() {
+        return Err(AppError::NotFound(format!("note '{id}' not found")));
     }
-    let revisions = db::get_record_revisions(&pool, &slug).await?;
+    let revisions = db::get_record_revisions(&pool, &id).await?;
     Ok(HttpResponse::Ok().json(revisions))
 }
 
-/// Get previous note slug
-#[get("/records/{slug}/prev")]
+#[get("/records/{id}/prev")]
 pub async fn previous(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -103,8 +98,7 @@ pub async fn previous(
     nav_response(pool, req, path.into_inner(), true).await
 }
 
-/// Get next note slug
-#[get("/records/{slug}/next")]
+#[get("/records/{id}/next")]
 pub async fn next(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -116,37 +110,33 @@ pub async fn next(
 async fn nav_response(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    slug: String,
+    id: String,
     older: bool,
 ) -> Result<HttpResponse, AppError> {
-    validate_slug(&slug)?;
+    validate_id(&id)?;
     let is_admin = session::check_session(&req, &pool).await?;
-    let record = db::get_record(&pool, &slug).await?;
+    let record = db::get_record(&pool, &id).await?;
     match record {
         Some(record) if is_admin || !record.is_private => {
             let neighbor = if older {
-                db::get_previous_slug(&pool, &slug, is_admin).await?
+                db::get_previous_id(&pool, &id, is_admin).await?
             } else {
-                db::get_next_slug(&pool, &slug, is_admin).await?
+                db::get_next_id(&pool, &id, is_admin).await?
             };
-            Ok(HttpResponse::Ok().json(NavResponse { slug: neighbor }))
+            Ok(HttpResponse::Ok().json(NavResponse { id: neighbor }))
         }
-        _ => Err(AppError::NotFound(format!("note '{slug}' not found"))),
+        _ => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }
 }
 
-async fn generate_unique_slug(pool: &DbPool) -> Result<String, AppError> {
-    let base = generate_slug();
-    if db::get_record(pool, &base).await?.is_none() {
-        return Ok(base);
-    }
-    for i in 2..100 {
-        let slug = format!("{base}-{i}");
-        if db::get_record(pool, &slug).await?.is_none() {
-            return Ok(slug);
+async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
+    for _ in 0..10 {
+        let id = generate_id();
+        if db::get_record(pool, &id).await?.is_none() {
+            return Ok(id);
         }
     }
     Err(AppError::StorageError(
-        "Could not generate unique slug".to_string(),
+        "could not generate unique id".to_string(),
     ))
 }

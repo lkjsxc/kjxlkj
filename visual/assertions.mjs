@@ -18,7 +18,7 @@ export async function expectDarkShell(page, buttonNames = []) {
     }
 }
 
-export async function expectAdminNote(page, slug) {
+export async function expectAdminNote(page) {
     await expectDarkShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Public');
     assert.equal(
@@ -27,14 +27,19 @@ export async function expectAdminNote(page, slug) {
         'admin note should show public checkbox state'
     );
     await assertVisibleText(page, 'Delete note');
-    await assertVisibleText(page, slug);
+    await assertVisibleText(page, 'Created');
+    await assertVisibleText(page, 'Updated');
+    await assertVisibleText(page, 'Prev');
+    await assertVisibleText(page, 'Next');
 }
 
-export async function expectGuestNote(page, previousSlug, nextSlug) {
+export async function expectGuestNote(page, previousTitle, nextTitle) {
     await expectDarkShell(page, ['History']);
     await assertVisibleText(page, 'History');
-    await assertVisibleText(page, previousSlug);
-    await assertVisibleText(page, nextSlug);
+    await assertVisibleText(page, 'Prev');
+    await assertVisibleText(page, previousTitle);
+    await assertVisibleText(page, 'Next');
+    await assertVisibleText(page, nextTitle);
 }
 
 export async function expectCompactTrigger(page, selector) {

@@ -3,23 +3,19 @@
     --bg-1: #10151a;
     --bg-2: #141b22;
     --bg-3: #1a222b;
-    --bg-4: #202a34;
     --rail: #0d1217;
-    --panel: rgba(19, 26, 33, 0.92);
     --line: rgba(138, 152, 168, 0.14);
     --line-strong: rgba(138, 152, 168, 0.24);
     --text: #e8edf2;
-    --text-soft: #b0bcc8;
-    --text-muted: #7c8793;
+    --text-soft: #a8b6c4;
+    --text-muted: #74808d;
     --accent: #8cb8ff;
-    --accent-soft: rgba(140, 184, 255, 0.14);
-    --accent-ink: #07111f;
-    --danger: #ff7d74;
-    --danger-soft: rgba(255, 125, 116, 0.16);
-    --success: #83d6aa;
+    --accent-soft: rgba(140, 184, 255, 0.12);
+    --danger: #ff8d84;
+    --success: #8fd6b0;
     --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-    --sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --serif: "Iowan Old Style", Charter, Georgia, serif;
 }
 
@@ -36,10 +32,10 @@ body {
     min-height: 100vh;
     color: var(--text);
     background:
-        radial-gradient(circle at top left, rgba(140, 184, 255, 0.07), transparent 30%),
-        radial-gradient(circle at 85% 10%, rgba(131, 214, 170, 0.05), transparent 28%),
+        radial-gradient(circle at top left, rgba(140, 184, 255, 0.06), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(131, 214, 170, 0.04), transparent 28%),
         linear-gradient(180deg, #0a0d11, #11161d 34%, #0c1116 100%);
-    font: 16px/1.6 var(--serif);
+    font: 15px/1.6 var(--sans);
 }
 
 body.nav-open {
@@ -55,6 +51,10 @@ button,
 input,
 textarea {
     font: inherit;
+}
+
+.prose {
+    font-family: var(--serif);
 }
 
 .visually-hidden {

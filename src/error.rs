@@ -59,8 +59,8 @@ impl ResponseError for AppError {
     }
 }
 
-impl From<crate::core::SlugError> for AppError {
-    fn from(err: crate::core::SlugError) -> Self {
+impl From<crate::core::IdError> for AppError {
+    fn from(err: crate::core::IdError) -> Self {
         AppError::InvalidRequest(err.to_string())
     }
 }

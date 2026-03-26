@@ -1,61 +1,76 @@
-//! Validation logic for records
+//! Validation logic for note ids and derived fields
 
-use chrono::Utc;
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use thiserror::Error;
+use uuid::Uuid;
 
-/// Regex for valid slugs: lowercase kebab-case
-static SLUG_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
+static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[A-Za-z0-9_-]{22}$").unwrap());
 
-/// Minimum slug length
-const SLUG_MIN_LEN: usize = 3;
+const ID_LEN: usize = 22;
+const SUMMARY_LIMIT: usize = 120;
 
-/// Maximum slug length
-const SLUG_MAX_LEN: usize = 64;
-
-/// Error type for slug validation
 #[derive(Debug, Error, PartialEq)]
-pub enum SlugError {
-    #[error("slug must be at least {SLUG_MIN_LEN} characters")]
-    TooShort,
-    #[error("slug must be at most {SLUG_MAX_LEN} characters")]
-    TooLong,
-    #[error("slug must be lowercase kebab-case (a-z, 0-9, hyphens)")]
+pub enum IdError {
+    #[error("id must be exactly {ID_LEN} characters")]
+    InvalidLength,
+    #[error("id must be Base64URL without padding")]
     InvalidFormat,
 }
 
-/// Validate a record slug
-pub fn validate_slug(slug: &str) -> Result<(), SlugError> {
-    if slug.len() < SLUG_MIN_LEN {
-        return Err(SlugError::TooShort);
+pub fn validate_id(id: &str) -> Result<(), IdError> {
+    if id.len() != ID_LEN {
+        return Err(IdError::InvalidLength);
     }
-    if slug.len() > SLUG_MAX_LEN {
-        return Err(SlugError::TooLong);
+    if !ID_REGEX.is_match(id) {
+        return Err(IdError::InvalidFormat);
     }
-    if !SLUG_REGEX.is_match(slug) {
-        return Err(SlugError::InvalidFormat);
+    let decoded = URL_SAFE_NO_PAD
+        .decode(id)
+        .map_err(|_| IdError::InvalidFormat)?;
+    if decoded.len() != 16 {
+        return Err(IdError::InvalidFormat);
     }
     Ok(())
 }
 
-/// Generate a slug from current datetime (format: YYYY-MM-DD-HHmm)
-pub fn generate_slug() -> String {
-    Utc::now().format("%Y-%m-%d-%H%M").to_string()
+pub fn generate_id() -> String {
+    URL_SAFE_NO_PAD.encode(Uuid::new_v4().as_bytes())
 }
 
-/// Extract title from body (first # heading line)
 pub fn extract_title(body: &str) -> Option<String> {
     for line in body.lines() {
         let trimmed = line.trim();
         if let Some(title) = trimmed.strip_prefix("# ") {
             return Some(title.to_string());
         }
-        if trimmed.starts_with("# ") || !trimmed.is_empty() {
+        if trimmed.starts_with('#') || !trimmed.is_empty() {
             break;
         }
     }
     None
+}
+
+pub fn derive_title(body: &str) -> String {
+    extract_title(body).unwrap_or_else(|| "Untitled note".to_string())
+}
+
+pub fn derive_summary(body: &str) -> String {
+    body.lines()
+        .map(str::trim)
+        .find(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(shorten)
+        .unwrap_or_else(|| "No summary yet.".to_string())
+}
+
+fn shorten(line: &str) -> String {
+    if line.chars().count() <= SUMMARY_LIMIT {
+        line.to_string()
+    } else {
+        let prefix: String = line.chars().take(SUMMARY_LIMIT - 1).collect();
+        format!("{prefix}…")
+    }
 }
 
 #[cfg(test)]
@@ -63,56 +78,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn valid_slugs() {
-        assert!(validate_slug("abc").is_ok());
-        assert!(validate_slug("test-slug").is_ok());
-        assert!(validate_slug("2026-03-25-0134").is_ok());
-        assert!(validate_slug("a1b2c3").is_ok());
+    fn valid_ids() {
+        let id = generate_id();
+        assert_eq!(id.len(), 22);
+        assert!(validate_id(&id).is_ok());
     }
 
     #[test]
-    fn too_short_slug() {
-        assert_eq!(validate_slug("ab"), Err(SlugError::TooShort));
-        assert_eq!(validate_slug("a"), Err(SlugError::TooShort));
-        assert_eq!(validate_slug(""), Err(SlugError::TooShort));
-    }
-
-    #[test]
-    fn too_long_slug() {
-        let long_slug = "a".repeat(65);
-        assert_eq!(validate_slug(&long_slug), Err(SlugError::TooLong));
-    }
-
-    #[test]
-    fn invalid_format() {
-        assert_eq!(validate_slug("UPPERCASE"), Err(SlugError::InvalidFormat));
-        assert_eq!(validate_slug("has spaces"), Err(SlugError::InvalidFormat));
+    fn invalid_ids() {
+        assert_eq!(validate_id("short"), Err(IdError::InvalidLength));
         assert_eq!(
-            validate_slug("has_underscore"),
-            Err(SlugError::InvalidFormat)
+            validate_id("contains+plus-sign____"),
+            Err(IdError::InvalidFormat)
         );
-        assert_eq!(
-            validate_slug("-starts-hyphen"),
-            Err(SlugError::InvalidFormat)
-        );
-        assert_eq!(validate_slug("ends-hyphen-"), Err(SlugError::InvalidFormat));
     }
 
     #[test]
-    fn extract_title_from_body() {
-        assert_eq!(
-            extract_title("# Hello World\n\nContent"),
-            Some("Hello World".to_string())
-        );
-        assert_eq!(extract_title("# Title"), Some("Title".to_string()));
-        assert_eq!(extract_title("No heading here"), None);
-        assert_eq!(extract_title(""), None);
-    }
-
-    #[test]
-    fn generate_slug_format() {
-        let slug = generate_slug();
-        assert!(validate_slug(&slug).is_ok());
-        assert!(slug.len() >= 15); // YYYY-MM-DD-HHmm
+    fn title_and_summary_derivation() {
+        assert_eq!(derive_title("# Hello\n\nBody"), "Hello".to_string());
+        assert_eq!(derive_title(""), "Untitled note".to_string());
+        assert_eq!(derive_summary("# Hello\n\nBody"), "Body".to_string());
+        assert_eq!(derive_summary(""), "No summary yet.".to_string());
     }
 }

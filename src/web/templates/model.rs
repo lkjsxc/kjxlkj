@@ -3,23 +3,25 @@
 #[derive(Clone, Debug)]
 pub struct NavLink {
     pub href: String,
-    pub label: String,
-    pub meta: String,
+    pub relation: &'static str,
+    pub title: String,
+    pub created_at: String,
 }
 
 #[derive(Clone, Debug)]
 pub struct HistoryLink {
     pub href: String,
     pub label: String,
-    pub meta: String,
+    pub created_at: String,
     pub status: &'static str,
     pub active: bool,
 }
 
 #[derive(Clone, Debug)]
 pub struct NoteChrome {
+    pub id: String,
     pub title: String,
-    pub slug: String,
+    pub current_href: String,
     pub created_at: String,
     pub updated_at: String,
     pub visibility: &'static str,
@@ -41,7 +43,7 @@ pub struct IndexItem {
     pub href: String,
     pub title: String,
     pub summary: String,
-    pub slug: String,
-    pub meta: String,
-    pub status: &'static str,
+    pub created_at: String,
+    pub updated_at: String,
+    pub visibility: Option<&'static str>,
 }

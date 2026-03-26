@@ -3,7 +3,6 @@
 use super::DbPool;
 use crate::error::AppError;
 
-/// Run database migrations
 pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
     let client = pool
         .get()
@@ -13,7 +12,19 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
     client
         .batch_execute(
             r#"
-            -- Admin user table
+            CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name = 'records' AND column_name = 'slug'
+                ) THEN
+                    DROP TABLE IF EXISTS record_revisions;
+                    DROP TABLE IF EXISTS records;
+                END IF;
+            END $$;
+
             CREATE TABLE IF NOT EXISTS admin_user (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 username VARCHAR(255) NOT NULL UNIQUE,
@@ -21,7 +32,6 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
 
-            -- Sessions table
             CREATE TABLE IF NOT EXISTS sessions (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 user_id UUID NOT NULL REFERENCES admin_user(id) ON DELETE CASCADE,
@@ -32,34 +42,39 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
             CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 
-            -- Records table (notes)
             CREATE TABLE IF NOT EXISTS records (
-                slug VARCHAR(64) PRIMARY KEY,
+                id CHAR(22) PRIMARY KEY,
+                title TEXT NOT NULL,
+                summary TEXT NOT NULL,
                 body TEXT NOT NULL DEFAULT '',
                 is_private BOOLEAN NOT NULL DEFAULT TRUE,
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                deleted_at TIMESTAMPTZ
+                deleted_at TIMESTAMPTZ,
+                search_document TSVECTOR GENERATED ALWAYS AS (
+                    setweight(to_tsvector('simple', COALESCE(title, '')), 'A') ||
+                    setweight(to_tsvector('simple', COALESCE(body, '')), 'B')
+                ) STORED
             );
 
-            CREATE INDEX IF NOT EXISTS idx_records_updated ON records(updated_at DESC);
-            CREATE INDEX IF NOT EXISTS idx_records_created ON records(created_at ASC, slug ASC);
+            CREATE INDEX IF NOT EXISTS idx_records_updated ON records(updated_at DESC, id ASC);
+            CREATE INDEX IF NOT EXISTS idx_records_created ON records(created_at ASC, id ASC);
             CREATE INDEX IF NOT EXISTS idx_records_active ON records(deleted_at)
                 WHERE deleted_at IS NULL;
+            CREATE INDEX IF NOT EXISTS idx_records_search ON records USING GIN(search_document);
 
-            -- Record revisions table
             CREATE TABLE IF NOT EXISTS record_revisions (
                 id SERIAL PRIMARY KEY,
-                record_slug VARCHAR(64) NOT NULL,
+                record_id CHAR(22) NOT NULL REFERENCES records(id),
                 body TEXT NOT NULL,
                 is_private BOOLEAN NOT NULL,
                 revision_number INTEGER NOT NULL,
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                UNIQUE(record_slug, revision_number)
+                UNIQUE(record_id, revision_number)
             );
 
-            CREATE INDEX IF NOT EXISTS idx_revisions_slug
-                ON record_revisions(record_slug, revision_number DESC);
+            CREATE INDEX IF NOT EXISTS idx_revisions_lookup
+                ON record_revisions(record_id, revision_number DESC);
             "#,
         )
         .await

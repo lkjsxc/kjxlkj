@@ -61,8 +61,16 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
     )
 }
 
+pub fn render_time(dt: &chrono::DateTime<chrono::Utc>) -> String {
+    let iso = dt.to_rfc3339();
+    format!(
+        r#"<time class="local-time" datetime="{iso}" data-utc="{iso}">{}</time>"#,
+        format_date(dt)
+    )
+}
+
 pub fn format_date(dt: &chrono::DateTime<chrono::Utc>) -> String {
-    dt.format("%B %d, %Y at %I:%M %p").to_string()
+    dt.format("%Y-%m-%d %H:%M UTC").to_string()
 }
 
 pub fn html_escape(s: &str) -> String {
