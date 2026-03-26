@@ -34,8 +34,9 @@ export async function expectAdminNote(page) {
 }
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
-    await expectDarkShell(page, ['History']);
+    await expectDarkShell(page);
     await assertVisibleText(page, 'History');
+    await assertVisibleText(page, 'All revisions');
     await assertVisibleText(page, 'Prev');
     await assertVisibleText(page, previousTitle);
     await assertVisibleText(page, 'Next');
