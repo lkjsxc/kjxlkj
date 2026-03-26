@@ -11,4 +11,5 @@
 - [theme/README.md](theme/README.md)
 - [index/README.md](index/README.md)
 - [shell/README.md](shell/README.md)
+- [editor/README.md](editor/README.md)
 - [responsive/README.md](responsive/README.md)

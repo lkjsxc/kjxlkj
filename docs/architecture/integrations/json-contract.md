@@ -5,6 +5,7 @@
 - `POST /records` returns the created note object with `id`.
 - `PUT /records/{id}` returns the updated note object with `id`.
 - `DELETE /records/{id}` returns `204` with no body.
+- JSON note payloads continue to store canonical raw Markdown in `body`.
 
 ## History Success
 

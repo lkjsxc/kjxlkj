@@ -8,9 +8,9 @@
 
 ## Compact Navigation Controls
 
-- Narrow-screen menu and close controls stay icon-only.
-- Their background and border remain quiet relative to the page.
-- ARIA labels remain required.
+- There are no drawer-era menu or close controls in this phase.
+- Narrow layouts keep the rail visible by stacking it above the main pane.
+- Rail interactions must remain keyboard accessible.
 
 ## State Treatments
 
@@ -23,3 +23,4 @@
 - `Public` remains the only visibility control.
 - No helper sentence appears next to the checkbox.
 - The editor surface must not expose a Markdown formatting toolbar in this pass.
+- `Text mode` remains a low-emphasis action, not a primary filled control.

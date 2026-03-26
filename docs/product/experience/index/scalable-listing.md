@@ -2,7 +2,7 @@
 
 ## Shared Behavior
 
-- Public root and admin dashboard share the same dense listing language.
+- Public root and admin dashboard share the same shell plus dense listing language.
 - Rows are compact, sortable by recency, and safe for thousands of notes.
 - The list is cursor-paginated, not infinite scroll.
 
@@ -18,3 +18,4 @@
 - Per-page actions use text-only controls instead of filled buttons.
 - Pagination actions are text links with disabled states, not large pills.
 - Search and filter chrome must not dominate the list.
+- Rail content may show recent-note shortcuts, but the main list remains authoritative for result browsing.

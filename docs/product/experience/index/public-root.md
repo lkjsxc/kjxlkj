@@ -3,14 +3,15 @@
 ## Route Intent
 
 - `GET /` is the public note index after setup completes.
-- Unauthenticated users land on a searchable list, not a rail-first shell.
+- Unauthenticated users land on the global note shell, not a bare list page.
 - Authenticated admins may still open `/`, but `/admin` remains the full admin index.
 
 ## Layout Rules
 
-- No persistent left rail on the public root.
-- A compact top bar contains product name, search, pagination context, and sign-in/admin text actions.
-- The main area is a dense note list optimized for thousands of rows.
+- The persistent side menu is visible on the public root.
+- The rail contains search, scope context, recent public notes, and session actions.
+- The main pane remains a dense public result list optimized for thousands of rows.
+- The rail supplements the list; it does not replace the main result pane.
 
 ## Content Rules
 
@@ -21,5 +22,5 @@
 ## Search Rules
 
 - Search is server-side and query-param driven.
-- The query input is first-class on the public root.
+- The primary query input lives in the rail.
 - Empty-state and no-result copy remain terse and non-marketing.

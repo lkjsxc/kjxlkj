@@ -25,9 +25,9 @@ This tree is the canonical contract for `kjxlkj`.
 ## Reading Order
 
 1. [vision/purpose.md](vision/purpose.md)
-2. [product/experience/index/public-root.md](product/experience/index/public-root.md)
-3. [product/experience/shell/note-workspace.md](product/experience/shell/note-workspace.md)
-4. [product/behavior/search-and-pagination.md](product/behavior/search-and-pagination.md)
+2. [product/experience/shell/root-shell.md](product/experience/shell/root-shell.md)
+3. [product/experience/index/public-root.md](product/experience/index/public-root.md)
+4. [product/experience/editor/rich-markdown.md](product/experience/editor/rich-markdown.md)
 5. [product/surface/routes.md](product/surface/routes.md)
 6. [architecture/data/id-rules.md](architecture/data/id-rules.md)
 7. [operations/verification/browser/screenshot-checks.md](operations/verification/browser/screenshot-checks.md)

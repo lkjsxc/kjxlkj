@@ -1,4 +1,4 @@
 # Responsive TOC
 
-- [compact-navigation.md](compact-navigation.md)
+- [stacked-shell.md](stacked-shell.md)
 - [mobile-density.md](mobile-density.md)

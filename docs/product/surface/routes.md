@@ -26,18 +26,18 @@
 ## Searchable Index Pages
 
 - `GET /`:
-  - returns public note list with query params `q`, `cursor`, `limit`
+  - returns public shell with rail plus note list using query params `q`, `cursor`, `limit`
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
-  - with valid session: `200` HTML admin note list with `q`, `cursor`, `limit`
+  - with valid session: `200` HTML admin shell with rail plus note list using `q`, `cursor`, `limit`
 
 ## Note Viewing
 
 - `GET /{id}`:
   - note not found: `404`
   - note is private and no session: `404`
-  - accessible note: `200` HTML note page
+  - accessible note: `200` HTML note page with rich editor or text-mode fallback for admins
 - `GET /{id}/history`:
   - note not found: `404`
   - note is private and no session: `404`

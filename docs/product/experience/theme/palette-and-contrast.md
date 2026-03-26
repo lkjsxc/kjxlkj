@@ -9,9 +9,10 @@
 ## Surface Hierarchy
 
 - Global background uses near-black graphite.
-- Primary panels use a raised charcoal tone.
-- Secondary panels use a slightly lighter layer for grouping.
+- Primary panels use solid charcoal tone.
+- Secondary panels use a slightly lighter solid layer for grouping.
 - Borders stay subtle but always visible against adjacent dark surfaces.
+- Depth comes from spacing and borders, not from gradients or shadows.
 
 ## Accent Policy
 
@@ -28,6 +29,7 @@
 
 ## Reference Translation
 
-- `tmp/image01.png` implies layered dark surfaces, not flat black.
+- `tmp/image01.png` implies flat dark surfaces with strong sectional separation.
 - `tmp/image02.png` is rejected because bright content panels and weak button contrast break the shell.
 - `tmp/image03.png` is rejected because compact-nav controls visually dominate the drawer.
+- Gradients, glass blur, and soft shadow elevation are not canonical in this phase.

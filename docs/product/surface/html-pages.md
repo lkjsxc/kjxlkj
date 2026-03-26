@@ -10,6 +10,8 @@
 
 ## Shared Rules
 
-- List pages are list-first, not rail-first.
+- Every page renders inside the global shell.
+- Root and admin pages remain list-first inside that shell.
 - Note and history shell rules are defined in [../experience/shell/README.md](../experience/shell/README.md).
 - Public root list rules are defined in [../experience/index/README.md](../experience/index/README.md).
+- Rich editor rules are defined in [../experience/editor/README.md](../experience/editor/README.md).

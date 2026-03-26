@@ -17,6 +17,7 @@
 - Updates `updated_at`.
 - Recomputes derived title, summary, and search fields.
 - Returns `200` with updated note.
+- The stored body remains canonical raw Markdown regardless of edit mode.
 
 ## Public Visibility Control
 
@@ -24,6 +25,12 @@
 - Checked maps to `is_private = false`.
 - Unchecked maps to `is_private = true`.
 - Toggling visibility triggers immediate save and immediate chrome refresh.
+
+## Edit Mode Rules
+
+- Rich mode edits rebuild and save raw Markdown.
+- Text mode edits save raw Markdown directly.
+- Unsupported Markdown must be preserved by using text mode rather than lossy rich-mode conversion.
 
 ## Delete (`DELETE /records/{id}`)
 

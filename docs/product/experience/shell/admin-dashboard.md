@@ -7,9 +7,10 @@
 
 ## Layout
 
-- No all-notes side rail.
-- Header contains search, result context, and restrained text actions.
+- The persistent shell rail remains visible.
+- The rail contains admin search, scope context, recent accessible notes, and restrained text actions.
 - Main content is a dense paginated list.
+- The main list remains the authoritative browse surface for thousands of notes.
 
 ## Row Content
 

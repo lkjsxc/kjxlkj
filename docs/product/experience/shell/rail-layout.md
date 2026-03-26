@@ -1,14 +1,17 @@
 # Rail Layout Contract
 
-## Desktop Rail
+## Global Rail
 
-- Note and history pages keep a persistent left rail on desktop.
-- Rail width stays compact and must not be used for large note indexes.
+- The rail is present on every HTML page.
+- Desktop keeps the rail as a fixed left column.
+- Rail width stays compact and must not be used as the primary full result list.
 - Scrollable rails must keep metadata readable without line wrapping collisions.
 
 ## Rail Sections
 
 - Brand and session mode.
+- Scope search.
+- Recent note shortcuts.
 - Current note context.
 - Created and updated metadata.
 - `Prev` and `Next` navigation cards with explicit relationship labels.
@@ -24,4 +27,4 @@
 ## Action Treatment
 
 - Dashboard, Home, New note, Logout, and Delete use text-style controls.
-- Compact navigation trigger and close controls remain icon-only ghost controls.
+- No menu trigger, close button, or drawer backdrop appears in this phase.
