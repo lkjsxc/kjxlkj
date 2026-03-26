@@ -30,14 +30,14 @@ The system manages `note` resources.
 - Missing heading yields `Untitled note`.
 - Normal UI does not display raw `id` values.
 - Created time is the secondary identity cue in lists and note chrome.
-- Admin note pages may edit the canonical body through rich mode or text mode.
+- Admin note pages edit the canonical body through a single rendered Markdown workspace.
 
 ## UI Semantics
 
 - The public-facing control is `Public`.
 - `Public = checked` maps to `is_private = false`.
 - `Public = unchecked` maps to `is_private = true`.
-- `Text mode` is an editing action, not a different storage format.
+- Search UI is canonical on `/search`.
 
 ## Revision History
 

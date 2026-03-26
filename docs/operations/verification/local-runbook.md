@@ -24,7 +24,7 @@ curl -sS -X POST http://127.0.0.1:8080/login \
 
 Expected:
 
-- `/` returns the public index after setup
+- `/` returns the public browse page after setup
 - setup redirects to `/login`
 - login redirects to `/admin`
 
@@ -39,29 +39,44 @@ curl -sS -X POST http://127.0.0.1:8080/records \
 
 Expected: `201` with JSON body containing `id`.
 
-## Verify Public Root Search
+## Verify Public Root Browse
 
 ```bash
-curl -sS 'http://127.0.0.1:8080/?q=new'
+curl -sS 'http://127.0.0.1:8080/'
 ```
 
 Expected:
 
 - HTML contains a dense note list
-- HTML does not contain the public rail shell
+- HTML contains the shell rail
 - HTML does not expose raw note IDs in normal list rows
+- HTML does not contain `RECENT`
+- HTML does not contain a rail search form
 
-## Verify Admin Dashboard Search
+## Verify Search Page
 
 ```bash
-curl -sS 'http://127.0.0.1:8080/admin?q=new' -b cookies.txt
+curl -sS 'http://127.0.0.1:8080/search?q=new'
+curl -sS 'http://127.0.0.1:8080/search?q=new' -b cookies.txt
+```
+
+Expected:
+
+- guest search returns only public matches
+- admin search may include private matches
+- HTML contains the search form in the main pane
+
+## Verify Admin Dashboard
+
+```bash
+curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 ```
 
 Expected:
 
 - HTML contains admin list rows
-- HTML contains search controls
-- HTML uses text-style actions
+- HTML links to `/search`
+- HTML uses restrained actions
 
 ## Verify Admin Note Shell
 
@@ -74,9 +89,9 @@ curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
 Expected:
 
 - HTML contains `Prev` / `Next` labels
-- HTML does not contain toolbar controls
+- HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
-- HTML does not render a footer history button below the note body
+- HTML hides `Saving` / `Saved`
 
 ## Verify Browser Visual Checks
 
@@ -86,8 +101,8 @@ docker compose --profile verify run --rm visual-verify
 
 Expected:
 
-- desktop screenshots pass list/note assertions
-- compact screenshots pass drawer assertions
+- desktop screenshots pass browse/search/note assertions
+- compact screenshots pass closed and open drawer assertions
 - visual verification exits `0`
 
 ## Cleanup

@@ -2,15 +2,15 @@
 
 ## Type Direction
 
-- Shell, controls, search inputs, and editor chrome use one default UI font stack.
-- Rendered Markdown and rich Markdown blocks may keep a separate reading-oriented stack.
+- Shell, controls, and editor chrome use one UI font direction.
+- Rendered Markdown may keep a separate reading-oriented stack.
 - IDs are not used as visible typography anchors in normal UI.
 
 ## Density Rules
 
 - Public and admin indexes use dense row layouts fit for thousands of notes.
-- Rails, history entries, note metadata, and rich blocks stay compact.
-- Text-only actions reduce chrome bulk relative to note content.
+- Rails, history entries, note metadata, and editor chrome stay compact.
+- Text-first actions reduce chrome bulk relative to note content.
 
 ## Readability Rules
 

@@ -4,8 +4,8 @@
 
 1. Update contracts in `docs/`.
 2. Update code to satisfy contracts.
-3. Run mandatory quality and compose gates.
-4. Commit only after gate success.
+3. Run mandatory Rust and compose gates.
+4. Commit the verified batch.
 
 ## Blocking Rule
 

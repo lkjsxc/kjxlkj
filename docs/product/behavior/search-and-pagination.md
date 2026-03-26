@@ -9,19 +9,19 @@
 
 ## Query Surface
 
-- HTML index routes accept `q`, `cursor`, and `limit`.
+- `/search` is the canonical HTML query surface.
 - `q` is a plain text full-text query.
-- `cursor` is opaque and route-specific.
+- `cursor` is opaque and search-specific.
 - `limit` defaults to `50` and is capped at `100`.
 
 ## Ordering
 
-- Without `q`, lists sort by `updated_at DESC, id ASC`.
-- With `q`, search first filters matching notes and then keeps `updated_at DESC, id ASC`.
+- Search first filters matching notes and then keeps `updated_at DESC, id ASC`.
+- Browse pages keep the same ordering without `q`.
 - Note-to-note `Prev` and `Next` continue to use `created_at`.
 
 ## Cursor Rules
 
-- Cursor pagination is canonical for both public and admin indexes.
+- Cursor pagination is canonical for browse pages and search results.
 - Empty cursor means first page.
 - Missing next page yields no further cursor.

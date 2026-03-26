@@ -23,21 +23,25 @@
 - `POST /logout`:
   - after setup: `204` and clears `session_id` cookie
 
-## Searchable Index Pages
+## List and Search Pages
 
 - `GET /`:
-  - returns public shell with rail plus note list using query params `q`, `cursor`, `limit`
+  - returns public shell with browse list using query params `cursor`, `limit`
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
-  - with valid session: `200` HTML admin shell with rail plus note list using `q`, `cursor`, `limit`
+  - with valid session: `200` HTML admin shell with browse list using `cursor`, `limit`
+- `GET /search`:
+  - before setup: `302` to `/setup`
+  - without valid session: `200` HTML public search page using `q`, `cursor`, `limit`
+  - with valid session: `200` HTML admin-capable search page using `q`, `cursor`, `limit`
 
 ## Note Viewing
 
 - `GET /{id}`:
   - note not found: `404`
   - note is private and no session: `404`
-  - accessible note: `200` HTML note page with rich editor or text-mode fallback for admins
+  - accessible note: `200` HTML note page with single-mode editor for admins
 - `GET /{id}/history`:
   - note not found: `404`
   - note is private and no session: `404`

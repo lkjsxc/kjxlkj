@@ -1,4 +1,4 @@
 # Editor TOC
 
-- [rich-markdown.md](rich-markdown.md)
-- [text-mode-fallback.md](text-mode-fallback.md)
+- [markdown-workspace.md](markdown-workspace.md)
+- [autosave-and-errors.md](autosave-and-errors.md)

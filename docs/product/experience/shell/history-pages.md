@@ -1,16 +1,16 @@
 # History Pages Contract
 
-## History Index
+## Layout
 
-- History pages inherit the same note rail as current note pages.
-- History access is rail-first; no duplicate footer button is rendered below the note body.
-- Each entry shows revision number, visibility state, and browser-local 24-hour time.
+- History index and revision pages reuse the note shell.
+- The rail keeps current-note context, prev/next links, revision links, and actions.
+- The history body stays in the main pane.
 
-## Snapshot Pages
+## Access Rules
 
-- Snapshot pages keep the current-note rail context.
-- Guests see only public revisions.
-- Admins see all revisions.
+- Guests may read only public revisions.
+- Admins may read all revisions.
+- Revision pages never expose raw note IDs as normal page chrome.
 
 ## Rail Limits
 

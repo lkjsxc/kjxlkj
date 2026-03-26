@@ -10,21 +10,21 @@
 ## Rail Sections
 
 - Brand and session mode.
-- Scope search.
-- Recent note shortcuts.
+- Primary navigation.
+- Scope summary.
 - Current note context.
 - Created and updated metadata.
 - `Prev` and `Next` navigation cards with explicit relationship labels.
 - Revision history links.
-- Mode-specific text actions.
+- Mode-specific actions.
 
 ## Metadata Rules
 
 - Created and updated values render as browser-local 24-hour time.
-- Timestamp layout must stack or grid safely; it may not wrap awkward fragments.
+- Timestamp layout must stack or grid safely.
 - Raw note IDs are not shown in normal rail metadata.
 
 ## Action Treatment
 
-- Dashboard, Home, New note, Logout, and Delete use text-style controls.
-- No menu trigger, close button, or drawer backdrop appears in this phase.
+- Search, Dashboard, Home, New note, Logout, and Delete use restrained controls.
+- Narrow screens add one quiet top-right menu toggle plus a backdrop.

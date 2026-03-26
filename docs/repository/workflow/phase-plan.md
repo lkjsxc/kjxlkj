@@ -1,11 +1,15 @@
 # Phase Plan Contract
 
-## Program Structure
+## Order
 
-- Restructuring execution is organized as an ordered stage program (`S00` through `S10`) under [../../restructuring/stages/README.md](../../restructuring/stages/README.md).
-- Each stage contains three ordered waves with explicit acceptance IDs.
-- Stage transitions are blocked until all stage exits are satisfied.
+1. Update the docs canon.
+2. Refactor shared layout and route surfaces.
+3. Replace or simplify client-side editor behavior.
+4. Update tests and compose verification.
+5. Commit only after the active batch passes its gates.
 
-## Transition Rule
+## Intent
 
-Each stage must pass [../../restructuring/checkpoints/gate-checklist.md](../../restructuring/checkpoints/gate-checklist.md) before moving forward.
+- Keep documentation decisions ahead of code changes.
+- Prefer small coherent batches over one massive unverified diff.
+- Treat compose verification as the acceptance boundary for each major batch.

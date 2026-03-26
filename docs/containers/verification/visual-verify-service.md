@@ -14,7 +14,7 @@ docker compose --profile verify run --rm visual-verify
 
 - Launch against the compose `app` service.
 - Capture desktop and compact layouts.
-- Fail on unreadable controls, missing dark-shell structure, or loud compact-nav controls.
+- Fail on unreadable controls, missing flat-shell structure, old rail/search artifacts, or broken drawer behavior.
 
 ## Container Requirements
 

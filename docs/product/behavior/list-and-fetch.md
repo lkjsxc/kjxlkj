@@ -2,23 +2,28 @@
 
 ## Public Root List
 
-- `GET /` returns the public searchable shell after setup completes.
+- `GET /` returns the public browse shell after setup completes.
 - Unauthenticated users see only public notes.
-- Authenticated admins may still open `/`, but it remains the public index surface.
-- The route accepts `q`, `cursor`, and `limit`.
+- Authenticated admins may still open `/`, but it remains the public browse surface.
+- The route accepts `cursor` and `limit`.
 - The rail remains visible while the main pane shows the result list.
 
 ## Admin Dashboard List
 
-- `GET /admin` returns the admin searchable index.
+- `GET /admin` returns the admin browse index.
 - Admin dashboard includes public and private notes.
 - Dashboard list is dense and paginated.
-- The rail may show recent-note shortcuts, but it does not replace the main list.
+- The rail provides navigation and actions, not recent-note shortcuts.
+
+## Search Page
+
+- `GET /search` is the only canonical search surface.
+- Search accepts `q`, `cursor`, and `limit`.
+- Empty query renders guidance instead of a full browse dump.
 
 ## Default Ordering
 
-- Index pages sort by `updated_at DESC, id ASC`.
-- Search keeps the same ordering after filtering matches.
+- Browse and search pages sort by `updated_at DESC, id ASC`.
 
 ## Fetch (`GET /{id}`)
 
@@ -26,7 +31,7 @@
 - Returns `404` if note does not exist.
 - Returns `404` if note is private and user is not authenticated.
 - Response includes `body`, `is_private`, `created_at`, and `updated_at`.
-- Admin note pages choose rich mode or text-mode fallback from the stored Markdown body.
+- Admin note pages edit the stored Markdown body through one rendered workspace.
 
 ## Note Navigation
 

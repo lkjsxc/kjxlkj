@@ -16,10 +16,10 @@
 
 ## Admin Editing Surface
 
-- Admin editing defaults to rich Markdown block editing.
-- Blocks render as Markdown output and become editable in place.
-- `Text mode` remains available as a low-emphasis action.
-- The editor uses the default UI font stack, not a separate branded UI font.
+- Admin editing uses one rendered Markdown workspace.
+- The workspace is powered by a third-party editor.
+- There is no mode-switch choice in normal UI.
+- The editor uses the shell UI font direction plus a readable content stack.
 - Public checkbox stays inside the editing surface.
 
 ## Live Chrome Sync
@@ -27,7 +27,6 @@
 - Heading edits update page title, browser title, and current-note rail title immediately.
 - Public checkbox toggles update visibility chips and related chrome immediately.
 - The removed helper text (`Guest-readable`, `Admin-only`) does not return.
-- Text-mode edits and rich-mode edits share the same live title and visibility sync rules.
 
 ## Guest View
 

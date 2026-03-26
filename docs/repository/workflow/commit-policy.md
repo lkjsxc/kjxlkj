@@ -2,14 +2,14 @@
 
 ## Frequency
 
-Commit after each major documentation batch:
+Commit after each major batch:
 
-- restructuring tree scaffold
-- stage and wave authoring batches
-- checkpoints and evidence updates
-- validation and consistency sweep
+- docs canon reset
+- shell and route refactor
+- editor replacement
+- verification stabilization
 
 ## Preconditions
 
-- Relevant gates for the stage must pass as defined in [../../restructuring/checkpoints/gate-checklist.md](../../restructuring/checkpoints/gate-checklist.md).
+- The changed batch passes the relevant compose and Rust gates.
 - Commit message summarizes changed contracts and behavior.

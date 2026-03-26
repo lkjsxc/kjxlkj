@@ -2,13 +2,13 @@
 
 ## Dashboard Intent
 
-- `GET /admin` is the scalable admin index.
-- The dashboard is for search, scan, and entry into note editing, not for large decorative cards.
+- `GET /admin` is the scalable admin browse page.
+- The dashboard is for scan, pagination, and entry into note editing.
 
 ## Layout
 
 - The persistent shell rail remains visible.
-- The rail contains admin search, scope context, recent accessible notes, and restrained text actions.
+- The rail contains navigation, scope context, and restrained actions.
 - Main content is a dense paginated list.
 - The main list remains the authoritative browse surface for thousands of notes.
 
@@ -22,6 +22,6 @@
 
 ## Visual Rules
 
-- Actions are text-only.
-- Search and pagination controls are quieter than note content.
-- Empty and no-result states remain compact and factual.
+- Actions are text-first.
+- Search entry belongs on `/search`, not in the rail.
+- Empty states remain compact and factual.

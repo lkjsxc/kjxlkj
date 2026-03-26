@@ -3,7 +3,7 @@
 ## Theme Policy
 
 - The product is dark-only.
-- No light theme is documented or implemented in this phase.
+- No light theme is documented or implemented.
 - Every surface, border, and text token is authored for dark presentation first.
 
 ## Surface Hierarchy
@@ -23,13 +23,13 @@
 ## Contrast Rules
 
 - Button text must always have explicit foreground color tokens.
-- Ghost and secondary buttons must remain readable on dark panels and overlays.
+- Secondary buttons must remain readable on dark panels and overlays.
 - Muted metadata may be softer than body text, but never dim enough to disappear.
-- Compact menu and close controls must be visually quiet without sacrificing contrast.
+- Compact menu controls must be visually quiet without sacrificing contrast.
 
 ## Reference Translation
 
 - `tmp/image01.png` implies flat dark surfaces with strong sectional separation.
 - `tmp/image02.png` is rejected because bright content panels and weak button contrast break the shell.
 - `tmp/image03.png` is rejected because compact-nav controls visually dominate the drawer.
-- Gradients, glass blur, and soft shadow elevation are not canonical in this phase.
+- Gradients, glass blur, and soft shadow elevation are not canonical.

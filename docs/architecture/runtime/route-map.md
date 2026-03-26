@@ -1,8 +1,9 @@
 # Runtime Route Map
 
-- `/setup`, `/login`, `/logout` -> setup/session handlers.
-- `/` -> public searchable index handler.
-- `/admin` and `/admin/` -> admin searchable index handler.
+- `/setup`, `/login`, `/logout` -> setup and session handlers.
+- `/` -> public browse handler.
+- `/admin` and `/admin/` -> admin browse handler.
+- `/search` -> auth-aware search handler.
 - `/{id}` -> note view/edit handler.
 - `/{id}/history` -> history index handler.
 - `/{id}/history/{revision_number}` -> history snapshot handler.
@@ -17,4 +18,5 @@
 
 - Public root lists public notes only.
 - Admin dashboard uses session guard.
-- Note/history handlers check current-note access and snapshot visibility.
+- Search widens to private notes only when session is valid.
+- Note and history handlers check current-note access and snapshot visibility.

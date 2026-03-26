@@ -6,6 +6,7 @@
 - Keep one requirement per bullet.
 - Keep canonical definitions in one file and link to them.
 - Prefer short declarative statements over narrative paragraphs.
+- Delete obsolete contracts instead of preserving conflicting versions.
 
 ## Topology Rules
 
@@ -21,5 +22,5 @@
 ## Note Content Rules
 
 - Title is extracted from the first `# heading` line in the body.
-- Slug is auto-generated from the current datetime on creation.
 - All notes are private by default.
+- Stored content remains canonical Markdown even when the editor shows rendered content.

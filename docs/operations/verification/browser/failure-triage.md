@@ -3,9 +3,10 @@
 ## Investigate First
 
 - Button text contrast regressions.
-- Drawer trigger or close control drawing too much attention.
+- Drawer trigger drawing too much attention.
 - Light surfaces reappearing in the dark shell.
 - Compact layout clipping or overlap.
+- Old UI artifacts such as `RECENT`, rail search, or mode-switch text returning.
 
 ## Recovery Steps
 

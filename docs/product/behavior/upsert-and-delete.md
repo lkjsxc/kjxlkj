@@ -17,7 +17,7 @@
 - Updates `updated_at`.
 - Recomputes derived title, summary, and search fields.
 - Returns `200` with updated note.
-- The stored body remains canonical raw Markdown regardless of edit mode.
+- The stored body remains canonical raw Markdown regardless of editor presentation.
 
 ## Public Visibility Control
 
@@ -26,11 +26,11 @@
 - Unchecked maps to `is_private = true`.
 - Toggling visibility triggers immediate save and immediate chrome refresh.
 
-## Edit Mode Rules
+## Editor Rules
 
-- Rich mode edits rebuild and save raw Markdown.
-- Text mode edits save raw Markdown directly.
-- Unsupported Markdown must be preserved by using text mode rather than lossy rich-mode conversion.
+- The third-party editor must save through canonical Markdown.
+- The normal UI exposes no user-facing mode choice.
+- If the editor fails to load, the page still remains editable.
 
 ## Delete (`DELETE /records/{id}`)
 

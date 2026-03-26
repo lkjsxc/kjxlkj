@@ -4,7 +4,7 @@
 
 - Compact mode reduces page padding and card chrome.
 - The title, metadata, and action surfaces remain readable without horizontal scrolling.
-- The stacked rail keeps full-width readability before the main pane begins.
+- The top bar, drawer, and main pane must coexist without clipping.
 
 ## Content Rules
 
@@ -14,5 +14,6 @@
 
 ## Verification Targets
 
-- The stacked rail stays visible without extra navigation controls.
+- The drawer is closed on first paint.
+- The drawer opens without clipping the main pane.
 - Button labels and note metadata stay readable on real mobile widths.

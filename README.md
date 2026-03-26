@@ -1,22 +1,22 @@
-# kjxlkj — Contract-First Record Service
+# kjxlkj
 
-This repository is operated from documentation contracts in `docs/`.
+Contract-first note service for LLM-operated workflows.
 
 ## Start Here
 
 1. [docs/README.md](docs/README.md)
 2. [docs/vision/purpose.md](docs/vision/purpose.md)
 3. [docs/product/surface/routes.md](docs/product/surface/routes.md)
-4. [docs/operations/quality/gates.md](docs/operations/quality/gates.md)
-5. [docs/repository/workflow/phase-plan.md](docs/repository/workflow/phase-plan.md)
+4. [docs/operations/verification/local-runbook.md](docs/operations/verification/local-runbook.md)
+5. [docs/operations/quality/gates.md](docs/operations/quality/gates.md)
 
-## Implementation Stack
+## Stack
 
 - Rust runtime and CLI
-- Docker Compose verification workflow
-- PostgreSQL-backed setup/login/session state
-- Filesystem-backed record storage
+- Actix Web server-rendered HTML
+- PostgreSQL for notes, revisions, search, and sessions
+- Docker Compose for build and verification
 
-## Contract Rule
+## Rule
 
-If code and docs diverge, docs define the intended behavior until code is realigned.
+If code and docs diverge, update the docs canon first and then realign code.

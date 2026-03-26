@@ -2,25 +2,26 @@
 
 ## Action Style
 
-- Standard actions render as text-only controls.
+- Standard actions render as text-first controls.
 - Filled buttons are not the default action language.
 - Delete may use color emphasis, but still reads as text-first.
 
 ## Compact Navigation Controls
 
-- There are no drawer-era menu or close controls in this phase.
-- Narrow layouts keep the rail visible by stacking it above the main pane.
+- Narrow layouts expose one quiet top-right menu toggle.
+- The drawer may use a backdrop but no loud close chrome.
 - Rail interactions must remain keyboard accessible.
 
 ## State Treatments
 
 - Hover, focus, and active states are visible on every control.
 - Disabled navigation stays readable and muted.
-- Save status messaging is explicit for saving, saved, and failed states.
+- Save failure is explicit.
+- Save success is silent.
 
 ## Form Rules
 
 - `Public` remains the only visibility control.
 - No helper sentence appears next to the checkbox.
-- The editor surface must not expose a Markdown formatting toolbar in this pass.
-- `Text mode` remains a low-emphasis action, not a primary filled control.
+- The rail must not expose a search box.
+- The editor must not expose a visible mode switch.
