@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
-import { assertVisibleText, expectAdminNote, expectCompactTrigger, expectDarkShell, expectGuestNote } from './assertions.mjs';
+import { assertVisibleText, expectAdminNote, expectDarkShell, expectGuestNote, expectPublicRoot, expectStackedShell } from './assertions.mjs';
 
 const appUrl = process.env.APP_URL ?? 'http://app:8080';
 const databaseUrl =
@@ -20,8 +20,8 @@ async function main() {
     const browser = await chromium.launch({ headless: true });
     try {
         const notes = await prepareState(browser);
+        await capturePublicScreens(browser, notes);
         await captureAdminScreens(browser, notes.middle.id);
-        await captureGuestScreens(browser, notes);
         await captureCompactScreens(browser, notes.middle.id);
     } finally {
         await browser.close();
@@ -30,7 +30,7 @@ async function main() {
     console.log(JSON.stringify({
         command: 'visual-verify',
         status: 'pass',
-        artifacts: ['desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-guest-note.png', 'compact-note-closed.png', 'compact-note-open.png'],
+        artifacts: ['desktop-public-root.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-guest-note.png', 'compact-public-root.png', 'compact-admin-note.png'],
     }));
 }
 
@@ -71,9 +71,13 @@ async function captureAdminScreens(browser, id) {
     await context.close();
 }
 
-async function captureGuestScreens(browser, notes) {
+async function capturePublicScreens(browser, notes) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } });
     const page = await context.newPage();
+
+    await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
+    await expectPublicRoot(page);
+    await capture(page, 'desktop-public-root.png');
 
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
@@ -92,14 +96,16 @@ async function captureCompactScreens(browser, id) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
 
-    await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
-    await expectCompactTrigger(page, '[data-menu-toggle]');
-    await capture(page, 'compact-note-closed.png');
+    await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
+    await expectPublicRoot(page);
+    await expectStackedShell(page);
+    await capture(page, 'compact-public-root.png');
 
-    await page.click('[data-menu-toggle]');
-    await page.waitForSelector('.app-shell.drawer-open');
-    await expectCompactTrigger(page, '.rail-close');
-    await capture(page, 'compact-note-open.png');
+    await login(page);
+    await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
+    await expectAdminNote(page);
+    await expectStackedShell(page);
+    await capture(page, 'compact-admin-note.png');
     await context.close();
 }
 

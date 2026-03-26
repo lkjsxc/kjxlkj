@@ -1,4 +1,5 @@
 var saveTimer = null;
+var currentMode = 'text';
 
 function createNote() {
     fetch('/records', {
@@ -12,13 +13,35 @@ function createNote() {
 }
 
 function initEditor() {
-    syncNoteChrome();
+    var surface = document.querySelector('[data-initial-mode]');
     var editor = document.getElementById('editor');
-    if (!editor) return;
+    var rich = document.getElementById('rich-editor');
+    if (!surface || !editor) return;
+    currentMode = surface.dataset.initialMode || 'text';
     editor.addEventListener('input', function () {
+        updateRichButton();
         syncNoteChrome();
         queueSave();
     });
+    rich?.addEventListener('input', function () {
+        syncSourceFromRich();
+        syncNoteChrome();
+        queueSave();
+    });
+    document.addEventListener('click', function (event) {
+        var mode = event.target.closest('[data-mode-button]')?.dataset.modeButton;
+        var block = event.target.closest('[data-add-block]')?.dataset.addBlock;
+        if (mode) setMode(mode);
+        if (block && rich) {
+            setMode('rich');
+            window.richMarkdown.addBlock(rich, block);
+            syncSourceFromRich();
+            syncNoteChrome();
+            queueSave();
+        }
+    });
+    setMode(currentMode);
+    syncNoteChrome();
 }
 
 function queueSave() {
@@ -29,6 +52,7 @@ function queueSave() {
 function saveNote() {
     var editor = document.getElementById('editor');
     if (!editor || typeof currentId === 'undefined') return;
+    if (currentMode === 'rich') syncSourceFromRich();
     var status = document.getElementById('save-status');
     status.textContent = 'Saving';
     status.dataset.state = 'saving';
@@ -49,6 +73,42 @@ function saveNote() {
     });
 }
 
+function setMode(mode) {
+    var surface = document.querySelector('[data-initial-mode]');
+    var rich = document.getElementById('rich-editor');
+    var editor = document.getElementById('editor');
+    if (!surface || !editor || !rich) return;
+    if (mode === 'rich') {
+        var blocks = window.richMarkdown.parseBlocks(editor.value);
+        if (!blocks) return updateRichButton();
+        rich.innerHTML = blocks.map(window.richMarkdown.blockHtml).join('');
+        syncSourceFromRich();
+    } else if (currentMode === 'rich') {
+        syncSourceFromRich();
+    }
+    currentMode = mode;
+    rich.hidden = mode !== 'rich';
+    editor.hidden = mode === 'rich';
+    document.querySelector('.editor-actions').hidden = mode !== 'rich';
+    document.querySelectorAll('[data-mode-button]').forEach(function (node) {
+        node.classList.toggle('active', node.dataset.modeButton === mode);
+    });
+    syncNoteChrome();
+}
+
+function updateRichButton() {
+    var editor = document.getElementById('editor');
+    var button = document.querySelector('[data-mode-button="rich"]');
+    if (!editor || !button) return;
+    button.disabled = !window.richMarkdown.parseBlocks(editor.value);
+}
+
+function syncSourceFromRich() {
+    var editor = document.getElementById('editor');
+    var rich = document.getElementById('rich-editor');
+    if (editor && rich) editor.value = window.richMarkdown.serializeRich(rich);
+}
+
 function togglePublic() {
     var checkbox = document.getElementById('public-toggle');
     isPrivate = !checkbox.checked;
@@ -58,7 +118,9 @@ function togglePublic() {
 
 function syncNoteChrome() {
     var editor = document.getElementById('editor');
-    var title = deriveTitle(editor ? editor.value : '');
+    if (!editor) return;
+    if (currentMode === 'rich') syncSourceFromRich();
+    var title = deriveTitle(editor.value);
     var visibility = isPrivate ? 'Private' : 'Public';
     document.querySelectorAll('[data-live-title]').forEach(function (node) { node.textContent = title; });
     document.querySelectorAll('[data-live-visibility]').forEach(function (node) { node.textContent = visibility; });

@@ -1,34 +1,31 @@
 //! Note page template
 
-use super::layout::{base, html_escape, render_markdown, shell_page};
+use super::editor::editor_surface;
+use super::layout::{base, shell_page};
 use super::model::NoteChrome;
 use super::note_shell::note_rail;
+use crate::core::{editor_document, render_markdown};
 use crate::web::db::Record;
 
 const EDITOR_JS: &str = include_str!("editor.js");
+const RICH_EDITOR_JS: &str = include_str!("rich_editor.js");
 
 pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
     let rail = note_rail(chrome, is_admin, &chrome.current_href);
     let editor = if is_admin {
+        let document = editor_document(&record.body);
         format!(
-            r#"<section class="surface editor-surface note-surface">
-<label class="check-row" for="public-toggle">
-<input type="checkbox" id="public-toggle" {} onchange="togglePublic()">
-<span>Public</span>
-</label>
-<span id="save-status" class="save-status"></span>
-<textarea id="editor" class="note-editor">{}</textarea>
-</section>
-<script>
+            r#"{}<script>
 var currentId = "{}";
 var isPrivate = {};
 {}
+{}
 initEditor();
 </script>"#,
-            if record.is_private { "" } else { "checked" },
-            html_escape(&record.body),
+            editor_surface(record, &document),
             record.id,
             record.is_private,
+            RICH_EDITOR_JS,
             EDITOR_JS
         )
     } else {
@@ -73,7 +70,7 @@ initEditor();
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::web::templates::{HistoryLink, NoteChrome};
+    use crate::web::templates::{HistoryLink, NoteChrome, RecentLink};
     use chrono::Utc;
 
     fn sample_record() -> Record {
@@ -93,9 +90,16 @@ mod tests {
             id: "Q29udHJhY3RSdW50aW1lMQ".to_string(),
             title: "Demo".to_string(),
             current_href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
+            search_path: "/admin",
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
             visibility: "Public",
+            recent: vec![RecentLink {
+                href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
+                title: "Demo".to_string(),
+                updated_at: "2026-03-26 08:35 UTC".to_string(),
+                visibility: Some("Public"),
+            }],
             previous: None,
             next: None,
             history: vec![HistoryLink {
@@ -112,7 +116,7 @@ mod tests {
     #[test]
     fn guest_note_page_hides_editor_and_history_footer_button() {
         let html = note_page(&sample_record(), &sample_chrome(), false);
-        assert!(html.contains("data-menu-toggle"));
+        assert!(html.contains("shell-rail"));
         assert!(!html.contains("textarea id=\"editor\""));
         assert!(!html.contains("<footer class=\"page-tail\">"));
         assert!(!html.contains("Q29udHJhY3RSdW50aW1lMQ</span>"));
@@ -122,7 +126,7 @@ mod tests {
     fn admin_note_page_uses_plain_editor() {
         let html = note_page(&sample_record(), &sample_chrome(), true);
         assert!(html.contains("public-toggle"));
-        assert!(html.contains("textarea id=\"editor\""));
+        assert!(html.contains("data-mode-button=\"rich\""));
         assert!(!html.contains("SimpleMDE"));
         assert!(!html.contains("Guest-readable"));
         assert!(!html.contains("editor-toolbar-row"));

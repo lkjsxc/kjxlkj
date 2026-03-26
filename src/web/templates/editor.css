@@ -3,8 +3,61 @@
     gap: 14px;
 }
 
+.editor-head,
+.editor-modes,
+.editor-actions,
+.rich-editor {
+    display: grid;
+    gap: 12px;
+}
+
+.editor-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+}
+
+.rich-block {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-1);
+    padding: 14px 16px;
+}
+
+.block-editable,
+.block-item {
+    margin: 0;
+    outline: 0;
+    white-space: pre-wrap;
+}
+
+.block-editable[data-kind="heading"][data-level="1"] {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.block-editable[data-kind="heading"][data-level="2"] {
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.block-editable[data-kind="heading"][data-level="3"] {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.block-list,
+.block-code {
+    margin: 0;
+}
+
+.block-code-input {
+    font-family: var(--mono);
+}
+
 .note-editor {
     min-height: 62vh;
     resize: vertical;
     font: 15px/1.7 var(--sans);
+    background: var(--bg-1);
 }

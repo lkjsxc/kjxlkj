@@ -1,6 +1,14 @@
 //! View models for HTML templates
 
 #[derive(Clone, Debug)]
+pub struct RecentLink {
+    pub href: String,
+    pub title: String,
+    pub updated_at: String,
+    pub visibility: Option<&'static str>,
+}
+
+#[derive(Clone, Debug)]
 pub struct NavLink {
     pub href: String,
     pub relation: &'static str,
@@ -22,9 +30,11 @@ pub struct NoteChrome {
     pub id: String,
     pub title: String,
     pub current_href: String,
+    pub search_path: &'static str,
     pub created_at: String,
     pub updated_at: String,
     pub visibility: &'static str,
+    pub recent: Vec<RecentLink>,
     pub previous: Option<NavLink>,
     pub next: Option<NavLink>,
     pub history: Vec<HistoryLink>,

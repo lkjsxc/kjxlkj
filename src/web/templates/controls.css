@@ -9,14 +9,13 @@
 .surface,
 .index-card {
     border: 1px solid var(--line);
-    background: linear-gradient(180deg, rgba(22, 29, 37, 0.96), rgba(15, 20, 27, 0.98));
-    box-shadow: var(--shadow);
+    background: var(--bg-2);
 }
 
 .auth-card {
     width: min(100%, 440px);
     padding: 32px;
-    border-radius: 24px;
+    border-radius: 18px;
 }
 
 .subtitle,
@@ -40,19 +39,19 @@
 
 .form-group input,
 .search-form input,
+.rail-search input,
 .note-editor {
     width: 100%;
     border: 1px solid var(--line-strong);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 12px 14px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-3);
     color: var(--text);
 }
 
-.btn,
-.icon-button {
+.btn {
     color: var(--text-soft);
-    transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+    transition: color 0.18s ease;
 }
 
 .btn {
@@ -70,40 +69,19 @@
     color: var(--text);
 }
 
+.btn.active,
 .btn-primary {
     color: var(--accent);
     font-weight: 600;
 }
 
+.btn[disabled] {
+    color: var(--text-muted);
+    cursor: default;
+}
+
 .btn-danger {
     color: var(--danger);
-}
-
-.icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
-    cursor: pointer;
-}
-
-.icon-button:hover,
-.icon-button:focus-visible {
-    color: var(--text);
-    border-color: rgba(140, 184, 255, 0.2);
-}
-
-.icon-svg {
-    width: 17px;
-    height: 17px;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    fill: none;
-    stroke-linecap: round;
 }
 
 .eyebrow,
@@ -125,7 +103,7 @@
 }
 
 .mode-pill {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-3);
     color: var(--text-soft);
 }
 

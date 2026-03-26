@@ -1,68 +1,21 @@
 @media (max-width: 900px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .shell-rail {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
     .shell-main,
     .index-layout {
-        padding: 74px 16px 28px;
-    }
-
-    html.js .menu-button {
-        display: inline-flex;
-        position: fixed;
-        right: 14px;
-        top: 14px;
-        z-index: 30;
-        border-color: rgba(255, 255, 255, 0.06);
-        background: rgba(12, 15, 19, 0.56);
-        backdrop-filter: blur(18px);
-    }
-
-    html.js .app-shell {
-        display: block;
-    }
-
-    html.js .shell-rail {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: min(86vw, 340px);
-        transform: translateX(-105%);
-        transition: transform 0.2s ease;
-        z-index: 40;
-    }
-
-    html.js .app-shell.drawer-open .shell-rail {
-        transform: translateX(0);
-    }
-
-    html.js .app-shell.drawer-open .menu-button {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    html.js .rail-close {
-        display: inline-flex;
-        justify-self: end;
-        background: rgba(255, 255, 255, 0.03);
-        border-color: transparent;
-    }
-
-    html.js .drawer-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(3, 5, 8, 0.54);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-        z-index: 20;
-    }
-
-    html.js .app-shell.drawer-open .drawer-backdrop {
-        display: block;
-        opacity: 1;
-        pointer-events: auto;
+        padding: 28px 16px 28px;
     }
 
     .index-header,
-    .search-form,
     .page-head,
     .page-tail,
     .note-row {
@@ -78,14 +31,9 @@
 }
 
 @media (max-width: 560px) {
-    .shell-main,
-    .index-layout {
-        padding-top: 68px;
-    }
-
     .surface,
     .index-card {
-        border-radius: 20px;
+        border-radius: 16px;
         padding: 16px;
     }
 

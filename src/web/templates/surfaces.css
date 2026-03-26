@@ -16,11 +16,10 @@
 .surface,
 .index-card {
     padding: 18px 20px;
-    border-radius: 24px;
+    border-radius: 18px;
 }
 
 .index-header,
-.search-form,
 .page-head,
 .page-tail,
 .title-tags,
@@ -59,14 +58,6 @@
     gap: 6px;
     justify-items: end;
     text-align: right;
-}
-
-.search-form {
-    align-items: center;
-}
-
-.search-form input {
-    flex: 1;
 }
 
 .note-list {
@@ -125,7 +116,8 @@
 }
 
 .pager,
-.index-actions form {
+.index-actions form,
+.editor-side {
     display: inline-flex;
     align-items: center;
     gap: 10px;

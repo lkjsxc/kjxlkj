@@ -1,10 +1,23 @@
 //! Shared note and history rail rendering
 
-use super::model::{HistoryLink, NavLink, NoteChrome};
+use super::layout::html_escape;
+use super::model::{HistoryLink, NavLink, NoteChrome, RecentLink};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
     format!(
         r#"<section class="rail-section">
+<h2>Search</h2>
+<form class="rail-search" method="GET" action="{}">
+<label class="visually-hidden" for="note-search">Search notes</label>
+<input id="note-search" type="search" name="q" value="" placeholder="Search current notes">
+<button type="submit" class="btn">Search</button>
+</form>
+</section>
+<section class="rail-section">
+<h2>Recent</h2>
+<div class="rail-list">{}</div>
+</section>
+<section class="rail-section">
 <h2>Current note</h2>
 <div class="rail-list">
 <a href="{}" class="rail-link{}">
@@ -27,6 +40,8 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
 <div class="rail-list">{}<a href="{}" class="rail-link{}"><small>History</small><span>All revisions</span></a></div>
 </section>
 {}"#,
+        chrome.search_path,
+        recent_links(&chrome.recent, &chrome.current_href),
         chrome.current_href,
         if active_href == chrome.current_href {
             " active"
@@ -48,6 +63,31 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
         },
         action_section(&chrome.id, is_admin)
     )
+}
+
+fn recent_links(recent: &[RecentLink], current_href: &str) -> String {
+    if recent.is_empty() {
+        return r#"<p class="rail-empty">No accessible notes yet.</p>"#.to_string();
+    }
+    recent
+        .iter()
+        .map(|item| {
+            format!(
+                r#"<a href="{}" class="rail-link{}"><span>{}</span><small>{}</small>{}</a>"#,
+                item.href,
+                if item.href == current_href {
+                    " active"
+                } else {
+                    ""
+                },
+                item.title,
+                item.updated_at,
+                item.visibility
+                    .map(|value| format!(r#"<small>{}</small>"#, html_escape(value)))
+                    .unwrap_or_default()
+            )
+        })
+        .collect()
 }
 
 fn history_links(history: &[HistoryLink], active_href: &str) -> String {

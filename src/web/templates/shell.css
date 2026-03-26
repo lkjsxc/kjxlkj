@@ -1,6 +1,6 @@
 .app-shell {
     display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
+    grid-template-columns: 312px minmax(0, 1fr);
     min-height: 100vh;
 }
 
@@ -10,13 +10,13 @@
     height: 100vh;
     padding: 18px 16px 20px;
     overflow-y: auto;
-    background: linear-gradient(180deg, rgba(18, 24, 31, 0.98), rgba(10, 14, 18, 1)), var(--rail);
+    background: var(--rail);
     border-right: 1px solid var(--line);
 }
 
 .rail-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
     align-items: center;
 }
@@ -51,19 +51,34 @@
     display: grid;
     gap: 5px;
     padding: 11px 13px;
-    border: 1px solid transparent;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-1);
 }
 
 .rail-link.active {
-    border-color: rgba(140, 184, 255, 0.22);
-    background: rgba(140, 184, 255, 0.09);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .rail-link small,
 .rail-facts span {
     color: var(--text-soft);
+}
+
+.rail-copy {
+    display: grid;
+    gap: 6px;
+}
+
+.rail-copy p {
+    margin: 0;
+    color: var(--text-soft);
+}
+
+.rail-search {
+    display: grid;
+    gap: 10px;
 }
 
 .rail-facts {
@@ -96,15 +111,4 @@
 
 .rail-actions form {
     margin: 0;
-}
-
-.menu-button,
-.rail-close {
-    color: var(--text-soft);
-}
-
-.menu-button,
-.rail-close,
-.drawer-backdrop {
-    display: none;
 }

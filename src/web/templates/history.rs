@@ -1,9 +1,9 @@
 //! History page templates
 
-use super::layout::{base, render_markdown, shell_page};
+use super::layout::{base, shell_page};
 use super::model::{HistoryLink, NoteChrome};
 use super::note_shell::note_rail;
-use crate::core::derive_title;
+use crate::core::{derive_title, render_markdown};
 use crate::web::db::{Record, RecordRevision};
 
 pub fn history_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
@@ -110,7 +110,7 @@ fn history_row(entry: &HistoryLink) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::web::templates::NoteChrome;
+    use crate::web::templates::{NoteChrome, RecentLink};
     use chrono::Utc;
 
     fn sample_record() -> Record {
@@ -130,9 +130,16 @@ mod tests {
             id: "Q29udHJhY3RSdW50aW1lMQ".to_string(),
             title: "Demo".to_string(),
             current_href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
+            search_path: "/",
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
             visibility: "Public",
+            recent: vec![RecentLink {
+                href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
+                title: "Demo".to_string(),
+                updated_at: "2026-03-26 08:35 UTC".to_string(),
+                visibility: None,
+            }],
             previous: None,
             next: None,
             history: vec![HistoryLink {

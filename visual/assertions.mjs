@@ -9,17 +9,33 @@ export async function expectDarkShell(page, buttonNames = []) {
     const shell = page.locator('.surface, .index-card, .hero-panel').first();
     const surface = await shell.evaluate((node) => {
         const style = getComputedStyle(node);
-        return { background: style.backgroundColor };
+        return {
+            background: style.backgroundColor,
+            backgroundImage: style.backgroundImage,
+            boxShadow: style.boxShadow,
+        };
     });
     assert.ok(isDark(surface.background), 'surfaces should be dark by default');
+    assert.equal(surface.backgroundImage, 'none', 'surface fills should stay flat');
+    assert.equal(surface.boxShadow, 'none', 'surface depth should not rely on shadows');
+    assert.equal(await page.locator('[data-menu-toggle]').count(), 0, 'drawer controls should not render');
 
     for (const name of buttonNames) {
         await assertReadable(await namedControl(page, name));
     }
 }
 
+export async function expectPublicRoot(page) {
+    await expectDarkShell(page);
+    await assertVisibleText(page, 'Public index');
+    await page.locator('.shell-rail').waitFor({ state: 'visible' });
+    await page.getByLabel('Search notes').waitFor({ state: 'visible' });
+}
+
 export async function expectAdminNote(page) {
     await expectDarkShell(page, ['New note', 'Logout']);
+    await assertVisibleText(page, 'Rich mode');
+    await assertVisibleText(page, 'Text mode');
     await assertVisibleText(page, 'Public');
     assert.equal(
         await page.locator('#public-toggle').isChecked(),
@@ -43,23 +59,17 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await assertVisibleText(page, nextTitle);
 }
 
-export async function expectCompactTrigger(page, selector) {
-    const locator = page.locator(selector);
-    await locator.waitFor({ state: 'visible' });
-    const chrome = await locator.evaluate((node) => {
-        const style = getComputedStyle(node);
-        return {
-            width: Math.round(node.getBoundingClientRect().width),
-            height: Math.round(node.getBoundingClientRect().height),
-            background: style.backgroundColor,
-            border: style.borderColor,
-            color: style.color,
-        };
-    });
-    assert.ok(chrome.width <= 40 && chrome.height <= 40, 'compact nav controls should stay small');
-    assert.ok(alpha(chrome.background) <= 0.72, 'compact nav controls should stay visually quiet');
-    assert.ok(alpha(chrome.border) <= 0.2, 'compact nav borders should stay subdued');
-    assert.ok(isLight(chrome.color), 'compact nav icon color should remain readable');
+export async function expectStackedShell(page) {
+    const rail = page.locator('.shell-rail');
+    const main = page.locator('.shell-main');
+    await rail.waitFor({ state: 'visible' });
+    await main.waitFor({ state: 'visible' });
+    const layout = await Promise.all([
+        rail.evaluate((node) => node.getBoundingClientRect()),
+        main.evaluate((node) => node.getBoundingClientRect()),
+    ]);
+    assert.ok(layout[0].top <= layout[1].top, 'rail should appear before the main pane on narrow screens');
+    assert.ok(layout[0].left <= layout[1].left + 1, 'stacked rail should stay aligned to the main content edge');
 }
 
 export async function assertVisibleText(page, text) {

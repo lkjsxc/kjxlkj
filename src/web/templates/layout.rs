@@ -7,8 +7,6 @@ const SURFACES_CSS: &str = include_str!("surfaces.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
 const SHELL_JS: &str = include_str!("shell.js");
-const MENU_ICON: &str = r#"<svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h12"/></svg>"#;
-const CLOSE_ICON: &str = r#"<svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>"#;
 
 pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(
@@ -46,13 +44,10 @@ pub fn not_found_page() -> String {
 pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) -> String {
     format!(
         r#"<div class="app-shell">
-<button type="button" class="menu-button icon-button" data-menu-toggle aria-expanded="false" aria-controls="shell-rail" aria-label="Open navigation">{MENU_ICON}<span class="visually-hidden">Open navigation</span></button>
-<div class="drawer-backdrop" data-menu-close></div>
-<aside id="shell-rail" class="shell-rail" aria-hidden="false">
+<aside id="shell-rail" class="shell-rail">
 <div class="rail-head">
 <a href="/" class="brand">kjxlkj</a>
 <span class="mode-pill">{mode_label}</span>
-<button type="button" class="rail-close icon-button" data-menu-close aria-label="Close navigation">{CLOSE_ICON}<span class="visually-hidden">Close navigation</span></button>
 </div>
 <div class="rail-body">{rail}</div>
 </aside>
@@ -78,23 +73,4 @@ pub fn html_escape(s: &str) -> String {
         .replace('<', "&lt;")
         .replace('>', "&gt;")
         .replace('"', "&quot;")
-}
-
-pub fn render_markdown(body: &str) -> String {
-    let mut html = String::new();
-    for line in body.lines() {
-        let trimmed = line.trim();
-        if let Some(h) = trimmed.strip_prefix("# ") {
-            html.push_str(&format!("<h1>{}</h1>", html_escape(h)));
-        } else if let Some(h) = trimmed.strip_prefix("## ") {
-            html.push_str(&format!("<h2>{}</h2>", html_escape(h)));
-        } else if let Some(h) = trimmed.strip_prefix("### ") {
-            html.push_str(&format!("<h3>{}</h3>", html_escape(h)));
-        } else if trimmed.is_empty() {
-            html.push_str("<br>");
-        } else {
-            html.push_str(&format!("<p>{}</p>", html_escape(trimmed)));
-        }
-    }
-    html
 }

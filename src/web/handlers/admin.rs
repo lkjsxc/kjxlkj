@@ -45,12 +45,14 @@ async fn admin_page_impl(
         return Ok(redirect("/login"));
     }
     let page = db::list_records(&pool, &list_request(params.clone(), true)).await?;
+    let recent = view::recent_links(&pool, true).await?;
     let entries: Vec<_> = page
         .records
         .iter()
         .map(|record| view::index_item(record, true))
         .collect();
     Ok(html(templates::admin_page(
+        &recent,
         &entries,
         page.next_cursor.as_deref(),
         params.q.as_deref(),
@@ -69,12 +71,14 @@ pub async fn home(
     let is_admin = session::check_session(&req, &pool).await?;
     let params = params.into_inner();
     let page = db::list_records(&pool, &list_request(params.clone(), false)).await?;
+    let recent = view::recent_links(&pool, is_admin).await?;
     let entries: Vec<_> = page
         .records
         .iter()
         .map(|record| view::index_item(record, false))
         .collect();
     Ok(html(templates::home_page(
+        &recent,
         &entries,
         page.next_cursor.as_deref(),
         params.q.as_deref(),

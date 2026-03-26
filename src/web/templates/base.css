@@ -1,19 +1,18 @@
 :root {
-    --bg-0: #0b0f13;
-    --bg-1: #10151a;
-    --bg-2: #141b22;
-    --bg-3: #1a222b;
-    --rail: #0d1217;
-    --line: rgba(138, 152, 168, 0.14);
-    --line-strong: rgba(138, 152, 168, 0.24);
-    --text: #e8edf2;
-    --text-soft: #a8b6c4;
-    --text-muted: #74808d;
+    --bg-0: #0f1012;
+    --bg-1: #17181b;
+    --bg-2: #1d1f23;
+    --bg-3: #26292d;
+    --rail: #141518;
+    --line: #2f3338;
+    --line-strong: #40464d;
+    --text: #e6e6e7;
+    --text-soft: #aeb3b8;
+    --text-muted: #828890;
     --accent: #8cb8ff;
-    --accent-soft: rgba(140, 184, 255, 0.12);
+    --accent-soft: #253140;
     --danger: #ff8d84;
     --success: #8fd6b0;
-    --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
     --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
     --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --serif: "Iowan Old Style", Charter, Georgia, serif;
@@ -31,15 +30,8 @@ body {
     margin: 0;
     min-height: 100vh;
     color: var(--text);
-    background:
-        radial-gradient(circle at top left, rgba(140, 184, 255, 0.06), transparent 30%),
-        radial-gradient(circle at 85% 10%, rgba(131, 214, 170, 0.04), transparent 28%),
-        linear-gradient(180deg, #0a0d11, #11161d 34%, #0c1116 100%);
+    background: var(--bg-0);
     font: 15px/1.6 var(--sans);
-}
-
-body.nav-open {
-    overflow: hidden;
 }
 
 a {
@@ -67,4 +59,8 @@ textarea {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+[hidden] {
+    display: none !important;
 }
