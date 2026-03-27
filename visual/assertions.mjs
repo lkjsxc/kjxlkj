@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 
-export async function expectDarkShell(page, buttonNames = []) {
+export async function expectFlatShell(page, buttonNames = []) {
     const colorScheme = await page.evaluate(
         () => getComputedStyle(document.documentElement).colorScheme
     );
     assert.match(colorScheme, /dark/, 'dark mode should be the default');
 
-    const shell = page.locator('.surface, .index-card, .hero-panel').first();
+    const shell = page.locator('.surface, .index-card').first();
     const surface = await shell.evaluate((node) => {
         const style = getComputedStyle(node);
         return {
@@ -18,7 +18,16 @@ export async function expectDarkShell(page, buttonNames = []) {
     assert.ok(isDark(surface.background), 'surfaces should be dark by default');
     assert.equal(surface.backgroundImage, 'none', 'surface fills should stay flat');
     assert.equal(surface.boxShadow, 'none', 'surface depth should not rely on shadows');
-    assert.equal(await page.locator('[data-menu-toggle]').count(), 0, 'drawer controls should not render');
+    assert.equal(
+        await page.locator('.shell-rail input[type="search"]').count(),
+        0,
+        'rail search inputs should not render'
+    );
+    await assertInvisibleText(page, 'RECENT');
+    await assertInvisibleText(page, 'Rich mode');
+    await assertInvisibleText(page, 'Text mode');
+    await assertInvisibleText(page, 'Saving');
+    await assertInvisibleText(page, 'Saved');
 
     for (const name of buttonNames) {
         await assertReadable(await namedControl(page, name));
@@ -26,32 +35,43 @@ export async function expectDarkShell(page, buttonNames = []) {
 }
 
 export async function expectPublicRoot(page) {
-    await expectDarkShell(page);
+    await expectFlatShell(page);
     await assertVisibleText(page, 'Public index');
-    await page.locator('.shell-rail').waitFor({ state: 'visible' });
+    await assertVisibleText(page, 'Public notes');
+}
+
+export async function expectSearchPage(page) {
+    await expectFlatShell(page);
+    await assertVisibleText(page, 'Find notes');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
 }
 
+export async function expectAdminDashboard(page) {
+    await expectFlatShell(page, ['Search', 'New note', 'Logout']);
+    await assertVisibleText(page, 'Admin index');
+    await assertVisibleText(page, 'Admin notes');
+}
+
 export async function expectAdminNote(page) {
-    await expectDarkShell(page, ['New note', 'Logout']);
-    await assertVisibleText(page, 'Rich mode');
-    await assertVisibleText(page, 'Text mode');
+    await expectFlatShell(page);
     await assertVisibleText(page, 'Public');
     assert.equal(
         await page.locator('#public-toggle').isChecked(),
         true,
         'admin note should show public checkbox state'
     );
+    const editableCount =
+        (await page.locator('.toastui-editor-defaultUI:visible').count()) +
+        (await page.locator('#editor-fallback:visible').count());
+    assert.ok(editableCount > 0, 'admin note should show an editable workspace');
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'Created');
     await assertVisibleText(page, 'Updated');
-    await assertVisibleText(page, 'Prev');
-    await assertVisibleText(page, 'Next');
+    await assertVisibleText(page, 'All revisions');
 }
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
-    await expectDarkShell(page);
-    await assertVisibleText(page, 'History');
+    await expectFlatShell(page);
     await assertVisibleText(page, 'All revisions');
     await assertVisibleText(page, 'Prev');
     await assertVisibleText(page, previousTitle);
@@ -59,27 +79,55 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await assertVisibleText(page, nextTitle);
 }
 
-export async function expectStackedShell(page) {
-    const rail = page.locator('.shell-rail');
-    const main = page.locator('.shell-main');
-    await rail.waitFor({ state: 'visible' });
-    await main.waitFor({ state: 'visible' });
-    const layout = await Promise.all([
-        rail.evaluate((node) => node.getBoundingClientRect()),
-        main.evaluate((node) => node.getBoundingClientRect()),
-    ]);
-    assert.ok(layout[0].top <= layout[1].top, 'rail should appear before the main pane on narrow screens');
-    assert.ok(layout[0].left <= layout[1].left + 1, 'stacked rail should stay aligned to the main content edge');
+export async function expectClosedDrawer(page) {
+    const toggle = page.locator('[data-menu-toggle]');
+    await toggle.waitFor({ state: 'visible' });
+    assert.equal(await toggle.getAttribute('aria-expanded'), 'false', 'drawer should start closed');
+    await page.waitForFunction(() => {
+        const node = document.querySelector('[data-menu-panel]');
+        return !!node && node.getBoundingClientRect().right < 20;
+    });
+    const right = await page
+        .locator('[data-menu-panel]')
+        .evaluate((node) => node.getBoundingClientRect().right);
+    assert.ok(right < 20, 'closed drawer should stay off canvas');
+}
+
+export async function openDrawer(page) {
+    const toggle = page.locator('[data-menu-toggle]');
+    await toggle.click();
+    await page.waitForFunction(() => document.body.classList.contains('rail-open'));
+    await page.waitForFunction(() => {
+        const node = document.querySelector('[data-menu-panel]');
+        return !!node && node.getBoundingClientRect().right > 200;
+    });
+    assert.equal(await toggle.getAttribute('aria-expanded'), 'true', 'drawer should open');
+    const right = await page
+        .locator('[data-menu-panel]')
+        .evaluate((node) => node.getBoundingClientRect().right);
+    assert.ok(right > 200, 'opened drawer should slide into view');
 }
 
 export async function assertVisibleText(page, text) {
     await page.getByText(text, { exact: false }).first().waitFor({ state: 'visible' });
 }
 
+export async function assertInvisibleText(page, text) {
+    const locator = page.getByText(text, { exact: false });
+    const visibleCount = await locator.evaluateAll((nodes) =>
+        nodes.filter((node) => {
+            const style = window.getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+        }).length
+    );
+    assert.equal(visibleCount, 0, `"${text}" should stay hidden`);
+}
+
 async function namedControl(page, name) {
     const button = page.getByRole('button', { name, exact: true });
-    if (await button.count()) return button;
-    return page.getByRole('link', { name, exact: true });
+    if (await button.count()) return button.first();
+    return page.getByRole('link', { name, exact: true }).first();
 }
 
 async function assertReadable(locator) {

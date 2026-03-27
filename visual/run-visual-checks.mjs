@@ -3,7 +3,16 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
-import { assertVisibleText, expectAdminNote, expectDarkShell, expectGuestNote, expectPublicRoot, expectStackedShell } from './assertions.mjs';
+import {
+    assertVisibleText,
+    expectAdminDashboard,
+    expectAdminNote,
+    expectClosedDrawer,
+    expectGuestNote,
+    expectPublicRoot,
+    expectSearchPage,
+    openDrawer,
+} from './assertions.mjs';
 
 const appUrl = process.env.APP_URL ?? 'http://app:8080';
 const databaseUrl =
@@ -30,7 +39,16 @@ async function main() {
     console.log(JSON.stringify({
         command: 'visual-verify',
         status: 'pass',
-        artifacts: ['desktop-public-root.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-guest-note.png', 'compact-public-root.png', 'compact-admin-note.png'],
+        artifacts: [
+            'desktop-public-root.png',
+            'desktop-search.png',
+            'desktop-admin-dashboard.png',
+            'desktop-admin-note.png',
+            'desktop-guest-note.png',
+            'compact-public-root-closed.png',
+            'compact-public-root-open.png',
+            'compact-admin-note.png',
+        ],
     }));
 }
 
@@ -58,11 +76,10 @@ async function captureAdminScreens(browser, id) {
     await login(page);
 
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
-    await expectDarkShell(page);
+    await expectAdminDashboard(page);
     await capture(page, 'desktop-admin-dashboard.png');
 
     await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
-    await page.waitForSelector('#public-toggle');
     await expectAdminNote(page);
     await capture(page, 'desktop-admin-note.png');
 
@@ -78,6 +95,10 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
     await capture(page, 'desktop-public-root.png');
+
+    await page.goto(`${appUrl}/search?q=Orbit`, { waitUntil: 'networkidle' });
+    await expectSearchPage(page);
+    await capture(page, 'desktop-search.png');
 
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
@@ -98,13 +119,16 @@ async function captureCompactScreens(browser, id) {
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
-    await expectStackedShell(page);
-    await capture(page, 'compact-public-root.png');
+    await expectClosedDrawer(page);
+    await capture(page, 'compact-public-root-closed.png');
+
+    await openDrawer(page);
+    await capture(page, 'compact-public-root-open.png');
 
     await login(page);
     await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
     await expectAdminNote(page);
-    await expectStackedShell(page);
+    await expectClosedDrawer(page);
     await capture(page, 'compact-admin-note.png');
     await context.close();
 }
