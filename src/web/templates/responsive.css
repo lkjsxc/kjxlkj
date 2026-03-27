@@ -57,6 +57,10 @@
         align-items: flex-start;
     }
 
+    .editor-controls {
+        width: 100%;
+    }
+
     .page-actions,
     .page-meta,
     .card-meta {
@@ -78,6 +82,36 @@
     .rail-facts span {
         justify-self: start;
         text-align: left;
+    }
+
+    .editor-shell.preview-open .editor-preview-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        background: rgba(8, 9, 11, 0.72);
+    }
+
+    .editor-shell.preview-open .toastui-editor-md-container > .toastui-editor {
+        width: 100% !important;
+        border-right: 0;
+    }
+
+    .editor-shell.preview-open .toastui-editor-md-preview {
+        position: fixed;
+        inset: 92px 16px 16px;
+        z-index: 85;
+        width: auto !important;
+        min-height: 0;
+        max-width: calc(100vw - 32px);
+        overflow: auto !important;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: none !important;
+    }
+
+    .editor-shell.preview-open .toastui-editor-md-splitter {
+        display: none !important;
     }
 }
 
@@ -130,11 +164,13 @@
         height: 28px !important;
     }
 
-    .toastui-editor-ww-container .toastui-editor-contents table {
+    .toastui-editor-md-preview .toastui-editor-contents table {
         font-size: 0.92rem;
     }
 
-    .toastui-editor-ww-container .toastui-editor-contents {
+    .CodeMirror,
+    .CodeMirror-scroll,
+    .toastui-editor-md-preview .toastui-editor-contents {
         min-height: 360px;
         padding: 16px 16px 18px !important;
     }

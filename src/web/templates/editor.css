@@ -3,6 +3,7 @@
     gap: 16px;
     min-width: 0;
     overflow-x: clip;
+    position: relative;
 }
 
 .editor-toolbar-row {
@@ -12,6 +13,18 @@
     align-items: center;
     gap: 12px;
     min-width: 0;
+}
+
+.editor-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.editor-preview-backdrop {
+    display: none;
 }
 
 .note-editor {
@@ -27,12 +40,15 @@
 .toast-host,
 .toastui-editor-defaultUI,
 .toastui-editor-main,
+.toastui-editor-main-container,
 .toastui-editor-md-container,
-.toastui-editor-ww-container,
+.toastui-editor-md-container > .toastui-editor,
+.toastui-editor-md-preview,
+.CodeMirror,
+.CodeMirror-scroll,
 .toastui-editor-contents {
     min-width: 0 !important;
     max-width: 100% !important;
-    width: 100% !important;
 }
 
 .toastui-editor-defaultUI {
@@ -100,38 +116,75 @@
 
 .toastui-editor-main,
 .toastui-editor-main-container,
-.toastui-editor-ww-container,
+.toastui-editor-md-container,
+.toastui-editor-md-container > .toastui-editor,
+.toastui-editor-md-preview,
 .toastui-editor-contents,
-.toastui-editor-ww-container > .toastui-editor,
-.toastui-editor-ww-container .ProseMirror {
+.CodeMirror,
+.CodeMirror-scroll {
     background: var(--panel) !important;
     height: auto !important;
     overflow: visible !important;
 }
 
-.toastui-editor-ww-container .toastui-editor-contents {
+.toastui-editor-md-container {
+    display: flex !important;
+    align-items: stretch;
+    position: relative;
+}
+
+.toastui-editor-md-container > .toastui-editor,
+.toastui-editor-md-preview {
+    width: 50% !important;
+}
+
+.toastui-editor-md-container > .toastui-editor {
+    border-right: 1px solid var(--line);
+}
+
+.toastui-editor-md-preview {
+    border-left: 1px solid var(--line);
+    padding: 0 !important;
+}
+
+.editor-shell.preview-closed .toastui-editor-md-preview,
+.editor-shell.preview-closed .toastui-editor-md-splitter {
+    display: none !important;
+}
+
+.editor-shell.preview-closed .toastui-editor-md-container > .toastui-editor {
+    width: 100% !important;
+    border-right: 0;
+}
+
+.CodeMirror,
+.CodeMirror-scroll {
+    min-height: 520px;
+}
+
+.CodeMirror pre {
+    white-space: pre-wrap !important;
+    word-break: break-word;
+}
+
+.toastui-editor-md-preview .toastui-editor-contents {
     color: var(--text) !important;
     min-height: 520px;
     padding: 18px 24px 20px !important;
+    overflow-wrap: anywhere;
 }
 
-.toastui-editor-ww-container .toastui-editor-contents table {
+.toastui-editor-md-preview .toastui-editor-contents table {
     table-layout: fixed;
     width: 100%;
 }
 
-.toastui-editor-ww-container .toastui-editor-contents td,
-.toastui-editor-ww-container .toastui-editor-contents th {
+.toastui-editor-md-preview .toastui-editor-contents td,
+.toastui-editor-md-preview .toastui-editor-contents th {
     overflow-wrap: anywhere;
 }
 
-.toastui-editor-ww-container .toastui-editor-contents code,
-.toastui-editor-ww-container .toastui-editor-contents pre {
+.toastui-editor-md-preview .toastui-editor-contents code,
+.toastui-editor-md-preview .toastui-editor-contents pre {
     font-family: var(--mono) !important;
-}
-
-.toastui-editor-ww-container .ProseMirror {
-    min-height: 0;
-    padding: 0 !important;
-    overflow-wrap: anywhere;
 }

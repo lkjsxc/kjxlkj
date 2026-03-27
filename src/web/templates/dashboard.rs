@@ -3,7 +3,7 @@
 use super::index::{list_page, ListPageConfig};
 use super::model::IndexItem;
 
-const ACTIONS_JS: &str = include_str!("editor.js");
+const ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn admin_page(notes: &[IndexItem], next_cursor: Option<&str>) -> String {
     let extra_script = format!(r#"<script>{ACTIONS_JS}</script>"#);

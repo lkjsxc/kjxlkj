@@ -7,7 +7,7 @@ use crate::core::render_markdown;
 use crate::web::db::Record;
 
 const EDITOR_JS: &str = include_str!("editor.js");
-const EDITOR_SHORTCUTS_JS: &str = include_str!("editor_shortcuts.js");
+const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
 pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
@@ -29,7 +29,7 @@ initEditor();
             editor_surface(record),
             record.id,
             record.is_private,
-            EDITOR_SHORTCUTS_JS,
+            NOTE_ACTIONS_JS,
             EDITOR_JS
         )
     } else {
@@ -55,7 +55,7 @@ initEditor();
         if is_admin { "Admin note" } else { "Note" },
         chrome.title,
         if is_admin {
-            "Rendered Markdown stays editable while Markdown remains canonical storage."
+            "Write Markdown directly. Open preview on demand while Markdown stays canonical storage."
         } else {
             "Rendered Markdown only."
         },
@@ -87,15 +87,19 @@ fn editor_head() -> String {
 
 fn editor_surface(record: &Record) -> String {
     format!(
-        r#"<section class="surface note-surface editor-shell">
+        r#"<section class="surface note-surface editor-shell preview-closed" id="editor-shell">
 <div class="editor-toolbar-row">
+<div class="editor-controls">
+<button type="button" id="preview-toggle" class="btn" aria-expanded="false" hidden onclick="togglePreview()">Show preview</button>
 <label class="check-row" for="public-toggle">
 <input type="checkbox" id="public-toggle" {} onchange="togglePublic()">
 <span>Public</span>
 </label>
+</div>
 <span id="save-error" class="save-error" hidden aria-live="polite">Save failed. Retry on the next change.</span>
 </div>
 <div id="editor-root" class="toast-host"></div>
+<button type="button" id="preview-backdrop" class="editor-preview-backdrop" hidden aria-label="Close preview" onclick="closePreview()"></button>
 <textarea id="editor-source" hidden>{}</textarea>
 <textarea id="editor-fallback" class="note-editor" hidden>{}</textarea>
 </section>"#,
@@ -150,12 +154,14 @@ mod tests {
     fn admin_note_page_renders_single_mode_workspace() {
         let html = note_page(&sample_record(), &sample_chrome(), true);
         assert!(html.contains("public-toggle"));
+        assert!(html.contains("preview-toggle"));
         assert!(html.contains("editor-root"));
         assert!(html.contains(TOAST_UI_ROOT));
         assert!(html.contains("height: 'auto'"));
+        assert!(html.contains("initialEditType: 'markdown'"));
+        assert!(html.contains("previewStyle: 'vertical'"));
         assert!(html.contains("hideModeSwitch: true"));
         assert!(html.contains("'table'"));
-        assert!(html.contains("moveCursorToEnd"));
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));
         assert!(!html.contains("save-status"));

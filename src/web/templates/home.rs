@@ -3,7 +3,7 @@
 use super::index::{list_page, ListPageConfig};
 use super::model::IndexItem;
 
-const ACTIONS_JS: &str = include_str!("editor.js");
+const ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn home_page(notes: &[IndexItem], next_cursor: Option<&str>, is_admin: bool) -> String {
     let extra_script = if is_admin {

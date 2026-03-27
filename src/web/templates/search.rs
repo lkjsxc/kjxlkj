@@ -4,7 +4,7 @@ use super::index::{note_row, pager, ListPageConfig};
 use super::layout::{base, html_escape, primary_nav, rail_section, shell_page};
 use super::model::IndexItem;
 
-const ACTIONS_JS: &str = include_str!("editor.js");
+const ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn search_page(
     notes: &[IndexItem],

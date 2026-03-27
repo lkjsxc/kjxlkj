@@ -2,26 +2,20 @@ var saveTimer = null;
 var editorInstance = null;
 var sourceField = null;
 var fallbackField = null;
-
-function createNote() {
-    fetch('/records', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: defaultNewNoteBody(), is_private: true })
-    })
-        .then(function (response) {
-            if (!response.ok) throw new Error('create failed');
-            return response.json();
-        })
-        .then(function (note) { window.location.href = '/' + note.id; })
-        .catch(function () { alert('Failed to create note'); });
-}
+var editorShell = null;
+var previewToggle = null;
+var previewBackdrop = null;
+var compactEditor = window.matchMedia('(max-width: 900px)');
 
 function initEditor() {
     sourceField = document.getElementById('editor-source');
     fallbackField = document.getElementById('editor-fallback');
+    editorShell = document.getElementById('editor-shell');
+    previewToggle = document.getElementById('preview-toggle');
+    previewBackdrop = document.getElementById('preview-backdrop');
     var root = document.getElementById('editor-root');
-    if (!sourceField || !root) return;
+    if (!sourceField || !root || !editorShell) return;
+    bindPreviewEvents();
     if (window.toastui && window.toastui.Editor) {
         try {
             var options = {
@@ -29,7 +23,8 @@ function initEditor() {
                 height: 'auto',
                 minHeight: editorMinHeight(),
                 initialValue: sourceField.value,
-                initialEditType: 'wysiwyg',
+                initialEditType: 'markdown',
+                previewStyle: 'vertical',
                 hideModeSwitch: true,
                 theme: 'dark',
                 autofocus: false,
@@ -38,9 +33,12 @@ function initEditor() {
             options.toolbarItems = toolbarItems();
             editorInstance = new window.toastui.Editor(options);
             window.editorInstance = editorInstance;
-            if (typeof bindShortcutNormalization === 'function') bindShortcutNormalization();
+            setPreviewEnabled(true);
+            syncPreviewState(false);
             editorInstance.on('change', onEditorInput);
             focusEditor();
+            syncNoteChrome();
+            return;
         } catch (_) {
             enableFallback(root);
         }
@@ -51,9 +49,9 @@ function initEditor() {
 }
 
 function enableFallback(root) {
-    if (typeof clearShortcutNormalization === 'function') clearShortcutNormalization();
     editorInstance = null;
     window.editorInstance = null;
+    setPreviewEnabled(false);
     if (root) root.hidden = true;
     if (!fallbackField) return;
     fallbackField.hidden = false;
@@ -130,29 +128,50 @@ function deriveTitle(body) {
     return match && match[1] ? match[1].trim() : 'Untitled note';
 }
 
-function defaultNewNoteBody() {
-    return '# ' + localMinuteStamp() + '\n';
+function bindPreviewEvents() {
+    window.addEventListener('resize', syncPreviewBackdrop);
+    document.addEventListener('keydown', handlePreviewEscape);
 }
 
-function localMinuteStamp() {
-    var date = new Date();
-    return [
-        date.getFullYear(),
-        pad(date.getMonth() + 1),
-        pad(date.getDate())
-    ].join('-') + ' ' + [pad(date.getHours()), pad(date.getMinutes())].join(':');
+function togglePreview() {
+    if (!editorShell || !editorInstance) return;
+    syncPreviewState(!editorShell.classList.contains('preview-open'));
 }
 
-function pad(value) {
-    return String(value).padStart(2, '0');
+function closePreview() {
+    syncPreviewState(false);
+    if (previewToggle) previewToggle.focus();
 }
+
+function syncPreviewState(open) {
+    if (!editorShell) return;
+    editorShell.classList.toggle('preview-open', open);
+    editorShell.classList.toggle('preview-closed', !open);
+    if (previewToggle) {
+        previewToggle.textContent = open ? 'Hide preview' : 'Show preview';
+        previewToggle.setAttribute('aria-expanded', String(open));
+    }
+    syncPreviewBackdrop();
+}
+
+function syncPreviewBackdrop() {
+    if (!previewBackdrop || !editorShell) return;
+    previewBackdrop.hidden = !(editorShell.classList.contains('preview-open') && compactEditor.matches);
+}
+
+function setPreviewEnabled(enabled) {
+    if (previewToggle) previewToggle.hidden = !enabled;
+    if (!enabled) syncPreviewState(false);
+}
+
+function handlePreviewEscape(event) { if (event.key === 'Escape') closePreview(); }
 
 function editorMinHeight() {
-    return window.matchMedia('(max-width: 900px)').matches ? '360px' : '520px';
+    return compactEditor.matches ? '360px' : '520px';
 }
 
 function toolbarItems() {
-    if (window.matchMedia('(max-width: 900px)').matches) {
+    if (compactEditor.matches) {
         return [
             ['heading', 'bold', 'italic', 'strike'],
             ['quote', 'ul', 'ol', 'task'],
@@ -161,9 +180,9 @@ function toolbarItems() {
     }
     return [
         ['heading'],
-        ['bold', 'italic', 'strike'],
-        ['quote'],
-        ['ul', 'ol', 'task'],
+        ['bold', 'italic', 'strike', 'hr'],
+        ['quote', 'ul', 'ol', 'task'],
+        ['indent', 'outdent'],
         ['table', 'link'],
         ['code', 'codeblock']
     ];
@@ -171,18 +190,11 @@ function toolbarItems() {
 
 function focusEditor() {
     requestAnimationFrame(function () {
-        if (!editorInstance) return;
-        editorInstance.focus();
-        if (typeof editorInstance.moveCursorToEnd === 'function') editorInstance.moveCursorToEnd();
+        if (editorInstance) {
+            editorInstance.focus();
+            if (typeof editorInstance.moveCursorToEnd === 'function') editorInstance.moveCursorToEnd();
+            return;
+        }
+        if (fallbackField && !fallbackField.hidden) fallbackField.focus();
     });
-}
-
-function deleteNote(id) {
-    if (!confirm('Delete this note?')) return;
-    fetch('/records/' + id, { method: 'DELETE' })
-        .then(function (response) {
-            if (!response.ok) throw new Error('delete failed');
-            window.location.href = '/admin';
-        })
-        .catch(function () { alert('Failed to delete note'); });
 }
