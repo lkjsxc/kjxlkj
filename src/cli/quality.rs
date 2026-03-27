@@ -13,6 +13,7 @@ struct LineCheckResult {
     status: &'static str,
     docs_max: usize,
     src_max: usize,
+    visual_max: usize,
     violations: Vec<String>,
 }
 
@@ -21,6 +22,7 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
     let mut violations = Vec::new();
     let mut docs_max = 0usize;
     let mut src_max = 0usize;
+    let mut visual_max = 0usize;
 
     check_dir_lines(
         Path::new("docs"),
@@ -34,6 +36,12 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
         &mut violations,
         &mut src_max,
     )?;
+    check_dir_lines(
+        Path::new("visual"),
+        SRC_LINE_LIMIT,
+        &mut violations,
+        &mut visual_max,
+    )?;
 
     let result = LineCheckResult {
         command: "check-lines",
@@ -44,6 +52,7 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
         },
         docs_max,
         src_max,
+        visual_max,
         violations: violations.clone(),
     };
     println!("{}", serde_json::to_string(&result)?);
@@ -71,7 +80,10 @@ fn check_dir_lines(
             check_dir_lines(&path, limit, violations, max_lines)?;
         } else {
             let ext = path.extension().and_then(|e| e.to_str());
-            let should_check = matches!(ext, Some("md") | Some("rs") | Some("js") | Some("css"));
+            let should_check = matches!(
+                ext,
+                Some("md") | Some("rs") | Some("js") | Some("mjs") | Some("css")
+            );
             if should_check {
                 let content = fs::read_to_string(&path)?;
                 let lines = content.lines().count();

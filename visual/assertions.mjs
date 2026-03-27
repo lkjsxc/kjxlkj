@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { alpha, contrast, isDark, isLight } from './style-utils.mjs';
 
 export async function expectFlatShell(page, buttonNames = []) {
     const colorScheme = await page.evaluate(
@@ -28,6 +29,8 @@ export async function expectFlatShell(page, buttonNames = []) {
     await assertInvisibleText(page, 'Text mode');
     await assertInvisibleText(page, 'Saving');
     await assertInvisibleText(page, 'Saved');
+    await assertInvisibleText(page, 'flat notes for LLMs');
+    await assertNoHorizontalOverflow(page);
 
     for (const name of buttonNames) {
         await assertReadable(await namedControl(page, name));
@@ -50,6 +53,7 @@ export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['Search', 'New note', 'Logout']);
     await assertVisibleText(page, 'Admin index');
     await assertVisibleText(page, 'Admin notes');
+    await assertTopRailCreateAction(page);
 }
 
 export async function expectAdminNote(page) {
@@ -68,6 +72,8 @@ export async function expectAdminNote(page) {
     await assertVisibleText(page, 'Created');
     await assertVisibleText(page, 'Updated');
     await assertVisibleText(page, 'All revisions');
+    await assertLocalToastUiAssets(page);
+    await assertTopRailCreateAction(page);
 }
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
@@ -106,6 +112,7 @@ export async function openDrawer(page) {
         .locator('[data-menu-panel]')
         .evaluate((node) => node.getBoundingClientRect().right);
     assert.ok(right > 200, 'opened drawer should slide into view');
+    await assertNoHorizontalOverflow(page);
 }
 
 export async function assertVisibleText(page, text) {
@@ -122,6 +129,13 @@ export async function assertInvisibleText(page, text) {
         }).length
     );
     assert.equal(visibleCount, 0, `"${text}" should stay hidden`);
+}
+
+export async function assertNoHorizontalOverflow(page) {
+    const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
 }
 
 async function namedControl(page, name) {
@@ -148,39 +162,28 @@ async function assertReadable(locator) {
     );
 }
 
-function alpha(color) {
-    return parseColor(color)[3] ?? 1;
+async function assertLocalToastUiAssets(page) {
+    const assetPaths = await page.evaluate(() =>
+        Array.from(
+            document.querySelectorAll(
+                'link[href*="toastui-editor"], script[src*="toastui-editor"]'
+            )
+        ).map((node) => node.getAttribute('href') ?? node.getAttribute('src'))
+    );
+    assert.ok(assetPaths.length >= 3, 'admin note should reference local Toast UI assets');
+    assert.ok(
+        assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')),
+        'Toast UI assets should be served from local versioned routes'
+    );
 }
 
-function contrast(foreground, background) {
-    const fg = parseColor(foreground);
-    const bg = parseColor(background);
-    const light = luminance(fg);
-    const dark = luminance(bg);
-    return (Math.max(light, dark) + 0.05) / (Math.min(light, dark) + 0.05);
-}
-
-function luminance([red, green, blue]) {
-    return [red, green, blue]
-        .map((value) => {
-            const channel = value / 255;
-            return channel <= 0.03928
-                ? channel / 12.92
-                : ((channel + 0.055) / 1.055) ** 2.4;
-        })
-        .reduce((total, value, index) => total + value * [0.2126, 0.7152, 0.0722][index], 0);
-}
-
-function isDark(color) {
-    return luminance(parseColor(color)) < 0.08;
-}
-
-function isLight(color) {
-    return luminance(parseColor(color)) > 0.35;
-}
-
-function parseColor(color) {
-    const values = color.match(/[\d.]+/g)?.map(Number);
-    if (!values || values.length < 3) throw new Error(`could not parse color: ${color}`);
-    return values;
+async function assertTopRailCreateAction(page) {
+    const createControl = page.getByRole('button', { name: 'New note', exact: true }).first();
+    if (!(await createControl.count()) || !(await createControl.isVisible())) return;
+    const createTop = await createControl.evaluate((node) => node.getBoundingClientRect().top);
+    const navigateTop = await page
+        .getByText('Navigate', { exact: true })
+        .first()
+        .evaluate((node) => node.getBoundingClientRect().top);
+    assert.ok(createTop < navigateTop, 'New note should appear above Navigate in the rail');
 }
