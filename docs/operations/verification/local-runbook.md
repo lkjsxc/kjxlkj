@@ -114,10 +114,11 @@ Use browser verification or a real narrow viewport.
 Expected:
 
 - the page does not require horizontal scrolling
-- the editor toolbar stays inside the viewport
+- the editor toolbar stays inside the viewport and wraps instead of showing a detached scrollbar strip
 - `New note` appears near the top of the rail
 - `Prev` and `Next` card footprints remain stable even when one side is unavailable
 - newly typed headings, lists, blockquotes, and code render with normal Toast UI styling
+- the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 
 ## Verify Browser Visual Checks
 
@@ -129,6 +130,7 @@ Expected:
 
 - desktop screenshots pass browse/search/note assertions
 - compact screenshots pass closed and open drawer assertions
+- the live typing scenario uses keyboard input on the visible WYSIWYG editor surface
 - visual verification exits `0`
 
 ## Cleanup

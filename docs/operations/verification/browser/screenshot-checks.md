@@ -35,3 +35,6 @@ docker compose --profile verify run --rm visual-verify
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Newly typed WYSIWYG formatting renders with the same visible semantics as initial content.
+- Browser verification types into the visible WYSIWYG editor surface rather than using `setMarkdown()`.
+- The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
+- The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.

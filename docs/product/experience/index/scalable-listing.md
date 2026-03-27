@@ -9,7 +9,7 @@
 ## Row Hierarchy
 
 - Title is the strongest text.
-- Summary is secondary and clipped to a short preview.
+- Summary is secondary, clipped to a short preview, and stripped of leading Markdown control markers.
 - Created and updated times use browser-local 24-hour formatting.
 - Admin rows may show visibility state, but guest rows do not expose private-only metadata.
 

@@ -7,6 +7,7 @@
 - Authenticated admins may still open `/`, but it remains the public browse surface.
 - The route accepts `cursor` and `limit`.
 - The rail remains visible while the main pane shows the result list.
+- Derived summaries strip leading Markdown control markers before clipping.
 
 ## Admin Dashboard List
 
@@ -32,6 +33,7 @@
 - Returns `404` if note is private and user is not authenticated.
 - Response includes `body`, `is_private`, `created_at`, and `updated_at`.
 - Admin note pages edit the stored Markdown body through one rendered workspace.
+- Guest note rendering must reflect common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.
 
 ## Note Navigation
 

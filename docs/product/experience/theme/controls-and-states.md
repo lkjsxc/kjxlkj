@@ -26,3 +26,4 @@
 - No helper sentence appears next to the checkbox.
 - The rail must not expose a search box.
 - The editor must not expose a visible mode switch.
+- Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
