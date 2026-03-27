@@ -21,13 +21,14 @@
 - The workspace is powered by a vendored Toast UI Editor build.
 - There is no mode-switch choice in normal UI.
 - The editing engine stays close to official Toast UI WYSIWYG behavior.
-- Desktop uses the upstream default toolbar.
-- Narrow screens reduce the toolbar to a fixed supported subset before page overflow is allowed.
+- Desktop uses an upstream-style text-plus-table toolbar inside the existing shell.
+- Narrow screens reduce the toolbar to a fixed supported subset, but table authoring remains available.
 - Toolbar rows wrap inside the editor chrome instead of introducing a detached toolbar scrollbar.
 - Public checkbox stays inside the editing surface.
 - Editor theming may skin the container, but must not flatten or suppress editor content semantics.
 - The note page owns the vertical scroll path for long notes.
 - The note page never requires horizontal page scrolling to reach editor controls.
+- Opening the note should leave the caret ready for direct typing.
 
 ## Live Chrome Sync
 
@@ -35,6 +36,7 @@
 - Public checkbox toggles update visibility chips and related chrome immediately.
 - The removed helper text (`Guest-readable`, `Admin-only`) does not return.
 - Markdown shortcut typing at the caret must transform into rendered heading, list, quote, and code-block structure without requiring a reload.
+- Table insertion must stay available without leaving the single rendered workspace.
 
 ## Guest View
 

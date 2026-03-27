@@ -19,7 +19,7 @@ The system manages `note` resources.
 ## Field Rules
 
 - `id`: Primary key. Exact 22-character Base64URL string representing 128 random bits.
-- `body`: UTF-8 Markdown content. May be empty.
+- `body`: UTF-8 Markdown content. May be empty. Supported authoring paths include headings, lists, task lists, blockquotes, fenced code, links, and GFM tables.
 - `is_private`: Boolean. Default `true`.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
@@ -44,6 +44,7 @@ The system manages `note` resources.
 - Normal UI does not display raw `id` values.
 - Created time is the secondary identity cue in lists and note chrome.
 - Admin note pages edit the canonical body through a single rendered Markdown workspace.
+- Admin note pages should open with keyboard focus in the visible editor.
 
 ## UI Semantics
 

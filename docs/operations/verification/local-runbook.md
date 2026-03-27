@@ -115,9 +115,10 @@ Expected:
 
 - the page does not require horizontal scrolling
 - the editor toolbar stays inside the viewport and wraps instead of showing a detached scrollbar strip
+- opening the note leaves typing focus inside the visible editor
 - `New note` appears near the top of the rail
 - `Prev` and `Next` card footprints remain stable even when one side is unavailable
-- newly typed headings, lists, blockquotes, and code render with normal Toast UI styling
+- newly typed headings, lists, blockquotes, fenced code, and tables render with normal Toast UI styling
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 
 ## Verify Browser Visual Checks
