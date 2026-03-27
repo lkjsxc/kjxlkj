@@ -6,5 +6,6 @@ pub mod history;
 pub mod login;
 pub mod logout;
 pub mod records;
+pub mod search;
 pub mod session;
 pub mod setup;

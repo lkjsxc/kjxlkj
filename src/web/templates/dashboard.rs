@@ -1,33 +1,31 @@
 //! Admin dashboard template
 
 use super::index::{list_page, ListPageConfig};
-use super::model::{IndexItem, RecentLink};
+use super::model::IndexItem;
 
-const EDITOR_JS: &str = include_str!("editor.js");
+const ACTIONS_JS: &str = include_str!("editor.js");
 
-pub fn admin_page(
-    recent: &[RecentLink],
-    notes: &[IndexItem],
-    next_cursor: Option<&str>,
-    query: Option<&str>,
-) -> String {
-    let actions = r#"<button type="button" class="btn" onclick="createNote()">New note</button>
+pub fn admin_page(notes: &[IndexItem], next_cursor: Option<&str>) -> String {
+    let extra_script = format!(r#"<script>{ACTIONS_JS}</script>"#);
+    let header_actions = r#"<a href="/search" class="btn btn-primary">Search</a><button type="button" class="btn" onclick="createNote()">New note</button>"#;
+    let rail_actions = r#"<button type="button" class="btn" onclick="createNote()">New note</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#;
     list_page(
         &ListPageConfig {
             page_title: "Admin notes",
-            eyebrow: "Dashboard",
-            summary: "Search across current titles and bodies for public and private notes.",
+            eyebrow: "Admin browse",
+            summary: "Browse public and private notes without leaving the shared shell.",
             path: "/admin",
             mode_label: "Admin",
             scope_title: "Admin index",
-            scope_summary: "The rail keeps search, recent notes, and actions available while the main pane stays dense and scalable.",
-            actions,
-            extra_script: &format!(r#"<script>{EDITOR_JS}</script>"#),
+            scope_summary: "Browse current notes here. Use Search for full-text lookup across titles and bodies.",
+            active_nav: "admin",
+            header_actions,
+            rail_actions,
+            is_admin: true,
+            extra_script: &extra_script,
         },
-        recent,
         notes,
         next_cursor,
-        query,
     )
 }

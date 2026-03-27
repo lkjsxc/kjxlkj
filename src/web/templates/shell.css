@@ -1,6 +1,10 @@
+.shell-frame {
+    min-height: 100vh;
+}
+
 .app-shell {
     display: grid;
-    grid-template-columns: 312px minmax(0, 1fr);
+    grid-template-columns: 288px minmax(0, 1fr);
     min-height: 100vh;
 }
 
@@ -8,7 +12,8 @@
     position: sticky;
     top: 0;
     height: 100vh;
-    padding: 18px 16px 20px;
+    max-height: 100vh;
+    padding: 20px 18px 24px;
     overflow-y: auto;
     background: var(--rail);
     border-right: 1px solid var(--line);
@@ -17,14 +22,37 @@
 .rail-head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+}
+
+.rail-branding {
+    display: grid;
+    gap: 4px;
+}
+
+.rail-caption {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.82rem;
 }
 
 .brand,
 .card-title,
 .rail-link span {
     font-weight: 600;
+}
+
+.mobile-bar,
+.shell-backdrop {
+    display: none;
+}
+
+.mobile-branding {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
 }
 
 .rail-section + .rail-section {
@@ -34,13 +62,14 @@
 }
 
 .rail-section h2 {
-    margin: 0 0 12px;
-    font: 600 0.82rem/1.2 var(--sans);
+    margin: 0 0 10px;
+    font: 600 0.79rem/1.2 var(--sans);
     color: var(--text-soft);
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
+.rail-body,
 .rail-list,
 .rail-actions {
     display: grid;
@@ -49,19 +78,20 @@
 
 .rail-link {
     display: grid;
-    gap: 5px;
-    padding: 11px 13px;
+    gap: 4px;
+    padding: 12px 13px;
     border: 1px solid var(--line);
-    border-radius: 14px;
-    background: var(--bg-1);
+    border-radius: 16px;
+    background: var(--panel);
 }
 
 .rail-link.active {
     border-color: var(--accent);
-    color: var(--accent);
+    color: var(--text);
 }
 
 .rail-link small,
+.rail-copy p,
 .rail-facts span {
     color: var(--text-soft);
 }
@@ -73,12 +103,6 @@
 
 .rail-copy p {
     margin: 0;
-    color: var(--text-soft);
-}
-
-.rail-search {
-    display: grid;
-    gap: 10px;
 }
 
 .rail-facts {
@@ -89,19 +113,19 @@
 
 .rail-facts p {
     display: grid;
-    grid-template-columns: 68px minmax(0, 1fr);
-    gap: 10px;
-    align-items: center;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
     margin: 0;
 }
 
-.rail-facts strong,
-.rail-facts span {
-    white-space: nowrap;
+.rail-facts strong {
+    color: var(--text-soft);
 }
 
 .rail-facts span {
     justify-self: end;
+    text-align: right;
 }
 
 .rail-actions .btn,
@@ -111,4 +135,8 @@
 
 .rail-actions form {
     margin: 0;
+}
+
+.rail-toggle {
+    min-width: 88px;
 }

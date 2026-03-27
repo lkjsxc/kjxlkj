@@ -17,13 +17,13 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
 <title>{title} - kjxlkj</title>
+{extra_head}
 <style>{BASE_CSS}
 {CONTROLS_CSS}
 {SHELL_CSS}
 {SURFACES_CSS}
 {RESPONSIVE_CSS}
 {EDITOR_CSS}</style>
-{extra_head}
 </head>
 <body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
 </html>"#
@@ -43,16 +43,51 @@ pub fn not_found_page() -> String {
 
 pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) -> String {
     format!(
-        r#"<div class="app-shell">
-<aside id="shell-rail" class="shell-rail">
-<div class="rail-head">
+        r#"<div class="shell-frame">
+<header class="mobile-bar">
+<div class="mobile-branding">
 <a href="/" class="brand">kjxlkj</a>
+<span class="mode-pill">{mode_label}</span>
+</div>
+<button type="button" class="btn rail-toggle" data-menu-toggle aria-controls="shell-rail" aria-expanded="false">Menu</button>
+</header>
+<div class="shell-backdrop" data-menu-backdrop hidden></div>
+<div class="app-shell">
+<aside id="shell-rail" class="shell-rail" data-menu-panel>
+<div class="rail-head">
+<div class="rail-branding">
+<a href="/" class="brand">kjxlkj</a>
+<p class="rail-caption">flat notes for LLMs</p>
+</div>
 <span class="mode-pill">{mode_label}</span>
 </div>
 <div class="rail-body">{rail}</div>
 </aside>
 <main class="shell-main {page_class}">{main}</main>
+</div>
 </div>"#
+    )
+}
+
+pub fn rail_section(title: &str, body: &str) -> String {
+    format!(r#"<section class="rail-section"><h2>{title}</h2>{body}</section>"#)
+}
+
+pub fn primary_nav(active: &str, is_admin: bool) -> String {
+    let mut links = vec![
+        nav_link("/", "Public notes", active == "home"),
+        nav_link("/search", "Search", active == "search"),
+    ];
+    if is_admin {
+        links.push(nav_link("/admin", "Admin workspace", active == "admin"));
+    }
+    format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
+}
+
+fn nav_link(href: &str, label: &str, active: bool) -> String {
+    format!(
+        r#"<a href="{href}" class="rail-link{}"><span>{label}</span></a>"#,
+        if active { " active" } else { "" }
     )
 }
 

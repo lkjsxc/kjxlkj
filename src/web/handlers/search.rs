@@ -1,0 +1,73 @@
+//! Search HTML handler
+
+use crate::error::AppError;
+use crate::web::db::{self, DbPool, ListRequest};
+use crate::web::handlers::session;
+use crate::web::templates;
+use crate::web::view;
+use actix_web::{get, web, HttpRequest, HttpResponse};
+use serde::Deserialize;
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct SearchParams {
+    pub q: Option<String>,
+    pub cursor: Option<String>,
+    pub limit: Option<i64>,
+}
+
+#[get("/search")]
+pub async fn search_page(
+    pool: web::Data<DbPool>,
+    req: HttpRequest,
+    params: web::Query<SearchParams>,
+) -> Result<HttpResponse, AppError> {
+    if !db::is_setup(&pool).await? {
+        return Ok(redirect("/setup"));
+    }
+    let is_admin = session::check_session(&req, &pool).await?;
+    let params = params.into_inner();
+    let query = params
+        .q
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let (entries, next_cursor) = if let Some(value) = query {
+        let page = db::list_records(
+            &pool,
+            &ListRequest {
+                include_private: is_admin,
+                limit: params.limit.unwrap_or(50),
+                query: Some(value.to_string()),
+                cursor: params.cursor,
+            },
+        )
+        .await?;
+        (
+            page.records
+                .iter()
+                .map(|record| view::index_item(record, is_admin))
+                .collect(),
+            page.next_cursor,
+        )
+    } else {
+        (Vec::new(), None)
+    };
+    Ok(html(templates::search_page(
+        &entries,
+        next_cursor.as_deref(),
+        query,
+        is_admin,
+    )))
+}
+
+fn redirect(location: &str) -> HttpResponse {
+    HttpResponse::Found()
+        .append_header(("Location", location))
+        .finish()
+}
+
+fn html(body: String) -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(body)
+}

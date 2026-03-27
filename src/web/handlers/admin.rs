@@ -9,8 +9,7 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct ListParams {
-    pub q: Option<String>,
+pub struct BrowseParams {
     pub cursor: Option<String>,
     pub limit: Option<i64>,
 }
@@ -19,7 +18,7 @@ pub struct ListParams {
 pub async fn admin_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<ListParams>,
+    params: web::Query<BrowseParams>,
 ) -> Result<HttpResponse, AppError> {
     admin_page_impl(pool, req, params.into_inner()).await
 }
@@ -28,7 +27,7 @@ pub async fn admin_page(
 pub async fn admin_page_slash(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<ListParams>,
+    params: web::Query<BrowseParams>,
 ) -> Result<HttpResponse, AppError> {
     admin_page_impl(pool, req, params.into_inner()).await
 }
@@ -36,7 +35,7 @@ pub async fn admin_page_slash(
 async fn admin_page_impl(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: ListParams,
+    params: BrowseParams,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
@@ -44,18 +43,15 @@ async fn admin_page_impl(
     if !session::check_session(&req, &pool).await? {
         return Ok(redirect("/login"));
     }
-    let page = db::list_records(&pool, &list_request(params.clone(), true)).await?;
-    let recent = view::recent_links(&pool, true).await?;
+    let page = db::list_records(&pool, &list_request(params, true)).await?;
     let entries: Vec<_> = page
         .records
         .iter()
         .map(|record| view::index_item(record, true))
         .collect();
     Ok(html(templates::admin_page(
-        &recent,
         &entries,
         page.next_cursor.as_deref(),
-        params.q.as_deref(),
     )))
 }
 
@@ -63,25 +59,22 @@ async fn admin_page_impl(
 pub async fn home(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<ListParams>,
+    params: web::Query<BrowseParams>,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
     let is_admin = session::check_session(&req, &pool).await?;
     let params = params.into_inner();
-    let page = db::list_records(&pool, &list_request(params.clone(), false)).await?;
-    let recent = view::recent_links(&pool, is_admin).await?;
+    let page = db::list_records(&pool, &list_request(params, false)).await?;
     let entries: Vec<_> = page
         .records
         .iter()
         .map(|record| view::index_item(record, false))
         .collect();
     Ok(html(templates::home_page(
-        &recent,
         &entries,
         page.next_cursor.as_deref(),
-        params.q.as_deref(),
         is_admin,
     )))
 }
@@ -108,11 +101,11 @@ pub async fn note_page(
     Ok(html(templates::note_page(&record, &chrome, is_admin)))
 }
 
-fn list_request(params: ListParams, include_private: bool) -> ListRequest {
+fn list_request(params: BrowseParams, include_private: bool) -> ListRequest {
     ListRequest {
         include_private,
         limit: params.limit.unwrap_or(50),
-        query: params.q,
+        query: None,
         cursor: params.cursor,
     }
 }

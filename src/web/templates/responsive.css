@@ -1,43 +1,94 @@
 @media (max-width: 900px) {
+    .mobile-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        background: var(--bg-0);
+    }
+
     .app-shell {
-        grid-template-columns: 1fr;
+        display: block;
     }
 
     .shell-rail {
-        position: static;
-        height: auto;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: min(320px, 86vw);
+        transform: translateX(-104%);
+        transition: transform 0.22s ease;
+        z-index: 70;
+    }
+
+    body.rail-open .shell-rail {
+        transform: translateX(0);
+    }
+
+    .shell-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 65;
+        background: rgba(8, 9, 11, 0.7);
+    }
+
+    body.rail-open .shell-backdrop {
+        display: block;
     }
 
     .shell-main,
     .index-layout {
-        padding: 28px 16px 28px;
+        padding: 24px 16px 32px;
     }
 
-    .index-header,
     .page-head,
-    .page-tail,
     .note-row {
-        align-items: start;
         flex-direction: column;
+        align-items: flex-start;
     }
 
+    .page-actions,
     .page-meta,
     .card-meta {
+        justify-content: flex-start;
         justify-items: start;
+        text-align: left;
+    }
+
+    .rail-facts p {
+        grid-template-columns: 1fr;
+    }
+
+    .rail-facts span {
+        justify-self: start;
         text-align: left;
     }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 640px) {
     .surface,
-    .index-card {
-        border-radius: 16px;
-        padding: 16px;
+    .index-card,
+    .auth-card {
+        border-radius: 20px;
+        padding: 18px;
     }
 
     .page-title-stack h1 {
-        font-size: 1.75rem;
+        font-size: clamp(1.9rem, 10vw, 2.4rem);
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .page-actions .btn,
+    .page-actions form,
+    .search-row .btn {
+        width: 100%;
     }
 }

@@ -9,13 +9,13 @@
 .surface,
 .index-card {
     border: 1px solid var(--line);
-    background: var(--bg-2);
+    background: var(--panel);
 }
 
 .auth-card {
-    width: min(100%, 440px);
+    width: min(100%, 460px);
     padding: 32px;
-    border-radius: 18px;
+    border-radius: 24px;
 }
 
 .subtitle,
@@ -23,7 +23,8 @@
 .surface-empty,
 .rail-empty,
 .card-summary,
-.save-status {
+.search-copy,
+.scope-label {
     color: var(--text-soft);
 }
 
@@ -31,51 +32,55 @@
     margin-top: 18px;
 }
 
-.form-group label {
+.form-group label,
+.search-form label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 500;
+    font: 600 0.92rem/1.3 var(--sans);
+    color: var(--text-soft);
 }
 
 .form-group input,
-.search-form input,
-.rail-search input,
+.search-row input,
 .note-editor {
     width: 100%;
     border: 1px solid var(--line-strong);
-    border-radius: 12px;
-    padding: 12px 14px;
+    border-radius: 16px;
+    padding: 13px 14px;
     background: var(--bg-3);
     color: var(--text);
 }
 
 .btn {
-    color: var(--text-soft);
-    transition: color 0.18s ease;
-}
-
-.btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 0;
-    border: 0;
-    background: none;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel-2);
+    color: var(--text-soft);
     cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
 }
 
 .btn:hover,
 .btn:focus-visible {
+    border-color: var(--line-strong);
     color: var(--text);
 }
 
 .btn.active,
 .btn-primary {
+    border-color: var(--accent);
+    background: var(--accent-soft);
     color: var(--accent);
-    font-weight: 600;
 }
 
 .btn[disabled] {
+    border-color: var(--line);
     color: var(--text-muted);
     cursor: default;
 }
@@ -103,11 +108,17 @@
 }
 
 .mode-pill {
-    background: var(--bg-3);
+    background: var(--panel-2);
     color: var(--text-soft);
 }
 
-.error {
-    margin: 16px 0;
+.search-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+}
+
+.error,
+.save-error {
     color: var(--danger);
 }

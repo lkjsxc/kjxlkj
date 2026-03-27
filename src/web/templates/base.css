@@ -1,21 +1,22 @@
 :root {
-    --bg-0: #0f1012;
+    --bg-0: #111214;
     --bg-1: #17181b;
-    --bg-2: #1d1f23;
-    --bg-3: #26292d;
-    --rail: #141518;
-    --line: #2f3338;
-    --line-strong: #40464d;
-    --text: #e6e6e7;
-    --text-soft: #aeb3b8;
-    --text-muted: #828890;
-    --accent: #8cb8ff;
-    --accent-soft: #253140;
-    --danger: #ff8d84;
-    --success: #8fd6b0;
-    --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
-    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --serif: "Iowan Old Style", Charter, Georgia, serif;
+    --bg-2: #1c1e22;
+    --bg-3: #252831;
+    --rail: #15171a;
+    --panel: #1b1d21;
+    --panel-2: #22252c;
+    --line: #2d3138;
+    --line-strong: #404754;
+    --text: #f2f2ef;
+    --text-soft: #b6bbc2;
+    --text-muted: #808894;
+    --accent: #9ec1ff;
+    --accent-soft: #263246;
+    --danger: #ff8574;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
 }
 
 * {
@@ -34,6 +35,10 @@ body {
     font: 15px/1.6 var(--sans);
 }
 
+body.rail-open {
+    overflow: hidden;
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -41,8 +46,17 @@ a {
 
 button,
 input,
-textarea {
+textarea,
+select {
     font: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+img {
+    max-width: 100%;
 }
 
 .prose {

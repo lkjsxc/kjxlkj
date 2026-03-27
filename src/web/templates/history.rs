@@ -24,7 +24,7 @@ pub fn history_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> Str
 <p class="eyebrow">History</p>
 <h1>{}</h1>
 </div>
-<a href="/{}" class="btn">Current note</a>
+<div class="page-actions"><a href="/{}" class="btn">Current note</a></div>
 </header>
 <section class="stack">{}</section>"#,
         chrome.title, record.id, rows
@@ -56,27 +56,25 @@ pub fn revision_page(
 <div class="page-title-stack">
 <p class="eyebrow">Snapshot</p>
 <h1>{}</h1>
+<p class="page-summary">Saved {}.</p>
 </div>
-<div class="page-meta">
+<div class="page-actions">
 <span class="status-pill">{}</span>
-<small>{}</small>
-</div>
-</header>
-<section class="surface note-surface prose">{}</section>
-<footer class="page-tail">
 <a href="{}" class="btn">Back to history</a>
 <a href="/{}" class="btn">Current note</a>
-</footer>"#,
+</div>
+</header>
+<section class="surface note-surface prose">{}</section>"#,
         title,
+        super::render_time(&revision.created_at),
         if revision.is_private {
             "Private"
         } else {
             "Public"
         },
-        super::render_time(&revision.created_at),
-        render_markdown(&revision.body),
         chrome.history_href,
-        record.id
+        record.id,
+        render_markdown(&revision.body)
     );
     base(
         &format!("Revision {} - {}", revision.revision_number, chrome.title),
@@ -110,7 +108,7 @@ fn history_row(entry: &HistoryLink) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::web::templates::{NoteChrome, RecentLink};
+    use crate::web::templates::NoteChrome;
     use chrono::Utc;
 
     fn sample_record() -> Record {
@@ -130,16 +128,9 @@ mod tests {
             id: "Q29udHJhY3RSdW50aW1lMQ".to_string(),
             title: "Demo".to_string(),
             current_href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
-            search_path: "/",
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
             visibility: "Public",
-            recent: vec![RecentLink {
-                href: "/Q29udHJhY3RSdW50aW1lMQ".to_string(),
-                title: "Demo".to_string(),
-                updated_at: "2026-03-26 08:35 UTC".to_string(),
-                visibility: None,
-            }],
             previous: None,
             next: None,
             history: vec![HistoryLink {

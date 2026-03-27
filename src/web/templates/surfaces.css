@@ -1,6 +1,6 @@
 .shell-main,
 .index-layout {
-    padding: 44px 52px 56px;
+    padding: 44px 48px 56px;
 }
 
 .dashboard-page,
@@ -15,29 +15,26 @@
 
 .surface,
 .index-card {
-    padding: 18px 20px;
-    border-radius: 18px;
+    padding: 20px 22px;
+    border-radius: 22px;
 }
 
-.index-header,
 .page-head,
-.page-tail,
+.page-actions,
 .title-tags,
-.card-meta,
-.index-actions {
+.card-meta {
     display: flex;
     gap: 12px;
 }
 
-.index-header,
-.page-head,
-.page-tail {
+.page-head {
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .page-title-stack,
-.card-body {
+.card-body,
+.search-surface {
     display: grid;
     gap: 8px;
 }
@@ -45,11 +42,16 @@
 .page-title-stack h1,
 .card-title {
     margin: 0;
-    line-height: 1.08;
+    line-height: 1.05;
 }
 
 .page-title-stack h1 {
     font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.page-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .page-meta,
@@ -58,6 +60,7 @@
     gap: 6px;
     justify-items: end;
     text-align: right;
+    color: var(--text-soft);
 }
 
 .note-list {
@@ -67,40 +70,81 @@
 .note-row {
     display: flex;
     justify-content: space-between;
-    gap: 18px;
+    gap: 20px;
+}
+
+.scope-card {
+    max-width: 720px;
+    background: var(--bg-1);
+}
+
+.scope-label {
+    margin: 0;
+    font: 600 0.82rem/1.2 var(--sans);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .card-summary,
 .prose h1,
 .prose h2,
 .prose h3,
-.prose p {
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose pre {
     margin: 0;
 }
 
 .card-summary {
-    font-size: 0.94rem;
+    font-size: 0.96rem;
 }
 
-.note-surface {
-    max-width: 1100px;
+.note-surface,
+.search-surface {
+    max-width: 1080px;
 }
 
 .prose {
     display: grid;
-    gap: 12px;
+    gap: 14px;
 }
 
 .prose h1 {
-    font-size: 2rem;
+    font-size: 2.15rem;
 }
 
 .prose h2 {
-    font-size: 1.45rem;
+    font-size: 1.5rem;
 }
 
 .prose h3 {
-    font-size: 1.18rem;
+    font-size: 1.2rem;
+}
+
+.prose ul,
+.prose ol {
+    padding-left: 24px;
+}
+
+.prose blockquote {
+    padding-left: 16px;
+    border-left: 2px solid var(--accent);
+    color: var(--text-soft);
+}
+
+.prose pre {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--bg-1);
+    overflow: auto;
+}
+
+.prose code,
+.prose pre {
+    font-family: var(--mono);
 }
 
 .check-row {
@@ -116,18 +160,15 @@
 }
 
 .pager,
-.index-actions form,
-.editor-side {
-    display: inline-flex;
+.page-actions form,
+.editor-toolbar-row {
+    display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
     margin: 0;
 }
 
-.save-status[data-state="saved"] {
-    color: var(--success);
-}
-
-.save-status[data-state="error"] {
-    color: var(--danger);
+.search-copy {
+    margin: 0;
 }

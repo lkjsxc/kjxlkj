@@ -1,5 +1,7 @@
 var saveTimer = null;
-var currentMode = 'text';
+var editorInstance = null;
+var sourceField = null;
+var fallbackField = null;
 
 function createNote() {
     fetch('/records', {
@@ -7,41 +9,65 @@ function createNote() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
     })
-    .then(function (response) { return response.json(); })
-    .then(function (note) { window.location.href = '/' + note.id; })
-    .catch(function (err) { alert('Failed to create note: ' + err.message); });
+        .then(function (response) { return response.json(); })
+        .then(function (note) { window.location.href = '/' + note.id; })
+        .catch(function (err) { alert('Failed to create note: ' + err.message); });
 }
 
 function initEditor() {
-    var surface = document.querySelector('[data-initial-mode]');
-    var editor = document.getElementById('editor');
-    var rich = document.getElementById('rich-editor');
-    if (!surface || !editor) return;
-    currentMode = surface.dataset.initialMode || 'text';
-    editor.addEventListener('input', function () {
-        updateRichButton();
-        syncNoteChrome();
-        queueSave();
-    });
-    rich?.addEventListener('input', function () {
-        syncSourceFromRich();
-        syncNoteChrome();
-        queueSave();
-    });
-    document.addEventListener('click', function (event) {
-        var mode = event.target.closest('[data-mode-button]')?.dataset.modeButton;
-        var block = event.target.closest('[data-add-block]')?.dataset.addBlock;
-        if (mode) setMode(mode);
-        if (block && rich) {
-            setMode('rich');
-            window.richMarkdown.addBlock(rich, block);
-            syncSourceFromRich();
-            syncNoteChrome();
-            queueSave();
+    sourceField = document.getElementById('editor-source');
+    fallbackField = document.getElementById('editor-fallback');
+    var root = document.getElementById('editor-root');
+    if (!sourceField || !root) return;
+    if (window.toastui && window.toastui.Editor) {
+        try {
+            editorInstance = new window.toastui.Editor({
+                el: root,
+                initialValue: sourceField.value,
+                initialEditType: 'wysiwyg',
+                previewStyle: 'tab',
+                theme: 'dark',
+                usageStatistics: false,
+                toolbarItems: [
+                    ['heading', 'bold', 'italic', 'strike'],
+                    ['ul', 'ol', 'task'],
+                    ['quote', 'code', 'codeblock'],
+                    ['link']
+                ]
+            });
+            root.querySelector('.toastui-editor-mode-switch')?.remove();
+            editorInstance.on('change', onEditorInput);
+        } catch (_) {
+            enableFallback(root);
         }
-    });
-    setMode(currentMode);
+    } else {
+        enableFallback(root);
+    }
     syncNoteChrome();
+}
+
+function enableFallback(root) {
+    editorInstance = null;
+    if (root) root.hidden = true;
+    if (!fallbackField) return;
+    fallbackField.hidden = false;
+    fallbackField.addEventListener('input', onEditorInput);
+}
+
+function onEditorInput() {
+    syncNoteChrome();
+    queueSave();
+}
+
+function currentBody() {
+    if (editorInstance) {
+        sourceField.value = editorInstance.getMarkdown();
+        return sourceField.value;
+    }
+    if (fallbackField && !fallbackField.hidden) {
+        sourceField.value = fallbackField.value;
+    }
+    return sourceField ? sourceField.value : '';
 }
 
 function queueSave() {
@@ -50,63 +76,26 @@ function queueSave() {
 }
 
 function saveNote() {
-    var editor = document.getElementById('editor');
-    if (!editor || typeof currentId === 'undefined') return;
-    if (currentMode === 'rich') syncSourceFromRich();
-    var status = document.getElementById('save-status');
-    status.textContent = 'Saving';
-    status.dataset.state = 'saving';
+    if (!sourceField || typeof currentId === 'undefined') return;
     fetch('/records/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: editor.value, is_private: isPrivate })
+        body: JSON.stringify({ body: currentBody(), is_private: isPrivate })
     })
-    .then(function (response) {
-        if (!response.ok) throw new Error('save failed');
-        status.textContent = 'Saved';
-        status.dataset.state = 'saved';
-        setTimeout(function () { status.textContent = ''; }, 1500);
-    })
-    .catch(function () {
-        status.textContent = 'Save failed';
-        status.dataset.state = 'error';
-    });
+        .then(function (response) {
+            if (!response.ok) throw new Error('save failed');
+            setSaveError('');
+        })
+        .catch(function () {
+            setSaveError('Save failed. Retry on the next change.');
+        });
 }
 
-function setMode(mode) {
-    var surface = document.querySelector('[data-initial-mode]');
-    var rich = document.getElementById('rich-editor');
-    var editor = document.getElementById('editor');
-    if (!surface || !editor || !rich) return;
-    if (mode === 'rich') {
-        var blocks = window.richMarkdown.parseBlocks(editor.value);
-        if (!blocks) return updateRichButton();
-        rich.innerHTML = blocks.map(window.richMarkdown.blockHtml).join('');
-        syncSourceFromRich();
-    } else if (currentMode === 'rich') {
-        syncSourceFromRich();
-    }
-    currentMode = mode;
-    rich.hidden = mode !== 'rich';
-    editor.hidden = mode === 'rich';
-    document.querySelector('.editor-actions').hidden = mode !== 'rich';
-    document.querySelectorAll('[data-mode-button]').forEach(function (node) {
-        node.classList.toggle('active', node.dataset.modeButton === mode);
-    });
-    syncNoteChrome();
-}
-
-function updateRichButton() {
-    var editor = document.getElementById('editor');
-    var button = document.querySelector('[data-mode-button="rich"]');
-    if (!editor || !button) return;
-    button.disabled = !window.richMarkdown.parseBlocks(editor.value);
-}
-
-function syncSourceFromRich() {
-    var editor = document.getElementById('editor');
-    var rich = document.getElementById('rich-editor');
-    if (editor && rich) editor.value = window.richMarkdown.serializeRich(rich);
+function setSaveError(message) {
+    var node = document.getElementById('save-error');
+    if (!node) return;
+    node.textContent = message;
+    node.hidden = !message;
 }
 
 function togglePublic() {
@@ -117,13 +106,15 @@ function togglePublic() {
 }
 
 function syncNoteChrome() {
-    var editor = document.getElementById('editor');
-    if (!editor) return;
-    if (currentMode === 'rich') syncSourceFromRich();
-    var title = deriveTitle(editor.value);
+    var body = currentBody();
+    var title = deriveTitle(body);
     var visibility = isPrivate ? 'Private' : 'Public';
-    document.querySelectorAll('[data-live-title]').forEach(function (node) { node.textContent = title; });
-    document.querySelectorAll('[data-live-visibility]').forEach(function (node) { node.textContent = visibility; });
+    document.querySelectorAll('[data-live-title]').forEach(function (node) {
+        node.textContent = title;
+    });
+    document.querySelectorAll('[data-live-visibility]').forEach(function (node) {
+        node.textContent = visibility;
+    });
     document.title = title + ' - kjxlkj';
 }
 
@@ -135,9 +126,9 @@ function deriveTitle(body) {
 function deleteNote(id) {
     if (!confirm('Delete this note?')) return;
     fetch('/records/' + id, { method: 'DELETE' })
-    .then(function (response) {
-        if (!response.ok) throw new Error('delete failed');
-        window.location.href = '/admin';
-    })
-    .catch(function () { alert('Failed to delete note'); });
+        .then(function (response) {
+            if (!response.ok) throw new Error('delete failed');
+            window.location.href = '/admin';
+        })
+        .catch(function () { alert('Failed to delete note'); });
 }
