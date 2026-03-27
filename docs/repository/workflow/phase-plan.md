@@ -3,9 +3,9 @@
 ## Order
 
 1. Update the docs canon.
-2. Refactor shared layout and route surfaces.
-3. Replace or simplify client-side editor behavior.
-4. Update tests and compose verification.
+2. Vendor and serve pinned editor assets.
+3. Refactor shared layout, create flow, and note responsiveness.
+4. Update tests, visual verification, and line-limit enforcement.
 5. Commit only after the active batch passes its gates.
 
 ## Intent

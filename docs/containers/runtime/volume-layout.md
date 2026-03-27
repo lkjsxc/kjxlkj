@@ -1,19 +1,17 @@
 # Runtime Volume Layout
 
-## Host Mount Root
+## Runtime Persistence
 
-All host-mounted runtime state is rooted under `./data`.
+- Runtime note, revision, and session state is persisted in PostgreSQL.
+- Compose maps PostgreSQL state to the named volume `pgdata`.
+- The app container does not require a writable note-storage filesystem path.
 
-## Record Storage Path
+## Verification Output
 
-- Host: `./data/records`
-- Container: `/app/data/records`
-
-## Auth/Session Storage Path
-
-- Auth/session state is persisted in PostgreSQL referenced by `DATABASE_URL`.
-- No filesystem fallback for auth/session persistence.
+- Browser verification writes screenshots to `tmp/visual-artifacts/`.
+- Those artifacts are disposable verification output rather than runtime state.
 
 ## Git Rule
 
-`data/` is ignored by git.
+- Runtime persistence is external to git.
+- Verification artifacts may be regenerated at any time.

@@ -4,10 +4,10 @@
 
 Commit after each major batch:
 
-- docs canon reset
-- shell and route refactor
-- editor replacement
-- verification stabilization
+- docs canon and license inventory
+- vendored asset delivery
+- create-flow and responsive editor fixes
+- verification and line-limit stabilization
 
 ## Preconditions
 

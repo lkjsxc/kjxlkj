@@ -17,10 +17,12 @@
 ## Admin Editing Surface
 
 - Admin editing uses one rendered Markdown workspace.
-- The workspace is powered by a third-party editor.
+- The workspace is powered by a vendored Toast UI Editor build.
 - There is no mode-switch choice in normal UI.
 - The editor uses the shell UI font direction plus a readable content stack.
 - Public checkbox stays inside the editing surface.
+- Narrow screens compact toolbar and metadata chrome before content is allowed to overflow.
+- The note page never requires horizontal page scrolling to reach editor controls.
 
 ## Live Chrome Sync
 

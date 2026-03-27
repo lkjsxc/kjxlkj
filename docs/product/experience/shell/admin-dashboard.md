@@ -9,6 +9,7 @@
 
 - The persistent shell rail remains visible.
 - The rail contains navigation, scope context, and restrained actions.
+- For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
 - Main content is a dense paginated list.
 - The main list remains the authoritative browse surface for thousands of notes.
 

@@ -34,7 +34,7 @@ Expected:
 curl -sS -X POST http://127.0.0.1:8080/records \
   -H 'Content-Type: application/json' \
   -b cookies.txt \
-  -d '{}'
+  -d '{"body":"# 2026-03-27 21:04\n","is_private":true}'
 ```
 
 Expected: `201` with JSON body containing `id`.
@@ -92,6 +92,17 @@ Expected:
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
 - HTML hides `Saving` / `Saved`
+- HTML references local editor assets rather than an external editor CDN
+
+## Verify Compact Admin Note
+
+Use browser verification or a real narrow viewport.
+
+Expected:
+
+- the page does not require horizontal scrolling
+- the editor toolbar stays inside the viewport
+- `New note` appears near the top of the rail
 
 ## Verify Browser Visual Checks
 

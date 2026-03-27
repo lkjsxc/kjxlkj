@@ -24,6 +24,19 @@ The system manages `note` resources.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
 
+## Create Payload
+
+```json
+{
+  "body": "# 2026-03-27 21:04\n",
+  "is_private": true
+}
+```
+
+- `POST /records` requires `body`.
+- Browser-created notes use a browser-local minute timestamp heading as the default title seed.
+- The server does not synthesize fallback body text when `body` is omitted.
+
 ## Derived Presentation Rules
 
 - Display title is extracted from the first `# ` heading line.

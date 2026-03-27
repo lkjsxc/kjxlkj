@@ -36,6 +36,15 @@
   - without valid session: `200` HTML public search page using `q`, `cursor`, `limit`
   - with valid session: `200` HTML admin-capable search page using `q`, `cursor`, `limit`
 
+## Asset Delivery
+
+- `GET /assets/vendor/toastui/3.2.2/toastui-editor.min.css`:
+  - returns vendored editor CSS
+- `GET /assets/vendor/toastui/3.2.2/toastui-editor-dark.min.css`:
+  - returns vendored dark-theme CSS
+- `GET /assets/vendor/toastui/3.2.2/toastui-editor-all.min.js`:
+  - returns vendored editor JS bundle
+
 ## Note Viewing
 
 - `GET /{id}`:
@@ -56,6 +65,7 @@
 
 - `POST /records`:
   - without valid session: `401` JSON error
+  - invalid payload or missing `body`: `400` JSON error
   - valid session: `201` JSON with new note and generated `id`
 - `PUT /records/{id}`:
   - without valid session: `401` JSON error

@@ -4,6 +4,7 @@
 - `/` -> public browse handler.
 - `/admin` and `/admin/` -> admin browse handler.
 - `/search` -> auth-aware search handler.
+- `/assets/vendor/toastui/3.2.2/...` -> vendored editor asset handlers.
 - `/{id}` -> note view/edit handler.
 - `/{id}/history` -> history index handler.
 - `/{id}/history/{revision_number}` -> history snapshot handler.

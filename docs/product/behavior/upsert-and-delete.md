@@ -4,8 +4,11 @@
 
 - Requires valid session.
 - Auto-generates a 22-character opaque `id`.
-- Request body may include `body` and `is_private`.
-- Defaults: `body = "# New Note\n"`, `is_private = true`.
+- Request body must include `body`.
+- Request body may include `is_private`.
+- The browser create flow seeds `body` with a local-time heading in `YYYY-MM-DD HH:mm`.
+- Server create behavior does not invent fallback note content when `body` is missing.
+- Default `is_private = true`.
 - Returns `201` with created note JSON.
 
 ## Update (`PUT /records/{id}`)

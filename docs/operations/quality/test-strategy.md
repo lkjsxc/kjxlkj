@@ -23,4 +23,5 @@ Compose verify profile must execute the full quality gate bundle.
 ## Browser Verification
 
 - Browser-rendered screenshots verify desktop and compact layouts.
-- Visual checks assert flat dark surfaces, hidden rail search, hidden `RECENT`, quiet drawer controls, and the single-mode editor surface.
+- Visual checks assert flat dark surfaces, hidden rail search, hidden `RECENT`, quiet drawer controls, locally served editor assets, and the single-mode editor surface.
+- Compact admin note checks must fail on horizontal overflow.

@@ -29,3 +29,5 @@ docker compose --profile verify run --rm visual-verify
 - Narrow screens start with the drawer closed.
 - Surfaces remain flat with solid fills rather than gradients or blur.
 - Note and history rails keep metadata readable without wrap regressions.
+- Compact admin note pages do not overflow horizontally.
+- Admin rails keep `New note` near the top.

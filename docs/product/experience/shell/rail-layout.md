@@ -10,6 +10,7 @@
 ## Rail Sections
 
 - Brand and session mode.
+- Admin-only `New note` action near the top of the rail.
 - Primary navigation.
 - Scope summary.
 - Current note context.
@@ -27,4 +28,5 @@
 ## Action Treatment
 
 - Search, Dashboard, Home, New note, Logout, and Delete use restrained controls.
+- `New note` is the first admin action in the rail.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.

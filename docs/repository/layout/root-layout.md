@@ -10,9 +10,14 @@
 - `Cargo.lock`
 - `src/`
 - `tests/`
+- `visual/`
+- `vendor/`
 - `Dockerfile`
+- `Dockerfile.verify`
+- `Dockerfile.visual`
 - `docker-compose.yml`
+- `verify.sh`
 
 ## Runtime State Entries
 
-- `data/` may exist locally and remains git-ignored.
+- `tmp/visual-artifacts/` may exist locally and remains disposable.
