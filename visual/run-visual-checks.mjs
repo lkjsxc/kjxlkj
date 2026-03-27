@@ -40,6 +40,7 @@ async function main() {
             'desktop-search.png',
             'desktop-admin-dashboard.png',
             'desktop-admin-note.png',
+            'desktop-history-index.png',
             'desktop-guest-note.png',
             'compact-public-root-closed.png',
             'compact-public-root-open.png',
@@ -61,6 +62,12 @@ async function captureAdminScreens(browser, id) {
     await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
     await expectAdminNote(page);
     await capture(page, 'desktop-admin-note.png');
+    await verifyEditorFormatting(page);
+
+    await page.goto(`${appUrl}/${id}/history`, { waitUntil: 'networkidle' });
+    await assertVisibleText(page, 'Current note');
+    await assertVisibleText(page, 'Revision 3');
+    await capture(page, 'desktop-history-index.png');
 
     await page.goto(`${appUrl}/${id}/history/3`, { waitUntil: 'networkidle' });
     await assertVisibleText(page, 'Shared release');
@@ -82,6 +89,12 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
     await capture(page, 'desktop-guest-note.png');
+
+    await page.goto(`${appUrl}/${notes.oldest.id}`, { waitUntil: 'networkidle' });
+    await expectGuestNote(page, null, notes.middle.title);
+
+    await page.goto(`${appUrl}/${notes.newest.id}`, { waitUntil: 'networkidle' });
+    await expectGuestNote(page, notes.middle.title, null);
 
     const publicRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/3`, { waitUntil: 'networkidle' });
     assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
@@ -124,6 +137,27 @@ async function verifyUiCreatedDraft(page) {
         await page.locator('#public-toggle').isChecked(),
         false,
         'new notes should default to private drafts'
+    );
+}
+
+async function verifyEditorFormatting(page) {
+    const body = '# Live Heading\n\n- Alpha\n- Beta\n\n> Quoted line.\n\n```txt\ncode\n```';
+    await page.evaluate((markdown) => window.editorInstance.setMarkdown(markdown), body);
+    await page.waitForFunction(
+        () =>
+            !!document.querySelector('.toastui-editor-contents h1') &&
+            document.querySelectorAll('.toastui-editor-contents li').length >= 2 &&
+            !!document.querySelector('.toastui-editor-contents blockquote') &&
+            !!document.querySelector('.toastui-editor-contents pre')
+    );
+    await page.waitForTimeout(900);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expectAdminNote(page);
+    await page.waitForFunction(
+        () =>
+            document.querySelector('[data-live-title]')?.textContent?.trim() === 'Live Heading' &&
+            !!document.querySelector('.toastui-editor-contents h1') &&
+            !!document.querySelector('.toastui-editor-contents blockquote')
     );
 }
 

@@ -71,18 +71,18 @@ export async function expectAdminNote(page) {
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'Created');
     await assertVisibleText(page, 'Updated');
-    await assertVisibleText(page, 'All revisions');
+    await assertSingleHistoryCard(page);
     await assertLocalToastUiAssets(page);
     await assertTopRailCreateAction(page);
 }
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'All revisions');
+    await assertSingleHistoryCard(page);
     await assertVisibleText(page, 'Prev');
-    await assertVisibleText(page, previousTitle);
+    await assertVisibleText(page, previousTitle ?? 'No older accessible note.');
     await assertVisibleText(page, 'Next');
-    await assertVisibleText(page, nextTitle);
+    await assertVisibleText(page, nextTitle ?? 'No newer accessible note.');
 }
 
 export async function expectClosedDrawer(page) {
@@ -174,6 +174,15 @@ async function assertLocalToastUiAssets(page) {
     assert.ok(
         assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')),
         'Toast UI assets should be served from local versioned routes'
+    );
+}
+
+async function assertSingleHistoryCard(page) {
+    await assertVisibleText(page, 'All history');
+    assert.equal(
+        await page.getByText('All history', { exact: true }).count(),
+        1,
+        'note rail should expose exactly one history card'
     );
 }
 
