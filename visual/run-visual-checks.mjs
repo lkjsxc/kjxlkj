@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { assertInvisibleText, assertVisibleText, expectAdminDashboard, expectAdminNote, expectClosedDrawer, expectGuestNote, expectPublicRoot, expectSearchPage, openDrawer } from './assertions.mjs';
+import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
 async function main() {
@@ -96,94 +97,6 @@ async function captureCompactScreens(browser, id) {
     await expectClosedDrawer(page);
     await capture(page, 'compact-admin-note.png');
     await context.close();
-}
-
-async function verifyUiCreatedDraft(page) {
-    await Promise.all([
-        page.waitForURL((url) => new URL(url).pathname !== '/admin'),
-        page.getByRole('button', { name: 'New note', exact: true }).first().click(),
-    ]);
-    await page.locator('[data-live-title]').first().waitFor({ state: 'visible' });
-    const title = (await page.locator('[data-live-title]').first().textContent()).trim();
-    assert.match(title, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
-    assert.equal(
-        await page.locator('#public-toggle').isChecked(),
-        false,
-        'new notes should default to private drafts'
-    );
-}
-
-async function verifyEditorFormatting(browser, page, id) {
-    const fence = '`'.repeat(3);
-    const editor = page.locator('.toastui-editor-ww-container .ProseMirror').first();
-    await editor.waitFor({ state: 'visible' });
-    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('## ');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('LiveHeading');
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('- ');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('Alpha');
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
-    await page.keyboard.press('Enter');
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('> ');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('Quoted line');
-    await page.keyboard.press('Enter');
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.keyboard.type(fence);
-    await page.keyboard.type('txt');
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(250);
-    await page.keyboard.type('code');
-    await page.waitForFunction(
-        () =>
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents h2') &&
-            document.querySelectorAll('.toastui-editor-ww-container .toastui-editor-contents li').length >= 1 &&
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents blockquote') &&
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents pre') &&
-            Array.from(document.querySelectorAll('.toastui-editor-defaultUI-toolbar,.toastui-editor-toolbar')).every(
-                (node) => node.scrollWidth - node.clientWidth <= 1 && node.scrollHeight - node.clientHeight <= 1
-            )
-    );
-    await page.waitForTimeout(900);
-    await page.reload({ waitUntil: 'networkidle' });
-    await expectAdminNote(page);
-    await page.waitForFunction(
-        () =>
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents h2') &&
-            document.querySelectorAll('.toastui-editor-ww-container .toastui-editor-contents li').length >= 1 &&
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents blockquote') &&
-            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents pre')
-    );
-    const guest = await newContext(browser, { width: 1440, height: 1100 });
-    const guestPage = await guest.newPage();
-    await guestPage.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
-    await guestPage.waitForFunction(
-        () =>
-            !!document.querySelector('.prose h2') &&
-            document.querySelectorAll('.prose li').length >= 1 &&
-            !!document.querySelector('.prose blockquote') &&
-            !!document.querySelector('.prose pre')
-    );
-    await assertVisibleText(guestPage, 'Alpha');
-    await assertInvisibleText(guestPage, '* Alpha');
-    await guest.close();
 }
 
 main().catch((error) => {
