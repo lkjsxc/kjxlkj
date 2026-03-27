@@ -84,6 +84,10 @@
     color: var(--text);
 }
 
+.rail-link-muted {
+    color: var(--text-soft);
+}
+
 .rail-link small,
 .rail-copy p,
 .rail-facts span {

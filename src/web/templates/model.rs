@@ -27,15 +27,7 @@ pub struct NoteChrome {
     pub visibility: &'static str,
     pub previous: Option<NavLink>,
     pub next: Option<NavLink>,
-    pub history: Vec<HistoryLink>,
     pub history_href: String,
-}
-
-impl NoteChrome {
-    pub fn with_history(mut self, history: Vec<HistoryLink>) -> Self {
-        self.history = history;
-        self
-    }
 }
 
 #[derive(Clone, Debug)]

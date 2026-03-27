@@ -6,17 +6,21 @@ use super::note_shell::note_rail;
 use crate::core::{derive_title, render_markdown};
 use crate::web::db::{Record, RecordRevision};
 
-pub fn history_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
+pub fn history_page(
+    record: &Record,
+    chrome: &NoteChrome,
+    history: &[HistoryLink],
+    is_admin: bool,
+) -> String {
     let rail = note_rail(chrome, is_admin, &chrome.history_href);
-    let rows = if chrome.history.is_empty() {
+    let rows = if history.is_empty() {
         r#"<p class="surface-empty">No saved revisions yet.</p>"#.to_string()
     } else {
-        chrome
-            .history
-            .iter()
-            .map(history_row)
-            .collect::<Vec<_>>()
-            .join("")
+        format!(
+            "{}{}",
+            current_row(record, chrome),
+            history.iter().map(history_row).collect::<Vec<_>>().join("")
+        )
     };
     let content = format!(
         r#"<header class="page-head">
@@ -105,6 +109,22 @@ fn history_row(entry: &HistoryLink) -> String {
     )
 }
 
+fn current_row(record: &Record, chrome: &NoteChrome) -> String {
+    format!(
+        r#"<a href="/{}" class="index-card note-row">
+<div class="card-body">
+<p class="card-title">Current note</p>
+<p class="card-summary">{}</p>
+</div>
+<div class="card-meta">
+<span class="status-pill">{}</span>
+<small>{}</small>
+</div>
+</a>"#,
+        record.id, chrome.updated_at, chrome.visibility, chrome.updated_at
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,21 +153,26 @@ mod tests {
             visibility: "Public",
             previous: None,
             next: None,
-            history: vec![HistoryLink {
+            history_href: "/Q29udHJhY3RSdW50aW1lMQ/history".to_string(),
+        }
+    }
+
+    #[test]
+    fn history_page_lists_current_note_and_revisions() {
+        let html = history_page(
+            &sample_record(),
+            &sample_chrome(),
+            &[HistoryLink {
                 href: "/Q29udHJhY3RSdW50aW1lMQ/history/2".to_string(),
                 label: "Revision 2".to_string(),
                 created_at: "2026-03-26 08:00 UTC".to_string(),
                 status: "Public",
                 active: false,
             }],
-            history_href: "/Q29udHJhY3RSdW50aW1lMQ/history".to_string(),
-        }
-    }
-
-    #[test]
-    fn history_page_lists_revision_links() {
-        let html = history_page(&sample_record(), &sample_chrome(), false);
+            false,
+        );
         assert!(html.contains("History"));
+        assert!(html.contains("Current note"));
         assert!(html.contains("/Q29udHJhY3RSdW50aW1lMQ/history/2"));
         assert!(html.contains("Current note"));
     }

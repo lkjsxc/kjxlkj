@@ -105,7 +105,7 @@ fn editor_surface(record: &Record) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::web::templates::{HistoryLink, NoteChrome};
+    use crate::web::templates::NoteChrome;
     use chrono::Utc;
 
     fn sample_record() -> Record {
@@ -130,13 +130,6 @@ mod tests {
             visibility: "Public",
             previous: None,
             next: None,
-            history: vec![HistoryLink {
-                href: "/Q29udHJhY3RSdW50aW1lMQ/history/1".to_string(),
-                label: "Revision 1".to_string(),
-                created_at: "2026-03-26 08:00 UTC".to_string(),
-                status: "Public",
-                active: false,
-            }],
             history_href: "/Q29udHJhY3RSdW50aW1lMQ/history".to_string(),
         }
     }
@@ -159,6 +152,7 @@ mod tests {
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));
         assert!(!html.contains("save-status"));
+        assert!(html.contains("All history"));
         assert!(!html.contains("uicdn.toast.com"));
     }
 }

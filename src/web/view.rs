@@ -5,8 +5,6 @@ use crate::error::AppError;
 use crate::web::db::{self, DbPool, Record, RecordRevision};
 use crate::web::templates::{render_time, HistoryLink, IndexItem, NavLink, NoteChrome};
 
-const SIDEBAR_HISTORY_LIMIT: usize = 5;
-
 pub fn index_item(record: &Record, show_visibility: bool) -> IndexItem {
     IndexItem {
         href: format!("/{}", record.id),
@@ -25,7 +23,6 @@ pub async fn note_chrome(
 ) -> Result<NoteChrome, AppError> {
     let previous = adjacent_link(pool, &record.id, is_admin, true).await?;
     let next = adjacent_link(pool, &record.id, is_admin, false).await?;
-    let revisions = db::get_record_revisions(pool, &record.id).await?;
     Ok(NoteChrome {
         id: record.id.clone(),
         title: title_for(record),
@@ -35,10 +32,6 @@ pub async fn note_chrome(
         visibility: visibility_label(record.is_private),
         previous,
         next,
-        history: filtered_history_links(record, &revisions, is_admin)
-            .into_iter()
-            .take(SIDEBAR_HISTORY_LIMIT)
-            .collect(),
         history_href: format!("/{}/history", record.id),
     })
 }

@@ -1,7 +1,7 @@
 //! Shared note and history rail rendering
 
 use super::layout::{html_escape, primary_nav, rail_section};
-use super::model::{HistoryLink, NavLink, NoteChrome};
+use super::model::{NavLink, NoteChrome};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
     let mut sections = Vec::new();
@@ -44,15 +44,14 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
 fn timeline(chrome: &NoteChrome) -> String {
     format!(
         r#"<div class="rail-list">{}{}</div>"#,
-        optional_link(chrome.previous.as_ref(), "No older accessible note."),
-        optional_link(chrome.next.as_ref(), "No newer accessible note.")
+        timeline_card(chrome.previous.as_ref(), "Prev", "No older accessible note."),
+        timeline_card(chrome.next.as_ref(), "Next", "No newer accessible note.")
     )
 }
 
 fn history(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
-        r#"<div class="rail-list">{}<a href="{}" class="rail-link{}"><small>Index</small><span>All revisions</span></a></div>"#,
-        history_links(&chrome.history, active_href),
+        r#"<div class="rail-list"><a href="{}" class="rail-link{}"><small>Index</small><span>All history</span><small>View every visible revision</small></a></div>"#,
         chrome.history_href,
         if active_href == chrome.history_href {
             " active"
@@ -62,40 +61,21 @@ fn history(chrome: &NoteChrome, active_href: &str) -> String {
     )
 }
 
-fn history_links(history: &[HistoryLink], active_href: &str) -> String {
-    if history.is_empty() {
-        return r#"<p class="rail-empty">No saved revisions yet.</p>"#.to_string();
-    }
-    history
-        .iter()
-        .take(5)
-        .map(|entry| {
-            format!(
-                r#"<a href="{}" class="rail-link{}"><small>{}</small><span>{}</span><small>{}</small></a>"#,
-                entry.href,
-                if entry.active || entry.href == active_href {
-                    " active"
-                } else {
-                    ""
-                },
-                entry.status,
-                entry.label,
-                entry.created_at
-            )
-        })
-        .collect()
+fn timeline_card(link: Option<&NavLink>, relation: &str, empty: &str) -> String {
+    link.map(|item| note_link(item))
+        .unwrap_or_else(|| missing_timeline_card(relation, empty))
 }
 
-fn optional_link(link: Option<&NavLink>, empty: &str) -> String {
-    link.map(|item| note_link(item, false))
-        .unwrap_or_else(|| format!(r#"<p class="rail-empty">{empty}</p>"#))
-}
-
-fn note_link(link: &NavLink, active: bool) -> String {
+fn missing_timeline_card(relation: &str, empty: &str) -> String {
     format!(
-        r#"<a href="{}" class="rail-link{}"><small>{}</small><span>{}</span><small>{}</small></a>"#,
+        r#"<article class="rail-link rail-link-muted" aria-disabled="true"><small>{relation}</small><span>{empty}</span><small>Not available</small></article>"#
+    )
+}
+
+fn note_link(link: &NavLink) -> String {
+    format!(
+        r#"<a href="{}" class="rail-link"><small>{}</small><span>{}</span><small>{}</small></a>"#,
         link.href,
-        if active { " active" } else { "" },
         link.relation,
         html_escape(&link.title),
         link.created_at
@@ -120,4 +100,39 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
 fn create_action() -> String {
     r#"<div class="rail-actions"><button type="button" class="btn btn-primary" onclick="createNote()">New note</button></div>"#
         .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> NoteChrome {
+        NoteChrome {
+            id: "demo".to_string(),
+            title: "Orbit Ledger".to_string(),
+            current_href: "/demo".to_string(),
+            created_at: "2026-03-26 08:34 UTC".to_string(),
+            updated_at: "2026-03-26 08:35 UTC".to_string(),
+            visibility: "Public",
+            previous,
+            next,
+            history_href: "/demo/history".to_string(),
+        }
+    }
+
+    #[test]
+    fn note_rail_keeps_single_history_card() {
+        let html = note_rail(&chrome(None, None), true, "/demo");
+        assert!(html.contains("All history"));
+        assert!(!html.contains("All revisions"));
+    }
+
+    #[test]
+    fn note_rail_renders_disabled_timeline_cards() {
+        let html = note_rail(&chrome(None, None), false, "/demo");
+        assert!(html.contains("No older accessible note."));
+        assert!(html.contains("No newer accessible note."));
+        assert!(html.contains("Not available"));
+        assert!(!html.contains("rail-empty"));
+    }
 }
