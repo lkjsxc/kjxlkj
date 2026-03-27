@@ -1,23 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
-import {
-    assertVisibleText,
-    expectAdminDashboard,
-    expectAdminNote,
-    expectClosedDrawer,
-    expectGuestNote,
-    expectPublicRoot,
-    expectSearchPage,
-    openDrawer,
-} from './assertions.mjs';
-import {
-    appUrl,
-    capture,
-    login,
-    newContext,
-    prepareEnvironment,
-    prepareState,
-} from './support.mjs';
+import { assertInvisibleText, assertVisibleText, expectAdminDashboard, expectAdminNote, expectClosedDrawer, expectGuestNote, expectPublicRoot, expectSearchPage, openDrawer } from './assertions.mjs';
+import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
 async function main() {
     await prepareEnvironment();
@@ -32,21 +16,11 @@ async function main() {
         await browser.close();
     }
 
-    console.log(JSON.stringify({
-        command: 'visual-verify',
-        status: 'pass',
-        artifacts: [
-            'desktop-public-root.png',
-            'desktop-search.png',
-            'desktop-admin-dashboard.png',
-            'desktop-admin-note.png',
-            'desktop-history-index.png',
-            'desktop-guest-note.png',
-            'compact-public-root-closed.png',
-            'compact-public-root-open.png',
-            'compact-admin-note.png',
-        ],
-    }));
+    console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: [
+        'desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png',
+        'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png',
+        'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png',
+    ] }));
 }
 
 async function captureAdminScreens(browser, id) {
@@ -61,8 +35,8 @@ async function captureAdminScreens(browser, id) {
 
     await page.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
     await expectAdminNote(page);
+    await verifyEditorFormatting(browser, page, id);
     await capture(page, 'desktop-admin-note.png');
-    await verifyEditorFormatting(page);
 
     await page.goto(`${appUrl}/${id}/history`, { waitUntil: 'networkidle' });
     await assertVisibleText(page, 'Current note');
@@ -97,9 +71,8 @@ async function capturePublicScreens(browser, notes) {
     await expectGuestNote(page, notes.middle.title, null);
 
     const publicRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/3`, { waitUntil: 'networkidle' });
-    assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
-
     const privateRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/2`, { waitUntil: 'networkidle' });
+    assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
     assert.equal(privateRevision?.status(), 404, 'private revision should return 404');
     await assertVisibleText(page, 'Note not found');
     await context.close();
@@ -140,25 +113,77 @@ async function verifyUiCreatedDraft(page) {
     );
 }
 
-async function verifyEditorFormatting(page) {
-    const body = '# Live Heading\n\n- Alpha\n- Beta\n\n> Quoted line.\n\n```txt\ncode\n```';
-    await page.evaluate((markdown) => window.editorInstance.setMarkdown(markdown), body);
+async function verifyEditorFormatting(browser, page, id) {
+    const fence = '`'.repeat(3);
+    const editor = page.locator('.toastui-editor-ww-container .ProseMirror').first();
+    await editor.waitFor({ state: 'visible' });
+    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('## ');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('LiveHeading');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('- ');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('Alpha');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('> ');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('Quoted line');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.evaluate(() => { window.editorInstance.focus(); window.editorInstance.moveCursorToEnd(); });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.keyboard.type(fence);
+    await page.keyboard.type('txt');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    await page.keyboard.type('code');
     await page.waitForFunction(
         () =>
-            !!document.querySelector('.toastui-editor-contents h1') &&
-            document.querySelectorAll('.toastui-editor-contents li').length >= 2 &&
-            !!document.querySelector('.toastui-editor-contents blockquote') &&
-            !!document.querySelector('.toastui-editor-contents pre')
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents h2') &&
+            document.querySelectorAll('.toastui-editor-ww-container .toastui-editor-contents li').length >= 1 &&
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents blockquote') &&
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents pre') &&
+            Array.from(document.querySelectorAll('.toastui-editor-defaultUI-toolbar,.toastui-editor-toolbar')).every(
+                (node) => node.scrollWidth - node.clientWidth <= 1 && node.scrollHeight - node.clientHeight <= 1
+            )
     );
     await page.waitForTimeout(900);
     await page.reload({ waitUntil: 'networkidle' });
     await expectAdminNote(page);
     await page.waitForFunction(
         () =>
-            document.querySelector('[data-live-title]')?.textContent?.trim() === 'Live Heading' &&
-            !!document.querySelector('.toastui-editor-contents h1') &&
-            !!document.querySelector('.toastui-editor-contents blockquote')
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents h2') &&
+            document.querySelectorAll('.toastui-editor-ww-container .toastui-editor-contents li').length >= 1 &&
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents blockquote') &&
+            !!document.querySelector('.toastui-editor-ww-container .toastui-editor-contents pre')
     );
+    const guest = await newContext(browser, { width: 1440, height: 1100 });
+    const guestPage = await guest.newPage();
+    await guestPage.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
+    await guestPage.waitForFunction(
+        () =>
+            !!document.querySelector('.prose h2') &&
+            document.querySelectorAll('.prose li').length >= 1 &&
+            !!document.querySelector('.prose blockquote') &&
+            !!document.querySelector('.prose pre')
+    );
+    await assertVisibleText(guestPage, 'Alpha');
+    await assertInvisibleText(guestPage, '* Alpha');
+    await guest.close();
 }
 
 main().catch((error) => {
