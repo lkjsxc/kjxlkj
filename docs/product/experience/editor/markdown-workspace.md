@@ -6,6 +6,7 @@
 - The editor defaults to rendered rich editing, not raw-source mode.
 - There is no visible `Rich mode` or `Text mode` switch.
 - The editor implementation is Toast UI Editor pinned to one exact vendored version.
+- The configuration uses supported Toast UI options rather than DOM surgery.
 
 ## Storage Rule
 
@@ -16,11 +17,13 @@
 
 - The editor lives inside the normal note shell.
 - The editor surface stays flat, dark, and document-first.
-- The mode switch chrome from the third-party editor is hidden.
-- Toolbar chrome is present only if it stays restrained.
+- The mode switch is hidden through supported editor configuration.
+- Desktop keeps the official toolbar ordering.
+- Narrow screens use this reduced toolbar set: `heading`, `bold`, `italic`, `strike`, `quote`, `ul`, `ol`, `task`, `link`, `code`, `codeblock`.
 - On narrow screens the toolbar compacts before the page is allowed to overflow.
 - The `Public` checkbox remains outside the editor body and inside the note workspace chrome.
 - The page itself may not require horizontal scrolling in order to edit.
+- Newly typed headings, lists, blockquotes, and code must render with the same styling behavior as initial content.
 
 ## Asset Delivery
 

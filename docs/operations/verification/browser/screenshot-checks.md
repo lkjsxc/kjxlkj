@@ -13,6 +13,7 @@ docker compose --profile verify run --rm visual-verify
 - Desktop admin dashboard shell.
 - Desktop admin note page with the single-mode editor.
 - Desktop guest note page.
+- Desktop history index page showing current note plus revisions.
 - Compact public root shell closed by default.
 - Compact public root shell opened through the menu toggle.
 - Compact admin note page with the drawer available.
@@ -29,5 +30,8 @@ docker compose --profile verify run --rm visual-verify
 - Narrow screens start with the drawer closed.
 - Surfaces remain flat with solid fills rather than gradients or blur.
 - Note and history rails keep metadata readable without wrap regressions.
+- Note rails render one `All history` card and never render inline revision lists.
+- Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
+- Newly typed WYSIWYG formatting renders with the same visible semantics as initial content.

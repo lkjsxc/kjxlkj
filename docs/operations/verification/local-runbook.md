@@ -89,10 +89,23 @@ curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
 Expected:
 
 - HTML contains `Prev` / `Next` labels
+- HTML contains one `All history` card and no inline revision links
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
 - HTML hides `Saving` / `Saved`
 - HTML references local editor assets rather than an external editor CDN
+
+## Verify History Page
+
+```bash
+curl -sS http://127.0.0.1:8080/<id>/history -b cookies.txt
+```
+
+Expected:
+
+- HTML contains one `Current note` card
+- HTML contains visible revision cards in newest-first order
+- the rail still contains one `All history` card rather than revision links
 
 ## Verify Compact Admin Note
 
@@ -103,6 +116,8 @@ Expected:
 - the page does not require horizontal scrolling
 - the editor toolbar stays inside the viewport
 - `New note` appears near the top of the rail
+- `Prev` and `Next` card footprints remain stable even when one side is unavailable
+- newly typed headings, lists, blockquotes, and code render with normal Toast UI styling
 
 ## Verify Browser Visual Checks
 

@@ -16,6 +16,7 @@
 
 - `GET /records/{id}/prev` returns `{ "id": "..." }` or `{ "id": null }`.
 - `GET /records/{id}/next` returns `{ "id": "..." }` or `{ "id": null }`.
+- HTML timeline placeholders are derived from `null` responses rather than a separate API.
 
 ## Error Shape
 

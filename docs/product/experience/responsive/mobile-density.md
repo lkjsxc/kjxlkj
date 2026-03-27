@@ -13,6 +13,7 @@
 - Dashboard and history rows keep compact padding and clear contrast.
 - Sticky or floating controls must not obscure note content.
 - The editor toolbar may compact or reduce tool count on narrow screens.
+- The note rail keeps fixed-size `Prev` and `Next` cards even when one side is unavailable.
 - Overflow is acceptable only inside tightly scoped editor internals, never at the page level.
 
 ## Verification Targets

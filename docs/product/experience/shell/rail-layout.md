@@ -15,8 +15,8 @@
 - Scope summary.
 - Current note context.
 - Created and updated metadata.
-- `Prev` and `Next` navigation cards with explicit relationship labels.
-- Revision history links.
+- `Prev` and `Next` timeline cards with explicit relationship labels.
+- One history card that opens the dedicated history page.
 - Mode-specific actions.
 
 ## Metadata Rules
@@ -30,3 +30,9 @@
 - Search, Dashboard, Home, New note, Logout, and Delete use restrained controls.
 - `New note` is the first admin action in the rail.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.
+
+## Timeline Rules
+
+- The timeline always renders exactly two cards.
+- `Prev` and `Next` keep fixed positions even when one target does not exist.
+- Missing targets render as muted non-interactive cards with explanatory copy.

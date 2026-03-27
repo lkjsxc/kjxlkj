@@ -40,6 +40,7 @@
 - `Next` means the nearest newer accessible note.
 - Guest navigation skips private notes.
 - Admin navigation includes private notes.
+- HTML note rails always render both timeline slots even when one side resolves to `null`.
 
 ## History Fetch
 
@@ -47,3 +48,4 @@
 - Revision snapshots are ordered by `revision_number DESC`.
 - Guests can fetch only revisions whose stored state is public.
 - Admins can fetch all revisions.
+- The history rail never expands into per-revision links.

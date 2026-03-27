@@ -16,6 +16,7 @@
 
 - Hover, focus, and active states are visible on every control.
 - Disabled navigation stays readable and muted.
+- Disabled timeline cards keep the same size as active cards.
 - Save failure is explicit.
 - Save success is silent.
 

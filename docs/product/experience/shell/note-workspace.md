@@ -5,6 +5,7 @@
 - Note pages remain dark, dense, flat, and document-first.
 - Header chrome is compact and informative.
 - History access belongs in the rail, not below the note body.
+- The rail history affordance is one `All history` card, not an inline revision list.
 
 ## Header Content
 
@@ -19,9 +20,11 @@
 - Admin editing uses one rendered Markdown workspace.
 - The workspace is powered by a vendored Toast UI Editor build.
 - There is no mode-switch choice in normal UI.
-- The editor uses the shell UI font direction plus a readable content stack.
+- The editing engine stays close to official Toast UI WYSIWYG behavior.
+- Desktop uses the upstream default toolbar.
+- Narrow screens reduce the toolbar to a fixed supported subset before page overflow is allowed.
 - Public checkbox stays inside the editing surface.
-- Narrow screens compact toolbar and metadata chrome before content is allowed to overflow.
+- Editor theming may skin the container, but must not flatten or suppress editor content semantics.
 - The note page never requires horizontal page scrolling to reach editor controls.
 
 ## Live Chrome Sync

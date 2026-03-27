@@ -3,8 +3,9 @@
 ## Layout
 
 - History index and revision pages reuse the note shell.
-- The rail keeps current-note context, prev/next links, revision links, and actions.
+- The rail keeps current-note context, timeline cards, one history card, and actions.
 - The history body stays in the main pane.
+- The history index is the only full revision-browsing surface.
 
 ## Access Rules
 
@@ -12,7 +13,14 @@
 - Admins may read all revisions.
 - Revision pages never expose raw note IDs as normal page chrome.
 
+## Index Content
+
+- The first card links to the current note.
+- The remaining cards list visible revisions in `revision_number DESC` order.
+- Each revision card shows revision label, saved-at time, and visibility state.
+
 ## Rail Limits
 
-- Rail history is intentionally short and current-context focused.
-- Full history browsing happens in the dedicated history index, not by rendering every revision in the rail.
+- The rail history section contains exactly one card labeled `All history`.
+- The rail never lists individual revisions.
+- Revision pages keep the same single-card history affordance.

@@ -9,7 +9,7 @@
 - `src/core/`: Markdown rendering and record validation helpers.
 - `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
 - `src/web/handlers/`: HTTP route handlers, including editor asset delivery.
-- `src/web/templates/`: HTML, CSS, and client-side note behavior.
+- `src/web/templates/`: HTML, CSS, note-shell rendering, history pages, and client-side note behavior.
 - `src/web/view.rs`: presentation adapters from database records to templates.
 - `src/cli/`: docs and quality gate commands.
 - `visual/`: browser verification scripts and assertions.
