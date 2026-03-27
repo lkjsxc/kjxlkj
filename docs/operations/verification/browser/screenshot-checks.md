@@ -11,12 +11,13 @@ docker compose --profile verify run --rm visual-verify
 - Desktop public root shell with rail.
 - Desktop search page.
 - Desktop admin dashboard shell.
-- Desktop admin note page with the single-mode editor.
+- Desktop admin note page with the Markdown editor.
 - Desktop guest note page.
 - Desktop history index page showing current note plus revisions.
 - Compact public root shell closed by default.
 - Compact public root shell opened through the menu toggle.
 - Compact admin note page with the drawer available.
+- Compact admin note page with the preview overlay opened.
 
 ## Required Assertions
 
@@ -35,8 +36,9 @@ docker compose --profile verify run --rm visual-verify
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Opening an admin note should leave focus inside the visible editor.
-- Newly typed WYSIWYG formatting renders with the same visible semantics as initial content.
-- Browser verification types into the visible WYSIWYG editor surface rather than using `setMarkdown()`.
+- Preview starts closed by default.
+- Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
+- Browser verification types into the visible Markdown editor surface rather than using `setMarkdown()`.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
 - The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.

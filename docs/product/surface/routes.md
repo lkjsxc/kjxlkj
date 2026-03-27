@@ -50,7 +50,7 @@
 - `GET /{id}`:
   - note not found: `404`
   - note is private and no session: `404`
-  - accessible note: `200` HTML note page with single-mode editor for admins
+  - accessible note: `200` HTML note page with Markdown editor for admins
 - `GET /{id}/history`:
   - note not found: `404`
   - note is private and no session: `404`

@@ -17,15 +17,16 @@
 
 ## Admin Editing Surface
 
-- Admin editing uses one rendered Markdown workspace.
+- Admin editing uses one Markdown-first workspace.
 - The workspace is powered by a vendored Toast UI Editor build.
 - There is no mode-switch choice in normal UI.
-- The editing engine stays close to official Toast UI WYSIWYG behavior.
+- The editing engine stays close to official Toast UI Markdown-mode behavior.
 - Desktop uses an upstream-style text-plus-table toolbar inside the existing shell.
 - Narrow screens reduce the toolbar to a fixed supported subset, but table authoring remains available.
 - Toolbar rows wrap inside the editor chrome instead of introducing a detached toolbar scrollbar.
 - Public checkbox stays inside the editing surface.
-- Editor theming may skin the container, but must not flatten or suppress editor content semantics.
+- Preview stays closed by default and opens on demand from the editor chrome.
+- Editor theming may skin the container, but must not flatten syntax legibility or preview semantics.
 - The note page owns the vertical scroll path for long notes.
 - The note page never requires horizontal page scrolling to reach editor controls.
 - Opening the note should leave the caret ready for direct typing.
@@ -35,8 +36,8 @@
 - Heading edits update page title, browser title, and current-note rail title immediately.
 - Public checkbox toggles update visibility chips and related chrome immediately.
 - The removed helper text (`Guest-readable`, `Admin-only`) does not return.
-- Markdown shortcut typing at the caret must transform into rendered heading, list, quote, and code-block structure without requiring a reload.
-- Table insertion must stay available without leaving the single rendered workspace.
+- Preview content updates from the current unsaved Markdown body.
+- Table insertion must stay available without leaving the single Markdown workspace.
 
 ## Guest View
 

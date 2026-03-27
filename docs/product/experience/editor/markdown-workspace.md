@@ -3,12 +3,12 @@
 ## Editing Model
 
 - Admin note pages use a single third-party Markdown editor.
-- The editor defaults to rendered rich editing, not raw-source mode.
+- The editor defaults to Markdown authoring, not rendered rich editing.
 - There is no visible `Rich mode` or `Text mode` switch.
 - The editor implementation is Toast UI Editor pinned to one exact vendored version.
-- The interaction target is the official Toast UI WYSIWYG feel, adapted to this app shell.
+- The interaction target is the official Toast UI Markdown-writing feel, adapted to this app shell.
 - The configuration uses supported Toast UI options rather than DOM surgery.
-- Live Markdown shortcut transforms inside WYSIWYG are allowed only where they make the visible editor behave closer to the official reference.
+- The app may not rely on a WYSIWYG shortcut-repair layer as its primary Markdown authoring model.
 
 ## Storage Rule
 
@@ -21,15 +21,16 @@
 - The editor surface stays flat, dark, and document-first.
 - The mode switch is hidden through supported editor configuration.
 - Opening an admin note should place typing focus into the visible editor.
-- Desktop keeps an upstream-style text-first toolbar with table support.
-- Narrow screens use a reduced wrapped toolbar set that still includes `heading`, `bold`, `italic`, `strike`, `quote`, `ul`, `ol`, `task`, `table`, `link`, `code`, `codeblock`.
+- Desktop keeps an upstream-style text/table toolbar inside Markdown mode.
+- Narrow screens may compact the toolbar, but `heading`, `bold`, `italic`, `strike`, `quote`, `ul`, `ol`, `task`, `table`, `link`, `code`, and `codeblock` remain available.
+- Preview starts closed and opens on demand from note chrome.
 - Toolbar groups wrap onto additional rows before a horizontal toolbar scrollbar is allowed to appear.
 - The `Public` checkbox remains outside the editor body and inside the note workspace chrome.
 - The note page owns vertical scrolling; the editor body may not add its own normal vertical scroll region.
 - The page itself may not require horizontal scrolling in order to edit.
-- Newly typed headings, lists, blockquotes, fenced code, and tables must render with the same visible semantics as seeded content before save.
-- The keyboard path for starting headings, lists, quotes, and fenced code must stay predictable at the end of the document and between existing blocks.
-- Verification must target the visible WYSIWYG subtree, not hidden Toast UI containers.
+- Typed Markdown must stay legible in the editor and render correctly in the opened preview before save.
+- The preview must use the current unsaved Markdown body, not only the last persisted version.
+- Verification must target the visible Markdown editor and preview surfaces, not hidden Toast UI containers.
 
 ## Asset Delivery
 

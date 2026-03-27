@@ -43,7 +43,7 @@ The system manages `note` resources.
 - Missing heading yields `Untitled note`.
 - Normal UI does not display raw `id` values.
 - Created time is the secondary identity cue in lists and note chrome.
-- Admin note pages edit the canonical body through a single rendered Markdown workspace.
+- Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
 
 ## UI Semantics
