@@ -107,8 +107,17 @@
         border-radius: 18px !important;
     }
 
+    .toastui-editor-defaultUI-toolbar,
     .toastui-editor-toolbar {
         padding: 6px !important;
+    }
+
+    .toastui-editor-toolbar-group {
+        gap: 2px;
+    }
+
+    .toastui-editor-toolbar-divider {
+        display: none !important;
     }
 
     .toastui-editor-toolbar-icons,
@@ -117,8 +126,8 @@
         height: 28px !important;
     }
 
-    .ProseMirror {
-        min-height: 50vh;
-        padding: 18px 16px !important;
+    .toastui-editor-ww-container .toastui-editor-contents {
+        min-height: 360px;
+        padding: 16px 16px 18px !important;
     }
 }

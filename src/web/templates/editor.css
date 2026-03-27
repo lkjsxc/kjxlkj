@@ -36,17 +36,22 @@
     overflow: hidden;
     background: var(--panel) !important;
     width: 100% !important;
+    height: auto !important;
     box-shadow: none !important;
 }
 
+.toastui-editor-defaultUI-toolbar,
 .toastui-editor-toolbar {
     display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start;
     gap: 4px;
     padding: 8px !important;
+    min-height: 46px;
+    height: auto !important;
     background: var(--panel-2) !important;
     border-bottom: 1px solid var(--line) !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+    overflow: visible !important;
     box-shadow: none !important;
 }
 
@@ -54,6 +59,10 @@
 .toastui-editor-toolbar-divider {
     border-color: var(--line) !important;
     flex: 0 0 auto;
+}
+
+.toastui-editor-defaultUI-toolbar button {
+    margin: 4px !important;
 }
 
 .toastui-editor-toolbar-icons,
@@ -73,10 +82,14 @@
 .toastui-editor-ww-container,
 .toastui-editor-contents {
     background: var(--panel) !important;
+    height: auto !important;
+    overflow: visible !important;
 }
 
 .toastui-editor-ww-container .toastui-editor-contents {
     color: var(--text) !important;
+    min-height: 520px;
+    padding: 18px 24px 20px !important;
 }
 
 .toastui-editor-ww-container .toastui-editor-contents code,
@@ -85,7 +98,7 @@
 }
 
 .toastui-editor-ww-container .ProseMirror {
-    min-height: 60vh;
-    padding: 22px 24px !important;
+    min-height: 0;
+    padding: 0 !important;
     overflow-wrap: anywhere;
 }

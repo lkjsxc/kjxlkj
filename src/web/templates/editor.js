@@ -26,15 +26,20 @@ function initEditor() {
         try {
             var options = {
                 el: root,
+                height: 'auto',
+                minHeight: editorMinHeight(),
                 initialValue: sourceField.value,
                 initialEditType: 'wysiwyg',
                 hideModeSwitch: true,
                 theme: 'dark',
+                autofocus: false,
                 usageStatistics: false
             };
             var tools = toolbarItems();
             if (tools) options.toolbarItems = tools;
             editorInstance = new window.toastui.Editor(options);
+            window.editorInstance = editorInstance;
+            if (typeof bindShortcutNormalization === 'function') bindShortcutNormalization();
             editorInstance.on('change', onEditorInput);
         } catch (_) {
             enableFallback(root);
@@ -46,7 +51,9 @@ function initEditor() {
 }
 
 function enableFallback(root) {
+    if (typeof clearShortcutNormalization === 'function') clearShortcutNormalization();
     editorInstance = null;
+    window.editorInstance = null;
     if (root) root.hidden = true;
     if (!fallbackField) return;
     fallbackField.hidden = false;
@@ -137,6 +144,10 @@ function localMinuteStamp() {
 
 function pad(value) {
     return String(value).padStart(2, '0');
+}
+
+function editorMinHeight() {
+    return window.matchMedia('(max-width: 900px)').matches ? '360px' : '520px';
 }
 
 function toolbarItems() {

@@ -7,6 +7,7 @@ use crate::core::render_markdown;
 use crate::web::db::Record;
 
 const EDITOR_JS: &str = include_str!("editor.js");
+const EDITOR_SHORTCUTS_JS: &str = include_str!("editor_shortcuts.js");
 const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
 pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
@@ -22,11 +23,13 @@ pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String
 var currentId = "{}";
 var isPrivate = {};
 {}
+{}
 initEditor();
 </script>"#,
             editor_surface(record),
             record.id,
             record.is_private,
+            EDITOR_SHORTCUTS_JS,
             EDITOR_JS
         )
     } else {
@@ -149,6 +152,7 @@ mod tests {
         assert!(html.contains("public-toggle"));
         assert!(html.contains("editor-root"));
         assert!(html.contains(TOAST_UI_ROOT));
+        assert!(html.contains("height: 'auto'"));
         assert!(html.contains("hideModeSwitch: true"));
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));

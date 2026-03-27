@@ -7,6 +7,8 @@ use thiserror::Error;
 use uuid::Uuid;
 
 static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[A-Za-z0-9_-]{22}$").unwrap());
+static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
 
 const ID_LEN: usize = 22;
 const SUMMARY_LIMIT: usize = 120;
@@ -59,9 +61,15 @@ pub fn derive_title(body: &str) -> String {
 pub fn derive_summary(body: &str) -> String {
     body.lines()
         .map(str::trim)
-        .find(|line| !line.is_empty() && !line.starts_with('#'))
-        .map(shorten)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(strip_summary_markers)
+        .find(|line| !line.is_empty())
+        .map(|line| shorten(&line))
         .unwrap_or_else(|| "No summary yet.".to_string())
+}
+
+fn strip_summary_markers(line: &str) -> String {
+    SUMMARY_PREFIX_REGEX.replace(line, "").trim().to_string()
 }
 
 fn shorten(line: &str) -> String {
@@ -98,6 +106,8 @@ mod tests {
         assert_eq!(derive_title("# Hello\n\nBody"), "Hello".to_string());
         assert_eq!(derive_title(""), "Untitled note".to_string());
         assert_eq!(derive_summary("# Hello\n\nBody"), "Body".to_string());
+        assert_eq!(derive_summary("# Hello\n\n- Bullet"), "Bullet".to_string());
+        assert_eq!(derive_summary("# Hello\n\n> Quote"), "Quote".to_string());
         assert_eq!(derive_summary(""), "No summary yet.".to_string());
     }
 }
