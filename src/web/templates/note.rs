@@ -7,7 +7,7 @@ use crate::core::render_markdown;
 use crate::web::db::Record;
 
 const EDITOR_JS: &str = include_str!("editor.js");
-const TOAST_UI_VERSION: &str = "3.2.2";
+const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
 pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
     let extra_head = if is_admin {
@@ -76,9 +76,9 @@ initEditor();
 
 fn editor_head() -> String {
     format!(
-        r#"<link rel="stylesheet" href="https://uicdn.toast.com/editor/{TOAST_UI_VERSION}/toastui-editor.min.css">
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/{TOAST_UI_VERSION}/theme/toastui-editor-dark.min.css">
-<script src="https://uicdn.toast.com/editor/{TOAST_UI_VERSION}/toastui-editor-all.min.js"></script>"#
+        r#"<link rel="stylesheet" href="{TOAST_UI_ROOT}/toastui-editor.min.css">
+<link rel="stylesheet" href="{TOAST_UI_ROOT}/toastui-editor-dark.min.css">
+<script src="{TOAST_UI_ROOT}/toastui-editor-all.min.js"></script>"#
     )
 }
 
@@ -155,9 +155,10 @@ mod tests {
         let html = note_page(&sample_record(), &sample_chrome(), true);
         assert!(html.contains("public-toggle"));
         assert!(html.contains("editor-root"));
-        assert!(html.contains("toastui-editor"));
+        assert!(html.contains(TOAST_UI_ROOT));
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));
         assert!(!html.contains("save-status"));
+        assert!(!html.contains("uicdn.toast.com"));
     }
 }

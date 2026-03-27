@@ -1,6 +1,7 @@
 //! Web handlers
 
 pub mod admin;
+pub mod assets;
 pub mod health;
 pub mod history;
 pub mod login;

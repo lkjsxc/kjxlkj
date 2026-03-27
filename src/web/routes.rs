@@ -3,7 +3,7 @@
 use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
-use crate::web::handlers::{admin, health, history, login, logout, records, search, setup};
+use crate::web::handlers::{admin, assets, health, history, login, logout, records, search, setup};
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 
@@ -28,6 +28,9 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(login::login_page)
             .service(login::login_submit)
             .service(logout::logout)
+            .service(assets::toastui_css)
+            .service(assets::toastui_dark_css)
+            .service(assets::toastui_js)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
             .service(search::search_page)
