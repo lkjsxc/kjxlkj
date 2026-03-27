@@ -168,8 +168,7 @@
         font-size: 0.92rem;
     }
 
-    .CodeMirror,
-    .CodeMirror-scroll,
+    .toastui-editor-md-container .ProseMirror,
     .toastui-editor-md-preview .toastui-editor-contents {
         min-height: 360px;
         padding: 16px 16px 18px !important;

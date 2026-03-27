@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { assertInvisibleText, assertVisibleText, expectAdminDashboard, expectAdminNote, expectClosedDrawer, expectGuestNote, expectPublicRoot, expectSearchPage, openDrawer } from './assertions.mjs';
-import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
+import { assertEditorLayout, openPreview, verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
 async function main() {
@@ -20,7 +20,8 @@ async function main() {
     console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: [
         'desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png',
         'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png',
-        'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png',
+        'compact-public-root-closed.png', 'compact-public-root-open.png',
+        'compact-admin-note.png', 'compact-admin-note-preview.png',
     ] }));
 }
 
@@ -96,6 +97,9 @@ async function captureCompactScreens(browser, id) {
     await expectAdminNote(page);
     await expectClosedDrawer(page);
     await capture(page, 'compact-admin-note.png');
+    await openPreview(page);
+    await assertEditorLayout(page, true);
+    await capture(page, 'compact-admin-note-preview.png');
     await context.close();
 }
 

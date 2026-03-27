@@ -44,8 +44,7 @@
 .toastui-editor-md-container,
 .toastui-editor-md-container > .toastui-editor,
 .toastui-editor-md-preview,
-.CodeMirror,
-.CodeMirror-scroll,
+.toastui-editor-md-container .ProseMirror,
 .toastui-editor-contents {
     min-width: 0 !important;
     max-width: 100% !important;
@@ -119,9 +118,9 @@
 .toastui-editor-md-container,
 .toastui-editor-md-container > .toastui-editor,
 .toastui-editor-md-preview,
+.toastui-editor-md-container .ProseMirror,
 .toastui-editor-contents,
-.CodeMirror,
-.CodeMirror-scroll {
+.toastui-editor-md-container .toastui-editor-contents {
     background: var(--panel) !important;
     height: auto !important;
     overflow: visible !important;
@@ -157,12 +156,10 @@
     border-right: 0;
 }
 
-.CodeMirror,
-.CodeMirror-scroll {
+.toastui-editor-md-container .ProseMirror {
     min-height: 520px;
-}
-
-.CodeMirror pre {
+    padding: 18px 24px 20px !important;
+    overflow-wrap: anywhere;
     white-space: pre-wrap !important;
     word-break: break-word;
 }
