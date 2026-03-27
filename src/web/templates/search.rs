@@ -82,6 +82,7 @@ pub fn search_page(
                     "Search public titles and bodies."
                 },
                 active_nav: "search",
+                rail_primary_action: rail_primary_action(is_admin),
                 header_actions: "",
                 rail_actions: rail_actions(is_admin),
                 is_admin,
@@ -96,7 +97,17 @@ pub fn search_page(
 }
 
 fn rail(config: &ListPageConfig<'_>) -> String {
-    [
+    let mut sections = Vec::new();
+    if !config.rail_primary_action.is_empty() {
+        sections.push(rail_section(
+            "Create",
+            &format!(
+                r#"<div class="rail-actions">{}</div>"#,
+                config.rail_primary_action
+            ),
+        ));
+    }
+    sections.extend([
         rail_section("Navigate", &primary_nav(config.active_nav, config.is_admin)),
         rail_section(
             "Scope",
@@ -109,22 +120,29 @@ fn rail(config: &ListPageConfig<'_>) -> String {
             "Actions",
             &format!(r#"<div class="rail-actions">{}</div>"#, config.rail_actions),
         ),
-    ]
-    .join("")
+    ]);
+    sections.join("")
 }
 
 fn header_actions(is_admin: bool) -> &'static str {
     if is_admin {
-        r#"<a href="/admin" class="btn">Admin workspace</a><button type="button" class="btn" onclick="createNote()">New note</button>"#
+        r#"<a href="/admin" class="btn">Admin workspace</a>"#
     } else {
         r#"<a href="/" class="btn">Browse notes</a><a href="/login" class="btn">Admin sign in</a>"#
     }
 }
 
+fn rail_primary_action(is_admin: bool) -> &'static str {
+    if is_admin {
+        r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#
+    } else {
+        ""
+    }
+}
+
 fn rail_actions(is_admin: bool) -> &'static str {
     if is_admin {
-        r#"<button type="button" class="btn" onclick="createNote()">New note</button>
-<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
+        r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
     } else {
         r#"<a href="/login" class="btn">Admin sign in</a>"#
     }

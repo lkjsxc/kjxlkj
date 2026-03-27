@@ -4,14 +4,18 @@ use super::layout::{html_escape, primary_nav, rail_section};
 use super::model::{HistoryLink, NavLink, NoteChrome};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
-    [
+    let mut sections = Vec::new();
+    if is_admin {
+        sections.push(rail_section("Create", &create_action()));
+    }
+    sections.extend([
         rail_section("Navigate", &primary_nav("", is_admin)),
         rail_section("Current note", &current_note(chrome, active_href)),
         rail_section("Timeline", &timeline(chrome)),
         rail_section("History", &history(chrome, active_href)),
         rail_section("Actions", &actions(chrome, is_admin)),
-    ]
-    .join("")
+    ]);
+    sections.join("")
 }
 
 fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
@@ -102,7 +106,6 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
     if is_admin {
         format!(
             r#"<div class="rail-actions">
-<button type="button" class="btn" onclick="createNote()">New note</button>
 <button type="button" class="btn btn-danger" onclick="deleteNote('{}')">Delete note</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>
 </div>"#,
@@ -112,4 +115,9 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
         r#"<div class="rail-actions"><a href="/login" class="btn">Admin sign in</a></div>"#
             .to_string()
     }
+}
+
+fn create_action() -> String {
+    r#"<div class="rail-actions"><button type="button" class="btn btn-primary" onclick="createNote()">New note</button></div>"#
+        .to_string()
 }

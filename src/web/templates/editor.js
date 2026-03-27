@@ -7,11 +7,14 @@ function createNote() {
     fetch('/records', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({ body: defaultNewNoteBody(), is_private: true })
     })
-        .then(function (response) { return response.json(); })
+        .then(function (response) {
+            if (!response.ok) throw new Error('create failed');
+            return response.json();
+        })
         .then(function (note) { window.location.href = '/' + note.id; })
-        .catch(function (err) { alert('Failed to create note: ' + err.message); });
+        .catch(function () { alert('Failed to create note'); });
 }
 
 function initEditor() {
@@ -28,12 +31,7 @@ function initEditor() {
                 previewStyle: 'tab',
                 theme: 'dark',
                 usageStatistics: false,
-                toolbarItems: [
-                    ['heading', 'bold', 'italic', 'strike'],
-                    ['ul', 'ol', 'task'],
-                    ['quote', 'code', 'codeblock'],
-                    ['link']
-                ]
+                toolbarItems: toolbarItems()
             });
             root.querySelector('.toastui-editor-mode-switch')?.remove();
             editorInstance.on('change', onEditorInput);
@@ -121,6 +119,35 @@ function syncNoteChrome() {
 function deriveTitle(body) {
     var match = body.match(/^\s*#\s+(.+)$/m);
     return match && match[1] ? match[1].trim() : 'Untitled note';
+}
+
+function defaultNewNoteBody() {
+    return '# ' + localMinuteStamp() + '\n';
+}
+
+function localMinuteStamp() {
+    var date = new Date();
+    return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+    ].join('-') + ' ' + [pad(date.getHours()), pad(date.getMinutes())].join(':');
+}
+
+function pad(value) {
+    return String(value).padStart(2, '0');
+}
+
+function toolbarItems() {
+    if (window.matchMedia('(max-width: 900px)').matches) {
+        return [['heading', 'bold', 'italic'], ['ul', 'ol', 'task'], ['link', 'code']];
+    }
+    return [
+        ['heading', 'bold', 'italic', 'strike'],
+        ['ul', 'ol', 'task'],
+        ['quote', 'code', 'codeblock'],
+        ['link']
+    ];
 }
 
 function deleteNote(id) {

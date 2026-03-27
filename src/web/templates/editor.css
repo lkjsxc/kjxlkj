@@ -1,6 +1,7 @@
 .editor-shell {
     display: grid;
     gap: 16px;
+    min-width: 0;
 }
 
 .editor-toolbar-row {
@@ -13,14 +14,21 @@
     font: 16px/1.7 var(--serif);
     background: var(--bg-1);
     color: var(--text);
+    width: 100%;
+    min-width: 0;
 }
 
 .toastui-editor-defaultUI,
 .toastui-editor-main,
 .toastui-editor-md-container,
 .toastui-editor-ww-container,
-.toastui-editor-toolbar {
+.toastui-editor-toolbar,
+.toast-host,
+.toastui-editor-contents,
+.ProseMirror {
     box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
 }
 
 .toastui-editor-defaultUI {
@@ -28,11 +36,13 @@
     border-radius: 22px !important;
     overflow: hidden;
     background: var(--panel) !important;
+    width: 100% !important;
 }
 
 .toastui-editor-toolbar {
     background: var(--panel-2) !important;
     border-bottom: 1px solid var(--line) !important;
+    overflow: hidden !important;
 }
 
 .toastui-editor-toolbar-group,
@@ -65,6 +75,7 @@
     min-height: 60vh;
     padding: 22px 24px !important;
     font: 16px/1.7 var(--serif) !important;
+    overflow-wrap: anywhere;
 }
 
 .toastui-editor-contents h1,

@@ -44,6 +44,7 @@
     .shell-main,
     .index-layout {
         padding: 24px 16px 32px;
+        min-width: 0;
     }
 
     .page-head,
@@ -57,7 +58,13 @@
     .card-meta {
         justify-content: flex-start;
         justify-items: start;
+        min-width: 0;
         text-align: left;
+    }
+
+    .page-title-stack h1,
+    .card-title {
+        overflow-wrap: anywhere;
     }
 
     .rail-facts p {
@@ -90,5 +97,28 @@
     .page-actions form,
     .search-row .btn {
         width: 100%;
+    }
+
+    .editor-toolbar-row {
+        align-items: flex-start;
+    }
+
+    .toastui-editor-defaultUI {
+        border-radius: 18px !important;
+    }
+
+    .toastui-editor-toolbar {
+        padding: 6px !important;
+    }
+
+    .toastui-editor-toolbar-icons,
+    .toastui-editor-defaultUI-toolbar button {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .ProseMirror {
+        min-height: 50vh;
+        padding: 18px 16px !important;
     }
 }

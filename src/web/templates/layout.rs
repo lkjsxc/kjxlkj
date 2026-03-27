@@ -57,7 +57,6 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
 <div class="rail-head">
 <div class="rail-branding">
 <a href="/" class="brand">kjxlkj</a>
-<p class="rail-caption">flat notes for LLMs</p>
 </div>
 <span class="mode-pill">{mode_label}</span>
 </div>

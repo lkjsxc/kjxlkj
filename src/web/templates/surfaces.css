@@ -25,6 +25,7 @@
 .card-meta {
     display: flex;
     gap: 12px;
+    min-width: 0;
 }
 
 .page-head {
@@ -37,12 +38,14 @@
 .search-surface {
     display: grid;
     gap: 8px;
+    min-width: 0;
 }
 
 .page-title-stack h1,
 .card-title {
     margin: 0;
     line-height: 1.05;
+    overflow-wrap: anywhere;
 }
 
 .page-title-stack h1 {
@@ -58,6 +61,7 @@
 .card-meta {
     display: grid;
     gap: 6px;
+    min-width: 0;
     justify-items: end;
     text-align: right;
     color: var(--text-soft);
@@ -104,6 +108,7 @@
 .note-surface,
 .search-surface {
     max-width: 1080px;
+    width: min(100%, 1080px);
 }
 
 .prose {
@@ -165,6 +170,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
     flex-wrap: wrap;
     margin: 0;
 }

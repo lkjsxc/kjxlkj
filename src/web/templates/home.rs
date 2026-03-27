@@ -16,9 +16,13 @@ pub fn home_page(notes: &[IndexItem], next_cursor: Option<&str>, is_admin: bool)
     } else {
         r#"<a href="/search" class="btn btn-primary">Search</a><a href="/login" class="btn">Admin sign in</a>"#
     };
+    let rail_primary_action = if is_admin {
+        r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#
+    } else {
+        ""
+    };
     let rail_actions = if is_admin {
-        r#"<button type="button" class="btn" onclick="createNote()">New note</button>
-<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
+        r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
     } else {
         r#"<a href="/login" class="btn">Admin sign in</a>"#
     };
@@ -33,6 +37,7 @@ pub fn home_page(notes: &[IndexItem], next_cursor: Option<&str>, is_admin: bool)
             scope_summary:
                 "Browse current public notes. Use Search for server-side full-text lookup.",
             active_nav: "home",
+            rail_primary_action,
             header_actions,
             rail_actions,
             is_admin,

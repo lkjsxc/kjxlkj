@@ -12,6 +12,7 @@ pub struct ListPageConfig<'a> {
     pub scope_title: &'a str,
     pub scope_summary: &'a str,
     pub active_nav: &'a str,
+    pub rail_primary_action: &'a str,
     pub header_actions: &'a str,
     pub rail_actions: &'a str,
     pub is_admin: bool,
@@ -86,16 +87,27 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
 }
 
 fn rail(config: &ListPageConfig<'_>) -> String {
-    let mut sections = vec![
-        rail_section("Navigate", &primary_nav(config.active_nav, config.is_admin)),
-        rail_section(
-            "Scope",
+    let mut sections = Vec::new();
+    if !config.rail_primary_action.is_empty() {
+        sections.push(rail_section(
+            "Create",
             &format!(
-                r#"<div class="rail-copy"><strong>{}</strong><p>{}</p></div>"#,
-                config.scope_title, config.scope_summary
+                r#"<div class="rail-actions">{}</div>"#,
+                config.rail_primary_action
             ),
+        ));
+    }
+    sections.push(rail_section(
+        "Navigate",
+        &primary_nav(config.active_nav, config.is_admin),
+    ));
+    sections.push(rail_section(
+        "Scope",
+        &format!(
+            r#"<div class="rail-copy"><strong>{}</strong><p>{}</p></div>"#,
+            config.scope_title, config.scope_summary
         ),
-    ];
+    ));
     if !config.rail_actions.is_empty() {
         sections.push(rail_section(
             "Actions",

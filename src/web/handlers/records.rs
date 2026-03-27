@@ -32,10 +32,9 @@ pub async fn create(
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
     let id = generate_unique_id(&pool).await?;
-    let content = body
-        .body
-        .clone()
-        .unwrap_or_else(|| "# New Note\n".to_string());
+    let Some(content) = body.body.clone() else {
+        return Err(AppError::InvalidRequest("body is required".to_string()));
+    };
     let is_private = body.is_private.unwrap_or(true);
     let record = db::create_record(&pool, &id, &content, is_private).await?;
     Ok(HttpResponse::Created().json(record))
