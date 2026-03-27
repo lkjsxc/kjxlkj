@@ -44,7 +44,11 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
 fn timeline(chrome: &NoteChrome) -> String {
     format!(
         r#"<div class="rail-list">{}{}</div>"#,
-        timeline_card(chrome.previous.as_ref(), "Prev", "No older accessible note."),
+        timeline_card(
+            chrome.previous.as_ref(),
+            "Prev",
+            "No older accessible note."
+        ),
         timeline_card(chrome.next.as_ref(), "Next", "No newer accessible note.")
     )
 }
@@ -62,7 +66,7 @@ fn history(chrome: &NoteChrome, active_href: &str) -> String {
 }
 
 fn timeline_card(link: Option<&NavLink>, relation: &str, empty: &str) -> String {
-    link.map(|item| note_link(item))
+    link.map(note_link)
         .unwrap_or_else(|| missing_timeline_card(relation, empty))
 }
 

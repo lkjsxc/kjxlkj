@@ -24,7 +24,9 @@ pub async fn history_page(
     let revisions = db::get_record_revisions(&pool, &id).await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
     let history = view::visible_history(&record, &revisions, is_admin);
-    Ok(html(templates::history_page(&record, &chrome, &history, is_admin)))
+    Ok(html(templates::history_page(
+        &record, &chrome, &history, is_admin,
+    )))
 }
 
 #[get("/{id}/history/{revision_number}")]
@@ -48,7 +50,9 @@ pub async fn revision_page(
         return Ok(not_found());
     }
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
-    Ok(html(templates::revision_page(&record, &chrome, &revision, is_admin)))
+    Ok(html(templates::revision_page(
+        &record, &chrome, &revision, is_admin,
+    )))
 }
 
 async fn accessible_record(

@@ -98,7 +98,6 @@ fn filtered_history_links(
             label: format!("Revision {}", revision.revision_number),
             created_at: render_time(&revision.created_at),
             status: visibility_label(revision.is_private),
-            active: false,
         })
         .collect()
 }

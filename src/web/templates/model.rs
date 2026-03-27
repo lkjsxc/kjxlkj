@@ -14,7 +14,6 @@ pub struct HistoryLink {
     pub label: String,
     pub created_at: String,
     pub status: &'static str,
-    pub active: bool,
 }
 
 #[derive(Clone, Debug)]

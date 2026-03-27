@@ -24,16 +24,17 @@ function initEditor() {
     if (!sourceField || !root) return;
     if (window.toastui && window.toastui.Editor) {
         try {
-            editorInstance = new window.toastui.Editor({
+            var options = {
                 el: root,
                 initialValue: sourceField.value,
                 initialEditType: 'wysiwyg',
-                previewStyle: 'tab',
+                hideModeSwitch: true,
                 theme: 'dark',
-                usageStatistics: false,
-                toolbarItems: toolbarItems()
-            });
-            root.querySelector('.toastui-editor-mode-switch')?.remove();
+                usageStatistics: false
+            };
+            var tools = toolbarItems();
+            if (tools) options.toolbarItems = tools;
+            editorInstance = new window.toastui.Editor(options);
             editorInstance.on('change', onEditorInput);
         } catch (_) {
             enableFallback(root);
@@ -139,14 +140,11 @@ function pad(value) {
 }
 
 function toolbarItems() {
-    if (window.matchMedia('(max-width: 900px)').matches) {
-        return [['heading', 'bold', 'italic'], ['ul', 'ol', 'task'], ['link', 'code']];
-    }
+    if (!window.matchMedia('(max-width: 900px)').matches) return null;
     return [
         ['heading', 'bold', 'italic', 'strike'],
-        ['ul', 'ol', 'task'],
-        ['quote', 'code', 'codeblock'],
-        ['link']
+        ['quote', 'ul', 'ol', 'task'],
+        ['link', 'code', 'codeblock']
     ];
 }
 

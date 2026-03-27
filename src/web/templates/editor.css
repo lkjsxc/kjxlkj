@@ -16,19 +16,18 @@
     color: var(--text);
     width: 100%;
     min-width: 0;
+    max-width: 100%;
 }
 
+.toast-host,
 .toastui-editor-defaultUI,
 .toastui-editor-main,
 .toastui-editor-md-container,
 .toastui-editor-ww-container,
-.toastui-editor-toolbar,
-.toast-host,
-.toastui-editor-contents,
-.ProseMirror {
-    box-shadow: none !important;
+.toastui-editor-contents {
     min-width: 0 !important;
     max-width: 100% !important;
+    width: 100% !important;
 }
 
 .toastui-editor-defaultUI {
@@ -37,19 +36,27 @@
     overflow: hidden;
     background: var(--panel) !important;
     width: 100% !important;
+    box-shadow: none !important;
 }
 
 .toastui-editor-toolbar {
+    display: flex !important;
+    gap: 4px;
+    padding: 8px !important;
     background: var(--panel-2) !important;
     border-bottom: 1px solid var(--line) !important;
-    overflow: hidden !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    box-shadow: none !important;
 }
 
 .toastui-editor-toolbar-group,
 .toastui-editor-toolbar-divider {
     border-color: var(--line) !important;
+    flex: 0 0 auto;
 }
 
+.toastui-editor-toolbar-icons,
 .toastui-editor-defaultUI-toolbar button {
     border-radius: 12px !important;
 }
@@ -62,51 +69,23 @@
     display: none !important;
 }
 
-.toastui-editor-contents,
-.toastui-editor-contents .ProseMirror,
-.ProseMirror,
 .toastui-editor-main,
-.toastui-editor-ww-container {
+.toastui-editor-ww-container,
+.toastui-editor-contents {
     background: var(--panel) !important;
+}
+
+.toastui-editor-ww-container .toastui-editor-contents {
     color: var(--text) !important;
 }
 
-.ProseMirror {
+.toastui-editor-ww-container .toastui-editor-contents code,
+.toastui-editor-ww-container .toastui-editor-contents pre {
+    font-family: var(--mono) !important;
+}
+
+.toastui-editor-ww-container .ProseMirror {
     min-height: 60vh;
     padding: 22px 24px !important;
-    font: 16px/1.7 var(--serif) !important;
     overflow-wrap: anywhere;
-}
-
-.toastui-editor-contents h1,
-.ProseMirror h1 {
-    font-size: 2.2rem;
-}
-
-.toastui-editor-contents h2,
-.ProseMirror h2 {
-    font-size: 1.55rem;
-}
-
-.toastui-editor-contents h3,
-.ProseMirror h3 {
-    font-size: 1.22rem;
-}
-
-.toastui-editor-contents blockquote,
-.ProseMirror blockquote {
-    padding-left: 14px;
-    border-left: 2px solid var(--accent);
-    color: var(--text-soft);
-}
-
-.toastui-editor-contents pre,
-.ProseMirror pre {
-    border: 1px solid var(--line) !important;
-    background: var(--bg-1) !important;
-}
-
-.toastui-editor-contents code,
-.ProseMirror code {
-    font-family: var(--mono) !important;
 }

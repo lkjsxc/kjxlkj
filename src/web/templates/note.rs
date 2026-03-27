@@ -149,6 +149,7 @@ mod tests {
         assert!(html.contains("public-toggle"));
         assert!(html.contains("editor-root"));
         assert!(html.contains(TOAST_UI_ROOT));
+        assert!(html.contains("hideModeSwitch: true"));
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));
         assert!(!html.contains("save-status"));

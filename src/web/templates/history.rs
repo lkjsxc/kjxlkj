@@ -167,7 +167,6 @@ mod tests {
                 label: "Revision 2".to_string(),
                 created_at: "2026-03-26 08:00 UTC".to_string(),
                 status: "Public",
-                active: false,
             }],
             false,
         );
