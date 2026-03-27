@@ -2,9 +2,15 @@ var shortcutTimer = null;
 var shortcutComposing = false;
 var shortcutKey = '';
 var shortcutSnapshot = null;
+var shortcutSurface = null;
 function bindShortcutNormalization() {
     var surface = visibleWysiwygSurface();
-    if (!surface) return;
+    if (!surface) {
+        setTimeout(bindShortcutNormalization, 50);
+        return;
+    }
+    if (surface === shortcutSurface) return;
+    shortcutSurface = surface;
     surface.addEventListener('compositionstart', onShortcutCompositionStart);
     surface.addEventListener('compositionend', onShortcutCompositionEnd);
     surface.addEventListener('keydown', onShortcutKeydown);
@@ -16,6 +22,7 @@ function clearShortcutNormalization() {
     shortcutComposing = false;
     shortcutKey = '';
     shortcutSnapshot = null;
+    shortcutSurface = null;
 }
 function onShortcutCompositionStart() {
     shortcutComposing = true;

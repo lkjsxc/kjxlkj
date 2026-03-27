@@ -35,12 +35,12 @@ function initEditor() {
                 autofocus: false,
                 usageStatistics: false
             };
-            var tools = toolbarItems();
-            if (tools) options.toolbarItems = tools;
+            options.toolbarItems = toolbarItems();
             editorInstance = new window.toastui.Editor(options);
             window.editorInstance = editorInstance;
             if (typeof bindShortcutNormalization === 'function') bindShortcutNormalization();
             editorInstance.on('change', onEditorInput);
+            focusEditor();
         } catch (_) {
             enableFallback(root);
         }
@@ -58,6 +58,7 @@ function enableFallback(root) {
     if (!fallbackField) return;
     fallbackField.hidden = false;
     fallbackField.addEventListener('input', onEditorInput);
+    requestAnimationFrame(function () { fallbackField.focus(); });
 }
 
 function onEditorInput() {
@@ -151,12 +152,29 @@ function editorMinHeight() {
 }
 
 function toolbarItems() {
-    if (!window.matchMedia('(max-width: 900px)').matches) return null;
+    if (window.matchMedia('(max-width: 900px)').matches) {
+        return [
+            ['heading', 'bold', 'italic', 'strike'],
+            ['quote', 'ul', 'ol', 'task'],
+            ['table', 'link', 'code', 'codeblock']
+        ];
+    }
     return [
-        ['heading', 'bold', 'italic', 'strike'],
-        ['quote', 'ul', 'ol', 'task'],
-        ['link', 'code', 'codeblock']
+        ['heading'],
+        ['bold', 'italic', 'strike'],
+        ['quote'],
+        ['ul', 'ol', 'task'],
+        ['table', 'link'],
+        ['code', 'codeblock']
     ];
+}
+
+function focusEditor() {
+    requestAnimationFrame(function () {
+        if (!editorInstance) return;
+        editorInstance.focus();
+        if (typeof editorInstance.moveCursorToEnd === 'function') editorInstance.moveCursorToEnd();
+    });
 }
 
 function deleteNote(id) {

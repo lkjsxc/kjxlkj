@@ -53,6 +53,10 @@
         align-items: flex-start;
     }
 
+    .editor-toolbar-row {
+        align-items: flex-start;
+    }
+
     .page-actions,
     .page-meta,
     .card-meta {
@@ -124,6 +128,10 @@
     .toastui-editor-defaultUI-toolbar button {
         width: 28px !important;
         height: 28px !important;
+    }
+
+    .toastui-editor-ww-container .toastui-editor-contents table {
+        font-size: 0.92rem;
     }
 
     .toastui-editor-ww-container .toastui-editor-contents {

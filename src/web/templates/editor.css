@@ -2,11 +2,16 @@
     display: grid;
     gap: 16px;
     min-width: 0;
+    overflow-x: clip;
 }
 
 .editor-toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+    min-width: 0;
 }
 
 .note-editor {
@@ -51,14 +56,29 @@
     height: auto !important;
     background: var(--panel-2) !important;
     border-bottom: 1px solid var(--line) !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     box-shadow: none !important;
+    min-width: 0;
+    width: 100% !important;
 }
 
 .toastui-editor-toolbar-group,
 .toastui-editor-toolbar-divider {
     border-color: var(--line) !important;
     flex: 0 0 auto;
+}
+
+.toastui-editor-toolbar-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px;
+    min-width: 0;
+}
+
+.toastui-editor-toolbar-divider {
+    margin: 8px 4px !important;
+    align-self: stretch;
+    height: auto !important;
 }
 
 .toastui-editor-defaultUI-toolbar button {
@@ -79,8 +99,11 @@
 }
 
 .toastui-editor-main,
+.toastui-editor-main-container,
 .toastui-editor-ww-container,
-.toastui-editor-contents {
+.toastui-editor-contents,
+.toastui-editor-ww-container > .toastui-editor,
+.toastui-editor-ww-container .ProseMirror {
     background: var(--panel) !important;
     height: auto !important;
     overflow: visible !important;
@@ -90,6 +113,16 @@
     color: var(--text) !important;
     min-height: 520px;
     padding: 18px 24px 20px !important;
+}
+
+.toastui-editor-ww-container .toastui-editor-contents table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.toastui-editor-ww-container .toastui-editor-contents td,
+.toastui-editor-ww-container .toastui-editor-contents th {
+    overflow-wrap: anywhere;
 }
 
 .toastui-editor-ww-container .toastui-editor-contents code,
