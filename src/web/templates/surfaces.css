@@ -7,7 +7,8 @@
 .note-page,
 .history-page,
 .index-layout,
-.stack {
+.stack,
+.note-list {
     display: grid;
     align-content: start;
     gap: 18px;
@@ -20,9 +21,7 @@
 }
 
 .page-head,
-.page-actions,
-.title-tags,
-.card-meta {
+.page-actions {
     display: flex;
     gap: 12px;
     min-width: 0;
@@ -35,60 +34,16 @@
 
 .page-title-stack,
 .card-body,
-.search-surface {
+.search-surface,
+.page-meta,
+.card-meta {
     display: grid;
     gap: 8px;
     min-width: 0;
 }
 
 .page-title-stack h1,
-.card-title {
-    margin: 0;
-    line-height: 1.05;
-    overflow-wrap: anywhere;
-}
-
-.page-title-stack h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-}
-
-.page-actions {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.page-meta,
-.card-meta {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-    justify-items: end;
-    text-align: right;
-    color: var(--text-soft);
-}
-
-.note-list {
-    gap: 12px;
-}
-
-.note-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.scope-card {
-    max-width: 720px;
-    background: var(--bg-1);
-}
-
-.scope-label {
-    margin: 0;
-    font: 600 0.82rem/1.2 var(--sans);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
+.card-title,
 .card-summary,
 .prose h1,
 .prose h2,
@@ -101,8 +56,75 @@
     margin: 0;
 }
 
+.page-title-stack h1,
+.card-title,
+.card-summary {
+    overflow-wrap: anywhere;
+}
+
+.page-title-stack h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.02;
+}
+
+.page-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.page-meta,
+.card-meta {
+    color: var(--text-soft);
+    justify-items: end;
+    text-align: right;
+}
+
+.page-meta small,
+.card-meta small {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    align-items: baseline;
+    white-space: nowrap;
+}
+
+.page-meta small span,
+.card-meta small span {
+    color: var(--text-muted);
+}
+
+.note-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: start;
+}
+
+.note-list {
+    gap: 12px;
+}
+
+.public-note-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.public-note-grid .note-row {
+    grid-template-columns: 1fr;
+    min-height: 100%;
+}
+
+.public-note-grid .card-meta {
+    justify-items: start;
+    text-align: left;
+}
+
+.public-note-grid .status-pill {
+    justify-self: start;
+}
+
 .card-summary {
     font-size: 0.96rem;
+    line-height: 1.5;
 }
 
 .note-surface,
@@ -111,70 +133,11 @@
     width: min(100%, 1080px);
 }
 
-.prose {
-    display: grid;
-    gap: 14px;
+.note-head {
+    align-items: end;
 }
 
-.prose h1 {
-    font-size: 2.15rem;
-}
-
-.prose h2 {
-    font-size: 1.5rem;
-}
-
-.prose h3 {
-    font-size: 1.2rem;
-}
-
-.prose ul,
-.prose ol {
-    padding-left: 24px;
-}
-
-.prose blockquote {
-    padding-left: 16px;
-    border-left: 2px solid var(--accent);
-    color: var(--text-soft);
-}
-
-.prose pre {
-    padding: 16px;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background: var(--bg-1);
-    overflow: auto;
-}
-
-.prose code,
-.prose pre {
-    font-family: var(--mono);
-}
-
-.check-row {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.check-row input {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent);
-}
-
-.pager,
-.page-actions form,
-.editor-toolbar-row {
+.title-tags {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    flex-wrap: wrap;
-    margin: 0;
-}
-
-.search-copy {
-    margin: 0;
+    gap: 12px;
 }

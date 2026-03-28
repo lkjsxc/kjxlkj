@@ -57,7 +57,12 @@ async function createHistoryNote(page) {
     const note = await createNote(page, '# Orbit Ledger\n\nPrivate draft.', true);
     await updateNote(page, note.id, '# Orbit Ledger\n\nSecond private draft.', true);
     await updateNote(page, note.id, '# Orbit Ledger\n\nShared release.', false);
-    await updateNote(page, note.id, '# Orbit Ledger\n\nCurrent shared revision.', false);
+    await updateNote(
+        page,
+        note.id,
+        '# Orbit Ledger\n\nCurrent shared revision stretches across the list card with enough words to stress the timestamp column.\n\nFollow-up detail keeps the summary ellipsis active.',
+        false
+    );
     return note;
 }
 

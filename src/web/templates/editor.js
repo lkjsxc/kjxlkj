@@ -1,44 +1,31 @@
-var saveTimer = null;
-var editorInstance = null;
-var sourceField = null;
-var fallbackField = null;
-var editorShell = null;
-var previewToggle = null;
-var previewBackdrop = null;
-var compactEditor = window.matchMedia('(max-width: 900px)');
+var editorState = {
+    editor: null,
+    sourceField: null,
+    fallbackField: null,
+    shell: null,
+    previewToggle: null,
+    previewBackdrop: null,
+    media: window.matchMedia('(max-width: 900px)'),
+    previewOpen: false,
+    previewStyle: 'tab',
+    saveTimer: null,
+    latestRequest: 0,
+    lastSavedBody: '',
+    lastSavedPrivate: null,
+    renderedTitle: '',
+    renderedVisibility: ''
+};
 
 function initEditor() {
-    sourceField = document.getElementById('editor-source');
-    fallbackField = document.getElementById('editor-fallback');
-    editorShell = document.getElementById('editor-shell');
-    previewToggle = document.getElementById('preview-toggle');
-    previewBackdrop = document.getElementById('preview-backdrop');
+    cacheEditorNodes();
     var root = document.getElementById('editor-root');
-    if (!sourceField || !root || !editorShell) return;
+    if (!editorState.sourceField || !root || !editorState.shell) return;
     bindPreviewEvents();
+    editorState.lastSavedBody = editorState.sourceField.value;
+    editorState.lastSavedPrivate = isPrivate;
     if (window.toastui && window.toastui.Editor) {
         try {
-            var options = {
-                el: root,
-                height: 'auto',
-                minHeight: editorMinHeight(),
-                initialValue: sourceField.value,
-                initialEditType: 'markdown',
-                previewStyle: 'vertical',
-                hideModeSwitch: true,
-                theme: 'dark',
-                autofocus: false,
-                usageStatistics: false
-            };
-            options.toolbarItems = toolbarItems();
-            editorInstance = new window.toastui.Editor(options);
-            window.editorInstance = editorInstance;
-            setPreviewEnabled(true);
-            syncPreviewState(false);
-            editorInstance.on('change', onEditorInput);
-            focusEditor();
-            syncNoteChrome();
-            return;
+            createEditor(root);
         } catch (_) {
             enableFallback(root);
         }
@@ -48,15 +35,50 @@ function initEditor() {
     syncNoteChrome();
 }
 
+function cacheEditorNodes() {
+    editorState.sourceField = document.getElementById('editor-source');
+    editorState.fallbackField = document.getElementById('editor-fallback');
+    editorState.shell = document.getElementById('editor-shell');
+    editorState.previewToggle = document.getElementById('preview-toggle');
+    editorState.previewBackdrop = document.getElementById('preview-backdrop');
+}
+
+function bindPreviewEvents() {
+    editorState.media.addEventListener('change', syncPreviewMode);
+    document.addEventListener('keydown', handlePreviewEscape);
+}
+
+function createEditor(root) {
+    var options = {
+        el: root,
+        height: 'auto',
+        minHeight: editorMinHeight(),
+        initialValue: editorState.sourceField.value,
+        initialEditType: 'markdown',
+        previewStyle: 'tab',
+        hideModeSwitch: true,
+        theme: 'dark',
+        autofocus: false,
+        usageStatistics: false,
+        toolbarItems: toolbarItems()
+    };
+    editorState.editor = new window.toastui.Editor(options);
+    window.editorInstance = editorState.editor;
+    editorState.editor.on('change', onEditorInput);
+    setPreviewEnabled(true);
+    syncPreviewMode();
+    focusEditor();
+}
+
 function enableFallback(root) {
-    editorInstance = null;
+    editorState.editor = null;
     window.editorInstance = null;
     setPreviewEnabled(false);
     if (root) root.hidden = true;
-    if (!fallbackField) return;
-    fallbackField.hidden = false;
-    fallbackField.addEventListener('input', onEditorInput);
-    requestAnimationFrame(function () { fallbackField.focus(); });
+    if (!editorState.fallbackField) return;
+    editorState.fallbackField.hidden = false;
+    editorState.fallbackField.addEventListener('input', onEditorInput);
+    requestAnimationFrame(function () { editorState.fallbackField.focus(); });
 }
 
 function onEditorInput() {
@@ -65,113 +87,70 @@ function onEditorInput() {
 }
 
 function currentBody() {
-    if (editorInstance) {
-        sourceField.value = editorInstance.getMarkdown();
-        return sourceField.value;
+    if (editorState.editor) {
+        editorState.sourceField.value = editorState.editor.getMarkdown();
+    } else if (editorState.fallbackField && !editorState.fallbackField.hidden) {
+        editorState.sourceField.value = editorState.fallbackField.value;
     }
-    if (fallbackField && !fallbackField.hidden) {
-        sourceField.value = fallbackField.value;
-    }
-    return sourceField ? sourceField.value : '';
-}
-
-function queueSave() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveNote, 500);
-}
-
-function saveNote() {
-    if (!sourceField || typeof currentId === 'undefined') return;
-    fetch('/records/' + currentId, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: currentBody(), is_private: isPrivate })
-    })
-        .then(function (response) {
-            if (!response.ok) throw new Error('save failed');
-            setSaveError('');
-        })
-        .catch(function () {
-            setSaveError('Save failed. Retry on the next change.');
-        });
-}
-
-function setSaveError(message) {
-    var node = document.getElementById('save-error');
-    if (!node) return;
-    node.textContent = message;
-    node.hidden = !message;
-}
-
-function togglePublic() {
-    var checkbox = document.getElementById('public-toggle');
-    isPrivate = !checkbox.checked;
-    syncNoteChrome();
-    queueSave();
-}
-
-function syncNoteChrome() {
-    var body = currentBody();
-    var title = deriveTitle(body);
-    var visibility = isPrivate ? 'Private' : 'Public';
-    document.querySelectorAll('[data-live-title]').forEach(function (node) {
-        node.textContent = title;
-    });
-    document.querySelectorAll('[data-live-visibility]').forEach(function (node) {
-        node.textContent = visibility;
-    });
-    document.title = title + ' - kjxlkj';
-}
-
-function deriveTitle(body) {
-    var match = body.match(/^\s*#\s+(.+)$/m);
-    return match && match[1] ? match[1].trim() : 'Untitled note';
-}
-
-function bindPreviewEvents() {
-    window.addEventListener('resize', syncPreviewBackdrop);
-    document.addEventListener('keydown', handlePreviewEscape);
+    return editorState.sourceField ? editorState.sourceField.value : '';
 }
 
 function togglePreview() {
-    if (!editorShell || !editorInstance) return;
-    syncPreviewState(!editorShell.classList.contains('preview-open'));
+    if (!editorState.shell || !editorState.editor) return;
+    editorState.previewOpen = !editorState.previewOpen;
+    syncPreviewMode();
 }
 
 function closePreview() {
-    syncPreviewState(false);
-    if (previewToggle) previewToggle.focus();
+    if (!editorState.previewOpen) return;
+    editorState.previewOpen = false;
+    syncPreviewMode();
+    if (editorState.previewToggle) editorState.previewToggle.focus();
 }
 
-function syncPreviewState(open) {
-    if (!editorShell) return;
-    editorShell.classList.toggle('preview-open', open);
-    editorShell.classList.toggle('preview-closed', !open);
-    if (previewToggle) {
-        previewToggle.textContent = open ? 'Hide preview' : 'Show preview';
-        previewToggle.setAttribute('aria-expanded', String(open));
+function syncPreviewMode() {
+    if (!editorState.shell) return;
+    var compact = editorState.media.matches;
+    var style = editorState.previewOpen && !compact ? 'vertical' : 'tab';
+    if (editorState.editor && editorState.previewStyle !== style) {
+        editorState.editor.changePreviewStyle(style);
+        editorState.previewStyle = style;
     }
-    syncPreviewBackdrop();
-}
-
-function syncPreviewBackdrop() {
-    if (!previewBackdrop || !editorShell) return;
-    previewBackdrop.hidden = !(editorShell.classList.contains('preview-open') && compactEditor.matches);
+    if (style === 'tab' && editorState.editor && editorState.editor.eventEmitter) {
+        editorState.editor.eventEmitter.emit(
+            editorState.previewOpen ? 'changePreviewTabPreview' : 'changePreviewTabWrite'
+        );
+    }
+    editorState.shell.classList.toggle('preview-open', editorState.previewOpen);
+    editorState.shell.classList.toggle('preview-closed', !editorState.previewOpen);
+    editorState.shell.classList.toggle('preview-compact', compact);
+    if (editorState.previewToggle) {
+        editorState.previewToggle.textContent = editorState.previewOpen ? 'Hide preview' : 'Show preview';
+        editorState.previewToggle.setAttribute('aria-expanded', String(editorState.previewOpen));
+    }
+    if (editorState.previewBackdrop) {
+        editorState.previewBackdrop.hidden = !(editorState.previewOpen && compact);
+    }
 }
 
 function setPreviewEnabled(enabled) {
-    if (previewToggle) previewToggle.hidden = !enabled;
-    if (!enabled) syncPreviewState(false);
+    if (editorState.previewToggle) editorState.previewToggle.hidden = !enabled;
+    if (!enabled) {
+        editorState.previewOpen = false;
+        syncPreviewMode();
+    }
 }
 
-function handlePreviewEscape(event) { if (event.key === 'Escape') closePreview(); }
+function handlePreviewEscape(event) {
+    if (event.key === 'Escape') closePreview();
+}
 
 function editorMinHeight() {
-    return compactEditor.matches ? '360px' : '520px';
+    return editorState.media.matches ? '360px' : '520px';
 }
 
 function toolbarItems() {
-    if (compactEditor.matches) {
+    if (editorState.media.matches) {
         return [
             ['heading', 'bold', 'italic', 'strike'],
             ['quote', 'ul', 'ol', 'task'],
@@ -190,11 +169,15 @@ function toolbarItems() {
 
 function focusEditor() {
     requestAnimationFrame(function () {
-        if (editorInstance) {
-            editorInstance.focus();
-            if (typeof editorInstance.moveCursorToEnd === 'function') editorInstance.moveCursorToEnd();
+        if (editorState.editor) {
+            editorState.editor.focus();
+            if (typeof editorState.editor.moveCursorToEnd === 'function') {
+                editorState.editor.moveCursorToEnd();
+            }
             return;
         }
-        if (fallbackField && !fallbackField.hidden) fallbackField.focus();
+        if (editorState.fallbackField && !editorState.fallbackField.hidden) {
+            editorState.fallbackField.focus();
+        }
     });
 }

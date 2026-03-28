@@ -1,6 +1,6 @@
 //! Revision and navigation queries
 
-use super::models::RecordRevision;
+use super::models::{Record, RecordRevision};
 use super::DbPool;
 use crate::error::AppError;
 
@@ -43,39 +43,41 @@ pub async fn get_record_revision(
     Ok(row.map(row_to_revision))
 }
 
-pub async fn get_previous_id(
+pub async fn get_previous_record(
     pool: &DbPool,
     id: &str,
     include_private: bool,
-) -> Result<Option<String>, AppError> {
-    adjacent_id(pool, id, include_private, true).await
+) -> Result<Option<Record>, AppError> {
+    adjacent_record(pool, id, include_private, true).await
 }
 
-pub async fn get_next_id(
+pub async fn get_next_record(
     pool: &DbPool,
     id: &str,
     include_private: bool,
-) -> Result<Option<String>, AppError> {
-    adjacent_id(pool, id, include_private, false).await
+) -> Result<Option<Record>, AppError> {
+    adjacent_record(pool, id, include_private, false).await
 }
 
-async fn adjacent_id(
+async fn adjacent_record(
     pool: &DbPool,
     id: &str,
     include_private: bool,
     older: bool,
-) -> Result<Option<String>, AppError> {
+) -> Result<Option<Record>, AppError> {
     let client = pool
         .get()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     let query = if older {
-        "SELECT id FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
+        "SELECT id, title, summary, body, is_private, created_at, updated_at \
+         FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at < (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id < $1)) \
          ORDER BY created_at DESC, id DESC LIMIT 1"
     } else {
-        "SELECT id FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
+        "SELECT id, title, summary, body, is_private, created_at, updated_at \
+         FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at > (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id > $1)) \
          ORDER BY created_at ASC, id ASC LIMIT 1"
@@ -84,7 +86,7 @@ async fn adjacent_id(
         .query_opt(query, &[&id, &include_private])
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(row.map(|row| row.get("id")))
+    Ok(row.map(super::records::row_to_record))
 }
 
 fn row_to_revision(row: tokio_postgres::Row) -> RecordRevision {

@@ -1,0 +1,63 @@
+.prose {
+    display: grid;
+    gap: 14px;
+}
+
+.prose h1 {
+    font-size: 2.15rem;
+}
+
+.prose h2 {
+    font-size: 1.5rem;
+}
+
+.prose h3 {
+    font-size: 1.2rem;
+}
+
+.prose ul,
+.prose ol {
+    padding-left: 24px;
+}
+
+.prose blockquote {
+    padding-left: 16px;
+    border-left: 2px solid var(--accent);
+    color: var(--text-soft);
+}
+
+.prose pre {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--bg-1);
+    overflow: auto;
+}
+
+.prose code,
+.prose pre {
+    font-family: var(--mono);
+}
+
+.check-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.check-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+.pager,
+.page-actions form,
+.editor-toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+    margin: 0;
+}

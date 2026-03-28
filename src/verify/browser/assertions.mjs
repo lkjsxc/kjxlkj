@@ -1,73 +1,58 @@
 import assert from 'node:assert/strict';
 import { alpha, contrast, isDark, isLight } from './style-utils.mjs';
 
-export async function expectFlatShell(page, buttonNames = []) {
+export async function expectFlatShell(page, controlNames = []) {
     const colorScheme = await page.evaluate(
         () => getComputedStyle(document.documentElement).colorScheme
     );
     assert.match(colorScheme, /dark/, 'dark mode should be the default');
-
-    const shell = page.locator('.surface, .index-card').first();
-    const surface = await shell.evaluate((node) => {
-        const style = getComputedStyle(node);
-        return {
-            background: style.backgroundColor,
-            backgroundImage: style.backgroundImage,
-            boxShadow: style.boxShadow,
-        };
-    });
-    assert.ok(isDark(surface.background), 'surfaces should be dark by default');
-    assert.equal(surface.backgroundImage, 'none', 'surface fills should stay flat');
-    assert.equal(surface.boxShadow, 'none', 'surface depth should not rely on shadows');
-    assert.equal(
-        await page.locator('.shell-rail input[type="search"]').count(),
-        0,
-        'rail search inputs should not render'
-    );
-    await assertInvisibleText(page, 'RECENT');
-    await assertInvisibleText(page, 'Rich mode');
-    await assertInvisibleText(page, 'Text mode');
-    await assertInvisibleText(page, 'Saving');
-    await assertInvisibleText(page, 'Saved');
-    await assertInvisibleText(page, 'flat notes for LLMs');
+    await assertDarkSurface(page);
+    assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
+    assert.equal(await page.locator('.shell-rail h2').count(), 0);
+    for (const text of ['RECENT', 'Rich mode', 'Text mode', 'Saving', 'Saved', 'Public index', 'Admin index']) {
+        await assertInvisibleText(page, text);
+    }
     await assertNoHorizontalOverflow(page);
-
-    for (const name of buttonNames) {
+    for (const name of controlNames) {
         await assertReadable(await namedControl(page, name));
     }
 }
 
 export async function expectPublicRoot(page) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'Public index');
     await assertVisibleText(page, 'Public notes');
+    await assertInvisibleText(page, 'Browse current public notes');
+    await assertNoHeaderButtons(page);
+    if ((await page.evaluate(() => window.innerWidth)) > 900) {
+        await assertWideGrid(page);
+    }
 }
 
 export async function expectSearchPage(page) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Find notes');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
+    await assertNoHeaderButtons(page);
 }
 
 export async function expectAdminDashboard(page) {
-    await expectFlatShell(page, ['Search', 'New note', 'Logout']);
-    await assertVisibleText(page, 'Admin index');
+    await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Admin notes');
+    await assertInvisibleText(page, 'Admin browse');
+    await assertNoHeaderButtons(page);
+    await assertStableMetadata(page, 'Orbit Ledger');
     await assertTopRailCreateAction(page);
 }
 
 export async function expectAdminNote(page) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Public');
-    assert.equal(
-        await page.locator('#public-toggle').isChecked(),
-        true,
-        'admin note should show public checkbox state'
-    );
-    const editableCount =
+    assert.equal(await page.locator('#public-toggle').isChecked(), true);
+    assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false');
+    assert.ok(
         (await page.locator('.toastui-editor-defaultUI:visible').count()) +
-        (await page.locator('#editor-fallback:visible').count());
-    assert.ok(editableCount > 0, 'admin note should show an editable workspace');
+            (await page.locator('#editor-fallback:visible').count()) > 0
+    );
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'Created');
     await assertVisibleText(page, 'Updated');
@@ -88,15 +73,11 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
 export async function expectClosedDrawer(page) {
     const toggle = page.locator('[data-menu-toggle]');
     await toggle.waitFor({ state: 'visible' });
-    assert.equal(await toggle.getAttribute('aria-expanded'), 'false', 'drawer should start closed');
+    assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
     await page.waitForFunction(() => {
         const node = document.querySelector('[data-menu-panel]');
         return !!node && node.getBoundingClientRect().right < 20;
     });
-    const right = await page
-        .locator('[data-menu-panel]')
-        .evaluate((node) => node.getBoundingClientRect().right);
-    assert.ok(right < 20, 'closed drawer should stay off canvas');
 }
 
 export async function openDrawer(page) {
@@ -107,11 +88,7 @@ export async function openDrawer(page) {
         const node = document.querySelector('[data-menu-panel]');
         return !!node && node.getBoundingClientRect().right > 200;
     });
-    assert.equal(await toggle.getAttribute('aria-expanded'), 'true', 'drawer should open');
-    const right = await page
-        .locator('[data-menu-panel]')
-        .evaluate((node) => node.getBoundingClientRect().right);
-    assert.ok(right > 200, 'opened drawer should slide into view');
+    assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
     await assertNoHorizontalOverflow(page);
 }
 
@@ -138,6 +115,40 @@ export async function assertNoHorizontalOverflow(page) {
     assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
 }
 
+async function assertDarkSurface(page) {
+    const shell = page.locator('.surface, .index-card').first();
+    const style = await shell.evaluate((node) => {
+        const computed = getComputedStyle(node);
+        return {
+            background: computed.backgroundColor,
+            backgroundImage: computed.backgroundImage,
+            boxShadow: computed.boxShadow,
+        };
+    });
+    assert.ok(isDark(style.background));
+    assert.equal(style.backgroundImage, 'none');
+    assert.equal(style.boxShadow, 'none');
+}
+
+async function assertWideGrid(page) {
+    const columns = await page.locator('.public-note-grid .note-row').evaluateAll((nodes) => {
+        return new Set(nodes.map((node) => Math.round(node.getBoundingClientRect().left))).size;
+    });
+    assert.ok(columns > 1, 'wide public browse should use multiple columns');
+}
+
+async function assertNoHeaderButtons(page) {
+    assert.equal(await page.locator('.page-head .btn').count(), 0);
+}
+
+async function assertStableMetadata(page, title) {
+    const row = page.locator('.note-row', { has: page.getByText(title, { exact: true }) }).first();
+    const heights = await row.locator('.card-meta small').evaluateAll((nodes) =>
+        nodes.map((node) => node.getBoundingClientRect().height)
+    );
+    assert.ok(heights.every((height) => height <= 22), 'timestamps should stay on single lines');
+}
+
 async function namedControl(page, name) {
     const button = page.getByRole('button', { name, exact: true });
     if (await button.count()) return button.first();
@@ -157,42 +168,32 @@ async function assertReadable(locator) {
     assert.ok(
         style.backgroundImage !== 'none' ||
             contrast(style.color, style.background) >= 4.2 ||
-            (alpha(style.background) < 0.2 && isLight(style.color)),
-        'button text should remain readable'
+            (alpha(style.background) < 0.2 && isLight(style.color))
     );
 }
 
 async function assertLocalToastUiAssets(page) {
     const assetPaths = await page.evaluate(() =>
-        Array.from(
-            document.querySelectorAll(
-                'link[href*="toastui-editor"], script[src*="toastui-editor"]'
-            )
-        ).map((node) => node.getAttribute('href') ?? node.getAttribute('src'))
+        Array.from(document.querySelectorAll('link[href*="toastui-editor"], script[src*="toastui-editor"]')).map(
+            (node) => node.getAttribute('href') ?? node.getAttribute('src')
+        )
     );
-    assert.ok(assetPaths.length >= 3, 'admin note should reference local Toast UI assets');
-    assert.ok(
-        assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')),
-        'Toast UI assets should be served from local versioned routes'
-    );
+    assert.ok(assetPaths.length >= 3);
+    assert.ok(assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')));
 }
 
 async function assertSingleHistoryCard(page) {
     await assertVisibleText(page, 'All history');
-    assert.equal(
-        await page.getByText('All history', { exact: true }).count(),
-        1,
-        'note rail should expose exactly one history card'
-    );
+    assert.equal(await page.getByText('All history', { exact: true }).count(), 1);
 }
 
 async function assertTopRailCreateAction(page) {
     const createControl = page.getByRole('button', { name: 'New note', exact: true }).first();
     if (!(await createControl.count()) || !(await createControl.isVisible())) return;
     const createTop = await createControl.evaluate((node) => node.getBoundingClientRect().top);
-    const navigateTop = await page
-        .getByText('Navigate', { exact: true })
+    const publicTop = await page
+        .getByRole('link', { name: 'Public notes', exact: true })
         .first()
         .evaluate((node) => node.getBoundingClientRect().top);
-    assert.ok(createTop < navigateTop, 'New note should appear above Navigate in the rail');
+    assert.ok(createTop < publicTop, 'New note should stay above navigation links');
 }

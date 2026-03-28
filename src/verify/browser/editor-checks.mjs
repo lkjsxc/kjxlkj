@@ -21,13 +21,25 @@ export async function verifyUiCreatedDraft(page) {
 }
 
 export async function verifyEditorFormatting(browser, page, id) {
+    const saveRequests = [];
+    page.on('requestfinished', (request) => {
+        if (request.method() === 'PUT' && new URL(request.url()).pathname === `/records/${id}`) {
+            saveRequests.push(Date.now());
+        }
+    });
     await page.locator('.toastui-editor-md-container .ProseMirror').first().waitFor({ state: 'visible' });
     await expectEditorFocus(page);
+    await page.waitForTimeout(1600);
+    assert.equal(saveRequests.length, 0, 'idle note should not save before edits');
     await appendMarkdown(page);
     await openPreview(page);
     await waitForPreviewStructures(page);
     await assertEditorLayout(page, false);
     await page.waitForTimeout(1800);
+    assert.ok(saveRequests.length >= 1, 'editing should trigger autosave');
+    const settledCount = saveRequests.length;
+    await page.waitForTimeout(1600);
+    assert.equal(saveRequests.length, settledCount, 'autosave should settle once edits are saved');
     await page.reload({ waitUntil: 'networkidle' });
     assert.equal(
         await page.locator('#preview-toggle').getAttribute('aria-expanded'),

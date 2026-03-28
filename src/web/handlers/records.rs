@@ -118,11 +118,13 @@ async fn nav_response(
     match record {
         Some(record) if is_admin || !record.is_private => {
             let neighbor = if older {
-                db::get_previous_id(&pool, &id, is_admin).await?
+                db::get_previous_record(&pool, &id, is_admin).await?
             } else {
-                db::get_next_id(&pool, &id, is_admin).await?
+                db::get_next_record(&pool, &id, is_admin).await?
             };
-            Ok(HttpResponse::Ok().json(NavResponse { id: neighbor }))
+            Ok(HttpResponse::Ok().json(NavResponse {
+                id: neighbor.map(|note| note.id),
+            }))
         }
         _ => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }

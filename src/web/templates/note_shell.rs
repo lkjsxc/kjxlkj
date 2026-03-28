@@ -6,14 +6,14 @@ use super::model::{NavLink, NoteChrome};
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
     let mut sections = Vec::new();
     if is_admin {
-        sections.push(rail_section("Create", &create_action()));
+        sections.push(rail_section("create", &create_action()));
     }
     sections.extend([
-        rail_section("Navigate", &primary_nav("", is_admin)),
-        rail_section("Current note", &current_note(chrome, active_href)),
-        rail_section("Timeline", &timeline(chrome)),
-        rail_section("History", &history(chrome, active_href)),
-        rail_section("Actions", &actions(chrome, is_admin)),
+        rail_section("navigate", &primary_nav("", is_admin)),
+        rail_section("current-note", &current_note(chrome, active_href)),
+        rail_section("timeline", &timeline(chrome)),
+        rail_section("history", &history(chrome, active_href)),
+        rail_section("actions", &actions(chrome, is_admin)),
     ]);
     sections.join("")
 }
@@ -21,7 +21,7 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
 fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
         r#"<div class="rail-list">
-<a href="{}" class="rail-link{}"><small>Current</small><span data-live-title>{}</span></a>
+<a href="{}" class="rail-link{}"><span data-live-title>{}</span><small>Current note</small></a>
 <div class="rail-facts">
 <p><strong>Created</strong><span>{}</span></p>
 <p><strong>Updated</strong><span>{}</span></p>
@@ -55,7 +55,7 @@ fn timeline(chrome: &NoteChrome) -> String {
 
 fn history(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
-        r#"<div class="rail-list"><a href="{}" class="rail-link{}"><small>Index</small><span>All history</span><small>View every visible revision</small></a></div>"#,
+        r#"<div class="rail-list"><a href="{}" class="rail-link{}"><span>All history</span></a></div>"#,
         chrome.history_href,
         if active_href == chrome.history_href {
             " active"
@@ -72,7 +72,7 @@ fn timeline_card(link: Option<&NavLink>, relation: &str, empty: &str) -> String 
 
 fn missing_timeline_card(relation: &str, empty: &str) -> String {
     format!(
-        r#"<article class="rail-link rail-link-muted" aria-disabled="true"><small>{relation}</small><span>{empty}</span><small>Not available</small></article>"#
+        r#"<article class="rail-link rail-link-muted" aria-disabled="true"><small>{relation}</small><span>{empty}</span></article>"#
     )
 }
 
@@ -128,7 +128,7 @@ mod tests {
     fn note_rail_keeps_single_history_card() {
         let html = note_rail(&chrome(None, None), true, "/demo");
         assert!(html.contains("All history"));
-        assert!(!html.contains("All revisions"));
+        assert!(!html.contains("View every visible revision"));
     }
 
     #[test]
@@ -136,7 +136,6 @@ mod tests {
         let html = note_rail(&chrome(None, None), false, "/demo");
         assert!(html.contains("No older accessible note."));
         assert!(html.contains("No newer accessible note."));
-        assert!(html.contains("Not available"));
-        assert!(!html.contains("rail-empty"));
+        assert!(!html.contains("CREATE"));
     }
 }

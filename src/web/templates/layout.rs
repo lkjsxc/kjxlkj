@@ -1,6 +1,7 @@
 //! Layout and helper functions
 
 const BASE_CSS: &str = include_str!("base.css");
+const CONTENT_CSS: &str = include_str!("content.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
@@ -19,6 +20,7 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <title>{title} - kjxlkj</title>
 {extra_head}
 <style>{BASE_CSS}
+{CONTENT_CSS}
 {CONTROLS_CSS}
 {SHELL_CSS}
 {SURFACES_CSS}
@@ -69,7 +71,7 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
 }
 
 pub fn rail_section(title: &str, body: &str) -> String {
-    format!(r#"<section class="rail-section"><h2>{title}</h2>{body}</section>"#)
+    format!(r#"<section class="rail-section" aria-label="{title}">{body}</section>"#)
 }
 
 pub fn primary_nav(active: &str, is_admin: bool) -> String {
@@ -78,7 +80,7 @@ pub fn primary_nav(active: &str, is_admin: bool) -> String {
         nav_link("/search", "Search", active == "search"),
     ];
     if is_admin {
-        links.push(nav_link("/admin", "Admin workspace", active == "admin"));
+        links.push(nav_link("/admin", "Admin notes", active == "admin"));
     }
     format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
 }

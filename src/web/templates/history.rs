@@ -3,7 +3,7 @@
 use super::layout::{base, shell_page};
 use super::model::{HistoryLink, NoteChrome};
 use super::note_shell::note_rail;
-use crate::core::{derive_title, render_markdown};
+use crate::core::{derive_summary, derive_title, render_markdown};
 use crate::web::db::{Record, RecordRevision};
 
 pub fn history_page(
@@ -12,7 +12,6 @@ pub fn history_page(
     history: &[HistoryLink],
     is_admin: bool,
 ) -> String {
-    let rail = note_rail(chrome, is_admin, &chrome.history_href);
     let rows = if history.is_empty() {
         r#"<p class="surface-empty">No saved revisions yet.</p>"#.to_string()
     } else {
@@ -24,25 +23,18 @@ pub fn history_page(
     };
     let content = format!(
         r#"<header class="page-head">
-<div class="page-title-stack">
-<p class="eyebrow">History</p>
-<h1>{}</h1>
-</div>
+<div class="page-title-stack"><h1>{}</h1></div>
 <div class="page-actions"><a href="/{}" class="btn">Current note</a></div>
 </header>
-<section class="stack">{}</section>"#,
-        chrome.title, record.id, rows
+<section class="stack note-list">{rows}</section>"#,
+        chrome.title, record.id
     );
-    base(
+    shell(
         &format!("History - {}", chrome.title),
-        &shell_page(
-            if is_admin { "Admin" } else { "Guest" },
-            &rail,
-            &content,
-            "history-page",
-        ),
-        "",
-        "",
+        chrome,
+        &chrome.history_href,
+        &content,
+        is_admin,
     )
 }
 
@@ -53,12 +45,9 @@ pub fn revision_page(
     is_admin: bool,
 ) -> String {
     let active = format!("/{}/history/{}", record.id, revision.revision_number);
-    let rail = note_rail(chrome, is_admin, &active);
-    let title = derive_title(&revision.body);
     let content = format!(
         r#"<header class="page-head">
 <div class="page-title-stack">
-<p class="eyebrow">Snapshot</p>
 <h1>{}</h1>
 <p class="page-summary">Saved {}.</p>
 </div>
@@ -69,7 +58,7 @@ pub fn revision_page(
 </div>
 </header>
 <section class="surface note-surface prose">{}</section>"#,
-        title,
+        derive_title(&revision.body),
         super::render_time(&revision.created_at),
         if revision.is_private {
             "Private"
@@ -80,12 +69,22 @@ pub fn revision_page(
         record.id,
         render_markdown(&revision.body)
     );
-    base(
+    shell(
         &format!("Revision {} - {}", revision.revision_number, chrome.title),
+        chrome,
+        &active,
+        &content,
+        is_admin,
+    )
+}
+
+fn shell(title: &str, chrome: &NoteChrome, active: &str, content: &str, is_admin: bool) -> String {
+    base(
+        title,
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
-            &rail,
-            &content,
+            &note_rail(chrome, is_admin, active),
+            content,
             "history-page",
         ),
         "",
@@ -98,14 +97,11 @@ fn history_row(entry: &HistoryLink) -> String {
         r#"<a href="{}" class="index-card note-row">
 <div class="card-body">
 <p class="card-title">{}</p>
-<p class="card-summary">{}</p>
+<p class="card-summary">Saved {}</p>
 </div>
-<div class="card-meta">
-<span class="status-pill">{}</span>
-<small>{}</small>
-</div>
+<div class="card-meta"><span class="status-pill">{}</span></div>
 </a>"#,
-        entry.href, entry.label, entry.created_at, entry.status, entry.created_at
+        entry.href, entry.label, entry.created_at, entry.status
     )
 }
 
@@ -118,10 +114,13 @@ fn current_row(record: &Record, chrome: &NoteChrome) -> String {
 </div>
 <div class="card-meta">
 <span class="status-pill">{}</span>
-<small>{}</small>
+<small><span>Updated</span>{}</small>
 </div>
 </a>"#,
-        record.id, chrome.updated_at, chrome.visibility, chrome.updated_at
+        record.id,
+        derive_summary(&record.body),
+        chrome.visibility,
+        chrome.updated_at
     )
 }
 
@@ -170,9 +169,8 @@ mod tests {
             }],
             false,
         );
-        assert!(html.contains("History"));
         assert!(html.contains("Current note"));
         assert!(html.contains("/Q29udHJhY3RSdW50aW1lMQ/history/2"));
-        assert!(html.contains("Current note"));
+        assert!(html.contains("Saved 2026-03-26 08:00 UTC"));
     }
 }

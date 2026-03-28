@@ -47,17 +47,18 @@
         min-width: 0;
     }
 
-    .page-head,
-    .note-row {
+    .page-head {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .editor-toolbar-row {
-        align-items: flex-start;
+    .note-row {
+        grid-template-columns: 1fr;
     }
 
+    .editor-toolbar-row,
     .editor-controls {
+        align-items: flex-start;
         width: 100%;
     }
 
@@ -66,25 +67,20 @@
     .card-meta {
         justify-content: flex-start;
         justify-items: start;
-        min-width: 0;
         text-align: left;
     }
 
-    .page-title-stack h1,
-    .card-title {
-        overflow-wrap: anywhere;
+    .page-meta small,
+    .card-meta small {
+        white-space: normal;
     }
 
-    .rail-facts p {
-        grid-template-columns: 1fr;
+    .rail-facts span,
+    .rail-link small {
+        white-space: normal;
     }
 
-    .rail-facts span {
-        justify-self: start;
-        text-align: left;
-    }
-
-    .editor-shell.preview-open .editor-preview-backdrop {
+    .editor-shell.preview-open.preview-compact .editor-preview-backdrop {
         display: block;
         position: fixed;
         inset: 0;
@@ -92,12 +88,7 @@
         background: rgba(8, 9, 11, 0.72);
     }
 
-    .editor-shell.preview-open .toastui-editor-md-container > .toastui-editor {
-        width: 100% !important;
-        border-right: 0;
-    }
-
-    .editor-shell.preview-open .toastui-editor-md-preview {
+    .editor-shell.preview-open.preview-compact .toastui-editor-md-preview {
         position: fixed;
         inset: 92px 16px 16px;
         z-index: 85;
@@ -107,11 +98,7 @@
         overflow: auto !important;
         border: 1px solid var(--line);
         border-radius: 18px;
-        box-shadow: none !important;
-    }
-
-    .editor-shell.preview-open .toastui-editor-md-splitter {
-        display: none !important;
+        background: var(--panel) !important;
     }
 }
 
@@ -135,10 +122,6 @@
     .page-actions form,
     .search-row .btn {
         width: 100%;
-    }
-
-    .editor-toolbar-row {
-        align-items: flex-start;
     }
 
     .toastui-editor-defaultUI {

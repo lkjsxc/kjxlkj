@@ -21,10 +21,7 @@
 .subtitle,
 .page-summary,
 .surface-empty,
-.rail-empty,
-.card-summary,
-.search-copy,
-.scope-label {
+.card-summary {
     color: var(--text-soft);
 }
 
@@ -89,7 +86,6 @@
     color: var(--danger);
 }
 
-.eyebrow,
 .status-pill,
 .mode-pill {
     display: inline-flex;
@@ -101,7 +97,6 @@
     text-transform: uppercase;
 }
 
-.eyebrow,
 .status-pill {
     background: var(--accent-soft);
     color: var(--accent);

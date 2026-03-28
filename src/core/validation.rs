@@ -12,6 +12,7 @@ static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
 
 const ID_LEN: usize = 22;
 const SUMMARY_LIMIT: usize = 120;
+const SUMMARY_SUFFIX: &str = "...";
 
 #[derive(Debug, Error, PartialEq)]
 pub enum IdError {
@@ -59,26 +60,35 @@ pub fn derive_title(body: &str) -> String {
 }
 
 pub fn derive_summary(body: &str) -> String {
-    body.lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty() && !line.starts_with('#'))
-        .map(strip_summary_markers)
-        .find(|line| !line.is_empty())
-        .map(|line| shorten(&line))
-        .unwrap_or_else(|| "No summary yet.".to_string())
+    let mut lines = meaningful_lines(body);
+    let Some(first_line) = lines.next() else {
+        return "No summary yet.".to_string();
+    };
+    shorten(&first_line, lines.next().is_some())
 }
 
 fn strip_summary_markers(line: &str) -> String {
     SUMMARY_PREFIX_REGEX.replace(line, "").trim().to_string()
 }
 
-fn shorten(line: &str) -> String {
-    if line.chars().count() <= SUMMARY_LIMIT {
-        line.to_string()
-    } else {
-        let prefix: String = line.chars().take(SUMMARY_LIMIT - 1).collect();
-        format!("{prefix}…")
+fn meaningful_lines<'a>(body: &'a str) -> impl Iterator<Item = String> + 'a {
+    body.lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(strip_summary_markers)
+        .filter(|line| !line.is_empty())
+}
+
+fn shorten(line: &str, has_more_content: bool) -> String {
+    let line_len = line.chars().count();
+    if line_len <= SUMMARY_LIMIT && !has_more_content {
+        return line.to_string();
     }
+
+    let suffix = SUMMARY_SUFFIX;
+    let max_len = SUMMARY_LIMIT.saturating_sub(suffix.len());
+    let prefix: String = line.chars().take(max_len).collect();
+    format!("{}{suffix}", prefix.trim_end())
 }
 
 #[cfg(test)]
@@ -108,6 +118,11 @@ mod tests {
         assert_eq!(derive_summary("# Hello\n\nBody"), "Body".to_string());
         assert_eq!(derive_summary("# Hello\n\n- Bullet"), "Bullet".to_string());
         assert_eq!(derive_summary("# Hello\n\n> Quote"), "Quote".to_string());
+        assert_eq!(
+            derive_summary("# Hello\n\nBody\n\nMore details"),
+            "Body...".to_string()
+        );
+        assert!(derive_summary(&format!("# Hello\n\n{}", "A".repeat(180))).ends_with("..."));
         assert_eq!(derive_summary(""), "No summary yet.".to_string());
     }
 }

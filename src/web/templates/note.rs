@@ -7,73 +7,66 @@ use crate::core::render_markdown;
 use crate::web::db::Record;
 
 const EDITOR_JS: &str = include_str!("editor.js");
+const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
 const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
 pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
+    let content = format!(
+        r#"<header class="page-head note-head">
+<div class="page-title-stack">
+<h1 data-live-title>{}</h1>
+<div class="title-tags"><span class="status-pill" data-live-visibility>{}</span></div>
+</div>
+<div class="page-meta">
+<small><span>Created</span>{}</small>
+<small><span>Updated</span>{}</small>
+</div>
+</header>
+{}"#,
+        chrome.title,
+        chrome.visibility,
+        chrome.created_at,
+        chrome.updated_at,
+        if is_admin {
+            editor_surface(record)
+        } else {
+            format!(
+                r#"<section class="surface note-surface prose">{}</section>"#,
+                render_markdown(&record.body)
+            )
+        }
+    );
     let extra_head = if is_admin {
         editor_head()
     } else {
         String::new()
     };
-    let rail = note_rail(chrome, is_admin, &chrome.current_href);
-    let editor = if is_admin {
+    let extra_script = if is_admin {
         format!(
-            r#"{}<script>
+            r#"<script>
 var currentId = "{}";
 var isPrivate = {};
 {}
 {}
+{}
 initEditor();
 </script>"#,
-            editor_surface(record),
-            record.id,
-            record.is_private,
-            NOTE_ACTIONS_JS,
-            EDITOR_JS
+            record.id, record.is_private, NOTE_ACTIONS_JS, EDITOR_JS, EDITOR_SYNC_JS
         )
     } else {
-        format!(
-            r#"<section class="surface note-surface prose">{}</section>"#,
-            render_markdown(&record.body)
-        )
+        String::new()
     };
-    let content = format!(
-        r#"<header class="page-head">
-<div class="page-title-stack">
-<p class="eyebrow">{}</p>
-<h1 data-live-title>{}</h1>
-<p class="page-summary">{}</p>
-<div class="title-tags"><span class="status-pill" data-live-visibility>{}</span></div>
-</div>
-<div class="page-meta">
-<small>Created {}</small>
-<small>Updated {}</small>
-</div>
-</header>
-{}"#,
-        if is_admin { "Admin note" } else { "Note" },
-        chrome.title,
-        if is_admin {
-            "Write Markdown directly. Open preview on demand while Markdown stays canonical storage."
-        } else {
-            "Rendered Markdown only."
-        },
-        chrome.visibility,
-        chrome.created_at,
-        chrome.updated_at,
-        editor
-    );
     base(
         &chrome.title,
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
-            &rail,
+            &note_rail(chrome, is_admin, &chrome.current_href),
             &content,
             "note-page",
         ),
         &extra_head,
-        "",
+        &extra_script,
     )
 }
 
@@ -146,7 +139,6 @@ mod tests {
         let html = note_page(&sample_record(), &sample_chrome(), false);
         assert!(html.contains("shell-rail"));
         assert!(!html.contains("editor-root"));
-        assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Q29udHJhY3RSdW50aW1lMQ</span>"));
     }
 
@@ -159,12 +151,11 @@ mod tests {
         assert!(html.contains(TOAST_UI_ROOT));
         assert!(html.contains("height: 'auto'"));
         assert!(html.contains("initialEditType: 'markdown'"));
-        assert!(html.contains("previewStyle: 'vertical'"));
-        assert!(html.contains("hideModeSwitch: true"));
+        assert!(html.contains("previewStyle: 'tab'"));
+        assert!(html.contains("changePreviewStyle(style)"));
         assert!(html.contains("'table'"));
         assert!(!html.contains("Rich mode"));
         assert!(!html.contains("Text mode"));
-        assert!(!html.contains("save-status"));
         assert!(html.contains("All history"));
         assert!(!html.contains("uicdn.toast.com"));
     }
