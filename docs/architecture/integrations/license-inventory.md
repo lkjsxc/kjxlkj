@@ -15,7 +15,7 @@
 
 | Component | Version | Upstream | License | Distribution | Notice Rule |
 |---|---:|---|---|---|---|
-| Toast UI Editor | 3.2.2 | `nhn/tui.editor` / npm package `@toast-ui/editor` | `MIT` | Vendored unmodified distribution assets under `vendor/` and served locally | Keep the upstream `LICENSE` file adjacent to the vendored files and retain version provenance |
+| Toast UI Editor | 3.2.2 | `nhn/tui.editor` / npm package `@toast-ui/editor` | `MIT` | Vendored unmodified distribution assets under `src/web/assets/vendor/` and served locally | Keep the upstream `LICENSE` file adjacent to the vendored files and retain version provenance |
 
 ## Direct Runtime Crates
 
@@ -45,7 +45,7 @@
 
 | Component | Version | Where Used | License | Distribution | Notice Rule |
 |---|---:|---|---|---|---|
-| Playwright | 1.54.2 | `Dockerfile.visual` / `visual/` checks | `Apache-2.0` | Installed into the verification image at build time | No repo vendoring; keep version pin explicit |
+| Playwright | 1.54.2 | `Dockerfile.visual` / `src/verify/browser/` checks | `Apache-2.0` | Installed into the verification image at build time | No repo vendoring; keep version pin explicit |
 | Chromium and other browser binaries in the Playwright image | image-provided | `visual-verify` runtime | vendor terms from browser providers | Not vendored in repo | Follow upstream browser terms through the Playwright image |
 
 ## Container Image Inputs
@@ -62,3 +62,4 @@
 - New third-party code may not be vendored without adding it to this inventory first.
 - Vendored assets must be pinned by exact version and kept with their upstream license text.
 - Direct dependency version bumps must update this file when the locked version or license expression changes.
+- Vendored payload may live under `src/`, but it is still treated as upstream code rather than authored code.

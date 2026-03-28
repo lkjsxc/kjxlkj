@@ -14,10 +14,10 @@ docker compose --profile verify run --rm visual-verify
 
 - Launch against the compose `app` service.
 - Capture desktop and compact layouts.
-- Fail on unreadable controls, missing flat-shell structure, old rail/search artifacts, or broken drawer behavior.
+- Fail on unreadable controls, removed-copy regressions, broken public grid behavior, old rail/search artifacts, or broken drawer behavior.
 
 ## Container Requirements
 
 - Playwright runtime with Chromium.
 - Access to the compose network.
-- A deterministic script checked into the repository.
+- A deterministic script checked into `src/verify/browser/`.

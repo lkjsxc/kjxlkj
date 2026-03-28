@@ -47,11 +47,12 @@ curl -sS 'http://127.0.0.1:8080/'
 
 Expected:
 
-- HTML contains a dense note list
-- HTML contains the shell rail
+- HTML contains the shared shell rail
+- wide screens render public notes in multiple columns
 - HTML does not expose raw note IDs in normal list rows
-- HTML does not contain `RECENT`
-- HTML does not contain a rail search form
+- HTML does not contain visible rail section headings such as `CREATE`, `NAVIGATE`, `ACTIONS`, or `SCOPE`
+- HTML does not contain helper copy such as `Browse current public notes`
+- HTML does not contain top-right `Search` or `Admin sign in` actions
 
 ## Verify Search Page
 
@@ -65,6 +66,7 @@ Expected:
 - guest search returns only public matches
 - admin search may include private matches
 - HTML contains the search form in the main pane
+- HTML does not contain a top-right `Browse notes` action
 
 ## Verify Admin Dashboard
 
@@ -75,8 +77,9 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 Expected:
 
 - HTML contains admin list rows
-- HTML links to `/search`
-- HTML uses restrained actions
+- `New note` remains in the rail
+- HTML does not contain `Admin browse` or `Admin index`
+- long previews do not force created/updated metadata into awkward wrapped collisions
 
 ## Verify Admin Note Shell
 
@@ -94,6 +97,8 @@ Expected:
 - HTML does not contain helper text next to `Public`
 - HTML hides `Saving` / `Saved`
 - HTML references local editor assets rather than an external editor CDN
+- preview starts closed
+- no repeated save requests occur after the page becomes idle without further edits
 
 ## Verify History Page
 
@@ -106,6 +111,7 @@ Expected:
 - HTML contains one `Current note` card
 - HTML contains visible revision cards in newest-first order
 - the rail still contains one `All history` card rather than revision links
+- HTML does not contain visible rail section headings
 
 ## Verify Compact Admin Note
 
@@ -133,6 +139,7 @@ Expected:
 - desktop screenshots pass browse/search/note assertions
 - compact screenshots pass closed and open drawer assertions
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
+- the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`
 
 ## Cleanup

@@ -3,7 +3,7 @@
 ## Build
 
 ```bash
-docker compose build app
+docker compose build app verify visual-verify
 ```
 
 ## Start Services

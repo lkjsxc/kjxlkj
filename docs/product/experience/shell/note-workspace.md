@@ -6,10 +6,10 @@
 - Header chrome is compact and informative.
 - History access belongs in the rail, not below the note body.
 - The rail history affordance is one `All history` card, not an inline revision list.
+- The note header does not show an eyebrow label such as `Admin note`.
 
 ## Header Content
 
-- Mode eyebrow or context marker.
 - Title extracted from the note body.
 - Visibility state.
 - Created and updated time.
@@ -21,11 +21,12 @@
 - The workspace is powered by a vendored Toast UI Editor build.
 - There is no mode-switch choice in normal UI.
 - The editing engine stays close to official Toast UI Markdown-mode behavior.
-- Desktop uses an upstream-style text-plus-table toolbar inside the existing shell.
+- Desktop uses a Markdown-first workspace with preview closed by default.
 - Narrow screens reduce the toolbar to a fixed supported subset, but table authoring remains available.
 - Toolbar rows wrap inside the editor chrome instead of introducing a detached toolbar scrollbar.
 - Public checkbox stays inside the editing surface.
 - Preview stays closed by default and opens on demand from the editor chrome.
+- Preview work may stay inactive until the user opens it.
 - Editor theming may skin the container, but must not flatten syntax legibility or preview semantics.
 - The note page owns the vertical scroll path for long notes.
 - The note page never requires horizontal page scrolling to reach editor controls.

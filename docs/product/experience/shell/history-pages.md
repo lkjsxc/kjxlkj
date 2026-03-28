@@ -6,6 +6,7 @@
 - The rail keeps current-note context, timeline cards, one history card, and actions.
 - The history body stays in the main pane.
 - The history index is the only full revision-browsing surface.
+- Visible rail section headings remain absent here too.
 
 ## Access Rules
 

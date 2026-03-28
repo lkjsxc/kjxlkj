@@ -8,10 +8,12 @@
 ## Layout
 
 - The persistent shell rail remains visible.
-- The rail contains navigation, scope context, and restrained actions.
+- The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
 - Main content is a dense paginated list.
 - The main list remains the authoritative browse surface for thousands of notes.
+- The page header does not show `Admin browse`.
+- The page does not expose a top-right search button.
 
 ## Row Content
 
@@ -26,3 +28,4 @@
 - Actions are text-first.
 - Search entry belongs on `/search`, not in the rail.
 - Empty states remain compact and factual.
+- Explanatory helper blocks such as `Admin index` are omitted.

@@ -12,22 +12,24 @@
 - Brand and session mode.
 - Admin-only `New note` action near the top of the rail.
 - Primary navigation.
-- Scope summary.
 - Current note context.
 - Created and updated metadata.
 - `Prev` and `Next` timeline cards with explicit relationship labels.
 - One history card that opens the dedicated history page.
 - Mode-specific actions.
+- Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
+- Section boundaries use separators and spacing only.
 
 ## Metadata Rules
 
 - Created and updated values render as browser-local 24-hour time.
 - Timestamp layout must stack or grid safely.
 - Raw note IDs are not shown in normal rail metadata.
+- Long note titles or previews may not cause timestamp collisions.
 
 ## Action Treatment
 
-- Search, Dashboard, Home, New note, Logout, and Delete use restrained controls.
+- Home, Search, Dashboard, New note, Logout, and Delete use restrained controls.
 - `New note` is the first admin action in the rail.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.
 

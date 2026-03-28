@@ -7,12 +7,14 @@
 - `src/config.rs`: environment configuration parsing.
 - `src/error.rs`: application error taxonomy.
 - `src/core/`: Markdown rendering and record validation helpers.
+- `src/tests/`: Rust test entrypoints defined inside the source tree.
+- `src/verify/browser/`: Playwright verification scripts, assertions, and support.
 - `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
-- `src/web/handlers/`: HTTP route handlers, including editor asset delivery.
-- `src/web/templates/`: HTML, CSS, note-shell rendering, history pages, and client-side note behavior.
+- `src/web/handlers/`: HTTP route handlers, including locally served editor asset delivery.
+- `src/web/templates/`: authored HTML, CSS, note-shell rendering, history pages, and client-side note behavior.
+- `src/web/assets/vendor/`: pinned upstream browser assets and notices.
 - `src/web/view.rs`: presentation adapters from database records to templates.
 - `src/cli/`: docs and quality gate commands.
-- `visual/`: browser verification scripts and assertions.
 
 ## File Size Constraint
 

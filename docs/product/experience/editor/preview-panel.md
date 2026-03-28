@@ -12,6 +12,7 @@
 - The toggle opens a live rendered preview of the current Markdown body.
 - The toggle closes the preview without leaving the editor workflow.
 - Preview state is ephemeral UI state, not persisted note data.
+- Preview-specific work may remain dormant until preview is opened.
 
 ## Layout Rules
 

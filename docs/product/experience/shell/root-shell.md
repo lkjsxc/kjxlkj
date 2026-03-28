@@ -6,16 +6,19 @@
 - The side menu is always visible on root, admin, note, history, and search pages.
 - Narrow screens switch the side menu into an overlay drawer.
 - The brand area shows the product name only and carries no marketing caption.
+- Desktop pages do not use a top-right action cluster for browse, search, or auth links.
 
 ## Rail Content
 
 - Brand and session mode.
 - Global navigation.
-- Scope summary such as `Public index`, `Admin index`, `Search`, or current note context.
+- Current-note context when applicable.
+- Timeline and history affordances when applicable.
 - Mode-specific actions.
+- Groups are separated visually, but visible section headings are omitted.
 
 ## Main Pane
 
 - Root, admin, and search pages keep list and query work in the main pane.
 - Note and history pages keep document-focused content in the main pane.
-- The rail adds navigation and context without taking over result browsing.
+- The rail adds navigation and context without repeating explanatory copy that the main pane already makes obvious.

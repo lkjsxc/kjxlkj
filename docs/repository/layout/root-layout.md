@@ -3,20 +3,24 @@
 ## Required Root Entries
 
 - `.gitignore`
+- `.github/`
 - `LICENSE`
 - `README.md`
 - `docs/`
 - `Cargo.toml`
 - `Cargo.lock`
 - `src/`
-- `tests/`
-- `visual/`
-- `vendor/`
 - `Dockerfile`
 - `Dockerfile.verify`
 - `Dockerfile.visual`
 - `docker-compose.yml`
 - `verify.sh`
+
+## Root Policy
+
+- Authored code, authored tests, browser verification, and vendored editor assets live under `src/`.
+- Root stays limited to entrypoint manifests, containers, docs, and disposable runtime state.
+- No root-level compatibility copies of `tests/`, `visual/`, or `vendor/` remain.
 
 ## Runtime State Entries
 

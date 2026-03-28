@@ -3,10 +3,11 @@
 ## Order
 
 1. Update the docs canon.
-2. Vendor and serve pinned editor assets.
-3. Refactor shared layout, create flow, and note responsiveness.
-4. Update tests, visual verification, and line-limit enforcement.
-5. Commit only after the active batch passes its gates.
+2. Move authored tests, browser verification, and vendored assets under `src/`.
+3. Refactor shared layout, summary rendering, autosave, and note responsiveness.
+4. Add CI publishing and artifact upload.
+5. Update tests, visual verification, and line-limit enforcement.
+6. Commit only after the active batch passes its gates.
 
 ## Intent
 

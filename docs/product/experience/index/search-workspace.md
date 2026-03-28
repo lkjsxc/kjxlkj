@@ -12,6 +12,8 @@
 - The global rail stays visible on desktop.
 - The rail exposes a link to `/search`, not an inline search form.
 - The main pane owns the actual query form and result list.
+- The page does not show a top-right `Browse notes` or auth action cluster.
+- Explanatory helper cards such as `Search public titles and bodies.` are omitted.
 
 ## Search Rules
 

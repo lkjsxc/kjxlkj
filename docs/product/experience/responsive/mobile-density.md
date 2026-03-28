@@ -25,3 +25,4 @@
 - Button labels and note metadata stay readable on real mobile widths.
 - Compact admin note pages show no horizontal page overflow.
 - Compact admin note pages do not show a misplaced toolbar scrollbar.
+- Compact layouts do not reintroduce visible rail section headings or helper copy.

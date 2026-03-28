@@ -22,5 +22,5 @@ Any non-zero gate result blocks acceptance.
 ## Line-Limit Rule
 
 - `check-lines` enforces the 300-line docs limit and the 200-line authored-code limit.
-- Authored-code checks must cover `src/` and `visual/`.
-- Vendored upstream artifacts may stay opaque but should remain pinned and unmodified.
+- Authored-code checks cover the authored subsets of `src/`, including `src/tests/` and `src/verify/`.
+- Vendored upstream artifacts under `src/web/assets/vendor/` remain pinned and unmodified but are excluded from authored-file pressure.

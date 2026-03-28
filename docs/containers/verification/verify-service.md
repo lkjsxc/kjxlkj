@@ -24,6 +24,7 @@ Run all quality gates in one deterministic container command.
 - Rust toolchain installed
 - Source mounted at `/app`
 - Docs mounted for validation
+- Authored tests and browser verification live under `src/`
 
 ## Script Template
 
