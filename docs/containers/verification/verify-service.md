@@ -10,9 +10,9 @@ Run all quality gates in one deterministic container command.
 2. `cargo clippy --all-targets -- -D warnings`
 3. `cargo test`
 4. `cargo build --release`
-5. `./target/release/kjxlkj docs validate-topology`
-6. `./target/release/kjxlkj docs validate-terms`
-7. `./target/release/kjxlkj quality check-lines`
+5. `"$CARGO_TARGET_DIR/release/kjxlkj" docs validate-topology`
+6. `"$CARGO_TARGET_DIR/release/kjxlkj" docs validate-terms`
+7. `"$CARGO_TARGET_DIR/release/kjxlkj" quality check-lines`
 
 ## Exit Behavior
 
@@ -22,8 +22,9 @@ Run all quality gates in one deterministic container command.
 ## Container Requirements
 
 - Rust toolchain installed
-- Source mounted at `/app`
-- Docs mounted for validation
+- Source mounted read-only at `/workspace`
+- Writable Cargo target dir mounted outside the source tree at `/target`
+- `CARGO_TARGET_DIR=/target`
 - Authored tests and browser verification live under `src/`
 
 ## Script Template
@@ -31,6 +32,9 @@ Run all quality gates in one deterministic container command.
 ```bash
 #!/bin/bash
 set -euo pipefail
+
+target_dir="${CARGO_TARGET_DIR:-target}"
+release_bin="$target_dir/release/kjxlkj"
 
 echo "=== fmt check ==="
 cargo fmt -- --check
@@ -45,13 +49,13 @@ echo "=== build release ==="
 cargo build --release
 
 echo "=== validate topology ==="
-./target/release/kjxlkj docs validate-topology
+"$release_bin" docs validate-topology
 
 echo "=== validate terms ==="
-./target/release/kjxlkj docs validate-terms
+"$release_bin" docs validate-terms
 
 echo "=== check lines ==="
-./target/release/kjxlkj quality check-lines
+"$release_bin" quality check-lines
 
 echo "=== all gates passed ==="
 ```

@@ -41,10 +41,12 @@ services:
     profiles:
       - verify
     working_dir: /workspace
+    environment:
+      CARGO_TARGET_DIR: /target
     volumes:
       - .:/workspace:ro
       - verify-cargo:/usr/local/cargo/registry
-      - verify-target:/workspace/target
+      - verify-target:/target
     depends_on:
       app:
         condition: service_healthy
