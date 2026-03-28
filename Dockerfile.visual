@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-COPY visual /workspace/visual
+COPY src/verify/browser /workspace/visual
 RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --prefix /workspace/visual playwright@1.54.2
 
 ENTRYPOINT ["node", "/workspace/visual/run-visual-checks.mjs"]

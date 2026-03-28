@@ -10,7 +10,6 @@ RUN mkdir src && echo 'fn main() {}' > src/main.rs
 RUN cargo build --release && rm -rf src
 
 COPY src ./src
-COPY vendor ./vendor
 RUN touch src/main.rs && cargo build --release
 
 # Runtime stage

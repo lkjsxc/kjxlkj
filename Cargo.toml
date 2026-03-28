@@ -10,6 +10,10 @@ license = "MIT"
 name = "kjxlkj"
 path = "src/main.rs"
 
+[[test]]
+name = "integration"
+path = "src/tests/integration.rs"
+
 [dependencies]
 # Web framework
 actix-web = "4"

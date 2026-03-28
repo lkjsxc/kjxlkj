@@ -6,6 +6,7 @@ use std::path::Path;
 
 const DOCS_LINE_LIMIT: usize = 300;
 const SRC_LINE_LIMIT: usize = 200;
+const VENDORED_PREFIX: &str = "src/web/assets/vendor";
 
 #[derive(Serialize)]
 struct LineCheckResult {
@@ -13,7 +14,6 @@ struct LineCheckResult {
     status: &'static str,
     docs_max: usize,
     src_max: usize,
-    visual_max: usize,
     violations: Vec<String>,
 }
 
@@ -22,7 +22,6 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
     let mut violations = Vec::new();
     let mut docs_max = 0usize;
     let mut src_max = 0usize;
-    let mut visual_max = 0usize;
 
     check_dir_lines(
         Path::new("docs"),
@@ -36,12 +35,6 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
         &mut violations,
         &mut src_max,
     )?;
-    check_dir_lines(
-        Path::new("visual"),
-        SRC_LINE_LIMIT,
-        &mut violations,
-        &mut visual_max,
-    )?;
 
     let result = LineCheckResult {
         command: "check-lines",
@@ -52,7 +45,6 @@ pub fn check_lines() -> Result<(), Box<dyn std::error::Error>> {
         },
         docs_max,
         src_max,
-        visual_max,
         violations: violations.clone(),
     };
     println!("{}", serde_json::to_string(&result)?);
@@ -69,13 +61,16 @@ fn check_dir_lines(
     violations: &mut Vec<String>,
     max_lines: &mut usize,
 ) -> Result<(), std::io::Error> {
-    if !dir.exists() {
+    if !dir.exists() || is_vendored(dir) {
         return Ok(());
     }
 
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
         let path = entry.path();
+        if is_vendored(&path) {
+            continue;
+        }
         if path.is_dir() {
             check_dir_lines(&path, limit, violations, max_lines)?;
         } else {
@@ -100,4 +95,9 @@ fn check_dir_lines(
         }
     }
     Ok(())
+}
+
+fn is_vendored(path: &Path) -> bool {
+    path.to_str()
+        .is_some_and(|value| value.replace('\\', "/").starts_with(VENDORED_PREFIX))
 }
