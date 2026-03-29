@@ -94,14 +94,27 @@ async function capturePublicScreens(browser, notes) {
 
     const browseCard = page.getByRole('link', { name: /View more notes/i }).first();
     assert.equal(await browseCard.getAttribute('href'), '/search');
-    await page.goto(`${appUrl}/search`, { waitUntil: 'networkidle' });
+    await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
     await expectSearchPage(page);
     await assertVisibleText(page, 'All notes');
-    await assertVisibleText(page, notes.oldest.title);
-    await assertVisibleText(page, notes.middle.title);
     await assertVisibleText(page, notes.newest.title);
+    await assertVisibleText(page, notes.middle.title);
     assert.equal(await page.locator('#search-sort').inputValue(), 'updated_desc');
+    assert.equal(await page.getByRole('button', { name: 'Previous', exact: true }).isDisabled(), true);
+    assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-search.png');
+
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
+        page.getByRole('button', { name: 'Next', exact: true }).click(),
+    ]);
+    await assertVisibleText(page, notes.oldest.title);
+    assert.equal(await page.getByRole('button', { name: 'Previous', exact: true }).isDisabled(), false);
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'prev'),
+        page.getByRole('button', { name: 'Previous', exact: true }).click(),
+    ]);
+    await assertVisibleText(page, notes.newest.title);
 
     await page.locator('#search-sort').selectOption('title_desc');
     await Promise.all([

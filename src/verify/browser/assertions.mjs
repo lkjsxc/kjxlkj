@@ -36,7 +36,10 @@ export async function expectSearchPage(page) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Search');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
+    await assertVisibleText(page, 'Query');
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
 }
 

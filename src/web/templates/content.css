@@ -61,3 +61,17 @@
     flex-wrap: wrap;
     margin: 0;
 }
+
+.pager-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.pager {
+    flex: 1 1 0;
+}
+
+.pager .btn {
+    width: 100%;
+}

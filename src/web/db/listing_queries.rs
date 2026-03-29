@@ -1,4 +1,4 @@
-use super::listing::{ListPage, ListSort};
+use super::listing::{ListDirection, ListPage, ListSort};
 use super::listing_cursor::{page_from_rows, row_to_listed_record, Cursor};
 use super::{DbPool, ListedRecord};
 use crate::error::AppError;
@@ -7,6 +7,7 @@ pub(super) async fn browse_records(
     pool: &DbPool,
     include_private: bool,
     limit: i64,
+    direction: &ListDirection,
     sort: &ListSort,
     cursor: Option<&Cursor>,
 ) -> Result<ListPage, AppError> {
@@ -17,8 +18,8 @@ pub(super) async fn browse_records(
          SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
          FROM listed WHERE {} AND {} ORDER BY {} LIMIT $8",
         sort.binding_clause(2),
-        sort.cursor_filter(2),
-        sort.order_clause()
+        sort.cursor_filter(direction, 2),
+        sort.order_clause(direction)
     );
     let rows = client(pool)
         .await?
@@ -37,7 +38,14 @@ pub(super) async fn browse_records(
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(page_from_rows(rows, limit, None, sort))
+    Ok(page_from_rows(
+        rows,
+        limit,
+        None,
+        direction,
+        sort,
+        cursor.is_some(),
+    ))
 }
 
 pub(super) async fn search_records(
@@ -45,6 +53,7 @@ pub(super) async fn search_records(
     include_private: bool,
     limit: i64,
     query: &str,
+    direction: &ListDirection,
     sort: &ListSort,
     cursor: Option<&Cursor>,
 ) -> Result<ListPage, AppError> {
@@ -64,8 +73,8 @@ pub(super) async fn search_records(
          SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
          FROM matched WHERE {} AND {} ORDER BY {} LIMIT $9",
         sort.binding_clause(3),
-        sort.cursor_filter(3),
-        sort.order_clause()
+        sort.cursor_filter(direction, 3),
+        sort.order_clause(direction)
     );
     let rows = client(pool)
         .await?
@@ -85,7 +94,14 @@ pub(super) async fn search_records(
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(page_from_rows(rows, limit, Some(query), sort))
+    Ok(page_from_rows(
+        rows,
+        limit,
+        Some(query),
+        direction,
+        sort,
+        cursor.is_some(),
+    ))
 }
 
 pub(super) async fn top_records(

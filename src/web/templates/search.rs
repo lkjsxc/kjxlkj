@@ -8,8 +8,10 @@ const ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn search_page(
     notes: &[IndexItem],
+    previous_cursor: Option<&str>,
     next_cursor: Option<&str>,
     query: Option<&str>,
+    limit: i64,
     sort: &str,
     is_admin: bool,
 ) -> String {
@@ -24,11 +26,13 @@ pub fn search_page(
         r#"<header class="page-head">
 <div class="page-title-stack"><h1>Search</h1></div>
 </header>
-<section class="surface search-surface">
+<section class="surface section-block search-surface">
+<div class="section-head"><h2>Search notes</h2></div>
 <form class="search-form" method="GET" action="/search">
-<label for="search-page-input">Search notes</label>
+<label for="search-page-input" class="visually-hidden">Search notes</label>
 <div class="search-grid">
 <input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
+<div class="search-state-card"><small>Query</small><strong>{}</strong></div>
 <label class="form-group search-sort" for="search-sort">
 <span>Sort</span>
 <select id="search-sort" name="sort">{}</select>
@@ -39,8 +43,17 @@ pub fn search_page(
 </section>
 {}"#,
         html_escape(query),
+        query_display(query),
         sort_options(sort, has_query),
-        results_section(notes, next_cursor, query, sort, has_query),
+        results_section(
+            notes,
+            previous_cursor,
+            next_cursor,
+            query,
+            limit,
+            sort,
+            has_query,
+        ),
     );
     base(
         "Search",
@@ -62,8 +75,10 @@ pub fn search_page(
 
 fn results_section(
     notes: &[IndexItem],
+    previous_cursor: Option<&str>,
     next_cursor: Option<&str>,
     query: &str,
+    limit: i64,
     sort: &str,
     has_query: bool,
 ) -> String {
@@ -84,7 +99,13 @@ fn results_section(
     } else {
         notes.iter().map(note_row).collect::<Vec<_>>().join("")
     };
-    let pager = pager("/search", next_cursor, &[("q", query), ("sort", sort)]);
+    let limit = limit.to_string();
+    let pager = pager(
+        "/search",
+        previous_cursor,
+        next_cursor,
+        &[("q", query), ("sort", sort), ("limit", &limit)],
+    );
     format!(
         r#"<section class="surface section-block">
 <div class="section-head"><h2>{title}</h2></div>
@@ -92,6 +113,14 @@ fn results_section(
 {pager}
 </section>"#
     )
+}
+
+fn query_display(query: &str) -> String {
+    if query.is_empty() {
+        "All notes".to_string()
+    } else {
+        html_escape(query)
+    }
 }
 
 fn sort_options(selected: &str, has_query: bool) -> String {
@@ -135,52 +164,5 @@ fn rail_actions(is_admin: bool) -> &'static str {
         r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
     } else {
         r#"<a href="/login" class="btn">Admin sign in</a>"#
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::web::templates::IndexItem;
-
-    fn sample_item() -> IndexItem {
-        IndexItem {
-            href: "/q29udhjy3rsdw50aw1lmq".to_string(),
-            title: "Orbit Ledger".to_string(),
-            summary: "Shared release.".to_string(),
-            created_at: "2026-03-26 08:34 UTC".to_string(),
-            updated_at: "2026-03-26 08:35 UTC".to_string(),
-            is_favorite: true,
-            visibility: Some("Public"),
-        }
-    }
-
-    #[test]
-    fn search_page_browses_without_query() {
-        let html = search_page(
-            &[sample_item()],
-            Some("cursor"),
-            None,
-            "updated_desc",
-            false,
-        );
-        assert!(html.contains(">All notes<"));
-        assert!(html.contains("name=\"sort\""));
-        assert!(html.contains("value=\"updated_desc\" selected"));
-        assert!(html.contains("More notes"));
-    }
-
-    #[test]
-    fn search_page_keeps_query_and_sort_in_form() {
-        let html = search_page(
-            &[sample_item()],
-            Some("cursor"),
-            Some("orbit"),
-            "relevance",
-            true,
-        );
-        assert!(html.contains("name=\"q\" value=\"orbit\""));
-        assert!(html.contains("value=\"relevance\" selected"));
-        assert!(html.contains("New note"));
     }
 }

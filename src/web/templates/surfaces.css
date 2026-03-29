@@ -1,6 +1,6 @@
 .shell-main,
 .index-layout {
-    padding: 34px 40px 44px;
+    padding: 24px 32px 32px;
 }
 
 .dashboard-page,
@@ -11,10 +11,14 @@
 .note-list {
     display: grid;
     align-content: start;
-    gap: 14px;
+    gap: 12px;
 }
 
-.surface,
+.surface {
+    padding: 12px 14px;
+    border-radius: 20px;
+}
+
 .index-card {
     padding: 16px 18px;
     border-radius: 20px;
@@ -82,7 +86,7 @@
 .page-meta small,
 .card-meta small {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto minmax(0, 1fr);
     gap: 8px;
     align-items: baseline;
     white-space: nowrap;
@@ -101,7 +105,7 @@
 }
 
 .note-list {
-    gap: 10px;
+    gap: 8px;
 }
 
 .public-note-grid {
@@ -127,10 +131,13 @@
     line-height: 1.45;
 }
 
-.note-surface,
-.search-surface {
+.note-surface {
     max-width: 1040px;
     width: min(100%, 1040px);
+}
+
+.search-surface {
+    width: 100%;
 }
 
 .note-head {

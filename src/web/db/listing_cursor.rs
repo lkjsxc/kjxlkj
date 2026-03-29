@@ -1,4 +1,4 @@
-use super::listing::{ListPage, ListSort};
+use super::listing::{ListDirection, ListPage, ListSort};
 use super::{ListedRecord, Record};
 use crate::error::AppError;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
@@ -21,17 +21,28 @@ pub(super) fn page_from_rows(
     mut rows: Vec<tokio_postgres::Row>,
     limit: i64,
     query: Option<&str>,
+    direction: &ListDirection,
     sort: &ListSort,
+    has_cursor: bool,
 ) -> ListPage {
-    let next_cursor = if rows.len() as i64 > limit {
-        rows.pop()
-            .map(|row| encode_cursor(&cursor_from_row(&row, query, sort)))
-    } else {
-        None
-    };
+    let has_more = rows.len() as i64 > limit;
+    if has_more {
+        rows.pop();
+    }
+    let mut entries = rows
+        .into_iter()
+        .map(|row| PageEntry {
+            cursor: cursor_from_row(&row, query, sort),
+            record: row_to_listed_record(row),
+        })
+        .collect::<Vec<_>>();
+    if matches!(direction, ListDirection::Prev) {
+        entries.reverse();
+    }
     ListPage {
-        records: rows.into_iter().map(row_to_listed_record).collect(),
-        next_cursor,
+        previous_cursor: edge_cursor(&entries, direction, has_more, has_cursor, true),
+        next_cursor: edge_cursor(&entries, direction, has_more, has_cursor, false),
+        records: entries.into_iter().map(|entry| entry.record).collect(),
     }
 }
 
@@ -86,6 +97,35 @@ fn cursor_from_row(row: &tokio_postgres::Row, query: Option<&str>, sort: &ListSo
     }
 }
 
+fn edge_cursor(
+    entries: &[PageEntry],
+    direction: &ListDirection,
+    has_more: bool,
+    has_cursor: bool,
+    previous: bool,
+) -> Option<String> {
+    let available = match (direction, previous) {
+        (ListDirection::Next, true) => has_cursor,
+        (ListDirection::Next, false) => has_more,
+        (ListDirection::Prev, true) => has_more,
+        (ListDirection::Prev, false) => has_cursor,
+    };
+    if !available || entries.is_empty() {
+        return None;
+    }
+    let entry = if previous {
+        entries.first().unwrap()
+    } else {
+        entries.last().unwrap()
+    };
+    Some(encode_cursor(&entry.cursor))
+}
+
 fn encode_cursor(cursor: &Cursor) -> String {
     URL_SAFE_NO_PAD.encode(serde_json::to_string(cursor).unwrap())
+}
+
+struct PageEntry {
+    record: ListedRecord,
+    cursor: Cursor,
 }

@@ -47,24 +47,17 @@ pub(crate) fn list_rail(
     sections.join("")
 }
 
-pub(crate) fn pager(path: &str, next_cursor: Option<&str>, fields: &[(&str, &str)]) -> String {
-    next_cursor
-        .map(|cursor| {
-            format!(
-                r#"<form class="pager" method="GET" action="{path}">
-{}
-<input type="hidden" name="cursor" value="{cursor}">
-<button type="submit" class="btn">More notes</button>
-</form>"#,
-                fields
-                    .iter()
-                    .filter(|(_, value)| !value.is_empty())
-                    .map(|(name, value)| hidden_input(name, value))
-                    .collect::<Vec<_>>()
-                    .join("")
-            )
-        })
-        .unwrap_or_default()
+pub(crate) fn pager(
+    path: &str,
+    previous_cursor: Option<&str>,
+    next_cursor: Option<&str>,
+    fields: &[(&str, &str)],
+) -> String {
+    format!(
+        r#"<div class="pager-nav">{}{}</div>"#,
+        page_button(path, previous_cursor, "prev", "Previous", fields),
+        page_button(path, next_cursor, "next", "Next", fields),
+    )
 }
 
 fn hidden_input(name: &str, value: &str) -> String {
@@ -72,6 +65,38 @@ fn hidden_input(name: &str, value: &str) -> String {
         r#"<input type="hidden" name="{}" value="{}">"#,
         html_escape(name),
         html_escape(value)
+    )
+}
+
+fn page_button(
+    path: &str,
+    cursor: Option<&str>,
+    direction: &str,
+    label: &str,
+    fields: &[(&str, &str)],
+) -> String {
+    let hidden = fields
+        .iter()
+        .filter(|(_, value)| !value.is_empty())
+        .map(|(name, value)| hidden_input(name, value))
+        .collect::<Vec<_>>()
+        .join("");
+    cursor.map_or_else(
+        || {
+            format!(
+                r#"<div class="pager"><button type="button" class="btn" disabled>{label}</button></div>"#
+            )
+        },
+        |cursor| {
+            format!(
+                r#"<form class="pager" method="GET" action="{path}">
+{hidden}
+<input type="hidden" name="direction" value="{direction}">
+<input type="hidden" name="cursor" value="{cursor}">
+<button type="submit" class="btn">{label}</button>
+</form>"#
+            )
+        },
     )
 }
 

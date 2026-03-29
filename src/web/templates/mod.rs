@@ -10,6 +10,8 @@ mod model;
 mod note;
 mod note_shell;
 mod search;
+#[cfg(test)]
+mod search_tests;
 
 pub use auth::{login_page, setup_page};
 pub use dashboard::admin_page;

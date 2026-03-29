@@ -16,9 +16,10 @@ pub fn home_page(recent: &[IndexItem], favorites: &[IndexItem], is_admin: bool) 
         r#"<header class="page-head">
 <div class="page-title-stack"><h1>Home</h1></div>
 </header>
-<section class="surface search-surface">
+<section class="surface section-block search-surface">
+<div class="section-head"><h2>Quick search</h2></div>
 <form class="search-form" method="GET" action="/search">
-<label for="home-search-input">Quick search</label>
+<label for="home-search-input" class="visually-hidden">Quick search</label>
 <div class="search-row">
 <input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
 <button type="submit" class="btn btn-primary">Search</button>
@@ -87,7 +88,7 @@ fn browse_card() -> String {
     r#"<a href="/search" class="index-card note-row note-row-action">
 <div class="card-body">
 <p class="card-title">View more notes</p>
-<p class="card-summary">Browse every visible note with sorting, search, and pagination.</p>
+<p class="card-summary">Browse all visible notes with search, sorting, and page navigation.</p>
 </div>
 <div class="card-meta"><small><span>Open</span>Search</small></div>
 </a>"#

@@ -1,7 +1,7 @@
 .home-page,
 .dashboard-page {
     display: grid;
-    gap: 14px;
+    gap: 10px;
 }
 
 .stats-grid,
@@ -9,7 +9,7 @@
 .note-grid,
 .editor-meta-grid {
     display: grid;
-    gap: 10px;
+    gap: 7px;
 }
 
 .stats-grid {
@@ -22,7 +22,7 @@
 }
 
 .note-grid {
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
     align-items: start;
 }
 
@@ -31,7 +31,7 @@
 .editor-url-card,
 .settings-grid {
     display: grid;
-    gap: 10px;
+    gap: 6px;
 }
 
 .section-head {
@@ -47,7 +47,7 @@
 }
 
 .stat-card {
-    min-height: 88px;
+    min-height: 82px;
     align-content: space-between;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .editor-url-card {
-    padding: 10px 12px;
+    padding: 9px 11px;
     border: 1px solid var(--line);
     border-radius: 14px;
     background: var(--panel-2);
@@ -78,6 +78,20 @@
 
 .editor-field-card input {
     margin-top: 2px;
+}
+
+.search-state-card {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    padding: 9px 11px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel-2);
+}
+
+.search-state-card strong {
+    overflow-wrap: anywhere;
 }
 
 .status-pill-favorite {
@@ -117,12 +131,20 @@
 .note-grid .note-row {
     grid-template-columns: 1fr;
     align-self: start;
-    height: 168px;
+    height: 196px;
 }
 
 .note-grid .card-meta {
     justify-items: start;
     text-align: left;
+    gap: 4px;
+}
+
+.note-grid .card-meta small {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+    white-space: nowrap;
 }
 
 .note-grid .card-badges {

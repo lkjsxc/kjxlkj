@@ -118,13 +118,14 @@
 .search-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
+    gap: 10px;
+    align-items: end;
 }
 
 .search-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) auto;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(180px, 220px) minmax(180px, 220px) auto;
+    gap: 10px;
     align-items: end;
 }
 
@@ -145,6 +146,12 @@
 
 .check-row-field {
     padding: 4px 0 0;
+}
+
+.search-row .btn,
+.search-grid .btn {
+    min-height: 48px;
+    margin: 0;
 }
 
 .error,

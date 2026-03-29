@@ -24,7 +24,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
     align-items: center;
-    padding-bottom: 18px;
+    padding-bottom: 16px;
 }
 
 .rail-branding,
@@ -36,7 +36,7 @@
 }
 
 .rail-body {
-    margin-top: 12px;
+    margin-top: 16px;
 }
 
 .brand,
@@ -63,8 +63,8 @@
 }
 
 .rail-section + .rail-section {
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px solid var(--line);
 }
 

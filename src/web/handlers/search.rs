@@ -1,7 +1,7 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListRequest, ListSort};
+use crate::web::db::{self, DbPool, ListDirection, ListRequest, ListSort};
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
@@ -11,6 +11,7 @@ use serde::Deserialize;
 #[derive(Clone, Debug, Deserialize)]
 pub struct SearchParams {
     pub q: Option<String>,
+    pub direction: Option<String>,
     pub sort: Option<String>,
     pub cursor: Option<String>,
     pub limit: Option<i64>,
@@ -34,13 +35,16 @@ pub async fn search_page(
         .map(str::trim)
         .filter(|value| !value.is_empty())
         .map(str::to_string);
+    let limit = params.limit.unwrap_or(settings.search_results_per_page);
+    let direction = ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref());
     let sort = ListSort::resolve(params.sort.as_deref(), query.is_some());
     let page = db::list_records(
         &pool,
         &ListRequest {
             include_private: is_admin,
-            limit: params.limit.unwrap_or(settings.search_results_per_page),
+            limit,
             query: query.clone(),
+            direction,
             sort: sort.clone(),
             cursor: params.cursor,
         },
@@ -52,8 +56,10 @@ pub async fn search_page(
             .iter()
             .map(|record| view::index_item(record, is_admin))
             .collect::<Vec<_>>(),
+        page.previous_cursor.as_deref(),
         page.next_cursor.as_deref(),
         query.as_deref(),
+        limit,
         sort.as_str(),
         is_admin,
     )))
