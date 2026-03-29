@@ -1,16 +1,25 @@
-//! Validation logic for note ids and derived fields
+//! Validation logic for note ids, aliases, and derived fields
 
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use once_cell::sync::Lazy;
 use regex::Regex;
+use std::collections::HashSet;
 use thiserror::Error;
 use uuid::Uuid;
 
-static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[A-Za-z0-9_-]{22}$").unwrap());
+static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z2-7]{26}$").unwrap());
+static ALIAS_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
 static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
+static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
+    ["admin", "assets", "healthz", "login", "logout", "records", "search", "setup"]
+        .into_iter()
+        .collect()
+});
 
-const ID_LEN: usize = 22;
+const BASE32_ALPHABET: &[u8; 32] = b"abcdefghijklmnopqrstuvwxyz234567";
+const ID_LEN: usize = 26;
+const MAX_ALIAS_LEN: usize = 64;
 const SUMMARY_LIMIT: usize = 120;
 const SUMMARY_SUFFIX: &str = "...";
 
@@ -18,8 +27,20 @@ const SUMMARY_SUFFIX: &str = "...";
 pub enum IdError {
     #[error("id must be exactly {ID_LEN} characters")]
     InvalidLength,
-    #[error("id must be Base64URL without padding")]
+    #[error("id must be lowercase Base32")]
     InvalidFormat,
+}
+
+#[derive(Debug, Error, PartialEq)]
+pub enum AliasError {
+    #[error("alias must be 1 to {MAX_ALIAS_LEN} characters")]
+    InvalidLength,
+    #[error("alias must use lowercase letters, digits, and single hyphens")]
+    InvalidFormat,
+    #[error("alias is reserved")]
+    Reserved,
+    #[error("alias may not match the id format")]
+    ConflictsWithId,
 }
 
 pub fn validate_id(id: &str) -> Result<(), IdError> {
@@ -29,18 +50,33 @@ pub fn validate_id(id: &str) -> Result<(), IdError> {
     if !ID_REGEX.is_match(id) {
         return Err(IdError::InvalidFormat);
     }
-    let decoded = URL_SAFE_NO_PAD
-        .decode(id)
-        .map_err(|_| IdError::InvalidFormat)?;
-    if decoded.len() != 16 {
-        return Err(IdError::InvalidFormat);
-    }
     Ok(())
 }
 
 pub fn generate_id() -> String {
-    URL_SAFE_NO_PAD.encode(Uuid::new_v4().as_bytes())
+    encode_base32(Uuid::new_v4().into_bytes())
 }
+
+pub fn normalize_alias(alias: Option<&str>) -> Result<Option<String>, AliasError> {
+    let Some(alias) = alias.map(str::trim).filter(|alias| !alias.is_empty()) else {
+        return Ok(None);
+    };
+    if alias.len() > MAX_ALIAS_LEN {
+        return Err(AliasError::InvalidLength);
+    }
+    if looks_like_id(alias) {
+        return Err(AliasError::ConflictsWithId);
+    }
+    if RESERVED_ALIASES.contains(alias) {
+        return Err(AliasError::Reserved);
+    }
+    if !ALIAS_REGEX.is_match(alias) {
+        return Err(AliasError::InvalidFormat);
+    }
+    Ok(Some(alias.to_string()))
+}
+
+pub fn looks_like_id(value: &str) -> bool { ID_REGEX.is_match(value) }
 
 pub fn extract_title(body: &str) -> Option<String> {
     for line in body.lines() {
@@ -91,6 +127,27 @@ fn shorten(line: &str, has_more_content: bool) -> String {
     format!("{}{suffix}", prefix.trim_end())
 }
 
+fn encode_base32(bytes: [u8; 16]) -> String {
+    let mut output = String::with_capacity(ID_LEN);
+    let mut buffer = 0u32;
+    let mut bits = 0usize;
+
+    for byte in bytes {
+        buffer = (buffer << 8) | byte as u32;
+        bits += 8;
+        while bits >= 5 {
+            bits -= 5;
+            output.push(BASE32_ALPHABET[((buffer >> bits) & 0x1f) as usize] as char);
+        }
+    }
+
+    if bits > 0 {
+        output.push(BASE32_ALPHABET[((buffer << (5 - bits)) & 0x1f) as usize] as char);
+    }
+
+    output
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -98,16 +155,31 @@ mod tests {
     #[test]
     fn valid_ids() {
         let id = generate_id();
-        assert_eq!(id.len(), 22);
+        assert_eq!(id.len(), 26);
         assert!(validate_id(&id).is_ok());
     }
 
     #[test]
     fn invalid_ids() {
         assert_eq!(validate_id("short"), Err(IdError::InvalidLength));
+        assert_eq!(validate_id("containsinvalididletters1z"), Err(IdError::InvalidFormat));
+    }
+
+    #[test]
+    fn aliases_normalize_and_validate() {
+        assert_eq!(normalize_alias(Some("")), Ok(None));
         assert_eq!(
-            validate_id("contains+plus-sign____"),
-            Err(IdError::InvalidFormat)
+            normalize_alias(Some("release-notes")),
+            Ok(Some("release-notes".to_string()))
+        );
+        assert_eq!(
+            normalize_alias(Some("release--notes")),
+            Err(AliasError::InvalidFormat)
+        );
+        assert_eq!(normalize_alias(Some("search")), Err(AliasError::Reserved));
+        assert_eq!(
+            normalize_alias(Some("abcdefghijklmnopqrstuvwxyz")),
+            Err(AliasError::ConflictsWithId)
         );
     }
 

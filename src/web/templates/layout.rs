@@ -5,8 +5,10 @@ const CONTENT_CSS: &str = include_str!("content.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
+const OVERVIEW_CSS: &str = include_str!("overview.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
+const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
 const SHELL_JS: &str = include_str!("shell.js");
 
 pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
@@ -24,8 +26,10 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 {CONTROLS_CSS}
 {SHELL_CSS}
 {SURFACES_CSS}
+{OVERVIEW_CSS}
 {RESPONSIVE_CSS}
-{EDITOR_CSS}</style>
+{EDITOR_CSS}
+{EDITOR_EXTRA_CSS}</style>
 </head>
 <body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
 </html>"#
@@ -76,11 +80,11 @@ pub fn rail_section(title: &str, body: &str) -> String {
 
 pub fn primary_nav(active: &str, is_admin: bool) -> String {
     let mut links = vec![
-        nav_link("/", "Public notes", active == "home"),
+        nav_link("/", "Home", active == "home"),
         nav_link("/search", "Search", active == "search"),
     ];
     if is_admin {
-        links.push(nav_link("/admin", "Admin notes", active == "admin"));
+        links.push(nav_link("/admin", "Dashboard", active == "admin"));
     }
     format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
 }

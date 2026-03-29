@@ -33,14 +33,14 @@ pub fn search_page(
     };
     let content = format!(
         r#"<header class="page-head">
-<div class="page-title-stack"><h1>Find notes</h1></div>
+<div class="page-title-stack"><h1>Search</h1></div>
 </header>
 <section class="surface search-surface">
 <form class="search-form" method="GET" action="/search">
 <label for="search-page-input">Search notes</label>
 <div class="search-row">
-<input id="search-page-input" type="search" name="q" value="{}" placeholder="Search titles and bodies">
-<button type="submit" class="btn btn-primary">Run search</button>
+<input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
+<button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>
 </section>
@@ -94,6 +94,7 @@ mod tests {
             summary: "Shared release.".to_string(),
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
+            is_favorite: true,
             visibility: Some("Public"),
         }
     }

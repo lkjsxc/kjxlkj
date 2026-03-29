@@ -3,7 +3,9 @@
 use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
-use crate::web::handlers::{admin, assets, health, history, login, logout, records, search, setup};
+use crate::web::handlers::{
+    admin, assets, health, history, home, login, logout, note, records, search, settings, setup,
+};
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 
@@ -31,8 +33,10 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(assets::toastui_css)
             .service(assets::toastui_dark_css)
             .service(assets::toastui_js)
+            .service(home::home_page)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
+            .service(settings::settings_submit)
             .service(search::search_page)
             .service(history::history_page)
             .service(history::revision_page)
@@ -42,8 +46,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(records::history)
             .service(records::previous)
             .service(records::next)
-            .service(admin::home)
-            .service(admin::note_page)
+            .service(note::note_page)
     })
     .bind(&bind_addr)
     .map_err(|e| AppError::StorageError(format!("Failed to bind: {e}")))?

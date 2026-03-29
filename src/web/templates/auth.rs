@@ -25,7 +25,7 @@ pub fn setup_page(error: Option<&str>) -> String {
 <label for="confirm_password">Confirm Password</label>
 <input type="password" id="confirm_password" name="confirm_password" required>
 </div>
-<button type="submit" class="btn btn-primary">Create Account</button>
+<div class="auth-actions"><button type="submit" class="btn btn-primary">Create Account</button></div>
 </form>
 </div>
 </div>"#
@@ -41,7 +41,6 @@ pub fn login_page(error: Option<&str>) -> String {
         r#"<div class="auth-container">
 <div class="auth-card">
 <h1>kjxlkj</h1>
-<p class="subtitle">Sign in</p>
 {error_html}
 <form method="POST" action="/login">
 <div class="form-group">
@@ -52,7 +51,7 @@ pub fn login_page(error: Option<&str>) -> String {
 <label for="password">Password</label>
 <input type="password" id="password" name="password" required>
 </div>
-<button type="submit" class="btn btn-primary">Sign In</button>
+<div class="auth-actions"><button type="submit" class="btn btn-primary">Sign In</button></div>
 </form>
 </div>
 </div>"#

@@ -24,6 +24,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
     align-items: center;
+    padding-bottom: 8px;
 }
 
 .rail-branding,
@@ -70,6 +71,8 @@
     border: 1px solid var(--line);
     border-radius: 16px;
     background: var(--panel);
+    min-height: 84px;
+    align-content: start;
 }
 
 .rail-link span {

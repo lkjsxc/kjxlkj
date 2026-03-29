@@ -6,6 +6,7 @@ mod listing;
 mod migrations;
 mod models;
 mod records;
+mod settings;
 
 pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
@@ -13,9 +14,10 @@ pub use auth::{
 pub use history::{
     get_next_record, get_previous_record, get_record_revision, get_record_revisions,
 };
-pub use listing::{list_records, ListRequest};
-pub use models::{Record, RecordRevision};
-pub use records::{create_record, delete_record, get_record, update_record};
+pub use listing::{list_favorite_records, list_records, list_recent_records, ListRequest};
+pub use models::{AppSettings, ListedRecord, NoteStats, Record, RecordRevision};
+pub use records::{create_record, delete_record, get_record, get_record_by_ref, update_record};
+pub use settings::{get_note_stats, get_settings, update_settings};
 
 use crate::error::AppError;
 use deadpool_postgres::{Manager, Pool, Runtime};

@@ -16,7 +16,7 @@
     --danger: #ff8574;
     --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
     --sans: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
-    --serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --serif: Georgia, "Times New Roman", Times, serif;
 }
 
 * {

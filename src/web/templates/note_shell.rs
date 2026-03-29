@@ -4,12 +4,11 @@ use super::layout::{html_escape, primary_nav, rail_section};
 use super::model::{NavLink, NoteChrome};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
-    let mut sections = Vec::new();
+    let mut sections = vec![rail_section("navigate", &primary_nav("", is_admin))];
     if is_admin {
         sections.push(rail_section("create", &create_action()));
     }
     sections.extend([
-        rail_section("navigate", &primary_nav("", is_admin)),
         rail_section("current-note", &current_note(chrome, active_href)),
         rail_section("timeline", &timeline(chrome)),
         rail_section("history", &history(chrome, active_href)),
@@ -21,8 +20,9 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
 fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
         r#"<div class="rail-list">
-<a href="{}" class="rail-link{}"><span data-live-title>{}</span><small>Current note</small></a>
+<a href="{}" class="rail-link{}" data-current-note-link><span data-live-title>{}</span><small>Current note</small></a>
 <div class="rail-facts">
+<p><strong>Alias</strong><span data-live-alias>{}</span></p>
 <p><strong>Created</strong><span>{}</span></p>
 <p><strong>Updated</strong><span>{}</span></p>
 <p><strong>Visibility</strong><span data-live-visibility>{}</span></p>
@@ -35,6 +35,7 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
             ""
         },
         chrome.title,
+        chrome.alias.as_deref().unwrap_or("None"),
         chrome.created_at,
         chrome.updated_at,
         chrome.visibility
@@ -55,7 +56,7 @@ fn timeline(chrome: &NoteChrome) -> String {
 
 fn history(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
-        r#"<div class="rail-list"><a href="{}" class="rail-link{}"><span>All history</span></a></div>"#,
+        r#"<div class="rail-list"><a href="{}" class="rail-link{}" data-history-link><span>All history</span></a></div>"#,
         chrome.history_href,
         if active_href == chrome.history_href {
             " active"
@@ -113,10 +114,12 @@ mod tests {
     fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> NoteChrome {
         NoteChrome {
             id: "demo".to_string(),
+            alias: Some("orbit-ledger".to_string()),
             title: "Orbit Ledger".to_string(),
             current_href: "/demo".to_string(),
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
+            is_favorite: true,
             visibility: "Public",
             previous,
             next,

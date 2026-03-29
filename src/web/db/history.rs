@@ -70,13 +70,13 @@ async fn adjacent_record(
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     let query = if older {
-        "SELECT id, title, summary, body, is_private, created_at, updated_at \
+        "SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at \
          FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at < (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id < $1)) \
          ORDER BY created_at DESC, id DESC LIMIT 1"
     } else {
-        "SELECT id, title, summary, body, is_private, created_at, updated_at \
+        "SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at \
          FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at > (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id > $1)) \

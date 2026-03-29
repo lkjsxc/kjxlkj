@@ -25,6 +25,7 @@ pub async fn search_page(
         return Ok(redirect("/setup"));
     }
     let is_admin = session::check_session(&req, &pool).await?;
+    let settings = db::get_settings(&pool).await?;
     let params = params.into_inner();
     let query = params
         .q
@@ -36,7 +37,7 @@ pub async fn search_page(
             &pool,
             &ListRequest {
                 include_private: is_admin,
-                limit: params.limit.unwrap_or(50),
+                limit: params.limit.unwrap_or(settings.search_results_per_page),
                 query: Some(value.to_string()),
                 cursor: params.cursor,
             },

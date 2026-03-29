@@ -22,5 +22,8 @@ pub async fn logout(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpRes
         .max_age(actix_web::cookie::time::Duration::ZERO)
         .finish();
 
-    Ok(HttpResponse::NoContent().cookie(clear_cookie).finish())
+    Ok(HttpResponse::SeeOther()
+        .cookie(clear_cookie)
+        .append_header(("Location", "/login"))
+        .finish())
 }

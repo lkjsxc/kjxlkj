@@ -1,0 +1,115 @@
+.home-page,
+.dashboard-page {
+    display: grid;
+    gap: 18px;
+}
+
+.stats-grid,
+.dashboard-panels,
+.note-grid,
+.editor-meta-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.dashboard-panels,
+.editor-meta-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.note-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    align-items: start;
+}
+
+.section-block,
+.stat-card,
+.editor-url-card,
+.settings-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.section-head h2,
+.stat-card strong {
+    margin: 0;
+}
+
+.stat-card {
+    min-height: 110px;
+    align-content: space-between;
+}
+
+.stat-card strong {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1;
+}
+
+.settings-grid .form-group {
+    margin: 0;
+}
+
+.editor-url-card {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel-2);
+}
+
+.editor-url-card a,
+.editor-url-card strong {
+    overflow-wrap: anywhere;
+}
+
+.status-pill-favorite {
+    background: rgba(255, 214, 110, 0.14);
+    color: #ffd66e;
+}
+
+.card-title,
+.card-summary,
+.rail-link span {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-title,
+.rail-link span {
+    -webkit-line-clamp: 2;
+    min-height: calc(1.35em * 2);
+}
+
+.card-summary {
+    -webkit-line-clamp: 3;
+    min-height: calc(1.5em * 3);
+}
+
+.note-grid .note-row {
+    grid-template-columns: 1fr;
+    align-self: start;
+}
+
+.note-grid .card-meta {
+    justify-items: start;
+    text-align: left;
+}
+
+.auth-actions {
+    margin-top: 24px;
+}
+
+.auth-actions .btn {
+    width: 100%;
+}

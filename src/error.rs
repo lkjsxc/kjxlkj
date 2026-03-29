@@ -64,3 +64,9 @@ impl From<crate::core::IdError> for AppError {
         AppError::InvalidRequest(err.to_string())
     }
 }
+
+impl From<crate::core::AliasError> for AppError {
+    fn from(err: crate::core::AliasError) -> Self {
+        AppError::InvalidRequest(err.to_string())
+    }
+}

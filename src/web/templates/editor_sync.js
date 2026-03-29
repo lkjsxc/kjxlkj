@@ -1,35 +1,56 @@
 function queueSave() {
     clearTimeout(editorState.saveTimer);
-    if (!isDirty(currentBody(), isPrivate)) return;
+    if (!isDirty(currentBody(), currentAlias, isFavorite, isPrivate)) return;
     editorState.saveTimer = setTimeout(saveNote, 500);
 }
 
-function isDirty(body, nextPrivate) {
-    return body !== editorState.lastSavedBody || nextPrivate !== editorState.lastSavedPrivate;
+function isDirty(body, alias, favorite, nextPrivate) {
+    return body !== editorState.lastSavedBody ||
+        alias !== editorState.lastSavedAlias ||
+        favorite !== editorState.lastSavedFavorite ||
+        nextPrivate !== editorState.lastSavedPrivate;
 }
 
 function saveNote() {
     if (!editorState.sourceField || typeof currentId === 'undefined') return;
     var body = currentBody();
-    var nextPrivate = isPrivate;
-    if (!isDirty(body, nextPrivate)) return;
     var requestId = ++editorState.latestRequest;
     fetch('/records/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: body, is_private: nextPrivate })
+        body: JSON.stringify({
+            body: body,
+            alias: currentAlias,
+            is_favorite: isFavorite,
+            is_private: isPrivate
+        })
     })
-        .then(function (response) {
-            if (!response.ok) throw new Error('save failed');
+        .then(readSaveResponse)
+        .then(function (note) {
             if (requestId !== editorState.latestRequest) return;
+            currentAlias = note.alias || null;
+            currentHref = currentAlias ? '/' + currentAlias : '/' + note.id;
+            isFavorite = !!note.is_favorite;
+            isPrivate = !!note.is_private;
             editorState.lastSavedBody = body;
-            editorState.lastSavedPrivate = nextPrivate;
+            editorState.lastSavedAlias = currentAlias;
+            editorState.lastSavedFavorite = isFavorite;
+            editorState.lastSavedPrivate = isPrivate;
+            syncNoteChrome();
+            syncCanonicalLinks();
             setSaveError('');
         })
-        .catch(function () {
+        .catch(function (error) {
             if (requestId !== editorState.latestRequest) return;
-            setSaveError('Save failed. Retry on the next change.');
+            setSaveError(error.message || 'Save failed. Retry on the next change.');
         });
+}
+
+function readSaveResponse(response) {
+    if (response.ok) return response.json();
+    return response.json()
+        .then(function (payload) { throw new Error(payload.message); })
+        .catch(function () { throw new Error('Save failed. Retry on the next change.'); });
 }
 
 function setSaveError(message) {
@@ -39,21 +60,28 @@ function setSaveError(message) {
     node.hidden = !message;
 }
 
-function togglePublic() {
-    var checkbox = document.getElementById('public-toggle');
-    var nextPrivate = !checkbox.checked;
-    if (nextPrivate === isPrivate) return;
-    isPrivate = nextPrivate;
-    syncNoteChrome();
-    queueSave();
-}
-
 function syncNoteChrome() {
     var title = deriveTitle(currentBody());
     var visibility = isPrivate ? 'Private' : 'Public';
     updateLiveText('[data-live-title]', title, 'renderedTitle');
     updateLiveText('[data-live-visibility]', visibility, 'renderedVisibility');
+    updateLiveText('[data-live-alias]', currentAlias || 'None', 'renderedAlias');
+    syncCanonicalLinks();
+    updateVimModeLabel();
     document.title = title + ' - kjxlkj';
+}
+
+function syncCanonicalLinks() {
+    var historyHref = currentHref + '/history';
+    document.querySelectorAll('[data-current-note-link]').forEach(function (node) { node.href = currentHref; });
+    document.querySelectorAll('[data-history-link]').forEach(function (node) { node.href = historyHref; });
+    document.querySelectorAll('[data-current-url]').forEach(function (node) {
+        node.href = currentHref;
+        node.textContent = currentHref;
+    });
+    if (window.location.pathname !== currentHref) {
+        window.history.replaceState({}, '', currentHref);
+    }
 }
 
 function updateLiveText(selector, value, key) {

@@ -3,9 +3,10 @@
 use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::DbPool;
+use crate::web::handlers::session;
 use crate::web::templates;
 use actix_web::cookie::{Cookie, SameSite};
-use actix_web::{get, post, web, HttpResponse};
+use actix_web::{get, post, web, HttpRequest, HttpResponse};
 use serde::Deserialize;
 
 /// Login form data
@@ -17,9 +18,15 @@ pub struct LoginForm {
 
 /// Login page GET handler
 #[get("/login")]
-pub async fn login_page(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
+pub async fn login_page(
+    pool: web::Data<DbPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, AppError> {
     if !crate::web::db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
+    }
+    if session::check_session(&req, &pool).await? {
+        return Ok(see_other("/admin"));
     }
     Ok(html(templates::login_page(None)))
 }
@@ -62,6 +69,12 @@ pub async fn login_submit(
 
 fn redirect(location: &str) -> HttpResponse {
     HttpResponse::Found()
+        .append_header(("Location", location))
+        .finish()
+}
+
+fn see_other(location: &str) -> HttpResponse {
+    HttpResponse::SeeOther()
         .append_header(("Location", location))
         .finish()
 }

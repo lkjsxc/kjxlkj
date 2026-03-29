@@ -1,6 +1,6 @@
 //! Record management handlers
 
-use crate::core::{generate_id, validate_id};
+use crate::core::{generate_id, normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
 use crate::web::handlers::session;
@@ -10,12 +10,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize)]
 pub struct CreateInput {
     pub body: Option<String>,
+    pub alias: Option<String>,
+    pub is_favorite: Option<bool>,
     pub is_private: Option<bool>,
 }
 
 #[derive(Deserialize)]
 pub struct UpdateInput {
     pub body: String,
+    pub alias: Option<String>,
+    pub is_favorite: bool,
     pub is_private: bool,
 }
 
@@ -35,8 +39,18 @@ pub async fn create(
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
+    let alias = normalize_alias(body.alias.as_deref())?;
+    let is_favorite = body.is_favorite.unwrap_or(false);
     let is_private = body.is_private.unwrap_or(true);
-    let record = db::create_record(&pool, &id, &content, is_private).await?;
+    let record = db::create_record(
+        &pool,
+        &id,
+        alias.as_deref(),
+        &content,
+        is_favorite,
+        is_private,
+    )
+    .await?;
     Ok(HttpResponse::Created().json(record))
 }
 
@@ -50,7 +64,17 @@ pub async fn update(
     session::require_session(&req, &pool).await?;
     let id = path.into_inner();
     validate_id(&id)?;
-    match db::update_record(&pool, &id, &body.body, body.is_private).await? {
+    let alias = normalize_alias(body.alias.as_deref())?;
+    match db::update_record(
+        &pool,
+        &id,
+        alias.as_deref(),
+        &body.body,
+        body.is_favorite,
+        body.is_private,
+    )
+    .await?
+    {
         Some(record) => Ok(HttpResponse::Ok().json(record)),
         None => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }

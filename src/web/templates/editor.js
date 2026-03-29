@@ -2,6 +2,9 @@ var editorState = {
     editor: null,
     sourceField: null,
     fallbackField: null,
+    aliasField: null,
+    publicToggle: null,
+    favoriteToggle: null,
     shell: null,
     previewToggle: null,
     previewBackdrop: null,
@@ -11,17 +14,23 @@ var editorState = {
     saveTimer: null,
     latestRequest: 0,
     lastSavedBody: '',
+    lastSavedAlias: null,
+    lastSavedFavorite: false,
     lastSavedPrivate: null,
     renderedTitle: '',
-    renderedVisibility: ''
+    renderedVisibility: '',
+    renderedAlias: ''
 };
 
 function initEditor() {
     cacheEditorNodes();
     var root = document.getElementById('editor-root');
     if (!editorState.sourceField || !root || !editorState.shell) return;
+    bindEditorInputs();
     bindPreviewEvents();
     editorState.lastSavedBody = editorState.sourceField.value;
+    editorState.lastSavedAlias = currentAlias;
+    editorState.lastSavedFavorite = isFavorite;
     editorState.lastSavedPrivate = isPrivate;
     if (window.toastui && window.toastui.Editor) {
         try {
@@ -38,18 +47,22 @@ function initEditor() {
 function cacheEditorNodes() {
     editorState.sourceField = document.getElementById('editor-source');
     editorState.fallbackField = document.getElementById('editor-fallback');
+    editorState.aliasField = document.getElementById('alias-input');
+    editorState.publicToggle = document.getElementById('public-toggle');
+    editorState.favoriteToggle = document.getElementById('favorite-toggle');
     editorState.shell = document.getElementById('editor-shell');
     editorState.previewToggle = document.getElementById('preview-toggle');
     editorState.previewBackdrop = document.getElementById('preview-backdrop');
 }
 
-function bindPreviewEvents() {
-    editorState.media.addEventListener('change', syncPreviewMode);
-    document.addEventListener('keydown', handlePreviewEscape);
+function bindEditorInputs() {
+    editorState.aliasField?.addEventListener('input', onAliasInput);
+    editorState.publicToggle?.addEventListener('change', onPublicToggle);
+    editorState.favoriteToggle?.addEventListener('change', onFavoriteToggle);
 }
 
 function createEditor(root) {
-    var options = {
+    editorState.editor = new window.toastui.Editor({
         el: root,
         height: 'auto',
         minHeight: editorMinHeight(),
@@ -61,11 +74,11 @@ function createEditor(root) {
         autofocus: false,
         usageStatistics: false,
         toolbarItems: toolbarItems()
-    };
-    editorState.editor = new window.toastui.Editor(options);
+    });
     window.editorInstance = editorState.editor;
     editorState.editor.on('change', onEditorInput);
     setPreviewEnabled(true);
+    configureVimMode();
     syncPreviewMode();
     focusEditor();
 }
@@ -78,10 +91,30 @@ function enableFallback(root) {
     if (!editorState.fallbackField) return;
     editorState.fallbackField.hidden = false;
     editorState.fallbackField.addEventListener('input', onEditorInput);
+    configureVimMode();
     requestAnimationFrame(function () { editorState.fallbackField.focus(); });
 }
 
 function onEditorInput() {
+    syncNoteChrome();
+    queueSave();
+}
+
+function onAliasInput() {
+    currentAlias = normalizeAliasValue(editorState.aliasField?.value || '');
+    if (editorState.aliasField) editorState.aliasField.value = currentAlias || '';
+    syncNoteChrome();
+    queueSave();
+}
+
+function onPublicToggle() {
+    isPrivate = !(editorState.publicToggle && editorState.publicToggle.checked);
+    syncNoteChrome();
+    queueSave();
+}
+
+function onFavoriteToggle() {
+    isFavorite = !!(editorState.favoriteToggle && editorState.favoriteToggle.checked);
     syncNoteChrome();
     queueSave();
 }
@@ -93,91 +126,4 @@ function currentBody() {
         editorState.sourceField.value = editorState.fallbackField.value;
     }
     return editorState.sourceField ? editorState.sourceField.value : '';
-}
-
-function togglePreview() {
-    if (!editorState.shell || !editorState.editor) return;
-    editorState.previewOpen = !editorState.previewOpen;
-    syncPreviewMode();
-}
-
-function closePreview() {
-    if (!editorState.previewOpen) return;
-    editorState.previewOpen = false;
-    syncPreviewMode();
-    if (editorState.previewToggle) editorState.previewToggle.focus();
-}
-
-function syncPreviewMode() {
-    if (!editorState.shell) return;
-    var compact = editorState.media.matches;
-    var style = editorState.previewOpen && !compact ? 'vertical' : 'tab';
-    if (editorState.editor && editorState.previewStyle !== style) {
-        editorState.editor.changePreviewStyle(style);
-        editorState.previewStyle = style;
-    }
-    if (style === 'tab' && editorState.editor && editorState.editor.eventEmitter) {
-        editorState.editor.eventEmitter.emit(
-            editorState.previewOpen ? 'changePreviewTabPreview' : 'changePreviewTabWrite'
-        );
-    }
-    editorState.shell.classList.toggle('preview-open', editorState.previewOpen);
-    editorState.shell.classList.toggle('preview-closed', !editorState.previewOpen);
-    editorState.shell.classList.toggle('preview-compact', compact);
-    if (editorState.previewToggle) {
-        editorState.previewToggle.textContent = editorState.previewOpen ? 'Hide preview' : 'Show preview';
-        editorState.previewToggle.setAttribute('aria-expanded', String(editorState.previewOpen));
-    }
-    if (editorState.previewBackdrop) {
-        editorState.previewBackdrop.hidden = !(editorState.previewOpen && compact);
-    }
-}
-
-function setPreviewEnabled(enabled) {
-    if (editorState.previewToggle) editorState.previewToggle.hidden = !enabled;
-    if (!enabled) {
-        editorState.previewOpen = false;
-        syncPreviewMode();
-    }
-}
-
-function handlePreviewEscape(event) {
-    if (event.key === 'Escape') closePreview();
-}
-
-function editorMinHeight() {
-    return editorState.media.matches ? '360px' : '520px';
-}
-
-function toolbarItems() {
-    if (editorState.media.matches) {
-        return [
-            ['heading', 'bold', 'italic', 'strike'],
-            ['quote', 'ul', 'ol', 'task'],
-            ['table', 'link', 'code', 'codeblock']
-        ];
-    }
-    return [
-        ['heading'],
-        ['bold', 'italic', 'strike', 'hr'],
-        ['quote', 'ul', 'ol', 'task'],
-        ['indent', 'outdent'],
-        ['table', 'link'],
-        ['code', 'codeblock']
-    ];
-}
-
-function focusEditor() {
-    requestAnimationFrame(function () {
-        if (editorState.editor) {
-            editorState.editor.focus();
-            if (typeof editorState.editor.moveCursorToEnd === 'function') {
-                editorState.editor.moveCursorToEnd();
-            }
-            return;
-        }
-        if (editorState.fallbackField && !editorState.fallbackField.hidden) {
-            editorState.fallbackField.focus();
-        }
-    });
 }

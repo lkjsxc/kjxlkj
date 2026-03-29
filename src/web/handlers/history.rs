@@ -16,12 +16,15 @@ pub async fn history_page(
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
-    let id = path.into_inner();
+    let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
-    let Some(record) = accessible_record(&pool, &id, is_admin).await? else {
+    let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
         return Ok(not_found());
     };
-    let revisions = db::get_record_revisions(&pool, &id).await?;
+    if record.alias.as_deref().is_some_and(|alias| alias != reference) && reference == record.id {
+        return Ok(redirect(&view::history_href(&record)));
+    }
+    let revisions = db::get_record_revisions(&pool, &record.id).await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
     let history = view::visible_history(&record, &revisions, is_admin);
     Ok(html(templates::history_page(
@@ -38,12 +41,18 @@ pub async fn revision_page(
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
-    let (id, revision_number) = path.into_inner();
+    let (reference, revision_number) = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
-    let Some(record) = accessible_record(&pool, &id, is_admin).await? else {
+    let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
         return Ok(not_found());
     };
-    let Some(revision) = db::get_record_revision(&pool, &id, revision_number).await? else {
+    if record.alias.as_deref().is_some_and(|alias| alias != reference) && reference == record.id {
+        return Ok(redirect(&format!(
+            "{}/history/{revision_number}",
+            view::note_href(&record)
+        )));
+    }
+    let Some(revision) = db::get_record_revision(&pool, &record.id, revision_number).await? else {
         return Ok(not_found());
     };
     if revision.is_private && !is_admin {
@@ -57,10 +66,10 @@ pub async fn revision_page(
 
 async fn accessible_record(
     pool: &DbPool,
-    id: &str,
+    reference: &str,
     is_admin: bool,
 ) -> Result<Option<db::Record>, AppError> {
-    let record = db::get_record(pool, id).await?;
+    let record = db::get_record_by_ref(pool, reference).await?;
     Ok(record.filter(|record| is_admin || !record.is_private))
 }
 

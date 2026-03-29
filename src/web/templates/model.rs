@@ -19,10 +19,12 @@ pub struct HistoryLink {
 #[derive(Clone, Debug)]
 pub struct NoteChrome {
     pub id: String,
+    pub alias: Option<String>,
     pub title: String,
     pub current_href: String,
     pub created_at: String,
     pub updated_at: String,
+    pub is_favorite: bool,
     pub visibility: &'static str,
     pub previous: Option<NavLink>,
     pub next: Option<NavLink>,
@@ -36,5 +38,6 @@ pub struct IndexItem {
     pub summary: String,
     pub created_at: String,
     pub updated_at: String,
+    pub is_favorite: bool,
     pub visibility: Option<&'static str>,
 }
