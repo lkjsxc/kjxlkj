@@ -35,6 +35,10 @@
     gap: 8px;
 }
 
+.rail-body {
+    margin-top: 12px;
+}
+
 .brand,
 .card-title,
 .rail-link span {

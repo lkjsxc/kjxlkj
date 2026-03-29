@@ -112,6 +112,23 @@ impl ListSort {
         clause
     }
 
+    pub fn binding_clause(&self, base: i32) -> String {
+        let updated = base;
+        let created = base + 1;
+        let title = base + 2;
+        let rank = base + 3;
+        let fuzzy = base + 4;
+        let id = base + 5;
+        format!(
+            "(${updated}::TIMESTAMPTZ IS NULL OR ${updated}::TIMESTAMPTZ IS NOT NULL) \
+             AND (${created}::TIMESTAMPTZ IS NULL OR ${created}::TIMESTAMPTZ IS NOT NULL) \
+             AND (${title}::TEXT IS NULL OR ${title}::TEXT IS NOT NULL) \
+             AND (${rank}::DOUBLE PRECISION IS NULL OR ${rank}::DOUBLE PRECISION IS NOT NULL) \
+             AND (${fuzzy}::DOUBLE PRECISION IS NULL OR ${fuzzy}::DOUBLE PRECISION IS NOT NULL) \
+             AND (${id}::TEXT IS NULL OR ${id}::TEXT IS NOT NULL)"
+        )
+    }
+
     fn parse(value: &str) -> Option<Self> {
         match value {
             "relevance" => Some(Self::Relevance),

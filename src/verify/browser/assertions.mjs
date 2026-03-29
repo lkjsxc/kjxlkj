@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {
     assertCreateActionBelowHome,
     assertGridHeights,
+    assertInvisibleText,
     assertLocalToastUiAssets,
     assertNoHeaderButtons,
     assertSingleHistoryCard,
@@ -13,7 +14,7 @@ import {
     openDrawer,
 } from './shell-assertions.mjs';
 
-export { assertVisibleText, expectClosedDrawer, openDrawer };
+export { assertInvisibleText, assertVisibleText, expectClosedDrawer, openDrawer };
 
 export async function expectPublicRoot(page) {
     await expectFlatShell(page);

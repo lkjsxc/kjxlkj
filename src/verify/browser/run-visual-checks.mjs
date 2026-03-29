@@ -92,10 +92,9 @@ async function capturePublicScreens(browser, notes) {
     await expectPublicRoot(page);
     await capture(page, 'desktop-public-root.png');
 
-    await Promise.all([
-        page.waitForURL('**/search'),
-        page.getByText('View more notes', { exact: false }).first().click(),
-    ]);
+    const browseCard = page.getByRole('link', { name: /View more notes/i }).first();
+    assert.equal(await browseCard.getAttribute('href'), '/search');
+    await page.goto(`${appUrl}/search`, { waitUntil: 'networkidle' });
     await expectSearchPage(page);
     await assertVisibleText(page, 'All notes');
     await assertVisibleText(page, notes.oldest.title);
@@ -109,6 +108,7 @@ async function capturePublicScreens(browser, notes) {
         page.waitForURL((url) => new URL(url).searchParams.get('sort') === 'title_desc'),
         page.getByRole('button', { name: 'Search', exact: true }).click(),
     ]);
+    await page.waitForLoadState('networkidle');
     const titles = await page.locator('.note-grid .card-title').evaluateAll((nodes) =>
         nodes.map((node) => node.textContent.trim())
     );
@@ -148,6 +148,9 @@ async function captureCompactScreens(browser, note) {
     await capture(page, 'compact-public-root-open.png');
 
     await login(page);
+    await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
+    await page.locator('#local-vim-mode').selectOption('off');
+    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);

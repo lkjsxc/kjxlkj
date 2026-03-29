@@ -117,7 +117,7 @@
 .note-grid .note-row {
     grid-template-columns: 1fr;
     align-self: start;
-    min-height: 168px;
+    height: 168px;
 }
 
 .note-grid .card-meta {

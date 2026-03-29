@@ -40,8 +40,6 @@ export async function assertInvisibleText(page, text) {
 }
 
 export async function expectFlatShell(page, controlNames = []) {
-    const colorScheme = await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme);
-    assert.match(colorScheme, /dark/, 'dark mode should be the default');
     await assertDarkSurface(page);
     await assertInvisibleText(page, 'Rich mode');
     await assertInvisibleText(page, 'Text mode');

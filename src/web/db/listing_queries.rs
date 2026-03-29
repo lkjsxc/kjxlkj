@@ -15,7 +15,8 @@ pub(super) async fn browse_records(
          summary AS preview, LOWER(title) AS title_key, 0::DOUBLE PRECISION AS rank, 0::DOUBLE PRECISION AS fuzzy \
          FROM records WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE)) \
          SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
-         FROM listed WHERE {} ORDER BY {} LIMIT $8",
+         FROM listed WHERE {} AND {} ORDER BY {} LIMIT $8",
+        sort.binding_clause(2),
         sort.cursor_filter(2),
         sort.order_clause()
     );
@@ -61,7 +62,8 @@ pub(super) async fn search_records(
          OR similarity(COALESCE(alias, ''), (SELECT raw FROM q)) >= 0.15 \
          OR similarity(title, (SELECT raw FROM q)) >= 0.15 OR similarity(body, (SELECT raw FROM q)) >= 0.05)) \
          SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
-         FROM matched WHERE {} ORDER BY {} LIMIT $9",
+         FROM matched WHERE {} AND {} ORDER BY {} LIMIT $9",
+        sort.binding_clause(3),
         sort.cursor_filter(3),
         sort.order_clause()
     );
