@@ -2,9 +2,9 @@
 
 - `/setup`, `/login`, `/logout` -> setup and session handlers.
 - `/` -> auth-aware homepage handler.
-- `/admin` and `/admin/` -> hybrid admin dashboard handler.
+- `/admin` and `/admin/` -> admin dashboard handler.
 - `/admin/settings` -> admin settings submit handler.
-- `/search` -> auth-aware search handler.
+- `/search` -> auth-aware browse/search handler.
 - `/assets/vendor/toastui/3.2.2/...` -> vendored editor asset handlers.
 - `/{ref}` -> note view/edit handler.
 - `/{ref}/history` -> history index handler.

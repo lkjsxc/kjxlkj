@@ -28,3 +28,4 @@
 - The editor must not expose a visible mode switch.
 - Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
 - Login page shows the brand only above the sign-in form and button.
+- Editor metadata controls should share one card language rather than mixing unrelated field styles.

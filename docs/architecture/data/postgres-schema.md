@@ -29,6 +29,7 @@
 - `home_recent_limit`: homepage recent-note count.
 - `home_favorite_limit`: homepage favorite count.
 - `search_results_per_page`: default HTML search page size.
+- `default_vim_mode`: global default editor Vim flag.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes

@@ -3,27 +3,30 @@
 ## Home Page
 
 - `GET /` returns the homepage shell after setup completes.
-- Guests see public recent notes, public favorites, and public statistics only.
-- Signed-in admins see the same homepage structure plus private-capable data and quick admin actions.
-- The route does not expose cursor pagination as its primary purpose.
+- Guests see public recent notes and public favorites only.
+- Signed-in admins see the same structure with private-capable data and admin actions.
+- Homepage is intentionally short and does not act as the full browse surface.
 
-## Admin Dashboard List
+## Admin Dashboard
 
-- `GET /admin` returns the hybrid admin dashboard.
-- The page includes dashboard sections first and the full admin library below.
-- Admin dashboard includes public and private notes.
-- The admin library remains dense and paginated.
+- `GET /admin` returns the admin dashboard.
+- Dashboard includes statistics, settings, recent notes, and favorites.
+- Dashboard does not include the full note library.
+- Dashboard data includes public and private notes.
 
-## Search Page
+## Search and Browse
 
-- `GET /search` is the only canonical search surface.
-- Search accepts `q`, `cursor`, and `limit`.
-- Empty query renders guidance instead of a full browse dump.
+- `GET /search` is the canonical browse and search workspace.
+- Search accepts `q`, `sort`, `cursor`, and `limit`.
+- Empty `q` returns the first paginated page of all viewable notes.
+- Non-empty `q` returns paginated matches only.
 
 ## Default Ordering
 
-- Recent and library lists sort by `updated_at DESC, id ASC`.
-- Search sorts by search rank first and `updated_at DESC, id ASC` second.
+- Homepage recent and favorite blocks sort by `updated_at DESC, id ASC`.
+- Empty-query `/search` defaults to `updated_desc`.
+- Non-empty-query `/search` defaults to `relevance`.
+- Note-to-note `Prev` and `Next` continue to use `created_at`.
 
 ## Fetch (`GET /{ref}`)
 
@@ -34,11 +37,10 @@
 - Redirects to the alias URL when a note has an alias and the request used its raw `id`.
 - Response includes `body`, `is_private`, `created_at`, and `updated_at`.
 - Admin note pages edit the stored Markdown body through one rendered workspace.
-- Guest note rendering must reflect common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.
+- Guest note rendering reflects common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.
 
 ## Note Navigation
 
-- `Prev` and `Next` relationships use `created_at` order, not `updated_at`.
 - `Prev` means the nearest older accessible note.
 - `Next` means the nearest newer accessible note.
 - Guest navigation skips private notes.

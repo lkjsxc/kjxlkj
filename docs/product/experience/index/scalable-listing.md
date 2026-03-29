@@ -2,8 +2,8 @@
 
 ## Shared Behavior
 
-- Homepage note blocks, admin library, search results, and history cards share the same compact card language.
-- Browse/search/history cards are compact, sortable by recency, and safe for thousands of notes.
+- Homepage note blocks, search results, and history cards share the same compact card language.
+- Browse/search/history cards are compact, sortable server-side, and safe for thousands of notes.
 - The list is cursor-paginated, not infinite scroll.
 
 ## Row Hierarchy
@@ -15,10 +15,11 @@
 - Metadata uses a dedicated layout that stays readable even when title or summary text is long.
 - Summary preview appends `...` whenever hidden meaningful content remains.
 - Title and summary are line-clamped so long notes do not enlarge sibling cards.
+- Dense layouts should reduce vertical padding before reducing useful metadata.
 
 ## Action Treatment
 
 - Per-page actions use text-first controls instead of filled buttons.
 - Pagination actions are text links with disabled states, not large pills.
 - Search and filter chrome must not dominate the list.
-- The main list remains authoritative for result browsing.
+- `/search` remains authoritative for result browsing.

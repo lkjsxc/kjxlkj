@@ -36,6 +36,7 @@ docker compose --profile verify run --rm visual-verify
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
+- Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
@@ -44,3 +45,6 @@ docker compose --profile verify run --rm visual-verify
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
 - The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
+- Empty-query `/search` renders note cards instead of helper guidance.
+- Dashboard does not render a library block.
+- Dashboard settings cover default Vim mode and browser-local Vim override behavior.

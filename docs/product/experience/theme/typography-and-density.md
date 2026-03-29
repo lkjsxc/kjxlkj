@@ -2,15 +2,16 @@
 
 ## Type Direction
 
-- Shell, controls, and editor chrome use one UI font direction.
-- Rendered Markdown uses a common reading-oriented stack based on `Georgia` and `Times New Roman`.
+- Shell, controls, editor chrome, and rendered Markdown use browser-default font families.
+- Custom font stacks are not part of the product language.
 - IDs are not used as visible typography anchors in normal UI.
 
 ## Density Rules
 
-- Homepage blocks, admin library, and search results use dense row layouts fit for thousands of notes.
+- Homepage blocks, dashboard panels, and search results use dense layouts fit for thousands of notes.
 - Rails, history entries, note metadata, and editor chrome stay compact.
 - Text-first actions reduce chrome bulk relative to note content.
+- Tall empty vertical gaps should be removed before reducing useful content.
 
 ## Readability Rules
 

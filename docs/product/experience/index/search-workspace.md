@@ -2,7 +2,7 @@
 
 ## Route Intent
 
-- `GET /search` is the only canonical search page.
+- `GET /search` is the only canonical browse and search page.
 - The route is auth-aware:
   - guests search public notes
   - signed-in admins search public and private notes
@@ -14,17 +14,22 @@
 - The main pane owns the actual query form and result list.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
+- Empty-query state should still feel like a full notes page rather than an empty helper page.
 
 ## Search Rules
 
 - Search is server-side and query-param driven.
 - Query input uses `q`.
+- Sort input uses `sort`.
 - Pagination uses `cursor` and `limit`.
-- Empty query renders the form plus terse guidance, not a default result dump.
+- Empty query returns the first paginated page of all viewable notes.
 - Result snippets may differ from derived summaries when search context is more useful.
+- Non-empty query defaults to relevance ordering.
+- Empty query defaults to updated-newest ordering.
 
 ## Result Rules
 
 - Results keep the same dense row language as browse pages.
 - Guest results never expose private-only metadata.
 - Admin results may show visibility and favorite state.
+- Search result sorting and pagination remain server-side only.

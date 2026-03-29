@@ -56,4 +56,4 @@
 - Every update creates a revision entry before changes.
 - Revisions store `body`, `is_private`, `revision_number`, and `created_at`.
 - Revision numbers increment from `1`.
-- Revisions are immutable and never deleted in this pass.
+- Revisions are immutable and never deleted.

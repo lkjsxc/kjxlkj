@@ -3,8 +3,8 @@
 ## Canonical Pages
 
 - `/`: auth-aware homepage.
-- `/admin`: hybrid admin dashboard plus admin library.
-- `/search`: auth-aware search page.
+- `/admin`: admin dashboard.
+- `/search`: auth-aware browse and search page.
 - `/{ref}`: current note page.
 - `/{ref}/history`: note history index.
 - `/{ref}/history/{revision_number}`: historical snapshot page.

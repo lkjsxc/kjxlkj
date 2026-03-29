@@ -52,13 +52,14 @@ The system manages `note` resources.
 - Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
 - Public note URLs prefer `alias` when present.
+- `/search` with empty `q` is the canonical paginated all-notes card view.
 
 ## UI Semantics
 
 - The public-facing control is `Public`.
 - `Public = checked` maps to `is_private = false`.
 - `Public = unchecked` maps to `is_private = true`.
-- Search UI is canonical on `/search`.
+- Search and browse UI are canonical on `/search`.
 - Favorite state is explicit admin-managed note state.
 
 ## Revision History

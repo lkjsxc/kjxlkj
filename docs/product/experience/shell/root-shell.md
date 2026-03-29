@@ -20,6 +20,6 @@
 
 ## Main Pane
 
-- Root, admin, and search pages keep home, list, stats, and query work in the main pane.
+- Root, admin, and search pages keep home, browse, stats, and query work in the main pane.
 - Note and history pages keep document-focused content in the main pane.
 - The rail adds navigation and context without repeating explanatory copy that the main pane already makes obvious.

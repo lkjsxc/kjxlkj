@@ -34,6 +34,7 @@
 - `New note` is the first admin action in the rail.
 - Guest sign-in may sit lower in the rail rather than directly under navigation.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.
+- Brand spacing must clearly separate `kjxlkj` from the first navigation card.
 
 ## Timeline Rules
 

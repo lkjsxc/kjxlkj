@@ -30,11 +30,11 @@
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
-  - with valid session: `200` HTML hybrid admin dashboard using `cursor`, `limit`
+  - with valid session: `200` HTML admin dashboard
 - `GET /search`:
   - before setup: `302` to `/setup`
-  - without valid session: `200` HTML public search page using `q`, `cursor`, `limit`
-  - with valid session: `200` HTML admin-capable search page using `q`, `cursor`, `limit`
+  - without valid session: `200` HTML public browse/search page using `q`, `sort`, `cursor`, `limit`
+  - with valid session: `200` HTML admin-capable browse/search page using `q`, `sort`, `cursor`, `limit`
 
 ## Asset Delivery
 

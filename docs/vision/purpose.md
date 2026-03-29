@@ -2,7 +2,7 @@
 
 ## Goal
 
-`kjxlkj` is a Markdown note system for LLM-operated workflows with direct root-path note URLs, live admin editing, full revision history, a homepage-like public root, and a hybrid admin dashboard.
+`kjxlkj` is a Markdown note system for LLM-operated workflows with direct root-path note URLs, live admin editing, full revision history, a homepage-like public root, and a compact admin dashboard.
 
 ## Product Intent
 

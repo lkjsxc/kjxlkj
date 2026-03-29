@@ -49,6 +49,8 @@ Expected:
 
 - HTML contains the shared shell rail
 - HTML contains homepage sections rather than one bare browse list
+- homepage contains no stats block
+- homepage includes a browse-action card that points to `/search`
 - homepage note cards do not stretch to the tallest card in a row
 - HTML does not expose raw note IDs in normal list rows
 - HTML does not contain visible rail section headings such as `CREATE`, `NAVIGATE`, `ACTIONS`, or `SCOPE`
@@ -58,15 +60,18 @@ Expected:
 ## Verify Search Page
 
 ```bash
+curl -sS 'http://127.0.0.1:8080/search'
 curl -sS 'http://127.0.0.1:8080/search?q=new'
 curl -sS 'http://127.0.0.1:8080/search?q=new' -b cookies.txt
 ```
 
 Expected:
 
+- empty query returns a paginated note-card browse page
 - guest search returns only public matches
 - admin search may include private matches
 - HTML contains the search form in the main pane
+- HTML contains sort controls in the main pane
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
 
@@ -78,11 +83,13 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 
 Expected:
 
-- HTML contains stats and settings blocks before the admin library
-- HTML contains admin list rows
+- HTML contains stats and settings blocks
+- HTML contains recent and favorite note rows
+- HTML does not contain a library block
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
+- settings include default Vim mode and browser-local Vim override controls
 
 ## Verify Admin Note Shell
 

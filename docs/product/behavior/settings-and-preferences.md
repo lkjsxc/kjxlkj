@@ -4,18 +4,23 @@
 
 - Global app settings are stored in PostgreSQL.
 - Admin dashboard owns the canonical settings form.
-- Global settings include homepage recent-note count, homepage favorite count, and default search page size.
+- Global settings include homepage recent-note count, homepage favorite count, default search page size, and default Vim mode.
 - Global settings affect HTML routes immediately after a successful save.
 
 ## Local Preferences
 
-- Editor preferences remain browser-local.
-- Vim mode is disabled by default.
-- Admin dashboard exposes the Vim-mode toggle even though the stored value remains local to the browser.
-- Reloading the page preserves the local Vim-mode preference in that browser.
+- Editor preference override remains browser-local.
+- The browser-local Vim override has three states:
+  - `default`
+  - `on`
+  - `off`
+- Effective Vim mode uses the local override when set.
+- Effective Vim mode falls back to the global default when the local override is `default`.
+- Reloading the page preserves the local Vim override in that browser.
 
 ## Defaults
 
 - Homepage recent-note count defaults to `6`.
 - Homepage favorite count defaults to `6`.
 - Default search page size defaults to `20`.
+- Default Vim mode defaults to `false`.
