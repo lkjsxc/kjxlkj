@@ -1,20 +1,18 @@
 # List and Fetch Behavior
 
-## Public Root List
+## Home Page
 
-- `GET /` returns the public browse shell after setup completes.
-- Unauthenticated users see only public notes.
-- Authenticated admins may still open `/`, but it remains the public browse surface.
-- The route accepts `cursor` and `limit`.
-- The rail remains visible while the main pane shows the result list.
-- Derived summaries strip leading Markdown control markers before clipping.
+- `GET /` returns the homepage shell after setup completes.
+- Guests see public recent notes, public favorites, and public statistics only.
+- Signed-in admins see the same homepage structure plus private-capable data and quick admin actions.
+- The route does not expose cursor pagination as its primary purpose.
 
 ## Admin Dashboard List
 
-- `GET /admin` returns the admin browse index.
+- `GET /admin` returns the hybrid admin dashboard.
+- The page includes dashboard sections first and the full admin library below.
 - Admin dashboard includes public and private notes.
-- Dashboard list is dense and paginated.
-- The rail provides navigation and actions, not recent-note shortcuts.
+- The admin library remains dense and paginated.
 
 ## Search Page
 
@@ -24,13 +22,16 @@
 
 ## Default Ordering
 
-- Browse and search pages sort by `updated_at DESC, id ASC`.
+- Recent and library lists sort by `updated_at DESC, id ASC`.
+- Search sorts by search rank first and `updated_at DESC, id ASC` second.
 
-## Fetch (`GET /{id}`)
+## Fetch (`GET /{ref}`)
 
 - Returns full note content if accessible.
 - Returns `404` if note does not exist.
 - Returns `404` if note is private and user is not authenticated.
+- Resolves `ref` by alias first and by `id` second.
+- Redirects to the alias URL when a note has an alias and the request used its raw `id`.
 - Response includes `body`, `is_private`, `created_at`, and `updated_at`.
 - Admin note pages edit the stored Markdown body through one rendered workspace.
 - Guest note rendering must reflect common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.

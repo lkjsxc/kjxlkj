@@ -21,9 +21,10 @@
 - Query input uses `q`.
 - Pagination uses `cursor` and `limit`.
 - Empty query renders the form plus terse guidance, not a default result dump.
+- Result snippets may differ from derived summaries when search context is more useful.
 
 ## Result Rules
 
 - Results keep the same dense row language as browse pages.
 - Guest results never expose private-only metadata.
-- Admin results may show visibility state.
+- Admin results may show visibility and favorite state.

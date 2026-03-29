@@ -10,7 +10,7 @@
 ## Rail Sections
 
 - Brand and session mode.
-- Admin-only `New note` action near the top of the rail.
+- Admin-only `New note` action near the top of the rail, but not flush against the brand block.
 - Primary navigation.
 - Current note context.
 - Created and updated metadata.
@@ -26,11 +26,13 @@
 - Timestamp layout must stack or grid safely.
 - Raw note IDs are not shown in normal rail metadata.
 - Long note titles or previews may not cause timestamp collisions.
+- Rail cards keep consistent heights even when text is long.
 
 ## Action Treatment
 
 - Home, Search, Dashboard, New note, Logout, and Delete use restrained controls.
 - `New note` is the first admin action in the rail.
+- Guest sign-in may sit lower in the rail rather than directly under navigation.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.
 
 ## Timeline Rules

@@ -7,8 +7,8 @@
 ## Format
 
 - `id` is a 128-bit random value.
-- Encoding is Base64URL without padding.
-- Length is exactly `22` characters.
+- Encoding is lowercase Base32 without separators.
+- Length is exactly `26` characters.
 - Hyphens are never inserted.
 
 ## Generation
@@ -20,4 +20,4 @@
 ## Validation
 
 - Any malformed `id` is rejected before storage access.
-- Validation checks exact length plus Base64URL character set.
+- Validation checks exact length plus lowercase Base32 character set.

@@ -27,3 +27,4 @@
 - The rail must not expose a search box.
 - The editor must not expose a visible mode switch.
 - Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
+- Login page shows the brand only above the sign-in form and button.

@@ -12,6 +12,7 @@
 - `Escape` closes the drawer.
 - Focus returns to the toggle after close.
 - Desktop keeps the rail persistently visible and ignores drawer-only chrome.
+- Compact preview overlay uses the same close affordances.
 
 ## Anti-Regression Rules
 

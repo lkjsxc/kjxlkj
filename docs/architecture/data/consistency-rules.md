@@ -3,6 +3,7 @@
 ## Current Note State
 
 - `id` is immutable once assigned.
+- `alias` and `is_favorite` belong to the current note state.
 - `created_at` never changes.
 - `updated_at` changes on every successful write.
 - `title`, `summary`, and search document are derived from the current body and updated on every write.

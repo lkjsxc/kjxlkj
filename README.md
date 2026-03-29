@@ -17,6 +17,12 @@ Contract-first note service for LLM-operated workflows.
 - PostgreSQL for notes, revisions, search, and sessions
 - Docker Compose for build and verification
 
+## Current Shape
+
+- `/` is an auth-aware homepage
+- `/admin` is a hybrid dashboard plus note library
+- `/{ref}` serves notes by alias or Base32 ID
+
 ## Rule
 
 If code and docs diverge, update the docs canon first and then realign code.

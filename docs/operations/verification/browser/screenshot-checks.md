@@ -8,14 +8,14 @@ docker compose --profile verify run --rm visual-verify
 
 ## Required Captures
 
-- Desktop public root shell with rail.
+- Desktop homepage shell with rail.
 - Desktop search page.
 - Desktop admin dashboard shell.
 - Desktop admin note page with the Markdown editor.
 - Desktop guest note page.
 - Desktop history index page showing current note plus revisions.
-- Compact public root shell closed by default.
-- Compact public root shell opened through the menu toggle.
+- Compact homepage shell closed by default.
+- Compact homepage shell opened through the menu toggle.
 - Compact admin note page with the drawer available.
 - Compact admin note page with the preview overlay opened.
 
@@ -33,10 +33,12 @@ docker compose --profile verify run --rm visual-verify
 - Note and history rails keep metadata readable without wrap regressions.
 - Note rails render one `All history` card and never render inline revision lists.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
+- Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
+- Compact preview opens as a fixed overlay.
 - Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
 - Browser verification types into the visible Markdown editor surface rather than using `setMarkdown()`.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.

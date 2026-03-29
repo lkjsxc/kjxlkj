@@ -1,29 +1,22 @@
-# Public Root Contract
+# Home Page Contract
 
 ## Route Intent
 
-- `GET /` is the public note browse page after setup completes.
-- Unauthenticated users land on the global note shell, not a bare list page.
-- Authenticated admins may still open `/`, but `/admin` remains the full admin index.
+- `GET /` is the homepage after setup completes.
+- Guests land on a public-facing home surface rather than a raw browse grid.
+- Signed-in admins still get the homepage, but `/admin` remains the heavy admin workspace.
 
 ## Layout Rules
 
-- The persistent side menu is visible on the public root.
-- The rail contains navigation and session actions.
-- Wide screens arrange public notes in a responsive multi-column grid.
-- Narrow screens collapse back to a single-column stack.
-- The rail supplements the list; it does not replace the main result pane.
+- The persistent side menu is visible on the homepage.
+- The main pane uses a stacked dashboard composition rather than one giant list.
+- Each note block uses compact cards in a responsive grid.
+- Narrow screens collapse to one column without stretched card heights.
 
 ## Content Rules
 
-- Public rows show title, summary, created time, and updated time.
-- Opaque note IDs are not shown in normal UI.
-- When a note has no heading-derived title, the row title is `Untitled note`.
-- The visible summary is the opening meaningful body excerpt.
-- If more meaningful content exists after the displayed excerpt, the summary ends with `...`.
-
-## Search Link Rule
-
-- The rail links to `/search`.
-- The public root itself does not carry the primary search input.
-- The page does not carry top-right `Search` or `Admin sign in` actions.
+- The homepage contains recent notes, favorite notes, and current month/year statistics.
+- Guest homepage data is public-only.
+- Signed-in admins may see private-capable recent/favorite blocks and quick admin actions.
+- Opaque IDs are not shown in normal homepage cards.
+- A quick search form may appear on the homepage, but canonical results stay on `/search`.

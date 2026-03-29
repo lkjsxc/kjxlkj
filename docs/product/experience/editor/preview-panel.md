@@ -17,9 +17,10 @@
 ## Layout Rules
 
 - Wide screens open preview as a right-side panel beside the Markdown editor.
-- Narrow screens open preview as an overlay/drawer above the editor workspace.
+- Narrow screens open preview as a fixed overlay above the editor workspace.
 - The preview may not cause horizontal page overflow.
 - The preview must be dismissible without losing note content.
+- The compact preview path may not depend on hidden tab content staying scroll-aligned underneath.
 
 ## Rendering Rules
 

@@ -24,7 +24,7 @@ curl -sS -X POST http://127.0.0.1:8080/login \
 
 Expected:
 
-- `/` returns the public browse page after setup
+- `/` returns the homepage after setup
 - setup redirects to `/login`
 - login redirects to `/admin`
 
@@ -48,7 +48,8 @@ curl -sS 'http://127.0.0.1:8080/'
 Expected:
 
 - HTML contains the shared shell rail
-- wide screens render public notes in multiple columns
+- HTML contains homepage sections rather than one bare browse list
+- homepage note cards do not stretch to the tallest card in a row
 - HTML does not expose raw note IDs in normal list rows
 - HTML does not contain visible rail section headings such as `CREATE`, `NAVIGATE`, `ACTIONS`, or `SCOPE`
 - HTML does not contain helper copy such as `Browse current public notes`
@@ -66,6 +67,7 @@ Expected:
 - guest search returns only public matches
 - admin search may include private matches
 - HTML contains the search form in the main pane
+- results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
 
 ## Verify Admin Dashboard
@@ -76,6 +78,7 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 
 Expected:
 
+- HTML contains stats and settings blocks before the admin library
 - HTML contains admin list rows
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
@@ -95,6 +98,7 @@ Expected:
 - HTML contains one `All history` card and no inline revision links
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
+- HTML does not render a title-adjacent `Public` or `Private` pill above the editor
 - HTML hides `Saving` / `Saved`
 - HTML references local editor assets rather than an external editor CDN
 - preview starts closed
@@ -127,6 +131,7 @@ Expected:
 - `Prev` and `Next` card footprints remain stable even when one side is unavailable
 - typed Markdown stays legible in the editor and renders correctly when preview is opened
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
+- compact preview opens as a fixed overlay and closes cleanly
 
 ## Verify Browser Visual Checks
 
@@ -136,7 +141,7 @@ docker compose --profile verify run --rm visual-verify
 
 Expected:
 
-- desktop screenshots pass browse/search/note assertions
+- desktop screenshots pass home/search/admin/note assertions
 - compact screenshots pass closed and open drawer assertions
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
 - the admin-note idle scenario detects no repeated no-op save churn

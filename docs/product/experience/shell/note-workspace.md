@@ -11,9 +11,9 @@
 ## Header Content
 
 - Title extracted from the note body.
-- Visibility state.
 - Created and updated time.
 - No visible raw ID chips in normal UI.
+- The header does not place a `Public` or `Private` pill between the title and editor.
 
 ## Admin Editing Surface
 
@@ -25,6 +25,7 @@
 - Narrow screens reduce the toolbar to a fixed supported subset, but table authoring remains available.
 - Toolbar rows wrap inside the editor chrome instead of introducing a detached toolbar scrollbar.
 - Public checkbox stays inside the editing surface.
+- Alias and favorite controls stay inside the editing surface.
 - Preview stays closed by default and opens on demand from the editor chrome.
 - Preview work may stay inactive until the user opens it.
 - Editor theming may skin the container, but must not flatten syntax legibility or preview semantics.
@@ -36,6 +37,8 @@
 
 - Heading edits update page title, browser title, and current-note rail title immediately.
 - Public checkbox toggles update visibility chips and related chrome immediately.
+- Alias edits update canonical-link targets after save.
+- Favorite toggles update relevant chrome immediately.
 - The removed helper text (`Guest-readable`, `Admin-only`) does not return.
 - Preview content updates from the current unsaved Markdown body.
 - Table insertion must stay available without leaving the single Markdown workspace.

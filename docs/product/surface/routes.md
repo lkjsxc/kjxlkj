@@ -4,7 +4,7 @@
 
 - `GET /`:
   - before setup: `302` to `/setup`
-  - after setup: `200` HTML public note index
+  - after setup: `200` HTML homepage
 - `GET /setup`:
   - before setup: `200` HTML setup page
   - after setup: `302` to `/login`
@@ -21,16 +21,16 @@
   - invalid credentials: `401` HTML error page
   - valid credentials: `303` to `/admin` and sets `session_id` cookie
 - `POST /logout`:
-  - after setup: `204` and clears `session_id` cookie
+  - after setup: `303` to `/login` and clears `session_id` cookie
 
-## List and Search Pages
+## Home, Admin, and Search Pages
 
 - `GET /`:
-  - returns public shell with browse list using query params `cursor`, `limit`
+  - returns auth-aware homepage shell
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
-  - with valid session: `200` HTML admin shell with browse list using `cursor`, `limit`
+  - with valid session: `200` HTML hybrid admin dashboard using `cursor`, `limit`
 - `GET /search`:
   - before setup: `302` to `/setup`
   - without valid session: `200` HTML public search page using `q`, `cursor`, `limit`
@@ -47,15 +47,15 @@
 
 ## Note Viewing
 
-- `GET /{id}`:
+- `GET /{ref}`:
   - note not found: `404`
   - note is private and no session: `404`
   - accessible note: `200` HTML note page with Markdown editor for admins
-- `GET /{id}/history`:
+- `GET /{ref}/history`:
   - note not found: `404`
   - note is private and no session: `404`
   - accessible note: `200` HTML history index
-- `GET /{id}/history/{revision_number}`:
+- `GET /{ref}/history/{revision_number}`:
   - note not found: `404`
   - revision not found: `404`
   - revision is private and no session: `404`
@@ -75,6 +75,10 @@
   - without valid session: `401` JSON error
   - note not found: `404` JSON error
   - valid session: `204`
+- `POST /admin/settings`:
+  - without valid session: `302` to `/login`
+  - invalid payload: `400` HTML validation page
+  - valid session: `303` to `/admin`
 
 ## Revision History and Navigation JSON
 

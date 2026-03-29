@@ -9,9 +9,10 @@
 
 ## Search Document
 
-- Current notes persist a full-text search document built from current title plus current body.
+- Current notes persist a full-text search document built from current alias, title, and body.
 - Search indexing applies only to the current note state, not revisions.
 - Search indexes must support public/admin list queries at thousands-note scale.
+- Search may supplement full-text ranking with trigram-assisted fallback matching.
 
 ## UI Visibility
 

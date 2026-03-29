@@ -8,8 +8,10 @@ The system manages `note` resources.
 
 ```json
 {
-  "id": "Q29udHJhY3RSdW50aW1lMQ",
+  "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
+  "alias": "release-notes",
   "body": "# Title\n\nMarkdown content...",
+  "is_favorite": true,
   "is_private": true,
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
@@ -18,8 +20,10 @@ The system manages `note` resources.
 
 ## Field Rules
 
-- `id`: Primary key. Exact 22-character Base64URL string representing 128 random bits.
+- `id`: Primary key. Exact 26-character lowercase Base32 string representing 128 random bits.
+- `alias`: Optional lowercase route alias.
 - `body`: UTF-8 Markdown content. May be empty. Supported authoring paths include headings, lists, task lists, blockquotes, fenced code, links, and GFM tables.
+- `is_favorite`: Boolean. Default `false`.
 - `is_private`: Boolean. Default `true`.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
@@ -29,6 +33,8 @@ The system manages `note` resources.
 ```json
 {
   "body": "# 2026-03-27 21:04\n",
+  "alias": null,
+  "is_favorite": false,
   "is_private": true
 }
 ```
@@ -45,6 +51,7 @@ The system manages `note` resources.
 - Created time is the secondary identity cue in lists and note chrome.
 - Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
+- Public note URLs prefer `alias` when present.
 
 ## UI Semantics
 
@@ -52,6 +59,7 @@ The system manages `note` resources.
 - `Public = checked` maps to `is_private = false`.
 - `Public = unchecked` maps to `is_private = true`.
 - Search UI is canonical on `/search`.
+- Favorite state is explicit admin-managed note state.
 
 ## Revision History
 
@@ -70,7 +78,7 @@ Every update creates a new immutable revision snapshot:
 
 ```json
 {
-  "id": "Q29udHJhY3RSdW50aW1lMQ"
+  "id": "01jvq6z3f4t2p8k7m9n0b1c2d3"
 }
 ```
 

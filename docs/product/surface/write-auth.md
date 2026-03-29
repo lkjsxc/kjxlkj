@@ -5,7 +5,7 @@
 All write operations require a valid admin session:
 
 - `POST /login` sets `session_id` cookie after valid password.
-- `POST /logout` clears `session_id`.
+- `POST /logout` clears `session_id` and redirects to `/login`.
 - Write endpoints (`POST`, `PUT`, `DELETE` on `/records/*`) require a valid non-expired `session_id`.
 - Admin credentials and session rows are persisted in PostgreSQL (`DATABASE_URL`).
 - Runtime startup fails when database connectivity is unavailable.
