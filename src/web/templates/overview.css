@@ -96,14 +96,29 @@
     min-height: calc(1.5em * 3);
 }
 
+.card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 28px;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
 .note-grid .note-row {
     grid-template-columns: 1fr;
     align-self: start;
+    min-height: 192px;
 }
 
 .note-grid .card-meta {
     justify-items: start;
     text-align: left;
+}
+
+.note-grid .card-badges {
+    justify-content: flex-start;
 }
 
 .auth-actions {

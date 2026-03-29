@@ -45,7 +45,12 @@ pub fn home_page(
         "Home",
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
-            &list_rail("home", rail_primary_action(is_admin), rail_actions(is_admin), is_admin),
+            &list_rail(
+                "home",
+                rail_primary_action(is_admin),
+                rail_actions(is_admin),
+                is_admin,
+            ),
             &content,
             "home-page",
         ),

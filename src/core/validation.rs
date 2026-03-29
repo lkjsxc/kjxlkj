@@ -7,14 +7,15 @@ use thiserror::Error;
 use uuid::Uuid;
 
 static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z2-7]{26}$").unwrap());
-static ALIAS_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
+static ALIAS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
 static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
 static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
-    ["admin", "assets", "healthz", "login", "logout", "records", "search", "setup"]
-        .into_iter()
-        .collect()
+    [
+        "admin", "assets", "healthz", "login", "logout", "records", "search", "setup",
+    ]
+    .into_iter()
+    .collect()
 });
 
 const BASE32_ALPHABET: &[u8; 32] = b"abcdefghijklmnopqrstuvwxyz234567";
@@ -76,7 +77,9 @@ pub fn normalize_alias(alias: Option<&str>) -> Result<Option<String>, AliasError
     Ok(Some(alias.to_string()))
 }
 
-pub fn looks_like_id(value: &str) -> bool { ID_REGEX.is_match(value) }
+pub fn looks_like_id(value: &str) -> bool {
+    ID_REGEX.is_match(value)
+}
 
 pub fn extract_title(body: &str) -> Option<String> {
     for line in body.lines() {
@@ -146,55 +149,4 @@ fn encode_base32(bytes: [u8; 16]) -> String {
     }
 
     output
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn valid_ids() {
-        let id = generate_id();
-        assert_eq!(id.len(), 26);
-        assert!(validate_id(&id).is_ok());
-    }
-
-    #[test]
-    fn invalid_ids() {
-        assert_eq!(validate_id("short"), Err(IdError::InvalidLength));
-        assert_eq!(validate_id("containsinvalididletters1z"), Err(IdError::InvalidFormat));
-    }
-
-    #[test]
-    fn aliases_normalize_and_validate() {
-        assert_eq!(normalize_alias(Some("")), Ok(None));
-        assert_eq!(
-            normalize_alias(Some("release-notes")),
-            Ok(Some("release-notes".to_string()))
-        );
-        assert_eq!(
-            normalize_alias(Some("release--notes")),
-            Err(AliasError::InvalidFormat)
-        );
-        assert_eq!(normalize_alias(Some("search")), Err(AliasError::Reserved));
-        assert_eq!(
-            normalize_alias(Some("abcdefghijklmnopqrstuvwxyz")),
-            Err(AliasError::ConflictsWithId)
-        );
-    }
-
-    #[test]
-    fn title_and_summary_derivation() {
-        assert_eq!(derive_title("# Hello\n\nBody"), "Hello".to_string());
-        assert_eq!(derive_title(""), "Untitled note".to_string());
-        assert_eq!(derive_summary("# Hello\n\nBody"), "Body".to_string());
-        assert_eq!(derive_summary("# Hello\n\n- Bullet"), "Bullet".to_string());
-        assert_eq!(derive_summary("# Hello\n\n> Quote"), "Quote".to_string());
-        assert_eq!(
-            derive_summary("# Hello\n\nBody\n\nMore details"),
-            "Body...".to_string()
-        );
-        assert!(derive_summary(&format!("# Hello\n\n{}", "A".repeat(180))).ends_with("..."));
-        assert_eq!(derive_summary(""), "No summary yet.".to_string());
-    }
 }

@@ -20,18 +20,19 @@ export async function verifyUiCreatedDraft(page) {
     await expectEditorFocus(page);
 }
 
-export async function verifyEditorFormatting(browser, page, id) {
+export async function verifyEditorFormatting(browser, page, note, vimEnabled = false) {
     const saveRequests = [];
     page.on('requestfinished', (request) => {
-        if (request.method() === 'PUT' && new URL(request.url()).pathname === `/records/${id}`) {
+        if (request.method() === 'PUT' && new URL(request.url()).pathname === `/records/${note.id}`) {
             saveRequests.push(Date.now());
         }
     });
     await page.locator('.toastui-editor-md-container .ProseMirror').first().waitFor({ state: 'visible' });
     await expectEditorFocus(page);
+    await verifyVimMode(page, vimEnabled);
     await page.waitForTimeout(1600);
     assert.equal(saveRequests.length, 0, 'idle note should not save before edits');
-    await appendMarkdown(page);
+    await appendMarkdown(page, vimEnabled);
     await openPreview(page);
     await waitForPreviewStructures(page);
     await assertEditorLayout(page, false);
@@ -46,11 +47,12 @@ export async function verifyEditorFormatting(browser, page, id) {
         'false',
         'preview should reset closed after reload'
     );
+    if (vimEnabled) await page.getByText('Vim normal', { exact: true }).waitFor({ state: 'visible' });
     await openPreview(page);
     await waitForPreviewStructures(page);
     const guest = await newContext(browser, { width: 1440, height: 1100 });
     const guestPage = await guest.newPage();
-    await guestPage.goto(`${appUrl}/${id}`, { waitUntil: 'networkidle' });
+    await guestPage.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await guestPage.waitForFunction(
         () =>
             !!document.querySelector('.prose h2') &&
@@ -92,7 +94,8 @@ export async function assertEditorLayout(page, compact) {
     }, compact);
 }
 
-async function appendMarkdown(page) {
+async function appendMarkdown(page, vimEnabled) {
+    if (vimEnabled) await ensureInsertMode(page);
     await moveCursorToEnd(page);
     for (const line of [
         '',
@@ -114,6 +117,29 @@ async function appendMarkdown(page) {
         await page.keyboard.press('Enter');
     }
     await page.locator('.toastui-editor-toolbar-icons.table').first().waitFor({ state: 'visible' });
+}
+
+async function verifyVimMode(page, enabled) {
+    const state = page.locator('[data-vim-mode-state]').first();
+    await state.waitFor({ state: 'visible' });
+    if (!enabled) {
+        assert.equal((await state.textContent()).trim(), 'Vim off');
+        return;
+    }
+    assert.equal((await state.textContent()).trim(), 'Vim normal');
+    await page.keyboard.press('i');
+    await page.getByText('Vim insert', { exact: true }).waitFor({ state: 'visible' });
+    await page.keyboard.press('Escape');
+    await page.getByText('Vim normal', { exact: true }).waitFor({ state: 'visible' });
+}
+
+async function ensureInsertMode(page) {
+    const state = page.locator('[data-vim-mode-state]').first();
+    await state.waitFor({ state: 'visible' });
+    if ((await state.textContent()).trim() === 'Vim normal') {
+        await page.keyboard.press('i');
+        await page.getByText('Vim insert', { exact: true }).waitFor({ state: 'visible' });
+    }
 }
 
 async function waitForPreviewStructures(page) {

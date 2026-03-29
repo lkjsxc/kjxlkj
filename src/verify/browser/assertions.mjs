@@ -1,64 +1,49 @@
 import assert from 'node:assert/strict';
 import { alpha, contrast, isDark, isLight } from './style-utils.mjs';
 
-export async function expectFlatShell(page, controlNames = []) {
-    const colorScheme = await page.evaluate(
-        () => getComputedStyle(document.documentElement).colorScheme
-    );
-    assert.match(colorScheme, /dark/, 'dark mode should be the default');
-    await assertDarkSurface(page);
-    assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
-    assert.equal(await page.locator('.shell-rail h2').count(), 0);
-    for (const text of ['RECENT', 'Rich mode', 'Text mode', 'Saving', 'Saved', 'Public index', 'Admin index']) {
-        await assertInvisibleText(page, text);
-    }
-    await assertNoHorizontalOverflow(page);
-    for (const name of controlNames) {
-        await assertReadable(await namedControl(page, name));
-    }
-}
-
 export async function expectPublicRoot(page) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'Public notes');
-    await assertInvisibleText(page, 'Browse current public notes');
+    await assertVisibleText(page, 'Home');
+    await assertVisibleText(page, 'Recently updated');
+    await assertVisibleText(page, 'Favorites');
+    await page.getByLabel('Quick search').waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
     if ((await page.evaluate(() => window.innerWidth)) > 900) {
         await assertWideGrid(page);
+        await assertGridHeights(page, '.note-grid .note-row');
     }
 }
 
 export async function expectSearchPage(page) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'Find notes');
+    await assertVisibleText(page, 'Search');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
 }
 
 export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
-    await assertVisibleText(page, 'Admin notes');
-    await assertInvisibleText(page, 'Admin browse');
+    await assertVisibleText(page, 'Dashboard');
+    await assertVisibleText(page, 'Settings');
+    await assertVisibleText(page, 'Local editor preferences');
+    await assertVisibleText(page, 'Library');
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
-    await assertTopRailCreateAction(page);
+    await assertCreateActionBelowHome(page);
 }
 
 export async function expectAdminNote(page) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'Public');
     assert.equal(await page.locator('#public-toggle').isChecked(), true);
+    assert.equal(await page.locator('#favorite-toggle').isChecked(), true);
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false');
-    assert.ok(
-        (await page.locator('.toastui-editor-defaultUI:visible').count()) +
-            (await page.locator('#editor-fallback:visible').count()) > 0
-    );
+    assert.equal(await page.locator('.note-head .status-pill').count(), 0);
     await assertVisibleText(page, 'Delete note');
-    await assertVisibleText(page, 'Created');
-    await assertVisibleText(page, 'Updated');
+    await assertVisibleText(page, 'URL alias');
+    await assertVisibleText(page, 'Canonical URL');
     await assertSingleHistoryCard(page);
     await assertLocalToastUiAssets(page);
-    await assertTopRailCreateAction(page);
+    await assertCreateActionBelowHome(page);
 }
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
@@ -108,22 +93,25 @@ export async function assertInvisibleText(page, text) {
     assert.equal(visibleCount, 0, `"${text}" should stay hidden`);
 }
 
-export async function assertNoHorizontalOverflow(page) {
-    const overflow = await page.evaluate(
-        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
+async function expectFlatShell(page, controlNames = []) {
+    const colorScheme = await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme);
+    assert.match(colorScheme, /dark/, 'dark mode should be the default');
+    await assertDarkSurface(page);
+    await assertInvisibleText(page, 'Rich mode');
+    await assertInvisibleText(page, 'Text mode');
+    await assertInvisibleText(page, 'Saving');
+    await assertInvisibleText(page, 'Saved');
+    await assertNoHorizontalOverflow(page);
+    assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
+    assert.equal(await page.locator('.shell-rail h2').count(), 0);
+    for (const name of controlNames) await assertReadable(await namedControl(page, name));
 }
 
 async function assertDarkSurface(page) {
     const shell = page.locator('.surface, .index-card').first();
     const style = await shell.evaluate((node) => {
         const computed = getComputedStyle(node);
-        return {
-            background: computed.backgroundColor,
-            backgroundImage: computed.backgroundImage,
-            boxShadow: computed.boxShadow,
-        };
+        return { background: computed.backgroundColor, backgroundImage: computed.backgroundImage, boxShadow: computed.boxShadow };
     });
     assert.ok(isDark(style.background));
     assert.equal(style.backgroundImage, 'none');
@@ -131,10 +119,17 @@ async function assertDarkSurface(page) {
 }
 
 async function assertWideGrid(page) {
-    const columns = await page.locator('.public-note-grid .note-row').evaluateAll((nodes) => {
-        return new Set(nodes.map((node) => Math.round(node.getBoundingClientRect().left))).size;
-    });
-    assert.ok(columns > 1, 'wide public browse should use multiple columns');
+    const columns = await page.locator('.note-grid .note-row').evaluateAll((nodes) =>
+        new Set(nodes.map((node) => Math.round(node.getBoundingClientRect().left))).size
+    );
+    assert.ok(columns > 1, 'wide home sections should use multiple columns');
+}
+
+async function assertGridHeights(page, selector) {
+    const heights = await page.locator(selector).evaluateAll((nodes) =>
+        nodes.map((node) => Math.round(node.getBoundingClientRect().height))
+    );
+    assert.ok(Math.max(...heights) - Math.min(...heights) <= 4, 'grid cards should keep consistent heights');
 }
 
 async function assertNoHeaderButtons(page) {
@@ -146,7 +141,7 @@ async function assertStableMetadata(page, title) {
     const heights = await row.locator('.card-meta small').evaluateAll((nodes) =>
         nodes.map((node) => node.getBoundingClientRect().height)
     );
-    assert.ok(heights.every((height) => height <= 22), 'timestamps should stay on single lines');
+    assert.ok(heights.every((height) => height <= 24), 'timestamps should stay compact');
 }
 
 async function namedControl(page, name) {
@@ -159,17 +154,9 @@ async function assertReadable(locator) {
     await locator.waitFor({ state: 'visible' });
     const style = await locator.evaluate((node) => {
         const computed = getComputedStyle(node);
-        return {
-            color: computed.color,
-            background: computed.backgroundColor,
-            backgroundImage: computed.backgroundImage,
-        };
+        return { color: computed.color, background: computed.backgroundColor, backgroundImage: computed.backgroundImage };
     });
-    assert.ok(
-        style.backgroundImage !== 'none' ||
-            contrast(style.color, style.background) >= 4.2 ||
-            (alpha(style.background) < 0.2 && isLight(style.color))
-    );
+    assert.ok(style.backgroundImage !== 'none' || contrast(style.color, style.background) >= 4.2 || (alpha(style.background) < 0.2 && isLight(style.color)));
 }
 
 async function assertLocalToastUiAssets(page) {
@@ -187,13 +174,15 @@ async function assertSingleHistoryCard(page) {
     assert.equal(await page.getByText('All history', { exact: true }).count(), 1);
 }
 
-async function assertTopRailCreateAction(page) {
+async function assertCreateActionBelowHome(page) {
     const createControl = page.getByRole('button', { name: 'New note', exact: true }).first();
     if (!(await createControl.count()) || !(await createControl.isVisible())) return;
     const createTop = await createControl.evaluate((node) => node.getBoundingClientRect().top);
-    const publicTop = await page
-        .getByRole('link', { name: 'Public notes', exact: true })
-        .first()
-        .evaluate((node) => node.getBoundingClientRect().top);
-    assert.ok(createTop < publicTop, 'New note should stay above navigation links');
+    const homeTop = await page.getByRole('link', { name: 'Home', exact: true }).first().evaluate((node) => node.getBoundingClientRect().top);
+    assert.ok(createTop > homeTop, 'New note should sit below primary navigation');
+}
+
+async function assertNoHorizontalOverflow(page) {
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
 }

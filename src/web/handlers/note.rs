@@ -25,7 +25,12 @@ pub async fn note_page(
     if record.is_private && !is_admin {
         return Ok(not_found());
     }
-    if record.alias.as_deref().is_some_and(|alias| alias != reference) && reference == record.id {
+    if record
+        .alias
+        .as_deref()
+        .is_some_and(|alias| alias != reference)
+        && reference == record.id
+    {
         return Ok(redirect(&view::note_href(&record)));
     }
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;

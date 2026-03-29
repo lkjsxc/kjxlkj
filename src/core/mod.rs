@@ -2,6 +2,8 @@
 
 mod markdown;
 mod validation;
+#[cfg(test)]
+mod validation_tests;
 
 pub use markdown::render_markdown;
 pub use validation::{

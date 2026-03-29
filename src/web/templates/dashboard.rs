@@ -87,9 +87,7 @@ fn settings_form(settings: &AppSettings) -> String {
 <button type="submit" class="btn btn-primary">Save settings</button>
 </form>
 </section>"#,
-        settings.home_recent_limit,
-        settings.home_favorite_limit,
-        settings.search_results_per_page
+        settings.home_recent_limit, settings.home_favorite_limit, settings.search_results_per_page
     )
 }
 

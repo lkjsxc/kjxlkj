@@ -32,9 +32,13 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
         home_favorite_limit: form.home_favorite_limit.clamp(1, 24),
         search_results_per_page: form.search_results_per_page.clamp(5, 100),
     };
-    if form.home_recent_limit < 1 || form.home_favorite_limit < 1 || form.search_results_per_page < 1
+    if form.home_recent_limit < 1
+        || form.home_favorite_limit < 1
+        || form.search_results_per_page < 1
     {
-        return Err(AppError::InvalidRequest("settings values must be positive".to_string()));
+        return Err(AppError::InvalidRequest(
+            "settings values must be positive".to_string(),
+        ));
     }
     Ok(settings)
 }

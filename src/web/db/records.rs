@@ -108,9 +108,7 @@ async fn get_record_where(
     Ok(row.map(row_to_record))
 }
 
-async fn client(
-    pool: &DbPool,
-) -> Result<deadpool_postgres::Object, AppError> {
+async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
     pool.get()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))

@@ -11,7 +11,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
 <p class="card-summary">{}</p>
 </div>
 <div class="card-meta">
-{}
+<div class="card-badges">{}</div>
 <small><span>Created</span>{}</small>
 <small><span>Updated</span>{}</small>
 </div>
@@ -70,7 +70,8 @@ pub(crate) fn pager(path: &str, query: Option<&str>, next_cursor: Option<&str>) 
 fn card_badges(note: &IndexItem) -> String {
     let mut badges = Vec::new();
     if note.is_favorite {
-        badges.push(r#"<span class="status-pill status-pill-favorite">Favorite</span>"#.to_string());
+        badges
+            .push(r#"<span class="status-pill status-pill-favorite">Favorite</span>"#.to_string());
     }
     if let Some(item) = note.visibility {
         badges.push(format!(r#"<span class="status-pill">{item}</span>"#));

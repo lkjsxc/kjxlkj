@@ -51,12 +51,16 @@ async fn admin_page_impl(
     Ok(html(templates::admin_page(
         &stats,
         &settings,
-        &recent.iter().map(|record| view::index_item(record, true)).collect::<Vec<_>>(),
+        &recent
+            .iter()
+            .map(|record| view::index_item(record, true))
+            .collect::<Vec<_>>(),
         &favorites
             .iter()
             .map(|record| view::index_item(record, true))
             .collect::<Vec<_>>(),
-        &page.records
+        &page
+            .records
             .iter()
             .map(|record| view::index_item(record, true))
             .collect::<Vec<_>>(),

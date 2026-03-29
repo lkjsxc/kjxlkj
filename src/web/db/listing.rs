@@ -1,9 +1,8 @@
 //! Searchable note listing queries
 
-use super::{DbPool, ListedRecord, Record};
+use super::listing_cursor::{decode_cursor, page_from_rows, row_to_listed_record, Cursor};
+use super::{DbPool, ListedRecord};
 use crate::error::AppError;
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
-use chrono::{DateTime, Utc};
 
 const DEFAULT_LIMIT: i64 = 20;
 const MAX_LIMIT: i64 = 100;
@@ -37,11 +36,19 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
     }
 }
 
-pub async fn list_recent_records(pool: &DbPool, include_private: bool, limit: i64) -> Result<Vec<ListedRecord>, AppError> {
+pub async fn list_recent_records(
+    pool: &DbPool,
+    include_private: bool,
+    limit: i64,
+) -> Result<Vec<ListedRecord>, AppError> {
     top_records(pool, include_private, limit, false).await
 }
 
-pub async fn list_favorite_records(pool: &DbPool, include_private: bool, limit: i64) -> Result<Vec<ListedRecord>, AppError> {
+pub async fn list_favorite_records(
+    pool: &DbPool,
+    include_private: bool,
+    limit: i64,
+) -> Result<Vec<ListedRecord>, AppError> {
     top_records(pool, include_private, limit, true).await
 }
 
@@ -126,64 +133,10 @@ async fn top_records(
     Ok(rows.into_iter().map(row_to_listed_record).collect())
 }
 
-fn page_from_rows(mut rows: Vec<tokio_postgres::Row>, limit: i64) -> ListPage {
-    let next_cursor = if rows.len() as i64 > limit {
-        rows.pop().map(|row| encode_cursor(&row.get::<_, DateTime<Utc>>("updated_at"), &row.get::<_, String>("id")))
-    } else {
-        None
-    };
-    ListPage {
-        records: rows.into_iter().map(row_to_listed_record).collect(),
-        next_cursor,
-    }
-}
-
-fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
-    ListedRecord {
-        record: Record {
-            id: row.get("id"),
-            alias: row.get("alias"),
-            title: row.get("title"),
-            summary: row.get("summary"),
-            body: row.get("body"),
-            is_favorite: row.get("is_favorite"),
-            is_private: row.get("is_private"),
-            created_at: row.get("created_at"),
-            updated_at: row.get("updated_at"),
-        },
-        preview: row.get("preview"),
-    }
-}
-
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
     pool.get()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))
-}
-
-#[derive(Clone, Debug)]
-struct Cursor { updated_at: DateTime<Utc>, id: String }
-
-fn encode_cursor(updated_at: &DateTime<Utc>, id: &str) -> String {
-    URL_SAFE_NO_PAD.encode(format!("{}|{id}", updated_at.to_rfc3339()))
-}
-
-fn decode_cursor(cursor: &str) -> Result<Cursor, AppError> {
-    let raw = URL_SAFE_NO_PAD
-        .decode(cursor)
-        .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    let text = String::from_utf8(raw)
-        .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    let Some((updated_at, id)) = text.split_once('|') else {
-        return Err(AppError::InvalidRequest("invalid cursor".to_string()));
-    };
-    let updated_at = updated_at
-        .parse()
-        .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    Ok(Cursor {
-        updated_at,
-        id: id.to_string(),
-    })
 }
 
 impl Default for ListRequest {

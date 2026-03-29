@@ -21,7 +21,12 @@ pub async fn history_page(
     let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
         return Ok(not_found());
     };
-    if record.alias.as_deref().is_some_and(|alias| alias != reference) && reference == record.id {
+    if record
+        .alias
+        .as_deref()
+        .is_some_and(|alias| alias != reference)
+        && reference == record.id
+    {
         return Ok(redirect(&view::history_href(&record)));
     }
     let revisions = db::get_record_revisions(&pool, &record.id).await?;
@@ -46,7 +51,12 @@ pub async fn revision_page(
     let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
         return Ok(not_found());
     };
-    if record.alias.as_deref().is_some_and(|alias| alias != reference) && reference == record.id {
+    if record
+        .alias
+        .as_deref()
+        .is_some_and(|alias| alias != reference)
+        && reference == record.id
+    {
         return Ok(redirect(&format!(
             "{}/history/{revision_number}",
             view::note_href(&record)
