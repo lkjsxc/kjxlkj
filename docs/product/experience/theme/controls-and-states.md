@@ -11,6 +11,7 @@
 - Narrow layouts expose one quiet top-right menu toggle.
 - The drawer may use a backdrop but no loud close chrome.
 - Rail interactions must remain keyboard accessible.
+- Search paging controls should make backward and forward movement obvious.
 
 ## State Treatments
 
@@ -29,3 +30,4 @@
 - Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
+- Search query state may be displayed in a read-only card beside sort rather than only inside the input.

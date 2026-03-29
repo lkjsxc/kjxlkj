@@ -11,6 +11,7 @@
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
 - Main content starts with compact stats and settings blocks, then recent and favorite note blocks.
+- Dashboard spacing should stay tighter than the early tall-card builds.
 - The dashboard does not include the full note library.
 - The page header does not show `Admin browse`.
 - The page does not expose a top-right search button.

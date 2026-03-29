@@ -46,5 +46,7 @@ docker compose --profile verify run --rm visual-verify
 - The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
 - Empty-query `/search` renders note cards instead of helper guidance.
+- Search exposes a query display card near sort.
+- Search paging exposes `Previous` and `Next` actions instead of `More notes`.
 - Dashboard does not render a library block.
 - Dashboard settings cover default Vim mode and browser-local Vim override behavior.

@@ -9,14 +9,16 @@
 ## Layout Rules
 
 - The persistent side menu is visible on the homepage.
-- The main pane uses a short stacked composition.
-- Each note block uses compact cards in a responsive grid.
+- The main pane uses a short stacked composition with restrained gaps between the page title and first section.
+- `Quick search`, `Recently updated`, and `Favorites` use the same section-block language.
+- Each note block uses compact but not cramped cards in a responsive grid.
 - Narrow screens collapse to one column without stretched card heights.
 - The homepage avoids tall summary panels and tall statistics blocks.
+- The quick-search section should not visually dominate the recent and favorite sections.
 
 ## Content Rules
 
-- The homepage contains a quick search form, recent notes, and favorite notes.
+- The homepage contains a quick search section, recent notes, and favorite notes.
 - The homepage does not contain a statistics block.
 - `Recently updated` ends with one clear browse-action card that links to `/search`.
 - Guest homepage data is public-only.

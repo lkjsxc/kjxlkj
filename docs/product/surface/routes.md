@@ -33,8 +33,8 @@
   - with valid session: `200` HTML admin dashboard
 - `GET /search`:
   - before setup: `302` to `/setup`
-  - without valid session: `200` HTML public browse/search page using `q`, `sort`, `cursor`, `limit`
-  - with valid session: `200` HTML admin-capable browse/search page using `q`, `sort`, `cursor`, `limit`
+  - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
+  - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
 
 ## Asset Delivery
 

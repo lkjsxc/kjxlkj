@@ -71,7 +71,9 @@ Expected:
 - guest search returns only public matches
 - admin search may include private matches
 - HTML contains the search form in the main pane
+- HTML contains a query display near the search input and sort control
 - HTML contains sort controls in the main pane
+- HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
 
