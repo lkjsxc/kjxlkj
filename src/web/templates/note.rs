@@ -13,7 +13,12 @@ const EDITOR_VIM_JS: &str = include_str!("editor_vim.js");
 const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
-pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
+pub fn note_page(
+    record: &Record,
+    chrome: &NoteChrome,
+    is_admin: bool,
+    default_vim_mode: bool,
+) -> String {
     let content = format!(
         r#"<header class="page-head note-head">
 <div class="page-title-stack"><h1 data-live-title>{}</h1></div>
@@ -44,7 +49,7 @@ pub fn note_page(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String
             "note-page",
         ),
         &editor_head(is_admin),
-        &editor_script(record, chrome, is_admin),
+        &editor_script(record, chrome, is_admin, default_vim_mode),
     )
 }
 
@@ -59,7 +64,12 @@ fn editor_head(is_admin: bool) -> String {
     )
 }
 
-fn editor_script(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
+fn editor_script(
+    record: &Record,
+    chrome: &NoteChrome,
+    is_admin: bool,
+    default_vim_mode: bool,
+) -> String {
     if !is_admin {
         return String::new();
     }
@@ -70,6 +80,7 @@ var currentAlias = {};
 var currentHref = {};
 var isFavorite = {};
 var isPrivate = {};
+var defaultVimMode = {};
 {}
 {}
 {}
@@ -82,6 +93,7 @@ initEditor();
         serde_json::to_string(&chrome.current_href).unwrap(),
         record.is_favorite,
         record.is_private,
+        default_vim_mode,
         NOTE_ACTIONS_JS,
         EDITOR_UI_JS,
         EDITOR_VIM_JS,
@@ -102,8 +114,8 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
 <span id="save-error" class="save-error" hidden aria-live="polite">Save failed. Retry on the next change.</span>
 </div>
 <div class="editor-meta-grid">
-<label class="form-group editor-alias-field" for="alias-input">
-<span>URL alias</span>
+<label class="editor-url-card editor-field-card" for="alias-input">
+<small>URL alias</small>
 <input type="text" id="alias-input" value="{}" placeholder="Optional alias">
 </label>
 <div class="editor-url-card"><small>Canonical URL</small><a href="{}" data-current-url>{}</a></div>
@@ -161,17 +173,19 @@ mod tests {
 
     #[test]
     fn guest_note_page_hides_editor() {
-        let html = note_page(&sample_record(), &sample_chrome(), false);
+        let html = note_page(&sample_record(), &sample_chrome(), false, false);
         assert!(html.contains("shell-rail"));
         assert!(!html.contains("editor-root"));
     }
 
     #[test]
     fn admin_note_page_renders_alias_and_favorite_controls() {
-        let html = note_page(&sample_record(), &sample_chrome(), true);
+        let html = note_page(&sample_record(), &sample_chrome(), true, true);
         assert!(html.contains("favorite-toggle"));
         assert!(html.contains("alias-input"));
         assert!(html.contains("preview-toggle"));
+        assert!(html.contains("var defaultVimMode = true;"));
+        assert!(html.contains("editor-field-card"));
         assert!(!html.contains("uicdn.toast.com"));
     }
 }

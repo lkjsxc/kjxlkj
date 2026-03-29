@@ -1,6 +1,6 @@
 .shell-main,
 .index-layout {
-    padding: 44px 48px 56px;
+    padding: 34px 40px 44px;
 }
 
 .dashboard-page,
@@ -11,13 +11,13 @@
 .note-list {
     display: grid;
     align-content: start;
-    gap: 18px;
+    gap: 14px;
 }
 
 .surface,
 .index-card {
-    padding: 20px 22px;
-    border-radius: 22px;
+    padding: 16px 18px;
+    border-radius: 20px;
 }
 
 .page-head,
@@ -38,7 +38,7 @@
 .page-meta,
 .card-meta {
     display: grid;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
 }
 
@@ -63,8 +63,8 @@
 }
 
 .page-title-stack h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.02;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    line-height: 1.04;
 }
 
 .page-actions {
@@ -96,12 +96,12 @@
 .note-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 20px;
+    gap: 16px;
     align-items: start;
 }
 
 .note-list {
-    gap: 12px;
+    gap: 10px;
 }
 
 .public-note-grid {
@@ -124,13 +124,13 @@
 
 .card-summary {
     font-size: 0.96rem;
-    line-height: 1.5;
+    line-height: 1.45;
 }
 
 .note-surface,
 .search-surface {
-    max-width: 1080px;
-    width: min(100%, 1080px);
+    max-width: 1040px;
+    width: min(100%, 1040px);
 }
 
 .note-head {

@@ -1,6 +1,6 @@
 .editor-shell {
     display: grid;
-    gap: 16px;
+    gap: 12px;
     min-width: 0;
     overflow-x: clip;
     position: relative;
@@ -24,8 +24,10 @@
 }
 
 .note-editor {
-    min-height: 62vh;
-    font: 16px/1.7 var(--serif);
+    min-height: 58vh;
+    font-size: 16px;
+    line-height: 1.7;
+    font-family: inherit;
     background: var(--bg-1);
     color: var(--text);
     width: 100%;
@@ -44,6 +46,7 @@
 .toastui-editor-contents {
     min-width: 0 !important;
     max-width: 100% !important;
+    font-family: inherit !important;
 }
 
 .toastui-editor-defaultUI {
@@ -62,7 +65,7 @@
     flex-wrap: wrap !important;
     align-items: flex-start;
     gap: 4px;
-    padding: 8px !important;
+    padding: 7px !important;
     min-height: 46px;
     height: auto !important;
     background: var(--panel-2) !important;
@@ -152,8 +155,8 @@
 }
 
 .toastui-editor-md-container .ProseMirror {
-    min-height: 520px;
-    padding: 18px 24px 20px !important;
+    min-height: 460px;
+    padding: 16px 20px 18px !important;
     overflow-wrap: anywhere;
     white-space: pre-wrap !important;
     word-break: break-word;
@@ -161,8 +164,8 @@
 
 .toastui-editor-md-preview .toastui-editor-contents {
     color: var(--text) !important;
-    min-height: 520px;
-    padding: 18px 24px 20px !important;
+    min-height: 460px;
+    padding: 16px 20px 18px !important;
     overflow-wrap: anywhere;
 }
 

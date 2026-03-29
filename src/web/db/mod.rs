@@ -4,6 +4,8 @@ mod auth;
 mod history;
 mod listing;
 mod listing_cursor;
+mod listing_queries;
+mod listing_sort;
 mod migrations;
 mod models;
 mod records;
@@ -15,7 +17,9 @@ pub use auth::{
 pub use history::{
     get_next_record, get_previous_record, get_record_revision, get_record_revisions,
 };
-pub use listing::{list_favorite_records, list_recent_records, list_records, ListRequest};
+pub use listing::{
+    list_favorite_records, list_recent_records, list_records, ListRequest, ListSort,
+};
 pub use models::{AppSettings, ListedRecord, NoteStats, Record, RecordRevision};
 pub use records::{create_record, delete_record, get_record, get_record_by_ref, update_record};
 pub use settings::{get_note_stats, get_settings, update_settings};

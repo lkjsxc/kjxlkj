@@ -43,7 +43,7 @@
 
     .shell-main,
     .index-layout {
-        padding: 24px 16px 32px;
+        padding: 20px 16px 28px;
         min-width: 0;
     }
 
@@ -114,13 +114,15 @@
         font-size: clamp(1.9rem, 10vw, 2.4rem);
     }
 
-    .search-row {
+    .search-row,
+    .search-grid {
         grid-template-columns: 1fr;
     }
 
     .page-actions .btn,
     .page-actions form,
-    .search-row .btn {
+    .search-row .btn,
+    .search-grid .btn {
         width: 100%;
     }
 

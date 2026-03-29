@@ -101,8 +101,12 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 home_recent_limit BIGINT NOT NULL DEFAULT 6,
                 home_favorite_limit BIGINT NOT NULL DEFAULT 6,
                 search_results_per_page BIGINT NOT NULL DEFAULT 20,
+                default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE,
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
+
+            ALTER TABLE app_settings
+                ADD COLUMN IF NOT EXISTS default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE;
 
             INSERT INTO app_settings (id) VALUES (1)
             ON CONFLICT (id) DO NOTHING;

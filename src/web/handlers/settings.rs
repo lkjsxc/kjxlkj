@@ -11,6 +11,7 @@ pub struct SettingsForm {
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub search_results_per_page: i64,
+    pub default_vim_mode: Option<String>,
 }
 
 #[post("/admin/settings")]
@@ -31,6 +32,7 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
         home_recent_limit: form.home_recent_limit.clamp(1, 24),
         home_favorite_limit: form.home_favorite_limit.clamp(1, 24),
         search_results_per_page: form.search_results_per_page.clamp(5, 100),
+        default_vim_mode: form.default_vim_mode.is_some(),
     };
     if form.home_recent_limit < 1
         || form.home_favorite_limit < 1

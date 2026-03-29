@@ -24,7 +24,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
     align-items: center;
-    padding-bottom: 8px;
+    padding-bottom: 18px;
 }
 
 .rail-branding,
@@ -32,7 +32,7 @@
 .rail-list,
 .rail-actions {
     display: grid;
-    gap: 10px;
+    gap: 8px;
 }
 
 .brand,
@@ -55,23 +55,23 @@
 
 .rail-section {
     display: grid;
-    gap: 10px;
+    gap: 8px;
 }
 
 .rail-section + .rail-section {
-    margin-top: 16px;
-    padding-top: 16px;
+    margin-top: 14px;
+    padding-top: 14px;
     border-top: 1px solid var(--line);
 }
 
 .rail-link {
     display: grid;
-    gap: 6px;
-    padding: 12px 13px;
+    gap: 5px;
+    padding: 11px 12px;
     border: 1px solid var(--line);
     border-radius: 16px;
     background: var(--panel);
-    min-height: 84px;
+    min-height: 72px;
     align-content: start;
 }
 
@@ -93,7 +93,7 @@
 
 .rail-facts {
     display: grid;
-    gap: 10px;
+    gap: 8px;
     margin-top: 4px;
 }
 

@@ -99,8 +99,8 @@ function resetDatabase() {
             'ON_ERROR_STOP=1',
             '-c',
             'TRUNCATE app_settings, sessions, record_revisions, records, admin_user RESTART IDENTITY CASCADE; ' +
-                'INSERT INTO app_settings (id, home_recent_limit, home_favorite_limit, search_results_per_page) ' +
-                'VALUES (1, 6, 6, 20)',
+                'INSERT INTO app_settings (id, home_recent_limit, home_favorite_limit, search_results_per_page, default_vim_mode) ' +
+                'VALUES (1, 6, 6, 20, FALSE)',
         ],
         { stdio: 'inherit' }
     );

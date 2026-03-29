@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { assertInvisibleText, assertVisibleText } from './assertions.mjs';
 import { appUrl, newContext } from './support.mjs';
 
-export async function verifyUiCreatedDraft(page) {
+export async function verifyUiCreatedDraft(page, vimEnabled = false) {
     await Promise.all([
         page.waitForURL((url) => new URL(url).pathname !== '/admin'),
         page.getByRole('button', { name: 'New note', exact: true }).first().click(),
@@ -17,6 +17,7 @@ export async function verifyUiCreatedDraft(page) {
         'false',
         'preview should start closed'
     );
+    await verifyVimMode(page, vimEnabled);
     await expectEditorFocus(page);
 }
 

@@ -20,9 +20,7 @@ pub async fn home_page(
     let recent = db::list_recent_records(&pool, is_admin, settings.home_recent_limit).await?;
     let favorites =
         db::list_favorite_records(&pool, is_admin, settings.home_favorite_limit).await?;
-    let stats = db::get_note_stats(&pool, is_admin).await?;
     Ok(html(templates::home_page(
-        &stats,
         &recent
             .iter()
             .map(|record| view::index_item(record, is_admin))

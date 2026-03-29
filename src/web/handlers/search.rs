@@ -1,7 +1,7 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListRequest};
+use crate::web::db::{self, DbPool, ListRequest, ListSort};
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
@@ -11,6 +11,7 @@ use serde::Deserialize;
 #[derive(Clone, Debug, Deserialize)]
 pub struct SearchParams {
     pub q: Option<String>,
+    pub sort: Option<String>,
     pub cursor: Option<String>,
     pub limit: Option<i64>,
 }
@@ -31,32 +32,29 @@ pub async fn search_page(
         .q
         .as_deref()
         .map(str::trim)
-        .filter(|value| !value.is_empty());
-    let (entries, next_cursor) = if let Some(value) = query {
-        let page = db::list_records(
-            &pool,
-            &ListRequest {
-                include_private: is_admin,
-                limit: params.limit.unwrap_or(settings.search_results_per_page),
-                query: Some(value.to_string()),
-                cursor: params.cursor,
-            },
-        )
-        .await?;
-        (
-            page.records
-                .iter()
-                .map(|record| view::index_item(record, is_admin))
-                .collect(),
-            page.next_cursor,
-        )
-    } else {
-        (Vec::new(), None)
-    };
+        .filter(|value| !value.is_empty())
+        .map(str::to_string);
+    let sort = ListSort::resolve(params.sort.as_deref(), query.is_some());
+    let page = db::list_records(
+        &pool,
+        &ListRequest {
+            include_private: is_admin,
+            limit: params.limit.unwrap_or(settings.search_results_per_page),
+            query: query.clone(),
+            sort: sort.clone(),
+            cursor: params.cursor,
+        },
+    )
+    .await?;
     Ok(html(templates::search_page(
-        &entries,
-        next_cursor.as_deref(),
-        query,
+        &page
+            .records
+            .iter()
+            .map(|record| view::index_item(record, is_admin))
+            .collect::<Vec<_>>(),
+        page.next_cursor.as_deref(),
+        query.as_deref(),
+        sort.as_str(),
         is_admin,
     )))
 }

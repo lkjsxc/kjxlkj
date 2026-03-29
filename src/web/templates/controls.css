@@ -33,12 +33,18 @@
 .search-form label {
     display: block;
     margin-bottom: 8px;
-    font: 600 0.92rem/1.3 var(--sans);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.3;
     color: var(--text-soft);
 }
 
 .form-group input,
+.form-group select,
 .search-row input,
+.search-grid input,
+.search-grid select,
+.editor-field-card input,
 .note-editor {
     width: 100%;
     border: 1px solid var(--line-strong);
@@ -92,7 +98,9 @@
     align-items: center;
     border-radius: 999px;
     padding: 4px 10px;
-    font: 600 0.75rem/1 var(--sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
@@ -111,6 +119,32 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
+}
+
+.search-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.search-sort,
+.local-setting-group {
+    margin: 0;
+}
+
+.search-sort span,
+.local-setting-group span {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-soft);
+}
+
+.check-row-field {
+    padding: 4px 0 0;
 }
 
 .error,

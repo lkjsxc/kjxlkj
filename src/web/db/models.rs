@@ -37,6 +37,7 @@ pub struct AppSettings {
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub search_results_per_page: i64,
+    pub default_vim_mode: bool,
 }
 
 impl Default for AppSettings {
@@ -45,6 +46,7 @@ impl Default for AppSettings {
             home_recent_limit: 6,
             home_favorite_limit: 6,
             search_results_per_page: 20,
+            default_vim_mode: false,
         }
     }
 }
@@ -55,8 +57,6 @@ pub struct NoteStats {
     pub public_count: i64,
     pub private_count: i64,
     pub favorite_count: i64,
-    pub created_this_month: i64,
     pub updated_this_month: i64,
-    pub created_this_year: i64,
     pub updated_this_year: i64,
 }

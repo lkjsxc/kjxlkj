@@ -1,7 +1,7 @@
 .home-page,
 .dashboard-page {
     display: grid;
-    gap: 18px;
+    gap: 14px;
 }
 
 .stats-grid,
@@ -9,20 +9,20 @@
 .note-grid,
 .editor-meta-grid {
     display: grid;
-    gap: 12px;
+    gap: 10px;
 }
 
 .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 .dashboard-panels,
 .editor-meta-grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
 .note-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     align-items: start;
 }
 
@@ -31,7 +31,7 @@
 .editor-url-card,
 .settings-grid {
     display: grid;
-    gap: 12px;
+    gap: 10px;
 }
 
 .section-head {
@@ -47,12 +47,12 @@
 }
 
 .stat-card {
-    min-height: 110px;
+    min-height: 88px;
     align-content: space-between;
 }
 
 .stat-card strong {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-size: clamp(1.35rem, 3vw, 1.9rem);
     line-height: 1;
 }
 
@@ -61,15 +61,23 @@
 }
 
 .editor-url-card {
-    padding: 12px 14px;
+    padding: 10px 12px;
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: 14px;
     background: var(--panel-2);
 }
 
 .editor-url-card a,
 .editor-url-card strong {
     overflow-wrap: anywhere;
+}
+
+.editor-field-card {
+    align-content: start;
+}
+
+.editor-field-card input {
+    margin-top: 2px;
 }
 
 .status-pill-favorite {
@@ -92,15 +100,15 @@
 }
 
 .card-summary {
-    -webkit-line-clamp: 3;
-    min-height: calc(1.5em * 3);
+    -webkit-line-clamp: 2;
+    min-height: calc(1.45em * 2);
 }
 
 .card-badges {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 28px;
+    min-height: 24px;
     width: 100%;
     justify-content: flex-end;
     align-items: flex-start;
@@ -109,7 +117,7 @@
 .note-grid .note-row {
     grid-template-columns: 1fr;
     align-self: start;
-    min-height: 192px;
+    min-height: 168px;
 }
 
 .note-grid .card-meta {

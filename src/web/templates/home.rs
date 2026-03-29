@@ -3,16 +3,10 @@
 use super::index::{list_rail, note_row};
 use super::layout::{base, shell_page};
 use super::model::IndexItem;
-use crate::web::db::NoteStats;
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
-pub fn home_page(
-    stats: &NoteStats,
-    recent: &[IndexItem],
-    favorites: &[IndexItem],
-    is_admin: bool,
-) -> String {
+pub fn home_page(recent: &[IndexItem], favorites: &[IndexItem], is_admin: bool) -> String {
     let extra_script = if is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
     } else {
@@ -20,10 +14,7 @@ pub fn home_page(
     };
     let content = format!(
         r#"<header class="page-head">
-<div class="page-title-stack">
-<h1>Home</h1>
-<p class="page-summary">Recent notes, favorites, and the current cadence.</p>
-</div>
+<div class="page-title-stack"><h1>Home</h1></div>
 </header>
 <section class="surface search-surface">
 <form class="search-form" method="GET" action="/search">
@@ -34,12 +25,14 @@ pub fn home_page(
 </div>
 </form>
 </section>
-{}
-{}
-{}"#,
-        stats_grid(stats),
-        note_section("Recently updated", recent, "No notes yet.", "note-grid"),
-        note_section("Favorites", favorites, "No favorites yet.", "note-grid"),
+{}{}"#,
+        note_section(
+            "Recently updated",
+            recent,
+            "No notes yet.",
+            Some(browse_card()),
+        ),
+        note_section("Favorites", favorites, "No favorites yet.", None),
     );
     base(
         "Home",
@@ -59,43 +52,46 @@ pub fn home_page(
     )
 }
 
-fn stats_grid(stats: &NoteStats) -> String {
-    format!(
-        r#"<section class="stats-grid">
-{}
-{}
-{}
-{}
-{}
-{}
-</section>"#,
-        stat_card("Notes", stats.total),
-        stat_card("Public", stats.public_count),
-        stat_card("Favorites", stats.favorite_count),
-        stat_card("This month", stats.updated_this_month),
-        stat_card("Created this month", stats.created_this_month),
-        stat_card("Created this year", stats.created_this_year),
-    )
-}
-
-fn note_section(title: &str, notes: &[IndexItem], empty: &str, list_class: &str) -> String {
-    let rows = if notes.is_empty() {
-        format!(r#"<p class="surface-empty">{empty}</p>"#)
+fn note_section(
+    title: &str,
+    notes: &[IndexItem],
+    empty: &str,
+    extra_card: Option<String>,
+) -> String {
+    let mut cards = if notes.is_empty() {
+        vec![empty_card(empty)]
     } else {
-        notes.iter().map(note_row).collect::<Vec<_>>().join("")
+        notes.iter().map(note_row).collect::<Vec<_>>()
     };
+    if let Some(card) = extra_card {
+        cards.push(card);
+    }
     format!(
         r#"<section class="surface section-block">
 <div class="section-head"><h2>{title}</h2></div>
-<div class="note-list {list_class}">{rows}</div>
-</section>"#
+<div class="note-list note-grid">{}</div>
+</section>"#,
+        cards.join("")
     )
 }
 
-fn stat_card(label: &str, value: i64) -> String {
+fn empty_card(message: &str) -> String {
     format!(
-        r#"<article class="surface stat-card"><small>{label}</small><strong>{value}</strong></article>"#
+        r#"<article class="index-card note-row note-row-empty">
+<div class="card-body"><p class="surface-empty">{message}</p></div>
+</article>"#
     )
+}
+
+fn browse_card() -> String {
+    r#"<a href="/search" class="index-card note-row note-row-action">
+<div class="card-body">
+<p class="card-title">View more notes</p>
+<p class="card-summary">Browse every visible note with sorting, search, and pagination.</p>
+</div>
+<div class="card-meta"><small><span>Open</span>Search</small></div>
+</a>"#
+        .to_string()
 }
 
 fn rail_primary_action(is_admin: bool) -> &'static str {

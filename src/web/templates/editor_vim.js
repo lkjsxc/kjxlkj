@@ -1,7 +1,8 @@
 var VIM_MODE_KEY = 'kjxlkj.vim-mode';
 
 function configureVimMode() {
-    editorState.vimEnabled = window.localStorage.getItem(VIM_MODE_KEY) === '1';
+    editorState.vimPreference = readVimPreference();
+    editorState.vimEnabled = resolveVimMode();
     editorState.vimNormal = editorState.vimEnabled;
     bindVimSurface();
     updateVimModeLabel();
@@ -16,6 +17,18 @@ function normalizeAliasValue(value) {
         .replace(/--+/g, '-')
         .replace(/^-+|-+$/g, '');
     return cleaned || null;
+}
+
+function readVimPreference() {
+    var stored = window.localStorage.getItem(VIM_MODE_KEY);
+    return stored === 'on' || stored === 'off' ? stored : 'default';
+}
+
+function resolveVimMode() {
+    var preference = readVimPreference();
+    if (preference === 'on') return true;
+    if (preference === 'off') return false;
+    return !!defaultVimMode;
 }
 
 function bindVimSurface() {

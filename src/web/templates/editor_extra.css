@@ -1,5 +1,9 @@
-.editor-alias-field {
+.editor-field-card {
     margin: 0;
+}
+
+.editor-field-card small {
+    color: var(--text-soft);
 }
 
 .editor-shell.preview-open.preview-compact .toastui-editor-md-container {

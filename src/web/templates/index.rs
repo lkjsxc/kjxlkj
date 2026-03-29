@@ -47,24 +47,32 @@ pub(crate) fn list_rail(
     sections.join("")
 }
 
-pub(crate) fn pager(path: &str, query: Option<&str>, next_cursor: Option<&str>) -> String {
+pub(crate) fn pager(path: &str, next_cursor: Option<&str>, fields: &[(&str, &str)]) -> String {
     next_cursor
         .map(|cursor| {
             format!(
                 r#"<form class="pager" method="GET" action="{path}">
-<input type="hidden" name="cursor" value="{cursor}">
 {}
+<input type="hidden" name="cursor" value="{cursor}">
 <button type="submit" class="btn">More notes</button>
 </form>"#,
-                query
-                    .map(|value| format!(
-                        r#"<input type="hidden" name="q" value="{}">"#,
-                        html_escape(value)
-                    ))
-                    .unwrap_or_default()
+                fields
+                    .iter()
+                    .filter(|(_, value)| !value.is_empty())
+                    .map(|(name, value)| hidden_input(name, value))
+                    .collect::<Vec<_>>()
+                    .join("")
             )
         })
         .unwrap_or_default()
+}
+
+fn hidden_input(name: &str, value: &str) -> String {
+    format!(
+        r#"<input type="hidden" name="{}" value="{}">"#,
+        html_escape(name),
+        html_escape(value)
+    )
 }
 
 fn card_badges(note: &IndexItem) -> String {

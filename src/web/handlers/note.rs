@@ -34,7 +34,17 @@ pub async fn note_page(
         return Ok(redirect(&view::note_href(&record)));
     }
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
-    Ok(html(templates::note_page(&record, &chrome, is_admin)))
+    let default_vim_mode = if is_admin {
+        db::get_settings(&pool).await?.default_vim_mode
+    } else {
+        false
+    };
+    Ok(html(templates::note_page(
+        &record,
+        &chrome,
+        is_admin,
+        default_vim_mode,
+    )))
 }
 
 fn redirect(location: &str) -> HttpResponse {

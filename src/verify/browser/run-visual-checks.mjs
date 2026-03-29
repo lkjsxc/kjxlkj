@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
-import { assertInvisibleText, assertVisibleText, expectAdminDashboard, expectAdminNote, expectClosedDrawer, expectGuestNote, expectPublicRoot, expectSearchPage, openDrawer } from './assertions.mjs';
+import {
+    assertVisibleText,
+    expectAdminDashboard,
+    expectAdminNote,
+    expectClosedDrawer,
+    expectGuestNote,
+    expectPublicRoot,
+    expectSearchPage,
+    openDrawer,
+} from './assertions.mjs';
 import { assertEditorLayout, openPreview, verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
@@ -34,16 +43,26 @@ async function captureAdminScreens(browser, note) {
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await expectAdminDashboard(page);
     await capture(page, 'desktop-admin-dashboard.png');
-    const vimToggle = page.locator('[data-local-setting="vim-mode"]').first();
-    assert.equal(await vimToggle.isChecked(), false, 'dashboard should default Vim mode off');
-    await vimToggle.check();
-    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === '1');
-    await verifyUiCreatedDraft(page);
+    assert.equal(await page.locator('#local-vim-mode').inputValue(), 'default');
+    const defaultVim = page.locator('input[name="default_vim_mode"]').first();
+    assert.equal(await defaultVim.isChecked(), false, 'dashboard should default Vim mode off');
+    await defaultVim.check();
+    await Promise.all([
+        page.waitForURL('**/admin'),
+        page.getByRole('button', { name: 'Save settings', exact: true }).click(),
+    ]);
+    assert.equal(await page.locator('input[name="default_vim_mode"]').first().isChecked(), true);
+    await verifyUiCreatedDraft(page, true);
+
+    await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
+    await page.locator('#local-vim-mode').selectOption('off');
+    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
 
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);
-    await verifyEditorFormatting(browser, page, note, true);
+    await assertVisibleText(page, 'Vim off');
+    await verifyEditorFormatting(browser, page, note, false);
     await capture(page, 'desktop-admin-note.png');
 
     await page.goto(`${appUrl}/${note.id}/history`, { waitUntil: 'networkidle' });
@@ -73,10 +92,27 @@ async function capturePublicScreens(browser, notes) {
     await expectPublicRoot(page);
     await capture(page, 'desktop-public-root.png');
 
-    await page.goto(`${appUrl}/search?q=Orbit`, { waitUntil: 'networkidle' });
+    await Promise.all([
+        page.waitForURL('**/search'),
+        page.getByText('View more notes', { exact: false }).first().click(),
+    ]);
     await expectSearchPage(page);
+    await assertVisibleText(page, 'All notes');
+    await assertVisibleText(page, notes.oldest.title);
     await assertVisibleText(page, notes.middle.title);
+    await assertVisibleText(page, notes.newest.title);
+    assert.equal(await page.locator('#search-sort').inputValue(), 'updated_desc');
     await capture(page, 'desktop-search.png');
+
+    await page.locator('#search-sort').selectOption('title_desc');
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('sort') === 'title_desc'),
+        page.getByRole('button', { name: 'Search', exact: true }).click(),
+    ]);
+    const titles = await page.locator('.note-grid .card-title').evaluateAll((nodes) =>
+        nodes.map((node) => node.textContent.trim())
+    );
+    assert.equal(titles[0], 'Orbit Ledger');
 
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);

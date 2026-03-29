@@ -14,9 +14,7 @@
     --accent: #9ec1ff;
     --accent-soft: #263246;
     --danger: #ff8574;
-    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-    --sans: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
-    --serif: Georgia, "Times New Roman", Times, serif;
+    --mono: monospace;
 }
 
 * {
@@ -32,7 +30,8 @@ body {
     min-height: 100vh;
     color: var(--text);
     background: var(--bg-0);
-    font: 15px/1.6 var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 body.rail-open {
@@ -60,7 +59,7 @@ img {
 }
 
 .prose {
-    font-family: var(--serif);
+    font-family: inherit;
 }
 
 .visually-hidden {
