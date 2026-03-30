@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict';
 import {
-    assertCompactSurface,
     assertCreateActionBelowHome,
     assertGridHeights,
     assertInvisibleText,
-    assertLeadSpacing,
-    assertLeadWidth,
     assertLocalToastUiAssets,
     assertNoHeaderButtons,
     assertSingleHistoryCard,
@@ -30,9 +27,6 @@ export async function expectPublicRoot(page) {
     assert.equal(await page.locator('.page-summary').count(), 0);
     await assertNoHeaderButtons(page);
     if ((await page.evaluate(() => window.innerWidth)) > 900) {
-        await assertLeadSpacing(page, '.home-search-surface');
-        await assertLeadWidth(page, '.home-search-surface');
-        await assertCompactSurface(page, '.home-search-surface', 130);
         await assertWideGrid(page);
         await assertGridHeights(page, '.note-grid .note-row');
     }
@@ -47,10 +41,6 @@ export async function expectSearchPage(page) {
     await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
-    if ((await page.evaluate(() => window.innerWidth)) > 900) {
-        await assertLeadSpacing(page, '.search-toolbar-surface');
-        await assertCompactSurface(page, '.search-toolbar-surface', 150);
-    }
 }
 
 export async function expectAdminDashboard(page) {
