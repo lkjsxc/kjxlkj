@@ -13,21 +13,19 @@ pub fn home_page(recent: &[IndexItem], favorites: &[IndexItem], is_admin: bool) 
         String::new()
     };
     let content = format!(
-        r#"<div class="lead-stack">
-<header class="page-head">
+        r#"<header class="page-head">
 <div class="page-title-stack"><h1>Home</h1></div>
 </header>
-<section class="surface section-block lead-surface home-search-surface">
+<section class="surface section-block search-surface">
 <div class="section-head"><h2>Quick search</h2></div>
 <form class="search-form" method="GET" action="/search">
 <label for="home-search-input" class="visually-hidden">Quick search</label>
-<div class="search-row search-row-compact">
+<div class="search-row">
 <input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
 <button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>
 </section>
- </div>
 {}{}"#,
         note_section(
             "Recently updated",

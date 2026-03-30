@@ -4,7 +4,7 @@
 
 .app-shell {
     display: grid;
-    grid-template-columns: 296px minmax(0, 1fr);
+    grid-template-columns: 288px minmax(0, 1fr);
     min-height: 100vh;
 }
 
@@ -13,7 +13,7 @@
     top: 0;
     height: 100vh;
     max-height: 100vh;
-    padding: 22px 18px 24px;
+    padding: 20px 18px 24px;
     overflow-y: auto;
     background: var(--rail);
     border-right: 1px solid var(--line);
@@ -45,10 +45,6 @@
     font-weight: 600;
 }
 
-.brand {
-    letter-spacing: -0.03em;
-}
-
 .mobile-bar,
 .shell-backdrop {
     display: none;
@@ -73,7 +69,6 @@
 }
 
 .rail-link {
-    position: relative;
     display: grid;
     gap: 5px;
     padding: 11px 12px;
@@ -82,23 +77,6 @@
     background: var(--panel);
     min-height: 72px;
     align-content: start;
-    overflow: hidden;
-    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
-}
-
-.rail-link::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: 1px;
-    background: var(--line-strong);
-    opacity: 0.72;
-}
-
-.rail-link:hover,
-.rail-link:focus-visible {
-    border-color: var(--line-strong);
-    transform: translateY(-1px);
 }
 
 .rail-link span {
@@ -108,10 +86,6 @@
 .rail-link.active {
     border-color: var(--accent);
     color: var(--text);
-}
-
-.rail-link.active::before {
-    background: var(--accent);
 }
 
 .rail-link-muted,
