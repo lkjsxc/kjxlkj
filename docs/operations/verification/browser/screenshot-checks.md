@@ -34,6 +34,8 @@ docker compose --profile verify run --rm visual-verify
 - Note rails render one `All history` card and never render inline revision lists.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
+- Home title and quick-search strip stay visually close together.
+- Home quick-search strip stays visibly narrower and shorter than the recent and favorite sections on desktop.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
@@ -48,5 +50,6 @@ docker compose --profile verify run --rm visual-verify
 - Empty-query `/search` renders note cards instead of helper guidance.
 - Search exposes a query display card near sort.
 - Search paging exposes `Previous` and `Next` actions instead of `More notes`.
+- Search toolbar reads as one compact lead strip rather than a tall utility slab.
 - Dashboard does not render a library block.
 - Dashboard settings cover default Vim mode and browser-local Vim override behavior.

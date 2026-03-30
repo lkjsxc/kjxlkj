@@ -13,6 +13,8 @@
 - Text-first actions reduce chrome bulk relative to note content.
 - Tall empty vertical gaps should be removed before reducing useful content.
 - Page title to first-section spacing should stay tight on Home, Search, and Dashboard.
+- Desktop browse pages should cap content width before surfaces become visually slack.
+- Home and Search lead strips should be denser than the larger content sections below them.
 - Dense layouts may slightly increase note-card footprint when that keeps metadata inside the card.
 
 ## Readability Rules
@@ -21,3 +23,4 @@
 - Local 24-hour time strings must fit without awkward wrapping.
 - Dense layouts still keep title, summary, and timestamps clearly separated.
 - Card metadata labels such as `Created` and `Updated` must remain fully inside the card at all supported widths.
+- Compact search controls should still align cleanly and never feel undersized relative to nearby section headings.

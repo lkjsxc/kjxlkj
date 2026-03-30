@@ -9,12 +9,14 @@
 ## Layout Rules
 
 - The persistent side menu is visible on the homepage.
-- The main pane uses a short stacked composition with restrained gaps between the page title and first section.
-- `Quick search`, `Recently updated`, and `Favorites` use the same section-block language.
+- The main pane uses a capped content width on desktop so homepage sections do not stretch into overly wide slabs.
+- The page title and first control block stay visually close together.
+- `Quick search`, `Recently updated`, and `Favorites` use the same dark-panel language, but quick search is rendered as the compact lead strip of the page.
 - Each note block uses compact but not cramped cards in a responsive grid.
 - Narrow screens collapse to one column without stretched card heights.
 - The homepage avoids tall summary panels and tall statistics blocks.
-- The quick-search section should not visually dominate the recent and favorite sections.
+- The quick-search strip should not visually dominate the recent and favorite sections.
+- On desktop, the quick-search input should stay noticeably narrower than the recent and favorite section width.
 
 ## Content Rules
 
@@ -24,3 +26,4 @@
 - Guest homepage data is public-only.
 - Signed-in admins may see private-capable recent and favorite blocks plus quick admin actions.
 - Opaque IDs are not shown in normal homepage cards.
+- Quick search may include only the heading, input, and submit action without helper prose.

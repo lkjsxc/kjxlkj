@@ -5,6 +5,7 @@
 - Standard actions render as text-first controls.
 - Filled buttons are not the default action language.
 - Delete may use color emphasis, but still reads as text-first.
+- Search submit actions stay visually compact and should not outweigh the search input itself.
 
 ## Compact Navigation Controls
 
@@ -31,3 +32,4 @@
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
 - Search query state may be displayed in a read-only card beside sort rather than only inside the input.
+- Home quick search may use a compact lead-strip form rather than a full-height section body.

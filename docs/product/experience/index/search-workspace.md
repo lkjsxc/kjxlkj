@@ -12,11 +12,13 @@
 - The global rail stays visible on desktop.
 - The rail exposes a link to `/search`, not an inline search form.
 - The main pane owns the actual query form and result list.
-- The search controls are one aligned row on wide screens: input, query display, sort, and submit action.
+- Search uses the same capped content width as Home and Dashboard.
+- The search controls form a compact lead toolbar on wide screens: input, query display, sort, and submit action.
 - The active query is echoed in a compact read-only `Query` card near `Sort`.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
 - Empty-query state should still feel like a full notes page rather than an empty helper page.
+- The toolbar should feel visually tighter than the results section below it.
 
 ## Search Rules
 
@@ -35,6 +37,7 @@
 - Results keep the same dense row language as browse pages.
 - Pagination actions should read like movement across result pages rather than endless loading.
 - Wide result cards are large enough to keep created and updated metadata inside the card bounds.
+- Result sections should feel visually stronger than the compact toolbar above them.
 - Guest results never expose private-only metadata.
 - Admin results may show visibility and favorite state.
 - Search result sorting and pagination remain server-side only.

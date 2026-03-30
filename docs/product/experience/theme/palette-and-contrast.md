@@ -12,12 +12,14 @@
 - Primary panels use solid charcoal tone.
 - Secondary panels use a slightly lighter solid layer for grouping.
 - Borders stay subtle but always visible against adjacent dark surfaces.
-- Depth comes from spacing and borders, not from gradients or shadows.
+- Depth comes from spacing, borders, and internal separators, not from gradients or shadows.
+- Panels may use thin accent seams or neutral top-edge emphasis as long as fills remain solid.
 
 ## Accent Policy
 
 - Accent is restrained and never floods the interface.
 - Accent appears on active note state, selected history items, links, and focused controls.
+- Accent may also appear in small structural seams on lead strips and active panels.
 - Destructive actions use a dedicated danger hue and never share the primary accent.
 
 ## Contrast Rules
