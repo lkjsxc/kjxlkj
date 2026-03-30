@@ -23,14 +23,15 @@ pub fn search_page(
         String::new()
     };
     let content = format!(
-        r#"<header class="page-head">
+        r#"<div class="lead-stack">
+<header class="page-head">
 <div class="page-title-stack"><h1>Search</h1></div>
 </header>
-<section class="surface section-block search-surface">
+<section class="surface section-block lead-surface search-toolbar-surface">
 <div class="section-head"><h2>Search notes</h2></div>
 <form class="search-form" method="GET" action="/search">
 <label for="search-page-input" class="visually-hidden">Search notes</label>
-<div class="search-grid">
+<div class="search-grid search-grid-toolbar">
 <input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
 <div class="search-state-card"><small>Query</small><strong>{}</strong></div>
 <label class="form-group search-sort" for="search-sort">
@@ -41,6 +42,7 @@ pub fn search_page(
 </div>
 </form>
 </section>
+ </div>
 {}"#,
         html_escape(query),
         query_display(query),

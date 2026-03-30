@@ -14,10 +14,12 @@ pub fn admin_page(
     favorites: &[IndexItem],
 ) -> String {
     let content = format!(
-        r#"<header class="page-head">
+        r#"<div class="lead-stack">
+<header class="page-head">
 <div class="page-title-stack"><h1>Dashboard</h1></div>
 </header>
 {}
+</div>
 <section class="dashboard-panels">
 {}
 {}

@@ -1,6 +1,6 @@
 .shell-main,
 .index-layout {
-    padding: 24px 32px 32px;
+    padding: 22px 30px 30px;
 }
 
 .dashboard-page,
@@ -14,14 +14,63 @@
     gap: 12px;
 }
 
+.home-page,
+.dashboard-page,
+.index-layout {
+    width: min(100%, 1260px);
+    justify-self: start;
+}
+
 .surface {
+    position: relative;
+    overflow: hidden;
     padding: 12px 14px;
     border-radius: 20px;
 }
-
 .index-card {
+    position: relative;
+    overflow: hidden;
     padding: 16px 18px;
     border-radius: 20px;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+}
+.surface::before,
+.index-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line-strong);
+    opacity: 0.72;
+}
+
+.index-card:hover,
+.index-card:focus-visible {
+    border-color: var(--line-strong);
+    transform: translateY(-1px);
+}
+.lead-stack {
+    display: grid;
+    gap: 6px;
+}
+
+.lead-surface {
+    padding: 10px 12px;
+    background: var(--panel-2);
+}
+
+.lead-surface::before {
+    background: var(--accent);
+    opacity: 0.6;
+}
+
+.home-search-surface {
+    width: min(100%, 760px);
+    padding: 8px 10px;
+}
+
+.search-toolbar-surface {
+    width: min(100%, 1120px);
 }
 
 .page-head,
@@ -67,8 +116,9 @@
 }
 
 .page-title-stack h1 {
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
-    line-height: 1.04;
+    font-size: clamp(2rem, 3.2vw, 2.8rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
 }
 
 .page-actions {
@@ -135,7 +185,6 @@
     max-width: 1040px;
     width: min(100%, 1040px);
 }
-
 .search-surface {
     width: 100%;
 }

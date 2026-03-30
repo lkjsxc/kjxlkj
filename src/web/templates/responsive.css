@@ -43,7 +43,7 @@
 
     .shell-main,
     .index-layout {
-        padding: 18px 16px 24px;
+        padding: 16px 16px 22px;
         min-width: 0;
     }
 
@@ -108,6 +108,14 @@
     .auth-card {
         border-radius: 20px;
         padding: 16px;
+    }
+
+    .home-search-surface,
+    .search-toolbar-surface,
+    .home-page,
+    .dashboard-page,
+    .index-layout {
+        width: 100%;
     }
 
     .page-title-stack h1 {

@@ -25,6 +25,7 @@ fn search_page_browses_without_query() {
     );
     assert!(html.contains(">All notes<"));
     assert!(html.contains(">Query<"));
+    assert!(html.contains("search-toolbar-surface"));
     assert!(html.contains("name=\"sort\""));
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Previous<"));

@@ -1,18 +1,18 @@
 :root {
-    --bg-0: #111214;
-    --bg-1: #17181b;
-    --bg-2: #1c1e22;
-    --bg-3: #252831;
-    --rail: #15171a;
-    --panel: #1b1d21;
-    --panel-2: #22252c;
-    --line: #2d3138;
-    --line-strong: #404754;
-    --text: #f2f2ef;
-    --text-soft: #b6bbc2;
-    --text-muted: #808894;
-    --accent: #9ec1ff;
-    --accent-soft: #263246;
+    --bg-0: #0f1218;
+    --bg-1: #151922;
+    --bg-2: #1b202a;
+    --bg-3: #212833;
+    --rail: #10141c;
+    --panel: #171c25;
+    --panel-2: #1d2430;
+    --line: #2a3342;
+    --line-strong: #44516a;
+    --text: #f4f7fb;
+    --text-soft: #b2bccb;
+    --text-muted: #7c8898;
+    --accent: #8ebfff;
+    --accent-soft: #1f334d;
     --danger: #ff8574;
     --mono: monospace;
 }
@@ -32,6 +32,7 @@ body {
     background: var(--bg-0);
     font-size: 15px;
     line-height: 1.6;
+    text-rendering: optimizeLegibility;
 }
 
 body.rail-open {
