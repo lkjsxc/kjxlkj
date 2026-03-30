@@ -23,4 +23,3 @@
 - Root, admin, and search pages keep home, browse, stats, and query work in the main pane.
 - Note and history pages keep document-focused content in the main pane.
 - The rail adds navigation and context without repeating explanatory copy that the main pane already makes obvious.
-- Home, Search, and Dashboard cap their main content width on desktop so shell pages feel composed rather than stretched.
