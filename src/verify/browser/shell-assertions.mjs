@@ -78,6 +78,31 @@ export async function assertStableMetadata(page, title) {
     assert.ok(heights.every((height) => height <= 24), 'timestamps should stay compact');
 }
 
+export async function assertLeadSpacing(page, selector, maxGap = 20) {
+    const gap = await page.evaluate((leadSelector) => {
+        const head = document.querySelector('.page-head');
+        const lead = document.querySelector(leadSelector);
+        if (!head || !lead) return Number.POSITIVE_INFINITY;
+        return lead.getBoundingClientRect().top - head.getBoundingClientRect().bottom;
+    }, selector);
+    assert.ok(gap >= 0 && gap <= maxGap, `lead surface should stay close to the page title (saw ${gap}px)`);
+}
+
+export async function assertLeadWidth(page, selector, maxRatio = 0.75) {
+    const ratio = await page.evaluate((leadSelector) => {
+        const main = document.querySelector('main.shell-main');
+        const lead = document.querySelector(leadSelector);
+        if (!main || !lead) return 1;
+        return lead.getBoundingClientRect().width / main.getBoundingClientRect().width;
+    }, selector);
+    assert.ok(ratio < maxRatio, `lead surface should not fill the entire page width (saw ratio ${ratio.toFixed(2)})`);
+}
+
+export async function assertCompactSurface(page, selector, maxHeight) {
+    const height = await page.locator(selector).first().evaluate((node) => node.getBoundingClientRect().height);
+    assert.ok(height <= maxHeight, `surface should stay compact (saw ${height}px)`);
+}
+
 export async function assertLocalToastUiAssets(page) {
     const assetPaths = await page.evaluate(() =>
         Array.from(document.querySelectorAll('link[href*="toastui-editor"], script[src*="toastui-editor"]')).map(
