@@ -20,7 +20,9 @@ Contract-first note service for LLM-operated workflows.
 ## Current Shape
 
 - `/` is an auth-aware homepage
-- `/admin` is a hybrid dashboard plus note library
+- `/admin` is an admin dashboard
+- `/settings` is the dedicated admin settings page
+- `/search` is the canonical browse and search workspace
 - `/{ref}` serves notes by alias or Base32 ID
 
 ## Rule

@@ -3,9 +3,14 @@
 ## Home Content
 
 - The homepage may render optional explanatory Markdown directly under the `Home` page title.
-- The intro copy is global app state edited from the admin dashboard.
+- The intro copy is global app state.
+- Admins may edit the intro copy inline from `/`.
+- The dedicated settings page also exposes the canonical full intro editor.
 - Empty intro copy removes the block entirely rather than rendering placeholder text.
 - Homepage note blocks include `Popular notes`, `Recently updated`, and `Favorites`.
+- `Quick search` stays above those note blocks.
+- Homepage section order and visibility are configurable per app, but only for the homepage.
+- Homepage section counts default to `5` for popular, recent, and favorites.
 
 ## Popular Windows
 
@@ -15,6 +20,8 @@
 - Window switching behaves like server-side sorting on `/search`; it does not depend on client-side reordering.
 - Guest homepage popularity uses public notes only.
 - Admin homepage popularity may include private notes.
+- Admin popular-note cards expose both the selected rolling-window total and the all-time lifetime total.
+- Guest popular-note cards use popularity ordering without exposing numeric counters.
 
 ## View Counting
 
@@ -29,6 +36,7 @@
 - Recent popularity is derived from per-note daily view rollups.
 - The product exposes `7d`, `30d`, and `90d` rolling totals.
 - Rolling totals use UTC day buckets including the current UTC day.
+- Homepage popular cards show rolling totals keyed to the current homepage window.
 
 ## Admin Visibility
 

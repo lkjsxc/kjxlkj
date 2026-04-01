@@ -13,9 +13,8 @@
 
 ## Vendored Browser Assets
 
-| Component | Version | Upstream | License | Distribution | Notice Rule |
-|---|---:|---|---|---|---|
-| Toast UI Editor | 3.2.2 | `nhn/tui.editor` / npm package `@toast-ui/editor` | `MIT` | Vendored unmodified distribution assets under `src/web/assets/vendor/` and served locally | Keep the upstream `LICENSE` file adjacent to the vendored files and retain version provenance |
+- None.
+- The repo does not vendor a third-party browser editor runtime.
 
 ## Direct Runtime Crates
 

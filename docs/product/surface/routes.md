@@ -31,21 +31,21 @@
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
   - with valid session: `200` HTML admin dashboard
+- `GET /settings`:
+  - before setup: `302` to `/setup`
+  - without valid session: `302` to `/login`
+  - with valid session: `200` HTML settings page
 - `GET /search`:
   - before setup: `302` to `/setup`
-  - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
-  - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
+  - without valid session: `200` HTML public browse/search page using `q`, `scope`, `popular_window`, `direction`, `sort`, `cursor`, `limit`
+  - with valid session: `200` HTML admin-capable browse/search page using `q`, `scope`, `popular_window`, `direction`, `sort`, `cursor`, `limit`
 
 ## Asset Delivery
 
+- `GET /assets/favicon.ico`:
+  - returns the canonical production favicon
 - `GET /assets/icon.svg`:
   - returns the canonical site icon SVG
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor.min.css`:
-  - returns vendored editor CSS
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor-dark.min.css`:
-  - returns vendored dark-theme CSS
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor-all.min.js`:
-  - returns vendored editor JS bundle
 
 ## Note Viewing
 
@@ -82,10 +82,18 @@
   - without valid session: `401` JSON error
   - note not found: `404` JSON error
   - valid session: `204`
-- `POST /admin/settings`:
+- `POST /settings`:
   - without valid session: `302` to `/login`
   - invalid payload: `400` HTML validation page
-  - valid session: `303` to `/admin`
+  - valid session: `303` to `/settings`
+- `POST /settings/home-intro`:
+  - without valid session: `302` to `/login`
+  - invalid payload: `400` HTML validation page
+  - valid session: `303` to `/`
+- `POST /preview`:
+  - without valid session: `302` to `/login`
+  - invalid payload: `400` JSON error
+  - valid session: `200` JSON preview payload
 
 ## Revision History and Navigation JSON
 

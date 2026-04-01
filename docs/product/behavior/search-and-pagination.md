@@ -11,6 +11,8 @@
 
 - `/search` is the canonical HTML browse and query surface.
 - `q` is a plain text full-text query.
+- `scope` selects `all`, `favorites`, or `popular`.
+- `popular_window` selects `7d`, `30d`, or `90d` when popularity scope is active.
 - `direction` is `next` or `prev`.
 - `sort` selects server-side ordering.
 - `cursor` is opaque and search-specific.
@@ -25,14 +27,20 @@
 - `created_asc`
 - `title_asc`
 - `title_desc`
+- `favorite_order`
+- `popular`
 
 ## Ordering Rules
 
 - Empty `q` defaults to `updated_desc`.
 - Non-empty `q` defaults to `relevance`.
+- `scope=favorites` defaults to `favorite_order`.
+- `scope=popular` defaults to `popular`.
 - `relevance` orders by search rank, fallback similarity, `updated_at DESC`, and `id ASC`.
 - Timestamp sorts use the chosen timestamp plus `id`.
 - Title sorts use normalized title plus `id`.
+- `favorite_order` uses `favorite_position ASC NULLS LAST, id ASC`.
+- `popular` uses the selected rolling total, then all-time total, then `updated_at DESC`, then `id ASC`.
 - Note-to-note `Prev` and `Next` continue to use `created_at`.
 
 ## Cursor Rules
@@ -53,3 +61,4 @@
 - Results never dump the full note set to the client at once.
 - Search chrome should expose explicit `Previous` and `Next` actions instead of one `More notes` action.
 - Empty-query `/search` does not echo a `Query` or `All notes` state card.
+- Search entry cards from Home use preset URLs rather than standalone browse pages.

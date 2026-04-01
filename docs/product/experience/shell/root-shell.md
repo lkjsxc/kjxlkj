@@ -12,7 +12,7 @@
 
 - Brand and session mode.
 - Global navigation.
-- Home and admin quick actions when appropriate.
+- Home, search, dashboard, and settings entry points when appropriate.
 - Current-note context when applicable.
 - Timeline and history affordances when applicable.
 - Mode-specific actions.

@@ -50,9 +50,10 @@ Expected:
 - HTML contains the shared shell rail
 - HTML contains homepage sections rather than one bare browse list
 - homepage may include intro Markdown below `Home`
+- admin homepage may include an inline intro editor directly below `Home`
 - homepage contains no stats block
 - homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
-- homepage includes a browse-action card that points to `/search`
+- homepage includes browse-action cards for popular, recent, and favorites that point into `/search`
 - homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
 - HTML does not expose raw note IDs in normal list rows
@@ -65,6 +66,8 @@ Expected:
 ```bash
 curl -sS 'http://127.0.0.1:8080/search'
 curl -sS 'http://127.0.0.1:8080/search?q=new'
+curl -sS 'http://127.0.0.1:8080/search?scope=popular&popular_window=30d'
+curl -sS 'http://127.0.0.1:8080/search?scope=favorites'
 curl -sS 'http://127.0.0.1:8080/search?q=new' -b cookies.txt
 ```
 
@@ -75,12 +78,15 @@ Expected:
 - admin search may include private matches
 - HTML contains the search form in the main pane
 - non-empty queries show a query display near the search input and sort control
+- favorites and popular presets show scope state near the search input and sort control
 - HTML contains sort controls in the main pane
 - HTML does not contain a visible `Sort` label
 - HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
 - empty-query HTML does not contain a `Query` or `All notes` state card
+- popular scope reflects the selected rolling window
+- favorites scope sorts by saved favorite order
 
 ## Verify Admin Dashboard
 
@@ -90,17 +96,31 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 
 Expected:
 
-- HTML contains stats and settings blocks
+- HTML contains stats and a settings-summary block
 - HTML contains a popular-notes block
 - HTML contains recent and favorite note rows
-- popular, recent, favorite, and settings sections stack vertically
+- popular, recent, and favorite sections stack vertically under the settings summary
 - HTML does not contain a library block
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
-- settings include homepage intro Markdown, homepage popular count, default Vim mode, and browser-local Vim override controls
+- dashboard links clearly to `/settings`
 - dashboard favorites use persistent favorite order rather than updated time
 - dashboard exposes note-view analytics
+
+## Verify Settings Page
+
+```bash
+curl -sS 'http://127.0.0.1:8080/settings' -b cookies.txt
+```
+
+Expected:
+
+- HTML contains homepage layout controls for visibility, order, and counts
+- HTML contains default new-note visibility controls
+- HTML contains search page-size controls
+- HTML contains the favorite reorder tool
+- HTML does not contain Vim settings
 
 ## Verify Admin Note Shell
 
@@ -114,11 +134,10 @@ Expected:
 
 - HTML contains `Prev` / `Next` labels
 - HTML contains one `All history` card and no inline revision links
-- HTML does not contain `Rich mode` or `Text mode`
+- HTML does not contain `Rich mode`, `Text mode`, or a formatting toolbar
 - HTML does not contain helper text next to `Public`
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
 - HTML hides `Saving` / `Saved`
-- HTML references local editor assets rather than an external editor CDN
 - HTML contains note-view analytics metadata for admins
 - preview starts closed
 - no repeated save requests occur after the page becomes idle without further edits
@@ -144,7 +163,6 @@ Use browser verification or a real narrow viewport.
 Expected:
 
 - the page does not require horizontal scrolling
-- the editor toolbar stays inside the viewport and wraps instead of showing a detached scrollbar strip
 - opening the note leaves typing focus inside the visible editor
 - preview starts closed
 - `New note` appears near the top of the rail
@@ -166,8 +184,8 @@ Expected:
 - compact screenshots pass closed and open drawer assertions
 - iPhone-width or equivalent compact screenshots confirm font consistency
 - homepage popular window switching works at runtime
-- the icon asset is linked in HTML and renders in shell branding
-- the live typing scenario uses keyboard input on the visible Markdown editor surface
+- the SVG icon renders in shell branding and the `.ico` favicon is linked in the document head
+- the live typing scenario uses keyboard input on the visible textarea editor surface
 - the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`
 

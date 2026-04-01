@@ -18,12 +18,9 @@
 ## Admin Editing Surface
 
 - Admin editing uses one Markdown-first workspace.
-- The workspace is powered by a vendored Toast UI Editor build.
+- The workspace is powered by one in-house textarea-first editor.
 - There is no mode-switch choice in normal UI.
-- The editing engine stays close to official Toast UI Markdown-mode behavior.
 - Desktop uses a Markdown-first workspace with preview closed by default.
-- Narrow screens reduce the toolbar to a fixed supported subset, but table authoring remains available.
-- Toolbar rows wrap inside the editor chrome instead of introducing a detached toolbar scrollbar.
 - Public checkbox stays inside the editing surface.
 - Alias and favorite controls stay inside the editing surface.
 - Preview stays closed by default and opens on demand from the editor chrome.
@@ -41,7 +38,6 @@
 - Favorite toggles update relevant chrome immediately.
 - The removed helper text (`Guest-readable`, `Admin-only`) does not return.
 - Preview content updates from the current unsaved Markdown body.
-- Table insertion must stay available without leaving the single Markdown workspace.
 
 ## Guest View
 

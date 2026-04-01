@@ -11,6 +11,7 @@ docker compose --profile verify run --rm visual-verify
 - Desktop homepage shell with rail.
 - Desktop search page.
 - Desktop admin dashboard shell.
+- Desktop settings page.
 - Desktop admin note page with the Markdown editor.
 - Desktop guest note page.
 - Desktop history index page showing current note plus revisions.
@@ -40,23 +41,23 @@ docker compose --profile verify run --rm visual-verify
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
 - Search sort remains functional without a visible `Sort` label.
+- Search sort and submit controls remain vertically aligned.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - The shell brand renders the SVG icon cleanly on desktop and compact headers.
+- The document head links a working `.ico` favicon.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
 - Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
-- Browser verification types into the visible Markdown editor surface rather than using `setMarkdown()`.
+- Browser verification types into the visible textarea editor surface rather than using hidden editor APIs.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
-- The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
 - Empty-query `/search` renders note cards instead of helper guidance.
 - Search exposes a query display card near sort only when `q` is non-empty.
 - Empty-query `/search` does not render a `Query` or `All notes` state card.
 - Dashboard does not render a library block.
-- Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
-- Dashboard favorites follow persistent favorite order and expose reorder controls.
-- Dashboard settings cover default Vim mode and browser-local Vim override behavior.
+- Dashboard links to a dedicated settings page.
+- Settings page exposes homepage layout and favorite reorder controls.
 - Dashboard and admin note surfaces expose note-view analytics.
 - Markdown links are visibly accented in guest content and preview.
 - Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
