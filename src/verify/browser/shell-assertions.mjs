@@ -146,9 +146,18 @@ async function assertBrandSpacing(page) {
 
 async function assertBrandIcon(page) {
     assert.equal(await page.locator('link[rel="icon"][href="/assets/icon.svg"]').count(), 1);
-    const mark = page.locator('.brand-mark').first();
-    await mark.waitFor({ state: 'visible' });
-    assert.equal(await mark.getAttribute('src'), '/assets/icon.svg');
+    const marks = page.locator('.brand-mark');
+    const visibleSources = await marks.evaluateAll((nodes) =>
+        nodes
+            .filter((node) => {
+                const style = getComputedStyle(node);
+                const rect = node.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+            })
+            .map((node) => node.getAttribute('src'))
+    );
+    assert.ok(visibleSources.length >= 1, 'at least one visible brand icon should render');
+    assert.ok(visibleSources.every((src) => src === '/assets/icon.svg'));
 }
 
 async function assertRestrainedMainColumn(page) {

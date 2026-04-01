@@ -49,7 +49,8 @@ export async function expectSearchPage(page, hasQueryCard = false) {
         assert.equal(await page.getByText('Query', { exact: true }).count(), 0);
     }
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
-    await assertInvisibleText(page, 'Sort');
+    assert.equal(await page.locator('.search-sort .visually-hidden').count(), 1);
+    assert.equal(await page.locator('.search-sort span:not(.visually-hidden)').count(), 0);
     await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
