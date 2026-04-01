@@ -53,6 +53,7 @@ The system manages `note` resources.
 
 - `POST /records` requires `body`.
 - Browser-created notes use a browser-local minute timestamp heading as the default title seed.
+- Browser-created notes initialize `is_private` from the current global default-new-note visibility setting.
 - The server does not synthesize fallback body text when `body` is omitted.
 
 ## Derived Presentation Rules
@@ -63,7 +64,7 @@ The system manages `note` resources.
 - Created time is the secondary identity cue in lists and note chrome.
 - Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
-- Homepage supports optional admin-authored intro Markdown below the page title.
+- Homepage supports an editable title plus optional admin-authored intro Markdown below it.
 - Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.

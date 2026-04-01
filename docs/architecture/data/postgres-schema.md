@@ -36,12 +36,19 @@
 ## `app_settings`
 
 - `id`: singleton key fixed to `1`.
+- `home_title`: homepage title text.
+- `home_intro_markdown`: optional homepage intro Markdown.
 - `home_recent_limit`: homepage recent-note count.
 - `home_favorite_limit`: homepage favorite count.
 - `home_popular_limit`: homepage popular-note count.
-- `home_intro_markdown`: optional homepage intro Markdown.
+- `home_recent_visible`: homepage recent-section visibility.
+- `home_favorite_visible`: homepage favorite-section visibility.
+- `home_popular_visible`: homepage popular-section visibility.
+- `home_recent_position`: homepage recent-section order slot.
+- `home_favorite_position`: homepage favorite-section order slot.
+- `home_popular_position`: homepage popular-section order slot.
 - `search_results_per_page`: default HTML search page size.
-- `default_vim_mode`: global default editor Vim flag.
+- `default_new_note_is_private`: default visibility for freshly opened note pages.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes

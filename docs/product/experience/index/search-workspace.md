@@ -13,7 +13,8 @@
 - The rail exposes a link to `/search`, not an inline search form.
 - The main pane owns the actual query form and result list.
 - The search controls are one aligned row on wide screens: input, optional query display, sort, and submit action.
-- The active query is echoed in a compact read-only card near `Sort` only when `q` is non-empty.
+- The sort control and submit button share one visual control height and vertical alignment.
+- The active query is echoed in a compact read-only card near sort only when `q` is non-empty.
 - The sort control keeps an accessible label, but the visible `Sort` text is omitted.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
@@ -25,11 +26,14 @@
 - Query input uses `q`.
 - Query direction uses `direction`.
 - Sort input uses `sort`.
+- Scope input uses `scope`.
+- Popular window input uses `popular_window`.
 - Pagination uses `cursor` and `limit`.
-- Empty query returns the first paginated page of all viewable notes.
+- Empty query returns the first paginated page of all viewable notes inside the active scope.
 - Result snippets may differ from derived summaries when search context is more useful.
 - Non-empty query defaults to relevance ordering.
-- Empty query defaults to updated-newest ordering.
+- Empty-query all-notes scope defaults to updated-newest ordering.
+- Empty-query favorites scope defaults to favorite-order browsing.
 
 ## Result Rules
 
@@ -40,3 +44,4 @@
 - Admin results may show visibility and favorite state.
 - Search result sorting and pagination remain server-side only.
 - Empty-query results do not render a `Query` or `All notes` state card.
+- Home-section `View more notes` links preserve their server-side sort or scope on first load.

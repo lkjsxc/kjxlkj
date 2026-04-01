@@ -21,14 +21,12 @@
 - The editor surface stays flat, dark, and document-first.
 - The mode switch is hidden through supported editor configuration.
 - Opening an admin note should place typing focus into the visible editor.
-- Vim mode is available but disabled by default.
-- Vim mode uses a global default plus a browser-local override.
 - Desktop keeps an upstream-style text/table toolbar inside Markdown mode.
 - Narrow screens may compact the toolbar, but `heading`, `bold`, `italic`, `strike`, `quote`, `ul`, `ol`, `task`, `table`, `link`, `code`, and `codeblock` remain available.
 - Preview starts closed and opens on demand from note chrome.
 - Toolbar groups wrap onto additional rows before a horizontal toolbar scrollbar is allowed to appear.
 - The `Public` checkbox remains outside the editor body and inside the note workspace chrome.
-- Alias, canonical URL, and mode controls should use a consistent card-like presentation.
+- Alias, canonical URL, and metadata controls should use a consistent card-like presentation.
 - The note page owns vertical scrolling; the editor body may not add its own normal vertical scroll region.
 - The page itself may not require horizontal scrolling in order to edit.
 - Typed Markdown must stay legible in the editor and render correctly in the opened preview before save.
@@ -39,8 +37,7 @@
 
 - Editor CSS and JS are served from local asset routes.
 - Admin note HTML may not depend on an external editor CDN at runtime.
-- Vendored editor files must keep their upstream license text.
-- Any vendored Vim keymap asset must stay pinned and documented like other editor assets.
+- Vendored editor files stay pinned and documented through the repo-level license and provenance contracts.
 
 ## Fallback Rule
 

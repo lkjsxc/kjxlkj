@@ -2,16 +2,16 @@
 
 ## Goal
 
-`kjxlkj` is a Markdown note system for LLM-operated workflows with direct root-path note URLs, live admin editing, full revision history, a homepage-like public root, and a compact admin dashboard.
+`kjxlkj` is a Markdown note system for LLM-operated workflows with direct root-path note URLs, live admin editing, full revision history, an editable homepage hero, a compact analytics dashboard, and a dedicated settings workspace.
 
 ## Product Intent
 
 - Serve notes at root paths such as `/{alias}` or `/{id}`.
 - Use opaque Base32 note IDs and optional human-managed aliases.
-- Keep editing fast for one admin with autosave and live chrome updates.
-- Support private-by-default notes with explicit `Public` control.
+- Keep editing fast for one admin with autosave, live chrome updates, and on-demand preview.
+- Support configurable new-note visibility while defaulting initial installs to private notes.
 - Preserve immutable revision history.
-- Keep recent-note, favorite, search, and stats surfaces workable for thousands of notes.
+- Keep homepage, favorites, popularity, search, and analytics surfaces workable for thousands of notes.
 
 ## Non-Goals
 

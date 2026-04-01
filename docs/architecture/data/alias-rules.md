@@ -6,8 +6,10 @@
 
 ## Format
 
-- `alias` is lowercase ASCII.
+- Raw alias input is trimmed and normalized before validation.
+- `alias` is stored as lowercase ASCII.
 - Allowed characters are `a-z`, `0-9`, and `-`.
+- Hyphens entered directly by typing or paste remain valid input.
 - Aliases may not begin or end with `-`.
 - Consecutive `--` is rejected.
 

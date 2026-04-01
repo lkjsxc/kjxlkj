@@ -8,6 +8,14 @@
 - Unfavoriting clears saved favorite position.
 - Admins reorder favorites from `/admin`.
 - Reordering operates on the full current favorite set, not only the homepage-sized subset.
+- The homepage favorites section ends with a `View more notes` card that links to `/search?scope=favorites`.
+
+## Favorite Search Scope
+
+- `scope=favorites` filters `/search` to favorite notes only.
+- Empty-query favorite scope defaults to `favorite_position_asc`.
+- Non-empty-query favorite scope still defaults to `relevance`.
+- Favorite scope keeps pagination and sorting server-side.
 
 ## Favorite Reorder API
 

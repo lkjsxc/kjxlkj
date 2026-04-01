@@ -3,28 +3,31 @@
 ## Dashboard Intent
 
 - `GET /admin` is the admin dashboard.
-- The page is for scan, settings, favorites, recent activity, and entry into note editing.
+- The page is for scan, analytics, favorites, recent activity, settings entry, and entry into note editing.
 
 ## Layout
 
 - The persistent shell rail remains visible.
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
-- Main content starts with compact stats, then stacked `Settings`, `Popular notes`, `Recently updated`, and `Favorites` sections.
-- Dashboard spacing should stay tighter than the early tall-card builds.
+- Main content starts with compact stats, then a `Settings` entry section, then stacked `Popular notes`, `Recently updated`, and `Favorites` sections.
+- Dashboard spacing should stay tighter than the early tall-card builds without collapsing section readability.
+- The dashboard does not include the canonical settings form.
 - The dashboard does not include the full note library.
 - The page header does not show `Admin browse`.
 - The page does not expose a top-right search button.
 
 ## Main Blocks
 
-- Statistics cards for total, public/private split, favorites, and current month/year activity.
+- Statistics cards for total, public/private split, favorites, and current month or year activity.
 - Statistics also expose note-view activity totals and recent popularity context.
-- Settings form for global defaults, including homepage intro copy, homepage popular-note count, and default Vim mode.
-- Browser-local Vim override controls.
-- Popular notes block with a server-driven `7d` / `30d` / `90d` selector.
-- Recent notes block.
-- Favorite notes block with a full reorderable admin list of all favorites.
+- `Settings` is a compact summary block with a link to `/admin/settings`.
+- Popular notes use a server-driven `7d` / `30d` / `90d` selector.
+- Popular-note rows show rolling-window and all-time totals.
+- Popular notes include a `View more notes` card into the matching `/search` state.
+- Recently updated includes a `View more notes` card into `/search`.
+- Favorites use a full reorderable admin list of all favorites.
+- Favorites include a `View more notes` card into `/search?scope=favorites`.
 
 ## Visual Rules
 

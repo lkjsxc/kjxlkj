@@ -3,29 +3,43 @@
 ## Home Page
 
 - `GET /` returns the homepage shell after setup completes.
-- Guests see public recent notes and public favorites only.
+- The homepage hero uses the editable global `home_title` plus optional intro Markdown.
+- The homepage always contains `Quick search`.
+- The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order and visibility.
+- Guests see public-only home data.
 - Signed-in admins see the same structure with private-capable data and admin actions.
-- Homepage is intentionally short and does not act as the full browse surface.
+- The homepage is intentionally short and does not act as the full browse surface.
 
 ## Admin Dashboard
 
 - `GET /admin` returns the admin dashboard.
-- Dashboard includes statistics, settings, recent notes, and favorites.
-- Dashboard does not include the full note library.
+- The dashboard includes statistics, popularity, recent activity, favorites, and a settings entry point.
+- The dashboard does not own the canonical settings form.
+- The dashboard does not include the full note library.
 - Dashboard data includes public and private notes.
+
+## Admin Settings
+
+- `GET /admin/settings` returns the dedicated settings workspace.
+- The settings page owns the canonical global settings form.
+- Saving settings affects rendered HTML routes and new-note defaults immediately.
 
 ## Search and Browse
 
 - `GET /search` is the canonical browse and search workspace.
-- Search accepts `q`, `sort`, `cursor`, and `limit`.
-- Empty `q` returns the first paginated page of all viewable notes.
-- Non-empty `q` returns paginated matches only.
+- Search accepts `q`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
+- `scope=all` is the default.
+- `scope=favorites` narrows search and browse results to favorite notes only.
+- Empty `q` returns the first paginated page of viewable notes inside the current scope and sort.
+- Non-empty `q` returns paginated matches inside the current scope only.
 
 ## Default Ordering
 
 - Homepage recent blocks sort by `updated_at DESC, id ASC`.
-- Favorite blocks use persistent `favorite_position ASC`.
-- Empty-query `/search` defaults to `updated_desc`.
+- Homepage favorite blocks use persistent `favorite_position ASC`.
+- Homepage popular blocks sort by the selected rolling window, then lifetime views, then `updated_at DESC, id ASC`.
+- Empty-query `/search` defaults to `updated_desc` for `scope=all`.
+- Empty-query `/search` defaults to `favorite_position_asc` for `scope=favorites`.
 - Non-empty-query `/search` defaults to `relevance`.
 - Note-to-note `Prev` and `Next` continue to use `created_at`.
 

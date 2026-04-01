@@ -12,21 +12,25 @@
 - The homepage uses the same restrained main-column width and vertical rhythm on rail-visible and drawer layouts.
 - The main pane uses a short stacked composition with restrained gaps between the page title and first section.
 - `Quick search`, `Popular notes`, `Recently updated`, and `Favorites` use the same lightweight section language.
+- `Quick search`, `Popular notes`, and `Recently updated` use slightly more generous internal spacing than the older tight layout.
 - Each note block uses compact but not cramped cards in a responsive grid.
 - Narrow screens collapse to one column without stretched card heights.
 - The homepage avoids tall summary panels and tall statistics blocks.
-- The quick-search section should not visually dominate the recent and favorite sections.
+- The quick-search section should not visually dominate the note sections.
 - Section wrappers avoid redundant borders when they do not contain note cards.
 - Grid gaps are slightly wider than the older tight dashboard/home spacing.
 
 ## Content Rules
 
-- The homepage may render optional Markdown intro copy directly under `Home`.
-- The homepage contains a quick search section, popular notes, recent notes, and favorite notes.
+- The homepage top title renders the editable global `home_title` instead of a hardcoded `Home`.
+- The homepage may render optional intro Markdown directly under that title.
+- The homepage always contains `Quick search`.
+- The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order.
 - The homepage does not contain a statistics block.
 - The popular-notes section exposes one server-driven window selector for `7d`, `30d`, and `90d`.
 - The default homepage popularity window is `30d`.
-- `Recently updated` ends with one clear browse-action card that links to `/search`.
+- `Popular notes`, `Recently updated`, and `Favorites` each end with one `View more notes` card that links into `/search`.
+- Popular-note cards show both the selected rolling-window total and the all-time total.
 - Guest homepage data is public-only.
 - Signed-in admins may see private-capable popular, recent, and favorite blocks plus quick admin actions.
 - Opaque IDs are not shown in normal homepage cards.

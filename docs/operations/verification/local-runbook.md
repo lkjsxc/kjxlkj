@@ -49,10 +49,12 @@ Expected:
 
 - HTML contains the shared shell rail
 - HTML contains homepage sections rather than one bare browse list
-- homepage may include intro Markdown below `Home`
+- homepage title is editable rather than hardcoded
+- homepage may include intro Markdown below the title
 - homepage contains no stats block
 - homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
-- homepage includes a browse-action card that points to `/search`
+- popular cards show rolling-window and all-time totals
+- homepage includes `View more notes` cards that point into `/search`
 - homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
 - HTML does not expose raw note IDs in normal list rows
@@ -77,10 +79,13 @@ Expected:
 - non-empty queries show a query display near the search input and sort control
 - HTML contains sort controls in the main pane
 - HTML does not contain a visible `Sort` label
+- sort and search-submit controls align vertically
 - HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
 - empty-query HTML does not contain a `Query` or `All notes` state card
+- `/search?scope=favorites` returns favorite-only browse results
+- `/search?sort=popular_desc&popular_window=30d` returns popularity-ordered browse results
 
 ## Verify Admin Dashboard
 
@@ -90,7 +95,7 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 
 Expected:
 
-- HTML contains stats and settings blocks
+- HTML contains stats and a settings entry block
 - HTML contains a popular-notes block
 - HTML contains recent and favorite note rows
 - popular, recent, favorite, and settings sections stack vertically
@@ -98,9 +103,25 @@ Expected:
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
-- settings include homepage intro Markdown, homepage popular count, default Vim mode, and browser-local Vim override controls
+- dashboard settings block links to `/admin/settings`
 - dashboard favorites use persistent favorite order rather than updated time
 - dashboard exposes note-view analytics
+
+## Verify Admin Settings
+
+```bash
+curl -sS 'http://127.0.0.1:8080/admin/settings' -b cookies.txt
+```
+
+Expected:
+
+- HTML contains the canonical settings form
+- settings include home title and intro Markdown
+- settings include visibility and order controls for popular, recent, and favorites
+- settings include item-count controls defaulting to `5`
+- settings include default new-note visibility
+- settings include default search page size
+- HTML does not contain Vim-mode controls
 
 ## Verify Admin Note Shell
 
@@ -122,6 +143,7 @@ Expected:
 - HTML contains note-view analytics metadata for admins
 - preview starts closed
 - no repeated save requests occur after the page becomes idle without further edits
+- HTML does not contain Vim-mode status text or controls
 
 ## Verify History Page
 
@@ -152,6 +174,7 @@ Expected:
 - typed Markdown stays legible in the editor and renders correctly when preview is opened
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 - compact preview opens as a fixed overlay and closes cleanly
+- compact preview still works when the rail is hidden behind the drawer
 - compact iPhone-width rendering keeps the same UI font family as other widths
 
 ## Verify Browser Visual Checks
@@ -162,11 +185,11 @@ docker compose --profile verify run --rm visual-verify
 
 Expected:
 
-- desktop screenshots pass home/search/admin/note assertions
+- desktop screenshots pass home/search/admin/admin-settings/note assertions
 - compact screenshots pass closed and open drawer assertions
 - iPhone-width or equivalent compact screenshots confirm font consistency
 - homepage popular window switching works at runtime
-- the icon asset is linked in HTML and renders in shell branding
+- the icon asset is linked through `/favicon.ico` and renders in shell branding
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
 - the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`

@@ -31,15 +31,21 @@
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
   - with valid session: `200` HTML admin dashboard
+- `GET /admin/settings`:
+  - before setup: `302` to `/setup`
+  - without valid session: `302` to `/login`
+  - with valid session: `200` HTML admin settings page
 - `GET /search`:
   - before setup: `302` to `/setup`
-  - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
-  - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `cursor`, `limit`
+  - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
+  - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
 
 ## Asset Delivery
 
+- `GET /favicon.ico`:
+  - returns the canonical production favicon
 - `GET /assets/icon.svg`:
-  - returns the canonical site icon SVG
+  - returns the authored vector icon source
 - `GET /assets/vendor/toastui/3.2.2/toastui-editor.min.css`:
   - returns vendored editor CSS
 - `GET /assets/vendor/toastui/3.2.2/toastui-editor-dark.min.css`:
@@ -85,7 +91,7 @@
 - `POST /admin/settings`:
   - without valid session: `302` to `/login`
   - invalid payload: `400` HTML validation page
-  - valid session: `303` to `/admin`
+  - valid session: `303` to `/admin/settings`
 
 ## Revision History and Navigation JSON
 

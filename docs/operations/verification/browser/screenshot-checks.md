@@ -11,6 +11,7 @@ docker compose --profile verify run --rm visual-verify
 - Desktop homepage shell with rail.
 - Desktop search page.
 - Desktop admin dashboard shell.
+- Desktop admin settings page.
 - Desktop admin note page with the Markdown editor.
 - Desktop guest note page.
 - Desktop history index page showing current note plus revisions.
@@ -36,15 +37,18 @@ docker compose --profile verify run --rm visual-verify
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Search and history paging expose `Previous` and `Next` actions.
+- Search sort and search-submit controls align vertically on desktop.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
 - Search sort remains functional without a visible `Sort` label.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
-- The shell brand renders the SVG icon cleanly on desktop and compact headers.
+- The shell brand renders the circular icon cleanly on desktop and compact headers.
+- HTML links `/favicon.ico` and the generated icon remains centered and legible at favicon scale.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
+- Compact preview stays correctly placed when the rail is drawer-only or closed.
 - Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
 - Browser verification types into the visible Markdown editor surface rather than using `setMarkdown()`.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
@@ -56,9 +60,12 @@ docker compose --profile verify run --rm visual-verify
 - Dashboard does not render a library block.
 - Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
-- Dashboard settings cover default Vim mode and browser-local Vim override behavior.
+- Dashboard links to a dedicated settings page instead of embedding the full settings form.
+- Settings page covers home title, intro Markdown, section visibility and order, section counts, search page size, and default new-note visibility.
 - Dashboard and admin note surfaces expose note-view analytics.
 - Markdown links are visibly accented in guest content and preview.
 - Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
 - Homepage intro Markdown renders when configured.
 - Homepage popular-window switching updates the visible popular list.
+- Homepage popular cards expose rolling-window and all-time totals.
+- Homepage note sections expose `View more notes` cards for popular, recent, and favorites.

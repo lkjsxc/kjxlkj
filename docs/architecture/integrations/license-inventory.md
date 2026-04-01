@@ -8,14 +8,15 @@
 
 ## Repo License
 
-- The repo itself is licensed under `MIT`.
+- The repo itself is licensed under `Apache-2.0`.
+- The root `LICENSE` file is the only license file shipped in the repo tree.
 - The repo must not vendor third-party code unless the upstream license permits redistribution.
 
 ## Vendored Browser Assets
 
 | Component | Version | Upstream | License | Distribution | Notice Rule |
 |---|---:|---|---|---|---|
-| Toast UI Editor | 3.2.2 | `nhn/tui.editor` / npm package `@toast-ui/editor` | `MIT` | Vendored unmodified distribution assets under `src/web/assets/vendor/` and served locally | Keep the upstream `LICENSE` file adjacent to the vendored files and retain version provenance |
+| Toast UI Editor | 3.2.2 | `nhn/tui.editor` / npm package `@toast-ui/editor` | `MIT` | Vendored unmodified distribution assets under `src/web/assets/vendor/` and served locally | Consolidate the required upstream notice text into the root `LICENSE` file and retain version provenance |
 
 ## Direct Runtime Crates
 
@@ -60,6 +61,6 @@
 ## Operational Rules
 
 - New third-party code may not be vendored without adding it to this inventory first.
-- Vendored assets must be pinned by exact version and kept with their upstream license text.
+- Vendored assets must be pinned by exact version and their required notice text must remain represented from the root `LICENSE`.
 - Direct dependency version bumps must update this file when the locked version or license expression changes.
 - Vendored payload may live under `src/`, but it is still treated as upstream code rather than authored code.

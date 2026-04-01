@@ -5,6 +5,7 @@
 - Homepage note blocks, search results, and history cards share the same compact card language.
 - Browse/search/history cards are compact, sortable server-side, and safe for thousands of notes.
 - The list is cursor-paginated, not infinite scroll.
+- Home sections may append one final `View more notes` card that shares the same grid rhythm without mimicking a note card exactly.
 
 ## Row Hierarchy
 

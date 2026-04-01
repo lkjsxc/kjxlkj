@@ -8,9 +8,10 @@
 2. Keep every docs directory to one `README.md` plus multiple children.
 3. Keep every docs file at 300 lines or fewer.
 4. Keep every source file at 200 lines or fewer.
-5. Remove stale contracts instead of preserving conflicting versions.
-6. Prefer short declarative bullets over narrative prose.
-7. Optimize for LLM retrieval before human ornament.
+5. Record exact defaults, route shapes, and UI labels when they matter.
+6. Remove stale contracts instead of preserving conflicting versions.
+7. Prefer short declarative bullets over narrative prose.
+8. Optimize for LLM retrieval before human ornament.
 
 ## Top-Level TOCs
 
@@ -21,7 +22,7 @@
 - [containers/README.md](containers/README.md)
 - [repository/README.md](repository/README.md)
 
-## Reading Order
+## Primary Reading Order
 
 1. [vision/purpose.md](vision/purpose.md)
 2. [repository/layout/root-layout.md](repository/layout/root-layout.md)
@@ -31,8 +32,9 @@
 6. [product/experience/shell/root-shell.md](product/experience/shell/root-shell.md)
 7. [product/experience/index/public-root.md](product/experience/index/public-root.md)
 8. [product/experience/shell/admin-dashboard.md](product/experience/shell/admin-dashboard.md)
-9. [product/experience/index/search-workspace.md](product/experience/index/search-workspace.md)
-10. [product/experience/editor/preview-panel.md](product/experience/editor/preview-panel.md)
-11. [architecture/integrations/license-inventory.md](architecture/integrations/license-inventory.md)
-12. [operations/verification/local-runbook.md](operations/verification/local-runbook.md)
-13. [operations/quality/gates.md](operations/quality/gates.md)
+9. [product/experience/shell/admin-settings.md](product/experience/shell/admin-settings.md)
+10. [product/experience/index/search-workspace.md](product/experience/index/search-workspace.md)
+11. [product/experience/editor/preview-panel.md](product/experience/editor/preview-panel.md)
+12. [architecture/integrations/license-inventory.md](architecture/integrations/license-inventory.md)
+13. [operations/verification/local-runbook.md](operations/verification/local-runbook.md)
+14. [operations/quality/gates.md](operations/quality/gates.md)

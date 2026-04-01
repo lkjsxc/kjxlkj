@@ -21,6 +21,8 @@
 - The preview may not cause horizontal page overflow.
 - The preview must be dismissible without losing note content.
 - The compact preview path may not depend on hidden tab content staying scroll-aligned underneath.
+- Compact preview sizing and placement must be computed from the visible editor workspace even when the side menu is drawer-only or currently hidden.
+- Opening or closing the drawer may not break preview rendering, preview width, or preview positioning.
 
 ## Rendering Rules
 
