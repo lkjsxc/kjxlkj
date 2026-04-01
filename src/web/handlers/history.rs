@@ -1,7 +1,8 @@
 //! Note history HTML handlers
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool};
+use crate::web::db::{self, DbPool, ListDirection};
+use crate::web::handlers::record_history::HistoryParams;
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
@@ -12,6 +13,7 @@ pub async fn history_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
     path: web::Path<String>,
+    params: web::Query<HistoryParams>,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
@@ -27,13 +29,30 @@ pub async fn history_page(
         .is_some_and(|alias| alias != reference)
         && reference == record.id
     {
-        return Ok(redirect(&view::history_href(&record)));
+        return Ok(redirect(&with_query(
+            &view::history_href(&record),
+            req.query_string(),
+        )));
     }
-    let revisions = db::get_record_revisions(&pool, &record.id).await?;
+    let settings = db::get_settings(&pool).await?;
+    let page = db::list_record_revisions(
+        &pool,
+        &record.id,
+        is_admin,
+        params.limit.unwrap_or(settings.search_results_per_page),
+        &ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref()),
+        params.cursor.as_deref(),
+    )
+    .await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
-    let history = view::visible_history(&record, &revisions, is_admin);
     Ok(html(templates::history_page(
-        &record, &chrome, &history, is_admin,
+        &record,
+        &chrome,
+        &view::history_links(&record, &page.revisions),
+        page.previous_cursor.as_deref(),
+        page.next_cursor.as_deref(),
+        params.limit.unwrap_or(settings.search_results_per_page),
+        is_admin,
     )))
 }
 
@@ -57,9 +76,9 @@ pub async fn revision_page(
         .is_some_and(|alias| alias != reference)
         && reference == record.id
     {
-        return Ok(redirect(&format!(
-            "{}/history/{revision_number}",
-            view::note_href(&record)
+        return Ok(redirect(&with_query(
+            &format!("{}/history/{revision_number}", view::note_href(&record)),
+            req.query_string(),
         )));
     }
     let Some(revision) = db::get_record_revision(&pool, &record.id, revision_number).await? else {
@@ -87,6 +106,14 @@ fn redirect(location: &str) -> HttpResponse {
     HttpResponse::Found()
         .append_header(("Location", location))
         .finish()
+}
+
+fn with_query(path: &str, query: &str) -> String {
+    if query.is_empty() {
+        path.to_string()
+    } else {
+        format!("{path}?{query}")
+    }
 }
 
 fn html(body: String) -> HttpResponse {

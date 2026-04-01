@@ -4,8 +4,8 @@ use crate::core::{generate_id, normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
 use crate::web::handlers::session;
-use actix_web::{delete, get, post, put, web, HttpRequest, HttpResponse};
-use serde::{Deserialize, Serialize};
+use actix_web::{delete, post, put, web, HttpRequest, HttpResponse};
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct CreateInput {
@@ -23,11 +23,6 @@ pub struct UpdateInput {
     pub is_private: bool,
 }
 
-#[derive(Serialize)]
-pub struct NavResponse {
-    pub id: Option<String>,
-}
-
 #[post("/records")]
 pub async fn create(
     pool: web::Data<DbPool>,
@@ -35,20 +30,16 @@ pub async fn create(
     body: web::Json<CreateInput>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    let id = generate_unique_id(&pool).await?;
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
-    let alias = normalize_alias(body.alias.as_deref())?;
-    let is_favorite = body.is_favorite.unwrap_or(false);
-    let is_private = body.is_private.unwrap_or(true);
     let record = db::create_record(
         &pool,
-        &id,
-        alias.as_deref(),
+        &generate_unique_id(&pool).await?,
+        normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
-        is_favorite,
-        is_private,
+        body.is_favorite.unwrap_or(false),
+        body.is_private.unwrap_or(true),
     )
     .await?;
     Ok(HttpResponse::Created().json(record))
@@ -64,11 +55,10 @@ pub async fn update(
     session::require_session(&req, &pool).await?;
     let id = path.into_inner();
     validate_id(&id)?;
-    let alias = normalize_alias(body.alias.as_deref())?;
     match db::update_record(
         &pool,
         &id,
-        alias.as_deref(),
+        normalize_alias(body.alias.as_deref())?.as_deref(),
         &body.body,
         body.is_favorite,
         body.is_private,
@@ -93,64 +83,6 @@ pub async fn remove(
         Ok(HttpResponse::NoContent().finish())
     } else {
         Err(AppError::NotFound(format!("note '{id}' not found")))
-    }
-}
-
-#[get("/records/{id}/history")]
-pub async fn history(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let id = path.into_inner();
-    validate_id(&id)?;
-    if db::get_record(&pool, &id).await?.is_none() {
-        return Err(AppError::NotFound(format!("note '{id}' not found")));
-    }
-    let revisions = db::get_record_revisions(&pool, &id).await?;
-    Ok(HttpResponse::Ok().json(revisions))
-}
-
-#[get("/records/{id}/prev")]
-pub async fn previous(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    nav_response(pool, req, path.into_inner(), true).await
-}
-
-#[get("/records/{id}/next")]
-pub async fn next(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    nav_response(pool, req, path.into_inner(), false).await
-}
-
-async fn nav_response(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    id: String,
-    older: bool,
-) -> Result<HttpResponse, AppError> {
-    validate_id(&id)?;
-    let is_admin = session::check_session(&req, &pool).await?;
-    let record = db::get_record(&pool, &id).await?;
-    match record {
-        Some(record) if is_admin || !record.is_private => {
-            let neighbor = if older {
-                db::get_previous_record(&pool, &id, is_admin).await?
-            } else {
-                db::get_next_record(&pool, &id, is_admin).await?
-            };
-            Ok(HttpResponse::Ok().json(NavResponse {
-                id: neighbor.map(|note| note.id),
-            }))
-        }
-        _ => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }
 }
 

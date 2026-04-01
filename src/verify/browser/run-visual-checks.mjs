@@ -4,13 +4,13 @@ import {
     assertVisibleText,
     expectAdminDashboard,
     expectAdminNote,
-    expectClosedDrawer,
     expectGuestNote,
     expectPublicRoot,
     expectSearchPage,
-    openDrawer,
 } from './assertions.mjs';
-import { assertEditorLayout, openPreview, verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
+import { verifyFavoriteReorder } from './dashboard-checks.mjs';
+import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
+import { captureCompactScreens } from './responsive-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
 async function main() {
@@ -19,9 +19,9 @@ async function main() {
     const browser = await chromium.launch({ headless: true });
     try {
         const notes = await prepareState(browser);
-        await capturePublicScreens(browser, notes);
+        const desktopFont = await capturePublicScreens(browser, notes);
         await captureAdminScreens(browser, notes.middle);
-        await captureCompactScreens(browser, notes.middle);
+        await captureCompactScreens(browser, notes.middle, desktopFont);
     } finally {
         await browser.close();
     }
@@ -42,6 +42,7 @@ async function captureAdminScreens(browser, note) {
 
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await expectAdminDashboard(page);
+    await verifyFavoriteReorder(page);
     await capture(page, 'desktop-admin-dashboard.png');
     assert.equal(await page.locator('#local-vim-mode').inputValue(), 'default');
     const defaultVim = page.locator('input[name="default_vim_mode"]').first();
@@ -65,21 +66,33 @@ async function captureAdminScreens(browser, note) {
     await verifyEditorFormatting(browser, page, note, false);
     await capture(page, 'desktop-admin-note.png');
 
-    await page.goto(`${appUrl}/${note.id}/history`, { waitUntil: 'networkidle' });
+    const historyJson = await page.evaluate(async (id) => {
+        const response = await fetch(`/records/${id}/history?limit=2`);
+        return response.json();
+    }, note.id);
+    assert.equal(historyJson.revisions.length, 2);
+    assert.equal(typeof historyJson.next_cursor, 'string');
+
+    await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
     await assertVisibleText(page, 'Current note');
     await assertVisibleText(page, 'Revision 3');
+    assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-history-index.png');
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
+        page.getByRole('button', { name: 'Next', exact: true }).click(),
+    ]);
+    await assertVisibleText(page, 'Revision 1');
 
     await page.goto(`${appUrl}/${note.id}/history/3`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history/3`);
     await assertVisibleText(page, 'Shared release');
     await Promise.all([
-        page.waitForURL('**/login'),
+        page.waitForURL('**/'),
         page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
     ]);
-    await assertVisibleText(page, 'kjxlkj');
-    assert.equal(await page.locator('.auth-card .subtitle').count(), 0);
+    await assertVisibleText(page, 'Home');
     await capture(page, 'desktop-login.png');
     await context.close();
 }
@@ -95,8 +108,9 @@ async function capturePublicScreens(browser, notes) {
     const browseCard = page.getByRole('link', { name: /View more notes/i }).first();
     assert.equal(await browseCard.getAttribute('href'), '/search');
     await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
-    await expectSearchPage(page);
-    await assertVisibleText(page, 'All notes');
+    await expectSearchPage(page, false);
+    await assertVisibleText(page, 'Notes');
+    assert.equal(await page.getByText('Query', { exact: true }).count(), 0);
     await assertVisibleText(page, notes.newest.title);
     await assertVisibleText(page, notes.middle.title);
     assert.equal(await page.locator('#search-sort').inputValue(), 'updated_desc');
@@ -127,6 +141,9 @@ async function capturePublicScreens(browser, notes) {
     );
     assert.equal(titles[0], 'Orbit Ledger');
 
+    await page.goto(`${appUrl}/search?q=orbit`, { waitUntil: 'networkidle' });
+    await expectSearchPage(page, true);
+
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
@@ -145,35 +162,9 @@ async function capturePublicScreens(browser, notes) {
     assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
     assert.equal(privateRevision?.status(), 404, 'private revision should return 404');
     await assertVisibleText(page, 'Note not found');
+    const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();
-}
-
-async function captureCompactScreens(browser, note) {
-    const context = await newContext(browser, { width: 360, height: 844 });
-    const page = await context.newPage();
-
-    await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
-    await expectPublicRoot(page);
-    await expectClosedDrawer(page);
-    await capture(page, 'compact-public-root-closed.png');
-
-    await openDrawer(page);
-    await capture(page, 'compact-public-root-open.png');
-
-    await login(page);
-    await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
-    await page.locator('#local-vim-mode').selectOption('off');
-    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
-    await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
-    await expectAdminNote(page);
-    await assertVisibleText(page, 'Vim off');
-    await expectClosedDrawer(page);
-    await capture(page, 'compact-admin-note.png');
-    await openPreview(page);
-    await assertEditorLayout(page, true);
-    await capture(page, 'compact-admin-note-preview.png');
-    await context.close();
+    return fontFamily;
 }
 
 main().catch((error) => {

@@ -1,11 +1,14 @@
 //! Admin dashboard template
 
+use super::dashboard_favorites::favorite_order_section;
 use super::index::{list_rail, note_row};
 use super::layout::{base, shell_page};
 use super::model::IndexItem;
+use super::sections::{page_header, section};
 use crate::web::db::{AppSettings, NoteStats};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
+const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
 
 pub fn admin_page(
     stats: &NoteStats,
@@ -13,18 +16,17 @@ pub fn admin_page(
     recent: &[IndexItem],
     favorites: &[IndexItem],
 ) -> String {
+    let dashboard_sections = format!(
+        "{}{}",
+        note_section("Recently updated", recent, "No notes yet."),
+        favorite_order_section(favorites),
+    );
     let content = format!(
-        r#"<header class="page-head">
-<div class="page-title-stack"><h1>Dashboard</h1></div>
-</header>
-{}
-<section class="dashboard-panels">
-{}
-{}
-</section>"#,
+        "{}{}<div class=\"dashboard-stack\">{}{}</div>",
+        page_header("Dashboard", None, "dashboard-head"),
         stats_grid(stats),
         settings_panel(settings),
-        note_columns(recent, favorites),
+        dashboard_sections,
     );
     base(
         "Dashboard",
@@ -40,7 +42,7 @@ pub fn admin_page(
             "dashboard-page",
         ),
         "",
-        &format!(r#"<script>{ACTIONS_JS}</script>"#),
+        &format!(r#"<script>{ACTIONS_JS}</script><script>{FAVORITE_ORDER_JS}</script>"#),
     )
 }
 
@@ -59,10 +61,10 @@ fn stats_grid(stats: &NoteStats) -> String {
 }
 
 fn settings_panel(settings: &AppSettings) -> String {
-    format!(
-        r#"<section class="surface section-block">
-<div class="section-head"><h2>Settings</h2></div>
-<form class="settings-grid" method="POST" action="/admin/settings">
+    section(
+        "Settings",
+        &format!(
+            r#"<form class="settings-grid" method="POST" action="/admin/settings">
 <label class="form-group"><span>Home recent count</span><input type="number" name="home_recent_limit" min="1" max="24" value="{}"></label>
 <label class="form-group"><span>Home favorite count</span><input type="number" name="home_favorite_limit" min="1" max="24" value="{}"></label>
 <label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
@@ -76,34 +78,28 @@ fn settings_panel(settings: &AppSettings) -> String {
 <option value="on">Always enable Vim mode</option>
 <option value="off">Always disable Vim mode</option>
 </select>
-</label>
-</section>"#,
-        settings.home_recent_limit,
-        settings.home_favorite_limit,
-        settings.search_results_per_page,
-        if settings.default_vim_mode {
-            "checked"
-        } else {
-            ""
-        },
-    )
-}
-
-fn note_columns(recent: &[IndexItem], favorites: &[IndexItem]) -> String {
-    format!(
-        "{}{}",
-        note_section("Recently updated", recent, "No notes yet."),
-        note_section("Favorites", favorites, "No favorites yet."),
+</label>"#,
+            settings.home_recent_limit,
+            settings.home_favorite_limit,
+            settings.search_results_per_page,
+            if settings.default_vim_mode {
+                "checked"
+            } else {
+                ""
+            },
+        ),
+        "settings-section",
     )
 }
 
 fn note_section(title: &str, notes: &[IndexItem], empty: &str) -> String {
-    format!(
-        r#"<section class="surface section-block">
-<div class="section-head"><h2>{title}</h2></div>
-<div class="note-list note-grid">{}</div>
-</section>"#,
-        note_rows(notes, empty)
+    section(
+        title,
+        &format!(
+            r#"<div class="note-list note-grid">{}</div>"#,
+            note_rows(notes, empty)
+        ),
+        "note-section",
     )
 }
 

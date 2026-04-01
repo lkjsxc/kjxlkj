@@ -3,6 +3,7 @@
 use super::index::{list_rail, note_row, pager};
 use super::layout::{base, html_escape, shell_page};
 use super::model::IndexItem;
+use super::sections::{page_header, section};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
@@ -23,28 +24,9 @@ pub fn search_page(
         String::new()
     };
     let content = format!(
-        r#"<header class="page-head">
-<div class="page-title-stack"><h1>Search</h1></div>
-</header>
-<section class="surface section-block search-surface">
-<div class="section-head"><h2>Search notes</h2></div>
-<form class="search-form" method="GET" action="/search">
-<label for="search-page-input" class="visually-hidden">Search notes</label>
-<div class="search-grid">
-<input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
-<div class="search-state-card"><small>Query</small><strong>{}</strong></div>
-<label class="form-group search-sort" for="search-sort">
-<span>Sort</span>
-<select id="search-sort" name="sort">{}</select>
-</label>
-<button type="submit" class="btn btn-primary">Search</button>
-</div>
-</form>
-</section>
-{}"#,
-        html_escape(query),
-        query_display(query),
-        sort_options(sort, has_query),
+        "{}{}{}",
+        page_header("Search", None, "search-head"),
+        search_section(query, sort, has_query),
         results_section(
             notes,
             previous_cursor,
@@ -73,6 +55,39 @@ pub fn search_page(
     )
 }
 
+fn search_section(query: &str, sort: &str, has_query: bool) -> String {
+    let query_card = if has_query {
+        format!(
+            r#"<div class="search-state-card"><small>Query</small><strong>{}</strong></div>"#,
+            html_escape(query)
+        )
+    } else {
+        String::new()
+    };
+    section(
+        "Search notes",
+        &format!(
+            r#"<form class="search-form" method="GET" action="/search">
+<label for="search-page-input" class="visually-hidden">Search notes</label>
+<div class="search-grid {}">
+<input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
+{}
+<label class="form-group search-sort" for="search-sort">
+<span>Sort</span>
+<select id="search-sort" name="sort">{}</select>
+</label>
+<button type="submit" class="btn btn-primary">Search</button>
+</div>
+</form>"#,
+            if has_query { "has-query" } else { "no-query" },
+            html_escape(query),
+            query_card,
+            sort_options(sort, has_query),
+        ),
+        "search-section",
+    )
+}
+
 fn results_section(
     notes: &[IndexItem],
     previous_cursor: Option<&str>,
@@ -82,11 +97,6 @@ fn results_section(
     sort: &str,
     has_query: bool,
 ) -> String {
-    let title = if has_query {
-        format!(r#"Results for “{}”"#, html_escape(query))
-    } else {
-        "All notes".to_string()
-    };
     let cards = if notes.is_empty() {
         format!(
             r#"<p class="surface-empty">{}</p>"#,
@@ -99,28 +109,20 @@ fn results_section(
     } else {
         notes.iter().map(note_row).collect::<Vec<_>>().join("")
     };
-    let limit = limit.to_string();
-    let pager = pager(
-        "/search",
-        previous_cursor,
-        next_cursor,
-        &[("q", query), ("sort", sort), ("limit", &limit)],
-    );
-    format!(
-        r#"<section class="surface section-block">
-<div class="section-head"><h2>{title}</h2></div>
-<div class="note-list note-grid">{cards}</div>
-{pager}
-</section>"#
+    section(
+        if has_query { "Results" } else { "Notes" },
+        &format!(
+            r#"<div class="note-list note-grid">{cards}</div>
+{}"#,
+            pager(
+                "/search",
+                previous_cursor,
+                next_cursor,
+                &[("q", query), ("sort", sort), ("limit", &limit.to_string())],
+            )
+        ),
+        "note-section",
     )
-}
-
-fn query_display(query: &str) -> String {
-    if query.is_empty() {
-        "All notes".to_string()
-    } else {
-        html_escape(query)
-    }
 }
 
 fn sort_options(selected: &str, has_query: bool) -> String {

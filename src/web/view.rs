@@ -7,6 +7,7 @@ use crate::web::templates::{render_time, HistoryLink, IndexItem, NavLink, NoteCh
 
 pub fn index_item(record: &ListedRecord, show_visibility: bool) -> IndexItem {
     IndexItem {
+        id: record.record.id.clone(),
         href: note_href(&record.record),
         title: title_for(&record.record),
         summary: record.preview.clone(),
@@ -22,8 +23,6 @@ pub async fn note_chrome(
     record: &Record,
     is_admin: bool,
 ) -> Result<NoteChrome, AppError> {
-    let previous = adjacent_link(pool, &record.id, is_admin, true).await?;
-    let next = adjacent_link(pool, &record.id, is_admin, false).await?;
     Ok(NoteChrome {
         id: record.id.clone(),
         alias: record.alias.clone(),
@@ -33,18 +32,22 @@ pub async fn note_chrome(
         updated_at: render_time(&record.updated_at),
         is_favorite: record.is_favorite,
         visibility: visibility_label(record.is_private),
-        previous,
-        next,
+        previous: adjacent_link(pool, &record.id, is_admin, true).await?,
+        next: adjacent_link(pool, &record.id, is_admin, false).await?,
         history_href: history_href(record),
     })
 }
 
-pub fn visible_history(
-    record: &Record,
-    revisions: &[RecordRevision],
-    is_admin: bool,
-) -> Vec<HistoryLink> {
-    filtered_history_links(record, revisions, is_admin)
+pub fn history_links(record: &Record, revisions: &[RecordRevision]) -> Vec<HistoryLink> {
+    revisions
+        .iter()
+        .map(|revision| HistoryLink {
+            href: format!("{}/history/{}", note_href(record), revision.revision_number),
+            label: format!("Revision {}", revision.revision_number),
+            created_at: render_time(&revision.created_at),
+            status: visibility_label(revision.is_private),
+        })
+        .collect()
 }
 
 async fn adjacent_link(
@@ -58,15 +61,12 @@ async fn adjacent_link(
     } else {
         db::get_next_record(pool, id, include_private).await?
     };
-    match target {
-        Some(note) => Ok(Some(NavLink {
-            href: note_href(&note),
-            relation: if older { "Prev" } else { "Next" },
-            title: title_for(&note),
-            created_at: render_time(&note.created_at),
-        })),
-        None => Ok(None),
-    }
+    Ok(target.map(|note| NavLink {
+        href: note_href(&note),
+        relation: if older { "Prev" } else { "Next" },
+        title: title_for(&note),
+        created_at: render_time(&note.created_at),
+    }))
 }
 
 fn title_for(record: &Record) -> String {
@@ -75,23 +75,6 @@ fn title_for(record: &Record) -> String {
     } else {
         record.title.clone()
     }
-}
-
-fn filtered_history_links(
-    record: &Record,
-    revisions: &[RecordRevision],
-    is_admin: bool,
-) -> Vec<HistoryLink> {
-    revisions
-        .iter()
-        .filter(|revision| is_admin || !revision.is_private)
-        .map(|revision| HistoryLink {
-            href: format!("{}/history/{}", note_href(record), revision.revision_number),
-            label: format!("Revision {}", revision.revision_number),
-            created_at: render_time(&revision.created_at),
-            status: visibility_label(revision.is_private),
-        })
-        .collect()
 }
 
 pub fn note_href(record: &Record) -> String {

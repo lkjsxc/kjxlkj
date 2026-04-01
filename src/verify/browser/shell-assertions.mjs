@@ -23,6 +23,11 @@ export async function openDrawer(page) {
     await assertNoHorizontalOverflow(page);
 }
 
+export async function assertNoHorizontalOverflow(page) {
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
+}
+
 export async function assertVisibleText(page, text) {
     await page.getByText(text, { exact: false }).first().waitFor({ state: 'visible' });
 }
@@ -135,9 +140,4 @@ async function assertBrandSpacing(page) {
         return nav.getBoundingClientRect().top - head.getBoundingClientRect().bottom;
     });
     assert.ok(gap >= 10, `brand and primary nav should have visual separation (saw ${gap}px)`);
-}
-
-async function assertNoHorizontalOverflow(page) {
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    assert.ok(overflow <= 1, `page should not overflow horizontally (saw ${overflow}px)`);
 }

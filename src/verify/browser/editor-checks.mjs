@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { assertInvisibleText, assertVisibleText } from './assertions.mjs';
+import { assertNoHorizontalOverflow } from './shell-assertions.mjs';
 import { appUrl, newContext } from './support.mjs';
 
 export async function verifyUiCreatedDraft(page, vimEnabled = false) {
@@ -37,6 +38,7 @@ export async function verifyEditorFormatting(browser, page, note, vimEnabled = f
     await openPreview(page);
     await waitForPreviewStructures(page);
     await assertEditorLayout(page, false);
+    await assertAccentLink(page, '.toastui-editor-md-preview .toastui-editor-contents a');
     await page.waitForTimeout(1800);
     assert.ok(saveRequests.length >= 1, 'editing should trigger autosave');
     const settledCount = saveRequests.length;
@@ -60,8 +62,11 @@ export async function verifyEditorFormatting(browser, page, note, vimEnabled = f
             document.querySelectorAll('.prose li').length >= 1 &&
             !!document.querySelector('.prose blockquote') &&
             !!document.querySelector('.prose pre') &&
-            !!document.querySelector('.prose table')
+            !!document.querySelector('.prose table') &&
+            !!document.querySelector('.prose a')
     );
+    await assertNoHorizontalOverflow(guestPage);
+    await assertAccentLink(guestPage, '.prose a');
     await assertVisibleText(guestPage, 'Alpha');
     await assertInvisibleText(guestPage, '* Alpha');
     await guest.close();
@@ -102,6 +107,8 @@ async function appendMarkdown(page, vimEnabled) {
         '',
         '## Live Heading',
         '',
+        '[Docs](https://example.com/very-long-link-for-wrap-testing)',
+        '',
         '- Alpha',
         '',
         '> Quoted line',
@@ -113,6 +120,8 @@ async function appendMarkdown(page, vimEnabled) {
         '| Name | Value |',
         '| --- | --- |',
         '| A | 1 |',
+        '',
+        'Inline code `super-long-inline-code-token-for-wrap-checking`.',
     ]) {
         if (line) await page.keyboard.type(line);
         await page.keyboard.press('Enter');
@@ -167,4 +176,13 @@ async function moveCursorToEnd(page) {
         window.editorInstance.moveCursorToEnd();
     });
     await expectEditorFocus(page);
+}
+
+async function assertAccentLink(page, selector) {
+    const style = await page.locator(selector).first().evaluate((node) => {
+        const computed = getComputedStyle(node);
+        return { color: computed.color, decoration: computed.textDecorationLine };
+    });
+    assert.notEqual(style.color, 'rgb(242, 242, 239)');
+    assert.ok(style.decoration.includes('underline'));
 }

@@ -7,6 +7,8 @@ const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
 const OVERVIEW_CSS: &str = include_str!("overview.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
+const PAGE_CSS: &str = include_str!("page.css");
+const FAVORITES_CSS: &str = include_str!("favorites.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
 const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
 const SHELL_JS: &str = include_str!("shell.js");
@@ -28,6 +30,8 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 {SURFACES_CSS}
 {OVERVIEW_CSS}
 {RESPONSIVE_CSS}
+{PAGE_CSS}
+{FAVORITES_CSS}
 {EDITOR_CSS}
 {EDITOR_EXTRA_CSS}</style>
 </head>
@@ -91,7 +95,7 @@ pub fn primary_nav(active: &str, is_admin: bool) -> String {
 
 fn nav_link(href: &str, label: &str, active: bool) -> String {
     format!(
-        r#"<a href="{href}" class="rail-link{}"><span>{label}</span></a>"#,
+        r#"<a href="{href}" class="rail-link rail-link-nav{}"><span>{label}</span></a>"#,
         if active { " active" } else { "" }
     )
 }

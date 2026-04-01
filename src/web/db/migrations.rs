@@ -61,6 +61,7 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 summary TEXT NOT NULL,
                 body TEXT NOT NULL DEFAULT '',
                 is_favorite BOOLEAN NOT NULL DEFAULT FALSE,
+                favorite_position BIGINT,
                 is_private BOOLEAN NOT NULL DEFAULT TRUE,
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -72,10 +73,24 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 ) STORED
             );
 
+            ALTER TABLE records ADD COLUMN IF NOT EXISTS favorite_position BIGINT;
+
+            WITH ordered AS (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY updated_at DESC, id ASC) AS favorite_position
+                FROM records
+                WHERE deleted_at IS NULL AND is_favorite = TRUE AND favorite_position IS NULL
+            )
+            UPDATE records
+            SET favorite_position = ordered.favorite_position
+            FROM ordered
+            WHERE records.id = ordered.id;
+
             CREATE INDEX IF NOT EXISTS idx_records_updated ON records(updated_at DESC, id ASC);
             CREATE INDEX IF NOT EXISTS idx_records_created ON records(created_at ASC, id ASC);
             CREATE INDEX IF NOT EXISTS idx_records_active ON records(deleted_at)
                 WHERE deleted_at IS NULL;
+            CREATE INDEX IF NOT EXISTS idx_records_favorite_position ON records(favorite_position ASC, id ASC)
+                WHERE deleted_at IS NULL AND is_favorite = TRUE;
             CREATE INDEX IF NOT EXISTS idx_records_search ON records USING GIN(search_document);
             CREATE UNIQUE INDEX IF NOT EXISTS idx_records_alias ON records(alias)
                 WHERE alias IS NOT NULL AND deleted_at IS NULL;

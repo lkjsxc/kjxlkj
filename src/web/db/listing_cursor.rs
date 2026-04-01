@@ -55,6 +55,7 @@ pub(super) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
             summary: row.get("summary"),
             body: row.get("body"),
             is_favorite: row.get("is_favorite"),
+            favorite_position: row.get("favorite_position"),
             is_private: row.get("is_private"),
             created_at: row.get("created_at"),
             updated_at: row.get("updated_at"),
@@ -118,11 +119,7 @@ fn edge_cursor(
     } else {
         entries.last().unwrap()
     };
-    Some(encode_cursor(&entry.cursor))
-}
-
-fn encode_cursor(cursor: &Cursor) -> String {
-    URL_SAFE_NO_PAD.encode(serde_json::to_string(cursor).unwrap())
+    Some(URL_SAFE_NO_PAD.encode(serde_json::to_string(&entry.cursor).unwrap()))
 }
 
 struct PageEntry {

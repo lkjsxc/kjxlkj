@@ -1,0 +1,88 @@
+.favorite-order-panel {
+    display: grid;
+    gap: 10px;
+}
+
+.favorite-order-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.favorite-order-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: start;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--panel);
+}
+
+.favorite-order-item.dragging {
+    opacity: 0.72;
+    border-color: var(--accent);
+}
+
+.favorite-order-handle {
+    min-height: 40px;
+    min-width: 56px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel-2);
+    color: var(--text-soft);
+    cursor: grab;
+}
+
+.favorite-order-link {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.favorite-order-title {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.favorite-order-summary {
+    color: var(--text-soft);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.favorite-order-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    color: var(--text-soft);
+}
+
+.favorite-order-meta small {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+}
+
+.favorite-order-error,
+.favorite-order-empty {
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .favorite-order-item {
+        grid-template-columns: 1fr;
+    }
+
+    .favorite-order-meta {
+        justify-content: flex-start;
+    }
+}

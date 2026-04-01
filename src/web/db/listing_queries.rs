@@ -12,10 +12,10 @@ pub(super) async fn browse_records(
     cursor: Option<&Cursor>,
 ) -> Result<ListPage, AppError> {
     let sql = format!(
-        "WITH listed AS (SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, \
+        "WITH listed AS (SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, \
          summary AS preview, LOWER(title) AS title_key, 0::DOUBLE PRECISION AS rank, 0::DOUBLE PRECISION AS fuzzy \
          FROM records WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE)) \
-         SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
+         SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
          FROM listed WHERE {} AND {} ORDER BY {} LIMIT $8",
         sort.binding_clause(2),
         sort.cursor_filter(direction, 2),
@@ -59,18 +59,18 @@ pub(super) async fn search_records(
 ) -> Result<ListPage, AppError> {
     let sql = format!(
         "WITH q AS (SELECT websearch_to_tsquery('simple', $2) AS tsq, $2::TEXT AS raw), \
-         matched AS (SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, \
+         matched AS (SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, \
          COALESCE(NULLIF(TRIM(ts_headline('simple', body, (SELECT tsq FROM q), \
          'StartSel=,StopSel=,MaxWords=18,MinWords=8,ShortWord=2,FragmentDelimiter= ... ')), ''), summary) AS preview, \
-         LOWER(title) AS title_key, ts_rank_cd(search_document, (SELECT tsq FROM q)) AS rank, \
+         LOWER(title) AS title_key, ts_rank_cd(search_document, (SELECT tsq FROM q))::DOUBLE PRECISION AS rank, \
          GREATEST(similarity(COALESCE(alias, ''), (SELECT raw FROM q)), similarity(title, (SELECT raw FROM q)), \
-         similarity(body, (SELECT raw FROM q))) AS fuzzy \
+         similarity(body, (SELECT raw FROM q)))::DOUBLE PRECISION AS fuzzy \
          FROM records WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE) \
          AND (search_document @@ (SELECT tsq FROM q) OR alias ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR title ILIKE '%' || (SELECT raw FROM q) || '%' OR body ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR similarity(COALESCE(alias, ''), (SELECT raw FROM q)) >= 0.15 \
          OR similarity(title, (SELECT raw FROM q)) >= 0.15 OR similarity(body, (SELECT raw FROM q)) >= 0.05)) \
-         SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
+         SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, preview, title_key, rank, fuzzy \
          FROM matched WHERE {} AND {} ORDER BY {} LIMIT $9",
         sort.binding_clause(3),
         sort.cursor_filter(direction, 3),
@@ -110,13 +110,23 @@ pub(super) async fn top_records(
     limit: i64,
     favorites_only: bool,
 ) -> Result<Vec<ListedRecord>, AppError> {
+    let (filter, order) = if favorites_only {
+        (
+            "AND is_favorite = TRUE",
+            "favorite_position ASC NULLS LAST, id ASC",
+        )
+    } else {
+        ("", "updated_at DESC, id ASC")
+    };
     let rows = client(pool)
         .await?
         .query(
-            "SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at, summary AS preview \
-             FROM records WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE) AND ($2 = FALSE OR is_favorite = TRUE) \
-             ORDER BY updated_at DESC, id ASC LIMIT $3",
-            &[&include_private, &favorites_only, &limit],
+            &format!(
+                "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, summary AS preview \
+                 FROM records WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE) {filter} \
+                 ORDER BY {order} LIMIT $2"
+            ),
+            &[&include_private, &limit],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;

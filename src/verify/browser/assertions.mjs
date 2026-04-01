@@ -3,6 +3,7 @@ import {
     assertCreateActionBelowHome,
     assertGridHeights,
     assertInvisibleText,
+    assertNoHorizontalOverflow,
     assertLocalToastUiAssets,
     assertNoHeaderButtons,
     assertSingleHistoryCard,
@@ -14,7 +15,7 @@ import {
     openDrawer,
 } from './shell-assertions.mjs';
 
-export { assertInvisibleText, assertVisibleText, expectClosedDrawer, openDrawer };
+export { assertInvisibleText, assertNoHorizontalOverflow, assertVisibleText, expectClosedDrawer, openDrawer };
 
 export async function expectPublicRoot(page) {
     await expectFlatShell(page);
@@ -32,11 +33,15 @@ export async function expectPublicRoot(page) {
     }
 }
 
-export async function expectSearchPage(page) {
+export async function expectSearchPage(page, hasQueryCard = false) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Search');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
-    await assertVisibleText(page, 'Query');
+    if (hasQueryCard) {
+        await assertVisibleText(page, 'Query');
+    } else {
+        assert.equal(await page.getByText('Query', { exact: true }).count(), 0);
+    }
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
@@ -47,8 +52,11 @@ export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
+    await assertVisibleText(page, 'Recently updated');
+    await assertVisibleText(page, 'Favorites');
     await assertVisibleText(page, 'Default Vim mode for editors');
     await assertVisibleText(page, 'This browser');
+    await page.locator('[data-favorite-order]').waitFor({ state: 'visible' });
     assert.equal(await page.getByRole('heading', { name: 'Library', exact: true }).count(), 0);
     assert.equal(
         await page
@@ -60,6 +68,7 @@ export async function expectAdminDashboard(page) {
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
     await assertCreateActionBelowHome(page);
+    await assertSectionOrder(page, ['Settings', 'Recently updated', 'Favorites']);
 }
 
 export async function expectAdminNote(page) {
@@ -83,4 +92,16 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await assertVisibleText(page, previousTitle ?? 'No older accessible note.');
     await assertVisibleText(page, 'Next');
     await assertVisibleText(page, nextTitle ?? 'No newer accessible note.');
+}
+
+async function assertSectionOrder(page, titles) {
+    const tops = [];
+    for (const title of titles) {
+        const heading = page.getByRole('heading', { name: title, exact: true }).first();
+        await heading.waitFor({ state: 'visible' });
+        tops.push(await heading.evaluate((node) => node.getBoundingClientRect().top));
+    }
+    for (let index = 1; index < tops.length; index += 1) {
+        assert.ok(tops[index] > tops[index - 1], 'dashboard sections should stack vertically');
+    }
 }

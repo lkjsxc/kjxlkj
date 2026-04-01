@@ -6,7 +6,6 @@ use actix_web::cookie::{Cookie, SameSite};
 use actix_web::{post, web, HttpRequest, HttpResponse};
 use uuid::Uuid;
 
-/// Logout POST handler
 #[post("/logout")]
 pub async fn logout(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpResponse, AppError> {
     if let Some(cookie) = req.cookie("session_id") {
@@ -24,6 +23,6 @@ pub async fn logout(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpRes
 
     Ok(HttpResponse::SeeOther()
         .cookie(clear_cookie)
-        .append_header(("Location", "/login"))
+        .append_header(("Location", "/"))
         .finish())
 }

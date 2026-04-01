@@ -5,7 +5,7 @@ use super::model::IndexItem;
 
 pub(crate) fn note_row(note: &IndexItem) -> String {
     format!(
-        r#"<a href="{}" class="index-card note-row">
+        r#"<a href="{}" class="index-card note-row" data-note-id="{}">
 <div class="card-body">
 <p class="card-title">{}</p>
 <p class="card-summary">{}</p>
@@ -17,6 +17,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
 </div>
 </a>"#,
         note.href,
+        note.id,
         html_escape(&note.title),
         html_escape(&note.summary),
         card_badges(note),

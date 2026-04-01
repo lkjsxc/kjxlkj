@@ -1,6 +1,7 @@
 //! PostgreSQL database adapter
 
 mod auth;
+mod favorites;
 mod history;
 mod listing;
 mod listing_cursor;
@@ -15,8 +16,9 @@ mod settings;
 pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
+pub use favorites::{list_all_favorite_records, reorder_favorites};
 pub use history::{
-    get_next_record, get_previous_record, get_record_revision, get_record_revisions,
+    get_next_record, get_previous_record, get_record_revision, list_record_revisions,
 };
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
@@ -31,7 +33,6 @@ use tokio_postgres::NoTls;
 
 pub type DbPool = Pool;
 
-/// Create a database connection pool
 pub async fn create_pool(database_url: &str) -> Result<DbPool, AppError> {
     let config: tokio_postgres::Config = database_url
         .parse()

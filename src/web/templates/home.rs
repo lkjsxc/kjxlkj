@@ -3,6 +3,7 @@
 use super::index::{list_rail, note_row};
 use super::layout::{base, shell_page};
 use super::model::IndexItem;
+use super::sections::{page_header, section};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
@@ -13,25 +14,14 @@ pub fn home_page(recent: &[IndexItem], favorites: &[IndexItem], is_admin: bool) 
         String::new()
     };
     let content = format!(
-        r#"<header class="page-head">
-<div class="page-title-stack"><h1>Home</h1></div>
-</header>
-<section class="surface section-block search-surface">
-<div class="section-head"><h2>Quick search</h2></div>
-<form class="search-form" method="GET" action="/search">
-<label for="home-search-input" class="visually-hidden">Quick search</label>
-<div class="search-row">
-<input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
-<button type="submit" class="btn btn-primary">Search</button>
-</div>
-</form>
-</section>
-{}{}"#,
+        "{}{}{}{}",
+        page_header("Home", None, "home-head"),
+        quick_search_section(),
         note_section(
             "Recently updated",
             recent,
             "No notes yet.",
-            Some(browse_card()),
+            Some(browse_card())
         ),
         note_section("Favorites", favorites, "No favorites yet.", None),
     );
@@ -53,6 +43,20 @@ pub fn home_page(recent: &[IndexItem], favorites: &[IndexItem], is_admin: bool) 
     )
 }
 
+fn quick_search_section() -> String {
+    section(
+        "Quick search",
+        r#"<form class="search-form" method="GET" action="/search">
+<label for="home-search-input" class="visually-hidden">Quick search</label>
+<div class="search-row">
+<input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
+<button type="submit" class="btn btn-primary">Search</button>
+</div>
+</form>"#,
+        "search-section",
+    )
+}
+
 fn note_section(
     title: &str,
     notes: &[IndexItem],
@@ -67,12 +71,13 @@ fn note_section(
     if let Some(card) = extra_card {
         cards.push(card);
     }
-    format!(
-        r#"<section class="surface section-block">
-<div class="section-head"><h2>{title}</h2></div>
-<div class="note-list note-grid">{}</div>
-</section>"#,
-        cards.join("")
+    section(
+        title,
+        &format!(
+            r#"<div class="note-list note-grid">{}</div>"#,
+            cards.join("")
+        ),
+        "note-section",
     )
 }
 

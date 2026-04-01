@@ -1,9 +1,8 @@
-//! Record database operations
-
 use super::models::Record;
 use super::DbPool;
 use crate::core::{derive_summary, derive_title};
 use crate::error::AppError;
+use deadpool_postgres::GenericClient;
 use tokio_postgres::error::SqlState;
 
 pub async fn get_record(pool: &DbPool, id: &str) -> Result<Option<Record>, AppError> {
@@ -29,15 +28,22 @@ pub async fn create_record(
     is_favorite: bool,
     is_private: bool,
 ) -> Result<Record, AppError> {
-    let title = derive_title(body);
-    let summary = derive_summary(body);
-    let row = client(pool)
-        .await?
+    let db = client(pool).await?;
+    let row = db
         .query_one(
-            "INSERT INTO records (id, alias, title, summary, body, is_favorite, is_private) \
-             VALUES ($1, $2, $3, $4, $5, $6, $7) \
-             RETURNING id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at",
-            &[&id, &alias, &title, &summary, &body, &is_favorite, &is_private],
+            "INSERT INTO records (id, alias, title, summary, body, is_favorite, favorite_position, is_private) \
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
+             RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at",
+            &[
+                &id,
+                &alias,
+                &derive_title(body),
+                &derive_summary(body),
+                &body,
+                &is_favorite,
+                &next_position(&db, is_favorite).await?,
+                &is_private,
+            ],
         )
         .await
         .map_err(map_write_error)?;
@@ -53,6 +59,9 @@ pub async fn update_record(
     is_private: bool,
 ) -> Result<Option<Record>, AppError> {
     let db = client(pool).await?;
+    let Some((was_favorite, current_position)) = current_favorite_state(&db, id).await? else {
+        return Ok(None);
+    };
     db.execute(
         "INSERT INTO record_revisions (record_id, body, is_private, revision_number) \
          SELECT id, body, is_private, \
@@ -62,19 +71,26 @@ pub async fn update_record(
     )
     .await
     .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    let title = derive_title(body);
-    let summary = derive_summary(body);
     let row = db
-        .query_opt(
+        .query_one(
             "UPDATE records SET alias = $2, title = $3, summary = $4, body = $5, \
-             is_favorite = $6, is_private = $7, updated_at = NOW() \
+             is_favorite = $6, favorite_position = $7, is_private = $8, updated_at = NOW() \
              WHERE id = $1 AND deleted_at IS NULL \
-             RETURNING id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at",
-            &[&id, &alias, &title, &summary, &body, &is_favorite, &is_private],
+             RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at",
+            &[
+                &id,
+                &alias,
+                &derive_title(body),
+                &derive_summary(body),
+                &body,
+                &is_favorite,
+                &resolve_position(&db, was_favorite, current_position, is_favorite).await?,
+                &is_private,
+            ],
         )
         .await
         .map_err(map_write_error)?;
-    Ok(row.map(row_to_record))
+    Ok(Some(row_to_record(row)))
 }
 
 pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {
@@ -98,7 +114,7 @@ async fn get_record_where(
         .await?
         .query_opt(
             &format!(
-                "SELECT id, alias, title, summary, body, is_favorite, is_private, created_at, updated_at \
+                "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at \
                  FROM records WHERE {predicate} AND deleted_at IS NULL"
             ),
             params,
@@ -106,6 +122,52 @@ async fn get_record_where(
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(row.map(row_to_record))
+}
+
+async fn current_favorite_state<C: GenericClient>(
+    db: &C,
+    id: &str,
+) -> Result<Option<(bool, Option<i64>)>, AppError> {
+    db.query_opt(
+        "SELECT is_favorite, favorite_position FROM records WHERE id = $1 AND deleted_at IS NULL",
+        &[&id],
+    )
+    .await
+    .map(|row| row.map(|item| (item.get("is_favorite"), item.get("favorite_position"))))
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+async fn next_position<C: GenericClient>(
+    db: &C,
+    is_favorite: bool,
+) -> Result<Option<i64>, AppError> {
+    if !is_favorite {
+        return Ok(None);
+    }
+    db.query_one(
+        "SELECT COALESCE(MAX(favorite_position), 0) + 1 AS position \
+         FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE",
+        &[],
+    )
+    .await
+    .map(|row| Some(row.get("position")))
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+async fn resolve_position<C: GenericClient>(
+    db: &C,
+    was_favorite: bool,
+    current_position: Option<i64>,
+    is_favorite: bool,
+) -> Result<Option<i64>, AppError> {
+    match (was_favorite, is_favorite) {
+        (_, false) => Ok(None),
+        (true, true) => match current_position {
+            Some(position) => Ok(Some(position)),
+            None => next_position(db, true).await,
+        },
+        (false, true) => next_position(db, true).await,
+    }
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
@@ -129,6 +191,7 @@ pub(crate) fn row_to_record(row: tokio_postgres::Row) -> Record {
         summary: row.get("summary"),
         body: row.get("body"),
         is_favorite: row.get("is_favorite"),
+        favorite_position: row.get("favorite_position"),
         is_private: row.get("is_private"),
         created_at: row.get("created_at"),
         updated_at: row.get("updated_at"),

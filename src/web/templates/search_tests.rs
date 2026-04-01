@@ -2,6 +2,7 @@ use super::{search::search_page, IndexItem};
 
 fn sample_item() -> IndexItem {
     IndexItem {
+        id: "q29udhjy3rsdw50aw1lmq26".to_string(),
         href: "/q29udhjy3rsdw50aw1lmq".to_string(),
         title: "Orbit Ledger".to_string(),
         summary: "Shared release.".to_string(),
@@ -23,8 +24,8 @@ fn search_page_browses_without_query() {
         "updated_desc",
         false,
     );
-    assert!(html.contains(">All notes<"));
-    assert!(html.contains(">Query<"));
+    assert!(html.contains(">Notes<"));
+    assert!(!html.contains(">Query<"));
     assert!(html.contains("name=\"sort\""));
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Previous<"));
@@ -43,6 +44,7 @@ fn search_page_keeps_query_and_sort_in_form() {
         true,
     );
     assert!(html.contains("name=\"q\" value=\"orbit\""));
+    assert!(html.contains(">Query<"));
     assert!(html.contains("value=\"relevance\" selected"));
     assert!(html.contains("name=\"direction\" value=\"prev\""));
     assert!(html.contains("New note"));

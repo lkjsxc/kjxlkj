@@ -43,8 +43,8 @@ export async function prepareState(browser) {
     };
 }
 
-export async function newContext(browser, viewport) {
-    return browser.newContext({ viewport, timezoneId });
+export async function newContext(browser, viewport, options = {}) {
+    return browser.newContext({ viewport, timezoneId, ...options });
 }
 
 export async function login(page) {

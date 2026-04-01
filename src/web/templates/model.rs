@@ -33,6 +33,7 @@ pub struct NoteChrome {
 
 #[derive(Clone, Debug)]
 pub struct IndexItem {
+    pub id: String,
     pub href: String,
     pub title: String,
     pub summary: String,

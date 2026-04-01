@@ -4,12 +4,12 @@ use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
 use crate::web::handlers::{
-    admin, assets, health, history, home, login, logout, note, records, search, settings, setup,
+    admin, assets, favorites, health, history, home, login, logout, note, record_history, records,
+    search, settings, setup,
 };
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 
-/// Run the HTTP server
 pub async fn run_server(config: Config) -> Result<(), AppError> {
     let pool = db::create_pool(&config.database_url).await?;
     info!("Database connected and migrations applied");
@@ -43,9 +43,10 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(records::create)
             .service(records::update)
             .service(records::remove)
-            .service(records::history)
-            .service(records::previous)
-            .service(records::next)
+            .service(favorites::reorder)
+            .service(record_history::history)
+            .service(record_history::previous)
+            .service(record_history::next)
             .service(note::note_page)
     })
     .bind(&bind_addr)

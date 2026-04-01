@@ -35,7 +35,7 @@ async fn admin_page_impl(
     }
     let settings = db::get_settings(&pool).await?;
     let recent = db::list_recent_records(&pool, true, settings.home_recent_limit).await?;
-    let favorites = db::list_favorite_records(&pool, true, settings.home_favorite_limit).await?;
+    let favorites = db::list_all_favorite_records(&pool, true).await?;
     let stats = db::get_note_stats(&pool, true).await?;
     Ok(html(templates::admin_page(
         &stats,

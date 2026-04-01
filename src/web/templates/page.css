@@ -1,0 +1,152 @@
+.shell-main,
+.index-layout,
+.home-page,
+.dashboard-page,
+.history-page {
+    gap: 18px;
+}
+
+.dashboard-stack,
+.stats-grid,
+.note-grid,
+.editor-meta-grid {
+    gap: 10px;
+}
+
+.dashboard-stack {
+    display: grid;
+}
+
+.section-block {
+    padding: 0;
+    gap: 10px;
+}
+
+.section-head {
+    align-items: baseline;
+}
+
+.section-head h2 {
+    font-size: 0.98rem;
+    color: var(--text-soft);
+}
+
+.page-head {
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.page-title-stack h1 {
+    font-size: clamp(1.72rem, 1.45rem + 1.1vw, 2.15rem);
+    line-height: 1.08;
+}
+
+.page-meta small,
+.card-meta small {
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.stat-card {
+    min-height: 74px;
+    padding: 10px 12px;
+}
+
+.note-grid {
+    grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+}
+
+.note-grid .note-row {
+    min-height: 208px;
+    height: auto;
+}
+
+.note-grid .card-meta {
+    align-self: end;
+}
+
+.card-title {
+    display: block;
+    min-height: 1.35em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-line-clamp: unset;
+}
+
+.search-grid.has-query {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) minmax(180px, 220px) auto;
+}
+
+.search-grid.no-query {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) auto;
+}
+
+.search-state-card {
+    min-width: 0;
+}
+
+.settings-section .settings-grid,
+.settings-section .local-setting-group {
+    max-width: 720px;
+}
+
+.section-block .surface-empty {
+    margin: 0;
+}
+
+.rail-section + .rail-section {
+    margin-top: 14px;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.rail-link-nav {
+    min-height: 42px;
+    padding: 10px 12px;
+    align-content: center;
+}
+
+.rail-link-nav span {
+    min-height: auto;
+    -webkit-line-clamp: 1;
+}
+
+.rail-link-nav.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .shell-main,
+    .index-layout,
+    .home-page,
+    .dashboard-page,
+    .history-page {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-title-stack h1 {
+        font-size: clamp(1.72rem, 1.45rem + 2.4vw, 1.96rem);
+    }
+
+    .search-grid.has-query,
+    .search-grid.no-query {
+        grid-template-columns: 1fr;
+    }
+
+    .note-grid {
+        gap: 14px;
+    }
+
+    .note-grid .note-row {
+        min-height: 198px;
+    }
+}
