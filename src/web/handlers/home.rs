@@ -31,7 +31,7 @@ pub async fn home_page(
     let favorites =
         db::list_favorite_records(&pool, is_admin, settings.home_favorite_limit).await?;
     Ok(html(templates::home_page(
-        &settings,
+        &settings.home_intro_markdown,
         &popular
             .iter()
             .map(|record| view::popular_index_item(record, is_admin, window))

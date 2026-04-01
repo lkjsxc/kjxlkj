@@ -1,17 +1,16 @@
 var editorState = {
+    editor: null,
     sourceField: null,
+    fallbackField: null,
     aliasField: null,
     publicToggle: null,
     favoriteToggle: null,
     shell: null,
     previewToggle: null,
     previewBackdrop: null,
-    previewPanel: null,
-    previewState: null,
     media: window.matchMedia('(max-width: 900px)'),
     previewOpen: false,
-    previewTimer: null,
-    previewRequest: 0,
+    previewStyle: 'tab',
     saveTimer: null,
     latestRequest: 0,
     lastSavedBody: '',
@@ -25,44 +24,80 @@ var editorState = {
 
 function initEditor() {
     cacheEditorNodes();
-    if (!editorState.sourceField || !editorState.shell) return;
+    var root = document.getElementById('editor-root');
+    if (!editorState.sourceField || !root || !editorState.shell) return;
     bindEditorInputs();
     bindPreviewEvents();
     editorState.lastSavedBody = editorState.sourceField.value;
     editorState.lastSavedAlias = currentAlias;
     editorState.lastSavedFavorite = isFavorite;
     editorState.lastSavedPrivate = isPrivate;
-    resizeEditor();
+    if (window.toastui && window.toastui.Editor) {
+        try {
+            createEditor(root);
+        } catch (_) {
+            enableFallback(root);
+        }
+    } else {
+        enableFallback(root);
+    }
     syncNoteChrome();
-    syncPreviewMode();
-    focusEditor();
 }
 
 function cacheEditorNodes() {
     editorState.sourceField = document.getElementById('editor-source');
+    editorState.fallbackField = document.getElementById('editor-fallback');
     editorState.aliasField = document.getElementById('alias-input');
     editorState.publicToggle = document.getElementById('public-toggle');
     editorState.favoriteToggle = document.getElementById('favorite-toggle');
     editorState.shell = document.getElementById('editor-shell');
     editorState.previewToggle = document.getElementById('preview-toggle');
     editorState.previewBackdrop = document.getElementById('preview-backdrop');
-    editorState.previewPanel = document.getElementById('editor-preview');
-    editorState.previewState = document.getElementById('preview-state');
 }
 
 function bindEditorInputs() {
-    editorState.sourceField?.addEventListener('input', onEditorInput);
     editorState.aliasField?.addEventListener('input', onAliasInput);
     editorState.publicToggle?.addEventListener('change', onPublicToggle);
     editorState.favoriteToggle?.addEventListener('change', onFavoriteToggle);
-    window.addEventListener('resize', resizeEditor);
+}
+
+function createEditor(root) {
+    editorState.editor = new window.toastui.Editor({
+        el: root,
+        height: 'auto',
+        minHeight: editorMinHeight(),
+        initialValue: editorState.sourceField.value,
+        initialEditType: 'markdown',
+        previewStyle: 'tab',
+        hideModeSwitch: true,
+        theme: 'dark',
+        autofocus: false,
+        usageStatistics: false,
+        toolbarItems: toolbarItems()
+    });
+    window.editorInstance = editorState.editor;
+    editorState.editor.on('change', onEditorInput);
+    setPreviewEnabled(true);
+    configureVimMode();
+    syncPreviewMode();
+    focusEditor();
+}
+
+function enableFallback(root) {
+    editorState.editor = null;
+    window.editorInstance = null;
+    setPreviewEnabled(false);
+    if (root) root.hidden = true;
+    if (!editorState.fallbackField) return;
+    editorState.fallbackField.hidden = false;
+    editorState.fallbackField.addEventListener('input', onEditorInput);
+    configureVimMode();
+    requestAnimationFrame(function () { editorState.fallbackField.focus(); });
 }
 
 function onEditorInput() {
-    resizeEditor();
     syncNoteChrome();
     queueSave();
-    queuePreviewRender();
 }
 
 function onAliasInput() {
@@ -85,23 +120,10 @@ function onFavoriteToggle() {
 }
 
 function currentBody() {
+    if (editorState.editor) {
+        editorState.sourceField.value = editorState.editor.getMarkdown();
+    } else if (editorState.fallbackField && !editorState.fallbackField.hidden) {
+        editorState.sourceField.value = editorState.fallbackField.value;
+    }
     return editorState.sourceField ? editorState.sourceField.value : '';
-}
-
-function normalizeAliasValue(value) {
-    var cleaned = value.trim().toLowerCase().replace(/[\s]+/g, '-').replace(/[^a-z0-9._-]/g, '')
-        .replace(/[._-]{2,}/g, '-').replace(/^[._-]+|[._-]+$/g, '');
-    return cleaned || null;
-}
-
-function resizeEditor() {
-    if (!editorState.sourceField) return;
-    editorState.sourceField.style.height = 'auto';
-    editorState.sourceField.style.height = editorState.sourceField.scrollHeight + 'px';
-}
-
-function focusEditor() {
-    requestAnimationFrame(function () {
-        editorState.sourceField?.focus();
-    });
 }

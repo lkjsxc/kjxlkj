@@ -18,7 +18,12 @@ function saveNote() {
     fetch('/records/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: body, alias: currentAlias, is_favorite: isFavorite, is_private: isPrivate })
+        body: JSON.stringify({
+            body: body,
+            alias: currentAlias,
+            is_favorite: isFavorite,
+            is_private: isPrivate
+        })
     })
         .then(readSaveResponse)
         .then(function (note) {
@@ -62,6 +67,7 @@ function syncNoteChrome() {
     updateLiveText('[data-live-visibility]', visibility, 'renderedVisibility');
     updateLiveText('[data-live-alias]', currentAlias || 'None', 'renderedAlias');
     syncCanonicalLinks();
+    updateVimModeLabel();
     document.title = title + ' - kjxlkj';
 }
 

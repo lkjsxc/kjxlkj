@@ -51,14 +51,13 @@ pub async fn create(
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
-    let default_private = db::get_settings(&pool).await?.default_new_note_is_private;
     let record = db::create_record(
         &pool,
         &generate_unique_id(&pool).await?,
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
         body.is_favorite.unwrap_or(false),
-        body.is_private.unwrap_or(default_private),
+        body.is_private.unwrap_or(true),
     )
     .await?;
     Ok(HttpResponse::Created().json(note_payload(&pool, record).await?))

@@ -7,14 +7,12 @@ use thiserror::Error;
 use uuid::Uuid;
 
 static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z2-7]{26}$").unwrap());
-static ALIAS_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:[._-][a-z0-9]+)*$").unwrap());
+static ALIAS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
 static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
 static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
     [
-        "admin", "assets", "healthz", "login", "logout", "preview", "records", "search",
-        "settings", "setup",
+        "admin", "assets", "healthz", "login", "logout", "records", "search", "setup",
     ]
     .into_iter()
     .collect()
@@ -38,7 +36,7 @@ pub enum IdError {
 pub enum AliasError {
     #[error("alias must be 1 to {MAX_ALIAS_LEN} characters")]
     InvalidLength,
-    #[error("alias must use lowercase letters, digits, and single separators (., _, -)")]
+    #[error("alias must use lowercase letters, digits, and single hyphens")]
     InvalidFormat,
     #[error("alias is reserved")]
     Reserved,

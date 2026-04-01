@@ -7,8 +7,7 @@
 .stats-grid,
 .dashboard-panels,
 .note-grid,
-.editor-meta-grid,
-.settings-summary-grid {
+.editor-meta-grid {
     display: grid;
     gap: 7px;
 }
@@ -18,8 +17,7 @@
 }
 
 .dashboard-panels,
-.editor-meta-grid,
-.settings-summary-grid {
+.editor-meta-grid {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
@@ -31,8 +29,7 @@
 .section-block,
 .stat-card,
 .editor-url-card,
-.settings-grid,
-.search-state-stack {
+.settings-grid {
     display: grid;
     gap: 6px;
 }
@@ -81,11 +78,6 @@
 
 .editor-field-card input {
     margin-top: 2px;
-}
-
-.home-intro-stack {
-    display: grid;
-    gap: 12px;
 }
 
 .search-state-card {

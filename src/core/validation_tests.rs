@@ -24,23 +24,10 @@ fn aliases_normalize_and_validate() {
         Ok(Some("release-notes".to_string()))
     );
     assert_eq!(
-        normalize_alias(Some("release_notes")),
-        Ok(Some("release_notes".to_string()))
-    );
-    assert_eq!(
-        normalize_alias(Some("release.notes")),
-        Ok(Some("release.notes".to_string()))
-    );
-    assert_eq!(
         normalize_alias(Some("release--notes")),
         Err(AliasError::InvalidFormat)
     );
-    assert_eq!(
-        normalize_alias(Some("release.-notes")),
-        Err(AliasError::InvalidFormat)
-    );
     assert_eq!(normalize_alias(Some("search")), Err(AliasError::Reserved));
-    assert_eq!(normalize_alias(Some("settings")), Err(AliasError::Reserved));
     assert_eq!(
         normalize_alias(Some("abcdefghijklmnopqrstuvwxyz")),
         Err(AliasError::ConflictsWithId)

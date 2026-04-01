@@ -19,55 +19,167 @@
     justify-content: space-between;
 }
 
-.editor-workspace {
-    display: grid;
-    gap: 12px;
-    grid-template-columns: minmax(0, 1fr);
-    min-width: 0;
-}
-
-.editor-shell.preview-open:not(.preview-compact) .editor-workspace {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-}
-
-.note-editor,
-.editor-preview {
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
+.editor-preview-backdrop {
+    display: none;
 }
 
 .note-editor {
     min-height: 58vh;
-    resize: none;
-    overflow: hidden;
     font-size: 16px;
     line-height: 1.7;
     font-family: inherit;
     background: var(--bg-1);
     color: var(--text);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
 }
 
-.editor-preview {
-    min-height: 58vh;
-    align-content: start;
-    padding: 16px 20px 18px;
-    background: var(--panel);
+.toast-host,
+.toastui-editor-defaultUI,
+.toastui-editor-main,
+.toastui-editor-main-container,
+.toastui-editor-md-container,
+.toastui-editor-md-container > .toastui-editor,
+.toastui-editor-md-preview,
+.toastui-editor-md-container .ProseMirror,
+.toastui-editor-contents {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    font-family: inherit !important;
 }
 
-.editor-preview table {
+.toastui-editor-defaultUI {
+    border: 1px solid var(--line) !important;
+    border-radius: 22px !important;
+    overflow: hidden;
+    background: var(--panel) !important;
+    width: 100% !important;
+    height: auto !important;
+    box-shadow: none !important;
+}
+
+.toastui-editor-defaultUI-toolbar,
+.toastui-editor-toolbar {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 7px !important;
+    min-height: 46px;
+    height: auto !important;
+    background: var(--panel-2) !important;
+    border-bottom: 1px solid var(--line) !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    width: 100% !important;
+}
+
+.toastui-editor-toolbar-group,
+.toastui-editor-toolbar-divider {
+    border-color: var(--line) !important;
+    flex: 0 0 auto;
+}
+
+.toastui-editor-toolbar-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px;
+}
+
+.toastui-editor-toolbar-divider {
+    margin: 8px 4px !important;
+    align-self: stretch;
+    height: auto !important;
+}
+
+.toastui-editor-defaultUI-toolbar button {
+    margin: 4px !important;
+}
+
+.toastui-editor-toolbar-icons,
+.toastui-editor-defaultUI-toolbar button {
+    border-radius: 12px !important;
+}
+
+.toastui-editor-defaultUI-toolbar button:hover {
+    background: var(--bg-3) !important;
+}
+
+.toastui-editor-md-tab-container,
+.toastui-editor-mode-switch {
+    display: none !important;
+}
+
+.toastui-editor-main,
+.toastui-editor-main-container,
+.toastui-editor-md-container,
+.toastui-editor-md-container > .toastui-editor,
+.toastui-editor-md-preview,
+.toastui-editor-md-container .ProseMirror,
+.toastui-editor-contents,
+.toastui-editor-md-container .toastui-editor-contents {
+    background: var(--panel) !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.toastui-editor-md-container {
+    display: flex !important;
+    align-items: stretch;
+    position: relative;
+}
+
+.editor-shell .toastui-editor-md-container > .toastui-editor,
+.editor-shell .toastui-editor-md-preview {
+    width: 100% !important;
+}
+
+.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-container > .toastui-editor,
+.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-preview {
+    width: 50% !important;
+}
+
+.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-container > .toastui-editor {
+    border-right: 1px solid var(--line);
+}
+
+.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-preview {
+    border-left: 1px solid var(--line);
+    padding: 0 !important;
+}
+
+.editor-shell.preview-closed .toastui-editor-md-preview,
+.editor-shell.preview-closed .toastui-editor-md-splitter {
+    display: none !important;
+}
+
+.toastui-editor-md-container .ProseMirror {
+    min-height: 460px;
+    padding: 16px 20px 18px !important;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap !important;
+    word-break: break-word;
+}
+
+.toastui-editor-md-preview .toastui-editor-contents {
+    color: var(--text) !important;
+    min-height: 460px;
+    padding: 16px 20px 18px !important;
+    overflow-wrap: anywhere;
+}
+
+.toastui-editor-md-preview .toastui-editor-contents table {
     table-layout: fixed;
     width: 100%;
 }
 
-.editor-preview td,
-.editor-preview th,
-.editor-preview code,
-.editor-preview pre {
+.toastui-editor-md-preview .toastui-editor-contents td,
+.toastui-editor-md-preview .toastui-editor-contents th {
     overflow-wrap: anywhere;
 }
 
-.editor-preview-backdrop {
-    display: none;
+.toastui-editor-md-preview .toastui-editor-contents code,
+.toastui-editor-md-preview .toastui-editor-contents pre {
+    font-family: var(--mono) !important;
 }

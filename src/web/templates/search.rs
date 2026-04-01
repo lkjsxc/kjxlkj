@@ -1,31 +1,24 @@
 //! Dedicated search page template
 
-use super::index::list_rail;
-use super::layout::{base, shell_page};
+use super::index::{list_rail, note_row, pager};
+use super::layout::{base, html_escape, shell_page};
 use super::model::IndexItem;
-use super::search_form::search_section;
-use super::search_results::{results_section, ResultsSection};
-use super::sections::page_header;
-use crate::web::db::{ListScope, PopularWindow};
+use super::sections::{page_header, section};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
-pub struct SearchPageModel<'a> {
-    pub notes: &'a [IndexItem],
-    pub previous_cursor: Option<&'a str>,
-    pub next_cursor: Option<&'a str>,
-    pub query: Option<&'a str>,
-    pub limit: i64,
-    pub sort: &'a str,
-    pub scope: &'a ListScope,
-    pub popular_window: PopularWindow,
-    pub is_admin: bool,
-}
-
-pub fn search_page(model: SearchPageModel<'_>) -> String {
-    let query = model.query.unwrap_or("").trim();
+pub fn search_page(
+    notes: &[IndexItem],
+    previous_cursor: Option<&str>,
+    next_cursor: Option<&str>,
+    query: Option<&str>,
+    limit: i64,
+    sort: &str,
+    is_admin: bool,
+) -> String {
+    let query = query.unwrap_or("").trim();
     let has_query = !query.is_empty();
-    let extra_script = if model.is_admin {
+    let extra_script = if is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
     } else {
         String::new()
@@ -33,34 +26,26 @@ pub fn search_page(model: SearchPageModel<'_>) -> String {
     let content = format!(
         "{}{}{}",
         page_header("Search", None, "search-head"),
-        search_section(
+        search_section(query, sort, has_query),
+        results_section(
+            notes,
+            previous_cursor,
+            next_cursor,
             query,
-            model.sort,
+            limit,
+            sort,
             has_query,
-            model.scope,
-            model.popular_window
         ),
-        results_section(ResultsSection {
-            notes: model.notes,
-            previous_cursor: model.previous_cursor,
-            next_cursor: model.next_cursor,
-            query,
-            limit: model.limit,
-            sort: model.sort,
-            has_query,
-            scope: model.scope,
-            popular_window: model.popular_window,
-        }),
     );
     base(
         "Search",
         &shell_page(
-            if model.is_admin { "Admin" } else { "Guest" },
+            if is_admin { "Admin" } else { "Guest" },
             &list_rail(
                 "search",
-                rail_primary_action(model.is_admin),
-                rail_actions(model.is_admin),
-                model.is_admin,
+                rail_primary_action(is_admin),
+                rail_actions(is_admin),
+                is_admin,
             ),
             &content,
             "index-layout",
@@ -68,6 +53,104 @@ pub fn search_page(model: SearchPageModel<'_>) -> String {
         "",
         &extra_script,
     )
+}
+
+fn search_section(query: &str, sort: &str, has_query: bool) -> String {
+    let query_card = if has_query {
+        format!(
+            r#"<div class="search-state-card"><small>Query</small><strong>{}</strong></div>"#,
+            html_escape(query)
+        )
+    } else {
+        String::new()
+    };
+    section(
+        "Search notes",
+        &format!(
+            r#"<form class="search-form" method="GET" action="/search">
+<label for="search-page-input" class="visually-hidden">Search notes</label>
+<div class="search-grid {}">
+<input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
+{}
+<label class="form-group search-sort" for="search-sort">
+<span class="visually-hidden">Sort</span>
+<select id="search-sort" name="sort" aria-label="Sort">{}</select>
+</label>
+<button type="submit" class="btn btn-primary">Search</button>
+</div>
+</form>"#,
+            if has_query { "has-query" } else { "no-query" },
+            html_escape(query),
+            query_card,
+            sort_options(sort, has_query),
+        ),
+        "search-section",
+    )
+}
+
+fn results_section(
+    notes: &[IndexItem],
+    previous_cursor: Option<&str>,
+    next_cursor: Option<&str>,
+    query: &str,
+    limit: i64,
+    sort: &str,
+    has_query: bool,
+) -> String {
+    let cards = if notes.is_empty() {
+        format!(
+            r#"<p class="surface-empty">{}</p>"#,
+            if has_query {
+                "No matching notes."
+            } else {
+                "No notes yet."
+            }
+        )
+    } else {
+        notes.iter().map(note_row).collect::<Vec<_>>().join("")
+    };
+    section(
+        if has_query { "Results" } else { "Notes" },
+        &format!(
+            r#"<div class="note-list note-grid">{cards}</div>
+{}"#,
+            pager(
+                "/search",
+                previous_cursor,
+                next_cursor,
+                &[("q", query), ("sort", sort), ("limit", &limit.to_string())],
+            )
+        ),
+        "note-section",
+    )
+}
+
+fn sort_options(selected: &str, has_query: bool) -> String {
+    sort_catalog(has_query)
+        .into_iter()
+        .map(|(value, label)| {
+            format!(
+                r#"<option value="{value}"{}>{label}</option>"#,
+                if value == selected { " selected" } else { "" }
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+fn sort_catalog(has_query: bool) -> Vec<(&'static str, &'static str)> {
+    let mut items = vec![
+        ("updated_desc", "Recently updated"),
+        ("updated_asc", "Oldest updates"),
+        ("created_desc", "Newest created"),
+        ("created_asc", "Oldest created"),
+        ("title_asc", "Title A-Z"),
+        ("title_desc", "Title Z-A"),
+    ];
+    if has_query {
+        items.insert(0, ("relevance", "Relevance"));
+    }
+    items
 }
 
 fn rail_primary_action(is_admin: bool) -> &'static str {

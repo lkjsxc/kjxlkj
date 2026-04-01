@@ -2,7 +2,7 @@ function createNote() {
     fetch('/records', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: defaultNewNoteBody() })
+        body: JSON.stringify({ body: defaultNewNoteBody(), is_private: true })
     })
         .then(function (response) {
             if (!response.ok) throw new Error('create failed');

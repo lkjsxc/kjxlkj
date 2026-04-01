@@ -83,37 +83,21 @@
     -webkit-line-clamp: unset;
 }
 
-.home-search-section,
-.home-popular-section,
-.home-recent-section {
-    gap: 14px;
+.search-grid.has-query {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) minmax(180px, 220px) auto;
 }
 
-.search-grid.has-state {
-    grid-template-columns: minmax(0, 1fr) minmax(220px, 320px) minmax(180px, 220px) auto;
-}
-
-.search-grid.no-state {
+.search-grid.no-query {
     grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) auto;
-}
-
-.search-state-stack,
-.settings-summary-grid {
-    display: grid;
-    gap: 10px;
 }
 
 .search-state-card {
     min-width: 0;
 }
 
-.settings-section .settings-grid {
+.settings-section .settings-grid,
+.settings-section .local-setting-group {
     max-width: 720px;
-}
-
-.settings-card {
-    padding: 12px 14px;
-    border-radius: 18px;
 }
 
 .section-block .surface-empty {
@@ -158,8 +142,8 @@
         font-size: clamp(1.72rem, 1.45rem + 2.4vw, 1.96rem);
     }
 
-    .search-grid.has-state,
-    .search-grid.no-state {
+    .search-grid.has-query,
+    .search-grid.no-query {
         grid-template-columns: 1fr;
     }
 

@@ -5,3 +5,12 @@
 .editor-field-card small {
     color: var(--text-soft);
 }
+
+.editor-shell.preview-open.preview-compact .toastui-editor-md-container {
+    position: relative;
+    z-index: 1;
+}
+
+.editor-shell.preview-open.preview-compact .toastui-editor-md-preview {
+    display: block !important;
+}

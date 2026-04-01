@@ -42,7 +42,7 @@
 }
 
 .prose a,
-.editor-preview a {
+.toastui-editor-md-preview .toastui-editor-contents a {
     color: var(--accent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
@@ -50,20 +50,20 @@
 }
 
 .prose :is(p, li, blockquote, td, th, code, strong, em),
-.editor-preview :is(p, li, blockquote, td, th, code, strong, em) {
+.toastui-editor-md-preview .toastui-editor-contents :is(p, li, blockquote, td, th, code, strong, em) {
     overflow-wrap: anywhere;
 }
 
 .prose table,
-.editor-preview table {
+.toastui-editor-md-preview .toastui-editor-contents table {
     width: 100%;
     table-layout: fixed;
 }
 
 .prose td,
 .prose th,
-.editor-preview td,
-.editor-preview th {
+.toastui-editor-md-preview .toastui-editor-contents td,
+.toastui-editor-md-preview .toastui-editor-contents th {
     overflow-wrap: anywhere;
 }
 

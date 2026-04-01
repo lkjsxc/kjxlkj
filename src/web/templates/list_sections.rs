@@ -15,7 +15,7 @@ pub fn quick_search_section() -> String {
 <button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>"#,
-        "search-section home-search-section",
+        "search-section",
     )
 }
 
@@ -46,16 +46,15 @@ pub fn note_grid_section(
     )
 }
 
-pub fn browse_card(href: &str, title: &str, summary: &str, meta: &str) -> String {
-    format!(
-        r#"<a href="{href}" class="index-card note-row note-row-action">
+pub fn browse_card() -> String {
+    r#"<a href="/search" class="index-card note-row note-row-action">
 <div class="card-body">
-<p class="card-title">{title}</p>
-<p class="card-summary">{summary}</p>
+<p class="card-title">View more notes</p>
+<p class="card-summary">Browse all visible notes with search, sorting, and page navigation.</p>
 </div>
-<div class="card-meta"><small><span>Open</span>{meta}</small></div>
+<div class="card-meta"><small><span>Open</span>Search</small></div>
 </a>"#
-    )
+        .to_string()
 }
 
 pub fn popular_window_switch(path: &str, window: PopularWindow) -> String {

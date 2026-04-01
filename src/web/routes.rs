@@ -4,8 +4,8 @@ use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
 use crate::web::handlers::{
-    admin, assets, favorites, health, history, home, login, logout, note, preview, record_history,
-    records, search, settings, setup,
+    admin, assets, favorites, health, history, home, login, logout, note, record_history, records,
+    search, settings, setup,
 };
 use actix_web::{web, App, HttpServer};
 use tracing::info;
@@ -30,15 +30,14 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(login::login_page)
             .service(login::login_submit)
             .service(logout::logout)
-            .service(assets::favicon_ico)
             .service(assets::icon_svg)
+            .service(assets::toastui_css)
+            .service(assets::toastui_dark_css)
+            .service(assets::toastui_js)
             .service(home::home_page)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
-            .service(settings::settings_page)
             .service(settings::settings_submit)
-            .service(settings::home_intro_submit)
-            .service(preview::preview)
             .service(search::search_page)
             .service(history::history_page)
             .service(history::revision_page)

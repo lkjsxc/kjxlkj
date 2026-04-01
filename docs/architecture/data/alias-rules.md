@@ -7,9 +7,9 @@
 ## Format
 
 - `alias` is lowercase ASCII.
-- Allowed characters are `a-z`, `0-9`, `.`, `_`, and `-`.
-- Aliases may not begin or end with `.`, `_`, or `-`.
-- Repeated separator runs are rejected.
+- Allowed characters are `a-z`, `0-9`, and `-`.
+- Aliases may not begin or end with `-`.
+- Consecutive `--` is rejected.
 
 ## Routing
 
@@ -21,5 +21,5 @@
 ## Reservation Rules
 
 - Aliases must be unique among live notes.
-- Aliases may not match reserved application paths such as `admin`, `search`, `settings`, `preview`, `login`, `logout`, `setup`, `records`, `assets`, and `healthz`.
+- Aliases may not match reserved application paths such as `admin`, `search`, `login`, `logout`, `setup`, `records`, `assets`, and `healthz`.
 - Aliases may not equal the ID format.

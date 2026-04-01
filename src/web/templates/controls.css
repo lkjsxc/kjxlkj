@@ -135,12 +135,6 @@
     margin: 0;
 }
 
-.search-sort {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
 .settings-wide {
     grid-column: 1 / -1;
 }
@@ -161,30 +155,8 @@
 
 .search-row .btn,
 .search-grid .btn {
-    min-height: 56px;
-    height: 56px;
-    margin: 0;
-    align-self: stretch;
-}
-
-.search-grid input,
-.search-grid select {
     min-height: 48px;
-}
-
-.search-grid select {
-    height: 56px;
-}
-
-.search-grid.has-state .btn {
-    margin-top: 4px;
-}
-
-.settings-card legend {
-    padding: 0;
-    color: var(--text-soft);
-    font-size: 0.92rem;
-    font-weight: 600;
+    margin: 0;
 }
 
 .error,

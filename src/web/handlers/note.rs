@@ -42,11 +42,17 @@ pub async fn note_page(
     } else {
         None
     };
+    let default_vim_mode = if is_admin {
+        db::get_settings(&pool).await?.default_vim_mode
+    } else {
+        false
+    };
     Ok(html(templates::note_page(
         &record,
         &chrome,
         analytics.as_ref(),
         is_admin,
+        default_vim_mode,
     )))
 }
 
