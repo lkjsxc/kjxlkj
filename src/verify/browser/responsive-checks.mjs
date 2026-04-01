@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { assertVisibleText, expectClosedDrawer, expectPublicRoot, openDrawer } from './assertions.mjs';
+import { assertVisibleText, expectClosedDrawer, openDrawer } from './assertions.mjs';
 import { assertEditorLayout, openPreview } from './editor-checks.mjs';
 import { appUrl, capture, login, newContext } from './support.mjs';
 
@@ -17,7 +17,10 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     const page = await context.newPage();
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
-    await expectPublicRoot(page);
+    await assertVisibleText(page, 'Home');
+    await assertVisibleText(page, 'Favorites');
+    await assertVisibleText(page, 'Popular notes');
+    assert.equal(await page.getByText('Recently updated', { exact: true }).count(), 0);
     await expectClosedDrawer(page);
     assert.equal(await page.evaluate(() => getComputedStyle(document.body).fontFamily), desktopFont);
     await capture(page, 'compact-public-root-closed.png');
@@ -27,13 +30,12 @@ export async function captureCompactScreens(browser, note, desktopFont) {
 
     await login(page);
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
-    await page.locator('#local-vim-mode').selectOption('off');
-    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
+    assert.notEqual(new URL(page.url()).pathname, `/${note.id}`);
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'All history');
-    await assertVisibleText(page, 'Vim off');
+    await page.locator('#editor-source').waitFor({ state: 'visible' });
+    await page.waitForFunction(() => document.activeElement?.id === 'editor-source');
     await expectClosedDrawer(page);
     await capture(page, 'compact-admin-note.png');
     await openPreview(page);

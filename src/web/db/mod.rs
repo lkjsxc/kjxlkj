@@ -8,7 +8,9 @@ mod listing;
 mod listing_cursor;
 mod listing_direction;
 mod listing_queries;
+mod listing_scope;
 mod listing_sort;
+mod listing_sort_sql;
 mod migrations;
 mod models;
 mod popular_window;
@@ -24,7 +26,8 @@ pub use history::{
     get_next_record, get_previous_record, get_record_revision, list_record_revisions,
 };
 pub use listing::{
-    list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
+    list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest,
+    ListScope, ListSort,
 };
 pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordRevision};
 pub use popular_window::PopularWindow;

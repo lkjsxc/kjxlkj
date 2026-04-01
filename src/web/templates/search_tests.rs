@@ -1,4 +1,5 @@
-use super::{search::search_page, IndexItem};
+use super::{search::search_page, search::SearchPageModel, IndexItem};
+use crate::web::db::{ListScope, PopularWindow};
 
 fn sample_item() -> IndexItem {
     IndexItem {
@@ -16,15 +17,17 @@ fn sample_item() -> IndexItem {
 
 #[test]
 fn search_page_browses_without_query() {
-    let html = search_page(
-        &[sample_item()],
-        None,
-        Some("cursor"),
-        None,
-        20,
-        "updated_desc",
-        false,
-    );
+    let html = search_page(SearchPageModel {
+        notes: &[sample_item()],
+        previous_cursor: None,
+        next_cursor: Some("cursor"),
+        query: None,
+        limit: 20,
+        sort: "updated_desc",
+        scope: &ListScope::All,
+        popular_window: PopularWindow::Days30,
+        is_admin: false,
+    });
     assert!(html.contains(">Notes<"));
     assert!(!html.contains(">Query<"));
     assert!(html.contains("name=\"sort\""));
@@ -37,15 +40,17 @@ fn search_page_browses_without_query() {
 
 #[test]
 fn search_page_keeps_query_and_sort_in_form() {
-    let html = search_page(
-        &[sample_item()],
-        Some("prev"),
-        Some("cursor"),
-        Some("orbit"),
-        20,
-        "relevance",
-        true,
-    );
+    let html = search_page(SearchPageModel {
+        notes: &[sample_item()],
+        previous_cursor: Some("prev"),
+        next_cursor: Some("cursor"),
+        query: Some("orbit"),
+        limit: 20,
+        sort: "relevance",
+        scope: &ListScope::All,
+        popular_window: PopularWindow::Days30,
+        is_admin: true,
+    });
     assert!(html.contains("name=\"q\" value=\"orbit\""));
     assert!(html.contains(">Query<"));
     assert!(html.contains("value=\"relevance\" selected"));

@@ -48,9 +48,8 @@ export async function expectFlatShell(page, controlNames = []) {
     await assertDarkSurface(page);
     await assertInvisibleText(page, 'Rich mode');
     await assertInvisibleText(page, 'Text mode');
-    await assertInvisibleText(page, 'Saving');
-    await assertInvisibleText(page, 'Saved');
     await assertNoHorizontalOverflow(page);
+    await assertNoLegacyEditorAssets(page);
     await assertBrandIcon(page);
     await assertRestrainedMainColumn(page);
     assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
@@ -67,9 +66,7 @@ export async function assertWideGrid(page) {
 }
 
 export async function assertGridHeights(page, selector) {
-    const heights = await page.locator(selector).evaluateAll((nodes) =>
-        nodes.map((node) => Math.round(node.getBoundingClientRect().height))
-    );
+    const heights = await page.locator(selector).evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().height)));
     assert.ok(Math.max(...heights) - Math.min(...heights) <= 4, 'grid cards should keep consistent heights');
 }
 
@@ -85,19 +82,29 @@ export async function assertStableMetadata(page, title) {
     assert.ok(heights.every((height) => height <= 24), 'timestamps should stay compact');
 }
 
-export async function assertLocalToastUiAssets(page) {
-    const assetPaths = await page.evaluate(() =>
-        Array.from(document.querySelectorAll('link[href*="toastui-editor"], script[src*="toastui-editor"]')).map(
-            (node) => node.getAttribute('href') ?? node.getAttribute('src')
-        )
-    );
-    assert.ok(assetPaths.length >= 3);
-    assert.ok(assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')));
+export async function assertNoLegacyEditorAssets(page) {
+    const legacy = await page.evaluate(() => ({
+        assetCount: document.querySelectorAll('link[href*="toastui"],script[src*="toastui"]').length,
+        editorCount: document.querySelectorAll('.toastui-editor-defaultUI,.toastui-editor-toolbar,.toastui-editor-md-container,.toastui-editor-md-preview').length,
+        vimCount: document.querySelectorAll('#local-vim-mode,[data-vim-mode-state]').length,
+    }));
+    assert.deepEqual(legacy, { assetCount: 0, editorCount: 0, vimCount: 0 });
 }
 
 export async function assertSingleHistoryCard(page) {
     await assertVisibleText(page, 'All history');
     assert.equal(await page.getByText('All history', { exact: true }).count(), 1);
+}
+
+export async function assertSearchControlsAligned(page) {
+    const metrics = await page.evaluate(() => {
+        const sort = document.querySelector('#search-sort')?.getBoundingClientRect();
+        const button = document.querySelector('.search-grid button[type="submit"]')?.getBoundingClientRect();
+        if (!sort || !button) return null;
+        return { sortBottom: sort.bottom, buttonBottom: button.bottom };
+    });
+    assert.ok(metrics, 'search controls should render');
+    assert.ok(Math.abs(metrics.sortBottom - metrics.buttonBottom) <= 3, 'sort select and search button should align vertically');
 }
 
 export async function assertCreateActionBelowHome(page) {
@@ -145,7 +152,7 @@ async function assertBrandSpacing(page) {
 }
 
 async function assertBrandIcon(page) {
-    assert.equal(await page.locator('link[rel="icon"][href="/assets/icon.svg"]').count(), 1);
+    assert.equal(await page.locator('link[rel="icon"][href="/assets/favicon.ico"]').count(), 1);
     const marks = page.locator('.brand-mark');
     const visibleSources = await marks.evaluateAll((nodes) =>
         nodes
@@ -165,16 +172,8 @@ async function assertRestrainedMainColumn(page) {
         const column = document.querySelector('.page-column');
         const head = document.querySelector('.page-head');
         const next = head?.nextElementSibling;
-        return {
-            viewportWidth: window.innerWidth,
-            columnWidth: column?.getBoundingClientRect().width ?? 0,
-            verticalGap: next ? next.getBoundingClientRect().top - head.getBoundingClientRect().bottom : 0,
-        };
+        return { viewportWidth: window.innerWidth, columnWidth: column?.getBoundingClientRect().width ?? 0, verticalGap: next ? next.getBoundingClientRect().top - head.getBoundingClientRect().bottom : 0 };
     });
-    if (metrics.viewportWidth > 1200) {
-        assert.ok(metrics.columnWidth <= 1062, `main column should stay restrained (saw ${metrics.columnWidth}px)`);
-    }
-    if (metrics.verticalGap) {
-        assert.ok(metrics.verticalGap <= 36, `page-head gap should stay compact (saw ${metrics.verticalGap}px)`);
-    }
+    if (metrics.viewportWidth > 1200) assert.ok(metrics.columnWidth <= 1062, `main column should stay restrained (saw ${metrics.columnWidth}px)`);
+    if (metrics.verticalGap) assert.ok(metrics.verticalGap <= 36, `page-head gap should stay compact (saw ${metrics.verticalGap}px)`);
 }

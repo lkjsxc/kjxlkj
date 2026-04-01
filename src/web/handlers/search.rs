@@ -1,7 +1,9 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListDirection, ListRequest, ListSort};
+use crate::web::db::{
+    self, DbPool, ListDirection, ListRequest, ListScope, ListSort, PopularWindow,
+};
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
@@ -11,6 +13,8 @@ use serde::Deserialize;
 #[derive(Clone, Debug, Deserialize)]
 pub struct SearchParams {
     pub q: Option<String>,
+    pub scope: Option<String>,
+    pub popular_window: Option<String>,
     pub direction: Option<String>,
     pub sort: Option<String>,
     pub cursor: Option<String>,
@@ -37,32 +41,44 @@ pub async fn search_page(
         .map(str::to_string);
     let limit = params.limit.unwrap_or(settings.search_results_per_page);
     let direction = ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref());
-    let sort = ListSort::resolve(params.sort.as_deref(), query.is_some());
+    let scope = ListScope::resolve(params.scope.as_deref());
+    let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
+    let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
     let page = db::list_records(
         &pool,
         &ListRequest {
             include_private: is_admin,
             limit,
             query: query.clone(),
+            scope: scope.clone(),
+            popular_window,
             direction,
             sort: sort.clone(),
             cursor: params.cursor,
         },
     )
     .await?;
-    Ok(html(templates::search_page(
-        &page
+    Ok(html(templates::search_page(templates::SearchPageModel {
+        notes: &page
             .records
             .iter()
-            .map(|record| view::index_item(record, is_admin))
+            .map(|record| {
+                if matches!(&scope, ListScope::Popular) {
+                    view::popular_index_item(record, is_admin, popular_window)
+                } else {
+                    view::index_item(record, is_admin)
+                }
+            })
             .collect::<Vec<_>>(),
-        page.previous_cursor.as_deref(),
-        page.next_cursor.as_deref(),
-        query.as_deref(),
+        previous_cursor: page.previous_cursor.as_deref(),
+        next_cursor: page.next_cursor.as_deref(),
+        query: query.as_deref(),
         limit,
-        sort.as_str(),
+        sort: sort.as_str(),
+        scope: &scope,
+        popular_window,
         is_admin,
-    )))
+    })))
 }
 
 fn redirect(location: &str) -> HttpResponse {

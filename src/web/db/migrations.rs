@@ -91,8 +91,7 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
 
             CREATE INDEX IF NOT EXISTS idx_records_updated ON records(updated_at DESC, id ASC);
             CREATE INDEX IF NOT EXISTS idx_records_created ON records(created_at ASC, id ASC);
-            CREATE INDEX IF NOT EXISTS idx_records_active ON records(deleted_at)
-                WHERE deleted_at IS NULL;
+            CREATE INDEX IF NOT EXISTS idx_records_active ON records(deleted_at) WHERE deleted_at IS NULL;
             CREATE INDEX IF NOT EXISTS idx_records_favorite_position ON records(favorite_position ASC, id ASC)
                 WHERE deleted_at IS NULL AND is_favorite = TRUE;
             CREATE INDEX IF NOT EXISTS idx_records_search ON records USING GIN(search_document);
@@ -127,24 +126,33 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
 
             CREATE TABLE IF NOT EXISTS app_settings (
                 id SMALLINT PRIMARY KEY,
-                home_recent_limit BIGINT NOT NULL DEFAULT 6,
-                home_favorite_limit BIGINT NOT NULL DEFAULT 6,
-                home_popular_limit BIGINT NOT NULL DEFAULT 6,
+                home_recent_limit BIGINT NOT NULL DEFAULT 5,
+                home_favorite_limit BIGINT NOT NULL DEFAULT 5,
+                home_popular_limit BIGINT NOT NULL DEFAULT 5,
+                home_recent_visible BOOLEAN NOT NULL DEFAULT TRUE,
+                home_favorite_visible BOOLEAN NOT NULL DEFAULT TRUE,
+                home_popular_visible BOOLEAN NOT NULL DEFAULT TRUE,
+                home_recent_position BIGINT NOT NULL DEFAULT 2,
+                home_favorite_position BIGINT NOT NULL DEFAULT 3,
+                home_popular_position BIGINT NOT NULL DEFAULT 1,
                 home_intro_markdown TEXT NOT NULL DEFAULT '',
                 search_results_per_page BIGINT NOT NULL DEFAULT 20,
-                default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE,
+                default_new_note_is_private BOOLEAN NOT NULL DEFAULT TRUE,
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
 
-            ALTER TABLE app_settings
-                ADD COLUMN IF NOT EXISTS default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE;
-            ALTER TABLE app_settings
-                ADD COLUMN IF NOT EXISTS home_popular_limit BIGINT NOT NULL DEFAULT 6;
-            ALTER TABLE app_settings
-                ADD COLUMN IF NOT EXISTS home_intro_markdown TEXT NOT NULL DEFAULT '';
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_popular_limit BIGINT NOT NULL DEFAULT 5;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_intro_markdown TEXT NOT NULL DEFAULT '';
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_recent_visible BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_favorite_visible BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_popular_visible BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_recent_position BIGINT NOT NULL DEFAULT 2;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_favorite_position BIGINT NOT NULL DEFAULT 3;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS home_popular_position BIGINT NOT NULL DEFAULT 1;
+            ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS default_new_note_is_private BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE app_settings DROP COLUMN IF EXISTS default_vim_mode;
 
-            INSERT INTO app_settings (id) VALUES (1)
-            ON CONFLICT (id) DO NOTHING;
+            INSERT INTO app_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
             "#,
         )
         .await

@@ -91,17 +91,17 @@
         background: rgba(8, 9, 11, 0.72);
     }
 
-    .editor-shell.preview-open.preview-compact .toastui-editor-md-preview {
+    .editor-shell.preview-open.preview-compact .editor-preview {
         position: fixed;
         inset: 92px 16px 16px;
         z-index: 85;
-        width: auto !important;
+        width: auto;
         min-height: 0;
         max-width: calc(100vw - 32px);
-        overflow: auto !important;
+        overflow: auto;
         border: 1px solid var(--line);
         border-radius: 18px;
-        background: var(--panel) !important;
+        background: var(--panel);
     }
 }
 
@@ -133,36 +133,12 @@
         width: 100%;
     }
 
-    .toastui-editor-defaultUI {
-        border-radius: 18px !important;
-    }
-
-    .toastui-editor-defaultUI-toolbar,
-    .toastui-editor-toolbar {
-        padding: 6px !important;
-    }
-
-    .toastui-editor-toolbar-group {
-        gap: 2px;
-    }
-
-    .toastui-editor-toolbar-divider {
-        display: none !important;
-    }
-
-    .toastui-editor-toolbar-icons,
-    .toastui-editor-defaultUI-toolbar button {
-        width: 28px !important;
-        height: 28px !important;
-    }
-
-    .toastui-editor-md-preview .toastui-editor-contents table {
-        font-size: 0.92rem;
-    }
-
-    .toastui-editor-md-container .ProseMirror,
-    .toastui-editor-md-preview .toastui-editor-contents {
+    .note-editor,
+    .editor-preview {
         min-height: 360px;
-        padding: 16px 16px 18px !important;
+    }
+
+    .editor-preview {
+        padding: 16px;
     }
 }

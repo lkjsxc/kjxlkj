@@ -22,7 +22,7 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
 <title>{title} - kjxlkj</title>
-<link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
 {extra_head}
 <style>{BASE_CSS}
 {CONTENT_CSS}
@@ -92,6 +92,7 @@ pub fn primary_nav(active: &str, is_admin: bool) -> String {
     ];
     if is_admin {
         links.push(nav_link("/admin", "Dashboard", active == "admin"));
+        links.push(nav_link("/settings", "Settings", active == "settings"));
     }
     format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
 }

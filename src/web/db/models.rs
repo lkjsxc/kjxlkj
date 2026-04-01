@@ -39,20 +39,32 @@ pub struct AppSettings {
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
+    pub home_recent_visible: bool,
+    pub home_favorite_visible: bool,
+    pub home_popular_visible: bool,
+    pub home_recent_position: i64,
+    pub home_favorite_position: i64,
+    pub home_popular_position: i64,
     pub home_intro_markdown: String,
     pub search_results_per_page: i64,
-    pub default_vim_mode: bool,
+    pub default_new_note_is_private: bool,
 }
 
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
-            home_recent_limit: 6,
-            home_favorite_limit: 6,
-            home_popular_limit: 6,
+            home_recent_limit: 5,
+            home_favorite_limit: 5,
+            home_popular_limit: 5,
+            home_recent_visible: true,
+            home_favorite_visible: true,
+            home_popular_visible: true,
+            home_recent_position: 2,
+            home_favorite_position: 3,
+            home_popular_position: 1,
             home_intro_markdown: String::new(),
             search_results_per_page: 20,
-            default_vim_mode: false,
+            default_new_note_is_private: true,
         }
     }
 }

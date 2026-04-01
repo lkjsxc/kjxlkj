@@ -1,11 +1,12 @@
 //! Searchable note listing queries
 
 use super::listing_cursor::decode_cursor;
-use super::listing_queries::{browse_records, search_records, top_records};
-use super::{DbPool, ListedRecord};
+use super::listing_queries::{browse_records, search_records, top_records, QueryParams};
+use super::{DbPool, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
 pub use super::listing_direction::ListDirection;
+pub use super::listing_scope::ListScope;
 pub use super::listing_sort::ListSort;
 
 const DEFAULT_LIMIT: i64 = 20;
@@ -16,6 +17,8 @@ pub struct ListRequest {
     pub include_private: bool,
     pub limit: i64,
     pub query: Option<String>,
+    pub scope: ListScope,
+    pub popular_window: PopularWindow,
     pub direction: ListDirection,
     pub sort: ListSort,
     pub cursor: Option<String>,
@@ -41,28 +44,26 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
     } else {
         ListDirection::Next
     };
-    let cursor = decode_cursor(request.cursor.as_deref(), query, &request.sort)?;
+    let cursor = decode_cursor(
+        request.cursor.as_deref(),
+        query,
+        &request.scope,
+        request.popular_window,
+        &request.sort,
+    )?;
+    let params = QueryParams {
+        include_private: request.include_private,
+        limit,
+        scope: &request.scope,
+        popular_window: request.popular_window,
+        direction: &direction,
+        sort: &request.sort,
+        cursor: cursor.as_ref(),
+    };
     if let Some(query) = query {
-        search_records(
-            pool,
-            request.include_private,
-            limit,
-            query,
-            &direction,
-            &request.sort,
-            cursor.as_ref(),
-        )
-        .await
+        search_records(pool, query, &params).await
     } else {
-        browse_records(
-            pool,
-            request.include_private,
-            limit,
-            &direction,
-            &request.sort,
-            cursor.as_ref(),
-        )
-        .await
+        browse_records(pool, &params).await
     }
 }
 
@@ -88,6 +89,8 @@ impl Default for ListRequest {
             include_private: false,
             limit: DEFAULT_LIMIT,
             query: None,
+            scope: ListScope::All,
+            popular_window: PopularWindow::Days30,
             direction: ListDirection::Next,
             sort: ListSort::UpdatedDesc,
             cursor: None,

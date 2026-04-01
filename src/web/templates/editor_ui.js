@@ -4,9 +4,10 @@ function bindPreviewEvents() {
 }
 
 function togglePreview() {
-    if (!editorState.shell || !editorState.editor) return;
+    if (!editorState.shell || !editorState.previewPanel) return;
     editorState.previewOpen = !editorState.previewOpen;
     syncPreviewMode();
+    if (editorState.previewOpen) renderPreview();
 }
 
 function closePreview() {
@@ -17,73 +18,51 @@ function closePreview() {
 }
 
 function syncPreviewMode() {
-    if (!editorState.shell) return;
+    if (!editorState.shell || !editorState.previewPanel) return;
     var compact = editorState.media.matches;
-    var style = editorState.previewOpen ? 'vertical' : 'tab';
-    if (editorState.editor && editorState.previewStyle !== style) {
-        editorState.editor.changePreviewStyle(style);
-        editorState.previewStyle = style;
-    }
-    if (style === 'tab' && editorState.editor && editorState.editor.eventEmitter) {
-        editorState.editor.eventEmitter.emit('changePreviewTabWrite');
-    }
     editorState.shell.classList.toggle('preview-open', editorState.previewOpen);
     editorState.shell.classList.toggle('preview-closed', !editorState.previewOpen);
     editorState.shell.classList.toggle('preview-compact', compact);
+    editorState.previewPanel.hidden = !editorState.previewOpen;
     if (editorState.previewToggle) {
         editorState.previewToggle.textContent = editorState.previewOpen ? 'Hide preview' : 'Show preview';
         editorState.previewToggle.setAttribute('aria-expanded', String(editorState.previewOpen));
     }
-    if (editorState.previewBackdrop) {
-        editorState.previewBackdrop.hidden = !(editorState.previewOpen && compact);
-    }
+    if (editorState.previewState) editorState.previewState.textContent = editorState.previewOpen ? 'Open' : 'Closed';
+    if (editorState.previewBackdrop) editorState.previewBackdrop.hidden = !(editorState.previewOpen && compact);
 }
 
-function setPreviewEnabled(enabled) {
-    if (editorState.previewToggle) editorState.previewToggle.hidden = !enabled;
-    if (!enabled) {
-        editorState.previewOpen = false;
-        syncPreviewMode();
-    }
+function queuePreviewRender() {
+    clearTimeout(editorState.previewTimer);
+    if (!editorState.previewOpen) return;
+    editorState.previewTimer = setTimeout(renderPreview, 180);
+}
+
+function renderPreview() {
+    if (!editorState.previewOpen || !editorState.previewPanel) return;
+    var requestId = ++editorState.previewRequest;
+    if (editorState.previewState) editorState.previewState.textContent = 'Loading';
+    fetch('/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: currentBody() })
+    })
+        .then(function (response) {
+            if (!response.ok) throw new Error('Preview unavailable.');
+            return response.json();
+        })
+        .then(function (payload) {
+            if (requestId !== editorState.previewRequest || !editorState.previewPanel) return;
+            editorState.previewPanel.innerHTML = payload.html;
+            if (editorState.previewState) editorState.previewState.textContent = 'Live';
+        })
+        .catch(function () {
+            if (requestId !== editorState.previewRequest || !editorState.previewPanel) return;
+            editorState.previewPanel.innerHTML = '<p class="surface-empty">Preview unavailable. Continue editing and try again.</p>';
+            if (editorState.previewState) editorState.previewState.textContent = 'Unavailable';
+        });
 }
 
 function handlePreviewEscape(event) {
     if (event.key === 'Escape' && editorState.previewOpen) closePreview();
-}
-
-function editorMinHeight() {
-    return editorState.media.matches ? '360px' : '520px';
-}
-
-function toolbarItems() {
-    if (editorState.media.matches) {
-        return [
-            ['heading', 'bold', 'italic', 'strike'],
-            ['quote', 'ul', 'ol', 'task'],
-            ['table', 'link', 'code', 'codeblock']
-        ];
-    }
-    return [
-        ['heading'],
-        ['bold', 'italic', 'strike', 'hr'],
-        ['quote', 'ul', 'ol', 'task'],
-        ['indent', 'outdent'],
-        ['table', 'link'],
-        ['code', 'codeblock']
-    ];
-}
-
-function focusEditor() {
-    requestAnimationFrame(function () {
-        if (editorState.editor) {
-            editorState.editor.focus();
-            if (typeof editorState.editor.moveCursorToEnd === 'function') {
-                editorState.editor.moveCursorToEnd();
-            }
-            return;
-        }
-        if (editorState.fallbackField && !editorState.fallbackField.hidden) {
-            editorState.fallbackField.focus();
-        }
-    });
 }
