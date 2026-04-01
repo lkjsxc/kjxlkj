@@ -10,7 +10,7 @@
 
 ## Web Groups
 
-- `src/web/assets/`: authored static assets such as the editable SVG icon and production favicon.
+- `src/web/assets/vendor/toastui/3.2.2/`: pinned upstream editor distribution plus `LICENSE` and provenance.
 - `src/web/db/`: PostgreSQL adapter, migrations, and query modules.
 - `src/web/handlers/`: route handlers and static-asset delivery.
 - `src/web/templates/`: authored HTML/CSS/JS/template support modules.
@@ -18,4 +18,5 @@
 ## Verification Rules
 
 - Authored Rust, JS, CSS, and Markdown verification code stays under the 200-line authored-file limit.
+- Vendored upstream payload inside `src/web/assets/vendor/` is excluded from authored-code refactoring pressure.
 - Include paths, Dockerfiles, and compose config must read from `src/` rather than root compatibility folders.

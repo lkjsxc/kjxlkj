@@ -6,25 +6,20 @@
 - Guests see public recent notes and public favorites only.
 - Signed-in admins see the same structure with private-capable data and admin actions.
 - Homepage is intentionally short and does not act as the full browse surface.
-- `Quick search` stays fixed near the top of the page.
-- `Popular notes`, `Recently updated`, and `Favorites` follow the configured homepage visibility, order, and count settings.
-- Each homepage summary section ends with one `View more notes` card linking into `/search`.
 
 ## Admin Dashboard
 
 - `GET /admin` returns the admin dashboard.
-- Dashboard includes statistics, a concise settings summary, and summary sections for popular notes, recent notes, and favorites.
-- Dashboard does not include the full note library or the full settings form.
+- Dashboard includes statistics, settings, recent notes, and favorites.
+- Dashboard does not include the full note library.
 - Dashboard data includes public and private notes.
 
 ## Search and Browse
 
 - `GET /search` is the canonical browse and search workspace.
-- Search accepts `q`, `scope`, `popular_window`, `sort`, `cursor`, and `limit`.
+- Search accepts `q`, `sort`, `cursor`, and `limit`.
 - Empty `q` returns the first paginated page of all viewable notes.
 - Non-empty `q` returns paginated matches only.
-- `scope=favorites` filters to favorites only.
-- `scope=popular` orders by popularity and honors `popular_window`.
 
 ## Default Ordering
 
@@ -32,8 +27,6 @@
 - Favorite blocks use persistent `favorite_position ASC`.
 - Empty-query `/search` defaults to `updated_desc`.
 - Non-empty-query `/search` defaults to `relevance`.
-- `/search?scope=favorites` defaults to `favorite_order`.
-- `/search?scope=popular` defaults to `popular`.
 - Note-to-note `Prev` and `Next` continue to use `created_at`.
 
 ## Fetch (`GET /{ref}`)

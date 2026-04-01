@@ -12,8 +12,7 @@
 - The toggle opens a live rendered preview of the current Markdown body.
 - The toggle closes the preview without leaving the editor workflow.
 - Preview state is ephemeral UI state, not persisted note data.
-- Preview-specific rendering may remain dormant until preview is opened.
-- Preview content is produced by the same server-side Markdown renderer used for guest note pages.
+- Preview-specific work may remain dormant until preview is opened.
 
 ## Layout Rules
 
@@ -21,7 +20,7 @@
 - Narrow screens open preview as a fixed overlay above the editor workspace.
 - The preview may not cause horizontal page overflow.
 - The preview must be dismissible without losing note content.
-- The compact preview path may not depend on hidden tab content or hidden side-menu state staying scroll-aligned underneath.
+- The compact preview path may not depend on hidden tab content staying scroll-aligned underneath.
 
 ## Rendering Rules
 

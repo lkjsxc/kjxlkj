@@ -6,7 +6,7 @@
 - Favorite lists on Home and Dashboard use `favorite_position ASC`.
 - Newly favorited notes append to the end of the favorite list.
 - Unfavoriting clears saved favorite position.
-- Admins reorder favorites from `/settings`.
+- Admins reorder favorites from `/admin`.
 - Reordering operates on the full current favorite set, not only the homepage-sized subset.
 
 ## Favorite Reorder API

@@ -3,24 +3,26 @@
 ## Global Settings
 
 - Global app settings are stored in PostgreSQL.
-- `GET /settings` owns the canonical settings form.
-- The admin dashboard links to settings but does not own the full form.
-- Global settings include homepage intro Markdown, homepage section visibility, homepage section order, homepage recent-note count, homepage favorite count, homepage popular-note count, default search page size, default new-note visibility, and favorite ordering controls.
+- Admin dashboard owns the canonical settings form.
+- Global settings include homepage recent-note count, homepage favorite count, homepage popular-note count, homepage intro Markdown, default search page size, and default Vim mode.
 - Global settings affect HTML routes immediately after a successful save.
 
-## Homepage Section Settings
+## Local Preferences
 
-- Homepage section settings apply only to `/`.
-- `Popular notes`, `Recently updated`, and `Favorites` may each be shown or hidden.
-- Those three sections have an explicit saved order.
-- `Quick search` remains visible and stays ahead of the configurable note sections.
-- Section counts are stored independently per note section.
+- Editor preference override remains browser-local.
+- The browser-local Vim override has three states:
+  - `default`
+  - `on`
+  - `off`
+- Effective Vim mode uses the local override when set.
+- Effective Vim mode falls back to the global default when the local override is `default`.
+- Reloading the page preserves the local Vim override in that browser.
 
 ## Defaults
 
-- Homepage recent-note count defaults to `5`.
-- Homepage favorite count defaults to `5`.
-- Homepage popular-note count defaults to `5`.
+- Homepage recent-note count defaults to `6`.
+- Homepage favorite count defaults to `6`.
+- Homepage popular-note count defaults to `6`.
 - Homepage intro Markdown defaults to empty.
 - Default search page size defaults to `20`.
-- Default new-note visibility defaults to private.
+- Default Vim mode defaults to `false`.

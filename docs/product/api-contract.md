@@ -26,17 +26,17 @@ The system manages `note` resources.
 
 ## Field Rules
 
-- `id`: primary key. Exact 26-character lowercase Base32 string representing 128 random bits.
-- `alias`: optional lowercase route alias using letters, digits, `.`, `_`, and `-`.
+- `id`: Primary key. Exact 26-character lowercase Base32 string representing 128 random bits.
+- `alias`: Optional lowercase route alias.
 - `body`: UTF-8 Markdown content. May be empty. Supported authoring paths include headings, lists, task lists, blockquotes, fenced code, links, and GFM tables.
-- `is_favorite`: boolean. Default `false`.
-- `favorite_position`: nullable positive integer. Present when the note is favorited.
-- `is_private`: boolean. New-note default is controlled by global settings.
-- `view_count_total`: lifetime successful note-page view count.
-- `view_count_7d`: rolling 7-day view count.
-- `view_count_30d`: rolling 30-day view count.
-- `view_count_90d`: rolling 90-day view count.
-- `last_viewed_at`: nullable UTC RFC3339 timestamp for the last counted note view.
+- `is_favorite`: Boolean. Default `false`.
+- `favorite_position`: Nullable positive integer. Present when the note is favorited.
+- `is_private`: Boolean. Default `true`.
+- `view_count_total`: Lifetime successful note-page view count.
+- `view_count_7d`: Rolling 7-day view count.
+- `view_count_30d`: Rolling 30-day view count.
+- `view_count_90d`: Rolling 90-day view count.
+- `last_viewed_at`: Nullable UTC RFC3339 timestamp for the last counted note view.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
 
@@ -53,7 +53,6 @@ The system manages `note` resources.
 
 - `POST /records` requires `body`.
 - Browser-created notes use a browser-local minute timestamp heading as the default title seed.
-- When `is_private` is omitted, the server uses the configured global new-note default.
 - The server does not synthesize fallback body text when `body` is omitted.
 
 ## Derived Presentation Rules
@@ -62,15 +61,12 @@ The system manages `note` resources.
 - Missing heading yields `Untitled note`.
 - Normal UI does not display raw `id` values.
 - Created time is the secondary identity cue in lists and note chrome.
-- Admin note pages edit the canonical body through one in-house textarea-first Markdown workspace with on-demand preview.
+- Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
-- Homepage supports optional admin-authored intro Markdown below the page title and inline admin editing of that block.
+- Homepage supports optional admin-authored intro Markdown below the page title.
 - Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
-- Homepage `Popular notes`, `Recently updated`, and `Favorites` use configurable visibility, order, and per-section counts.
-- Homepage section counts default to `5`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.
-- `/search` also owns favorites and popularity preset browsing through query parameters rather than separate routes.
 
 ## UI Semantics
 
@@ -80,27 +76,6 @@ The system manages `note` resources.
 - Search and browse UI are canonical on `/search`.
 - Favorite state is explicit admin-managed note state.
 - Favorite ordering is explicit admin-managed note state.
-
-## Preview Payload
-
-`POST /preview` accepts:
-
-```json
-{
-  "body": "# Title\n\nDraft Markdown..."
-}
-```
-
-Response:
-
-```json
-{
-  "html": "<h1>Title</h1>\n<p>Draft Markdown...</p>\n"
-}
-```
-
-- `POST /preview` is admin-only.
-- Preview rendering uses the same Markdown renderer as guest note pages.
 
 ## Revision History
 

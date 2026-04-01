@@ -12,21 +12,17 @@
 - The global rail stays visible on desktop.
 - The rail exposes a link to `/search`, not an inline search form.
 - The main pane owns the actual query form and result list.
-- The search controls are one aligned row on wide screens: input, optional state card, sort, and submit action.
+- The search controls are one aligned row on wide screens: input, optional query display, sort, and submit action.
 - The active query is echoed in a compact read-only card near `Sort` only when `q` is non-empty.
-- Scope-specific state such as `Favorites` or `Popular 30d` is echoed in the same control row.
 - The sort control keeps an accessible label, but the visible `Sort` text is omitted.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
 - Empty-query state should still feel like a full notes page rather than an empty helper page.
-- The search submit button and sort control must share the same vertical alignment baseline.
 
 ## Search Rules
 
 - Search is server-side and query-param driven.
 - Query input uses `q`.
-- Scope input uses `scope`.
-- Popular-window input uses `popular_window`.
 - Query direction uses `direction`.
 - Sort input uses `sort`.
 - Pagination uses `cursor` and `limit`.
@@ -34,8 +30,6 @@
 - Result snippets may differ from derived summaries when search context is more useful.
 - Non-empty query defaults to relevance ordering.
 - Empty query defaults to updated-newest ordering.
-- Favorites scope defaults to favorite ordering.
-- Popular scope defaults to popularity ordering.
 
 ## Result Rules
 
