@@ -34,8 +34,10 @@ docker compose --profile verify run --rm visual-verify
 - Note rails render one `All history` card and never render inline revision lists.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
+- Search and history paging expose `Previous` and `Next` actions.
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
+- Rail navigation controls use the same size family as rail actions.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
@@ -46,7 +48,11 @@ docker compose --profile verify run --rm visual-verify
 - The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
 - Empty-query `/search` renders note cards instead of helper guidance.
-- Search exposes a query display card near sort.
-- Search paging exposes `Previous` and `Next` actions instead of `More notes`.
+- Search exposes a query display card near sort only when `q` is non-empty.
+- Empty-query `/search` does not render a `Query` or `All notes` state card.
 - Dashboard does not render a library block.
+- Dashboard stacks `Settings`, `Recently updated`, and `Favorites`.
+- Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard settings cover default Vim mode and browser-local Vim override behavior.
+- Markdown links are visibly accented in guest content and preview.
+- Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.

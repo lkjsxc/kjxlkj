@@ -16,7 +16,7 @@
 - Current-note context when applicable.
 - Timeline and history affordances when applicable.
 - Mode-specific actions.
-- Groups are separated visually, but visible section headings are omitted.
+- Groups are separated visually, but visible section headings and heading underlines are omitted.
 
 ## Main Pane
 

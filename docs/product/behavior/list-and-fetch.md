@@ -23,7 +23,8 @@
 
 ## Default Ordering
 
-- Homepage recent and favorite blocks sort by `updated_at DESC, id ASC`.
+- Homepage recent blocks sort by `updated_at DESC, id ASC`.
+- Favorite blocks use persistent `favorite_position ASC`.
 - Empty-query `/search` defaults to `updated_desc`.
 - Non-empty-query `/search` defaults to `relevance`.
 - Note-to-note `Prev` and `Next` continue to use `created_at`.
@@ -49,8 +50,9 @@
 
 ## History Fetch
 
-- History index returns the current note plus visible revisions.
+- History index returns the current note plus one visible revision page.
 - Revision snapshots are ordered by `revision_number DESC`.
 - Guests can fetch only revisions whose stored state is public.
 - Admins can fetch all revisions.
 - The history rail never expands into per-revision links.
+- HTML and JSON history fetches share cursor pagination rules.

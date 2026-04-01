@@ -12,8 +12,8 @@
 - The global rail stays visible on desktop.
 - The rail exposes a link to `/search`, not an inline search form.
 - The main pane owns the actual query form and result list.
-- The search controls are one aligned row on wide screens: input, query display, sort, and submit action.
-- The active query is echoed in a compact read-only `Query` card near `Sort`.
+- The search controls are one aligned row on wide screens: input, optional query display, sort, and submit action.
+- The active query is echoed in a compact read-only card near `Sort` only when `q` is non-empty.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
 - Empty-query state should still feel like a full notes page rather than an empty helper page.
@@ -38,3 +38,4 @@
 - Guest results never expose private-only metadata.
 - Admin results may show visibility and favorite state.
 - Search result sorting and pagination remain server-side only.
+- Empty-query results do not render a `Query` or `All notes` state card.

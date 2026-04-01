@@ -7,6 +7,7 @@
 - The history body stays in the main pane.
 - The history index is the only full revision-browsing surface.
 - Visible rail section headings remain absent here too.
+- History index paging uses the same `Previous` and `Next` language as Search.
 
 ## Access Rules
 
@@ -17,8 +18,10 @@
 ## Index Content
 
 - The first card links to the current note.
-- The remaining cards list visible revisions in `revision_number DESC` order.
+- The remaining cards list one paginated page of visible revisions in `revision_number DESC` order.
 - Each revision card shows revision label, saved-at time, and visibility state.
+- The current-note card remains visible on every page instead of becoming part of the paginated slice.
+- History paging is URL-shareable through `cursor`, `direction`, and `limit`.
 
 ## Rail Limits
 

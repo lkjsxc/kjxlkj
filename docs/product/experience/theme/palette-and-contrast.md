@@ -9,15 +9,15 @@
 ## Surface Hierarchy
 
 - Global background uses near-black graphite.
-- Primary panels use solid charcoal tone.
-- Secondary panels use a slightly lighter solid layer for grouping.
+- Primary note cards use solid charcoal tone.
+- Secondary grouping surfaces use a slightly lighter solid layer only when spacing alone is insufficient.
 - Borders stay subtle but always visible against adjacent dark surfaces.
 - Depth comes from spacing and borders, not from gradients or shadows.
 
 ## Accent Policy
 
 - Accent is restrained and never floods the interface.
-- Accent appears on active note state, selected history items, links, and focused controls.
+- Accent appears on active note state, selected history items, Markdown links, and focused controls.
 - Destructive actions use a dedicated danger hue and never share the primary accent.
 
 ## Contrast Rules

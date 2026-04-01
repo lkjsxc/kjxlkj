@@ -14,8 +14,10 @@
 - Admin rows may show visibility state, but guest rows do not expose private-only metadata.
 - Metadata uses a dedicated layout that stays readable even when title or summary text is long.
 - Summary preview appends `...` whenever hidden meaningful content remains.
-- Title and summary are line-clamped so long notes do not enlarge sibling cards.
+- Title is single-line clamped.
+- Summary is line-clamped so long notes do not enlarge sibling cards.
 - Dense layouts should reduce vertical padding before reducing useful metadata.
+- Grid cards may gain a small amount of height so timestamp rows remain fully contained.
 
 ## Action Treatment
 

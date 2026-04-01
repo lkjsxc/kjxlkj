@@ -18,7 +18,7 @@
 - One history card that opens the dedicated history page.
 - Mode-specific actions.
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
-- Section boundaries use separators and spacing only.
+- Section boundaries use spacing first and minimal separators only when needed.
 
 ## Metadata Rules
 
@@ -30,7 +30,7 @@
 
 ## Action Treatment
 
-- Home, Search, Dashboard, New note, Logout, and Delete use restrained controls.
+- Home, Search, Dashboard, New note, Logout, and Delete use restrained controls from the same size family.
 - `New note` is the first admin action in the rail.
 - Guest sign-in may sit lower in the rail rather than directly under navigation.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.

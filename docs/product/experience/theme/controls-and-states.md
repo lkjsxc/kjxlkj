@@ -5,13 +5,14 @@
 - Standard actions render as text-first controls.
 - Filled buttons are not the default action language.
 - Delete may use color emphasis, but still reads as text-first.
+- Primary rail navigation controls use the same size family as `New note` and `Logout`.
 
 ## Compact Navigation Controls
 
 - Narrow layouts expose one quiet top-right menu toggle.
 - The drawer may use a backdrop but no loud close chrome.
 - Rail interactions must remain keyboard accessible.
-- Search paging controls should make backward and forward movement obvious.
+- Search and history paging controls should make backward and forward movement obvious.
 
 ## State Treatments
 
@@ -30,4 +31,11 @@
 - Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
-- Search query state may be displayed in a read-only card beside sort rather than only inside the input.
+- Search query state may be displayed beside sort only when `q` is non-empty.
+
+## Section Chrome
+
+- Notes may keep bordered cards.
+- Non-note sections such as `Quick search`, `Recently updated`, `Favorites`, and `Settings` should prefer spacing over boxed shells.
+- Visible rules directly under section headings are not part of the product language.
+- Section groups may separate through spacing, alignment, and shared background rather than repeated nested boxes.

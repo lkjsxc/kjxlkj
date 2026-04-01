@@ -10,6 +10,7 @@
 - `/{ref}/history` -> history index handler.
 - `/{ref}/history/{revision_number}` -> history snapshot handler.
 - `/records` -> note create handler.
+- `/records/favorites/order` -> favorite reorder handler.
 - `/records/{id}` -> note update (PUT), delete (DELETE) handlers.
 - `/records/{id}/history` -> revision history handler.
 - `/records/{id}/prev` -> previous note handler.

@@ -10,7 +10,7 @@
 - The persistent shell rail remains visible.
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
-- Main content starts with compact stats and settings blocks, then recent and favorite note blocks.
+- Main content starts with compact stats, then stacked `Settings`, `Recently updated`, and `Favorites` sections.
 - Dashboard spacing should stay tighter than the early tall-card builds.
 - The dashboard does not include the full note library.
 - The page header does not show `Admin browse`.
@@ -22,7 +22,7 @@
 - Settings form for global defaults, including default Vim mode.
 - Browser-local Vim override controls.
 - Recent notes block.
-- Favorite notes block.
+- Favorite notes block with a full reorderable admin list of all favorites.
 
 ## Visual Rules
 
@@ -30,3 +30,4 @@
 - Full browsing belongs on `/search`, not in the dashboard.
 - Empty states remain compact and factual.
 - Explanatory helper blocks such as `Admin index` are omitted.
+- Section wrappers stay lighter than note cards and do not stack repeated nested borders.

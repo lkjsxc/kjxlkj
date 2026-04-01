@@ -52,3 +52,4 @@
 - Admin results may show favorite and visibility state.
 - Results never dump the full note set to the client at once.
 - Search chrome should expose explicit `Previous` and `Next` actions instead of one `More notes` action.
+- Empty-query `/search` does not echo a `Query` or `All notes` state card.

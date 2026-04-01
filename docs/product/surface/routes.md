@@ -21,7 +21,7 @@
   - invalid credentials: `401` HTML error page
   - valid credentials: `303` to `/admin` and sets `session_id` cookie
 - `POST /logout`:
-  - after setup: `303` to `/login` and clears `session_id` cookie
+  - after setup: `303` to `/` and clears `session_id` cookie
 
 ## Home, Admin, and Search Pages
 
@@ -54,7 +54,7 @@
 - `GET /{ref}/history`:
   - note not found: `404`
   - note is private and no session: `404`
-  - accessible note: `200` HTML history index
+  - accessible note: `200` HTML history index using `cursor`, `direction`, and `limit`
 - `GET /{ref}/history/{revision_number}`:
   - note not found: `404`
   - revision not found: `404`
@@ -67,6 +67,10 @@
   - without valid session: `401` JSON error
   - invalid payload or missing `body`: `400` JSON error
   - valid session: `201` JSON with new note and generated `id`
+- `PUT /records/favorites/order`:
+  - without valid session: `401` JSON error
+  - invalid favorite set or invalid IDs: `400` JSON error
+  - valid session: `204`
 - `PUT /records/{id}`:
   - without valid session: `401` JSON error
   - note not found: `404` JSON error
@@ -85,7 +89,7 @@
 - `GET /records/{id}/history`:
   - without valid session: `401`
   - note not found: `404`
-  - valid session: `200` JSON array of revisions
+  - valid session: `200` JSON paginated revision payload using `cursor`, `direction`, and `limit`
 - `GET /records/{id}/prev`:
   - note not found or inaccessible: `404`
   - returns previous accessible note `id` by `created_at`

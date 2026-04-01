@@ -12,6 +12,7 @@ The system manages `note` resources.
   "alias": "release-notes",
   "body": "# Title\n\nMarkdown content...",
   "is_favorite": true,
+  "favorite_position": 2,
   "is_private": true,
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
@@ -24,6 +25,7 @@ The system manages `note` resources.
 - `alias`: Optional lowercase route alias.
 - `body`: UTF-8 Markdown content. May be empty. Supported authoring paths include headings, lists, task lists, blockquotes, fenced code, links, and GFM tables.
 - `is_favorite`: Boolean. Default `false`.
+- `favorite_position`: Nullable positive integer. Present when the note is favorited.
 - `is_private`: Boolean. Default `true`.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
@@ -61,6 +63,7 @@ The system manages `note` resources.
 - `Public = unchecked` maps to `is_private = true`.
 - Search and browse UI are canonical on `/search`.
 - Favorite state is explicit admin-managed note state.
+- Favorite ordering is explicit admin-managed note state.
 
 ## Revision History
 
@@ -72,6 +75,23 @@ Every update creates a new immutable revision snapshot:
   "body": "# Title\n\nOld content...",
   "is_private": true,
   "created_at": "2026-03-26T08:35:00Z"
+}
+```
+
+History listing responses are paginated:
+
+```json
+{
+  "revisions": [
+    {
+      "revision_number": 3,
+      "body": "# Title\n\nOld content...",
+      "is_private": true,
+      "created_at": "2026-03-26T08:35:00Z"
+    }
+  ],
+  "previous_cursor": null,
+  "next_cursor": "opaque"
 }
 ```
 

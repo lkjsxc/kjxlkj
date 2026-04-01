@@ -8,6 +8,7 @@
 - `title`: current derived title.
 - `summary`: current derived summary.
 - `is_favorite`: favorite flag.
+- `favorite_position`: nullable persistent favorite ordering slot.
 - `is_private`: privacy flag.
 - `created_at`: immutable UTC timestamp.
 - `updated_at`: mutable UTC timestamp.
@@ -38,6 +39,7 @@
 - unique partial index on `alias`
 - updated-order index for public/admin indexes
 - created-order index for `Prev` / `Next`
+- favorite-order index on `(favorite_position, id)` for active favorites
 - GIN index for `search_document`
 - trigram index support for alias/title/body fallback matching
 - revision lookup index on `(record_id, revision_number DESC)`

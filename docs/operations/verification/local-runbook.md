@@ -51,6 +51,7 @@ Expected:
 - HTML contains homepage sections rather than one bare browse list
 - homepage contains no stats block
 - homepage includes a browse-action card that points to `/search`
+- homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
 - HTML does not expose raw note IDs in normal list rows
 - HTML does not contain visible rail section headings such as `CREATE`, `NAVIGATE`, `ACTIONS`, or `SCOPE`
@@ -71,11 +72,12 @@ Expected:
 - guest search returns only public matches
 - admin search may include private matches
 - HTML contains the search form in the main pane
-- HTML contains a query display near the search input and sort control
+- non-empty queries show a query display near the search input and sort control
 - HTML contains sort controls in the main pane
 - HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
+- empty-query HTML does not contain a `Query` or `All notes` state card
 
 ## Verify Admin Dashboard
 
@@ -87,11 +89,13 @@ Expected:
 
 - HTML contains stats and settings blocks
 - HTML contains recent and favorite note rows
+- recent, favorite, and settings sections stack vertically
 - HTML does not contain a library block
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
 - settings include default Vim mode and browser-local Vim override controls
+- dashboard favorites use persistent favorite order rather than updated time
 
 ## Verify Admin Note Shell
 
@@ -123,6 +127,7 @@ Expected:
 
 - HTML contains one `Current note` card
 - HTML contains visible revision cards in newest-first order
+- HTML contains previous/next paging controls when the revision set spans multiple pages
 - the rail still contains one `All history` card rather than revision links
 - HTML does not contain visible rail section headings
 
@@ -141,6 +146,7 @@ Expected:
 - typed Markdown stays legible in the editor and renders correctly when preview is opened
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 - compact preview opens as a fixed overlay and closes cleanly
+- compact iPhone-width rendering keeps the same UI font family as other widths
 
 ## Verify Browser Visual Checks
 
@@ -152,6 +158,7 @@ Expected:
 
 - desktop screenshots pass home/search/admin/note assertions
 - compact screenshots pass closed and open drawer assertions
+- iPhone-width or equivalent compact screenshots confirm font consistency
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
 - the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`
