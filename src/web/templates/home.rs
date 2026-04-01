@@ -3,17 +3,18 @@
 use super::index::list_rail;
 use super::layout::{base, shell_page};
 use super::list_sections::{
-    browse_card, note_grid_section, popular_window_switch, quick_search_section,
+    favorite_browse_card, note_grid_section, popular_browse_card, popular_window_switch,
+    quick_search_section, recent_browse_card,
 };
 use super::model::IndexItem;
 use super::sections::page_header;
 use crate::core::render_markdown;
-use crate::web::db::PopularWindow;
+use crate::web::db::{AppSettings, PopularWindow};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn home_page(
-    intro_markdown: &str,
+    settings: &AppSettings,
     popular: &[IndexItem],
     recent: &[IndexItem],
     favorites: &[IndexItem],
@@ -26,36 +27,14 @@ pub fn home_page(
         String::new()
     };
     let content = format!(
-        "{}{}{}{}{}",
-        page_header("Home", None, "home-head"),
-        intro_block(intro_markdown),
+        "{}{}{}{}",
+        page_header(&settings.home_title, None, "home-head"),
+        intro_block(&settings.home_intro_markdown),
         quick_search_section(),
-        note_grid_section(
-            "Popular notes",
-            popular,
-            "No popular notes yet.",
-            "note-section",
-            Some(&popular_window_switch("/", window)),
-            None,
-        ),
-        note_grid_section(
-            "Recently updated",
-            recent,
-            "No notes yet.",
-            "note-section",
-            None,
-            Some(browse_card()),
-        )
-    ) + &note_grid_section(
-        "Favorites",
-        favorites,
-        "No favorites yet.",
-        "note-section",
-        None,
-        None,
+        home_sections(settings, popular, recent, favorites, window),
     );
     base(
-        "Home",
+        &settings.home_title,
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &list_rail(
@@ -70,6 +49,61 @@ pub fn home_page(
         "",
         &extra_script,
     )
+}
+
+fn home_sections(
+    settings: &AppSettings,
+    popular: &[IndexItem],
+    recent: &[IndexItem],
+    favorites: &[IndexItem],
+    window: PopularWindow,
+) -> String {
+    let mut sections = Vec::new();
+    if settings.home_popular_visible {
+        sections.push((
+            settings.home_popular_position,
+            note_grid_section(
+                "Popular notes",
+                popular,
+                "No popular notes yet.",
+                "note-section",
+                Some(&popular_window_switch("/", window)),
+                Some(popular_browse_card(window)),
+            ),
+        ));
+    }
+    if settings.home_recent_visible {
+        sections.push((
+            settings.home_recent_position,
+            note_grid_section(
+                "Recently updated",
+                recent,
+                "No notes yet.",
+                "note-section",
+                None,
+                Some(recent_browse_card()),
+            ),
+        ));
+    }
+    if settings.home_favorite_visible {
+        sections.push((
+            settings.home_favorite_position,
+            note_grid_section(
+                "Favorites",
+                favorites,
+                "No favorites yet.",
+                "note-section",
+                None,
+                Some(favorite_browse_card()),
+            ),
+        ));
+    }
+    sections.sort_by_key(|(position, _)| *position);
+    sections
+        .into_iter()
+        .map(|(_, html)| html)
+        .collect::<Vec<_>>()
+        .join("")
 }
 
 fn intro_block(markdown: &str) -> String {

@@ -4,11 +4,13 @@ mod analytics;
 mod auth;
 mod favorites;
 mod history;
+mod list_scope;
 mod listing;
 mod listing_cursor;
 mod listing_direction;
 mod listing_queries;
 mod listing_sort;
+mod listing_sort_sql;
 mod migrations;
 mod models;
 mod popular_window;
@@ -23,6 +25,7 @@ pub use favorites::{list_all_favorite_records, reorder_favorites};
 pub use history::{
     get_next_record, get_previous_record, get_record_revision, list_record_revisions,
 };
+pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };

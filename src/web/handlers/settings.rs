@@ -3,17 +3,40 @@
 use crate::error::AppError;
 use crate::web::db::{self, AppSettings, DbPool};
 use crate::web::handlers::session;
-use actix_web::{post, web, HttpRequest, HttpResponse};
+use crate::web::templates;
+use actix_web::{get, post, web, HttpRequest, HttpResponse};
 use serde::Deserialize;
+use std::collections::HashSet;
 
 #[derive(Debug, Deserialize)]
 pub struct SettingsForm {
+    pub home_title: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
     pub home_intro_markdown: String,
+    pub home_recent_visible: Option<String>,
+    pub home_favorite_visible: Option<String>,
+    pub home_popular_visible: Option<String>,
+    pub home_recent_position: i64,
+    pub home_favorite_position: i64,
+    pub home_popular_position: i64,
     pub search_results_per_page: i64,
-    pub default_vim_mode: Option<String>,
+    pub default_new_note_is_private: Option<String>,
+}
+
+#[get("/admin/settings")]
+pub async fn settings_page(
+    pool: web::Data<DbPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, AppError> {
+    if !db::is_setup(&pool).await? {
+        return Ok(redirect("/setup"));
+    }
+    session::require_session(&req, &pool).await?;
+    Ok(html(templates::settings_page(
+        &db::get_settings(&pool).await?,
+    )))
 }
 
 #[post("/admin/settings")]
@@ -25,27 +48,76 @@ pub async fn settings_submit(
     session::require_session(&req, &pool).await?;
     db::update_settings(&pool, &validate(&form)?).await?;
     Ok(HttpResponse::SeeOther()
-        .append_header(("Location", "/admin"))
+        .append_header(("Location", "/admin/settings"))
         .finish())
 }
 
 fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
-    let settings = AppSettings {
-        home_recent_limit: form.home_recent_limit.clamp(1, 24),
-        home_favorite_limit: form.home_favorite_limit.clamp(1, 24),
-        home_popular_limit: form.home_popular_limit.clamp(1, 24),
-        home_intro_markdown: form.home_intro_markdown.trim().to_string(),
-        search_results_per_page: form.search_results_per_page.clamp(5, 100),
-        default_vim_mode: form.default_vim_mode.is_some(),
-    };
-    if form.home_recent_limit < 1
-        || form.home_favorite_limit < 1
-        || form.home_popular_limit < 1
-        || form.search_results_per_page < 1
-    {
+    if form.home_title.trim().is_empty() {
         return Err(AppError::InvalidRequest(
-            "settings values must be positive".to_string(),
+            "home title is required".to_string(),
         ));
     }
-    Ok(settings)
+    if !counts_are_valid(form) {
+        return Err(AppError::InvalidRequest(
+            "section counts must be between 1 and 24".to_string(),
+        ));
+    }
+    if !(5..=100).contains(&form.search_results_per_page) {
+        return Err(AppError::InvalidRequest(
+            "search page size must be between 5 and 100".to_string(),
+        ));
+    }
+    if !positions_are_valid(form) {
+        return Err(AppError::InvalidRequest(
+            "section order must use 1, 2, and 3 exactly once".to_string(),
+        ));
+    }
+    Ok(AppSettings {
+        home_title: form.home_title.trim().to_string(),
+        home_recent_limit: form.home_recent_limit,
+        home_favorite_limit: form.home_favorite_limit,
+        home_popular_limit: form.home_popular_limit,
+        home_intro_markdown: form.home_intro_markdown.trim().to_string(),
+        home_recent_visible: form.home_recent_visible.is_some(),
+        home_favorite_visible: form.home_favorite_visible.is_some(),
+        home_popular_visible: form.home_popular_visible.is_some(),
+        home_recent_position: form.home_recent_position,
+        home_favorite_position: form.home_favorite_position,
+        home_popular_position: form.home_popular_position,
+        search_results_per_page: form.search_results_per_page,
+        default_new_note_is_private: form.default_new_note_is_private.is_some(),
+    })
+}
+
+fn counts_are_valid(form: &SettingsForm) -> bool {
+    [
+        form.home_recent_limit,
+        form.home_favorite_limit,
+        form.home_popular_limit,
+    ]
+    .into_iter()
+    .all(|value| (1..=24).contains(&value))
+}
+
+fn positions_are_valid(form: &SettingsForm) -> bool {
+    let positions = [
+        form.home_popular_position,
+        form.home_recent_position,
+        form.home_favorite_position,
+    ];
+    positions.iter().all(|value| (1..=3).contains(value))
+        && positions.into_iter().collect::<HashSet<_>>().len() == 3
+}
+
+fn redirect(location: &str) -> HttpResponse {
+    HttpResponse::Found()
+        .append_header(("Location", location))
+        .finish()
+}
+
+fn html(body: String) -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(body)
 }

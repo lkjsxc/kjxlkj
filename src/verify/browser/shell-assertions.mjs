@@ -145,7 +145,7 @@ async function assertBrandSpacing(page) {
 }
 
 async function assertBrandIcon(page) {
-    assert.equal(await page.locator('link[rel="icon"][href="/assets/icon.svg"]').count(), 1);
+    assert.equal(await page.locator('link[rel="icon"][href="/favicon.ico"]').count(), 1);
     const marks = page.locator('.brand-mark');
     const visibleSources = await marks.evaluateAll((nodes) =>
         nodes

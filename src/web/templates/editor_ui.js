@@ -1,6 +1,7 @@
 function bindPreviewEvents() {
     editorState.media.addEventListener('change', syncPreviewMode);
     document.addEventListener('keydown', handlePreviewEscape);
+    window.addEventListener('resize', syncPreviewLayout);
 }
 
 function togglePreview() {
@@ -37,6 +38,7 @@ function syncPreviewMode() {
     if (editorState.previewBackdrop) {
         editorState.previewBackdrop.hidden = !(editorState.previewOpen && compact);
     }
+    syncPreviewLayout();
 }
 
 function setPreviewEnabled(enabled) {
@@ -53,6 +55,13 @@ function handlePreviewEscape(event) {
 
 function editorMinHeight() {
     return editorState.media.matches ? '360px' : '520px';
+}
+
+function syncPreviewLayout() {
+    if (!editorState.shell) return;
+    var mobileBar = document.querySelector('.mobile-bar');
+    var top = mobileBar ? Math.ceil(mobileBar.getBoundingClientRect().bottom + 16) : 92;
+    editorState.shell.style.setProperty('--preview-top', top + 'px');
 }
 
 function toolbarItems() {

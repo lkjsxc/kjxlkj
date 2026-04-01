@@ -3,7 +3,7 @@ import { assertInvisibleText, assertVisibleText } from './assertions.mjs';
 import { assertNoHorizontalOverflow } from './shell-assertions.mjs';
 import { appUrl, newContext } from './support.mjs';
 
-export async function verifyUiCreatedDraft(page, vimEnabled = false) {
+export async function verifyUiCreatedDraft(page, expectedPrivate = true) {
     await Promise.all([
         page.waitForURL((url) => new URL(url).pathname !== '/admin'),
         page.getByRole('button', { name: 'New note', exact: true }).first().click(),
@@ -11,18 +11,17 @@ export async function verifyUiCreatedDraft(page, vimEnabled = false) {
     await page.locator('[data-live-title]').first().waitFor({ state: 'visible' });
     const title = (await page.locator('[data-live-title]').first().textContent()).trim();
     assert.match(title, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
-    assert.equal(await page.locator('#public-toggle').isChecked(), false, 'new notes should default to private drafts');
+    assert.equal(await page.locator('#public-toggle').isChecked(), !expectedPrivate, 'new note visibility should follow settings');
     await page.getByRole('button', { name: 'Show preview', exact: true }).waitFor({ state: 'visible' });
     assert.equal(
         await page.locator('#preview-toggle').getAttribute('aria-expanded'),
         'false',
         'preview should start closed'
     );
-    await verifyVimMode(page, vimEnabled);
     await expectEditorFocus(page);
 }
 
-export async function verifyEditorFormatting(browser, page, note, vimEnabled = false) {
+export async function verifyEditorFormatting(browser, page, note) {
     const saveRequests = [];
     page.on('requestfinished', (request) => {
         if (request.method() === 'PUT' && new URL(request.url()).pathname === `/records/${note.id}`) {
@@ -31,10 +30,9 @@ export async function verifyEditorFormatting(browser, page, note, vimEnabled = f
     });
     await page.locator('.toastui-editor-md-container .ProseMirror').first().waitFor({ state: 'visible' });
     await expectEditorFocus(page);
-    await verifyVimMode(page, vimEnabled);
     await page.waitForTimeout(1600);
     assert.equal(saveRequests.length, 0, 'idle note should not save before edits');
-    await appendMarkdown(page, vimEnabled);
+    await appendMarkdown(page);
     await openPreview(page);
     await waitForPreviewStructures(page);
     await assertEditorLayout(page, false);
@@ -50,7 +48,6 @@ export async function verifyEditorFormatting(browser, page, note, vimEnabled = f
         'false',
         'preview should reset closed after reload'
     );
-    if (vimEnabled) await page.getByText('Vim normal', { exact: true }).waitFor({ state: 'visible' });
     await openPreview(page);
     await waitForPreviewStructures(page);
     const guest = await newContext(browser, { width: 1440, height: 1100 });
@@ -100,8 +97,7 @@ export async function assertEditorLayout(page, compact) {
     }, compact);
 }
 
-async function appendMarkdown(page, vimEnabled) {
-    if (vimEnabled) await ensureInsertMode(page);
+async function appendMarkdown(page) {
     await moveCursorToEnd(page);
     for (const line of [
         '',
@@ -127,29 +123,6 @@ async function appendMarkdown(page, vimEnabled) {
         await page.keyboard.press('Enter');
     }
     await page.locator('.toastui-editor-toolbar-icons.table').first().waitFor({ state: 'visible' });
-}
-
-async function verifyVimMode(page, enabled) {
-    const state = page.locator('[data-vim-mode-state]').first();
-    await state.waitFor({ state: 'visible' });
-    if (!enabled) {
-        assert.equal((await state.textContent()).trim(), 'Vim off');
-        return;
-    }
-    assert.equal((await state.textContent()).trim(), 'Vim normal');
-    await page.keyboard.press('i');
-    await page.getByText('Vim insert', { exact: true }).waitFor({ state: 'visible' });
-    await page.keyboard.press('Escape');
-    await page.getByText('Vim normal', { exact: true }).waitFor({ state: 'visible' });
-}
-
-async function ensureInsertMode(page) {
-    const state = page.locator('[data-vim-mode-state]').first();
-    await state.waitFor({ state: 'visible' });
-    if ((await state.textContent()).trim() === 'Vim normal') {
-        await page.keyboard.press('i');
-        await page.getByText('Vim insert', { exact: true }).waitFor({ state: 'visible' });
-    }
 }
 
 async function waitForPreviewStructures(page) {

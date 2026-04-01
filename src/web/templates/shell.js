@@ -1,7 +1,6 @@
 (function () {
     formatLocalTimes();
     setupDrawer();
-    setupLocalSettings();
 
     function formatLocalTimes() {
         var formatter = new Intl.DateTimeFormat(undefined, {
@@ -82,26 +81,5 @@
         });
         media.addEventListener('change', function () { closeMenu(false); });
         sync();
-    }
-
-    function setupLocalSettings() {
-        document.querySelectorAll('[data-local-setting]').forEach(function (input) {
-            var key = 'kjxlkj.' + input.dataset.localSetting;
-            if (input.tagName === 'SELECT') {
-                input.value = window.localStorage.getItem(key) || 'default';
-                input.addEventListener('change', function () {
-                    if (input.value === 'default') {
-                        window.localStorage.removeItem(key);
-                    } else {
-                        window.localStorage.setItem(key, input.value);
-                    }
-                });
-                return;
-            }
-            input.checked = window.localStorage.getItem(key) === '1';
-            input.addEventListener('change', function () {
-                window.localStorage.setItem(key, input.checked ? '1' : '0');
-            });
-        });
     }
 })();

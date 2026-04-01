@@ -7,8 +7,10 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
     let row = client(pool)
         .await?
         .query_opt(
-            "SELECT home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, \
-             search_results_per_page, default_vim_mode FROM app_settings WHERE id = 1",
+            "SELECT home_title, home_recent_limit, home_favorite_limit, home_popular_limit, \
+             home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
+             home_recent_position, home_favorite_position, home_popular_position, \
+             search_results_per_page, default_new_note_is_private FROM app_settings WHERE id = 1",
             &[],
         )
         .await
@@ -21,21 +23,38 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
         .await?
         .execute(
             "INSERT INTO app_settings \
-             (id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, \
-             search_results_per_page, default_vim_mode) VALUES (1, $1, $2, $3, $4, $5, $6) \
-             ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, \
+             (id, home_title, home_recent_limit, home_favorite_limit, home_popular_limit, \
+             home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
+             home_recent_position, home_favorite_position, home_popular_position, \
+             search_results_per_page, default_new_note_is_private) \
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) \
+             ON CONFLICT (id) DO UPDATE SET home_title = EXCLUDED.home_title, \
+             home_recent_limit = EXCLUDED.home_recent_limit, \
              home_favorite_limit = EXCLUDED.home_favorite_limit, \
              home_popular_limit = EXCLUDED.home_popular_limit, \
              home_intro_markdown = EXCLUDED.home_intro_markdown, \
+             home_recent_visible = EXCLUDED.home_recent_visible, \
+             home_favorite_visible = EXCLUDED.home_favorite_visible, \
+             home_popular_visible = EXCLUDED.home_popular_visible, \
+             home_recent_position = EXCLUDED.home_recent_position, \
+             home_favorite_position = EXCLUDED.home_favorite_position, \
+             home_popular_position = EXCLUDED.home_popular_position, \
              search_results_per_page = EXCLUDED.search_results_per_page, \
-             default_vim_mode = EXCLUDED.default_vim_mode, updated_at = NOW()",
+             default_new_note_is_private = EXCLUDED.default_new_note_is_private, updated_at = NOW()",
             &[
+                &settings.home_title,
                 &settings.home_recent_limit,
                 &settings.home_favorite_limit,
                 &settings.home_popular_limit,
                 &settings.home_intro_markdown,
+                &settings.home_recent_visible,
+                &settings.home_favorite_visible,
+                &settings.home_popular_visible,
+                &settings.home_recent_position,
+                &settings.home_favorite_position,
+                &settings.home_popular_position,
                 &settings.search_results_per_page,
-                &settings.default_vim_mode,
+                &settings.default_new_note_is_private,
             ],
         )
         .await
@@ -84,12 +103,19 @@ pub async fn get_note_stats(pool: &DbPool, include_private: bool) -> Result<Note
 
 fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
     AppSettings {
+        home_title: row.get("home_title"),
         home_recent_limit: row.get("home_recent_limit"),
         home_favorite_limit: row.get("home_favorite_limit"),
         home_popular_limit: row.get("home_popular_limit"),
         home_intro_markdown: row.get("home_intro_markdown"),
+        home_recent_visible: row.get("home_recent_visible"),
+        home_favorite_visible: row.get("home_favorite_visible"),
+        home_popular_visible: row.get("home_popular_visible"),
+        home_recent_position: row.get("home_recent_position"),
+        home_favorite_position: row.get("home_favorite_position"),
+        home_popular_position: row.get("home_popular_position"),
         search_results_per_page: row.get("search_results_per_page"),
-        default_vim_mode: row.get("default_vim_mode"),
+        default_new_note_is_private: row.get("default_new_note_is_private"),
     }
 }
 

@@ -11,6 +11,7 @@ const PAGE_CSS: &str = include_str!("page.css");
 const FAVORITES_CSS: &str = include_str!("favorites.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
 const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
+const SETTINGS_CSS: &str = include_str!("settings.css");
 const SHELL_JS: &str = include_str!("shell.js");
 
 pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
@@ -21,8 +22,8 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
-<title>{title} - kjxlkj</title>
-<link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+<title>{} - kjxlkj</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
 {extra_head}
 <style>{BASE_CSS}
 {CONTENT_CSS}
@@ -34,10 +35,12 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 {PAGE_CSS}
 {FAVORITES_CSS}
 {EDITOR_CSS}
-{EDITOR_EXTRA_CSS}</style>
+{EDITOR_EXTRA_CSS}
+{SETTINGS_CSS}</style>
 </head>
 <body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
-</html>"#
+</html>"#,
+        html_escape(title),
     )
 }
 
@@ -92,6 +95,11 @@ pub fn primary_nav(active: &str, is_admin: bool) -> String {
     ];
     if is_admin {
         links.push(nav_link("/admin", "Dashboard", active == "admin"));
+        links.push(nav_link(
+            "/admin/settings",
+            "Settings",
+            active == "settings",
+        ));
     }
     format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
 }

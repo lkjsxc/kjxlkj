@@ -17,26 +17,31 @@ import {
 
 export { assertInvisibleText, assertNoHorizontalOverflow, assertVisibleText, expectClosedDrawer, openDrawer };
 
-export async function expectPublicRoot(page) {
+export async function expectPublicRoot(
+    page,
+    { title = 'Home', intro = 'Welcome to', sections = ['Popular notes', 'Recently updated', 'Favorites'] } = {}
+) {
     await expectFlatShell(page);
-    await assertVisibleText(page, 'Home');
-    await assertVisibleText(page, 'Welcome to');
-    await assertVisibleText(page, 'Popular notes');
-    await assertVisibleText(page, 'Recently updated');
-    await assertVisibleText(page, 'Favorites');
-    await assertVisibleText(page, 'View more notes');
+    await assertVisibleText(page, title);
+    if (intro) await assertVisibleText(page, intro);
+    for (const section of sections) await assertVisibleText(page, section);
+    for (const hidden of ['Popular notes', 'Recently updated', 'Favorites'].filter((item) => !sections.includes(item))) {
+        assert.equal(await page.getByRole('heading', { name: hidden, exact: true }).count(), 0);
+    }
+    assert.equal(await page.getByRole('link', { name: /View more notes/i }).count(), sections.length);
     await page.getByLabel('Quick search').waitFor({ state: 'visible' });
     await page.getByRole('link', { name: '7d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('link', { name: '30d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('link', { name: '90d', exact: true }).waitFor({ state: 'visible' });
     assert.equal(await page.locator('.stats-grid').count(), 0);
     assert.equal(await page.locator('.page-summary').count(), 0);
-    assert.equal(await page.getByText('All time', { exact: true }).count(), 0);
+    assert.ok(await page.getByText('All time', { exact: true }).count() >= (sections.includes('Popular notes') ? 1 : 0));
     await assertNoHeaderButtons(page);
     if ((await page.evaluate(() => window.innerWidth)) > 900) {
         await assertWideGrid(page);
         await assertGridHeights(page, '.note-grid .note-row');
     }
+    await assertSectionOrder(page, sections);
 }
 
 export async function expectSearchPage(page, hasQueryCard = false) {
@@ -51,6 +56,7 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
     assert.equal(await page.locator('.search-sort .visually-hidden').count(), 1);
     assert.equal(await page.locator('.search-sort span:not(.visually-hidden)').count(), 0);
+    await assertSearchControlsAligned(page);
     await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
@@ -63,24 +69,30 @@ export async function expectAdminDashboard(page) {
     await assertVisibleText(page, 'Popular notes');
     await assertVisibleText(page, 'Recently updated');
     await assertVisibleText(page, 'Favorites');
-    await assertVisibleText(page, 'Home intro Markdown');
-    await assertVisibleText(page, 'Home popular count');
-    await assertVisibleText(page, 'Default Vim mode for editors');
+    await page.getByRole('link', { name: 'Open settings', exact: true }).waitFor({ state: 'visible' });
     await assertVisibleText(page, 'Views total');
-    await assertVisibleText(page, 'This browser');
     await page.locator('[data-favorite-order]').waitFor({ state: 'visible' });
     assert.equal(await page.getByRole('heading', { name: 'Library', exact: true }).count(), 0);
-    assert.equal(
-        await page
-            .getByRole('heading', { name: 'Local editor preferences', exact: true })
-            .count(),
-        0
-    );
+    assert.equal(await page.getByLabel('Home title').count(), 0);
+    assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);
     assert.equal(await page.locator('.page-summary').count(), 0);
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
     await assertCreateActionBelowHome(page);
     await assertSectionOrder(page, ['Settings', 'Popular notes', 'Recently updated', 'Favorites']);
+}
+
+export async function expectSettingsPage(page) {
+    await expectFlatShell(page, ['New note', 'Logout']);
+    await assertVisibleText(page, 'Settings');
+    await page.getByLabel('Home title').waitFor({ state: 'visible' });
+    await page.getByLabel('Home intro Markdown').waitFor({ state: 'visible' });
+    await page.getByLabel('Search page size').waitFor({ state: 'visible' });
+    await page.getByLabel('New notes start private').waitFor({ state: 'visible' });
+    await assertVisibleText(page, 'Home sections');
+    await assertVisibleText(page, 'Defaults');
+    assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);
+    await assertNoHeaderButtons(page);
 }
 
 export async function expectAdminNote(page) {
@@ -118,4 +130,17 @@ async function assertSectionOrder(page, titles) {
     for (let index = 1; index < tops.length; index += 1) {
         assert.ok(tops[index] > tops[index - 1], 'dashboard sections should stack vertically');
     }
+}
+
+async function assertSearchControlsAligned(page) {
+    const metrics = await page.evaluate(() => {
+        const select = document.querySelector('#search-sort');
+        const button = document.querySelector('.search-section button[type="submit"]');
+        if (!select || !button) return null;
+        return {
+            top: Math.abs(select.getBoundingClientRect().top - button.getBoundingClientRect().top),
+            bottom: Math.abs(select.getBoundingClientRect().bottom - button.getBoundingClientRect().bottom),
+        };
+    });
+    assert.ok(metrics && metrics.top <= 1 && metrics.bottom <= 1, 'search sort and button should align vertically');
 }

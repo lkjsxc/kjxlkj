@@ -1,7 +1,9 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListDirection, ListRequest, ListSort};
+use crate::web::db::{
+    self, DbPool, ListDirection, ListRequest, ListScope, ListSort, PopularWindow,
+};
 use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
@@ -13,6 +15,8 @@ pub struct SearchParams {
     pub q: Option<String>,
     pub direction: Option<String>,
     pub sort: Option<String>,
+    pub scope: Option<String>,
+    pub popular_window: Option<String>,
     pub cursor: Option<String>,
     pub limit: Option<i64>,
 }
@@ -37,7 +41,9 @@ pub async fn search_page(
         .map(str::to_string);
     let limit = params.limit.unwrap_or(settings.search_results_per_page);
     let direction = ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref());
-    let sort = ListSort::resolve(params.sort.as_deref(), query.is_some());
+    let scope = ListScope::resolve(params.scope.as_deref());
+    let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
+    let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
     let page = db::list_records(
         &pool,
         &ListRequest {
@@ -45,7 +51,9 @@ pub async fn search_page(
             limit,
             query: query.clone(),
             direction,
+            scope: scope.clone(),
             sort: sort.clone(),
+            popular_window,
             cursor: params.cursor,
         },
     )
@@ -60,7 +68,9 @@ pub async fn search_page(
         page.next_cursor.as_deref(),
         query.as_deref(),
         limit,
+        scope.as_str(),
         sort.as_str(),
+        popular_window.as_str(),
         is_admin,
     )))
 }

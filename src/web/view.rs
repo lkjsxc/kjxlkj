@@ -16,17 +16,16 @@ pub fn popular_index_item(
     show_visibility: bool,
     window: PopularWindow,
 ) -> IndexItem {
-    let mut metrics = Vec::new();
-    if show_visibility {
-        metrics.push(IndexMetric {
+    let metrics = vec![
+        IndexMetric {
             label: window.metric_label().to_string(),
             value: record.popular_views.unwrap_or(0).to_string(),
-        });
-        metrics.push(IndexMetric {
+        },
+        IndexMetric {
             label: "All time".to_string(),
             value: record.record.view_count_total.to_string(),
-        });
-    }
+        },
+    ];
     build_index_item(record, show_visibility, metrics)
 }
 

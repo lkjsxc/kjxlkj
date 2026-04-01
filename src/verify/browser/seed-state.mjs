@@ -5,8 +5,12 @@ export function resetDatabase(databaseUrl) {
         databaseUrl,
         "TRUNCATE app_settings, sessions, record_daily_views, record_revisions, records, admin_user RESTART IDENTITY CASCADE; " +
             "INSERT INTO app_settings " +
-            "(id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, search_results_per_page, default_vim_mode) " +
-            "VALUES (1, 6, 6, 6, $$Welcome to **kjxlkj**. Use Home as the landing space for search, popular notes, and curated favorites.$$ , 20, FALSE)"
+            "(id, home_title, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, " +
+            "home_recent_visible, home_favorite_visible, home_popular_visible, " +
+            "home_recent_position, home_favorite_position, home_popular_position, " +
+            "search_results_per_page, default_new_note_is_private) " +
+            "VALUES (1, 'Home', 5, 5, 5, $$Welcome to **kjxlkj**. Use Home as the landing space for search, popular notes, and curated favorites.$$," +
+            " TRUE, TRUE, TRUE, 2, 3, 1, 20, TRUE)"
     );
 }
 

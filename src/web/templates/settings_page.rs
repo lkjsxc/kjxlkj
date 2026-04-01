@@ -1,0 +1,128 @@
+//! Dedicated admin settings template
+
+use super::index::list_rail;
+use super::layout::{base, html_escape, shell_page};
+use super::sections::{page_header, section};
+use crate::web::db::AppSettings;
+
+const ACTIONS_JS: &str = include_str!("note_actions.js");
+
+pub fn settings_page(settings: &AppSettings) -> String {
+    let content = format!(
+        "{}<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
+        page_header("Settings", None, "settings-head"),
+        home_hero_section(settings),
+        home_sections_section(settings),
+        defaults_section(settings),
+    );
+    base(
+        "Settings",
+        &shell_page(
+            "Admin",
+            &list_rail(
+                "settings",
+                r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#,
+                r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#,
+                true,
+            ),
+            &content,
+            "settings-page",
+        ),
+        "",
+        &format!(r#"<script>{ACTIONS_JS}</script>"#),
+    )
+}
+
+fn home_hero_section(settings: &AppSettings) -> String {
+    section(
+        "Home hero",
+        &format!(
+            r#"<div class="settings-section-grid">
+<label class="form-group settings-wide"><span>Home title</span><input type="text" name="home_title" value="{}" required></label>
+<label class="form-group settings-wide"><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
+</div>"#,
+            html_escape(&settings.home_title),
+            html_escape(&settings.home_intro_markdown),
+        ),
+        "settings-section",
+    )
+}
+
+fn home_sections_section(settings: &AppSettings) -> String {
+    section(
+        "Home sections",
+        &format!(
+            r#"<div class="settings-table">
+<div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Order</span><span>Items</span></div>
+{}{}{}
+</div>"#,
+            section_row(
+                "Popular notes",
+                "home_popular_visible",
+                settings.home_popular_visible,
+                "home_popular_position",
+                settings.home_popular_position,
+                "home_popular_limit",
+                settings.home_popular_limit,
+            ),
+            section_row(
+                "Recently updated",
+                "home_recent_visible",
+                settings.home_recent_visible,
+                "home_recent_position",
+                settings.home_recent_position,
+                "home_recent_limit",
+                settings.home_recent_limit,
+            ),
+            section_row(
+                "Favorites",
+                "home_favorite_visible",
+                settings.home_favorite_visible,
+                "home_favorite_position",
+                settings.home_favorite_position,
+                "home_favorite_limit",
+                settings.home_favorite_limit,
+            ),
+        ),
+        "settings-section",
+    )
+}
+
+fn defaults_section(settings: &AppSettings) -> String {
+    section(
+        "Defaults",
+        &format!(
+            r#"<div class="settings-section-grid">
+<label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
+<label class="check-row check-row-field settings-wide"><input type="checkbox" name="default_new_note_is_private" {}><span>New notes start private</span></label>
+</div>"#,
+            settings.search_results_per_page,
+            if settings.default_new_note_is_private {
+                "checked"
+            } else {
+                ""
+            },
+        ),
+        "settings-section",
+    )
+}
+
+fn section_row(
+    label: &str,
+    visible_name: &str,
+    visible: bool,
+    position_name: &str,
+    position: i64,
+    limit_name: &str,
+    limit: i64,
+) -> String {
+    format!(
+        r#"<label class="settings-row">
+<span class="settings-row-label">{label}</span>
+<span class="settings-row-field settings-row-check"><input type="checkbox" name="{visible_name}" {}></span>
+<span class="settings-row-field"><input type="number" name="{position_name}" min="1" max="3" value="{position}"></span>
+<span class="settings-row-field"><input type="number" name="{limit_name}" min="1" max="24" value="{limit}"></span>
+</label>"#,
+        if visible { "checked" } else { "" },
+    )
+}

@@ -9,7 +9,6 @@ use crate::web::db::Record;
 const EDITOR_CORE_JS: &str = include_str!("editor.js");
 const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
 const EDITOR_UI_JS: &str = include_str!("editor_ui.js");
-const EDITOR_VIM_JS: &str = include_str!("editor_vim.js");
 const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 
@@ -18,7 +17,6 @@ pub fn note_page(
     chrome: &NoteChrome,
     analytics: Option<&NoteAnalytics>,
     is_admin: bool,
-    default_vim_mode: bool,
 ) -> String {
     let content = format!(
         r#"<header class="page-head note-head">
@@ -51,7 +49,7 @@ pub fn note_page(
             "note-page",
         ),
         &editor_head(is_admin),
-        &editor_script(record, chrome, is_admin, default_vim_mode),
+        &editor_script(record, chrome, is_admin),
     )
 }
 
@@ -66,12 +64,7 @@ fn editor_head(is_admin: bool) -> String {
     )
 }
 
-fn editor_script(
-    record: &Record,
-    chrome: &NoteChrome,
-    is_admin: bool,
-    default_vim_mode: bool,
-) -> String {
+fn editor_script(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
     if !is_admin {
         return String::new();
     }
@@ -82,8 +75,6 @@ var currentAlias = {};
 var currentHref = {};
 var isFavorite = {};
 var isPrivate = {};
-var defaultVimMode = {};
-{}
 {}
 {}
 {}
@@ -95,10 +86,8 @@ initEditor();
         serde_json::to_string(&chrome.current_href).unwrap(),
         record.is_favorite,
         record.is_private,
-        default_vim_mode,
         NOTE_ACTIONS_JS,
         EDITOR_UI_JS,
-        EDITOR_VIM_JS,
         EDITOR_CORE_JS,
         EDITOR_SYNC_JS
     )
@@ -144,7 +133,6 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
 <input type="text" id="alias-input" value="{}" placeholder="Optional alias">
 </label>
 <div class="editor-url-card"><small>Canonical URL</small><a href="{}" data-current-url>{}</a></div>
-<div class="editor-url-card"><small>Mode</small><strong data-vim-mode-state>Vim off</strong></div>
 </div>
 <div id="editor-root" class="toast-host"></div>
 <button type="button" id="preview-backdrop" class="editor-preview-backdrop" hidden aria-label="Close preview" onclick="closePreview()"></button>

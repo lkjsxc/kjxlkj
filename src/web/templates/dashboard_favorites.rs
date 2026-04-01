@@ -4,15 +4,17 @@ use super::layout::html_escape;
 use super::model::IndexItem;
 use super::sections::section;
 
-pub fn favorite_order_section(favorites: &[IndexItem]) -> String {
+pub fn favorite_order_section(favorites: &[IndexItem], extra_card: &str) -> String {
     let body = if favorites.is_empty() {
-        r#"<p class="surface-empty favorite-order-empty">No favorites yet.</p>"#.to_string()
+        format!(
+            r#"<p class="surface-empty favorite-order-empty">No favorites yet.</p>{extra_card}"#
+        )
     } else {
         format!(
             r#"<div class="favorite-order-panel">
 <p class="favorite-order-error" data-favorite-order-error aria-live="polite"></p>
 <ol class="favorite-order-list" data-favorite-order>{}</ol>
-</div>"#,
+</div>{extra_card}"#,
             favorites
                 .iter()
                 .map(favorite_item)

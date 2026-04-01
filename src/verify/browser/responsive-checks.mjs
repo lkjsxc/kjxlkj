@@ -27,13 +27,10 @@ export async function captureCompactScreens(browser, note, desktopFont) {
 
     await login(page);
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
-    await page.locator('#local-vim-mode').selectOption('off');
-    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'All history');
-    await assertVisibleText(page, 'Vim off');
     await expectClosedDrawer(page);
     await capture(page, 'compact-admin-note.png');
     await openPreview(page);

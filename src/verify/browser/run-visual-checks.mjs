@@ -7,9 +7,11 @@ import {
     expectGuestNote,
     expectPublicRoot,
     expectSearchPage,
+    expectSettingsPage,
 } from './assertions.mjs';
-import { verifyFavoriteReorder } from './dashboard-checks.mjs';
+import { applySettingsScenario, verifyFavoriteReorder } from './dashboard-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
+import { assertAdminHomeConfiguration, assertHomeBrowseLinks, popularTitles } from './home-checks.mjs';
 import { captureCompactScreens } from './responsive-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
@@ -26,13 +28,11 @@ async function main() {
         await browser.close();
     }
 
-    console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: [
-        'desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png',
-        'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png',
-        'desktop-login.png',
-        'compact-public-root-closed.png', 'compact-public-root-open.png',
-        'compact-admin-note.png', 'compact-admin-note-preview.png',
-    ] }));
+    console.log(JSON.stringify({
+        command: 'visual-verify',
+        status: 'pass',
+        artifacts: ['desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png', 'desktop-login.png', 'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png', 'compact-admin-note-preview.png'],
+    }));
 }
 
 async function captureAdminScreens(browser, note) {
@@ -44,26 +44,26 @@ async function captureAdminScreens(browser, note) {
     await expectAdminDashboard(page);
     await verifyFavoriteReorder(page);
     await capture(page, 'desktop-admin-dashboard.png');
-    assert.equal(await page.locator('#local-vim-mode').inputValue(), 'default');
-    const defaultVim = page.locator('input[name="default_vim_mode"]').first();
-    assert.equal(await defaultVim.isChecked(), false, 'dashboard should default Vim mode off');
-    await defaultVim.check();
     await Promise.all([
-        page.waitForURL('**/admin'),
-        page.getByRole('button', { name: 'Save settings', exact: true }).click(),
+        page.waitForURL('**/admin/settings'),
+        page.getByRole('link', { name: 'Open settings', exact: true }).click(),
     ]);
-    assert.equal(await page.locator('input[name="default_vim_mode"]').first().isChecked(), true);
-    await verifyUiCreatedDraft(page, true);
+    await expectSettingsPage(page);
+    await applySettingsScenario(page);
 
-    await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
-    await page.locator('#local-vim-mode').selectOption('off');
-    await page.waitForFunction(() => window.localStorage.getItem('kjxlkj.vim-mode') === 'off');
+    await page.goto(`${appUrl}/search`, { waitUntil: 'networkidle' });
+    await expectSearchPage(page, false);
+    assert.equal(await page.locator('.note-grid .note-row').count(), 2);
+    assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
+
+    await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
+    await assertAdminHomeConfiguration(page);
+    await verifyUiCreatedDraft(page, false);
 
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);
-    await assertVisibleText(page, 'Vim off');
-    await verifyEditorFormatting(browser, page, note, false);
+    await verifyEditorFormatting(browser, page, note);
     await capture(page, 'desktop-admin-note.png');
 
     const historyJson = await page.evaluate(async (id) => {
@@ -105,6 +105,7 @@ async function capturePublicScreens(browser, notes) {
     await expectPublicRoot(page);
     assert.equal(await page.getByRole('link', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
     assert.equal((await popularTitles(page))[0], 'Beacon Log');
+    await assertHomeBrowseLinks(page);
     await capture(page, 'desktop-public-root.png');
     await Promise.all([
         page.waitForURL((url) => new URL(url).searchParams.get('popular_window') === '90d'),
@@ -116,8 +117,13 @@ async function capturePublicScreens(browser, notes) {
         page.getByRole('link', { name: '30d', exact: true }).click(),
     ]);
 
-    const browseCard = page.getByRole('link', { name: /View more notes/i }).first();
-    assert.equal(await browseCard.getAttribute('href'), '/search');
+    await page.goto(`${appUrl}/search?scope=favorites`, { waitUntil: 'networkidle' });
+    await expectSearchPage(page, false);
+    assert.equal(await page.locator('#search-sort').inputValue(), 'favorite_position_asc');
+    assert.equal(await page.getByText('Atlas Entry', { exact: true }).count(), 0);
+    await assertVisibleText(page, 'Beacon Log');
+    await assertVisibleText(page, 'Orbit Ledger');
+
     await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);
     await assertVisibleText(page, 'Notes');
@@ -177,16 +183,6 @@ async function capturePublicScreens(browser, notes) {
     await context.close();
     return fontFamily;
 }
-
-async function popularTitles(page) {
-    return page
-        .locator('.section-block.note-section', {
-            has: page.getByRole('heading', { name: 'Popular notes', exact: true }),
-        })
-        .locator('.card-title')
-        .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
-}
-
 main().catch((error) => {
     console.error(error);
     process.exit(1);

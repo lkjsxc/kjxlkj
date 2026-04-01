@@ -33,3 +33,21 @@ export async function verifyFavoriteReorder(page) {
     assert.equal(favoriteTitles[0], 'Beacon Log');
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
 }
+
+export async function applySettingsScenario(page) {
+    assert.equal(await page.locator('input[name="home_popular_limit"]').inputValue(), '5');
+    assert.equal(await page.locator('input[name="home_recent_limit"]').inputValue(), '5');
+    assert.equal(await page.locator('input[name="home_favorite_limit"]').inputValue(), '5');
+    assert.equal(await page.getByLabel('New notes start private').isChecked(), true);
+    await page.getByLabel('Home title').fill('Launchpad');
+    await page.getByLabel('Home intro Markdown').fill('Welcome to **Launchpad**.');
+    await page.locator('input[name="home_favorite_position"]').fill('1');
+    await page.locator('input[name="home_popular_position"]').fill('2');
+    await page.locator('input[name="home_recent_position"]').fill('3');
+    await page.locator('input[name="home_recent_visible"]').uncheck();
+    await page.getByLabel('Search page size').fill('2');
+    await page.getByLabel('New notes start private').uncheck();
+    await Promise.all([page.waitForURL('**/admin/settings'), page.getByRole('button', { name: 'Save settings', exact: true }).click()]);
+    assert.equal(await page.getByLabel('Home title').inputValue(), 'Launchpad');
+    assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
+}

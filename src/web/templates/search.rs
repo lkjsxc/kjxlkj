@@ -13,7 +13,9 @@ pub fn search_page(
     next_cursor: Option<&str>,
     query: Option<&str>,
     limit: i64,
+    scope: &str,
     sort: &str,
+    popular_window: &str,
     is_admin: bool,
 ) -> String {
     let query = query.unwrap_or("").trim();
@@ -26,14 +28,16 @@ pub fn search_page(
     let content = format!(
         "{}{}{}",
         page_header("Search", None, "search-head"),
-        search_section(query, sort, has_query),
+        search_section(query, scope, sort, popular_window, has_query),
         results_section(
             notes,
             previous_cursor,
             next_cursor,
             query,
             limit,
+            scope,
             sort,
+            popular_window,
             has_query,
         ),
     );
@@ -55,7 +59,13 @@ pub fn search_page(
     )
 }
 
-fn search_section(query: &str, sort: &str, has_query: bool) -> String {
+fn search_section(
+    query: &str,
+    scope: &str,
+    sort: &str,
+    popular_window: &str,
+    has_query: bool,
+) -> String {
     let query_card = if has_query {
         format!(
             r#"<div class="search-state-card"><small>Query</small><strong>{}</strong></div>"#,
@@ -71,6 +81,8 @@ fn search_section(query: &str, sort: &str, has_query: bool) -> String {
 <label for="search-page-input" class="visually-hidden">Search notes</label>
 <div class="search-grid {}">
 <input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
+<input type="hidden" name="popular_window" value="{}">
+<input type="hidden" name="scope" value="{}">
 {}
 <label class="form-group search-sort" for="search-sort">
 <span class="visually-hidden">Sort</span>
@@ -81,8 +93,10 @@ fn search_section(query: &str, sort: &str, has_query: bool) -> String {
 </form>"#,
             if has_query { "has-query" } else { "no-query" },
             html_escape(query),
+            popular_window,
+            scope,
             query_card,
-            sort_options(sort, has_query),
+            sort_options(sort, has_query, scope),
         ),
         "search-section",
     )
@@ -94,7 +108,9 @@ fn results_section(
     next_cursor: Option<&str>,
     query: &str,
     limit: i64,
+    scope: &str,
     sort: &str,
+    popular_window: &str,
     has_query: bool,
 ) -> String {
     let cards = if notes.is_empty() {
@@ -118,15 +134,21 @@ fn results_section(
                 "/search",
                 previous_cursor,
                 next_cursor,
-                &[("q", query), ("sort", sort), ("limit", &limit.to_string())],
+                &[
+                    ("q", query),
+                    ("scope", scope),
+                    ("sort", sort),
+                    ("popular_window", popular_window),
+                    ("limit", &limit.to_string()),
+                ],
             )
         ),
         "note-section",
     )
 }
 
-fn sort_options(selected: &str, has_query: bool) -> String {
-    sort_catalog(has_query)
+fn sort_options(selected: &str, has_query: bool, scope: &str) -> String {
+    sort_catalog(has_query, scope)
         .into_iter()
         .map(|(value, label)| {
             format!(
@@ -138,7 +160,7 @@ fn sort_options(selected: &str, has_query: bool) -> String {
         .join("")
 }
 
-fn sort_catalog(has_query: bool) -> Vec<(&'static str, &'static str)> {
+fn sort_catalog(has_query: bool, scope: &str) -> Vec<(&'static str, &'static str)> {
     let mut items = vec![
         ("updated_desc", "Recently updated"),
         ("updated_asc", "Oldest updates"),
@@ -146,9 +168,14 @@ fn sort_catalog(has_query: bool) -> Vec<(&'static str, &'static str)> {
         ("created_asc", "Oldest created"),
         ("title_asc", "Title A-Z"),
         ("title_desc", "Title Z-A"),
+        ("popular_desc", "Popular"),
+        ("views_total_desc", "Most viewed"),
     ];
     if has_query {
         items.insert(0, ("relevance", "Relevance"));
+    }
+    if scope == "favorites" {
+        items.push(("favorite_position_asc", "Favorite order"));
     }
     items
 }

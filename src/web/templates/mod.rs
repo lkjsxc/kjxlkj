@@ -19,6 +19,7 @@ mod search;
 #[cfg(test)]
 mod search_tests;
 mod sections;
+mod settings_page;
 
 pub use auth::{login_page, setup_page};
 pub use dashboard::admin_page;
@@ -28,3 +29,4 @@ pub use layout::{not_found_page, render_time};
 pub use model::{HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome};
 pub use note::note_page;
 pub use search::search_page;
+pub use settings_page::settings_page;

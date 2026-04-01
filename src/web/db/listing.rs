@@ -2,7 +2,7 @@
 
 use super::listing_cursor::decode_cursor;
 use super::listing_queries::{browse_records, search_records, top_records};
-use super::{DbPool, ListedRecord};
+use super::{DbPool, ListScope, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
 pub use super::listing_direction::ListDirection;
@@ -17,7 +17,9 @@ pub struct ListRequest {
     pub limit: i64,
     pub query: Option<String>,
     pub direction: ListDirection,
+    pub scope: ListScope,
     pub sort: ListSort,
+    pub popular_window: PopularWindow,
     pub cursor: Option<String>,
 }
 
@@ -41,7 +43,13 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
     } else {
         ListDirection::Next
     };
-    let cursor = decode_cursor(request.cursor.as_deref(), query, &request.sort)?;
+    let cursor = decode_cursor(
+        request.cursor.as_deref(),
+        query,
+        &request.sort,
+        &request.scope,
+        request.popular_window,
+    )?;
     if let Some(query) = query {
         search_records(
             pool,
@@ -49,7 +57,9 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
             limit,
             query,
             &direction,
+            &request.scope,
             &request.sort,
+            request.popular_window,
             cursor.as_ref(),
         )
         .await
@@ -59,7 +69,9 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
             request.include_private,
             limit,
             &direction,
+            &request.scope,
             &request.sort,
+            request.popular_window,
             cursor.as_ref(),
         )
         .await
@@ -89,7 +101,9 @@ impl Default for ListRequest {
             limit: DEFAULT_LIMIT,
             query: None,
             direction: ListDirection::Next,
+            scope: ListScope::All,
             sort: ListSort::UpdatedDesc,
+            popular_window: PopularWindow::Days30,
             cursor: None,
         }
     }

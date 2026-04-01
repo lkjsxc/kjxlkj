@@ -22,7 +22,9 @@ fn search_page_browses_without_query() {
         Some("cursor"),
         None,
         20,
+        "all",
         "updated_desc",
+        "30d",
         false,
     );
     assert!(html.contains(">Notes<"));
@@ -43,7 +45,9 @@ fn search_page_keeps_query_and_sort_in_form() {
         Some("cursor"),
         Some("orbit"),
         20,
+        "all",
         "relevance",
+        "30d",
         true,
     );
     assert!(html.contains("name=\"q\" value=\"orbit\""));

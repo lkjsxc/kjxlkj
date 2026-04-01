@@ -93,7 +93,7 @@
 
     .editor-shell.preview-open.preview-compact .toastui-editor-md-preview {
         position: fixed;
-        inset: 92px 16px 16px;
+        inset: var(--preview-top, 92px) 16px 16px;
         z-index: 85;
         width: auto !important;
         min-height: 0;

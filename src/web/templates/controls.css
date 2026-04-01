@@ -120,19 +120,24 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
-    align-items: end;
+    align-items: stretch;
 }
 
 .search-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(180px, 220px) minmax(180px, 220px) auto;
     gap: 10px;
-    align-items: end;
+    align-items: stretch;
 }
 
 .search-sort,
 .local-setting-group {
     margin: 0;
+}
+
+.search-sort {
+    display: grid;
+    align-content: stretch;
 }
 
 .settings-wide {
@@ -157,6 +162,7 @@
 .search-grid .btn {
     min-height: 48px;
     margin: 0;
+    align-self: stretch;
 }
 
 .error,

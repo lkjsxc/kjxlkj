@@ -1,0 +1,89 @@
+.settings-page,
+.settings-stack,
+.settings-form,
+.settings-section-grid,
+.settings-table {
+    display: grid;
+}
+
+.settings-page,
+.settings-stack,
+.settings-section-grid,
+.settings-table {
+    gap: 12px;
+}
+
+.settings-form {
+    width: 100%;
+    gap: 14px;
+}
+
+.settings-section-grid,
+.settings-summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.settings-summary-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.settings-summary-card {
+    min-height: 74px;
+    padding: 10px 12px;
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) 100px 100px 100px;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel-2);
+}
+
+.settings-row-head {
+    padding: 0 12px;
+    border: 0;
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.settings-row-label {
+    font-weight: 600;
+}
+
+.settings-row-check {
+    display: flex;
+    justify-content: center;
+}
+
+.settings-row-field input {
+    text-align: center;
+}
+
+.settings-submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    .settings-row,
+    .settings-row-head {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .settings-row-label {
+        grid-column: 1 / -1;
+    }
+
+    .settings-submit-row .btn {
+        width: 100%;
+    }
+}

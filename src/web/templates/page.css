@@ -41,6 +41,18 @@
     margin-bottom: 4px;
 }
 
+.home-page .search-section,
+.home-page .note-section,
+.dashboard-page .note-section {
+    gap: 14px;
+}
+
+.home-page .search-row,
+.home-page .note-grid,
+.dashboard-page .note-grid {
+    gap: 12px;
+}
+
 .page-title-stack h1 {
     font-size: clamp(1.72rem, 1.45rem + 1.1vw, 2.15rem);
     line-height: 1.08;

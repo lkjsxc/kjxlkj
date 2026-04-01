@@ -78,7 +78,6 @@ function createEditor(root) {
     window.editorInstance = editorState.editor;
     editorState.editor.on('change', onEditorInput);
     setPreviewEnabled(true);
-    configureVimMode();
     syncPreviewMode();
     focusEditor();
 }
@@ -91,7 +90,6 @@ function enableFallback(root) {
     if (!editorState.fallbackField) return;
     editorState.fallbackField.hidden = false;
     editorState.fallbackField.addEventListener('input', onEditorInput);
-    configureVimMode();
     requestAnimationFrame(function () { editorState.fallbackField.focus(); });
 }
 
@@ -126,4 +124,15 @@ function currentBody() {
         editorState.sourceField.value = editorState.fallbackField.value;
     }
     return editorState.sourceField ? editorState.sourceField.value : '';
+}
+
+function normalizeAliasValue(value) {
+    var cleaned = value
+        .trim()
+        .toLowerCase()
+        .replace(/[_\s]+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/--+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return cleaned || null;
 }

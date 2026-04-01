@@ -57,7 +57,8 @@ pub async fn create(
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
         body.is_favorite.unwrap_or(false),
-        body.is_private.unwrap_or(true),
+        body.is_private
+            .unwrap_or(db::get_settings(&pool).await?.default_new_note_is_private),
     )
     .await?;
     Ok(HttpResponse::Created().json(note_payload(&pool, record).await?))

@@ -37,7 +37,7 @@ fn sample_chrome() -> NoteChrome {
 
 #[test]
 fn guest_note_page_hides_editor() {
-    let html = note_page(&sample_record(), &sample_chrome(), None, false, false);
+    let html = note_page(&sample_record(), &sample_chrome(), None, false);
     assert!(html.contains("shell-rail"));
     assert!(!html.contains("editor-root"));
 }
@@ -55,12 +55,10 @@ fn admin_note_page_renders_alias_and_favorite_controls() {
             last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
         }),
         true,
-        true,
     );
     assert!(html.contains("favorite-toggle"));
     assert!(html.contains("alias-input"));
     assert!(html.contains("preview-toggle"));
-    assert!(html.contains("var defaultVimMode = true;"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("2026-03-26 08:35 UTC"));

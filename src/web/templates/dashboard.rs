@@ -3,7 +3,10 @@
 use super::dashboard_favorites::favorite_order_section;
 use super::index::list_rail;
 use super::layout::{base, html_escape, shell_page};
-use super::list_sections::{note_grid_section, popular_window_switch};
+use super::list_sections::{
+    favorite_browse_card, note_grid_section, popular_browse_card, popular_window_switch,
+    recent_browse_card,
+};
 use super::model::IndexItem;
 use super::sections::{page_header, section};
 use crate::web::db::{AppSettings, NoteStats, PopularWindow};
@@ -30,7 +33,7 @@ pub fn admin_page(
             "No popular notes yet.",
             "note-section",
             Some(&popular_window_switch("/admin", window)),
-            None,
+            Some(popular_browse_card(window)),
         ),
         note_grid_section(
             "Recently updated",
@@ -38,9 +41,9 @@ pub fn admin_page(
             "No notes yet.",
             "note-section",
             None,
-            None,
+            Some(recent_browse_card()),
         ),
-    ) + &favorite_order_section(favorites);
+    ) + &favorite_order_section(favorites, &favorite_browse_card());
     base(
         "Dashboard",
         &shell_page(
@@ -81,36 +84,38 @@ fn settings_panel(settings: &AppSettings) -> String {
     section(
         "Settings",
         &format!(
-            r#"<form class="settings-grid" method="POST" action="/admin/settings">
-<label class="form-group"><span>Home recent count</span><input type="number" name="home_recent_limit" min="1" max="24" value="{}"></label>
-<label class="form-group"><span>Home favorite count</span><input type="number" name="home_favorite_limit" min="1" max="24" value="{}"></label>
-<label class="form-group"><span>Home popular count</span><input type="number" name="home_popular_limit" min="1" max="24" value="{}"></label>
-<label class="form-group settings-wide"><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="6" placeholder="Optional homepage introduction">{}</textarea></label>
-<label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
-<label class="check-row check-row-field"><input type="checkbox" name="default_vim_mode" {}><span>Default Vim mode for editors</span></label>
-<button type="submit" class="btn btn-primary">Save settings</button>
-</form>
-<label class="form-group local-setting-group" for="local-vim-mode">
-<span>This browser</span>
-<select id="local-vim-mode" data-local-setting="vim-mode">
-<option value="default">Follow dashboard default</option>
-<option value="on">Always enable Vim mode</option>
-<option value="off">Always disable Vim mode</option>
-</select>
-</label>"#,
-            settings.home_recent_limit,
-            settings.home_favorite_limit,
-            settings.home_popular_limit,
-            html_escape(&settings.home_intro_markdown),
-            settings.search_results_per_page,
-            if settings.default_vim_mode {
-                "checked"
+            r#"<div class="settings-summary-grid">
+<article class="surface settings-summary-card"><small>Home title</small><strong>{}</strong></article>
+<article class="surface settings-summary-card"><small>New notes</small><strong>{}</strong></article>
+<article class="surface settings-summary-card"><small>Search page size</small><strong>{}</strong></article>
+<article class="surface settings-summary-card"><small>Home order</small><strong>{}</strong></article>
+</div>
+<a href="/admin/settings" class="btn btn-primary">Open settings</a>"#,
+            html_escape(&settings.home_title),
+            if settings.default_new_note_is_private {
+                "Private by default"
             } else {
-                ""
+                "Public by default"
             },
+            settings.search_results_per_page,
+            home_order(settings),
         ),
         "settings-section",
     )
+}
+
+fn home_order(settings: &AppSettings) -> String {
+    let mut items = vec![
+        (settings.home_popular_position, "Popular"),
+        (settings.home_recent_position, "Recent"),
+        (settings.home_favorite_position, "Favorites"),
+    ];
+    items.sort_by_key(|(position, _)| *position);
+    items
+        .into_iter()
+        .map(|(_, label)| label)
+        .collect::<Vec<_>>()
+        .join(" / ")
 }
 
 fn stat_card(label: &str, value: i64) -> String {

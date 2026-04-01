@@ -47,14 +47,49 @@ pub fn note_grid_section(
 }
 
 pub fn browse_card() -> String {
-    r#"<a href="/search" class="index-card note-row note-row-action">
+    view_more_card(
+        "/search",
+        "View more notes",
+        "Browse all visible notes with search, sorting, and page navigation.",
+        "Search",
+    )
+}
+
+pub fn recent_browse_card() -> String {
+    browse_card()
+}
+
+pub fn favorite_browse_card() -> String {
+    view_more_card(
+        "/search?scope=favorites",
+        "View more notes",
+        "Browse favorites in favorite order with search and page navigation.",
+        "Favorites",
+    )
+}
+
+pub fn popular_browse_card(window: PopularWindow) -> String {
+    view_more_card(
+        &format!(
+            "/search?sort=popular_desc&popular_window={}",
+            window.as_str()
+        ),
+        "View more notes",
+        "Browse more popularity-ranked notes in the current rolling window.",
+        window.as_str(),
+    )
+}
+
+pub fn view_more_card(href: &str, title: &str, summary: &str, meta: &str) -> String {
+    format!(
+        r#"<a href="{href}" class="index-card note-row note-row-action">
 <div class="card-body">
-<p class="card-title">View more notes</p>
-<p class="card-summary">Browse all visible notes with search, sorting, and page navigation.</p>
+<p class="card-title">{title}</p>
+<p class="card-summary">{summary}</p>
 </div>
-<div class="card-meta"><small><span>Open</span>Search</small></div>
+<div class="card-meta"><small><span>Open</span>{meta}</small></div>
 </a>"#
-        .to_string()
+    )
 }
 
 pub fn popular_window_switch(path: &str, window: PopularWindow) -> String {
