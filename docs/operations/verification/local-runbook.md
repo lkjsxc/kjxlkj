@@ -49,7 +49,9 @@ Expected:
 
 - HTML contains the shared shell rail
 - HTML contains homepage sections rather than one bare browse list
+- homepage may include intro Markdown below `Home`
 - homepage contains no stats block
+- homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
 - homepage includes a browse-action card that points to `/search`
 - homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
@@ -74,6 +76,7 @@ Expected:
 - HTML contains the search form in the main pane
 - non-empty queries show a query display near the search input and sort control
 - HTML contains sort controls in the main pane
+- HTML does not contain a visible `Sort` label
 - HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
@@ -88,14 +91,16 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 Expected:
 
 - HTML contains stats and settings blocks
+- HTML contains a popular-notes block
 - HTML contains recent and favorite note rows
-- recent, favorite, and settings sections stack vertically
+- popular, recent, favorite, and settings sections stack vertically
 - HTML does not contain a library block
 - `New note` remains in the rail
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
-- settings include default Vim mode and browser-local Vim override controls
+- settings include homepage intro Markdown, homepage popular count, default Vim mode, and browser-local Vim override controls
 - dashboard favorites use persistent favorite order rather than updated time
+- dashboard exposes note-view analytics
 
 ## Verify Admin Note Shell
 
@@ -114,6 +119,7 @@ Expected:
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
 - HTML hides `Saving` / `Saved`
 - HTML references local editor assets rather than an external editor CDN
+- HTML contains note-view analytics metadata for admins
 - preview starts closed
 - no repeated save requests occur after the page becomes idle without further edits
 
@@ -159,6 +165,8 @@ Expected:
 - desktop screenshots pass home/search/admin/note assertions
 - compact screenshots pass closed and open drawer assertions
 - iPhone-width or equivalent compact screenshots confirm font consistency
+- homepage popular window switching works at runtime
+- the icon asset is linked in HTML and renders in shell branding
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
 - the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`

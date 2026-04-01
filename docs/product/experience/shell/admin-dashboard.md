@@ -10,7 +10,7 @@
 - The persistent shell rail remains visible.
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
-- Main content starts with compact stats, then stacked `Settings`, `Recently updated`, and `Favorites` sections.
+- Main content starts with compact stats, then stacked `Settings`, `Popular notes`, `Recently updated`, and `Favorites` sections.
 - Dashboard spacing should stay tighter than the early tall-card builds.
 - The dashboard does not include the full note library.
 - The page header does not show `Admin browse`.
@@ -19,8 +19,10 @@
 ## Main Blocks
 
 - Statistics cards for total, public/private split, favorites, and current month/year activity.
-- Settings form for global defaults, including default Vim mode.
+- Statistics also expose note-view activity totals and recent popularity context.
+- Settings form for global defaults, including homepage intro copy, homepage popular-note count, and default Vim mode.
 - Browser-local Vim override controls.
+- Popular notes block with a server-driven `7d` / `30d` / `90d` selector.
 - Recent notes block.
 - Favorite notes block with a full reorderable admin list of all favorites.
 

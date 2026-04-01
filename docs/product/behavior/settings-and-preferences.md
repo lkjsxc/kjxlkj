@@ -4,7 +4,7 @@
 
 - Global app settings are stored in PostgreSQL.
 - Admin dashboard owns the canonical settings form.
-- Global settings include homepage recent-note count, homepage favorite count, default search page size, and default Vim mode.
+- Global settings include homepage recent-note count, homepage favorite count, homepage popular-note count, homepage intro Markdown, default search page size, and default Vim mode.
 - Global settings affect HTML routes immediately after a successful save.
 
 ## Local Preferences
@@ -22,5 +22,7 @@
 
 - Homepage recent-note count defaults to `6`.
 - Homepage favorite count defaults to `6`.
+- Homepage popular-note count defaults to `6`.
+- Homepage intro Markdown defaults to empty.
 - Default search page size defaults to `20`.
 - Default Vim mode defaults to `false`.

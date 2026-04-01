@@ -32,6 +32,7 @@
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
 - Search query state may be displayed beside sort only when `q` is non-empty.
+- Search sort keeps an accessible label through semantics rather than a visible helper word.
 
 ## Section Chrome
 

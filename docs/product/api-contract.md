@@ -14,6 +14,11 @@ The system manages `note` resources.
   "is_favorite": true,
   "favorite_position": 2,
   "is_private": true,
+  "view_count_total": 18,
+  "view_count_7d": 4,
+  "view_count_30d": 9,
+  "view_count_90d": 12,
+  "last_viewed_at": "2026-04-01T08:35:00Z",
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
 }
@@ -27,6 +32,11 @@ The system manages `note` resources.
 - `is_favorite`: Boolean. Default `false`.
 - `favorite_position`: Nullable positive integer. Present when the note is favorited.
 - `is_private`: Boolean. Default `true`.
+- `view_count_total`: Lifetime successful note-page view count.
+- `view_count_7d`: Rolling 7-day view count.
+- `view_count_30d`: Rolling 30-day view count.
+- `view_count_90d`: Rolling 90-day view count.
+- `last_viewed_at`: Nullable UTC RFC3339 timestamp for the last counted note view.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
 
@@ -53,6 +63,8 @@ The system manages `note` resources.
 - Created time is the secondary identity cue in lists and note chrome.
 - Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
+- Homepage supports optional admin-authored intro Markdown below the page title.
+- Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.
 

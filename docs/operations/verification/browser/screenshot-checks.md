@@ -22,6 +22,7 @@ docker compose --profile verify run --rm visual-verify
 ## Required Assertions
 
 - Text-first actions remain readable and non-flashy.
+- Desktop homepage spacing remains as restrained as compact homepage spacing.
 - Visible timestamps are browser-local 24-hour strings.
 - Raw note IDs are not shown in normal UI.
 - Rail search input does not appear.
@@ -38,7 +39,9 @@ docker compose --profile verify run --rm visual-verify
 - Compact admin note pages do not overflow horizontally.
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
+- Search sort remains functional without a visible `Sort` label.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
+- The shell brand renders the SVG icon cleanly on desktop and compact headers.
 - Opening an admin note should leave focus inside the visible editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
@@ -51,8 +54,11 @@ docker compose --profile verify run --rm visual-verify
 - Search exposes a query display card near sort only when `q` is non-empty.
 - Empty-query `/search` does not render a `Query` or `All notes` state card.
 - Dashboard does not render a library block.
-- Dashboard stacks `Settings`, `Recently updated`, and `Favorites`.
+- Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard settings cover default Vim mode and browser-local Vim override behavior.
+- Dashboard and admin note surfaces expose note-view analytics.
 - Markdown links are visibly accented in guest content and preview.
 - Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
+- Homepage intro Markdown renders when configured.
+- Homepage popular-window switching updates the visible popular list.

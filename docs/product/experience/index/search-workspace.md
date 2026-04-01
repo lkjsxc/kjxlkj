@@ -14,6 +14,7 @@
 - The main pane owns the actual query form and result list.
 - The search controls are one aligned row on wide screens: input, optional query display, sort, and submit action.
 - The active query is echoed in a compact read-only card near `Sort` only when `q` is non-empty.
+- The sort control keeps an accessible label, but the visible `Sort` text is omitted.
 - The page does not show a top-right `Browse notes` or auth action cluster.
 - Explanatory helper cards such as `Search public titles and bodies.` are omitted.
 - Empty-query state should still feel like a full notes page rather than an empty helper page.

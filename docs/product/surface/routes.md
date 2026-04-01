@@ -26,7 +26,7 @@
 ## Home, Admin, and Search Pages
 
 - `GET /`:
-  - returns auth-aware homepage shell
+  - returns auth-aware homepage shell using optional `popular_window`
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
@@ -38,6 +38,8 @@
 
 ## Asset Delivery
 
+- `GET /assets/icon.svg`:
+  - returns the canonical site icon SVG
 - `GET /assets/vendor/toastui/3.2.2/toastui-editor.min.css`:
   - returns vendored editor CSS
 - `GET /assets/vendor/toastui/3.2.2/toastui-editor-dark.min.css`:
@@ -50,6 +52,7 @@
 - `GET /{ref}`:
   - note not found: `404`
   - note is private and no session: `404`
+  - canonical redirect responses do not count as note views
   - accessible note: `200` HTML note page with Markdown editor for admins
 - `GET /{ref}/history`:
   - note not found: `404`
