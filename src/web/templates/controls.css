@@ -138,6 +138,16 @@
 .search-sort {
     display: grid;
     align-content: stretch;
+    align-self: stretch;
+}
+
+.search-form .search-sort {
+    margin: 0;
+}
+
+.search-sort select {
+    min-height: 48px;
+    height: 100%;
 }
 
 .settings-wide {

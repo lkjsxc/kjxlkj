@@ -51,11 +51,6 @@ async function captureAdminScreens(browser, note) {
     await expectSettingsPage(page);
     await applySettingsScenario(page);
 
-    await page.goto(`${appUrl}/search`, { waitUntil: 'networkidle' });
-    await expectSearchPage(page, false);
-    assert.equal(await page.locator('.note-grid .note-row').count(), 2);
-    assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
-
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await assertAdminHomeConfiguration(page);
     await verifyUiCreatedDraft(page, false);

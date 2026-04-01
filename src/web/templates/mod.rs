@@ -28,5 +28,5 @@ pub use home::home_page;
 pub use layout::{not_found_page, render_time};
 pub use model::{HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome};
 pub use note::note_page;
-pub use search::search_page;
+pub use search::{search_page, SearchView};
 pub use settings_page::settings_page;

@@ -36,14 +36,14 @@ pub fn settings_page(settings: &AppSettings) -> String {
 fn home_hero_section(settings: &AppSettings) -> String {
     section(
         "Home hero",
-        &format!(
+        &surface_panel(&format!(
             r#"<div class="settings-section-grid">
 <label class="form-group settings-wide"><span>Home title</span><input type="text" name="home_title" value="{}" required></label>
 <label class="form-group settings-wide"><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
 </div>"#,
             html_escape(&settings.home_title),
             html_escape(&settings.home_intro_markdown),
-        ),
+        )),
         "settings-section",
     )
 }
@@ -51,7 +51,7 @@ fn home_hero_section(settings: &AppSettings) -> String {
 fn home_sections_section(settings: &AppSettings) -> String {
     section(
         "Home sections",
-        &format!(
+        &surface_panel(&format!(
             r#"<div class="settings-table">
 <div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Order</span><span>Items</span></div>
 {}{}{}
@@ -83,7 +83,7 @@ fn home_sections_section(settings: &AppSettings) -> String {
                 "home_favorite_limit",
                 settings.home_favorite_limit,
             ),
-        ),
+        )),
         "settings-section",
     )
 }
@@ -91,7 +91,7 @@ fn home_sections_section(settings: &AppSettings) -> String {
 fn defaults_section(settings: &AppSettings) -> String {
     section(
         "Defaults",
-        &format!(
+        &surface_panel(&format!(
             r#"<div class="settings-section-grid">
 <label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
 <label class="check-row check-row-field settings-wide"><input type="checkbox" name="default_new_note_is_private" {}><span>New notes start private</span></label>
@@ -102,7 +102,7 @@ fn defaults_section(settings: &AppSettings) -> String {
             } else {
                 ""
             },
-        ),
+        )),
         "settings-section",
     )
 }
@@ -125,4 +125,8 @@ fn section_row(
 </label>"#,
         if visible { "checked" } else { "" },
     )
+}
+
+fn surface_panel(body: &str) -> String {
+    format!(r#"<div class="surface settings-panel">{body}</div>"#)
 }

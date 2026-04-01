@@ -45,9 +45,14 @@ export async function applySettingsScenario(page) {
     await page.locator('input[name="home_popular_position"]').fill('2');
     await page.locator('input[name="home_recent_position"]').fill('3');
     await page.locator('input[name="home_recent_visible"]').uncheck();
-    await page.getByLabel('Search page size').fill('2');
     await page.getByLabel('New notes start private').uncheck();
-    await Promise.all([page.waitForURL('**/admin/settings'), page.getByRole('button', { name: 'Save settings', exact: true }).click()]);
+    const responsePromise = page.waitForResponse((response) => {
+        const url = new URL(response.url());
+        return url.pathname === '/admin/settings' && response.request().method() === 'POST';
+    });
+    await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+    assert.equal((await responsePromise).status(), 303);
+    await page.waitForLoadState('networkidle');
     assert.equal(await page.getByLabel('Home title').inputValue(), 'Launchpad');
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
 }

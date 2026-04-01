@@ -7,20 +7,22 @@ use super::sections::{page_header, section};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
-pub fn search_page(
-    notes: &[IndexItem],
-    previous_cursor: Option<&str>,
-    next_cursor: Option<&str>,
-    query: Option<&str>,
-    limit: i64,
-    scope: &str,
-    sort: &str,
-    popular_window: &str,
-    is_admin: bool,
-) -> String {
-    let query = query.unwrap_or("").trim();
+pub struct SearchView<'a> {
+    pub notes: &'a [IndexItem],
+    pub previous_cursor: Option<&'a str>,
+    pub next_cursor: Option<&'a str>,
+    pub query: Option<&'a str>,
+    pub limit: i64,
+    pub scope: &'a str,
+    pub sort: &'a str,
+    pub popular_window: &'a str,
+    pub is_admin: bool,
+}
+
+pub fn search_page(view: SearchView<'_>) -> String {
+    let query = view.query.unwrap_or("").trim();
     let has_query = !query.is_empty();
-    let extra_script = if is_admin {
+    let extra_script = if view.is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
     } else {
         String::new()
@@ -28,28 +30,18 @@ pub fn search_page(
     let content = format!(
         "{}{}{}",
         page_header("Search", None, "search-head"),
-        search_section(query, scope, sort, popular_window, has_query),
-        results_section(
-            notes,
-            previous_cursor,
-            next_cursor,
-            query,
-            limit,
-            scope,
-            sort,
-            popular_window,
-            has_query,
-        ),
+        search_section(query, view.scope, view.sort, view.popular_window, has_query),
+        results_section(&view, query, has_query),
     );
     base(
         "Search",
         &shell_page(
-            if is_admin { "Admin" } else { "Guest" },
+            if view.is_admin { "Admin" } else { "Guest" },
             &list_rail(
                 "search",
-                rail_primary_action(is_admin),
-                rail_actions(is_admin),
-                is_admin,
+                rail_primary_action(view.is_admin),
+                rail_actions(view.is_admin),
+                view.is_admin,
             ),
             &content,
             "index-layout",
@@ -102,18 +94,8 @@ fn search_section(
     )
 }
 
-fn results_section(
-    notes: &[IndexItem],
-    previous_cursor: Option<&str>,
-    next_cursor: Option<&str>,
-    query: &str,
-    limit: i64,
-    scope: &str,
-    sort: &str,
-    popular_window: &str,
-    has_query: bool,
-) -> String {
-    let cards = if notes.is_empty() {
+fn results_section(view: &SearchView<'_>, query: &str, has_query: bool) -> String {
+    let cards = if view.notes.is_empty() {
         format!(
             r#"<p class="surface-empty">{}</p>"#,
             if has_query {
@@ -123,7 +105,7 @@ fn results_section(
             }
         )
     } else {
-        notes.iter().map(note_row).collect::<Vec<_>>().join("")
+        view.notes.iter().map(note_row).collect::<Vec<_>>().join("")
     };
     section(
         if has_query { "Results" } else { "Notes" },
@@ -132,14 +114,14 @@ fn results_section(
 {}"#,
             pager(
                 "/search",
-                previous_cursor,
-                next_cursor,
+                view.previous_cursor,
+                view.next_cursor,
                 &[
                     ("q", query),
-                    ("scope", scope),
-                    ("sort", sort),
-                    ("popular_window", popular_window),
-                    ("limit", &limit.to_string()),
+                    ("scope", view.scope),
+                    ("sort", view.sort),
+                    ("popular_window", view.popular_window),
+                    ("limit", &view.limit.to_string()),
                 ],
             )
         ),

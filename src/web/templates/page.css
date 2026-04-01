@@ -78,8 +78,9 @@
 }
 
 .note-grid .note-row {
-    min-height: 208px;
-    height: auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 224px;
+    height: 224px;
 }
 
 .note-grid .card-meta {
@@ -164,6 +165,7 @@
     }
 
     .note-grid .note-row {
-        min-height: 198px;
+        min-height: 214px;
+        height: auto;
     }
 }

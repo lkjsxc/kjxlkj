@@ -22,15 +22,19 @@ pub(super) struct Cursor {
     pub(super) view_count_total: Option<i64>,
 }
 
+pub(super) struct PageCursorContext<'a> {
+    pub(super) query: Option<&'a str>,
+    pub(super) scope: &'a ListScope,
+    pub(super) direction: &'a ListDirection,
+    pub(super) sort: &'a ListSort,
+    pub(super) popular_window: PopularWindow,
+    pub(super) has_cursor: bool,
+}
+
 pub(super) fn page_from_rows(
     mut rows: Vec<tokio_postgres::Row>,
     limit: i64,
-    query: Option<&str>,
-    scope: &ListScope,
-    direction: &ListDirection,
-    sort: &ListSort,
-    popular_window: PopularWindow,
-    has_cursor: bool,
+    context: &PageCursorContext<'_>,
 ) -> ListPage {
     let has_more = rows.len() as i64 > limit;
     if has_more {
@@ -39,16 +43,34 @@ pub(super) fn page_from_rows(
     let mut entries = rows
         .into_iter()
         .map(|row| PageEntry {
-            cursor: cursor_from_row(&row, query, scope, sort, popular_window),
+            cursor: cursor_from_row(
+                &row,
+                context.query,
+                context.scope,
+                context.sort,
+                context.popular_window,
+            ),
             record: row_to_listed_record(row),
         })
         .collect::<Vec<_>>();
-    if matches!(direction, ListDirection::Prev) {
+    if matches!(context.direction, ListDirection::Prev) {
         entries.reverse();
     }
     ListPage {
-        previous_cursor: edge_cursor(&entries, direction, has_more, has_cursor, true),
-        next_cursor: edge_cursor(&entries, direction, has_more, has_cursor, false),
+        previous_cursor: edge_cursor(
+            &entries,
+            context.direction,
+            has_more,
+            context.has_cursor,
+            true,
+        ),
+        next_cursor: edge_cursor(
+            &entries,
+            context.direction,
+            has_more,
+            context.has_cursor,
+            false,
+        ),
         records: entries.into_iter().map(|entry| entry.record).collect(),
     }
 }

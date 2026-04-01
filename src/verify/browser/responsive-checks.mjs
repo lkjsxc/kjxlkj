@@ -17,7 +17,11 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     const page = await context.newPage();
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
-    await expectPublicRoot(page);
+    await expectPublicRoot(page, {
+        title: 'Launchpad',
+        intro: 'Welcome to Launchpad',
+        sections: ['Favorites', 'Popular notes'],
+    });
     await expectClosedDrawer(page);
     assert.equal(await page.evaluate(() => getComputedStyle(document.body).fontFamily), desktopFont);
     await capture(page, 'compact-public-root-closed.png');

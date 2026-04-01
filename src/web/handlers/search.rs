@@ -58,21 +58,21 @@ pub async fn search_page(
         },
     )
     .await?;
-    Ok(html(templates::search_page(
-        &page
+    Ok(html(templates::search_page(templates::SearchView {
+        notes: &page
             .records
             .iter()
             .map(|record| view::index_item(record, is_admin))
             .collect::<Vec<_>>(),
-        page.previous_cursor.as_deref(),
-        page.next_cursor.as_deref(),
-        query.as_deref(),
+        previous_cursor: page.previous_cursor.as_deref(),
+        next_cursor: page.next_cursor.as_deref(),
+        query: query.as_deref(),
         limit,
-        scope.as_str(),
-        sort.as_str(),
-        popular_window.as_str(),
+        scope: scope.as_str(),
+        sort: sort.as_str(),
+        popular_window: popular_window.as_str(),
         is_admin,
-    )))
+    })))
 }
 
 fn redirect(location: &str) -> HttpResponse {

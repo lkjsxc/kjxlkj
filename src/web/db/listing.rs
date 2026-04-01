@@ -1,7 +1,7 @@
 //! Searchable note listing queries
 
 use super::listing_cursor::decode_cursor;
-use super::listing_queries::{browse_records, search_records, top_records};
+use super::listing_queries::{browse_records, search_records, top_records, ListingQuery};
 use super::{DbPool, ListScope, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
@@ -53,26 +53,13 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
     if let Some(query) = query {
         search_records(
             pool,
-            request.include_private,
-            limit,
-            query,
-            &direction,
-            &request.scope,
-            &request.sort,
-            request.popular_window,
-            cursor.as_ref(),
+            &query_request(request, limit, query, &direction, cursor.as_ref()),
         )
         .await
     } else {
         browse_records(
             pool,
-            request.include_private,
-            limit,
-            &direction,
-            &request.scope,
-            &request.sort,
-            request.popular_window,
-            cursor.as_ref(),
+            &query_request(request, limit, "", &direction, cursor.as_ref()),
         )
         .await
     }
@@ -106,5 +93,24 @@ impl Default for ListRequest {
             popular_window: PopularWindow::Days30,
             cursor: None,
         }
+    }
+}
+
+fn query_request<'a>(
+    request: &'a ListRequest,
+    limit: i64,
+    query: &'a str,
+    direction: &'a ListDirection,
+    cursor: Option<&'a super::listing_cursor::Cursor>,
+) -> ListingQuery<'a> {
+    ListingQuery {
+        include_private: request.include_private,
+        limit,
+        query: (!query.is_empty()).then_some(query),
+        direction,
+        scope: &request.scope,
+        sort: &request.sort,
+        popular_window: request.popular_window,
+        cursor,
     }
 }

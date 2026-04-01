@@ -18,6 +18,12 @@
     gap: 14px;
 }
 
+.settings-panel {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+}
+
 .settings-section-grid,
 .settings-summary-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

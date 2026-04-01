@@ -1,19 +1,24 @@
 use super::listing::{ListDirection, ListPage, ListSort};
-use super::listing_cursor::{page_from_rows, row_to_listed_record, Cursor};
+use super::listing_cursor::{page_from_rows, row_to_listed_record, Cursor, PageCursorContext};
 use super::{DbPool, ListScope, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
+pub(super) struct ListingQuery<'a> {
+    pub(super) include_private: bool,
+    pub(super) limit: i64,
+    pub(super) query: Option<&'a str>,
+    pub(super) direction: &'a ListDirection,
+    pub(super) scope: &'a ListScope,
+    pub(super) sort: &'a ListSort,
+    pub(super) popular_window: PopularWindow,
+    pub(super) cursor: Option<&'a Cursor>,
+}
+
 pub(super) async fn browse_records(
     pool: &DbPool,
-    include_private: bool,
-    limit: i64,
-    direction: &ListDirection,
-    scope: &ListScope,
-    sort: &ListSort,
-    popular_window: PopularWindow,
-    cursor: Option<&Cursor>,
+    request: &ListingQuery<'_>,
 ) -> Result<ListPage, AppError> {
-    let favorite_filter = if scope.favorites_only() {
+    let favorite_filter = if request.scope.favorites_only() {
         "AND r.is_favorite = TRUE"
     } else {
         ""
@@ -30,55 +35,51 @@ pub(super) async fn browse_records(
          SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
          view_count_total, last_viewed_at, created_at, updated_at, preview, popular_views, \
          title_key, rank, fuzzy FROM listed WHERE {} AND {} ORDER BY {} LIMIT $11",
-        popular_window.days(),
-        sort.binding_clause(2),
-        sort.cursor_filter(direction, 2),
-        sort.order_clause(direction)
+        request.popular_window.days(),
+        request.sort.binding_clause(2),
+        request.sort.cursor_filter(request.direction, 2),
+        request.sort.order_clause(request.direction)
     );
     let rows = client(pool)
         .await?
         .query(
             &sql,
             &[
-                &include_private,
-                &cursor.and_then(|item| item.updated_at),
-                &cursor.and_then(|item| item.created_at),
-                &cursor.and_then(|item| item.title_key.as_deref()),
-                &cursor.and_then(|item| item.rank),
-                &cursor.and_then(|item| item.fuzzy),
-                &cursor.map(|item| item.id.as_str()),
-                &cursor.and_then(|item| item.favorite_position),
-                &cursor.and_then(|item| item.popular_views),
-                &cursor.and_then(|item| item.view_count_total),
-                &(limit + 1),
+                &request.include_private,
+                &request.cursor.and_then(|item| item.updated_at),
+                &request.cursor.and_then(|item| item.created_at),
+                &request.cursor.and_then(|item| item.title_key.as_deref()),
+                &request.cursor.and_then(|item| item.rank),
+                &request.cursor.and_then(|item| item.fuzzy),
+                &request.cursor.map(|item| item.id.as_str()),
+                &request.cursor.and_then(|item| item.favorite_position),
+                &request.cursor.and_then(|item| item.popular_views),
+                &request.cursor.and_then(|item| item.view_count_total),
+                &(request.limit + 1),
             ],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(page_from_rows(
         rows,
-        limit,
-        None,
-        scope,
-        direction,
-        sort,
-        popular_window,
-        cursor.is_some(),
+        request.limit,
+        &PageCursorContext {
+            query: None,
+            scope: request.scope,
+            direction: request.direction,
+            sort: request.sort,
+            popular_window: request.popular_window,
+            has_cursor: request.cursor.is_some(),
+        },
     ))
 }
 
 pub(super) async fn search_records(
     pool: &DbPool,
-    include_private: bool,
-    limit: i64,
-    query: &str,
-    direction: &ListDirection,
-    scope: &ListScope,
-    sort: &ListSort,
-    popular_window: PopularWindow,
-    cursor: Option<&Cursor>,
+    request: &ListingQuery<'_>,
 ) -> Result<ListPage, AppError> {
-    let favorite_filter = if scope.favorites_only() {
+    let query = request.query.unwrap_or_default();
+    let favorite_filter = if request.scope.favorites_only() {
         "AND r.is_favorite = TRUE"
     } else {
         ""
@@ -104,41 +105,43 @@ pub(super) async fn search_records(
          SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
          view_count_total, last_viewed_at, created_at, updated_at, preview, popular_views, \
          title_key, rank, fuzzy FROM matched WHERE {} AND {} ORDER BY {} LIMIT $12",
-        popular_window.days(),
-        sort.binding_clause(3),
-        sort.cursor_filter(direction, 3),
-        sort.order_clause(direction)
+        request.popular_window.days(),
+        request.sort.binding_clause(3),
+        request.sort.cursor_filter(request.direction, 3),
+        request.sort.order_clause(request.direction)
     );
     let rows = client(pool)
         .await?
         .query(
             &sql,
             &[
-                &include_private,
+                &request.include_private,
                 &query,
-                &cursor.and_then(|item| item.updated_at),
-                &cursor.and_then(|item| item.created_at),
-                &cursor.and_then(|item| item.title_key.as_deref()),
-                &cursor.and_then(|item| item.rank),
-                &cursor.and_then(|item| item.fuzzy),
-                &cursor.map(|item| item.id.as_str()),
-                &cursor.and_then(|item| item.favorite_position),
-                &cursor.and_then(|item| item.popular_views),
-                &cursor.and_then(|item| item.view_count_total),
-                &(limit + 1),
+                &request.cursor.and_then(|item| item.updated_at),
+                &request.cursor.and_then(|item| item.created_at),
+                &request.cursor.and_then(|item| item.title_key.as_deref()),
+                &request.cursor.and_then(|item| item.rank),
+                &request.cursor.and_then(|item| item.fuzzy),
+                &request.cursor.map(|item| item.id.as_str()),
+                &request.cursor.and_then(|item| item.favorite_position),
+                &request.cursor.and_then(|item| item.popular_views),
+                &request.cursor.and_then(|item| item.view_count_total),
+                &(request.limit + 1),
             ],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(page_from_rows(
         rows,
-        limit,
-        Some(query),
-        scope,
-        direction,
-        sort,
-        popular_window,
-        cursor.is_some(),
+        request.limit,
+        &PageCursorContext {
+            query: Some(query),
+            scope: request.scope,
+            direction: request.direction,
+            sort: request.sort,
+            popular_window: request.popular_window,
+            has_cursor: request.cursor.is_some(),
+        },
     ))
 }
 
