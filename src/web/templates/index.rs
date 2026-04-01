@@ -12,6 +12,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
 </div>
 <div class="card-meta">
 <div class="card-badges">{}</div>
+{}
 <small><span>Created</span>{}</small>
 <small><span>Updated</span>{}</small>
 </div>
@@ -21,6 +22,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
         html_escape(&note.title),
         html_escape(&note.summary),
         card_badges(note),
+        card_metrics(note),
         note.created_at,
         note.updated_at
     )
@@ -111,4 +113,18 @@ fn card_badges(note: &IndexItem) -> String {
         badges.push(format!(r#"<span class="status-pill">{item}</span>"#));
     }
     badges.join("")
+}
+
+fn card_metrics(note: &IndexItem) -> String {
+    note.metrics
+        .iter()
+        .map(|metric| {
+            format!(
+                r#"<small><span>{}</span>{}</small>"#,
+                html_escape(&metric.label),
+                html_escape(&metric.value)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("")
 }

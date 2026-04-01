@@ -1,16 +1,33 @@
-.shell-main,
-.index-layout {
-    padding: 24px 32px 32px;
+.shell-main {
+    display: grid;
+    justify-items: center;
+    padding: 20px 22px 28px;
 }
 
+.page-column,
 .dashboard-page,
 .note-page,
 .history-page,
+.home-page,
 .index-layout,
 .stack,
 .note-list {
     display: grid;
     align-content: start;
+}
+
+.page-column {
+    width: min(100%, 1060px);
+    min-width: 0;
+}
+
+.dashboard-page,
+.note-page,
+.history-page,
+.home-page,
+.index-layout,
+.stack,
+.note-list {
     gap: 12px;
 }
 
@@ -25,7 +42,9 @@
 }
 
 .page-head,
-.page-actions {
+.page-actions,
+.section-head,
+.section-actions {
     display: flex;
     gap: 12px;
     min-width: 0;
@@ -36,9 +55,15 @@
     align-items: flex-start;
 }
 
+.section-head {
+    justify-content: space-between;
+    align-items: baseline;
+}
+
 .page-title-stack,
 .card-body,
 .search-surface,
+.page-intro,
 .page-meta,
 .card-meta {
     display: grid;
@@ -72,6 +97,11 @@
 }
 
 .page-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.section-actions {
     flex-wrap: wrap;
     justify-content: flex-end;
 }
@@ -142,6 +172,25 @@
 
 .note-head {
     align-items: end;
+}
+
+.page-intro {
+    max-width: 78ch;
+}
+
+.note-analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.note-analytics-grid article {
+    display: grid;
+    gap: 4px;
+}
+
+.note-analytics-grid small {
+    color: var(--text-soft);
 }
 
 .title-tags {

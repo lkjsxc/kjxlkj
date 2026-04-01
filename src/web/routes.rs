@@ -30,6 +30,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(login::login_page)
             .service(login::login_submit)
             .service(logout::logout)
+            .service(assets::icon_svg)
             .service(assets::toastui_css)
             .service(assets::toastui_dark_css)
             .service(assets::toastui_js)

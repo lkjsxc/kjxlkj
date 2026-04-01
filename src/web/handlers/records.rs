@@ -2,10 +2,11 @@
 
 use crate::core::{generate_id, normalize_alias, validate_id};
 use crate::error::AppError;
-use crate::web::db::{self, DbPool};
+use crate::web::db::{self, DbPool, NoteViewStats, Record};
 use crate::web::handlers::session;
 use actix_web::{delete, post, put, web, HttpRequest, HttpResponse};
-use serde::Deserialize;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct CreateInput {
@@ -21,6 +22,23 @@ pub struct UpdateInput {
     pub alias: Option<String>,
     pub is_favorite: bool,
     pub is_private: bool,
+}
+
+#[derive(Serialize)]
+struct NotePayload {
+    id: String,
+    alias: Option<String>,
+    body: String,
+    is_favorite: bool,
+    favorite_position: Option<i64>,
+    is_private: bool,
+    view_count_total: i64,
+    view_count_7d: i64,
+    view_count_30d: i64,
+    view_count_90d: i64,
+    last_viewed_at: Option<DateTime<Utc>>,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
 }
 
 #[post("/records")]
@@ -42,7 +60,7 @@ pub async fn create(
         body.is_private.unwrap_or(true),
     )
     .await?;
-    Ok(HttpResponse::Created().json(record))
+    Ok(HttpResponse::Created().json(note_payload(&pool, record).await?))
 }
 
 #[put("/records/{id}")]
@@ -65,7 +83,7 @@ pub async fn update(
     )
     .await?
     {
-        Some(record) => Ok(HttpResponse::Ok().json(record)),
+        Some(record) => Ok(HttpResponse::Ok().json(note_payload(&pool, record).await?)),
         None => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }
 }
@@ -86,6 +104,11 @@ pub async fn remove(
     }
 }
 
+async fn note_payload(pool: &DbPool, record: Record) -> Result<NotePayload, AppError> {
+    let stats = db::get_note_view_stats(pool, &record.id).await?;
+    Ok(NotePayload::from_record(record, stats))
+}
+
 async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
     for _ in 0..10 {
         let id = generate_id();
@@ -96,4 +119,24 @@ async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
     Err(AppError::StorageError(
         "could not generate unique id".to_string(),
     ))
+}
+
+impl NotePayload {
+    fn from_record(record: Record, stats: NoteViewStats) -> Self {
+        Self {
+            id: record.id,
+            alias: record.alias,
+            body: record.body,
+            is_favorite: record.is_favorite,
+            favorite_position: record.favorite_position,
+            is_private: record.is_private,
+            view_count_total: stats.total,
+            view_count_7d: stats.views_7d,
+            view_count_30d: stats.views_30d,
+            view_count_90d: stats.views_90d,
+            last_viewed_at: stats.last_viewed_at,
+            created_at: record.created_at,
+            updated_at: record.updated_at,
+        }
+    }
 }

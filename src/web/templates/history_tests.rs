@@ -12,6 +12,8 @@ fn sample_record() -> Record {
         is_favorite: true,
         favorite_position: Some(1),
         is_private: false,
+        view_count_total: 3,
+        last_viewed_at: None,
         created_at: Utc::now(),
         updated_at: Utc::now(),
     }

@@ -41,10 +41,13 @@
         display: block;
     }
 
-    .shell-main,
-    .index-layout {
+    .shell-main {
         padding: 18px 16px 24px;
         min-width: 0;
+    }
+
+    .page-column {
+        width: 100%;
     }
 
     .page-head {

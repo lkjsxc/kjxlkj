@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { resetDatabase, seedViewAnalytics } from './seed-state.mjs';
 
 export const appUrl = process.env.APP_URL ?? 'http://app:8080';
 const databaseUrl =
@@ -14,7 +14,7 @@ const timezoneId = 'Asia/Tokyo';
 export async function prepareEnvironment() {
     await fs.mkdir(artifactDir, { recursive: true });
     await waitForHealth();
-    resetDatabase();
+    resetDatabase(databaseUrl);
 }
 
 export async function prepareState(browser) {
@@ -35,6 +35,7 @@ export async function prepareState(browser) {
         favorite: true,
     });
 
+    seedViewAnalytics(databaseUrl, { oldest, middle, newest });
     await context.close();
     return {
         oldest: { id: oldest.id, ref: oldest.alias ?? oldest.id, title: 'Atlas Entry' },
@@ -88,22 +89,6 @@ async function createHistoryNote(page) {
         }
     );
     return note;
-}
-
-function resetDatabase() {
-    execFileSync(
-        'psql',
-        [
-            databaseUrl,
-            '-v',
-            'ON_ERROR_STOP=1',
-            '-c',
-            'TRUNCATE app_settings, sessions, record_revisions, records, admin_user RESTART IDENTITY CASCADE; ' +
-                'INSERT INTO app_settings (id, home_recent_limit, home_favorite_limit, search_results_per_page, default_vim_mode) ' +
-                'VALUES (1, 6, 6, 20, FALSE)',
-        ],
-        { stdio: 'inherit' }
-    );
 }
 
 async function waitForHealth() {

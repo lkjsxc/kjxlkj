@@ -46,7 +46,7 @@ pub(super) fn page_from_rows(
     }
 }
 
-pub(super) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
+pub(crate) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
     ListedRecord {
         record: Record {
             id: row.get("id"),
@@ -57,10 +57,13 @@ pub(super) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
             is_favorite: row.get("is_favorite"),
             favorite_position: row.get("favorite_position"),
             is_private: row.get("is_private"),
+            view_count_total: row.get("view_count_total"),
+            last_viewed_at: row.get("last_viewed_at"),
             created_at: row.get("created_at"),
             updated_at: row.get("updated_at"),
         },
         preview: row.get("preview"),
+        popular_views: row.try_get("popular_views").ok(),
     }
 }
 

@@ -41,6 +41,7 @@
 
 .form-group input,
 .form-group select,
+.form-group textarea,
 .search-row input,
 .search-grid input,
 .search-grid select,
@@ -132,6 +133,10 @@
 .search-sort,
 .local-setting-group {
     margin: 0;
+}
+
+.settings-wide {
+    grid-column: 1 / -1;
 }
 
 .search-sort span,

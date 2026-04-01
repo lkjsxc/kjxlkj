@@ -45,6 +45,20 @@
     font-weight: 600;
 }
 
+.brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    flex: none;
+}
+
 .mobile-bar,
 .shell-backdrop {
     display: none;

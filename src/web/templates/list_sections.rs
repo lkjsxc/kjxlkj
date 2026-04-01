@@ -1,0 +1,86 @@
+//! Shared index-style sections
+
+use super::index::note_row;
+use super::model::IndexItem;
+use super::sections::{section, section_with_actions};
+use crate::web::db::PopularWindow;
+
+pub fn quick_search_section() -> String {
+    section(
+        "Quick search",
+        r#"<form class="search-form" method="GET" action="/search">
+<label for="home-search-input" class="visually-hidden">Quick search</label>
+<div class="search-row">
+<input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
+<button type="submit" class="btn btn-primary">Search</button>
+</div>
+</form>"#,
+        "search-section",
+    )
+}
+
+pub fn note_grid_section(
+    title: &str,
+    notes: &[IndexItem],
+    empty: &str,
+    class_name: &str,
+    actions: Option<&str>,
+    extra_card: Option<String>,
+) -> String {
+    let mut cards = if notes.is_empty() {
+        vec![empty_card(empty)]
+    } else {
+        notes.iter().map(note_row).collect::<Vec<_>>()
+    };
+    if let Some(card) = extra_card {
+        cards.push(card);
+    }
+    section_with_actions(
+        title,
+        actions,
+        &format!(
+            r#"<div class="note-list note-grid">{}</div>"#,
+            cards.join("")
+        ),
+        class_name,
+    )
+}
+
+pub fn browse_card() -> String {
+    r#"<a href="/search" class="index-card note-row note-row-action">
+<div class="card-body">
+<p class="card-title">View more notes</p>
+<p class="card-summary">Browse all visible notes with search, sorting, and page navigation.</p>
+</div>
+<div class="card-meta"><small><span>Open</span>Search</small></div>
+</a>"#
+        .to_string()
+}
+
+pub fn popular_window_switch(path: &str, window: PopularWindow) -> String {
+    [
+        PopularWindow::Days7,
+        PopularWindow::Days30,
+        PopularWindow::Days90,
+    ]
+    .into_iter()
+    .map(|item| {
+        format!(
+            r#"<a href="{}?popular_window={}" class="btn{}">{}</a>"#,
+            path,
+            item.as_str(),
+            if item == window { " btn-primary" } else { "" },
+            item.as_str()
+        )
+    })
+    .collect::<Vec<_>>()
+    .join("")
+}
+
+fn empty_card(message: &str) -> String {
+    format!(
+        r#"<article class="index-card note-row note-row-empty">
+<div class="card-body"><p class="surface-empty">{message}</p></div>
+</article>"#
+    )
+}

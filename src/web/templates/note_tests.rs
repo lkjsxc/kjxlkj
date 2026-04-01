@@ -1,4 +1,4 @@
-use super::{note::note_page, NoteChrome};
+use super::{note::note_page, NoteAnalytics, NoteChrome};
 use crate::web::db::Record;
 use chrono::Utc;
 
@@ -12,6 +12,8 @@ fn sample_record() -> Record {
         is_favorite: true,
         favorite_position: Some(1),
         is_private: false,
+        view_count_total: 3,
+        last_viewed_at: None,
         created_at: Utc::now(),
         updated_at: Utc::now(),
     }
@@ -35,18 +37,32 @@ fn sample_chrome() -> NoteChrome {
 
 #[test]
 fn guest_note_page_hides_editor() {
-    let html = note_page(&sample_record(), &sample_chrome(), false, false);
+    let html = note_page(&sample_record(), &sample_chrome(), None, false, false);
     assert!(html.contains("shell-rail"));
     assert!(!html.contains("editor-root"));
 }
 
 #[test]
 fn admin_note_page_renders_alias_and_favorite_controls() {
-    let html = note_page(&sample_record(), &sample_chrome(), true, true);
+    let html = note_page(
+        &sample_record(),
+        &sample_chrome(),
+        Some(&NoteAnalytics {
+            total: 12,
+            views_7d: 4,
+            views_30d: 7,
+            views_90d: 9,
+            last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
+        }),
+        true,
+        true,
+    );
     assert!(html.contains("favorite-toggle"));
     assert!(html.contains("alias-input"));
     assert!(html.contains("preview-toggle"));
     assert!(html.contains("var defaultVimMode = true;"));
     assert!(html.contains("editor-field-card"));
+    assert!(html.contains("Views total"));
+    assert!(html.contains("2026-03-26 08:35 UTC"));
     assert!(!html.contains("uicdn.toast.com"));
 }

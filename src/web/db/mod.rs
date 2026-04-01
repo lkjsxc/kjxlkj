@@ -1,5 +1,6 @@
 //! PostgreSQL database adapter
 
+mod analytics;
 mod auth;
 mod favorites;
 mod history;
@@ -10,9 +11,11 @@ mod listing_queries;
 mod listing_sort;
 mod migrations;
 mod models;
+mod popular_window;
 mod records;
 mod settings;
 
+pub use analytics::{get_note_view_stats, list_popular_records, record_note_view};
 pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
@@ -23,7 +26,8 @@ pub use history::{
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
-pub use models::{AppSettings, ListedRecord, NoteStats, Record, RecordRevision};
+pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordRevision};
+pub use popular_window::PopularWindow;
 pub use records::{create_record, delete_record, get_record, get_record_by_ref, update_record};
 pub use settings::{get_note_stats, get_settings, update_settings};
 

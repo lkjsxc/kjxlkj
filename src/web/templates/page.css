@@ -1,8 +1,8 @@
-.shell-main,
-.index-layout,
 .home-page,
 .dashboard-page,
-.history-page {
+.history-page,
+.note-page,
+.index-layout {
     gap: 18px;
 }
 
@@ -29,6 +29,11 @@
 .section-head h2 {
     font-size: 0.98rem;
     color: var(--text-soft);
+}
+
+.section-actions .btn {
+    min-height: 34px;
+    padding-inline: 12px;
 }
 
 .page-head {
@@ -123,11 +128,11 @@
 }
 
 @media (max-width: 900px) {
-    .shell-main,
-    .index-layout,
     .home-page,
     .dashboard-page,
-    .history-page {
+    .history-page,
+    .note-page,
+    .index-layout {
         gap: 16px;
     }
 }

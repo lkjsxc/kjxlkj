@@ -12,7 +12,8 @@ pub async fn list_all_favorite_records(
     let rows = client(pool)
         .await?
         .query(
-            "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at, summary AS preview \
+            "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+             view_count_total, last_viewed_at, created_at, updated_at, summary AS preview, NULL::BIGINT AS popular_views \
              FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR is_private = FALSE) \
              ORDER BY favorite_position ASC NULLS LAST, id ASC",
             &[&include_private],

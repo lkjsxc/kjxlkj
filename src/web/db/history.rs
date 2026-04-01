@@ -17,7 +17,6 @@ pub struct RevisionPage {
 struct RevisionCursor {
     revision_number: i32,
 }
-
 pub async fn list_record_revisions(
     pool: &DbPool,
     record_id: &str,
@@ -149,13 +148,15 @@ async fn adjacent_record(
     older: bool,
 ) -> Result<Option<Record>, AppError> {
     let query = if older {
-        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at \
+        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+         view_count_total, last_viewed_at, created_at, updated_at \
          FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at < (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id < $1)) \
          ORDER BY created_at DESC, id DESC LIMIT 1"
     } else {
-        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at \
+        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+         view_count_total, last_viewed_at, created_at, updated_at \
          FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
          AND ((created_at > (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
            OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id > $1)) \

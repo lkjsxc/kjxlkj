@@ -10,6 +10,7 @@ fn sample_item() -> IndexItem {
         updated_at: "2026-03-26 08:35 UTC".to_string(),
         is_favorite: true,
         visibility: Some("Public"),
+        metrics: Vec::new(),
     }
 }
 
@@ -27,6 +28,8 @@ fn search_page_browses_without_query() {
     assert!(html.contains(">Notes<"));
     assert!(!html.contains(">Query<"));
     assert!(html.contains("name=\"sort\""));
+    assert!(html.contains("aria-label=\"Sort\""));
+    assert!(!html.contains("<span>Sort</span>"));
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Previous<"));
     assert!(html.contains(">Next<"));

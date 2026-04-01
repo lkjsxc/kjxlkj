@@ -103,7 +103,18 @@ async function capturePublicScreens(browser, notes) {
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
+    assert.equal(await page.getByRole('link', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
+    assert.equal((await popularTitles(page))[0], 'Beacon Log');
     await capture(page, 'desktop-public-root.png');
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('popular_window') === '90d'),
+        page.getByRole('link', { name: '90d', exact: true }).click(),
+    ]);
+    assert.equal((await popularTitles(page))[0], 'Atlas Entry');
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).searchParams.get('popular_window') === '30d'),
+        page.getByRole('link', { name: '30d', exact: true }).click(),
+    ]);
 
     const browseCard = page.getByRole('link', { name: /View more notes/i }).first();
     assert.equal(await browseCard.getAttribute('href'), '/search');
@@ -165,6 +176,15 @@ async function capturePublicScreens(browser, notes) {
     const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();
     return fontFamily;
+}
+
+async function popularTitles(page) {
+    return page
+        .locator('.section-block.note-section', {
+            has: page.getByRole('heading', { name: 'Popular notes', exact: true }),
+        })
+        .locator('.card-title')
+        .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
 }
 
 main().catch((error) => {

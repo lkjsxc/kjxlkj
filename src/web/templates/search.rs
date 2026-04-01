@@ -73,8 +73,8 @@ fn search_section(query: &str, sort: &str, has_query: bool) -> String {
 <input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, and bodies">
 {}
 <label class="form-group search-sort" for="search-sort">
-<span>Sort</span>
-<select id="search-sort" name="sort">{}</select>
+<span class="visually-hidden">Sort</span>
+<select id="search-sort" name="sort" aria-label="Sort">{}</select>
 </label>
 <button type="submit" class="btn btn-primary">Search</button>
 </div>

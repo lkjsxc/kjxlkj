@@ -51,6 +51,8 @@ export async function expectFlatShell(page, controlNames = []) {
     await assertInvisibleText(page, 'Saving');
     await assertInvisibleText(page, 'Saved');
     await assertNoHorizontalOverflow(page);
+    await assertBrandIcon(page);
+    await assertRestrainedMainColumn(page);
     assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
     assert.equal(await page.locator('.shell-rail h2').count(), 0);
     if ((await page.evaluate(() => window.innerWidth)) > 900) await assertBrandSpacing(page);
@@ -140,4 +142,30 @@ async function assertBrandSpacing(page) {
         return nav.getBoundingClientRect().top - head.getBoundingClientRect().bottom;
     });
     assert.ok(gap >= 10, `brand and primary nav should have visual separation (saw ${gap}px)`);
+}
+
+async function assertBrandIcon(page) {
+    assert.equal(await page.locator('link[rel="icon"][href="/assets/icon.svg"]').count(), 1);
+    const mark = page.locator('.brand-mark').first();
+    await mark.waitFor({ state: 'visible' });
+    assert.equal(await mark.getAttribute('src'), '/assets/icon.svg');
+}
+
+async function assertRestrainedMainColumn(page) {
+    const metrics = await page.evaluate(() => {
+        const column = document.querySelector('.page-column');
+        const head = document.querySelector('.page-head');
+        const next = head?.nextElementSibling;
+        return {
+            viewportWidth: window.innerWidth,
+            columnWidth: column?.getBoundingClientRect().width ?? 0,
+            verticalGap: next ? next.getBoundingClientRect().top - head.getBoundingClientRect().bottom : 0,
+        };
+    });
+    if (metrics.viewportWidth > 1200) {
+        assert.ok(metrics.columnWidth <= 1062, `main column should stay restrained (saw ${metrics.columnWidth}px)`);
+    }
+    if (metrics.verticalGap) {
+        assert.ok(metrics.verticalGap <= 36, `page-head gap should stay compact (saw ${metrics.verticalGap}px)`);
+    }
 }

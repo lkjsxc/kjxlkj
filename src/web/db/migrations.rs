@@ -63,6 +63,8 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 is_favorite BOOLEAN NOT NULL DEFAULT FALSE,
                 favorite_position BIGINT,
                 is_private BOOLEAN NOT NULL DEFAULT TRUE,
+                view_count_total BIGINT NOT NULL DEFAULT 0,
+                last_viewed_at TIMESTAMPTZ,
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 deleted_at TIMESTAMPTZ,
@@ -74,6 +76,8 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             );
 
             ALTER TABLE records ADD COLUMN IF NOT EXISTS favorite_position BIGINT;
+            ALTER TABLE records ADD COLUMN IF NOT EXISTS view_count_total BIGINT NOT NULL DEFAULT 0;
+            ALTER TABLE records ADD COLUMN IF NOT EXISTS last_viewed_at TIMESTAMPTZ;
 
             WITH ordered AS (
                 SELECT id, ROW_NUMBER() OVER (ORDER BY updated_at DESC, id ASC) AS favorite_position
@@ -111,10 +115,22 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             CREATE INDEX IF NOT EXISTS idx_revisions_lookup
                 ON record_revisions(record_id, revision_number DESC);
 
+            CREATE TABLE IF NOT EXISTS record_daily_views (
+                record_id CHAR(26) NOT NULL REFERENCES records(id) ON DELETE CASCADE,
+                view_date DATE NOT NULL,
+                view_count BIGINT NOT NULL DEFAULT 0,
+                PRIMARY KEY (record_id, view_date)
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_record_daily_views_rank
+                ON record_daily_views(view_date, view_count DESC, record_id);
+
             CREATE TABLE IF NOT EXISTS app_settings (
                 id SMALLINT PRIMARY KEY,
                 home_recent_limit BIGINT NOT NULL DEFAULT 6,
                 home_favorite_limit BIGINT NOT NULL DEFAULT 6,
+                home_popular_limit BIGINT NOT NULL DEFAULT 6,
+                home_intro_markdown TEXT NOT NULL DEFAULT '',
                 search_results_per_page BIGINT NOT NULL DEFAULT 20,
                 default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE,
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -122,6 +138,10 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
 
             ALTER TABLE app_settings
                 ADD COLUMN IF NOT EXISTS default_vim_mode BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE app_settings
+                ADD COLUMN IF NOT EXISTS home_popular_limit BIGINT NOT NULL DEFAULT 6;
+            ALTER TABLE app_settings
+                ADD COLUMN IF NOT EXISTS home_intro_markdown TEXT NOT NULL DEFAULT '';
 
             INSERT INTO app_settings (id) VALUES (1)
             ON CONFLICT (id) DO NOTHING;

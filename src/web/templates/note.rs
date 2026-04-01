@@ -1,7 +1,7 @@
 //! Note page template
 
 use super::layout::{base, html_escape, shell_page};
-use super::model::NoteChrome;
+use super::model::{NoteAnalytics, NoteChrome};
 use super::note_shell::note_rail;
 use crate::core::render_markdown;
 use crate::web::db::Record;
@@ -16,6 +16,7 @@ const TOAST_UI_ROOT: &str = "/assets/vendor/toastui/3.2.2";
 pub fn note_page(
     record: &Record,
     chrome: &NoteChrome,
+    analytics: Option<&NoteAnalytics>,
     is_admin: bool,
     default_vim_mode: bool,
 ) -> String {
@@ -27,10 +28,11 @@ pub fn note_page(
 <small><span>Updated</span>{}</small>
 </div>
 </header>
-{}"#,
+{}{}"#,
         chrome.title,
         chrome.created_at,
         chrome.updated_at,
+        analytics_block(analytics),
         if is_admin {
             editor_surface(record, chrome)
         } else {
@@ -99,6 +101,29 @@ initEditor();
         EDITOR_VIM_JS,
         EDITOR_CORE_JS,
         EDITOR_SYNC_JS
+    )
+}
+
+fn analytics_block(analytics: Option<&NoteAnalytics>) -> String {
+    let Some(analytics) = analytics else {
+        return String::new();
+    };
+    format!(
+        r#"<section class="surface note-analytics-grid">
+<article><small>Views total</small><strong>{}</strong></article>
+<article><small>Views 7d</small><strong>{}</strong></article>
+<article><small>Views 30d</small><strong>{}</strong></article>
+<article><small>Views 90d</small><strong>{}</strong></article>
+<article><small>Last viewed</small><strong>{}</strong></article>
+</section>"#,
+        analytics.total,
+        analytics.views_7d,
+        analytics.views_30d,
+        analytics.views_90d,
+        analytics
+            .last_viewed_at
+            .clone()
+            .unwrap_or_else(|| "Never".to_string()),
     )
 }
 

@@ -5,21 +5,24 @@ use crate::error::AppError;
 use deadpool_postgres::GenericClient;
 use tokio_postgres::error::SqlState;
 
+const RETURNING_RECORD: &str =
+    "RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+     view_count_total, last_viewed_at, created_at, updated_at";
+const SELECT_RECORD: &str =
+    "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+     view_count_total, last_viewed_at, created_at, updated_at";
 pub async fn get_record(pool: &DbPool, id: &str) -> Result<Option<Record>, AppError> {
     get_record_where(pool, "id = $1", &[&id]).await
 }
-
 pub async fn get_record_by_alias(pool: &DbPool, alias: &str) -> Result<Option<Record>, AppError> {
     get_record_where(pool, "alias = $1", &[&alias]).await
 }
-
 pub async fn get_record_by_ref(pool: &DbPool, reference: &str) -> Result<Option<Record>, AppError> {
     if let Some(record) = get_record_by_alias(pool, reference).await? {
         return Ok(Some(record));
     }
     get_record(pool, reference).await
 }
-
 pub async fn create_record(
     pool: &DbPool,
     id: &str,
@@ -31,9 +34,10 @@ pub async fn create_record(
     let db = client(pool).await?;
     let row = db
         .query_one(
-            "INSERT INTO records (id, alias, title, summary, body, is_favorite, favorite_position, is_private) \
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
-             RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at",
+            &format!(
+                "INSERT INTO records (id, alias, title, summary, body, is_favorite, favorite_position, is_private) \
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8) {RETURNING_RECORD}"
+            ),
             &[
                 &id,
                 &alias,
@@ -44,12 +48,11 @@ pub async fn create_record(
                 &next_position(&db, is_favorite).await?,
                 &is_private,
             ],
-        )
-        .await
-        .map_err(map_write_error)?;
+    )
+    .await
+    .map_err(map_write_error)?;
     Ok(row_to_record(row))
 }
-
 pub async fn update_record(
     pool: &DbPool,
     id: &str,
@@ -73,10 +76,11 @@ pub async fn update_record(
     .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     let row = db
         .query_one(
-            "UPDATE records SET alias = $2, title = $3, summary = $4, body = $5, \
-             is_favorite = $6, favorite_position = $7, is_private = $8, updated_at = NOW() \
-             WHERE id = $1 AND deleted_at IS NULL \
-             RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at",
+            &format!(
+                "UPDATE records SET alias = $2, title = $3, summary = $4, body = $5, \
+                 is_favorite = $6, favorite_position = $7, is_private = $8, updated_at = NOW() \
+                 WHERE id = $1 AND deleted_at IS NULL {RETURNING_RECORD}"
+            ),
             &[
                 &id,
                 &alias,
@@ -92,7 +96,6 @@ pub async fn update_record(
         .map_err(map_write_error)?;
     Ok(Some(row_to_record(row)))
 }
-
 pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {
     let count = client(pool)
         .await?
@@ -104,26 +107,21 @@ pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(count > 0)
 }
-
 async fn get_record_where(
     pool: &DbPool,
     predicate: &str,
     params: &[&(dyn tokio_postgres::types::ToSql + Sync)],
 ) -> Result<Option<Record>, AppError> {
-    let row = client(pool)
+    client(pool)
         .await?
         .query_opt(
-            &format!(
-                "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, created_at, updated_at \
-                 FROM records WHERE {predicate} AND deleted_at IS NULL"
-            ),
+            &format!("{SELECT_RECORD} FROM records WHERE {predicate} AND deleted_at IS NULL"),
             params,
         )
         .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(row.map(row_to_record))
+        .map(|row| row.map(row_to_record))
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
-
 async fn current_favorite_state<C: GenericClient>(
     db: &C,
     id: &str,
@@ -193,6 +191,8 @@ pub(crate) fn row_to_record(row: tokio_postgres::Row) -> Record {
         is_favorite: row.get("is_favorite"),
         favorite_position: row.get("favorite_position"),
         is_private: row.get("is_private"),
+        view_count_total: row.get("view_count_total"),
+        last_viewed_at: row.get("last_viewed_at"),
         created_at: row.get("created_at"),
         updated_at: row.get("updated_at"),
     }

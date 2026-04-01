@@ -32,6 +32,21 @@ pub struct NoteChrome {
 }
 
 #[derive(Clone, Debug)]
+pub struct NoteAnalytics {
+    pub total: i64,
+    pub views_7d: i64,
+    pub views_30d: i64,
+    pub views_90d: i64,
+    pub last_viewed_at: Option<String>,
+}
+
+#[derive(Clone, Debug)]
+pub struct IndexMetric {
+    pub label: String,
+    pub value: String,
+}
+
+#[derive(Clone, Debug)]
 pub struct IndexItem {
     pub id: String,
     pub href: String,
@@ -41,4 +56,5 @@ pub struct IndexItem {
     pub updated_at: String,
     pub is_favorite: bool,
     pub visibility: Option<&'static str>,
+    pub metrics: Vec<IndexMetric>,
 }

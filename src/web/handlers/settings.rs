@@ -10,6 +10,8 @@ use serde::Deserialize;
 pub struct SettingsForm {
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
+    pub home_popular_limit: i64,
+    pub home_intro_markdown: String,
     pub search_results_per_page: i64,
     pub default_vim_mode: Option<String>,
 }
@@ -31,11 +33,14 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
     let settings = AppSettings {
         home_recent_limit: form.home_recent_limit.clamp(1, 24),
         home_favorite_limit: form.home_favorite_limit.clamp(1, 24),
+        home_popular_limit: form.home_popular_limit.clamp(1, 24),
+        home_intro_markdown: form.home_intro_markdown.trim().to_string(),
         search_results_per_page: form.search_results_per_page.clamp(5, 100),
         default_vim_mode: form.default_vim_mode.is_some(),
     };
     if form.home_recent_limit < 1
         || form.home_favorite_limit < 1
+        || form.home_popular_limit < 1
         || form.search_results_per_page < 1
     {
         return Err(AppError::InvalidRequest(

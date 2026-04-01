@@ -2,10 +2,49 @@
 
 use crate::core::derive_title;
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListedRecord, Record, RecordRevision};
-use crate::web::templates::{render_time, HistoryLink, IndexItem, NavLink, NoteChrome};
+use crate::web::db::{self, DbPool, ListedRecord, PopularWindow, Record, RecordRevision};
+use crate::web::templates::{
+    render_time, HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome,
+};
 
 pub fn index_item(record: &ListedRecord, show_visibility: bool) -> IndexItem {
+    build_index_item(record, show_visibility, Vec::new())
+}
+
+pub fn popular_index_item(
+    record: &ListedRecord,
+    show_visibility: bool,
+    window: PopularWindow,
+) -> IndexItem {
+    let mut metrics = Vec::new();
+    if show_visibility {
+        metrics.push(IndexMetric {
+            label: window.metric_label().to_string(),
+            value: record.popular_views.unwrap_or(0).to_string(),
+        });
+        metrics.push(IndexMetric {
+            label: "All time".to_string(),
+            value: record.record.view_count_total.to_string(),
+        });
+    }
+    build_index_item(record, show_visibility, metrics)
+}
+
+pub fn note_analytics(stats: &db::NoteViewStats) -> NoteAnalytics {
+    NoteAnalytics {
+        total: stats.total,
+        views_7d: stats.views_7d,
+        views_30d: stats.views_30d,
+        views_90d: stats.views_90d,
+        last_viewed_at: stats.last_viewed_at.as_ref().map(render_time),
+    }
+}
+
+fn build_index_item(
+    record: &ListedRecord,
+    show_visibility: bool,
+    metrics: Vec<IndexMetric>,
+) -> IndexItem {
     IndexItem {
         id: record.record.id.clone(),
         href: note_href(&record.record),
@@ -15,6 +54,7 @@ pub fn index_item(record: &ListedRecord, show_visibility: bool) -> IndexItem {
         updated_at: render_time(&record.record.updated_at),
         is_favorite: record.record.is_favorite,
         visibility: show_visibility.then_some(visibility_label(record.record.is_private)),
+        metrics,
     }
 }
 

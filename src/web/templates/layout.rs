@@ -22,6 +22,7 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
 <title>{title} - kjxlkj</title>
+<link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
 {extra_head}
 <style>{BASE_CSS}
 {CONTENT_CSS}
@@ -56,7 +57,7 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
         r#"<div class="shell-frame">
 <header class="mobile-bar">
 <div class="mobile-branding">
-<a href="/" class="brand">kjxlkj</a>
+{}
 <span class="mode-pill">{mode_label}</span>
 </div>
 <button type="button" class="btn rail-toggle" data-menu-toggle aria-controls="shell-rail" aria-expanded="false">Menu</button>
@@ -66,15 +67,17 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
 <aside id="shell-rail" class="shell-rail" data-menu-panel>
 <div class="rail-head">
 <div class="rail-branding">
-<a href="/" class="brand">kjxlkj</a>
+{}
 </div>
 <span class="mode-pill">{mode_label}</span>
 </div>
 <div class="rail-body">{rail}</div>
 </aside>
-<main class="shell-main {page_class}">{main}</main>
+<main class="shell-main"><div class="page-column {page_class}">{main}</div></main>
 </div>
-</div>"#
+</div>"#,
+        brand_lockup(),
+        brand_lockup(),
     )
 }
 
@@ -110,6 +113,10 @@ pub fn render_time(dt: &chrono::DateTime<chrono::Utc>) -> String {
 
 pub fn format_date(dt: &chrono::DateTime<chrono::Utc>) -> String {
     dt.format("%Y-%m-%d %H:%M UTC").to_string()
+}
+
+fn brand_lockup() -> &'static str {
+    r#"<a href="/" class="brand brand-lockup"><img src="/assets/icon.svg" class="brand-mark" alt="" aria-hidden="true"><span>kjxlkj</span></a>"#
 }
 
 pub fn html_escape(s: &str) -> String {

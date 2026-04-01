@@ -33,7 +33,15 @@ pub async fn note_page(
     {
         return Ok(redirect(&view::note_href(&record)));
     }
+    db::record_note_view(&pool, &record.id).await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
+    let analytics = if is_admin {
+        Some(view::note_analytics(
+            &db::get_note_view_stats(&pool, &record.id).await?,
+        ))
+    } else {
+        None
+    };
     let default_vim_mode = if is_admin {
         db::get_settings(&pool).await?.default_vim_mode
     } else {
@@ -42,6 +50,7 @@ pub async fn note_page(
     Ok(html(templates::note_page(
         &record,
         &chrome,
+        analytics.as_ref(),
         is_admin,
         default_vim_mode,
     )))
