@@ -10,7 +10,6 @@ use std::collections::HashSet;
 
 #[derive(Debug, Deserialize)]
 pub struct SettingsForm {
-    pub home_title: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -53,11 +52,6 @@ pub async fn settings_submit(
 }
 
 fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
-    if form.home_title.trim().is_empty() {
-        return Err(AppError::InvalidRequest(
-            "home title is required".to_string(),
-        ));
-    }
     if !counts_are_valid(form) {
         return Err(AppError::InvalidRequest(
             "section counts must be between 1 and 24".to_string(),
@@ -74,7 +68,6 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
         ));
     }
     Ok(AppSettings {
-        home_title: form.home_title.trim().to_string(),
         home_recent_limit: form.home_recent_limit,
         home_favorite_limit: form.home_favorite_limit,
         home_popular_limit: form.home_popular_limit,

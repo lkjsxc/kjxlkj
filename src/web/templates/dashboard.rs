@@ -2,7 +2,7 @@
 
 use super::dashboard_favorites::favorite_order_section;
 use super::index::list_rail;
-use super::layout::{base, html_escape, shell_page};
+use super::layout::{base, shell_page};
 use super::list_sections::{
     favorite_browse_card, note_grid_section, popular_browse_card, popular_window_switch,
     recent_browse_card,
@@ -81,17 +81,21 @@ fn stats_grid(stats: &NoteStats) -> String {
 }
 
 fn settings_panel(settings: &AppSettings) -> String {
+    let hero_state = if settings.home_intro_markdown.trim().is_empty() {
+        "Hidden"
+    } else {
+        "Configured"
+    };
     section(
         "Settings",
         &format!(
             r#"<div class="settings-summary-grid">
-<article class="surface settings-summary-card"><small>Home title</small><strong>{}</strong></article>
+<article class="surface settings-summary-card"><small>Home hero</small><strong>{hero_state}</strong></article>
 <article class="surface settings-summary-card"><small>New notes</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Search page size</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Home order</small><strong>{}</strong></article>
 </div>
 <a href="/admin/settings" class="btn btn-primary">Open settings</a>"#,
-            html_escape(&settings.home_title),
             if settings.default_new_note_is_private {
                 "Private by default"
             } else {

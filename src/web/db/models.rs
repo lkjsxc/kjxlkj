@@ -36,7 +36,6 @@ pub struct ListedRecord {
 
 #[derive(Debug, Clone)]
 pub struct AppSettings {
-    pub home_title: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -54,7 +53,6 @@ pub struct AppSettings {
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
-            home_title: "Home".to_string(),
             home_recent_limit: 5,
             home_favorite_limit: 5,
             home_popular_limit: 5,

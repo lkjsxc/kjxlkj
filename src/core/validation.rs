@@ -7,7 +7,9 @@ use thiserror::Error;
 use uuid::Uuid;
 
 static ID_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z2-7]{26}$").unwrap());
-static ALIAS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:-[a-z0-9]+)*$").unwrap());
+static ALIAS_REGEX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^[a-z0-9]+(?:[-._][a-z0-9]+)*$").unwrap());
+static ALIAS_SPACES: Lazy<Regex> = Lazy::new(|| Regex::new(r"\s+").unwrap());
 static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
 static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
@@ -36,7 +38,7 @@ pub enum IdError {
 pub enum AliasError {
     #[error("alias must be 1 to {MAX_ALIAS_LEN} characters")]
     InvalidLength,
-    #[error("alias must use lowercase letters, digits, and single hyphens")]
+    #[error("alias must use lowercase letters, digits, and single separators: -, _, .")]
     InvalidFormat,
     #[error("alias is reserved")]
     Reserved,
@@ -59,22 +61,31 @@ pub fn generate_id() -> String {
 }
 
 pub fn normalize_alias(alias: Option<&str>) -> Result<Option<String>, AliasError> {
-    let Some(alias) = alias.map(str::trim).filter(|alias| !alias.is_empty()) else {
+    let Some(alias) = alias
+        .map(normalize_alias_input)
+        .filter(|alias| !alias.is_empty())
+    else {
         return Ok(None);
     };
     if alias.len() > MAX_ALIAS_LEN {
         return Err(AliasError::InvalidLength);
     }
-    if looks_like_id(alias) {
+    if looks_like_id(&alias) {
         return Err(AliasError::ConflictsWithId);
     }
-    if RESERVED_ALIASES.contains(alias) {
+    if RESERVED_ALIASES.contains(alias.as_str()) {
         return Err(AliasError::Reserved);
     }
-    if !ALIAS_REGEX.is_match(alias) {
+    if !ALIAS_REGEX.is_match(&alias) {
         return Err(AliasError::InvalidFormat);
     }
     Ok(Some(alias.to_string()))
+}
+
+fn normalize_alias_input(alias: &str) -> String {
+    ALIAS_SPACES
+        .replace_all(&alias.trim().to_ascii_lowercase(), "-")
+        .into_owned()
 }
 
 pub fn looks_like_id(value: &str) -> bool {

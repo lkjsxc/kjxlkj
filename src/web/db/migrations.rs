@@ -127,7 +127,6 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
 
             CREATE TABLE IF NOT EXISTS app_settings (
                 id SMALLINT PRIMARY KEY,
-                home_title TEXT NOT NULL DEFAULT 'Home',
                 home_recent_limit BIGINT NOT NULL DEFAULT 5,
                 home_favorite_limit BIGINT NOT NULL DEFAULT 5,
                 home_popular_limit BIGINT NOT NULL DEFAULT 5,
@@ -143,8 +142,6 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
 
-            ALTER TABLE app_settings
-                ADD COLUMN IF NOT EXISTS home_title TEXT NOT NULL DEFAULT 'Home';
             ALTER TABLE app_settings
                 ADD COLUMN IF NOT EXISTS home_popular_limit BIGINT NOT NULL DEFAULT 5;
             ALTER TABLE app_settings
@@ -163,6 +160,8 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 ADD COLUMN IF NOT EXISTS home_popular_position BIGINT NOT NULL DEFAULT 1;
             ALTER TABLE app_settings
                 ADD COLUMN IF NOT EXISTS default_new_note_is_private BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE app_settings
+                DROP COLUMN IF EXISTS home_title;
             ALTER TABLE app_settings
                 ALTER COLUMN home_recent_limit SET DEFAULT 5;
             ALTER TABLE app_settings

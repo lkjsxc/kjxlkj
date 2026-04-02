@@ -13,20 +13,24 @@ pub fn index_item(record: &ListedRecord, show_visibility: bool) -> IndexItem {
 
 pub fn popular_index_item(
     record: &ListedRecord,
-    show_visibility: bool,
+    show_admin_details: bool,
     window: PopularWindow,
 ) -> IndexItem {
-    let metrics = vec![
-        IndexMetric {
-            label: window.metric_label().to_string(),
-            value: record.popular_views.unwrap_or(0).to_string(),
-        },
-        IndexMetric {
-            label: "All time".to_string(),
-            value: record.record.view_count_total.to_string(),
-        },
-    ];
-    build_index_item(record, show_visibility, metrics)
+    let metrics = if show_admin_details {
+        vec![
+            IndexMetric {
+                label: window.metric_label().to_string(),
+                value: record.popular_views.unwrap_or(0).to_string(),
+            },
+            IndexMetric {
+                label: "All time".to_string(),
+                value: record.record.view_count_total.to_string(),
+            },
+        ]
+    } else {
+        Vec::new()
+    };
+    build_index_item(record, show_admin_details, metrics)
 }
 
 pub fn note_analytics(stats: &db::NoteViewStats) -> NoteAnalytics {

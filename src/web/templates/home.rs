@@ -7,7 +7,6 @@ use super::list_sections::{
     quick_search_section, recent_browse_card,
 };
 use super::model::IndexItem;
-use super::sections::page_header;
 use crate::core::render_markdown;
 use crate::web::db::{AppSettings, PopularWindow};
 
@@ -27,14 +26,13 @@ pub fn home_page(
         String::new()
     };
     let content = format!(
-        "{}{}{}{}",
-        page_header(&settings.home_title, None, "home-head"),
+        "{}{}{}",
         intro_block(&settings.home_intro_markdown),
         quick_search_section(),
         home_sections(settings, popular, recent, favorites, window),
     );
     base(
-        &settings.home_title,
+        "Home",
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &list_rail(
@@ -111,7 +109,7 @@ fn intro_block(markdown: &str) -> String {
         return String::new();
     }
     format!(
-        r#"<section class="page-intro prose">{}</section>"#,
+        r#"<section class="page-intro prose home-hero">{}</section>"#,
         render_markdown(markdown)
     )
 }

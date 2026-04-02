@@ -38,10 +38,8 @@ fn home_hero_section(settings: &AppSettings) -> String {
         "Home hero",
         &surface_panel(&format!(
             r#"<div class="settings-section-grid">
-<label class="form-group settings-wide"><span>Home title</span><input type="text" name="home_title" value="{}" required></label>
 <label class="form-group settings-wide"><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
 </div>"#,
-            html_escape(&settings.home_title),
             html_escape(&settings.home_intro_markdown),
         )),
         "settings-section",

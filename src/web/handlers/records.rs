@@ -2,7 +2,7 @@
 
 use crate::core::{generate_id, normalize_alias, validate_id};
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, NoteViewStats, Record};
+use crate::web::db::{self, DbPool, Record};
 use crate::web::handlers::session;
 use actix_web::{delete, post, put, web, HttpRequest, HttpResponse};
 use chrono::{DateTime, Utc};
@@ -32,11 +32,6 @@ struct NotePayload {
     is_favorite: bool,
     favorite_position: Option<i64>,
     is_private: bool,
-    view_count_total: i64,
-    view_count_7d: i64,
-    view_count_30d: i64,
-    view_count_90d: i64,
-    last_viewed_at: Option<DateTime<Utc>>,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
 }
@@ -106,8 +101,8 @@ pub async fn remove(
 }
 
 async fn note_payload(pool: &DbPool, record: Record) -> Result<NotePayload, AppError> {
-    let stats = db::get_note_view_stats(pool, &record.id).await?;
-    Ok(NotePayload::from_record(record, stats))
+    let _ = pool;
+    Ok(NotePayload::from_record(record))
 }
 
 async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
@@ -123,7 +118,7 @@ async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
 }
 
 impl NotePayload {
-    fn from_record(record: Record, stats: NoteViewStats) -> Self {
+    fn from_record(record: Record) -> Self {
         Self {
             id: record.id,
             alias: record.alias,
@@ -131,11 +126,6 @@ impl NotePayload {
             is_favorite: record.is_favorite,
             favorite_position: record.favorite_position,
             is_private: record.is_private,
-            view_count_total: stats.total,
-            view_count_7d: stats.views_7d,
-            view_count_30d: stats.views_30d,
-            view_count_90d: stats.views_90d,
-            last_viewed_at: stats.last_viewed_at,
             created_at: record.created_at,
             updated_at: record.updated_at,
         }
