@@ -1,117 +1,78 @@
-.prose,
-.paper-prose {
+.prose {
     display: grid;
     gap: 14px;
     overflow-wrap: anywhere;
 }
 
-.prose h1,
-.paper-prose h1 {
+.prose h1 {
     font-size: 2.15rem;
 }
 
-.prose h2,
-.paper-prose h2 {
+.prose h2 {
     font-size: 1.5rem;
 }
 
-.prose h3,
-.paper-prose h3 {
+.prose h3 {
     font-size: 1.2rem;
 }
 
 .prose ul,
-.prose ol,
-.paper-prose ul,
-.paper-prose ol {
+.prose ol {
     padding-left: 24px;
 }
 
-.prose blockquote,
-.paper-prose blockquote {
+.prose blockquote {
     padding-left: 16px;
     border-left: 2px solid var(--accent);
-}
-
-.prose blockquote {
     color: var(--text-soft);
 }
 
-.paper-prose {
-    color: #172033;
-}
-
-.paper-prose blockquote {
-    border-left-color: #2b6bc8;
-    color: #516074;
-}
-
-.prose pre,
-.paper-prose pre {
+.prose pre {
     padding: 16px;
     border: 1px solid var(--line);
     border-radius: 18px;
     overflow: auto;
     white-space: pre-wrap;
-}
-
-.prose pre {
     background: var(--bg-1);
 }
 
-.paper-prose pre {
-    border-color: #d0dae6;
-    background: #e9eef5;
-}
-
 .prose code,
-.prose pre,
-.paper-prose code,
-.paper-prose pre {
+.prose pre {
     font-family: var(--mono);
 }
 
-.prose a,
-.paper-prose a {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.18em;
+.prose :not(pre) > code {
+    padding: 0.12em 0.36em;
+    border-radius: 8px;
+    background: var(--bg-3);
 }
 
 .prose a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
     color: var(--accent);
 }
 
-.paper-prose a {
-    color: #1f66cf;
-}
-
-.prose :is(p, li, blockquote, td, th, code, strong, em),
-.paper-prose :is(p, li, blockquote, td, th, code, strong, em) {
+.prose :is(p, li, blockquote, td, th, code, strong, em) {
     overflow-wrap: anywhere;
 }
 
-.prose table,
-.paper-prose table {
+.prose table {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
 }
 
 .prose td,
-.prose th,
-.paper-prose td,
-.paper-prose th {
+.prose th {
     overflow-wrap: anywhere;
+    padding: 10px 12px;
+    border: 1px solid var(--line-strong);
 }
 
-.paper-prose td,
-.paper-prose th {
-    border: 1px solid #d0dae6;
-}
-
-.paper-prose th {
-    background: #e3ebf6;
+.prose th {
+    background: var(--bg-3);
 }
 
 .check-row {

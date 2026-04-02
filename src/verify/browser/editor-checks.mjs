@@ -3,7 +3,7 @@ import { assertInvisibleText, assertVisibleText } from './assertions.mjs';
 import { assertNoHorizontalOverflow } from './shell-assertions.mjs';
 import { appUrl, newContext } from './support.mjs';
 
-export async function verifyUiCreatedDraft(page, expectedPrivate = true) {
+export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
     await Promise.all([
         page.waitForURL((url) => new URL(url).pathname !== '/admin'),
         page.getByRole('button', { name: 'New note', exact: true }).first().click(),
@@ -87,14 +87,17 @@ export async function assertEditorLayout(page, compact) {
         const previewStyle = getComputedStyle(preview);
         const pageColor = getComputedStyle(document.body).backgroundColor;
         const previewColor = previewStyle.backgroundColor;
+        const previewText = previewStyle.color;
         const brightness = (color) => color.match(/\d+/g).slice(0, 3).map(Number).reduce((sum, value, index) => {
             return sum + value * [0.2126, 0.7152, 0.0722][index];
         }, 0);
-        const lighterPreview = brightness(previewColor) > brightness(pageColor) + 80;
-        if (isCompact) return editorOk && previewStyle.position === 'fixed' && lighterPreview;
+        const darkPreview = brightness(previewColor) > brightness(pageColor) + 5 &&
+            brightness(previewColor) < 90 &&
+            brightness(previewText) > 180;
+        if (isCompact) return editorOk && previewStyle.position === 'fixed' && darkPreview;
         const sideBySide = previewStyle.position !== 'fixed' &&
             preview.getBoundingClientRect().left >= editor.getBoundingClientRect().right - 4;
-        return editorOk && sideBySide && lighterPreview;
+        return editorOk && sideBySide && darkPreview;
     }, compact);
 }
 

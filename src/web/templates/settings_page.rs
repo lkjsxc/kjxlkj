@@ -82,7 +82,7 @@ fn home_sections_section(settings: &AppSettings) -> String {
         "Home sections",
         &surface_panel(&format!(
             r#"<div class="settings-table">
-<div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Order</span><span>Items</span></div>
+<div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Items</span></div>
 <div class="settings-table-body" data-settings-order-list>{}</div>
 </div>"#,
             rows.into_iter()
@@ -124,12 +124,12 @@ fn section_row(
 ) -> String {
     format!(
         r#"<div class="settings-row settings-order-item" data-settings-order-item draggable="true">
+<input type="hidden" name="{position_name}" value="{position}">
 <div class="settings-row-label-group">
 <button type="button" class="settings-drag-handle" aria-label="Reorder home sections">Drag</button>
 <span class="settings-row-label">{label}</span>
 </div>
 <span class="settings-row-field settings-row-check"><input type="checkbox" name="{visible_name}" {}></span>
-<span class="settings-row-field"><span class="settings-order-pill" data-settings-order-value>{position}</span><input type="hidden" name="{position_name}" value="{position}"></span>
 <span class="settings-row-field"><input type="number" name="{limit_name}" min="1" max="24" value="{limit}"></span>
 </div>"#,
         if visible { "checked" } else { "" },

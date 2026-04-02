@@ -38,13 +38,16 @@
 }
 
 .settings-summary-card {
+    display: grid;
+    gap: 10px;
+    align-content: start;
     min-height: 74px;
-    padding: 10px 12px;
+    padding: 12px 14px;
 }
 
 .settings-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) 100px 100px 100px;
+    grid-template-columns: minmax(0, 1.25fr) 100px 100px;
     gap: 10px;
     align-items: center;
     padding: 10px 12px;
@@ -73,8 +76,7 @@
     font-weight: 600;
 }
 
-.settings-drag-handle,
-.settings-order-pill {
+.settings-drag-handle {
     display: inline-flex;
     align-items: center;
     justify-content: center;

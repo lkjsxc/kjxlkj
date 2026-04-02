@@ -10,7 +10,7 @@ export function resetDatabase(databaseUrl) {
             "home_recent_position, home_favorite_position, home_popular_position, " +
             "search_results_per_page, default_new_note_is_private) " +
             "VALUES (1, 5, 5, 5, $$# Home\n\nWelcome to **kjxlkj**. Use Home as the landing space for search, popular notes, and curated favorites.$$," +
-            " TRUE, TRUE, TRUE, 2, 3, 1, 20, TRUE)"
+            " TRUE, TRUE, TRUE, 2, 3, 1, 20, FALSE)"
     );
 }
 

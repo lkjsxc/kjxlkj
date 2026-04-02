@@ -92,6 +92,8 @@ export async function expectSettingsPage(page) {
     await assertVisibleText(page, 'Defaults');
     await page.locator('[data-settings-order-list]').waitFor({ state: 'visible' });
     assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);
+    assert.equal(await page.getByText('Order', { exact: true }).count(), 0);
+    assert.equal(await page.locator('.settings-order-pill').count(), 0);
     await assertNoHeaderButtons(page);
 }
 

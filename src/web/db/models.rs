@@ -64,7 +64,7 @@ impl Default for AppSettings {
             home_favorite_position: 3,
             home_popular_position: 1,
             search_results_per_page: 20,
-            default_new_note_is_private: true,
+            default_new_note_is_private: false,
         }
     }
 }

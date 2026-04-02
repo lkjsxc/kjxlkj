@@ -132,7 +132,7 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
 </label>
 <aside id="editor-preview-panel" class="editor-preview-panel" hidden>
 <div class="editor-preview-frame">
-<div id="editor-preview" class="editor-preview-body prose paper-prose"></div>
+<div id="editor-preview" class="editor-preview-body prose"></div>
 </div>
 </aside>
 </div>

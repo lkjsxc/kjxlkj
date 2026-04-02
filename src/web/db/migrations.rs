@@ -62,7 +62,7 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 body TEXT NOT NULL DEFAULT '',
                 is_favorite BOOLEAN NOT NULL DEFAULT FALSE,
                 favorite_position BIGINT,
-                is_private BOOLEAN NOT NULL DEFAULT TRUE,
+                is_private BOOLEAN NOT NULL DEFAULT FALSE,
                 view_count_total BIGINT NOT NULL DEFAULT 0,
                 last_viewed_at TIMESTAMPTZ,
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -138,7 +138,7 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
                 home_favorite_position BIGINT NOT NULL DEFAULT 3,
                 home_popular_position BIGINT NOT NULL DEFAULT 1,
                 search_results_per_page BIGINT NOT NULL DEFAULT 20,
-                default_new_note_is_private BOOLEAN NOT NULL DEFAULT TRUE,
+                default_new_note_is_private BOOLEAN NOT NULL DEFAULT FALSE,
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
 
@@ -159,9 +159,11 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             ALTER TABLE app_settings
                 ADD COLUMN IF NOT EXISTS home_popular_position BIGINT NOT NULL DEFAULT 1;
             ALTER TABLE app_settings
-                ADD COLUMN IF NOT EXISTS default_new_note_is_private BOOLEAN NOT NULL DEFAULT TRUE;
+                ADD COLUMN IF NOT EXISTS default_new_note_is_private BOOLEAN NOT NULL DEFAULT FALSE;
             ALTER TABLE app_settings
                 DROP COLUMN IF EXISTS home_title;
+            ALTER TABLE records
+                ALTER COLUMN is_private SET DEFAULT FALSE;
             ALTER TABLE app_settings
                 ALTER COLUMN home_recent_limit SET DEFAULT 5;
             ALTER TABLE app_settings
@@ -169,10 +171,13 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), AppError> {
             ALTER TABLE app_settings
                 ALTER COLUMN home_popular_limit SET DEFAULT 5;
             ALTER TABLE app_settings
+                ALTER COLUMN default_new_note_is_private SET DEFAULT FALSE;
+            ALTER TABLE app_settings
                 DROP COLUMN IF EXISTS default_vim_mode;
 
             INSERT INTO app_settings (id) VALUES (1)
             ON CONFLICT (id) DO NOTHING;
+            UPDATE app_settings SET default_new_note_is_private = FALSE WHERE id = 1;
             "#,
         )
         .await

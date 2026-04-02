@@ -89,10 +89,10 @@
 
 .editor-preview-panel {
     min-width: 0;
-    border: 1px solid #d0dae6;
+    border: 1px solid var(--line);
     border-radius: 22px;
-    background: #f7f8fb;
-    color: #111827;
+    background: var(--panel-2);
+    color: var(--text);
 }
 
 .editor-preview-frame {

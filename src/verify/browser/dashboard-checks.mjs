@@ -38,11 +38,12 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.locator('input[name="home_popular_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_recent_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_favorite_limit"]').inputValue(), '5');
-    assert.equal(await page.getByLabel('New notes start private').isChecked(), true);
+    assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
+    assert.equal(await page.getByText('Order', { exact: true }).count(), 0);
+    assert.equal(await page.locator('.settings-order-pill').count(), 0);
     await page.getByLabel('Home intro Markdown').fill('# Launchpad\n\nWelcome to **Launchpad**.');
     await reorderHomeSections(page);
     await page.locator('input[name="home_recent_visible"]').uncheck();
-    await page.getByLabel('New notes start private').uncheck();
     const responsePromise = page.waitForResponse((response) => {
         const url = new URL(response.url());
         return url.pathname === '/admin/settings' && response.request().method() === 'POST';

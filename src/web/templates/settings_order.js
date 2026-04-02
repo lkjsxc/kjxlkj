@@ -44,9 +44,7 @@
         Array.from(list.querySelectorAll('[data-settings-order-item]')).forEach(function (item, index) {
             var value = String(index + 1);
             var input = item.querySelector('input[type="hidden"][name$="_position"]');
-            var badge = item.querySelector('[data-settings-order-value]');
             if (input) input.value = value;
-            if (badge) badge.textContent = value;
         });
     }
 })();
