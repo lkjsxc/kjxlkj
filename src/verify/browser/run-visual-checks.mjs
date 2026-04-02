@@ -12,6 +12,7 @@ import {
 import { applySettingsScenario, verifyFavoriteReorder } from './dashboard-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertHomeBrowseLinks, popularTitles } from './home-checks.mjs';
+import { assertIconAssets } from './icon-checks.mjs';
 import { captureCompactScreens } from './responsive-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
@@ -98,6 +99,7 @@ async function capturePublicScreens(browser, notes) {
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
+    await assertIconAssets(page);
     assert.equal(await page.getByRole('link', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
     assert.equal((await popularTitles(page))[0], 'Beacon Log');
     await assertHomeBrowseLinks(page);

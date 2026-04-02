@@ -1,6 +1,22 @@
-.editor-shell {
+.editor-shell,
+.editor-meta-grid,
+.editor-workspace,
+.editor-field-card,
+.editor-preview-panel,
+.editor-preview-frame,
+.editor-preview-body {
     display: grid;
+}
+
+.editor-shell,
+.editor-meta-grid,
+.editor-workspace,
+.editor-preview-frame,
+.editor-preview-body {
     gap: 12px;
+}
+
+.editor-shell {
     min-width: 0;
     overflow-x: clip;
     position: relative;
@@ -19,167 +35,76 @@
     justify-content: space-between;
 }
 
-.editor-preview-backdrop {
-    display: none;
+.editor-meta-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.editor-field-card {
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+}
+
+.editor-field-card small {
+    color: var(--text-soft);
+}
+
+.editor-field-card input,
+.note-editor {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--bg-1);
+    color: var(--text);
+}
+
+.editor-field-card input {
+    padding: 12px 14px;
+}
+
+.editor-body-card {
+    min-width: 0;
 }
 
 .note-editor {
     min-height: 58vh;
-    font-size: 16px;
+    padding: 18px 20px;
+    font-size: 15px;
     line-height: 1.7;
-    font-family: inherit;
-    background: var(--bg-1);
-    color: var(--text);
-    width: 100%;
+    font-family: var(--mono);
+    resize: vertical;
+    overflow-wrap: anywhere;
+}
+
+.editor-field-card input:focus,
+.note-editor:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.editor-shell.preview-open:not(.preview-compact) .editor-workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
+    align-items: start;
+}
+
+.editor-preview-panel {
     min-width: 0;
-    max-width: 100%;
+    border: 1px solid #d0dae6;
+    border-radius: 22px;
+    background: #f7f8fb;
+    color: #111827;
 }
 
-.toast-host,
-.toastui-editor-defaultUI,
-.toastui-editor-main,
-.toastui-editor-main-container,
-.toastui-editor-md-container,
-.toastui-editor-md-container > .toastui-editor,
-.toastui-editor-md-preview,
-.toastui-editor-md-container .ProseMirror,
-.toastui-editor-contents {
-    min-width: 0 !important;
-    max-width: 100% !important;
-    font-family: inherit !important;
+.editor-preview-frame {
+    max-height: calc(100vh - 280px);
+    overflow: auto;
+    padding: 18px 20px;
 }
 
-.toastui-editor-defaultUI {
-    border: 1px solid var(--line) !important;
-    border-radius: 22px !important;
-    overflow: hidden;
-    background: var(--panel) !important;
-    width: 100% !important;
-    height: auto !important;
-    box-shadow: none !important;
+.editor-preview-backdrop {
+    display: none;
 }
 
-.toastui-editor-defaultUI-toolbar,
-.toastui-editor-toolbar {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 7px !important;
-    min-height: 46px;
-    height: auto !important;
-    background: var(--panel-2) !important;
-    border-bottom: 1px solid var(--line) !important;
-    overflow: hidden !important;
-    box-shadow: none !important;
-    width: 100% !important;
-}
-
-.toastui-editor-toolbar-group,
-.toastui-editor-toolbar-divider {
-    border-color: var(--line) !important;
-    flex: 0 0 auto;
-}
-
-.toastui-editor-toolbar-group {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 4px;
-}
-
-.toastui-editor-toolbar-divider {
-    margin: 8px 4px !important;
-    align-self: stretch;
-    height: auto !important;
-}
-
-.toastui-editor-defaultUI-toolbar button {
-    margin: 4px !important;
-}
-
-.toastui-editor-toolbar-icons,
-.toastui-editor-defaultUI-toolbar button {
-    border-radius: 12px !important;
-}
-
-.toastui-editor-defaultUI-toolbar button:hover {
-    background: var(--bg-3) !important;
-}
-
-.toastui-editor-md-tab-container,
-.toastui-editor-mode-switch {
-    display: none !important;
-}
-
-.toastui-editor-main,
-.toastui-editor-main-container,
-.toastui-editor-md-container,
-.toastui-editor-md-container > .toastui-editor,
-.toastui-editor-md-preview,
-.toastui-editor-md-container .ProseMirror,
-.toastui-editor-contents,
-.toastui-editor-md-container .toastui-editor-contents {
-    background: var(--panel) !important;
-    height: auto !important;
-    overflow: visible !important;
-}
-
-.toastui-editor-md-container {
-    display: flex !important;
-    align-items: stretch;
-    position: relative;
-}
-
-.editor-shell .toastui-editor-md-container > .toastui-editor,
-.editor-shell .toastui-editor-md-preview {
-    width: 100% !important;
-}
-
-.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-container > .toastui-editor,
-.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-preview {
-    width: 50% !important;
-}
-
-.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-container > .toastui-editor {
-    border-right: 1px solid var(--line);
-}
-
-.editor-shell.preview-open:not(.preview-compact) .toastui-editor-md-preview {
-    border-left: 1px solid var(--line);
-    padding: 0 !important;
-}
-
-.editor-shell.preview-closed .toastui-editor-md-preview,
-.editor-shell.preview-closed .toastui-editor-md-splitter {
-    display: none !important;
-}
-
-.toastui-editor-md-container .ProseMirror {
-    min-height: 460px;
-    padding: 16px 20px 18px !important;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap !important;
-    word-break: break-word;
-}
-
-.toastui-editor-md-preview .toastui-editor-contents {
-    color: var(--text) !important;
-    min-height: 460px;
-    padding: 16px 20px 18px !important;
-    overflow-wrap: anywhere;
-}
-
-.toastui-editor-md-preview .toastui-editor-contents table {
-    table-layout: fixed;
-    width: 100%;
-}
-
-.toastui-editor-md-preview .toastui-editor-contents td,
-.toastui-editor-md-preview .toastui-editor-contents th {
-    overflow-wrap: anywhere;
-}
-
-.toastui-editor-md-preview .toastui-editor-contents code,
-.toastui-editor-md-preview .toastui-editor-contents pre {
-    font-family: var(--mono) !important;
+.save-error {
+    color: var(--danger);
 }

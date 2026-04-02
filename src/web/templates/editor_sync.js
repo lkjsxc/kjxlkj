@@ -12,7 +12,7 @@ function isDirty(body, alias, favorite, nextPrivate) {
 }
 
 function saveNote() {
-    if (!editorState.sourceField || typeof currentId === 'undefined') return;
+    if (!editorState.bodyField || typeof currentId === 'undefined') return;
     var body = currentBody();
     var requestId = ++editorState.latestRequest;
     fetch('/records/' + currentId, {
@@ -36,8 +36,10 @@ function saveNote() {
             editorState.lastSavedAlias = currentAlias;
             editorState.lastSavedFavorite = isFavorite;
             editorState.lastSavedPrivate = isPrivate;
+            editorState.aliasField.value = currentAlias || '';
+            editorState.publicToggle.checked = !isPrivate;
+            editorState.favoriteToggle.checked = isFavorite;
             syncNoteChrome();
-            syncCanonicalLinks();
             setSaveError('');
         })
         .catch(function (error) {

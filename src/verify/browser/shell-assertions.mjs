@@ -85,16 +85,6 @@ export async function assertStableMetadata(page, title) {
     assert.ok(heights.every((height) => height <= 24), 'timestamps should stay compact');
 }
 
-export async function assertLocalToastUiAssets(page) {
-    const assetPaths = await page.evaluate(() =>
-        Array.from(document.querySelectorAll('link[href*="toastui-editor"], script[src*="toastui-editor"]')).map(
-            (node) => node.getAttribute('href') ?? node.getAttribute('src')
-        )
-    );
-    assert.ok(assetPaths.length >= 3);
-    assert.ok(assetPaths.every((path) => path.startsWith('/assets/vendor/toastui/3.2.2/')));
-}
-
 export async function assertSingleHistoryCard(page) {
     await assertVisibleText(page, 'All history');
     assert.equal(await page.getByText('All history', { exact: true }).count(), 1);

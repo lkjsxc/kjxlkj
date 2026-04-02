@@ -8,17 +8,19 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = true) {
         page.waitForURL((url) => new URL(url).pathname !== '/admin'),
         page.getByRole('button', { name: 'New note', exact: true }).first().click(),
     ]);
-    await page.locator('[data-live-title]').first().waitFor({ state: 'visible' });
+    await page.locator('#editor-body').waitFor({ state: 'visible' });
     const title = (await page.locator('[data-live-title]').first().textContent()).trim();
     assert.match(title, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
     assert.equal(await page.locator('#public-toggle').isChecked(), !expectedPrivate, 'new note visibility should follow settings');
-    await page.getByRole('button', { name: 'Show preview', exact: true }).waitFor({ state: 'visible' });
-    assert.equal(
-        await page.locator('#preview-toggle').getAttribute('aria-expanded'),
-        'false',
-        'preview should start closed'
-    );
+    assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should start closed');
     await expectEditorFocus(page);
+    const savePromise = page.waitForResponse((response) => {
+        return response.request().method() === 'PUT' && new URL(response.url()).pathname.startsWith('/records/');
+    });
+    await page.locator('#alias-input').fill('launchpad-note_v2.release');
+    assert.equal((await savePromise).status(), 200);
+    await page.waitForURL((url) => new URL(url).pathname === '/launchpad-note_v2.release');
+    await assertVisibleText(page, '/launchpad-note_v2.release');
 }
 
 export async function verifyEditorFormatting(browser, page, note) {
@@ -28,7 +30,7 @@ export async function verifyEditorFormatting(browser, page, note) {
             saveRequests.push(Date.now());
         }
     });
-    await page.locator('.toastui-editor-md-container .ProseMirror').first().waitFor({ state: 'visible' });
+    await page.locator('#editor-body').waitFor({ state: 'visible' });
     await expectEditorFocus(page);
     await page.waitForTimeout(1600);
     assert.equal(saveRequests.length, 0, 'idle note should not save before edits');
@@ -36,18 +38,14 @@ export async function verifyEditorFormatting(browser, page, note) {
     await openPreview(page);
     await waitForPreviewStructures(page);
     await assertEditorLayout(page, false);
-    await assertAccentLink(page, '.toastui-editor-md-preview .toastui-editor-contents a');
+    await assertAccentLink(page, '#editor-preview a');
     await page.waitForTimeout(1800);
     assert.ok(saveRequests.length >= 1, 'editing should trigger autosave');
     const settledCount = saveRequests.length;
     await page.waitForTimeout(1600);
     assert.equal(saveRequests.length, settledCount, 'autosave should settle once edits are saved');
     await page.reload({ waitUntil: 'networkidle' });
-    assert.equal(
-        await page.locator('#preview-toggle').getAttribute('aria-expanded'),
-        'false',
-        'preview should reset closed after reload'
-    );
+    assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should reset closed after reload');
     await openPreview(page);
     await waitForPreviewStructures(page);
     const guest = await newContext(browser, { width: 1440, height: 1100 });
@@ -76,24 +74,27 @@ export async function openPreview(page) {
     await page.waitForFunction(
         () =>
             document.querySelector('#preview-toggle')?.getAttribute('aria-expanded') === 'true' &&
-            !!document.querySelector('.toastui-editor-md-preview')
+            !document.querySelector('#editor-preview-panel')?.hidden
     );
 }
 
 export async function assertEditorLayout(page, compact) {
     await page.waitForFunction((isCompact) => {
-        const toolbar = document.querySelector('.toastui-editor-defaultUI-toolbar,.toastui-editor-toolbar');
-        const preview = document.querySelector('.toastui-editor-md-preview');
-        const editor = document.querySelector('.toastui-editor-md-container > .toastui-editor');
-        const scroll = document.querySelector('.toastui-editor-md-container .ProseMirror');
-        if (!toolbar || !preview || !editor || !scroll) return false;
+        const editor = document.querySelector('#editor-body');
+        const preview = document.querySelector('#editor-preview-panel');
+        if (!editor || !preview) return false;
+        const editorOk = editor.scrollWidth - editor.clientWidth <= 1;
         const previewStyle = getComputedStyle(preview);
-        const toolbarOk = toolbar.scrollWidth - toolbar.clientWidth <= 1;
-        const scrollOk = scroll.scrollHeight - scroll.clientHeight <= 1;
-        if (isCompact) return toolbarOk && previewStyle.position === 'fixed' && scrollOk;
+        const pageColor = getComputedStyle(document.body).backgroundColor;
+        const previewColor = previewStyle.backgroundColor;
+        const brightness = (color) => color.match(/\d+/g).slice(0, 3).map(Number).reduce((sum, value, index) => {
+            return sum + value * [0.2126, 0.7152, 0.0722][index];
+        }, 0);
+        const lighterPreview = brightness(previewColor) > brightness(pageColor) + 80;
+        if (isCompact) return editorOk && previewStyle.position === 'fixed' && lighterPreview;
         const sideBySide = previewStyle.position !== 'fixed' &&
             preview.getBoundingClientRect().left >= editor.getBoundingClientRect().right - 4;
-        return toolbarOk && sideBySide && scrollOk;
+        return editorOk && sideBySide && lighterPreview;
     }, compact);
 }
 
@@ -122,31 +123,28 @@ async function appendMarkdown(page) {
         if (line) await page.keyboard.type(line);
         await page.keyboard.press('Enter');
     }
-    await page.locator('.toastui-editor-toolbar-icons.table').first().waitFor({ state: 'visible' });
 }
 
 async function waitForPreviewStructures(page) {
     await page.waitForFunction(
         () =>
-            !!document.querySelector('.toastui-editor-md-preview .toastui-editor-contents h2') &&
-            document.querySelectorAll('.toastui-editor-md-preview .toastui-editor-contents li').length >= 1 &&
-            !!document.querySelector('.toastui-editor-md-preview .toastui-editor-contents blockquote') &&
-            !!document.querySelector('.toastui-editor-md-preview .toastui-editor-contents pre') &&
-            !!document.querySelector('.toastui-editor-md-preview .toastui-editor-contents table')
+            !!document.querySelector('#editor-preview h2') &&
+            document.querySelectorAll('#editor-preview li').length >= 1 &&
+            !!document.querySelector('#editor-preview blockquote') &&
+            !!document.querySelector('#editor-preview pre') &&
+            !!document.querySelector('#editor-preview table')
     );
 }
 
 async function expectEditorFocus(page) {
-    await page.waitForFunction(() => {
-        const surface = document.querySelector('.toastui-editor-md-container .ProseMirror');
-        return !!surface && !!document.activeElement?.closest('.ProseMirror');
-    });
+    await page.waitForFunction(() => document.activeElement?.id === 'editor-body');
 }
 
 async function moveCursorToEnd(page) {
     await page.evaluate(() => {
-        window.editorInstance.focus();
-        window.editorInstance.moveCursorToEnd();
+        const field = document.querySelector('#editor-body');
+        field.focus();
+        field.setSelectionRange(field.value.length, field.value.length);
     });
     await expectEditorFocus(page);
 }

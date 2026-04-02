@@ -6,6 +6,7 @@ use super::sections::{page_header, section};
 use crate::web::db::AppSettings;
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
+const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
 
 pub fn settings_page(settings: &AppSettings) -> String {
     let content = format!(
@@ -29,7 +30,7 @@ pub fn settings_page(settings: &AppSettings) -> String {
             "settings-page",
         ),
         "",
-        &format!(r#"<script>{ACTIONS_JS}</script>"#),
+        &format!(r#"<script>{ACTIONS_JS}</script><script>{SETTINGS_ORDER_JS}</script>"#),
     )
 }
 
@@ -47,40 +48,47 @@ fn home_hero_section(settings: &AppSettings) -> String {
 }
 
 fn home_sections_section(settings: &AppSettings) -> String {
+    let mut rows = vec![
+        (
+            "Popular notes",
+            "home_popular_visible",
+            settings.home_popular_visible,
+            "home_popular_position",
+            settings.home_popular_position,
+            "home_popular_limit",
+            settings.home_popular_limit,
+        ),
+        (
+            "Recently updated",
+            "home_recent_visible",
+            settings.home_recent_visible,
+            "home_recent_position",
+            settings.home_recent_position,
+            "home_recent_limit",
+            settings.home_recent_limit,
+        ),
+        (
+            "Favorites",
+            "home_favorite_visible",
+            settings.home_favorite_visible,
+            "home_favorite_position",
+            settings.home_favorite_position,
+            "home_favorite_limit",
+            settings.home_favorite_limit,
+        ),
+    ];
+    rows.sort_by_key(|row| row.4);
     section(
         "Home sections",
         &surface_panel(&format!(
             r#"<div class="settings-table">
 <div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Order</span><span>Items</span></div>
-{}{}{}
+<div class="settings-table-body" data-settings-order-list>{}</div>
 </div>"#,
-            section_row(
-                "Popular notes",
-                "home_popular_visible",
-                settings.home_popular_visible,
-                "home_popular_position",
-                settings.home_popular_position,
-                "home_popular_limit",
-                settings.home_popular_limit,
-            ),
-            section_row(
-                "Recently updated",
-                "home_recent_visible",
-                settings.home_recent_visible,
-                "home_recent_position",
-                settings.home_recent_position,
-                "home_recent_limit",
-                settings.home_recent_limit,
-            ),
-            section_row(
-                "Favorites",
-                "home_favorite_visible",
-                settings.home_favorite_visible,
-                "home_favorite_position",
-                settings.home_favorite_position,
-                "home_favorite_limit",
-                settings.home_favorite_limit,
-            ),
+            rows.into_iter()
+                .map(|row| section_row(row.0, row.1, row.2, row.3, row.4, row.5, row.6))
+                .collect::<Vec<_>>()
+                .join("")
         )),
         "settings-section",
     )
@@ -115,12 +123,15 @@ fn section_row(
     limit: i64,
 ) -> String {
     format!(
-        r#"<label class="settings-row">
+        r#"<div class="settings-row settings-order-item" data-settings-order-item draggable="true">
+<div class="settings-row-label-group">
+<button type="button" class="settings-drag-handle" aria-label="Reorder home sections">Drag</button>
 <span class="settings-row-label">{label}</span>
+</div>
 <span class="settings-row-field settings-row-check"><input type="checkbox" name="{visible_name}" {}></span>
-<span class="settings-row-field"><input type="number" name="{position_name}" min="1" max="3" value="{position}"></span>
+<span class="settings-row-field"><span class="settings-order-pill" data-settings-order-value>{position}</span><input type="hidden" name="{position_name}" value="{position}"></span>
 <span class="settings-row-field"><input type="number" name="{limit_name}" min="1" max="24" value="{limit}"></span>
-</label>"#,
+</div>"#,
         if visible { "checked" } else { "" },
     )
 }

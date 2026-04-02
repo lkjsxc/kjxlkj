@@ -19,6 +19,7 @@ export async function assertHomeBrowseLinks(page) {
 export async function assertAdminHomeConfiguration(page) {
     await assertVisibleText(page, 'Launchpad');
     await assertVisibleText(page, 'Welcome to Launchpad');
+    assert.ok(await page.getByText('All time', { exact: true }).count() >= 1);
     assert.equal(await page.getByRole('heading', { name: 'Recently updated', exact: true }).count(), 0);
     const [favoritesTop, popularTop] = await Promise.all([
         page.getByRole('heading', { name: 'Favorites', exact: true }).evaluate((node) => node.getBoundingClientRect().top),

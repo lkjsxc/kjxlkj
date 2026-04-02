@@ -39,7 +39,7 @@ fn sample_chrome() -> NoteChrome {
 fn guest_note_page_hides_editor() {
     let html = note_page(&sample_record(), &sample_chrome(), None, false);
     assert!(html.contains("shell-rail"));
-    assert!(!html.contains("editor-root"));
+    assert!(!html.contains("id=\"editor-body\""));
 }
 
 #[test]
@@ -58,9 +58,10 @@ fn admin_note_page_renders_alias_and_favorite_controls() {
     );
     assert!(html.contains("favorite-toggle"));
     assert!(html.contains("alias-input"));
+    assert!(html.contains("id=\"editor-body\""));
     assert!(html.contains("preview-toggle"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("2026-03-26 08:35 UTC"));
-    assert!(!html.contains("uicdn.toast.com"));
+    assert!(!html.contains("toastui"));
 }

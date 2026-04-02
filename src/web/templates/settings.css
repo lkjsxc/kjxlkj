@@ -2,14 +2,16 @@
 .settings-stack,
 .settings-form,
 .settings-section-grid,
-.settings-table {
+.settings-table,
+.settings-table-body {
     display: grid;
 }
 
 .settings-page,
 .settings-stack,
 .settings-section-grid,
-.settings-table {
+.settings-table,
+.settings-table-body {
     gap: 12px;
 }
 
@@ -60,8 +62,40 @@
     font-weight: 600;
 }
 
+.settings-row-label-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
 .settings-row-label {
     font-weight: 600;
+}
+
+.settings-drag-handle,
+.settings-order-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-2);
+}
+
+.settings-drag-handle {
+    color: var(--text-soft);
+    cursor: grab;
+}
+
+.settings-order-item.dragging .settings-drag-handle {
+    cursor: grabbing;
+}
+
+.settings-order-item.dragging {
+    opacity: 0.6;
+    border-style: dashed;
 }
 
 .settings-row-check {
@@ -69,8 +103,18 @@
     justify-content: center;
 }
 
-.settings-row-field input {
+.settings-row-field {
+    display: flex;
+    justify-content: center;
+}
+
+.settings-row-field input[type="number"] {
+    width: 100%;
     text-align: center;
+}
+
+.settings-row-field input[type="hidden"] {
+    display: none;
 }
 
 .settings-submit-row {
@@ -85,6 +129,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .settings-row-label-group,
     .settings-row-label {
         grid-column: 1 / -1;
     }
