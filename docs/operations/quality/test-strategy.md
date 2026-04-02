@@ -23,6 +23,8 @@ Compose verify profile must execute the full quality gate bundle.
 ## Browser Verification
 
 - Browser-rendered screenshots verify desktop and compact layouts.
-- Visual checks assert hidden rail headings and helper copy, absent top-right browse/search/login actions, locally served editor assets, preview-toggle flow, and the wide-screen public grid.
+- Visual checks assert hidden rail headings and helper copy, absent top-right browse/search/login actions, preview-toggle flow, and the wide-screen public grid.
 - Compact admin note checks must fail on horizontal overflow.
 - Admin note checks must fail if idle editing triggers repeated no-op saves.
+- Guest-facing checks must fail if view counts leak onto non-admin surfaces.
+- Settings checks must fail if draggable home-section ordering does not persist after save.

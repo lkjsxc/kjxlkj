@@ -29,13 +29,13 @@
 - The rail must not expose a search box.
 - The editor must not expose a visible mode switch.
 - The product must not expose Vim-mode toggles, preferences, or status labels.
-- Toolbar overflow resolves by wrapping, not by a separate scrollbar strip.
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
 - Search query state may be displayed beside sort only when `q` is non-empty.
 - Search sort keeps an accessible label through semantics rather than a visible helper word.
 - Search input, sort control, and submit button align on one clean row on wide screens.
 - Settings controls for section visibility, order, and limits stay aligned enough to scan as one system.
+- Settings section order uses direct drag handles rather than raw numeric order fields.
 
 ## Section Chrome
 

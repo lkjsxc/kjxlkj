@@ -6,7 +6,8 @@
 - `/admin/settings` -> admin settings page and submit handlers.
 - `/search` -> auth-aware browse/search handler.
 - `/favicon.ico` -> production favicon handler.
-- `/assets/vendor/toastui/3.2.2/...` -> vendored editor asset handlers.
+- `/assets/icon.svg` -> visible brand icon handler.
+- `/admin/markdown-preview` -> admin-only preview renderer.
 - `/{ref}` -> note view/edit handler.
 - `/{ref}/history` -> history index handler.
 - `/{ref}/history/{revision_number}` -> history snapshot handler.

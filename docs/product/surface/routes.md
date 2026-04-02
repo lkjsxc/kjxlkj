@@ -46,12 +46,9 @@
   - returns the canonical production favicon
 - `GET /assets/icon.svg`:
   - returns the authored vector icon source
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor.min.css`:
-  - returns vendored editor CSS
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor-dark.min.css`:
-  - returns vendored dark-theme CSS
-- `GET /assets/vendor/toastui/3.2.2/toastui-editor-all.min.js`:
-  - returns vendored editor JS bundle
+- `POST /admin/markdown-preview`:
+  - without valid session: `401` JSON error
+  - valid session: `200` JSON containing rendered preview HTML
 
 ## Note Viewing
 
@@ -59,7 +56,7 @@
   - note not found: `404`
   - note is private and no session: `404`
   - canonical redirect responses do not count as note views
-  - accessible note: `200` HTML note page with Markdown editor for admins
+  - accessible note: `200` HTML note page with first-party Markdown editor for admins
 - `GET /{ref}/history`:
   - note not found: `404`
   - note is private and no session: `404`
@@ -75,7 +72,7 @@
 - `POST /records`:
   - without valid session: `401` JSON error
   - invalid payload or missing `body`: `400` JSON error
-  - valid session: `201` JSON with new note and generated `id`
+  - valid session: `201` JSON with new note editor state and generated `id`
 - `PUT /records/favorites/order`:
   - without valid session: `401` JSON error
   - invalid favorite set or invalid IDs: `400` JSON error
@@ -83,7 +80,7 @@
 - `PUT /records/{id}`:
   - without valid session: `401` JSON error
   - note not found: `404` JSON error
-  - valid session and note exists: `200` JSON with updated note
+  - valid session and note exists: `200` JSON with updated note editor state
 - `DELETE /records/{id}`:
   - without valid session: `401` JSON error
   - note not found: `404` JSON error

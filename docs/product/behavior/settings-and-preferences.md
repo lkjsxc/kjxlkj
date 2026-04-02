@@ -5,7 +5,6 @@
 - Global app settings are stored in PostgreSQL.
 - `GET /admin/settings` owns the canonical settings form.
 - The dashboard links to the settings page, but does not replace it.
-- Global settings include `home_title`.
 - Global settings include `home_intro_markdown`.
 - Global settings include homepage recent-note, favorite, and popular limits.
 - Global settings include homepage recent, favorite, and popular visibility toggles.
@@ -22,7 +21,6 @@
 
 ## Defaults
 
-- `home_title` defaults to `Home`.
 - Homepage recent-note count defaults to `5`.
 - Homepage favorite count defaults to `5`.
 - Homepage popular-note count defaults to `5`.

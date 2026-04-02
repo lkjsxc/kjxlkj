@@ -11,7 +11,6 @@
 ## Web Groups
 
 - `src/web/assets/`: site-owned static assets including icon sources and generated favicon output.
-- `src/web/assets/vendor/toastui/3.2.2/`: pinned upstream editor distribution plus provenance.
 - `src/web/db/`: PostgreSQL adapter, migrations, and query modules.
 - `src/web/handlers/`: route handlers and static-asset delivery.
 - `src/web/templates/`: authored HTML/CSS/JS/template support modules.

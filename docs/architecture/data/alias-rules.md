@@ -8,10 +8,11 @@
 
 - Raw alias input is trimmed and normalized before validation.
 - `alias` is stored as lowercase ASCII.
-- Allowed characters are `a-z`, `0-9`, and `-`.
-- Hyphens entered directly by typing or paste remain valid input.
-- Aliases may not begin or end with `-`.
-- Consecutive `--` is rejected.
+- Allowed characters are `a-z`, `0-9`, `-`, `_`, and `.`.
+- Direct typing or paste must preserve internal `-`, `_`, and `.` separators.
+- Aliases may not begin or end with a separator.
+- Consecutive separators are rejected even when they differ, such as `-.`, `._`, or `__`.
+- Whitespace normalizes to `-` before validation.
 
 ## Routing
 

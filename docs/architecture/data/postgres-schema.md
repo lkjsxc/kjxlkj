@@ -36,8 +36,7 @@
 ## `app_settings`
 
 - `id`: singleton key fixed to `1`.
-- `home_title`: homepage title text.
-- `home_intro_markdown`: optional homepage intro Markdown.
+- `home_intro_markdown`: optional homepage hero Markdown.
 - `home_recent_limit`: homepage recent-note count.
 - `home_favorite_limit`: homepage favorite count.
 - `home_popular_limit`: homepage popular-note count.

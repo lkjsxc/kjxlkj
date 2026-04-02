@@ -15,8 +15,8 @@
 
 ## Form Groups
 
-- `Home hero` contains the editable home title and intro Markdown.
-- `Home sections` contains visibility, order, and item-count controls for `Popular notes`, `Recently updated`, and `Favorites`.
+- `Home hero` contains only the editable intro Markdown field.
+- `Home sections` contains visibility, draggable order, and item-count controls for `Popular notes`, `Recently updated`, and `Favorites`.
 - `New notes` contains the default visibility control used when opening a fresh note.
 - `Search` contains the default result-count control for `/search`.
 

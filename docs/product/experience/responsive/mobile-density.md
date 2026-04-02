@@ -13,8 +13,6 @@
 - Editor and reader surfaces use the full remaining width.
 - Dashboard and history rows keep compact padding and clear contrast.
 - Sticky or floating controls must not obscure note content.
-- The editor toolbar may compact or reduce tool count on narrow screens.
-- Narrow screens wrap toolbar groups instead of exposing a detached horizontal toolbar scrollbar.
 - The note rail keeps fixed-size `Prev` and `Next` cards even when one side is unavailable.
 - Overflow is acceptable only inside tightly scoped editor internals, never at the page level.
 - The note page remains the primary vertical scroll container while editing.
@@ -26,6 +24,5 @@
 - The drawer opens without clipping the main pane.
 - Button labels and note metadata stay readable on real mobile widths.
 - Compact admin note pages show no horizontal page overflow.
-- Compact admin note pages do not show a misplaced toolbar scrollbar.
 - Compact layouts do not reintroduce visible rail section headings or helper copy.
 - Compact iPhone-width layouts keep the same UI font family and control sizing as other compact layouts.

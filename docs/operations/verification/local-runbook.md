@@ -49,11 +49,10 @@ Expected:
 
 - HTML contains the shared shell rail
 - HTML contains homepage sections rather than one bare browse list
-- homepage title is editable rather than hardcoded
-- homepage may include intro Markdown below the title
+- homepage hero is driven only by intro Markdown
 - homepage contains no stats block
 - homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
-- popular cards show rolling-window and all-time totals
+- guest popular cards do not show rolling-window or all-time totals
 - homepage includes `View more notes` cards that point into `/search`
 - homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
@@ -116,7 +115,7 @@ curl -sS 'http://127.0.0.1:8080/admin/settings' -b cookies.txt
 Expected:
 
 - HTML contains the canonical settings form
-- settings include home title and intro Markdown
+- settings include intro Markdown
 - settings include visibility and order controls for popular, recent, and favorites
 - settings include item-count controls defaulting to `5`
 - settings include default new-note visibility
@@ -139,7 +138,6 @@ Expected:
 - HTML does not contain helper text next to `Public`
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
 - HTML hides `Saving` / `Saved`
-- HTML references local editor assets rather than an external editor CDN
 - HTML contains note-view analytics metadata for admins
 - preview starts closed
 - no repeated save requests occur after the page becomes idle without further edits
@@ -166,7 +164,6 @@ Use browser verification or a real narrow viewport.
 Expected:
 
 - the page does not require horizontal scrolling
-- the editor toolbar stays inside the viewport and wraps instead of showing a detached scrollbar strip
 - opening the note leaves typing focus inside the visible editor
 - preview starts closed
 - `New note` appears near the top of the rail
@@ -175,6 +172,7 @@ Expected:
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 - compact preview opens as a fixed overlay and closes cleanly
 - compact preview still works when the rail is hidden behind the drawer
+- compact preview content is lighter than the surrounding shell
 - compact iPhone-width rendering keeps the same UI font family as other widths
 
 ## Verify Browser Visual Checks
@@ -190,6 +188,7 @@ Expected:
 - iPhone-width or equivalent compact screenshots confirm font consistency
 - homepage popular window switching works at runtime
 - the icon asset is linked through `/favicon.ico` and renders in shell branding
+- the icon verification checks transparent corners and centered text mass
 - the live typing scenario uses keyboard input on the visible Markdown editor surface
 - the admin-note idle scenario detects no repeated no-op save churn
 - visual verification exits `0`

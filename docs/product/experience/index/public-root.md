@@ -22,15 +22,16 @@
 
 ## Content Rules
 
-- The homepage top title renders the editable global `home_title` instead of a hardcoded `Home`.
-- The homepage may render optional intro Markdown directly under that title.
+- The homepage hero renders only admin-authored `home_intro_markdown`.
+- Empty hero Markdown removes the hero block entirely.
 - The homepage always contains `Quick search`.
 - The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order.
 - The homepage does not contain a statistics block.
 - The popular-notes section exposes one server-driven window selector for `7d`, `30d`, and `90d`.
 - The default homepage popularity window is `30d`.
 - `Popular notes`, `Recently updated`, and `Favorites` each end with one `View more notes` card that links into `/search`.
-- Popular-note cards show both the selected rolling-window total and the all-time total.
+- Guest popular-note cards do not expose rolling-window or all-time totals.
+- Admin popular-note cards may expose rolling-window and all-time totals.
 - Guest homepage data is public-only.
 - Signed-in admins may see private-capable popular, recent, and favorite blocks plus quick admin actions.
 - Opaque IDs are not shown in normal homepage cards.

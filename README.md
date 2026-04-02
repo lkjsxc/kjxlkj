@@ -19,10 +19,11 @@ Contract-first note service for LLM-operated workflows.
 
 ## Current Shape
 
-- `/` is an auth-aware homepage
+- `/` is an auth-aware homepage driven only by intro Markdown plus section settings
 - `/admin` is the analytics and activity dashboard
 - `/admin/settings` is the canonical settings workspace
 - `/{ref}` serves notes by alias or Base32 ID
+- Admin note editing uses a first-party Markdown textarea with on-demand preview
 
 ## Rule
 

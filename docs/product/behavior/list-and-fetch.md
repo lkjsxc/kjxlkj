@@ -3,7 +3,7 @@
 ## Home Page
 
 - `GET /` returns the homepage shell after setup completes.
-- The homepage hero uses the editable global `home_title` plus optional intro Markdown.
+- The homepage hero uses only the editable global `home_intro_markdown`.
 - The homepage always contains `Quick search`.
 - The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order and visibility.
 - Guests see public-only home data.
@@ -51,7 +51,7 @@
 - Resolves `ref` by alias first and by `id` second.
 - Redirects to the alias URL when a note has an alias and the request used its raw `id`.
 - Response includes `body`, `is_private`, `created_at`, and `updated_at`.
-- Admin note pages edit the stored Markdown body through one rendered workspace.
+- Admin note pages edit the stored Markdown body through one first-party Markdown workspace.
 - Guest note rendering reflects common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.
 
 ## Note Navigation

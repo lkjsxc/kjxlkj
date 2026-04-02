@@ -28,6 +28,7 @@
 - Recently updated includes a `View more notes` card into `/search`.
 - Favorites use a full reorderable admin list of all favorites.
 - Favorites include a `View more notes` card into `/search?scope=favorites`.
+- The settings summary should describe intro presence and section order rather than a removed home-title field.
 
 ## Visual Rules
 

@@ -45,14 +45,14 @@ docker compose --profile verify run --rm visual-verify
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - The shell brand renders the circular icon cleanly on desktop and compact headers.
 - HTML links `/favicon.ico` and the generated icon remains centered and legible at favicon scale.
-- Opening an admin note should leave focus inside the visible editor.
+- Opening an admin note should leave focus inside the visible textarea editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
 - Compact preview stays correctly placed when the rail is drawer-only or closed.
 - Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
-- Browser verification types into the visible Markdown editor surface rather than using `setMarkdown()`.
+- Compact preview content stays lighter than the surrounding dark shell.
+- Browser verification types into the visible Markdown editor surface.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
-- The editor toolbar wraps cleanly and does not expose a detached scrollbar strip.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
 - Empty-query `/search` renders note cards instead of helper guidance.
 - Search exposes a query display card near sort only when `q` is non-empty.
@@ -61,11 +61,13 @@ docker compose --profile verify run --rm visual-verify
 - Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard links to a dedicated settings page instead of embedding the full settings form.
-- Settings page covers home title, intro Markdown, section visibility and order, section counts, search page size, and default new-note visibility.
+- Settings page covers intro Markdown, section visibility and order, section counts, search page size, and default new-note visibility.
+- Settings page section order is draggable and persists after save.
 - Dashboard and admin note surfaces expose note-view analytics.
 - Markdown links are visibly accented in guest content and preview.
 - Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
 - Homepage intro Markdown renders when configured.
 - Homepage popular-window switching updates the visible popular list.
-- Homepage popular cards expose rolling-window and all-time totals.
+- Guest homepage popular cards do not expose counts.
+- Admin homepage popular cards expose rolling-window and all-time totals.
 - Homepage note sections expose `View more notes` cards for popular, recent, and favorites.

@@ -2,9 +2,9 @@
 
 ## Theme Policy
 
-- The product is dark-only.
-- No light theme is documented or implemented.
-- Every surface, border, and text token is authored for dark presentation first.
+- The shell is dark-first.
+- No alternate full light theme is documented or implemented.
+- Preview content surfaces may use a light paper-like treatment inside the dark shell when readability benefits.
 
 ## Surface Hierarchy
 

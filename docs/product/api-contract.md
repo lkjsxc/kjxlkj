@@ -14,11 +14,6 @@ The system manages `note` resources.
   "is_favorite": true,
   "favorite_position": 2,
   "is_private": true,
-  "view_count_total": 18,
-  "view_count_7d": 4,
-  "view_count_30d": 9,
-  "view_count_90d": 12,
-  "last_viewed_at": "2026-04-01T08:35:00Z",
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
 }
@@ -32,13 +27,23 @@ The system manages `note` resources.
 - `is_favorite`: Boolean. Default `false`.
 - `favorite_position`: Nullable positive integer. Present when the note is favorited.
 - `is_private`: Boolean. Default `true`.
-- `view_count_total`: Lifetime successful note-page view count.
-- `view_count_7d`: Rolling 7-day view count.
-- `view_count_30d`: Rolling 30-day view count.
-- `view_count_90d`: Rolling 90-day view count.
-- `last_viewed_at`: Nullable UTC RFC3339 timestamp for the last counted note view.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
+
+## Admin Analytics Schema
+
+```json
+{
+  "view_count_total": 18,
+  "view_count_7d": 4,
+  "view_count_30d": 9,
+  "view_count_90d": 12,
+  "last_viewed_at": "2026-04-01T08:35:00Z"
+}
+```
+
+- Analytics fields are admin-only presentation data.
+- Non-admin HTML and non-admin note payloads do not expose view totals.
 
 ## Create Payload
 
@@ -62,9 +67,9 @@ The system manages `note` resources.
 - Missing heading yields `Untitled note`.
 - Normal UI does not display raw `id` values.
 - Created time is the secondary identity cue in lists and note chrome.
-- Admin note pages edit the canonical body through a Markdown-first workspace with on-demand preview.
+- Admin note pages edit the canonical body through a first-party Markdown textarea with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
-- Homepage supports an editable title plus optional admin-authored intro Markdown below it.
+- Homepage hero content uses only editable intro Markdown.
 - Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.
@@ -77,6 +82,24 @@ The system manages `note` resources.
 - Search and browse UI are canonical on `/search`.
 - Favorite state is explicit admin-managed note state.
 - Favorite ordering is explicit admin-managed note state.
+
+## Preview API
+
+```json
+{
+  "body": "# Preview me"
+}
+```
+
+```json
+{
+  "html": "<h1>Preview me</h1>\n"
+}
+```
+
+- `POST /admin/markdown-preview` is admin-only.
+- The endpoint renders Markdown through the same server path used by note display.
+- Preview rendering does not mutate note state.
 
 ## Revision History
 

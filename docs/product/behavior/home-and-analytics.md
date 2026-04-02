@@ -2,9 +2,8 @@
 
 ## Home Content
 
-- The homepage top section renders the editable global `home_title`.
-- The homepage may render optional intro Markdown directly below that title.
-- Empty intro copy removes the block entirely rather than rendering placeholder text.
+- The homepage hero uses only the editable global `home_intro_markdown`.
+- Empty hero Markdown removes the hero block entirely rather than rendering placeholder text.
 - `Quick search` always renders.
 - `Popular notes`, `Recently updated`, and `Favorites` follow the configured visibility and order.
 - Initial installs default each visible note section limit to `5`.
@@ -22,8 +21,9 @@
 
 ## Popular Metrics
 
-- Popular-note cards show the selected rolling-window count.
-- Popular-note cards also show the lifetime `all-time` view total.
+- Admin-facing popular-note cards show the selected rolling-window count.
+- Admin-facing popular-note cards also show the lifetime `all-time` view total.
+- Guest-facing popular-note cards do not reveal any view counts.
 - Lifetime totals come from the stored `view_count_total` value.
 - When rolling-window totals tie, higher lifetime totals sort first.
 
@@ -45,4 +45,4 @@
 
 - Dashboard surfaces show popularity and note-view analytics.
 - Admin note pages show note-level view metrics.
-- Popularity-oriented homepage and search rows may expose rolling and lifetime totals.
+- Non-admin surfaces do not expose rolling or lifetime totals.
