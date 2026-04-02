@@ -1,20 +1,23 @@
 <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="kjx">
   <defs>
-    <linearGradient id="ring" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0D47A1"/>
-      <stop offset="0.55" stop-color="#1E88E5"/>
-      <stop offset="1" stop-color="#00BCD4"/>
-    </linearGradient>
+    <clipPath id="badge">
+      <circle cx="64" cy="64" r="60"/>
+    </clipPath>
   </defs>
-  <circle cx="64" cy="64" r="54" fill="none" stroke="url(#ring)" stroke-width="14"/>
-  <circle cx="64" cy="64" r="43" fill="#ffffff"/>
+  <g clip-path="url(#badge)">
+    <rect x="0" y="0" width="64" height="64" fill="#0D47A1"/>
+    <rect x="64" y="0" width="64" height="64" fill="#1E88E5"/>
+    <rect x="0" y="64" width="64" height="64" fill="#4FC3F7"/>
+    <rect x="64" y="64" width="64" height="64" fill="#00BCD4"/>
+  </g>
+  <circle cx="64" cy="64" r="48" fill="#ffffff"/>
   <text
     x="64"
-    y="74"
+    y="66"
     font-family="DejaVu Sans, Arial, Helvetica, sans-serif"
     font-size="43"
     font-weight="800"
-    letter-spacing="-2"
+    letter-spacing="-1"
     text-anchor="middle"
     dominant-baseline="middle"
     fill="#0B1018"
