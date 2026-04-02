@@ -28,4 +28,4 @@
 - Homepage section order defaults to `Popular notes`, `Recently updated`, then `Favorites`.
 - Homepage intro Markdown defaults to empty.
 - Default search page size defaults to `20`.
-- Default new-note visibility defaults to private.
+- Default new-note visibility defaults to public.

@@ -25,7 +25,7 @@
 - Alias and favorite controls stay inside the editing surface.
 - Preview stays closed by default and opens on demand from the editor chrome.
 - Preview work may stay inactive until the user opens it.
-- The typing surface stays dark, but preview content may switch to a light paper-like surface for readability.
+- The typing surface and the preview both stay within the same dark-mode presentation family.
 - The note page owns the vertical scroll path for long notes.
 - The note page never requires horizontal page scrolling to reach editor controls.
 - Opening the note should leave the caret ready for direct typing.

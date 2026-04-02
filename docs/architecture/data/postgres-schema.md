@@ -47,7 +47,7 @@
 - `home_favorite_position`: homepage favorite-section order slot.
 - `home_popular_position`: homepage popular-section order slot.
 - `search_results_per_page`: default HTML search page size.
-- `default_new_note_is_private`: default visibility for freshly opened note pages.
+- `default_new_note_is_private`: default visibility flag for freshly opened note pages; the product default is `FALSE` so new notes start public unless the setting is turned on.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes

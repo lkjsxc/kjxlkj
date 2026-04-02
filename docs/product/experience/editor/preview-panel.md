@@ -29,4 +29,5 @@
 - Preview content tracks the current unsaved Markdown body.
 - Preview rendering should stay visually aligned with guest note rendering.
 - Tables, lists, blockquotes, headings, and fenced code must render normally inside the preview.
-- Compact preview content may use a lighter paper-like content surface inside the dark shell when that improves readability.
+- Preview uses the same dark-mode content language as the actual note display rather than a separate light-paper treatment.
+- Preview contrast should come from spacing, borders, and typography, not from switching into a light theme.

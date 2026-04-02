@@ -9,7 +9,7 @@
 - Serve notes at root paths such as `/{alias}` or `/{id}`.
 - Use opaque Base32 note IDs and optional human-managed aliases.
 - Keep editing fast for one admin with autosave, live chrome updates, and on-demand preview.
-- Support configurable new-note visibility while defaulting initial installs to private notes.
+- Support configurable new-note visibility while defaulting initial installs to public notes.
 - Preserve immutable revision history.
 - Keep homepage, favorites, popularity, search, and analytics surfaces workable for thousands of notes.
 

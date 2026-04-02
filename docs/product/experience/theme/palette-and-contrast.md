@@ -4,7 +4,7 @@
 
 - The shell is dark-first.
 - No alternate full light theme is documented or implemented.
-- Preview content surfaces may use a light paper-like treatment inside the dark shell when readability benefits.
+- Preview content stays in the same dark-mode family as guest note rendering.
 
 ## Surface Hierarchy
 

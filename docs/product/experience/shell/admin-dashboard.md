@@ -37,3 +37,4 @@
 - Empty states remain compact and factual.
 - Explanatory helper blocks such as `Admin index` are omitted.
 - Section wrappers stay lighter than note cards and do not stack repeated nested borders.
+- Settings summary cards keep a clearer gap between their labels and values than the tighter early pass.

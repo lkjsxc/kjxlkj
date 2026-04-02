@@ -28,3 +28,5 @@ Compose verify profile must execute the full quality gate bundle.
 - Admin note checks must fail if idle editing triggers repeated no-op saves.
 - Guest-facing checks must fail if view counts leak onto non-admin surfaces.
 - Settings checks must fail if draggable home-section ordering does not persist after save.
+- Settings checks must fail if home-section order numbers reappear in the visible UI.
+- Editor checks must fail if preview falls back to the old light-surface treatment.

@@ -44,13 +44,14 @@ docker compose --profile verify run --rm visual-verify
 - Search sort remains functional without a visible `Sort` label.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - The shell brand renders the circular icon cleanly on desktop and compact headers.
-- HTML links `/favicon.ico` and the generated icon remains centered and legible at favicon scale.
+- HTML links `/favicon.ico` and the generated icon remain centered and legible at favicon scale.
+- The icon uses the final four-solid-color composition rather than a gradient ring.
 - Opening an admin note should leave focus inside the visible textarea editor.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
 - Compact preview stays correctly placed when the rail is drawer-only or closed.
 - Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
-- Compact preview content stays lighter than the surrounding dark shell.
+- Compact preview content stays in the same dark-mode family as the guest note surface.
 - Browser verification types into the visible Markdown editor surface.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
@@ -61,7 +62,8 @@ docker compose --profile verify run --rm visual-verify
 - Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard links to a dedicated settings page instead of embedding the full settings form.
-- Settings page covers intro Markdown, section visibility and order, section counts, search page size, and default new-note visibility.
+- Settings page covers intro Markdown, section visibility and drag order, section counts, search page size, and default new-note visibility.
+- Settings page does not expose visible order numbers for home sections.
 - Settings page section order is draggable and persists after save.
 - Dashboard and admin note surfaces expose note-view analytics.
 - Markdown links are visibly accented in guest content and preview.

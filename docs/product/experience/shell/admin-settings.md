@@ -17,6 +17,7 @@
 
 - `Home hero` contains only the editable intro Markdown field.
 - `Home sections` contains visibility, draggable order, and item-count controls for `Popular notes`, `Recently updated`, and `Favorites`.
+- The drag row order is the only visible order affordance; numeric order badges are omitted.
 - `New notes` contains the default visibility control used when opening a fresh note.
 - `Search` contains the default result-count control for `/search`.
 
@@ -24,5 +25,6 @@
 
 - Saving redirects back to `/admin/settings`.
 - Successful saves immediately affect `/`, `/search`, `/admin`, and newly opened note pages.
+- Fresh installs and untouched settings default new notes to public.
 - The settings page contains no Vim-mode controls.
 - The settings page uses factual validation copy and does not hide invalid values behind silent coercion.
