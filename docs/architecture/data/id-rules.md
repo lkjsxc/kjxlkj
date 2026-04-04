@@ -16,8 +16,10 @@
 - IDs are generated from cryptographically secure random bytes.
 - IDs are opaque and carry no timestamp or title meaning.
 - The system retries on collision before failing creation.
+- Current-note IDs and revision IDs share one global opaque-ID namespace.
 
 ## Validation
 
 - Any malformed `id` is rejected before storage access.
 - Validation checks exact length plus lowercase Base32 character set.
+- Aliases remain current-note-only and never identify revisions.

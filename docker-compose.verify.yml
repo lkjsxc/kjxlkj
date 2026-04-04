@@ -1,0 +1,35 @@
+services:
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile.verify
+    working_dir: /workspace
+    environment:
+      CARGO_TARGET_DIR: /target
+    volumes:
+      - .:/workspace:ro
+      - verify-cargo:/usr/local/cargo/registry
+      - verify-target:/target
+    depends_on:
+      app:
+        condition: service_healthy
+
+  visual-verify:
+    build:
+      context: .
+      dockerfile: Dockerfile.visual
+    environment:
+      APP_URL: http://app:${BIND_PORT:-8080}
+      DATABASE_URL: postgres://${POSTGRES_USER:-kjxlkj}:${POSTGRES_PASSWORD:-kjxlkj}@postgres:5432/${POSTGRES_DB:-kjxlkj}
+      ARTIFACT_DIR: /artifacts
+    volumes:
+      - ./tmp/visual-artifacts:/artifacts
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  verify-cargo:
+    name: kjxlkj-verify-cargo
+  verify-target:
+    name: kjxlkj-verify-target

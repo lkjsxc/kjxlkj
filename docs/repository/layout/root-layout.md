@@ -3,6 +3,7 @@
 ## Required Root Entries
 
 - `.gitignore`
+- `.env.example`
 - `.github/`
 - `LICENSE`
 - `README.md`
@@ -14,6 +15,7 @@
 - `Dockerfile.verify`
 - `Dockerfile.visual`
 - `docker-compose.yml`
+- `docker-compose.verify.yml`
 - `verify.sh`
 
 ## Root Policy

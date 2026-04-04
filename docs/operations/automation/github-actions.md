@@ -9,6 +9,7 @@
 - Pull requests run the compose-backed verification bundle.
 - Default-branch pushes run the same verification bundle.
 - Workflow logic must not replace compose verification with a weaker direct-host shortcut.
+- The workflow layers `docker-compose.verify.yml` on top of `docker-compose.yml`.
 
 ## Publish Job
 

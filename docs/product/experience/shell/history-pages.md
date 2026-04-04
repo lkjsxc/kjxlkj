@@ -14,12 +14,14 @@
 - Guests may read only public revisions.
 - Admins may read all revisions.
 - Revision pages never expose raw note IDs as normal page chrome.
+- Revision pages use their own opaque root-path URL at `/{id}`.
 
 ## Index Content
 
 - The first card links to the current note.
 - The remaining cards list one paginated page of visible revisions in `revision_number DESC` order.
 - Each revision card shows revision label, saved-at time, and visibility state.
+- Each revision card links directly to its root-path revision page.
 - The current-note card remains visible on every page instead of becoming part of the paginated slice.
 - History paging is URL-shareable through `cursor`, `direction`, and `limit`.
 

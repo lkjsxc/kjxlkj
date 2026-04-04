@@ -8,9 +8,8 @@
 - `/favicon.ico` -> production favicon handler.
 - `/assets/icon.svg` -> visible brand icon handler.
 - `/admin/markdown-preview` -> admin-only preview renderer.
-- `/{ref}` -> note view/edit handler.
+- `/{ref}` -> root resource handler for current notes and revisions.
 - `/{ref}/history` -> history index handler.
-- `/{ref}/history/{revision_number}` -> history snapshot handler.
 - `/records` -> note create handler.
 - `/records/favorites/order` -> favorite reorder handler.
 - `/records/{id}` -> note update (PUT), delete (DELETE) handlers.
@@ -26,4 +25,4 @@
 - Admin settings uses session guard.
 - Search widens to private notes only when session is valid.
 - Note and history handlers check current-note access and snapshot visibility.
-- Root-path note routes resolve alias first and ID second.
+- Root-path current-note routes resolve alias first and opaque ID second.

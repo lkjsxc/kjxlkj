@@ -3,7 +3,7 @@
 ## Verification Command
 
 ```bash
-docker compose --profile verify run --rm visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 ```
 
 ## Required Captures
@@ -62,7 +62,7 @@ docker compose --profile verify run --rm visual-verify
 - Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard links to a dedicated settings page instead of embedding the full settings form.
-- Settings page covers intro Markdown, section visibility and drag order, section counts, search page size, and default new-note visibility.
+- Settings page covers intro Markdown, section visibility and drag order, section counts, session timeout, search page size, and default new-note visibility.
 - Settings page does not expose visible order numbers for home sections.
 - Settings page section order is draggable and persists after save.
 - Dashboard and admin note surfaces expose note-view analytics.

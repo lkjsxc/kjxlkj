@@ -118,6 +118,7 @@ Expected:
 - settings include intro Markdown
 - settings include visibility and order controls for popular, recent, and favorites
 - settings include item-count controls defaulting to `5`
+- settings include session timeout with default `1440`
 - settings include default new-note visibility
 - settings include default search page size
 - HTML does not contain Vim-mode controls
@@ -153,6 +154,7 @@ Expected:
 
 - HTML contains one `Current note` card
 - HTML contains visible revision cards in newest-first order
+- revision cards link to root-path opaque revision IDs rather than numbered note-scoped URLs
 - HTML contains previous/next paging controls when the revision set spans multiple pages
 - the rail still contains one `All history` card rather than revision links
 - HTML does not contain visible rail section headings
@@ -178,7 +180,7 @@ Expected:
 ## Verify Browser Visual Checks
 
 ```bash
-docker compose --profile verify run --rm visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 ```
 
 Expected:
@@ -196,6 +198,6 @@ Expected:
 ## Cleanup
 
 ```bash
-docker compose down -v
+docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 rm -f cookies.txt
 ```

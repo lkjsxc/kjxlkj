@@ -54,6 +54,7 @@
 ## Revision Tracking
 
 - Every update creates a revision entry before changes.
-- Revisions store `body`, `is_private`, `revision_number`, and `created_at`.
+- Revisions store `id`, `body`, `is_private`, `revision_number`, and `created_at`.
+- Revision `id` uses the same 26-character opaque format as current notes.
 - Revision numbers increment from `1`.
 - Revisions are immutable and never deleted.

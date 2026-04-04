@@ -30,5 +30,7 @@
 - Pagination uses `cursor`, `direction`, and `limit`.
 - Empty cursor returns the first page.
 - Visible revisions remain ordered `revision_number DESC`.
+- Visible revisions expose stable opaque revision IDs.
+- Revision cards link to root-path revision URLs at `/{id}`.
 - `direction=prev` still renders revisions in normal on-screen newest-to-oldest order.
 - The current note card remains outside the paginated revision slice on HTML history pages.

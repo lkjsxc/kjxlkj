@@ -27,6 +27,12 @@ Run all quality gates in one deterministic container command.
 - `CARGO_TARGET_DIR=/target`
 - Authored tests and browser verification live under `src/`
 
+## Compose Command
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
+```
+
 ## Script Template
 
 ```bash

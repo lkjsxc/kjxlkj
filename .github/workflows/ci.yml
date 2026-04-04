@@ -29,32 +29,32 @@ jobs:
       - name: Build compose images
         run: |
           set -euo pipefail
-          docker compose build app verify visual-verify
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
 
       - name: Start application services
         run: |
           set -euo pipefail
-          docker compose up -d postgres app
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres app
 
       - name: Run repository verification
         run: |
           set -euo pipefail
-          docker compose --profile verify run --rm verify
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
 
       - name: Run browser verification
         run: |
           set -euo pipefail
-          docker compose --profile verify run --rm visual-verify
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 
       - name: Collect compose logs
         if: always()
         run: |
-          docker compose ps > tmp/ci-logs/compose-ps.txt || true
-          docker compose logs postgres app > tmp/ci-logs/compose.log || true
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml ps > tmp/ci-logs/compose-ps.txt || true
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml logs postgres app > tmp/ci-logs/compose.log || true
 
       - name: Tear down compose services
         if: always()
-        run: docker compose down -v || true
+        run: docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v || true
 
       - name: Upload visual artifacts
         if: always() && hashFiles('tmp/visual-artifacts/**') != ''

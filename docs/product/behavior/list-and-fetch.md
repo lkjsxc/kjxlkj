@@ -23,6 +23,7 @@
 - `GET /admin/settings` returns the dedicated settings workspace.
 - The settings page owns the canonical global settings form.
 - Saving settings affects rendered HTML routes and new-note defaults immediately.
+- Saving settings affects future login session lifetime immediately.
 
 ## Search and Browse
 
@@ -45,14 +46,15 @@
 
 ## Fetch (`GET /{ref}`)
 
-- Returns full note content if accessible.
-- Returns `404` if note does not exist.
-- Returns `404` if note is private and user is not authenticated.
-- Resolves `ref` by alias first and by `id` second.
-- Redirects to the alias URL when a note has an alias and the request used its raw `id`.
-- Response includes `body`, `is_private`, `created_at`, and `updated_at`.
-- Admin note pages edit the stored Markdown body through one first-party Markdown workspace.
-- Guest note rendering reflects common structured Markdown such as headings, tables, task lists, and strikethrough when present in stored `body`.
+- Returns the current note page or a revision snapshot page if accessible.
+- Returns `404` if the target does not exist.
+- Returns `404` if the target is private and user is not authenticated.
+- Resolves `ref` by alias first, then by globally unique opaque ID.
+- Aliases resolve only to current notes.
+- Current-note IDs redirect to the alias URL when the note has an alias.
+- Revision IDs never redirect.
+- Current-note responses include the editable current body for admins.
+- Revision responses include the immutable historical snapshot body.
 
 ## Note Navigation
 
@@ -66,6 +68,7 @@
 
 - History index returns the current note plus one visible revision page.
 - Revision snapshots are ordered by `revision_number DESC`.
+- Revision snapshots also expose stable opaque revision IDs.
 - Guests can fetch only revisions whose stored state is public.
 - Admins can fetch all revisions.
 - The history rail never expands into per-revision links.

@@ -3,7 +3,7 @@
 ## Build
 
 ```bash
-docker compose build app verify visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
 ```
 
 ## Start Services
@@ -14,16 +14,16 @@ docker compose up -d
 
 Starts `postgres` and `app` services.
 
-## Run Verify Profile
+## Run Verify Service
 
 ```bash
-docker compose --profile verify run --rm verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
 ```
 
-## Run Visual Verify Profile
+## Run Visual Verify Service
 
 ```bash
-docker compose --profile verify run --rm visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 ```
 
 ## Stop
@@ -35,7 +35,7 @@ docker compose down
 ## Stop with Volume Cleanup
 
 ```bash
-docker compose down -v
+docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 ```
 
 ## View Logs

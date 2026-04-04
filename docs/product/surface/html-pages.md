@@ -6,9 +6,8 @@
 - `/admin`: admin dashboard.
 - `/admin/settings`: admin settings page.
 - `/search`: auth-aware browse and search page.
-- `/{ref}`: current note page.
+- `/{ref}`: current note page or revision snapshot page.
 - `/{ref}/history`: note history index.
-- `/{ref}/history/{revision_number}`: historical snapshot page.
 
 ## Shared Rules
 

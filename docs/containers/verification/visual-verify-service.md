@@ -7,7 +7,7 @@ Run browser-rendered screenshot and contrast checks against the live compose app
 ## Command
 
 ```bash
-docker compose --profile verify run --rm visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 ```
 
 ## Required Behavior

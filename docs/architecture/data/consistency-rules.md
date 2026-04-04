@@ -11,6 +11,7 @@
 ## Revision State
 
 - Every update snapshots the prior current body and privacy state.
+- Revision `id` is immutable once assigned.
 - Revision visibility is evaluated per stored snapshot.
 - Revisions never become searchable current-note records.
 
@@ -25,3 +26,4 @@
 - Homepage section visibility and order belong to singleton app settings.
 - Default new-note visibility belongs to singleton app settings.
 - Search default page size belongs to singleton app settings.
+- Session timeout belongs to singleton app settings.

@@ -9,11 +9,11 @@
 
 ## Compose Command Bundle
 
-- `docker compose build app verify visual-verify`
-- `docker compose up -d postgres app`
-- `docker compose --profile verify run --rm verify`
-- `docker compose --profile verify run --rm visual-verify`
-- `docker compose down -v`
+- `docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify`
+- `docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres app`
+- `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify`
+- `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify`
+- `docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v`
 
 ## Output Rules
 

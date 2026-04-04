@@ -1,11 +1,16 @@
 # Compose Service Contract
 
+## Compose Files
+
+- `docker-compose.yml`: runtime services only.
+- `docker-compose.verify.yml`: verification services only.
+
 ## Services
 
 - `postgres`: PostgreSQL database for auth/sessions.
 - `app`: runtime service exposing port `8080`.
-- `verify`: profile-gated quality verification service.
-- `visual-verify`: profile-gated browser screenshot verification service.
+- `verify`: quality verification service from the verification overlay.
+- `visual-verify`: browser screenshot verification service from the verification overlay.
 
 ## Service Dependencies
 
@@ -16,10 +21,15 @@
 
 - Image: `postgres:16-alpine`
 - Port: `5432` (internal only by default)
-- Volume: `pgdata:/var/lib/postgresql/data`
+- Volume: `kjxlkj-postgres-data:/var/lib/postgresql/data`
 - Healthcheck: `pg_isready`
 
-## Profile Rule
+## Verification Volumes
 
-- Default `docker compose up` starts `postgres` and `app`.
-- `verify` and `visual-verify` run only with `--profile verify`.
+- `verify` uses `kjxlkj-verify-cargo` for the Cargo registry cache.
+- `verify` uses `kjxlkj-verify-target` for the Rust target dir.
+
+## Start Rule
+
+- Default `docker compose up` starts only `postgres` and `app`.
+- Verification services start only when the overlay file is included.

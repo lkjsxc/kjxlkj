@@ -107,6 +107,7 @@ Every update creates a new immutable revision snapshot:
 
 ```json
 {
+  "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
   "revision_number": 3,
   "body": "# Title\n\nOld content...",
   "is_private": true,
@@ -120,6 +121,7 @@ History listing responses are paginated:
 {
   "revisions": [
     {
+      "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
       "revision_number": 3,
       "body": "# Title\n\nOld content...",
       "is_private": true,

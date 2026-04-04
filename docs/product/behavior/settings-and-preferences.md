@@ -11,7 +11,9 @@
 - Global settings include homepage recent, favorite, and popular order positions.
 - Global settings include default HTML search page size.
 - Global settings include default new-note visibility.
+- Global settings include session timeout in minutes.
 - Global settings affect HTML routes immediately after a successful save.
+- Session timeout affects future logins only.
 
 ## Local UI State
 
@@ -29,3 +31,4 @@
 - Homepage intro Markdown defaults to empty.
 - Default search page size defaults to `20`.
 - Default new-note visibility defaults to public.
+- Session timeout defaults to `1440` minutes.

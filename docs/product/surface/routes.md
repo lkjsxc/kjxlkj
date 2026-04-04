@@ -53,19 +53,15 @@
 ## Note Viewing
 
 - `GET /{ref}`:
-  - note not found: `404`
-  - note is private and no session: `404`
+  - target not found: `404`
+  - target is private and no session: `404`
   - canonical redirect responses do not count as note views
-  - accessible note: `200` HTML note page with first-party Markdown editor for admins
+  - accessible current note: `200` HTML note page with first-party Markdown editor for admins
+  - accessible revision snapshot: `200` HTML history snapshot page
 - `GET /{ref}/history`:
   - note not found: `404`
   - note is private and no session: `404`
   - accessible note: `200` HTML history index using `cursor`, `direction`, and `limit`
-- `GET /{ref}/history/{revision_number}`:
-  - note not found: `404`
-  - revision not found: `404`
-  - revision is private and no session: `404`
-  - accessible revision: `200` HTML history snapshot
 
 ## Note Management (Admin Only)
 

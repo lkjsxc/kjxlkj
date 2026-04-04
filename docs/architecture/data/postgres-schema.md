@@ -19,7 +19,7 @@
 
 ## `record_revisions`
 
-- `id`: surrogate primary key.
+- `id`: `CHAR(26)` primary key.
 - `record_id`: note reference.
 - `body`: historical snapshot body.
 - `is_private`: historical snapshot privacy.
@@ -48,6 +48,7 @@
 - `home_popular_position`: homepage popular-section order slot.
 - `search_results_per_page`: default HTML search page size.
 - `default_new_note_is_private`: default visibility flag for freshly opened note pages; the product default is `FALSE` so new notes start public unless the setting is turned on.
+- `session_timeout_minutes`: future-login session lifetime; the product default is `1440`.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes

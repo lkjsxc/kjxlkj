@@ -22,6 +22,7 @@
 - Statistics cards for total, public/private split, favorites, and current month or year activity.
 - Statistics also expose note-view activity totals and recent popularity context.
 - `Settings` is a compact summary block with a link to `/admin/settings`.
+- `Settings` summary also shows the configured session timeout.
 - Popular notes use a server-driven `7d` / `30d` / `90d` selector.
 - Popular-note rows show rolling-window and all-time totals.
 - Popular notes include a `View more notes` card into the matching `/search` state.
