@@ -20,9 +20,12 @@ pub struct Record {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RecordRevision {
+pub struct RecordSnapshot {
     pub id: String,
-    pub revision_number: i32,
+    pub snapshot_number: i32,
+    pub alias: Option<String>,
+    pub title: String,
+    pub summary: String,
     pub body: String,
     pub is_private: bool,
     pub created_at: DateTime<Utc>,

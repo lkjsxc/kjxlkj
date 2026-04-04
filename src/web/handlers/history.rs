@@ -35,7 +35,7 @@ pub async fn history_page(
         )));
     }
     let settings = db::get_settings(&pool).await?;
-    let page = db::list_record_revisions(
+    let page = db::list_record_snapshots(
         &pool,
         &record.id,
         is_admin,
@@ -48,7 +48,7 @@ pub async fn history_page(
     Ok(html(templates::history_page(
         &record,
         &chrome,
-        &view::history_links(&page.revisions),
+        &view::history_links(&page.snapshots, params.cursor.is_none()),
         page.previous_cursor.as_deref(),
         page.next_cursor.as_deref(),
         params.limit.unwrap_or(settings.search_results_per_page),

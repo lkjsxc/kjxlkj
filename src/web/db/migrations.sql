@@ -1,6 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
-
 DO $$
 BEGIN
     IF EXISTS (
@@ -22,24 +21,20 @@ BEGIN
         DROP TABLE IF EXISTS records;
     END IF;
 END $$;
-
 CREATE TABLE IF NOT EXISTS admin_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES admin_user(id) ON DELETE CASCADE,
     expires_at TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
-
 CREATE TABLE IF NOT EXISTS records (
     id CHAR(26) PRIMARY KEY,
     alias TEXT,
@@ -91,11 +86,14 @@ CREATE INDEX IF NOT EXISTS idx_records_body_trgm ON records USING GIN(body gin_t
 CREATE TABLE IF NOT EXISTS record_revisions (
     id CHAR(26) PRIMARY KEY,
     record_id CHAR(26) NOT NULL REFERENCES records(id),
+    alias TEXT,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
     body TEXT NOT NULL,
     is_private BOOLEAN NOT NULL,
-    revision_number INTEGER NOT NULL,
+    snapshot_number INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(record_id, revision_number)
+    UNIQUE(record_id, snapshot_number)
 );
 
 DO $$
@@ -111,9 +109,25 @@ BEGIN
 END $$;
 
 ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS id CHAR(26);
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'record_revisions' AND column_name = 'revision_number'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'record_revisions' AND column_name = 'snapshot_number'
+    ) THEN
+        ALTER TABLE record_revisions RENAME COLUMN revision_number TO snapshot_number;
+    END IF;
+END $$;
+ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS snapshot_number INTEGER;
+ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS alias TEXT;
+ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS summary TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_revisions_lookup
-    ON record_revisions(record_id, revision_number DESC);
+    ON record_revisions(record_id, snapshot_number DESC);
 
 CREATE TABLE IF NOT EXISTS record_daily_views (
     record_id CHAR(26) NOT NULL REFERENCES records(id) ON DELETE CASCADE,

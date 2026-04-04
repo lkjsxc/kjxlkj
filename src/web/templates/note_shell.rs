@@ -20,7 +20,7 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
 fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
         r#"<div class="rail-list">
-<a href="{}" class="rail-link{}" data-current-note-link><span data-live-title>{}</span><small>Current note</small></a>
+<a href="{}" class="rail-link{}" data-current-note-link><span data-live-title>{}</span><small>Live note</small></a>
 <div class="rail-facts">
 <p><strong>Alias</strong><span data-live-alias>{}</span></p>
 <p><strong>Created</strong><span>{}</span></p>
@@ -34,7 +34,7 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
         } else {
             ""
         },
-        chrome.title,
+        html_escape(&chrome.title),
         chrome.alias.as_deref().unwrap_or("None"),
         chrome.created_at,
         chrome.updated_at,
@@ -79,10 +79,11 @@ fn missing_timeline_card(relation: &str, empty: &str) -> String {
 
 fn note_link(link: &NavLink) -> String {
     format!(
-        r#"<a href="{}" class="rail-link"><small>{}</small><span>{}</span><small>{}</small></a>"#,
+        r#"<a href="{}" class="rail-link"><small>{}</small><span>{}</span><small class="rail-link-summary">{}</small><small>{}</small></a>"#,
         link.href,
         link.relation,
         html_escape(&link.title),
+        html_escape(&link.summary),
         link.created_at
     )
 }

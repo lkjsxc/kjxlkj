@@ -107,12 +107,14 @@ export async function expectAdminNote(page) {
     assert.equal(await page.locator('#favorite-toggle').isChecked(), true);
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false');
     assert.equal(await page.locator('.note-head .status-pill').count(), 0);
+    assert.equal(await page.locator('.note-head h1').count(), 0);
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'URL alias');
     await assertVisibleText(page, 'Canonical URL');
     await assertVisibleText(page, 'Views total');
     await assertVisibleText(page, 'Views 30d');
     await assertSingleHistoryCard(page);
+    assert.equal(await page.getByText('Markdown body', { exact: true }).count(), 0);
     assert.equal(await page.locator('script[src*="toastui"],link[href*="toastui"]').count(), 0);
     await assertCreateActionBelowHome(page);
 }

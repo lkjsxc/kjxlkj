@@ -122,8 +122,16 @@
 }
 
 .rail-facts span,
-.rail-link small {
+.rail-link small:not(.rail-link-summary) {
     white-space: nowrap;
+}
+
+.rail-link-summary {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .rail-actions .btn,

@@ -2,7 +2,7 @@
 
 use crate::core::derive_title;
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListedRecord, PopularWindow, Record, RecordRevision};
+use crate::web::db::{self, DbPool, ListedRecord, PopularWindow, Record, RecordSnapshot};
 use crate::web::templates::{
     render_time, HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome,
 };
@@ -43,24 +43,6 @@ pub fn note_analytics(stats: &db::NoteViewStats) -> NoteAnalytics {
     }
 }
 
-fn build_index_item(
-    record: &ListedRecord,
-    show_visibility: bool,
-    metrics: Vec<IndexMetric>,
-) -> IndexItem {
-    IndexItem {
-        id: record.record.id.clone(),
-        href: note_href(&record.record),
-        title: title_for(&record.record),
-        summary: record.preview.clone(),
-        created_at: render_time(&record.record.created_at),
-        updated_at: render_time(&record.record.updated_at),
-        is_favorite: record.record.is_favorite,
-        visibility: show_visibility.then_some(visibility_label(record.record.is_private)),
-        metrics,
-    }
-}
-
 pub async fn note_chrome(
     pool: &DbPool,
     record: &Record,
@@ -81,16 +63,40 @@ pub async fn note_chrome(
     })
 }
 
-pub fn history_links(revisions: &[RecordRevision]) -> Vec<HistoryLink> {
-    revisions
+pub fn history_links(snapshots: &[RecordSnapshot], first_page: bool) -> Vec<HistoryLink> {
+    snapshots
         .iter()
-        .map(|revision| HistoryLink {
-            href: revision_href(revision),
-            label: format!("Revision {}", revision.revision_number),
-            created_at: render_time(&revision.created_at),
-            status: visibility_label(revision.is_private),
+        .enumerate()
+        .map(|(index, snapshot)| HistoryLink {
+            href: snapshot_href(snapshot),
+            label: if first_page && index == 0 {
+                "Latest saved snapshot".to_string()
+            } else {
+                format!("Saved snapshot {}", snapshot.snapshot_number)
+            },
+            summary: snapshot.summary.clone(),
+            created_at: render_time(&snapshot.created_at),
+            status: visibility_label(snapshot.is_private),
         })
         .collect()
+}
+
+fn build_index_item(
+    record: &ListedRecord,
+    show_visibility: bool,
+    metrics: Vec<IndexMetric>,
+) -> IndexItem {
+    IndexItem {
+        id: record.record.id.clone(),
+        href: note_href(&record.record),
+        title: title_for(&record.record),
+        summary: record.preview.clone(),
+        created_at: render_time(&record.record.created_at),
+        updated_at: render_time(&record.record.updated_at),
+        is_favorite: record.record.is_favorite,
+        visibility: show_visibility.then_some(visibility_label(record.record.is_private)),
+        metrics,
+    }
 }
 
 async fn adjacent_link(
@@ -108,15 +114,20 @@ async fn adjacent_link(
         href: note_href(&note),
         relation: if older { "Prev" } else { "Next" },
         title: title_for(&note),
+        summary: note.summary.clone(),
         created_at: render_time(&note.created_at),
     }))
 }
 
 fn title_for(record: &Record) -> String {
-    if record.title.trim().is_empty() {
-        derive_title(&record.body)
+    title_from(&record.title, &record.body)
+}
+
+fn title_from(title: &str, body: &str) -> String {
+    if title.trim().is_empty() {
+        derive_title(body)
     } else {
-        record.title.clone()
+        title.to_string()
     }
 }
 
@@ -128,8 +139,8 @@ pub fn history_href(record: &Record) -> String {
     format!("{}/history", note_href(record))
 }
 
-pub fn revision_href(revision: &RecordRevision) -> String {
-    format!("/{}", revision.id)
+pub fn snapshot_href(snapshot: &RecordSnapshot) -> String {
+    format!("/{}", snapshot.id)
 }
 
 pub fn visibility_label(is_private: bool) -> &'static str {

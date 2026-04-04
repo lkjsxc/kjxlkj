@@ -1,6 +1,6 @@
 function queueSave() {
     clearTimeout(editorState.saveTimer);
-    if (!isDirty(currentBody(), currentAlias, isFavorite, isPrivate)) return;
+    if (!isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate)) return;
     editorState.saveTimer = setTimeout(saveNote, 500);
 }
 
@@ -14,13 +14,14 @@ function isDirty(body, alias, favorite, nextPrivate) {
 function saveNote() {
     if (!editorState.bodyField || typeof currentId === 'undefined') return;
     var body = currentBody();
+    var alias = draftAliasValue();
     var requestId = ++editorState.latestRequest;
     fetch('/records/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             body: body,
-            alias: currentAlias,
+            alias: alias,
             is_favorite: isFavorite,
             is_private: isPrivate
         })
@@ -51,8 +52,12 @@ function saveNote() {
 function readSaveResponse(response) {
     if (response.ok) return response.json();
     return response.json()
-        .then(function (payload) { throw new Error(payload.message); })
-        .catch(function () { throw new Error('Save failed. Retry on the next change.'); });
+        .then(
+            function (payload) {
+                throw new Error(payload.message || 'Save failed. Retry on the next change.');
+            },
+            function () { throw new Error('Save failed. Retry on the next change.'); }
+        );
 }
 
 function setSaveError(message) {

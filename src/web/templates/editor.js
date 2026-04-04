@@ -64,9 +64,7 @@ function onEditorInput() {
 }
 
 function onAliasInput() {
-    currentAlias = normalizeAliasValue(editorState.aliasField.value);
-    editorState.aliasField.value = currentAlias || '';
-    syncNoteChrome();
+    setSaveError('');
     queueSave();
 }
 
@@ -86,13 +84,8 @@ function currentBody() {
     return editorState.bodyField ? editorState.bodyField.value : '';
 }
 
-function normalizeAliasValue(value) {
-    var cleaned = value
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9._-]/g, '')
-        .replace(/([._-])[._-]+/g, '$1')
-        .replace(/^[-._]+|[-._]+$/g, '');
-    return cleaned || null;
+function draftAliasValue() {
+    if (!editorState.aliasField) return null;
+    var value = editorState.aliasField.value.trim();
+    return value ? value : null;
 }

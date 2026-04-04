@@ -19,14 +19,12 @@ pub fn note_page(
 ) -> String {
     let content = format!(
         r#"<header class="page-head note-head">
-<div class="page-title-stack"><h1 data-live-title>{}</h1></div>
 <div class="page-meta">
 <small><span>Created</span>{}</small>
 <small><span>Updated</span>{}</small>
 </div>
 </header>
 {}{}"#,
-        chrome.title,
         chrome.created_at,
         chrome.updated_at,
         analytics_block(analytics),
@@ -127,7 +125,6 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
 </div>
 <div class="editor-workspace">
 <label class="editor-field-card editor-body-card" for="editor-body">
-<small>Markdown body</small>
 <textarea id="editor-body" class="note-editor" spellcheck="false">{body}</textarea>
 </label>
 <aside id="editor-preview-panel" class="editor-preview-panel" hidden>

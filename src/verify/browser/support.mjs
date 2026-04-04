@@ -42,7 +42,7 @@ export async function prepareState(browser) {
         middle: {
             id: middle.id,
             ref: middle.alias ?? middle.id,
-            revisions: middle.revisions,
+            snapshots: middle.snapshots,
             title: 'Orbit Ledger',
         },
         newest: { id: newest.id, ref: newest.alias ?? newest.id, title: 'Beacon Log' },
@@ -93,7 +93,7 @@ async function createHistoryNote(page) {
             favorite: true,
         }
     );
-    return { ...note, revisions: await listRevisions(page, note.id) };
+    return { ...note, snapshots: await listSnapshots(page, note.id) };
 }
 
 async function waitForHealth() {
@@ -167,10 +167,10 @@ async function updateNote(page, id, body, options) {
     assert.equal(status, 200, `note update should succeed for ${id}`);
 }
 
-async function listRevisions(page, id) {
+async function listSnapshots(page, id) {
     return page.evaluate(async (noteId) => {
         const response = await fetch(`/records/${noteId}/history?limit=10`);
         const payload = await response.json();
-        return payload.revisions;
+        return payload.snapshots;
     }, id);
 }

@@ -1,12 +1,11 @@
 //! History page templates
 
 use super::index::pager;
-use super::layout::{base, shell_page};
+use super::layout::{base, html_escape, shell_page};
 use super::model::{HistoryLink, NoteChrome};
 use super::note_shell::note_rail;
 use super::sections::page_header;
-use crate::core::{derive_summary, derive_title, render_markdown};
-use crate::web::db::{Record, RecordRevision};
+use crate::web::db::{Record, RecordSnapshot};
 
 pub fn history_page(
     record: &Record,
@@ -17,37 +16,26 @@ pub fn history_page(
     limit: i64,
     is_admin: bool,
 ) -> String {
-    let current_note_action = format!(
-        r#"<a href="{}" class="btn">Current note</a>"#,
+    let live_note_action = format!(
+        r#"<a href="{}" class="btn">Open live note</a>"#,
         chrome.current_href
     );
     let cards = if history.is_empty() {
-        r#"<p class="surface-empty">No saved revisions yet.</p>"#.to_string()
+        r#"<p class="surface-empty">No saved snapshots yet.</p>"#.to_string()
     } else {
         history.iter().map(history_row).collect::<Vec<_>>().join("")
     };
-    let current_note_card = format!(
-        r#"<section class="stack note-list">{}</section>"#,
-        current_row(record, chrome)
-    );
-    let history_section = format!(
-        r#"<section class="section-block history-list-section">
-<div class="section-head"><h2>History</h2></div>
-<div class="note-list">{cards}</div>
-{}
-</section>"#,
+    let content = format!(
+        "{}<section class=\"stack note-list\">{}</section><section class=\"section-block history-list-section\"><div class=\"section-head\"><h2>Saved snapshots</h2></div><div class=\"note-list\">{}</div>{}</section>",
+        page_header(&format!("History: {}", chrome.title), Some(&live_note_action), "history-head"),
+        live_row(record, chrome),
+        cards,
         pager(
             &chrome.history_href,
             previous_cursor,
             next_cursor,
             &[("limit", &limit.to_string())],
         )
-    );
-    let content = format!(
-        "{}{}{}",
-        page_header(&chrome.title, Some(&current_note_action), "history-head"),
-        current_note_card,
-        history_section,
     );
     shell(
         &format!("History - {}", chrome.title),
@@ -58,36 +46,39 @@ pub fn history_page(
     )
 }
 
-pub fn revision_page(chrome: &NoteChrome, revision: &RecordRevision, is_admin: bool) -> String {
-    let active = format!("/{}", revision.id);
+pub fn snapshot_page(chrome: &NoteChrome, snapshot: &RecordSnapshot, is_admin: bool) -> String {
     let content = format!(
         r#"<header class="page-head">
 <div class="page-title-stack">
-<h1>{}</h1>
-<p class="page-summary">Saved {}.</p>
+<h1>Saved snapshot {}</h1>
+<p class="page-summary">{} saved {}.</p>
 </div>
 <div class="page-actions">
 <span class="status-pill">{}</span>
 <a href="{}" class="btn">Back to history</a>
-<a href="{}" class="btn">Current note</a>
+<a href="{}" class="btn">Open live note</a>
 </div>
 </header>
 <section class="surface note-surface prose">{}</section>"#,
-        derive_title(&revision.body),
-        super::render_time(&revision.created_at),
-        if revision.is_private {
+        snapshot.snapshot_number,
+        html_escape(&snapshot.title),
+        super::render_time(&snapshot.created_at),
+        if snapshot.is_private {
             "Private"
         } else {
             "Public"
         },
         chrome.history_href,
         chrome.current_href,
-        render_markdown(&revision.body)
+        crate::core::render_markdown(&snapshot.body)
     );
     shell(
-        &format!("Revision {} - {}", revision.revision_number, chrome.title),
+        &format!(
+            "Saved snapshot {} - {}",
+            snapshot.snapshot_number, chrome.title
+        ),
         chrome,
-        &active,
+        &format!("/{}", snapshot.id),
         &content,
         is_admin,
     )
@@ -112,28 +103,29 @@ fn history_row(entry: &HistoryLink) -> String {
         r#"<a href="{}" class="index-card note-row">
 <div class="card-body">
 <p class="card-title">{}</p>
-<p class="card-summary">Saved {}</p>
+<p class="card-summary">{}</p>
 </div>
-<div class="card-meta"><span class="status-pill">{}</span></div>
+<div class="card-meta"><div class="card-badges"><span class="status-pill">{}</span></div><small><span>Saved</span>{}</small></div>
 </a>"#,
-        entry.href, entry.label, entry.created_at, entry.status
+        entry.href,
+        html_escape(&entry.label),
+        html_escape(&entry.summary),
+        entry.status,
+        entry.created_at
     )
 }
 
-fn current_row(record: &Record, chrome: &NoteChrome) -> String {
+fn live_row(record: &Record, chrome: &NoteChrome) -> String {
     format!(
         r#"<a href="{}" class="index-card note-row">
 <div class="card-body">
-<p class="card-title">Current note</p>
+<p class="card-title">Live note</p>
 <p class="card-summary">{}</p>
 </div>
-<div class="card-meta">
-<span class="status-pill">{}</span>
-<small><span>Updated</span>{}</small>
-</div>
+<div class="card-meta"><div class="card-badges"><span class="status-pill">{}</span></div><small><span>Updated</span>{}</small></div>
 </a>"#,
         chrome.current_href,
-        derive_summary(&record.body),
+        html_escape(&record.summary),
         chrome.visibility,
         chrome.updated_at
     )

@@ -36,13 +36,14 @@ fn sample_chrome() -> NoteChrome {
 }
 
 #[test]
-fn history_page_lists_current_note_and_revisions() {
+fn history_page_lists_live_note_and_saved_snapshots() {
     let html = history_page(
         &sample_record(),
         &sample_chrome(),
         &[HistoryLink {
             href: "/zyxwvutsrqponmlkjihgfedcba".to_string(),
-            label: "Revision 2".to_string(),
+            label: "Latest saved snapshot".to_string(),
+            summary: "Saved body".to_string(),
             created_at: "2026-03-26 08:00 UTC".to_string(),
             status: "Public",
         }],
@@ -51,9 +52,11 @@ fn history_page_lists_current_note_and_revisions() {
         20,
         false,
     );
-    assert!(html.contains("Current note"));
+    assert!(html.contains("Live note"));
+    assert!(html.contains("Latest saved snapshot"));
+    assert!(html.contains("Saved body"));
     assert!(html.contains("/zyxwvutsrqponmlkjihgfedcba"));
-    assert!(html.contains("Saved 2026-03-26 08:00 UTC"));
+    assert!(html.contains("2026-03-26 08:00 UTC"));
     assert!(html.contains(">Previous<"));
     assert!(html.contains(">Next<"));
 }

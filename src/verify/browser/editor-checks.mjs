@@ -17,7 +17,10 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
     const savePromise = page.waitForResponse((response) => {
         return response.request().method() === 'PUT' && new URL(response.url()).pathname.startsWith('/records/');
     });
-    await page.locator('#alias-input').fill('launchpad-note_v2.release');
+    const aliasInput = page.locator('#alias-input');
+    await aliasInput.click();
+    await page.keyboard.type('launchpad-note_v2.release');
+    assert.equal(await aliasInput.inputValue(), 'launchpad-note_v2.release');
     assert.equal((await savePromise).status(), 200);
     await page.waitForURL((url) => new URL(url).pathname === '/launchpad-note_v2.release');
     await assertVisibleText(page, '/launchpad-note_v2.release');

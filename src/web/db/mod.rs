@@ -29,14 +29,14 @@ pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
-pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordRevision};
+pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordSnapshot};
 pub use navigation::{get_next_record, get_previous_record};
 pub use popular_window::PopularWindow;
 pub use records::{
     create_record, delete_record, get_record, get_record_by_alias, get_record_by_ref, update_record,
 };
 pub use resource_ids::generate_resource_id;
-pub use revisions::{get_revision_resource, list_record_revisions, RevisionResource};
+pub use revisions::{get_snapshot_resource, list_record_snapshots, SnapshotResource};
 pub use settings::{get_note_stats, get_settings, update_settings};
 
 use crate::error::AppError;

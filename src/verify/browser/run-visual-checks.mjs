@@ -39,8 +39,8 @@ async function main() {
 async function captureAdminScreens(browser, note) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
-    const revisionThree = note.revisions.find((item) => item.revision_number === 3);
-    assert.ok(revisionThree, 'expected revision 3 fixture');
+    const latestSnapshot = note.snapshots.find((item) => item.snapshot_number === 4);
+    assert.ok(latestSnapshot, 'expected latest snapshot fixture');
     await login(page);
 
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
@@ -68,25 +68,26 @@ async function captureAdminScreens(browser, note) {
         const response = await fetch(`/records/${id}/history?limit=2`);
         return response.json();
     }, note.id);
-    assert.equal(historyJson.revisions.length, 2);
-    assert.equal(typeof historyJson.revisions[0]?.id, 'string');
+    assert.equal(historyJson.snapshots.length, 2);
+    assert.equal(typeof historyJson.snapshots[0]?.id, 'string');
     assert.equal(typeof historyJson.next_cursor, 'string');
 
     await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
-    await assertVisibleText(page, 'Current note');
-    await assertVisibleText(page, 'Revision 3');
+    await assertVisibleText(page, 'Live note');
+    await assertVisibleText(page, 'Latest saved snapshot');
+    await assertVisibleText(page, 'Saved snapshot 3');
     assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-history-index.png');
     await Promise.all([
         page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
         page.getByRole('button', { name: 'Next', exact: true }).click(),
     ]);
-    await assertVisibleText(page, 'Revision 1');
+    await assertVisibleText(page, 'Saved snapshot 2');
 
-    await page.goto(`${appUrl}/${revisionThree.id}`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${revisionThree.id}`);
-    await assertVisibleText(page, 'Shared release');
+    await page.goto(`${appUrl}/${latestSnapshot.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
+    await assertVisibleText(page, 'Current shared revision stretches across the list card');
     await Promise.all([
         page.waitForURL('**/'),
         page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
@@ -99,10 +100,10 @@ async function captureAdminScreens(browser, note) {
 async function capturePublicScreens(browser, notes) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
-    const publicRevision = notes.middle.revisions.find((item) => item.revision_number === 3);
-    const privateRevision = notes.middle.revisions.find((item) => item.revision_number === 2);
-    assert.ok(publicRevision, 'expected public revision fixture');
-    assert.ok(privateRevision, 'expected private revision fixture');
+    const publicSnapshot = notes.middle.snapshots.find((item) => item.snapshot_number === 4);
+    const privateSnapshot = notes.middle.snapshots.find((item) => item.snapshot_number === 2);
+    assert.ok(publicSnapshot, 'expected public snapshot fixture');
+    assert.ok(privateSnapshot, 'expected private snapshot fixture');
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
@@ -168,6 +169,8 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
+    await assertVisibleText(page, 'Oldest public note.');
+    await assertVisibleText(page, 'Newest public note.');
     await capture(page, 'desktop-guest-note.png');
 
     await page.goto(`${appUrl}/${notes.oldest.ref}`, { waitUntil: 'networkidle' });
@@ -176,12 +179,12 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.newest.ref}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.middle.title, null);
 
-    const publicRevisionResponse = await page.goto(`${appUrl}/${publicRevision.id}`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${publicRevision.id}`);
-    const privateRevisionResponse = await page.goto(`${appUrl}/${privateRevision.id}`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${privateRevision.id}`);
-    assert.equal(publicRevisionResponse?.status(), 200, 'public revision should stay guest-readable');
-    assert.equal(privateRevisionResponse?.status(), 404, 'private revision should return 404');
+    const publicSnapshotResponse = await page.goto(`${appUrl}/${publicSnapshot.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${publicSnapshot.id}`);
+    const privateSnapshotResponse = await page.goto(`${appUrl}/${privateSnapshot.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${privateSnapshot.id}`);
+    assert.equal(publicSnapshotResponse?.status(), 200, 'public snapshot should stay guest-readable');
+    assert.equal(privateSnapshotResponse?.status(), 404, 'private snapshot should return 404');
     await assertVisibleText(page, 'Note not found');
     const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();

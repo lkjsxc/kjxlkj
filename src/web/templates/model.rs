@@ -5,6 +5,7 @@ pub struct NavLink {
     pub href: String,
     pub relation: &'static str,
     pub title: String,
+    pub summary: String,
     pub created_at: String,
 }
 
@@ -12,6 +13,7 @@ pub struct NavLink {
 pub struct HistoryLink {
     pub href: String,
     pub label: String,
+    pub summary: String,
     pub created_at: String,
     pub status: &'static str,
 }

@@ -40,10 +40,11 @@ fn guest_note_page_hides_editor() {
     let html = note_page(&sample_record(), &sample_chrome(), None, false);
     assert!(html.contains("shell-rail"));
     assert!(!html.contains("id=\"editor-body\""));
+    assert_eq!(html.match_indices("<h1>").count(), 1);
 }
 
 #[test]
-fn admin_note_page_renders_alias_and_favorite_controls() {
+fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
     let html = note_page(
         &sample_record(),
         &sample_chrome(),
@@ -63,5 +64,7 @@ fn admin_note_page_renders_alias_and_favorite_controls() {
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("2026-03-26 08:35 UTC"));
+    assert!(!html.contains("Markdown body"));
+    assert!(!html.contains("<div class=\"page-title-stack\"><h1"));
     assert!(!html.contains("toastui"));
 }

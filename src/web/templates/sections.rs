@@ -1,5 +1,7 @@
 //! Shared page headers and section wrappers
 
+use super::layout::html_escape;
+
 pub fn page_header(title: &str, actions: Option<&str>, class_name: &str) -> String {
     let actions = actions
         .filter(|value| !value.is_empty())
@@ -7,9 +9,10 @@ pub fn page_header(title: &str, actions: Option<&str>, class_name: &str) -> Stri
         .unwrap_or_default();
     format!(
         r#"<header class="page-head {class_name}">
-<div class="page-title-stack"><h1>{title}</h1></div>
+<div class="page-title-stack"><h1>{}</h1></div>
 {actions}
-</header>"#
+</header>"#,
+        html_escape(title),
     )
 }
 
@@ -29,8 +32,9 @@ pub fn section_with_actions(
         .unwrap_or_default();
     format!(
         r#"<section class="section-block {class_name}">
-<div class="section-head"><h2>{title}</h2>{actions}</div>
-{body}
-</section>"#
+<div class="section-head"><h2>{}</h2>{actions}</div>
+    {body}
+</section>"#,
+        html_escape(title),
     )
 }

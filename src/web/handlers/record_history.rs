@@ -33,7 +33,7 @@ pub async fn history(
         return Err(AppError::NotFound(format!("note '{id}' not found")));
     }
     let settings = db::get_settings(&pool).await?;
-    let page = db::list_record_revisions(
+    let page = db::list_record_snapshots(
         &pool,
         &id,
         true,

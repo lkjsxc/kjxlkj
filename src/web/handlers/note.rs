@@ -10,7 +10,7 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 
 enum RootResource {
     Current(db::Record),
-    Revision(db::RevisionResource),
+    Snapshot(db::SnapshotResource),
 }
 
 #[get("/{reference}")]
@@ -32,7 +32,7 @@ pub async fn note_page(
         RootResource::Current(record) => {
             render_current_note(&pool, &reference, &record, is_admin).await
         }
-        RootResource::Revision(resource) => render_revision(&pool, &resource, is_admin).await,
+        RootResource::Snapshot(resource) => render_snapshot(&pool, &resource, is_admin).await,
     }
 }
 
@@ -48,9 +48,9 @@ async fn resolve_root_resource(
     if let Some(record) = db::get_record(pool, reference).await? {
         return Ok(Some(RootResource::Current(record)));
     }
-    Ok(db::get_revision_resource(pool, reference)
+    Ok(db::get_snapshot_resource(pool, reference)
         .await?
-        .map(RootResource::Revision))
+        .map(RootResource::Snapshot))
 }
 
 async fn render_current_note(
@@ -87,18 +87,18 @@ async fn render_current_note(
     )))
 }
 
-async fn render_revision(
+async fn render_snapshot(
     pool: &DbPool,
-    resource: &db::RevisionResource,
+    resource: &db::SnapshotResource,
     is_admin: bool,
 ) -> Result<HttpResponse, AppError> {
-    if (resource.record.is_private || resource.revision.is_private) && !is_admin {
+    if (resource.record.is_private || resource.snapshot.is_private) && !is_admin {
         return Ok(not_found());
     }
     let chrome = view::note_chrome(pool, &resource.record, is_admin).await?;
-    Ok(html(templates::revision_page(
+    Ok(html(templates::snapshot_page(
         &chrome,
-        &resource.revision,
+        &resource.snapshot,
         is_admin,
     )))
 }
