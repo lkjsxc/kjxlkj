@@ -10,7 +10,8 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
             "SELECT home_recent_limit, home_favorite_limit, home_popular_limit, \
              home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
              home_recent_position, home_favorite_position, home_popular_position, \
-             search_results_per_page, default_new_note_is_private FROM app_settings WHERE id = 1",
+             search_results_per_page, session_timeout_minutes, default_new_note_is_private \
+             FROM app_settings WHERE id = 1",
             &[],
         )
         .await
@@ -26,8 +27,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              (id, home_recent_limit, home_favorite_limit, home_popular_limit, \
              home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
              home_recent_position, home_favorite_position, home_popular_position, \
-             search_results_per_page, default_new_note_is_private) \
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) \
+             search_results_per_page, session_timeout_minutes, default_new_note_is_private) \
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) \
              ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, \
              home_favorite_limit = EXCLUDED.home_favorite_limit, \
              home_popular_limit = EXCLUDED.home_popular_limit, \
@@ -39,6 +40,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              home_favorite_position = EXCLUDED.home_favorite_position, \
              home_popular_position = EXCLUDED.home_popular_position, \
              search_results_per_page = EXCLUDED.search_results_per_page, \
+             session_timeout_minutes = EXCLUDED.session_timeout_minutes, \
              default_new_note_is_private = EXCLUDED.default_new_note_is_private, updated_at = NOW()",
             &[
                 &settings.home_recent_limit,
@@ -52,6 +54,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.home_favorite_position,
                 &settings.home_popular_position,
                 &settings.search_results_per_page,
+                &settings.session_timeout_minutes,
                 &settings.default_new_note_is_private,
             ],
         )
@@ -112,6 +115,7 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
         home_favorite_position: row.get("home_favorite_position"),
         home_popular_position: row.get("home_popular_position"),
         search_results_per_page: row.get("search_results_per_page"),
+        session_timeout_minutes: row.get("session_timeout_minutes"),
         default_new_note_is_private: row.get("default_new_note_is_private"),
     }
 }

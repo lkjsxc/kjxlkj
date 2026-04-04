@@ -66,6 +66,7 @@ export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
+    await assertVisibleText(page, 'Session timeout');
     await assertVisibleText(page, 'Popular notes');
     await assertVisibleText(page, 'Recently updated');
     await assertVisibleText(page, 'Favorites');
@@ -86,9 +87,11 @@ export async function expectSettingsPage(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Settings');
     await page.getByLabel('Home intro Markdown').waitFor({ state: 'visible' });
+    await page.getByLabel('Session timeout (minutes)').waitFor({ state: 'visible' });
     await page.getByLabel('Search page size').waitFor({ state: 'visible' });
     await page.getByLabel('New notes start private').waitFor({ state: 'visible' });
     await assertVisibleText(page, 'Home sections');
+    await assertVisibleText(page, 'Sessions');
     await assertVisibleText(page, 'Defaults');
     await page.locator('[data-settings-order-list]').waitFor({ state: 'visible' });
     assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);

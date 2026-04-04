@@ -21,6 +21,7 @@ pub struct SettingsForm {
     pub home_favorite_position: i64,
     pub home_popular_position: i64,
     pub search_results_per_page: i64,
+    pub session_timeout_minutes: i64,
     pub default_new_note_is_private: Option<String>,
 }
 
@@ -62,6 +63,11 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
             "search page size must be between 5 and 100".to_string(),
         ));
     }
+    if !(5..=10080).contains(&form.session_timeout_minutes) {
+        return Err(AppError::InvalidRequest(
+            "session timeout must be between 5 and 10080 minutes".to_string(),
+        ));
+    }
     if !positions_are_valid(form) {
         return Err(AppError::InvalidRequest(
             "section order must use 1, 2, and 3 exactly once".to_string(),
@@ -79,6 +85,7 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
         home_favorite_position: form.home_favorite_position,
         home_popular_position: form.home_popular_position,
         search_results_per_page: form.search_results_per_page,
+        session_timeout_minutes: form.session_timeout_minutes,
         default_new_note_is_private: form.default_new_note_is_private.is_some(),
     })
 }
@@ -113,4 +120,49 @@ fn html(body: String) -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(body)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{validate, SettingsForm};
+
+    fn sample_form() -> SettingsForm {
+        SettingsForm {
+            home_recent_limit: 5,
+            home_favorite_limit: 5,
+            home_popular_limit: 5,
+            home_intro_markdown: "# Home".to_string(),
+            home_recent_visible: Some("on".to_string()),
+            home_favorite_visible: Some("on".to_string()),
+            home_popular_visible: Some("on".to_string()),
+            home_recent_position: 2,
+            home_favorite_position: 3,
+            home_popular_position: 1,
+            search_results_per_page: 20,
+            session_timeout_minutes: 1440,
+            default_new_note_is_private: None,
+        }
+    }
+
+    #[test]
+    fn validate_accepts_default_timeout() {
+        assert_eq!(
+            validate(&sample_form()).unwrap().session_timeout_minutes,
+            1440
+        );
+    }
+
+    #[test]
+    fn validate_rejects_short_timeout() {
+        let mut form = sample_form();
+        form.session_timeout_minutes = 4;
+        assert!(validate(&form).is_err());
+    }
+
+    #[test]
+    fn validate_rejects_long_timeout() {
+        let mut form = sample_form();
+        form.session_timeout_minutes = 10081;
+        assert!(validate(&form).is_err());
+    }
 }

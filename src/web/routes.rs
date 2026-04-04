@@ -15,14 +15,12 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
     info!("Database connected and migrations applied");
 
     let bind_addr = config.bind_addr();
-    let config = web::Data::new(config);
     let pool = web::Data::new(pool);
 
     info!("Starting HTTP server on {}", bind_addr);
 
     HttpServer::new(move || {
         App::new()
-            .app_data(config.clone())
             .app_data(pool.clone())
             .service(health::healthz)
             .service(setup::setup_page)

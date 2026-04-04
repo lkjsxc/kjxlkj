@@ -47,6 +47,7 @@ pub struct AppSettings {
     pub home_favorite_position: i64,
     pub home_popular_position: i64,
     pub search_results_per_page: i64,
+    pub session_timeout_minutes: i64,
     pub default_new_note_is_private: bool,
 }
 
@@ -64,6 +65,7 @@ impl Default for AppSettings {
             home_favorite_position: 3,
             home_popular_position: 1,
             search_results_per_page: 20,
+            session_timeout_minutes: 1440,
             default_new_note_is_private: false,
         }
     }

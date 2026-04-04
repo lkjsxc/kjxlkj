@@ -91,11 +91,13 @@ fn settings_panel(settings: &AppSettings) -> String {
         &format!(
             r#"<div class="settings-summary-grid">
 <article class="surface settings-summary-card"><small>Home hero</small><strong>{hero_state}</strong></article>
+<article class="surface settings-summary-card"><small>Session timeout</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>New notes</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Search page size</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Home order</small><strong>{}</strong></article>
 </div>
 <a href="/admin/settings" class="btn btn-primary">Open settings</a>"#,
+            session_timeout_label(settings.session_timeout_minutes),
             if settings.default_new_note_is_private {
                 "Private by default"
             } else {
@@ -106,6 +108,16 @@ fn settings_panel(settings: &AppSettings) -> String {
         ),
         "settings-section",
     )
+}
+
+fn session_timeout_label(minutes: i64) -> String {
+    if minutes % 1440 == 0 {
+        format!("{}d", minutes / 1440)
+    } else if minutes % 60 == 0 {
+        format!("{}h", minutes / 60)
+    } else {
+        format!("{minutes}m")
+    }
 }
 
 fn home_order(settings: &AppSettings) -> String {

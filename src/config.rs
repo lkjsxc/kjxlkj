@@ -10,8 +10,6 @@ pub enum ConfigError {
     MissingVar(String),
     #[error("Invalid port: {0}")]
     InvalidPort(String),
-    #[error("Invalid timeout: {0}")]
-    InvalidTimeout(String),
 }
 
 /// Application configuration
@@ -20,7 +18,6 @@ pub struct Config {
     pub bind_host: String,
     pub bind_port: u16,
     pub database_url: String,
-    pub session_timeout_minutes: u32,
 }
 
 impl Config {
@@ -35,19 +32,10 @@ impl Config {
         let database_url = env::var("DATABASE_URL")
             .map_err(|_| ConfigError::MissingVar("DATABASE_URL".to_string()))?;
 
-        let session_timeout_minutes = env::var("SESSION_TIMEOUT_MINUTES")
-            .unwrap_or_else(|_| "1440".to_string())
-            .parse::<u32>()
-            .map_err(|_| {
-                ConfigError::InvalidTimeout("SESSION_TIMEOUT_MINUTES must be a number".to_string())
-            })?
-            .clamp(5, 10080);
-
         Ok(Self {
             bind_host,
             bind_port,
             database_url,
-            session_timeout_minutes,
         })
     }
 
@@ -58,25 +46,5 @@ impl Config {
             host = self.bind_host,
             port = self.bind_port
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn timeout_clamping() {
-        env::set_var("DATABASE_URL", "postgres://test");
-        env::set_var("SESSION_TIMEOUT_MINUTES", "1");
-
-        let config = Config::from_env().unwrap();
-        assert_eq!(config.session_timeout_minutes, 5);
-
-        env::set_var("SESSION_TIMEOUT_MINUTES", "99999");
-        let config = Config::from_env().unwrap();
-        assert_eq!(config.session_timeout_minutes, 10080);
-
-        env::remove_var("SESSION_TIMEOUT_MINUTES");
     }
 }

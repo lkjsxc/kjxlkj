@@ -10,10 +10,11 @@ const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
 
 pub fn settings_page(settings: &AppSettings) -> String {
     let content = format!(
-        "{}<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
+        "{}<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
         page_header("Settings", None, "settings-head"),
         home_hero_section(settings),
         home_sections_section(settings),
+        sessions_section(settings),
         defaults_section(settings),
     );
     base(
@@ -108,6 +109,20 @@ fn defaults_section(settings: &AppSettings) -> String {
             } else {
                 ""
             },
+        )),
+        "settings-section",
+    )
+}
+
+fn sessions_section(settings: &AppSettings) -> String {
+    section(
+        "Sessions",
+        &surface_panel(&format!(
+            r#"<div class="settings-section-grid">
+<label class="form-group"><span>Session timeout (minutes)</span><input type="number" name="session_timeout_minutes" min="5" max="10080" value="{}"></label>
+<p class="page-summary settings-wide">Applies to future logins only. Active sessions keep their current expiry.</p>
+</div>"#,
+            settings.session_timeout_minutes,
         )),
         "settings-section",
     )

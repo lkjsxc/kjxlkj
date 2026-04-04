@@ -38,10 +38,12 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.locator('input[name="home_popular_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_recent_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_favorite_limit"]').inputValue(), '5');
+    assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '1440');
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
     assert.equal(await page.getByText('Order', { exact: true }).count(), 0);
     assert.equal(await page.locator('.settings-order-pill').count(), 0);
     await page.getByLabel('Home intro Markdown').fill('# Launchpad\n\nWelcome to **Launchpad**.');
+    await page.getByLabel('Session timeout (minutes)').fill('720');
     await reorderHomeSections(page);
     await page.locator('input[name="home_recent_visible"]').uncheck();
     const responsePromise = page.waitForResponse((response) => {
@@ -51,6 +53,7 @@ export async function applySettingsScenario(page) {
     await page.getByRole('button', { name: 'Save settings', exact: true }).click();
     assert.equal((await responsePromise).status(), 303);
     await page.waitForLoadState('networkidle');
+    assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '720');
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
     assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular notes', 'Recently updated']);
 }

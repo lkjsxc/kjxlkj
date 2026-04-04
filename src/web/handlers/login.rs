@@ -1,6 +1,5 @@
 //! Login handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::DbPool;
 use crate::web::handlers::session;
@@ -35,7 +34,6 @@ pub async fn login_page(
 #[post("/login")]
 pub async fn login_submit(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     form: web::Form<LoginForm>,
 ) -> Result<HttpResponse, AppError> {
     if !crate::web::db::is_setup(&pool).await? {
@@ -46,8 +44,10 @@ pub async fn login_submit(
 
     match user_id {
         Some(id) => {
-            let session_id =
-                crate::web::db::create_session(&pool, id, config.session_timeout_minutes).await?;
+            let settings = crate::web::db::get_settings(&pool).await?;
+            let timeout = i32::try_from(settings.session_timeout_minutes)
+                .map_err(|_| AppError::StorageError("invalid session timeout".to_string()))?;
+            let session_id = crate::web::db::create_session(&pool, id, timeout).await?;
 
             let cookie = Cookie::build("session_id", session_id.to_string())
                 .path("/")

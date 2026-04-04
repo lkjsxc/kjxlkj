@@ -74,7 +74,7 @@ pub async fn verify_credentials(
 }
 
 /// Create a new session
-pub async fn create_session(pool: &DbPool, user_id: Uuid, minutes: u32) -> Result<Uuid, AppError> {
+pub async fn create_session(pool: &DbPool, user_id: Uuid, minutes: i32) -> Result<Uuid, AppError> {
     let client = pool
         .get()
         .await
@@ -83,9 +83,9 @@ pub async fn create_session(pool: &DbPool, user_id: Uuid, minutes: u32) -> Resul
     let row = client
         .query_one(
             "INSERT INTO sessions (user_id, expires_at) \
-             VALUES ($1, NOW() + ($2 || ' minutes')::INTERVAL) \
+             VALUES ($1, NOW() + make_interval(mins => $2)) \
              RETURNING id",
-            &[&user_id, &minutes.to_string()],
+            &[&user_id, &minutes],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
