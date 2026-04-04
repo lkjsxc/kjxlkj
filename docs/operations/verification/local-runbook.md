@@ -56,6 +56,7 @@ Expected:
 - homepage includes `View more notes` cards that point into `/search`
 - homepage section wrappers stay lighter than note cards
 - homepage note cards do not stretch to the tallest card in a row
+- rectangular cards and controls keep tight corners instead of soft rounded shells
 - HTML does not expose raw note IDs in normal list rows
 - HTML does not contain visible rail section headings such as `CREATE`, `NAVIGATE`, `ACTIONS`, or `SCOPE`
 - HTML does not contain helper copy such as `Browse current public notes`
@@ -134,10 +135,11 @@ curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
 Expected:
 
 - HTML contains `Prev` / `Next` labels
-- HTML contains one `All history` card and no inline revision links
+- HTML contains one `All history` card and no inline saved-snapshot links
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
+- rectangular buttons, cards, and editor shells keep tight `2px` through `4px` corners
 - HTML hides `Saving` / `Saved`
 - HTML contains note-view analytics metadata for admins
 - preview starts closed
@@ -152,11 +154,13 @@ curl -sS http://127.0.0.1:8080/<id>/history -b cookies.txt
 
 Expected:
 
-- HTML contains one `Current note` card
-- HTML contains visible revision cards in newest-first order
-- revision cards link to root-path opaque revision IDs rather than numbered note-scoped URLs
-- HTML contains previous/next paging controls when the revision set spans multiple pages
-- the rail still contains one `All history` card rather than revision links
+- HTML contains one `Live note` card
+- HTML contains visible saved-snapshot cards in newest-first order
+- the first snapshot card on page one is labeled `Latest saved snapshot`
+- later snapshot cards use `Saved snapshot N`
+- snapshot cards link to root-path opaque snapshot IDs rather than numbered note-scoped URLs
+- HTML contains previous/next paging controls when the snapshot set spans multiple pages
+- the rail still contains one `All history` card rather than snapshot links
 - HTML does not contain visible rail section headings
 
 ## Verify Compact Admin Note
@@ -176,6 +180,7 @@ Expected:
 - compact preview still works when the rail is hidden behind the drawer
 - compact preview content is lighter than the surrounding shell
 - compact iPhone-width rendering keeps the same UI font family as other widths
+- compact rectangular controls keep the same tight-corner radius family as desktop
 
 ## Verify Browser Visual Checks
 

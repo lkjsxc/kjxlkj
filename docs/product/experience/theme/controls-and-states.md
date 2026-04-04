@@ -6,6 +6,7 @@
 - Filled buttons are not the default action language.
 - Delete may use color emphasis, but still reads as text-first.
 - Primary rail navigation controls use the same size family as `New note` and `Logout`.
+- Rectangular buttons use the tight `2px` through `4px` radius family rather than soft rounded pills.
 
 ## Compact Navigation Controls
 
@@ -31,6 +32,7 @@
 - The product must not expose Vim-mode toggles, preferences, or status labels.
 - Login page shows the brand only above the sign-in form and button.
 - Editor metadata controls should share one card language rather than mixing unrelated field styles.
+- Text boxes, selects, and textarea shells use the same tight-corner family as buttons.
 - Search query state may be displayed beside sort only when `q` is non-empty.
 - Search sort keeps an accessible label through semantics rather than a visible helper word.
 - Search input, sort control, and submit button align on one clean row on wide screens.
@@ -43,3 +45,4 @@
 - Non-note sections such as `Quick search`, `Recently updated`, `Favorites`, and `Settings` should prefer spacing over boxed shells.
 - Visible rules directly under section headings are not part of the product language.
 - Section groups may separate through spacing, alignment, and shared background rather than repeated nested boxes.
+- When rectangular shells are present, they stay sharply cut rather than heavily rounded.

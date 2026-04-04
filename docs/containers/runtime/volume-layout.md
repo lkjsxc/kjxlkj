@@ -2,7 +2,7 @@
 
 ## Runtime Persistence
 
-- Runtime note, revision, and session state is persisted in PostgreSQL.
+- Runtime note, saved-snapshot, and session state is persisted in PostgreSQL.
 - Compose maps PostgreSQL state to the named volume `kjxlkj-postgres-data`.
 - The app container does not require a writable note-storage filesystem path.
 

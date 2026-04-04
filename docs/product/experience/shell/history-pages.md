@@ -2,7 +2,7 @@
 
 ## Layout
 
-- History index and revision pages reuse the note shell.
+- History index and saved-snapshot pages reuse the note shell.
 - The rail keeps live-note context, timeline cards, one history card, and actions.
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
@@ -12,7 +12,7 @@
 ## Access Rules
 
 - Guests may read only public saved snapshots.
-- Admins may read all revisions.
+- Admins may read all saved snapshots.
 - Saved-snapshot pages never expose raw live-note IDs as normal page chrome.
 - Saved-snapshot pages use their own opaque root-path URL at `/{id}`.
 

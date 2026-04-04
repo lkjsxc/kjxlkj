@@ -39,7 +39,7 @@
 - Direct typing and paste must preserve internal `-`, `_`, and `.` separators in the editor field.
 - Alias input normalization should not delete allowed separators while the user is typing.
 - Favorite state is current-note state only.
-- Favorite changes do not alter revision visibility or history access.
+- Favorite changes do not alter saved-snapshot visibility or history access.
 
 ## Editor Rules
 

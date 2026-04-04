@@ -72,5 +72,5 @@
 - Saved snapshots also expose stable opaque snapshot IDs.
 - Guests can fetch only saved snapshots whose stored state is public.
 - Admins can fetch all saved snapshots.
-- The history rail never expands into per-revision links.
+- The history rail never expands into per-snapshot links.
 - HTML and JSON history fetches share cursor pagination rules.

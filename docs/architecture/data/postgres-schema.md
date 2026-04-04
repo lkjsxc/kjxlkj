@@ -19,6 +19,8 @@
 
 ## `record_revisions`
 
+- This table stores immutable saved snapshots even though the table name still uses `revisions`.
+
 - `id`: `CHAR(26)` primary key for one saved snapshot.
 - `record_id`: live-note reference.
 - `alias`: saved route alias at snapshot time.
@@ -26,7 +28,7 @@
 - `summary`: saved derived summary.
 - `body`: saved snapshot body.
 - `is_private`: saved snapshot privacy.
-- `revision_number`: immutable per-note saved-snapshot sequence.
+- `snapshot_number`: immutable per-note saved-snapshot sequence.
 - `created_at`: snapshot UTC timestamp.
 
 ## `record_daily_views`
@@ -64,4 +66,4 @@
 - record-daily-view lookup index covering `(view_date, view_count DESC)`
 - GIN index for `search_document`
 - trigram index support for alias/title/body fallback matching
-- revision lookup index on `(record_id, revision_number DESC)`
+- saved-snapshot lookup index on `(record_id, snapshot_number DESC)`

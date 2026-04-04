@@ -1,7 +1,7 @@
 # Runtime Stack
 
 - Actix Web for HTTP routing.
-- PostgreSQL for notes, revisions, and search.
+- PostgreSQL for notes, saved snapshots, and search.
 - Server-rendered HTML templates with inline CSS and JS.
 - Third-party rendered Markdown editing for admins with Markdown persistence.
 - CommonMark-capable rendering shared across reader and editor preparation.

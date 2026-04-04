@@ -7,6 +7,7 @@
 - Narrow screens switch the side menu into an overlay drawer.
 - The brand area shows the product name only and carries no marketing caption.
 - Desktop pages do not use a top-right action cluster for browse, search, or auth links.
+- Rectangular shell cards and actions use tight corners instead of soft rounded shells.
 
 ## Rail Content
 

@@ -40,13 +40,14 @@
 4. Open the note by alias if present, otherwise by its opaque ID.
 5. If the note has an alias, confirm visiting the raw current-note ID redirects to the alias URL.
 
-## Verify Revision Behavior
+## Verify Saved-Snapshot Behavior
 
 1. Edit the note at least once.
 2. Open `/{note_ref}/history`.
-3. Confirm the history list is newest-first by `revision_number`.
-4. Open one revision card.
-5. Confirm the revision page uses its own opaque root-path URL like `/{id}`.
+3. Confirm the history list is newest-first by `snapshot_number`.
+4. Confirm the first pinned card is `Live note` and the first saved card is `Latest saved snapshot`.
+5. Open one saved-snapshot card.
+6. Confirm the saved-snapshot page uses its own opaque root-path URL like `/{id}`.
 
 ## Start Real Usage
 

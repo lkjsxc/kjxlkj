@@ -14,7 +14,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Desktop admin settings page.
 - Desktop admin note page with the Markdown editor.
 - Desktop guest note page.
-- Desktop history index page showing current note plus revisions.
+- Desktop history index page showing the live note plus saved snapshots.
 - Compact homepage shell closed by default.
 - Compact homepage shell opened through the menu toggle.
 - Compact admin note page with the drawer available.
@@ -32,8 +32,9 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Drawer toggle appears only on narrow screens.
 - Narrow screens start with the drawer closed.
 - Surfaces remain flat with solid fills rather than gradients or blur.
+- Rectangular cards, inputs, and buttons keep tight `2px` through `4px` corners rather than soft rounded shells.
 - Note and history rails keep metadata readable without wrap regressions.
-- Note rails render one `All history` card and never render inline revision lists.
+- Note rails render one `All history` card and never render inline saved-snapshot lists.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Search and history paging expose `Previous` and `Next` actions.
@@ -55,6 +56,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Browser verification types into the visible Markdown editor surface.
 - Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
 - The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
+- History pages expose `Live note`, `Latest saved snapshot`, and numbered `Saved snapshot N` labels.
 - Empty-query `/search` renders note cards instead of helper guidance.
 - Search exposes a query display card near sort only when `q` is non-empty.
 - Empty-query `/search` does not render a `Query` or `All notes` state card.

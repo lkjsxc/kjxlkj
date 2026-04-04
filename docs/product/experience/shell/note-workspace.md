@@ -5,7 +5,7 @@
 - Note pages remain dark, dense, flat, and document-first.
 - Header chrome is compact and informative.
 - History access belongs in the rail, not below the note body.
-- The rail history affordance is one `All history` card, not an inline revision list.
+- The rail history affordance is one `All history` card, not an inline saved-snapshot list.
 - The note header does not show an eyebrow label such as `Admin note`.
 
 ## Header Content
@@ -24,6 +24,7 @@
 - Desktop uses a Markdown-first workspace with preview closed by default.
 - Public checkbox stays inside the editing surface.
 - Alias and favorite controls stay inside the editing surface.
+- Editor cards, input fields, and preview shells use tight rectangular corners.
 - Preview stays closed by default and opens on demand from the editor chrome.
 - Preview work may stay inactive until the user opens it.
 - The typing surface and the preview both stay within the same dark-mode presentation family.

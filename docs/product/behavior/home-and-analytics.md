@@ -32,7 +32,7 @@
 - A successful canonical `GET /{ref}` note page increments note analytics.
 - Counting happens for both guest and admin note views.
 - Redirect responses do not increment counters.
-- Search pages, home pages, dashboards, settings pages, history indexes, and revision pages do not increment counters.
+- Search pages, home pages, dashboards, settings pages, history indexes, and saved-snapshot pages do not increment counters.
 
 ## Stored Metrics
 

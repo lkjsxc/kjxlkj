@@ -12,7 +12,7 @@
 - Brand and session mode.
 - Admin-only `New note` action near the top of the rail, but not flush against the brand block.
 - Primary navigation.
-- Current note context.
+- Live note context.
 - Created and updated metadata.
 - `Prev` and `Next` timeline cards with explicit relationship labels.
 - One history card that opens the dedicated history page.

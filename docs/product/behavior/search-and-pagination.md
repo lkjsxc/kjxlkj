@@ -3,7 +3,7 @@
 ## Scope
 
 - Search covers current note alias, title, and body.
-- Search does not index revision history.
+- Search does not index saved-snapshot history.
 - Public search returns only public notes.
 - Admin search returns public and private notes.
 - `scope=favorites` limits search to favorite notes.

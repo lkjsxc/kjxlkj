@@ -7,6 +7,7 @@
 - The top bar, drawer, and main pane must coexist without clipping.
 - Admin note pages must keep the editor inside the viewport width.
 - Compact layouts keep the same explicit system font stack as wide layouts.
+- Compact layouts keep the same tight rectangular radius family as wide layouts.
 
 ## Content Rules
 
