@@ -40,6 +40,7 @@ async function captureAdminScreens(browser, note) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
     const latestSnapshot = note.snapshots.find((item) => item.snapshot_number === 4);
+    const autosavedSnapshotNumber = 5;
     assert.ok(latestSnapshot, 'expected latest snapshot fixture');
     await login(page);
 
@@ -76,14 +77,14 @@ async function captureAdminScreens(browser, note) {
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
     await assertVisibleText(page, 'Live note');
     await assertVisibleText(page, 'Latest saved snapshot');
-    await assertVisibleText(page, 'Saved snapshot 3');
+    await assertVisibleText(page, `Saved snapshot ${autosavedSnapshotNumber - 1}`);
     assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-history-index.png');
     await Promise.all([
         page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
         page.getByRole('button', { name: 'Next', exact: true }).click(),
     ]);
-    await assertVisibleText(page, 'Saved snapshot 2');
+    await assertVisibleText(page, `Saved snapshot ${autosavedSnapshotNumber - 2}`);
 
     await page.goto(`${appUrl}/${latestSnapshot.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
