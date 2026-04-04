@@ -57,7 +57,7 @@
   - target is private and no session: `404`
   - canonical redirect responses do not count as note views
   - accessible current note: `200` HTML note page with first-party Markdown editor for admins
-  - accessible revision snapshot: `200` HTML history snapshot page
+  - accessible saved snapshot: `200` HTML history snapshot page
 - `GET /{ref}/history`:
   - note not found: `404`
   - note is private and no session: `404`
@@ -91,7 +91,7 @@
 - `GET /records/{id}/history`:
   - without valid session: `401`
   - note not found: `404`
-  - valid session: `200` JSON paginated revision payload using `cursor`, `direction`, and `limit`
+  - valid session: `200` JSON paginated saved-snapshot payload using `cursor`, `direction`, and `limit`
 - `GET /records/{id}/prev`:
   - note not found or inaccessible: `404`
   - returns previous accessible note `id` by `created_at`

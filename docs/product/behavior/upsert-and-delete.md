@@ -12,15 +12,16 @@
 - Default `is_favorite = false`.
 - Default `is_private = true`.
 - Returns `201` with created note JSON.
+- Creates saved snapshot `1` from the persisted note state.
 
 ## Update (`PUT /records/{id}`)
 
 - Requires valid session.
 - `id` must exist.
 - Request body contains `body`, `alias`, `is_favorite`, and `is_private`.
-- Creates a new revision before applying changes.
 - Updates `updated_at`.
 - Recomputes derived title, summary, and search fields.
+- Creates one new saved snapshot from the persisted post-update note state.
 - Returns `200` with updated note.
 - The stored body remains canonical raw Markdown regardless of editor presentation.
 
@@ -35,14 +36,17 @@
 
 - Clearing the alias returns the note to an ID-only canonical route.
 - Alias validity and uniqueness are checked before write.
+- Direct typing and paste must preserve internal `-`, `_`, and `.` separators in the editor field.
+- Alias input normalization should not delete allowed separators while the user is typing.
 - Favorite state is current-note state only.
 - Favorite changes do not alter revision visibility or history access.
 
 ## Editor Rules
 
-- The third-party editor must save through canonical Markdown.
 - The normal UI exposes no user-facing mode choice.
-- If the editor fails to load, the page still remains editable.
+- The note body owns the visible document heading on both admin and guest note pages.
+- The visible textarea label `Markdown body` is absent.
+- If the editor helper JS fails to load, the page still remains editable.
 
 ## Delete (`DELETE /records/{id}`)
 
@@ -51,10 +55,11 @@
 - Performs soft delete.
 - Returns `204` with no body.
 
-## Revision Tracking
+## Saved Snapshot Tracking
 
-- Every update creates a revision entry before changes.
-- Revisions store `id`, `body`, `is_private`, `revision_number`, and `created_at`.
-- Revision `id` uses the same 26-character opaque format as current notes.
-- Revision numbers increment from `1`.
-- Revisions are immutable and never deleted.
+- Creating a note creates saved snapshot `1`.
+- Every update creates one additional immutable saved snapshot after the live-note write succeeds.
+- Saved snapshots store `id`, `alias`, `title`, `summary`, `body`, `is_private`, `snapshot_number`, and `created_at`.
+- Saved snapshot `id` uses the same 26-character opaque format as current notes.
+- Saved snapshot numbers increment from `1`.
+- Saved snapshots are immutable and never deleted.

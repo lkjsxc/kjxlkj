@@ -29,8 +29,16 @@
 - HTML history pages and `GET /records/{id}/history` share the same pagination model.
 - Pagination uses `cursor`, `direction`, and `limit`.
 - Empty cursor returns the first page.
-- Visible revisions remain ordered `revision_number DESC`.
-- Visible revisions expose stable opaque revision IDs.
-- Revision cards link to root-path revision URLs at `/{id}`.
-- `direction=prev` still renders revisions in normal on-screen newest-to-oldest order.
-- The current note card remains outside the paginated revision slice on HTML history pages.
+- Visible saved snapshots remain ordered `snapshot_number DESC`.
+- Visible saved snapshots expose stable opaque snapshot IDs.
+- Saved-snapshot cards link to root-path snapshot URLs at `/{id}`.
+- `direction=prev` still renders saved snapshots in normal on-screen newest-to-oldest order.
+- The live-note card remains outside the paginated saved-snapshot slice on HTML history pages.
+
+## History Separation
+
+- History UI must clearly separate the mutable live note from immutable saved snapshots.
+- The pinned live-note card is labeled `Live note`.
+- The first saved-snapshot card on the first history page is labeled `Latest saved snapshot`.
+- Later cards use `Saved snapshot N`.
+- History copy should avoid reusing `Current note` as the only distinction between live and immutable state.

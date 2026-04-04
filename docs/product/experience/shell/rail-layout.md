@@ -40,4 +40,6 @@
 
 - The timeline always renders exactly two cards.
 - `Prev` and `Next` keep fixed positions even when one target does not exist.
+- Timeline cards show title, short summary preview, and created time when a target exists.
+- Timeline preview text follows the same compact summary rules as root-page note cards.
 - Missing targets render as muted non-interactive cards with explanatory copy.

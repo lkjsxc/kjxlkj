@@ -19,11 +19,14 @@
 
 ## `record_revisions`
 
-- `id`: `CHAR(26)` primary key.
-- `record_id`: note reference.
-- `body`: historical snapshot body.
-- `is_private`: historical snapshot privacy.
-- `revision_number`: immutable per-note sequence.
+- `id`: `CHAR(26)` primary key for one saved snapshot.
+- `record_id`: live-note reference.
+- `alias`: saved route alias at snapshot time.
+- `title`: saved derived title.
+- `summary`: saved derived summary.
+- `body`: saved snapshot body.
+- `is_private`: saved snapshot privacy.
+- `revision_number`: immutable per-note saved-snapshot sequence.
 - `created_at`: snapshot UTC timestamp.
 
 ## `record_daily_views`

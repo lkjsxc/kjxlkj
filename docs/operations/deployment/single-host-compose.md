@@ -47,6 +47,7 @@ Expected:
 
 - `postgres` is healthy.
 - `app` is running.
+- Compose readiness continues to rely on service health checks.
 - The PostgreSQL volume name is `kjxlkj-postgres-data`.
 
 ## Confirm Boot Health

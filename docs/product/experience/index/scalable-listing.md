@@ -19,6 +19,7 @@
 - Summary is line-clamped so long notes do not enlarge sibling cards.
 - Dense layouts should reduce vertical padding before reducing useful metadata.
 - Grid cards may gain a small amount of height so timestamp rows remain fully contained.
+- Smaller rail timeline cards may use a shorter one-line summary preview, but should reuse the same derived-summary language.
 
 ## Action Treatment
 

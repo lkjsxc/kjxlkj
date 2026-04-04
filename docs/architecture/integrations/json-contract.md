@@ -10,7 +10,7 @@
 ## History Success
 
 - `GET /records/{id}/history` returns:
-  - `revisions`: newest-first revision objects with `id`, `revision_number`, `body`, `is_private`, and `created_at`
+  - `snapshots`: newest-first saved-snapshot objects with `id`, `snapshot_number`, `alias`, `title`, `summary`, `body`, `is_private`, and `created_at`
   - `previous_cursor`: nullable cursor for older pages
   - `next_cursor`: nullable cursor for newer pages
 - History JSON remains admin-only.

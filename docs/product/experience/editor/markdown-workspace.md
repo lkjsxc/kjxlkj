@@ -22,6 +22,8 @@
 - Alias, canonical URL, and metadata controls should use a consistent card-like presentation.
 - The note page owns vertical scrolling; the editor body may not add its own normal vertical scroll region.
 - The page itself may not require horizontal scrolling in order to edit.
+- The visible textarea label `Markdown body` is absent.
+- Alias typing must preserve allowed separators `-`, `_`, and `.` while the user edits.
 - Typed Markdown must stay legible in the editor and render correctly in the opened preview before save.
 - The preview must use the current unsaved Markdown body, not only the last persisted state.
 - Verification must target the visible Markdown editor and preview surfaces.

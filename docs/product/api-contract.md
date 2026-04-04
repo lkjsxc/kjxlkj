@@ -69,6 +69,9 @@ The system manages `note` resources.
 - Created time is the secondary identity cue in lists and note chrome.
 - Admin note pages edit the canonical body through a first-party Markdown textarea with on-demand preview.
 - Admin note pages should open with keyboard focus in the visible editor.
+- Note pages do not render a duplicate visible title outside the Markdown body.
+- The editor does not show a visible `Markdown body` label.
+- Alias typing must preserve internal `-`, `_`, and `.` separators until save-time validation.
 - Homepage hero content uses only editable intro Markdown.
 - Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
@@ -101,15 +104,18 @@ The system manages `note` resources.
 - The endpoint renders Markdown through the same server path used by note display.
 - Preview rendering does not mutate note state.
 
-## Revision History
+## Saved Snapshot History
 
-Every update creates a new immutable revision snapshot:
+Creating a note creates saved snapshot `1`. Every successful update creates one new immutable saved snapshot:
 
 ```json
 {
   "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
-  "revision_number": 3,
-  "body": "# Title\n\nOld content...",
+  "snapshot_number": 3,
+  "alias": "release-notes",
+  "title": "Title",
+  "summary": "Old content...",
+  "body": "# Title\n\nSaved content...",
   "is_private": true,
   "created_at": "2026-03-26T08:35:00Z"
 }
@@ -119,11 +125,14 @@ History listing responses are paginated:
 
 ```json
 {
-  "revisions": [
+  "snapshots": [
     {
       "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
-      "revision_number": 3,
-      "body": "# Title\n\nOld content...",
+      "snapshot_number": 3,
+      "alias": "release-notes",
+      "title": "Title",
+      "summary": "Saved content...",
+      "body": "# Title\n\nSaved content...",
       "is_private": true,
       "created_at": "2026-03-26T08:35:00Z"
     }

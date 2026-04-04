@@ -16,6 +16,7 @@
 
 - `app` depends on `postgres` being healthy
 - `verify` depends on `app` being healthy
+- `visual-verify` depends on `app` being healthy
 
 ## Postgres Service
 
@@ -33,3 +34,4 @@
 
 - Default `docker compose up` starts only `postgres` and `app`.
 - Verification services start only when the overlay file is included.
+- Health checks remain part of the canonical compose contract because the app runs migrations at boot and the verification overlay reuses the same readiness model.

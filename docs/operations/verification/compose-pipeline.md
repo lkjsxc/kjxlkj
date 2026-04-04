@@ -17,6 +17,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 - Any failing command propagates non-zero exit code.
 - Pipeline output is deterministic and CI-safe.
 - CI uses the same bundle rather than a weaker host-only shortcut.
+- The pipeline keeps compose health checks enabled instead of replacing them with ad hoc shell sleeps.
 
 ## Optional Wrapper
 

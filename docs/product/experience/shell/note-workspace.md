@@ -10,10 +10,11 @@
 
 ## Header Content
 
-- Title extracted from the note body.
 - Created and updated time.
 - No visible raw ID chips in normal UI.
 - The header does not place a `Public` or `Private` pill between the title and editor.
+- The note page does not render a duplicate visible title outside the Markdown body.
+- Browser title, rail title, and other chrome may still derive from the first `# ` heading.
 
 ## Admin Editing Surface
 
@@ -42,4 +43,5 @@
 ## Guest View
 
 - Guests see rendered Markdown only.
+- The rendered Markdown owns the visible document heading.
 - Markdown typography may use a dedicated content stack separate from UI chrome.

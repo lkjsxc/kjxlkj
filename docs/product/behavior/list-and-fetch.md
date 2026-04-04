@@ -46,15 +46,15 @@
 
 ## Fetch (`GET /{ref}`)
 
-- Returns the current note page or a revision snapshot page if accessible.
+- Returns the live note page or a saved-snapshot page if accessible.
 - Returns `404` if the target does not exist.
 - Returns `404` if the target is private and user is not authenticated.
 - Resolves `ref` by alias first, then by globally unique opaque ID.
 - Aliases resolve only to current notes.
 - Current-note IDs redirect to the alias URL when the note has an alias.
-- Revision IDs never redirect.
+- Saved-snapshot IDs never redirect.
 - Current-note responses include the editable current body for admins.
-- Revision responses include the immutable historical snapshot body.
+- Saved-snapshot responses include the immutable saved body.
 
 ## Note Navigation
 
@@ -63,13 +63,14 @@
 - Guest navigation skips private notes.
 - Admin navigation includes private notes.
 - HTML note rails always render both timeline slots even when one side resolves to `null`.
+- Timeline cards show relation label, note title, short summary preview, and created time.
 
 ## History Fetch
 
-- History index returns the current note plus one visible revision page.
-- Revision snapshots are ordered by `revision_number DESC`.
-- Revision snapshots also expose stable opaque revision IDs.
-- Guests can fetch only revisions whose stored state is public.
-- Admins can fetch all revisions.
+- History index returns the live note plus one visible saved-snapshot page.
+- Saved snapshots are ordered by `snapshot_number DESC`.
+- Saved snapshots also expose stable opaque snapshot IDs.
+- Guests can fetch only saved snapshots whose stored state is public.
+- Admins can fetch all saved snapshots.
 - The history rail never expands into per-revision links.
 - HTML and JSON history fetches share cursor pagination rules.
