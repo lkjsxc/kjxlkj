@@ -53,6 +53,7 @@ export async function expectFlatShell(page, controlNames = []) {
     await assertNoHorizontalOverflow(page);
     await assertBrandIcon(page);
     await assertRestrainedMainColumn(page);
+    await assertTightCorners(page);
     assert.equal(await page.locator('.shell-rail input[type="search"]').count(), 0);
     assert.equal(await page.locator('.shell-rail h2').count(), 0);
     if ((await page.evaluate(() => window.innerWidth)) > 900) await assertBrandSpacing(page);
@@ -166,5 +167,26 @@ async function assertRestrainedMainColumn(page) {
     }
     if (metrics.verticalGap) {
         assert.ok(metrics.verticalGap <= 36, `page-head gap should stay compact (saw ${metrics.verticalGap}px)`);
+    }
+}
+
+async function assertTightCorners(page) {
+    const samples = await page.evaluate(() =>
+        ['.btn', '.surface', '.index-card', '.rail-link', 'input:not([type="checkbox"]):not([type="radio"])', 'select', 'textarea']
+            .map((selector) => {
+                const node = [...document.querySelectorAll(selector)].find((item) => {
+                    const style = getComputedStyle(item);
+                    const rect = item.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+                });
+                if (!node) return null;
+                const style = getComputedStyle(node);
+                return { selector, radii: [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius] };
+            })
+            .filter(Boolean)
+    );
+    for (const sample of samples) {
+        const largest = Math.max(...sample.radii.map((value) => Number.parseFloat(value) || 0));
+        assert.ok(largest <= 4.1, `${sample.selector} should keep tight corners (saw ${largest}px)`);
     }
 }

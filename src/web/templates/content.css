@@ -30,7 +30,7 @@
 .prose pre {
     padding: 16px;
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: var(--radius-md);
     overflow: auto;
     white-space: pre-wrap;
     background: var(--bg-1);
@@ -43,7 +43,7 @@
 
 .prose :not(pre) > code {
     padding: 0.12em 0.36em;
-    border-radius: 8px;
+    border-radius: var(--radius-xs);
     background: var(--bg-3);
 }
 

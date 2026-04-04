@@ -33,12 +33,12 @@
 
 .surface {
     padding: 12px 14px;
-    border-radius: 20px;
+    border-radius: var(--radius-md);
 }
 
 .index-card {
     padding: 16px 18px;
-    border-radius: 20px;
+    border-radius: var(--radius-md);
 }
 
 .page-head,

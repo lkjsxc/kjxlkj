@@ -53,7 +53,7 @@
 .note-editor {
     width: 100%;
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: var(--radius-sm);
     background: var(--bg-1);
     color: var(--text);
 }
@@ -90,7 +90,7 @@
 .editor-preview-panel {
     min-width: 0;
     border: 1px solid var(--line);
-    border-radius: 22px;
+    border-radius: var(--radius-md);
     background: var(--panel-2);
     color: var(--text);
 }

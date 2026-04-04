@@ -18,7 +18,7 @@
     align-items: start;
     padding: 14px 16px;
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: var(--radius-md);
     background: var(--panel);
 }
 
@@ -31,7 +31,7 @@
     min-height: 40px;
     min-width: 56px;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: var(--radius-sm);
     background: var(--panel-2);
     color: var(--text-soft);
     cursor: grab;

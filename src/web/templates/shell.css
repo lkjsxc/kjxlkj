@@ -55,7 +55,7 @@
 .brand-mark {
     width: 28px;
     height: 28px;
-    border-radius: 999px;
+    border-radius: var(--radius-round);
     flex: none;
 }
 
@@ -87,7 +87,7 @@
     gap: 5px;
     padding: 11px 12px;
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
     background: var(--panel);
     min-height: 72px;
     align-content: start;
