@@ -41,7 +41,7 @@ fn history_page_lists_current_note_and_revisions() {
         &sample_record(),
         &sample_chrome(),
         &[HistoryLink {
-            href: "/demo-note/history/2".to_string(),
+            href: "/zyxwvutsrqponmlkjihgfedcba".to_string(),
             label: "Revision 2".to_string(),
             created_at: "2026-03-26 08:00 UTC".to_string(),
             status: "Public",
@@ -52,7 +52,7 @@ fn history_page_lists_current_note_and_revisions() {
         false,
     );
     assert!(html.contains("Current note"));
-    assert!(html.contains("/demo-note/history/2"));
+    assert!(html.contains("/zyxwvutsrqponmlkjihgfedcba"));
     assert!(html.contains("Saved 2026-03-26 08:00 UTC"));
     assert!(html.contains(">Previous<"));
     assert!(html.contains(">Next<"));

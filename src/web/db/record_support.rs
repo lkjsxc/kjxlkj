@@ -1,0 +1,81 @@
+use crate::error::AppError;
+use crate::web::db::Record;
+use deadpool_postgres::GenericClient;
+use tokio_postgres::error::SqlState;
+
+pub(super) const RETURNING_RECORD: &str =
+    "RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+     view_count_total, last_viewed_at, created_at, updated_at";
+pub(super) const SELECT_RECORD: &str =
+    "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
+     view_count_total, last_viewed_at, created_at, updated_at";
+
+pub(super) async fn current_favorite_state<C: GenericClient>(
+    db: &C,
+    id: &str,
+) -> Result<Option<(bool, Option<i64>)>, AppError> {
+    db.query_opt(
+        "SELECT is_favorite, favorite_position FROM records WHERE id = $1 AND deleted_at IS NULL",
+        &[&id],
+    )
+    .await
+    .map(|row| row.map(|item| (item.get("is_favorite"), item.get("favorite_position"))))
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+pub(super) async fn next_position<C: GenericClient>(
+    db: &C,
+    is_favorite: bool,
+) -> Result<Option<i64>, AppError> {
+    if !is_favorite {
+        return Ok(None);
+    }
+    db.query_one(
+        "SELECT COALESCE(MAX(favorite_position), 0) + 1 AS position \
+         FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE",
+        &[],
+    )
+    .await
+    .map(|row| Some(row.get("position")))
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+pub(super) async fn resolve_position<C: GenericClient>(
+    db: &C,
+    was_favorite: bool,
+    current_position: Option<i64>,
+    is_favorite: bool,
+) -> Result<Option<i64>, AppError> {
+    match (was_favorite, is_favorite) {
+        (_, false) => Ok(None),
+        (true, true) => match current_position {
+            Some(position) => Ok(Some(position)),
+            None => next_position(db, true).await,
+        },
+        (false, true) => next_position(db, true).await,
+    }
+}
+
+pub(super) fn map_write_error(error: tokio_postgres::Error) -> AppError {
+    if error.code() == Some(&SqlState::UNIQUE_VIOLATION) {
+        return AppError::InvalidRequest("alias already exists".to_string());
+    }
+    AppError::DatabaseError(error.to_string())
+}
+
+pub(crate) fn row_to_record(row: tokio_postgres::Row) -> Record {
+    Record {
+        id: row.get("id"),
+        alias: row.get("alias"),
+        title: row.get("title"),
+        summary: row.get("summary"),
+        body: row.get("body"),
+        is_favorite: row.get("is_favorite"),
+        favorite_position: row.get("favorite_position"),
+        is_private: row.get("is_private"),
+        view_count_total: row.get("view_count_total"),
+        last_viewed_at: row.get("last_viewed_at"),
+        created_at: row.get("created_at"),
+        updated_at: row.get("updated_at"),
+    }
+}

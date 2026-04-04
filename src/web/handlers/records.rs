@@ -1,6 +1,6 @@
 //! Record management handlers
 
-use crate::core::{generate_id, normalize_alias, validate_id};
+use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, Record};
 use crate::web::handlers::session;
@@ -48,7 +48,7 @@ pub async fn create(
     };
     let record = db::create_record(
         &pool,
-        &generate_unique_id(&pool).await?,
+        &db::generate_resource_id(&pool).await?,
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
         body.is_favorite.unwrap_or(false),
@@ -56,7 +56,7 @@ pub async fn create(
             .unwrap_or(db::get_settings(&pool).await?.default_new_note_is_private),
     )
     .await?;
-    Ok(HttpResponse::Created().json(note_payload(&pool, record).await?))
+    Ok(HttpResponse::Created().json(NotePayload::from_record(record)))
 }
 
 #[put("/records/{id}")]
@@ -79,7 +79,7 @@ pub async fn update(
     )
     .await?
     {
-        Some(record) => Ok(HttpResponse::Ok().json(note_payload(&pool, record).await?)),
+        Some(record) => Ok(HttpResponse::Ok().json(NotePayload::from_record(record))),
         None => Err(AppError::NotFound(format!("note '{id}' not found"))),
     }
 }
@@ -98,23 +98,6 @@ pub async fn remove(
     } else {
         Err(AppError::NotFound(format!("note '{id}' not found")))
     }
-}
-
-async fn note_payload(pool: &DbPool, record: Record) -> Result<NotePayload, AppError> {
-    let _ = pool;
-    Ok(NotePayload::from_record(record))
-}
-
-async fn generate_unique_id(pool: &DbPool) -> Result<String, AppError> {
-    for _ in 0..10 {
-        let id = generate_id();
-        if db::get_record(pool, &id).await?.is_none() {
-            return Ok(id);
-        }
-    }
-    Err(AppError::StorageError(
-        "could not generate unique id".to_string(),
-    ))
 }
 
 impl NotePayload {

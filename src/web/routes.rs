@@ -38,7 +38,6 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(preview::render_markdown_preview)
             .service(search::search_page)
             .service(history::history_page)
-            .service(history::revision_page)
             .service(records::create)
             .service(records::update)
             .service(records::remove)

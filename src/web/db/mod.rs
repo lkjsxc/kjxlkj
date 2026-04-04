@@ -3,7 +3,6 @@
 mod analytics;
 mod auth;
 mod favorites;
-mod history;
 mod list_scope;
 mod listing;
 mod listing_cursor;
@@ -13,8 +12,12 @@ mod listing_sort;
 mod listing_sort_sql;
 mod migrations;
 mod models;
+mod navigation;
 mod popular_window;
+mod record_support;
 mod records;
+mod resource_ids;
+mod revisions;
 mod settings;
 
 pub use analytics::{get_note_view_stats, list_popular_records, record_note_view};
@@ -22,16 +25,18 @@ pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
 pub use favorites::{list_all_favorite_records, reorder_favorites};
-pub use history::{
-    get_next_record, get_previous_record, get_record_revision, list_record_revisions,
-};
 pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
 pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordRevision};
+pub use navigation::{get_next_record, get_previous_record};
 pub use popular_window::PopularWindow;
-pub use records::{create_record, delete_record, get_record, get_record_by_ref, update_record};
+pub use records::{
+    create_record, delete_record, get_record, get_record_by_alias, get_record_by_ref, update_record,
+};
+pub use resource_ids::generate_resource_id;
+pub use revisions::{get_revision_resource, list_record_revisions, RevisionResource};
 pub use settings::{get_note_stats, get_settings, update_settings};
 
 use crate::error::AppError;

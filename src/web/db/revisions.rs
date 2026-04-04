@@ -13,6 +13,11 @@ pub struct RevisionPage {
     pub previous_cursor: Option<String>,
     pub next_cursor: Option<String>,
 }
+#[derive(Clone, Debug)]
+pub struct RevisionResource {
+    pub record: Record,
+    pub revision: RecordRevision,
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct RevisionCursor {
     revision_number: i32,
@@ -35,59 +40,46 @@ pub async fn list_record_revisions(
     if matches!(direction, ListDirection::Prev) {
         revisions.reverse();
     }
-    let previous_cursor = edge_cursor(
-        pool,
-        record_id,
-        include_private,
-        revisions.first().map(|item| item.revision_number),
-        true,
-    )
-    .await?;
-    let next_cursor = edge_cursor(
-        pool,
-        record_id,
-        include_private,
-        revisions.last().map(|item| item.revision_number),
-        false,
-    )
-    .await?;
     Ok(RevisionPage {
+        previous_cursor: edge_cursor(
+            pool,
+            record_id,
+            include_private,
+            revisions.first().map(|item| item.revision_number),
+            true,
+        )
+        .await?,
+        next_cursor: edge_cursor(
+            pool,
+            record_id,
+            include_private,
+            revisions.last().map(|item| item.revision_number),
+            false,
+        )
+        .await?,
         revisions,
-        previous_cursor,
-        next_cursor,
     })
 }
-pub async fn get_record_revision(
+pub async fn get_revision_resource(
     pool: &DbPool,
-    record_id: &str,
-    revision_number: i32,
-) -> Result<Option<RecordRevision>, AppError> {
+    revision_id: &str,
+) -> Result<Option<RevisionResource>, AppError> {
     client(pool)
         .await?
         .query_opt(
-            "SELECT revision_number, body, is_private, created_at FROM record_revisions \
-             WHERE record_id = $1 AND revision_number = $2",
-            &[&record_id, &revision_number],
+            "SELECT r.id, r.alias, r.title, r.summary, r.body, r.is_favorite, r.favorite_position, \
+             r.is_private, r.view_count_total, r.last_viewed_at, r.created_at, r.updated_at, \
+             rr.id AS revision_id, rr.revision_number, rr.body AS revision_body, \
+             rr.is_private AS revision_is_private, rr.created_at AS revision_created_at \
+             FROM record_revisions rr \
+             JOIN records r ON r.id = rr.record_id \
+             WHERE rr.id = $1 AND r.deleted_at IS NULL",
+            &[&revision_id],
         )
         .await
-        .map(|row| row.map(row_to_revision))
+        .map(|row| row.map(row_to_revision_resource))
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
-pub async fn get_previous_record(
-    pool: &DbPool,
-    id: &str,
-    include_private: bool,
-) -> Result<Option<Record>, AppError> {
-    adjacent_record(pool, id, include_private, true).await
-}
-pub async fn get_next_record(
-    pool: &DbPool,
-    id: &str,
-    include_private: bool,
-) -> Result<Option<Record>, AppError> {
-    adjacent_record(pool, id, include_private, false).await
-}
-
 async fn query_page(
     pool: &DbPool,
     record_id: &str,
@@ -104,7 +96,7 @@ async fn query_page(
         .await?
         .query(
             &format!(
-                "SELECT revision_number, body, is_private, created_at FROM record_revisions \
+                "SELECT id, revision_number, body, is_private, created_at FROM record_revisions \
                  WHERE record_id = $1 AND ($2 OR is_private = FALSE) AND ($3::INT IS NULL OR {predicate}) \
                  ORDER BY {order} LIMIT $4"
             ),
@@ -133,41 +125,14 @@ async fn edge_cursor(
         .await?
         .query_opt(
             &format!(
-                "SELECT 1 FROM record_revisions WHERE record_id = $1 AND ($2 OR is_private = FALSE) AND {predicate} LIMIT 1"
+                "SELECT 1 FROM record_revisions \
+                 WHERE record_id = $1 AND ($2 OR is_private = FALSE) AND {predicate} LIMIT 1"
             ),
             &[&record_id, &include_private, &revision_number],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(row.map(|_| encode_cursor(revision_number)))
-}
-async fn adjacent_record(
-    pool: &DbPool,
-    id: &str,
-    include_private: bool,
-    older: bool,
-) -> Result<Option<Record>, AppError> {
-    let query = if older {
-        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
-         view_count_total, last_viewed_at, created_at, updated_at \
-         FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
-         AND ((created_at < (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
-           OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id < $1)) \
-         ORDER BY created_at DESC, id DESC LIMIT 1"
-    } else {
-        "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
-         view_count_total, last_viewed_at, created_at, updated_at \
-         FROM records WHERE deleted_at IS NULL AND ($2 OR is_private = FALSE) \
-         AND ((created_at > (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL)) \
-           OR (created_at = (SELECT created_at FROM records WHERE id = $1 AND deleted_at IS NULL) AND id > $1)) \
-         ORDER BY created_at ASC, id ASC LIMIT 1"
-    };
-    client(pool)
-        .await?
-        .query_opt(query, &[&id, &include_private])
-        .await
-        .map(|row| row.map(super::records::row_to_record))
-        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
     pool.get()
@@ -176,10 +141,36 @@ async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
 }
 fn row_to_revision(row: tokio_postgres::Row) -> RecordRevision {
     RecordRevision {
+        id: row.get("id"),
         revision_number: row.get("revision_number"),
         body: row.get("body"),
         is_private: row.get("is_private"),
         created_at: row.get("created_at"),
+    }
+}
+fn row_to_revision_resource(row: tokio_postgres::Row) -> RevisionResource {
+    RevisionResource {
+        record: Record {
+            id: row.get("id"),
+            alias: row.get("alias"),
+            title: row.get("title"),
+            summary: row.get("summary"),
+            body: row.get("body"),
+            is_favorite: row.get("is_favorite"),
+            favorite_position: row.get("favorite_position"),
+            is_private: row.get("is_private"),
+            view_count_total: row.get("view_count_total"),
+            last_viewed_at: row.get("last_viewed_at"),
+            created_at: row.get("created_at"),
+            updated_at: row.get("updated_at"),
+        },
+        revision: RecordRevision {
+            id: row.get("revision_id"),
+            revision_number: row.get("revision_number"),
+            body: row.get("revision_body"),
+            is_private: row.get("revision_is_private"),
+            created_at: row.get("revision_created_at"),
+        },
     }
 }
 fn decode_cursor(cursor: Option<&str>) -> Result<Option<i32>, AppError> {

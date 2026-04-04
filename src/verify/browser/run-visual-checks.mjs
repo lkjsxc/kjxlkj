@@ -39,6 +39,8 @@ async function main() {
 async function captureAdminScreens(browser, note) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
+    const revisionThree = note.revisions.find((item) => item.revision_number === 3);
+    assert.ok(revisionThree, 'expected revision 3 fixture');
     await login(page);
 
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
@@ -67,6 +69,7 @@ async function captureAdminScreens(browser, note) {
         return response.json();
     }, note.id);
     assert.equal(historyJson.revisions.length, 2);
+    assert.equal(typeof historyJson.revisions[0]?.id, 'string');
     assert.equal(typeof historyJson.next_cursor, 'string');
 
     await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
@@ -81,8 +84,8 @@ async function captureAdminScreens(browser, note) {
     ]);
     await assertVisibleText(page, 'Revision 1');
 
-    await page.goto(`${appUrl}/${note.id}/history/3`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${note.ref}/history/3`);
+    await page.goto(`${appUrl}/${revisionThree.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${revisionThree.id}`);
     await assertVisibleText(page, 'Shared release');
     await Promise.all([
         page.waitForURL('**/'),
@@ -96,6 +99,10 @@ async function captureAdminScreens(browser, note) {
 async function capturePublicScreens(browser, notes) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
+    const publicRevision = notes.middle.revisions.find((item) => item.revision_number === 3);
+    const privateRevision = notes.middle.revisions.find((item) => item.revision_number === 2);
+    assert.ok(publicRevision, 'expected public revision fixture');
+    assert.ok(privateRevision, 'expected private revision fixture');
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
@@ -169,12 +176,12 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.newest.ref}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.middle.title, null);
 
-    const publicRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/3`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}/history/3`);
-    const privateRevision = await page.goto(`${appUrl}/${notes.middle.id}/history/2`, { waitUntil: 'networkidle' });
-    assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}/history/2`);
-    assert.equal(publicRevision?.status(), 200, 'public revision should stay guest-readable');
-    assert.equal(privateRevision?.status(), 404, 'private revision should return 404');
+    const publicRevisionResponse = await page.goto(`${appUrl}/${publicRevision.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${publicRevision.id}`);
+    const privateRevisionResponse = await page.goto(`${appUrl}/${privateRevision.id}`, { waitUntil: 'networkidle' });
+    assert.equal(new URL(page.url()).pathname, `/${privateRevision.id}`);
+    assert.equal(publicRevisionResponse?.status(), 200, 'public revision should stay guest-readable');
+    assert.equal(privateRevisionResponse?.status(), 404, 'private revision should return 404');
     await assertVisibleText(page, 'Note not found');
     const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();

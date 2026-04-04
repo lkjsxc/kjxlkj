@@ -58,16 +58,8 @@ pub fn history_page(
     )
 }
 
-pub fn revision_page(
-    _record: &Record,
-    chrome: &NoteChrome,
-    revision: &RecordRevision,
-    is_admin: bool,
-) -> String {
-    let active = format!(
-        "{}/history/{}",
-        chrome.current_href, revision.revision_number
-    );
+pub fn revision_page(chrome: &NoteChrome, revision: &RecordRevision, is_admin: bool) -> String {
+    let active = format!("/{}", revision.id);
     let content = format!(
         r#"<header class="page-head">
 <div class="page-title-stack">

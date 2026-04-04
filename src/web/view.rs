@@ -81,11 +81,11 @@ pub async fn note_chrome(
     })
 }
 
-pub fn history_links(record: &Record, revisions: &[RecordRevision]) -> Vec<HistoryLink> {
+pub fn history_links(revisions: &[RecordRevision]) -> Vec<HistoryLink> {
     revisions
         .iter()
         .map(|revision| HistoryLink {
-            href: format!("{}/history/{}", note_href(record), revision.revision_number),
+            href: revision_href(revision),
             label: format!("Revision {}", revision.revision_number),
             created_at: render_time(&revision.created_at),
             status: visibility_label(revision.is_private),
@@ -126,6 +126,10 @@ pub fn note_href(record: &Record) -> String {
 
 pub fn history_href(record: &Record) -> String {
     format!("{}/history", note_href(record))
+}
+
+pub fn revision_href(revision: &RecordRevision) -> String {
+    format!("/{}", revision.id)
 }
 
 pub fn visibility_label(is_private: bool) -> &'static str {

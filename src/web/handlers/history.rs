@@ -48,48 +48,11 @@ pub async fn history_page(
     Ok(html(templates::history_page(
         &record,
         &chrome,
-        &view::history_links(&record, &page.revisions),
+        &view::history_links(&page.revisions),
         page.previous_cursor.as_deref(),
         page.next_cursor.as_deref(),
         params.limit.unwrap_or(settings.search_results_per_page),
         is_admin,
-    )))
-}
-
-#[get("/{id}/history/{revision_number}")]
-pub async fn revision_page(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<(String, i32)>,
-) -> Result<HttpResponse, AppError> {
-    if !db::is_setup(&pool).await? {
-        return Ok(redirect("/setup"));
-    }
-    let (reference, revision_number) = path.into_inner();
-    let is_admin = session::check_session(&req, &pool).await?;
-    let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
-        return Ok(not_found());
-    };
-    if record
-        .alias
-        .as_deref()
-        .is_some_and(|alias| alias != reference)
-        && reference == record.id
-    {
-        return Ok(redirect(&with_query(
-            &format!("{}/history/{revision_number}", view::note_href(&record)),
-            req.query_string(),
-        )));
-    }
-    let Some(revision) = db::get_record_revision(&pool, &record.id, revision_number).await? else {
-        return Ok(not_found());
-    };
-    if revision.is_private && !is_admin {
-        return Ok(not_found());
-    }
-    let chrome = view::note_chrome(&pool, &record, is_admin).await?;
-    Ok(html(templates::revision_page(
-        &record, &chrome, &revision, is_admin,
     )))
 }
 

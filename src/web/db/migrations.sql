@@ -89,7 +89,7 @@ CREATE INDEX IF NOT EXISTS idx_records_title_trgm ON records USING GIN(title gin
 CREATE INDEX IF NOT EXISTS idx_records_body_trgm ON records USING GIN(body gin_trgm_ops);
 
 CREATE TABLE IF NOT EXISTS record_revisions (
-    id SERIAL PRIMARY KEY,
+    id CHAR(26) PRIMARY KEY,
     record_id CHAR(26) NOT NULL REFERENCES records(id),
     body TEXT NOT NULL,
     is_private BOOLEAN NOT NULL,
@@ -97,6 +97,20 @@ CREATE TABLE IF NOT EXISTS record_revisions (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(record_id, revision_number)
 );
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'record_revisions' AND column_name = 'id'
+        AND data_type = 'integer'
+    ) THEN
+        ALTER TABLE record_revisions DROP CONSTRAINT IF EXISTS record_revisions_pkey;
+        ALTER TABLE record_revisions RENAME COLUMN id TO legacy_id;
+    END IF;
+END $$;
+
+ALTER TABLE record_revisions ADD COLUMN IF NOT EXISTS id CHAR(26);
 
 CREATE INDEX IF NOT EXISTS idx_revisions_lookup
     ON record_revisions(record_id, revision_number DESC);
