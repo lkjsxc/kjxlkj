@@ -1,10 +1,12 @@
 //! Search HTML handler
 
+use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{
     self, DbPool, ListDirection, ListRequest, ListScope, ListSort, PopularWindow,
 };
 use crate::web::handlers::session;
+use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
@@ -24,6 +26,7 @@ pub struct SearchParams {
 #[get("/search")]
 pub async fn search_page(
     pool: web::Data<DbPool>,
+    config: web::Data<Config>,
     req: HttpRequest,
     params: web::Query<SearchParams>,
 ) -> Result<HttpResponse, AppError> {
@@ -32,6 +35,7 @@ pub async fn search_page(
     }
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
+    let site = SiteContext::from_settings(&config, &settings);
     let params = params.into_inner();
     let query = params
         .q
@@ -72,6 +76,7 @@ pub async fn search_page(
         sort: sort.as_str(),
         popular_window: popular_window.as_str(),
         is_admin,
+        site: &site,
     })))
 }
 

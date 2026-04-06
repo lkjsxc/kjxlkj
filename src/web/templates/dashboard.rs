@@ -8,6 +8,7 @@ use super::model::IndexItem;
 use super::popular_sections::admin_popular_section;
 use super::sections::{page_header, section};
 use crate::web::db::{AppSettings, NoteStats, PopularWindow};
+use crate::web::site::SiteContext;
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
@@ -20,6 +21,7 @@ pub fn admin_page(
     recent: &[IndexItem],
     favorites: &[IndexItem],
     window: PopularWindow,
+    site: &SiteContext,
 ) -> String {
     let content = format!(
         "{}{}<div class=\"dashboard-stack\">{}{}{}</div>",
@@ -37,7 +39,12 @@ pub fn admin_page(
         ),
     ) + &favorite_order_section(favorites, &favorite_browse_card());
     base(
-        "Dashboard",
+        &site.page_meta(
+            "Dashboard",
+            format!("Admin dashboard for {}.", site.site_name),
+            false,
+            None,
+        ),
         &shell_page(
             "Admin",
             &list_rail(
@@ -48,6 +55,7 @@ pub fn admin_page(
             ),
             &content,
             "dashboard-page",
+            &site.site_name,
         ),
         "",
         &format!(

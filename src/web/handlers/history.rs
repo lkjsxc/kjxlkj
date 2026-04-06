@@ -1,9 +1,11 @@
 //! Note history HTML handlers
 
+use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, ListDirection};
 use crate::web::handlers::record_history::HistoryParams;
 use crate::web::handlers::session;
+use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
@@ -11,6 +13,7 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 #[get("/{id}/history")]
 pub async fn history_page(
     pool: web::Data<DbPool>,
+    config: web::Data<Config>,
     req: HttpRequest,
     path: web::Path<String>,
     params: web::Query<HistoryParams>,
@@ -20,8 +23,10 @@ pub async fn history_page(
     }
     let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
+    let settings = db::get_settings(&pool).await?;
+    let site = SiteContext::from_settings(&config, &settings);
     let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
-        return Ok(not_found());
+        return Ok(not_found(&site));
     };
     if record
         .alias
@@ -34,7 +39,6 @@ pub async fn history_page(
             req.query_string(),
         )));
     }
-    let settings = db::get_settings(&pool).await?;
     let page = db::list_record_snapshots(
         &pool,
         &record.id,
@@ -45,14 +49,18 @@ pub async fn history_page(
     )
     .await?;
     let chrome = view::note_chrome(&pool, &record, is_admin).await?;
+    let history = view::history_links(&page.snapshots, params.cursor.is_none());
     Ok(html(templates::history_page(
         &record,
         &chrome,
-        &view::history_links(&page.snapshots, params.cursor.is_none()),
-        page.previous_cursor.as_deref(),
-        page.next_cursor.as_deref(),
-        params.limit.unwrap_or(settings.search_results_per_page),
+        templates::HistoryPage {
+            history: &history,
+            previous_cursor: page.previous_cursor.as_deref(),
+            next_cursor: page.next_cursor.as_deref(),
+            limit: params.limit.unwrap_or(settings.search_results_per_page),
+        },
         is_admin,
+        &site,
     )))
 }
 
@@ -85,8 +93,13 @@ fn html(body: String) -> HttpResponse {
         .body(body)
 }
 
-fn not_found() -> HttpResponse {
+fn not_found(site: &SiteContext) -> HttpResponse {
     HttpResponse::NotFound()
         .content_type("text/html; charset=utf-8")
-        .body(templates::not_found_page())
+        .body(templates::not_found_page(&site.page_meta(
+            "Not Found",
+            "The requested note could not be found.",
+            false,
+            None,
+        )))
 }

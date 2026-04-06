@@ -2,6 +2,7 @@
 
 mod analytics;
 mod auth;
+mod discovery;
 mod favorites;
 mod list_scope;
 mod listing;
@@ -24,12 +25,15 @@ pub use analytics::{get_note_view_stats, list_popular_records, record_note_view}
 pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
+pub use discovery::list_public_sitemap_records;
 pub use favorites::{list_all_favorite_records, reorder_favorites};
 pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
-pub use models::{AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordSnapshot};
+pub use models::{
+    AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordSnapshot, SitemapRecord,
+};
 pub use navigation::{get_next_record, get_previous_record};
 pub use popular_window::PopularWindow;
 pub use records::{

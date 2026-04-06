@@ -1,5 +1,6 @@
 use super::{note::note_page, NoteAnalytics, NoteChrome};
 use crate::web::db::Record;
+use crate::web::site::SiteContext;
 use chrono::Utc;
 
 fn sample_record() -> Record {
@@ -35,12 +36,29 @@ fn sample_chrome() -> NoteChrome {
     }
 }
 
+fn sample_site() -> SiteContext {
+    SiteContext {
+        site_name: "Launchpad".to_string(),
+        site_description: "Search-friendly notes.".to_string(),
+        public_base_url: Some("https://example.com".to_string()),
+    }
+}
+
 #[test]
 fn guest_note_page_hides_editor() {
-    let html = note_page(&sample_record(), &sample_chrome(), None, false);
+    let html = note_page(
+        &sample_record(),
+        &sample_chrome(),
+        None,
+        false,
+        &sample_site(),
+    );
     assert!(html.contains("shell-rail"));
     assert!(!html.contains("id=\"editor-body\""));
     assert_eq!(html.match_indices("<h1>").count(), 1);
+    assert!(html.contains("<title>Demo | Launchpad</title>"));
+    assert!(html.contains("rel=\"canonical\" href=\"https://example.com/demo-note\""));
+    assert!(html.contains("content=\"index,follow\""));
 }
 
 #[test]
@@ -56,6 +74,7 @@ fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
             last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
         }),
         true,
+        &sample_site(),
     );
     assert!(html.contains("favorite-toggle"));
     assert!(html.contains("alias-input"));
@@ -67,4 +86,6 @@ fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
     assert!(!html.contains("Markdown body"));
     assert!(!html.contains("<div class=\"page-title-stack\"><h1"));
     assert!(!html.contains("toastui"));
+    assert!(html.contains("content=\"noindex,nofollow\""));
+    assert!(!html.contains("rel=\"canonical\""));
 }

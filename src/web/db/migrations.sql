@@ -154,6 +154,8 @@ CREATE TABLE IF NOT EXISTS app_settings (
     search_results_per_page BIGINT NOT NULL DEFAULT 20,
     session_timeout_minutes BIGINT NOT NULL DEFAULT 1440,
     default_new_note_is_private BOOLEAN NOT NULL DEFAULT FALSE,
+    site_name TEXT NOT NULL DEFAULT 'kjxlkj',
+    site_description TEXT NOT NULL DEFAULT 'Markdown note system for LLM-operated workflows.',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -178,6 +180,10 @@ ALTER TABLE app_settings
 ALTER TABLE app_settings
     ADD COLUMN IF NOT EXISTS default_new_note_is_private BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE app_settings
+    ADD COLUMN IF NOT EXISTS site_name TEXT NOT NULL DEFAULT 'kjxlkj';
+ALTER TABLE app_settings
+    ADD COLUMN IF NOT EXISTS site_description TEXT NOT NULL DEFAULT 'Markdown note system for LLM-operated workflows.';
+ALTER TABLE app_settings
     DROP COLUMN IF EXISTS home_title;
 ALTER TABLE records
     ALTER COLUMN is_private SET DEFAULT FALSE;
@@ -192,8 +198,16 @@ ALTER TABLE app_settings
 ALTER TABLE app_settings
     ALTER COLUMN default_new_note_is_private SET DEFAULT FALSE;
 ALTER TABLE app_settings
+    ALTER COLUMN site_name SET DEFAULT 'kjxlkj';
+ALTER TABLE app_settings
+    ALTER COLUMN site_description SET DEFAULT 'Markdown note system for LLM-operated workflows.';
+ALTER TABLE app_settings
     DROP COLUMN IF EXISTS default_vim_mode;
 
 INSERT INTO app_settings (id) VALUES (1)
 ON CONFLICT (id) DO NOTHING;
 UPDATE app_settings SET default_new_note_is_private = FALSE WHERE id = 1;
+UPDATE app_settings SET site_name = 'kjxlkj' WHERE id = 1 AND (site_name IS NULL OR btrim(site_name) = '');
+UPDATE app_settings
+SET site_description = 'Markdown note system for LLM-operated workflows.'
+WHERE id = 1 AND (site_description IS NULL OR btrim(site_description) = '');

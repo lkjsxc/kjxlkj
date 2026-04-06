@@ -9,6 +9,7 @@ use super::model::IndexItem;
 use super::popular_sections::home_popular_section;
 use crate::core::render_markdown;
 use crate::web::db::{AppSettings, PopularWindow};
+use crate::web::site::SiteContext;
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 const POPULAR_JS: &str = include_str!("popular_window.js");
@@ -20,6 +21,7 @@ pub fn home_page(
     favorites: &[IndexItem],
     window: PopularWindow,
     is_admin: bool,
+    site: &SiteContext,
 ) -> String {
     let admin_script = if is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
@@ -33,7 +35,7 @@ pub fn home_page(
         home_sections(settings, popular, recent, favorites, window),
     );
     base(
-        "Home",
+        &site.page_meta("Home", site.site_description.clone(), !is_admin, Some("/")),
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &list_rail(
@@ -44,6 +46,7 @@ pub fn home_page(
             ),
             &content,
             "home-page",
+            &site.site_name,
         ),
         "",
         &format!(r#"<script>{POPULAR_JS}</script>{admin_script}"#),

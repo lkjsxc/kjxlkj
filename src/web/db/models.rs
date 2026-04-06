@@ -53,6 +53,8 @@ pub struct AppSettings {
     pub search_results_per_page: i64,
     pub session_timeout_minutes: i64,
     pub default_new_note_is_private: bool,
+    pub site_name: String,
+    pub site_description: String,
 }
 
 impl Default for AppSettings {
@@ -71,6 +73,8 @@ impl Default for AppSettings {
             search_results_per_page: 20,
             session_timeout_minutes: 1440,
             default_new_note_is_private: false,
+            site_name: "kjxlkj".to_string(),
+            site_description: "Markdown note system for LLM-operated workflows.".to_string(),
         }
     }
 }
@@ -96,4 +100,11 @@ pub struct NoteViewStats {
     pub views_30d: i64,
     pub views_90d: i64,
     pub last_viewed_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SitemapRecord {
+    pub id: String,
+    pub alias: Option<String>,
+    pub updated_at: DateTime<Utc>,
 }

@@ -8,9 +8,9 @@ export function resetDatabase(databaseUrl) {
             "(id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, " +
             "home_recent_visible, home_favorite_visible, home_popular_visible, " +
             "home_recent_position, home_favorite_position, home_popular_position, " +
-            "search_results_per_page, session_timeout_minutes, default_new_note_is_private) " +
+            "search_results_per_page, session_timeout_minutes, default_new_note_is_private, site_name, site_description) " +
             "VALUES (1, 5, 5, 5, $$# Home\n\nWelcome to **kjxlkj**. Use Home as the landing space for search, popular notes, and curated favorites.$$," +
-            " TRUE, TRUE, TRUE, 2, 3, 1, 20, 1440, FALSE)"
+            " TRUE, TRUE, TRUE, 2, 3, 1, 20, 1440, FALSE, 'kjxlkj', 'Markdown note system for LLM-operated workflows.')"
     );
 }
 

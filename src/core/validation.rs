@@ -14,7 +14,16 @@ static SUMMARY_PREFIX_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)").unwrap());
 static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
     [
-        "admin", "assets", "healthz", "login", "logout", "records", "search", "setup",
+        "admin",
+        "assets",
+        "healthz",
+        "login",
+        "logout",
+        "records",
+        "robots.txt",
+        "search",
+        "setup",
+        "sitemap.xml",
     ]
     .into_iter()
     .collect()

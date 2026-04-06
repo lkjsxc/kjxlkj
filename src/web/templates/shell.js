@@ -35,19 +35,16 @@
         var media = window.matchMedia('(max-width: 900px)');
 
         function sync() {
+            var open = document.body.classList.contains('rail-open');
             if (media.matches) {
-                panel.setAttribute(
-                    'aria-hidden',
-                    document.body.classList.contains('rail-open') ? 'false' : 'true'
-                );
-                toggle.setAttribute(
-                    'aria-expanded',
-                    document.body.classList.contains('rail-open') ? 'true' : 'false'
-                );
-                backdrop.hidden = !document.body.classList.contains('rail-open');
+                panel.removeAttribute('aria-hidden');
+                panel.toggleAttribute('inert', !open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                backdrop.hidden = !open;
             } else {
                 document.body.classList.remove('rail-open');
-                panel.setAttribute('aria-hidden', 'false');
+                panel.removeAttribute('aria-hidden');
+                panel.removeAttribute('inert');
                 toggle.setAttribute('aria-expanded', 'false');
                 backdrop.hidden = true;
             }

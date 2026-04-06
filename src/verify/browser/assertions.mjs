@@ -86,6 +86,8 @@ export async function expectAdminDashboard(page) {
 export async function expectSettingsPage(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Settings');
+    await page.getByLabel('Site name').waitFor({ state: 'visible' });
+    await page.getByLabel('Site description').waitFor({ state: 'visible' });
     await page.getByLabel('Home intro Markdown').waitFor({ state: 'visible' });
     await page.getByLabel('Session timeout (minutes)').waitFor({ state: 'visible' });
     await page.getByLabel('Search page size').waitFor({ state: 'visible' });

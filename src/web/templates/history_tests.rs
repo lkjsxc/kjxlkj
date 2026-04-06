@@ -1,5 +1,9 @@
-use super::{history::history_page, HistoryLink, NoteChrome};
+use super::{
+    history::{history_page, HistoryPage},
+    HistoryLink, NoteChrome,
+};
 use crate::web::db::Record;
+use crate::web::site::SiteContext;
 use chrono::Utc;
 
 fn sample_record() -> Record {
@@ -35,22 +39,33 @@ fn sample_chrome() -> NoteChrome {
     }
 }
 
+fn sample_site() -> SiteContext {
+    SiteContext {
+        site_name: "Launchpad".to_string(),
+        site_description: "Search-friendly notes.".to_string(),
+        public_base_url: Some("https://example.com".to_string()),
+    }
+}
+
 #[test]
 fn history_page_lists_live_note_and_saved_snapshots() {
     let html = history_page(
         &sample_record(),
         &sample_chrome(),
-        &[HistoryLink {
-            href: "/zyxwvutsrqponmlkjihgfedcba".to_string(),
-            label: "Latest saved snapshot".to_string(),
-            summary: "Saved body".to_string(),
-            created_at: "2026-03-26 08:00 UTC".to_string(),
-            status: "Public",
-        }],
-        Some("prev"),
-        Some("next"),
-        20,
+        HistoryPage {
+            history: &[HistoryLink {
+                href: "/zyxwvutsrqponmlkjihgfedcba".to_string(),
+                label: "Latest saved snapshot".to_string(),
+                summary: "Saved body".to_string(),
+                created_at: "2026-03-26 08:00 UTC".to_string(),
+                status: "Public",
+            }],
+            previous_cursor: Some("prev"),
+            next_cursor: Some("next"),
+            limit: 20,
+        },
         false,
+        &sample_site(),
     );
     assert!(html.contains("Live note"));
     assert!(html.contains("Latest saved snapshot"));
@@ -59,4 +74,6 @@ fn history_page_lists_live_note_and_saved_snapshots() {
     assert!(html.contains("2026-03-26 08:00 UTC"));
     assert!(html.contains(">Previous<"));
     assert!(html.contains(">Next<"));
+    assert!(html.contains("<title>History: Demo | Launchpad</title>"));
+    assert!(html.contains("content=\"noindex,nofollow\""));
 }

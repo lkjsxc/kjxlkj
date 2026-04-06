@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText, expectClosedDrawer, expectPublicRoot, openDrawer } from './assertions.mjs';
+import { assertBrandName, assertHead } from './discoverability-checks.mjs';
 import { assertEditorLayout, openPreview } from './editor-checks.mjs';
 import { appUrl, capture, login, newContext } from './support.mjs';
 
@@ -22,6 +23,8 @@ export async function captureCompactScreens(browser, note, desktopFont) {
         intro: 'Welcome to Launchpad',
         sections: ['Favorites', 'Popular notes'],
     });
+    await assertBrandName(page, 'Launchpad');
+    await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public notes.', robots: 'index,follow', canonical: `${appUrl}/` });
     await expectClosedDrawer(page);
     assert.equal(await page.evaluate(() => getComputedStyle(document.body).fontFamily), desktopFont);
     await capture(page, 'compact-public-root-closed.png');
@@ -33,6 +36,7 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
+    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'All history');
     await expectClosedDrawer(page);

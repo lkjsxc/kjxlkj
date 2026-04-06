@@ -1,8 +1,10 @@
 //! Admin settings handler
 
+use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, AppSettings, DbPool};
 use crate::web::handlers::session;
+use crate::web::site::SiteContext;
 use crate::web::templates;
 use actix_web::{get, post, web, HttpRequest, HttpResponse};
 use serde::Deserialize;
@@ -10,6 +12,8 @@ use std::collections::HashSet;
 
 #[derive(Debug, Deserialize)]
 pub struct SettingsForm {
+    pub site_name: String,
+    pub site_description: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -28,15 +32,16 @@ pub struct SettingsForm {
 #[get("/admin/settings")]
 pub async fn settings_page(
     pool: web::Data<DbPool>,
+    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
     session::require_session(&req, &pool).await?;
-    Ok(html(templates::settings_page(
-        &db::get_settings(&pool).await?,
-    )))
+    let settings = db::get_settings(&pool).await?;
+    let site = SiteContext::from_settings(&config, &settings);
+    Ok(html(templates::settings_page(&settings, &site)))
 }
 
 #[post("/admin/settings")]
@@ -53,6 +58,18 @@ pub async fn settings_submit(
 }
 
 fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
+    let site_name = form.site_name.trim();
+    let site_description = form.site_description.trim();
+    if site_name.is_empty() || site_name.len() > 80 {
+        return Err(AppError::InvalidRequest(
+            "site name must be between 1 and 80 characters".to_string(),
+        ));
+    }
+    if site_description.is_empty() || site_description.len() > 200 {
+        return Err(AppError::InvalidRequest(
+            "site description must be between 1 and 200 characters".to_string(),
+        ));
+    }
     if !counts_are_valid(form) {
         return Err(AppError::InvalidRequest(
             "section counts must be between 1 and 24".to_string(),
@@ -74,6 +91,8 @@ fn validate(form: &SettingsForm) -> Result<AppSettings, AppError> {
         ));
     }
     Ok(AppSettings {
+        site_name: site_name.to_string(),
+        site_description: site_description.to_string(),
         home_recent_limit: form.home_recent_limit,
         home_favorite_limit: form.home_favorite_limit,
         home_popular_limit: form.home_popular_limit,
@@ -128,6 +147,8 @@ mod tests {
 
     fn sample_form() -> SettingsForm {
         SettingsForm {
+            site_name: "Launchpad".to_string(),
+            site_description: "Search-friendly notes.".to_string(),
             home_recent_limit: 5,
             home_favorite_limit: 5,
             home_popular_limit: 5,
@@ -163,6 +184,13 @@ mod tests {
     fn validate_rejects_long_timeout() {
         let mut form = sample_form();
         form.session_timeout_minutes = 10081;
+        assert!(validate(&form).is_err());
+    }
+
+    #[test]
+    fn validate_rejects_blank_site_name() {
+        let mut form = sample_form();
+        form.site_name = "   ".to_string();
         assert!(validate(&form).is_err());
     }
 }

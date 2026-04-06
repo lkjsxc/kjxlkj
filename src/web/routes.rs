@@ -4,8 +4,8 @@ use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db;
 use crate::web::handlers::{
-    admin, assets, favorites, health, history, home, login, logout, note, popular_sections,
-    preview, record_history, records, search, settings, setup,
+    admin, assets, discoverability, favorites, health, history, home, login, logout, note,
+    popular_sections, preview, record_history, records, search, settings, setup,
 };
 use actix_web::{web, App, HttpServer};
 use tracing::info;
@@ -16,12 +16,14 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
 
     let bind_addr = config.bind_addr();
     let pool = web::Data::new(pool);
+    let config = web::Data::new(config);
 
     info!("Starting HTTP server on {}", bind_addr);
 
     HttpServer::new(move || {
         App::new()
             .app_data(pool.clone())
+            .app_data(config.clone())
             .service(health::healthz)
             .service(setup::setup_page)
             .service(setup::setup_submit)
@@ -30,6 +32,8 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(logout::logout)
             .service(assets::favicon)
             .service(assets::icon_svg)
+            .service(discoverability::robots_txt)
+            .service(discoverability::sitemap_xml)
             .service(home::home_page)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)

@@ -5,6 +5,7 @@ export async function expectClosedDrawer(page) {
     const toggle = page.locator('[data-menu-toggle]');
     await toggle.waitFor({ state: 'visible' });
     assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(await page.locator('[data-menu-panel]').getAttribute('inert'), '');
     await page.waitForFunction(() => {
         const node = document.querySelector('[data-menu-panel]');
         return !!node && node.getBoundingClientRect().right < 20;
@@ -20,6 +21,7 @@ export async function openDrawer(page) {
         return !!node && node.getBoundingClientRect().right > 200;
     });
     assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
+    assert.equal(await page.locator('[data-menu-panel]').getAttribute('inert'), null);
     await assertNoHorizontalOverflow(page);
 }
 
@@ -29,9 +31,15 @@ export async function assertNoHorizontalOverflow(page) {
 }
 
 export async function assertVisibleText(page, text) {
-    await page.getByText(text, { exact: false }).first().waitFor({ state: 'visible' });
+    const visibleCount = await page.getByText(text, { exact: false }).evaluateAll((nodes) =>
+        nodes.filter((node) => {
+            const style = window.getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+        }).length
+    );
+    assert.ok(visibleCount > 0, `"${text}" should be visible`);
 }
-
 export async function assertInvisibleText(page, text) {
     const locator = page.getByText(text, { exact: false });
     const visibleCount = await locator.evaluateAll((nodes) =>

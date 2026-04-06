@@ -74,7 +74,7 @@ function syncNoteChrome() {
     updateLiveText('[data-live-visibility]', visibility, 'renderedVisibility');
     updateLiveText('[data-live-alias]', currentAlias || 'None', 'renderedAlias');
     syncCanonicalLinks();
-    document.title = title + ' - kjxlkj';
+    document.title = title + ' | ' + currentSiteName;
 }
 
 function syncCanonicalLinks() {

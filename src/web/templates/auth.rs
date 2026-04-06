@@ -1,15 +1,16 @@
 //! Authentication pages
 
-use super::layout::base;
+use super::layout::{base, html_escape};
+use crate::web::site::SiteContext;
 
-pub fn setup_page(error: Option<&str>) -> String {
+pub fn setup_page(site: &SiteContext, error: Option<&str>) -> String {
     let error_html = error
         .map(|e| format!(r#"<div class="error">{e}</div>"#))
         .unwrap_or_default();
     let content = format!(
         r#"<div class="auth-container">
 <div class="auth-card">
-<h1>kjxlkj Setup</h1>
+<h1>{} Setup</h1>
 <p class="subtitle">Create your admin account</p>
 {error_html}
 <form method="POST" action="/setup">
@@ -28,19 +29,30 @@ pub fn setup_page(error: Option<&str>) -> String {
 <div class="auth-actions"><button type="submit" class="btn btn-primary">Create Account</button></div>
 </form>
 </div>
-</div>"#
+</div>"#,
+        html_escape(&site.site_name),
     );
-    base("Setup", &content, "", "")
+    base(
+        &site.page_meta(
+            "Setup",
+            format!("Create the first admin account for {}.", site.site_name),
+            false,
+            None,
+        ),
+        &content,
+        "",
+        "",
+    )
 }
 
-pub fn login_page(error: Option<&str>) -> String {
+pub fn login_page(site: &SiteContext, error: Option<&str>) -> String {
     let error_html = error
         .map(|e| format!(r#"<div class="error">{e}</div>"#))
         .unwrap_or_default();
     let content = format!(
         r#"<div class="auth-container">
 <div class="auth-card">
-<h1>kjxlkj</h1>
+<h1>{}</h1>
 {error_html}
 <form method="POST" action="/login">
 <div class="form-group">
@@ -54,7 +66,18 @@ pub fn login_page(error: Option<&str>) -> String {
 <div class="auth-actions"><button type="submit" class="btn btn-primary">Sign In</button></div>
 </form>
 </div>
-</div>"#
+</div>"#,
+        html_escape(&site.site_name),
     );
-    base("Login", &content, "", "")
+    base(
+        &site.page_meta(
+            "Login",
+            format!("Sign in to manage {}.", site.site_name),
+            false,
+            None,
+        ),
+        &content,
+        "",
+        "",
+    )
 }

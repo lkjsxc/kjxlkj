@@ -5,6 +5,7 @@ use super::model::{NoteAnalytics, NoteChrome};
 use super::note_shell::note_rail;
 use crate::core::render_markdown;
 use crate::web::db::Record;
+use crate::web::site::SiteContext;
 
 const EDITOR_CORE_JS: &str = include_str!("editor.js");
 const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
@@ -16,6 +17,7 @@ pub fn note_page(
     chrome: &NoteChrome,
     analytics: Option<&NoteAnalytics>,
     is_admin: bool,
+    site: &SiteContext,
 ) -> String {
     let content = format!(
         r#"<header class="page-head note-head">
@@ -38,19 +40,25 @@ pub fn note_page(
         }
     );
     base(
-        &chrome.title,
+        &site.page_meta(
+            &chrome.title,
+            record.summary.clone(),
+            !is_admin && !record.is_private,
+            (!is_admin && !record.is_private).then_some(chrome.current_href.as_str()),
+        ),
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &note_rail(chrome, is_admin, &chrome.current_href),
             &content,
             "note-page",
+            &site.site_name,
         ),
         "",
-        &editor_script(record, chrome, is_admin),
+        &editor_script(record, chrome, is_admin, &site.site_name),
     )
 }
 
-fn editor_script(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String {
+fn editor_script(record: &Record, chrome: &NoteChrome, is_admin: bool, site_name: &str) -> String {
     if !is_admin {
         return String::new();
     }
@@ -59,6 +67,7 @@ fn editor_script(record: &Record, chrome: &NoteChrome, is_admin: bool) -> String
 var currentId = {};
 var currentAlias = {};
 var currentHref = {};
+var currentSiteName = {};
 var isFavorite = {};
 var isPrivate = {};
 {}
@@ -70,6 +79,7 @@ initEditor();
         serde_json::to_string(&record.id).unwrap(),
         serde_json::to_string(&record.alias).unwrap(),
         serde_json::to_string(&chrome.current_href).unwrap(),
+        serde_json::to_string(site_name).unwrap(),
         record.is_favorite,
         record.is_private,
         NOTE_ACTIONS_JS,

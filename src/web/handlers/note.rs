@@ -1,9 +1,11 @@
 //! Note page handler
 
+use crate::config::Config;
 use crate::core::looks_like_id;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
 use crate::web::handlers::session;
+use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
@@ -16,6 +18,7 @@ enum RootResource {
 #[get("/{reference}")]
 pub async fn note_page(
     pool: web::Data<DbPool>,
+    config: web::Data<Config>,
     req: HttpRequest,
     path: web::Path<String>,
 ) -> Result<HttpResponse, AppError> {
@@ -24,15 +27,19 @@ pub async fn note_page(
     }
     let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
+    let settings = db::get_settings(&pool).await?;
+    let site = SiteContext::from_settings(&config, &settings);
     let resource = match resolve_root_resource(&pool, &reference).await? {
         Some(resource) => resource,
-        None => return Ok(not_found()),
+        None => return Ok(not_found(&site)),
     };
     match resource {
         RootResource::Current(record) => {
-            render_current_note(&pool, &reference, &record, is_admin).await
+            render_current_note(&pool, &reference, &record, is_admin, &site).await
         }
-        RootResource::Snapshot(resource) => render_snapshot(&pool, &resource, is_admin).await,
+        RootResource::Snapshot(resource) => {
+            render_snapshot(&pool, &resource, is_admin, &site).await
+        }
     }
 }
 
@@ -58,9 +65,10 @@ async fn render_current_note(
     reference: &str,
     record: &db::Record,
     is_admin: bool,
+    site: &SiteContext,
 ) -> Result<HttpResponse, AppError> {
     if record.is_private && !is_admin {
-        return Ok(not_found());
+        return Ok(not_found(site));
     }
     if record
         .alias
@@ -84,6 +92,7 @@ async fn render_current_note(
         &chrome,
         analytics.as_ref(),
         is_admin,
+        site,
     )))
 }
 
@@ -91,15 +100,17 @@ async fn render_snapshot(
     pool: &DbPool,
     resource: &db::SnapshotResource,
     is_admin: bool,
+    site: &SiteContext,
 ) -> Result<HttpResponse, AppError> {
     if (resource.record.is_private || resource.snapshot.is_private) && !is_admin {
-        return Ok(not_found());
+        return Ok(not_found(site));
     }
     let chrome = view::note_chrome(pool, &resource.record, is_admin).await?;
     Ok(html(templates::snapshot_page(
         &chrome,
         &resource.snapshot,
         is_admin,
+        site,
     )))
 }
 
@@ -115,8 +126,13 @@ fn html(body: String) -> HttpResponse {
         .body(body)
 }
 
-fn not_found() -> HttpResponse {
+fn not_found(site: &SiteContext) -> HttpResponse {
     HttpResponse::NotFound()
         .content_type("text/html; charset=utf-8")
-        .body(templates::not_found_page())
+        .body(templates::not_found_page(&site.page_meta(
+            "Not Found",
+            "The requested note could not be found.",
+            false,
+            None,
+        )))
 }

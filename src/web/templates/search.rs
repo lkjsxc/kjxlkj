@@ -4,6 +4,7 @@ use super::index::{list_rail, note_row, pager};
 use super::layout::{base, html_escape, shell_page};
 use super::model::IndexItem;
 use super::sections::{page_header, section};
+use crate::web::site::SiteContext;
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 
@@ -17,6 +18,7 @@ pub struct SearchView<'a> {
     pub sort: &'a str,
     pub popular_window: &'a str,
     pub is_admin: bool,
+    pub site: &'a SiteContext,
 }
 
 pub fn search_page(view: SearchView<'_>) -> String {
@@ -34,7 +36,9 @@ pub fn search_page(view: SearchView<'_>) -> String {
         results_section(&view, query, has_query),
     );
     base(
-        "Search",
+        &view
+            .site
+            .page_meta("Search", view.site.site_description.clone(), false, None),
         &shell_page(
             if view.is_admin { "Admin" } else { "Guest" },
             &list_rail(
@@ -45,6 +49,7 @@ pub fn search_page(view: SearchView<'_>) -> String {
             ),
             &content,
             "index-layout",
+            &view.site.site_name,
         ),
         "",
         &extra_script,

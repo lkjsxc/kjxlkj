@@ -1,4 +1,8 @@
 services:
+  app:
+    environment:
+      PUBLIC_BASE_URL: http://app:${BIND_PORT:-8080}
+
   verify:
     build:
       context: .

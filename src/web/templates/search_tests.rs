@@ -2,6 +2,7 @@ use super::{
     search::{search_page, SearchView},
     IndexItem,
 };
+use crate::web::site::SiteContext;
 
 fn sample_item() -> IndexItem {
     IndexItem {
@@ -17,6 +18,14 @@ fn sample_item() -> IndexItem {
     }
 }
 
+fn sample_site() -> SiteContext {
+    SiteContext {
+        site_name: "Launchpad".to_string(),
+        site_description: "Search-friendly notes.".to_string(),
+        public_base_url: Some("https://example.com".to_string()),
+    }
+}
+
 #[test]
 fn search_page_browses_without_query() {
     let html = search_page(SearchView {
@@ -29,6 +38,7 @@ fn search_page_browses_without_query() {
         sort: "updated_desc",
         popular_window: "30d",
         is_admin: false,
+        site: &sample_site(),
     });
     assert!(html.contains(">Notes<"));
     assert!(!html.contains(">Query<"));
@@ -38,6 +48,8 @@ fn search_page_browses_without_query() {
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Previous<"));
     assert!(html.contains(">Next<"));
+    assert!(html.contains("<title>Search | Launchpad</title>"));
+    assert!(html.contains("content=\"noindex,nofollow\""));
 }
 
 #[test]
@@ -52,6 +64,7 @@ fn search_page_keeps_query_and_sort_in_form() {
         sort: "relevance",
         popular_window: "30d",
         is_admin: true,
+        site: &sample_site(),
     });
     assert!(html.contains("name=\"q\" value=\"orbit\""));
     assert!(html.contains(">Query<"));

@@ -1,5 +1,7 @@
 //! Layout and helper functions
 
+use crate::web::site::PageMeta;
+
 const BASE_CSS: &str = include_str!("base.css");
 const CONTENT_CSS: &str = include_str!("content.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
@@ -14,7 +16,7 @@ const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
 const SETTINGS_CSS: &str = include_str!("settings.css");
 const SHELL_JS: &str = include_str!("shell.js");
 
-pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) -> String {
+pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(
         r#"<!DOCTYPE html>
 <html lang="en">
@@ -22,8 +24,9 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
-<title>{} - kjxlkj</title>
+<title>{}</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
+{}
 {extra_head}
 <style>{BASE_CSS}
 {CONTENT_CSS}
@@ -40,11 +43,12 @@ pub fn base(title: &str, content: &str, extra_head: &str, extra_script: &str) ->
 </head>
 <body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
 </html>"#,
-        html_escape(title),
+        html_escape(&meta.full_title()),
+        meta.head_tags(),
     )
 }
 
-pub fn not_found_page() -> String {
+pub fn not_found_page(meta: &PageMeta) -> String {
     let content = r#"<div class="auth-container">
 <div class="auth-card">
 <h1>404</h1>
@@ -52,10 +56,16 @@ pub fn not_found_page() -> String {
 <a href="/" class="btn btn-primary">Go Home</a>
 </div>
 </div>"#;
-    base("Not Found", content, "", "")
+    base(meta, content, "", "")
 }
 
-pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) -> String {
+pub fn shell_page(
+    mode_label: &str,
+    rail: &str,
+    main: &str,
+    page_class: &str,
+    site_name: &str,
+) -> String {
     format!(
         r#"<div class="shell-frame">
 <header class="mobile-bar">
@@ -79,8 +89,8 @@ pub fn shell_page(mode_label: &str, rail: &str, main: &str, page_class: &str) ->
 <main class="shell-main"><div class="page-column {page_class}">{main}</div></main>
 </div>
 </div>"#,
-        brand_lockup(),
-        brand_lockup(),
+        brand_lockup(site_name),
+        brand_lockup(site_name),
     )
 }
 
@@ -123,8 +133,11 @@ pub fn format_date(dt: &chrono::DateTime<chrono::Utc>) -> String {
     dt.format("%Y-%m-%d %H:%M UTC").to_string()
 }
 
-fn brand_lockup() -> &'static str {
-    r#"<a href="/" class="brand brand-lockup"><img src="/assets/icon.svg" class="brand-mark" alt="" aria-hidden="true"><span>kjxlkj</span></a>"#
+fn brand_lockup(site_name: &str) -> String {
+    format!(
+        r#"<a href="/" class="brand brand-lockup"><img src="/assets/icon.svg" class="brand-mark" alt="" aria-hidden="true"><span>{}</span></a>"#,
+        html_escape(site_name),
+    )
 }
 
 pub fn html_escape(s: &str) -> String {

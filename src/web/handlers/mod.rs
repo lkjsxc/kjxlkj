@@ -2,6 +2,7 @@
 
 pub mod admin;
 pub mod assets;
+pub mod discoverability;
 pub mod favorites;
 pub mod health;
 pub mod history;
