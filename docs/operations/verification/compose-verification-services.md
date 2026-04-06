@@ -21,6 +21,7 @@
 - Canonical command: `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify`
 - Exit `0` only when desktop and compact screenshots pass
 - Fail on unreadable controls, broken public-root behavior, drawer regressions, icon regressions, or note-shell regressions
+- Browser verification seeds persisted settings, including a valid `public_base_url`, when discovery-on assertions are required
 
 ## `visual-verify` Runtime Requirements
 

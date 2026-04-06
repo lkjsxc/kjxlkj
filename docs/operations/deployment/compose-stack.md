@@ -27,8 +27,8 @@
 - `BIND_PORT` default: `8080`
 - `DATABASE_URL` format: `postgres://user:password@host:port/database`
 - `DATABASE_URL` is required by the runtime and is assembled by Compose for the `app` service.
-- `PUBLIC_BASE_URL` is optional and enables canonical URLs, `robots.txt`, `sitemap.xml`, and indexable HTML mode when valid.
-- Session timeout is not an environment variable; it is loaded from `app_settings.session_timeout_minutes`.
+- `site_name`, `site_description`, `public_base_url`, and session timeout are not environment variables; they are loaded from `app_settings`.
+- Compose env config and persisted operator config are split explicitly in [runtime-configuration.md](runtime-configuration.md).
 
 ## Boot Behavior
 

@@ -10,12 +10,14 @@
 ## Review Settings Before Publishing Real Notes
 
 1. Open `/admin/settings`.
-2. Set the homepage intro Markdown if the deployment needs a landing message.
-3. Set homepage section visibility, order, and item counts.
-4. Set `Search page size`.
-5. Set `New notes start private` based on the deployment policy.
-6. Set `Session timeout (minutes)` to the desired login lifetime.
-7. Save and confirm the page redirects back to `/admin/settings`.
+2. Set `Site name` and `Site description`.
+3. Set `Public base URL` to the final public origin once the deployment hostname is ready.
+4. Set the homepage intro Markdown if the deployment needs a landing message.
+5. Set homepage section visibility, order, and item counts.
+6. Set `Search page size`.
+7. Set `New notes start private` based on the deployment policy.
+8. Set `Session timeout (minutes)` to the desired login lifetime.
+9. Save and confirm the page redirects back to `/admin/settings`.
 
 ## Session Timeout Rule
 
@@ -23,6 +25,11 @@
 - Already-issued sessions keep their existing expiry.
 - Allowed range is `5` through `10080` minutes.
 - The untouched default is `1440` minutes.
+
+## Public Origin Rule
+
+- Blank `Public base URL` keeps the deployment out of search-indexable mode.
+- A saved public origin should be the exact absolute origin that canonical URLs and the sitemap must advertise.
 
 ## Create the First Real Note
 
@@ -39,6 +46,7 @@
 3. Open `/search` and confirm browse results and default page size match expectations.
 4. Open the note by alias if present, otherwise by its opaque ID.
 5. If the note has an alias, confirm visiting the raw current-note ID redirects to the alias URL.
+6. If `Public base URL` is set, confirm `/robots.txt` and `/sitemap.xml` advertise the same origin.
 
 ## Verify Saved-Snapshot Behavior
 

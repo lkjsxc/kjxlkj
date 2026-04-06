@@ -15,6 +15,8 @@
 
 ## Form Groups
 
+- `Site identity` contains `Site name`, `Site description`, and `Public base URL`.
+- `Public base URL` may be blank to keep discovery disabled.
 - `Home hero` contains only the editable intro Markdown field.
 - `Home sections` contains visibility, draggable order, and item-count controls for `Popular notes`, `Recently updated`, and `Favorites`.
 - The drag row order is the only visible order affordance; numeric order badges are omitted.
@@ -25,8 +27,9 @@
 ## Behavior
 
 - Saving redirects back to `/admin/settings`.
-- Successful saves immediately affect `/`, `/search`, `/admin`, and newly opened note pages.
+- Successful saves immediately affect `/`, `/search`, `/admin`, newly opened note pages, and discovery surfaces.
 - Successful saves affect future login session length without mutating active sessions.
 - Fresh installs and untouched settings default new notes to public.
 - The settings page contains no Vim-mode controls.
 - The settings page uses factual validation copy and does not hide invalid values behind silent coercion.
+- The settings page should describe blank `Public base URL` as an intentional discovery-off state.

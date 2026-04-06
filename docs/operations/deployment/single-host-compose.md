@@ -27,6 +27,7 @@ cp .env.example .env
 - Set `APP_PORT` if the host should expose something other than `8080`.
 - Keep `BIND_HOST=0.0.0.0` unless the host should only bind locally.
 - Do not look for `SESSION_TIMEOUT_MINUTES` in compose; that setting lives in `/admin/settings`.
+- Do not look for `PUBLIC_BASE_URL` in compose; `public_base_url` lives in `/admin/settings`.
 - `DATABASE_URL` is constructed by Compose for the `app` service and should not be hand-authored in `.env`.
 
 ## Build the Runtime Stack
@@ -89,5 +90,6 @@ docker compose up -d postgres app
 ## First Operator Handoff
 
 - Continue with [first-login-and-live-use.md](first-login-and-live-use.md).
-- The first live admin configures the session timeout from `/admin/settings`.
+- The first live admin configures site identity, discovery origin, and session timeout from `/admin/settings`.
+- Use [runtime-configuration.md](runtime-configuration.md) for the source-of-truth split between compose env and persisted settings.
 - Use [../verification/compose-pipeline.md](../verification/compose-pipeline.md) for the deeper acceptance contract.

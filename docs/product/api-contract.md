@@ -35,12 +35,14 @@ The system manages `note` resources.
 ```json
 {
   "site_name": "kjxlkj",
-  "site_description": "Markdown note system for LLM-operated workflows."
+  "site_description": "Markdown note system for LLM-operated workflows.",
+  "public_base_url": "https://notes.example.com"
 }
 ```
 
 - `site_name`: Visible HTML brand and browser-title site suffix.
 - `site_description`: Shared metadata description fallback and homepage/search description source.
+- `public_base_url`: Persisted absolute public origin for canonical URLs, `robots.txt`, and `sitemap.xml`. Blank disables discovery.
 
 ## Admin Analytics Schema
 
@@ -84,6 +86,7 @@ The system manages `note` resources.
 - Note pages do not render a duplicate visible title outside the Markdown body.
 - The editor does not show a visible `Markdown body` label.
 - Browser titles use `Page | site`.
+- Saved settings own SEO origin state; the runtime must not derive public origins from incoming requests.
 - Alias typing must preserve internal `-`, `_`, and `.` separators until save-time validation.
 - Homepage hero content uses only editable intro Markdown.
 - Homepage and dashboard popularity default to `30d` and switch windows without mutating the visible URL.

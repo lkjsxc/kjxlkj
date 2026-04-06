@@ -59,11 +59,11 @@
 - `GET /assets/icon.svg`:
   - returns the authored vector icon source
 - `GET /robots.txt`:
-  - valid `PUBLIC_BASE_URL`: `200` plain text robots policy
-  - missing or invalid `PUBLIC_BASE_URL`: `404`
+  - valid non-blank `public_base_url` setting: `200` plain text robots policy
+  - blank or invalid `public_base_url` setting: `404`
 - `GET /sitemap.xml`:
-  - valid `PUBLIC_BASE_URL`: `200` XML sitemap
-  - missing or invalid `PUBLIC_BASE_URL`: `404`
+  - valid non-blank `public_base_url` setting: `200` XML sitemap
+  - blank or invalid `public_base_url` setting: `404`
 - `POST /admin/markdown-preview`:
   - without valid session: `401` JSON error
   - valid session: `200` JSON containing rendered preview HTML
@@ -103,6 +103,7 @@
   - without valid session: `302` to `/login`
   - invalid payload: `400` HTML validation page
   - valid session: `303` to `/admin/settings`
+  - successful save may immediately change canonical URLs, robots meta, `robots.txt`, and `sitemap.xml`
 
 ## Revision History and Navigation JSON
 

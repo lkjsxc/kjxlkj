@@ -14,7 +14,9 @@
 - Global settings include session timeout in minutes.
 - Global settings include `site_name`.
 - Global settings include `site_description`.
+- Global settings include `public_base_url`.
 - Global settings affect HTML routes immediately after a successful save.
+- Global settings affect `robots.txt` and `sitemap.xml` immediately after a successful save.
 - Session timeout affects future logins only.
 
 ## Local UI State
@@ -36,3 +38,10 @@
 - Session timeout defaults to `1440` minutes.
 - `site_name` defaults to `kjxlkj`.
 - `site_description` defaults to `Markdown note system for LLM-operated workflows.`
+- `public_base_url` defaults to blank, which keeps discovery disabled.
+
+## Discovery Setting Rule
+
+- Blank `public_base_url` is the safe default and means the app should not emit canonical URLs or machine-readable discovery routes.
+- Non-blank `public_base_url` must be a normalized absolute `http` or `https` origin.
+- Invalid `public_base_url` input must be rejected rather than silently repaired into a guessed URL.

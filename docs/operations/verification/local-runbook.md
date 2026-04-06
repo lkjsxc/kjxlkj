@@ -120,6 +120,8 @@ curl -sS 'http://127.0.0.1:8080/admin/settings' -b cookies.txt
 Expected:
 
 - HTML contains the canonical settings form
+- settings include site identity fields
+- settings include public base URL
 - settings include intro Markdown
 - settings include visibility and order controls for popular, recent, and favorites
 - settings include item-count controls defaulting to `5`
@@ -127,6 +129,28 @@ Expected:
 - settings include default new-note visibility
 - settings include default search page size
 - HTML does not contain Vim-mode controls
+
+## Enable Local Discovery Verification
+
+If the local run should exercise canonical URLs, `robots.txt`, and `sitemap.xml`, save `Public base URL` as `http://127.0.0.1:8080` from `/admin/settings` before running the checks below.
+
+## Verify Discovery Endpoints
+
+```bash
+curl -sS http://127.0.0.1:8080/robots.txt
+curl -sS http://127.0.0.1:8080/sitemap.xml
+```
+
+Expected when `Public base URL` is blank:
+
+- `/robots.txt` returns `404`
+- `/sitemap.xml` returns `404`
+
+Expected when `Public base URL` is `http://127.0.0.1:8080`:
+
+- `/robots.txt` advertises `Sitemap: http://127.0.0.1:8080/sitemap.xml`
+- `/sitemap.xml` contains absolute URLs rooted at `http://127.0.0.1:8080`
+- homepage and public live-note HTML emit canonical URLs using the same origin
 
 ## Verify Admin Note Shell
 

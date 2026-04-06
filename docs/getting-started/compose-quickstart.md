@@ -24,8 +24,8 @@ cp .env.example .env
 - Set `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`.
 - Set `APP_PORT` if the host should expose something other than `8080`.
 - Keep `BIND_HOST=0.0.0.0` unless the service must bind locally only.
-- Set `PUBLIC_BASE_URL` on real deployments if search indexing, canonical URLs, `robots.txt`, or `sitemap.xml` should be enabled.
 - Do not look for session timeout in `.env`; it is stored in `app_settings`.
+- Do not look for public-origin SEO configuration in `.env`; `public_base_url` is stored in `app_settings` and edited from `/admin/settings`.
 
 ## Build and Start
 
@@ -54,3 +54,4 @@ Expected: body `ok`.
 - Continue with [first-session.md](first-session.md) for setup and initial live-use checks.
 - Continue with [verification.md](verification.md) for the full compose acceptance flow.
 - Use [../operations/deployment/single-host-compose.md](../operations/deployment/single-host-compose.md) for the deeper deployment reference.
+- Use [../operations/deployment/runtime-configuration.md](../operations/deployment/runtime-configuration.md) for the split between compose env and persisted operator settings.

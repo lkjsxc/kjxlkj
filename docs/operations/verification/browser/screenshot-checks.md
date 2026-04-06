@@ -43,8 +43,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Compact admin note pages do not overflow horizontally.
 - Search, admin, history, snapshot, setup, and login pages emit `noindex` robots metadata.
 - Homepage and public live-note pages emit meta descriptions.
-- Homepage and public live-note pages emit canonical URLs only when `PUBLIC_BASE_URL` is valid.
-- `robots.txt` and `sitemap.xml` exist only when `PUBLIC_BASE_URL` is valid.
+- Homepage and public live-note pages emit canonical URLs only when saved `public_base_url` is non-blank and valid.
+- `robots.txt` and `sitemap.xml` exist only when saved `public_base_url` is non-blank and valid.
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
 - Search sort remains functional without a visible `Sort` label.
@@ -70,7 +70,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard links to a dedicated settings page instead of embedding the full settings form.
-- Settings page covers intro Markdown, section visibility and drag order, section counts, session timeout, search page size, and default new-note visibility.
+- Settings page covers site name, site description, public base URL, intro Markdown, section visibility and drag order, section counts, session timeout, search page size, and default new-note visibility.
 - Settings page does not expose visible order numbers for home sections.
 - Settings page section order is draggable and persists after save.
 - Dashboard and admin note surfaces expose note-view analytics.

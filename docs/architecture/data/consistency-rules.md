@@ -27,3 +27,5 @@
 - Default new-note visibility belongs to singleton app settings.
 - Search default page size belongs to singleton app settings.
 - Session timeout belongs to singleton app settings.
+- Site identity fields belong to singleton app settings.
+- Discovery public-origin state belongs to singleton app settings.

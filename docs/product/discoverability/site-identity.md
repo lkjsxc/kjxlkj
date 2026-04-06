@@ -4,13 +4,12 @@
 
 - `site_name` is the operator-configurable visible product name for HTML pages.
 - `site_description` is the operator-configurable shared product description for metadata and discovery copy.
-- `PUBLIC_BASE_URL` is the deploy-time absolute public origin used for canonical URLs, sitemap entries, and `robots.txt` sitemap advertisement.
+- Public-origin ownership is defined separately in [public-origin.md](public-origin.md).
 
 ## Defaults
 
 - Default `site_name`: `kjxlkj`.
 - Default `site_description`: `Markdown note system for LLM-operated workflows.`
-- `PUBLIC_BASE_URL` has no default value.
 
 ## Visible Branding
 
@@ -35,3 +34,4 @@
 - `site_name` and `site_description` are stored in `app_settings`.
 - `GET /admin/settings` owns the canonical edit surface for both fields.
 - Saving either field updates subsequent HTML responses immediately.
+- `site_name`, `site_description`, and `public_base_url` form one site-identity configuration cluster, even though title and origin rules are split across separate docs.

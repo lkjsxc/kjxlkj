@@ -10,18 +10,25 @@
 ## Review Settings Before Real Use
 
 1. Open `/admin/settings`.
-2. Set homepage intro Markdown if needed.
-3. Set homepage section visibility, order, and item counts.
-4. Set `Search page size`.
-5. Set `New notes start private`.
-6. Set `Session timeout (minutes)`.
-7. Save and confirm the page returns to `/admin/settings`.
+2. Set `Site name` and `Site description`.
+3. Set `Public base URL` if the deployment already has its final public origin.
+4. Set homepage intro Markdown if needed.
+5. Set homepage section visibility, order, and item counts.
+6. Set `Search page size`.
+7. Set `New notes start private`.
+8. Set `Session timeout (minutes)`.
+9. Save and confirm the page returns to `/admin/settings`.
 
 ## Session Timeout Rules
 
 - Allowed range: `5` through `10080` minutes
 - Untouched default: `1440` minutes
 - New value affects future logins only
+
+## Public Origin Rule
+
+- Blank `Public base URL` keeps canonical URLs, `robots.txt`, and `sitemap.xml` disabled.
+- Set it once the deployment has the final public origin that crawlers should see.
 
 ## Create the First Real Note
 
@@ -38,6 +45,7 @@
 3. Open the note by alias if present, otherwise by its opaque ID.
 4. If the note has an alias, confirm the raw current-note ID redirects to the alias URL.
 5. Edit the note once, open `/{note_ref}/history`, and confirm saved snapshots render newest first.
+6. If `Public base URL` is set, confirm `/robots.txt` and `/sitemap.xml` respond.
 
 ## Next Step
 

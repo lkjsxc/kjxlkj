@@ -56,6 +56,7 @@
 - `session_timeout_minutes`: future-login session lifetime; the product default is `1440`.
 - `site_name`: operator-configurable visible site label and browser-title site suffix.
 - `site_description`: operator-configurable shared metadata description.
+- `public_base_url`: blank-or-origin public discovery base URL; blank disables discovery.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes
