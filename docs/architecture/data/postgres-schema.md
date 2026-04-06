@@ -54,6 +54,8 @@
 - `search_results_per_page`: default HTML search page size.
 - `default_new_note_is_private`: default visibility flag for freshly opened note pages; the product default is `FALSE` so new notes start public unless the setting is turned on.
 - `session_timeout_minutes`: future-login session lifetime; the product default is `1440`.
+- `site_name`: operator-configurable visible site label and browser-title site suffix.
+- `site_description`: operator-configurable shared metadata description.
 - `updated_at`: mutable UTC timestamp.
 
 ## Required Indexes

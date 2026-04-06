@@ -13,6 +13,7 @@ Use this subtree for the user-visible canon: routes, API shapes, runtime behavio
 - [surface/README.md](surface/README.md): routes, pages, and write-auth surface
 - [behavior/README.md](behavior/README.md): note lifecycle, listing, analytics, history, settings, and errors
 - [experience/README.md](experience/README.md): layout, shell, editor, theme, and responsive contracts
+- [discoverability/README.md](discoverability/README.md): site identity, metadata, indexing, robots, and sitemap contracts
 - [api-contract.md](api-contract.md): API payload shapes and shared field semantics
 
 ## Start Here
@@ -20,3 +21,4 @@ Use this subtree for the user-visible canon: routes, API shapes, runtime behavio
 - Route map: [surface/routes.md](surface/routes.md)
 - Behavior map: [behavior/list-and-fetch.md](behavior/list-and-fetch.md)
 - UI map: [experience/README.md](experience/README.md)
+- Discovery map: [discoverability/README.md](discoverability/README.md)

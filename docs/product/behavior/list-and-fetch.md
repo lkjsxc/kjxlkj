@@ -10,6 +10,7 @@
 - Guests see public-only home data.
 - Signed-in admins see the same structure with private-capable data and admin actions.
 - The homepage is intentionally short and does not act as the full browse surface.
+- The homepage is the only library-style page that remains search-indexable.
 
 ## Admin Dashboard
 
@@ -35,6 +36,7 @@
 - `scope=favorites` narrows search and browse results to favorite notes only.
 - Empty `q` returns the first paginated page of viewable notes inside the current scope and sort.
 - Non-empty `q` returns paginated matches inside the current scope only.
+- `/search` remains guest-readable but is not search-indexable.
 
 ## Default Ordering
 
@@ -57,6 +59,8 @@
 - Saved-snapshot IDs never redirect.
 - Current-note responses include the editable current body for admins.
 - Saved-snapshot responses include the immutable saved body.
+- Public current-note routes are search-indexable when `PUBLIC_BASE_URL` is configured and valid.
+- Saved snapshots remain guest-readable when allowed, but are not search-indexable.
 
 ## Note Navigation
 
@@ -76,3 +80,4 @@
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.
 - HTML and JSON history fetches share cursor pagination rules.
+- History indexes are not search-indexable.

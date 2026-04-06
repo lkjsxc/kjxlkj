@@ -16,3 +16,4 @@
 - Note and history shell rules are defined in [../experience/shell/README.md](../experience/shell/README.md).
 - Public root and search rules are defined in [../experience/index/README.md](../experience/index/README.md).
 - Editor rules are defined in [../experience/editor/README.md](../experience/editor/README.md).
+- Shared title, description, canonical, and robots-meta rules are defined in [../discoverability/head-metadata.md](../discoverability/head-metadata.md).

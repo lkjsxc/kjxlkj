@@ -30,6 +30,18 @@ The system manages `note` resources.
 - `created_at`: UTC RFC3339 timestamp.
 - `updated_at`: UTC RFC3339 timestamp.
 
+## Global Settings Schema
+
+```json
+{
+  "site_name": "kjxlkj",
+  "site_description": "Markdown note system for LLM-operated workflows."
+}
+```
+
+- `site_name`: Visible HTML brand and browser-title site suffix.
+- `site_description`: Shared metadata description fallback and homepage/search description source.
+
 ## Admin Analytics Schema
 
 ```json
@@ -71,12 +83,14 @@ The system manages `note` resources.
 - Admin note pages should open with keyboard focus in the visible editor.
 - Note pages do not render a duplicate visible title outside the Markdown body.
 - The editor does not show a visible `Markdown body` label.
+- Browser titles use `Page | site`.
 - Alias typing must preserve internal `-`, `_`, and `.` separators until save-time validation.
 - Homepage hero content uses only editable intro Markdown.
 - Homepage and dashboard popularity default to `30d` and switch windows without mutating the visible URL.
 - `/search` popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.
+- Public homepage and live notes are the only HTML pages intended for search indexing.
 
 ## UI Semantics
 

@@ -58,6 +58,12 @@
   - returns the canonical production favicon
 - `GET /assets/icon.svg`:
   - returns the authored vector icon source
+- `GET /robots.txt`:
+  - valid `PUBLIC_BASE_URL`: `200` plain text robots policy
+  - missing or invalid `PUBLIC_BASE_URL`: `404`
+- `GET /sitemap.xml`:
+  - valid `PUBLIC_BASE_URL`: `200` XML sitemap
+  - missing or invalid `PUBLIC_BASE_URL`: `404`
 - `POST /admin/markdown-preview`:
   - without valid session: `401` JSON error
   - valid session: `200` JSON containing rendered preview HTML

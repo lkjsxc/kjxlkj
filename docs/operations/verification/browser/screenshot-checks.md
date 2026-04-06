@@ -26,6 +26,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Desktop homepage spacing remains as restrained as compact homepage spacing.
 - Visible timestamps are browser-local 24-hour strings.
 - Raw note IDs are not shown in normal UI.
+- Visible shell branding uses the configured site name.
 - Rail search input does not appear.
 - `RECENT` does not appear.
 - `Rich mode`, `Text mode`, `Saving`, and `Saved` do not appear.
@@ -40,6 +41,10 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Search and history paging expose `Previous` and `Next` actions.
 - Search sort and search-submit controls align vertically on desktop.
 - Compact admin note pages do not overflow horizontally.
+- Search, admin, history, snapshot, setup, and login pages emit `noindex` robots metadata.
+- Homepage and public live-note pages emit meta descriptions.
+- Homepage and public live-note pages emit canonical URLs only when `PUBLIC_BASE_URL` is valid.
+- `robots.txt` and `sitemap.xml` exist only when `PUBLIC_BASE_URL` is valid.
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
 - Search sort remains functional without a visible `Sort` label.
@@ -48,6 +53,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - HTML links `/favicon.ico` and the generated icon remain centered and legible at favicon scale.
 - The icon uses the final four-solid-color composition rather than a gradient ring.
 - Opening an admin note should leave focus inside the visible textarea editor.
+- Closed drawer containers do not leave focusable descendants reachable.
 - Preview starts closed by default.
 - Compact preview opens as a fixed overlay.
 - Compact preview stays correctly placed when the rail is drawer-only or closed.

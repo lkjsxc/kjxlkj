@@ -24,6 +24,7 @@ cp .env.example .env
 - Set `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`.
 - Set `APP_PORT` if the host should expose something other than `8080`.
 - Keep `BIND_HOST=0.0.0.0` unless the service must bind locally only.
+- Set `PUBLIC_BASE_URL` on real deployments if search indexing, canonical URLs, `robots.txt`, or `sitemap.xml` should be enabled.
 - Do not look for session timeout in `.env`; it is stored in `app_settings`.
 
 ## Build and Start

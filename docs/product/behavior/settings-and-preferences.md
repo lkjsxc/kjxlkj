@@ -12,6 +12,8 @@
 - Global settings include default HTML search page size.
 - Global settings include default new-note visibility.
 - Global settings include session timeout in minutes.
+- Global settings include `site_name`.
+- Global settings include `site_description`.
 - Global settings affect HTML routes immediately after a successful save.
 - Session timeout affects future logins only.
 
@@ -32,3 +34,5 @@
 - Default search page size defaults to `20`.
 - Default new-note visibility defaults to public.
 - Session timeout defaults to `1440` minutes.
+- `site_name` defaults to `kjxlkj`.
+- `site_description` defaults to `Markdown note system for LLM-operated workflows.`

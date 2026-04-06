@@ -15,6 +15,7 @@ Treat [docs/README.md](docs/README.md) as the only active canon for intended beh
 
 - Mixed operator + contributor: [docs/getting-started/README.md](docs/getting-started/README.md)
 - Product and behavior canon: [docs/product/README.md](docs/product/README.md)
+- Discoverability and SEO canon: [docs/product/discoverability/README.md](docs/product/discoverability/README.md)
 - Architecture and data contracts: [docs/architecture/README.md](docs/architecture/README.md)
 - Operations runbooks and quality gates: [docs/operations/README.md](docs/operations/README.md)
 - Repository rules for LLM-driven changes: [docs/repository/README.md](docs/repository/README.md)

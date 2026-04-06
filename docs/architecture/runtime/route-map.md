@@ -7,6 +7,8 @@
 - `/search` -> auth-aware browse/search handler.
 - `/favicon.ico` -> production favicon handler.
 - `/assets/icon.svg` -> visible brand icon handler.
+- `/robots.txt` -> conditional robots policy handler.
+- `/sitemap.xml` -> conditional sitemap handler.
 - `/admin/markdown-preview` -> admin-only preview renderer.
 - `/{ref}` -> root resource handler for live notes and saved snapshots.
 - `/{ref}/history` -> history index handler.
