@@ -6,25 +6,18 @@ use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
-use serde::Deserialize;
-
-#[derive(Debug, Deserialize)]
-pub struct HomeParams {
-    pub popular_window: Option<String>,
-}
 
 #[get("/")]
 pub async fn home_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<HomeParams>,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
-    let window = PopularWindow::resolve(params.popular_window.as_deref());
+    let window = PopularWindow::Days30;
     let popular =
         db::list_popular_records(&pool, is_admin, settings.home_popular_limit, window).await?;
     let recent = db::list_recent_records(&pool, is_admin, settings.home_recent_limit).await?;

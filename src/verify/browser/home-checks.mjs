@@ -16,6 +16,16 @@ export async function assertHomeBrowseLinks(page) {
     assert.equal(await browseHref(page, 'Favorites'), '/search?scope=favorites');
 }
 
+export async function assertPopularWindowSwitch(page, path, surface) {
+    const before = await navigationCount(page);
+    await clickWindow(page, surface, '90d', 'Atlas Entry');
+    assert.equal(await browseHref(page, 'Popular notes'), '/search?sort=popular_desc&popular_window=90d');
+    assertStableUrl(page, path, before);
+    await clickWindow(page, surface, '30d', 'Beacon Log');
+    assert.equal(await browseHref(page, 'Popular notes'), '/search?sort=popular_desc&popular_window=30d');
+    assertStableUrl(page, path, before);
+}
+
 export async function assertAdminHomeConfiguration(page) {
     await assertVisibleText(page, 'Launchpad');
     await assertVisibleText(page, 'Welcome to Launchpad');
@@ -36,4 +46,36 @@ async function browseHref(page, heading) {
         })
         .locator('a.note-row-action')
         .getAttribute('href');
+}
+
+async function clickWindow(page, surface, label, firstTitle) {
+    await page.getByRole('button', { name: label, exact: true }).click();
+    await page.waitForFunction(
+        ({ expectedSurface, expectedTitle, expectedWindow }) => {
+            const section = document.querySelector(
+                '[data-popular-section][data-popular-surface="' + expectedSurface + '"]'
+            );
+            if (!section || section.getAttribute('aria-busy') === 'true') return false;
+            const title = section.querySelector('.card-title');
+            const active = section.querySelector('[data-popular-window][aria-pressed="true"]');
+            return (
+                !!title &&
+                !!active &&
+                title.textContent.trim() === expectedTitle &&
+                active.getAttribute('data-popular-window') === expectedWindow
+            );
+        },
+        { expectedSurface: surface, expectedTitle: firstTitle, expectedWindow: label }
+    );
+}
+
+async function navigationCount(page) {
+    return page.evaluate(() => performance.getEntriesByType('navigation').length);
+}
+
+async function assertStableUrl(page, path, navigationEntries) {
+    const url = new URL(page.url());
+    assert.equal(url.pathname, path);
+    assert.equal(url.search, '');
+    assert.equal(await navigationCount(page), navigationEntries);
 }

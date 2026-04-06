@@ -8,12 +8,17 @@ pub enum PopularWindow {
 }
 
 impl PopularWindow {
-    pub fn resolve(value: Option<&str>) -> Self {
+    pub fn parse(value: &str) -> Option<Self> {
         match value {
-            Some("7d") => Self::Days7,
-            Some("90d") => Self::Days90,
-            _ => Self::Days30,
+            "7d" => Some(Self::Days7),
+            "30d" => Some(Self::Days30),
+            "90d" => Some(Self::Days90),
+            _ => None,
         }
+    }
+
+    pub fn resolve(value: Option<&str>) -> Self {
+        value.and_then(Self::parse).unwrap_or(Self::Days30)
     }
 
     pub fn as_str(self) -> &'static str {

@@ -11,7 +11,12 @@ import {
 } from './assertions.mjs';
 import { applySettingsScenario, verifyFavoriteReorder } from './dashboard-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
-import { assertAdminHomeConfiguration, assertHomeBrowseLinks, popularTitles } from './home-checks.mjs';
+import {
+    assertAdminHomeConfiguration,
+    assertHomeBrowseLinks,
+    assertPopularWindowSwitch,
+    popularTitles,
+} from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
 import { captureCompactScreens } from './responsive-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
@@ -46,6 +51,7 @@ async function captureAdminScreens(browser, note) {
 
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await expectAdminDashboard(page);
+    await assertPopularWindowSwitch(page, '/admin', 'admin');
     await verifyFavoriteReorder(page);
     await capture(page, 'desktop-admin-dashboard.png');
     await Promise.all([
@@ -109,19 +115,11 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
     await assertIconAssets(page);
-    assert.equal(await page.getByRole('link', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
+    assert.equal(await page.getByRole('button', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
     assert.equal((await popularTitles(page))[0], 'Beacon Log');
     await assertHomeBrowseLinks(page);
     await capture(page, 'desktop-public-root.png');
-    await Promise.all([
-        page.waitForURL((url) => new URL(url).searchParams.get('popular_window') === '90d'),
-        page.getByRole('link', { name: '90d', exact: true }).click(),
-    ]);
-    assert.equal((await popularTitles(page))[0], 'Atlas Entry');
-    await Promise.all([
-        page.waitForURL((url) => new URL(url).searchParams.get('popular_window') === '30d'),
-        page.getByRole('link', { name: '30d', exact: true }).click(),
-    ]);
+    await assertPopularWindowSwitch(page, '/', 'home');
 
     await page.goto(`${appUrl}/search?scope=favorites`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);

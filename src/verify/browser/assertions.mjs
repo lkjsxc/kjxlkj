@@ -29,9 +29,9 @@ export async function expectPublicRoot(
     }
     assert.equal(await page.getByRole('link', { name: /View more notes/i }).count(), sections.length);
     await page.getByLabel('Quick search').waitFor({ state: 'visible' });
-    await page.getByRole('link', { name: '7d', exact: true }).waitFor({ state: 'visible' });
-    await page.getByRole('link', { name: '30d', exact: true }).waitFor({ state: 'visible' });
-    await page.getByRole('link', { name: '90d', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: '7d', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: '30d', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: '90d', exact: true }).waitFor({ state: 'visible' });
     assert.equal(await page.locator('.stats-grid').count(), 0);
     assert.equal(await page.locator('.page-summary').count(), 0);
     assert.equal(await page.getByText('All time', { exact: true }).count(), 0);

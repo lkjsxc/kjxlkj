@@ -3,14 +3,15 @@
 use super::index::list_rail;
 use super::layout::{base, shell_page};
 use super::list_sections::{
-    favorite_browse_card, note_grid_section, popular_browse_card, popular_window_switch,
-    quick_search_section, recent_browse_card,
+    favorite_browse_card, note_grid_section, quick_search_section, recent_browse_card,
 };
 use super::model::IndexItem;
+use super::popular_sections::home_popular_section;
 use crate::core::render_markdown;
 use crate::web::db::{AppSettings, PopularWindow};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
+const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub fn home_page(
     settings: &AppSettings,
@@ -20,7 +21,7 @@ pub fn home_page(
     window: PopularWindow,
     is_admin: bool,
 ) -> String {
-    let extra_script = if is_admin {
+    let admin_script = if is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
     } else {
         String::new()
@@ -45,7 +46,7 @@ pub fn home_page(
             "home-page",
         ),
         "",
-        &extra_script,
+        &format!(r#"<script>{POPULAR_JS}</script>{admin_script}"#),
     )
 }
 
@@ -58,17 +59,7 @@ fn home_sections(
 ) -> String {
     let mut sections = Vec::new();
     if settings.home_popular_visible {
-        sections.push((
-            settings.home_popular_position,
-            note_grid_section(
-                "Popular notes",
-                popular,
-                "No popular notes yet.",
-                "note-section",
-                Some(&popular_window_switch("/", window)),
-                Some(popular_browse_card(window)),
-            ),
-        ));
+        sections.push((settings.home_popular_position, home_popular_section(popular, window)));
     }
     if settings.home_recent_visible {
         sections.push((

@@ -27,6 +27,15 @@ pub fn note_grid_section(
     actions: Option<&str>,
     extra_card: Option<String>,
 ) -> String {
+    section_with_actions(
+        title,
+        actions,
+        &note_grid_body(notes, empty, extra_card),
+        class_name,
+    )
+}
+
+pub fn note_grid_body(notes: &[IndexItem], empty: &str, extra_card: Option<String>) -> String {
     let mut cards = if notes.is_empty() {
         vec![empty_card(empty)]
     } else {
@@ -35,15 +44,7 @@ pub fn note_grid_section(
     if let Some(card) = extra_card {
         cards.push(card);
     }
-    section_with_actions(
-        title,
-        actions,
-        &format!(
-            r#"<div class="note-list note-grid">{}</div>"#,
-            cards.join("")
-        ),
-        class_name,
-    )
+    format!(r#"<div class="note-list note-grid">{}</div>"#, cards.join(""))
 }
 
 pub fn browse_card() -> String {
@@ -90,26 +91,6 @@ pub fn view_more_card(href: &str, title: &str, summary: &str, meta: &str) -> Str
 <div class="card-meta"><small><span>Open</span>{meta}</small></div>
 </a>"#
     )
-}
-
-pub fn popular_window_switch(path: &str, window: PopularWindow) -> String {
-    [
-        PopularWindow::Days7,
-        PopularWindow::Days30,
-        PopularWindow::Days90,
-    ]
-    .into_iter()
-    .map(|item| {
-        format!(
-            r#"<a href="{}?popular_window={}" class="btn{}">{}</a>"#,
-            path,
-            item.as_str(),
-            if item == window { " btn-primary" } else { "" },
-            item.as_str()
-        )
-    })
-    .collect::<Vec<_>>()
-    .join("")
 }
 
 fn empty_card(message: &str) -> String {

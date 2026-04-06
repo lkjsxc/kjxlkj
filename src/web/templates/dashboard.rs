@@ -3,16 +3,15 @@
 use super::dashboard_favorites::favorite_order_section;
 use super::index::list_rail;
 use super::layout::{base, shell_page};
-use super::list_sections::{
-    favorite_browse_card, note_grid_section, popular_browse_card, popular_window_switch,
-    recent_browse_card,
-};
+use super::list_sections::{favorite_browse_card, note_grid_section, recent_browse_card};
 use super::model::IndexItem;
+use super::popular_sections::admin_popular_section;
 use super::sections::{page_header, section};
 use crate::web::db::{AppSettings, NoteStats, PopularWindow};
 
 const ACTIONS_JS: &str = include_str!("note_actions.js");
 const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
+const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub fn admin_page(
     stats: &NoteStats,
@@ -27,14 +26,7 @@ pub fn admin_page(
         page_header("Dashboard", None, "dashboard-head"),
         stats_grid(stats),
         settings_panel(settings),
-        note_grid_section(
-            "Popular notes",
-            popular,
-            "No popular notes yet.",
-            "note-section",
-            Some(&popular_window_switch("/admin", window)),
-            Some(popular_browse_card(window)),
-        ),
+        admin_popular_section(popular, window),
         note_grid_section(
             "Recently updated",
             recent,
@@ -58,7 +50,9 @@ pub fn admin_page(
             "dashboard-page",
         ),
         "",
-        &format!(r#"<script>{ACTIONS_JS}</script><script>{FAVORITE_ORDER_JS}</script>"#),
+        &format!(
+            r#"<script>{ACTIONS_JS}</script><script>{FAVORITE_ORDER_JS}</script><script>{POPULAR_JS}</script>"#
+        ),
     )
 }
 

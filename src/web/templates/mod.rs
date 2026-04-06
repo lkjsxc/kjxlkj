@@ -15,6 +15,9 @@ mod note;
 mod note_shell;
 #[cfg(test)]
 mod note_tests;
+mod popular_sections;
+#[cfg(test)]
+mod popular_sections_tests;
 mod search;
 #[cfg(test)]
 mod search_tests;
@@ -28,5 +31,6 @@ pub use home::home_page;
 pub use layout::{not_found_page, render_time};
 pub use model::{HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome};
 pub use note::note_page;
+pub use popular_sections::{admin_popular_section, home_popular_section};
 pub use search::{search_page, SearchView};
 pub use settings_page::settings_page;

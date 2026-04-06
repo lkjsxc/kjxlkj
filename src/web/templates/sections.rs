@@ -26,12 +26,27 @@ pub fn section_with_actions(
     body: &str,
     class_name: &str,
 ) -> String {
+    section_with_actions_attrs(title, actions, body, class_name, "")
+}
+
+pub fn section_with_actions_attrs(
+    title: &str,
+    actions: Option<&str>,
+    body: &str,
+    class_name: &str,
+    attrs: &str,
+) -> String {
     let actions = actions
         .filter(|value| !value.is_empty())
         .map(|value| format!(r#"<div class="section-actions">{value}</div>"#))
         .unwrap_or_default();
+    let attrs = if attrs.is_empty() {
+        String::new()
+    } else {
+        format!(" {attrs}")
+    };
     format!(
-        r#"<section class="section-block {class_name}">
+        r#"<section class="section-block {class_name}"{attrs}>
 <div class="section-head"><h2>{}</h2>{actions}</div>
     {body}
 </section>"#,

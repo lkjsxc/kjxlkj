@@ -6,35 +6,26 @@ use crate::web::handlers::session;
 use crate::web::templates;
 use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
-use serde::Deserialize;
-
-#[derive(Debug, Deserialize)]
-pub struct AdminParams {
-    pub popular_window: Option<String>,
-}
 
 #[get("/admin")]
 pub async fn admin_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<AdminParams>,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, req, params).await
+    admin_page_impl(pool, req).await
 }
 
 #[get("/admin/")]
 pub async fn admin_page_slash(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<AdminParams>,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, req, params).await
+    admin_page_impl(pool, req).await
 }
 
 async fn admin_page_impl(
     pool: web::Data<DbPool>,
     req: HttpRequest,
-    params: web::Query<AdminParams>,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
@@ -43,7 +34,7 @@ async fn admin_page_impl(
         return Ok(redirect("/login"));
     }
     let settings = db::get_settings(&pool).await?;
-    let window = PopularWindow::resolve(params.popular_window.as_deref());
+    let window = PopularWindow::Days30;
     let popular =
         db::list_popular_records(&pool, true, settings.home_popular_limit, window).await?;
     let recent = db::list_recent_records(&pool, true, settings.home_recent_limit).await?;

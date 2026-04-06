@@ -9,6 +9,7 @@ pub mod home;
 pub mod login;
 pub mod logout;
 pub mod note;
+pub mod popular_sections;
 pub mod preview;
 pub mod record_history;
 pub mod records;
