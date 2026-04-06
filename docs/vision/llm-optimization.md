@@ -23,6 +23,6 @@
 
 - Title is extracted from the first `# heading` line in the body.
 - Stored content remains canonical Markdown even when the editor shows rendered content.
-- New-note visibility comes from the current global default and initial installs default that setting to private.
+- New-note visibility comes from the current global default and initial installs default that setting to public.
 - Homepage hero content uses only the editable `home_intro_markdown` field.
 - Empty `home_intro_markdown` removes the hero block entirely.

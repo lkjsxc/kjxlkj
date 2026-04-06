@@ -23,6 +23,7 @@
 ## Search Rules
 
 - Search is server-side and query-param driven.
+- Search remains query-param driven even though homepage and dashboard popularity switching are in-place.
 - Query input uses `q`.
 - Query direction uses `direction`.
 - Sort input uses `sort`.

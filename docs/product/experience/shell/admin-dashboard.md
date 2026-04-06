@@ -23,7 +23,9 @@
 - Statistics also expose note-view activity totals and recent popularity context.
 - `Settings` is a compact summary block with a link to `/admin/settings`.
 - `Settings` summary also shows the configured session timeout.
-- Popular notes use a server-driven `7d` / `30d` / `90d` selector.
+- Popular notes use an in-place `7d` / `30d` / `90d` switch.
+- Popular switching leaves the visible URL at `/admin`.
+- Popular switching replaces the full section from server-rendered HTML without a full page reload.
 - Popular-note rows show rolling-window and all-time totals.
 - Popular notes include a `View more notes` card into the matching `/search` state.
 - Recently updated includes a `View more notes` card into `/search`.

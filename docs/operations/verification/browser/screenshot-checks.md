@@ -72,6 +72,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
 - Homepage intro Markdown renders when configured.
 - Homepage popular-window switching updates the visible popular list.
+- Homepage and dashboard popular-window switching do not mutate the visible URL.
+- Homepage and dashboard popular-window switching replace the section without a full page reload.
 - Guest homepage popular cards do not expose counts.
 - Admin homepage popular cards expose rolling-window and all-time totals.
 - Homepage note sections expose `View more notes` cards for popular, recent, and favorites.

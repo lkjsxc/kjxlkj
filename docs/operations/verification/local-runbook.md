@@ -52,6 +52,8 @@ Expected:
 - homepage hero is driven only by intro Markdown
 - homepage contains no stats block
 - homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
+- homepage popular switching keeps the visible URL at `/`
+- homepage popular switching updates the section without a full page reload
 - guest popular cards do not show rolling-window or all-time totals
 - homepage includes `View more notes` cards that point into `/search`
 - homepage section wrappers stay lighter than note cards
@@ -106,6 +108,8 @@ Expected:
 - dashboard settings block links to `/admin/settings`
 - dashboard favorites use persistent favorite order rather than updated time
 - dashboard exposes note-view analytics
+- dashboard popular switching keeps the visible URL at `/admin`
+- dashboard popular switching updates the section without a full page reload
 
 ## Verify Admin Settings
 
@@ -194,6 +198,7 @@ Expected:
 - compact screenshots pass closed and open drawer assertions
 - iPhone-width or equivalent compact screenshots confirm font consistency
 - homepage popular window switching works at runtime
+- homepage and dashboard popular switching leave the visible URL unchanged
 - the icon asset is linked through `/favicon.ico` and renders in shell branding
 - the icon verification checks transparent corners and centered text mass
 - the live typing scenario uses keyboard input on the visible Markdown editor surface

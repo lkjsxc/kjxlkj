@@ -73,7 +73,8 @@ The system manages `note` resources.
 - The editor does not show a visible `Markdown body` label.
 - Alias typing must preserve internal `-`, `_`, and `.` separators until save-time validation.
 - Homepage hero content uses only editable intro Markdown.
-- Homepage popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
+- Homepage and dashboard popularity default to `30d` and switch windows without mutating the visible URL.
+- `/search` popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
 - Public note URLs prefer `alias` when present.
 - `/search` with empty `q` is the canonical paginated all-notes card view.
 

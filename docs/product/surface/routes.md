@@ -26,7 +26,7 @@
 ## Home, Admin, and Search Pages
 
 - `GET /`:
-  - returns auth-aware homepage shell using optional `popular_window`
+  - returns auth-aware homepage shell
 - `GET /admin` and `GET /admin/`:
   - before setup: `302` to `/setup`
   - without valid session: `302` to `/login`
@@ -39,6 +39,18 @@
   - before setup: `302` to `/setup`
   - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
   - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
+
+## HTML Fragment Endpoints
+
+- `GET /_/popular-notes/home/{window}`:
+  - `{window}` is `7d`, `30d`, or `90d`
+  - returns the homepage popular-notes section as HTML
+  - uses current session state to decide guest vs admin note details
+- `GET /_/popular-notes/admin/{window}`:
+  - `{window}` is `7d`, `30d`, or `90d`
+  - without valid session: `401`
+  - with valid session: returns the admin dashboard popular-notes section as HTML
+- invalid popularity fragment route parts return `404`
 
 ## Asset Delivery
 

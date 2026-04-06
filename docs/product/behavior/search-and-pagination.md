@@ -18,6 +18,7 @@
 - `popular_window` selects the rolling window when popularity ordering is active.
 - `cursor` is opaque and search-specific.
 - `limit` defaults to the configured search page size and is capped at `100`.
+- Homepage and dashboard popularity switching do not reuse the search query string.
 
 ## Sort Values
 

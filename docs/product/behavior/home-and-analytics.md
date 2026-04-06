@@ -13,9 +13,12 @@
 
 - Popular-note ranking is available for `7d`, `30d`, and `90d`.
 - The homepage defaults to `30d`.
-- The selected window is controlled by the `popular_window` query parameter on `/`.
-- The same `popular_window` parameter is reused on `/search` when `sort=popular_desc`.
-- Window switching behaves like server-side sorting on `/search`; it does not depend on client-side reordering.
+- The admin dashboard also defaults to `30d`.
+- Homepage and dashboard window switching are client-driven and replace the visible section in place.
+- Homepage and dashboard switching must not reload the page.
+- Homepage and dashboard switching must not add a query string, hash, or alternate path to the visible URL.
+- `/search` remains the canonical query-param surface for popularity browsing and uses `popular_window` when `sort=popular_desc`.
+- Homepage and dashboard switching use server-rendered HTML fragments rather than client-side reordering.
 - Guest homepage popularity uses public notes only.
 - Admin homepage popularity may include private notes.
 
@@ -40,6 +43,7 @@
 - Recent popularity is derived from per-note daily view rollups.
 - The product exposes `7d`, `30d`, and `90d` rolling totals.
 - Rolling totals use UTC day buckets including the current UTC day.
+- Failed homepage or dashboard window refresh keeps the previous visible list and reports a compact inline error.
 
 ## Visibility
 

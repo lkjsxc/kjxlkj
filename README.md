@@ -1,6 +1,8 @@
 # kjxlkj
 
-Contract-first note service for LLM-operated workflows.
+`kjxlkj` is a Markdown note system for LLM-operated workflows. It serves notes at root URLs such as `/{alias}` or `/{id}`, gives one admin a live editing workspace with autosave and preview, keeps immutable saved-snapshot history, and exposes curated home, search, favorites, and analytics surfaces that are meant to be operated through AI agents.
+
+Treat [docs/README.md](docs/README.md) as the only active canon for intended behavior, operations, and repository rules.
 
 ## Start Here
 

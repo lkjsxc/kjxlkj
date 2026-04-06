@@ -6,6 +6,7 @@
 - The homepage hero uses only the editable global `home_intro_markdown`.
 - The homepage always contains `Quick search`.
 - The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order and visibility.
+- The homepage popular-window switch is in-place and does not alter the visible URL.
 - Guests see public-only home data.
 - Signed-in admins see the same structure with private-capable data and admin actions.
 - The homepage is intentionally short and does not act as the full browse surface.
@@ -14,6 +15,7 @@
 
 - `GET /admin` returns the admin dashboard.
 - The dashboard includes statistics, popularity, recent activity, favorites, and a settings entry point.
+- The dashboard popular-window switch is in-place and does not alter the visible URL.
 - The dashboard does not own the canonical settings form.
 - The dashboard does not include the full note library.
 - Dashboard data includes public and private notes.

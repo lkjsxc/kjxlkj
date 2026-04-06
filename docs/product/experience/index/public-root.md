@@ -27,8 +27,11 @@
 - The homepage always contains `Quick search`.
 - The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order.
 - The homepage does not contain a statistics block.
-- The popular-notes section exposes one server-driven window selector for `7d`, `30d`, and `90d`.
+- The popular-notes section exposes one in-place window switch for `7d`, `30d`, and `90d`.
 - The default homepage popularity window is `30d`.
+- Popular switching leaves the visible URL at `/`.
+- Popular switching replaces the full section from server-rendered HTML instead of re-sorting the existing DOM.
+- Without JavaScript, the homepage stays on the default `30d` render.
 - `Popular notes`, `Recently updated`, and `Favorites` each end with one `View more notes` card that links into `/search`.
 - Guest popular-note cards do not expose rolling-window or all-time totals.
 - Admin popular-note cards may expose rolling-window and all-time totals.
