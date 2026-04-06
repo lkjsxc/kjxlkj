@@ -1,4 +1,14 @@
-# Repository Rules TOC
+# Repository Rules
 
-- [authoring.md](authoring.md)
-- [change-policy.md](change-policy.md)
+Use this subtree for the rules that govern how documentation and code changes are written.
+
+## Read This Section When
+
+- You are editing docs.
+- You need the mandatory order of docs and code changes.
+- You need to know what blocks acceptance of a change.
+
+## Child Index
+
+- [authoring.md](authoring.md): docs-writing and linking rules
+- [change-policy.md](change-policy.md): docs-first change sequence and blocking rule

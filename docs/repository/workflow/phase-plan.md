@@ -2,12 +2,11 @@
 
 ## Order
 
-1. Update the docs canon.
-2. Move authored tests, browser verification, and vendored assets under `src/`.
-3. Refactor shared layout, summary rendering, autosave, and note responsiveness.
-4. Add CI publishing and artifact upload.
-5. Update tests, visual verification, and line-limit enforcement.
-6. Commit only after the active batch passes its gates.
+1. Read the relevant canon in `docs/`.
+2. Update the docs canon if behavior or structure must change.
+3. Update code, tooling, or topology to satisfy the canon.
+4. Run the relevant cargo gates and, when acceptance scope is affected, the compose verification bundle.
+5. Commit the verified batch.
 
 ## Intent
 

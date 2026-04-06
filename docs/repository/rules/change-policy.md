@@ -10,3 +10,8 @@
 ## Blocking Rule
 
 If docs and code diverge, code changes are incomplete.
+
+## Navigation Rule
+
+- Update parent `README.md` files when children are added, removed, or moved.
+- Remove stale locations instead of keeping compatibility copies.

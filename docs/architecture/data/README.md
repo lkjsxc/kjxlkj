@@ -1,7 +1,17 @@
-# Data Architecture TOC
+# Data Architecture
 
-- [postgres-schema.md](postgres-schema.md)
-- [id-rules.md](id-rules.md)
-- [alias-rules.md](alias-rules.md)
-- [search-indexing.md](search-indexing.md)
-- [consistency-rules.md](consistency-rules.md)
+Use this subtree for canonical storage and identifier rules.
+
+## Read This Section When
+
+- You need the PostgreSQL table layout.
+- You need the canonical rules for opaque IDs or aliases.
+- You need search indexing or consistency guarantees.
+
+## Child Index
+
+- [postgres-schema.md](postgres-schema.md): tables, columns, and required indexes
+- [id-rules.md](id-rules.md): opaque note and snapshot identifier rules
+- [alias-rules.md](alias-rules.md): human-readable URL alias rules
+- [search-indexing.md](search-indexing.md): derived search document fields and visibility rules
+- [consistency-rules.md](consistency-rules.md): note, revision, navigation, and settings consistency rules
