@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { assertVisibleText, expectAdminDashboard, expectAdminNote, expectGuestNote, expectPublicRoot, expectSearchPage, expectSettingsPage } from './assertions.mjs';
 import { applySettingsScenario, verifyFavoriteReorder } from './dashboard-checks.mjs';
-import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
+import { assertBrandName, assertDiscoveryDisabled, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertHomeBrowseLinks, assertPopularWindowSwitch, popularTitles } from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
@@ -92,7 +92,10 @@ async function captureAdminScreens(browser, note) {
     ]);
     await assertVisibleText(page, 'Home');
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public notes.', robots: 'index,follow', canonical: `${appUrl}/` });
+    await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`] });
     await capture(page, 'desktop-login.png');
+    await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
+    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${note.ref}` });
     await context.close();
 }
 
@@ -107,8 +110,8 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
     await assertBrandName(page, 'kjxlkj');
-    await assertHead(page, { title: 'Home | kjxlkj', descriptionIncludes: 'Markdown note system for LLM-operated workflows.', robots: 'index,follow', canonical: `${appUrl}/` });
-    await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${notes.middle.ref}</loc>`] });
+    await assertHead(page, { title: 'Home | kjxlkj', descriptionIncludes: 'Markdown note system for LLM-operated workflows.', robots: 'noindex,nofollow', canonical: null });
+    await assertDiscoveryDisabled(page);
     await assertIconAssets(page);
     assert.equal(await page.getByRole('button', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
     assert.equal((await popularTitles(page))[0], 'Beacon Log');
@@ -164,7 +167,7 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
-    await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${notes.middle.ref}` });
+    await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Oldest public note.');
     await assertVisibleText(page, 'Newest public note.');
     await capture(page, 'desktop-guest-note.png');

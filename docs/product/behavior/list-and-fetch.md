@@ -59,7 +59,7 @@
 - Saved-snapshot IDs never redirect.
 - Current-note responses include the editable current body for admins.
 - Saved-snapshot responses include the immutable saved body.
-- Public current-note routes are search-indexable when `PUBLIC_BASE_URL` is configured and valid.
+- Public current-note routes are search-indexable only when `public_base_url` is non-blank and valid.
 - Saved snapshots remain guest-readable when allowed, but are not search-indexable.
 
 ## Note Navigation

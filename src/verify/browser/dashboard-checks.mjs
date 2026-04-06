@@ -36,6 +36,7 @@ export async function verifyFavoriteReorder(page) {
 
 export async function applySettingsScenario(page) {
     assert.equal(await page.getByLabel('Site name').inputValue(), 'kjxlkj');
+    assert.equal(await page.getByLabel('Public base URL').inputValue(), '');
     assert.equal(await page.locator('input[name="home_popular_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_recent_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_favorite_limit"]').inputValue(), '5');
@@ -45,6 +46,7 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.locator('.settings-order-pill').count(), 0);
     await page.getByLabel('Site name').fill('Launchpad');
     await page.getByLabel('Site description').fill('Launchpad search surface for public notes.');
+    await page.getByLabel('Public base URL').fill(appUrl);
     await page.getByLabel('Home intro Markdown').fill('# Launchpad\n\nWelcome to **Launchpad**.');
     await page.getByLabel('Session timeout (minutes)').fill('720');
     await reorderHomeSections(page);
@@ -57,6 +59,7 @@ export async function applySettingsScenario(page) {
     assert.equal((await responsePromise).status(), 303);
     await page.waitForLoadState('networkidle');
     assert.equal(await page.getByLabel('Site name').inputValue(), 'Launchpad');
+    assert.equal(await page.getByLabel('Public base URL').inputValue(), appUrl);
     assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '720');
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
     assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular notes', 'Recently updated']);

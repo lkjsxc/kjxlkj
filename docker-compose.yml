@@ -28,7 +28,6 @@ services:
     environment:
       BIND_HOST: ${BIND_HOST:-0.0.0.0}
       BIND_PORT: ${BIND_PORT:-8080}
-      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
       DATABASE_URL: postgres://${POSTGRES_USER:-kjxlkj}:${POSTGRES_PASSWORD:-kjxlkj}@postgres:5432/${POSTGRES_DB:-kjxlkj}
     depends_on:
       postgres:

@@ -1,6 +1,5 @@
 //! Login handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::DbPool;
 use crate::web::handlers::session;
@@ -21,7 +20,6 @@ pub struct LoginForm {
 #[get("/login")]
 pub async fn login_page(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
     if !crate::web::db::is_setup(&pool).await? {
@@ -31,7 +29,7 @@ pub async fn login_page(
         return Ok(see_other("/admin"));
     }
     let settings = crate::web::db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     Ok(html(templates::login_page(&site, None)))
 }
 
@@ -39,7 +37,6 @@ pub async fn login_page(
 #[post("/login")]
 pub async fn login_submit(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     form: web::Form<LoginForm>,
 ) -> Result<HttpResponse, AppError> {
     if !crate::web::db::is_setup(&pool).await? {
@@ -69,7 +66,7 @@ pub async fn login_submit(
         None => Ok(html_status(
             actix_web::http::StatusCode::UNAUTHORIZED,
             templates::login_page(
-                &SiteContext::from_settings(&config, &crate::web::db::get_settings(&pool).await?),
+                &SiteContext::from_settings(&crate::web::db::get_settings(&pool).await?),
                 Some("Invalid username or password"),
             ),
         )),

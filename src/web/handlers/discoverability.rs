@@ -1,34 +1,37 @@
 //! Sitemap and robots handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, SitemapRecord};
+use crate::web::site::normalize_public_base_url;
 use actix_web::{get, web, HttpResponse};
 
 #[get("/robots.txt")]
-pub async fn robots_txt(config: web::Data<Config>) -> Result<HttpResponse, AppError> {
-    let Some(public_base_url) = config.public_base_url.as_deref() else {
+pub async fn robots_txt(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
+    let Some(public_base_url) = public_base_url(&pool).await? else {
         return Ok(HttpResponse::NotFound().finish());
     };
     Ok(HttpResponse::Ok()
         .content_type("text/plain; charset=utf-8")
-        .body(robots_body(public_base_url)))
+        .body(robots_body(&public_base_url)))
 }
 
 #[get("/sitemap.xml")]
-pub async fn sitemap_xml(
-    pool: web::Data<DbPool>,
-    config: web::Data<Config>,
-) -> Result<HttpResponse, AppError> {
-    let Some(public_base_url) = config.public_base_url.as_deref() else {
+pub async fn sitemap_xml(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
+    let Some(public_base_url) = public_base_url(&pool).await? else {
         return Ok(HttpResponse::NotFound().finish());
     };
     Ok(HttpResponse::Ok()
         .content_type("application/xml; charset=utf-8")
         .body(sitemap_body(
-            public_base_url,
+            &public_base_url,
             &db::list_public_sitemap_records(&pool).await?,
         )))
+}
+
+async fn public_base_url(pool: &DbPool) -> Result<Option<String>, AppError> {
+    Ok(normalize_public_base_url(
+        &db::get_settings(pool).await?.public_base_url,
+    ))
 }
 
 fn robots_body(public_base_url: &str) -> String {

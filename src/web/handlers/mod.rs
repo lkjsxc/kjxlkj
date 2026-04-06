@@ -17,4 +17,5 @@ pub mod records;
 pub mod search;
 pub mod session;
 pub mod settings;
+mod settings_input;
 pub mod setup;

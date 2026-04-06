@@ -51,3 +51,13 @@ export async function assertDiscoveryRoutes(page, { sitemapContains }) {
         assert.ok(payload.sitemapText.includes(expected), `expected sitemap to include ${expected}`);
     }
 }
+
+export async function assertDiscoveryDisabled(page) {
+    const payload = await page.evaluate(async () => {
+        const robots = await fetch('/robots.txt');
+        const sitemap = await fetch('/sitemap.xml');
+        return { robotsStatus: robots.status, sitemapStatus: sitemap.status };
+    });
+    assert.equal(payload.robotsStatus, 404);
+    assert.equal(payload.sitemapStatus, 404);
+}

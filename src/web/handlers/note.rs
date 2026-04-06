@@ -1,6 +1,5 @@
 //! Note page handler
 
-use crate::config::Config;
 use crate::core::looks_like_id;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
@@ -18,7 +17,6 @@ enum RootResource {
 #[get("/{reference}")]
 pub async fn note_page(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
     path: web::Path<String>,
 ) -> Result<HttpResponse, AppError> {
@@ -28,7 +26,7 @@ pub async fn note_page(
     let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     let resource = match resolve_root_resource(&pool, &reference).await? {
         Some(resource) => resource,
         None => return Ok(not_found(&site)),

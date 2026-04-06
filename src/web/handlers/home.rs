@@ -1,6 +1,5 @@
 //! Homepage handler
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, PopularWindow};
 use crate::web::handlers::session;
@@ -12,7 +11,6 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 #[get("/")]
 pub async fn home_page(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
@@ -20,7 +18,7 @@ pub async fn home_page(
     }
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
     let popular =
         db::list_popular_records(&pool, is_admin, settings.home_popular_limit, window).await?;

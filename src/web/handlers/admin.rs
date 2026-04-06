@@ -1,6 +1,5 @@
 //! Admin dashboard handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, PopularWindow};
 use crate::web::handlers::session;
@@ -12,24 +11,21 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 #[get("/admin")]
 pub async fn admin_page(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, config, req).await
+    admin_page_impl(pool, req).await
 }
 
 #[get("/admin/")]
 pub async fn admin_page_slash(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
-    admin_page_impl(pool, config, req).await
+    admin_page_impl(pool, req).await
 }
 
 async fn admin_page_impl(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
 ) -> Result<HttpResponse, AppError> {
     if !db::is_setup(&pool).await? {
@@ -39,7 +35,7 @@ async fn admin_page_impl(
         return Ok(redirect("/login"));
     }
     let settings = db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
     let popular =
         db::list_popular_records(&pool, true, settings.home_popular_limit, window).await?;

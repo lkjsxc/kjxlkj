@@ -55,6 +55,7 @@ pub struct AppSettings {
     pub default_new_note_is_private: bool,
     pub site_name: String,
     pub site_description: String,
+    pub public_base_url: String,
 }
 
 impl Default for AppSettings {
@@ -75,6 +76,7 @@ impl Default for AppSettings {
             default_new_note_is_private: false,
             site_name: "kjxlkj".to_string(),
             site_description: "Markdown note system for LLM-operated workflows.".to_string(),
+            public_base_url: String::new(),
         }
     }
 }

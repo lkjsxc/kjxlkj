@@ -1,7 +1,7 @@
 //! Public site identity and metadata helpers
 
 use super::db::AppSettings;
-use crate::config::Config;
+use url::Url;
 
 const INDEX_FOLLOW: &str = "index,follow";
 const NOINDEX_NOFOLLOW: &str = "noindex,nofollow";
@@ -14,11 +14,11 @@ pub struct SiteContext {
 }
 
 impl SiteContext {
-    pub fn from_settings(config: &Config, settings: &AppSettings) -> Self {
+    pub fn from_settings(settings: &AppSettings) -> Self {
         Self {
             site_name: settings.site_name.clone(),
             site_description: settings.site_description.clone(),
-            public_base_url: config.public_base_url.clone(),
+            public_base_url: normalize_public_base_url(&settings.public_base_url),
         }
     }
 
@@ -57,6 +57,28 @@ impl SiteContext {
             },
         }
     }
+}
+
+pub fn normalize_public_base_url(value: &str) -> Option<String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    let mut url = Url::parse(trimmed).ok()?;
+    if !matches!(url.scheme(), "http" | "https") {
+        return None;
+    }
+    if url.host_str().is_none()
+        || !url.username().is_empty()
+        || url.password().is_some()
+        || url.query().is_some()
+        || url.fragment().is_some()
+        || url.path() != "/"
+    {
+        return None;
+    }
+    url.set_path("");
+    Some(url.as_str().trim_end_matches('/').to_string())
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -99,40 +121,39 @@ fn escape_html_attr(value: &str) -> String {
 mod tests {
     use super::*;
 
-    fn settings() -> AppSettings {
-        AppSettings {
-            site_name: "Launchpad".to_string(),
-            site_description: "Search-friendly notes.".to_string(),
-            ..AppSettings::default()
-        }
-    }
-
-    fn config(public_base_url: Option<&str>) -> Config {
-        Config {
-            bind_host: "0.0.0.0".to_string(),
-            bind_port: 8080,
-            database_url: "postgres://example".to_string(),
-            public_base_url: public_base_url.map(str::to_string),
-        }
-    }
-
     #[test]
     fn page_meta_uses_safe_noindex_without_public_origin() {
-        let meta = SiteContext::from_settings(&config(None), &settings()).page_meta(
-            "Home",
-            "",
-            true,
-            Some("/"),
-        );
+        let meta = SiteContext::from_settings(&settings("")).page_meta("Home", "", true, Some("/"));
         assert!(meta.head_tags().contains("noindex,nofollow"));
         assert!(!meta.head_tags().contains("rel=\"canonical\""));
     }
 
     #[test]
     fn page_meta_uses_page_then_site_titles() {
-        let meta = SiteContext::from_settings(&config(Some("https://example.com")), &settings())
-            .page_meta("Home", "", true, Some("/"));
+        let meta = SiteContext::from_settings(&settings("https://example.com")).page_meta(
+            "Home",
+            "",
+            true,
+            Some("/"),
+        );
         assert_eq!(meta.full_title(), "Home | Launchpad");
         assert!(meta.head_tags().contains("https://example.com/"));
+    }
+
+    #[test]
+    fn invalid_persisted_public_origin_falls_back_to_safe_mode() {
+        assert_eq!(
+            SiteContext::from_settings(&settings("https://example.com/path")).public_base_url,
+            None
+        );
+    }
+
+    fn settings(public_base_url: &str) -> AppSettings {
+        AppSettings {
+            site_name: "Launchpad".to_string(),
+            site_description: "Search-friendly notes.".to_string(),
+            public_base_url: public_base_url.to_string(),
+            ..AppSettings::default()
+        }
     }
 }

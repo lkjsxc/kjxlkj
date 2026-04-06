@@ -1,6 +1,5 @@
 //! Note history HTML handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, ListDirection};
 use crate::web::handlers::record_history::HistoryParams;
@@ -13,7 +12,6 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 #[get("/{id}/history")]
 pub async fn history_page(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     req: HttpRequest,
     path: web::Path<String>,
     params: web::Query<HistoryParams>,
@@ -24,7 +22,7 @@ pub async fn history_page(
     let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
         return Ok(not_found(&site));
     };

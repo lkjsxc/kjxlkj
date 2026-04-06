@@ -49,9 +49,12 @@ fn site_identity_section(settings: &AppSettings) -> String {
         &surface_panel(&format!(
             r#"<div class="settings-section-grid">
 <label class="form-group"><span>Site name</span><input type="text" name="site_name" maxlength="80" value="{}"></label>
+<label class="form-group"><span>Public base URL</span><input type="url" name="public_base_url" maxlength="255" placeholder="Leave blank to disable indexing" value="{}"></label>
 <label class="form-group settings-wide"><span>Site description</span><textarea name="site_description" rows="4" maxlength="200">{}</textarea></label>
+<p class="page-summary settings-wide">Leave Public base URL blank until the deployment has the final public origin for canonical URLs, robots, and the sitemap.</p>
 </div>"#,
             html_escape(&settings.site_name),
+            html_escape(&settings.public_base_url),
             html_escape(&settings.site_description),
         )),
         "settings-section",

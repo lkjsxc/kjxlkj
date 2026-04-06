@@ -11,7 +11,7 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
              home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
              home_recent_position, home_favorite_position, home_popular_position, \
              search_results_per_page, session_timeout_minutes, default_new_note_is_private, \
-             site_name, site_description \
+             site_name, site_description, public_base_url \
              FROM app_settings WHERE id = 1",
             &[],
         )
@@ -29,8 +29,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
              home_recent_position, home_favorite_position, home_popular_position, \
              search_results_per_page, session_timeout_minutes, default_new_note_is_private, \
-             site_name, site_description) \
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) \
+             site_name, site_description, public_base_url) \
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) \
              ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, \
              home_favorite_limit = EXCLUDED.home_favorite_limit, \
              home_popular_limit = EXCLUDED.home_popular_limit, \
@@ -45,7 +45,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              session_timeout_minutes = EXCLUDED.session_timeout_minutes, \
              default_new_note_is_private = EXCLUDED.default_new_note_is_private, \
              site_name = EXCLUDED.site_name, \
-             site_description = EXCLUDED.site_description, updated_at = NOW()",
+             site_description = EXCLUDED.site_description, \
+             public_base_url = EXCLUDED.public_base_url, updated_at = NOW()",
             &[
                 &settings.home_recent_limit,
                 &settings.home_favorite_limit,
@@ -62,6 +63,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.default_new_note_is_private,
                 &settings.site_name,
                 &settings.site_description,
+                &settings.public_base_url,
             ],
         )
         .await
@@ -125,6 +127,7 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
         default_new_note_is_private: row.get("default_new_note_is_private"),
         site_name: row.get("site_name"),
         site_description: row.get("site_description"),
+        public_base_url: row.get("public_base_url"),
     }
 }
 

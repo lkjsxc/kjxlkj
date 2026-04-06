@@ -1,6 +1,5 @@
 //! Setup handlers
 
-use crate::config::Config;
 use crate::error::AppError;
 use crate::web::db::DbPool;
 use crate::web::site::SiteContext;
@@ -18,15 +17,12 @@ pub struct SetupForm {
 
 /// Setup page GET handler
 #[get("/setup")]
-pub async fn setup_page(
-    pool: web::Data<DbPool>,
-    config: web::Data<Config>,
-) -> Result<HttpResponse, AppError> {
+pub async fn setup_page(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
     if crate::web::db::is_setup(&pool).await? {
         return Ok(redirect("/login"));
     }
     let settings = crate::web::db::get_settings(&pool).await?;
-    let site = SiteContext::from_settings(&config, &settings);
+    let site = SiteContext::from_settings(&settings);
     Ok(html(templates::setup_page(&site, None)))
 }
 
@@ -34,7 +30,6 @@ pub async fn setup_page(
 #[post("/setup")]
 pub async fn setup_submit(
     pool: web::Data<DbPool>,
-    config: web::Data<Config>,
     form: web::Form<SetupForm>,
 ) -> Result<HttpResponse, AppError> {
     if crate::web::db::is_setup(&pool).await? {
@@ -44,7 +39,7 @@ pub async fn setup_submit(
     let errors = validate_setup_form(&form);
     if !errors.is_empty() {
         let settings = crate::web::db::get_settings(&pool).await?;
-        let site = SiteContext::from_settings(&config, &settings);
+        let site = SiteContext::from_settings(&settings);
         return Ok(html_status(
             actix_web::http::StatusCode::BAD_REQUEST,
             templates::setup_page(&site, Some(&errors.join(", "))),

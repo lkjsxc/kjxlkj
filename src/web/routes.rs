@@ -16,14 +16,12 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
 
     let bind_addr = config.bind_addr();
     let pool = web::Data::new(pool);
-    let config = web::Data::new(config);
 
     info!("Starting HTTP server on {}", bind_addr);
 
     HttpServer::new(move || {
         App::new()
             .app_data(pool.clone())
-            .app_data(config.clone())
             .service(health::healthz)
             .service(setup::setup_page)
             .service(setup::setup_submit)

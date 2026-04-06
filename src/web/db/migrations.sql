@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS app_settings (
     default_new_note_is_private BOOLEAN NOT NULL DEFAULT FALSE,
     site_name TEXT NOT NULL DEFAULT 'kjxlkj',
     site_description TEXT NOT NULL DEFAULT 'Markdown note system for LLM-operated workflows.',
+    public_base_url TEXT NOT NULL DEFAULT '',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -184,6 +185,8 @@ ALTER TABLE app_settings
 ALTER TABLE app_settings
     ADD COLUMN IF NOT EXISTS site_description TEXT NOT NULL DEFAULT 'Markdown note system for LLM-operated workflows.';
 ALTER TABLE app_settings
+    ADD COLUMN IF NOT EXISTS public_base_url TEXT NOT NULL DEFAULT '';
+ALTER TABLE app_settings
     DROP COLUMN IF EXISTS home_title;
 ALTER TABLE records
     ALTER COLUMN is_private SET DEFAULT FALSE;
@@ -202,6 +205,8 @@ ALTER TABLE app_settings
 ALTER TABLE app_settings
     ALTER COLUMN site_description SET DEFAULT 'Markdown note system for LLM-operated workflows.';
 ALTER TABLE app_settings
+    ALTER COLUMN public_base_url SET DEFAULT '';
+ALTER TABLE app_settings
     DROP COLUMN IF EXISTS default_vim_mode;
 
 INSERT INTO app_settings (id) VALUES (1)
@@ -211,3 +216,6 @@ UPDATE app_settings SET site_name = 'kjxlkj' WHERE id = 1 AND (site_name IS NULL
 UPDATE app_settings
 SET site_description = 'Markdown note system for LLM-operated workflows.'
 WHERE id = 1 AND (site_description IS NULL OR btrim(site_description) = '');
+UPDATE app_settings
+SET public_base_url = ''
+WHERE id = 1 AND public_base_url IS NULL;
