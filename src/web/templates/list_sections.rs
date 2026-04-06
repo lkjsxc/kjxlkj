@@ -44,7 +44,10 @@ pub fn note_grid_body(notes: &[IndexItem], empty: &str, extra_card: Option<Strin
     if let Some(card) = extra_card {
         cards.push(card);
     }
-    format!(r#"<div class="note-list note-grid">{}</div>"#, cards.join(""))
+    format!(
+        r#"<div class="note-list note-grid">{}</div>"#,
+        cards.join("")
+    )
 }
 
 pub fn browse_card() -> String {

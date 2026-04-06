@@ -17,22 +17,29 @@ fn popular_notes_section(surface: &str, notes: &[IndexItem], window: PopularWind
     section_with_actions_attrs(
         "Popular notes",
         Some(&window_controls(window)),
-        &note_grid_body(notes, "No popular notes yet.", Some(popular_browse_card(window))),
+        &note_grid_body(
+            notes,
+            "No popular notes yet.",
+            Some(popular_browse_card(window)),
+        ),
         "note-section",
         &format!(r#"data-popular-section data-popular-surface="{surface}""#),
     )
 }
 
 fn window_controls(window: PopularWindow) -> String {
+    let buttons = [
+        PopularWindow::Days7,
+        PopularWindow::Days30,
+        PopularWindow::Days90,
+    ]
+    .into_iter()
+    .map(|item| window_button(item, window))
+    .collect::<Vec<_>>()
+    .join("");
     format!(
-        r#"<div class="popular-window-switch" role="group" aria-label="Popular notes window">{}{}</div>
+        r#"<div class="popular-window-switch" role="group" aria-label="Popular notes window">{buttons}</div>
 <p class="error" data-popular-error hidden></p>"#,
-        window_button(PopularWindow::Days7, window),
-        format!(
-            "{}{}",
-            window_button(PopularWindow::Days30, window),
-            window_button(PopularWindow::Days90, window)
-        ),
     )
 }
 

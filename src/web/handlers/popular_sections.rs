@@ -44,7 +44,13 @@ async fn render_home_fragment(
     if !settings.home_popular_visible {
         return Ok(not_found());
     }
-    let items = popular_items(pool.get_ref(), is_admin, settings.home_popular_limit, window).await?;
+    let items = popular_items(
+        pool.get_ref(),
+        is_admin,
+        settings.home_popular_limit,
+        window,
+    )
+    .await?;
     Ok(html(templates::home_popular_section(&items, window)))
 }
 

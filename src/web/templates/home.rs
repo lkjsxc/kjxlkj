@@ -59,7 +59,10 @@ fn home_sections(
 ) -> String {
     let mut sections = Vec::new();
     if settings.home_popular_visible {
-        sections.push((settings.home_popular_position, home_popular_section(popular, window)));
+        sections.push((
+            settings.home_popular_position,
+            home_popular_section(popular, window),
+        ));
     }
     if settings.home_recent_visible {
         sections.push((
