@@ -3,10 +3,8 @@
 ## Canonical Scope
 
 - The canonical deployment target is one host running Docker Compose.
-- `docker-compose.yml` is the runtime stack.
-- `docker-compose.verify.yml` is the verification overlay.
-- `.env.example` is the tracked template.
-- `.env` is the local active config file used by Compose.
+- Use [compose-stack.md](compose-stack.md) for the detailed runtime contract.
+- Use this page for the exact deployment sequence.
 
 ## Host Prerequisites
 
@@ -29,6 +27,7 @@ cp .env.example .env
 - Set `APP_PORT` if the host should expose something other than `8080`.
 - Keep `BIND_HOST=0.0.0.0` unless the host should only bind locally.
 - Do not look for `SESSION_TIMEOUT_MINUTES` in compose; that setting lives in `/admin/settings`.
+- `DATABASE_URL` is constructed by Compose for the `app` service and should not be hand-authored in `.env`.
 
 ## Build the Runtime Stack
 
@@ -47,8 +46,8 @@ Expected:
 
 - `postgres` is healthy.
 - `app` is running.
-- Compose readiness continues to rely on service health checks.
-- The PostgreSQL volume name is `kjxlkj-postgres-data`.
+- Compose readiness continues to rely on health checks rather than shell sleeps.
+- PostgreSQL state is stored in the named volume `kjxlkj-postgres-data`.
 
 ## Confirm Boot Health
 
@@ -66,6 +65,17 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
+```
+
+Expected:
+
+- `verify` exits `0` only when Rust, docs, and line-limit checks pass.
+- `visual-verify` exits `0` only when browser-rendered desktop and compact screenshots pass.
+- The verification bundle removes PostgreSQL state because it ends with `down -v`.
+
+## Resume Runtime After Verification
+
+```bash
 docker compose up -d postgres app
 ```
 
@@ -80,3 +90,4 @@ docker compose up -d postgres app
 
 - Continue with [first-login-and-live-use.md](first-login-and-live-use.md).
 - The first live admin configures the session timeout from `/admin/settings`.
+- Use [../verification/compose-pipeline.md](../verification/compose-pipeline.md) for the deeper acceptance contract.

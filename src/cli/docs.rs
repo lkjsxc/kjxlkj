@@ -36,18 +36,24 @@ fn validate_dir_recursive(dir: &Path, errors: &mut Vec<String>) -> Result<(), st
         .filter(|e| !e.file_name().to_string_lossy().starts_with('.'))
         .collect();
 
-    let has_readme = entries.iter().any(|e| e.file_name() == "README.md");
+    let readme_count = entries
+        .iter()
+        .filter(|e| e.file_name() == "README.md")
+        .count();
     let dir_display = dir.display();
-    if !has_readme {
-        errors.push(format!("{dir_display}: missing README.md"));
+    if readme_count != 1 {
+        errors.push(format!("{dir_display}: expected exactly one README.md"));
     }
 
-    let child_count = entries.len();
-    if child_count < 2 {
+    let non_readme_children = entries
+        .iter()
+        .filter(|e| e.file_name() != "README.md")
+        .count();
+    if non_readme_children < 2 {
         errors.push(format!(
-            "{}: needs multiple children (has {})",
+            "{}: needs at least two children besides README.md (has {})",
             dir.display(),
-            child_count
+            non_readme_children
         ));
     }
 
