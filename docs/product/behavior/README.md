@@ -6,6 +6,7 @@ Use this subtree for the runtime behavior rules behind the UI and API.
 
 - You need listing, fetching, create, update, delete, or history behavior.
 - You need search, pagination, analytics, or favorites rules.
+- You need runtime consequences of the shared navigation canon.
 - You need settings defaults or error semantics.
 
 ## Child Index
@@ -18,3 +19,7 @@ Use this subtree for the runtime behavior rules behind the UI and API.
 - [upsert-and-delete.md](upsert-and-delete.md): create, update, visibility, and delete behavior
 - [settings-and-preferences.md](settings-and-preferences.md): global settings, local UI state, and defaults
 - [errors.md](errors.md): error JSON shape, codes, determinism, and HTML error pages
+
+## Related Canon
+
+- [../navigation/README.md](../navigation/README.md): shared `Prev` / `Next` semantics and pager rules

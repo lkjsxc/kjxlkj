@@ -7,7 +7,7 @@
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
-- History index paging uses `Prev` and `Next`.
+- History index paging uses the shared pager contract from [../../navigation/paging/README.md](../../navigation/paging/README.md).
 
 ## Access Rules
 
@@ -34,3 +34,4 @@
 - The rail places `History` above `Open GitHub` on both guest and admin note/history pages.
 - The rail never lists individual saved snapshots.
 - Saved-snapshot pages keep the same single-card history affordance.
+- Rail timeline semantics and compact ordering follow [../../navigation/timeline/README.md](../../navigation/timeline/README.md).

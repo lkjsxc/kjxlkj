@@ -44,7 +44,7 @@
 - `popular_desc` orders by the selected rolling-window count, then lifetime views, then `updated_at DESC`, then `id ASC`.
 - `views_total_desc` orders by lifetime views, then `updated_at DESC`, then `id ASC`.
 - `favorite_position_asc` orders by persistent favorite order and then `id`.
-- Note-to-note `Prev` and `Next` continue to use `created_at`.
+- Note-to-note `Prev` and `Next` remain governed by [../navigation/timeline/semantics-and-order.md](../navigation/timeline/semantics-and-order.md).
 
 ## Cursor Rules
 
@@ -55,6 +55,7 @@
 - Missing previous page yields no previous cursor.
 - Cursor payload must encode enough information to reject mismatched `q`, `sort`, `scope`, or `popular_window`.
 - `direction=prev` returns the previous page in normal on-screen order rather than reversed order.
+- Shared `Prev` / `Next` labels and compact pager layout follow [../navigation/paging/README.md](../navigation/paging/README.md).
 
 ## Result Shape
 
@@ -62,6 +63,6 @@
 - Result cards may show a contextual snippet rather than the plain derived summary.
 - Admin results may show favorite and visibility state.
 - Results never dump the full note set to the client at once.
-- Search chrome should expose explicit `Prev` and `Next` actions instead of one `More notes` action.
+- Search chrome uses the shared pager contract instead of one `More notes` action.
 - Empty-query `/search` does not echo a `Query` or `All notes` state card.
 - Homepage `View more notes` cards deep-link into `/search` by changing `scope`, `sort`, and `popular_window` only.

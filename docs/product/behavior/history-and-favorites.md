@@ -26,7 +26,7 @@
 
 ## History Pagination
 
-- HTML history pages and `GET /records/{id}/history` share the same pagination model.
+- HTML history pages and `GET /records/{id}/history` share the same pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
 - Pagination uses `cursor`, `direction`, and `limit`.
 - Empty cursor returns the first page.
 - Visible saved snapshots remain ordered `snapshot_number DESC`.

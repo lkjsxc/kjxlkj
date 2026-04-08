@@ -169,6 +169,7 @@ Expected:
 - HTML contains one `History` card and no inline saved-snapshot links
 - `History` appears above `Open GitHub`
 - `Open GitHub` appears above the trailing note-action block
+- compact note rails keep `Prev` above `Next`
 - the `Live note` card shows both `Created` and `Updated` inside the card metadata
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
@@ -198,6 +199,8 @@ Expected:
 - guest rails place `History` above `Open GitHub`
 - guest rails place `Open GitHub` above `Admin sign in`
 - the rail still contains one `History` card rather than snapshot links
+- compact history rails keep `Prev` above `Next`
+- compact history paging keeps `Prev` left of `Next`
 - HTML does not contain visible rail section headings
 
 ## Verify Compact Admin Note
@@ -211,7 +214,8 @@ Expected:
 - preview starts closed
 - `New note` appears near the top of the rail
 - `Prev` and `Next` card footprints remain stable even when one side is unavailable
-- compact note/history rails keep `Prev` and `Next` in one horizontal row
+- compact note/history rails keep `Prev` above `Next`
+- compact search and history pagers keep `Prev` and `Next` in one horizontal row
 - typed Markdown stays legible in the editor and renders correctly when preview is opened
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 - compact preview opens as a fixed overlay and closes cleanly

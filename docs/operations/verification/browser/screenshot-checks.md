@@ -18,6 +18,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Compact homepage shell closed by default.
 - Compact homepage shell opened through the menu toggle.
 - Compact admin note page with the drawer available.
+- Compact history index page.
 - Compact admin note page with the preview overlay opened.
 
 ## Required Assertions
@@ -48,7 +49,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
 - Search sort and search-submit controls align vertically on desktop.
 - Compact admin note pages do not overflow horizontally.
-- Compact note and history rails keep `Prev` and `Next` in one horizontal row.
+- Compact note and history rails keep `Prev` above `Next`.
+- Compact search and history pagers keep `Prev` and `Next` in one horizontal row.
 - Search, admin, history, snapshot, setup, and login pages emit `noindex` robots metadata.
 - Homepage and public live-note pages emit meta descriptions.
 - Homepage and public live-note pages emit canonical URLs only when saved `public_base_url` is non-blank and valid.

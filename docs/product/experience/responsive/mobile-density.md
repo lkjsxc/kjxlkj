@@ -14,8 +14,9 @@
 - Editor and reader surfaces use the full remaining width.
 - Dashboard and history rows keep compact padding and clear contrast.
 - Sticky or floating controls must not obscure note content.
-- The note rail keeps fixed-size `Prev` and `Next` cards even when one side is unavailable.
-- Drawer and narrow layouts show the two timeline cards in one horizontal row.
+- The note and history rails keep fixed-size timeline cards even when one side is unavailable.
+- Drawer and narrow layouts keep the rail timeline in one column with `Prev` above `Next`.
+- Narrow search and history pagers stay in one left-right row.
 - Overflow is acceptable only inside tightly scoped editor internals, never at the page level.
 - The note page remains the primary vertical scroll container while editing.
 - Markdown links, long URLs, code spans, and metadata wrap or clip safely without page-level horizontal scrolling.
@@ -28,4 +29,5 @@
 - Compact admin note pages show no horizontal page overflow.
 - Compact layouts do not reintroduce visible rail section headings or helper copy.
 - Compact iPhone-width layouts keep the same UI font family and control sizing as other compact layouts.
-- Compact note/history rails keep `Prev` and `Next` readable in one row without overflow.
+- Compact note/history rails keep `Prev` above `Next` without overflow.
+- Compact search and history pagers keep `Prev` and `Next` in one row without overflow.

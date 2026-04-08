@@ -20,7 +20,7 @@
 - On note and history pages, the rail places `History` above GitHub and GitHub above the trailing action block.
 - On guest note and history pages, the trailing action block contains `Admin sign in`.
 - On admin note and history pages, the trailing action block contains note management actions such as `Delete note` and `Logout`.
-- `Prev` and `Next` timeline slots with labels outside their preview cards.
+- `Prev` and `Next` timeline slots follow [../../navigation/timeline/README.md](../../navigation/timeline/README.md).
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
 - Section boundaries use spacing first and minimal separators only when needed.
 
@@ -46,9 +46,10 @@
 ## Timeline Rules
 
 - The timeline always renders exactly two cards.
-- `Prev` and `Next` keep fixed positions even when one target does not exist.
+- `Prev` and `Next` keep the shared fixed positions even when one target does not exist.
 - Timeline cards reuse the same note-summary card language as Home and Search.
 - Timeline labels remain outside the cards instead of becoming part of the card body.
 - Timeline cards show title, short summary preview, and created time when a target exists.
 - Timeline preview text follows the same compact summary rules as Home, Search, and History cards.
 - Missing targets render as muted non-interactive cards with explanatory copy.
+- Compact note/history rails keep the timeline vertical; see [../../navigation/timeline/compact-rail-layout.md](../../navigation/timeline/compact-rail-layout.md).

@@ -46,7 +46,7 @@
 - Empty-query `/search` defaults to `updated_desc` for `scope=all`.
 - Empty-query `/search` defaults to `favorite_position_asc` for `scope=favorites`.
 - Non-empty-query `/search` defaults to `relevance`.
-- Note-to-note `Prev` and `Next` continue to use `created_at`.
+- Note-to-note `Prev` and `Next` follow [../navigation/timeline/semantics-and-order.md](../navigation/timeline/semantics-and-order.md).
 
 ## Fetch (`GET /{ref}`)
 
@@ -64,10 +64,7 @@
 
 ## Note Navigation
 
-- `Prev` means the nearest older accessible note.
-- `Next` means the nearest newer accessible note.
-- Guest navigation skips private notes.
-- Admin navigation includes private notes.
+- Note and history rails use the shared timeline canon from [../navigation/timeline/README.md](../navigation/timeline/README.md).
 - HTML note rails always render both timeline slots even when one side resolves to `null`.
 - Timeline cards show relation label, note title, short summary preview, and created time.
 - Note and history rails order note-level sections as live context, timeline, `History`, `Open GitHub`, then the trailing action block.
@@ -80,6 +77,6 @@
 - Guests can fetch only saved snapshots whose stored state is public.
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.
-- HTML and JSON history fetches share cursor pagination rules.
+- HTML and JSON history fetches share the pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
 - History indexes are not search-indexable.
 - The history-page `Live note` card uses the same Created/Updated metadata language as Home and Search cards.

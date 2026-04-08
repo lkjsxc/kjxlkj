@@ -5,6 +5,7 @@ Use this subtree for the visual and interaction contracts of the HTML product.
 ## Read This Section When
 
 - You need shell, page, editor, theme, or responsive behavior.
+- You need the visual layout of shared navigation controls.
 - You are validating a UI change against the intended visual direction.
 - You need the supporting image anchors that explain the target look and the regressions to avoid.
 
@@ -21,6 +22,10 @@ Use this subtree for the visual and interaction contracts of the HTML product.
 - [shell/README.md](shell/README.md): shared shell, rail, note workspace, dashboard, settings, and history pages
 - [editor/README.md](editor/README.md): Markdown editing, preview, autosave, and reference alignment
 - [responsive/README.md](responsive/README.md): narrow-layout drawer and density rules
+
+## Related Canon
+
+- [../navigation/README.md](../navigation/README.md): shared `Prev` / `Next` semantics plus pager and rail layout ownership
 
 ## Start Here
 
