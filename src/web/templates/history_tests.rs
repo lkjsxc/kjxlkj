@@ -72,6 +72,8 @@ fn history_page_lists_live_note_and_saved_snapshots() {
     assert!(html.contains("Latest saved snapshot"));
     assert!(html.contains("Saved body"));
     assert!(html.contains("/zyxwvutsrqponmlkjihgfedcba"));
+    assert!(html.contains("<span>Created</span>"));
+    assert!(html.contains("<span>Updated</span>"));
     assert!(html.contains("2026-03-26 08:00 UTC"));
     assert!(html.contains(">Prev<"));
     assert!(html.contains(">Next<"));

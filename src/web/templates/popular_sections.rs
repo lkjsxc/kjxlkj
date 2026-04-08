@@ -15,11 +15,11 @@ pub fn admin_popular_section(notes: &[IndexItem], window: PopularWindow) -> Stri
 
 fn popular_notes_section(surface: &str, notes: &[IndexItem], window: PopularWindow) -> String {
     section_with_actions_attrs(
-        "Popular notes",
+        "Popular",
         Some(&window_controls(window)),
         &note_grid_body(
             notes,
-            "No popular notes yet.",
+            "No popular entries yet.",
             Some(popular_browse_card(window)),
         ),
         "note-section",
@@ -38,7 +38,7 @@ fn window_controls(window: PopularWindow) -> String {
     .collect::<Vec<_>>()
     .join("");
     format!(
-        r#"<div class="popular-window-switch" role="group" aria-label="Popular notes window">{buttons}</div>
+        r#"<div class="popular-window-switch" role="group" aria-label="Popular window">{buttons}</div>
 <p class="error" data-popular-error hidden></p>"#,
     )
 }

@@ -21,7 +21,7 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     await expectPublicRoot(page, {
         title: 'Launchpad',
         intro: 'Welcome to Launchpad',
-        sections: ['Favorites', 'Popular notes'],
+        sections: ['Favorites', 'Popular'],
     });
     await assertBrandName(page, 'Launchpad');
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public notes.', robots: 'index,follow', canonical: `${appUrl}/` });

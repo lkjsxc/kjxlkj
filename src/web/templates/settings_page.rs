@@ -77,7 +77,7 @@ fn home_hero_section(settings: &AppSettings) -> String {
 fn home_sections_section(settings: &AppSettings) -> String {
     let mut rows = vec![
         (
-            "Popular notes",
+            "Popular",
             "home_popular_visible",
             settings.home_popular_visible,
             "home_popular_position",

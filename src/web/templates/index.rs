@@ -1,6 +1,8 @@
 //! Shared browse list templates
 
-use super::card_frame::{card_body, card_meta, linked_card, meta_line, status_pill};
+use super::card_frame::{
+    card_body, card_meta, created_updated_lines, linked_card, meta_line, status_pill,
+};
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::IndexItem;
 
@@ -13,10 +15,9 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
         &card_meta(
             &card_badges(note),
             &format!(
-                "{}{}{}",
+                "{}{}",
                 card_metrics(note),
-                meta_line("Created", &note.created_at),
-                meta_line("Updated", &note.updated_at),
+                created_updated_lines(&note.created_at, &note.updated_at)
             ),
         ),
     )

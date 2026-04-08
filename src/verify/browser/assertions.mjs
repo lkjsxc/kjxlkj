@@ -18,14 +18,14 @@ export { assertInvisibleText, assertNoHorizontalOverflow, assertVisibleText, exp
 
 export async function expectPublicRoot(
     page,
-    { title = 'Home', intro = 'Welcome to', sections = ['Popular notes', 'Recently updated', 'Favorites'] } = {}
+    { title = 'Home', intro = 'Welcome to', sections = ['Popular', 'Recently updated', 'Favorites'] } = {}
 ) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Open GitHub');
     await page.getByRole('heading', { name: title, exact: true }).first().waitFor({ state: 'visible' });
     if (intro) await assertVisibleText(page, intro);
     for (const section of sections) await assertVisibleText(page, section);
-    for (const hidden of ['Popular notes', 'Recently updated', 'Favorites'].filter((item) => !sections.includes(item))) {
+    for (const hidden of ['Popular', 'Recently updated', 'Favorites'].filter((item) => !sections.includes(item))) {
         assert.equal(await page.getByRole('heading', { name: hidden, exact: true }).count(), 0);
     }
     assert.equal(await page.getByRole('link', { name: /View more notes/i }).count(), sections.length);
@@ -70,7 +70,7 @@ export async function expectAdminDashboard(page) {
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
     await assertVisibleText(page, 'Session timeout');
-    await assertVisibleText(page, 'Popular notes');
+    await assertVisibleText(page, 'Popular');
     await assertVisibleText(page, 'Recently updated');
     await assertVisibleText(page, 'Favorites');
     await page.getByRole('link', { name: 'Open settings', exact: true }).waitFor({ state: 'visible' });
@@ -83,7 +83,7 @@ export async function expectAdminDashboard(page) {
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
     await assertCreateActionBelowHome(page);
-    await assertSectionOrder(page, ['Settings', 'Popular notes', 'Recently updated', 'Favorites']);
+    await assertSectionOrder(page, ['Settings', 'Popular', 'Recently updated', 'Favorites']);
 }
 
 export async function expectSettingsPage(page) {
@@ -122,6 +122,8 @@ export async function expectAdminNote(page) {
     await assertVisibleText(page, 'Views total');
     await assertVisibleText(page, 'Views 30d');
     await assertSingleHistoryCard(page);
+    await assertLiveNoteMetadata(page, page.locator('.current-note-card'));
+    await assertRailOrder(page, ['History', 'Open GitHub', 'Delete note']);
     assert.equal(await page.getByText('Markdown body', { exact: true }).count(), 0);
     assert.equal(await page.locator('script[src*="toastui"],link[href*="toastui"]').count(), 0);
     await assertCreateActionBelowHome(page);
@@ -131,6 +133,8 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Open GitHub');
     await assertSingleHistoryCard(page);
+    await assertLiveNoteMetadata(page, page.locator('.current-note-card'));
+    await assertRailOrder(page, ['History', 'Open GitHub', 'Admin sign in']);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Prev');
     await assertVisibleText(page, previousTitle ?? 'No older accessible note.');
@@ -161,4 +165,22 @@ async function assertSearchControlsAligned(page) {
         };
     });
     assert.ok(metrics && metrics.top <= 1 && metrics.bottom <= 1, 'search sort and button should align vertically');
+}
+
+async function assertLiveNoteMetadata(page, card) {
+    await card.waitFor({ state: 'visible' });
+    await card.getByText('Created', { exact: true }).waitFor({ state: 'visible' });
+    await card.getByText('Updated', { exact: true }).waitFor({ state: 'visible' });
+}
+
+async function assertRailOrder(page, labels) {
+    const tops = [];
+    for (const label of labels) {
+        const control = page.getByText(label, { exact: true }).first();
+        await control.waitFor({ state: 'visible' });
+        tops.push(await control.evaluate((node) => node.getBoundingClientRect().top));
+    }
+    for (let index = 1; index < tops.length; index += 1) {
+        assert.ok(tops[index] > tops[index - 1], 'rail controls should stay in the documented order');
+    }
 }

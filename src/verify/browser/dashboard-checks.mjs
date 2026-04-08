@@ -69,12 +69,12 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
     assert.equal(discovery.robotsStatus, 200);
     assert.equal(discovery.sitemapStatus, 200);
-    assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular notes', 'Recently updated']);
+    assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular', 'Recently updated']);
 }
 
 async function reorderHomeSections(page) {
     const rows = page.locator('[data-settings-order-item]');
-    assert.deepEqual(await settingsOrder(page), ['Popular notes', 'Recently updated', 'Favorites']);
+    assert.deepEqual(await settingsOrder(page), ['Popular', 'Recently updated', 'Favorites']);
     await rows.nth(2).dragTo(rows.nth(0));
 }
 

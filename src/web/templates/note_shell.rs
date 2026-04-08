@@ -1,6 +1,8 @@
 //! Shared note and history rail rendering
 
-use super::card_frame::{card_body, card_meta, linked_card, meta_line, static_card};
+use super::card_frame::{
+    card_body, card_meta, created_updated_lines, linked_card, meta_line, static_card,
+};
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::{NavLink, NoteChrome};
 
@@ -14,9 +16,9 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
         &current_note(chrome, active_href),
     ));
     sections.push(rail_section("timeline", &timeline(chrome)));
-    sections.push(rail_section("actions", &actions(chrome, is_admin)));
-    sections.push(rail_section("project", &project_link()));
     sections.push(rail_section("history", &history(chrome, active_href)));
+    sections.push(rail_section("project", &project_link()));
+    sections.push(rail_section("actions", &actions(chrome, is_admin)));
     sections.join("")
 }
 
@@ -31,7 +33,7 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
             r#"<span class="status-pill" data-live-visibility>{}</span>"#,
             chrome.visibility
         ),
-        &meta_line("Updated", &chrome.updated_at),
+        &created_updated_lines(&chrome.created_at, &chrome.updated_at),
     );
     format!(
         r#"<div class="rail-stack">
@@ -41,7 +43,6 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
 </div>
 <div class="rail-facts">
 <p><strong>Alias</strong><span data-live-alias>{}</span></p>
-<p><strong>Created</strong><span>{}</span></p>
 </div>
 </div>"#,
         linked_card(
@@ -59,7 +60,6 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
             &card_meta,
         ),
         chrome.alias.as_deref().unwrap_or("None"),
-        chrome.created_at,
     )
 }
 
@@ -170,8 +170,14 @@ mod tests {
     #[test]
     fn note_rail_keeps_single_history_card() {
         let html = note_rail(&chrome(None, None), true, "/demo");
+        let history = html.find("History").unwrap();
+        let github = html.find("Open GitHub").unwrap();
+        let delete = html.find("Delete note").unwrap();
         assert!(html.contains("History"));
         assert!(html.contains("Open GitHub"));
+        assert!(html.contains("<span>Created</span>"));
+        assert!(html.contains("<span>Updated</span>"));
+        assert!(history < github && github < delete);
     }
 
     #[test]

@@ -26,14 +26,15 @@
                 headers: { 'X-Requested-With': 'fetch' },
                 signal: controller.signal,
             });
-            if (!response.ok) throw new Error('Popular notes refresh failed.');
+            if (!response.ok) throw new Error('Popular refresh failed.');
             var replacement = parseSection(await response.text());
+            window.kjxlkj?.formatLocalTimes?.(replacement);
             if (requestIds[surface] !== requestId) return;
             section.replaceWith(replacement);
         } catch (error) {
             if (error.name === 'AbortError' || requestIds[surface] !== requestId) return;
             setBusy(section, false);
-            showError(section, 'Failed to refresh popular notes.');
+            showError(section, 'Failed to refresh Popular.');
         } finally {
             if (controllers[surface] === controller) controllers[surface] = null;
             var current = document.querySelector('[data-popular-section][data-popular-surface="' + surface + '"]');
@@ -46,7 +47,7 @@
         template.innerHTML = html.trim();
         var section = template.content.firstElementChild;
         if (!section || !section.matches('[data-popular-section]')) {
-            throw new Error('Popular notes refresh failed.');
+            throw new Error('Popular refresh failed.');
         }
         return section;
     }

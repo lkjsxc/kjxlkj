@@ -24,6 +24,7 @@ fn sample_item() -> IndexItem {
 #[test]
 fn home_popular_section_marks_surface_and_active_window() {
     let html = home_popular_section(&[sample_item()], PopularWindow::Days30);
+    assert!(html.contains(">Popular<"));
     assert!(html.contains(r#"data-popular-surface="home""#));
     assert!(html.contains(r#"data-popular-window="30d" aria-pressed="true""#));
     assert!(html.contains("/search?sort=popular_desc&popular_window=30d"));

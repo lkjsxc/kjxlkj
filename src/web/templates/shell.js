@@ -1,17 +1,17 @@
 (function () {
     formatLocalTimes();
     setupDrawer();
+    window.kjxlkj = window.kjxlkj || {};
+    window.kjxlkj.formatLocalTimes = formatLocalTimes;
 
-    function formatLocalTimes() {
+    function formatLocalTimes(root) {
         var formatter = new Intl.DateTimeFormat(undefined, {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
+            year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false,
         });
-        document.querySelectorAll('.local-time').forEach(function (node) {
+        var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+        var nodes = Array.from(scope.querySelectorAll('.local-time'));
+        if (scope !== document && scope.matches && scope.matches('.local-time')) nodes.unshift(scope);
+        nodes.forEach(function (node) {
             var iso = node.getAttribute('datetime') || node.dataset.utc;
             if (!iso) return;
             var date = new Date(iso);

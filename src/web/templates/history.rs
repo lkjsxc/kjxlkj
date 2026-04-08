@@ -1,6 +1,8 @@
 //! History page templates
 
-use super::card_frame::{card_body, card_meta, linked_card, meta_line, status_pill};
+use super::card_frame::{
+    card_body, card_meta, created_updated_lines, linked_card, meta_line, status_pill,
+};
 use super::index::pager;
 use super::layout::{base, html_escape, shell_page};
 use super::model::{HistoryLink, NoteChrome};
@@ -151,7 +153,7 @@ fn live_row(record: &Record, chrome: &NoteChrome) -> String {
         &card_body("Live note", &record.summary),
         &card_meta(
             &status_pill(chrome.visibility, ""),
-            &meta_line("Updated", &chrome.updated_at),
+            &created_updated_lines(&chrome.created_at, &chrome.updated_at),
         ),
     )
 }

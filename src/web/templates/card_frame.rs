@@ -50,6 +50,14 @@ pub(crate) fn meta_line(label: &str, value: &str) -> String {
     )
 }
 
+pub(crate) fn created_updated_lines(created: &str, updated: &str) -> String {
+    format!(
+        "{}{}",
+        meta_line("Created", created),
+        meta_line("Updated", updated),
+    )
+}
+
 pub(crate) fn status_pill(label: &str, extra_classes: &str) -> String {
     format!(
         r#"<span class="status-pill{}">{}</span>"#,
