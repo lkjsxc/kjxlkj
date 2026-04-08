@@ -80,6 +80,10 @@
         white-space: normal;
     }
 
+    .timeline-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .editor-shell.preview-open.preview-compact .editor-preview-backdrop {
         display: block;
         position: fixed;

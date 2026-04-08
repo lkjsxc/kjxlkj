@@ -1,6 +1,7 @@
 //! HTML templates
 
 mod auth;
+mod card_frame;
 mod dashboard;
 mod dashboard_favorites;
 mod history;

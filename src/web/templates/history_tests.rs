@@ -28,6 +28,7 @@ fn sample_chrome() -> NoteChrome {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
+        summary: "Body".to_string(),
         current_href: "/demo-note".to_string(),
         created_at: "2026-03-26 08:34 UTC".to_string(),
         updated_at: "2026-03-26 08:35 UTC".to_string(),
@@ -72,7 +73,7 @@ fn history_page_lists_live_note_and_saved_snapshots() {
     assert!(html.contains("Saved body"));
     assert!(html.contains("/zyxwvutsrqponmlkjihgfedcba"));
     assert!(html.contains("2026-03-26 08:00 UTC"));
-    assert!(html.contains(">Previous<"));
+    assert!(html.contains(">Prev<"));
     assert!(html.contains(">Next<"));
     assert!(html.contains("<title>History: Demo | Launchpad</title>"));
     assert!(html.contains("content=\"noindex,nofollow\""));

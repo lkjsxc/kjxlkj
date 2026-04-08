@@ -25,6 +25,7 @@ fn sample_chrome() -> NoteChrome {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
+        summary: "Body".to_string(),
         current_href: "/demo-note".to_string(),
         created_at: "2026-03-26 08:34 UTC".to_string(),
         updated_at: "2026-03-26 08:35 UTC".to_string(),
@@ -83,6 +84,7 @@ fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("2026-03-26 08:35 UTC"));
+    assert!(html.contains("Open GitHub"));
     assert!(!html.contains("Markdown body"));
     assert!(!html.contains("<div class=\"page-title-stack\"><h1"));
     assert!(!html.contains("toastui"));

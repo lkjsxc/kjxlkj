@@ -7,6 +7,7 @@ const CONTENT_CSS: &str = include_str!("content.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
+const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
 const OVERVIEW_CSS: &str = include_str!("overview.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
 const PAGE_CSS: &str = include_str!("page.css");
@@ -33,6 +34,7 @@ pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str
 {CONTROLS_CSS}
 {SHELL_CSS}
 {SURFACES_CSS}
+{SUMMARY_CARDS_CSS}
 {OVERVIEW_CSS}
 {RESPONSIVE_CSS}
 {PAGE_CSS}
@@ -96,6 +98,10 @@ pub fn shell_page(
 
 pub fn rail_section(title: &str, body: &str) -> String {
     format!(r#"<section class="rail-section" aria-label="{title}">{body}</section>"#)
+}
+
+pub fn project_link_button() -> &'static str {
+    r#"<a href="https://github.com/lkjsxc/kjxlkj" class="btn" target="_blank" rel="noreferrer">Open GitHub</a>"#
 }
 
 pub fn primary_nav(active: &str, is_admin: bool) -> String {

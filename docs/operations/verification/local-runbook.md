@@ -163,6 +163,7 @@ curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
 Expected:
 
 - HTML contains `Prev` / `Next` labels
+- HTML contains an `Open GitHub` control
 - HTML contains one `History` card and no inline saved-snapshot links
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
@@ -188,6 +189,7 @@ Expected:
 - later snapshot cards use `Saved snapshot N`
 - snapshot cards link to root-path opaque snapshot IDs rather than numbered note-scoped URLs
 - HTML contains `Prev` / `Next` paging controls when the snapshot set spans multiple pages
+- guest rails place `Open GitHub` between `Admin sign in` and `History`
 - the rail still contains one `History` card rather than snapshot links
 - HTML does not contain visible rail section headings
 

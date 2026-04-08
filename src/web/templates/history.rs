@@ -1,5 +1,6 @@
 //! History page templates
 
+use super::card_frame::{card_body, card_meta, linked_card, meta_line, status_pill};
 use super::index::pager;
 use super::layout::{base, html_escape, shell_page};
 use super::model::{HistoryLink, NoteChrome};
@@ -130,34 +131,27 @@ fn shell(
 }
 
 fn history_row(entry: &HistoryLink) -> String {
-    format!(
-        r#"<a href="{}" class="index-card note-row">
-<div class="card-body">
-<p class="card-title">{}</p>
-<p class="card-summary">{}</p>
-</div>
-<div class="card-meta"><div class="card-badges"><span class="status-pill">{}</span></div><small><span>Saved</span>{}</small></div>
-</a>"#,
-        entry.href,
-        html_escape(&entry.label),
-        html_escape(&entry.summary),
-        entry.status,
-        entry.created_at
+    linked_card(
+        &entry.href,
+        "",
+        "",
+        &card_body(&entry.label, &entry.summary),
+        &card_meta(
+            &status_pill(entry.status, ""),
+            &meta_line("Saved", &entry.created_at),
+        ),
     )
 }
 
 fn live_row(record: &Record, chrome: &NoteChrome) -> String {
-    format!(
-        r#"<a href="{}" class="index-card note-row">
-<div class="card-body">
-<p class="card-title">Live note</p>
-<p class="card-summary">{}</p>
-</div>
-<div class="card-meta"><div class="card-badges"><span class="status-pill">{}</span></div><small><span>Updated</span>{}</small></div>
-</a>"#,
-        chrome.current_href,
-        html_escape(&record.summary),
-        chrome.visibility,
-        chrome.updated_at
+    linked_card(
+        &chrome.current_href,
+        "",
+        "",
+        &card_body("Live note", &record.summary),
+        &card_meta(
+            &status_pill(chrome.visibility, ""),
+            &meta_line("Updated", &chrome.updated_at),
+        ),
     )
 }

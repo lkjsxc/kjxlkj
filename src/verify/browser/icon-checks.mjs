@@ -49,7 +49,7 @@ async function inspectIcon(page, src, size) {
             };
             const alphaAt = (x, y) => data[(y * imageSize + x) * 4 + 3] / 255;
             const lightness = (r, g, b) => r * 0.2126 + g * 0.7152 + b * 0.0722;
-            const inset = Math.max(2, Math.floor(imageSize * 0.21875));
+            const inset = Math.max(2, Math.floor(imageSize * 0.171875));
             const mid = Math.floor(imageSize / 2);
             let mass = 0;
             let sumX = 0;

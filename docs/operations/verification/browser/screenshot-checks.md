@@ -39,6 +39,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Search and history paging expose `Prev` and `Next` actions.
+- Guest note and history rails place the GitHub control between `Admin sign in` and `History`.
 - Rail timeline labels stay outside the shared preview cards.
 - Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
 - Search sort and search-submit controls align vertically on desktop.

@@ -21,6 +21,7 @@ export async function expectPublicRoot(
     { title = 'Home', intro = 'Welcome to', sections = ['Popular notes', 'Recently updated', 'Favorites'] } = {}
 ) {
     await expectFlatShell(page);
+    await assertVisibleText(page, 'Open GitHub');
     await page.getByRole('heading', { name: title, exact: true }).first().waitFor({ state: 'visible' });
     if (intro) await assertVisibleText(page, intro);
     for (const section of sections) await assertVisibleText(page, section);
@@ -46,6 +47,7 @@ export async function expectPublicRoot(
 
 export async function expectSearchPage(page, hasQueryCard = false) {
     await expectFlatShell(page);
+    await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Search');
     await page.getByLabel('Search notes').waitFor({ state: 'visible' });
     if (hasQueryCard) {
@@ -57,13 +59,14 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     assert.equal(await page.locator('.search-sort .visually-hidden').count(), 1);
     assert.equal(await page.locator('.search-sort span:not(.visually-hidden)').count(), 0);
     await assertSearchControlsAligned(page);
-    await page.getByRole('button', { name: 'Previous', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'Prev', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
 }
 
 export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
+    await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
     await assertVisibleText(page, 'Session timeout');
@@ -85,6 +88,7 @@ export async function expectAdminDashboard(page) {
 
 export async function expectSettingsPage(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
+    await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Settings');
     await page.getByLabel('Site name').waitFor({ state: 'visible' });
     await page.getByLabel('Site description').waitFor({ state: 'visible' });
@@ -105,6 +109,7 @@ export async function expectSettingsPage(page) {
 
 export async function expectAdminNote(page) {
     await expectFlatShell(page);
+    await assertVisibleText(page, 'Open GitHub');
     await page.locator('#editor-body').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#public-toggle').isChecked(), true);
     assert.equal(await page.locator('#favorite-toggle').isChecked(), true);
@@ -124,6 +129,7 @@ export async function expectAdminNote(page) {
 
 export async function expectGuestNote(page, previousTitle, nextTitle) {
     await expectFlatShell(page);
+    await assertVisibleText(page, 'Open GitHub');
     await assertSingleHistoryCard(page);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Prev');

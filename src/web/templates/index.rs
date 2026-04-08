@@ -1,30 +1,24 @@
 //! Shared browse list templates
 
-use super::layout::{html_escape, primary_nav, rail_section};
+use super::card_frame::{card_body, card_meta, linked_card, meta_line, status_pill};
+use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::IndexItem;
 
 pub(crate) fn note_row(note: &IndexItem) -> String {
-    format!(
-        r#"<a href="{}" class="index-card note-row" data-note-id="{}">
-<div class="card-body">
-<p class="card-title">{}</p>
-<p class="card-summary">{}</p>
-</div>
-<div class="card-meta">
-<div class="card-badges">{}</div>
-{}
-<small><span>Created</span>{}</small>
-<small><span>Updated</span>{}</small>
-</div>
-</a>"#,
-        note.href,
-        note.id,
-        html_escape(&note.title),
-        html_escape(&note.summary),
-        card_badges(note),
-        card_metrics(note),
-        note.created_at,
-        note.updated_at
+    linked_card(
+        &note.href,
+        &format!(r#" data-note-id="{}""#, note.id),
+        "",
+        &card_body(&note.title, &note.summary),
+        &card_meta(
+            &card_badges(note),
+            &format!(
+                "{}{}{}",
+                card_metrics(note),
+                meta_line("Created", &note.created_at),
+                meta_line("Updated", &note.updated_at),
+            ),
+        ),
     )
 }
 
@@ -47,6 +41,13 @@ pub(crate) fn list_rail(
             &format!(r#"<div class="rail-actions">{rail_actions}</div>"#),
         ));
     }
+    sections.push(rail_section(
+        "project",
+        &format!(
+            r#"<div class="rail-actions">{}</div>"#,
+            project_link_button()
+        ),
+    ));
     sections.join("")
 }
 
@@ -58,7 +59,7 @@ pub(crate) fn pager(
 ) -> String {
     format!(
         r#"<div class="pager-nav">{}{}</div>"#,
-        page_button(path, previous_cursor, "prev", "Previous", fields),
+        page_button(path, previous_cursor, "prev", "Prev", fields),
         page_button(path, next_cursor, "next", "Next", fields),
     )
 }
@@ -106,11 +107,10 @@ fn page_button(
 fn card_badges(note: &IndexItem) -> String {
     let mut badges = Vec::new();
     if note.is_favorite {
-        badges
-            .push(r#"<span class="status-pill status-pill-favorite">Favorite</span>"#.to_string());
+        badges.push(status_pill("Favorite", "status-pill-favorite"));
     }
     if let Some(item) = note.visibility {
-        badges.push(format!(r#"<span class="status-pill">{item}</span>"#));
+        badges.push(status_pill(item, ""));
     }
     badges.join("")
 }
@@ -118,13 +118,7 @@ fn card_badges(note: &IndexItem) -> String {
 fn card_metrics(note: &IndexItem) -> String {
     note.metrics
         .iter()
-        .map(|metric| {
-            format!(
-                r#"<small><span>{}</span>{}</small>"#,
-                html_escape(&metric.label),
-                html_escape(&metric.value)
-            )
-        })
+        .map(|metric| meta_line(&metric.label, &metric.value))
         .collect::<Vec<_>>()
         .join("")
 }

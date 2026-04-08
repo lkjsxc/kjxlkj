@@ -1,0 +1,72 @@
+.rail-stack,
+.rail-slot,
+.timeline-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.rail-slot {
+    min-width: 0;
+}
+
+.rail-slot-label {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.timeline-grid {
+    grid-template-columns: 1fr;
+}
+
+.summary-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-self: start;
+    min-height: 142px;
+    gap: 10px;
+    padding: 14px 15px;
+}
+
+.current-note-card {
+    min-height: 150px;
+}
+
+.history-card {
+    min-height: auto;
+}
+
+.summary-card-active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
+.summary-card-muted {
+    border-style: dashed;
+    opacity: 0.8;
+}
+
+.summary-card .card-meta {
+    justify-items: start;
+    text-align: left;
+    gap: 4px;
+}
+
+.summary-card .card-meta small {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+}
+
+.summary-card .card-badges {
+    justify-content: flex-start;
+    min-height: 0;
+}
+
+.card-badges-empty {
+    min-height: 0;
+}

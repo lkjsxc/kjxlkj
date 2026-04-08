@@ -41,7 +41,7 @@ export async function assertVisibleText(page, text) {
     assert.ok(visibleCount > 0, `"${text}" should be visible`);
 }
 export async function assertInvisibleText(page, text) {
-    const locator = page.getByText(text, { exact: false });
+    const locator = page.getByText(text, { exact: true });
     const visibleCount = await locator.evaluateAll((nodes) =>
         nodes.filter((node) => {
             const style = window.getComputedStyle(node);
@@ -95,8 +95,8 @@ export async function assertStableMetadata(page, title) {
 }
 
 export async function assertSingleHistoryCard(page) {
-    await assertVisibleText(page, 'All history');
-    assert.equal(await page.getByText('All history', { exact: true }).count(), 1);
+    await assertVisibleText(page, 'History');
+    assert.equal(await page.getByText('History', { exact: true }).count(), 1);
 }
 
 export async function assertCreateActionBelowHome(page) {

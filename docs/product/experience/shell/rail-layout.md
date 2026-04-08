@@ -14,10 +14,11 @@
 - Primary navigation.
 - Live note context.
 - Created and updated metadata.
-- One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
-- `Prev` and `Next` timeline slots with labels outside their preview cards.
-- One history card labeled `History` that opens the dedicated history page.
 - Mode-specific actions.
+- One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
+- One history card labeled `History` that opens the dedicated history page.
+- On guest note and history pages, GitHub sits between `Admin sign in` and `History`.
+- `Prev` and `Next` timeline slots with labels outside their preview cards.
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
 - Section boundaries use spacing first and minimal separators only when needed.
 

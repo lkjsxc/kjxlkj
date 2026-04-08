@@ -1,6 +1,7 @@
 //! Shared note and history rail rendering
 
-use super::layout::{html_escape, primary_nav, rail_section};
+use super::card_frame::{card_body, card_meta, linked_card, meta_line, static_card};
+use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::{NavLink, NoteChrome};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
@@ -8,83 +9,120 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
     if is_admin {
         sections.push(rail_section("create", &create_action()));
     }
-    sections.extend([
-        rail_section("current-note", &current_note(chrome, active_href)),
-        rail_section("timeline", &timeline(chrome)),
-        rail_section("history", &history(chrome, active_href)),
-        rail_section("actions", &actions(chrome, is_admin)),
-    ]);
+    sections.push(rail_section(
+        "current-note",
+        &current_note(chrome, active_href),
+    ));
+    sections.push(rail_section("timeline", &timeline(chrome)));
+    sections.push(rail_section("actions", &actions(chrome, is_admin)));
+    sections.push(rail_section("project", &project_link()));
+    sections.push(rail_section("history", &history(chrome, active_href)));
     sections.join("")
 }
 
 fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
+    let card_body = format!(
+        r#"<div class="card-body"><p class="card-title" data-live-title>{}</p><p class="card-summary">{}</p></div>"#,
+        html_escape(&chrome.title),
+        html_escape(&chrome.summary)
+    );
+    let card_meta = card_meta(
+        &format!(
+            r#"<span class="status-pill" data-live-visibility>{}</span>"#,
+            chrome.visibility
+        ),
+        &meta_line("Updated", &chrome.updated_at),
+    );
     format!(
-        r#"<div class="rail-list">
-<a href="{}" class="rail-link{}" data-current-note-link><span data-live-title>{}</span><small>Live note</small></a>
+        r#"<div class="rail-stack">
+<div class="rail-slot">
+<p class="rail-slot-label">Live note</p>
+{}
+</div>
 <div class="rail-facts">
 <p><strong>Alias</strong><span data-live-alias>{}</span></p>
 <p><strong>Created</strong><span>{}</span></p>
-<p><strong>Updated</strong><span>{}</span></p>
-<p><strong>Visibility</strong><span data-live-visibility>{}</span></p>
 </div>
 </div>"#,
-        chrome.current_href,
-        if active_href == chrome.current_href {
-            " active"
-        } else {
-            ""
-        },
-        html_escape(&chrome.title),
+        linked_card(
+            &chrome.current_href,
+            " data-current-note-link",
+            &format!(
+                "summary-card current-note-card{}",
+                if active_href == chrome.current_href {
+                    " summary-card-active"
+                } else {
+                    ""
+                }
+            ),
+            &card_body,
+            &card_meta,
+        ),
         chrome.alias.as_deref().unwrap_or("None"),
         chrome.created_at,
-        chrome.updated_at,
-        chrome.visibility
     )
 }
 
 fn timeline(chrome: &NoteChrome) -> String {
     format!(
-        r#"<div class="rail-list">{}{}</div>"#,
-        timeline_card(
+        r#"<div class="timeline-grid">{}{}</div>"#,
+        timeline_slot(
             chrome.previous.as_ref(),
             "Prev",
             "No older accessible note."
         ),
-        timeline_card(chrome.next.as_ref(), "Next", "No newer accessible note.")
+        timeline_slot(chrome.next.as_ref(), "Next", "No newer accessible note.")
     )
 }
 
 fn history(chrome: &NoteChrome, active_href: &str) -> String {
-    format!(
-        r#"<div class="rail-list"><a href="{}" class="rail-link{}" data-history-link><span>All history</span></a></div>"#,
-        chrome.history_href,
-        if active_href == chrome.history_href {
-            " active"
-        } else {
-            ""
-        }
+    linked_card(
+        &chrome.history_href,
+        " data-history-link",
+        &format!(
+            "summary-card history-card{}",
+            if active_href == chrome.history_href {
+                " summary-card-active"
+            } else {
+                ""
+            }
+        ),
+        &card_body("History", "Browse the live note and saved snapshots."),
+        &card_meta("", ""),
     )
 }
 
-fn timeline_card(link: Option<&NavLink>, relation: &str, empty: &str) -> String {
-    link.map(note_link)
-        .unwrap_or_else(|| missing_timeline_card(relation, empty))
+fn timeline_slot(link: Option<&NavLink>, relation: &str, empty: &str) -> String {
+    format!(
+        r#"<div class="rail-slot timeline-slot"><p class="rail-slot-label">{relation}</p>{}</div>"#,
+        link.map(note_link)
+            .unwrap_or_else(|| missing_timeline_card(empty))
+    )
 }
 
-fn missing_timeline_card(relation: &str, empty: &str) -> String {
+fn project_link() -> String {
     format!(
-        r#"<article class="rail-link rail-link-muted" aria-disabled="true"><small>{relation}</small><span>{empty}</span></article>"#
+        r#"<div class="rail-actions">{}</div>"#,
+        project_link_button()
     )
 }
 
 fn note_link(link: &NavLink) -> String {
-    format!(
-        r#"<a href="{}" class="rail-link"><small>{}</small><span>{}</span><small class="rail-link-summary">{}</small><small>{}</small></a>"#,
-        link.href,
-        link.relation,
-        html_escape(&link.title),
-        html_escape(&link.summary),
-        link.created_at
+    linked_card(
+        &link.href,
+        "",
+        "summary-card timeline-card",
+        &card_body(&link.title, &link.summary),
+        &card_meta("", &meta_line("Created", &link.created_at)),
+    )
+}
+
+fn missing_timeline_card(empty: &str) -> String {
+    static_card(
+        r#" aria-disabled="true""#,
+        "summary-card timeline-card summary-card-muted",
+        &card_body(empty, ""),
+        &card_meta("", ""),
     )
 }
 
@@ -117,6 +155,7 @@ mod tests {
             id: "demo".to_string(),
             alias: Some("orbit-ledger".to_string()),
             title: "Orbit Ledger".to_string(),
+            summary: "Shared release note for the orbit ledger.".to_string(),
             current_href: "/demo".to_string(),
             created_at: "2026-03-26 08:34 UTC".to_string(),
             updated_at: "2026-03-26 08:35 UTC".to_string(),
@@ -131,8 +170,8 @@ mod tests {
     #[test]
     fn note_rail_keeps_single_history_card() {
         let html = note_rail(&chrome(None, None), true, "/demo");
-        assert!(html.contains("All history"));
-        assert!(!html.contains("View every visible revision"));
+        assert!(html.contains("History"));
+        assert!(html.contains("Open GitHub"));
     }
 
     #[test]
@@ -141,5 +180,6 @@ mod tests {
         assert!(html.contains("No older accessible note."));
         assert!(html.contains("No newer accessible note."));
         assert!(!html.contains("CREATE"));
+        assert!(html.contains("timeline-grid"));
     }
 }

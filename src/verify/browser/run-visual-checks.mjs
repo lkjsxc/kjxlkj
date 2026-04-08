@@ -70,7 +70,7 @@ async function captureAdminScreens(browser, note) {
 
     await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
-    await assertVisibleText(page, 'Live note');
+    await Promise.all([assertVisibleText(page, 'Live note'), assertVisibleText(page, 'Open GitHub')]);
     await assertVisibleText(page, 'Latest saved snapshot');
     await assertVisibleText(page, `Saved snapshot ${autosavedSnapshotNumber - 1}`);
     await assertHead(page, { title: `History: ${note.title} | Launchpad`, descriptionIncludes: `Saved snapshots for ${note.title}.`, robots: 'noindex,nofollow', canonical: null });
@@ -134,7 +134,7 @@ async function capturePublicScreens(browser, notes) {
     await assertVisibleText(page, notes.newest.title);
     await assertVisibleText(page, notes.middle.title);
     assert.equal(await page.locator('#search-sort').inputValue(), 'updated_desc');
-    assert.equal(await page.getByRole('button', { name: 'Previous', exact: true }).isDisabled(), true);
+    assert.equal(await page.getByRole('button', { name: 'Prev', exact: true }).isDisabled(), true);
     assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-search.png');
 
@@ -143,10 +143,10 @@ async function capturePublicScreens(browser, notes) {
         page.getByRole('button', { name: 'Next', exact: true }).click(),
     ]);
     await assertVisibleText(page, notes.oldest.title);
-    assert.equal(await page.getByRole('button', { name: 'Previous', exact: true }).isDisabled(), false);
+    assert.equal(await page.getByRole('button', { name: 'Prev', exact: true }).isDisabled(), false);
     await Promise.all([
         page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'prev'),
-        page.getByRole('button', { name: 'Previous', exact: true }).click(),
+        page.getByRole('button', { name: 'Prev', exact: true }).click(),
     ]);
     await assertVisibleText(page, notes.newest.title);
 

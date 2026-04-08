@@ -52,6 +52,7 @@ pub async fn note_chrome(
         id: record.id.clone(),
         alias: record.alias.clone(),
         title: title_for(record),
+        summary: record.summary.clone(),
         current_href: note_href(record),
         created_at: render_time(&record.created_at),
         updated_at: render_time(&record.updated_at),
@@ -112,7 +113,6 @@ async fn adjacent_link(
     };
     Ok(target.map(|note| NavLink {
         href: note_href(&note),
-        relation: if older { "Prev" } else { "Next" },
         title: title_for(&note),
         summary: note.summary.clone(),
         created_at: render_time(&note.created_at),

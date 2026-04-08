@@ -58,10 +58,17 @@ export async function applySettingsScenario(page) {
     await page.getByRole('button', { name: 'Save settings', exact: true }).click();
     assert.equal((await responsePromise).status(), 303);
     await page.waitForLoadState('networkidle');
+    const discovery = await page.evaluate(async () => {
+        const robots = await fetch('/robots.txt');
+        const sitemap = await fetch('/sitemap.xml');
+        return { robotsStatus: robots.status, sitemapStatus: sitemap.status };
+    });
     assert.equal(await page.getByLabel('Site name').inputValue(), 'Launchpad');
     assert.equal(await page.getByLabel('Public base URL').inputValue(), appUrl);
     assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '720');
     assert.equal(await page.getByLabel('New notes start private').isChecked(), false);
+    assert.equal(discovery.robotsStatus, 200);
+    assert.equal(discovery.sitemapStatus, 200);
     assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular notes', 'Recently updated']);
 }
 

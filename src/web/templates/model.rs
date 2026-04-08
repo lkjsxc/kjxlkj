@@ -3,7 +3,6 @@
 #[derive(Clone, Debug)]
 pub struct NavLink {
     pub href: String,
-    pub relation: &'static str,
     pub title: String,
     pub summary: String,
     pub created_at: String,
@@ -23,6 +22,7 @@ pub struct NoteChrome {
     pub id: String,
     pub alias: Option<String>,
     pub title: String,
+    pub summary: String,
     pub current_href: String,
     pub created_at: String,
     pub updated_at: String,
