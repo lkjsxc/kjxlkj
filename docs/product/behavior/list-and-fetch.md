@@ -68,6 +68,7 @@
 - HTML note rails always render both timeline slots even when one side resolves to `null`.
 - Timeline cards show relation label, note title, short summary preview, and created time.
 - Note and history rails order note-level sections as live context, timeline, `History`, `Open GitHub`, then the trailing action block.
+- List-rail action ordering follows [../experience/shell/actions/section-order.md](../experience/shell/actions/section-order.md).
 
 ## History Fetch
 

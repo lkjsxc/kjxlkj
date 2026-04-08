@@ -10,6 +10,7 @@
 - The persistent shell rail remains visible.
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
+- Admin dashboard rails place `Open GitHub` above `Logout`.
 - Main content starts with compact stats, then a `Settings` entry section, then stacked `Popular`, `Recently updated`, and `Favorites` sections.
 - Dashboard spacing should stay tighter than the early tall-card builds without collapsing section readability.
 - The dashboard does not include the canonical settings form.

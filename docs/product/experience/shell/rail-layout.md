@@ -17,9 +17,8 @@
 - One history card labeled `History` that opens the dedicated history page.
 - One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
 - Mode-specific actions.
-- On note and history pages, the rail places `History` above GitHub and GitHub above the trailing action block.
-- On guest note and history pages, the trailing action block contains `Admin sign in`.
-- On admin note and history pages, the trailing action block contains note management actions such as `Delete note` and `Logout`.
+- Rail action ordering is owned by [actions/section-order.md](actions/section-order.md).
+- Mode-specific action ownership is defined in [actions/mode-specific-actions.md](actions/mode-specific-actions.md).
 - `Prev` and `Next` timeline slots follow [../../navigation/timeline/README.md](../../navigation/timeline/README.md).
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
 - Section boundaries use spacing first and minimal separators only when needed.
@@ -40,6 +39,7 @@
 - Home, Search, Dashboard, New note, Logout, and Delete use restrained controls from the same size family.
 - `New note` is the first admin action in the rail.
 - Guest sign-in may sit lower in the rail rather than directly under navigation.
+- GitHub stays above auth or session actions across rail families.
 - Narrow screens add one quiet top-right menu toggle plus a backdrop.
 - Brand spacing must clearly separate `kjxlkj` from the first navigation card.
 

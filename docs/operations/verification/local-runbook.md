@@ -86,6 +86,8 @@ Expected:
 - HTML contains previous/next paging controls rather than `More notes`
 - results may show contextual snippets rather than only derived summaries
 - HTML does not contain a top-right `Browse notes` action
+- guest rails place `Open GitHub` above `Admin sign in`
+- admin rails place `Open GitHub` above `Logout`
 - empty-query HTML does not contain a `Query` or `All notes` state card
 - `/search?scope=favorites` returns favorite-only browse results
 - `/search?sort=popular_desc&popular_window=30d` returns popularity-ordered browse results
@@ -104,6 +106,7 @@ Expected:
 - popular, recent, favorite, and settings sections stack vertically
 - HTML does not contain a library block
 - `New note` remains in the rail
+- `Open GitHub` appears above `Logout`
 - HTML does not contain `Admin browse` or `Admin index`
 - long previews do not force created/updated metadata into awkward wrapped collisions
 - dashboard settings block links to `/admin/settings`
@@ -130,6 +133,7 @@ Expected:
 - settings include session timeout with default `1440`
 - settings include default new-note visibility
 - settings include default search page size
+- `Open GitHub` appears above `Logout`
 - HTML does not contain Vim-mode controls
 
 ## Enable Local Discovery Verification

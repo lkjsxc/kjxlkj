@@ -40,11 +40,14 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Note rails render one `History` card and never render inline saved-snapshot lists.
 - Note and history rails place `History` above `Open GitHub`.
 - Note and history rails place `Open GitHub` above the trailing action block.
+- Guest home and search rails place `Open GitHub` above `Admin sign in`.
+- Admin home, search, dashboard, and settings rails place `Open GitHub` above `Logout`.
 - Live-note cards on note and history pages show both `Created` and `Updated` inside shared card metadata.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Search and history paging expose `Prev` and `Next` actions.
 - Guest note and history rails place the GitHub control between `History` and `Admin sign in`.
+- Rail GitHub controls keep their own section instead of merging into auth or session actions.
 - Rail timeline labels stay outside the shared preview cards.
 - Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
 - Search sort and search-submit controls align vertically on desktop.

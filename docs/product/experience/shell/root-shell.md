@@ -18,6 +18,7 @@
 - Current-note context when applicable.
 - Timeline and history affordances when applicable.
 - Mode-specific actions.
+- Rail action ordering follows [actions/section-order.md](actions/section-order.md).
 - Groups are separated visually, but visible section headings and heading underlines are omitted.
 
 ## Main Pane

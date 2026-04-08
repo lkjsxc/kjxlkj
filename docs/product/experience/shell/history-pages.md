@@ -32,6 +32,7 @@
 
 - The rail history section contains exactly one card labeled `History`.
 - The rail places `History` above `Open GitHub` on both guest and admin note/history pages.
+- Note/history action ordering follows [actions/section-order.md](actions/section-order.md).
 - The rail never lists individual saved snapshots.
 - Saved-snapshot pages keep the same single-card history affordance.
 - Rail timeline semantics and compact ordering follow [../../navigation/timeline/README.md](../../navigation/timeline/README.md).

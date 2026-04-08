@@ -10,6 +10,7 @@
 
 - The persistent shell rail remains visible.
 - The page header stays concise and includes a clear return path to `/admin`.
+- Admin settings rails place `Open GitHub` above `Logout`.
 - Settings groups render as short stacked sections rather than one giant form wall.
 - Form density stays compact, but field groups use enough spacing to remain scannable.
 

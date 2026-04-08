@@ -5,11 +5,13 @@ Use this subtree for the shared page chrome and admin workspace layouts.
 ## Read This Section When
 
 - You need the root shell or rail rules.
+- You need canonical rail action ordering.
 - You need the note workspace, dashboard, settings, or history page contract.
 - You need to understand how navigation and metadata are shared across pages.
 
 ## Child Index
 
+- [actions/README.md](actions/README.md): shared rail action ordering and mode-specific actions
 - [root-shell.md](root-shell.md): shared shell structure and rail content
 - [rail-layout.md](rail-layout.md): rail sections, metadata, actions, and timeline treatment
 - [note-workspace.md](note-workspace.md): admin and guest note-page layout and chrome sync
