@@ -13,6 +13,7 @@
 
 - Brand and session mode.
 - Global navigation.
+- One external-repository section linking to the project GitHub page.
 - Home, dashboard, and settings quick actions when appropriate.
 - Current-note context when applicable.
 - Timeline and history affordances when applicable.

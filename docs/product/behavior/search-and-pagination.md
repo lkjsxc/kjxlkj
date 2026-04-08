@@ -62,6 +62,6 @@
 - Result cards may show a contextual snippet rather than the plain derived summary.
 - Admin results may show favorite and visibility state.
 - Results never dump the full note set to the client at once.
-- Search chrome should expose explicit `Previous` and `Next` actions instead of one `More notes` action.
+- Search chrome should expose explicit `Prev` and `Next` actions instead of one `More notes` action.
 - Empty-query `/search` does not echo a `Query` or `All notes` state card.
 - Homepage `View more notes` cards deep-link into `/search` by changing `scope`, `sort`, and `popular_window` only.

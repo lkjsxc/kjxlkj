@@ -26,3 +26,4 @@
 - Blank `public_base_url` is the safe pre-launch state.
 - Non-blank `public_base_url` enables canonical URLs, `robots.txt`, and `sitemap.xml`.
 - The runtime must not guess public URLs from request headers when `public_base_url` is blank.
+- Saving `public_base_url` must affect subsequent requests immediately without restarting the app service.

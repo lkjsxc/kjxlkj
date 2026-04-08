@@ -10,6 +10,7 @@
 - `public_base_url` is stored in `app_settings`.
 - `GET /admin/settings` owns the canonical edit surface for `public_base_url`.
 - Saving `public_base_url` updates subsequent HTML metadata, `robots.txt`, and `sitemap.xml` responses immediately.
+- Operators do not restart the process or rebuild the compose stack after changing `public_base_url`.
 
 ## Allowed States
 

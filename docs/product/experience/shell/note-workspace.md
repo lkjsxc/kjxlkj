@@ -5,7 +5,7 @@
 - Note pages remain dark, dense, flat, and document-first.
 - Header chrome is compact and informative.
 - History access belongs in the rail, not below the note body.
-- The rail history affordance is one `All history` card, not an inline saved-snapshot list.
+- The rail history affordance is one `History` card, not an inline saved-snapshot list.
 - The note header does not show an eyebrow label such as `Admin note`.
 
 ## Header Content

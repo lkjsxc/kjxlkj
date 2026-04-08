@@ -2,7 +2,7 @@
 
 ## Shared Behavior
 
-- Homepage note blocks, search results, and history cards share the same compact card language.
+- Homepage note blocks, search results, history cards, and rail timeline cards share the same compact card language.
 - Browse/search/history cards are compact, sortable server-side, and safe for thousands of notes.
 - The list is cursor-paginated, not infinite scroll.
 - Home sections may append one final `View more notes` card that shares the same grid rhythm without mimicking a note card exactly.
@@ -16,10 +16,10 @@
 - Metadata uses a dedicated layout that stays readable even when title or summary text is long.
 - Summary preview appends `...` whenever hidden meaningful content remains.
 - Title is single-line clamped.
-- Summary is line-clamped so long notes do not enlarge sibling cards.
+- Summary is two-line clamped so long notes do not enlarge sibling cards.
 - Dense layouts should reduce vertical padding before reducing useful metadata.
 - Grid cards may gain a small amount of height so timestamp rows remain fully contained.
-- Smaller rail timeline cards may use a shorter one-line summary preview, but should reuse the same derived-summary language.
+- Rail timeline cards keep the same one-line title clamp and two-line summary clamp as other note-summary cards.
 
 ## Action Treatment
 

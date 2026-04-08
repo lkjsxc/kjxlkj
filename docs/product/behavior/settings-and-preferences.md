@@ -45,3 +45,4 @@
 - Blank `public_base_url` is the safe default and means the app should not emit canonical URLs or machine-readable discovery routes.
 - Non-blank `public_base_url` must be a normalized absolute `http` or `https` origin.
 - Invalid `public_base_url` input must be rejected rather than silently repaired into a guessed URL.
+- Saving a valid `public_base_url` updates subsequent HTML metadata and discovery routes without restarting the app container.

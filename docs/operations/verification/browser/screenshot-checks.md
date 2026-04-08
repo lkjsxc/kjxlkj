@@ -35,18 +35,23 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Surfaces remain flat with solid fills rather than gradients or blur.
 - Rectangular cards, inputs, and buttons keep tight `2px` through `4px` corners rather than soft rounded shells.
 - Note and history rails keep metadata readable without wrap regressions.
-- Note rails render one `All history` card and never render inline saved-snapshot lists.
+- Note rails render one `History` card and never render inline saved-snapshot lists.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
-- Search and history paging expose `Previous` and `Next` actions.
+- Search and history paging expose `Prev` and `Next` actions.
+- Rail timeline labels stay outside the shared preview cards.
+- Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
 - Search sort and search-submit controls align vertically on desktop.
 - Compact admin note pages do not overflow horizontally.
+- Compact note and history rails keep `Prev` and `Next` in one horizontal row.
 - Search, admin, history, snapshot, setup, and login pages emit `noindex` robots metadata.
 - Homepage and public live-note pages emit meta descriptions.
 - Homepage and public live-note pages emit canonical URLs only when saved `public_base_url` is non-blank and valid.
 - `robots.txt` and `sitemap.xml` exist only when saved `public_base_url` is non-blank and valid.
+- Saving `public_base_url` changes later HTML metadata plus discovery routes without restarting the running app service.
 - Admin rails keep `New note` near the top.
 - Rail navigation controls use the same size family as rail actions.
+- Rail GitHub controls use the same size family as nearby rail actions.
 - Search sort remains functional without a visible `Sort` label.
 - Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
 - The shell brand renders the circular icon cleanly on desktop and compact headers.

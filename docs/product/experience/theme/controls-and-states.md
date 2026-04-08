@@ -14,12 +14,14 @@
 - The drawer may use a backdrop but no loud close chrome.
 - Rail interactions must remain keyboard accessible.
 - Search and history paging controls should make backward and forward movement obvious.
+- Narrow note/history rails present `Prev` and `Next` side by side instead of stacking them vertically.
 
 ## State Treatments
 
 - Hover, focus, and active states are visible on every control.
 - Disabled navigation stays readable and muted.
 - Disabled timeline cards keep the same size as active cards.
+- External-link rail controls use the same size family as nearby rail actions.
 - Save failure is explicit.
 - Save success is silent.
 

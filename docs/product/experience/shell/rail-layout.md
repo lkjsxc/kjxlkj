@@ -14,8 +14,9 @@
 - Primary navigation.
 - Live note context.
 - Created and updated metadata.
-- `Prev` and `Next` timeline cards with explicit relationship labels.
-- One history card that opens the dedicated history page.
+- One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
+- `Prev` and `Next` timeline slots with labels outside their preview cards.
+- One history card labeled `History` that opens the dedicated history page.
 - Mode-specific actions.
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
 - Section boundaries use spacing first and minimal separators only when needed.
@@ -27,6 +28,8 @@
 - Raw note IDs are not shown in normal rail metadata.
 - Long note titles or previews may not cause timestamp collisions.
 - Rail cards keep consistent heights even when text is long.
+- Rail note titles clamp to one visible line with end truncation.
+- Rail summary previews clamp to two visible lines with end truncation.
 
 ## Action Treatment
 
@@ -40,6 +43,8 @@
 
 - The timeline always renders exactly two cards.
 - `Prev` and `Next` keep fixed positions even when one target does not exist.
+- Timeline cards reuse the same note-summary card language as Home and Search.
+- Timeline labels remain outside the cards instead of becoming part of the card body.
 - Timeline cards show title, short summary preview, and created time when a target exists.
-- Timeline preview text follows the same compact summary rules as root-page note cards.
+- Timeline preview text follows the same compact summary rules as Home, Search, and History cards.
 - Missing targets render as muted non-interactive cards with explanatory copy.

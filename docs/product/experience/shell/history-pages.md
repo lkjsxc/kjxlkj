@@ -7,7 +7,7 @@
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
-- History index paging uses the same `Previous` and `Next` language as Search.
+- History index paging uses `Prev` and `Next`.
 
 ## Access Rules
 
@@ -29,6 +29,6 @@
 
 ## Rail Limits
 
-- The rail history section contains exactly one card labeled `All history`.
+- The rail history section contains exactly one card labeled `History`.
 - The rail never lists individual saved snapshots.
 - Saved-snapshot pages keep the same single-card history affordance.

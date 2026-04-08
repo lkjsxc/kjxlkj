@@ -163,7 +163,7 @@ curl -sS http://127.0.0.1:8080/<id> -b cookies.txt
 Expected:
 
 - HTML contains `Prev` / `Next` labels
-- HTML contains one `All history` card and no inline saved-snapshot links
+- HTML contains one `History` card and no inline saved-snapshot links
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
@@ -187,8 +187,8 @@ Expected:
 - the first snapshot card on page one is labeled `Latest saved snapshot`
 - later snapshot cards use `Saved snapshot N`
 - snapshot cards link to root-path opaque snapshot IDs rather than numbered note-scoped URLs
-- HTML contains previous/next paging controls when the snapshot set spans multiple pages
-- the rail still contains one `All history` card rather than snapshot links
+- HTML contains `Prev` / `Next` paging controls when the snapshot set spans multiple pages
+- the rail still contains one `History` card rather than snapshot links
 - HTML does not contain visible rail section headings
 
 ## Verify Compact Admin Note
@@ -202,6 +202,7 @@ Expected:
 - preview starts closed
 - `New note` appears near the top of the rail
 - `Prev` and `Next` card footprints remain stable even when one side is unavailable
+- compact note/history rails keep `Prev` and `Next` in one horizontal row
 - typed Markdown stays legible in the editor and renders correctly when preview is opened
 - the page owns vertical scrolling instead of the editor body exposing a second normal scroll region
 - compact preview opens as a fixed overlay and closes cleanly
