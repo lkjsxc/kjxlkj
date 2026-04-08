@@ -15,6 +15,7 @@
 - The header does not place a `Public` or `Private` pill between the title and editor.
 - The note page does not render a duplicate visible title outside the Markdown body.
 - Browser title, rail title, and other chrome may still derive from the first `# ` heading.
+- The rail `Live note` card shows both `Created` and `Updated` inside the shared card metadata rather than splitting Created into a separate fact row.
 
 ## Admin Editing Surface
 

@@ -18,7 +18,7 @@
 - `Site identity` contains `Site name`, `Site description`, and `Public base URL`.
 - `Public base URL` may be blank to keep discovery disabled.
 - `Home hero` contains only the editable intro Markdown field.
-- `Home sections` contains visibility, draggable order, and item-count controls for `Popular notes`, `Recently updated`, and `Favorites`.
+- `Home sections` contains visibility, draggable order, and item-count controls for `Popular`, `Recently updated`, and `Favorites`.
 - The drag row order is the only visible order affordance; numeric order badges are omitted.
 - `Sessions` contains the future-login timeout field in minutes.
 - `New notes` contains the default visibility control used when opening a fresh note.

@@ -51,9 +51,10 @@ Expected:
 - HTML contains homepage sections rather than one bare browse list
 - homepage hero is driven only by intro Markdown
 - homepage contains no stats block
-- homepage contains a popular-notes block with `7d`, `30d`, and `90d` window controls
+- homepage contains a `Popular` block with `7d`, `30d`, and `90d` window controls
 - homepage popular switching keeps the visible URL at `/`
 - homepage popular switching updates the section without a full page reload
+- homepage popular switching keeps visible timestamps browser-local without a `UTC` suffix
 - guest popular cards do not show rolling-window or all-time totals
 - homepage includes `View more notes` cards that point into `/search`
 - homepage section wrappers stay lighter than note cards
@@ -98,7 +99,7 @@ curl -sS 'http://127.0.0.1:8080/admin' -b cookies.txt
 Expected:
 
 - HTML contains stats and a settings entry block
-- HTML contains a popular-notes block
+- HTML contains a `Popular` block
 - HTML contains recent and favorite note rows
 - popular, recent, favorite, and settings sections stack vertically
 - HTML does not contain a library block
@@ -110,6 +111,7 @@ Expected:
 - dashboard exposes note-view analytics
 - dashboard popular switching keeps the visible URL at `/admin`
 - dashboard popular switching updates the section without a full page reload
+- dashboard popular switching keeps visible timestamps browser-local without a `UTC` suffix
 
 ## Verify Admin Settings
 
@@ -165,6 +167,9 @@ Expected:
 - HTML contains `Prev` / `Next` labels
 - HTML contains an `Open GitHub` control
 - HTML contains one `History` card and no inline saved-snapshot links
+- `History` appears above `Open GitHub`
+- `Open GitHub` appears above the trailing note-action block
+- the `Live note` card shows both `Created` and `Updated` inside the card metadata
 - HTML does not contain `Rich mode` or `Text mode`
 - HTML does not contain helper text next to `Public`
 - HTML does not render a title-adjacent `Public` or `Private` pill above the editor
@@ -189,7 +194,9 @@ Expected:
 - later snapshot cards use `Saved snapshot N`
 - snapshot cards link to root-path opaque snapshot IDs rather than numbered note-scoped URLs
 - HTML contains `Prev` / `Next` paging controls when the snapshot set spans multiple pages
-- guest rails place `Open GitHub` between `Admin sign in` and `History`
+- the `Live note` card shows both `Created` and `Updated` inside the card metadata
+- guest rails place `History` above `Open GitHub`
+- guest rails place `Open GitHub` above `Admin sign in`
 - the rail still contains one `History` card rather than snapshot links
 - HTML does not contain visible rail section headings
 

@@ -5,13 +5,13 @@
 - The homepage hero uses only the editable global `home_intro_markdown`.
 - Empty hero Markdown removes the hero block entirely rather than rendering placeholder text.
 - `Quick search` always renders.
-- `Popular notes`, `Recently updated`, and `Favorites` follow the configured visibility and order.
+- `Popular`, `Recently updated`, and `Favorites` follow the configured visibility and order.
 - Initial installs default each visible note section limit to `5`.
 - Each visible note section ends with one `View more notes` card that links to the matching `/search` state.
 
 ## Popular Windows
 
-- Popular-note ranking is available for `7d`, `30d`, and `90d`.
+- Popular ranking is available for `7d`, `30d`, and `90d`.
 - The homepage defaults to `30d`.
 - The admin dashboard also defaults to `30d`.
 - Homepage and dashboard window switching are client-driven and replace the visible section in place.
@@ -19,14 +19,15 @@
 - Homepage and dashboard switching must not add a query string, hash, or alternate path to the visible URL.
 - `/search` remains the canonical query-param surface for popularity browsing and uses `popular_window` when `sort=popular_desc`.
 - Homepage and dashboard switching use server-rendered HTML fragments rather than client-side reordering.
+- Homepage and dashboard switching must preserve browser-local timestamp rendering after each fragment replacement.
 - Guest homepage popularity uses public notes only.
 - Admin homepage popularity may include private notes.
 
 ## Popular Metrics
 
-- Admin-facing popular-note cards show the selected rolling-window count.
-- Admin-facing popular-note cards also show the lifetime `all-time` view total.
-- Guest-facing popular-note cards do not reveal any view counts.
+- Admin-facing Popular cards show the selected rolling-window count.
+- Admin-facing Popular cards also show the lifetime `all-time` view total.
+- Guest-facing Popular cards do not reveal any view counts.
 - Lifetime totals come from the stored `view_count_total` value.
 - When rolling-window totals tie, higher lifetime totals sort first.
 

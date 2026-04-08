@@ -44,12 +44,12 @@
 
 - `GET /_/popular-notes/home/{window}`:
   - `{window}` is `7d`, `30d`, or `90d`
-  - returns the homepage popular-notes section as HTML
+  - returns the homepage Popular section as HTML
   - uses current session state to decide guest vs admin note details
 - `GET /_/popular-notes/admin/{window}`:
   - `{window}` is `7d`, `30d`, or `90d`
   - without valid session: `401`
-  - with valid session: returns the admin dashboard popular-notes section as HTML
+  - with valid session: returns the admin dashboard Popular section as HTML
 - invalid popularity fragment route parts return `404`
 
 ## Asset Delivery

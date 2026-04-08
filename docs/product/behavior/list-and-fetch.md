@@ -5,7 +5,7 @@
 - `GET /` returns the homepage shell after setup completes.
 - The homepage hero uses only the editable global `home_intro_markdown`.
 - The homepage always contains `Quick search`.
-- The homepage may contain `Popular notes`, `Recently updated`, and `Favorites` in the configured order and visibility.
+- The homepage may contain `Popular`, `Recently updated`, and `Favorites` in the configured order and visibility.
 - The homepage popular-window switch is in-place and does not alter the visible URL.
 - Guests see public-only home data.
 - Signed-in admins see the same structure with private-capable data and admin actions.
@@ -70,6 +70,7 @@
 - Admin navigation includes private notes.
 - HTML note rails always render both timeline slots even when one side resolves to `null`.
 - Timeline cards show relation label, note title, short summary preview, and created time.
+- Note and history rails order note-level sections as live context, timeline, `History`, `Open GitHub`, then the trailing action block.
 
 ## History Fetch
 
@@ -81,3 +82,4 @@
 - The history rail never expands into per-snapshot links.
 - HTML and JSON history fetches share cursor pagination rules.
 - History indexes are not search-indexable.
+- The history-page `Live note` card uses the same Created/Updated metadata language as Home and Search cards.

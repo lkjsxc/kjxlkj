@@ -10,12 +10,13 @@
 - The persistent shell rail remains visible.
 - The rail contains navigation and restrained actions.
 - For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
-- Main content starts with compact stats, then a `Settings` entry section, then stacked `Popular notes`, `Recently updated`, and `Favorites` sections.
+- Main content starts with compact stats, then a `Settings` entry section, then stacked `Popular`, `Recently updated`, and `Favorites` sections.
 - Dashboard spacing should stay tighter than the early tall-card builds without collapsing section readability.
 - The dashboard does not include the canonical settings form.
 - The dashboard does not include the full note library.
 - The page header does not show `Admin browse`.
 - The page does not expose a top-right search button.
+- The dashboard label for popularity is `Popular`, while internal routes and params remain `popular-notes` and `popular_window`.
 
 ## Main Blocks
 
@@ -23,11 +24,12 @@
 - Statistics also expose note-view activity totals and recent popularity context.
 - `Settings` is a compact summary block with a link to `/admin/settings`.
 - `Settings` summary also shows the configured session timeout.
-- Popular notes use an in-place `7d` / `30d` / `90d` switch.
+- `Popular` uses an in-place `7d` / `30d` / `90d` switch.
 - Popular switching leaves the visible URL at `/admin`.
 - Popular switching replaces the full section from server-rendered HTML without a full page reload.
-- Popular-note rows show rolling-window and all-time totals.
-- Popular notes include a `View more notes` card into the matching `/search` state.
+- Popular switching preserves browser-local timestamp rendering after fragment replacement.
+- Popular rows show rolling-window and all-time totals.
+- `Popular` includes a `View more notes` card into the matching `/search` state.
 - Recently updated includes a `View more notes` card into `/search`.
 - Favorites use a full reorderable admin list of all favorites.
 - Favorites include a `View more notes` card into `/search?scope=favorites`.

@@ -13,11 +13,13 @@
 - Admin-only `New note` action near the top of the rail, but not flush against the brand block.
 - Primary navigation.
 - Live note context.
-- Created and updated metadata.
-- Mode-specific actions.
-- One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
+- Timeline navigation.
 - One history card labeled `History` that opens the dedicated history page.
-- On guest note and history pages, GitHub sits between `Admin sign in` and `History`.
+- One GitHub section that links to `https://github.com/lkjsxc/kjxlkj`.
+- Mode-specific actions.
+- On note and history pages, the rail places `History` above GitHub and GitHub above the trailing action block.
+- On guest note and history pages, the trailing action block contains `Admin sign in`.
+- On admin note and history pages, the trailing action block contains note management actions such as `Delete note` and `Logout`.
 - `Prev` and `Next` timeline slots with labels outside their preview cards.
 - Visible section titles such as `CREATE`, `NAVIGATE`, `ACTIONS`, and `SCOPE` are omitted.
 - Section boundaries use spacing first and minimal separators only when needed.
@@ -25,6 +27,7 @@
 ## Metadata Rules
 
 - Created and updated values render as browser-local 24-hour time.
+- Live-note cards keep Created and Updated inside the shared card metadata used across Home, Search, and History surfaces.
 - Timestamp layout must stack or grid safely.
 - Raw note IDs are not shown in normal rail metadata.
 - Long note titles or previews may not cause timestamp collisions.

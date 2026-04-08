@@ -16,7 +16,7 @@
 - Wide layouts may not introduce extra top or side whitespace that compact layouts do not need.
 - Soft oversized corner radii count as unnecessary chrome bulk and should be removed.
 - Page title to first-section spacing stays restrained on Home, Search, Dashboard, and History.
-- `Quick search`, `Popular notes`, and `Recently updated` may use a slightly looser internal gap than the older build when that improves scan speed.
+- `Quick search`, `Popular`, and `Recently updated` may use a slightly looser internal gap than the older build when that improves scan speed.
 - Page titles may scale slightly, but wide screens may not inflate them into billboard-sized banners.
 - Dense layouts may slightly increase note-card footprint when that keeps metadata inside the card.
 

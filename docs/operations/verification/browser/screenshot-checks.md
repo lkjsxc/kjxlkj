@@ -25,6 +25,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Text-first actions remain readable and non-flashy.
 - Desktop homepage spacing remains as restrained as compact homepage spacing.
 - Visible timestamps are browser-local 24-hour strings.
+- Fragment-refreshed Popular sections still show browser-local timestamps and never expose a visible `UTC` suffix.
 - Raw note IDs are not shown in normal UI.
 - Visible shell branding uses the configured site name.
 - Rail search input does not appear.
@@ -36,10 +37,13 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Rectangular cards, inputs, and buttons keep tight `2px` through `4px` corners rather than soft rounded shells.
 - Note and history rails keep metadata readable without wrap regressions.
 - Note rails render one `History` card and never render inline saved-snapshot lists.
+- Note and history rails place `History` above `Open GitHub`.
+- Note and history rails place `Open GitHub` above the trailing action block.
+- Live-note cards on note and history pages show both `Created` and `Updated` inside shared card metadata.
 - Timeline cards keep a stable two-card layout, including disabled placeholders.
 - Search and homepage cards keep consistent heights without row-stretch artifacts.
 - Search and history paging expose `Prev` and `Next` actions.
-- Guest note and history rails place the GitHub control between `Admin sign in` and `History`.
+- Guest note and history rails place the GitHub control between `History` and `Admin sign in`.
 - Rail timeline labels stay outside the shared preview cards.
 - Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
 - Search sort and search-submit controls align vertically on desktop.
@@ -73,7 +77,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Search exposes a query display card near sort only when `q` is non-empty.
 - Empty-query `/search` does not render a `Query` or `All notes` state card.
 - Dashboard does not render a library block.
-- Dashboard stacks `Settings`, `Popular notes`, `Recently updated`, and `Favorites`.
+- Dashboard stacks `Settings`, `Popular`, `Recently updated`, and `Favorites`.
 - Dashboard favorites follow persistent favorite order and expose reorder controls.
 - Dashboard links to a dedicated settings page instead of embedding the full settings form.
 - Settings page covers site name, site description, public base URL, intro Markdown, section visibility and drag order, section counts, session timeout, search page size, and default new-note visibility.

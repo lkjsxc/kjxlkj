@@ -12,6 +12,7 @@
 - Title is the strongest text.
 - Summary is secondary, clipped to a short preview, and stripped of leading Markdown control markers.
 - Created and updated times use browser-local 24-hour formatting.
+- Live-note cards on note and history pages use the same Created/Updated metadata language as Home and Search cards.
 - Admin rows may show visibility state, but guest rows do not expose private-only metadata.
 - Metadata uses a dedicated layout that stays readable even when title or summary text is long.
 - Summary preview appends `...` whenever hidden meaningful content remains.

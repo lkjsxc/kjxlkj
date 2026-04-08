@@ -3,7 +3,7 @@
 ## Layout
 
 - History index and saved-snapshot pages reuse the note shell.
-- The rail keeps live-note context, timeline cards, one history card, and actions.
+- The rail keeps live-note context, timeline cards, one history card, the GitHub control, and trailing actions.
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
@@ -19,6 +19,7 @@
 ## Index Content
 
 - The first card links to the live note and is labeled `Live note`.
+- The `Live note` card shows `Created` and `Updated` inside the shared card metadata.
 - The remaining cards list one paginated page of visible saved snapshots in `snapshot_number DESC` order.
 - The first saved-snapshot card on the first page is labeled `Latest saved snapshot`.
 - Remaining saved-snapshot cards use `Saved snapshot N`.
@@ -30,5 +31,6 @@
 ## Rail Limits
 
 - The rail history section contains exactly one card labeled `History`.
+- The rail places `History` above `Open GitHub` on both guest and admin note/history pages.
 - The rail never lists individual saved snapshots.
 - Saved-snapshot pages keep the same single-card history affordance.

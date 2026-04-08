@@ -31,7 +31,7 @@
 - Homepage favorite count defaults to `5`.
 - Homepage popular-note count defaults to `5`.
 - Homepage section visibility defaults to all three sections enabled.
-- Homepage section order defaults to `Popular notes`, `Recently updated`, then `Favorites`.
+- Homepage section order defaults to `Popular`, `Recently updated`, then `Favorites`.
 - Homepage intro Markdown defaults to empty.
 - Default search page size defaults to `20`.
 - Default new-note visibility defaults to public.
