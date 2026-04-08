@@ -81,7 +81,7 @@
     }
 
     .timeline-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .editor-shell.preview-open.preview-compact .editor-preview-backdrop {
@@ -122,10 +122,6 @@
     .search-grid,
     .editor-meta-grid {
         grid-template-columns: 1fr;
-    }
-
-    .pager-nav {
-        flex-direction: column;
     }
 
     .page-actions .btn,

@@ -48,6 +48,7 @@ fn search_page_browses_without_query() {
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Prev<"));
     assert!(html.contains(">Next<"));
+    assert!(html.find(">Prev<").unwrap() < html.find(">Next<").unwrap());
     assert!(html.contains("<title>Search | Launchpad</title>"));
     assert!(html.contains("content=\"noindex,nofollow\""));
 }

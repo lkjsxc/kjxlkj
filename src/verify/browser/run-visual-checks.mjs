@@ -20,7 +20,7 @@ async function main() {
     } finally {
         await browser.close();
     }
-    console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: ['desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png', 'desktop-login.png', 'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png', 'compact-admin-note-preview.png'] }));
+    console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: ['desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png', 'desktop-login.png', 'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png', 'compact-admin-note-preview.png', 'compact-history-index.png'] }));
 }
 
 async function captureAdminScreens(browser, note) {

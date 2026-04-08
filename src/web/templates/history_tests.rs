@@ -77,6 +77,7 @@ fn history_page_lists_live_note_and_saved_snapshots() {
     assert!(html.contains("2026-03-26 08:00 UTC"));
     assert!(html.contains(">Prev<"));
     assert!(html.contains(">Next<"));
+    assert!(html.find(">Prev<").unwrap() < html.find(">Next<").unwrap());
     assert!(html.contains("<title>History: Demo | Launchpad</title>"));
     assert!(html.contains("content=\"noindex,nofollow\""));
 }
