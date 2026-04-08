@@ -173,11 +173,12 @@ mod tests {
         let history = html.find("History").unwrap();
         let github = html.find("Open GitHub").unwrap();
         let delete = html.find("Delete note").unwrap();
+        let logout = html.find("Logout").unwrap();
         assert!(html.contains("History"));
         assert!(html.contains("Open GitHub"));
         assert!(html.contains("<span>Created</span>"));
         assert!(html.contains("<span>Updated</span>"));
-        assert!(history < github && github < delete);
+        assert!(history < github && github < delete && delete < logout);
     }
 
     #[test]

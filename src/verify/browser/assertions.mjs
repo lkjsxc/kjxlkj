@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { assertListRailOrder } from './rail-order-checks.mjs';
 import {
     assertCreateActionBelowHome,
     assertGridHeights,
@@ -42,6 +43,7 @@ export async function expectPublicRoot(
         await assertWideGrid(page);
         await assertGridHeights(page, '.note-grid .note-row');
     }
+    await assertListRailOrder(page);
     await assertSectionOrder(page, sections);
 }
 
@@ -62,6 +64,7 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     await page.getByRole('button', { name: 'Prev', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Next', exact: true }).waitFor({ state: 'visible' });
     await assertNoHeaderButtons(page);
+    await assertListRailOrder(page);
 }
 
 export async function expectAdminDashboard(page) {
@@ -83,6 +86,7 @@ export async function expectAdminDashboard(page) {
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
     await assertCreateActionBelowHome(page);
+    await assertListRailOrder(page);
     await assertSectionOrder(page, ['Settings', 'Popular', 'Recently updated', 'Favorites']);
 }
 
@@ -105,6 +109,7 @@ export async function expectSettingsPage(page) {
     assert.equal(await page.getByText('Order', { exact: true }).count(), 0);
     assert.equal(await page.locator('.settings-order-pill').count(), 0);
     await assertNoHeaderButtons(page);
+    await assertListRailOrder(page);
 }
 
 export async function expectAdminNote(page) {

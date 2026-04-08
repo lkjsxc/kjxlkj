@@ -36,12 +36,6 @@ pub(crate) fn list_rail(
             &format!(r#"<div class="rail-actions">{rail_primary_action}</div>"#),
         ));
     }
-    if !rail_actions.is_empty() {
-        sections.push(rail_section(
-            "actions",
-            &format!(r#"<div class="rail-actions">{rail_actions}</div>"#),
-        ));
-    }
     sections.push(rail_section(
         "project",
         &format!(
@@ -49,6 +43,12 @@ pub(crate) fn list_rail(
             project_link_button()
         ),
     ));
+    if !rail_actions.is_empty() {
+        sections.push(rail_section(
+            "actions",
+            &format!(r#"<div class="rail-actions">{rail_actions}</div>"#),
+        ));
+    }
     sections.join("")
 }
 

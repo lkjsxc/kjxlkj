@@ -9,6 +9,8 @@ mod history;
 mod history_tests;
 mod home;
 mod index;
+#[cfg(test)]
+mod index_tests;
 mod layout;
 mod list_sections;
 mod model;
