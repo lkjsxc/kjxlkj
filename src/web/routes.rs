@@ -6,8 +6,8 @@ use crate::storage::Storage;
 use crate::web::db;
 use crate::web::handlers::{
     admin, assets, discoverability, favorites, health, history, home, login, logout, media,
-    media_attachments, note, popular_sections, preview, record_history, records, resource_file,
-    search, settings, setup,
+    media_attachments, popular_sections, preview, resource, resource_file, resource_history,
+    resources, search, settings, setup,
 };
 use actix_web::{web, App, HttpServer};
 use tracing::info;
@@ -40,7 +40,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(home::home_page)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
-            .service(popular_sections::popular_notes_section)
+            .service(popular_sections::popular_resources_section)
             .service(settings::settings_page)
             .service(settings::settings_submit)
             .service(preview::render_markdown_preview)
@@ -49,14 +49,14 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(history::history_page)
             .service(media::create)
             .service(media_attachments::attach_media)
-            .service(records::create)
-            .service(records::update)
-            .service(records::remove)
+            .service(resources::create)
+            .service(resources::update)
+            .service(resources::remove)
             .service(favorites::reorder)
-            .service(record_history::history)
-            .service(record_history::previous)
-            .service(record_history::next)
-            .service(note::note_page)
+            .service(resource_history::history)
+            .service(resource_history::previous)
+            .service(resource_history::next)
+            .service(resource::resource_page)
     })
     .bind(&bind_addr)
     .map_err(|e| AppError::StorageError(format!("Failed to bind: {e}")))?

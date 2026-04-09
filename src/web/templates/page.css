@@ -1,14 +1,14 @@
 .home-page,
 .dashboard-page,
 .history-page,
-.note-page,
+.resource-page,
 .index-layout {
     gap: 18px;
 }
 
 .dashboard-stack,
 .stats-grid,
-.note-grid,
+.resource-grid,
 .editor-meta-grid {
     gap: 10px;
 }
@@ -42,14 +42,14 @@
 }
 
 .home-page .search-section,
-.home-page .note-section,
-.dashboard-page .note-section {
+.home-page .resource-section,
+.dashboard-page .resource-section {
     gap: 14px;
 }
 
 .home-page .search-row,
-.home-page .note-grid,
-.dashboard-page .note-grid {
+.home-page .resource-grid,
+.dashboard-page .resource-grid {
     gap: 12px;
 }
 
@@ -73,17 +73,17 @@
     padding: 10px 12px;
 }
 
-.note-grid {
+.resource-grid {
     grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
 }
 
-.note-grid .note-row {
+.resource-grid .resource-row {
     grid-template-rows: minmax(0, 1fr) auto;
     min-height: 224px;
     height: 224px;
 }
 
-.note-grid .card-meta {
+.resource-grid .card-meta {
     align-self: end;
 }
 
@@ -140,7 +140,7 @@
     .home-page,
     .dashboard-page,
     .history-page,
-    .note-page,
+    .resource-page,
     .index-layout {
         gap: 16px;
     }
@@ -155,11 +155,11 @@
         grid-template-columns: 1fr;
     }
 
-    .note-grid {
+    .resource-grid {
         gap: 14px;
     }
 
-    .note-grid .note-row {
+    .resource-grid .resource-row {
         min-height: 214px;
         height: auto;
     }

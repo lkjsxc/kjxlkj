@@ -1,37 +1,42 @@
-use super::models::{Record, RecordKind};
-use super::record_support::{
-    current_favorite_state, map_write_error, next_position, resolve_position, row_to_record,
+use super::models::{Resource, ResourceKind};
+use super::resource_support::{
+    current_favorite_state, map_write_error, next_position, resolve_position, row_to_resource,
     RETURNING_RECORD, SELECT_RECORD,
 };
-use super::resource_ids::next_resource_id;
+use super::write_support::{create_snapshot, next_snapshot_number};
 use super::DbPool;
 use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
 use crate::error::AppError;
-use deadpool_postgres::GenericClient;
 
-pub async fn get_record(pool: &DbPool, id: &str) -> Result<Option<Record>, AppError> {
-    get_record_where(pool, "id = $1", &[&id]).await
+pub async fn get_resource(pool: &DbPool, id: &str) -> Result<Option<Resource>, AppError> {
+    get_resource_where(pool, "id = $1", &[&id]).await
 }
 
-pub async fn get_record_by_alias(pool: &DbPool, alias: &str) -> Result<Option<Record>, AppError> {
-    get_record_where(pool, "alias = $1", &[&alias]).await
+pub async fn get_resource_by_alias(
+    pool: &DbPool,
+    alias: &str,
+) -> Result<Option<Resource>, AppError> {
+    get_resource_where(pool, "alias = $1", &[&alias]).await
 }
 
-pub async fn get_record_by_ref(pool: &DbPool, reference: &str) -> Result<Option<Record>, AppError> {
-    if let Some(record) = get_record_by_alias(pool, reference).await? {
-        return Ok(Some(record));
+pub async fn get_resource_by_ref(
+    pool: &DbPool,
+    reference: &str,
+) -> Result<Option<Resource>, AppError> {
+    if let Some(resource) = get_resource_by_alias(pool, reference).await? {
+        return Ok(Some(resource));
     }
-    get_record(pool, reference).await
+    get_resource(pool, reference).await
 }
 
-pub async fn create_record(
+pub async fn create_resource(
     pool: &DbPool,
     id: &str,
     alias: Option<&str>,
     body: &str,
     is_favorite: bool,
     is_private: bool,
-) -> Result<Record, AppError> {
+) -> Result<Resource, AppError> {
     let mut db = client(pool).await?;
     let tx = db
         .transaction()
@@ -45,7 +50,7 @@ pub async fn create_record(
             ),
             &[
                 &id,
-                &RecordKind::Note.as_str(),
+                &ResourceKind::Note.as_str(),
                 &alias,
                 &derive_title(body),
                 &derive_summary(body),
@@ -57,22 +62,27 @@ pub async fn create_record(
         )
         .await
         .map_err(map_write_error)?;
-    let record = row_to_record(row);
-    create_snapshot(&tx, &record, next_snapshot_number(&tx, &record.id).await?).await?;
+    let resource = row_to_resource(row);
+    create_snapshot(
+        &tx,
+        &resource,
+        next_snapshot_number(&tx, &resource.id).await?,
+    )
+    .await?;
     tx.commit()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(record)
+    Ok(resource)
 }
 
-pub async fn update_record(
+pub async fn update_resource(
     pool: &DbPool,
     id: &str,
     alias: Option<&str>,
     body: &str,
     is_favorite: bool,
     is_private: bool,
-) -> Result<Option<Record>, AppError> {
+) -> Result<Option<Resource>, AppError> {
     let mut db = client(pool).await?;
     let tx = db
         .transaction()
@@ -102,22 +112,27 @@ pub async fn update_record(
         )
         .await
         .map_err(map_write_error)?;
-    let record = row_to_record(row);
-    create_snapshot(&tx, &record, next_snapshot_number(&tx, &record.id).await?).await?;
+    let resource = row_to_resource(row);
+    create_snapshot(
+        &tx,
+        &resource,
+        next_snapshot_number(&tx, &resource.id).await?,
+    )
+    .await?;
     tx.commit()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(Some(record))
+    Ok(Some(resource))
 }
 
-fn derive_title_for_kind(kind: RecordKind, body: &str) -> String {
+fn derive_title_for_kind(kind: ResourceKind, body: &str) -> String {
     match kind {
-        RecordKind::Note => derive_title(body),
-        RecordKind::Media => derive_title_with_fallback(body, "Untitled media"),
+        ResourceKind::Note => derive_title(body),
+        ResourceKind::Media => derive_title_with_fallback(body, "Untitled media"),
     }
 }
 
-pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {
+pub async fn delete_resource(pool: &DbPool, id: &str) -> Result<bool, AppError> {
     let count = client(pool)
         .await?
         .execute(
@@ -129,11 +144,11 @@ pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {
     Ok(count > 0)
 }
 
-async fn get_record_where(
+async fn get_resource_where(
     pool: &DbPool,
     predicate: &str,
     params: &[&(dyn tokio_postgres::types::ToSql + Sync)],
-) -> Result<Option<Record>, AppError> {
+) -> Result<Option<Resource>, AppError> {
     client(pool)
         .await?
         .query_opt(
@@ -141,56 +156,8 @@ async fn get_record_where(
             params,
         )
         .await
-        .map(|row| row.map(row_to_record))
+        .map(|row| row.map(row_to_resource))
         .map_err(|e| AppError::DatabaseError(e.to_string()))
-}
-
-async fn next_snapshot_number<C: GenericClient>(db: &C, record_id: &str) -> Result<i32, AppError> {
-    db.query_one(
-        "SELECT COALESCE(MAX(snapshot_number), 0) + 1 AS snapshot_number \
-         FROM resource_snapshots WHERE resource_id = $1",
-        &[&record_id],
-    )
-    .await
-    .map(|row| row.get("snapshot_number"))
-    .map_err(|e| AppError::DatabaseError(e.to_string()))
-}
-
-async fn create_snapshot<C: GenericClient>(
-    db: &C,
-    record: &Record,
-    snapshot_number: i32,
-) -> Result<(), AppError> {
-    let snapshot_id = next_resource_id(db).await?;
-    db.execute(
-        "INSERT INTO resource_snapshots \
-         (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
-          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, is_private) \
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)",
-        &[
-            &snapshot_id,
-            &record.id,
-            &record.kind.as_str(),
-            &snapshot_number,
-            &record.alias,
-            &record.title,
-            &record.summary,
-            &record.body,
-            &record.media_family.map(|family| family.as_str()),
-            &record.file_key,
-            &record.content_type,
-            &record.byte_size,
-            &record.sha256_hex,
-            &record.original_filename,
-            &record.width,
-            &record.height,
-            &record.duration_ms,
-            &record.is_private,
-        ],
-    )
-    .await
-    .map(|_| ())
-    .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {

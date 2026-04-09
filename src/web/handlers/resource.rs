@@ -1,4 +1,4 @@
-//! Note page handler
+//! Resource page handler
 
 use crate::core::looks_like_id;
 use crate::error::AppError;
@@ -10,12 +10,12 @@ use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
 
 enum RootResource {
-    Current(Box<db::Record>),
-    Snapshot(Box<db::SnapshotResource>),
+    Current(Box<db::Resource>),
+    Snapshot(Box<db::SnapshotTarget>),
 }
 
 #[get("/{reference}")]
-pub async fn note_page(
+pub async fn resource_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
     path: web::Path<String>,
@@ -32,8 +32,8 @@ pub async fn note_page(
         None => return Ok(not_found(&site)),
     };
     match resource {
-        RootResource::Current(record) => {
-            render_current_note(&pool, &reference, record.as_ref(), is_admin, &site).await
+        RootResource::Current(resource) => {
+            render_current_resource(&pool, &reference, resource.as_ref(), is_admin, &site).await
         }
         RootResource::Snapshot(resource) => {
             render_snapshot(&pool, resource.as_ref(), is_admin, &site).await
@@ -46,49 +46,49 @@ async fn resolve_root_resource(
     reference: &str,
 ) -> Result<Option<RootResource>, AppError> {
     if !looks_like_id(reference) {
-        return Ok(db::get_record_by_alias(pool, reference)
+        return Ok(db::get_resource_by_alias(pool, reference)
             .await?
             .map(Box::new)
             .map(RootResource::Current));
     }
-    if let Some(record) = db::get_record(pool, reference).await? {
-        return Ok(Some(RootResource::Current(Box::new(record))));
+    if let Some(resource) = db::get_resource(pool, reference).await? {
+        return Ok(Some(RootResource::Current(Box::new(resource))));
     }
-    Ok(db::get_snapshot_resource(pool, reference)
+    Ok(db::get_snapshot_target(pool, reference)
         .await?
         .map(Box::new)
         .map(RootResource::Snapshot))
 }
 
-async fn render_current_note(
+async fn render_current_resource(
     pool: &DbPool,
     reference: &str,
-    record: &db::Record,
+    resource: &db::Resource,
     is_admin: bool,
     site: &SiteContext,
 ) -> Result<HttpResponse, AppError> {
-    if record.is_private && !is_admin {
+    if resource.is_private && !is_admin {
         return Ok(not_found(site));
     }
-    if record
+    if resource
         .alias
         .as_deref()
         .is_some_and(|alias| alias != reference)
-        && reference == record.id
+        && reference == resource.id
     {
-        return Ok(redirect(&view::note_href(record)));
+        return Ok(redirect(&view::resource_href(resource)));
     }
-    db::record_note_view(pool, &record.id).await?;
-    let chrome = view::note_chrome(pool, record, is_admin).await?;
+    db::count_resource_view(pool, &resource.id).await?;
+    let chrome = view::resource_chrome(pool, resource, is_admin).await?;
     let analytics = if is_admin {
-        Some(view::note_analytics(
-            &db::get_note_view_stats(pool, &record.id).await?,
+        Some(view::resource_analytics(
+            &db::get_resource_view_stats(pool, &resource.id).await?,
         ))
     } else {
         None
     };
-    Ok(html(templates::note_page(
-        record,
+    Ok(html(templates::resource_page(
+        resource,
         &chrome,
         analytics.as_ref(),
         is_admin,
@@ -98,17 +98,17 @@ async fn render_current_note(
 
 async fn render_snapshot(
     pool: &DbPool,
-    resource: &db::SnapshotResource,
+    target: &db::SnapshotTarget,
     is_admin: bool,
     site: &SiteContext,
 ) -> Result<HttpResponse, AppError> {
-    if resource.snapshot.is_private && !is_admin {
+    if target.snapshot.is_private && !is_admin {
         return Ok(not_found(site));
     }
-    let chrome = view::note_chrome(pool, &resource.record, is_admin).await?;
+    let chrome = view::resource_chrome(pool, &target.resource, is_admin).await?;
     Ok(html(templates::snapshot_page(
         &chrome,
-        &resource.snapshot,
+        &target.snapshot,
         is_admin,
         site,
     )))

@@ -46,7 +46,7 @@ async function uploadSelectedMedia(files) {
         var cursor = payload.selection_fallback
             ? body.length + payload.inserted_markdown.length
             : selection.start + payload.inserted_markdown.length;
-        applySavedNote(payload.current_note, { selectionStart: cursor, selectionEnd: cursor });
+        applySavedResource(payload.current_resource, { selectionStart: cursor, selectionEnd: cursor });
         setSaveError('');
         queuePreviewRender(true);
         setUploadStatus(

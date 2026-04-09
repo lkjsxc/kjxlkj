@@ -69,7 +69,7 @@ export async function expectFlatShell(page, controlNames = []) {
 }
 
 export async function assertWideGrid(page) {
-    const columns = await page.locator('.note-grid .note-row').evaluateAll((nodes) =>
+    const columns = await page.locator('.resource-grid .resource-row').evaluateAll((nodes) =>
         new Set(nodes.map((node) => Math.round(node.getBoundingClientRect().left))).size
     );
     assert.ok(columns > 1, 'wide home sections should use multiple columns');
@@ -87,7 +87,7 @@ export async function assertNoHeaderButtons(page) {
 }
 
 export async function assertStableMetadata(page, title) {
-    const row = page.locator('.note-row', { has: page.getByText(title, { exact: true }) }).first();
+    const row = page.locator('.resource-row', { has: page.getByText(title, { exact: true }) }).first();
     const heights = await row.locator('.card-meta small').evaluateAll((nodes) =>
         nodes.map((node) => node.getBoundingClientRect().height)
     );

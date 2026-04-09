@@ -25,10 +25,10 @@ export async function verifyFavoriteReorder(page) {
     assert.deepEqual(persistedTitles, ['Beacon Log', 'Orbit Ledger']);
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     const favoriteTitles = await page
-        .locator('.section-block.note-section', {
+        .locator('.section-block.resource-section', {
             has: page.getByRole('heading', { name: 'Favorites', exact: true }),
         })
-        .locator('.note-row[data-card-title]')
+        .locator('.resource-row[data-card-title]')
         .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
     assert.equal(favoriteTitles[0], 'Beacon Log');
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });

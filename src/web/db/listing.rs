@@ -1,8 +1,8 @@
-//! Searchable note listing queries
+//! Searchable resource listing queries
 
 use super::listing_cursor::decode_cursor;
-use super::listing_queries::{browse_records, search_records, top_records, ListingQuery};
-use super::{DbPool, ListKind, ListScope, ListedRecord, PopularWindow};
+use super::listing_queries::{browse_resources, search_resources, top_resources, ListingQuery};
+use super::{DbPool, ListKind, ListScope, ListedResource, PopularWindow};
 use crate::error::AppError;
 
 pub use super::listing_direction::ListDirection;
@@ -26,12 +26,12 @@ pub struct ListRequest {
 
 #[derive(Clone, Debug)]
 pub struct ListPage {
-    pub records: Vec<ListedRecord>,
+    pub resources: Vec<ListedResource>,
     pub previous_cursor: Option<String>,
     pub next_cursor: Option<String>,
 }
 
-pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPage, AppError> {
+pub async fn list_resources(pool: &DbPool, request: &ListRequest) -> Result<ListPage, AppError> {
     let limit = request.limit.clamp(1, MAX_LIMIT);
     let has_cursor = request.cursor.is_some();
     let query = request
@@ -53,13 +53,13 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
         request.popular_window,
     )?;
     if let Some(query) = query {
-        search_records(
+        search_resources(
             pool,
             &query_request(request, limit, query, &direction, cursor.as_ref()),
         )
         .await
     } else {
-        browse_records(
+        browse_resources(
             pool,
             &query_request(request, limit, "", &direction, cursor.as_ref()),
         )
@@ -67,20 +67,20 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
     }
 }
 
-pub async fn list_recent_records(
+pub async fn list_recent_resources(
     pool: &DbPool,
     include_private: bool,
     limit: i64,
-) -> Result<Vec<ListedRecord>, AppError> {
-    top_records(pool, include_private, limit, false).await
+) -> Result<Vec<ListedResource>, AppError> {
+    top_resources(pool, include_private, limit, false).await
 }
 
-pub async fn list_favorite_records(
+pub async fn list_favorite_resources(
     pool: &DbPool,
     include_private: bool,
     limit: i64,
-) -> Result<Vec<ListedRecord>, AppError> {
-    top_records(pool, include_private, limit, true).await
+) -> Result<Vec<ListedResource>, AppError> {
+    top_resources(pool, include_private, limit, true).await
 }
 
 impl Default for ListRequest {

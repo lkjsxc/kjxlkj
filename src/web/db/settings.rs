@@ -1,6 +1,6 @@
 //! App settings and dashboard stats queries
 
-use super::{AppSettings, DbPool, NoteStats};
+use super::{AppSettings, DbPool, ResourceStats};
 use crate::error::AppError;
 
 pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
@@ -58,7 +58,10 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-pub async fn get_note_stats(pool: &DbPool, include_private: bool) -> Result<NoteStats, AppError> {
+pub async fn get_resource_stats(
+    pool: &DbPool,
+    include_private: bool,
+) -> Result<ResourceStats, AppError> {
     client(pool)
         .await?
         .query_one(
@@ -75,7 +78,7 @@ pub async fn get_note_stats(pool: &DbPool, include_private: bool) -> Result<Note
             &[&include_private],
         )
         .await
-        .map(|row| NoteStats {
+        .map(|row| ResourceStats {
             total: row.get("total"),
             public_count: row.get("public_count"),
             private_count: row.get("private_count"),

@@ -1,14 +1,14 @@
 //! Favorite ordering queries
 
-use super::listing_cursor::row_to_listed_record;
-use super::{DbPool, ListedRecord};
+use super::listing_cursor::row_to_listed_resource;
+use super::{DbPool, ListedResource};
 use crate::error::AppError;
 use std::collections::HashSet;
 
-pub async fn list_all_favorite_records(
+pub async fn list_all_favorite_resources(
     pool: &DbPool,
     include_private: bool,
-) -> Result<Vec<ListedRecord>, AppError> {
+) -> Result<Vec<ListedResource>, AppError> {
     let rows = client(pool)
         .await?
         .query(
@@ -22,7 +22,7 @@ pub async fn list_all_favorite_records(
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(rows.into_iter().map(row_to_listed_record).collect())
+    Ok(rows.into_iter().map(row_to_listed_resource).collect())
 }
 
 pub async fn reorder_favorites(pool: &DbPool, ids: &[String]) -> Result<(), AppError> {

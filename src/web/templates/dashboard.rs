@@ -7,15 +7,15 @@ use super::list_sections::{favorite_browse_card, note_grid_section, recent_brows
 use super::model::IndexItem;
 use super::popular_sections::admin_popular_section;
 use super::sections::{page_header, section};
-use crate::web::db::{AppSettings, NoteStats, PopularWindow};
+use crate::web::db::{AppSettings, PopularWindow, ResourceStats};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("note_actions.js");
+const ACTIONS_JS: &str = include_str!("resource_actions.js");
 const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
 const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub fn admin_page(
-    stats: &NoteStats,
+    stats: &ResourceStats,
     settings: &AppSettings,
     popular: &[IndexItem],
     recent: &[IndexItem],
@@ -34,7 +34,7 @@ pub fn admin_page(
             "Recently updated",
             recent,
             "No resources yet.",
-            "note-section",
+            "resource-section",
             None,
             Some(recent_browse_card()),
         ),
@@ -65,7 +65,7 @@ pub fn admin_page(
     )
 }
 
-fn stats_grid(stats: &NoteStats) -> String {
+fn stats_grid(stats: &ResourceStats) -> String {
     format!(
         r#"<section class="stats-grid">
 {}{}{}{}{}{}{}{}{}{}

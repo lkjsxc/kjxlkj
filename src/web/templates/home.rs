@@ -11,7 +11,7 @@ use crate::core::render_markdown;
 use crate::web::db::{AppSettings, PopularWindow};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("note_actions.js");
+const ACTIONS_JS: &str = include_str!("resource_actions.js");
 const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub fn home_page(
@@ -77,7 +77,7 @@ fn home_sections(
                 "Recently updated",
                 recent,
                 "No resources yet.",
-                "note-section",
+                "resource-section",
                 None,
                 Some(recent_browse_card()),
             ),
@@ -90,7 +90,7 @@ fn home_sections(
                 "Favorites",
                 favorites,
                 "No favorite resources yet.",
-                "note-section",
+                "resource-section",
                 None,
                 Some(favorite_browse_card()),
             ),

@@ -1,7 +1,7 @@
 //! Sitemap and robots handlers
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, SitemapRecord};
+use crate::web::db::{self, DbPool, SitemapResource};
 use crate::web::site::normalize_public_base_url;
 use actix_web::{get, web, HttpResponse};
 
@@ -24,7 +24,7 @@ pub async fn sitemap_xml(pool: web::Data<DbPool>) -> Result<HttpResponse, AppErr
         .content_type("application/xml; charset=utf-8")
         .body(sitemap_body(
             &public_base_url,
-            &db::list_public_sitemap_records(&pool).await?,
+            &db::list_public_sitemap_resources(&pool).await?,
         )))
 }
 
@@ -40,13 +40,13 @@ fn robots_body(public_base_url: &str) -> String {
     )
 }
 
-fn sitemap_body(public_base_url: &str, records: &[SitemapRecord]) -> String {
+fn sitemap_body(public_base_url: &str, resources: &[SitemapResource]) -> String {
     let mut urls = vec![format!("<url><loc>{public_base_url}/</loc></url>")];
-    urls.extend(records.iter().map(|record| {
-        let path = format!("/{}", record.alias.as_deref().unwrap_or(&record.id));
+    urls.extend(resources.iter().map(|resource| {
+        let path = format!("/{}", resource.alias.as_deref().unwrap_or(&resource.id));
         format!(
             "<url><loc>{public_base_url}{path}</loc><lastmod>{}</lastmod></url>",
-            record.updated_at.to_rfc3339()
+            resource.updated_at.to_rfc3339()
         )
     }));
     format!(
@@ -71,10 +71,10 @@ mod tests {
     }
 
     #[test]
-    fn sitemap_body_lists_home_and_current_note_urls() {
+    fn sitemap_body_lists_home_and_current_resource_urls() {
         let body = sitemap_body(
             "https://example.com",
-            &[SitemapRecord {
+            &[SitemapResource {
                 id: "abcdefghijklmnopqrstuvwx26".to_string(),
                 alias: Some("release-notes".to_string()),
                 updated_at: Utc::now(),

@@ -1,4 +1,4 @@
-//! Integration tests for the note service
+//! Integration tests for the resource service
 
 use actix_web::{test, App};
 use kjxlkj::web::handlers::health;

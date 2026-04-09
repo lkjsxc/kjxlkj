@@ -6,7 +6,7 @@
 
 .stats-grid,
 .dashboard-panels,
-.note-grid,
+.resource-grid,
 .editor-meta-grid {
     display: grid;
     gap: 7px;
@@ -21,7 +21,7 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.note-grid {
+.resource-grid {
     grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
     align-items: start;
 }
@@ -128,51 +128,51 @@
     align-items: flex-start;
 }
 
-.note-grid .note-row {
+.resource-grid .resource-row {
     grid-template-columns: 1fr;
     align-self: start;
     height: 196px;
 }
 
-.note-grid .note-row.note-row-media {
+.resource-grid .resource-row.resource-row-media {
     height: 196px;
     padding: 0;
     grid-template-rows: 104px minmax(0, 1fr);
     overflow: hidden;
 }
 
-.note-row-media .card-cover {
+.resource-row-media .card-cover {
     height: 104px;
     min-height: 0;
     overflow: hidden;
     border-bottom: 1px solid var(--line);
 }
 
-.note-row-media .card-cover-media {
+.resource-row-media .card-cover-media {
     width: 100%;
     height: 100%;
     display: block;
     object-fit: cover;
 }
 
-.note-row-media .card-meta {
+.resource-row-media .card-meta {
     padding: 12px 16px 16px;
 }
 
-.note-grid .card-meta {
+.resource-grid .card-meta {
     justify-items: start;
     text-align: left;
     gap: 4px;
 }
 
-.note-grid .card-meta small {
+.resource-grid .card-meta small {
     grid-template-columns: auto minmax(0, 1fr);
     gap: 6px;
     width: 100%;
     white-space: nowrap;
 }
 
-.note-grid .card-badges {
+.resource-grid .card-badges {
     justify-content: flex-start;
 }
 

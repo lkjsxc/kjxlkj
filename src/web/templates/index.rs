@@ -21,7 +21,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
                 String::new()
             }
         ),
-        if is_media { "note-row-media" } else { "" },
+        if is_media { "resource-row-media" } else { "" },
         &format!(
             "{}{}",
             card_cover(note),

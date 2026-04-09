@@ -46,7 +46,7 @@
 .search-grid input,
 .search-grid select,
 .editor-field-card input,
-.note-editor {
+.resource-editor {
     width: 100%;
     border: 1px solid var(--line-strong);
     border-radius: var(--radius-sm);

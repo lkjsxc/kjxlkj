@@ -7,7 +7,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Parser)]
 #[command(name = "kjxlkj")]
-#[command(about = "Deterministic record service for LLM-operated workflows")]
+#[command(about = "Deterministic resource service for LLM-operated workflows")]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,

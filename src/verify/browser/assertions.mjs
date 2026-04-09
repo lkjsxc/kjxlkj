@@ -41,7 +41,7 @@ export async function expectPublicRoot(
     await assertNoHeaderButtons(page);
     if ((await page.evaluate(() => window.innerWidth)) > 900) {
         await assertWideGrid(page);
-        await assertGridHeights(page, '.note-grid .note-row');
+        await assertGridHeights(page, '.resource-grid .resource-row');
     }
     await assertListRailOrder(page);
     await assertSectionOrder(page, sections);
@@ -120,8 +120,8 @@ export async function expectAdminNote(page) {
     assert.equal(await page.locator('#public-toggle').isChecked(), true);
     assert.equal(await page.locator('#favorite-toggle').isChecked(), true);
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false');
-    assert.equal(await page.locator('.note-head .status-pill').count(), 0);
-    assert.equal(await page.locator('.note-head h1').count(), 0);
+    assert.equal(await page.locator('.resource-head .status-pill').count(), 0);
+    assert.equal(await page.locator('.resource-head h1').count(), 0);
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'URL alias');
     await assertVisibleText(page, 'Canonical URL');
@@ -129,7 +129,7 @@ export async function expectAdminNote(page) {
     await assertVisibleText(page, 'Views total');
     await assertVisibleText(page, 'Views 30d');
     await assertSingleHistoryCard(page);
-    await assertLiveNoteMetadata(page, page.locator('.current-note-card'));
+    await assertLiveNoteMetadata(page, page.locator('.current-resource-card'));
     await assertRailOrder(page, ['History', 'Open GitHub', 'Delete note']);
     assert.equal(await page.getByText('Markdown body', { exact: true }).count(), 0);
     assert.equal(await page.locator('script[src*="toastui"],link[href*="toastui"]').count(), 0);
@@ -140,7 +140,7 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Open GitHub');
     await assertSingleHistoryCard(page);
-    await assertLiveNoteMetadata(page, page.locator('.current-note-card'));
+    await assertLiveNoteMetadata(page, page.locator('.current-resource-card'));
     await assertRailOrder(page, ['History', 'Open GitHub', 'Admin sign in']);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Prev');

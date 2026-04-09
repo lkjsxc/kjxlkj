@@ -7,7 +7,7 @@ use super::resource_payload::ResourcePayload;
 use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::storage::Storage;
-use crate::web::db::{self, AttachmentCreate, NoteAttachmentUpdate, RecordKind};
+use crate::web::db::{self, AttachmentCreate, NoteAttachmentUpdate, ResourceKind};
 use crate::web::view;
 use actix_multipart::Multipart;
 use actix_web::{post, web, HttpRequest, HttpResponse};
@@ -16,14 +16,14 @@ use serde::Serialize;
 #[derive(Serialize)]
 struct AttachmentRefPayload {
     id: String,
-    kind: RecordKind,
+    kind: ResourceKind,
     alias: Option<String>,
     file_href: Option<String>,
 }
 
 #[derive(Serialize)]
 struct AttachmentResponse {
-    current_note: ResourcePayload,
+    current_resource: ResourcePayload,
     inserted_markdown: String,
     selection_fallback: bool,
     created_media: Vec<AttachmentRefPayload>,
@@ -69,17 +69,17 @@ pub async fn attach_media(
     .await;
     match result {
         Ok(result) => Ok(HttpResponse::Ok().json(AttachmentResponse {
-            current_note: ResourcePayload::from_record(result.current_note),
+            current_resource: ResourcePayload::from_resource(result.current_resource),
             inserted_markdown,
             selection_fallback: insertion.selection_fallback,
             created_media: result
                 .created_media
                 .into_iter()
-                .map(|record| AttachmentRefPayload {
-                    file_href: Some(view::file_href(&record)),
-                    id: record.id,
-                    kind: record.kind,
-                    alias: record.alias,
+                .map(|resource| AttachmentRefPayload {
+                    file_href: Some(view::file_href(&resource)),
+                    id: resource.id,
+                    kind: resource.kind,
+                    alias: resource.alias,
                 })
                 .collect(),
         })),

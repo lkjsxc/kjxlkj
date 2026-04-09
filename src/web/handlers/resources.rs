@@ -1,4 +1,4 @@
-//! Record management handlers
+//! Resource management handlers
 
 use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
@@ -33,7 +33,7 @@ pub async fn create(
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
-    let record = db::create_record(
+    let resource = db::create_resource(
         &pool,
         &db::generate_resource_id(&pool).await?,
         normalize_alias(body.alias.as_deref())?.as_deref(),
@@ -46,7 +46,7 @@ pub async fn create(
         ),
     )
     .await?;
-    Ok(HttpResponse::Created().json(ResourcePayload::from_record(record)))
+    Ok(HttpResponse::Created().json(ResourcePayload::from_resource(resource)))
 }
 
 #[put("/resources/{id}")]
@@ -59,7 +59,7 @@ pub async fn update(
     session::require_session(&req, &pool).await?;
     let id = path.into_inner();
     validate_id(&id)?;
-    match db::update_record(
+    match db::update_resource(
         &pool,
         &id,
         normalize_alias(body.alias.as_deref())?.as_deref(),
@@ -69,7 +69,7 @@ pub async fn update(
     )
     .await?
     {
-        Some(record) => Ok(HttpResponse::Ok().json(ResourcePayload::from_record(record))),
+        Some(resource) => Ok(HttpResponse::Ok().json(ResourcePayload::from_resource(resource))),
         None => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }
@@ -83,7 +83,7 @@ pub async fn remove(
     session::require_session(&req, &pool).await?;
     let id = path.into_inner();
     validate_id(&id)?;
-    if db::delete_record(&pool, &id).await? {
+    if db::delete_resource(&pool, &id).await? {
         Ok(HttpResponse::NoContent().finish())
     } else {
         Err(AppError::NotFound(format!("resource '{id}' not found")))

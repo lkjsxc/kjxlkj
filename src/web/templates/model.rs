@@ -1,6 +1,6 @@
 //! View models for HTML templates
 
-use crate::web::db::{MediaFamily, RecordKind};
+use crate::web::db::{MediaFamily, ResourceKind};
 
 #[derive(Clone, Debug)]
 pub struct NavLink {
@@ -20,9 +20,9 @@ pub struct HistoryLink {
 }
 
 #[derive(Clone, Debug)]
-pub struct NoteChrome {
+pub struct ResourceChrome {
     pub id: String,
-    pub kind: RecordKind,
+    pub kind: ResourceKind,
     pub alias: Option<String>,
     pub title: String,
     pub summary: String,
@@ -37,7 +37,7 @@ pub struct NoteChrome {
 }
 
 #[derive(Clone, Debug)]
-pub struct NoteAnalytics {
+pub struct ResourceAnalytics {
     pub total: i64,
     pub views_7d: i64,
     pub views_30d: i64,

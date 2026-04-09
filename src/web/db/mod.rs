@@ -19,39 +19,41 @@ mod migrations;
 mod models;
 mod navigation;
 mod popular_window;
-mod record_support;
-mod records;
 mod resource_ids;
-mod revisions;
-mod revisions_cursor;
+mod resource_support;
+mod resources;
 mod settings;
+mod snapshots;
+mod snapshots_cursor;
 mod write_support;
 
-pub use analytics::{get_note_view_stats, list_popular_records, record_note_view};
+pub use analytics::{count_resource_view, get_resource_view_stats, list_popular_resources};
 pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
-pub use discovery::list_public_sitemap_records;
-pub use favorites::{list_all_favorite_records, reorder_favorites};
+pub use discovery::list_public_sitemap_resources;
+pub use favorites::{list_all_favorite_resources, reorder_favorites};
 pub use list_kind::ListKind;
 pub use list_scope::ListScope;
 pub use listing::{
-    list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
+    list_favorite_resources, list_recent_resources, list_resources, ListDirection, ListRequest,
+    ListSort,
 };
 pub use media::{create_media, MediaBlob};
 pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
 pub use models::{
-    AppSettings, ListedRecord, MediaFamily, NoteStats, NoteViewStats, Record, RecordKind,
-    RecordSnapshot, SitemapRecord,
+    AppSettings, ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot,
+    ResourceStats, ResourceViewStats, SitemapResource,
 };
-pub use navigation::{get_next_record, get_previous_record};
+pub use navigation::{get_next_resource, get_previous_resource};
 pub use popular_window::PopularWindow;
-pub use records::{
-    create_record, delete_record, get_record, get_record_by_alias, get_record_by_ref, update_record,
-};
 pub use resource_ids::generate_resource_id;
-pub use revisions::{get_snapshot_resource, list_record_snapshots, SnapshotResource};
-pub use settings::{get_note_stats, get_settings, update_settings};
+pub use resources::{
+    create_resource, delete_resource, get_resource, get_resource_by_alias, get_resource_by_ref,
+    update_resource,
+};
+pub use settings::{get_resource_stats, get_settings, update_settings};
+pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget};
 
 use crate::error::AppError;
 use deadpool_postgres::{Manager, Pool, Runtime};

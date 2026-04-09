@@ -30,7 +30,7 @@ function saveNote() {
         .then(readSaveResponse)
         .then(function (note) {
             if (requestId !== editorState.latestRequest) return;
-            applySavedNote(note, selection);
+            applySavedResource(note, selection);
             setSaveError('');
         })
         .catch(function (error) {
@@ -58,7 +58,7 @@ function setSaveError(message) {
     node.hidden = !message;
 }
 
-function applySavedNote(note, selection) {
+function applySavedResource(note, selection) {
     currentAlias = note.alias || null;
     currentHref = currentAlias ? '/' + currentAlias : '/' + note.id;
     isFavorite = !!note.is_favorite;
@@ -73,11 +73,11 @@ function applySavedNote(note, selection) {
     if (editorState.aliasField) editorState.aliasField.value = currentAlias || '';
     if (editorState.publicToggle) editorState.publicToggle.checked = !isPrivate;
     if (editorState.favoriteToggle) editorState.favoriteToggle.checked = isFavorite;
-    syncNoteChrome();
+    syncResourceChrome();
     restoreSelection(selection);
 }
 
-function syncNoteChrome() {
+function syncResourceChrome() {
     var title = deriveTitle(currentBody());
     var visibility = isPrivate ? 'Private' : 'Public';
     updateLiveText('[data-live-title]', title, 'renderedTitle');
@@ -89,7 +89,7 @@ function syncNoteChrome() {
 
 function syncCanonicalLinks() {
     var historyHref = currentHref + '/history';
-    document.querySelectorAll('[data-current-note-link]').forEach(function (node) { node.href = currentHref; });
+    document.querySelectorAll('[data-current-resource-link]').forEach(function (node) { node.href = currentHref; });
     document.querySelectorAll('[data-history-link]').forEach(function (node) { node.href = historyHref; });
     document.querySelectorAll('[data-current-url]').forEach(function (node) {
         node.href = currentHref;

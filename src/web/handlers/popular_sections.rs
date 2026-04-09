@@ -15,7 +15,7 @@ pub struct PopularSectionPath {
 }
 
 #[get("/_/popular-resources/{surface}/{window}")]
-pub async fn popular_notes_section(
+pub async fn popular_resources_section(
     pool: web::Data<DbPool>,
     req: HttpRequest,
     path: web::Path<PopularSectionPath>,
@@ -73,10 +73,10 @@ async fn popular_items(
     limit: i64,
     window: PopularWindow,
 ) -> Result<Vec<templates::IndexItem>, AppError> {
-    Ok(db::list_popular_records(pool, is_admin, limit, window)
+    Ok(db::list_popular_resources(pool, is_admin, limit, window)
         .await?
         .iter()
-        .map(|record| view::popular_index_item(record, is_admin, window))
+        .map(|resource| view::popular_index_item(resource, is_admin, window))
         .collect())
 }
 

@@ -1,10 +1,9 @@
-use super::models::{MediaFamily, Record, RecordKind};
-use super::record_support::{map_write_error, next_position, row_to_record, RETURNING_RECORD};
-use super::resource_ids::next_resource_id;
+use super::models::{MediaFamily, Resource, ResourceKind};
+use super::resource_support::{map_write_error, next_position, row_to_resource, RETURNING_RECORD};
+use super::write_support::create_snapshot;
 use super::DbPool;
 use crate::core::{derive_summary, derive_title_with_fallback};
 use crate::error::AppError;
-use deadpool_postgres::GenericClient;
 
 pub struct MediaBlob<'a> {
     pub media_family: MediaFamily,
@@ -26,7 +25,7 @@ pub async fn create_media(
     blob: &MediaBlob<'_>,
     is_favorite: bool,
     is_private: bool,
-) -> Result<Record, AppError> {
+) -> Result<Resource, AppError> {
     let mut db = client(pool).await?;
     let tx = db
         .transaction()
@@ -41,7 +40,7 @@ pub async fn create_media(
             ),
             &[
                 &id,
-                &RecordKind::Media.as_str(),
+                &ResourceKind::Media.as_str(),
                 &alias,
                 &derive_title_with_fallback(body, "Untitled media"),
                 &derive_summary(body),
@@ -62,49 +61,12 @@ pub async fn create_media(
         )
         .await
         .map_err(map_write_error)?;
-    let record = row_to_record(row);
-    create_snapshot(&tx, &record, 1).await?;
+    let resource = row_to_resource(row);
+    create_snapshot(&tx, &resource, 1).await?;
     tx.commit()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(record)
-}
-
-async fn create_snapshot<C: GenericClient>(
-    db: &C,
-    record: &Record,
-    snapshot_number: i32,
-) -> Result<(), AppError> {
-    let snapshot_id = next_resource_id(db).await?;
-    db.execute(
-        "INSERT INTO resource_snapshots \
-         (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
-          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, is_private) \
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)",
-        &[
-            &snapshot_id,
-            &record.id,
-            &record.kind.as_str(),
-            &snapshot_number,
-            &record.alias,
-            &record.title,
-            &record.summary,
-            &record.body,
-            &record.media_family.map(|family| family.as_str()),
-            &record.file_key,
-            &record.content_type,
-            &record.byte_size,
-            &record.sha256_hex,
-            &record.original_filename,
-            &record.width,
-            &record.height,
-            &record.duration_ms,
-            &record.is_private,
-        ],
-    )
-    .await
-    .map(|_| ())
-    .map_err(|e| AppError::DatabaseError(e.to_string()))
+    Ok(resource)
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {

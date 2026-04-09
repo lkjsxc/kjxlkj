@@ -1,9 +1,11 @@
 //! Discovery queries
 
-use super::{DbPool, SitemapRecord};
+use super::{DbPool, SitemapResource};
 use crate::error::AppError;
 
-pub async fn list_public_sitemap_records(pool: &DbPool) -> Result<Vec<SitemapRecord>, AppError> {
+pub async fn list_public_sitemap_resources(
+    pool: &DbPool,
+) -> Result<Vec<SitemapResource>, AppError> {
     pool.get()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?
@@ -16,7 +18,7 @@ pub async fn list_public_sitemap_records(pool: &DbPool) -> Result<Vec<SitemapRec
         .await
         .map(|rows| {
             rows.into_iter()
-                .map(|row| SitemapRecord {
+                .map(|row| SitemapResource {
                     id: row.get("id"),
                     alias: row.get("alias"),
                     updated_at: row.get("updated_at"),

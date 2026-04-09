@@ -79,9 +79,9 @@ fn card_shell(
     meta: &str,
 ) -> String {
     let class_attr = if classes.is_empty() {
-        "index-card note-row".to_string()
+        "index-card resource-row".to_string()
     } else {
-        format!("index-card note-row {classes}")
+        format!("index-card resource-row {classes}")
     };
     href.map_or_else(
         || format!(r#"<{tag} class="{class_attr}"{attrs}>{body}{meta}</{tag}>"#),

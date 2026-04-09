@@ -57,7 +57,7 @@ async function captureAdminScreens(browser, fixtures) {
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);
-    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await verifyEditorFormatting(browser, page, note, fixtures);
     await capture(page, 'desktop-admin-note.png');
 
@@ -85,7 +85,7 @@ async function captureAdminScreens(browser, fixtures) {
     await page.goto(`${appUrl}/${latestSnapshot.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
     await assertHead(page, { title: `Saved snapshot 4: ${note.title} | Launchpad`, descriptionIncludes: 'Saved snapshot 4 for Orbit Ledger.', robots: 'noindex,nofollow', canonical: null });
-    await assertVisibleText(page, 'Current shared revision stretches across the list card');
+    await assertVisibleText(page, 'Current shared snapshot stretches across the list card');
     await verifyUiCreatedMedia(page, note);
     await Promise.all([
         page.waitForURL('**/'),
@@ -96,7 +96,7 @@ async function captureAdminScreens(browser, fixtures) {
     await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`, `${appUrl}/${fixtures.image.ref}</loc>`] });
     await capture(page, 'desktop-login.png');
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
-    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${note.ref}` });
+    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${note.ref}` });
     await context.close();
 }
 
@@ -156,7 +156,7 @@ async function capturePublicScreens(browser, notes) {
         page.getByRole('button', { name: 'Search', exact: true }).click(),
     ]);
     await page.waitForLoadState('networkidle');
-    const titles = await page.locator('.note-grid .note-row[data-card-title]').evaluateAll((nodes) =>
+    const titles = await page.locator('.resource-grid .resource-row[data-card-title]').evaluateAll((nodes) =>
         nodes.map((node) => node.dataset.cardTitle.trim())
     );
     assert.equal(titles[0], notes.image.title);
@@ -168,7 +168,7 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
-    await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Oldest public note.');
     await assertVisibleText(page, 'Newest public note.');
     await capture(page, 'desktop-guest-note.png');

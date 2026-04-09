@@ -1,7 +1,7 @@
 use super::listing::{ListDirection, ListPage, ListSort};
-use super::listing_cursor::{page_from_rows, row_to_listed_record, Cursor, PageCursorContext};
+use super::listing_cursor::{page_from_rows, row_to_listed_resource, Cursor, PageCursorContext};
 use super::listing_params::{BrowseParams, SearchParams};
-use super::{DbPool, ListKind, ListScope, ListedRecord, PopularWindow};
+use super::{DbPool, ListKind, ListScope, ListedResource, PopularWindow};
 use crate::error::AppError;
 
 pub(super) struct ListingQuery<'a> {
@@ -16,7 +16,7 @@ pub(super) struct ListingQuery<'a> {
     pub(super) cursor: Option<&'a Cursor>,
 }
 
-pub(super) async fn browse_records(
+pub(super) async fn browse_resources(
     pool: &DbPool,
     request: &ListingQuery<'_>,
 ) -> Result<ListPage, AppError> {
@@ -50,7 +50,7 @@ pub(super) async fn browse_records(
     Ok(page_from_rows(rows, request.limit, &context(request)))
 }
 
-pub(super) async fn search_records(
+pub(super) async fn search_resources(
     pool: &DbPool,
     request: &ListingQuery<'_>,
 ) -> Result<ListPage, AppError> {
@@ -94,12 +94,12 @@ pub(super) async fn search_records(
     Ok(page_from_rows(rows, request.limit, &context(request)))
 }
 
-pub(super) async fn top_records(
+pub(super) async fn top_resources(
     pool: &DbPool,
     include_private: bool,
     limit: i64,
     favorites_only: bool,
-) -> Result<Vec<ListedRecord>, AppError> {
+) -> Result<Vec<ListedResource>, AppError> {
     let (filter, order) = if favorites_only {
         (
             "AND is_favorite = TRUE",
@@ -118,7 +118,7 @@ pub(super) async fn top_records(
         .await?
         .query(&sql, &[&include_private, &limit])
         .await
-        .map(|rows| rows.into_iter().map(row_to_listed_record).collect())
+        .map(|rows| rows.into_iter().map(row_to_listed_resource).collect())
         .map_err(db_err)
 }
 

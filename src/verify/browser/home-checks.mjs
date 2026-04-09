@@ -4,10 +4,10 @@ import { assertListRailOrder } from './rail-order-checks.mjs';
 
 export async function popularTitles(page) {
     return page
-        .locator('.section-block.note-section', {
+        .locator('.section-block.resource-section', {
             has: page.getByRole('heading', { name: 'Popular', exact: true }),
         })
-        .locator('.note-row[data-card-title]')
+        .locator('.resource-row[data-card-title]')
         .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
 }
 
@@ -47,10 +47,10 @@ export async function assertAdminHomeConfiguration(page) {
 
 async function browseHref(page, heading) {
     return page
-        .locator('.section-block.note-section', {
+        .locator('.section-block.resource-section', {
             has: page.getByRole('heading', { name: heading, exact: true }),
         })
-        .locator('a.note-row-action')
+        .locator('a.resource-row-action')
         .getAttribute('href');
 }
 
@@ -62,7 +62,7 @@ async function clickWindow(page, surface, label, windowValue, firstTitle) {
                 '[data-popular-section][data-popular-surface="' + expectedSurface + '"]'
             );
             if (!section || section.getAttribute('aria-busy') === 'true') return false;
-            const title = section.querySelector('.note-row[data-card-title]');
+            const title = section.querySelector('.resource-row[data-card-title]');
             const active = section.querySelector('[data-popular-window][aria-pressed="true"]');
             return (
                 !!title &&
@@ -83,7 +83,7 @@ async function assertPopularMetricLabel(page, surface, label) {
                 '[data-popular-section][data-popular-surface="' + expectedSurface + '"]'
             );
             if (!section) return false;
-            const metric = section.querySelector('.note-row .card-meta small span');
+            const metric = section.querySelector('.resource-row .card-meta small span');
             return !!metric && metric.textContent.trim() === expectedLabel;
         },
         { expectedLabel: label, expectedSurface: surface }

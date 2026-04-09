@@ -50,7 +50,7 @@ pub async fn create(
     )
     .await;
     match result {
-        Ok(record) => Ok(HttpResponse::Created().json(ResourcePayload::from_record(record))),
+        Ok(resource) => Ok(HttpResponse::Created().json(ResourcePayload::from_resource(resource))),
         Err(error) => {
             let _ = storage.delete_object(&file_key).await;
             Err(error)

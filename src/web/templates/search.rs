@@ -7,7 +7,7 @@ use super::search_form::search_section;
 use super::sections::{page_header, section};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("note_actions.js");
+const ACTIONS_JS: &str = include_str!("resource_actions.js");
 
 pub struct SearchView<'a> {
     pub notes: &'a [IndexItem],
@@ -84,7 +84,7 @@ fn results_section(view: &SearchView<'_>, query: &str, has_query: bool) -> Strin
     section(
         if has_query { "Results" } else { "Resources" },
         &format!(
-            r#"<div class="note-list note-grid">{cards}</div>
+            r#"<div class="resource-list resource-grid">{cards}</div>
 {}"#,
             pager(
                 "/search",
@@ -100,7 +100,7 @@ fn results_section(view: &SearchView<'_>, query: &str, has_query: bool) -> Strin
                 ],
             )
         ),
-        "note-section",
+        "resource-section",
     )
 }
 

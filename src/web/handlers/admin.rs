@@ -38,24 +38,24 @@ async fn admin_page_impl(
     let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
     let popular =
-        db::list_popular_records(&pool, true, settings.home_popular_limit, window).await?;
-    let recent = db::list_recent_records(&pool, true, settings.home_recent_limit).await?;
-    let favorites = db::list_all_favorite_records(&pool, true).await?;
-    let stats = db::get_note_stats(&pool, true).await?;
+        db::list_popular_resources(&pool, true, settings.home_popular_limit, window).await?;
+    let recent = db::list_recent_resources(&pool, true, settings.home_recent_limit).await?;
+    let favorites = db::list_all_favorite_resources(&pool, true).await?;
+    let stats = db::get_resource_stats(&pool, true).await?;
     Ok(html(templates::admin_page(
         &stats,
         &settings,
         &popular
             .iter()
-            .map(|record| view::popular_index_item(record, true, window))
+            .map(|resource| view::popular_index_item(resource, true, window))
             .collect::<Vec<_>>(),
         &recent
             .iter()
-            .map(|record| view::index_item(record, true))
+            .map(|resource| view::index_item(resource, true))
             .collect::<Vec<_>>(),
         &favorites
             .iter()
-            .map(|record| view::index_item(record, true))
+            .map(|resource| view::index_item(resource, true))
             .collect::<Vec<_>>(),
         window,
         &site,

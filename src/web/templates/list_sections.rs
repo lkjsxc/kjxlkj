@@ -45,7 +45,7 @@ pub fn note_grid_body(notes: &[IndexItem], empty: &str, extra_card: Option<Strin
         cards.push(card);
     }
     format!(
-        r#"<div class="note-list note-grid">{}</div>"#,
+        r#"<div class="resource-list resource-grid">{}</div>"#,
         cards.join("")
     )
 }
@@ -86,7 +86,7 @@ pub fn popular_browse_card(window: PopularWindow) -> String {
 
 pub fn view_more_card(href: &str, title: &str, summary: &str, meta: &str) -> String {
     format!(
-        r#"<a href="{href}" class="index-card note-row note-row-action">
+        r#"<a href="{href}" class="index-card resource-row resource-row-action">
 <div class="card-body">
 <p class="card-title">{title}</p>
 <p class="card-summary">{summary}</p>
@@ -98,7 +98,7 @@ pub fn view_more_card(href: &str, title: &str, summary: &str, meta: &str) -> Str
 
 fn empty_card(message: &str) -> String {
     format!(
-        r#"<article class="index-card note-row note-row-empty">
+        r#"<article class="index-card resource-row resource-row-empty">
 <div class="card-body"><p class="surface-empty">{message}</p></div>
 </article>"#
     )

@@ -12,14 +12,14 @@ function createNote() {
         .catch(function () { alert('Failed to create note'); });
 }
 
-function deleteNote(id) {
-    if (!confirm('Delete this note?')) return;
+function deleteResource(id) {
+    if (!confirm('Delete this resource?')) return;
     fetch('/resources/' + id, { method: 'DELETE' })
         .then(function (response) {
             if (!response.ok) throw new Error('delete failed');
             window.location.href = '/admin';
         })
-        .catch(function () { alert('Failed to delete note'); });
+        .catch(function () { alert('Failed to delete resource'); });
 }
 
 function defaultNewNoteBody() {

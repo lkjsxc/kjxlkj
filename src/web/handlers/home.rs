@@ -21,23 +21,23 @@ pub async fn home_page(
     let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
     let popular =
-        db::list_popular_records(&pool, is_admin, settings.home_popular_limit, window).await?;
-    let recent = db::list_recent_records(&pool, is_admin, settings.home_recent_limit).await?;
+        db::list_popular_resources(&pool, is_admin, settings.home_popular_limit, window).await?;
+    let recent = db::list_recent_resources(&pool, is_admin, settings.home_recent_limit).await?;
     let favorites =
-        db::list_favorite_records(&pool, is_admin, settings.home_favorite_limit).await?;
+        db::list_favorite_resources(&pool, is_admin, settings.home_favorite_limit).await?;
     Ok(html(templates::home_page(
         &settings,
         &popular
             .iter()
-            .map(|record| view::popular_index_item(record, is_admin, window))
+            .map(|resource| view::popular_index_item(resource, is_admin, window))
             .collect::<Vec<_>>(),
         &recent
             .iter()
-            .map(|record| view::index_item(record, is_admin))
+            .map(|resource| view::index_item(resource, is_admin))
             .collect::<Vec<_>>(),
         &favorites
             .iter()
-            .map(|record| view::index_item(record, is_admin))
+            .map(|resource| view::index_item(resource, is_admin))
             .collect::<Vec<_>>(),
         window,
         is_admin,

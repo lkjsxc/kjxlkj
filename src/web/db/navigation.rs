@@ -1,30 +1,30 @@
-use super::record_support::row_to_record;
+use super::resource_support::row_to_resource;
 use super::DbPool;
 use crate::error::AppError;
-use crate::web::db::Record;
+use crate::web::db::Resource;
 
-pub async fn get_previous_record(
+pub async fn get_previous_resource(
     pool: &DbPool,
     id: &str,
     include_private: bool,
-) -> Result<Option<Record>, AppError> {
-    adjacent_record(pool, id, include_private, true).await
+) -> Result<Option<Resource>, AppError> {
+    adjacent_resource(pool, id, include_private, true).await
 }
 
-pub async fn get_next_record(
+pub async fn get_next_resource(
     pool: &DbPool,
     id: &str,
     include_private: bool,
-) -> Result<Option<Record>, AppError> {
-    adjacent_record(pool, id, include_private, false).await
+) -> Result<Option<Resource>, AppError> {
+    adjacent_resource(pool, id, include_private, false).await
 }
 
-async fn adjacent_record(
+async fn adjacent_resource(
     pool: &DbPool,
     id: &str,
     include_private: bool,
     older: bool,
-) -> Result<Option<Record>, AppError> {
+) -> Result<Option<Resource>, AppError> {
     let query = if older {
         "SELECT id, kind, alias, title, summary, body, media_family, file_key, content_type, \
          byte_size, sha256_hex, original_filename, width, height, duration_ms, is_favorite, \
@@ -46,7 +46,7 @@ async fn adjacent_record(
         .await?
         .query_opt(query, &[&id, &include_private])
         .await
-        .map(|row| row.map(row_to_record))
+        .map(|row| row.map(row_to_resource))
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 

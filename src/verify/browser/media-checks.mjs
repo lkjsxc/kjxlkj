@@ -6,7 +6,7 @@ export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
     await page.goto(`${appUrl}/search?kind=media`, { waitUntil: 'networkidle' });
     await page.getByLabel('Kind').selectOption('media');
     const titles = await page
-        .locator('.note-row[data-card-title]')
+        .locator('.resource-row[data-card-title]')
         .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
     assert.ok(titles.includes(media.image.title));
     assert.ok(titles.includes(media.video.title));
@@ -104,14 +104,14 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.equal(staleRangeResponse.payload.created_media.length, 1);
     assert.equal(Object.hasOwn(staleRangeResponse.payload, 'created_notes'), false);
     assert.ok(
-        staleRangeResponse.payload.current_note.body.endsWith(staleRangeResponse.payload.inserted_markdown),
+        staleRangeResponse.payload.current_resource.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
     );
 }
 
 async function assertMediaCardGeometry(page) {
-    await page.locator('.note-row-media .card-cover').first().waitFor({ state: 'visible' });
-    const metrics = await page.locator('.note-row-media').evaluateAll((cards) =>
+    await page.locator('.resource-row-media .card-cover').first().waitFor({ state: 'visible' });
+    const metrics = await page.locator('.resource-row-media').evaluateAll((cards) =>
         cards.map((card) => {
             const cover = card.querySelector('.card-cover').getBoundingClientRect();
             const badges = card.querySelector('.card-badges').getBoundingClientRect();
@@ -130,7 +130,7 @@ async function assertMediaCardGeometry(page) {
         assert.ok(item.mediaHeight >= item.coverHeight - 1, 'media should fill the cover height');
         assert.ok(item.badgesTop >= item.coverBottom, 'badges should sit below the thumbnail');
     }
-    const imagePaint = await page.locator('.note-row-media img.card-cover-media').first().evaluate(
+    const imagePaint = await page.locator('.resource-row-media img.card-cover-media').first().evaluate(
         async (image) => {
             if (!image.complete) {
                 await new Promise((resolve, reject) => {

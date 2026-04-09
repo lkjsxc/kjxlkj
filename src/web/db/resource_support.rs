@@ -1,5 +1,5 @@
 use crate::error::AppError;
-use crate::web::db::models::{MediaFamily, Record, RecordKind};
+use crate::web::db::models::{MediaFamily, Resource, ResourceKind};
 use deadpool_postgres::GenericClient;
 use tokio_postgres::error::SqlState;
 
@@ -15,7 +15,7 @@ created_at, updated_at";
 pub(super) async fn current_favorite_state<C: GenericClient>(
     db: &C,
     id: &str,
-) -> Result<Option<(RecordKind, bool, Option<i64>)>, AppError> {
+) -> Result<Option<(ResourceKind, bool, Option<i64>)>, AppError> {
     db.query_opt(
         "SELECT kind, is_favorite, favorite_position FROM resources WHERE id = $1 AND deleted_at IS NULL",
         &[&id],
@@ -24,7 +24,7 @@ pub(super) async fn current_favorite_state<C: GenericClient>(
     .map(|row| {
         row.map(|item| {
             (
-                RecordKind::from_db(&item.get::<_, String>("kind")),
+                ResourceKind::from_db(&item.get::<_, String>("kind")),
                 item.get("is_favorite"),
                 item.get("favorite_position"),
             )
@@ -73,10 +73,10 @@ pub(super) fn map_write_error(error: tokio_postgres::Error) -> AppError {
     AppError::DatabaseError(error.to_string())
 }
 
-pub(crate) fn row_to_record(row: tokio_postgres::Row) -> Record {
-    Record {
+pub(crate) fn row_to_resource(row: tokio_postgres::Row) -> Resource {
+    Resource {
         id: row.get("id"),
-        kind: RecordKind::from_db(&row.get::<_, String>("kind")),
+        kind: ResourceKind::from_db(&row.get::<_, String>("kind")),
         alias: row.get("alias"),
         title: row.get("title"),
         summary: row.get("summary"),

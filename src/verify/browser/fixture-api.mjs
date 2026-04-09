@@ -132,7 +132,7 @@ Shared release with the current chart.
 ![Orbital chart](${media.image.fileHref})`,
         `# Orbit Ledger
 
-Current shared revision stretches across the list card with enough words to stress the timestamp column.
+Current shared snapshot stretches across the list card with enough words to stress the timestamp column.
 
 ![Orbital chart](${media.image.fileHref})
 

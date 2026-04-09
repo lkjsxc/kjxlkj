@@ -37,7 +37,7 @@ function initEditor() {
     editorState.lastSavedAlias = currentAlias;
     editorState.lastSavedFavorite = isFavorite;
     editorState.lastSavedPrivate = isPrivate;
-    syncNoteChrome();
+    syncResourceChrome();
     syncPreviewMode();
     focusEditor();
 }
@@ -64,7 +64,7 @@ function bindEditorInputs() {
 }
 
 function onEditorInput() {
-    syncNoteChrome();
+    syncResourceChrome();
     queueSave();
     queuePreviewRender(false);
 }
@@ -76,13 +76,13 @@ function onAliasInput() {
 
 function onPublicToggle() {
     isPrivate = !editorState.publicToggle.checked;
-    syncNoteChrome();
+    syncResourceChrome();
     queueSave();
 }
 
 function onFavoriteToggle() {
     isFavorite = !!editorState.favoriteToggle.checked;
-    syncNoteChrome();
+    syncResourceChrome();
     queueSave();
 }
 

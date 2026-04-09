@@ -5,12 +5,12 @@ use super::card_frame::{
 };
 use super::index::pager;
 use super::layout::{base, html_escape, shell_page};
-use super::model::{HistoryLink, NoteChrome};
-use super::note_shell::note_rail;
+use super::model::{HistoryLink, ResourceChrome};
 use super::resource_media::snapshot_media_block;
+use super::resource_shell::resource_rail;
 use super::resource_words::{live_label, open_live_label};
 use super::sections::page_header;
-use crate::web::db::{Record, RecordKind, RecordSnapshot};
+use crate::web::db::{Resource, ResourceKind, ResourceSnapshot};
 use crate::web::site::SiteContext;
 
 pub struct HistoryPage<'a> {
@@ -21,8 +21,8 @@ pub struct HistoryPage<'a> {
 }
 
 pub fn history_page(
-    record: &Record,
-    chrome: &NoteChrome,
+    resource: &Resource,
+    chrome: &ResourceChrome,
     page: HistoryPage<'_>,
     is_admin: bool,
     site: &SiteContext,
@@ -37,7 +37,7 @@ pub fn history_page(
             .join("")
     };
     let content = format!(
-        "{}<section class=\"stack note-list\">{}</section><section class=\"section-block history-list-section\"><div class=\"section-head\"><h2>Saved snapshots</h2></div><div class=\"note-list\">{}</div>{}</section>",
+        "{}<section class=\"stack resource-list\">{}</section><section class=\"section-block history-list-section\"><div class=\"section-head\"><h2>Saved snapshots</h2></div><div class=\"resource-list\">{}</div>{}</section>",
         page_header(
             &format!("History: {}", chrome.title),
             Some(&format!(
@@ -47,7 +47,7 @@ pub fn history_page(
             )),
             "history-head",
         ),
-        live_row(record, chrome),
+        live_row(resource, chrome),
         cards,
         pager(
             &chrome.history_href,
@@ -68,8 +68,8 @@ pub fn history_page(
 }
 
 pub fn snapshot_page(
-    chrome: &NoteChrome,
-    snapshot: &RecordSnapshot,
+    chrome: &ResourceChrome,
+    snapshot: &ResourceSnapshot,
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
@@ -86,7 +86,7 @@ pub fn snapshot_page(
 </div>
 </header>
 {}
-<section class="surface note-surface prose">{}</section>"#,
+<section class="surface resource-surface prose">{}</section>"#,
         snapshot.snapshot_number,
         html_escape(&snapshot.title),
         super::render_time(&snapshot.created_at),
@@ -98,7 +98,7 @@ pub fn snapshot_page(
         chrome.history_href,
         chrome.current_href,
         open_live_label(chrome.kind),
-        if snapshot.kind == RecordKind::Media {
+        if snapshot.kind == ResourceKind::Media {
             snapshot_media_block(snapshot)
         } else {
             String::new()
@@ -124,7 +124,7 @@ pub fn snapshot_page(
 
 fn shell(
     title: &str,
-    chrome: &NoteChrome,
+    chrome: &ResourceChrome,
     active: &str,
     content: &str,
     is_admin: bool,
@@ -135,7 +135,7 @@ fn shell(
         &site.page_meta(title, description, false, None),
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
-            &note_rail(chrome, is_admin, active),
+            &resource_rail(chrome, is_admin, active),
             content,
             "history-page",
             &site.site_name,
@@ -158,12 +158,12 @@ fn history_row(entry: &HistoryLink) -> String {
     )
 }
 
-fn live_row(record: &Record, chrome: &NoteChrome) -> String {
+fn live_row(resource: &Resource, chrome: &ResourceChrome) -> String {
     linked_card(
         &chrome.current_href,
         "",
         "",
-        &card_body(live_label(record.kind), &record.summary),
+        &card_body(live_label(resource.kind), &resource.summary),
         &card_meta(
             &status_pill(chrome.visibility, ""),
             &created_updated_lines(&chrome.created_at, &chrome.updated_at),

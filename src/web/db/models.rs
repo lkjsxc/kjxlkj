@@ -5,12 +5,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
-pub enum RecordKind {
+pub enum ResourceKind {
     Note,
     Media,
 }
 
-impl RecordKind {
+impl ResourceKind {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Note => "note",
@@ -51,9 +51,9 @@ impl MediaFamily {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Record {
+pub struct Resource {
     pub id: String,
-    pub kind: RecordKind,
+    pub kind: ResourceKind,
     pub alias: Option<String>,
     pub title: String,
     pub summary: String,
@@ -77,9 +77,9 @@ pub struct Record {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RecordSnapshot {
+pub struct ResourceSnapshot {
     pub id: String,
-    pub kind: RecordKind,
+    pub kind: ResourceKind,
     pub snapshot_number: i32,
     pub alias: Option<String>,
     pub title: String,
@@ -99,8 +99,8 @@ pub struct RecordSnapshot {
 }
 
 #[derive(Debug, Clone)]
-pub struct ListedRecord {
-    pub record: Record,
+pub struct ListedResource {
+    pub resource: Resource,
     pub preview: String,
     pub popular_views: Option<i64>,
 }
@@ -150,7 +150,7 @@ impl Default for AppSettings {
 }
 
 #[derive(Debug, Clone)]
-pub struct NoteStats {
+pub struct ResourceStats {
     pub total: i64,
     pub public_count: i64,
     pub private_count: i64,
@@ -164,7 +164,7 @@ pub struct NoteStats {
 }
 
 #[derive(Debug, Clone)]
-pub struct NoteViewStats {
+pub struct ResourceViewStats {
     pub total: i64,
     pub views_7d: i64,
     pub views_30d: i64,
@@ -173,7 +173,7 @@ pub struct NoteViewStats {
 }
 
 #[derive(Debug, Clone)]
-pub struct SitemapRecord {
+pub struct SitemapResource {
     pub id: String,
     pub alias: Option<String>,
     pub updated_at: DateTime<Utc>,

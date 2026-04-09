@@ -6,7 +6,7 @@ use super::sections::{page_header, section};
 use crate::web::db::AppSettings;
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("note_actions.js");
+const ACTIONS_JS: &str = include_str!("resource_actions.js");
 const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
 
 pub fn settings_page(settings: &AppSettings, site: &SiteContext) -> String {

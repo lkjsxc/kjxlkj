@@ -6,12 +6,12 @@
 
 .page-column,
 .dashboard-page,
-.note-page,
+.resource-page,
 .history-page,
 .home-page,
 .index-layout,
 .stack,
-.note-list {
+.resource-list {
     display: grid;
     align-content: start;
 }
@@ -22,12 +22,12 @@
 }
 
 .dashboard-page,
-.note-page,
+.resource-page,
 .history-page,
 .home-page,
 .index-layout,
 .stack,
-.note-list {
+.resource-list {
     gap: 12px;
 }
 
@@ -127,32 +127,32 @@
     color: var(--text-muted);
 }
 
-.note-row {
+.resource-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 16px;
     align-items: start;
 }
 
-.note-list {
+.resource-list {
     gap: 8px;
 }
 
-.public-note-grid {
+.public-resource-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.public-note-grid .note-row {
+.public-resource-grid .resource-row {
     grid-template-columns: 1fr;
     min-height: 100%;
 }
 
-.public-note-grid .card-meta {
+.public-resource-grid .card-meta {
     justify-items: start;
     text-align: left;
 }
 
-.public-note-grid .status-pill {
+.public-resource-grid .status-pill {
     justify-self: start;
 }
 
@@ -161,7 +161,7 @@
     line-height: 1.45;
 }
 
-.note-surface {
+.resource-surface {
     max-width: 1040px;
     width: min(100%, 1040px);
 }
@@ -170,7 +170,7 @@
     width: 100%;
 }
 
-.note-head {
+.resource-head {
     align-items: end;
 }
 
@@ -178,18 +178,18 @@
     max-width: 78ch;
 }
 
-.note-analytics-grid {
+.resource-analytics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 10px;
 }
 
-.note-analytics-grid article {
+.resource-analytics-grid article {
     display: grid;
     gap: 4px;
 }
 
-.note-analytics-grid small {
+.resource-analytics-grid small {
     color: var(--text-soft);
 }
 

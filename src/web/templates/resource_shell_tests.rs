@@ -1,10 +1,10 @@
-use super::model::{NavLink, NoteChrome};
-use super::note_shell::note_rail;
+use super::model::{NavLink, ResourceChrome};
+use super::resource_shell::resource_rail;
 
-fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> NoteChrome {
-    NoteChrome {
+fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> ResourceChrome {
+    ResourceChrome {
         id: "demo".to_string(),
-        kind: crate::web::db::RecordKind::Note,
+        kind: crate::web::db::ResourceKind::Note,
         alias: Some("orbit-ledger".to_string()),
         title: "Orbit Ledger".to_string(),
         summary: "Shared release note for the orbit ledger.".to_string(),
@@ -20,8 +20,8 @@ fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> NoteChrome {
 }
 
 #[test]
-fn note_rail_keeps_single_history_card() {
-    let html = note_rail(&chrome(None, None), true, "/demo");
+fn resource_rail_keeps_single_history_card() {
+    let html = resource_rail(&chrome(None, None), true, "/demo");
     let history = html.find("History").unwrap();
     let github = html.find("Open GitHub").unwrap();
     let delete = html.find("Delete note").unwrap();
@@ -34,8 +34,8 @@ fn note_rail_keeps_single_history_card() {
 }
 
 #[test]
-fn note_rail_renders_disabled_timeline_cards() {
-    let html = note_rail(&chrome(None, None), false, "/demo");
+fn resource_rail_renders_disabled_timeline_cards() {
+    let html = resource_rail(&chrome(None, None), false, "/demo");
     assert!(html.contains("No older accessible resource."));
     assert!(html.contains("No newer accessible resource."));
     assert!(!html.contains("CREATE"));

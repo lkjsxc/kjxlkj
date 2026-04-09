@@ -5,17 +5,17 @@ use super::card_frame::{
 };
 use super::index::admin_create_actions;
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
-use super::model::{NavLink, NoteChrome};
+use super::model::{NavLink, ResourceChrome};
 use super::resource_words::{delete_label, history_summary, live_label};
 
-pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
+pub fn resource_rail(chrome: &ResourceChrome, is_admin: bool, active_href: &str) -> String {
     let mut sections = vec![rail_section("navigate", &primary_nav("", is_admin))];
     if is_admin {
         sections.push(rail_section("create", &create_action()));
     }
     sections.push(rail_section(
-        "current-note",
-        &current_note(chrome, active_href),
+        "current-resource",
+        &current_resource(chrome, active_href),
     ));
     sections.push(rail_section("timeline", &timeline(chrome)));
     sections.push(rail_section("history", &history(chrome, active_href)));
@@ -24,7 +24,7 @@ pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> Stri
     sections.join("")
 }
 
-fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
+fn current_resource(chrome: &ResourceChrome, active_href: &str) -> String {
     let card_body = format!(
         r#"<div class="card-body"><p class="card-title" data-live-title>{}</p><p class="card-summary">{}</p></div>"#,
         html_escape(&chrome.title),
@@ -50,9 +50,9 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
         live_label(chrome.kind),
         linked_card(
             &chrome.current_href,
-            " data-current-note-link",
+            " data-current-resource-link",
             &format!(
-                "summary-card current-note-card{}",
+                "summary-card current-resource-card{}",
                 if active_href == chrome.current_href {
                     " summary-card-active"
                 } else {
@@ -66,7 +66,7 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
     )
 }
 
-fn timeline(chrome: &NoteChrome) -> String {
+fn timeline(chrome: &ResourceChrome) -> String {
     format!(
         r#"<div class="timeline-grid">{}{}</div>"#,
         timeline_slot(
@@ -82,7 +82,7 @@ fn timeline(chrome: &NoteChrome) -> String {
     )
 }
 
-fn history(chrome: &NoteChrome, active_href: &str) -> String {
+fn history(chrome: &ResourceChrome, active_href: &str) -> String {
     linked_card(
         &chrome.history_href,
         " data-history-link",
@@ -133,11 +133,11 @@ fn missing_timeline_card(empty: &str) -> String {
     )
 }
 
-fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
+fn actions(chrome: &ResourceChrome, is_admin: bool) -> String {
     if is_admin {
         format!(
             r#"<div class="rail-actions">
-<button type="button" class="btn btn-danger" onclick="deleteNote('{}')">{}</button>
+<button type="button" class="btn btn-danger" onclick="deleteResource('{}')">{}</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>
 </div>"#,
             chrome.id,

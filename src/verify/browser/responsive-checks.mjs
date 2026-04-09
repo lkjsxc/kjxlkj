@@ -36,7 +36,7 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
-    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'History');

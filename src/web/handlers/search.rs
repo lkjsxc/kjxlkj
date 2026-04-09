@@ -48,7 +48,7 @@ pub async fn search_page(
     let scope = ListScope::resolve(params.scope.as_deref());
     let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
     let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
-    let page = db::list_records(
+    let page = db::list_resources(
         &pool,
         &ListRequest {
             include_private: is_admin,
@@ -65,9 +65,9 @@ pub async fn search_page(
     .await?;
     Ok(html(templates::search_page(templates::SearchView {
         notes: &page
-            .records
+            .resources
             .iter()
-            .map(|record| view::index_item(record, is_admin))
+            .map(|resource| view::index_item(resource, is_admin))
             .collect::<Vec<_>>(),
         previous_cursor: page.previous_cursor.as_deref(),
         next_cursor: page.next_cursor.as_deref(),

@@ -1,7 +1,7 @@
 use super::listing_direction::ListDirection;
-use super::models::{MediaFamily, Record, RecordKind, RecordSnapshot};
-use super::record_support::row_to_record;
-use super::revisions_cursor::{decode_snapshot_cursor, encode_snapshot_cursor};
+use super::models::{MediaFamily, Resource, ResourceKind, ResourceSnapshot};
+use super::resource_support::row_to_resource;
+use super::snapshots_cursor::{decode_snapshot_cursor, encode_snapshot_cursor};
 use super::DbPool;
 use crate::error::AppError;
 use serde::Serialize;
@@ -10,20 +10,20 @@ const MAX_LIMIT: i64 = 100;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct SnapshotPage {
-    pub snapshots: Vec<RecordSnapshot>,
+    pub snapshots: Vec<ResourceSnapshot>,
     pub previous_cursor: Option<String>,
     pub next_cursor: Option<String>,
 }
 
 #[derive(Clone, Debug)]
-pub struct SnapshotResource {
-    pub record: Record,
-    pub snapshot: RecordSnapshot,
+pub struct SnapshotTarget {
+    pub resource: Resource,
+    pub snapshot: ResourceSnapshot,
 }
 
-pub async fn list_record_snapshots(
+pub async fn list_resource_snapshots(
     pool: &DbPool,
-    record_id: &str,
+    resource_id: &str,
     include_private: bool,
     limit: i64,
     direction: &ListDirection,
@@ -32,7 +32,7 @@ pub async fn list_record_snapshots(
     let limit = limit.clamp(1, MAX_LIMIT);
     let cursor = decode_snapshot_cursor(cursor)?;
     let mut snapshots =
-        query_page(pool, record_id, include_private, limit, direction, cursor).await?;
+        query_page(pool, resource_id, include_private, limit, direction, cursor).await?;
     if snapshots.len() as i64 > limit {
         snapshots.pop();
     }
@@ -42,7 +42,7 @@ pub async fn list_record_snapshots(
     Ok(SnapshotPage {
         previous_cursor: edge_cursor(
             pool,
-            record_id,
+            resource_id,
             include_private,
             snapshots.first().map(|item| item.snapshot_number),
             true,
@@ -50,7 +50,7 @@ pub async fn list_record_snapshots(
         .await?,
         next_cursor: edge_cursor(
             pool,
-            record_id,
+            resource_id,
             include_private,
             snapshots.last().map(|item| item.snapshot_number),
             false,
@@ -60,10 +60,10 @@ pub async fn list_record_snapshots(
     })
 }
 
-pub async fn get_snapshot_resource(
+pub async fn get_snapshot_target(
     pool: &DbPool,
     snapshot_id: &str,
-) -> Result<Option<SnapshotResource>, AppError> {
+) -> Result<Option<SnapshotTarget>, AppError> {
     client(pool).await?.query_opt(
         "SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, r.content_type, \
          r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, r.duration_ms, r.is_favorite, r.favorite_position, \
@@ -75,17 +75,17 @@ pub async fn get_snapshot_resource(
          s.is_private AS snapshot_is_private, s.created_at AS snapshot_created_at \
          FROM resource_snapshots s JOIN resources r ON r.id = s.resource_id WHERE s.id = $1 AND r.deleted_at IS NULL",
         &[&snapshot_id],
-    ).await.map(|row| row.map(row_to_snapshot_resource)).map_err(|e| AppError::DatabaseError(e.to_string()))
+    ).await.map(|row| row.map(row_to_snapshot_target)).map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
 async fn query_page(
     pool: &DbPool,
-    record_id: &str,
+    resource_id: &str,
     include_private: bool,
     limit: i64,
     direction: &ListDirection,
     cursor: Option<i32>,
-) -> Result<Vec<RecordSnapshot>, AppError> {
+) -> Result<Vec<ResourceSnapshot>, AppError> {
     let (predicate, order) = match direction {
         ListDirection::Next => ("snapshot_number < $3", "snapshot_number DESC"),
         ListDirection::Prev => ("snapshot_number > $3", "snapshot_number ASC"),
@@ -97,7 +97,10 @@ async fn query_page(
     );
     client(pool)
         .await?
-        .query(&sql, &[&record_id, &include_private, &cursor, &(limit + 1)])
+        .query(
+            &sql,
+            &[&resource_id, &include_private, &cursor, &(limit + 1)],
+        )
         .await
         .map(|rows| rows.into_iter().map(row_to_snapshot).collect())
         .map_err(|e| AppError::DatabaseError(e.to_string()))
@@ -105,7 +108,7 @@ async fn query_page(
 
 async fn edge_cursor(
     pool: &DbPool,
-    record_id: &str,
+    resource_id: &str,
     include_private: bool,
     snapshot_number: Option<i32>,
     previous: bool,
@@ -123,16 +126,16 @@ async fn edge_cursor(
     );
     client(pool)
         .await?
-        .query_opt(&sql, &[&record_id, &include_private, &snapshot_number])
+        .query_opt(&sql, &[&resource_id, &include_private, &snapshot_number])
         .await
         .map(|row| row.map(|_| encode_snapshot_cursor(snapshot_number)))
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-fn row_to_snapshot(row: tokio_postgres::Row) -> RecordSnapshot {
-    RecordSnapshot {
+fn row_to_snapshot(row: tokio_postgres::Row) -> ResourceSnapshot {
+    ResourceSnapshot {
         id: row.get("id"),
-        kind: RecordKind::from_db(&row.get::<_, String>("kind")),
+        kind: ResourceKind::from_db(&row.get::<_, String>("kind")),
         snapshot_number: row.get("snapshot_number"),
         alias: row.get("alias"),
         title: row.get("title"),
@@ -152,12 +155,12 @@ fn row_to_snapshot(row: tokio_postgres::Row) -> RecordSnapshot {
     }
 }
 
-fn row_to_snapshot_resource(row: tokio_postgres::Row) -> SnapshotResource {
-    SnapshotResource {
-        record: row_to_record(row.clone()),
-        snapshot: RecordSnapshot {
+fn row_to_snapshot_target(row: tokio_postgres::Row) -> SnapshotTarget {
+    SnapshotTarget {
+        resource: row_to_resource(row.clone()),
+        snapshot: ResourceSnapshot {
             id: row.get("snapshot_id"),
-            kind: RecordKind::from_db(&row.get::<_, String>("snapshot_kind")),
+            kind: ResourceKind::from_db(&row.get::<_, String>("snapshot_kind")),
             snapshot_number: row.get("snapshot_number"),
             alias: row.get("snapshot_alias"),
             title: row.get("snapshot_title"),

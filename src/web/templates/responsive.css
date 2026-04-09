@@ -55,7 +55,7 @@
         align-items: flex-start;
     }
 
-    .note-row {
+    .resource-row {
         grid-template-columns: 1fr;
     }
 
@@ -131,7 +131,7 @@
         width: 100%;
     }
 
-    .note-editor,
+    .resource-editor,
     .editor-preview-frame {
         min-height: 360px;
         padding: 16px;

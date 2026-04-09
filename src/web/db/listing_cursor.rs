@@ -1,6 +1,6 @@
 use super::listing::{ListDirection, ListPage, ListSort};
-use super::models::{MediaFamily, RecordKind};
-use super::{ListKind, ListScope, ListedRecord, PopularWindow, Record};
+use super::models::{MediaFamily, ResourceKind};
+use super::{ListKind, ListScope, ListedResource, PopularWindow, Resource};
 use crate::error::AppError;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use chrono::{DateTime, Utc};
@@ -54,7 +54,7 @@ pub(super) fn page_from_rows(
                 context.sort,
                 context.popular_window,
             ),
-            record: row_to_listed_record(row),
+            resource: row_to_listed_resource(row),
         })
         .collect::<Vec<_>>();
     if matches!(context.direction, ListDirection::Prev) {
@@ -75,15 +75,15 @@ pub(super) fn page_from_rows(
             context.has_cursor,
             false,
         ),
-        records: entries.into_iter().map(|entry| entry.record).collect(),
+        resources: entries.into_iter().map(|entry| entry.resource).collect(),
     }
 }
 
-pub(crate) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
-    ListedRecord {
-        record: Record {
+pub(crate) fn row_to_listed_resource(row: tokio_postgres::Row) -> ListedResource {
+    ListedResource {
+        resource: Resource {
             id: row.get("id"),
-            kind: RecordKind::from_db(&row.get::<_, String>("kind")),
+            kind: ResourceKind::from_db(&row.get::<_, String>("kind")),
             alias: row.get("alias"),
             title: row.get("title"),
             summary: row.get("summary"),
@@ -191,6 +191,6 @@ fn edge_cursor(
 }
 
 struct PageEntry {
-    record: ListedRecord,
+    resource: ListedResource,
     cursor: Cursor,
 }

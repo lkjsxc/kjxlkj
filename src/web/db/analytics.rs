@@ -1,10 +1,10 @@
 //! Resource-view analytics queries
 
-use super::listing_cursor::row_to_listed_record;
-use super::{DbPool, ListedRecord, NoteViewStats, PopularWindow};
+use super::listing_cursor::row_to_listed_resource;
+use super::{DbPool, ListedResource, PopularWindow, ResourceViewStats};
 use crate::error::AppError;
 
-pub async fn record_note_view(pool: &DbPool, id: &str) -> Result<(), AppError> {
+pub async fn count_resource_view(pool: &DbPool, id: &str) -> Result<(), AppError> {
     let mut db = client(pool).await?;
     let tx = db
         .transaction()
@@ -29,7 +29,10 @@ pub async fn record_note_view(pool: &DbPool, id: &str) -> Result<(), AppError> {
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-pub async fn get_note_view_stats(pool: &DbPool, id: &str) -> Result<NoteViewStats, AppError> {
+pub async fn get_resource_view_stats(
+    pool: &DbPool,
+    id: &str,
+) -> Result<ResourceViewStats, AppError> {
     client(pool)
         .await?
         .query_one(
@@ -42,7 +45,7 @@ pub async fn get_note_view_stats(pool: &DbPool, id: &str) -> Result<NoteViewStat
             &[&id],
         )
         .await
-        .map(|row| NoteViewStats {
+        .map(|row| ResourceViewStats {
             total: row.get("total"),
             views_7d: row.get("views_7d"),
             views_30d: row.get("views_30d"),
@@ -52,12 +55,12 @@ pub async fn get_note_view_stats(pool: &DbPool, id: &str) -> Result<NoteViewStat
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-pub async fn list_popular_records(
+pub async fn list_popular_resources(
     pool: &DbPool,
     include_private: bool,
     limit: i64,
     window: PopularWindow,
-) -> Result<Vec<ListedRecord>, AppError> {
+) -> Result<Vec<ListedResource>, AppError> {
     let sql = format!(
         "WITH popular AS ({}) \
          SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
@@ -74,7 +77,7 @@ pub async fn list_popular_records(
         .await?
         .query(&sql, &[&include_private, &limit])
         .await
-        .map(|rows| rows.into_iter().map(row_to_listed_record).collect())
+        .map(|rows| rows.into_iter().map(row_to_listed_resource).collect())
         .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 

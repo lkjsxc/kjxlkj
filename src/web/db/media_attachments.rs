@@ -1,6 +1,8 @@
 use super::media::MediaBlob;
-use super::models::{Record, RecordKind};
-use super::record_support::{map_write_error, resolve_position, row_to_record, RETURNING_RECORD};
+use super::models::{Resource, ResourceKind};
+use super::resource_support::{
+    map_write_error, resolve_position, row_to_resource, RETURNING_RECORD,
+};
 use super::write_support::{client, create_snapshot, next_snapshot_number};
 use super::{DbPool, MediaFamily};
 use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
@@ -23,7 +25,7 @@ pub struct AttachmentCreate {
 pub struct NoteAttachmentUpdate<'a> { pub body: &'a str, pub alias: Option<&'a str>, pub is_favorite: bool, pub is_private: bool }
 
 #[rustfmt::skip]
-pub struct AttachmentBatchResult { pub current_note: Record, pub created_media: Vec<Record> }
+pub struct AttachmentBatchResult { pub current_resource: Resource, pub created_media: Vec<Resource> }
 
 pub async fn attach_media_to_note(
     pool: &DbPool,
@@ -36,33 +38,33 @@ pub async fn attach_media_to_note(
         .transaction()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    let Some((kind, was_favorite, current_position)) = current_note_state(&tx, note_id).await?
+    let Some((kind, was_favorite, current_position)) = target_note_state(&tx, note_id).await?
     else {
         return Err(AppError::NotFound(format!(
             "resource '{note_id}' not found"
         )));
     };
-    if kind != RecordKind::Note {
+    if kind != ResourceKind::Note {
         return Err(AppError::InvalidRequest(
             "media attachments require a live note".to_string(),
         ));
     }
-    let created_media = create_media_records(&tx, attachments, update.is_private).await?;
-    let current_note =
-        update_current_note(&tx, note_id, update, was_favorite, current_position).await?;
+    let created_media = create_media_resources(&tx, attachments, update.is_private).await?;
+    let current_resource =
+        update_target_note(&tx, note_id, update, was_favorite, current_position).await?;
     tx.commit()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(AttachmentBatchResult {
-        current_note,
+        current_resource,
         created_media,
     })
 }
 
-async fn current_note_state<C: GenericClient>(
+async fn target_note_state<C: GenericClient>(
     db: &C,
     id: &str,
-) -> Result<Option<NoteState>, AppError> {
+) -> Result<Option<NoteResourceState>, AppError> {
     db.query_opt(
         "SELECT kind, is_favorite, favorite_position FROM resources WHERE id = $1 AND deleted_at IS NULL FOR UPDATE",
         &[&id],
@@ -71,7 +73,7 @@ async fn current_note_state<C: GenericClient>(
     .map(|row| {
         row.map(|item| {
             (
-                RecordKind::from_db(&item.get::<_, String>("kind")),
+                ResourceKind::from_db(&item.get::<_, String>("kind")),
                 item.get("is_favorite"),
                 item.get("favorite_position"),
             )
@@ -80,14 +82,14 @@ async fn current_note_state<C: GenericClient>(
     .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-type NoteState = (RecordKind, bool, Option<i64>);
+type NoteResourceState = (ResourceKind, bool, Option<i64>);
 
-async fn create_media_records<C: GenericClient>(
+async fn create_media_resources<C: GenericClient>(
     db: &C,
     attachments: &[AttachmentCreate],
     is_private: bool,
-) -> Result<Vec<Record>, AppError> {
-    let mut records = Vec::with_capacity(attachments.len());
+) -> Result<Vec<Resource>, AppError> {
+    let mut resources = Vec::with_capacity(attachments.len());
     for attachment in attachments {
         let blob = MediaBlob {
             media_family: attachment.media_family,
@@ -109,7 +111,7 @@ async fn create_media_records<C: GenericClient>(
                 ),
                 &[
                     &attachment.media_id,
-                    &RecordKind::Media.as_str(),
+                    &ResourceKind::Media.as_str(),
                     &derive_title_with_fallback(&attachment.media_body, "Untitled media"),
                     &derive_summary(&attachment.media_body),
                     &attachment.media_body,
@@ -124,20 +126,20 @@ async fn create_media_records<C: GenericClient>(
             )
             .await
             .map_err(map_write_error)?;
-        let record = row_to_record(row);
-        create_snapshot(db, &record, 1).await?;
-        records.push(record);
+        let resource = row_to_resource(row);
+        create_snapshot(db, &resource, 1).await?;
+        resources.push(resource);
     }
-    Ok(records)
+    Ok(resources)
 }
 
-async fn update_current_note<C: GenericClient>(
+async fn update_target_note<C: GenericClient>(
     db: &C,
     id: &str,
     update: &NoteAttachmentUpdate<'_>,
     was_favorite: bool,
     current_position: Option<i64>,
-) -> Result<Record, AppError> {
+) -> Result<Resource, AppError> {
     let row = db
         .query_one(
             &format!(
@@ -158,7 +160,7 @@ async fn update_current_note<C: GenericClient>(
         )
         .await
         .map_err(map_write_error)?;
-    let record = row_to_record(row);
-    create_snapshot(db, &record, next_snapshot_number(db, &record.id).await?).await?;
-    Ok(record)
+    let resource = row_to_resource(row);
+    create_snapshot(db, &resource, next_snapshot_number(db, &resource.id).await?).await?;
+    Ok(resource)
 }

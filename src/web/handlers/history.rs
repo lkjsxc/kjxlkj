@@ -1,8 +1,8 @@
-//! Note history HTML handlers
+//! Resource history HTML handlers
 
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, ListDirection};
-use crate::web::handlers::record_history::HistoryParams;
+use crate::web::handlers::resource_history::HistoryParams;
 use crate::web::handlers::session;
 use crate::web::site::SiteContext;
 use crate::web::templates;
@@ -23,33 +23,33 @@ pub async fn history_page(
     let is_admin = session::check_session(&req, &pool).await?;
     let settings = db::get_settings(&pool).await?;
     let site = SiteContext::from_settings(&settings);
-    let Some(record) = accessible_record(&pool, &reference, is_admin).await? else {
+    let Some(resource) = accessible_resource(&pool, &reference, is_admin).await? else {
         return Ok(not_found(&site));
     };
-    if record
+    if resource
         .alias
         .as_deref()
         .is_some_and(|alias| alias != reference)
-        && reference == record.id
+        && reference == resource.id
     {
         return Ok(redirect(&with_query(
-            &view::history_href(&record),
+            &view::history_href(&resource),
             req.query_string(),
         )));
     }
-    let page = db::list_record_snapshots(
+    let page = db::list_resource_snapshots(
         &pool,
-        &record.id,
+        &resource.id,
         is_admin,
         params.limit.unwrap_or(settings.search_results_per_page),
         &ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref()),
         params.cursor.as_deref(),
     )
     .await?;
-    let chrome = view::note_chrome(&pool, &record, is_admin).await?;
+    let chrome = view::resource_chrome(&pool, &resource, is_admin).await?;
     let history = view::history_links(&page.snapshots, params.cursor.is_none());
     Ok(html(templates::history_page(
-        &record,
+        &resource,
         &chrome,
         templates::HistoryPage {
             history: &history,
@@ -62,13 +62,13 @@ pub async fn history_page(
     )))
 }
 
-async fn accessible_record(
+async fn accessible_resource(
     pool: &DbPool,
     reference: &str,
     is_admin: bool,
-) -> Result<Option<db::Record>, AppError> {
-    let record = db::get_record_by_ref(pool, reference).await?;
-    Ok(record.filter(|record| is_admin || !record.is_private))
+) -> Result<Option<db::Resource>, AppError> {
+    let resource = db::get_resource_by_ref(pool, reference).await?;
+    Ok(resource.filter(|resource| is_admin || !resource.is_private))
 }
 
 fn redirect(location: &str) -> HttpResponse {

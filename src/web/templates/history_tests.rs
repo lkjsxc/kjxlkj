@@ -1,15 +1,15 @@
 use super::{
     history::{history_page, HistoryPage},
-    HistoryLink, NoteChrome,
+    HistoryLink, ResourceChrome,
 };
-use crate::web::db::{Record, RecordKind};
+use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
 use chrono::Utc;
 
-fn sample_record() -> Record {
-    Record {
+fn sample_resource() -> Resource {
+    Resource {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
-        kind: RecordKind::Note,
+        kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),
@@ -33,10 +33,10 @@ fn sample_record() -> Record {
     }
 }
 
-fn sample_chrome() -> NoteChrome {
-    NoteChrome {
+fn sample_chrome() -> ResourceChrome {
+    ResourceChrome {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
-        kind: RecordKind::Note,
+        kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),
@@ -62,7 +62,7 @@ fn sample_site() -> SiteContext {
 #[test]
 fn history_page_lists_live_note_and_saved_snapshots() {
     let html = history_page(
-        &sample_record(),
+        &sample_resource(),
         &sample_chrome(),
         HistoryPage {
             history: &[HistoryLink {

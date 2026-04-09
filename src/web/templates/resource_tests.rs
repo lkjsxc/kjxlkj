@@ -1,12 +1,12 @@
-use super::{note::note_page, NoteAnalytics, NoteChrome};
-use crate::web::db::{Record, RecordKind};
+use super::{resource::resource_page, ResourceAnalytics, ResourceChrome};
+use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
 use chrono::Utc;
 
-fn sample_record() -> Record {
-    Record {
+fn sample_resource() -> Resource {
+    Resource {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
-        kind: RecordKind::Note,
+        kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),
@@ -30,10 +30,10 @@ fn sample_record() -> Record {
     }
 }
 
-fn sample_chrome() -> NoteChrome {
-    NoteChrome {
+fn sample_chrome() -> ResourceChrome {
+    ResourceChrome {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
-        kind: RecordKind::Note,
+        kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),
@@ -57,9 +57,9 @@ fn sample_site() -> SiteContext {
 }
 
 #[test]
-fn guest_note_page_hides_editor() {
-    let html = note_page(
-        &sample_record(),
+fn guest_resource_page_hides_editor() {
+    let html = resource_page(
+        &sample_resource(),
         &sample_chrome(),
         None,
         false,
@@ -74,11 +74,11 @@ fn guest_note_page_hides_editor() {
 }
 
 #[test]
-fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
-    let html = note_page(
-        &sample_record(),
+fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
+    let html = resource_page(
+        &sample_resource(),
         &sample_chrome(),
-        Some(&NoteAnalytics {
+        Some(&ResourceAnalytics {
             total: 12,
             views_7d: 4,
             views_30d: 7,

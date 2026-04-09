@@ -1,38 +1,43 @@
 use super::layout::html_escape;
-use crate::web::db::{MediaFamily, Record, RecordSnapshot};
+use crate::web::db::{MediaFamily, Resource, ResourceSnapshot};
 use crate::web::view;
 
-pub fn current_media_block(record: &Record) -> String {
+pub fn current_media_block(resource: &Resource) -> String {
     media_surface(
         "Current file",
-        record.media_family,
-        &view::file_href(record),
-        &record.title,
+        resource.media_family,
+        &view::file_href(resource),
+        &resource.title,
     )
 }
 
-pub fn admin_media_panel(record: &Record) -> String {
-    let file_href = view::file_href(record);
+pub fn admin_media_panel(resource: &Resource) -> String {
+    let file_href = view::file_href(resource);
     format!(
-        r#"{}<section class="surface note-surface">
+        r#"{}<section class="surface resource-surface">
 <div class="editor-meta-grid">
 <div class="editor-url-card editor-field-card"><small>File URL</small><a href="{file_href}">{file_href}</a></div>
 <div class="editor-url-card editor-field-card"><small>File metadata</small><span>{} · {} · {}</span></div>
 </div>
 </section>"#,
-        current_media_block(record),
-        html_escape(record.original_filename.as_deref().unwrap_or("upload.bin")),
+        current_media_block(resource),
         html_escape(
-            record
+            resource
+                .original_filename
+                .as_deref()
+                .unwrap_or("upload.bin")
+        ),
+        html_escape(
+            resource
                 .content_type
                 .as_deref()
                 .unwrap_or("application/octet-stream")
         ),
-        format_bytes(record.byte_size.unwrap_or(0)),
+        format_bytes(resource.byte_size.unwrap_or(0)),
     )
 }
 
-pub fn snapshot_media_block(snapshot: &RecordSnapshot) -> String {
+pub fn snapshot_media_block(snapshot: &ResourceSnapshot) -> String {
     media_surface(
         "Saved file",
         snapshot.media_family,
@@ -48,7 +53,7 @@ fn media_surface(
     title: &str,
 ) -> String {
     format!(
-        r#"<section class="surface note-surface media-surface"><small>{label}</small>{}</section>"#,
+        r#"<section class="surface resource-surface media-surface"><small>{label}</small>{}</section>"#,
         media_markup(media_family, href, title)
     )
 }

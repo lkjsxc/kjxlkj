@@ -6,14 +6,14 @@ use super::sections::section_with_actions_attrs;
 use crate::web::db::PopularWindow;
 
 pub fn home_popular_section(notes: &[IndexItem], window: PopularWindow) -> String {
-    popular_notes_section("home", notes, window)
+    popular_resources_section("home", notes, window)
 }
 
 pub fn admin_popular_section(notes: &[IndexItem], window: PopularWindow) -> String {
-    popular_notes_section("admin", notes, window)
+    popular_resources_section("admin", notes, window)
 }
 
-fn popular_notes_section(surface: &str, notes: &[IndexItem], window: PopularWindow) -> String {
+fn popular_resources_section(surface: &str, notes: &[IndexItem], window: PopularWindow) -> String {
     section_with_actions_attrs(
         "Popular",
         Some(&window_controls(window)),
@@ -22,7 +22,7 @@ fn popular_notes_section(surface: &str, notes: &[IndexItem], window: PopularWind
             "No popular entries yet.",
             Some(popular_browse_card(window)),
         ),
-        "note-section",
+        "resource-section",
         &format!(r#"data-popular-section data-popular-surface="{surface}""#),
     )
 }
