@@ -58,24 +58,40 @@ pub async fn list_popular_records(
     limit: i64,
     window: PopularWindow,
 ) -> Result<Vec<ListedRecord>, AppError> {
+    let sql = format!(
+        "WITH popular AS ({}) \
+         SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
+         r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
+         r.duration_ms, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
+         r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, \
+         COALESCE(p.popular_views, 0)::BIGINT AS popular_views \
+         FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) \
+         ORDER BY COALESCE(p.popular_views, 0) DESC, r.view_count_total DESC, r.updated_at DESC, r.id ASC LIMIT $2",
+        popular_cte(window)
+    );
     client(pool)
         .await?
-        .query(
-            "WITH popular AS (SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
-             FROM resource_daily_views WHERE view_date >= CURRENT_DATE - ($3::INT - 1) GROUP BY resource_id) \
-             SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
-             r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
-             r.duration_ms, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
-             r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, \
-             COALESCE(p.popular_views, 0)::BIGINT AS popular_views \
-             FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-             WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) \
-             ORDER BY COALESCE(p.popular_views, 0) DESC, r.view_count_total DESC, r.updated_at DESC, r.id ASC LIMIT $2",
-            &[&include_private, &limit, &window.days()],
-        )
+        .query(&sql, &[&include_private, &limit])
         .await
         .map(|rows| rows.into_iter().map(row_to_listed_record).collect())
         .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+fn popular_cte(window: PopularWindow) -> String {
+    window.days().map_or_else(
+        || {
+            "SELECT id AS resource_id, view_count_total AS popular_views \
+             FROM resources WHERE deleted_at IS NULL"
+                .to_string()
+        },
+        |days| {
+            format!(
+                "SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
+                 FROM resource_daily_views WHERE view_date >= CURRENT_DATE - ({days} - 1) GROUP BY resource_id"
+            )
+        },
+    )
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {

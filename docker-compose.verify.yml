@@ -19,8 +19,8 @@ services:
       context: .
       dockerfile: Dockerfile.visual
     environment:
-      APP_URL: http://app:${BIND_PORT:-8080}
-      DATABASE_URL: postgres://${POSTGRES_USER:-kjxlkj}:${POSTGRES_PASSWORD:-kjxlkj}@postgres:5432/${POSTGRES_DB:-kjxlkj}
+      APP_URL: http://app:${BIND_PORT}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       ARTIFACT_DIR: /artifacts
     volumes:
       - ./tmp/visual-artifacts:/artifacts

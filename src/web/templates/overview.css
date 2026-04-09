@@ -134,6 +134,21 @@
     height: 196px;
 }
 
+.note-grid .note-row.note-row-media {
+    min-height: 196px;
+    height: auto;
+    padding: 0 0 16px;
+    overflow: hidden;
+}
+
+.note-row-media .card-cover {
+    border-bottom: 1px solid var(--line);
+}
+
+.note-row-media .card-meta {
+    padding: 0 16px;
+}
+
 .note-grid .card-meta {
     justify-items: start;
     text-align: left;

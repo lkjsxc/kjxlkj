@@ -80,7 +80,7 @@ pub fn popular_browse_card(window: PopularWindow) -> String {
         ),
         "View more resources",
         "Browse more popularity-ranked resources in the current rolling window.",
-        window.as_str(),
+        window.button_label(),
     )
 }
 

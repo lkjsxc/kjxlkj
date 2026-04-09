@@ -1,0 +1,62 @@
+use super::models::Record;
+use super::resource_ids::next_resource_id;
+use super::DbPool;
+use crate::error::AppError;
+use deadpool_postgres::GenericClient;
+
+pub async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
+    pool.get()
+        .await
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+pub async fn next_snapshot_number<C: GenericClient>(
+    db: &C,
+    record_id: &str,
+) -> Result<i32, AppError> {
+    db.query_one(
+        "SELECT COALESCE(MAX(snapshot_number), 0) + 1 AS snapshot_number \
+         FROM resource_snapshots WHERE resource_id = $1",
+        &[&record_id],
+    )
+    .await
+    .map(|row| row.get("snapshot_number"))
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}
+
+pub async fn create_snapshot<C: GenericClient>(
+    db: &C,
+    record: &Record,
+    snapshot_number: i32,
+) -> Result<(), AppError> {
+    let snapshot_id = next_resource_id(db).await?;
+    db.execute(
+        "INSERT INTO resource_snapshots \
+         (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
+          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, is_private) \
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)",
+        &[
+            &snapshot_id,
+            &record.id,
+            &record.kind.as_str(),
+            &snapshot_number,
+            &record.alias,
+            &record.title,
+            &record.summary,
+            &record.body,
+            &record.media_family.map(|family| family.as_str()),
+            &record.file_key,
+            &record.content_type,
+            &record.byte_size,
+            &record.sha256_hex,
+            &record.original_filename,
+            &record.width,
+            &record.height,
+            &record.duration_ms,
+            &record.is_private,
+        ],
+    )
+    .await
+    .map(|_| ())
+    .map_err(|e| AppError::DatabaseError(e.to_string()))
+}

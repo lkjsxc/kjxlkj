@@ -92,6 +92,7 @@ fn admin_note_page_renders_alias_controls_without_markdown_body_label() {
     assert!(html.contains("alias-input"));
     assert!(html.contains("id=\"editor-body\""));
     assert!(html.contains("preview-toggle"));
+    assert!(html.contains("upload-media-trigger"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("2026-03-26 08:35 UTC"));

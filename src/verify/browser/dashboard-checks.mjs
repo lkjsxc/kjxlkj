@@ -28,8 +28,8 @@ export async function verifyFavoriteReorder(page) {
         .locator('.section-block.note-section', {
             has: page.getByRole('heading', { name: 'Favorites', exact: true }),
         })
-        .locator('.card-title')
-        .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
+        .locator('.note-row[data-card-title]')
+        .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
     assert.equal(favoriteTitles[0], 'Beacon Log');
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
 }

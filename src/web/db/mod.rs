@@ -14,6 +14,7 @@ mod listing_queries;
 mod listing_sort;
 mod listing_sort_sql;
 mod media;
+mod media_attachments;
 mod migrations;
 mod models;
 mod navigation;
@@ -24,6 +25,7 @@ mod resource_ids;
 mod revisions;
 mod revisions_cursor;
 mod settings;
+mod write_support;
 
 pub use analytics::{get_note_view_stats, list_popular_records, record_note_view};
 pub use auth::{
@@ -36,7 +38,8 @@ pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
-pub use media::{create_media, replace_media_file, MediaBlob};
+pub use media::{create_media, MediaBlob};
+pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
 pub use models::{
     AppSettings, ListedRecord, MediaFamily, NoteStats, NoteViewStats, Record, RecordKind,
     RecordSnapshot, SitemapRecord,

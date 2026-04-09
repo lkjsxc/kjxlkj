@@ -1,6 +1,6 @@
 //! View models for HTML templates
 
-use crate::web::db::RecordKind;
+use crate::web::db::{MediaFamily, RecordKind};
 
 #[derive(Clone, Debug)]
 pub struct NavLink {
@@ -60,7 +60,8 @@ pub struct IndexItem {
     pub created_at: String,
     pub updated_at: String,
     pub kind_badge: &'static str,
-    pub image_href: Option<String>,
+    pub media_family: Option<MediaFamily>,
+    pub media_href: Option<String>,
     pub is_favorite: bool,
     pub visibility: Option<&'static str>,
     pub metrics: Vec<IndexMetric>,

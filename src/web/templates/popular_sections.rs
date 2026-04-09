@@ -32,6 +32,7 @@ fn window_controls(window: PopularWindow) -> String {
         PopularWindow::Days7,
         PopularWindow::Days30,
         PopularWindow::Days90,
+        PopularWindow::All,
     ]
     .into_iter()
     .map(|item| window_button(item, window))
@@ -49,6 +50,6 @@ fn window_button(item: PopularWindow, current: PopularWindow) -> String {
         if item == current { " btn-primary" } else { "" },
         item.as_str(),
         if item == current { "true" } else { "false" },
-        item.as_str(),
+        item.button_label(),
     )
 }

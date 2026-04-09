@@ -27,9 +27,9 @@ pub(super) async fn browse_records(
     };
     let kind_filter = request.kind.sql_filter("r");
     let params = BrowseParams::new(request);
+    let popular = popular_cte(request.popular_window);
     let sql = format!(
-        "WITH popular AS (SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
-         FROM resource_daily_views WHERE view_date >= CURRENT_DATE - ({} - 1) GROUP BY resource_id), \
+        "WITH popular AS ({popular}), \
          listed AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
          r.duration_ms, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
@@ -38,7 +38,6 @@ pub(super) async fn browse_records(
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
          WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) {favorite_filter} {kind_filter}) \
          SELECT * FROM listed WHERE {} AND {} ORDER BY {} LIMIT $11",
-        request.popular_window.days(),
         request.sort.binding_clause(2),
         request.sort.cursor_filter(request.direction, 2),
         request.sort.order_clause(request.direction)
@@ -63,10 +62,10 @@ pub(super) async fn search_records(
     };
     let kind_filter = request.kind.sql_filter("r");
     let params = SearchParams::new(request, query);
+    let popular = popular_cte(request.popular_window);
     let sql = format!(
         "WITH q AS (SELECT websearch_to_tsquery('simple', $2) AS tsq, $2::TEXT AS raw), \
-         popular AS (SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
-         FROM resource_daily_views WHERE view_date >= CURRENT_DATE - ({} - 1) GROUP BY resource_id), \
+         popular AS ({popular}), \
          matched AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, r.duration_ms, \
          r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, r.last_viewed_at, r.created_at, r.updated_at, \
@@ -83,7 +82,6 @@ pub(super) async fn search_records(
          OR similarity(COALESCE(r.alias, ''), (SELECT raw FROM q)) >= 0.15 \
          OR similarity(r.title, (SELECT raw FROM q)) >= 0.15 OR similarity(r.body, (SELECT raw FROM q)) >= 0.05)) \
          SELECT * FROM matched WHERE {} AND {} ORDER BY {} LIMIT $12",
-        request.popular_window.days(),
         request.sort.binding_clause(3),
         request.sort.cursor_filter(request.direction, 3),
         request.sort.order_clause(request.direction)
@@ -134,6 +132,22 @@ fn context<'a>(request: &'a ListingQuery<'a>) -> PageCursorContext<'a> {
         popular_window: request.popular_window,
         has_cursor: request.cursor.is_some(),
     }
+}
+
+fn popular_cte(window: PopularWindow) -> String {
+    window.days().map_or_else(
+        || {
+            "SELECT id AS resource_id, view_count_total AS popular_views \
+             FROM resources WHERE deleted_at IS NULL"
+                .to_string()
+        },
+        |days| {
+            format!(
+                "SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
+                 FROM resource_daily_views WHERE view_date >= CURRENT_DATE - ({days} - 1) GROUP BY resource_id"
+            )
+        },
+    )
 }
 
 fn db_err(error: tokio_postgres::Error) -> AppError {

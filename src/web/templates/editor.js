@@ -3,6 +3,8 @@ var editorState = {
     aliasField: null,
     publicToggle: null,
     favoriteToggle: null,
+    uploadButton: null,
+    uploadInput: null,
     shell: null,
     previewToggle: null,
     previewBackdrop: null,
@@ -18,6 +20,7 @@ var editorState = {
     lastSavedAlias: null,
     lastSavedFavorite: false,
     lastSavedPrivate: null,
+    uploading: false,
     lastPreviewBody: null,
     renderedTitle: '',
     renderedVisibility: '',
@@ -29,6 +32,7 @@ function initEditor() {
     if (!editorState.bodyField || !editorState.shell) return;
     bindEditorInputs();
     bindPreviewEvents();
+    if (typeof bindUploadEvents === 'function') bindUploadEvents();
     editorState.lastSavedBody = editorState.bodyField.value;
     editorState.lastSavedAlias = currentAlias;
     editorState.lastSavedFavorite = isFavorite;
@@ -43,6 +47,8 @@ function cacheEditorNodes() {
     editorState.aliasField = document.getElementById('alias-input');
     editorState.publicToggle = document.getElementById('public-toggle');
     editorState.favoriteToggle = document.getElementById('favorite-toggle');
+    editorState.uploadButton = document.getElementById('upload-media-trigger');
+    editorState.uploadInput = document.getElementById('upload-media-input');
     editorState.shell = document.getElementById('editor-shell');
     editorState.previewToggle = document.getElementById('preview-toggle');
     editorState.previewBackdrop = document.getElementById('preview-backdrop');

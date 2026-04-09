@@ -70,61 +70,6 @@ pub async fn create_media(
     Ok(record)
 }
 
-pub async fn replace_media_file(
-    pool: &DbPool,
-    id: &str,
-    blob: &MediaBlob<'_>,
-) -> Result<Option<Record>, AppError> {
-    let mut db = client(pool).await?;
-    let tx = db
-        .transaction()
-        .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    let row = tx
-        .query_opt(
-            &format!(
-                "UPDATE resources SET media_family = $2, file_key = $3, content_type = $4, byte_size = $5, \
-                 sha256_hex = $6, original_filename = $7, width = $8, height = $9, duration_ms = $10, \
-                 updated_at = NOW() \
-                 WHERE id = $1 AND kind = 'media' AND deleted_at IS NULL {RETURNING_RECORD}"
-            ),
-            &[
-                &id,
-                &blob.media_family.as_str(),
-                &blob.file_key,
-                &blob.content_type,
-                &blob.byte_size,
-                &blob.sha256_hex,
-                &blob.original_filename,
-                &blob.width,
-                &blob.height,
-                &blob.duration_ms,
-            ],
-        )
-        .await
-        .map_err(map_write_error)?;
-    let Some(record) = row.map(row_to_record) else {
-        return Ok(None);
-    };
-    let snapshot_number = next_snapshot_number(&tx, &record.id).await?;
-    create_snapshot(&tx, &record, snapshot_number).await?;
-    tx.commit()
-        .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(Some(record))
-}
-
-async fn next_snapshot_number<C: GenericClient>(db: &C, record_id: &str) -> Result<i32, AppError> {
-    db.query_one(
-        "SELECT COALESCE(MAX(snapshot_number), 0) + 1 AS snapshot_number \
-         FROM resource_snapshots WHERE resource_id = $1",
-        &[&record_id],
-    )
-    .await
-    .map(|row| row.get("snapshot_number"))
-    .map_err(|e| AppError::DatabaseError(e.to_string()))
-}
-
 async fn create_snapshot<C: GenericClient>(
     db: &C,
     record: &Record,

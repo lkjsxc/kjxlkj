@@ -35,6 +35,12 @@
     justify-content: space-between;
 }
 
+.editor-statuses {
+    display: grid;
+    gap: 6px;
+    justify-items: end;
+}
+
 .editor-meta-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
@@ -105,6 +111,10 @@
     display: none;
 }
 
-.save-error {
+.editor-status {
+    color: var(--text-soft);
+}
+
+.editor-status[data-tone="error"] {
     color: var(--danger);
 }

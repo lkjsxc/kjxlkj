@@ -13,7 +13,8 @@ fn sample_item() -> IndexItem {
         created_at: "2026-03-26 08:34 UTC".to_string(),
         updated_at: "2026-03-26 08:35 UTC".to_string(),
         kind_badge: "Note",
-        image_href: None,
+        media_family: None,
+        media_href: None,
         is_favorite: true,
         visibility: Some("Public"),
         metrics: vec![IndexMetric {
@@ -37,5 +38,6 @@ fn admin_popular_section_uses_button_controls() {
     let html = admin_popular_section(&[sample_item()], PopularWindow::Days7);
     assert!(html.contains(r#"data-popular-surface="admin""#));
     assert!(html.contains(r#"type="button" class="btn btn-primary" data-popular-window="7d""#));
+    assert!(html.contains(r#"data-popular-window="all""#));
     assert!(html.contains(r#"data-popular-error hidden"#));
 }

@@ -5,6 +5,7 @@ pub enum PopularWindow {
     Days7,
     Days30,
     Days90,
+    All,
 }
 
 impl PopularWindow {
@@ -13,6 +14,7 @@ impl PopularWindow {
             "7d" => Some(Self::Days7),
             "30d" => Some(Self::Days30),
             "90d" => Some(Self::Days90),
+            "all" => Some(Self::All),
             _ => None,
         }
     }
@@ -26,14 +28,25 @@ impl PopularWindow {
             Self::Days7 => "7d",
             Self::Days30 => "30d",
             Self::Days90 => "90d",
+            Self::All => "all",
         }
     }
 
-    pub fn days(self) -> i32 {
+    pub fn button_label(self) -> &'static str {
         match self {
-            Self::Days7 => 7,
-            Self::Days30 => 30,
-            Self::Days90 => 90,
+            Self::Days7 => "7d",
+            Self::Days30 => "30d",
+            Self::Days90 => "90d",
+            Self::All => "All time",
+        }
+    }
+
+    pub fn days(self) -> Option<i32> {
+        match self {
+            Self::Days7 => Some(7),
+            Self::Days30 => Some(30),
+            Self::Days90 => Some(90),
+            Self::All => None,
         }
     }
 
@@ -42,6 +55,7 @@ impl PopularWindow {
             Self::Days7 => "7d views",
             Self::Days30 => "30d views",
             Self::Days90 => "90d views",
+            Self::All => "Views",
         }
     }
 }

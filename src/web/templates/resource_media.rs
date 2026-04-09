@@ -19,11 +19,6 @@ pub fn admin_media_panel(record: &Record) -> String {
 <div class="editor-url-card editor-field-card"><small>File URL</small><a href="{file_href}">{file_href}</a></div>
 <div class="editor-url-card editor-field-card"><small>File metadata</small><span>{} · {} · {}</span></div>
 </div>
-<form id="media-file-form" class="settings-submit-row">
-<input id="media-file-input" type="file" name="file" accept="image/*,video/*" required>
-<button id="media-file-submit" type="submit" class="btn">Replace file</button>
-<span id="media-file-status" class="save-error" hidden></span>
-</form>
 </section>"#,
         current_media_block(record),
         html_escape(record.original_filename.as_deref().unwrap_or("upload.bin")),

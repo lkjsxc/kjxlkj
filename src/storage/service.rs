@@ -94,6 +94,17 @@ impl Storage {
         })
     }
 
+    pub async fn delete_object(&self, key: &str) -> Result<(), AppError> {
+        self.client
+            .delete_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .send()
+            .await
+            .map(|_| ())
+            .map_err(|e| AppError::StorageError(format!("object delete failed: {e}")))
+    }
+
     async fn ensure_bucket(&self) -> Result<(), AppError> {
         if self
             .client

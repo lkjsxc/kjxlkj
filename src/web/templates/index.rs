@@ -5,23 +5,42 @@ use super::card_frame::{
 };
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::IndexItem;
+use crate::web::db::MediaFamily;
 
 pub(crate) fn note_row(note: &IndexItem) -> String {
+    let is_media = note.media_family.is_some();
     linked_card(
         &note.href,
-        &format!(r#" data-note-id="{}""#, note.id),
-        "",
+        &format!(
+            r#" data-note-id="{}" data-card-title="{}"{}"#,
+            note.id,
+            html_escape(&note.title),
+            if is_media {
+                format!(r#" aria-label="{}""#, html_escape(&note.title))
+            } else {
+                String::new()
+            }
+        ),
+        if is_media { "note-row-media" } else { "" },
         &format!(
             "{}{}",
             card_cover(note),
-            card_body(&note.title, &note.summary)
+            if is_media {
+                String::new()
+            } else {
+                card_body(&note.title, &note.summary)
+            }
         ),
         &card_meta(
             &card_badges(note),
             &format!(
                 "{}{}",
                 card_metrics(note),
-                created_updated_lines(&note.created_at, &note.updated_at)
+                if is_media {
+                    meta_line("Created", &note.created_at)
+                } else {
+                    created_updated_lines(&note.created_at, &note.updated_at)
+                }
             ),
         ),
     )
@@ -57,9 +76,7 @@ pub(crate) fn list_rail(
 }
 
 pub(crate) fn admin_create_actions() -> String {
-    r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>
-<a href="/admin/media/new" class="btn">New media</a>"#
-        .to_string()
+    r#"<button type="button" class="btn" onclick="createNote()">New note</button>"#.to_string()
 }
 
 pub(crate) fn pager(
@@ -127,12 +144,17 @@ fn card_badges(note: &IndexItem) -> String {
 }
 
 fn card_cover(note: &IndexItem) -> String {
-    note.image_href.as_ref().map_or_else(String::new, |href| {
-        format!(
+    match (note.media_family, note.media_href.as_ref()) {
+        (Some(MediaFamily::Image), Some(href)) => format!(
             r#"<div class="card-cover"><img src="{}" alt="" style="width:100%;aspect-ratio:16 / 9;object-fit:cover;display:block;"></div>"#,
             html_escape(href),
-        )
-    })
+        ),
+        (Some(MediaFamily::Video), Some(href)) => format!(
+            r#"<div class="card-cover"><video preload="metadata" muted playsinline src="{}" style="width:100%;aspect-ratio:16 / 9;object-fit:cover;display:block;"></video></div>"#,
+            html_escape(href),
+        ),
+        _ => String::new(),
+    }
 }
 
 fn card_metrics(note: &IndexItem) -> String {

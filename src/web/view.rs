@@ -18,20 +18,13 @@ pub fn popular_index_item(
     show_admin_details: bool,
     window: PopularWindow,
 ) -> IndexItem {
-    let metrics = if show_admin_details {
-        vec![
-            IndexMetric {
-                label: window.metric_label().to_string(),
-                value: record.popular_views.unwrap_or(0).to_string(),
-            },
-            IndexMetric {
-                label: "All time".to_string(),
-                value: record.record.view_count_total.to_string(),
-            },
-        ]
-    } else {
-        Vec::new()
-    };
+    let metrics = show_admin_details
+        .then(|| IndexMetric {
+            label: window.metric_label().to_string(),
+            value: record.popular_views.unwrap_or(0).to_string(),
+        })
+        .into_iter()
+        .collect();
     build_index_item(record, show_admin_details, metrics)
 }
 
@@ -103,8 +96,11 @@ fn build_index_item(
         created_at: render_time(&record.record.created_at),
         updated_at: render_time(&record.record.updated_at),
         kind_badge,
-        image_href: matches!(record.record.media_family, Some(MediaFamily::Image))
-            .then(|| file_href(&record.record)),
+        media_family: record.record.media_family,
+        media_href: record
+            .record
+            .media_family
+            .map(|_| file_href(&record.record)),
         is_favorite: record.record.is_favorite,
         visibility: show_visibility.then_some(visibility_label(record.record.is_private)),
         metrics,

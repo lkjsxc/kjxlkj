@@ -7,8 +7,8 @@ export async function popularTitles(page) {
         .locator('.section-block.note-section', {
             has: page.getByRole('heading', { name: 'Popular', exact: true }),
         })
-        .locator('.card-title')
-        .evaluateAll((nodes) => nodes.map((node) => node.textContent.trim()));
+        .locator('.note-row[data-card-title]')
+        .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
 }
 
 export async function assertHomeBrowseLinks(page) {
@@ -21,6 +21,10 @@ export async function assertPopularWindowSwitch(page, path, surface) {
     const before = await navigationCount(page);
     await clickWindow(page, surface, '90d', 'Atlas Entry');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=90d');
+    assertStableUrl(page, path, before);
+    await clickWindow(page, surface, 'All time', 'Beacon Log');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=all');
+    await assertPopularMetricLabel(page, surface, 'Views');
     assertStableUrl(page, path, before);
     await clickWindow(page, surface, '30d', 'Beacon Log');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=30d');
@@ -58,17 +62,31 @@ async function clickWindow(page, surface, label, firstTitle) {
                 '[data-popular-section][data-popular-surface="' + expectedSurface + '"]'
             );
             if (!section || section.getAttribute('aria-busy') === 'true') return false;
-            const title = section.querySelector('.card-title');
+            const title = section.querySelector('.note-row[data-card-title]');
             const active = section.querySelector('[data-popular-window][aria-pressed="true"]');
             return (
                 !!title &&
                 !!active &&
-                title.textContent.trim() === expectedTitle &&
+                title.dataset.cardTitle.trim() === expectedTitle &&
                 active.getAttribute('data-popular-window') === expectedWindow &&
                 !section.textContent.includes('UTC')
             );
         },
         { expectedSurface: surface, expectedTitle: firstTitle, expectedWindow: label }
+    );
+}
+
+async function assertPopularMetricLabel(page, surface, label) {
+    await page.waitForFunction(
+        ({ expectedLabel, expectedSurface }) => {
+            const section = document.querySelector(
+                '[data-popular-section][data-popular-surface="' + expectedSurface + '"]'
+            );
+            if (!section) return false;
+            const metric = section.querySelector('.note-row .card-meta small span');
+            return !!metric && metric.textContent.trim() === expectedLabel;
+        },
+        { expectedLabel: label, expectedSurface: surface }
     );
 }
 

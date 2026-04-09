@@ -11,7 +11,7 @@ use crate::web::site::SiteContext;
 const EDITOR_CORE_JS: &str = include_str!("editor.js");
 const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
 const EDITOR_UI_JS: &str = include_str!("editor_ui.js");
-const MEDIA_FILE_JS: &str = include_str!("media_file.js");
+const EDITOR_UPLOAD_JS: &str = include_str!("editor_upload.js");
 const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn note_page(
@@ -91,7 +91,6 @@ var isPrivate = {};
 {}
 {}
 initEditor();
-{}
 </script>"#,
         serde_json::to_string(&record.id).unwrap(),
         serde_json::to_string(&record.alias).unwrap(),
@@ -103,13 +102,8 @@ initEditor();
         EDITOR_UI_JS,
         EDITOR_CORE_JS,
         EDITOR_SYNC_JS,
-        if record.kind == RecordKind::Media {
-            MEDIA_FILE_JS
-        } else {
-            ""
-        },
-        if record.kind == RecordKind::Media {
-            "initMediaFileForm();"
+        if record.kind == RecordKind::Note {
+            EDITOR_UPLOAD_JS
         } else {
             ""
         },
@@ -143,15 +137,25 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
     let alias = html_escape(record.alias.as_deref().unwrap_or(""));
     let href = html_escape(&chrome.current_href);
     let body = html_escape(&record.body);
+    let upload_controls = if record.kind == RecordKind::Note {
+        r#"<button type="button" id="upload-media-trigger" class="btn">Upload media</button>
+<input id="upload-media-input" type="file" accept="image/*,video/*" multiple hidden>"#
+    } else {
+        ""
+    };
     format!(
         r#"<section class="surface note-surface editor-shell preview-closed" id="editor-shell">
 <div class="editor-toolbar-row">
 <div class="editor-controls">
 <button type="button" id="preview-toggle" class="btn" aria-expanded="false" onclick="togglePreview()">Show preview</button>
-<label class="check-row" for="favorite-toggle"><input type="checkbox" id="favorite-toggle" {}><span>Favorite</span></label>
-<label class="check-row" for="public-toggle"><input type="checkbox" id="public-toggle" {}><span>Public</span></label>
+{upload_controls}
+<label class="check-row" for="favorite-toggle"><input type="checkbox" id="favorite-toggle" {favorite_checked}><span>Favorite</span></label>
+<label class="check-row" for="public-toggle"><input type="checkbox" id="public-toggle" {public_checked}><span>Public</span></label>
 </div>
-<span id="save-error" class="save-error" hidden aria-live="polite">Save failed. Retry on the next change.</span>
+<div class="editor-statuses">
+<span id="upload-media-status" class="editor-status" hidden aria-live="polite"></span>
+<span id="save-error" class="editor-status" hidden aria-live="polite">Save failed. Retry on the next change.</span>
+</div>
 </div>
 <div class="editor-meta-grid">
 <label class="editor-url-card editor-field-card" for="alias-input">
@@ -172,7 +176,8 @@ fn editor_surface(record: &Record, chrome: &NoteChrome) -> String {
 </div>
 <button type="button" id="preview-backdrop" class="editor-preview-backdrop" hidden aria-label="Close preview" onclick="closePreview()"></button>
 </section>"#,
-        if chrome.is_favorite { "checked" } else { "" },
-        if record.is_private { "" } else { "checked" },
+        upload_controls = upload_controls,
+        favorite_checked = if chrome.is_favorite { "checked" } else { "" },
+        public_checked = if record.is_private { "" } else { "checked" },
     )
 }

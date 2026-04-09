@@ -22,8 +22,8 @@ fn admin_list_rail_places_new_note_then_github_then_logout() {
         true,
     );
     let new_note = html.find("New note").unwrap();
-    let new_media = html.find("New media").unwrap();
     let github = html.find("Open GitHub").unwrap();
     let logout = html.find("Logout").unwrap();
-    assert!(new_note < new_media && new_media < github && github < logout);
+    assert!(new_note < github && github < logout);
+    assert!(!html.contains("New media"));
 }

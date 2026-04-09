@@ -86,7 +86,7 @@ async function captureAdminScreens(browser, fixtures) {
     assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
     await assertHead(page, { title: `Saved snapshot 4: ${note.title} | Launchpad`, descriptionIncludes: 'Saved snapshot 4 for Orbit Ledger.', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Current shared revision stretches across the list card');
-    await verifyUiCreatedMedia(page);
+    await verifyUiCreatedMedia(page, note);
     await Promise.all([
         page.waitForURL('**/'),
         page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
@@ -156,8 +156,8 @@ async function capturePublicScreens(browser, notes) {
         page.getByRole('button', { name: 'Search', exact: true }).click(),
     ]);
     await page.waitForLoadState('networkidle');
-    const titles = await page.locator('.note-grid .card-title').evaluateAll((nodes) =>
-        nodes.map((node) => node.textContent.trim())
+    const titles = await page.locator('.note-grid .note-row[data-card-title]').evaluateAll((nodes) =>
+        nodes.map((node) => node.dataset.cardTitle.trim())
     );
     assert.equal(titles[0], notes.image.title);
 

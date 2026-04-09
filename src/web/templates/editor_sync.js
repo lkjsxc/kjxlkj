@@ -15,6 +15,7 @@ function saveNote() {
     if (!editorState.bodyField || typeof currentId === 'undefined') return;
     var body = currentBody();
     var alias = draftAliasValue();
+    var selection = currentSelection();
     var requestId = ++editorState.latestRequest;
     fetch('/resources/' + currentId, {
         method: 'PUT',
@@ -29,18 +30,7 @@ function saveNote() {
         .then(readSaveResponse)
         .then(function (note) {
             if (requestId !== editorState.latestRequest) return;
-            currentAlias = note.alias || null;
-            currentHref = currentAlias ? '/' + currentAlias : '/' + note.id;
-            isFavorite = !!note.is_favorite;
-            isPrivate = !!note.is_private;
-            editorState.lastSavedBody = body;
-            editorState.lastSavedAlias = currentAlias;
-            editorState.lastSavedFavorite = isFavorite;
-            editorState.lastSavedPrivate = isPrivate;
-            editorState.aliasField.value = currentAlias || '';
-            editorState.publicToggle.checked = !isPrivate;
-            editorState.favoriteToggle.checked = isFavorite;
-            syncNoteChrome();
+            applySavedNote(note, selection);
             setSaveError('');
         })
         .catch(function (error) {
@@ -64,7 +54,27 @@ function setSaveError(message) {
     var node = document.getElementById('save-error');
     if (!node) return;
     node.textContent = message;
+    node.dataset.tone = message ? 'error' : '';
     node.hidden = !message;
+}
+
+function applySavedNote(note, selection) {
+    currentAlias = note.alias || null;
+    currentHref = currentAlias ? '/' + currentAlias : '/' + note.id;
+    isFavorite = !!note.is_favorite;
+    isPrivate = !!note.is_private;
+    editorState.lastSavedBody = note.body;
+    editorState.lastSavedAlias = currentAlias;
+    editorState.lastSavedFavorite = isFavorite;
+    editorState.lastSavedPrivate = isPrivate;
+    if (editorState.bodyField && editorState.bodyField.value !== note.body) {
+        editorState.bodyField.value = note.body;
+    }
+    if (editorState.aliasField) editorState.aliasField.value = currentAlias || '';
+    if (editorState.publicToggle) editorState.publicToggle.checked = !isPrivate;
+    if (editorState.favoriteToggle) editorState.favoriteToggle.checked = isFavorite;
+    syncNoteChrome();
+    restoreSelection(selection);
 }
 
 function syncNoteChrome() {
@@ -96,6 +106,20 @@ function updateLiveText(selector, value, key) {
     document.querySelectorAll(selector).forEach(function (node) {
         node.textContent = value;
     });
+}
+
+function currentSelection() {
+    if (!editorState.bodyField) return null;
+    return {
+        selectionStart: editorState.bodyField.selectionStart,
+        selectionEnd: editorState.bodyField.selectionEnd
+    };
+}
+
+function restoreSelection(selection) {
+    if (!selection || !editorState.bodyField) return;
+    editorState.bodyField.focus();
+    editorState.bodyField.setSelectionRange(selection.selectionStart, selection.selectionEnd);
 }
 
 function deriveTitle(body) {

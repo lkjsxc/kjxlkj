@@ -34,9 +34,9 @@ export async function expectPublicRoot(
     await page.getByRole('button', { name: '7d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: '30d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: '90d', exact: true }).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: 'All time', exact: true }).waitFor({ state: 'visible' });
     assert.equal(await page.locator('.stats-grid').count(), 0);
     assert.equal(await page.locator('.page-summary').count(), 0);
-    assert.equal(await page.getByText('All time', { exact: true }).count(), 0);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
     await assertNoHeaderButtons(page);
     if ((await page.evaluate(() => window.innerWidth)) > 900) {
@@ -69,7 +69,7 @@ export async function expectSearchPage(page, hasQueryCard = false) {
 }
 
 export async function expectAdminDashboard(page) {
-    await expectFlatShell(page, ['New note', 'New media', 'Logout']);
+    await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
@@ -92,7 +92,7 @@ export async function expectAdminDashboard(page) {
 }
 
 export async function expectSettingsPage(page) {
-    await expectFlatShell(page, ['New note', 'New media', 'Logout']);
+    await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Settings');
     await page.getByLabel('Site name').waitFor({ state: 'visible' });
@@ -125,6 +125,7 @@ export async function expectAdminNote(page) {
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'URL alias');
     await assertVisibleText(page, 'Canonical URL');
+    await assertVisibleText(page, 'Upload media');
     await assertVisibleText(page, 'Views total');
     await assertVisibleText(page, 'Views 30d');
     await assertSingleHistoryCard(page);
