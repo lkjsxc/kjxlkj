@@ -34,7 +34,7 @@ pub async fn parse_note_media_form(
     {
         match field.name() {
             Some("file") => files.push(read_file(&mut field).await?),
-            Some("body") => body = Some(required_text(&mut field).await?),
+            Some("body") => body = Some(raw_text(&mut field).await?),
             Some("alias") => alias = text_value(&mut field).await?,
             Some("is_favorite") => is_favorite = Some(bool_value(&mut field).await?),
             Some("is_private") => is_private = Some(bool_value(&mut field).await?),
@@ -93,15 +93,25 @@ async fn required_text(field: &mut actix_multipart::Field) -> Result<String, App
 }
 
 async fn text_value(field: &mut actix_multipart::Field) -> Result<Option<String>, AppError> {
+    Ok(trimmed_text(raw_text(field).await?))
+}
+
+async fn raw_text(field: &mut actix_multipart::Field) -> Result<String, AppError> {
     let bytes = field
         .bytes(MAX_TEXT_BYTES)
         .await
         .map_err(|_| invalid("text field exceeds limit"))?
         .map_err(|e| invalid(&format!("could not read field: {e}")))?;
-    let value =
-        String::from_utf8(bytes.to_vec()).map_err(|_| invalid("text fields must be utf-8"))?;
+    decode_text(bytes.to_vec())
+}
+
+fn decode_text(bytes: Vec<u8>) -> Result<String, AppError> {
+    String::from_utf8(bytes).map_err(|_| invalid("text fields must be utf-8"))
+}
+
+fn trimmed_text(value: String) -> Option<String> {
     let trimmed = value.trim();
-    Ok((!trimmed.is_empty()).then(|| trimmed.to_string()))
+    (!trimmed.is_empty()).then(|| trimmed.to_string())
 }
 
 async fn bool_value(field: &mut actix_multipart::Field) -> Result<bool, AppError> {
@@ -121,4 +131,26 @@ async fn usize_value(field: &mut actix_multipart::Field) -> Result<usize, AppErr
 
 fn invalid(message: &str) -> AppError {
     AppError::InvalidRequest(message.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{decode_text, trimmed_text};
+
+    #[test]
+    fn decode_text_preserves_raw_body_whitespace() {
+        assert_eq!(
+            decode_text(b"# Title\n\n  ".to_vec()).unwrap(),
+            "# Title\n\n  "
+        );
+    }
+
+    #[test]
+    fn trimmed_text_keeps_non_body_fields_trimmed() {
+        assert_eq!(
+            trimmed_text("  launch-note  \n".to_string()),
+            Some("launch-note".to_string())
+        );
+        assert_eq!(trimmed_text(" \n\t ".to_string()), None);
+    }
 }

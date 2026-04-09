@@ -1,3 +1,4 @@
+use super::media_insert::apply_insert;
 use super::media_support::{
     attachment_note_body, detect_media_family, embed_markdown, initial_body, object_key, sha256_hex,
 };
@@ -24,6 +25,7 @@ struct AttachmentRefPayload {
 struct AttachmentResponse {
     current_note: ResourcePayload,
     inserted_markdown: String,
+    selection_fallback: bool,
     created_media: Vec<AttachmentRefPayload>,
     created_notes: Vec<AttachmentRefPayload>,
 }
@@ -43,12 +45,12 @@ pub async fn attach_media(
     let alias = normalize_alias(form.alias.as_deref())?;
     let attachments = build_attachments(&pool, &form.files).await?;
     let inserted_markdown = inserted_markdown(&attachments);
-    let body = apply_insert(
+    let insertion = apply_insert(
         &form.body,
         form.insert_start,
         form.insert_end,
         &inserted_markdown,
-    )?;
+    );
     let keys = attachments
         .iter()
         .map(|item| item.file_key.clone())
@@ -58,7 +60,7 @@ pub async fn attach_media(
         &pool,
         &id,
         &NoteAttachmentUpdate {
-            body: &body,
+            body: &insertion.body,
             alias: alias.as_deref(),
             is_favorite: form.is_favorite,
             is_private: form.is_private,
@@ -70,6 +72,7 @@ pub async fn attach_media(
         Ok(result) => Ok(HttpResponse::Ok().json(AttachmentResponse {
             current_note: ResourcePayload::from_record(result.current_note),
             inserted_markdown,
+            selection_fallback: insertion.selection_fallback,
             created_media: result
                 .created_media
                 .into_iter()
@@ -152,30 +155,6 @@ fn inserted_markdown(attachments: &[AttachmentCreate]) -> String {
         .map(|attachment| embed_markdown(&attachment.media_id, attachment.media_family))
         .collect::<Vec<_>>()
         .join("\n\n")
-}
-
-fn apply_insert(
-    body: &str,
-    start: usize,
-    end: usize,
-    inserted_markdown: &str,
-) -> Result<String, AppError> {
-    if start > end || end > body.len() {
-        return Err(AppError::InvalidRequest(
-            "selection range is outside the note body".to_string(),
-        ));
-    }
-    if !body.is_char_boundary(start) || !body.is_char_boundary(end) {
-        return Err(AppError::InvalidRequest(
-            "selection range must align to UTF-8 boundaries".to_string(),
-        ));
-    }
-    Ok(format!(
-        "{}{}{}",
-        &body[..start],
-        inserted_markdown,
-        &body[end..]
-    ))
 }
 
 async fn cleanup_objects(storage: &Storage, keys: &[String]) {

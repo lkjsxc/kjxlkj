@@ -43,12 +43,18 @@ async function uploadSelectedMedia(files) {
         var payload = await response.json();
         if (!response.ok) throw new Error(payload.message || 'Media upload failed.');
         if (requestId !== editorState.latestRequest) return;
-        var cursor = selection.start + payload.inserted_markdown.length;
+        var cursor = payload.selection_fallback
+            ? body.length + payload.inserted_markdown.length
+            : selection.start + payload.inserted_markdown.length;
         applySavedNote(payload.current_note, { selectionStart: cursor, selectionEnd: cursor });
         setSaveError('');
         queuePreviewRender(true);
         setUploadStatus(
-            files.length === 1 ? 'Uploaded 1 media item.' : 'Uploaded ' + files.length + ' media items.',
+            payload.selection_fallback
+                ? 'Selection changed; inserted at end.'
+                : files.length === 1
+                    ? 'Uploaded 1 media item.'
+                    : 'Uploaded ' + files.length + ' media items.',
             ''
         );
     } catch (error) {

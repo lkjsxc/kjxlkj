@@ -12,6 +12,7 @@ pub mod logout;
 pub mod media;
 pub mod media_attachments;
 mod media_input;
+mod media_insert;
 mod media_support;
 pub mod note;
 mod note_media_input;

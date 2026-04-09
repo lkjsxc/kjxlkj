@@ -33,8 +33,10 @@ export async function verifyUiCreatedMedia(page, note) {
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await page.locator('#editor-body').waitFor({ state: 'visible' });
     await page.locator('#editor-body').evaluate((field) => {
+        if (!field.value.endsWith('\n\n  ')) field.value += '\n\n  ';
         field.focus();
         field.setSelectionRange(field.value.length, field.value.length);
+        field.dispatchEvent(new Event('input', { bubbles: true }));
     });
     const uploadPromise = page.waitForResponse((response) => {
         const url = new URL(response.url());
@@ -80,4 +82,43 @@ export async function verifyUiCreatedMedia(page, note) {
         );
     }
     await assertVisibleText(page, 'Uploaded 2 media items.');
+
+    const staleRangeResponse = await page.evaluate(async (noteId) => {
+        const body = document.querySelector('#editor-body').value;
+        const formData = new FormData();
+        formData.append(
+            'file',
+            new File(
+                ['<svg xmlns="http://www.w3.org/2000/svg"><circle r="4"/></svg>'],
+                'stale-range.svg',
+                { type: 'image/svg+xml' }
+            )
+        );
+        formData.append('body', body);
+        formData.append(
+            'is_favorite',
+            document.querySelector('#favorite-toggle').checked ? 'true' : 'false'
+        );
+        formData.append(
+            'is_private',
+            document.querySelector('#public-toggle').checked ? 'false' : 'true'
+        );
+        formData.append('insert_start', String(new TextEncoder().encode(body).length + 100));
+        formData.append('insert_end', String(new TextEncoder().encode(body).length + 100));
+        const alias = document.querySelector('#alias-input').value.trim();
+        if (alias) formData.append('alias', alias);
+        const response = await fetch(`/resources/${noteId}/media-attachments`, {
+            method: 'POST',
+            body: formData,
+        });
+        return { status: response.status, payload: await response.json() };
+    }, note.id);
+    assert.equal(staleRangeResponse.status, 200);
+    assert.equal(staleRangeResponse.payload.selection_fallback, true);
+    assert.equal(staleRangeResponse.payload.created_media.length, 1);
+    assert.equal(staleRangeResponse.payload.created_notes.length, 1);
+    assert.ok(
+        staleRangeResponse.payload.current_note.body.endsWith(staleRangeResponse.payload.inserted_markdown),
+        'stale upload selection should append embeds to the submitted draft'
+    );
 }
