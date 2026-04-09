@@ -2,11 +2,10 @@
 
 use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, Record};
-use crate::web::handlers::session;
+use crate::web::db::{self, DbPool};
+use crate::web::handlers::{resource_payload::ResourcePayload, session};
 use actix_web::{delete, post, put, web, HttpRequest, HttpResponse};
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct CreateInput {
@@ -24,19 +23,7 @@ pub struct UpdateInput {
     pub is_private: bool,
 }
 
-#[derive(Serialize)]
-struct NotePayload {
-    id: String,
-    alias: Option<String>,
-    body: String,
-    is_favorite: bool,
-    favorite_position: Option<i64>,
-    is_private: bool,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
-}
-
-#[post("/records")]
+#[post("/resources/notes")]
 pub async fn create(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -53,13 +40,13 @@ pub async fn create(
         &content,
         body.is_favorite.unwrap_or(false),
         body.is_private
-            .unwrap_or(db::get_settings(&pool).await?.default_new_note_is_private),
+            .unwrap_or(db::get_settings(&pool).await?.default_new_resource_is_private),
     )
     .await?;
-    Ok(HttpResponse::Created().json(NotePayload::from_record(record)))
+    Ok(HttpResponse::Created().json(ResourcePayload::from_record(record)))
 }
 
-#[put("/records/{id}")]
+#[put("/resources/{id}")]
 pub async fn update(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -79,12 +66,12 @@ pub async fn update(
     )
     .await?
     {
-        Some(record) => Ok(HttpResponse::Ok().json(NotePayload::from_record(record))),
-        None => Err(AppError::NotFound(format!("note '{id}' not found"))),
+        Some(record) => Ok(HttpResponse::Ok().json(ResourcePayload::from_record(record))),
+        None => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }
 
-#[delete("/records/{id}")]
+#[delete("/resources/{id}")]
 pub async fn remove(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -96,21 +83,6 @@ pub async fn remove(
     if db::delete_record(&pool, &id).await? {
         Ok(HttpResponse::NoContent().finish())
     } else {
-        Err(AppError::NotFound(format!("note '{id}' not found")))
-    }
-}
-
-impl NotePayload {
-    fn from_record(record: Record) -> Self {
-        Self {
-            id: record.id,
-            alias: record.alias,
-            body: record.body,
-            is_favorite: record.is_favorite,
-            favorite_position: record.favorite_position,
-            is_private: record.is_private,
-            created_at: record.created_at,
-            updated_at: record.updated_at,
-        }
+        Err(AppError::NotFound(format!("resource '{id}' not found")))
     }
 }

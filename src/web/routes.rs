@@ -5,8 +5,9 @@ use crate::error::AppError;
 use crate::storage::Storage;
 use crate::web::db;
 use crate::web::handlers::{
-    admin, assets, discoverability, favorites, health, history, home, login, logout, note,
-    popular_sections, preview, record_history, records, search, settings, setup,
+    admin, assets, discoverability, favorites, health, history, home, login, logout, media,
+    media_new, note, popular_sections, preview, record_history, records, resource_file, search,
+    settings, setup,
 };
 use actix_web::{web, App, HttpServer};
 use tracing::info;
@@ -39,12 +40,17 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(home::home_page)
             .service(admin::admin_page)
             .service(admin::admin_page_slash)
+            .service(media_new::media_new_page)
             .service(popular_sections::popular_notes_section)
             .service(settings::settings_page)
             .service(settings::settings_submit)
             .service(preview::render_markdown_preview)
             .service(search::search_page)
+            .service(resource_file::snapshot_file)
+            .service(resource_file::current_file)
             .service(history::history_page)
+            .service(media::create)
+            .service(media::replace_file)
             .service(records::create)
             .service(records::update)
             .service(records::remove)

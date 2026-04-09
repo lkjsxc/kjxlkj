@@ -1,6 +1,6 @@
 //! Dedicated search page template
 
-use super::index::{list_rail, note_row, pager};
+use super::index::{admin_create_actions, list_rail, note_row, pager};
 use super::layout::{base, html_escape, shell_page};
 use super::model::IndexItem;
 use super::sections::{page_header, section};
@@ -35,6 +35,7 @@ pub fn search_page(view: SearchView<'_>) -> String {
         search_section(query, view.scope, view.sort, view.popular_window, has_query),
         results_section(&view, query, has_query),
     );
+    let admin_actions = view.is_admin.then(admin_create_actions);
     base(
         &view
             .site
@@ -43,7 +44,9 @@ pub fn search_page(view: SearchView<'_>) -> String {
             if view.is_admin { "Admin" } else { "Guest" },
             &list_rail(
                 "search",
-                rail_primary_action(view.is_admin),
+                admin_actions
+                    .as_deref()
+                    .unwrap_or_else(|| rail_primary_action(view.is_admin)),
                 rail_actions(view.is_admin),
                 view.is_admin,
             ),
@@ -168,11 +171,7 @@ fn sort_catalog(has_query: bool, scope: &str) -> Vec<(&'static str, &'static str
 }
 
 fn rail_primary_action(is_admin: bool) -> &'static str {
-    if is_admin {
-        r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#
-    } else {
-        ""
-    }
+    if is_admin { unreachable!() } else { "" }
 }
 
 fn rail_actions(is_admin: bool) -> &'static str {

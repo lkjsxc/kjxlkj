@@ -2,4 +2,4 @@
 
 mod service;
 
-pub use service::Storage;
+pub use service::{Storage, StoredObject};

@@ -2,12 +2,18 @@ use crate::config::Config;
 use crate::error::AppError;
 use aws_config::{BehaviorVersion, Region};
 use aws_credential_types::Credentials;
-use aws_sdk_s3::{config::Builder, Client};
+use aws_sdk_s3::{config::Builder, primitives::ByteStream, Client};
 
 #[derive(Clone)]
 pub struct Storage {
     bucket: String,
     client: Client,
+}
+
+pub struct StoredObject {
+    pub body: Vec<u8>,
+    pub content_length: i64,
+    pub content_range: Option<String>,
 }
 
 impl Storage {
@@ -41,6 +47,51 @@ impl Storage {
 
     pub fn client(&self) -> &Client {
         &self.client
+    }
+
+    pub async fn put_object(
+        &self,
+        key: &str,
+        bytes: Vec<u8>,
+        content_type: &str,
+    ) -> Result<(), AppError> {
+        self.client
+            .put_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .content_type(content_type)
+            .body(ByteStream::from(bytes))
+            .send()
+            .await
+            .map(|_| ())
+            .map_err(|e| AppError::StorageError(format!("object upload failed: {e}")))
+    }
+
+    pub async fn get_object(
+        &self,
+        key: &str,
+        range: Option<&str>,
+    ) -> Result<StoredObject, AppError> {
+        let mut request = self.client.get_object().bucket(&self.bucket).key(key);
+        if let Some(range) = range {
+            request = request.range(range);
+        }
+        let response = request
+            .send()
+            .await
+            .map_err(|e| AppError::StorageError(format!("object fetch failed: {e}")))?;
+        let body = response
+            .body
+            .collect()
+            .await
+            .map_err(|e| AppError::StorageError(format!("object stream failed: {e}")))?
+            .into_bytes()
+            .to_vec();
+        Ok(StoredObject {
+            body,
+            content_length: response.content_length.unwrap_or_default(),
+            content_range: response.content_range,
+        })
     }
 
     async fn ensure_bucket(&self) -> Result<(), AppError> {

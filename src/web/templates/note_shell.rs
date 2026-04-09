@@ -3,6 +3,7 @@
 use super::card_frame::{
     card_body, card_meta, created_updated_lines, linked_card, meta_line, static_card,
 };
+use super::index::admin_create_actions;
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::{NavLink, NoteChrome};
 
@@ -142,8 +143,7 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
 }
 
 fn create_action() -> String {
-    r#"<div class="rail-actions"><button type="button" class="btn btn-primary" onclick="createNote()">New note</button></div>"#
-        .to_string()
+    format!(r#"<div class="rail-actions">{}</div>"#, admin_create_actions())
 }
 
 #[cfg(test)]

@@ -22,7 +22,7 @@
         requestIds[surface] = (requestIds[surface] || 0) + 1;
         var requestId = requestIds[surface];
         try {
-            var response = await fetch('/_/popular-notes/' + surface + '/' + windowValue, {
+            var response = await fetch('/_/popular-resources/' + surface + '/' + windowValue, {
                 headers: { 'X-Requested-With': 'fetch' },
                 signal: controller.signal,
             });

@@ -100,7 +100,7 @@ async fn render_snapshot(
     is_admin: bool,
     site: &SiteContext,
 ) -> Result<HttpResponse, AppError> {
-    if (resource.record.is_private || resource.snapshot.is_private) && !is_admin {
+    if resource.snapshot.is_private && !is_admin {
         return Ok(not_found(site));
     }
     let chrome = view::note_chrome(pool, &resource.record, is_admin).await?;
@@ -129,7 +129,7 @@ fn not_found(site: &SiteContext) -> HttpResponse {
         .content_type("text/html; charset=utf-8")
         .body(templates::not_found_page(&site.page_meta(
             "Not Found",
-            "The requested note could not be found.",
+            "The requested resource could not be found.",
             false,
             None,
         )))

@@ -19,7 +19,7 @@ pub struct NavResponse {
     pub id: Option<String>,
 }
 
-#[get("/records/{id}/history")]
+#[get("/resources/{id}/history")]
 pub async fn history(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -30,7 +30,7 @@ pub async fn history(
     let id = path.into_inner();
     validate_id(&id)?;
     if db::get_record(&pool, &id).await?.is_none() {
-        return Err(AppError::NotFound(format!("note '{id}' not found")));
+        return Err(AppError::NotFound(format!("resource '{id}' not found")));
     }
     let settings = db::get_settings(&pool).await?;
     let page = db::list_record_snapshots(
@@ -45,7 +45,7 @@ pub async fn history(
     Ok(HttpResponse::Ok().json(page))
 }
 
-#[get("/records/{id}/prev")]
+#[get("/resources/{id}/prev")]
 pub async fn previous(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -54,7 +54,7 @@ pub async fn previous(
     nav_response(pool, req, path.into_inner(), true).await
 }
 
-#[get("/records/{id}/next")]
+#[get("/resources/{id}/next")]
 pub async fn next(
     pool: web::Data<DbPool>,
     req: HttpRequest,
@@ -83,6 +83,6 @@ async fn nav_response(
                 id: neighbor.map(|note| note.id),
             }))
         }
-        _ => Err(AppError::NotFound(format!("note '{id}' not found"))),
+        _ => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }

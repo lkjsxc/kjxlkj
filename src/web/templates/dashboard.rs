@@ -1,7 +1,7 @@
 //! Admin dashboard template
 
 use super::dashboard_favorites::favorite_order_section;
-use super::index::list_rail;
+use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, shell_page};
 use super::list_sections::{favorite_browse_card, note_grid_section, recent_browse_card};
 use super::model::IndexItem;
@@ -23,6 +23,7 @@ pub fn admin_page(
     window: PopularWindow,
     site: &SiteContext,
 ) -> String {
+    let admin_actions = admin_create_actions();
     let content = format!(
         "{}{}<div class=\"dashboard-stack\">{}{}{}</div>",
         page_header("Dashboard", None, "dashboard-head"),
@@ -49,7 +50,7 @@ pub fn admin_page(
             "Admin",
             &list_rail(
                 "admin",
-                r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#,
+                &admin_actions,
                 r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#,
                 true,
             ),
@@ -94,13 +95,13 @@ fn settings_panel(settings: &AppSettings) -> String {
             r#"<div class="settings-summary-grid">
 <article class="surface settings-summary-card"><small>Home hero</small><strong>{hero_state}</strong></article>
 <article class="surface settings-summary-card"><small>Session timeout</small><strong>{}</strong></article>
-<article class="surface settings-summary-card"><small>New notes</small><strong>{}</strong></article>
+<article class="surface settings-summary-card"><small>New resources</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Search page size</small><strong>{}</strong></article>
 <article class="surface settings-summary-card"><small>Home order</small><strong>{}</strong></article>
 </div>
 <a href="/admin/settings" class="btn btn-primary">Open settings</a>"#,
             session_timeout_label(settings.session_timeout_minutes),
-            if settings.default_new_note_is_private {
+            if settings.default_new_resource_is_private {
                 "Private by default"
             } else {
                 "Public by default"

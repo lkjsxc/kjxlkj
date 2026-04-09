@@ -7,12 +7,10 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
     let row = client(pool)
         .await?
         .query_opt(
-            "SELECT home_recent_limit, home_favorite_limit, home_popular_limit, \
-             home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
-             home_recent_position, home_favorite_position, home_popular_position, \
-             search_results_per_page, session_timeout_minutes, default_new_note_is_private, \
-             site_name, site_description, public_base_url \
-             FROM app_settings WHERE id = 1",
+            "SELECT home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, \
+             home_recent_visible, home_favorite_visible, home_popular_visible, home_recent_position, \
+             home_favorite_position, home_popular_position, search_results_per_page, session_timeout_minutes, \
+             default_new_resource_is_private, site_name, site_description, public_base_url FROM app_settings WHERE id = 1",
             &[],
         )
         .await
@@ -24,29 +22,18 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
     client(pool)
         .await?
         .execute(
-            "INSERT INTO app_settings \
-             (id, home_recent_limit, home_favorite_limit, home_popular_limit, \
-             home_intro_markdown, home_recent_visible, home_favorite_visible, home_popular_visible, \
-             home_recent_position, home_favorite_position, home_popular_position, \
-             search_results_per_page, session_timeout_minutes, default_new_note_is_private, \
-             site_name, site_description, public_base_url) \
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) \
-             ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, \
-             home_favorite_limit = EXCLUDED.home_favorite_limit, \
-             home_popular_limit = EXCLUDED.home_popular_limit, \
-             home_intro_markdown = EXCLUDED.home_intro_markdown, \
-             home_recent_visible = EXCLUDED.home_recent_visible, \
-             home_favorite_visible = EXCLUDED.home_favorite_visible, \
-             home_popular_visible = EXCLUDED.home_popular_visible, \
-             home_recent_position = EXCLUDED.home_recent_position, \
-             home_favorite_position = EXCLUDED.home_favorite_position, \
-             home_popular_position = EXCLUDED.home_popular_position, \
-             search_results_per_page = EXCLUDED.search_results_per_page, \
-             session_timeout_minutes = EXCLUDED.session_timeout_minutes, \
-             default_new_note_is_private = EXCLUDED.default_new_note_is_private, \
-             site_name = EXCLUDED.site_name, \
-             site_description = EXCLUDED.site_description, \
-             public_base_url = EXCLUDED.public_base_url, updated_at = NOW()",
+            "INSERT INTO app_settings (id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, \
+             home_recent_visible, home_favorite_visible, home_popular_visible, home_recent_position, home_favorite_position, \
+             home_popular_position, search_results_per_page, session_timeout_minutes, default_new_resource_is_private, site_name, \
+             site_description, public_base_url) VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) \
+             ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, home_favorite_limit = EXCLUDED.home_favorite_limit, \
+             home_popular_limit = EXCLUDED.home_popular_limit, home_intro_markdown = EXCLUDED.home_intro_markdown, \
+             home_recent_visible = EXCLUDED.home_recent_visible, home_favorite_visible = EXCLUDED.home_favorite_visible, \
+             home_popular_visible = EXCLUDED.home_popular_visible, home_recent_position = EXCLUDED.home_recent_position, \
+             home_favorite_position = EXCLUDED.home_favorite_position, home_popular_position = EXCLUDED.home_popular_position, \
+             search_results_per_page = EXCLUDED.search_results_per_page, session_timeout_minutes = EXCLUDED.session_timeout_minutes, \
+             default_new_resource_is_private = EXCLUDED.default_new_resource_is_private, site_name = EXCLUDED.site_name, \
+             site_description = EXCLUDED.site_description, public_base_url = EXCLUDED.public_base_url, updated_at = NOW()",
             &[
                 &settings.home_recent_limit,
                 &settings.home_favorite_limit,
@@ -60,38 +47,31 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.home_popular_position,
                 &settings.search_results_per_page,
                 &settings.session_timeout_minutes,
-                &settings.default_new_note_is_private,
+                &settings.default_new_resource_is_private,
                 &settings.site_name,
                 &settings.site_description,
                 &settings.public_base_url,
             ],
         )
         .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    Ok(())
+        .map(|_| ())
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
 pub async fn get_note_stats(pool: &DbPool, include_private: bool) -> Result<NoteStats, AppError> {
     client(pool)
         .await?
         .query_one(
-            "WITH rollup AS (SELECT record_id, \
-             COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 6), 0)::BIGINT AS view_count_7d, \
+            "WITH rollup AS (SELECT resource_id, COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 6), 0)::BIGINT AS view_count_7d, \
              COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 29), 0)::BIGINT AS view_count_30d, \
              COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 89), 0)::BIGINT AS view_count_90d \
-             FROM record_daily_views GROUP BY record_id) \
-             SELECT COUNT(*) AS total, \
-             COUNT(*) FILTER (WHERE is_private = FALSE) AS public_count, \
-             COUNT(*) FILTER (WHERE is_private = TRUE) AS private_count, \
-             COUNT(*) FILTER (WHERE is_favorite = TRUE) AS favorite_count, \
-             COUNT(*) FILTER (WHERE updated_at >= date_trunc('month', NOW())) AS updated_this_month, \
-             COUNT(*) FILTER (WHERE updated_at >= date_trunc('year', NOW())) AS updated_this_year, \
-             COALESCE(SUM(view_count_total), 0)::BIGINT AS view_count_total, \
-             COALESCE(SUM(rollup.view_count_7d), 0)::BIGINT AS view_count_7d, \
-             COALESCE(SUM(rollup.view_count_30d), 0)::BIGINT AS view_count_30d, \
+             FROM resource_daily_views GROUP BY resource_id) \
+             SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE is_private = FALSE) AS public_count, COUNT(*) FILTER (WHERE is_private = TRUE) AS private_count, \
+             COUNT(*) FILTER (WHERE is_favorite = TRUE) AS favorite_count, COUNT(*) FILTER (WHERE updated_at >= date_trunc('month', NOW())) AS updated_this_month, \
+             COUNT(*) FILTER (WHERE updated_at >= date_trunc('year', NOW())) AS updated_this_year, COALESCE(SUM(view_count_total), 0)::BIGINT AS view_count_total, \
+             COALESCE(SUM(rollup.view_count_7d), 0)::BIGINT AS view_count_7d, COALESCE(SUM(rollup.view_count_30d), 0)::BIGINT AS view_count_30d, \
              COALESCE(SUM(rollup.view_count_90d), 0)::BIGINT AS view_count_90d \
-             FROM records LEFT JOIN rollup ON rollup.record_id = records.id \
-             WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE)",
+             FROM resources LEFT JOIN rollup ON rollup.resource_id = resources.id WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE)",
             &[&include_private],
         )
         .await
@@ -124,7 +104,7 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
         home_popular_position: row.get("home_popular_position"),
         search_results_per_page: row.get("search_results_per_page"),
         session_timeout_minutes: row.get("session_timeout_minutes"),
-        default_new_note_is_private: row.get("default_new_note_is_private"),
+        default_new_resource_is_private: row.get("default_new_resource_is_private"),
         site_name: row.get("site_name"),
         site_description: row.get("site_description"),
         public_base_url: row.get("public_base_url"),
@@ -132,7 +112,5 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
-    pool.get()
-        .await
-        .map_err(|e| AppError::DatabaseError(e.to_string()))
+    pool.get().await.map_err(|e| AppError::DatabaseError(e.to_string()))
 }

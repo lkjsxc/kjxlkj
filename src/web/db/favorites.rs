@@ -12,9 +12,11 @@ pub async fn list_all_favorite_records(
     let rows = client(pool)
         .await?
         .query(
-            "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
-             view_count_total, last_viewed_at, created_at, updated_at, summary AS preview, NULL::BIGINT AS popular_views \
-             FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR is_private = FALSE) \
+            "SELECT id, kind, alias, title, summary, body, media_family, file_key, content_type, \
+             byte_size, sha256_hex, original_filename, width, height, duration_ms, is_favorite, \
+             favorite_position, is_private, view_count_total, last_viewed_at, created_at, updated_at, \
+             summary AS preview, NULL::BIGINT AS popular_views \
+             FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR is_private = FALSE) \
              ORDER BY favorite_position ASC NULLS LAST, id ASC",
             &[&include_private],
         )
@@ -31,7 +33,7 @@ pub async fn reorder_favorites(pool: &DbPool, ids: &[String]) -> Result<(), AppE
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     let current = transaction
         .query(
-            "SELECT id FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE \
+            "SELECT id FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE \
              ORDER BY favorite_position ASC NULLS LAST, id ASC",
             &[],
         )
@@ -43,7 +45,7 @@ pub async fn reorder_favorites(pool: &DbPool, ids: &[String]) -> Result<(), AppE
     validate_ids(&current, ids)?;
     transaction
         .execute(
-            "UPDATE records SET favorite_position = NULL WHERE deleted_at IS NULL AND is_favorite = TRUE",
+            "UPDATE resources SET favorite_position = NULL WHERE deleted_at IS NULL AND is_favorite = TRUE",
             &[],
         )
         .await
@@ -51,7 +53,7 @@ pub async fn reorder_favorites(pool: &DbPool, ids: &[String]) -> Result<(), AppE
     for (index, id) in ids.iter().enumerate() {
         transaction
             .execute(
-                "UPDATE records SET favorite_position = $2 WHERE id = $1",
+                "UPDATE resources SET favorite_position = $2 WHERE id = $1",
                 &[id, &((index + 1) as i64)],
             )
             .await

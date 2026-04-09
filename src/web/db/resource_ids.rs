@@ -22,9 +22,9 @@ pub async fn next_resource_id<C: GenericClient>(db: &C) -> Result<String, AppErr
 
 async fn id_exists<C: GenericClient>(db: &C, id: &str) -> Result<bool, AppError> {
     db.query_opt(
-        "SELECT 1 FROM records WHERE id = $1 \
+        "SELECT 1 FROM resources WHERE id = $1 \
          UNION ALL \
-         SELECT 1 FROM record_revisions WHERE id = $1 \
+         SELECT 1 FROM resource_snapshots WHERE id = $1 \
          LIMIT 1",
         &[&id],
     )

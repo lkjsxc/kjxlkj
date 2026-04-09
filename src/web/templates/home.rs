@@ -1,6 +1,6 @@
 //! Homepage template
 
-use super::index::list_rail;
+use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, shell_page};
 use super::list_sections::{
     favorite_browse_card, note_grid_section, quick_search_section, recent_browse_card,
@@ -34,13 +34,16 @@ pub fn home_page(
         quick_search_section(),
         home_sections(settings, popular, recent, favorites, window),
     );
+    let admin_actions = is_admin.then(admin_create_actions);
     base(
         &site.page_meta("Home", site.site_description.clone(), !is_admin, Some("/")),
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &list_rail(
                 "home",
-                rail_primary_action(is_admin),
+                admin_actions
+                    .as_deref()
+                    .unwrap_or_else(|| rail_primary_action(is_admin)),
                 rail_actions(is_admin),
                 is_admin,
             ),
@@ -112,11 +115,7 @@ fn intro_block(markdown: &str) -> String {
 }
 
 fn rail_primary_action(is_admin: bool) -> &'static str {
-    if is_admin {
-        r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#
-    } else {
-        ""
-    }
+    if is_admin { unreachable!() } else { "" }
 }
 
 fn rail_actions(is_admin: bool) -> &'static str {

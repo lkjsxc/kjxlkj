@@ -11,6 +11,7 @@ mod listing_direction;
 mod listing_queries;
 mod listing_sort;
 mod listing_sort_sql;
+mod media;
 mod migrations;
 mod models;
 mod navigation;
@@ -31,8 +32,10 @@ pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,
 };
+pub use media::{create_media, replace_media_file, MediaBlob};
 pub use models::{
-    AppSettings, ListedRecord, NoteStats, NoteViewStats, Record, RecordSnapshot, SitemapRecord,
+    AppSettings, ListedRecord, MediaFamily, NoteStats, NoteViewStats, Record, RecordKind,
+    RecordSnapshot, SitemapRecord,
 };
 pub use navigation::{get_next_record, get_previous_record};
 pub use popular_window::PopularWindow;

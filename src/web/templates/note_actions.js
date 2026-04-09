@@ -1,5 +1,5 @@
 function createNote() {
-    fetch('/records', {
+    fetch('/resources/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ body: defaultNewNoteBody() })
@@ -14,7 +14,7 @@ function createNote() {
 
 function deleteNote(id) {
     if (!confirm('Delete this note?')) return;
-    fetch('/records/' + id, { method: 'DELETE' })
+    fetch('/resources/' + id, { method: 'DELETE' })
         .then(function (response) {
             if (!response.ok) throw new Error('delete failed');
             window.location.href = '/admin';

@@ -23,7 +23,7 @@ pub struct SettingsForm {
     pub home_popular_position: i64,
     pub search_results_per_page: i64,
     pub session_timeout_minutes: i64,
-    pub default_new_note_is_private: Option<String>,
+    pub default_new_resource_is_private: Option<String>,
 }
 
 pub fn validate_settings_form(form: &SettingsForm) -> Result<AppSettings, AppError> {
@@ -68,7 +68,7 @@ pub fn validate_settings_form(form: &SettingsForm) -> Result<AppSettings, AppErr
         home_popular_position: form.home_popular_position,
         search_results_per_page: form.search_results_per_page,
         session_timeout_minutes: form.session_timeout_minutes,
-        default_new_note_is_private: form.default_new_note_is_private.is_some(),
+        default_new_resource_is_private: form.default_new_resource_is_private.is_some(),
     })
 }
 
@@ -127,7 +127,7 @@ mod tests {
             home_popular_position: 1,
             search_results_per_page: 20,
             session_timeout_minutes: 1440,
-            default_new_note_is_private: None,
+            default_new_resource_is_private: None,
         }
     }
 

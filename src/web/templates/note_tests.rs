@@ -1,15 +1,25 @@
 use super::{note::note_page, NoteAnalytics, NoteChrome};
-use crate::web::db::Record;
+use crate::web::db::{Record, RecordKind};
 use crate::web::site::SiteContext;
 use chrono::Utc;
 
 fn sample_record() -> Record {
     Record {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
+        kind: RecordKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),
         body: "# Demo\n\nBody".to_string(),
+        media_family: None,
+        file_key: None,
+        content_type: None,
+        byte_size: None,
+        sha256_hex: None,
+        original_filename: None,
+        width: None,
+        height: None,
+        duration_ms: None,
         is_favorite: true,
         favorite_position: Some(1),
         is_private: false,

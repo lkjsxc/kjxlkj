@@ -8,7 +8,7 @@ pub async fn list_public_sitemap_records(pool: &DbPool) -> Result<Vec<SitemapRec
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?
         .query(
-            "SELECT id, alias, updated_at FROM records \
+            "SELECT id, alias, updated_at FROM resources \
              WHERE deleted_at IS NULL AND is_private = FALSE \
              ORDER BY updated_at DESC, id ASC",
             &[],

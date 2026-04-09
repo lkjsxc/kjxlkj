@@ -16,7 +16,7 @@ function saveNote() {
     var body = currentBody();
     var alias = draftAliasValue();
     var requestId = ++editorState.latestRequest;
-    fetch('/records/' + currentId, {
+    fetch('/resources/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

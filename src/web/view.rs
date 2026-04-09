@@ -135,6 +135,10 @@ pub fn note_href(record: &Record) -> String {
     format!("/{}", record.alias.as_deref().unwrap_or(&record.id))
 }
 
+pub fn file_href(record: &Record) -> String {
+    format!("{}/file", note_href(record))
+}
+
 pub fn history_href(record: &Record) -> String {
     format!("{}/history", note_href(record))
 }

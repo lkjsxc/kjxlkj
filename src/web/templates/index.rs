@@ -52,6 +52,12 @@ pub(crate) fn list_rail(
     sections.join("")
 }
 
+pub(crate) fn admin_create_actions() -> String {
+    r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>
+<a href="/admin/media/new" class="btn">New media</a>"#
+        .to_string()
+}
+
 pub(crate) fn pager(
     path: &str,
     previous_cursor: Option<&str>,

@@ -1,21 +1,23 @@
 use crate::error::AppError;
-use crate::web::db::Record;
+use crate::web::db::models::{MediaFamily, Record, RecordKind};
 use deadpool_postgres::GenericClient;
 use tokio_postgres::error::SqlState;
 
-pub(super) const RETURNING_RECORD: &str =
-    "RETURNING id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
-     view_count_total, last_viewed_at, created_at, updated_at";
-pub(super) const SELECT_RECORD: &str =
-    "SELECT id, alias, title, summary, body, is_favorite, favorite_position, is_private, \
-     view_count_total, last_viewed_at, created_at, updated_at";
+pub(super) const RETURNING_RECORD: &str = "RETURNING id, kind, alias, title, summary, body, \
+media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
+duration_ms, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+created_at, updated_at";
+pub(super) const SELECT_RECORD: &str = "SELECT id, kind, alias, title, summary, body, \
+media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
+duration_ms, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+created_at, updated_at";
 
 pub(super) async fn current_favorite_state<C: GenericClient>(
     db: &C,
     id: &str,
 ) -> Result<Option<(bool, Option<i64>)>, AppError> {
     db.query_opt(
-        "SELECT is_favorite, favorite_position FROM records WHERE id = $1 AND deleted_at IS NULL",
+        "SELECT is_favorite, favorite_position FROM resources WHERE id = $1 AND deleted_at IS NULL",
         &[&id],
     )
     .await
@@ -32,7 +34,7 @@ pub(super) async fn next_position<C: GenericClient>(
     }
     db.query_one(
         "SELECT COALESCE(MAX(favorite_position), 0) + 1 AS position \
-         FROM records WHERE deleted_at IS NULL AND is_favorite = TRUE",
+         FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE",
         &[],
     )
     .await
@@ -66,10 +68,20 @@ pub(super) fn map_write_error(error: tokio_postgres::Error) -> AppError {
 pub(crate) fn row_to_record(row: tokio_postgres::Row) -> Record {
     Record {
         id: row.get("id"),
+        kind: RecordKind::from_db(&row.get::<_, String>("kind")),
         alias: row.get("alias"),
         title: row.get("title"),
         summary: row.get("summary"),
         body: row.get("body"),
+        media_family: MediaFamily::from_db(row.get("media_family")),
+        file_key: row.get("file_key"),
+        content_type: row.get("content_type"),
+        byte_size: row.get("byte_size"),
+        sha256_hex: row.get("sha256_hex"),
+        original_filename: row.get("original_filename"),
+        width: row.get("width"),
+        height: row.get("height"),
+        duration_ms: row.get("duration_ms"),
         is_favorite: row.get("is_favorite"),
         favorite_position: row.get("favorite_position"),
         is_private: row.get("is_private"),

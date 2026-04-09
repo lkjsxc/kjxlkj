@@ -14,7 +14,7 @@ pub struct PopularSectionPath {
     window: String,
 }
 
-#[get("/_/popular-notes/{surface}/{window}")]
+#[get("/_/popular-resources/{surface}/{window}")]
 pub async fn popular_notes_section(
     pool: web::Data<DbPool>,
     req: HttpRequest,

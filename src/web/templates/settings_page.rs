@@ -1,6 +1,6 @@
 //! Dedicated admin settings template
 
-use super::index::list_rail;
+use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, html_escape, shell_page};
 use super::sections::{page_header, section};
 use crate::web::db::AppSettings;
@@ -10,6 +10,7 @@ const ACTIONS_JS: &str = include_str!("note_actions.js");
 const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
 
 pub fn settings_page(settings: &AppSettings, site: &SiteContext) -> String {
+    let admin_actions = admin_create_actions();
     let content = format!(
         "{}<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
         page_header("Settings", None, "settings-head"),
@@ -30,7 +31,7 @@ pub fn settings_page(settings: &AppSettings, site: &SiteContext) -> String {
             "Admin",
             &list_rail(
                 "settings",
-                r#"<button type="button" class="btn btn-primary" onclick="createNote()">New note</button>"#,
+                &admin_actions,
                 r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#,
                 true,
             ),
@@ -127,10 +128,10 @@ fn defaults_section(settings: &AppSettings) -> String {
         &surface_panel(&format!(
             r#"<div class="settings-section-grid">
 <label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
-<label class="check-row check-row-field settings-wide"><input type="checkbox" name="default_new_note_is_private" {}><span>New notes start private</span></label>
+<label class="check-row check-row-field settings-wide"><input type="checkbox" name="default_new_resource_is_private" {}><span>New resources start private</span></label>
 </div>"#,
             settings.search_results_per_page,
-            if settings.default_new_note_is_private {
+            if settings.default_new_resource_is_private {
                 "checked"
             } else {
                 ""

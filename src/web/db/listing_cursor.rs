@@ -1,4 +1,5 @@
 use super::listing::{ListDirection, ListPage, ListSort};
+use super::models::{MediaFamily, RecordKind};
 use super::{ListScope, ListedRecord, PopularWindow, Record};
 use crate::error::AppError;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
@@ -57,20 +58,8 @@ pub(super) fn page_from_rows(
         entries.reverse();
     }
     ListPage {
-        previous_cursor: edge_cursor(
-            &entries,
-            context.direction,
-            has_more,
-            context.has_cursor,
-            true,
-        ),
-        next_cursor: edge_cursor(
-            &entries,
-            context.direction,
-            has_more,
-            context.has_cursor,
-            false,
-        ),
+        previous_cursor: edge_cursor(&entries, context.direction, has_more, context.has_cursor, true),
+        next_cursor: edge_cursor(&entries, context.direction, has_more, context.has_cursor, false),
         records: entries.into_iter().map(|entry| entry.record).collect(),
     }
 }
@@ -79,10 +68,20 @@ pub(crate) fn row_to_listed_record(row: tokio_postgres::Row) -> ListedRecord {
     ListedRecord {
         record: Record {
             id: row.get("id"),
+            kind: RecordKind::from_db(&row.get::<_, String>("kind")),
             alias: row.get("alias"),
             title: row.get("title"),
             summary: row.get("summary"),
             body: row.get("body"),
+            media_family: MediaFamily::from_db(row.get("media_family")),
+            file_key: row.get("file_key"),
+            content_type: row.get("content_type"),
+            byte_size: row.get("byte_size"),
+            sha256_hex: row.get("sha256_hex"),
+            original_filename: row.get("original_filename"),
+            width: row.get("width"),
+            height: row.get("height"),
+            duration_ms: row.get("duration_ms"),
             is_favorite: row.get("is_favorite"),
             favorite_position: row.get("favorite_position"),
             is_private: row.get("is_private"),
@@ -103,9 +102,7 @@ pub(super) fn decode_cursor(
     scope: &ListScope,
     popular_window: PopularWindow,
 ) -> Result<Option<Cursor>, AppError> {
-    let Some(cursor) = cursor else {
-        return Ok(None);
-    };
+    let Some(cursor) = cursor else { return Ok(None) };
     let raw = URL_SAFE_NO_PAD
         .decode(cursor)
         .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
@@ -147,27 +144,14 @@ fn cursor_from_row(
     }
 }
 
-fn edge_cursor(
-    entries: &[PageEntry],
-    direction: &ListDirection,
-    has_more: bool,
-    has_cursor: bool,
-    previous: bool,
-) -> Option<String> {
+fn edge_cursor(entries: &[PageEntry], direction: &ListDirection, has_more: bool, has_cursor: bool, previous: bool) -> Option<String> {
     let available = match (direction, previous) {
         (ListDirection::Next, true) => has_cursor,
         (ListDirection::Next, false) => has_more,
         (ListDirection::Prev, true) => has_more,
         (ListDirection::Prev, false) => has_cursor,
     };
-    if !available || entries.is_empty() {
-        return None;
-    }
-    let entry = if previous {
-        entries.first().unwrap()
-    } else {
-        entries.last().unwrap()
-    };
+    let entry = if available { if previous { entries.first() } else { entries.last() } } else { None }?;
     Some(URL_SAFE_NO_PAD.encode(serde_json::to_string(&entry.cursor).unwrap()))
 }
 
