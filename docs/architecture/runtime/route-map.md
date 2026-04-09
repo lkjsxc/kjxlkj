@@ -4,7 +4,6 @@
 - `/` -> auth-aware homepage handler.
 - `/admin` and `/admin/` -> admin dashboard handler.
 - `/admin/settings` -> admin settings page and submit handlers.
-- `/admin/media/new` -> admin media upload page and submit path.
 - `/search` -> auth-aware browse/search handler.
 - `/favicon.ico` and `/assets/icon.svg` -> site asset handlers.
 - `/robots.txt` and `/sitemap.xml` -> conditional discovery handlers.
@@ -15,9 +14,9 @@
 - `/{snapshot_id}/file` -> snapshot media file handler.
 - `/resources/notes` -> note create handler.
 - `/resources/media` -> media create handler.
+- `/resources/{id}/media-attachments` -> note attachment batch upload handler.
 - `/resources/favorites/order` -> favorite reorder handler.
 - `/resources/{id}` -> shared metadata update and delete handlers.
-- `/resources/media/{id}/file` -> media replacement handler.
 - `/resources/{id}/history` -> saved-snapshot history handler.
 - `/resources/{id}/prev` and `/resources/{id}/next` -> adjacent resource handlers.
 - `/healthz` -> health handler.

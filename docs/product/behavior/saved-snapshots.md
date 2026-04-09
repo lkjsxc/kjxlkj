@@ -9,9 +9,9 @@
 
 - Creating a resource writes the live resource and saved snapshot `1`.
 - Every successful metadata update writes one new saved snapshot after the live resource updates.
-- Every successful media file replacement writes one new saved snapshot after the live media updates.
 - Saved snapshots preserve post-save state, not pre-save state.
 - Saved snapshots are immutable once written.
+- Media uploads create new live resources instead of replacing binaries on older media resources.
 
 ## Snapshot Fields
 

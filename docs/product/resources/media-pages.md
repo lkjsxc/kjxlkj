@@ -2,10 +2,10 @@
 
 ## Create Flow
 
-- Admin rails expose `New media` directly below `New note`.
-- `New media` opens `/admin/media/new`.
-- The create flow is upload-first and requires one file.
-- Create may also accept optional alias, visibility, and favorite state.
+- The canonical UI ingest path is `Upload media` from a live note editor.
+- Agent and automation callers may still create media directly through `POST /resources/media`.
+- Every media create requires one uploaded image or video file.
+- Direct media create may also accept optional alias, visibility, and favorite state.
 - The initial media `body` is seeded from the uploaded filename stem as a `# Heading`.
 
 ## Guest View
@@ -19,11 +19,12 @@
 - Admin media pages keep the shared shell rail and current-resource chrome.
 - The page shows the current image or video preview, file metadata, Markdown body editor, alias, favorite, and visibility controls.
 - Markdown body edits autosave like note edits.
-- File replacement is an explicit action and does not piggyback on text autosave.
+- Existing media binaries do not change from the media edit page.
 
-## File Replacement
+## Immutability
 
-- Replacing the file updates the live media resource.
-- Successful file replacement creates one new immutable saved snapshot.
+- Existing media binaries are immutable after creation.
+- Updating media Markdown, alias, visibility, or favorite state does not replace the binary file.
+- New uploads create new media resources instead of replacing files on older media pages.
 - Older saved snapshots keep their original object references.
-- File replacement does not rewrite older note bodies or older media bodies.
+- Later note edits do not rewrite earlier media objects or earlier note embed text.

@@ -24,8 +24,9 @@
 
 ## Runtime Environment
 
-- `.env` owns PostgreSQL credentials, host ports, MinIO credentials, and S3 endpoint settings.
+- `.env` owns PostgreSQL credentials, app host exposure, MinIO credentials, and S3 endpoint settings.
 - Compose assembles `DATABASE_URL` and the S3-compatible environment for `app`.
+- Runtime Compose does not expose MinIO ports on the host.
 - Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior

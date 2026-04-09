@@ -15,5 +15,5 @@
 ## `sitemap.xml`
 
 - `GET /sitemap.xml` exists only when `public_base_url` is non-blank and valid.
-- The sitemap contains the homepage plus current public live resource URLs only.
+- The sitemap contains `/` plus every current public live note and media page.
 - The sitemap excludes search, setup, login, admin, settings, history, snapshots, fragments, health, file routes, and write/API routes.

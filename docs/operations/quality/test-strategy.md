@@ -12,7 +12,7 @@
 - Health endpoint behavior.
 - Public and admin resource fetch behavior.
 - Session-protected write behavior.
-- End-to-end note create, media upload, metadata update, file replacement, and delete lifecycle.
+- End-to-end note create, direct media upload, note-attachment upload, metadata update, and delete lifecycle.
 
 ## Compose Verification
 
@@ -22,4 +22,4 @@
 ## Browser Verification
 
 - Browser-rendered screenshots verify desktop and compact layouts.
-- Visual checks assert mixed resource cards, upload flow, media page rendering, inline note embeds, and rail ordering.
+- Visual checks assert mixed resource cards, note-editor upload flow, media page rendering, inline note embeds, and rail ordering.

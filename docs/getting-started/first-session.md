@@ -21,13 +21,13 @@
 1. Click `New note`.
 2. Add a heading and real Markdown body.
 3. Set an alias if the note needs a stable human-readable URL.
-4. Click `New media`.
-5. Upload one image or video and confirm the page redirects to the new media resource.
-6. Edit the media Markdown body and confirm the file preview remains visible.
+4. Click `Upload media`.
+5. Select one image or video and confirm the current note receives a direct media embed.
+6. Open the new media resource and the generated background note and confirm both were created.
 
 ## Verify Live Surfaces
 
 1. Open `/` and confirm the homepage reflects saved settings.
 2. Open `/search?kind=all`, `/search?kind=note`, and `/search?kind=media`.
 3. Open the note body and confirm inline media renders when referenced through `/{ref}/file`.
-4. Replace one media file, open `/{ref}/history`, and confirm snapshots render newest first.
+4. Edit a note or media body, open `/{ref}/history`, and confirm snapshots render newest first.

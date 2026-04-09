@@ -11,5 +11,5 @@ Use this subtree for the shared model that makes notes and media behave like pee
 ## Child Index
 
 - [resource-kinds.md](resource-kinds.md): shared fields, identity, and live-resource semantics
-- [media-pages.md](media-pages.md): media creation, display, editing, and file replacement rules
+- [media-pages.md](media-pages.md): media creation, display, editing, and immutability rules
 - [embed-rules.md](embed-rules.md): inline image and video rules for Markdown and saved snapshots

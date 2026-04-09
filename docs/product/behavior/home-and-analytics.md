@@ -15,6 +15,8 @@
 
 ## Popularity
 
-- Popularity windows remain `7d`, `30d`, and `90d`.
+- Popularity windows are `7d`, `30d`, `90d`, and `all`.
 - Popularity ranking applies to live note pages and live media pages.
-- Admin dashboard popularity cards may expose rolling-window and all-time totals.
+- Guest cards do not expose popularity totals.
+- Admin Popular cards may expose the active popularity total only.
+- When the active window is `all`, the visible card metric label is `Views`.

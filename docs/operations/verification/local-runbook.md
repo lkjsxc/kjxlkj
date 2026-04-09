@@ -44,16 +44,17 @@ curl -sS -X POST http://127.0.0.1:8080/resources/media \
 ## Verify Resource Pages
 
 - `/search` can filter `kind=all|note|media`.
-- Admin rails show `New note`, then `New media`, then `Open GitHub`.
+- Admin rails show `New note`, then `Open GitHub`.
 - Guest image media pages show the image plus rendered Markdown body.
 - Guest note pages render inline images from `![](/demo-image/file)`.
 - Guest or admin video media pages expose a playable `<video>` element.
 - `/demo-image/file` returns the binary and respects visibility.
 
-## Verify History + Replacement
+## Verify History + Immutability
 
-- Replacing a media file creates a new saved snapshot.
+- Updating note or media Markdown creates a new saved snapshot.
 - `/{snapshot_id}/file` serves the older binary.
+- Existing media pages do not expose a file replacement control.
 - History pages distinguish the live resource from immutable saved snapshots.
 
 ## Verify Browser Visual Checks

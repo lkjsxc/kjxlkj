@@ -19,6 +19,20 @@
 - The initial Markdown `body` is seeded from the uploaded filename stem as a `# Heading`.
 - Successful create returns `201` with created resource JSON.
 - Creating media also creates saved snapshot `1`.
+- This route is the direct API path for agents and automation rather than the canonical human-facing create screen.
+
+## Attach Media to a Live Note (`POST /resources/{id}/media-attachments`)
+
+- Requires valid session.
+- Applies only to a live `note`.
+- Requires one or more multipart `file` parts.
+- The request also supplies the current draft `body`, `alias`, `is_favorite`, `is_private`, and the textarea `insert_start` and `insert_end`.
+- The server validates and processes the entire batch atomically.
+- Each selected file creates one new `media` resource and one new background `note`.
+- The created media and generated background notes inherit the triggering note visibility.
+- The current note updates by inserting direct media embeds at the supplied selection range in picker order.
+- A successful batch creates one new saved snapshot for the current note plus saved snapshot `1` for each newly created media and background note.
+- Any file failure aborts the whole batch and leaves the current note unchanged.
 
 ## Shared Update (`PUT /resources/{id}`)
 
@@ -28,14 +42,6 @@
 - Updates `updated_at`.
 - Recomputes derived title, summary, and search fields.
 - Creates one new immutable saved snapshot from the post-update live state.
-
-## Replace Media File (`PUT /resources/media/{id}/file`)
-
-- Requires valid session.
-- Applies only to live `media`.
-- Replaces the current binary object and derived file metadata.
-- Creates one new immutable saved snapshot from the post-replacement live state.
-- Does not rewrite earlier snapshots.
 
 ## Public Visibility Control
 

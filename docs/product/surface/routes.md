@@ -9,7 +9,6 @@
 - `GET /`: auth-aware homepage shell for mixed resources.
 - `GET /admin` and `GET /admin/`: admin dashboard.
 - `GET /admin/settings`: admin settings page.
-- `GET /admin/media/new`: admin upload-first media creation page.
 - `GET /search`: auth-aware browse/search page using `q`, `kind`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, and `limit`.
 - `GET /{ref}`: live note page, live media page, or saved-snapshot page.
 - `GET /{ref}/history`: history index for one live resource.
@@ -20,7 +19,7 @@
 
 - `GET /_/popular-resources/home/{window}` returns the homepage Popular section.
 - `GET /_/popular-resources/admin/{window}` returns the dashboard Popular section.
-- `{window}` is `7d`, `30d`, or `90d`.
+- `{window}` is `7d`, `30d`, `90d`, or `all`.
 
 ## Asset Delivery
 
@@ -33,8 +32,8 @@
 
 - `POST /resources/notes`: admin-only JSON note create.
 - `POST /resources/media`: admin-only multipart media create.
+- `POST /resources/{id}/media-attachments`: admin-only multipart upload that updates one live note and creates one media plus one background note per selected file.
 - `PUT /resources/{id}`: admin-only JSON metadata and Markdown update for both resource kinds.
-- `PUT /resources/media/{id}/file`: admin-only multipart file replacement for live media.
 - `DELETE /resources/{id}`: admin-only soft delete.
 - `PUT /resources/favorites/order`: admin-only favorite reorder across mixed resources.
 

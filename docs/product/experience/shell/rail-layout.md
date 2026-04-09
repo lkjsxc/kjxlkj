@@ -20,7 +20,6 @@
 ## Create Actions
 
 - Admin rails place `New note` first.
-- Admin rails place `New media` directly below `New note`.
 - The create section appears above `Open GitHub`.
 
 ## Metadata Rules

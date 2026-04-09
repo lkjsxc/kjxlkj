@@ -19,13 +19,13 @@
 ## Create the First Real Resources
 
 1. Click `New note` and create one public note.
-2. Click `New media` and upload one public image or video.
-3. Embed the media file in the note through `/{ref}/file`.
-4. Edit the note once and replace the media once.
+2. Use `Upload media` on that note and upload one public image or video.
+3. Confirm the current note receives a direct embed for the new media.
+4. Open the generated background note and confirm it also embeds the uploaded media.
 
 ## Verify Published Surface
 
 1. Confirm `/` shows mixed-resource sections.
 2. Confirm `/search?kind=all|note|media` behaves as expected.
 3. Confirm the embedded media renders inside the note page.
-4. Confirm media history exposes old file versions through snapshot URLs.
+4. Confirm media history exposes stable file versions through snapshot URLs.

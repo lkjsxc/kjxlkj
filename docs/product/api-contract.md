@@ -59,6 +59,7 @@
 - `kind=all` is the default.
 - `kind=note` narrows to notes only.
 - `kind=media` narrows to media only.
+- `popular_window` accepts `7d`, `30d`, `90d`, and `all`.
 
 ## Settings Schema
 
@@ -92,11 +93,56 @@
 - Optional parts: `alias`, `is_favorite`, `is_private`.
 - The server derives `media_family`, content metadata, and the initial Markdown body from the uploaded file.
 
+## Note Media Attachment Payload
+
+- `POST /resources/{id}/media-attachments` is `multipart/form-data`.
+- Required parts: one or more `file` values plus `body`, `is_favorite`, `is_private`, `insert_start`, and `insert_end`.
+- Optional part: `alias`.
+- `body`, `alias`, `is_favorite`, and `is_private` describe the current unsaved live-note draft that should become authoritative if the batch succeeds.
+- `insert_start` and `insert_end` are zero-based UTF-8 string indices into that draft body.
+- The endpoint is valid only for live notes.
+
 ## Shared Update Rules
 
 - `PUT /resources/{id}` accepts JSON updates for `body`, `alias`, `is_favorite`, and `is_private`.
-- `PUT /resources/media/{id}/file` accepts `multipart/form-data` with a replacement `file`.
 - Every successful live-resource update creates one new immutable saved snapshot.
+
+## Note Media Attachment Result
+
+```json
+{
+  "current_note": {
+    "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
+    "kind": "note",
+    "alias": "release-notes",
+    "body": "# Title\n\n![](/ag6m3m3jy6hm74m6rfj7dnu3ga/file)\n",
+    "is_favorite": true,
+    "favorite_position": 2,
+    "is_private": false,
+    "created_at": "2026-03-26T08:34:00Z",
+    "updated_at": "2026-03-26T08:40:00Z"
+  },
+  "inserted_markdown": "![](/ag6m3m3jy6hm74m6rfj7dnu3ga/file)\n",
+  "created_media": [
+    {
+      "id": "ag6m3m3jy6hm74m6rfj7dnu3ga",
+      "kind": "media",
+      "alias": null,
+      "file_href": "/ag6m3m3jy6hm74m6rfj7dnu3ga/file"
+    }
+  ],
+  "created_notes": [
+    {
+      "id": "bh7n4n4kz7in85n7sgk8eov4hb",
+      "kind": "note",
+      "alias": null
+    }
+  ]
+}
+```
+
+- The endpoint creates one media and one background note for each uploaded file.
+- The current note is updated only when the entire batch succeeds.
 
 ## Preview API
 
