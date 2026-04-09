@@ -2,6 +2,7 @@
 
 use crate::config::Config;
 use crate::error::AppError;
+use crate::storage::Storage;
 use crate::web::db;
 use crate::web::handlers::{
     admin, assets, discoverability, favorites, health, history, home, login, logout, note,
@@ -12,16 +13,19 @@ use tracing::info;
 
 pub async fn run_server(config: Config) -> Result<(), AppError> {
     let pool = db::create_pool(&config.database_url).await?;
+    let storage = Storage::from_config(&config).await?;
     info!("Database connected and migrations applied");
 
     let bind_addr = config.bind_addr();
     let pool = web::Data::new(pool);
+    let storage = web::Data::new(storage);
 
     info!("Starting HTTP server on {}", bind_addr);
 
     HttpServer::new(move || {
         App::new()
             .app_data(pool.clone())
+            .app_data(storage.clone())
             .service(health::healthz)
             .service(setup::setup_page)
             .service(setup::setup_submit)

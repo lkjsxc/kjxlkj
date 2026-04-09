@@ -19,6 +19,9 @@ cargo build --release
 echo "=== validate topology ==="
 "$release_bin" docs validate-topology
 
+echo "=== validate links ==="
+"$release_bin" docs validate-links
+
 echo "=== validate terms ==="
 "$release_bin" docs validate-terms
 

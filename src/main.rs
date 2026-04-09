@@ -36,6 +36,8 @@ enum Commands {
 enum DocsAction {
     /// Validate documentation topology
     ValidateTopology,
+    /// Validate relative markdown links
+    ValidateLinks,
     /// Validate canonical terms usage
     ValidateTerms,
 }
@@ -61,6 +63,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Some(Commands::Docs { action }) => match action {
             DocsAction::ValidateTopology => cli::docs::validate_topology()?,
+            DocsAction::ValidateLinks => cli::docs::validate_links()?,
             DocsAction::ValidateTerms => cli::docs::validate_terms()?,
         },
         Some(Commands::Quality { action }) => match action {
