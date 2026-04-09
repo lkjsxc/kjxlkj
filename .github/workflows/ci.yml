@@ -26,6 +26,10 @@ jobs:
         run: |
           mkdir -p tmp/visual-artifacts tmp/ci-logs
 
+      - name: Prepare compose environment
+        run: |
+          cp .env.example .env
+
       - name: Build compose images
         run: |
           set -euo pipefail

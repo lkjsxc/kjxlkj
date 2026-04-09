@@ -1,14 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-DROP TABLE IF EXISTS resource_daily_views;
-DROP TABLE IF EXISTS resource_snapshots;
-DROP TABLE IF EXISTS resources;
-DROP TABLE IF EXISTS record_daily_views;
-DROP TABLE IF EXISTS record_revisions;
-DROP TABLE IF EXISTS records;
-DROP TABLE IF EXISTS app_settings;
-
 CREATE TABLE IF NOT EXISTS admin_user (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) NOT NULL UNIQUE,

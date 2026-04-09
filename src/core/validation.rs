@@ -1,4 +1,4 @@
-//! Validation logic for note ids, aliases, and derived fields
+//! Validation logic for resource ids, aliases, and derived fields
 
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -19,7 +19,7 @@ static RESERVED_ALIASES: Lazy<HashSet<&'static str>> = Lazy::new(|| {
         "healthz",
         "login",
         "logout",
-        "records",
+        "resources",
         "robots.txt",
         "search",
         "setup",
@@ -115,7 +115,11 @@ pub fn extract_title(body: &str) -> Option<String> {
 }
 
 pub fn derive_title(body: &str) -> String {
-    extract_title(body).unwrap_or_else(|| "Untitled note".to_string())
+    derive_title_with_fallback(body, "Untitled note")
+}
+
+pub fn derive_title_with_fallback(body: &str, fallback: &str) -> String {
+    extract_title(body).unwrap_or_else(|| fallback.to_string())
 }
 
 pub fn derive_summary(body: &str) -> String {

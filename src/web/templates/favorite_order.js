@@ -47,7 +47,7 @@
         saving = true;
         clearError();
         try {
-            var response = await fetch('/records/favorites/order', {
+            var response = await fetch('/resources/favorites/order', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ids: currentIds() }),

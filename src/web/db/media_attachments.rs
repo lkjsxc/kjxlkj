@@ -3,7 +3,7 @@ use super::models::{Record, RecordKind};
 use super::record_support::{map_write_error, resolve_position, row_to_record, RETURNING_RECORD};
 use super::write_support::{client, create_snapshot, next_snapshot_number};
 use super::{DbPool, MediaFamily};
-use crate::core::{derive_summary, derive_title};
+use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
 use crate::error::AppError;
 use deadpool_postgres::GenericClient;
 
@@ -110,7 +110,7 @@ async fn create_media_records<C: GenericClient>(
                 &[
                     &attachment.media_id,
                     &RecordKind::Media.as_str(),
-                    &derive_title(&attachment.media_body),
+                    &derive_title_with_fallback(&attachment.media_body, "Untitled media"),
                     &derive_summary(&attachment.media_body),
                     &attachment.media_body,
                     &blob.media_family.as_str(),

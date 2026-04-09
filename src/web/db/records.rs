@@ -5,7 +5,7 @@ use super::record_support::{
 };
 use super::resource_ids::next_resource_id;
 use super::DbPool;
-use crate::core::{derive_summary, derive_title};
+use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
 use crate::error::AppError;
 use deadpool_postgres::GenericClient;
 
@@ -78,7 +78,8 @@ pub async fn update_record(
         .transaction()
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-    let Some((was_favorite, current_position)) = current_favorite_state(&tx, id).await? else {
+    let Some((kind, was_favorite, current_position)) = current_favorite_state(&tx, id).await?
+    else {
         return Ok(None);
     };
     let row = tx
@@ -91,7 +92,7 @@ pub async fn update_record(
             &[
                 &id,
                 &alias,
-                &derive_title(body),
+                &derive_title_for_kind(kind, body),
                 &derive_summary(body),
                 &body,
                 &is_favorite,
@@ -107,6 +108,13 @@ pub async fn update_record(
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     Ok(Some(record))
+}
+
+fn derive_title_for_kind(kind: RecordKind, body: &str) -> String {
+    match kind {
+        RecordKind::Note => derive_title(body),
+        RecordKind::Media => derive_title_with_fallback(body, "Untitled media"),
+    }
 }
 
 pub async fn delete_record(pool: &DbPool, id: &str) -> Result<bool, AppError> {

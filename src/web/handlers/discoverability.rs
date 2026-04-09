@@ -36,7 +36,7 @@ async fn public_base_url(pool: &DbPool) -> Result<Option<String>, AppError> {
 
 fn robots_body(public_base_url: &str) -> String {
     format!(
-        "User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /setup\nDisallow: /login\nDisallow: /admin\nDisallow: /records\nDisallow: /_/\nDisallow: /healthz\nDisallow: /*/history\nSitemap: {public_base_url}/sitemap.xml\n"
+        "User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /setup\nDisallow: /login\nDisallow: /admin\nDisallow: /resources\nDisallow: /_/\nDisallow: /healthz\nDisallow: /*/history\nSitemap: {public_base_url}/sitemap.xml\n"
     )
 }
 
@@ -65,6 +65,8 @@ mod tests {
     fn robots_body_advertises_sitemap_and_disallows_search() {
         let body = robots_body("https://example.com");
         assert!(body.contains("Disallow: /search"));
+        assert!(body.contains("Disallow: /resources"));
+        assert!(!body.contains("Disallow: /records"));
         assert!(body.contains("Sitemap: https://example.com/sitemap.xml"));
     }
 

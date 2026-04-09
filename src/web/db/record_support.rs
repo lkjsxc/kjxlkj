@@ -15,13 +15,21 @@ created_at, updated_at";
 pub(super) async fn current_favorite_state<C: GenericClient>(
     db: &C,
     id: &str,
-) -> Result<Option<(bool, Option<i64>)>, AppError> {
+) -> Result<Option<(RecordKind, bool, Option<i64>)>, AppError> {
     db.query_opt(
-        "SELECT is_favorite, favorite_position FROM resources WHERE id = $1 AND deleted_at IS NULL",
+        "SELECT kind, is_favorite, favorite_position FROM resources WHERE id = $1 AND deleted_at IS NULL",
         &[&id],
     )
     .await
-    .map(|row| row.map(|item| (item.get("is_favorite"), item.get("favorite_position"))))
+    .map(|row| {
+        row.map(|item| {
+            (
+                RecordKind::from_db(&item.get::<_, String>("kind")),
+                item.get("is_favorite"),
+                item.get("favorite_position"),
+            )
+        })
+    })
     .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 

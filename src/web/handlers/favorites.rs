@@ -11,7 +11,7 @@ pub struct FavoriteOrderInput {
     pub ids: Vec<String>,
 }
 
-#[put("/records/favorites/order")]
+#[put("/resources/favorites/order")]
 pub async fn reorder(
     pool: web::Data<DbPool>,
     req: HttpRequest,

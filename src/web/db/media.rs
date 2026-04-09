@@ -2,7 +2,7 @@ use super::models::{MediaFamily, Record, RecordKind};
 use super::record_support::{map_write_error, next_position, row_to_record, RETURNING_RECORD};
 use super::resource_ids::next_resource_id;
 use super::DbPool;
-use crate::core::{derive_summary, derive_title};
+use crate::core::{derive_summary, derive_title_with_fallback};
 use crate::error::AppError;
 use deadpool_postgres::GenericClient;
 
@@ -43,7 +43,7 @@ pub async fn create_media(
                 &id,
                 &RecordKind::Media.as_str(),
                 &alias,
-                &derive_title(body),
+                &derive_title_with_fallback(body, "Untitled media"),
                 &derive_summary(body),
                 &body,
                 &blob.media_family.as_str(),

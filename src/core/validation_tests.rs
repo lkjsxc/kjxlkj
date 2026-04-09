@@ -41,6 +41,14 @@ fn aliases_normalize_and_validate() {
     );
     assert_eq!(normalize_alias(Some("search")), Err(AliasError::Reserved));
     assert_eq!(
+        normalize_alias(Some("resources")),
+        Err(AliasError::Reserved)
+    );
+    assert_eq!(
+        normalize_alias(Some("records")),
+        Ok(Some("records".to_string()))
+    );
+    assert_eq!(
         normalize_alias(Some("abcdefghijklmnopqrstuvwxyz")),
         Err(AliasError::ConflictsWithId)
     );
@@ -50,6 +58,10 @@ fn aliases_normalize_and_validate() {
 fn title_and_summary_derivation() {
     assert_eq!(derive_title("# Hello\n\nBody"), "Hello".to_string());
     assert_eq!(derive_title(""), "Untitled note".to_string());
+    assert_eq!(
+        derive_title_with_fallback("", "Untitled media"),
+        "Untitled media"
+    );
     assert_eq!(derive_summary("# Hello\n\nBody"), "Body".to_string());
     assert_eq!(derive_summary("# Hello\n\n- Bullet"), "Bullet".to_string());
     assert_eq!(derive_summary("# Hello\n\n> Quote"), "Quote".to_string());

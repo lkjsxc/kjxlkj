@@ -10,7 +10,7 @@ export async function verifyFavoriteReorder(page) {
     await Promise.all([
         page.waitForResponse((response) => {
             const url = new URL(response.url());
-            return url.pathname === '/records/favorites/order' && response.request().method() === 'PUT';
+            return url.pathname === '/resources/favorites/order' && response.request().method() === 'PUT';
         }),
         items.nth(1).dragTo(items.nth(0)),
     ]);
