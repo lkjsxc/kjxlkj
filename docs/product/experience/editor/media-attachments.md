@@ -12,11 +12,14 @@
 - Upload is all-or-nothing per picker submission.
 - Selected file order is preserved.
 - The server uses the current unsaved note draft supplied by the editor, not a stale last-saved body.
+- The submitted draft `body` is preserved byte-for-byte after UTF-8 decoding; trailing spaces and newlines are meaningful note content.
 - Each selected file creates one new `media` resource and one new background `note`.
 - Both created resources inherit the visibility of the note that triggered the upload.
 - Background notes start with a filename-derived `# Heading` followed by the canonical embed for their media.
-- The currently open note inserts direct embeds for the new media at the current textarea caret or selection.
+- The currently open note inserts direct embeds for the new media at the submitted textarea caret or selection when that range is valid.
+- If the submitted selection range is stale or invalid, the server appends the embeds to the end of the submitted draft instead of failing the batch.
 - Inserted embed blocks are separated by blank lines in the same order as the selected files.
+- When append fallback is used, the editor shows brief non-error status copy: `Selection changed; inserted at end.`
 
 ## Embed Format
 
@@ -30,4 +33,5 @@
 - A successful upload updates the current live note and therefore creates one new saved snapshot for that note.
 - Each new media resource writes saved snapshot `1`.
 - Each generated background note writes saved snapshot `1`.
+- The response reports whether selection fallback was used.
 - If any file fails validation or storage, the server creates nothing and updates nothing.

@@ -6,6 +6,7 @@
 - Title and summary derivation for notes and media.
 - Markdown sanitization and safe embed rendering.
 - Object-storage key handling and snapshot retention rules.
+- Note-attachment upload preserves raw body text and falls back to append-at-end for stale selection ranges.
 
 ## Integration Tests
 
@@ -23,3 +24,4 @@
 
 - Browser-rendered screenshots verify desktop and compact layouts.
 - Visual checks assert mixed resource cards, note-editor upload flow, media page rendering, inline note embeds, and rail ordering.
+- Browser checks cover note-editor upload against trailing blank lines and stale insertion ranges.

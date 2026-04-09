@@ -99,7 +99,10 @@
 - Required parts: one or more `file` values plus `body`, `is_favorite`, `is_private`, `insert_start`, and `insert_end`.
 - Optional part: `alias`.
 - `body`, `alias`, `is_favorite`, and `is_private` describe the current unsaved live-note draft that should become authoritative if the batch succeeds.
+- The `body` part may be empty or whitespace-only and must be preserved exactly after UTF-8 decoding.
 - `insert_start` and `insert_end` are zero-based UTF-8 string indices into that draft body.
+- Valid insertion ranges replace the selected draft slice with the inserted embeds.
+- Invalid, reversed, or stale insertion ranges append the embeds to the end of the submitted draft and set `selection_fallback` in the response.
 - The endpoint is valid only for live notes.
 
 ## Shared Update Rules
@@ -131,6 +134,7 @@
       "file_href": "/ag6m3m3jy6hm74m6rfj7dnu3ga/file"
     }
   ],
+  "selection_fallback": false,
   "created_notes": [
     {
       "id": "bh7n4n4kz7in85n7sgk8eov4hb",
@@ -143,6 +147,7 @@
 
 - The endpoint creates one media and one background note for each uploaded file.
 - The current note is updated only when the entire batch succeeds.
+- `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
 
 ## Preview API
 

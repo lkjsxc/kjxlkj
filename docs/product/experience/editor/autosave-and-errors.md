@@ -13,6 +13,9 @@
 - Successful autosave is silent.
 - `Saving` and `Saved` copy do not appear in normal UI.
 - Save failure is shown with subdued but persistent error text until the next successful save.
+- Successful media upload may show brief status inside the editor surface.
+- If media upload falls back from a stale selection to append-at-end insertion, the status is `Selection changed; inserted at end.`
+- Selection fallback status is informational and must not use error styling.
 
 ## Live Sync
 
