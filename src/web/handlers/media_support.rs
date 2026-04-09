@@ -24,14 +24,6 @@ pub fn initial_body(filename: &str) -> String {
     format!("# {}", pretty_stem(filename))
 }
 
-pub fn attachment_note_body(filename: &str, media_ref: &str, family: MediaFamily) -> String {
-    format!(
-        "# {}\n\n{}\n",
-        pretty_stem(filename),
-        embed_markdown(media_ref, family)
-    )
-}
-
 pub fn embed_markdown(media_ref: &str, family: MediaFamily) -> String {
     match family {
         MediaFamily::Image => format!("![](/{media_ref}/file)"),

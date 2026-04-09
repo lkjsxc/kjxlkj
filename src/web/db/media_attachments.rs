@@ -10,8 +10,6 @@ use deadpool_postgres::GenericClient;
 pub struct AttachmentCreate {
     pub media_id: String,
     pub media_body: String,
-    pub note_id: String,
-    pub note_body: String,
     pub bytes: Vec<u8>,
     pub media_family: MediaFamily,
     pub file_key: String,
@@ -25,7 +23,7 @@ pub struct AttachmentCreate {
 pub struct NoteAttachmentUpdate<'a> { pub body: &'a str, pub alias: Option<&'a str>, pub is_favorite: bool, pub is_private: bool }
 
 #[rustfmt::skip]
-pub struct AttachmentBatchResult { pub current_note: Record, pub created_media: Vec<Record>, pub created_notes: Vec<Record> }
+pub struct AttachmentBatchResult { pub current_note: Record, pub created_media: Vec<Record> }
 
 pub async fn attach_media_to_note(
     pool: &DbPool,
@@ -50,7 +48,6 @@ pub async fn attach_media_to_note(
         ));
     }
     let created_media = create_media_records(&tx, attachments, update.is_private).await?;
-    let created_notes = create_note_records(&tx, attachments, update.is_private).await?;
     let current_note =
         update_current_note(&tx, note_id, update, was_favorite, current_position).await?;
     tx.commit()
@@ -59,7 +56,6 @@ pub async fn attach_media_to_note(
     Ok(AttachmentBatchResult {
         current_note,
         created_media,
-        created_notes,
     })
 }
 
@@ -85,37 +81,6 @@ async fn current_note_state<C: GenericClient>(
 }
 
 type NoteState = (RecordKind, bool, Option<i64>);
-
-async fn create_note_records<C: GenericClient>(
-    db: &C,
-    attachments: &[AttachmentCreate],
-    is_private: bool,
-) -> Result<Vec<Record>, AppError> {
-    let mut records = Vec::with_capacity(attachments.len());
-    for attachment in attachments {
-        let row = db
-            .query_one(
-                &format!(
-                    "INSERT INTO resources (id, kind, title, summary, body, is_favorite, favorite_position, is_private) \
-                     VALUES ($1, $2, $3, $4, $5, FALSE, NULL, $6) {RETURNING_RECORD}"
-                ),
-                &[
-                    &attachment.note_id,
-                    &RecordKind::Note.as_str(),
-                    &derive_title(&attachment.note_body),
-                    &derive_summary(&attachment.note_body),
-                    &attachment.note_body,
-                    &is_private,
-                ],
-            )
-            .await
-            .map_err(map_write_error)?;
-        let record = row_to_record(row);
-        create_snapshot(db, &record, 1).await?;
-        records.push(record);
-    }
-    Ok(records)
-}
 
 async fn create_media_records<C: GenericClient>(
     db: &C,

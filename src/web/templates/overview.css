@@ -137,11 +137,12 @@
 .note-grid .note-row.note-row-media {
     height: 196px;
     padding: 0;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: 104px minmax(0, 1fr);
     overflow: hidden;
 }
 
 .note-row-media .card-cover {
+    height: 104px;
     min-height: 0;
     overflow: hidden;
     border-bottom: 1px solid var(--line);

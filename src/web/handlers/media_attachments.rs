@@ -1,6 +1,6 @@
 use super::media_insert::apply_insert;
 use super::media_support::{
-    attachment_note_body, detect_media_family, embed_markdown, initial_body, object_key, sha256_hex,
+    detect_media_family, embed_markdown, initial_body, object_key, sha256_hex,
 };
 use super::note_media_input::parse_note_media_form;
 use super::resource_payload::ResourcePayload;
@@ -27,7 +27,6 @@ struct AttachmentResponse {
     inserted_markdown: String,
     selection_fallback: bool,
     created_media: Vec<AttachmentRefPayload>,
-    created_notes: Vec<AttachmentRefPayload>,
 }
 
 #[post("/resources/{id}/media-attachments")]
@@ -83,16 +82,6 @@ pub async fn attach_media(
                     alias: record.alias,
                 })
                 .collect(),
-            created_notes: result
-                .created_notes
-                .into_iter()
-                .map(|record| AttachmentRefPayload {
-                    file_href: None,
-                    id: record.id,
-                    kind: record.kind,
-                    alias: record.alias,
-                })
-                .collect(),
         })),
         Err(error) => {
             cleanup_objects(&storage, &keys).await;
@@ -108,13 +97,10 @@ async fn build_attachments(
     let mut attachments = Vec::with_capacity(files.len());
     for file in files {
         let media_id = db::generate_resource_id(pool).await?;
-        let note_id = db::generate_resource_id(pool).await?;
         let media_family = detect_media_family(&file.content_type, &file.original_filename)?;
         attachments.push(AttachmentCreate {
             media_id: media_id.clone(),
             media_body: initial_body(&file.original_filename),
-            note_id,
-            note_body: attachment_note_body(&file.original_filename, &media_id, media_family),
             bytes: file.bytes.clone(),
             media_family,
             file_key: object_key(&media_id, &file.original_filename),

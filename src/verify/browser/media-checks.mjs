@@ -11,6 +11,7 @@ export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
     assert.ok(titles.includes(media.image.title));
     assert.ok(titles.includes(media.video.title));
     assert.ok(!titles.includes(hiddenNoteTitle));
+    await assertMediaCardGeometry(page);
 }
 
 export async function assertPublicMediaPage(page, media) {
@@ -61,25 +62,10 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.equal(uploadResponse.status(), 200);
     const payload = await uploadResponse.json();
     assert.equal(payload.created_media.length, 2);
-    assert.equal(payload.created_notes.length, 2);
+    assert.equal(Object.hasOwn(payload, 'created_notes'), false);
     const body = await page.locator('#editor-body').inputValue();
     for (const media of payload.created_media) {
         assert.ok(body.includes(media.file_href), `note body should embed ${media.file_href}`);
-    }
-    const notePages = await page.evaluate(async (items) => {
-        return Promise.all(
-            items.map(async (item) => {
-                const href = '/' + (item.alias || item.id);
-                const response = await fetch(href);
-                return response.text();
-            })
-        );
-    }, payload.created_notes);
-    for (const [index, html] of notePages.entries()) {
-        assert.ok(
-            html.includes(payload.created_media[index].file_href),
-            'background note should render the corresponding media embed'
-        );
     }
     await assertVisibleText(page, 'Uploaded 2 media items.');
 
@@ -116,9 +102,55 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.equal(staleRangeResponse.status, 200);
     assert.equal(staleRangeResponse.payload.selection_fallback, true);
     assert.equal(staleRangeResponse.payload.created_media.length, 1);
-    assert.equal(staleRangeResponse.payload.created_notes.length, 1);
+    assert.equal(Object.hasOwn(staleRangeResponse.payload, 'created_notes'), false);
     assert.ok(
         staleRangeResponse.payload.current_note.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
     );
+}
+
+async function assertMediaCardGeometry(page) {
+    await page.locator('.note-row-media .card-cover').first().waitFor({ state: 'visible' });
+    const metrics = await page.locator('.note-row-media').evaluateAll((cards) =>
+        cards.map((card) => {
+            const cover = card.querySelector('.card-cover').getBoundingClientRect();
+            const badges = card.querySelector('.card-badges').getBoundingClientRect();
+            const media = card.querySelector('.card-cover-media').getBoundingClientRect();
+            return {
+                coverBottom: cover.bottom,
+                coverHeight: Math.round(cover.height),
+                badgesTop: badges.top,
+                mediaHeight: Math.round(media.height),
+            };
+        })
+    );
+    assert.ok(metrics.length >= 2, 'media search should render media cards');
+    for (const item of metrics) {
+        assert.equal(item.coverHeight, 104, 'media thumbnail height should be fixed');
+        assert.ok(item.mediaHeight >= item.coverHeight - 1, 'media should fill the cover height');
+        assert.ok(item.badgesTop >= item.coverBottom, 'badges should sit below the thumbnail');
+    }
+    const imagePaint = await page.locator('.note-row-media img.card-cover-media').first().evaluate(
+        async (image) => {
+            if (!image.complete) {
+                await new Promise((resolve, reject) => {
+                    image.addEventListener('load', resolve, { once: true });
+                    image.addEventListener('error', reject, { once: true });
+                });
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0, 16, 16);
+            const data = context.getImageData(0, 0, 16, 16).data;
+            return {
+                naturalHeight: image.naturalHeight,
+                naturalWidth: image.naturalWidth,
+                painted: Array.from(data).some((value, index) => index % 4 !== 3 && value > 0),
+            };
+        }
+    );
+    assert.ok(imagePaint.naturalWidth > 0 && imagePaint.naturalHeight > 0, 'image card should load');
+    assert.ok(imagePaint.painted, 'image card should render visible pixels');
 }
