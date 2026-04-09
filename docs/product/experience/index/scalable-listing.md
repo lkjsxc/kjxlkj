@@ -20,6 +20,8 @@
 - Summary is two-line clamped so long notes do not enlarge sibling cards.
 - Dense layouts should reduce vertical padding before reducing useful metadata.
 - Grid cards may gain a small amount of height so timestamp rows remain fully contained.
+- Media grid cards may stay thumbnail-only, but thumbnails use one fixed cropped height.
+- Media card badges and metadata must sit below the thumbnail without overlap.
 - Rail timeline cards keep the same one-line title clamp and two-line summary clamp as other note-summary cards.
 
 ## Action Treatment

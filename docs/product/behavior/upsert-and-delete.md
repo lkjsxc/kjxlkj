@@ -29,11 +29,12 @@
 - The request also supplies the current draft `body`, `alias`, `is_favorite`, `is_private`, and the textarea `insert_start` and `insert_end`.
 - The draft `body` is raw Markdown and is not trimmed before insertion or persistence.
 - The server validates and processes the entire batch atomically.
-- Each selected file creates one new `media` resource and one new background `note`.
-- The created media and generated background notes inherit the triggering note visibility.
+- Each selected file creates one new `media` resource.
+- Created media inherit the triggering note visibility.
+- The upload flow does not create generated notes that only link to or embed the media.
 - The current note updates by inserting direct media embeds at the supplied selection range in picker order.
 - If the supplied selection range is stale or invalid for the submitted draft, the current note appends the embeds instead of failing the batch.
-- A successful batch creates one new saved snapshot for the current note plus saved snapshot `1` for each newly created media and background note.
+- A successful batch creates one new saved snapshot for the current note plus saved snapshot `1` for each newly created media.
 - Any file failure aborts the whole batch and leaves the current note unchanged.
 
 ## Shared Update (`PUT /resources/{id}`)

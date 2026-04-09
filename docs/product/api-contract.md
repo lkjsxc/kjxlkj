@@ -134,18 +134,12 @@
       "file_href": "/ag6m3m3jy6hm74m6rfj7dnu3ga/file"
     }
   ],
-  "selection_fallback": false,
-  "created_notes": [
-    {
-      "id": "bh7n4n4kz7in85n7sgk8eov4hb",
-      "kind": "note",
-      "alias": null
-    }
-  ]
+  "selection_fallback": false
 }
 ```
 
-- The endpoint creates one media and one background note for each uploaded file.
+- The endpoint creates one media resource for each uploaded file.
+- The endpoint does not create generated notes that only link to or embed media.
 - The current note is updated only when the entire batch succeeds.
 - `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
 

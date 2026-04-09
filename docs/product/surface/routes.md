@@ -32,7 +32,7 @@
 
 - `POST /resources/notes`: admin-only JSON note create.
 - `POST /resources/media`: admin-only multipart media create.
-- `POST /resources/{id}/media-attachments`: admin-only multipart upload that updates one live note and creates one media plus one background note per selected file.
+- `POST /resources/{id}/media-attachments`: admin-only multipart upload that updates one live note and creates one media per selected file.
 - `PUT /resources/{id}`: admin-only JSON metadata and Markdown update for both resource kinds.
 - `DELETE /resources/{id}`: admin-only soft delete.
 - `PUT /resources/favorites/order`: admin-only favorite reorder across mixed resources.

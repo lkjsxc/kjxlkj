@@ -21,7 +21,7 @@
 1. Click `New note` and create one public note.
 2. Use `Upload media` on that note and upload one public image or video.
 3. Confirm the current note receives a direct embed for the new media.
-4. Open the generated background note and confirm it also embeds the uploaded media.
+4. Open the new media resource and confirm it has its own media page.
 
 ## Verify Published Surface
 

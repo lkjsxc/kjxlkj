@@ -23,7 +23,7 @@
 3. Set an alias if the note needs a stable human-readable URL.
 4. Click `Upload media`.
 5. Select one image or video and confirm the current note receives a direct media embed.
-6. Open the new media resource and the generated background note and confirm both were created.
+6. Open the new media resource and confirm it has its own media page.
 
 ## Verify Live Surfaces
 
